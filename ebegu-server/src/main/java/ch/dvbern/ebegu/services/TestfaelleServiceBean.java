@@ -259,7 +259,6 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 				responseString.append("Fall ASIV 10 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if (SOZIALDIENST.equals(fallid)) {
 				Sozialdienst sozialdienst = getBernerSozialdienst();
-				Benutzer sozialdienstBenutzer = getBernerSozialdienstBenutzer();
 				Testfall_Sozialdienst testfallSozialdienst = new Testfall_Sozialdienst(
 					gesuchsperiode,
 					institutionStammdatenList,
@@ -267,7 +266,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 					gemeinde,
 					sozialdienst
 					);
-				final Gesuch gesuch = createAndSaveGesuch(testfallSozialdienst, verfuegen, sozialdienstBenutzer);
+				final Gesuch gesuch = createAndSaveGesuch(testfallSozialdienst, verfuegen, null);
 				responseString.append("Fall Sozialdienst Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if ("all".equals(fallid)) {
 				createAndSaveGesuch(new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, besitzer);
@@ -291,7 +290,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 				createAndSaveAsivGesuch(new Testfall_ASIV_08(gesuchsperiode, institutionStammdatenList, true, gemeinde), verfuegen, besitzer);
 				createAndSaveAsivGesuch(new Testfall_ASIV_09(gesuchsperiode, institutionStammdatenList, true, gemeinde), verfuegen, besitzer);
 				createAndSaveAsivGesuch(new Testfall_ASIV_10(gesuchsperiode, institutionStammdatenList, true, gemeinde), verfuegen, besitzer);
-				createAndSaveGesuch(new Testfall_Sozialdienst(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde, getBernerSozialdienst()), verfuegen, getBernerSozialdienstBenutzer());
+				createAndSaveGesuch(new Testfall_Sozialdienst(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde, getBernerSozialdienst()), verfuegen, null);
 				responseString.append("Testfaelle 1-11, ASIV-Testfaelle 1-10 und Sozialdiensttestfall erstellt");
 			} else {
 				responseString.append("Usage: /Nummer des Testfalls an die URL anhaengen. Bisher umgesetzt: 1-11. "
@@ -384,7 +383,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			return createAndSaveAsivGesuch(new Testfall_ASIV_10(gesuchsperiode, institutionStammdatenList, true, gemeinde), verfuegen, null);
 		}
 		if (SOZIALDIENST.equals(fallid)) {
-			return createAndSaveGesuch(new Testfall_Sozialdienst(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde, getBernerSozialdienst()), verfuegen, getBernerSozialdienstBenutzer());
+			return createAndSaveGesuch(new Testfall_Sozialdienst(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde, getBernerSozialdienst()), verfuegen, null);
 		}
 		throw new IllegalArgumentException("Unbekannter Testfall: " + fallid);
 	}
@@ -586,7 +585,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		Gesuch gesuch = fromTestfall.fillInGesuch();
 
 		//noinspection VariableNotUsedInsideIf Muss so sein
-		if (besitzer != null) {
+		// online gesuch falls fall einen besitzer hat oder sozialdienstFall ist
+		if (besitzer != null || fall.getSozialdienstFall() != null) {
 			gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_GS);
 			gesuch.setEingangsart(Eingangsart.ONLINE);
 		} else {
@@ -1003,11 +1003,5 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private Sozialdienst getBernerSozialdienst() {
 		return sozialdienstService.findSozialdienst(AbstractTestfall.ID_BERNER_SOZIALDIENST)
 			.orElseThrow(() -> new EbeguEntityNotFoundException("getBernerSozialdienst", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
-	}
-
-	@Nonnull
-	private Benutzer getBernerSozialdienstBenutzer() {
-		return benutzerService.findBenutzerByEmail("patrick.melcher@mailbucket.dvbern.ch")
-			.orElseThrow(() -> new EbeguEntityNotFoundException("getBernerSozialdienstBenutzer", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 	}
 }

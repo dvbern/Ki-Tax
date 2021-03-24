@@ -21,11 +21,14 @@ import java.util.Collection;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
+import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -60,11 +63,8 @@ public class Testfall_Sozialdienst extends AbstractTestfall {
 	}
 
 	@Override
-	public Gesuch fillInGesuch() {
-		// Gesuch, Gesuchsteller
-		gesuch = createAlleinerziehend();
-
-		// Sozialdienst
+	public Fall createFall(@Nullable Benutzer verantwortlicher) {
+		Fall fall = super.createFall(verantwortlicher);
 		SozialdienstFall sozialdienstFall = new SozialdienstFall();
 		sozialdienstFall.setSozialdienst(sozialdienst);
 		sozialdienstFall.setName("Wälti");
@@ -78,8 +78,17 @@ public class Testfall_Sozialdienst extends AbstractTestfall {
 		adresse.setPlz("3000");
 		adresse.setOrt("Bern");
 		sozialdienstFall.setAdresse(adresse);
+		sozialdienstFall.setVollmacht(new byte[10]);
 
-		gesuch.getFall().setSozialdienstFall(sozialdienstFall);
+		fall.setSozialdienstFall(sozialdienstFall);
+
+		return fall;
+	}
+
+	@Override
+	public Gesuch fillInGesuch() {
+		// Gesuch, Gesuchsteller
+		gesuch = createAlleinerziehend();
 
 		// Gesuchsteller
 		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer();
