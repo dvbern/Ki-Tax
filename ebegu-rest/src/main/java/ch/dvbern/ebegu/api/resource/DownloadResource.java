@@ -127,9 +127,6 @@ public class DownloadResource {
 	private JaxBConverter converter;
 
 	@Inject
-	private JaxFerienbetreuungConverter ferienbetreuungConverter;
-
-	@Inject
 	private DokumentService dokumentService;
 
 	@Inject
