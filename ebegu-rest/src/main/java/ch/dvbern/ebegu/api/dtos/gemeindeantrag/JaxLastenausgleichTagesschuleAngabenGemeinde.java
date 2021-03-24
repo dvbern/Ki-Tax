@@ -24,12 +24,16 @@ import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 
 public class JaxLastenausgleichTagesschuleAngabenGemeinde extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -1526099337176479663L;
 
 	// A: Allgemeine Angaben
+
+	@NotNull @Nonnull
+	private LastenausgleichTagesschuleAngabenGemeindeFormularStatus status;
 
 	@NotNull @Nonnull
 	private Boolean bedarfBeiElternAbgeklaert;
@@ -291,5 +295,14 @@ public class JaxLastenausgleichTagesschuleAngabenGemeinde extends JaxAbstractDTO
 
 	public void setBemerkungen(@Nullable String bemerkungen) {
 		this.bemerkungen = bemerkungen;
+	}
+
+	@Nonnull
+	public LastenausgleichTagesschuleAngabenGemeindeFormularStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(@Nonnull LastenausgleichTagesschuleAngabenGemeindeFormularStatus status) {
+		this.status = status;
 	}
 }

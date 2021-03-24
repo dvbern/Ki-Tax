@@ -669,4 +669,8 @@ export class TSRoleUtil {
     public static getAmtOrSozialdienstRolle(): ReadonlyArray<TSRole> {
         return this.getAmtRole().concat(this.getSozialdienstRolle());
     }
+
+    public static getGemeindeOrBGOrTSorMandantRoles(): ReadonlyArray<TSRole> {
+        return this.getGemeindeOrBGOrTSRoles().concat(this.getMandantRoles());
+    }
 }

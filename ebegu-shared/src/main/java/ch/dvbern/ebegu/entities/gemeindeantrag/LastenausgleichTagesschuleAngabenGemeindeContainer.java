@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.entities.gemeindeantrag;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -41,9 +42,11 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionStatus;
 import ch.dvbern.ebegu.validators.CheckLastenausgleichTagesschuleAngabenGemeinde;
+import com.google.common.base.Preconditions;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.hibernate.envers.Audited;
 
@@ -56,17 +59,20 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	private static final long serialVersionUID = -149964317716679424L;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private LastenausgleichTagesschuleAngabenGemeindeStatus status;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_lats_fall_container_gemeinde_id"), nullable = false)
 	private Gemeinde gemeinde;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_lats_fall_container_gesuchsperiode_id"), nullable = false)
 	private Gesuchsperiode gesuchsperiode;
@@ -96,7 +102,6 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "angabenGemeinde")
 	private Set<LastenausgleichTagesschuleAngabenInstitutionContainer> angabenInstitutionContainers = new HashSet<>();
-
 
 	@Nonnull
 	public LastenausgleichTagesschuleAngabenGemeindeStatus getStatus() {
@@ -168,7 +173,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 		return angabenInstitutionContainers;
 	}
 
-	public void setAngabenInstitutionContainers(@Nonnull Set<LastenausgleichTagesschuleAngabenInstitutionContainer> angabenInstitutionContainers) {
+	public void setAngabenInstitutionContainers(
+		@Nonnull Set<LastenausgleichTagesschuleAngabenInstitutionContainer> angabenInstitutionContainers) {
 		this.angabenInstitutionContainers = angabenInstitutionContainers;
 	}
 
@@ -184,14 +190,16 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 		if (!super.equals(other)) {
 			return false;
 		}
-		LastenausgleichTagesschuleAngabenGemeindeContainer that = (LastenausgleichTagesschuleAngabenGemeindeContainer) other;
+		LastenausgleichTagesschuleAngabenGemeindeContainer that =
+			(LastenausgleichTagesschuleAngabenGemeindeContainer) other;
 		return getGemeinde().equals(that.getGemeinde()) &&
 			getGesuchsperiode().equals(that.getGesuchsperiode());
 	}
 
 	public void copyForFreigabe() {
 		// Nur moeglich, wenn noch nicht freigegeben und ueberhaupt Daten zum kopieren vorhanden
-		if (status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE && angabenDeklaration != null) {
+		if (status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE
+			&& angabenDeklaration != null) {
 			angabenKorrektur = new LastenausgleichTagesschuleAngabenGemeinde(angabenDeklaration);
 		}
 	}
@@ -214,7 +222,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	}
 
 	@CanIgnoreReturnValue
-	public boolean addLastenausgleichTagesschuleAngabenInstitutionContainer(@Nonnull final LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainerToAdd) {
+	public boolean addLastenausgleichTagesschuleAngabenInstitutionContainer(
+		@Nonnull final LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainerToAdd) {
 		institutionContainerToAdd.setAngabenGemeinde(this);
 		return !angabenInstitutionContainers.contains(institutionContainerToAdd)
 			&& angabenInstitutionContainers.add(institutionContainerToAdd);
@@ -231,10 +240,10 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	}
 
 	public boolean angabenDeklarationComplete() {
-		if(Objects.isNull(getAlleAngabenInKibonErfasst())) {
+		if (Objects.isNull(getAlleAngabenInKibonErfasst())) {
 			return false;
 		}
-		if(Objects.isNull(getAngabenDeklaration())) {
+		if (Objects.isNull(getAngabenDeklaration())) {
 			return false;
 		}
 		LastenausgleichTagesschuleAngabenGemeinde deklaration = getAngabenDeklaration();
@@ -247,7 +256,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 		if (Objects.isNull(deklaration.getAngebotVerfuegbarFuerAlleSchulstufen())) {
 			return false;
 		}
-		if (!deklaration.getAngebotVerfuegbarFuerAlleSchulstufen() && Objects.isNull(deklaration.getBegruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen())) {
+		if (!deklaration.getAngebotVerfuegbarFuerAlleSchulstufen()
+			&& Objects.isNull(deklaration.getBegruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen())) {
 			return false;
 		}
 		if (Objects.isNull(deklaration.getGeleisteteBetreuungsstundenBesondereBeduerfnisse())) {
@@ -284,5 +294,55 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 			return false;
 		}
 		return true;
+	}
+
+	public boolean plausibilisierungTagesschulenStundenHoldsForDeklaration() {
+		LastenausgleichTagesschuleAngabenGemeinde formular;
+		if(isAtLeastInBearbeitungKanton()) {
+			formular = getAngabenKorrektur();
+		} else {
+			formular = getAngabenDeklaration();
+		}
+		Preconditions.checkState(formular != null, "angabenDeklaration must not be null");
+		Preconditions.checkState(formular.getGeleisteteBetreuungsstundenBesondereBeduerfnisse()
+			!= null, "angabenDeklaration incomplete");
+		Preconditions.checkState(formular.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse()
+			!= null, "angabenDeklaration incomplete");
+
+		BigDecimal sumTagesschulen = getAngabenInstitutionContainers().stream()
+			.map(container -> {
+				// we should not be here if there are tagesschule formulare that are not geprueft
+					Preconditions.checkArgument(
+						container.getAngabenKorrektur() != null && container.isAntragAbgeschlossen(),
+						"angabenDeklaration Tagesschulen incomplete"
+					);
+					return container.getAngabenKorrektur().getBetreuungsstundenEinschliesslichBesondereBeduerfnisse();
+
+			}).reduce(BigDecimal.ZERO, BigDecimal::add);
+
+		return formular.getGeleisteteBetreuungsstundenBesondereBeduerfnisse()
+			.add(formular.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse())
+			.compareTo(sumTagesschulen) == 0;
+	}
+
+	public boolean isAtLeastInBearbeitungKanton() {
+		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON ||
+			status == LastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT ||
+			status == LastenausgleichTagesschuleAngabenGemeindeStatus.VERFUEGT ||
+			status == LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG;
+	}
+
+	public boolean isAngabenDeklarationAbgeschlossen() {
+		return angabenDeklaration != null
+			&& angabenDeklaration.getStatus() == LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
+	}
+
+	public boolean isAngabenKorrekturAbgeschlossen() {
+		return angabenKorrektur != null
+			&& angabenKorrektur.getStatus() == LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
+	}
+
+	public boolean isInBearbeitungGemeinde() {
+		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE;
 	}
 }

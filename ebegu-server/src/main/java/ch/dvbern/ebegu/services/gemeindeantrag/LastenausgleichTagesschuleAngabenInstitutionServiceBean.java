@@ -126,7 +126,8 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 			"LastenausgleichAngabenInstitution muss im Status OFFEN sein");
 
 		Objects.requireNonNull(institutionContainer.getAngabenDeklaration());
-		checkInstitutionAngabenComplete(institutionContainer.getAngabenDeklaration(),
+		checkInstitutionAngabenComplete(
+			institutionContainer.getAngabenDeklaration(),
 			institutionContainer.getAngabenGemeinde().getAlleAngabenInKibonErfasst());
 
 		institutionContainer.copyForFreigabe();
@@ -175,6 +176,27 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		return persistence.getCriteriaResults(query);
 	}
 
+	@Override
+	public LastenausgleichTagesschuleAngabenInstitutionContainer latsAngabenInstitutionContainerWiederOeffnen(
+		LastenausgleichTagesschuleAngabenInstitutionContainer fallContainer) {
+
+		authorizer.checkWriteAuthorization(fallContainer);
+
+		Preconditions.checkState(
+			fallContainer.getAngabenGemeinde().isInBearbeitungGemeinde(),
+			"LastenausgleichTagesschuleAngabenGemeindeContainer muss in Bearbeitung Gemeinde sein"
+		);
+
+		Preconditions.checkState(
+			fallContainer.isAntragAbgeschlossen(),
+			"LastenausgleichTagesschuleAngabenInstitutionContainer muss im Status GEPRUEFT sein");
+
+		fallContainer.setStatus(LastenausgleichTagesschuleAngabenInstitutionStatus.IN_PRUEFUNG_GEMEINDE);
+
+		return persistence.persist(fallContainer);
+
+	}
+
 	// we check this since the attributes can be cached and can be null then, but must not be when changing status
 	private void checkInstitutionAngabenComplete(
 		LastenausgleichTagesschuleAngabenInstitution institutionAngaben,
@@ -182,7 +204,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		if (Objects.isNull(institutionAngaben.getLehrbetrieb())) {
 			throw new WebApplicationException("isLehrbetrieb must not be null", Status.BAD_REQUEST);
 		}
-		if(!alleAngabenInKibonErfasst) {
+		if (!alleAngabenInKibonErfasst) {
 			if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinder())) {
 				throw new WebApplicationException("anzahlEingeschribeneKinder must not be null", Status.BAD_REQUEST);
 			}
@@ -232,7 +254,8 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 			throw new WebApplicationException("betreuungsverhaeltnisEingehalten must not be null", Status.BAD_REQUEST);
 		}
 		if (Objects.isNull(institutionAngaben.getErnaehrungsGrundsaetzeEingehalten())) {
-			throw new WebApplicationException("ernaehrungsGrundsaetzeEingehalten must not be null",
+			throw new WebApplicationException(
+				"ernaehrungsGrundsaetzeEingehalten must not be null",
 				Status.BAD_REQUEST);
 		}
 		if (Objects.isNull(institutionAngaben.getSchuleAufBasisOrganisatorischesKonzept())) {
