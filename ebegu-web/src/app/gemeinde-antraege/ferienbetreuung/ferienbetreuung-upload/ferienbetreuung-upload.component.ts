@@ -21,11 +21,13 @@ import {TranslateService} from '@ngx-translate/core';
 import {concatMap} from 'rxjs/operators';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungDokument} from '../../../../models/gemeindeantrag/TSFerienbetreuungDokument';
+import {TSDownloadFile} from '../../../../models/TSDownloadFile';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {DvNgRemoveDialogComponent} from '../../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {MAX_FILE_SIZE} from '../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
+import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {UploadRS} from '../../../core/service/uploadRS.rest';
 import {FerienbetreuungDokumentService} from '../services/ferienbetreuung-dokument.service';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
@@ -52,7 +54,8 @@ export class FerienbetreuungUploadComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly cd: ChangeDetectorRef,
         private readonly translate: TranslateService,
-        private readonly dialog: MatDialog
+        private readonly dialog: MatDialog,
+        private readonly downloadRS: DownloadRS
     ) {
     }
 
@@ -71,7 +74,14 @@ export class FerienbetreuungUploadComponent implements OnInit {
     }
 
     public download(dokument: TSFerienbetreuungDokument, attachment: boolean): void {
-        // TODO
+        const win = this.downloadRS.prepareDownloadWindow();
+        this.downloadRS.getAccessTokenFerienbetreuungDokument(dokument.id)
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, attachment, win);
+            })
+            .catch(() => {
+                win.close();
+            });
     }
 
     public onDelete(dokument: TSFerienbetreuungDokument): void {
