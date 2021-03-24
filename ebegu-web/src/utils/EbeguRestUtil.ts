@@ -1485,6 +1485,10 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.offenVon = institutionStammdaten.offenVon;
             restInstitutionStammdaten.offenBis = institutionStammdaten.offenBis;
             restInstitutionStammdaten.oeffnungsAbweichungen = institutionStammdaten.oeffnungsAbweichungen;
+            restInstitutionStammdaten.alternativeEmailFamilienportal =
+                (institutionStammdaten.alternativeEmailFamilienportal) ?
+                    institutionStammdaten.alternativeEmailFamilienportal :
+                null;
             return restInstitutionStammdaten;
         }
         return undefined;
@@ -1531,6 +1535,8 @@ export class EbeguRestUtil {
             institutionStammdatenTS.offenVon = institutionStammdatenFromServer.offenVon;
             institutionStammdatenTS.offenBis = institutionStammdatenFromServer.offenBis;
             institutionStammdatenTS.oeffnungsAbweichungen = institutionStammdatenFromServer.oeffnungsAbweichungen;
+            institutionStammdatenTS.alternativeEmailFamilienportal =
+                institutionStammdatenFromServer.alternativeEmailFamilienportal;
             institutionStammdatenTS.betreuungsstandorte =
                 this.parseBetreuungsstandortList(institutionStammdatenFromServer.betreuungsstandorte);
             return institutionStammdatenTS;

@@ -149,7 +149,7 @@
                                 <md-checkbox ng-model="vm.hasUnbezahlterUrlaub"
                                              name="showUnbezahlterUrlaub" id="showUnbezahlterUrlaub"
                                              aria-label="{{'UNBEZAHLTER_URLAUB'|translate}}"
-                                             ng-disabled="vm.erwerbspensumDisabled() || vm.isGesuchReadonly()"
+                                             ng-disabled="vm.isUnbezahlterUrlaubDisabled()"
                                              ng-change="vm.unbezahlterUrlaubClicked()">
                                     <span data-translate="UNBEZAHLTER_URLAUB"></span>
                                 </md-checkbox>
@@ -174,7 +174,7 @@
                                                ng-model="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigAb"
                                                ng-required="vm.hasUnbezahlterUrlaub"
                                                ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}"
-                                               ng-disabled="vm.erwerbspensumDisabled()">
+                                               ng-disabled="vm.isUnbezahlterUrlaubDisabled()">
                                 </dv-datepicker>
                                 <dv-bisher gs="vm.model.erwerbspensumGS.unbezahlterUrlaub.gueltigkeit.gueltigAb"
                                            ja="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigAb"
@@ -192,7 +192,7 @@
                                                ng-model="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigBis"
                                                ng-required="false"
                                                ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}"
-                                               ng-disabled="vm.erwerbspensumDisabled()">
+                                               ng-disabled="vm.isUnbezahlterUrlaubDisabled()">
                                 </dv-datepicker>
                                 <dv-bisher gs="vm.model.erwerbspensumGS.unbezahlterUrlaub.gueltigkeit.gueltigBis"
                                            ja="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigBis"

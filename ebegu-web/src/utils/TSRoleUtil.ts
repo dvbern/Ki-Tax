@@ -23,7 +23,15 @@ import {getTSRoleValues, getTSRoleValuesWithoutSuperAdmin, rolePrefix, TSRole} f
 export class TSRoleUtil {
 
     public static getAllRolesButGesuchsteller(): ReadonlyArray<TSRole> {
-        return TSRoleUtil.getAllRolesButAnonymous().filter(element => element !== TSRole.GESUCHSTELLER);
+        return TSRoleUtil.getAllRolesButAnonymous()
+            .filter(element => element !== TSRole.GESUCHSTELLER);
+    }
+
+    public static getAllRolesButGesuchstellerSozialdienst(): ReadonlyArray<TSRole> {
+        return TSRoleUtil.getAllRolesButAnonymous()
+            .filter(element => (element !== TSRole.GESUCHSTELLER
+                && element !== TSRole.ADMIN_SOZIALDIENST
+                && element !== TSRole.SACHBEARBEITER_SOZIALDIENST));
     }
 
     // noinspection JSUnusedGlobalSymbols Es wird doch benutzt
@@ -104,7 +112,14 @@ export class TSRoleUtil {
     }
 
     public static getAdministratorRoles(): ReadonlyArray<TSRole> {
-        return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE, TSRole.ADMIN_TS, TSRole.ADMIN_MANDANT];
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_BG,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.ADMIN_TS,
+            TSRole.ADMIN_MANDANT,
+            TSRole.ADMIN_SOZIALDIENST,
+        ];
     }
 
     // noinspection JSUnusedGlobalSymbols Es wird doch benutzt
@@ -641,6 +656,10 @@ export class TSRoleUtil {
             TSRole.ADMIN_SOZIALDIENST,
             TSRole.SACHBEARBEITER_SOZIALDIENST,
         ];
+    }
+
+    public static getGesuchstellerSozialdienstRolle(): ReadonlyArray<TSRole> {
+        return [TSRole.GESUCHSTELLER, TSRole.ADMIN_SOZIALDIENST, TSRole.SACHBEARBEITER_SOZIALDIENST];
     }
 
     public static getAdministratorOrAmtOrSozialdienstRolle(): ReadonlyArray<TSRole> {

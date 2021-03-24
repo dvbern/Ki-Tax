@@ -261,7 +261,7 @@ export class GesuchGenerator {
             gesuch.dossier.fall.sozialdienstFall.sozialdienst = sozialdienst;
         }
         this.wizardStepManager.setHiddenSteps(gesuch);
-        this.wizardStepManager.initWizardSteps();
+        this.wizardStepManager.initWizardSteps(isNewFallNeeded(creationAction));
         this.setCurrentUserAsFallVerantwortlicher(gesuch);
 
         return gesuch;
