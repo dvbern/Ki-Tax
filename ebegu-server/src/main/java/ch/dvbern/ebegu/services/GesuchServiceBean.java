@@ -747,13 +747,15 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			if (!(principalBean.isCallerInAnyOfRole(
 				UserRole.SUPER_ADMIN,
 				UserRole.GESUCHSTELLER,
+				UserRole.ADMIN_SOZIALDIENST,
+				UserRole.SACHBEARBEITER_SOZIALDIENST,
 				UserRole.ADMIN_TRAEGERSCHAFT,
 				UserRole.SACHBEARBEITER_TRAEGERSCHAFT,
 				UserRole.ADMIN_INSTITUTION,
 				UserRole.SACHBEARBEITER_INSTITUTION))) {
 				// Nur GS darf ein Gesuch sehen, das sich im Status BEARBEITUNG_GS oder FREIGABEQUITTUNG befindet
 				predicatesToUse.add(root.get(Gesuch_.status)
-					.in(AntragStatus.IN_BEARBEITUNG_GS, AntragStatus.FREIGABEQUITTUNG)
+					.in(AntragStatus.IN_BEARBEITUNG_GS, AntragStatus.IN_BEARBEITUNG_SOZIALDIENST, AntragStatus.FREIGABEQUITTUNG)
 					.not());
 			}
 

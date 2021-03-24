@@ -255,9 +255,21 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			case ADMIN_GEMEINDE:
 			case SACHBEARBEITER_TS:
 			case ADMIN_TS: {
-				mitteilung.setEmpfaenger(mitteilung.getFall().getBesitzer());
-				mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.GESUCHSTELLER);
+				if (mitteilung.getFall().getSozialdienstFall() != null){
+					// Sozialdienst hat kein Empfanger
+					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.SOZIALDIENST);
+				} else {
+					mitteilung.setEmpfaenger(mitteilung.getFall().getBesitzer());
+					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.GESUCHSTELLER);
+				}
 				mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
+				break;
+			}
+			case ADMIN_SOZIALDIENST:
+			case SACHBEARBEITER_SOZIALDIENST: {
+				mitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(mitteilung));
+				mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
+				mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.SOZIALDIENST);
 				break;
 			}
 			case SUPER_ADMIN: {
@@ -266,7 +278,12 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					mitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(mitteilung));
 					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 					mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.INSTITUTION);
-				} else {
+				} else if (mitteilung.getFall().getSozialdienstFall() != null){
+					// Sozialdienst hat kein Empfanger
+					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.SOZIALDIENST);
+					mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
+				}
+				else {
 					mitteilung.setEmpfaenger(mitteilung.getFall().getBesitzer());
 					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.GESUCHSTELLER);
 					mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
@@ -1213,6 +1230,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		case SACHBEARBEITER_MANDANT: {
 			return MitteilungTeilnehmerTyp.JUGENDAMT;
 		}
+		case SACHBEARBEITER_SOZIALDIENST:
+		case ADMIN_SOZIALDIENST:
+			return MitteilungTeilnehmerTyp.SOZIALDIENST;
 		default:
 			return null;
 		}
