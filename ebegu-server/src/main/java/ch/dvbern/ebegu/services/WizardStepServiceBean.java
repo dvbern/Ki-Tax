@@ -57,6 +57,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
@@ -250,7 +251,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				wizardStepList.add(saveWizardStep(createWizardStepObject(
 					gesuch,
 					WizardStepName.SOZIALDIENSTFALL_ERSTELLEN,
-					WizardStepStatus.IN_BEARBEITUNG,
+					gesuch.getDossier().getFall().getSozialdienstFall().getStatus() == SozialdienstFallStatus.AKTIV ?
+						WizardStepStatus.OK : WizardStepStatus.IN_BEARBEITUNG,
 					true)));
 			}
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
