@@ -2391,5 +2391,6 @@
     "FERIENBETREUUNG_FEHLER_ABRUF_INFORMATIONEN": "Beim Abrufen der Informationen ist ein Fehler aufgetreten",
     "FERIENBETREUUNG_AUS_GEMEINDESTAMMDATEN_UEBERNEHMEN": "Aus Gemeindestammdaten übernehmen",
     "FERIENBETREUUNG_MEINE_ANGABEN_UEBERNEHMEN": "Aus Benutzer übernehmen",
+    "FEHLER_BEIM_HOCHLADEN_VON_DOKUMENT": "Fehler beim Hochladen von {{dokumentName}}: ",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
