@@ -1699,6 +1699,7 @@ public class JaxBConverter extends AbstractConverter {
 		if (persistedAdresseKontoinhaber != null) {
 			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedAdresseKontoinhaber));
 		}
+		jaxInstStammdaten.setAlternativeEmailFamilienportal(persistedInstStammdaten.getAlternativeEmailFamilienportal());
 		return jaxInstStammdaten;
 	}
 
@@ -1769,6 +1770,7 @@ public class JaxBConverter extends AbstractConverter {
 		if (institutionStammdatenJAXP.getOffenBis() != null) {
 			institutionStammdaten.setOffenBis(hoursAndMinutesToDate(institutionStammdatenJAXP.getOffenBis()));
 		}
+		institutionStammdaten.setAlternativeEmailFamilienportal(institutionStammdatenJAXP.getAlternativeEmailFamilienportal());
 
 		institutionStammdaten.setBetreuungsstandorte(betreuungsstandortListToEntity(
 			institutionStammdatenJAXP.getBetreuungsstandorte(),
