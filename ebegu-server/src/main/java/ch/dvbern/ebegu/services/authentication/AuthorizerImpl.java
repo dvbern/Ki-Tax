@@ -87,7 +87,6 @@ import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
 import ch.dvbern.ebegu.services.gemeindeantrag.GemeindeAntragService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.sentry.event.User;
 
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_FERIENBETREUUNG;
@@ -97,7 +96,6 @@ import static ch.dvbern.ebegu.enums.UserRole.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRole.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRole.JURIST;
 import static ch.dvbern.ebegu.enums.UserRole.REVISOR;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_BG;
@@ -845,12 +843,17 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 		return (fall != null) && (
 			fall.getUserErstellt() == null || (fall.getBesitzer() != null && hasPrincipalName(fall.getBesitzer()))
-				|| (fall.getSozialdienstFall() != null && principalBean.getBenutzer().getSozialdienst() != null &&
-				fall.getSozialdienstFall()
-					.getSozialdienst()
-					.getId()
-					.equals(principalBean.getBenutzer().getSozialdienst().getId()))
+				|| sozialdienstIsOwnerOfGS(fall)
 		);
+	}
+
+	private boolean sozialdienstIsOwnerOfGS(Fall fall) {
+		return fall.getSozialdienstFall() != null
+			&& principalBean.getBenutzer().getSozialdienst() != null
+			&& fall.getSozialdienstFall()
+				.getSozialdienst()
+				.getId()
+				.equals(principalBean.getBenutzer().getSozialdienst().getId());
 	}
 
 	private boolean isReadAuthorized(final AbstractPlatz abstractPlatz) {
