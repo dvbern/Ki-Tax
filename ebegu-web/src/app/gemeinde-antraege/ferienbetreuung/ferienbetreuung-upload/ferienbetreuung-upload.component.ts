@@ -18,6 +18,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
+import {concatMap} from 'rxjs/operators';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungDokument} from '../../../../models/gemeindeantrag/TSFerienbetreuungDokument';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
@@ -57,11 +58,16 @@ export class FerienbetreuungUploadComponent implements OnInit {
 
     public ngOnInit(): void {
         this.ferienbetreuungService.getFerienbetreuungContainer()
-            .subscribe(container => {
+            .pipe(concatMap(container => {
                 this.container = container;
+                return this.ferienbetreuungDokumentService.getAllDokumente(container.id);
+            }))
+            .subscribe(dokumente => {
+                this.dokumente = dokumente;
+                this.cd.markForCheck();
             }, error => {
-                LOG.error(error);
-            });
+            LOG.error(error);
+        });
     }
 
     public download(dokument: TSFerienbetreuungDokument, attachment: boolean): void {

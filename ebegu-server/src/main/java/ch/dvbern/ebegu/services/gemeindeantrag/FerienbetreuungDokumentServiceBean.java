@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -24,8 +25,16 @@ import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument_;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -68,6 +77,27 @@ public class FerienbetreuungDokumentServiceBean extends AbstractBaseService
 	public void removeDokument(@Nonnull FerienbetreuungDokument dokument) {
 		authorizer.checkWriteAuthorization(dokument.getFerienbetreuungAngabenContainer());
 		persistence.remove(dokument);
+	}
+
+	@Nonnull
+	@Override
+	public List<FerienbetreuungDokument> findDokumente(@Nonnull String ferienbetreuungContainerId) {
+		Objects.requireNonNull(ferienbetreuungContainerId);
+		authorizer.checkReadAuthorizationFerienbetreuung(ferienbetreuungContainerId);
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<FerienbetreuungDokument> query = cb.createQuery(FerienbetreuungDokument.class);
+		Root<FerienbetreuungDokument> root = query.from(FerienbetreuungDokument.class);
+
+		ParameterExpression<String> containerIdParam = cb.parameter(String.class, "ferienbetreuungContainerId");
+
+		Predicate predicateFerienbetreuungFormularId = cb.equal(root.get(FerienbetreuungDokument_.ferienbetreuungAngabenContainer).get(AbstractEntity_.id), containerIdParam);
+		query.where(predicateFerienbetreuungFormularId);
+		query.orderBy(cb.asc(root.get(FerienbetreuungDokument_.timestampUpload)));
+		TypedQuery<FerienbetreuungDokument> q = persistence.getEntityManager().createQuery(query);
+		q.setParameter(containerIdParam, ferienbetreuungContainerId);
+
+		return q.getResultList();
 	}
 }
 

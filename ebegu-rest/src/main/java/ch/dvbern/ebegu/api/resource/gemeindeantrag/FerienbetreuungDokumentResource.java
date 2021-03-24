@@ -17,6 +17,9 @@
 
 package ch.dvbern.ebegu.api.resource.gemeindeantrag;
 
+import java.util.List;
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.security.DenyAll;
@@ -27,14 +30,19 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.converter.JaxFerienbetreuungConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.dtos.JaxRueckforderungFormular;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungDokument;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -68,7 +76,30 @@ public class FerienbetreuungDokumentResource {
 	private JaxBConverter converter;
 
 	@Inject
+	private JaxFerienbetreuungConverter ferienbetreuungConverter;
+
+	@Inject
 	private FerienbetreuungDokumentService ferienbetreuungDokumentService;
+
+
+	@ApiOperation(value = "Gibt alle Ferienbetreuungdokumente für den FerienbetreuungContainer zurück",
+		responseContainer = "List", response = JaxRueckforderungFormular.class)
+	@GET
+	@Path("/all/{ferienbetreuungId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS,
+		SACHBEARBEITER_TS, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG})
+	public List<JaxFerienbetreuungDokument> getFerienbetreuungDokumente(
+		@Nonnull @NotNull @PathParam("ferienbetreuungId") JaxId ferienbetreuungContainerJaxId
+	) {
+		Objects.requireNonNull(ferienbetreuungContainerJaxId.getId());
+		String ferienbetreuungContainerId = converter.toEntityId(ferienbetreuungContainerJaxId);
+		List<FerienbetreuungDokument> ferienbetreuungDokumente =
+			ferienbetreuungDokumentService.findDokumente(ferienbetreuungContainerId);
+
+		return ferienbetreuungConverter.ferienbetreuungDokumentListToJax(ferienbetreuungDokumente);
+	}
 
 	@ApiOperation("Loescht das Dokument mit der uebergebenen Id in der Datenbank")
 	@Nullable

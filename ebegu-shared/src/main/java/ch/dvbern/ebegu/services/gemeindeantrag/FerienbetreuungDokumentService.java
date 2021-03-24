@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -33,4 +34,6 @@ public interface FerienbetreuungDokumentService {
 	@Nonnull Optional<FerienbetreuungDokument> findDokument(@Nonnull String dokumentId);
 
 	void removeDokument(@Nonnull FerienbetreuungDokument dokument);
+
+	@Nonnull List<FerienbetreuungDokument> findDokumente(@Nonnull String ferienbetreuungContainerId);
 }
