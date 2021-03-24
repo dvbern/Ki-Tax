@@ -15,4 +15,20 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<p>ferienbetreuung-upload works!</p>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="dv-error-messages" *ngIf="true">
+            <span>{{'FEHLER'}}</span>
+        </div>
+        <dv-file-upload
+            (download)="download($event[0],$event[1])"
+            [title]="'FERIENBETREUUNG_DOKUMENT_UPLOAD_TITLE'"
+            (delete)="onDelete($event)"
+            (uploadFile)="onUpload($event)"
+            [files]="dokumente"
+            [readOnly]="isReadonly()"
+            [readOnlyDelete]="false"
+        >
+        </dv-file-upload>
+    </div>
+</div>
