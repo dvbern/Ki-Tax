@@ -20,6 +20,7 @@ import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SharedModule} from '../../shared/shared.module';
 import {WizardstepXModule} from '../../wizardstepX/wizardstep-x.module';
+import {FerienbetreuungAbschlussComponent} from './ferienbetreuung-abschluss/ferienbetreuung-abschluss.component';
 import {FerienbetreuungAngebotComponent} from './ferienbetreuung-angebot/ferienbetreuung-angebot.component';
 import {FerienbetreuungFreigabeComponent} from './ferienbetreuung-freigabe/ferienbetreuung-freigabe.component';
 import {FerienbetreuungKommantarComponent} from './ferienbetreuung-kommantar/ferienbetreuung-kommantar.component';
@@ -28,7 +29,6 @@ import {FerienbetreuungNutzungComponent} from './ferienbetreuung-nutzung/ferienb
 import {FerienbetreuungRoutingModule} from './ferienbetreuung-routing/ferienbetreuung-routing.module';
 import {FerienbetreuungStammdatenGemeindeComponent} from './ferienbetreuung-stammdaten-gemeinde/ferienbetreuung-stammdaten-gemeinde.component';
 import {FerienbetreuungUploadComponent} from './ferienbetreuung-upload/ferienbetreuung-upload.component';
-import {FerienbetreuungVerfuegungComponent} from './ferienbetreuung-verfuegung/ferienbetreuung-verfuegung.component';
 import {FerienbetreuungComponent} from './ferienbetreuung/ferienbetreuung.component';
 import {FerienbetreuungService} from './services/ferienbetreuung.service';
 
@@ -42,7 +42,7 @@ import {FerienbetreuungService} from './services/ferienbetreuung.service';
         FerienbetreuungKostenEinnahmenComponent,
         FerienbetreuungUploadComponent,
         FerienbetreuungFreigabeComponent,
-        FerienbetreuungVerfuegungComponent,
+        FerienbetreuungAbschlussComponent,
     ],
     imports: [
         CommonModule,

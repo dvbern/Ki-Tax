@@ -23,6 +23,5 @@ public enum FerienbetreuungWizardStepsEnum {
 	NUTZUNG,
 	KOSTEN_EINNAHMEN,
 	UPLOAD,
-	FREIGABE,
-	VERFUEGUNG
+	ABSCHLUSS
 }

@@ -15,105 +15,170 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
+package ch.dvbern.ebegu.entities.gemeindeantrag;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.validation.constraints.Size;
 
-import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
-import ch.dvbern.ebegu.api.dtos.JaxAdresse;
+import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.util.Constants;
+import org.hibernate.envers.Audited;
 
-public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
+import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
-	private static final long serialVersionUID = -3543367177495435040L;
+@Entity
+@Audited
+public class FerienbetreuungAngabenAngebot extends AbstractEntity {
+
+	private static final long serialVersionUID = -5754760882297428231L;
 
 	@Nullable
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Column()
 	private String angebot;
 
 	@Nullable
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Column()
 	private String angebotKontaktpersonVorname;
 
 	@Nullable
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Column()
 	private String angebotKontaktpersonNachname;
 
 	@Nullable
-	private JaxAdresse angebotAdresse;
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_angebot_adresse_id"))
+	private Adresse angebotAdresse;
 
 	@Nullable
+	@Column()
 	private BigDecimal anzahlFerienwochenHerbstferien;
 
 	@Nullable
+	@Column()
 	private BigDecimal anzahlFerienwochenWinterferien;
 
 	@Nullable
+	@Column()
 	private BigDecimal anzahlFerienwochenFruehlingsferien;
 
 	@Nullable
+	@Column()
 	private BigDecimal anzahlFerienwochenSommerferien;
 
 	@Nullable
+	@Column()
 	private BigDecimal anzahlTage;
 
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
+	@Column(length = Constants.DB_TEXTAREA_LENGTH)
 	private String bemerkungenAnzahlFerienwochen;
 
 	@Nullable
+	@Column()
 	private BigDecimal anzahlStundenProBetreuungstag;
 
 	@Nullable
+	@Column()
 	private Boolean betreuungErfolgtTagsueber;
 
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
+	@Column(length = Constants.DB_TEXTAREA_LENGTH)
 	private String bemerkungenOeffnungszeiten;
 
-	@Nullable
-	private Set<String> finanziellBeteiligteGemeinden;
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(
+		name = "ferienbetreuung_finanziell_beteiligte_gemeinden",
+		joinColumns = @JoinColumn(name = "ferienbetreuung_angebot_id")
+	)
+	@Column(nullable = false)
+	@Nonnull
+	private Set<String> finanziellBeteiligteGemeinden = new HashSet<>();
 
 	@Nullable
+	@Column()
 	private Boolean gemeindeFuehrtAngebotSelber;
 
 	@Nullable
+	@Column()
 	private Boolean gemeindeBeauftragtExterneAnbieter;
 
 	@Nullable
+	@Column()
 	private Boolean angebotVereineUndPrivateIntegriert;
 
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
+	@Column(length = Constants.DB_TEXTAREA_LENGTH)
 	private String bemerkungenKooperation;
 
 	@Nullable
+	@Column()
 	private Boolean leitungDurchPersonMitAusbildung;
 
 	@Nullable
+	@Column()
 	private Boolean betreuungDurchPersonenMitErfahrung;
 
 	@Nullable
+	@Column()
 	private Boolean anzahlKinderAngemessen;
 
 	@Nullable
+	@Column()
 	private BigDecimal betreuungsschluessel;
 
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
+	@Column(length = Constants.DB_TEXTAREA_LENGTH)
 	private String bemerkungenPersonal;
 
 	@Nullable
+	@Column()
 	private Boolean fixerTarifKinderDerGemeinde;
 
 	@Nullable
+	@Column()
 	private Boolean einkommensabhaengigerTarifKinderDerGemeinde;
 
 	@Nullable
+	@Column()
 	private Boolean tagesschuleTarifGiltFuerFerienbetreuung;
 
 	@Nullable
+	@Column()
 	private Boolean ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet;
 
 	@Nullable
+	@Column()
 	private Boolean kinderAusAnderenGemeindenZahlenAnderenTarif;
 
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
+	@Column(length = Constants.DB_TEXTAREA_LENGTH)
 	private String bemerkungenTarifsystem;
 
 	@Nullable
@@ -144,11 +209,11 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public JaxAdresse getAngebotAdresse() {
+	public Adresse getAngebotAdresse() {
 		return angebotAdresse;
 	}
 
-	public void setAngebotAdresse(@Nullable JaxAdresse angebotAdresse) {
+	public void setAngebotAdresse(@Nullable Adresse angebotAdresse) {
 		this.angebotAdresse = angebotAdresse;
 	}
 
@@ -233,12 +298,12 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 		this.bemerkungenOeffnungszeiten = bemerkungenOeffnungszeiten;
 	}
 
-	@Nullable
+	@Nonnull
 	public Set<String> getFinanziellBeteiligteGemeinden() {
 		return finanziellBeteiligteGemeinden;
 	}
 
-	public void setFinanziellBeteiligteGemeinden(@Nullable Set<String> finanziellBeteiligteGemeinden) {
+	public void setFinanziellBeteiligteGemeinden(@Nonnull Set<String> finanziellBeteiligteGemeinden) {
 		this.finanziellBeteiligteGemeinden = finanziellBeteiligteGemeinden;
 	}
 
@@ -247,7 +312,7 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 		return gemeindeFuehrtAngebotSelber;
 	}
 
-	public void setGemeindeFuehrtAngebotSelber(Boolean gemeindeFuehrtAngebotSelber) {
+	public void setGemeindeFuehrtAngebotSelber(@Nullable Boolean gemeindeFuehrtAngebotSelber) {
 		this.gemeindeFuehrtAngebotSelber = gemeindeFuehrtAngebotSelber;
 	}
 
@@ -375,5 +440,36 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 
 	public void setBemerkungenTarifsystem(@Nullable String bemerkungenTarifsystem) {
 		this.bemerkungenTarifsystem = bemerkungenTarifsystem;
+	}
+
+	@Override
+	public boolean isSame(AbstractEntity other) {
+		return getId().equals(other.getId());
+	}
+
+	public boolean isReadyForFreigeben() {
+		return checkPropertiesNotNull();
+	}
+
+	private boolean checkPropertiesNotNull() {
+		List<Serializable> nonNullObj = Arrays.asList(
+			this.angebot,
+			this.angebotKontaktpersonVorname,
+			this.angebotKontaktpersonNachname,
+			this.angebotAdresse,
+			this.anzahlFerienwochenHerbstferien,
+			this.anzahlFerienwochenWinterferien,
+			this.anzahlFerienwochenFruehlingsferien,
+			this.anzahlFerienwochenSommerferien,
+			this.anzahlTage,
+			this.anzahlStundenProBetreuungstag,
+			this.betreuungErfolgtTagsueber,
+			this.leitungDurchPersonMitAusbildung,
+			this.betreuungDurchPersonenMitErfahrung,
+			this.anzahlKinderAngemessen,
+			this.betreuungsschluessel
+		);
+		return nonNullObj.stream()
+			.anyMatch(Objects::isNull);
 	}
 }

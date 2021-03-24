@@ -18,13 +18,12 @@
 import {NgModule} from '@angular/core';
 import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {Transition} from '@uirouter/core';
+import {FerienbetreuungAbschlussComponent} from '../ferienbetreuung-abschluss/ferienbetreuung-abschluss.component';
 import {FerienbetreuungAngebotComponent} from '../ferienbetreuung-angebot/ferienbetreuung-angebot.component';
-import {FerienbetreuungFreigabeComponent} from '../ferienbetreuung-freigabe/ferienbetreuung-freigabe.component';
 import {FerienbetreuungKostenEinnahmenComponent} from '../ferienbetreuung-kosten-einnahmen/ferienbetreuung-kosten-einnahmen.component';
 import {FerienbetreuungNutzungComponent} from '../ferienbetreuung-nutzung/ferienbetreuung-nutzung.component';
 import {FerienbetreuungStammdatenGemeindeComponent} from '../ferienbetreuung-stammdaten-gemeinde/ferienbetreuung-stammdaten-gemeinde.component';
 import {FerienbetreuungUploadComponent} from '../ferienbetreuung-upload/ferienbetreuung-upload.component';
-import {FerienbetreuungVerfuegungComponent} from '../ferienbetreuung-verfuegung/ferienbetreuung-verfuegung.component';
 import {FerienbetreuungComponent} from '../ferienbetreuung/ferienbetreuung.component';
 
 const states: NgHybridStateDeclaration[] = [
@@ -68,14 +67,9 @@ const states: NgHybridStateDeclaration[] = [
         component: FerienbetreuungUploadComponent,
     },
     {
-        name: 'FERIENBETREUUNG.FREIGABE',
-        url: '/freigabe',
-        component: FerienbetreuungFreigabeComponent,
-    },
-    {
-        name: 'FERIENBETREUUNG.VERFUEGUNG',
+        name: 'FERIENBETREUUNG.ABSCHLUSS',
         url: '/verfuegung',
-        component: FerienbetreuungVerfuegungComponent,
+        component: FerienbetreuungAbschlussComponent,
     },
 ];
 

@@ -27,6 +27,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
+import {WindowRef} from '../../../core/service/windowRef.service';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
 import {SharedModule} from '../../../shared/shared.module';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
@@ -41,6 +42,7 @@ describe('FerienbetreuungComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [FerienbetreuungComponent],
             providers: [
+                WindowRef,
                 { provide: AuthServiceRS, useValue: authServiceRSSpy },
                 { provide: WizardStepXRS, useValue: wizardStepXRSSpy },
                 { provide: FerienbetreuungService, useValue: ferienbetreuungServiceSpy },
