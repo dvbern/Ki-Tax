@@ -26,6 +26,7 @@ import {MAX_FILE_SIZE} from '../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {UploadRS} from '../../../core/service/uploadRS.rest';
+import {FerienbetreuungDokumentService} from '../services/ferienbetreuung-dokument.service';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
 const LOG = LogFactory.createLog('FerienbetreuungUploadComponent');
@@ -45,6 +46,7 @@ export class FerienbetreuungUploadComponent implements OnInit {
 
     public constructor(
         private readonly ferienbetreuungService: FerienbetreuungService,
+        private readonly ferienbetreuungDokumentService: FerienbetreuungDokumentService,
         private readonly uploadRS: UploadRS,
         private readonly errorService: ErrorService,
         private readonly cd: ChangeDetectorRef,
@@ -79,7 +81,7 @@ export class FerienbetreuungUploadComponent implements OnInit {
                     if (!userAccepted) {
                         return;
                     }
-                    this.ferienbetreuungService.deleteDokument(dokument.id).subscribe(() => {
+                    this.ferienbetreuungDokumentService.deleteDokument(dokument.id).subscribe(() => {
                         this.dokumente = this.dokumente.filter(d => d.id !== dokument.id);
                         this.cd.markForCheck();
                     });

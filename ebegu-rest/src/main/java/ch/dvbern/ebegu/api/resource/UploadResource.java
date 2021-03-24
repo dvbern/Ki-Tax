@@ -85,6 +85,7 @@ import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.RueckforderungDokumentService;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
+import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungDokumentService;
 import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -164,6 +165,9 @@ public class UploadResource {
 
 	@Inject
 	private FerienbetreuungService ferienbetreuungService;
+
+	@Inject
+	private FerienbetreuungDokumentService ferienbetreuungDokumentService;
 
 	@Inject
 	private FallService fallService;
@@ -546,7 +550,7 @@ public class UploadResource {
 			ferienbetreuungDokument.setTimestampUpload(LocalDateTime.now());
 
 			FerienbetreuungDokument documentFromDB =
-				ferienbetreuungService.saveDokument(ferienbetreuungDokument);
+				ferienbetreuungDokumentService.saveDokument(ferienbetreuungDokument);
 
 			jaxFerienbetreuungDokumente.add(ferienbetreuungConverter.ferienbetreuungDokumentToJax(documentFromDB));
 

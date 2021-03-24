@@ -30,7 +30,6 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
 
 /**
  * Service fuer die Ferienbetreuungen
@@ -77,9 +76,4 @@ public interface FerienbetreuungService {
 	@Nonnull
 	FerienbetreuungAngabenKostenEinnahmen saveFerienbetreuungAngabenKostenEinnahmen(@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen);
 
-	@Nonnull FerienbetreuungDokument saveDokument(@Nonnull FerienbetreuungDokument ferienbetreuungDokument);
-
-	@Nonnull Optional<FerienbetreuungDokument> findDokument(@Nonnull String dokumentId);
-
-	void removeDokument(@Nonnull FerienbetreuungDokument dokument);
 }

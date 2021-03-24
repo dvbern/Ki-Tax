@@ -125,8 +125,4 @@ export class FerienbetreuungService {
             );
         }));
     }
-
-    public deleteDokument(dokumentId: string): Observable<void> {
-        return this.http.delete<void>(`${this.API_BASE_URL}/${encodeURIComponent(dokumentId)}`);
-    }
 }
