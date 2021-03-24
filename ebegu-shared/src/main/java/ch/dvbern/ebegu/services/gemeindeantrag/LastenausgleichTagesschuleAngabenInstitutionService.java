@@ -71,4 +71,7 @@ public interface LastenausgleichTagesschuleAngabenInstitutionService {
 	 * Gibt alle LastenausgleichTagesschuleAngabenInsitutionContainer zurück, die zu diesem Gemeinde-Antrag gehören
 	 */
 	List<LastenausgleichTagesschuleAngabenInstitutionContainer> findLastenausgleichTagesschuleAngabenInstitutionByGemeindeAntragId(String gemeindeAntragId);
+
+	LastenausgleichTagesschuleAngabenInstitutionContainer latsAngabenInstitutionContainerWiederOeffnen(
+			LastenausgleichTagesschuleAngabenInstitutionContainer fallContainer);
 }

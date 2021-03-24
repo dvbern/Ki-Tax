@@ -24,13 +24,13 @@ import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
 
-public class AngabenTagesschule	implements WizardStep<TagesschuleWizard>  {
+public class AngabenTagesschuleStep implements WizardStep<TagesschuleWizard>  {
 
 	@Override
 	public void next(
 		@Nonnull TagesschuleWizard wizard) {
 		if (wizard.getRole().isRoleGemeindeOrTS() || wizard.getRole().isRoleMandant() || wizard.getRole().isSuperadmin()) {
-			wizard.setStep(new Freigabe());
+			wizard.setStep(new FreigabeStep());
 		}
 	}
 
@@ -38,7 +38,7 @@ public class AngabenTagesschule	implements WizardStep<TagesschuleWizard>  {
 	public void prev(
 		@Nonnull TagesschuleWizard wizard) {
 		if (wizard.getRole().isRoleGemeindeOrTS() || wizard.getRole().isRoleMandant() || wizard.getRole().isSuperadmin()) {
-			wizard.setStep(new AngabenGemeinde());
+			wizard.setStep(new AngabenGemeindeStep());
 		}
 	}
 
@@ -62,6 +62,6 @@ public class AngabenTagesschule	implements WizardStep<TagesschuleWizard>  {
 
 	@Override
 	public WizardTyp getWizardTyp() {
-		return WizardTyp.LASTENAUSGLEICH_TS;
+		return WizardTyp.LASTENAUSGLEICH_TAGESSCHULEN;
 	}
 }

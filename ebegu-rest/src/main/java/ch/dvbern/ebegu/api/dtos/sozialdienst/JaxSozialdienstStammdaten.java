@@ -39,7 +39,7 @@ public class JaxSozialdienstStammdaten extends JaxAbstractDTO {
 	@NotNull
 	private String mail;
 
-	@NotNull
+	@Nullable
 	private String telefon;
 
 	@Nullable
@@ -69,11 +69,12 @@ public class JaxSozialdienstStammdaten extends JaxAbstractDTO {
 		this.mail = mail;
 	}
 
+	@Nullable
 	public String getTelefon() {
 		return telefon;
 	}
 
-	public void setTelefon(String telefon) {
+	public void setTelefon(@Nullable String telefon) {
 		this.telefon = telefon;
 	}
 

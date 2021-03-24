@@ -356,7 +356,7 @@
                     <!--Bestätigung Ausserordentlicher Betreuungsaufwand-->
                     <div class="row"
                          dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()"
+                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()"
                          dv-show-expression="vm.isFachstelleRequired()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
@@ -373,7 +373,7 @@
                     <!--Betreuung in Gemeinde-->
                     <div class="row"
                          dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()"
+                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()"
                          dv-show-expression="vm.isBetreuungInGemeindeRequired()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">

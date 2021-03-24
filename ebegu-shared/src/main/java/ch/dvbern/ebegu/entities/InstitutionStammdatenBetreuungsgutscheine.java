@@ -43,12 +43,15 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
+import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 
 /**
@@ -125,6 +128,12 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	@Column(nullable = true)
 	@Nullable
 	private @Size(max = DB_TEXTAREA_LENGTH) String oeffnungsAbweichungen;
+
+	@Nullable
+	@Column(nullable = true)
+	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
+	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
+	private String alternativeEmailFamilienportal;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "institutionStammdatenBetreuungsgutscheine", fetch = FetchType.EAGER)
 	@Nonnull
@@ -276,6 +285,15 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 
 	public void setOffenBis(@Nullable LocalTime offenBis) {
 		this.offenBis = offenBis;
+	}
+
+	@Nullable
+	public String getAlternativeEmailFamilienportal() {
+		return alternativeEmailFamilienportal;
+	}
+
+	public void setAlternativeEmailFamilienportal(@Nullable String alternativeEmailFuerFamilienportal) {
+		this.alternativeEmailFamilienportal = alternativeEmailFuerFamilienportal;
 	}
 
 	@Nonnull

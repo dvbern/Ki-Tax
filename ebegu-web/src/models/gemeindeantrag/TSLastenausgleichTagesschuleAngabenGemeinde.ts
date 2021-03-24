@@ -15,9 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus} from '../enums/TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus';
 import {TSAbstractEntity} from '../TSAbstractEntity';
 
 export class TSLastenausgleichTagesschuleAngabenGemeinde extends TSAbstractEntity {
+
+    public status: TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 
     // A: Allgemeine Angaben
     public bedarfBeiElternAbgeklaert: boolean;
@@ -50,4 +53,11 @@ export class TSLastenausgleichTagesschuleAngabenGemeinde extends TSAbstractEntit
 
     // Bemerkungen
     public bemerkungen: string;
+
+    public isInBearbeitung(): boolean {
+        return [
+            TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG,
+            TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN,
+        ].includes(this.status);
+    }
 }

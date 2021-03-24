@@ -1,0 +1,255 @@
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="ferienbetreuung-nutzung">
+    <h1 class="access-for-all-title" translate>FERIENBETREUUNG_NUTZUNG</h1>
+    <div class="row view-title">
+        <div class="col-md-12">
+            <h2 translate>FERIENBETREUUNG_NUTZUNG</h2>
+            <hr class="header"/>
+        </div>
+    </div>
+
+    <form *ngIf="form" [formGroup]="form">
+
+        <h3 translate class="uppercase">FERIENBETREUUNG_BETREUUNGSTAGE</h3>
+        <dv-input-container-x>
+            <label required [ngClass]="{'label-required-error': form && form.get('anzahlBetreuungstageKinderBern').errors}">
+                {{'FERIENBETREUUNG_ANZAHL_BETREUUNGTAGE_KINDER_BERN' | translate }}
+                <dv-tooltip inputId="anzahlBetreuungstageKinderBern_id"
+                            [text]="'FERIENBETREUUNG_ANZAHL_BETREUUNGTAGE_KINDER_BERN_HINT' | translate">
+                </dv-tooltip>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       id="anzahlBetreuungstageKinderBern_id"
+                       type="number"
+                       formControlName="anzahlBetreuungstageKinderBern"
+                       class="form-control dv-input"/>
+                <mat-error *ngIf="form && form.get('anzahlBetreuungstageKinderBern').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+                <mat-error *ngIf="form && form.get('anzahlBetreuungstageKinderBern').errors?.isNotHalf"
+                           translate>ERROR_NOT_HALF
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label class="padding-left-20" required [ngClass]="{'label-required-error': form && form.get('betreuungstageKinderDieserGemeinde').errors}">
+                {{'FERIENBETREUUNG_BETREUUNGSTAGE_KINDER_DIESER_GEMEINDE' | translate }}
+                <dv-tooltip inputId="betreuungstageKinderDieserGemeinde_id"
+                            [text]="'FERIENBETREUUNG_BETREUUNGSTAGE_KINDER_DIESER_GEMEINDE_HINT' | translate">
+                </dv-tooltip>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       type="number"
+                       id="betreuungstageKinderDieserGemeinde_id"
+                       formControlName="betreuungstageKinderDieserGemeinde"
+                       class="form-control dv-input"/>
+                <mat-error *ngIf="form && form.get('betreuungstageKinderDieserGemeinde').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+                <mat-error *ngIf="form && form.get('betreuungstageKinderDieserGemeinde').errors?.isNotHalf"
+                           translate>ERROR_NOT_HALF
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label class="padding-left-40">
+                {{'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER' | translate }}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       type="number"
+                       formControlName="betreuungstageKinderDieserGemeindeSonderschueler"
+                       class="form-control dv-input"/>
+                <mat-error
+                    *ngIf="form && form.get('betreuungstageKinderDieserGemeindeSonderschueler').errors?.isNotHalf"
+                    translate>ERROR_NOT_HALF
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label required
+                   class="padding-left-20"
+                   [ngClass]="{'label-required-error': form && form.get('davonBetreuungstageKinderAndererGemeinden').errors}">
+                {{'FERIENBETREUUNG_DAVON_BETREUUNGSTAGE_KINDER_ANDERER_GEMEINDEN' | translate }}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       type="number"
+                       formControlName="davonBetreuungstageKinderAndererGemeinden"
+                       class="form-control dv-input"/>
+                <mat-error *ngIf="form && form.get('davonBetreuungstageKinderAndererGemeinden').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+                <mat-error *ngIf="form && form.get('davonBetreuungstageKinderAndererGemeinden').errors?.isNotHalf"
+                           translate>ERROR_NOT_HALF
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label class="padding-left-40">
+                {{'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER' | translate }}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       type="number"
+                       formControlName="davonBetreuungstageKinderAndererGemeindenSonderschueler"
+                       class="form-control dv-input"/>
+                <mat-error
+                    *ngIf="form && form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').errors?.isNotHalf"
+                    translate>ERROR_NOT_HALF
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <mat-divider></mat-divider>
+
+        <h3 translate class="uppercase">KINDER</h3>
+
+        <dv-input-container-x>
+            <label>
+                {{'FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER' | translate }}
+                <dv-tooltip inputId="anzahlBetreuteKinder_id"
+                            [text]="'FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER_HINT' | translate">
+                </dv-tooltip>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       type="number"
+                       id="anzahlBetreuteKinder_id"
+                       formControlName="anzahlBetreuteKinder"
+                       class="form-control dv-input"/>
+                <mat-error
+                    *ngIf="form && form.get('anzahlBetreuteKinder').errors?.isNotInteger"
+                    translate>ERROR_NOT_INTEGER
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label class="padding-left-20">
+                {{'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER' | translate }}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       type="number"
+                       formControlName="anzahlBetreuteKinderSonderschueler"
+                       class="form-control dv-input"/>
+                <mat-error
+                    *ngIf="form && form.get('anzahlBetreuteKinderSonderschueler').errors?.isNotInteger"
+                    translate>ERROR_NOT_INTEGER
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label class="padding-left-20">
+                {{'FERIENBETREUUNG_DAVON_KINDER_IM_1_ZYKLUS' | translate }}
+                <dv-tooltip inputId="anzahlBetreuteKinder1Zyklus_id"
+                            [text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate">
+                </dv-tooltip>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       type="number"
+                       id="anzahlBetreuteKinder1Zyklus_id"
+                       formControlName="anzahlBetreuteKinder1Zyklus"
+                       class="form-control dv-input"/>
+                <mat-error
+                    *ngIf="form && form.get('anzahlBetreuteKinder1Zyklus').errors?.isNotInteger"
+                    translate>ERROR_NOT_INTEGER
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label class="padding-left-20">
+                {{'FERIENBETREUUNG_DAVON_KINDER_IM_2_ZYKLUS' | translate }}
+                <dv-tooltip inputId="anzahlBetreuteKinder2Zyklus_id"
+                            [text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate">
+                </dv-tooltip>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       id="anzahlBetreuteKinder2Zyklus_id"
+                       type="number"
+                       formControlName="anzahlBetreuteKinder2Zyklus"
+                       class="form-control dv-input"/>
+                <mat-error
+                    *ngIf="form && form.get('anzahlBetreuteKinder2Zyklus').errors?.isNotInteger"
+                    translate>ERROR_NOT_INTEGER
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label class="padding-left-20">
+                {{'FERIENBETREUUNG_DAVON_KINDER_IM_3_ZYKLUS' | translate }}
+                <dv-tooltip inputId="anzahlBetreuteKinder2Zyklus_id"
+                            [text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate">
+                </dv-tooltip>
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       type="number"
+                       id="anzahlBetreuteKinder3Zyklus_id"
+                       formControlName="anzahlBetreuteKinder3Zyklus"
+                       class="form-control dv-input"/>
+                <mat-error
+                    *ngIf="form && form.get('anzahlBetreuteKinder3Zyklus').errors?.isNotInteger"
+                    translate>ERROR_NOT_INTEGER
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
+
+    </form>
+
+    <div class="actions">
+        <button type="button" class="dv-btn cancel-button"
+                (click)="save()"
+                [textContent]="'SAVE' | translate">
+        </button>
+    </div>
+
+</div>

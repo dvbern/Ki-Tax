@@ -23,13 +23,17 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.dto.geoadmin.JaxWohnadresse;
 import ch.dvbern.ebegu.services.GeoadminSearchService;
+import ch.dvbern.ebegu.test.IntegrationTest;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Arquillian.class)
+@Category(IntegrationTest.class)
 @UsingDataSet("datasets/mandant-dataset.xml")
 public class GeoadminSearchServiceBeanTest extends AbstractEbeguLoginTest {
 

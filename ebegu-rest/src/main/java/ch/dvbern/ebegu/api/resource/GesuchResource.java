@@ -466,7 +466,7 @@ public class GesuchResource {
 	@Path("/zurueckziehen/{antragId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, GESUCHSTELLER })
+	@RolesAllowed({ SUPER_ADMIN, GESUCHSTELLER, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
 	public Response antraZurueckziehen(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
 		@Context UriInfo uriInfo,

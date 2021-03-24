@@ -15,19 +15,24 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {TSGemeinde} from '../../../../models/TSGemeinde';
 
 @Component({
-  selector: 'dv-lastenausgleich-ts-toolbar',
-  templateUrl: './lastenausgleich-ts-toolbar.component.html',
-  styleUrls: ['./lastenausgleich-ts-toolbar.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-lastenausgleich-ts-toolbar',
+    templateUrl: './lastenausgleich-ts-toolbar.component.html',
+    styleUrls: ['./lastenausgleich-ts-toolbar.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LastenausgleichTsToolbarComponent implements OnInit {
 
-  public constructor() { }
+    @Input()
+    public gemeinde: TSGemeinde;
 
-  public ngOnInit(): void {
-  }
+    public constructor() {
+    }
+
+    public ngOnInit(): void {
+    }
 
 }

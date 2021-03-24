@@ -32,4 +32,10 @@ export class TSLastenausgleichTagesschuleAngabenInstitutionContainer extends TSA
             TSLastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT,
         ].includes(this.status);
     }
+
+    public isInBearbeitungInstitution(): boolean {
+        return [
+            TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN
+        ].includes(this.status);
+    }
 }

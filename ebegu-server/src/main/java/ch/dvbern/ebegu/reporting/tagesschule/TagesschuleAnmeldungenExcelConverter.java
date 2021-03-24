@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.reporting.tagesschule;
 
+import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -39,6 +40,7 @@ import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldTagesschuleAnmeldungen;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
@@ -203,7 +205,8 @@ public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 				excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.valueOf(group.getRepeatColName()), null);
 				excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.modulName,
 					moduleGroup.getBezeichnung().findTextByLocale(locale));
-				long modulStunden = Duration.between(moduleGroup.getZeitVon(), moduleGroup.getZeitBis()).toHours();
+				long modulMinutes = Duration.between(moduleGroup.getZeitVon(), moduleGroup.getZeitBis()).toMinutes();
+				BigDecimal modulStunden = MathUtil.ZWEI_NACHKOMMASTELLE.divideNullSafe(new BigDecimal(modulMinutes), new BigDecimal(60));
 				excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.modulStunden, modulStunden);
 				excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.verpflegungskosten, moduleGroup.getVerpflegungskosten());
 				counter--;

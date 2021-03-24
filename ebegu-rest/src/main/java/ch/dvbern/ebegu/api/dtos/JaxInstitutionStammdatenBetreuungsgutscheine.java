@@ -78,6 +78,9 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 	@Nullable
 	private String offenBis;
 
+	@Nullable
+	private String alternativeEmailFamilienportal;
+
 	@Nonnull
 	private Set<JaxBetreuungsstandort> betreuungsstandorte = new HashSet<>();
 
@@ -218,6 +221,15 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 
 	public void setOffenBis(@Nullable String offenBis) {
 		this.offenBis = offenBis;
+	}
+
+	@Nullable
+	public String getAlternativeEmailFamilienportal() {
+		return alternativeEmailFamilienportal;
+	}
+
+	public void setAlternativeEmailFamilienportal(@Nullable String alternativeEmailFamilienportal) {
+		this.alternativeEmailFamilienportal = alternativeEmailFamilienportal;
 	}
 
 	@Nonnull
