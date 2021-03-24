@@ -53,7 +53,7 @@ export class PendenzenListViewComponent {
         totalItemCount: 0,
         start: 0,
     };
-    private search: { predicateObject: DVAntragListFilter } = {
+    private readonly search: { predicateObject: DVAntragListFilter } = {
         predicateObject: {},
     };
 
@@ -78,6 +78,8 @@ export class PendenzenListViewComponent {
             this.initialFilter.verantwortlicherGemeinde = principal.getFullName();
             this.search.predicateObject = this.initialFilter;
             this.loadData();
+        }, error => {
+            LOG.error(error);
         });
         this.initHasGemeindenInStatusAngemeldet();
     }
