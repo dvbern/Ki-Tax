@@ -18,13 +18,16 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.test.IntegrationTest;
+import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 
 /**
  * @author <a href="http://community.jboss.org/people/dan.j.allen">Dan Allen</a>
  */
+@RunWith(Arquillian.class)
 @Category(IntegrationTest.class)
 public class ArquilllianWiringTest extends AbstractEbeguLoginTest {
 
