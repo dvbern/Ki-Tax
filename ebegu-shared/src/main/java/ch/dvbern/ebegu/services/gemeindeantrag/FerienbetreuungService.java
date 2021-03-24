@@ -78,4 +78,8 @@ public interface FerienbetreuungService {
 	FerienbetreuungAngabenKostenEinnahmen saveFerienbetreuungAngabenKostenEinnahmen(@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen);
 
 	@Nonnull FerienbetreuungDokument saveDokument(@Nonnull FerienbetreuungDokument ferienbetreuungDokument);
+
+	@Nonnull Optional<FerienbetreuungDokument> findDokument(@Nonnull String dokumentId);
+
+	void removeDokument(@Nonnull FerienbetreuungDokument dokument);
 }

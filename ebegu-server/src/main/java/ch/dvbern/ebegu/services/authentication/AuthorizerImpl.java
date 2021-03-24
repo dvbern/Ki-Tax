@@ -1892,6 +1892,11 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				id
 			).orElseThrow(() -> new EbeguEntityNotFoundException("checkReadAuthorizationFerienbetreuung", id));
 
+		checkWriteAuthorization(container);
+	}
+
+	@Override
+	public void checkReadAuthorization(@Nonnull FerienbetreuungAngabenContainer container) {
 		if (principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
 			return;
 		}

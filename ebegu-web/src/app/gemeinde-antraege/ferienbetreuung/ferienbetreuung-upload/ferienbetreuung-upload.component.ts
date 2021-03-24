@@ -15,10 +15,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {TranslateService} from '@ngx-translate/core';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungDokument} from '../../../../models/gemeindeantrag/TSFerienbetreuungDokument';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
+import {DvNgRemoveDialogComponent} from '../../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {MAX_FILE_SIZE} from '../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
@@ -41,9 +44,12 @@ export class FerienbetreuungUploadComponent implements OnInit {
     private filesTooBig: File[];
 
     public constructor(
-        private ferienbetreuungService: FerienbetreuungService,
-        private uploadRS: UploadRS,
-        private errorService: ErrorService
+        private readonly ferienbetreuungService: FerienbetreuungService,
+        private readonly uploadRS: UploadRS,
+        private readonly errorService: ErrorService,
+        private readonly cd: ChangeDetectorRef,
+        private readonly translate: TranslateService,
+        private readonly dialog: MatDialog
     ) {
     }
 
@@ -61,7 +67,27 @@ export class FerienbetreuungUploadComponent implements OnInit {
     }
 
     public onDelete(dokument: TSFerienbetreuungDokument): void {
-        // TODO
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: this.translate.instant('LOESCHEN_DIALOG_TITLE'),
+            text: '',
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
+            .afterClosed()
+            .subscribe(
+                userAccepted => {
+                    if (!userAccepted) {
+                        return;
+                    }
+                    this.ferienbetreuungService.deleteDokument(dokument.id).subscribe(() => {
+                        this.dokumente = this.dokumente.filter(d => d.id !== dokument.id);
+                        this.cd.markForCheck();
+                    });
+                },
+                err => {
+                    LOG.error(err);
+                    this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
+                });
     }
 
     public onUpload(event: any): void {
@@ -75,10 +101,11 @@ export class FerienbetreuungUploadComponent implements OnInit {
         this.uploadRS.uploadFerienbetreuungDokumente(files, this.container.id)
             .then(dokumente => {
                 this.dokumente = dokumente;
+                this.cd.markForCheck();
             })
             .catch(err => {
                 LOG.error(err);
-                this.errorService.addMesageAsError(err);
+                this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
             });
 
     }

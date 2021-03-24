@@ -245,6 +245,21 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 		return persistence.merge(ferienbetreuungDokument);
 	}
+
+	@Nonnull
+	@Override
+	public Optional<FerienbetreuungDokument> findDokument(@Nonnull String dokumentId) {
+		Objects.requireNonNull(dokumentId);
+		FerienbetreuungDokument dokument = persistence.find(FerienbetreuungDokument.class, dokumentId);
+		authorizer.checkReadAuthorization(dokument.getFerienbetreuungAngabenContainer());
+		return Optional.ofNullable(dokument);
+	}
+
+	@Override
+	public void removeDokument(@Nonnull FerienbetreuungDokument dokument) {
+		authorizer.checkWriteAuthorization(dokument.getFerienbetreuungAngabenContainer());
+		persistence.remove(dokument);
+	}
 }
 
 
