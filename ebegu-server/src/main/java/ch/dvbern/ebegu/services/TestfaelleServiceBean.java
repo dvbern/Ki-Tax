@@ -585,9 +585,15 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		Gesuch gesuch = fromTestfall.fillInGesuch();
 
 		//noinspection VariableNotUsedInsideIf Muss so sein
-		// online gesuch falls fall einen besitzer hat oder sozialdienstFall ist
-		if (besitzer != null || fall.getSozialdienstFall() != null) {
+		if (besitzer != null) {
 			gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_GS);
+			gesuch.setEingangsart(Eingangsart.ONLINE);
+		} else if (fall.getSozialdienstFall() != null) {
+			gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_SOZIALDIENST);
+			WizardStep gesuchStep = wizardStepService.findWizardStepFromGesuch(gesuch.getId(), WizardStepName.GESUCH_ERSTELLEN);
+			gesuchStep.setWizardStepStatus(WizardStepStatus.OK);
+			gesuchStep.setVerfuegbar(true);
+			wizardStepService.saveWizardStep(gesuchStep);
 			gesuch.setEingangsart(Eingangsart.ONLINE);
 		} else {
 			gesuch.setEingangsart(Eingangsart.PAPIER);
