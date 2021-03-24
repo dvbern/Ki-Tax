@@ -2395,5 +2395,8 @@
     "FERIENBETREUUNG_AUS_GEMEINDESTAMMDATEN_UEBERNEHMEN": "Aus Gemeindestammdaten übernehmen",
     "FERIENBETREUUNG_MEINE_ANGABEN_UEBERNEHMEN": "Aus Benutzer übernehmen",
     "FEHLER_BEIM_HOCHLADEN_VON_DOKUMENT": "Fehler beim Hochladen von \"{{dokumentName}}\": ",
+    "FERIENBETREUUNG_DOKUMENT_TITLE": "Upload für Dokumente",
+    "FERIENBETREUUNG_DOKUMENT_TITLE_HINT": "Laden Sie bitte hier das aktuelle Konzept Ihrer Ferienbetreuung hoch (pädagogisch und betrieblich). Sie können auch mehrere Dokumente hochladen.<br>Es soll daraus ersichtlich sein, dass die Gemeinde das Konzept in dieser Form bewilligt hat. Wenn Sie eine Institution mit der Durchführung beauftragen, laden Sie den zugehörigen Leistungsvertrag hoch.<br>Falls Sie im Verlauf der Prüfung dazu aufgefordert werden, weitere Dokumente einzureichen (z. B. zu Kosten und Einnahmen), können Sie dies ebenfalls hier tun.",
+    "FERIENBETREUUNG_DOKUMENT_UPLOAD_TITLE": "Konzept des Ferienbetreuungsangebots; Leistungsvertrag",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
