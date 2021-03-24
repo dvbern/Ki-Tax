@@ -103,7 +103,7 @@ export class UploadRS {
         IPromise<TSFerienbetreuungDokument[]> {
         const names = this.encodeFileNames(files);
         return this.upload.upload({
-            url: `${this.serviceURL}/uploadFerienbetreuungDokumente/${encodeURIComponent(ferienbetreuungContainerId)}`,
+            url: `${this.serviceURL}/ferienbetreuungDokumente/${encodeURIComponent(ferienbetreuungContainerId)}`,
             method: 'POST',
             headers: {
                 'x-filename': names.join(';'),

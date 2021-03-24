@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -51,10 +52,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.converter.JaxFerienbetreuungConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDokument;
 import ch.dvbern.ebegu.api.dtos.JaxDokumentGrund;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungDokument;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungDokument;
 import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
 import ch.dvbern.ebegu.api.resource.util.TransferFile;
 import ch.dvbern.ebegu.api.util.RestUtil;
@@ -62,6 +65,8 @@ import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.RueckforderungDokument;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.RueckforderungDokumentTyp;
@@ -80,6 +85,7 @@ import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.RueckforderungDokumentService;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
+import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -97,6 +103,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_FERIENBETREUUNG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
@@ -104,6 +111,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_FERIENBETREUUNG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
@@ -140,6 +148,9 @@ public class UploadResource {
 	private JaxBConverter converter;
 
 	@Inject
+	private JaxFerienbetreuungConverter ferienbetreuungConverter;
+
+	@Inject
 	private ApplicationPropertyService applicationPropertyService;
 
 	@Inject
@@ -150,6 +161,9 @@ public class UploadResource {
 
 	@Inject
 	private RueckforderungFormularService rueckforderungFormularService;
+
+	@Inject
+	private FerienbetreuungService ferienbetreuungService;
 
 	@Inject
 	private FallService fallService;
@@ -301,6 +315,50 @@ public class UploadResource {
 		return Response.created(uri).entity(jaxRueckforderungDokuments).build();
 	}
 
+	@ApiOperation(value = "Speichert ein oder mehrere FerienbetreuungDokumente in der Datenbank", response =
+		JaxRueckforderungDokument.class)
+	@Path("/ferienbetreuungDokumente/{ferienbetreuungContainerId}")
+	@POST
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG })
+	public Response uploadFerienbetreuungDokumente(
+		@Nonnull @NotNull @PathParam("ferienbetreuungContainerId") JaxId ferienbetreuungContainerJAXPId,
+		@Context HttpServletRequest request, @Context UriInfo uriInfo,
+		MultipartFormDataInput input)
+		throws IOException, MimeTypeParseException {
+
+		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, "*/*; charset=UTF-8");
+
+		String[] encodedFilenames = getFilenamesFromHeader(request);
+
+		// check if filenames available
+		if (encodedFilenames == null || encodedFilenames.length == 0) {
+			final String problemString = "filename must be given";
+			LOG.error(problemString);
+			return Response.serverError().entity(problemString).build();
+		}
+
+		// Get RueckforderungId from request Parameter
+		String ferienbetreuungContainerId = converter.toEntityId(ferienbetreuungContainerJAXPId);
+
+		FerienbetreuungAngabenContainer container =
+			ferienbetreuungService.findFerienbetreuungAngabenContainer(ferienbetreuungContainerId)
+			.orElseThrow(() -> new EbeguRuntimeException("uploadFerienbetreuungDokumente", ferienbetreuungContainerId));
+
+		// for every file create a new FerienbetreuungDokument linked with the given FerienbetreuungContainer
+		List<JaxFerienbetreuungDokument> jaxFerienbetreuungDokumente =
+			extractFilesFromInputAndCreateFerienbetreuungDokumente(encodedFilenames, input, container);
+
+		URI uri = uriInfo.getBaseUriBuilder()
+			.path(UploadResource.class)
+			.path('/' + container.getId())
+			.build();
+
+		return Response.created(uri).entity(jaxFerienbetreuungDokumente).build();
+	}
+
 	@ApiOperation("Stores the Erlaeuterungen zu Verfuegung pdf of the Gesuchsperiode with the given id and Sprache")
 	@POST
 	@Path("/gesuchsperiodeDokument/{sprache}/{periodeId}/{dokumentTyp}")
@@ -393,18 +451,8 @@ public class UploadResource {
 		// do for every file:
 		List<InputPart> inputParts = input.getFormDataMap().get(partrileName);
 		while (inputParts != null && inputParts.stream().findAny().isPresent()) {
-			UploadFileInfo fileInfo = RestUtil.parseUploadFile(inputParts.stream().findAny().get());
 
-			// evil workaround, (Umlaute werden sonst nicht richtig übertragen!)
-			if (encodedFilenames[filecounter] != null) {
-				String decodedFilenamesJson =
-					new String(Base64.getDecoder().decode(encodedFilenames[filecounter]), StandardCharsets.UTF_8);
-				fileInfo.setFilename(decodedFilenamesJson);
-			}
-
-			try (InputStream fileInputStream = input.getFormDataPart(partrileName, InputStream.class, null)) {
-				fileInfo.setBytes(IOUtils.toByteArray(fileInputStream));
-			}
+			UploadFileInfo fileInfo = extractFileInfo(inputParts, encodedFilenames[filecounter], partrileName, input);
 
 			// safe File to Filesystem, if we just analyze the input stream tika classifies all files as octet streams
 			fileSaverService.save(fileInfo, gesuchId);
@@ -434,18 +482,8 @@ public class UploadResource {
 		// do for every file:
 		List<InputPart> inputParts = input.getFormDataMap().get(partrileName);
 		while (inputParts != null && inputParts.stream().findAny().isPresent()) {
-			UploadFileInfo fileInfo = RestUtil.parseUploadFile(inputParts.stream().findAny().get());
 
-			// evil workaround, (Umlaute werden sonst nicht richtig übertragen!)
-			if (encodedFilenames[filecounter] != null) {
-				String decodedFilenamesJson =
-					new String(Base64.getDecoder().decode(encodedFilenames[filecounter]), StandardCharsets.UTF_8);
-				fileInfo.setFilename(decodedFilenamesJson);
-			}
-
-			try (InputStream fileInputStream = input.getFormDataPart(partrileName, InputStream.class, null)) {
-				fileInfo.setBytes(IOUtils.toByteArray(fileInputStream));
-			}
+			UploadFileInfo fileInfo = extractFileInfo(inputParts, encodedFilenames[filecounter], partrileName, input);
 
 			// safe File to Filesystem, if we just analyze the input stream tika classifies all files as octet streams
 			fileSaverService.save(fileInfo, rueckforderungFormular.getId());
@@ -476,6 +514,65 @@ public class UploadResource {
 		}
 
 		return rueckforderungJaxDokuments;
+	}
+
+	private List<JaxFerienbetreuungDokument> extractFilesFromInputAndCreateFerienbetreuungDokumente(
+		@Nonnull String[] encodedFilenames,
+		@Nonnull MultipartFormDataInput input,
+		@Nonnull FerienbetreuungAngabenContainer container
+	) throws MimeTypeParseException, IOException {
+
+		int filecounter = 0;
+		String partrileName = PART_FILE + '[' + filecounter + ']';
+
+		List<JaxFerienbetreuungDokument> jaxFerienbetreuungDokumente = new ArrayList<>();
+
+		// do for every file:
+		List<InputPart> inputParts = input.getFormDataMap().get(partrileName);
+		while (inputParts != null && inputParts.stream().findAny().isPresent()) {
+
+			UploadFileInfo fileInfo = extractFileInfo(inputParts, encodedFilenames[filecounter], partrileName, input);
+
+			// safe File to Filesystem, if we just analyze the input stream tika classifies all files as octet streams
+			fileSaverService.save(fileInfo, container.getId());
+			checkFiletypeAllowed(fileInfo);
+
+			// create and add the new file to FerienbetreuungDokument object and persist it
+			FerienbetreuungDokument ferienbetreuungDokument = new FerienbetreuungDokument();
+			ferienbetreuungDokument.setFerienbetreuungAngabenContainer(container);
+			ferienbetreuungDokument.setFilepfad(fileInfo.getPath());
+			ferienbetreuungDokument.setFilename(fileInfo.getFilename());
+			ferienbetreuungDokument.setFilesize(fileInfo.getSizeString());
+			ferienbetreuungDokument.setTimestampUpload(LocalDateTime.now());
+
+			FerienbetreuungDokument documentFromDB =
+				ferienbetreuungService.saveDokument(ferienbetreuungDokument);
+
+			jaxFerienbetreuungDokumente.add(ferienbetreuungConverter.ferienbetreuungDokumentToJax(documentFromDB));
+
+			filecounter++;
+			partrileName = PART_FILE + '[' + filecounter + ']';
+			inputParts = input.getFormDataMap().get(partrileName);
+		}
+
+		return jaxFerienbetreuungDokumente;
+	}
+
+	private UploadFileInfo extractFileInfo(List<InputPart> inputParts, String encodedFilename, String partrileName, MultipartFormDataInput input)
+		throws IOException, MimeTypeParseException {
+		UploadFileInfo fileInfo = RestUtil.parseUploadFile(inputParts.stream().findAny().get());
+
+		// evil workaround, (Umlaute werden sonst nicht richtig übertragen!)
+		if (encodedFilename != null) {
+			String decodedFilenamesJson =
+				new String(Base64.getDecoder().decode(encodedFilename), StandardCharsets.UTF_8);
+			fileInfo.setFilename(decodedFilenamesJson);
+		}
+
+		try (InputStream fileInputStream = input.getFormDataPart(partrileName, InputStream.class, null)) {
+			fileInfo.setBytes(IOUtils.toByteArray(fileInputStream));
+		}
+		return fileInfo;
 	}
 
 	private void checkFiletypeAllowed(UploadFileInfo fileInfo) {

@@ -48,11 +48,13 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
+import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -72,6 +74,9 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 	@Inject
 	private PrincipalBean principal;
+
+	@Inject
+	private Authorizer authorizer;
 
 	@Nonnull
 	@Override
@@ -230,6 +235,15 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	@Override
 	public FerienbetreuungAngabenKostenEinnahmen saveFerienbetreuungAngabenKostenEinnahmen(@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen) {
 		return persistence.merge(kostenEinnahmen);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungDokument saveDokument(@Nonnull FerienbetreuungDokument ferienbetreuungDokument) {
+		Objects.requireNonNull(ferienbetreuungDokument);
+		authorizer.checkWriteAuthorization(ferienbetreuungDokument.getFerienbetreuungAngabenContainer());
+
+		return persistence.merge(ferienbetreuungDokument);
 	}
 }
 
