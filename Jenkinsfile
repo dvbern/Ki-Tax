@@ -28,7 +28,7 @@ pipeline {
 		}
 
 		stage("Backend & Frontend") {
-			when { changeset 'ebegu-web/**'}
+			when {changeset 'ebegu-web/**'}
 			steps {
 				withMaven(jdk: 'OpenJDK_11.0.4', options: [
 						junitPublisher(healthScaleFactor: 1.0),
@@ -39,20 +39,20 @@ pipeline {
 					sh './mvnw -B -U -T 1C -P dvbern.oss -P ci -P frontend clean test'
 				}
 			}
+		}
+	}
 
-			post {
-				always {
-					recordIssues(enabledForFailure: true, tools: [
-							pmdParser(),
-							checkStyle(),
-							spotBugs(pattern: '**/target/spotbugs/spotbugsXml.xml', useRankAsPriority: true),
-							tsLint(pattern: '**/tslint-checkstyle-report.xml')
-					])
-					junit allowEmptyResults: true,
-							testResults: 'target/surefire-reports/*.xml build/karma-results.xml'
-					cleanWs cleanWhenFailure: false, cleanWhenNotBuilt: false, cleanWhenUnstable: false, notFailBuild: true
-				}
-			}
+	post {
+		always {
+			recordIssues(enabledForFailure: true, tools: [
+					pmdParser(),
+					checkStyle(),
+					spotBugs(pattern: '**/target/spotbugs/spotbugsXml.xml', useRankAsPriority: true),
+					tsLint(pattern: '**/tslint-checkstyle-report.xml')
+			])
+			junit allowEmptyResults: true,
+					testResults: 'target/surefire-reports/*.xml build/karma-results.xml'
+			cleanWs cleanWhenFailure: false, cleanWhenNotBuilt: false, cleanWhenUnstable: false, notFailBuild: true
 		}
 	}
 }
