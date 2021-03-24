@@ -108,6 +108,7 @@ import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
 import static ch.dvbern.ebegu.enums.UserRole.SUPER_ADMIN;
 import static ch.dvbern.ebegu.enums.UserRole.getAllAdminRoles;
+import static ch.dvbern.ebegu.enums.UserRole.getMandantSuperadminRoles;
 import static ch.dvbern.ebegu.util.Constants.ANONYMOUS_USER_USERNAME;
 import static ch.dvbern.ebegu.util.Constants.LOGINCONNECTOR_USER_USERNAME;
 
@@ -1863,6 +1864,37 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
+	public void checkWriteAuthorization(@Nonnull FerienbetreuungAngabenContainer container) {
+		Objects.requireNonNull(container);
+		switch (container.getStatus()) {
+		case IN_BEARBEITUNG_GEMEINDE: {
+			if (principalBean.isCallerInRole(SUPER_ADMIN)) {
+				return;
+			}
+			boolean isFBRole = principalBean.isCallerInAnyOfRole(
+				UserRole.getAllGemeindeFerienbetreuungRoles()
+			);
+			if (isFBRole && principalBean.belongsToGemeinde(container.getGemeinde())) {
+				return;
+			}
+			throwViolation(container);
+		} case IN_PRUEFUNG_KANTON: {
+			if (principalBean.isCallerInAnyOfRole(getMandantSuperadminRoles())) {
+				return;
+			}
+			throwViolation(container);
+		}
+		case VERFUEGT:
+		case ABGELEHNT:
+			throwViolation(container);
+			return;
+		default:
+			throwViolation(container);
+		}
+
+	}
+
+	@Override
 	public void checkReadAuthorizationFerienbetreuung(@Nonnull String id) {
 		Objects.requireNonNull(id);
 		FerienbetreuungAngabenContainer container =
@@ -1873,7 +1905,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
 			return;
 		}
-		if (principalBean.isCallerInAnyOfRole(UserRole.getTsAndGemeindeRoles())
+		if (principalBean.isCallerInAnyOfRole(UserRole.getAllGemeindeFerienbetreuungRoles())
 			&& principalBean.belongsToGemeinde(container.getGemeinde())) {
 			return;
 		}

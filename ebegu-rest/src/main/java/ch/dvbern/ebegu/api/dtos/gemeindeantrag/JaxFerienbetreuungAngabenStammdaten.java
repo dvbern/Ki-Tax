@@ -17,20 +17,22 @@
 
 package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
-import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 
 public class JaxFerienbetreuungAngabenStammdaten extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = 4363557668421396679L;
 
 	@Nullable
-	private List<JaxGemeinde> amAngebotBeteiligteGemeinden;
+	private Set<String> amAngebotBeteiligteGemeinden;
+
+	@Nullable
+	private String seitWannFerienbetreuungen;
 
 	@Nullable
 	private String traegerschaft;
@@ -62,14 +64,26 @@ public class JaxFerienbetreuungAngabenStammdaten extends JaxAbstractDTO {
 	@Nullable
 	private JaxAdresse adresseKontoinhaber;
 
+	@Nullable
+	private String vermerkAuszahlung;
+
 
 	@Nullable
-	public List<JaxGemeinde> getAmAngebotBeteiligteGemeinden() {
+	public Set<String> getAmAngebotBeteiligteGemeinden() {
 		return amAngebotBeteiligteGemeinden;
 	}
 
-	public void setAmAngebotBeteiligteGemeinden(@Nullable List<JaxGemeinde> amAngebotBeteiligteGemeinden) {
+	public void setAmAngebotBeteiligteGemeinden(@Nullable Set<String> amAngebotBeteiligteGemeinden) {
 		this.amAngebotBeteiligteGemeinden = amAngebotBeteiligteGemeinden;
+	}
+
+	@Nullable
+	public String getSeitWannFerienbetreuungen() {
+		return seitWannFerienbetreuungen;
+	}
+
+	public void setSeitWannFerienbetreuungen(@Nullable String seitWannFerienbetreuungen) {
+		this.seitWannFerienbetreuungen = seitWannFerienbetreuungen;
 	}
 
 	@Nullable
@@ -160,5 +174,14 @@ public class JaxFerienbetreuungAngabenStammdaten extends JaxAbstractDTO {
 
 	public void setAdresseKontoinhaber(@Nullable JaxAdresse adresseKontoinhaber) {
 		this.adresseKontoinhaber = adresseKontoinhaber;
+	}
+
+	@Nullable
+	public String getVermerkAuszahlung() {
+		return vermerkAuszahlung;
+	}
+
+	public void setVermerkAuszahlung(@Nullable String vermerkAuszahlung) {
+		this.vermerkAuszahlung = vermerkAuszahlung;
 	}
 }

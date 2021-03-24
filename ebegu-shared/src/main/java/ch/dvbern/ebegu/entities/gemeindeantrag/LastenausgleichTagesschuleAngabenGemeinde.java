@@ -23,10 +23,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
+import com.google.common.base.Preconditions;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -36,6 +40,11 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 
 	private static final long serialVersionUID = 7179246039479930826L;
+
+	@NotNull
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private LastenausgleichTagesschuleAngabenGemeindeFormularStatus status;
 
 	// A: Allgemeine Angaben
 
@@ -136,6 +145,7 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	}
 
 	public LastenausgleichTagesschuleAngabenGemeinde(@Nonnull LastenausgleichTagesschuleAngabenGemeinde source) {
+		this.status = LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG;
 		// A: Allgemeine Angaben
 		this.bedarfBeiElternAbgeklaert = source.bedarfBeiElternAbgeklaert;
 		this.angebotFuerFerienbetreuungVorhanden = source.angebotFuerFerienbetreuungVorhanden;
@@ -347,5 +357,39 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		return getId().equals(other.getId());
+	}
+
+	@Nonnull
+	public LastenausgleichTagesschuleAngabenGemeindeFormularStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(@Nonnull LastenausgleichTagesschuleAngabenGemeindeFormularStatus status) {
+		this.status = status;
+	}
+
+	public boolean plausibilisierungLATSBerechtigteStundenHolds() {
+		Preconditions.checkState(
+			getGeleisteteBetreuungsstundenBesondereBeduerfnisse() != null,
+			"geleisteteBetreuungsstundenBesondereBeduerfnisse darf nicht null sein"
+		);
+		Preconditions.checkState(
+			getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse() != null,
+			"geleisteteBetreuungsstundenOhneBesondereBeduerfnisse darf nicht null sein"
+		);
+		Preconditions.checkState(
+			getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete() != null,
+			"davonStundenZuNormlohnMehrAls50ProzentAusgebildete darf nicht null sein"
+		);
+		Preconditions.checkState(
+			getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete() != null,
+			"davonStundenZuNormlohnWenigerAls50ProzentAusgebildete darf nicht null sein"
+		);
+		assert getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse() != null;
+		assert getGeleisteteBetreuungsstundenBesondereBeduerfnisse() != null;
+		return getGeleisteteBetreuungsstundenBesondereBeduerfnisse().add(
+			getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse())
+			.compareTo(getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete().add(
+				getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete())) == 0;
 	}
 }

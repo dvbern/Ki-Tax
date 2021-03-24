@@ -94,6 +94,7 @@
                             <label class="required" translate for="e_mail_id">EMAIL</label>
                             <input id="e_mail_id" type="email" name="e_mail_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.mail"
+                                   email
                                    [maxlength]="255" class="form-control" required>
                             <dv-error-messages [errorObject]="form.controls.e_mail_id?.errors"
                                                inputId="e_mail_id"></dv-error-messages>

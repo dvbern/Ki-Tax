@@ -26,6 +26,7 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.ReceivedEvent;
 import ch.dvbern.ebegu.services.ReceivedEventService;
+import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
@@ -34,9 +35,11 @@ import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
+@Category(IntegrationTest.class)
 @Transactional(TransactionMode.DISABLED)
 public class ReceivedEventServiceTest extends AbstractEbeguTest {
 

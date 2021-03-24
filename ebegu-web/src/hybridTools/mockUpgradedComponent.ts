@@ -18,6 +18,7 @@
 import {Directive, EventEmitter, Input, Output} from '@angular/core';
 import {WindowRef} from '../app/core/service/windowRef.service';
 import {LoadingButtonDirective} from '../app/shared/directive/loading-button.directive';
+import {TooltipDirective} from '../app/shared/directive/TooltipDirective';
 
 /**
  * This mock should be used when testing an angular component that uses LoadingButtonDirective
@@ -39,14 +40,24 @@ export class MockDvLoadingButton {
     @Output() public readonly buttonClick: EventEmitter<void> = new EventEmitter<void>();
 }
 
+@Directive({
+    selector: 'dv-tooltip'
+})
+export class MockTooltipDirective {
+
+    @Input() public inputId: string;
+    @Input() public text: string;
+
+}
+
 export const SHARED_MODULE_OVERRIDES = {
     remove: {
-        declarations: [LoadingButtonDirective],
-        exports: [LoadingButtonDirective],
+        declarations: [LoadingButtonDirective, TooltipDirective],
+        exports: [LoadingButtonDirective, TooltipDirective],
     },
     add: {
-        declarations: [MockDvLoadingButton],
-        exports: [MockDvLoadingButton],
+        declarations: [MockDvLoadingButton, MockTooltipDirective],
+        exports: [MockDvLoadingButton, MockTooltipDirective],
         providers: [WindowRef]
     },
 };

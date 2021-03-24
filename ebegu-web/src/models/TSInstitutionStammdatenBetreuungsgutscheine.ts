@@ -38,6 +38,7 @@ export class TSInstitutionStammdatenBetreuungsgutscheine extends TSAbstractEntit
     public offenVon: string = undefined;
     public offenBis: string = undefined;
     public oeffnungsAbweichungen: string;
+    public alternativeEmailFamilienportal: string = undefined;
     public betreuungsstandorte: TSBetreuungsstandort[] = [];
 
     public constructor() {

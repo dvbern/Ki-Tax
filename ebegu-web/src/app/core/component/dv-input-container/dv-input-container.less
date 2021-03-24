@@ -19,6 +19,14 @@
 
 dv-input-container-x {
     .dv-input-container {
+        &.vertical-align {
+            flex-direction: column;
+            > label, > mat-form-field {
+                width: 100%;
+                flex-grow: 1;
+            }
+        }
+
         align-items: center;
         display: flex;
         justify-content: space-between;
@@ -46,6 +54,13 @@ dv-input-container-x {
 
         textarea {
             padding: 1rem;
+        }
+
+        .mat-select-trigger {
+            height: 100%;
+            .mat-select-value {
+                padding-top: 7.5px;
+            }
         }
 
     }

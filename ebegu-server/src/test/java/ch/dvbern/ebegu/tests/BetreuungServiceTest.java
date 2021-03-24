@@ -44,6 +44,7 @@ import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.services.MitteilungService;
+import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -54,6 +55,7 @@ import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
@@ -67,6 +69,7 @@ import static org.junit.Assert.fail;
  * Tests fuer die Klasse betreuungService
  */
 @RunWith(Arquillian.class)
+@Category(IntegrationTest.class)
 @UsingDataSet("datasets/empty.xml")
 @Transactional(TransactionMode.DISABLED)
 public class BetreuungServiceTest extends AbstractEbeguLoginTest {
