@@ -48,8 +48,8 @@ export class TSAdresse extends TSAbstractDateRangedEntity {
         if (!this.gueltigkeit) {
             this.gueltigkeit = new TSDateRange();
         }
-        this.gueltigkeit.gueltigAb = toCopy.gueltigkeit.gueltigAb;
-        this.gueltigkeit.gueltigBis = toCopy.gueltigkeit.gueltigBis;
+        this.gueltigkeit.gueltigAb = toCopy.gueltigkeit?.gueltigAb;
+        this.gueltigkeit.gueltigBis = toCopy.gueltigkeit?.gueltigBis;
     }
 
     public get strasse(): string {

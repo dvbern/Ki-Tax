@@ -76,58 +76,61 @@
                 </dv-input-container-x>
             </div>
 
-            <div class="row">
-                <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
-                    <label required [ngClass]="{'label-required-error': form && form.get('angebotStrasse').errors}">
-                        {{'ADRESSE_STRASSE' | translate}}
-                    </label>
-                    <div class="flex-whitespace-item"></div>
-                    <mat-form-field floatLabel="always">
-                        <input type="text" matInput formControlName="angebotStrasse" class="form-control dv-input"/>
-                    </mat-form-field>
-                    <mat-error *ngIf="form && form.get('angebotStrasse').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                </dv-input-container-x>
+            <div formGroupName="angebotAdresse">
+                <div class="row">
+                    <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
+                        <label required [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('strasse').errors}">
+                            {{'ADRESSE_STRASSE' | translate}}
+                        </label>
+                        <div class="flex-whitespace-item"></div>
+                        <mat-form-field floatLabel="always">
+                            <input type="text" matInput formControlName="strasse" class="form-control dv-input"/>
+                        </mat-form-field>
+                        <mat-error *ngIf="form && form.get('angebotAdresse').get('strasse').errors?.required"
+                                   translate>ERROR_REQUIRED
+                        </mat-error>
+                    </dv-input-container-x>
 
-                <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
-                    <label>
-                        {{'FERIENBETREUUNG_ADRESSE_NR' | translate}}
-                    </label>
-                    <div class="flex-whitespace-item"></div>
-                    <mat-form-field floatLabel="always">
-                        <input type="text" matInput formControlName="angebotNr" class="form-control dv-input"/>
-                    </mat-form-field>
-                </dv-input-container-x>
+                    <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
+                        <label>
+                            {{'FERIENBETREUUNG_ADRESSE_NR' | translate}}
+                        </label>
+                        <div class="flex-whitespace-item"></div>
+                        <mat-form-field floatLabel="always">
+                            <input type="text" matInput formControlName="hausnummer" class="form-control dv-input"/>
+                        </mat-form-field>
+                    </dv-input-container-x>
+                </div>
+
+                <div class="row">
+                    <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
+                        <label required [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('plz').errors}">
+                            {{'ADRESSE_PLZ' | translate}}
+                        </label>
+                        <div class="flex-whitespace-item"></div>
+                        <mat-form-field floatLabel="always">
+                            <input type="text" matInput formControlName="plz" class="form-control dv-input"/>
+                        </mat-form-field>
+                        <mat-error *ngIf="form && form.get('angebotAdresse').get('plz').errors?.required"
+                                   translate>ERROR_REQUIRED
+                        </mat-error>
+                    </dv-input-container-x>
+
+                    <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
+                        <label required [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('ort').errors}">
+                            {{'ADRESSE_ORT' | translate}}
+                        </label>
+                        <div class="flex-whitespace-item"></div>
+                        <mat-form-field floatLabel="always">
+                            <input type="text" matInput formControlName="ort" class="form-control dv-input"/>
+                        </mat-form-field>
+                        <mat-error *ngIf="form && form.get('angebotAdresse').get('ort').errors?.required"
+                                   translate>ERROR_REQUIRED
+                        </mat-error>
+                    </dv-input-container-x>
+                </div>
             </div>
 
-            <div class="row">
-                <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
-                    <label required [ngClass]="{'label-required-error': form && form.get('angebotPlz').errors}">
-                        {{'ADRESSE_PLZ' | translate}}
-                    </label>
-                    <div class="flex-whitespace-item"></div>
-                    <mat-form-field floatLabel="always">
-                        <input type="text" matInput formControlName="angebotPlz" class="form-control dv-input"/>
-                    </mat-form-field>
-                    <mat-error *ngIf="form && form.get('angebotPlz').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                </dv-input-container-x>
-
-                <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
-                    <label required [ngClass]="{'label-required-error': form && form.get('angebotOrt').errors}">
-                        {{'ADRESSE_ORT' | translate}}
-                    </label>
-                    <div class="flex-whitespace-item"></div>
-                    <mat-form-field floatLabel="always">
-                        <input type="text" matInput formControlName="angebotOrt" class="form-control dv-input"/>
-                    </mat-form-field>
-                    <mat-error *ngIf="form && form.get('angebotOrt').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                </dv-input-container-x>
-            </div>
 
         </div>
 
