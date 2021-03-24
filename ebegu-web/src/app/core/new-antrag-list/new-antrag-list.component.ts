@@ -223,7 +223,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
 
     public displayedColumns: string[];
 
-    private filterPredicate: DVAntragListFilter = {};
+    private filterPredicate: DVAntragListFilter;
 
     private readonly unsubscribe$ = new Subject<void>();
     /**
@@ -244,6 +244,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
     public userListBgTsOrGemeinde: TSBenutzerNoDetails[];
     public userListTsOrGemeinde: TSBenutzerNoDetails[];
     public userListBgOrGemeinde: TSBenutzerNoDetails[];
+    public initialGemeindeUser: TSBenutzerNoDetails;
+    public initialBgGemeindeUser: TSBenutzerNoDetails;
+    public initialTsGemeindeUser: TSBenutzerNoDetails;
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
@@ -329,9 +332,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     private initFilter(): void {
-        if (this.initialFilter) {
-            this.filterPredicate = {...this.filterPredicate, ...this.initialFilter};
-        }
+        this.filterPredicate = {...this.initialFilter};
     }
 
     public ngOnDestroy(): void {
@@ -578,15 +579,19 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         if (this.isPendenzGemeindeRolle()) {
             this.benutzerRS.getAllBenutzerBgTsOrGemeinde().then(response => {
                 this.userListBgTsOrGemeinde = response;
+                this.initialGemeindeUser =
+                    this.findUserByNameInList(this.initialFilter?.verantwortlicherGemeinde, response);
                 this.changeDetectorRef.markForCheck();
             });
         } else {
             this.benutzerRS.getAllBenutzerBgOrGemeinde().then(response => {
                 this.userListBgOrGemeinde = response;
+                this.initialBgGemeindeUser = this.findUserByNameInList(this.initialFilter?.verantwortlicherBG, response);
                 this.changeDetectorRef.markForCheck();
             });
             this.benutzerRS.getAllBenutzerTsOrGemeinde().then(response => {
                 this.userListTsOrGemeinde = response;
+                this.initialTsGemeindeUser = this.findUserByNameInList(this.initialFilter?.verantwortlicherTS, response);
                 this.changeDetectorRef.markForCheck();
             });
         }
@@ -605,5 +610,23 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
             verantwortliche.push(antrag.verantwortlicheTS);
         }
         return verantwortliche.join(', ');
+    }
+
+    public resetFilter(): void {
+        this.initFilter();
+        this.applyFilter();
+        this.initialGemeindeUser = new TSBenutzerNoDetails(this.initialGemeindeUser?.vorname,
+            this.initialGemeindeUser?.nachname,
+            this.initialGemeindeUser?.username,
+            this.initialGemeindeUser?.gemeindeIds);
+        this.initialBgGemeindeUser = new TSBenutzerNoDetails(this.initialBgGemeindeUser?.vorname,
+            this.initialBgGemeindeUser?.nachname,
+            this.initialBgGemeindeUser?.username,
+            this.initialBgGemeindeUser?.gemeindeIds);
+        this.initialTsGemeindeUser = new TSBenutzerNoDetails(this.initialTsGemeindeUser?.vorname,
+            this.initialTsGemeindeUser?.nachname,
+            this.initialTsGemeindeUser?.username,
+            this.initialTsGemeindeUser?.gemeindeIds);
+
     }
 }

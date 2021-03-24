@@ -22,7 +22,7 @@
                 <h3 class="ng-scope" *ngIf="!title" translate>FAELLE_LIST</h3>
             </div>
             <div id="refreshIcon">
-                <i class="fa fa-undo" dv-st-reset-search=""></i>
+                <i class="fa fa-undo" (click)="resetFilter()"></i>
             </div>
         </div>
         <div class="col-md-2 text-right">
@@ -284,7 +284,7 @@
             <ng-container matColumnDef="verantwortlicheTS-filter" st-table="">
                 <mat-header-cell *matHeaderCellDef="let column">
                     <div dvNewUserSelect
-                         [selectedUser]="findUserByNameInList(initialFilter?.verantwortlicherTS, userListTsOrGemeinde)"
+                         [selectedUser]="initialTsGemeindeUser"
                          [showSelectionAll]="true"
                          [angular2]="true"
                          [initialAll]="true"
@@ -297,7 +297,7 @@
                 <mat-header-cell *matHeaderCellDef="let column">
                     <div dvNewUserSelect
                          [showSelectionAll]="true"
-                         [selectedUser]="findUserByNameInList(initialFilter?.verantwortlicherBG, userListBgOrGemeinde)"
+                         [selectedUser]="initialBgGemeindeUser"
                          [angular2]="true"
                          [initialAll]="true"
                          (onUserChanged)="filterVerantwortlicheBG($event.user)"></div>
@@ -308,7 +308,7 @@
                 <mat-header-cell *matHeaderCellDef="let column">
                     <div dvNewUserSelect
                          [showSelectionAll]="true"
-                         [selectedUser]="findUserByNameInList(initialFilter?.verantwortlicherGemeinde, userListBgTsOrGemeinde)"
+                         [selectedUser]="initialGemeindeUser"
                          [angular2]="true"
                          [initialAll]="true"
                          (onUserChanged)="filterVerantwortlicheGemeinde($event.user)"
