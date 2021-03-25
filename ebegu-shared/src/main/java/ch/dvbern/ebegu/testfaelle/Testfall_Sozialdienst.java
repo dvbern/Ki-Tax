@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.testfaelle;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
@@ -41,13 +42,19 @@ import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
+import ch.dvbern.ebegu.pdfgenerator.MandantPdfGenerator;
 import ch.dvbern.ebegu.util.MathUtil;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * http://localhost:8080/ebegu/api/v1/testfaelle/testfall/1
  * https://ebegu.dvbern.ch/ebegu/api/v1/testfaelle/testfall/1
  */
 public class Testfall_Sozialdienst extends AbstractTestfall {
+
+	private static final Logger LOG = LoggerFactory.getLogger(Testfall_Sozialdienst.class);
 
 	private final Sozialdienst sozialdienst;
 
@@ -78,11 +85,23 @@ public class Testfall_Sozialdienst extends AbstractTestfall {
 		adresse.setPlz("3000");
 		adresse.setOrt("Bern");
 		sozialdienstFall.setAdresse(adresse);
-		sozialdienstFall.setVollmacht(new byte[10]);
+		sozialdienstFall.setVollmacht(getVollmachtExample());
 
 		fall.setSozialdienstFall(sozialdienstFall);
 
 		return fall;
+	}
+
+	private byte[] getVollmachtExample() {
+		byte[] vollmacht = new byte[0];
+		try {
+			vollmacht = IOUtils.toByteArray(MandantPdfGenerator.class.getResourceAsStream(
+				"/ExampleVollmacht.pdf"));
+		}
+		catch (IOException e) {
+			LOG.error("ExampleVollmacht.pdf koennte nicht geladen werden: {}", e.getMessage());
+		}
+		return vollmacht;
 	}
 
 	@Override
