@@ -478,7 +478,7 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 			this.betreuungsschluessel
 		);
 		return nonNullObj.stream()
-			.anyMatch(Objects::isNull);
+			.noneMatch(Objects::isNull);
 	}
 
 	@Nonnull

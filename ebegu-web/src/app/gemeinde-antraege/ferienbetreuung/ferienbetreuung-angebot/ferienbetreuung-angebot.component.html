@@ -602,12 +602,15 @@
 
     <div class="actions">
         <button type="button" class="dv-btn cancel-button"
+                *ngIf="canSeeSave | async"
                 (click)="save()"
+                [disabled]="formularReadOnky()"
                 [textContent]="'SAVE' | translate">
         </button>
         <dv-loading-button
+            *ngIf="canSeeAbschliessen | async"
             type="button"
-            [buttonDisabled]="formularNotEditable()"
+            [buttonDisabled]="formularReadOnky()"
             (buttonClick)="onAbschliessen()">
             <span translate>ABSCHLIESSEN</span>
         </dv-loading-button>

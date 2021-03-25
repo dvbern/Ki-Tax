@@ -252,7 +252,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			angebot.getStatus() == FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE,
 			"FerienbetreuungAngabenAngebot must be in state IN_BEARBEITUNG_GEMEINDE");
 
-		angebot.setStatus(FerienbetreuungFormularStatus.IN_PRUEFUNG_KANTON);
+		angebot.setStatus(FerienbetreuungFormularStatus.ABGESCHLOSSEN);
 
 		return persistence.merge(angebot);
 

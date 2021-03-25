@@ -20,14 +20,19 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
+import {combineLatest, Subject} from 'rxjs';
+import {filter} from 'rxjs/operators';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {FerienbetreuungAngabenStatus} from '../../../../models/enums/FerienbetreuungAngabenStatus';
 import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
 import {TSFerienbetreuungAngabenAngebot} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSAdresse} from '../../../../models/TSAdresse';
+import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSBfsGemeinde} from '../../../../models/TSBfsGemeinde';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
@@ -53,6 +58,9 @@ export class FerienbetreuungAngebotComponent implements OnInit {
     private container: TSFerienbetreuungAngabenContainer;
     private readonly WIZARD_TYPE: TSWizardStepXTyp.FERIENBETREUUNG;
 
+    public readonly canSeeAbschliessen: Subject<boolean> = new Subject<boolean>();
+    public readonly canSeeSave: Subject<boolean> = new Subject<boolean>();
+
     public constructor(
         private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly fb: FormBuilder,
@@ -63,19 +71,46 @@ export class FerienbetreuungAngebotComponent implements OnInit {
         private readonly dialog: MatDialog,
         private readonly wizardRS: WizardStepXRS,
         private readonly uiRouterGlobals: UIRouterGlobals,
+        private readonly authService: AuthServiceRS,
     ) {
     }
 
     public ngOnInit(): void {
-        this.ferienbetreuungService.getFerienbetreuungContainer()
-            .subscribe(container => {
-                this.container = container;
-                this.angebot = container.angabenDeklaration?.angebot;
-                this.setupForm(this.angebot);
-                this.cd.markForCheck();
-            }, error => {
-                LOG.error(error);
-            });
+        combineLatest([
+                this.ferienbetreuungService.getFerienbetreuungContainer(),
+                this.authService.principal$.pipe(filter(principal => !!principal)),
+            ],
+        ).subscribe(([container, principal]) => {
+            this.container = container;
+            this.angebot = container.angabenDeklaration?.angebot;
+            this.setupForm(this.angebot);
+
+            if (this.angebot?.isGeprueft() ||
+                this.angebot?.isAtLeastAbgeschlossenGemeinde() && principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
+                this.form.disable();
+            }
+
+            if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
+                if (this.angebot.isAtLeastAbgeschlossenGemeinde()) {
+                    this.canSeeAbschliessen.next(false);
+                    this.canSeeSave.next(false);
+                } else {
+                    this.canSeeAbschliessen.next(true);
+                    this.canSeeSave.next(true);
+                }
+            } else if (principal.hasOneOfRoles(TSRoleUtil.getMandantRoles())) {
+                this.canSeeAbschliessen.next(false);
+                if (this.angebot.isInPruefungKanton()) {
+                    this.canSeeSave.next(false);
+                } else {
+                    this.canSeeSave.next(true);
+                }
+            }
+
+            this.cd.markForCheck();
+        }, error => {
+            LOG.error(error);
+        });
         this.gemeindeRS.getAllBfsGemeinden().then(gemeinden => {
             this.bfsGemeinden = gemeinden;
             this.cd.markForCheck();
@@ -250,7 +285,7 @@ export class FerienbetreuungAngebotComponent implements OnInit {
         return this.angebot;
     }
 
-    public formularNotEditable(): boolean {
+    public formularReadOnky(): boolean {
         return !(this.container?.status === FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE ||
             this.container?.status === FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON);
     }
