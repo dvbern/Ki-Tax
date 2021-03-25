@@ -55,7 +55,7 @@
                         <th st-sort="sentDatum" class="sortable row-sentDatum uppercase"
                             data-translate="POSTEINGANG_DATUM"></th>
                         <!-- Verantwortliche Person -->
-                        <th st-sort="empfaenger" class="sortable row-empfaenger uppercase"
+                        <th ng-if="!vm.isSozialdienst()" st-sort="empfaenger" class="sortable row-empfaenger uppercase"
                             data-translate="POSTEINGANG_AN"></th>
                         <!-- Amt -->
                         <th ng-if="!vm.isSozialdienst()" st-sort="empfaengerVerantwortung"
@@ -88,7 +88,7 @@
                         <!-- Datum -->
                         <th><input st-search="sentDatum" class="form-control" type="text"/></th>
                         <!-- An -->
-                        <th>
+                        <th ng-if="!vm.isSozialdienst()">
                             <dv-userselect input-id="empfaenger" dv-usersearch="empfaenger"
                                            initial-all="vm.isSuperAdmin() ? true : false"
                                            show-selection-all="true" sachbearbeiter-gemeinde="true"></dv-userselect>
@@ -141,7 +141,7 @@
                         <td class="ellipsis" title="{{row.sentDatum | amDateFormat : 'DD.MM.YYYY'}}"
                             ng-bind="row.sentDatum | amDateFormat : 'DD.MM.YYYY'"></td>
                         <!-- An -->
-                        <td class="ellipsis">
+                        <td ng-if="!vm.isSozialdienst()" class="ellipsis">
                             <dv-benutzer-entry [benutzer]="row.empfaenger"
                                                no-icons="true"></dv-benutzer-entry>
                         <!-- Verantwortung -->
