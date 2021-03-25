@@ -268,8 +268,8 @@ public class ApplicationPropertyResource {
 			kitaxendpoint,
 			einreichefristOeffentlich.getValue(),
 			einreichefristPrivat.getValue(),
-			ferienbetreuungAktiv.getValue(),
-			lastenausgleichTagesschulenAktiv.getValue()
+			ferienbetreuungAktiv.getValue().equals("true"),
+			lastenausgleichTagesschulenAktiv.getValue().equals("true")
 		);
 		return Response.ok(pubAppConf).build();
 	}
