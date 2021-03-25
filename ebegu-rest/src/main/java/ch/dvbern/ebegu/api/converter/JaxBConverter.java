@@ -66,7 +66,6 @@ import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensum;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsstandort;
-import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxDokument;
 import ch.dvbern.ebegu.api.dtos.JaxDokumentGrund;
 import ch.dvbern.ebegu.api.dtos.JaxDokumente;
@@ -167,7 +166,6 @@ import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Betreuungsstandort;
-import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.Dokument;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Dossier;
@@ -4820,15 +4818,6 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxTag;
 	}
 
-	@Nonnull
-	public JaxBfsGemeinde gemeindeBfsToJax(@Nonnull final BfsGemeinde bfsGemeinde) {
-		// Aktuell brauchen wir nur den Namen und die BFS-Nummer
-		JaxBfsGemeinde jaxBfsGemeinde = new JaxBfsGemeinde();
-		jaxBfsGemeinde.setName(bfsGemeinde.getName());
-		jaxBfsGemeinde.setBfsNummer(bfsGemeinde.getBfsNummer());
-		return jaxBfsGemeinde;
-	}
-
 	@SuppressWarnings("PMD.NcssMethodCount")
 	@Nonnull
 	public GemeindeStammdaten gemeindeStammdatenToEntity(
@@ -5683,7 +5672,7 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private JaxGemeindeAntrag gemeindeAntragToJax(@Nonnull final GemeindeAntrag gemeindeAntrag) {
+	public JaxGemeindeAntrag gemeindeAntragToJax(@Nonnull final GemeindeAntrag gemeindeAntrag) {
 		JaxGemeindeAntrag jaxGemeindeAntrag = new JaxGemeindeAntrag();
 
 		jaxGemeindeAntrag.setTimestampErstellt(gemeindeAntrag.getTimestampErstellt());
@@ -5786,6 +5775,8 @@ public class JaxBConverter extends AbstractConverter {
 			new JaxLastenausgleichTagesschuleAngabenGemeinde();
 		convertAbstractFieldsToJAX(angabenGemeinde, jaxAngabenGemeinde);
 
+		jaxAngabenGemeinde.setStatus(angabenGemeinde.getStatus());
+
 		// A: Allgemeine Angaben
 		jaxAngabenGemeinde.setBedarfBeiElternAbgeklaert(angabenGemeinde.getBedarfBeiElternAbgeklaert());
 		jaxAngabenGemeinde.setAngebotFuerFerienbetreuungVorhanden(angabenGemeinde.getAngebotFuerFerienbetreuungVorhanden());
@@ -5822,6 +5813,8 @@ public class JaxBConverter extends AbstractConverter {
 		@Nonnull LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde
 	) {
 		convertAbstractFieldsToEntity(jaxAngabenGemeinde, angabenGemeinde);
+
+		angabenGemeinde.setStatus(jaxAngabenGemeinde.getStatus());
 
 		// A: Allgemeine Angaben
 		angabenGemeinde.setBedarfBeiElternAbgeklaert(jaxAngabenGemeinde.getBedarfBeiElternAbgeklaert());
@@ -5911,7 +5904,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(jaxInstitutionContainer.getInstitution().getId());
 		convertAbstractFieldsToJAX(institutionContainer, jaxInstitutionContainer);
 
-		institutionContainer.setStatus(jaxInstitutionContainer.getStatus());
+		// status darf nicht vom client übernommen werden
 
 		// Die Institution darf nie vom Client uebernommen werden
 		institutionService.findInstitution(jaxInstitutionContainer.getInstitution().getId(), false)
@@ -5958,6 +5951,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAngabenInstitution.setDurchschnittKinderProTagMittag(angabenInstitution.getDurchschnittKinderProTagMittag());
 		jaxAngabenInstitution.setDurchschnittKinderProTagNachmittag1(angabenInstitution.getDurchschnittKinderProTagNachmittag1());
 		jaxAngabenInstitution.setDurchschnittKinderProTagNachmittag2(angabenInstitution.getDurchschnittKinderProTagNachmittag2());
+		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(angabenInstitution.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen());
+		jaxAngabenInstitution.setBetreuungsstundenEinschliesslichBesondereBeduerfnisse(angabenInstitution.getBetreuungsstundenEinschliesslichBesondereBeduerfnisse());
 		// C: Qualitative Vorgaben der Tagesschuleverordnung
 		jaxAngabenInstitution.setSchuleAufBasisOrganisatorischesKonzept(angabenInstitution.getSchuleAufBasisOrganisatorischesKonzept());
 		jaxAngabenInstitution.setSchuleAufBasisPaedagogischesKonzept(angabenInstitution.getSchuleAufBasisPaedagogischesKonzept());
@@ -5989,6 +5984,7 @@ public class JaxBConverter extends AbstractConverter {
 		angabenInstitution.setDurchschnittKinderProTagMittag(jaxAngabenInstitution.getDurchschnittKinderProTagMittag());
 		angabenInstitution.setDurchschnittKinderProTagNachmittag1(jaxAngabenInstitution.getDurchschnittKinderProTagNachmittag1());
 		angabenInstitution.setDurchschnittKinderProTagNachmittag2(jaxAngabenInstitution.getDurchschnittKinderProTagNachmittag2());
+		angabenInstitution.setBetreuungsstundenEinschliesslichBesondereBeduerfnisse(jaxAngabenInstitution.getBetreuungsstundenEinschliesslichBesondereBeduerfnisse());
 		// C: Qualitative Vorgaben der Tagesschuleverordnung
 		angabenInstitution.setSchuleAufBasisOrganisatorischesKonzept(jaxAngabenInstitution.getSchuleAufBasisOrganisatorischesKonzept());
 		angabenInstitution.setSchuleAufBasisPaedagogischesKonzept(jaxAngabenInstitution.getSchuleAufBasisPaedagogischesKonzept());

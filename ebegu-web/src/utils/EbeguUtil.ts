@@ -21,6 +21,7 @@ import {Displayable} from '../app/shared/interfaces/displayable';
 import {TSBetreuungsnummerParts} from '../models/dto/TSBetreuungsnummerParts';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import {TSAbstractEntity} from '../models/TSAbstractEntity';
+import {TSAdresse} from '../models/TSAdresse';
 import {TSBetreuung} from '../models/TSBetreuung';
 import {TSDossier} from '../models/TSDossier';
 import {TSFall} from '../models/TSFall';
@@ -355,6 +356,13 @@ export class EbeguUtil {
             throw new Error(`Wrong Format for ZEMIS-Nummer ${zemisNummer}`);
         }
         return standardZemisNummer;
+    }
+
+    /**
+     * Checks if required TS Adresse fields are set
+     */
+    public static adresseValid(adresse: TSAdresse): boolean {
+        return !!adresse.strasse && !!adresse.plz && !!adresse.ort;
     }
 
     /**

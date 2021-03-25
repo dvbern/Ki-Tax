@@ -32,6 +32,7 @@ export class TSLastenausgleichTagesschuleAngabenInstitution extends TSAbstractEn
     public durchschnittKinderProTagMittag: number;
     public durchschnittKinderProTagNachmittag1: number;
     public durchschnittKinderProTagNachmittag2: number;
+    public betreuungsstundenEinschliesslichBesondereBeduerfnisse: number;
 
     // C: Qualitative Vorgaben der Tagesschuleverordnung
     public schuleAufBasisOrganisatorischesKonzept: boolean;
