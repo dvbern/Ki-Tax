@@ -92,7 +92,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
 
         this.applicationPropertyRS.getPublicPropertiesCached().then(properties => {
             this.gemeindeAntraegeVisible =
-                properties.ferienbetreuungAktiv === 'true' || properties.lastenausgleichTagesschulenAktiv === 'true';
+                properties.ferienbetreuungAktiv || properties.lastenausgleichTagesschulenAktiv;
             this.changeDetectorRef.markForCheck();
         });
     }
