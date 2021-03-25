@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
@@ -259,9 +259,7 @@ export class FerienbetreuungAngebotComponent implements OnInit {
         this.triggerFormValidation();
 
         if (!this.form.valid) {
-            this.errorService.addMesageAsError(
-                this.translate.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
-            );
+            this.showValidierungFehlgeschlagenErrorMessage();
             return;
         }
         if (!await this.confirmDialog('FRAGE_FORMULAR_ABSCHLIESSEN')) {
@@ -269,7 +267,13 @@ export class FerienbetreuungAngebotComponent implements OnInit {
         }
 
         this.ferienbetreuungService.angebotAbschliessen(this.container.id, this.formToObject())
-            .subscribe(() => this.handleSaveSuccess(), () => this.handleSaveError());
+            .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
+    }
+
+    private showValidierungFehlgeschlagenErrorMessage(): void {
+        this.errorService.addMesageAsError(
+            this.translate.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
+        );
     }
 
     private confirmDialog(frageKey: string): Promise<boolean> {
@@ -283,11 +287,17 @@ export class FerienbetreuungAngebotComponent implements OnInit {
     }
 
     private handleSaveSuccess(): void {
+        this.form.disable();
         this.wizardRS.updateSteps(this.WIZARD_TYPE, this.uiRouterGlobals.params.id);
     }
 
-    private handleSaveError(): void {
-        this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR'));
+    private handleSaveError(error: any): void {
+        if (error.error.includes('Not all required properties are set')) {
+            this.triggerFormValidation();
+            this.showValidierungFehlgeschlagenErrorMessage();
+        } else {
+            this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR'));
+        }
     }
 
     private triggerFormValidation(): void {
