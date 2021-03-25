@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import com.google.common.base.Preconditions;
 
 /**
  * Service fuer die Ferienbetreuungen
@@ -141,7 +142,9 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 	@Nonnull
 	@Override
-	public FerienbetreuungAngabenContainer createFerienbetreuungAntrag(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+	public FerienbetreuungAngabenContainer createFerienbetreuungAntrag(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
 		FerienbetreuungAngabenContainer container = new FerienbetreuungAngabenContainer();
 		container.setStatus(FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE);
 		container.setGemeinde(gemeinde);
@@ -166,7 +169,8 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 	@Nonnull
 	@Override
-	public Optional<FerienbetreuungAngabenStammdaten> findFerienbetreuungAngabenStammdaten(@Nonnull String stammdatenId) {
+	public Optional<FerienbetreuungAngabenStammdaten> findFerienbetreuungAngabenStammdaten(
+		@Nonnull String stammdatenId) {
 		Objects.requireNonNull(stammdatenId, ID_MUSS_GESETZT_SEIN);
 
 		FerienbetreuungAngabenStammdaten stammdaten =
@@ -199,7 +203,8 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 	@Nonnull
 	@Override
-	public Optional<FerienbetreuungAngabenKostenEinnahmen> findFerienbetreuungAngabenKostenEinnahmen(@Nonnull String kostenEinnahmenId) {
+	public Optional<FerienbetreuungAngabenKostenEinnahmen> findFerienbetreuungAngabenKostenEinnahmen(
+		@Nonnull String kostenEinnahmenId) {
 		Objects.requireNonNull(kostenEinnahmenId, ID_MUSS_GESETZT_SEIN);
 
 		FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen =
@@ -210,26 +215,46 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 	@Nonnull
 	@Override
-	public FerienbetreuungAngabenStammdaten saveFerienbetreuungAngabenStammdaten(@Nonnull FerienbetreuungAngabenStammdaten stammdaten) {
+	public FerienbetreuungAngabenStammdaten saveFerienbetreuungAngabenStammdaten(
+		@Nonnull FerienbetreuungAngabenStammdaten stammdaten) {
 		return persistence.merge(stammdaten);
 	}
 
 	@Nonnull
 	@Override
-	public FerienbetreuungAngabenAngebot saveFerienbetreuungAngabenAngebot(@Nonnull FerienbetreuungAngabenAngebot angebot) {
+	public FerienbetreuungAngabenAngebot saveFerienbetreuungAngabenAngebot(
+		@Nonnull FerienbetreuungAngabenAngebot angebot) {
 		return persistence.merge(angebot);
 	}
 
 	@Nonnull
 	@Override
-	public FerienbetreuungAngabenNutzung saveFerienbetreuungAngabenNutzung(@Nonnull FerienbetreuungAngabenNutzung nutzung) {
+	public FerienbetreuungAngabenNutzung saveFerienbetreuungAngabenNutzung(
+		@Nonnull FerienbetreuungAngabenNutzung nutzung) {
 		return persistence.merge(nutzung);
 	}
 
 	@Nonnull
 	@Override
-	public FerienbetreuungAngabenKostenEinnahmen saveFerienbetreuungAngabenKostenEinnahmen(@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen) {
+	public FerienbetreuungAngabenKostenEinnahmen saveFerienbetreuungAngabenKostenEinnahmen(
+		@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen) {
 		return persistence.merge(kostenEinnahmen);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenAngebot ferienbetreuungAngebotAbschliessen(
+		@Nonnull FerienbetreuungAngabenAngebot angebot) {
+
+		Preconditions.checkArgument(angebot.isReadyForFreigeben(), "Not all required properties are set");
+		Preconditions.checkArgument(
+			angebot.getStatus() == FerienBetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE,
+			"FerienbetreuungAngabenAngebot must be in state IN_BEARBEITUNG_GEMEINDE");
+
+		angebot.setStatus(FerienbetreuungFormularStatus.ABGESCHLOSSEN);
+
+		return persistence.merge(angebot);
+
 	}
 }
 

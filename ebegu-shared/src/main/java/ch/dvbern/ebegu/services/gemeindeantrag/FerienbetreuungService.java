@@ -75,4 +75,7 @@ public interface FerienbetreuungService {
 
 	@Nonnull
 	FerienbetreuungAngabenKostenEinnahmen saveFerienbetreuungAngabenKostenEinnahmen(@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen);
+
+	@Nonnull
+	FerienbetreuungAngabenAngebot ferienbetreuungAngebotAbschliessen(@Nonnull FerienbetreuungAngabenAngebot angebot);
 }
