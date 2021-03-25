@@ -193,8 +193,8 @@ export class AuthServiceRS {
 
     private reloadUser(username: string): IPromise<TSBenutzer> {
         return this.benutzerRS.findBenutzer(username).then(user => {
-            this.principalSubject$.next(user);
             this.principal = user;
+            this.principalSubject$.next(user);
             this.setPrincipalInRavenUserContext();
 
             this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGIN_SUCCESS, 'logged in');

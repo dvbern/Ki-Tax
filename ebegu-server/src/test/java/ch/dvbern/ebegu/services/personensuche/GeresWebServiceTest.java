@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.cdi.Geres;
 import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
 import ch.dvbern.ebegu.errors.PersonenSucheServiceException;
 import ch.dvbern.ebegu.errors.STSZertifikatServiceException;
+import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.tests.AbstractEbeguLoginTest;
 import ch.dvbern.ebegu.ws.ewk.IGeresWebService;
 import org.jboss.arquillian.junit.Arquillian;
@@ -38,6 +39,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +50,7 @@ import org.slf4j.LoggerFactory;
  * comments homa
  */
 @RunWith(Arquillian.class)
+@Category(IntegrationTest.class)
 @UsingDataSet("datasets/mandant-dataset.xml")
 @Transactional(TransactionMode.DISABLED)
 @Ignore

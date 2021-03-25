@@ -15,23 +15,26 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
-Grösster Teil des Stylings wird von sidenav.less übernommen
- */
+import {NgModule} from '@angular/core';
+import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {GemeindeAntraegeComponent} from '../gemeinde-antraege/gemeinde-antraege.component';
 
-@import (reference) 'src/style/variables.less';
-@import (reference) 'src/style/mixins.less';
+const states: NgHybridStateDeclaration[] = [
+    {
+        parent: 'app',
+        name: 'GEMEINDE_ANTRAEGE',
+        url: '/gemeinde-antraege',
+        component: GemeindeAntraegeComponent,
+    },
+];
 
-.gesuch-status {
-    color: @contrast-darkest;
-    margin: 5rem 2.5rem 2.5rem 2.5rem;
-
-    .status {
-        .ebeguBold();
-        font-size: 1.4rem;
-        letter-spacing: 0.1rem;
-    }
-}
-button {
-    background: none;
+@NgModule({
+    imports: [
+        UIRouterUpgradeModule.forChild({states}),
+    ],
+    exports: [
+        UIRouterUpgradeModule,
+    ],
+})
+export class GemeindeAntraegeRoutingModule {
 }

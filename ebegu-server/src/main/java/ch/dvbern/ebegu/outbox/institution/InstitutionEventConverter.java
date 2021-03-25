@@ -78,7 +78,11 @@ public class InstitutionEventConverter {
 	private InstitutionEventDTO toInstitutionEventDTO(@Nonnull InstitutionStammdaten stammdaten) {
 		Institution institution = stammdaten.getInstitution();
 
-		KontaktAngabenDTO institutionKontaktAngaben = toKontaktAngabenDTO(stammdaten);
+		String alternativeEmail = stammdaten.getInstitutionStammdatenBetreuungsgutscheine() != null ?
+			stammdaten.getInstitutionStammdatenBetreuungsgutscheine().getAlternativeEmailFamilienportal() :
+			null;
+
+		KontaktAngabenDTO institutionKontaktAngaben = toKontaktAngabenDTO(stammdaten, alternativeEmail);
 
 		Builder builder = InstitutionEventDTO.newBuilder()
 			.setId(institution.getId())
@@ -116,7 +120,7 @@ public class InstitutionEventConverter {
 		@Nonnull InstitutionStammdatenBetreuungsgutscheine bgStammdaten) {
 
 		List<KontaktAngabenDTO> betreuungsStandorte = bgStammdaten.getBetreuungsstandorte().stream()
-			.map(this::toKontaktAngabenDTO)
+			.map(kontaktAngaben -> toKontaktAngabenDTO(kontaktAngaben, null))
 			.collect(Collectors.toList());
 
 		// implicitly, the institution address is also a betreuungs address
@@ -164,7 +168,9 @@ public class InstitutionEventConverter {
 	}
 
 	@Nonnull
-	private KontaktAngabenDTO toKontaktAngabenDTO(@Nonnull KontaktAngaben kontaktAngaben) {
+	private KontaktAngabenDTO toKontaktAngabenDTO(
+		@Nonnull KontaktAngaben kontaktAngaben,
+		@Nullable String alternativeEmailFamilienportal) {
 		Adresse adr = kontaktAngaben.getAdresse();
 
 		return KontaktAngabenDTO.newBuilder()
@@ -177,6 +183,7 @@ public class InstitutionEventConverter {
 			.setLand(adr.getLand().name())
 			.setGemeinde(toGemeindeDTO(adr))
 			.setEmail(kontaktAngaben.getMail())
+			.setAlternativeEmail(alternativeEmailFamilienportal)
 			.setTelefon(kontaktAngaben.getTelefon())
 			.setWebseite(kontaktAngaben.getWebseite())
 			.build();

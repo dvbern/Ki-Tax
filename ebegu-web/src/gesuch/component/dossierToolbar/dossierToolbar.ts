@@ -525,7 +525,7 @@ export class DossierToolbarController implements IDVFocusableController {
 
     public antragMutieren(): void {
         this.mutierenPossibleForCurrentAntrag = false;
-        const eingangsart = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles()) ?
+        const eingangsart = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle()) ?
             TSEingangsart.ONLINE :
             TSEingangsart.PAPIER;
         this.$state.go('gesuch.mutation', {
@@ -558,7 +558,7 @@ export class DossierToolbarController implements IDVFocusableController {
             if (antragItem.eingangsart !== TSEingangsart.ONLINE || antragItem.antragTyp === TSAntragTyp.MUTATION) {
                 continue;
             }
-            if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
+            if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle())) {
                 erneuernGesperrt = true;
                 break;
             }
@@ -568,7 +568,7 @@ export class DossierToolbarController implements IDVFocusableController {
 
     public antragErneuern(): void {
         this.erneuernPossibleForCurrentAntrag = false;
-        const eingangsart = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles()) ?
+        const eingangsart = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle()) ?
             TSEingangsart.ONLINE :
             TSEingangsart.PAPIER;
         this.$state.go('gesuch.erneuerung', {
@@ -612,7 +612,7 @@ export class DossierToolbarController implements IDVFocusableController {
         if (!this.getGesuch() || this.getGesuch().isNew()) {
             return false;
         }
-        if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
+        if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerSozialdienstRolle())) {
             // GS darf nur vor der Freigabe loeschen
             if (this.hideActionButtons || this.isDashboardScreen || isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status)) {
                 return false;

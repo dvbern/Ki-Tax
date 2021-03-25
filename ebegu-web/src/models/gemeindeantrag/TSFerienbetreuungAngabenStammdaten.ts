@@ -17,11 +17,11 @@
 
 import {TSAbstractEntity} from '../TSAbstractEntity';
 import {TSAdresse} from '../TSAdresse';
-import {TSGemeinde} from '../TSGemeinde';
 
 export class TSFerienbetreuungAngabenStammdaten extends TSAbstractEntity {
 
-    private _amAngebotBeteiligteGemeinden: TSGemeinde[];
+    private _amAngebotBeteiligteGemeinden: string[];
+    private _seitWannFerienbetreuungen: string;
     private _traegerschaft: string;
     private _stammdatenAdresse: TSAdresse;
     private _stammdatenKontaktpersonVorname: string;
@@ -32,13 +32,22 @@ export class TSFerienbetreuungAngabenStammdaten extends TSAbstractEntity {
     private _iban: string;
     private _kontoinhaber: string;
     private _adresseKontoinhaber: TSAdresse;
+    private _vermerkAuszahlung: string;
 
-    public get amAngebotBeteiligteGemeinden(): TSGemeinde[] {
+    public get amAngebotBeteiligteGemeinden(): string[] {
         return this._amAngebotBeteiligteGemeinden;
     }
 
-    public set amAngebotBeteiligteGemeinden(value: TSGemeinde[]) {
+    public set amAngebotBeteiligteGemeinden(value: string[]) {
         this._amAngebotBeteiligteGemeinden = value;
+    }
+
+    public get seitWannFerienbetreuungen(): string {
+        return this._seitWannFerienbetreuungen;
+    }
+
+    public set seitWannFerienbetreuungen(value: string) {
+        this._seitWannFerienbetreuungen = value;
     }
 
     public get traegerschaft(): string {
@@ -119,5 +128,13 @@ export class TSFerienbetreuungAngabenStammdaten extends TSAbstractEntity {
 
     public set adresseKontoinhaber(value: TSAdresse) {
         this._adresseKontoinhaber = value;
+    }
+
+    public get vermerkAuszahlung(): string {
+        return this._vermerkAuszahlung;
+    }
+
+    public set vermerkAuszahlung(value: string) {
+        this._vermerkAuszahlung = value;
     }
 }

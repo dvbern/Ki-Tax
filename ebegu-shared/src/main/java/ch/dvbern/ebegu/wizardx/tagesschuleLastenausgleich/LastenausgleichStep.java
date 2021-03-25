@@ -23,17 +23,16 @@ import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
 
-public class AngabenGemeinde implements WizardStep<TagesschuleWizard> {
+public class LastenausgleichStep implements WizardStep<TagesschuleWizard> {
 
 	@Override
-	public void next(
-		TagesschuleWizard wizard) {
-		wizard.setStep(new AngabenTagesschule());
+	public void next(@Nonnull TagesschuleWizard wizard) {
+		//Last Step nothing to do
 	}
 
 	@Override
 	public void prev(@Nonnull TagesschuleWizard wizard) {
-		//Nothing to do - initial State
+		wizard.setStep(new AngabenTagesschuleStep());
 	}
 
 	@Override
@@ -42,18 +41,17 @@ public class AngabenGemeinde implements WizardStep<TagesschuleWizard> {
 	}
 
 	@Override
-	public WizardTyp getWizardTyp() {
-		return WizardTyp.LASTENAUSGLEICH_TS;
-	}
-
-	@Override
 	public String getWizardStepName() {
-		return TagesschuleWizardStepsEnum.ANGABEN_GEMEINDE.name();
+		return TagesschuleWizardStepsEnum.LASTENAUSGLEICH.name();
 	}
 
 	@Override
 	public boolean isDisabled(@Nonnull TagesschuleWizard wizard) {
+		return true;
+	}
 
-		return false;
+	@Override
+	public WizardTyp getWizardTyp() {
+		return WizardTyp.LASTENAUSGLEICH_TAGESSCHULEN;
 	}
 }

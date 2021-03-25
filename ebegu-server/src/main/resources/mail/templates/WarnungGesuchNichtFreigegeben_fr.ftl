@@ -1,11 +1,12 @@
 <#-- @ftlvariable name="gesuch" type="ch.dvbern.ebegu.entities.Gesuch" -->
-<#-- @ftlvariable name="gesuchsteller" type="ch.dvbern.ebegu.entities.Gesuchsteller" -->
+<#-- @ftlvariable name="senderFullName" type="java.lang.String" -->
 <#-- @ftlvariable name="anzahlTage" type="java.lang.String" -->
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="tsOnlyAntrag" type="java.lang.Boolean" -->
+<#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 From: ${configuration.senderAddress}
-To: <@base64Header>${gesuchsteller.fullName}</@base64Header> <${gesuchsteller.mail}>
+To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Demande non confirmée</@base64Header>
 Content-Type: text/html;charset=utf-8
 

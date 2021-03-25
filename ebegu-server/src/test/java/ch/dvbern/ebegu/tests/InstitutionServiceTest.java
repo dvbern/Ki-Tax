@@ -24,6 +24,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
@@ -32,6 +33,7 @@ import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
@@ -43,6 +45,7 @@ import static org.junit.Assert.assertTrue;
  * Tests fuer die Klasse InstitutionService
  */
 @RunWith(Arquillian.class)
+@Category(IntegrationTest.class)
 @UsingDataSet("datasets/empty.xml")
 @Transactional(TransactionMode.DISABLED)
 public class InstitutionServiceTest extends AbstractEbeguLoginTest {

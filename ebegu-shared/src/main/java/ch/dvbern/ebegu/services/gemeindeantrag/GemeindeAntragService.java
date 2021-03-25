@@ -23,6 +23,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
@@ -36,15 +37,18 @@ public interface GemeindeAntragService {
 	 * Erstellt fuer jede aktive Gemeinde einen Gemeindeantrag des gewuenschten Typs fuer die gewuenschte Periode.
 	 */
 	@Nonnull
-	List<GemeindeAntrag> createGemeindeAntrag(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull GemeindeAntragTyp typ);
+	List<GemeindeAntrag> createAllGemeindeAntraege(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull GemeindeAntragTyp typ);
+
+	/**
+	 * Erstellt für die angegebene Gemeinden einen Gemeindeantrag des gewuenschten Typs fuer die gewuenschte Periode.
+	 */
+	@Nonnull
+	GemeindeAntrag createGemeindeAntrag(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull GemeindeAntragTyp gemeindeAntragTyp);
 
 	/**
 	 * Gibt alle GemeindeAntraege der Benutzerin zurück. Falls gesuchsperiode und/oder antragstyp mitgegeben werden
 	 * wird entsprechend gefiltert.
 	 */
-	@Nonnull
-	List<? extends GemeindeAntrag> getGemeindeAntraege();
-
 	@Nonnull
 	List<? extends GemeindeAntrag> getGemeindeAntraege(
 		@Nullable String gemeinde,
@@ -53,13 +57,10 @@ public interface GemeindeAntragService {
 		@Nullable String status);
 
 	@Nonnull
-	List<GemeindeAntrag> getGemeindeAntraege(@Nonnull Gesuchsperiode gesuchsperiode);
-
-	@Nonnull
-	List<GemeindeAntrag> getGemeindeAntraege(@Nonnull GemeindeAntragTyp typ);
-
-	@Nonnull
-	List<GemeindeAntrag> getGemeindeAntraege(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull GemeindeAntragTyp typ);
+	List<GemeindeAntrag> getGemeindeAntraege(
+		@Nullable String gemeindeId,
+		@Nullable String periodeId,
+		@Nullable String status);
 
 	@Nonnull
 	Optional<? extends GemeindeAntrag> findGemeindeAntrag(@Nonnull GemeindeAntragTyp typ, @Nonnull String gemeindeAntragId);

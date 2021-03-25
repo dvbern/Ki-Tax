@@ -38,11 +38,11 @@ export class LastenausgleichTSComponent implements OnInit, OnDestroy {
 
     @Input() public  lastenausgleichId: string;
 
-    private lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
     private subscription: Subscription;
 
+    public lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
     public wizardSteps$: Observable<TSWizardStepX[]>;
-    public wizardTyp = TSWizardStepXTyp.LASTENAUSGLEICH_TS;
+    public wizardTyp = TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN;
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
