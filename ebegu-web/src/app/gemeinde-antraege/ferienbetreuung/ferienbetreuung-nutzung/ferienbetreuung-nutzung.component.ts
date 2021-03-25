@@ -16,12 +16,19 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
+import {UIRouterGlobals} from '@uirouter/core';
+import {combineLatest, Subject} from 'rxjs';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenNutzung} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
+import {DvNgConfirmDialogComponent} from '../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
+import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
 import {numberValidator, ValidationType} from '../../../shared/validators/number-validator.directive';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
@@ -31,7 +38,7 @@ const LOG = LogFactory.createLog('FerienbetreuungNutzungComponent');
     selector: 'dv-ferienbetreuung-nutzung',
     templateUrl: './ferienbetreuung-nutzung.component.html',
     styleUrls: ['./ferienbetreuung-nutzung.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FerienbetreuungNutzungComponent implements OnInit {
 
@@ -39,21 +46,34 @@ export class FerienbetreuungNutzungComponent implements OnInit {
 
     private nutzung: TSFerienbetreuungAngabenNutzung;
     private container: TSFerienbetreuungAngabenContainer;
+    private formFreigebenTriggered = false;
+    private readonly WIZARD_TYPE = TSWizardStepXTyp.FERIENBETREUUNG;
+
+    public readonly canSeeSave: Subject<boolean> = new Subject();
+    public readonly canSeeAbschliessen: Subject<boolean> = new Subject();
 
     public constructor(
         private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly fb: FormBuilder,
         private readonly cd: ChangeDetectorRef,
         private readonly errorService: ErrorService,
-        private readonly translate: TranslateService
+        private readonly translate: TranslateService,
+        private readonly dialog: MatDialog,
+        private readonly wizardRS: WizardStepXRS,
+        private readonly uiRouterGlobals: UIRouterGlobals,
+        private readonly authService: AuthServiceRS
     ) {
     }
 
     public ngOnInit(): void {
-        this.ferienbetreuungService.getFerienbetreuungContainer()
-            .subscribe(container => {
+        combineLatest([
+            this.ferienbetreuungService.getFerienbetreuungContainer(),
+            this.authService.principal$,
+        ]).subscribe(([container, principal]) => {
                 this.container = container;
                 this.nutzung = container.angabenDeklaration?.nutzung;
+                this.canSeeSave.next(true);
+                this.canSeeAbschliessen.next(true);
                 this.setupForm(this.nutzung);
                 this.cd.markForCheck();
             }, error => {
@@ -61,56 +81,122 @@ export class FerienbetreuungNutzungComponent implements OnInit {
             });
     }
 
+
+    public async onAbschliessen(): Promise<void> {
+        this.triggerFormValidation();
+
+        if (!this.form.valid) {
+            this.showValidierungFehlgeschlagenErrorMessage();
+            return;
+        }
+        if (!await this.confirmDialog('FRAGE_FORMULAR_ABSCHLIESSEN')) {
+            return;
+        }
+
+        this.ferienbetreuungService.angebotAbschliessen(this.container.id, this.form.value)
+            .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
+    }
+
+    private handleSaveSuccess(): void {
+        this.wizardRS.updateSteps(this.WIZARD_TYPE, this.uiRouterGlobals.params.id);
+    }
+
+    private handleSaveError(error: any): void {
+        if (error.error?.includes('Not all required properties are set')) {
+            this.triggerFormValidation();
+            this.showValidierungFehlgeschlagenErrorMessage();
+        } else {
+            this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR'));
+        }
+    }
+
+    private showValidierungFehlgeschlagenErrorMessage(): void {
+        this.errorService.addMesageAsError(
+            this.translate.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
+        );
+    }
+
+    private confirmDialog(frageKey: string): Promise<boolean> {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            frage: this.translate.instant(frageKey),
+        };
+        return this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
+            .afterClosed()
+            .toPromise();
+    }
+
+    private triggerFormValidation(): void {
+        this.enableFormValidation();
+        this.formFreigebenTriggered = true;
+        for (const key in this.form.controls) {
+            if (this.form.get(key) !== null) {
+                this.form.get(key).markAsTouched();
+                this.form.get(key).updateValueAndValidity();
+            }
+        }
+        this.form.updateValueAndValidity();
+    }
+
+    private enableFormValidation(): void {
+        this.form.get('anzahlBetreuungstageKinderBern')
+            .setValidators([Validators.required, numberValidator(ValidationType.HALF)]);
+        this.form.get('betreuungstageKinderDieserGemeinde')
+            .setValidators([Validators.required, numberValidator(ValidationType.HALF)]);
+        this.form.get('betreuungstageKinderDieserGemeindeSonderschueler')
+            .setValidators([numberValidator(ValidationType.HALF)]);
+        this.form.get('davonBetreuungstageKinderAndererGemeinden')
+            .setValidators([Validators.required, numberValidator(ValidationType.HALF)]);
+        this.form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler')
+            .setValidators([numberValidator(ValidationType.HALF)]);
+        this.form.get('anzahlBetreuteKinder').setValidators([numberValidator(ValidationType.INTEGER)]);
+        this.form.get('anzahlBetreuteKinderSonderschueler').setValidators([numberValidator(ValidationType.INTEGER)]);
+        this.form.get('anzahlBetreuteKinder1Zyklus').setValidators([numberValidator(ValidationType.INTEGER)]);
+        this.form.get('anzahlBetreuteKinder2Zyklus').setValidators([numberValidator(ValidationType.INTEGER)]);
+        this.form.get('anzahlBetreuteKinder3Zyklus').setValidators([numberValidator(ValidationType.INTEGER)]);
+    }
+
     private setupForm(nutzung: TSFerienbetreuungAngabenNutzung): void {
         if (!nutzung) {
             return;
         }
         this.form = this.fb.group({
+            id: [nutzung.id],
             anzahlBetreuungstageKinderBern: [
                 nutzung.anzahlBetreuungstageKinderBern,
-                numberValidator(ValidationType.HALF)
             ],
             betreuungstageKinderDieserGemeinde: [
                 nutzung.betreuungstageKinderDieserGemeinde,
-                numberValidator(ValidationType.HALF)
             ],
             betreuungstageKinderDieserGemeindeSonderschueler: [
                 nutzung.betreuungstageKinderDieserGemeindeSonderschueler,
-                numberValidator(ValidationType.HALF)
             ],
             davonBetreuungstageKinderAndererGemeinden: [
                 nutzung.davonBetreuungstageKinderAndererGemeinden,
-                numberValidator(ValidationType.HALF)
             ],
             davonBetreuungstageKinderAndererGemeindenSonderschueler: [
                 nutzung.davonBetreuungstageKinderAndererGemeindenSonderschueler,
-                numberValidator(ValidationType.HALF)
             ],
             anzahlBetreuteKinder: [
                 nutzung.anzahlBetreuteKinder,
-                numberValidator(ValidationType.INTEGER)
             ],
             anzahlBetreuteKinderSonderschueler: [
                 nutzung.anzahlBetreuteKinderSonderschueler,
-                numberValidator(ValidationType.INTEGER)
             ],
             anzahlBetreuteKinder1Zyklus: [
                 nutzung.anzahlBetreuteKinder1Zyklus,
-                numberValidator(ValidationType.INTEGER)
             ],
             anzahlBetreuteKinder2Zyklus: [
                 nutzung.anzahlBetreuteKinder2Zyklus,
-                numberValidator(ValidationType.INTEGER)
             ],
             anzahlBetreuteKinder3Zyklus: [
                 nutzung.anzahlBetreuteKinder3Zyklus,
-                numberValidator(ValidationType.INTEGER)
             ],
         });
     }
 
     public save(): void {
-        this.ferienbetreuungService.saveNutzung(this.container.id, this.extractFormValues())
+        this.ferienbetreuungService.saveNutzung(this.container.id, this.form.value)
             .subscribe(() => {
                 this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
@@ -120,20 +206,4 @@ export class FerienbetreuungNutzungComponent implements OnInit {
             });
     }
 
-    private extractFormValues(): TSFerienbetreuungAngabenNutzung {
-        this.nutzung.anzahlBetreuungstageKinderBern = this.form.controls.anzahlBetreuungstageKinderBern.value;
-        this.nutzung.betreuungstageKinderDieserGemeinde = this.form.controls.betreuungstageKinderDieserGemeinde.value;
-        this.nutzung.betreuungstageKinderDieserGemeindeSonderschueler =
-            this.form.controls.betreuungstageKinderDieserGemeindeSonderschueler.value;
-        this.nutzung.davonBetreuungstageKinderAndererGemeinden =
-            this.form.controls.davonBetreuungstageKinderAndererGemeinden.value;
-        this.nutzung.davonBetreuungstageKinderAndererGemeindenSonderschueler =
-            this.form.controls.davonBetreuungstageKinderAndererGemeindenSonderschueler.value;
-        this.nutzung.anzahlBetreuteKinder = this.form.controls.anzahlBetreuteKinder.value;
-        this.nutzung.anzahlBetreuteKinderSonderschueler = this.form.controls.anzahlBetreuteKinderSonderschueler.value;
-        this.nutzung.anzahlBetreuteKinder1Zyklus = this.form.controls.anzahlBetreuteKinder1Zyklus.value;
-        this.nutzung.anzahlBetreuteKinder2Zyklus = this.form.controls.anzahlBetreuteKinder2Zyklus.value;
-        this.nutzung.anzahlBetreuteKinder3Zyklus = this.form.controls.anzahlBetreuteKinder3Zyklus.value;
-        return this.nutzung;
-    }
 }
