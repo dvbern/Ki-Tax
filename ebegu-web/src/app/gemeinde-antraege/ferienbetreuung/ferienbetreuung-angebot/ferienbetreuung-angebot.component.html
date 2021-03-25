@@ -42,10 +42,10 @@
                            formControlName="angebot"
                            id="angebot_id"
                            class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('angebot').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
                 </mat-form-field>
-                <mat-error *ngIf="form && form.get('angebot').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
             </dv-input-container-x>
 
             <mat-divider></mat-divider>
@@ -64,10 +64,10 @@
                                matInput
                                formControlName="angebotKontaktpersonVorname"
                                class="form-control dv-input"/>
+                        <mat-error *ngIf="form && form.get('angebotKontaktpersonVorname').errors?.required"
+                                   translate>ERROR_REQUIRED
+                        </mat-error>
                     </mat-form-field>
-                    <mat-error *ngIf="form && form.get('angebotKontaktpersonVorname').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
                 </dv-input-container-x>
 
                 <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
@@ -81,10 +81,10 @@
                                matInput
                                formControlName="angebotKontaktpersonNachname"
                                class="form-control dv-input"/>
+                        <mat-error *ngIf="form && form.get('angebotKontaktpersonNachname').errors?.required"
+                                   translate>ERROR_REQUIRED
+                        </mat-error>
                     </mat-form-field>
-                    <mat-error *ngIf="form && form.get('angebotKontaktpersonNachname').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
                 </dv-input-container-x>
             </div>
 
@@ -98,10 +98,10 @@
                         <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text" matInput formControlName="strasse" class="form-control dv-input"/>
+                            <mat-error *ngIf="form && form.get('angebotAdresse').get('strasse').errors?.required"
+                                       translate>ERROR_REQUIRED
+                            </mat-error>
                         </mat-form-field>
-                        <mat-error *ngIf="form && form.get('angebotAdresse').get('strasse').errors?.required"
-                                   translate>ERROR_REQUIRED
-                        </mat-error>
                     </dv-input-container-x>
 
                     <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
@@ -124,10 +124,10 @@
                         <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text" matInput formControlName="plz" class="form-control dv-input"/>
+                            <mat-error *ngIf="form && form.get('angebotAdresse').get('plz').errors?.required"
+                                       translate>ERROR_REQUIRED
+                            </mat-error>
                         </mat-form-field>
-                        <mat-error *ngIf="form && form.get('angebotAdresse').get('plz').errors?.required"
-                                   translate>ERROR_REQUIRED
-                        </mat-error>
                     </dv-input-container-x>
 
                     <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
@@ -138,10 +138,10 @@
                         <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text" matInput formControlName="ort" class="form-control dv-input"/>
+                            <mat-error *ngIf="form && form.get('angebotAdresse').get('ort').errors?.required"
+                                       translate>ERROR_REQUIRED
+                            </mat-error>
                         </mat-form-field>
-                        <mat-error *ngIf="form && form.get('angebotAdresse').get('ort').errors?.required"
-                                   translate>ERROR_REQUIRED
-                        </mat-error>
                     </dv-input-container-x>
                 </div>
             </div>
@@ -164,7 +164,6 @@
             <mat-form-field floatLabel="always">
                 <mat-label translate></mat-label>
                 <input matInput
-                       type="number"
                        formControlName="anzahlFerienwochenHerbstferien"
                        class="form-control dv-input"/>
                 <mat-error *ngIf="form && form.get('anzahlFerienwochenHerbstferien').errors?.required"
@@ -185,7 +184,6 @@
             <mat-form-field floatLabel="always">
                 <mat-label translate></mat-label>
                 <input matInput
-                       type="number"
                        formControlName="anzahlFerienwochenWinterferien"
                        class="form-control dv-input"/>
                 <mat-error *ngIf="form && form.get('anzahlFerienwochenWinterferien').errors?.required"
@@ -206,7 +204,6 @@
             <mat-form-field floatLabel="always">
                 <mat-label translate></mat-label>
                 <input matInput
-                       type="number"
                        formControlName="anzahlFerienwochenFruehlingsferien"
                        class="form-control dv-input"/>
                 <mat-error *ngIf="form && form.get('anzahlFerienwochenFruehlingsferien').errors?.required"
@@ -226,7 +223,6 @@
             <mat-form-field floatLabel="always">
                 <mat-label translate></mat-label>
                 <input matInput
-                       type="number"
                        formControlName="anzahlTage"
                        class="form-control dv-input"/>
                 <mat-error *ngIf="form && form.get('anzahlTage').errors?.required"
@@ -284,7 +280,6 @@
             <mat-form-field floatLabel="always">
                 <mat-label translate></mat-label>
                 <input matInput
-                       type="number"
                        formControlName="anzahlStundenProBetreuungstag"
                        class="form-control dv-input"/>
                 <mat-error *ngIf="form && form.get('anzahlStundenProBetreuungstag').errors?.required"
@@ -310,9 +305,6 @@
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                 </mat-radio-group>
-                <mat-error *ngIf="form && form.get('betreuungErfolgtTagsueber').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
             </dv-radio-container-x>
         </dv-input-container-x>
 
@@ -435,9 +427,6 @@
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                 </mat-radio-group>
-                <mat-error *ngIf="form && form.get('leitungDurchPersonMitAusbildung').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
             </dv-radio-container-x>
         </dv-input-container-x>
 
@@ -456,9 +445,6 @@
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                 </mat-radio-group>
-                <mat-error *ngIf="form && form.get('betreuungDurchPersonenMitErfahrung').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
             </dv-radio-container-x>
         </dv-input-container-x>
 
@@ -478,9 +464,7 @@
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                 </mat-radio-group>
-                <mat-error *ngIf="form && form.get('anzahlKinderAngemessen').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
+
             </dv-radio-container-x>
         </dv-input-container-x>
 
@@ -492,7 +476,6 @@
             <mat-form-field floatLabel="always">
                 <mat-label translate></mat-label>
                 <input matInput
-                       type="number"
                        formControlName="betreuungsschluessel"
                        class="form-control dv-input"/>
                 <mat-error *ngIf="form && form.get('betreuungsschluessel').errors?.required"

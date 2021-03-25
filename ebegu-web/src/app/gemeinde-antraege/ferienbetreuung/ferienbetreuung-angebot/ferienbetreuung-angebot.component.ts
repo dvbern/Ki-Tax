@@ -206,30 +206,19 @@ export class FerienbetreuungAngebotComponent implements OnInit {
         this.form.get('anzahlFerienwochenFruehlingsferien')
             .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
         this.form.get('anzahlFerienwochenSommerferien')
-            .setValidators([this.numberValidator()]);
+            .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
 
         this.form.get('anzahlTage').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
         this.form.get('anzahlStundenProBetreuungstag')
             .setValidators([Validators.required, numberValidator(ValidationType.HALF)]);
 
         this.form.get('betreuungErfolgtTagsueber').setValidators(Validators.required);
-        this.form.get('finanziellBeteiligteGemeinden').setValidators(Validators.required);
-        this.form.get('gemeindeFuehrtAngebotSelber').setValidators(Validators.required);
-        this.form.get('gemeindeBeauftragtExterneAnbieter').setValidators(Validators.required);
 
-        this.form.get('angebotVereineUndPrivateIntegriert').setValidators(Validators.required);
         this.form.get('leitungDurchPersonMitAusbildung').setValidators(Validators.required);
         this.form.get('betreuungDurchPersonenMitErfahrung').setValidators(Validators.required);
         this.form.get('anzahlKinderAngemessen').setValidators(Validators.required);
-
         this.form.get('betreuungsschluessel')
             .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
-        this.form.get('fixerTarifKinderDerGemeinde').setValidators(Validators.required);
-        this.form.get('einkommensabhaengigerTarifKinderDerGemeinde').setValidators(Validators.required);
-        this.form.get('tagesschuleTarifGiltFuerFerienbetreuung').setValidators(Validators.required);
-        this.form.get('ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet').setValidators(Validators.required);
-
-        this.form.get('kinderAusAnderenGemeindenZahlenAnderenTarif').setValidators(Validators.required);
     }
 
     private enableAdressFormValidation(): void {
@@ -247,15 +236,6 @@ export class FerienbetreuungAngebotComponent implements OnInit {
                 LOG.error(err);
                 this.errorService.addMesageAsError(this.translate.instant('FERIENBETREUUNG_PERSIST_ERROR'));
             });
-    }
-
-    private numberValidator(): ValidatorFn {
-        // tslint:disable-next-line:no-unnecessary-type-annotation
-        return (control: AbstractControl): {} | null => {
-            return isNaN(control.value) ? {
-                noNumberError: control.value,
-            } : null;
-        };
     }
 
     private formToObject(): TSFerienbetreuungAngabenAngebot {
