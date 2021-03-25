@@ -226,6 +226,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		}
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	private void setSenderAndEmpfaengerAndCheckAuthorization(@Nonnull Mitteilung mitteilung) {
 		Optional<Benutzer> currentBenutzer = benutzerService.getCurrentBenutzer();
 		//wenn man direkt aus Kafka Event liest sind man nicht eingeloggt, aber man hat der Rolle SUPER_ADMIN
