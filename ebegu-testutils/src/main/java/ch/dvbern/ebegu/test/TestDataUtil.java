@@ -145,6 +145,7 @@ import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.FallService;
@@ -2239,6 +2240,7 @@ public final class TestDataUtil {
 	) {
 		LastenausgleichTagesschuleAngabenGemeindeContainer cnt = new LastenausgleichTagesschuleAngabenGemeindeContainer();
 		LastenausgleichTagesschuleAngabenGemeinde angabenDeklaration = new LastenausgleichTagesschuleAngabenGemeinde();
+		angabenDeklaration.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
 		cnt.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.NEU);
 		cnt.setGesuchsperiode(gesuchsperiode);
 		cnt.setAngabenDeklaration(angabenDeklaration);
@@ -2274,6 +2276,7 @@ public final class TestDataUtil {
 		angabenGemeinde.setAusbildungenMitarbeitendeBelegt(true);
 		// Bemerkungen
 		angabenGemeinde.setBemerkungen(null);
+		angabenGemeinde.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN);
 		return angabenGemeinde;
 	}
 

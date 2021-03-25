@@ -15,21 +15,28 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
+import {UIRouterGlobals} from '@uirouter/core';
 import {combineLatest, Subject, Subscription} from 'rxjs';
-import {startWith} from 'rxjs/operators';
+import {map, startWith} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
+import {TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {TSWizardStepXTyp} from '../../../../../models/enums/TSWizardStepXTyp';
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSEinstellung} from '../../../../../models/TSEinstellung';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
+import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
+import {WizardStepXRS} from '../../../../core/service/wizardStepXRS.rest';
 import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
 import {GemeindeAntragService} from '../../../services/gemeinde-antrag.service';
 
@@ -38,6 +45,7 @@ import {GemeindeAntragService} from '../../../services/gemeinde-antrag.service';
     templateUrl: './gemeinde-angaben.component.html',
     styleUrls: ['./gemeinde-angaben.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None,
 })
 export class GemeindeAngabenComponent implements OnInit {
 
@@ -48,11 +56,12 @@ export class GemeindeAngabenComponent implements OnInit {
     public lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
     public formularInitForm: FormGroup;
     private subscription: Subscription;
-    public formFreigebenTriggered = false;
+    public formValidationActive = false;
     public lohnnormkostenSettingMoreThanFifty$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
     public lohnnormkostenSettingLessThanFifty$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
 
     private readonly kostenbeitragGemeinde = 0.2;
+    private readonly WIZARD_TYPE: TSWizardStepXTyp = TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN;
 
     public constructor(
         private readonly fb: FormBuilder,
@@ -63,6 +72,9 @@ export class GemeindeAngabenComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly translateService: TranslateService,
         private readonly settings: EinstellungRS,
+        private readonly wizardRS: WizardStepXRS,
+        private readonly uiRouterGlobals: UIRouterGlobals,
+        private readonly dialog: MatDialog,
     ) {
     }
 
@@ -123,6 +135,7 @@ export class GemeindeAngabenComponent implements OnInit {
 
     private setupForm(initialGemeindeAngaben: TSLastenausgleichTagesschuleAngabenGemeinde): void {
         this.angabenForm = this.fb.group({
+            status: initialGemeindeAngaben.status,
             // A
             alleFaelleInKibon: [{value: this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst, disabled: true}],
             angebotVerfuegbarFuerAlleSchulstufen: [
@@ -164,12 +177,12 @@ export class GemeindeAngabenComponent implements OnInit {
                     initialGemeindeAngaben?.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal,
                 ],
             ausbildungenMitarbeitendeBelegt: [
-                initialGemeindeAngaben?.ausbildungenMitarbeitendeBelegt,
+                {value: initialGemeindeAngaben?.ausbildungenMitarbeitendeBelegt, disabled: false},
             ],
             // Bemerkungen
             bemerkungen: [initialGemeindeAngaben?.bemerkungen],
             // calculated values
-            lastenausgleichberechtigteBetreuungsstunden: [{value: '', disabled: true}],
+            lastenausgleichberechtigteBetreuungsstunden: [{value: ''}],
             davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
             davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
             normlohnkostenBetreuungBerechnet: [{value: '', disabled: true}],
@@ -180,11 +193,12 @@ export class GemeindeAngabenComponent implements OnInit {
             erwarteterKostenbeitragGemeinde: [{value: '', disabled: true}],
         });
 
-        if (!this.lATSAngabenGemeindeContainer.isInBearbeitungForRole(this.authServiceRS.getPrincipalRole())) {
+        if (!this.lATSAngabenGemeindeContainer.isGemeindeFormularInBearbeitungForRole(this.authServiceRS.getPrincipalRole())) {
             this.angabenForm.disable();
         }
 
-        if (this.triggerValidationOnInit) {
+        if (this.formValidationActive || initialGemeindeAngaben?.status ===
+            TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN) {
             this.triggerFormValidation();
         }
     }
@@ -213,11 +227,13 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse')
             .setValidators([Validators.required, this.numberValidator()]);
         this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
-            .setValidators([Validators.required, this.numberValidator()]);
+            .setValidators([Validators.required, this.numberValidator(), this.plausibilisierungAddition()]);
         this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
-            .setValidators([Validators.required, this.numberValidator()]);
+            .setValidators([Validators.required, this.numberValidator(), this.plausibilisierungAddition()]);
         this.angabenForm.get('einnahmenElterngebuehren')
             .setValidators([Validators.required, this.numberValidator()]);
+        this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
+            .setValidators([this.plausibilisierungTageschulenStunden()]);
 
         // C
         this.angabenForm.get('gesamtKostenTagesschule')
@@ -246,12 +262,42 @@ export class GemeindeAngabenComponent implements OnInit {
         };
     }
 
+    private plausibilisierungAddition(): ValidatorFn {
+        return control => {
+            return parseFloat(this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').value) ===
+            parseFloat(this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').value) +
+            parseFloat(this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').value) ? null : {
+                plausibilisierungAdditionError: control.value,
+            };
+        };
+    }
+
+    private plausibilisierungTageschulenStunden(): ValidatorFn {
+        return control => {
+            const tagesschulenSum = this.lATSAngabenGemeindeContainer.angabenInstitutionContainers.reduce((
+                accumulator,
+                next,
+                ) => accumulator + (next.isInBearbeitungInstitution() ?
+                next.angabenDeklaration.betreuungsstundenEinschliesslichBesondereBeduerfnisse :
+                next.angabenKorrektur.betreuungsstundenEinschliesslichBesondereBeduerfnisse),
+                0);
+
+            return this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').value === tagesschulenSum ?
+                null :
+                {
+                    plausibilisierungTagesschulenStundenError: control.value,
+                };
+        };
+    }
+
     /**
      * Sets up form obervers that calculate intermediate results of the form that are presented to the user each
      * time the inputs change
      *
      * @param gemeindeAngabenFromServer existing data, used for initiating some calculations
      */
+    // TODO: refactor
+    // tslint:disable-next-line:cognitive-complexity
     private setupCalculcations(gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde): void {
         combineLatest(
             [
@@ -265,11 +311,15 @@ export class GemeindeAngabenComponent implements OnInit {
         ).subscribe(formValues => {
             this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
                 .setValue(parseFloat(formValues[0] || 0) + parseFloat(formValues[1] || 0));
+            this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').updateValueAndValidity();
+            this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').updateValueAndValidity();
+            this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
+                .updateValueAndValidity({emitEvent: false});
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
 
         combineLatest([
             this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').valueChanges.pipe(
-                startWith(gemeindeAngabenFromServer?.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete)
+                startWith(gemeindeAngabenFromServer?.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete),
             ),
             this.lohnnormkostenSettingLessThanFifty$,
         ]).subscribe(valueAndParamter => {
@@ -277,11 +327,13 @@ export class GemeindeAngabenComponent implements OnInit {
             const lohnkostenParam = parseFloat(valueAndParamter[1].value);
             this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
                 .setValue((value && lohnkostenParam) ? value * lohnkostenParam : 0);
+            this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
+                .updateValueAndValidity({onlySelf: true, emitEvent: false});
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
 
         combineLatest([
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').valueChanges.pipe(
-                startWith(gemeindeAngabenFromServer?.davonStundenZuNormlohnMehrAls50ProzentAusgebildete)
+                startWith(gemeindeAngabenFromServer?.davonStundenZuNormlohnMehrAls50ProzentAusgebildete),
             ),
             this.lohnnormkostenSettingMoreThanFifty$,
         ]).subscribe(valueAndParameter => {
@@ -289,6 +341,8 @@ export class GemeindeAngabenComponent implements OnInit {
             const lohnkostenParam = parseFloat(valueAndParameter[1].value);
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
                 .setValue((value && lohnkostenParam) ? value * lohnkostenParam : 0);
+            this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
+                .updateValueAndValidity({onlySelf: true, emitEvent: false});
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
 
         combineLatest(
@@ -308,11 +362,23 @@ export class GemeindeAngabenComponent implements OnInit {
         );
 
         combineLatest([
-            this.angabenForm.get('gesamtKostenTagesschule').valueChanges.pipe(startWith(0)),
-            this.angabenForm.get('lastenausgleichsberechtigerBetrag').valueChanges.pipe(startWith(0)),
-            this.angabenForm.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0)),
-            this.angabenForm.get('einnnahmenVerpflegung').valueChanges.pipe(startWith(0)),
-            this.angabenForm.get('einnahmenSubventionenDritter').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('gesamtKostenTagesschule')
+                .valueChanges
+                .pipe(startWith(gemeindeAngabenFromServer?.gesamtKostenTagesschule || 0),
+                    map(value => this.parseFloatSafe(value))),
+            this.angabenForm.get('lastenausgleichsberechtigerBetrag').valueChanges.pipe(startWith(0),
+                map(value => this.parseFloatSafe(value))),
+            this.angabenForm.get('einnahmenElterngebuehren')
+                .valueChanges
+                .pipe(startWith(gemeindeAngabenFromServer?.einnahmenElterngebuehren || 0),
+                    map(value => this.parseFloatSafe(value))),
+            this.angabenForm.get('einnnahmenVerpflegung')
+                .valueChanges
+                .pipe(startWith(gemeindeAngabenFromServer?.einnnahmenVerpflegung || 0),
+                    map(value => this.parseFloatSafe(value))),
+            this.angabenForm.get('einnahmenSubventionenDritter')
+                .valueChanges
+                .pipe(startWith(gemeindeAngabenFromServer?.einnahmenSubventionenDritter || 0)),
         ]).subscribe(values => {
                 const gemeindeBeitragOderUeberschuss = values[0] - values[1] - values[2] - values[3] - values[4];
                 if (gemeindeBeitragOderUeberschuss < 0) {
@@ -335,7 +401,9 @@ export class GemeindeAngabenComponent implements OnInit {
 
         combineLatest([
             this.angabenForm.get('normlohnkostenBetreuungBerechnet').valueChanges.pipe(startWith(0)),
-            this.angabenForm.get('einnahmenElterngebuehren').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('einnahmenElterngebuehren')
+                .valueChanges
+                .pipe(startWith(gemeindeAngabenFromServer?.einnahmenElterngebuehren || 0)),
         ]).subscribe(values => {
                 this.angabenForm.get('lastenausgleichsberechtigerBetrag').setValue(
                     // round to 0.2
@@ -345,6 +413,11 @@ export class GemeindeAngabenComponent implements OnInit {
             () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')),
         );
 
+    }
+
+    private parseFloatSafe(formValue: string): number {
+        const unsafeParsed = parseFloat(formValue);
+        return isNaN(unsafeParsed) ? 0 : unsafeParsed;
     }
 
     private lATSAngabenGemeindeFuerInstitutionenFreigeben(): void {
@@ -362,9 +435,6 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     public onAngabenFormSubmit(): void {
-        if (!this.angabenForm.valid) {
-            return;
-        }
         // tslint:disable-next-line:max-line-length
         if (this.lATSAngabenGemeindeContainer.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON) {
             this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.value;
@@ -375,8 +445,71 @@ export class GemeindeAngabenComponent implements OnInit {
 
     }
 
+    public async onAbschliessen(): Promise<void> {
+        this.triggerFormValidation();
+
+        if (!this.angabenForm.valid) {
+            this.errorService.addMesageAsError(
+                this.translateService.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
+            );
+            return;
+        }
+        if (!await this.confirmDialog('FRAGE_FORMULAR_ABSCHLIESSEN')) {
+            return;
+        }
+
+        // tslint:disable-next-line:max-line-length
+        if (this.lATSAngabenGemeindeContainer.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON) {
+            this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.value;
+        } else {
+            this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.value;
+        }
+        this.lastenausgleichTSService.latsAngabenGemeindeFormularAbschliessen(this.lATSAngabenGemeindeContainer)
+            .subscribe(container => this.handleSaveSuccess(container),
+                err => this.handleSaveError(err));
+    }
+
+    private confirmDialog(frageKey: string): Promise<boolean> {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            frage: this.translateService.instant(frageKey),
+        };
+        return this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
+            .afterClosed()
+            .toPromise();
+    }
+
+    private handleSaveSuccess(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
+        if (container.isInBearbeitungGemeinde() && container.angabenDeklaration.status ===
+            TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN ||
+            container.isAtLeastInBearbeitungKanton() && container.angabenKorrektur.status ===
+            TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN) {
+            this.triggerFormValidation();
+            this.errorService.addMesageAsError(this.translateService.instant(
+                'LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'));
+        }
+        this.wizardRS.updateSteps(this.WIZARD_TYPE, this.uiRouterGlobals.params.id);
+    }
+
+    private handleSaveError(error: any): void {
+        // tslint:disable-next-line:early-exit
+        if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
+            if (error.error.includes('institution')) {
+                this.errorService.addMesageAsError(this.translateService.instant(
+                    'LATS_NICHT_ALLE_INSTITUTIONEN_ABGESCHLOSSEN'));
+            } else if (error.error.includes('incomplete')) {
+                this.errorService.addMesageAsError(this.translateService.instant(
+                    'LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'));
+            } else {
+                this.errorService.addMesageAsError(this.translateService.instant('SAVE_ERROR'));
+            }
+        } else {
+            this.errorService.addMesageAsError(this.translateService.instant('SAVE_ERROR'));
+        }
+    }
+
     public triggerFormValidation(): void {
-        this.formFreigebenTriggered = true;
+        this.formValidationActive = true;
         this.enableFormValidation();
         for (const key in this.angabenForm.controls) {
             if (this.angabenForm.get(key) !== null) {
@@ -403,7 +536,19 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     public formularNotEditable(): boolean {
-        return this.lATSAngabenGemeindeContainer.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU ||
-            this.lATSAngabenGemeindeContainer.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT;
+        return this.lATSAngabenGemeindeContainer.isInBearbeitungGemeinde() && // tslint:disable-next-line:max-line-length
+            this.lATSAngabenGemeindeContainer.angabenDeklaration.status === TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN ||
+            this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton() && // tslint:disable-next-line:max-line-length
+            this.lATSAngabenGemeindeContainer.angabenKorrektur.status === TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
+    }
+
+    public onFalscheAngaben(): void {
+        this.lastenausgleichTSService.falscheAngaben(this.lATSAngabenGemeindeContainer);
+    }
+
+    public falscheAngabenVisible(): boolean {
+        return this.lATSAngabenGemeindeContainer?.isInBearbeitungGemeinde() &&
+            this.lATSAngabenGemeindeContainer?.angabenDeklaration.status ===
+            TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
     }
 }

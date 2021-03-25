@@ -17,7 +17,6 @@
 
 import {TSAbstractEntity} from '../TSAbstractEntity';
 import {TSAdresse} from '../TSAdresse';
-import {TSGemeinde} from '../TSGemeinde';
 
 export class TSFerienbetreuungAngabenAngebot extends TSAbstractEntity {
 
@@ -30,16 +29,19 @@ export class TSFerienbetreuungAngabenAngebot extends TSAbstractEntity {
     private _anzahlFerienwochenFruehlingsferien: number;
     private _anzahlFerienwochenSommerferien: number;
     private _anzahlTage: number;
+    private _bemerkungenAnzahlFerienwochen: string;
     private _anzahlStundenProBetreuungstag: number;
+    private _betreuungErfolgtTagsueber: boolean;
     private _bemerkungenOeffnungszeiten: string;
-    private _finanziellBeteiligteGemeinden: TSGemeinde[];
+    private _finanziellBeteiligteGemeinden: string[];
     private _gemeindeFuehrtAngebotSelber: boolean;
     private _gemeindeBeauftragtExterneAnbieter: boolean;
     private _angebotVereineUndPrivateIntegriert: boolean;
     private _bemerkungenKooperation: boolean;
     private _leitungDurchPersonMitAusbildung: string;
-    private _aufwandBetreuungspersonal: number;
-    private _zusaetzlicherAufwandLeitungAdmin: number;
+    private _betreuungDurchPersonenMitErfahrung: boolean;
+    private _anzahlKinderAngemessen: boolean;
+    private _betreuungsschluessel: number;
     private _bemerkungenPersonal: string;
     private _fixerTarifKinderDerGemeinde: boolean;
     private _einkommensabhaengigerTarifKinderDerGemeinde: boolean;
@@ -120,12 +122,28 @@ export class TSFerienbetreuungAngabenAngebot extends TSAbstractEntity {
         this._anzahlTage = value;
     }
 
+    public get bemerkungenAnzahlFerienwochen(): string {
+        return this._bemerkungenAnzahlFerienwochen;
+    }
+
+    public set bemerkungenAnzahlFerienwochen(value: string) {
+        this._bemerkungenAnzahlFerienwochen = value;
+    }
+
     public get anzahlStundenProBetreuungstag(): number {
         return this._anzahlStundenProBetreuungstag;
     }
 
     public set anzahlStundenProBetreuungstag(value: number) {
         this._anzahlStundenProBetreuungstag = value;
+    }
+
+    public get betreuungErfolgtTagsueber(): boolean {
+        return this._betreuungErfolgtTagsueber;
+    }
+
+    public set betreuungErfolgtTagsueber(value: boolean) {
+        this._betreuungErfolgtTagsueber = value;
     }
 
     public get bemerkungenOeffnungszeiten(): string {
@@ -136,11 +154,11 @@ export class TSFerienbetreuungAngabenAngebot extends TSAbstractEntity {
         this._bemerkungenOeffnungszeiten = value;
     }
 
-    public get finanziellBeteiligteGemeinden(): TSGemeinde[] {
+    public get finanziellBeteiligteGemeinden(): string[] {
         return this._finanziellBeteiligteGemeinden;
     }
 
-    public set finanziellBeteiligteGemeinden(value: TSGemeinde[]) {
+    public set finanziellBeteiligteGemeinden(value: string[]) {
         this._finanziellBeteiligteGemeinden = value;
     }
 
@@ -184,20 +202,28 @@ export class TSFerienbetreuungAngabenAngebot extends TSAbstractEntity {
         this._leitungDurchPersonMitAusbildung = value;
     }
 
-    public get aufwandBetreuungspersonal(): number {
-        return this._aufwandBetreuungspersonal;
+    public get betreuungDurchPersonenMitErfahrung(): boolean {
+        return this._betreuungDurchPersonenMitErfahrung;
     }
 
-    public set aufwandBetreuungspersonal(value: number) {
-        this._aufwandBetreuungspersonal = value;
+    public set betreuungDurchPersonenMitErfahrung(value: boolean) {
+        this._betreuungDurchPersonenMitErfahrung = value;
     }
 
-    public get zusaetzlicherAufwandLeitungAdmin(): number {
-        return this._zusaetzlicherAufwandLeitungAdmin;
+    public get anzahlKinderAngemessen(): boolean {
+        return this._anzahlKinderAngemessen;
     }
 
-    public set zusaetzlicherAufwandLeitungAdmin(value: number) {
-        this._zusaetzlicherAufwandLeitungAdmin = value;
+    public set anzahlKinderAngemessen(value: boolean) {
+        this._anzahlKinderAngemessen = value;
+    }
+
+    public get betreuungsschluessel(): number {
+        return this._betreuungsschluessel;
+    }
+
+    public set betreuungsschluessel(value: number) {
+        this._betreuungsschluessel = value;
     }
 
     public get bemerkungenPersonal(): string {

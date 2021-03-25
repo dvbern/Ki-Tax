@@ -109,6 +109,7 @@ public enum AntragStatus {
 		GEPRUEFT_STV);
 
 	public static final Set<AntragStatus> FOR_SOZIALDIENST_ROLE = EnumSet.of(
+		FREIGABEQUITTUNG,
 		FREIGEGEBEN,
 		IN_BEARBEITUNG_JA,
 		ERSTE_MAHNUNG,
@@ -417,7 +418,7 @@ public enum AntragStatus {
 	}
 
 	public static final Set<AntragStatus> FOR_SOZIALDIENST_PENDENZEN = EnumSet.of(
-		IN_BEARBEITUNG_SOZIALDIENST);
+		IN_BEARBEITUNG_SOZIALDIENST, ERSTE_MAHNUNG, ZWEITE_MAHNUNG);
 
 	/**
 	 * Ein verfuegtes Gesuch kann mehrere Status haben. Diese Methode immer anwenden um herauszufinden

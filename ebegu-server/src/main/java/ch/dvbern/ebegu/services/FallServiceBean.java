@@ -100,9 +100,7 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 		Objects.requireNonNull(fall);
 		// Den "Besitzer" auf dem Fall ablegen
 		if (principalBean.isCallerInAnyOfRole(
-			UserRole.GESUCHSTELLER,
-			UserRole.ADMIN_SOZIALDIENST,
-			UserRole.SACHBEARBEITER_SOZIALDIENST)) {
+			UserRole.GESUCHSTELLER)) {
 			Optional<Benutzer> currentBenutzer = benutzerService.getCurrentBenutzer();
 			currentBenutzer.ifPresent(fall::setBesitzer);
 		}

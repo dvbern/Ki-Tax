@@ -16,15 +16,15 @@
   -->
 
 <div class="tagesschule-angaben">
-    <h1 class="access-for-all-title">{{'LASTENAUSGLEICH_TS_ANGABEN_TAGESSCHULEN' | translate}}</h1>
+    <h1 class="access-for-all-title">{{'LASTENAUSGLEICH_TAGESSCHULEN_ANGABEN_TAGESSCHULEN' | translate}}</h1>
     <div class="row view-title">
         <div class="col-md-12">
-            <h2 translate>LASTENAUSGLEICH_TS_ANGABEN_TAGESSCHULEN</h2>
+            <h2 translate>LASTENAUSGLEICH_TAGESSCHULEN_ANGABEN_TAGESSCHULEN</h2>
             <hr class="header"/>
         </div>
     </div>
 
-    <form *ngIf="form" [formGroup]="form" (ngSubmit)="onFormSubmit()">
+    <form *ngIf="form" [formGroup]="form" class="tagesschule-angaben-wrapper" (ngSubmit)="onFormSubmit()">
 
         <h3 translate class="uppercase">ALLGEMEINE_ANGABEN</h3>
 
@@ -42,6 +42,7 @@
                     class=""
                     name="isLehrbetrieb"
                     horizontal
+                    [disabled]="form.get('isLehrbetrieb').disabled"
                     formControlName="isLehrbetrieb">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -62,7 +63,8 @@
         <div *ngIf="!angabenAusKibon">
             <dv-input-container-x>
                 <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinder').errors}">
-                    {{'LATS_ANZAHL_EINGESCHRIEBENE_KINDER' | translate: {jahr: gesuchsPeriode?.gueltigkeit.gueltigAb.year()} }}
+                    {{'LATS_ANZAHL_EINGESCHRIEBENE_KINDER' | translate: {jahr: gesuchsPeriode?.gueltigkeit?.gueltigAb?.year()} }}
+                    <dv-tooltip [text]="'LATS_ANZAHL_EINGESCHRIEBENE_KINDER_INFO' | translate"></dv-tooltip>
                 </label>
                 <div class="flex-whitespace-item"></div>
                 <mat-form-field floatLabel="always">
@@ -184,7 +186,7 @@
         <dv-input-container-x>
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').errors}">
                 {{'LATS_ANZAHL_KINDER_BESONDERE_ANFORDERUNGEN' | translate}}
-
+                <dv-tooltip [text]="'LATS_ANZAHL_KINDER_BESONDERE_ANFORDERUNGEN_INFO' | translate"></dv-tooltip>
             </label>
             <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
@@ -314,6 +316,32 @@
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').errors}">
+                    {{'LATS_BETREUUNGSSTUNDEN_EINSCHLIESSLICH_BESONDERE_BEDUERFNISSE' | translate:{schuljahr: gesuchsPeriode?.gesuchsperiodeString} }}
+                    <dv-tooltip [text]="'LATS_BETREUUNGSSTUNDEN_EINSCHLIESSLICH_BESONDERE_BEDUERFNISSE_INFO' | translate"></dv-tooltip>
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <mat-label translate></mat-label>
+                    <input matInput
+                           formControlName="betreuungsstundenEinschliesslichBesondereBeduerfnisse"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="formFreigebenTriggered && form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').errors?.noNumberError"
+                               translate>ERROR_NUMBER
+                    </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.betreuungsstundenEinschliesslichBesondereBeduerfnisse"
+                        [korrektur]="form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').value"
+                        [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
+                    </dv-bisher-x>
+                </mat-form-field>
+            </dv-input-container-x>
         </div>
 
         <mat-divider></mat-divider>
@@ -334,6 +362,7 @@
                     class=""
                     name="schuleAufBasisOrganisatorischesKonzept"
                     horizontal
+                    [disabled]="form.get('schuleAufBasisOrganisatorischesKonzept').disabled"
                     formControlName="schuleAufBasisOrganisatorischesKonzept">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -361,6 +390,7 @@
                     class=""
                     name="schuleAufBasisPaedagogischesKonzept"
                     horizontal
+                    [disabled]="form.get('schuleAufBasisPaedagogischesKonzept').disabled"
                     formControlName="schuleAufBasisPaedagogischesKonzept">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -388,6 +418,7 @@
                     class=""
                     name="raeumlicheVoraussetzungenEingehalten"
                     horizontal
+                    [disabled]="form.get('raeumlicheVoraussetzungenEingehalten').disabled"
                     formControlName="raeumlicheVoraussetzungenEingehalten">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -415,6 +446,7 @@
                     class=""
                     name="betreuungsverhaeltnisEingehalten"
                     horizontal
+                    [disabled]="form.get('betreuungsverhaeltnisEingehalten').disabled"
                     formControlName="betreuungsverhaeltnisEingehalten">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -442,6 +474,7 @@
                     class=""
                     name="ernaehrungsGrundsaetzeEingehalten"
                     horizontal
+                    [disabled]="form.get('ernaehrungsGrundsaetzeEingehalten').disabled"
                     formControlName="ernaehrungsGrundsaetzeEingehalten">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -463,32 +496,54 @@
                 <textarea matInput
                           formControlName="bemerkungen"
                           class="form-control dv-input"></textarea>
+                <dv-bisher-x
+                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.bemerkungen"
+                    [korrektur]="form.get('bemerkungen').value"
+                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
+                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                </dv-bisher-x>
             </mat-form-field>
         </dv-input-container-x>
 
         <div class="actions">
             <dv-loading-button
-                type="button"
-                *ngIf="canSeeSaveButton()"
-                [buttonDisabled]="actionButtonsDisabled()"
-                (buttonClick)="onFormSubmit()">
-                <span translate>SAVE</span>
-            </dv-loading-button>
-            <dv-loading-button
+                class="uppercase"
                 *ngIf="canSeeFreigebenButton()"
                 type="button"
                 [buttonDisabled]="actionButtonsDisabled()"
                 (buttonClick)="onFreigeben()">
                 <span translate>FREIGEBEN</span>
             </dv-loading-button>
+
             <dv-loading-button
+                class="uppercase"
                 *ngIf="canSeeGeprueftButton()"
                 type="button"
                 [buttonDisabled]="actionButtonsDisabled()"
                 (buttonClick)="onGeprueft()">
                 <span translate>GEPRUEFT</span>
             </dv-loading-button>
+
+            <button class="dv-btn cancel-button uppercase"
+                type="button"
+                *ngIf="canSeeSaveButton()"
+                [disabled]="actionButtonsDisabled()"
+                (click)="onFormSubmit()">
+                <span translate>SAVE</span>
+            </button>
+
+            <button class="dv-btn cancel-button margin-left-5 uppercase"
+                    type="button"
+                    (click)="navigateBack($event)">
+                <span translate>CANCEL</span>
+            </button>
         </div>
 
     </form>
+
+    <div class="row" *ngIf="falscheAngabenVisible()">
+        <div class="col-md-12">
+            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
+        </div>
+    </div>
 </div>

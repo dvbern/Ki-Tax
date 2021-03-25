@@ -19,6 +19,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {UIRouterGlobals} from '@uirouter/core';
 
 import {of} from 'rxjs';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
@@ -47,6 +48,8 @@ const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.
     'findEinstellung'
 ]);
 
+const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
+
 describe('GemeindeAngabenComponent', () => {
     let component: GemeindeAngabenComponent;
     let fixture: ComponentFixture<GemeindeAngabenComponent>;
@@ -69,6 +72,7 @@ describe('GemeindeAngabenComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: EinstellungRS, useValue: einstellungServiceSpy},
+                {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
             ],
 
         })

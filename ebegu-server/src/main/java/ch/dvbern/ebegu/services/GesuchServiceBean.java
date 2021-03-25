@@ -205,8 +205,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Gemeinde gemeindeOfGesuchToCreate = gesuchToCreate.extractGemeinde();
 		Gesuchsperiode gesuchsperiodeOfGesuchToCreate = gesuchToCreate.getGesuchsperiode();
 		AntragTyp typOfGesuchToCreate = gesuchToCreate.getTyp();
-		Eingangsart eingangsart = calculateEingangsart();
-		AntragStatus initialStatus = calculateInitialStatus();
+		Eingangsart eingangsart = calculateEingangsart(gesuchToCreate);
+		AntragStatus initialStatus = calculateInitialStatus(gesuchToCreate);
 		LocalDate eingangsdatum = gesuchToCreate.getEingangsdatum();
 		LocalDate regelnGueltigAb = gesuchToCreate.getRegelnGueltigAb();
 		StringBuilder logInfo = new StringBuilder();
@@ -376,7 +376,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				return gesuchToCopy.copyForMutationNeuesDossier(gesuchToCreate, eingangsart,
 					gesuchToCreate.getDossier());
 			} else {
-				return gesuchToCopy.copyForErneuerungsgesuchNeuesDossier(gesuchToCreate,
+				return gesuchToCopy.copyForErneuerungsgesuchNeuesDossier(
+					gesuchToCreate,
 					eingangsart,
 					gesuchToCreate.getDossier(),
 					gesuchsperiode,
@@ -907,7 +908,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			validateGesuchComplete(gesuch);
 
 			if (gesuch.getStatus() != AntragStatus.FREIGABEQUITTUNG && gesuch.getStatus() != AntragStatus
-				.IN_BEARBEITUNG_GS) {
+				.IN_BEARBEITUNG_GS && gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_SOZIALDIENST) {
 				throw new EbeguRuntimeException(
 					"antragFreigeben",
 					"Gesuch war im falschen Status: "
@@ -1219,7 +1220,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private void ensureUniqueErstgesuchProDossierAndGesuchsperiode(@Nonnull Gesuch gesuchToPersist) {
 		if (gesuchToPersist.getTyp() != AntragTyp.MUTATION) {
 			// Von allem ausser MUTATION darf es pro Dossier und Gesuchsperiode nur einen Antrag geben
-			List<Gesuch> existingGesuch = findExistingGesuch(gesuchToPersist.getDossier(),
+			List<Gesuch> existingGesuch = findExistingGesuch(
+				gesuchToPersist.getDossier(),
 				gesuchToPersist.getGesuchsperiode(),
 				gesuchToPersist.getTyp());
 			if (!existingGesuch.isEmpty()) {
@@ -1254,9 +1256,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@Nonnull
-	private Eingangsart calculateEingangsart() {
+	private Eingangsart calculateEingangsart(Gesuch gesuchToCreate) {
 		Eingangsart eingangsart;
-		if (this.principalBean.isCallerInAnyOfRole(UserRole.GESUCHSTELLER, UserRole.ADMIN_SOZIALDIENST, UserRole.SACHBEARBEITER_SOZIALDIENST)) {
+		if (this.principalBean.isCallerInRole(UserRole.GESUCHSTELLER)
+			|| gesuchToCreate.getFall().getSozialdienstFall() != null) {
 			eingangsart = Eingangsart.ONLINE;
 		} else {
 			eingangsart = Eingangsart.PAPIER;
@@ -1265,14 +1268,13 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@Nonnull
-	private AntragStatus calculateInitialStatus() {
+	private AntragStatus calculateInitialStatus(Gesuch gesuch) {
 		AntragStatus status;
 		if (this.principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
 			status = AntragStatus.IN_BEARBEITUNG_GS;
-		} else if (this.principalBean.isCallerInAnyOfRole(UserRole.getAllSozialdienstRoles())){
+		} else if (gesuch.getFall().getSozialdienstFall() != null) {
 			status = AntragStatus.IN_BEARBEITUNG_SOZIALDIENST;
-		}
-		else {
+		} else {
 			status = AntragStatus.IN_BEARBEITUNG_JA;
 		}
 		return status;
@@ -1833,7 +1835,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		// Jedes Loeschen eines Antrags muss geloggt werden!
 		logDeletingOfAntrag(gesuch);
 		boolean isRolleGesuchsteller = principalBean.isCallerInRole(UserRole.GESUCHSTELLER);
-		if (isRolleGesuchsteller) {
+		boolean isRolleSozialdiesnt = principalBean.isCallerInAnyOfRole(UserRole.getAllSozialdienstRoles());
+		if (isRolleGesuchsteller || isRolleSozialdiesnt) {
 			// Gesuchsteller:
 			// Antrag muss Online sein, und darf noch nicht freigegeben sein
 			if (gesuch.getEingangsart().isPapierGesuch()) {
@@ -1841,7 +1844,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 					"removeGesuchstellerAntrag",
 					ErrorCodeEnum.ERROR_DELETION_NOT_ALLOWED_FOR_GS);
 			}
-			if (gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_GS) {
+			if ((isRolleGesuchsteller && gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_GS)
+			|| (isRolleSozialdiesnt && gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_SOZIALDIENST)) {
 				throw new EbeguRuntimeException("removeGesuchstellerAntrag",
 					ErrorCodeEnum.ERROR_DELETION_ANTRAG_NOT_ALLOWED, gesuch.getStatus());
 			}
@@ -2143,7 +2147,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		allTuples.forEach(tuple -> {
 			final String dossierIdValue = String.valueOf(tuple.get(0));
 			Gesuch gesuch = neustesGeprueftesFreigegebensGesuchCache.get(dossierIdValue);
-			if(gesuch != null){
+			if (gesuch != null) {
 				gesuche.add(gesuch);
 			}
 		});
@@ -2252,7 +2256,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			gesuchsperiodeParam);
 		predicates.add(predicateGesuchsperiode);
 
-		if(user.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
+		if (user.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
 			Join<Gesuch, Dossier> joinDossier = root.join(Gesuch_.dossier, JoinType.LEFT);
 			Join<Dossier, Gemeinde> joinGemeinde = joinDossier.join(Dossier_.gemeinde, JoinType.LEFT);
 			Predicate inGemeinde = joinGemeinde.in(user.extractGemeindenForUser());
@@ -2332,7 +2336,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			gesuchsperiodeGueltigAbParam);
 		predicates.add(gesuchsperiodePredicate);
 
-		if(user.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
+		if (user.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
 			Join<Gesuch, Dossier> joinDossier = root.join(Gesuch_.dossier, JoinType.LEFT);
 			Join<Dossier, Gemeinde> joinGemeinde = joinDossier.join(Dossier_.gemeinde, JoinType.LEFT);
 			Predicate inGemeinde = joinGemeinde.in(user.extractGemeindenForUser());
@@ -2381,7 +2385,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		zuMutierendeAnmeldungenAbschliessen(gesuch);
 
 		// Die Mutation erstellen
-		Gesuch mutation = gesuch.copyForMutation(new Gesuch(),
+		Gesuch mutation = gesuch.copyForMutation(
+			new Gesuch(),
 			Eingangsart.PAPIER,
 			gesuch.getRegelStartDatum() != null ? gesuch.getRegelStartDatum() : LocalDate.now());
 		mutation.setTyp(AntragTyp.MUTATION);
