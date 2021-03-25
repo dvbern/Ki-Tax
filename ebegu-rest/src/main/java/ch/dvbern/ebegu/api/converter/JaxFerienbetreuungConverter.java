@@ -333,6 +333,8 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 
 		convertAbstractFieldsToJAX(angebot, jaxAngebot);
 
+		jaxAngebot.setStatus(angebot.getStatus());
+
 		jaxAngebot.setAngebot(angebot.getAngebot());
 		jaxAngebot.setAngebotKontaktpersonVorname(angebot.getAngebotKontaktpersonVorname());
 		jaxAngebot.setAngebotKontaktpersonNachname(angebot.getAngebotKontaktpersonNachname());

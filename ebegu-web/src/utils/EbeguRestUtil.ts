@@ -4997,6 +4997,7 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractEntity(angebotTS, angebotFromServer);
+        angebotTS.status = angebotFromServer.status;
         angebotTS.angebot = angebotFromServer.angebot;
         angebotTS.angebotKontaktpersonVorname = angebotFromServer.angebotKontaktpersonVorname;
         angebotTS.angebotKontaktpersonNachname = angebotFromServer.angebotKontaktpersonNachname;

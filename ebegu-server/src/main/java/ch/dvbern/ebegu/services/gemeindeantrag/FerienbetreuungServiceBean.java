@@ -51,6 +51,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.types.DateRange;
@@ -248,10 +249,10 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 		Preconditions.checkArgument(angebot.isReadyForFreigeben(), "Not all required properties are set");
 		Preconditions.checkArgument(
-			angebot.getStatus() == FerienBetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE,
+			angebot.getStatus() == FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE,
 			"FerienbetreuungAngabenAngebot must be in state IN_BEARBEITUNG_GEMEINDE");
 
-		angebot.setStatus(FerienbetreuungFormularStatus.ABGESCHLOSSEN);
+		angebot.setStatus(FerienbetreuungFormularStatus.IN_PRUEFUNG_KANTON);
 
 		return persistence.merge(angebot);
 
