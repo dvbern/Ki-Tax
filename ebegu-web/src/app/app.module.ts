@@ -30,6 +30,7 @@ import {GemeindeModule} from './gemeinde/gemeinde.module';
 import {InstitutionModule} from './institution/institution.module';
 import {NotrechtModule} from './notrecht/notrecht.module';
 import {OnboardingModule} from './onboarding/onboarding.module';
+import {PendenzenXModule} from './pendenzen/pendenzen-x.module';
 import {NgPosteingangModule} from './posteingang/ng-posteingang.module';
 import {SharedModule} from './shared/shared.module';
 import {SozialdienstModule} from './sozialdienst/sozialdienst.module';
@@ -62,7 +63,8 @@ import {WizardstepXModule} from './wizardstepX/wizardstep-x.module';
         NotrechtModule,
         GemeindeAntraegeModule,
         WizardstepXModule,
-        SozialdienstModule
+        SozialdienstModule,
+        PendenzenXModule
     ],
 })
 
