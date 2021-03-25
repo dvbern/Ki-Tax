@@ -236,18 +236,20 @@ public class ApplicationPropertyResource {
 		String kitaxHost = ebeguConfiguration.getKitaxHost();
 		String kitaxendpoint = ebeguConfiguration.getKitaxEndpoint();
 
+		EbeguEntityNotFoundException notFound = new EbeguEntityNotFoundException("getPublicProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
+
 		ApplicationProperty einreichefristOeffentlich  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH)
-			.orElseThrow(() -> new EbeguEntityNotFoundException("getPublicProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+			.orElseThrow(() -> notFound);
 		ApplicationProperty einreichefristPrivat  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT)
-			.orElseThrow(() -> new EbeguEntityNotFoundException("getPublicProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+			.orElseThrow(() -> notFound);
 		ApplicationProperty ferienbetreuungAktiv  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.FERIENBETREUUNG_AKTIV)
-				.orElseThrow(() -> new EbeguEntityNotFoundException("getPublicProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+				.orElseThrow(() -> notFound);
 		ApplicationProperty lastenausgleichTagesschulenAktiv  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AKTIV)
-				.orElseThrow(() -> new EbeguEntityNotFoundException("getPublicProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+				.orElseThrow(() -> notFound);
 
 		String nodeName = "";
 		try {
