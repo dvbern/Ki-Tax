@@ -590,10 +590,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			gesuch.setEingangsart(Eingangsart.ONLINE);
 		} else if (fall.getSozialdienstFall() != null) {
 			gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_SOZIALDIENST);
-			WizardStep gesuchStep = wizardStepService.findWizardStepFromGesuch(gesuch.getId(), WizardStepName.GESUCH_ERSTELLEN);
-			gesuchStep.setWizardStepStatus(WizardStepStatus.OK);
-			gesuchStep.setVerfuegbar(true);
-			wizardStepService.saveWizardStep(gesuchStep);
+			setWizardStepForSozialdienst(gesuch);
 			gesuch.setEingangsart(Eingangsart.ONLINE);
 		} else {
 			gesuch.setEingangsart(Eingangsart.PAPIER);
@@ -603,6 +600,13 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 		return gesuch;
 
+	}
+
+	private void setWizardStepForSozialdienst(@Nonnull Gesuch gesuch) {
+		WizardStep gesuchStep = wizardStepService.findWizardStepFromGesuch(gesuch.getId(), WizardStepName.GESUCH_ERSTELLEN);
+		gesuchStep.setWizardStepStatus(WizardStepStatus.OK);
+		gesuchStep.setVerfuegbar(true);
+		wizardStepService.saveWizardStep(gesuchStep);
 	}
 
 	@Nonnull
