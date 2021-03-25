@@ -60,6 +60,7 @@ export class FerienbetreuungAngebotComponent implements OnInit {
 
     public readonly canSeeAbschliessen: Subject<boolean> = new Subject<boolean>();
     public readonly canSeeSave: Subject<boolean> = new Subject<boolean>();
+    public readonly canSeeFalscheAngaben: Subject<boolean> = new Subject<boolean>();
 
     public constructor(
         private readonly ferienbetreuungService: FerienbetreuungService,
@@ -94,9 +95,11 @@ export class FerienbetreuungAngebotComponent implements OnInit {
                 if (this.angebot.isAtLeastAbgeschlossenGemeinde()) {
                     this.canSeeAbschliessen.next(false);
                     this.canSeeSave.next(false);
+                    this.canSeeFalscheAngaben.next(true);
                 } else {
                     this.canSeeAbschliessen.next(true);
                     this.canSeeSave.next(true);
+                    this.canSeeFalscheAngaben.next(false);
                 }
             } else if (principal.hasOneOfRoles(TSRoleUtil.getMandantRoles())) {
                 this.canSeeAbschliessen.next(false);
@@ -322,12 +325,11 @@ export class FerienbetreuungAngebotComponent implements OnInit {
     }
 
     private handleSaveSuccess(): void {
-        this.form.disable();
         this.wizardRS.updateSteps(this.WIZARD_TYPE, this.uiRouterGlobals.params.id);
     }
 
     private handleSaveError(error: any): void {
-        if (error.error.includes('Not all required properties are set')) {
+        if (error.error?.includes('Not all required properties are set')) {
             this.triggerFormValidation();
             this.showValidierungFehlgeschlagenErrorMessage();
         } else {
@@ -345,5 +347,10 @@ export class FerienbetreuungAngebotComponent implements OnInit {
             }
         }
         this.form.updateValueAndValidity();
+    }
+
+    public onFalscheAngaben(): void {
+        this.ferienbetreuungService.falscheAngabenAngebot(this.container.id, this.angebot)
+            .subscribe(() => this.handleSaveSuccess(), (error: any) => this.handleSaveError(error));
     }
 }

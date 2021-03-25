@@ -78,4 +78,7 @@ public interface FerienbetreuungService {
 
 	@Nonnull
 	FerienbetreuungAngabenAngebot ferienbetreuungAngebotAbschliessen(@Nonnull FerienbetreuungAngabenAngebot angebot);
+
+	@Nonnull
+	FerienbetreuungAngabenAngebot ferienbetreuungAngebotFalscheAngaben(@Nonnull FerienbetreuungAngabenAngebot angebot);
 }

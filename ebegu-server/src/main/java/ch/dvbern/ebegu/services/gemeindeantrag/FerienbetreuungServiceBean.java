@@ -257,6 +257,19 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 		return persistence.merge(angebot);
 
 	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenAngebot ferienbetreuungAngebotFalscheAngaben(
+		@Nonnull FerienbetreuungAngabenAngebot angebot) {
+		Preconditions.checkArgument(
+			angebot.getStatus() == FerienbetreuungFormularStatus.ABGESCHLOSSEN,
+			"FerienbetreuungAngabenAngebot must be in state ABGESCHLOSSEN");
+
+		angebot.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
+
+		return persistence.merge(angebot);
+	}
 }
 
 
