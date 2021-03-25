@@ -23,15 +23,18 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {TranslateModule} from '@ngx-translate/core';
 import {StateService, UIRouterModule} from '@uirouter/angular';
-import {of} from 'rxjs';
+import {BehaviorSubject, of} from 'rxjs';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
-import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSBerechtigung} from '../../../models/TSBerechtigung';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
 import {MaterialModule} from '../../shared/material.module';
+import {GemeindeAntragService} from '../services/gemeinde-antrag.service';
 
 import {GemeindeAntraegeComponent} from './gemeinde-antraege.component';
 
@@ -50,11 +53,15 @@ const controlContainerSpy = jasmine.createSpyObj<ControlContainer>(ControlContai
 const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
     ['isOneOfRoles', 'principal$']);
 
+const gemeindeAntragServiceSpy = jasmine.createSpyObj<GemeindeAntragService>(GemeindeAntragService.name, ['getTypesForRole']);
+
 const user = new TSBenutzer();
+user.currentBerechtigung = new TSBerechtigung();
+user.currentBerechtigung.role = TSRole.ADMIN_MANDANT;
 
 const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
 
-authServiceSpy.principal$ = of(user);
+authServiceSpy.principal$ = new BehaviorSubject(user);
 
 // We mock the dv loading buttondirective to make the setup easier since these are unit tests
 @Directive({
@@ -76,7 +83,7 @@ describe('GemeindeAntraegeComponent', () => {
     let component: GemeindeAntraegeComponent;
     let fixture: ComponentFixture<GemeindeAntraegeComponent>;
 
-    authServiceSpy.principal$ = of(user) as any;
+    authServiceSpy.principal$ = new BehaviorSubject(user);
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -99,6 +106,7 @@ describe('GemeindeAntraegeComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
+                {provide: GemeindeAntragService, useValue: gemeindeAntragServiceSpy},
             ],
         })
             .overrideComponent(GemeindeAntraegeComponent, {
@@ -108,6 +116,11 @@ describe('GemeindeAntraegeComponent', () => {
 
         gesuchPeriodeSpy.getAllActiveGesuchsperioden.and.returnValue(Promise.resolve([]));
         gemeindeRSSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
+        gemeindeAntragServiceSpy.getTypesForRole.and.returnValue([
+            TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN,
+            TSGemeindeAntragTyp.FERIENBETREUUNG
+        ]);
+        authServiceSpy.isOneOfRoles.and.returnValue(true);
     });
 
     beforeEach(() => {
