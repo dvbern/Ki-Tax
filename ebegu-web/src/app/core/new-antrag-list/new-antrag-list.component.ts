@@ -598,7 +598,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     public isPendenzGemeindeRolle(): boolean {
-        return this.pendenz && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles());
+        return this.pendenz && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles());
     }
 
     public getVerantwortlicheBgAndTs(antrag: DVAntragListItem): string {
