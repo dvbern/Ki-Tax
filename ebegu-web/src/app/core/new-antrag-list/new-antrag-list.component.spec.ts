@@ -28,6 +28,7 @@ import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {MaterialModule} from '../../shared/material.module';
 import {ErrorService} from '../errors/service/ErrorService';
+import {BenutzerRS} from '../service/benutzerRS.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
 
@@ -79,6 +80,8 @@ describe('NewAntragListComponent', () => {
         ['getPrincipalRole', 'hasMandantAngebotTS']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
         ['addMesageAsError']);
+    const benutzerRSSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name,
+        ['getAllBenutzerBgOrGemeinde', 'getAllBenutzerTsOrGemeinde']);
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -91,6 +94,7 @@ describe('NewAntragListComponent', () => {
                 {provide: AuthServiceRS, useValue: authRSSpy},
                 {provide: SearchRS, useValue: searchRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: BenutzerRS, useValue: benutzerRSSpy},
             ],
         }).compileComponents();
 
@@ -108,7 +112,8 @@ describe('NewAntragListComponent', () => {
             },
         } as any;
         searchRSSpy.searchAntraege.and.returnValue(Promise.resolve(dummySearchResult));
-
+        benutzerRSSpy.getAllBenutzerBgOrGemeinde.and.resolveTo([]);
+        benutzerRSSpy.getAllBenutzerTsOrGemeinde.and.resolveTo([]);
     }));
 
     beforeEach(() => {

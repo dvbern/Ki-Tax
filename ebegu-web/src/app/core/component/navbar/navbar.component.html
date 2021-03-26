@@ -57,11 +57,13 @@
                     *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesForStatistik()">
                     <a uiSref="statistik.view" [textContent]="'MENU_STATISTIK' | translate"></a>
                 </li>
-                <li uiSrefActive="active"
-                    class="dv-ng-navbar-element uppercase"
-                    *dvNgShowElement="true; roles: TSRoleUtil.getSuperAdminRoles()">
-                    <a uiSref="GEMEINDE_ANTRAEGE" [textContent]="'MENU_GEMEINDE_ANTRAEGE' | translate"></a>
-                </li>
+                <ng-container *ngIf="gemeindeAntraegeVisible">
+                    <li uiSrefActive="active"
+                        class="dv-ng-navbar-element uppercase"
+                        *dvNgShowElement="true; roles: TSRoleUtil.getLastenausgleichTagesschuleRoles().concat(TSRoleUtil.getFerienbetreuungRoles())">
+                        <a uiSref="gemeindeantrage.view" [textContent]="'MENU_GEMEINDE_ANTRAEGE' | translate"></a>
+                    </li>
+                </ng-container>
                 <li uiSrefActive="active"
                     class="dv-ng-navbar-element uppercase"
                     *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtOrSozialdienstRolle()">

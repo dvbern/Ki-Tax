@@ -2406,5 +2406,7 @@
     "FERIENBETREUUNG_AUS_GEMEINDESTAMMDATEN_UEBERNEHMEN": "Aus Gemeindestammdaten übernehmen",
     "FERIENBETREUUNG_MEINE_ANGABEN_UEBERNEHMEN": "Aus Benutzer übernehmen",
     "NEUE_MITTEILUNG_SOZIALDIENST": "Nouveau message au service social",
+    "LASTENAUSGLEICH_TAGESSCHULEN_AKTIV": "Lastenausgleich Tagesschulen aktiviert",
+    "FERIENBETREUUNG_AKTIV": "Ferienbetreuung aktiviert",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

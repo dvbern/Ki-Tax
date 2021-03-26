@@ -14,6 +14,7 @@
  */
 
 import * as moment from 'moment';
+import {CONSTANTS} from '../app/core/constants/CONSTANTS';
 import {LogFactory} from '../app/core/logging/LogFactory';
 import Moment = moment.Moment; // kann das über ein anderes Import Format gelöst werden (import ... from 'moment')?
 
@@ -137,5 +138,9 @@ export class DateUtil {
         const hours = split[0];
         const minutes = split[1];
         return moment({hour: hours, minute: minutes});
+    }
+
+    public static endOfTime(): Moment {
+        return moment(CONSTANTS.END_OF_TIME_STRING, 'DD.MM.YYYY');
     }
 }

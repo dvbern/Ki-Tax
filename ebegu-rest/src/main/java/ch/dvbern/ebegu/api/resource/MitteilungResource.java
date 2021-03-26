@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -75,8 +76,11 @@ import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.MitteilungService;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MitteilungUtil;
 import ch.dvbern.ebegu.util.MonitoringUtil;
+import ch.dvbern.ebegu.util.ValidationMessageUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.tuple.Pair;
@@ -206,6 +210,23 @@ public class MitteilungResource {
 					.isAfter(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()))) {
 
 				throw new WebApplicationException("BETREUUNG_STARTS_AFTER_GESUCHSPERIODE", Status.BAD_REQUEST);
+
+			}
+
+			if (betreuungsmitteilung.getBetreuungspensen()
+				.stream()
+				.anyMatch(betreuungsmitteilungPensum -> !betreuung.getInstitutionStammdaten()
+					.getGueltigkeit()
+					.contains(betreuungsmitteilungPensum.getGueltigkeit()))) {
+				String message =
+					ValidationMessageUtil.getMessage("invalid_betreuungszeitraum_for_institutionsstammdaten");
+				final DateRange institutionGueltigkeit = betreuung.getInstitutionStammdaten().getGueltigkeit();
+				message = MessageFormat.format(message, Constants.DATE_FORMATTER.format(institutionGueltigkeit
+					.getGueltigAb()), Constants.DATE_FORMATTER.format(institutionGueltigkeit.getGueltigBis()));
+				throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
+					.entity(message)
+					.type(MediaType.TEXT_PLAIN_TYPE)
+					.build());
 
 			}
 		});
@@ -501,7 +522,8 @@ public class MitteilungResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
 		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST,
-		REVISOR, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
+		REVISOR, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_SOZIALDIENST,
+		SACHBEARBEITER_SOZIALDIENST })
 	public Integer getAmountNewMitteilungenOfDossierForCurrentRolle(
 		@Nonnull @NotNull @PathParam("dossierId") JaxId jaxDossierId,
 		@Context UriInfo uriInfo,
