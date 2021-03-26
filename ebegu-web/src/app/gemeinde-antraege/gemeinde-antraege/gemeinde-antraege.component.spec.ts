@@ -30,7 +30,9 @@ import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSBerechtigung} from '../../../models/TSBerechtigung';
+import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {ErrorService} from '../../core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
 import {MaterialModule} from '../../shared/material.module';
@@ -60,6 +62,11 @@ user.currentBerechtigung = new TSBerechtigung();
 user.currentBerechtigung.role = TSRole.ADMIN_MANDANT;
 
 const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
+
+const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(
+    ApplicationPropertyRS.name,
+    ['getPublicPropertiesCached']
+);
 
 authServiceSpy.principal$ = new BehaviorSubject(user);
 
@@ -107,6 +114,7 @@ describe('GemeindeAntraegeComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: GemeindeAntragService, useValue: gemeindeAntragServiceSpy},
+                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
             ],
         })
             .overrideComponent(GemeindeAntraegeComponent, {
@@ -121,6 +129,11 @@ describe('GemeindeAntraegeComponent', () => {
             TSGemeindeAntragTyp.FERIENBETREUUNG
         ]);
         authServiceSpy.isOneOfRoles.and.returnValue(true);
+
+        const properties = new TSPublicAppConfig();
+        properties.lastenausgleichTagesschulenAktiv = true;
+        properties.ferienbetreuungAktiv = true;
+        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(of(properties).toPromise());
     });
 
     beforeEach(() => {

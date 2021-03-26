@@ -23,6 +23,8 @@ public class JaxPublicAppConfig {
 	private String kitaxEndpoint;
 	private String notverordnungDefaultEinreichefristOeffentlich;
 	private String notverordnungDefaultEinreichefristPrivat;
+	private boolean ferienbetreuungAktiv;
+	private boolean lastenausgleichTagesschulenAktiv;
 
 	public JaxPublicAppConfig(
 		String currentNode,
@@ -36,7 +38,9 @@ public class JaxPublicAppConfig {
 		String kitaxHost,
 		String kitaxEndpoint,
 		String notverordnungDefaultEinreichefristOeffentlich,
-		String notverordnungDefaultEinreichefristPrivat
+		String notverordnungDefaultEinreichefristPrivat,
+		boolean ferienbetreuungAktiv,
+		boolean lastenausgleichTagesschulenAktiv
 	) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
@@ -50,6 +54,8 @@ public class JaxPublicAppConfig {
 		this.kitaxEndpoint = kitaxEndpoint;
 		this.notverordnungDefaultEinreichefristOeffentlich = notverordnungDefaultEinreichefristOeffentlich;
 		this.notverordnungDefaultEinreichefristPrivat = notverordnungDefaultEinreichefristPrivat;
+		this.ferienbetreuungAktiv = ferienbetreuungAktiv;
+		this.lastenausgleichTagesschulenAktiv = lastenausgleichTagesschulenAktiv;
 	}
 
 	public String getCurrentNode() {
@@ -146,5 +152,21 @@ public class JaxPublicAppConfig {
 
 	public void setNotverordnungDefaultEinreichefristPrivat(String notverordnungDefaultEinreichefristPrivat) {
 		this.notverordnungDefaultEinreichefristPrivat = notverordnungDefaultEinreichefristPrivat;
+	}
+
+	public boolean isFerienbetreuungAktiv() {
+		return ferienbetreuungAktiv;
+	}
+
+	public void setFerienbetreuungAktiv(boolean ferienbetreuungAktiv) {
+		this.ferienbetreuungAktiv = ferienbetreuungAktiv;
+	}
+
+	public boolean isLastenausgleichTagesschulenAktiv() {
+		return lastenausgleichTagesschulenAktiv;
+	}
+
+	public void setLastenausgleichTagesschulenAktiv(boolean lastenausgleichTagesschulenAktiv) {
+		this.lastenausgleichTagesschulenAktiv = lastenausgleichTagesschulenAktiv;
 	}
 }

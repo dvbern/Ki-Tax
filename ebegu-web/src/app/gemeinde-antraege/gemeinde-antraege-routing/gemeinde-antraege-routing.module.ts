@@ -22,7 +22,12 @@ import {GemeindeAntraegeComponent} from '../gemeinde-antraege/gemeinde-antraege.
 const states: NgHybridStateDeclaration[] = [
     {
         parent: 'app',
-        name: 'GEMEINDE_ANTRAEGE',
+        name: 'gemeindeantrage',
+        abstract: true,
+        component: GemeindeAntraegeComponent,
+    },
+    {
+        name: 'gemeindeantrage.view',
         url: '/gemeinde-antraege',
         component: GemeindeAntraegeComponent,
     },
