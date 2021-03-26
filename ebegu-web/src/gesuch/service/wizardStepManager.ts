@@ -387,7 +387,7 @@ export class WizardStepManager {
         if (step.wizardStepName === TSWizardStepName.VERFUEGEN) {
             // verfuegen fuer admin, jugendamt und gesuchsteller immer sichtbar
             if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole()) &&
-                !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles()) &&
+                !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle()) &&
                 !isAnyStatusOfVerfuegtOrKeinKontingent(gesuch.status)) {
                 return false;
             }
