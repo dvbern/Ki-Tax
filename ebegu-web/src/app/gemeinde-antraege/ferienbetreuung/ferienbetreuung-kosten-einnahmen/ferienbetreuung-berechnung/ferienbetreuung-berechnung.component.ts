@@ -30,7 +30,7 @@ const LOG = LogFactory.createLog('FerienbetreuungBerechnungComponent');
     selector: 'dv-ferienbetreuung-berechnung',
     templateUrl: './ferienbetreuung-berechnung.component.html',
     styleUrls: ['./ferienbetreuung-berechnung.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.Default
 })
 export class FerienbetreuungBerechnungComponent implements OnInit {
 

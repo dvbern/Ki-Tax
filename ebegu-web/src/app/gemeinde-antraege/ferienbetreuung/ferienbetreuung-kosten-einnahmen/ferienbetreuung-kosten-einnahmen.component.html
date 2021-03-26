@@ -67,9 +67,9 @@
                 <mat-label translate></mat-label>
                 <input matInput
                        type="number"
-                       formControlName="personalkosten"
+                       formControlName="personalkostenLeitungAdmin"
                        class="form-control dv-input"/>
-                <mat-error *ngIf="form && form.get('personalkosten').errors?.isNotInteger"
+                <mat-error *ngIf="form && form.get('personalkostenLeitungAdmin').errors?.isNotInteger"
                            translate>ERROR_NOT_INTEGER
                 </mat-error>
             </mat-form-field>
