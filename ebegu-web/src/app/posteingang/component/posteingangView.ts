@@ -26,6 +26,7 @@ import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSMitteilung} from '../../../models/TSMitteilung';
 import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
 
@@ -132,5 +133,9 @@ export class PosteingangViewController implements IController {
 
     public isSuperAdmin(): boolean {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    public isSozialdienst(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
     }
 }

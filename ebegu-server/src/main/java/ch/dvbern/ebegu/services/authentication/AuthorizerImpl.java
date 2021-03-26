@@ -1121,6 +1121,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 					throwViolation(mitteilung);
 				}
 				break;
+			case ADMIN_SOZIALDIENST:
+			case SACHBEARBEITER_SOZIALDIENST:
+				if (isNotSenderTyp(mitteilung, MitteilungTeilnehmerTyp.SOZIALDIENST)) {
+					throwViolation(mitteilung);
+				}
+				break;
 			case SUPER_ADMIN: {
 				// Superadmin darf alles!
 				break;
@@ -1182,11 +1188,32 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			case ADMIN_GEMEINDE: {
 				break;
 			}
+			case ADMIN_SOZIALDIENST:
+			case SACHBEARBEITER_SOZIALDIENST:
+				if (!isSozialdienstMitteilungOfPrincipal(mitteilung)) {
+					throwViolation(mitteilung);
+				}
+				break;
 			default: {
 				throwViolation(mitteilung);
 			}
 			}
 		}
+	}
+
+	private boolean isSozialdienstMitteilungOfPrincipal(@Nullable Mitteilung mitteilung) {
+		if (mitteilung == null) {
+			return true;
+		}
+		if (mitteilung.getFall().getSozialdienstFall() == null
+			|| principalBean.getBenutzer().getSozialdienst() == null) {
+			return false;
+		}
+		return mitteilung.getFall()
+			.getSozialdienstFall()
+			.getSozialdienst()
+			.getId()
+			.equals(principalBean.getBenutzer().getSozialdienst().getId());
 	}
 
 	@Override

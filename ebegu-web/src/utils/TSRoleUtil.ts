@@ -357,6 +357,8 @@ export class TSRoleUtil {
             TSRole.GESUCHSTELLER,
             TSRole.ADMIN_TS,
             TSRole.SACHBEARBEITER_TS,
+            TSRole.SACHBEARBEITER_SOZIALDIENST,
+            TSRole.ADMIN_SOZIALDIENST
         ];
     }
 
