@@ -149,10 +149,10 @@ export class DVMitteilungListController implements IOnInit {
 
     private initMitteilungForCurrentBenutzer(): void {
         const isGesuchsteller = this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
-        const isJugendamtOrSchulamtAndFallHasBesitzer = (this.dossier.fall.besitzer
-            || (!this.dossier.fall.besitzer && this.dossier.fall.sozialdienstFall))
-            && this.authServiceRS.isOneOfRoles(
-                TSRoleUtil.getAdministratorJugendamtSchulamtRoles());
+        const hasBesitzerOrSozialdienst = this.dossier.fall.besitzer || this.dossier.fall.sozialdienstFall;
+        const isJugendamtOrSchulamtAndFallHasBesitzer = hasBesitzerOrSozialdienst && this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getAdministratorJugendamtSchulamtRoles()
+        );
         const isInstitutionsUser = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
         const isSozialdienst = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
         if (!(isGesuchsteller || isJugendamtOrSchulamtAndFallHasBesitzer || isInstitutionsUser || isSozialdienst)) {

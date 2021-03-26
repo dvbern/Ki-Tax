@@ -1190,7 +1190,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			}
 			case ADMIN_SOZIALDIENST:
 			case SACHBEARBEITER_SOZIALDIENST:
-				if (!isSozialdienstMitteilung(mitteilung)) {
+				if (!isSozialdienstMitteilungOfPrincipal(mitteilung)) {
 					throwViolation(mitteilung);
 				}
 				break;
@@ -1201,7 +1201,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 	}
 
-	private boolean isSozialdienstMitteilung(@Nullable Mitteilung mitteilung) {
+	private boolean isSozialdienstMitteilungOfPrincipal(@Nullable Mitteilung mitteilung) {
 		if (mitteilung == null) {
 			return true;
 		}

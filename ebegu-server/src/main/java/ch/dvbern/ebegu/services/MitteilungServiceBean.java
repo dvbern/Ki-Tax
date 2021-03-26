@@ -894,6 +894,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				Predicate sozialdienstFall =
 					cb.equal(joinSozialdienst.get(SozialdienstFall_.sozialdienst), user.getSozialdienst());
 				predicates.add(sozialdienstFall);
+			} else {
+				throw new EbeguRuntimeException("mitteilungTableFilterDto",
+					"Sozialdienst not defined for Sozialdienstuser");
 			}
 		} else {
 			// nur hier definieren, Left join auf dem Root koennen nicht null sein eben wenn nicht vewendet und
