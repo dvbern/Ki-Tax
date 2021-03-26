@@ -2412,5 +2412,8 @@
     "GUELTIGKEIT_OUTSIDE_INSTITUTION_GUELTIGKEIT": "Die eingegebenen Daten der Betreuung liegen ausserhalb des gültigen Zeitraums ({{gueltigAb}} - {{gueltigBis}}) dieser Institution",
     "LASTENAUSGLEICH_TAGESSCHULEN_AKTIV": "Lastenausgleich Tagesschulen aktiviert",
     "FERIENBETREUUNG_AKTIV": "Ferienbetreuung aktiviert",
+    "DELETE_ANTRAEGE_ERROR": "Ein Fehler beim Löschen der Anträge ist aufgetreten",
+    "LATS_ANTRAEGE_LOESCHEN": "Anträge löschen",
+    "WIRKLICH_LOESCHEN": "Wirklich löschen?",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
