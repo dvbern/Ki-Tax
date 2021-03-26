@@ -189,7 +189,7 @@
                                     class="symbol"
                                     tabindex="-1">
                                     <button ng-click="vm.removeVollmachtDokument();$event.stopPropagation()"
-                                            ng-disabled="!vm.isVollmachtHochgeladet || vm.isSozialdienstFallReadOnly()"
+                                            ng-disabled="!vm.isVollmachtHochgeladet || (vm.isSozialdienstFallReadOnly() && vm.isSozialdienstFallAktiv())"
                                             class="dv-btn fa fa-trash dv-btn-operation"
                                             title="{{'DOKUMENT_DELETE' | translate}}"
                                             [attr.aria-label]="'DOKUMENT_DELETE' | translate"
@@ -210,7 +210,7 @@
                             <span class="uppercase" data-translate="{{vm.getNextButtonText()}}"></span>
                         </dv-loading-button>
                     </span>
-                    <span ng-if="vm.isSozialdienstFallReadOnly()">
+                    <span ng-if="vm.isSozialdienstFallReadOnly() && vm.isSozialdienstFallAktiv()">
                         <dv-loading-button button-click="vm.weiter()" type="submit">
                             <span class="uppercase" data-translate="WEITER_ONLY"></span>
                         </dv-loading-button>
