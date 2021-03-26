@@ -35,7 +35,7 @@ const LOG = LogFactory.createLog('FerienbetreuungBerechnungComponent');
 export class FerienbetreuungBerechnungComponent implements OnInit {
 
     @Input()
-    private form: FormGroup;
+    private readonly form: FormGroup;
 
     @Input()
     private container: TSFerienbetreuungAngabenContainer;
@@ -61,6 +61,9 @@ export class FerienbetreuungBerechnungComponent implements OnInit {
     }
 
     private setUpValuesFromForm(): void {
+        if (!this.form) {
+            return;
+        }
         const angaben = this.container?.angabenDeklaration;
         combineLatest([
             this.form.get('personalkosten').valueChanges.pipe(
@@ -90,6 +93,8 @@ export class FerienbetreuungBerechnungComponent implements OnInit {
             this.berechnung.weitereEinnahmen = formValues[5];
 
             this.calculate();
+        }, err => {
+            LOG.error(err);
         });
     }
 

@@ -15,8 +15,11 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {HttpClientModule} from '@angular/common/http';
 /* tslint:disable:no-magic-numbers */
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {SharedModule} from '../../../../shared/shared.module';
 import {TSFerienbetreuungBerechnung} from '../TSFerienbetreuungBerechnung';
 
 import {FerienbetreuungBerechnungComponent} from './ferienbetreuung-berechnung.component';
@@ -27,8 +30,13 @@ describe('FerienbetreuungBerechnungComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [FerienbetreuungBerechnungComponent]
+            declarations: [FerienbetreuungBerechnungComponent],
+            imports: [
+                HttpClientModule,
+                SharedModule
+            ]
         })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 
