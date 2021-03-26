@@ -1,4 +1,195 @@
-<p>{{berechnung.totalKantonsbeitrag}}</p>
-<p>{{berechnung.beitragFuerKinderDerAnbietendenGemeinde}}</p>
-<p>{{berechnung.beteiligungDurchAnbietendeGemeinde}}</p>
-<p>{{berechnung.beteiligungZuTief}}</p>
+<div class="berechnung-wrapper">
+    <h3 class="uppercase">
+        {{'FERIENBETREUUNG_BERECHNUNG' | translate }}
+    </h3>
+
+    <div class="berechnung-container">
+        <div class="section">
+            <div>
+                <p>{{'FERIENBETREUUNG_PERSONALKOSTEN_INSGESAMT' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{'CHF' | translate}}</span>
+                    <span>{{berechnung.personalkosten}}</span>
+                </p>
+            </div>
+            <div>
+                <p>{{'FERIENBETREUUNG_SACHKOSTEN_INSGESAMT' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{'CHF' | translate}}</span>
+                    <span>{{berechnung.sachkosten}}</span>
+                </p>
+            </div>
+            <div>
+                <p>{{'FERIENBETREUUNG_VERPFLEGUNGSKOSTEN_INSGESAMT' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{'CHF' | translate}}</span>
+                    <span>{{berechnung.verpflegungskosten}}</span>
+                </p>
+            </div>
+            <div>
+                <p>{{'FERIENBETREUUNG_WEITERE_KOSTEN' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{'CHF' | translate}}</span>
+                    <span>{{berechnung.weitereKosten}}</span>
+                </p>
+            </div>
+            <div class="result">
+                <p>{{'FERIENBETREUUNG_TOTAL_KOSTEN' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{'CHF' | translate}}</span>
+                    <span>{{berechnung.totalKosten}}</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="section">
+            <div>
+                <p>{{'FERIENBETREUUNG_ANZAHL_BETREUUNGTAGE_KINDER_BERN' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{berechnung.anzahlBetreuungstageKinderBern}}</span>
+                </p>
+            </div>
+            <div>
+                <p class="intent-1">{{'FERIENBETREUUNG_BETREUUNGSTAGE_KINDER_DIESER_GEMEINDE' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{berechnung.betreuungstageKinderDieserGemeinde}}</span>
+                </p>
+            </div>
+            <div>
+                <p class="intent-2">{{'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{berechnung.betreuungstageKinderDieserGemeindeSonderschueler}}</span>
+                </p>
+            </div>
+            <div>
+                <p class="intent-1">{{'FERIENBETREUUNG_DAVON_BETREUUNGSTAGE_KINDER_ANDERER_GEMEINDEN' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{berechnung.betreuungstageKinderAndererGemeinde}}</span>
+                </p>
+            </div>
+            <div>
+                <p class="intent-2">{{'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{berechnung.betreuungstageKinderAndererGemeindenSonderschueler}}</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="section">
+            <div>
+                <p>{{'FERIENBETREUUNG_BERECHNUNG_ANZAHL_KINDER_DIESE_GEMEINDE' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>{{'30_CHF' | translate}}</p>
+                <p>
+                    <span>{{berechnung.betreuungstageKinderDieserGemeindeMinusSonderschueler}}</span>
+                </p>
+            </div>
+            <div>
+                <p class="intent-1">{{'FERIENBETREUUNG_PLUS_SONDERSCHUELER' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>{{'60_CHF' | translate}}</p>
+                <p>
+                    <span>{{berechnung.betreuungstageKinderDieserGemeindeSonderschueler}}</span>
+                </p>
+            </div>
+            <div>
+                <p>{{'FERIENBETREUUNG_BERECHNUNG_ANZAHL_KINDER_ANDERE_GEMEINDE' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>{{'30_CHF' | translate}}</p>
+                <p>
+                    <span>{{berechnung.betreuungstageKinderAndererGemeindeMinusSonderschueler}}</span>
+                </p>
+            </div>
+            <div>
+                <p class="intent-1">{{'FERIENBETREUUNG_PLUS_SONDERSCHUELER' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>{{'60_CHF' | translate}}</p>
+                <p>
+                    <span>{{berechnung.betreuungstageKinderAndererGemeindenSonderschueler}}</span>
+                </p>
+            </div>
+            <div class="result">
+                <p>{{'FERIENBETREUUNG_TOTAL_KANTONSBEITRAG' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{'CHF' | translate}}</span>
+                    <span>{{berechnung.totalKantonsbeitrag}}</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="section">
+            <div>
+                <p>{{'FERIENBETREUUNG_EINNAHMEN_AUS_ELTERNBEITRAEGEN' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{'CHF' | translate}}</span>
+                    <span>{{berechnung.einnahmenElterngebuehren}}</span>
+                </p>
+            </div>
+            <div>
+                <p>{{'FERIENBETREUUNG_BERECHNUNG_WEITERE_EINNAHMEN' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{'CHF' | translate}}</span>
+                    <span>{{berechnung.weitereEinnahmen}}</span>
+                </p>
+            </div>
+            <div class="result">
+                <p>{{'FERIENBETREUUNG_BERECHNUNG_WEITERE_EINNAHMEN' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{'CHF' | translate}}</span>
+                    <span>{{berechnung.totalEinnahmen}}</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="section section-result">
+            <div>
+                <p>{{'FERIENBETREUUNG_BERECHNUNG_VORAUSSICHTLICHER_KANTONSBETRAG' | translate}}</p>
+            </div>
+            <div>
+                <p class="intent-1">{{'FERIENBETREUUNG_BERECHNUNG_TOTAL' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{'CHF' | translate}}</span>
+                    <span>{{berechnung.totalKantonsbeitrag}}</span>
+                </p>
+            </div>
+            <div>
+                <p class="intent-1">{{'FERIENBETREUUNG_BERECHNUNG_FUER_KINDER_ANBIETENDE_GEMEINDE' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{'CHF' | translate}}</span>
+                    <span>{{berechnung.beitragFuerKinderDerAnbietendenGemeinde}}</span>
+                </p>
+            </div>
+            <div>
+                <p>{{'FERIENBETREUUNG_BERECHNUNG_BETEILIGUNG_DEFIZIT' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{'CHF' | translate}}</span>
+                    <span>{{berechnung.beteiligungDurchAnbietendeGemeinde}}</span>
+                </p>
+            </div>
+            <div class="result">
+                <p>{{'FERIENBETREUUNG_FAZIT' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span *ngIf="berechnung.beteiligungZuTief">{{'FERIENBETREUUNG_FAZIT_ZU_TIEF' | translate}}</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
