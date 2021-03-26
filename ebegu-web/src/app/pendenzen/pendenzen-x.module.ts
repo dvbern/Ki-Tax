@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,19 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export class TSPublicAppConfig {
-    public currentNode: string;
-    public devmode: boolean;
-    public whitelist: string;
-    public dummyMode: boolean;
-    public sentryEnvName: string;
-    public backgroundColor: string = '#FFFFFF';
-    public zahlungentestmode: boolean;
-    public personenSucheDisabled: boolean;
-    public kitaxHost: string;
-    public kitaxEndpoint: string;
-    public notverordnungDefaultEinreichefristOeffentlich: string;
-    public notverordnungDefaultEinreichefristPrivat: string;
-    public ferienbetreuungAktiv: boolean;
-    public lastenausgleichTagesschulenAktiv: boolean;
-}
+import {NgModule} from '@angular/core';
+import {SharedModule} from '../shared/shared.module';
+import {PendenzenListViewComponent} from './default/component/pendenzenListView/pendenzen-list-view.component';
+
+@NgModule({
+    imports: [SharedModule],
+    declarations: [PendenzenListViewComponent],
+    exports: [PendenzenListViewComponent],
+    entryComponents: [PendenzenListViewComponent],
+})
+export class PendenzenXModule {}

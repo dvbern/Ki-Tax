@@ -21,23 +21,25 @@
             <div class="col-md-12 table-responsive">
 
                 <!-- Warnung, falls noch Gemeinden im Status EINGELADEN -->
-                <div class="well well-status-abgewiesen" ng-if="vm.hasGemeindenInStatusAngemeldet">
-                    <span data-translate="WARNUNG_GEMEINDEN_IN_STATUS_ANMELDUNG"></span>
+                <div class="well well-status-abgewiesen" *ngIf="hasGemeindenInStatusAngemeldet">
+                    <span translate>WARNUNG_GEMEINDEN_IN_STATUS_ANMELDUNG</span>
                     <p>
-                        <a ui-sref="gemeinde.list" data-translate="ZUR_LISTE"></a>
+                        <a uiSref="gemeinde.list" translate>ZUR_LISTE</a>
                     </p>
                 </div>
 
-                <dv-antrag-list
-                    table-title="{{'PENDENZEN_LIST' | translate}}"
-                    on-filter-change="vm.passFilterToServer(tableState)"
-                    on-edit="vm.editpendenzJA(antrag, event)"
-                    table-id="pendenzenJATable"
-                    add-button-visible="false"
-                    total-result-count="vm.totalResultCount"
-                    pendenz="true">
-                </dv-antrag-list>
-
+                <dv-new-antrag-list *ngIf="initialFilter.verantwortlicherGemeinde"
+                                    [data$]="data$"
+                                    [title]="'PENDENZEN_LIST' | translate"
+                                    [initialFilter]="initialFilter"
+                                    [page]="calculatePage()"
+                                    [totalItems]="pagination.totalItemCount"
+                                    [pendenz]="true"
+                                    (sortChange)="onSort($event)"
+                                    (filterChange)="onFilterChange($event)"
+                                    (paginationEvent)="onPagination($event)"
+                                    (rowClicked)="editpendenzJA($event.antrag, $event.event)">
+                </dv-new-antrag-list>
             </div>
 
         </div>

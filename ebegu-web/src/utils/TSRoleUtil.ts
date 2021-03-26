@@ -601,6 +601,14 @@ export class TSRoleUtil {
         return PERMISSIONS[Permission.ROLE_INSTITUTION].concat(TSRole.SUPER_ADMIN);
     }
 
+    public static getFerienbetreuungRoles(): ReadonlyArray<TSRole> {
+        return PERMISSIONS[Permission.FERIENBETREUUNG];
+    }
+
+    public static getLastenausgleichTagesschuleRoles(): ReadonlyArray<TSRole> {
+        return PERMISSIONS[Permission.LASTENAUSGLEICH_TAGESSCHULE];
+    }
+
     public static isGemeindeRole(role: TSRole): boolean {
         return PERMISSIONS[Permission.ROLE_GEMEINDE].includes(role);
     }
