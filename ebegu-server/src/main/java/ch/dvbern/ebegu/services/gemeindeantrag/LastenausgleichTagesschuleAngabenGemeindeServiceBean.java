@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer_;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer_;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -504,6 +505,25 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		angaben.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
 
 		return persistence.persist(fallContainer);
+	}
+
+	@Override
+	public void deleteLastenausgleicheTagesschule(@Nonnull Gesuchsperiode gesuchsperiode) {
+		List<LastenausgleichTagesschuleAngabenGemeindeContainer> containerList =
+			getLastenausgleicheTagesschulen(null, gesuchsperiode.getGesuchsperiodeString(), null);
+		if (containerList == null) {
+			return;
+		}
+		containerList.forEach(container -> {
+
+			List<LastenausgleichTagesschuleAngabenGemeindeStatusHistory> historyList =
+				historyService.findHistoryForContainer(container);
+			historyList.forEach(entry -> {
+				persistence.remove(entry);
+			});
+
+			persistence.remove(container);
+		});
 	}
 }
 

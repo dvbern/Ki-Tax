@@ -35,7 +35,6 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.services.AbstractBaseService;
-import ch.dvbern.ebegu.services.InstitutionService;
 import org.apache.commons.lang.NotImplementedException;
 
 /**
@@ -138,6 +137,15 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 		}
 
 		return Optional.empty();
+	}
+
+	@Override
+	public void deleteGemeindeAntraege(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull GemeindeAntragTyp gemeindeAntragTyp) {
+		if (gemeindeAntragTyp == GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN) {
+			lastenausgleichTagesschuleAngabenGemeindeService.deleteLastenausgleicheTagesschule(gesuchsperiode);
+			return;
+		}
+		throw new NotImplementedException("DeleteGemeindeAntraege für typ " + gemeindeAntragTyp + " nicht implementiert");
 	}
 }
 

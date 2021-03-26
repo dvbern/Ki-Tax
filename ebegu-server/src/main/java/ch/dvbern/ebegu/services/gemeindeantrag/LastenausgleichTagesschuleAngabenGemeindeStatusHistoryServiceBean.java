@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -81,6 +82,13 @@ public class LastenausgleichTagesschuleAngabenGemeindeStatusHistoryServiceBean e
 		newStatusHistory.setBenutzer(currentBenutzer);
 
 		return persistence.persist(newStatusHistory);
+	}
+
+	@Override
+	public List<LastenausgleichTagesschuleAngabenGemeindeStatusHistory> findHistoryForContainer(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
+		final CriteriaQuery<LastenausgleichTagesschuleAngabenGemeindeStatusHistory> query =
+			createQueryAllStatusHistoryForFall(container);
+		return persistence.getEntityManager().createQuery(query).getResultList();
 	}
 
 	@Nullable
