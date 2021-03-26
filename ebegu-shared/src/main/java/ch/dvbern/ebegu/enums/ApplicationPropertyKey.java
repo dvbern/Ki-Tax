@@ -90,6 +90,14 @@ public enum ApplicationPropertyKey {
 	 * Default Datum bis wann die privaten Gesuche der Notverordnung einreicht werden können
 	 */
 	NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT,
+	/**
+	 * Wenn TRUE sind Ferienbetreuungen aktiviert
+	 */
+	FERIENBETREUUNG_AKTIV,
+	/**
+	 * Wenn TRUE ist Lastenausgleich Tagesschulen aktiviert
+	 */
+	LASTENAUSGLEICH_TAGESSCHULEN_AKTIV
 
 
 }
