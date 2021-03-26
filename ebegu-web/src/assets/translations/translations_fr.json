@@ -2294,6 +2294,7 @@
     "SOZIALDIENST_STAMMDATEN": "Donnnée de base du service social",
     "SOZIALDIENST_EDIT": "Modifier le service social",
     "SOZIALDIENST_SPEICHERN": "Enregistrer le service social",
+    "SOZIALDIENST": "Service social",
     "LATS_IN_BETREUUNG_EINLEITUNG": "Durchschnittliche Anzahl eingeschriebene Kinder pro Tag in der Woche vom 15. September {{jahr}}",
     "ALLGEMEINE_ANGABEN": "Informationen zur Tagesschule",
     "LATS_IST_LEHRBETRIEB": "Die Tagesschule ist im laufenden Schuljahr {{periode}} Lehrbetrieb für eine/n Fachfrau/-mann Betreuung EFZ.",
