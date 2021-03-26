@@ -147,7 +147,9 @@ export class WizardStepManager {
 
         } else if (TSRoleUtil.getAmtRole().concat(TSRole.GESUCHSTELLER).indexOf(role) > -1) {
             this.setAllowedStepsForAmtAndGesuchsteller();
-            // TODO abklaeren ob die Gemeinde koennen auch sehe dieser Schritt
+            if (TSRoleUtil.getAmtRole().indexOf(role) > -1) {
+                this.allowedSteps.push(TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN);
+            }
         } else {
             // Nur sozialdienst und superadmin koennen alle Step sehen
             this.setAllAllowedSteps();
