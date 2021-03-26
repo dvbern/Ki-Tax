@@ -1141,6 +1141,7 @@
     "VERANTWORTUNG_SUPERADMIN": "Superadmin",
     "VERANTWORTUNG_INSTITUTION": "Institution",
     "VERANTWORTUNG_GESUCHSTELLER": "Auteur-e de la demande",
+    "VERANTWORTUNG_SOZIALDIENST": "Unterstützungsdienst",
     "POSTEINGANG_INCLUDE_CLOSED": "Messages réglés inclus",
     "MITTEILUNGEN_NOCH_KEINE": "Aucun message envoyé pour ce cas",
     "SEARCH_LIST": "Tous les résultats de la recherche",
