@@ -96,14 +96,14 @@ export class GemeindeAntraegeComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.loadAntragList();
-        this.loadGemeinden();
-        this.gesuchsperiodenService.getAllActiveGesuchsperioden().then(result => this.gesuchsperioden = result);
         this.formGroup = this.fb.group({
             periode: ['', Validators.required],
             antragTyp: ['', Validators.required],
             gemeinde: [''],
         });
+        this.loadAntragList();
+        this.loadGemeinden();
+        this.gesuchsperiodenService.getAllActiveGesuchsperioden().then(result => this.gesuchsperioden = result);
         this.initAntragTypes();
     }
 
