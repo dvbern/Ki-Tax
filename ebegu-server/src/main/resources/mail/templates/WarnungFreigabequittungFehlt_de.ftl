@@ -7,6 +7,8 @@
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="tsOnlyAntrag" type="java.lang.Boolean" -->
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
+<#-- @ftlvariable name="gesuchsteller" type="ch.dvbern.ebegu.entities.Gesuchsteller" -->
+<#-- @ftlvariable name="isSozialdienst" type="java.lang.Boolean" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Freigabequittung ausstehend</@base64Header>
@@ -28,7 +30,7 @@ ${templateConfiguration.mailCss}
 		Guten Tag
 	</p>
 	<p>
-		Sie haben via kiBon Ihr Gesuch vollständig erfasst, besten Dank!
+		Sie haben via kiBon <#if isSozialdienst>Der Antrag für ${gesuchsteller.fullName}<#else>Ihr Gesuch</#if> vollständig erfasst, besten Dank!
 	</p>
 	<p>
 		Leider ist Ihre Freigabequittung bisher nicht bei uns eingetroffen.

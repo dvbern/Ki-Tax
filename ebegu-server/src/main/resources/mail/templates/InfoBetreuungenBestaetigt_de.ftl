@@ -3,9 +3,11 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
+<#-- @ftlvariable name="gesuchsteller" type="ch.dvbern.ebegu.entities.Gesuchsteller" -->
+<#-- @ftlvariable name="isSozialdienst" type="java.lang.Boolean" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
-Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Gesuch kann freigegeben werden</@base64Header>
+Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – <#if isSozialdienst>Antrag für ${gesuchsteller.fullName}<#else>Gesuch</#if> kann freigegeben werden</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -13,7 +15,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon <#if configuration.isDevmode>Testsystem</#if> – Gesuch kann freigegeben werden</title>
+	<title>kiBon <#if configuration.isDevmode>Testsystem</#if> – <#if isSozialdienst>Antrag für ${gesuchsteller.fullName}<#else>Gesuch</#if> kann freigegeben werden</title>
 
 </head>
 
@@ -24,7 +26,7 @@ ${templateConfiguration.mailCss}
 		Sehr geehrte Familie
 	</p>
 	<p>
-		Für sämtliche Betreuungsangebote wurden die Plätze bestätigt. Das Gesuch kann
+		Für sämtliche Betreuungsangebote wurden die Plätze bestätigt. <#if isSozialdienst>Der Antrag für ${gesuchsteller.fullName}<#else>Das Gesuch</#if> kann
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/freigabe/${gesuch.id}">hier</a>
 		freigegeben werden.
 	<p>
