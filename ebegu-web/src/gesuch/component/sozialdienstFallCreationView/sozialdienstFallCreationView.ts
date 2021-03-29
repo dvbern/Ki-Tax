@@ -241,6 +241,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
                 let filename;
                 file = new Blob([response], {type: 'application/pdf'});
                 filename = this.$translate.instant('VOLLMACHT_DATEI_NAME');
+                filename = `${filename}_${this.sozialdienstFall?.vorname}_${this.sozialdienstFall.name}`;
                 this.downloadRS.openDownload(file, filename);
             });
     }
