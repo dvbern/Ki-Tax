@@ -178,7 +178,7 @@
                                     tabindex="-1">
                                     <button
                                         ng-click="vm.downloadVollmachtDokument();$event.stopPropagation()"
-                                        ng-disabled="!vm.isVollmachtHochgeladet"
+                                        ng-disabled="!vm.isVollmachtHochgeladen"
                                         class="dv-btn fa fa-eye dv-btn-operation"
                                         title="{{'DOKUMENT_DOWNLOAD' | translate}}"
                                         [attr.aria-label]="'DOKUMENT_DOWNLOAD' | translate"
@@ -189,7 +189,7 @@
                                     class="symbol"
                                     tabindex="-1">
                                     <button ng-click="vm.removeVollmachtDokument();$event.stopPropagation()"
-                                            ng-disabled="!vm.isVollmachtHochgeladet || (vm.isSozialdienstFallReadOnly() && vm.isSozialdienstFallAktiv())"
+                                            ng-disabled="!vm.isVollmachtHochgeladen || (vm.isSozialdienstFallReadOnly() && vm.isSozialdienstFallAktiv())"
                                             class="dv-btn fa fa-trash dv-btn-operation"
                                             title="{{'DOKUMENT_DELETE' | translate}}"
                                             [attr.aria-label]="'DOKUMENT_DELETE' | translate"

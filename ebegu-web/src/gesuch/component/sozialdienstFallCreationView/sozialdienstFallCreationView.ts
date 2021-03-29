@@ -67,7 +67,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     ];
 
     private sozialdienstFall: TSSozialdienstFall;
-    private isVollmachtHochgeladet: boolean;
+    private isVollmachtHochgeladen: boolean;
     private gesuchsperiodeId: string;
 
     // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt
@@ -120,7 +120,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
             return;
         }
         this.fallRS.existVollmachtDokument(this.gesuchModelManager.getFall().id).then(
-            result => this.isVollmachtHochgeladet = result,
+            result => this.isVollmachtHochgeladen = result,
         );
     }
 
@@ -184,12 +184,8 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         return this.$translate.instant('WEITER');
     }
 
-    /**
-     * There could be Gesuchsperiode in the list so we can chose it, or the gesuch has already a
-     * gesuchsperiode set
-     */
     public isSozialdienstFallReadOnly(): boolean {
-        if (this.isSozialdienstFallAktiv() || this.isVollmachtHochgeladet) {
+        if (this.isSozialdienstFallAktiv() || this.isVollmachtHochgeladen) {
             return true;
         }
         return false;
@@ -201,7 +197,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
 
     public isAktivierungMoeglich(): boolean {
         if (this.gesuchModelManager.getFall().sozialdienstFall?.status === TSSozialdienstFallStatus.INAKTIV
-            && this.isVollmachtHochgeladet) {
+            && this.isVollmachtHochgeladen) {
             return true;
         }
         return false;
@@ -227,14 +223,14 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
 
         this.uploadRS.uploadVollmachtDokument(selectedFile, this.gesuchModelManager.getFall().id)
             .then(() => {
-                this.isVollmachtHochgeladet = true;
+                this.isVollmachtHochgeladen = true;
             });
     }
 
     public removeVollmachtDokument(): void {
         this.fallRS.removeVollmachtDokument(this.gesuchModelManager.getFall().id)
             .then(() => {
-                this.isVollmachtHochgeladet = false;
+                this.isVollmachtHochgeladen = false;
             });
     }
 
