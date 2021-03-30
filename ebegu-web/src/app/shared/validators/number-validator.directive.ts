@@ -29,6 +29,9 @@ export function numberValidator(type: ValidationType): ValidatorFn {
 }
 
 function isInteger(val: any): boolean {
+    if (val.toString().endsWith('.')) {
+        return false;
+    }
     if (isNaN(val)) {
         return false;
     }
@@ -36,6 +39,9 @@ function isInteger(val: any): boolean {
 }
 
 function isHalf(val: any): boolean {
+    if (val.toString().endsWith('.')) {
+        return false;
+    }
     if (isNaN(val)) {
         return false;
     }
