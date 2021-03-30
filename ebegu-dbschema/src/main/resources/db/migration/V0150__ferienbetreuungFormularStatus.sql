@@ -20,3 +20,9 @@ ALTER TABLE ferienbetreuung_angaben_angebot ADD COLUMN IF NOT EXISTS
 
 ALTER TABLE ferienbetreuung_angaben_angebot_aud ADD COLUMN IF NOT EXISTS
 	status VARCHAR(255) DEFAULT NULL;
+
+ALTER TABLE ferienbetreuung_angaben_nutzung ADD COLUMN IF NOT EXISTS
+	status VARCHAR(255) NOT NULL DEFAULT "IN_BEARBEITUNG_GEMEINDE";
+
+ALTER TABLE ferienbetreuung_angaben_nutzung_aud ADD COLUMN IF NOT EXISTS
+	status VARCHAR(255) DEFAULT NULL;
