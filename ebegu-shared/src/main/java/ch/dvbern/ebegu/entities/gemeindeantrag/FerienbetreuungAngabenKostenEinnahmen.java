@@ -170,7 +170,7 @@ public class FerienbetreuungAngabenKostenEinnahmen extends AbstractEntity {
 			this.weitereEinnahmen
 		);
 		return nonNullObj.stream()
-			.anyMatch(Objects::isNull);
+			.noneMatch(Objects::isNull);
 	}
 
 	@Nonnull

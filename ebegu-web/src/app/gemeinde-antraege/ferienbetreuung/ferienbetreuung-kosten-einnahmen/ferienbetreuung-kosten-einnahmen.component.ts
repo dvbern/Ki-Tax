@@ -78,6 +78,9 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
             return;
         }
         this.form = this.fb.group({
+            id: [
+                kostenEinnahmen.id
+            ],
             personalkosten: [
                 kostenEinnahmen.personalkosten,
             ],

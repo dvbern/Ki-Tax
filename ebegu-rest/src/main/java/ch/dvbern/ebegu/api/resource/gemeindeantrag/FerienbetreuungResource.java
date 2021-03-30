@@ -325,7 +325,6 @@ public class FerienbetreuungResource {
 		return converter.ferienbetreuungAngabenNutzungToJax(persisted);
 	}
 
-
 	@ApiOperation(
 		value = "Schliesst FerieninselAngabenNutzung als Gemeinde ab",
 		response = JaxFerienbetreuungAngabenNutzung.class)
@@ -431,5 +430,88 @@ public class FerienbetreuungResource {
 		FerienbetreuungAngabenKostenEinnahmen persisted = ferienbetreuungService.saveFerienbetreuungAngabenKostenEinnahmen(kostenEinnahmen);
 		return converter.ferienbetreuungAngabenKostenEinnahmenToJax(persisted);
 	}
+
+	@ApiOperation(
+		value = "Schliesst FerieninselAngabenNutzung als Gemeinde ab",
+		response = JaxFerienbetreuungAngabenNutzung.class)
+	@Nonnull
+	@PUT
+	@Path("/{containerId}/kostenEinnahmen/abschliessen")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS })
+	public JaxFerienbetreuungAngabenKostenEinnahmen ferienbetreuungKostenEinnahmenAbschliessen(
+		@Nonnull @NotNull @Valid JaxFerienbetreuungAngabenKostenEinnahmen jaxKostenEinnamen,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response,
+		@Nonnull @NotNull @PathParam("containerId") JaxId containerId
+	) {
+		Objects.requireNonNull(jaxKostenEinnamen.getId());
+		Objects.requireNonNull(containerId.getId());
+
+		FerienbetreuungAngabenContainer container =
+			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"ferienbetreuungKostenEinnahmenAbschliessen",
+					containerId.getId()));
+
+		authorizer.checkWriteAuthorization(container);
+
+		FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen =
+			ferienbetreuungService.findFerienbetreuungAngabenKostenEinnahmen(jaxKostenEinnamen.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"ferienbetreuungKostenEinnahmenAbschliessen",
+					jaxKostenEinnamen
+						.getId()));
+
+		converter.ferienbetreuungAngabenKostenEinnahmenToEntity(jaxKostenEinnamen, kostenEinnahmen);
+
+		FerienbetreuungAngabenKostenEinnahmen persisted =
+			ferienbetreuungService.ferienbetreuungAngabenKostenEinnahmenAbschliessen(kostenEinnahmen);
+		return converter.ferienbetreuungAngabenKostenEinnahmenToJax(persisted);
+	}
+
+	@ApiOperation(
+		value = "Öffnet FerienbetreuungAngabenKostenEinnahmen zur Wiederbearbeitung als Gemeinde",
+		response = JaxFerienbetreuungAngabenNutzung.class)
+	@Nonnull
+	@PUT
+	@Path("/{containerId}/kostenEinnahmen/falsche-angaben")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS })
+	public JaxFerienbetreuungAngabenKostenEinnahmen ferienbetreuungKostenEinnahmenFalscheAngaben(
+		@Nonnull @NotNull @Valid JaxFerienbetreuungAngabenKostenEinnahmen jaxKostenEinnahmen,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response,
+		@Nonnull @NotNull @PathParam("containerId") JaxId containerId
+	) {
+		Objects.requireNonNull(jaxKostenEinnahmen.getId());
+		Objects.requireNonNull(containerId.getId());
+
+		FerienbetreuungAngabenContainer container =
+			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"ferienbetreuungKostenEinnahmenFalscheAngaben",
+					containerId.getId()));
+
+		authorizer.checkWriteAuthorization(container);
+
+		FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen =
+			ferienbetreuungService.findFerienbetreuungAngabenKostenEinnahmen(jaxKostenEinnahmen.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"ferienbetreuungKostenEinnahmenFalscheAngaben",
+					jaxKostenEinnahmen
+						.getId()));
+
+		converter.ferienbetreuungAngabenKostenEinnahmenToEntity(jaxKostenEinnahmen, kostenEinnahmen);
+
+		FerienbetreuungAngabenKostenEinnahmen persisted =
+			ferienbetreuungService.ferienbetreuungAngabenKostenEinnahmenFalscheAngaben(kostenEinnahmen);
+		return converter.ferienbetreuungAngabenKostenEinnahmenToJax(persisted);
+	}
+
 
 }
