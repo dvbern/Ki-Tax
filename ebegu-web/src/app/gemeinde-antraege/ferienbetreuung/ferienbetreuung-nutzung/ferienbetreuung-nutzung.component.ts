@@ -30,6 +30,7 @@ import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
 import {numberValidator, ValidationType} from '../../../shared/validators/number-validator.directive';
+import {AbstractFerienbetreuungFormular} from '../abstract.ferienbetreuung-formular';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
 const LOG = LogFactory.createLog('FerienbetreuungNutzungComponent');
@@ -40,29 +41,27 @@ const LOG = LogFactory.createLog('FerienbetreuungNutzungComponent');
     styleUrls: ['./ferienbetreuung-nutzung.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FerienbetreuungNutzungComponent implements OnInit {
-
-    public form: FormGroup;
+export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungFormular implements OnInit {
 
     private nutzung: TSFerienbetreuungAngabenNutzung;
     private container: TSFerienbetreuungAngabenContainer;
-    private formFreigebenTriggered = false;
     private readonly WIZARD_TYPE = TSWizardStepXTyp.FERIENBETREUUNG;
 
     public readonly canSeeSave: Subject<boolean> = new Subject();
     public readonly canSeeAbschliessen: Subject<boolean> = new Subject();
 
     public constructor(
+        protected readonly errorService: ErrorService,
+        protected readonly translate: TranslateService,
+        protected readonly dialog: MatDialog,
         private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly fb: FormBuilder,
         private readonly cd: ChangeDetectorRef,
-        private readonly errorService: ErrorService,
-        private readonly translate: TranslateService,
-        private readonly dialog: MatDialog,
         private readonly wizardRS: WizardStepXRS,
         private readonly uiRouterGlobals: UIRouterGlobals,
-        private readonly authService: AuthServiceRS
+        private readonly authService: AuthServiceRS,
     ) {
+        super(errorService, translate, dialog);
     }
 
     public ngOnInit(): void {
@@ -70,17 +69,16 @@ export class FerienbetreuungNutzungComponent implements OnInit {
             this.ferienbetreuungService.getFerienbetreuungContainer(),
             this.authService.principal$,
         ]).subscribe(([container, principal]) => {
-                this.container = container;
-                this.nutzung = container.angabenDeklaration?.nutzung;
-                this.canSeeSave.next(true);
-                this.canSeeAbschliessen.next(true);
-                this.setupForm(this.nutzung);
-                this.cd.markForCheck();
-            }, error => {
-                LOG.error(error);
-            });
+            this.container = container;
+            this.nutzung = container.angabenDeklaration?.nutzung;
+            this.canSeeSave.next(true);
+            this.canSeeAbschliessen.next(true);
+            this.setupForm(this.nutzung);
+            this.cd.markForCheck();
+        }, error => {
+            LOG.error(error);
+        });
     }
-
 
     public async onAbschliessen(): Promise<void> {
         this.triggerFormValidation();
@@ -110,35 +108,8 @@ export class FerienbetreuungNutzungComponent implements OnInit {
         }
     }
 
-    private showValidierungFehlgeschlagenErrorMessage(): void {
-        this.errorService.addMesageAsError(
-            this.translate.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
-        );
-    }
-
-    private confirmDialog(frageKey: string): Promise<boolean> {
-        const dialogConfig = new MatDialogConfig();
-        dialogConfig.data = {
-            frage: this.translate.instant(frageKey),
-        };
-        return this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
-            .afterClosed()
-            .toPromise();
-    }
-
-    private triggerFormValidation(): void {
-        this.enableFormValidation();
-        this.formFreigebenTriggered = true;
-        for (const key in this.form.controls) {
-            if (this.form.get(key) !== null) {
-                this.form.get(key).markAsTouched();
-                this.form.get(key).updateValueAndValidity();
-            }
-        }
-        this.form.updateValueAndValidity();
-    }
-
-    private enableFormValidation(): void {
+    // Overwrite
+    protected enableFormValidation(): void {
         this.form.get('anzahlBetreuungstageKinderBern')
             .setValidators([Validators.required, numberValidator(ValidationType.HALF)]);
         this.form.get('betreuungstageKinderDieserGemeinde')
