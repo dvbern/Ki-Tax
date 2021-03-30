@@ -32,3 +32,9 @@ ALTER TABLE ferienbetreuung_angaben_kosten_einnahmen ADD COLUMN IF NOT EXISTS
 
 ALTER TABLE ferienbetreuung_angaben_kosten_einnahmen_aud ADD COLUMN IF NOT EXISTS
 	status VARCHAR(255) DEFAULT NULL;
+
+ALTER TABLE ferienbetreuung_angaben_stammdaten ADD COLUMN IF NOT EXISTS
+	status VARCHAR(255) NOT NULL DEFAULT "IN_BEARBEITUNG_GEMEINDE";
+
+ALTER TABLE ferienbetreuung_angaben_stammdaten_aud ADD COLUMN IF NOT EXISTS
+	status VARCHAR(255) DEFAULT NULL;

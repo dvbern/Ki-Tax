@@ -321,6 +321,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 			}
 		}
 		jaxStammdaten.setVermerkAuszahlung(stammdaten.getVermerkAuszahlung());
+		jaxStammdaten.setStatus(stammdaten.getStatus());
 
 		return jaxStammdaten;
 	}

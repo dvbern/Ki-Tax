@@ -4973,6 +4973,7 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
+        stammdatenTS.status = stammdatenFromServer.status;
         stammdatenTS.amAngebotBeteiligteGemeinden = stammdatenFromServer.amAngebotBeteiligteGemeinden;
         stammdatenTS.seitWannFerienbetreuungen = stammdatenFromServer.seitWannFerienbetreuungen;
         stammdatenTS.traegerschaft = stammdatenFromServer.traegerschaft;
