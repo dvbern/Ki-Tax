@@ -16,13 +16,17 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
+import {UIRouterGlobals} from '@uirouter/core';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenKostenEinnahmen} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
+import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
 import {numberValidator, ValidationType} from '../../../shared/validators/number-validator.directive';
+import {AbstractFerienbetreuungFormular} from '../abstract.ferienbetreuung-formular';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
 const LOG = LogFactory.createLog('FerienbetreuungKostenEinnahmenComponent');
@@ -31,21 +35,25 @@ const LOG = LogFactory.createLog('FerienbetreuungKostenEinnahmenComponent');
     selector: 'dv-ferienbetreuung-kosten-einnahmen',
     templateUrl: './ferienbetreuung-kosten-einnahmen.component.html',
     styleUrls: ['./ferienbetreuung-kosten-einnahmen.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FerienbetreuungKostenEinnahmenComponent implements OnInit {
+export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetreuungFormular implements OnInit {
 
     public form: FormGroup;
     public container: TSFerienbetreuungAngabenContainer;
     private kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen;
 
     public constructor(
+        protected readonly cd: ChangeDetectorRef,
+        protected readonly errorService: ErrorService,
+        protected readonly translate: TranslateService,
+        protected readonly dialog: MatDialog,
+        protected readonly wizardRS: WizardStepXRS,
+        protected readonly uiRouterGlobals: UIRouterGlobals,
         private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly fb: FormBuilder,
-        private readonly cd: ChangeDetectorRef,
-        private readonly errorService: ErrorService,
-        private readonly translate: TranslateService
     ) {
+        super(errorService, translate, dialog, cd, wizardRS, uiRouterGlobals);
     }
 
     public ngOnInit(): void {
@@ -60,43 +68,47 @@ export class FerienbetreuungKostenEinnahmenComponent implements OnInit {
             });
     }
 
-    private setupForm(kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen): void {
+    protected setupForm(kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen): void {
         if (!kostenEinnahmen) {
             return;
         }
         this.form = this.fb.group({
             personalkosten: [
                 kostenEinnahmen.personalkosten,
-                numberValidator(ValidationType.INTEGER)
             ],
             personalkostenLeitungAdmin: [
                 kostenEinnahmen.personalkostenLeitungAdmin,
-                numberValidator(ValidationType.INTEGER)
             ],
             sachkosten: [
                 kostenEinnahmen.sachkosten,
-                numberValidator(ValidationType.INTEGER)
             ],
             verpflegungskosten: [
                 kostenEinnahmen.verpflegungskosten,
-                numberValidator(ValidationType.INTEGER)
             ],
             weitereKosten: [
                 kostenEinnahmen.weitereKosten,
-                numberValidator(ValidationType.INTEGER)
             ],
             bemerkungenKosten: [
-                kostenEinnahmen.bemerkungenKosten
+                kostenEinnahmen.bemerkungenKosten,
             ],
             elterngebuehren: [
                 kostenEinnahmen.elterngebuehren,
-                numberValidator(ValidationType.INTEGER)
             ],
             weitereEinnahmen: [
                 kostenEinnahmen.weitereEinnahmen,
-                numberValidator(ValidationType.INTEGER)
             ],
         });
+    }
+
+    protected enableFormValidation(): void {
+        this.form.get('personalkosten').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+        this.form.get('personalkostenLeitungAdmin').setValidators([numberValidator(ValidationType.INTEGER)]);
+        this.form.get('sachkosten').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+        this.form.get('verpflegungskosten')
+            .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+        this.form.get('weitereKosten').setValidators([numberValidator(ValidationType.INTEGER)]);
+        this.form.get('elterngebuehren').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+        this.form.get('weitereEinnahmen').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
     }
 
     public save(): void {
@@ -110,6 +122,13 @@ export class FerienbetreuungKostenEinnahmenComponent implements OnInit {
             });
     }
 
+    public async onAbschliessen(): Promise<void> {
+        if (await this.checkReadyForAbschliessen()) {
+            this.ferienbetreuungService.nutzungAbschliessen(this.container.id, this.form.value)
+                .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
+        }
+    }
+
     private extractFormValues(): TSFerienbetreuungAngabenKostenEinnahmen {
         this.kostenEinnahmen.personalkosten = this.form.get('personalkosten').value;
         this.kostenEinnahmen.personalkostenLeitungAdmin = this.form.get('personalkostenLeitungAdmin').value;
@@ -121,5 +140,4 @@ export class FerienbetreuungKostenEinnahmenComponent implements OnInit {
         this.kostenEinnahmen.weitereEinnahmen = this.form.get('weitereEinnahmen').value;
         return this.kostenEinnahmen;
     }
-
 }

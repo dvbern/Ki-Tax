@@ -25,7 +25,6 @@ import {filter} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {FerienbetreuungAngabenStatus} from '../../../../models/enums/FerienbetreuungAngabenStatus';
-import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
 import {TSFerienbetreuungAngabenAngebot} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSAdresse} from '../../../../models/TSAdresse';
@@ -53,21 +52,20 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
 
     private angebot: TSFerienbetreuungAngabenAngebot;
     private container: TSFerienbetreuungAngabenContainer;
-    private readonly WIZARD_TYPE: TSWizardStepXTyp.FERIENBETREUUNG;
 
     public constructor(
         protected readonly errorService: ErrorService,
         protected readonly translate: TranslateService,
         protected readonly dialog: MatDialog,
         protected readonly cd: ChangeDetectorRef,
-        private readonly ferienbetreuungService: FerienbetreuungService,
+        protected readonly wizardRS: WizardStepXRS,
+        protected readonly uiRouterGlobals: UIRouterGlobals,
         private readonly fb: FormBuilder,
         private readonly gemeindeRS: GemeindeRS,
-        private readonly wizardRS: WizardStepXRS,
-        private readonly uiRouterGlobals: UIRouterGlobals,
+        private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly authService: AuthServiceRS,
     ) {
-        super(errorService, translate, dialog, cd);
+        super(errorService, translate, dialog, cd, wizardRS, uiRouterGlobals);
     }
 
     public ngOnInit(): void {
@@ -268,30 +266,9 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
     }
 
     public async onAbschliessen(): Promise<void> {
-        this.triggerFormValidation();
-
-        if (!this.form.valid) {
-            this.showValidierungFehlgeschlagenErrorMessage();
-            return;
-        }
-        if (!await this.confirmDialog('FRAGE_FORMULAR_ABSCHLIESSEN')) {
-            return;
-        }
-
-        this.ferienbetreuungService.angebotAbschliessen(this.container.id, this.formToObject())
-            .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
-    }
-
-    private handleSaveSuccess(): void {
-        this.wizardRS.updateSteps(this.WIZARD_TYPE, this.uiRouterGlobals.params.id);
-    }
-
-    private handleSaveError(error: any): void {
-        if (error.error?.includes('Not all required properties are set')) {
-            this.triggerFormValidation();
-            this.showValidierungFehlgeschlagenErrorMessage();
-        } else {
-            this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR'));
+        if (await this.checkReadyForAbschliessen()) {
+            this.ferienbetreuungService.angebotAbschliessen(this.container.id, this.formToObject())
+                .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
         }
     }
 

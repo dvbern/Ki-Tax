@@ -19,17 +19,22 @@ import {ChangeDetectorRef} from '@angular/core';
 import {FormGroup} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
+import {UIRouterGlobals} from '@uirouter/core';
 import {BehaviorSubject} from 'rxjs';
+import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSFerienbetreuungAbstractAngaben} from '../../../models/gemeindeantrag/TSFerienbetreuungAbstractAngaben';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
+import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
 
 export abstract class AbstractFerienbetreuungFormular {
 
     public form: FormGroup;
     public formFreigebenTriggered = false;
+
+    private readonly WIZARD_TYPE = TSWizardStepXTyp.FERIENBETREUUNG;
 
     public readonly canSeeSave: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public readonly canSeeAbschliessen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -40,6 +45,8 @@ export abstract class AbstractFerienbetreuungFormular {
         protected readonly translate: TranslateService,
         protected readonly dialog: MatDialog,
         protected readonly cd: ChangeDetectorRef,
+        protected readonly wizardRS: WizardStepXRS,
+        protected readonly uiRouterGlobals: UIRouterGlobals,
     ) {
     }
 
@@ -117,6 +124,30 @@ export abstract class AbstractFerienbetreuungFormular {
         this.setupRoleBasedPropertiesForPrincipal(angaben, principal);
 
         this.cd.markForCheck();
+    }
+
+    protected handleSaveSuccess(): void {
+        this.wizardRS.updateSteps(this.WIZARD_TYPE, this.uiRouterGlobals.params.id);
+    }
+
+    protected handleSaveError(error: any): void {
+        if (error.error?.includes('Not all required properties are set')) {
+            this.triggerFormValidation();
+            this.showValidierungFehlgeschlagenErrorMessage();
+        } else {
+            this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR'));
+        }
+    }
+
+    protected async checkReadyForAbschliessen(): Promise<boolean> {
+        this.triggerFormValidation();
+
+        if (!this.form.valid) {
+            this.showValidierungFehlgeschlagenErrorMessage();
+            return false;
+        }
+        return this.confirmDialog('FRAGE_FORMULAR_ABSCHLIESSEN');
+
     }
 
 }

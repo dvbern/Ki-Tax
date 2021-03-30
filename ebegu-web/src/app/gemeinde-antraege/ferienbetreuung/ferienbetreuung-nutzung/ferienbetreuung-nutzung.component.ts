@@ -22,11 +22,8 @@ import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {combineLatest} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
-import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
-import {TSFerienbetreuungAbstractAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAbstractAngaben';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenNutzung} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
-import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
@@ -46,7 +43,6 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
 
     private nutzung: TSFerienbetreuungAngabenNutzung;
     private container: TSFerienbetreuungAngabenContainer;
-    private readonly WIZARD_TYPE = TSWizardStepXTyp.FERIENBETREUUNG;
 
     public constructor(
         protected readonly errorService: ErrorService,
@@ -54,12 +50,12 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
         protected readonly dialog: MatDialog,
         private readonly ferienbetreuungService: FerienbetreuungService,
         protected readonly cd: ChangeDetectorRef,
+        protected readonly wizardRS: WizardStepXRS,
+        protected readonly uiRouterGlobals: UIRouterGlobals,
         private readonly fb: FormBuilder,
-        private readonly wizardRS: WizardStepXRS,
-        private readonly uiRouterGlobals: UIRouterGlobals,
         private readonly authService: AuthServiceRS,
     ) {
-        super(errorService, translate, dialog, cd);
+        super(errorService, translate, dialog, cd, wizardRS, uiRouterGlobals);
     }
 
     public ngOnInit(): void {
@@ -77,30 +73,9 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
     }
 
     public async onAbschliessen(): Promise<void> {
-        this.triggerFormValidation();
-
-        if (!this.form.valid) {
-            this.showValidierungFehlgeschlagenErrorMessage();
-            return;
-        }
-        if (!await this.confirmDialog('FRAGE_FORMULAR_ABSCHLIESSEN')) {
-            return;
-        }
-
-        this.ferienbetreuungService.nutzungAbschliessen(this.container.id, this.form.value)
-            .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
-    }
-
-    private handleSaveSuccess(): void {
-        this.wizardRS.updateSteps(this.WIZARD_TYPE, this.uiRouterGlobals.params.id);
-    }
-
-    private handleSaveError(error: any): void {
-        if (error.error?.includes('Not all required properties are set')) {
-            this.triggerFormValidation();
-            this.showValidierungFehlgeschlagenErrorMessage();
-        } else {
-            this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR'));
+        if (await this.checkReadyForAbschliessen()) {
+            this.ferienbetreuungService.nutzungAbschliessen(this.container.id, this.form.value)
+                .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
         }
     }
 
