@@ -2359,7 +2359,7 @@
     "FERIENBETREUUNG_AUSZAHLUNG_HINT": "Angaben für die Auszahlung des Kantonsbeitrags",
     "FERIENBETREUUNG_KONTAKTPERSON_HINT": "Kontaktperson für Rückfragen im Zusammenhang mit dem Gesuch",
     "FERIENBETREUUNG_PERSONALKOSTEN_INSGESAMT":  "Personalkosten insgesamt",
-    "FERIENBETREUUNG_PERSONALKOSTEN_LEITUNG_ADMIN": "davon Leitung und Administration",
+    "FERIENBETREUUNG_PERSONALKOSTEN_LEITUNG_ADMIN": " - davon Leitung und Administration",
     "FERIENBETREUUNG_SACHKOSTEN_INSGESAMT":  "Sachkosten insgesamt",
     "FERIENBETREUUNG_VERPFLEGUNGSKOSTEN_INSGESAMT": "Verpflegungskosten insgesamt",
     "FERIENBETREUUNG_WEITERE_KOSTEN":  "Weitere Kosten",
