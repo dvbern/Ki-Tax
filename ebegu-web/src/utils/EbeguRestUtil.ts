@@ -5067,6 +5067,7 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractEntity(kostenEinnahmenTS, kostenEinnahmenFromServer);
+        kostenEinnahmenTS.status = kostenEinnahmenFromServer.status;
         kostenEinnahmenTS.personalkosten = kostenEinnahmenFromServer.personalkosten;
         kostenEinnahmenTS.personalkostenLeitungAdmin = kostenEinnahmenFromServer.personalkostenLeitungAdmin;
         kostenEinnahmenTS.sachkosten = kostenEinnahmenFromServer.sachkosten;

@@ -413,6 +413,8 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxKostenEinnahmen.setElterngebuehren(kostenEinnahmen.getElterngebuehren());
 		jaxKostenEinnahmen.setWeitereEinnahmen(kostenEinnahmen.getWeitereEinnahmen());
 
+		jaxKostenEinnahmen.setStatus(kostenEinnahmen.getStatus());
+
 		return jaxKostenEinnahmen;
 	}
 
