@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {ChangeDetectorRef} from '@angular/core';
 import {FormGroup} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
@@ -38,10 +39,13 @@ export abstract class AbstractFerienbetreuungFormular {
         protected readonly errorService: ErrorService,
         protected readonly translate: TranslateService,
         protected readonly dialog: MatDialog,
+        protected readonly cd: ChangeDetectorRef,
     ) {
     }
 
     protected abstract enableFormValidation(): void;
+
+    protected abstract setupForm(angabe: TSFerienbetreuungAbstractAngaben): void;
 
     protected triggerFormValidation(): void {
         this.enableFormValidation();
@@ -93,6 +97,26 @@ export abstract class AbstractFerienbetreuungFormular {
                 this.canSeeSave.next(true);
             }
         }
+    }
+
+    protected disableFormBasedOnStateAndPrincipal(
+        angaben: TSFerienbetreuungAbstractAngaben,
+        principal: TSBenutzer,
+    ): void {
+        if (angaben?.isGeprueft() ||
+            angaben?.isAtLeastAbgeschlossenGemeinde() &&
+            principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
+            this.form.disable();
+        }
+    }
+
+    protected setupFormAndPermissions(angaben: TSFerienbetreuungAbstractAngaben, principal: TSBenutzer): void {
+        this.setupForm(angaben);
+
+        this.disableFormBasedOnStateAndPrincipal(angaben, principal);
+        this.setupRoleBasedPropertiesForPrincipal(angaben, principal);
+
+        this.cd.markForCheck();
     }
 
 }

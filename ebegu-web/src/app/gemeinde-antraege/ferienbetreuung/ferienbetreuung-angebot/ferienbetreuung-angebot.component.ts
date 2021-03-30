@@ -31,7 +31,6 @@ import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantr
 import {TSAdresse} from '../../../../models/TSAdresse';
 import {TSBfsGemeinde} from '../../../../models/TSBfsGemeinde';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
-import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
@@ -60,15 +59,15 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         protected readonly errorService: ErrorService,
         protected readonly translate: TranslateService,
         protected readonly dialog: MatDialog,
+        protected readonly cd: ChangeDetectorRef,
         private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly fb: FormBuilder,
-        private readonly cd: ChangeDetectorRef,
         private readonly gemeindeRS: GemeindeRS,
         private readonly wizardRS: WizardStepXRS,
         private readonly uiRouterGlobals: UIRouterGlobals,
         private readonly authService: AuthServiceRS,
     ) {
-        super(errorService, translate, dialog);
+        super(errorService, translate, dialog, cd);
     }
 
     public ngOnInit(): void {
@@ -81,11 +80,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             this.angebot = container.angabenDeklaration?.angebot;
             this.setupForm(this.angebot);
 
-            if (this.angebot?.isGeprueft() ||
-                this.angebot?.isAtLeastAbgeschlossenGemeinde() &&
-                principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
-                this.form.disable();
-            }
+            this.disableFormBasedOnStateAndPrincipal(this.angebot, principal);
             this.setupRoleBasedPropertiesForPrincipal(this.angebot, principal);
 
             this.cd.markForCheck();
@@ -97,7 +92,8 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             this.cd.markForCheck();
         });
     }
-    private setupForm(angebot: TSFerienbetreuungAngabenAngebot): void {
+
+    protected setupForm(angebot: TSFerienbetreuungAngabenAngebot): void {
         if (!angebot) {
             return;
         }

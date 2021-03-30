@@ -23,9 +23,10 @@ import {UIRouterGlobals} from '@uirouter/core';
 import {combineLatest} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
+import {TSFerienbetreuungAbstractAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAbstractAngaben';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenNutzung} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
-import {DvNgConfirmDialogComponent} from '../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
@@ -52,13 +53,13 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
         protected readonly translate: TranslateService,
         protected readonly dialog: MatDialog,
         private readonly ferienbetreuungService: FerienbetreuungService,
+        protected readonly cd: ChangeDetectorRef,
         private readonly fb: FormBuilder,
-        private readonly cd: ChangeDetectorRef,
         private readonly wizardRS: WizardStepXRS,
         private readonly uiRouterGlobals: UIRouterGlobals,
         private readonly authService: AuthServiceRS,
     ) {
-        super(errorService, translate, dialog);
+        super(errorService, translate, dialog, cd);
     }
 
     public ngOnInit(): void {
@@ -68,10 +69,8 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
         ]).subscribe(([container, principal]) => {
             this.container = container;
             this.nutzung = container.angabenDeklaration?.nutzung;
-            this.canSeeSave.next(true);
-            this.canSeeAbschliessen.next(true);
-            this.setupForm(this.nutzung);
-            this.cd.markForCheck();
+
+            this.setupFormAndPermissions(this.nutzung, principal);
         }, error => {
             LOG.error(error);
         });
@@ -124,7 +123,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
         this.form.get('anzahlBetreuteKinder3Zyklus').setValidators([numberValidator(ValidationType.INTEGER)]);
     }
 
-    private setupForm(nutzung: TSFerienbetreuungAngabenNutzung): void {
+    protected setupForm(nutzung: TSFerienbetreuungAngabenNutzung): void {
         if (!nutzung) {
             return;
         }
