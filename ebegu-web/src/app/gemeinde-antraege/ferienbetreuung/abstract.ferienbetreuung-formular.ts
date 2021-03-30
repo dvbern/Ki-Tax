@@ -54,8 +54,12 @@ export abstract class AbstractFerienbetreuungFormular {
 
     protected abstract setupForm(angabe: TSFerienbetreuungAbstractAngaben): void;
 
-    protected triggerFormValidation(): void {
+    protected enableAndTriggerFormValidation(): void {
         this.enableFormValidation();
+        this.triggerFormValidation();
+    }
+
+    protected triggerFormValidation(): void {
         this.formFreigebenTriggered = true;
         for (const key in this.form.controls) {
             if (this.form.get(key) !== null) {
@@ -132,7 +136,7 @@ export abstract class AbstractFerienbetreuungFormular {
 
     protected handleSaveError(error: any): void {
         if (error.error?.includes('Not all required properties are set')) {
-            this.triggerFormValidation();
+            this.enableAndTriggerFormValidation();
             this.showValidierungFehlgeschlagenErrorMessage();
         } else {
             this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR'));
@@ -140,7 +144,7 @@ export abstract class AbstractFerienbetreuungFormular {
     }
 
     protected async checkReadyForAbschliessen(): Promise<boolean> {
-        this.triggerFormValidation();
+        this.enableAndTriggerFormValidation();
 
         if (!this.form.valid) {
             this.showValidierungFehlgeschlagenErrorMessage();
