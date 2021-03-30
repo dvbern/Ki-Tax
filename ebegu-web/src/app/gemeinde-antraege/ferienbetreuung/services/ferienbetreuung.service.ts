@@ -79,12 +79,14 @@ export class FerienbetreuungService {
         return this.http.put<any>(
             `${this.API_BASE_URL}/${encodeURIComponent(containerId)}/stammdaten/save`,
             this.ebeguRestUtil.ferienbetreuungStammdatenToRestObject({}, stammdaten),
-        ).pipe(map(restStammdaten => {
-            return this.ebeguRestUtil.parseFerienbetreuungStammdaten(
-                new TSFerienbetreuungAngabenStammdaten(),
-                restStammdaten,
-            );
-        }));
+        ).pipe(map(restStammdaten => this.parseRestStammdaten(restStammdaten)));
+    }
+
+    private parseRestStammdaten(restStammdaten: any): TSFerienbetreuungAngabenStammdaten {
+        return this.ebeguRestUtil.parseFerienbetreuungStammdaten(
+            new TSFerienbetreuungAngabenStammdaten(),
+            restStammdaten,
+        );
     }
 
     public saveAngebot(containerId: string, angebot: TSFerienbetreuungAngabenAngebot):
@@ -206,6 +208,32 @@ export class FerienbetreuungService {
             this.ebeguRestUtil.ferienbetreuungKostenEinnahmenToRestObject({}, kostenEinnahmen),
         ).pipe(
             map(restNutzung => this.parseRestKostenEinnahmen(restNutzung)),
+            tap(() => this.updateFerienbetreuungContainerStore(containerId)),
+        );
+    }
+
+    public stammdatenAbschliessen(
+        containerId: string,
+        stammdaten: TSFerienbetreuungAngabenStammdaten,
+    ): Observable<TSFerienbetreuungAngabenStammdaten> {
+        return this.http.put(
+            `${this.API_BASE_URL}/${encodeURIComponent(containerId)}/stammdaten/abschliessen`,
+            this.ebeguRestUtil.ferienbetreuungStammdatenToRestObject({}, stammdaten),
+        ).pipe(
+            map(restStammdaten => this.parseRestStammdaten(restStammdaten)),
+            tap(() => this.updateFerienbetreuungContainerStore(containerId)),
+        );
+    }
+
+    public falscheAngabenStammdaten(
+        containerId: string,
+        stammdaten: TSFerienbetreuungAngabenStammdaten,
+    ): Observable<TSFerienbetreuungAngabenStammdaten> {
+        return this.http.put(
+            `${this.API_BASE_URL}/${encodeURIComponent(containerId)}/stammdaten/falsche-angaben`,
+            this.ebeguRestUtil.ferienbetreuungStammdatenToRestObject({}, stammdaten),
+        ).pipe(
+            map(restStammdaten => this.parseRestStammdaten(restStammdaten)),
             tap(() => this.updateFerienbetreuungContainerStore(containerId)),
         );
     }
