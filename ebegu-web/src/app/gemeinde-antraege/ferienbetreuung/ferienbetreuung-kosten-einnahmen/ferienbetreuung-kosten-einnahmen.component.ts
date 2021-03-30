@@ -20,6 +20,8 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
+import {combineLatest} from 'rxjs';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenKostenEinnahmen} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
@@ -52,20 +54,23 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         protected readonly uiRouterGlobals: UIRouterGlobals,
         private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly fb: FormBuilder,
+        private readonly authService: AuthServiceRS,
     ) {
         super(errorService, translate, dialog, cd, wizardRS, uiRouterGlobals);
     }
 
     public ngOnInit(): void {
-        this.ferienbetreuungService.getFerienbetreuungContainer()
-            .subscribe(container => {
-                this.container = container;
-                this.kostenEinnahmen = container.angabenDeklaration?.kostenEinnahmen;
-                this.setupForm(this.kostenEinnahmen);
-                this.cd.markForCheck();
-            }, error => {
-                LOG.error(error);
-            });
+        combineLatest([
+            this.ferienbetreuungService.getFerienbetreuungContainer(),
+            this.authService.principal$,
+        ]).subscribe(([container, principal]) => {
+            this.container = container;
+            this.kostenEinnahmen = container.angabenDeklaration?.kostenEinnahmen;
+
+            this.setupFormAndPermissions(this.kostenEinnahmen, principal);
+        }, error => {
+            LOG.error(error);
+        });
     }
 
     protected setupForm(kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen): void {
@@ -124,7 +129,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
 
     public async onAbschliessen(): Promise<void> {
         if (await this.checkReadyForAbschliessen()) {
-            this.ferienbetreuungService.nutzungAbschliessen(this.container.id, this.form.value)
+            this.ferienbetreuungService.kostenEinnahmenAbschliessen(this.container.id, this.form.value)
                 .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
         }
     }
@@ -139,5 +144,10 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         this.kostenEinnahmen.elterngebuehren = this.form.get('elterngebuehren').value;
         this.kostenEinnahmen.weitereEinnahmen = this.form.get('weitereEinnahmen').value;
         return this.kostenEinnahmen;
+    }
+
+    public onFalscheAngaben(): void {
+        this.ferienbetreuungService.falscheAngabenKostenEinnahmen(this.container.id, this.kostenEinnahmen)
+            .subscribe(() => this.handleSaveSuccess(), (error: any) => this.handleSaveError(error));
     }
 }

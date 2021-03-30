@@ -115,12 +115,14 @@ export class FerienbetreuungService {
         return this.http.put<any>(
             `${this.API_BASE_URL}/${encodeURIComponent(containerId)}/kostenEinnahmen/save`,
             this.ebeguRestUtil.ferienbetreuungKostenEinnahmenToRestObject({}, kostenEinnahmen),
-        ).pipe(map(restKostenEinnahmen => {
-            return this.ebeguRestUtil.parseFerienbetreuungKostenEinnahmen(
-                new TSFerienbetreuungAngabenKostenEinnahmen(),
-                restKostenEinnahmen,
-            );
-        }));
+        ).pipe(map(restKostenEinnahmen => this.parseRestKostenEinnahmen(restKostenEinnahmen)));
+    }
+
+    private parseRestKostenEinnahmen(restKostenEinnahmen: any): TSFerienbetreuungAngabenKostenEinnahmen {
+        return this.ebeguRestUtil.parseFerienbetreuungKostenEinnahmen(
+            new TSFerienbetreuungAngabenKostenEinnahmen(),
+            restKostenEinnahmen,
+        );
     }
 
     public angebotAbschliessen(
@@ -178,6 +180,32 @@ export class FerienbetreuungService {
             this.ebeguRestUtil.ferienbetreuungNutzungToRestObject({}, nutzung),
         ).pipe(
             map(restNutzung => this.parseRestNutzung(restNutzung)),
+            tap(() => this.updateFerienbetreuungContainerStore(containerId)),
+        );
+    }
+
+    public kostenEinnahmenAbschliessen(
+        containerId: string,
+        kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen,
+    ): Observable<TSFerienbetreuungAngabenKostenEinnahmen> {
+        return this.http.put(
+            `${this.API_BASE_URL}/${encodeURIComponent(containerId)}/kostenEinnahmen/abschliessen`,
+            this.ebeguRestUtil.ferienbetreuungKostenEinnahmenToRestObject({}, kostenEinnahmen),
+        ).pipe(
+            map(restNutzung => this.parseRestKostenEinnahmen(restNutzung)),
+            tap(() => this.updateFerienbetreuungContainerStore(containerId)),
+        );
+    }
+
+    public falscheAngabenKostenEinnahmen(
+        containerId: string,
+        kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen,
+    ): Observable<TSFerienbetreuungAngabenKostenEinnahmen> {
+        return this.http.put(
+            `${this.API_BASE_URL}/${encodeURIComponent(containerId)}/kostenEinnahmen/falsche-angaben`,
+            this.ebeguRestUtil.ferienbetreuungKostenEinnahmenToRestObject({}, kostenEinnahmen),
+        ).pipe(
+            map(restNutzung => this.parseRestKostenEinnahmen(restNutzung)),
             tap(() => this.updateFerienbetreuungContainerStore(containerId)),
         );
     }
