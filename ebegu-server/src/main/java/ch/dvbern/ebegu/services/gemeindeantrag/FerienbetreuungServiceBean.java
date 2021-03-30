@@ -309,7 +309,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 		Preconditions.checkArgument(kostenEinnahmen.isReadyForFreigeben(), "Not all required properties are set");
 		Preconditions.checkArgument(
 			kostenEinnahmen.getStatus() == FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE,
-			"FerienbetreuungAngabenNutzung must be in state IN_BEARBEITUNG_GEMEINDE"
+			"FerienbetreuungAngabenKostenEinnahmen must be in state IN_BEARBEITUNG_GEMEINDE"
 		);
 
 		kostenEinnahmen.setStatus(FerienbetreuungFormularStatus.ABGESCHLOSSEN);
@@ -324,12 +324,42 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen) {
 		Preconditions.checkArgument(
 			kostenEinnahmen.getStatus() == FerienbetreuungFormularStatus.ABGESCHLOSSEN,
-			"FerienbetreuungAngabenNutzung must be in state ABGESCHLOSSEN"
+			"FerienbetreuungAngabenKostenEinnahmen must be in state ABGESCHLOSSEN"
 		);
 
 		kostenEinnahmen.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
 
 		return persistence.merge(kostenEinnahmen);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenAbschliessen(
+			@Nonnull FerienbetreuungAngabenStammdaten stammdaten) {
+		Preconditions.checkArgument(stammdaten.isReadyForFreigeben(), "Not all required properties are set");
+		Preconditions.checkArgument(
+			stammdaten.getStatus() == FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE,
+			"FerienbetreuungAngabenNutzung must be in state IN_BEARBEITUNG_GEMEINDE"
+		);
+
+		stammdaten.setStatus(FerienbetreuungFormularStatus.ABGESCHLOSSEN);
+
+		return persistence.merge(stammdaten);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenFalscheAngaben(
+		@Nonnull
+			FerienbetreuungAngabenStammdaten stammdaten) {
+		Preconditions.checkArgument(
+			stammdaten.getStatus() == FerienbetreuungFormularStatus.ABGESCHLOSSEN,
+			"FerienbetreuungAngabenStammdaten must be in state ABGESCHLOSSEN"
+		);
+
+		stammdaten.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
+
+		return persistence.merge(stammdaten);
 	}
 }
 

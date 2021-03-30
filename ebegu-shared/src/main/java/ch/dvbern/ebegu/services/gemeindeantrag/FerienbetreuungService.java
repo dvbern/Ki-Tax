@@ -95,4 +95,12 @@ public interface FerienbetreuungService {
 	@Nonnull
 	FerienbetreuungAngabenKostenEinnahmen ferienbetreuungAngabenKostenEinnahmenFalscheAngaben(
 		@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen);
+
+	@Nonnull
+	FerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenAbschliessen(
+		@Nonnull FerienbetreuungAngabenStammdaten stammdaten);
+
+	@Nonnull
+	FerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenFalscheAngaben(
+		@Nonnull FerienbetreuungAngabenStammdaten stammdaten);
 }
