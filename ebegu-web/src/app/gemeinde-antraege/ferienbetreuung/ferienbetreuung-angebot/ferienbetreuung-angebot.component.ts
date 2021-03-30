@@ -20,7 +20,7 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
-import {combineLatest, Subject} from 'rxjs';
+import {combineLatest} from 'rxjs';
 import {filter} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
@@ -56,10 +56,6 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
     private angebot: TSFerienbetreuungAngabenAngebot;
     private container: TSFerienbetreuungAngabenContainer;
     private readonly WIZARD_TYPE: TSWizardStepXTyp.FERIENBETREUUNG;
-
-    public readonly canSeeAbschliessen: Subject<boolean> = new Subject<boolean>();
-    public readonly canSeeSave: Subject<boolean> = new Subject<boolean>();
-    public readonly canSeeFalscheAngaben: Subject<boolean> = new Subject<boolean>();
 
     public constructor(
         protected readonly errorService: ErrorService,

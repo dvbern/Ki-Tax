@@ -18,6 +18,7 @@
 import {FormGroup} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
+import {BehaviorSubject} from 'rxjs';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 
@@ -25,6 +26,10 @@ export abstract class AbstractFerienbetreuungFormular {
 
     public form: FormGroup;
     public formFreigebenTriggered = false;
+
+    public readonly canSeeSave: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public readonly canSeeAbschliessen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public readonly canSeeFalscheAngaben: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     protected constructor(
         protected readonly errorService: ErrorService,

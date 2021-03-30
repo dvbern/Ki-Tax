@@ -16,11 +16,11 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {FormBuilder, Validators} from '@angular/forms';
+import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
-import {combineLatest, Subject} from 'rxjs';
+import {combineLatest} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
@@ -46,9 +46,6 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
     private nutzung: TSFerienbetreuungAngabenNutzung;
     private container: TSFerienbetreuungAngabenContainer;
     private readonly WIZARD_TYPE = TSWizardStepXTyp.FERIENBETREUUNG;
-
-    public readonly canSeeSave: Subject<boolean> = new Subject();
-    public readonly canSeeAbschliessen: Subject<boolean> = new Subject();
 
     public constructor(
         protected readonly errorService: ErrorService,
