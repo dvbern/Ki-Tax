@@ -5041,6 +5041,7 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractEntity(nutzungTS, nutzungFromServer);
+        nutzungTS.status = nutzungFromServer.status;
         nutzungTS.anzahlBetreuungstageKinderBern = nutzungFromServer.anzahlBetreuungstageKinderBern;
         nutzungTS.betreuungstageKinderDieserGemeinde = nutzungFromServer.betreuungstageKinderDieserGemeinde;
         nutzungTS.betreuungstageKinderDieserGemeindeSonderschueler =

@@ -391,6 +391,8 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxNutzung.setAnzahlBetreuteKinder2Zyklus(nutzung.getAnzahlBetreuteKinder2Zyklus());
 		jaxNutzung.setAnzahlBetreuteKinder3Zyklus(nutzung.getAnzahlBetreuteKinder3Zyklus());
 
+		jaxNutzung.setStatus(nutzung.getStatus());
+
 		return jaxNutzung;
 	}
 
