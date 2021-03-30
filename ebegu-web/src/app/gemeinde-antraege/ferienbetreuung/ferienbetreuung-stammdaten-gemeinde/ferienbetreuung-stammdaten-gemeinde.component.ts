@@ -252,7 +252,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
     }
 
     public onFalscheAngaben(): void {
-        this.ferienbetreuungService.stammdatenAbschliessen(this.container.id, this.extractFormValues())
+        this.ferienbetreuungService.falscheAngabenStammdaten(this.container.id, this.extractFormValues())
             .subscribe(() => this.handleSaveSuccess(), (error: any) => this.handleSaveError(error));
     }
 }
