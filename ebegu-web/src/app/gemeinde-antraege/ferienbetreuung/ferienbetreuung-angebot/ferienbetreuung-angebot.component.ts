@@ -16,8 +16,8 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {FormBuilder, Validators} from '@angular/forms';
+import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {combineLatest, Subject} from 'rxjs';
@@ -33,11 +33,11 @@ import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSBfsGemeinde} from '../../../../models/TSBfsGemeinde';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import {DvNgConfirmDialogComponent} from '../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
 import {numberValidator, ValidationType} from '../../../shared/validators/number-validator.directive';
+import {AbstractFerienbetreuungFormular} from '../abstract.ferienbetreuung-formular';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
 const LOG = LogFactory.createLog('FerienbetreuungAngebotComponent');
@@ -48,9 +48,8 @@ const LOG = LogFactory.createLog('FerienbetreuungAngebotComponent');
     styleUrls: ['./ferienbetreuung-angebot.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FerienbetreuungAngebotComponent implements OnInit {
+export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungFormular implements OnInit {
 
-    public form: FormGroup;
     public formFreigebenTriggered = false;
     public bfsGemeinden: TSBfsGemeinde[];
 
@@ -63,17 +62,18 @@ export class FerienbetreuungAngebotComponent implements OnInit {
     public readonly canSeeFalscheAngaben: Subject<boolean> = new Subject<boolean>();
 
     public constructor(
+        protected readonly errorService: ErrorService,
+        protected readonly translate: TranslateService,
+        protected readonly dialog: MatDialog,
         private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly fb: FormBuilder,
         private readonly cd: ChangeDetectorRef,
         private readonly gemeindeRS: GemeindeRS,
-        private readonly errorService: ErrorService,
-        private readonly translate: TranslateService,
-        private readonly dialog: MatDialog,
         private readonly wizardRS: WizardStepXRS,
         private readonly uiRouterGlobals: UIRouterGlobals,
         private readonly authService: AuthServiceRS,
     ) {
+        super(errorService, translate, dialog);
     }
 
     public ngOnInit(): void {
@@ -235,7 +235,8 @@ export class FerienbetreuungAngebotComponent implements OnInit {
         });
     }
 
-    private enableFormValidation(): void {
+    // overwrite
+    protected enableFormValidation(): void {
         this.form.get('angebot').setValidators(Validators.required);
         this.form.get('angebotKontaktpersonVorname').setValidators(Validators.required);
         this.form.get('angebotKontaktpersonNachname').setValidators(Validators.required);
@@ -312,22 +313,6 @@ export class FerienbetreuungAngebotComponent implements OnInit {
             .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
     }
 
-    private showValidierungFehlgeschlagenErrorMessage(): void {
-        this.errorService.addMesageAsError(
-            this.translate.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
-        );
-    }
-
-    private confirmDialog(frageKey: string): Promise<boolean> {
-        const dialogConfig = new MatDialogConfig();
-        dialogConfig.data = {
-            frage: this.translate.instant(frageKey),
-        };
-        return this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
-            .afterClosed()
-            .toPromise();
-    }
-
     private handleSaveSuccess(): void {
         this.wizardRS.updateSteps(this.WIZARD_TYPE, this.uiRouterGlobals.params.id);
     }
@@ -339,18 +324,6 @@ export class FerienbetreuungAngebotComponent implements OnInit {
         } else {
             this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR'));
         }
-    }
-
-    private triggerFormValidation(): void {
-        this.enableFormValidation();
-        this.formFreigebenTriggered = true;
-        for (const key in this.form.controls) {
-            if (this.form.get(key) !== null) {
-                this.form.get(key).markAsTouched();
-                this.form.get(key).updateValueAndValidity();
-            }
-        }
-        this.form.updateValueAndValidity();
     }
 
     public onFalscheAngaben(): void {
