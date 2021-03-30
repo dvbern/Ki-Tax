@@ -209,11 +209,6 @@ public enum UserRole {
 		return Arrays.asList(ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST);
 	}
 
-	public boolean isRoleSozialdienstabhaengig(){
-		return this.rollenAbhaengigkeit == RollenAbhaengigkeit.SOZIALDIENST;
-	}
-
-
 	public boolean isRoleGemeindeabhaengig(){
 		return this.rollenAbhaengigkeit == RollenAbhaengigkeit.GEMEINDE;
 	}
