@@ -29,7 +29,6 @@ import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
 import {TSFerienbetreuungAngabenAngebot} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSAdresse} from '../../../../models/TSAdresse';
-import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSBfsGemeinde} from '../../../../models/TSBfsGemeinde';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
@@ -87,7 +86,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
                 principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
                 this.form.disable();
             }
-            this.setupRoleBasedPropertiesForPrincipal(principal);
+            this.setupRoleBasedPropertiesForPrincipal(this.angebot, principal);
 
             this.cd.markForCheck();
         }, error => {
@@ -98,28 +97,6 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             this.cd.markForCheck();
         });
     }
-
-    private setupRoleBasedPropertiesForPrincipal(principal: TSBenutzer): void {
-        if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
-            if (this.angebot.isAtLeastAbgeschlossenGemeinde()) {
-                this.canSeeAbschliessen.next(false);
-                this.canSeeSave.next(false);
-                this.canSeeFalscheAngaben.next(true);
-            } else {
-                this.canSeeAbschliessen.next(true);
-                this.canSeeSave.next(true);
-                this.canSeeFalscheAngaben.next(false);
-            }
-        } else if (principal.hasOneOfRoles(TSRoleUtil.getMandantRoles())) {
-            this.canSeeAbschliessen.next(false);
-            if (this.angebot.isInPruefungKanton()) {
-                this.canSeeSave.next(false);
-            } else {
-                this.canSeeSave.next(true);
-            }
-        }
-    }
-
     private setupForm(angebot: TSFerienbetreuungAngabenAngebot): void {
         if (!angebot) {
             return;

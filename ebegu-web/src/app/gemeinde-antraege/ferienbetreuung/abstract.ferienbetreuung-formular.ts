@@ -19,6 +19,9 @@ import {FormGroup} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {BehaviorSubject} from 'rxjs';
+import {TSFerienbetreuungAbstractAngaben} from '../../../models/gemeindeantrag/TSFerienbetreuungAbstractAngaben';
+import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 
@@ -67,4 +70,29 @@ export abstract class AbstractFerienbetreuungFormular {
             .afterClosed()
             .toPromise();
     }
+
+    protected setupRoleBasedPropertiesForPrincipal(
+        angaben: TSFerienbetreuungAbstractAngaben,
+        principal: TSBenutzer,
+    ): void {
+        if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
+            if (angaben.isAtLeastAbgeschlossenGemeinde()) {
+                this.canSeeAbschliessen.next(false);
+                this.canSeeSave.next(false);
+                this.canSeeFalscheAngaben.next(true);
+            } else {
+                this.canSeeAbschliessen.next(true);
+                this.canSeeSave.next(true);
+                this.canSeeFalscheAngaben.next(false);
+            }
+        } else if (principal.hasOneOfRoles(TSRoleUtil.getMandantRoles())) {
+            this.canSeeAbschliessen.next(false);
+            if (angaben.isInPruefungKanton()) {
+                this.canSeeSave.next(false);
+            } else {
+                this.canSeeSave.next(true);
+            }
+        }
+    }
+
 }

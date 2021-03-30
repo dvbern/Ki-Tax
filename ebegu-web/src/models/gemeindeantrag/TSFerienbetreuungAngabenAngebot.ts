@@ -16,10 +16,10 @@
  */
 
 import {TSFerienbetreuungFormularStatus} from '../enums/TSFerienbetreuungFormularStatus';
-import {TSAbstractEntity} from '../TSAbstractEntity';
 import {TSAdresse} from '../TSAdresse';
+import {TSFerienbetreuungAbstractAngaben} from './TSFerienbetreuungAbstractAngaben';
 
-export class TSFerienbetreuungAngabenAngebot extends TSAbstractEntity {
+export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAngaben {
 
     private _angebot: string;
     private _angebotKontaktpersonVorname: string;
@@ -50,7 +50,6 @@ export class TSFerienbetreuungAngabenAngebot extends TSAbstractEntity {
     private _ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet: boolean;
     private _kinderAusAnderenGemeindenZahlenAnderenTarif: boolean;
     private _bemerkungenTarifsystem: string;
-    private _status: TSFerienbetreuungFormularStatus;
 
     public get angebot(): string {
         return this._angebot;
@@ -282,14 +281,6 @@ export class TSFerienbetreuungAngabenAngebot extends TSAbstractEntity {
 
     public set bemerkungenTarifsystem(value: string) {
         this._bemerkungenTarifsystem = value;
-    }
-
-    public get status(): TSFerienbetreuungFormularStatus {
-        return this._status;
-    }
-
-    public set status(value: TSFerienbetreuungFormularStatus) {
-        this._status = value;
     }
 
     public isAtLeastAbgeschlossenGemeinde(): boolean {
