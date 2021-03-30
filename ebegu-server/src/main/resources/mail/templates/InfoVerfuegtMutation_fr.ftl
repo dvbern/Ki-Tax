@@ -3,9 +3,11 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
+<#-- @ftlvariable name="gesuchsteller" type="ch.dvbern.ebegu.entities.Gesuchsteller" -->
+<#-- @ftlvariable name="isSozialdienst" type="java.lang.Boolean" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
-Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Le changement a été enregistré</@base64Header>
+Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Le changement <#if isSozialdienst>pour ${gesuchsteller.fullName}</#if> a été enregistré</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -13,7 +15,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon <#if configuration.isDevmode>Système de test</#if> – Le changement a été enregistré</title>
+	<title>kiBon <#if configuration.isDevmode>Système de test</#if> – Le changement <#if isSozialdienst>pour ${gesuchsteller.fullName}</#if> a été enregistré</title>
 
 </head>
 
@@ -24,7 +26,7 @@ ${templateConfiguration.mailCss}
 		Chère famille,
 	</p>
 	<p>
-		Le changement que vous avez communiqué le ${gesuch.getEingangsdatumFormated()} a été enregistré.
+        <#if isSozialdienst>Le changement pour ${gesuchsteller.fullName}<#else>Le changement</#if> que vous avez communiqué le ${gesuch.getEingangsdatumFormated()} a été enregistré.
 		Vous pouvez consulter le résultat
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegen/${gesuch.id}">ici</a>.
 	</p>

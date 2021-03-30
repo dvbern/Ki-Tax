@@ -21,6 +21,16 @@
           *ngIf="stammdaten$ | async as stammdaten"
           (ngSubmit)="onSubmit(stammdaten)"
           novalidate>
+        <div class="stammdaten-header row">
+            <div class="col-md-12">
+                {{'SOZIALDIENST_TITLE' | translate}}
+                <h1 class="access-for-all-title" translate>AFA_GEMEINDEVERWALTUNG</h1>
+                <div class="view-title">
+                    <h2>{{stammdaten.sozialdienst.name}}</h2>
+                    <hr class="header">
+                </div>
+            </div>
+        </div>
         <div class="dv-content">
             <fieldset *ngIf="editMode; else showViewMode">
                 <div class="view-sub-title">
