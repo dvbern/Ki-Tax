@@ -191,7 +191,7 @@ public class FerienbetreuungAngabenNutzung extends AbstractEntity {
 			this.davonBetreuungstageKinderAndererGemeinden
 		);
 		return nonNullObj.stream()
-			.anyMatch(Objects::isNull);
+			.noneMatch(Objects::isNull);
 	}
 
 	@Nonnull

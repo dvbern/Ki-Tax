@@ -270,6 +270,36 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 		return persistence.merge(angebot);
 	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenNutzung ferienbetreuungAngabenNutzungAbschliessen(
+		@Nonnull FerienbetreuungAngabenNutzung nutzung) {
+		Preconditions.checkArgument(nutzung.isReadyForFreigeben(), "Not all required properties are set");
+		Preconditions.checkArgument(
+			nutzung.getStatus() == FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE,
+			"FerienbetreuungAngabenNutzung must be in state IN_BEARBEITUNG_GEMEINDE"
+		);
+
+		nutzung.setStatus(FerienbetreuungFormularStatus.ABGESCHLOSSEN);
+
+		return persistence.merge(nutzung);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenNutzung ferienbetreuungAngabenNutzungFalscheAngaben(
+		@Nonnull
+			FerienbetreuungAngabenNutzung nutzung) {
+		Preconditions.checkArgument(
+			nutzung.getStatus() == FerienbetreuungFormularStatus.ABGESCHLOSSEN,
+			"FerienbetreuungAngabenNutzung must be in state ABGESCHLOSSEN"
+		);
+
+		nutzung.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
+
+		return persistence.merge(nutzung);
+	}
 }
 
 

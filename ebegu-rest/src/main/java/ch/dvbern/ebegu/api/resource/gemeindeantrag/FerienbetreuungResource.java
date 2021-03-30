@@ -251,7 +251,7 @@ public class FerienbetreuungResource {
 	}
 
 	@ApiOperation(
-		value = "Schliesst FerieninselAngabenAngebot als Gemeinde ab",
+		value = "Öffnet FerieninselAngabenAngebot zur Wiederbearbeitung als Gemeinde",
 		response = JaxFerienbetreuungAngabenAngebot.class)
 	@Nonnull
 	@PUT
@@ -322,6 +322,78 @@ public class FerienbetreuungResource {
 		converter.ferienbetreuungAngabenNutzungToEntity(jaxNutzung, nutzung);
 
 		FerienbetreuungAngabenNutzung persisted = ferienbetreuungService.saveFerienbetreuungAngabenNutzung(nutzung);
+		return converter.ferienbetreuungAngabenNutzungToJax(persisted);
+	}
+
+
+	@ApiOperation(
+		value = "Schliesst FerieninselAngabenNutzung als Gemeinde ab",
+		response = JaxFerienbetreuungAngabenNutzung.class)
+	@Nonnull
+	@PUT
+	@Path("/{containerId}/nutzung/abschliessen")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS })
+	public JaxFerienbetreuungAngabenNutzung ferienbetreuungNutzungAbschliessen(
+		@Nonnull @NotNull @Valid JaxFerienbetreuungAngabenNutzung jaxNutzung,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response,
+		@Nonnull @NotNull @PathParam("containerId") JaxId containerId
+	) {
+		Objects.requireNonNull(jaxNutzung.getId());
+		Objects.requireNonNull(containerId.getId());
+
+		FerienbetreuungAngabenContainer container =
+			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("ferienbetreuungNutzungAbschliessen", containerId.getId()));
+
+		authorizer.checkWriteAuthorization(container);
+
+		FerienbetreuungAngabenNutzung nutzung =
+			ferienbetreuungService.findFerienbetreuungAngabenNutzung(jaxNutzung.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("ferienbetreuungNutzungAbschliessen", jaxNutzung.getId()));
+
+		converter.ferienbetreuungAngabenNutzungToEntity(jaxNutzung, nutzung);
+
+		FerienbetreuungAngabenNutzung persisted = ferienbetreuungService.ferienbetreuungAngabenNutzungAbschliessen(nutzung);
+		return converter.ferienbetreuungAngabenNutzungToJax(persisted);
+	}
+
+
+	@ApiOperation(
+		value = "Öffnet FerieninselAngabenNutzung zur Wiederbearbeitung als Gemeinde",
+		response = JaxFerienbetreuungAngabenNutzung.class)
+	@Nonnull
+	@PUT
+	@Path("/{containerId}/nutzung/falsche-angaben")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS })
+	public JaxFerienbetreuungAngabenNutzung ferienbetreuungNutzungFalscheAngaben(
+		@Nonnull @NotNull @Valid JaxFerienbetreuungAngabenNutzung jaxNutzung,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response,
+		@Nonnull @NotNull @PathParam("containerId") JaxId containerId
+	) {
+		Objects.requireNonNull(jaxNutzung.getId());
+		Objects.requireNonNull(containerId.getId());
+
+		FerienbetreuungAngabenContainer container =
+			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("ferienbetreuungNutzungFalscheAngaben", containerId.getId()));
+
+		authorizer.checkWriteAuthorization(container);
+
+		FerienbetreuungAngabenNutzung nutzung =
+			ferienbetreuungService.findFerienbetreuungAngabenNutzung(jaxNutzung.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("ferienbetreuungNutzungFalscheAngaben", jaxNutzung.getId()));
+
+		converter.ferienbetreuungAngabenNutzungToEntity(jaxNutzung, nutzung);
+
+		FerienbetreuungAngabenNutzung persisted = ferienbetreuungService.ferienbetreuungAngabenNutzungFalscheAngaben(nutzung);
 		return converter.ferienbetreuungAngabenNutzungToJax(persisted);
 	}
 

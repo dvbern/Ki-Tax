@@ -88,7 +88,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
             return;
         }
 
-        this.ferienbetreuungService.angebotAbschliessen(this.container.id, this.form.value)
+        this.ferienbetreuungService.nutzungAbschliessen(this.container.id, this.form.value)
             .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
     }
 
