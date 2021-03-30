@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.errors.MergeDocException;
 
 public interface PDFService {
@@ -95,5 +96,11 @@ public interface PDFService {
 	byte[] generateDefinitiveVerfuegungRuckforderungformular(
 		@Nonnull RueckforderungFormular rueckforderungFormular,
 		boolean writeProtected
+	) throws MergeDocException;
+
+	@Nonnull
+	byte[] generateVollmachtSozialdienst(
+		@Nonnull SozialdienstFall sozialdienstFall,
+		@Nonnull Locale locale
 	) throws MergeDocException;
 }

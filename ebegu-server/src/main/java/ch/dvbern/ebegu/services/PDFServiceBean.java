@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
@@ -380,5 +381,19 @@ public class PDFServiceBean implements PDFService {
 			throw new MergeDocException("generateDokument()",
 				"Bei der Generierung des Dokuments ist ein Fehler aufgetreten", e, OBJECTARRAY);
 		}
+	}
+
+	@Nonnull
+	@Override
+	public byte[] generateVollmachtSozialdienst(
+		@Nonnull SozialdienstFall sozialdienstFall,
+		@Nonnull Locale locale
+	) throws MergeDocException {
+
+		Objects.requireNonNull(sozialdienstFall, "Das Argument 'sozialdienstFall' darf nicht leer sein");
+
+	//RueckforderungProvVerfuegungPdfGenerator pdfGenerator ;
+	//return generateDokument(pdfGenerator, false, locale);
+		return new byte[0];
 	}
 }

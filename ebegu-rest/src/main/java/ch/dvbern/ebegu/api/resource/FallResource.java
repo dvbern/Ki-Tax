@@ -129,7 +129,7 @@ public class FallResource {
 	@Path("/vollmachtDokument/{fallId}")
 	@Consumes(MediaType.WILDCARD)
 	@RolesAllowed({SUPER_ADMIN, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST})
-	public Response removeGesuchsperiodeDokument(
+	public Response removeVollmachtDokument(
 		@Nonnull @PathParam("fallId") String fallId,
 		@Context HttpServletResponse response) {
 
@@ -161,7 +161,7 @@ public class FallResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({SUPER_ADMIN, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public Response downloadGesuchsperiodeDokument(
+	public Response downloadVollmachtDokument(
 		@Nonnull @PathParam("fallId") String fallId,
 		@Context HttpServletResponse response
 	) {
@@ -179,6 +179,37 @@ public class FallResource {
 					.entity("Vollmacht Dokument fuer SozialdienstFall: "
 						+ fallId
 						+ " kann nicht gelesen werden")
+					.build();
+			}
+		}
+
+		return Response.status(Status.NO_CONTENT).build();
+	}
+
+	@ApiOperation("return the Vollmacht Dokument for the given language")
+	@GET
+	@Path("/generateVollmachtDokument/{fallId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST})
+	public Response generateVollmachtDokument(
+		@Nonnull @PathParam("fallId") String fallId,
+		@Context HttpServletResponse response
+	) {
+		requireNonNull(fallId);
+
+		final byte[] content = fallService.generateVollmachtDokument(fallId);
+
+		if (content != null && content.length > 0) {
+			try {
+				return RestUtil.buildDownloadResponse(true, "vollmacht.pdf",
+					"application/octet-stream", content);
+
+			} catch (IOException e) {
+				return Response.status(Status.NOT_FOUND)
+					.entity("Vollmacht Dokument fuer SozialdienstFall: "
+						+ fallId
+						+ " kann nicht generiert werden")
 					.build();
 			}
 		}

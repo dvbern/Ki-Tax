@@ -352,4 +352,21 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 		}
 		return fall.getSozialdienstFall().getVollmacht();
 	}
+
+	@Override
+	public byte[] generateVollmachtDokument(@Nonnull String fallId) {
+		final Fall fall = findFall(fallId).orElseThrow(
+			() -> new EbeguEntityNotFoundException(
+				"generateVollmachtDokument - findFall",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				fallId)
+		);
+		if (fall.getSozialdienstFall() == null) {
+			throw new EbeguEntityNotFoundException(
+				"generateVollmachtDokument - getSozialdienstFall",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				fallId);
+		}
+		return new byte[0];
+	}
 }
