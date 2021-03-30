@@ -168,4 +168,17 @@ export class FerienbetreuungService {
             tap(() => this.updateFerienbetreuungContainerStore(containerId)),
         );
     }
+
+    public falscheAngabenNutzung(
+        containerId: string,
+        nutzung: TSFerienbetreuungAngabenNutzung,
+    ): Observable<TSFerienbetreuungAngabenNutzung> {
+        return this.http.put(
+            `${this.API_BASE_URL}/${encodeURIComponent(containerId)}/nutzung/falsche-angaben`,
+            this.ebeguRestUtil.ferienbetreuungNutzungToRestObject({}, nutzung),
+        ).pipe(
+            map(restNutzung => this.parseRestNutzung(restNutzung)),
+            tap(() => this.updateFerienbetreuungContainerStore(containerId)),
+        );
+    }
 }

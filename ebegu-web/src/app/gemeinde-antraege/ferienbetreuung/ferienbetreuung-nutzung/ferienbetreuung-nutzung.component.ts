@@ -173,4 +173,8 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
             });
     }
 
+    public onFalscheAngaben(): void {
+        this.ferienbetreuungService.falscheAngabenNutzung(this.container.id, this.nutzung)
+            .subscribe(() => this.handleSaveSuccess(), (error: any) => this.handleSaveError(error));
+    }
 }
