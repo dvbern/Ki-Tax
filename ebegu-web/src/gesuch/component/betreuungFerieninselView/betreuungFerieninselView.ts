@@ -227,6 +227,15 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
             && !this.isAnmeldungNichtFreigegeben();
     }
 
+    public isAblehnenMoeglich(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.betreuung.belegungFerieninsel.ferienname)
+            && !this.isAnmeldungNichtFreigegeben();
+    }
+
+    public showWarnungAnmeldeschlussAbgelaufen(): boolean {
+        return this.isAnmeldeschlussAbgelaufen() && (this.betreuung.isEnabled() || this.isFalscheInstitutionAndUserInRole());
+    }
+
     public getButtonTextSpeichern(): string {
         return this.direktAnmeldenSchulamt() ? 'ANMELDEN_FERIENINSEL' : 'SPEICHERN';
     }
@@ -345,5 +354,9 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         if (this.form.$valid) {
             this.anmeldungSchulamtUebernehmen({isScolaris: false});
         }
+    }
+
+    public getCurrentFerienNameTranslated(): string {
+        return this.$translate.instant(this.ferieninselStammdaten.ferienname);
     }
 }
