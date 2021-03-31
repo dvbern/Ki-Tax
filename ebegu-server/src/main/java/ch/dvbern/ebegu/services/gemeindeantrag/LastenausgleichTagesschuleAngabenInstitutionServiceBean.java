@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer_;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -309,8 +310,12 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 			joinBelegungTagesschule.get(BelegungTagesschule_.eintrittsdatum),
 			 stichtag
 		);
+		final Predicate predicateUebernommen = cb.equal(
+			root.get(AnmeldungTagesschule_.betreuungsstatus),
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
+		);
 
-		query.where(predicateGesuch, predicateStammdaten, predicateGueltig, predicateEingeschrieben);
+		query.where(predicateGesuch, predicateStammdaten, predicateGueltig, predicateEingeschrieben, predicateUebernommen);
 
 		return persistence.getCriteriaResults(query);
 
