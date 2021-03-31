@@ -24,6 +24,12 @@
         </div>
     </div>
 
+    <div class="well well-with-button" *ngIf="angabenAusKibon">
+        <span translate>LATS_AUTOMATISCHE_BERECHNUNGEN_HINT</span>
+<!--        <div class="flex-whitespace-item"></div>-->
+        <button class="dv-btn cancel-button"><i class="fa fa-refresh"></i>{{'LATS_NEU_BERECHNEN' | translate}}</button>
+    </div>
+
     <form *ngIf="form" [formGroup]="form" class="tagesschule-angaben-wrapper" (ngSubmit)="onFormSubmit()">
 
         <h3 translate class="uppercase">ALLGEMEINE_ANGABEN</h3>

@@ -51,7 +51,7 @@ export class TagesschulenAngabenComponent {
     public form: FormGroup;
 
     private subscription: Subscription;
-    private angabenAusKibon: boolean;
+    public angabenAusKibon: boolean;
     public latsAngabenInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer;
     public gesuchsPeriode: TSGesuchsperiode;
     public formFreigebenTriggered: boolean = false;

@@ -2417,6 +2417,8 @@
     "FERIENBETREUUNG_AKTIV": "Ferienbetreuung aktiviert",
     "DELETE_ANTRAEGE_ERROR": "Ein Fehler beim Löschen der Anträge ist aufgetreten",
     "LATS_ANTRAEGE_LOESCHEN": "Anträge löschen",
+    "LATS_AUTOMATISCHE_BERECHNUNGEN_HINT": "Sie haben angegeben, dass alle Tagesschulanmeldungen in kiBon erfasst werden. Deshalb werden einige Werte durch kiBon berechnet.",
+    "LATS_NEU_BERECHNEN": "Neu berechnen",
     "WIRKLICH_LOESCHEN": "Wirklich löschen?",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
