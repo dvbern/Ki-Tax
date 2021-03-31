@@ -19,19 +19,19 @@
 
 dv-input-container-x {
     .dv-input-container {
-        &.vertical-align {
-            flex-direction: column;
-            > label, > mat-form-field {
-                width: 100%;
-                flex-grow: 1;
-            }
-        }
-
         align-items: center;
         display: flex;
         justify-content: space-between;
         margin-bottom: 2.3rem;
         width: 100%;
+
+        &.vertical-align {
+            flex-direction: column;
+            > label, > mat-form-field {
+                flex-grow: 1;
+                width: 100%;
+            }
+        }
 
         input, textarea {
             font-family: Open Sans, Arial, Helvetica, sans-serif;

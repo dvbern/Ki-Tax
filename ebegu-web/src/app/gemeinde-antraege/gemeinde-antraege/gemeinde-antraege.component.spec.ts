@@ -53,7 +53,7 @@ const controlContainerSpy = jasmine.createSpyObj<ControlContainer>(ControlContai
     ['path']);
 
 const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-    ['isOneOfRoles', 'principal$']);
+    ['isOneOfRoles', 'principal$', 'isRole']);
 
 const gemeindeAntragServiceSpy = jasmine.createSpyObj<GemeindeAntragService>(GemeindeAntragService.name, ['getTypesForRole']);
 
