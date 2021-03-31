@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.pdfgenerator.AnmeldebestaetigungTSPDFGenerator;
@@ -62,6 +63,7 @@ import ch.dvbern.ebegu.pdfgenerator.RueckforderungPrivateVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.RueckforderungPublicVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator.Art;
+import ch.dvbern.ebegu.pdfgenerator.VollmachtPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.ZweiteMahnungPdfGenerator;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.util.DokumenteUtil;
@@ -387,13 +389,21 @@ public class PDFServiceBean implements PDFService {
 	@Override
 	public byte[] generateVollmachtSozialdienst(
 		@Nonnull SozialdienstFall sozialdienstFall,
-		@Nonnull Locale locale
+		@Nonnull Sprache sprache
 	) throws MergeDocException {
 
 		Objects.requireNonNull(sozialdienstFall, "Das Argument 'sozialdienstFall' darf nicht leer sein");
 
-	//RueckforderungProvVerfuegungPdfGenerator pdfGenerator ;
-	//return generateDokument(pdfGenerator, false, locale);
-		return new byte[0];
+		VollmachtPdfGenerator pdfGenerator = new VollmachtPdfGenerator(sprache, sozialdienstFall);
+
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			pdfGenerator.generate(baos);
+			byte[] content = baos.toByteArray();
+			return content;
+		} catch (InvoiceGeneratorException e) {
+			throw new MergeDocException("generateDokument()",
+				"Bei der Generierung des Dokuments ist ein Fehler aufgetreten", e, OBJECTARRAY);
+		}
 	}
 }

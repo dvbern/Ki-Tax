@@ -85,4 +85,12 @@ export class FallRS {
     public getServiceName(): string {
         return 'FallRS';
     }
+
+    public getVollmachtDokumentAccessTokenGeneratedDokument(fallId: string): IPromise<BlobPart> {
+        return this.$http.get(`${this.serviceURL}/generateVollmachtDokument/${encodeURIComponent(fallId)}`,
+            {responseType: 'blob'})
+            .then((response: any) => {
+                return response.data;
+            });
+    }
 }

@@ -52,9 +52,11 @@ import ch.dvbern.ebegu.entities.Gesuchsteller_;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
@@ -93,6 +95,9 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 
 	@Inject
 	private SozialdienstService sozialdienstService;
+
+	@Inject
+	private PDFService pdfService;
 
 	@Nonnull
 	@Override
@@ -354,7 +359,7 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 	}
 
 	@Override
-	public byte[] generateVollmachtDokument(@Nonnull String fallId) {
+	public byte[] generateVollmachtDokument(@Nonnull String fallId) throws MergeDocException {
 		final Fall fall = findFall(fallId).orElseThrow(
 			() -> new EbeguEntityNotFoundException(
 				"generateVollmachtDokument - findFall",
@@ -367,6 +372,7 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				fallId);
 		}
-		return new byte[0];
+
+			return pdfService.generateVollmachtSozialdienst(fall.getSozialdienstFall(), Sprache.DEUTSCH);
 	}
 }

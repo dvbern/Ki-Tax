@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.services.FallService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -195,7 +196,7 @@ public class FallResource {
 	public Response generateVollmachtDokument(
 		@Nonnull @PathParam("fallId") String fallId,
 		@Context HttpServletResponse response
-	) {
+	) throws MergeDocException {
 		requireNonNull(fallId);
 
 		final byte[] content = fallService.generateVollmachtDokument(fallId);
@@ -203,7 +204,7 @@ public class FallResource {
 		if (content != null && content.length > 0) {
 			try {
 				return RestUtil.buildDownloadResponse(true, "vollmacht.pdf",
-					"application/octet-stream", content);
+				 	"application/octet-stream", content);
 
 			} catch (IOException e) {
 				return Response.status(Status.NOT_FOUND)

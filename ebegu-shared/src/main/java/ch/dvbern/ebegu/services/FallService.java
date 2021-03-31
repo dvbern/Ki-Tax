@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
+import ch.dvbern.ebegu.errors.MergeDocException;
 
 /**
  * Service zum Verwalten von Fallen
@@ -110,5 +111,5 @@ public interface FallService {
 
 	byte[] downloadVollmachtDokument(@Nonnull String fallId);
 
-	byte[] generateVollmachtDokument(@Nonnull String fallId);
+	byte[] generateVollmachtDokument(@Nonnull String fallId) throws MergeDocException;
 }

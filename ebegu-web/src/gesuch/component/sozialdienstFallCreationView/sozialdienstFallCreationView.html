@@ -137,6 +137,24 @@
                     </div>
                 </fieldset>
 
+                <!-- Vollmacht Dokument herunterladen -->
+                <div class="row view-title margin-top-30" ng-if="!vm.sozialdienstFall.isNew() && !vm.isVollmachtHochgeladet">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <h1>
+                            <span data-translate="VOLLMACHT_HERUNTERLADEN"></span>
+                        </h1>
+                        <hr class="header"/>
+                    </div>
+                    <div class="col-md-12">
+
+                        <button type="button" class="dv-btn btn-link link-underline"
+                                ng-click="vm.generateVollmachtPDF()">
+                            <i class="fa fa-file-text-o"></i>
+                            <span data-translate="PDF_VOLLMACHT_HERUNTERLADEN"></span>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Vollmacht Dokument hochladen -->
                 <div class="row view-title margin-top-30" ng-if="!vm.sozialdienstFall.isNew()">
                     <div class="col-sm-12 dv-input-container-medium">

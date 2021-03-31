@@ -2412,5 +2412,7 @@
     "GUELTIGKEIT_OUTSIDE_INSTITUTION_GUELTIGKEIT": "Die eingegebenen Daten der Betreuung liegen ausserhalb des gültigen Zeitraums ({{gueltigAb}} - {{gueltigBis}}) dieser Institution",
     "LASTENAUSGLEICH_TAGESSCHULEN_AKTIV": "Lastenausgleich Tagesschulen aktiviert",
     "FERIENBETREUUNG_AKTIV": "Ferienbetreuung aktiviert",
+    "VOLLMACHT_HERUNTERLADEN": "Vollmacht Dokument herunterladen",
+    "PDF_VOLLMACHT_HERUNTERLADEN": "Vollamcht Dokument generieren und herunterladen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

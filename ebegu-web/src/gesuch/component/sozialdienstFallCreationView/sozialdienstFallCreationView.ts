@@ -237,11 +237,23 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     public downloadVollmachtDokument(): void {
         this.fallRS.downloadVollmachtDokument(this.gesuchModelManager.getFall().id).then(
             response => {
-                let file;
-                let filename;
-                file = new Blob([response], {type: 'application/pdf'});
-                filename = this.$translate.instant('VOLLMACHT_DATEI_NAME');
-                this.downloadRS.openDownload(file, filename);
+                this.openDownloadForFile(response);
             });
+    }
+
+    public generateVollmachtPDF(): void {
+        this.fallRS.getVollmachtDokumentAccessTokenGeneratedDokument(this.gesuchModelManager.getFall().id)
+            .then(
+                response => {
+                    this.openDownloadForFile(response);
+                });
+    }
+
+    private openDownloadForFile(response: BlobPart): void {
+        let file;
+        let filename;
+        file = new Blob([response], {type: 'application/pdf'});
+        filename = this.$translate.instant('VOLLMACHT_DATEI_NAME');
+        this.downloadRS.openDownload(file, filename);
     }
 }

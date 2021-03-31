@@ -203,7 +203,7 @@ public class VollmachtPdfGenerator {
 		float x, Font font, float size) throws DocumentException {
 		ColumnText fz = new ColumnText(dirPdfContentByte);
 		final float height = millimetersToPoints(20);
-		final float width = millimetersToPoints(275);
+		final float width = millimetersToPoints(170);
 		final float loverLeftX = millimetersToPoints(x);
 		final float loverLeftY = y;
 		fz.setSimpleColumn(loverLeftX, loverLeftY, loverLeftX + width, loverLeftY + height);
