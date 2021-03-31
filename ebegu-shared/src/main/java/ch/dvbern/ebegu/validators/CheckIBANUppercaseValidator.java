@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.validators;
 
 import java.util.regex.Pattern;
 
+import javax.annotation.Nullable;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -32,7 +33,11 @@ public class CheckIBANUppercaseValidator implements ConstraintValidator<CheckIBA
 	}
 
 	@Override
-	public boolean isValid(IBAN iban, ConstraintValidatorContext constraintValidatorContext) {
+	public boolean isValid(@Nullable IBAN iban, ConstraintValidatorContext constraintValidatorContext) {
+		// we should allow nullable iban fields
+		if (iban == null) {
+			return true;
+		}
 		String ibanString = iban.getIban();
 		for(int i = 0; i < iban.getIban().length(); i++) {
 			char current = ibanString.charAt(i);

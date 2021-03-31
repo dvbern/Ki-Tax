@@ -908,7 +908,7 @@
                 <unpack.artifactId>wildfly-dist</unpack.artifactId>
                 <unpack.version>${version.wildfly.container}</unpack.version>
                 <unpack.directory>${project.build.directory}</unpack.directory>
-                <surefire.excludedGroups/>
+                <surefire.excludedGroups />
             </properties>
             <dependencies>
                 <dependency>
