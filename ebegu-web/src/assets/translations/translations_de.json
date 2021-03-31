@@ -1358,7 +1358,7 @@
     "FIN_SIT_NOT_REQUIRED": "Die finanziellen Verhältnisse müssen in diesem Fall nicht erfasst werden. Klicken Sie auf \"Weiter\", um fortzufahren.",
     "FERIENNAME": "Ferien",
     "WARN_FERIEN_NOCH_NICHT_BUCHBAR": "Für diese Ferien kann noch keine Ferieninsel gebucht werden. Versuchen Sie es später wieder.",
-    "WARN_FERIEN_NICHT_MEHR_BUCHBAR": "Der Anmeldeschluss für diese Ferieninsel ist bereits abgelaufen!",
+    "WARN_FERIEN_NICHT_MEHR_BUCHBAR": "Der Anmeldeschluss für die {{ferien}} ist bereits abgelaufen!",
     "WARN_FERIEN_KEINE_TAGE_GEWAEHLT": "Bitte wählen Sie mindestens einen Tag aus",
     "WARN_FERIEN_AUSWEICHSTANDORT": "Die gewählte Ferieninsel findet in dieser Feriensequenz am Standort {{standort}} statt.",
     "WARN_TAGESSCHULE_KEIN_MODUL_GEWAEHLT": "Bitte wählen Sie mindestens ein Modul aus",
