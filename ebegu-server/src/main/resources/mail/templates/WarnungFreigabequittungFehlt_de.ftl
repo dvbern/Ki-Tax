@@ -7,6 +7,8 @@
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="tsOnlyAntrag" type="java.lang.Boolean" -->
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
+<#-- @ftlvariable name="gesuchsteller" type="ch.dvbern.ebegu.entities.Gesuchsteller" -->
+<#-- @ftlvariable name="isSozialdienst" type="java.lang.Boolean" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Freigabequittung ausstehend</@base64Header>
@@ -28,19 +30,19 @@ ${templateConfiguration.mailCss}
 		Guten Tag
 	</p>
 	<p>
-		Sie haben via kiBon Ihr Gesuch vollständig erfasst, besten Dank!
+		Sie haben via kiBon <#if isSozialdienst>den Antrag für ${gesuchsteller.fullName}<#else>Ihren Antrag</#if> vollständig erfasst, besten Dank!
 	</p>
 	<p>
 		Leider ist Ihre Freigabequittung bisher nicht bei uns eingetroffen.
         <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/freigabe/${gesuch.id}">Hier</a>
 		können Sie Ihre Freigabequittung nochmals herunterladen. Bitte schicken Sie uns die unterschriebene
         Freigabequittung umgehend per Post an ${adresse}.
-		Andernfalls gilt Ihr Gesuch als nicht eingereicht, kann nicht bearbeitet werden und wird am
+		Andernfalls gilt Ihr Antrag als nicht eingereicht, kann nicht bearbeitet werden und wird am
 		${datumLoeschung} automatisch gelöscht.
 	</p>
     <#if tsOnlyAntrag == false>
 		<p>
-			Bitte beachten Sie, dass der Betreuungsgutschein auf den Folgemonat nach Einreichung des vollständigen Gesuchs
+			Bitte beachten Sie, dass der Betreuungsgutschein auf den Folgemonat nach Einreichung des vollständigen Antrags
 			und ab Beginn des Betreuungsverhältnisses in der neuen Periode ausgestellt wird.
 		</p>
     </#if>
@@ -50,7 +52,7 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		<#if configuration.isDevmode>
-		<b>Hierbei handelt es sich um eine Nachricht von einem Testsystem. Dieses Testsystem wird für Schulungen verwendet. Über dieses System abgehandelte Gesuche verfügen über keine Zahlungsberechtigung!</b><br><br>
+		<b>Hierbei handelt es sich um eine Nachricht von einem Testsystem. Dieses Testsystem wird für Schulungen verwendet. Über dieses System abgehandelte Anträge verfügen über keine Zahlungsberechtigung!</b><br><br>
 		</#if>
 		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
 	</p>

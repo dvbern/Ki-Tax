@@ -22,6 +22,7 @@ import {of} from 'rxjs';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {WindowRef} from '../../../core/service/windowRef.service';
 import {SharedModule} from '../../../shared/shared.module';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
@@ -52,6 +53,7 @@ describe('FerienbetreuungAngebotComponent', () => {
                 HttpClientModule
             ],
             providers: [
+                WindowRef,
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: FerienbetreuungService, useValue: ferienbetreuungServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},

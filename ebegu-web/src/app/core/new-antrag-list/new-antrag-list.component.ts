@@ -297,6 +297,12 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
             } else {
                 this.hiddenColumns.push('verantwortlicheGemeinde');
             }
+            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle())) {
+                this.hiddenColumns.push('verantwortlicheBG');
+                this.hiddenColumns.push('verantwortlicheTS');
+                this.hiddenColumns.push('verantwortlicheGemeinde');
+                this.hiddenColumns.push('dokumenteHochgeladen');
+            }
         }
         this.updateColumns();
     }
@@ -586,12 +592,14 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         } else {
             this.benutzerRS.getAllBenutzerBgOrGemeinde().then(response => {
                 this.userListBgOrGemeinde = response;
-                this.initialBgGemeindeUser = this.findUserByNameInList(this.initialFilter?.verantwortlicherBG, response);
+                this.initialBgGemeindeUser =
+                    this.findUserByNameInList(this.initialFilter?.verantwortlicherBG, response);
                 this.changeDetectorRef.markForCheck();
             });
             this.benutzerRS.getAllBenutzerTsOrGemeinde().then(response => {
                 this.userListTsOrGemeinde = response;
-                this.initialTsGemeindeUser = this.findUserByNameInList(this.initialFilter?.verantwortlicherTS, response);
+                this.initialTsGemeindeUser =
+                    this.findUserByNameInList(this.initialFilter?.verantwortlicherTS, response);
                 this.changeDetectorRef.markForCheck();
             });
         }

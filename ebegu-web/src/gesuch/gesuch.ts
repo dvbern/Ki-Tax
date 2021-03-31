@@ -354,7 +354,7 @@ export class GesuchRouteController implements IController {
     public getVerfuegenText(): string {
 
         if (this.gesuchModelManager.getGesuch()
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle())
             && !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) {
 
             return this.$translate.instant('MENU_PROVISORISCHE_BERECHNUNG');

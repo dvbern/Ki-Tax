@@ -7,6 +7,8 @@
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="tsOnlyAntrag" type="java.lang.Boolean" -->
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
+<#-- @ftlvariable name="gesuchsteller" type="ch.dvbern.ebegu.entities.Gesuchsteller" -->
+<#-- @ftlvariable name="isSozialdienst" type="java.lang.Boolean" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Confirmation des données à remettre</@base64Header>
@@ -28,7 +30,7 @@ ${templateConfiguration.mailCss}
 		Bonjour,
 	</p>
 	<p>
-		Vous avez déposé une demande via kiBon pour laquelle vos données n'ont pas encore été confirmées.
+		Vous avez déposé une demande <#if isSozialdienst>pour ${gesuchsteller.fullName} </#if>via kiBon pour laquelle vos données n'ont pas encore été confirmées.
 		Le formulaire, qui peut être téléchargé
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/freigabe/${gesuch.id}">ici</a>, est à remettre dûment signé et au plus vite par courrier postal à ${adresse} faute de quoi votre demande
 		sera considérée comme non valable. Elle ne pourra pas être traitée et sera automatiquement supprimée le ${datumLoeschung}.

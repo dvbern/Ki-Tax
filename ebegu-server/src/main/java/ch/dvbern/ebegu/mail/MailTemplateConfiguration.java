@@ -470,6 +470,8 @@ public class MailTemplateConfiguration {
 
 		paramMap.put(GESUCH, gesuch);
 		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(gesuch, gesuchsteller));
+		paramMap.put(GESUCHSTELLER, gesuchsteller);
+		paramMap.put("isSozialdienst", gesuch.getFall().getSozialdienstFall() != null);
 
 		return doProcessTemplate(appendLanguageToTemplateName(nameOfTemplate, sprache), paramMap);
 	}

@@ -360,19 +360,19 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			if (predicateObjectDto.getKinder() != null) {
 				predicates.add(cb.like(joinKinder.get(AbstractPersonEntity_.vorname), predicateObjectDto.getKindNameForLike()));
 			}
-			if (predicateObjectDto.getVerantwortlicherBG() != null) {
+			if (predicateObjectDto.getVerantwortlicherBG() != null && !role.isRoleSozialdienstabhaengig()) {
 				predicates.add(
 					cb.and(
 						cb.equal(joinVerantwortlicherBG.get(Benutzer_.fullName), predicateObjectDto.getVerantwortlicherBG())
 					));
 			}
-			if (predicateObjectDto.getVerantwortlicherTS() != null) {
+			if (predicateObjectDto.getVerantwortlicherTS() != null && !role.isRoleSozialdienstabhaengig()) {
 				predicates.add(
 					cb.and(
 						cb.equal(joinVerantwortlicherTS.get(Benutzer_.fullName), predicateObjectDto.getVerantwortlicherTS())
 					));
 			}
-			if (predicateObjectDto.getVerantwortlicherGemeinde() != null) {
+			if (predicateObjectDto.getVerantwortlicherGemeinde() != null && !role.isRoleSozialdienstabhaengig()) {
 				Predicate predicateBG = cb.equal(joinVerantwortlicherBG.get(Benutzer_.fullName), predicateObjectDto.getVerantwortlicherGemeinde());
 				Predicate predicateTS = cb.equal(joinVerantwortlicherTS.get(Benutzer_.fullName), predicateObjectDto.getVerantwortlicherGemeinde());
 				predicates.add(
