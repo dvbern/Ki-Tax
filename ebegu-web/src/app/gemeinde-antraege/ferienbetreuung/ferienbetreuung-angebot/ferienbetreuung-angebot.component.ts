@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {FormBuilder, Validators} from '@angular/forms';
+import {FormBuilder, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
@@ -102,13 +102,13 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             angebot: [
                 angebot?.angebot,
             ],
-            angebotKontaktpersonVorname: [
-                angebot?.angebotKontaktpersonVorname,
-            ],
-            angebotKontaktpersonNachname: [
-                angebot?.angebotKontaktpersonNachname,
-            ],
             angebotAdresse: this.fb.group({
+                kontaktpersonVorname: [
+                    angebot?.angebotKontaktpersonVorname,
+                ],
+                kontaktpersonNachname: [
+                    angebot?.angebotKontaktpersonNachname,
+                ],
                 strasse: [
                     angebot?.angebotAdresse?.strasse,
                 ],
@@ -205,9 +205,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
     // overwrite
     protected enableFormValidation(): void {
         this.form.get('angebot').setValidators(Validators.required);
-        this.form.get('angebotKontaktpersonVorname').setValidators(Validators.required);
-        this.form.get('angebotKontaktpersonNachname').setValidators(Validators.required);
-        this.enableAdressFormValidation();
+        this.enableAdressValidation();
 
         this.form.get('anzahlFerienwochenHerbstferien')
             .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
@@ -231,15 +229,17 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
     }
 
-    private enableAdressFormValidation(): void {
-        this.form.get('angebotAdresse').get('strasse').setValidators(Validators.required);
-        this.form.get('angebotAdresse').get('plz').setValidators(Validators.required);
-        this.form.get('angebotAdresse').get('ort').setValidators(Validators.required);
-    }
-
     public save(): void {
+        this.enableAdressValidation();
+
+        if (!this.form.valid) {
+            this.showValidierungFehlgeschlagenErrorMessage();
+            return;
+        }
         this.ferienbetreuungService.saveAngebot(this.container.id, this.formToObject())
             .subscribe(() => {
+                this.formValidationTriggered = false;
+                this.form.get('angebotAdresse').clearValidators();
                 this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
             }, err => {
@@ -250,6 +250,8 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
 
     private formToObject(): TSFerienbetreuungAngabenAngebot {
         this.angebot = this.form.value;
+        this.angebot.angebotKontaktpersonVorname = this.form.value.angebotAdresse.kontaktpersonVorname;
+        this.angebot.angebotKontaktpersonNachname = this.form.value.angebotAdresse.kontaktpersonNachname;
         const formAdresse = this.form.value.angebotAdresse;
 
         const adresse = new TSAdresse();
@@ -275,5 +277,55 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
     public onFalscheAngaben(): void {
         this.ferienbetreuungService.falscheAngabenAngebot(this.container.id, this.angebot)
             .subscribe(() => this.handleSaveSuccess(), (error: any) => this.handleSaveError(error));
+    }
+
+    // tslint:disable-next-line:cognitive-complexity
+    private adressValidValidator(): ValidatorFn {
+        return control => {
+            const strasse = control.get('strasse');
+            const ort = control.get('ort');
+            const plz = control.get('plz');
+            const vorname = control.get('kontaktpersonVorname');
+            const nachname = control.get('kontaktpersonNachname');
+
+            let formErroneous = false;
+
+            if ((strasse.value || ort.value || plz.value || vorname.value || nachname.value)) {
+                if (!strasse.value) {
+                    strasse.setErrors({required: true});
+                    formErroneous = true;
+                }
+                if (!ort.value) {
+                    ort.setErrors({required: true});
+                    formErroneous = true;
+                }
+                if (!plz.value) {
+                    plz.setErrors({required: true});
+                    formErroneous = true;
+                }
+                if (!vorname.value) {
+                    vorname.setErrors({required: true});
+                    formErroneous = true;
+                }
+                if (!nachname.value) {
+                    plz.setErrors({required: true});
+                    formErroneous = true;
+                }
+            } else {
+                strasse.setErrors(null);
+                ort.setErrors(null);
+                plz.setErrors(null);
+                vorname.setErrors(null);
+                nachname.setErrors(null);
+            }
+            return formErroneous ? {adressInvalid: true} : null;
+        };
+    }
+
+    protected enableAdressValidation(): void {
+        this.form.get('angebotAdresse').setValidators(this.adressValidValidator());
+        this.form.get('angebotAdresse').markAllAsTouched();
+
+        this.triggerFormValidation();
     }
 }

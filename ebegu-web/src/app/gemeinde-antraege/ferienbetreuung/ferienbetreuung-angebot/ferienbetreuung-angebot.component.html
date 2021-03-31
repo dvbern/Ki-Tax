@@ -29,7 +29,9 @@
         <div class="limit-width">
 
             <dv-input-container-x [verticalAlign]="true">
-                <label required [ngClass]="{'label-required-error': form && form.get('angebot').errors}" for="angebot_id">
+                <label required
+                       [ngClass]="{'label-required-error': form && form.get('angebot').errors}"
+                       for="angebot_id">
                     {{'FERIENBETREUUNG_NAME_ANGEBOT' | translate}}
                     <dv-tooltip inputId="angebot_id"
                                 [text]="'FERIENBETREUUNG_NAME_ANGEBOT_HINT' | translate">
@@ -51,48 +53,49 @@
             <mat-divider></mat-divider>
             <h3 translate class="uppercase">FERIENBETREUUNG_KONTAKTPERSON</h3>
 
-            <div class="row">
-
-                <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
-                    <label required
-                           for="angebotKontaktpersonVorname_id"
-                           [ngClass]="{'label-required-error': form && form.get('angebotKontaktpersonVorname').errors}">
-                        {{'VORNAME' | translate}}
-                    </label>
-                    <div class="flex-whitespace-item"></div>
-                    <mat-form-field floatLabel="always">
-                        <input type="text"
-                               matInput
-                               id="angebotKontaktpersonVorname_id"
-                               formControlName="angebotKontaktpersonVorname"
-                               class="form-control dv-input"/>
-                        <mat-error *ngIf="form && form.get('angebotKontaktpersonVorname').errors?.required"
-                                   translate>ERROR_REQUIRED
-                        </mat-error>
-                    </mat-form-field>
-                </dv-input-container-x>
-
-                <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
-                    <label required
-                           for="angebotKontaktpersonNachname_id"
-                           [ngClass]="{'label-required-error': form && form.get('angebotKontaktpersonNachname').errors}">
-                        {{'NAME' | translate}}
-                    </label>
-                    <div class="flex-whitespace-item"></div>
-                    <mat-form-field floatLabel="always">
-                        <input type="text"
-                               matInput
-                               id="angebotKontaktpersonNachname_id"
-                               formControlName="angebotKontaktpersonNachname"
-                               class="form-control dv-input"/>
-                        <mat-error *ngIf="form && form.get('angebotKontaktpersonNachname').errors?.required"
-                                   translate>ERROR_REQUIRED
-                        </mat-error>
-                    </mat-form-field>
-                </dv-input-container-x>
-            </div>
-
             <div formGroupName="angebotAdresse">
+                <div class="row">
+
+                    <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+                        <label required
+                               for="angebotKontaktpersonVorname_id"
+                               [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('kontaktpersonVorname').errors}">
+                            {{'VORNAME' | translate}}
+                        </label>
+                        <div class="flex-whitespace-item"></div>
+                        <mat-form-field floatLabel="always">
+                            <input type="text"
+                                   matInput
+                                   id="angebotKontaktpersonVorname_id"
+                                   formControlName="kontaktpersonVorname"
+                                   class="form-control dv-input"/>
+                            <mat-error *ngIf="form && form.get('angebotAdresse').get('kontaktpersonVorname').errors?.required"
+                                       translate>ERROR_REQUIRED
+                            </mat-error>
+                        </mat-form-field>
+                    </dv-input-container-x>
+
+                    <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+                        <label required
+                               for="angebotKontaktpersonNachname_id"
+                               [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('kontaktpersonNachname').errors}">
+                            {{'NAME' | translate}}
+                        </label>
+                        <div class="flex-whitespace-item"></div>
+                        <mat-form-field floatLabel="always">
+                            <input type="text"
+                                   matInput
+                                   id="angebotKontaktpersonNachname_id"
+                                   formControlName="kontaktpersonNachname"
+                                   class="form-control dv-input"/>
+                            <mat-error *ngIf="form && form.get('angebotAdresse').get('kontaktpersonNachname').errors?.required"
+                                       translate>ERROR_REQUIRED
+                            </mat-error>
+                        </mat-form-field>
+                    </dv-input-container-x>
+                </div>
+
+
                 <div class="row">
                     <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
                         <label required
@@ -102,7 +105,11 @@
                         </label>
                         <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
-                            <input type="text" id="strasse_id" matInput formControlName="strasse" class="form-control dv-input"/>
+                            <input type="text"
+                                   id="strasse_id"
+                                   matInput
+                                   formControlName="strasse"
+                                   class="form-control dv-input"/>
                             <mat-error *ngIf="form && form.get('angebotAdresse').get('strasse').errors?.required"
                                        translate>ERROR_REQUIRED
                             </mat-error>
@@ -115,7 +122,11 @@
                         </label>
                         <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
-                            <input type="text" id="hausnummer_id" matInput formControlName="hausnummer" class="form-control dv-input"/>
+                            <input type="text"
+                                   id="hausnummer_id"
+                                   matInput
+                                   formControlName="hausnummer"
+                                   class="form-control dv-input"/>
                         </mat-form-field>
                     </dv-input-container-x>
                 </div>
@@ -129,7 +140,11 @@
                         </label>
                         <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
-                            <input type="text" id="plz_id" matInput formControlName="plz" class="form-control dv-input"/>
+                            <input type="text"
+                                   id="plz_id"
+                                   matInput
+                                   formControlName="plz"
+                                   class="form-control dv-input"/>
                             <mat-error *ngIf="form && form.get('angebotAdresse').get('plz').errors?.required"
                                        translate>ERROR_REQUIRED
                             </mat-error>
@@ -144,7 +159,11 @@
                         </label>
                         <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
-                            <input type="text" id="ort_id" matInput formControlName="ort" class="form-control dv-input"/>
+                            <input type="text"
+                                   id="ort_id"
+                                   matInput
+                                   formControlName="ort"
+                                   class="form-control dv-input"/>
                             <mat-error *ngIf="form && form.get('angebotAdresse').get('ort').errors?.required"
                                        translate>ERROR_REQUIRED
                             </mat-error>
@@ -229,7 +248,9 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label required for="anzahl_tage_id" [ngClass]="{'label-required-error': form && form.get('anzahlTage').errors}">
+            <label required
+                   for="anzahl_tage_id"
+                   [ngClass]="{'label-required-error': form && form.get('anzahlTage').errors}">
                 {{'FERIENBETREUUNG_ANZAHL_TAGE' | translate }}
             </label>
             <div class="flex-whitespace-item"></div>
@@ -490,7 +511,9 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label for="betreuungsschluessel_id" required [ngClass]="{'label-required-error': form && form.get('betreuungsschluessel').errors}">
+            <label for="betreuungsschluessel_id"
+                   required
+                   [ngClass]="{'label-required-error': form && form.get('betreuungsschluessel').errors}">
                 {{'FERIENBETREUUNG_BETREUUNGSSCHLUESSEL' | translate }}
             </label>
             <div class="flex-whitespace-item"></div>
