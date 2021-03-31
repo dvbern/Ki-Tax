@@ -19,13 +19,27 @@ form {
 }
 
 .actions {
-    width: 100%;
     display: flex;
     justify-content: center;
+    width: 100%;
+
+    & > dv-loading-button {
+        margin: 0 5px;
+    }
+}
+
+.label-required-error {
+    color: red;
+}
+
+
+.pointer-cursor {
+    cursor: pointer;
 }
 
 #adresse-header, #kontaktperson-header {
     display: flex;
+
     .flex-whitespace-item {
         flex-grow: 1;
     }

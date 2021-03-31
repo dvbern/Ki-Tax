@@ -241,7 +241,7 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 			this.auszahlungsdaten
 		);
 		return nonNullObj.stream()
-			.anyMatch(Objects::isNull);
+			.noneMatch(Objects::isNull);
 	}
 
 	@Nonnull

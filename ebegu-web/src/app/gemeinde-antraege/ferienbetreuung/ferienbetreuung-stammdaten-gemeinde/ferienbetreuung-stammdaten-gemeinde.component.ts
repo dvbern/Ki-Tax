@@ -242,6 +242,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
     }
 
     protected enableFormValidation(): void {
+        this.enableStammdatenAuszahlungValidation();
         this.form.get('stammdatenKontaktpersonVorname').setValidators([Validators.required]);
         this.form.get('stammdatenKontaktpersonNachname').setValidators([Validators.required]);
         this.form.get('stammdatenKontaktpersonTelefon')
