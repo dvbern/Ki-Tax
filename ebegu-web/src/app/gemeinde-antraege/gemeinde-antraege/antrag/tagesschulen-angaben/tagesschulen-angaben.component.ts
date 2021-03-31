@@ -110,39 +110,15 @@ export class TagesschulenAngabenComponent {
             // A
             isLehrbetrieb: latsAngabenInstiution?.isLehrbetrieb,
             // B
-            anzahlEingeschriebeneKinder: {
-                value: latsAngabenInstiution?.anzahlEingeschriebeneKinder,
-                disabled: this.angabenAusKibon
-            },
-            anzahlEingeschriebeneKinderKindergarten: {
-                value: latsAngabenInstiution?.anzahlEingeschriebeneKinderKindergarten,
-                disabled: this.angabenAusKibon
-            },
-            anzahlEingeschriebeneKinderSekundarstufe: {
-                value: latsAngabenInstiution?.anzahlEingeschriebeneKinderSekundarstufe,
-                disabled: this.angabenAusKibon
-            },
-            anzahlEingeschriebeneKinderPrimarstufe: {
-                value: latsAngabenInstiution?.anzahlEingeschriebeneKinderPrimarstufe,
-                disabled: this.angabenAusKibon
-            },
+            anzahlEingeschriebeneKinder: latsAngabenInstiution?.anzahlEingeschriebeneKinder,
+            anzahlEingeschriebeneKinderKindergarten: latsAngabenInstiution?.anzahlEingeschriebeneKinderKindergarten,
+            anzahlEingeschriebeneKinderSekundarstufe: latsAngabenInstiution?.anzahlEingeschriebeneKinderSekundarstufe,
+            anzahlEingeschriebeneKinderPrimarstufe: latsAngabenInstiution?.anzahlEingeschriebeneKinderPrimarstufe,
             anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen: latsAngabenInstiution?.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen,
-            durchschnittKinderProTagFruehbetreuung: {
-                value: latsAngabenInstiution?.durchschnittKinderProTagFruehbetreuung,
-                disabled: this.angabenAusKibon
-            },
-            durchschnittKinderProTagMittag: {
-                value: latsAngabenInstiution?.durchschnittKinderProTagMittag,
-                disabled: this.angabenAusKibon
-            },
-            durchschnittKinderProTagNachmittag1: {
-                value: latsAngabenInstiution?.durchschnittKinderProTagNachmittag1,
-                disabled: this.angabenAusKibon
-            },
-            durchschnittKinderProTagNachmittag2: {
-                value: latsAngabenInstiution?.durchschnittKinderProTagNachmittag2,
-                disabled: this.angabenAusKibon
-            },
+            durchschnittKinderProTagFruehbetreuung: latsAngabenInstiution?.durchschnittKinderProTagFruehbetreuung,
+            durchschnittKinderProTagMittag: latsAngabenInstiution?.durchschnittKinderProTagMittag,
+            durchschnittKinderProTagNachmittag1: latsAngabenInstiution?.durchschnittKinderProTagNachmittag1,
+            durchschnittKinderProTagNachmittag2: latsAngabenInstiution?.durchschnittKinderProTagNachmittag2,
             betreuungsstundenEinschliesslichBesondereBeduerfnisse:
             latsAngabenInstiution?.betreuungsstundenEinschliesslichBesondereBeduerfnisse,
             // C
