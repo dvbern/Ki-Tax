@@ -57,9 +57,9 @@ export class TagesschulenAngabenComponent {
     public gesuchsPeriode: TSGesuchsperiode;
     public formFreigebenTriggered: boolean = false;
     public anzahlEingeschriebeneKinder: TSAnzahlEingeschriebeneKinder;
+    public abweichungenAnzahlKinder: number;
 
     private gemeindeAntragContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
-    private abweichungenAnzahlKinder: number;
 
     public constructor(
         private readonly lastenausgleichTSService: LastenausgleichTSService,
@@ -369,6 +369,9 @@ export class TagesschulenAngabenComponent {
     }
 
     private queryAnzahlEingeschriebeneKinder(): void {
+        if (!this.angabenAusKibon) {
+            return;
+        }
         this.tagesschulenAngabenRS.getAnzahlEingeschriebeneKinder(this.latsAngabenInstitutionContainer)
             .subscribe(anzahlEingeschriebeneKinder => {
                 this.anzahlEingeschriebeneKinder = anzahlEingeschriebeneKinder;

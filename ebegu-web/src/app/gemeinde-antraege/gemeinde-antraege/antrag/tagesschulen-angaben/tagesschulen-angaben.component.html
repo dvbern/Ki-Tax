@@ -170,6 +170,19 @@
             </mat-form-field>
         </dv-input-container-x>
 
+        <div class="well well-status-warten" *ngIf="abweichungenAnzahlKinder !== 0">
+            <i class="fa fa-exclamation" aria-hidden="true"></i>
+            <span>
+                <span translate>LATS_ABWEICHUNGEN_ANZAHL_KINDER</span>
+                <span *ngIf="anzahlEingeschriebeneKinder?.vorschulalter == 1">
+                    {{'LATS_ABWEICHUNGEN_ANZAHL_KINDER_VORSCHULALTER_HINT' | translate }}
+                </span>
+                <span *ngIf="anzahlEingeschriebeneKinder?.vorschulalter > 1">
+                    {{'LATS_ABWEICHUNGEN_ANZAHL_KINDER_VORSCHULALTER_HINT_MEHRZAHL' | translate:{numberAntraege: anzahlEingeschriebeneKinder?.vorschulalter} }}
+                </span>
+            </span>
+        </div>
+
         <dv-input-container-x>
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').errors}">
                 {{'LATS_ANZAHL_KINDER_BESONDERE_ANFORDERUNGEN' | translate}}

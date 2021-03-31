@@ -2417,6 +2417,9 @@
     "LATS_AUTOMATISCHE_BERECHNUNGEN_HINT": "Sie haben angegeben, dass alle Tagesschulanmeldungen in kiBon erfasst werden. Deshalb werden einige Werte durch kiBon berechnet.",
     "LATS_DURCH_KIBON_AUSFUELLEN": "Durch kiBon ausfüllen",
     "LATS_WARN_FILL_OUT_FROM_KIBON": "Achtung: Falls bereits Angaben in diesem Formular gemacht wurden, werden diese möglicherweise gelöscht",
+    "LATS_ABWEICHUNGEN_ANZAHL_KINDER": "Die Angaben zu Kindergarten-, Primar- und SekundarschülerInnen stimmen nicht mit der angegebenen Summe überein.",
+    "LATS_ABWEICHUNGEN_ANZAHL_KINDER_VORSCHULALTER_HINT_MEHRZAHL": " {{numberAntraege}} Anträge wurden für Kinder im Vorschulalter gemacht",
+    "LATS_ABWEICHUNGEN_ANZAHL_KINDER_VORSCHULALTER_HINT": " Ein Antrag wurde für ein Kind im Vorschulalter gemacht",
     "WIRKLICH_LOESCHEN": "Wirklich löschen?",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
