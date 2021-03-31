@@ -17,8 +17,11 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -28,20 +31,34 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
+import ch.dvbern.ebegu.entities.BelegungTagesschule;
+import ch.dvbern.ebegu.entities.BelegungTagesschule_;
+import ch.dvbern.ebegu.entities.Gesuch_;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
+import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer_;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionStatus;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
+import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.base.Preconditions;
@@ -62,6 +79,9 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
+
+	@Inject
+	private GesuchsperiodeService gesuchsperiodeService;
 
 	@Override
 	public void createLastenausgleichTagesschuleInstitution(
@@ -194,6 +214,105 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		fallContainer.setStatus(LastenausgleichTagesschuleAngabenInstitutionStatus.IN_PRUEFUNG_GEMEINDE);
 
 		return persistence.persist(fallContainer);
+
+	}
+
+	@Override
+	public @Nonnull Map<String, Integer> calculateAnzahlEingeschriebeneKinder(
+		@Nonnull LastenausgleichTagesschuleAngabenInstitution angabenInstitution,
+		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer container
+	) {
+		Preconditions.checkNotNull(angabenInstitution);
+		Preconditions.checkNotNull(container);
+
+		authorizer.checkWriteAuthorization(container);
+
+		InstitutionStammdaten stammdaten = institutionStammdatenService.fetchInstitutionStammdatenByInstitution(
+			container.getInstitution().getId(), false
+		);
+		if (stammdaten == null) {
+			throw new EbeguEntityNotFoundException("calculateAngabenFromKiBon", container.getInstitution().getId());
+		}
+
+		List<AnmeldungTagesschule> anmeldungenTagesschule =
+			findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode(
+				stammdaten, container.getGesuchsperiode()
+			);
+
+		int countVorschulalter = 0;
+		int countKindergarten = 0;
+		int countPrimarstufe = 0;
+		int countSekundarstufe = 0;
+
+		for (AnmeldungTagesschule anmeldungTagesschule : anmeldungenTagesschule) {
+			EinschulungTyp einschulungTyp = anmeldungTagesschule.getKind().getKindJA().getEinschulungTyp();
+			if (einschulungTyp == null) {
+				continue;
+			}
+			if (!einschulungTyp.isEingeschult()) {
+				countVorschulalter++;
+			} else if (einschulungTyp.isKindergarten()) {
+				countKindergarten++;
+			} else if (einschulungTyp.isPrimarstufe()) {
+				countPrimarstufe++;
+			} else if (einschulungTyp.isSekundarstufe()) {
+				countSekundarstufe++;
+			}
+		}
+
+		HashMap<String, Integer> anzahlKinder = new HashMap<>();
+		anzahlKinder.put("overall", countVorschulalter + countKindergarten + countPrimarstufe + countSekundarstufe);
+		anzahlKinder.put("vorschulalter", countVorschulalter);
+		anzahlKinder.put("kindergarten", countKindergarten);
+		anzahlKinder.put("primarstufe", countPrimarstufe);
+		anzahlKinder.put("sekundarstufe", countSekundarstufe);
+
+		return anzahlKinder;
+	}
+
+	@Nonnull
+	private List<AnmeldungTagesschule> findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode(
+		@Nonnull InstitutionStammdaten stammdaten,
+		@Nonnull Gesuchsperiode gesuchsperiode
+		) {
+
+//		TODO: use correct date
+		LocalDate stichtag = LocalDate.of(2020, 9, 15);
+		Gesuchsperiode gesuchsperiodeAmStichtag = gesuchsperiodeService.getGesuchsperiodeAm(stichtag)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode",
+				"Keine Gesuchsperiode für Stichtag " + stichtag.toString() + " gefunden"
+			));
+
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery<AnmeldungTagesschule> query = cb.createQuery(AnmeldungTagesschule.class);
+		Root<AnmeldungTagesschule> root = query.from(AnmeldungTagesschule.class);
+
+		Join<AnmeldungTagesschule, KindContainer> joinKindContainer = root.join(AnmeldungTagesschule_.kind);
+		Join<AnmeldungTagesschule, BelegungTagesschule> joinBelegungTagesschule =
+			root.join(AnmeldungTagesschule_.belegungTagesschule);
+
+
+		final Predicate predicateGesuch = cb.equal(
+			joinKindContainer.get(KindContainer_.gesuch)
+				.get(Gesuch_.gesuchsperiode)
+				.get(Gesuchsperiode_.id),
+			gesuchsperiodeAmStichtag.getId()
+		);
+		final Predicate predicateStammdaten = cb.equal(
+			root.get(
+				AnmeldungTagesschule_.institutionStammdaten).get(InstitutionStammdaten_.id),
+				stammdaten.getId()
+		);
+		final Predicate predicateGueltig = cb.equal(root.get(AnmeldungTagesschule_.gueltig), Boolean.TRUE);
+		final Predicate predicateEingeschrieben = cb.lessThanOrEqualTo(
+			joinBelegungTagesschule.get(BelegungTagesschule_.eintrittsdatum),
+			 stichtag
+		);
+
+		query.where(predicateGesuch, predicateStammdaten, predicateGueltig, predicateEingeschrieben);
+
+		return persistence.getCriteriaResults(query);
 
 	}
 

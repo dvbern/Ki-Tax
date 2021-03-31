@@ -23,6 +23,7 @@ import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
+import {TSAnzahlEingeschriebeneKinder} from '../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
 import {TSFerienbetreuungAngaben} from '../models/gemeindeantrag/TSFerienbetreuungAngaben';
 import {TSFerienbetreuungAngabenAngebot} from '../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenContainer} from '../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
@@ -5136,5 +5137,16 @@ export class EbeguRestUtil {
             return sozialdienstFallTS;
         }
         return undefined;
+    }
+
+    public parseAnzahlEingeschriebeneKinder(
+        anzahlEingeschriebeneKinder: TSAnzahlEingeschriebeneKinder,
+        restAnzahlEingeschriebeneKinder: any
+    ): TSAnzahlEingeschriebeneKinder {
+        anzahlEingeschriebeneKinder.vorschulalter = restAnzahlEingeschriebeneKinder.vorschulalter;
+        anzahlEingeschriebeneKinder.kindergarten = restAnzahlEingeschriebeneKinder.kindergarten;
+        anzahlEingeschriebeneKinder.primarstufe = restAnzahlEingeschriebeneKinder.primarstufe;
+        anzahlEingeschriebeneKinder.sekundarstufe = restAnzahlEingeschriebeneKinder.sekundarstufe;
+        return anzahlEingeschriebeneKinder;
     }
 }

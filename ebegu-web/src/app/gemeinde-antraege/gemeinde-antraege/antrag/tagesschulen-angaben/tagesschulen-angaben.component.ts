@@ -377,4 +377,11 @@ export class TagesschulenAngabenComponent {
             this.$state.go(parentState);
         }
     }
+
+    public fillOutAnzahlEingeschriebeneKinder(): void {
+        this.tagesschulenAngabenRS.getAnzahlEingeschriebeneKinder(this.latsAngabenInstitutionContainer)
+            .subscribe(data => {
+                console.log(data);
+            });
+    }
 }

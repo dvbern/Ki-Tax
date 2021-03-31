@@ -18,11 +18,13 @@
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 
 /**
@@ -74,4 +76,10 @@ public interface LastenausgleichTagesschuleAngabenInstitutionService {
 
 	LastenausgleichTagesschuleAngabenInstitutionContainer latsAngabenInstitutionContainerWiederOeffnen(
 			LastenausgleichTagesschuleAngabenInstitutionContainer fallContainer);
+
+	@Nonnull
+	Map<String, Integer> calculateAnzahlEingeschriebeneKinder(
+		@Nonnull LastenausgleichTagesschuleAngabenInstitution angabenInstitution,
+		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer container
+	);
 }
