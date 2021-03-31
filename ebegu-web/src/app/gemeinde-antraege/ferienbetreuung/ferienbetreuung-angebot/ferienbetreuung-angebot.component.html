@@ -309,7 +309,7 @@
 
         <dv-input-container-x>
             <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('betreuungErfolgtTagsueber').errors}"
+                   [ngClass]="{'label-required-error': formValidationTriggered && form.get('betreuungErfolgtTagsueber').errors}"
                    id="betreuungErfolgtTagsueber_id">
                 {{'FERIENBETREUUNG_BETREUUNG_ERFOLGT_TAGSUEBER' | translate}}
             </label>
@@ -435,7 +435,7 @@
 
         <dv-input-container-x>
             <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('leitungDurchPersonMitAusbildung').errors}">
+                   [ngClass]="{'label-required-error': formValidationTriggered && form.get('leitungDurchPersonMitAusbildung').errors}">
                 {{'FERIENBETREUUNG_LEITUNG_DURCH_PERSON_MIT_AUSBILDUNG' | translate}}
             </label>
             <div class="flex-whitespace-item"></div>
@@ -453,7 +453,7 @@
 
         <dv-input-container-x>
             <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('betreuungDurchPersonenMitErfahrung').errors}">
+                   [ngClass]="{'label-required-error': formValidationTriggered && form.get('betreuungDurchPersonenMitErfahrung').errors}">
                 {{'FERIENBETREUUNG_LEITUNG_DURCH_PERSON_MIT_ERFAHRUNG' | translate}}
             </label>
             <div class="flex-whitespace-item"></div>
@@ -471,7 +471,7 @@
 
         <dv-input-container-x>
             <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlKinderAngemessen').errors}">
+                   [ngClass]="{'label-required-error': formValidationTriggered && form.get('anzahlKinderAngemessen').errors}">
                 {{'FERIENBETREUUNG_ANZAHL_KINDER_ANGEMESSEN' | translate}}
                 <dv-tooltip [text]="'FERIENBETREUUNG_ANZAHL_KINDER_ANGEMESSEN_HINT' | translate"></dv-tooltip>
             </label>

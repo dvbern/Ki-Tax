@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {FormBuilder, Validators} from '@angular/forms';
+import {FormBuilder, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
@@ -46,7 +46,7 @@ const LOG = LogFactory.createLog('FerienbetreuungStammdatenGemeindeComponent');
 })
 export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbetreuungFormular implements OnInit {
 
-    public formFreigebenTriggered: false;
+    public formValidationTriggered = true;
     public bfsGemeinden: TSBfsGemeinde[];
 
     private stammdaten: TSFerienbetreuungAngabenStammdaten;
@@ -117,7 +117,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                 ort: [
                     stammdaten?.stammdatenAdresse?.ort,
                 ],
-            }),
+            }, {validators: this.adressValidValidator()}),
             stammdatenKontaktpersonVorname: [
                 stammdaten?.stammdatenKontaktpersonVorname,
             ],
@@ -156,9 +156,9 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
             vermerkAuszahlung: [
                 stammdaten?.vermerkAuszahlung,
             ],
-        }, {
-            updateOn: 'blur',
         });
+        this.form.get('stammdatenAdresse').markAllAsTouched();
+        this.form.get('stammdatenAdresse').get('plz').markAllAsTouched();
     }
 
     protected enableFormValidation(): void {
@@ -169,7 +169,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
             .setValidators([Validators.required, Validators.pattern(CONSTANTS.PATTERN_PHONE)]);
         this.form.get('stammdatenKontaktpersonEmail')
             .setValidators([Validators.required, Validators.pattern(CONSTANTS.PATTERN_EMAIL)]);
-        this.enableKontoinhaberValidation();
+        this.enableAuszahlungValidation();
     }
 
     private enableAdresseStammdatenValidation(): void {
@@ -180,22 +180,39 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         group.get('ort').setValidators([Validators.required]);
     }
 
-    // We make a check for auszahlungsdaten and adresse if any of their fields are set
-    private enableSaveValidations(): void {
-        if (this.form.get('adresseKontoinhaber').dirty
-            || this.form.get('kontoinhaber').dirty
-            || this.form.get('iban').dirty) {
-            this.enableKontoinhaberValidation();
-        }
-
-        if (this.form.get('stammdatenAdresse').dirty) {
-            this.enableAdresseStammdatenValidation();
-        }
-
-        this.triggerFormValidation();
+    private disableAdresseStammdatenValidation(): void {
+        const group = this.form.get('stammdatenAdresse');
+        group.get('organisation').setValidators([]);
+        group.get('strasse').setValidators([]);
+        group.get('plz').setValidators([]);
+        group.get('ort').setValidators([]);
     }
 
-    private enableKontoinhaberValidation(): void {
+    // We make a check for auszahlungsdaten and adresse if any of their fields are set
+    private triggerSaveValidations(): void {
+
+        const adresseStammdatenNeedsValidation = this.anyRequiredAdresseStammdatenFieldsNotNull();
+        const auszahlungNeedsValidation = this.anyRequiredAuszahlungFieldsNotNull();
+
+        if (adresseStammdatenNeedsValidation && auszahlungNeedsValidation) {
+            this.enableAdresseStammdatenValidation();
+            this.enableAuszahlungValidation();
+            this.triggerFormValidation();
+        } else if (adresseStammdatenNeedsValidation && !auszahlungNeedsValidation) {
+            this.enableAdresseStammdatenValidation();
+            this.disableAuszahlungValidation();
+            this.triggerFormValidation();
+        } else if (!adresseStammdatenNeedsValidation && auszahlungNeedsValidation) {
+            this.enableAuszahlungValidation();
+            this.disableAdresseStammdatenValidation();
+            this.triggerFormValidation();
+        } else {
+
+        }
+
+    }
+
+    private enableAuszahlungValidation(): void {
         this.form.get('kontoinhaber').setValidators([Validators.required]);
         this.form.get('adresseKontoinhaber').get('strasse').setValidators([Validators.required]);
         this.form.get('adresseKontoinhaber').get('plz').setValidators([Validators.required]);
@@ -203,10 +220,18 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         this.form.get('iban').setValidators([Validators.required, ibanValidator()]);
     }
 
+    private disableAuszahlungValidation(): void {
+        this.form.get('kontoinhaber').setValidators([]);
+        this.form.get('adresseKontoinhaber').get('strasse').setValidators([]);
+        this.form.get('adresseKontoinhaber').get('plz').setValidators([]);
+        this.form.get('adresseKontoinhaber').get('ort').setValidators([]);
+        this.form.get('iban').setValidators([]);
+    }
+
     public save(): void {
-        this.enableSaveValidations();
-        if (!this.form.valid) {
+        if (this.formValidationTriggered && !this.form.valid) {
             this.showValidierungFehlgeschlagenErrorMessage();
+            this.cd.markForCheck();
             return;
         }
         this.ferienbetreuungService.saveStammdaten(this.container.id, this.extractFormValues())
@@ -277,5 +302,83 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
     public onFalscheAngaben(): void {
         this.ferienbetreuungService.falscheAngabenStammdaten(this.container.id, this.extractFormValues())
             .subscribe(() => this.handleSaveSuccess(), (error: any) => this.handleSaveError(error));
+    }
+
+    // tslint:disable-next-line:cognitive-complexity
+    private adressValidValidator(): ValidatorFn {
+        return control => {
+            const strasse = control.get('strasse');
+            const ort = control.get('ort');
+            const plz = control.get('plz');
+            const organisation = control.get('organisation');
+
+            let formErroneous = false;
+
+            if ((strasse.value || ort.value || plz.value || organisation.value)) {
+                if (!strasse.value) {
+                    strasse.setErrors({required: true});
+                    formErroneous = true;
+                }
+                if (!ort.value) {
+                    ort.setErrors({required: true});
+                    formErroneous = true;
+                }
+                if (!plz.value) {
+                    plz.setErrors({required: true});
+                    formErroneous = true;
+                }
+                if (!organisation.value) {
+                    organisation.setErrors({required: true});
+                    formErroneous = true;
+                }
+            } else {
+                strasse.setErrors(null);
+                ort.setErrors(null);
+                plz.setErrors(null);
+                organisation.setErrors(null);
+            }
+            return formErroneous ? {adressInvalid: true} : null;
+        };
+    }
+
+    private anyElementNotNull(...args: any[]): boolean {
+        for (const arg of args) {
+            if (!this.isNull(arg)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private allElementsNotNull(...args: any[]): boolean {
+        for (const arg of args) {
+            if (this.isNull(arg)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private anyRequiredAdresseStammdatenFieldsNotNull(): boolean {
+        const adresseStammdaten = this.form.get('stammdatenAdresse').value;
+
+        return this.isNull(adresseStammdaten.strasse) ||
+            this.isNull(adresseStammdaten.plz) ||
+            this.isNull(adresseStammdaten.ort) ||
+            this.isNull(adresseStammdaten.organisation);
+    }
+
+    private anyRequiredAuszahlungFieldsNotNull(): boolean {
+        const kontoinhaberAdresse = this.form.get('adresseKontoinhaber').value;
+
+        return this.isNull(kontoinhaberAdresse.strasse) ||
+            this.isNull(kontoinhaberAdresse.plz) ||
+            this.isNull(kontoinhaberAdresse.ort) ||
+            this.isNull(this.form.get('iban').value) ||
+            this.isNull(this.form.get('kontoinhaber').value);
+    }
+
+    private isNull(value: any): boolean {
+        return value === undefined || value === null;
     }
 }

@@ -32,7 +32,7 @@ import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
 export abstract class AbstractFerienbetreuungFormular {
 
     public form: FormGroup;
-    public formFreigebenTriggered = false;
+    public formValidationTriggered = false;
 
     private readonly WIZARD_TYPE = TSWizardStepXTyp.FERIENBETREUUNG;
 
@@ -60,7 +60,7 @@ export abstract class AbstractFerienbetreuungFormular {
     }
 
     protected triggerFormValidation(): void {
-        this.formFreigebenTriggered = true;
+        this.formValidationTriggered = true;
         for (const key in this.form.controls) {
             if (this.form.get(key) !== null) {
                 this.form.get(key).markAsTouched();

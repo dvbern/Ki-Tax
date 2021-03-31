@@ -47,7 +47,7 @@ const LOG = LogFactory.createLog('FerienbetreuungAngebotComponent');
 })
 export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungFormular implements OnInit {
 
-    public formFreigebenTriggered = false;
+    public formValidationTriggered = false;
     public bfsGemeinden: TSBfsGemeinde[];
 
     private angebot: TSFerienbetreuungAngabenAngebot;
