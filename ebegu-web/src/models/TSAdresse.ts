@@ -146,7 +146,7 @@ export class TSAdresse extends TSAbstractDateRangedEntity {
         this.plz = adresseKontoinhaber.plz;
         this.ort = adresseKontoinhaber.ort;
         this.organisation = adresseKontoinhaber.organisation;
-        this.zusatzzeile = adresseKontoinhaber.zusatzzeile
+        this.zusatzzeile = adresseKontoinhaber.zusatzzeile;
 
         return this;
     }

@@ -151,6 +151,6 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
 
     public onFalscheAngaben(): void {
         this.ferienbetreuungService.falscheAngabenKostenEinnahmen(this.container.id, this.kostenEinnahmen)
-            .subscribe(() => this.handleSaveSuccess(), (error: any) => this.handleSaveError(error));
+            .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
     }
 }

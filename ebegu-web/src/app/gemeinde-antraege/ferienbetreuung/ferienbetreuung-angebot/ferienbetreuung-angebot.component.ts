@@ -276,7 +276,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
 
     public onFalscheAngaben(): void {
         this.ferienbetreuungService.falscheAngabenAngebot(this.container.id, this.angebot)
-            .subscribe(() => this.handleSaveSuccess(), (error: any) => this.handleSaveError(error));
+            .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
     }
 
     // tslint:disable-next-line:cognitive-complexity

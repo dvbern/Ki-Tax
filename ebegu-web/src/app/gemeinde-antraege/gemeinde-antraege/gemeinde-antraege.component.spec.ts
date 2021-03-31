@@ -121,6 +121,7 @@ describe('GemeindeAntraegeComponent', () => {
     });
 
     it('should display third dropdown if ferienbetreuung is selected', () => {
+        authServiceSpy.isOneOfRoles.and.returnValue(true);
         component.formGroup.controls.antragTyp.setValue(TSGemeindeAntragTyp.FERIENBETREUUNG);
         fixture.detectChanges();
         expect(fixture.debugElement.query(By.css('#select-gemeinde'))).not.toBeNull();

@@ -18,6 +18,7 @@
 import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
@@ -37,6 +38,9 @@ const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
     ['addMesageAsError', 'addMesageAsInfo']);
 const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(ErrorService.name,
     ['getPrincipal']);
+
+const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
+    ['params']);
 
 describe('FerienbetreuungStammdatenGemeindeComponent', () => {
     let component: FerienbetreuungStammdatenGemeindeComponent;
@@ -59,6 +63,7 @@ describe('FerienbetreuungStammdatenGemeindeComponent', () => {
                 {provide: FerienbetreuungService, useValue: ferienbetreuungServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
+                {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
             ]
         })
             .compileComponents();
