@@ -2405,5 +2405,7 @@
     "FERIENBETREUUNG_FEHLER_ABRUF_INFORMATIONEN": "Beim Abrufen der Informationen ist ein Fehler aufgetreten",
     "FERIENBETREUUNG_AUS_GEMEINDESTAMMDATEN_UEBERNEHMEN": "Aus Gemeindestammdaten übernehmen",
     "FERIENBETREUUNG_MEINE_ANGABEN_UEBERNEHMEN": "Aus Benutzer übernehmen",
+    "ERROR_ADRESSE_NICHT_VOLLSTAENDING": "Die Adresse ist nicht vollständig",
+    "ERROR_AUSZAHLUNGSDATEN_NICHT_VOLLSTAENDING": "Die Auszahlungsdaten sind nicht vollständing",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

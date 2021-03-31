@@ -46,7 +46,6 @@ const LOG = LogFactory.createLog('FerienbetreuungStammdatenGemeindeComponent');
 })
 export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbetreuungFormular implements OnInit {
 
-    public formValidationTriggered = true;
     public bfsGemeinden: TSBfsGemeinde[];
 
     private stammdaten: TSFerienbetreuungAngabenStammdaten;
@@ -117,7 +116,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                 ort: [
                     stammdaten?.stammdatenAdresse?.ort,
                 ],
-            }, {validators: this.adressValidValidator()}),
+            }),
             stammdatenKontaktpersonVorname: [
                 stammdaten?.stammdatenKontaktpersonVorname,
             ],
@@ -133,175 +132,33 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
             stammdatenKontaktpersonEmail: [
                 stammdaten?.stammdatenKontaktpersonEmail,
             ],
-            iban: [
-                stammdaten?.iban,
-            ],
-            kontoinhaber: [
-                stammdaten?.kontoinhaber,
-            ],
-            adresseKontoinhaber: this.fb.group({
-                strasse: [
-                    stammdaten?.adresseKontoinhaber?.strasse,
+            auszahlungsdaten: this.fb.group({
+                kontoinhaber: [
+                    stammdaten?.kontoinhaber,
                 ],
-                hausnummer: [
-                    stammdaten?.adresseKontoinhaber?.hausnummer,
+                adresseKontoinhaber: this.fb.group({
+                    strasse: [
+                        stammdaten?.adresseKontoinhaber?.strasse,
+                    ],
+                    hausnummer: [
+                        stammdaten?.adresseKontoinhaber?.hausnummer,
+                    ],
+                    ort: [
+                        stammdaten?.adresseKontoinhaber?.ort,
+                    ],
+                    plz: [
+                        stammdaten?.adresseKontoinhaber?.plz,
+                    ],
+                }),
+                iban: [
+                    stammdaten?.iban,
+                    ibanValidator(),
                 ],
-                ort: [
-                    stammdaten?.adresseKontoinhaber?.ort,
-                ],
-                plz: [
-                    stammdaten?.adresseKontoinhaber?.plz,
+                vermerkAuszahlung: [
+                    stammdaten?.vermerkAuszahlung,
                 ],
             }),
-            vermerkAuszahlung: [
-                stammdaten?.vermerkAuszahlung,
-            ],
         });
-        this.form.get('stammdatenAdresse').markAllAsTouched();
-        this.form.get('stammdatenAdresse').get('plz').markAllAsTouched();
-    }
-
-    protected enableFormValidation(): void {
-        this.enableAdresseStammdatenValidation();
-        this.form.get('stammdatenKontaktpersonVorname').setValidators([Validators.required]);
-        this.form.get('stammdatenKontaktpersonNachname').setValidators([Validators.required]);
-        this.form.get('stammdatenKontaktpersonTelefon')
-            .setValidators([Validators.required, Validators.pattern(CONSTANTS.PATTERN_PHONE)]);
-        this.form.get('stammdatenKontaktpersonEmail')
-            .setValidators([Validators.required, Validators.pattern(CONSTANTS.PATTERN_EMAIL)]);
-        this.enableAuszahlungValidation();
-    }
-
-    private enableAdresseStammdatenValidation(): void {
-        const group = this.form.get('stammdatenAdresse');
-        group.get('organisation').setValidators([Validators.required]);
-        group.get('strasse').setValidators([Validators.required]);
-        group.get('plz').setValidators([Validators.required]);
-        group.get('ort').setValidators([Validators.required]);
-    }
-
-    private disableAdresseStammdatenValidation(): void {
-        const group = this.form.get('stammdatenAdresse');
-        group.get('organisation').setValidators([]);
-        group.get('strasse').setValidators([]);
-        group.get('plz').setValidators([]);
-        group.get('ort').setValidators([]);
-    }
-
-    // We make a check for auszahlungsdaten and adresse if any of their fields are set
-    private triggerSaveValidations(): void {
-
-        const adresseStammdatenNeedsValidation = this.anyRequiredAdresseStammdatenFieldsNotNull();
-        const auszahlungNeedsValidation = this.anyRequiredAuszahlungFieldsNotNull();
-
-        if (adresseStammdatenNeedsValidation && auszahlungNeedsValidation) {
-            this.enableAdresseStammdatenValidation();
-            this.enableAuszahlungValidation();
-            this.triggerFormValidation();
-        } else if (adresseStammdatenNeedsValidation && !auszahlungNeedsValidation) {
-            this.enableAdresseStammdatenValidation();
-            this.disableAuszahlungValidation();
-            this.triggerFormValidation();
-        } else if (!adresseStammdatenNeedsValidation && auszahlungNeedsValidation) {
-            this.enableAuszahlungValidation();
-            this.disableAdresseStammdatenValidation();
-            this.triggerFormValidation();
-        } else {
-
-        }
-
-    }
-
-    private enableAuszahlungValidation(): void {
-        this.form.get('kontoinhaber').setValidators([Validators.required]);
-        this.form.get('adresseKontoinhaber').get('strasse').setValidators([Validators.required]);
-        this.form.get('adresseKontoinhaber').get('plz').setValidators([Validators.required]);
-        this.form.get('adresseKontoinhaber').get('ort').setValidators([Validators.required]);
-        this.form.get('iban').setValidators([Validators.required, ibanValidator()]);
-    }
-
-    private disableAuszahlungValidation(): void {
-        this.form.get('kontoinhaber').setValidators([]);
-        this.form.get('adresseKontoinhaber').get('strasse').setValidators([]);
-        this.form.get('adresseKontoinhaber').get('plz').setValidators([]);
-        this.form.get('adresseKontoinhaber').get('ort').setValidators([]);
-        this.form.get('iban').setValidators([]);
-    }
-
-    public save(): void {
-        if (this.formValidationTriggered && !this.form.valid) {
-            this.showValidierungFehlgeschlagenErrorMessage();
-            this.cd.markForCheck();
-            return;
-        }
-        this.ferienbetreuungService.saveStammdaten(this.container.id, this.extractFormValues())
-            .subscribe(() => {
-                this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
-                this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
-            }, err => {
-                LOG.error(err);
-                this.errorService.addMesageAsError(this.translate.instant('FERIENBETREUUNG_PERSIST_ERROR'));
-            });
-    }
-
-    private extractFormValues(): TSFerienbetreuungAngabenStammdaten {
-        this.stammdaten.amAngebotBeteiligteGemeinden = this.form.get('amAngebotBeteiligteGemeinden').value;
-        this.stammdaten.seitWannFerienbetreuungen = this.form.get('seitWannFerienbetreuungen').value;
-        this.stammdaten.traegerschaft = this.form.get('traegerschaft').value;
-
-        const adresse = new TSAdresse().from(this.form.get('stammdatenAdresse').value);
-        // Felder der Adresse sind required in Backend. Deshalb müssen entweder alle oder keine gesetzt sein.
-        this.stammdaten.stammdatenAdresse = (EbeguUtil.adresseValid(adresse)) ? adresse : null;
-
-        this.stammdaten.stammdatenKontaktpersonVorname = this.form.get('stammdatenKontaktpersonVorname').value;
-        this.stammdaten.stammdatenKontaktpersonNachname = this.form.get('stammdatenKontaktpersonNachname').value;
-        this.stammdaten.stammdatenKontaktpersonFunktion = this.form.get('stammdatenKontaktpersonFunktion').value;
-        this.stammdaten.stammdatenKontaktpersonTelefon = this.form.get('stammdatenKontaktpersonTelefon').value;
-        this.stammdaten.stammdatenKontaktpersonEmail = this.form.get('stammdatenKontaktpersonEmail').value;
-        this.stammdaten.iban = this.form.get('iban').value;
-        this.stammdaten.kontoinhaber = this.form.get('kontoinhaber').value;
-
-        const adresseKontoinhaber = new TSAdresse().from(this.form.get('adresseKontoinhaber').value);
-        // Felder der Adresse sind required in Backend. Deshalb müssen entweder alle oder keine gesetzt sein.
-        this.stammdaten.adresseKontoinhaber =
-            (EbeguUtil.adresseValid(adresseKontoinhaber)) ? adresseKontoinhaber : null;
-
-        this.stammdaten.vermerkAuszahlung = this.form.get('vermerkAuszahlung').value;
-        return this.stammdaten;
-    }
-
-    public fillAdress(): void {
-        const gemeinde = this.container.gemeinde;
-        this.gemeindeRS.getGemeindeStammdaten(gemeinde.id).then(stammdaten => {
-            const adresse = stammdaten.extractTsAdresse();
-            this.form.get('stammdatenAdresse').get('organisation').setValue(adresse?.organisation);
-            this.form.get('stammdatenAdresse').get('strasse').setValue(adresse?.strasse);
-            this.form.get('stammdatenAdresse').get('hausnummer').setValue(adresse?.hausnummer);
-            this.form.get('stammdatenAdresse').get('plz').setValue(adresse?.plz);
-            this.form.get('stammdatenAdresse').get('ort').setValue(adresse.ort);
-        }, err => {
-            this.errorService.addMesageAsError(this.translate.instant('FERIENBETREUUNG_FEHLER_ABRUF_INFORMATIONEN'));
-            LOG.error(err);
-        });
-    }
-
-    public fillBenutzer(): void {
-        const benutzer = this.authServiceRS.getPrincipal();
-        this.form.get('stammdatenKontaktpersonVorname').setValue(benutzer.vorname);
-        this.form.get('stammdatenKontaktpersonNachname').setValue(benutzer.nachname);
-        this.form.get('stammdatenKontaktpersonEmail').setValue(benutzer.email);
-    }
-
-    public async onAbschliessen(): Promise<void> {
-        if (await this.checkReadyForAbschliessen()) {
-            this.ferienbetreuungService.stammdatenAbschliessen(this.container.id, this.extractFormValues())
-                .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
-        }
-    }
-
-    public onFalscheAngaben(): void {
-        this.ferienbetreuungService.falscheAngabenStammdaten(this.container.id, this.extractFormValues())
-            .subscribe(() => this.handleSaveSuccess(), (error: any) => this.handleSaveError(error));
     }
 
     // tslint:disable-next-line:cognitive-complexity
@@ -341,44 +198,149 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         };
     }
 
-    private anyElementNotNull(...args: any[]): boolean {
-        for (const arg of args) {
-            if (!this.isNull(arg)) {
-                return true;
+    // tslint:disable-next-line:cognitive-complexity
+    private auszahlungsdatenValidation(): ValidatorFn {
+        return control => {
+            const kontoinhaber = control.get('kontoinhaber');
+            const strasse = control.get('adresseKontoinhaber').get('strasse');
+            const plz = control.get('adresseKontoinhaber').get('plz');
+            const ort = control.get('adresseKontoinhaber').get('ort');
+            const iban = control.get('iban');
+
+            let formErroneous = false;
+
+            if ((strasse.value || ort.value || plz.value || kontoinhaber.value || iban.value)) {
+                if (!strasse.value) {
+                    strasse.setErrors({required: true});
+                    formErroneous = true;
+                }
+                if (!kontoinhaber.value) {
+                    kontoinhaber.setErrors({required: true});
+                    formErroneous = true;
+                }
+                if (!ort.value) {
+                    ort.setErrors({required: true});
+                    formErroneous = true;
+                }
+                if (!plz.value) {
+                    plz.setErrors({required: true});
+                    formErroneous = true;
+                }
+                if (!iban.value) {
+                    iban.setErrors({required: true});
+                    formErroneous = true;
+                }
+            } else {
+                strasse.setErrors(null);
+                ort.setErrors(null);
+                plz.setErrors(null);
+                kontoinhaber.setErrors(null);
+                iban.setErrors(null);
             }
+            return formErroneous ? {adressInvalid: true} : null;
+        };
+    }
+
+    protected enableFormValidation(): void {
+        this.form.get('stammdatenKontaktpersonVorname').setValidators([Validators.required]);
+        this.form.get('stammdatenKontaktpersonNachname').setValidators([Validators.required]);
+        this.form.get('stammdatenKontaktpersonTelefon')
+            .setValidators([Validators.required, Validators.pattern(CONSTANTS.PATTERN_PHONE)]);
+        this.form.get('stammdatenKontaktpersonEmail')
+            .setValidators([Validators.required, Validators.pattern(CONSTANTS.PATTERN_EMAIL)]);
+    }
+
+    public save(): void {
+        this.enableStammdatenAuszahlungValidation();
+
+        if (!this.form.valid) {
+            this.showValidierungFehlgeschlagenErrorMessage();
+            return;
         }
-        return false;
+        this.ferienbetreuungService.saveStammdaten(this.container.id, this.extractFormValues())
+            .subscribe(() => {
+                this.formValidationTriggered = false;
+                this.clearStammdatenAuszahlungValidators();
+                this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
+                this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
+            }, err => {
+                LOG.error(err);
+                this.errorService.addMesageAsError(this.translate.instant('FERIENBETREUUNG_PERSIST_ERROR'));
+            });
     }
 
-    private allElementsNotNull(...args: any[]): boolean {
-        for (const arg of args) {
-            if (this.isNull(arg)) {
-                return false;
-            }
+    private extractFormValues(): TSFerienbetreuungAngabenStammdaten {
+        this.stammdaten.amAngebotBeteiligteGemeinden = this.form.get('amAngebotBeteiligteGemeinden').value;
+        this.stammdaten.seitWannFerienbetreuungen = this.form.get('seitWannFerienbetreuungen').value;
+        this.stammdaten.traegerschaft = this.form.get('traegerschaft').value;
+
+        const adresse = new TSAdresse().from(this.form.get('stammdatenAdresse').value);
+        // Felder der Adresse sind required in Backend. Deshalb müssen entweder alle oder keine gesetzt sein.
+        this.stammdaten.stammdatenAdresse = (EbeguUtil.adresseValid(adresse)) ? adresse : null;
+
+        this.stammdaten.stammdatenKontaktpersonVorname = this.form.get('stammdatenKontaktpersonVorname').value;
+        this.stammdaten.stammdatenKontaktpersonNachname = this.form.get('stammdatenKontaktpersonNachname').value;
+        this.stammdaten.stammdatenKontaktpersonFunktion = this.form.get('stammdatenKontaktpersonFunktion').value;
+        this.stammdaten.stammdatenKontaktpersonTelefon = this.form.get('stammdatenKontaktpersonTelefon').value;
+        this.stammdaten.stammdatenKontaktpersonEmail = this.form.get('stammdatenKontaktpersonEmail').value;
+        this.stammdaten.iban = this.form.get('auszahlungsdaten').get('iban').value;
+        this.stammdaten.kontoinhaber = this.form.get('auszahlungsdaten').get('kontoinhaber').value;
+
+        const adresseKontoinhaber = new TSAdresse().from(this.form.get('auszahlungsdaten')
+            .get('adresseKontoinhaber').value);
+        // Felder der Adresse sind required in Backend. Deshalb müssen entweder alle oder keine gesetzt sein.
+        this.stammdaten.adresseKontoinhaber =
+            (EbeguUtil.adresseValid(adresseKontoinhaber)) ? adresseKontoinhaber : null;
+
+        this.stammdaten.vermerkAuszahlung = this.form.get('auszahlungsdaten').get('vermerkAuszahlung').value;
+        return this.stammdaten;
+    }
+
+    public fillAdress(): void {
+        const gemeinde = this.container.gemeinde;
+        this.gemeindeRS.getGemeindeStammdaten(gemeinde.id).then(stammdaten => {
+            const adresse = stammdaten.extractTsAdresse();
+            this.form.get('stammdatenAdresse').get('organisation').setValue(adresse?.organisation);
+            this.form.get('stammdatenAdresse').get('strasse').setValue(adresse?.strasse);
+            this.form.get('stammdatenAdresse').get('hausnummer').setValue(adresse?.hausnummer);
+            this.form.get('stammdatenAdresse').get('plz').setValue(adresse?.plz);
+            this.form.get('stammdatenAdresse').get('ort').setValue(adresse.ort);
+        }, err => {
+            this.errorService.addMesageAsError(this.translate.instant('FERIENBETREUUNG_FEHLER_ABRUF_INFORMATIONEN'));
+            LOG.error(err);
+        });
+    }
+
+    public fillBenutzer(): void {
+        const benutzer = this.authServiceRS.getPrincipal();
+        this.form.get('stammdatenKontaktpersonVorname').setValue(benutzer.vorname);
+        this.form.get('stammdatenKontaktpersonNachname').setValue(benutzer.nachname);
+        this.form.get('stammdatenKontaktpersonEmail').setValue(benutzer.email);
+    }
+
+    public async onAbschliessen(): Promise<void> {
+        if (await this.checkReadyForAbschliessen()) {
+            this.ferienbetreuungService.stammdatenAbschliessen(this.container.id, this.extractFormValues())
+                .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
         }
-        return true;
     }
 
-    private anyRequiredAdresseStammdatenFieldsNotNull(): boolean {
-        const adresseStammdaten = this.form.get('stammdatenAdresse').value;
-
-        return this.isNull(adresseStammdaten.strasse) ||
-            this.isNull(adresseStammdaten.plz) ||
-            this.isNull(adresseStammdaten.ort) ||
-            this.isNull(adresseStammdaten.organisation);
+    public onFalscheAngaben(): void {
+        this.ferienbetreuungService.falscheAngabenStammdaten(this.container.id, this.extractFormValues())
+            .subscribe(() => this.handleSaveSuccess(), (error: any) => this.handleSaveError(error));
     }
 
-    private anyRequiredAuszahlungFieldsNotNull(): boolean {
-        const kontoinhaberAdresse = this.form.get('adresseKontoinhaber').value;
-
-        return this.isNull(kontoinhaberAdresse.strasse) ||
-            this.isNull(kontoinhaberAdresse.plz) ||
-            this.isNull(kontoinhaberAdresse.ort) ||
-            this.isNull(this.form.get('iban').value) ||
-            this.isNull(this.form.get('kontoinhaber').value);
+    private clearStammdatenAuszahlungValidators(): void {
+        this.form.get('stammdatenAdresse').clearValidators();
+        this.form.get('auszahlungsdaten').clearValidators();
     }
 
-    private isNull(value: any): boolean {
-        return value === undefined || value === null;
+    private enableStammdatenAuszahlungValidation(): void {
+        this.form.get('stammdatenAdresse').setValidators(this.adressValidValidator());
+        this.form.get('stammdatenAdresse').markAllAsTouched();
+        this.form.get('auszahlungsdaten').setValidators(this.auszahlungsdatenValidation());
+        this.form.get('auszahlungsdaten').markAllAsTouched();
+
+        this.triggerFormValidation();
     }
 }
