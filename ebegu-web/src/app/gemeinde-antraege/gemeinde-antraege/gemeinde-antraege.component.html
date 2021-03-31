@@ -85,7 +85,7 @@
                     </div>
 
                     <div *ngIf="!ferienBetreuungSelected()"
-                        class="col-md-3 layout-align-center-center layout-row flex actions"
+                         class="col-md-3 layout-align-center-center layout-row flex actions"
                          flex
                          layout="row"
                          layout-align="center center">
@@ -95,6 +95,12 @@
                              (buttonClick)="createAllAntraege()">
                             <span class="uppercase" translate>LATS_ANTRAEGE_ERSTELLEN</span>
                         </div>
+                        <button *ngIf="deletePossible$ | async"
+                                type="button"
+                                class="dv-btn cancel-button margin-left-5"
+                                (click)="deleteAntraege()">
+                            <span class="uppercase" translate>LATS_ANTRAEGE_LOESCHEN</span>
+                        </button>
                     </div>
 
                     <div *ngIf="ferienBetreuungSelected()"

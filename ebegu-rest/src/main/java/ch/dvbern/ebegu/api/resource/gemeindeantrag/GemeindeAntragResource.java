@@ -29,6 +29,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -44,6 +45,7 @@ import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxGemeindeAntrag;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
@@ -51,6 +53,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
@@ -66,15 +69,15 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_FERIENBETREUUNG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_FERIENBETREUUNG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -110,6 +113,9 @@ public class GemeindeAntragResource {
 	@Inject
 	private InstitutionService institutionService;
 
+	@Inject
+	private EbeguConfiguration configuration;
+
 	@ApiOperation(
 		"Erstellt fuer jede aktive Gemeinde einen Gemeindeantrag des gewuenschten Typs fuer die gewuenschte Periode")
 	@POST
@@ -138,6 +144,35 @@ public class GemeindeAntragResource {
 		} catch (EntityExistsException e) {
 			throw new WebApplicationException(e, Status.CONFLICT);
 		}
+	}
+
+	@ApiOperation(
+		"Löscht alle Anträge des gewuenschten Typs fuer die gewuenschte Periode")
+	@DELETE
+	@Path("/deleteAntraege/{gemeindeAntragTyp}/gesuchsperiode/{gesuchsperiodeId}")
+	@RolesAllowed({ SUPER_ADMIN })
+	public void deleteGemeindeAntraege(
+		@Nonnull @Valid @PathParam("gemeindeAntragTyp") GemeindeAntragTyp gemeindeAntragTyp,
+		@Nonnull @Valid @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,
+		@Context HttpServletRequest request,
+		@Context UriInfo uriInfo
+	) {
+
+		if (!configuration.getIsDevmode()) {
+			throw new EbeguRuntimeException("deleteGemeindeAntraege", "deleteGemeindeAntrage ist nur im Devmode möglich");
+		}
+
+		Objects.requireNonNull(gesuchsperiodeJaxId.getId());
+		Objects.requireNonNull(gemeindeAntragTyp);
+
+		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJaxId);
+		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId).
+			orElseThrow(() -> new EbeguEntityNotFoundException(
+				"deleteGemeindeAntraege",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gesuchsperiodeId));
+
+		gemeindeAntragService.deleteGemeindeAntraege(gesuchsperiode, gemeindeAntragTyp);
 	}
 
 	@ApiOperation(
