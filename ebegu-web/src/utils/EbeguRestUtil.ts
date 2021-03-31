@@ -5143,6 +5143,7 @@ export class EbeguRestUtil {
         anzahlEingeschriebeneKinder: TSAnzahlEingeschriebeneKinder,
         restAnzahlEingeschriebeneKinder: any
     ): TSAnzahlEingeschriebeneKinder {
+        anzahlEingeschriebeneKinder.overall = restAnzahlEingeschriebeneKinder.overall;
         anzahlEingeschriebeneKinder.vorschulalter = restAnzahlEingeschriebeneKinder.vorschulalter;
         anzahlEingeschriebeneKinder.kindergarten = restAnzahlEingeschriebeneKinder.kindergarten;
         anzahlEingeschriebeneKinder.primarstufe = restAnzahlEingeschriebeneKinder.primarstufe;

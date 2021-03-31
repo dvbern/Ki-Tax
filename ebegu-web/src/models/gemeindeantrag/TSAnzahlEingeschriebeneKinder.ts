@@ -16,12 +16,21 @@
  */
 
 export class TSAnzahlEingeschriebeneKinder {
+    private _overall: number;
     private _vorschulalter: number;
     private _kindergarten:  number;
     private _primarstufe: number;
     private _sekundarstufe: number;
 
     public constructor() {
+    }
+
+    public get overall(): number {
+        return this._overall;
+    }
+
+    public set overall(value: number) {
+        this._overall = value;
     }
 
     public get vorschulalter(): number {

@@ -25,6 +25,7 @@ import {startWith} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSLastenausgleichTagesschuleAngabenInstitutionStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenInstitutionStatus';
+import {TSAnzahlEingeschriebeneKinder} from '../../../../../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
@@ -55,6 +56,7 @@ export class TagesschulenAngabenComponent {
     public latsAngabenInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer;
     public gesuchsPeriode: TSGesuchsperiode;
     public formFreigebenTriggered: boolean = false;
+    public anzahlEingeschriebeneKinder: TSAnzahlEingeschriebeneKinder;
 
     private gemeindeAntragContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
     private abweichungenAnzahlKinder: number;
@@ -90,6 +92,7 @@ export class TagesschulenAngabenComponent {
                 this.form.disable();
             }
             this.setupCalculation(angaben);
+            this.queryAnzahlEingeschriebeneKinder();
             this.cd.markForCheck();
         }, () => {
             this.errorService.addMesageAsError(this.translate.instant('DATA_RETRIEVAL_ERROR'));
@@ -351,10 +354,24 @@ export class TagesschulenAngabenComponent {
         }
     }
 
-    public fillOutAnzahlEingeschriebeneKinder(): void {
+    public async fillOutCalculationsFromKiBon(): Promise<void> {
+        if (!await this.confirmDialog('LATS_WARN_FILL_OUT_FROM_KIBON')) {
+            return;
+        }
+        this.form.get('anzahlEingeschriebeneKinder')
+            .setValue(this.anzahlEingeschriebeneKinder?.overall);
+        this.form.get('anzahlEingeschriebeneKinderKindergarten')
+            .setValue(this.anzahlEingeschriebeneKinder?.kindergarten);
+        this.form.get('anzahlEingeschriebeneKinderPrimarstufe')
+            .setValue(this.anzahlEingeschriebeneKinder?.primarstufe);
+        this.form.get('anzahlEingeschriebeneKinderSekundarstufe')
+            .setValue(this.anzahlEingeschriebeneKinder?.sekundarstufe);
+    }
+
+    private queryAnzahlEingeschriebeneKinder(): void {
         this.tagesschulenAngabenRS.getAnzahlEingeschriebeneKinder(this.latsAngabenInstitutionContainer)
-            .subscribe(data => {
-                console.log(data);
+            .subscribe(anzahlEingeschriebeneKinder => {
+                this.anzahlEingeschriebeneKinder = anzahlEingeschriebeneKinder;
             });
     }
 }
