@@ -86,6 +86,13 @@ export class GemeindeAntragService {
             .pipe(map(jaxAntrag => this.ebeguRestUtil.parseGemeindeAntragList(jaxAntrag)));
     }
 
+    public deleteAntrage(
+        toDelete: { periode: string, antragTyp: string, gemeinde?: TSGemeinde }
+        ): Observable<void> {
+        return this.http.delete<void>(
+            `${this.API_BASE_URL}/deleteAntraege/${toDelete.antragTyp}/gesuchsperiode/${toDelete.periode}`);
+    }
+
     public createAntrag(
         toCreate: { periode: string, antragTyp: string, gemeinde: string }
         ): Observable<TSGemeindeAntrag[]> {
