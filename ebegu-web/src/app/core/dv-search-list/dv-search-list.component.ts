@@ -82,7 +82,7 @@ export class DvSearchListComponent implements OnInit, OnChanges, AfterViewInit {
         }
     }
 
-    ngAfterViewInit(): void {
+    public ngAfterViewInit(): void {
         this.dataSource.sort = this.sort;
     }
 
