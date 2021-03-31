@@ -14,6 +14,7 @@
  */
 
 import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
+import {TSSprache} from '../../models/enums/TSSprache';
 import {TSFall} from '../../models/TSFall';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
@@ -86,8 +87,11 @@ export class FallRS {
         return 'FallRS';
     }
 
-    public getVollmachtDokumentAccessTokenGeneratedDokument(fallId: string): IPromise<BlobPart> {
-        return this.$http.get(`${this.serviceURL}/generateVollmachtDokument/${encodeURIComponent(fallId)}`,
+    public getVollmachtDokumentAccessTokenGeneratedDokument(
+        fallId: string,
+        sprache: TSSprache,
+    ): angular.IPromise<BlobPart> {
+        return this.$http.get(`${this.serviceURL}/generateVollmachtDokument/${encodeURIComponent(fallId)}/${sprache}`,
             {responseType: 'blob'})
             .then((response: any) => {
                 return response.data;

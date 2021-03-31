@@ -359,7 +359,7 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 	}
 
 	@Override
-	public byte[] generateVollmachtDokument(@Nonnull String fallId) throws MergeDocException {
+	public byte[] generateVollmachtDokument(@Nonnull String fallId, @Nonnull Sprache sprache) throws MergeDocException {
 		final Fall fall = findFall(fallId).orElseThrow(
 			() -> new EbeguEntityNotFoundException(
 				"generateVollmachtDokument - findFall",
@@ -373,6 +373,6 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 				fallId);
 		}
 
-			return pdfService.generateVollmachtSozialdienst(fall.getSozialdienstFall(), Sprache.DEUTSCH);
+			return pdfService.generateVollmachtSozialdienst(fall.getSozialdienstFall(), sprache);
 	}
 }

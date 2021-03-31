@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.services.FallService;
 import io.swagger.annotations.Api;
@@ -189,17 +190,18 @@ public class FallResource {
 
 	@ApiOperation("return the Vollmacht Dokument for the given language")
 	@GET
-	@Path("/generateVollmachtDokument/{fallId}")
+	@Path("/generateVollmachtDokument/{fallId}/{sprache}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({SUPER_ADMIN, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST})
 	public Response generateVollmachtDokument(
 		@Nonnull @PathParam("fallId") String fallId,
+		@Nonnull @PathParam("sprache") Sprache sprache,
 		@Context HttpServletResponse response
 	) throws MergeDocException {
 		requireNonNull(fallId);
 
-		final byte[] content = fallService.generateVollmachtDokument(fallId);
+		final byte[] content = fallService.generateVollmachtDokument(fallId, sprache);
 
 		if (content != null && content.length > 0) {
 			try {

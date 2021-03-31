@@ -146,11 +146,16 @@
                         <hr class="header"/>
                     </div>
                     <div class="col-md-12">
-
                         <button type="button" class="dv-btn btn-link link-underline"
-                                ng-click="vm.generateVollmachtPDF()">
+                                ng-click="vm.generateVollmachtPDF('DEUTSCH')">
                             <i class="fa fa-file-text-o"></i>
-                            <span data-translate="PDF_VOLLMACHT_HERUNTERLADEN"></span>
+                            <span data-translate="PDF_VOLLMACHT_DE_HERUNTERLADEN"></span>
+                        </button>
+                        <br/>
+                        <button type="button" class="dv-btn btn-link link-underline"
+                                ng-click="vm.generateVollmachtPDF('FRANZOESISCH')">
+                            <i class="fa fa-file-text-o"></i>
+                            <span data-translate="PDF_VOLLMACHT_FR_HERUNTERLADEN"></span>
                         </button>
                     </div>
                 </div>

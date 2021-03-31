@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.MergeDocException;
 
 /**
@@ -32,7 +33,8 @@ import ch.dvbern.ebegu.errors.MergeDocException;
 public interface FallService {
 
 	/**
-	 * Erstellt einen neuen Fall in der DB, falls der key noch nicht existiert. Sollte es existieren, aktualisiert es den Inhalt
+	 * Erstellt einen neuen Fall in der DB, falls der key noch nicht existiert. Sollte es existieren, aktualisiert es
+	 * den Inhalt
 	 *
 	 * @param fall der Fall als DTO
 	 * @return den gespeicherten Fall
@@ -94,7 +96,8 @@ public interface FallService {
 	Optional<Fall> createFallForCurrentGesuchstellerAsBesitzer();
 
 	/**
-	 * Gibt die GS1-Emailadresse des neusten Gesuchs fuer diesen Fall zurueck, wenn noch kein Gesuch vorhanden ist, wird
+	 * Gibt die GS1-Emailadresse des neusten Gesuchs fuer diesen Fall zurueck, wenn noch kein Gesuch vorhanden ist,
+	 * wird
 	 * die E-Mail zurueckgegeben die beim Besitzer des Falls eingegeben wurde (aus IAM importiert)
 	 */
 	@Nonnull
@@ -111,5 +114,5 @@ public interface FallService {
 
 	byte[] downloadVollmachtDokument(@Nonnull String fallId);
 
-	byte[] generateVollmachtDokument(@Nonnull String fallId) throws MergeDocException;
+	byte[] generateVollmachtDokument(@Nonnull String fallId, @Nonnull Sprache sprache) throws MergeDocException;
 }

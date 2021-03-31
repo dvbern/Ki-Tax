@@ -2413,6 +2413,7 @@
     "LASTENAUSGLEICH_TAGESSCHULEN_AKTIV": "Lastenausgleich Tagesschulen aktiviert",
     "FERIENBETREUUNG_AKTIV": "Ferienbetreuung aktiviert",
     "VOLLMACHT_HERUNTERLADEN": "Vollmacht Dokument herunterladen",
-    "PDF_VOLLMACHT_HERUNTERLADEN": "Vollamcht Dokument generieren und herunterladen",
+    "PDF_VOLLMACHT_DE_HERUNTERLADEN": "Vollamcht Dokument in Deutsch generieren und herunterladen",
+    "PDF_VOLLMACHT_FR_HERUNTERLADEN": "Vollamcht Dokument in Französisch generieren und herunterladen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

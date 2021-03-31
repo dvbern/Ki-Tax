@@ -1977,7 +1977,7 @@
     "MERKBLATT_ANMELDUNG_TAGESSCHULE_FR": "Conditions d'inscriptions aux écoles à journée continue français",
     "MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME": "Condition_inscription_ecole_continue.pdf",
     "MERKBLATT_ANMELDUNG_TAGESSCHULE_HOCHLADEN": "Télécharger les conditions d'inscriptions aux écoles à journée continue",
-    "MERKBLATT_ANMELDUNG_TAGESSCHULE_HOCHLADEN_HELP": "Vous pouvez télécharger ci-dessous une fiche d'information de la municipalité sur l'inscription à l'école de jour. Lors de l'inscription, les parents doivent confirmer qu'ils ont lu et pris note des \"conditions d'inscriptions aux écoles à journée continue\".<br>kiBon fournit un modèle Word sous le bouton <span class=\"fa fa-eye\"></span>, que vous pouvez adapter et télécharger le résultat sous forme de PDF en cliquant sur le bouton <span class=\"fa fa fa-upload\"></span>.<br>Si vous avez déjà une fiche d'information correspondante de votre municipalité, vous pouvez la télécharger directement sans utiliser le modèle.",
+    "MERKBLATT_ANMELDUNG_TAGESSCHULE_HOCHLADEN_HELP": "Vous pouvez télécharger ci-dessous une fiche d'information de la commune sur l'inscription à l'école de jour. Lors de l'inscription, les parents doivent confirmer qu'ils ont lu et pris note des \"conditions d'inscriptions aux écoles à journée continue\".<br>kiBon fournit un modèle Word sous le bouton <span class=\"fa fa-eye\"></span>, que vous pouvez adapter et télécharger le résultat sous forme de PDF en cliquant sur le bouton <span class=\"fa fa fa-upload\"></span>.<br>Si vous avez déjà une fiche d'information correspondante de votre commune, vous pouvez la télécharger directement sans utiliser le modèle.",
     "ERLAUTERUNG_ZUR_VERFUEGUNG_DATEI_NAME": "explications.pdf",
     "MODUL_NICHT_BEARBEITBAR_TOOLTIP": "Ces modules ne peuvent plus être effacés ou modifiés car les inscriptions sont déjà ouvertes",
     "TAGESSCHULE_PROVISORISCHE_BERECHNUNG_TITEL": "Calcul provisoire",
@@ -2410,6 +2410,7 @@
     "LASTENAUSGLEICH_TAGESSCHULEN_AKTIV": "Lastenausgleich Tagesschulen aktiviert",
     "FERIENBETREUUNG_AKTIV": "Ferienbetreuung aktiviert",
     "VOLLMACHT_HERUNTERLADEN": "Vollmacht Dokument herunterladen",
-    "PDF_VOLLMACHT_HERUNTERLADEN": "Vollamcht Dokument generieren und herunterladen",
+    "PDF_VOLLMACHT_DE_HERUNTERLADEN": "Générer et télécharger le document de Vollamcht en Allemand",
+    "PDF_VOLLMACHT_DE_HERUNTERLADEN": "Générer et télécharger le document de Vollamcht en Français",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
