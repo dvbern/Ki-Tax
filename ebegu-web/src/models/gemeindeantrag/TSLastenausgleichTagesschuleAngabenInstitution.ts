@@ -25,7 +25,7 @@ export class TSLastenausgleichTagesschuleAngabenInstitution extends TSAbstractEn
     // B: Quantitative Angaben
     public anzahlEingeschriebeneKinder: number;
     public anzahlEingeschriebeneKinderKindergarten: number;
-    public anzahlEingeschriebeneKinderBasisstufe: number;
+    public anzahlEingeschriebeneKinderSekundarstufe: number;
     public anzahlEingeschriebeneKinderPrimarstufe: number;
     public anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen: number;
     public durchschnittKinderProTagFruehbetreuung: number;

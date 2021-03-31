@@ -327,7 +327,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 			if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinder())) {
 				throw new WebApplicationException("anzahlEingeschribeneKinder must not be null", Status.BAD_REQUEST);
 			}
-			if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderBasisstufe())) {
+			if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderSekundarstufe())) {
 				throw new WebApplicationException(
 					"anzahlEingeschriebeneKinderBasisstufe must not be null",
 					Status.BAD_REQUEST);

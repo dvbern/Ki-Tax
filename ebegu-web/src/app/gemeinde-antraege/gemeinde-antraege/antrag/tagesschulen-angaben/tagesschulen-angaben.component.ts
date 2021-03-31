@@ -57,6 +57,7 @@ export class TagesschulenAngabenComponent {
     public formFreigebenTriggered: boolean = false;
 
     private gemeindeAntragContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
+    private abweichungenAnzahlKinder: number;
 
     public constructor(
         private readonly lastenausgleichTSService: LastenausgleichTSService,
@@ -117,8 +118,8 @@ export class TagesschulenAngabenComponent {
                 value: latsAngabenInstiution?.anzahlEingeschriebeneKinderKindergarten,
                 disabled: this.angabenAusKibon
             },
-            anzahlEingeschriebeneKinderBasisstufe: {
-                value: latsAngabenInstiution?.anzahlEingeschriebeneKinderBasisstufe,
+            anzahlEingeschriebeneKinderSekundarstufe: {
+                value: latsAngabenInstiution?.anzahlEingeschriebeneKinderSekundarstufe,
                 disabled: this.angabenAusKibon
             },
             anzahlEingeschriebeneKinderPrimarstufe: {
@@ -152,10 +153,7 @@ export class TagesschulenAngabenComponent {
             ernaehrungsGrundsaetzeEingehalten: latsAngabenInstiution?.ernaehrungsGrundsaetzeEingehalten,
             // Bemerkungen
             bemerkungen: latsAngabenInstiution?.bemerkungen,
-            // Calculations
-            anzahlEingeschriebeneKinderSekundarstufe: '',
         });
-        form.get('anzahlEingeschriebeneKinderSekundarstufe').disable();
 
         return form;
     }
@@ -169,16 +167,15 @@ export class TagesschulenAngabenComponent {
                 this.form.get('anzahlEingeschriebeneKinderKindergarten')
                     .valueChanges
                     .pipe(startWith(angaben?.anzahlEingeschriebeneKinderKindergarten || 0)),
-                this.form.get('anzahlEingeschriebeneKinderBasisstufe')
-                    .valueChanges
-                    .pipe(startWith(angaben?.anzahlEingeschriebeneKinderBasisstufe || 0)),
                 this.form.get('anzahlEingeschriebeneKinderPrimarstufe')
                     .valueChanges
                     .pipe(startWith(angaben?.anzahlEingeschriebeneKinderPrimarstufe || 0)),
+                this.form.get('anzahlEingeschriebeneKinderSekundarstufe')
+                    .valueChanges
+                    .pipe(startWith(angaben?.anzahlEingeschriebeneKinderSekundarstufe || 0)),
             ],
         ).subscribe(values => {
-            this.form.get('anzahlEingeschriebeneKinderSekundarstufe')
-                .setValue(values[0] - values[1] - values[2] - values[3]);
+            this.abweichungenAnzahlKinder = values[0] - values[1] - values[2] - values[3];
         }, () => {
             this.errorService.addMesageAsError('BAD_NUMBER_ERROR');
         });
@@ -278,9 +275,9 @@ export class TagesschulenAngabenComponent {
                 .setValidators([Validators.required, this.numberValidator()]);
             this.form.get('anzahlEingeschriebeneKinderKindergarten')
                 .setValidators([Validators.required, this.numberValidator()]);
-            this.form.get('anzahlEingeschriebeneKinderBasisstufe')
-                .setValidators([Validators.required, this.numberValidator()]);
             this.form.get('anzahlEingeschriebeneKinderPrimarstufe')
+                .setValidators([Validators.required, this.numberValidator()]);
+            this.form.get('anzahlEingeschriebeneKinderSekundarstufe')
                 .setValidators([Validators.required, this.numberValidator()]);
             this.form.get('durchschnittKinderProTagFruehbetreuung')
                 .setValidators([Validators.required, this.numberValidator()]);

@@ -5944,7 +5944,7 @@ public class JaxBConverter extends AbstractConverter {
 		// B: Quantitative Angaben
 		jaxAngabenInstitution.setAnzahlEingeschriebeneKinder(angabenInstitution.getAnzahlEingeschriebeneKinder());
 		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderKindergarten(angabenInstitution.getAnzahlEingeschriebeneKinderKindergarten());
-		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderBasisstufe(angabenInstitution.getAnzahlEingeschriebeneKinderBasisstufe());
+		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderSekundarstufe(angabenInstitution.getAnzahlEingeschriebeneKinderSekundarstufe());
 		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderPrimarstufe(angabenInstitution.getAnzahlEingeschriebeneKinderPrimarstufe());
 		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(angabenInstitution.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen());
 		jaxAngabenInstitution.setDurchschnittKinderProTagFruehbetreuung(angabenInstitution.getDurchschnittKinderProTagFruehbetreuung());
@@ -5977,7 +5977,7 @@ public class JaxBConverter extends AbstractConverter {
 		// B: Quantitative Angaben
 		angabenInstitution.setAnzahlEingeschriebeneKinder(jaxAngabenInstitution.getAnzahlEingeschriebeneKinder());
 		angabenInstitution.setAnzahlEingeschriebeneKinderKindergarten(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderKindergarten());
-		angabenInstitution.setAnzahlEingeschriebeneKinderBasisstufe(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderBasisstufe());
+		angabenInstitution.setAnzahlEingeschriebeneKinderSekundarstufe(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderSekundarstufe());
 		angabenInstitution.setAnzahlEingeschriebeneKinderPrimarstufe(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderPrimarstufe());
 		angabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen());
 		angabenInstitution.setDurchschnittKinderProTagFruehbetreuung(jaxAngabenInstitution.getDurchschnittKinderProTagFruehbetreuung());

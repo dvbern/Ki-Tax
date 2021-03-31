@@ -4621,8 +4621,8 @@ export class EbeguRestUtil {
             angabenInstitutionTS.anzahlEingeschriebeneKinder = angabenInstitutionFromServer.anzahlEingeschriebeneKinder;
             angabenInstitutionTS.anzahlEingeschriebeneKinderKindergarten =
                 angabenInstitutionFromServer.anzahlEingeschriebeneKinderKindergarten;
-            angabenInstitutionTS.anzahlEingeschriebeneKinderBasisstufe =
-                angabenInstitutionFromServer.anzahlEingeschriebeneKinderBasisstufe;
+            angabenInstitutionTS.anzahlEingeschriebeneKinderSekundarstufe =
+                angabenInstitutionFromServer.anzahlEingeschriebeneKinderSekundarstufe;
             angabenInstitutionTS.anzahlEingeschriebeneKinderPrimarstufe =
                 angabenInstitutionFromServer.anzahlEingeschriebeneKinderPrimarstufe;
             angabenInstitutionTS.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen =
@@ -4667,8 +4667,8 @@ export class EbeguRestUtil {
             restAngabenInstitution.anzahlEingeschriebeneKinder = tsAngabenInstitution.anzahlEingeschriebeneKinder;
             restAngabenInstitution.anzahlEingeschriebeneKinderKindergarten =
                 tsAngabenInstitution.anzahlEingeschriebeneKinderKindergarten;
-            restAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe =
-                tsAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe;
+            restAngabenInstitution.anzahlEingeschriebeneKinderSekundarstufe =
+                tsAngabenInstitution.anzahlEingeschriebeneKinderSekundarstufe;
             restAngabenInstitution.anzahlEingeschriebeneKinderPrimarstufe =
                 tsAngabenInstitution.anzahlEingeschriebeneKinderPrimarstufe;
             restAngabenInstitution.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen =

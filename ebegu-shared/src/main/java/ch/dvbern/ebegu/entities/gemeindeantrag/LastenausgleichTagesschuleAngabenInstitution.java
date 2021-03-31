@@ -23,7 +23,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
@@ -55,7 +54,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal anzahlEingeschriebeneKinderBasisstufe;
+	private BigDecimal anzahlEingeschriebeneKinderSekundarstufe;
 
 	@Nullable
 	@Column(nullable = true)
@@ -123,7 +122,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		// B: Quantitative Angaben
 		this.anzahlEingeschriebeneKinder = source.anzahlEingeschriebeneKinder;
 		this.anzahlEingeschriebeneKinderKindergarten = source.anzahlEingeschriebeneKinderKindergarten;
-		this.anzahlEingeschriebeneKinderBasisstufe = source.anzahlEingeschriebeneKinderBasisstufe;
+		this.anzahlEingeschriebeneKinderSekundarstufe = source.anzahlEingeschriebeneKinderSekundarstufe;
 		this.anzahlEingeschriebeneKinderPrimarstufe = source.anzahlEingeschriebeneKinderPrimarstufe;
 		this.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen = source.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
 		this.durchschnittKinderProTagFruehbetreuung = source.durchschnittKinderProTagFruehbetreuung;
@@ -169,12 +168,12 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 	}
 
 	@Nullable
-	public BigDecimal getAnzahlEingeschriebeneKinderBasisstufe() {
-		return anzahlEingeschriebeneKinderBasisstufe;
+	public BigDecimal getAnzahlEingeschriebeneKinderSekundarstufe() {
+		return anzahlEingeschriebeneKinderSekundarstufe;
 	}
 
-	public void setAnzahlEingeschriebeneKinderBasisstufe(@Nullable BigDecimal anzahlEingeschriebeneKinderBasisstufe) {
-		this.anzahlEingeschriebeneKinderBasisstufe = anzahlEingeschriebeneKinderBasisstufe;
+	public void setAnzahlEingeschriebeneKinderSekundarstufe(@Nullable BigDecimal anzahlEingeschriebeneKinderBasisstufe) {
+		this.anzahlEingeschriebeneKinderSekundarstufe = anzahlEingeschriebeneKinderBasisstufe;
 	}
 
 	@Nullable

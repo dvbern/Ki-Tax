@@ -121,31 +121,6 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderBasisstufe').errors}">
-                {{'LATS_DAVON_BASISSTUFE' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
-                <input matInput
-                       formControlName="anzahlEingeschriebeneKinderBasisstufe"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderBasisstufe').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderBasisstufe').errors?.noNumberError"
-                           translate>ERROR_NUMBER
-                </mat-error>
-                <dv-bisher-x
-                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderBasisstufe"
-                    [korrektur]="form.get('anzahlEingeschriebeneKinderBasisstufe').value"
-                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
-                </dv-bisher-x>
-            </mat-form-field>
-        </dv-input-container-x>
-
-        <dv-input-container-x>
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderPrimarstufe').errors}">
                 {{'LATS_DAVON_PRIMARSTUFE' | translate}}
             </label>
@@ -171,7 +146,7 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderSekundarstufe').errors}">
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderBasisstufe').errors}">
                 {{'LATS_DAVON_SEKUNDARSTUFE' | translate}}
             </label>
             <div class="flex-whitespace-item"></div>
@@ -186,6 +161,12 @@
                 <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderSekundarstufe').errors?.noNumberError"
                            translate>ERROR_NUMBER
                 </mat-error>
+                <dv-bisher-x
+                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderSekundarstufe"
+                    [korrektur]="form.get('anzahlEingeschriebeneKinderSekundarstufe').value"
+                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
+                    [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
+                </dv-bisher-x>
             </mat-form-field>
         </dv-input-container-x>
 
