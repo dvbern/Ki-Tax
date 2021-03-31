@@ -24,6 +24,7 @@ import {FerienbetreuungAbschlussComponent} from './ferienbetreuung-abschluss/fer
 import {FerienbetreuungAngebotComponent} from './ferienbetreuung-angebot/ferienbetreuung-angebot.component';
 import {FerienbetreuungFreigabeComponent} from './ferienbetreuung-freigabe/ferienbetreuung-freigabe.component';
 import {FerienbetreuungKommantarComponent} from './ferienbetreuung-kommantar/ferienbetreuung-kommantar.component';
+import {FerienbetreuungBerechnungComponent} from './ferienbetreuung-kosten-einnahmen/ferienbetreuung-berechnung/ferienbetreuung-berechnung.component';
 import {FerienbetreuungKostenEinnahmenComponent} from './ferienbetreuung-kosten-einnahmen/ferienbetreuung-kosten-einnahmen.component';
 import {FerienbetreuungNutzungComponent} from './ferienbetreuung-nutzung/ferienbetreuung-nutzung.component';
 import {FerienbetreuungRoutingModule} from './ferienbetreuung-routing/ferienbetreuung-routing.module';
@@ -43,6 +44,7 @@ import {FerienbetreuungService} from './services/ferienbetreuung.service';
         FerienbetreuungUploadComponent,
         FerienbetreuungFreigabeComponent,
         FerienbetreuungAbschlussComponent,
+        FerienbetreuungBerechnungComponent,
     ],
     imports: [
         CommonModule,
