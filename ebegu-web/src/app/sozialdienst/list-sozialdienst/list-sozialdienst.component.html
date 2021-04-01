@@ -20,14 +20,14 @@
 
         <h1 class="access-for-all-title" translate>AFA_SOZIALDIENSTEVERWALTUNG</h1>
         <div class="view-title">
-            <h2 translate>SOZIALDIENSTE</h2>
+            <h2 translate>SOZIALDIENSTE_TITLE</h2>
             <hr class="header">
         </div>
         <dv-search-list [hiddenColumns]="hiddenDVTableColumns"
                         [data$]="antragList$"
                         (openEvent)="open($event)"
                         [statusPrefix]="'SOZIALDIENST_STATUS'"
-                        [columnName]="'SOZIALDIENST'"
+                        [columnName]="'SOZIALDIENST_TITLE'"
                         ></dv-search-list>
 
         <!--Knopf unterhalb der Tabelle zum hinzufügen einer neuen Gemeinde-->
