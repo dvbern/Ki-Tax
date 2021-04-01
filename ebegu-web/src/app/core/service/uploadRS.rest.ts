@@ -17,6 +17,7 @@ import {IHttpService, ILogService, IPromise, IQService} from 'angular';
 import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {TSRueckforderungDokumentTyp} from '../../../models/enums/TSRueckforderungDokumentTyp';
 import {TSSprache} from '../../../models/enums/TSSprache';
+import {TSFerienbetreuungDokument} from '../../../models/gemeindeantrag/TSFerienbetreuungDokument';
 import {TSDokumentGrund} from '../../../models/TSDokumentGrund';
 import {TSRueckforderungDokument} from '../../../models/TSRueckforderungDokument';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
@@ -78,13 +79,7 @@ export class UploadRS {
     public uploadRueckforderungsDokumente(files: any, rueckforderungFormularId: string,
                                           rueckforderungDokumentTyp: TSRueckforderungDokumentTyp,
     ): IPromise<TSRueckforderungDokument[]> {
-        const names: string [] = [];
-        for (const file of files) {
-            if (file) {
-                const encodedFilename = this.base64.encode(file.name);
-                names.push(encodedFilename);
-            }
-        }
+        const names = this.encodeFileNames(files);
         return this.upload.upload({
             url: `${this.serviceURL}/uploadRueckforderungsDokument/${encodeURIComponent(rueckforderungFormularId)}/${rueckforderungDokumentTyp}`,
             method: 'POST',
@@ -102,6 +97,39 @@ export class UploadRS {
         }, (evt: any) => {
             this.notifyCallbackByUpload(evt);
         });
+    }
+
+    public uploadFerienbetreuungDokumente(files: any, ferienbetreuungContainerId: string):
+        IPromise<TSFerienbetreuungDokument[]> {
+        const names = this.encodeFileNames(files);
+        return this.upload.upload({
+            url: `${this.serviceURL}/ferienbetreuungDokumente/${encodeURIComponent(ferienbetreuungContainerId)}`,
+            method: 'POST',
+            headers: {
+                'x-filename': names.join(';'),
+            },
+            data: {
+                file: files,
+            },
+        }).then((response: any) => {
+            return this.ebeguRestUtil.parseFerienbetreuungDokumente(response.data);
+        }, (response: any) => {
+            console.log(this.NOT_SUCCESS);
+            return this.q.reject(response);
+        }, (evt: any) => {
+            this.notifyCallbackByUpload(evt);
+        });
+    }
+
+    private encodeFileNames(files: any): string[] {
+        const names: string [] = [];
+        for (const file of files) {
+            if (file) {
+                const encodedFilename = this.base64.encode(file.name);
+                names.push(encodedFilename);
+            }
+        }
+        return names;
     }
 
     public uploadZemisExcel(file: File): IPromise<void> {

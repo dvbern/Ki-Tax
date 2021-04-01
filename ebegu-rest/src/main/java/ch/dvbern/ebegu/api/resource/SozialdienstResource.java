@@ -59,11 +59,9 @@ import ch.dvbern.ebegu.services.SozialdienstService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 @Path("sozialdienst")

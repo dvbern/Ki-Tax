@@ -16,27 +16,58 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../../core/rest-services/applicationPropertyRS.rest';
+import {DownloadRS} from '../../../core/service/downloadRS.rest';
+import {UploadRS} from '../../../core/service/uploadRS.rest';
+import {SharedModule} from '../../../shared/shared.module';
+import {FerienbetreuungDokumentService} from '../services/ferienbetreuung-dokument.service';
+import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
 import {FerienbetreuungUploadComponent} from './ferienbetreuung-upload.component';
 
+const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(FerienbetreuungService.name,
+    ['getFerienbetreuungContainer']);
+const ferienbetreuungDokumentServiceSpy = jasmine.createSpyObj<FerienbetreuungDokumentService>(
+    FerienbetreuungDokumentService.name, ['getAllDokumente']
+);
+const uploadRSSpy = jasmine.createSpyObj<UploadRS>(UploadRS.name, ['uploadFerienbetreuungDokumente']);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
+const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name,
+    ['prepareDownloadWindow', 'getAccessTokenFerienbetreuungDokument', 'startDownload']);
+const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, []);
+
 describe('FerienbetreuungUploadComponent', () => {
-  let component: FerienbetreuungUploadComponent;
-  let fixture: ComponentFixture<FerienbetreuungUploadComponent>;
+    let component: FerienbetreuungUploadComponent;
+    let fixture: ComponentFixture<FerienbetreuungUploadComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ FerienbetreuungUploadComponent ]
-    })
-    .compileComponents();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [FerienbetreuungUploadComponent],
+            imports: [
+                SharedModule,
+            ],
+            providers: [
+                {provide: FerienbetreuungService, useValue: ferienbetreuungServiceSpy},
+                {provide: FerienbetreuungDokumentService, useValue: ferienbetreuungDokumentServiceSpy},
+                {provide: UploadRS, useValue: uploadRSSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: DownloadRS, useValue: downloadRSSpy},
+                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
+            ]
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(FerienbetreuungUploadComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(FerienbetreuungUploadComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });
