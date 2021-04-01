@@ -262,8 +262,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 				latsInstitutionAngabenJaxId.getId())
 			);
 
-		// TODO use correct deklaration/korrektur
-		return angabenInstitutionService.calculateAnzahlEingeschriebeneKinder(container.getAngabenDeklaration(), container);
+		return angabenInstitutionService.calculateAnzahlEingeschriebeneKinder(container);
 
 	}
 
@@ -292,8 +291,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 				latsInstitutionAngabenJaxId.getId())
 			);
 
-		// TODO use correct deklaration/korrektur
-		return angabenInstitutionService.calculateDurchschnittKinderProTag(container.getAngabenDeklaration(), container);
+		return angabenInstitutionService.calculateDurchschnittKinderProTag(container);
 
 	}
 }

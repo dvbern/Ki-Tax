@@ -224,10 +224,8 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 
 	@Override
 	public @Nonnull Map<String, Integer> calculateAnzahlEingeschriebeneKinder(
-		@Nonnull LastenausgleichTagesschuleAngabenInstitution angabenInstitution,
 		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer container
 	) {
-		Preconditions.checkNotNull(angabenInstitution);
 		Preconditions.checkNotNull(container);
 
 		authorizer.checkReadAuthorization(container);
@@ -277,10 +275,8 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 
 	@Override
 	public @Nonnull Map<String, BigDecimal> calculateDurchschnittKinderProTag(
-		@Nonnull LastenausgleichTagesschuleAngabenInstitution angabenInstitution,
 		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer container
 	) {
-		Preconditions.checkNotNull(angabenInstitution);
 		Preconditions.checkNotNull(container);
 
 		authorizer.checkReadAuthorization(container);

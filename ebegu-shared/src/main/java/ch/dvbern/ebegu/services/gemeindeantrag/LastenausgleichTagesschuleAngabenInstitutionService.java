@@ -25,7 +25,6 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 
 /**
@@ -80,13 +79,11 @@ public interface LastenausgleichTagesschuleAngabenInstitutionService {
 
 	@Nonnull
 	Map<String, Integer> calculateAnzahlEingeschriebeneKinder(
-		@Nonnull LastenausgleichTagesschuleAngabenInstitution angabenInstitution,
 		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer container
 	);
 
 	@Nonnull
 	Map<String, BigDecimal> calculateDurchschnittKinderProTag(
-		@Nonnull LastenausgleichTagesschuleAngabenInstitution angabenInstitution,
 		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer container
 	);
 }
