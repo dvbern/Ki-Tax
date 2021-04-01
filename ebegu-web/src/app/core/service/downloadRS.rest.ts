@@ -331,4 +331,12 @@ export class DownloadRS {
                 return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
             });
     }
+
+    public getAccessTokenFerienbetreuungDokument(rueckForderungDokumentId: string): IPromise<TSDownloadFile> {
+        return this.http.get(
+            `${this.serviceURL}/${encodeURIComponent(rueckForderungDokumentId)}/ferienbetreuungDokument`)
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            });
+    }
 }

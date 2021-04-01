@@ -19,6 +19,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {of} from 'rxjs';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {SharedModule} from '../../../shared/shared.module';
@@ -28,7 +29,7 @@ import {FerienbetreuungNutzungComponent} from './ferienbetreuung-nutzung.compone
 
 const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(
     FerienbetreuungService.name,
-    ['getFerienbetreuungContainer']
+    ['getFerienbetreuungContainer'],
 );
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
     ['addMesageAsError', 'addMesageAsInfo']);
@@ -47,13 +48,13 @@ describe('FerienbetreuungNutzungComponent', () => {
                 FormsModule,
                 ReactiveFormsModule,
                 SharedModule,
-                HttpClientModule
+                HttpClientModule,
             ],
             providers: [
                 {provide: FerienbetreuungService, useValue: ferienbetreuungServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-            ]
-        })
+            ],
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 

@@ -53,7 +53,7 @@ const controlContainerSpy = jasmine.createSpyObj<ControlContainer>(ControlContai
     ['path']);
 
 const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-    ['isOneOfRoles', 'principal$']);
+    ['isOneOfRoles', 'principal$', 'isRole']);
 
 const gemeindeAntragServiceSpy = jasmine.createSpyObj<GemeindeAntragService>(GemeindeAntragService.name, ['getTypesForRole']);
 
@@ -65,7 +65,7 @@ const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGem
 
 const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(
     ApplicationPropertyRS.name,
-    ['getPublicPropertiesCached']
+    ['getPublicPropertiesCached', 'isDevMode']
 );
 
 authServiceSpy.principal$ = new BehaviorSubject(user);
@@ -134,6 +134,7 @@ describe('GemeindeAntraegeComponent', () => {
         properties.lastenausgleichTagesschulenAktiv = true;
         properties.ferienbetreuungAktiv = true;
         applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(of(properties).toPromise());
+        applicationPropertyRSSpy.isDevMode.and.returnValue(Promise.resolve(true));
     });
 
     beforeEach(() => {
@@ -147,6 +148,7 @@ describe('GemeindeAntraegeComponent', () => {
     });
 
     it('should display third dropdown if ferienbetreuung is selected', () => {
+        authServiceSpy.isOneOfRoles.and.returnValue(true);
         component.formGroup.controls.antragTyp.setValue(TSGemeindeAntragTyp.FERIENBETREUUNG);
         fixture.detectChanges();
         expect(fixture.debugElement.query(By.css('#select-gemeinde'))).not.toBeNull();

@@ -18,22 +18,22 @@
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
 
 /**
- * Service fuer den Lastenausgleich der Tagesschulen, StatusHistory
+ * Service fuer die Dokumente Ferienbetreuungen
  */
-public interface LastenausgleichTagesschuleAngabenGemeindeStatusHistoryService {
+public interface FerienbetreuungDokumentService {
 
-	@Nonnull
-	LastenausgleichTagesschuleAngabenGemeindeStatusHistory saveLastenausgleichTagesschuleStatusChange(
-		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer);
+	@Nonnull FerienbetreuungDokument saveDokument(@Nonnull FerienbetreuungDokument ferienbetreuungDokument);
 
-	List<LastenausgleichTagesschuleAngabenGemeindeStatusHistory> findHistoryForContainer(
-		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container
-	);
+	@Nonnull Optional<FerienbetreuungDokument> findDokument(@Nonnull String dokumentId);
+
+	void removeDokument(@Nonnull FerienbetreuungDokument dokument);
+
+	@Nonnull List<FerienbetreuungDokument> findDokumente(@Nonnull String ferienbetreuungContainerId);
 }

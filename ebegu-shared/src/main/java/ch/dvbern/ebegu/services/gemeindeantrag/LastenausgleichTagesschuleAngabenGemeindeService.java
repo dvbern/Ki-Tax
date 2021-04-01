@@ -116,4 +116,6 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 	@Nonnull
 	LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeWiederOeffnen(
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer);
+
+	void deleteLastenausgleicheTagesschule(@Nonnull Gesuchsperiode gesuchsperiode);
 }
