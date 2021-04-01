@@ -16,7 +16,9 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {of} from 'rxjs';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
+import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../core/service/downloadRS.rest';
@@ -36,11 +38,17 @@ const uploadRSSpy = jasmine.createSpyObj<UploadRS>(UploadRS.name, ['uploadFerien
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
 const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name,
     ['prepareDownloadWindow', 'getAccessTokenFerienbetreuungDokument', 'startDownload']);
-const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, []);
+const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDevMode', 'getAllowedMimetypes']);
+
+const container = new TSFerienbetreuungAngabenContainer();
+container.angabenDeklaration = null;
 
 describe('FerienbetreuungUploadComponent', () => {
     let component: FerienbetreuungUploadComponent;
     let fixture: ComponentFixture<FerienbetreuungUploadComponent>;
+
+    ferienbetreuungServiceSpy.getFerienbetreuungContainer.and.returnValue(of(container));
+    applicationPropertyRSSpy.getAllowedMimetypes.and.returnValue(Promise.resolve(''));
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
