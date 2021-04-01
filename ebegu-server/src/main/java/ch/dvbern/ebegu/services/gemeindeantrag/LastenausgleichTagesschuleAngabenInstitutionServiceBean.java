@@ -317,6 +317,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 			}
 			for (BelegungTagesschuleModul modul : belegungTagesschule.getBelegungTagesschuleModule()) {
 				ModulTagesschuleGroup group = modul.getModulTagesschule().getModulTagesschuleGroup();
+				// we count Zweiwöchentliche Module as 0.5
 				double increment = (modul.getIntervall() == BelegungTagesschuleModulIntervall.WOECHENTLICH) ? 1 : 0.5;
 				if (group.isFruehbetreuung()) {
 					fruehbetreuung += increment;
