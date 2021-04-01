@@ -26,6 +26,7 @@ import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSLastenausgleichTagesschuleAngabenInstitutionStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenInstitutionStatus';
 import {TSAnzahlEingeschriebeneKinder} from '../../../../../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
+import {TSDurchschnittKinderProTag} from '../../../../../models/gemeindeantrag/TSDurchschnittKinderProTag';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
@@ -57,6 +58,7 @@ export class TagesschulenAngabenComponent {
     public gesuchsPeriode: TSGesuchsperiode;
     public formFreigebenTriggered: boolean = false;
     public anzahlEingeschriebeneKinder: TSAnzahlEingeschriebeneKinder;
+    public durchschnittKinderProTag: TSDurchschnittKinderProTag;
     public abweichungenAnzahlKinder: number;
 
     private gemeindeAntragContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -92,7 +94,10 @@ export class TagesschulenAngabenComponent {
                 this.form.disable();
             }
             this.setupCalculation(angaben);
-            this.queryAnzahlEingeschriebeneKinder();
+            if (this.angabenAusKibon) {
+                this.queryAnzahlEingeschriebeneKinder();
+                this.queryDurchschnittKinderProTag();
+            }
             this.cd.markForCheck();
         }, () => {
             this.errorService.addMesageAsError(this.translate.instant('DATA_RETRIEVAL_ERROR'));
@@ -366,15 +371,27 @@ export class TagesschulenAngabenComponent {
             .setValue(this.anzahlEingeschriebeneKinder?.primarstufe);
         this.form.get('anzahlEingeschriebeneKinderSekundarstufe')
             .setValue(this.anzahlEingeschriebeneKinder?.sekundarstufe);
+        this.form.get('durchschnittKinderProTagFruehbetreuung')
+            .setValue(this.durchschnittKinderProTag?.fruehbetreuung);
+        this.form.get('durchschnittKinderProTagMittag')
+            .setValue(this.durchschnittKinderProTag?.mittagsbetreuung);
+        this.form.get('durchschnittKinderProTagNachmittag1')
+            .setValue(this.durchschnittKinderProTag?.nachmittagsbetreuung1);
+        this.form.get('durchschnittKinderProTagNachmittag2')
+            .setValue(this.durchschnittKinderProTag?.nachmittagsbetreuung2);
     }
 
     private queryAnzahlEingeschriebeneKinder(): void {
-        if (!this.angabenAusKibon) {
-            return;
-        }
         this.tagesschulenAngabenRS.getAnzahlEingeschriebeneKinder(this.latsAngabenInstitutionContainer)
             .subscribe(anzahlEingeschriebeneKinder => {
                 this.anzahlEingeschriebeneKinder = anzahlEingeschriebeneKinder;
+            });
+    }
+
+    private queryDurchschnittKinderProTag(): void {
+        this.tagesschulenAngabenRS.getDurchschnittKinderProTag(this.latsAngabenInstitutionContainer)
+            .subscribe(durchschnittKinderProTag => {
+                this.durchschnittKinderProTag = durchschnittKinderProTag;
             });
     }
 }

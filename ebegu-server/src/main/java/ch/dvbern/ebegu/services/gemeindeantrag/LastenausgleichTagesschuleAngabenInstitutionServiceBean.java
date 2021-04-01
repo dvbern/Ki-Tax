@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,6 +41,7 @@ import javax.ws.rs.core.Response.Status;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
+import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.BelegungTagesschule_;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -48,6 +50,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
+import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
@@ -61,6 +64,7 @@ import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.base.Preconditions;
 
@@ -226,7 +230,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		Preconditions.checkNotNull(angabenInstitution);
 		Preconditions.checkNotNull(container);
 
-		authorizer.checkWriteAuthorization(container);
+		authorizer.checkReadAuthorization(container);
 
 		InstitutionStammdaten stammdaten = institutionStammdatenService.fetchInstitutionStammdatenByInstitution(
 			container.getInstitution().getId(), false
@@ -269,6 +273,72 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		anzahlKinder.put("sekundarstufe", countSekundarstufe);
 
 		return anzahlKinder;
+	}
+
+	@Override
+	public @Nonnull Map<String, BigDecimal> calculateDurchschnittKinderProTag(
+		@Nonnull LastenausgleichTagesschuleAngabenInstitution angabenInstitution,
+		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer container
+	) {
+		Preconditions.checkNotNull(angabenInstitution);
+		Preconditions.checkNotNull(container);
+
+		authorizer.checkReadAuthorization(container);
+
+		InstitutionStammdaten stammdaten = institutionStammdatenService.fetchInstitutionStammdatenByInstitution(
+			container.getInstitution().getId(), false
+		);
+		if (stammdaten == null) {
+			throw new EbeguEntityNotFoundException("calculateDurchschnittKinderProTag", container.getInstitution().getId());
+		}
+
+		List<AnmeldungTagesschule> anmeldungenTagesschule =
+			findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode(
+				stammdaten, container.getGesuchsperiode()
+			);
+
+		return calculateDurchschnittKinderProTag(anmeldungenTagesschule);
+
+	}
+
+	@Nonnull
+	protected Map<String, BigDecimal> calculateDurchschnittKinderProTag(List<AnmeldungTagesschule> anmeldungenTagesschule) {
+		int fruehbetreuung = 0;
+		int mittagbetreuung = 0;
+		int nachmittagbetreuung1 = 0;
+		int nachmittagbetreuung2 = 0;
+
+		for (AnmeldungTagesschule anmeldungTagesschule : anmeldungenTagesschule) {
+			BelegungTagesschule belegungTagesschule = anmeldungTagesschule.getBelegungTagesschule();
+			if (belegungTagesschule == null) {
+				continue;
+			}
+			for (BelegungTagesschuleModul modul : belegungTagesschule.getBelegungTagesschuleModule()) {
+				ModulTagesschuleGroup group = modul.getModulTagesschule().getModulTagesschuleGroup();
+				if (group.isFruehbetreuung()) {
+					fruehbetreuung++;
+				} else if (group.isMittagsbetreuung()) {
+					mittagbetreuung++;
+				} else if (group.isNachmittagbetreuung1()) {
+					nachmittagbetreuung1++;
+				} else if (group.isNachmittagbetreuung2()) {
+					nachmittagbetreuung2++;
+				}
+			}
+		}
+
+		HashMap<String, BigDecimal> durchschnittKinder = new HashMap<>();
+		durchschnittKinder.put("fruehbetreuung", this.divideBy5(fruehbetreuung));
+		durchschnittKinder.put("mittagsbetreuung", this.divideBy5(mittagbetreuung));
+		durchschnittKinder.put("nachmittagsbetreuung1", this.divideBy5(nachmittagbetreuung1));
+		durchschnittKinder.put("nachmittagsbetreuung2", this.divideBy5(nachmittagbetreuung2));
+
+		return durchschnittKinder;
+	}
+
+	private BigDecimal divideBy5(int number) {
+		BigDecimal dividend = new BigDecimal(number);
+		return MathUtil.ZWEI_NACHKOMMASTELLE.divide(dividend, new BigDecimal(5));
 	}
 
 	@Nonnull

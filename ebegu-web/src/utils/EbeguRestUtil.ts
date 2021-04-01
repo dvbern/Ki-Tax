@@ -24,6 +24,7 @@ import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspe
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
 import {TSAnzahlEingeschriebeneKinder} from '../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
+import {TSDurchschnittKinderProTag} from '../models/gemeindeantrag/TSDurchschnittKinderProTag';
 import {TSFerienbetreuungAngaben} from '../models/gemeindeantrag/TSFerienbetreuungAngaben';
 import {TSFerienbetreuungAngabenAngebot} from '../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenContainer} from '../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
@@ -5149,5 +5150,16 @@ export class EbeguRestUtil {
         anzahlEingeschriebeneKinder.primarstufe = restAnzahlEingeschriebeneKinder.primarstufe;
         anzahlEingeschriebeneKinder.sekundarstufe = restAnzahlEingeschriebeneKinder.sekundarstufe;
         return anzahlEingeschriebeneKinder;
+    }
+
+    public parseDurchschnittKinderProTag(
+        tsDurchschnittKinderProTag: TSDurchschnittKinderProTag,
+        restDurchschnittKinderProTag: any
+    ): TSDurchschnittKinderProTag {
+        tsDurchschnittKinderProTag.fruehbetreuung = restDurchschnittKinderProTag.fruehbetreuung;
+        tsDurchschnittKinderProTag.mittagsbetreuung = restDurchschnittKinderProTag.mittagsbetreuung;
+        tsDurchschnittKinderProTag.nachmittagsbetreuung1 = restDurchschnittKinderProTag.nachmittagsbetreuung1;
+        tsDurchschnittKinderProTag.nachmittagsbetreuung2 = restDurchschnittKinderProTag.nachmittagsbetreuung2;
+        return tsDurchschnittKinderProTag;
     }
 }

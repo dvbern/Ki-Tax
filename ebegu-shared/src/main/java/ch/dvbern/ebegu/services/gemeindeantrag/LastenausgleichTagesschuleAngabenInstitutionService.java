@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -79,6 +80,12 @@ public interface LastenausgleichTagesschuleAngabenInstitutionService {
 
 	@Nonnull
 	Map<String, Integer> calculateAnzahlEingeschriebeneKinder(
+		@Nonnull LastenausgleichTagesschuleAngabenInstitution angabenInstitution,
+		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer container
+	);
+
+	@Nonnull
+	Map<String, BigDecimal> calculateDurchschnittKinderProTag(
 		@Nonnull LastenausgleichTagesschuleAngabenInstitution angabenInstitution,
 		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer container
 	);
