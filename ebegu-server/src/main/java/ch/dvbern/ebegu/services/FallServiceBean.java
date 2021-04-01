@@ -366,6 +366,9 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				fallId)
 		);
+
+		authorizer.checkReadAuthorizationFall(fall);
+
 		if (fall.getSozialdienstFall() == null) {
 			throw new EbeguEntityNotFoundException(
 				"generateVollmachtDokument - getSozialdienstFall",
