@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer_;
+import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionStatus;
@@ -242,6 +243,11 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 				stammdaten, container.getGesuchsperiode()
 			);
 
+		return countAnzahlKinder(anmeldungenTagesschule);
+	}
+
+	@Nonnull
+	Map<String, Integer> countAnzahlKinder(@Nonnull List<AnmeldungTagesschule> anmeldungenTagesschule) {
 		int countVorschulalter = 0;
 		int countKindergarten = 0;
 		int countPrimarstufe = 0;
@@ -299,10 +305,10 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 
 	@Nonnull
 	protected Map<String, BigDecimal> calculateDurchschnittKinderProTag(List<AnmeldungTagesschule> anmeldungenTagesschule) {
-		int fruehbetreuung = 0;
-		int mittagbetreuung = 0;
-		int nachmittagbetreuung1 = 0;
-		int nachmittagbetreuung2 = 0;
+		double fruehbetreuung = 0;
+		double mittagbetreuung = 0;
+		double nachmittagbetreuung1 = 0;
+		double nachmittagbetreuung2 = 0;
 
 		for (AnmeldungTagesschule anmeldungTagesschule : anmeldungenTagesschule) {
 			BelegungTagesschule belegungTagesschule = anmeldungTagesschule.getBelegungTagesschule();
@@ -311,14 +317,15 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 			}
 			for (BelegungTagesschuleModul modul : belegungTagesschule.getBelegungTagesschuleModule()) {
 				ModulTagesschuleGroup group = modul.getModulTagesschule().getModulTagesschuleGroup();
+				double increment = (modul.getIntervall() == BelegungTagesschuleModulIntervall.WOECHENTLICH) ? 1 : 0.5;
 				if (group.isFruehbetreuung()) {
-					fruehbetreuung++;
+					fruehbetreuung += increment;
 				} else if (group.isMittagsbetreuung()) {
-					mittagbetreuung++;
+					mittagbetreuung += increment;
 				} else if (group.isNachmittagbetreuung1()) {
-					nachmittagbetreuung1++;
+					nachmittagbetreuung1 += increment;
 				} else if (group.isNachmittagbetreuung2()) {
-					nachmittagbetreuung2++;
+					nachmittagbetreuung2 += increment;
 				}
 			}
 		}
@@ -332,7 +339,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		return durchschnittKinder;
 	}
 
-	private BigDecimal divideBy5(int number) {
+	private BigDecimal divideBy5(double number) {
 		BigDecimal dividend = new BigDecimal(number);
 		return MathUtil.ZWEI_NACHKOMMASTELLE.divide(dividend, new BigDecimal(5));
 	}
