@@ -202,14 +202,3 @@
         cursor: not-allowed;
     }
 }
-
-
-.mat-columns(column-widths) {
-    each(column-widths, {
-        .mat-column-@{key} {
-            flex: 0 0 @value;
-            min-width: @value
-        }
-    })
-}
-
