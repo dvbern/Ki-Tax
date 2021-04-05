@@ -17,8 +17,10 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 
 import javax.annotation.Nonnull;
@@ -45,7 +47,8 @@ public class VollmachtPdfGeneratorTest {
 
 
 	@Test
-	public void createVollmacht() throws FileNotFoundException, InvoiceGeneratorException {
+	public void createVollmacht() throws IOException, InvoiceGeneratorException {
+		FileUtils.forceMkdir(new File(pfad));
 		generateVollmacht(Sprache.DEUTSCH, "Vollmacht_de.pdf");
 	}
 
