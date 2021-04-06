@@ -28,13 +28,16 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.services.AbstractBaseService;
+import ch.dvbern.ebegu.services.AuthService;
 import org.apache.commons.lang.NotImplementedException;
 
 /**
@@ -49,6 +52,9 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 
 	@Inject
 	private FerienbetreuungService ferienbetreuungService;
+
+	@Inject
+	private PrincipalBean principal;
 
 	@Override
 	@Nonnull
@@ -113,17 +119,20 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 		@Nullable String periodeId,
 		@Nullable String status) {
 
+		List<GemeindeAntrag> antraege = new ArrayList<>();
+
+		if(principal.isCallerInAnyOfRole(UserRole.getSuperadminAllGemeindeRoles())) {
+			List<FerienbetreuungAngabenContainer> ferienbetreuungAntraege = ferienbetreuungService.getFerienbetreuungAntraege(
+				gemeindeId, periodeId, status
+			);
+			antraege.addAll(ferienbetreuungAntraege);
+		}
+
 		List<LastenausgleichTagesschuleAngabenGemeindeContainer> latsAntraege = lastenausgleichTagesschuleAngabenGemeindeService.getLastenausgleicheTagesschulen(
 			gemeindeId, periodeId, status
 		);
-
-		List<FerienbetreuungAngabenContainer> ferienbetreuungAntraege = ferienbetreuungService.getFerienbetreuungAntraege(
-			gemeindeId, periodeId, status
-		);
-
-		List<GemeindeAntrag> antraege = new ArrayList<>();
 		antraege.addAll(latsAntraege);
-		antraege.addAll(ferienbetreuungAntraege);
+
 		return antraege;
 	}
 
