@@ -36,6 +36,10 @@ export class TagesschulenUiViewComponent implements OnInit {
             this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.LIST');
         });
 
+        if (this.$state.is('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN')) {
+            this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.LIST');
+        }
+
     }
 
 }
