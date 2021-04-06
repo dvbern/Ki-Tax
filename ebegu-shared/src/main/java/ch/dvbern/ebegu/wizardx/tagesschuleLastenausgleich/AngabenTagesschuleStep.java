@@ -20,24 +20,14 @@ package ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
-
-import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
-import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
-import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
 
 public class AngabenTagesschuleStep implements WizardStep<TagesschuleWizard> {
 
-	@Inject
-	private PrincipalBean principal;
-
-	@Inject
-	private InstitutionService institutionService;
 
 	@Override
 	public void next(
@@ -62,10 +52,10 @@ public class AngabenTagesschuleStep implements WizardStep<TagesschuleWizard> {
 		final Set<LastenausgleichTagesschuleAngabenInstitutionContainer> containerList =
 			wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().getAngabenInstitutionContainers();
 
-		if (principal.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
+		if (wizard.getRole().isInstitutionRole()) {
 			boolean userInstitutionsAbgeschlossen =
 				containerList.stream()
-					.filter(container -> this.institutionService.getInstitutionenReadableForCurrentBenutzer(false)
+					.filter(container -> wizard.getReadableInstitutionsOfUser()
 						.stream()
 						.anyMatch(institution -> institution.equals(container.getInstitution())))
 				.reduce(true, (prev, cur) -> prev && cur.isAntragInPruefungGemeinde(), Boolean::logicalAnd);

@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.enums;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -220,5 +221,18 @@ public enum UserRole {
 	@Nonnull
 	public RollenAbhaengigkeit getRollenAbhaengigkeit() {
 		return rollenAbhaengigkeit;
+	}
+
+	public boolean isInstitutionRole() {
+		return SACHBEARBEITER_INSTITUTION == this
+			|| ADMIN_INSTITUTION == this
+			|| SACHBEARBEITER_TRAEGERSCHAFT == this
+			|| ADMIN_TRAEGERSCHAFT == this;
+	}
+
+	public static List<UserRole> getAllInstitutionRoles() {
+		List<UserRole> all = getAllInstitutionAdminRoles();
+		all.addAll(getAllInstitutionSachbearbeiterRoles());
+		return all;
 	}
 }
