@@ -47,4 +47,11 @@ export class TSDateRange {
     public isInDateRange(date: moment.Moment): boolean {
         return date.isBefore(this.gueltigBis) && date.isAfter(this.gueltigAb);
     }
+
+    public contains(other: TSDateRange): boolean {
+        if (!this.gueltigBis || !other.gueltigBis) {
+            return other.gueltigAb.isSameOrAfter(this.gueltigAb);
+        }
+        return other.gueltigAb.isSameOrAfter(this.gueltigAb) && other.gueltigBis.isSameOrBefore(this.gueltigBis);
+    }
 }

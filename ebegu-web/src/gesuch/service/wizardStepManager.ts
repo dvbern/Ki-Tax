@@ -94,8 +94,9 @@ export class WizardStepManager {
      * Initializes WizardSteps with one single Step GESUCH_ERSTELLEN which status is IN_BEARBEITUNG.
      * This method must be called only when the Gesuch doesn't exist yet.
      */
-    public initWizardSteps(): void {
-        if (this.isStepVisible(TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN)) {
+    public initWizardSteps(newFall: boolean): void {
+        if (this.isStepVisible(TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN)
+            && (!this.isStepStatusOk(TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN) || newFall)) {
             this.wizardSteps = [
                 this.createWizardStep(undefined,
                     TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN,
@@ -146,7 +147,9 @@ export class WizardStepManager {
 
         } else if (TSRoleUtil.getAmtRole().concat(TSRole.GESUCHSTELLER).indexOf(role) > -1) {
             this.setAllowedStepsForAmtAndGesuchsteller();
-            // TODO abklaeren ob die Gemeinde koennen auch sehe dieser Schritt
+            if (TSRoleUtil.getAmtRole().indexOf(role) > -1) {
+                this.allowedSteps.push(TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN);
+            }
         } else {
             // Nur sozialdienst und superadmin koennen alle Step sehen
             this.setAllAllowedSteps();
@@ -199,7 +202,7 @@ export class WizardStepManager {
             if (Array.isArray(response) && response.length > 0) {
                 this.wizardSteps = response;
             } else {
-                this.initWizardSteps();
+                this.initWizardSteps(false);
             }
             this.backupCurrentSteps();
             this.setAllowedStepsForRole(this.authServiceRS.getPrincipalRole());
@@ -386,7 +389,7 @@ export class WizardStepManager {
         if (step.wizardStepName === TSWizardStepName.VERFUEGEN) {
             // verfuegen fuer admin, jugendamt und gesuchsteller immer sichtbar
             if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole()) &&
-                !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles()) &&
+                !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle()) &&
                 !isAnyStatusOfVerfuegtOrKeinKontingent(gesuch.status)) {
                 return false;
             }

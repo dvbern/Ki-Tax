@@ -16,11 +16,18 @@
  */
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
+import {Observable, ReplaySubject} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {TSFerienbetreuungAngabenAngebot} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
+import {TSFerienbetreuungAngabenKostenEinnahmen} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
+import {TSFerienbetreuungAngabenNutzung} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
+import {TSFerienbetreuungAngabenStammdaten} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenStammdaten';
 import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../../core/constants/CONSTANTS';
+import {LogFactory} from '../../../core/logging/LogFactory';
+
+const LOG = LogFactory.createLog('FerienbetreuungService');
 
 @Injectable({
     providedIn: 'root',
@@ -29,18 +36,93 @@ export class FerienbetreuungService {
 
     private readonly API_BASE_URL = `${CONSTANTS.REST_API}ferienbetreuung`;
     private readonly ebeguRestUtil = new EbeguRestUtil();
+    // return last item but don't provide initial value like BehaviourSubject does
+    private ferienbetreuungAngabenContainerStore =
+        new ReplaySubject<TSFerienbetreuungAngabenContainer>(1);
 
     public constructor(private readonly http: HttpClient) {
     }
 
-    public findFerienbetreuungContainer(id: string): Observable<TSFerienbetreuungAngabenContainer> {
+    public updateFerienbetreuungContainerStore(id: string): void {
         const url = `${this.API_BASE_URL}/find/${encodeURIComponent(id)}`;
-        return this.http.get<TSFerienbetreuungAngabenContainer>(url)
-            .pipe(
-                map(container => this.ebeguRestUtil.parseFerienbetreuungContainer(
-                    new TSFerienbetreuungAngabenContainer(),
-                    container
-                ))
+        this.http.get<TSFerienbetreuungAngabenContainer>(url)
+            .subscribe(container => {
+                this.next(container);
+            }, error => LOG.error(error));
+    }
+
+    public getFerienbetreuungContainer(): Observable<TSFerienbetreuungAngabenContainer> {
+        return this.ferienbetreuungAngabenContainerStore.asObservable();
+    }
+
+    public emptyStore(): void {
+        this.ferienbetreuungAngabenContainerStore = new ReplaySubject<TSFerienbetreuungAngabenContainer>(1);
+    }
+
+    private next(restContainer: TSFerienbetreuungAngabenContainer): void {
+        const container = this.ebeguRestUtil.parseFerienbetreuungContainer(
+            new TSFerienbetreuungAngabenContainer(),
+            restContainer
+        );
+        this.ferienbetreuungAngabenContainerStore.next(container);
+    }
+
+    public saveKommentar(containerId: string, kommentar: string): Observable<void> {
+        return this.http.put<void>(
+            `${this.API_BASE_URL}/saveKommentar/${encodeURIComponent(containerId)}`,
+            kommentar,
+        );
+    }
+
+    public saveStammdaten(containerId: string, stammdaten: TSFerienbetreuungAngabenStammdaten):
+        Observable<TSFerienbetreuungAngabenStammdaten> {
+        return this.http.put<any>(
+            `${this.API_BASE_URL}/${encodeURIComponent(containerId)}/stammdaten/save`,
+            this.ebeguRestUtil.ferienbetreuungStammdatenToRestObject({}, stammdaten),
+        ).pipe(map(restStammdaten => {
+            return this.ebeguRestUtil.parseFerienbetreuungStammdaten(
+                new TSFerienbetreuungAngabenStammdaten(),
+                restStammdaten
             );
+        }));
+    }
+
+    public saveAngebot(containerId: string, angebot: TSFerienbetreuungAngabenAngebot):
+        Observable<TSFerienbetreuungAngabenAngebot> {
+        return this.http.put<any>(
+            `${this.API_BASE_URL}/${encodeURIComponent(containerId)}/angebot/save`,
+            this.ebeguRestUtil.ferienbetreuungAngebotToRestObject({}, angebot),
+        ).pipe(map(restAngebot => {
+            return this.ebeguRestUtil.parseFerienbetreuungAngebot(
+                new TSFerienbetreuungAngabenAngebot(),
+                restAngebot
+            );
+        }));
+    }
+
+    public saveNutzung(containerId: string, nutzung: TSFerienbetreuungAngabenNutzung):
+        Observable<TSFerienbetreuungAngabenNutzung> {
+        return this.http.put<any>(
+            `${this.API_BASE_URL}/${encodeURIComponent(containerId)}/nutzung/save`,
+            this.ebeguRestUtil.ferienbetreuungNutzungToRestObject({}, nutzung),
+        ).pipe(map(restNutzung => {
+            return this.ebeguRestUtil.parseFerienbetreuungNutzung(
+                new TSFerienbetreuungAngabenNutzung(),
+                restNutzung
+            );
+        }));
+    }
+
+    public saveKostenEinnahmen(containerId: string, kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen):
+        Observable<TSFerienbetreuungAngabenKostenEinnahmen> {
+        return this.http.put<any>(
+            `${this.API_BASE_URL}/${encodeURIComponent(containerId)}/kostenEinnahmen/save`,
+            this.ebeguRestUtil.ferienbetreuungKostenEinnahmenToRestObject({}, kostenEinnahmen),
+        ).pipe(map(restKostenEinnahmen => {
+            return this.ebeguRestUtil.parseFerienbetreuungKostenEinnahmen(
+                new TSFerienbetreuungAngabenKostenEinnahmen(),
+                restKostenEinnahmen
+            );
+        }));
     }
 }

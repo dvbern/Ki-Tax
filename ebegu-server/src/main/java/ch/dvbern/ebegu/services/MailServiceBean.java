@@ -109,7 +109,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			"InfoBetreuungBestaetigt",
 			(gesuchsteller, adr) -> mailTemplateConfig.getInfoBetreuungenBestaetigt(gesuch, gesuchsteller, adr,
 				sprache),
-			AntragStatus.IN_BEARBEITUNG_GS
+			AntragStatus.IN_BEARBEITUNG_GS, AntragStatus.IN_BEARBEITUNG_SOZIALDIENST
 		);
 	}
 
@@ -550,7 +550,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	 */
 	private boolean doSendMail(@Nonnull Fall fall) {
 		// Mail nur schicken, wenn es der Fall einen Besitzer hat
-		return fall.getBesitzer() != null;
+		return fall.getBesitzer() != null || fall.getSozialdienstFall() != null;
 	}
 
 	/**

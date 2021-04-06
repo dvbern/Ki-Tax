@@ -73,12 +73,14 @@ public class MailTemplateConfiguration {
 	public static final String GESUCHSPERIODE = "gesuchsperiode";
 	public static final String START_DATUM = "startDatum";
 	public static final String GESUCH = "gesuch";
+	public static final String SENDER_FULL_NAME = "senderFullName";
 	public static final String ADRESSE = "adresse";
 	public static final String MITTEILUNG = "mitteilung";
 	public static final String TEMPLATES_FOLDER = "/mail/templates";
 	public static final String INSTITUTION_STAMMDATEN = "institutionStammdaten";
 	public static final String BETRAG1 = "betrag1";
 	public static final String BETRAG2 = "betrag2";
+	public static final String BETREUUNG = "betreuung";
 	public static final String FTL_FILE_EXTENSION = ".ftl";
 
 	private final Configuration freeMarkerConfiguration;
@@ -353,7 +355,7 @@ public class MailTemplateConfiguration {
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
 		paramMap.put(GESUCHSPERIODE, gesuchsperiode);
 		paramMap.put(START_DATUM, Constants.DATE_FORMATTER.format(gesuchsperiode.getGueltigkeit().getGueltigAb()));
-		paramMap.put(GESUCHSTELLER, gesuchsteller);
+		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(gesuch, gesuchsteller));
 		paramMap.put(EMPFAENGER_MAIL, empfaengerMail);
 		paramMap.put(GESUCH, gesuch);
 
@@ -467,9 +469,18 @@ public class MailTemplateConfiguration {
 	) {
 
 		paramMap.put(GESUCH, gesuch);
+		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(gesuch, gesuchsteller));
 		paramMap.put(GESUCHSTELLER, gesuchsteller);
+		paramMap.put("isSozialdienst", gesuch.getFall().getSozialdienstFall() != null);
 
 		return doProcessTemplate(appendLanguageToTemplateName(nameOfTemplate, sprache), paramMap);
+	}
+
+	private String getSenderFullNameForEmail(Gesuch gesuch, Gesuchsteller gesuchsteller){
+		if(gesuch.getFall().getSozialdienstFall() != null) {
+			return gesuch.getFall().getSozialdienstFall().getSozialdienst().getName();
+		}
+		return gesuchsteller.getFullName();
 	}
 
 	private String processTemplateBetreuung(
@@ -480,8 +491,8 @@ public class MailTemplateConfiguration {
 		@Nonnull Sprache sprache
 	) {
 
-		paramMap.put("betreuung", betreuung);
-		paramMap.put(GESUCHSTELLER, gesuchsteller);
+		paramMap.put(BETREUUNG, betreuung);
+		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(betreuung.extractGesuch(), gesuchsteller));
 
 		return doProcessTemplate(appendLanguageToTemplateName(nameOfTemplate, sprache), paramMap);
 	}
@@ -494,8 +505,8 @@ public class MailTemplateConfiguration {
 		@Nonnull Sprache sprache
 	) {
 
-		paramMap.put("betreuung", betreuung);
-		paramMap.put(GESUCHSTELLER, gesuchsteller);
+		paramMap.put(BETREUUNG, betreuung);
+		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(betreuung.extractGesuch(), gesuchsteller));
 
 		return doProcessTemplate(appendLanguageToTemplateName(nameOfTemplate, sprache), paramMap);
 	}
@@ -532,7 +543,7 @@ public class MailTemplateConfiguration {
 		@Nonnull Sprache sprache
 	) {
 
-		paramMap.put("betreuung", betreuung);
+		paramMap.put(BETREUUNG, betreuung);
 		paramMap.put("fall", fall);
 		paramMap.put("kind", kind);
 		paramMap.put(GESUCHSTELLER, gesuchsteller1);

@@ -28,6 +28,8 @@ export function getEntityTargetState(transition: Transition): TargetState {
             return stateService.target('gemeinde.edit', {gemeindeId: entityId});
         case TSEinladungTyp.INSTITUTION:
             return stateService.target('institution.edit', {institutionId: entityId});
+        case TSEinladungTyp.SOZIALDIENST:
+            return stateService.target('sozialdienst.edit', {sozialdienstId: entityId});
         default:
             throw new Error(`unrecognised EinladungTyp ${typ}`);
     }

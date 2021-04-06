@@ -46,7 +46,7 @@
                         <th st-sort="fallNummer" class="sortable row-fallNummer uppercase"
                             data-translate="POSTEINGANG_FALL"></th>
                         <!-- Familie -->
-                        <th st-sort="familienName" class="sortable row-besitzer uppercase"
+                        <th ng-if="!vm.isSozialdienst()" st-sort="familienName" class="sortable row-besitzer uppercase"
                             data-translate="POSTEINGANG_FAMILIE"></th>
                         <!-- Betreff -->
                         <th st-sort="subject" class="sortable row-subject uppercase"
@@ -55,10 +55,10 @@
                         <th st-sort="sentDatum" class="sortable row-sentDatum uppercase"
                             data-translate="POSTEINGANG_DATUM"></th>
                         <!-- Verantwortliche Person -->
-                        <th st-sort="empfaenger" class="sortable row-empfaenger uppercase"
+                        <th ng-if="!vm.isSozialdienst()" st-sort="empfaenger" class="sortable row-empfaenger uppercase"
                             data-translate="POSTEINGANG_AN"></th>
                         <!-- Amt -->
-                        <th st-sort="empfaengerVerantwortung"
+                        <th ng-if="!vm.isSozialdienst()" st-sort="empfaengerVerantwortung"
                             class="sortable uppercase"
                             data-translate="POSTEINGANG_VERANTWORTUNG"></th>
                         <!-- Status -->
@@ -82,19 +82,19 @@
                         <!-- Fall-Nummer -->
                         <th><input st-search="fallNummer" class="form-control" type="text"/></th>
                         <!-- Familie -->
-                        <th><input st-search="familienName" class="form-control" type="text"/></th>
+                        <th ng-if="!vm.isSozialdienst()"><input st-search="familienName" class="form-control" type="text"/></th>
                         <!-- Betreff -->
                         <th><input st-search="subject" class="form-control" type="text"/></th>
                         <!-- Datum -->
                         <th><input st-search="sentDatum" class="form-control" type="text"/></th>
                         <!-- An -->
-                        <th>
+                        <th ng-if="!vm.isSozialdienst()">
                             <dv-userselect input-id="empfaenger" dv-usersearch="empfaenger"
                                            initial-all="vm.isSuperAdmin() ? true : false"
                                            show-selection-all="true" sachbearbeiter-gemeinde="true"></dv-userselect>
                         </th>
                         <!-- Verantwortung -->
-                        <th>
+                        <th ng-if="!vm.isSozialdienst()">
                             <div class="dv-select-style">
                                 <select st-input-event="change" name="empfaengerVerantwortung" id="empfaengerVerantwortung"
                                         st-search="empfaengerVerantwortung" class="form-control"
@@ -132,7 +132,7 @@
                         <td class="ellipsis" title="{{vm.addZerosToFallNummer(row.dossier.fall.fallNummer)}}"
                             ng-bind="vm.addZerosToFallNummer(row.dossier.fall.fallNummer)"></td>
                         <!-- Familie -->
-                        <td class="ellipsis" title="{{row.dossier.fall.besitzer.getFullName()}}"
+                        <td ng-if="!vm.isSozialdienst()" class="ellipsis" title="{{row.dossier.fall.besitzer.getFullName()}}"
                             ng-bind="row.dossier.fall.besitzer.getFullName()"></td>
                         <!-- Betreff -->
                         <td class="ellipsis" title="{{row.subject}}"
@@ -141,11 +141,11 @@
                         <td class="ellipsis" title="{{row.sentDatum | amDateFormat : 'DD.MM.YYYY'}}"
                             ng-bind="row.sentDatum | amDateFormat : 'DD.MM.YYYY'"></td>
                         <!-- An -->
-                        <td class="ellipsis">
+                        <td ng-if="!vm.isSozialdienst()" class="ellipsis">
                             <dv-benutzer-entry [benutzer]="row.empfaenger"
                                                no-icons="true"></dv-benutzer-entry>
                         <!-- Verantwortung -->
-                        <td class="ellipsis">
+                        <td ng-if="!vm.isSozialdienst()" class="ellipsis">
                             <dv-benutzer-entry [benutzer]="row.empfaenger" no-name="true"></dv-benutzer-entry>
                         </td>
                         <!-- Status -->

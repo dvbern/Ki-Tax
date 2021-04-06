@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensum;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
+import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxFile;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
@@ -44,6 +45,7 @@ import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
+import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -383,6 +385,15 @@ public class AbstractConverter {
 		jaxGemeinde.setAngebotTS(persistedGemeinde.isAngebotTS());
 		jaxGemeinde.setAngebotFI(persistedGemeinde.isAngebotFI());
 		return jaxGemeinde;
+	}
+
+	@Nonnull
+	public JaxBfsGemeinde gemeindeBfsToJax(@Nonnull final BfsGemeinde bfsGemeinde) {
+		// Aktuell brauchen wir nur den Namen und die BFS-Nummer
+		JaxBfsGemeinde jaxBfsGemeinde = new JaxBfsGemeinde();
+		jaxBfsGemeinde.setName(bfsGemeinde.getName());
+		jaxBfsGemeinde.setBfsNummer(bfsGemeinde.getBfsNummer());
+		return jaxBfsGemeinde;
 	}
 
 	@Nonnull

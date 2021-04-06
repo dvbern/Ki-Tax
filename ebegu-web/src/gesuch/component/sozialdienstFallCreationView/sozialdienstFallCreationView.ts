@@ -24,6 +24,7 @@ import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSSozialdienstFallStatus} from '../../../models/enums/TSSozialdienstFallStatus';
+import {TSSprache} from '../../../models/enums/TSSprache';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSSozialdienstFall} from '../../../models/sozialdienst/TSSozialdienstFall';
@@ -67,7 +68,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     ];
 
     private sozialdienstFall: TSSozialdienstFall;
-    private isVollmachtHochgeladet: boolean;
+    private isVollmachtHochgeladen: boolean;
     private gesuchsperiodeId: string;
 
     // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt
@@ -120,7 +121,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
             return;
         }
         this.fallRS.existVollmachtDokument(this.gesuchModelManager.getFall().id).then(
-            result => this.isVollmachtHochgeladet = result,
+            result => this.isVollmachtHochgeladen = result,
         );
     }
 
@@ -184,20 +185,20 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         return this.$translate.instant('WEITER');
     }
 
-    /**
-     * There could be Gesuchsperiode in the list so we can chose it, or the gesuch has already a
-     * gesuchsperiode set
-     */
     public isSozialdienstFallReadOnly(): boolean {
-        if (this.gesuchModelManager.getFall().sozialdienstFall?.status === TSSozialdienstFallStatus.AKTIV) {
+        if (this.isSozialdienstFallAktiv() || this.isVollmachtHochgeladen) {
             return true;
         }
         return false;
     }
 
+    public isSozialdienstFallAktiv(): boolean {
+        return this.gesuchModelManager.getFall().sozialdienstFall?.status === TSSozialdienstFallStatus.AKTIV;
+    }
+
     public isAktivierungMoeglich(): boolean {
         if (this.gesuchModelManager.getFall().sozialdienstFall?.status === TSSozialdienstFallStatus.INAKTIV
-            && this.isVollmachtHochgeladet) {
+            && this.isVollmachtHochgeladen) {
             return true;
         }
         return false;
@@ -223,25 +224,38 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
 
         this.uploadRS.uploadVollmachtDokument(selectedFile, this.gesuchModelManager.getFall().id)
             .then(() => {
-                this.isVollmachtHochgeladet = true;
+                this.isVollmachtHochgeladen = true;
             });
     }
 
     public removeVollmachtDokument(): void {
         this.fallRS.removeVollmachtDokument(this.gesuchModelManager.getFall().id)
             .then(() => {
-                this.isVollmachtHochgeladet = false;
+                this.isVollmachtHochgeladen = false;
             });
     }
 
     public downloadVollmachtDokument(): void {
         this.fallRS.downloadVollmachtDokument(this.gesuchModelManager.getFall().id).then(
             response => {
-                let file;
-                let filename;
-                file = new Blob([response], {type: 'application/pdf'});
-                filename = this.$translate.instant('VOLLMACHT_DATEI_NAME');
-                this.downloadRS.openDownload(file, filename);
+                this.openDownloadForFile(response);
             });
+    }
+
+    public generateVollmachtPDF(sprache: TSSprache): void {
+        this.fallRS.getVollmachtDokumentAccessTokenGeneratedDokument(this.gesuchModelManager.getFall().id, sprache)
+            .then(
+                response => {
+                    this.openDownloadForFile(response);
+                });
+    }
+
+    private openDownloadForFile(response: BlobPart): void {
+        let file;
+        let filename;
+        file = new Blob([response], {type: 'application/pdf'});
+        filename = this.$translate.instant('VOLLMACHT_DATEI_NAME');
+        filename = `${filename}_${this.sozialdienstFall?.vorname}_${this.sozialdienstFall.name}`;
+        this.downloadRS.openDownload(file, filename);
     }
 }

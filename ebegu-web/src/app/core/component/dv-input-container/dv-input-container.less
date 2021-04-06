@@ -19,11 +19,20 @@
 
 dv-input-container-x {
     .dv-input-container {
+
         align-items: center;
         display: flex;
         justify-content: space-between;
         margin-bottom: 2.3rem;
         width: 100%;
+
+        &.vertical-align {
+            flex-direction: column;
+            > label, > mat-form-field {
+                flex-grow: 1;
+                width: 100%;
+            }
+        }
 
         input, textarea {
             font-family: Open Sans, Arial, Helvetica, sans-serif;
@@ -46,6 +55,13 @@ dv-input-container-x {
 
         textarea {
             padding: 1rem;
+        }
+
+        .mat-select-trigger {
+            height: 100%;
+            .mat-select-value {
+                padding-top: 7.5px;
+            }
         }
 
     }

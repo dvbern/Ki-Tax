@@ -17,7 +17,7 @@ import {IComponentOptions, IPromise, IQService, IScope, ITimeoutService} from 'a
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {getTSTaetigkeitWithFreiwilligenarbeit, getTSTaetigkeit, TSTaetigkeit} from '../../../models/enums/TSTaetigkeit';
+import {getTSTaetigkeit, getTSTaetigkeitWithFreiwilligenarbeit, TSTaetigkeit} from '../../../models/enums/TSTaetigkeit';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSErwerbspensum} from '../../../models/TSErwerbspensum';
 import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';
@@ -147,6 +147,10 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         return this.model && this.model.erwerbspensumJA
             && (this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.ANGESTELLT
                 || this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.SELBSTAENDIG);
+    }
+
+    public isUnbezahlterUrlaubDisabled(): boolean {
+        return !this.isUnbezahlterUrlaubVisible() || this.isGesuchReadonly();
     }
 
     private initUnbezahlterUrlaub(): void {

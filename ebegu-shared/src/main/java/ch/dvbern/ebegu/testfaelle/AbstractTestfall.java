@@ -100,6 +100,8 @@ public abstract class AbstractTestfall {
 	public static final String ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE = "199ac4a1-448f-4d4c-b3a6-5aee21f89613";
 	public static final String ID_INSTITUTION_STAMMDATEN_GUARDA_FERIENINSEL = "9d8ff34f-8856-4dd3-ade2-2469aadac0ed";
 
+	public static final String ID_BERNER_SOZIALDIENST = "f44a68f2-dda2-4bf2-936a-68e20264b620";
+
 	protected final Gesuchsperiode gesuchsperiode;
 	protected final Collection<InstitutionStammdaten> institutionStammdatenList;
 

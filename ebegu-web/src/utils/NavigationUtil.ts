@@ -24,12 +24,14 @@ export class NavigationUtil {
             state.go('gesuch.betreuungen', {
                 gesuchId: gesuchID,
             });
-
         } else if (role === TSRole.STEUERAMT) {
             state.go('gesuch.familiensituation', {
                 gesuchId: gesuchID,
             });
-
+        } else if (TSRoleUtil.isSozialdienstRole(role)) {
+            state.go('gesuch.sozialdienstfallcreation', {
+                gesuchId: gesuchID,
+            });
         } else {
             state.go('gesuch.fallcreation', {
                 gesuchId: gesuchID,

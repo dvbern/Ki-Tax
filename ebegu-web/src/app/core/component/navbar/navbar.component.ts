@@ -32,6 +32,7 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {KiBonGuidedTourService} from '../../../kibonTour/service/KiBonGuidedTourService';
 import {GUIDED_TOUR_SUPPORTED_ROLES, GuidedTourByRole} from '../../../kibonTour/shared/KiBonGuidedTour';
 import {LogFactory} from '../../logging/LogFactory';
+import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from '../../service/gesuchsperiodeRS.rest';
 import {SozialdienstRS} from '../../service/SozialdienstRS.rest';
 import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
@@ -51,6 +52,8 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
 
     private readonly unsubscribe$ = new Subject<void>();
 
+    public gemeindeAntraegeVisible = false;
+
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
         private readonly changeDetectorRef: ChangeDetectorRef,
@@ -62,6 +65,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         private readonly kibonGuidedTourService: KiBonGuidedTourService,
         private readonly sozialdienstRS: SozialdienstRS,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
@@ -85,6 +89,12 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                 },
                 err => LOG.error(err),
             );
+
+        this.applicationPropertyRS.getPublicPropertiesCached().then(properties => {
+            this.gemeindeAntraegeVisible =
+                properties.ferienbetreuungAktiv || properties.lastenausgleichTagesschulenAktiv;
+            this.changeDetectorRef.markForCheck();
+        });
     }
 
     public ngOnDestroy(): void {

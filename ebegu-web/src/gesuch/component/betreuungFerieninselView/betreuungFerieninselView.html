@@ -128,10 +128,11 @@
         </div>
 
         <!-- Hinweis, wenn Anmeldeschluss schon abgelaufen -->
-        <div class="margin-top-30" ng-if="vm.isAnmeldeschlussAbgelaufen() && vm.betreuung.isEnabled()">
+        <div class="margin-top-30" ng-if="vm.showWarnungAnmeldeschlussAbgelaufen()">
             <div class="well well-status-warten">
                 <i class="fa fa-exclamation " aria-hidden="true"></i>
-                <span data-translate="WARN_FERIEN_NICHT_MEHR_BUCHBAR"></span>
+                <span data-translate="WARN_FERIEN_NICHT_MEHR_BUCHBAR"
+                      data-translate-value-ferien="{{vm.getCurrentFerienNameTranslated()}}"></span>
             </div>
         </div>
 
@@ -178,15 +179,20 @@
         <span class="dv-navigation-flex"
              dv-show-element
              dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()"
-             dv-show-expression="vm.isFalscheInstitutionAndUserInRole() && vm.isAnmeldungMoeglich() && vm.aktuellGueltig">
-            <dv-loading-button button-click="vm.anmelden()" type="submit" button-class="save"
-                               class="dv-navigation-item">
+             dv-show-expression="vm.isFalscheInstitutionAndUserInRole() && vm.aktuellGueltig">
+            <dv-loading-button
+                ng-if="vm.isAnmeldungMoeglich()"
+                button-click="vm.anmelden()"
+                type="submit"
+                button-class="save"
+                class="dv-navigation-item">
                 <span class="uppercase" data-translate="{{vm.getButtonTextSpeichern()}}"></span>
             </dv-loading-button>
-            <dv-loading-button class="dv-navigation-item"
-                               button-click="vm.anmeldungSchulamtAblehnen()"
-                               type="button"
-                               button-class="save">
+            <dv-loading-button
+                ng-if="vm.isAblehnenMoeglich()"
+                class="dv-navigation-item"
+                button-click="vm.anmeldungSchulamtAblehnen()"
+                type="button"button-class="save">
                 <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"></span>
             </dv-loading-button>
         </span>

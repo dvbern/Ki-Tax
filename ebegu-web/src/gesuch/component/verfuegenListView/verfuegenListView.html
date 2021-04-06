@@ -85,7 +85,7 @@
 
                 <div class="row margin-top-40" ng-show="vm.hasNichtBerechenbareBetreuungen()"
                      dv-show-element
-                     dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
+                     dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerSozialdienstRolle()">
                     <div class="col-md-12">
                         <div class="well well-status-warten">
                             <span data-translate="BETREUUNGEN_KOENNEN_NICHT_BERECHNET_WERDEN"></span>
@@ -93,7 +93,7 @@
                     </div>
                 </div>
                 <!--FinSitStatus-->
-                <div class="row margin-top-30" ng-if="vm.mustFinanzielleSituationBeValidated() && !vm.isGesuchsteller()">
+                <div class="row margin-top-30" ng-if="vm.mustFinanzielleSituationBeValidated() && !vm.isGesuchstellerOrSozialdienst()">
                     <div class="col-xs-12 dv-input-container-medium">
                         <div class="form-group">
                             <dv-radio-container name="finSitStatus" class="input-element"

@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.inbox.handler;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -62,10 +63,12 @@ import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.GueltigkeitsUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.ebegu.util.ValidationMessageUtil;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
 import org.apache.commons.lang3.StringUtils;
@@ -335,6 +338,19 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			return Processing.failure("Die Betreuungsmeldung und die Betreuung sind identisch.");
 		}
 
+		final DateRange institutionGueltigkeit = betreuung.getInstitutionStammdaten().getGueltigkeit();
+		if (betreuungsmitteilung.getBetreuungspensen()
+			.stream()
+			.anyMatch(betreuungsmitteilungPensum -> !institutionGueltigkeit.contains(betreuungsmitteilungPensum.getGueltigkeit()))) {
+			String message =
+				ValidationMessageUtil.getMessage("invalid_betreuungszeitraum_for_institutionsstammdaten");
+
+			message = MessageFormat.format(message, Constants.DATE_FORMATTER.format(institutionGueltigkeit
+				.getGueltigAb()), Constants.DATE_FORMATTER.format(institutionGueltigkeit.getGueltigBis()));
+
+			return Processing.failure(message);
+		}
+
 		mitteilungService.replaceBetreungsmitteilungen(betreuungsmitteilung);
 		LOG.info("Mutationsmeldung erstellt für die Betreuung mit RefNr: {}", ctx.getDto().getRefnr());
 
@@ -357,7 +373,9 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		betreuungsmitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 		betreuungsmitteilung.setEmpfaenger(gesuch.getDossier().getFall().getBesitzer());
 		betreuungsmitteilung.setMitteilungStatus(MitteilungStatus.NEU);
-		betreuungsmitteilung.setSubject(ServerMessageUtil.getMessage(BETREFF_KEY, locale) + ' ' + client.getExternalClient().getClientName());
+		betreuungsmitteilung.setSubject(ServerMessageUtil.getMessage(BETREFF_KEY, locale)
+			+ ' '
+			+ client.getExternalClient().getClientName());
 		betreuungsmitteilung.setBetreuung(betreuung);
 
 		PensumMappingUtil.addZeitabschnitteToBetreuungsmitteilung(ctx, latest, betreuungsmitteilung);

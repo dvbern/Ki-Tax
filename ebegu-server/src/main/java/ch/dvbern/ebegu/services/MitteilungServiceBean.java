@@ -86,6 +86,8 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.Mitteilung_;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall_;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -224,6 +226,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		}
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	private void setSenderAndEmpfaengerAndCheckAuthorization(@Nonnull Mitteilung mitteilung) {
 		Optional<Benutzer> currentBenutzer = benutzerService.getCurrentBenutzer();
 		//wenn man direkt aus Kafka Event liest sind man nicht eingeloggt, aber man hat der Rolle SUPER_ADMIN
@@ -255,9 +258,21 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			case ADMIN_GEMEINDE:
 			case SACHBEARBEITER_TS:
 			case ADMIN_TS: {
-				mitteilung.setEmpfaenger(mitteilung.getFall().getBesitzer());
-				mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.GESUCHSTELLER);
+				if (mitteilung.getFall().getSozialdienstFall() != null) {
+					// Sozialdienst hat kein Empfanger
+					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.SOZIALDIENST);
+				} else {
+					mitteilung.setEmpfaenger(mitteilung.getFall().getBesitzer());
+					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.GESUCHSTELLER);
+				}
 				mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
+				break;
+			}
+			case ADMIN_SOZIALDIENST:
+			case SACHBEARBEITER_SOZIALDIENST: {
+				mitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(mitteilung));
+				mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
+				mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.SOZIALDIENST);
 				break;
 			}
 			case SUPER_ADMIN: {
@@ -266,6 +281,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					mitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(mitteilung));
 					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 					mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.INSTITUTION);
+				} else if (mitteilung.getFall().getSozialdienstFall() != null) {
+					// Sozialdienst hat kein Empfanger
+					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.SOZIALDIENST);
+					mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 				} else {
 					mitteilung.setEmpfaenger(mitteilung.getFall().getBesitzer());
 					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.GESUCHSTELLER);
@@ -854,9 +873,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		Join<Fall, Benutzer> joinBesitzer = joinFall.join(Fall_.besitzer, JoinType.LEFT);
 		Join<Mitteilung, Benutzer> joinSender = root.join(Mitteilung_.sender, JoinType.LEFT);
-		Join<Mitteilung, Benutzer> joinEmpfaenger = root.join(Mitteilung_.empfaenger, JoinType.LEFT);
-		SetJoin<Benutzer, Berechtigung> joinEmpfaengerBerechtigungen = joinEmpfaenger.join(Benutzer_.berechtigungen);
-
 		// Predicates derived from PredicateDTO (Filter coming from client)
 		MitteilungPredicateObjectDTO predicateObjectDto = mitteilungTableFilterDto.getSearch().getPredicateObject();
 
@@ -869,6 +885,25 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		predicates.add(predicateEmpfaengerTyp);
 
 		filterGemeinde(user, joinGemeinde, predicates);
+
+		Join<Mitteilung, Benutzer> joinEmpfaenger = null;
+		SetJoin<Benutzer, Berechtigung> joinEmpfaengerBerechtigungen = null;
+		if (user.getCurrentBerechtigung().getRole().isRoleSozialdienstabhaengig()) {
+			if (user.getSozialdienst() != null) {
+				Join<Fall, SozialdienstFall> joinSozialdienst = joinFall.join(Fall_.sozialdienstFall, JoinType.LEFT);
+				Predicate sozialdienstFall =
+					cb.equal(joinSozialdienst.get(SozialdienstFall_.sozialdienst), user.getSozialdienst());
+				predicates.add(sozialdienstFall);
+			} else {
+				throw new EbeguRuntimeException("mitteilungTableFilterDto",
+					"Sozialdienst not defined for Sozialdienstuser");
+			}
+		} else {
+			// nur hier definieren, Left join auf dem Root koennen nicht null sein eben wenn nicht vewendet und
+			// nullable FK
+			joinEmpfaenger = root.join(Mitteilung_.empfaenger, JoinType.LEFT);
+			joinEmpfaengerBerechtigungen = joinEmpfaenger.join(Benutzer_.berechtigungen);
+		}
 
 		if (predicateObjectDto != null) {
 
@@ -926,13 +961,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				}
 			}
 			// empfaenger
-			if (predicateObjectDto.getEmpfaenger() != null) {
+			if (predicateObjectDto.getEmpfaenger() != null && joinEmpfaenger != null) {
 				predicates.add(
 					cb.and(
 						cb.equal(joinEmpfaenger.get(Benutzer_.fullName), predicateObjectDto.getEmpfaenger())
 					));
 			}
-			if (predicateObjectDto.getEmpfaengerVerantwortung() != null) {
+			if (predicateObjectDto.getEmpfaengerVerantwortung() != null  && joinEmpfaengerBerechtigungen != null) {
 				Verantwortung verantwortung = Verantwortung.valueOf(predicateObjectDto.getEmpfaengerVerantwortung());
 				switch (verantwortung) {
 				case VERANTWORTUNG_BG:
@@ -1049,8 +1084,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Join<Dossier, Fall> joinFall,
 		Join<Fall, Benutzer> joinBesitzer,
 		Join<Mitteilung, Benutzer> joinSender,
-		Join<Mitteilung, Benutzer> joinEmpfaenger,
-		SetJoin<Benutzer, Berechtigung> joinEmpfaengerBerechtigungen
+		@Nullable Join<Mitteilung, Benutzer> joinEmpfaenger,
+		@Nullable SetJoin<Benutzer, Berechtigung> joinEmpfaengerBerechtigungen
 	) {
 		Expression<?> expression = null;
 		if (tableFilterDTO.getSort() != null && tableFilterDTO.getSort().getPredicate() != null) {
@@ -1071,27 +1106,34 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				expression = root.get(Mitteilung_.sentDatum);
 				break;
 			case "empfaenger":
-				expression = joinEmpfaenger.get(Benutzer_.vorname);
+				if (joinEmpfaenger != null) {
+					expression = joinEmpfaenger.get(Benutzer_.vorname);
+				}
 				break;
 			case "mitteilungStatus":
 				expression = root.get(Mitteilung_.mitteilungStatus);
 				break;
 			case "empfaengerVerantwortung":
-				Predicate predicateActive = cb.between(
-					cb.literal(LocalDate.now()),
-					joinEmpfaengerBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
-					joinEmpfaengerBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
-				Predicate predicateBg =
-					joinEmpfaengerBerechtigungen.get(Berechtigung_.role).in(UserRole.getBgOnlyRoles());
-				Predicate predicateTs =
-					joinEmpfaengerBerechtigungen.get(Berechtigung_.role).in(UserRole.getTsOnlyRoles());
-				Expression<Boolean> isActiveBg = cb.and(predicateActive, predicateBg);
-				Expression<Boolean> isActiveTs = cb.and(predicateActive, predicateTs);
-				Locale browserSprache = LocaleThreadLocal.get(); // Nur fuer Sortierung!
-				String bg = ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_BG.name(), browserSprache);
-				String ts = ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_TS.name(), browserSprache);
-				String bg_ts = ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_BG_TS.name(), browserSprache);
-				expression = cb.selectCase().when(isActiveBg, bg).when(isActiveTs, ts).otherwise(bg_ts);
+				if (joinEmpfaengerBerechtigungen != null) {
+					Predicate predicateActive = cb.between(
+						cb.literal(LocalDate.now()),
+						joinEmpfaengerBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit)
+							.get(DateRange_.gueltigAb),
+						joinEmpfaengerBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit)
+							.get(DateRange_.gueltigBis));
+					Predicate predicateBg =
+						joinEmpfaengerBerechtigungen.get(Berechtigung_.role).in(UserRole.getBgOnlyRoles());
+					Predicate predicateTs =
+						joinEmpfaengerBerechtigungen.get(Berechtigung_.role).in(UserRole.getTsOnlyRoles());
+					Expression<Boolean> isActiveBg = cb.and(predicateActive, predicateBg);
+					Expression<Boolean> isActiveTs = cb.and(predicateActive, predicateTs);
+					Locale browserSprache = LocaleThreadLocal.get(); // Nur fuer Sortierung!
+					String bg = ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_BG.name(), browserSprache);
+					String ts = ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_TS.name(), browserSprache);
+					String bg_ts =
+						ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_BG_TS.name(), browserSprache);
+					expression = cb.selectCase().when(isActiveBg, bg).when(isActiveTs, ts).otherwise(bg_ts);
+				}
 				break;
 			default:
 				LOG.warn(
@@ -1213,6 +1255,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		case SACHBEARBEITER_MANDANT: {
 			return MitteilungTeilnehmerTyp.JUGENDAMT;
 		}
+		case SACHBEARBEITER_SOZIALDIENST:
+		case ADMIN_SOZIALDIENST:
+			return MitteilungTeilnehmerTyp.SOZIALDIENST;
 		default:
 			return null;
 		}

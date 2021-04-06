@@ -185,6 +185,12 @@
                             <span [textContent]="'Testfall ASIV 10'"></span>
                         </button>
                     </li>
+                    <li *ngIf="!this.selectedBesitzer">
+                        <button type="button" class="dv-btn btn-link btn-testfall"
+                                (click)="createTestFallType('Sozialdienst')">
+                            <span [textContent]="'Testfall Unterstützungsdienste'"></span>
+                        </button>
+                    </li>
                 </ul>
             </div>
 

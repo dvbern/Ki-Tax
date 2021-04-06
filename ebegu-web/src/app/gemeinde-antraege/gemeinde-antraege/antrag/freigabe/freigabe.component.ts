@@ -64,20 +64,20 @@ export class FreigabeComponent implements OnInit {
                 mergeMap(container => this.latsService.latsGemeindeAntragFreigeben(container)),
             )
             .subscribe(() => {
-                this.$state.go('GEMEINDE_ANTRAEGE');
+                this.$state.go('gemeindeantraege.view');
             }, error => {
                 // tslint:disable-next-line:early-exit
                 if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
                     if (error.error.includes('angabenDeklaration')) {
                         this.errorService.addMesageAsError(this.translate.instant('LATS_GEMEINDE_ANGABEN_ERROR'));
-                        setTimeout(() => this.$state.go('LASTENAUSGLEICH_TS.ANGABEN_GEMEINDE',
+                        setTimeout(() => this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_GEMEINDE',
                             {triggerValidation: true},
                             {}),
                             this.ROUTING_DELAY);
                     } else if (error.error.includes('LastenausgleichAngabenInstitution')) {
                         this.errorService.addMesageAsError(this.translate.instant(
                             'LATS_NICHT_ALLE_INSTITUTIONEN_ABGESCHLOSSEN'));
-                        setTimeout(() => this.$state.go('LASTENAUSGLEICH_TS.ANGABEN_TAGESSCHULEN.LIST'),
+                        setTimeout(() => this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.LIST'),
                             this.ROUTING_DELAY);
                     }
                 } else {

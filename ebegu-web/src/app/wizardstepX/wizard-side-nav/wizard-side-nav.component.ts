@@ -17,6 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
+import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSWizardStepX} from '../../../models/TSWizardStepX';
 import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
 
@@ -31,6 +32,7 @@ export class WizardSideNavComponent implements OnInit {
     @Input() public readonly id: string;
     @Input() public readonly wizardTyp: string;
     @Input() public readonly status: string;
+    @Input() public readonly gemeinde: TSGemeinde;
 
     public wizardSteps$: Observable<TSWizardStepX[]>;
 

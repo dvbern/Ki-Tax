@@ -22,12 +22,9 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.wizardx.Wizard;
-import ch.dvbern.ebegu.wizardx.WizardStep;
 
-public class TagesschuleWizard implements Wizard {
+public class TagesschuleWizard extends Wizard {
 
-	private WizardStep step;
-	private UserRole role;
 	private LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleAngabenGemeindeContainer;
 
 	public TagesschuleWizard(
@@ -36,35 +33,10 @@ public class TagesschuleWizard implements Wizard {
 		this.role = roleToUse;
 		this.lastenausgleichTagesschuleAngabenGemeindeContainer = lastenausgleichTagesschuleAngabenGemeindeContainer;
 		if (role.isRoleGemeindeOrTS() || role.isRoleMandant() || role.isSuperadmin()) {
-			this.setStep(new AngabenGemeinde());
+			this.setStep(new AngabenGemeindeStep());
 		} else {
-			this.setStep(new AngabenTagesschule());
+			this.setStep(new AngabenTagesschuleStep());
 		}
-	}
-
-	@Override
-	public void previousState() {
-		this.getStep().prev(this);
-	}
-
-	@Override
-	public void nextState() {
-		this.getStep().next(this);
-	}
-
-	@Override
-	public WizardStep getStep() {
-		return step;
-	}
-
-	@Override
-	public void setStep(WizardStep step) {
-		this.step = step;
-	}
-
-	@Override
-	public UserRole getRole() {
-		return role;
 	}
 
 	public LastenausgleichTagesschuleAngabenGemeindeContainer getLastenausgleichTagesschuleAngabenGemeindeContainer() {

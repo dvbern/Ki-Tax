@@ -15,10 +15,11 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
+import {TSFile} from '../../../../models/TSFile';
 import {ApplicationPropertyRS} from '../../../core/rest-services/applicationPropertyRS.rest';
 import {WindowRef} from '../../../core/service/windowRef.service';
 import {MaterialModule} from '../../material.module';
@@ -27,8 +28,8 @@ import {SharedModule} from '../../shared.module';
 import {FileUploadComponent} from './file-upload.component';
 
 describe('FileUploadComponent', () => {
-    let component: FileUploadComponent;
-    let fixture: ComponentFixture<FileUploadComponent>;
+    let component: FileUploadComponent<TSFile>;
+    let fixture: ComponentFixture<FileUploadComponent<TSFile>>;
 
     const applicationPropertyRSSpy =
         jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getAllowedMimetypes']);

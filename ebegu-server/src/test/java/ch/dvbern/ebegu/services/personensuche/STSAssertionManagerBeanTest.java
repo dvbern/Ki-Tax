@@ -23,6 +23,7 @@ import javax.xml.transform.TransformerException;
 
 import ch.dvbern.ebegu.errors.PersonenSucheServiceException;
 import ch.dvbern.ebegu.errors.STSZertifikatServiceException;
+import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.tests.AbstractEbeguLoginTest;
 import ch.dvbern.ebegu.ws.ewk.sts.SAMLAuthenticationUtil;
 import ch.dvbern.ebegu.ws.ewk.sts.STSAssertionManager;
@@ -35,6 +36,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
@@ -43,6 +45,7 @@ import org.junit.runner.RunWith;
  * comments homa
  */
 @RunWith(Arquillian.class)
+@Category(IntegrationTest.class)
 @UsingDataSet("datasets/mandant-dataset.xml")
 @Transactional(TransactionMode.DISABLED)
 @Ignore
