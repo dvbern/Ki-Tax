@@ -21,6 +21,7 @@ package ch.dvbern.ebegu.wizardx;
  * Wizard steps status - to extend - shared between all wizards but no need to use all values
  */
 public enum WizardStateEnum {
+	IN_BEARBEITUNG,
 	OK,
 	KO
 }
