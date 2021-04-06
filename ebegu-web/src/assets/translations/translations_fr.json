@@ -1779,7 +1779,7 @@
     "INSTITUTIONEN_STATISTIK": "Institutions",
     "STATISTIK_INSTITUTIONEN_HINT": "Affiche une liste avec l'ensemble des institutions figurant dans kiBon.",
     "WARNUNG_INSTITUTIONEN_IN_STATUS_ANMELDUNG": "Le statut de certaines institutions n'est toujours pas actif. Veuillez compléter les informations manquantes. Seules les institutions dont le statut est actif peuvent accepter les bons de garde.",
-    "WARNUNG_INSTITUTIONEN_100_TAGE": "Les données de base des institutions doivent être vérifiées régulièrement. Veuillez vous rendre dans la liste des institutions pour vérifier les données de base de votre ou vos institution(s).",
+    "WARNUNG_INSTITUTIONEN_100_TAGE": "Les données de base des institutions doivent être vérifiées régulièrement. Veuillez vous rendre dans la liste des institutions pour vérifier les données de base de votre ou vos institution(s).<br>Toute modification de la réglementation tarifaire ou tout changement pouvant influer sur les conditions d’admission sont à annoncer à l’OIAS (<a href='mailto:info@fam.be'>info@fam.be</a>).",
     "WARNUNG_GEMEINDEN_IN_STATUS_ANMELDUNG": "Les communes dont le statut n'est pas actif ne peuvent pas émettre de bons de garde. Veuillez compléter les informations manquantes.",
     "ZUR_LISTE": "Revenir à la liste",
     "TESTLOGIN_REDIRECT_WARNING_TITLE": "Vous allez être redirigé vers le <b>système de test du BE-LOGIN</b>",

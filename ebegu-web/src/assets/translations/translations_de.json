@@ -1779,7 +1779,7 @@
     "INSTITUTIONEN_STATISTIK": "Institutionen",
     "STATISTIK_INSTITUTIONEN_HINT": "Zeigt eine Liste mit sämtlichen aktiven kiBon-Institutionen an.",
     "WARNUNG_INSTITUTIONEN_IN_STATUS_ANMELDUNG": "Sie haben noch Institutionen, die nicht aktiviert sind. Bitte vervollständigen Sie deren Angaben. Nur aktive Institutionen können Betreuungsgutscheine entgegennehmen.",
-    "WARNUNG_INSTITUTIONEN_100_TAGE": "Die Stammdaten der Institutionen müssen regelmässig überprüft werden. Bitte navigieren Sie auf die Institutionliste, um die Stammdaten Ihrer Institution(en) zu überprüfen",
+    "WARNUNG_INSTITUTIONEN_100_TAGE": "Die Stammdaten der Institutionen müssen regelmässig überprüft werden. Bitte navigieren Sie auf die Institutionliste, um die Stammdaten Ihrer Institution(en) zu überprüfen.<br>Bitte melden Sie uns an <a href='mailto:info@fam.be'>info@fam.be</a> Anpassungen des Tarifreglements oder wenn Sie Änderungen vornehmen, welche die Zulassungskriterien zum Gutscheinsystem tangieren.",
     "WARNUNG_GEMEINDEN_IN_STATUS_ANMELDUNG": "Nicht aktivierte Gemeinden können keine Betreuungsgutscheine ausstellen. Bitte vervollständigen Sie alle Angaben Ihrer Gemeinden.",
     "ZUR_LISTE": "Zur Liste",
     "TESTLOGIN_REDIRECT_WARNING_TITLE": "Sie werden jetzt auf die <b>TESTUMGEBUNG DES BE-LOGINS</b> weitergeleitet",
