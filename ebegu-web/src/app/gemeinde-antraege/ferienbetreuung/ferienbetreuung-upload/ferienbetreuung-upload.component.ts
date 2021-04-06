@@ -46,7 +46,7 @@ export class FerienbetreuungUploadComponent implements OnInit {
     public dokumente: TSFerienbetreuungDokument[];
 
     private container: TSFerienbetreuungAngabenContainer;
-    private filesTooBig: File[];
+    public filesTooBig: File[];
 
     public constructor(
         private readonly ferienbetreuungService: FerienbetreuungService,

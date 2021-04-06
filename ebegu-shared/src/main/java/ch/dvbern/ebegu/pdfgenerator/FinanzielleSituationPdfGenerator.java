@@ -387,14 +387,14 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		introBasisjahr.add(new TableRowLabelValue(
 			BASISJAHR,
 			String.valueOf(gesuch.getGesuchsperiode().getBasisJahr())));
-		return PdfUtil.creatreIntroTable(introBasisjahr, sprache);
+		return PdfUtil.createIntroTable(introBasisjahr, sprache);
 	}
 
 	@Nonnull
 	private PdfPTable createIntroEkv() {
 		List<TableRowLabelValue> introEkv1 = new ArrayList<>();
 		introEkv1.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
-		return PdfUtil.creatreIntroTable(introEkv1, sprache);
+		return PdfUtil.createIntroTable(introEkv1, sprache);
 	}
 
 	@Nonnull
@@ -402,7 +402,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		List<TableRowLabelValue> introMassgEinkommen = new ArrayList<>();
 		introMassgEinkommen.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
 		introMassgEinkommen.add(new TableRowLabelValue(NAME, String.valueOf(gesuch.extractFullnamesString())));
-		return PdfUtil.creatreIntroTable(introMassgEinkommen, sprache);
+		return PdfUtil.createIntroTable(introMassgEinkommen, sprache);
 	}
 
 	@Nonnull
