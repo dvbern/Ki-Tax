@@ -349,8 +349,8 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 	}
 
 	private BigDecimal divideBy5(double number) {
-		BigDecimal dividend = new BigDecimal(number);
-		return MathUtil.ZWEI_NACHKOMMASTELLE.divide(dividend, new BigDecimal(5));
+		BigDecimal dividend = new BigDecimal(String.valueOf(number));
+		return MathUtil.ZWEI_NACHKOMMASTELLE.divide(dividend, new BigDecimal("5.00"));
 	}
 
 	@Nonnull
