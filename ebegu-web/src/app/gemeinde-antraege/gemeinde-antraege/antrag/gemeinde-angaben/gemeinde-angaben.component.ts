@@ -239,6 +239,17 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
             .setValidators([this.plausibilisierungTageschulenStunden()]);
 
+        // tslint:disable-next-line:no-identical-functions
+        this.angabenForm.get('tagesschuleTeilweiseGeschlossen').valueChanges.subscribe(value => {
+            if (value === true) {
+                this.angabenForm.get('rueckerstattungenElterngebuehrenSchliessung')
+                    .setValidators([Validators.required]);
+            } else {
+                this.angabenForm.get('rueckerstattungenElterngebuehrenSchliessung')
+                    .setValidators(null);
+            }
+        }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
+
         // C
         this.angabenForm.get('gesamtKostenTagesschule')
             .setValidators([Validators.required, this.numberValidator()]);

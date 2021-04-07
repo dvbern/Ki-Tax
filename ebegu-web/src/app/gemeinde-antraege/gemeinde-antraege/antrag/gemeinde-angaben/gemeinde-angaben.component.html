@@ -402,7 +402,7 @@
         </dv-radio-container-x>
     </dv-input-container-x>
 
-    <dv-input-container-x>
+    <dv-input-container-x *ngIf="angabenForm.get('tagesschuleTeilweiseGeschlossen').value">
         <label required
                [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('rueckerstattungenElterngebuehrenSchliessung').errors}">
             {{'LATS_RUECKERSTATTUNG_TS_GESCHLOSSEN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
