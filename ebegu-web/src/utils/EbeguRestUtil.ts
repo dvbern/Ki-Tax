@@ -1501,7 +1501,7 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.alternativeEmailFamilienportal =
                 (institutionStammdaten.alternativeEmailFamilienportal) ?
                     institutionStammdaten.alternativeEmailFamilienportal :
-                null;
+                    null;
             return restInstitutionStammdaten;
         }
         return undefined;
@@ -4447,6 +4447,12 @@ export class EbeguRestUtil {
                 gemeindeFromServer.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete;
             gemeindeTS.einnahmenElterngebuehren =
                 gemeindeFromServer.einnahmenElterngebuehren;
+            gemeindeTS.ersteRateAusbezahlt =
+                gemeindeFromServer.ersteRateAusbezahlt;
+            gemeindeTS.tagesschuleTeilweiseGeschlossen =
+                gemeindeFromServer.tagesschuleTeilweiseGeschlossen;
+            gemeindeTS.rueckerstattungenElterngebuehrenSchliessung =
+                gemeindeFromServer.rueckerstattungenElterngebuehrenSchliessung;
             // C: Kostenbeteiligung Gemeinde
             gemeindeTS.gesamtKostenTagesschule =
                 gemeindeFromServer.gesamtKostenTagesschule;
@@ -4454,6 +4460,10 @@ export class EbeguRestUtil {
                 gemeindeFromServer.einnnahmenVerpflegung;
             gemeindeTS.einnahmenSubventionenDritter =
                 gemeindeFromServer.einnahmenSubventionenDritter;
+            gemeindeTS.ueberschussErzielt =
+                gemeindeFromServer.ueberschussErzielt;
+            gemeindeTS.ueberschussVerwendung =
+                gemeindeFromServer.ueberschussVerwendung;
             // D: Angaben zu weiteren Kosten und Ertraegen
             gemeindeTS.bemerkungenWeitereKostenUndErtraege =
                 gemeindeFromServer.bemerkungenWeitereKostenUndErtraege;
@@ -4506,6 +4516,12 @@ export class EbeguRestUtil {
                 tsAngabenGemeinde.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete;
             restAngabenGemeinde.einnahmenElterngebuehren =
                 tsAngabenGemeinde.einnahmenElterngebuehren;
+            restAngabenGemeinde.tagesschuleTeilweiseGeschlossen =
+                tsAngabenGemeinde.tagesschuleTeilweiseGeschlossen;
+            restAngabenGemeinde.rueckerstattungenElterngebuehrenSchliessung =
+                tsAngabenGemeinde.rueckerstattungenElterngebuehrenSchliessung;
+            restAngabenGemeinde.ersteRateAusbezahlt =
+                tsAngabenGemeinde.ersteRateAusbezahlt;
             // C: Kostenbeteiligung Gemeinde
             restAngabenGemeinde.gesamtKostenTagesschule =
                 tsAngabenGemeinde.gesamtKostenTagesschule;
@@ -4513,6 +4529,10 @@ export class EbeguRestUtil {
                 tsAngabenGemeinde.einnnahmenVerpflegung;
             restAngabenGemeinde.einnahmenSubventionenDritter =
                 tsAngabenGemeinde.einnahmenSubventionenDritter;
+            restAngabenGemeinde.ueberschussErzielt =
+                tsAngabenGemeinde.ueberschussErzielt;
+            restAngabenGemeinde.ueberschussVerwendung =
+                tsAngabenGemeinde.ueberschussVerwendung;
             // D: Angaben zu weiteren Kosten und Ertraegen
             restAngabenGemeinde.bemerkungenWeitereKostenUndErtraege =
                 tsAngabenGemeinde.bemerkungenWeitereKostenUndErtraege;
