@@ -82,7 +82,7 @@ public class InstitutionEventConverter {
 			stammdaten.getInstitutionStammdatenBetreuungsgutscheine().getAlternativeEmailFamilienportal() :
 			null;
 
-		KontaktAngabenDTO institutionKontaktAngaben = toKontaktAngabenDTO(stammdaten, alternativeEmail);
+		KontaktAngabenDTO institutionKontaktAngaben = toKontaktAngabenDTO(stammdaten, alternativeEmail, false);
 
 		Builder builder = InstitutionEventDTO.newBuilder()
 			.setId(institution.getId())
@@ -99,7 +99,8 @@ public class InstitutionEventConverter {
 			builder
 				.setBetreuungsGutscheineAb(stammdaten.getGueltigkeit().getGueltigAb())
 				.setBetreuungsGutscheineBis(getGueltigBis(stammdaten.getGueltigkeit()))
-				.setBetreuungsAdressen(getBetreuungsAdressen(institutionKontaktAngaben, bgStammdaten))
+				.setBetreuungsAdressen(getBetreuungsAdressen(institutionKontaktAngaben, bgStammdaten,
+					alternativeEmail))
 				.setOeffnungsTage(getOeffnungsTage(bgStammdaten))
 				.setOffenVon(TimeConverter.serialize(bgStammdaten.getOffenVon()))
 				.setOffenBis(TimeConverter.serialize(bgStammdaten.getOffenBis()))
@@ -117,10 +118,11 @@ public class InstitutionEventConverter {
 	@Nonnull
 	private List<KontaktAngabenDTO> getBetreuungsAdressen(
 		@Nonnull KontaktAngabenDTO institutionKontaktAngaben,
-		@Nonnull InstitutionStammdatenBetreuungsgutscheine bgStammdaten) {
+		@Nonnull InstitutionStammdatenBetreuungsgutscheine bgStammdaten,
+		@Nullable String alternativeEmail) {
 
 		List<KontaktAngabenDTO> betreuungsStandorte = bgStammdaten.getBetreuungsstandorte().stream()
-			.map(kontaktAngaben -> toKontaktAngabenDTO(kontaktAngaben, null))
+			.map(kontaktAngaben -> toKontaktAngabenDTO(kontaktAngaben, alternativeEmail, true))
 			.collect(Collectors.toList());
 
 		// implicitly, the institution address is also a betreuungs address
@@ -170,7 +172,8 @@ public class InstitutionEventConverter {
 	@Nonnull
 	private KontaktAngabenDTO toKontaktAngabenDTO(
 		@Nonnull KontaktAngaben kontaktAngaben,
-		@Nullable String alternativeEmailFamilienportal) {
+		@Nullable String alternativeEmailFamilienportal,
+		@Nonnull boolean isBetreuungStandorte) {
 		Adresse adr = kontaktAngaben.getAdresse();
 
 		return KontaktAngabenDTO.newBuilder()
@@ -182,8 +185,9 @@ public class InstitutionEventConverter {
 			.setOrt(adr.getOrt())
 			.setLand(adr.getLand().name())
 			.setGemeinde(toGemeindeDTO(adr))
-			.setEmail(kontaktAngaben.getMail())
-			.setAlternativeEmail(alternativeEmailFamilienportal)
+			.setEmail(isBetreuungStandorte ?
+				(kontaktAngaben.getMail() != null ? kontaktAngaben.getMail() : alternativeEmailFamilienportal)
+				: (alternativeEmailFamilienportal != null ? alternativeEmailFamilienportal : kontaktAngaben.getMail()))
 			.setTelefon(kontaktAngaben.getTelefon())
 			.setWebseite(kontaktAngaben.getWebseite())
 			.build();
