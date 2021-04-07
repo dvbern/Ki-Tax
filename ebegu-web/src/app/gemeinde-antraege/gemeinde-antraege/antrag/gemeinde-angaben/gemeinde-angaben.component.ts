@@ -403,8 +403,9 @@ export class GemeindeAngabenComponent implements OnInit {
         ]).subscribe(valueAndParameter => {
             const value = valueAndParameter[0];
             const lohnkostenParam = parseFloat(valueAndParameter[1].value);
+            const roundedValue = (value && lohnkostenParam) ? +(value * lohnkostenParam).toFixed(2) : 0;
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
-                .setValue((value && lohnkostenParam) ? value * lohnkostenParam : 0);
+                .setValue(roundedValue);
             this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
                 .updateValueAndValidity({onlySelf: true, emitEvent: false});
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
@@ -420,8 +421,9 @@ export class GemeindeAngabenComponent implements OnInit {
         ]).subscribe(valueAndParamter => {
             const value = valueAndParamter[0];
             const lohnkostenParam = parseFloat(valueAndParamter[1].value);
+            const roundedValue = (value && lohnkostenParam) ? +(value * lohnkostenParam).toFixed(2) : 0;
             this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
-                .setValue((value && lohnkostenParam) ? value * lohnkostenParam : 0);
+                .setValue(roundedValue);
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
                 .updateValueAndValidity({onlySelf: true, emitEvent: false});
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
@@ -437,7 +439,7 @@ export class GemeindeAngabenComponent implements OnInit {
         ]).subscribe(values => {
                 this.angabenForm.get('lastenausgleichsberechtigerBetrag').setValue(
                     // round to 0.2
-                    +(values[0] - values[1]).toFixed(2),
+                    Math.round((values[0] - values[1])),
                 );
             },
             () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')),
@@ -497,7 +499,7 @@ export class GemeindeAngabenComponent implements OnInit {
             ],
         ).subscribe(value => {
                 this.angabenForm.get('normlohnkostenBetreuungBerechnet')
-                    .setValue(parseFloat(value[0] || 0) + parseFloat(value[1] || 0));
+                    .setValue(+(parseFloat(value[0] || 0) + parseFloat(value[1] || 0)).toFixed(2));
             },
             () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')),
         );
