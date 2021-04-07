@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {Component, OnInit, ChangeDetectionStrategy, ViewChildren, QueryList, ChangeDetectorRef} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
@@ -24,9 +24,9 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSSozialdienstStammdaten} from '../../../models/sozialdienst/TSSozaildienstStammdaten';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
-import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
 @Component({
     selector: 'dv-edit-sozialdienst',
@@ -77,7 +77,12 @@ export class EditSozialdienstComponent implements OnInit {
     }
 
     public isStammdatenEditable(): boolean {
-        return this.authServiceRS.isOneOfRoles([TSRole.SUPER_ADMIN, TSRole.ADMIN_SOZIALDIENST]);
+        return this.authServiceRS.isOneOfRoles([
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_SOZIALDIENST,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT,
+        ]);
     }
 
     private loadStammdaten(): void {
