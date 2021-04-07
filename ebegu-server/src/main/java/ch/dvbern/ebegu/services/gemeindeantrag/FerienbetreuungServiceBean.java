@@ -68,6 +68,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	implements FerienbetreuungService {
 
 	public static final String ID_MUSS_GESETZT_SEIN = "id muss gesetzt sein";
+	public static final String NOT_ALL_PROPERTIES_SET = "Not all required properties are set";
 
 	@Inject
 	private Persistence persistence;
@@ -247,7 +248,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	public FerienbetreuungAngabenAngebot ferienbetreuungAngebotAbschliessen(
 		@Nonnull FerienbetreuungAngabenAngebot angebot) {
 
-		Preconditions.checkArgument(angebot.isReadyForFreigeben(), "Not all required properties are set");
+		Preconditions.checkArgument(angebot.isReadyForFreigeben(), NOT_ALL_PROPERTIES_SET);
 		Preconditions.checkArgument(
 			angebot.getStatus() == FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE,
 			"FerienbetreuungAngabenAngebot must be in state IN_BEARBEITUNG_GEMEINDE");
@@ -275,7 +276,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	@Override
 	public FerienbetreuungAngabenNutzung ferienbetreuungAngabenNutzungAbschliessen(
 		@Nonnull FerienbetreuungAngabenNutzung nutzung) {
-		Preconditions.checkArgument(nutzung.isReadyForFreigeben(), "Not all required properties are set");
+		Preconditions.checkArgument(nutzung.isReadyForFreigeben(), NOT_ALL_PROPERTIES_SET);
 		Preconditions.checkArgument(
 			nutzung.getStatus() == FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE,
 			"FerienbetreuungAngabenNutzung must be in state IN_BEARBEITUNG_GEMEINDE"
@@ -306,7 +307,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	public FerienbetreuungAngabenKostenEinnahmen ferienbetreuungAngabenKostenEinnahmenAbschliessen(
 		@Nonnull
 			FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen) {
-		Preconditions.checkArgument(kostenEinnahmen.isReadyForFreigeben(), "Not all required properties are set");
+		Preconditions.checkArgument(kostenEinnahmen.isReadyForFreigeben(), NOT_ALL_PROPERTIES_SET);
 		Preconditions.checkArgument(
 			kostenEinnahmen.getStatus() == FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE,
 			"FerienbetreuungAngabenKostenEinnahmen must be in state IN_BEARBEITUNG_GEMEINDE"
@@ -336,7 +337,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	@Override
 	public FerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenAbschliessen(
 			@Nonnull FerienbetreuungAngabenStammdaten stammdaten) {
-		Preconditions.checkArgument(stammdaten.isReadyForFreigeben(), "Not all required properties are set");
+		Preconditions.checkArgument(stammdaten.isReadyForFreigeben(), NOT_ALL_PROPERTIES_SET);
 		Preconditions.checkArgument(
 			stammdaten.getStatus() == FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE,
 			"FerienbetreuungAngabenNutzung must be in state IN_BEARBEITUNG_GEMEINDE"
