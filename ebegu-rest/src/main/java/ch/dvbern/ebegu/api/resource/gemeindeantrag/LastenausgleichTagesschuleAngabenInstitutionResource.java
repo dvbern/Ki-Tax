@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.api.resource.gemeindeantrag;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -239,7 +238,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 
 	@ApiOperation(
 		value = "Berechnet die Anzahl eingeschriebener Kinder pro Stufe (overall, vorschulalter, kindergarten, primarschule",
-		response = HashMap.class
+		response = Map.class
 	)
 	@Nonnull
 	@GET
@@ -268,7 +267,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 
 	@ApiOperation(
 		value = "Berechnet den Durchschnitt der Kinder pro Modulgruppe (Frühbetreuung, Mittagsbetreuung, Nachmittagsbetreuung 1, Nachmittagsbetreuung 2",
-		response = HashMap.class
+		response = Map.class
 	)
 	@Nonnull
 	@GET
