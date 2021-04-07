@@ -52,6 +52,9 @@ public class AngabenGemeindeStep implements WizardStep<TagesschuleWizard> {
 				WizardStateEnum.OK :
 				WizardStateEnum.IN_BEARBEITUNG;
 		case IN_PRUEFUNG_KANTON:
+			if (wizard.getRole().isRoleGemeindeabhaengig()) {
+				return WizardStateEnum.OK;
+			}
 			return container.isAngabenKorrekturAbgeschlossen() ?
 				WizardStateEnum.OK :
 				WizardStateEnum.IN_BEARBEITUNG;
