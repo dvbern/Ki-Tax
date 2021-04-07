@@ -47,6 +47,8 @@ import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.services.FallService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -129,7 +131,7 @@ public class FallResource {
 	@Path("/vollmachtDokument/{fallId}")
 	@Consumes(MediaType.WILDCARD)
 	@RolesAllowed({SUPER_ADMIN, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST})
-	public Response removeGesuchsperiodeDokument(
+	public Response removeVollmachtDokument(
 		@Nonnull @PathParam("fallId") String fallId,
 		@Context HttpServletResponse response) {
 
@@ -162,7 +164,7 @@ public class FallResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({SUPER_ADMIN, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public Response downloadGesuchsperiodeDokument(
+	public Response downloadVollmachtDokument(
 		@Nonnull @PathParam("fallId") String fallId,
 		@Context HttpServletResponse response
 	) {
@@ -180,6 +182,38 @@ public class FallResource {
 					.entity("Vollmacht Dokument fuer SozialdienstFall: "
 						+ fallId
 						+ " kann nicht gelesen werden")
+					.build();
+			}
+		}
+
+		return Response.status(Status.NO_CONTENT).build();
+	}
+
+	@ApiOperation("return the Vollmacht Dokument for the given language")
+	@GET
+	@Path("/generateVollmachtDokument/{fallId}/{sprache}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST})
+	public Response generateVollmachtDokument(
+		@Nonnull @PathParam("fallId") String fallId,
+		@Nonnull @PathParam("sprache") Sprache sprache,
+		@Context HttpServletResponse response
+	) throws MergeDocException {
+		requireNonNull(fallId);
+
+		final byte[] content = fallService.generateVollmachtDokument(fallId, sprache);
+
+		if (content != null && content.length > 0) {
+			try {
+				return RestUtil.buildDownloadResponse(true, "vollmacht.pdf",
+				 	"application/octet-stream", content);
+
+			} catch (IOException e) {
+				return Response.status(Status.NOT_FOUND)
+					.entity("Vollmacht Dokument fuer SozialdienstFall: "
+						+ fallId
+						+ " kann nicht generiert werden")
 					.build();
 			}
 		}

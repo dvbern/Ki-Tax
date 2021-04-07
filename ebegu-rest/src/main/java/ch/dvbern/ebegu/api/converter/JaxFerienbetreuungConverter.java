@@ -18,6 +18,8 @@
 package ch.dvbern.ebegu.api.converter;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
@@ -410,6 +412,11 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxKostenEinnahmen.setWeitereEinnahmen(kostenEinnahmen.getWeitereEinnahmen());
 
 		return jaxKostenEinnahmen;
+	}
+
+	@Nonnull
+	public List<JaxFerienbetreuungDokument> ferienbetreuungDokumentListToJax(@Nonnull List<FerienbetreuungDokument> dokumente) {
+		return dokumente.stream().map(d -> ferienbetreuungDokumentToJax(d)).collect(Collectors.toList());
 	}
 
 	@Nonnull

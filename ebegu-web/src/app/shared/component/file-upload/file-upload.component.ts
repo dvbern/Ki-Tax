@@ -15,18 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {
-    Component,
     ChangeDetectionStrategy,
-    Output,
+    Component,
     EventEmitter,
     Input,
     OnChanges,
-    SimpleChanges, OnInit
+    OnInit,
+    Output,
+    SimpleChanges
 } from '@angular/core';
 import {Moment} from 'moment';
 import {TSFile} from '../../../../models/TSFile';
 import {DateUtil} from '../../../../utils/DateUtil';
 import {ApplicationPropertyRS} from '../../../core/rest-services/applicationPropertyRS.rest';
+
+export interface HTMLInputEvent extends Event {
+    target: HTMLInputElement & EventTarget;
+}
 
 @Component({
     selector: 'dv-file-upload',
@@ -34,14 +39,14 @@ import {ApplicationPropertyRS} from '../../../core/rest-services/applicationProp
     styleUrls: ['./file-upload.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FileUploadComponent implements OnChanges, OnInit {
+export class FileUploadComponent<T extends TSFile> implements OnChanges, OnInit {
 
     @Input() public title: string;
     @Input() public readOnly: boolean;
     @Input() public readOnlyDelete: boolean;
-    @Output() public readonly download: EventEmitter<any> = new EventEmitter();
-    @Output() public readonly delete: EventEmitter<any> = new EventEmitter();
-    @Output() public readonly uploadFile: EventEmitter<any> = new EventEmitter();
+    @Output() public readonly download: EventEmitter<[T, boolean]> = new EventEmitter();
+    @Output() public readonly delete: EventEmitter<T> = new EventEmitter();
+    @Output() public readonly uploadFile: EventEmitter<HTMLInputEvent> = new EventEmitter();
 
     @Input() public files: TSFile[];
 
@@ -59,16 +64,16 @@ export class FileUploadComponent implements OnChanges, OnInit {
         });
     }
 
-    public onDownload<T extends TSFile>(file: T, attachment: boolean): void {
+    public onDownload(file: T, attachment: boolean): void {
         this.download.emit([file, attachment]);
     }
 
-    public onDelete<T extends TSFile>(file: T): void {
+    public onDelete(file: T): void {
         this.delete.emit(file);
     }
 
-    public onUploadFile(event: any): void {
-        this.uploadFile.emit(event);
+    public onUploadFile(event: Event): void {
+        this.uploadFile.emit(event as HTMLInputEvent);
     }
 
     public formatDate(timestampUpload: Moment): string {
