@@ -61,6 +61,6 @@ describe('numberValidator', () => {
     });
     it('should return an error if "abc" ist tested for positive integer', () => {
         const test = numberValidator(ValidationType.POSITIVE_INTEGER)(new FormControl('abc'));
-        expect(test).toEqual({isNotInteger: {value: 'abc'}});
+        expect(test).toEqual({isNotPositiveInteger: {value: 'abc'}});
     });
 });

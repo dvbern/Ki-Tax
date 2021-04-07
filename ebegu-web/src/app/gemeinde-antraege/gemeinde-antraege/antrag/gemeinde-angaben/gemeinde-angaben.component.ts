@@ -520,7 +520,7 @@ export class GemeindeAngabenComponent implements OnInit {
             this.angabenForm.get('schlusszahlung').setValue(
                 +(values[0] - values[1]).toFixed(2),
             );
-        });
+        }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
     }
 
     private parseFloatSafe(formValue: string): number {
