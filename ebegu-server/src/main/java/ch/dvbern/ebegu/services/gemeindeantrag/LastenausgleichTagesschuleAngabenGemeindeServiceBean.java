@@ -101,7 +101,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 		List<GemeindeAntrag> result = new ArrayList<>();
 		final Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden();
-		for (Gemeinde gemeinde : aktiveGemeinden) {
+		final Collection<Gemeinde> tsGemeinden = aktiveGemeinden.stream()
+			.filter(gemeinde -> gemeinde.isTagesschuleActiveForGesuchsperiode(gesuchsperiode))
+			.collect(Collectors.toList());
+
+		for (Gemeinde gemeinde : tsGemeinden) {
 			Optional<LastenausgleichTagesschuleAngabenGemeindeContainer> existingOptional =
 				findLastenausgleichTagesschuleAngabenGemeindeContainer(gemeinde, gesuchsperiode);
 			if (existingOptional.isPresent()) {
