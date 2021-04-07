@@ -20,9 +20,12 @@ import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from '
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
-import {combineLatest, Subscription} from 'rxjs';
+import * as moment from 'moment';
+import {combineLatest, Subject, Subscription} from 'rxjs';
 import {startWith} from 'rxjs/operators';
+import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSLastenausgleichTagesschuleAngabenInstitutionStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenInstitutionStatus';
 import {TSAnzahlEingeschriebeneKinder} from '../../../../../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
@@ -33,7 +36,7 @@ import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../
 import {TSGesuchsperiode} from '../../../../../models/TSGesuchsperiode';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
-import {HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
+import {CONSTANTS, HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
 import {TagesschuleAngabenRS} from '../../../lastenausgleich-ts/services/tagesschule-angaben.service.rest';
@@ -60,6 +63,7 @@ export class TagesschulenAngabenComponent {
     public anzahlEingeschriebeneKinder: TSAnzahlEingeschriebeneKinder;
     public durchschnittKinderProTag: TSDurchschnittKinderProTag;
     public abweichungenAnzahlKinder: number;
+    public stichtag: Subject<string> = new Subject<string>();
 
     private gemeindeAntragContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
 
@@ -74,6 +78,7 @@ export class TagesschulenAngabenComponent {
         private readonly dialog: MatDialog,
         private readonly $state: StateService,
         private readonly routerGlobals: UIRouterGlobals,
+        private readonly settings: EinstellungRS,
     ) {
     }
 
@@ -93,6 +98,7 @@ export class TagesschulenAngabenComponent {
             if (container.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU || !this.canEditForm()) {
                 this.form.disable();
             }
+            this.getStichtag();
             this.setupCalculation(angaben);
             if (this.angabenAusKibon) {
                 this.queryAnzahlEingeschriebeneKinder();
@@ -392,6 +398,16 @@ export class TagesschulenAngabenComponent {
         this.tagesschulenAngabenRS.getDurchschnittKinderProTag(this.latsAngabenInstitutionContainer)
             .subscribe(durchschnittKinderProTag => {
                 this.durchschnittKinderProTag = durchschnittKinderProTag;
+            });
+    }
+
+    private getStichtag(): void {
+        this.settings.findEinstellung(TSEinstellungKey.LATS_STICHTAG,
+            this.gemeindeAntragContainer.gemeinde?.id,
+            this.gemeindeAntragContainer.gesuchsperiode?.id)
+            .then(setting => {
+                const date = moment(setting.value).format(CONSTANTS.DATE_FORMAT);
+                this.stichtag.next(date);
             });
     }
 }

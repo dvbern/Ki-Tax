@@ -169,7 +169,8 @@ public enum EinstellungKey {
 
 	//LATS
 	LATS_LOHNNORMKOSTEN,
-	LATS_LOHNNORMKOSTEN_LESS_THAN_50;
+	LATS_LOHNNORMKOSTEN_LESS_THAN_50,
+	LATS_STICHTAG;
 
 
 	private EinstellungTyp typ;

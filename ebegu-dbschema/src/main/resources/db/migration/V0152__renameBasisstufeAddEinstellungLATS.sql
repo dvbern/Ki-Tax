@@ -17,3 +17,14 @@
 
 alter table lastenausgleich_tagesschule_angaben_institution change anzahl_eingeschriebene_kinder_basisstufe anzahl_eingeschriebene_kinder_sekundarstufe decimal(19,2) null;
 alter table lastenausgleich_tagesschule_angaben_institution_aud change anzahl_eingeschriebene_kinder_basisstufe anzahl_eingeschriebene_kinder_sekundarstufe decimal(19,2) null;
+
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, einstellung_key, value, gesuchsperiode_id)
+	(
+	    SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) as id,
+	           NOW() as timestamp_erstellt, NOW() as timestamp_mutiert,
+	           'ebegu' as user_erstellt, 'ebegu' as user_mutiert,
+	           '0' as version,
+	           'LATS_STICHTAG' as einstellungkey,
+	           CONCAT(YEAR(gesuchsperiode.gueltig_ab), '-09-15') as value,
+	           id as gesuchsperiode_id
+	    FROM gesuchsperiode);

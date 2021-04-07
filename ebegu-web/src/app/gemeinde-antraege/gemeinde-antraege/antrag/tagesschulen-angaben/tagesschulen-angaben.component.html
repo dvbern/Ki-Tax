@@ -70,7 +70,7 @@
 
         <dv-input-container-x>
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinder').errors}">
-                {{'LATS_ANZAHL_EINGESCHRIEBENE_KINDER' | translate: {jahr: gesuchsPeriode?.gueltigkeit?.gueltigAb?.year()} }}
+                {{'LATS_ANZAHL_EINGESCHRIEBENE_KINDER' | translate: {datum: stichtag | async} }}
                 <dv-tooltip [text]="'LATS_ANZAHL_EINGESCHRIEBENE_KINDER_INFO' | translate"></dv-tooltip>
             </label>
             <div class="flex-whitespace-item"></div>
@@ -212,7 +212,7 @@
         <mat-divider class="margin-bottom-20"></mat-divider>
 
         <dv-input-container-x>
-            <label>{{'LATS_IN_BETREUUNG_EINLEITUNG' | translate:{jahr: gesuchsPeriode?.gueltigkeit.gueltigAb.year()} }}</label>
+            <label>{{'LATS_IN_BETREUUNG_EINLEITUNG' | translate:{datum: stichtag | async} }}</label>
         </dv-input-container-x>
 
         <dv-input-container-x>
