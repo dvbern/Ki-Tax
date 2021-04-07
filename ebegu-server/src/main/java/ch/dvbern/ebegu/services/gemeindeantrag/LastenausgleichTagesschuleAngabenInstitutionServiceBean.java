@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
@@ -43,6 +44,7 @@ import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.BelegungTagesschule_;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
@@ -59,10 +61,13 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
+import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -88,6 +93,9 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
+
+	@Inject
+	private EinstellungService einstellungService;
 
 	@Override
 	public void createLastenausgleichTagesschuleInstitution(
@@ -351,8 +359,15 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		@Nonnull Gesuchsperiode gesuchsperiode
 		) {
 
-//		TODO: use correct date
-		LocalDate stichtag = LocalDate.of(2020, 9, 15);
+		List<Einstellung> einstellungList = einstellungService.findEinstellungen(EinstellungKey.LATS_STICHTAG, gesuchsperiode);
+		if (einstellungList.size() != 1) {
+			throw new EbeguRuntimeException(
+				"findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode",
+				"Es sollte exakt eine Einstellung für den LATS_Stichtag und die Gesuchsperiode "
+					+ gesuchsperiode.getGesuchsperiodeString()
+					+ " gefunden werden");
+		}
+		LocalDate stichtag = Date.valueOf(einstellungList.get(0).getValue()).toLocalDate();
 		Gesuchsperiode gesuchsperiodeAmStichtag = gesuchsperiodeService.getGesuchsperiodeAm(stichtag)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode",
