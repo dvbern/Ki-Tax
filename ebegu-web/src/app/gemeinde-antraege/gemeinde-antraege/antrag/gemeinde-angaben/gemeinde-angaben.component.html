@@ -577,6 +577,57 @@
             </mat-form-field>
         </dv-input-container-x>
 
+    <dv-input-container-x>
+        <label [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('ueberschussErzielt').errors}">
+            {{'LATS_UEBERSCHUSS_ERZIELT' | translate}}
+            <span>&nbsp;*</span>
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <dv-radio-container-x>
+            <mat-radio-group
+                aria-labelledby="ueberschussErzielt-radio-group"
+                class=""
+                name="ueberschussErzielt"
+                horizontal
+                [disabled]="angabenForm.get('ueberschussErzielt').disabled"
+                formControlName="ueberschussErzielt">
+                <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+            </mat-radio-group>
+            <dv-bisher-x
+                [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.ueberschussErzielt"
+                [korrektur]="angabenForm.get('ueberschussErzielt').value"
+                [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
+                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+            </dv-bisher-x>
+        </dv-radio-container-x>
+    </dv-input-container-x>
+
+    <dv-input-container-x *ngIf="angabenForm.get('ueberschussErzielt').value">
+        <label required
+               [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('ueberschussVerwendung').errors}">
+            {{'LATS_UEBERSCHUSS_VERWENDUNG' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <mat-form-field floatLabel="always">
+            <input matInput
+                   formControlName="ueberschussVerwendung"
+                   class="form-control dv-input"/>
+            <mat-error *ngIf="formValidationActive && angabenForm.get('ueberschussVerwendung').errors?.required"
+                       translate>ERROR_REQUIRED
+            </mat-error>
+            <mat-error *ngIf="formValidationActive && angabenForm.get('ueberschussVerwendung').errors?.noNumberError"
+                       translate>ERROR_NUMBER
+            </mat-error>
+            <dv-bisher-x
+                [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.ueberschussVerwendung"
+                [korrektur]="angabenForm.get('ueberschussVerwendung').value"
+                [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
+                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+            </dv-bisher-x>
+        </mat-form-field>
+    </dv-input-container-x>
+
         <mat-divider></mat-divider>
 
         <h3 class="uppercase">{{'LATS_ANGABEN_WEITERE_KOSTEN_ERTRAEGE' | translate}}</h3>

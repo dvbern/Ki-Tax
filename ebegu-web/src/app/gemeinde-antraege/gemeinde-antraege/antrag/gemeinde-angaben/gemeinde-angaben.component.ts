@@ -166,6 +166,8 @@ export class GemeindeAngabenComponent implements OnInit {
             gesamtKostenTagesschule: [initialGemeindeAngaben?.gesamtKostenTagesschule],
             einnnahmenVerpflegung: [initialGemeindeAngaben?.einnnahmenVerpflegung],
             einnahmenSubventionenDritter: [initialGemeindeAngaben?.einnahmenSubventionenDritter],
+            ueberschussErzielt: [initialGemeindeAngaben?.ueberschussErzielt],
+            ueberschussVerwendung: [initialGemeindeAngaben?.ueberschussVerwendung],
             // D
             bemerkungenWeitereKostenUndErtraege: [initialGemeindeAngaben?.bemerkungenWeitereKostenUndErtraege],
             // E
@@ -218,7 +220,7 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').valueChanges.subscribe(value => {
             if (value === false) {
                 this.angabenForm.get('begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen')
-                    .setValidators([Validators.required]);
+                    .setValidators([Validators.required, this.numberValidator()]);
             } else {
                 this.angabenForm.get('begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen')
                     .setValidators(null);
@@ -236,8 +238,14 @@ export class GemeindeAngabenComponent implements OnInit {
             .setValidators([Validators.required, this.numberValidator(), this.plausibilisierungAddition()]);
         this.angabenForm.get('einnahmenElterngebuehren')
             .setValidators([Validators.required, this.numberValidator()]);
+        this.angabenForm.get('tagesschuleTeilweiseGeschlossen')
+            .setValidators([Validators.required]);
+        this.angabenForm.get('rueckerstattungenElterngebuehrenSchliessung')
+            .setValidators([Validators.required, this.numberValidator()]);
         this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
             .setValidators([this.plausibilisierungTageschulenStunden()]);
+        this.angabenForm.get('ersteRateAusbezahlt')
+            .setValidators([Validators.required, this.numberValidator()]);
 
         // tslint:disable-next-line:no-identical-functions
         this.angabenForm.get('tagesschuleTeilweiseGeschlossen').valueChanges.subscribe(value => {
@@ -257,6 +265,18 @@ export class GemeindeAngabenComponent implements OnInit {
             .setValidators([Validators.required, this.numberValidator()]);
         this.angabenForm.get('einnahmenSubventionenDritter')
             .setValidators([Validators.required, this.numberValidator()]);
+        this.angabenForm.get('ueberschussErzielt')
+            .setValidators([Validators.required]);
+        // tslint:disable-next-line:no-identical-functions
+        this.angabenForm.get('ueberschussErzielt').valueChanges.subscribe(value => {
+            if (value === true) {
+                this.angabenForm.get('ueberschussVerwendung')
+                    .setValidators([Validators.required]);
+            } else {
+                this.angabenForm.get('ueberschussVerwendung')
+                    .setValidators(null);
+            }
+        }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
 
         // E
         this.angabenForm.get('betreuungsstundenDokumentiertUndUeberprueft').setValidators([Validators.required]);
