@@ -992,9 +992,23 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
         for (const pensum of this.getBetreuungspensen()) {
             const container = pensum.betreuungspensumJA || pensum.betreuungspensumGS;
+            const institutionGueltigkeit = new TSDateRange(this.getBetreuungModel().institutionStammdaten.gueltigkeit.gueltigAb,
+                this.getBetreuungModel().institutionStammdaten.gueltigkeit.gueltigBis || DateUtil.endOfTime());
+
+            if (!institutionGueltigkeit.contains(container.gueltigkeit)) {
+                const dateFormat = 'DD.MM.YYYY';
+                this.errorService.addMesageAsError(
+                    this.$translate.instant('GUELTIGKEIT_OUTSIDE_INSTITUTION_GUELTIGKEIT',
+                        {
+                            gueltigAb: DateUtil.momentToLocalDateFormat(institutionGueltigkeit.gueltigAb, dateFormat),
+                            gueltigBis: DateUtil.momentToLocalDateFormat(institutionGueltigkeit.gueltigBis, dateFormat),
+                        }));
+                return;
+            }
             if (container.gueltigkeit.gueltigAb.isAfter(this.getGesuch().gesuchsperiode.gueltigkeit.gueltigBis)) {
                 this.errorService.addMesageAsError(this.$translate.instant('PENSUM_AFTER_PERIODE'));
                 return;
+
             }
         }
 
@@ -1029,10 +1043,18 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.isMutationsmeldungStatus = false;
             this.mutationsmeldungModel = undefined;
             this.$state.go(GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
-        }).catch(() => {
-            // We don't know exactly the cause, because it gets lost in the httpinterceptor. We have to use a general
-            // message
-            this.errorService.addMesageAsError(this.$translate.instant('ERROR_COULD_NOT_SAVE'));
+        }).catch(err => {
+            const outsideInstiGueltigkeitError = err.find((error: any) => error._argumentList.toLowerCase()
+                .includes('institution') && (error._argumentList.includes('liegen ausserhalb') || error._argumentList.includes(
+                'Les dates de prise en charge ne sont pas comprises')));
+
+            if (outsideInstiGueltigkeitError) {
+                this.errorService.addMesageAsError(outsideInstiGueltigkeitError._argumentList);
+            } else {
+                // We don't know exactly the cause, because it gets lost in the httpinterceptor. We have to use a
+                // general message
+                this.errorService.addMesageAsError(this.$translate.instant('ERROR_COULD_NOT_SAVE'));
+            }
         });
     }
 

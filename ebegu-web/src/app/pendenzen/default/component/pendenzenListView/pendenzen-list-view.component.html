@@ -1,0 +1,47 @@
+<!--
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="dv-view">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12 table-responsive">
+
+                <!-- Warnung, falls noch Gemeinden im Status EINGELADEN -->
+                <div class="well well-status-abgewiesen" *ngIf="hasGemeindenInStatusAngemeldet">
+                    <span translate>WARNUNG_GEMEINDEN_IN_STATUS_ANMELDUNG</span>
+                    <p>
+                        <a uiSref="gemeinde.list" translate>ZUR_LISTE</a>
+                    </p>
+                </div>
+
+                <dv-new-antrag-list *ngIf="initialFilter.verantwortlicherGemeinde"
+                                    [data$]="data$"
+                                    [title]="'PENDENZEN_LIST' | translate"
+                                    [initialFilter]="initialFilter"
+                                    [page]="calculatePage()"
+                                    [totalItems]="pagination.totalItemCount"
+                                    [pendenz]="true"
+                                    (sortChange)="onSort($event)"
+                                    (filterChange)="onFilterChange($event)"
+                                    (paginationEvent)="onPagination($event)"
+                                    (rowClicked)="editpendenzJA($event.antrag, $event.event)">
+                </dv-new-antrag-list>
+            </div>
+
+        </div>
+    </div>
+</div>

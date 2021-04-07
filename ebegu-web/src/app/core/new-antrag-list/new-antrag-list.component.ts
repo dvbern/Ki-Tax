@@ -49,11 +49,13 @@ import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
 import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
 import {DVPaginationEvent} from '../../shared/interfaces/DVPaginationEvent';
 import {ErrorService} from '../errors/service/ErrorService';
 import {LogFactory} from '../logging/LogFactory';
+import {BenutzerRS} from '../service/benutzerRS.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
 
@@ -92,10 +94,16 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
      * 'institutionen',
      * 'verantwortlicheTS',
      * 'verantwortlicheBG',
+     * 'verantwortlicheGemeinde',
      *
      * Hides the column in the table
      */
     @Input() public hiddenColumns: string[] = [];
+
+    /**
+     * Inits the filter values. Does not trigger the EventEmitter
+     */
+    @Input() public initialFilter: DVAntragListFilter;
 
     /**
      * Used to provide other data than the default all faelle. Providing this input disables the provided filter and
@@ -158,13 +166,26 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
     @Input()
     public disablePagination: boolean = false;
 
+    /**
+     * Does the table show pendenzen or general fälle
+     * TODO: is this necessary?
+     */
+    @Input()
+    public pendenz: boolean = false;
+
+    /**
+     * The title displayed in the top left
+     */
+    @Input()
+    public title: string;
+
     public gesuchsperiodenList: Array<string> = [];
     private allInstitutionen: TSInstitution[];
     public institutionenList$: BehaviorSubject<TSInstitution[]> = new BehaviorSubject<TSInstitution[]>([]);
+
     public gemeindenList: Array<TSGemeinde> = [];
 
     private customData: boolean = false;
-
     public datasource: MatTableDataSource<DVAntragListItem>;
     public filterColumns: string[] = [
         'fallNummer-filter',
@@ -180,7 +201,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         'institutionen-filter',
         'verantwortlicheTS-filter',
         'verantwortlicheBG-filter',
+        'verantwortlicheGemeinde-filter',
     ];
+
     private readonly allColumns = [
         'fallNummer',
         'gemeinde',
@@ -195,14 +218,14 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         'institutionen',
         'verantwortlicheTS',
         'verantwortlicheBG',
+        'verantwortlicheGemeinde',
     ];
 
-    public displayedColumns: string[] = this.allColumns;
+    public displayedColumns: string[];
 
-    private readonly filterPredicate: DVAntragListFilter = {};
+    private filterPredicate: DVAntragListFilter;
 
     private readonly unsubscribe$ = new Subject<void>();
-
     /**
      * Filter change should not be triggered when user is still typing. Filter change is triggered
      * after user stopped typing for timeoutMS milliseconds
@@ -210,13 +233,20 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
      * and we add some more extra for slow typers
      */
     private keyupTimeout: NodeJS.Timeout;
-    private readonly timeoutMS = 700;
 
+    private readonly timeoutMS = 700;
     private readonly sort: {
         predicate?: string,
         reverse?: boolean
     } = {};
+
     public paginationItems: number[];
+    public userListBgTsOrGemeinde: TSBenutzerNoDetails[];
+    public userListTsOrGemeinde: TSBenutzerNoDetails[];
+    public userListBgOrGemeinde: TSBenutzerNoDetails[];
+    public initialGemeindeUser: TSBenutzerNoDetails;
+    public initialBgGemeindeUser: TSBenutzerNoDetails;
+    public initialTsGemeindeUser: TSBenutzerNoDetails;
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
@@ -227,6 +257,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly translate: TranslateService,
         private readonly errorService: ErrorService,
+        private readonly benutzerRS: BenutzerRS,
     ) {
     }
 
@@ -234,13 +265,15 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         this.updateInstitutionenList();
         this.updateGesuchsperiodenList();
         this.updateGemeindenList();
+        this.initFilter();
+        this.initDisplayedColumns();
         this.initTable();
+        this.initBenutzerLists();
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
         if (changes.hiddenColumns) {
-            this.displayedColumns = this.allColumns.filter(column => !this.hiddenColumns.includes(column));
-            this.filterColumns = this.displayedColumns.map(column => `${column}-filter`);
+            this.updateColumns();
         }
 
         // tslint:disable-next-line:early-exit
@@ -250,6 +283,33 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
                 this.loadData();
             }
         }
+
+        if (changes.totalItems) {
+            this.updatePagination();
+        }
+    }
+
+    private initDisplayedColumns(): void {
+        if (this.filterColumns?.length > 0) {
+            if (this.pendenz) {
+                this.hiddenColumns.push('verantwortlicheBG');
+                this.hiddenColumns.push('verantwortlicheTS');
+            } else {
+                this.hiddenColumns.push('verantwortlicheGemeinde');
+            }
+            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle())) {
+                this.hiddenColumns.push('verantwortlicheBG');
+                this.hiddenColumns.push('verantwortlicheTS');
+                this.hiddenColumns.push('verantwortlicheGemeinde');
+                this.hiddenColumns.push('dokumenteHochgeladen');
+            }
+        }
+        this.updateColumns();
+    }
+
+    private updateColumns(): void {
+        this.displayedColumns = this.allColumns.filter(column => !this.hiddenColumns.includes(column));
+        this.filterColumns = this.displayedColumns.map(column => `${column}-filter`);
     }
 
     public updateInstitutionenList(): void {
@@ -275,6 +335,10 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
                 },
                 err => LOG.error(err),
             );
+    }
+
+    private initFilter(): void {
+        this.filterPredicate = {...this.initialFilter};
     }
 
     public ngOnDestroy(): void {
@@ -327,11 +391,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
 
         dataToLoad$.subscribe((result: DVAntragListItem[]) => {
             this.datasource.data = result;
-            this.paginationItems = [];
-            for (let i = Math.max(1, this.page - 4); i <= Math.min(Math.ceil(this.totalItems / this.pageSize),
-                this.page + 5); i++) {
-                this.paginationItems.push(i);
-            }
+            this.updatePagination();
             // TODO: we need this because the angualarJS Service returns an IPromise. Angular does not detect changes in
             //  these since they are not zone-aware. Remove once the service is migrated
             this.changeDetectorRef.markForCheck();
@@ -340,6 +400,14 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
                 this.errorService.addMesageAsError(message);
             }, translateError => console.error('Could not load translation', translateError));
         });
+    }
+
+    private updatePagination(): void {
+        this.paginationItems = [];
+        for (let i = Math.max(1, this.page - 4); i <= Math.min(Math.ceil(this.totalItems / this.pageSize),
+            this.page + 5); i++) {
+            this.paginationItems.push(i);
+        }
     }
 
     /**
@@ -413,6 +481,11 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
 
     public filterVerantwortlicheBG(verantwortliche: TSBenutzerNoDetails): void {
         this.filterPredicate.verantwortlicherBG = verantwortliche ? verantwortliche.getFullName() : null;
+        this.applyFilter();
+    }
+
+    public filterVerantwortlicheGemeinde(verantwortliche: TSBenutzerNoDetails): void {
+        this.filterPredicate.verantwortlicherGemeinde = verantwortliche ? verantwortliche.getFullName() : null;
         this.applyFilter();
     }
 
@@ -499,5 +572,69 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         }
 
         return bezeichnung;
+    }
+
+    public findUserByNameInList(name: string, list: TSBenutzerNoDetails[]): TSBenutzerNoDetails | null {
+        if (!name || !list) {
+            return null;
+        }
+        return list.find(user => user.getFullName() === name);
+    }
+
+    private initBenutzerLists(): void {
+        if (this.isPendenzGemeindeRolle()) {
+            this.benutzerRS.getAllBenutzerBgTsOrGemeinde().then(response => {
+                this.userListBgTsOrGemeinde = response;
+                this.initialGemeindeUser =
+                    this.findUserByNameInList(this.initialFilter?.verantwortlicherGemeinde, response);
+                this.changeDetectorRef.markForCheck();
+            });
+        } else {
+            this.benutzerRS.getAllBenutzerBgOrGemeinde().then(response => {
+                this.userListBgOrGemeinde = response;
+                this.initialBgGemeindeUser =
+                    this.findUserByNameInList(this.initialFilter?.verantwortlicherBG, response);
+                this.changeDetectorRef.markForCheck();
+            });
+            this.benutzerRS.getAllBenutzerTsOrGemeinde().then(response => {
+                this.userListTsOrGemeinde = response;
+                this.initialTsGemeindeUser =
+                    this.findUserByNameInList(this.initialFilter?.verantwortlicherTS, response);
+                this.changeDetectorRef.markForCheck();
+            });
+        }
+    }
+
+    public isPendenzGemeindeRolle(): boolean {
+        return this.pendenz && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles());
+    }
+
+    public getVerantwortlicheBgAndTs(antrag: DVAntragListItem): string {
+        const verantwortliche: string[] = [];
+        if (EbeguUtil.isNotNullOrUndefined(antrag.verantwortlicheBG)) {
+            verantwortliche.push(antrag.verantwortlicheBG);
+        }
+        if (EbeguUtil.isNotNullOrUndefined(antrag.verantwortlicheTS)) {
+            verantwortliche.push(antrag.verantwortlicheTS);
+        }
+        return verantwortliche.join(', ');
+    }
+
+    public resetFilter(): void {
+        this.initFilter();
+        this.applyFilter();
+        this.initialGemeindeUser = new TSBenutzerNoDetails(this.initialGemeindeUser?.vorname,
+            this.initialGemeindeUser?.nachname,
+            this.initialGemeindeUser?.username,
+            this.initialGemeindeUser?.gemeindeIds);
+        this.initialBgGemeindeUser = new TSBenutzerNoDetails(this.initialBgGemeindeUser?.vorname,
+            this.initialBgGemeindeUser?.nachname,
+            this.initialBgGemeindeUser?.username,
+            this.initialBgGemeindeUser?.gemeindeIds);
+        this.initialTsGemeindeUser = new TSBenutzerNoDetails(this.initialTsGemeindeUser?.vorname,
+            this.initialTsGemeindeUser?.nachname,
+            this.initialTsGemeindeUser?.username,
+            this.initialTsGemeindeUser?.gemeindeIds);
+
     }
 }

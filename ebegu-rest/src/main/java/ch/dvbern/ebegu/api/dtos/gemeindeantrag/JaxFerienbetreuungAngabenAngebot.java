@@ -18,13 +18,12 @@
 package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
-import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 
 public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 
@@ -58,13 +57,19 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	private BigDecimal anzahlTage;
 
 	@Nullable
+	private String bemerkungenAnzahlFerienwochen;
+
+	@Nullable
 	private BigDecimal anzahlStundenProBetreuungstag;
+
+	@Nullable
+	private Boolean betreuungErfolgtTagsueber;
 
 	@Nullable
 	private String bemerkungenOeffnungszeiten;
 
 	@Nullable
-	private List<JaxGemeinde> finanziellBeteiligteGemeinden;
+	private Set<String> finanziellBeteiligteGemeinden;
 
 	@Nullable
 	private Boolean gemeindeFuehrtAngebotSelber;
@@ -82,10 +87,13 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	private Boolean leitungDurchPersonMitAusbildung;
 
 	@Nullable
-	private BigDecimal aufwandBetreuungspersonal;
+	private Boolean betreuungDurchPersonenMitErfahrung;
 
 	@Nullable
-	private BigDecimal zusaetzlicherAufwandLeitungAdmin;
+	private Boolean anzahlKinderAngemessen;
+
+	@Nullable
+	private BigDecimal betreuungsschluessel;
 
 	@Nullable
 	private String bemerkungenPersonal;
@@ -190,12 +198,30 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	}
 
 	@Nullable
+	public String getBemerkungenAnzahlFerienwochen() {
+		return bemerkungenAnzahlFerienwochen;
+	}
+
+	public void setBemerkungenAnzahlFerienwochen(@Nullable String bemerkungenAnzahlFerienwochen) {
+		this.bemerkungenAnzahlFerienwochen = bemerkungenAnzahlFerienwochen;
+	}
+
+	@Nullable
 	public BigDecimal getAnzahlStundenProBetreuungstag() {
 		return anzahlStundenProBetreuungstag;
 	}
 
 	public void setAnzahlStundenProBetreuungstag(@Nullable BigDecimal anzahlStundenProBetreuungstag) {
 		this.anzahlStundenProBetreuungstag = anzahlStundenProBetreuungstag;
+	}
+
+	@Nullable
+	public Boolean getBetreuungErfolgtTagsueber() {
+		return betreuungErfolgtTagsueber;
+	}
+
+	public void setBetreuungErfolgtTagsueber(@Nullable Boolean betreuungErfolgtTagsueber) {
+		this.betreuungErfolgtTagsueber = betreuungErfolgtTagsueber;
 	}
 
 	@Nullable
@@ -208,11 +234,11 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public List<JaxGemeinde> getFinanziellBeteiligteGemeinden() {
+	public Set<String> getFinanziellBeteiligteGemeinden() {
 		return finanziellBeteiligteGemeinden;
 	}
 
-	public void setFinanziellBeteiligteGemeinden(@Nullable List<JaxGemeinde> finanziellBeteiligteGemeinden) {
+	public void setFinanziellBeteiligteGemeinden(@Nullable Set<String> finanziellBeteiligteGemeinden) {
 		this.finanziellBeteiligteGemeinden = finanziellBeteiligteGemeinden;
 	}
 
@@ -262,21 +288,30 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public BigDecimal getAufwandBetreuungspersonal() {
-		return aufwandBetreuungspersonal;
+	public Boolean getBetreuungDurchPersonenMitErfahrung() {
+		return betreuungDurchPersonenMitErfahrung;
 	}
 
-	public void setAufwandBetreuungspersonal(@Nullable BigDecimal aufwandBetreuungspersonal) {
-		this.aufwandBetreuungspersonal = aufwandBetreuungspersonal;
+	public void setBetreuungDurchPersonenMitErfahrung(@Nullable Boolean betreuungDurchPersonenMitErfahrung) {
+		this.betreuungDurchPersonenMitErfahrung = betreuungDurchPersonenMitErfahrung;
 	}
 
 	@Nullable
-	public BigDecimal getZusaetzlicherAufwandLeitungAdmin() {
-		return zusaetzlicherAufwandLeitungAdmin;
+	public Boolean getAnzahlKinderAngemessen() {
+		return anzahlKinderAngemessen;
 	}
 
-	public void setZusaetzlicherAufwandLeitungAdmin(@Nullable BigDecimal zusaetzlicherAufwandLeitungAdmin) {
-		this.zusaetzlicherAufwandLeitungAdmin = zusaetzlicherAufwandLeitungAdmin;
+	public void setAnzahlKinderAngemessen(@Nullable Boolean anzahlKinderAngemessen) {
+		this.anzahlKinderAngemessen = anzahlKinderAngemessen;
+	}
+
+	@Nullable
+	public BigDecimal getBetreuungsschluessel() {
+		return betreuungsschluessel;
+	}
+
+	public void setBetreuungsschluessel(@Nullable BigDecimal betreuungsschluessel) {
+		this.betreuungsschluessel = betreuungsschluessel;
 	}
 
 	@Nullable

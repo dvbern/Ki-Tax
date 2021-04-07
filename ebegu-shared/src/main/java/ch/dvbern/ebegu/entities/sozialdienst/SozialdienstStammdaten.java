@@ -68,7 +68,7 @@ public class SozialdienstStammdaten extends AbstractEntity {
 	@Column(nullable = false)
 	private String mail;
 
-	@NotNull @Nonnull
+	@Nullable
 	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{validator.constraints.phonenumber.message}")
 	private String telefon;
@@ -105,12 +105,12 @@ public class SozialdienstStammdaten extends AbstractEntity {
 		this.mail = mail;
 	}
 
-	@Nonnull
+	@Nullable
 	public String getTelefon() {
 		return telefon;
 	}
 
-	public void setTelefon(@Nonnull String telefon) {
+	public void setTelefon(@Nullable String telefon) {
 		this.telefon = telefon;
 	}
 

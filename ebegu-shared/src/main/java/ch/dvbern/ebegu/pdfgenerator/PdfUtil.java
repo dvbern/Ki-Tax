@@ -223,7 +223,7 @@ public final class PdfUtil {
 	}
 
 	@Nonnull
-	public static PdfPTable creatreIntroTable(@Nonnull java.util.List<TableRowLabelValue> entries, @Nonnull Locale locale) {
+	public static PdfPTable createIntroTable(@Nonnull java.util.List<TableRowLabelValue> entries, @Nonnull Locale locale) {
 		PdfPTable table = new PdfPTable(2);
 		try {
 			float[] columnWidths = { 1, 2 };

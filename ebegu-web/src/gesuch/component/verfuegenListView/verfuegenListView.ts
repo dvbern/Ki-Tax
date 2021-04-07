@@ -39,6 +39,7 @@ import {TSMahnung} from '../../../models/TSMahnung';
 import {navigateToStartPageForRole} from '../../../utils/AuthenticationUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {EnumEx} from '../../../utils/EnumEx';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {BemerkungenDialogController} from '../../dialog/BemerkungenDialogController';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {BerechnungsManager} from '../../service/berechnungsManager';
@@ -204,7 +205,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
          * wird bei Betreuungen im Status Bestätigt und Unbekannte Institution direkt das PDF erzeugt.
          * Alle anderen darf der GS nicht anschauen (siehe isDetailAvailableForBetreuungstatus())
          */
-        if (this.isGesuchsteller() && !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)
+        if (this.isGesuchstellerOrSozialdienst() && !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)
             && !betreuung.isAngebotTagesschule()) {
             this.openVerfuegungPDF(betreuung);
             return;
@@ -273,8 +274,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             || !this.gesuchModelManager.isFinanzielleSituationRequired()) {
             return false;
         }
-        const isGesuchsteller = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
-        if (isGesuchsteller) {
+        if (this.isGesuchstellerOrSozialdienst()) {
             return isAnyStatusOfVerfuegt(this.getAntragStatus())
                 && !this.isFinSitAbglehnt();
         }
@@ -296,8 +296,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public isBegleitschreibenVisible(): boolean {
-        const isGesuchsteller = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
-        if (isGesuchsteller) {
+        if (this.isGesuchstellerOrSozialdienst()) {
             return isAnyStatusOfVerfuegt(this.getAntragStatus())
                 && !this.gesuchModelManager.areThereOnlySchulamtAngebote()
                 && !this.gesuchModelManager.areThereOnlyGeschlossenOhneVerfuegung();
@@ -783,15 +782,15 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public getTitle(): string {
         const gesuch = this.gesuchModelManager.getGesuch();
-        if (this.isGesuchsteller()
+        if (this.isGesuchstellerOrSozialdienst()
             && gesuch && !isAnyStatusOfVerfuegt(gesuch.status)) {
             return this.$translate.instant('PROVISORISCHE_BERECHNUNG');
         }
         return this.$translate.instant('VERFUEGUNGEN');
     }
 
-    public isGesuchsteller(): boolean {
-        return this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
+    public isGesuchstellerOrSozialdienst(): boolean {
+        return this.authServiceRs.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle());
     }
 
     public $postLink(): void {

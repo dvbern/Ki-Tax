@@ -373,6 +373,7 @@ describe('EbeguRestUtil', () => {
                 myInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungstage.monday = true;
                 myInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungstage.wednesday = true;
                 myInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungsAbweichungen = 'Lorem ';
+                myInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine.alternativeEmailFamilienportal = 'my-mail';
                 myInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine.iban = 'my-iban';
                 myInstitutionStammdaten.betreuungsangebotTyp = TSBetreuungsangebotTyp.KITA;
                 myInstitutionStammdaten.institution = myInstitution;

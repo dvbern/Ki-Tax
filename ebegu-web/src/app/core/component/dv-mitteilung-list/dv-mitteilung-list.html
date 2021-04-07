@@ -20,8 +20,10 @@
                 <span ng-if="!vm.betreuung && !vm.isCurrentUserAmt()"
                       data-translate="NEUE_MITTEILUNG_GEMEINDE"
                       data-translate-value-gemeinde="{{vm.dossier.gemeinde.name}}"></span>
-                <span ng-if="!vm.betreuung && vm.isCurrentUserAmt()"
+                <span ng-if="!vm.betreuung && vm.isCurrentUserAmt() && !vm.isCurrentMitteilungSozialdienst()"
                       data-translate="NEUE_MITTEILUNG_GESUCHSTELLER"></span>
+                <span ng-if="!vm.betreuung && vm.isCurrentUserAmt() && vm.isCurrentMitteilungSozialdienst()"
+                      data-translate="NEUE_MITTEILUNG_SOZIALDIENST"></span>
                 <span ng-if="vm.betreuung"
                       data-translate="NEUE_MITTEILUNG_BETREUUNG"
                       data-translate-value-gemeinde="{{vm.dossier.gemeinde.name}}"

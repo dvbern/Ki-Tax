@@ -88,7 +88,7 @@
     <!-- Sozialdienst -->
     <div [class]="displayClass" *ngIf="berechtigung.hasSozialdienstRole()">
         <div class="form-group">
-            <label translate [for]="sozialdienstId">SOZIALDIENST</label>
+            <label translate [for]="sozialdienstId">SOZIALDIENST_TITLE</label>
             <div class="dv-select-style">
                 <select [attr.aria-describedby]="sozialdienstId + '-error'"
                         [name]="sozialdienstId"
@@ -132,7 +132,7 @@
                 <td>{{berechtigung.traegerschaft.name}}</td>
             </tr>
             <tr *ngIf="berechtigung.hasSozialdienstRole()">
-                <td class="bold" translate>SOZIALDIENST</td>
+                <td class="bold" translate>SOZIALDIENST_TITLE</td>
                 <td>{{berechtigung.sozialdienst.name}}</td>
             </tr>
             </tbody>

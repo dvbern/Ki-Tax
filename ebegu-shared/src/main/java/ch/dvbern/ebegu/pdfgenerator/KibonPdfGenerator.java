@@ -134,7 +134,7 @@ public abstract class KibonPdfGenerator {
 	}
 
 	@Nonnull
-	private List<String> getGemeindeKontaktdaten() {
+	protected List<String> getGemeindeKontaktdaten() {
 		String email = gemeindeStammdaten.getEmailForGesuch(getGesuch());
 		String telefon = gemeindeStammdaten.getTelefonForGesuch(getGesuch());
 		Adresse adresse = gemeindeStammdaten.getAdresseForGesuch(getGesuch());

@@ -28,7 +28,7 @@ const states: NgHybridStateDeclaration[] = [
         parent: 'app',
         name: 'sozialdienst',
         abstract: true,
-        url: '/sozialdienst',
+        url: '/unterstuetzungsdienst',
         component: UiViewComponent,
     },
     {

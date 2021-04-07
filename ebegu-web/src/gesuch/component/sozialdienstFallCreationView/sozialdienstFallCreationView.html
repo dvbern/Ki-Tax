@@ -25,6 +25,16 @@
             <hr class="header"/>
         </div>
     </div>
+    <!--Willkommnstext-->
+    <div class="row">
+        <div class="col-md-12">
+            <div>
+                <p>
+                    {{"SOZIALDIENST_GESUCH_WILLKOMMEN_TEXT"|translate}}
+                </p>
+            </div>
+        </div>
+    </div>
     <div class="row margin-top-40">
         <div class="col-md-12">
             <form role="form" name="vm.form" class="" novalidate unsaved-warning-form>
@@ -137,6 +147,29 @@
                     </div>
                 </fieldset>
 
+                <!-- Vollmacht Dokument herunterladen -->
+                <div class="row view-title margin-top-30" ng-if="!vm.sozialdienstFall.isNew() && !vm.isVollmachtHochgeladen">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <h1>
+                            <span data-translate="VOLLMACHT_HERUNTERLADEN"></span>
+                        </h1>
+                        <hr class="header"/>
+                    </div>
+                    <div class="col-md-12">
+                        <button type="button" class="dv-btn btn-link link-underline"
+                                ng-click="vm.generateVollmachtPDF('DEUTSCH')">
+                            <i class="fa fa-file-text-o"></i>
+                            <span data-translate="PDF_VOLLMACHT_DE_HERUNTERLADEN"></span>
+                        </button>
+                        <br/>
+                        <button type="button" class="dv-btn btn-link link-underline margin-bottom-20"
+                                ng-click="vm.generateVollmachtPDF('FRANZOESISCH')">
+                            <i class="fa fa-file-text-o"></i>
+                            <span data-translate="PDF_VOLLMACHT_FR_HERUNTERLADEN"></span>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Vollmacht Dokument hochladen -->
                 <div class="row view-title margin-top-30" ng-if="!vm.sozialdienstFall.isNew()">
                     <div class="col-sm-12 dv-input-container-medium">
@@ -168,7 +201,7 @@
                                     tabindex="-1">
                                     <button
                                         ng-click="vm.downloadVollmachtDokument();$event.stopPropagation()"
-                                        ng-disabled="!vm.isVollmachtHochgeladet"
+                                        ng-disabled="!vm.isVollmachtHochgeladen"
                                         class="dv-btn fa fa-eye dv-btn-operation"
                                         title="{{'DOKUMENT_DOWNLOAD' | translate}}"
                                         [attr.aria-label]="'DOKUMENT_DOWNLOAD' | translate"
@@ -179,7 +212,7 @@
                                     class="symbol"
                                     tabindex="-1">
                                     <button ng-click="vm.removeVollmachtDokument();$event.stopPropagation()"
-                                            ng-disabled="!vm.isVollmachtHochgeladet || vm.isSozialdienstFallReadOnly()"
+                                            ng-disabled="!vm.isVollmachtHochgeladen || (vm.isSozialdienstFallReadOnly() && vm.isSozialdienstFallAktiv())"
                                             class="dv-btn fa fa-trash dv-btn-operation"
                                             title="{{'DOKUMENT_DELETE' | translate}}"
                                             [attr.aria-label]="'DOKUMENT_DELETE' | translate"
@@ -200,12 +233,12 @@
                             <span class="uppercase" data-translate="{{vm.getNextButtonText()}}"></span>
                         </dv-loading-button>
                     </span>
-                    <span ng-if="vm.isSozialdienstFallReadOnly()">
+                    <span ng-if="vm.isSozialdienstFallReadOnly() && vm.isSozialdienstFallAktiv()">
                         <dv-loading-button button-click="vm.weiter()" type="submit">
                             <span class="uppercase" data-translate="WEITER_ONLY"></span>
                         </dv-loading-button>
                     </span>
-                        <!-- Fall aktivieren soll nur sichtbar sein wenn Vollmacht hochgeladen ist-->
+                    <!-- Fall aktivieren soll nur sichtbar sein wenn Vollmacht hochgeladen ist-->
                     <span dv-show-element
                           dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrSozialdienstRolle()"
                           dv-show-expression="vm.isAktivierungMoeglich()">

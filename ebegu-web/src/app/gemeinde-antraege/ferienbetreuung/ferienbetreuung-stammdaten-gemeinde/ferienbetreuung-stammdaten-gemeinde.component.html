@@ -1,0 +1,356 @@
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="ferienbetreuung-stammdaten">
+    <h1 class="access-for-all-title" translate>FERIENBETREUUNG_STAMMDATEN_GEMEINDE</h1>
+    <div class="row view-title">
+        <div class="col-md-12">
+            <h2 translate>FERIENBETREUUNG_STAMMDATEN_GEMEINDE</h2>
+            <hr class="header"/>
+        </div>
+    </div>
+
+    <form *ngIf="form" [formGroup]="form">
+
+        <h3 translate class="uppercase" id="gemeinde-header">
+            {{'GEMEINDE' | translate }}
+            <dv-tooltip inputId="gemeinde-header"
+                        [text]="'FERIENBETREUUNG_STAMMDATEN_GEMEINDE_HINT' | translate">
+            </dv-tooltip>
+        </h3>
+
+        <dv-input-container-x [verticalAlign]="true">
+            <label>
+                {{'FERIENBETREUUNG_TRAEGERSCHAFT' | translate}}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <input type="text" matInput formControlName="traegerschaft" class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
+<!--        am angebot beteiligte gemeinden-->
+        <dv-input-container-x [verticalAlign]="true">
+            <label for="am-angebot-beteiligte-gemeinden" translate>FERIENBETREUUNG_AM_ANGEBOT_BETEILIGTE_GEMEINDEN</label>
+            <mat-select *ngIf="bfsGemeinden?.length"
+                        class="form-control"
+                        formControlName="amAngebotBeteiligteGemeinden"
+                        name="amAngebotBeteiligteGemeinden"
+                        id="am-angebot-beteiligte-gemeinden"
+                        [multiple]="true">
+                <mat-option *ngFor="let gemeinde of bfsGemeinden"
+                            [value]="gemeinde.name">
+                    {{gemeinde.name}}
+                </mat-option>
+            </mat-select>
+        </dv-input-container-x>
+
+        <mat-divider></mat-divider>
+
+        <h3 translate class="uppercase margin-bottom-20" id="adresse-header">
+            <div>
+                {{'FERIENBETREUUNG_ADRESSE_GEMEINDE' | translate}}
+                <dv-tooltip inputId="adresse-header"
+                            [text]="'FERIENBETREUUNG_ADRESSE_GEMEINDE_HINT' | translate">
+                </dv-tooltip>
+            </div>
+            <div class="flex-whitespace-item"></div>
+            <button type="button"
+                    (click)="fillAdress()"
+                    class="dv-btn cancel-button">
+                {{ 'FERIENBETREUUNG_AUS_GEMEINDESTAMMDATEN_UEBERNEHMEN' | translate }}
+            </button>
+        </h3>
+
+        <dv-input-container-x [verticalAlign]="true">
+            <label required [ngClass]="{'label-required-error': form && form.get('stammdatenAdresseAnschrift').errors}">
+                {{'ADRESSE_ANSCHRIFT' | translate}}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <input type="text" matInput formControlName="stammdatenAdresseAnschrift" class="form-control dv-input"/>
+            </mat-form-field>
+            <mat-error *ngIf="form && form.get('stammdatenAdresseAnschrift').errors?.required"
+                       translate>ERROR_REQUIRED
+            </mat-error>
+        </dv-input-container-x>
+
+        <div class="row">
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
+                <label required [ngClass]="{'label-required-error': form && form.get('stammdatenAdresseStrasse').errors}">
+                    {{'ADRESSE_STRASSE' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="stammdatenAdresseStrasse" class="form-control dv-input"/>
+                </mat-form-field>
+                <mat-error *ngIf="form && form.get('stammdatenAdresseStrasse').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+            </dv-input-container-x>
+
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
+                <label>
+                    {{'FERIENBETREUUNG_ADRESSE_NR' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="stammdatenAdresseNr" class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+        </div>
+
+        <div class="row">
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
+                <label required [ngClass]="{'label-required-error': form && form.get('stammdatenAdressePlz').errors}">
+                    {{'ADRESSE_PLZ' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="stammdatenAdressePlz" class="form-control dv-input"/>
+                </mat-form-field>
+                <mat-error *ngIf="form && form.get('stammdatenAdressePlz').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+            </dv-input-container-x>
+
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
+                <label required [ngClass]="{'label-required-error': form && form.get('stammdatenAdresseOrt').errors}">
+                    {{'ADRESSE_ORT' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="stammdatenAdresseOrt" class="form-control dv-input"/>
+                </mat-form-field>
+                <mat-error *ngIf="form && form.get('stammdatenAdresseOrt').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+            </dv-input-container-x>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <h3 translate class="uppercase margin-bottom-20" id="kontaktperson-header">
+            <div>
+                {{'KONTAKTPERSON' | translate}}
+                <dv-tooltip inputId="kontaktperson-header"
+                            [text]="'FERIENBETREUUNG_KONTAKTPERSON_HINT' | translate">
+                </dv-tooltip>
+            </div>
+            <div class="flex-whitespace-item"></div>
+            <button type="button"
+                    (click)="fillBenutzer()"
+                    class="dv-btn cancel-button">
+                {{ 'FERIENBETREUUNG_MEINE_ANGABEN_UEBERNEHMEN' | translate }}
+            </button>
+        </h3>
+
+        <div class="row">
+
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+                <label required [ngClass]="{'label-required-error': form && form.get('stammdatenKontaktpersonVorname').errors}">
+                    {{'VORNAME' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="stammdatenKontaktpersonVorname" class="form-control dv-input"/>
+                </mat-form-field>
+                <mat-error *ngIf="form && form.get('stammdatenKontaktpersonVorname').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+            </dv-input-container-x>
+
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+                <label required [ngClass]="{'label-required-error': form && form.get('stammdatenKontaktpersonNachname').errors}">
+                    {{'NAME' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="stammdatenKontaktpersonNachname" class="form-control dv-input"/>
+                </mat-form-field>
+                <mat-error *ngIf="form && form.get('stammdatenKontaktpersonNachname').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+            </dv-input-container-x>
+        </div>
+
+        <dv-input-container-x [verticalAlign]="true">
+            <label>
+                {{'FERIENBETREUUNG_FUNKTION' | translate}}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <input type="text" matInput formControlName="stammdatenKontaktpersonFunktion" class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <div class="row">
+
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+                <label required [ngClass]="{'label-required-error': form && form.get('stammdatenKontaktpersonTelefon').errors}">
+                    {{'TELEFON' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="stammdatenKontaktpersonTelefon" class="form-control dv-input"/>
+                </mat-form-field>
+                <mat-error *ngIf="form && form.get('stammdatenKontaktpersonTelefon').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+                <mat-error *ngIf="form && form.get('stammdatenKontaktpersonTelefon').errors?.pattern"
+                           translate>ERROR_PHONE
+                </mat-error>
+            </dv-input-container-x>
+
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+                <label required [ngClass]="{'label-required-error': form && form.get('stammdatenKontaktpersonEmail').errors}">
+                    {{'EMAIL' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="stammdatenKontaktpersonEmail" class="form-control dv-input"/>
+                </mat-form-field>
+                <mat-error *ngIf="form && form.get('stammdatenKontaktpersonEmail').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+                <mat-error *ngIf="form && form.get('stammdatenKontaktpersonEmail').errors?.pattern"
+                           translate>ERROR_EMAIL
+                </mat-error>
+            </dv-input-container-x>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <h3 class="uppercase" id="auszahlung-header">
+            {{'AUSZAHLUNG' | translate}}
+            <dv-tooltip inputId="auszahlung-header"
+                        [text]="'FERIENBETREUUNG_AUSZAHLUNG_HINT' | translate">
+            </dv-tooltip>
+        </h3>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <dv-input-container-x [verticalAlign]="true">
+                    <label required [ngClass]="{'label-required-error': form && form.get('kontoinhaber').errors}">
+                        {{'FERIENBETREUUNG_KONTOINHABER' | translate}}
+                    </label>
+                    <div class="flex-whitespace-item"></div>
+                    <mat-form-field floatLabel="always">
+                        <input type="text" matInput formControlName="kontoinhaber" class="form-control dv-input"/>
+                    </mat-form-field>
+                    <mat-error *ngIf="form && form.get('kontoinhaber').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                </dv-input-container-x>
+            </div>
+        </div>
+
+        <div class="row">
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
+                <label required [ngClass]="{'label-required-error': form && form.get('adresseKontoinhaberStrasse').errors}">
+                    {{'ADRESSE_STRASSE' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="adresseKontoinhaberStrasse" class="form-control dv-input"/>
+                </mat-form-field>
+                <mat-error *ngIf="form && form.get('adresseKontoinhaberStrasse').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+            </dv-input-container-x>
+
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
+                <label>
+                    {{'FERIENBETREUUNG_ADRESSE_NR' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="adresseKontoinhaberNr" class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+        </div>
+
+        <div class="row">
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
+                <label required [ngClass]="{'label-required-error': form && form.get('adresseKontoinhaberPlz').errors}">
+                    {{'ADRESSE_PLZ' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="adresseKontoinhaberPlz" class="form-control dv-input"/>
+                </mat-form-field>
+                <mat-error *ngIf="form && form.get('adresseKontoinhaberPlz').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+            </dv-input-container-x>
+
+            <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
+                <label required [ngClass]="{'label-required-error': form && form.get('adresseKontoinhaberOrt').errors}">
+                    {{'ADRESSE_ORT' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input type="text" matInput formControlName="adresseKontoinhaberOrt" class="form-control dv-input"/>
+                </mat-form-field>
+                <mat-error *ngIf="form && form.get('adresseKontoinhaberOrt').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+            </dv-input-container-x>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-6">
+
+                <dv-input-container-x [verticalAlign]="true">
+                    <label required [ngClass]="{'label-required-error': form && form.get('iban').errors}">
+                        {{'FERIENBETREUUNG_IBAN' | translate}}
+                    </label>
+                    <div class="flex-whitespace-item"></div>
+                    <mat-form-field floatLabel="always">
+                        <input type="text" matInput formControlName="iban" class="form-control dv-input"/>
+                    </mat-form-field>
+                    <mat-error *ngIf="form && form.get('iban').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="form && form.get('iban').errors?.iban && form.get('iban').dirty"
+                               translate>ERROR_IBAN
+                    </mat-error>
+                </dv-input-container-x>
+
+            </div>
+            <div class="col-xs-6">
+                <dv-input-container-x [verticalAlign]="true">
+                    <label>
+                        {{'FERIENBETREUUNG_VERMERK_AUSZAHLUNG' | translate}}
+                    </label>
+                    <div class="flex-whitespace-item"></div>
+                    <mat-form-field floatLabel="always">
+                        <input type="text" matInput formControlName="vermerkAuszahlung" class="form-control dv-input"/>
+                    </mat-form-field>
+                </dv-input-container-x>
+            </div>
+        </div>
+
+    </form>
+
+    <div class="actions">
+        <button type="button" class="dv-btn cancel-button"
+                (click)="save()"
+                [textContent]="'SAVE' | translate">
+        </button>
+    </div>
+</div>

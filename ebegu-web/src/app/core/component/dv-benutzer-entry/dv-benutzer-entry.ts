@@ -16,9 +16,9 @@
  */
 
 import {Component, Input} from '@angular/core';
+import {TSRole} from '../../../../models/enums/TSRole';
 import {TSVerantwortung} from '../../../../models/enums/TSVerantwortung';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
-import {TSRole} from '../../../../models/enums/TSRole';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 
 @Component({
@@ -56,6 +56,9 @@ export class DvBenutzerEntry {
             case TSRole.ADMIN_INSTITUTION:
             case TSRole.SACHBEARBEITER_INSTITUTION:
                 return [['fa fa-home', 'VERANTWORTUNG_INSTITUTION']];
+            case TSRole.ADMIN_SOZIALDIENST:
+            case TSRole.SACHBEARBEITER_SOZIALDIENST:
+                return [['fa fa-handshake-o', 'VERANTWORTUNG_SOZIALDIENST']];
             case TSRole.GESUCHSTELLER:
                 return [['fa fa-user', 'VERANTWORTUNG_GESUCHSTELLER']];
             case TSRole.SUPER_ADMIN:

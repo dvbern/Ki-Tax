@@ -40,10 +40,18 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenAngebot;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer_;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -56,6 +64,8 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 @Local(FerienbetreuungService.class)
 public class FerienbetreuungServiceBean extends AbstractBaseService
 	implements FerienbetreuungService {
+
+	public static final String ID_MUSS_GESETZT_SEIN = "id muss gesetzt sein";
 
 	@Inject
 	private Persistence persistence;
@@ -121,12 +131,105 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	@Nonnull
 	@Override
 	public Optional<FerienbetreuungAngabenContainer> findFerienbetreuungAngabenContainer(@Nonnull String containerId) {
-		Objects.requireNonNull(containerId, "id muss gesetzt sein");
+		Objects.requireNonNull(containerId, ID_MUSS_GESETZT_SEIN);
 
 		FerienbetreuungAngabenContainer container =
 			persistence.find(FerienbetreuungAngabenContainer.class, containerId);
 
 		return Optional.ofNullable(container);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenContainer createFerienbetreuungAntrag(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+		FerienbetreuungAngabenContainer container = new FerienbetreuungAngabenContainer();
+		container.setStatus(FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE);
+		container.setGemeinde(gemeinde);
+		container.setGesuchsperiode(gesuchsperiode);
+		container.setAngabenDeklaration(new FerienbetreuungAngaben());
+		return persistence.persist(container);
+	}
+
+	@Nonnull
+	@Override
+	public void saveKommentar(@Nonnull String containerId, @Nonnull String kommentar) {
+		FerienbetreuungAngabenContainer container =
+			this.findFerienbetreuungAngabenContainer(containerId)
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"saveKommentar",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					containerId)
+				);
+		container.setInternerKommentar(kommentar);
+		persistence.persist(container);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<FerienbetreuungAngabenStammdaten> findFerienbetreuungAngabenStammdaten(@Nonnull String stammdatenId) {
+		Objects.requireNonNull(stammdatenId, ID_MUSS_GESETZT_SEIN);
+
+		FerienbetreuungAngabenStammdaten stammdaten =
+			persistence.find(FerienbetreuungAngabenStammdaten.class, stammdatenId);
+
+		return Optional.ofNullable(stammdaten);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<FerienbetreuungAngabenAngebot> findFerienbetreuungAngabenAngebot(@Nonnull String angebotId) {
+		Objects.requireNonNull(angebotId, ID_MUSS_GESETZT_SEIN);
+
+		FerienbetreuungAngabenAngebot angebot =
+			persistence.find(FerienbetreuungAngabenAngebot.class, angebotId);
+
+		return Optional.ofNullable(angebot);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<FerienbetreuungAngabenNutzung> findFerienbetreuungAngabenNutzung(@Nonnull String nutzungId) {
+		Objects.requireNonNull(nutzungId, ID_MUSS_GESETZT_SEIN);
+
+		FerienbetreuungAngabenNutzung nutzung =
+			persistence.find(FerienbetreuungAngabenNutzung.class, nutzungId);
+
+		return Optional.ofNullable(nutzung);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<FerienbetreuungAngabenKostenEinnahmen> findFerienbetreuungAngabenKostenEinnahmen(@Nonnull String kostenEinnahmenId) {
+		Objects.requireNonNull(kostenEinnahmenId, ID_MUSS_GESETZT_SEIN);
+
+		FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen =
+			persistence.find(FerienbetreuungAngabenKostenEinnahmen.class, kostenEinnahmenId);
+
+		return Optional.ofNullable(kostenEinnahmen);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenStammdaten saveFerienbetreuungAngabenStammdaten(@Nonnull FerienbetreuungAngabenStammdaten stammdaten) {
+		return persistence.merge(stammdaten);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenAngebot saveFerienbetreuungAngabenAngebot(@Nonnull FerienbetreuungAngabenAngebot angebot) {
+		return persistence.merge(angebot);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenNutzung saveFerienbetreuungAngabenNutzung(@Nonnull FerienbetreuungAngabenNutzung nutzung) {
+		return persistence.merge(nutzung);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenKostenEinnahmen saveFerienbetreuungAngabenKostenEinnahmen(@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen) {
+		return persistence.merge(kostenEinnahmen);
 	}
 }
 

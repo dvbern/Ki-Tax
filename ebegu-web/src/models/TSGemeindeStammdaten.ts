@@ -120,4 +120,11 @@ export class TSGemeindeStammdaten extends TSAbstractEntity {
         console.error('kein benutzer TS fuer gemeinde', this.gemeinde.name);
         return undefined;
     }
+
+    public extractTsAdresse(): TSAdresse | undefined {
+        if (this.tsAdresse) {
+            return this.tsAdresse;
+        }
+        return this.adresse;
+    }
 }

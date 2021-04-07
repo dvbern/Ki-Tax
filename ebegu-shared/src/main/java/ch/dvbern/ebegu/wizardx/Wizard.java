@@ -20,12 +20,30 @@ package ch.dvbern.ebegu.wizardx;
 import ch.dvbern.ebegu.enums.UserRole;
 
 /**
- *  Wizard Interface
+ *  Abstract Class Wizard
  */
-public interface Wizard {
-	void previousState();
-	void nextState();
-	WizardStep getStep();
-	void setStep(WizardStep step);
-	UserRole getRole();
+public abstract class Wizard {
+
+	protected WizardStep step;
+	protected UserRole role;
+
+	public void previousState() {
+		this.getStep().prev(this);
+	}
+
+	public void nextState() {
+		this.getStep().next(this);
+	}
+
+	public WizardStep getStep() {
+		return step;
+	}
+
+	public void setStep(WizardStep step) {
+		this.step = step;
+	}
+
+	public UserRole getRole() {
+		return role;
+	}
 }

@@ -84,7 +84,7 @@ describe('wizardStepManager', () => {
             spyOn(authServiceRS, 'getPrincipalRole').and.returnValue(TSRole.SACHBEARBEITER_BG);
             wizardStepManager.getAllowedSteps().splice(0);
             wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_BG);
-            const expectedSteps = 13;
+            const expectedSteps = 14;
             expect(wizardStepManager.getAllowedSteps().length).toBe(expectedSteps);
             expect(wizardStepManager.getAllowedSteps()[0]).toBe(TSWizardStepName.GESUCH_ERSTELLEN);
             expect(wizardStepManager.getAllowedSteps()[1]).toBe(TSWizardStepName.FAMILIENSITUATION);

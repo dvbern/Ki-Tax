@@ -15,8 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {downgradeComponent} from '@angular/upgrade/static';
 import {CORE_JS_MODULE} from '../../core/core.angularjs.module';
-import {PendenzenListViewComponentConfig} from './component/pendenzenListView/pendenzenListView';
+import {PendenzenListViewComponent} from './component/pendenzenListView/pendenzen-list-view.component';
 import {EllipsisTooltip} from './directive/ellipsisTooltip';
 import {pendenzRun} from './pendenzen.route';
 
@@ -24,4 +25,4 @@ export const PENDENZEN_JS_MODULE =
     angular.module('ebeguWeb.pendenzen', [CORE_JS_MODULE.name])
         .run(pendenzRun)
         .directive('ellipsisTooltip', EllipsisTooltip.factory())
-        .component('pendenzenListView', new PendenzenListViewComponentConfig());
+        .directive('pendenzenListView', downgradeComponent({component: PendenzenListViewComponent}));

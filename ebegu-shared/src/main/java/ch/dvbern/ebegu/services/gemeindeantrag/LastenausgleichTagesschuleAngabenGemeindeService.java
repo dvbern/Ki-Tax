@@ -105,4 +105,17 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 		@Nonnull String containerId,
 		@Nonnull String kommentar
 	);
+
+	/**
+	 * Schliesst das Angaben Gemeinde Formular ab
+	 */
+	@Nonnull
+	LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeFormularAbschliessen(
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer);
+
+	@Nonnull
+	LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeWiederOeffnen(
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer);
+
+	void deleteLastenausgleicheTagesschule(@Nonnull Gesuchsperiode gesuchsperiode);
 }

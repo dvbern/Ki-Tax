@@ -15,14 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {
-    Component,
-    OnInit,
+    AfterViewInit,
     ChangeDetectionStrategy,
-    Output,
+    ChangeDetectorRef,
+    Component,
     EventEmitter,
-    ViewChild,
     Input,
-    SimpleChanges, OnChanges, ChangeDetectorRef,
+    OnChanges,
+    OnInit,
+    Output,
+    SimpleChanges,
+    ViewChild,
 } from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -35,9 +38,9 @@ import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
     selector: 'dv-search-list',
     templateUrl: './dv-search-list.component.html',
     styleUrls: ['./dv-search-list.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.Default,
 })
-export class DvSearchListComponent implements OnInit, OnChanges {
+export class DvSearchListComponent implements OnInit, OnChanges, AfterViewInit {
 
     /**
      * Emits when the user clicks on a row
@@ -77,6 +80,10 @@ export class DvSearchListComponent implements OnInit, OnChanges {
         if (changes.data$ && !changes.data$.firstChange) {
             this.loadData();
         }
+    }
+
+    public ngAfterViewInit(): void {
+        this.dataSource.sort = this.sort;
     }
 
     public showNoContentMessage(): boolean {
