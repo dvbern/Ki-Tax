@@ -4713,6 +4713,7 @@ export class EbeguRestUtil {
         wizardStep.stepName = data.stepName;
         wizardStep.wizardTyp = data.wizardTyp;
         wizardStep.disabled = data.disabled;
+        wizardStep.status = data.status;
         return wizardStep;
     }
 
