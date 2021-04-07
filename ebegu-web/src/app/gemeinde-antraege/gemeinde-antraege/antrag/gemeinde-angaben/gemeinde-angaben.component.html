@@ -67,7 +67,7 @@
 
 <form *ngIf="angabenForm" class="gemeinde-angaben-wrapper" [formGroup]="angabenForm" (ngSubmit)="onAngabenFormSubmit()">
 
-        <h3 translate class="uppercase">ALLGEMEINE_ANGABEN</h3>
+        <h3 translate class="uppercase">LATS_ALLGEMEINE_ANGABEN_GEMEINDE</h3>
 
         <dv-input-container-x>
             <label required
@@ -180,8 +180,10 @@
 
 
         <h3 class="uppercase">{{'LATS_ABRECHNUNG' | translate}}</h3>
-        <p class="sub-header-explanation">{{'LATS_EXPLANATION_SUB_HEADER_ABRECHNUNG' | translate}}</p>
-
+        <p class="italic">{{'LATS_EXPLANATION_SUB_HEADER_ABRECHNUNG' | translate}}</p>
+        <p class="sub-header-explanation">{{'LATS_COVID_INFORMATION' | translate}}
+            <dv-tooltip [text]="'LATS_COVID_ABRECHNUNG_INFO' | translate"></dv-tooltip>
+        </p>
         <dv-input-container-x>
             <label required [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors}">
                 {{'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
@@ -440,7 +442,8 @@
     <dv-input-container-x>
         <!-- TODO: add year translation parameter -->
         <label [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('ersteRateAusbezahlt').errors}">
-            {{'ERSTE_RATE_AUSBEZAHLT' | translate}}
+            {{'LATS_ERSTE_RATE_AUSBEZAHLT' | translate}}
+            <dv-tooltip [text]="'LATS_ERSTE_RATE_AUSBEZAHLT_INFO' | translate"></dv-tooltip>
             <span>&nbsp;*</span>
         </label>
         <div class="flex-whitespace-item"></div>
@@ -632,7 +635,6 @@
 
         <h3 class="uppercase">{{'LATS_ANGABEN_WEITERE_KOSTEN_ERTRAEGE' | translate}}</h3>
         <p class="sub-header-explanation">{{'LATS_BEMERKUNG_WIETER_KOSTEN_ERTRAEGE' | translate}}</p>
-
         <dv-input-container-x>
             <mat-form-field floatLabel="always" class="no-margin-left">
                 <textarea matInput
