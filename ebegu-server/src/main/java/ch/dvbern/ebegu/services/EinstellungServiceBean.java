@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.NoEinstellungFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 /**
@@ -258,6 +259,9 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 					lastGPEinstellung.getKey() == EinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG ||
 					lastGPEinstellung.getKey() == EinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB) {
 					einstellungOfNewGP.setValue(gueltigAbAsString);
+				}
+				if (lastGPEinstellung.getKey() == EinstellungKey.LATS_STICHTAG) {
+					einstellungOfNewGP.setValue(DateUtil.incrementYear(lastGPEinstellung.getValue()));
 				}
 				saveEinstellung(einstellungOfNewGP);
 			});
