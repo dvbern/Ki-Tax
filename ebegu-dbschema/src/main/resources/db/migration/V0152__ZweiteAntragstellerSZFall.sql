@@ -15,20 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as moment from 'moment';
-import {TSSozialdienstFallStatus} from '../enums/TSSozialdienstFallStatus';
-import {TSAbstractEntity} from '../TSAbstractEntity';
-import {TSAdresse} from '../TSAdresse';
-import {TSSozialdienst} from './TSSozialdienst';
+ALTER TABLE sozialdienst_fall ADD vorname_gs2 VARCHAR(255);
+ALTER TABLE sozialdienst_fall ADD name_gs2 VARCHAR(255);
+ALTER TABLE sozialdienst_fall ADD geburtsdatum_gs2 DATE;
 
-export class TSSozialdienstFall extends TSAbstractEntity {
-    public name: string;
-    public vorname: string;
-    public status: TSSozialdienstFallStatus;
-    public adresse: TSAdresse;
-    public geburtsdatum: moment.Moment;
-    public nameGS2: string;
-    public vornameGS2: string;
-    public geburtsdatumGS2: moment.Moment;
-    public sozialdienst: TSSozialdienst;
-}
+ALTER TABLE sozialdienst_fall_aud ADD vorname_gs2 VARCHAR(255);
+ALTER TABLE sozialdienst_fall_aud ADD name_gs2 VARCHAR(255);
+ALTER TABLE sozialdienst_fall_aud ADD geburtsdatum_gs2 DATE;

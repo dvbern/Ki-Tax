@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.api.dtos.sozialdienst;
 import java.time.LocalDate;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -47,6 +48,16 @@ public class JaxSozialdienstFall extends JaxAbstractDTO {
 	@Nonnull
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate geburtsdatum;
+
+	@Nullable
+	private String nameGS2;
+
+	@Nullable
+	private String vornameGS2;
+
+	@Nullable
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private LocalDate geburtsdatumGS2;
 
 	@Nonnull
 	private JaxAdresse adresse;
@@ -106,5 +117,32 @@ public class JaxSozialdienstFall extends JaxAbstractDTO {
 
 	public void setVorname(@Nonnull String vorname) {
 		this.vorname = vorname;
+	}
+
+	@Nullable
+	public String getNameGS2() {
+		return nameGS2;
+	}
+
+	public void setNameGS2(@Nullable String nameGS2) {
+		this.nameGS2 = nameGS2;
+	}
+
+	@Nullable
+	public String getVornameGS2() {
+		return vornameGS2;
+	}
+
+	public void setVornameGS2(@Nullable String vornameGS2) {
+		this.vornameGS2 = vornameGS2;
+	}
+
+	@Nullable
+	public LocalDate getGeburtsdatumGS2() {
+		return geburtsdatumGS2;
+	}
+
+	public void setGeburtsdatumGS2(@Nullable LocalDate geburtsdatumGS2) {
+		this.geburtsdatumGS2 = geburtsdatumGS2;
 	}
 }

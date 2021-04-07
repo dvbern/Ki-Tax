@@ -114,6 +114,9 @@ public class JaxSozialdienstConverter extends AbstractConverter {
 		}
 		adresseToEntity(jaxSozialdienstFall.getAdresse(), sozialdienstFall.getAdresse());
 		sozialdienstFall.setGeburtsdatum(jaxSozialdienstFall.getGeburtsdatum());
+		sozialdienstFall.setNameGS2(jaxSozialdienstFall.getNameGS2());
+		sozialdienstFall.setVornameGS2(jaxSozialdienstFall.getVornameGS2());
+		sozialdienstFall.setGeburtsdatumGS2(jaxSozialdienstFall.getGeburtsdatumGS2());
 		requireNonNull(jaxSozialdienstFall.getSozialdienst().getId());
 		Sozialdienst sozialdienst = sozialdienstService.findSozialdienst(jaxSozialdienstFall.getSozialdienst().getId())
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -131,6 +134,9 @@ public class JaxSozialdienstConverter extends AbstractConverter {
 		jaxSozialdienstFall.setVorname(persistedSozialdienstFall.getVorname());
 		jaxSozialdienstFall.setStatus(persistedSozialdienstFall.getStatus());
 		jaxSozialdienstFall.setGeburtsdatum(persistedSozialdienstFall.getGeburtsdatum());
+		jaxSozialdienstFall.setNameGS2(persistedSozialdienstFall.getNameGS2());
+		jaxSozialdienstFall.setVornameGS2(persistedSozialdienstFall.getVornameGS2());
+		jaxSozialdienstFall.setGeburtsdatumGS2(persistedSozialdienstFall.getGeburtsdatumGS2());
 		jaxSozialdienstFall.setAdresse(adresseToJAX(persistedSozialdienstFall.getAdresse()));
 		jaxSozialdienstFall.setSozialdienst(sozialdienstToJAX(persistedSozialdienstFall.getSozialdienst()));
 		return jaxSozialdienstFall;
