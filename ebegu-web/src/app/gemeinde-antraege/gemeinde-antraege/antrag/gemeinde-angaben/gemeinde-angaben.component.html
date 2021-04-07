@@ -380,7 +380,7 @@
 
     <dv-input-container-x>
         <label [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('tagesschuleTeilweiseGeschlossen').errors}">
-            {{'LATS_TAGESSCHULE_GESCHLOSSEN' | translate}}
+            {{'LATS_TAGESSCHULE_GESCHLOSSEN' | translate:{periode: lATSAngabenGemeindeContainer?.gesuchsperiode?.gesuchsperiodeString} }}
             <span>&nbsp;*</span>
         </label>
         <div class="flex-whitespace-item"></div>
@@ -442,8 +442,8 @@
     <dv-input-container-x>
         <!-- TODO: add year translation parameter -->
         <label [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('ersteRateAusbezahlt').errors}">
-            {{'LATS_ERSTE_RATE_AUSBEZAHLT' | translate}}
-            <dv-tooltip [text]="'LATS_ERSTE_RATE_AUSBEZAHLT_INFO' | translate"></dv-tooltip>
+            {{'LATS_ERSTE_RATE_AUSBEZAHLT' | translate:{year: getLastYear()} }}
+            <dv-tooltip [text]="'LATS_ERSTE_RATE_AUSBEZAHLT_INFO' | translate:{periode: lATSAngabenGemeindeContainer?.gesuchsperiode?.gesuchsperiodeString, previousYear: getLastYear()}"></dv-tooltip>
             <span>&nbsp;*</span>
         </label>
         <div class="flex-whitespace-item"></div>
@@ -459,9 +459,8 @@
     </dv-input-container-x>
 
     <dv-input-container-x>
-        <!-- TODO: add year translation parameter -->
         <label>
-            {{'LATS_SCHLUSSZAHLUNG' | translate}}
+            {{'LATS_SCHLUSSZAHLUNG' | translate:{year: getLastYear()} }}
         </label>
         <div class="flex-whitespace-item"></div>
         <mat-form-field floatLabel="always">
@@ -582,7 +581,7 @@
 
     <dv-input-container-x>
         <label [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('ueberschussErzielt').errors}">
-            {{'LATS_UEBERSCHUSS_ERZIELT' | translate}}
+            {{'LATS_UEBERSCHUSS_ERZIELT' | translate:{periode: lATSAngabenGemeindeContainer?.gesuchsperiode?.gesuchsperiodeString} }}
             <span>&nbsp;*</span>
         </label>
         <div class="flex-whitespace-item"></div>

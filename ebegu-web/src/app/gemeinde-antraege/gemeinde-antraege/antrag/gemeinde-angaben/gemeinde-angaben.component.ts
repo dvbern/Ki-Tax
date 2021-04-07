@@ -480,7 +480,7 @@ export class GemeindeAngabenComponent implements OnInit {
                         .setValue('');
                 }
 
-                this.angabenForm.get('erwarteterKostenbeitragGemeinde').setValue(values[0] * this.kostenbeitragGemeinde);
+                this.angabenForm.get('erwarteterKostenbeitragGemeinde').setValue((values[0] * this.kostenbeitragGemeinde).toFixed(2));
                 this.angabenForm.get('einnahmenElterngebuehrenRO').setValue(values[2]);
             },
             () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')),
@@ -664,5 +664,9 @@ export class GemeindeAngabenComponent implements OnInit {
         return this.lATSAngabenGemeindeContainer?.isInBearbeitungGemeinde() &&
             this.lATSAngabenGemeindeContainer?.angabenDeklaration.status ===
             TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
+    }
+
+    public getLastYear(): number {
+        return this.lATSAngabenGemeindeContainer.gesuchsperiode.getBasisJahr();
     }
 }
