@@ -330,29 +330,102 @@
             </mat-form-field>
         </dv-input-container-x>
 
-        <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('einnahmenElterngebuehren').errors}">
-                {{'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <input matInput formControlName="einnahmenElterngebuehren" class="form-control dv-input"/>
-                <mat-error *ngIf="formValidationActive && angabenForm.get('einnahmenElterngebuehren').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="formValidationActive && angabenForm.get('einnahmenElterngebuehren').errors?.noNumberError"
-                           translate>ERROR_NUMBER
-                </mat-error>
-                <dv-bisher-x
-                    [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.einnahmenElterngebuehren"
-                    [korrektur]="angabenForm.get('einnahmenElterngebuehren').value"
-                    [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                </dv-bisher-x>
-            </mat-form-field>
-        </dv-input-container-x>
+    <dv-input-container-x>
+        <label required
+               [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('einnahmenElterngebuehren').errors}">
+            {{'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="einnahmenElterngebuehren" class="form-control dv-input"/>
+            <mat-error *ngIf="formValidationActive && angabenForm.get('einnahmenElterngebuehren').errors?.required"
+                       translate>ERROR_REQUIRED
+            </mat-error>
+            <mat-error *ngIf="formValidationActive && angabenForm.get('einnahmenElterngebuehren').errors?.noNumberError"
+                       translate>ERROR_NUMBER
+            </mat-error>
+            <dv-bisher-x
+                [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.einnahmenElterngebuehren"
+                [korrektur]="angabenForm.get('einnahmenElterngebuehren').value"
+                [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
+                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+            </dv-bisher-x>
+        </mat-form-field>
+    </dv-input-container-x>
 
-        <mat-divider></mat-divider>
+    <dv-input-container-x>
+        <label required
+               [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('einnahmenElterngebuehren').errors}">
+            {{'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="einnahmenElterngebuehren" class="form-control dv-input"/>
+            <mat-error *ngIf="formValidationActive && angabenForm.get('einnahmenElterngebuehren').errors?.required"
+                       translate>ERROR_REQUIRED
+            </mat-error>
+            <mat-error *ngIf="formValidationActive && angabenForm.get('einnahmenElterngebuehren').errors?.noNumberError"
+                       translate>ERROR_NUMBER
+            </mat-error>
+            <dv-bisher-x
+                [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.einnahmenElterngebuehren"
+                [korrektur]="angabenForm.get('einnahmenElterngebuehren').value"
+                [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
+                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+            </dv-bisher-x>
+        </mat-form-field>
+    </dv-input-container-x>
+
+    <dv-input-container-x>
+        <label [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('tagesschuleTeilweiseGeschlossen').errors}">
+            {{'LATS_TAGESSCHULE_GESCHLOSSEN' | translate}}
+            <span>&nbsp;*</span>
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <dv-radio-container-x>
+            <mat-radio-group
+                aria-labelledby="tagesschuleTeilweiseGeschlossen-radio-group"
+                class=""
+                name="tagesschuleTeilweiseGeschlossen"
+                horizontal
+                [disabled]="angabenForm.get('tagesschuleTeilweiseGeschlossen').disabled"
+                formControlName="tagesschuleTeilweiseGeschlossen">
+                <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+            </mat-radio-group>
+            <dv-bisher-x
+                [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.tagesschuleTeilweiseGeschlossen"
+                [korrektur]="angabenForm.get('tagesschuleTeilweiseGeschlossen').value"
+                [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
+                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+            </dv-bisher-x>
+        </dv-radio-container-x>
+    </dv-input-container-x>
+
+    <dv-input-container-x>
+        <label required
+               [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('rueckerstattungenElterngebuehrenSchliessung').errors}">
+            {{'LATS_RUECKERSTATTUNG_TS_GESCHLOSSEN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="rueckerstattungenElterngebuehrenSchliessung" class="form-control dv-input"/>
+            <mat-error *ngIf="formValidationActive && angabenForm.get('rueckerstattungenElterngebuehrenSchliessung').errors?.required"
+                       translate>ERROR_REQUIRED
+            </mat-error>
+            <mat-error *ngIf="formValidationActive && angabenForm.get('rueckerstattungenElterngebuehrenSchliessung').errors?.noNumberError"
+                       translate>ERROR_NUMBER
+            </mat-error>
+            <dv-bisher-x
+                [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.rueckerstattungenElterngebuehrenSchliessung"
+                [korrektur]="angabenForm.get('rueckerstattungenElterngebuehrenSchliessung').value"
+                [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
+                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+            </dv-bisher-x>
+        </mat-form-field>
+    </dv-input-container-x>
+
+    <mat-divider></mat-divider>
 
         <dv-input-container-x>
             <label [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('lastenausgleichsberechtigerBetrag').errors}">
@@ -363,6 +436,35 @@
                 <input matInput formControlName="lastenausgleichsberechtigerBetrag" class="form-control dv-input"/>
             </mat-form-field>
         </dv-input-container-x>
+
+    <dv-input-container-x>
+        <!-- TODO: add year translation parameter -->
+        <label [ngClass]="{'label-required-error': formValidationActive && angabenForm.get('ersteRateAusbezahlt').errors}">
+            {{'ERSTE_RATE_AUSBEZAHLT' | translate}}
+            <span>&nbsp;*</span>
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="ersteRateAusbezahlt" class="form-control dv-input"/>
+            <mat-error *ngIf="formValidationActive && angabenForm.get('ersteRateAusbezahlt').errors?.required"
+                       translate>ERROR_REQUIRED
+            </mat-error>
+            <mat-error *ngIf="formValidationActive && angabenForm.get('ersteRateAusbezahlt').errors?.noNumberError"
+                       translate>ERROR_NUMBER
+            </mat-error>
+        </mat-form-field>
+    </dv-input-container-x>
+
+    <dv-input-container-x>
+        <!-- TODO: add year translation parameter -->
+        <label>
+            {{'LATS_SCHLUSSZAHLUNG' | translate}}
+        </label>
+        <div class="flex-whitespace-item"></div>
+        <mat-form-field floatLabel="always">
+            <input matInput formControlName="schlusszahlung" class="form-control dv-input"/>
+        </mat-form-field>
+    </dv-input-container-x>
 
         <h3 class="uppercase">{{'LATS_KOSTENBETEILIGUNG_GEMEINDE' | translate}}</h3>
         <p class="sub-header-explanation">{{'LATS_EXPLANATION_SUB_HEADER_KOSTENBETEILIGUNG_GEMEINDE' | translate}}</p>

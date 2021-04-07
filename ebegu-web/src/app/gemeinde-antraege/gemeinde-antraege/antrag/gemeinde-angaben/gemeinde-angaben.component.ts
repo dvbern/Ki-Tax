@@ -159,6 +159,9 @@ export class GemeindeAngabenComponent implements OnInit {
             davonStundenZuNormlohnWenigerAls50ProzentAusgebildete:
                 [initialGemeindeAngaben?.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete],
             einnahmenElterngebuehren: [initialGemeindeAngaben?.einnahmenElterngebuehren],
+            ersteRateAusbezahlt: [initialGemeindeAngaben?.ersteRateAusbezahlt],
+            tagesschuleTeilweiseGeschlossen: [initialGemeindeAngaben?.tagesschuleTeilweiseGeschlossen],
+            rueckerstattungenElterngebuehrenSchliessung: [initialGemeindeAngaben?.rueckerstattungenElterngebuehrenSchliessung],
             // C
             gesamtKostenTagesschule: [initialGemeindeAngaben?.gesamtKostenTagesschule],
             einnnahmenVerpflegung: [initialGemeindeAngaben?.einnnahmenVerpflegung],
@@ -191,6 +194,7 @@ export class GemeindeAngabenComponent implements OnInit {
             kostenbeitragGemeinde: [{value: '', disabled: true}],
             kostenueberschussGemeinde: [{value: '', disabled: true}],
             erwarteterKostenbeitragGemeinde: [{value: '', disabled: true}],
+            schlusszahlung: [{value: '', disabled: true}],
         });
 
         if (!this.lATSAngabenGemeindeContainer.isGemeindeFormularInBearbeitungForRole(this.authServiceRS.getPrincipalRole())) {

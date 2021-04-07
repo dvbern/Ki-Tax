@@ -33,7 +33,7 @@ ALTER TABLE lastenausgleich_tagesschule_angaben_gemeinde ADD COLUMN IF NOT EXIST
 	erste_rate_ausbezahlt DECIMAL(19,2) NULL DEFAULT NULL;
 
 ALTER TABLE lastenausgleich_tagesschule_angaben_gemeinde_aud ADD COLUMN IF NOT EXISTS
-	ersteRateAusbezahlt DECIMAL(19,2) NULL DEFAULT NULL;
+	erste_rate_ausbezahlt DECIMAL(19,2) NULL DEFAULT NULL;
 
 
 ALTER TABLE lastenausgleich_tagesschule_angaben_gemeinde ADD COLUMN IF NOT EXISTS
