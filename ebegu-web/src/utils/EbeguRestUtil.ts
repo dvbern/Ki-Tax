@@ -3964,6 +3964,8 @@ export class EbeguRestUtil {
         publicAppConfigTS.notverordnungDefaultEinreichefristOeffentlich =
             data.notverordnungDefaultEinreichefristOeffentlich;
         publicAppConfigTS.notverordnungDefaultEinreichefristPrivat = data.notverordnungDefaultEinreichefristPrivat;
+        publicAppConfigTS.lastenausgleichTagesschulenAktiv = data.lastenausgleichTagesschulenAktiv;
+        publicAppConfigTS.ferienbetreuungAktiv = data.ferienbetreuungAktiv;
         return publicAppConfigTS;
 
     }

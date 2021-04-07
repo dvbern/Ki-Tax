@@ -159,16 +159,17 @@ export class FallToolbarComponent implements OnChanges {
 
     public createNewDossier(): void {
         this.getGemeindeIDFromDialog$()
-            .pipe(filter(chosenGemeindeId => !!chosenGemeindeId))
+            .pipe(filter(chosenGemeinde => !!chosenGemeinde))
+            .pipe(filter(chosenGemeinde => !!chosenGemeinde.gemeindeId))
             .subscribe(
                 chosenGemeindeId => {
                     if (this.isGesuchsteller()) {
-                        this.createDossier(chosenGemeindeId).then(() => this.navigateToDashboard());
+                        this.createDossier(chosenGemeindeId.gemeindeId).then(() => this.navigateToDashboard());
 
                         return;
                     }
 
-                    this.navigateToFallCreation(chosenGemeindeId);
+                    this.navigateToFallCreation(chosenGemeindeId.gemeindeId);
                 },
                 err => LOG.error(err),
             );
@@ -249,7 +250,7 @@ export class FallToolbarComponent implements OnChanges {
     /**
      * A dialog will always be displayed when creating a new Dossier. So that the user
      */
-    private getGemeindeIDFromDialog$(): Observable<string> {
+    private getGemeindeIDFromDialog$(): Observable<{ gemeindeId: string, gesuchsperiodeId?: string }> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             gemeindeList: this.availableGemeindeList,

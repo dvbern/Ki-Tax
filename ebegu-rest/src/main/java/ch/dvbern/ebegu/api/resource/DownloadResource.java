@@ -45,6 +45,7 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.av.AVClient;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.converter.JaxFerienbetreuungConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxMahnung;
@@ -76,6 +77,7 @@ import ch.dvbern.ebegu.services.RueckforderungDokumentService;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
 import ch.dvbern.ebegu.services.VorlageService;
 import ch.dvbern.ebegu.services.ZahlungService;
+import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungDokumentService;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.annotations.Api;
@@ -83,7 +85,24 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.*;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_SOZIALDIENST;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
+import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
+import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_SOZIALDIENST;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -142,6 +161,9 @@ public class DownloadResource {
 
 	@Inject
 	private RueckforderungFormularService rueckforderungFormularService;
+
+	@Inject
+	private FerienbetreuungDokumentService ferienbetreuungDokumentService;
 
 	@Inject
 	private AVClient avClient;
@@ -643,6 +665,28 @@ public class DownloadResource {
 		String id = converter.toEntityId(jaxId);
 
 		final FileMetadata dokument = rueckforderungDokumentService.findDokument(id)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getDokumentAccessTokenDokument",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, id));
+
+		return getFileDownloadResponse(uriInfo, ip, dokument);
+	}
+
+	@ApiOperation("Erstellt ein Token f&uuml;r den Download eines Dokumentes.")
+	@Nonnull
+	@GET
+	@Path("/{dokumentId}/ferienbetreuungDokument")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDokumentAccessTokenFerienbetreuunggDokument(
+		@Nonnull @Valid @PathParam("dokumentId") JaxId jaxId,
+		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException {
+
+		String ip = getIP(request);
+
+		requireNonNull(jaxId.getId());
+		String id = converter.toEntityId(jaxId);
+
+		final FileMetadata dokument = ferienbetreuungDokumentService.findDokument(id)
 			.orElseThrow(() -> new EbeguEntityNotFoundException("getDokumentAccessTokenDokument",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, id));
 

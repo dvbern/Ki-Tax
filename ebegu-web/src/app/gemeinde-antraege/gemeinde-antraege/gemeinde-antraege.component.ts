@@ -17,21 +17,26 @@
 import {HttpErrorResponse} from '@angular/common/http';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
-import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
-import {catchError, filter, map, mergeMap, tap} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest, from, NEVER, Observable, of} from 'rxjs';
+import {catchError, concatMap, filter, map, mergeMap, tap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {HTTP_ERROR_CODES} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
@@ -77,6 +82,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     }> = new BehaviorSubject<{ predicate?: string; reverse?: boolean }>({});
     public triedSending: boolean = false;
     public types: TSGemeindeAntragTyp[];
+    public deletePossible$: Observable<boolean>;
 
     public constructor(
         private readonly gemeindeAntragService: GemeindeAntragService,
@@ -89,19 +95,22 @@ export class GemeindeAntraegeComponent implements OnInit {
         private readonly wizardStepXRS: WizardStepXRS,
         private readonly gemeindeRS: GemeindeRS,
         private readonly authService: AuthServiceRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly dialog: MatDialog,
     ) {
     }
 
     public ngOnInit(): void {
-        this.loadAntragList();
-        this.loadGemeinden();
-        this.gesuchsperiodenService.getAllActiveGesuchsperioden().then(result => this.gesuchsperioden = result);
         this.formGroup = this.fb.group({
             periode: ['', Validators.required],
             antragTyp: ['', Validators.required],
             gemeinde: [''],
         });
+        this.loadAntragList();
+        this.loadGemeinden();
+        this.gesuchsperiodenService.getAllActiveGesuchsperioden().then(result => this.gesuchsperioden = result);
         this.initAntragTypes();
+        this.checkDeletePossible$();
     }
 
     private loadAntragList(): void {
@@ -157,18 +166,72 @@ export class GemeindeAntraegeComponent implements OnInit {
         });
     }
 
-    private initAntragTypes(): void {
-        this.authService.principal$.pipe(
-            filter(principal => !!principal),
+    public deleteAntraege(): void {
+        if (!this.formGroup.valid) {
+            this.triedSending = true;
+            return;
+        }
+        this.openRemoveDialog$().pipe(
+            concatMap(answer => {
+                if (!answer) {
+                    return NEVER;
+                }
+                return this.gemeindeAntragService.deleteAntrage(this.formGroup.value);
+            })
         ).subscribe(() => {
-            this.types = this.gemeindeAntragService.getTypesForRole();
-            if (this.types.length === 1) {
-                this.formGroup.get('antragTyp').setValue(this.types[0]);
-            }
-        }, error => {
-            console.error(error);
-        });
+                this.loadAntragList();
+                this.cd.markForCheck();
+            }, err => {
+                const msg = this.translate.instant('DELETE_ANTRAEGE_ERROR');
+                this.errorService.addMesageAsError(msg);
+                console.error(err);
+            });
+    }
 
+    private openRemoveDialog$(): Observable<boolean> {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'WIRKLICH_LOESCHEN',
+            text: '',
+        };
+        return this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed();
+    }
+
+    private checkDeletePossible$(): void {
+        const promise = this.applicationPropertyRS.isDevMode();
+        this.deletePossible$ = from(promise)
+            .pipe(map(isDevmode => {
+                return this.authService.isRole(TSRole.SUPER_ADMIN) && isDevmode;
+            }));
+    }
+
+    private initAntragTypes(): void {
+        const principal$ = this.authService.principal$.pipe(
+            filter(principal => !!principal),
+        );
+        const properties$ = from(this.applicationPropertyRS.getPublicPropertiesCached());
+
+        combineLatest([principal$, properties$])
+            .subscribe(data => {
+                this.types = this.getFilterAntragTypes(data[1]);
+                if (this.types.length === 1) {
+                    this.formGroup.get('antragTyp').setValue(this.types[0]);
+                }
+            }, error => {
+                console.error(error);
+            });
+
+    }
+
+    private getFilterAntragTypes(config: TSPublicAppConfig): TSGemeindeAntragTyp[] {
+        this.types = this.gemeindeAntragService.getTypesForRole();
+        if (!config.ferienbetreuungAktiv) {
+            this.types = this.types.filter(d => d !== TSGemeindeAntragTyp.FERIENBETREUUNG);
+        }
+        if (!config.lastenausgleichTagesschulenAktiv) {
+            this.types = this.types.filter(d => d !== TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN);
+        }
+        return this.types;
     }
 
     public createAntrag(): void {

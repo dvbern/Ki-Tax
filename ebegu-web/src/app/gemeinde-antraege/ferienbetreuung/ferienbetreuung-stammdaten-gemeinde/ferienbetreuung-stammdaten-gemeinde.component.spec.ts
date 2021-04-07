@@ -22,6 +22,7 @@ import {UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {SharedModule} from '../../../shared/shared.module';
@@ -32,7 +33,7 @@ import {FerienbetreuungStammdatenGemeindeComponent} from './ferienbetreuung-stam
 const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAllBfsGemeinden']);
 const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(
     FerienbetreuungService.name,
-    ['getFerienbetreuungContainer']
+    ['getFerienbetreuungContainer'],
 );
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
     ['addMesageAsError', 'addMesageAsInfo']);
@@ -56,7 +57,7 @@ describe('FerienbetreuungStammdatenGemeindeComponent', () => {
                 FormsModule,
                 ReactiveFormsModule,
                 SharedModule,
-                HttpClientModule
+                HttpClientModule,
             ],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
@@ -64,8 +65,8 @@ describe('FerienbetreuungStammdatenGemeindeComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
-            ]
-        })
+            ],
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 

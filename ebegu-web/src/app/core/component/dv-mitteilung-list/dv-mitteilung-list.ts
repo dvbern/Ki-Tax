@@ -149,10 +149,13 @@ export class DVMitteilungListController implements IOnInit {
 
     private initMitteilungForCurrentBenutzer(): void {
         const isGesuchsteller = this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
-        const isJugendamtOrSchulamtAndFallHasBesitzer = this.dossier.fall.besitzer && this.authServiceRS.isOneOfRoles(
-            TSRoleUtil.getAdministratorJugendamtSchulamtRoles());
+        const hasBesitzerOrSozialdienst = this.dossier.fall.besitzer || this.dossier.fall.sozialdienstFall;
+        const isJugendamtOrSchulamtAndFallHasBesitzer = hasBesitzerOrSozialdienst && this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getAdministratorJugendamtSchulamtRoles()
+        );
         const isInstitutionsUser = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
-        if (!(isGesuchsteller || isJugendamtOrSchulamtAndFallHasBesitzer || isInstitutionsUser)) {
+        const isSozialdienst = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
+        if (!(isGesuchsteller || isJugendamtOrSchulamtAndFallHasBesitzer || isInstitutionsUser || isSozialdienst)) {
             return;
         }
         const currentUser = this.authServiceRS.getPrincipal();
@@ -256,6 +259,9 @@ export class DVMitteilungListController implements IOnInit {
             case TSRole.ADMIN_MANDANT:
             case TSRole.SACHBEARBEITER_MANDANT:
                 return TSMitteilungTeilnehmerTyp.JUGENDAMT;
+            case TSRole.ADMIN_SOZIALDIENST:
+            case TSRole.SACHBEARBEITER_SOZIALDIENST:
+                return TSMitteilungTeilnehmerTyp.SOZIALDIENST;
             default:
                 return null;
         }
@@ -394,5 +400,9 @@ export class DVMitteilungListController implements IOnInit {
 
     public isCurrentUserAmt(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
+    }
+
+    public isCurrentMitteilungSozialdienst(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.currentMitteilung.dossier.fall.sozialdienstFall);
     }
 }

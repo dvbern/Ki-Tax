@@ -147,7 +147,9 @@ export class WizardStepManager {
 
         } else if (TSRoleUtil.getAmtRole().concat(TSRole.GESUCHSTELLER).indexOf(role) > -1) {
             this.setAllowedStepsForAmtAndGesuchsteller();
-            // TODO abklaeren ob die Gemeinde koennen auch sehe dieser Schritt
+            if (TSRoleUtil.getAmtRole().indexOf(role) > -1) {
+                this.allowedSteps.push(TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN);
+            }
         } else {
             // Nur sozialdienst und superadmin koennen alle Step sehen
             this.setAllAllowedSteps();
@@ -387,7 +389,7 @@ export class WizardStepManager {
         if (step.wizardStepName === TSWizardStepName.VERFUEGEN) {
             // verfuegen fuer admin, jugendamt und gesuchsteller immer sichtbar
             if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole()) &&
-                !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles()) &&
+                !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle()) &&
                 !isAnyStatusOfVerfuegtOrKeinKontingent(gesuch.status)) {
                 return false;
             }

@@ -22,5 +22,6 @@ public enum MitteilungTeilnehmerTyp {
 
 	GESUCHSTELLER,
 	JUGENDAMT, // Auch Schulamt
-	INSTITUTION
+	INSTITUTION,
+	SOZIALDIENST
 }

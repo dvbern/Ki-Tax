@@ -357,6 +357,8 @@ export class TSRoleUtil {
             TSRole.GESUCHSTELLER,
             TSRole.ADMIN_TS,
             TSRole.SACHBEARBEITER_TS,
+            TSRole.SACHBEARBEITER_SOZIALDIENST,
+            TSRole.ADMIN_SOZIALDIENST
         ];
     }
 
@@ -599,6 +601,14 @@ export class TSRoleUtil {
 
     public static getInstitutionRoles(): ReadonlyArray<TSRole> {
         return PERMISSIONS[Permission.ROLE_INSTITUTION].concat(TSRole.SUPER_ADMIN);
+    }
+
+    public static getFerienbetreuungRoles(): ReadonlyArray<TSRole> {
+        return PERMISSIONS[Permission.FERIENBETREUUNG];
+    }
+
+    public static getLastenausgleichTagesschuleRoles(): ReadonlyArray<TSRole> {
+        return PERMISSIONS[Permission.LASTENAUSGLEICH_TAGESSCHULE];
     }
 
     public static isGemeindeRole(role: TSRole): boolean {

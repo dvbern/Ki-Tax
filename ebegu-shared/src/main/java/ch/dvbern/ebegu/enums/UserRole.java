@@ -213,6 +213,10 @@ public enum UserRole {
 		return this.rollenAbhaengigkeit == RollenAbhaengigkeit.GEMEINDE;
 	}
 
+	public boolean isRoleSozialdienstabhaengig(){
+		return this.rollenAbhaengigkeit == RollenAbhaengigkeit.SOZIALDIENST;
+	}
+
 	@Nonnull
 	public RollenAbhaengigkeit getRollenAbhaengigkeit() {
 		return rollenAbhaengigkeit;

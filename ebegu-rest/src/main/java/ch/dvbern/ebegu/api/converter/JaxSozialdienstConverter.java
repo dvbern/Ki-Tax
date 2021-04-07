@@ -78,7 +78,9 @@ public class JaxSozialdienstConverter extends AbstractConverter {
 		adresseToEntity(jaxStammdaten.getAdresse(), stammdaten.getAdresse());
 
 		stammdaten.setMail(jaxStammdaten.getMail());
-		stammdaten.setTelefon(jaxStammdaten.getTelefon());
+		stammdaten.setTelefon(jaxStammdaten.getTelefon() != null && jaxStammdaten.getTelefon().length() > 0 ?
+			jaxStammdaten.getTelefon() :
+			null);
 		stammdaten.setWebseite(jaxStammdaten.getWebseite());
 
 		return stammdaten;
@@ -107,7 +109,7 @@ public class JaxSozialdienstConverter extends AbstractConverter {
 		sozialdienstFall.setName(jaxSozialdienstFall.getName());
 		sozialdienstFall.setVorname(jaxSozialdienstFall.getVorname());
 		sozialdienstFall.setStatus(jaxSozialdienstFall.getStatus());
-		if(sozialdienstFall.isNew()) {
+		if (sozialdienstFall.isNew()) {
 			sozialdienstFall.setAdresse(new Adresse());
 		}
 		adresseToEntity(jaxSozialdienstFall.getAdresse(), sozialdienstFall.getAdresse());

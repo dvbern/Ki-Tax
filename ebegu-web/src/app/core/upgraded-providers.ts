@@ -24,6 +24,7 @@ import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {DossierRS} from '../../gesuch/service/dossierRS.rest';
 import {FallRS} from '../../gesuch/service/fallRS.rest';
 import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
+import {GesuchModelManager} from '../../gesuch/service/gesuchModelManager';
 import {GesuchRS} from '../../gesuch/service/gesuchRS.rest';
 import {SearchRS} from '../../gesuch/service/searchRS.rest';
 import {SupportRS} from '../../gesuch/service/supportRS.rest';
@@ -356,6 +357,17 @@ export const searchRSProvider = {
     deps: ['$injector'],
 };
 
+// GesuchModelManager
+export function gesuchModelManagerFactory(i: IInjectorService): GesuchModelManager {
+    return i.get('GesuchModelManager');
+}
+
+export const gesuchModelManagerProvider = {
+    provide: GesuchModelManager,
+    useFactory: gesuchModelManagerFactory,
+    deps: ['$injector'],
+};
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -383,4 +395,5 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     uploadRSProvider,
     notrechtRSProvider,
     searchRSProvider,
+    gesuchModelManagerProvider,
 ];
