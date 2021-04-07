@@ -22,7 +22,7 @@ import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {combineLatest, Subject, Subscription} from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
+import {filter, map, startWith} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
@@ -411,11 +411,26 @@ export class GemeindeAngabenComponent implements OnInit {
         ]).subscribe(values => {
                 this.angabenForm.get('lastenausgleichsberechtigerBetrag').setValue(
                     // round to 0.2
-                    Math.round((values[0] - values[1]) / 5) * 5,
+                    +(values[0] - values[1]).toFixed(2),
                 );
             },
             () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')),
         );
+
+        combineLatest([
+            this.angabenForm.get('lastenausgleichsberechtigerBetrag').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('ersteRateAusbezahlt')
+                .valueChanges
+                .pipe(
+                    startWith(gemeindeAngabenFromServer?.ersteRateAusbezahlt || 0),
+                    map(value => this.parseFloatSafe(value)),
+                ),
+            // tslint:disable-next-line:no-identical-functions
+        ]).subscribe(values => {
+            this.angabenForm.get('schlusszahlung').setValue(
+                +(values[0] - values[1]).toFixed(2),
+            );
+        });
 
     }
 
