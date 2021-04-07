@@ -2443,5 +2443,16 @@
     "FERIENBETREUUNG_DOKUMENT_TITLE": "Upload für Dokumente",
     "FERIENBETREUUNG_DOKUMENT_TITLE_HINT": "Laden Sie bitte hier das aktuelle Konzept Ihrer Ferienbetreuung hoch (pädagogisch und betrieblich). Sie können auch mehrere Dokumente hochladen.<br>Es soll daraus ersichtlich sein, dass die Gemeinde das Konzept in dieser Form bewilligt hat. Wenn Sie eine Institution mit der Durchführung beauftragen, laden Sie den zugehörigen Leistungsvertrag hoch.<br>Falls Sie im Verlauf der Prüfung dazu aufgefordert werden, weitere Dokumente einzureichen (z. B. zu Kosten und Einnahmen), können Sie dies ebenfalls hier tun.",
     "FERIENBETREUUNG_DOKUMENT_UPLOAD_TITLE": "Konzept des Ferienbetreuungsangebots; Leistungsvertrag",
+    "LATS_ERSTE_RATE_AUSBEZAHLT": "Erste Rate, ausbezahlt Dezember 2020",
+    "LATS_ERSTE_RATE_AUSBEZAHLT_INFO": "Der Betrag muss der ersten Rate für das Schuljahr 2020/21 gemäss Verfügung vom Dezember 2020 entsprechen. Im Falle eines Fehlers korrigiert das AKVB den angegebenen Betrag ohne Mitteilung.",
+    "LATS_COVID_INFORMATION": "Informationen bezüglich COVID-19",
+    "LATS_COVID_ABRECHNUNG_INFO": "<h1>Abwesenheiten von Kindern aufgrund von Quarantäne oder Isolation</h1><p>Es gilt folgender Grundsatz: Mit dem Kanton können diejenigen Stunden abgerechnet werden, die den Eltern fakturiert wurden. </p> <br><h1>Schliessung einer Tagesschule aufgrund behördlicher Anweisung oder  Personalausfall (betrifft nur einen Teil der Gemeinden)</h1><p> Die Betreuungsstunden während einer Schliessung werden basierend auf den Anmeldungen hochgerechnet. Das heisst, die Betreuungsstunden für die Wochen der Schliessung werden so berechnet, als ob die Kinder im gleichen Umfang wie vor der Schliessung anwesend gewesen wären.</p><p>Die Elterngebühren für die Betreuung und Mahlzeiten in der Tagesschule sind während der Schliessung nicht geschuldet.</p>",
+    "LATS_TAGESSCHULE_GESCHLOSSEN": "War die Tagesschule / eine der Tagesschulen der Gemeinde im Schuljahr 2020/21 teilweise geschlossen?",
+    "LATS_RUECKERSTATTUNG_TS_GESCHLOSSEN": "Wenn ja: erlassene / für Rückerstattung oder Verrechnung vorgesehene Elterngebühren Betreuung während allfälliger Schliessung der Tagesschule",
+    "LATS_UEBERSCHUSS_ERZIELT": "Wurden im vorangehenden Schuljahr 2019/20 Überschüsse aus dem Betrieb der Tagesschule erzielt?",
+    "LATS_UEBERSCHUSS_VERWENDUNG": "Falls ja, wie wurden diese Überschüsse eingesetzt?",
+    "LATS_COVID_ALLGEMEINE_INFORMATIONEN_INFO": "<h1>Schliessung einer Tagesschule aufgrund behördlicher Anweisung oder  Personalausfall (betrifft nur einen Teil der Gemeinden)</h1><p> Die Betreuungsstunden während einer Schliessung werden basierend auf den Anmeldungen hochgerechnet. Das heisst, die Betreuungsstunden für die Wochen der Schliessung werden so berechnet, als ob die Kinder im gleichen Umfang wie vor der Schliessung anwesend gewesen wären.</p><p>Die Elterngebühren für die Betreuung und Mahlzeiten in der Tagesschule sind während der Schliessung nicht geschuldet.</p>",
+    "LATS_ALLGEMEINE_ANGABEN_GEMEINDE": "Allgemeine Angaben zur Gemeinde",
+    "ERROR_POSITIVE_NUMBER": "Bitte geben Sie eine positive ganze Zahl ein",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
