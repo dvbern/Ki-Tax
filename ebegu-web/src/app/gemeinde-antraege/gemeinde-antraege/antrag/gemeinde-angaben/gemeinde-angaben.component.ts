@@ -281,7 +281,7 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm.get('tagesschuleTeilweiseGeschlossen').valueChanges.subscribe(value => {
             if (value === true) {
                 this.angabenForm.get('rueckerstattungenElterngebuehrenSchliessung')
-                    .setValidators([Validators.required]);
+                    .setValidators([Validators.required, this.numberValidator()]);
             } else {
                 this.angabenForm.get('rueckerstattungenElterngebuehrenSchliessung')
                     .setValidators(null);
@@ -667,6 +667,10 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     public getLastYear(): number {
-        return this.lATSAngabenGemeindeContainer.gesuchsperiode.getBasisJahr();
+        return this.lATSAngabenGemeindeContainer?.gesuchsperiode?.getBasisJahr();
+    }
+
+    public getNextYear(): number {
+        return this.lATSAngabenGemeindeContainer?.gesuchsperiode?.getBasisJahrPlus1();
     }
 }
