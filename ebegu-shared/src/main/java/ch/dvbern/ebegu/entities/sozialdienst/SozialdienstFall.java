@@ -91,16 +91,16 @@ public class SozialdienstFall extends AbstractEntity {
 	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = false)
 	@Nullable
-	private String nameGS2;
+	private String nameGs2;
 
 	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = false)
 	@Nullable
-	private String vornameGS2;
+	private String vornameGs2;
 
 	@Nullable
 	@Column(nullable = false)
-	private LocalDate geburtsdatumGS2;
+	private LocalDate geburtsdatumGs2;
 
 	@Nullable
 	@Column(nullable = true, length = TEN_MB) // 10 megabytes
@@ -196,35 +196,35 @@ public class SozialdienstFall extends AbstractEntity {
 			&& Objects.equals(this.getVorname(), sozialdienstFall.getVorname())
 			&& Objects.equals(this.getGeburtsdatum(), sozialdienstFall.getGeburtsdatum())
 			&& Objects.equals(this.getAdresse(), sozialdienstFall.getAdresse())
-			&& Objects.equals(this.getNameGS2(), sozialdienstFall.getNameGS2())
-			&& Objects.equals(this.getVornameGS2(), sozialdienstFall.getVornameGS2())
-			&& Objects.equals(this.getGeburtsdatumGS2(), sozialdienstFall.getGeburtsdatumGS2());
+			&& Objects.equals(this.getNameGs2(), sozialdienstFall.getNameGs2())
+			&& Objects.equals(this.getVornameGs2(), sozialdienstFall.getVornameGs2())
+			&& Objects.equals(this.getGeburtsdatumGs2(), sozialdienstFall.getGeburtsdatumGs2());
 	}
 
 	@Nullable
-	public String getNameGS2() {
-		return nameGS2;
+	public String getNameGs2() {
+		return nameGs2;
 	}
 
-	public void setNameGS2(@Nullable String nameGS2) {
-		this.nameGS2 = nameGS2;
-	}
-
-	@Nullable
-	public String getVornameGS2() {
-		return vornameGS2;
-	}
-
-	public void setVornameGS2(@Nullable String vornameGS2) {
-		this.vornameGS2 = vornameGS2;
+	public void setNameGs2(@Nullable String nameGs2) {
+		this.nameGs2 = nameGs2;
 	}
 
 	@Nullable
-	public LocalDate getGeburtsdatumGS2() {
-		return geburtsdatumGS2;
+	public String getVornameGs2() {
+		return vornameGs2;
 	}
 
-	public void setGeburtsdatumGS2(@Nullable LocalDate geburtsdatumGS2) {
-		this.geburtsdatumGS2 = geburtsdatumGS2;
+	public void setVornameGs2(@Nullable String vornameGs2) {
+		this.vornameGs2 = vornameGs2;
+	}
+
+	@Nullable
+	public LocalDate getGeburtsdatumGs2() {
+		return geburtsdatumGs2;
+	}
+
+	public void setGeburtsdatumGs2(@Nullable LocalDate geburtsdatumGs2) {
+		this.geburtsdatumGs2 = geburtsdatumGs2;
 	}
 }
