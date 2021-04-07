@@ -76,8 +76,8 @@
                     <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinder').errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinder').errors?.noNumberError"
-                               translate>ERROR_NUMBER
+                    <mat-error *ngIf="form.get('anzahlEingeschriebeneKinder').errors?.isNotPositiveInteger"
+                               translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinder"
@@ -101,8 +101,8 @@
                     <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderKindergarten').errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderKindergarten').errors?.noNumberError"
-                               translate>ERROR_NUMBER
+                    <mat-error *ngIf="form.get('anzahlEingeschriebeneKinderKindergarten').errors?.isNotPositiveInteger"
+                               translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderKindergarten"
@@ -126,8 +126,8 @@
                     <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderBasisstufe').errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderBasisstufe').errors?.noNumberError"
-                               translate>ERROR_NUMBER
+                    <mat-error *ngIf="form.get('anzahlEingeschriebeneKinderBasisstufe').errors?.isNotPositiveInteger"
+                               translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderBasisstufe"
@@ -151,8 +151,8 @@
                     <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderPrimarstufe').errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderPrimarstufe').errors?.noNumberError"
-                               translate>ERROR_NUMBER
+                    <mat-error *ngIf="form.get('anzahlEingeschriebeneKinderPrimarstufe').errors?.isNotPositiveInteger"
+                               translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderPrimarstufe"
@@ -176,8 +176,8 @@
                     <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderSekundarstufe').errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderSekundarstufe').errors?.noNumberError"
-                               translate>ERROR_NUMBER
+                    <mat-error *ngIf="form.get('anzahlEingeschriebeneKinderSekundarstufe').errors?.isNotPositiveInteger"
+                               translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
                 </mat-form-field>
             </dv-input-container-x>
@@ -197,8 +197,8 @@
                 <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').errors?.required"
                            translate>ERROR_REQUIRED
                 </mat-error>
-                <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').errors?.noNumberError"
-                           translate>ERROR_NUMBER
+                <mat-error *ngIf="form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').errors?.isNotPositiveInteger"
+                           translate>ERROR_POSITIVE_NUMBER
                 </mat-error>
                 <dv-bisher-x
                     [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen"
@@ -230,8 +230,8 @@
                     <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagFruehbetreuung').errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagFruehbetreuung').errors?.noNumberError"
-                               translate>ERROR_NUMBER
+                    <mat-error *ngIf="form.get('durchschnittKinderProTagFruehbetreuung').errors?.isNotPositiveInteger"
+                               translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagFruehbetreuung"
@@ -255,8 +255,8 @@
                     <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagMittag').errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagMittag').errors?.noNumberError"
-                               translate>ERROR_NUMBER
+                    <mat-error *ngIf="form.get('durchschnittKinderProTagMittag').errors?.isNotPositiveInteger"
+                               translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagMittag"
@@ -280,8 +280,8 @@
                     <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag1').errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag1').errors?.noNumberError"
-                               translate>ERROR_NUMBER
+                    <mat-error *ngIf="form.get('durchschnittKinderProTagNachmittag1').errors?.isNotPositiveInteger"
+                               translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagNachmittag1"
@@ -305,8 +305,8 @@
                     <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag2').errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag2').errors?.noNumberError"
-                               translate>ERROR_NUMBER
+                    <mat-error *ngIf="form.get('durchschnittKinderProTagNachmittag2').errors?.isNotPositiveInteger"
+                               translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagNachmittag2"
@@ -331,8 +331,8 @@
                     <mat-error *ngIf="formFreigebenTriggered && form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="formFreigebenTriggered && form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').errors?.noNumberError"
-                               translate>ERROR_NUMBER
+                    <mat-error *ngIf="form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').errors?.isNotPositiveInteger"
+                               translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.betreuungsstundenEinschliesslichBesondereBeduerfnisse"
