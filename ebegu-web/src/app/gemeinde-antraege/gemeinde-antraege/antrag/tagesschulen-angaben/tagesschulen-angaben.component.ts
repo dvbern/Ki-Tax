@@ -38,8 +38,11 @@ import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {CONSTANTS, HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
+import {LogFactory} from '../../../../core/logging/LogFactory';
 import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
 import {TagesschuleAngabenRS} from '../../../lastenausgleich-ts/services/tagesschule-angaben.service.rest';
+
+const LOG = LogFactory.createLog('TagesschulenAngabenComponent');
 
 @Component({
     selector: 'dv-tagesschulen-angaben',
@@ -390,15 +393,23 @@ export class TagesschulenAngabenComponent {
     private queryAnzahlEingeschriebeneKinder(): void {
         this.tagesschulenAngabenRS.getAnzahlEingeschriebeneKinder(this.latsAngabenInstitutionContainer)
             .subscribe(anzahlEingeschriebeneKinder => {
-                this.anzahlEingeschriebeneKinder = anzahlEingeschriebeneKinder;
-            });
+                    this.anzahlEingeschriebeneKinder = anzahlEingeschriebeneKinder;
+                },
+                error => {
+                    LOG.error(error);
+                    this.errorService.addMesageAsError(this.translate.instant('DATA_RETRIEVAL_ERROR'));
+                });
     }
 
     private queryDurchschnittKinderProTag(): void {
         this.tagesschulenAngabenRS.getDurchschnittKinderProTag(this.latsAngabenInstitutionContainer)
             .subscribe(durchschnittKinderProTag => {
-                this.durchschnittKinderProTag = durchschnittKinderProTag;
-            });
+                    this.durchschnittKinderProTag = durchschnittKinderProTag;
+                },
+                error => {
+                    LOG.error(error);
+                    this.errorService.addMesageAsError(this.translate.instant('DATA_RETRIEVAL_ERROR'));
+                });
     }
 
     private getStichtag(): void {

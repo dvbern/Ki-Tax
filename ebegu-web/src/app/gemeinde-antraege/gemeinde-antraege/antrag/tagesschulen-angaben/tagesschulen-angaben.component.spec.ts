@@ -40,6 +40,7 @@ const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['
 const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['saveEinstellung']);
 const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
 const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['href', 'go']);
+const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['findEinstellung']);
 
 describe('TagesschulenAngabenComponent', () => {
     let component: TagesschulenAngabenComponent;
@@ -63,7 +64,8 @@ describe('TagesschulenAngabenComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: EinstellungRS, useValue: einstellungServiceSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
-                {provide: StateService, useValue: stateServiceSpy}
+                {provide: StateService, useValue: stateServiceSpy},
+                {provide: EinstellungRS, useValue: einstellungRSSpy}
             ],
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
@@ -73,6 +75,9 @@ describe('TagesschulenAngabenComponent', () => {
     beforeEach(() => {
         lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
             of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer()),
+        );
+        einstellungRSSpy.findEinstellung.and.returnValue(
+            of(null).toPromise()
         );
         fixture = TestBed.createComponent(TagesschulenAngabenComponent);
         component = fixture.componentInstance;
