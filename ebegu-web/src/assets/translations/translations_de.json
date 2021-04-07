@@ -2453,5 +2453,6 @@
     "LATS_UEBERSCHUSS_VERWENDUNG": "Wenn ja: erlassene / für Rückerstattung oder Verrechnung vorgesehene Elterngebühren Betreuung während allfälliger Schliessung der Tagesschule",
     "LATS_COVID_ALLGEMEINE_INFORMATIONEN_INFO": "<h1>Schliessung einer Tagesschule aufgrund behördlicher Anweisung oder  Personalausfall (betrifft nur einen Teil der Gemeinden)</h1><p> Die Betreuungsstunden während einer Schliessung werden basierend auf den Anmeldungen hochgerechnet. Das heisst, die Betreuungsstunden für die Wochen der Schliessung werden so berechnet, als ob die Kinder im gleichen Umfang wie vor der Schliessung anwesend gewesen wären.</p><p>Die Elterngebühren für die Betreuung und Mahlzeiten in der Tagesschule sind während der Schliessung nicht geschuldet.</p>",
     "LATS_ALLGEMEINE_ANGABEN_GEMEINDE": "Allgemeine Angaben zur Gemeinde",
+    "ERROR_POSITIVE_NUMBER": "Bitte geben Sie eine positive ganze Zahl ein",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

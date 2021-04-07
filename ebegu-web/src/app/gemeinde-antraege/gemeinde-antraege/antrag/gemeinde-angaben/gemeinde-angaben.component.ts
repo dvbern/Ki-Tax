@@ -22,7 +22,7 @@ import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {combineLatest, Subject, Subscription} from 'rxjs';
-import {filter, map, startWith} from 'rxjs/operators';
+import {map, startWith} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
@@ -37,6 +37,7 @@ import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confi
 import {HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {WizardStepXRS} from '../../../../core/service/wizardStepXRS.rest';
+import {numberValidator, ValidationType} from '../../../../shared/validators/number-validator.directive';
 import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
 import {GemeindeAntragService} from '../../../services/gemeinde-antrag.service';
 
@@ -56,7 +57,7 @@ export class GemeindeAngabenComponent implements OnInit {
     public lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
     public formularInitForm: FormGroup;
     private subscription: Subscription;
-    public formValidationActive = false;
+    public abschliessenValidationActive = false;
     public lohnnormkostenSettingMoreThanFifty$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
     public lohnnormkostenSettingLessThanFifty$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
 
@@ -151,21 +152,42 @@ export class GemeindeAngabenComponent implements OnInit {
             ],
             // B
             geleisteteBetreuungsstundenOhneBesondereBeduerfnisse:
-                [initialGemeindeAngaben?.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse],
+                [
+                    initialGemeindeAngaben?.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse,
+                    numberValidator(ValidationType.POSITIVE_INTEGER),
+                ],
             geleisteteBetreuungsstundenBesondereBeduerfnisse:
-                [initialGemeindeAngaben?.geleisteteBetreuungsstundenBesondereBeduerfnisse],
+                [
+                    initialGemeindeAngaben?.geleisteteBetreuungsstundenBesondereBeduerfnisse,
+                    numberValidator(ValidationType.POSITIVE_INTEGER),
+                ],
             davonStundenZuNormlohnMehrAls50ProzentAusgebildete:
-                [initialGemeindeAngaben?.davonStundenZuNormlohnMehrAls50ProzentAusgebildete],
+                [
+                    initialGemeindeAngaben?.davonStundenZuNormlohnMehrAls50ProzentAusgebildete,
+                    numberValidator(ValidationType.POSITIVE_INTEGER),
+                ],
             davonStundenZuNormlohnWenigerAls50ProzentAusgebildete:
-                [initialGemeindeAngaben?.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete],
-            einnahmenElterngebuehren: [initialGemeindeAngaben?.einnahmenElterngebuehren],
-            ersteRateAusbezahlt: [initialGemeindeAngaben?.ersteRateAusbezahlt],
+                [
+                    initialGemeindeAngaben?.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete,
+                    numberValidator(ValidationType.POSITIVE_INTEGER),
+                ],
+            einnahmenElterngebuehren: [initialGemeindeAngaben?.einnahmenElterngebuehren, this.numberValidator()],
+            ersteRateAusbezahlt: [
+                initialGemeindeAngaben?.ersteRateAusbezahlt,
+                numberValidator(ValidationType.POSITIVE_INTEGER),
+            ],
             tagesschuleTeilweiseGeschlossen: [initialGemeindeAngaben?.tagesschuleTeilweiseGeschlossen],
-            rueckerstattungenElterngebuehrenSchliessung: [initialGemeindeAngaben?.rueckerstattungenElterngebuehrenSchliessung],
+            rueckerstattungenElterngebuehrenSchliessung: [
+                initialGemeindeAngaben?.rueckerstattungenElterngebuehrenSchliessung,
+                this.numberValidator(),
+            ],
             // C
-            gesamtKostenTagesschule: [initialGemeindeAngaben?.gesamtKostenTagesschule],
-            einnnahmenVerpflegung: [initialGemeindeAngaben?.einnnahmenVerpflegung],
-            einnahmenSubventionenDritter: [initialGemeindeAngaben?.einnahmenSubventionenDritter],
+            gesamtKostenTagesschule: [initialGemeindeAngaben?.gesamtKostenTagesschule, this.numberValidator()],
+            einnnahmenVerpflegung: [initialGemeindeAngaben?.einnnahmenVerpflegung, this.numberValidator()],
+            einnahmenSubventionenDritter: [
+                initialGemeindeAngaben?.einnahmenSubventionenDritter,
+                this.numberValidator(),
+            ],
             ueberschussErzielt: [initialGemeindeAngaben?.ueberschussErzielt],
             ueberschussVerwendung: [initialGemeindeAngaben?.ueberschussVerwendung],
             // D
@@ -203,7 +225,7 @@ export class GemeindeAngabenComponent implements OnInit {
             this.angabenForm.disable();
         }
 
-        if (this.formValidationActive || initialGemeindeAngaben?.status ===
+        if (this.abschliessenValidationActive || initialGemeindeAngaben?.status ===
             TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN) {
             this.triggerFormValidation();
         }
@@ -220,7 +242,7 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').valueChanges.subscribe(value => {
             if (value === false) {
                 this.angabenForm.get('begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen')
-                    .setValidators([Validators.required, this.numberValidator()]);
+                    .setValidators([Validators.required]);
             } else {
                 this.angabenForm.get('begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen')
                     .setValidators(null);
@@ -229,13 +251,13 @@ export class GemeindeAngabenComponent implements OnInit {
 
         // B
         this.angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse')
-            .setValidators([Validators.required, this.numberValidator()]);
+            .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
         this.angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse')
-            .setValidators([Validators.required, this.numberValidator()]);
+            .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
         this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
-            .setValidators([Validators.required, this.numberValidator(), this.plausibilisierungAddition()]);
+            .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER), this.plausibilisierungAddition()]);
         this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
-            .setValidators([Validators.required, this.numberValidator(), this.plausibilisierungAddition()]);
+            .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER), this.plausibilisierungAddition()]);
         this.angabenForm.get('einnahmenElterngebuehren')
             .setValidators([Validators.required, this.numberValidator()]);
         this.angabenForm.get('tagesschuleTeilweiseGeschlossen')
@@ -245,7 +267,7 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
             .setValidators([this.plausibilisierungTageschulenStunden()]);
         this.angabenForm.get('ersteRateAusbezahlt')
-            .setValidators([Validators.required, this.numberValidator()]);
+            .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
 
         // tslint:disable-next-line:no-identical-functions
         this.angabenForm.get('tagesschuleTeilweiseGeschlossen').valueChanges.subscribe(value => {
@@ -485,6 +507,12 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     public onAngabenFormSubmit(): void {
+        if (!this.angabenForm.valid) {
+            this.errorService.addMesageAsError(
+                this.translateService.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
+            );
+            return;
+        }
         // tslint:disable-next-line:max-line-length
         if (this.lATSAngabenGemeindeContainer.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON) {
             this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.value;
@@ -559,7 +587,7 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     public triggerFormValidation(): void {
-        this.formValidationActive = true;
+        this.abschliessenValidationActive = true;
         this.enableFormValidation();
         for (const key in this.angabenForm.controls) {
             if (this.angabenForm.get(key) !== null) {
