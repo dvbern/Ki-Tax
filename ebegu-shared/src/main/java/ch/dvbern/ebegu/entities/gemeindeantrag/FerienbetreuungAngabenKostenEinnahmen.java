@@ -78,7 +78,7 @@ public class FerienbetreuungAngabenKostenEinnahmen extends AbstractEntity {
 	@Nonnull
 	@Column()
 	@Enumerated(EnumType.STRING)
-	private FerienbetreuungFormularStatus status;
+	private FerienbetreuungFormularStatus status = FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE;;
 
 	@Nullable
 	public BigDecimal getPersonalkosten() {

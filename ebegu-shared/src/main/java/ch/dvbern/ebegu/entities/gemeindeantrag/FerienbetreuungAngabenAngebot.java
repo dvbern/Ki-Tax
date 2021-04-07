@@ -115,7 +115,7 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 	@Nonnull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private FerienbetreuungFormularStatus status;
+	private FerienbetreuungFormularStatus status = FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE;;
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(
