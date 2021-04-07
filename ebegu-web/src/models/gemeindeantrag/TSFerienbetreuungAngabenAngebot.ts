@@ -285,7 +285,7 @@ export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAn
 
     public isAtLeastAbgeschlossenGemeinde(): boolean {
         return [
-            TSFerienbetreuungFormularStatus.ABEGSCHLOSSEN,
+            TSFerienbetreuungFormularStatus.ABGESCHLOSSEN,
             TSFerienbetreuungFormularStatus.IN_PRUEFUNG_KANTON,
             TSFerienbetreuungFormularStatus.GEPRUEFT,
         ].includes(this.status);

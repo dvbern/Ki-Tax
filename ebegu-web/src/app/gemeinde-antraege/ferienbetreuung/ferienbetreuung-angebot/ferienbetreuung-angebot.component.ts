@@ -262,7 +262,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         return this.angebot;
     }
 
-    public formularReadOnky(): boolean {
+    public formularReadOnly(): boolean {
         return !(this.container?.status === FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE ||
             this.container?.status === FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON);
     }

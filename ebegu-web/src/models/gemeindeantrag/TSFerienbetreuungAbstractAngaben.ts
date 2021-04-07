@@ -31,7 +31,7 @@ export class TSFerienbetreuungAbstractAngaben extends TSAbstractEntity {
 
     public isAtLeastAbgeschlossenGemeinde(): boolean {
         return [
-            TSFerienbetreuungFormularStatus.ABEGSCHLOSSEN,
+            TSFerienbetreuungFormularStatus.ABGESCHLOSSEN,
             TSFerienbetreuungFormularStatus.IN_PRUEFUNG_KANTON,
             TSFerienbetreuungFormularStatus.GEPRUEFT,
         ].includes(this.status);
