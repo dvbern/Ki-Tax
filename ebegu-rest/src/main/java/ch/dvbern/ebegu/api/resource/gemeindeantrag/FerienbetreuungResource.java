@@ -275,6 +275,7 @@ public class FerienbetreuungResource {
 		return converter.ferienbetreuungAngabenAngebotToJax(persisted);
 	}
 
+	@SuppressWarnings("PMD.PreserveStackTrace")
 	@ApiOperation(
 		value = "Schliesst FerieninselAngabenAngebot als Gemeinde ab",
 		response = JaxFerienbetreuungAngabenAngebot.class)
