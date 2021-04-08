@@ -55,9 +55,12 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.authentication.AuthorizerImpl;
 import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
+import com.google.common.base.Preconditions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -259,6 +262,10 @@ public class FerienbetreuungResource {
 
 		authorizer.checkWriteAuthorization(container);
 
+		Preconditions.checkArgument(
+			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE,
+			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE");
+
 		FerienbetreuungAngabenStammdaten stammdaten =
 			ferienbetreuungService.findFerienbetreuungAngabenStammdaten(jaxStammdaten.getId())
 			.orElseThrow(() -> new EbeguEntityNotFoundException("falscheAngabenFerienbetreuungStammdaten", jaxStammdaten.getId()));
@@ -377,6 +384,10 @@ public class FerienbetreuungResource {
 
 		authorizer.checkWriteAuthorization(container);
 
+		Preconditions.checkArgument(
+			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE,
+			"FerienbetreuungAngabenContainer must be in state ABGESCHLOSSEN");
+
 		FerienbetreuungAngabenAngebot angebot =
 			ferienbetreuungService.findFerienbetreuungAngabenAngebot(jaxAngebot.getId())
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -485,6 +496,11 @@ public class FerienbetreuungResource {
 			.orElseThrow(() -> new EbeguEntityNotFoundException("ferienbetreuungNutzungFalscheAngaben", containerId.getId()));
 
 		authorizer.checkWriteAuthorization(container);
+
+		Preconditions.checkArgument(
+			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE,
+			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE");
+
 
 		FerienbetreuungAngabenNutzung nutzung =
 			ferienbetreuungService.findFerienbetreuungAngabenNutzung(jaxNutzung.getId())
@@ -598,6 +614,10 @@ public class FerienbetreuungResource {
 					containerId.getId()));
 
 		authorizer.checkWriteAuthorization(container);
+
+		Preconditions.checkArgument(
+			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE,
+			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE");
 
 		FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen =
 			ferienbetreuungService.findFerienbetreuungAngabenKostenEinnahmen(jaxKostenEinnahmen.getId())
