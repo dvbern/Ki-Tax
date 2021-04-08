@@ -17,8 +17,11 @@
 
 package ch.dvbern.ebegu.wizardx.ferienbetreuung;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
@@ -37,7 +40,24 @@ public class StammdatenGemeindeStep implements WizardStep<FerienbetreuungWizard>
 
 	@Override
 	public WizardStateEnum getStatus(@Nonnull FerienbetreuungWizard wizard) {
-		return WizardStateEnum.OK;
+		if (wizard.getFerienbetreuungAngabenContainer().isAtLeastInPruefungKanton()) {
+			if (wizard.getRole().isRoleGemeindeabhaengig()) {
+				return WizardStateEnum.OK;
+			}
+			return Objects.requireNonNull(wizard.getFerienbetreuungAngabenContainer()
+				.getAngabenKorrektur())
+				.getFerienbetreuungAngabenStammdaten()
+				.isGeprueft() ?
+				WizardStateEnum.OK :
+				WizardStateEnum.IN_BEARBEITUNG;
+		}
+
+		return wizard.getFerienbetreuungAngabenContainer()
+			.getAngabenDeklaration()
+			.getFerienbetreuungAngabenStammdaten()
+			.isAbgeschlossen() ?
+			WizardStateEnum.OK :
+			WizardStateEnum.IN_BEARBEITUNG;
 	}
 
 	@Override

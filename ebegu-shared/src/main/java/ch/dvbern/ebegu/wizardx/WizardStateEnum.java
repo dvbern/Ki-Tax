@@ -23,5 +23,6 @@ package ch.dvbern.ebegu.wizardx;
 public enum WizardStateEnum {
 	IN_BEARBEITUNG,
 	OK,
-	KO
+	KO,
+	NONE;
 }

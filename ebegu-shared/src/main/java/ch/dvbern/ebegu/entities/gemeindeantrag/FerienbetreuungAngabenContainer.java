@@ -194,4 +194,14 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 	public void setDokumente(@Nullable Set<FerienbetreuungDokument> dokumente) {
 		this.dokumente = dokumente;
 	}
+
+	public boolean isInPruefungKanton() {
+		return status == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON;
+	}
+
+	public boolean isGeprueft() {
+		return status == FerienbetreuungAngabenStatus.GEPRUEFT ||
+			status == FerienbetreuungAngabenStatus.VERFUEGT ||
+			status == FerienbetreuungAngabenStatus.ABGELEHNT;
+	}
 }

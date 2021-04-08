@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.wizardx.ferienbetreuung;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.wizardx.WizardStateEnum;
@@ -37,7 +39,24 @@ public class AngebotStep implements WizardStep<FerienbetreuungWizard> {
 
 	@Override
 	public WizardStateEnum getStatus(@Nonnull FerienbetreuungWizard wizard) {
-		return WizardStateEnum.OK;
+		if (wizard.getFerienbetreuungAngabenContainer().isAtLeastInPruefungKanton()) {
+			if (wizard.getRole().isRoleGemeindeabhaengig()) {
+				return WizardStateEnum.OK;
+			}
+			return Objects.requireNonNull(wizard.getFerienbetreuungAngabenContainer()
+				.getAngabenKorrektur())
+				.getFerienbetreuungAngabenAngebot()
+				.isGeprueft() ?
+				WizardStateEnum.OK :
+				WizardStateEnum.IN_BEARBEITUNG;
+		}
+
+		return wizard.getFerienbetreuungAngabenContainer()
+			.getAngabenDeklaration()
+			.getFerienbetreuungAngabenAngebot()
+			.isAbgeschlossen() ?
+			WizardStateEnum.OK :
+			WizardStateEnum.IN_BEARBEITUNG;
 	}
 
 	@Override
