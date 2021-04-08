@@ -85,6 +85,21 @@ public class FerienbetreuungAngabenNutzung extends AbstractEntity {
 	@Enumerated(EnumType.STRING)
 	private FerienbetreuungFormularStatus status = FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE;;
 
+	public FerienbetreuungAngabenNutzung() {}
+
+	public FerienbetreuungAngabenNutzung(FerienbetreuungAngabenNutzung toCopy) {
+		this.anzahlBetreuungstageKinderBern = toCopy.anzahlBetreuungstageKinderBern;
+		this.betreuungstageKinderDieserGemeinde = betreuungstageKinderDieserGemeindeSonderschueler;
+		this.betreuungstageKinderDieserGemeindeSonderschueler = toCopy.betreuungstageKinderDieserGemeindeSonderschueler;
+		this.davonBetreuungstageKinderAndererGemeinden = toCopy.davonBetreuungstageKinderAndererGemeinden;
+		this.davonBetreuungstageKinderAndererGemeindenSonderschueler = toCopy.davonBetreuungstageKinderAndererGemeindenSonderschueler;
+
+		this.anzahlBetreuteKinder = toCopy.anzahlBetreuteKinder;
+		this.anzahlBetreuteKinder1Zyklus = toCopy.anzahlBetreuteKinder1Zyklus;
+		this.anzahlBetreuteKinder2Zyklus = toCopy.anzahlBetreuteKinder2Zyklus;
+		this.anzahlBetreuteKinder3Zyklus = toCopy.anzahlBetreuteKinder3Zyklus;
+	}
+
 	@Nullable
 	public BigDecimal getAnzahlBetreuungstageKinderBern() {
 		return anzahlBetreuungstageKinderBern;

@@ -42,6 +42,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
@@ -188,6 +189,44 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 	@Nullable
 	@Column(length = Constants.DB_TEXTAREA_LENGTH)
 	private String bemerkungenTarifsystem;
+
+	public FerienbetreuungAngabenAngebot() {}
+
+	public FerienbetreuungAngabenAngebot(FerienbetreuungAngabenAngebot toCopy) {
+		this.angebot = toCopy.angebot;
+		this.angebotKontaktpersonVorname = toCopy.angebotKontaktpersonVorname;
+		this.angebotKontaktpersonNachname = toCopy.angebotKontaktpersonNachname;
+		assert toCopy.angebotAdresse != null;
+		this.angebotAdresse = toCopy.angebotAdresse.copyAdresse(new Adresse(), AntragCopyType.MUTATION);
+
+		this.anzahlFerienwochenFruehlingsferien = toCopy.anzahlFerienwochenFruehlingsferien;
+		this.anzahlFerienwochenSommerferien = toCopy.anzahlFerienwochenSommerferien;
+		this.anzahlFerienwochenHerbstferien = toCopy.anzahlFerienwochenHerbstferien;
+		this.anzahlFerienwochenWinterferien = toCopy.anzahlFerienwochenWinterferien;
+		this.anzahlTage = toCopy.anzahlTage;
+		this.bemerkungenAnzahlFerienwochen = toCopy.bemerkungenAnzahlFerienwochen;
+
+		this.finanziellBeteiligteGemeinden = new HashSet<>(toCopy.finanziellBeteiligteGemeinden);
+
+		this.gemeindeFuehrtAngebotSelber = toCopy.gemeindeFuehrtAngebotSelber;
+		this.gemeindeBeauftragtExterneAnbieter = toCopy.gemeindeBeauftragtExterneAnbieter;
+		this.angebotVereineUndPrivateIntegriert = toCopy.angebotVereineUndPrivateIntegriert;
+		this.bemerkungenKooperation = toCopy.bemerkungenKooperation;
+
+		this.leitungDurchPersonMitAusbildung = toCopy.leitungDurchPersonMitAusbildung;
+		this.betreuungDurchPersonenMitErfahrung = toCopy.betreuungDurchPersonenMitErfahrung;
+		this.anzahlKinderAngemessen = toCopy.anzahlKinderAngemessen;
+		this.betreuungsschluessel = toCopy.betreuungsschluessel;
+		this.bemerkungenPersonal = toCopy.bemerkungenPersonal;
+
+		this.fixerTarifKinderDerGemeinde = toCopy.fixerTarifKinderDerGemeinde;
+		this.einkommensabhaengigerTarifKinderDerGemeinde = toCopy.einkommensabhaengigerTarifKinderDerGemeinde;
+		this.tagesschuleTarifGiltFuerFerienbetreuung = toCopy.tagesschuleTarifGiltFuerFerienbetreuung;
+		this.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet = toCopy.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet;
+		this.kinderAusAnderenGemeindenZahlenAnderenTarif = toCopy.kinderAusAnderenGemeindenZahlenAnderenTarif;
+
+		this.bemerkungenTarifsystem = toCopy.bemerkungenTarifsystem;
+	}
 
 	@Nullable
 	public String getAngebot() {
