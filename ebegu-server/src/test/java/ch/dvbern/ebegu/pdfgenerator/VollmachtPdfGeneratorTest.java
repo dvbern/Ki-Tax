@@ -50,6 +50,9 @@ public class VollmachtPdfGeneratorTest {
 	public void createVollmacht() throws IOException, InvoiceGeneratorException {
 		FileUtils.forceMkdir(new File(pfad));
 		generateVollmacht(Sprache.DEUTSCH, "Vollmacht_de.pdf");
+		assert this.fall.getSozialdienstFall() != null;
+		addSecondAntragsteller(this.fall.getSozialdienstFall());
+		generateVollmacht(Sprache.DEUTSCH, "Vollmacht_de_zweiAntragstellende.pdf");
 	}
 
 	private void generateVollmacht(@Nonnull Sprache locale, @Nonnull String dokumentname) throws FileNotFoundException,
@@ -83,5 +86,11 @@ public class VollmachtPdfGeneratorTest {
 		sozialdienstFall.setSozialdienst(sozialdienst);
 
 		this.fall.setSozialdienstFall(sozialdienstFall);
+	}
+
+	private void addSecondAntragsteller(SozialdienstFall sozialdienstFall){
+		sozialdienstFall.setNameGs2("NameGs2");
+		sozialdienstFall.setVornameGs2("VornameGs2");
+		sozialdienstFall.setGeburtsdatum(LocalDate.now().minusYears(19));
 	}
 }
