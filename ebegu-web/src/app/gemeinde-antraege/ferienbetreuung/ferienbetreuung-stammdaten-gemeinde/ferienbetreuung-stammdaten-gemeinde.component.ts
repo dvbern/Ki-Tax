@@ -171,7 +171,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
 
             let formErroneous = false;
 
-            if ((strasse.value || ort.value || plz.value || organisation.value)) {
+            if (this.formAbschliessenTriggered || (strasse.value || ort.value || plz.value || organisation.value)) {
                 if (!strasse.value) {
                     strasse.setErrors({required: true});
                     formErroneous = true;
@@ -209,7 +209,8 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
 
             let formErroneous = false;
 
-            if ((strasse.value || ort.value || plz.value || kontoinhaber.value || iban.value)) {
+            if (this.formAbschliessenTriggered ||
+                (strasse.value || ort.value || plz.value || kontoinhaber.value || iban.value)) {
                 if (!strasse.value) {
                     strasse.setErrors({required: true});
                     formErroneous = true;
@@ -339,6 +340,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
     private enableStammdatenAuszahlungValidation(): void {
         this.form.get('stammdatenAdresse').setValidators(this.adressValidValidator());
         this.form.get('stammdatenAdresse').markAllAsTouched();
+        this.form.get('stammdatenAdresse').get('organisation').markAllAsTouched();
         this.form.get('auszahlungsdaten').setValidators(this.auszahlungsdatenValidation());
         this.form.get('auszahlungsdaten').markAllAsTouched();
 

@@ -33,6 +33,7 @@ export abstract class AbstractFerienbetreuungFormular {
 
     public form: FormGroup;
     public formValidationTriggered = false;
+    public formAbschliessenTriggered = false;
 
     private readonly WIZARD_TYPE = TSWizardStepXTyp.FERIENBETREUUNG;
 
@@ -131,6 +132,7 @@ export abstract class AbstractFerienbetreuungFormular {
     }
 
     protected handleSaveSuccess(): void {
+        this.formAbschliessenTriggered = false;
         this.wizardRS.updateSteps(this.WIZARD_TYPE, this.uiRouterGlobals.params.id);
     }
 
@@ -144,6 +146,7 @@ export abstract class AbstractFerienbetreuungFormular {
     }
 
     protected async checkReadyForAbschliessen(): Promise<boolean> {
+        this.formAbschliessenTriggered = true;
         this.enableAndTriggerFormValidation();
 
         if (!this.form.valid) {

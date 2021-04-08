@@ -290,7 +290,8 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
 
             let formErroneous = false;
 
-            if ((strasse.value || ort.value || plz.value || vorname.value || nachname.value)) {
+            if (this.formAbschliessenTriggered ||
+                (strasse.value || ort.value || plz.value || vorname.value || nachname.value)) {
                 if (!strasse.value) {
                     strasse.setErrors({required: true});
                     formErroneous = true;
