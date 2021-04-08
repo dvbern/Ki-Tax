@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.enums;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -180,9 +181,10 @@ public enum UserRole {
 	}
 
 	public static List<UserRole> getAllGemeindeFerienbetreuungSuperadminRoles() {
-		List<UserRole> gemeindeList = getAllGemeindeFerienbetreuungRoles();
-		gemeindeList.add(SUPER_ADMIN);
-		return gemeindeList;
+		List<UserRole> roles = new ArrayList<>();
+		roles.add(SUPER_ADMIN);
+		roles.addAll(getAllGemeindeFerienbetreuungRoles());
+		return roles;
 	}
 
 	public static List<UserRole> getAllInstitutionAdminRoles() {
