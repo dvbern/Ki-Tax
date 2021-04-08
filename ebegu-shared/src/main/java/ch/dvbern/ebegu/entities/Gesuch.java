@@ -81,9 +81,10 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 @Entity
 @Indexed
 @Analyzer(definition = "EBEGUGermanAnalyzer")
-@EntityListeners({ GesuchStatusListener.class , GesuchGueltigListener.class})
+@EntityListeners({ GesuchStatusListener.class, GesuchGueltigListener.class })
 @Table(
-	uniqueConstraints = @UniqueConstraint(columnNames = { "dossier_id", "gesuchsperiode_id", "gueltig" }, name = "UK_gueltiges_gesuch"),
+	uniqueConstraints = @UniqueConstraint(columnNames = { "dossier_id", "gesuchsperiode_id", "gueltig" },
+		name = "UK_gueltiges_gesuch"),
 	indexes = @Index(name = "IX_gesuch_timestamp_erstellt", columnList = "timestampErstellt")
 )
 public class Gesuch extends AbstractMutableEntity implements Searchable {
@@ -241,12 +242,12 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Column(nullable = true)
 	private Boolean gueltig = null;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Column(nullable = false)
 	// jedesmal wenn der Gesuchsteller das Gesuch zurück zieht, wird dieses Feld um 1 erhöht, damit wir beim
 	// einscannen der Freigabequittung wissen, ob es sich um die aktuelle Freigabequittung handelt.
 	private Integer anzahlGesuchZurueckgezogen = 0;
-
 
 	public Gesuch() {
 	}
@@ -383,9 +384,13 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	@Nullable
-	public LocalDate getRegelnGueltigAb() { return regelnGueltigAb; }
+	public LocalDate getRegelnGueltigAb() {
+		return regelnGueltigAb;
+	}
 
-	public void setRegelnGueltigAb(@Nullable LocalDate regelnGueltigAb) { this.regelnGueltigAb = regelnGueltigAb; }
+	public void setRegelnGueltigAb(@Nullable LocalDate regelnGueltigAb) {
+		this.regelnGueltigAb = regelnGueltigAb;
+	}
 
 	@Nullable
 	public LocalDate getEingangsdatumSTV() {
@@ -484,7 +489,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return einkommensverschlechterungInfoContainer;
 	}
 
-	public void setEinkommensverschlechterungInfoContainer(@Nullable EinkommensverschlechterungInfoContainer einkommensverschlechterungInfoContainer) {
+	public void setEinkommensverschlechterungInfoContainer(
+		@Nullable EinkommensverschlechterungInfoContainer einkommensverschlechterungInfoContainer) {
 		this.einkommensverschlechterungInfoContainer = einkommensverschlechterungInfoContainer;
 	}
 
@@ -689,7 +695,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	 */
 	@Transient
 	public String extractFamiliennamenString() {
-		String bothFamiliennamen = (this.getGesuchsteller1() != null ? this.getGesuchsteller1().extractNachname() : "");
+		String bothFamiliennamen = (this.getGesuchsteller1() != null ? this.getGesuchsteller1().extractNachname() :
+			"");
 		bothFamiliennamen += this.getGesuchsteller2() != null ? ", " + this.getGesuchsteller2().extractNachname() : "";
 		return bothFamiliennamen;
 	}
@@ -698,10 +705,13 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	public String extractFullnamesString() {
 		Familiensituation familiensituation = extractFamiliensituation();
 
-		String bothFamiliennamen = (this.getGesuchsteller1() != null ? this.getGesuchsteller1().extractFullName() : "");
+		String bothFamiliennamen = (this.getGesuchsteller1() != null ? this.getGesuchsteller1().extractFullName() :
+			"");
 
-		if (familiensituation != null && familiensituation.hasSecondGesuchsteller(getGesuchsperiode().getGueltigkeit().getGueltigBis())) {
-			bothFamiliennamen += this.getGesuchsteller2() != null ? ", " + this.getGesuchsteller2().extractFullName() : "";
+		if (familiensituation != null && familiensituation.hasSecondGesuchsteller(getGesuchsperiode().getGueltigkeit()
+			.getGueltigBis())) {
+			bothFamiliennamen +=
+				this.getGesuchsteller2() != null ? ", " + this.getGesuchsteller2().extractFullName() : "";
 		}
 
 		return bothFamiliennamen;
@@ -723,11 +733,15 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 		boolean hasBetreuungsTagesschule = kindContainers.stream()
 			.flatMap(kindContainer -> kindContainer.getAnmeldungenTagesschule().stream())
-			.anyMatch(anmeldungTagesschule -> anmeldungTagesschule.getInstitutionStammdaten().getInstitution().equals(institution));
+			.anyMatch(anmeldungTagesschule -> anmeldungTagesschule.getInstitutionStammdaten()
+				.getInstitution()
+				.equals(institution));
 
 		boolean hasBetreuungsFerienInselt = kindContainers.stream()
 			.flatMap(kindContainer -> kindContainer.getAnmeldungenFerieninsel().stream())
-			.anyMatch(anmeldungFerieninsel -> anmeldungFerieninsel.getInstitutionStammdaten().getInstitution().equals(institution));
+			.anyMatch(anmeldungFerieninsel -> anmeldungFerieninsel.getInstitutionStammdaten()
+				.getInstitution()
+				.equals(institution));
 
 		return hasBetreuungsKitaTagesfamillie || hasBetreuungsTagesschule || hasBetreuungsFerienInselt;
 	}
@@ -739,12 +753,13 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Transient
 	public boolean hasOnlyBetreuungenOfSchulamt() {
 		//noinspection SimplifyStreamApiCallChains
-		List<Betreuung> allBetreuungen = kindContainers.stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
-			.collect(Collectors.toList());
+		List<Betreuung> allBetreuungen =
+			kindContainers.stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
+				.collect(Collectors.toList());
 
 		List<AnmeldungTagesschule> anmeldungTagesschules =
 			kindContainers.stream().flatMap(kindContainer -> kindContainer.getAnmeldungenTagesschule().stream())
-			.collect(Collectors.toList());
+				.collect(Collectors.toList());
 
 		List<AnmeldungFerieninsel> anmeldungFerienInsel =
 			kindContainers.stream().flatMap(kindContainer -> kindContainer.getAnmeldungenFerieninsel().stream())
@@ -760,8 +775,9 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Transient
 	public boolean hasOnlyBetreuungenOfJugendamt() {
 		//noinspection SimplifyStreamApiCallChains
-		List<Betreuung> allBetreuungen = kindContainers.stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
-			.collect(Collectors.toList());
+		List<Betreuung> allBetreuungen =
+			kindContainers.stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
+				.collect(Collectors.toList());
 
 		List<AnmeldungTagesschule> anmeldungTagesschules =
 			kindContainers.stream().flatMap(kindContainer -> kindContainer.getAnmeldungenTagesschule().stream())
@@ -789,8 +805,9 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	@Transient
 	public boolean hasBetreuungOfJugendamt() {
-		List<Betreuung> allBetreuungen = kindContainers.stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
-			.collect(Collectors.toList());
+		List<Betreuung> allBetreuungen =
+			kindContainers.stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
+				.collect(Collectors.toList());
 		return !allBetreuungen.isEmpty();
 	}
 
@@ -803,7 +820,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		List<AnmeldungFerieninsel> anmeldungFerienInsel =
 			kindContainers.stream().flatMap(kindContainer -> kindContainer.getAnmeldungenFerieninsel().stream())
 				.collect(Collectors.toList());
-		return !anmeldungTagesschules.isEmpty() ||!anmeldungFerienInsel.isEmpty();
+		return !anmeldungTagesschules.isEmpty() || !anmeldungFerienInsel.isEmpty();
 	}
 
 	@Nullable
@@ -820,7 +837,6 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		}
 		return getEingangsdatum();
 	}
-
 
 	@Nullable
 	public Familiensituation extractFamiliensituation() {
@@ -859,7 +875,11 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		target.setRegelnGueltigAb(null);
 		target.setDossier(targetDossier);
 		target.setGesuchsperiode(targetGesuchsperiode);
-		target.setStatus(targetEingangsart == Eingangsart.PAPIER ? AntragStatus.IN_BEARBEITUNG_JA : AntragStatus.IN_BEARBEITUNG_GS);
+		target.setStatus(targetEingangsart == Eingangsart.PAPIER ?
+			AntragStatus.IN_BEARBEITUNG_JA :
+			getDossier().getFall().getSozialdienstFall() != null ?
+				AntragStatus.IN_BEARBEITUNG_SOZIALDIENST :
+				AntragStatus.IN_BEARBEITUNG_GS);
 
 		target.setAntragStatusHistories(new LinkedHashSet<>());
 		target.setGesperrtWegenBeschwerde(false);
@@ -885,7 +905,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 			if (getFamiliensituationContainer() != null
 				&& getFamiliensituationContainer().getFamiliensituationJA() != null
-				&& Boolean.FALSE.equals(getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht())) {
+				&& Boolean.FALSE.equals(getFamiliensituationContainer().getFamiliensituationJA()
+				.getVerguenstigungGewuenscht())) {
 				target.setFinSitStatus(FinSitStatus.AKZEPTIERT);
 			}
 			break;
@@ -901,7 +922,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			copyDokumentGruende(target, copyType);
 			if (getFamiliensituationContainer() != null
 				&& getFamiliensituationContainer().getFamiliensituationJA() != null
-				&& Boolean.FALSE.equals(getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht())) {
+				&& Boolean.FALSE.equals(getFamiliensituationContainer().getFamiliensituationJA()
+				.getVerguenstigungGewuenscht())) {
 				target.setFinSitStatus(FinSitStatus.AKZEPTIERT);
 			}
 			break;
@@ -909,36 +931,47 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return target;
 	}
 
-	private void copyFamiliensituation(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType, boolean sourceGesuchIsMutation) {
+	private void copyFamiliensituation(
+		@Nonnull Gesuch target,
+		@Nonnull AntragCopyType copyType,
+		boolean sourceGesuchIsMutation) {
 		if (this.getFamiliensituationContainer() != null) {
-			target.setFamiliensituationContainer(this.getFamiliensituationContainer().copyFamiliensituationContainer(new FamiliensituationContainer(),
-				copyType, sourceGesuchIsMutation));
+			target.setFamiliensituationContainer(this.getFamiliensituationContainer()
+				.copyFamiliensituationContainer(new FamiliensituationContainer(),
+					copyType, sourceGesuchIsMutation));
 		}
 	}
 
-	private void copyEinkommensverschlechterungInfoContainer(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
+	private void copyEinkommensverschlechterungInfoContainer(@Nonnull Gesuch target,
+		@Nonnull AntragCopyType copyType) {
 		if (this.getEinkommensverschlechterungInfoContainer() != null) {
 			target.setEinkommensverschlechterungInfoContainer(this.getEinkommensverschlechterungInfoContainer()
-				.copyEinkommensverschlechterungInfoContainer (new EinkommensverschlechterungInfoContainer(), copyType, target));
+				.copyEinkommensverschlechterungInfoContainer(
+					new EinkommensverschlechterungInfoContainer(),
+					copyType,
+					target));
 		}
 	}
 
 	private void copyGesuchsteller1(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
 		if (this.getGesuchsteller1() != null) {
-			target.setGesuchsteller1(this.getGesuchsteller1().copyGesuchstellerContainer(new GesuchstellerContainer(), copyType));
+			target.setGesuchsteller1(this.getGesuchsteller1()
+				.copyGesuchstellerContainer(new GesuchstellerContainer(), copyType));
 		}
 	}
 
 	private void copyGesuchsteller2(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
 		if (this.getGesuchsteller2() != null && this.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
-			target.setGesuchsteller2(this.getGesuchsteller2().copyGesuchstellerContainer(new GesuchstellerContainer(), copyType));
+			target.setGesuchsteller2(this.getGesuchsteller2()
+				.copyGesuchstellerContainer(new GesuchstellerContainer(), copyType));
 		}
 	}
 
 	private void copyGesuchsteller2IfStillNeeded(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
 		// Den zweiten GS nur kopieren, wenn er laut aktuellem Zivilstand noch benoetigt wird
 		if (this.getGesuchsteller2() != null && target.hasSecondGesuchstellerAtEndOfGesuchsperiode()) {
-			target.setGesuchsteller2(this.getGesuchsteller2().copyGesuchstellerContainer(new GesuchstellerContainer(), copyType));
+			target.setGesuchsteller2(this.getGesuchsteller2()
+				.copyGesuchstellerContainer(new GesuchstellerContainer(), copyType));
 		}
 	}
 
@@ -947,7 +980,12 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		@Nonnull AntragCopyType copyType,
 		@Nonnull LocalDate regelStartDatum) {
 		this.getKindContainers().forEach(
-			kindContainer -> target.addKindContainer(kindContainer.copyKindContainer(new KindContainer(), copyType, target, target.getGesuchsperiode(), regelStartDatum))
+			kindContainer -> target.addKindContainer(kindContainer.copyKindContainer(
+				new KindContainer(),
+				copyType,
+				target,
+				target.getGesuchsperiode(),
+				regelStartDatum))
 		);
 	}
 
@@ -964,7 +1002,9 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		}
 	}
 
-	private boolean isDokumentOfSecondGesuchstellerButHasNoSecondGesuchsteller(@Nonnull Gesuch target, @Nonnull DokumentGrund dokumentGrund) {
+	private boolean isDokumentOfSecondGesuchstellerButHasNoSecondGesuchsteller(
+		@Nonnull Gesuch target,
+		@Nonnull DokumentGrund dokumentGrund) {
 		boolean hasSecondGS = target.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode();
 		if (!hasSecondGS) {
 			boolean isDokumentOfSecondGS = dokumentGrund.getPersonType() == DokumentGrundPersonType.GESUCHSTELLER
@@ -977,28 +1017,56 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Nonnull
 	public Gesuch copyForMutation(
 		@Nonnull Gesuch mutation, @Nonnull Eingangsart eingangsartOfTarget, @Nonnull LocalDate regelStartDatum) {
-		return this.copyGesuch(mutation, AntragCopyType.MUTATION, eingangsartOfTarget, AntragTyp.MUTATION, this.getDossier(), this.getGesuchsperiode(), regelStartDatum);
+		return this.copyGesuch(
+			mutation,
+			AntragCopyType.MUTATION,
+			eingangsartOfTarget,
+			AntragTyp.MUTATION,
+			this.getDossier(),
+			this.getGesuchsperiode(),
+			regelStartDatum);
 	}
 
 	@Nonnull
 	public Gesuch copyForErneuerung(
-			@Nonnull Gesuch folgegesuch, @Nonnull Gesuchsperiode gesuchsperiodeOfTarget, @Nonnull Eingangsart eingangsartOfTarget, @Nonnull LocalDate regelStartDatum) {
-		return this.copyGesuch(folgegesuch, AntragCopyType.ERNEUERUNG, eingangsartOfTarget, AntragTyp.ERNEUERUNGSGESUCH, this.getDossier(), gesuchsperiodeOfTarget,
+		@Nonnull Gesuch folgegesuch,
+		@Nonnull Gesuchsperiode gesuchsperiodeOfTarget,
+		@Nonnull Eingangsart eingangsartOfTarget,
+		@Nonnull LocalDate regelStartDatum) {
+		return this.copyGesuch(folgegesuch,
+			AntragCopyType.ERNEUERUNG,
+			eingangsartOfTarget,
+			AntragTyp.ERNEUERUNGSGESUCH,
+			this.getDossier(),
+			gesuchsperiodeOfTarget,
 			regelStartDatum);
 	}
 
 	@Nonnull
 	public Gesuch copyForErneuerungsgesuchNeuesDossier(
-			@Nonnull Gesuch target, @Nonnull Eingangsart eingangsartOfTarget,
-			@Nonnull Dossier dossierOfTarget, @Nonnull Gesuchsperiode gesuchsperiodeOfTarget, @Nonnull LocalDate regelStartDatum) {
-		return this.copyGesuch(target, AntragCopyType.ERNEUERUNG_NEUES_DOSSIER, eingangsartOfTarget, AntragTyp.ERSTGESUCH, dossierOfTarget, gesuchsperiodeOfTarget,
+		@Nonnull Gesuch target,
+		@Nonnull Eingangsart eingangsartOfTarget,
+		@Nonnull Dossier dossierOfTarget,
+		@Nonnull Gesuchsperiode gesuchsperiodeOfTarget,
+		@Nonnull LocalDate regelStartDatum) {
+		return this.copyGesuch(target,
+			AntragCopyType.ERNEUERUNG_NEUES_DOSSIER,
+			eingangsartOfTarget,
+			AntragTyp.ERSTGESUCH,
+			dossierOfTarget,
+			gesuchsperiodeOfTarget,
 			regelStartDatum);
 	}
 
 	@Nonnull
 	public Gesuch copyForMutationNeuesDossier(
-			@Nonnull Gesuch target, @Nonnull Eingangsart eingangsartOfTarget, @Nonnull Dossier dossierOfTarget) {
-		return this.copyGesuch(target, AntragCopyType.MUTATION_NEUES_DOSSIER, eingangsartOfTarget, AntragTyp.ERSTGESUCH, dossierOfTarget, this.getGesuchsperiode(),
+		@Nonnull Gesuch target, @Nonnull Eingangsart eingangsartOfTarget, @Nonnull Dossier dossierOfTarget) {
+		return this.copyGesuch(target,
+			AntragCopyType.MUTATION_NEUES_DOSSIER,
+			eingangsartOfTarget,
+			AntragTyp.ERSTGESUCH,
+			dossierOfTarget,
+			this.getGesuchsperiode(),
 			this.getRegelStartDatum() != null ? this.getRegelStartDatum() : LocalDate.now());
 	}
 
@@ -1037,10 +1105,14 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	@Nonnull
-	public Optional<Betreuung> extractBetreuungsFromBetreuungNummer(@NotNull Integer kindNummer, @NotNull Integer betreuungNummer) {
+	public Optional<Betreuung> extractBetreuungsFromBetreuungNummer(
+		@NotNull Integer kindNummer,
+		@NotNull Integer betreuungNummer) {
 		final List<Betreuung> allBetreuungen = extractAllBetreuungen();
 		for (final Betreuung betreuung : allBetreuungen) {
-			if (betreuung.getBetreuungNummer().equals(betreuungNummer) && betreuung.getKind().getKindNummer().equals(kindNummer)) {
+			if (betreuung.getBetreuungNummer().equals(betreuungNummer) && betreuung.getKind()
+				.getKindNummer()
+				.equals(kindNummer)) {
 				return Optional.of(betreuung);
 			}
 		}
@@ -1093,7 +1165,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	/**
-	 * This method will go through all Betreuungen of the Gesuch and check all of them to know which kind (BetreuungsangebotTyp)
+	 * This method will go through all Betreuungen of the Gesuch and check all of them to know which kind
+	 * (BetreuungsangebotTyp)
 	 * of betreuungen they are. An enum will be returned with the result
 	 */
 	public GesuchTypFromAngebotTyp calculateGesuchTypFromAngebotTyp() {
@@ -1149,13 +1222,17 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode(extractFamiliensituationErstgesuch());
 	}
 
-	private boolean hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode(@Nullable final Familiensituation familiensituation) {
+	private boolean hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode(
+		@Nullable final Familiensituation familiensituation) {
 		return familiensituation != null
 			&& (familiensituation.hasSecondGesuchsteller(getGesuchsperiode().getGueltigkeit().getGueltigAb())
 			|| familiensituation.hasSecondGesuchsteller(getGesuchsperiode().getGueltigkeit().getGueltigBis()));
 	}
 
-	public static Gesuch createMutation(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode, @Nullable LocalDate eingangsdatum) {
+	public static Gesuch createMutation(
+		@Nonnull Dossier dossier,
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nullable LocalDate eingangsdatum) {
 		Gesuch mutation = new Gesuch();
 		mutation.setTyp(AntragTyp.MUTATION);
 		mutation.setDossier(dossier);
@@ -1164,7 +1241,10 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return mutation;
 	}
 
-	public static Gesuch createErneuerung(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode, @Nullable LocalDate eingangsdatum) {
+	public static Gesuch createErneuerung(
+		@Nonnull Dossier dossier,
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nullable LocalDate eingangsdatum) {
 		Gesuch erneuerung = new Gesuch();
 		erneuerung.setTyp(AntragTyp.ERNEUERUNGSGESUCH);
 		erneuerung.setDossier(dossier);
