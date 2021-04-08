@@ -24,7 +24,7 @@ const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
     ['go', 'is']);
 
 const transitionServiceSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name,
-    ['onFinish']);
+    ['onFinish', 'onSuccess']);
 
 describe('TagesschulenUiViewComponent', () => {
     let component: TagesschulenUiViewComponent;

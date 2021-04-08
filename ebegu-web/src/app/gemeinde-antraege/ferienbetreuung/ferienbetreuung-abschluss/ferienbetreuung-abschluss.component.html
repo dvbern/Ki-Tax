@@ -15,4 +15,21 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<p>ferienbetreuung-verfuegung works!</p>
+
+
+<div class="actions">
+    <dv-loading-button
+        *ngIf="abschliessenVisible() | async"
+        [buttonDisabled]="alreadyFreigegeben()"
+        (buttonClick)="freigeben()"
+        type="button">
+        <span translate>LATS_FREIGABE_PRUEFUNG_KANTON</span>
+    </dv-loading-button>
+    <dv-loading-button
+        *ngIf="geprueftVisible() | async"
+        type="button"
+        [buttonDisabled]="alreadyGeprueft()"
+        (buttonClick)="geprueft()">
+        <span translate>LATS_GEPRUEFT_KANTON</span>
+    </dv-loading-button>
+</div>

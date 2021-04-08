@@ -323,6 +323,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 			}
 		}
 		jaxStammdaten.setVermerkAuszahlung(stammdaten.getVermerkAuszahlung());
+		jaxStammdaten.setStatus(stammdaten.getStatus());
 
 		return jaxStammdaten;
 	}
@@ -334,6 +335,8 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		JaxFerienbetreuungAngabenAngebot jaxAngebot = new JaxFerienbetreuungAngabenAngebot();
 
 		convertAbstractFieldsToJAX(angebot, jaxAngebot);
+
+		jaxAngebot.setStatus(angebot.getStatus());
 
 		jaxAngebot.setAngebot(angebot.getAngebot());
 		jaxAngebot.setAngebotKontaktpersonVorname(angebot.getAngebotKontaktpersonVorname());
@@ -391,6 +394,8 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxNutzung.setAnzahlBetreuteKinder2Zyklus(nutzung.getAnzahlBetreuteKinder2Zyklus());
 		jaxNutzung.setAnzahlBetreuteKinder3Zyklus(nutzung.getAnzahlBetreuteKinder3Zyklus());
 
+		jaxNutzung.setStatus(nutzung.getStatus());
+
 		return jaxNutzung;
 	}
 
@@ -410,6 +415,8 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxKostenEinnahmen.setBemerkungenKosten(kostenEinnahmen.getBemerkungenKosten());
 		jaxKostenEinnahmen.setElterngebuehren(kostenEinnahmen.getElterngebuehren());
 		jaxKostenEinnahmen.setWeitereEinnahmen(kostenEinnahmen.getWeitereEinnahmen());
+
+		jaxKostenEinnahmen.setStatus(kostenEinnahmen.getStatus());
 
 		return jaxKostenEinnahmen;
 	}

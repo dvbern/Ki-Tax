@@ -16,9 +16,15 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, ValidatorFn, Validators} from '@angular/forms';
+import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
+import {UIRouterGlobals} from '@uirouter/core';
+import {combineLatest} from 'rxjs';
+import {filter} from 'rxjs/operators';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
+import {FerienbetreuungAngabenStatus} from '../../../../models/enums/FerienbetreuungAngabenStatus';
 import {TSFerienbetreuungAngabenAngebot} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSAdresse} from '../../../../models/TSAdresse';
@@ -26,7 +32,9 @@ import {TSBfsGemeinde} from '../../../../models/TSBfsGemeinde';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
+import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
 import {numberValidator, ValidationType} from '../../../shared/validators/number-validator.directive';
+import {AbstractFerienbetreuungFormular} from '../abstract.ferienbetreuung-formular';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
 const LOG = LogFactory.createLog('FerienbetreuungAngebotComponent');
@@ -35,69 +43,80 @@ const LOG = LogFactory.createLog('FerienbetreuungAngebotComponent');
     selector: 'dv-ferienbetreuung-angebot',
     templateUrl: './ferienbetreuung-angebot.component.html',
     styleUrls: ['./ferienbetreuung-angebot.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FerienbetreuungAngebotComponent implements OnInit {
+export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungFormular implements OnInit {
 
-    public form: FormGroup;
-    public formFreigebenTriggered: false;
+    public formValidationTriggered = false;
     public bfsGemeinden: TSBfsGemeinde[];
 
     private angebot: TSFerienbetreuungAngabenAngebot;
     private container: TSFerienbetreuungAngabenContainer;
 
     public constructor(
-        private readonly ferienbetreuungService: FerienbetreuungService,
+        protected readonly errorService: ErrorService,
+        protected readonly translate: TranslateService,
+        protected readonly dialog: MatDialog,
+        protected readonly cd: ChangeDetectorRef,
+        protected readonly wizardRS: WizardStepXRS,
+        protected readonly uiRouterGlobals: UIRouterGlobals,
         private readonly fb: FormBuilder,
-        private readonly cd: ChangeDetectorRef,
         private readonly gemeindeRS: GemeindeRS,
-        private readonly errorService: ErrorService,
-        private readonly translate: TranslateService
+        private readonly ferienbetreuungService: FerienbetreuungService,
+        private readonly authService: AuthServiceRS,
     ) {
+        super(errorService, translate, dialog, cd, wizardRS, uiRouterGlobals);
     }
 
     public ngOnInit(): void {
-        this.ferienbetreuungService.getFerienbetreuungContainer()
-            .subscribe(container => {
-                this.container = container;
-                this.angebot = container.angabenDeklaration?.angebot;
-                this.setupForm(this.angebot);
-                this.cd.markForCheck();
-            }, error => {
-                LOG.error(error);
-            });
+        combineLatest([
+                this.ferienbetreuungService.getFerienbetreuungContainer(),
+                this.authService.principal$.pipe(filter(principal => !!principal)),
+            ],
+        ).subscribe(([container, principal]) => {
+            this.container = container;
+            this.angebot = container.angabenDeklaration?.angebot;
+            this.setupFormAndPermissions(container, this.angebot, principal);
+        }, error => {
+            LOG.error(error);
+        });
         this.gemeindeRS.getAllBfsGemeinden().then(gemeinden => {
             this.bfsGemeinden = gemeinden;
             this.cd.markForCheck();
         });
     }
 
-    private setupForm(angebot: TSFerienbetreuungAngabenAngebot): void {
+    protected setupForm(angebot: TSFerienbetreuungAngabenAngebot): void {
         if (!angebot) {
             return;
         }
         this.form = this.fb.group({
+            id: [
+                angebot?.id,
+            ],
             angebot: [
-                angebot?.angebot
+                angebot?.angebot,
             ],
-            angebotKontaktpersonVorname: [
-                angebot?.angebotKontaktpersonVorname
-            ],
-            angebotKontaktpersonNachname: [
-                angebot?.angebotKontaktpersonNachname
-            ],
-            angebotStrasse: [
-                angebot?.angebotAdresse?.strasse
-            ],
-            angebotNr: [
-                angebot?.angebotAdresse?.hausnummer
-            ],
-            angebotPlz: [
-                angebot?.angebotAdresse?.plz
-            ],
-            angebotOrt: [
-                angebot?.angebotAdresse?.ort
-            ],
+            angebotAdresse: this.fb.group({
+                kontaktpersonVorname: [
+                    angebot?.angebotKontaktpersonVorname,
+                ],
+                kontaktpersonNachname: [
+                    angebot?.angebotKontaktpersonNachname,
+                ],
+                strasse: [
+                    angebot?.angebotAdresse?.strasse,
+                ],
+                hausnummer: [
+                    angebot?.angebotAdresse?.hausnummer,
+                ],
+                plz: [
+                    angebot?.angebotAdresse?.plz,
+                ],
+                ort: [
+                    angebot?.angebotAdresse?.ort,
+                ],
+            }),
             anzahlFerienwochenHerbstferien: [
                 angebot?.anzahlFerienwochenHerbstferien,
                 numberValidator(ValidationType.INTEGER)
@@ -119,10 +138,12 @@ export class FerienbetreuungAngebotComponent implements OnInit {
                 numberValidator(ValidationType.INTEGER)
             ],
             bemerkungenAnzahlFerienwochen: [
-                angebot?.bemerkungenAnzahlFerienwochen
+                angebot?.bemerkungenAnzahlFerienwochen,
+                numberValidator(ValidationType.INTEGER)
             ],
             anzahlStundenProBetreuungstag: [
-                angebot?.anzahlStundenProBetreuungstag
+                angebot?.anzahlStundenProBetreuungstag,
+                numberValidator(ValidationType.INTEGER)
             ],
             betreuungErfolgtTagsueber: [
                 angebot?.betreuungErfolgtTagsueber
@@ -131,61 +152,97 @@ export class FerienbetreuungAngebotComponent implements OnInit {
                 angebot?.bemerkungenOeffnungszeiten
             ],
             finanziellBeteiligteGemeinden: [
-                angebot?.finanziellBeteiligteGemeinden
+                angebot?.finanziellBeteiligteGemeinden,
             ],
             gemeindeFuehrtAngebotSelber: [
-                angebot?.gemeindeFuehrtAngebotSelber
+                angebot?.gemeindeFuehrtAngebotSelber,
             ],
             gemeindeBeauftragtExterneAnbieter: [
-                angebot?.gemeindeBeauftragtExterneAnbieter
+                angebot?.gemeindeBeauftragtExterneAnbieter,
             ],
             angebotVereineUndPrivateIntegriert: [
-                angebot?.angebotVereineUndPrivateIntegriert
+                angebot?.angebotVereineUndPrivateIntegriert,
             ],
             bemerkungenKooperation: [
-                angebot?.bemerkungenKooperation
+                angebot?.bemerkungenKooperation,
             ],
             leitungDurchPersonMitAusbildung: [
-                angebot?.leitungDurchPersonMitAusbildung
+                angebot?.leitungDurchPersonMitAusbildung,
             ],
             betreuungDurchPersonenMitErfahrung: [
-                angebot?.betreuungDurchPersonenMitErfahrung
+                angebot?.betreuungDurchPersonenMitErfahrung,
             ],
             anzahlKinderAngemessen: [
-                angebot?.anzahlKinderAngemessen
+                angebot?.anzahlKinderAngemessen,
             ],
             betreuungsschluessel: [
-                angebot?.betreuungsschluessel
+                angebot?.betreuungsschluessel,
+                numberValidator(ValidationType.INTEGER)
             ],
             bemerkungenPersonal: [
-                angebot?.bemerkungenPersonal
+                angebot?.bemerkungenPersonal,
             ],
             fixerTarifKinderDerGemeinde: [
-                angebot?.fixerTarifKinderDerGemeinde
+                angebot?.fixerTarifKinderDerGemeinde,
             ],
             einkommensabhaengigerTarifKinderDerGemeinde: [
-                angebot?.einkommensabhaengigerTarifKinderDerGemeinde
+                angebot?.einkommensabhaengigerTarifKinderDerGemeinde,
             ],
             tagesschuleTarifGiltFuerFerienbetreuung: [
-                angebot?.tagesschuleTarifGiltFuerFerienbetreuung
+                angebot?.tagesschuleTarifGiltFuerFerienbetreuung,
             ],
             ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet: [
-                angebot?.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet
+                angebot?.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet,
             ],
             kinderAusAnderenGemeindenZahlenAnderenTarif: [
-                angebot?.kinderAusAnderenGemeindenZahlenAnderenTarif
+                angebot?.kinderAusAnderenGemeindenZahlenAnderenTarif,
             ],
             bemerkungenTarifsystem: [
-                angebot?.bemerkungenTarifsystem
+                angebot?.bemerkungenTarifsystem,
             ],
         }, {
-            updateOn: 'blur'
+            updateOn: 'blur',
         });
     }
 
+    // overwrite
+    protected enableFormValidation(): void {
+        this.form.get('angebot').setValidators(Validators.required);
+        this.enableAdressValidation();
+
+        this.form.get('anzahlFerienwochenHerbstferien')
+            .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+        this.form.get('anzahlFerienwochenWinterferien')
+            .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+        this.form.get('anzahlFerienwochenFruehlingsferien')
+            .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+        this.form.get('anzahlFerienwochenSommerferien')
+            .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+
+        this.form.get('anzahlTage').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+        this.form.get('anzahlStundenProBetreuungstag')
+            .setValidators([Validators.required, numberValidator(ValidationType.HALF)]);
+
+        this.form.get('betreuungErfolgtTagsueber').setValidators(Validators.required);
+
+        this.form.get('leitungDurchPersonMitAusbildung').setValidators(Validators.required);
+        this.form.get('betreuungDurchPersonenMitErfahrung').setValidators(Validators.required);
+        this.form.get('anzahlKinderAngemessen').setValidators(Validators.required);
+        this.form.get('betreuungsschluessel')
+            .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+    }
+
     public save(): void {
-        this.ferienbetreuungService.saveAngebot(this.container.id, this.extractFormValues())
+        this.enableAdressValidation();
+
+        if (!this.form.valid) {
+            this.showValidierungFehlgeschlagenErrorMessage();
+            return;
+        }
+        this.ferienbetreuungService.saveAngebot(this.container.id, this.formToObject())
             .subscribe(() => {
+                this.formValidationTriggered = false;
+                this.form.get('angebotAdresse').clearValidators();
                 this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
             }, err => {
@@ -194,46 +251,85 @@ export class FerienbetreuungAngebotComponent implements OnInit {
             });
     }
 
-    private extractFormValues(): TSFerienbetreuungAngabenAngebot {
-        this.angebot.angebot = this.form.get('angebot').value;
-        this.angebot.angebotKontaktpersonVorname = this.form.get('angebotKontaktpersonVorname').value;
-        this.angebot.angebotKontaktpersonNachname = this.form.get('angebotKontaktpersonNachname').value;
+    private formToObject(): TSFerienbetreuungAngabenAngebot {
+        this.angebot = this.form.value;
+        this.angebot.angebotKontaktpersonVorname = this.form.value.angebotAdresse.kontaktpersonVorname;
+        this.angebot.angebotKontaktpersonNachname = this.form.value.angebotAdresse.kontaktpersonNachname;
+        const formAdresse = this.form.value.angebotAdresse;
 
         const adresse = new TSAdresse();
-        adresse.strasse = this.form.get('angebotStrasse').value;
-        adresse.hausnummer = this.form.get('angebotNr').value;
-        adresse.plz = this.form.get('angebotPlz').value;
-        adresse.ort = this.form.get('angebotOrt').value;
+        Object.assign(adresse, formAdresse);
         // set only if adresse is valid
         this.angebot.angebotAdresse = (EbeguUtil.adresseValid(adresse)) ? adresse : null;
 
-        this.angebot.anzahlFerienwochenHerbstferien = this.form.get('anzahlFerienwochenHerbstferien').value;
-        this.angebot.anzahlFerienwochenWinterferien = this.form.get('anzahlFerienwochenWinterferien').value;
-        this.angebot.anzahlFerienwochenFruehlingsferien = this.form.get('anzahlFerienwochenFruehlingsferien').value;
-        this.angebot.anzahlFerienwochenSommerferien = this.form.get('anzahlFerienwochenSommerferien').value;
-        this.angebot.anzahlTage = this.form.get('anzahlTage').value;
-        this.angebot.bemerkungenAnzahlFerienwochen = this.form.get('bemerkungenAnzahlFerienwochen').value;
-        this.angebot.anzahlStundenProBetreuungstag = this.form.get('anzahlStundenProBetreuungstag').value;
-        this.angebot.betreuungErfolgtTagsueber = this.form.get('betreuungErfolgtTagsueber').value;
-        this.angebot.bemerkungenOeffnungszeiten = this.form.get('bemerkungenOeffnungszeiten').value;
-        this.angebot.finanziellBeteiligteGemeinden = this.form.get('finanziellBeteiligteGemeinden').value;
-        this.angebot.gemeindeFuehrtAngebotSelber = this.form.get('gemeindeFuehrtAngebotSelber').value;
-        this.angebot.gemeindeBeauftragtExterneAnbieter = this.form.get('gemeindeBeauftragtExterneAnbieter').value;
-        this.angebot.angebotVereineUndPrivateIntegriert = this.form.get('angebotVereineUndPrivateIntegriert').value;
-        this.angebot.bemerkungenKooperation = this.form.get('bemerkungenKooperation').value;
-        this.angebot.leitungDurchPersonMitAusbildung = this.form.get('leitungDurchPersonMitAusbildung').value;
-        this.angebot.betreuungDurchPersonenMitErfahrung = this.form.get('betreuungDurchPersonenMitErfahrung').value;
-        this.angebot.anzahlKinderAngemessen = this.form.get('anzahlKinderAngemessen').value;
-        this.angebot.betreuungsschluessel = this.form.get('betreuungsschluessel').value;
-        this.angebot.bemerkungenPersonal = this.form.get('bemerkungenPersonal').value;
-        this.angebot.fixerTarifKinderDerGemeinde = this.form.get('fixerTarifKinderDerGemeinde').value;
-        this.angebot.einkommensabhaengigerTarifKinderDerGemeinde =
-            this.form.get('einkommensabhaengigerTarifKinderDerGemeinde').value;
-        this.angebot.tagesschuleTarifGiltFuerFerienbetreuung =
-            this.form.get('tagesschuleTarifGiltFuerFerienbetreuung').value;
-        this.angebot.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet = this.form.get('ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet').value;
-        this.angebot.kinderAusAnderenGemeindenZahlenAnderenTarif = this.form.get('kinderAusAnderenGemeindenZahlenAnderenTarif').value;
-        this.angebot.bemerkungenTarifsystem = this.form.get('bemerkungenTarifsystem').value;
         return this.angebot;
+    }
+
+    public formularReadOnly(): boolean {
+        return !(this.container?.status === FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE ||
+            this.container?.status === FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON);
+    }
+
+    public async onAbschliessen(): Promise<void> {
+        if (await this.checkReadyForAbschliessen()) {
+            this.ferienbetreuungService.angebotAbschliessen(this.container.id, this.formToObject())
+                .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
+        }
+    }
+
+    public onFalscheAngaben(): void {
+        this.ferienbetreuungService.falscheAngabenAngebot(this.container.id, this.angebot)
+            .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
+    }
+
+    // tslint:disable-next-line:cognitive-complexity
+    private adressValidValidator(): ValidatorFn {
+        return control => {
+            const strasse = control.get('strasse');
+            const ort = control.get('ort');
+            const plz = control.get('plz');
+            const vorname = control.get('kontaktpersonVorname');
+            const nachname = control.get('kontaktpersonNachname');
+
+            let formErroneous = false;
+
+            if (this.formAbschliessenTriggered ||
+                (strasse.value || ort.value || plz.value || vorname.value || nachname.value)) {
+                if (!strasse.value) {
+                    strasse.setErrors({required: true});
+                    formErroneous = true;
+                }
+                if (!ort.value) {
+                    ort.setErrors({required: true});
+                    formErroneous = true;
+                }
+                if (!plz.value) {
+                    plz.setErrors({required: true});
+                    formErroneous = true;
+                }
+                if (!vorname.value) {
+                    vorname.setErrors({required: true});
+                    formErroneous = true;
+                }
+                if (!nachname.value) {
+                    nachname.setErrors({required: true});
+                    formErroneous = true;
+                }
+            } else {
+                strasse.setErrors(null);
+                ort.setErrors(null);
+                plz.setErrors(null);
+                vorname.setErrors(null);
+                nachname.setErrors(null);
+            }
+            return formErroneous ? {adressInvalid: true} : null;
+        };
+    }
+
+    protected enableAdressValidation(): void {
+        this.form.get('angebotAdresse').setValidators(this.adressValidValidator());
+        this.form.get('angebotAdresse').markAllAsTouched();
+
+        this.triggerFormValidation();
     }
 }

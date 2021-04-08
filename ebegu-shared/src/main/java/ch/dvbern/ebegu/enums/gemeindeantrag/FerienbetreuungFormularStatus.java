@@ -14,33 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-form {
-    max-width: 600px;
-}
 
-.actions {
-    display: flex;
-    justify-content: center;
-    width: 100%;
+package ch.dvbern.ebegu.enums.gemeindeantrag;
 
-    & > dv-loading-button {
-        margin: 0 5px;
-    }
-}
+public enum FerienbetreuungFormularStatus {
 
-.label-required-error {
-    color: red;
-}
-
-
-.pointer-cursor {
-    cursor: pointer;
-}
-
-#adresse-header, #kontaktperson-header {
-    display: flex;
-
-    .flex-whitespace-item {
-        flex-grow: 1;
-    }
+	IN_BEARBEITUNG_GEMEINDE,
+	ABGESCHLOSSEN,
+	IN_PRUEFUNG_KANTON,
+	GEPRUEFT,
 }
