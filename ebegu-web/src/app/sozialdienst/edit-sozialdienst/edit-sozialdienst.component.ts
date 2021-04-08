@@ -80,8 +80,6 @@ export class EditSozialdienstComponent implements OnInit {
         return this.authServiceRS.isOneOfRoles([
             TSRole.SUPER_ADMIN,
             TSRole.ADMIN_SOZIALDIENST,
-            TSRole.ADMIN_MANDANT,
-            TSRole.SACHBEARBEITER_MANDANT,
         ]);
     }
 
