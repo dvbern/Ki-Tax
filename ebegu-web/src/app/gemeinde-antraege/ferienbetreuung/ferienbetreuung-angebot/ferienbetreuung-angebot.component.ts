@@ -124,30 +124,37 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             }),
             anzahlFerienwochenHerbstferien: [
                 angebot?.anzahlFerienwochenHerbstferien,
+                numberValidator(ValidationType.INTEGER)
             ],
             anzahlFerienwochenWinterferien: [
                 angebot?.anzahlFerienwochenWinterferien,
+                numberValidator(ValidationType.INTEGER)
             ],
             anzahlFerienwochenFruehlingsferien: [
                 angebot?.anzahlFerienwochenFruehlingsferien,
+                numberValidator(ValidationType.INTEGER)
             ],
             anzahlFerienwochenSommerferien: [
                 angebot?.anzahlFerienwochenSommerferien,
+                numberValidator(ValidationType.INTEGER)
             ],
             anzahlTage: [
                 angebot?.anzahlTage,
+                numberValidator(ValidationType.INTEGER)
             ],
             bemerkungenAnzahlFerienwochen: [
                 angebot?.bemerkungenAnzahlFerienwochen,
+                numberValidator(ValidationType.INTEGER)
             ],
             anzahlStundenProBetreuungstag: [
                 angebot?.anzahlStundenProBetreuungstag,
+                numberValidator(ValidationType.INTEGER)
             ],
             betreuungErfolgtTagsueber: [
-                angebot?.betreuungErfolgtTagsueber,
+                angebot?.betreuungErfolgtTagsueber
             ],
             bemerkungenOeffnungszeiten: [
-                angebot?.bemerkungenOeffnungszeiten,
+                angebot?.bemerkungenOeffnungszeiten
             ],
             finanziellBeteiligteGemeinden: [
                 angebot?.finanziellBeteiligteGemeinden,
@@ -175,6 +182,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             ],
             betreuungsschluessel: [
                 angebot?.betreuungsschluessel,
+                numberValidator(ValidationType.INTEGER)
             ],
             bemerkungenPersonal: [
                 angebot?.bemerkungenPersonal,

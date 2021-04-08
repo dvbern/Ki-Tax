@@ -60,7 +60,8 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label for="personalkosten_leitung_admin_id" class="padding-left-20">
+            <label for="personalkosten_leitung_admin_id" class="padding-left-20"
+                   [ngClass]="{'label-required-error': form?.get('personalkostenLeitungAdmin').errors}">
                 {{'FERIENBETREUUNG_PERSONALKOSTEN_LEITUNG_ADMIN' | translate }}
             </label>
             <div class="flex-whitespace-item"></div>
@@ -125,7 +126,8 @@
 
 
         <dv-input-container-x>
-            <label for="weitere_kosten_id">
+            <label for="weitere_kosten_id"
+                   [ngClass]="{'label-required-error': form?.get('weitereKosten').errors}">
                 {{'FERIENBETREUUNG_WEITERE_KOSTEN' | translate }}
             </label>
             <div class="flex-whitespace-item"></div>

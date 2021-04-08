@@ -79,31 +79,39 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         }
         this.form = this.fb.group({
             id: [
-                kostenEinnahmen.id
+                kostenEinnahmen.id,
             ],
             personalkosten: [
                 kostenEinnahmen.personalkosten,
+                numberValidator(ValidationType.INTEGER),
             ],
             personalkostenLeitungAdmin: [
                 kostenEinnahmen.personalkostenLeitungAdmin,
+                numberValidator(ValidationType.INTEGER),
             ],
             sachkosten: [
                 kostenEinnahmen.sachkosten,
+                numberValidator(ValidationType.INTEGER),
             ],
             verpflegungskosten: [
                 kostenEinnahmen.verpflegungskosten,
+                numberValidator(ValidationType.INTEGER),
             ],
             weitereKosten: [
                 kostenEinnahmen.weitereKosten,
+                numberValidator(ValidationType.INTEGER),
             ],
             bemerkungenKosten: [
                 kostenEinnahmen.bemerkungenKosten,
+                numberValidator(ValidationType.INTEGER),
             ],
             elterngebuehren: [
                 kostenEinnahmen.elterngebuehren,
+                numberValidator(ValidationType.INTEGER),
             ],
             weitereEinnahmen: [
                 kostenEinnahmen.weitereEinnahmen,
+                numberValidator(ValidationType.INTEGER),
             ],
         });
     }
@@ -120,6 +128,10 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
     }
 
     public save(): void {
+        if (!this.form.valid) {
+            this.showValidierungFehlgeschlagenErrorMessage();
+            return;
+        }
         this.ferienbetreuungService.saveKostenEinnahmen(this.container.id, this.extractFormValues())
             .subscribe(() => {
                 this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);

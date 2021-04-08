@@ -534,6 +534,9 @@
                 <mat-error *ngIf="form && form.get('betreuungsschluessel').errors?.required"
                            translate>ERROR_REQUIRED
                 </mat-error>
+                <mat-error *ngIf="form && form.get('betreuungsschluessel').errors?.isNotInteger"
+                           translate>ERROR_NOT_INTEGER
+                </mat-error>
             </mat-form-field>
         </dv-input-container-x>
 

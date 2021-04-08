@@ -106,38 +106,52 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
             id: [nutzung.id],
             anzahlBetreuungstageKinderBern: [
                 nutzung.anzahlBetreuungstageKinderBern,
+                numberValidator(ValidationType.HALF),
             ],
             betreuungstageKinderDieserGemeinde: [
                 nutzung.betreuungstageKinderDieserGemeinde,
+                numberValidator(ValidationType.HALF),
             ],
             betreuungstageKinderDieserGemeindeSonderschueler: [
                 nutzung.betreuungstageKinderDieserGemeindeSonderschueler,
+                numberValidator(ValidationType.HALF),
             ],
             davonBetreuungstageKinderAndererGemeinden: [
                 nutzung.davonBetreuungstageKinderAndererGemeinden,
+                numberValidator(ValidationType.HALF),
             ],
             davonBetreuungstageKinderAndererGemeindenSonderschueler: [
                 nutzung.davonBetreuungstageKinderAndererGemeindenSonderschueler,
+                numberValidator(ValidationType.HALF),
             ],
             anzahlBetreuteKinder: [
                 nutzung.anzahlBetreuteKinder,
+                numberValidator(ValidationType.INTEGER),
             ],
             anzahlBetreuteKinderSonderschueler: [
                 nutzung.anzahlBetreuteKinderSonderschueler,
+                numberValidator(ValidationType.INTEGER),
             ],
             anzahlBetreuteKinder1Zyklus: [
                 nutzung.anzahlBetreuteKinder1Zyklus,
+                numberValidator(ValidationType.INTEGER),
             ],
             anzahlBetreuteKinder2Zyklus: [
                 nutzung.anzahlBetreuteKinder2Zyklus,
+                numberValidator(ValidationType.INTEGER),
             ],
             anzahlBetreuteKinder3Zyklus: [
                 nutzung.anzahlBetreuteKinder3Zyklus,
+                numberValidator(ValidationType.INTEGER),
             ],
         });
     }
 
     public save(): void {
+        if (!this.form.valid) {
+            this.showValidierungFehlgeschlagenErrorMessage();
+            return;
+        }
         this.ferienbetreuungService.saveNutzung(this.container.id, this.form.value)
             .subscribe(() => {
                 this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);

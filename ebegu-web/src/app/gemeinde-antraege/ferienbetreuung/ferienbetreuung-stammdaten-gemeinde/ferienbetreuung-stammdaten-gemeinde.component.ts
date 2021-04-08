@@ -128,9 +128,11 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
             ],
             stammdatenKontaktpersonTelefon: [
                 stammdaten?.stammdatenKontaktpersonTelefon,
+                Validators.pattern(CONSTANTS.PATTERN_PHONE)
             ],
             stammdatenKontaktpersonEmail: [
                 stammdaten?.stammdatenKontaktpersonEmail,
+                Validators.pattern(CONSTANTS.PATTERN_EMAIL)
             ],
             auszahlungsdaten: this.fb.group({
                 kontoinhaber: [
