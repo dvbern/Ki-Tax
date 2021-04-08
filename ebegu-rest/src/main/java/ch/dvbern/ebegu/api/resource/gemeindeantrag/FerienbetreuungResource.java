@@ -136,6 +136,35 @@ public class FerienbetreuungResource {
 	}
 
 	@ApiOperation(
+		value = "Schliesst den FerienBetreuungAngabenContainertare als Gemeinde ab und gibt ihn zur Prüfung durch"
+			+ "die Kantone frei",
+		response = JaxFerienbetreuungAngabenStammdaten.class)
+	@PUT
+	@Path("/abschliessen/{containerId}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS,
+		SACHBEARBEITER_TS })
+	public JaxFerienbetreuungAngabenContainer FerienBetreuungAbschliessen(
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response,
+		@Nonnull @NotNull @PathParam("containerId") JaxId containerId
+	) {
+		Objects.requireNonNull(containerId);
+		Objects.requireNonNull(containerId.getId());
+
+		authorizer.checkReadAuthorizationFerienbetreuung(containerId.getId());
+
+		FerienbetreuungAngabenContainer container =
+			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException("saveFerienbetreuungStammdaten", containerId.getId()));
+
+		authorizer.checkWriteAuthorization(container);
+
+		FerienbetreuungAngabenContainer persisted = ferienbetreuungService.ferienbetreuungAngabenAbschliessen(container);
+		return converter.ferienbetreuungAngabenContainerToJax(persisted);
+	}
+
+	@ApiOperation(
 		value = "Speichert FerieninselAngabenStammdaten in der Datenbank",
 		response = JaxFerienbetreuungAngabenStammdaten.class)
 	@Nonnull

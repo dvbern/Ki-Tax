@@ -252,4 +252,8 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 	public void setStatus(@Nonnull FerienbetreuungFormularStatus status) {
 		this.status = status;
 	}
+
+	public boolean isAbgeschlossen() {
+		return status == FerienbetreuungFormularStatus.ABGESCHLOSSEN;
+	}
 }

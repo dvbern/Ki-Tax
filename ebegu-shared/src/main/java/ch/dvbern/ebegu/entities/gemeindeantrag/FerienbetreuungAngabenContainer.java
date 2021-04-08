@@ -158,4 +158,21 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 	public boolean isSame(AbstractEntity other) {
 		return getId().equals(other.getId());
 	}
+
+	public boolean isAtLeastInPruefungKanton() {
+		return status == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON ||
+			status == FerienbetreuungAngabenStatus.GEPRUEFT ||
+			status == FerienbetreuungAngabenStatus.VERFUEGT ||
+			status == FerienbetreuungAngabenStatus.ABGELEHNT;
+	}
+
+	public boolean isReadyForAbschluss() {
+		FerienbetreuungAngaben angaben = isAtLeastInPruefungKanton() ? getAngabenKorrektur() : getAngabenDeklaration();
+
+		assert angaben != null;
+		return angaben.getFerienbetreuungAngabenStammdaten().isAbgeschlossen() &&
+			angaben.getFerienbetreuungAngabenAngebot().isAbgeschlossen() &&
+			angaben.getFerienbetreuungAngabenNutzung().isAbgeschlossen() &&
+			angaben.getFerienbetreuungAngabenKostenEinnahmen().isAbgeschlossen();
+	}
 }

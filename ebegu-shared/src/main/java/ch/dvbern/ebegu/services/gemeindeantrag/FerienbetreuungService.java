@@ -103,4 +103,8 @@ public interface FerienbetreuungService {
 	@Nonnull
 	FerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenFalscheAngaben(
 		@Nonnull FerienbetreuungAngabenStammdaten stammdaten);
+
+	@Nonnull
+	FerienbetreuungAngabenContainer ferienbetreuungAngabenAbschliessen(
+		@Nonnull FerienbetreuungAngabenContainer container);
 }
