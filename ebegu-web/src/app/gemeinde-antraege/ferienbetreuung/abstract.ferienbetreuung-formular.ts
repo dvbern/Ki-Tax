@@ -21,8 +21,10 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {BehaviorSubject} from 'rxjs';
+import {FerienbetreuungAngabenStatus} from '../../../models/enums/FerienbetreuungAngabenStatus';
 import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSFerienbetreuungAbstractAngaben} from '../../../models/gemeindeantrag/TSFerienbetreuungAbstractAngaben';
+import {TSFerienbetreuungAngabenContainer} from '../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
@@ -88,6 +90,7 @@ export abstract class AbstractFerienbetreuungFormular {
     }
 
     protected setupRoleBasedPropertiesForPrincipal(
+        container: TSFerienbetreuungAngabenContainer,
         angaben: TSFerienbetreuungAbstractAngaben,
         principal: TSBenutzer,
     ): void {
@@ -95,7 +98,11 @@ export abstract class AbstractFerienbetreuungFormular {
             if (angaben.isAtLeastAbgeschlossenGemeinde()) {
                 this.canSeeAbschliessen.next(false);
                 this.canSeeSave.next(false);
-                this.canSeeFalscheAngaben.next(true);
+                if (container.status === FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE) {
+                    this.canSeeFalscheAngaben.next(true);
+                } else {
+                    this.canSeeFalscheAngaben.next(false);
+                }
             } else {
                 this.canSeeAbschliessen.next(true);
                 this.canSeeSave.next(true);
@@ -122,11 +129,15 @@ export abstract class AbstractFerienbetreuungFormular {
         }
     }
 
-    protected setupFormAndPermissions(angaben: TSFerienbetreuungAbstractAngaben, principal: TSBenutzer): void {
+    protected setupFormAndPermissions(
+        container: TSFerienbetreuungAngabenContainer,
+        angaben: TSFerienbetreuungAbstractAngaben,
+        principal: TSBenutzer,
+    ): void {
         this.setupForm(angaben);
 
         this.disableFormBasedOnStateAndPrincipal(angaben, principal);
-        this.setupRoleBasedPropertiesForPrincipal(angaben, principal);
+        this.setupRoleBasedPropertiesForPrincipal(container, angaben, principal);
 
         this.cd.markForCheck();
     }
@@ -156,6 +167,5 @@ export abstract class AbstractFerienbetreuungFormular {
         return this.confirmDialog('FRAGE_FORMULAR_ABSCHLIESSEN');
 
     }
-
 
 }

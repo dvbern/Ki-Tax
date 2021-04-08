@@ -76,12 +76,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         ).subscribe(([container, principal]) => {
             this.container = container;
             this.angebot = container.angabenDeklaration?.angebot;
-            this.setupForm(this.angebot);
-
-            this.disableFormBasedOnStateAndPrincipal(this.angebot, principal);
-            this.setupRoleBasedPropertiesForPrincipal(this.angebot, principal);
-
-            this.cd.markForCheck();
+            this.setupFormAndPermissions(container, this.angebot, principal);
         }, error => {
             LOG.error(error);
         });

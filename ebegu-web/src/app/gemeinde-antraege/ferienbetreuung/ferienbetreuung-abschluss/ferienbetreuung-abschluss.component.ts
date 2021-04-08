@@ -18,11 +18,14 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
-import {Observable, Subject} from 'rxjs';
+import {combineLatest, Observable, Subject} from 'rxjs';
 import {filter, first, map, mergeMap, takeUntil} from 'rxjs/operators';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {FerienbetreuungAngabenStatus} from '../../../../models/enums/FerienbetreuungAngabenStatus';
+import {TSRole} from '../../../../models/enums/TSRole';
 import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
@@ -47,6 +50,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
         private readonly dialog: MatDialog,
         private readonly errorService: ErrorService,
         private readonly wizardRS: WizardStepXRS,
+        private readonly authService: AuthServiceRS,
     ) {
     }
 
@@ -56,19 +60,34 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
         ).subscribe(container => this.container = container);
     }
 
-    public isInBearbeitungGemeinde(): Observable<boolean> {
-        return this.ferienbetreuungsService.getFerienbetreuungContainer().pipe(
-            takeUntil(this.unsubscribe),
-            map(latsContainer => latsContainer.status ===
-                FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE),
+    public abschliessenVisible(): Observable<boolean> {
+        return combineLatest([
+            this.ferienbetreuungsService.getFerienbetreuungContainer().pipe(
+                takeUntil(this.unsubscribe),
+                map(latsContainer => latsContainer.status ===
+                    FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE),
+            ), this.authService.principal$,
+        ]).pipe(
+            map(([inBearbeitungGemeinde, principal]) => {
+                return (principal.hasRole(TSRole.SUPER_ADMIN) && inBearbeitungGemeinde) ||
+                    (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles()) &&
+                        !principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()));
+            }),
         );
     }
 
-    public isInPruefungKanton(): Observable<boolean> {
-        return this.ferienbetreuungsService.getFerienbetreuungContainer().pipe(
-            takeUntil(this.unsubscribe),
-            map(latsContainer => latsContainer.status ===
-                FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON),
+    public geprueftVisible(): Observable<boolean> {
+        return combineLatest([
+            this.ferienbetreuungsService.getFerienbetreuungContainer().pipe(
+                takeUntil(this.unsubscribe),
+                map(latsContainer => latsContainer.status ===
+                    FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON),
+            ), this.authService.principal$,
+        ]).pipe(
+            map(([inBearbeitungGemeinde, principal]) => {
+                return (principal.hasRole(TSRole.SUPER_ADMIN) && inBearbeitungGemeinde) ||
+                        principal.hasOneOfRoles(TSRoleUtil.getMandantRoles());
+            }),
         );
     }
 
@@ -111,5 +130,16 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
 
     public ngOnDestroy(): void {
         this.unsubscribe.next(true);
+    }
+
+    public alreadyFreigegeben(): boolean {
+        return this.container.status === FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON ||
+            this.alreadyGeprueft();
+    }
+
+    public alreadyGeprueft(): boolean {
+        return this.container.status === FerienbetreuungAngabenStatus.GEPRUEFT ||
+            this.container.status === FerienbetreuungAngabenStatus.ABGELEHNT ||
+            this.container.status === FerienbetreuungAngabenStatus.VERFUEGT;
     }
 }

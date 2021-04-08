@@ -144,7 +144,8 @@ public class FerienbetreuungResource {
 		response = JaxFerienbetreuungAngabenStammdaten.class)
 	@PUT
 	@Path("/abschliessen/{containerId}")
-	@Consumes(MediaType.TEXT_PLAIN)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS,
 		SACHBEARBEITER_TS })
 	public JaxFerienbetreuungAngabenContainer FerienBetreuungAbschliessen(

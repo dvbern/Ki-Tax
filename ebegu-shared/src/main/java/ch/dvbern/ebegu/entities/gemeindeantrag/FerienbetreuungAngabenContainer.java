@@ -166,13 +166,14 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 			status == FerienbetreuungAngabenStatus.ABGELEHNT;
 	}
 
-	public boolean isReadyForAbschluss() {
-		FerienbetreuungAngaben angaben = isAtLeastInPruefungKanton() ? getAngabenKorrektur() : getAngabenDeklaration();
+	public boolean isReadyForGeprueft() {
+		if(getAngabenKorrektur() == null) {
+			return false;
+		}
 
-		assert angaben != null;
-		return angaben.getFerienbetreuungAngabenStammdaten().isAbgeschlossen() &&
-			angaben.getFerienbetreuungAngabenAngebot().isAbgeschlossen() &&
-			angaben.getFerienbetreuungAngabenNutzung().isAbgeschlossen() &&
-			angaben.getFerienbetreuungAngabenKostenEinnahmen().isAbgeschlossen();
+		return getAngabenKorrektur().getFerienbetreuungAngabenStammdaten().isAbgeschlossen() &&
+			getAngabenKorrektur().getFerienbetreuungAngabenAngebot().isAbgeschlossen() &&
+			getAngabenKorrektur().getFerienbetreuungAngabenNutzung().isAbgeschlossen() &&
+			getAngabenKorrektur().getFerienbetreuungAngabenKostenEinnahmen().isAbgeschlossen();
 	}
 }

@@ -19,14 +19,16 @@
 
 <div class="actions">
     <dv-loading-button
-        *ngIf="isInBearbeitungGemeinde() | async"
+        *ngIf="abschliessenVisible() | async"
+        [buttonDisabled]="alreadyFreigegeben()"
         (buttonClick)="freigeben()"
         type="button">
         <span translate>LATS_FREIGABE_PRUEFUNG_KANTON</span>
     </dv-loading-button>
     <dv-loading-button
-        *ngIf="isInPruefungKanton() | async"
+        *ngIf="geprueftVisible() | async"
         type="button"
+        [buttonDisabled]="alreadyGeprueft()"
         (buttonClick)="geprueft()">
         <span translate>LATS_GEPRUEFT_KANTON</span>
     </dv-loading-button>

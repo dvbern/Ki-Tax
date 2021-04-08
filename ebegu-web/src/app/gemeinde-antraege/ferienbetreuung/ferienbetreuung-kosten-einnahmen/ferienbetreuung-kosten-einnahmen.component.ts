@@ -67,7 +67,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
             this.container = container;
             this.kostenEinnahmen = container.angabenDeklaration?.kostenEinnahmen;
 
-            this.setupFormAndPermissions(this.kostenEinnahmen, principal);
+            this.setupFormAndPermissions(container, this.kostenEinnahmen, principal);
         }, error => {
             LOG.error(error);
         });

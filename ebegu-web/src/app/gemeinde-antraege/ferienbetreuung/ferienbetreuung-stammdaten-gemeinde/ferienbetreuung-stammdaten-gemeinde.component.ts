@@ -73,7 +73,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         ]).subscribe(([container, principal]) => {
             this.container = container;
             this.stammdaten = container.angabenDeklaration?.stammdaten;
-            this.setupFormAndPermissions(this.stammdaten, principal);
+            this.setupFormAndPermissions(container, this.stammdaten, principal);
         }, error => {
             LOG.error(error);
         });
