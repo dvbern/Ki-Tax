@@ -312,7 +312,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
                     formErroneous = true;
                 }
                 if (!nachname.value) {
-                    plz.setErrors({required: true});
+                    nachname.setErrors({required: true});
                     formErroneous = true;
                 }
             } else {

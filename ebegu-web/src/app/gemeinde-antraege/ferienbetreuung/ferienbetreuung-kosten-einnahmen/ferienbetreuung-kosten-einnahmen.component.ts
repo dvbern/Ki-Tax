@@ -103,7 +103,6 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
             ],
             bemerkungenKosten: [
                 kostenEinnahmen.bemerkungenKosten,
-                numberValidator(ValidationType.INTEGER),
             ],
             elterngebuehren: [
                 kostenEinnahmen.elterngebuehren,

@@ -128,7 +128,7 @@ export abstract class AbstractFerienbetreuungFormular {
             principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
             this.form.disable();
         }*/
-        if (angaben?.isAtLeastAbgeschlossenGemeinde() || principal.hasOneOfRoles(TSRoleUtil.getMandantRoles())) {
+        if (angaben?.isAtLeastAbgeschlossenGemeinde() || principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
             this.form.disable();
         }
     }
