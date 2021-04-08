@@ -341,6 +341,7 @@
                     class=""
                     name="betreuungErfolgtTagsueber"
                     horizontal
+                    [disabled]="form.get('betreuungErfolgtTagsueber').disabled"
                     formControlName="betreuungErfolgtTagsueber">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -375,6 +376,7 @@
                             formControlName="finanziellBeteiligteGemeinden"
                             name="finanziellBeteiligteGemeinden"
                             id="am-angebot-beteiligte-gemeinden"
+                            [disabled]="form.get('finanziellBeteiligteGemeinden').disabled"
                             [multiple]="true">
                     <mat-option *ngFor="let gemeinde of bfsGemeinden"
                                 [value]="gemeinde.name">
@@ -396,6 +398,7 @@
                     class=""
                     name="gemeindeFuehrtAngebotSelber"
                     horizontal
+                    [disabled]="form.get('gemeindeFuehrtAngebotSelber').disabled"
                     formControlName="gemeindeFuehrtAngebotSelber">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -413,6 +416,7 @@
                     class=""
                     name="gemeindeBeauftragtExterneAnbieter"
                     horizontal
+                    [disabled]="form.get('gemeindeBeauftragtExterneAnbieter').disabled"
                     formControlName="gemeindeBeauftragtExterneAnbieter">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -430,6 +434,7 @@
                     class=""
                     name="angebotVereineUndPrivateIntegriert"
                     horizontal
+                    [disabled]="form.get('angebotVereineUndPrivateIntegriert').disabled"
                     formControlName="angebotVereineUndPrivateIntegriert">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -465,6 +470,7 @@
                     class=""
                     name="leitungDurchPersonMitAusbildung"
                     horizontal
+                    [disabled]="form.get('leitungDurchPersonMitAusbildung').disabled"
                     formControlName="leitungDurchPersonMitAusbildung">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -483,6 +489,7 @@
                     class=""
                     name="betreuungDurchPersonenMitErfahrung"
                     horizontal
+                    [disabled]="form.get('betreuungDurchPersonenMitErfahrung').disabled"
                     formControlName="betreuungDurchPersonenMitErfahrung">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -502,6 +509,7 @@
                     class=""
                     name="anzahlKinderAngemessen"
                     horizontal
+                    [disabled]="form.get('anzahlKinderAngemessen').disabled"
                     formControlName="anzahlKinderAngemessen">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -556,6 +564,7 @@
                     class=""
                     name="fixerTarifKinderDerGemeinde"
                     horizontal
+                    [disabled]="form.get('fixerTarifKinderDerGemeinde').disabled"
                     formControlName="fixerTarifKinderDerGemeinde">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -573,6 +582,7 @@
                     class=""
                     name="einkommensabhaengigerTarifKinderDerGemeinde"
                     horizontal
+                    [disabled]="form.get('einkommensabhaengigerTarifKinderDerGemeinde').disabled"
                     formControlName="einkommensabhaengigerTarifKinderDerGemeinde">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -590,6 +600,7 @@
                     class=""
                     name="tagesschuleTarifGiltFuerFerienbetreuung"
                     horizontal
+                    [disabled]="form.get('tagesschuleTarifGiltFuerFerienbetreuung').disabled"
                     formControlName="tagesschuleTarifGiltFuerFerienbetreuung">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -607,6 +618,7 @@
                     class=""
                     name="ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet"
                     horizontal
+                    [disabled]="form.get('ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet').disabled"
                     formControlName="ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -625,6 +637,7 @@
                     class=""
                     name="kinderAusAnderenGemeindenZahlenAnderenTarif"
                     horizontal
+                    [disabled]="form.get('kinderAusAnderenGemeindenZahlenAnderenTarif').disabled"
                     formControlName="kinderAusAnderenGemeindenZahlenAnderenTarif">
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
