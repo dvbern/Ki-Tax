@@ -261,7 +261,8 @@ export class DossierToolbarController implements IDVFocusableController {
     }
 
     public showKontaktMenu(): boolean {
-        return this.getGesuch() && !!this.getGesuch().gesuchsteller1;
+        return this.getGesuch() && !!this.getGesuch().gesuchsteller1
+            && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
     }
 
     // tslint:disable-next-line:cognitive-complexity
