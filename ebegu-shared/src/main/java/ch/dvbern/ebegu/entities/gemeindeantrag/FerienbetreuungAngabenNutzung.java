@@ -196,6 +196,10 @@ public class FerienbetreuungAngabenNutzung extends AbstractEntity {
 	}
 
 	public boolean isReadyForFreigeben() {
+		return checkPropertiesNotNull() && status == FerienbetreuungFormularStatus.ABGESCHLOSSEN;
+	}
+
+	public boolean isReadyForAbschluss() {
 		return checkPropertiesNotNull();
 	}
 
