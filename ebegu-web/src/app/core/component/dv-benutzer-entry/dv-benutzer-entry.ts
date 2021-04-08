@@ -36,6 +36,9 @@ export class DvBenutzerEntry {
     }
 
     public getVerantwortungClasses(): string[][] {
+        if (EbeguUtil.isNullOrUndefined(this.benutzer)) {
+            return [];
+        }
         const currentRole = this.benutzer.getCurrentRole();
         if (EbeguUtil.isNullOrUndefined(currentRole)) {
             return [];
@@ -49,8 +52,10 @@ export class DvBenutzerEntry {
                 return [['fa fa-graduation-cap', TSVerantwortung.VERANTWORTUNG_TS]];
             case TSRole.ADMIN_GEMEINDE:
             case TSRole.SACHBEARBEITER_GEMEINDE:
-                return [['fa fa-gift', TSVerantwortung.VERANTWORTUNG_BG],
-                    ['fa fa-graduation-cap', TSVerantwortung.VERANTWORTUNG_TS]];
+                return [
+                    ['fa fa-gift', TSVerantwortung.VERANTWORTUNG_BG],
+                    ['fa fa-graduation-cap', TSVerantwortung.VERANTWORTUNG_TS],
+                ];
             case TSRole.ADMIN_TRAEGERSCHAFT:
             case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
             case TSRole.ADMIN_INSTITUTION:
@@ -66,5 +71,12 @@ export class DvBenutzerEntry {
             default:
                 return [];
         }
+    }
+
+    public getBenutzerFullName(): string {
+        if (EbeguUtil.isNullOrUndefined(this.benutzer)) {
+            return '';
+        }
+        return this.benutzer.getFullName();
     }
 }
