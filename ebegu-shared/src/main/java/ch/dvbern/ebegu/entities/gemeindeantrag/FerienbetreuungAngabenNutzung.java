@@ -23,11 +23,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 import org.hibernate.envers.Audited;
 
 @Entity
@@ -75,6 +79,11 @@ public class FerienbetreuungAngabenNutzung extends AbstractEntity {
 	@Nullable
 	@Column(name = "anzahl_betreute_kinder_3_zyklus")
 	private BigDecimal anzahlBetreuteKinder3Zyklus;
+
+	@Nonnull
+	@Column()
+	@Enumerated(EnumType.STRING)
+	private FerienbetreuungFormularStatus status = FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE;;
 
 	@Nullable
 	public BigDecimal getAnzahlBetreuungstageKinderBern() {
@@ -182,6 +191,19 @@ public class FerienbetreuungAngabenNutzung extends AbstractEntity {
 			this.davonBetreuungstageKinderAndererGemeinden
 		);
 		return nonNullObj.stream()
-			.anyMatch(Objects::isNull);
+			.noneMatch(Objects::isNull);
+	}
+
+	@Nonnull
+	public FerienbetreuungFormularStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(@Nonnull FerienbetreuungFormularStatus status) {
+		this.status = status;
+	}
+
+	public boolean isAbgeschlossen() {
+		return status == FerienbetreuungFormularStatus.ABGESCHLOSSEN;
 	}
 }

@@ -15,9 +15,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractEntity} from '../TSAbstractEntity';
+import {TSFerienbetreuungAbstractAngaben} from './TSFerienbetreuungAbstractAngaben';
 
-export class TSFerienbetreuungAngabenNutzung extends TSAbstractEntity {
+export class TSFerienbetreuungAngabenNutzung extends TSFerienbetreuungAbstractAngaben {
 
     private _anzahlBetreuungstageKinderBern: number;
     private _betreuungstageKinderDieserGemeinde: number;

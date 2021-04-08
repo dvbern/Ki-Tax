@@ -31,6 +31,8 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
@@ -42,6 +44,7 @@ import javax.validation.constraints.Size;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 
@@ -114,6 +117,11 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Column()
 	private String vermerkAuszahlung;
+
+	@Nonnull
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private FerienbetreuungFormularStatus status = FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE;
 
 	@Nonnull
 	public Set<String> getAmAngebotBeteiligteGemeinden() {
@@ -233,6 +241,19 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 			this.auszahlungsdaten
 		);
 		return nonNullObj.stream()
-			.anyMatch(Objects::isNull);
+			.noneMatch(Objects::isNull);
+	}
+
+	@Nonnull
+	public FerienbetreuungFormularStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(@Nonnull FerienbetreuungFormularStatus status) {
+		this.status = status;
+	}
+
+	public boolean isAbgeschlossen() {
+		return status == FerienbetreuungFormularStatus.ABGESCHLOSSEN;
 	}
 }

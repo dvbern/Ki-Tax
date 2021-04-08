@@ -19,9 +19,11 @@ package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 
 public class JaxFerienbetreuungAngabenKostenEinnahmen extends JaxAbstractDTO {
 
@@ -50,6 +52,9 @@ public class JaxFerienbetreuungAngabenKostenEinnahmen extends JaxAbstractDTO {
 
 	@Nullable
 	private BigDecimal weitereEinnahmen;
+
+	@Nonnull
+	private FerienbetreuungFormularStatus status;
 
 	@Nullable
 	public BigDecimal getPersonalkosten() {
@@ -121,5 +126,14 @@ public class JaxFerienbetreuungAngabenKostenEinnahmen extends JaxAbstractDTO {
 
 	public void setWeitereEinnahmen(@Nullable BigDecimal weitereEinnahmen) {
 		this.weitereEinnahmen = weitereEinnahmen;
+	}
+
+	@Nonnull
+	public FerienbetreuungFormularStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(@Nonnull FerienbetreuungFormularStatus status) {
+		this.status = status;
 	}
 }
