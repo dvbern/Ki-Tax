@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.entities.gemeindeantrag;
 
+import java.util.Set;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
@@ -27,12 +29,14 @@ import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
@@ -81,6 +85,11 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 	@Size(max = DB_TEXTAREA_LENGTH)
 	@Column(nullable = true)
 	private String internerKommentar;
+
+	@Nullable
+	@Valid
+	@OneToMany(mappedBy = "ferienbetreuungAngabenContainer")
+	private Set<FerienbetreuungDokument> dokumente;
 
 	@Nonnull
 	public FerienbetreuungAngabenStatus getStatus() {
@@ -175,5 +184,14 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 			getAngabenKorrektur().getFerienbetreuungAngabenAngebot().isAbgeschlossen() &&
 			getAngabenKorrektur().getFerienbetreuungAngabenNutzung().isAbgeschlossen() &&
 			getAngabenKorrektur().getFerienbetreuungAngabenKostenEinnahmen().isAbgeschlossen();
+	}
+
+	@Nullable
+	public Set<FerienbetreuungDokument> getDokumente() {
+		return dokumente;
+	}
+
+	public void setDokumente(@Nullable Set<FerienbetreuungDokument> dokumente) {
+		this.dokumente = dokumente;
 	}
 }

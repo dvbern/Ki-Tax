@@ -47,8 +47,10 @@ public class AbschlussStep implements WizardStep<FerienbetreuungWizard> {
 
 	@Override
 	public boolean isDisabled(@Nonnull FerienbetreuungWizard wizard) {
-		if(wizard.getRole().isRoleGemeindeabhaengig()) {
-			return !wizard.getFerienbetreuungAngabenContainer().getAngabenDeklaration().isReadyForFreigeben();
+		if (wizard.getRole().isRoleGemeindeabhaengig()) {
+			return wizard.getFerienbetreuungAngabenContainer().getDokumente() == null ||
+				wizard.getFerienbetreuungAngabenContainer().getDokumente().isEmpty() ||
+				!wizard.getFerienbetreuungAngabenContainer().getAngabenDeklaration().isReadyForFreigeben();
 		}
 		return !wizard.getFerienbetreuungAngabenContainer().isReadyForGeprueft();
 	}
