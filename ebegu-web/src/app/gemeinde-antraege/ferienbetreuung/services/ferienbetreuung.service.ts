@@ -264,8 +264,8 @@ export class FerienbetreuungService {
             map(
                 restAngaben => this.ebeguRestUtil.parseFerienbetreuungContainer(new TSFerienbetreuungAngabenContainer(),
                     restAngaben),
-                tap(() => this.updateFerienbetreuungContainerStore(container.id)),
             ),
+            tap(() => this.updateFerienbetreuungContainerStore(container.id)),
         );
     }
 }
