@@ -42,7 +42,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
     private readonly WIZARD_TYPE = TSWizardStepXTyp.FERIENBETREUUNG;
     private container: TSFerienbetreuungAngabenContainer;
 
-    private unsubscribe: Subject<boolean> = new Subject<boolean>();
+    private readonly unsubscribe: Subject<boolean> = new Subject<boolean>();
 
     public constructor(
         private readonly ferienbetreuungsService: FerienbetreuungService,
@@ -55,17 +55,20 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.ferienbetreuungsService.getFerienbetreuungContainer().pipe(
-            takeUntil(this.unsubscribe),
-        ).subscribe(container => this.container = container);
+        this.ferienbetreuungsService.getFerienbetreuungContainer()
+            .pipe(
+                takeUntil(this.unsubscribe),
+            )
+            .subscribe(container => this.container = container,
+                () => this.errorService.addMesageAsError(this.translate.instant('DATA_RETRIEVAL_ERROR')));
     }
 
     public abschliessenVisible(): Observable<boolean> {
         return combineLatest([
             this.ferienbetreuungsService.getFerienbetreuungContainer().pipe(
-                takeUntil(this.unsubscribe),
                 map(latsContainer => latsContainer.status ===
                     FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE),
+                takeUntil(this.unsubscribe),
             ), this.authService.principal$,
         ]).pipe(
             map(([inBearbeitungGemeinde, principal]) => {
@@ -79,14 +82,14 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
     public geprueftVisible(): Observable<boolean> {
         return combineLatest([
             this.ferienbetreuungsService.getFerienbetreuungContainer().pipe(
-                takeUntil(this.unsubscribe),
                 map(latsContainer => latsContainer.status ===
                     FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON),
+                takeUntil(this.unsubscribe),
             ), this.authService.principal$,
         ]).pipe(
             map(([inBearbeitungGemeinde, principal]) => {
                 return (principal.hasRole(TSRole.SUPER_ADMIN) && inBearbeitungGemeinde) ||
-                        principal.hasOneOfRoles(TSRoleUtil.getMandantRoles());
+                    principal.hasOneOfRoles(TSRoleUtil.getMandantRoles());
             }),
         );
     }
@@ -99,10 +102,10 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
         this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
             .afterClosed()
             .pipe(
-                takeUntil(this.unsubscribe),
                 filter(result => !!result),
                 mergeMap(() => this.ferienbetreuungsService.getFerienbetreuungContainer().pipe(first())),
                 mergeMap(container => this.ferienbetreuungsService.ferienbetreuungAngabenFreigeben(container)),
+                takeUntil(this.unsubscribe),
             )
             .subscribe(() => {
                 this.wizardRS.updateSteps(this.WIZARD_TYPE, this.container.id);
@@ -120,10 +123,10 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
         this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
             .afterClosed()
             .pipe(
-                takeUntil(this.unsubscribe),
                 filter(result => !!result),
                 mergeMap(() => this.ferienbetreuungsService.getFerienbetreuungContainer().pipe(first())),
                 mergeMap(container => this.ferienbetreuungsService.ferienbetreuungAngabenGeprueft(container)),
+                takeUntil(this.unsubscribe),
             ).subscribe(() => this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH')),
             () => this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR')));
     }
