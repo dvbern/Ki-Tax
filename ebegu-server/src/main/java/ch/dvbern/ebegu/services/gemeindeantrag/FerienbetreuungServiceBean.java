@@ -372,6 +372,12 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			"FerienbetreuungAngabenStammdaten must be in state IN_BEARBEITUNG_GEMEINDE"
 		);
 
+		Preconditions.checkArgument(
+			container.getAngabenDeklaration().isReadyForFreigeben(),
+			"angaben incomplete"
+		);
+
+		container.copyForFreigabe();
 		container.setStatus(FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON);
 
 		return persistence.merge(container);

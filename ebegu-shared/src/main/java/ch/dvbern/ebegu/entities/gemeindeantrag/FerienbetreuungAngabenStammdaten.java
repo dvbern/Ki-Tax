@@ -44,6 +44,7 @@ import javax.validation.constraints.Size;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
@@ -122,6 +123,31 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private FerienbetreuungFormularStatus status = FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE;
+
+	public FerienbetreuungAngabenStammdaten() {
+	}
+
+	public FerienbetreuungAngabenStammdaten(FerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenToCopy) {
+		this.amAngebotBeteiligteGemeinden =
+			new HashSet<>(ferienbetreuungAngabenStammdatenToCopy.getAmAngebotBeteiligteGemeinden());
+		this.seitWannFerienbetreuungen = ferienbetreuungAngabenStammdatenToCopy.seitWannFerienbetreuungen;
+		this.traegerschaft = ferienbetreuungAngabenStammdatenToCopy.traegerschaft;
+		// Stammdaten adresse
+		this.stammdatenAdresse = Objects.requireNonNull(ferienbetreuungAngabenStammdatenToCopy.stammdatenAdresse)
+			.copyAdresse(new Adresse(), AntragCopyType.MUTATION);
+		// Kontaktperson
+		this.stammdatenKontaktpersonVorname = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonVorname;
+		this.stammdatenKontaktpersonNachname = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonNachname;
+		this.stammdatenKontaktpersonFunktion = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonFunktion;
+		this.stammdatenKontaktpersonEmail = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonEmail;
+		this.stammdatenKontaktpersonTelefon = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonTelefon;
+		// Auszahlungsdaten
+		this.auszahlungsdaten = Objects.requireNonNull(ferienbetreuungAngabenStammdatenToCopy.auszahlungsdaten).copyAuszahlungsdaten(
+			new Auszahlungsdaten(),
+			AntragCopyType.MUTATION);
+		this.vermerkAuszahlung = ferienbetreuungAngabenStammdatenToCopy.vermerkAuszahlung;
+
+	}
 
 	@Nonnull
 	public Set<String> getAmAngebotBeteiligteGemeinden() {

@@ -80,6 +80,19 @@ public class FerienbetreuungAngabenKostenEinnahmen extends AbstractEntity {
 	@Enumerated(EnumType.STRING)
 	private FerienbetreuungFormularStatus status = FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE;;
 
+	public FerienbetreuungAngabenKostenEinnahmen() {}
+
+	public FerienbetreuungAngabenKostenEinnahmen(FerienbetreuungAngabenKostenEinnahmen toCopy) {
+		this.personalkosten = toCopy.personalkosten;
+		this.personalkostenLeitungAdmin = toCopy.personalkostenLeitungAdmin;
+		this.sachkosten = toCopy.sachkosten;
+		this.verpflegungskosten = toCopy.verpflegungskosten;
+		this.weitereKosten = toCopy.weitereKosten;
+		this.bemerkungenKosten = toCopy.bemerkungenKosten;
+		this.elterngebuehren = toCopy.elterngebuehren;
+		this.weitereEinnahmen = toCopy.weitereEinnahmen;
+	}
+
 	@Nullable
 	public BigDecimal getPersonalkosten() {
 		return personalkosten;
