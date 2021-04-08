@@ -88,12 +88,12 @@ public class SozialdienstFall extends AbstractEntity {
 	@Column(nullable = false)
 	private LocalDate geburtsdatum;
 
-	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = false)
 	@Nullable
 	private String nameGs2;
 
-	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = false)
 	@Nullable
 	private String vornameGs2;

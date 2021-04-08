@@ -2313,6 +2313,8 @@
     "VOLLMACHT_DOKUMENT": "Vollmacht Dokument",
     "SOZIALDIENSTFALL_AKTIVIEREN": "Fall eröffnen",
     "NEUE_MITTEILUNG_SOZIALDIENST": "Neue Mitteilung an den Unterstützungsdienst",
+    "ERROR_ANTRAGSTELLER_SZ_NOT_VOLLSTAENDIG": "Der Antragsteller 2 ist nicht pflichtig aber darf nicht teilweise ausgefüllt werden!",
+    "SOZIALDIENST_INFO_VOLLMACHT_FORM_DIRTY": "Sie haben Änderungen im Formular gemacht. Bitte speichern Sie diese, bevor Sie die Vollmacht erneut herunterladen können",
     "LATS_IN_BETREUUNG_EINLEITUNG": "Durchschnittliche Anzahl eingeschriebene Kinder pro Tag in der Woche vom 15. September {{jahr}}",
     "ALLGEMEINE_ANGABEN": "Informationen zur Tagesschule",
     "LATS_IST_LEHRBETRIEB": "Die Tagesschule ist im laufenden Schuljahr {{periode}} Lehrbetrieb für eine/n Fachfrau/-mann Betreuung EFZ.",
