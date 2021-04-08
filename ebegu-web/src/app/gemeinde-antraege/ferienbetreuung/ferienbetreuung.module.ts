@@ -31,6 +31,7 @@ import {FerienbetreuungRoutingModule} from './ferienbetreuung-routing/ferienbetr
 import {FerienbetreuungStammdatenGemeindeComponent} from './ferienbetreuung-stammdaten-gemeinde/ferienbetreuung-stammdaten-gemeinde.component';
 import {FerienbetreuungUploadComponent} from './ferienbetreuung-upload/ferienbetreuung-upload.component';
 import {FerienbetreuungComponent} from './ferienbetreuung/ferienbetreuung.component';
+import {FerienbetreuungDokumentService} from './services/ferienbetreuung-dokument.service';
 import {FerienbetreuungService} from './services/ferienbetreuung.service';
 
 @NgModule({
@@ -55,7 +56,8 @@ import {FerienbetreuungService} from './services/ferienbetreuung.service';
         ReactiveFormsModule,
     ],
     providers: [
-        FerienbetreuungService
+        FerienbetreuungService,
+        FerienbetreuungDokumentService
     ]
 })
 export class FerienbetreuungModule {

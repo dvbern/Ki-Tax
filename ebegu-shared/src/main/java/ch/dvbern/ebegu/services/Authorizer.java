@@ -279,4 +279,6 @@ public interface Authorizer {
 	void checkWriteAuthorization(@Nonnull FerienbetreuungAngabenContainer container);
 
 	void checkReadAuthorizationFerienbetreuung(@Nonnull String id);
+
+	void checkReadAuthorization(@Nonnull FerienbetreuungAngabenContainer container);
 }

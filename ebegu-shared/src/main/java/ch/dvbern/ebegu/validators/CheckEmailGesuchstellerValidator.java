@@ -38,7 +38,7 @@ public class CheckEmailGesuchstellerValidator implements ConstraintValidator<Che
 	@Override
 	public boolean isValid(Gesuch gesuch, ConstraintValidatorContext context) {
 		boolean valid = true;
-		if (gesuch.getEingangsart().isOnlineGesuch()) {
+		if (gesuch.getEingangsart().isOnlineGesuch() && !gesuch.getFall().isSozialdienstFall()) {
 			if (gesuch.getGesuchsteller1() != null && gesuch.getGesuchsteller1().getGesuchstellerJA() != null) {
 				return StringUtils.isNotEmpty(gesuch.getGesuchsteller1().getGesuchstellerJA().getMail());
 			}

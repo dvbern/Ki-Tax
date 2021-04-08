@@ -24,6 +24,7 @@ import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSSozialdienstFallStatus} from '../../../models/enums/TSSozialdienstFallStatus';
+import {TSSprache} from '../../../models/enums/TSSprache';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSSozialdienstFall} from '../../../models/sozialdienst/TSSozialdienstFall';
@@ -237,12 +238,24 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     public downloadVollmachtDokument(): void {
         this.fallRS.downloadVollmachtDokument(this.gesuchModelManager.getFall().id).then(
             response => {
-                let file;
-                let filename;
-                file = new Blob([response], {type: 'application/pdf'});
-                filename = this.$translate.instant('VOLLMACHT_DATEI_NAME');
-                filename = `${filename}_${this.sozialdienstFall?.vorname}_${this.sozialdienstFall.name}`;
-                this.downloadRS.openDownload(file, filename);
+                this.openDownloadForFile(response);
             });
+    }
+
+    public generateVollmachtPDF(sprache: TSSprache): void {
+        this.fallRS.getVollmachtDokumentAccessTokenGeneratedDokument(this.gesuchModelManager.getFall().id, sprache)
+            .then(
+                response => {
+                    this.openDownloadForFile(response);
+                });
+    }
+
+    private openDownloadForFile(response: BlobPart): void {
+        let file;
+        let filename;
+        file = new Blob([response], {type: 'application/pdf'});
+        filename = this.$translate.instant('VOLLMACHT_DATEI_NAME');
+        filename = `${filename}_${this.sozialdienstFall?.vorname}_${this.sozialdienstFall.name}`;
+        this.downloadRS.openDownload(file, filename);
     }
 }

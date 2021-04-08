@@ -342,10 +342,15 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         return this.gesuchstellerNumber === 1;
     }
 
+    // Email is not required for Papiergesuche and Sozialdienst Gesuche
     public isMailRequired(): boolean {
         const gesuch = this.gesuchModelManager.getGesuch();
-        if (!gesuch) {
+        const fall = this.gesuchModelManager.getFall();
+        if (!gesuch || !fall) {
             return true;
+        }
+        if (fall.isSozialdienstFall()) {
+            return false;
         }
         return this.gesuchstellerNumber === 1 && gesuch.eingangsart === TSEingangsart.ONLINE;
     }

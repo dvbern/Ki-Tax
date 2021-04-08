@@ -166,4 +166,8 @@ public class Fall extends AbstractMutableEntity implements HasMandant {
 	public void setSozialdienstFall(@Nullable SozialdienstFall sozialdienstFall) {
 		this.sozialdienstFall = sozialdienstFall;
 	}
+
+	public boolean isSozialdienstFall() {
+		return this.sozialdienstFall != null;
+	}
 }
