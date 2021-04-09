@@ -127,6 +127,10 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 			antraege.addAll(ferienbetreuungAntraege);
 		}
 
+		if (principal.isCallerInAnyOfRole(UserRole.ADMIN_FERIENBETREUUNG, UserRole.SACHBEARBEITER_FERIENBETREUUNG)) {
+			return antraege;
+		}
+
 		List<LastenausgleichTagesschuleAngabenGemeindeContainer> latsAntraege = lastenausgleichTagesschuleAngabenGemeindeService.getLastenausgleicheTagesschulen(
 			gemeindeId, periodeId, status
 		);

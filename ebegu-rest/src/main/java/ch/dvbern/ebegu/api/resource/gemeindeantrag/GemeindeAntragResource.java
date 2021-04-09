@@ -179,9 +179,8 @@ public class GemeindeAntragResource {
 		"Erstellt fuer die gewählte Gemeinde einen Gemeindeantrag des gewuenschten Typs fuer die gewuenschte Periode")
 	@POST
 	@Path("/create/{gemeindeAntragTyp}/gesuchsperiode/{gesuchsperiodeId}/gemeinde/{gemeindeId}")
-	// todo: add ferienbetreuungen roles
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS })
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG })
 	public JaxGemeindeAntrag createGemeindeAntrag(
 		@Nonnull @Valid @PathParam("gemeindeAntragTyp") GemeindeAntragTyp gemeindeAntragTyp,
 		@Nonnull @Valid @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,

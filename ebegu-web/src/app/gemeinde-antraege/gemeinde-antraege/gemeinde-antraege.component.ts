@@ -305,7 +305,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     public canCreateAntrag(): Observable<boolean> {
         return this.authService.principal$.pipe(
             filter(principal => !!principal),
-            map(() => this.authService.isOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSorMandantRoles()))
+            map(() => this.authService.isOneOfRoles(TSRoleUtil.getFerienbetreuungRoles()))
         );
     }
 }

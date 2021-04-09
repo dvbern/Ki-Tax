@@ -99,6 +99,7 @@ import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRole.JURIST;
 import static ch.dvbern.ebegu.enums.UserRole.REVISOR;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_FERIENBETREUUNG;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_MANDANT;
@@ -168,7 +169,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			}
 			boolean allowedForGemeinde = isUserAllowedForGemeinde(gemeinde) &&
 				principalBean.isCallerInAnyOfRole(ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS,
-					ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, STEUERAMT, JURIST);
+					ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, STEUERAMT, JURIST,
+					ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG);
 			if (!allowedForGemeinde) {
 				throwViolation(gemeinde);
 			}
