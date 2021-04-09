@@ -29,6 +29,8 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.lib.invoicegenerator.BaseGenerator;
+import ch.dvbern.lib.invoicegenerator.OnPageHandler;
 import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import com.google.common.collect.Lists;
@@ -42,11 +44,10 @@ import com.lowagie.text.pdf.ColumnText;
 import com.lowagie.text.pdf.PdfContentByte;
 import org.apache.commons.lang.StringUtils;
 
-
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 import static com.lowagie.text.Utilities.millimetersToPoints;
 
-public class VollmachtPdfGenerator {
+public class VollmachtPdfGenerator extends BaseGenerator<VollmachtPdfLayoutConfiguration> {
 
 	private static final String VOLLMACHT_TITLE = "PdfGeneration_Vollmacht_title";
 	private static final String VOLLMACHT_SUBTITLE = "PdfGeneration_Vollmacht_subtitle";
@@ -61,13 +62,14 @@ public class VollmachtPdfGenerator {
 
 	private static final int SUPER_TEXT_SIZE = 6;
 	private static final int SUPER_TEXT_RISE = 4;
+	private static final int ABSENDER_Y_POSITION = 630;
+	private static final int ABSENDER_2_X_POSITION = 100;
+	private static final float ABSENDER_LINE_HEIGHT = PdfUtil.FONT_SIZE + 4;
 
-	private static final String UNTERSCHRIFT_PLACEHOLDER = "X  __________________________________________";
+	private static final String UNTERSCHRIFT_PLACEHOLDER = "X  ________________________________________________________";
 
-	// verwendet werden
 	protected Locale sprache;
-	@Nonnull
-	private PdfGenerator pdfGenerator;
+	private BaseGenerator<VollmachtPdfLayoutConfiguration> pdfGenerator;
 
 	private SozialdienstFall sozialdienstFall;
 
@@ -75,7 +77,7 @@ public class VollmachtPdfGenerator {
 	public VollmachtPdfGenerator(Sprache sprache, @Nonnull SozialdienstFall sozialdienstFall) {
 		initSprache(sprache);
 		this.sozialdienstFall = sozialdienstFall;
-		initGenerator(new byte[0]);
+		initGenerator();
 	}
 
 	private void initSprache(Sprache sprache) {
@@ -92,44 +94,53 @@ public class VollmachtPdfGenerator {
 	}
 
 	@Nonnull
-	protected PdfGenerator getPdfGenerator() {
+	protected BaseGenerator<VollmachtPdfLayoutConfiguration> getPdfGenerator() {
 		return pdfGenerator;
 	}
 
 	public void generate(@Nonnull final OutputStream outputStream) throws InvoiceGeneratorException {
-		getPdfGenerator().generate(outputStream, "", getAbsenderAdresseAntragsteller2(), getCustomGenerator());
+		OnPageHandler onPageHandler = new OnPageHandler(getPdfElementGenerator(), new ArrayList<>());
+		getPdfGenerator().generate(outputStream, onPageHandler, (generator) -> {
+			Document document = generator.getDocument();
+			createContent(document, generator.getDirectContent());
+		});
 	}
 
-	private void initGenerator(@Nonnull final byte[] mandantLogo) {
-		this.pdfGenerator = PdfGenerator.create(mandantLogo, getAbsenderAdresse(), true);
+	private void initGenerator() {
+		this.pdfGenerator = new BaseGenerator<>(new VollmachtPdfLayoutConfiguration());
 	}
 
 	protected CustomGenerator getCustomGenerator() {
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 			//document.add(createIntroAndInfoKontingentierung());
-			createContent(document, generator);
+			createContent(document, generator.getDirectContent());
 		};
 	}
 
 	public void createContent(
 		@Nonnull final Document document,
-		@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator) throws DocumentException {
+		@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
 
 		createContentWhereIWant(
-			generator.getDirectContent(),
+			dirPdfContentByte,
 			translate(VOLLMACHT_TITLE),
 			725,
 			20,
-			getPageConfiguration().getFonts().getFontH2(),
-			16);
+			16,
+			PdfUtil.DEFAULT_FONT_BOLD);
+
 		createContentWhereIWant(
-			generator.getDirectContent(),
+			dirPdfContentByte,
 			translate(VOLLMACHT_SUBTITLE),
 			690,
 			20,
-			getPageConfiguration().getFonts().getFontBold(),
-			11);
+			11,
+			PdfUtil.DEFAULT_FONT_BOLD);
+
+		placeAbsender(dirPdfContentByte);
+		placeAntragsteller2(dirPdfContentByte);
+
 		Paragraph paragraph1 =
 			PdfUtil.createParagraph(translate(VOLLMACHT_PARAGRAPH_1,
 				this.sozialdienstFall.getSozialdienst().getName()),
@@ -143,13 +154,13 @@ public class VollmachtPdfGenerator {
 		paragraph2.setSpacingAfter(15);
 		document.add(paragraph2);
 		Paragraph bemerkung = PdfUtil.createParagraph(translate(VOLLMACHT_BEMERKUNG), 2, PdfUtil.DEFAULT_FONT);
-		bemerkung.setSpacingAfter(35);
+		bemerkung.setSpacingAfter(45);
 		document.add(bemerkung);
 		Paragraph ortDatum = PdfUtil.createParagraph(translate(VOLLMACHT_ORT_DATUM), 2, PdfUtil.DEFAULT_FONT);
 		ortDatum.setSpacingAfter(25);
 		document.add(ortDatum);
 		Paragraph unterschrift = PdfUtil.createParagraph(translate(VOLLMACHT_UNTERSCHRIFT), 2, PdfUtil.DEFAULT_FONT);
-		unterschrift.setSpacingAfter(15);
+		unterschrift.setSpacingAfter(25);
 		document.add(unterschrift);
 		Paragraph unterschriftZeile1 = PdfUtil.createParagraph(UNTERSCHRIFT_PLACEHOLDER, 1, PdfUtil.DEFAULT_FONT);
 		unterschrift.setSpacingAfter(0);
@@ -160,10 +171,40 @@ public class VollmachtPdfGenerator {
 			document.add(unterschriftZeile2);
 		}
 		createFusszeile(
-			generator.getDirectContent(),
+			dirPdfContentByte,
 			Lists.newArrayList(translate(VOLLMACHT_FUSSZEILE_1)),
 			0, 0
 		);
+	}
+
+	private void placeAbsender(
+		@Nonnull PdfContentByte dirPdfContentByte
+	) {
+		float position = ABSENDER_Y_POSITION;
+		for (String text : getAbsenderAdresse()) {
+			createContentWhereIWant(
+				dirPdfContentByte,
+				text,
+				position,
+				20,
+				PdfUtil.FONT_SIZE);
+			position -= ABSENDER_LINE_HEIGHT;
+		}
+	}
+
+	private void placeAntragsteller2(
+		@Nonnull PdfContentByte dirPdfContentByte
+	) {
+		int position = ABSENDER_Y_POSITION;
+		for (String text : getAbsenderAdresseAntragsteller2()) {
+			createContentWhereIWant(
+				dirPdfContentByte,
+				text,
+				position,
+				ABSENDER_2_X_POSITION,
+				PdfUtil.FONT_SIZE);
+			position -= ABSENDER_LINE_HEIGHT;
+		}
 	}
 
 	@Nonnull
@@ -185,7 +226,6 @@ public class VollmachtPdfGenerator {
 	protected final List<String> getAbsenderAdresseAntragsteller2() {
 		List<String> absender = new ArrayList<>();
 		if (isZweiAntragstellende()) {
-			absender.add("");
 			absender.add("");
 			absender.add("");
 			absender.add(this.sozialdienstFall.getNameGs2() + " " + this.sozialdienstFall.getVornameGs2());
@@ -224,12 +264,21 @@ public class VollmachtPdfGenerator {
 		fz.go();
 	}
 
+	private void createContentWhereIWant(
+		@Nonnull PdfContentByte dirPdfContentByte,
+		String content,
+		float y,
+		float x,
+		float size) {
+		createContentWhereIWant(dirPdfContentByte, content, y, x, size, PdfUtil.DEFAULT_FONT);
+	}
+
 	/**
 	 * Wenn man etwas ganz genau platzieren muss...
 	 */
 	protected void createContentWhereIWant(
 		@Nonnull PdfContentByte dirPdfContentByte, String content, float y,
-		float x, Font font, float size) throws DocumentException {
+		float x, float size, Font font) throws DocumentException {
 		ColumnText fz = new ColumnText(dirPdfContentByte);
 		final float height = millimetersToPoints(20);
 		final float width = millimetersToPoints(170);
