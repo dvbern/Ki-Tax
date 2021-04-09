@@ -34,10 +34,15 @@ export class TSLastenausgleichTagesschuleAngabenGemeinde extends TSAbstractEntit
     public davonStundenZuNormlohnMehrAls50ProzentAusgebildete: number;
     public davonStundenZuNormlohnWenigerAls50ProzentAusgebildete: number;
     public einnahmenElterngebuehren: number;
-
+    public tagesschuleTeilweiseGeschlossen: boolean;
+    public rueckerstattungenElterngebuehrenSchliessung: number;
+    public ersteRateAusbezahlt: number;
     // C: Kostenbeteiligung Gemeinde
     public gesamtKostenTagesschule: number;
     public einnnahmenVerpflegung: number;
+    public ueberschussErzielt: boolean;
+    public ueberschussVerwendung: string;
+
     public einnahmenSubventionenDritter: number;
 
     // D: Angaben zu weiteren Kosten und Ertraegen
