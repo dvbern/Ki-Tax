@@ -75,4 +75,36 @@ public interface FerienbetreuungService {
 
 	@Nonnull
 	FerienbetreuungAngabenKostenEinnahmen saveFerienbetreuungAngabenKostenEinnahmen(@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen);
+
+	@Nonnull
+	FerienbetreuungAngabenAngebot ferienbetreuungAngebotAbschliessen(@Nonnull FerienbetreuungAngabenAngebot angebot);
+
+	@Nonnull
+	FerienbetreuungAngabenAngebot ferienbetreuungAngebotFalscheAngaben(@Nonnull FerienbetreuungAngabenAngebot angebot);
+
+	@Nonnull
+	FerienbetreuungAngabenNutzung ferienbetreuungAngabenNutzungAbschliessen(@Nonnull FerienbetreuungAngabenNutzung nutzung);
+
+	@Nonnull
+	FerienbetreuungAngabenNutzung ferienbetreuungAngabenNutzungFalscheAngaben(@Nonnull FerienbetreuungAngabenNutzung nutzung);
+
+	@Nonnull
+	FerienbetreuungAngabenKostenEinnahmen ferienbetreuungAngabenKostenEinnahmenAbschliessen(
+		@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen);
+
+	@Nonnull
+	FerienbetreuungAngabenKostenEinnahmen ferienbetreuungAngabenKostenEinnahmenFalscheAngaben(
+		@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen);
+
+	@Nonnull
+	FerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenAbschliessen(
+		@Nonnull FerienbetreuungAngabenStammdaten stammdaten);
+
+	@Nonnull
+	FerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenFalscheAngaben(
+		@Nonnull FerienbetreuungAngabenStammdaten stammdaten);
+
+	@Nonnull
+	FerienbetreuungAngabenContainer ferienbetreuungAngabenAbschliessen(
+		@Nonnull FerienbetreuungAngabenContainer container);
 }

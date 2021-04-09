@@ -16,27 +16,58 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {of} from 'rxjs';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
+import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
+import {TSBenutzer} from '../../../../models/TSBenutzer';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {SharedModule} from '../../../shared/shared.module';
+import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
 import {FerienbetreuungAbschlussComponent} from './ferienbetreuung-abschluss.component';
 
-describe('FerienbetreuungVerfuegungComponent', () => {
-  let component: FerienbetreuungAbschlussComponent;
-  let fixture: ComponentFixture<FerienbetreuungAbschlussComponent>;
+describe('FerienbetreuungAbschlussComponent', () => {
+    let component: FerienbetreuungAbschlussComponent;
+    let fixture: ComponentFixture<FerienbetreuungAbschlussComponent>;
+    const dummyUser = new TSBenutzer();
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ FerienbetreuungAbschlussComponent ]
-    })
-    .compileComponents();
-  });
+    const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(
+        FerienbetreuungService.name,
+        ['getFerienbetreuungContainer'],
+    );
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
+        ['addMesageAsError', 'addMesageAsInfo']);
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(FerienbetreuungAbschlussComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+        ['principal$']);
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    const container = new TSFerienbetreuungAngabenContainer();
+    container.angabenDeklaration = null;
+    authServiceSpy.principal$ = of(dummyUser);
+
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [SharedModule],
+            providers: [
+                {provide: FerienbetreuungService, useValue: ferienbetreuungServiceSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy},
+            ],
+            declarations: [FerienbetreuungAbschlussComponent],
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
+    });
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(FerienbetreuungAbschlussComponent);
+        ferienbetreuungServiceSpy.getFerienbetreuungContainer.and.returnValue(of(container));
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

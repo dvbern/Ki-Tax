@@ -19,9 +19,11 @@ package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 
 public class JaxFerienbetreuungAngabenNutzung extends JaxAbstractDTO {
 
@@ -56,6 +58,9 @@ public class JaxFerienbetreuungAngabenNutzung extends JaxAbstractDTO {
 
 	@Nullable
 	private BigDecimal anzahlBetreuteKinder3Zyklus;
+
+	@Nonnull
+	private FerienbetreuungFormularStatus status;
 
 	@Nullable
 	public BigDecimal getAnzahlBetreuungstageKinderBern() {
@@ -145,5 +150,14 @@ public class JaxFerienbetreuungAngabenNutzung extends JaxAbstractDTO {
 
 	public void setAnzahlBetreuteKinder3Zyklus(@Nullable BigDecimal anzahlBetreuteKinder3Zyklus) {
 		this.anzahlBetreuteKinder3Zyklus = anzahlBetreuteKinder3Zyklus;
+	}
+
+	@Nonnull
+	public FerienbetreuungFormularStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(@Nonnull FerienbetreuungFormularStatus status) {
+		this.status = status;
 	}
 }

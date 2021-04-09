@@ -14,33 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-form {
-    max-width: 600px;
-}
 
-.actions {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-
-    & > dv-loading-button {
-        margin: 0 5px;
-    }
-}
-
-.label-required-error {
-    color: red;
-}
-
-
-.pointer-cursor {
-    cursor: pointer;
-}
-
-#adresse-header, #kontaktperson-header {
-    display: flex;
-
-    .flex-whitespace-item {
-        flex-grow: 1;
-    }
+export enum TSFerienbetreuungFormularStatus {
+    IN_BEARBEITUNG_GEMEINDE = 'IN_BEARBEITUNG_GEMEINDE',
+    ABGESCHLOSSEN = 'ABGESCHLOSSEN',
+    IN_PRUEFUNG_KANTON = 'IN_PRUEFUNG_KANTON',
+    GEPRUEFT = 'GEPRUEFT',
 }
