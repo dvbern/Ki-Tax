@@ -40,7 +40,8 @@ public interface FerienbetreuungService {
 	List<FerienbetreuungAngabenContainer> getFerienbetreuungAntraege(
 		@Nullable String gemeinde,
 		@Nullable String periode,
-		@Nullable String status
+		@Nullable String status,
+		@Nullable String timestampMutiert
 	);
 
 	@Nonnull

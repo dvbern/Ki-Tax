@@ -59,7 +59,6 @@ export class GemeindeAntraegeComponent implements OnInit {
         'fallNummer',
         'familienName',
         'kinder',
-        'aenderungsdatum',
         'dokumenteHochgeladen',
         'angebote',
         'institutionen',
@@ -128,6 +127,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                         status: antrag.statusString,
                         periode: antrag.gesuchsperiode.gesuchsperiodeString,
                         antragTyp: antrag.gemeindeAntragTyp,
+                        aenderungsdatum: antrag.timestampMutiert
                     };
                 });
             }),

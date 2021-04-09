@@ -62,6 +62,9 @@ export class GemeindeAntragService {
         if (filter.status) {
             params = params.append('status', filter.status);
         }
+        if (filter.aenderungsdatum) {
+            params = params.append('timestampMutiert', filter.aenderungsdatum);
+        }
         return this.http.get<TSGemeindeAntrag[]>(this.API_BASE_URL, {
             params,
         }).pipe(

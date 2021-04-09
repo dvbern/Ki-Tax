@@ -225,10 +225,11 @@ public class GemeindeAntragResource {
 		@Nullable @QueryParam("gemeinde") String gemeinde,
 		@Nullable @QueryParam("periode") String periode,
 		@Nullable @QueryParam("typ") String typ,
-		@Nullable @QueryParam("status") String status
+		@Nullable @QueryParam("status") String status,
+		@Nullable @QueryParam("timestampMutiert") String timestampMutiert
 	) {
 		return converter.gemeindeAntragListToJax(
-			(List<GemeindeAntrag>) gemeindeAntragService.getGemeindeAntraege(gemeinde, periode, typ, status));
+			(List<GemeindeAntrag>) gemeindeAntragService.getGemeindeAntraege(gemeinde, periode, typ, status, timestampMutiert));
 	}
 
 	@ApiOperation("Gibt alle Tagesschuleanträge des Gemeinde-Antrags zurück, die für die Benutzerin sichtbar sind")
