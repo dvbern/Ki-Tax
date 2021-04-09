@@ -186,6 +186,8 @@ public class SozialdienstResource {
 		if (convertedStammdaten.getSozialdienst().getStatus() == SozialdienstStatus.EINGELADEN) {
 			convertedStammdaten.getSozialdienst().setStatus(SozialdienstStatus.AKTIV);
 		}
+		// Name ist editierbar in die Stammdaten
+		convertedStammdaten.getSozialdienst().setName(jaxStammdaten.getSozialdienst().getName());
 
 		authorizer.checkWriteAuthorization(convertedStammdaten.getSozialdienst());
 
