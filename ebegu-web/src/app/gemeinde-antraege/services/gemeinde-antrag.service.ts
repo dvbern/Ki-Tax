@@ -128,6 +128,12 @@ export class GemeindeAntragService {
                         a.gesuchsperiode.gesuchsperiodeString.localeCompare(b.gesuchsperiode.gesuchsperiodeString)) :
                     antraege.sort((a, b) =>
                         b.gesuchsperiode.gesuchsperiodeString.localeCompare(a.gesuchsperiode.gesuchsperiodeString));
+            case 'aenderungsdatum':
+                return sort.reverse ?
+                    antraege.sort((a, b) =>
+                        b.timestampMutiert.diff(a.timestampMutiert)) :
+                    antraege.sort((a, b) =>
+                        a.timestampMutiert.diff(b.timestampMutiert));
             default:
                 return antraege;
         }

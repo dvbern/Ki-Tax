@@ -78,7 +78,10 @@ export class GemeindeAntraegeComponent implements OnInit {
     private readonly sortDebounceSubject: BehaviorSubject<{
         predicate?: string,
         reverse?: boolean
-    }> = new BehaviorSubject<{ predicate?: string; reverse?: boolean }>({});
+    }> = new BehaviorSubject<{ predicate?: string; reverse?: boolean }>({
+        predicate: 'aenderungsdatum',
+        reverse: true
+    });
     public triedSending: boolean = false;
     public types: TSGemeindeAntragTyp[];
     public deletePossible$: Observable<boolean>;
