@@ -181,13 +181,13 @@
 
         <h3 class="uppercase">{{'LATS_ABRECHNUNG' | translate}}</h3>
         <p class="italic">{{'LATS_EXPLANATION_SUB_HEADER_ABRECHNUNG' | translate}}</p>
-        <p class="sub-header-explanation">{{'LATS_COVID_INFORMATION' | translate}}
+        <p class="sub-header-explanation green">{{'LATS_COVID_INFORMATION' | translate}}
             <dv-tooltip [text]="'LATS_COVID_ABRECHNUNG_INFO' | translate"></dv-tooltip>
         </p>
         <dv-input-container-x>
             <label required [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors}">
-                {{'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
-                <dv-tooltip [text]="'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR_INFO' | translate"></dv-tooltip>
+                <span [innerHTML]="'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString}"></span>
+                <dv-tooltip class="green" [text]="'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR_INFO' | translate"></dv-tooltip>
             </label>
             <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
@@ -212,8 +212,8 @@
 
         <dv-input-container-x>
             <label required [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').errors}">
-                {{'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
-                <dv-tooltip [text]="'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN_INFO' | translate"></dv-tooltip>
+                <span [innerHtml]="'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString}"></span>
+                <dv-tooltip class="green" [text]="'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN_INFO' | translate"></dv-tooltip>
             </label>
 
             <div class="flex-whitespace-item"></div>
@@ -257,7 +257,7 @@
         <dv-input-container-x>
             <label required [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors}"
                    >
-                {{'LATS_DAVON_STUNDEN_NORM_MEHR_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingMoreThanFifty$ | async)?.value} }}
+                {{'LATS_DAVON_STUNDEN_NORM_MEHR_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingMoreThanFifty$ | async)?.value | number:'1.2-2'} }}
             </label>
             <mat-form-field floatLabel="always">
                 <mat-label translate></mat-label>
@@ -290,7 +290,7 @@
 
         <dv-input-container-x>
             <label required [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors}">
-                {{'LATS_DAVON_STUNDEN_NORM_WENIGER_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingLessThanFifty$ | async)?.value} }}
+                {{'LATS_DAVON_STUNDEN_NORM_WENIGER_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingLessThanFifty$ | async)?.value  | number:'1.2-2'} }}
             </label>
             <mat-form-field floatLabel="always">
                 <input matInput
@@ -379,10 +379,9 @@
     </dv-input-container-x>
 
     <dv-input-container-x>
-        <label [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('tagesschuleTeilweiseGeschlossen').errors}">
+        <label required class="green" [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('tagesschuleTeilweiseGeschlossen').errors}">
             {{'LATS_TAGESSCHULE_GESCHLOSSEN' | translate:{periode: lATSAngabenGemeindeContainer?.gesuchsperiode?.gesuchsperiodeString} }}
             <dv-tooltip [text]="'LATS_TAGESSCHULE_GESCHLOSSEN_INFO' | translate"></dv-tooltip>
-            <span>&nbsp;*</span>
         </label>
         <div class="flex-whitespace-item"></div>
         <dv-radio-container-x>
@@ -406,7 +405,7 @@
     </dv-input-container-x>
 
     <dv-input-container-x *ngIf="angabenForm.get('tagesschuleTeilweiseGeschlossen').value">
-        <label required
+        <label class="green" required
                [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('rueckerstattungenElterngebuehrenSchliessung').errors}">
             {{'LATS_RUECKERSTATTUNG_TS_GESCHLOSSEN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
         </label>
@@ -428,10 +427,11 @@
         </mat-form-field>
     </dv-input-container-x>
 
-    <mat-divider></mat-divider>
+    <mat-divider class="margin-bottom-20"></mat-divider>
 
         <dv-input-container-x>
-            <label [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('lastenausgleichsberechtigerBetrag').errors}">
+            <label [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('lastenausgleichsberechtigerBetrag').errors}"
+            class="bold-label">
                 {{'LATS_LASTENAUSGLEICHSBERECHTIGTER_BETRAG_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
             </label>
             <div class="flex-whitespace-item"></div>
@@ -441,7 +441,6 @@
         </dv-input-container-x>
 
     <dv-input-container-x>
-        <!-- TODO: add year translation parameter -->
         <label [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('ersteRateAusbezahlt').errors}">
             {{'LATS_ERSTE_RATE_AUSBEZAHLT' | translate:{year: getLastYear()} }}
             <dv-tooltip [text]="'LATS_ERSTE_RATE_AUSBEZAHLT_INFO' | translate:{periode: lATSAngabenGemeindeContainer?.gesuchsperiode?.gesuchsperiodeString, previousYear: getLastYear()}"></dv-tooltip>
@@ -460,7 +459,7 @@
     </dv-input-container-x>
 
     <dv-input-container-x>
-        <label>
+        <label class="bold-label">
             {{'LATS_SCHLUSSZAHLUNG' | translate:{year: getNextYear()} }}
         </label>
         <div class="flex-whitespace-item"></div>
@@ -469,7 +468,9 @@
         </mat-form-field>
     </dv-input-container-x>
 
-        <h3 class="uppercase">{{'LATS_KOSTENBETEILIGUNG_GEMEINDE' | translate}}</h3>
+    <mat-divider class="margin-bottom-20"></mat-divider>
+
+    <h3 class="uppercase">{{'LATS_KOSTENBETEILIGUNG_GEMEINDE' | translate}}</h3>
         <p class="sub-header-explanation">{{'LATS_EXPLANATION_SUB_HEADER_KOSTENBETEILIGUNG_GEMEINDE' | translate}}</p>
 
         <dv-input-container-x>
