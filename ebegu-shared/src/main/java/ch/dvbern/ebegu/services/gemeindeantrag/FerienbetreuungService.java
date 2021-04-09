@@ -50,7 +50,6 @@ public interface FerienbetreuungService {
 	@Nonnull
 	FerienbetreuungAngabenContainer createFerienbetreuungAntrag(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
 
-	@Nonnull
 	void saveKommentar(@Nonnull String id, @Nonnull String kommentar);
 
 	@Nonnull

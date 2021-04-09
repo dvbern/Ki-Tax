@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -177,12 +178,43 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	public FerienbetreuungAngabenContainer createFerienbetreuungAntrag(
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull Gesuchsperiode gesuchsperiode) {
+
+		Optional<FerienbetreuungAngabenContainer> existingOptional =
+			findFerienbetreuungAngabenContainer(gemeinde, gesuchsperiode);
+
+		if (existingOptional.isPresent()) {
+			throw new EntityExistsException(
+				FerienbetreuungAngabenContainer.class,
+				"FerienbetreuungContainer existiert für Gemeinde und Periode bereits",
+				gemeinde.getName() + ' ' + gesuchsperiode.getGesuchsperiodeString());
+		}
+
 		FerienbetreuungAngabenContainer container = new FerienbetreuungAngabenContainer();
 		container.setStatus(FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE);
 		container.setGemeinde(gemeinde);
 		container.setGesuchsperiode(gesuchsperiode);
 		container.setAngabenDeklaration(new FerienbetreuungAngaben());
 		return persistence.persist(container);
+	}
+
+	@Nonnull
+	private Optional<FerienbetreuungAngabenContainer> findFerienbetreuungAngabenContainer(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+		Objects.requireNonNull(gemeinde, "gemeinde muss gesetzt sein");
+		Objects.requireNonNull(gesuchsperiode, "gesuchsperiode muss gesetzt sein");
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<FerienbetreuungAngabenContainer> query =
+			cb.createQuery(FerienbetreuungAngabenContainer.class);
+		Root<FerienbetreuungAngabenContainer> root =
+			query.from(FerienbetreuungAngabenContainer.class);
+
+		Predicate gemeindePredicate =
+			cb.equal(root.get(FerienbetreuungAngabenContainer_.gemeinde), gemeinde);
+		Predicate gesuchsperiodePredicate =
+			cb.equal(root.get(FerienbetreuungAngabenContainer_.gesuchsperiode), gesuchsperiode);
+
+		query.where(cb.and(gemeindePredicate, gesuchsperiodePredicate));
+		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
 	}
 
 	@Nonnull
