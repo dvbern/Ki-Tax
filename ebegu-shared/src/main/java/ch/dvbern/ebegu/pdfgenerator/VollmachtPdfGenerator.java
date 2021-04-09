@@ -40,8 +40,8 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.ColumnText;
 import com.lowagie.text.pdf.PdfContentByte;
-import org.apache.commons.io.IOUtils;
-import org.jetbrains.annotations.Nullable;
+import org.apache.commons.lang.StringUtils;
+
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 import static com.lowagie.text.Utilities.millimetersToPoints;
@@ -62,6 +62,8 @@ public class VollmachtPdfGenerator {
 	private static final int SUPER_TEXT_SIZE = 6;
 	private static final int SUPER_TEXT_RISE = 4;
 
+	private static final String UNTERSCHRIFT_PLACEHOLDER = "X  __________________________________________";
+
 	// verwendet werden
 	protected Locale sprache;
 	@Nonnull
@@ -76,10 +78,10 @@ public class VollmachtPdfGenerator {
 		initGenerator(new byte[0]);
 	}
 
-	private void initSprache(Sprache sprache){
-		if(sprache != null) {
+	private void initSprache(Sprache sprache) {
+		if (sprache != null) {
 			this.sprache = sprache.getLocale();
-		} else{
+		} else {
 			this.sprache = Sprache.DEUTSCH.getLocale();
 		}
 	}
@@ -94,9 +96,8 @@ public class VollmachtPdfGenerator {
 		return pdfGenerator;
 	}
 
-
 	public void generate(@Nonnull final OutputStream outputStream) throws InvoiceGeneratorException {
-		getPdfGenerator().generate(outputStream, "", new ArrayList<String>(), getCustomGenerator());
+		getPdfGenerator().generate(outputStream, "", getAbsenderAdresseAntragsteller2(), getCustomGenerator());
 	}
 
 	private void initGenerator(@Nonnull final byte[] mandantLogo) {
@@ -115,9 +116,25 @@ public class VollmachtPdfGenerator {
 		@Nonnull final Document document,
 		@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator) throws DocumentException {
 
-		createContentWhereIWant(generator.getDirectContent(), translate(VOLLMACHT_TITLE), 725, 20, getPageConfiguration().getFonts().getFontH2(), 16);
-		createContentWhereIWant(generator.getDirectContent(), translate(VOLLMACHT_SUBTITLE), 690, 20, getPageConfiguration().getFonts().getFontBold(), 11);
-		Paragraph paragraph1 = PdfUtil.createParagraph(translate(VOLLMACHT_PARAGRAPH_1, this.sozialdienstFall.getSozialdienst().getName()), 2, PdfUtil.DEFAULT_FONT);
+		createContentWhereIWant(
+			generator.getDirectContent(),
+			translate(VOLLMACHT_TITLE),
+			725,
+			20,
+			getPageConfiguration().getFonts().getFontH2(),
+			16);
+		createContentWhereIWant(
+			generator.getDirectContent(),
+			translate(VOLLMACHT_SUBTITLE),
+			690,
+			20,
+			getPageConfiguration().getFonts().getFontBold(),
+			11);
+		Paragraph paragraph1 =
+			PdfUtil.createParagraph(translate(VOLLMACHT_PARAGRAPH_1,
+				this.sozialdienstFall.getSozialdienst().getName()),
+				2,
+				PdfUtil.DEFAULT_FONT);
 		paragraph1.setSpacingAfter(15);
 		document.add(paragraph1);
 		Paragraph paragraph2 = PdfUtil.createParagraph(translate(VOLLMACHT_PARAGRAPH_2A), 2, PdfUtil.DEFAULT_FONT);
@@ -134,6 +151,14 @@ public class VollmachtPdfGenerator {
 		Paragraph unterschrift = PdfUtil.createParagraph(translate(VOLLMACHT_UNTERSCHRIFT), 2, PdfUtil.DEFAULT_FONT);
 		unterschrift.setSpacingAfter(15);
 		document.add(unterschrift);
+		Paragraph unterschriftZeile1 = PdfUtil.createParagraph(UNTERSCHRIFT_PLACEHOLDER, 1, PdfUtil.DEFAULT_FONT);
+		unterschrift.setSpacingAfter(0);
+		document.add(unterschriftZeile1);
+		if(isZweiAntragstellende()){
+			Paragraph unterschriftZeile2 = PdfUtil.createParagraph(UNTERSCHRIFT_PLACEHOLDER, 2, PdfUtil.DEFAULT_FONT);
+			unterschrift.setSpacingAfter(5);
+			document.add(unterschriftZeile2);
+		}
 		createFusszeile(
 			generator.getDirectContent(),
 			Lists.newArrayList(translate(VOLLMACHT_FUSSZEILE_1)),
@@ -148,15 +173,24 @@ public class VollmachtPdfGenerator {
 		absender.add("");
 		absender.add(this.sozialdienstFall.getName() + " " + this.sozialdienstFall.getVorname());
 		absender.add(this.sozialdienstFall.getAdresse().getStrasseAndHausnummer());
+		if (!StringUtils.isEmpty(this.sozialdienstFall.getAdresse().getZusatzzeile())) {
+			absender.add(this.sozialdienstFall.getAdresse().getZusatzzeile());
+		}
 		absender.add(this.sozialdienstFall.getAdresse().getPlz() + " " + this.sozialdienstFall.getAdresse().getOrt());
 		absender.add(Constants.DATE_FORMATTER.format(this.sozialdienstFall.getGeburtsdatum()));
 		return absender;
 	}
 
 	@Nonnull
-	protected final List<String> getEmpfangerAdresse() {
+	protected final List<String> getAbsenderAdresseAntragsteller2() {
 		List<String> absender = new ArrayList<>();
-		// No Empfanger bei Vollmacht
+		if (isZweiAntragstellende()) {
+			absender.add("");
+			absender.add("");
+			absender.add("");
+			absender.add(this.sozialdienstFall.getNameGs2() + " " + this.sozialdienstFall.getVornameGs2());
+			absender.add(Constants.DATE_FORMATTER.format(this.sozialdienstFall.getGeburtsdatum()));
+		}
 		return absender;
 	}
 
@@ -180,7 +214,8 @@ public class VollmachtPdfGenerator {
 		fz.setLeading(0, DEFAULT_MULTIPLIED_LEADING);
 		Font fontWithSize = PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFont(), 6.5f);
 		for (int i = start; i < content.size(); i++) {
-			Chunk chunk = new Chunk((i + anzeigeNummerStart + 1) + " ", PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFont(),
+			Chunk chunk = new Chunk((i + anzeigeNummerStart + 1) + " ", PdfUtil.createFontWithSize(
+				getPageConfiguration().getFonts().getFont(),
 				5));
 			chunk.setTextRise(2);
 			fz.addText(chunk);
@@ -191,15 +226,9 @@ public class VollmachtPdfGenerator {
 
 	/**
 	 * Wenn man etwas ganz genau platzieren muss...
-	 * @param dirPdfContentByte
-	 * @param content
-	 * @param y
-	 * @param x
-	 * @param font
-	 * @param size
-	 * @throws DocumentException
 	 */
-	protected void createContentWhereIWant(@Nonnull PdfContentByte dirPdfContentByte, String content, float y,
+	protected void createContentWhereIWant(
+		@Nonnull PdfContentByte dirPdfContentByte, String content, float y,
 		float x, Font font, float size) throws DocumentException {
 		ColumnText fz = new ColumnText(dirPdfContentByte);
 		final float height = millimetersToPoints(20);
@@ -211,5 +240,12 @@ public class VollmachtPdfGenerator {
 		Font fontWithSize = PdfUtil.createFontWithSize(font, size);
 		fz.addText(new Phrase(content + '\n', fontWithSize));
 		fz.go();
+	}
+
+	private boolean isZweiAntragstellende() {
+		if (this.sozialdienstFall.getNameGs2() != null && !this.sozialdienstFall.getNameGs2().isEmpty()) {
+			return true;
+		}
+		return false;
 	}
 }
