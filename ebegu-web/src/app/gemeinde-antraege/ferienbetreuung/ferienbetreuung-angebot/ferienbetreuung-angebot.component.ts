@@ -138,8 +138,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
                 numberValidator(ValidationType.INTEGER)
             ],
             bemerkungenAnzahlFerienwochen: [
-                angebot?.bemerkungenAnzahlFerienwochen,
-                numberValidator(ValidationType.INTEGER)
+                angebot?.bemerkungenAnzahlFerienwochen
             ],
             anzahlStundenProBetreuungstag: [
                 angebot?.anzahlStundenProBetreuungstag,
