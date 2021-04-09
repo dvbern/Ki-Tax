@@ -20,10 +20,12 @@ package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
 import java.math.BigDecimal;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 
 public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 
@@ -115,6 +117,9 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 
 	@Nullable
 	private String bemerkungenTarifsystem;
+
+	@Nonnull
+	private FerienbetreuungFormularStatus status;
 
 	@Nullable
 	public String getAngebot() {
@@ -247,7 +252,7 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 		return gemeindeFuehrtAngebotSelber;
 	}
 
-	public void setGemeindeFuehrtAngebotSelber(Boolean gemeindeFuehrtAngebotSelber) {
+	public void setGemeindeFuehrtAngebotSelber(@Nullable Boolean gemeindeFuehrtAngebotSelber) {
 		this.gemeindeFuehrtAngebotSelber = gemeindeFuehrtAngebotSelber;
 	}
 
@@ -375,5 +380,14 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 
 	public void setBemerkungenTarifsystem(@Nullable String bemerkungenTarifsystem) {
 		this.bemerkungenTarifsystem = bemerkungenTarifsystem;
+	}
+
+	@Nonnull
+	public FerienbetreuungFormularStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(@Nonnull FerienbetreuungFormularStatus status) {
+		this.status = status;
 	}
 }

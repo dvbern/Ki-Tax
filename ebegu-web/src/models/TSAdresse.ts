@@ -48,8 +48,8 @@ export class TSAdresse extends TSAbstractDateRangedEntity {
         if (!this.gueltigkeit) {
             this.gueltigkeit = new TSDateRange();
         }
-        this.gueltigkeit.gueltigAb = toCopy.gueltigkeit.gueltigAb;
-        this.gueltigkeit.gueltigBis = toCopy.gueltigkeit.gueltigBis;
+        this.gueltigkeit.gueltigAb = toCopy.gueltigkeit?.gueltigAb;
+        this.gueltigkeit.gueltigBis = toCopy.gueltigkeit?.gueltigBis;
     }
 
     public get strasse(): string {
@@ -138,5 +138,16 @@ export class TSAdresse extends TSAbstractDateRangedEntity {
 
     public set organisation(value: string) {
         this._organisation = value;
+    }
+
+    public from(adresseKontoinhaber: Partial<TSAdresse>): TSAdresse {
+        this.strasse = adresseKontoinhaber.strasse;
+        this.hausnummer = adresseKontoinhaber.hausnummer;
+        this.plz = adresseKontoinhaber.plz;
+        this.ort = adresseKontoinhaber.ort;
+        this.organisation = adresseKontoinhaber.organisation;
+        this.zusatzzeile = adresseKontoinhaber.zusatzzeile;
+
+        return this;
     }
 }

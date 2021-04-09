@@ -119,7 +119,7 @@ export class FerienbetreuungUploadComponent implements OnInit {
         }
         this.uploadRS.uploadFerienbetreuungDokumente(files, this.container.id)
             .then(dokumente => {
-                this.dokumente = dokumente;
+                this.dokumente = this.dokumente.concat(dokumente);
                 this.cd.markForCheck();
             })
             .catch(err => {

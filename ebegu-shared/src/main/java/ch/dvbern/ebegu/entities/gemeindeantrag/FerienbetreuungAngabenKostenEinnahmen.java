@@ -23,12 +23,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 
@@ -70,6 +74,24 @@ public class FerienbetreuungAngabenKostenEinnahmen extends AbstractEntity {
 	@Nullable
 	@Column()
 	private BigDecimal weitereEinnahmen;
+
+	@Nonnull
+	@Column()
+	@Enumerated(EnumType.STRING)
+	private FerienbetreuungFormularStatus status = FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE;;
+
+	public FerienbetreuungAngabenKostenEinnahmen() {}
+
+	public FerienbetreuungAngabenKostenEinnahmen(FerienbetreuungAngabenKostenEinnahmen toCopy) {
+		this.personalkosten = toCopy.personalkosten;
+		this.personalkostenLeitungAdmin = toCopy.personalkostenLeitungAdmin;
+		this.sachkosten = toCopy.sachkosten;
+		this.verpflegungskosten = toCopy.verpflegungskosten;
+		this.weitereKosten = toCopy.weitereKosten;
+		this.bemerkungenKosten = toCopy.bemerkungenKosten;
+		this.elterngebuehren = toCopy.elterngebuehren;
+		this.weitereEinnahmen = toCopy.weitereEinnahmen;
+	}
 
 	@Nullable
 	public BigDecimal getPersonalkosten() {
@@ -149,6 +171,10 @@ public class FerienbetreuungAngabenKostenEinnahmen extends AbstractEntity {
 	}
 
 	public boolean isReadyForFreigeben() {
+		return checkPropertiesNotNull() && status == FerienbetreuungFormularStatus.ABGESCHLOSSEN;
+	}
+
+	public boolean isReadyForAbschluss() {
 		return checkPropertiesNotNull();
 	}
 
@@ -161,6 +187,19 @@ public class FerienbetreuungAngabenKostenEinnahmen extends AbstractEntity {
 			this.weitereEinnahmen
 		);
 		return nonNullObj.stream()
-			.anyMatch(Objects::isNull);
+			.noneMatch(Objects::isNull);
+	}
+
+	@Nonnull
+	public FerienbetreuungFormularStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(@Nonnull FerienbetreuungFormularStatus status) {
+		this.status = status;
+	}
+
+	public boolean isAbgeschlossen() {
+		return status == FerienbetreuungFormularStatus.ABGESCHLOSSEN;
 	}
 }

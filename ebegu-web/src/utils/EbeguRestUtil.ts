@@ -4995,6 +4995,7 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
+        stammdatenTS.status = stammdatenFromServer.status;
         stammdatenTS.amAngebotBeteiligteGemeinden = stammdatenFromServer.amAngebotBeteiligteGemeinden;
         stammdatenTS.seitWannFerienbetreuungen = stammdatenFromServer.seitWannFerienbetreuungen;
         stammdatenTS.traegerschaft = stammdatenFromServer.traegerschaft;
@@ -5019,6 +5020,7 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractEntity(angebotTS, angebotFromServer);
+        angebotTS.status = angebotFromServer.status;
         angebotTS.angebot = angebotFromServer.angebot;
         angebotTS.angebotKontaktpersonVorname = angebotFromServer.angebotKontaktpersonVorname;
         angebotTS.angebotKontaktpersonNachname = angebotFromServer.angebotKontaktpersonNachname;
@@ -5062,6 +5064,7 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractEntity(nutzungTS, nutzungFromServer);
+        nutzungTS.status = nutzungFromServer.status;
         nutzungTS.anzahlBetreuungstageKinderBern = nutzungFromServer.anzahlBetreuungstageKinderBern;
         nutzungTS.betreuungstageKinderDieserGemeinde = nutzungFromServer.betreuungstageKinderDieserGemeinde;
         nutzungTS.betreuungstageKinderDieserGemeindeSonderschueler =
@@ -5087,6 +5090,7 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractEntity(kostenEinnahmenTS, kostenEinnahmenFromServer);
+        kostenEinnahmenTS.status = kostenEinnahmenFromServer.status;
         kostenEinnahmenTS.personalkosten = kostenEinnahmenFromServer.personalkosten;
         kostenEinnahmenTS.personalkostenLeitungAdmin = kostenEinnahmenFromServer.personalkostenLeitungAdmin;
         kostenEinnahmenTS.sachkosten = kostenEinnahmenFromServer.sachkosten;
