@@ -164,6 +164,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         this.gemeindeAntragService.createAllAntrage(this.formGroup.value).subscribe(() => {
             this.loadAntragList();
             this.cd.markForCheck();
+            this.errorService.addMesageAsInfo(this.translate.instant('ANTRAEGE_ERSTELLT'));
         }, err => {
             this.handleCreateAntragError(err);
         });
@@ -245,6 +246,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         this.gemeindeAntragService.createAntrag(this.formGroup.value).subscribe(() => {
             this.loadAntragList();
             this.cd.markForCheck();
+            this.errorService.addMesageAsInfo(this.translate.instant('ANTRAG_ERSTELLT'));
         }, err => {
             this.handleCreateAntragError(err);
         });
