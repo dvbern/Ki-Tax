@@ -852,9 +852,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return fall.getSozialdienstFall() != null
 			&& principalBean.getBenutzer().getSozialdienst() != null
 			&& fall.getSozialdienstFall()
-				.getSozialdienst()
-				.getId()
-				.equals(principalBean.getBenutzer().getSozialdienst().getId());
+			.getSozialdienst()
+			.getId()
+			.equals(principalBean.getBenutzer().getSozialdienst().getId());
 	}
 
 	private boolean isReadAuthorized(final AbstractPlatz abstractPlatz) {
@@ -1647,8 +1647,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			if (principalBean.isCallerInAnyOfRole(UserRole.getTsBgAndGemeindeRoles())) {
 				final boolean gehoertZuGemeinde =
 					principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList()
-					.stream()
-					.anyMatch(latsGemeindeContainer.getGemeinde()::equals);
+						.stream()
+						.anyMatch(latsGemeindeContainer.getGemeinde()::equals);
 				if (gehoertZuGemeinde) {
 					return;
 				}
@@ -1859,6 +1859,10 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	 */
 	@Override
 	public void checkReadAuthorization(@Nullable Sozialdienst sozialdienst) {
+		if (principalBean.isCallerInAnyOfRole(UserRole.getTsBgAndGemeindeRoles())
+			|| principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
+			return;
+		}
 		this.checkWriteAuthorization(sozialdienst);
 	}
 
@@ -1905,7 +1909,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				return;
 			}
 			throwViolation(container);
-		} case IN_PRUEFUNG_KANTON: {
+		}
+		case IN_PRUEFUNG_KANTON: {
 			if (principalBean.isCallerInAnyOfRole(getMandantSuperadminRoles())) {
 				return;
 			}

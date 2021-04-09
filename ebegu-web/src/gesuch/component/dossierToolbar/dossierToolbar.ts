@@ -21,6 +21,7 @@ import {IDVFocusableController} from '../../../app/core/component/IDVFocusableCo
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
+import {SozialdienstRS} from '../../../app/core/service/SozialdienstRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {
     isAnyStatusOfVerfuegt,
@@ -33,6 +34,7 @@ import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSMitteilungEvent} from '../../../models/enums/TSMitteilungEvent';
 import {TSRole} from '../../../models/enums/TSRole';
+import {TSSozialdienstStammdaten} from '../../../models/sozialdienst/TSSozaildienstStammdaten';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSDossier} from '../../../models/TSDossier';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
@@ -105,6 +107,7 @@ export class DossierToolbarController implements IDVFocusableController {
         'MitteilungRS',
         'DossierRS',
         'GemeindeRS',
+        'SozialdienstRS',
     ];
 
     public antragList: Array<TSAntragDTO>;
@@ -125,6 +128,7 @@ export class DossierToolbarController implements IDVFocusableController {
     public antragTypList: { [key: string]: TSAntragDTO } = {};
     public gemeindeId: string;
     public gemeindeInstitutionKontakteHtml: string;
+    public gemeindeSozialdienstKontakteHtml: string;
     public mutierenPossibleForCurrentAntrag: boolean = false;
     public erneuernPossibleForCurrentAntrag: boolean = false;
     public neuesteGesuchsperiode: TSGesuchsperiode;
@@ -144,6 +148,7 @@ export class DossierToolbarController implements IDVFocusableController {
                        private readonly mitteilungRS: MitteilungRS,
                        private readonly dossierRS: DossierRS,
                        private readonly gemeindeRS: GemeindeRS,
+                       private readonly sozialdienstRS: SozialdienstRS,
     ) {
 
     }
@@ -281,6 +286,15 @@ export class DossierToolbarController implements IDVFocusableController {
                     this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then((stammdaten => {
                         this.gemeindeInstitutionKontakteHtml = this.gemeindeStammdatenToHtml(stammdaten);
                     }));
+                }
+
+                if (this.dossier.fall.sozialdienstFall) {
+                    this.sozialdienstRS.getSozialdienstStammdaten(this.dossier.fall.sozialdienstFall.sozialdienst.id)
+                        .toPromise()
+                        .then(
+                            stammdaten => this.gemeindeSozialdienstKontakteHtml =
+                                this.sozialdienstStammdatenToHtml(stammdaten),
+                        );
                 }
 
                 if (!this.forceLoadingFromFall && this.getGesuch() && this.getGesuch().id) {
@@ -739,6 +753,18 @@ export class DossierToolbarController implements IDVFocusableController {
                 }
             }
         }
+        return html;
+    }
+
+    private sozialdienstStammdatenToHtml(stammdaten: TSSozialdienstStammdaten): string {
+        let html = `<span class="margin-top-20">${stammdaten.adresse.organisation ?
+            stammdaten.adresse.organisation :
+            ''}
+                          ${stammdaten.sozialdienst.name}</span>
+                    <span>${stammdaten.adresse.strasse} ${stammdaten.adresse.hausnummer}</span>
+                    <span>${stammdaten.adresse.plz} ${stammdaten.adresse.ort}</span>
+                    <a href="mailto:${stammdaten.mail}">${stammdaten.mail}</a>`;
+        html += stammdaten.telefon ? `<a href="tel:${stammdaten.telefon}">${stammdaten.telefon}</a><br>` : '';
         return html;
     }
 
