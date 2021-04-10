@@ -56,8 +56,7 @@ export class TagesschulenAngabenComponent {
     public angabenAusKibon: boolean;
     public gesuchsPeriode: TSGesuchsperiode;
     public formFreigebenTriggered: boolean = false;
-
-    private gemeindeAntragContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
+    public gemeindeAntragContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
 
     public constructor(
         private readonly lastenausgleichTSService: LastenausgleichTSService,
