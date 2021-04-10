@@ -202,6 +202,13 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         }, {
             updateOn: 'blur',
         });
+        // it's necessary to set value again and async. Otherwise, initial value is not shown.
+        setTimeout(() => {
+            this.form.get('kinderAusAnderenGemeindenZahlenAnderenTarif').setValue(
+                this.form.get('kinderAusAnderenGemeindenZahlenAnderenTarif').value
+            );
+            this.cd.markForCheck();
+        }, 0);
     }
 
     // overwrite

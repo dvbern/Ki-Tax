@@ -629,23 +629,28 @@
             </dv-radio-container-x>
         </dv-input-container-x>
 
-        <!--        todo: ADD THIRD OPTION -->
         <dv-input-container-x>
-            <label>
+            <label for="kinder-aus-anderen-gemeinden-zahlen-anderen-tarif">
                 {{'FERIENBETREUUNG_KINDER_ANDERER_GEMEINDEN_ANDERER_TARIF' | translate}}
             </label>
-            <div class="flex-whitespace-item"></div>
-            <dv-radio-container-x>
-                <mat-radio-group
-                    class=""
-                    name="kinderAusAnderenGemeindenZahlenAnderenTarif"
-                    horizontal
-                    [disabled]="form.get('kinderAusAnderenGemeindenZahlenAnderenTarif').disabled"
-                    formControlName="kinderAusAnderenGemeindenZahlenAnderenTarif">
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-            </dv-radio-container-x>
+            <mat-form-field>
+                <mat-select class="form-control"
+                            formControlName="kinderAusAnderenGemeindenZahlenAnderenTarif"
+                            name="kinderAusAnderenGemeindenZahlenAnderenTarif"
+                            id="kinder-aus-anderen-gemeinden-zahlen-anderen-tarif"
+                            [disabled]="form.get('kinderAusAnderenGemeindenZahlenAnderenTarif').disabled"
+                            [multiple]="false">
+                    <mat-option value="JA">
+                        {{'LABEL_JA' | translate}}
+                    </mat-option>
+                    <mat-option value="NEIN">
+                        {{'LABEL_NEIN' | translate}}
+                    </mat-option>
+                    <mat-option value="KEINE_KINDER_AUS_ANDEREN_GEMEINDEN">
+                        {{'KEINE_KINDER_AUS_ANDEREN_GEMEINDEN' | translate}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
         </dv-input-container-x>
 
         <dv-input-container-x>

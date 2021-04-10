@@ -2417,6 +2417,7 @@
     "FERIENBETREUUNG_TAGESSCHULE_TARIF_GILT_FUER_FERIENBETREUUNG": "Der Tarif der Tagesschule gilt bei Kindern der anbietenden Gemeinde auch für die Ferienbetreuung.",
     "FERIENBETREUUNG_TARIF_ABGELEITET":  "Aus dem Tarif der Tagesschule werden Tarifstufen für die Ferienbetreuung abgeleitet.",
     "FERIENBETREUUNG_KINDER_ANDERER_GEMEINDEN_ANDERER_TARIF": "Kinder aus anderen Gemeinden bezahlen einen anderen Tarif.",
+    "KEINE_KINDER_AUS_ANDEREN_GEMEINDEN": "Keine Kinder aus anderen Gemeinden",
     "FERIENBETREUUNG_PERSIST_ERROR": "Es gab einen Fehler beim Speichern des Formulars",
     "FERIENBETREUUNG_FEHLER_ABRUF_INFORMATIONEN": "Beim Abrufen der Informationen ist ein Fehler aufgetreten",
     "FERIENBETREUUNG_AUS_GEMEINDESTAMMDATEN_UEBERNEHMEN": "Aus Gemeindestammdaten übernehmen",
