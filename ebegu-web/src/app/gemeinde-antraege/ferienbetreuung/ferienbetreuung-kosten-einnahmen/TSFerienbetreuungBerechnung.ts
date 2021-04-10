@@ -138,7 +138,7 @@ export class TSFerienbetreuungBerechnung {
     }
 
     public set personalkosten(value: number) {
-        this._personalkosten = value;
+        this._personalkosten = this.convertPossibleStringToNumber(value);
     }
 
     public get sachkosten(): number {
@@ -146,7 +146,7 @@ export class TSFerienbetreuungBerechnung {
     }
 
     public set sachkosten(value: number) {
-        this._sachkosten = value;
+        this._sachkosten = this.convertPossibleStringToNumber(value);
     }
 
     public get verpflegungskosten(): number {
@@ -154,7 +154,7 @@ export class TSFerienbetreuungBerechnung {
     }
 
     public set verpflegungskosten(value: number) {
-        this._verpflegungskosten = value;
+        this._verpflegungskosten = this.convertPossibleStringToNumber(value);
     }
 
     public get weitereKosten(): number {
@@ -162,7 +162,7 @@ export class TSFerienbetreuungBerechnung {
     }
 
     public set weitereKosten(value: number) {
-        this._weitereKosten = value;
+        this._weitereKosten = this.convertPossibleStringToNumber(value);
     }
 
     public get anzahlBetreuungstageKinderBern(): number {
@@ -170,7 +170,7 @@ export class TSFerienbetreuungBerechnung {
     }
 
     public set anzahlBetreuungstageKinderBern(value: number) {
-        this._anzahlBetreuungstageKinderBern = value;
+        this._anzahlBetreuungstageKinderBern = this.convertPossibleStringToNumber(value);
     }
 
     public get betreuungstageKinderDieserGemeinde(): number {
@@ -178,7 +178,7 @@ export class TSFerienbetreuungBerechnung {
     }
 
     public set betreuungstageKinderDieserGemeinde(value: number) {
-        this._betreuungstageKinderDieserGemeinde = value;
+        this._betreuungstageKinderDieserGemeinde = this.convertPossibleStringToNumber(value);
     }
 
     public get betreuungstageKinderDieserGemeindeSonderschueler(): number {
@@ -186,7 +186,7 @@ export class TSFerienbetreuungBerechnung {
     }
 
     public set betreuungstageKinderDieserGemeindeSonderschueler(value: number) {
-        this._betreuungstageKinderDieserGemeindeSonderschueler = value;
+        this._betreuungstageKinderDieserGemeindeSonderschueler = this.convertPossibleStringToNumber(value);
     }
 
     public get betreuungstageKinderAndererGemeinde(): number {
@@ -194,7 +194,7 @@ export class TSFerienbetreuungBerechnung {
     }
 
     public set betreuungstageKinderAndererGemeinde(value: number) {
-        this._betreuungstageKinderAndererGemeinde = value;
+        this._betreuungstageKinderAndererGemeinde = this.convertPossibleStringToNumber(value);
     }
 
     public get betreuungstageKinderAndererGemeindenSonderschueler(): number {
@@ -202,7 +202,7 @@ export class TSFerienbetreuungBerechnung {
     }
 
     public set betreuungstageKinderAndererGemeindenSonderschueler(value: number) {
-        this._betreuungstageKinderAndererGemeindenSonderschueler = value;
+        this._betreuungstageKinderAndererGemeindenSonderschueler = this.convertPossibleStringToNumber(value);
     }
 
     public get einnahmenElterngebuehren(): number {
@@ -210,7 +210,7 @@ export class TSFerienbetreuungBerechnung {
     }
 
     public set einnahmenElterngebuehren(value: number) {
-        this._einnahmenElterngebuehren = value;
+        this._einnahmenElterngebuehren = this.convertPossibleStringToNumber(value);
     }
 
     public get weitereEinnahmen(): number {
@@ -218,7 +218,7 @@ export class TSFerienbetreuungBerechnung {
     }
 
     public set weitereEinnahmen(value: number) {
-        this._weitereEinnahmen = value;
+        this._weitereEinnahmen = this.convertPossibleStringToNumber(value);
     }
 
     public get totalKosten(): number {
@@ -251,5 +251,12 @@ export class TSFerienbetreuungBerechnung {
 
     public get beteiligungZuTief(): boolean {
         return this._beteiligungZuTief;
+    }
+
+    private convertPossibleStringToNumber(val: any): number {
+        if (isNaN(val) || EbeguUtil.isNullOrUndefined(val)) {
+            return 0;
+        }
+        return parseFloat(val);
     }
 }
