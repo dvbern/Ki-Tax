@@ -30,6 +30,7 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../
 import {TSEinstellung} from '../../../../../models/TSEinstellung';
 import {TSGemeinde} from '../../../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../../../models/TSGesuchsperiode';
+import {TSDateRange} from '../../../../../models/types/TSDateRange';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {WindowRef} from '../../../../core/service/windowRef.service';
 import {MaterialModule} from '../../../../shared/material.module';
@@ -38,6 +39,7 @@ import {WizardstepXModule} from '../../../../wizardstepX/wizardstep-x.module';
 import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
 
 import {GemeindeAngabenComponent} from './gemeinde-angaben.component';
+import * as moment from 'moment';
 
 const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(LastenausgleichTSService.name,
     ['getLATSAngabenGemeindeContainer']);
@@ -84,6 +86,7 @@ describe('GemeindeAngabenComponent', () => {
         const container = new TSLastenausgleichTagesschuleAngabenGemeindeContainer();
         container.gemeinde = new TSGemeinde();
         container.gesuchsperiode = new TSGesuchsperiode();
+        container.gesuchsperiode.gueltigkeit = new TSDateRange(moment(), moment());
         container.angabenDeklaration = new TSLastenausgleichTagesschuleAngabenGemeinde();
         container.angabenKorrektur = new TSLastenausgleichTagesschuleAngabenGemeinde();
         lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
