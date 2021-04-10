@@ -34,6 +34,7 @@ import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
 import {numberValidator, ValidationType} from '../../../shared/validators/number-validator.directive';
+import {UnsavedChangesService} from '../../services/unsaved-changes.service';
 import {AbstractFerienbetreuungFormular} from '../abstract.ferienbetreuung-formular';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
@@ -64,6 +65,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         private readonly gemeindeRS: GemeindeRS,
         private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly authService: AuthServiceRS,
+        private readonly unsavedChangesService: UnsavedChangesService
     ) {
         super(errorService, translate, dialog, cd, wizardRS, uiRouterGlobals);
     }
@@ -84,6 +86,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             this.bfsGemeinden = gemeinden;
             this.cd.markForCheck();
         });
+        this.unsavedChangesService.registerForm(this.form);
     }
 
     protected setupForm(angebot: TSFerienbetreuungAngabenAngebot): void {
