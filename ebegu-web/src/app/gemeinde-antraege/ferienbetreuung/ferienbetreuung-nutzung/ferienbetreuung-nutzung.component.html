@@ -49,6 +49,9 @@
                 <mat-error *ngIf="form && form.get('anzahlBetreuungstageKinderBern').errors?.isNotHalf"
                            translate>ERROR_NOT_HALF
                 </mat-error>
+                <mat-error *ngIf="form && form.get('anzahlBetreuungstageKinderBern').errors?.betreuungstageError"
+                           translate>ERROR_FB_BETREUUNGSTAGE
+                </mat-error>
             </mat-form-field>
         </dv-input-container-x>
 
@@ -80,7 +83,7 @@
 
         <dv-input-container-x>
             <label for="betreuungstageKinderDieserGemeindeSonderschueler_id"
-                   class="padding-left-20"
+                   class="padding-left-40"
                    [ngClass]="{'label-error': form && form.get('betreuungstageKinderDieserGemeindeSonderschueler').errors}">
                 {{'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER' | translate }}
             </label>
@@ -94,6 +97,10 @@
                 <mat-error
                     *ngIf="form && form.get('betreuungstageKinderDieserGemeindeSonderschueler').errors?.isNotHalf"
                     translate>ERROR_NOT_HALF
+                </mat-error>
+                <mat-error
+                    *ngIf="form && form.get('betreuungstageKinderDieserGemeindeSonderschueler').errors?.sonderschuelerError"
+                    translate>ERROR_FB_SONDERSCHUELER
                 </mat-error>
             </mat-form-field>
         </dv-input-container-x>
@@ -123,7 +130,7 @@
 
         <dv-input-container-x>
             <label for="davonBetreuungstageKinderAndererGemeindenSonderschueler_id"
-                   class="padding-left-20"
+                   class="padding-left-40"
                    [ngClass]="{'label-error': form && form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').errors}">
                 {{'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER' | translate }}
             </label>
@@ -137,6 +144,10 @@
                 <mat-error
                     *ngIf="form && form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').errors?.isNotHalf"
                     translate>ERROR_NOT_HALF
+                </mat-error>
+                <mat-error
+                    *ngIf="form && form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').errors?.sonderschuelerError"
+                    translate>ERROR_FB_SONDERSCHUELER
                 </mat-error>
             </mat-form-field>
         </dv-input-container-x>

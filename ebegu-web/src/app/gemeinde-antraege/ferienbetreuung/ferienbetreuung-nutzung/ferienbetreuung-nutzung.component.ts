@@ -96,6 +96,44 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
         this.form.get('anzahlBetreuteKinder1Zyklus').setValidators([numberValidator(ValidationType.INTEGER)]);
         this.form.get('anzahlBetreuteKinder2Zyklus').setValidators([numberValidator(ValidationType.INTEGER)]);
         this.form.get('anzahlBetreuteKinder3Zyklus').setValidators([numberValidator(ValidationType.INTEGER)]);
+        this.enableSpecialBetreuungstageFormValidation();
+    }
+
+    private enableSpecialBetreuungstageFormValidation(): void {
+        // betreuungstage
+        this.form.get('anzahlBetreuungstageKinderBern').setValidators(control => {
+            const diff = parseFloat(this.form.get('anzahlBetreuungstageKinderBern').value) -
+                parseFloat(this.form.get('betreuungstageKinderDieserGemeinde').value) -
+                parseFloat(this.form.get('davonBetreuungstageKinderAndererGemeinden').value);
+            if (diff !== 0) {
+                return {
+                    betreuungstageError: control.value
+                };
+            }
+            return null;
+        });
+        // sonderschueler 1
+        this.form.get('betreuungstageKinderDieserGemeindeSonderschueler').setValidators(control => {
+            const diff = parseFloat(this.form.get('betreuungstageKinderDieserGemeinde').value) -
+                parseFloat(this.form.get('betreuungstageKinderDieserGemeindeSonderschueler').value);
+            if (diff < 0) {
+                return {
+                    sonderschuelerError: control.value
+                };
+            }
+            return null;
+        });
+        // sonderschueler 2
+        this.form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').setValidators(control => {
+            const diff = parseFloat(this.form.get('davonBetreuungstageKinderAndererGemeinden').value) -
+                parseFloat(this.form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').value);
+            if (diff < 0) {
+                return {
+                    sonderschuelerError: control.value
+                };
+            }
+            return null;
+        });
     }
 
     protected setupForm(nutzung: TSFerienbetreuungAngabenNutzung): void {
