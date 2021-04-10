@@ -35,12 +35,32 @@ describe('numberValidator', () => {
         const test = numberValidator(ValidationType.HALF)(new FormControl('1.5'));
         expect(test).toEqual(null);
     });
+    it('should return an error if "abc" ist tested for half number', () => {
+        const test = numberValidator(ValidationType.HALF)(new FormControl('abc'));
+        expect(test).toEqual({isNotHalf: {value: 'abc'}});
+    });
     it('should return an error if "abc" ist tested for integer', () => {
         const test = numberValidator(ValidationType.INTEGER)(new FormControl('abc'));
         expect(test).toEqual({isNotInteger: {value: 'abc'}});
     });
-    it('should return an error if "abc" ist tested for half number', () => {
-        const test = numberValidator(ValidationType.HALF)(new FormControl('abc'));
-        expect(test).toEqual({isNotHalf: {value: 'abc'}});
+    it('should return an error if "-1" ist tested for positive integer', () => {
+        const test = numberValidator(ValidationType.POSITIVE_INTEGER)(new FormControl('-1'));
+        expect(test).toEqual({isNotPositiveInteger: {value: '-1'}});
+    });
+    it('should return an error if 1.5 ist tested for a positive integer', () => {
+        const test = numberValidator(ValidationType.POSITIVE_INTEGER)(new FormControl('1.5'));
+        expect(test).toEqual({isNotPositiveInteger: {value: '1.5'}});
+    });
+    it('should return an error if -1.5 ist tested for a positive integer', () => {
+        const test = numberValidator(ValidationType.POSITIVE_INTEGER)(new FormControl('-1.5'));
+        expect(test).toEqual({isNotPositiveInteger: {value: '-1.5'}});
+    });
+    it('should NOT return an error if 2 ist tested for a positive integer', () => {
+        const test = numberValidator(ValidationType.POSITIVE_INTEGER)(new FormControl('2'));
+        expect(test).toEqual(null);
+    });
+    it('should return an error if "abc" ist tested for positive integer', () => {
+        const test = numberValidator(ValidationType.POSITIVE_INTEGER)(new FormControl('abc'));
+        expect(test).toEqual({isNotPositiveInteger: {value: 'abc'}});
     });
 });

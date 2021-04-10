@@ -36,7 +36,7 @@ const states: NgHybridStateDeclaration[] = [
         url: '/list',
         component: ListSozialdienstComponent,
         data: {
-            roles: TSRoleUtil.getAdministratorOrSozialdienstRolle(),
+            roles: TSRoleUtil.getAllRolesForSozialdienst(),
         },
     },
     {
@@ -44,7 +44,7 @@ const states: NgHybridStateDeclaration[] = [
         url: '/add',
         component: AddSozialdienstComponent,
         data: {
-            roles: TSRoleUtil.getSuperAdminRoles(),
+            roles: TSRoleUtil.getMandantRoles(),
         },
     },
     {
@@ -52,7 +52,7 @@ const states: NgHybridStateDeclaration[] = [
         url: '/edit/:sozialdienstId',
         component: EditSozialdienstComponent,
         data: {
-            roles: TSRoleUtil.getAdministratorOrSozialdienstRolle(),
+            roles: TSRoleUtil.getAllRolesForSozialdienst(),
         },
     },
 ];

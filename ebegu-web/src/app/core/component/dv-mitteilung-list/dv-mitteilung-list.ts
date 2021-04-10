@@ -151,7 +151,7 @@ export class DVMitteilungListController implements IOnInit {
         const isGesuchsteller = this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
         const hasBesitzerOrSozialdienst = this.dossier.fall.besitzer || this.dossier.fall.sozialdienstFall;
         const isJugendamtOrSchulamtAndFallHasBesitzer = hasBesitzerOrSozialdienst && this.authServiceRS.isOneOfRoles(
-                TSRoleUtil.getAdministratorJugendamtSchulamtRoles()
+            TSRoleUtil.getAdministratorJugendamtSchulamtRoles(),
         );
         const isInstitutionsUser = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
         const isSozialdienst = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
@@ -404,5 +404,9 @@ export class DVMitteilungListController implements IOnInit {
 
     public isCurrentMitteilungSozialdienst(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.currentMitteilung.dossier.fall.sozialdienstFall);
+    }
+
+    public isMitteilungEmpfaengerSozialdienst(mitteilung: TSMitteilung): boolean {
+        return mitteilung.empfaengerTyp === TSMitteilungTeilnehmerTyp.SOZIALDIENST;
     }
 }

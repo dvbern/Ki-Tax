@@ -50,7 +50,7 @@ export class ListSozialdienstComponent implements OnInit {
     }
 
     public hatBerechtigungHinzufuegen(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSuperAdminRoles());
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 
     public addSozialdienst(): void {

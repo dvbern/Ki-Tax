@@ -3,6 +3,7 @@ import {ValidatorFn} from '@angular/forms';
 export enum ValidationType {
     INTEGER,
     HALF,
+    POSITIVE_INTEGER,
     ANY_NUMBER
 }
 
@@ -20,6 +21,10 @@ export function numberValidator(type: ValidationType): ValidatorFn {
             const err = {isNotHalf: {value: control.value}};
             return isHalf(control.value) ? null : err;
         }
+        if (type === ValidationType.POSITIVE_INTEGER) {
+            const err = {isNotPositiveInteger: {value: control.value}};
+            return isPositiveInteger(control.value) ? null : err;
+        }
         if (type === ValidationType.ANY_NUMBER) {
             const err = {isNotFloat: {value: control.value}};
             return isNaN(control.value) ? err : null;
@@ -36,6 +41,13 @@ function isInteger(val: any): boolean {
         return false;
     }
     return Number.isInteger(val * 1);
+}
+
+function isPositiveInteger(val: any): boolean {
+    if (isNaN(val)) {
+        return false;
+    }
+    return Number.isInteger(val * 1) && val >= 0;
 }
 
 function isHalf(val: any): boolean {
