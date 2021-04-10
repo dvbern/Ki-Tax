@@ -2314,6 +2314,8 @@
     "VOLLMACHT_DOKUMENT": "Document de procuration",
     "SOZIALDIENSTFALL_AKTIVIEREN": "Ouvrir le cas",
     "NEUE_MITTEILUNG_SOZIALDIENST": "Nouveau message au service de soutien",
+    "ERROR_ANTRAGSTELLER_SZ_NOT_VOLLSTAENDIG": "L'auteur de la demande numéro 2 n'est pas obligatoire mais ne doit pas être remplis que partiellement!",
+    "SOZIALDIENST_INFO_VOLLMACHT_FORM_DIRTY": "Vous avez effectué des changements dans le formulaire. Veuillez les sauvegarder avant de pouvoir générer la Vollmacht et la télécharger",
     "LATS_IN_BETREUUNG_EINLEITUNG": "Durchschnittliche Anzahl eingeschriebene Kinder pro Tag in der Woche vom 15. September {{jahr}}",
     "ALLGEMEINE_ANGABEN": "Informationen zur Tagesschule",
     "LATS_IST_LEHRBETRIEB": "Die Tagesschule ist im laufenden Schuljahr {{periode}} Lehrbetrieb für eine/n Fachfrau/-mann Betreuung EFZ.",

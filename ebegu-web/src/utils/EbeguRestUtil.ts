@@ -5139,6 +5139,9 @@ export class EbeguRestUtil {
             restSozialdienstFall.vorname = sozialdienstFall.vorname;
             restSozialdienstFall.geburtsdatum = DateUtil.momentToLocalDate(sozialdienstFall.geburtsdatum);
             restSozialdienstFall.status = sozialdienstFall.status;
+            restSozialdienstFall.nameGs2 = sozialdienstFall.nameGs2;
+            restSozialdienstFall.vornameGs2 = sozialdienstFall.vornameGs2;
+            restSozialdienstFall.geburtsdatumGs2 = DateUtil.momentToLocalDate(sozialdienstFall.geburtsdatumGs2);
             return restSozialdienstFall;
         }
         return undefined;
@@ -5156,6 +5159,9 @@ export class EbeguRestUtil {
             sozialdienstFallTS.name = sozialdienstFallFromServer.name;
             sozialdienstFallTS.vorname = sozialdienstFallFromServer.vorname;
             sozialdienstFallTS.geburtsdatum = DateUtil.localDateToMoment(sozialdienstFallFromServer.geburtsdatum);
+            sozialdienstFallTS.nameGs2 = sozialdienstFallFromServer.nameGs2;
+            sozialdienstFallTS.vornameGs2 = sozialdienstFallFromServer.vornameGs2;
+            sozialdienstFallTS.geburtsdatumGs2 = DateUtil.localDateToMoment(sozialdienstFallFromServer.geburtsdatumGs2);
             sozialdienstFallTS.status = sozialdienstFallFromServer.status;
             return sozialdienstFallTS;
         }
