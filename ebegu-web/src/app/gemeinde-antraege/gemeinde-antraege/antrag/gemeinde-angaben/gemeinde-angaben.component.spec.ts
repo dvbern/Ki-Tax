@@ -20,6 +20,7 @@ import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UIRouterGlobals} from '@uirouter/core';
+import * as moment from 'moment';
 
 import {of} from 'rxjs';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
@@ -37,9 +38,9 @@ import {MaterialModule} from '../../../../shared/material.module';
 import {SharedModule} from '../../../../shared/shared.module';
 import {WizardstepXModule} from '../../../../wizardstepX/wizardstep-x.module';
 import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
+import {UnsavedChangesService} from '../../../services/unsaved-changes.service';
 
 import {GemeindeAngabenComponent} from './gemeinde-angaben.component';
-import * as moment from 'moment';
 
 const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(LastenausgleichTSService.name,
     ['getLATSAngabenGemeindeContainer']);
@@ -49,6 +50,9 @@ const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.
     'saveEinstellung',
     'findEinstellung'
 ]);
+
+const unsavedChangesServiceSpy = jasmine.createSpyObj<UnsavedChangesService>(UnsavedChangesService.name,
+    ['registerForm']);
 
 const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
 
@@ -75,6 +79,7 @@ describe('GemeindeAngabenComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: EinstellungRS, useValue: einstellungServiceSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
+                {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy}
             ],
 
         })

@@ -17,6 +17,7 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {of} from 'rxjs';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
@@ -39,6 +40,8 @@ const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['
 const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name,
     ['prepareDownloadWindow', 'getAccessTokenFerienbetreuungDokument', 'startDownload']);
 const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDevMode', 'getAllowedMimetypes']);
+const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+    ['isOneOfRoles']);
 
 const container = new TSFerienbetreuungAngabenContainer();
 container.angabenDeklaration = null;
@@ -63,6 +66,7 @@ describe('FerienbetreuungUploadComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: DownloadRS, useValue: downloadRSSpy},
                 {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
+                {provide: AuthServiceRS, useValue: authServiceRSSpy},
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

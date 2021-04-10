@@ -26,6 +26,7 @@ import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedCompo
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {SharedModule} from '../../../shared/shared.module';
+import {UnsavedChangesService} from '../../services/unsaved-changes.service';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
 import {FerienbetreuungStammdatenGemeindeComponent} from './ferienbetreuung-stammdaten-gemeinde.component';
@@ -42,6 +43,9 @@ const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(ErrorService.name,
 
 const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
     ['params']);
+
+const unsavedChangesServiceSpy = jasmine.createSpyObj<UnsavedChangesService>(UnsavedChangesService.name,
+    ['registerForm']);
 
 describe('FerienbetreuungStammdatenGemeindeComponent', () => {
     let component: FerienbetreuungStammdatenGemeindeComponent;
@@ -65,6 +69,7 @@ describe('FerienbetreuungStammdatenGemeindeComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
+                {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy}
             ],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
