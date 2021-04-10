@@ -3,7 +3,7 @@ import {FormGroup} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TransitionService} from '@uirouter/core';
 import {Observable, of} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 
 @Injectable({
@@ -18,7 +18,12 @@ export class UnsavedChangesService {
         private readonly dialog: MatDialog,
     ) {
         this.$transition.onStart({}, async() => {
-            return this.checkUnsavedChanges();
+            return this.checkUnsavedChanges().then(userAccepted => {
+                if (userAccepted) {
+                    this.unregisterForm();
+                }
+                return userAccepted;
+            });
         });
     }
 
@@ -31,9 +36,6 @@ export class UnsavedChangesService {
             return of(true).toPromise();
         }
         return this.openDialog()
-            .pipe(tap(() => {
-                this.unregisterForm();
-            }))
             .toPromise();
     }
 
