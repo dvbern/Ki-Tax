@@ -2291,7 +2291,7 @@
     "MENU_SOZIALDIENST": "Service de soutien",
     "SOZIALDIENST_STATUS_EINGELADEN": "Invité",
     "SOZIALDIENST_STATUS_AKTIV": "Actif",
-    "SOZIALDIENST_NOCH_KEINE": "Aucun service de soutien",
+    "SOZIALDIENST_TITLE_NOCH_KEINE": "Aucun service de soutien",
     "SOZIALDIENST_PERSIST_ERROR": "Il y a eu une erreur lors de la sauvergarde des données du service de soutien",
     "SOZIALDIENST_HINZUFUEGEN": "Ajouter un service de soutien",
     "NEUE_SOZIALDIENST": "Nouveau service de soutien",

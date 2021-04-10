@@ -437,7 +437,7 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     public isCheckRequiredEnabled(): boolean {
-        return this.isCheckRequired && !this.editMode;
+        return this.isCheckRequired && !this.editMode && this.isStammdatenEditable();
     }
 
     public isBetreuungsgutschein(): boolean {
