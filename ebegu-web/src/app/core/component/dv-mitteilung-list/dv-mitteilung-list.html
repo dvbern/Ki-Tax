@@ -128,7 +128,9 @@
                                     </div>
                                     <div>
                                         <span data-translate="AN_COLON"></span><dv-benutzer-entry ng-if="!vm.isMitteilungEmpfaengerSozialdienst(mitteilung)" [benutzer]="mitteilung.empfaenger"></dv-benutzer-entry>
-                                        <span ng-if="vm.isMitteilungEmpfaengerSozialdienst(mitteilung)">{{mitteilung.dossier.fall.sozialdienstFall.sozialdienst.name}}</span>
+                                        <span ng-if="vm.isMitteilungEmpfaengerSozialdienst(mitteilung)">
+                                            <i class="fa fa-handshake-o" [title]="'VERANTWORTUNG_SOZIALDIENST' | translate"> </i>
+                                            {{mitteilung.dossier.fall.sozialdienstFall.sozialdienst.name}}</span>
                                     </div>
                                     <div ng-if="!!mitteilung.betreuung.institutionStammdaten.institution">
                                         <span data-translate="INSTITUTION"></span>: <i class='fa fa-building'></i><span>{{mitteilung.betreuung.institutionStammdaten.institution.name}}</span>
