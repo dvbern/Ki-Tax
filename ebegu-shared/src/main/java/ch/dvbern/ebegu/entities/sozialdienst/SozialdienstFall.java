@@ -89,17 +89,17 @@ public class SozialdienstFall extends AbstractEntity {
 	private LocalDate geburtsdatum;
 
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = false)
+	@Column(nullable = true)
 	@Nullable
 	private String nameGs2;
 
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = false)
+	@Column(nullable = true)
 	@Nullable
 	private String vornameGs2;
 
 	@Nullable
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private LocalDate geburtsdatumGs2;
 
 	@Nullable
