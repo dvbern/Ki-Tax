@@ -2309,6 +2309,7 @@
     "IN_BEARBEITUNG_SOZIALDIENST": "En traitement par le service de soutien",
     "MENU_SOZIALDIENSTFALL_ERSTELLEN": "Service de soutien",
     "SOZIALDIENST_FALL_ERSTELLEN": "Ouvrir un cas pour le service de soutien",
+    "SOZIALDIENST_FALL_ERSTELLEN_HINT": "<b>Wann müssen zwei Vollmachtgebende erfasst werden?</b><br><br>Falls zwei Erwachsene Personen im Haushalt wohnen und eines der folgenden Kriterien gegeben ist:<br><ul><li>Die Personen sind verheiratet oder leben in einer eingetragenen Partnerschaft</li><li>Die Personen haben ein gemeinsames Kind</li><li>Die Personen leben seit mindestens fünf Jahre zusammen</li></ul>",
     "SOZIALDIENST_AUSWAEHLEN": "Choisir un service de soutien",
     "VOLLMACHT_HOCHLADEN": "Télécharger la procuration",
     "VOLLMACHT_DOKUMENT": "Document de procuration",
