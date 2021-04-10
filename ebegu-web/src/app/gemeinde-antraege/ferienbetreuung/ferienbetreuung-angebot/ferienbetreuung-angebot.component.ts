@@ -79,6 +79,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             this.container = container;
             this.angebot = container.angabenDeklaration?.angebot;
             this.setupFormAndPermissions(container, this.angebot, principal);
+            this.unsavedChangesService.registerForm(this.form);
         }, error => {
             LOG.error(error);
         });
@@ -86,7 +87,6 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             this.bfsGemeinden = gemeinden;
             this.cd.markForCheck();
         });
-        this.unsavedChangesService.registerForm(this.form);
     }
 
     protected setupForm(angebot: TSFerienbetreuungAngabenAngebot): void {

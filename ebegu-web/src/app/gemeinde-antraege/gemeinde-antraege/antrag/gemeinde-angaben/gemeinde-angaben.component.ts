@@ -40,6 +40,7 @@ import {WizardStepXRS} from '../../../../core/service/wizardStepXRS.rest';
 import {numberValidator, ValidationType} from '../../../../shared/validators/number-validator.directive';
 import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
 import {GemeindeAntragService} from '../../../services/gemeinde-antrag.service';
+import {UnsavedChangesService} from '../../../services/unsaved-changes.service';
 
 @Component({
     selector: 'dv-gemeinde-angaben',
@@ -76,6 +77,7 @@ export class GemeindeAngabenComponent implements OnInit {
         private readonly wizardRS: WizardStepXRS,
         private readonly uiRouterGlobals: UIRouterGlobals,
         private readonly dialog: MatDialog,
+        private readonly unsavedChangesService: UnsavedChangesService
     ) {
     }
 
@@ -97,6 +99,7 @@ export class GemeindeAngabenComponent implements OnInit {
                     this.lATSAngabenGemeindeContainer.gemeinde?.id,
                     this.lATSAngabenGemeindeContainer.gesuchsperiode?.id)
                     .then(setting => this.lohnnormkostenSettingLessThanFifty$.next(setting));
+                this.unsavedChangesService.registerForm(this.angabenForm);
                 this.cd.markForCheck();
             }, () => this.errorService.addMesageAsError(this.translateService.instant('DATA_RETRIEVAL_ERROR')));
 

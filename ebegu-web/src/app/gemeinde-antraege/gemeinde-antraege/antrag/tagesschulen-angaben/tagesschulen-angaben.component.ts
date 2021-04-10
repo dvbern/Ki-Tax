@@ -36,6 +36,7 @@ import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {numberValidator, ValidationType} from '../../../../shared/validators/number-validator.directive';
 import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
 import {TagesschuleAngabenRS} from '../../../lastenausgleich-ts/services/tagesschule-angaben.service.rest';
+import {UnsavedChangesService} from '../../../services/unsaved-changes.service';
 
 @Component({
     selector: 'dv-tagesschulen-angaben',
@@ -69,6 +70,7 @@ export class TagesschulenAngabenComponent {
         private readonly dialog: MatDialog,
         private readonly $state: StateService,
         private readonly routerGlobals: UIRouterGlobals,
+        private readonly unsavedChangesService: UnsavedChangesService
     ) {
     }
 
@@ -89,6 +91,7 @@ export class TagesschulenAngabenComponent {
             }
             this.setupCalculation(angaben);
             this.angabenAusKibon = container.alleAngabenInKibonErfasst;
+            this.unsavedChangesService.registerForm(this.form);
             this.cd.markForCheck();
         }, () => {
             this.errorService.addMesageAsError(this.translate.instant('DATA_RETRIEVAL_ERROR'));
