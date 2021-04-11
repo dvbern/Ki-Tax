@@ -211,6 +211,7 @@ export class TagesschulenAngabenComponent {
             this.setupForm(result?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
                 result?.angabenDeklaration : result?.angabenKorrektur);
             this.errorService.addMesageAsInfo(this.translate.instant('SAVED'));
+            this.form.markAsPristine();
         }, error => {
             if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
                 this.errorService.addMesageAsError(this.translate.instant('ERROR_NUMBER'));
@@ -241,6 +242,7 @@ export class TagesschulenAngabenComponent {
                     this.form.disable();
                 }
                 this.cd.markForCheck();
+                this.form.markAsPristine();
             }, () => {
                 this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
             });
@@ -279,6 +281,7 @@ export class TagesschulenAngabenComponent {
                 this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.routerGlobals.params.id);
                 this.form.disable();
                 this.cd.markForCheck();
+                this.form.markAsPristine();
                 this.navigateBack();
             }, () => {
                 this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));

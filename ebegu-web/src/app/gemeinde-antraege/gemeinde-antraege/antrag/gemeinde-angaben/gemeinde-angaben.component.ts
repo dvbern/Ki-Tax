@@ -559,6 +559,7 @@ export class GemeindeAngabenComponent implements OnInit {
             this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.value;
         }
         this.lastenausgleichTSService.saveLATSAngabenGemeindeContainer(this.lATSAngabenGemeindeContainer);
+        this.angabenForm.markAsPristine();
 
     }
 
@@ -604,6 +605,7 @@ export class GemeindeAngabenComponent implements OnInit {
             this.triggerFormValidation();
             this.errorService.addMesageAsError(this.translateService.instant(
                 'LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'));
+            this.angabenForm.markAsPristine();
         }
         this.wizardRS.updateSteps(this.WIZARD_TYPE, this.uiRouterGlobals.params.id);
     }
