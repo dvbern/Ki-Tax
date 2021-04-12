@@ -2346,6 +2346,7 @@
     "FERIENBETREUUNG_UPLOAD": "Dépôt des documents",
     "FERIENBETREUUNG_ABSCHLUSS": "Validation",
     "FERIENBETREUUNG_TRAEGERSCHAFT": "Organisme responsable de la structure d’accueil durant les vacances scolaires",
+    "FERIENBETREUUNG_SEIT_WANN": "Depuis quand la commune dispose-t-elle d’une structure d’accueil durant les vacances scolaires ?",
     "FERIENBETREUUNG_BETREUUNGSTAGE": "Jours de prise en charge",
     "FERIENBETREUUNG_ANZAHL_BETREUUNGTAGE_KINDER_BERN": "Nombre de jours de prise en charge pour les enfants en âge scolaire dont le domicile civil est situé dans le canton de Berne",
     "FERIENBETREUUNG_ANZAHL_BETREUUNGTAGE_KINDER_BERN_HINT": "Jour de prise en charge : un jour de prise en charge est comptabilisé par enfant qui est accueilli pour une durée comprise entre 8 et 12 heures. L'enfant qui a été pris en charge durant moins de 8 heures, mais au moins 4 heures dans une journée, la demi-journée de prise en charge est prise en compte. Aucun jour de prise en charge n’est comptabilisé pour les enfants qui sont accueillis moins de 4 heures.",
