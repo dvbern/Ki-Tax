@@ -30,190 +30,202 @@
 
     <form *ngIf="form" [formGroup]="form">
 
-        <h3 class="uppercase">
-            {{'FERIENBETREUUNG_KOSTEN_SCHULJAHR' | translate }} {{container?.gesuchsperiode?.gesuchsperiodeString}}
-        </h3>
+        <div class="max-width-container-750">
 
-        <dv-input-container-x>
-            <label for="personalkosten_id"
-                   required
-                   [ngClass]="{'label-required-error': form && form.get('personalkosten').errors}">
-                {{'FERIENBETREUUNG_PERSONALKOSTEN_INSGESAMT' | translate }}
-                <dv-tooltip inputId="personalkosten_id"
-                            [text]="'FERIENBETREUUNG_PERSONALKOSTEN_INSGESAMT_HINT' | translate">
-                </dv-tooltip>
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
-                <input matInput
-                       id="personalkosten_id"
-                       formControlName="personalkosten"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="form && form.get('personalkosten').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="form && form.get('personalkosten').errors?.isNotInteger"
-                           translate>ERROR_NOT_INTEGER
-                </mat-error>
-            </mat-form-field>
-        </dv-input-container-x>
+            <h3 class="uppercase">
+                {{'FERIENBETREUUNG_KOSTEN_SCHULJAHR' | translate }} {{container?.gesuchsperiode?.gesuchsperiodeString}}
+            </h3>
 
-        <dv-input-container-x>
-            <label for="personalkosten_leitung_admin_id" class="padding-left-20"
-                   [ngClass]="{'label-required-error': form?.get('personalkostenLeitungAdmin').errors}">
-                {{'FERIENBETREUUNG_PERSONALKOSTEN_LEITUNG_ADMIN' | translate }}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
-                <input matInput
-                       id="personalkosten_leitung_admin_id"
-                       formControlName="personalkostenLeitungAdmin"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="form && form.get('personalkostenLeitungAdmin').errors?.isNotInteger"
-                           translate>ERROR_NOT_INTEGER
-                </mat-error>
-            </mat-form-field>
-        </dv-input-container-x>
+            <dv-input-container-x>
+                <label for="personalkosten_id"
+                       required
+                       [ngClass]="{'label-required-error': form && form.get('personalkosten').errors}">
+                    {{'FERIENBETREUUNG_PERSONALKOSTEN_INSGESAMT' | translate }}
+                    <dv-tooltip inputId="personalkosten_id"
+                                [text]="'FERIENBETREUUNG_PERSONALKOSTEN_INSGESAMT_HINT' | translate">
+                    </dv-tooltip>
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <mat-label translate></mat-label>
+                    <input matInput
+                           id="personalkosten_id"
+                           formControlName="personalkosten"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('personalkosten').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="form && form.get('personalkosten').errors?.isNotInteger"
+                               translate>ERROR_NOT_INTEGER
+                    </mat-error>
+                </mat-form-field>
+            </dv-input-container-x>
 
-        <dv-input-container-x>
-            <label for="sachkosten_id"
-                   required
-                   [ngClass]="{'label-required-error': form && form.get('sachkosten').errors}">
-                {{'FERIENBETREUUNG_SACHKOSTEN_INSGESAMT' | translate }}
-                <dv-tooltip inputId="sachkosten_id"
-                            [text]="'FERIENBETREUUNG_SACHKOSTEN_INSGESAMT_HINT' | translate">
-                </dv-tooltip>
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
-                <input matInput
-                       id="sachkosten_id"
-                       formControlName="sachkosten"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="form && form.get('sachkosten').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="form && form.get('sachkosten').errors?.isNotInteger"
-                           translate>ERROR_NOT_INTEGER
-                </mat-error>
-            </mat-form-field>
-        </dv-input-container-x>
+            <dv-input-container-x>
+                <label for="personalkosten_leitung_admin_id" class="padding-left-20"
+                       [ngClass]="{'label-required-error': form?.get('personalkostenLeitungAdmin').errors}">
+                    {{'FERIENBETREUUNG_PERSONALKOSTEN_LEITUNG_ADMIN' | translate }}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <mat-label translate></mat-label>
+                    <input matInput
+                           id="personalkosten_leitung_admin_id"
+                           formControlName="personalkostenLeitungAdmin"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('personalkostenLeitungAdmin').errors?.isNotInteger"
+                               translate>ERROR_NOT_INTEGER
+                    </mat-error>
+                </mat-form-field>
+            </dv-input-container-x>
 
-        <dv-input-container-x>
-            <label for="verpflegungskosten_id"
-                   required
-                   [ngClass]="{'label-required-error': form && form.get('verpflegungskosten').errors}">
-                {{'FERIENBETREUUNG_VERPFLEGUNGSKOSTEN_INSGESAMT' | translate }}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
-                <input matInput
-                       id="verpflegungskosten_id"
-                       formControlName="verpflegungskosten"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="form && form.get('verpflegungskosten').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="form && form.get('verpflegungskosten').errors?.isNotInteger"
-                           translate>ERROR_NOT_INTEGER
-                </mat-error>
-            </mat-form-field>
-        </dv-input-container-x>
+            <dv-input-container-x>
+                <label for="sachkosten_id"
+                       required
+                       [ngClass]="{'label-required-error': form && form.get('sachkosten').errors}">
+                    {{'FERIENBETREUUNG_SACHKOSTEN_INSGESAMT' | translate }}
+                    <dv-tooltip inputId="sachkosten_id"
+                                [text]="'FERIENBETREUUNG_SACHKOSTEN_INSGESAMT_HINT' | translate">
+                    </dv-tooltip>
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <mat-label translate></mat-label>
+                    <input matInput
+                           id="sachkosten_id"
+                           formControlName="sachkosten"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('sachkosten').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="form && form.get('sachkosten').errors?.isNotInteger"
+                               translate>ERROR_NOT_INTEGER
+                    </mat-error>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label for="verpflegungskosten_id"
+                       required
+                       [ngClass]="{'label-required-error': form && form.get('verpflegungskosten').errors}">
+                    {{'FERIENBETREUUNG_VERPFLEGUNGSKOSTEN_INSGESAMT' | translate }}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <mat-label translate></mat-label>
+                    <input matInput
+                           id="verpflegungskosten_id"
+                           formControlName="verpflegungskosten"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('verpflegungskosten').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="form && form.get('verpflegungskosten').errors?.isNotInteger"
+                               translate>ERROR_NOT_INTEGER
+                    </mat-error>
+                </mat-form-field>
+            </dv-input-container-x>
 
 
-        <dv-input-container-x>
-            <label for="weitere_kosten_id"
-                   [ngClass]="{'label-required-error': form?.get('weitereKosten').errors}">
-                {{'FERIENBETREUUNG_WEITERE_KOSTEN' | translate }}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
-                <input matInput
-                       id="weitere_kosten_id"
-                       formControlName="weitereKosten"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="form && form.get('weitereKosten').errors?.isNotInteger"
-                           translate>ERROR_NOT_INTEGER
-                </mat-error>
-            </mat-form-field>
-        </dv-input-container-x>
+            <dv-input-container-x>
+                <label for="weitere_kosten_id"
+                       [ngClass]="{'label-required-error': form?.get('weitereKosten').errors}">
+                    {{'FERIENBETREUUNG_WEITERE_KOSTEN' | translate }}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <mat-label translate></mat-label>
+                    <input matInput
+                           id="weitere_kosten_id"
+                           formControlName="weitereKosten"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('weitereKosten').errors?.isNotInteger"
+                               translate>ERROR_NOT_INTEGER
+                    </mat-error>
+                </mat-form-field>
+            </dv-input-container-x>
 
-        <dv-input-container-x>
-            <label for="bemerkungen_kosten_id">
-                {{'BEMERKUNGEN' | translate }}
-            </label>
-            <mat-form-field floatLabel="always" class="no-margin-left">
+            <dv-input-container-x [verticalAlign]="true">
+                <label for="bemerkungen_kosten_id">
+                    {{'BEMERKUNGEN' | translate }}
+                </label>
+                <mat-form-field floatLabel="always" class="no-margin-left">
                 <textarea matInput
                           id="bemerkungen_kosten_id"
                           formControlName="bemerkungenKosten"
                           class="form-control dv-input"></textarea>
-            </mat-form-field>
-        </dv-input-container-x>
+                </mat-form-field>
+            </dv-input-container-x>
+
+        </div>
 
         <mat-divider></mat-divider>
 
-        <h3 class="uppercase">
-            {{'FERIENBETREUUNG_EINNAHMEN_SCHULJAHR' | translate }} {{container?.gesuchsperiode?.gesuchsperiodeString}}
-        </h3>
+        <div class="max-width-container-750">
 
-        <dv-input-container-x>
-            <label for="elterngebuehren_id"
-                   required
-                   [ngClass]="{'label-required-error': form && form.get('elterngebuehren').errors}">
-                {{'FERIENBETREUUNG_EINNAHMEN_AUS_ELTERNBEITRAEGEN' | translate }}
-                <dv-tooltip inputId="elterngebuehren_id"
-                            [text]="'FERIENBETREUUNG_EINNAHMEN_AUS_ELTERNBEITRAEGEN_HINT' | translate">
-                </dv-tooltip>
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
-                <input matInput
-                       id="elterngebuehren_id"
-                       formControlName="elterngebuehren"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="form && form.get('elterngebuehren').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="form && form.get('elterngebuehren').errors?.isNotInteger"
-                           translate>ERROR_NOT_INTEGER
-                </mat-error>
-            </mat-form-field>
-        </dv-input-container-x>
+            <h3 class="uppercase">
+                {{'FERIENBETREUUNG_EINNAHMEN_SCHULJAHR' | translate }} {{container?.gesuchsperiode?.gesuchsperiodeString}}
+            </h3>
 
-        <dv-input-container-x>
-            <label for="weitereEinnahmen_id"
-                   required
-                   [ngClass]="{'label-required-error': form && form.get('weitereEinnahmen').errors}">
-                {{'FERIENBETREUUNG_WEITERE_EINNAHMEN' | translate }}
-                <dv-tooltip inputId="weitereEinnahmen_id"
-                            [text]="'FERIENBETREUUNG_WEITERE_EINNAHMEN_HINT' | translate">
-                </dv-tooltip>
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
-                <input matInput
-                       id="weitereEinnahmen_id"
-                       formControlName="weitereEinnahmen"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="form && form.get('weitereEinnahmen').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="form && form.get('weitereEinnahmen').errors?.isNotInteger"
-                           translate>ERROR_NOT_INTEGER
-                </mat-error>
-            </mat-form-field>
-        </dv-input-container-x>
+            <dv-input-container-x>
+                <label for="elterngebuehren_id"
+                       required
+                       [ngClass]="{'label-required-error': form && form.get('elterngebuehren').errors}">
+                    {{'FERIENBETREUUNG_EINNAHMEN_AUS_ELTERNBEITRAEGEN' | translate }}
+                    <dv-tooltip inputId="elterngebuehren_id"
+                                [text]="'FERIENBETREUUNG_EINNAHMEN_AUS_ELTERNBEITRAEGEN_HINT' | translate">
+                    </dv-tooltip>
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <mat-label translate></mat-label>
+                    <input matInput
+                           id="elterngebuehren_id"
+                           formControlName="elterngebuehren"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('elterngebuehren').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="form && form.get('elterngebuehren').errors?.isNotInteger"
+                               translate>ERROR_NOT_INTEGER
+                    </mat-error>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label for="weitereEinnahmen_id"
+                       required
+                       [ngClass]="{'label-required-error': form && form.get('weitereEinnahmen').errors}">
+                    {{'FERIENBETREUUNG_WEITERE_EINNAHMEN' | translate }}
+                    <dv-tooltip inputId="weitereEinnahmen_id"
+                                [text]="'FERIENBETREUUNG_WEITERE_EINNAHMEN_HINT' | translate">
+                    </dv-tooltip>
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <mat-label translate></mat-label>
+                    <input matInput
+                           id="weitereEinnahmen_id"
+                           formControlName="weitereEinnahmen"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('weitereEinnahmen').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="form && form.get('weitereEinnahmen').errors?.isNotInteger"
+                               translate>ERROR_NOT_INTEGER
+                    </mat-error>
+                </mat-form-field>
+            </dv-input-container-x>
+
+        </div>
 
         <mat-divider></mat-divider>
 
-        <dv-ferienbetreuung-berechnung [form]="form"></dv-ferienbetreuung-berechnung>
+        <div class="max-width-container-750">
+
+            <dv-ferienbetreuung-berechnung [form]="form"></dv-ferienbetreuung-berechnung>
+
+        </div>
 
     </form>
 
