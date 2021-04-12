@@ -256,6 +256,7 @@ export class TagesschulenAngabenComponent {
     }
 
     public onFormSubmit(): void {
+        this.resetBasicValidation();
         if (!this.form.valid) {
             this.errorService.addMesageAsError(
                 this.translate.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
@@ -454,5 +455,38 @@ export class TagesschulenAngabenComponent {
         } else {
             this.$state.go(parentState);
         }
+    }
+
+    private resetBasicValidation(): void {
+        if (!this.angabenAusKibon) {
+            this.form.get('anzahlEingeschriebeneKinder')
+                .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
+            this.form.get('anzahlEingeschriebeneKinderKindergarten')
+                .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
+            this.form.get('anzahlEingeschriebeneKinderBasisstufe')
+                .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
+            this.form.get('anzahlEingeschriebeneKinderPrimarstufe')
+                .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
+            this.form.get('durchschnittKinderProTagFruehbetreuung')
+                .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
+            this.form.get('durchschnittKinderProTagMittag')
+                .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
+            this.form.get('durchschnittKinderProTagNachmittag1')
+                .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
+            this.form.get('durchschnittKinderProTagNachmittag2')
+                .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
+            this.form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse')
+                .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
+        }
+        this.form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen')
+            .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
+
+        this.form.get('schuleAufBasisOrganisatorischesKonzept').clearValidators();
+        this.form.get('schuleAufBasisPaedagogischesKonzept').clearValidators();
+        this.form.get('raeumlicheVoraussetzungenEingehalten').clearValidators();
+        this.form.get('betreuungsverhaeltnisEingehalten').clearValidators();
+        this.form.get('ernaehrungsGrundsaetzeEingehalten').clearValidators();
+
+        this.triggerFormValidation();
     }
 }
