@@ -73,7 +73,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
         ]).pipe(
             map(([inBearbeitungGemeinde, principal]) => {
                 return (principal.hasRole(TSRole.SUPER_ADMIN) && inBearbeitungGemeinde) ||
-                    (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles()) &&
+                    (principal.hasOneOfRoles(TSRoleUtil.getFerienbetreuungRoles()) &&
                         !principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()));
             }),
         );

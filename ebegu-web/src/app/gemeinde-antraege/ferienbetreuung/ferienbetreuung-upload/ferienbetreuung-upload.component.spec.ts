@@ -45,6 +45,8 @@ const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
 
 authServiceSpy.principal$ = of(new TSBenutzer());
 const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDevMode', 'getAllowedMimetypes']);
+const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+    ['isOneOfRoles']);
 
 const container = new TSFerienbetreuungAngabenContainer();
 container.angabenDeklaration = null;
@@ -69,7 +71,7 @@ describe('FerienbetreuungUploadComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: DownloadRS, useValue: downloadRSSpy},
                 {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
-                {provide: AuthServiceRS, useValue: authServiceSpy}
+                {provide: AuthServiceRS, useValue: authServiceRSSpy},
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

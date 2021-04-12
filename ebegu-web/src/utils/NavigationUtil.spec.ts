@@ -57,5 +57,14 @@ describe('NavigationUtil', () => {
 
             expect(stateServiceSpy.go).toHaveBeenCalledWith('gesuch.fallcreation', {gesuchId});
         });
+        it('should navigate to gemeindeantraege for ferienbetreuung roles', () => {
+            const stateServiceSpy = jasmine.createSpyObj('StateService', ['go']);
+            NavigationUtil.navigateToStartsiteOfGesuchForRole(
+                TSRole.ADMIN_FERIENBETREUUNG,
+                stateServiceSpy,
+                gesuchId);
+
+            expect(stateServiceSpy.go).toHaveBeenCalledWith('gemeindeantrage.view');
+        });
     });
 });

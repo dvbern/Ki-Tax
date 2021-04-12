@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
+import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.tests.AbstractEbeguLoginTest;
@@ -72,6 +73,12 @@ public class FerienbetreuungServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals("Bern", ferienbetreuungAngabenContainer.getGemeinde().getName());
 		Assert.assertEquals("IN_BEARBEITUNG_GEMEINDE", ferienbetreuungAngabenContainer.getStatusString());
 		Assert.assertEquals(2017, ferienbetreuungAngabenContainer.getGesuchsperiode().getBasisJahr());
+	}
+
+	@Test(expected = EntityExistsException.class)
+	public void createFerienbetreuungAntragDuplicate() {
+		ferienbetreuungService.createFerienbetreuungAntrag(gemeindeParis, gesuchsperiode1920);
+		ferienbetreuungService.createFerienbetreuungAntrag(gemeindeParis, gesuchsperiode1920);
 	}
 
 	@Test

@@ -34,7 +34,7 @@
             (uploadFile)="onUpload($event)"
             [files]="dokumente"
             [readOnly]="isReadonly()"
-            [readOnlyDelete]="false"
+            [readOnlyDelete]="isReadonly()"
         >
         </dv-file-upload>
         <div class="dv-error-messages" *ngFor="let file of filesTooBig">

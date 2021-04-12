@@ -78,6 +78,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_FERIENBETREUUNG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
@@ -154,7 +155,7 @@ public class BenutzerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
-		ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST})
+		ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG})
 	public List<JaxBenutzerNoDetails> getAllBenutzerBgOrGemeinde() {
 		return benutzerService.getAllBenutzerBgOrGemeinde().stream()
 			.map(converter::benutzerToJaxBenutzerNoDetails)
@@ -237,7 +238,7 @@ public class BenutzerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
-		ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST})
+		ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG})
 	public List<JaxBenutzerNoDetails> getAllBenutzerTsOrGemeinde() {
 		return benutzerService.getAllBenutzerTsOrGemeinde().stream()
 			.map(converter::benutzerToJaxBenutzerNoDetails)

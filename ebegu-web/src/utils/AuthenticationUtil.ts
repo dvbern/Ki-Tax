@@ -31,6 +31,7 @@ export function getRoleBasedTargetState(currentRole: TSRole, $state: StateServic
     const faelle = 'faelle.list';
     const pendenzen = 'pendenzen.list-view';
     const pendenzenBetreuung = 'pendenzenBetreuungen.list-view';
+    const gemeindeAntraege = 'gemeindeantrage.view';
 
     const stateByRole: { [key in TSRole]: string } = {
         [TSRole.SUPER_ADMIN]: faelle,
@@ -53,8 +54,8 @@ export function getRoleBasedTargetState(currentRole: TSRole, $state: StateServic
         [TSRole.ANONYMOUS]: 'onboarding.anmeldung',
         [TSRole.ADMIN_SOZIALDIENST]: pendenzen,
         [TSRole.SACHBEARBEITER_SOZIALDIENST]: pendenzen,
-        [TSRole.ADMIN_FERIENBETREUUNG]: 'GEMEINDE_ANTRAEGE',
-        [TSRole.SACHBEARBEITER_FERIENBETREUUNG]: 'GEMEINDE_ANTRAEGE',
+        [TSRole.ADMIN_FERIENBETREUUNG]: gemeindeAntraege,
+        [TSRole.SACHBEARBEITER_FERIENBETREUUNG]: gemeindeAntraege,
     };
 
     return $state.target(stateByRole[currentRole]);

@@ -59,7 +59,6 @@ export class GemeindeAntraegeComponent implements OnInit {
         'fallNummer',
         'familienName',
         'kinder',
-        'aenderungsdatum',
         'dokumenteHochgeladen',
         'angebote',
         'institutionen',
@@ -79,7 +78,10 @@ export class GemeindeAntraegeComponent implements OnInit {
     private readonly sortDebounceSubject: BehaviorSubject<{
         predicate?: string,
         reverse?: boolean
-    }> = new BehaviorSubject<{ predicate?: string; reverse?: boolean }>({});
+    }> = new BehaviorSubject<{ predicate?: string; reverse?: boolean }>({
+        predicate: 'aenderungsdatum',
+        reverse: true
+    });
     public triedSending: boolean = false;
     public types: TSGemeindeAntragTyp[];
     public deletePossible$: Observable<boolean>;
@@ -128,6 +130,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                         status: antrag.statusString,
                         periode: antrag.gesuchsperiode.gesuchsperiodeString,
                         antragTyp: antrag.gemeindeAntragTyp,
+                        aenderungsdatum: antrag.timestampMutiert
                     };
                 });
             }),
@@ -161,6 +164,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         this.gemeindeAntragService.createAllAntrage(this.formGroup.value).subscribe(() => {
             this.loadAntragList();
             this.cd.markForCheck();
+            this.errorService.addMesageAsInfo(this.translate.instant('ANTRAEGE_ERSTELLT'));
         }, err => {
             this.handleCreateAntragError(err);
         });
@@ -239,9 +243,11 @@ export class GemeindeAntraegeComponent implements OnInit {
             this.triedSending = true;
             return;
         }
+        // tslint:disable-next-line:no-identical-functions
         this.gemeindeAntragService.createAntrag(this.formGroup.value).subscribe(() => {
             this.loadAntragList();
             this.cd.markForCheck();
+            this.errorService.addMesageAsInfo(this.translate.instant('ANTRAG_ERSTELLT'));
         }, err => {
             this.handleCreateAntragError(err);
         });
@@ -305,7 +311,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     public canCreateAntrag(): Observable<boolean> {
         return this.authService.principal$.pipe(
             filter(principal => !!principal),
-            map(() => this.authService.isOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSorMandantRoles()))
+            map(() => this.authService.isOneOfRoles(TSRoleUtil.getFerienbetreuungRoles()))
         );
     }
 }

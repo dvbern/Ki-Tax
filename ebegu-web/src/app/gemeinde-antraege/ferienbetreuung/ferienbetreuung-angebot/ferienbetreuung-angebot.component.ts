@@ -34,6 +34,7 @@ import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
 import {numberValidator, ValidationType} from '../../../shared/validators/number-validator.directive';
+import {UnsavedChangesService} from '../../services/unsaved-changes.service';
 import {AbstractFerienbetreuungFormular} from '../abstract.ferienbetreuung-formular';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
@@ -49,9 +50,9 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
 
     public formValidationTriggered = false;
     public bfsGemeinden: TSBfsGemeinde[];
+    public container: TSFerienbetreuungAngabenContainer;
 
     private angebot: TSFerienbetreuungAngabenAngebot;
-    private container: TSFerienbetreuungAngabenContainer;
 
     public constructor(
         protected readonly errorService: ErrorService,
@@ -64,6 +65,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         private readonly gemeindeRS: GemeindeRS,
         private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly authService: AuthServiceRS,
+        private readonly unsavedChangesService: UnsavedChangesService
     ) {
         super(errorService, translate, dialog, cd, wizardRS, uiRouterGlobals);
     }
@@ -77,6 +79,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             this.container = container;
             this.angebot = container.angabenDeklaration?.angebot;
             this.setupFormAndPermissions(container, this.angebot, principal);
+            this.unsavedChangesService.registerForm(this.form);
         }, error => {
             LOG.error(error);
         });
@@ -138,8 +141,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
                 numberValidator(ValidationType.INTEGER)
             ],
             bemerkungenAnzahlFerienwochen: [
-                angebot?.bemerkungenAnzahlFerienwochen,
-                numberValidator(ValidationType.INTEGER)
+                angebot?.bemerkungenAnzahlFerienwochen
             ],
             anzahlStundenProBetreuungstag: [
                 angebot?.anzahlStundenProBetreuungstag,

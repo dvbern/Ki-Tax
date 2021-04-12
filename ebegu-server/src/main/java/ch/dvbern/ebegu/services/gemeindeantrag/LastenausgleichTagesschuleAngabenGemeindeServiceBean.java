@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,6 +35,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -63,6 +66,7 @@ import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.base.Preconditions;
 
@@ -267,8 +271,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	public List<LastenausgleichTagesschuleAngabenGemeindeContainer> getLastenausgleicheTagesschulen(
 		@Nullable String gemeinde,
 		@Nullable String periode,
-		@Nullable String status
-	) {
+		@Nullable String status,
+		@Nullable String timestampMutiert) {
 		// institution users have much less permissions, so we handle this in on its own
 		if (principal.isCallerInAnyOfRole(UserRole.ADMIN_INSTITUTION, UserRole.SACHBEARBEITER_INSTITUTION)) {
 			return getLastenausgleicheTagesschulenForInstitution(periode, status);
@@ -308,6 +312,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 				statusPredicate
 			);
 		}
+		if (timestampMutiert != null) {
+			final Predicate timestampMutiertPredicate = createTimestampMutiertPredicate(timestampMutiert, cb, root);
+			query.where(
+				timestampMutiertPredicate
+			);
+		}
 
 		List<LastenausgleichTagesschuleAngabenGemeindeContainer> containerList = persistence.getCriteriaResults(query);
 
@@ -326,6 +336,25 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.status),
 			LastenausgleichTagesschuleAngabenGemeindeStatus.valueOf(status));
 		return statusPredicate;
+	}
+
+	private Predicate createTimestampMutiertPredicate(
+		@Nonnull String timestampMutiert,
+		CriteriaBuilder cb,
+		Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root) {
+
+		Predicate timestampMutiertPredicate;
+		try {
+			// Wir wollen ohne Zeit vergleichen
+			Expression<LocalDate> timestampAsLocalDate =
+				root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.timestampMutiert).as(LocalDate.class);
+			LocalDate searchDate = LocalDate.parse(timestampMutiert, Constants.DATE_FORMATTER);
+			timestampMutiertPredicate = cb.equal(timestampAsLocalDate, searchDate);
+		} catch (DateTimeParseException e) {
+			// no valid date. we return false, since no antrag should be found
+			timestampMutiertPredicate = cb.disjunction();
+		}
+		return timestampMutiertPredicate;
 	}
 
 	private Predicate createPeriodePredicate(
@@ -510,7 +539,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	@Override
 	public void deleteLastenausgleicheTagesschule(@Nonnull Gesuchsperiode gesuchsperiode) {
 		List<LastenausgleichTagesschuleAngabenGemeindeContainer> containerList =
-			getLastenausgleicheTagesschulen(null, gesuchsperiode.getGesuchsperiodeString(), null);
+			getLastenausgleicheTagesschulen(null, gesuchsperiode.getGesuchsperiodeString(), null, null);
 		if (containerList == null) {
 			return;
 		}

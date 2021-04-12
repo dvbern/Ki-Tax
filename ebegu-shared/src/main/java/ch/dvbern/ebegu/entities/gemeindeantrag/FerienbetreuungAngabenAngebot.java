@@ -43,6 +43,7 @@ import javax.validation.constraints.Size;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.KinderAusAnderenGemeindenZahlenAnderenTarifAnswer;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
@@ -183,7 +184,8 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 
 	@Nullable
 	@Column()
-	private Boolean kinderAusAnderenGemeindenZahlenAnderenTarif;
+	@Enumerated(EnumType.STRING)
+	private KinderAusAnderenGemeindenZahlenAnderenTarifAnswer kinderAusAnderenGemeindenZahlenAnderenTarif;
 
 	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
@@ -472,11 +474,13 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 	}
 
 	@Nullable
-	public Boolean getKinderAusAnderenGemeindenZahlenAnderenTarif() {
+	public KinderAusAnderenGemeindenZahlenAnderenTarifAnswer getKinderAusAnderenGemeindenZahlenAnderenTarif() {
 		return kinderAusAnderenGemeindenZahlenAnderenTarif;
 	}
 
-	public void setKinderAusAnderenGemeindenZahlenAnderenTarif(@Nullable Boolean kinderAusAnderenGemeindenZahlenAnderenTarif) {
+	public void setKinderAusAnderenGemeindenZahlenAnderenTarif(
+		@Nullable KinderAusAnderenGemeindenZahlenAnderenTarifAnswer kinderAusAnderenGemeindenZahlenAnderenTarif
+	) {
 		this.kinderAusAnderenGemeindenZahlenAnderenTarif = kinderAusAnderenGemeindenZahlenAnderenTarif;
 	}
 
