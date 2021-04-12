@@ -1329,6 +1329,7 @@
     "CONFIRM_MUTATION_LOESCHEN": "Voulez-vous vraiment supprimer le changement ?",
     "BESCHREIBUNG_GESUCH_LOESCHEN": "Si vous cliquez sur \"Supprimer\", toutes les données seront définitivement supprimées.",
     "SCHLIESSEN": "Fermer",
+    "BACK_TO_FORM": "Zurück zum Formular",
     "KINDER_DELETE": "Supprimer l'entrée",
     "FREISCHALTUNG_TAGESSCHULE": "Ecole à journée continue activée",
     "FREISCHALTUNG_TAGESSCHULE_BUTTON": "Activer les inscriptions pour l'école à journée continue",

@@ -1329,6 +1329,7 @@
     "CONFIRM_MUTATION_LOESCHEN": "Möchten Sie diese Mutation wirklich löschen?",
     "BESCHREIBUNG_GESUCH_LOESCHEN": "Wenn Sie mit dem Löschen fortfahren, werden alle Daten endgültig gelöscht",
     "SCHLIESSEN": "Schliessen",
+    "BACK_TO_FORM": "Zurück zum Formular",
     "KINDER_DELETE": "Eintrag löschen",
     "FREISCHALTUNG_TAGESSCHULE": "Freischaltung Tagesschule",
     "FREISCHALTUNG_TAGESSCHULE_BUTTON": "Anmeldungen für Tagesschule freischalten",
