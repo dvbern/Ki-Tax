@@ -53,7 +53,7 @@ public class FreigabeStep implements WizardStep<TagesschuleWizard> {
 				WizardStateEnum.OK :
 				WizardStateEnum.IN_BEARBEITUNG;
 		}
-		return wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAntragAbgeschlossen() ?
+		return wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAntragGeprueft() ?
 			WizardStateEnum.OK :
 			WizardStateEnum.IN_BEARBEITUNG;
 	}
@@ -65,18 +65,13 @@ public class FreigabeStep implements WizardStep<TagesschuleWizard> {
 
 	@Override
 	public boolean isDisabled(@Nonnull TagesschuleWizard wizard) {
-		switch (wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().getStatus()) {
-		case IN_BEARBEITUNG_GEMEINDE:
+		if(wizard.getRole().isRoleGemeindeabhaengig()) {
 			return !(wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAngabenDeklarationAbgeschlossen()
-				&&
-				wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().allInstitutionenGeprueft());
-		case IN_PRUEFUNG_KANTON:
+				&& wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().allInstitutionenGeprueft());
+		}
+
 			return !((wizard.getRole().isRoleMandant() || wizard.getRole().isSuperadmin()) &&
 				wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAngabenKorrekturAbgeschlossen());
-		case NEU:
-		default:
-			return true;
-		}
 
 	}
 

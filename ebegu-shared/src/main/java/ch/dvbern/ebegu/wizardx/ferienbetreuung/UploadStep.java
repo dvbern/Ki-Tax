@@ -37,7 +37,10 @@ public class UploadStep implements WizardStep<FerienbetreuungWizard> {
 
 	@Override
 	public WizardStateEnum getStatus(@Nonnull FerienbetreuungWizard wizard) {
-		return WizardStateEnum.OK;
+		return wizard.getFerienbetreuungAngabenContainer().getDokumente() == null
+			|| wizard.getFerienbetreuungAngabenContainer().getDokumente().isEmpty() ?
+			WizardStateEnum.IN_BEARBEITUNG :
+			WizardStateEnum.OK;
 	}
 
 	@Override

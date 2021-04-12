@@ -2285,6 +2285,7 @@
     "LATS_FA_INSTI_NUR_WENN_GEMEINDE_OFFEN": "Um dieses Formular wieder zu öffnen müssen Sie zuerst das \"Angaben Gemeinde\" Formular wieder öffnen, indem Sie dort auf \"Falsche Angaben\" klicken.",
     "FRAGE_FORMULAR_ABSCHLIESSEN": "Sind Sie sicher, dass Sie dieses Formular abschliessen möchten?",
     "LATS_BETREUUNGSSTUNDEN_EINSCHLIESSLICH_BESONDERE_BEDUERFNISSE_INFO": "Die Betreuungsstunden für Kinder mit besonderen Betreuungsanforderungen mit dem Faktor 1,5 multiplizieren. <br> Beispiel: 2 Kinder mit besonderen Betreuungsanforderungen (Faktor 1,5) besuchten die Tagesschule im SJ {{periode}} während je 100 Stunden: Eingabe 300.",
+    "LATS_FRAGE_GEMEINDE_ANTRAG_FREIGABE_GEPRUEFT": "Wollen Sie das Formular wirklich als \"Geprüft\" markieren?",
     "ERROR_COULD_NOT_SAVE": "Die Daten konnten nicht gespeichert werden. Prüfen Sie die Daten und versuchen Sie es erneut.",
     "PENSUM_AFTER_PERIODE": "Ein Pensum beginnt nach Ende der Gesuchsperiode. Bitte korrigieren Sie Ihre Eingaben.",
     "MENU_SOZIALDIENST": "Unterstützungsdienste",

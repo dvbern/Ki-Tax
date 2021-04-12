@@ -351,4 +351,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	public boolean isInBearbeitungGemeinde() {
 		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE;
 	}
+
+	public boolean isAntragGeprueft() {
+		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT;
+	}
 }
