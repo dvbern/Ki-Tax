@@ -77,7 +77,7 @@ export class FreigabeComponent implements OnInit {
                 this.canViewFreigabeButton.next(true);
                 this.canViewGeprueftButton.next(false);
             }
-        });
+        }, () => this.errorService.addMesageAsInfo(this.translate.instant('DATA_RETRIEVAL_ERROR')));
     }
 
     public freigeben(): void {
