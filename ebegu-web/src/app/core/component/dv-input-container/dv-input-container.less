@@ -23,14 +23,23 @@ dv-input-container-x {
         align-items: center;
         display: flex;
         justify-content: space-between;
-        margin-bottom: 2.3rem;
         width: 100%;
 
         &.vertical-align {
             flex-direction: column;
-            > label, > mat-form-field {
+            margin-bottom: 4rem;
+            > label, dv-radio-container-x, mat-form-field, .flex-whitespace-item {
                 flex-grow: 1;
                 width: 100%;
+                margin: 0 2rem;
+            }
+        }
+        &:not(.vertical-align) {
+            margin-bottom: 3rem;
+            dv-radio-container-x, mat-form-field, .flex-whitespace-item {
+                //space for outline
+                flex: 0 0 180px;
+                margin-left: 6rem;
             }
         }
 
@@ -80,15 +89,6 @@ dv-input-container-x {
             display: inline-block;
         }
     }
-
-
-
-    dv-radio-container-x, mat-form-field, .flex-whitespace-item {
-        //space for outline
-        flex: 0 1 30px;
-        margin: 0 2rem;
-    }
-
 
 
     .mat-form-field-underline {
