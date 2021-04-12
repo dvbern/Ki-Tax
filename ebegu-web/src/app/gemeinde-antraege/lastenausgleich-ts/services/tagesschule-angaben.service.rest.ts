@@ -18,6 +18,8 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {TSAnzahlEingeschriebeneKinder} from '../../../../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
+import {TSDurchschnittKinderProTag} from '../../../../models/gemeindeantrag/TSDurchschnittKinderProTag';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
@@ -94,5 +96,30 @@ export class TagesschuleAngabenRS {
                 new TSLastenausgleichTagesschuleAngabenInstitutionContainer(), latsAngabenInstitutionContainerfromServer,
             )),
         );
+    }
+
+    public getAnzahlEingeschriebeneKinder(
+        container: TSLastenausgleichTagesschuleAngabenInstitutionContainer
+    ): Observable<TSAnzahlEingeschriebeneKinder> {
+        return this.http.get(
+            `${CONSTANTS.REST_API}/lats/institution/anzahl-eingeschriebene-kinder/${encodeURIComponent(container.id)}`
+        ).pipe(map(data => {
+            return this.ebeguRestUtils.parseAnzahlEingeschriebeneKinder(
+                new TSAnzahlEingeschriebeneKinder(),
+                data
+            );
+        }));
+    }
+
+    public getDurchschnittKinderProTag(container: TSLastenausgleichTagesschuleAngabenInstitutionContainer):
+        Observable<TSDurchschnittKinderProTag> {
+        return this.http.get(
+            `${CONSTANTS.REST_API}/lats/institution/durchschnitt-kinder-pro-tag/${encodeURIComponent(container.id)}`
+        ).pipe(map(data => {
+            return this.ebeguRestUtils.parseDurchschnittKinderProTag(
+                new TSDurchschnittKinderProTag(),
+                data
+            );
+        }));
     }
 }

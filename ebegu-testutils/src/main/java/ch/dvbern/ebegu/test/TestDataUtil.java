@@ -2287,7 +2287,7 @@ public final class TestDataUtil {
 		// B: Quantitative Angaben
 		angabenInstitution.setAnzahlEingeschriebeneKinder(BigDecimal.TEN);
 		angabenInstitution.setAnzahlEingeschriebeneKinderKindergarten(BigDecimal.TEN);
-		angabenInstitution.setAnzahlEingeschriebeneKinderBasisstufe(BigDecimal.TEN);
+		angabenInstitution.setAnzahlEingeschriebeneKinderSekundarstufe(BigDecimal.TEN);
 		angabenInstitution.setAnzahlEingeschriebeneKinderPrimarstufe(BigDecimal.TEN);
 		angabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(BigDecimal.TEN);
 		angabenInstitution.setDurchschnittKinderProTagFruehbetreuung(BigDecimal.TEN);

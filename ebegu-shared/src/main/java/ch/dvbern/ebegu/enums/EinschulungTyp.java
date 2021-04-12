@@ -36,4 +36,24 @@ public enum EinschulungTyp {
 	public boolean isEingeschult() {
 		return this != VORSCHULALTER;
 	}
+
+	public boolean isKindergarten() {
+		return this == KINDERGARTEN1
+			|| this == KINDERGARTEN2;
+	}
+
+	public boolean isPrimarstufe() {
+		return this == KLASSE1
+			|| this == KLASSE2
+			|| this == KLASSE3
+			|| this == KLASSE4
+			|| this == KLASSE5
+			|| this == KLASSE6;
+	}
+
+	public boolean isSekundarstufe() {
+		return this == KLASSE7
+			|| this == KLASSE8
+			|| this == KLASSE9;
+	}
 }

@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.api.resource.gemeindeantrag;
 
+import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -256,5 +258,63 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 				latsInstitutionContainerJax,
 				latsInstitutionContainer);
 		return converted;
+	}
+
+	@ApiOperation(
+		value = "Berechnet die Anzahl eingeschriebener Kinder pro Stufe (overall, vorschulalter, kindergarten, primarschule",
+		response = Map.class
+	)
+	@Nonnull
+	@GET
+	@Path("/anzahl-eingeschriebene-kinder/{containerJaxId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS,
+		SACHBEARBEITER_TS, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
+	public Map<String, Integer> calculateAnzahlEingeschriebeneKinder(
+		@Nonnull @NotNull @PathParam("containerJaxId") JaxId latsInstitutionAngabenJaxId
+	) {
+		Objects.requireNonNull(latsInstitutionAngabenJaxId);
+		Objects.requireNonNull(latsInstitutionAngabenJaxId.getId());
+
+		LastenausgleichTagesschuleAngabenInstitutionContainer container =
+			angabenInstitutionService.findLastenausgleichTagesschuleAngabenInstitutionContainer(
+				converter.toEntityId(latsInstitutionAngabenJaxId)
+			).orElseThrow(() -> new EbeguEntityNotFoundException(
+				"calculateAnzahlEingeschriebeneKinder",
+				latsInstitutionAngabenJaxId.getId())
+			);
+
+		return angabenInstitutionService.calculateAnzahlEingeschriebeneKinder(container);
+
+	}
+
+	@ApiOperation(
+		value = "Berechnet den Durchschnitt der Kinder pro Modulgruppe (Frühbetreuung, Mittagsbetreuung, Nachmittagsbetreuung 1, Nachmittagsbetreuung 2",
+		response = Map.class
+	)
+	@Nonnull
+	@GET
+	@Path("/durchschnitt-kinder-pro-tag/{containerJaxId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS,
+		SACHBEARBEITER_TS, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
+	public Map<String, BigDecimal> calculateDurchschnitKinderProTag(
+		@Nonnull @NotNull @PathParam("containerJaxId") JaxId latsInstitutionAngabenJaxId
+	) {
+		Objects.requireNonNull(latsInstitutionAngabenJaxId);
+		Objects.requireNonNull(latsInstitutionAngabenJaxId.getId());
+
+		LastenausgleichTagesschuleAngabenInstitutionContainer container =
+			angabenInstitutionService.findLastenausgleichTagesschuleAngabenInstitutionContainer(
+				converter.toEntityId(latsInstitutionAngabenJaxId)
+			).orElseThrow(() -> new EbeguEntityNotFoundException(
+				"calculateDurchschnitKinderProTag",
+				latsInstitutionAngabenJaxId.getId())
+			);
+
+		return angabenInstitutionService.calculateDurchschnittKinderProTag(container);
+
 	}
 }

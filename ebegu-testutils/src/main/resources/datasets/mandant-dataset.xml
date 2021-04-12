@@ -59,7 +59,7 @@
 			  tagesschulanmeldungen_startdatum="2020-08-01"
 			  ferieninselanmeldungen_startdatum="2020-08-01"
 			  angebotbg="true"
-			  angebotts="false"
+			  angebotts="true"
 			  angebotfi="false"
 			  gueltig_bis="9999-12-31"/>
 	<gemeinde id="TEUyY/mSSK+GtdwEzX6Hdw=="

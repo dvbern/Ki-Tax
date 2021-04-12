@@ -271,4 +271,10 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 		}
 		return false;
 	}
+
+	public boolean isTagesschuleActiveForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
+		return this.angebotTS
+			&& this.tagesschulanmeldungenStartdatum.isBefore(gesuchsperiode.getGueltigkeit().getGueltigBis())
+			&& gesuchsperiode.getGueltigkeit().getGueltigAb().isBefore(this.gueltigBis);
+	}
 }
