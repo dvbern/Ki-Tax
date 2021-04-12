@@ -92,7 +92,9 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 	List<LastenausgleichTagesschuleAngabenGemeindeContainer> getLastenausgleicheTagesschulen(
 		@Nullable String gemeinde,
 		@Nullable String periode,
-		@Nullable String status);
+		@Nullable String status,
+		@Nullable String timestampMutiert
+	);
 
 	@Nonnull
 	LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindePruefen(

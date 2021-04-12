@@ -49,6 +49,9 @@
                 <mat-error *ngIf="form && form.get('anzahlBetreuungstageKinderBern').errors?.isNotHalf"
                            translate>ERROR_NOT_HALF
                 </mat-error>
+                <mat-error *ngIf="form && form.get('anzahlBetreuungstageKinderBern').errors?.betreuungstageError"
+                           translate>ERROR_FB_BETREUUNGSTAGE
+                </mat-error>
             </mat-form-field>
         </dv-input-container-x>
 
@@ -80,7 +83,7 @@
 
         <dv-input-container-x>
             <label for="betreuungstageKinderDieserGemeindeSonderschueler_id"
-                   class="padding-left-20"
+                   class="padding-left-40"
                    [ngClass]="{'label-error': form && form.get('betreuungstageKinderDieserGemeindeSonderschueler').errors}">
                 {{'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER' | translate }}
             </label>
@@ -94,6 +97,10 @@
                 <mat-error
                     *ngIf="form && form.get('betreuungstageKinderDieserGemeindeSonderschueler').errors?.isNotHalf"
                     translate>ERROR_NOT_HALF
+                </mat-error>
+                <mat-error
+                    *ngIf="form && form.get('betreuungstageKinderDieserGemeindeSonderschueler').errors?.sonderschuelerError"
+                    translate>ERROR_FB_SONDERSCHUELER
                 </mat-error>
             </mat-form-field>
         </dv-input-container-x>
@@ -123,7 +130,7 @@
 
         <dv-input-container-x>
             <label for="davonBetreuungstageKinderAndererGemeindenSonderschueler_id"
-                   class="padding-left-20"
+                   class="padding-left-40"
                    [ngClass]="{'label-error': form && form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').errors}">
                 {{'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER' | translate }}
             </label>
@@ -137,6 +144,10 @@
                 <mat-error
                     *ngIf="form && form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').errors?.isNotHalf"
                     translate>ERROR_NOT_HALF
+                </mat-error>
+                <mat-error
+                    *ngIf="form && form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').errors?.sonderschuelerError"
+                    translate>ERROR_FB_SONDERSCHUELER
                 </mat-error>
             </mat-form-field>
         </dv-input-container-x>
@@ -171,7 +182,7 @@
             <label for="anzahl_betreute_kinder_sonderschueler_id"
                    class="padding-left-20"
                    [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinderSonderschueler').errors}">
-                {{'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER' | translate }}
+                {{'FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER_SONDERSCHUELER' | translate }}
             </label>
             <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
@@ -191,7 +202,7 @@
             <label for="anzahlBetreuteKinder1Zyklus_id"
                    class="padding-left-20"
                    [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinder1Zyklus').errors}">
-                {{'FERIENBETREUUNG_DAVON_KINDER_IM_1_ZYKLUS' | translate }}
+                <span [innerHTML]="'FERIENBETREUUNG_DAVON_KINDER_IM_1_ZYKLUS' | translate"></span>
                 <dv-tooltip inputId="anzahlBetreuteKinder1Zyklus_id"
                             [text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate">
                 </dv-tooltip>
@@ -214,7 +225,7 @@
             <label for="anzahlBetreuteKinder2Zyklus_id"
                    class="padding-left-20"
                    [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinder2Zyklus').errors}">
-                {{'FERIENBETREUUNG_DAVON_KINDER_IM_2_ZYKLUS' | translate }}
+                <span [innerHTML]="'FERIENBETREUUNG_DAVON_KINDER_IM_2_ZYKLUS' | translate"></span>
                 <dv-tooltip inputId="anzahlBetreuteKinder2Zyklus_id"
                             [text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate">
                 </dv-tooltip>
@@ -237,7 +248,7 @@
             <label for="anzahlBetreuteKinder3Zyklus_id"
                    class="padding-left-20"
                    [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinder3Zyklus').errors}">
-                {{'FERIENBETREUUNG_DAVON_KINDER_IM_3_ZYKLUS' | translate }}
+                <span [innerHTML]="'FERIENBETREUUNG_DAVON_KINDER_IM_3_ZYKLUS' | translate"></span>
                 <dv-tooltip inputId="anzahlBetreuteKinder3Zyklus_id"
                             [text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate">
                 </dv-tooltip>

@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -31,6 +33,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -53,9 +56,11 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.base.Preconditions;
 
@@ -81,7 +86,8 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	public List<FerienbetreuungAngabenContainer> getFerienbetreuungAntraege(
 		@Nullable String gemeinde,
 		@Nullable String periode,
-		@Nullable String status
+		@Nullable String status,
+		@Nullable String timestampMutiert
 	) {
 		Set<Gemeinde> gemeinden = principal.getBenutzer().extractGemeindenForUser();
 
@@ -127,8 +133,33 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 					FerienbetreuungAngabenStatus.valueOf(status))
 			);
 		}
+		if (timestampMutiert != null) {
+			Predicate timestampMutiertPredicate = createTimestampMutiertPredicate(timestampMutiert, cb, root);
+			query.where(timestampMutiertPredicate);
+		}
 
 		return persistence.getCriteriaResults(query);
+	}
+
+
+
+	private Predicate createTimestampMutiertPredicate(
+		@Nonnull String timestampMutiert,
+		CriteriaBuilder cb,
+		Root<FerienbetreuungAngabenContainer> root) {
+
+		Predicate timestampMutiertPredicate;
+		try {
+			// Wir wollen ohne Zeit vergleichen
+			Expression<LocalDate> timestampAsLocalDate =
+				root.get(FerienbetreuungAngabenContainer_.timestampMutiert).as(LocalDate.class);
+			LocalDate searchDate = LocalDate.parse(timestampMutiert, Constants.DATE_FORMATTER);
+			timestampMutiertPredicate = cb.equal(timestampAsLocalDate, searchDate);
+		} catch (DateTimeParseException e) {
+			// no valid date. we return false, since no antrag should be found
+			timestampMutiertPredicate = cb.disjunction();
+		}
+		return timestampMutiertPredicate;
 	}
 
 	@Nonnull
@@ -147,12 +178,43 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	public FerienbetreuungAngabenContainer createFerienbetreuungAntrag(
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull Gesuchsperiode gesuchsperiode) {
+
+		Optional<FerienbetreuungAngabenContainer> existingOptional =
+			findFerienbetreuungAngabenContainer(gemeinde, gesuchsperiode);
+
+		if (existingOptional.isPresent()) {
+			throw new EntityExistsException(
+				FerienbetreuungAngabenContainer.class,
+				"FerienbetreuungContainer existiert für Gemeinde und Periode bereits",
+				gemeinde.getName() + ' ' + gesuchsperiode.getGesuchsperiodeString());
+		}
+
 		FerienbetreuungAngabenContainer container = new FerienbetreuungAngabenContainer();
 		container.setStatus(FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE);
 		container.setGemeinde(gemeinde);
 		container.setGesuchsperiode(gesuchsperiode);
 		container.setAngabenDeklaration(new FerienbetreuungAngaben());
 		return persistence.persist(container);
+	}
+
+	@Nonnull
+	private Optional<FerienbetreuungAngabenContainer> findFerienbetreuungAngabenContainer(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+		Objects.requireNonNull(gemeinde, "gemeinde muss gesetzt sein");
+		Objects.requireNonNull(gesuchsperiode, "gesuchsperiode muss gesetzt sein");
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<FerienbetreuungAngabenContainer> query =
+			cb.createQuery(FerienbetreuungAngabenContainer.class);
+		Root<FerienbetreuungAngabenContainer> root =
+			query.from(FerienbetreuungAngabenContainer.class);
+
+		Predicate gemeindePredicate =
+			cb.equal(root.get(FerienbetreuungAngabenContainer_.gemeinde), gemeinde);
+		Predicate gesuchsperiodePredicate =
+			cb.equal(root.get(FerienbetreuungAngabenContainer_.gesuchsperiode), gesuchsperiode);
+
+		query.where(cb.and(gemeindePredicate, gesuchsperiodePredicate));
+		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
 	}
 
 	@Nonnull

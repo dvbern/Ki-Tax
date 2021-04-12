@@ -91,23 +91,25 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 		@Nullable String gemeinde,
 		@Nullable String periode,
 		@Nullable String typ,
-		@Nullable String status) {
+		@Nullable String status,
+		@Nullable String timestampMutiert
+	) {
 
 		if (typ != null) {
 			switch (typ) {
 			case "LASTENAUSGLEICH_TAGESSCHULEN": {
 				return lastenausgleichTagesschuleAngabenGemeindeService.getLastenausgleicheTagesschulen(
-					gemeinde, periode, status
+					gemeinde, periode, status, timestampMutiert
 				);
 			}
 			case "FERIENBETREUUNG": {
-				return ferienbetreuungService.getFerienbetreuungAntraege(gemeinde, periode, status);
+				return ferienbetreuungService.getFerienbetreuungAntraege(gemeinde, periode, status, timestampMutiert);
 			}
 			default:
 				throw new NotImplementedException("getGemeindeAntraege Typ: " + typ + " wurde noch nicht implementiert");
 			}
 		}
-		return getGemeindeAntraege(gemeinde, periode, status);
+		return getGemeindeAntraege(gemeinde, periode, status, timestampMutiert);
 
 	}
 
@@ -116,19 +118,25 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 	public List<GemeindeAntrag> getGemeindeAntraege(
 		@Nullable String gemeindeId,
 		@Nullable String periodeId,
-		@Nullable String status) {
+		@Nullable String status,
+		@Nullable String timestampMutiert
+		) {
 
 		List<GemeindeAntrag> antraege = new ArrayList<>();
 
 		if(principal.isCallerInAnyOfRole(UserRole.getAllGemeindeFerienbetreuungSuperadminRoles())) {
 			List<FerienbetreuungAngabenContainer> ferienbetreuungAntraege = ferienbetreuungService.getFerienbetreuungAntraege(
-				gemeindeId, periodeId, status
+				gemeindeId, periodeId, status, timestampMutiert
 			);
 			antraege.addAll(ferienbetreuungAntraege);
 		}
 
+		if (principal.isCallerInAnyOfRole(UserRole.ADMIN_FERIENBETREUUNG, UserRole.SACHBEARBEITER_FERIENBETREUUNG)) {
+			return antraege;
+		}
+
 		List<LastenausgleichTagesschuleAngabenGemeindeContainer> latsAntraege = lastenausgleichTagesschuleAngabenGemeindeService.getLastenausgleicheTagesschulen(
-			gemeindeId, periodeId, status
+			gemeindeId, periodeId, status, timestampMutiert
 		);
 		antraege.addAll(latsAntraege);
 

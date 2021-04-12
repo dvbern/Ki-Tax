@@ -36,6 +36,7 @@ import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {numberValidator, ValidationType} from '../../../../shared/validators/number-validator.directive';
 import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
 import {TagesschuleAngabenRS} from '../../../lastenausgleich-ts/services/tagesschule-angaben.service.rest';
+import {UnsavedChangesService} from '../../../services/unsaved-changes.service';
 
 @Component({
     selector: 'dv-tagesschulen-angaben',
@@ -69,6 +70,7 @@ export class TagesschulenAngabenComponent {
         private readonly dialog: MatDialog,
         private readonly $state: StateService,
         private readonly routerGlobals: UIRouterGlobals,
+        private readonly unsavedChangesService: UnsavedChangesService
     ) {
     }
 
@@ -89,6 +91,7 @@ export class TagesschulenAngabenComponent {
             }
             this.setupCalculation(angaben);
             this.angabenAusKibon = container.alleAngabenInKibonErfasst;
+            this.unsavedChangesService.registerForm(this.form);
             this.cd.markForCheck();
         }, () => {
             this.errorService.addMesageAsError(this.translate.instant('DATA_RETRIEVAL_ERROR'));
@@ -208,6 +211,7 @@ export class TagesschulenAngabenComponent {
             this.setupForm(result?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
                 result?.angabenDeklaration : result?.angabenKorrektur);
             this.errorService.addMesageAsInfo(this.translate.instant('SAVED'));
+            this.form.markAsPristine();
         }, error => {
             if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
                 this.errorService.addMesageAsError(this.translate.instant('ERROR_NUMBER'));
@@ -238,6 +242,7 @@ export class TagesschulenAngabenComponent {
                     this.form.disable();
                 }
                 this.cd.markForCheck();
+                this.form.markAsPristine();
             }, () => {
                 this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
             });
@@ -276,6 +281,7 @@ export class TagesschulenAngabenComponent {
                 this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.routerGlobals.params.id);
                 this.form.disable();
                 this.cd.markForCheck();
+                this.form.markAsPristine();
                 this.navigateBack();
             }, () => {
                 this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));

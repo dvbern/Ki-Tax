@@ -33,6 +33,7 @@ import {CONSTANTS} from '../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
+import {UnsavedChangesService} from '../../services/unsaved-changes.service';
 import {AbstractFerienbetreuungFormular} from '../abstract.ferienbetreuung-formular';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
@@ -62,6 +63,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         private readonly fb: FormBuilder,
         private readonly gemeindeRS: GemeindeRS,
         private readonly authServiceRS: AuthServiceRS,
+        private readonly unsavedChangesService: UnsavedChangesService
     ) {
         super(errorService, translate, dialog, cd, wizardRS, uiRouterGlobals);
     }
@@ -74,6 +76,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
             this.container = container;
             this.stammdaten = container.angabenDeklaration?.stammdaten;
             this.setupFormAndPermissions(container, this.stammdaten, principal);
+            this.unsavedChangesService.registerForm(this.form);
         }, error => {
             LOG.error(error);
         });

@@ -28,6 +28,7 @@ import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
 import {numberValidator, ValidationType} from '../../../shared/validators/number-validator.directive';
+import {UnsavedChangesService} from '../../services/unsaved-changes.service';
 import {AbstractFerienbetreuungFormular} from '../abstract.ferienbetreuung-formular';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
@@ -55,6 +56,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly fb: FormBuilder,
         private readonly authService: AuthServiceRS,
+        private readonly unsavedChangesService: UnsavedChangesService
     ) {
         super(errorService, translate, dialog, cd, wizardRS, uiRouterGlobals);
     }
@@ -66,8 +68,8 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         ]).subscribe(([container, principal]) => {
             this.container = container;
             this.kostenEinnahmen = container.angabenDeklaration?.kostenEinnahmen;
-
             this.setupFormAndPermissions(container, this.kostenEinnahmen, principal);
+            this.unsavedChangesService.registerForm(this.form);
         }, error => {
             LOG.error(error);
         });

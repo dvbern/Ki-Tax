@@ -25,6 +25,7 @@ import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantr
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {WindowRef} from '../../../core/service/windowRef.service';
 import {SharedModule} from '../../../shared/shared.module';
+import {UnsavedChangesService} from '../../services/unsaved-changes.service';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
 import {FerienbetreuungKostenEinnahmenComponent} from './ferienbetreuung-kosten-einnahmen.component';
@@ -41,6 +42,9 @@ const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals
 
 const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
     ['principal$']);
+
+const unsavedChangesServiceSpy = jasmine.createSpyObj<UnsavedChangesService>(UnsavedChangesService.name,
+    ['registerForm']);
 
 describe('FerienbetreuungKostenEinnahmenComponent', () => {
     let component: FerienbetreuungKostenEinnahmenComponent;
@@ -64,6 +68,7 @@ describe('FerienbetreuungKostenEinnahmenComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy}
             ]
         })
             .compileComponents();

@@ -48,7 +48,7 @@ export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAn
     private _einkommensabhaengigerTarifKinderDerGemeinde: boolean;
     private _tagesschuleTarifGiltFuerFerienbetreuung: boolean;
     private _ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet: boolean;
-    private _kinderAusAnderenGemeindenZahlenAnderenTarif: boolean;
+    private _kinderAusAnderenGemeindenZahlenAnderenTarif: string;
     private _bemerkungenTarifsystem: string;
 
     public get angebot(): string {
@@ -267,11 +267,11 @@ export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAn
         this._ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet = value;
     }
 
-    public get kinderAusAnderenGemeindenZahlenAnderenTarif(): boolean {
+    public get kinderAusAnderenGemeindenZahlenAnderenTarif(): string {
         return this._kinderAusAnderenGemeindenZahlenAnderenTarif;
     }
 
-    public set kinderAusAnderenGemeindenZahlenAnderenTarif(value: boolean) {
+    public set kinderAusAnderenGemeindenZahlenAnderenTarif(value: string) {
         this._kinderAusAnderenGemeindenZahlenAnderenTarif = value;
     }
 
