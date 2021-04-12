@@ -630,23 +630,22 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		final CriteriaQuery<Long> query = cb.createQuery(Long.class);
 		Root<Mitteilung> root = query.from(Mitteilung.class);
 
-		List<Predicate> predicates;
+		List<Predicate> predicates = new ArrayList<>();
+
+		Predicate predicateNew = cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.NEU);
+		predicates.add(predicateNew);
+
 		if (loggedInBenutzer.getRole().isRoleSozialdienstabhaengig()) {
-			predicates = countNewMitteilungenPredicatesForSozialdienstBenutzer(loggedInBenutzer, cb, root);
+			predicates.add(countNewMitteilungenPredicatesForSozialdienstBenutzer(loggedInBenutzer, cb, root));
 		} else {
-			predicates = countNewMitteilungenPredicatesForOtherBenutzer(loggedInBenutzer, cb, root);
+			predicates.add(cb.equal(root.get(Mitteilung_.empfaenger), loggedInBenutzer));
 		}
 		query.select(cb.countDistinct(root));
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		return persistence.getCriteriaSingleResult(query);
 	}
 
-	private List<Predicate> countNewMitteilungenPredicatesForSozialdienstBenutzer(@Nonnull Benutzer loggedInBenutzer, CriteriaBuilder cb, Root<Mitteilung> root) {
-
-		List<Predicate> predicates = new ArrayList<>();
-
-		Predicate predicateNew = cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.NEU);
-		predicates.add(predicateNew);
+	private Predicate countNewMitteilungenPredicatesForSozialdienstBenutzer(@Nonnull Benutzer loggedInBenutzer, CriteriaBuilder cb, Root<Mitteilung> root) {
 
 		Join<Mitteilung, Dossier> joinDossier = root.join(Mitteilung_.dossier, JoinType.INNER);
 		Join<Dossier, Fall> joinFall = joinDossier.join(Dossier_.fall);
@@ -654,22 +653,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		Predicate sozialdienstFall =
 			cb.equal(joinSozialdienst.get(SozialdienstFall_.sozialdienst), loggedInBenutzer.getSozialdienst());
-		predicates.add(sozialdienstFall);
 
-		return predicates;
-
-	}
-
-	private List<Predicate> countNewMitteilungenPredicatesForOtherBenutzer(@Nonnull Benutzer loggedInBenutzer, CriteriaBuilder cb, Root<Mitteilung> root) {
-		List<Predicate> predicates = new ArrayList<>();
-
-		Predicate predicateNew = cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.NEU);
-		predicates.add(predicateNew);
-
-		Predicate predicateEmpfaenger = cb.equal(root.get(Mitteilung_.empfaenger), loggedInBenutzer);
-		predicates.add(predicateEmpfaenger);
-
-		return predicates;
+		return sozialdienstFall;
 	}
 
 	@Override
