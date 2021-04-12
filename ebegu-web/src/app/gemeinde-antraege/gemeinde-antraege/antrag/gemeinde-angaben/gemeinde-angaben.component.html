@@ -262,12 +262,26 @@
                            formControlName="lastenausgleichberechtigteBetreuungsstunden"
                            [readonly]="true"
                            class="form-control dv-input"/>
-                    <mat-error
-                        *ngIf="abschliessenValidationActive && angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors?.plausibilisierungTagesschulenStundenError"
-                        translate>ERROR_LATS_PLAUSIBLISIERUNG_TAGESSCHULEN
-                    </mat-error>
                 </mat-form-field>
             </dv-input-container-x>
+
+            <div class="custom-errors">
+                <div
+                    *ngIf="abschliessenValidationActive && angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors?.plausibilisierungTagesschulenStundenError">
+                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                    <span translate>ERROR_LATS_PLAUSIBLISIERUNG_TAGESSCHULEN</span>
+                </div>
+                <div
+                    *ngIf="abschliessenValidationActive && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors?.plausibilisierungAdditionError">
+                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                    <span translate>ERROR_LATS_PLAUSIBLISIERUNG_ADDITION</span>
+                </div>
+                <div
+                    *ngIf="abschliessenValidationActive && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.plausibilisierungTagesschulenStundenError">
+                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                    <span translate>ERROR_LATS_PLAUSIBLISIERUNG_TAGESSCHULEN_STUNDEN</span>
+                </div>
+            </div>
 
             <dv-input-container-x>
                 <label required
@@ -287,10 +301,6 @@
                     <mat-error
                         *ngIf="angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors?.isNotPositiveInteger"
                         translate>ERROR_POSITIVE_NUMBER
-                    </mat-error>
-                    <mat-error
-                        *ngIf="abschliessenValidationActive && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors?.plausibilisierungAdditionError"
-                        translate>ERROR_LATS_PLAUSIBLISIERUNG_ADDITION
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.davonStundenZuNormlohnMehrAls50ProzentAusgebildete"
@@ -323,14 +333,6 @@
                     <mat-error
                         *ngIf="angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.isNotPositiveInteger"
                         translate>ERROR_POSITIVE_NUMBER
-                    </mat-error>
-                    <mat-error
-                        *ngIf="abschliessenValidationActive && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.plausibilisierungAdditionError"
-                        translate>ERROR_LATS_PLAUSIBLISIERUNG_ADDITION
-                    </mat-error>
-                    <mat-error
-                        *ngIf="abschliessenValidationActive && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.plausibilisierungTagesschulenStundenError"
-                        translate>ERROR_LATS_PLAUSIBLISIERUNG_TAGESSCHULEN_STUNDEN
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete"
