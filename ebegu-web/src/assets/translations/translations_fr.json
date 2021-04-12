@@ -2340,6 +2340,7 @@
     "GEMEINDE_ANTRAEGE_ANTRAG_ERSTELLEN": "Créer une demande",
     "FERIENBETREUUNG_STAMMDATEN_GEMEINDE": "Données de base de la commune",
     "FERIENBETREUUNG_ANGEBOT": "Structure d’accueil",
+    "FERIENBETREUUNG_ANGEBOT_SCHULJAHR": "Structure d’accueil pendant l’année scolaire {{periode}}",
     "FERIENBETREUUNG_NUTZUNG": "Fréquentation",
     "FERIENBETREUUNG_KOSTEN_EINNAHMEN": "Coûts et recettes",
     "FERIENBETREUUNG_UPLOAD": "Dépôt des documents",

@@ -50,9 +50,9 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
 
     public formValidationTriggered = false;
     public bfsGemeinden: TSBfsGemeinde[];
+    public container: TSFerienbetreuungAngabenContainer;
 
     private angebot: TSFerienbetreuungAngabenAngebot;
-    private container: TSFerienbetreuungAngabenContainer;
 
     public constructor(
         protected readonly errorService: ErrorService,

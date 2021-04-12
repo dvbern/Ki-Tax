@@ -2339,6 +2339,7 @@
     "GEMEINDE_ANTRAEGE_ANTRAG_ERSTELLEN": "Antrag erstellen",
     "FERIENBETREUUNG_STAMMDATEN_GEMEINDE": "Stammdaten Gemeinde",
     "FERIENBETREUUNG_ANGEBOT": "Angebot",
+    "FERIENBETREUUNG_ANGEBOT_SCHULJAHR": "Angebot im Schuljahr {{periode}}",
     "FERIENBETREUUNG_NUTZUNG": "Nutzung",
     "FERIENBETREUUNG_KOSTEN_EINNAHMEN": "Kosten und Einnahmen",
     "FERIENBETREUUNG_UPLOAD": "Upload",
