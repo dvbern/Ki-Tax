@@ -67,7 +67,6 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         '$timeout',
     ];
 
-    private sozialdienstFall: TSSozialdienstFall;
     private isVollmachtHochgeladen: boolean;
     private gesuchsperiodeId: string;
 
@@ -110,8 +109,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     }
 
     private initViewModel(): void {
-        this.sozialdienstFall = this.gesuchModelManager.getFall().sozialdienstFall;
-        if (this.sozialdienstFall.isNew()) {
+        if (this.gesuchModelManager.getFall().sozialdienstFall.isNew()) {
             return;
         }
         this.fallRS.existVollmachtDokument(this.gesuchModelManager.getFall().id).then(
@@ -250,21 +248,25 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         let filename;
         file = new Blob([response], {type: 'application/pdf'});
         filename = this.$translate.instant('VOLLMACHT_DATEI_NAME');
-        filename = `${filename}_${this.sozialdienstFall?.vorname}_${this.sozialdienstFall.name}`;
+        filename = `${filename}_${this.getSozialdienstFall().vorname}_${this.getSozialdienstFall().name}`;
         this.downloadRS.openDownload(file, filename);
     }
 
     private validateZweiteAntragsteller(): void {
-        if ((!EbeguUtil.isEmptyStringNullOrUndefined(this.sozialdienstFall.nameGs2)
-            || !EbeguUtil.isEmptyStringNullOrUndefined(this.sozialdienstFall.vornameGs2)
-            || EbeguUtil.isNotNullOrUndefined(this.sozialdienstFall.geburtsdatumGs2))
+        if ((!EbeguUtil.isEmptyStringNullOrUndefined(this.getSozialdienstFall().nameGs2)
+            || !EbeguUtil.isEmptyStringNullOrUndefined(this.getSozialdienstFall().vornameGs2)
+            || EbeguUtil.isNotNullOrUndefined(this.getSozialdienstFall().geburtsdatumGs2))
             &&
-            (EbeguUtil.isEmptyStringNullOrUndefined(this.sozialdienstFall.nameGs2)
-                || EbeguUtil.isEmptyStringNullOrUndefined(this.sozialdienstFall.vornameGs2)
-                || EbeguUtil.isNullOrUndefined(this.sozialdienstFall.geburtsdatumGs2))
+            (EbeguUtil.isEmptyStringNullOrUndefined(this.getSozialdienstFall().nameGs2)
+                || EbeguUtil.isEmptyStringNullOrUndefined(this.getSozialdienstFall().vornameGs2)
+                || EbeguUtil.isNullOrUndefined(this.getSozialdienstFall().geburtsdatumGs2))
         ) {
             this.showAntragsteller2Error = true;
         }
+    }
+
+    public getSozialdienstFall(): TSSozialdienstFall {
+        return this.gesuchModelManager.getFall().sozialdienstFall;
     }
 
     public isFormDirty(): boolean {
