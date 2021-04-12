@@ -27,5 +27,8 @@ export class TSSozialdienstFall extends TSAbstractEntity {
     public status: TSSozialdienstFallStatus;
     public adresse: TSAdresse;
     public geburtsdatum: moment.Moment;
+    public nameGs2: string;
+    public vornameGs2: string;
+    public geburtsdatumGs2: moment.Moment;
     public sozialdienst: TSSozialdienst;
 }

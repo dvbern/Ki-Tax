@@ -20,6 +20,7 @@ import {StateService} from '@uirouter/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {ITourParams} from '../../../gesuch/gesuch.route';
 import {navigateToStartPageForRole, navigateToStartPageForRoleWithParams} from '../../../utils/AuthenticationUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {KiBonGuidedTourService} from '../../kibonTour/service/KiBonGuidedTourService';
 
 @Component({
@@ -33,14 +34,14 @@ export class WelcomeMainComponent {
     public constructor(
         private readonly authServiceRs: AuthServiceRS,
         private readonly $state: StateService,
-        private readonly kibonGuidedTourService: KiBonGuidedTourService
+        private readonly kibonGuidedTourService: KiBonGuidedTourService,
     ) {
 
     }
 
     public navigateToStartPage(): void {
         const params: ITourParams = {
-            tourType : 'startTour'
+            tourType: 'startTour',
         };
         navigateToStartPageForRoleWithParams(this.authServiceRs.getPrincipal().getCurrentRole(), this.$state, params);
         this.kibonGuidedTourService.emit();
@@ -48,5 +49,9 @@ export class WelcomeMainComponent {
 
     public cancel(): void {
         navigateToStartPageForRole(this.authServiceRs.getPrincipal().getCurrentRole(), this.$state);
+    }
+
+    public isNotSozialdienstRole(): boolean {
+        return !this.authServiceRs.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
     }
 }

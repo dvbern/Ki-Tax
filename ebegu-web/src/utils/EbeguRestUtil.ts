@@ -1501,7 +1501,7 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.alternativeEmailFamilienportal =
                 (institutionStammdaten.alternativeEmailFamilienportal) ?
                     institutionStammdaten.alternativeEmailFamilienportal :
-                null;
+                    null;
             return restInstitutionStammdaten;
         }
         return undefined;
@@ -4447,6 +4447,12 @@ export class EbeguRestUtil {
                 gemeindeFromServer.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete;
             gemeindeTS.einnahmenElterngebuehren =
                 gemeindeFromServer.einnahmenElterngebuehren;
+            gemeindeTS.ersteRateAusbezahlt =
+                gemeindeFromServer.ersteRateAusbezahlt;
+            gemeindeTS.tagesschuleTeilweiseGeschlossen =
+                gemeindeFromServer.tagesschuleTeilweiseGeschlossen;
+            gemeindeTS.rueckerstattungenElterngebuehrenSchliessung =
+                gemeindeFromServer.rueckerstattungenElterngebuehrenSchliessung;
             // C: Kostenbeteiligung Gemeinde
             gemeindeTS.gesamtKostenTagesschule =
                 gemeindeFromServer.gesamtKostenTagesschule;
@@ -4454,6 +4460,10 @@ export class EbeguRestUtil {
                 gemeindeFromServer.einnnahmenVerpflegung;
             gemeindeTS.einnahmenSubventionenDritter =
                 gemeindeFromServer.einnahmenSubventionenDritter;
+            gemeindeTS.ueberschussErzielt =
+                gemeindeFromServer.ueberschussErzielt;
+            gemeindeTS.ueberschussVerwendung =
+                gemeindeFromServer.ueberschussVerwendung;
             // D: Angaben zu weiteren Kosten und Ertraegen
             gemeindeTS.bemerkungenWeitereKostenUndErtraege =
                 gemeindeFromServer.bemerkungenWeitereKostenUndErtraege;
@@ -4506,6 +4516,12 @@ export class EbeguRestUtil {
                 tsAngabenGemeinde.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete;
             restAngabenGemeinde.einnahmenElterngebuehren =
                 tsAngabenGemeinde.einnahmenElterngebuehren;
+            restAngabenGemeinde.tagesschuleTeilweiseGeschlossen =
+                tsAngabenGemeinde.tagesschuleTeilweiseGeschlossen;
+            restAngabenGemeinde.rueckerstattungenElterngebuehrenSchliessung =
+                tsAngabenGemeinde.rueckerstattungenElterngebuehrenSchliessung;
+            restAngabenGemeinde.ersteRateAusbezahlt =
+                tsAngabenGemeinde.ersteRateAusbezahlt;
             // C: Kostenbeteiligung Gemeinde
             restAngabenGemeinde.gesamtKostenTagesschule =
                 tsAngabenGemeinde.gesamtKostenTagesschule;
@@ -4513,6 +4529,10 @@ export class EbeguRestUtil {
                 tsAngabenGemeinde.einnnahmenVerpflegung;
             restAngabenGemeinde.einnahmenSubventionenDritter =
                 tsAngabenGemeinde.einnahmenSubventionenDritter;
+            restAngabenGemeinde.ueberschussErzielt =
+                tsAngabenGemeinde.ueberschussErzielt;
+            restAngabenGemeinde.ueberschussVerwendung =
+                tsAngabenGemeinde.ueberschussVerwendung;
             // D: Angaben zu weiteren Kosten und Ertraegen
             restAngabenGemeinde.bemerkungenWeitereKostenUndErtraege =
                 tsAngabenGemeinde.bemerkungenWeitereKostenUndErtraege;
@@ -4975,6 +4995,7 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
+        stammdatenTS.status = stammdatenFromServer.status;
         stammdatenTS.amAngebotBeteiligteGemeinden = stammdatenFromServer.amAngebotBeteiligteGemeinden;
         stammdatenTS.seitWannFerienbetreuungen = stammdatenFromServer.seitWannFerienbetreuungen;
         stammdatenTS.traegerschaft = stammdatenFromServer.traegerschaft;
@@ -4999,6 +5020,7 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractEntity(angebotTS, angebotFromServer);
+        angebotTS.status = angebotFromServer.status;
         angebotTS.angebot = angebotFromServer.angebot;
         angebotTS.angebotKontaktpersonVorname = angebotFromServer.angebotKontaktpersonVorname;
         angebotTS.angebotKontaktpersonNachname = angebotFromServer.angebotKontaktpersonNachname;
@@ -5042,6 +5064,7 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractEntity(nutzungTS, nutzungFromServer);
+        nutzungTS.status = nutzungFromServer.status;
         nutzungTS.anzahlBetreuungstageKinderBern = nutzungFromServer.anzahlBetreuungstageKinderBern;
         nutzungTS.betreuungstageKinderDieserGemeinde = nutzungFromServer.betreuungstageKinderDieserGemeinde;
         nutzungTS.betreuungstageKinderDieserGemeindeSonderschueler =
@@ -5067,6 +5090,7 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractEntity(kostenEinnahmenTS, kostenEinnahmenFromServer);
+        kostenEinnahmenTS.status = kostenEinnahmenFromServer.status;
         kostenEinnahmenTS.personalkosten = kostenEinnahmenFromServer.personalkosten;
         kostenEinnahmenTS.personalkostenLeitungAdmin = kostenEinnahmenFromServer.personalkostenLeitungAdmin;
         kostenEinnahmenTS.sachkosten = kostenEinnahmenFromServer.sachkosten;
@@ -5115,6 +5139,9 @@ export class EbeguRestUtil {
             restSozialdienstFall.vorname = sozialdienstFall.vorname;
             restSozialdienstFall.geburtsdatum = DateUtil.momentToLocalDate(sozialdienstFall.geburtsdatum);
             restSozialdienstFall.status = sozialdienstFall.status;
+            restSozialdienstFall.nameGs2 = sozialdienstFall.nameGs2;
+            restSozialdienstFall.vornameGs2 = sozialdienstFall.vornameGs2;
+            restSozialdienstFall.geburtsdatumGs2 = DateUtil.momentToLocalDate(sozialdienstFall.geburtsdatumGs2);
             return restSozialdienstFall;
         }
         return undefined;
@@ -5132,6 +5159,9 @@ export class EbeguRestUtil {
             sozialdienstFallTS.name = sozialdienstFallFromServer.name;
             sozialdienstFallTS.vorname = sozialdienstFallFromServer.vorname;
             sozialdienstFallTS.geburtsdatum = DateUtil.localDateToMoment(sozialdienstFallFromServer.geburtsdatum);
+            sozialdienstFallTS.nameGs2 = sozialdienstFallFromServer.nameGs2;
+            sozialdienstFallTS.vornameGs2 = sozialdienstFallFromServer.vornameGs2;
+            sozialdienstFallTS.geburtsdatumGs2 = DateUtil.localDateToMoment(sozialdienstFallFromServer.geburtsdatumGs2);
             sozialdienstFallTS.status = sozialdienstFallFromServer.status;
             return sozialdienstFallTS;
         }

@@ -79,11 +79,12 @@
     }
     .pagination {
 
-        .active {
+        .padding.active {
             a {
                 background-color: @primary;
                 border-color: @primary-dark;
                 color: @contrast-lightest;
+
                 &:hover, &:focus {
                     background-color: @primary-dark;
                     border-color: @primary;
@@ -91,11 +92,14 @@
                 }
             }
         }
+
         a {
             color: @primary;
+
             &, &:first-child, &:last-child {
                 border-radius: 0;
             }
+
             &:hover, &:focus {
                 color: @primary-dark;
             }

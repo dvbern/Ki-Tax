@@ -8,39 +8,17 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-form {
-    max-width: 600px;
-}
 
-.actions {
-    display: flex;
-    justify-content: center;
-    width: 100%;
+ALTER TABLE sozialdienst_fall ADD vorname_gs2 VARCHAR(255);
+ALTER TABLE sozialdienst_fall ADD name_gs2 VARCHAR(255);
+ALTER TABLE sozialdienst_fall ADD geburtsdatum_gs2 DATE;
 
-    & > dv-loading-button {
-        margin: 0 5px;
-    }
-}
-
-.label-required-error {
-    color: red;
-}
-
-
-.pointer-cursor {
-    cursor: pointer;
-}
-
-#adresse-header, #kontaktperson-header {
-    display: flex;
-
-    .flex-whitespace-item {
-        flex-grow: 1;
-    }
-}
+ALTER TABLE sozialdienst_fall_aud ADD vorname_gs2 VARCHAR(255);
+ALTER TABLE sozialdienst_fall_aud ADD name_gs2 VARCHAR(255);
+ALTER TABLE sozialdienst_fall_aud ADD geburtsdatum_gs2 DATE;

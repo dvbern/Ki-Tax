@@ -71,9 +71,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     private isVollmachtHochgeladen: boolean;
     private gesuchsperiodeId: string;
 
-    // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt
-    // wird sondern erst nachdem man auf ein checkbox oder auf speichern geklickt hat
-    public showError: boolean = false;
+    public showAntragsteller2Error: boolean = false;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -111,10 +109,6 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         }
     }
 
-    public setShowError(showError: boolean): void {
-        this.showError = showError;
-    }
-
     private initViewModel(): void {
         this.sozialdienstFall = this.gesuchModelManager.getFall().sozialdienstFall;
         if (this.sozialdienstFall.isNew()) {
@@ -127,8 +121,9 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
 
     // tslint:disable-next-line:cognitive-complexity
     public save(): void {
-        this.showError = true;
-        if (!this.isGesuchValid()) {
+        this.showAntragsteller2Error = false;
+        this.validateZweiteAntragsteller();
+        if (!this.isGesuchValid() || this.showAntragsteller2Error) {
             return undefined;
         }
         if (!this.form.$dirty && !this.gesuchModelManager.getFall().sozialdienstFall.isNew()) {
@@ -257,5 +252,22 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         filename = this.$translate.instant('VOLLMACHT_DATEI_NAME');
         filename = `${filename}_${this.sozialdienstFall?.vorname}_${this.sozialdienstFall.name}`;
         this.downloadRS.openDownload(file, filename);
+    }
+
+    private validateZweiteAntragsteller(): void {
+        if ((!EbeguUtil.isEmptyStringNullOrUndefined(this.sozialdienstFall.nameGs2)
+            || !EbeguUtil.isEmptyStringNullOrUndefined(this.sozialdienstFall.vornameGs2)
+            || EbeguUtil.isNotNullOrUndefined(this.sozialdienstFall.geburtsdatumGs2))
+            &&
+            (EbeguUtil.isEmptyStringNullOrUndefined(this.sozialdienstFall.nameGs2)
+                || EbeguUtil.isEmptyStringNullOrUndefined(this.sozialdienstFall.vornameGs2)
+                || EbeguUtil.isNullOrUndefined(this.sozialdienstFall.geburtsdatumGs2))
+        ) {
+            this.showAntragsteller2Error = true;
+        }
+    }
+
+    public isFormDirty(): boolean {
+        return this.form.$dirty;
     }
 }

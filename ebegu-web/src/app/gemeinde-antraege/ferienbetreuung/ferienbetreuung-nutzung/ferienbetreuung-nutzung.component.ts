@@ -16,13 +16,19 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, Validators} from '@angular/forms';
+import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
+import {UIRouterGlobals} from '@uirouter/core';
+import {combineLatest} from 'rxjs';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenNutzung} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
+import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
 import {numberValidator, ValidationType} from '../../../shared/validators/number-validator.directive';
+import {AbstractFerienbetreuungFormular} from '../abstract.ferienbetreuung-formular';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
 const LOG = LogFactory.createLog('FerienbetreuungNutzungComponent');
@@ -31,86 +37,122 @@ const LOG = LogFactory.createLog('FerienbetreuungNutzungComponent');
     selector: 'dv-ferienbetreuung-nutzung',
     templateUrl: './ferienbetreuung-nutzung.component.html',
     styleUrls: ['./ferienbetreuung-nutzung.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FerienbetreuungNutzungComponent implements OnInit {
-
-    public form: FormGroup;
+export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungFormular implements OnInit {
 
     private nutzung: TSFerienbetreuungAngabenNutzung;
     private container: TSFerienbetreuungAngabenContainer;
 
     public constructor(
+        protected readonly errorService: ErrorService,
+        protected readonly translate: TranslateService,
+        protected readonly dialog: MatDialog,
         private readonly ferienbetreuungService: FerienbetreuungService,
+        protected readonly cd: ChangeDetectorRef,
+        protected readonly wizardRS: WizardStepXRS,
+        protected readonly uiRouterGlobals: UIRouterGlobals,
         private readonly fb: FormBuilder,
-        private readonly cd: ChangeDetectorRef,
-        private readonly errorService: ErrorService,
-        private readonly translate: TranslateService
+        private readonly authService: AuthServiceRS,
     ) {
+        super(errorService, translate, dialog, cd, wizardRS, uiRouterGlobals);
     }
 
     public ngOnInit(): void {
-        this.ferienbetreuungService.getFerienbetreuungContainer()
-            .subscribe(container => {
-                this.container = container;
-                this.nutzung = container.angabenDeklaration?.nutzung;
-                this.setupForm(this.nutzung);
-                this.cd.markForCheck();
-            }, error => {
-                LOG.error(error);
-            });
+        combineLatest([
+            this.ferienbetreuungService.getFerienbetreuungContainer(),
+            this.authService.principal$,
+        ]).subscribe(([container, principal]) => {
+            this.container = container;
+            this.nutzung = container.angabenDeklaration?.nutzung;
+
+            this.setupFormAndPermissions(container, this.nutzung, principal);
+        }, error => {
+            LOG.error(error);
+        });
     }
 
-    private setupForm(nutzung: TSFerienbetreuungAngabenNutzung): void {
+    public async onAbschliessen(): Promise<void> {
+        if (await this.checkReadyForAbschliessen()) {
+            this.ferienbetreuungService.nutzungAbschliessen(this.container.id, this.form.value)
+                .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
+        }
+    }
+
+    // Overwrite
+    protected enableFormValidation(): void {
+        this.form.get('anzahlBetreuungstageKinderBern')
+            .setValidators([Validators.required, numberValidator(ValidationType.HALF)]);
+        this.form.get('betreuungstageKinderDieserGemeinde')
+            .setValidators([Validators.required, numberValidator(ValidationType.HALF)]);
+        this.form.get('betreuungstageKinderDieserGemeindeSonderschueler')
+            .setValidators([numberValidator(ValidationType.HALF)]);
+        this.form.get('davonBetreuungstageKinderAndererGemeinden')
+            .setValidators([Validators.required, numberValidator(ValidationType.HALF)]);
+        this.form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler')
+            .setValidators([numberValidator(ValidationType.HALF)]);
+        this.form.get('anzahlBetreuteKinder').setValidators([numberValidator(ValidationType.INTEGER)]);
+        this.form.get('anzahlBetreuteKinderSonderschueler').setValidators([numberValidator(ValidationType.INTEGER)]);
+        this.form.get('anzahlBetreuteKinder1Zyklus').setValidators([numberValidator(ValidationType.INTEGER)]);
+        this.form.get('anzahlBetreuteKinder2Zyklus').setValidators([numberValidator(ValidationType.INTEGER)]);
+        this.form.get('anzahlBetreuteKinder3Zyklus').setValidators([numberValidator(ValidationType.INTEGER)]);
+    }
+
+    protected setupForm(nutzung: TSFerienbetreuungAngabenNutzung): void {
         if (!nutzung) {
             return;
         }
         this.form = this.fb.group({
+            id: [nutzung.id],
             anzahlBetreuungstageKinderBern: [
                 nutzung.anzahlBetreuungstageKinderBern,
-                numberValidator(ValidationType.HALF)
+                numberValidator(ValidationType.HALF),
             ],
             betreuungstageKinderDieserGemeinde: [
                 nutzung.betreuungstageKinderDieserGemeinde,
-                numberValidator(ValidationType.HALF)
+                numberValidator(ValidationType.HALF),
             ],
             betreuungstageKinderDieserGemeindeSonderschueler: [
                 nutzung.betreuungstageKinderDieserGemeindeSonderschueler,
-                numberValidator(ValidationType.HALF)
+                numberValidator(ValidationType.HALF),
             ],
             davonBetreuungstageKinderAndererGemeinden: [
                 nutzung.davonBetreuungstageKinderAndererGemeinden,
-                numberValidator(ValidationType.HALF)
+                numberValidator(ValidationType.HALF),
             ],
             davonBetreuungstageKinderAndererGemeindenSonderschueler: [
                 nutzung.davonBetreuungstageKinderAndererGemeindenSonderschueler,
-                numberValidator(ValidationType.HALF)
+                numberValidator(ValidationType.HALF),
             ],
             anzahlBetreuteKinder: [
                 nutzung.anzahlBetreuteKinder,
-                numberValidator(ValidationType.INTEGER)
+                numberValidator(ValidationType.INTEGER),
             ],
             anzahlBetreuteKinderSonderschueler: [
                 nutzung.anzahlBetreuteKinderSonderschueler,
-                numberValidator(ValidationType.INTEGER)
+                numberValidator(ValidationType.INTEGER),
             ],
             anzahlBetreuteKinder1Zyklus: [
                 nutzung.anzahlBetreuteKinder1Zyklus,
-                numberValidator(ValidationType.INTEGER)
+                numberValidator(ValidationType.INTEGER),
             ],
             anzahlBetreuteKinder2Zyklus: [
                 nutzung.anzahlBetreuteKinder2Zyklus,
-                numberValidator(ValidationType.INTEGER)
+                numberValidator(ValidationType.INTEGER),
             ],
             anzahlBetreuteKinder3Zyklus: [
                 nutzung.anzahlBetreuteKinder3Zyklus,
-                numberValidator(ValidationType.INTEGER)
+                numberValidator(ValidationType.INTEGER),
             ],
         });
     }
 
     public save(): void {
-        this.ferienbetreuungService.saveNutzung(this.container.id, this.extractFormValues())
+        if (!this.form.valid) {
+            this.showValidierungFehlgeschlagenErrorMessage();
+            return;
+        }
+        this.ferienbetreuungService.saveNutzung(this.container.id, this.form.value)
             .subscribe(() => {
                 this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
@@ -120,20 +162,8 @@ export class FerienbetreuungNutzungComponent implements OnInit {
             });
     }
 
-    private extractFormValues(): TSFerienbetreuungAngabenNutzung {
-        this.nutzung.anzahlBetreuungstageKinderBern = this.form.controls.anzahlBetreuungstageKinderBern.value;
-        this.nutzung.betreuungstageKinderDieserGemeinde = this.form.controls.betreuungstageKinderDieserGemeinde.value;
-        this.nutzung.betreuungstageKinderDieserGemeindeSonderschueler =
-            this.form.controls.betreuungstageKinderDieserGemeindeSonderschueler.value;
-        this.nutzung.davonBetreuungstageKinderAndererGemeinden =
-            this.form.controls.davonBetreuungstageKinderAndererGemeinden.value;
-        this.nutzung.davonBetreuungstageKinderAndererGemeindenSonderschueler =
-            this.form.controls.davonBetreuungstageKinderAndererGemeindenSonderschueler.value;
-        this.nutzung.anzahlBetreuteKinder = this.form.controls.anzahlBetreuteKinder.value;
-        this.nutzung.anzahlBetreuteKinderSonderschueler = this.form.controls.anzahlBetreuteKinderSonderschueler.value;
-        this.nutzung.anzahlBetreuteKinder1Zyklus = this.form.controls.anzahlBetreuteKinder1Zyklus.value;
-        this.nutzung.anzahlBetreuteKinder2Zyklus = this.form.controls.anzahlBetreuteKinder2Zyklus.value;
-        this.nutzung.anzahlBetreuteKinder3Zyklus = this.form.controls.anzahlBetreuteKinder3Zyklus.value;
-        return this.nutzung;
+    public onFalscheAngaben(): void {
+        this.ferienbetreuungService.falscheAngabenNutzung(this.container.id, this.nutzung)
+            .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
     }
 }
