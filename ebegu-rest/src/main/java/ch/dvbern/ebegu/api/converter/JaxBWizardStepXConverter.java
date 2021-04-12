@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.api.converter;
 import javax.enterprise.context.RequestScoped;
 
 import ch.dvbern.ebegu.api.dtos.JaxWizardStepX;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.wizardx.Wizard;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.ferienbetreuung.AbschlussStep;
@@ -41,6 +42,7 @@ public class JaxBWizardStepXConverter {
 		JaxWizardStepX wizardStepX = new JaxWizardStepX();
 		wizardStepX.setStepName(step.getWizardStepName());
 		wizardStepX.setWizardTyp(step.getWizardTyp().name());
+		wizardStepX.setStatus(step.getStatus(wizard));
 		wizardStepX.setDisabled(step.isDisabled(wizard));
 		return wizardStepX;
 	}

@@ -30,11 +30,16 @@
 
                 <li *ngFor="let entry of wizardSteps$ | async" class="row"
                     uiSrefActive="active-element">
-                    <button class="col-xs-10" *ngIf="!entry.disabled"
-                            uiSref="{{wizardTyp}}.{{entry.stepName}}"
-                            [uiParams]="{ id: id }">
-                        <span translate>{{wizardTyp}}_{{entry.stepName}}</span>
-                    </button>
+                    <div *ngIf="!entry.disabled">
+                        <button class="col-xs-10" *ngIf="!entry.disabled"
+                                uiSref="{{wizardTyp}}.{{entry.stepName}}"
+                                [uiParams]="{ id: id }">
+                            <span translate>{{wizardTyp}}_{{entry.stepName}}</span>
+                        </button>
+                        <span class="col-xs-2 font-awesome fa-pencil black" *ngIf="isInBearbeitung(entry)"></span>
+                        <span class="col-xs-2 font-awesome fa-check green" *ngIf="isOK(entry)"></span>
+                        <span class="col-xs-2 font-awesome fa-close red" *ngIf="isNOK(entry)"></span>
+                    </div>
                     <button class="col-xs-10" *ngIf="entry.disabled" disabled>
                         <span translate>{{wizardTyp}}_{{entry.stepName}}</span>
                     </button>

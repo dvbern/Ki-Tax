@@ -20,6 +20,7 @@ import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
+import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../core/service/downloadRS.rest';
@@ -39,6 +40,10 @@ const uploadRSSpy = jasmine.createSpyObj<UploadRS>(UploadRS.name, ['uploadFerien
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
 const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name,
     ['prepareDownloadWindow', 'getAccessTokenFerienbetreuungDokument', 'startDownload']);
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+    ['getPrincipal', 'isOneOfRoles']);
+
+authServiceSpy.principal$ = of(new TSBenutzer());
 const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDevMode', 'getAllowedMimetypes']);
 const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
     ['isOneOfRoles']);

@@ -138,8 +138,8 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 	}
 
 	@ApiOperation(
-		value = "Gibt den LastenausgleichTagesschuleAngabenInstitutionContainer frei fuer die Bearbeitung durch die "
-			+ "Institutionen",
+		value = "Gibt den LastenausgleichTagesschuleAngabenInstitutionContainer frei fuer die Prüfung durch die "
+			+ "Gemeinde",
 		response = JaxLastenausgleichTagesschuleAngabenInstitutionContainer.class)
 	@Nonnull
 	@PUT
@@ -193,11 +193,35 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 	)
 	@Nonnull
 	@PUT
-	@Path("/falsche-angaben")
+	@Path("/gemeinde-falsche-angaben")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN,
 		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS })
+	public JaxLastenausgleichTagesschuleAngabenInstitutionContainer falscheAngabenGemeinde(
+		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainerJax
+	) {
+		final LastenausgleichTagesschuleAngabenInstitutionContainer converted =
+			getConvertedLastenausgleichTagesschuleAngabenInstitutionContainer(latsInstitutionContainerJax);
+
+		final LastenausgleichTagesschuleAngabenInstitutionContainer saved =
+			angabenInstitutionService.latsAngabenInstitutionContainerWiederOeffnenGemeinde(converted);
+
+		return converter.lastenausgleichTagesschuleAngabenInstitutionContainerToJax(saved);
+	}
+
+	@ApiOperation(
+		value = "Setzt den LastenausgleichTagesschuleAngabenInstitutionContainer zurück in den Status Prüfung durch Gemeinde",
+		response = JaxLastenausgleichTagesschuleAngabenInstitutionContainer.class
+	)
+	@Nonnull
+	@PUT
+	@Path("/ts-falsche-angaben")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN,
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
 	public JaxLastenausgleichTagesschuleAngabenInstitutionContainer falscheAngaben(
 		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainerJax
 	) {
@@ -205,7 +229,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 			getConvertedLastenausgleichTagesschuleAngabenInstitutionContainer(latsInstitutionContainerJax);
 
 		final LastenausgleichTagesschuleAngabenInstitutionContainer saved =
-			angabenInstitutionService.latsAngabenInstitutionContainerWiederOeffnen(converted);
+			angabenInstitutionService.latsAngabenInstitutionContainerWiederOeffnenTS(converted);
 
 		return converter.lastenausgleichTagesschuleAngabenInstitutionContainerToJax(saved);
 	}

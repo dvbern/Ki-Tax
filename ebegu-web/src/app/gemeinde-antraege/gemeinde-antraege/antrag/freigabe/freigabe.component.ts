@@ -19,9 +19,12 @@ import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {filter, first, map, mergeMap} from 'rxjs/operators';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {TSRole} from '../../../../../models/enums/TSRole';
+import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
@@ -39,16 +42,42 @@ export class FreigabeComponent implements OnInit {
 
     @Input() public lastenausgleichID: string;
 
+    public canViewFreigabeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public canViewGeprueftButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
     public constructor(
         private readonly translate: TranslateService,
         private readonly errorService: ErrorService,
         private readonly latsService: LastenausgleichTSService,
         private readonly dialog: MatDialog,
         private readonly $state: StateService,
+        private readonly authService: AuthServiceRS,
     ) {
     }
 
     public ngOnInit(): void {
+        combineLatest([
+            this.latsService.getLATSAngabenGemeindeContainer(),
+            this.authService.principal$,
+        ]).subscribe(([container, principal]) => {
+            if (principal.hasRole(TSRole.SUPER_ADMIN)) {
+                if (container.isAtLeastInBearbeitungKanton()) {
+                    this.canViewFreigabeButton.next(false);
+                    this.canViewGeprueftButton.next(true);
+                } else {
+                    this.canViewFreigabeButton.next(true);
+                    this.canViewGeprueftButton.next(false);
+                }
+            }
+            if (principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
+                this.canViewFreigabeButton.next(false);
+                this.canViewGeprueftButton.next(true);
+            }
+            if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles())) {
+                this.canViewFreigabeButton.next(true);
+                this.canViewGeprueftButton.next(false);
+            }
+        }, () => this.errorService.addMesageAsInfo(this.translate.instant('DATA_RETRIEVAL_ERROR')));
     }
 
     public freigeben(): void {
