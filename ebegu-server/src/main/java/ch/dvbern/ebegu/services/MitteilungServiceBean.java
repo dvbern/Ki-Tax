@@ -623,22 +623,53 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Override
 	@Nonnull
 	public Long getAmountNewMitteilungenForCurrentBenutzer() {
+		Benutzer loggedInBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException
+			("getAmountNewMitteilungenForCurrentBenutzer", "No User is logged in"));
+
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Long> query = cb.createQuery(Long.class);
 		Root<Mitteilung> root = query.from(Mitteilung.class);
+
+		List<Predicate> predicates;
+		if (loggedInBenutzer.getRole().isRoleSozialdienstabhaengig()) {
+			predicates = countNewMitteilungenPredicatesForSozialdienstBenutzer(loggedInBenutzer, cb, root);
+		} else {
+			predicates = countNewMitteilungenPredicatesForOtherBenutzer(loggedInBenutzer, cb, root);
+		}
+		query.select(cb.countDistinct(root));
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		return persistence.getCriteriaSingleResult(query);
+	}
+
+	private List<Predicate> countNewMitteilungenPredicatesForSozialdienstBenutzer(@Nonnull Benutzer loggedInBenutzer, CriteriaBuilder cb, Root<Mitteilung> root) {
+
 		List<Predicate> predicates = new ArrayList<>();
 
 		Predicate predicateNew = cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.NEU);
 		predicates.add(predicateNew);
 
-		Benutzer loggedInBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException
-			("getAmountNewMitteilungenForCurrentBenutzer", "No User is logged in"));
+		Join<Mitteilung, Dossier> joinDossier = root.join(Mitteilung_.dossier, JoinType.INNER);
+		Join<Dossier, Fall> joinFall = joinDossier.join(Dossier_.fall);
+		Join<Fall, SozialdienstFall> joinSozialdienst = joinFall.join(Fall_.sozialdienstFall, JoinType.LEFT);
+
+		Predicate sozialdienstFall =
+			cb.equal(joinSozialdienst.get(SozialdienstFall_.sozialdienst), loggedInBenutzer.getSozialdienst());
+		predicates.add(sozialdienstFall);
+
+		return predicates;
+
+	}
+
+	private List<Predicate> countNewMitteilungenPredicatesForOtherBenutzer(@Nonnull Benutzer loggedInBenutzer, CriteriaBuilder cb, Root<Mitteilung> root) {
+		List<Predicate> predicates = new ArrayList<>();
+
+		Predicate predicateNew = cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.NEU);
+		predicates.add(predicateNew);
+
 		Predicate predicateEmpfaenger = cb.equal(root.get(Mitteilung_.empfaenger), loggedInBenutzer);
 		predicates.add(predicateEmpfaenger);
 
-		query.select(cb.countDistinct(root));
-		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
-		return persistence.getCriteriaSingleResult(query);
+		return predicates;
 	}
 
 	@Override

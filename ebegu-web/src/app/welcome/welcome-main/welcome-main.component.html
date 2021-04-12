@@ -38,7 +38,7 @@
                 </div>
             </div>
 
-            <div class="col-sm-12 welcome-title-cotainer">
+            <div *ngIf="isNotSozialdienstRole()" class="col-sm-12 welcome-title-cotainer">
                 <p class="p-bg" style="padding: 0 12rem 0 12rem;"
                       [innerHTML]="'TOUR_WELCOME_TEXT' | translate">
                 </p>
@@ -49,7 +49,7 @@
         </div>
 
         <div class="dv-footer" style="padding-bottom: 5rem;">
-            <dv-loading-button [type]="'submit'" [buttonClass]="'dv-btn-bg'">
+            <dv-loading-button *ngIf="isNotSozialdienstRole()" [type]="'submit'" [buttonClass]="'dv-btn-bg'">
                 <span translate>LETS_START</span>
             </dv-loading-button>
 
