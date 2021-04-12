@@ -16,6 +16,7 @@
  */
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
 import {Observable, ReplaySubject} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
@@ -38,7 +39,11 @@ export class LastenausgleichTSService {
     private lATSAngabenGemeindeContainerStore =
         new ReplaySubject<TSLastenausgleichTagesschuleAngabenGemeindeContainer>(1);
 
-    public constructor(private readonly http: HttpClient, private readonly errorService: ErrorService) {
+    public constructor(
+        private readonly http: HttpClient,
+        private readonly errorService: ErrorService,
+        private readonly translate: TranslateService,
+    ) {
     }
 
     public updateLATSAngabenGemeindeContainerStore(id: string): void {
@@ -67,6 +72,8 @@ export class LastenausgleichTSService {
             `${this.API_BASE_URL}/save`,
             this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
         ).subscribe(result => {
+            this.errorService.clearAll();
+            this.errorService.addMesageAsInfo(this.translate.instant('SAVED'));
             this.next(result);
         }, error => LOG.error(error));
     }

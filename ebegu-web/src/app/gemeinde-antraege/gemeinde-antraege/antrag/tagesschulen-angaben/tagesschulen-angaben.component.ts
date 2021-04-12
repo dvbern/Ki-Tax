@@ -390,11 +390,11 @@ export class TagesschulenAngabenComponent {
     }
 
     public onFalscheAngaben(): void {
-        const falscheAngabenObs = this.latsAngabenInstitutionContainer.isGeprueftGemeinde() ?
+        const falscheAngabenObs$ = this.latsAngabenInstitutionContainer.isGeprueftGemeinde() ?
             this.tagesschulenAngabenRS.falscheAngabenGemeinde(this.latsAngabenInstitutionContainer) :
             this.tagesschulenAngabenRS.falscheAngabenTS(this.latsAngabenInstitutionContainer);
 
-        falscheAngabenObs.subscribe(() => {
+        falscheAngabenObs$.subscribe(() => {
             this.errorService.clearAll();
             this.wizardRS.updateSteps(TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN, this.gemeindeAntragContainer.id);
             this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.routerGlobals.params.id);

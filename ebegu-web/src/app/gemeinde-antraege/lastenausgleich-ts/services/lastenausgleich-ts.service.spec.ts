@@ -16,20 +16,28 @@
  */
 import {HttpClientModule} from '@angular/common/http';
 import {TestBed} from '@angular/core/testing';
+import {TranslateService} from '@ngx-translate/core';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
 
 import {LastenausgleichTSService} from './lastenausgleich-ts.service';
 
 describe('GemeindeAngaben', () => {
-  let service: LastenausgleichTSService;
+    let service: LastenausgleichTSService;
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
+    const translateSpy = jasmine.createSpyObj<TranslateService>(TranslateService.name, ['instant']);
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-        imports: [HttpClientModule]
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [HttpClientModule],
+            providers: [
+                {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: TranslateService, useValue: translateSpy},
+            ],
+        });
+        service = TestBed.inject(LastenausgleichTSService);
     });
-    service = TestBed.inject(LastenausgleichTSService);
-  });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        expect(service).toBeTruthy();
+    });
 });
