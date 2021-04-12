@@ -58,7 +58,7 @@ public class AngabenTagesschuleStep implements WizardStep<TagesschuleWizard> {
 					.filter(container -> wizard.getReadableInstitutionsOfUser()
 						.stream()
 						.anyMatch(institution -> institution.equals(container.getInstitution())))
-				.reduce(true, (prev, cur) -> prev && cur.isAntragInPruefungGemeinde(), Boolean::logicalAnd);
+				.reduce(true, (prev, cur) -> prev && cur.isAntragAtLeastInPruefungGemeinde(), Boolean::logicalAnd);
 
 			return userInstitutionsAbgeschlossen? WizardStateEnum.OK : WizardStateEnum.IN_BEARBEITUNG;
 		}
