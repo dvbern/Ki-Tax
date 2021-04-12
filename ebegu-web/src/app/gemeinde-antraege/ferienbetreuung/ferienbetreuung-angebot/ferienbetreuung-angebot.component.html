@@ -26,7 +26,7 @@
 
     <form *ngIf="form" [formGroup]="form">
 
-        <div class="limit-width">
+        <div class="max-width-container-750">
 
             <dv-input-container-x [verticalAlign]="true">
                 <label required
@@ -49,7 +49,11 @@
                 </mat-form-field>
             </dv-input-container-x>
 
-            <mat-divider></mat-divider>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="max-width-container-750">
             <h3 translate class="uppercase">FERIENBETREUUNG_KONTAKTPERSON</h3>
 
             <div formGroupName="angebotAdresse">
@@ -167,7 +171,12 @@
                 </div>
             </div>
 
-            <mat-divider></mat-divider>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="max-width-container-750">
+
             <h3 class="uppercase">
                 {{'FERIENBETREUUNG_ANGEBOT' | translate }}
                 <dv-tooltip [text]="'FERIENBETREUUNG_ANGEBOT_HINT' | translate"></dv-tooltip>
@@ -179,7 +188,6 @@
                        [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenHerbstferien').errors}">
                     {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_HERBST' | translate }}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <mat-form-field floatLabel="always">
                     <mat-label translate></mat-label>
                     <input matInput
@@ -201,7 +209,6 @@
                        [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenWinterferien').errors}">
                     {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_WINTER' | translate }}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <mat-form-field floatLabel="always">
                     <mat-label translate></mat-label>
                     <input matInput
@@ -223,7 +230,6 @@
                        [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenFruehlingsferien').errors}">
                     {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_FRUEHLING' | translate }}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <mat-form-field floatLabel="always">
                     <mat-label translate></mat-label>
                     <input matInput
@@ -245,7 +251,6 @@
                        [ngClass]="{'label-required-error': form && form.get('anzahlTage').errors}">
                     {{'FERIENBETREUUNG_ANZAHL_TAGE' | translate }}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <mat-form-field floatLabel="always">
                     <mat-label translate></mat-label>
                     <input matInput
@@ -267,7 +272,6 @@
                        [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenSommerferien').errors}">
                     {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_SOMMER' | translate }}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <mat-form-field floatLabel="always">
                     <mat-label translate></mat-label>
                     <input matInput
@@ -283,7 +287,7 @@
                 </mat-form-field>
             </dv-input-container-x>
 
-            <dv-input-container-x>
+            <dv-input-container-x [verticalAlign]="true">
                 <label for="bemerkungen_id">
                     {{'BEMERKUNGEN' | translate }}
                 </label>
@@ -295,7 +299,11 @@
                 </mat-form-field>
             </dv-input-container-x>
 
-            <mat-divider></mat-divider>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="max-width-container-750">
             <h3 class="uppercase">
                 {{'FERIENBETREUUNG_OEFFNUNGSZEITEN' | translate }}
                 <dv-tooltip [text]="'FERIENBETREUUNG_OEFFNUNGSZEITEN_HINT' | translate"></dv-tooltip>
@@ -307,7 +315,6 @@
                        [ngClass]="{'label-required-error': form && form.get('anzahlStundenProBetreuungstag').errors}">
                     {{'FERIENBETREUUNG_ANZAHL_STUNDEN_BETREUUNGSTAG' | translate }}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <mat-form-field floatLabel="always">
                     <mat-label translate></mat-label>
                     <input matInput
@@ -326,7 +333,6 @@
                        id="betreuungErfolgtTagsueber_id">
                     {{'FERIENBETREUUNG_BETREUUNG_ERFOLGT_TAGSUEBER' | translate}}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <dv-radio-container-x>
                     <mat-radio-group
                         aria-labelledby="betreuungErfolgtTagsueber_id"
@@ -341,7 +347,7 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
-            <dv-input-container-x>
+            <dv-input-container-x [verticalAlign]="true">
                 <label for="bemerkungen_oeffnungszeiten_id">
                     {{'BEMERKUNGEN' | translate }}
                 </label>
@@ -353,7 +359,11 @@
                 </mat-form-field>
             </dv-input-container-x>
 
-            <mat-divider></mat-divider>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="max-width-container-750">
             <h3 class="uppercase">
                 {{'FERIENBETREUUNG_KOOPERATION' | translate }}
             </h3>
@@ -385,7 +395,6 @@
                 <label class="margin-left-20">
                     {{'FERIENBETREUUNG_GEMEINDE_FUEHRT_ANGEBOT_SELBER' | translate}}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <dv-radio-container-x>
                     <mat-radio-group
                         class=""
@@ -403,7 +412,6 @@
                 <label class="margin-left-20">
                     {{'FERIENBETREUUNG_GEMEINDE_BEAUFTRAGT_EXTERNE_ANBIETER' | translate}}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <dv-radio-container-x>
                     <mat-radio-group
                         class=""
@@ -421,7 +429,6 @@
                 <label class="margin-left-20">
                     {{'FERIENBETREUUNG_ANGEBOT_VEREINE_UND_PRIVATE_INTEGRIERT' | translate}}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <dv-radio-container-x>
                     <mat-radio-group
                         class=""
@@ -435,7 +442,7 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
-            <dv-input-container-x>
+            <dv-input-container-x [verticalAlign]="true">
                 <label for="bemerkungen_kooperation">
                     {{'BEMERKUNGEN' | translate }}
                 </label>
@@ -447,7 +454,12 @@
                 </mat-form-field>
             </dv-input-container-x>
 
-            <mat-divider></mat-divider>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="max-width-container-750">
+
             <h3 class="uppercase">
                 {{'FERIENBETREUUNG_PERSONAL_UND_QUALITAET' | translate }}
             </h3>
@@ -457,7 +469,6 @@
                        [ngClass]="{'label-required-error': formValidationTriggered && form.get('leitungDurchPersonMitAusbildung').errors}">
                     {{'FERIENBETREUUNG_LEITUNG_DURCH_PERSON_MIT_AUSBILDUNG' | translate}}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <dv-radio-container-x>
                     <mat-radio-group
                         class=""
@@ -476,7 +487,6 @@
                        [ngClass]="{'label-required-error': formValidationTriggered && form.get('betreuungDurchPersonenMitErfahrung').errors}">
                     {{'FERIENBETREUUNG_LEITUNG_DURCH_PERSON_MIT_ERFAHRUNG' | translate}}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <dv-radio-container-x>
                     <mat-radio-group
                         class=""
@@ -496,7 +506,6 @@
                     {{'FERIENBETREUUNG_ANZAHL_KINDER_ANGEMESSEN' | translate}}
                     <dv-tooltip [text]="'FERIENBETREUUNG_ANZAHL_KINDER_ANGEMESSEN_HINT' | translate"></dv-tooltip>
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <dv-radio-container-x>
                     <mat-radio-group
                         class=""
@@ -517,7 +526,6 @@
                        [ngClass]="{'label-required-error': form && form.get('betreuungsschluessel').errors}">
                     {{'FERIENBETREUUNG_BETREUUNGSSCHLUESSEL' | translate }}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <mat-form-field floatLabel="always">
                     <mat-label translate></mat-label>
                     <input matInput
@@ -533,7 +541,7 @@
                 </mat-form-field>
             </dv-input-container-x>
 
-            <dv-input-container-x>
+            <dv-input-container-x [verticalAlign]="true">
                 <label for="bemerkungen_personal">
                     {{'BEMERKUNGEN' | translate }}
                 </label>
@@ -545,7 +553,12 @@
                 </mat-form-field>
             </dv-input-container-x>
 
-            <mat-divider></mat-divider>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="max-width-container-750">
+
             <h3 class="uppercase">
                 {{'FERIENBETREUUNG_TARIFSYSTEM' | translate }}
             </h3>
@@ -554,7 +567,6 @@
                 <label>
                     {{'FERIENBETREUUNG_FIXER_TARIF_KINDER_DER_GEMEINDE' | translate}}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <dv-radio-container-x>
                     <mat-radio-group
                         class=""
@@ -572,7 +584,6 @@
                 <label>
                     {{'FERIENBETREUUNG_EINKOMMENSABHAENGIGER_TARIF_KINDER' | translate}}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <dv-radio-container-x>
                     <mat-radio-group
                         class=""
@@ -590,7 +601,6 @@
                 <label>
                     {{'FERIENBETREUUNG_TAGESSCHULE_TARIF_GILT_FUER_FERIENBETREUUNG' | translate}}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <dv-radio-container-x>
                     <mat-radio-group
                         class=""
@@ -608,7 +618,6 @@
                 <label>
                     {{'FERIENBETREUUNG_TARIF_ABGELEITET' | translate}}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <dv-radio-container-x>
                     <mat-radio-group
                         class=""
@@ -627,7 +636,6 @@
                 <label>
                     {{'FERIENBETREUUNG_KINDER_ANDERER_GEMEINDEN_ANDERER_TARIF' | translate}}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <dv-radio-container-x>
                     <mat-radio-group
                         class=""
@@ -641,7 +649,7 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
-            <dv-input-container-x>
+            <dv-input-container-x [verticalAlign]="true">
                 <label for="bemerkungen_tarifsystem_id">
                     {{'BEMERKUNGEN' | translate }}
                 </label>
@@ -656,7 +664,6 @@
         </div>
 
     </form>
-
 
     <div class="actions">
         <button type="button" class="dv-btn cancel-button"
