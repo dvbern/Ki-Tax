@@ -2454,6 +2454,8 @@
     "FERIENBETREUUNG_DOKUMENT_TITLE": "Dépôt des documents",
     "FERIENBETREUUNG_DOKUMENT_TITLE_HINT": "Veuillez télécharger le concept actuel de votre structure d’accueil (pédagogie et organisationnel). Vous pouvez télécharger plusieurs documents si nécessaire.<br>Il doit en ressortir que la commune a approuvé le concept sous sa forme actuelle. Si vous avez chargé une institution de gérer la structure d’accueil, veuillez télécharger le contrat de prestations correspondant.<br>Si, au cours de l’examen de votre demande, nous vous demandons de nous soumettre d’autres documents (p. ex. concernant les coûts et les recettes), vous pourrez également le faire ici.",
     "FERIENBETREUUNG_DOKUMENT_UPLOAD_TITLE": "Concept de la structure d’accueil ; contrat de prestations",
+    "FERIENBETREUUNG_FREIGABE_AN_KANTON": "Validation de la demande soumise au canton",
+    "FERIENBETREUUNG_FREIGEGEBEN_AN_KANTON": "Vous avez soumis votre demande au canton. Vous pouvez toujours consulter vos données mais vous ne pouvez plus les modifier. En cas de problèmes, veuillez écrire à <a href='mailto:oeco.inc@be.ch'>oeco.inc@be.ch</a>.<br>Votre demande sera examinée en octobre et les contributions cantonales devraient vous être versées d’ici la fin de l’année civile.",
     "ANTRAEGE_ERSTELLT": "Die Anträge wurden erstellt",
     "ANTRAG_ERSTELLT": "Der Antrag wurde erstellt",
     "LATS_ERSTE_RATE_AUSBEZAHLT": "Erste Rate, ausbezahlt Dezember {{year}}",

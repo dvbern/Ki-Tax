@@ -2454,6 +2454,8 @@
     "FERIENBETREUUNG_DOKUMENT_TITLE": "Upload für Dokumente",
     "FERIENBETREUUNG_DOKUMENT_TITLE_HINT": "Laden Sie bitte hier das aktuelle Konzept Ihrer Ferienbetreuung hoch (pädagogisch und betrieblich). Sie können auch mehrere Dokumente hochladen.<br>Es soll daraus ersichtlich sein, dass die Gemeinde das Konzept in dieser Form bewilligt hat. Wenn Sie eine Institution mit der Durchführung beauftragen, laden Sie den zugehörigen Leistungsvertrag hoch.<br>Falls Sie im Verlauf der Prüfung dazu aufgefordert werden, weitere Dokumente einzureichen (z. B. zu Kosten und Einnahmen), können Sie dies ebenfalls hier tun.",
     "FERIENBETREUUNG_DOKUMENT_UPLOAD_TITLE": "Konzept des Ferienbetreuungsangebots; Leistungsvertrag",
+    "FERIENBETREUUNG_FREIGABE_AN_KANTON": "Freigabe des Gesuchs an den Kanton",
+    "FERIENBETREUUNG_FREIGEGEBEN_AN_KANTON": "Sie haben das Gesuch an den Kanton eingereicht. Sie können Ihre Eingaben weiterhin einsehen, sind aber nicht mehr in der Lage, Ihre Eingaben zu mutieren. Wenden Sie sich ansonsten an <a href='mailto:sea.bkd@be.ch'>sea.bkd@be.ch</a>.<br>Die Prüfung der Gesuche erfolgt im Oktober, die Auszahlung voraussichtlich bis Jahresende.",
     "ANTRAEGE_ERSTELLT": "Die Anträge wurden erstellt",
     "ANTRAG_ERSTELLT": "Der Antrag wurde erstellt",
     "LATS_ERSTE_RATE_AUSBEZAHLT": "Erste Rate, ausbezahlt Dezember {{year}}",
