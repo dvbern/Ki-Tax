@@ -610,9 +610,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Predicate predicateNew = cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.NEU);
 		predicates.add(predicateNew);
 
-		MitteilungTeilnehmerTyp mitteilungTeilnehmerTyp = getMitteilungTeilnehmerTypForCurrentUser();
-		Predicate predicateEmpfaenger = cb.equal(root.get(Mitteilung_.empfaengerTyp), mitteilungTeilnehmerTyp);
-		predicates.add(predicateEmpfaenger);
+		predicates.add(getPredicateEmpfaengerMitteilungTyp(cb, root));
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		List<Mitteilung> mitteilungen = persistence.getCriteriaResults(query);
@@ -637,6 +635,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		if (loggedInBenutzer.getRole().isRoleSozialdienstabhaengig()) {
 			predicates.add(countNewMitteilungenPredicatesForSozialdienstBenutzer(loggedInBenutzer, cb, root));
+
+			predicates.add(getPredicateEmpfaengerMitteilungTyp(cb, root));
+
 		} else {
 			predicates.add(cb.equal(root.get(Mitteilung_.empfaenger), loggedInBenutzer));
 		}
@@ -655,6 +656,12 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			cb.equal(joinSozialdienst.get(SozialdienstFall_.sozialdienst), loggedInBenutzer.getSozialdienst());
 
 		return sozialdienstFall;
+	}
+
+	private Predicate getPredicateEmpfaengerMitteilungTyp(CriteriaBuilder cb, Root<Mitteilung> root) {
+		MitteilungTeilnehmerTyp mitteilungTeilnehmerTyp = getMitteilungTeilnehmerTypForCurrentUser();
+		Predicate predicateEmpfaenger = cb.equal(root.get(Mitteilung_.empfaengerTyp), mitteilungTeilnehmerTyp);
+		return predicateEmpfaenger;
 	}
 
 	@Override
@@ -896,9 +903,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		List<Predicate> predicates = new ArrayList<>();
 
 		// Richtiger Empfangs-Typ. Persoenlicher Empfaenger wird nicht beachtet sondern auf Client mit Filter geloest
-		MitteilungTeilnehmerTyp mitteilungTeilnehmerTyp = getMitteilungTeilnehmerTypForCurrentUser();
-		Predicate predicateEmpfaengerTyp = cb.equal(root.get(Mitteilung_.empfaengerTyp), mitteilungTeilnehmerTyp);
-		predicates.add(predicateEmpfaengerTyp);
+		predicates.add(getPredicateEmpfaengerMitteilungTyp(cb, root));
 
 		filterGemeinde(user, joinGemeinde, predicates);
 
