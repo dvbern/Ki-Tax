@@ -2452,6 +2452,7 @@
     "IN_BEARBEITUNG_SOZIALDIENST": "En traitement par le service de soutien",
     "MENU_SOZIALDIENSTFALL_ERSTELLEN": "Service de soutien",
     "SOZIALDIENST_FALL_ERSTELLEN": "Ouvrir un cas pour le service de soutien",
+    "SOZIALDIENST_FALL_ERSTELLEN_HINT": "<b>Quand faut-il saisir deux mandants ?</b><br><br>Lorsque deux adultes vivent dans le même ménage et que l’un des critères suivants est rempli :<br><ul><li>Les personnes sont mariées ou vivent sous le régime du partenariat enregistré</li><li>Les personnes ont un enfant en commun</li><li>Les personnes vivent en concubinage depuis au moins cinq ans</li></ul>",
     "SOZIALDIENST_AUSWAEHLEN": "Choisir un service de soutien",
     "VOLLMACHT_HOCHLADEN": "Télécharger la procuration",
     "VOLLMACHT_DOKUMENT": "Document de procuration",
