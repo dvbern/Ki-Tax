@@ -19,7 +19,7 @@
     <h1 class="access-for-all-title" translate>FERIENBETREUUNG_ANGEBOT</h1>
     <div class="row view-title">
         <div class="col-md-12">
-            <h2 translate>FERIENBETREUUNG_ANGEBOT</h2>
+            <h2>{{'FERIENBETREUUNG_ANGEBOT_SCHULJAHR' | translate:{periode: container?.gesuchsperiode?.gesuchsperiodeString} }}</h2>
             <hr class="header"/>
         </div>
     </div>
@@ -245,47 +245,47 @@
                 </mat-form-field>
             </dv-input-container-x>
 
-            <dv-input-container-x>
-                <label required
-                       for="anzahl_tage_id"
-                       [ngClass]="{'label-required-error': form && form.get('anzahlTage').errors}">
-                    {{'FERIENBETREUUNG_ANZAHL_TAGE' | translate }}
-                </label>
-                <mat-form-field floatLabel="always">
-                    <mat-label translate></mat-label>
-                    <input matInput
-                           id="anzahl_tage_id"
-                           formControlName="anzahlTage"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.get('anzahlTage').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                    <mat-error *ngIf="form && form.get('anzahlTage').errors?.isNotInteger"
-                               translate>ERROR_NOT_INTEGER
-                    </mat-error>
-                </mat-form-field>
-            </dv-input-container-x>
+        <dv-input-container-x>
+            <label required
+                   for="anzahl_ferienwoche_sommer_id"
+                   [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenSommerferien').errors}">
+                {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_SOMMER' | translate }}
+            </label>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       id="anzahl_ferienwoche_sommer_id"
+                       formControlName="anzahlFerienwochenSommerferien"
+                       class="form-control dv-input"/>
+                <mat-error *ngIf="form && form.get('anzahlFerienwochenSommerferien').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+                <mat-error *ngIf="form && form.get('anzahlFerienwochenSommerferien').errors?.isNotInteger"
+                           translate>ERROR_NOT_INTEGER
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
 
-            <dv-input-container-x>
-                <label required
-                       for="anzahl_ferienwoche_sommer_id"
-                       [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenSommerferien').errors}">
-                    {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_SOMMER' | translate }}
-                </label>
-                <mat-form-field floatLabel="always">
-                    <mat-label translate></mat-label>
-                    <input matInput
-                           id="anzahl_ferienwoche_sommer_id"
-                           formControlName="anzahlFerienwochenSommerferien"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.get('anzahlFerienwochenSommerferien').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                    <mat-error *ngIf="form && form.get('anzahlFerienwochenSommerferien').errors?.isNotInteger"
-                               translate>ERROR_NOT_INTEGER
-                    </mat-error>
-                </mat-form-field>
-            </dv-input-container-x>
+        <dv-input-container-x>
+            <label required
+                   for="anzahl_tage_id"
+                   [ngClass]="{'label-required-error': form && form.get('anzahlTage').errors}">
+                {{'FERIENBETREUUNG_ANZAHL_TAGE' | translate }}
+            </label>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       id="anzahl_tage_id"
+                       formControlName="anzahlTage"
+                       class="form-control dv-input"/>
+                <mat-error *ngIf="form && form.get('anzahlTage').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+                <mat-error *ngIf="form && form.get('anzahlTage').errors?.isNotInteger"
+                           translate>ERROR_NOT_INTEGER
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
 
             <dv-input-container-x [verticalAlign]="true">
                 <label for="bemerkungen_id">
@@ -631,23 +631,29 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
-            <!--        todo: ADD THIRD OPTION -->
-            <dv-input-container-x>
-                <label>
-                    {{'FERIENBETREUUNG_KINDER_ANDERER_GEMEINDEN_ANDERER_TARIF' | translate}}
-                </label>
-                <dv-radio-container-x>
-                    <mat-radio-group
-                        class=""
-                        name="kinderAusAnderenGemeindenZahlenAnderenTarif"
-                        horizontal
-                        [disabled]="form.get('kinderAusAnderenGemeindenZahlenAnderenTarif').disabled"
-                        formControlName="kinderAusAnderenGemeindenZahlenAnderenTarif">
-                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                    </mat-radio-group>
-                </dv-radio-container-x>
-            </dv-input-container-x>
+        <dv-input-container-x>
+            <label for="kinder-aus-anderen-gemeinden-zahlen-anderen-tarif">
+                {{'FERIENBETREUUNG_KINDER_ANDERER_GEMEINDEN_ANDERER_TARIF' | translate}}
+            </label>
+            <mat-form-field>
+                <mat-select class="form-control"
+                            formControlName="kinderAusAnderenGemeindenZahlenAnderenTarif"
+                            name="kinderAusAnderenGemeindenZahlenAnderenTarif"
+                            id="kinder-aus-anderen-gemeinden-zahlen-anderen-tarif"
+                            [disabled]="form.get('kinderAusAnderenGemeindenZahlenAnderenTarif').disabled"
+                            [multiple]="false">
+                    <mat-option value="JA">
+                        {{'LABEL_JA' | translate}}
+                    </mat-option>
+                    <mat-option value="NEIN">
+                        {{'LABEL_NEIN' | translate}}
+                    </mat-option>
+                    <mat-option value="KEINE_KINDER_AUS_ANDEREN_GEMEINDEN">
+                        {{'KEINE_KINDER_AUS_ANDEREN_GEMEINDEN' | translate}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </dv-input-container-x>
 
             <dv-input-container-x [verticalAlign]="true">
                 <label for="bemerkungen_tarifsystem_id">

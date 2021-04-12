@@ -23,6 +23,7 @@ import {FerienbetreuungModule} from './ferienbetreuung/ferienbetreuung.module';
 import {GemeindeAntraegeRoutingModule} from './gemeinde-antraege-routing/gemeinde-antraege-routing.module';
 import {GemeindeAntraegeComponent} from './gemeinde-antraege/gemeinde-antraege.component';
 import {LastenausgleichTSModule} from './lastenausgleich-ts/lastenausgleich-ts.module';
+import {UnsavedChangesService} from './services/unsaved-changes.service';
 
 @NgModule({
     declarations: [
@@ -40,6 +41,9 @@ import {LastenausgleichTSModule} from './lastenausgleich-ts/lastenausgleich-ts.m
     exports: [
         LastenausgleichTSModule,
         FerienbetreuungModule,
+    ],
+    providers: [
+        UnsavedChangesService
     ]
 })
 export class GemeindeAntraegeModule {

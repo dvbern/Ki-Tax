@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
+import ch.dvbern.ebegu.enums.KinderAusAnderenGemeindenZahlenAnderenTarifAnswer;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 
 public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
@@ -113,7 +114,7 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	private Boolean ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet;
 
 	@Nullable
-	private Boolean kinderAusAnderenGemeindenZahlenAnderenTarif;
+	private KinderAusAnderenGemeindenZahlenAnderenTarifAnswer kinderAusAnderenGemeindenZahlenAnderenTarif;
 
 	@Nullable
 	private String bemerkungenTarifsystem;
@@ -365,11 +366,13 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public Boolean getKinderAusAnderenGemeindenZahlenAnderenTarif() {
+	public KinderAusAnderenGemeindenZahlenAnderenTarifAnswer getKinderAusAnderenGemeindenZahlenAnderenTarif() {
 		return kinderAusAnderenGemeindenZahlenAnderenTarif;
 	}
 
-	public void setKinderAusAnderenGemeindenZahlenAnderenTarif(@Nullable Boolean kinderAusAnderenGemeindenZahlenAnderenTarif) {
+	public void setKinderAusAnderenGemeindenZahlenAnderenTarif(
+		@Nullable KinderAusAnderenGemeindenZahlenAnderenTarifAnswer kinderAusAnderenGemeindenZahlenAnderenTarif
+	) {
 		this.kinderAusAnderenGemeindenZahlenAnderenTarif = kinderAusAnderenGemeindenZahlenAnderenTarif;
 	}
 

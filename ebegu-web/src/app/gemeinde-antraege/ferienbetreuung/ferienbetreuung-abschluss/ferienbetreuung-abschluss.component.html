@@ -19,11 +19,10 @@
 
 <div class="actions">
     <dv-loading-button
-        *ngIf="abschliessenVisible() | async"
-        [buttonDisabled]="alreadyFreigegeben()"
+        *ngIf="(abschliessenVisible() | async) && !alreadyFreigegeben()"
         (buttonClick)="freigeben()"
         type="button">
-        <span translate>LATS_FREIGABE_PRUEFUNG_KANTON</span>
+        <span translate>FERIENBETREUUNG_FREIGABE_AN_KANTON</span>
     </dv-loading-button>
     <dv-loading-button
         *ngIf="geprueftVisible() | async"
@@ -33,3 +32,6 @@
         <span translate>LATS_GEPRUEFT_KANTON</span>
     </dv-loading-button>
 </div>
+<p *ngIf="(abschliessenVisible() | async) && alreadyFreigegeben()"
+   [innerHTML]="'FERIENBETREUUNG_FREIGEGEBEN_AN_KANTON' | translate">
+</p>

@@ -173,4 +173,12 @@ public class LastenausgleichTagesschuleAngabenInstitutionContainer extends Abstr
 	public boolean isAntragAbgeschlossen() {
 		return status == LastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT;
 	}
+
+	public boolean isAntragInPruefungGemeinde() {
+		return status == LastenausgleichTagesschuleAngabenInstitutionStatus.IN_PRUEFUNG_GEMEINDE;
+	}
+
+	public boolean isAntragAtLeastInPruefungGemeinde() {
+		return isAntragInPruefungGemeinde() || isAntragAbgeschlossen();
+	}
 }

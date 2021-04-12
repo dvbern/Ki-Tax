@@ -28,6 +28,7 @@ import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
 import {numberValidator, ValidationType} from '../../../shared/validators/number-validator.directive';
+import {UnsavedChangesService} from '../../services/unsaved-changes.service';
 import {AbstractFerienbetreuungFormular} from '../abstract.ferienbetreuung-formular';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
@@ -54,6 +55,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
         protected readonly uiRouterGlobals: UIRouterGlobals,
         private readonly fb: FormBuilder,
         private readonly authService: AuthServiceRS,
+        private readonly unsavedChangesService: UnsavedChangesService
     ) {
         super(errorService, translate, dialog, cd, wizardRS, uiRouterGlobals);
     }
@@ -65,8 +67,8 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
         ]).subscribe(([container, principal]) => {
             this.container = container;
             this.nutzung = container.angabenDeklaration?.nutzung;
-
             this.setupFormAndPermissions(container, this.nutzung, principal);
+            this.unsavedChangesService.registerForm(this.form);
         }, error => {
             LOG.error(error);
         });
@@ -96,6 +98,45 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
         this.form.get('anzahlBetreuteKinder1Zyklus').setValidators([numberValidator(ValidationType.INTEGER)]);
         this.form.get('anzahlBetreuteKinder2Zyklus').setValidators([numberValidator(ValidationType.INTEGER)]);
         this.form.get('anzahlBetreuteKinder3Zyklus').setValidators([numberValidator(ValidationType.INTEGER)]);
+        this.enableSpecialBetreuungstageFormValidation();
+    }
+
+    private enableSpecialBetreuungstageFormValidation(): void {
+        // betreuungstage
+        this.form.get('anzahlBetreuungstageKinderBern').setValidators(control => {
+            const diff = parseFloat(this.form.get('anzahlBetreuungstageKinderBern').value) -
+                parseFloat(this.form.get('betreuungstageKinderDieserGemeinde').value) -
+                parseFloat(this.form.get('davonBetreuungstageKinderAndererGemeinden').value);
+            if (diff !== 0) {
+                return {
+                    betreuungstageError: control.value
+                };
+            }
+            return null;
+        });
+        // sonderschueler 1
+        this.form.get('betreuungstageKinderDieserGemeindeSonderschueler').setValidators(control => {
+            const diff = parseFloat(this.form.get('betreuungstageKinderDieserGemeinde').value) -
+                parseFloat(this.form.get('betreuungstageKinderDieserGemeindeSonderschueler').value);
+            if (diff < 0) {
+                return {
+                    sonderschuelerError: control.value
+                };
+            }
+            return null;
+        });
+        // sonderschueler 2
+        // tslint:disable-next-line:no-identical-functions
+        this.form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').setValidators(control => {
+            const diff = parseFloat(this.form.get('davonBetreuungstageKinderAndererGemeinden').value) -
+                parseFloat(this.form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').value);
+            if (diff < 0) {
+                return {
+                    sonderschuelerError: control.value
+                };
+            }
+            return null;
+        });
     }
 
     protected setupForm(nutzung: TSFerienbetreuungAngabenNutzung): void {

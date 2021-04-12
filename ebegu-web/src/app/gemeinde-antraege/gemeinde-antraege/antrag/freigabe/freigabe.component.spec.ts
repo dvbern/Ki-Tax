@@ -19,7 +19,9 @@ import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/angular';
 import {of} from 'rxjs';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {MaterialModule} from '../../../../shared/material.module';
 import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
@@ -32,6 +34,10 @@ const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSServic
     ['getLATSAngabenGemeindeContainer']);
 const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
     ['go']);
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+    ['getPrincipal', 'isOneOfRoles']);
+
+authServiceSpy.principal$ = of(new TSBenutzer());
 
 describe('FreigabeComponent', () => {
     let component: FreigabeComponent;
@@ -50,6 +56,7 @@ describe('FreigabeComponent', () => {
                 {provide: TranslateService, useValue: translateServiceSpy},
                 {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy}
             ],
         })
             .compileComponents();

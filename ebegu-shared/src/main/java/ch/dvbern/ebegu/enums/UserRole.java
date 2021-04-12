@@ -229,4 +229,17 @@ public enum UserRole {
 	public RollenAbhaengigkeit getRollenAbhaengigkeit() {
 		return rollenAbhaengigkeit;
 	}
+
+	public boolean isInstitutionRole() {
+		return SACHBEARBEITER_INSTITUTION == this
+			|| ADMIN_INSTITUTION == this
+			|| SACHBEARBEITER_TRAEGERSCHAFT == this
+			|| ADMIN_TRAEGERSCHAFT == this;
+	}
+
+	public static List<UserRole> getAllInstitutionRoles() {
+		List<UserRole> all = getAllInstitutionAdminRoles();
+		all.addAll(getAllInstitutionSachbearbeiterRoles());
+		return all;
+	}
 }

@@ -54,13 +54,15 @@ public interface GemeindeAntragService {
 		@Nullable String gemeinde,
 		@Nullable String periode,
 		@Nullable String typ,
-		@Nullable String status);
+		@Nullable String status,
+		@Nullable String timestampMutiert);
 
 	@Nonnull
 	List<GemeindeAntrag> getGemeindeAntraege(
 		@Nullable String gemeindeId,
 		@Nullable String periodeId,
-		@Nullable String status);
+		@Nullable String status,
+		@Nullable String timestampMutiert);
 
 	@Nonnull
 	Optional<? extends GemeindeAntrag> findGemeindeAntrag(@Nonnull GemeindeAntragTyp typ, @Nonnull String gemeindeAntragId);

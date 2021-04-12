@@ -50,6 +50,9 @@
                     <mat-error *ngIf="form && form.get('anzahlBetreuungstageKinderBern').errors?.isNotHalf"
                                translate>ERROR_NOT_HALF
                     </mat-error>
+                    <mat-error *ngIf="form && form.get('anzahlBetreuungstageKinderBern').errors?.betreuungstageError"
+                               translate>ERROR_FB_BETREUUNGSTAGE
+                    </mat-error>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -94,6 +97,10 @@
                         *ngIf="form && form.get('betreuungstageKinderDieserGemeindeSonderschueler').errors?.isNotHalf"
                         translate>ERROR_NOT_HALF
                     </mat-error>
+                    <mat-error
+                        *ngIf="form && form.get('betreuungstageKinderDieserGemeindeSonderschueler').errors?.sonderschuelerError"
+                        translate>ERROR_FB_SONDERSCHUELER
+                    </mat-error>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -135,6 +142,10 @@
                         *ngIf="form && form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').errors?.isNotHalf"
                         translate>ERROR_NOT_HALF
                     </mat-error>
+                    <mat-error
+                        *ngIf="form && form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').errors?.sonderschuelerError"
+                        translate>ERROR_FB_SONDERSCHUELER
+                    </mat-error>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -167,90 +178,90 @@
                 </mat-form-field>
             </dv-input-container-x>
 
-            <dv-input-container-x>
-                <label for="anzahl_betreute_kinder_sonderschueler_id"
-                       class="padding-left-20"
-                       [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinderSonderschueler').errors}">
-                    {{'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER' | translate }}
-                </label>
-                <mat-form-field floatLabel="always">
-                    <mat-label translate></mat-label>
-                    <input matInput
-                           id="anzahl_betreute_kinder_sonderschueler_id"
-                           formControlName="anzahlBetreuteKinderSonderschueler"
-                           class="form-control dv-input"/>
-                    <mat-error
-                        *ngIf="form && form.get('anzahlBetreuteKinderSonderschueler').errors?.isNotInteger"
-                        translate>ERROR_NOT_INTEGER
-                    </mat-error>
-                </mat-form-field>
-            </dv-input-container-x>
+        <dv-input-container-x>
+            <label for="anzahl_betreute_kinder_sonderschueler_id"
+                   class="padding-left-20"
+                   [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinderSonderschueler').errors}">
+                {{'FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER_SONDERSCHUELER' | translate }}
+            </label>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       id="anzahl_betreute_kinder_sonderschueler_id"
+                       formControlName="anzahlBetreuteKinderSonderschueler"
+                       class="form-control dv-input"/>
+                <mat-error
+                    *ngIf="form && form.get('anzahlBetreuteKinderSonderschueler').errors?.isNotInteger"
+                    translate>ERROR_NOT_INTEGER
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
 
-            <dv-input-container-x>
-                <label for="anzahlBetreuteKinder1Zyklus_id"
-                       class="padding-left-20"
-                       [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinder1Zyklus').errors}">
-                    {{'FERIENBETREUUNG_DAVON_KINDER_IM_1_ZYKLUS' | translate }}
-                    <dv-tooltip inputId="anzahlBetreuteKinder1Zyklus_id"
-                                [text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate">
-                    </dv-tooltip>
-                </label>
-                <mat-form-field floatLabel="always">
-                    <mat-label translate></mat-label>
-                    <input matInput
-                           id="anzahlBetreuteKinder1Zyklus_id"
-                           formControlName="anzahlBetreuteKinder1Zyklus"
-                           class="form-control dv-input"/>
-                    <mat-error
-                        *ngIf="form && form.get('anzahlBetreuteKinder1Zyklus').errors?.isNotInteger"
-                        translate>ERROR_NOT_INTEGER
-                    </mat-error>
-                </mat-form-field>
-            </dv-input-container-x>
+        <dv-input-container-x>
+            <label for="anzahlBetreuteKinder1Zyklus_id"
+                   class="padding-left-20"
+                   [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinder1Zyklus').errors}">
+                <span [innerHTML]="'FERIENBETREUUNG_DAVON_KINDER_IM_1_ZYKLUS' | translate"></span>
+                <dv-tooltip inputId="anzahlBetreuteKinder1Zyklus_id"
+                            [text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate">
+                </dv-tooltip>
+            </label>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       id="anzahlBetreuteKinder1Zyklus_id"
+                       formControlName="anzahlBetreuteKinder1Zyklus"
+                       class="form-control dv-input"/>
+                <mat-error
+                    *ngIf="form && form.get('anzahlBetreuteKinder1Zyklus').errors?.isNotInteger"
+                    translate>ERROR_NOT_INTEGER
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
 
-            <dv-input-container-x>
-                <label for="anzahlBetreuteKinder2Zyklus_id"
-                       class="padding-left-20"
-                       [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinder2Zyklus').errors}">
-                    {{'FERIENBETREUUNG_DAVON_KINDER_IM_2_ZYKLUS' | translate }}
-                    <dv-tooltip inputId="anzahlBetreuteKinder2Zyklus_id"
-                                [text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate">
-                    </dv-tooltip>
-                </label>
-                <mat-form-field floatLabel="always">
-                    <mat-label translate></mat-label>
-                    <input matInput
-                           id="anzahlBetreuteKinder2Zyklus_id"
-                           formControlName="anzahlBetreuteKinder2Zyklus"
-                           class="form-control dv-input"/>
-                    <mat-error
-                        *ngIf="form && form.get('anzahlBetreuteKinder2Zyklus').errors?.isNotInteger"
-                        translate>ERROR_NOT_INTEGER
-                    </mat-error>
-                </mat-form-field>
-            </dv-input-container-x>
+        <dv-input-container-x>
+            <label for="anzahlBetreuteKinder2Zyklus_id"
+                   class="padding-left-20"
+                   [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinder2Zyklus').errors}">
+                <span [innerHTML]="'FERIENBETREUUNG_DAVON_KINDER_IM_2_ZYKLUS' | translate"></span>
+                <dv-tooltip inputId="anzahlBetreuteKinder2Zyklus_id"
+                            [text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate">
+                </dv-tooltip>
+            </label>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       id="anzahlBetreuteKinder2Zyklus_id"
+                       formControlName="anzahlBetreuteKinder2Zyklus"
+                       class="form-control dv-input"/>
+                <mat-error
+                    *ngIf="form && form.get('anzahlBetreuteKinder2Zyklus').errors?.isNotInteger"
+                    translate>ERROR_NOT_INTEGER
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
 
-            <dv-input-container-x>
-                <label for="anzahlBetreuteKinder3Zyklus_id"
-                       class="padding-left-20"
-                       [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinder3Zyklus').errors}">
-                    {{'FERIENBETREUUNG_DAVON_KINDER_IM_3_ZYKLUS' | translate }}
-                    <dv-tooltip inputId="anzahlBetreuteKinder3Zyklus_id"
-                                [text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate">
-                    </dv-tooltip>
-                </label>
-                <mat-form-field floatLabel="always">
-                    <mat-label translate></mat-label>
-                    <input matInput
-                           id="anzahlBetreuteKinder3Zyklus_id"
-                           formControlName="anzahlBetreuteKinder3Zyklus"
-                           class="form-control dv-input"/>
-                    <mat-error
-                        *ngIf="form && form.get('anzahlBetreuteKinder3Zyklus').errors?.isNotInteger"
-                        translate>ERROR_NOT_INTEGER
-                    </mat-error>
-                </mat-form-field>
-            </dv-input-container-x>
+        <dv-input-container-x>
+            <label for="anzahlBetreuteKinder3Zyklus_id"
+                   class="padding-left-20"
+                   [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinder3Zyklus').errors}">
+                <span [innerHTML]="'FERIENBETREUUNG_DAVON_KINDER_IM_3_ZYKLUS' | translate"></span>
+                <dv-tooltip inputId="anzahlBetreuteKinder3Zyklus_id"
+                            [text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate">
+                </dv-tooltip>
+            </label>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       id="anzahlBetreuteKinder3Zyklus_id"
+                       formControlName="anzahlBetreuteKinder3Zyklus"
+                       class="form-control dv-input"/>
+                <mat-error
+                    *ngIf="form && form.get('anzahlBetreuteKinder3Zyklus').errors?.isNotInteger"
+                    translate>ERROR_NOT_INTEGER
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
 
         </div>
 

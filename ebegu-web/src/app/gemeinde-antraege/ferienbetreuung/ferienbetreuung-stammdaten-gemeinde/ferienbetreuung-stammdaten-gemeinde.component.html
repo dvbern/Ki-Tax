@@ -67,6 +67,21 @@
                 </mat-select>
             </dv-input-container-x>
 
+
+        <dv-input-container-x [verticalAlign]="true">
+            <label for="seitWannFerienbetreuungen_id">
+                {{'FERIENBETREUUNG_SEIT_WANN' | translate}}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <input id="seitWannFerienbetreuungen_id"
+                       type="text"
+                       matInput
+                       formControlName="seitWannFerienbetreuungen"
+                       class="form-control dv-input"/>
+            </mat-form-field>
+        </dv-input-container-x>
+
         </div>
 
         <mat-divider></mat-divider>
@@ -191,7 +206,7 @@
 
             <h3 translate class="uppercase margin-bottom-20" id="kontaktperson-header">
             <span>
-                {{'KONTAKTPERSON' | translate}}
+                {{'FERIENBETREUUNG_KONTAKTPERSON' | translate}}
                 <dv-tooltip inputId="kontaktperson-header"
                             [text]="'FERIENBETREUUNG_KONTAKTPERSON_HINT' | translate">
                 </dv-tooltip>
@@ -464,9 +479,7 @@
                     </div>
                 </div>
             </div>
-
         </div>
-
     </form>
 
     <div class="actions">
@@ -488,5 +501,4 @@
             <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
         </div>
     </div>
-
 </div>

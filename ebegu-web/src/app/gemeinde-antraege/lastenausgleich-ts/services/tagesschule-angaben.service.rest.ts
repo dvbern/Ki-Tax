@@ -72,15 +72,27 @@ export class TagesschuleAngabenRS {
         );
     }
 
-    public falscheAngaben(latsAngabenInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer): Observable<TSLastenausgleichTagesschuleAngabenInstitutionContainer> {
+    public falscheAngabenGemeinde(latsAngabenInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer): Observable<TSLastenausgleichTagesschuleAngabenInstitutionContainer> {
         return this.http.put(
-            `${CONSTANTS.REST_API}/lats/institution/falsche-angaben`,
+            `${CONSTANTS.REST_API}/lats/institution/gemeinde-falsche-angaben`,
             this.ebeguRestUtils.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject({},
-                latsAngabenInstitutionContainer)
+                latsAngabenInstitutionContainer),
         ).pipe(
             map(latsAngabenInstitutionContainerfromServer => this.ebeguRestUtils.parseLastenausgleichTagesschuleAngabenInstitutionContainer(
-                new TSLastenausgleichTagesschuleAngabenInstitutionContainer(), latsAngabenInstitutionContainerfromServer
-            ))
+                new TSLastenausgleichTagesschuleAngabenInstitutionContainer(), latsAngabenInstitutionContainerfromServer,
+            )),
+        );
+    }
+
+    public falscheAngabenTS(latsAngabenInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer): Observable<TSLastenausgleichTagesschuleAngabenInstitutionContainer> {
+        return this.http.put(
+            `${CONSTANTS.REST_API}/lats/institution/ts-falsche-angaben`,
+            this.ebeguRestUtils.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject({},
+                latsAngabenInstitutionContainer),
+        ).pipe(
+            map(latsAngabenInstitutionContainerfromServer => this.ebeguRestUtils.parseLastenausgleichTagesschuleAngabenInstitutionContainer(
+                new TSLastenausgleichTagesschuleAngabenInstitutionContainer(), latsAngabenInstitutionContainerfromServer,
+            )),
         );
     }
 }

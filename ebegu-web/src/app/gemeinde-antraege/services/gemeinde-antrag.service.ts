@@ -62,6 +62,9 @@ export class GemeindeAntragService {
         if (filter.status) {
             params = params.append('status', filter.status);
         }
+        if (filter.aenderungsdatum) {
+            params = params.append('timestampMutiert', filter.aenderungsdatum);
+        }
         return this.http.get<TSGemeindeAntrag[]>(this.API_BASE_URL, {
             params,
         }).pipe(
@@ -125,6 +128,12 @@ export class GemeindeAntragService {
                         a.gesuchsperiode.gesuchsperiodeString.localeCompare(b.gesuchsperiode.gesuchsperiodeString)) :
                     antraege.sort((a, b) =>
                         b.gesuchsperiode.gesuchsperiodeString.localeCompare(a.gesuchsperiode.gesuchsperiodeString));
+            case 'aenderungsdatum':
+                return sort.reverse ?
+                    antraege.sort((a, b) =>
+                        b.timestampMutiert.diff(a.timestampMutiert)) :
+                    antraege.sort((a, b) =>
+                        a.timestampMutiert.diff(b.timestampMutiert));
             default:
                 return antraege;
         }

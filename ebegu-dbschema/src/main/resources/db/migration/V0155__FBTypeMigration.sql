@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,14 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.wizardx;
-
-/**
- * Wizard steps status - to extend - shared between all wizards but no need to use all values
- */
-public enum WizardStateEnum {
-	IN_BEARBEITUNG,
-	OK,
-	KO,
-	NONE;
-}
+ALTER TABLE ferienbetreuung_angaben_angebot MODIFY COLUMN kinder_aus_anderen_gemeinden_zahlen_anderen_tarif VARCHAR(255);
+ALTER TABLE ferienbetreuung_angaben_angebot_aud MODIFY COLUMN kinder_aus_anderen_gemeinden_zahlen_anderen_tarif VARCHAR(255);
+UPDATE ferienbetreuung_angaben_angebot SET kinder_aus_anderen_gemeinden_zahlen_anderen_tarif = 'JA' WHERE kinder_aus_anderen_gemeinden_zahlen_anderen_tarif = '1';
+UPDATE ferienbetreuung_angaben_angebot SET kinder_aus_anderen_gemeinden_zahlen_anderen_tarif = 'NEIN' WHERE kinder_aus_anderen_gemeinden_zahlen_anderen_tarif = '0';

@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {TSWizardStepStatus} from './enums/TSWizardStepStatus';
 import {TSWizardStepXTyp} from './enums/TSWizardStepXTyp';
 
 export class TSWizardStepX {
@@ -23,5 +24,6 @@ export class TSWizardStepX {
 
     public stepName: string;
     public disabled: boolean;
+    public status: TSWizardStepStatus;
 
 }

@@ -40,7 +40,8 @@ public interface FerienbetreuungService {
 	List<FerienbetreuungAngabenContainer> getFerienbetreuungAntraege(
 		@Nullable String gemeinde,
 		@Nullable String periode,
-		@Nullable String status
+		@Nullable String status,
+		@Nullable String timestampMutiert
 	);
 
 	@Nonnull
@@ -49,7 +50,6 @@ public interface FerienbetreuungService {
 	@Nonnull
 	FerienbetreuungAngabenContainer createFerienbetreuungAntrag(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
 
-	@Nonnull
 	void saveKommentar(@Nonnull String id, @Nonnull String kommentar);
 
 	@Nonnull

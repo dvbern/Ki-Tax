@@ -30,6 +30,7 @@ import {WindowRef} from '../../../../core/service/windowRef.service';
 import {MaterialModule} from '../../../../shared/material.module';
 import {SharedModule} from '../../../../shared/shared.module';
 import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
+import {UnsavedChangesService} from '../../../services/unsaved-changes.service';
 
 import {TagesschulenAngabenComponent} from './tagesschulen-angaben.component';
 
@@ -40,6 +41,8 @@ const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['
 const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['saveEinstellung']);
 const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
 const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['href', 'go']);
+const unsavedChangesServiceSpy = jasmine.createSpyObj<UnsavedChangesService>(UnsavedChangesService.name,
+    ['registerForm']);
 
 describe('TagesschulenAngabenComponent', () => {
     let component: TagesschulenAngabenComponent;
@@ -63,7 +66,8 @@ describe('TagesschulenAngabenComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: EinstellungRS, useValue: einstellungServiceSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
-                {provide: StateService, useValue: stateServiceSpy}
+                {provide: StateService, useValue: stateServiceSpy},
+                {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy}
             ],
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

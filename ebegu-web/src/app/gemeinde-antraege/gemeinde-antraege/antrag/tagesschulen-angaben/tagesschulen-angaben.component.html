@@ -541,7 +541,7 @@
         <div class="actions">
             <dv-loading-button
                 class="uppercase"
-                *ngIf="canSeeFreigebenButton()"
+                *ngIf="canSeeFreigeben | async"
                 type="button"
                 [buttonDisabled]="actionButtonsDisabled()"
                 (buttonClick)="onFreigeben()">
@@ -550,7 +550,7 @@
 
             <dv-loading-button
                 class="uppercase"
-                *ngIf="canSeeGeprueftButton()"
+                *ngIf="canSeeAbschliessen | async"
                 type="button"
                 [buttonDisabled]="actionButtonsDisabled()"
                 (buttonClick)="onGeprueft()">
@@ -558,15 +558,16 @@
             </dv-loading-button>
 
             <button class="dv-btn cancel-button uppercase"
-                    type="button"
-                    *ngIf="canSeeSaveButton()"
-                    [disabled]="actionButtonsDisabled()"
-                    (click)="onFormSubmit()">
+                type="button"
+                *ngIf="canSeeSave | async"
+                [disabled]="actionButtonsDisabled()"
+                (click)="onFormSubmit()">
                 <span translate>SAVE</span>
             </button>
 
             <button class="dv-btn cancel-button margin-left-5 uppercase"
                     type="button"
+                    *ngIf="canSeeSave | async"
                     (click)="navigateBack($event)">
                 <span translate>CANCEL</span>
             </button>
@@ -574,7 +575,7 @@
 
     </form>
 
-    <div class="row" *ngIf="falscheAngabenVisible()">
+    <div class="row" *ngIf="canSeeFalscheAngaben | async">
         <div class="col-md-12">
             <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
         </div>
