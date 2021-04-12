@@ -37,7 +37,6 @@
                                 [text]="'FERIENBETREUUNG_NAME_ANGEBOT_HINT' | translate">
                     </dv-tooltip>
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <mat-form-field floatLabel="always">
                     <input type="text"
                            matInput
@@ -62,7 +61,6 @@
                                [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('kontaktpersonVorname').errors}">
                             {{'VORNAME' | translate}}
                         </label>
-                        <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text"
                                    matInput
@@ -81,7 +79,6 @@
                                [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('kontaktpersonNachname').errors}">
                             {{'NAME' | translate}}
                         </label>
-                        <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text"
                                    matInput
@@ -103,7 +100,6 @@
                                [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('strasse').errors}">
                             {{'ADRESSE_STRASSE' | translate}}
                         </label>
-                        <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text"
                                    id="strasse_id"
@@ -120,7 +116,6 @@
                         <label for="hausnummer_id">
                             {{'FERIENBETREUUNG_ADRESSE_NR' | translate}}
                         </label>
-                        <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text"
                                    id="hausnummer_id"
@@ -138,7 +133,6 @@
                                [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('plz').errors}">
                             {{'ADRESSE_PLZ' | translate}}
                         </label>
-                        <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text"
                                    id="plz_id"
@@ -157,7 +151,6 @@
                                [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('ort').errors}">
                             {{'ADRESSE_ORT' | translate}}
                         </label>
-                        <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text"
                                    id="ort_id"
@@ -475,12 +468,12 @@
                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                 </mat-radio-group>
-            </dv-radio-container-x>
-        </dv-input-container-x>
+                </dv-radio-container-x>
+            </dv-input-container-x>
 
-        <dv-input-container-x>
-            <label required
-                   [ngClass]="{'label-required-error': formValidationTriggered && form.get('betreuungDurchPersonenMitErfahrung').errors}">
+            <dv-input-container-x>
+                <label required
+                       [ngClass]="{'label-required-error': formValidationTriggered && form.get('betreuungDurchPersonenMitErfahrung').errors}">
                 {{'FERIENBETREUUNG_LEITUNG_DURCH_PERSON_MIT_ERFAHRUNG' | translate}}
             </label>
             <div class="flex-whitespace-item"></div>
@@ -659,6 +652,8 @@
                       class="form-control dv-input"></textarea>
             </mat-form-field>
         </dv-input-container-x>
+
+        </div>
 
     </form>
 

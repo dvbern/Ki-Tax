@@ -37,7 +37,6 @@
             <label for="traegerschaft_id">
                 {{'FERIENBETREUUNG_TRAEGERSCHAFT' | translate}}
             </label>
-            <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
                 <input id="traegerschaft_id"
                        type="text"
@@ -89,7 +88,6 @@
                        [ngClass]="{'label-required-error': formValidationTriggered && form && form.get('stammdatenAdresse').get('organisation').errors}">
                     {{'ADRESSE_ANSCHRIFT' | translate}}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <mat-form-field floatLabel="always">
                     <input type="text"
                            id="stammdaten_adresse_anschrift_id"
@@ -109,7 +107,6 @@
                            [ngClass]="{'label-required-error': formValidationTriggered && form && form.get('stammdatenAdresse').get('strasse').errors}">
                         {{'ADRESSE_STRASSE' | translate}}
                     </label>
-                    <div class="flex-whitespace-item"></div>
                     <mat-form-field floatLabel="always">
                         <input type="text"
                                id="stammdaten_adresse_strasse_id"
@@ -126,7 +123,6 @@
                     <label for="stammdaten_adresse_nr_id">
                         {{'FERIENBETREUUNG_ADRESSE_NR' | translate}}
                     </label>
-                    <div class="flex-whitespace-item"></div>
                     <mat-form-field floatLabel="always">
                         <input type="text"
                                id="stammdaten_adresse_nr_id"
@@ -144,7 +140,6 @@
                            [ngClass]="{'label-required-error': formValidationTriggered && form?.get('stammdatenAdresse').get('plz').errors}">
                         {{'ADRESSE_PLZ' | translate}}
                     </label>
-                    <div class="flex-whitespace-item"></div>
                     <mat-form-field floatLabel="always">
                         <input type="text"
                                id="stammdaten_adresse_plz_id"
@@ -163,7 +158,6 @@
                            [ngClass]="{'label-required-error':formValidationTriggered && form?.get('stammdatenAdresse').get('ort').errors}">
                         {{'ADRESSE_ORT' | translate}}
                     </label>
-                    <div class="flex-whitespace-item"></div>
                     <mat-form-field floatLabel="always">
                         <input type="text"
                                id="stammdaten_adresse_ort_id"
@@ -203,7 +197,6 @@
                        [ngClass]="{'label-required-error': formValidationTriggered && form?.get('stammdatenKontaktpersonVorname').errors}">
                     {{'VORNAME' | translate}}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <mat-form-field floatLabel="always">
                     <input type="text"
                            id="stammdaten_kontakt_vorname_id"
@@ -222,7 +215,6 @@
                        [ngClass]="{'label-required-error':formValidationTriggered && form?.get('stammdatenKontaktpersonNachname').errors}">
                     {{'NAME' | translate}}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <mat-form-field floatLabel="always">
                     <input type="text"
                            id="stammdaten_kontakt_nachname_id"
@@ -240,7 +232,6 @@
             <label for="stammdaten_kontakt_funktion_id">
                 {{'FERIENBETREUUNG_FUNKTION' | translate}}
             </label>
-            <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
                 <input type="text"
                        id="stammdaten_kontakt_funktion_id"
@@ -258,7 +249,6 @@
                        [ngClass]="{'label-required-error': formValidationTriggered && form?.get('stammdatenKontaktpersonTelefon').errors}">
                     {{'TELEFON' | translate}}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <mat-form-field floatLabel="always">
                     <input type="text"
                            id="stammdaten_kontakt_telefon_id"
@@ -280,7 +270,6 @@
                        [ngClass]="{'label-required-error': formValidationTriggered && form?.get('stammdatenKontaktpersonEmail').errors}">
                     {{'EMAIL' | translate}}
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <mat-form-field floatLabel="always">
                     <input type="text"
                            id="stammdaten_kontakt_email_id"
@@ -316,7 +305,6 @@
                                [ngClass]="{'label-required-error': formValidationTriggered && form?.get('auszahlungsdaten').get('kontoinhaber').errors}">
                             {{'FERIENBETREUUNG_KONTOINHABER' | translate}}
                         </label>
-                        <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text"
                                    id="kontoinhaber_id"
@@ -339,7 +327,6 @@
                                [ngClass]="{'label-required-error': formValidationTriggered && form?.get('auszahlungsdaten').get('adresseKontoinhaber').get('strasse').errors}">
                             {{'ADRESSE_STRASSE' | translate}}
                         </label>
-                        <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text"
                                    id="adresse_kontoinhaber_strasse_id"
@@ -356,7 +343,6 @@
                         <label for="adresse_kontoinhaber_nr_id">
                             {{'FERIENBETREUUNG_ADRESSE_NR' | translate}}
                         </label>
-                        <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text"
                                    id="adresse_kontoinhaber_nr_id"
@@ -374,7 +360,6 @@
                                [ngClass]="{'label-required-error': formValidationTriggered && form?.get('auszahlungsdaten').get('adresseKontoinhaber').get('plz').errors}">
                             {{'ADRESSE_PLZ' | translate}}
                         </label>
-                        <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text"
                                    id="adresse_kontoinhaber_plz_id"
@@ -393,7 +378,6 @@
                                [ngClass]="{'label-required-error': formValidationTriggered && form?.get('auszahlungsdaten').get('adresseKontoinhaber').get('ort').errors}">
                             {{'ADRESSE_ORT' | translate}}
                         </label>
-                        <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text"
                                    id="adresse_kontoinhaber_ort_id"
@@ -417,7 +401,6 @@
                                [ngClass]="{'label-required-error': formValidationTriggered && form?.get('auszahlungsdaten').get('iban').errors}">
                             {{'FERIENBETREUUNG_IBAN' | translate}}
                         </label>
-                        <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text"
                                    id="iban_id"
@@ -439,7 +422,6 @@
                         <label for="vermerk_auszahlung_id">
                             {{'FERIENBETREUUNG_VERMERK_AUSZAHLUNG' | translate}}
                         </label>
-                        <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text"
                                    id="vermerk_auszahlung_id"
