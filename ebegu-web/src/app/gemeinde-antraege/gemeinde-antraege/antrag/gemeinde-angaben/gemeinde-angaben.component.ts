@@ -488,6 +488,7 @@ export class GemeindeAngabenComponent implements OnInit {
             this.errorService.addMesageAsError(this.translateService.instant(
                 'LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'));
         }
+        this.errorService.clearAll();
         this.wizardRS.updateSteps(this.WIZARD_TYPE, this.uiRouterGlobals.params.id);
     }
 

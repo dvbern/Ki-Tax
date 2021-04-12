@@ -235,6 +235,7 @@ export class TagesschulenAngabenComponent {
         this.tagesschulenAngabenRS.saveTagesschuleAngaben(this.latsAngabenInstitutionContainer).subscribe(result => {
             this.setupForm(result?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
                 result?.angabenDeklaration : result?.angabenKorrektur);
+            this.errorService.clearAll();
             this.errorService.addMesageAsInfo(this.translate.instant('SAVED'));
         }, error => {
             if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
@@ -265,6 +266,7 @@ export class TagesschulenAngabenComponent {
                 if (!this.canEditForm()) {
                     this.form.disable();
                 }
+                this.errorService.clearAll();
                 this.cd.markForCheck();
             }, () => {
                 this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
@@ -303,6 +305,7 @@ export class TagesschulenAngabenComponent {
                 this.latsAngabenInstitutionContainer = geprueft;
                 this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.routerGlobals.params.id);
                 this.form.disable();
+                this.errorService.clearAll();
                 this.cd.markForCheck();
                 this.navigateBack();
             }, () => {
@@ -390,12 +393,10 @@ export class TagesschulenAngabenComponent {
         const falscheAngabenObs = this.latsAngabenInstitutionContainer.isGeprueftGemeinde() ?
             this.tagesschulenAngabenRS.falscheAngabenGemeinde(this.latsAngabenInstitutionContainer) :
             this.tagesschulenAngabenRS.falscheAngabenTS(this.latsAngabenInstitutionContainer);
-        combineLatest([
-            falscheAngabenObs,
-            this.authService.principal$,
-        ]).subscribe(([container, principal]) => {
-            this.wizardRS.updateSteps(TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN, this.gemeindeAntragContainer.id);
 
+        falscheAngabenObs.subscribe(() => {
+            this.errorService.clearAll();
+            this.wizardRS.updateSteps(TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN, this.gemeindeAntragContainer.id);
             this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.routerGlobals.params.id);
             this.cd.markForCheck();
         }, error => {
