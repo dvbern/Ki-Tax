@@ -540,4 +540,8 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 	public boolean isAbgeschlossen() {
 		return status == FerienbetreuungFormularStatus.ABGESCHLOSSEN;
 	}
+
+	public boolean isGeprueft() {
+		return status == FerienbetreuungFormularStatus.GEPRUEFT;
+	}
 }

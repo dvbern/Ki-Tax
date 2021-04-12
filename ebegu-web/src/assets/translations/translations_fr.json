@@ -2445,7 +2445,7 @@
     "ANTRAEGE_ERSTELLT": "Les demandes ont été créées",
     "ANTRAG_ERSTELLT": "La demande a été créée",
     "ERROR_FB_SONDERSCHUELER": "le nombre de jour de garde pour les écoliers spéciaux ne doit pas être plus élevé que le nombre de jour de garde de la commune",
-    "ERROR_FB_BETREUUNGSTAGE": "\"Le ombre de jour de garde d'enfant provenant de la commune proposée\" plus \"le nombre de jour de garde d'enfant provenant d'autres communes\" doit être égal au \"nombre de jour de garde du canton de Bern\"",
+    "ERROR_FB_BETREUUNGSTAGE": "\"Le nombre de jour de garde d'enfant provenant de la commune proposée\" plus \"le nombre de jour de garde d'enfant provenant d'autres communes\" doit être égal au \"nombre de jour de garde du canton de Bern\"",
     "MENU_SOZIALDIENST": "Service de soutien",
     "SOZIALDIENST_STATUS_EINGELADEN": "Invité",
     "SOZIALDIENST_STATUS_AKTIV": "Actif",

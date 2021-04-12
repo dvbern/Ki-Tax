@@ -196,6 +196,16 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 		this.dokumente = dokumente;
 	}
 
+	public boolean isInPruefungKanton() {
+		return status == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON;
+	}
+
+	public boolean isGeprueft() {
+		return status == FerienbetreuungAngabenStatus.GEPRUEFT ||
+			status == FerienbetreuungAngabenStatus.VERFUEGT ||
+			status == FerienbetreuungAngabenStatus.ABGELEHNT;
+	}
+
 	public void copyForFreigabe() {
 		// Nur moeglich, wenn noch nicht freigegeben und ueberhaupt Daten zum kopieren vorhanden
 		if (status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE) {

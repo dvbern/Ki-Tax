@@ -20,6 +20,8 @@ package ch.dvbern.ebegu.api.dtos;
 import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.wizardx.WizardStateEnum;
+
 public class JaxWizardStepX {
 
 	@NotNull
@@ -30,6 +32,9 @@ public class JaxWizardStepX {
 
 	@Nonnull
 	private Boolean disabled;
+
+	@Nonnull
+	private WizardStateEnum status;
 
 	public String getWizardTyp() {
 		return wizardTyp;
@@ -54,5 +59,13 @@ public class JaxWizardStepX {
 
 	public void setDisabled(@Nonnull Boolean disabled) {
 		this.disabled = disabled;
+	}
+
+	public void setStatus(WizardStateEnum status) {
+		this.status = status;
+	}
+
+	public WizardStateEnum getStatus() {
+		return status;
 	}
 }

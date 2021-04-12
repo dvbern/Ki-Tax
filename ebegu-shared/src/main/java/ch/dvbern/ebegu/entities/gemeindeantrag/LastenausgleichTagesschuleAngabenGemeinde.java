@@ -174,16 +174,21 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 		this.angebotFuerFerienbetreuungVorhanden = source.angebotFuerFerienbetreuungVorhanden;
 		this.angebotVerfuegbarFuerAlleSchulstufen = source.angebotVerfuegbarFuerAlleSchulstufen;
 		this.begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen = source.begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen;
+		this.tagesschuleTeilweiseGeschlossen = source.tagesschuleTeilweiseGeschlossen;
+		this.rueckerstattungenElterngebuehrenSchliessung = source.rueckerstattungenElterngebuehrenSchliessung;
 		// B: Abrechnung
 		this.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse = source.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse;
 		this.geleisteteBetreuungsstundenBesondereBeduerfnisse = source.geleisteteBetreuungsstundenBesondereBeduerfnisse;
 		this.davonStundenZuNormlohnMehrAls50ProzentAusgebildete = source.davonStundenZuNormlohnMehrAls50ProzentAusgebildete;
 		this.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete = source.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete;
+		this.ersteRateAusbezahlt = source.ersteRateAusbezahlt;
 		this.einnahmenElterngebuehren = source.einnahmenElterngebuehren;
 		// C: Kostenbeteiligung Gemeinde
 		this.gesamtKostenTagesschule = source.gesamtKostenTagesschule;
 		this.einnnahmenVerpflegung = source.einnnahmenVerpflegung;
 		this.einnahmenSubventionenDritter = source.einnahmenSubventionenDritter;
+		this.ueberschussErzielt = source.ueberschussErzielt;
+		this.ueberschussVerwendung = source.ueberschussVerwendung;
 		// D: Angaben zu weiteren Kosten und Ertraegen
 		this.bemerkungenWeitereKostenUndErtraege = source.bemerkungenWeitereKostenUndErtraege;
 		// E: Kontrollfragen

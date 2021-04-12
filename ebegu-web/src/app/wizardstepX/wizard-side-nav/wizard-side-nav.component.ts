@@ -17,6 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
+import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSWizardStepX} from '../../../models/TSWizardStepX';
 import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
@@ -44,4 +45,15 @@ export class WizardSideNavComponent implements OnInit {
         this.wizardSteps$ = this.wizardStepXRS.getAllSteps();
     }
 
+    public isInBearbeitung(stepX: TSWizardStepX): boolean {
+        return stepX.status === TSWizardStepStatus.IN_BEARBEITUNG;
+    }
+
+    public isOK(stepX: TSWizardStepX): boolean {
+        return stepX.status === TSWizardStepStatus.OK;
+    }
+
+    public isNOK(stepX: TSWizardStepX): boolean {
+        return stepX.status === TSWizardStepStatus.NOK;
+    }
 }

@@ -390,7 +390,7 @@
                 class=""
                 name="tagesschuleTeilweiseGeschlossen"
                 horizontal
-                [disabled]="angabenForm.get('tagesschuleTeilweiseGeschlossen').disabled"
+                [disabled]="angabenForm.get('tagesschuleTeilweiseGeschlossen')?.disabled"
                 formControlName="tagesschuleTeilweiseGeschlossen">
                 <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                 <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>

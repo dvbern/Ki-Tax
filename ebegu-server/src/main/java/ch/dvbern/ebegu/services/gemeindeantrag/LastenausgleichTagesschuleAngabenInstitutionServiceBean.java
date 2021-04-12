@@ -177,8 +177,9 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 	}
 
 	@Override
-	public LastenausgleichTagesschuleAngabenInstitutionContainer latsAngabenInstitutionContainerWiederOeffnen(
-		LastenausgleichTagesschuleAngabenInstitutionContainer fallContainer) {
+	@Nonnull
+	public LastenausgleichTagesschuleAngabenInstitutionContainer latsAngabenInstitutionContainerWiederOeffnenGemeinde(
+		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer fallContainer) {
 
 		authorizer.checkWriteAuthorization(fallContainer);
 
@@ -195,6 +196,26 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 
 		return persistence.persist(fallContainer);
 
+	}
+
+	@Override
+	@Nonnull
+	public LastenausgleichTagesschuleAngabenInstitutionContainer latsAngabenInstitutionContainerWiederOeffnenTS(
+		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer fallContainer) {
+		authorizer.checkWriteAuthorization(fallContainer);
+
+		Preconditions.checkState(
+			fallContainer.getAngabenGemeinde().isInBearbeitungGemeinde(),
+			"LastenausgleichTagesschuleAngabenGemeindeContainer muss in Bearbeitung Gemeinde sein"
+		);
+
+		Preconditions.checkState(
+			fallContainer.isAntragInPruefungGemeinde(),
+			"LastenausgleichTagesschuleAngabenInstitutionContainer muss im Status IN_PRUEFUNG_GEMEINDE sein");
+
+		fallContainer.setStatus(LastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN);
+
+		return persistence.persist(fallContainer);
 	}
 
 	// we check this since the attributes can be cached and can be null then, but must not be when changing status
