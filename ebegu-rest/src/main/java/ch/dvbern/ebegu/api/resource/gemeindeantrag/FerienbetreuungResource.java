@@ -56,7 +56,6 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinna
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
-import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.authentication.AuthorizerImpl;
 import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
@@ -139,7 +138,7 @@ public class FerienbetreuungResource {
 	}
 
 	@ApiOperation(
-		value = "Schliesst den FerienBetreuungAngabenContainertare als Gemeinde ab und gibt ihn zur Prüfung durch"
+		value = "Schliesst den FerienBetreuungAngabenContainer als Gemeinde ab und gibt ihn zur Prüfung durch"
 			+ "die Kantone frei",
 		response = JaxFerienbetreuungAngabenStammdaten.class)
 	@PUT

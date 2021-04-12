@@ -14,5 +14,5 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
-<span *ngIf="!noIcons"><i *ngFor="let icon of getVerantwortungClasses()" class="{{icon[0]}}" [title]="icon[1] | translate" style="padding-right: 0.5rem"> </i></span><span *ngIf="!noName" [title]="benutzer.getFullName()">{{benutzer.getFullName()}}</span>
+<span *ngIf="!noIcons"><i *ngFor="let icon of getVerantwortungClasses()" class="{{icon[0]}}" [title]="icon[1] | translate" style="padding-right: 0.5rem"> </i></span><span *ngIf="!noName" [title]="getBenutzerFullName()">{{getBenutzerFullName()}}</span>
 

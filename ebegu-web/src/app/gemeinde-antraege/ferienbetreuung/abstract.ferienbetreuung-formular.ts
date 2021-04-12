@@ -122,9 +122,13 @@ export abstract class AbstractFerienbetreuungFormular {
         angaben: TSFerienbetreuungAbstractAngaben,
         principal: TSBenutzer,
     ): void {
+        /*TODO: reenable once mandant has more than readonly permission and remove other code
         if (angaben?.isGeprueft() ||
             angaben?.isAtLeastAbgeschlossenGemeinde() &&
             principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
+            this.form.disable();
+        }*/
+        if (angaben?.isAtLeastAbgeschlossenGemeinde() || principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
             this.form.disable();
         }
     }

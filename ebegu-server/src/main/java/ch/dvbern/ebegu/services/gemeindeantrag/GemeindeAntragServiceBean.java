@@ -37,7 +37,6 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.services.AbstractBaseService;
-import ch.dvbern.ebegu.services.AuthService;
 import org.apache.commons.lang.NotImplementedException;
 
 /**
@@ -121,7 +120,7 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 
 		List<GemeindeAntrag> antraege = new ArrayList<>();
 
-		if(principal.isCallerInAnyOfRole(UserRole.getSuperadminAllGemeindeRoles())) {
+		if(principal.isCallerInAnyOfRole(UserRole.getAllGemeindeFerienbetreuungSuperadminRoles())) {
 			List<FerienbetreuungAngabenContainer> ferienbetreuungAntraege = ferienbetreuungService.getFerienbetreuungAntraege(
 				gemeindeId, periodeId, status
 			);

@@ -88,6 +88,20 @@ public class SozialdienstFall extends AbstractEntity {
 	@Column(nullable = false)
 	private LocalDate geburtsdatum;
 
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Column(nullable = true)
+	@Nullable
+	private String nameGs2;
+
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Column(nullable = true)
+	@Nullable
+	private String vornameGs2;
+
+	@Nullable
+	@Column(nullable = true)
+	private LocalDate geburtsdatumGs2;
+
 	@Nullable
 	@Column(nullable = true, length = TEN_MB) // 10 megabytes
 	@Lob
@@ -181,6 +195,36 @@ public class SozialdienstFall extends AbstractEntity {
 			&& Objects.equals(this.getName(), sozialdienstFall.getName())
 			&& Objects.equals(this.getVorname(), sozialdienstFall.getVorname())
 			&& Objects.equals(this.getGeburtsdatum(), sozialdienstFall.getGeburtsdatum())
-			&& Objects.equals(this.getAdresse(), sozialdienstFall.getAdresse());
+			&& Objects.equals(this.getAdresse(), sozialdienstFall.getAdresse())
+			&& Objects.equals(this.getNameGs2(), sozialdienstFall.getNameGs2())
+			&& Objects.equals(this.getVornameGs2(), sozialdienstFall.getVornameGs2())
+			&& Objects.equals(this.getGeburtsdatumGs2(), sozialdienstFall.getGeburtsdatumGs2());
+	}
+
+	@Nullable
+	public String getNameGs2() {
+		return nameGs2;
+	}
+
+	public void setNameGs2(@Nullable String nameGs2) {
+		this.nameGs2 = nameGs2;
+	}
+
+	@Nullable
+	public String getVornameGs2() {
+		return vornameGs2;
+	}
+
+	public void setVornameGs2(@Nullable String vornameGs2) {
+		this.vornameGs2 = vornameGs2;
+	}
+
+	@Nullable
+	public LocalDate getGeburtsdatumGs2() {
+		return geburtsdatumGs2;
+	}
+
+	public void setGeburtsdatumGs2(@Nullable LocalDate geburtsdatumGs2) {
+		this.geburtsdatumGs2 = geburtsdatumGs2;
 	}
 }
