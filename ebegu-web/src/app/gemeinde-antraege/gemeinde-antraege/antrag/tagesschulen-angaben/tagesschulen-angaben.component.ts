@@ -20,8 +20,8 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
-import {BehaviorSubject, combineLatest, Subscription, Subject} from 'rxjs';
 import * as moment from 'moment';
+import {BehaviorSubject, combineLatest, Subject, Subscription} from 'rxjs';
 import {startWith} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
@@ -40,9 +40,9 @@ import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {CONSTANTS, HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
+import {LogFactory} from '../../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../../core/service/wizardStepXRS.rest';
 import {numberValidator, ValidationType} from '../../../../shared/validators/number-validator.directive';
-import {LogFactory} from '../../../../core/logging/LogFactory';
 import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
 import {TagesschuleAngabenRS} from '../../../lastenausgleich-ts/services/tagesschule-angaben.service.rest';
 import {UnsavedChangesService} from '../../../services/unsaved-changes.service';
@@ -73,10 +73,9 @@ export class TagesschulenAngabenComponent {
     public durchschnittKinderProTag: TSDurchschnittKinderProTag;
     public abweichungenAnzahlKinder: number;
     public stichtag: Subject<string> = new Subject<string>();
+    public gemeindeAntragContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
 
     public autoFilled: boolean = false;
-
-    private gemeindeAntragContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
 
     public readonly canSeeSave: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public readonly canSeeAbschliessen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
