@@ -896,22 +896,22 @@
                 </mat-form-field>
             </dv-input-container-x>
 
-            <div class="actions">
-                <dv-loading-button
-                    type="button"
-                    [ngClass]="{'secondary': !formularNotEditable()}"
-                    [buttonDisabled]="formularNotEditable()"
-                    (buttonClick)="onAngabenFormSubmit()">
-                    <span translate>SAVE</span>
-                </dv-loading-button>
-                <dv-loading-button
-                    type="button"
-                    [buttonDisabled]="formularNotEditable()"
-                    (buttonClick)="onAbschliessen()">
-                    <span translate>ABSCHLIESSEN</span>
-                </dv-loading-button>
-            </div>
+        </div>
 
+        <div class="actions">
+            <dv-loading-button
+                type="button"
+                [ngClass]="{'secondary': !formularNotEditable()}"
+                [buttonDisabled]="formularNotEditable()"
+                (buttonClick)="onAngabenFormSubmit()">
+                <span translate>SAVE</span>
+            </dv-loading-button>
+            <dv-loading-button
+                type="button"
+                [buttonDisabled]="formularNotEditable()"
+                (buttonClick)="onAbschliessen()">
+                <span translate>ABSCHLIESSEN</span>
+            </dv-loading-button>
         </div>
 
     </form>
