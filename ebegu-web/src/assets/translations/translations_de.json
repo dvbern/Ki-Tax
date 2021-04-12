@@ -2356,6 +2356,7 @@
     "FERIENBETREUUNG_DAVON_BETREUUNGSTAGE_KINDER_ANDERER_GEMEINDEN_BERECHNUNG": "davon Betreuungstage von Kindern aus anderen Gemeinden",
     "FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER": "Anzahl betreute Kinder",
     "FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER_HINT": "Anzahl Kinder, die im Schuljahr an mindestens einem Angebot teilgenommen haben (jedes Kind nur einmal zählen).",
+    "FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER_SONDERSCHUELER": "- davon Sonderschülerinnen und Sonderschüler",
     "FERIENBETREUUNG_DAVON_KINDER_IM_1_ZYKLUS": "    - davon Kinder im 1. Zyklus",
     "FERIENBETREUUNG_DAVON_KINDER_IM_2_ZYKLUS": "    - davon Kinder im 2. Zyklus",
     "FERIENBETREUUNG_DAVON_KINDER_IM_3_ZYKLUS": "    - davon Kinder im 3. Zyklus",

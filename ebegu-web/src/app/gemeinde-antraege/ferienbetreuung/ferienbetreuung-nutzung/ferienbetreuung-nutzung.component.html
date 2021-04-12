@@ -182,7 +182,7 @@
             <label for="anzahl_betreute_kinder_sonderschueler_id"
                    class="padding-left-20"
                    [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinderSonderschueler').errors}">
-                {{'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER' | translate }}
+                {{'FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER_SONDERSCHUELER' | translate }}
             </label>
             <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
@@ -202,7 +202,7 @@
             <label for="anzahlBetreuteKinder1Zyklus_id"
                    class="padding-left-20"
                    [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinder1Zyklus').errors}">
-                {{'FERIENBETREUUNG_DAVON_KINDER_IM_1_ZYKLUS' | translate }}
+                <span [innerHTML]="'FERIENBETREUUNG_DAVON_KINDER_IM_1_ZYKLUS' | translate"></span>
                 <dv-tooltip inputId="anzahlBetreuteKinder1Zyklus_id"
                             [text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate">
                 </dv-tooltip>
@@ -225,7 +225,7 @@
             <label for="anzahlBetreuteKinder2Zyklus_id"
                    class="padding-left-20"
                    [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinder2Zyklus').errors}">
-                {{'FERIENBETREUUNG_DAVON_KINDER_IM_2_ZYKLUS' | translate }}
+                <span [innerHTML]="'FERIENBETREUUNG_DAVON_KINDER_IM_2_ZYKLUS' | translate"></span>
                 <dv-tooltip inputId="anzahlBetreuteKinder2Zyklus_id"
                             [text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate">
                 </dv-tooltip>
@@ -248,7 +248,7 @@
             <label for="anzahlBetreuteKinder3Zyklus_id"
                    class="padding-left-20"
                    [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinder3Zyklus').errors}">
-                {{'FERIENBETREUUNG_DAVON_KINDER_IM_3_ZYKLUS' | translate }}
+                <span [innerHTML]="'FERIENBETREUUNG_DAVON_KINDER_IM_3_ZYKLUS' | translate"></span>
                 <dv-tooltip inputId="anzahlBetreuteKinder3Zyklus_id"
                             [text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate">
                 </dv-tooltip>
