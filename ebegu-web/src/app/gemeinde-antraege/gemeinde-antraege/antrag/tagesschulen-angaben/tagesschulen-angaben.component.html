@@ -34,46 +34,51 @@
 
     <form *ngIf="form" [formGroup]="form" class="tagesschule-angaben-wrapper" (ngSubmit)="onFormSubmit()">
 
-        <h3 translate class="uppercase">ALLGEMEINE_ANGABEN</h3>
+        <div class="max-width-container-750">
 
-        <dv-input-container-x>
-            <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('isLehrbetrieb').errors}"
-                   id="isLehrbetrieb-radio-group">
-                {{'LATS_IST_LEHRBETRIEB' | translate:{periode: gesuchsPeriode?.gesuchsperiodeString} }}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <dv-radio-container-x>
+            <h3 translate class="uppercase">ALLGEMEINE_ANGABEN</h3>
 
-                <mat-radio-group
-                    aria-labelledby="isLehrbetrieb-radio-group"
-                    class=""
-                    name="isLehrbetrieb"
-                    horizontal
-                    [disabled]="form.get('isLehrbetrieb').disabled"
-                    formControlName="isLehrbetrieb">
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-                <dv-bisher-x
-                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.isLehrbetrieb"
-                    [korrektur]="form.get('isLehrbetrieb').value"
-                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
-                </dv-bisher-x>
-            </dv-radio-container-x>
-        </dv-input-container-x>
+            <dv-input-container-x>
+                <label required
+                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('isLehrbetrieb').errors}"
+                       id="isLehrbetrieb-radio-group">
+                    {{'LATS_IST_LEHRBETRIEB' | translate:{periode: gesuchsPeriode?.gesuchsperiodeString} }}
+                </label>
+                <dv-radio-container-x>
+
+                    <mat-radio-group
+                        aria-labelledby="isLehrbetrieb-radio-group"
+                        class=""
+                        name="isLehrbetrieb"
+                        horizontal
+                        [disabled]="form.get('isLehrbetrieb').disabled"
+                        formControlName="isLehrbetrieb">
+                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+                    <dv-bisher-x
+                        [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.isLehrbetrieb"
+                        [korrektur]="form.get('isLehrbetrieb').value"
+                        [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
+                    </dv-bisher-x>
+                </dv-radio-container-x>
+            </dv-input-container-x>
+
+        </div>
 
         <mat-divider></mat-divider>
 
-        <h3 class="uppercase">{{'LATS_QUANTITATIVE_ANGABEN' | translate}}</h3>
+        <div class="max-width-container-750">
 
-        <dv-input-container-x>
+            <h3 class="uppercase">{{'LATS_QUANTITATIVE_ANGABEN' | translate}}</h3>
+
+            <dv-input-container-x>
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinder').errors}">
                 {{'LATS_ANZAHL_EINGESCHRIEBENE_KINDER' | translate: {datum: stichtag | async} }}
                 <dv-tooltip [text]="'LATS_ANZAHL_EINGESCHRIEBENE_KINDER_INFO' | translate"></dv-tooltip>
             </label>
-            <div class="flex-whitespace-item"></div>
+
             <mat-form-field floatLabel="always">
                 <mat-label translate></mat-label>
                 <input matInput
@@ -94,61 +99,64 @@
             </mat-form-field>
         </dv-input-container-x>
 
-        <dv-input-container-x>
-            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderKindergarten').errors}">
-                {{'LATS_DAVON_KINDERGARTEN' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
-                <input matInput
-                       formControlName="anzahlEingeschriebeneKinderKindergarten"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderKindergarten').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="form.get('anzahlEingeschriebeneKinderKindergarten').errors?.isNotPositiveInteger"
-                           translate>ERROR_POSITIVE_NUMBER
-                </mat-error>
-                <dv-bisher-x
-                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderKindergarten"
-                    [korrektur]="form.get('anzahlEingeschriebeneKinderKindergarten').value"
-                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
-                </dv-bisher-x>
-            </mat-form-field>
-        </dv-input-container-x>
+                <dv-input-container-x>
+                    <label
+                        [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderKindergarten').errors}">
+                        {{'LATS_DAVON_KINDERGARTEN' | translate}}
+                    </label>
+                    <mat-form-field floatLabel="always">
+                        <mat-label translate></mat-label>
+                        <input matInput
+                               formControlName="anzahlEingeschriebeneKinderKindergarten"
+                               class="form-control dv-input"/>
+                        <mat-error
+                            *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderKindergarten').errors?.required"
+                            translate>ERROR_REQUIRED
+                        </mat-error>
+                        <mat-error
+                            *ngIf="form.get('anzahlEingeschriebeneKinderKindergarten').errors?.isNotPositiveInteger"
+                            translate>ERROR_POSITIVE_NUMBER
+                        </mat-error>
+                        <dv-bisher-x
+                            [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderKindergarten"
+                            [korrektur]="form.get('anzahlEingeschriebeneKinderKindergarten').value"
+                            [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
 
-        <dv-input-container-x>
-            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderPrimarstufe').errors}">
-                {{'LATS_DAVON_PRIMARSTUFE' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
-                <input matInput
-                       formControlName="anzahlEingeschriebeneKinderPrimarstufe"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderPrimarstufe').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="form.get('anzahlEingeschriebeneKinderPrimarstufe').errors?.isNotPositiveInteger"
-                           translate>ERROR_POSITIVE_NUMBER
-                </mat-error>
-                <dv-bisher-x
-                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderPrimarstufe"
-                    [korrektur]="form.get('anzahlEingeschriebeneKinderPrimarstufe').value"
-                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
-                </dv-bisher-x>
-            </mat-form-field>
-        </dv-input-container-x>
+                <dv-input-container-x>
+                    <label
+                        [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderPrimarstufe').errors}">
+                        {{'LATS_DAVON_PRIMARSTUFE' | translate}}
+                    </label>
+                    <mat-form-field floatLabel="always">
+                        <mat-label translate></mat-label>
+                        <input matInput
+                               formControlName="anzahlEingeschriebeneKinderPrimarstufe"
+                               class="form-control dv-input"/>
+                        <mat-error
+                            *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderPrimarstufe').errors?.required"
+                            translate>ERROR_REQUIRED
+                        </mat-error>
+                        <mat-error
+                            *ngIf="form.get('anzahlEingeschriebeneKinderPrimarstufe').errors?.isNotPositiveInteger"
+                            translate>ERROR_POSITIVE_NUMBER
+                        </mat-error>
+                        <dv-bisher-x
+                            [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderPrimarstufe"
+                            [korrektur]="form.get('anzahlEingeschriebeneKinderPrimarstufe').value"
+                            [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
 
         <dv-input-container-x>
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderSekundarstufe').errors}">
                 {{'LATS_DAVON_SEKUNDARSTUFE' | translate}}
             </label>
-            <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
                 <mat-label translate></mat-label>
                 <input matInput
@@ -176,35 +184,39 @@
             </span>
         </div>
 
-        <dv-input-container-x>
-            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').errors}">
-                {{'LATS_ANZAHL_KINDER_BESONDERE_ANFORDERUNGEN' | translate}}
-                <dv-tooltip [text]="'LATS_ANZAHL_KINDER_BESONDERE_ANFORDERUNGEN_INFO' | translate"></dv-tooltip>
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
-                <input matInput
-                       formControlName="anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').errors?.isNotPositiveInteger"
-                           translate>ERROR_POSITIVE_NUMBER
-                </mat-error>
-                <dv-bisher-x
-                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen"
-                    [korrektur]="form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').value"
-                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
-                </dv-bisher-x>
-            </mat-form-field>
-        </dv-input-container-x>
+            <dv-input-container-x>
+                <label
+                    [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').errors}">
+                    {{'LATS_ANZAHL_KINDER_BESONDERE_ANFORDERUNGEN' | translate}}
+                    <dv-tooltip [text]="'LATS_ANZAHL_KINDER_BESONDERE_ANFORDERUNGEN_INFO' | translate"></dv-tooltip>
+                </label>
+                <mat-form-field floatLabel="always">
+                    <mat-label translate></mat-label>
+                    <input matInput
+                           formControlName="anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen"
+                           class="form-control dv-input"/>
+                    <mat-error
+                        *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').errors?.required"
+                        translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error
+                        *ngIf="form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').errors?.isNotPositiveInteger"
+                        translate>ERROR_POSITIVE_NUMBER
+                    </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen"
+                        [korrektur]="form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').value"
+                        [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
+                    </dv-bisher-x>
+                </mat-form-field>
+            </dv-input-container-x>
 
         <mat-divider class="margin-bottom-20"></mat-divider>
 
-        <dv-input-container-x>
+        <div class="max-width-container-750">
+
+                <dv-input-container-x>
             <label>{{'LATS_IN_BETREUUNG_EINLEITUNG' | translate:{datum: stichtag | async} }}</label>
         </dv-input-container-x>
 
@@ -212,7 +224,6 @@
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagFruehbetreuung').errors}">
                 {{'LATS_IN_FRUEH_BETREUUNG' | translate}}
             </label>
-            <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
                 <mat-label translate></mat-label>
                 <input matInput
@@ -237,7 +248,7 @@
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagMittag').errors}">
                 {{'LATS_ANZAHL_IN_MITTAGSBETREUUNG' | translate}}
             </label>
-            <div class="flex-whitespace-item"></div>
+
             <mat-form-field floatLabel="always">
                 <mat-label translate></mat-label>
                 <input matInput
@@ -262,7 +273,7 @@
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag1').errors}">
                 {{'LATS_ANZAHL_NACHMITTAG_1' | translate}}
             </label>
-            <div class="flex-whitespace-item"></div>
+
             <mat-form-field floatLabel="always">
                 <mat-label translate></mat-label>
                 <input matInput
@@ -287,7 +298,7 @@
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag2').errors}">
                 {{'LATS_ANZAHL_NACHMITTAG_2' | translate}}
             </label>
-            <div class="flex-whitespace-item"></div>
+
             <mat-form-field floatLabel="always">
                 <mat-label translate></mat-label>
                 <input matInput
@@ -308,192 +319,201 @@
             </mat-form-field>
         </dv-input-container-x>
 
-        <dv-input-container-x>
-            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').errors}">
-                {{'LATS_BETREUUNGSSTUNDEN_EINSCHLIESSLICH_BESONDERE_BEDUERFNISSE' | translate:{schuljahr: gesuchsPeriode?.gesuchsperiodeString} }}
-                <dv-tooltip [text]="'LATS_BETREUUNGSSTUNDEN_EINSCHLIESSLICH_BESONDERE_BEDUERFNISSE_INFO' | translate:{year: gemeindeAntragContainer?.gesuchsperiode?.gesuchsperiodeString}"></dv-tooltip>
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
-                <input matInput
-                       formControlName="betreuungsstundenEinschliesslichBesondereBeduerfnisse"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="formFreigebenTriggered && form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').errors?.isNotPositiveInteger"
-                           translate>ERROR_POSITIVE_NUMBER
-                </mat-error>
-                <dv-bisher-x
-                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.betreuungsstundenEinschliesslichBesondereBeduerfnisse"
-                    [korrektur]="form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').value"
-                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
-                </dv-bisher-x>
-            </mat-form-field>
-        </dv-input-container-x>
+                <dv-input-container-x>
+                    <label
+                        [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').errors}">
+                        {{'LATS_BETREUUNGSSTUNDEN_EINSCHLIESSLICH_BESONDERE_BEDUERFNISSE' | translate:{schuljahr: gesuchsPeriode?.gesuchsperiodeString} }}
+                        <dv-tooltip
+                            [text]="'LATS_BETREUUNGSSTUNDEN_EINSCHLIESSLICH_BESONDERE_BEDUERFNISSE_INFO' | translate:{year: gemeindeAntragContainer?.gesuchsperiode?.gesuchsperiodeString}"></dv-tooltip>
+                    </label>
+                    <mat-form-field floatLabel="always">
+                        <mat-label translate></mat-label>
+                        <input matInput
+                               formControlName="betreuungsstundenEinschliesslichBesondereBeduerfnisse"
+                               class="form-control dv-input"/>
+                        <mat-error
+                            *ngIf="formFreigebenTriggered && form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').errors?.required"
+                            translate>ERROR_REQUIRED
+                        </mat-error>
+                        <mat-error
+                            *ngIf="form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').errors?.isNotPositiveInteger"
+                            translate>ERROR_POSITIVE_NUMBER
+                        </mat-error>
+                        <dv-bisher-x
+                            [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.betreuungsstundenEinschliesslichBesondereBeduerfnisse"
+                            [korrektur]="form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').value"
+                            [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
+
+            </div>
+
+        </div>
 
         <mat-divider></mat-divider>
 
-        <h3 translate class="uppercase">QUALITATIVE_VORGABEN_TAGESSCHULVERORDNUNG</h3>
+        <div class="max-width-container-750">
 
-        <dv-input-container-x>
-            <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('schuleAufBasisOrganisatorischesKonzept').errors}"
-                   id="schuleAufBasisOrganisatorischesKonzept-radio-group">
-                {{'LATS_AUF_BASIS_ORG_KONZEPT' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <dv-radio-container-x>
+            <h3 translate class="uppercase">QUALITATIVE_VORGABEN_TAGESSCHULVERORDNUNG</h3>
 
-                <mat-radio-group
-                    aria-labelledby="schuleAufBasisOrganisatorischesKonzept-radio-group"
-                    class=""
-                    name="schuleAufBasisOrganisatorischesKonzept"
-                    horizontal
-                    [disabled]="form.get('schuleAufBasisOrganisatorischesKonzept').disabled"
-                    formControlName="schuleAufBasisOrganisatorischesKonzept">
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-                <dv-bisher-x
-                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.schuleAufBasisOrganisatorischesKonzept"
-                    [korrektur]="form.get('schuleAufBasisOrganisatorischesKonzept').value"
-                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
-                </dv-bisher-x>
-            </dv-radio-container-x>
-        </dv-input-container-x>
+            <dv-input-container-x>
+                <label required
+                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('schuleAufBasisOrganisatorischesKonzept').errors}"
+                       id="schuleAufBasisOrganisatorischesKonzept-radio-group">
+                    {{'LATS_AUF_BASIS_ORG_KONZEPT' | translate}}
+                </label>
+                <dv-radio-container-x>
 
-        <dv-input-container-x>
-            <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('schuleAufBasisPaedagogischesKonzept').errors}"
-                   id="schuleAufBasisPaedagogischesKonzept-radio-group">
-                {{'LATS_AUF_BASIS_PAEDAGOGISCH_KONZEPT' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <dv-radio-container-x>
+                    <mat-radio-group
+                        aria-labelledby="schuleAufBasisOrganisatorischesKonzept-radio-group"
+                        class=""
+                        name="schuleAufBasisOrganisatorischesKonzept"
+                        horizontal
+                        [disabled]="form.get('schuleAufBasisOrganisatorischesKonzept').disabled"
+                        formControlName="schuleAufBasisOrganisatorischesKonzept">
+                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+                    <dv-bisher-x
+                        [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.schuleAufBasisOrganisatorischesKonzept"
+                        [korrektur]="form.get('schuleAufBasisOrganisatorischesKonzept').value"
+                        [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
+                    </dv-bisher-x>
+                </dv-radio-container-x>
+            </dv-input-container-x>
 
-                <mat-radio-group
-                    aria-labelledby="schuleAufBasisPaedagogischesKonzept-radio-group"
-                    class=""
-                    name="schuleAufBasisPaedagogischesKonzept"
-                    horizontal
-                    [disabled]="form.get('schuleAufBasisPaedagogischesKonzept').disabled"
-                    formControlName="schuleAufBasisPaedagogischesKonzept">
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-                <dv-bisher-x
-                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.schuleAufBasisPaedagogischesKonzept"
-                    [korrektur]="form.get('schuleAufBasisPaedagogischesKonzept').value"
-                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
-                </dv-bisher-x>
-            </dv-radio-container-x>
-        </dv-input-container-x>
+            <dv-input-container-x>
+                <label required
+                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('schuleAufBasisPaedagogischesKonzept').errors}"
+                       id="schuleAufBasisPaedagogischesKonzept-radio-group">
+                    {{'LATS_AUF_BASIS_PAEDAGOGISCH_KONZEPT' | translate}}
+                </label>
+                <dv-radio-container-x>
 
-        <dv-input-container-x>
-            <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('raeumlicheVoraussetzungenEingehalten').errors}"
-                   id="raeumlicheVoraussetzungenEingehalten-radio-group">
-                {{'LATS_RAEULICHE_VORAUSSETZUNGEN_EINGEHALTEN' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <dv-radio-container-x>
+                    <mat-radio-group
+                        aria-labelledby="schuleAufBasisPaedagogischesKonzept-radio-group"
+                        class=""
+                        name="schuleAufBasisPaedagogischesKonzept"
+                        horizontal
+                        [disabled]="form.get('schuleAufBasisPaedagogischesKonzept').disabled"
+                        formControlName="schuleAufBasisPaedagogischesKonzept">
+                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+                    <dv-bisher-x
+                        [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.schuleAufBasisPaedagogischesKonzept"
+                        [korrektur]="form.get('schuleAufBasisPaedagogischesKonzept').value"
+                        [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
+                    </dv-bisher-x>
+                </dv-radio-container-x>
+            </dv-input-container-x>
 
-                <mat-radio-group
-                    aria-labelledby="raeumlicheVoraussetzungenEingehalten-radio-group"
-                    class=""
-                    name="raeumlicheVoraussetzungenEingehalten"
-                    horizontal
-                    [disabled]="form.get('raeumlicheVoraussetzungenEingehalten').disabled"
-                    formControlName="raeumlicheVoraussetzungenEingehalten">
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-                <dv-bisher-x
-                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.raeumlicheVoraussetzungenEingehalten"
-                    [korrektur]="form.get('raeumlicheVoraussetzungenEingehalten').value"
-                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
-                </dv-bisher-x>
-            </dv-radio-container-x>
-        </dv-input-container-x>
+            <dv-input-container-x>
+                <label required
+                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('raeumlicheVoraussetzungenEingehalten').errors}"
+                       id="raeumlicheVoraussetzungenEingehalten-radio-group">
+                    {{'LATS_RAEULICHE_VORAUSSETZUNGEN_EINGEHALTEN' | translate}}
+                </label>
+                <dv-radio-container-x>
 
-        <dv-input-container-x>
-            <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('betreuungsverhaeltnisEingehalten').errors}"
-                   id="betreuungsverhaeltnisEingehalten-radio-group">
-                {{'LATS_BETREUUNGSVERHAELTNIS_EINGEHALTEN' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <dv-radio-container-x>
+                    <mat-radio-group
+                        aria-labelledby="raeumlicheVoraussetzungenEingehalten-radio-group"
+                        class=""
+                        name="raeumlicheVoraussetzungenEingehalten"
+                        horizontal
+                        [disabled]="form.get('raeumlicheVoraussetzungenEingehalten').disabled"
+                        formControlName="raeumlicheVoraussetzungenEingehalten">
+                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+                    <dv-bisher-x
+                        [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.raeumlicheVoraussetzungenEingehalten"
+                        [korrektur]="form.get('raeumlicheVoraussetzungenEingehalten').value"
+                        [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
+                    </dv-bisher-x>
+                </dv-radio-container-x>
+            </dv-input-container-x>
 
-                <mat-radio-group
-                    aria-labelledby="betreuungsverhaeltnisEingehalten-radio-group"
-                    class=""
-                    name="betreuungsverhaeltnisEingehalten"
-                    horizontal
-                    [disabled]="form.get('betreuungsverhaeltnisEingehalten').disabled"
-                    formControlName="betreuungsverhaeltnisEingehalten">
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-                <dv-bisher-x
-                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.betreuungsverhaeltnisEingehalten"
-                    [korrektur]="form.get('betreuungsverhaeltnisEingehalten').value"
-                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
-                </dv-bisher-x>
-            </dv-radio-container-x>
-        </dv-input-container-x>
+            <dv-input-container-x>
+                <label required
+                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('betreuungsverhaeltnisEingehalten').errors}"
+                       id="betreuungsverhaeltnisEingehalten-radio-group">
+                    {{'LATS_BETREUUNGSVERHAELTNIS_EINGEHALTEN' | translate}}
+                </label>
+                <dv-radio-container-x>
 
-        <dv-input-container-x>
-            <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('ernaehrungsGrundsaetzeEingehalten').errors}"
-                   id="ernaehrungsGrundsaetzeEingehalten-radio-group">
-                {{'LATS_ERNAEHRUNGS_GRUNDSAETZE_EINGEHALTEN' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <dv-radio-container-x>
+                    <mat-radio-group
+                        aria-labelledby="betreuungsverhaeltnisEingehalten-radio-group"
+                        class=""
+                        name="betreuungsverhaeltnisEingehalten"
+                        horizontal
+                        [disabled]="form.get('betreuungsverhaeltnisEingehalten').disabled"
+                        formControlName="betreuungsverhaeltnisEingehalten">
+                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+                    <dv-bisher-x
+                        [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.betreuungsverhaeltnisEingehalten"
+                        [korrektur]="form.get('betreuungsverhaeltnisEingehalten').value"
+                        [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
+                    </dv-bisher-x>
+                </dv-radio-container-x>
+            </dv-input-container-x>
 
-                <mat-radio-group
-                    aria-labelledby="ernaehrungsGrundsaetzeEingehalten-radio-group"
-                    class=""
-                    name="ernaehrungsGrundsaetzeEingehalten"
-                    horizontal
-                    [disabled]="form.get('ernaehrungsGrundsaetzeEingehalten').disabled"
-                    formControlName="ernaehrungsGrundsaetzeEingehalten">
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-                <dv-bisher-x
-                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.ernaehrungsGrundsaetzeEingehalten"
-                    [korrektur]="form.get('ernaehrungsGrundsaetzeEingehalten').value"
-                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
-                </dv-bisher-x>
-            </dv-radio-container-x>
-        </dv-input-container-x>
+            <dv-input-container-x>
+                <label required
+                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('ernaehrungsGrundsaetzeEingehalten').errors}"
+                       id="ernaehrungsGrundsaetzeEingehalten-radio-group">
+                    {{'LATS_ERNAEHRUNGS_GRUNDSAETZE_EINGEHALTEN' | translate}}
+                </label>
+                <dv-radio-container-x>
+
+                    <mat-radio-group
+                        aria-labelledby="ernaehrungsGrundsaetzeEingehalten-radio-group"
+                        class=""
+                        name="ernaehrungsGrundsaetzeEingehalten"
+                        horizontal
+                        [disabled]="form.get('ernaehrungsGrundsaetzeEingehalten').disabled"
+                        formControlName="ernaehrungsGrundsaetzeEingehalten">
+                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+                    <dv-bisher-x
+                        [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.ernaehrungsGrundsaetzeEingehalten"
+                        [korrektur]="form.get('ernaehrungsGrundsaetzeEingehalten').value"
+                        [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
+                    </dv-bisher-x>
+                </dv-radio-container-x>
+            </dv-input-container-x>
+
+        </div>
         <mat-divider></mat-divider>
+        <div class="max-width-container-750">
 
-        <h3 class="uppercase">{{'LATS_ANGABEN_GEMEINDE_BEMERKUNGEN' | translate}}</h3>
+            <h3 class="uppercase">{{'LATS_ANGABEN_GEMEINDE_BEMERKUNGEN' | translate}}</h3>
 
-        <dv-input-container-x>
-            <mat-form-field floatLabel="always" class="no-margin-left">
-                <textarea matInput
-                          formControlName="bemerkungen"
-                          class="form-control dv-input"></textarea>
-                <dv-bisher-x
-                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.bemerkungen"
-                    [korrektur]="form.get('bemerkungen').value"
-                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                </dv-bisher-x>
-            </mat-form-field>
-        </dv-input-container-x>
+            <dv-input-container-x [verticalAlign]="true">
+                <mat-form-field floatLabel="always" class="no-margin-left">
+                    <textarea matInput
+                              formControlName="bemerkungen"
+                              class="form-control dv-input"></textarea>
+                    <dv-bisher-x
+                        [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.bemerkungen"
+                        [korrektur]="form.get('bemerkungen').value"
+                        [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
+                </mat-form-field>
+            </dv-input-container-x>
+
+        </div>
 
         <div class="actions">
             <dv-loading-button

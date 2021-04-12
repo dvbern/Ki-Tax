@@ -24,46 +24,48 @@
         </div>
     </div>
 
+
     <form *ngIf="form" [formGroup]="form">
 
-        <h3 translate class="uppercase" id="gemeinde-header">
-            {{'GEMEINDE' | translate }}
-            <dv-tooltip inputId="gemeinde-header"
-                        [text]="'FERIENBETREUUNG_STAMMDATEN_GEMEINDE_HINT' | translate">
-            </dv-tooltip>
-        </h3>
+        <div class="max-width-container-750">
 
-        <dv-input-container-x [verticalAlign]="true">
-            <label for="traegerschaft_id">
-                {{'FERIENBETREUUNG_TRAEGERSCHAFT' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <input id="traegerschaft_id"
-                       type="text"
-                       matInput
-                       formControlName="traegerschaft"
-                       class="form-control dv-input"/>
-            </mat-form-field>
-        </dv-input-container-x>
+            <h3 translate class="uppercase" id="gemeinde-header">
+                {{'GEMEINDE' | translate }}
+                <dv-tooltip inputId="gemeinde-header"
+                            [text]="'FERIENBETREUUNG_STAMMDATEN_GEMEINDE_HINT' | translate">
+                </dv-tooltip>
+            </h3>
 
-        <!--        am angebot beteiligte gemeinden-->
-        <dv-input-container-x [verticalAlign]="true">
-            <label for="am-angebot-beteiligte-gemeinden"
-                   translate>FERIENBETREUUNG_AM_ANGEBOT_BETEILIGTE_GEMEINDEN</label>
-            <mat-select *ngIf="bfsGemeinden?.length"
-                        class="form-control"
-                        formControlName="amAngebotBeteiligteGemeinden"
-                        name="amAngebotBeteiligteGemeinden"
-                        id="am-angebot-beteiligte-gemeinden"
-                        [disabled]="form.get('amAngebotBeteiligteGemeinden').disabled"
-                        [multiple]="true">
-                <mat-option *ngFor="let gemeinde of bfsGemeinden"
-                            [value]="gemeinde.name">
-                    {{gemeinde.name}}
-                </mat-option>
-            </mat-select>
-        </dv-input-container-x>
+            <dv-input-container-x [verticalAlign]="true">
+                <label for="traegerschaft_id">
+                    {{'FERIENBETREUUNG_TRAEGERSCHAFT' | translate}}
+                </label>
+                <mat-form-field floatLabel="always">
+                    <input id="traegerschaft_id"
+                           type="text"
+                           matInput
+                           formControlName="traegerschaft"
+                           class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <!--        am angebot beteiligte gemeinden-->
+            <dv-input-container-x [verticalAlign]="true">
+                <label for="am-angebot-beteiligte-gemeinden"
+                       translate>FERIENBETREUUNG_AM_ANGEBOT_BETEILIGTE_GEMEINDEN</label>
+                <mat-select *ngIf="bfsGemeinden?.length"
+                            class="form-control"
+                            formControlName="amAngebotBeteiligteGemeinden"
+                            name="amAngebotBeteiligteGemeinden"
+                            id="am-angebot-beteiligte-gemeinden"
+                            [disabled]="form.get('amAngebotBeteiligteGemeinden').disabled"
+                            [multiple]="true">
+                    <mat-option *ngFor="let gemeinde of bfsGemeinden"
+                                [value]="gemeinde.name">
+                        {{gemeinde.name}}
+                    </mat-option>
+                </mat-select>
+            </dv-input-container-x>
 
 
         <dv-input-container-x [verticalAlign]="true">
@@ -80,301 +82,74 @@
             </mat-form-field>
         </dv-input-container-x>
 
+        </div>
+
         <mat-divider></mat-divider>
 
-        <h3 translate class="uppercase margin-bottom-20" id="adresse-header">
+        <div class=max-width-container-750>
+
+            <h3 translate class="uppercase margin-bottom-20" id="adresse-header">
             <span>
                 {{'FERIENBETREUUNG_ADRESSE_GEMEINDE' | translate}}
                 <dv-tooltip inputId="adresse-header"
                             [text]="'FERIENBETREUUNG_ADRESSE_GEMEINDE_HINT' | translate">
                 </dv-tooltip>
             </span>
-            <span class="flex-whitespace-item"></span>
-            <button type="button"
-                    (click)="fillAdress()"
-                    class="dv-btn cancel-button">
-                {{ 'FERIENBETREUUNG_AUS_GEMEINDESTAMMDATEN_UEBERNEHMEN' | translate }}
-            </button>
-        </h3>
+                <span class="flex-whitespace-item"></span>
+                <button type="button"
+                        (click)="fillAdress()"
+                        class="dv-btn cancel-button">
+                    {{ 'FERIENBETREUUNG_AUS_GEMEINDESTAMMDATEN_UEBERNEHMEN' | translate }}
+                </button>
+            </h3>
 
-        <div formGroupName="stammdatenAdresse">
-            <dv-input-container-x [verticalAlign]="true">
-                <label for="stammdaten_adresse_anschrift_id"
-                       required
-                       [ngClass]="{'label-required-error': formValidationTriggered && form && form.get('stammdatenAdresse').get('organisation').errors}">
-                    {{'ADRESSE_ANSCHRIFT' | translate}}
-                </label>
-                <div class="flex-whitespace-item"></div>
-                <mat-form-field floatLabel="always">
-                    <input type="text"
-                           id="stammdaten_adresse_anschrift_id"
-                           matInput
-                           formControlName="organisation"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="formValidationTriggered && form && form.get('stammdatenAdresse').get('organisation').errors?.required"
-                               translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
-                    </mat-error>
-                </mat-form-field>
-            </dv-input-container-x>
-
-            <div class="row">
-                <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
-                    <label for="stammdaten_adresse_strasse_id"
+            <div formGroupName="stammdatenAdresse">
+                <dv-input-container-x [verticalAlign]="true">
+                    <label for="stammdaten_adresse_anschrift_id"
                            required
-                           [ngClass]="{'label-required-error': formValidationTriggered && form && form.get('stammdatenAdresse').get('strasse').errors}">
-                        {{'ADRESSE_STRASSE' | translate}}
+                           [ngClass]="{'label-required-error': formValidationTriggered && form && form.get('stammdatenAdresse').get('organisation').errors}">
+                        {{'ADRESSE_ANSCHRIFT' | translate}}
                     </label>
-                    <div class="flex-whitespace-item"></div>
                     <mat-form-field floatLabel="always">
                         <input type="text"
-                               id="stammdaten_adresse_strasse_id"
+                               id="stammdaten_adresse_anschrift_id"
                                matInput
-                               formControlName="strasse"
+                               formControlName="organisation"
                                class="form-control dv-input"/>
-                        <mat-error *ngIf="formValidationTriggered && form && form.get('stammdatenAdresse').get('strasse').errors?.required"
-                                   translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
+                        <mat-error
+                            *ngIf="formValidationTriggered && form && form.get('stammdatenAdresse').get('organisation').errors?.required"
+                            translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
                         </mat-error>
                     </mat-form-field>
                 </dv-input-container-x>
 
-                <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
-                    <label for="stammdaten_adresse_nr_id">
-                        {{'FERIENBETREUUNG_ADRESSE_NR' | translate}}
-                    </label>
-                    <div class="flex-whitespace-item"></div>
-                    <mat-form-field floatLabel="always">
-                        <input type="text"
-                               id="stammdaten_adresse_nr_id"
-                               matInput
-                               formControlName="hausnummer"
-                               class="form-control dv-input"/>
-                    </mat-form-field>
-                </dv-input-container-x>
-            </div>
-
-            <div class="row">
-                <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
-                    <label for="stammdaten_adresse_plz_id"
-                           required
-                           [ngClass]="{'label-required-error': formValidationTriggered && form?.get('stammdatenAdresse').get('plz').errors}">
-                        {{'ADRESSE_PLZ' | translate}}
-                    </label>
-                    <div class="flex-whitespace-item"></div>
-                    <mat-form-field floatLabel="always">
-                        <input type="text"
-                               id="stammdaten_adresse_plz_id"
-                               matInput
-                               formControlName="plz"
-                               class="form-control dv-input"/>
-                        <mat-error *ngIf="formValidationTriggered && form?.get('stammdatenAdresse').get('plz').errors?.required"
-                                   translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
-                        </mat-error>
-                    </mat-form-field>
-                </dv-input-container-x>
-
-                <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
-                    <label for="stammdaten_adresse_ort_id"
-                           required
-                           [ngClass]="{'label-required-error':formValidationTriggered && form?.get('stammdatenAdresse').get('ort').errors}">
-                        {{'ADRESSE_ORT' | translate}}
-                    </label>
-                    <div class="flex-whitespace-item"></div>
-                    <mat-form-field floatLabel="always">
-                        <input type="text"
-                               id="stammdaten_adresse_ort_id"
-                               matInput
-                               formControlName="ort"
-                               class="form-control dv-input"/>
-                        <mat-error *ngIf="formValidationTriggered && form?.get('stammdatenAdresse').get('ort').errors?.required"
-                                   translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
-                        </mat-error>
-                    </mat-form-field>
-                </dv-input-container-x>
-            </div>
-        </div>
-
-        <mat-divider></mat-divider>
-
-        <h3 translate class="uppercase margin-bottom-20" id="kontaktperson-header">
-            <span>
-                {{'FERIENBETREUUNG_KONTAKTPERSON' | translate}}
-                <dv-tooltip inputId="kontaktperson-header"
-                            [text]="'FERIENBETREUUNG_KONTAKTPERSON_HINT' | translate">
-                </dv-tooltip>
-            </span>
-            <span class="flex-whitespace-item"></span>
-            <button type="button"
-                    (click)="fillBenutzer()"
-                    class="dv-btn cancel-button">
-                {{ 'FERIENBETREUUNG_MEINE_ANGABEN_UEBERNEHMEN' | translate }}
-            </button>
-        </h3>
-
-        <div class="row">
-
-            <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
-                <label for="stammdaten_kontakt_vorname_id"
-                       required
-                       [ngClass]="{'label-required-error': formValidationTriggered && form?.get('stammdatenKontaktpersonVorname').errors}">
-                    {{'VORNAME' | translate}}
-                </label>
-                <div class="flex-whitespace-item"></div>
-                <mat-form-field floatLabel="always">
-                    <input type="text"
-                           id="stammdaten_kontakt_vorname_id"
-                           matInput
-                           formControlName="stammdatenKontaktpersonVorname"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="formValidationTriggered && form?.get('stammdatenKontaktpersonVorname').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                </mat-form-field>
-            </dv-input-container-x>
-
-            <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
-                <label for="stammdaten_kontakt_nachname_id"
-                       required
-                       [ngClass]="{'label-required-error':formValidationTriggered && form?.get('stammdatenKontaktpersonNachname').errors}">
-                    {{'NAME' | translate}}
-                </label>
-                <div class="flex-whitespace-item"></div>
-                <mat-form-field floatLabel="always">
-                    <input type="text"
-                           id="stammdaten_kontakt_nachname_id"
-                           matInput
-                           formControlName="stammdatenKontaktpersonNachname"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="formValidationTriggered && form?.get('stammdatenKontaktpersonNachname').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                </mat-form-field>
-            </dv-input-container-x>
-        </div>
-
-        <dv-input-container-x [verticalAlign]="true">
-            <label for="stammdaten_kontakt_funktion_id">
-                {{'FERIENBETREUUNG_FUNKTION' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <input type="text"
-                       id="stammdaten_kontakt_funktion_id"
-                       matInput
-                       formControlName="stammdatenKontaktpersonFunktion"
-                       class="form-control dv-input"/>
-            </mat-form-field>
-        </dv-input-container-x>
-
-        <div class="row">
-
-            <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
-                <label for="stammdaten_kontakt_telefon_id"
-                       required
-                       [ngClass]="{'label-required-error': formValidationTriggered && form?.get('stammdatenKontaktpersonTelefon').errors}">
-                    {{'TELEFON' | translate}}
-                </label>
-                <div class="flex-whitespace-item"></div>
-                <mat-form-field floatLabel="always">
-                    <input type="text"
-                           id="stammdaten_kontakt_telefon_id"
-                           matInput
-                           formControlName="stammdatenKontaktpersonTelefon"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="formValidationTriggered && form?.get('stammdatenKontaktpersonTelefon').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                    <mat-error *ngIf="formValidationTriggered && form?.get('stammdatenKontaktpersonTelefon').errors?.pattern"
-                               translate>ERROR_PHONE
-                    </mat-error>
-                </mat-form-field>
-            </dv-input-container-x>
-
-            <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
-                <label for="stammdaten_kontakt_email_id"
-                       required
-                       [ngClass]="{'label-required-error': formValidationTriggered && form?.get('stammdatenKontaktpersonEmail').errors}">
-                    {{'EMAIL' | translate}}
-                </label>
-                <div class="flex-whitespace-item"></div>
-                <mat-form-field floatLabel="always">
-                    <input type="text"
-                           id="stammdaten_kontakt_email_id"
-                           matInput
-                           formControlName="stammdatenKontaktpersonEmail"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="formValidationTriggered && form?.get('stammdatenKontaktpersonEmail').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                    <mat-error *ngIf="formValidationTriggered && form?.get('stammdatenKontaktpersonEmail').errors?.pattern"
-                               translate>ERROR_EMAIL
-                    </mat-error>
-                </mat-form-field>
-            </dv-input-container-x>
-        </div>
-
-        <mat-divider></mat-divider>
-
-        <h3 class="uppercase" id="auszahlung-header">
-            {{'AUSZAHLUNG' | translate}}
-            <dv-tooltip inputId="auszahlung-header"
-                        [text]="'FERIENBETREUUNG_AUSZAHLUNG_HINT' | translate">
-            </dv-tooltip>
-        </h3>
-
-        <div formGroupName="auszahlungsdaten">
-
-            <div class="row">
-                <div class="col-xs-12">
-                    <dv-input-container-x [verticalAlign]="true">
-                        <label for="kontoinhaber_id"
-                               required
-                               [ngClass]="{'label-required-error': formValidationTriggered && form?.get('auszahlungsdaten').get('kontoinhaber').errors}">
-                            {{'FERIENBETREUUNG_KONTOINHABER' | translate}}
-                        </label>
-                        <div class="flex-whitespace-item"></div>
-                        <mat-form-field floatLabel="always">
-                            <input type="text"
-                                   id="kontoinhaber_id"
-                                   matInput
-                                   formControlName="kontoinhaber"
-                                   class="form-control dv-input"/>
-                            <mat-error *ngIf="formValidationTriggered && form?.get('auszahlungsdaten').get('kontoinhaber').errors?.required"
-                                       translate>ERROR_AUSZAHLUNGSDATEN_NICHT_VOLLSTAENDING
-                            </mat-error>
-                        </mat-form-field>
-                    </dv-input-container-x>
-                </div>
-            </div>
-
-            <div formGroupName="adresseKontoinhaber">
                 <div class="row">
                     <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
-                        <label for="adresse_kontoinhaber_strasse_id"
+                        <label for="stammdaten_adresse_strasse_id"
                                required
-                               [ngClass]="{'label-required-error': formValidationTriggered && form?.get('auszahlungsdaten').get('adresseKontoinhaber').get('strasse').errors}">
+                               [ngClass]="{'label-required-error': formValidationTriggered && form && form.get('stammdatenAdresse').get('strasse').errors}">
                             {{'ADRESSE_STRASSE' | translate}}
                         </label>
-                        <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text"
-                                   id="adresse_kontoinhaber_strasse_id"
+                                   id="stammdaten_adresse_strasse_id"
                                    matInput
                                    formControlName="strasse"
                                    class="form-control dv-input"/>
-                            <mat-error *ngIf="formValidationTriggered && form?.get('auszahlungsdaten').get('adresseKontoinhaber').get('strasse').errors?.required"
-                                       translate>ERROR_AUSZAHLUNGSDATEN_NICHT_VOLLSTAENDING
+                            <mat-error
+                                *ngIf="formValidationTriggered && form && form.get('stammdatenAdresse').get('strasse').errors?.required"
+                                translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
                             </mat-error>
                         </mat-form-field>
                     </dv-input-container-x>
 
                     <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
-                        <label for="adresse_kontoinhaber_nr_id">
+                        <label for="stammdaten_adresse_nr_id">
                             {{'FERIENBETREUUNG_ADRESSE_NR' | translate}}
                         </label>
-                        <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text"
-                                   id="adresse_kontoinhaber_nr_id"
+                                   id="stammdaten_adresse_nr_id"
                                    matInput
                                    formControlName="hausnummer"
                                    class="form-control dv-input"/>
@@ -384,89 +159,327 @@
 
                 <div class="row">
                     <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
-                        <label for="adresse_kontoinhaber_plz_id"
+                        <label for="stammdaten_adresse_plz_id"
                                required
-                               [ngClass]="{'label-required-error': formValidationTriggered && form?.get('auszahlungsdaten').get('adresseKontoinhaber').get('plz').errors}">
+                               [ngClass]="{'label-required-error': formValidationTriggered && form?.get('stammdatenAdresse').get('plz').errors}">
                             {{'ADRESSE_PLZ' | translate}}
                         </label>
-                        <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text"
-                                   id="adresse_kontoinhaber_plz_id"
+                                   id="stammdaten_adresse_plz_id"
                                    matInput
                                    formControlName="plz"
                                    class="form-control dv-input"/>
-                            <mat-error *ngIf="formValidationTriggered && form?.get('auszahlungsdaten').get('adresseKontoinhaber').get('plz').errors?.required"
-                                       translate>ERROR_REQUIRED
+                            <mat-error
+                                *ngIf="formValidationTriggered && form?.get('stammdatenAdresse').get('plz').errors?.required"
+                                translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
                             </mat-error>
                         </mat-form-field>
                     </dv-input-container-x>
 
                     <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
-                        <label for="adresse_kontoinhaber_ort_id"
+                        <label for="stammdaten_adresse_ort_id"
                                required
-                               [ngClass]="{'label-required-error': formValidationTriggered && form?.get('auszahlungsdaten').get('adresseKontoinhaber').get('ort').errors}">
+                               [ngClass]="{'label-required-error':formValidationTriggered && form?.get('stammdatenAdresse').get('ort').errors}">
                             {{'ADRESSE_ORT' | translate}}
                         </label>
-                        <div class="flex-whitespace-item"></div>
                         <mat-form-field floatLabel="always">
                             <input type="text"
-                                   id="adresse_kontoinhaber_ort_id"
+                                   id="stammdaten_adresse_ort_id"
                                    matInput
                                    formControlName="ort"
                                    class="form-control dv-input"/>
-                            <mat-error *ngIf="formValidationTriggered && form?.get('auszahlungsdaten').get('adresseKontoinhaber').get('ort').errors?.required"
-                                       translate>ERROR_AUSZAHLUNGSDATEN_NICHT_VOLLSTAENDING
+                            <mat-error
+                                *ngIf="formValidationTriggered && form?.get('stammdatenAdresse').get('ort').errors?.required"
+                                translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
                             </mat-error>
                         </mat-form-field>
                     </dv-input-container-x>
                 </div>
             </div>
 
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="max-width-container-750">
+
+            <h3 translate class="uppercase margin-bottom-20" id="kontaktperson-header">
+            <span>
+                {{'FERIENBETREUUNG_KONTAKTPERSON' | translate}}
+                <dv-tooltip inputId="kontaktperson-header"
+                            [text]="'FERIENBETREUUNG_KONTAKTPERSON_HINT' | translate">
+                </dv-tooltip>
+            </span>
+                <span class="flex-whitespace-item"></span>
+                <button type="button"
+                        (click)="fillBenutzer()"
+                        class="dv-btn cancel-button">
+                    {{ 'FERIENBETREUUNG_MEINE_ANGABEN_UEBERNEHMEN' | translate }}
+                </button>
+            </h3>
+
             <div class="row">
-                <div class="col-xs-6">
 
-                    <dv-input-container-x [verticalAlign]="true">
-                        <label for="iban_id"
-                               required
-                               [ngClass]="{'label-required-error': formValidationTriggered && form?.get('auszahlungsdaten').get('iban').errors}">
-                            {{'FERIENBETREUUNG_IBAN' | translate}}
-                        </label>
-                        <div class="flex-whitespace-item"></div>
-                        <mat-form-field floatLabel="always">
-                            <input type="text"
-                                   id="iban_id"
-                                   matInput
-                                   formControlName="iban"
-                                   class="form-control dv-input"/>
-                            <mat-error *ngIf="formValidationTriggered && form?.get('auszahlungsdaten').get('iban').errors?.required"
-                                       translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
-                            </mat-error>
-                            <mat-error *ngIf="form?.get('auszahlungsdaten').get('iban').errors?.iban && form.get('auszahlungsdaten').get('iban').dirty"
-                                       translate>ERROR_IBAN
-                            </mat-error>
-                        </mat-form-field>
-                    </dv-input-container-x>
+                <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+                    <label for="stammdaten_kontakt_vorname_id"
+                           required
+                           [ngClass]="{'label-required-error': formValidationTriggered && form?.get('stammdatenKontaktpersonVorname').errors}">
+                        {{'VORNAME' | translate}}
+                    </label>
+                    <mat-form-field floatLabel="always">
+                        <input type="text"
+                               id="stammdaten_kontakt_vorname_id"
+                               matInput
+                               formControlName="stammdatenKontaktpersonVorname"
+                               class="form-control dv-input"/>
+                        <mat-error
+                            *ngIf="formValidationTriggered && form?.get('stammdatenKontaktpersonVorname').errors?.required"
+                            translate>ERROR_REQUIRED
+                        </mat-error>
+                    </mat-form-field>
+                </dv-input-container-x>
 
+                <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+                    <label for="stammdaten_kontakt_nachname_id"
+                           required
+                           [ngClass]="{'label-required-error':formValidationTriggered && form?.get('stammdatenKontaktpersonNachname').errors}">
+                        {{'NAME' | translate}}
+                    </label>
+                    <mat-form-field floatLabel="always">
+                        <input type="text"
+                               id="stammdaten_kontakt_nachname_id"
+                               matInput
+                               formControlName="stammdatenKontaktpersonNachname"
+                               class="form-control dv-input"/>
+                        <mat-error
+                            *ngIf="formValidationTriggered && form?.get('stammdatenKontaktpersonNachname').errors?.required"
+                            translate>ERROR_REQUIRED
+                        </mat-error>
+                    </mat-form-field>
+                </dv-input-container-x>
+            </div>
+
+            <dv-input-container-x [verticalAlign]="true">
+                <label for="stammdaten_kontakt_funktion_id">
+                    {{'FERIENBETREUUNG_FUNKTION' | translate}}
+                </label>
+                <mat-form-field floatLabel="always">
+                    <input type="text"
+                           id="stammdaten_kontakt_funktion_id"
+                           matInput
+                           formControlName="stammdatenKontaktpersonFunktion"
+                           class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <div class="row">
+
+                <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+                    <label for="stammdaten_kontakt_telefon_id"
+                           required
+                           [ngClass]="{'label-required-error': formValidationTriggered && form?.get('stammdatenKontaktpersonTelefon').errors}">
+                        {{'TELEFON' | translate}}
+                    </label>
+                    <mat-form-field floatLabel="always">
+                        <input type="text"
+                               id="stammdaten_kontakt_telefon_id"
+                               matInput
+                               formControlName="stammdatenKontaktpersonTelefon"
+                               class="form-control dv-input"/>
+                        <mat-error
+                            *ngIf="formValidationTriggered && form?.get('stammdatenKontaktpersonTelefon').errors?.required"
+                            translate>ERROR_REQUIRED
+                        </mat-error>
+                        <mat-error
+                            *ngIf="formValidationTriggered && form?.get('stammdatenKontaktpersonTelefon').errors?.pattern"
+                            translate>ERROR_PHONE
+                        </mat-error>
+                    </mat-form-field>
+                </dv-input-container-x>
+
+                <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+                    <label for="stammdaten_kontakt_email_id"
+                           required
+                           [ngClass]="{'label-required-error': formValidationTriggered && form?.get('stammdatenKontaktpersonEmail').errors}">
+                        {{'EMAIL' | translate}}
+                    </label>
+                    <mat-form-field floatLabel="always">
+                        <input type="text"
+                               id="stammdaten_kontakt_email_id"
+                               matInput
+                               formControlName="stammdatenKontaktpersonEmail"
+                               class="form-control dv-input"/>
+                        <mat-error
+                            *ngIf="formValidationTriggered && form?.get('stammdatenKontaktpersonEmail').errors?.required"
+                            translate>ERROR_REQUIRED
+                        </mat-error>
+                        <mat-error
+                            *ngIf="formValidationTriggered && form?.get('stammdatenKontaktpersonEmail').errors?.pattern"
+                            translate>ERROR_EMAIL
+                        </mat-error>
+                    </mat-form-field>
+                </dv-input-container-x>
+            </div>
+
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="max-width-container-750">
+
+            <h3 class="uppercase" id="auszahlung-header">
+                {{'AUSZAHLUNG' | translate}}
+                <dv-tooltip inputId="auszahlung-header"
+                            [text]="'FERIENBETREUUNG_AUSZAHLUNG_HINT' | translate">
+                </dv-tooltip>
+            </h3>
+
+            <div formGroupName="auszahlungsdaten">
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <dv-input-container-x [verticalAlign]="true">
+                            <label for="kontoinhaber_id"
+                                   required
+                                   [ngClass]="{'label-required-error': formValidationTriggered && form?.get('auszahlungsdaten').get('kontoinhaber').errors}">
+                                {{'FERIENBETREUUNG_KONTOINHABER' | translate}}
+                            </label>
+                            <mat-form-field floatLabel="always">
+                                <input type="text"
+                                       id="kontoinhaber_id"
+                                       matInput
+                                       formControlName="kontoinhaber"
+                                       class="form-control dv-input"/>
+                                <mat-error
+                                    *ngIf="formValidationTriggered && form?.get('auszahlungsdaten').get('kontoinhaber').errors?.required"
+                                    translate>ERROR_AUSZAHLUNGSDATEN_NICHT_VOLLSTAENDING
+                                </mat-error>
+                            </mat-form-field>
+                        </dv-input-container-x>
+                    </div>
                 </div>
-                <div class="col-xs-6">
-                    <dv-input-container-x [verticalAlign]="true">
-                        <label for="vermerk_auszahlung_id">
-                            {{'FERIENBETREUUNG_VERMERK_AUSZAHLUNG' | translate}}
-                        </label>
-                        <div class="flex-whitespace-item"></div>
-                        <mat-form-field floatLabel="always">
-                            <input type="text"
-                                   id="vermerk_auszahlung_id"
-                                   matInput
-                                   formControlName="vermerkAuszahlung"
-                                   class="form-control dv-input"/>
-                        </mat-form-field>
-                    </dv-input-container-x>
+
+                <div formGroupName="adresseKontoinhaber">
+                    <div class="row">
+                        <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
+                            <label for="adresse_kontoinhaber_strasse_id"
+                                   required
+                                   [ngClass]="{'label-required-error': formValidationTriggered && form?.get('auszahlungsdaten').get('adresseKontoinhaber').get('strasse').errors}">
+                                {{'ADRESSE_STRASSE' | translate}}
+                            </label>
+                            <mat-form-field floatLabel="always">
+                                <input type="text"
+                                       id="adresse_kontoinhaber_strasse_id"
+                                       matInput
+                                       formControlName="strasse"
+                                       class="form-control dv-input"/>
+                                <mat-error
+                                    *ngIf="formValidationTriggered && form?.get('auszahlungsdaten').get('adresseKontoinhaber').get('strasse').errors?.required"
+                                    translate>ERROR_AUSZAHLUNGSDATEN_NICHT_VOLLSTAENDING
+                                </mat-error>
+                            </mat-form-field>
+                        </dv-input-container-x>
+
+                        <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
+                            <label for="adresse_kontoinhaber_nr_id">
+                                {{'FERIENBETREUUNG_ADRESSE_NR' | translate}}
+                            </label>
+                            <mat-form-field floatLabel="always">
+                                <input type="text"
+                                       id="adresse_kontoinhaber_nr_id"
+                                       matInput
+                                       formControlName="hausnummer"
+                                       class="form-control dv-input"/>
+                            </mat-form-field>
+                        </dv-input-container-x>
+                    </div>
+
+                    <div class="row">
+                        <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
+                            <label for="adresse_kontoinhaber_plz_id"
+                                   required
+                                   [ngClass]="{'label-required-error': formValidationTriggered && form?.get('auszahlungsdaten').get('adresseKontoinhaber').get('plz').errors}">
+                                {{'ADRESSE_PLZ' | translate}}
+                            </label>
+                            <mat-form-field floatLabel="always">
+                                <input type="text"
+                                       id="adresse_kontoinhaber_plz_id"
+                                       matInput
+                                       formControlName="plz"
+                                       class="form-control dv-input"/>
+                                <mat-error
+                                    *ngIf="formValidationTriggered && form?.get('auszahlungsdaten').get('adresseKontoinhaber').get('plz').errors?.required"
+                                    translate>ERROR_REQUIRED
+                                </mat-error>
+                            </mat-form-field>
+                        </dv-input-container-x>
+
+                        <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
+                            <label for="adresse_kontoinhaber_ort_id"
+                                   required
+                                   [ngClass]="{'label-required-error': formValidationTriggered && form?.get('auszahlungsdaten').get('adresseKontoinhaber').get('ort').errors}">
+                                {{'ADRESSE_ORT' | translate}}
+                            </label>
+                            <mat-form-field floatLabel="always">
+                                <input type="text"
+                                       id="adresse_kontoinhaber_ort_id"
+                                       matInput
+                                       formControlName="ort"
+                                       class="form-control dv-input"/>
+                                <mat-error
+                                    *ngIf="formValidationTriggered && form?.get('auszahlungsdaten').get('adresseKontoinhaber').get('ort').errors?.required"
+                                    translate>ERROR_AUSZAHLUNGSDATEN_NICHT_VOLLSTAENDING
+                                </mat-error>
+                            </mat-form-field>
+                        </dv-input-container-x>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-6">
+
+                        <dv-input-container-x [verticalAlign]="true">
+                            <label for="iban_id"
+                                   required
+                                   [ngClass]="{'label-required-error': formValidationTriggered && form?.get('auszahlungsdaten').get('iban').errors}">
+                                {{'FERIENBETREUUNG_IBAN' | translate}}
+                            </label>
+                            <mat-form-field floatLabel="always">
+                                <input type="text"
+                                       id="iban_id"
+                                       matInput
+                                       formControlName="iban"
+                                       class="form-control dv-input"/>
+                                <mat-error
+                                    *ngIf="formValidationTriggered && form?.get('auszahlungsdaten').get('iban').errors?.required"
+                                    translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="form?.get('auszahlungsdaten').get('iban').errors?.iban && form.get('auszahlungsdaten').get('iban').dirty"
+                                    translate>ERROR_IBAN
+                                </mat-error>
+                            </mat-form-field>
+                        </dv-input-container-x>
+
+                    </div>
+                    <div class="col-xs-6">
+                        <dv-input-container-x [verticalAlign]="true">
+                            <label for="vermerk_auszahlung_id">
+                                {{'FERIENBETREUUNG_VERMERK_AUSZAHLUNG' | translate}}
+                            </label>
+                            <mat-form-field floatLabel="always">
+                                <input type="text"
+                                       id="vermerk_auszahlung_id"
+                                       matInput
+                                       formControlName="vermerkAuszahlung"
+                                       class="form-control dv-input"/>
+                            </mat-form-field>
+                        </dv-input-container-x>
+                    </div>
                 </div>
             </div>
         </div>
-
     </form>
 
     <div class="actions">
