@@ -610,9 +610,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Predicate predicateNew = cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.NEU);
 		predicates.add(predicateNew);
 
-		MitteilungTeilnehmerTyp mitteilungTeilnehmerTyp = getMitteilungTeilnehmerTypForCurrentUser();
-		Predicate predicateEmpfaenger = cb.equal(root.get(Mitteilung_.empfaengerTyp), mitteilungTeilnehmerTyp);
-		predicates.add(predicateEmpfaenger);
+		predicates.add(getPredicateEmpfaengerMitteilungTyp(cb, root));
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		List<Mitteilung> mitteilungen = persistence.getCriteriaResults(query);
@@ -630,23 +628,25 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		final CriteriaQuery<Long> query = cb.createQuery(Long.class);
 		Root<Mitteilung> root = query.from(Mitteilung.class);
 
-		List<Predicate> predicates;
+		List<Predicate> predicates = new ArrayList<>();
+
+		Predicate predicateNew = cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.NEU);
+		predicates.add(predicateNew);
+
 		if (loggedInBenutzer.getRole().isRoleSozialdienstabhaengig()) {
-			predicates = countNewMitteilungenPredicatesForSozialdienstBenutzer(loggedInBenutzer, cb, root);
+			predicates.add(countNewMitteilungenPredicatesForSozialdienstBenutzer(loggedInBenutzer, cb, root));
+
+			predicates.add(getPredicateEmpfaengerMitteilungTyp(cb, root));
+
 		} else {
-			predicates = countNewMitteilungenPredicatesForOtherBenutzer(loggedInBenutzer, cb, root);
+			predicates.add(cb.equal(root.get(Mitteilung_.empfaenger), loggedInBenutzer));
 		}
 		query.select(cb.countDistinct(root));
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		return persistence.getCriteriaSingleResult(query);
 	}
 
-	private List<Predicate> countNewMitteilungenPredicatesForSozialdienstBenutzer(@Nonnull Benutzer loggedInBenutzer, CriteriaBuilder cb, Root<Mitteilung> root) {
-
-		List<Predicate> predicates = new ArrayList<>();
-
-		Predicate predicateNew = cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.NEU);
-		predicates.add(predicateNew);
+	private Predicate countNewMitteilungenPredicatesForSozialdienstBenutzer(@Nonnull Benutzer loggedInBenutzer, CriteriaBuilder cb, Root<Mitteilung> root) {
 
 		Join<Mitteilung, Dossier> joinDossier = root.join(Mitteilung_.dossier, JoinType.INNER);
 		Join<Dossier, Fall> joinFall = joinDossier.join(Dossier_.fall);
@@ -654,22 +654,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		Predicate sozialdienstFall =
 			cb.equal(joinSozialdienst.get(SozialdienstFall_.sozialdienst), loggedInBenutzer.getSozialdienst());
-		predicates.add(sozialdienstFall);
 
-		return predicates;
-
+		return sozialdienstFall;
 	}
 
-	private List<Predicate> countNewMitteilungenPredicatesForOtherBenutzer(@Nonnull Benutzer loggedInBenutzer, CriteriaBuilder cb, Root<Mitteilung> root) {
-		List<Predicate> predicates = new ArrayList<>();
-
-		Predicate predicateNew = cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.NEU);
-		predicates.add(predicateNew);
-
-		Predicate predicateEmpfaenger = cb.equal(root.get(Mitteilung_.empfaenger), loggedInBenutzer);
-		predicates.add(predicateEmpfaenger);
-
-		return predicates;
+	private Predicate getPredicateEmpfaengerMitteilungTyp(CriteriaBuilder cb, Root<Mitteilung> root) {
+		MitteilungTeilnehmerTyp mitteilungTeilnehmerTyp = getMitteilungTeilnehmerTypForCurrentUser();
+		Predicate predicateEmpfaenger = cb.equal(root.get(Mitteilung_.empfaengerTyp), mitteilungTeilnehmerTyp);
+		return predicateEmpfaenger;
 	}
 
 	@Override
@@ -911,9 +903,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		List<Predicate> predicates = new ArrayList<>();
 
 		// Richtiger Empfangs-Typ. Persoenlicher Empfaenger wird nicht beachtet sondern auf Client mit Filter geloest
-		MitteilungTeilnehmerTyp mitteilungTeilnehmerTyp = getMitteilungTeilnehmerTypForCurrentUser();
-		Predicate predicateEmpfaengerTyp = cb.equal(root.get(Mitteilung_.empfaengerTyp), mitteilungTeilnehmerTyp);
-		predicates.add(predicateEmpfaengerTyp);
+		predicates.add(getPredicateEmpfaengerMitteilungTyp(cb, root));
 
 		filterGemeinde(user, joinGemeinde, predicates);
 
