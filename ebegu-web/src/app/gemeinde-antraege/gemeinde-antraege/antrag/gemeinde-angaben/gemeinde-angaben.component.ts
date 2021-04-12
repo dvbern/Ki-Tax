@@ -15,6 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {TS} from '@angular/compiler-cli/src/transformers/util';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
@@ -539,7 +540,8 @@ export class GemeindeAngabenComponent implements OnInit {
     public formularNotEditable(): boolean {
         return this.lATSAngabenGemeindeContainer.isInBearbeitungGemeinde() && // tslint:disable-next-line:max-line-length
             this.lATSAngabenGemeindeContainer.angabenDeklaration.status === TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN ||
-            this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton() && // tslint:disable-next-line:max-line-length
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles()) && this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton() ||
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles()) && this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton() && // tslint:disable-next-line:max-line-length
             this.lATSAngabenGemeindeContainer.angabenKorrektur.status === TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
     }
 
