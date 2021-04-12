@@ -2466,7 +2466,7 @@
     "ERROR_POSITIVE_NUMBER": "Bitte geben Sie eine positive ganze Zahl ein",
     "LATS_SCHLUSSZAHLUNG": "Schlusszahlung Dezember {{year}}",
     "LATS_TAGESSCHULE_GESCHLOSSEN_INFO":  "<h1>Schliessung einer Tagesschule aufgrund behördlicher Anweisung oder  Personalausfall (betrifft nur einen Teil der Gemeinden)</h1><p> Die Betreuungsstunden während einer Schliessung werden basierend auf den Anmeldungen hochgerechnet. Das heisst, die Betreuungsstunden für die Wochen der Schliessung werden so berechnet, als ob die Kinder im gleichen Umfang wie vor der Schliessung anwesend gewesen wären.</p><p>Die Elterngebühren für die Betreuung und Mahlzeiten in der Tagesschule sind während der Schliessung nicht geschuldet.</p>   <p><a href=\"https://www.erz.be.ch/erz/de/index/kindergarten_volksschule/kindergarten_volksschule/corona/schuljahr-2020-21.assetref/dam/documents/ERZ/AKVB/de/00_Allgemeines/allgemeines_volksschule_corona_faq_schuljahr_2020-21_d.pdf\" target=\"_blank\">siehe auch FAQ Corona S.14</a></p>",
-    "ERROR_FB_SONDERSCHUELER": "Anzahl Betreuungstage für Sonderschüeler dürfen nicht höher sein, als die Anzahl der Betreuungstage der Gemeinde",
+    "ERROR_FB_SONDERSCHUELER": "Anzahl Betreuungstage für Sonderschüler dürfen nicht höher sein, als die Anzahl der Betreuungstage der Gemeinde",
     "ERROR_FB_BETREUUNGSTAGE": "\"Betreuungstage von Kindern der anbietenden Gemeinde\" plus \"Betreuungstage von Kindern aus anderen Gemeinden\" muss gleich \"Anzahl Betreuungstage Kanton Bern\" sein",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

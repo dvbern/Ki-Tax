@@ -17,9 +17,11 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -91,6 +93,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	) {
 		Set<Gemeinde> gemeinden = principal.getBenutzer().extractGemeindenForUser();
 
+		Set<Predicate> predicates = new HashSet<>();
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		CriteriaQuery<FerienbetreuungAngabenContainer> query = cb.createQuery(FerienbetreuungAngabenContainer.class);
 		Root<FerienbetreuungAngabenContainer> root = query.from(FerienbetreuungAngabenContainer.class);
@@ -101,11 +104,11 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			UserRole.SACHBEARBEITER_MANDANT)) {
 			Predicate gemeindeIn =
 				root.get(FerienbetreuungAngabenContainer_.gemeinde).in(gemeinden);
-			query.where(gemeindeIn);
+			predicates.add(gemeindeIn);
 		}
 
 		if (gemeinde != null) {
-			query.where(
+			predicates.add(
 				cb.equal(
 					root.get(FerienbetreuungAngabenContainer_.gemeinde).get(Gemeinde_.name),
 					gemeinde)
@@ -119,7 +122,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			Path<DateRange> dateRangePath =
 				root.join(FerienbetreuungAngabenContainer_.gesuchsperiode, JoinType.INNER)
 					.get(AbstractDateRangedEntity_.gueltigkeit);
-			query.where(
+			predicates.add(
 				cb.and(
 					cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigAb)), years[0]),
 					cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigBis)), years[1])
@@ -127,7 +130,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			);
 		}
 		if (status != null) {
-			query.where(
+			predicates.add(
 				cb.equal(
 					root.get(FerienbetreuungAngabenContainer_.status),
 					FerienbetreuungAngabenStatus.valueOf(status))
@@ -135,8 +138,11 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 		}
 		if (timestampMutiert != null) {
 			Predicate timestampMutiertPredicate = createTimestampMutiertPredicate(timestampMutiert, cb, root);
-			query.where(timestampMutiertPredicate);
+			predicates.add(timestampMutiertPredicate);
 		}
+
+		Predicate[] predicateArray = new Predicate[predicates.size()];
+		query.where(predicates.toArray(predicateArray));
 
 		return persistence.getCriteriaResults(query);
 	}
