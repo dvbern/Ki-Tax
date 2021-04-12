@@ -249,28 +249,6 @@
 
         <dv-input-container-x>
             <label required
-                   for="anzahl_tage_id"
-                   [ngClass]="{'label-required-error': form && form.get('anzahlTage').errors}">
-                {{'FERIENBETREUUNG_ANZAHL_TAGE' | translate }}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
-                <input matInput
-                       id="anzahl_tage_id"
-                       formControlName="anzahlTage"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="form && form.get('anzahlTage').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="form && form.get('anzahlTage').errors?.isNotInteger"
-                           translate>ERROR_NOT_INTEGER
-                </mat-error>
-            </mat-form-field>
-        </dv-input-container-x>
-
-        <dv-input-container-x>
-            <label required
                    for="anzahl_ferienwoche_sommer_id"
                    [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenSommerferien').errors}">
                 {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_SOMMER' | translate }}
@@ -286,6 +264,28 @@
                            translate>ERROR_REQUIRED
                 </mat-error>
                 <mat-error *ngIf="form && form.get('anzahlFerienwochenSommerferien').errors?.isNotInteger"
+                           translate>ERROR_NOT_INTEGER
+                </mat-error>
+            </mat-form-field>
+        </dv-input-container-x>
+
+        <dv-input-container-x>
+            <label required
+                   for="anzahl_tage_id"
+                   [ngClass]="{'label-required-error': form && form.get('anzahlTage').errors}">
+                {{'FERIENBETREUUNG_ANZAHL_TAGE' | translate }}
+            </label>
+            <div class="flex-whitespace-item"></div>
+            <mat-form-field floatLabel="always">
+                <mat-label translate></mat-label>
+                <input matInput
+                       id="anzahl_tage_id"
+                       formControlName="anzahlTage"
+                       class="form-control dv-input"/>
+                <mat-error *ngIf="form && form.get('anzahlTage').errors?.required"
+                           translate>ERROR_REQUIRED
+                </mat-error>
+                <mat-error *ngIf="form && form.get('anzahlTage').errors?.isNotInteger"
                            translate>ERROR_NOT_INTEGER
                 </mat-error>
             </mat-form-field>
