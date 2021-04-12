@@ -4,7 +4,7 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TransitionService} from '@uirouter/core';
 import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {DvNgBackDialogComponent} from '../../core/component/dv-ng-back-dialog/dv-ng-back-dialog.component';
 
 @Injectable({
     providedIn: 'root'
@@ -51,7 +51,7 @@ export class UnsavedChangesService {
         dialogConfig.data = {
             title: 'UNSAVED_WARNING',
         };
-        return this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
+        return this.dialog.open(DvNgBackDialogComponent, dialogConfig)
             .afterClosed()
             .pipe(map(answer => {
                 // answer is undefined, if cancel is pressed. we need a boolean here
