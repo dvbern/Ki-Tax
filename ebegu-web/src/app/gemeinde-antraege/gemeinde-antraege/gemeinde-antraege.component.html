@@ -43,8 +43,7 @@
                     </div>
 
                     <!-- Gemeindeantragtyp -->
-                    <div class="col-md-3">
-
+                    <div [ngClass]="{'col-md-3': ferienBetreuungSelected(), 'col-md-5': !ferienBetreuungSelected()}">
                         <div>
                             <label class="md-no-float required"
                                    for="gemeindeantragtyp"
