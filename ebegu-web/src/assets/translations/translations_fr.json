@@ -2392,7 +2392,7 @@
     "FERIENBETREUUNG_BETREUUNG_ERFOLGT_TAGSUEBER":  "La prise en charge est assurée uniquement durant la journée",
     "FERIENBETREUUNG_KOOPERATION": "Coopération",
     "FERIENBETREUUNG_FINANZIELL_BETEILIGTE_GEMEINDEN":  "Indiquez ici les autres communes qui participent au financement de la structure d’accueil sans en assumer conjointement la responsabilité",
-    "FERIENBETREUUNG_FINANZIELL_BETEILIGTE_GEMEINDEN_HINT": "Heures d’ouverture normales, y compris prise en charge le matin et le soir. Si les heures d’ouverture varient au cours de l’année scolaire, veuillez l’indiquer sous « Remarques ».",
+    "FERIENBETREUUNG_FINANZIELL_BETEILIGTE_GEMEINDEN_HINT": "Les communes impliquées (voir les points « Organisme responsable » et « Autres communes impliquées » à la rubrique « Données de base ») ne doivent pas être répétées ici.",
     "FERIENBETREUUNG_WIE_ORGANISIERT":  "Comment la structure d’accueil est-elle organisée ?",
     "FERIENBETREUUNG_GEMEINDE_FUEHRT_ANGEBOT_SELBER": "La commune gère la structure elle-même ou en coopération avec d’autres communes. (p. ex. via l’école à journée continue).",
     "FERIENBETREUUNG_GEMEINDE_BEAUFTRAGT_EXTERNE_ANBIETER":  "La commune charge des prestataires externes de gérer la structure d’accueil et n’assume que des tâches administratives.",
