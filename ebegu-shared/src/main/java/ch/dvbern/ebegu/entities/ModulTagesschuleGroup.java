@@ -222,6 +222,24 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 		this.module = module;
 	}
 
+	public boolean isFruehbetreuung() {
+		return this.zeitVon.isBefore(LocalTime.of(11, 30));
+	}
+
+	public boolean isMittagsbetreuung() {
+		return this.zeitVon.compareTo(LocalTime.of(11, 30)) >= 0
+			&& this.zeitVon.isBefore(LocalTime.of(13, 15));
+	}
+
+	public boolean isNachmittagbetreuung1() {
+		return this.zeitVon.compareTo(LocalTime.of(13, 15)) >= 0
+			&& this.zeitVon.isBefore(LocalTime.of(15, 0));
+	}
+
+	public boolean isNachmittagbetreuung2() {
+		return this.zeitVon.compareTo(LocalTime.of(15, 0)) >= 0;
+	}
+
 	@Override
 	public int compareTo(@Nonnull ModulTagesschuleGroup o) {
 		CompareToBuilder builder = new CompareToBuilder();

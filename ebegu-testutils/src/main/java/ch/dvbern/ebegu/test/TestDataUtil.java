@@ -201,6 +201,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCH
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.LATS_LOHNNORMKOSTEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50;
+import static ch.dvbern.ebegu.enums.EinstellungKey.LATS_STICHTAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
@@ -1721,6 +1722,8 @@ public final class TestDataUtil {
 			gesuchsperiode, persistence);
 		saveEinstellung(LATS_LOHNNORMKOSTEN, "10.39",	gesuchsperiode, persistence);
 		saveEinstellung(LATS_LOHNNORMKOSTEN_LESS_THAN_50, "5.2",	gesuchsperiode, persistence);
+		String stichtag = gesuchsperiode.getGueltigkeit().getGueltigAb().getYear() + "-09-15";
+		saveEinstellung(LATS_STICHTAG, stichtag, gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(
@@ -2287,7 +2290,7 @@ public final class TestDataUtil {
 		// B: Quantitative Angaben
 		angabenInstitution.setAnzahlEingeschriebeneKinder(BigDecimal.TEN);
 		angabenInstitution.setAnzahlEingeschriebeneKinderKindergarten(BigDecimal.TEN);
-		angabenInstitution.setAnzahlEingeschriebeneKinderBasisstufe(BigDecimal.TEN);
+		angabenInstitution.setAnzahlEingeschriebeneKinderSekundarstufe(BigDecimal.TEN);
 		angabenInstitution.setAnzahlEingeschriebeneKinderPrimarstufe(BigDecimal.TEN);
 		angabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(BigDecimal.TEN);
 		angabenInstitution.setDurchschnittKinderProTagFruehbetreuung(BigDecimal.TEN);

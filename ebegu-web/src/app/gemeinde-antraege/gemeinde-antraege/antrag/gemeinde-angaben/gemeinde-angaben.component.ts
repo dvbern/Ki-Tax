@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
@@ -120,20 +120,16 @@ export class GemeindeAngabenComponent implements OnInit {
             this.formularInitForm.patchValue({
                 alleAngabenInKibonErfasst: this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst,
             });
-            if (this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst !== null) {
-                this.formularInitForm.get('alleAngabenInKibonErfasst').disable();
-            }
         } else {
-            this.formularInitForm = new FormGroup({
-                alleAngabenInKibonErfasst: new FormControl(
-                    {
-                        value: this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst,
-                        disabled: this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst !== null ||
-                            !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles()),
-                    },
-                    Validators.required,
-                ),
+            this.formularInitForm = this.fb.group({
+                alleAngabenInKibonErfasst: [
+                    this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst,
+                    Validators.required
+                ],
             });
+        }
+        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
+            this.formularInitForm.disable();
         }
     }
 
@@ -141,7 +137,7 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm = this.fb.group({
             status: initialGemeindeAngaben.status,
             // A
-            alleFaelleInKibon: [{value: this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst, disabled: true}],
+            alleFaelleInKibon: [this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst],
             angebotVerfuegbarFuerAlleSchulstufen: [
                 initialGemeindeAngaben?.angebotVerfuegbarFuerAlleSchulstufen,
             ],
@@ -554,6 +550,7 @@ export class GemeindeAngabenComponent implements OnInit {
         } else {
             this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.value;
         }
+        this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst = this.formularInitForm.get('alleAngabenInKibonErfasst').value;
         this.lastenausgleichTSService.saveLATSAngabenGemeindeContainer(this.lATSAngabenGemeindeContainer);
         this.angabenForm.markAsPristine();
 

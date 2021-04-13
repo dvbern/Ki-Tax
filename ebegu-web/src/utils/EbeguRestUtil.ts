@@ -23,6 +23,8 @@ import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
+import {TSAnzahlEingeschriebeneKinder} from '../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
+import {TSDurchschnittKinderProTag} from '../models/gemeindeantrag/TSDurchschnittKinderProTag';
 import {TSFerienbetreuungAngaben} from '../models/gemeindeantrag/TSFerienbetreuungAngaben';
 import {TSFerienbetreuungAngabenAngebot} from '../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenContainer} from '../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
@@ -4640,8 +4642,8 @@ export class EbeguRestUtil {
             angabenInstitutionTS.anzahlEingeschriebeneKinder = angabenInstitutionFromServer.anzahlEingeschriebeneKinder;
             angabenInstitutionTS.anzahlEingeschriebeneKinderKindergarten =
                 angabenInstitutionFromServer.anzahlEingeschriebeneKinderKindergarten;
-            angabenInstitutionTS.anzahlEingeschriebeneKinderBasisstufe =
-                angabenInstitutionFromServer.anzahlEingeschriebeneKinderBasisstufe;
+            angabenInstitutionTS.anzahlEingeschriebeneKinderSekundarstufe =
+                angabenInstitutionFromServer.anzahlEingeschriebeneKinderSekundarstufe;
             angabenInstitutionTS.anzahlEingeschriebeneKinderPrimarstufe =
                 angabenInstitutionFromServer.anzahlEingeschriebeneKinderPrimarstufe;
             angabenInstitutionTS.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen =
@@ -4686,8 +4688,8 @@ export class EbeguRestUtil {
             restAngabenInstitution.anzahlEingeschriebeneKinder = tsAngabenInstitution.anzahlEingeschriebeneKinder;
             restAngabenInstitution.anzahlEingeschriebeneKinderKindergarten =
                 tsAngabenInstitution.anzahlEingeschriebeneKinderKindergarten;
-            restAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe =
-                tsAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe;
+            restAngabenInstitution.anzahlEingeschriebeneKinderSekundarstufe =
+                tsAngabenInstitution.anzahlEingeschriebeneKinderSekundarstufe;
             restAngabenInstitution.anzahlEingeschriebeneKinderPrimarstufe =
                 tsAngabenInstitution.anzahlEingeschriebeneKinderPrimarstufe;
             restAngabenInstitution.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen =
@@ -5167,5 +5169,28 @@ export class EbeguRestUtil {
             return sozialdienstFallTS;
         }
         return undefined;
+    }
+
+    public parseAnzahlEingeschriebeneKinder(
+        anzahlEingeschriebeneKinder: TSAnzahlEingeschriebeneKinder,
+        restAnzahlEingeschriebeneKinder: any
+    ): TSAnzahlEingeschriebeneKinder {
+        anzahlEingeschriebeneKinder.overall = restAnzahlEingeschriebeneKinder.overall;
+        anzahlEingeschriebeneKinder.vorschulalter = restAnzahlEingeschriebeneKinder.vorschulalter;
+        anzahlEingeschriebeneKinder.kindergarten = restAnzahlEingeschriebeneKinder.kindergarten;
+        anzahlEingeschriebeneKinder.primarstufe = restAnzahlEingeschriebeneKinder.primarstufe;
+        anzahlEingeschriebeneKinder.sekundarstufe = restAnzahlEingeschriebeneKinder.sekundarstufe;
+        return anzahlEingeschriebeneKinder;
+    }
+
+    public parseDurchschnittKinderProTag(
+        tsDurchschnittKinderProTag: TSDurchschnittKinderProTag,
+        restDurchschnittKinderProTag: any
+    ): TSDurchschnittKinderProTag {
+        tsDurchschnittKinderProTag.fruehbetreuung = restDurchschnittKinderProTag.fruehbetreuung;
+        tsDurchschnittKinderProTag.mittagsbetreuung = restDurchschnittKinderProTag.mittagsbetreuung;
+        tsDurchschnittKinderProTag.nachmittagsbetreuung1 = restDurchschnittKinderProTag.nachmittagsbetreuung1;
+        tsDurchschnittKinderProTag.nachmittagsbetreuung2 = restDurchschnittKinderProTag.nachmittagsbetreuung2;
+        return tsDurchschnittKinderProTag;
     }
 }

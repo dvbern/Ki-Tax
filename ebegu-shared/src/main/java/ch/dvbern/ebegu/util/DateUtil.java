@@ -111,4 +111,9 @@ public final class DateUtil {
 		return dateOne.getYear() == dateTwo.getYear()
 			&& dateOne.getMonth() == dateTwo.getMonth();
 	}
+
+	public static String incrementYear(@Nonnull String dateStr) {
+		LocalDate date = Date.valueOf(dateStr).toLocalDate();
+		return date.plus(1, ChronoUnit.YEARS).toString();
+	}
 }
