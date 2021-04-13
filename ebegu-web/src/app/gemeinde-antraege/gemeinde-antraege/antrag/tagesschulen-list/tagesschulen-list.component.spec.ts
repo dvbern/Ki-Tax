@@ -21,6 +21,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {WindowRef} from '../../../../core/service/windowRef.service';
 import {SharedModule} from '../../../../shared/shared.module';
+import {GemeindeAntragService} from '../../../services/gemeinde-antrag.service';
 
 import {TagesschulenListComponent} from './tagesschulen-list.component';
 
@@ -30,6 +31,9 @@ const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
     'getErrors',
     'addMesageAsError'
+]);
+const gemeindeAntragServiceSpy = jasmine.createSpyObj<GemeindeAntragService>(GemeindeAntragService.name, [
+    'getAllVisibleTagesschulenAngabenForTSLastenausgleich'
 ]);
 describe('TagesschulenListComponent', () => {
     let component: TagesschulenListComponent;
@@ -52,6 +56,10 @@ describe('TagesschulenListComponent', () => {
                     provide: StateService,
                     useValue: stateServiceSpy,
                 },
+                {
+                    provide: GemeindeAntragService,
+                    useValue: gemeindeAntragServiceSpy
+                }
             ],
             declarations: [TagesschulenListComponent],
         })
