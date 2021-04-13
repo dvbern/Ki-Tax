@@ -22,6 +22,8 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
+import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
+import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -152,5 +154,13 @@ export class GemeindeAntragService {
         }
         LOG.error('wrong wizardTypStr provided');
         return undefined;
+    }
+
+    public getAllVisibleTagesschulenAngabenForTSLastenausgleich(lastenausgleichId: string): Observable<TSLastenausgleichTagesschuleAngabenInstitutionContainer[]> {
+        return this.http.get<TSLastenausgleichTagesschuleAngabenInstitution[]>(`${this.API_BASE_URL}/${lastenausgleichId}/tagesschulenantraege`)
+            .pipe(
+                map(lastenausgleichAngabenList => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenInstitutionContainerList(
+                    lastenausgleichAngabenList)),
+            );
     }
 }

@@ -902,6 +902,7 @@
 
         <div class="actions">
             <dv-loading-button
+                class="uppercase"
                 type="button"
                 [ngClass]="{'secondary': !formularNotEditable()}"
                 [buttonDisabled]="formularNotEditable()"
@@ -909,6 +910,7 @@
                 <span translate>SAVE</span>
             </dv-loading-button>
             <dv-loading-button
+                class="uppercase"
                 type="button"
                 [buttonDisabled]="formularNotEditable()"
                 (buttonClick)="onAbschliessen()">

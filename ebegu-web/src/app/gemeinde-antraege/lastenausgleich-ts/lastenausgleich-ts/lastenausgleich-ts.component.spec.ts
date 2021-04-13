@@ -29,7 +29,6 @@ import {WindowRef} from '../../../core/service/windowRef.service';
 import {SharedModule} from '../../../shared/shared.module';
 import {WizardstepXModule} from '../../../wizardstepX/wizardstep-x.module';
 import {LastenausgleichTsKommentarComponent} from '../lastenausgleich-ts-kommentar/lastenausgleich-ts-kommentar.component';
-import {LastenausgleichTsToolbarComponent} from '../lastenausgleich-ts-toolbar/lastenausgleich-ts-toolbar.component';
 import {LastenausgleichTSService} from '../services/lastenausgleich-ts.service';
 
 import {LastenausgleichTSComponent} from './lastenausgleich-ts.component';
@@ -61,7 +60,6 @@ describe('LastenausgleichTSComponent', () => {
             declarations: [
                 LastenausgleichTSComponent,
                 LastenausgleichTsKommentarComponent,
-                LastenausgleichTsToolbarComponent,
             ],
             imports: [
                 SharedModule,

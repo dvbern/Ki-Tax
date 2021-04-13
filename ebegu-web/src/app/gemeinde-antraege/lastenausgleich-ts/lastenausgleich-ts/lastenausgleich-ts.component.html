@@ -16,13 +16,12 @@
   -->
 
 <div class="lastenausgleich-ts-container">
-    <dv-lastenausgleich-ts-toolbar *ngIf="showToolbar()"
-        [gemeinde]="lATSAngabenGemeindeContainer?.gemeinde">
-    </dv-lastenausgleich-ts-toolbar>
     <div class="antrag-container">
         <dv-wizard-side-nav
             [status]="lATSAngabenGemeindeContainer?.status | translate"
             [id]="lastenausgleichId"
+            [gemeinde]="lATSAngabenGemeindeContainer?.gemeinde"
+            [gesuchsperiode]="lATSAngabenGemeindeContainer?.gesuchsperiode"
             [wizardTyp]="wizardTyp">
         </dv-wizard-side-nav>
         <div class="antrag">
