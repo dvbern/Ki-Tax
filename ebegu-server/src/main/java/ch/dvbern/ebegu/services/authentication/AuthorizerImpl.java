@@ -1939,7 +1939,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 		switch (container.getStatus()) {
 		case IN_BEARBEITUNG_GEMEINDE: {
-			if (principalBean.isCallerInRole(SUPER_ADMIN)) {
+			if (principalBean.isCallerInAnyOfRole(getMandantSuperadminRoles())) {
 				return;
 			}
 			boolean isFBRole = principalBean.isCallerInAnyOfRole(

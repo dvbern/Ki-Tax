@@ -111,9 +111,9 @@ export abstract class AbstractFerienbetreuungFormular {
         } else if (principal.hasOneOfRoles(TSRoleUtil.getMandantRoles())) {
             this.canSeeAbschliessen.next(false);
             if (angaben.isInPruefungKanton()) {
-                this.canSeeSave.next(false);
-            } else {
                 this.canSeeSave.next(true);
+            } else {
+                this.canSeeSave.next(false);
             }
         }
     }
