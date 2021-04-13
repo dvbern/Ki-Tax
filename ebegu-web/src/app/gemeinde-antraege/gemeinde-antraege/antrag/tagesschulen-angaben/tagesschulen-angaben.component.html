@@ -151,8 +151,8 @@
                 </dv-input-container-x>
 
         <dv-input-container-x>
-            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderSekundarstufe').errors}">
-                {{'LATS_DAVON_SEKUNDARSTUFE' | translate}}
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderSekundarstufe').errors}"
+            [innerHTML]="'LATS_DAVON_SEKUNDARSTUFE' | translate">
             </label>
             <mat-form-field floatLabel="always">
                 <input matInput
@@ -263,8 +263,8 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag1').errors}">
-                {{'LATS_ANZAHL_NACHMITTAG_1' | translate}}
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag1').errors}"
+            [innerHTML]="'LATS_ANZAHL_NACHMITTAG_1' | translate">
             </label>
 
             <mat-form-field floatLabel="always">
@@ -287,8 +287,8 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag2').errors}">
-                {{'LATS_ANZAHL_NACHMITTAG_2' | translate}}
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag2').errors}"
+                [innerHTML]="'LATS_ANZAHL_NACHMITTAG_2' | translate">
             </label>
 
             <mat-form-field floatLabel="always">

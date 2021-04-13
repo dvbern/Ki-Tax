@@ -2250,7 +2250,7 @@
     "LATS_ERSTE_RATE_AUSBEZAHLT": "./. Première tranche versée en décembre {{year}}",
     "LATS_ERSTE_RATE_AUSBEZAHLT_INFO": "Le montant doit correspondre au premier versement de l'année scolaire {{periode}}, selon la décision de décembre {{previousYear}}. En cas d'erreur, l'OECO corrigera le montant indiqué sans notification.",
     "LATS_SCHLUSSZAHLUNG": "Deuxième tranche versée en décembre {{year}} (décompte final)",
-    "LATS_EINNAHMEN_LASTENAUSGLEICH": "Einnahmen Lastenausgleich",
+    "LATS_EINNAHMEN_LASTENAUSGLEICH": "./. recettes provenant de la compensation des charges :",
     "LATS_KOSTENBETEILIGUNG_GEMEINDE": "C) Contribution de la commune aux coûts",
     "LATS_EXPLANATION_SUB_HEADER_KOSTENBETEILIGUNG_GEMEINDE": "Ces données sont destinées à alimenter les statistiques et permettent de vérifier l'estimation cantonale des coûts normatifs",
     "LATS_GESAMTKOSTEN_TAGESSCHULE": "Coûts globaux de l'école à journée continue d'après les comptes communaux annuels, calculés pour l'année scolaire {{jahr}}:",

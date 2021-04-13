@@ -659,10 +659,12 @@
         <div class="max-width-container-750">
 
             <h3 class="uppercase">{{'LATS_ANGABEN_WEITERE_KOSTEN_ERTRAEGE' | translate}}</h3>
-            <p class="sub-header-explanation">{{'LATS_BEMERKUNG_WIETER_KOSTEN_ERTRAEGE' | translate}}</p>
 
             <dv-input-container-x [verticalAlign]="true">
-                <mat-form-field floatLabel="always" class="no-margin-left">
+                <mat-form-field floatLabel="always">
+                    <label>
+                        {{'LATS_BEMERKUNG_WIETER_KOSTEN_ERTRAEGE' | translate}}
+                    </label>
                     <textarea matInput
                               formControlName="bemerkungenWeitereKostenUndErtraege"
                               class="form-control dv-input"></textarea>
