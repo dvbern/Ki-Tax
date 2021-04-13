@@ -2250,6 +2250,7 @@
     "LATS_ERSTE_RATE_AUSBEZAHLT": "Erste Rate, ausbezahlt Dezember {{year}}",
     "LATS_ERSTE_RATE_AUSBEZAHLT_INFO": "Der Betrag muss der ersten Rate für das Schuljahr {{periode}} gemäss Verfügung vom Dezember {{previousYear}} entsprechen. Im Falle eines Fehlers korrigiert das AKVB den angegebenen Betrag ohne Mitteilung.",
     "LATS_SCHLUSSZAHLUNG": "Schlusszahlung Dezember {{year}}",
+    "LATS_EINNAHMEN_LASTENAUSGLEICH": "./. Einnahmen Lastenausgleich",
     "LATS_KOSTENBETEILIGUNG_GEMEINDE": "C) Kostenbeteiligung Gemeinde",
     "LATS_EXPLANATION_SUB_HEADER_KOSTENBETEILIGUNG_GEMEINDE": "Diese Angaben dienen der Statistik und der Überprüfung der kantonalen Kalkulation der Normkosten.",
     "LATS_GESAMTKOSTEN_TAGESSCHULE": "Gesamtkosten der Tagesschule gemäss Jahresrechnung Gemeinde, berechnet für das Schuljahr {{jahr}}",

@@ -28,6 +28,7 @@ import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
 import {TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {TSRole} from '../../../../../models/enums/TSRole';
 import {TSWizardStepXTyp} from '../../../../../models/enums/TSWizardStepXTyp';
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
@@ -213,6 +214,7 @@ export class GemeindeAngabenComponent implements OnInit {
             davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
             normlohnkostenBetreuungBerechnet: [{value: '', disabled: true}],
             lastenausgleichsberechtigerBetrag: [{value: '', disabled: true}],
+            lastenausgleichsberechtigerBetragRO: [{value: '', disabled: true}],
             einnahmenElterngebuehrenRO: [{value: '', disabled: true}],
             kostenbeitragGemeinde: [{value: '', disabled: true}],
             kostenueberschussGemeinde: [{value: '', disabled: true}],
@@ -432,6 +434,10 @@ export class GemeindeAngabenComponent implements OnInit {
                 .pipe(startWith(gemeindeAngabenFromServer?.einnahmenElterngebuehren || 0)),
         ]).subscribe(values => {
                 this.angabenForm.get('lastenausgleichsberechtigerBetrag').setValue(
+                    // round to 0.2
+                    Math.round((values[0] - values[1])),
+                );
+                this.angabenForm.get('lastenausgleichsberechtigerBetragRO').setValue(
                     // round to 0.2
                     Math.round((values[0] - values[1])),
                 );
@@ -668,17 +674,20 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     public falscheAngabenVisible(): boolean {
+        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles().concat(TSRole.SUPER_ADMIN))) {
+            return false;
+        }
         return this.lATSAngabenGemeindeContainer?.isInBearbeitungGemeinde() &&
             this.lATSAngabenGemeindeContainer?.angabenDeklaration.status ===
             TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
     }
 
     public getLastYear(): number {
-        return this.lATSAngabenGemeindeContainer?.gesuchsperiode?.getBasisJahr();
+        return this.lATSAngabenGemeindeContainer?.gesuchsperiode?.getBasisJahrPlus1();
     }
 
     public getNextYear(): number {
-        return this.lATSAngabenGemeindeContainer?.gesuchsperiode?.getBasisJahrPlus1();
+        return this.lATSAngabenGemeindeContainer?.gesuchsperiode?.getBasisJahrPlus2();
     }
 
     private resetBasicValidation(): void {

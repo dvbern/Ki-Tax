@@ -189,8 +189,8 @@
                     {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_HERBST' | translate }}
                 </label>
                 <mat-form-field floatLabel="always">
-                    <mat-label translate></mat-label>
                     <input matInput
+                           placeholder=""
                            id="anzahl_ferienwoche_herbst_id"
                            formControlName="anzahlFerienwochenHerbstferien"
                            class="form-control dv-input"/>
@@ -210,7 +210,6 @@
                     {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_WINTER' | translate }}
                 </label>
                 <mat-form-field floatLabel="always">
-                    <mat-label translate></mat-label>
                     <input matInput
                            id="anzahl_ferienwoche_winter_id"
                            formControlName="anzahlFerienwochenWinterferien"
@@ -231,7 +230,6 @@
                     {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_FRUEHLING' | translate }}
                 </label>
                 <mat-form-field floatLabel="always">
-                    <mat-label translate></mat-label>
                     <input matInput
                            id="anzahl_ferienwoche_fruehling_id"
                            formControlName="anzahlFerienwochenFruehlingsferien"
@@ -252,7 +250,6 @@
                 {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_SOMMER' | translate }}
             </label>
             <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
                 <input matInput
                        id="anzahl_ferienwoche_sommer_id"
                        formControlName="anzahlFerienwochenSommerferien"
@@ -273,7 +270,6 @@
                 {{'FERIENBETREUUNG_ANZAHL_TAGE' | translate }}
             </label>
             <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
                 <input matInput
                        id="anzahl_tage_id"
                        formControlName="anzahlTage"
@@ -316,7 +312,6 @@
                     {{'FERIENBETREUUNG_ANZAHL_STUNDEN_BETREUUNGSTAG' | translate }}
                 </label>
                 <mat-form-field floatLabel="always">
-                    <mat-label translate></mat-label>
                     <input matInput
                            id="anzahl_stunden_betreuungstag_id"
                            formControlName="anzahlStundenProBetreuungstag"
@@ -527,7 +522,6 @@
                     {{'FERIENBETREUUNG_BETREUUNGSSCHLUESSEL' | translate }}
                 </label>
                 <mat-form-field floatLabel="always">
-                    <mat-label translate></mat-label>
                     <input matInput
                            id="betreuungsschluessel_id"
                            formControlName="betreuungsschluessel"
@@ -671,6 +665,12 @@
 
     </form>
 
+    <div class="row margin-top-20" *ngIf="canSeeFalscheAngaben | async">
+        <div class="col-md-12">
+            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
+        </div>
+    </div>
+
     <div class="actions">
         <button type="button" class="dv-btn cancel-button"
                 *ngIf="canSeeSave | async"
@@ -685,12 +685,6 @@
             (buttonClick)="onAbschliessen()">
             <span translate>ABSCHLIESSEN</span>
         </dv-loading-button>
-    </div>
-
-    <div class="row margin-top-20" *ngIf="canSeeFalscheAngaben | async">
-        <div class="col-md-12">
-            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
-        </div>
     </div>
 
 </div>

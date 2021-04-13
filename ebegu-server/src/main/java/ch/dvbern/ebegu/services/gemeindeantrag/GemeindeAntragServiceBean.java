@@ -124,7 +124,7 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 
 		List<GemeindeAntrag> antraege = new ArrayList<>();
 
-		if(principal.isCallerInAnyOfRole(UserRole.getAllGemeindeFerienbetreuungSuperadminRoles())) {
+		if(principal.isCallerInAnyOfRole(UserRole.getAllGemeindeFerienbetreuungMandantSuperadminRoles())) {
 			List<FerienbetreuungAngabenContainer> ferienbetreuungAntraege = ferienbetreuungService.getFerienbetreuungAntraege(
 				gemeindeId, periodeId, status, timestampMutiert
 			);

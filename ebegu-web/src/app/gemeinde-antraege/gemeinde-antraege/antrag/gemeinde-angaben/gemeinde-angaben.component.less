@@ -38,7 +38,7 @@ textarea {
 
 .no-margin-left {
     // we need to leave space for the outline
-    margin-left: 2px;
+    margin-left: 2px !important;
 }
 
 mat-divider {
@@ -63,6 +63,7 @@ mat-divider {
     .actions {
         display: flex;
         justify-content: center;
+        margin-bottom: 10rem;
 
         & > dv-loading-button {
             margin: 0 5px;
@@ -98,4 +99,8 @@ mat-divider {
             margin-right: 1rem;
         }
     }
+}
+
+dv-input-container-x > .dv-input-container > mat-form-field.flex-grow {
+    flex: 1 0 180px;
 }
