@@ -53,9 +53,13 @@
                 <span translate>LETS_START</span>
             </dv-loading-button>
 
-            <button type="button" class="dv-btn dv-btn-bg cancel-button"
+            <button *ngIf="isNotSozialdienstRole()" type="button" class="dv-btn dv-btn-bg cancel-button"
                     (click)="cancel()"
                     [textContent]="'CANCEL' | translate">
+            </button>
+            <button *ngIf="!isNotSozialdienstRole()" type="button" class="dv-btn dv-btn-bg cancel-button"
+                    (click)="cancel()"
+                    [textContent]="'LETS_START' | translate">
             </button>
         </div>
 
