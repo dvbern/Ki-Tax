@@ -75,7 +75,7 @@
 
             <dv-input-container-x>
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinder').errors}">
-                {{'LATS_ANZAHL_EINGESCHRIEBENE_KINDER' | translate: {datum: stichtag | async} }}
+                {{'LATS_ANZAHL_EINGESCHRIEBENE_KINDER' | translate: {datum: (stichtag | async)} }}
                 <dv-tooltip [text]="'LATS_ANZAHL_EINGESCHRIEBENE_KINDER_INFO' | translate"></dv-tooltip>
             </label>
 
