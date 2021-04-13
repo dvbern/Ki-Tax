@@ -23,6 +23,7 @@ import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSSozialdienstFallStatus} from '../../../models/enums/TSSozialdienstFallStatus';
 import {TSSprache} from '../../../models/enums/TSSprache';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
@@ -271,5 +272,18 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
 
     public isFormDirty(): boolean {
         return this.form.$dirty;
+    }
+
+    public isAntragBearbeitbar(): boolean {
+        return this.isSozialdienstFallAktiv() && this.gesuchModelManager.getGesuch()
+            && (this.gesuchModelManager.getGesuch().isMutation()
+                || this.gesuchModelManager.getGesuch().isFolgegesuch())
+            && this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST);
+    }
+
+    public bearbeiten(): void {
+        this.gesuchModelManager.getFall().sozialdienstFall.status = TSSozialdienstFallStatus.INAKTIV;
+        this.form.$dirty = true;
+        this.save();
     }
 }

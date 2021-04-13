@@ -119,7 +119,7 @@
                                        ng-model="vm.getSozialdienstFall().adresse.hausnummer"
                                        dv-max-length
                                        class="form-control">
-                                <dv-error-messages input-id="hausnummer_ID" for="vm.form.hausnummer.$error"
+                                <dv-error-messages Ainput-id="hausnummer_ID" for="vm.form.hausnummer.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
                         </div>
@@ -309,9 +309,18 @@
 
                 <!--Buttons-->
                 <div class="dv-navigation dv-navigation-flex">
-                    <span ng-if="!vm.isSozialdienstFallReadOnly()">
+                    <span dv-show-element
+                          dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrSozialdienstRolle()"
+                          dv-show-expression="!vm.isSozialdienstFallReadOnly()">
                         <dv-loading-button button-click="vm.save()" type="submit">
                             <span class="uppercase" data-translate="{{vm.getNextButtonText()}}"></span>
+                        </dv-loading-button>
+                    </span>
+                    <span dv-show-element
+                          dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrSozialdienstRolle()"
+                          dv-show-expression="vm.isAntragBearbeitbar()">
+                        <dv-loading-button button-click="vm.bearbeiten()" type="submit">
+                            <span class="uppercase" data-translate="BEARBEITEN"></span>
                         </dv-loading-button>
                     </span>
                     <span ng-if="vm.isSozialdienstFallReadOnly() && vm.isSozialdienstFallAktiv()">
