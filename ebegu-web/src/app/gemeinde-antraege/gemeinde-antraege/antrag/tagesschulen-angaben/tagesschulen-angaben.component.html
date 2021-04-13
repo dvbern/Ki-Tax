@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <div class="well well-with-button" *ngIf="angabenAusKibon">
+    <div class="well well-with-button" *ngIf="angabenAusKibon && (canSeeDurchKibonAusfuellen | async)">
         <span translate>LATS_AUTOMATISCHE_BERECHNUNGEN_HINT</span>
         <!--        <div class="flex-whitespace-item"></div>-->
         <button class="dv-btn cancel-button" (click)="fillOutCalculationsFromKiBon()">
