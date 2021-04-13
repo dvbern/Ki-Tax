@@ -665,6 +665,12 @@
 
     </form>
 
+    <div class="row margin-top-20" *ngIf="canSeeFalscheAngaben | async">
+        <div class="col-md-12">
+            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
+        </div>
+    </div>
+
     <div class="actions">
         <button type="button" class="dv-btn cancel-button"
                 *ngIf="canSeeSave | async"
@@ -679,12 +685,6 @@
             (buttonClick)="onAbschliessen()">
             <span translate>ABSCHLIESSEN</span>
         </dv-loading-button>
-    </div>
-
-    <div class="row margin-top-20" *ngIf="canSeeFalscheAngaben | async">
-        <div class="col-md-12">
-            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
-        </div>
     </div>
 
 </div>
