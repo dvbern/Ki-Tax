@@ -674,11 +674,11 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     public getLastYear(): number {
-        return this.lATSAngabenGemeindeContainer?.gesuchsperiode?.getBasisJahr();
+        return this.lATSAngabenGemeindeContainer?.gesuchsperiode?.getBasisJahrPlus1();
     }
 
     public getNextYear(): number {
-        return this.lATSAngabenGemeindeContainer?.gesuchsperiode?.getBasisJahrPlus1();
+        return this.lATSAngabenGemeindeContainer?.gesuchsperiode?.getBasisJahrPlus2();
     }
 
     private resetBasicValidation(): void {
