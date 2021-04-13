@@ -159,7 +159,7 @@
 
             <div *ngIf="angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').value === false">
                 <dv-input-container-x>
-                    <mat-form-field floatLabel="always" class="no-margin-left" required>
+                    <mat-form-field floatLabel="always" class="flex-grow no-margin-left" required>
                         <label required [ngClass]="{'label-required-error': abschliessenValidationActive &&
                                                             angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').value === false &&
                                                             angabenForm.get('begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen').errors}">
@@ -505,6 +505,18 @@
             </dv-input-container-x>
 
             <dv-input-container-x>
+                <label for="lastenausgleichsberechtigerBetragRO">
+                    {{'LATS_EINNAHMEN_LASTENAUSGLEICH' | translate}}</label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input id="lastenausgleichsberechtigerBetragRO"
+                           matInput
+                           formControlName="lastenausgleichsberechtigerBetragRO"
+                           class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
                 <label>
                     {{'LATS_EINNAHMEN_ELTERNGEBUEHREN' | translate}}
                 </label>
@@ -613,30 +625,32 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
-            <dv-input-container-x *ngIf="angabenForm.get('ueberschussErzielt').value">
-                <label required
-                       [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('ueberschussVerwendung').errors}">
-                    {{'LATS_UEBERSCHUSS_VERWENDUNG' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
-                </label>
-                <mat-form-field floatLabel="always">
-                    <input matInput
-                           formControlName="ueberschussVerwendung"
-                           class="form-control dv-input"/>
-                    <mat-error
-                        *ngIf="abschliessenValidationActive && angabenForm.get('ueberschussVerwendung').errors?.required"
-                        translate>ERROR_REQUIRED
-                    </mat-error>
-                    <mat-error *ngIf="angabenForm.get('ueberschussVerwendung').errors?.noNumberError"
-                               translate>ERROR_NUMBER
-                    </mat-error>
-                    <dv-bisher-x
-                        [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.ueberschussVerwendung"
-                        [korrektur]="angabenForm.get('ueberschussVerwendung').value"
-                        [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </mat-form-field>
-            </dv-input-container-x>
+            <div *ngIf="angabenForm.get('ueberschussErzielt').value === true">
+                <dv-input-container-x>
+                    <mat-form-field floatLabel="always" class="flex-grow no-margin-left" required>
+                        <label required
+                               [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('ueberschussVerwendung').errors}">
+                            {{'LATS_UEBERSCHUSS_VERWENDUNG' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+                        </label>
+                        <textarea matInput
+                                  formControlName="ueberschussVerwendung"
+                                  class="form-control dv-input"></textarea>
+                        <mat-error
+                            *ngIf="abschliessenValidationActive && angabenForm.get('ueberschussVerwendung').errors?.required"
+                            translate>ERROR_REQUIRED
+                        </mat-error>
+                        <mat-error *ngIf="angabenForm.get('ueberschussVerwendung').errors?.noNumberError"
+                                   translate>ERROR_NUMBER
+                        </mat-error>
+                        <dv-bisher-x
+                            [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.ueberschussVerwendung"
+                            [korrektur]="angabenForm.get('ueberschussVerwendung').value"
+                            [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
+            </div>
 
         </div>
 

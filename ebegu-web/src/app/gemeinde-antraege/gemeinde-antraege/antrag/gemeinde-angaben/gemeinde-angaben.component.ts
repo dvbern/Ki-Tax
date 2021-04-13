@@ -213,6 +213,7 @@ export class GemeindeAngabenComponent implements OnInit {
             davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
             normlohnkostenBetreuungBerechnet: [{value: '', disabled: true}],
             lastenausgleichsberechtigerBetrag: [{value: '', disabled: true}],
+            lastenausgleichsberechtigerBetragRO: [{value: '', disabled: true}],
             einnahmenElterngebuehrenRO: [{value: '', disabled: true}],
             kostenbeitragGemeinde: [{value: '', disabled: true}],
             kostenueberschussGemeinde: [{value: '', disabled: true}],
@@ -432,6 +433,10 @@ export class GemeindeAngabenComponent implements OnInit {
                 .pipe(startWith(gemeindeAngabenFromServer?.einnahmenElterngebuehren || 0)),
         ]).subscribe(values => {
                 this.angabenForm.get('lastenausgleichsberechtigerBetrag').setValue(
+                    // round to 0.2
+                    Math.round((values[0] - values[1])),
+                );
+                this.angabenForm.get('lastenausgleichsberechtigerBetragRO').setValue(
                     // round to 0.2
                     Math.round((values[0] - values[1])),
                 );
