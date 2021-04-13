@@ -149,6 +149,7 @@ export abstract class AbstractFerienbetreuungFormular {
     protected handleSaveSuccess(): void {
         this.formAbschliessenTriggered = false;
         this.form.markAsPristine();
+        this.errorService.clearAll();
         this.wizardRS.updateSteps(this.WIZARD_TYPE, this.uiRouterGlobals.params.id);
     }
 

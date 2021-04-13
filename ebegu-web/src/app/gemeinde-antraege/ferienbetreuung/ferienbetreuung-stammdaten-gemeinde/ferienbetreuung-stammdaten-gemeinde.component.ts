@@ -269,6 +269,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                 this.formValidationTriggered = false;
                 this.clearStammdatenAuszahlungValidators();
                 this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
+                this.errorService.clearAll();
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
             }, err => {
                 LOG.error(err);
