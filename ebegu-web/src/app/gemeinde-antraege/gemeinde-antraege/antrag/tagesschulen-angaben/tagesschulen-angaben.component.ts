@@ -226,19 +226,19 @@ export class TagesschulenAngabenComponent {
             ],
             durchschnittKinderProTagFruehbetreuung: [
                 latsAngabenInstiution?.durchschnittKinderProTagFruehbetreuung,
-                numberValidator(ValidationType.POSITIVE_INTEGER),
+                numberValidator(ValidationType.ANY_NUMBER),
             ],
             durchschnittKinderProTagMittag: [
                 latsAngabenInstiution?.durchschnittKinderProTagMittag,
-                numberValidator(ValidationType.POSITIVE_INTEGER),
+                numberValidator(ValidationType.ANY_NUMBER),
             ],
             durchschnittKinderProTagNachmittag1: [
                 latsAngabenInstiution?.durchschnittKinderProTagNachmittag1,
-                numberValidator(ValidationType.POSITIVE_INTEGER),
+                numberValidator(ValidationType.ANY_NUMBER),
             ],
             durchschnittKinderProTagNachmittag2: [
                 latsAngabenInstiution?.durchschnittKinderProTagNachmittag2,
-                numberValidator(ValidationType.POSITIVE_INTEGER),
+                numberValidator(ValidationType.ANY_NUMBER),
             ],
             betreuungsstundenEinschliesslichBesondereBeduerfnisse:
                 [
@@ -395,13 +395,13 @@ export class TagesschulenAngabenComponent {
             this.form.get('anzahlEingeschriebeneKinderPrimarstufe')
                 .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
             this.form.get('durchschnittKinderProTagFruehbetreuung')
-                .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
+                .setValidators([Validators.required, numberValidator(ValidationType.ANY_NUMBER)]);
             this.form.get('durchschnittKinderProTagMittag')
-                .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
+                .setValidators([Validators.required, numberValidator(ValidationType.ANY_NUMBER)]);
             this.form.get('durchschnittKinderProTagNachmittag1')
-                .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
+                .setValidators([Validators.required, numberValidator(ValidationType.ANY_NUMBER)]);
             this.form.get('durchschnittKinderProTagNachmittag2')
-                .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
+                .setValidators([Validators.required, numberValidator(ValidationType.ANY_NUMBER)]);
             this.form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse')
                 .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
         }
@@ -498,13 +498,13 @@ export class TagesschulenAngabenComponent {
             this.form.get('anzahlEingeschriebeneKinderPrimarstufe')
                 .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
             this.form.get('durchschnittKinderProTagFruehbetreuung')
-                .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
+                .setValidators([numberValidator(ValidationType.ANY_NUMBER)]);
             this.form.get('durchschnittKinderProTagMittag')
-                .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
+                .setValidators([numberValidator(ValidationType.ANY_NUMBER)]);
             this.form.get('durchschnittKinderProTagNachmittag1')
-                .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
+                .setValidators([numberValidator(ValidationType.ANY_NUMBER)]);
             this.form.get('durchschnittKinderProTagNachmittag2')
-                .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
+                .setValidators([numberValidator(ValidationType.ANY_NUMBER)]);
             this.form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse')
                 .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
         }
