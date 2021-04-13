@@ -98,6 +98,7 @@
                 <span class="flex-whitespace-item"></span>
                 <button type="button"
                         (click)="fillAdress()"
+                        *ngIf="fillActionsVisible()"
                         class="dv-btn cancel-button">
                     {{ 'FERIENBETREUUNG_AUS_GEMEINDESTAMMDATEN_UEBERNEHMEN' | translate }}
                 </button>
@@ -214,6 +215,7 @@
                 <span class="flex-whitespace-item"></span>
                 <button type="button"
                         (click)="fillBenutzer()"
+                        *ngIf="fillActionsVisible()"
                         class="dv-btn cancel-button">
                     {{ 'FERIENBETREUUNG_MEINE_ANGABEN_UEBERNEHMEN' | translate }}
                 </button>

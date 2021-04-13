@@ -24,6 +24,7 @@ import {ibanValidator} from 'ngx-iban';
 import {combineLatest} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
+import {FerienbetreuungAngabenStatus} from '../../../../models/enums/FerienbetreuungAngabenStatus';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenStammdaten} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenStammdaten';
 import {TSAdresse} from '../../../../models/TSAdresse';
@@ -351,5 +352,9 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         this.form.get('auszahlungsdaten').markAllAsTouched();
 
         this.triggerFormValidation();
+    }
+
+    public fillActionsVisible(): boolean {
+        return this.container.status === FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE;
     }
 }
