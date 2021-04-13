@@ -28,6 +28,7 @@ import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
 import {TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {TSRole} from '../../../../../models/enums/TSRole';
 import {TSWizardStepXTyp} from '../../../../../models/enums/TSWizardStepXTyp';
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
@@ -673,6 +674,9 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     public falscheAngabenVisible(): boolean {
+        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles().concat(TSRole.SUPER_ADMIN))) {
+            return false;
+        }
         return this.lATSAngabenGemeindeContainer?.isInBearbeitungGemeinde() &&
             this.lATSAngabenGemeindeContainer?.angabenDeklaration.status ===
             TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
