@@ -99,7 +99,7 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Column()
-	@Pattern(regexp = Constants.REGEX_TELEFON_MOBILE, message = "{error_invalid_mobilenummer}")
+	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{error_invalid_phonenumber.message}")
 	private String stammdatenKontaktpersonTelefon;
 
 	@Nullable
