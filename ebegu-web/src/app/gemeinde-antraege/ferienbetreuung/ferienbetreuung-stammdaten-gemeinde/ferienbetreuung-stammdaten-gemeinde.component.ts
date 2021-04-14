@@ -165,6 +165,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                 ],
             }),
         });
+        this.enableStammdatenAuszahlungValidation();
     }
 
     // tslint:disable-next-line:cognitive-complexity
@@ -268,7 +269,6 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         this.ferienbetreuungService.saveStammdaten(this.container.id, this.extractFormValues())
             .subscribe(() => {
                 this.formValidationTriggered = false;
-                this.clearStammdatenAuszahlungValidators();
                 this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
                 this.errorService.clearAll();
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
@@ -337,11 +337,6 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
     public onFalscheAngaben(): void {
         this.ferienbetreuungService.falscheAngabenStammdaten(this.container.id, this.extractFormValues())
             .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
-    }
-
-    private clearStammdatenAuszahlungValidators(): void {
-        this.form.get('stammdatenAdresse').clearValidators();
-        this.form.get('auszahlungsdaten').clearValidators();
     }
 
     private enableStammdatenAuszahlungValidation(): void {
