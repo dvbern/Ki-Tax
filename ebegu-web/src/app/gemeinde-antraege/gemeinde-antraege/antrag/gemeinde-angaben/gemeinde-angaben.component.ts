@@ -269,7 +269,10 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm.get('rueckerstattungenElterngebuehrenSchliessung')
             .setValidators([Validators.required, this.numberValidator()]);
         this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
-            .setValidators([this.plausibilisierungTageschulenStunden()]);
+            .setValidators([
+                this.plausibilisierungTageschulenStunden(),
+                this.allInstitutionsGeprueft(),
+            ]);
         this.angabenForm.get('ersteRateAusbezahlt')
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
 
@@ -751,5 +754,13 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm.get('ausbildungenMitarbeitendeBelegt').clearValidators();
 
         this.triggerFormValidation();
+    }
+
+    private allInstitutionsGeprueft(): ValidatorFn {
+        return () => {
+            return this.lATSAngabenGemeindeContainer?.allAngabenInstitutionContainersGeprueft() ? null : {
+                notAllInstitutionsGeprueft: true,
+            };
+        };
     }
 }
