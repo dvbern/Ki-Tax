@@ -116,7 +116,7 @@
                                                         ng-model="vm.gesuchsperiodeId"
                                                         ng-change="vm.setSelectedGesuchsperiode()"
                                                         dv-show-element
-                                                        dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()"
+                                                        dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()"
                                                         ng-required="true">
                                             <md-radio-button
                                                 ng-repeat="current in vm.getAllActiveGesuchsperioden()"
