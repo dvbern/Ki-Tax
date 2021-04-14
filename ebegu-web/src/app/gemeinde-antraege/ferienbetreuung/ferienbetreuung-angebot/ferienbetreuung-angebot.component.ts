@@ -205,6 +205,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         }, {
             updateOn: 'blur',
         });
+        this.enableAdressValidation();
     }
 
     // overwrite
@@ -244,7 +245,6 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         this.ferienbetreuungService.saveAngebot(this.container.id, this.formToObject())
             .subscribe(() => {
                 this.formValidationTriggered = false;
-                this.form.get('angebotAdresse').clearValidators();
                 this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
                 this.errorService.clearAll();
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
