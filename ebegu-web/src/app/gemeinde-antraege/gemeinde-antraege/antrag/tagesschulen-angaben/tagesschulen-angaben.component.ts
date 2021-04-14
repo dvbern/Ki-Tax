@@ -478,7 +478,7 @@ export class TagesschulenAngabenComponent {
     }
 
     public navigateBack($event?: MouseEvent): void {
-        const parentState = 'LASTENAUSGLEICH_TS.ANGABEN_TAGESSCHULEN.LIST';
+        const parentState = 'LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.LIST';
         if ($event && $event.ctrlKey) {
             const url = this.$state.href(parentState);
             window.open(url, '_blank');
