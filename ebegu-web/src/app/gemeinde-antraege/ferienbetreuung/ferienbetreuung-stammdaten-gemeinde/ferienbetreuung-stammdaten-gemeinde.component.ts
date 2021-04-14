@@ -24,7 +24,7 @@ import {ibanValidator} from 'ngx-iban';
 import {combineLatest} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
-import {FerienbetreuungAngabenStatus} from '../../../../models/enums/FerienbetreuungAngabenStatus';
+import {TSFerienbetreuungFormularStatus} from '../../../../models/enums/TSFerienbetreuungFormularStatus';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenStammdaten} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenStammdaten';
 import {TSAdresse} from '../../../../models/TSAdresse';
@@ -350,6 +350,6 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
     }
 
     public fillActionsVisible(): boolean {
-        return this.container.status === FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE;
+        return this.stammdaten?.status === TSFerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE;
     }
 }
