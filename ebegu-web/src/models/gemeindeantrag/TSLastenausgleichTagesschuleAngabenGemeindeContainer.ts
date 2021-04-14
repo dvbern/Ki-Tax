@@ -81,4 +81,13 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
                 return false;
         }
     }
+
+    public allAngabenInstitutionContainersGeprueft(): boolean {
+        return this.angabenInstitutionContainers.reduce((
+            prev: boolean,
+            cur: TSLastenausgleichTagesschuleAngabenInstitutionContainer,
+        ) => {
+            return prev && cur.isGeprueftGemeinde();
+        }, true);
+    }
 }
