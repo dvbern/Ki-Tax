@@ -263,7 +263,13 @@
 
             <div class="custom-errors">
                 <div
-                    *ngIf="abschliessenValidationActive && angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors?.plausibilisierungTagesschulenStundenError">
+                    *ngIf="abschliessenValidationActive && angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors?.notAllInstitutionsGeprueft">
+                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                    <span translate>LATS_NICHT_ALLE_INSTITUTIONEN_ABGESCHLOSSEN</span>
+                </div>
+                <div
+                    *ngIf="abschliessenValidationActive && angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors?.plausibilisierungTagesschulenStundenError &&
+                        !angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors?.notAllInstitutionsGeprueft">
                     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                     <span translate>ERROR_LATS_PLAUSIBLISIERUNG_TAGESSCHULEN</span>
                 </div>
