@@ -608,7 +608,7 @@
             <dv-input-container-x>
                 <label
                     [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('ueberschussErzielt').errors}">
-                    {{'LATS_UEBERSCHUSS_ERZIELT' | translate:{periode: lATSAngabenGemeindeContainer?.gesuchsperiode?.gesuchsperiodeString} }}
+                    {{'LATS_UEBERSCHUSS_ERZIELT' | translate:{periode: lATSAngabenGemeindeContainer?.gesuchsperiode | previousPeriodeStr} }}
                     <span>&nbsp;*</span>
                 </label>
                 <dv-radio-container-x>

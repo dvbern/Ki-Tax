@@ -42,7 +42,7 @@
                 <label required
                        [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('isLehrbetrieb').errors}"
                        id="isLehrbetrieb-radio-group">
-                    {{'LATS_IST_LEHRBETRIEB' | translate:{periode: gesuchsPeriode?.gesuchsperiodeString} }}
+                    {{'LATS_IST_LEHRBETRIEB' | translate:{periode: gesuchsPeriode | nextPeriodeStr} }}
                 </label>
                 <dv-radio-container-x>
 
