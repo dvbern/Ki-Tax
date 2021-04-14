@@ -118,6 +118,13 @@ public class ResourceHelper {
 				gesuch.getId(),
 				msg);
 		}
+		if (userRole != null && userRole.isRoleSozialdienstabhaengig() && gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_SOZIALDIENST) {
+			throw new EbeguRuntimeException(
+				"assertGesuchStatusForBenutzerRole",
+				ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE,
+				gesuch.getId(),
+				msg);
+		}
 		if (gesuch.getStatus().ordinal() >= AntragStatus.VERFUEGEN.ordinal()) {
 			throw new EbeguRuntimeException(
 				"assertGesuchStatusForBenutzerRole",

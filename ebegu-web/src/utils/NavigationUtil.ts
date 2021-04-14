@@ -32,6 +32,8 @@ export class NavigationUtil {
             state.go('gesuch.sozialdienstfallcreation', {
                 gesuchId: gesuchID,
             });
+        } else if (role === TSRole.ADMIN_FERIENBETREUUNG || role === TSRole.SACHBEARBEITER_FERIENBETREUUNG) {
+            state.go('gemeindeantrage.view');
         } else {
             state.go('gesuch.fallcreation', {
                 gesuchId: gesuchID,

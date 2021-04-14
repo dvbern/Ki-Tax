@@ -15,10 +15,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractEntity} from '../TSAbstractEntity';
 import {TSAdresse} from '../TSAdresse';
+import {TSFerienbetreuungAbstractAngaben} from './TSFerienbetreuungAbstractAngaben';
 
-export class TSFerienbetreuungAngabenStammdaten extends TSAbstractEntity {
+export class TSFerienbetreuungAngabenStammdaten extends TSFerienbetreuungAbstractAngaben {
 
     private _amAngebotBeteiligteGemeinden: string[];
     private _seitWannFerienbetreuungen: string;

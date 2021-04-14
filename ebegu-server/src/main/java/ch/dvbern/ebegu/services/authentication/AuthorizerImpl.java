@@ -99,6 +99,7 @@ import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRole.JURIST;
 import static ch.dvbern.ebegu.enums.UserRole.REVISOR;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_FERIENBETREUUNG;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_MANDANT;
@@ -168,7 +169,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			}
 			boolean allowedForGemeinde = isUserAllowedForGemeinde(gemeinde) &&
 				principalBean.isCallerInAnyOfRole(ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS,
-					ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, STEUERAMT, JURIST);
+					ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, STEUERAMT, JURIST,
+					ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG);
 			if (!allowedForGemeinde) {
 				throwViolation(gemeinde);
 			}
@@ -610,7 +612,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return benutzer.getRole().isRoleMandant()
 				|| benutzer.getRole().isRoleAnyAdminGemeinde()
 				|| benutzer.getRole().isRoleGemeinde()
-				|| benutzer.getRole().isRoleAdminTraegerschaftInstitution();
+				|| benutzer.getRole().isRoleAdminTraegerschaftInstitution()
+				|| benutzer.getRole().isRoleSozialdienstabhaengig();
 		}
 		if (principalBean.isCallerInRole(ADMIN_TRAEGERSCHAFT)) {
 			return userBelongsToTraegerschaftOfPrincipal(benutzer);
@@ -852,9 +855,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return fall.getSozialdienstFall() != null
 			&& principalBean.getBenutzer().getSozialdienst() != null
 			&& fall.getSozialdienstFall()
-				.getSozialdienst()
-				.getId()
-				.equals(principalBean.getBenutzer().getSozialdienst().getId());
+			.getSozialdienst()
+			.getId()
+			.equals(principalBean.getBenutzer().getSozialdienst().getId());
 	}
 
 	private boolean isReadAuthorized(final AbstractPlatz abstractPlatz) {
@@ -1647,8 +1650,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			if (principalBean.isCallerInAnyOfRole(UserRole.getTsBgAndGemeindeRoles())) {
 				final boolean gehoertZuGemeinde =
 					principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList()
-					.stream()
-					.anyMatch(latsGemeindeContainer.getGemeinde()::equals);
+						.stream()
+						.anyMatch(latsGemeindeContainer.getGemeinde()::equals);
 				if (gehoertZuGemeinde) {
 					return;
 				}
@@ -1859,6 +1862,10 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	 */
 	@Override
 	public void checkReadAuthorization(@Nullable Sozialdienst sozialdienst) {
+		if (principalBean.isCallerInAnyOfRole(UserRole.getTsBgAndGemeindeRoles())
+			|| principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())) {
+			return;
+		}
 		this.checkWriteAuthorization(sozialdienst);
 	}
 
@@ -1905,7 +1912,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				return;
 			}
 			throwViolation(container);
-		} case IN_PRUEFUNG_KANTON: {
+		}
+		case IN_PRUEFUNG_KANTON: {
 			if (principalBean.isCallerInAnyOfRole(getMandantSuperadminRoles())) {
 				return;
 			}
@@ -1929,7 +1937,37 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				id
 			).orElseThrow(() -> new EbeguEntityNotFoundException("checkReadAuthorizationFerienbetreuung", id));
 
-		checkWriteAuthorization(container);
+		switch (container.getStatus()) {
+		case IN_BEARBEITUNG_GEMEINDE: {
+			if (principalBean.isCallerInAnyOfRole(getMandantSuperadminRoles())) {
+				return;
+			}
+			boolean isFBRole = principalBean.isCallerInAnyOfRole(
+				UserRole.getAllGemeindeFerienbetreuungRoles()
+			);
+			if (isFBRole && principalBean.belongsToGemeinde(container.getGemeinde())) {
+				return;
+			}
+			throwViolation(container);
+		} case IN_PRUEFUNG_KANTON: {
+			if (principalBean.isCallerInAnyOfRole(getMandantSuperadminRoles())) {
+				return;
+			}
+			boolean isFBRole = principalBean.isCallerInAnyOfRole(
+				UserRole.getAllGemeindeFerienbetreuungRoles()
+			);
+			if (isFBRole && principalBean.belongsToGemeinde(container.getGemeinde())) {
+				return;
+			}
+			throwViolation(container);
+		}
+		case VERFUEGT:
+		case ABGELEHNT:
+			throwViolation(container);
+			return;
+		default:
+			throwViolation(container);
+		}
 	}
 
 	@Override

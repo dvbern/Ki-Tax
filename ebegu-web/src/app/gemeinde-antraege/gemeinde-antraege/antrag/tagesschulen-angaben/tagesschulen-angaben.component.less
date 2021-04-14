@@ -33,6 +33,7 @@ textarea {
     .actions {
         display: flex;
         justify-content: center;
+        margin-bottom: 10rem;
 
         & > dv-loading-button {
             margin: 0 5px;
@@ -52,7 +53,7 @@ mat-divider {
 }
 
 .label-required-error {
-    color: red;
+    color: red !important;
 }
 
 .tagesschule-angaben {
@@ -61,4 +62,21 @@ mat-divider {
 
 .pointer-cursor {
     cursor: pointer;
+}
+
+.well.well-with-button {
+    border-bottom-color: #bfbfbf;
+    display: flex;
+    justify-content: space-between;
+    .dv-btn {
+        i {
+            color: black;
+        }
+    }
+    span {
+        align-items: center;
+        display: flex;
+        margin-bottom: 0;
+        margin-top: 0;
+    }
 }

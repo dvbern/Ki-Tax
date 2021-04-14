@@ -32,6 +32,8 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
@@ -40,6 +42,9 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.KinderAusAnderenGemeindenZahlenAnderenTarifAnswer;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 
@@ -109,6 +114,11 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 	@Column(length = Constants.DB_TEXTAREA_LENGTH)
 	private String bemerkungenOeffnungszeiten;
 
+	@Nonnull
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private FerienbetreuungFormularStatus status = FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE;;
+
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(
 		name = "ferienbetreuung_finanziell_beteiligte_gemeinden",
@@ -174,12 +184,51 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 
 	@Nullable
 	@Column()
-	private Boolean kinderAusAnderenGemeindenZahlenAnderenTarif;
+	@Enumerated(EnumType.STRING)
+	private KinderAusAnderenGemeindenZahlenAnderenTarifAnswer kinderAusAnderenGemeindenZahlenAnderenTarif;
 
 	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
 	@Column(length = Constants.DB_TEXTAREA_LENGTH)
 	private String bemerkungenTarifsystem;
+
+	public FerienbetreuungAngabenAngebot() {}
+
+	public FerienbetreuungAngabenAngebot(FerienbetreuungAngabenAngebot toCopy) {
+		this.angebot = toCopy.angebot;
+		this.angebotKontaktpersonVorname = toCopy.angebotKontaktpersonVorname;
+		this.angebotKontaktpersonNachname = toCopy.angebotKontaktpersonNachname;
+		assert toCopy.angebotAdresse != null;
+		this.angebotAdresse = toCopy.angebotAdresse.copyAdresse(new Adresse(), AntragCopyType.MUTATION);
+
+		this.anzahlFerienwochenFruehlingsferien = toCopy.anzahlFerienwochenFruehlingsferien;
+		this.anzahlFerienwochenSommerferien = toCopy.anzahlFerienwochenSommerferien;
+		this.anzahlFerienwochenHerbstferien = toCopy.anzahlFerienwochenHerbstferien;
+		this.anzahlFerienwochenWinterferien = toCopy.anzahlFerienwochenWinterferien;
+		this.anzahlTage = toCopy.anzahlTage;
+		this.bemerkungenAnzahlFerienwochen = toCopy.bemerkungenAnzahlFerienwochen;
+
+		this.finanziellBeteiligteGemeinden = new HashSet<>(toCopy.finanziellBeteiligteGemeinden);
+
+		this.gemeindeFuehrtAngebotSelber = toCopy.gemeindeFuehrtAngebotSelber;
+		this.gemeindeBeauftragtExterneAnbieter = toCopy.gemeindeBeauftragtExterneAnbieter;
+		this.angebotVereineUndPrivateIntegriert = toCopy.angebotVereineUndPrivateIntegriert;
+		this.bemerkungenKooperation = toCopy.bemerkungenKooperation;
+
+		this.leitungDurchPersonMitAusbildung = toCopy.leitungDurchPersonMitAusbildung;
+		this.betreuungDurchPersonenMitErfahrung = toCopy.betreuungDurchPersonenMitErfahrung;
+		this.anzahlKinderAngemessen = toCopy.anzahlKinderAngemessen;
+		this.betreuungsschluessel = toCopy.betreuungsschluessel;
+		this.bemerkungenPersonal = toCopy.bemerkungenPersonal;
+
+		this.fixerTarifKinderDerGemeinde = toCopy.fixerTarifKinderDerGemeinde;
+		this.einkommensabhaengigerTarifKinderDerGemeinde = toCopy.einkommensabhaengigerTarifKinderDerGemeinde;
+		this.tagesschuleTarifGiltFuerFerienbetreuung = toCopy.tagesschuleTarifGiltFuerFerienbetreuung;
+		this.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet = toCopy.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet;
+		this.kinderAusAnderenGemeindenZahlenAnderenTarif = toCopy.kinderAusAnderenGemeindenZahlenAnderenTarif;
+
+		this.bemerkungenTarifsystem = toCopy.bemerkungenTarifsystem;
+	}
 
 	@Nullable
 	public String getAngebot() {
@@ -425,11 +474,13 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 	}
 
 	@Nullable
-	public Boolean getKinderAusAnderenGemeindenZahlenAnderenTarif() {
+	public KinderAusAnderenGemeindenZahlenAnderenTarifAnswer getKinderAusAnderenGemeindenZahlenAnderenTarif() {
 		return kinderAusAnderenGemeindenZahlenAnderenTarif;
 	}
 
-	public void setKinderAusAnderenGemeindenZahlenAnderenTarif(@Nullable Boolean kinderAusAnderenGemeindenZahlenAnderenTarif) {
+	public void setKinderAusAnderenGemeindenZahlenAnderenTarif(
+		@Nullable KinderAusAnderenGemeindenZahlenAnderenTarifAnswer kinderAusAnderenGemeindenZahlenAnderenTarif
+	) {
 		this.kinderAusAnderenGemeindenZahlenAnderenTarif = kinderAusAnderenGemeindenZahlenAnderenTarif;
 	}
 
@@ -448,6 +499,10 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 	}
 
 	public boolean isReadyForFreigeben() {
+		return checkPropertiesNotNull() && status == FerienbetreuungFormularStatus.ABGESCHLOSSEN;
+	}
+
+	public boolean isReadyForAbschluss() {
 		return checkPropertiesNotNull();
 	}
 
@@ -470,6 +525,23 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 			this.betreuungsschluessel
 		);
 		return nonNullObj.stream()
-			.anyMatch(Objects::isNull);
+			.noneMatch(Objects::isNull);
+	}
+
+	@Nonnull
+	public FerienbetreuungFormularStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(@Nonnull FerienbetreuungFormularStatus status) {
+		this.status = status;
+	}
+
+	public boolean isAbgeschlossen() {
+		return status == FerienbetreuungFormularStatus.ABGESCHLOSSEN;
+	}
+
+	public boolean isGeprueft() {
+		return status == FerienbetreuungFormularStatus.GEPRUEFT;
 	}
 }

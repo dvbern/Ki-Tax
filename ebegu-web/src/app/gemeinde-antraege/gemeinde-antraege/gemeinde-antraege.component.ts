@@ -15,7 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {HttpErrorResponse} from '@angular/common/http';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    ViewChild,
+    ViewEncapsulation,
+} from '@angular/core';
 import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
@@ -50,6 +57,7 @@ const LOG = LogFactory.createLog('GemeindeAntraegeComponent');
     templateUrl: './gemeinde-antraege.component.html',
     styleUrls: ['./gemeinde-antraege.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None
 })
 export class GemeindeAntraegeComponent implements OnInit {
 
@@ -59,7 +67,6 @@ export class GemeindeAntraegeComponent implements OnInit {
         'fallNummer',
         'familienName',
         'kinder',
-        'aenderungsdatum',
         'dokumenteHochgeladen',
         'angebote',
         'institutionen',
@@ -79,7 +86,10 @@ export class GemeindeAntraegeComponent implements OnInit {
     private readonly sortDebounceSubject: BehaviorSubject<{
         predicate?: string,
         reverse?: boolean
-    }> = new BehaviorSubject<{ predicate?: string; reverse?: boolean }>({});
+    }> = new BehaviorSubject<{ predicate?: string; reverse?: boolean }>({
+        predicate: 'aenderungsdatum',
+        reverse: true
+    });
     public triedSending: boolean = false;
     public types: TSGemeindeAntragTyp[];
     public deletePossible$: Observable<boolean>;
@@ -128,6 +138,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                         status: antrag.statusString,
                         periode: antrag.gesuchsperiode.gesuchsperiodeString,
                         antragTyp: antrag.gemeindeAntragTyp,
+                        aenderungsdatum: antrag.timestampMutiert
                     };
                 });
             }),
@@ -161,6 +172,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         this.gemeindeAntragService.createAllAntrage(this.formGroup.value).subscribe(() => {
             this.loadAntragList();
             this.cd.markForCheck();
+            this.errorService.addMesageAsInfo(this.translate.instant('ANTRAEGE_ERSTELLT'));
         }, err => {
             this.handleCreateAntragError(err);
         });
@@ -239,9 +251,11 @@ export class GemeindeAntraegeComponent implements OnInit {
             this.triedSending = true;
             return;
         }
+        // tslint:disable-next-line:no-identical-functions
         this.gemeindeAntragService.createAntrag(this.formGroup.value).subscribe(() => {
             this.loadAntragList();
             this.cd.markForCheck();
+            this.errorService.addMesageAsInfo(this.translate.instant('ANTRAG_ERSTELLT'));
         }, err => {
             this.handleCreateAntragError(err);
         });
@@ -305,7 +319,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     public canCreateAntrag(): Observable<boolean> {
         return this.authService.principal$.pipe(
             filter(principal => !!principal),
-            map(() => this.authService.isOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSorMandantRoles()))
+            map(() => this.authService.isOneOfRoles(TSRoleUtil.getFerienbetreuungRoles()))
         );
     }
 }

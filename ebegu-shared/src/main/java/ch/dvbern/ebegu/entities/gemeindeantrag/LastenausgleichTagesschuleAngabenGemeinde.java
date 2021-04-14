@@ -87,6 +87,19 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	@Column(nullable = true)
 	private BigDecimal einnahmenElterngebuehren;
 
+	@Nullable
+	@Column(nullable = true)
+	private Boolean tagesschuleTeilweiseGeschlossen;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal rueckerstattungenElterngebuehrenSchliessung;
+
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal ersteRateAusbezahlt;
+
 	// C: Kostenbeteiligung Gemeinde
 
 	@Nullable
@@ -100,6 +113,16 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	@Nullable
 	@Column(nullable = true)
 	private BigDecimal einnahmenSubventionenDritter;
+
+	@Nullable
+	@Column(nullable = true)
+	private Boolean ueberschussErzielt;
+
+	@Nullable
+	@Column(nullable = true)
+	private String ueberschussVerwendung;
+
+
 
 	// D: Angaben zu weiteren Kosten und Ertraegen
 
@@ -151,16 +174,21 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 		this.angebotFuerFerienbetreuungVorhanden = source.angebotFuerFerienbetreuungVorhanden;
 		this.angebotVerfuegbarFuerAlleSchulstufen = source.angebotVerfuegbarFuerAlleSchulstufen;
 		this.begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen = source.begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen;
+		this.tagesschuleTeilweiseGeschlossen = source.tagesschuleTeilweiseGeschlossen;
+		this.rueckerstattungenElterngebuehrenSchliessung = source.rueckerstattungenElterngebuehrenSchliessung;
 		// B: Abrechnung
 		this.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse = source.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse;
 		this.geleisteteBetreuungsstundenBesondereBeduerfnisse = source.geleisteteBetreuungsstundenBesondereBeduerfnisse;
 		this.davonStundenZuNormlohnMehrAls50ProzentAusgebildete = source.davonStundenZuNormlohnMehrAls50ProzentAusgebildete;
 		this.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete = source.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete;
+		this.ersteRateAusbezahlt = source.ersteRateAusbezahlt;
 		this.einnahmenElterngebuehren = source.einnahmenElterngebuehren;
 		// C: Kostenbeteiligung Gemeinde
 		this.gesamtKostenTagesschule = source.gesamtKostenTagesschule;
 		this.einnnahmenVerpflegung = source.einnnahmenVerpflegung;
 		this.einnahmenSubventionenDritter = source.einnahmenSubventionenDritter;
+		this.ueberschussErzielt = source.ueberschussErzielt;
+		this.ueberschussVerwendung = source.ueberschussVerwendung;
 		// D: Angaben zu weiteren Kosten und Ertraegen
 		this.bemerkungenWeitereKostenUndErtraege = source.bemerkungenWeitereKostenUndErtraege;
 		// E: Kontrollfragen
@@ -391,5 +419,51 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 			getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse())
 			.compareTo(getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete().add(
 				getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete())) == 0;
+	}
+
+	@Nullable
+	public Boolean getTagesschuleTeilweiseGeschlossen() {
+		return tagesschuleTeilweiseGeschlossen;
+	}
+
+	public void setTagesschuleTeilweiseGeschlossen(@Nullable Boolean tagesschuleTeilweiseGeschlossen) {
+		this.tagesschuleTeilweiseGeschlossen = tagesschuleTeilweiseGeschlossen;
+	}
+
+	@Nullable
+	public BigDecimal getRueckerstattungenElterngebuehrenSchliessung() {
+		return rueckerstattungenElterngebuehrenSchliessung;
+	}
+
+	public void setRueckerstattungenElterngebuehrenSchliessung(
+		@Nullable BigDecimal rueckerstattungenElterngebuehrenSchliesseung) {
+		this.rueckerstattungenElterngebuehrenSchliessung = rueckerstattungenElterngebuehrenSchliesseung;
+	}
+
+	@Nullable
+	public BigDecimal getErsteRateAusbezahlt() {
+		return ersteRateAusbezahlt;
+	}
+
+	public void setErsteRateAusbezahlt(@Nullable BigDecimal ersteRateAusbezahlt) {
+		this.ersteRateAusbezahlt = ersteRateAusbezahlt;
+	}
+
+	@Nullable
+	public Boolean getUeberschussErzielt() {
+		return ueberschussErzielt;
+	}
+
+	public void setUeberschussErzielt(@Nullable Boolean ueberschussErzielt) {
+		this.ueberschussErzielt = ueberschussErzielt;
+	}
+
+	@Nullable
+	public String getUeberschussVerwendung() {
+		return ueberschussVerwendung;
+	}
+
+	public void setUeberschussVerwendung(@Nullable String ueberschussVerwendung) {
+		this.ueberschussVerwendung = ueberschussVerwendung;
 	}
 }

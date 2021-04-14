@@ -17,21 +17,27 @@
 
 package ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich;
 
+import java.util.Collection;
+
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.wizardx.Wizard;
 
 public class TagesschuleWizard extends Wizard {
 
+	private final Collection<Institution> readableInstitutionsOfUser;
 	private LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleAngabenGemeindeContainer;
 
 	public TagesschuleWizard(
 		@Nonnull UserRole roleToUse,
-		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleAngabenGemeindeContainer) {
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleAngabenGemeindeContainer,
+		@Nonnull Collection<Institution> readableInstitutionsOfUser) {
 		this.role = roleToUse;
 		this.lastenausgleichTagesschuleAngabenGemeindeContainer = lastenausgleichTagesschuleAngabenGemeindeContainer;
+		this.readableInstitutionsOfUser = readableInstitutionsOfUser;
 		if (role.isRoleGemeindeOrTS() || role.isRoleMandant() || role.isSuperadmin()) {
 			this.setStep(new AngabenGemeindeStep());
 		} else {
@@ -41,5 +47,9 @@ public class TagesschuleWizard extends Wizard {
 
 	public LastenausgleichTagesschuleAngabenGemeindeContainer getLastenausgleichTagesschuleAngabenGemeindeContainer() {
 		return lastenausgleichTagesschuleAngabenGemeindeContainer;
+	}
+
+	public Collection<Institution> getReadableInstitutionsOfUser() {
+		return readableInstitutionsOfUser;
 	}
 }

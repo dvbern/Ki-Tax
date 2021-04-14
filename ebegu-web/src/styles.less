@@ -110,11 +110,12 @@ body {
     ui-view {
         display: flex;
         flex: 1;
+        height: 100%;
         max-height: 100%;
         max-width: 100%;
 
         & > * {
-            height: auto;
+            height: 100%;
             overflow-x: hidden;
             overflow-y: auto;
             width: 100%;
@@ -663,6 +664,10 @@ _:-ms-fullscreen, .mat-cell {
 
 .dv-mat-dialog-send-notrecht-mitteilung .mat-dialog-container{
     background-color: @lgrey;
+}
+
+.max-width-container-750 {
+    max-width: 750px;
 }
 
 /* Personal preference for BS modal.  The LESS below makes the backdrop white and

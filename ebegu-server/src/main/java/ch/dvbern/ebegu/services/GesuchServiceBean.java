@@ -756,7 +756,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				UserRole.SACHBEARBEITER_INSTITUTION))) {
 				// Nur GS darf ein Gesuch sehen, das sich im Status BEARBEITUNG_GS oder FREIGABEQUITTUNG befindet
 				predicatesToUse.add(root.get(Gesuch_.status)
-					.in(AntragStatus.IN_BEARBEITUNG_GS, AntragStatus.IN_BEARBEITUNG_SOZIALDIENST, AntragStatus.FREIGABEQUITTUNG)
+					.in(
+						AntragStatus.IN_BEARBEITUNG_GS,
+						AntragStatus.IN_BEARBEITUNG_SOZIALDIENST,
+						AntragStatus.FREIGABEQUITTUNG)
 					.not());
 			}
 
@@ -1274,7 +1277,11 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		AntragStatus status;
 		if (this.principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
 			status = AntragStatus.IN_BEARBEITUNG_GS;
-		} else if (gesuch.getFall().getSozialdienstFall() != null) {
+		} else if (gesuch.getFall().getSozialdienstFall() != null
+			&& this.principalBean.isCallerInAnyOfRole(
+			UserRole.ADMIN_SOZIALDIENST,
+			UserRole.SACHBEARBEITER_SOZIALDIENST,
+			UserRole.SUPER_ADMIN)) {
 			status = AntragStatus.IN_BEARBEITUNG_SOZIALDIENST;
 		} else {
 			status = AntragStatus.IN_BEARBEITUNG_JA;
@@ -1847,7 +1854,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 					ErrorCodeEnum.ERROR_DELETION_NOT_ALLOWED_FOR_GS);
 			}
 			if ((isRolleGesuchsteller && gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_GS)
-			|| (isRolleSozialdiesnt && gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_SOZIALDIENST)) {
+				|| (isRolleSozialdiesnt && gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_SOZIALDIENST)) {
 				throw new EbeguRuntimeException("removeGesuchstellerAntrag",
 					ErrorCodeEnum.ERROR_DELETION_ANTRAG_NOT_ALLOWED, gesuch.getStatus());
 			}

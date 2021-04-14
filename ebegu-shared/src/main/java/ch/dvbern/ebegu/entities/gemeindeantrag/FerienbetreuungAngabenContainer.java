@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.entities.gemeindeantrag;
 
+import java.util.Set;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
@@ -27,16 +29,19 @@ import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
@@ -81,6 +86,11 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 	@Size(max = DB_TEXTAREA_LENGTH)
 	@Column(nullable = true)
 	private String internerKommentar;
+
+	@Nullable
+	@Valid
+	@OneToMany(mappedBy = "ferienbetreuungAngabenContainer")
+	private Set<FerienbetreuungDokument> dokumente;
 
 	@Nonnull
 	public FerienbetreuungAngabenStatus getStatus() {
@@ -157,5 +167,49 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		return getId().equals(other.getId());
+	}
+
+	public boolean isAtLeastInPruefungKanton() {
+		return status == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON ||
+			status == FerienbetreuungAngabenStatus.GEPRUEFT ||
+			status == FerienbetreuungAngabenStatus.VERFUEGT ||
+			status == FerienbetreuungAngabenStatus.ABGELEHNT;
+	}
+
+	public boolean isReadyForGeprueft() {
+		if(getAngabenKorrektur() == null) {
+			return false;
+		}
+
+		return getAngabenKorrektur().getFerienbetreuungAngabenStammdaten().isAbgeschlossen() &&
+			getAngabenKorrektur().getFerienbetreuungAngabenAngebot().isAbgeschlossen() &&
+			getAngabenKorrektur().getFerienbetreuungAngabenNutzung().isAbgeschlossen() &&
+			getAngabenKorrektur().getFerienbetreuungAngabenKostenEinnahmen().isAbgeschlossen();
+	}
+
+	@Nullable
+	public Set<FerienbetreuungDokument> getDokumente() {
+		return dokumente;
+	}
+
+	public void setDokumente(@Nullable Set<FerienbetreuungDokument> dokumente) {
+		this.dokumente = dokumente;
+	}
+
+	public boolean isInPruefungKanton() {
+		return status == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON;
+	}
+
+	public boolean isGeprueft() {
+		return status == FerienbetreuungAngabenStatus.GEPRUEFT ||
+			status == FerienbetreuungAngabenStatus.VERFUEGT ||
+			status == FerienbetreuungAngabenStatus.ABGELEHNT;
+	}
+
+	public void copyForFreigabe() {
+		// Nur moeglich, wenn noch nicht freigegeben und ueberhaupt Daten zum kopieren vorhanden
+		if (status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE) {
+			angabenKorrektur = new FerienbetreuungAngaben(angabenDeklaration);
+		}
 	}
 }

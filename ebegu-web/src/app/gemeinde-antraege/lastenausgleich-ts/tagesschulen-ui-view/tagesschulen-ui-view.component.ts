@@ -32,7 +32,7 @@ export class TagesschulenUiViewComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.$transition.onFinish({to: 'LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN'}, () => {
+        this.$transition.onSuccess({to: 'LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN'}, () => {
             this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.LIST');
         });
 

@@ -118,7 +118,7 @@ describe('gesuchGenerator', () => {
                         expect(gesuch).toBeDefined();
                         expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);
                         expect(gesuch.eingangsart).toBe(TSEingangsart.PAPIER);
-                        expect(gesuch.status).toBe(TSAntragStatus.IN_BEARBEITUNG_JA);
+                        expect(gesuch.status).toBe(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST);
                         expect(gesuch.isNew()).toBe(true);
                         expect(gesuch.dossier).toBeDefined();
                         expect(gesuch.dossier).not.toBe(dossier);

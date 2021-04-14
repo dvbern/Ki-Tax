@@ -28,11 +28,13 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import org.apache.commons.lang.NotImplementedException;
@@ -49,6 +51,9 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 
 	@Inject
 	private FerienbetreuungService ferienbetreuungService;
+
+	@Inject
+	private PrincipalBean principal;
 
 	@Override
 	@Nonnull
@@ -86,23 +91,25 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 		@Nullable String gemeinde,
 		@Nullable String periode,
 		@Nullable String typ,
-		@Nullable String status) {
+		@Nullable String status,
+		@Nullable String timestampMutiert
+	) {
 
 		if (typ != null) {
 			switch (typ) {
 			case "LASTENAUSGLEICH_TAGESSCHULEN": {
 				return lastenausgleichTagesschuleAngabenGemeindeService.getLastenausgleicheTagesschulen(
-					gemeinde, periode, status
+					gemeinde, periode, status, timestampMutiert
 				);
 			}
 			case "FERIENBETREUUNG": {
-				return ferienbetreuungService.getFerienbetreuungAntraege(gemeinde, periode, status);
+				return ferienbetreuungService.getFerienbetreuungAntraege(gemeinde, periode, status, timestampMutiert);
 			}
 			default:
 				throw new NotImplementedException("getGemeindeAntraege Typ: " + typ + " wurde noch nicht implementiert");
 			}
 		}
-		return getGemeindeAntraege(gemeinde, periode, status);
+		return getGemeindeAntraege(gemeinde, periode, status, timestampMutiert);
 
 	}
 
@@ -111,19 +118,28 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 	public List<GemeindeAntrag> getGemeindeAntraege(
 		@Nullable String gemeindeId,
 		@Nullable String periodeId,
-		@Nullable String status) {
-
-		List<LastenausgleichTagesschuleAngabenGemeindeContainer> latsAntraege = lastenausgleichTagesschuleAngabenGemeindeService.getLastenausgleicheTagesschulen(
-			gemeindeId, periodeId, status
-		);
-
-		List<FerienbetreuungAngabenContainer> ferienbetreuungAntraege = ferienbetreuungService.getFerienbetreuungAntraege(
-			gemeindeId, periodeId, status
-		);
+		@Nullable String status,
+		@Nullable String timestampMutiert
+		) {
 
 		List<GemeindeAntrag> antraege = new ArrayList<>();
+
+		if(principal.isCallerInAnyOfRole(UserRole.getAllGemeindeFerienbetreuungMandantSuperadminRoles())) {
+			List<FerienbetreuungAngabenContainer> ferienbetreuungAntraege = ferienbetreuungService.getFerienbetreuungAntraege(
+				gemeindeId, periodeId, status, timestampMutiert
+			);
+			antraege.addAll(ferienbetreuungAntraege);
+		}
+
+		if (principal.isCallerInAnyOfRole(UserRole.ADMIN_FERIENBETREUUNG, UserRole.SACHBEARBEITER_FERIENBETREUUNG)) {
+			return antraege;
+		}
+
+		List<LastenausgleichTagesschuleAngabenGemeindeContainer> latsAntraege = lastenausgleichTagesschuleAngabenGemeindeService.getLastenausgleicheTagesschulen(
+			gemeindeId, periodeId, status, timestampMutiert
+		);
 		antraege.addAll(latsAntraege);
-		antraege.addAll(ferienbetreuungAntraege);
+
 		return antraege;
 	}
 

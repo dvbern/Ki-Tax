@@ -23,11 +23,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 import org.hibernate.envers.Audited;
 
 @Entity
@@ -75,6 +79,26 @@ public class FerienbetreuungAngabenNutzung extends AbstractEntity {
 	@Nullable
 	@Column(name = "anzahl_betreute_kinder_3_zyklus")
 	private BigDecimal anzahlBetreuteKinder3Zyklus;
+
+	@Nonnull
+	@Column()
+	@Enumerated(EnumType.STRING)
+	private FerienbetreuungFormularStatus status = FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE;;
+
+	public FerienbetreuungAngabenNutzung() {}
+
+	public FerienbetreuungAngabenNutzung(FerienbetreuungAngabenNutzung toCopy) {
+		this.anzahlBetreuungstageKinderBern = toCopy.anzahlBetreuungstageKinderBern;
+		this.betreuungstageKinderDieserGemeinde = betreuungstageKinderDieserGemeindeSonderschueler;
+		this.betreuungstageKinderDieserGemeindeSonderschueler = toCopy.betreuungstageKinderDieserGemeindeSonderschueler;
+		this.davonBetreuungstageKinderAndererGemeinden = toCopy.davonBetreuungstageKinderAndererGemeinden;
+		this.davonBetreuungstageKinderAndererGemeindenSonderschueler = toCopy.davonBetreuungstageKinderAndererGemeindenSonderschueler;
+
+		this.anzahlBetreuteKinder = toCopy.anzahlBetreuteKinder;
+		this.anzahlBetreuteKinder1Zyklus = toCopy.anzahlBetreuteKinder1Zyklus;
+		this.anzahlBetreuteKinder2Zyklus = toCopy.anzahlBetreuteKinder2Zyklus;
+		this.anzahlBetreuteKinder3Zyklus = toCopy.anzahlBetreuteKinder3Zyklus;
+	}
 
 	@Nullable
 	public BigDecimal getAnzahlBetreuungstageKinderBern() {
@@ -172,6 +196,10 @@ public class FerienbetreuungAngabenNutzung extends AbstractEntity {
 	}
 
 	public boolean isReadyForFreigeben() {
+		return checkPropertiesNotNull() && status == FerienbetreuungFormularStatus.ABGESCHLOSSEN;
+	}
+
+	public boolean isReadyForAbschluss() {
 		return checkPropertiesNotNull();
 	}
 
@@ -182,6 +210,23 @@ public class FerienbetreuungAngabenNutzung extends AbstractEntity {
 			this.davonBetreuungstageKinderAndererGemeinden
 		);
 		return nonNullObj.stream()
-			.anyMatch(Objects::isNull);
+			.noneMatch(Objects::isNull);
+	}
+
+	@Nonnull
+	public FerienbetreuungFormularStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(@Nonnull FerienbetreuungFormularStatus status) {
+		this.status = status;
+	}
+
+	public boolean isAbgeschlossen() {
+		return status == FerienbetreuungFormularStatus.ABGESCHLOSSEN;
+	}
+
+	public boolean isGeprueft() {
+		return status == FerienbetreuungFormularStatus.GEPRUEFT;
 	}
 }

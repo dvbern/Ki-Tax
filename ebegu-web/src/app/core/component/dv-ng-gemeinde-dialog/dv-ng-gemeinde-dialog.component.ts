@@ -45,6 +45,7 @@ export class DvNgGemeindeDialogComponent {
     ) {
 
         this.gemeindeList = data.gemeindeList;
+        this.sortGemeinden();
         this.gesuchsperiodeList = data.gesuchsperiodeList;
     }
 
@@ -67,5 +68,12 @@ export class DvNgGemeindeDialogComponent {
 
     public close(): void {
         this.dialogRef.close();
+    }
+
+    private sortGemeinden(): void {
+        if (EbeguUtil.isNullOrUndefined(this.gemeindeList) || !Array.isArray(this.gemeindeList)) {
+            return;
+        }
+        this.gemeindeList.sort((a, b) => a.name.localeCompare(b.name));
     }
 }

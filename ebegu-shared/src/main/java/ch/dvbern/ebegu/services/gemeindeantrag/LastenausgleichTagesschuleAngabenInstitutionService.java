@@ -17,7 +17,9 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -71,7 +73,21 @@ public interface LastenausgleichTagesschuleAngabenInstitutionService {
 	 * Gibt alle LastenausgleichTagesschuleAngabenInsitutionContainer zurück, die zu diesem Gemeinde-Antrag gehören
 	 */
 	List<LastenausgleichTagesschuleAngabenInstitutionContainer> findLastenausgleichTagesschuleAngabenInstitutionByGemeindeAntragId(String gemeindeAntragId);
+	@Nonnull
+	LastenausgleichTagesschuleAngabenInstitutionContainer latsAngabenInstitutionContainerWiederOeffnenGemeinde(
+		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer fallContainer);
 
-	LastenausgleichTagesschuleAngabenInstitutionContainer latsAngabenInstitutionContainerWiederOeffnen(
-			LastenausgleichTagesschuleAngabenInstitutionContainer fallContainer);
+	@Nonnull
+	LastenausgleichTagesschuleAngabenInstitutionContainer latsAngabenInstitutionContainerWiederOeffnenTS(
+		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer fallContainer);
+
+	@Nonnull
+	Map<String, Integer> calculateAnzahlEingeschriebeneKinder(
+		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer container
+	);
+
+	@Nonnull
+	Map<String, BigDecimal> calculateDurchschnittKinderProTag(
+		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer container
+	);
 }

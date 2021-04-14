@@ -19,213 +19,239 @@
     <h1 class="access-for-all-title" translate>FERIENBETREUUNG_ANGEBOT</h1>
     <div class="row view-title">
         <div class="col-md-12">
-            <h2 translate>FERIENBETREUUNG_ANGEBOT</h2>
+            <h2>{{'FERIENBETREUUNG_ANGEBOT_SCHULJAHR' | translate:{periode: container?.gesuchsperiode?.gesuchsperiodeString} }}</h2>
             <hr class="header"/>
         </div>
     </div>
 
     <form *ngIf="form" [formGroup]="form">
 
-        <div class="limit-width">
+        <div class="max-width-container-750">
 
             <dv-input-container-x [verticalAlign]="true">
-                <label required [ngClass]="{'label-required-error': form && form.get('angebot').errors}">
+                <label required
+                       [ngClass]="{'label-required-error': form && form.get('angebot').errors}"
+                       for="angebot_id">
                     {{'FERIENBETREUUNG_NAME_ANGEBOT' | translate}}
                     <dv-tooltip inputId="angebot_id"
                                 [text]="'FERIENBETREUUNG_NAME_ANGEBOT_HINT' | translate">
                     </dv-tooltip>
                 </label>
-                <div class="flex-whitespace-item"></div>
                 <mat-form-field floatLabel="always">
-                    <input type="text" matInput formControlName="angebot" id="angebot_id" class="form-control dv-input"/>
+                    <input type="text"
+                           matInput
+                           formControlName="angebot"
+                           id="angebot_id"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('angebot').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
                 </mat-form-field>
-                <mat-error *ngIf="form && form.get('angebot').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
             </dv-input-container-x>
 
-            <mat-divider></mat-divider>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="max-width-container-750">
             <h3 translate class="uppercase">FERIENBETREUUNG_KONTAKTPERSON</h3>
 
-            <div class="row">
+            <div formGroupName="angebotAdresse">
+                <div class="row">
 
-                <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
-                    <label required [ngClass]="{'label-required-error': form && form.get('angebotKontaktpersonVorname').errors}">
-                        {{'VORNAME' | translate}}
-                    </label>
-                    <div class="flex-whitespace-item"></div>
-                    <mat-form-field floatLabel="always">
-                        <input type="text" matInput formControlName="angebotKontaktpersonVorname" class="form-control dv-input"/>
-                    </mat-form-field>
-                    <mat-error *ngIf="form && form.get('angebotKontaktpersonVorname').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                </dv-input-container-x>
+                    <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+                        <label required
+                               for="angebotKontaktpersonVorname_id"
+                               [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('kontaktpersonVorname').errors}">
+                            {{'VORNAME' | translate}}
+                        </label>
+                        <mat-form-field floatLabel="always">
+                            <input type="text"
+                                   matInput
+                                   id="angebotKontaktpersonVorname_id"
+                                   formControlName="kontaktpersonVorname"
+                                   class="form-control dv-input"/>
+                            <mat-error
+                                *ngIf="form && form.get('angebotAdresse').get('kontaktpersonVorname').errors?.required"
+                                translate>ERROR_REQUIRED
+                            </mat-error>
+                        </mat-form-field>
+                    </dv-input-container-x>
 
-                <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
-                    <label required [ngClass]="{'label-required-error': form && form.get('angebotKontaktpersonNachname').errors}">
-                        {{'NAME' | translate}}
-                    </label>
-                    <div class="flex-whitespace-item"></div>
-                    <mat-form-field floatLabel="always">
-                        <input type="text" matInput formControlName="angebotKontaktpersonNachname" class="form-control dv-input"/>
-                    </mat-form-field>
-                    <mat-error *ngIf="form && form.get('angebotKontaktpersonNachname').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                </dv-input-container-x>
-            </div>
+                    <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+                        <label required
+                               for="angebotKontaktpersonNachname_id"
+                               [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('kontaktpersonNachname').errors}">
+                            {{'NAME' | translate}}
+                        </label>
+                        <mat-form-field floatLabel="always">
+                            <input type="text"
+                                   matInput
+                                   id="angebotKontaktpersonNachname_id"
+                                   formControlName="kontaktpersonNachname"
+                                   class="form-control dv-input"/>
+                            <mat-error
+                                *ngIf="form && form.get('angebotAdresse').get('kontaktpersonNachname').errors?.required"
+                                translate>ERROR_REQUIRED
+                            </mat-error>
+                        </mat-form-field>
+                    </dv-input-container-x>
+                </div>
 
-            <div class="row">
-                <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
-                    <label required [ngClass]="{'label-required-error': form && form.get('angebotStrasse').errors}">
-                        {{'ADRESSE_STRASSE' | translate}}
-                    </label>
-                    <div class="flex-whitespace-item"></div>
-                    <mat-form-field floatLabel="always">
-                        <input type="text" matInput formControlName="angebotStrasse" class="form-control dv-input"/>
-                    </mat-form-field>
-                    <mat-error *ngIf="form && form.get('angebotStrasse').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                </dv-input-container-x>
 
-                <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
-                    <label>
-                        {{'FERIENBETREUUNG_ADRESSE_NR' | translate}}
-                    </label>
-                    <div class="flex-whitespace-item"></div>
-                    <mat-form-field floatLabel="always">
-                        <input type="text" matInput formControlName="angebotNr" class="form-control dv-input"/>
-                    </mat-form-field>
-                </dv-input-container-x>
-            </div>
+                <div class="row">
+                    <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
+                        <label required
+                               for="strasse_id"
+                               [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('strasse').errors}">
+                            {{'ADRESSE_STRASSE' | translate}}
+                        </label>
+                        <mat-form-field floatLabel="always">
+                            <input type="text"
+                                   id="strasse_id"
+                                   matInput
+                                   formControlName="strasse"
+                                   class="form-control dv-input"/>
+                            <mat-error *ngIf="form && form.get('angebotAdresse').get('strasse').errors?.required"
+                                       translate>ERROR_REQUIRED
+                            </mat-error>
+                        </mat-form-field>
+                    </dv-input-container-x>
 
-            <div class="row">
-                <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
-                    <label required [ngClass]="{'label-required-error': form && form.get('angebotPlz').errors}">
-                        {{'ADRESSE_PLZ' | translate}}
-                    </label>
-                    <div class="flex-whitespace-item"></div>
-                    <mat-form-field floatLabel="always">
-                        <input type="text" matInput formControlName="angebotPlz" class="form-control dv-input"/>
-                    </mat-form-field>
-                    <mat-error *ngIf="form && form.get('angebotPlz').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                </dv-input-container-x>
+                    <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
+                        <label for="hausnummer_id">
+                            {{'FERIENBETREUUNG_ADRESSE_NR' | translate}}
+                        </label>
+                        <mat-form-field floatLabel="always">
+                            <input type="text"
+                                   id="hausnummer_id"
+                                   matInput
+                                   formControlName="hausnummer"
+                                   class="form-control dv-input"/>
+                        </mat-form-field>
+                    </dv-input-container-x>
+                </div>
 
-                <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
-                    <label required [ngClass]="{'label-required-error': form && form.get('angebotOrt').errors}">
-                        {{'ADRESSE_ORT' | translate}}
-                    </label>
-                    <div class="flex-whitespace-item"></div>
-                    <mat-form-field floatLabel="always">
-                        <input type="text" matInput formControlName="angebotOrt" class="form-control dv-input"/>
-                    </mat-form-field>
-                    <mat-error *ngIf="form && form.get('angebotOrt').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                </dv-input-container-x>
+                <div class="row">
+                    <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
+                        <label required
+                               for="plz_id"
+                               [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('plz').errors}">
+                            {{'ADRESSE_PLZ' | translate}}
+                        </label>
+                        <mat-form-field floatLabel="always">
+                            <input type="text"
+                                   id="plz_id"
+                                   matInput
+                                   formControlName="plz"
+                                   class="form-control dv-input"/>
+                            <mat-error *ngIf="form && form.get('angebotAdresse').get('plz').errors?.required"
+                                       translate>ERROR_REQUIRED
+                            </mat-error>
+                        </mat-form-field>
+                    </dv-input-container-x>
+
+                    <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
+                        <label required
+                               for="ort_id"
+                               [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('ort').errors}">
+                            {{'ADRESSE_ORT' | translate}}
+                        </label>
+                        <mat-form-field floatLabel="always">
+                            <input type="text"
+                                   id="ort_id"
+                                   matInput
+                                   formControlName="ort"
+                                   class="form-control dv-input"/>
+                            <mat-error *ngIf="form && form.get('angebotAdresse').get('ort').errors?.required"
+                                       translate>ERROR_REQUIRED
+                            </mat-error>
+                        </mat-form-field>
+                    </dv-input-container-x>
+                </div>
             </div>
 
         </div>
 
         <mat-divider></mat-divider>
-        <h3 class="uppercase">
-            {{'FERIENBETREUUNG_ANGEBOT' | translate }}
-            <dv-tooltip [text]="'FERIENBETREUUNG_ANGEBOT_HINT' | translate"></dv-tooltip>
-        </h3>
+
+        <div class="max-width-container-750">
+
+            <h3 class="uppercase">
+                {{'FERIENBETREUUNG_ANGEBOT' | translate }}
+                <dv-tooltip [text]="'FERIENBETREUUNG_ANGEBOT_HINT' | translate"></dv-tooltip>
+            </h3>
+
+            <dv-input-container-x>
+                <label required
+                       for="anzahl_ferienwoche_herbst_id"
+                       [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenHerbstferien').errors}">
+                    {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_HERBST' | translate }}
+                </label>
+                <mat-form-field floatLabel="always">
+                    <input matInput
+                           placeholder=""
+                           id="anzahl_ferienwoche_herbst_id"
+                           formControlName="anzahlFerienwochenHerbstferien"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('anzahlFerienwochenHerbstferien').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="form && form.get('anzahlFerienwochenHerbstferien').errors?.isNotInteger"
+                               translate>ERROR_NOT_INTEGER
+                    </mat-error>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label required
+                       for="anzahl_ferienwoche_winter_id"
+                       [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenWinterferien').errors}">
+                    {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_WINTER' | translate }}
+                </label>
+                <mat-form-field floatLabel="always">
+                    <input matInput
+                           id="anzahl_ferienwoche_winter_id"
+                           formControlName="anzahlFerienwochenWinterferien"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('anzahlFerienwochenWinterferien').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="form && form.get('anzahlFerienwochenWinterferien').errors?.isNotInteger"
+                               translate>ERROR_NOT_INTEGER
+                    </mat-error>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label required
+                       for="anzahl_ferienwoche_fruehling_id"
+                       [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenFruehlingsferien').errors}">
+                    {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_FRUEHLING' | translate }}
+                </label>
+                <mat-form-field floatLabel="always">
+                    <input matInput
+                           id="anzahl_ferienwoche_fruehling_id"
+                           formControlName="anzahlFerienwochenFruehlingsferien"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('anzahlFerienwochenFruehlingsferien').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="form && form.get('anzahlFerienwochenFruehlingsferien').errors?.isNotInteger"
+                               translate>ERROR_NOT_INTEGER
+                    </mat-error>
+                </mat-form-field>
+            </dv-input-container-x>
 
         <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenHerbstferien').errors}">
-                {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_HERBST' | translate }}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
-                <input matInput
-                       type="number"
-                       formControlName="anzahlFerienwochenHerbstferien"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="form && form.get('anzahlFerienwochenHerbstferien').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="form && form.get('anzahlFerienwochenHerbstferien').errors?.isNotInteger"
-                           translate>ERROR_NOT_INTEGER
-                </mat-error>
-            </mat-form-field>
-        </dv-input-container-x>
-
-        <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenWinterferien').errors}">
-                {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_WINTER' | translate }}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
-                <input matInput
-                       type="number"
-                       formControlName="anzahlFerienwochenWinterferien"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="form && form.get('anzahlFerienwochenWinterferien').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="form && form.get('anzahlFerienwochenWinterferien').errors?.isNotInteger"
-                           translate>ERROR_NOT_INTEGER
-                </mat-error>
-            </mat-form-field>
-        </dv-input-container-x>
-
-        <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenFruehlingsferien').errors}">
-                {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_FRUEHLING' | translate }}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
-                <input matInput
-                       type="number"
-                       formControlName="anzahlFerienwochenFruehlingsferien"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="form && form.get('anzahlFerienwochenFruehlingsferien').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="form && form.get('anzahlFerienwochenFruehlingsferien').errors?.isNotInteger"
-                           translate>ERROR_NOT_INTEGER
-                </mat-error>
-            </mat-form-field>
-        </dv-input-container-x>
-
-        <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': form && form.get('anzahlTage').errors}">
-                {{'FERIENBETREUUNG_ANZAHL_TAGE' | translate }}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
-                <input matInput
-                       type="number"
-                       formControlName="anzahlTage"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="form && form.get('anzahlTage').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="form && form.get('anzahlTage').errors?.isNotInteger"
-                           translate>ERROR_NOT_INTEGER
-                </mat-error>
-            </mat-form-field>
-        </dv-input-container-x>
-
-        <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenSommerferien').errors}">
+            <label required
+                   for="anzahl_ferienwoche_sommer_id"
+                   [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenSommerferien').errors}">
                 {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_SOMMER' | translate }}
             </label>
-            <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
                 <input matInput
-                       type="number"
+                       id="anzahl_ferienwoche_sommer_id"
                        formControlName="anzahlFerienwochenSommerferien"
                        class="form-control dv-input"/>
                 <mat-error *ngIf="form && form.get('anzahlFerienwochenSommerferien').errors?.required"
@@ -238,368 +264,427 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label>
-                {{'BEMERKUNGEN' | translate }}
+            <label required
+                   for="anzahl_tage_id"
+                   [ngClass]="{'label-required-error': form && form.get('anzahlTage').errors}">
+                {{'FERIENBETREUUNG_ANZAHL_TAGE' | translate }}
             </label>
-            <mat-form-field floatLabel="always" class="no-margin-left">
-            <textarea matInput
-                      formControlName="bemerkungenAnzahlFerienwochen"
-                      class="form-control dv-input"></textarea>
-            </mat-form-field>
-        </dv-input-container-x>
-
-        <mat-divider></mat-divider>
-        <h3 class="uppercase">
-            {{'FERIENBETREUUNG_OEFFNUNGSZEITEN' | translate }}
-            <dv-tooltip [text]="'FERIENBETREUUNG_OEFFNUNGSZEITEN_HINT' | translate"></dv-tooltip>
-        </h3>
-
-        <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': form && form.get('anzahlStundenProBetreuungstag').errors}">
-                {{'FERIENBETREUUNG_ANZAHL_STUNDEN_BETREUUNGSTAG' | translate }}
-            </label>
-            <div class="flex-whitespace-item"></div>
             <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
                 <input matInput
-                       type="number"
-                       formControlName="anzahlStundenProBetreuungstag"
+                       id="anzahl_tage_id"
+                       formControlName="anzahlTage"
                        class="form-control dv-input"/>
-                <mat-error *ngIf="form && form.get('anzahlStundenProBetreuungstag').errors?.required"
+                <mat-error *ngIf="form && form.get('anzahlTage').errors?.required"
                            translate>ERROR_REQUIRED
+                </mat-error>
+                <mat-error *ngIf="form && form.get('anzahlTage').errors?.isNotInteger"
+                           translate>ERROR_NOT_INTEGER
                 </mat-error>
             </mat-form-field>
         </dv-input-container-x>
 
-        <dv-input-container-x>
-            <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('betreuungErfolgtTagsueber').errors}"
-                   id="betreuungErfolgtTagsueber_id">
-                {{'FERIENBETREUUNG_BETREUUNG_ERFOLGT_TAGSUEBER' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <dv-radio-container-x>
-                <mat-radio-group
-                    aria-labelledby="betreuungErfolgtTagsueber_id"
-                    class=""
-                    name="betreuungErfolgtTagsueber"
-                    horizontal
-                    formControlName="betreuungErfolgtTagsueber">
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-                <mat-error *ngIf="form && form.get('betreuungErfolgtTagsueber').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-            </dv-radio-container-x>
-        </dv-input-container-x>
+            <dv-input-container-x [verticalAlign]="true">
+                <label for="bemerkungen_id">
+                    {{'BEMERKUNGEN' | translate }}
+                </label>
+                <mat-form-field floatLabel="always" class="no-margin-left">
+                <textarea matInput
+                          id="bemerkungen_id"
+                          formControlName="bemerkungenAnzahlFerienwochen"
+                          class="form-control dv-input"></textarea>
+                </mat-form-field>
+            </dv-input-container-x>
 
-        <dv-input-container-x>
-            <label>
-                {{'BEMERKUNGEN' | translate }}
-            </label>
-            <mat-form-field floatLabel="always" class="no-margin-left">
-            <textarea matInput
-                      formControlName="bemerkungenOeffnungszeiten"
-                      class="form-control dv-input"></textarea>
-            </mat-form-field>
-        </dv-input-container-x>
+        </div>
 
         <mat-divider></mat-divider>
-        <h3 class="uppercase">
-            {{'FERIENBETREUUNG_KOOPERATION' | translate }}
-        </h3>
 
-        <dv-input-container-x>
-            <label for="am-angebot-beteiligte-gemeinden">
-                {{'FERIENBETREUUNG_FINANZIELL_BETEILIGTE_GEMEINDEN' | translate}}
-                <dv-tooltip [text]="'FERIENBETREUUNG_FINANZIELL_BETEILIGTE_GEMEINDEN_HINT' | translate"></dv-tooltip>
-            </label>
-            <mat-form-field *ngIf="bfsGemeinden?.length">
-            <mat-select class="form-control"
-                        formControlName="finanziellBeteiligteGemeinden"
-                        name="finanziellBeteiligteGemeinden"
-                        id="am-angebot-beteiligte-gemeinden"
-                        [multiple]="true">
-                <mat-option *ngFor="let gemeinde of bfsGemeinden"
-                            [value]="gemeinde.name">
-                    {{gemeinde.name}}
-                </mat-option>
-            </mat-select>
-            </mat-form-field>
-        </dv-input-container-x>
+        <div class="max-width-container-750">
+            <h3 class="uppercase">
+                {{'FERIENBETREUUNG_OEFFNUNGSZEITEN' | translate }}
+                <dv-tooltip [text]="'FERIENBETREUUNG_OEFFNUNGSZEITEN_HINT' | translate"></dv-tooltip>
+            </h3>
 
-        <p>{{'FERIENBETREUUNG_WIE_ORGANISIERT' | translate }}</p>
+            <dv-input-container-x>
+                <label required
+                       for="anzahl_stunden_betreuungstag_id"
+                       [ngClass]="{'label-required-error': form && form.get('anzahlStundenProBetreuungstag').errors}">
+                    {{'FERIENBETREUUNG_ANZAHL_STUNDEN_BETREUUNGSTAG' | translate }}
+                </label>
+                <mat-form-field floatLabel="always">
+                    <input matInput
+                           id="anzahl_stunden_betreuungstag_id"
+                           formControlName="anzahlStundenProBetreuungstag"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('anzahlStundenProBetreuungstag').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                </mat-form-field>
+            </dv-input-container-x>
 
-        <dv-input-container-x>
-            <label class="margin-left-20">
-                {{'FERIENBETREUUNG_GEMEINDE_FUEHRT_ANGEBOT_SELBER' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <dv-radio-container-x>
-                <mat-radio-group
-                    class=""
-                    name="gemeindeFuehrtAngebotSelber"
-                    horizontal
-                    formControlName="gemeindeFuehrtAngebotSelber">
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-            </dv-radio-container-x>
-        </dv-input-container-x>
+            <dv-input-container-x>
+                <label required
+                       [ngClass]="{'label-required-error': formValidationTriggered && form.get('betreuungErfolgtTagsueber').errors}"
+                       id="betreuungErfolgtTagsueber_id">
+                    {{'FERIENBETREUUNG_BETREUUNG_ERFOLGT_TAGSUEBER' | translate}}
+                </label>
+                <dv-radio-container-x>
+                    <mat-radio-group
+                        aria-labelledby="betreuungErfolgtTagsueber_id"
+                        class=""
+                        name="betreuungErfolgtTagsueber"
+                        horizontal
+                        [disabled]="form.get('betreuungErfolgtTagsueber').disabled"
+                        formControlName="betreuungErfolgtTagsueber">
+                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+                </dv-radio-container-x>
+            </dv-input-container-x>
 
-        <dv-input-container-x>
-            <label class="margin-left-20">
-                {{'FERIENBETREUUNG_GEMEINDE_BEAUFTRAGT_EXTERNE_ANBIETER' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <dv-radio-container-x>
-                <mat-radio-group
-                    class=""
-                    name="gemeindeBeauftragtExterneAnbieter"
-                    horizontal
-                    formControlName="gemeindeBeauftragtExterneAnbieter">
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-            </dv-radio-container-x>
-        </dv-input-container-x>
+            <dv-input-container-x [verticalAlign]="true">
+                <label for="bemerkungen_oeffnungszeiten_id">
+                    {{'BEMERKUNGEN' | translate }}
+                </label>
+                <mat-form-field floatLabel="always" class="no-margin-left">
+                <textarea matInput
+                          id="bemerkungen_oeffnungszeiten_id"
+                          formControlName="bemerkungenOeffnungszeiten"
+                          class="form-control dv-input"></textarea>
+                </mat-form-field>
+            </dv-input-container-x>
 
-        <dv-input-container-x>
-            <label class="margin-left-20">
-                {{'FERIENBETREUUNG_ANGEBOT_VEREINE_UND_PRIVATE_INTEGRIERT' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <dv-radio-container-x>
-                <mat-radio-group
-                    class=""
-                    name="angebotVereineUndPrivateIntegriert"
-                    horizontal
-                    formControlName="angebotVereineUndPrivateIntegriert">
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-            </dv-radio-container-x>
-        </dv-input-container-x>
-
-        <dv-input-container-x>
-            <label>
-                {{'BEMERKUNGEN' | translate }}
-            </label>
-            <mat-form-field floatLabel="always" class="no-margin-left">
-            <textarea matInput
-                      formControlName="bemerkungenKooperation"
-                      class="form-control dv-input"></textarea>
-            </mat-form-field>
-        </dv-input-container-x>
+        </div>
 
         <mat-divider></mat-divider>
-        <h3 class="uppercase">
-            {{'FERIENBETREUUNG_PERSONAL_UND_QUALITAET' | translate }}
-        </h3>
 
-        <dv-input-container-x>
-            <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('leitungDurchPersonMitAusbildung').errors}">
-                {{'FERIENBETREUUNG_LEITUNG_DURCH_PERSON_MIT_AUSBILDUNG' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <dv-radio-container-x>
-                <mat-radio-group
-                    class=""
-                    name="leitungDurchPersonMitAusbildung"
-                    horizontal
-                    formControlName="leitungDurchPersonMitAusbildung">
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-                <mat-error *ngIf="form && form.get('leitungDurchPersonMitAusbildung').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-            </dv-radio-container-x>
-        </dv-input-container-x>
+        <div class="max-width-container-750">
+            <h3 class="uppercase">
+                {{'FERIENBETREUUNG_KOOPERATION' | translate }}
+            </h3>
 
-        <dv-input-container-x>
-            <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('betreuungDurchPersonenMitErfahrung').errors}">
-                {{'FERIENBETREUUNG_LEITUNG_DURCH_PERSON_MIT_ERFAHRUNG' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <dv-radio-container-x>
-                <mat-radio-group
-                    class=""
-                    name="betreuungDurchPersonenMitErfahrung"
-                    horizontal
-                    formControlName="betreuungDurchPersonenMitErfahrung">
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-                <mat-error *ngIf="form && form.get('betreuungDurchPersonenMitErfahrung').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-            </dv-radio-container-x>
-        </dv-input-container-x>
+            <dv-input-container-x [verticalAlign]="true">
+                <label for="am-angebot-beteiligte-gemeinden">
+                    {{'FERIENBETREUUNG_FINANZIELL_BETEILIGTE_GEMEINDEN' | translate}}
+                    <dv-tooltip
+                        [text]="'FERIENBETREUUNG_FINANZIELL_BETEILIGTE_GEMEINDEN_HINT' | translate"></dv-tooltip>
+                </label>
+                <mat-form-field *ngIf="bfsGemeinden?.length">
+                    <mat-select class="form-control"
+                                formControlName="finanziellBeteiligteGemeinden"
+                                name="finanziellBeteiligteGemeinden"
+                                id="am-angebot-beteiligte-gemeinden"
+                                [disabled]="form.get('finanziellBeteiligteGemeinden').disabled"
+                                [multiple]="true">
+                        <mat-option *ngFor="let gemeinde of bfsGemeinden"
+                                    [value]="gemeinde.name">
+                            {{gemeinde.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </dv-input-container-x>
 
-        <dv-input-container-x>
-            <label required
-                   [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlKinderAngemessen').errors}">
-                {{'FERIENBETREUUNG_ANZAHL_KINDER_ANGEMESSEN' | translate}}
-                <dv-tooltip [text]="'FERIENBETREUUNG_ANZAHL_KINDER_ANGEMESSEN_HINT' | translate"></dv-tooltip>
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <dv-radio-container-x>
-                <mat-radio-group
-                    class=""
-                    name="anzahlKinderAngemessen"
-                    horizontal
-                    formControlName="anzahlKinderAngemessen">
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-                <mat-error *ngIf="form && form.get('anzahlKinderAngemessen').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-            </dv-radio-container-x>
-        </dv-input-container-x>
+            <p class="margin-bottom-30">{{'FERIENBETREUUNG_WIE_ORGANISIERT' | translate }}</p>
 
-        <dv-input-container-x>
-            <label required [ngClass]="{'label-required-error': form && form.get('betreuungsschluessel').errors}">
-                {{'FERIENBETREUUNG_BETREUUNGSSCHLUESSEL' | translate }}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
-                <input matInput
-                       type="number"
-                       formControlName="betreuungsschluessel"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="form && form.get('betreuungsschluessel').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-            </mat-form-field>
-        </dv-input-container-x>
+            <dv-input-container-x>
+                <label>
+                    {{'FERIENBETREUUNG_GEMEINDE_FUEHRT_ANGEBOT_SELBER' | translate}}
+                </label>
+                <dv-radio-container-x>
+                    <mat-radio-group
+                        class=""
+                        name="gemeindeFuehrtAngebotSelber"
+                        horizontal
+                        [disabled]="form.get('gemeindeFuehrtAngebotSelber').disabled"
+                        formControlName="gemeindeFuehrtAngebotSelber">
+                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+                </dv-radio-container-x>
+            </dv-input-container-x>
 
-        <dv-input-container-x>
-            <label>
-                {{'BEMERKUNGEN' | translate }}
-            </label>
-            <mat-form-field floatLabel="always" class="no-margin-left">
-            <textarea matInput
-                      formControlName="bemerkungenPersonal"
-                      class="form-control dv-input"></textarea>
-            </mat-form-field>
-        </dv-input-container-x>
+            <dv-input-container-x>
+                <label>
+                    {{'FERIENBETREUUNG_GEMEINDE_BEAUFTRAGT_EXTERNE_ANBIETER' | translate}}
+                </label>
+                <dv-radio-container-x>
+                    <mat-radio-group
+                        class=""
+                        name="gemeindeBeauftragtExterneAnbieter"
+                        horizontal
+                        [disabled]="form.get('gemeindeBeauftragtExterneAnbieter').disabled"
+                        formControlName="gemeindeBeauftragtExterneAnbieter">
+                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+                </dv-radio-container-x>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label>
+                    {{'FERIENBETREUUNG_ANGEBOT_VEREINE_UND_PRIVATE_INTEGRIERT' | translate}}
+                </label>
+                <dv-radio-container-x>
+                    <mat-radio-group
+                        class=""
+                        name="angebotVereineUndPrivateIntegriert"
+                        horizontal
+                        [disabled]="form.get('angebotVereineUndPrivateIntegriert').disabled"
+                        formControlName="angebotVereineUndPrivateIntegriert">
+                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+                </dv-radio-container-x>
+            </dv-input-container-x>
+
+            <dv-input-container-x [verticalAlign]="true">
+                <label for="bemerkungen_kooperation">
+                    {{'BEMERKUNGEN' | translate }}
+                </label>
+                <mat-form-field floatLabel="always" class="no-margin-left">
+                <textarea matInput
+                          id="bemerkungen_kooperation"
+                          formControlName="bemerkungenKooperation"
+                          class="form-control dv-input"></textarea>
+                </mat-form-field>
+            </dv-input-container-x>
+
+        </div>
 
         <mat-divider></mat-divider>
-        <h3 class="uppercase">
-            {{'FERIENBETREUUNG_TARIFSYSTEM' | translate }}
-        </h3>
+
+        <div class="max-width-container-750">
+
+            <h3 class="uppercase">
+                {{'FERIENBETREUUNG_PERSONAL_UND_QUALITAET' | translate }}
+            </h3>
+
+            <dv-input-container-x>
+                <label required
+                       [ngClass]="{'label-required-error': formValidationTriggered && form.get('leitungDurchPersonMitAusbildung').errors}">
+                    {{'FERIENBETREUUNG_LEITUNG_DURCH_PERSON_MIT_AUSBILDUNG' | translate}}
+                </label>
+                <dv-radio-container-x>
+                    <mat-radio-group
+                        class=""
+                        name="leitungDurchPersonMitAusbildung"
+                        horizontal
+                        [disabled]="form.get('leitungDurchPersonMitAusbildung').disabled"
+                        formControlName="leitungDurchPersonMitAusbildung">
+                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+                </dv-radio-container-x>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label required
+                       [ngClass]="{'label-required-error': formValidationTriggered && form.get('betreuungDurchPersonenMitErfahrung').errors}">
+                    {{'FERIENBETREUUNG_LEITUNG_DURCH_PERSON_MIT_ERFAHRUNG' | translate}}
+                </label>
+                <dv-radio-container-x>
+                    <mat-radio-group
+                        class=""
+                        name="betreuungDurchPersonenMitErfahrung"
+                        horizontal
+                        [disabled]="form.get('betreuungDurchPersonenMitErfahrung').disabled"
+                        formControlName="betreuungDurchPersonenMitErfahrung">
+                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+                </dv-radio-container-x>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label required
+                       [ngClass]="{'label-required-error': formValidationTriggered && form.get('anzahlKinderAngemessen').errors}">
+                    {{'FERIENBETREUUNG_ANZAHL_KINDER_ANGEMESSEN' | translate}}
+                    <dv-tooltip [text]="'FERIENBETREUUNG_ANZAHL_KINDER_ANGEMESSEN_HINT' | translate"></dv-tooltip>
+                </label>
+                <dv-radio-container-x>
+                    <mat-radio-group
+                        class=""
+                        name="anzahlKinderAngemessen"
+                        horizontal
+                        [disabled]="form.get('anzahlKinderAngemessen').disabled"
+                        formControlName="anzahlKinderAngemessen">
+                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+
+                </dv-radio-container-x>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label for="betreuungsschluessel_id"
+                       required
+                       [ngClass]="{'label-required-error': form && form.get('betreuungsschluessel').errors}">
+                    {{'FERIENBETREUUNG_BETREUUNGSSCHLUESSEL' | translate }}
+                </label>
+                <mat-form-field floatLabel="always">
+                    <input matInput
+                           id="betreuungsschluessel_id"
+                           formControlName="betreuungsschluessel"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('betreuungsschluessel').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="form && form.get('betreuungsschluessel').errors?.isNotInteger"
+                               translate>ERROR_NOT_INTEGER
+                    </mat-error>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x [verticalAlign]="true">
+                <label for="bemerkungen_personal">
+                    {{'BEMERKUNGEN' | translate }}
+                </label>
+                <mat-form-field floatLabel="always" class="no-margin-left">
+                <textarea matInput
+                          id="bemerkungen_personal"
+                          formControlName="bemerkungenPersonal"
+                          class="form-control dv-input"></textarea>
+                </mat-form-field>
+            </dv-input-container-x>
+
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="max-width-container-750">
+
+            <h3 class="uppercase">
+                {{'FERIENBETREUUNG_TARIFSYSTEM' | translate }}
+            </h3>
+
+            <dv-input-container-x>
+                <label>
+                    {{'FERIENBETREUUNG_FIXER_TARIF_KINDER_DER_GEMEINDE' | translate}}
+                </label>
+                <dv-radio-container-x>
+                    <mat-radio-group
+                        class=""
+                        name="fixerTarifKinderDerGemeinde"
+                        horizontal
+                        [disabled]="form.get('fixerTarifKinderDerGemeinde').disabled"
+                        formControlName="fixerTarifKinderDerGemeinde">
+                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+                </dv-radio-container-x>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label>
+                    {{'FERIENBETREUUNG_EINKOMMENSABHAENGIGER_TARIF_KINDER' | translate}}
+                </label>
+                <dv-radio-container-x>
+                    <mat-radio-group
+                        class=""
+                        name="einkommensabhaengigerTarifKinderDerGemeinde"
+                        horizontal
+                        [disabled]="form.get('einkommensabhaengigerTarifKinderDerGemeinde').disabled"
+                        formControlName="einkommensabhaengigerTarifKinderDerGemeinde">
+                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+                </dv-radio-container-x>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label>
+                    {{'FERIENBETREUUNG_TAGESSCHULE_TARIF_GILT_FUER_FERIENBETREUUNG' | translate}}
+                </label>
+                <dv-radio-container-x>
+                    <mat-radio-group
+                        class=""
+                        name="tagesschuleTarifGiltFuerFerienbetreuung"
+                        horizontal
+                        [disabled]="form.get('tagesschuleTarifGiltFuerFerienbetreuung').disabled"
+                        formControlName="tagesschuleTarifGiltFuerFerienbetreuung">
+                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+                </dv-radio-container-x>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label>
+                    {{'FERIENBETREUUNG_TARIF_ABGELEITET' | translate}}
+                </label>
+                <dv-radio-container-x>
+                    <mat-radio-group
+                        class=""
+                        name="ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet"
+                        horizontal
+                        [disabled]="form.get('ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet').disabled"
+                        formControlName="ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet">
+                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+                </dv-radio-container-x>
+            </dv-input-container-x>
 
         <dv-input-container-x>
-            <label>
-                {{'FERIENBETREUUNG_FIXER_TARIF_KINDER_DER_GEMEINDE' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <dv-radio-container-x>
-                <mat-radio-group
-                    class=""
-                    name="fixerTarifKinderDerGemeinde"
-                    horizontal
-                    formControlName="fixerTarifKinderDerGemeinde">
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-            </dv-radio-container-x>
-        </dv-input-container-x>
-
-        <dv-input-container-x>
-            <label>
-                {{'FERIENBETREUUNG_EINKOMMENSABHAENGIGER_TARIF_KINDER' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <dv-radio-container-x>
-                <mat-radio-group
-                    class=""
-                    name="einkommensabhaengigerTarifKinderDerGemeinde"
-                    horizontal
-                    formControlName="einkommensabhaengigerTarifKinderDerGemeinde">
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-            </dv-radio-container-x>
-        </dv-input-container-x>
-
-        <dv-input-container-x>
-            <label>
-                {{'FERIENBETREUUNG_TAGESSCHULE_TARIF_GILT_FUER_FERIENBETREUUNG' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <dv-radio-container-x>
-                <mat-radio-group
-                    class=""
-                    name="tagesschuleTarifGiltFuerFerienbetreuung"
-                    horizontal
-                    formControlName="tagesschuleTarifGiltFuerFerienbetreuung">
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-            </dv-radio-container-x>
-        </dv-input-container-x>
-
-        <dv-input-container-x>
-            <label>
-                {{'FERIENBETREUUNG_TARIF_ABGELEITET' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <dv-radio-container-x>
-                <mat-radio-group
-                    class=""
-                    name="ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet"
-                    horizontal
-                    formControlName="ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet">
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-            </dv-radio-container-x>
-        </dv-input-container-x>
-
-<!--        todo: ADD THIRD OPTION -->
-        <dv-input-container-x>
-            <label>
+            <label for="kinder-aus-anderen-gemeinden-zahlen-anderen-tarif">
                 {{'FERIENBETREUUNG_KINDER_ANDERER_GEMEINDEN_ANDERER_TARIF' | translate}}
             </label>
-            <div class="flex-whitespace-item"></div>
-            <dv-radio-container-x>
-                <mat-radio-group
-                    class=""
-                    name="kinderAusAnderenGemeindenZahlenAnderenTarif"
-                    horizontal
-                    formControlName="kinderAusAnderenGemeindenZahlenAnderenTarif">
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-            </dv-radio-container-x>
-        </dv-input-container-x>
-
-        <dv-input-container-x>
-            <label>
-                {{'BEMERKUNGEN' | translate }}
-            </label>
-            <mat-form-field floatLabel="always" class="no-margin-left">
-            <textarea matInput
-                      formControlName="bemerkungenAnzahlFerienwochen"
-                      class="form-control dv-input"></textarea>
+            <mat-form-field>
+                <mat-select class="form-control"
+                            formControlName="kinderAusAnderenGemeindenZahlenAnderenTarif"
+                            name="kinderAusAnderenGemeindenZahlenAnderenTarif"
+                            id="kinder-aus-anderen-gemeinden-zahlen-anderen-tarif"
+                            [disabled]="form.get('kinderAusAnderenGemeindenZahlenAnderenTarif').disabled"
+                            [multiple]="false">
+                    <mat-option value="JA">
+                        {{'LABEL_JA' | translate}}
+                    </mat-option>
+                    <mat-option value="NEIN">
+                        {{'LABEL_NEIN' | translate}}
+                    </mat-option>
+                    <mat-option value="KEINE_KINDER_AUS_ANDEREN_GEMEINDEN">
+                        {{'KEINE_KINDER_AUS_ANDEREN_GEMEINDEN' | translate}}
+                    </mat-option>
+                </mat-select>
             </mat-form-field>
         </dv-input-container-x>
+
+            <dv-input-container-x [verticalAlign]="true">
+                <label for="bemerkungen_tarifsystem_id">
+                    {{'BEMERKUNGEN' | translate }}
+                </label>
+                <mat-form-field floatLabel="always" class="no-margin-left">
+                <textarea matInput
+                          id="bemerkungen_tarifsystem_id"
+                          formControlName="bemerkungenTarifsystem"
+                          class="form-control dv-input"></textarea>
+                </mat-form-field>
+            </dv-input-container-x>
+
+        </div>
 
     </form>
 
+    <div class="row margin-top-20" *ngIf="canSeeFalscheAngaben | async">
+        <div class="col-md-12">
+            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
+        </div>
+    </div>
 
     <div class="actions">
         <button type="button" class="dv-btn cancel-button"
+                *ngIf="canSeeSave | async"
                 (click)="save()"
+                [disabled]="formularReadOnly()"
                 [textContent]="'SAVE' | translate">
         </button>
+        <dv-loading-button
+            *ngIf="canSeeAbschliessen | async"
+            type="button"
+            [buttonDisabled]="formularReadOnly()"
+            (buttonClick)="onAbschliessen()">
+            <span translate>ABSCHLIESSEN</span>
+        </dv-loading-button>
     </div>
 
 </div>

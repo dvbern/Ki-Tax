@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,24 +15,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
-import {TSGemeinde} from '../../../../models/TSGemeinde';
+package ch.dvbern.ebegu.enums.gemeindeantrag;
 
-@Component({
-    selector: 'dv-lastenausgleich-ts-toolbar',
-    templateUrl: './lastenausgleich-ts-toolbar.component.html',
-    styleUrls: ['./lastenausgleich-ts-toolbar.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class LastenausgleichTsToolbarComponent implements OnInit {
+public enum FerienbetreuungFormularStatus {
 
-    @Input()
-    public gemeinde: TSGemeinde;
-
-    public constructor() {
-    }
-
-    public ngOnInit(): void {
-    }
-
+	IN_BEARBEITUNG_GEMEINDE,
+	ABGESCHLOSSEN,
+	IN_PRUEFUNG_KANTON,
+	GEPRUEFT,
 }

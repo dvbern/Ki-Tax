@@ -33,6 +33,7 @@ import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
 import {DVInputContainerXComponent} from '../core/component/dv-input-container/dv-input-container-x.component';
 import {DvMitteilungDelegationComponent} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation';
+import {DvNgBackDialogComponent} from '../core/component/dv-ng-back-dialog/dv-ng-back-dialog.component';
 import {DvNgConfirmDialogComponent} from '../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {DvNgGesuchstellerDialogComponent} from '../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
@@ -73,6 +74,7 @@ import {FullHeightInnerPaddingContainerComponent} from './full-height-inner-padd
 import {MaterialModule} from './material.module';
 import {EbeguDatePipe} from './pipe/ebegu-date.pipe';
 import {NextPeriodeStrPipe} from './pipe/next-periode-str.pipe';
+import {PreviousPeriodeStrPipe} from './pipe/previous-periode-str.pipe';
 import {UiViewComponent} from './ui-view/ui-view.component';
 
 export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
@@ -115,6 +117,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,
+        DvNgBackDialogComponent,
         DvNgThreeButtonDialogComponent,
         DvNgShowElementDirective,
         DvPosteingangComponent,
@@ -136,6 +139,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvMonthPickerComponent,
         EbeguDatePipe,
         NextPeriodeStrPipe,
+        PreviousPeriodeStrPipe,
         DvMonthPickerComponent,
         NewAntragListComponent,
         NewUserSelectDirective,
@@ -173,6 +177,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,
+        DvNgBackDialogComponent,
         DvNgThreeButtonDialogComponent,
         DvNgShowElementDirective,
         ErrorMessagesComponent,
@@ -200,6 +205,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvBisherXComponent,
         DvNgSozialdienstDialogComponent,
         NextPeriodeStrPipe,
+        PreviousPeriodeStrPipe,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

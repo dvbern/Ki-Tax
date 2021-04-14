@@ -92,7 +92,7 @@
             </md-menu-item>
 
             <!-- Sozialdienste -->
-            <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrSozialdienstRolle()">
+            <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesForSozialdienst()">
                 <md-button ui-sref-active="active" ui-sref="sozialdienst.list" aria-label="{{'MENU_SOZIALDIENST' | translate}}">
                     <a href="#" ng-click="$event.preventDefault();" data-translate="MENU_SOZIALDIENST" aria-hidden></a>
                 </md-button>

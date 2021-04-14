@@ -83,6 +83,7 @@ export enum TSEinstellungKey {
     ERWERBSPENSUM_ZUSCHLAG = 'ERWERBSPENSUM_ZUSCHLAG' as any,
     LATS_LOHNNORMKOSTEN = 'LATS_LOHNNORMKOSTEN' as any,
     LATS_LOHNNORMKOSTEN_LESS_THAN_50 = 'LATS_LOHNNORMKOSTEN_LESS_THAN_50' as any,
+    LATS_STICHTAG = 'LATS_STICHTAG' as any
 }
 
 export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
@@ -147,5 +148,6 @@ export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
         TSEinstellungKey.ERWERBSPENSUM_ZUSCHLAG,
         TSEinstellungKey.LATS_LOHNNORMKOSTEN,
         TSEinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50,
+        TSEinstellungKey.LATS_STICHTAG,
     ];
 }

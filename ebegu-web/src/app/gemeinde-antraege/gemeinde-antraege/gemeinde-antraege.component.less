@@ -21,3 +21,21 @@ md-input-container label:not(.md-container-ignore), label {
 md-input-container label:not(.md-container-ignore)::after, label::after {
     color: black;
 }
+
+select {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lastenausgleich-view {
+    .mat-column-periode, .mat-column-periode-filter {
+        flex: 0 0 16rem !important;
+        min-width: 0 !important;
+    }
+
+    .mat-column-aenderungsdatum, .mat-column-aenderungsdatum-filter {
+        flex: 0 0 16rem !important;
+        min-width: 0 !important;
+    }
+}

@@ -23,14 +23,23 @@ dv-input-container-x {
         align-items: center;
         display: flex;
         justify-content: space-between;
-        margin-bottom: 2.3rem;
         width: 100%;
 
         &.vertical-align {
             flex-direction: column;
-            > label, > mat-form-field {
+            margin-bottom: 4rem;
+            > label, dv-radio-container-x, mat-form-field, .flex-whitespace-item {
                 flex-grow: 1;
+                margin: 0 2rem;
                 width: 100%;
+            }
+        }
+        &:not(.vertical-align) {
+            margin-bottom: 3rem;
+            dv-radio-container-x, mat-form-field, .flex-whitespace-item {
+                //space for outline
+                flex: 0 0 180px;
+                margin-left: 6rem;
             }
         }
 
@@ -40,8 +49,11 @@ dv-input-container-x {
 
         label {
             color: black;
-            flex: 0 0 33%;
+            flex: 1 0 35%;
             font-family: Open Sans, Arial, Helvetica, sans-serif;
+            &.bold-label {
+                font-weight: bold;
+            }
         }
 
         label[required]:after {
@@ -77,15 +89,6 @@ dv-input-container-x {
             display: inline-block;
         }
     }
-
-
-
-    dv-radio-container-x, mat-form-field, .flex-whitespace-item {
-        //space for outline
-        flex: 1 1 30%;
-        margin: 0 5%;
-    }
-
 
 
     .mat-form-field-underline {

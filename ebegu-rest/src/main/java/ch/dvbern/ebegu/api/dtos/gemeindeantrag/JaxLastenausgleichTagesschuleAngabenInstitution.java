@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
 
 import java.math.BigDecimal;
+
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
@@ -40,7 +41,7 @@ public class JaxLastenausgleichTagesschuleAngabenInstitution extends JaxAbstract
 	private BigDecimal anzahlEingeschriebeneKinderKindergarten;
 
 	@Nullable
-	private BigDecimal anzahlEingeschriebeneKinderBasisstufe;
+	private BigDecimal anzahlEingeschriebeneKinderSekundarstufe;
 
 	@Nullable
 	private BigDecimal anzahlEingeschriebeneKinderPrimarstufe;
@@ -113,12 +114,12 @@ public class JaxLastenausgleichTagesschuleAngabenInstitution extends JaxAbstract
 	}
 
 	@Nullable
-	public BigDecimal getAnzahlEingeschriebeneKinderBasisstufe() {
-		return anzahlEingeschriebeneKinderBasisstufe;
+	public BigDecimal getAnzahlEingeschriebeneKinderSekundarstufe() {
+		return anzahlEingeschriebeneKinderSekundarstufe;
 	}
 
-	public void setAnzahlEingeschriebeneKinderBasisstufe(@Nullable BigDecimal anzahlEingeschriebeneKinderBasisstufe) {
-		this.anzahlEingeschriebeneKinderBasisstufe = anzahlEingeschriebeneKinderBasisstufe;
+	public void setAnzahlEingeschriebeneKinderSekundarstufe(@Nullable BigDecimal anzahlEingeschriebeneKinderSekundarstufe) {
+		this.anzahlEingeschriebeneKinderSekundarstufe = anzahlEingeschriebeneKinderSekundarstufe;
 	}
 
 	@Nullable

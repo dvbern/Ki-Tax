@@ -50,4 +50,11 @@ public class DateUtilTest {
 		Assert.assertEquals(12, returnedDate.getMonthValue());
 		Assert.assertEquals(31, returnedDate.getDayOfMonth());
 	}
+
+	@Test
+	public void testIncrementYear() {
+		final String oldDate = "2020-05-17";
+		final String newDate = DateUtil.incrementYear(oldDate);
+		Assert.assertEquals("2021-05-17", newDate);
+	}
 }

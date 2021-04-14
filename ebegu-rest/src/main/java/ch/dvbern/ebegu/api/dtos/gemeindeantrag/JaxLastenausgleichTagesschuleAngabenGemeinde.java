@@ -64,6 +64,15 @@ public class JaxLastenausgleichTagesschuleAngabenGemeinde extends JaxAbstractDTO
 	@NotNull @Nonnull
 	private BigDecimal einnahmenElterngebuehren;
 
+	@Nullable
+	private Boolean tagesschuleTeilweiseGeschlossen;
+
+	@Nullable
+	private BigDecimal rueckerstattungenElterngebuehrenSchliessung;
+
+	@Nullable
+	private BigDecimal ersteRateAusbezahlt;
+
 	// C: Kostenbeteiligung Gemeinde
 
 	@NotNull @Nonnull
@@ -74,6 +83,12 @@ public class JaxLastenausgleichTagesschuleAngabenGemeinde extends JaxAbstractDTO
 
 	@NotNull @Nonnull
 	private BigDecimal einnahmenSubventionenDritter;
+
+	@Nullable
+	private Boolean ueberschussErzielt;
+
+	@Nullable
+	private String ueberschussVerwendung;
 
 	// D: Angaben zu weiteren Kosten und Ertraegen
 
@@ -304,5 +319,51 @@ public class JaxLastenausgleichTagesschuleAngabenGemeinde extends JaxAbstractDTO
 
 	public void setStatus(@Nonnull LastenausgleichTagesschuleAngabenGemeindeFormularStatus status) {
 		this.status = status;
+	}
+
+	@Nullable
+	public Boolean getTagesschuleTeilweiseGeschlossen() {
+		return tagesschuleTeilweiseGeschlossen;
+	}
+
+	public void setTagesschuleTeilweiseGeschlossen(@Nullable Boolean tagesschuleTeilweiseGeschlossen) {
+		this.tagesschuleTeilweiseGeschlossen = tagesschuleTeilweiseGeschlossen;
+	}
+
+	@Nullable
+	public BigDecimal getRueckerstattungenElterngebuehrenSchliessung() {
+		return rueckerstattungenElterngebuehrenSchliessung;
+	}
+
+	public void setRueckerstattungenElterngebuehrenSchliessung(
+		@Nullable BigDecimal rueckerstattungenElterngebuehrenSchliessung) {
+		this.rueckerstattungenElterngebuehrenSchliessung = rueckerstattungenElterngebuehrenSchliessung;
+	}
+
+	@Nullable
+	public BigDecimal getErsteRateAusbezahlt() {
+		return ersteRateAusbezahlt;
+	}
+
+	public void setErsteRateAusbezahlt(@Nullable BigDecimal ersteRateAusbezahlt) {
+		this.ersteRateAusbezahlt = ersteRateAusbezahlt;
+	}
+
+	@Nullable
+	public Boolean getUeberschussErzielt() {
+		return ueberschussErzielt;
+	}
+
+	public void setUeberschussErzielt(@Nullable Boolean ueberschussErzielt) {
+		this.ueberschussErzielt = ueberschussErzielt;
+	}
+
+	@Nullable
+	public String getUeberschussVerwendung() {
+		return ueberschussVerwendung;
+	}
+
+	public void setUeberschussVerwendung(@Nullable String ueberschussVerwendung) {
+		this.ueberschussVerwendung = ueberschussVerwendung;
 	}
 }

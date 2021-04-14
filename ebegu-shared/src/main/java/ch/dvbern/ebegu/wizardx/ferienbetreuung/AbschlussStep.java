@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.wizardx.ferienbetreuung;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.wizardx.WizardStateEnum;
@@ -37,7 +39,27 @@ public class AbschlussStep implements WizardStep<FerienbetreuungWizard> {
 
 	@Override
 	public WizardStateEnum getStatus(@Nonnull FerienbetreuungWizard wizard) {
-		return WizardStateEnum.OK;
+		if (wizard.getFerienbetreuungAngabenContainer().isGeprueft()) {
+			return WizardStateEnum.OK;
+		}
+		if (wizard.getFerienbetreuungAngabenContainer().isInPruefungKanton()) {
+			if (wizard.getRole().isRoleGemeindeabhaengig()) {
+				return WizardStateEnum.OK;
+			}
+
+			if (Objects.requireNonNull(wizard.getFerienbetreuungAngabenContainer().getAngabenKorrektur()).isReadyForFreigeben()) {
+				return WizardStateEnum.IN_BEARBEITUNG;
+			}
+			// step should be disabled
+			return WizardStateEnum.NONE;
+		}
+		// IN_BEARBEITUNG_GEMEINDE
+		if(wizard.getFerienbetreuungAngabenContainer().getAngabenDeklaration().isReadyForFreigeben()) {
+			return WizardStateEnum.IN_BEARBEITUNG;
+		}
+		// step should be disabled
+		return WizardStateEnum.NONE;
+
 	}
 
 	@Override
@@ -47,7 +69,12 @@ public class AbschlussStep implements WizardStep<FerienbetreuungWizard> {
 
 	@Override
 	public boolean isDisabled(@Nonnull FerienbetreuungWizard wizard) {
-		return true;
+		if (wizard.getRole().isRoleGemeindeabhaengig()) {
+			return wizard.getFerienbetreuungAngabenContainer().getDokumente() == null ||
+				wizard.getFerienbetreuungAngabenContainer().getDokumente().isEmpty() ||
+				!wizard.getFerienbetreuungAngabenContainer().getAngabenDeklaration().isReadyForFreigeben();
+		}
+		return !wizard.getFerienbetreuungAngabenContainer().isReadyForGeprueft();
 	}
 
 	@Override

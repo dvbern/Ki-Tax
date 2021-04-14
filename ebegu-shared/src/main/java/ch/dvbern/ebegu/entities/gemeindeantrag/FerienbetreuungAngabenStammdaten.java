@@ -31,6 +31,8 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
@@ -42,6 +44,8 @@ import javax.validation.constraints.Size;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
+import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 
@@ -95,7 +99,7 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Column()
-	@Pattern(regexp = Constants.REGEX_TELEFON_MOBILE, message = "{error_invalid_mobilenummer}")
+	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{error_invalid_phonenumber.message}")
 	private String stammdatenKontaktpersonTelefon;
 
 	@Nullable
@@ -114,6 +118,36 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Column()
 	private String vermerkAuszahlung;
+
+	@Nonnull
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private FerienbetreuungFormularStatus status = FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE;
+
+	public FerienbetreuungAngabenStammdaten() {
+	}
+
+	public FerienbetreuungAngabenStammdaten(FerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenToCopy) {
+		this.amAngebotBeteiligteGemeinden =
+			new HashSet<>(ferienbetreuungAngabenStammdatenToCopy.getAmAngebotBeteiligteGemeinden());
+		this.seitWannFerienbetreuungen = ferienbetreuungAngabenStammdatenToCopy.seitWannFerienbetreuungen;
+		this.traegerschaft = ferienbetreuungAngabenStammdatenToCopy.traegerschaft;
+		// Stammdaten adresse
+		this.stammdatenAdresse = Objects.requireNonNull(ferienbetreuungAngabenStammdatenToCopy.stammdatenAdresse)
+			.copyAdresse(new Adresse(), AntragCopyType.MUTATION);
+		// Kontaktperson
+		this.stammdatenKontaktpersonVorname = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonVorname;
+		this.stammdatenKontaktpersonNachname = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonNachname;
+		this.stammdatenKontaktpersonFunktion = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonFunktion;
+		this.stammdatenKontaktpersonEmail = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonEmail;
+		this.stammdatenKontaktpersonTelefon = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonTelefon;
+		// Auszahlungsdaten
+		this.auszahlungsdaten = Objects.requireNonNull(ferienbetreuungAngabenStammdatenToCopy.auszahlungsdaten).copyAuszahlungsdaten(
+			new Auszahlungsdaten(),
+			AntragCopyType.MUTATION);
+		this.vermerkAuszahlung = ferienbetreuungAngabenStammdatenToCopy.vermerkAuszahlung;
+
+	}
 
 	@Nonnull
 	public Set<String> getAmAngebotBeteiligteGemeinden() {
@@ -220,6 +254,10 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 	}
 
 	public boolean isReadyForFreigeben() {
+		return checkPropertiesNotNull() && status == FerienbetreuungFormularStatus.ABGESCHLOSSEN;
+	}
+
+	public boolean isReadyForAbschluss() {
 		return checkPropertiesNotNull();
 	}
 
@@ -233,6 +271,23 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 			this.auszahlungsdaten
 		);
 		return nonNullObj.stream()
-			.anyMatch(Objects::isNull);
+			.noneMatch(Objects::isNull);
+	}
+
+	@Nonnull
+	public FerienbetreuungFormularStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(@Nonnull FerienbetreuungFormularStatus status) {
+		this.status = status;
+	}
+
+	public boolean isAbgeschlossen() {
+		return status == FerienbetreuungFormularStatus.ABGESCHLOSSEN;
+	}
+
+	public boolean isGeprueft() {
+		return status == FerienbetreuungFormularStatus.GEPRUEFT;
 	}
 }

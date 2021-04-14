@@ -111,12 +111,12 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="dv-radio-container">
-                                        <md-radio-group name="gesuchsperioden" class="input-element radio"
+                                        <md-radio-group name="gesuchsperioden" class="input-element radio margin-top-10"
                                                         dv-suppress-form-submit-on-enter
                                                         ng-model="vm.gesuchsperiodeId"
                                                         ng-change="vm.setSelectedGesuchsperiode()"
                                                         dv-show-element
-                                                        dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()"
+                                                        dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()"
                                                         ng-required="true">
                                             <md-radio-button
                                                 ng-repeat="current in vm.getAllActiveGesuchsperioden()"

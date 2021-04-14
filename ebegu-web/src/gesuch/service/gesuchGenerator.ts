@@ -160,7 +160,8 @@ export class GesuchGenerator {
             currentFall,
             currentDossier,
             sozialdienst);
-        gesuch.status = getStartAntragStatusFromEingangsart(eingangsart, EbeguUtil.isNotNullOrUndefined(sozialdienst));
+        gesuch.status = getStartAntragStatusFromEingangsart(eingangsart, (EbeguUtil.isNotNullOrUndefined(sozialdienst)
+            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle())));
 
         if (gesuchsperiodeId) {
             return this.gesuchsperiodeRS.findGesuchsperiode(gesuchsperiodeId).then(periode => {

@@ -17,9 +17,10 @@
 
 <div id="sidenavContainer">
     <div class="mobile-sidenav-scroll">
-        <div class="sidenav gesuch-gemeinde" *ngIf="gemeinde">
+        <div class="sidenav gesuch-gemeinde" *ngIf="gemeinde || gesuchsperiode">
             <h2 class="access-for-all-title">{{'AFA_GEMEINDE' | translate}}</h2>
-            <span class="gemeinde">{{gemeinde?.name}}</span>
+            <span *ngIf="gemeinde" class="gemeinde">{{gemeinde?.name}}</span> <br>
+            <span *ngIf="gesuchsperiode" class="sub-title"> {{gesuchsperiode?.gesuchsperiodeString}}</span>
         </div>
         <div class="sidenav gesuch-status">
             <h2 class="access-for-all-title">{{'AFA_GESUCHSTATUS' | translate}}</h2>
@@ -30,11 +31,16 @@
 
                 <li *ngFor="let entry of wizardSteps$ | async" class="row"
                     uiSrefActive="active-element">
-                    <button class="col-xs-10" *ngIf="!entry.disabled"
-                            uiSref="{{wizardTyp}}.{{entry.stepName}}"
-                            [uiParams]="{ id: id }">
-                        <span translate>{{wizardTyp}}_{{entry.stepName}}</span>
-                    </button>
+                    <div *ngIf="!entry.disabled">
+                        <button class="col-xs-10" *ngIf="!entry.disabled"
+                                uiSref="{{wizardTyp}}.{{entry.stepName}}"
+                                [uiParams]="{ id: id }">
+                            <span translate>{{wizardTyp}}_{{entry.stepName}}</span>
+                        </button>
+                        <span class="col-xs-2 font-awesome fa-pencil black" *ngIf="isInBearbeitung(entry)"></span>
+                        <span class="col-xs-2 font-awesome fa-check green" *ngIf="isOK(entry)"></span>
+                        <span class="col-xs-2 font-awesome fa-close red" *ngIf="isNOK(entry)"></span>
+                    </div>
                     <button class="col-xs-10" *ngIf="entry.disabled" disabled>
                         <span translate>{{wizardTyp}}_{{entry.stepName}}</span>
                     </button>

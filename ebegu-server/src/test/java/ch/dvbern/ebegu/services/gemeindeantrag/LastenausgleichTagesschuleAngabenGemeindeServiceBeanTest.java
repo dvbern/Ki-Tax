@@ -54,22 +54,32 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBeanTest extends Ab
 	private Persistence persistence;
 
 	private Gesuchsperiode gesuchsperiode1920;
+	private Gesuchsperiode gesuchsperiode2021;
 	private Gemeinde gemeindeParis;
 
 	@Before
 	public void setUp() {
-		gesuchsperiode1920 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2018, 2019);
+		gesuchsperiode1920 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2019, 2020);
 		TestDataUtil.prepareParameters(gesuchsperiode1920, persistence);
+		gesuchsperiode2021 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2020, 2021);
+		TestDataUtil.prepareParameters(gesuchsperiode2021, persistence);
 		gemeindeParis = TestDataUtil.getGemeindeParis(persistence);
 		TestDataUtil.getGemeindeLondon(persistence);
 	}
 
 	@Test
 	public void createLastenausgleichTagesschuleGemeinde() {
-		final List<? extends GemeindeAntrag> gemeindeAntragList =
+		List<? extends GemeindeAntrag> gemeindeAntragList =
 			angabenGemeindeService.createLastenausgleichTagesschuleGemeinde(gesuchsperiode1920);
 		Assert.assertNotNull(gemeindeAntragList);
-		Assert.assertEquals("Wir erwarten pro Gemeinde einen Antrag", 2, gemeindeAntragList.size());
+		Assert.assertEquals("Wir erwarten keinen Antrag für die GP 19/20", 0, gemeindeAntragList.size());
+
+		gemeindeAntragList =
+			angabenGemeindeService.createLastenausgleichTagesschuleGemeinde(gesuchsperiode2021);
+		Assert.assertNotNull(gemeindeAntragList);
+		Assert.assertEquals("Wir erwarten einen Antrag für die GP 20/21", 1, gemeindeAntragList.size());
+
+
 		final GemeindeAntrag gemeindeAntrag = gemeindeAntragList.get(0);
 		Assert.assertTrue(
 			"Der erstelle Antrag muss vom Typ LastenausgleichTagesschuleAngabenGemeindeContainer sein",
@@ -81,7 +91,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBeanTest extends Ab
 	@Test
 	public void saveLastenausgleichTagesschuleGemeinde() {
 		LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer =
-			TestDataUtil.createLastenausgleichTagesschuleAngabenGemeindeContainer(gesuchsperiode1920, gemeindeParis);
+			TestDataUtil.createLastenausgleichTagesschuleAngabenGemeindeContainer(gesuchsperiode2021, gemeindeParis);
 		latsGemeindeContainer = angabenGemeindeService.saveLastenausgleichTagesschuleGemeinde(latsGemeindeContainer);
 
 		Assert.assertEquals(
@@ -101,7 +111,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBeanTest extends Ab
 	@Test
 	public void lastenausgleichTagesschuleGemeindeFuerInstitutionenFreigeben_ok() {
 		LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer =
-			TestDataUtil.createLastenausgleichTagesschuleAngabenGemeindeContainer(gesuchsperiode1920, gemeindeParis);
+			TestDataUtil.createLastenausgleichTagesschuleAngabenGemeindeContainer(gesuchsperiode2021, gemeindeParis);
 		latsGemeindeContainer.setAlleAngabenInKibonErfasst(true);
 		latsGemeindeContainer = angabenGemeindeService.saveLastenausgleichTagesschuleGemeinde(latsGemeindeContainer);
 
@@ -119,7 +129,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBeanTest extends Ab
 	@Test(expected = EJBException.class)
 	public void lastenausgleichTagesschuleGemeindeFuerInstitutionenFreigeben_nokFalscherStatus() {
 		LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer =
-			TestDataUtil.createLastenausgleichTagesschuleAngabenGemeindeContainer(gesuchsperiode1920, gemeindeParis);
+			TestDataUtil.createLastenausgleichTagesschuleAngabenGemeindeContainer(gesuchsperiode2021, gemeindeParis);
 		latsGemeindeContainer.setAlleAngabenInKibonErfasst(true);
 		latsGemeindeContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE);
 		latsGemeindeContainer = angabenGemeindeService.saveLastenausgleichTagesschuleGemeinde(latsGemeindeContainer);
@@ -135,7 +145,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBeanTest extends Ab
 	@Test(expected = EJBException.class)
 	public void lastenausgleichTagesschuleGemeindeFuerInstitutionenFreigeben_nokRequiredFields() {
 		LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer =
-			TestDataUtil.createLastenausgleichTagesschuleAngabenGemeindeContainer(gesuchsperiode1920, gemeindeParis);
+			TestDataUtil.createLastenausgleichTagesschuleAngabenGemeindeContainer(gesuchsperiode2021, gemeindeParis);
 		latsGemeindeContainer = angabenGemeindeService.saveLastenausgleichTagesschuleGemeinde(latsGemeindeContainer);
 
 		// Die zwingenden Felder sind nicht erfasst
@@ -147,7 +157,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBeanTest extends Ab
 	@Test
 	public void lastenausgleichTagesschuleGemeindeEinreichen_ok() {
 		LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer =
-			TestDataUtil.createLastenausgleichTagesschuleAngabenGemeindeContainer(gesuchsperiode1920, gemeindeParis);
+			TestDataUtil.createLastenausgleichTagesschuleAngabenGemeindeContainer(gesuchsperiode2021, gemeindeParis);
 		latsGemeindeContainer.setAlleAngabenInKibonErfasst(true);
 		latsGemeindeContainer.setAngabenDeklaration(TestDataUtil.createLastenausgleichTagesschuleAngabenGemeinde());
 		latsGemeindeContainer = angabenGemeindeService.saveLastenausgleichTagesschuleGemeinde(latsGemeindeContainer);

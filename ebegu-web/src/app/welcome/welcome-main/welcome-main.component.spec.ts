@@ -30,7 +30,7 @@ describe('WelcomeMainComponent', () => {
     let fixture: ComponentFixture<WelcomeMainComponent>;
 
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-        ['getPrincipal']);
+        ['getPrincipal', 'isOneOfRoles']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);

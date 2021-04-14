@@ -39,17 +39,21 @@
 
         .antrag {
             box-sizing: border-box;
-            flex-basis: 0;
+            flex-basis: 780px;
             flex-grow: 1;
+            flex-shrink: 1;
 
             ::ng-deep ui-view > *:not(dv-tagesschulen-ui-view) {
-                padding: 5rem 2.5rem 10rem 5rem;
+                padding: 5rem 2.5rem 0 5rem;
             }
         }
 
         dv-lastenausgleich-ts-kommentar {
             background-color: @contrast-lightest;
-            width: 45rem;
+            flex-basis: 28rem;
+            flex-grow: 1;
+            flex-shrink: 2;
+            max-width: 45rem;
         }
     }
 }

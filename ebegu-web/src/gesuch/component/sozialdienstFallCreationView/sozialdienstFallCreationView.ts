@@ -67,13 +67,10 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         '$timeout',
     ];
 
-    private sozialdienstFall: TSSozialdienstFall;
     private isVollmachtHochgeladen: boolean;
     private gesuchsperiodeId: string;
 
-    // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt
-    // wird sondern erst nachdem man auf ein checkbox oder auf speichern geklickt hat
-    public showError: boolean = false;
+    public showAntragsteller2Error: boolean = false;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -111,13 +108,8 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         }
     }
 
-    public setShowError(showError: boolean): void {
-        this.showError = showError;
-    }
-
     private initViewModel(): void {
-        this.sozialdienstFall = this.gesuchModelManager.getFall().sozialdienstFall;
-        if (this.sozialdienstFall.isNew()) {
+        if (this.gesuchModelManager.getFall().sozialdienstFall.isNew()) {
             return;
         }
         this.fallRS.existVollmachtDokument(this.gesuchModelManager.getFall().id).then(
@@ -127,8 +119,9 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
 
     // tslint:disable-next-line:cognitive-complexity
     public save(): void {
-        this.showError = true;
-        if (!this.isGesuchValid()) {
+        this.showAntragsteller2Error = false;
+        this.validateZweiteAntragsteller();
+        if (!this.isGesuchValid() || this.showAntragsteller2Error) {
             return undefined;
         }
         if (!this.form.$dirty && !this.gesuchModelManager.getFall().sozialdienstFall.isNew()) {
@@ -255,7 +248,28 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         let filename;
         file = new Blob([response], {type: 'application/pdf'});
         filename = this.$translate.instant('VOLLMACHT_DATEI_NAME');
-        filename = `${filename}_${this.sozialdienstFall?.vorname}_${this.sozialdienstFall.name}`;
+        filename = `${filename}_${this.getSozialdienstFall().vorname}_${this.getSozialdienstFall().name}`;
         this.downloadRS.openDownload(file, filename);
+    }
+
+    private validateZweiteAntragsteller(): void {
+        if ((!EbeguUtil.isEmptyStringNullOrUndefined(this.getSozialdienstFall().nameGs2)
+            || !EbeguUtil.isEmptyStringNullOrUndefined(this.getSozialdienstFall().vornameGs2)
+            || EbeguUtil.isNotNullOrUndefined(this.getSozialdienstFall().geburtsdatumGs2))
+            &&
+            (EbeguUtil.isEmptyStringNullOrUndefined(this.getSozialdienstFall().nameGs2)
+                || EbeguUtil.isEmptyStringNullOrUndefined(this.getSozialdienstFall().vornameGs2)
+                || EbeguUtil.isNullOrUndefined(this.getSozialdienstFall().geburtsdatumGs2))
+        ) {
+            this.showAntragsteller2Error = true;
+        }
+    }
+
+    public getSozialdienstFall(): TSSozialdienstFall {
+        return this.gesuchModelManager.getFall().sozialdienstFall;
+    }
+
+    public isFormDirty(): boolean {
+        return this.form.$dirty;
     }
 }

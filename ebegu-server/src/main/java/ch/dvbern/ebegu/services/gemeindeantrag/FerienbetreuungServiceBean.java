@@ -17,7 +17,11 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.lang.reflect.Array;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,6 +35,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -51,11 +56,15 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import com.google.common.base.Preconditions;
 
 /**
  * Service fuer die Ferienbetreuungen
@@ -66,6 +75,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	implements FerienbetreuungService {
 
 	public static final String ID_MUSS_GESETZT_SEIN = "id muss gesetzt sein";
+	public static final String NOT_ALL_PROPERTIES_SET = "Not all required properties are set";
 
 	@Inject
 	private Persistence persistence;
@@ -78,10 +88,12 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	public List<FerienbetreuungAngabenContainer> getFerienbetreuungAntraege(
 		@Nullable String gemeinde,
 		@Nullable String periode,
-		@Nullable String status
+		@Nullable String status,
+		@Nullable String timestampMutiert
 	) {
 		Set<Gemeinde> gemeinden = principal.getBenutzer().extractGemeindenForUser();
 
+		Set<Predicate> predicates = new HashSet<>();
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		CriteriaQuery<FerienbetreuungAngabenContainer> query = cb.createQuery(FerienbetreuungAngabenContainer.class);
 		Root<FerienbetreuungAngabenContainer> root = query.from(FerienbetreuungAngabenContainer.class);
@@ -92,11 +104,11 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			UserRole.SACHBEARBEITER_MANDANT)) {
 			Predicate gemeindeIn =
 				root.get(FerienbetreuungAngabenContainer_.gemeinde).in(gemeinden);
-			query.where(gemeindeIn);
+			predicates.add(gemeindeIn);
 		}
 
 		if (gemeinde != null) {
-			query.where(
+			predicates.add(
 				cb.equal(
 					root.get(FerienbetreuungAngabenContainer_.gemeinde).get(Gemeinde_.name),
 					gemeinde)
@@ -110,7 +122,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			Path<DateRange> dateRangePath =
 				root.join(FerienbetreuungAngabenContainer_.gesuchsperiode, JoinType.INNER)
 					.get(AbstractDateRangedEntity_.gueltigkeit);
-			query.where(
+			predicates.add(
 				cb.and(
 					cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigAb)), years[0]),
 					cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigBis)), years[1])
@@ -118,14 +130,42 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			);
 		}
 		if (status != null) {
-			query.where(
+			predicates.add(
 				cb.equal(
 					root.get(FerienbetreuungAngabenContainer_.status),
 					FerienbetreuungAngabenStatus.valueOf(status))
 			);
 		}
+		if (timestampMutiert != null) {
+			Predicate timestampMutiertPredicate = createTimestampMutiertPredicate(timestampMutiert, cb, root);
+			predicates.add(timestampMutiertPredicate);
+		}
+
+		Predicate[] predicateArray = new Predicate[predicates.size()];
+		query.where(predicates.toArray(predicateArray));
 
 		return persistence.getCriteriaResults(query);
+	}
+
+
+
+	private Predicate createTimestampMutiertPredicate(
+		@Nonnull String timestampMutiert,
+		CriteriaBuilder cb,
+		Root<FerienbetreuungAngabenContainer> root) {
+
+		Predicate timestampMutiertPredicate;
+		try {
+			// Wir wollen ohne Zeit vergleichen
+			Expression<LocalDate> timestampAsLocalDate =
+				root.get(FerienbetreuungAngabenContainer_.timestampMutiert).as(LocalDate.class);
+			LocalDate searchDate = LocalDate.parse(timestampMutiert, Constants.DATE_FORMATTER);
+			timestampMutiertPredicate = cb.equal(timestampAsLocalDate, searchDate);
+		} catch (DateTimeParseException e) {
+			// no valid date. we return false, since no antrag should be found
+			timestampMutiertPredicate = cb.disjunction();
+		}
+		return timestampMutiertPredicate;
 	}
 
 	@Nonnull
@@ -141,13 +181,46 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 	@Nonnull
 	@Override
-	public FerienbetreuungAngabenContainer createFerienbetreuungAntrag(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+	public FerienbetreuungAngabenContainer createFerienbetreuungAntrag(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
+
+		Optional<FerienbetreuungAngabenContainer> existingOptional =
+			findFerienbetreuungAngabenContainer(gemeinde, gesuchsperiode);
+
+		if (existingOptional.isPresent()) {
+			throw new EntityExistsException(
+				FerienbetreuungAngabenContainer.class,
+				"FerienbetreuungContainer existiert für Gemeinde und Periode bereits",
+				gemeinde.getName() + ' ' + gesuchsperiode.getGesuchsperiodeString());
+		}
+
 		FerienbetreuungAngabenContainer container = new FerienbetreuungAngabenContainer();
 		container.setStatus(FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE);
 		container.setGemeinde(gemeinde);
 		container.setGesuchsperiode(gesuchsperiode);
 		container.setAngabenDeklaration(new FerienbetreuungAngaben());
 		return persistence.persist(container);
+	}
+
+	@Nonnull
+	private Optional<FerienbetreuungAngabenContainer> findFerienbetreuungAngabenContainer(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+		Objects.requireNonNull(gemeinde, "gemeinde muss gesetzt sein");
+		Objects.requireNonNull(gesuchsperiode, "gesuchsperiode muss gesetzt sein");
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<FerienbetreuungAngabenContainer> query =
+			cb.createQuery(FerienbetreuungAngabenContainer.class);
+		Root<FerienbetreuungAngabenContainer> root =
+			query.from(FerienbetreuungAngabenContainer.class);
+
+		Predicate gemeindePredicate =
+			cb.equal(root.get(FerienbetreuungAngabenContainer_.gemeinde), gemeinde);
+		Predicate gesuchsperiodePredicate =
+			cb.equal(root.get(FerienbetreuungAngabenContainer_.gesuchsperiode), gesuchsperiode);
+
+		query.where(cb.and(gemeindePredicate, gesuchsperiodePredicate));
+		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
 	}
 
 	@Nonnull
@@ -166,7 +239,8 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 	@Nonnull
 	@Override
-	public Optional<FerienbetreuungAngabenStammdaten> findFerienbetreuungAngabenStammdaten(@Nonnull String stammdatenId) {
+	public Optional<FerienbetreuungAngabenStammdaten> findFerienbetreuungAngabenStammdaten(
+		@Nonnull String stammdatenId) {
 		Objects.requireNonNull(stammdatenId, ID_MUSS_GESETZT_SEIN);
 
 		FerienbetreuungAngabenStammdaten stammdaten =
@@ -199,7 +273,8 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 	@Nonnull
 	@Override
-	public Optional<FerienbetreuungAngabenKostenEinnahmen> findFerienbetreuungAngabenKostenEinnahmen(@Nonnull String kostenEinnahmenId) {
+	public Optional<FerienbetreuungAngabenKostenEinnahmen> findFerienbetreuungAngabenKostenEinnahmen(
+		@Nonnull String kostenEinnahmenId) {
 		Objects.requireNonNull(kostenEinnahmenId, ID_MUSS_GESETZT_SEIN);
 
 		FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen =
@@ -210,26 +285,170 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 	@Nonnull
 	@Override
-	public FerienbetreuungAngabenStammdaten saveFerienbetreuungAngabenStammdaten(@Nonnull FerienbetreuungAngabenStammdaten stammdaten) {
+	public FerienbetreuungAngabenStammdaten saveFerienbetreuungAngabenStammdaten(
+		@Nonnull FerienbetreuungAngabenStammdaten stammdaten) {
 		return persistence.merge(stammdaten);
 	}
 
 	@Nonnull
 	@Override
-	public FerienbetreuungAngabenAngebot saveFerienbetreuungAngabenAngebot(@Nonnull FerienbetreuungAngabenAngebot angebot) {
+	public FerienbetreuungAngabenAngebot saveFerienbetreuungAngabenAngebot(
+		@Nonnull FerienbetreuungAngabenAngebot angebot) {
 		return persistence.merge(angebot);
 	}
 
 	@Nonnull
 	@Override
-	public FerienbetreuungAngabenNutzung saveFerienbetreuungAngabenNutzung(@Nonnull FerienbetreuungAngabenNutzung nutzung) {
+	public FerienbetreuungAngabenNutzung saveFerienbetreuungAngabenNutzung(
+		@Nonnull FerienbetreuungAngabenNutzung nutzung) {
 		return persistence.merge(nutzung);
 	}
 
 	@Nonnull
 	@Override
-	public FerienbetreuungAngabenKostenEinnahmen saveFerienbetreuungAngabenKostenEinnahmen(@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen) {
+	public FerienbetreuungAngabenKostenEinnahmen saveFerienbetreuungAngabenKostenEinnahmen(
+		@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen) {
 		return persistence.merge(kostenEinnahmen);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenAngebot ferienbetreuungAngebotAbschliessen(
+		@Nonnull FerienbetreuungAngabenAngebot angebot) {
+
+		Preconditions.checkArgument(angebot.isReadyForAbschluss(), NOT_ALL_PROPERTIES_SET);
+		Preconditions.checkArgument(
+			angebot.getStatus() == FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE,
+			"FerienbetreuungAngabenAngebot must be in state IN_BEARBEITUNG_GEMEINDE");
+
+		angebot.setStatus(FerienbetreuungFormularStatus.ABGESCHLOSSEN);
+
+		return persistence.merge(angebot);
+
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenAngebot ferienbetreuungAngebotFalscheAngaben(
+		@Nonnull FerienbetreuungAngabenAngebot angebot) {
+		Preconditions.checkArgument(
+			angebot.getStatus() == FerienbetreuungFormularStatus.ABGESCHLOSSEN,
+			"FerienbetreuungAngabenAngebot must be in state ABGESCHLOSSEN");
+
+		angebot.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
+
+		return persistence.merge(angebot);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenNutzung ferienbetreuungAngabenNutzungAbschliessen(
+		@Nonnull FerienbetreuungAngabenNutzung nutzung) {
+		Preconditions.checkArgument(nutzung.isReadyForAbschluss(), NOT_ALL_PROPERTIES_SET);
+		Preconditions.checkArgument(
+			nutzung.getStatus() == FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE,
+			"FerienbetreuungAngabenNutzung must be in state IN_BEARBEITUNG_GEMEINDE"
+		);
+
+		nutzung.setStatus(FerienbetreuungFormularStatus.ABGESCHLOSSEN);
+
+		return persistence.merge(nutzung);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenNutzung ferienbetreuungAngabenNutzungFalscheAngaben(
+		@Nonnull
+			FerienbetreuungAngabenNutzung nutzung) {
+		Preconditions.checkArgument(
+			nutzung.getStatus() == FerienbetreuungFormularStatus.ABGESCHLOSSEN,
+			"FerienbetreuungAngabenNutzung must be in state ABGESCHLOSSEN"
+		);
+
+		nutzung.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
+
+		return persistence.merge(nutzung);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenKostenEinnahmen ferienbetreuungAngabenKostenEinnahmenAbschliessen(
+		@Nonnull
+			FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen) {
+		Preconditions.checkArgument(kostenEinnahmen.isReadyForAbschluss(), NOT_ALL_PROPERTIES_SET);
+		Preconditions.checkArgument(
+			kostenEinnahmen.getStatus() == FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE,
+			"FerienbetreuungAngabenKostenEinnahmen must be in state IN_BEARBEITUNG_GEMEINDE"
+		);
+
+		kostenEinnahmen.setStatus(FerienbetreuungFormularStatus.ABGESCHLOSSEN);
+
+		return persistence.merge(kostenEinnahmen);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenKostenEinnahmen ferienbetreuungAngabenKostenEinnahmenFalscheAngaben(
+		@Nonnull
+			FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen) {
+		Preconditions.checkArgument(
+			kostenEinnahmen.getStatus() == FerienbetreuungFormularStatus.ABGESCHLOSSEN,
+			"FerienbetreuungAngabenKostenEinnahmen must be in state ABGESCHLOSSEN"
+		);
+
+		kostenEinnahmen.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
+
+		return persistence.merge(kostenEinnahmen);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenAbschliessen(
+			@Nonnull FerienbetreuungAngabenStammdaten stammdaten) {
+		Preconditions.checkArgument(stammdaten.isReadyForAbschluss(), NOT_ALL_PROPERTIES_SET);
+		Preconditions.checkArgument(
+			stammdaten.getStatus() == FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE,
+			"FerienbetreuungAngabenNutzung must be in state IN_BEARBEITUNG_GEMEINDE"
+		);
+
+		stammdaten.setStatus(FerienbetreuungFormularStatus.ABGESCHLOSSEN);
+
+		return persistence.merge(stammdaten);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenFalscheAngaben(
+		@Nonnull
+			FerienbetreuungAngabenStammdaten stammdaten) {
+		Preconditions.checkArgument(
+			stammdaten.getStatus() == FerienbetreuungFormularStatus.ABGESCHLOSSEN,
+			"FerienbetreuungAngabenStammdaten must be in state ABGESCHLOSSEN"
+		);
+
+		stammdaten.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
+
+		return persistence.merge(stammdaten);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenContainer ferienbetreuungAngabenAbschliessen(
+			@Nonnull FerienbetreuungAngabenContainer container) {
+		Preconditions.checkArgument(
+			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE,
+			"FerienbetreuungAngabenStammdaten must be in state IN_BEARBEITUNG_GEMEINDE"
+		);
+
+		Preconditions.checkArgument(
+			container.getAngabenDeklaration().isReadyForFreigeben(),
+			"angaben incomplete"
+		);
+
+		container.copyForFreigabe();
+		container.setStatus(FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON);
+
+		return persistence.merge(container);
 	}
 }
 

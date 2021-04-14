@@ -15,10 +15,6 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-.limit-width {
-    max-width: 600px;
-}
-
 textarea {
     min-height: 80px;
 }
@@ -26,5 +22,19 @@ textarea {
 .actions {
     display: flex;
     justify-content: center;
+    margin-bottom: 10rem;
     width: 100%;
+
+    & > dv-loading-button {
+        margin: 0 5px;
+    }
+}
+
+.label-required-error {
+    color: red !important;
+}
+
+
+.pointer-cursor {
+    cursor: pointer;
 }

@@ -23,6 +23,8 @@ import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
+import {TSAnzahlEingeschriebeneKinder} from '../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
+import {TSDurchschnittKinderProTag} from '../models/gemeindeantrag/TSDurchschnittKinderProTag';
 import {TSFerienbetreuungAngaben} from '../models/gemeindeantrag/TSFerienbetreuungAngaben';
 import {TSFerienbetreuungAngabenAngebot} from '../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenContainer} from '../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
@@ -1501,7 +1503,7 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.alternativeEmailFamilienportal =
                 (institutionStammdaten.alternativeEmailFamilienportal) ?
                     institutionStammdaten.alternativeEmailFamilienportal :
-                null;
+                    null;
             return restInstitutionStammdaten;
         }
         return undefined;
@@ -4447,6 +4449,12 @@ export class EbeguRestUtil {
                 gemeindeFromServer.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete;
             gemeindeTS.einnahmenElterngebuehren =
                 gemeindeFromServer.einnahmenElterngebuehren;
+            gemeindeTS.ersteRateAusbezahlt =
+                gemeindeFromServer.ersteRateAusbezahlt;
+            gemeindeTS.tagesschuleTeilweiseGeschlossen =
+                gemeindeFromServer.tagesschuleTeilweiseGeschlossen;
+            gemeindeTS.rueckerstattungenElterngebuehrenSchliessung =
+                gemeindeFromServer.rueckerstattungenElterngebuehrenSchliessung;
             // C: Kostenbeteiligung Gemeinde
             gemeindeTS.gesamtKostenTagesschule =
                 gemeindeFromServer.gesamtKostenTagesschule;
@@ -4454,6 +4462,10 @@ export class EbeguRestUtil {
                 gemeindeFromServer.einnnahmenVerpflegung;
             gemeindeTS.einnahmenSubventionenDritter =
                 gemeindeFromServer.einnahmenSubventionenDritter;
+            gemeindeTS.ueberschussErzielt =
+                gemeindeFromServer.ueberschussErzielt;
+            gemeindeTS.ueberschussVerwendung =
+                gemeindeFromServer.ueberschussVerwendung;
             // D: Angaben zu weiteren Kosten und Ertraegen
             gemeindeTS.bemerkungenWeitereKostenUndErtraege =
                 gemeindeFromServer.bemerkungenWeitereKostenUndErtraege;
@@ -4506,6 +4518,12 @@ export class EbeguRestUtil {
                 tsAngabenGemeinde.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete;
             restAngabenGemeinde.einnahmenElterngebuehren =
                 tsAngabenGemeinde.einnahmenElterngebuehren;
+            restAngabenGemeinde.tagesschuleTeilweiseGeschlossen =
+                tsAngabenGemeinde.tagesschuleTeilweiseGeschlossen;
+            restAngabenGemeinde.rueckerstattungenElterngebuehrenSchliessung =
+                tsAngabenGemeinde.rueckerstattungenElterngebuehrenSchliessung;
+            restAngabenGemeinde.ersteRateAusbezahlt =
+                tsAngabenGemeinde.ersteRateAusbezahlt;
             // C: Kostenbeteiligung Gemeinde
             restAngabenGemeinde.gesamtKostenTagesschule =
                 tsAngabenGemeinde.gesamtKostenTagesschule;
@@ -4513,6 +4531,10 @@ export class EbeguRestUtil {
                 tsAngabenGemeinde.einnnahmenVerpflegung;
             restAngabenGemeinde.einnahmenSubventionenDritter =
                 tsAngabenGemeinde.einnahmenSubventionenDritter;
+            restAngabenGemeinde.ueberschussErzielt =
+                tsAngabenGemeinde.ueberschussErzielt;
+            restAngabenGemeinde.ueberschussVerwendung =
+                tsAngabenGemeinde.ueberschussVerwendung;
             // D: Angaben zu weiteren Kosten und Ertraegen
             restAngabenGemeinde.bemerkungenWeitereKostenUndErtraege =
                 tsAngabenGemeinde.bemerkungenWeitereKostenUndErtraege;
@@ -4620,8 +4642,8 @@ export class EbeguRestUtil {
             angabenInstitutionTS.anzahlEingeschriebeneKinder = angabenInstitutionFromServer.anzahlEingeschriebeneKinder;
             angabenInstitutionTS.anzahlEingeschriebeneKinderKindergarten =
                 angabenInstitutionFromServer.anzahlEingeschriebeneKinderKindergarten;
-            angabenInstitutionTS.anzahlEingeschriebeneKinderBasisstufe =
-                angabenInstitutionFromServer.anzahlEingeschriebeneKinderBasisstufe;
+            angabenInstitutionTS.anzahlEingeschriebeneKinderSekundarstufe =
+                angabenInstitutionFromServer.anzahlEingeschriebeneKinderSekundarstufe;
             angabenInstitutionTS.anzahlEingeschriebeneKinderPrimarstufe =
                 angabenInstitutionFromServer.anzahlEingeschriebeneKinderPrimarstufe;
             angabenInstitutionTS.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen =
@@ -4666,8 +4688,8 @@ export class EbeguRestUtil {
             restAngabenInstitution.anzahlEingeschriebeneKinder = tsAngabenInstitution.anzahlEingeschriebeneKinder;
             restAngabenInstitution.anzahlEingeschriebeneKinderKindergarten =
                 tsAngabenInstitution.anzahlEingeschriebeneKinderKindergarten;
-            restAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe =
-                tsAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe;
+            restAngabenInstitution.anzahlEingeschriebeneKinderSekundarstufe =
+                tsAngabenInstitution.anzahlEingeschriebeneKinderSekundarstufe;
             restAngabenInstitution.anzahlEingeschriebeneKinderPrimarstufe =
                 tsAngabenInstitution.anzahlEingeschriebeneKinderPrimarstufe;
             restAngabenInstitution.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen =
@@ -4713,6 +4735,7 @@ export class EbeguRestUtil {
         wizardStep.stepName = data.stepName;
         wizardStep.wizardTyp = data.wizardTyp;
         wizardStep.disabled = data.disabled;
+        wizardStep.status = data.status;
         return wizardStep;
     }
 
@@ -4975,6 +4998,7 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
+        stammdatenTS.status = stammdatenFromServer.status;
         stammdatenTS.amAngebotBeteiligteGemeinden = stammdatenFromServer.amAngebotBeteiligteGemeinden;
         stammdatenTS.seitWannFerienbetreuungen = stammdatenFromServer.seitWannFerienbetreuungen;
         stammdatenTS.traegerschaft = stammdatenFromServer.traegerschaft;
@@ -4999,6 +5023,7 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractEntity(angebotTS, angebotFromServer);
+        angebotTS.status = angebotFromServer.status;
         angebotTS.angebot = angebotFromServer.angebot;
         angebotTS.angebotKontaktpersonVorname = angebotFromServer.angebotKontaktpersonVorname;
         angebotTS.angebotKontaktpersonNachname = angebotFromServer.angebotKontaktpersonNachname;
@@ -5042,6 +5067,7 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractEntity(nutzungTS, nutzungFromServer);
+        nutzungTS.status = nutzungFromServer.status;
         nutzungTS.anzahlBetreuungstageKinderBern = nutzungFromServer.anzahlBetreuungstageKinderBern;
         nutzungTS.betreuungstageKinderDieserGemeinde = nutzungFromServer.betreuungstageKinderDieserGemeinde;
         nutzungTS.betreuungstageKinderDieserGemeindeSonderschueler =
@@ -5067,6 +5093,7 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractEntity(kostenEinnahmenTS, kostenEinnahmenFromServer);
+        kostenEinnahmenTS.status = kostenEinnahmenFromServer.status;
         kostenEinnahmenTS.personalkosten = kostenEinnahmenFromServer.personalkosten;
         kostenEinnahmenTS.personalkostenLeitungAdmin = kostenEinnahmenFromServer.personalkostenLeitungAdmin;
         kostenEinnahmenTS.sachkosten = kostenEinnahmenFromServer.sachkosten;
@@ -5115,6 +5142,9 @@ export class EbeguRestUtil {
             restSozialdienstFall.vorname = sozialdienstFall.vorname;
             restSozialdienstFall.geburtsdatum = DateUtil.momentToLocalDate(sozialdienstFall.geburtsdatum);
             restSozialdienstFall.status = sozialdienstFall.status;
+            restSozialdienstFall.nameGs2 = sozialdienstFall.nameGs2;
+            restSozialdienstFall.vornameGs2 = sozialdienstFall.vornameGs2;
+            restSozialdienstFall.geburtsdatumGs2 = DateUtil.momentToLocalDate(sozialdienstFall.geburtsdatumGs2);
             return restSozialdienstFall;
         }
         return undefined;
@@ -5132,9 +5162,35 @@ export class EbeguRestUtil {
             sozialdienstFallTS.name = sozialdienstFallFromServer.name;
             sozialdienstFallTS.vorname = sozialdienstFallFromServer.vorname;
             sozialdienstFallTS.geburtsdatum = DateUtil.localDateToMoment(sozialdienstFallFromServer.geburtsdatum);
+            sozialdienstFallTS.nameGs2 = sozialdienstFallFromServer.nameGs2;
+            sozialdienstFallTS.vornameGs2 = sozialdienstFallFromServer.vornameGs2;
+            sozialdienstFallTS.geburtsdatumGs2 = DateUtil.localDateToMoment(sozialdienstFallFromServer.geburtsdatumGs2);
             sozialdienstFallTS.status = sozialdienstFallFromServer.status;
             return sozialdienstFallTS;
         }
         return undefined;
+    }
+
+    public parseAnzahlEingeschriebeneKinder(
+        anzahlEingeschriebeneKinder: TSAnzahlEingeschriebeneKinder,
+        restAnzahlEingeschriebeneKinder: any
+    ): TSAnzahlEingeschriebeneKinder {
+        anzahlEingeschriebeneKinder.overall = restAnzahlEingeschriebeneKinder.overall;
+        anzahlEingeschriebeneKinder.vorschulalter = restAnzahlEingeschriebeneKinder.vorschulalter;
+        anzahlEingeschriebeneKinder.kindergarten = restAnzahlEingeschriebeneKinder.kindergarten;
+        anzahlEingeschriebeneKinder.primarstufe = restAnzahlEingeschriebeneKinder.primarstufe;
+        anzahlEingeschriebeneKinder.sekundarstufe = restAnzahlEingeschriebeneKinder.sekundarstufe;
+        return anzahlEingeschriebeneKinder;
+    }
+
+    public parseDurchschnittKinderProTag(
+        tsDurchschnittKinderProTag: TSDurchschnittKinderProTag,
+        restDurchschnittKinderProTag: any
+    ): TSDurchschnittKinderProTag {
+        tsDurchschnittKinderProTag.fruehbetreuung = restDurchschnittKinderProTag.fruehbetreuung;
+        tsDurchschnittKinderProTag.mittagsbetreuung = restDurchschnittKinderProTag.mittagsbetreuung;
+        tsDurchschnittKinderProTag.nachmittagsbetreuung1 = restDurchschnittKinderProTag.nachmittagsbetreuung1;
+        tsDurchschnittKinderProTag.nachmittagsbetreuung2 = restDurchschnittKinderProTag.nachmittagsbetreuung2;
+        return tsDurchschnittKinderProTag;
     }
 }

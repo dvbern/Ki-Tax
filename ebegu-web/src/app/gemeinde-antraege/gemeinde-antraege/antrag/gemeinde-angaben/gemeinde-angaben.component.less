@@ -28,13 +28,17 @@ h2 {
     margin-bottom: 3rem;
 }
 
+.italic {
+    font-style: italic;
+}
+
 textarea {
     min-height: 80px;
 }
 
 .no-margin-left {
     // we need to leave space for the outline
-    margin-left: 2px;
+    margin-left: 2px !important;
 }
 
 mat-divider {
@@ -42,7 +46,7 @@ mat-divider {
 }
 
 .label-required-error {
-    color: red;
+    color: red !important;
 }
 
 .pointer-cursor {
@@ -59,6 +63,7 @@ mat-divider {
     .actions {
         display: flex;
         justify-content: center;
+        margin-bottom: 10rem;
 
         & > dv-loading-button {
             margin: 0 5px;
@@ -77,4 +82,25 @@ mat-divider {
         cursor: not-allowed;
     }
 
+    .green {
+        color: green;
+    }
+
+}
+
+.custom-errors {
+    color: red;
+    margin-bottom: 4rem;
+    > div {
+        align-items: center;
+        display: flex;
+        margin-bottom: 1rem;
+        > i {
+            margin-right: 1rem;
+        }
+    }
+}
+
+dv-input-container-x > .dv-input-container > mat-form-field.flex-grow {
+    flex: 1 0 180px;
 }

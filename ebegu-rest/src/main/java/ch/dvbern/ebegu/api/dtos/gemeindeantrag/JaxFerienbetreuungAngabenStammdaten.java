@@ -19,10 +19,12 @@ package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
 
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 
 public class JaxFerienbetreuungAngabenStammdaten extends JaxAbstractDTO {
 
@@ -66,6 +68,9 @@ public class JaxFerienbetreuungAngabenStammdaten extends JaxAbstractDTO {
 
 	@Nullable
 	private String vermerkAuszahlung;
+
+	@Nonnull
+	private FerienbetreuungFormularStatus status;
 
 
 	@Nullable
@@ -183,5 +188,14 @@ public class JaxFerienbetreuungAngabenStammdaten extends JaxAbstractDTO {
 
 	public void setVermerkAuszahlung(@Nullable String vermerkAuszahlung) {
 		this.vermerkAuszahlung = vermerkAuszahlung;
+	}
+
+	@Nonnull
+	public FerienbetreuungFormularStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(@Nonnull FerienbetreuungFormularStatus status) {
+		this.status = status;
 	}
 }

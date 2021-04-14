@@ -20,16 +20,21 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {NEVER} from 'rxjs';
 import {concatMap} from 'rxjs/operators';
+import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {FerienbetreuungAngabenStatus} from '../../../../models/enums/FerienbetreuungAngabenStatus';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungDokument} from '../../../../models/gemeindeantrag/TSFerienbetreuungDokument';
 import {TSDownloadFile} from '../../../../models/TSDownloadFile';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {MAX_FILE_SIZE} from '../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {UploadRS} from '../../../core/service/uploadRS.rest';
+import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
 import {FerienbetreuungDokumentService} from '../services/ferienbetreuung-dokument.service';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
@@ -56,7 +61,9 @@ export class FerienbetreuungUploadComponent implements OnInit {
         private readonly cd: ChangeDetectorRef,
         private readonly translate: TranslateService,
         private readonly dialog: MatDialog,
-        private readonly downloadRS: DownloadRS
+        private readonly downloadRS: DownloadRS,
+        private readonly wizardRS: WizardStepXRS,
+        private readonly authService: AuthServiceRS
     ) {
     }
 
@@ -101,6 +108,7 @@ export class FerienbetreuungUploadComponent implements OnInit {
             }))
             .subscribe(() => {
                     this.dokumente = this.dokumente.filter(d => d.id !== dokument.id);
+                    this.wizardRS.updateSteps(TSWizardStepXTyp.FERIENBETREUUNG, this.container.id);
                     this.cd.markForCheck();
                 },
                 err => {
@@ -119,7 +127,8 @@ export class FerienbetreuungUploadComponent implements OnInit {
         }
         this.uploadRS.uploadFerienbetreuungDokumente(files, this.container.id)
             .then(dokumente => {
-                this.dokumente = dokumente;
+                this.dokumente = this.dokumente.concat(dokumente);
+                this.wizardRS.updateSteps(TSWizardStepXTyp.FERIENBETREUUNG, this.container.id);
                 this.cd.markForCheck();
             })
             .catch(err => {
@@ -130,8 +139,8 @@ export class FerienbetreuungUploadComponent implements OnInit {
     }
 
     public isReadonly(): boolean {
-        // TODO
-        return false;
+        return this.container?.status !== FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE
+            || this.authService.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
     }
 
     /**

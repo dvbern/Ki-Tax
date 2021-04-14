@@ -5788,10 +5788,15 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAngabenGemeinde.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete());
 		jaxAngabenGemeinde.setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete(angabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
 		jaxAngabenGemeinde.setEinnahmenElterngebuehren(angabenGemeinde.getEinnahmenElterngebuehren());
+		jaxAngabenGemeinde.setTagesschuleTeilweiseGeschlossen(angabenGemeinde.getTagesschuleTeilweiseGeschlossen());
+		jaxAngabenGemeinde.setRueckerstattungenElterngebuehrenSchliessung(angabenGemeinde.getRueckerstattungenElterngebuehrenSchliessung());
+		jaxAngabenGemeinde.setErsteRateAusbezahlt(angabenGemeinde.getErsteRateAusbezahlt());
 		// C: Kostenbeteiligung Gemeinde
 		jaxAngabenGemeinde.setGesamtKostenTagesschule(angabenGemeinde.getGesamtKostenTagesschule());
 		jaxAngabenGemeinde.setEinnnahmenVerpflegung(angabenGemeinde.getEinnnahmenVerpflegung());
 		jaxAngabenGemeinde.setEinnahmenSubventionenDritter(angabenGemeinde.getEinnahmenSubventionenDritter());
+		jaxAngabenGemeinde.setUeberschussErzielt(angabenGemeinde.getUeberschussErzielt());
+		jaxAngabenGemeinde.setUeberschussVerwendung(angabenGemeinde.getUeberschussVerwendung());
 		// D: Angaben zu weiteren Kosten und Ertraegen
 		jaxAngabenGemeinde.setBemerkungenWeitereKostenUndErtraege(angabenGemeinde.getBemerkungenWeitereKostenUndErtraege());
 		// E: Kontrollfragen
@@ -5827,10 +5832,15 @@ public class JaxBConverter extends AbstractConverter {
 		angabenGemeinde.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(jaxAngabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete());
 		angabenGemeinde.setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete(jaxAngabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
 		angabenGemeinde.setEinnahmenElterngebuehren(jaxAngabenGemeinde.getEinnahmenElterngebuehren());
+		angabenGemeinde.setTagesschuleTeilweiseGeschlossen(jaxAngabenGemeinde.getTagesschuleTeilweiseGeschlossen());
+		angabenGemeinde.setRueckerstattungenElterngebuehrenSchliessung(jaxAngabenGemeinde.getRueckerstattungenElterngebuehrenSchliessung());
+		angabenGemeinde.setErsteRateAusbezahlt(jaxAngabenGemeinde.getErsteRateAusbezahlt());
 		// C: Kostenbeteiligung Gemeinde
 		angabenGemeinde.setGesamtKostenTagesschule(jaxAngabenGemeinde.getGesamtKostenTagesschule());
 		angabenGemeinde.setEinnnahmenVerpflegung(jaxAngabenGemeinde.getEinnnahmenVerpflegung());
 		angabenGemeinde.setEinnahmenSubventionenDritter(jaxAngabenGemeinde.getEinnahmenSubventionenDritter());
+		angabenGemeinde.setUeberschussErzielt(jaxAngabenGemeinde.getUeberschussErzielt());
+		angabenGemeinde.setUeberschussVerwendung(jaxAngabenGemeinde.getUeberschussVerwendung());
 		// D: Angaben zu weiteren Kosten und Ertraegen
 		angabenGemeinde.setBemerkungenWeitereKostenUndErtraege(jaxAngabenGemeinde.getBemerkungenWeitereKostenUndErtraege());
 		// E: Kontrollfragen
@@ -5855,7 +5865,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		return institutionContainerList.stream()
 			.map(this::lastenausgleichTagesschuleAngabenInstitutionContainerToJax)
-			.collect(Collectors.toCollection(TreeSet::new));
+			.collect(Collectors.toSet());
 	}
 
 	@Nonnull
@@ -5944,7 +5954,7 @@ public class JaxBConverter extends AbstractConverter {
 		// B: Quantitative Angaben
 		jaxAngabenInstitution.setAnzahlEingeschriebeneKinder(angabenInstitution.getAnzahlEingeschriebeneKinder());
 		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderKindergarten(angabenInstitution.getAnzahlEingeschriebeneKinderKindergarten());
-		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderBasisstufe(angabenInstitution.getAnzahlEingeschriebeneKinderBasisstufe());
+		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderSekundarstufe(angabenInstitution.getAnzahlEingeschriebeneKinderSekundarstufe());
 		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderPrimarstufe(angabenInstitution.getAnzahlEingeschriebeneKinderPrimarstufe());
 		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(angabenInstitution.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen());
 		jaxAngabenInstitution.setDurchschnittKinderProTagFruehbetreuung(angabenInstitution.getDurchschnittKinderProTagFruehbetreuung());
@@ -5977,7 +5987,7 @@ public class JaxBConverter extends AbstractConverter {
 		// B: Quantitative Angaben
 		angabenInstitution.setAnzahlEingeschriebeneKinder(jaxAngabenInstitution.getAnzahlEingeschriebeneKinder());
 		angabenInstitution.setAnzahlEingeschriebeneKinderKindergarten(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderKindergarten());
-		angabenInstitution.setAnzahlEingeschriebeneKinderBasisstufe(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderBasisstufe());
+		angabenInstitution.setAnzahlEingeschriebeneKinderSekundarstufe(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderSekundarstufe());
 		angabenInstitution.setAnzahlEingeschriebeneKinderPrimarstufe(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderPrimarstufe());
 		angabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen());
 		angabenInstitution.setDurchschnittKinderProTagFruehbetreuung(jaxAngabenInstitution.getDurchschnittKinderProTagFruehbetreuung());

@@ -66,6 +66,15 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 	@Column()
 	private BigDecimal gemeindebeitrag;
 
+	public FerienbetreuungAngaben() {}
+
+	public FerienbetreuungAngaben(FerienbetreuungAngaben angabenToCopy) {
+		this.ferienbetreuungAngabenStammdaten = new FerienbetreuungAngabenStammdaten(angabenToCopy.ferienbetreuungAngabenStammdaten);
+		this.ferienbetreuungAngabenAngebot = new FerienbetreuungAngabenAngebot(angabenToCopy.ferienbetreuungAngabenAngebot);
+		this.ferienbetreuungAngabenNutzung = new FerienbetreuungAngabenNutzung(angabenToCopy.ferienbetreuungAngabenNutzung);
+		this.ferienbetreuungAngabenKostenEinnahmen = new FerienbetreuungAngabenKostenEinnahmen(angabenToCopy.ferienbetreuungAngabenKostenEinnahmen);
+	}
+
 	@Nonnull
 	public FerienbetreuungAngabenStammdaten getFerienbetreuungAngabenStammdaten() {
 		return ferienbetreuungAngabenStammdaten;

@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.enums;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -179,6 +180,21 @@ public enum UserRole {
 			SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG);
 	}
 
+	public static List<UserRole> getAllGemeindeFerienbetreuungSuperadminRoles() {
+		List<UserRole> roles = new ArrayList<>();
+		roles.add(SUPER_ADMIN);
+		roles.addAll(getAllGemeindeFerienbetreuungRoles());
+		return roles;
+	}
+
+	public static List<UserRole> getAllGemeindeFerienbetreuungMandantSuperadminRoles() {
+		List<UserRole> roles = new ArrayList<>();
+		roles.add(SUPER_ADMIN);
+		roles.addAll(getMandantRoles());
+		roles.addAll(getAllGemeindeFerienbetreuungRoles());
+		return roles;
+	}
+
 	public static List<UserRole> getAllInstitutionAdminRoles() {
 		return Arrays.asList(ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT);
 	}
@@ -220,5 +236,18 @@ public enum UserRole {
 	@Nonnull
 	public RollenAbhaengigkeit getRollenAbhaengigkeit() {
 		return rollenAbhaengigkeit;
+	}
+
+	public boolean isInstitutionRole() {
+		return SACHBEARBEITER_INSTITUTION == this
+			|| ADMIN_INSTITUTION == this
+			|| SACHBEARBEITER_TRAEGERSCHAFT == this
+			|| ADMIN_TRAEGERSCHAFT == this;
+	}
+
+	public static List<UserRole> getAllInstitutionRoles() {
+		List<UserRole> all = getAllInstitutionAdminRoles();
+		all.addAll(getAllInstitutionSachbearbeiterRoles());
+		return all;
 	}
 }
