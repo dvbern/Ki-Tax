@@ -111,19 +111,19 @@ public class SuperAdminServiceBean implements SuperAdminService {
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, ADMIN_SOZIALDIENST })
 	public void removeDossier(@Nonnull String dossierId) {
 		dossierService.removeDossier(dossierId, GesuchDeletionCause.USER);
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, ADMIN_SOZIALDIENST })
 	public void removeFallIfExists(@Nonnull String fallId) {
 		fallService.removeFallIfExists(fallId, GesuchDeletionCause.USER);
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, ADMIN_SOZIALDIENST })
 	public void removeFall(@Nonnull Fall fall) {
 		fallService.removeFall(fall, GesuchDeletionCause.USER);
 	}
