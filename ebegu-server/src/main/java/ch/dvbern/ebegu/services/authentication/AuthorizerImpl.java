@@ -430,6 +430,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (!allowedJAORGS && !allowedSchulamt && !allowedSteueramt
 			&& principalBean.isCallerInAnyOfRole(ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST)
 			&& AntragStatus.IN_BEARBEITUNG_SOZIALDIENST == gesuch.getStatus()
+			&& gesuch.getFall().getSozialdienstFall() != null
 			&& gesuch.getFall().getSozialdienstFall().getStatus() != SozialdienstFallStatus.ENTZOGEN) {
 			allowedSozialdienst = true;
 		}
