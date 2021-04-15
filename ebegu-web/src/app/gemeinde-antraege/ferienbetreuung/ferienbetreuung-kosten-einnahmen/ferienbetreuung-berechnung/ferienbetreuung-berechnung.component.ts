@@ -15,9 +15,17 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnDestroy,
+    OnInit,
+    SimpleChanges
+} from '@angular/core';
 import {FormGroup} from '@angular/forms';
-import {combineLatest} from 'rxjs';
+import {combineLatest, Subscription} from 'rxjs';
 import {startWith} from 'rxjs/operators';
 import {TSFerienbetreuungAngabenContainer} from '../../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {LogFactory} from '../../../../core/logging/LogFactory';
@@ -32,13 +40,15 @@ const LOG = LogFactory.createLog('FerienbetreuungBerechnungComponent');
     styleUrls: ['./ferienbetreuung-berechnung.component.less'],
     changeDetection: ChangeDetectionStrategy.Default
 })
-export class FerienbetreuungBerechnungComponent implements OnInit {
+export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy {
 
     @Input()
     private readonly form: FormGroup;
 
     @Input()
     private container: TSFerienbetreuungAngabenContainer;
+
+    private subscription: Subscription;
 
     public berechnung: TSFerienbetreuungBerechnung;
 
@@ -50,7 +60,7 @@ export class FerienbetreuungBerechnungComponent implements OnInit {
 
     public ngOnInit(): void {
         this.berechnung = new TSFerienbetreuungBerechnung();
-        this.ferienbetreuungService.getFerienbetreuungContainer()
+        this.subscription = this.ferienbetreuungService.getFerienbetreuungContainer()
             .subscribe(container => {
                 this.container = container;
                 this.setUpValuesFromContainer();
@@ -58,6 +68,16 @@ export class FerienbetreuungBerechnungComponent implements OnInit {
                 LOG.error(error);
             });
         this.setUpValuesFromForm();
+    }
+
+    public ngOnChanges(changes: SimpleChanges): void {
+        if (changes.form && changes.form.currentValue && !changes.form.firstChange) {
+            this.setUpValuesFromForm();
+        }
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     private setUpValuesFromForm(): void {
