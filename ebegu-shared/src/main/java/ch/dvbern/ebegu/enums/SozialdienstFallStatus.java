@@ -19,5 +19,6 @@ package ch.dvbern.ebegu.enums;
 
 public enum SozialdienstFallStatus {
 	AKTIV,
-	INAKTIV
+	INAKTIV,
+	ENTZOGEN
 }

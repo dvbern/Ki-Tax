@@ -17,5 +17,6 @@
 
 export enum TSSozialdienstFallStatus {
     AKTIV = 'AKTIV',
-    INAKTIV = 'INAKTIV'
+    INAKTIV = 'INAKTIV',
+    ENTZOGEN = 'ENTZOGEN'
 }

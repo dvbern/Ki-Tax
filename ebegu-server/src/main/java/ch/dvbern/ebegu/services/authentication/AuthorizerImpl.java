@@ -71,6 +71,7 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
+import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
@@ -428,7 +429,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		boolean allowedSozialdienst = false;
 		if (!allowedJAORGS && !allowedSchulamt && !allowedSteueramt
 			&& principalBean.isCallerInAnyOfRole(ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST)
-			&& AntragStatus.IN_BEARBEITUNG_SOZIALDIENST == gesuch.getStatus()) {
+			&& AntragStatus.IN_BEARBEITUNG_SOZIALDIENST == gesuch.getStatus()
+			&& gesuch.getFall().getSozialdienstFall().getStatus() != SozialdienstFallStatus.ENTZOGEN) {
 			allowedSozialdienst = true;
 		}
 
@@ -1949,7 +1951,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				return;
 			}
 			throwViolation(container);
-		} case IN_PRUEFUNG_KANTON: {
+		}
+		case IN_PRUEFUNG_KANTON: {
 			if (principalBean.isCallerInAnyOfRole(getMandantSuperadminRoles())) {
 				return;
 			}
