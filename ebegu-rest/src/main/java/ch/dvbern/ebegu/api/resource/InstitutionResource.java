@@ -501,6 +501,20 @@ public class InstitutionResource {
 	}
 
 	@ApiOperation(
+		value = "Returns true, if the currently logged in Benutzer has any Institutionen which is Tagesschule",
+		response = Boolean.class)
+	@Nonnull
+	@GET
+	@Path("/istagesschulenutzende/currentuser")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
+	public Response isCurrentUserTageschuleNutzende() {
+		boolean isTSNutzende = institutionService.isCurrentUserTagesschuleNutzende(false);
+		return Response.ok(isTSNutzende).build();
+	}
+
+	@ApiOperation(
 		value = "Returns the given institution",
 		response = Boolean.class)
 	@Nonnull

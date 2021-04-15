@@ -21,7 +21,6 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -123,4 +122,8 @@ public interface InstitutionService {
 		@Nonnull Collection<InstitutionExternalClient> institutionExternalClients);
 
 	Map<Institution, InstitutionStammdaten> getInstitutionenInstitutionStammdatenEditableForCurrentBenutzer(boolean restrictedForSCH);
+
+
+	@Nonnull
+	boolean isCurrentUserTagesschuleNutzende(@Nonnull boolean restrictedForSCH);
 }

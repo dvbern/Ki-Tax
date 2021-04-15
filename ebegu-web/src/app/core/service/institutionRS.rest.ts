@@ -131,4 +131,10 @@ export class InstitutionRS {
                 return this.ebeguRestUtil.parseInstitution(new TSInstitution(), response.data);
             });
     }
+
+    public isCurrentUserTagesschuleUser(): IPromise<boolean> {
+        return this.$http.get(`${this.serviceURL}/istagesschulenutzende/currentuser`).then((response: any) => {
+            return response.data;
+        });
+    }
 }
