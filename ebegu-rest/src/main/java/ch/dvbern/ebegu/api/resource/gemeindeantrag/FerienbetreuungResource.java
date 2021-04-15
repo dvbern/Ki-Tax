@@ -163,11 +163,14 @@ public class FerienbetreuungResource {
 
 		FerienbetreuungAngabenContainer container =
 			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
-				.orElseThrow(() -> new EbeguEntityNotFoundException("saveFerienbetreuungStammdaten", containerId.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"saveFerienbetreuungStammdaten",
+					containerId.getId()));
 
 		authorizer.checkWriteAuthorization(container);
 
-		FerienbetreuungAngabenContainer persisted = ferienbetreuungService.ferienbetreuungAngabenAbschliessen(container);
+		FerienbetreuungAngabenContainer persisted =
+			ferienbetreuungService.ferienbetreuungAngabenAbschliessen(container);
 		return converter.ferienbetreuungAngabenContainerToJax(persisted);
 	}
 
@@ -193,17 +196,22 @@ public class FerienbetreuungResource {
 
 		FerienbetreuungAngabenContainer container =
 			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("saveFerienbetreuungStammdaten", containerId.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"saveFerienbetreuungStammdaten",
+					containerId.getId()));
 
 		authorizer.checkWriteAuthorization(container);
 
 		FerienbetreuungAngabenStammdaten stammdaten =
 			ferienbetreuungService.findFerienbetreuungAngabenStammdaten(jaxStammdaten.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("saveFerienbetreuungStammdaten", jaxStammdaten.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"saveFerienbetreuungStammdaten",
+					jaxStammdaten.getId()));
 
 		converter.ferienbetreuungAngabenStammdatenToEntity(jaxStammdaten, stammdaten);
 
-		FerienbetreuungAngabenStammdaten persisted = ferienbetreuungService.saveFerienbetreuungAngabenStammdaten(stammdaten);
+		FerienbetreuungAngabenStammdaten persisted =
+			ferienbetreuungService.saveFerienbetreuungAngabenStammdaten(stammdaten);
 		return converter.ferienbetreuungAngabenStammdatenToJax(persisted);
 	}
 
@@ -229,17 +237,22 @@ public class FerienbetreuungResource {
 
 		FerienbetreuungAngabenContainer container =
 			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("ferienbetreuungStammdatenAbschliessen", containerId.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"ferienbetreuungStammdatenAbschliessen",
+					containerId.getId()));
 
 		authorizer.checkWriteAuthorization(container);
 
 		FerienbetreuungAngabenStammdaten stammdaten =
 			ferienbetreuungService.findFerienbetreuungAngabenStammdaten(jaxStammdaten.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("ferienbetreuungStammdatenAbschliessen", jaxStammdaten.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"ferienbetreuungStammdatenAbschliessen",
+					jaxStammdaten.getId()));
 
 		converter.ferienbetreuungAngabenStammdatenToEntity(jaxStammdaten, stammdaten);
 
-		FerienbetreuungAngabenStammdaten persisted = ferienbetreuungService.ferienbetreuungAngabenStammdatenAbschliessen(stammdaten);
+		FerienbetreuungAngabenStammdaten persisted =
+			ferienbetreuungService.ferienbetreuungAngabenStammdatenAbschliessen(stammdaten);
 		return converter.ferienbetreuungAngabenStammdatenToJax(persisted);
 	}
 
@@ -265,7 +278,9 @@ public class FerienbetreuungResource {
 
 		FerienbetreuungAngabenContainer container =
 			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("falscheAngabenFerienbetreuungStammdaten", containerId.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"falscheAngabenFerienbetreuungStammdaten",
+					containerId.getId()));
 
 		authorizer.checkWriteAuthorization(container);
 
@@ -275,11 +290,14 @@ public class FerienbetreuungResource {
 
 		FerienbetreuungAngabenStammdaten stammdaten =
 			ferienbetreuungService.findFerienbetreuungAngabenStammdaten(jaxStammdaten.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("falscheAngabenFerienbetreuungStammdaten", jaxStammdaten.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"falscheAngabenFerienbetreuungStammdaten",
+					jaxStammdaten.getId()));
 
 		converter.ferienbetreuungAngabenStammdatenToEntity(jaxStammdaten, stammdaten);
 
-		FerienbetreuungAngabenStammdaten persisted = ferienbetreuungService.ferienbetreuungAngabenStammdatenFalscheAngaben(stammdaten);
+		FerienbetreuungAngabenStammdaten persisted =
+			ferienbetreuungService.ferienbetreuungAngabenStammdatenFalscheAngaben(stammdaten);
 		return converter.ferienbetreuungAngabenStammdatenToJax(persisted);
 	}
 
@@ -305,13 +323,14 @@ public class FerienbetreuungResource {
 
 		FerienbetreuungAngabenContainer container =
 			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("saveFerienbetreuungAngebot", containerId.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException("saveFerienbetreuungAngebot",
+					containerId.getId()));
 
 		authorizer.checkWriteAuthorization(container);
 
 		FerienbetreuungAngabenAngebot angebot =
 			ferienbetreuungService.findFerienbetreuungAngabenAngebot(jaxAngebot.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("saveFerienbetreuungAngebot", jaxAngebot.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException("saveFerienbetreuungAngebot", jaxAngebot.getId()));
 
 		converter.ferienbetreuungAngabenAngebotToEntity(jaxAngebot, angebot);
 
@@ -342,18 +361,23 @@ public class FerienbetreuungResource {
 
 		FerienbetreuungAngabenContainer container =
 			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("ferienbetreuungAngebotAbschliessen", containerId.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"ferienbetreuungAngebotAbschliessen",
+					containerId.getId()));
 
 		authorizer.checkWriteAuthorization(container);
 
 		FerienbetreuungAngabenAngebot angebot =
 			ferienbetreuungService.findFerienbetreuungAngabenAngebot(jaxAngebot.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("ferienbetreuungAngebotAbschliessen", jaxAngebot.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"ferienbetreuungAngebotAbschliessen",
+					jaxAngebot.getId()));
 
 		converter.ferienbetreuungAngabenAngebotToEntity(jaxAngebot, angebot);
 
 		try {
-			FerienbetreuungAngabenAngebot persisted = ferienbetreuungService.ferienbetreuungAngebotAbschliessen(angebot);
+			FerienbetreuungAngabenAngebot persisted =
+				ferienbetreuungService.ferienbetreuungAngebotAbschliessen(angebot);
 			return converter.ferienbetreuungAngabenAngebotToJax(persisted);
 		} catch (EJBTransactionRolledbackException e) {
 			if (e.getCause() instanceof IllegalArgumentException) {
@@ -433,13 +457,14 @@ public class FerienbetreuungResource {
 
 		FerienbetreuungAngabenContainer container =
 			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("saveFerienbetreuungNutzung", containerId.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException("saveFerienbetreuungNutzung",
+					containerId.getId()));
 
 		authorizer.checkWriteAuthorization(container);
 
 		FerienbetreuungAngabenNutzung nutzung =
 			ferienbetreuungService.findFerienbetreuungAngabenNutzung(jaxNutzung.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("saveFerienbetreuungNutzung", jaxNutzung.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException("saveFerienbetreuungNutzung", jaxNutzung.getId()));
 
 		converter.ferienbetreuungAngabenNutzungToEntity(jaxNutzung, nutzung);
 
@@ -469,17 +494,22 @@ public class FerienbetreuungResource {
 
 		FerienbetreuungAngabenContainer container =
 			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("ferienbetreuungNutzungAbschliessen", containerId.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"ferienbetreuungNutzungAbschliessen",
+					containerId.getId()));
 
 		authorizer.checkWriteAuthorization(container);
 
 		FerienbetreuungAngabenNutzung nutzung =
 			ferienbetreuungService.findFerienbetreuungAngabenNutzung(jaxNutzung.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("ferienbetreuungNutzungAbschliessen", jaxNutzung.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"ferienbetreuungNutzungAbschliessen",
+					jaxNutzung.getId()));
 
 		converter.ferienbetreuungAngabenNutzungToEntity(jaxNutzung, nutzung);
 
-		FerienbetreuungAngabenNutzung persisted = ferienbetreuungService.ferienbetreuungAngabenNutzungAbschliessen(nutzung);
+		FerienbetreuungAngabenNutzung persisted =
+			ferienbetreuungService.ferienbetreuungAngabenNutzungAbschliessen(nutzung);
 		return converter.ferienbetreuungAngabenNutzungToJax(persisted);
 	}
 
@@ -505,7 +535,9 @@ public class FerienbetreuungResource {
 
 		FerienbetreuungAngabenContainer container =
 			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("ferienbetreuungNutzungFalscheAngaben", containerId.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"ferienbetreuungNutzungFalscheAngaben",
+					containerId.getId()));
 
 		authorizer.checkWriteAuthorization(container);
 
@@ -513,14 +545,16 @@ public class FerienbetreuungResource {
 			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE,
 			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE");
 
-
 		FerienbetreuungAngabenNutzung nutzung =
 			ferienbetreuungService.findFerienbetreuungAngabenNutzung(jaxNutzung.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("ferienbetreuungNutzungFalscheAngaben", jaxNutzung.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"ferienbetreuungNutzungFalscheAngaben",
+					jaxNutzung.getId()));
 
 		converter.ferienbetreuungAngabenNutzungToEntity(jaxNutzung, nutzung);
 
-		FerienbetreuungAngabenNutzung persisted = ferienbetreuungService.ferienbetreuungAngabenNutzungFalscheAngaben(nutzung);
+		FerienbetreuungAngabenNutzung persisted =
+			ferienbetreuungService.ferienbetreuungAngabenNutzungFalscheAngaben(nutzung);
 		return converter.ferienbetreuungAngabenNutzungToJax(persisted);
 	}
 
@@ -546,17 +580,22 @@ public class FerienbetreuungResource {
 
 		FerienbetreuungAngabenContainer container =
 			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("saveFerienbetreuungKostenEinnahmen", containerId.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"saveFerienbetreuungKostenEinnahmen",
+					containerId.getId()));
 
 		authorizer.checkWriteAuthorization(container);
 
 		FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen =
 			ferienbetreuungService.findFerienbetreuungAngabenKostenEinnahmen(jaxKostenEinnahmen.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("saveFerienbetreuungKostenEinnahmen", jaxKostenEinnahmen.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"saveFerienbetreuungKostenEinnahmen",
+					jaxKostenEinnahmen.getId()));
 
 		converter.ferienbetreuungAngabenKostenEinnahmenToEntity(jaxKostenEinnahmen, kostenEinnahmen);
 
-		FerienbetreuungAngabenKostenEinnahmen persisted = ferienbetreuungService.saveFerienbetreuungAngabenKostenEinnahmen(kostenEinnahmen);
+		FerienbetreuungAngabenKostenEinnahmen persisted =
+			ferienbetreuungService.saveFerienbetreuungAngabenKostenEinnahmen(kostenEinnahmen);
 		return converter.ferienbetreuungAngabenKostenEinnahmenToJax(persisted);
 	}
 
@@ -647,6 +686,5 @@ public class FerienbetreuungResource {
 			ferienbetreuungService.ferienbetreuungAngabenKostenEinnahmenFalscheAngaben(kostenEinnahmen);
 		return converter.ferienbetreuungAngabenKostenEinnahmenToJax(persisted);
 	}
-
 
 }

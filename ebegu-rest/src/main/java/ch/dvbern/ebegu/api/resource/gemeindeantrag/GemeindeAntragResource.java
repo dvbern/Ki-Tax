@@ -159,7 +159,9 @@ public class GemeindeAntragResource {
 	) {
 
 		if (!configuration.getIsDevmode()) {
-			throw new EbeguRuntimeException("deleteGemeindeAntraege", "deleteGemeindeAntrage ist nur im Devmode möglich");
+			throw new EbeguRuntimeException(
+				"deleteGemeindeAntraege",
+				"deleteGemeindeAntrage ist nur im Devmode möglich");
 		}
 
 		Objects.requireNonNull(gesuchsperiodeJaxId.getId());
@@ -180,7 +182,8 @@ public class GemeindeAntragResource {
 	@POST
 	@Path("/create/{gemeindeAntragTyp}/gesuchsperiode/{gesuchsperiodeId}/gemeinde/{gemeindeId}")
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG })
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+		SACHBEARBEITER_FERIENBETREUUNG })
 	public JaxGemeindeAntrag createGemeindeAntrag(
 		@Nonnull @Valid @PathParam("gemeindeAntragTyp") GemeindeAntragTyp gemeindeAntragTyp,
 		@Nonnull @Valid @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,
@@ -218,9 +221,11 @@ public class GemeindeAntragResource {
 	@ApiOperation("Gibt alle Gemeindeanträge zurück, die die Benutzerin sehen kann")
 	@GET
 	@Path("")
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS,
-		SACHBEARBEITER_INSTITUTION, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_BG, SACHBEARBEITER_BG,
-		SACHBEARBEITER_FERIENBETREUUNG, ADMIN_FERIENBETREUUNG})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_TS, SACHBEARBEITER_TS,
+		SACHBEARBEITER_INSTITUTION, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_BG,
+		SACHBEARBEITER_BG,
+		SACHBEARBEITER_FERIENBETREUUNG, ADMIN_FERIENBETREUUNG })
 	public List<JaxGemeindeAntrag> getAllGemeindeAntraege(
 		@Nullable @QueryParam("gemeinde") String gemeinde,
 		@Nullable @QueryParam("periode") String periode,
@@ -229,13 +234,19 @@ public class GemeindeAntragResource {
 		@Nullable @QueryParam("timestampMutiert") String timestampMutiert
 	) {
 		return converter.gemeindeAntragListToJax(
-			(List<GemeindeAntrag>) gemeindeAntragService.getGemeindeAntraege(gemeinde, periode, typ, status, timestampMutiert));
+			(List<GemeindeAntrag>) gemeindeAntragService.getGemeindeAntraege(
+				gemeinde,
+				periode,
+				typ,
+				status,
+				timestampMutiert));
 	}
 
 	@ApiOperation("Gibt alle Tagesschuleanträge des Gemeinde-Antrags zurück, die für die Benutzerin sichtbar sind")
 	@GET
 	@Path("{gemeindeAntragId}/tagesschulenantraege")
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_GEMEINDE,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		ADMIN_GEMEINDE,
 		ADMIN_TS, SACHBEARBEITER_TS, SACHBEARBEITER_GEMEINDE })
 	public List<JaxLastenausgleichTagesschuleAngabenInstitutionContainer> getTagesschuleAntraegeFuerGemeinedAntrag(
 		@Nonnull @Valid @PathParam("gemeindeAntragId") String gemeindeAntragId
