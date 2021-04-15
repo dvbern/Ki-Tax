@@ -102,7 +102,8 @@ public class FerienbetreuungResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG })
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+		SACHBEARBEITER_FERIENBETREUUNG })
 	public JaxFerienbetreuungAngabenContainer findFerienbetreuungContainer(
 		@Nonnull @NotNull @PathParam("containerId") JaxId containerId
 	) {
@@ -148,6 +149,7 @@ public class FerienbetreuungResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS,
+		ADMIN_BG, SACHBEARBEITER_BG,
 		SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG })
 	public JaxFerienbetreuungAngabenContainer FerienBetreuungAbschliessen(
 		@Context UriInfo uriInfo,
@@ -178,7 +180,8 @@ public class FerienbetreuungResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG })
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+		SACHBEARBEITER_FERIENBETREUUNG })
 	public JaxFerienbetreuungAngabenStammdaten saveFerienbetreuungStammdaten(
 		@Nonnull @NotNull @Valid JaxFerienbetreuungAngabenStammdaten jaxStammdaten,
 		@Context UriInfo uriInfo,
@@ -213,7 +216,8 @@ public class FerienbetreuungResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG })
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+		SACHBEARBEITER_FERIENBETREUUNG })
 	public JaxFerienbetreuungAngabenStammdaten ferienbetreuungStammdatenAbschliessen(
 		@Nonnull @NotNull @Valid JaxFerienbetreuungAngabenStammdaten jaxStammdaten,
 		@Context UriInfo uriInfo,
@@ -248,7 +252,8 @@ public class FerienbetreuungResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG })
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+		SACHBEARBEITER_FERIENBETREUUNG })
 	public JaxFerienbetreuungAngabenStammdaten falscheAngabenFerienbetreuungStammdaten(
 		@Nonnull @NotNull @Valid JaxFerienbetreuungAngabenStammdaten jaxStammdaten,
 		@Context UriInfo uriInfo,
@@ -287,7 +292,8 @@ public class FerienbetreuungResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG })
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+		SACHBEARBEITER_FERIENBETREUUNG })
 	public JaxFerienbetreuungAngabenAngebot saveFerienbetreuungAngebot(
 		@Nonnull @NotNull @Valid JaxFerienbetreuungAngabenAngebot jaxAngebot,
 		@Context UriInfo uriInfo,
@@ -323,7 +329,8 @@ public class FerienbetreuungResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG })
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+		SACHBEARBEITER_FERIENBETREUUNG })
 	public JaxFerienbetreuungAngabenAngebot ferienbetreuungAngebotAbschliessen(
 		@Nonnull @NotNull @Valid JaxFerienbetreuungAngabenAngebot jaxAngebot,
 		@Context UriInfo uriInfo,
@@ -368,7 +375,8 @@ public class FerienbetreuungResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG })
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+		SACHBEARBEITER_FERIENBETREUUNG })
 	public JaxFerienbetreuungAngabenAngebot ferienbetreuungAngebotFalscheAngaben(
 		@Nonnull @NotNull @Valid JaxFerienbetreuungAngabenAngebot jaxAngebot,
 		@Context UriInfo uriInfo,
@@ -412,7 +420,8 @@ public class FerienbetreuungResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG })
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+		SACHBEARBEITER_FERIENBETREUUNG })
 	public JaxFerienbetreuungAngabenNutzung saveFerienbetreuungNutzung(
 		@Nonnull @NotNull @Valid JaxFerienbetreuungAngabenNutzung jaxNutzung,
 		@Context UriInfo uriInfo,
@@ -447,7 +456,8 @@ public class FerienbetreuungResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG })
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+		SACHBEARBEITER_FERIENBETREUUNG })
 	public JaxFerienbetreuungAngabenNutzung ferienbetreuungNutzungAbschliessen(
 		@Nonnull @NotNull @Valid JaxFerienbetreuungAngabenNutzung jaxNutzung,
 		@Context UriInfo uriInfo,
@@ -473,7 +483,6 @@ public class FerienbetreuungResource {
 		return converter.ferienbetreuungAngabenNutzungToJax(persisted);
 	}
 
-
 	@ApiOperation(
 		value = "Öffnet FerienbetreuungAngabenNutzung zur Wiederbearbeitung als Gemeinde",
 		response = JaxFerienbetreuungAngabenNutzung.class)
@@ -483,7 +492,8 @@ public class FerienbetreuungResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG })
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+		SACHBEARBEITER_FERIENBETREUUNG })
 	public JaxFerienbetreuungAngabenNutzung ferienbetreuungNutzungFalscheAngaben(
 		@Nonnull @NotNull @Valid JaxFerienbetreuungAngabenNutzung jaxNutzung,
 		@Context UriInfo uriInfo,
@@ -523,7 +533,8 @@ public class FerienbetreuungResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG })
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+		SACHBEARBEITER_FERIENBETREUUNG })
 	public JaxFerienbetreuungAngabenKostenEinnahmen saveFerienbetreuungKostenEinnahmen(
 		@Nonnull @NotNull @Valid JaxFerienbetreuungAngabenKostenEinnahmen jaxKostenEinnahmen,
 		@Context UriInfo uriInfo,
@@ -558,7 +569,8 @@ public class FerienbetreuungResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG })
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+		SACHBEARBEITER_FERIENBETREUUNG })
 	public JaxFerienbetreuungAngabenKostenEinnahmen ferienbetreuungKostenEinnahmenAbschliessen(
 		@Nonnull @NotNull @Valid JaxFerienbetreuungAngabenKostenEinnahmen jaxKostenEinnamen,
 		@Context UriInfo uriInfo,
@@ -599,7 +611,8 @@ public class FerienbetreuungResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG })
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+		SACHBEARBEITER_FERIENBETREUUNG })
 	public JaxFerienbetreuungAngabenKostenEinnahmen ferienbetreuungKostenEinnahmenFalscheAngaben(
 		@Nonnull @NotNull @Valid JaxFerienbetreuungAngabenKostenEinnahmen jaxKostenEinnahmen,
 		@Context UriInfo uriInfo,

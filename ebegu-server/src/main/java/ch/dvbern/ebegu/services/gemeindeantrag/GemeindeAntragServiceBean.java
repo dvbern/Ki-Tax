@@ -131,7 +131,11 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 			antraege.addAll(ferienbetreuungAntraege);
 		}
 
-		if (principal.isCallerInAnyOfRole(UserRole.ADMIN_FERIENBETREUUNG, UserRole.SACHBEARBEITER_FERIENBETREUUNG)) {
+		if (principal.isCallerInAnyOfRole(
+			UserRole.ADMIN_FERIENBETREUUNG,
+			UserRole.SACHBEARBEITER_FERIENBETREUUNG,
+			UserRole.ADMIN_BG,
+			UserRole.SACHBEARBEITER_BG)) {
 			return antraege;
 		}
 
