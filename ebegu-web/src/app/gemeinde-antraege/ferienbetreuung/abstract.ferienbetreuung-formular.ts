@@ -74,6 +74,7 @@ export abstract class AbstractFerienbetreuungFormular {
     }
 
     protected showValidierungFehlgeschlagenErrorMessage(): void {
+        this.errorService.clearAll();
         this.errorService.addMesageAsError(
             this.translate.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
         );
