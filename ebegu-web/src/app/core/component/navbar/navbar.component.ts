@@ -87,10 +87,10 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                 this.gemeindeAntragVisible.next(
                     this.authServiceRS.isOneOfRoles(PERMISSIONS.LASTENAUSGLEICH_TAGESSCHULE) ||
                     this.authServiceRS.isOneOfRoles(PERMISSIONS.FERIENBETREUUNG) ||
-                    this.authServiceRS.isOneOfRoles([
+                    (this.authServiceRS.isOneOfRoles([
                         TSRole.ADMIN_INSTITUTION,
                         TSRole.SACHBEARBEITER_INSTITUTION,
-                    ]) && isTSUser,
+                    ]) && isTSUser),
                 );
             },
             err => LOG.error(err),
