@@ -15,12 +15,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
-import {combineLatest} from 'rxjs';
+import {combineLatest, Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenKostenEinnahmen} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
@@ -40,11 +40,12 @@ const LOG = LogFactory.createLog('FerienbetreuungKostenEinnahmenComponent');
     styleUrls: ['./ferienbetreuung-kosten-einnahmen.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetreuungFormular implements OnInit {
+export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetreuungFormular implements OnInit, OnDestroy {
 
     public form: FormGroup;
     public container: TSFerienbetreuungAngabenContainer;
     private kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen;
+    private subscription: Subscription;
 
     public constructor(
         protected readonly cd: ChangeDetectorRef,
@@ -62,7 +63,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
     }
 
     public ngOnInit(): void {
-        combineLatest([
+        this.subscription = combineLatest([
             this.ferienbetreuungService.getFerienbetreuungContainer(),
             this.authService.principal$,
         ]).subscribe(([container, principal]) => {
@@ -73,6 +74,10 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         }, error => {
             LOG.error(error);
         });
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     protected setupForm(kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen): void {

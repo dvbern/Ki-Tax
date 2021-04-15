@@ -21,7 +21,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {ibanValidator} from 'ngx-iban';
-import {combineLatest} from 'rxjs';
+import {combineLatest, Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSFerienbetreuungFormularStatus} from '../../../../models/enums/TSFerienbetreuungFormularStatus';
@@ -52,6 +52,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
 
     private stammdaten: TSFerienbetreuungAngabenStammdaten;
     private container: TSFerienbetreuungAngabenContainer;
+    private subscription: Subscription;
 
     public constructor(
         protected readonly errorService: ErrorService,
@@ -70,7 +71,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
     }
 
     public ngOnInit(): void {
-        combineLatest([
+        this.subscription = combineLatest([
             this.ferienbetreuungService.getFerienbetreuungContainer(),
             this.authServiceRS.principal$,
         ]).subscribe(([container, principal]) => {
@@ -85,6 +86,10 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
             this.bfsGemeinden = gemeinden;
             this.cd.markForCheck();
         });
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     protected setupForm(stammdaten: TSFerienbetreuungAngabenStammdaten): void {

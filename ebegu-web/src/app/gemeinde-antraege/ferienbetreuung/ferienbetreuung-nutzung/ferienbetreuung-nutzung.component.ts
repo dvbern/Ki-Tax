@@ -15,12 +15,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
-import {combineLatest} from 'rxjs';
+import {combineLatest, Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenNutzung} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
@@ -40,10 +40,11 @@ const LOG = LogFactory.createLog('FerienbetreuungNutzungComponent');
     styleUrls: ['./ferienbetreuung-nutzung.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungFormular implements OnInit {
+export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungFormular implements OnInit, OnDestroy {
 
     private nutzung: TSFerienbetreuungAngabenNutzung;
     private container: TSFerienbetreuungAngabenContainer;
+    private subscription: Subscription;
 
     public constructor(
         protected readonly errorService: ErrorService,
@@ -61,7 +62,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
     }
 
     public ngOnInit(): void {
-        combineLatest([
+        this.subscription = combineLatest([
             this.ferienbetreuungService.getFerienbetreuungContainer(),
             this.authService.principal$,
         ]).subscribe(([container, principal]) => {
@@ -72,6 +73,10 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
         }, error => {
             LOG.error(error);
         });
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     public async onAbschliessen(): Promise<void> {
