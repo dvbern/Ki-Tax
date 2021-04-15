@@ -270,6 +270,8 @@ public class GemeindeAntragResource {
 						UserRole.SUPER_ADMIN,
 						UserRole.ADMIN_GEMEINDE,
 						UserRole.SACHBEARBEITER_GEMEINDE,
+						UserRole.ADMIN_TS,
+						UserRole.SACHBEARBEITER_TS,
 						UserRole.ADMIN_INSTITUTION,
 						UserRole.SACHBEARBEITER_INSTITUTION);
 				}
