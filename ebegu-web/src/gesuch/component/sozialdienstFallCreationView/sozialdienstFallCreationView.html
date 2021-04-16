@@ -293,7 +293,7 @@
                                     class="symbol"
                                     tabindex="-1">
                                     <button ng-click="vm.removeVollmachtDokument();$event.stopPropagation()"
-                                            ng-disabled="!vm.isVollmachtHochgeladen || (vm.isSozialdienstFallReadOnly() && vm.isSozialdienstFallAktiv())"
+                                            ng-disabled="!vm.isVollmachtHochgeladen || (vm.isSozialdienstFallReadOnly() && vm.isSozialdienstFallAktiv()) || vm.isSozialdienstFallEntzogen()"
                                             class="dv-btn fa fa-trash dv-btn-operation"
                                             title="{{'DOKUMENT_DELETE' | translate}}"
                                             [attr.aria-label]="'DOKUMENT_DELETE' | translate"
@@ -334,6 +334,14 @@
                           dv-show-expression="vm.isAktivierungMoeglich()">
                         <dv-loading-button button-click="vm.fallAktivieren()" type="submit">
                             <span class="uppercase" data-translate="SOZIALDIENSTFALL_AKTIVIEREN"></span>
+                        </dv-loading-button>
+                    </span>
+                    <!-- Fall entziehen soll nur sichtbar sein wenn Fall ist aktiv-->
+                    <span dv-show-element
+                          dv-show-allowed-roles="vm.TSRoleUtil.getGemeindeBGTSAndAllSozialdienstRoles()"
+                          dv-show-expression="vm.isSozialdienstFallAktiv()">
+                        <dv-loading-button button-click="vm.fallEntziehen()" type="submit">
+                            <span class="uppercase" data-translate="SOZIALDIENSTFALL_ENTZIEHEN"></span>
                         </dv-loading-button>
                     </span>
                 </div>

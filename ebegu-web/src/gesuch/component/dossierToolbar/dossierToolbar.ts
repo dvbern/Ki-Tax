@@ -34,6 +34,7 @@ import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSMitteilungEvent} from '../../../models/enums/TSMitteilungEvent';
 import {TSRole} from '../../../models/enums/TSRole';
+import {TSSozialdienstFallStatus} from '../../../models/enums/TSSozialdienstFallStatus';
 import {TSSozialdienstStammdaten} from '../../../models/sozialdienst/TSSozaildienstStammdaten';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSDossier} from '../../../models/TSDossier';
@@ -535,6 +536,9 @@ export class DossierToolbarController implements IDVFocusableController {
                 break;
             }
         }
+        if (this.isSZFallGesperrtFuerSZ()) {
+            mutierenGesperrt = true;
+        }
         this.mutierenPossibleForCurrentAntrag = !mutierenGesperrt;
     }
 
@@ -577,6 +581,9 @@ export class DossierToolbarController implements IDVFocusableController {
                 erneuernGesperrt = true;
                 break;
             }
+        }
+        if (this.isSZFallGesperrtFuerSZ()) {
+            erneuernGesperrt = true;
         }
         this.erneuernPossibleForCurrentAntrag = !erneuernGesperrt;
     }
@@ -781,5 +788,11 @@ export class DossierToolbarController implements IDVFocusableController {
 
     public showVerantwortlicher(): boolean {
         return !this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
+    }
+
+    private isSZFallGesperrtFuerSZ(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle())
+            && this.dossier.fall.isSozialdienstFall()
+            && this.dossier.fall.sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN;
     }
 }

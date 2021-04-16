@@ -31,6 +31,7 @@ import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSSozialdienstFall} from '../../../models/sozialdienst/TSSozialdienstFall';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {INewFallStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
 import {FallRS} from '../../service/fallRS.rest';
@@ -41,6 +42,7 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 const okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
+const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 
 export class SozialdienstFallCreationViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -180,7 +182,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     }
 
     public isSozialdienstFallReadOnly(): boolean {
-        if (this.isSozialdienstFallAktiv() || this.isVollmachtHochgeladen) {
+        if (this.isSozialdienstFallAktiv() || this.isVollmachtHochgeladen || this.isSozialdienstFallEntzogen()) {
             return true;
         }
         return false;
@@ -188,6 +190,10 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
 
     public isSozialdienstFallAktiv(): boolean {
         return this.gesuchModelManager.getFall().sozialdienstFall?.status === TSSozialdienstFallStatus.AKTIV;
+    }
+
+    public isSozialdienstFallEntzogen(): boolean {
+        return this.gesuchModelManager.getFall().sozialdienstFall?.status === TSSozialdienstFallStatus.ENTZOGEN;
     }
 
     public isAktivierungMoeglich(): boolean {
@@ -202,6 +208,19 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         this.gesuchModelManager.getFall().sozialdienstFall.status = TSSozialdienstFallStatus.AKTIV;
         this.form.$dirty = true;
         this.save();
+    }
+
+    public fallEntziehen(): void {
+        this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+            title: 'CONFIRM_VOLLMACHT_ENTZIEHEN',
+            deleteText: 'BESCHREIBUNG_VOLLMACHT_ENTZIEHEN',
+            parentController: undefined,
+            elementID: undefined,
+        }).then(() => {
+            this.gesuchModelManager.getFall().sozialdienstFall.status = TSSozialdienstFallStatus.ENTZOGEN;
+            this.form.$dirty = true;
+            this.save();
+        });
     }
 
     public uploadVollmachtDokument(file: any[]): void {

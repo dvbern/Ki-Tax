@@ -48,6 +48,7 @@ import {TSErrorType} from '../../models/enums/TSErrorType';
 import {TSGesuchBetreuungenStatus} from '../../models/enums/TSGesuchBetreuungenStatus';
 import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
 import {TSRole} from '../../models/enums/TSRole';
+import {TSSozialdienstFallStatus} from '../../models/enums/TSSozialdienstFallStatus';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import {TSAdresse} from '../../models/TSAdresse';
@@ -1475,7 +1476,9 @@ export class GesuchModelManager {
         if (this.authServiceRS.isOneOfRoles([TSRole.GESUCHSTELLER].concat(TSRoleUtil.getSozialdienstRolle()))) {
             // readonly fuer gs wenn gesuch freigegeben oder weiter
             const gesuchReadonly = !this.getGesuch() || isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status);
-            return gesuchReadonly || periodeReadonly;
+            const sozialdienstFallEntzogen = this.getFall().isSozialdienstFall()
+                 && this.getFall().sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN;
+            return gesuchReadonly || periodeReadonly || sozialdienstFallEntzogen;
         }
 
         return periodeReadonly;
