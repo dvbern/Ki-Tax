@@ -1472,7 +1472,7 @@ export class GesuchModelManager {
             return true;  // schulamt hat immer nur readonly zugriff
         }
 
-        if (this.authServiceRS.isRole(TSRole.GESUCHSTELLER)) {
+        if (this.authServiceRS.isOneOfRoles([TSRole.GESUCHSTELLER].concat(TSRoleUtil.getSozialdienstRolle()))) {
             // readonly fuer gs wenn gesuch freigegeben oder weiter
             const gesuchReadonly = !this.getGesuch() || isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status);
             return gesuchReadonly || periodeReadonly;

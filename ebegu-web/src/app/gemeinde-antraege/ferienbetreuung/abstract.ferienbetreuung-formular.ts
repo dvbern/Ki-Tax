@@ -111,9 +111,9 @@ export abstract class AbstractFerienbetreuungFormular {
         } else if (principal.hasOneOfRoles(TSRoleUtil.getMandantRoles())) {
             this.canSeeAbschliessen.next(false);
             if (angaben.isInPruefungKanton()) {
-                this.canSeeSave.next(false);
-            } else {
                 this.canSeeSave.next(true);
+            } else {
+                this.canSeeSave.next(false);
             }
         }
     }
@@ -149,6 +149,7 @@ export abstract class AbstractFerienbetreuungFormular {
     protected handleSaveSuccess(): void {
         this.formAbschliessenTriggered = false;
         this.form.markAsPristine();
+        this.errorService.clearAll();
         this.wizardRS.updateSteps(this.WIZARD_TYPE, this.uiRouterGlobals.params.id);
     }
 

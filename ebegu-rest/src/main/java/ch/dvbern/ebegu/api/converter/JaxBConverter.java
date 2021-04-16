@@ -5865,7 +5865,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		return institutionContainerList.stream()
 			.map(this::lastenausgleichTagesschuleAngabenInstitutionContainerToJax)
-			.collect(Collectors.toCollection(TreeSet::new));
+			.collect(Collectors.toSet());
 	}
 
 	@Nonnull

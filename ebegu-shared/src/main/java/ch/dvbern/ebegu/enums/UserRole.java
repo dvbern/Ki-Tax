@@ -187,6 +187,14 @@ public enum UserRole {
 		return roles;
 	}
 
+	public static List<UserRole> getAllGemeindeFerienbetreuungMandantSuperadminRoles() {
+		List<UserRole> roles = new ArrayList<>();
+		roles.add(SUPER_ADMIN);
+		roles.addAll(getMandantRoles());
+		roles.addAll(getAllGemeindeFerienbetreuungRoles());
+		return roles;
+	}
+
 	public static List<UserRole> getAllInstitutionAdminRoles() {
 		return Arrays.asList(ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT);
 	}

@@ -18,9 +18,11 @@ import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {StateService} from '@uirouter/angular';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {of} from 'rxjs';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {WindowRef} from '../../../../core/service/windowRef.service';
 import {SharedModule} from '../../../../shared/shared.module';
+import {GemeindeAntragService} from '../../../services/gemeinde-antrag.service';
 
 import {TagesschulenListComponent} from './tagesschulen-list.component';
 
@@ -31,9 +33,13 @@ const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
     'getErrors',
     'addMesageAsError'
 ]);
+const gemeindeAntragServiceSpy = jasmine.createSpyObj<GemeindeAntragService>(GemeindeAntragService.name, [
+    'getAllVisibleTagesschulenAngabenForTSLastenausgleich'
+]);
 describe('TagesschulenListComponent', () => {
     let component: TagesschulenListComponent;
     let fixture: ComponentFixture<TagesschulenListComponent>;
+    gemeindeAntragServiceSpy.getAllVisibleTagesschulenAngabenForTSLastenausgleich.and.returnValue(of([]));
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -52,6 +58,10 @@ describe('TagesschulenListComponent', () => {
                     provide: StateService,
                     useValue: stateServiceSpy,
                 },
+                {
+                    provide: GemeindeAntragService,
+                    useValue: gemeindeAntragServiceSpy
+                }
             ],
             declarations: [TagesschulenListComponent],
         })

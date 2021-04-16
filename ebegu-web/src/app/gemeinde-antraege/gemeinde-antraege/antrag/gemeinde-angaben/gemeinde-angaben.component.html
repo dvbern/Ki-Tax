@@ -32,12 +32,11 @@
         <div class="max-width-container-750">
             <div class="row">
                 <div class="col-xs-12">
-                    <dv-input-container-x [disabled]="angabenForm">
+                    <dv-input-container-x>
                         <label required
                                id="alle-angaben-radio-group">
                             {{'LATS_ANGABEN_GEMEINDE_FRAGE_1' | translate}}
                         </label>
-                        <div class="flex-whitespace-item"></div>
                         <dv-radio-container-x>
 
                             <mat-radio-group
@@ -160,7 +159,7 @@
 
             <div *ngIf="angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').value === false">
                 <dv-input-container-x>
-                    <mat-form-field floatLabel="always" class="no-margin-left" required>
+                    <mat-form-field floatLabel="always" class="flex-grow no-margin-left" required>
                         <label required [ngClass]="{'label-required-error': abschliessenValidationActive &&
                                                             angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').value === false &&
                                                             angabenForm.get('begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen').errors}">
@@ -199,7 +198,6 @@
                                 [text]="'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR_INFO' | translate"></dv-tooltip>
                 </label>
                 <mat-form-field floatLabel="always">
-                    <mat-label translate></mat-label>
                     <input matInput
                            formControlName="geleisteteBetreuungsstundenOhneBesondereBeduerfnisse"
                            class="form-control dv-input"/>
@@ -230,7 +228,6 @@
                 </label>
 
                 <mat-form-field floatLabel="always">
-                    <mat-label translate></mat-label>
                     <input matInput
                            formControlName="geleisteteBetreuungsstundenBesondereBeduerfnisse"
                            class="form-control dv-input"/>
@@ -257,7 +254,6 @@
                     {{'LATS_LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN' | translate}}
                 </label>
                 <mat-form-field floatLabel="always">
-                    <mat-label translate></mat-label>
                     <input matInput
                            formControlName="lastenausgleichberechtigteBetreuungsstunden"
                            [readonly]="true"
@@ -267,7 +263,13 @@
 
             <div class="custom-errors">
                 <div
-                    *ngIf="abschliessenValidationActive && angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors?.plausibilisierungTagesschulenStundenError">
+                    *ngIf="abschliessenValidationActive && angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors?.notAllInstitutionsGeprueft">
+                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                    <span translate>LATS_NICHT_ALLE_INSTITUTIONEN_ABGESCHLOSSEN</span>
+                </div>
+                <div
+                    *ngIf="abschliessenValidationActive && angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors?.plausibilisierungTagesschulenStundenError &&
+                        !angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').errors?.notAllInstitutionsGeprueft">
                     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                     <span translate>ERROR_LATS_PLAUSIBLISIERUNG_TAGESSCHULEN</span>
                 </div>
@@ -290,7 +292,6 @@
                     {{'LATS_DAVON_STUNDEN_NORM_MEHR_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingMoreThanFifty$ | async)?.value | number:'1.2-2'} }}
                 </label>
                 <mat-form-field floatLabel="always">
-                    <mat-label translate></mat-label>
                     <input matInput
                            formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildete"
                            class="form-control dv-input"/>
@@ -310,7 +311,6 @@
                     </dv-bisher-x>
                 </mat-form-field>
                 <mat-form-field floatLabel="always">
-                    <mat-label translate></mat-label>
                     <input matInput
                            formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet"
                            class="form-control dv-input"/>
@@ -370,29 +370,6 @@
                         translate>ERROR_REQUIRED
                     </mat-error>
                     <mat-error *ngIf="angabenForm.get('einnahmenElterngebuehren').errors?.noNumberError"
-                               translate>ERROR_NUMBER
-                    </mat-error>
-                    <dv-bisher-x
-                        [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.einnahmenElterngebuehren"
-                        [korrektur]="angabenForm.get('einnahmenElterngebuehren').value"
-                        [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </mat-form-field>
-            </dv-input-container-x>
-
-            <dv-input-container-x>
-                <label required
-                       [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('einnahmenElterngebuehren').errors}">
-                    {{'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
-                </label>
-                <mat-form-field floatLabel="always">
-                    <input matInput formControlName="einnahmenElterngebuehren" class="form-control dv-input"/>
-                    <mat-error
-                        *ngIf="abschliessenValidationActive && angabenForm.get('einnahmenElterngebuehren').errors?.required"
-                        translate>ERROR_REQUIRED
-                    </mat-error>
-                    <mat-error *ngIf=" angabenForm.get('einnahmenElterngebuehren').errors?.noNumberError"
                                translate>ERROR_NUMBER
                     </mat-error>
                     <dv-bisher-x
@@ -534,6 +511,18 @@
             </dv-input-container-x>
 
             <dv-input-container-x>
+                <label for="lastenausgleichsberechtigerBetragRO">
+                    {{'LATS_EINNAHMEN_LASTENAUSGLEICH' | translate}}</label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input id="lastenausgleichsberechtigerBetragRO"
+                           matInput
+                           formControlName="lastenausgleichsberechtigerBetragRO"
+                           class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
                 <label>
                     {{'LATS_EINNAHMEN_ELTERNGEBUEHREN' | translate}}
                 </label>
@@ -619,7 +608,7 @@
             <dv-input-container-x>
                 <label
                     [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('ueberschussErzielt').errors}">
-                    {{'LATS_UEBERSCHUSS_ERZIELT' | translate:{periode: lATSAngabenGemeindeContainer?.gesuchsperiode?.gesuchsperiodeString} }}
+                    {{'LATS_UEBERSCHUSS_ERZIELT' | translate:{periode: lATSAngabenGemeindeContainer?.gesuchsperiode | previousPeriodeStr} }}
                     <span>&nbsp;*</span>
                 </label>
                 <dv-radio-container-x>
@@ -642,30 +631,32 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
-            <dv-input-container-x *ngIf="angabenForm.get('ueberschussErzielt').value">
-                <label required
-                       [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('ueberschussVerwendung').errors}">
-                    {{'LATS_UEBERSCHUSS_VERWENDUNG' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
-                </label>
-                <mat-form-field floatLabel="always">
-                    <input matInput
-                           formControlName="ueberschussVerwendung"
-                           class="form-control dv-input"/>
-                    <mat-error
-                        *ngIf="abschliessenValidationActive && angabenForm.get('ueberschussVerwendung').errors?.required"
-                        translate>ERROR_REQUIRED
-                    </mat-error>
-                    <mat-error *ngIf="angabenForm.get('ueberschussVerwendung').errors?.noNumberError"
-                               translate>ERROR_NUMBER
-                    </mat-error>
-                    <dv-bisher-x
-                        [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.ueberschussVerwendung"
-                        [korrektur]="angabenForm.get('ueberschussVerwendung').value"
-                        [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </mat-form-field>
-            </dv-input-container-x>
+            <div *ngIf="angabenForm.get('ueberschussErzielt').value === true">
+                <dv-input-container-x>
+                    <mat-form-field floatLabel="always" class="flex-grow no-margin-left" required>
+                        <label required
+                               [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('ueberschussVerwendung').errors}">
+                            {{'LATS_UEBERSCHUSS_VERWENDUNG' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+                        </label>
+                        <textarea matInput
+                                  formControlName="ueberschussVerwendung"
+                                  class="form-control dv-input"></textarea>
+                        <mat-error
+                            *ngIf="abschliessenValidationActive && angabenForm.get('ueberschussVerwendung').errors?.required"
+                            translate>ERROR_REQUIRED
+                        </mat-error>
+                        <mat-error *ngIf="angabenForm.get('ueberschussVerwendung').errors?.noNumberError"
+                                   translate>ERROR_NUMBER
+                        </mat-error>
+                        <dv-bisher-x
+                            [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.ueberschussVerwendung"
+                            [korrektur]="angabenForm.get('ueberschussVerwendung').value"
+                            [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
+            </div>
 
         </div>
 
@@ -674,10 +665,12 @@
         <div class="max-width-container-750">
 
             <h3 class="uppercase">{{'LATS_ANGABEN_WEITERE_KOSTEN_ERTRAEGE' | translate}}</h3>
-            <p class="sub-header-explanation">{{'LATS_BEMERKUNG_WIETER_KOSTEN_ERTRAEGE' | translate}}</p>
 
             <dv-input-container-x [verticalAlign]="true">
-                <mat-form-field floatLabel="always" class="no-margin-left">
+                <mat-form-field floatLabel="always">
+                    <label>
+                        {{'LATS_BEMERKUNG_WIETER_KOSTEN_ERTRAEGE' | translate}}
+                    </label>
                     <textarea matInput
                               formControlName="bemerkungenWeitereKostenUndErtraege"
                               class="form-control dv-input"></textarea>
@@ -900,8 +893,22 @@
 
         </div>
 
+        <div class="well well-status-warten" *ngIf="!abschliessenVisible()">
+            <i class="fa fa-exclamation" aria-hidden="true"></i>
+            <span>
+                <span translate>LATS_ABSCHLIESSEN_NOCH_NICHT_MOEGLICH</span>
+            </span>
+        </div>
+
+        <div class="row" *ngIf="falscheAngabenVisible()">
+            <div class="col-md-12">
+                <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
+            </div>
+        </div>
+
         <div class="actions">
             <dv-loading-button
+                class="uppercase"
                 type="button"
                 [ngClass]="{'secondary': !formularNotEditable()}"
                 [buttonDisabled]="formularNotEditable()"
@@ -909,7 +916,9 @@
                 <span translate>SAVE</span>
             </dv-loading-button>
             <dv-loading-button
+                class="uppercase"
                 type="button"
+                *ngIf="abschliessenVisible()"
                 [buttonDisabled]="formularNotEditable()"
                 (buttonClick)="onAbschliessen()">
                 <span translate>ABSCHLIESSEN</span>
@@ -917,12 +926,6 @@
         </div>
 
     </form>
-
-    <div class="row" *ngIf="falscheAngabenVisible()">
-        <div class="col-md-12">
-            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
-        </div>
-    </div>
 
 
 </div>

@@ -24,6 +24,7 @@ import {ibanValidator} from 'ngx-iban';
 import {combineLatest} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
+import {TSFerienbetreuungFormularStatus} from '../../../../models/enums/TSFerienbetreuungFormularStatus';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenStammdaten} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenStammdaten';
 import {TSAdresse} from '../../../../models/TSAdresse';
@@ -164,6 +165,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                 ],
             }),
         });
+        this.enableStammdatenAuszahlungValidation();
     }
 
     // tslint:disable-next-line:cognitive-complexity
@@ -267,8 +269,8 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         this.ferienbetreuungService.saveStammdaten(this.container.id, this.extractFormValues())
             .subscribe(() => {
                 this.formValidationTriggered = false;
-                this.clearStammdatenAuszahlungValidators();
                 this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
+                this.errorService.clearAll();
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
             }, err => {
                 LOG.error(err);
@@ -337,11 +339,6 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
             .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
     }
 
-    private clearStammdatenAuszahlungValidators(): void {
-        this.form.get('stammdatenAdresse').clearValidators();
-        this.form.get('auszahlungsdaten').clearValidators();
-    }
-
     private enableStammdatenAuszahlungValidation(): void {
         this.form.get('stammdatenAdresse').setValidators(this.adressValidValidator());
         this.form.get('stammdatenAdresse').markAllAsTouched();
@@ -350,5 +347,9 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         this.form.get('auszahlungsdaten').markAllAsTouched();
 
         this.triggerFormValidation();
+    }
+
+    public fillActionsVisible(): boolean {
+        return this.stammdaten?.status === TSFerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE;
     }
 }

@@ -74,6 +74,7 @@ import {FullHeightInnerPaddingContainerComponent} from './full-height-inner-padd
 import {MaterialModule} from './material.module';
 import {EbeguDatePipe} from './pipe/ebegu-date.pipe';
 import {NextPeriodeStrPipe} from './pipe/next-periode-str.pipe';
+import {PreviousPeriodeStrPipe} from './pipe/previous-periode-str.pipe';
 import {UiViewComponent} from './ui-view/ui-view.component';
 
 export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
@@ -138,6 +139,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvMonthPickerComponent,
         EbeguDatePipe,
         NextPeriodeStrPipe,
+        PreviousPeriodeStrPipe,
         DvMonthPickerComponent,
         NewAntragListComponent,
         NewUserSelectDirective,
@@ -203,6 +205,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvBisherXComponent,
         DvNgSozialdienstDialogComponent,
         NextPeriodeStrPipe,
+        PreviousPeriodeStrPipe,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

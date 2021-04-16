@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <div class="well well-with-button" *ngIf="angabenAusKibon">
+    <div class="well well-with-button" *ngIf="angabenAusKibon && (canSeeDurchKibonAusfuellen | async)">
         <span translate>LATS_AUTOMATISCHE_BERECHNUNGEN_HINT</span>
         <!--        <div class="flex-whitespace-item"></div>-->
         <button class="dv-btn cancel-button" (click)="fillOutCalculationsFromKiBon()">
@@ -42,7 +42,7 @@
                 <label required
                        [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('isLehrbetrieb').errors}"
                        id="isLehrbetrieb-radio-group">
-                    {{'LATS_IST_LEHRBETRIEB' | translate:{periode: gesuchsPeriode?.gesuchsperiodeString} }}
+                    {{'LATS_IST_LEHRBETRIEB' | translate:{periode: gesuchsPeriode | nextPeriodeStr} }}
                 </label>
                 <dv-radio-container-x>
 
@@ -75,12 +75,11 @@
 
             <dv-input-container-x>
             <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinder').errors}">
-                {{'LATS_ANZAHL_EINGESCHRIEBENE_KINDER' | translate: {datum: stichtag | async} }}
+                {{'LATS_ANZAHL_EINGESCHRIEBENE_KINDER' | translate: {datum: (stichtag | async)} }}
                 <dv-tooltip [text]="'LATS_ANZAHL_EINGESCHRIEBENE_KINDER_INFO' | translate"></dv-tooltip>
             </label>
 
             <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
                 <input matInput
                        formControlName="anzahlEingeschriebeneKinder"
                        class="form-control dv-input"/>
@@ -105,7 +104,6 @@
                         {{'LATS_DAVON_KINDERGARTEN' | translate}}
                     </label>
                     <mat-form-field floatLabel="always">
-                        <mat-label translate></mat-label>
                         <input matInput
                                formControlName="anzahlEingeschriebeneKinderKindergarten"
                                class="form-control dv-input"/>
@@ -132,7 +130,6 @@
                         {{'LATS_DAVON_PRIMARSTUFE' | translate}}
                     </label>
                     <mat-form-field floatLabel="always">
-                        <mat-label translate></mat-label>
                         <input matInput
                                formControlName="anzahlEingeschriebeneKinderPrimarstufe"
                                class="form-control dv-input"/>
@@ -154,11 +151,10 @@
                 </dv-input-container-x>
 
         <dv-input-container-x>
-            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderSekundarstufe').errors}">
-                {{'LATS_DAVON_SEKUNDARSTUFE' | translate}}
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderSekundarstufe').errors}"
+            [innerHTML]="'LATS_DAVON_SEKUNDARSTUFE' | translate">
             </label>
             <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
                 <input matInput
                        formControlName="anzahlEingeschriebeneKinderSekundarstufe"
                        class="form-control dv-input"/>
@@ -191,7 +187,6 @@
                     <dv-tooltip [text]="'LATS_ANZAHL_KINDER_BESONDERE_ANFORDERUNGEN_INFO' | translate"></dv-tooltip>
                 </label>
                 <mat-form-field floatLabel="always">
-                    <mat-label translate></mat-label>
                     <input matInput
                            formControlName="anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen"
                            class="form-control dv-input"/>
@@ -225,7 +220,6 @@
                 {{'LATS_IN_FRUEH_BETREUUNG' | translate}}
             </label>
             <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
                 <input matInput
                        formControlName="durchschnittKinderProTagFruehbetreuung"
                        class="form-control dv-input"/>
@@ -250,7 +244,6 @@
             </label>
 
             <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
                 <input matInput
                        formControlName="durchschnittKinderProTagMittag"
                        class="form-control dv-input"/>
@@ -270,12 +263,11 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag1').errors}">
-                {{'LATS_ANZAHL_NACHMITTAG_1' | translate}}
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag1').errors}"
+            [innerHTML]="'LATS_ANZAHL_NACHMITTAG_1' | translate">
             </label>
 
             <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
                 <input matInput
                        formControlName="durchschnittKinderProTagNachmittag1"
                        class="form-control dv-input"/>
@@ -295,12 +287,11 @@
         </dv-input-container-x>
 
         <dv-input-container-x>
-            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag2').errors}">
-                {{'LATS_ANZAHL_NACHMITTAG_2' | translate}}
+            <label [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag2').errors}"
+                [innerHTML]="'LATS_ANZAHL_NACHMITTAG_2' | translate">
             </label>
 
             <mat-form-field floatLabel="always">
-                <mat-label translate></mat-label>
                 <input matInput
                        formControlName="durchschnittKinderProTagNachmittag2"
                        class="form-control dv-input"/>
@@ -327,7 +318,6 @@
                             [text]="'LATS_BETREUUNGSSTUNDEN_EINSCHLIESSLICH_BESONDERE_BEDUERFNISSE_INFO' | translate:{year: gemeindeAntragContainer?.gesuchsperiode?.gesuchsperiodeString}"></dv-tooltip>
                     </label>
                     <mat-form-field floatLabel="always">
-                        <mat-label translate></mat-label>
                         <input matInput
                                formControlName="betreuungsstundenEinschliesslichBesondereBeduerfnisse"
                                class="form-control dv-input"/>
@@ -515,6 +505,12 @@
 
         </div>
 
+        <div class="row" *ngIf="canSeeFalscheAngaben | async">
+            <div class="col-md-12">
+                <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
+            </div>
+        </div>
+
         <div class="actions">
             <dv-loading-button
                 class="uppercase"
@@ -551,10 +547,4 @@
         </div>
 
     </form>
-
-    <div class="row" *ngIf="canSeeFalscheAngaben | async">
-        <div class="col-md-12">
-            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
-        </div>
-    </div>
 </div>

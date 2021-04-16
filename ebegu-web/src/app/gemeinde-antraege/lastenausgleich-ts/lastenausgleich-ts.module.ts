@@ -33,7 +33,6 @@ import {TagesschulenAngabenComponent} from '../gemeinde-antraege/antrag/tagessch
 import {TagesschulenListComponent} from '../gemeinde-antraege/antrag/tagesschulen-list/tagesschulen-list.component';
 import {LastenausgleichTsKommentarComponent} from './lastenausgleich-ts-kommentar/lastenausgleich-ts-kommentar.component';
 import {LastenausgleichTsRoutingModule} from './lastenausgleich-ts-routing/lastenausgleich-ts-routing.module';
-import {LastenausgleichTsToolbarComponent} from './lastenausgleich-ts-toolbar/lastenausgleich-ts-toolbar.component';
 import {LastenausgleichTSComponent} from './lastenausgleich-ts/lastenausgleich-ts.component';
 import {TagesschulenUiViewComponent} from './tagesschulen-ui-view/tagesschulen-ui-view.component';
 
@@ -41,7 +40,6 @@ import {TagesschulenUiViewComponent} from './tagesschulen-ui-view/tagesschulen-u
     declarations: [
         LastenausgleichTSComponent,
         LastenausgleichTsKommentarComponent,
-        LastenausgleichTsToolbarComponent,
         GemeindeAngabenComponent,
         TagesschulenAngabenComponent,
         FreigabeComponent,

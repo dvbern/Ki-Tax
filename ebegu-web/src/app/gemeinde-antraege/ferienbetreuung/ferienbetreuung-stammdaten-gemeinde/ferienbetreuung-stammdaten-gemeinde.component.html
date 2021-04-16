@@ -98,6 +98,7 @@
                 <span class="flex-whitespace-item"></span>
                 <button type="button"
                         (click)="fillAdress()"
+                        *ngIf="fillActionsVisible()"
                         class="dv-btn cancel-button">
                     {{ 'FERIENBETREUUNG_AUS_GEMEINDESTAMMDATEN_UEBERNEHMEN' | translate }}
                 </button>
@@ -107,7 +108,7 @@
                 <dv-input-container-x [verticalAlign]="true">
                     <label for="stammdaten_adresse_anschrift_id"
                            required
-                           [ngClass]="{'label-required-error': formValidationTriggered && form && form.get('stammdatenAdresse').get('organisation').errors}">
+                           [ngClass]="{'label-required-error': form?.get('stammdatenAdresse').get('organisation').errors}">
                         {{'ADRESSE_ANSCHRIFT' | translate}}
                     </label>
                     <mat-form-field floatLabel="always">
@@ -117,7 +118,7 @@
                                formControlName="organisation"
                                class="form-control dv-input"/>
                         <mat-error
-                            *ngIf="formValidationTriggered && form && form.get('stammdatenAdresse').get('organisation').errors?.required"
+                            *ngIf="form?.get('stammdatenAdresse').get('organisation').errors?.required"
                             translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
                         </mat-error>
                     </mat-form-field>
@@ -127,7 +128,7 @@
                     <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
                         <label for="stammdaten_adresse_strasse_id"
                                required
-                               [ngClass]="{'label-required-error': formValidationTriggered && form && form.get('stammdatenAdresse').get('strasse').errors}">
+                               [ngClass]="{'label-required-error': form?.get('stammdatenAdresse').get('strasse').errors}">
                             {{'ADRESSE_STRASSE' | translate}}
                         </label>
                         <mat-form-field floatLabel="always">
@@ -137,7 +138,7 @@
                                    formControlName="strasse"
                                    class="form-control dv-input"/>
                             <mat-error
-                                *ngIf="formValidationTriggered && form && form.get('stammdatenAdresse').get('strasse').errors?.required"
+                                *ngIf="form?.get('stammdatenAdresse').get('strasse').errors?.required"
                                 translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
                             </mat-error>
                         </mat-form-field>
@@ -161,7 +162,7 @@
                     <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
                         <label for="stammdaten_adresse_plz_id"
                                required
-                               [ngClass]="{'label-required-error': formValidationTriggered && form?.get('stammdatenAdresse').get('plz').errors}">
+                               [ngClass]="{'label-required-error': form?.get('stammdatenAdresse').get('plz').errors}">
                             {{'ADRESSE_PLZ' | translate}}
                         </label>
                         <mat-form-field floatLabel="always">
@@ -171,7 +172,7 @@
                                    formControlName="plz"
                                    class="form-control dv-input"/>
                             <mat-error
-                                *ngIf="formValidationTriggered && form?.get('stammdatenAdresse').get('plz').errors?.required"
+                                *ngIf="form?.get('stammdatenAdresse').get('plz').errors?.required"
                                 translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
                             </mat-error>
                         </mat-form-field>
@@ -180,7 +181,7 @@
                     <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
                         <label for="stammdaten_adresse_ort_id"
                                required
-                               [ngClass]="{'label-required-error':formValidationTriggered && form?.get('stammdatenAdresse').get('ort').errors}">
+                               [ngClass]="{'label-required-error':form?.get('stammdatenAdresse').get('ort').errors}">
                             {{'ADRESSE_ORT' | translate}}
                         </label>
                         <mat-form-field floatLabel="always">
@@ -190,7 +191,7 @@
                                    formControlName="ort"
                                    class="form-control dv-input"/>
                             <mat-error
-                                *ngIf="formValidationTriggered && form?.get('stammdatenAdresse').get('ort').errors?.required"
+                                *ngIf="form?.get('stammdatenAdresse').get('ort').errors?.required"
                                 translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
                             </mat-error>
                         </mat-form-field>
@@ -214,6 +215,7 @@
                 <span class="flex-whitespace-item"></span>
                 <button type="button"
                         (click)="fillBenutzer()"
+                        *ngIf="fillActionsVisible()"
                         class="dv-btn cancel-button">
                     {{ 'FERIENBETREUUNG_MEINE_ANGABEN_UEBERNEHMEN' | translate }}
                 </button>
@@ -482,6 +484,12 @@
         </div>
     </form>
 
+    <div class="row margin-top-20" *ngIf="canSeeFalscheAngaben | async">
+        <div class="col-md-12">
+            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
+        </div>
+    </div>
+
     <div class="actions">
         <button type="button" class="dv-btn cancel-button"
                 *ngIf="canSeeSave | async"
@@ -494,11 +502,5 @@
             (buttonClick)="onAbschliessen()">
             <span translate>ABSCHLIESSEN</span>
         </dv-loading-button>
-    </div>
-
-    <div class="row margin-top-20" *ngIf="canSeeFalscheAngaben | async">
-        <div class="col-md-12">
-            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
-        </div>
     </div>
 </div>
