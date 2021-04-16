@@ -1647,7 +1647,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			if (principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
 				return;
 			}
-			if (principalBean.isCallerInAnyOfRole(UserRole.getTsBgAndGemeindeRoles())) {
+			if (principalBean.isCallerInAnyOfRole(UserRole.getTsAndGemeindeRoles())) {
 				final boolean gehoertZuGemeinde =
 					principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList()
 						.stream()

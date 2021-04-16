@@ -763,4 +763,8 @@ export class GemeindeAngabenComponent implements OnInit {
             };
         };
     }
+
+    public abschliessenVisible(): boolean {
+        return this.lATSAngabenGemeindeContainer?.allAngabenInstitutionContainersGeprueft();
+    }
 }

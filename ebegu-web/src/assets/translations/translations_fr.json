@@ -2328,6 +2328,7 @@
     "LATS_ABWEICHUNGEN_ANZAHL_KINDER": "Les données entrées pour le jardin d'enfant, l'école primaire et secondaire ne correspondent pas avec la somme entrée.",
     "LATS_ABWEICHUNGEN_ANZAHL_KINDER_VORSCHULALTER_HINT_MEHRZAHL": " {{numberAntraege}} demandes ont été effectuées pour des enfants en age préscolaire",
     "LATS_ABWEICHUNGEN_ANZAHL_KINDER_VORSCHULALTER_HINT": " Une demande a été faite pour un enfant en age préscolaire",
+    "LATS_ABSCHLIESSEN_NOCH_NICHT_MOEGLICH": "Der Antrag kann erst abgeschlossen werden, wenn alle Formulare der Tagesschulen ausgefüllt und geprüft worden sind. Sie können die Angaben aber zwischenspeichern.",
     "ERROR_POSITIVE_NUMBER": "Veuillez entrer un nombre positif entier",
     "ERR_GEMEINDEN_LADEN": "Les communes n'ont pas pu être chargées",
     "GEMEINDE_ANTRAEGE_ANTRAG_ERSTELLEN": "Créer une demande",

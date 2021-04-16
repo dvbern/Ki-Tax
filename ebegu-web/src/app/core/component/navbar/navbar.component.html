@@ -57,10 +57,10 @@
                     *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesForStatistik()">
                     <a uiSref="statistik.view" [textContent]="'MENU_STATISTIK' | translate"></a>
                 </li>
-                <ng-container *ngIf="gemeindeAntraegeVisible">
+                <ng-container *ngIf="gemeindeAntraegeActive">
                     <li uiSrefActive="active"
                         class="dv-ng-navbar-element uppercase"
-                        *dvNgShowElement="true; roles: TSRoleUtil.getLastenausgleichTagesschuleRoles().concat(TSRoleUtil.getFerienbetreuungRoles())">
+                        *ngIf="(gemeindeAntragVisible | async)">
                         <a uiSref="gemeindeantrage.view" [textContent]="'MENU_GEMEINDE_ANTRAEGE' | translate"></a>
                     </li>
                 </ng-container>

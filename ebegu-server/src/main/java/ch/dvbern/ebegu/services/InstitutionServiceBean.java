@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -302,6 +303,20 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			}
 		}
 		return institutionInstitutionStammdatenMap;
+	}
+
+	@Nonnull
+	@Override
+	public boolean isCurrentUserTagesschuleNutzende(boolean restrictedForSCH) {
+		return getInstitutionenReadableForCurrentBenutzer(restrictedForSCH).stream().anyMatch(institution -> {
+			AtomicBoolean isTagesschule = new AtomicBoolean(false);
+			InstitutionStammdaten institutionStammdaten =
+				institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institution.getId(), true);
+
+			isTagesschule.set(institutionStammdaten.getBetreuungsangebotTyp().isTagesschule());
+
+			return isTagesschule.get();
+		});
 	}
 
 	@Override
