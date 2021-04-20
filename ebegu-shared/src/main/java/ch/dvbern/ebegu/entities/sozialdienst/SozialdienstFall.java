@@ -55,7 +55,6 @@ import static ch.dvbern.ebegu.util.Constants.TEN_MB;
 public class SozialdienstFall extends AbstractEntity {
 
 	private static final long serialVersionUID = -3978972308622826784L;
-	private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
 	@NotNull @Nonnull
 	@ManyToOne(optional = false)

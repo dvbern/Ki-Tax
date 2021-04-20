@@ -265,8 +265,8 @@
                             (delete)="vm.removeVollmachtDokument($event)"
                             (upload-file)="vm.uploadVollmachtDokument($event)"
                             [files]="vm.dokumente"
-                            [read-only]="false"
-                            [read-only-delete]="false"
+                            [read-only]="vm.isSozialdienstFallReadOnly()"
+                            [read-only-delete]="vm.isSozialdienstFallReadOnly()"
                         >
                         </dv-file-upload>
                     </div>

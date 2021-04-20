@@ -54,8 +54,6 @@ import org.slf4j.LoggerFactory;
  */
 public class Testfall_Sozialdienst extends AbstractTestfall {
 
-	private static final Logger LOG = LoggerFactory.getLogger(Testfall_Sozialdienst.class);
-
 	private final Sozialdienst sozialdienst;
 
 	public Testfall_Sozialdienst(

@@ -2913,10 +2913,7 @@ export class EbeguRestUtil {
 
     private parseDokument(dokument: TSDokument, dokumentFromServer: any): TSDokument {
         if (dokumentFromServer) {
-            this.parseAbstractMutableEntity(dokument, dokumentFromServer);
-            dokument.filename = dokumentFromServer.filename;
-            dokument.filepfad = dokumentFromServer.filepfad;
-            dokument.filesize = dokumentFromServer.filesize;
+            this.parseTSFileDokument(dokument, dokumentFromServer);
             dokument.timestampUpload = DateUtil.localDateTimeToMoment(dokumentFromServer.timestampUpload);
             dokument.userUploaded = this.parseUser(new TSBenutzer(), dokumentFromServer.userUploaded);
             return dokument;
@@ -4284,10 +4281,7 @@ export class EbeguRestUtil {
         dokumentFromServer: any,
     ): TSRueckforderungDokument {
         if (dokumentFromServer) {
-            this.parseAbstractMutableEntity(dokument, dokumentFromServer);
-            dokument.filename = dokumentFromServer.filename;
-            dokument.filepfad = dokumentFromServer.filepfad;
-            dokument.filesize = dokumentFromServer.filesize;
+            this.parseTSFileDokument(dokument, dokumentFromServer);
             dokument.timestampUpload = DateUtil.localDateTimeToMoment(dokumentFromServer.timestampUpload);
             dokument.rueckforderungDokumentTyp = dokumentFromServer.rueckforderungDokumentTyp;
             return dokument;
@@ -5122,10 +5116,7 @@ export class EbeguRestUtil {
         if (!dokumentFromServer) {
             return undefined;
         }
-        this.parseAbstractMutableEntity(dokument, dokumentFromServer);
-        dokument.filename = dokumentFromServer.filename;
-        dokument.filepfad = dokumentFromServer.filepfad;
-        dokument.filesize = dokumentFromServer.filesize;
+        this.parseTSFileDokument(dokument, dokumentFromServer);
         dokument.timestampUpload = DateUtil.localDateTimeToMoment(dokumentFromServer.timestampUpload);
         return dokument;
     }
@@ -5211,11 +5202,16 @@ export class EbeguRestUtil {
         if (!dokumentFromServer) {
             return undefined;
         }
+        this.parseTSFileDokument(dokument, dokumentFromServer);
+        dokument.timestampUpload = DateUtil.localDateTimeToMoment(dokumentFromServer.timestampUpload);
+        return dokument;
+    }
+
+    private parseTSFileDokument(dokument: TSFile, dokumentFromServer: any): TSFile {
         this.parseAbstractMutableEntity(dokument, dokumentFromServer);
         dokument.filename = dokumentFromServer.filename;
         dokument.filepfad = dokumentFromServer.filepfad;
         dokument.filesize = dokumentFromServer.filesize;
-        dokument.timestampUpload = DateUtil.localDateTimeToMoment(dokumentFromServer.timestampUpload);
         return dokument;
     }
 }
