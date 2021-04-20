@@ -18,8 +18,8 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {GuidedTourService} from 'ngx-guided-tour';
-import {BehaviorSubject, combineLatest, from as fromPromise, Observable, of, Subject} from 'rxjs';
-import {filter, map, switchMap, take, takeUntil} from 'rxjs/operators';
+import {BehaviorSubject, from as fromPromise, Observable, of, Subject} from 'rxjs';
+import {filter, map, mergeMap, switchMap, take, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {INewFallStateParams} from '../../../../gesuch/gesuch.route';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
@@ -77,24 +77,25 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     public ngOnInit(): void {
         // navbar depends on the principal. trigger change detection when the principal changes
 
-        combineLatest([
-            this.authServiceRS.principal$
-                .pipe(takeUntil(this.unsubscribe$)),
-            this.institutionService.isCurrentUserTagesschuleUser(),
-        ]).subscribe(
-            ([, isTSUser]) => {
-                this.changeDetectorRef.markForCheck();
-                this.gemeindeAntragVisible.next(
-                    this.authServiceRS.isOneOfRoles(PERMISSIONS.LASTENAUSGLEICH_TAGESSCHULE) ||
-                    this.authServiceRS.isOneOfRoles(PERMISSIONS.FERIENBETREUUNG) ||
-                    (this.authServiceRS.isOneOfRoles([
-                        TSRole.ADMIN_INSTITUTION,
-                        TSRole.SACHBEARBEITER_INSTITUTION,
-                    ]) && isTSUser),
-                );
-            },
-            err => LOG.error(err),
-        );
+        this.authServiceRS.principal$
+            .pipe(
+                filter(principal => !!principal),
+                mergeMap(() => this.institutionService.isCurrentUserTagesschuleUser()),
+                takeUntil(this.unsubscribe$),
+            )
+            .subscribe((isTSUser: boolean) => {
+                    this.changeDetectorRef.markForCheck();
+                    this.gemeindeAntragVisible.next(
+                        this.authServiceRS.isOneOfRoles(PERMISSIONS.LASTENAUSGLEICH_TAGESSCHULE) ||
+                        this.authServiceRS.isOneOfRoles(PERMISSIONS.FERIENBETREUUNG) ||
+                        (this.authServiceRS.isOneOfRoles([
+                            TSRole.ADMIN_INSTITUTION,
+                            TSRole.SACHBEARBEITER_INSTITUTION,
+                        ]) && isTSUser),
+                    );
+                },
+                err => LOG.error(err),
+            );
 
         this.kibonGuidedTourService.guidedTour$
             .pipe(takeUntil(this.unsubscribe$))
