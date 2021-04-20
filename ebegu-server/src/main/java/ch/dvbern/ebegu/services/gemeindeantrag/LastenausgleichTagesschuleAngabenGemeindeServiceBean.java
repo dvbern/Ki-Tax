@@ -60,7 +60,6 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
@@ -69,6 +68,8 @@ import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.base.Preconditions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Service fuer den Lastenausgleich der Tagesschulen
@@ -96,6 +97,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	@Inject
 	private LastenausgleichTagesschuleAngabenGemeindeStatusHistoryService historyService;
 
+	private static final Logger LOG =
+		LoggerFactory.getLogger(LastenausgleichTagesschuleAngabenGemeindeServiceBean.class);
+
 	@Override
 	@Nonnull
 	public List<? extends GemeindeAntrag> createLastenausgleichTagesschuleGemeinde(
@@ -113,10 +117,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			Optional<LastenausgleichTagesschuleAngabenGemeindeContainer> existingOptional =
 				findLastenausgleichTagesschuleAngabenGemeindeContainer(gemeinde, gesuchsperiode);
 			if (existingOptional.isPresent()) {
-				throw new EntityExistsException(
-					LastenausgleichTagesschuleAngabenGemeindeContainer.class,
-					"LastenausgleichTagesschule Gemeinde Angaben existieren für gemeinde und periode bereits",
-					gemeinde.getName() + ' ' + gesuchsperiode.getGesuchsperiodeString());
+				LOG.info(
+					"LastenausgleichTagesschule Gemeinde Angaben existieren für {} und periode {} bereits",
+					gemeinde.getName(),
+					gesuchsperiode.getGesuchsperiodeString());
+				continue;
 			}
 			LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer =
 				new LastenausgleichTagesschuleAngabenGemeindeContainer();
@@ -131,6 +136,10 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
 				saveLastenausgleichTagesschuleGemeinde(fallContainer, true);
 			angabenInstitutionService.createLastenausgleichTagesschuleInstitution(saved);
+			LOG.info(
+				"LastenausgleichTagesschule Gemeinde Angaben für {} und periode {} erstellt",
+				gemeinde.getName(),
+				gesuchsperiode.getGesuchsperiodeString());
 			result.add(saved);
 		}
 		return result;

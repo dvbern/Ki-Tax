@@ -169,10 +169,10 @@ export class GemeindeAntraegeComponent implements OnInit {
             this.triedSending = true;
             return;
         }
-        this.gemeindeAntragService.createAllAntrage(this.formGroup.value).subscribe(() => {
+        this.gemeindeAntragService.createAllAntrage(this.formGroup.value).subscribe(result => {
             this.loadAntragList();
             this.cd.markForCheck();
-            this.errorService.addMesageAsInfo(this.translate.instant('ANTRAEGE_ERSTELLT'));
+            this.errorService.addMesageAsInfo(this.translate.instant('ANTRAEGE_ERSTELLT', {amount: result.length}));
         }, err => {
             this.handleCreateAntragError(err);
         });
