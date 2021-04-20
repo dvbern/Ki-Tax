@@ -37,7 +37,8 @@ import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../models/gemeindeant
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
-import {TSSozialdienstStammdaten} from '../models/sozialdienst/TSSozaildienstStammdaten';
+import {TSSozialdienstFallDokument} from '../models/sozialdienst/TSSozialdienstFallDokument';
+import {TSSozialdienstStammdaten} from '../models/sozialdienst/TSSozialdienstStammdaten';
 import {TSSozialdienst} from '../models/sozialdienst/TSSozialdienst';
 import {TSSozialdienstFall} from '../models/sozialdienst/TSSozialdienstFall';
 import {TSAbstractAntragEntity} from '../models/TSAbstractAntragEntity';
@@ -5173,7 +5174,7 @@ export class EbeguRestUtil {
 
     public parseAnzahlEingeschriebeneKinder(
         anzahlEingeschriebeneKinder: TSAnzahlEingeschriebeneKinder,
-        restAnzahlEingeschriebeneKinder: any
+        restAnzahlEingeschriebeneKinder: any,
     ): TSAnzahlEingeschriebeneKinder {
         anzahlEingeschriebeneKinder.overall = restAnzahlEingeschriebeneKinder.overall;
         anzahlEingeschriebeneKinder.vorschulalter = restAnzahlEingeschriebeneKinder.vorschulalter;
@@ -5185,12 +5186,36 @@ export class EbeguRestUtil {
 
     public parseDurchschnittKinderProTag(
         tsDurchschnittKinderProTag: TSDurchschnittKinderProTag,
-        restDurchschnittKinderProTag: any
+        restDurchschnittKinderProTag: any,
     ): TSDurchschnittKinderProTag {
         tsDurchschnittKinderProTag.fruehbetreuung = restDurchschnittKinderProTag.fruehbetreuung;
         tsDurchschnittKinderProTag.mittagsbetreuung = restDurchschnittKinderProTag.mittagsbetreuung;
         tsDurchschnittKinderProTag.nachmittagsbetreuung1 = restDurchschnittKinderProTag.nachmittagsbetreuung1;
         tsDurchschnittKinderProTag.nachmittagsbetreuung2 = restDurchschnittKinderProTag.nachmittagsbetreuung2;
         return tsDurchschnittKinderProTag;
+    }
+
+    public parseSozialdienstFallDokumente(data: any): TSSozialdienstFallDokument[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseSozialdienstFallDokument(new TSSozialdienstFallDokument(), item))
+            : [this.parseSozialdienstFallDokument(new TSSozialdienstFallDokument(), data)];
+    }
+
+    public parseSozialdienstFallDokument(
+        dokument: TSSozialdienstFallDokument,
+        dokumentFromServer: any,
+    ): TSSozialdienstFallDokument {
+        if (!dokumentFromServer) {
+            return undefined;
+        }
+        this.parseAbstractMutableEntity(dokument, dokumentFromServer);
+        dokument.filename = dokumentFromServer.filename;
+        dokument.filepfad = dokumentFromServer.filepfad;
+        dokument.filesize = dokumentFromServer.filesize;
+        dokument.timestampUpload = DateUtil.localDateTimeToMoment(dokumentFromServer.timestampUpload);
+        return dokument;
     }
 }

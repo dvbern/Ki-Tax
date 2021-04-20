@@ -258,54 +258,19 @@
                             <span data-translate="VOLLMACHT_HOCHLADEN"></span>
                         </h1>
                         <hr class="header"/>
-                        <table class="table table-striped" width="100%">
-                            <tbody>
-                            <tr>
-                                <td translate="VOLLMACHT_DOKUMENT"></td>
-                                <td width="2%"
-                                    class="symbol"
-                                    tabindex="-1"
-                                    ng-click="$event.stopPropagation()">
-                                    <button
-                                        ngf-select="vm.uploadVollmachtDokument($files)"
-                                        ngf-multiple="false"
-                                        accept="application/pdf"
-                                        ng-disabled="vm.isSozialdienstFallReadOnly()"
-                                        class="dv-btn fa fa-upload dv-btn-operation"
-                                        title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
-                                        aria-label="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
-                                        tabindex="0">
-                                    </button>
-                                </td>
-                                <td width="2%"
-                                    class="symbol"
-                                    tabindex="-1">
-                                    <button
-                                        ng-click="vm.downloadVollmachtDokument();$event.stopPropagation()"
-                                        ng-disabled="!vm.isVollmachtHochgeladen"
-                                        class="dv-btn fa fa-eye dv-btn-operation"
-                                        title="{{'DOKUMENT_DOWNLOAD' | translate}}"
-                                        [attr.aria-label]="'DOKUMENT_DOWNLOAD' | translate"
-                                        aria-hidden="true"
-                                        tabindex="0"></button>
-                                </td>
-                                <td width="2%"
-                                    class="symbol"
-                                    tabindex="-1">
-                                    <button ng-click="vm.removeVollmachtDokument();$event.stopPropagation()"
-                                            ng-disabled="!vm.isVollmachtHochgeladen || (vm.isSozialdienstFallReadOnly() && vm.isSozialdienstFallAktiv()) || vm.isSozialdienstFallEntzogen()"
-                                            class="dv-btn fa fa-trash dv-btn-operation"
-                                            title="{{'DOKUMENT_DELETE' | translate}}"
-                                            [attr.aria-label]="'DOKUMENT_DELETE' | translate"
-                                            aria-hidden="true"
-                                            tabindex="0"></button>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+
+                        <dv-file-upload
+                            (download)="vm.downloadVollmachtDokument($event[0],$event[1])"
+                            [title]="'VOLLMACHT_DOKUMENT'"
+                            (delete)="vm.removeVollmachtDokument($event)"
+                            (upload-file)="vm.uploadVollmachtDokument($event)"
+                            [files]="vm.dokumente"
+                            [read-only]="false"
+                            [read-only-delete]="false"
+                        >
+                        </dv-file-upload>
                     </div>
                 </div>
-
 
                 <!--Buttons-->
                 <div class="dv-navigation dv-navigation-flex">

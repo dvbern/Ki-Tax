@@ -35,7 +35,7 @@ import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStat
 import {TSMitteilungEvent} from '../../../models/enums/TSMitteilungEvent';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSSozialdienstFallStatus} from '../../../models/enums/TSSozialdienstFallStatus';
-import {TSSozialdienstStammdaten} from '../../../models/sozialdienst/TSSozaildienstStammdaten';
+import {TSSozialdienstStammdaten} from '../../../models/sozialdienst/TSSozialdienstStammdaten';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSDossier} from '../../../models/TSDossier';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';

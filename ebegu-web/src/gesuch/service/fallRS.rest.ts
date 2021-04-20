@@ -15,6 +15,7 @@
 
 import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
 import {TSSprache} from '../../models/enums/TSSprache';
+import {TSSozialdienstFallDokument} from '../../models/sozialdienst/TSSozialdienstFallDokument';
 import {TSFall} from '../../models/TSFall';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
@@ -63,23 +64,14 @@ export class FallRS {
             });
     }
 
-    public removeVollmachtDokument(fallId: string): IHttpPromise<TSFall> {
-        return this.$http.delete(`${this.serviceURL}/vollmachtDokument/${encodeURIComponent(fallId)}`);
+    public removeVollmachtDokument(sozialdienstFallDokumentId: string): IHttpPromise<TSFall> {
+        return this.$http.delete(`${this.serviceURL}/vollmachtDokument/${encodeURIComponent(sozialdienstFallDokumentId)}`);
     }
 
-    public downloadVollmachtDokument(fallId: string): IPromise<BlobPart> {
-        return this.$http.get(`${this.serviceURL}/downloadVollmachtDokument/${encodeURIComponent(fallId)}`,
-            {responseType: 'blob'})
-            .then((response: any) => {
-                return response.data;
-            });
-    }
-
-    public existVollmachtDokument(fallId: string): IPromise<boolean> {
-        return this.$http.get(
-            `${this.serviceURL}/existVollmachtDokument/${encodeURIComponent(fallId)}`)
-            .then((response: any) => {
-                return response.data;
+    public getAllVollmachtDokumente(sozialdienstFallId: string): IPromise<TSSozialdienstFallDokument[]> {
+        return this.$http.get(`${this.serviceURL}/vollmachtDokumente/${encodeURIComponent(sozialdienstFallId)}`)
+            .then(restDokumente => {
+                return this.ebeguRestUtil.parseSozialdienstFallDokumente(restDokumente.data);
             });
     }
 

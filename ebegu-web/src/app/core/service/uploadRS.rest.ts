@@ -190,16 +190,19 @@ export class UploadRS {
         return 'UploadRS';
     }
 
-    public uploadVollmachtDokument(file: any, fallId: string): IPromise<any> {
+    public uploadVollmachtDokument(vollmacht: any, fallId: string): IPromise<any> {
+        const encodedFilename = this.base64.encode(vollmacht.name);
         return this.upload.upload({
             // tslint:disable-next-line:max-line-length
-            url: `${this.serviceURL}/sozialdienstfall/${encodeURIComponent(fallId)}`,
-            method: 'POST',
+            url: `${this.serviceURL}/uploadSozialdienstFallsDokument/${encodeURIComponent(fallId)}`,
+            headers: {
+                'x-filename': encodedFilename,
+            },
             data: {
-                file,
+                file: vollmacht,
             },
         }).then((response: any) => {
-            return response.data;
+            return this.ebeguRestUtil.parseSozialdienstFallDokumente(response.data);
         }, (response: any) => {
             console.log('Upload Vollmacht File: NOT SUCCESS');
             return this.q.reject(response);

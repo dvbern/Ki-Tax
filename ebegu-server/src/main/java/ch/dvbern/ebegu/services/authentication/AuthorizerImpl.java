@@ -1901,6 +1901,35 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
+	public void checkReadAuthorization(@Nullable SozialdienstFall sozialdienstFall) {
+		this.checkWriteAuthorization(sozialdienstFall);
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable SozialdienstFall sozialdienstFall) {
+		if (sozialdienstFall != null) {
+			boolean allSozialdienstAllowed =
+				principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT);
+			if (allSozialdienstAllowed || principalBean.isCallerInAnyOfRole(UserRole.getTsBgAndGemeindeRoles())) {
+				return;
+			}
+			if (principalBean.isCallerInAnyOfRole(ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST)) {
+				Sozialdienst benutzerSozialdienst = principalBean.getBenutzer().getSozialdienst();
+				Objects.requireNonNull(
+					benutzerSozialdienst,
+					String.format(
+						"Sozialdienst des Sachbearbeiters muss gesetzt sein: {%s} ",
+						principalBean.getBenutzer()));
+				if (benutzerSozialdienst.equals(sozialdienstFall.getSozialdienst())) {
+					return;
+				}
+			}
+
+			throwViolation(sozialdienstFall);
+		}
+	}
+
+	@Override
 	public void checkWriteAuthorization(@Nonnull FerienbetreuungAngabenContainer container) {
 		Objects.requireNonNull(container);
 		switch (container.getStatus()) {

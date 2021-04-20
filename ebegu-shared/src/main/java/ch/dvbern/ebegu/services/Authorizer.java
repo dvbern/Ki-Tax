@@ -46,6 +46,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 
 /**
  * Interface fuer eine Klasse welche prueft ob der aktuelle Benutzer fuer ein Gesuch berechtigt ist
@@ -275,6 +276,10 @@ public interface Authorizer {
 	void checkReadAuthorization(@Nullable Sozialdienst sozialdienst);
 
 	void checkWriteAuthorization(@Nullable Sozialdienst sozialdienst);
+
+	void checkReadAuthorization(@Nullable SozialdienstFall sozialdienstFall);
+
+	void checkWriteAuthorization(@Nullable SozialdienstFall sozialdienstFall);
 
 	void checkWriteAuthorization(@Nonnull FerienbetreuungAngabenContainer container);
 

@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -43,13 +44,19 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.converter.JaxSozialdienstConverter;
 import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienstFallDokument;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFallDokument;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.services.FallService;
+import ch.dvbern.ebegu.services.SozialdienstFallDokumentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -81,6 +88,12 @@ public class FallResource {
 
 	@Inject
 	private JaxBConverter converter;
+
+	@Inject
+	private JaxSozialdienstConverter jaxSozialdienstConverter;
+
+	@Inject
+	private SozialdienstFallDokumentService sozialdienstFallDokumentService;
 
 	@ApiOperation(value = "Creates a new Fall in the database. The transfer object also has a relation to Gesuch " +
 		"which is stored in the database as well.", response = JaxFall.class)
@@ -126,69 +139,6 @@ public class FallResource {
 		return converter.fallToJAX(fallToReturn);
 	}
 
-	@Nullable
-	@DELETE
-	@Path("/vollmachtDokument/{fallId}")
-	@Consumes(MediaType.WILDCARD)
-	@RolesAllowed({SUPER_ADMIN, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST})
-	public Response removeVollmachtDokument(
-		@Nonnull @PathParam("fallId") String fallId,
-		@Context HttpServletResponse response) {
-
-		requireNonNull(fallId);
-
-		fallService.removeVollmachtDokument(fallId);
-		return Response.ok().build();
-
-	}
-
-	@ApiOperation(value = "retuns true id the VerfuegungErlaeuterung exists for the given language",
-		response = boolean.class)
-	@GET
-	@Path("/existVollmachtDokument/{fallId}")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS,
-		SACHBEARBEITER_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public boolean existDokument(
-		@Nonnull @PathParam("fallId") String fallId,
-		@Context HttpServletResponse response
-	) {
-		requireNonNull(fallId);
-		return fallService.existVollmachtDokument(fallId);
-	}
-
-	@ApiOperation("return the VerfuegungErlaeuterung for the given language")
-	@GET
-	@Path("/downloadVollmachtDokument/{fallId}")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({SUPER_ADMIN, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public Response downloadVollmachtDokument(
-		@Nonnull @PathParam("fallId") String fallId,
-		@Context HttpServletResponse response
-	) {
-		requireNonNull(fallId);
-
-		final byte[] content = fallService.downloadVollmachtDokument(fallId);
-
-		if (content != null && content.length > 0) {
-			try {
-				return RestUtil.buildDownloadResponse(true, "vollmacht.pdf",
-					"application/octet-stream", content);
-
-			} catch (IOException e) {
-				return Response.status(Status.NOT_FOUND)
-					.entity("Vollmacht Dokument fuer SozialdienstFall: "
-						+ fallId
-						+ " kann nicht gelesen werden")
-					.build();
-			}
-		}
-
-		return Response.status(Status.NO_CONTENT).build();
-	}
-
 	@ApiOperation("return the Vollmacht Dokument for the given language")
 	@GET
 	@Path("/generateVollmachtDokument/{fallId}/{sprache}")
@@ -219,5 +169,47 @@ public class FallResource {
 		}
 
 		return Response.status(Status.NO_CONTENT).build();
+	}
+
+	@ApiOperation(value = "Gibt alle VollmachtDokumente zurück, die die aktuelle SozialdienstFall gehoeren",
+		responseContainer = "List", response = JaxSozialdienstFallDokument.class)
+	@GET
+	@Path("/vollmachtDokumente/{sozialdienstFallId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		SACHBEARBEITER_TS, ADMIN_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public List<JaxSozialdienstFallDokument> getVollmachtDokumente(
+		@Nonnull @NotNull @PathParam("sozialdienstFallId") JaxId sozialdienstFallJaxId
+	) {
+		Objects.requireNonNull(sozialdienstFallJaxId.getId());
+		String sozialdienstFallId = converter.toEntityId(sozialdienstFallJaxId);
+		List<SozialdienstFallDokument> sozialdienstFallDokumente =
+			sozialdienstFallDokumentService.findDokumente(sozialdienstFallId);
+
+		return jaxSozialdienstConverter.sozialdienstFallDokumentListToJax(sozialdienstFallDokumente);
+	}
+
+	@ApiOperation("Loescht das Dokument mit der uebergebenen Id in der Datenbank")
+	@Nullable
+	@DELETE
+	@Path("/vollmachtDokument/{vollmachtDokumentId}")
+	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
+	public Response removeVollmachtDokument(
+		@Nonnull @NotNull @PathParam("vollmachtDokumentId") JaxId vollmachtDokumentJAXPId,
+		@Context HttpServletResponse response) {
+
+		requireNonNull(vollmachtDokumentJAXPId.getId());
+		String dokumentId = converter.toEntityId(vollmachtDokumentJAXPId);
+
+		SozialdienstFallDokument sozialdienstFallDokument =
+			sozialdienstFallDokumentService.findDokument(dokumentId).orElseThrow(() -> new EbeguEntityNotFoundException(
+				"removeVollmachtDokument",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dokumentId));
+
+		sozialdienstFallDokumentService.removeDokument(sozialdienstFallDokument);
+
+		return Response.ok().build();
 	}
 }

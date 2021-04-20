@@ -29,6 +29,8 @@ import {TSSprache} from '../../../models/enums/TSSprache';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSSozialdienstFall} from '../../../models/sozialdienst/TSSozialdienstFall';
+import {TSSozialdienstFallDokument} from '../../../models/sozialdienst/TSSozialdienstFallDokument';
+import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
@@ -70,10 +72,10 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         '$timeout',
     ];
 
-    private isVollmachtHochgeladen: boolean;
     private gesuchsperiodeId: string;
 
     public showAntragsteller2Error: boolean = false;
+    public dokumente: TSSozialdienstFallDokument[];
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -115,8 +117,8 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         if (this.gesuchModelManager.getFall().sozialdienstFall.isNew()) {
             return;
         }
-        this.fallRS.existVollmachtDokument(this.gesuchModelManager.getFall().id).then(
-            result => this.isVollmachtHochgeladen = result,
+        this.fallRS.getAllVollmachtDokumente(this.gesuchModelManager.getFall().sozialdienstFall.id).then(
+            dokumente => this.dokumente = dokumente,
         );
     }
 
@@ -182,7 +184,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     }
 
     public isSozialdienstFallReadOnly(): boolean {
-        if (this.isSozialdienstFallAktiv() || this.isVollmachtHochgeladen || this.isSozialdienstFallEntzogen()) {
+        if (this.isSozialdienstFallAktiv() || this.isSozialdienstFallEntzogen()) {
             return true;
         }
         return false;
@@ -198,7 +200,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
 
     public isAktivierungMoeglich(): boolean {
         if (this.gesuchModelManager.getFall().sozialdienstFall?.status === TSSozialdienstFallStatus.INAKTIV
-            && this.isVollmachtHochgeladen) {
+            && this.dokumente && this.dokumente.length > 0) {
             return true;
         }
         return false;
@@ -223,11 +225,12 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         });
     }
 
-    public uploadVollmachtDokument(file: any[]): void {
-        if (file.length <= 0) {
+    public uploadVollmachtDokument(event: any): void {
+        const files = event.target.files;
+        if (files.length <= 0) {
             return;
         }
-        const selectedFile = file[0];
+        const selectedFile = files[0];
         if (selectedFile.size > MAX_FILE_SIZE) {
             this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
                 title: this.$translate.instant('FILE_ZU_GROSS'),
@@ -236,22 +239,26 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         }
 
         this.uploadRS.uploadVollmachtDokument(selectedFile, this.gesuchModelManager.getFall().id)
-            .then(() => {
-                this.isVollmachtHochgeladen = true;
+            .then(dokumente => {
+                this.dokumente = this.dokumente.concat(dokumente);
             });
     }
 
-    public removeVollmachtDokument(): void {
-        this.fallRS.removeVollmachtDokument(this.gesuchModelManager.getFall().id)
+    public removeVollmachtDokument(dokument: TSSozialdienstFallDokument): void {
+        this.fallRS.removeVollmachtDokument(dokument.id)
             .then(() => {
-                this.isVollmachtHochgeladen = false;
+                this.dokumente = this.dokumente.filter(d => d.id !== dokument.id);
             });
     }
 
-    public downloadVollmachtDokument(): void {
-        this.fallRS.downloadVollmachtDokument(this.gesuchModelManager.getFall().id).then(
-            response => {
-                this.openDownloadForFile(response);
+    public downloadVollmachtDokument(dokument: TSSozialdienstFallDokument, attachment: boolean): void {
+        const win = this.downloadRS.prepareDownloadWindow();
+        this.downloadRS.getAccessTokenSozialdienstFallDokument(dokument.id)
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, attachment, win);
+            })
+            .catch(() => {
+                win.close();
             });
     }
 
