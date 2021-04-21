@@ -300,7 +300,7 @@ export class TagesschulenAngabenComponent {
         }
 
         this.tagesschulenAngabenRS.saveTagesschuleAngaben(this.latsAngabenInstitutionContainer).subscribe(result => {
-            this.setupForm(result?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
+            this.form = this.setupForm(result?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
                 result?.angabenDeklaration : result?.angabenKorrektur);
             this.errorService.clearAll();
             this.errorService.addMesageAsInfo(this.translate.instant('SAVED'));

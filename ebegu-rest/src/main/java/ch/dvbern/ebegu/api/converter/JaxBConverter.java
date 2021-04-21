@@ -933,11 +933,14 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		if (fallJAXP.getSozialdienstFall() != null) {
 			SozialdienstFall sozialdienstFall = new SozialdienstFall();
-			if(fallJAXP.getSozialdienstFall().getId() != null) {
-				Optional<SozialdienstFall> sozialdienstFallOpt = sozialdienstService.findSozialdienstFall(fallJAXP.getSozialdienstFall().getId());
+			if (fallJAXP.getSozialdienstFall().getId() != null) {
+				Optional<SozialdienstFall> sozialdienstFallOpt =
+					sozialdienstService.findSozialdienstFall(fallJAXP.getSozialdienstFall().getId());
 				sozialdienstFall = sozialdienstFallOpt.orElse(new SozialdienstFall());
 			}
-			fall.setSozialdienstFall(jaxSozialdienstConverter.sozialdienstFallToEntity(fallJAXP.getSozialdienstFall(), sozialdienstFall));
+			fall.setSozialdienstFall(jaxSozialdienstConverter.sozialdienstFallToEntity(
+				fallJAXP.getSozialdienstFall(),
+				sozialdienstFall));
 		}
 		return fall;
 	}
@@ -5763,7 +5766,9 @@ public class JaxBConverter extends AbstractConverter {
 
 		jaxGemeindeContainer.getAngabenInstitutionContainers()
 			.stream()
-			.map(this::lastenausgleichTagesschuleAngabenInstitutionContainerToStorableEntity)
+			.map(jaxContainer -> lastenausgleichTagesschuleAngabenInstitutionContainerToStorableEntity(
+				jaxContainer,
+				false))
 			.forEach(gemeindeContainer::addLastenausgleichTagesschuleAngabenInstitutionContainer);
 
 		return gemeindeContainer;
@@ -5897,7 +5902,8 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	private LastenausgleichTagesschuleAngabenInstitutionContainer lastenausgleichTagesschuleAngabenInstitutionContainerToStorableEntity(
-		@Nonnull JaxLastenausgleichTagesschuleAngabenInstitutionContainer jaxInstitutionContainer
+		@Nonnull JaxLastenausgleichTagesschuleAngabenInstitutionContainer jaxInstitutionContainer,
+		@Nonnull boolean performOptimisticLockCheck
 	) {
 		LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainerToMergeWith =
 			persistence.find(
@@ -5908,13 +5914,15 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		return lastenausgleichTagesschuleAngabenInstitutionContainerToEntity(
 			jaxInstitutionContainer,
-			institutionContainerToMergeWith);
+			institutionContainerToMergeWith,
+			false);
 	}
 
 	@Nonnull
 	public LastenausgleichTagesschuleAngabenInstitutionContainer lastenausgleichTagesschuleAngabenInstitutionContainerToEntity(
 		@Nonnull JaxLastenausgleichTagesschuleAngabenInstitutionContainer jaxInstitutionContainer,
-		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainer
+		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainer,
+		@Nonnull boolean performOptimisticLockCheck
 	) {
 
 		requireNonNull(jaxInstitutionContainer.getInstitution().getId());
@@ -5930,7 +5938,8 @@ public class JaxBConverter extends AbstractConverter {
 			if (institutionContainer.getAngabenDeklaration() != null) {
 				institutionContainer.setAngabenDeklaration(lastenausgleichTagesschuleAngabenInstitutionToEntity(
 					jaxInstitutionContainer.getAngabenDeklaration(),
-					institutionContainer.getAngabenDeklaration()));
+					institutionContainer.getAngabenDeklaration(),
+					performOptimisticLockCheck));
 			} else {
 				institutionContainer.setAngabenDeklaration(new LastenausgleichTagesschuleAngabenInstitution());
 			}
@@ -5939,7 +5948,8 @@ public class JaxBConverter extends AbstractConverter {
 			if (institutionContainer.getAngabenKorrektur() != null) {
 				institutionContainer.setAngabenKorrektur(lastenausgleichTagesschuleAngabenInstitutionToEntity(
 					jaxInstitutionContainer.getAngabenKorrektur(),
-					institutionContainer.getAngabenKorrektur()));
+					institutionContainer.getAngabenKorrektur(),
+					performOptimisticLockCheck));
 			} else {
 				institutionContainer.setAngabenKorrektur(new LastenausgleichTagesschuleAngabenInstitution());
 			}
@@ -5987,7 +5997,8 @@ public class JaxBConverter extends AbstractConverter {
 	@Nonnull
 	private LastenausgleichTagesschuleAngabenInstitution lastenausgleichTagesschuleAngabenInstitutionToEntity(
 		@Nonnull JaxLastenausgleichTagesschuleAngabenInstitution jaxAngabenInstitution,
-		@Nonnull LastenausgleichTagesschuleAngabenInstitution angabenInstitution
+		@Nonnull LastenausgleichTagesschuleAngabenInstitution angabenInstitution,
+		@Nonnull boolean performOptimisticLockCheck
 	) {
 		convertAbstractFieldsToEntity(jaxAngabenInstitution, angabenInstitution);
 
@@ -6013,6 +6024,9 @@ public class JaxBConverter extends AbstractConverter {
 		// Bemerkungen
 		angabenInstitution.setBemerkungen(jaxAngabenInstitution.getBemerkungen());
 
-		return checkVersionSaveAndFlush(angabenInstitution, jaxAngabenInstitution.getVersion());
+		if(performOptimisticLockCheck) {
+			return checkVersionSaveAndFlush(angabenInstitution, jaxAngabenInstitution.getVersion());
+		}
+		return angabenInstitution;
 	}
 }
