@@ -5196,15 +5196,15 @@ export class EbeguRestUtil {
     }
 
     public parseSozialdienstFallDokument(
-        dokument: TSSozialdienstFallDokument,
+        vollMachtDokument: TSSozialdienstFallDokument,
         dokumentFromServer: any,
     ): TSSozialdienstFallDokument {
         if (!dokumentFromServer) {
             return undefined;
         }
-        this.parseTSFileDokument(dokument, dokumentFromServer);
-        dokument.timestampUpload = DateUtil.localDateTimeToMoment(dokumentFromServer.timestampUpload);
-        return dokument;
+        this.parseTSFileDokument(vollMachtDokument, dokumentFromServer);
+        vollMachtDokument.timestampUpload = DateUtil.localDateTimeToMoment(dokumentFromServer.timestampUpload);
+        return vollMachtDokument;
     }
 
     private parseTSFileDokument(dokument: TSFile, dokumentFromServer: any): TSFile {

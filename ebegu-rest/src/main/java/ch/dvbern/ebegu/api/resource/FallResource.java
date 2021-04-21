@@ -52,6 +52,7 @@ import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFallDokument;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MergeDocException;
@@ -211,5 +212,29 @@ public class FallResource {
 		sozialdienstFallDokumentService.removeDokument(sozialdienstFallDokument);
 
 		return Response.ok().build();
+	}
+
+	@ApiOperation(value = "Setz der SozialdienstFall zu entzogen Status",
+		responseContainer = "List", response = JaxSozialdienstFallDokument.class)
+	@PUT
+	@Path("/sozialdienstFallEntziehen/{fallId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		SACHBEARBEITER_TS, ADMIN_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public JaxFall sozialdienstFallEntziehen(
+		@Nonnull @NotNull @PathParam("fallId") JaxId fallJAXPId) {
+
+		Objects.requireNonNull(fallJAXPId.getId());
+		String fallID = converter.toEntityId(fallJAXPId);
+		Fall fall = fallService.findFall(fallID).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"sozialdienstFallEntziehen",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallID));
+
+		Objects.requireNonNull(fall.getSozialdienstFall());
+		fall.getSozialdienstFall().setStatus(SozialdienstFallStatus.ENTZOGEN);
+
+		Fall persistedFall = this.fallService.saveFall(fall);
+		return converter.fallToJAX(persistedFall);
 	}
 }

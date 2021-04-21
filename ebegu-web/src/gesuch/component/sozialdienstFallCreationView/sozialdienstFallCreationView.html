@@ -36,6 +36,14 @@
             </div>
         </div>
     </div>
+    <div class="row" ng-if="vm.showFallEntzogenWarning()">
+        <div class="col-md-12">
+            <br/>
+            <div class="well well-status-warten">
+                <span>{{'SOZIALDIENST_WARNING_FALL_ENTZOGEN' | translate }}</span>
+            </div>
+        </div>
+    </div>
     <div class="row margin-top-40">
         <form role="form" name="vm.form" class="" novalidate unsaved-warning-form>
             <fieldset ng-disabled="vm.isSozialdienstFallReadOnly()">

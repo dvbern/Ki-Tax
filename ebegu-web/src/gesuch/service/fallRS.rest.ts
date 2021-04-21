@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
+import {IHttpPromise, IHttpResponse, IHttpService, ILogService, IPromise} from 'angular';
 import {TSSprache} from '../../models/enums/TSSprache';
 import {TSSozialdienstFallDokument} from '../../models/sozialdienst/TSSozialdienstFallDokument';
 import {TSFall} from '../../models/TSFall';
@@ -87,6 +87,14 @@ export class FallRS {
             {responseType: 'blob'})
             .then((response: any) => {
                 return response.data;
+            });
+    }
+
+    public sozialdienstFallEntziehen(fallId: string): IPromise<TSFall> {
+        return this.$http.put(`${this.serviceURL}/sozialdienstFallEntziehen/${encodeURIComponent(fallId)}`, {})
+            .then((response: IHttpResponse<TSFall>) => {
+                this.$log.debug('PARSING gesuch REST object ', response.data);
+                return this.ebeguRestUtil.parseFall(new TSFall(), response.data);
             });
     }
 }

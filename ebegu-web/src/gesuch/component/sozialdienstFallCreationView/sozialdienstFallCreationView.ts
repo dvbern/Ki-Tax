@@ -219,9 +219,23 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
             parentController: undefined,
             elementID: undefined,
         }).then(() => {
-            this.gesuchModelManager.getFall().sozialdienstFall.status = TSSozialdienstFallStatus.ENTZOGEN;
-            this.form.$dirty = true;
-            this.save();
+            this.fallRS.sozialdienstFallEntziehen(this.gesuchModelManager.getFall().id).then(
+                fall => {
+                    const params: INewFallStateParams = {
+                        gesuchsperiodeId: this.gesuchsperiodeId,
+                        creationAction: null,
+                        gesuchId: EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch()) ?
+                            this.gesuchModelManager.getGesuch().id :
+                            null,
+                        dossierId: null,
+                        gemeindeId: this.gesuchModelManager.getGemeinde().id,
+                        eingangsart: null,
+                        sozialdienstId: fall.sozialdienstFall.sozialdienst.id,
+                        fallId: fall.id,
+                    };
+                    this.$state.go('gesuch.sozialdienstfallcreation', params);
+                },
+            );
         });
     }
 
@@ -311,5 +325,9 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         this.gesuchModelManager.getFall().sozialdienstFall.status = TSSozialdienstFallStatus.INAKTIV;
         this.form.$dirty = true;
         this.save();
+    }
+
+    public showFallEntzogenWarning(): boolean {
+        return this.gesuchModelManager.getFall().sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN;
     }
 }

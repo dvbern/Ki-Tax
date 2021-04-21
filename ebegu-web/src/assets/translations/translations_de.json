@@ -2487,5 +2487,6 @@
     "NEUE_MITTEILUNG_SOZIALDIENST": "Neue Mitteilung an den Unterstützungsdienst",
     "ERROR_ANTRAGSTELLER_SZ_NOT_VOLLSTAENDIG": "Die Angaben zur Antragsteller/in 2 müssen vollständig ausgefüllt sein oder leer gelassen werden",
     "SOZIALDIENST_INFO_VOLLMACHT_FORM_DIRTY": "Sie haben Änderungen im Formular gemacht. Bitte speichern Sie diese, bevor Sie die Vollmacht erneut herunterladen können",
+    "SOZIALDIENST_WARNING_FALL_ENTZOGEN": "Der Vollmacht würde entzogen. Der Fall ist für Unterstützungdienst gesperrt!",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
