@@ -60,9 +60,14 @@ export abstract class AbstractFerienbetreuungFormular {
     protected abstract setBasicValidation(): void;
 
     protected removeAllValidators(): void {
-        Object.keys(this.form.controls).forEach(key => {
+        for (const key in this.form.controls) {
+            if (this.form.get(key) === null) {
+                continue;
+            }
             this.form.controls[key].clearValidators();
-        });
+            this.form.get(key).markAsTouched();
+            this.form.get(key).updateValueAndValidity();
+        }
     }
 
     protected enableAndTriggerFormValidation(): void {
