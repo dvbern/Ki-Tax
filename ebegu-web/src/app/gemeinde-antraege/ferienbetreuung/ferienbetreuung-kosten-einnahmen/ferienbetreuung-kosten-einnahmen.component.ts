@@ -90,36 +90,56 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
             ],
             personalkosten: [
                 kostenEinnahmen.personalkosten,
-                numberValidator(ValidationType.INTEGER),
             ],
             personalkostenLeitungAdmin: [
                 kostenEinnahmen.personalkostenLeitungAdmin,
-                numberValidator(ValidationType.INTEGER),
             ],
             sachkosten: [
                 kostenEinnahmen.sachkosten,
-                numberValidator(ValidationType.INTEGER),
             ],
             verpflegungskosten: [
                 kostenEinnahmen.verpflegungskosten,
-                numberValidator(ValidationType.INTEGER),
             ],
             weitereKosten: [
                 kostenEinnahmen.weitereKosten,
-                numberValidator(ValidationType.INTEGER),
             ],
             bemerkungenKosten: [
                 kostenEinnahmen.bemerkungenKosten,
             ],
             elterngebuehren: [
                 kostenEinnahmen.elterngebuehren,
-                numberValidator(ValidationType.INTEGER),
             ],
             weitereEinnahmen: [
                 kostenEinnahmen.weitereEinnahmen,
-                numberValidator(ValidationType.INTEGER),
             ],
         });
+        this.setBasicValidation();
+    }
+
+    protected setBasicValidation(): void {
+        this.removeAllValidators();
+
+        this.form.get('personalkosten').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('personalkostenLeitungAdmin').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('sachkosten').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('verpflegungskosten').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('weitereKosten').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('elterngebuehren').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('weitereEinnahmen').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
     }
 
     protected enableFormValidation(): void {
@@ -134,6 +154,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
     }
 
     public save(): void {
+        this.setBasicValidation();
         if (!this.form.valid) {
             this.showValidierungFehlgeschlagenErrorMessage();
             return;

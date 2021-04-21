@@ -57,6 +57,14 @@ export abstract class AbstractFerienbetreuungFormular {
 
     protected abstract setupForm(angabe: TSFerienbetreuungAbstractAngaben): void;
 
+    protected abstract setBasicValidation(): void;
+
+    protected removeAllValidators(): void {
+        Object.keys(this.form.controls).forEach(key => {
+            this.form.controls[key].clearValidators();
+        });
+    }
+
     protected enableAndTriggerFormValidation(): void {
         this.enableFormValidation();
         this.triggerFormValidation();

@@ -126,31 +126,25 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
                 ],
             }),
             anzahlFerienwochenHerbstferien: [
-                angebot?.anzahlFerienwochenHerbstferien,
-                numberValidator(ValidationType.INTEGER)
+                angebot?.anzahlFerienwochenHerbstferien
             ],
             anzahlFerienwochenWinterferien: [
                 angebot?.anzahlFerienwochenWinterferien,
-                numberValidator(ValidationType.INTEGER)
             ],
             anzahlFerienwochenFruehlingsferien: [
                 angebot?.anzahlFerienwochenFruehlingsferien,
-                numberValidator(ValidationType.INTEGER)
             ],
             anzahlFerienwochenSommerferien: [
                 angebot?.anzahlFerienwochenSommerferien,
-                numberValidator(ValidationType.INTEGER)
             ],
             anzahlTage: [
                 angebot?.anzahlTage,
-                numberValidator(ValidationType.INTEGER)
             ],
             bemerkungenAnzahlFerienwochen: [
                 angebot?.bemerkungenAnzahlFerienwochen
             ],
             anzahlStundenProBetreuungstag: [
                 angebot?.anzahlStundenProBetreuungstag,
-                numberValidator(ValidationType.INTEGER)
             ],
             betreuungErfolgtTagsueber: [
                 angebot?.betreuungErfolgtTagsueber
@@ -184,7 +178,6 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             ],
             betreuungsschluessel: [
                 angebot?.betreuungsschluessel,
-                numberValidator(ValidationType.INTEGER)
             ],
             bemerkungenPersonal: [
                 angebot?.bemerkungenPersonal,
@@ -210,6 +203,34 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         }, {
             updateOn: 'blur',
         });
+        this.setBasicValidation();
+    }
+
+    protected setBasicValidation(): void {
+        this.removeAllValidators();
+
+        this.form.get('anzahlFerienwochenHerbstferien').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('anzahlFerienwochenWinterferien').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('anzahlFerienwochenFruehlingsferien').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('anzahlFerienwochenSommerferien').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('anzahlTage').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('anzahlStundenProBetreuungstag').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('betreuungsschluessel').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+
         this.enableAdressValidation();
     }
 
@@ -241,7 +262,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
     }
 
     public save(): void {
-        this.enableAdressValidation();
+        this.setBasicValidation();
 
         if (!this.form.valid) {
             this.showValidierungFehlgeschlagenErrorMessage();

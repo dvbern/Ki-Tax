@@ -152,48 +152,75 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
             id: [nutzung.id],
             anzahlBetreuungstageKinderBern: [
                 nutzung.anzahlBetreuungstageKinderBern,
-                numberValidator(ValidationType.HALF),
             ],
             betreuungstageKinderDieserGemeinde: [
                 nutzung.betreuungstageKinderDieserGemeinde,
-                numberValidator(ValidationType.HALF),
             ],
             betreuungstageKinderDieserGemeindeSonderschueler: [
                 nutzung.betreuungstageKinderDieserGemeindeSonderschueler,
-                numberValidator(ValidationType.HALF),
             ],
             davonBetreuungstageKinderAndererGemeinden: [
                 nutzung.davonBetreuungstageKinderAndererGemeinden,
-                numberValidator(ValidationType.HALF),
             ],
             davonBetreuungstageKinderAndererGemeindenSonderschueler: [
                 nutzung.davonBetreuungstageKinderAndererGemeindenSonderschueler,
-                numberValidator(ValidationType.HALF),
             ],
             anzahlBetreuteKinder: [
                 nutzung.anzahlBetreuteKinder,
-                numberValidator(ValidationType.INTEGER),
             ],
             anzahlBetreuteKinderSonderschueler: [
                 nutzung.anzahlBetreuteKinderSonderschueler,
-                numberValidator(ValidationType.INTEGER),
             ],
             anzahlBetreuteKinder1Zyklus: [
                 nutzung.anzahlBetreuteKinder1Zyklus,
-                numberValidator(ValidationType.INTEGER),
             ],
             anzahlBetreuteKinder2Zyklus: [
                 nutzung.anzahlBetreuteKinder2Zyklus,
-                numberValidator(ValidationType.INTEGER),
             ],
             anzahlBetreuteKinder3Zyklus: [
                 nutzung.anzahlBetreuteKinder3Zyklus,
-                numberValidator(ValidationType.INTEGER),
             ],
         });
+        this.setBasicValidation();
+    }
+
+    protected setBasicValidation(): void {
+        this.removeAllValidators();
+
+        this.form.get('anzahlBetreuungstageKinderBern').setValidators(
+            numberValidator(ValidationType.HALF)
+        );
+        this.form.get('betreuungstageKinderDieserGemeinde').setValidators(
+            numberValidator(ValidationType.HALF)
+        );
+        this.form.get('betreuungstageKinderDieserGemeindeSonderschueler').setValidators(
+            numberValidator(ValidationType.HALF)
+        );
+        this.form.get('davonBetreuungstageKinderAndererGemeinden').setValidators(
+            numberValidator(ValidationType.HALF)
+        );
+        this.form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').setValidators(
+            numberValidator(ValidationType.HALF)
+        );
+        this.form.get('anzahlBetreuteKinder').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('anzahlBetreuteKinderSonderschueler').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('anzahlBetreuteKinder1Zyklus').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('anzahlBetreuteKinder2Zyklus').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('anzahlBetreuteKinder3Zyklus').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
     }
 
     public save(): void {
+        this.setBasicValidation();
         if (!this.form.valid) {
             this.showValidierungFehlgeschlagenErrorMessage();
             return;

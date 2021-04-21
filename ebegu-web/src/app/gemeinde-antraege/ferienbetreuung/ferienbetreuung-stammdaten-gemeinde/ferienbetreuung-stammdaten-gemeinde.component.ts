@@ -136,12 +136,10 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                 stammdaten?.stammdatenKontaktpersonFunktion,
             ],
             stammdatenKontaktpersonTelefon: [
-                stammdaten?.stammdatenKontaktpersonTelefon,
-                Validators.pattern(CONSTANTS.PATTERN_PHONE)
+                stammdaten?.stammdatenKontaktpersonTelefon
             ],
             stammdatenKontaktpersonEmail: [
-                stammdaten?.stammdatenKontaktpersonEmail,
-                Validators.pattern(CONSTANTS.PATTERN_EMAIL)
+                stammdaten?.stammdatenKontaktpersonEmail
             ],
             auszahlungsdaten: this.fb.group({
                 kontoinhaber: [
@@ -170,6 +168,19 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                 ],
             }),
         });
+        this.setBasicValidation();
+    }
+
+    protected setBasicValidation(): void {
+        this.removeAllValidators();
+
+        this.form.get('stammdatenKontaktpersonTelefon').setValidators(
+            Validators.pattern(CONSTANTS.PATTERN_PHONE)
+        );
+        this.form.get('stammdatenKontaktpersonEmail').setValidators(
+            Validators.pattern(CONSTANTS.PATTERN_EMAIL)
+        );
+
         this.enableStammdatenAuszahlungValidation();
     }
 
@@ -265,7 +276,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
     }
 
     public save(): void {
-        this.enableStammdatenAuszahlungValidation();
+        this.setBasicValidation();
 
         if (!this.form.valid) {
             this.showValidierungFehlgeschlagenErrorMessage();
