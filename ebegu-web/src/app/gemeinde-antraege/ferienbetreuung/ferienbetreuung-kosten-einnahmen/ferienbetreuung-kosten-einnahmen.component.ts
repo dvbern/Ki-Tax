@@ -83,6 +83,9 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
             id: [
                 kostenEinnahmen.id,
             ],
+            version: [
+                kostenEinnahmen?.version
+            ],
             personalkosten: [
                 kostenEinnahmen.personalkosten,
                 numberValidator(ValidationType.INTEGER),

@@ -208,7 +208,7 @@ public class FerienbetreuungResource {
 					"saveFerienbetreuungStammdaten",
 					jaxStammdaten.getId()));
 
-		converter.ferienbetreuungAngabenStammdatenToEntity(jaxStammdaten, stammdaten);
+		stammdaten = converter.ferienbetreuungAngabenStammdatenToEntity(jaxStammdaten, stammdaten);
 
 		FerienbetreuungAngabenStammdaten persisted =
 			ferienbetreuungService.saveFerienbetreuungAngabenStammdaten(stammdaten);
@@ -249,7 +249,7 @@ public class FerienbetreuungResource {
 					"ferienbetreuungStammdatenAbschliessen",
 					jaxStammdaten.getId()));
 
-		converter.ferienbetreuungAngabenStammdatenToEntity(jaxStammdaten, stammdaten);
+		stammdaten = converter.ferienbetreuungAngabenStammdatenToEntity(jaxStammdaten, stammdaten);
 
 		FerienbetreuungAngabenStammdaten persisted =
 			ferienbetreuungService.ferienbetreuungAngabenStammdatenAbschliessen(stammdaten);
@@ -294,7 +294,7 @@ public class FerienbetreuungResource {
 					"falscheAngabenFerienbetreuungStammdaten",
 					jaxStammdaten.getId()));
 
-		converter.ferienbetreuungAngabenStammdatenToEntity(jaxStammdaten, stammdaten);
+		stammdaten = converter.ferienbetreuungAngabenStammdatenToEntity(jaxStammdaten, stammdaten);
 
 		FerienbetreuungAngabenStammdaten persisted =
 			ferienbetreuungService.ferienbetreuungAngabenStammdatenFalscheAngaben(stammdaten);
@@ -332,7 +332,7 @@ public class FerienbetreuungResource {
 			ferienbetreuungService.findFerienbetreuungAngabenAngebot(jaxAngebot.getId())
 				.orElseThrow(() -> new EbeguEntityNotFoundException("saveFerienbetreuungAngebot", jaxAngebot.getId()));
 
-		converter.ferienbetreuungAngabenAngebotToEntity(jaxAngebot, angebot);
+		angebot = converter.ferienbetreuungAngabenAngebotToEntity(jaxAngebot, angebot);
 
 		FerienbetreuungAngabenAngebot persisted = ferienbetreuungService.saveFerienbetreuungAngabenAngebot(angebot);
 		return converter.ferienbetreuungAngabenAngebotToJax(persisted);
@@ -373,7 +373,7 @@ public class FerienbetreuungResource {
 					"ferienbetreuungAngebotAbschliessen",
 					jaxAngebot.getId()));
 
-		converter.ferienbetreuungAngabenAngebotToEntity(jaxAngebot, angebot);
+		angebot = converter.ferienbetreuungAngabenAngebotToEntity(jaxAngebot, angebot);
 
 		try {
 			FerienbetreuungAngabenAngebot persisted =
@@ -428,7 +428,7 @@ public class FerienbetreuungResource {
 					"ferienbetreuungAngebotFalscheAngaben",
 					jaxAngebot.getId()));
 
-		converter.ferienbetreuungAngabenAngebotToEntity(jaxAngebot, angebot);
+		angebot = converter.ferienbetreuungAngabenAngebotToEntity(jaxAngebot, angebot);
 
 		FerienbetreuungAngabenAngebot persisted = ferienbetreuungService.ferienbetreuungAngebotFalscheAngaben(angebot);
 		return converter.ferienbetreuungAngabenAngebotToJax(persisted);
@@ -466,7 +466,7 @@ public class FerienbetreuungResource {
 			ferienbetreuungService.findFerienbetreuungAngabenNutzung(jaxNutzung.getId())
 				.orElseThrow(() -> new EbeguEntityNotFoundException("saveFerienbetreuungNutzung", jaxNutzung.getId()));
 
-		converter.ferienbetreuungAngabenNutzungToEntity(jaxNutzung, nutzung);
+		nutzung = converter.ferienbetreuungAngabenNutzungToEntity(jaxNutzung, nutzung);
 
 		FerienbetreuungAngabenNutzung persisted = ferienbetreuungService.saveFerienbetreuungAngabenNutzung(nutzung);
 		return converter.ferienbetreuungAngabenNutzungToJax(persisted);
@@ -506,7 +506,7 @@ public class FerienbetreuungResource {
 					"ferienbetreuungNutzungAbschliessen",
 					jaxNutzung.getId()));
 
-		converter.ferienbetreuungAngabenNutzungToEntity(jaxNutzung, nutzung);
+		nutzung = converter.ferienbetreuungAngabenNutzungToEntity(jaxNutzung, nutzung);
 
 		FerienbetreuungAngabenNutzung persisted =
 			ferienbetreuungService.ferienbetreuungAngabenNutzungAbschliessen(nutzung);
@@ -551,7 +551,7 @@ public class FerienbetreuungResource {
 					"ferienbetreuungNutzungFalscheAngaben",
 					jaxNutzung.getId()));
 
-		converter.ferienbetreuungAngabenNutzungToEntity(jaxNutzung, nutzung);
+		nutzung = converter.ferienbetreuungAngabenNutzungToEntity(jaxNutzung, nutzung);
 
 		FerienbetreuungAngabenNutzung persisted =
 			ferienbetreuungService.ferienbetreuungAngabenNutzungFalscheAngaben(nutzung);
@@ -592,7 +592,7 @@ public class FerienbetreuungResource {
 					"saveFerienbetreuungKostenEinnahmen",
 					jaxKostenEinnahmen.getId()));
 
-		converter.ferienbetreuungAngabenKostenEinnahmenToEntity(jaxKostenEinnahmen, kostenEinnahmen);
+		kostenEinnahmen = converter.ferienbetreuungAngabenKostenEinnahmenToEntity(jaxKostenEinnahmen, kostenEinnahmen);
 
 		FerienbetreuungAngabenKostenEinnahmen persisted =
 			ferienbetreuungService.saveFerienbetreuungAngabenKostenEinnahmen(kostenEinnahmen);
@@ -634,7 +634,7 @@ public class FerienbetreuungResource {
 					jaxKostenEinnamen
 						.getId()));
 
-		converter.ferienbetreuungAngabenKostenEinnahmenToEntity(jaxKostenEinnamen, kostenEinnahmen);
+		kostenEinnahmen = converter.ferienbetreuungAngabenKostenEinnahmenToEntity(jaxKostenEinnamen, kostenEinnahmen);
 
 		FerienbetreuungAngabenKostenEinnahmen persisted =
 			ferienbetreuungService.ferienbetreuungAngabenKostenEinnahmenAbschliessen(kostenEinnahmen);
@@ -680,7 +680,7 @@ public class FerienbetreuungResource {
 					jaxKostenEinnahmen
 						.getId()));
 
-		converter.ferienbetreuungAngabenKostenEinnahmenToEntity(jaxKostenEinnahmen, kostenEinnahmen);
+		kostenEinnahmen = converter.ferienbetreuungAngabenKostenEinnahmenToEntity(jaxKostenEinnahmen, kostenEinnahmen);
 
 		FerienbetreuungAngabenKostenEinnahmen persisted =
 			ferienbetreuungService.ferienbetreuungAngabenKostenEinnahmenFalscheAngaben(kostenEinnahmen);

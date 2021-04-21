@@ -92,6 +92,9 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
             return;
         }
         this.form = this.fb.group({
+            version: [
+                stammdaten?.version
+            ],
             traegerschaft: [
                 stammdaten?.traegerschaft,
             ],

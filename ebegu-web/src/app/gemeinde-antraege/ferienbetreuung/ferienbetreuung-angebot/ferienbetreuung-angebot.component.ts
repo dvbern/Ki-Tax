@@ -97,6 +97,9 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             id: [
                 angebot?.id,
             ],
+            version: [
+                angebot?.version
+            ],
             angebot: [
                 angebot?.angebot,
             ],

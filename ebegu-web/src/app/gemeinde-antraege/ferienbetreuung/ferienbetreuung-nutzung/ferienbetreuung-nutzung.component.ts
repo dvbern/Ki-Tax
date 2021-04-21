@@ -145,6 +145,9 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
         }
         this.form = this.fb.group({
             id: [nutzung.id],
+            version: [
+                nutzung.version
+            ],
             anzahlBetreuungstageKinderBern: [
                 nutzung.anzahlBetreuungstageKinderBern,
                 numberValidator(ValidationType.HALF),
