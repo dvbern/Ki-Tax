@@ -254,7 +254,7 @@ export class TagesschulenAngabenComponent {
             // Bemerkungen
             bemerkungen: latsAngabenInstiution?.bemerkungen,
             // hidden fields
-            version: latsAngabenInstiution?.version
+            version: latsAngabenInstiution?.version,
         });
 
         return form;
@@ -308,6 +308,9 @@ export class TagesschulenAngabenComponent {
         }, error => {
             if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
                 this.errorService.addMesageAsError(this.translate.instant('ERROR_NUMBER'));
+            }
+            if (error.status === HTTP_ERROR_CODES.CONFLICT) {
+                this.errorService.addMesageAsError(this.translate.instant('ERROR_DATA_CHANGED'));
             }
         });
     }
