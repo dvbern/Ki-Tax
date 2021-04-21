@@ -24,6 +24,7 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSDossier} from '../../../models/TSDossier';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSFall} from '../../../models/TSFall';
 import {TSGesuch} from '../../../models/TSGesuch';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
@@ -45,6 +46,7 @@ describe('freigabeView', () => {
     let authServiceRS: AuthServiceRS;
     let $timeout: ITimeoutService;
     let dossier: TSDossier;
+    let fall: TSFall;
     let $translate: TranslateService;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
@@ -70,9 +72,12 @@ describe('freigabeView', () => {
         spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
         spyOn(wizardStepManager, 'updateCurrentWizardStepStatus').and.returnValue($q.resolve());
 
-        dossier = TestDataUtil.createDossier('', undefined);
+        fall = TestDataUtil.createFall();
+
+        dossier = TestDataUtil.createDossier('', fall);
         dossier.gemeinde = TestDataUtil.createGemeindeParis();
         spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
+        spyOn(gesuchModelManager, 'getFall').and.returnValue(fall);
 
         controller = new FreigabeViewController(gesuchModelManager, $injector.get('BerechnungsManager'),
             wizardStepManager, dialog, downloadRS, $scope, applicationPropertyRS, authServiceRS, $timeout, $translate);
