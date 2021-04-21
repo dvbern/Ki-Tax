@@ -349,4 +349,10 @@ export class FallToolbarComponent implements OnChanges {
             }
         });
     }
+
+    public isSozialdienstGesuch(): boolean {
+        return this.selectedDossier
+            && this.selectedDossier.fall
+            && this.selectedDossier.fall.isSozialdienstFall();
+    }
 }

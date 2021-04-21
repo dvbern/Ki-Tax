@@ -69,8 +69,9 @@
                 <mat-header-cell mat-sort-header="antragTyp" *matHeaderCellDef><span translate>TYP</span>
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element">
-                    <i class="fa fa-desktop margin-ri" *ngIf="element.hasBesitzer?.call()"></i>
-                    <i class="fa fa-file-text-o margin-ri" *ngIf="!element.hasBesitzer?.call()"></i>
+                    <i class="fa fa-desktop margin-ri" *ngIf="element.hasBesitzer?.call() && !element.isSozialdienst"></i>
+                    <i class="fa fa-file-text-o margin-ri" *ngIf="!element.hasBesitzer?.call() && !element.isSozialdienst"></i>
+                    <i class="fa fa-handshake-o margin-ri" *ngIf="element.isSozialdienst"></i>
                     <span class="margin-left-5"
                           [title]="element.antragTyp | translate">
                           {{getAntragTypBezeichnung(element)}}</span></mat-cell>

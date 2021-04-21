@@ -2586,6 +2586,7 @@ export class EbeguRestUtil {
         restPendenz.dokumenteHochgeladen = pendenz.dokumenteHochgeladen;
         restPendenz.fallId = pendenz.fallId;
         restPendenz.gemeindeId = pendenz.gemeindeId;
+        restPendenz.isSozialdienst = pendenz.isSozialdienst;
         return restPendenz;
     }
 
@@ -2619,6 +2620,7 @@ export class EbeguRestUtil {
         antragTS.gemeinde = antragFromServer.gemeinde;
         antragTS.fallId = antragFromServer.fallId;
         antragTS.gemeindeId = antragFromServer.gemeindeId;
+        antragTS.isSozialdienst = antragFromServer.isSozialdienst;
         return antragTS;
     }
 

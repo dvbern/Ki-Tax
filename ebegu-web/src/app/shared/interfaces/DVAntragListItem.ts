@@ -33,6 +33,7 @@ export interface DVAntragListItem {
     institutionen?: string[];
     verantwortlicheTS?: string;
     verantwortlicheBG?: string;
+    isSozialdienst?: boolean;
 
     hasBesitzer?(): boolean;
 }
