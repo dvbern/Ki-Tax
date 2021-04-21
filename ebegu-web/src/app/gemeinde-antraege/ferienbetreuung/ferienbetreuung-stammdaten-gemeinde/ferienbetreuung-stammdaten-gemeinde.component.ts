@@ -30,7 +30,7 @@ import {TSFerienbetreuungAngabenStammdaten} from '../../../../models/gemeindeant
 import {TSAdresse} from '../../../../models/TSAdresse';
 import {TSBfsGemeinde} from '../../../../models/TSBfsGemeinde';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
-import {CONSTANTS} from '../../../core/constants/CONSTANTS';
+import {CONSTANTS, HTTP_ERROR_CODES} from '../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
@@ -275,10 +275,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                 this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
                 this.errorService.clearAll();
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
-            }, err => {
-                LOG.error(err);
-                this.errorService.addMesageAsError(this.translate.instant('FERIENBETREUUNG_PERSIST_ERROR'));
-            });
+            }, err => this.handleSaveError(err));
     }
 
     private extractFormValues(): TSFerienbetreuungAngabenStammdaten {

@@ -24,6 +24,7 @@ import {combineLatest} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenNutzung} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
+import {HTTP_ERROR_CODES} from '../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
@@ -55,7 +56,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
         protected readonly uiRouterGlobals: UIRouterGlobals,
         private readonly fb: FormBuilder,
         private readonly authService: AuthServiceRS,
-        private readonly unsavedChangesService: UnsavedChangesService
+        private readonly unsavedChangesService: UnsavedChangesService,
     ) {
         super(errorService, translate, dialog, cd, wizardRS, uiRouterGlobals);
     }
@@ -109,7 +110,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
                 parseFloat(this.form.get('davonBetreuungstageKinderAndererGemeinden').value);
             if (diff !== 0) {
                 return {
-                    betreuungstageError: control.value
+                    betreuungstageError: control.value,
                 };
             }
             return null;
@@ -120,7 +121,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
                 parseFloat(this.form.get('betreuungstageKinderDieserGemeindeSonderschueler').value);
             if (diff < 0) {
                 return {
-                    sonderschuelerError: control.value
+                    sonderschuelerError: control.value,
                 };
             }
             return null;
@@ -132,7 +133,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
                 parseFloat(this.form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').value);
             if (diff < 0) {
                 return {
-                    sonderschuelerError: control.value
+                    sonderschuelerError: control.value,
                 };
             }
             return null;
@@ -146,7 +147,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
         this.form = this.fb.group({
             id: [nutzung.id],
             version: [
-                nutzung.version
+                nutzung.version,
             ],
             anzahlBetreuungstageKinderBern: [
                 nutzung.anzahlBetreuungstageKinderBern,
@@ -201,10 +202,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
                 this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
                 this.errorService.clearAll();
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
-            }, err => {
-                LOG.error(err);
-                this.errorService.addMesageAsError(this.translate.instant('FERIENBETREUUNG_PERSIST_ERROR'));
-            });
+            }, err => this.handleSaveError(err));
     }
 
     public onFalscheAngaben(): void {

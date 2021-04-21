@@ -251,10 +251,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
                 this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
                 this.errorService.clearAll();
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
-            }, err => {
-                LOG.error(err);
-                this.errorService.addMesageAsError(this.translate.instant('FERIENBETREUUNG_PERSIST_ERROR'));
-            });
+            }, err => this.handleSaveError(err));
     }
 
     private formToObject(): TSFerienbetreuungAngabenAngebot {
