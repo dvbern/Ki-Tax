@@ -669,7 +669,7 @@ public class DownloadResource {
 		String id = converter.toEntityId(jaxId);
 
 		final FileMetadata dokument = rueckforderungDokumentService.findDokument(id)
-			.orElseThrow(() -> new EbeguEntityNotFoundException("getDokumentAccessTokenDokument",
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getDokumentAccessTokenRueckforderungDokument",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, id));
 
 		return getFileDownloadResponse(uriInfo, ip, dokument);
@@ -691,7 +691,7 @@ public class DownloadResource {
 		String id = converter.toEntityId(jaxId);
 
 		final FileMetadata dokument = ferienbetreuungDokumentService.findDokument(id)
-			.orElseThrow(() -> new EbeguEntityNotFoundException("getDokumentAccessTokenDokument",
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getDokumentAccessTokenFerienbetreuungDokument",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, id));
 
 		return getFileDownloadResponse(uriInfo, ip, dokument);
@@ -793,7 +793,7 @@ public class DownloadResource {
 		String id = converter.toEntityId(jaxId);
 
 		final FileMetadata dokument = sozialdienstFallDokumentService.findDokument(id)
-			.orElseThrow(() -> new EbeguEntityNotFoundException("getDokumentAccessTokenDokument",
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getDokumentAccessTokenSozialdienstFallDokument",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, id));
 
 		return getFileDownloadResponse(uriInfo, ip, dokument);

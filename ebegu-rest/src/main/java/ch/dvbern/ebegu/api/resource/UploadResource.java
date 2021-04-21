@@ -191,6 +191,9 @@ public class UploadResource {
 	private static final String GESUCHID_HEADER = "x-gesuchID";
 
 	private static final String UPLOAD_WARNING = "Need to upload something";
+	private static final String FILENAME_WARNING = "filename must be given";
+
+	private static final String CONTENT_TYPE = "*/*; charset=UTF-8";
 
 	private static final Logger LOG = LoggerFactory.getLogger(UploadResource.class);
 
@@ -204,13 +207,13 @@ public class UploadResource {
 		MultipartFormDataInput input)
 		throws IOException, MimeTypeParseException {
 
-		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, "*/*; charset=UTF-8");
+		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, CONTENT_TYPE);
 
 		String[] encodedFilenames = getFilenamesFromHeader(request);
 
 		// check if filenames available
 		if (encodedFilenames == null || encodedFilenames.length == 0) {
-			final String problemString = "filename must be given";
+			final String problemString = FILENAME_WARNING;
 			LOG.error(problemString);
 			return Response.serverError().entity(problemString).build();
 		}
@@ -303,13 +306,13 @@ public class UploadResource {
 		MultipartFormDataInput input)
 		throws IOException, MimeTypeParseException {
 
-		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, "*/*; charset=UTF-8");
+		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, CONTENT_TYPE);
 
 		String[] encodedFilenames = getFilenamesFromHeader(request);
 
 		// check if filenames available
 		if (encodedFilenames == null || encodedFilenames.length == 0) {
-			final String problemString = "filename must be given";
+			final String problemString = FILENAME_WARNING;
 			LOG.error(problemString);
 			return Response.serverError().entity(problemString).build();
 		}
@@ -355,13 +358,13 @@ public class UploadResource {
 		MultipartFormDataInput input)
 		throws IOException, MimeTypeParseException {
 
-		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, "*/*; charset=UTF-8");
+		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, CONTENT_TYPE);
 
 		String[] encodedFilenames = getFilenamesFromHeader(request);
 
 		// check if filenames available
 		if (encodedFilenames == null || encodedFilenames.length == 0) {
-			final String problemString = "filename must be given";
+			final String problemString = FILENAME_WARNING;
 			LOG.error(problemString);
 			return Response.serverError().entity(problemString).build();
 		}
@@ -406,13 +409,13 @@ public class UploadResource {
 		MultipartFormDataInput input)
 		throws IOException, MimeTypeParseException {
 
-		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, "*/*; charset=UTF-8");
+		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, CONTENT_TYPE);
 
 		String[] encodedFilenames = getFilenamesFromHeader(request);
 
 		// check if filenames available
 		if (encodedFilenames == null || encodedFilenames.length == 0) {
-			final String problemString = "filename must be given";
+			final String problemString = FILENAME_WARNING;
 			LOG.error(problemString);
 			return Response.serverError().entity(problemString).build();
 		}
