@@ -217,9 +217,11 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
         this.form.get('anzahlBetreuteKinder3Zyklus').setValidators(
             numberValidator(ValidationType.INTEGER)
         );
+        this.triggerFormValidation();
     }
 
     public save(): void {
+        this.formAbschliessenTriggered = false;
         this.setBasicValidation();
         if (!this.form.valid) {
             this.showValidierungFehlgeschlagenErrorMessage();

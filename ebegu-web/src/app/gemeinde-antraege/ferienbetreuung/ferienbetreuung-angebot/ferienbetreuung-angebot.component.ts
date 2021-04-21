@@ -232,6 +232,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         );
 
         this.enableAdressValidation();
+        this.triggerFormValidation();
     }
 
     // overwrite
@@ -262,6 +263,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
     }
 
     public save(): void {
+        this.formAbschliessenTriggered = false;
         this.setBasicValidation();
 
         if (!this.form.valid) {

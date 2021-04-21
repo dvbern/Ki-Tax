@@ -182,6 +182,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         );
 
         this.enableStammdatenAuszahlungValidation();
+        this.triggerFormValidation();
     }
 
     // tslint:disable-next-line:cognitive-complexity
@@ -276,6 +277,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
     }
 
     public save(): void {
+        this.formAbschliessenTriggered = false;
         this.setBasicValidation();
 
         if (!this.form.valid) {

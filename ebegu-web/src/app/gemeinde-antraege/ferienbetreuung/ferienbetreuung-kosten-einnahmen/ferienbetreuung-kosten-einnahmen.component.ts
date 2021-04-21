@@ -140,6 +140,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         this.form.get('weitereEinnahmen').setValidators(
             numberValidator(ValidationType.INTEGER)
         );
+        this.triggerFormValidation();
     }
 
     protected enableFormValidation(): void {
@@ -154,6 +155,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
     }
 
     public save(): void {
+        this.formAbschliessenTriggered = false;
         this.setBasicValidation();
         if (!this.form.valid) {
             this.showValidierungFehlgeschlagenErrorMessage();

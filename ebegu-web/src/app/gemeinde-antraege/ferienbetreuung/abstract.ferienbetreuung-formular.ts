@@ -65,9 +65,8 @@ export abstract class AbstractFerienbetreuungFormular {
                 continue;
             }
             this.form.controls[key].clearValidators();
-            this.form.get(key).markAsTouched();
-            this.form.get(key).updateValueAndValidity();
         }
+        this.triggerFormValidation();
     }
 
     protected enableAndTriggerFormValidation(): void {
@@ -83,6 +82,7 @@ export abstract class AbstractFerienbetreuungFormular {
                 this.form.get(key).updateValueAndValidity();
             }
         }
+        this.form.markAsTouched();
         this.form.updateValueAndValidity();
     }
 
