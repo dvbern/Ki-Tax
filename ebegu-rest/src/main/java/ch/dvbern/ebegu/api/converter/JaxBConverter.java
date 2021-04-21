@@ -5698,6 +5698,8 @@ public class JaxBConverter extends AbstractConverter {
 	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleAngabenGemeindeContainerToJax(
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer gemeindeContainer
 	) {
+		// OptimisticLocking: Version richtig behandeln
+		flush();
 		JaxLastenausgleichTagesschuleAngabenGemeindeContainer jaxGemeindeContainer =
 			new JaxLastenausgleichTagesschuleAngabenGemeindeContainer();
 		convertAbstractFieldsToJAX(gemeindeContainer, jaxGemeindeContainer);
@@ -5771,6 +5773,10 @@ public class JaxBConverter extends AbstractConverter {
 	public JaxLastenausgleichTagesschuleAngabenGemeinde lastenausgleichTagesschuleAngabenGemeindeToJax(
 		@Nonnull LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde
 	) {
+
+		// OptimisticLocking: Version richtig behandeln
+		flush();
+
 		JaxLastenausgleichTagesschuleAngabenGemeinde jaxAngabenGemeinde =
 			new JaxLastenausgleichTagesschuleAngabenGemeinde();
 		convertAbstractFieldsToJAX(angabenGemeinde, jaxAngabenGemeinde);
@@ -5853,7 +5859,7 @@ public class JaxBConverter extends AbstractConverter {
 		// Bemerkungen
 		angabenGemeinde.setBemerkungen(jaxAngabenGemeinde.getBemerkungen());
 
-		return angabenGemeinde;
+		return checkVersionSaveAndFlush(angabenGemeinde, jaxAngabenGemeinde.getVersion());
 	}
 
 	@Nonnull
@@ -5945,6 +5951,9 @@ public class JaxBConverter extends AbstractConverter {
 	private JaxLastenausgleichTagesschuleAngabenInstitution lastenausgleichTagesschuleAngabenInstitutionToJax(
 		@Nonnull final LastenausgleichTagesschuleAngabenInstitution angabenInstitution
 	) {
+		// OptimisticLocking: Version richtig behandeln
+		flush();
+
 		JaxLastenausgleichTagesschuleAngabenInstitution jaxAngabenInstitution =
 			new JaxLastenausgleichTagesschuleAngabenInstitution();
 		convertAbstractFieldsToJAX(angabenInstitution, jaxAngabenInstitution);
@@ -6004,6 +6013,6 @@ public class JaxBConverter extends AbstractConverter {
 		// Bemerkungen
 		angabenInstitution.setBemerkungen(jaxAngabenInstitution.getBemerkungen());
 
-		return angabenInstitution;
+		return checkVersionSaveAndFlush(angabenInstitution, jaxAngabenInstitution.getVersion());
 	}
 }

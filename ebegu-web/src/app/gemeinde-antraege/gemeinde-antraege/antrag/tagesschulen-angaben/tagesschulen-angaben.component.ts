@@ -253,6 +253,8 @@ export class TagesschulenAngabenComponent {
             ernaehrungsGrundsaetzeEingehalten: latsAngabenInstiution?.ernaehrungsGrundsaetzeEingehalten,
             // Bemerkungen
             bemerkungen: latsAngabenInstiution?.bemerkungen,
+            // hidden fields
+            version: latsAngabenInstiution?.version
         });
 
         return form;

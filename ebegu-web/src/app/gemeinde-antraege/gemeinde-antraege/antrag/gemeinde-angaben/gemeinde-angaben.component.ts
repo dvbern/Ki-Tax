@@ -136,7 +136,8 @@ export class GemeindeAngabenComponent implements OnInit {
 
     private setupForm(initialGemeindeAngaben: TSLastenausgleichTagesschuleAngabenGemeinde): void {
         this.angabenForm = this.fb.group({
-            status: initialGemeindeAngaben.status,
+            status: initialGemeindeAngaben?.status,
+            version: initialGemeindeAngaben?.version,
             // A
             alleFaelleInKibon: [this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst],
             angebotVerfuegbarFuerAlleSchulstufen: [
