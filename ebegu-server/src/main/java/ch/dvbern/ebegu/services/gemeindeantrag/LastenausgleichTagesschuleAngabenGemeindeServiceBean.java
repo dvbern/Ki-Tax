@@ -64,6 +64,7 @@ import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
@@ -95,6 +96,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 	@Inject
 	private LastenausgleichTagesschuleAngabenGemeindeStatusHistoryService historyService;
+
+	@Inject
+	private InstitutionService institutionService;
 
 	@Override
 	@Nonnull
@@ -278,7 +282,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		@Nullable String status,
 		@Nullable String timestampMutiert) {
 		// institution users have much less permissions, so we handle this in on its own
-		if (principal.isCallerInAnyOfRole(UserRole.ADMIN_INSTITUTION, UserRole.SACHBEARBEITER_INSTITUTION)) {
+		if (principal.isCallerInAnyOfRole(
+			UserRole.ADMIN_INSTITUTION,
+			UserRole.SACHBEARBEITER_INSTITUTION,
+			UserRole.SACHBEARBEITER_TRAEGERSCHAFT,
+			UserRole.ADMIN_TRAEGERSCHAFT)) {
 			return getLastenausgleicheTagesschulenForInstitution(periode, status);
 		}
 		Set<Gemeinde> gemeinden = principal.getBenutzer().extractGemeindenForUser();
@@ -396,8 +404,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			JoinType.LEFT);
 
 		Predicate institutionIn = join.get(LastenausgleichTagesschuleAngabenInstitutionContainer_.institution)
-			.in(Objects.requireNonNull(principal.getBenutzer()
-				.getInstitution()));
+			.in(Objects.requireNonNull(institutionService.getInstitutionenReadableForCurrentBenutzer(false)));
 
 		Predicate notNeu = cb.not(
 			cb.equal(
