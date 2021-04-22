@@ -57,6 +57,18 @@ export abstract class AbstractFerienbetreuungFormular {
 
     protected abstract setupForm(angabe: TSFerienbetreuungAbstractAngaben): void;
 
+    protected abstract setBasicValidation(): void;
+
+    protected removeAllValidators(): void {
+        for (const key in this.form.controls) {
+            if (this.form.get(key) === null) {
+                continue;
+            }
+            this.form.controls[key].clearValidators();
+        }
+        this.triggerFormValidation();
+    }
+
     protected enableAndTriggerFormValidation(): void {
         this.enableFormValidation();
         this.triggerFormValidation();
@@ -70,10 +82,12 @@ export abstract class AbstractFerienbetreuungFormular {
                 this.form.get(key).updateValueAndValidity();
             }
         }
+        this.form.markAsTouched();
         this.form.updateValueAndValidity();
     }
 
     protected showValidierungFehlgeschlagenErrorMessage(): void {
+        this.errorService.clearAll();
         this.errorService.addMesageAsError(
             this.translate.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
         );

@@ -4856,8 +4856,10 @@ export class EbeguRestUtil {
         restStammdaten.stammdatenKontaktpersonVorname = stammdatenTS.stammdatenKontaktpersonVorname;
         restStammdaten.stammdatenKontaktpersonNachname = stammdatenTS.stammdatenKontaktpersonNachname;
         restStammdaten.stammdatenKontaktpersonFunktion = stammdatenTS.stammdatenKontaktpersonFunktion;
-        restStammdaten.stammdatenKontaktpersonTelefon = stammdatenTS.stammdatenKontaktpersonTelefon;
-        restStammdaten.stammdatenKontaktpersonEmail = stammdatenTS.stammdatenKontaktpersonEmail;
+        restStammdaten.stammdatenKontaktpersonTelefon = stammdatenTS.stammdatenKontaktpersonTelefon
+            ? stammdatenTS.stammdatenKontaktpersonTelefon : null;
+        restStammdaten.stammdatenKontaktpersonEmail = stammdatenTS.stammdatenKontaktpersonEmail
+            ? stammdatenTS.stammdatenKontaktpersonEmail : null;
         restStammdaten.iban = (!!stammdatenTS.iban) ? stammdatenTS.iban : null;
         restStammdaten.kontoinhaber = stammdatenTS.kontoinhaber;
         restStammdaten.adresseKontoinhaber = this.adresseToRestObject({}, stammdatenTS.adresseKontoinhaber);

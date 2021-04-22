@@ -15,12 +15,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
-import {combineLatest} from 'rxjs';
+import {combineLatest, Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenKostenEinnahmen} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
@@ -40,11 +40,12 @@ const LOG = LogFactory.createLog('FerienbetreuungKostenEinnahmenComponent');
     styleUrls: ['./ferienbetreuung-kosten-einnahmen.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetreuungFormular implements OnInit {
+export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetreuungFormular implements OnInit, OnDestroy {
 
     public form: FormGroup;
     public container: TSFerienbetreuungAngabenContainer;
     private kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen;
+    private subscription: Subscription;
 
     public constructor(
         protected readonly cd: ChangeDetectorRef,
@@ -62,7 +63,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
     }
 
     public ngOnInit(): void {
-        combineLatest([
+        this.subscription = combineLatest([
             this.ferienbetreuungService.getFerienbetreuungContainer(),
             this.authService.principal$,
         ]).subscribe(([container, principal]) => {
@@ -75,6 +76,10 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         });
     }
 
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
+    }
+
     protected setupForm(kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen): void {
         if (!kostenEinnahmen) {
             return;
@@ -85,36 +90,57 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
             ],
             personalkosten: [
                 kostenEinnahmen.personalkosten,
-                numberValidator(ValidationType.INTEGER),
             ],
             personalkostenLeitungAdmin: [
                 kostenEinnahmen.personalkostenLeitungAdmin,
-                numberValidator(ValidationType.INTEGER),
             ],
             sachkosten: [
                 kostenEinnahmen.sachkosten,
-                numberValidator(ValidationType.INTEGER),
             ],
             verpflegungskosten: [
                 kostenEinnahmen.verpflegungskosten,
-                numberValidator(ValidationType.INTEGER),
             ],
             weitereKosten: [
                 kostenEinnahmen.weitereKosten,
-                numberValidator(ValidationType.INTEGER),
             ],
             bemerkungenKosten: [
                 kostenEinnahmen.bemerkungenKosten,
             ],
             elterngebuehren: [
                 kostenEinnahmen.elterngebuehren,
-                numberValidator(ValidationType.INTEGER),
             ],
             weitereEinnahmen: [
                 kostenEinnahmen.weitereEinnahmen,
-                numberValidator(ValidationType.INTEGER),
             ],
         });
+        this.setBasicValidation();
+    }
+
+    protected setBasicValidation(): void {
+        this.removeAllValidators();
+
+        this.form.get('personalkosten').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('personalkostenLeitungAdmin').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('sachkosten').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('verpflegungskosten').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('weitereKosten').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('elterngebuehren').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('weitereEinnahmen').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.triggerFormValidation();
     }
 
     protected enableFormValidation(): void {
@@ -129,6 +155,8 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
     }
 
     public save(): void {
+        this.formAbschliessenTriggered = false;
+        this.setBasicValidation();
         if (!this.form.valid) {
             this.showValidierungFehlgeschlagenErrorMessage();
             return;
