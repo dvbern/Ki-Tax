@@ -282,14 +282,14 @@ public final class PensumMappingUtil {
 		} else {
 			target.setVollstaendig(false);
 			ctx.requireHumanConfirmation();
-			LOG.info("Betreuungevent mit RefNr: {} hat kein Hauptmahlzeiten Tarif", ctx.getDto().getRefnr());
+			LOG.info("PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat kein Hauptmahlzeiten Tarif", ctx.getDto().getRefnr());
 		}
 		if (zeitabschnittDTO.getTarifProNebenmahlzeiten() != null) {
 			target.setTarifProNebenmahlzeit(zeitabschnittDTO.getTarifProNebenmahlzeiten());
 		} else {
 			target.setVollstaendig(false);
 			ctx.requireHumanConfirmation();
-			LOG.info("Betreuungevent mit RefNr: {} hat kein Nebenmahlzeiten Tarif", ctx.getDto().getRefnr());
+			LOG.info("PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat kein Nebenmahlzeiten Tarif", ctx.getDto().getRefnr());
 		}
 	}
 

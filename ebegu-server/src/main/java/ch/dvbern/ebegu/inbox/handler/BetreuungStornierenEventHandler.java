@@ -76,7 +76,12 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 		@Nonnull EventType eventType,
 		@Nonnull String key,
 		@Nonnull String dto, @Nonnull String clientName) {
-		attemptProcessing(eventTime, key, clientName);
+		Processing processing = attemptProcessing(eventTime, key, clientName);
+
+		if (!processing.isProcessingSuccess()) {
+			String message = processing.getMessage();
+			LOG.warn("Stornierung Event für Betreuung mit RefNr: {} nicht verarbeitet: {}", key, message);
+		}
 	}
 
 	@Nonnull
