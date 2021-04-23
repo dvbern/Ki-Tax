@@ -43,12 +43,16 @@ import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.GueltigkeitsUtil;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandler.GO_LIVE;
 import static ch.dvbern.ebegu.util.EbeguUtil.coalesce;
 import static java.math.BigDecimal.ZERO;
 
 public final class PensumMappingUtil {
+
+	private static final Logger LOG = LoggerFactory.getLogger(PensumMappingUtil.class);
 
 	private PensumMappingUtil() {
 		// util
@@ -278,12 +282,14 @@ public final class PensumMappingUtil {
 		} else {
 			target.setVollstaendig(false);
 			ctx.requireHumanConfirmation();
+			LOG.info("Betreuungevent mit RefNr: {} hat kein Hauptmahlzeiten Tarif", ctx.getDto().getRefnr());
 		}
 		if (zeitabschnittDTO.getTarifProNebenmahlzeiten() != null) {
 			target.setTarifProNebenmahlzeit(zeitabschnittDTO.getTarifProNebenmahlzeiten());
 		} else {
 			target.setVollstaendig(false);
 			ctx.requireHumanConfirmation();
+			LOG.info("Betreuungevent mit RefNr: {} hat kein Nebenmahlzeiten Tarif", ctx.getDto().getRefnr());
 		}
 	}
 
