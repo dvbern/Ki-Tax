@@ -52,7 +52,11 @@ import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.SozialdienstStatus;
+import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.SozialdienstService;
@@ -100,6 +104,17 @@ public class SozialdienstResource {
 		Sozialdienst persistedSozialdienst = this.sozialdienstService.createSozialdienst(convertedSozialdienst);
 
 		final Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
+			.map(b -> {
+				if (b.getRole() != UserRole.GESUCHSTELLER) {
+					// an existing user cannot be used to create a new Sozial / Unterstuetzung Dienst
+					throw new EbeguRuntimeException(
+						KibonLogLevel.INFO,
+						"createSozialdienst",
+						ErrorCodeEnum.EXISTING_USER_MAIL,
+						adminMail);
+				}
+				return b;
+			})
 			.orElseGet(() -> benutzerService.createAdminSozialdienstByEmail(adminMail, persistedSozialdienst));
 
 		benutzerService.einladen(Einladung.forSozialdienst(benutzer, persistedSozialdienst));

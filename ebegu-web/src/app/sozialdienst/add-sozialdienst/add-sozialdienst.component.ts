@@ -17,11 +17,11 @@
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSSozialdienstStatus} from '../../../models/enums/TSSozialdienstStatus';
 import {TSSozialdienst} from '../../../models/sozialdienst/TSSozialdienst';
-import {TSExceptionReport} from '../../../models/TSExceptionReport';
 import {DvNgGesuchstellerDialogComponent} from '../../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
@@ -48,6 +48,7 @@ export class AddSozialdienstComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly benutzerRS: BenutzerRS,
         private readonly dialog: MatDialog,
+        private readonly translate: TranslateService,
     ) {
     }
 
@@ -67,23 +68,24 @@ export class AddSozialdienstComponent implements OnInit {
             .subscribe(neueSozialdienst => {
                 this.sozialdienst = neueSozialdienst;
                 this.navigateBack();
-            }, (exception: TSExceptionReport[]) => {
-            if (exception[0].errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH') {
+            }, exception  => {
+                // tslint:disable-next-line:prefer-switch
+            if (exception.error.errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH') {
                 this.errorService.clearAll();
                 const dialogConfig = new MatDialogConfig();
                 dialogConfig.data = {
                     emailAdresse: this.adminEmail,
                     administratorRolle: TSRole.ADMIN_SOZIALDIENST,
-                    gesuchstellerName: exception[0].argumentList[1],
+                    gesuchstellerName: exception.error.argumentList[1],
                 };
                 this.dialog.open(DvNgGesuchstellerDialogComponent, dialogConfig).afterClosed()
                     .subscribe(answer => {
                             if (answer !== true) {
                                 return;
                             }
-                            this.log.warn(`Der Gesuchsteller: ${exception[0].argumentList[1]} wird einen neuen`
+                            this.log.warn(`Der Gesuchsteller: ${exception.error.argumentList[1]} wird einen neuen`
                                 + ` Rollen bekommen und seine Gesuch wird gelöscht werden!`);
-                            this.benutzerRS.removeBenutzer(exception[0].argumentList[0]).then(
+                            this.benutzerRS.removeBenutzer(exception.error.argumentList[0]).then(
                                 () => {
                                     this.persistSozialdienst();
                                 },
@@ -91,13 +93,15 @@ export class AddSozialdienstComponent implements OnInit {
                         },
                         () => {
                         });
-            } else if (exception[0].errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_NO_GESUCH') {
-                this.benutzerRS.removeBenutzer(exception[0].argumentList[0]).then(
+            } else if (exception.error.errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_NO_GESUCH') {
+                this.benutzerRS.removeBenutzer(exception.error.argumentList[0]).then(
                     () => {
                         this.errorService.clearAll();
                         this.persistSozialdienst();
                     },
                 );
+            } else if (exception.error.errorCodeEnum === 'EXISTING_USER_MAIL') {
+                this.errorService.addMesageAsError(this.translate.instant('ERROR_USER_EXISTS'));
             }
         });
     }
