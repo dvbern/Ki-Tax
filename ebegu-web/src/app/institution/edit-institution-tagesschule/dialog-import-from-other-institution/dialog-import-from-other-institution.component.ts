@@ -36,15 +36,12 @@ export class DialogImportFromOtherInstitution implements OnInit {
     public selectedEinstellungTagesschule: TSEinstellungenTagesschule;
     public einstellungenTagesschule: TSEinstellungenTagesschule[];
 
-    private readonly currentTagesschule: TSInstitution;
-
     public constructor(
         private readonly dialogRef: MatDialogRef<DialogImportFromOtherInstitution>,
         private readonly institutionStammdatenRS: InstitutionStammdatenRS,
         @Inject(MAT_DIALOG_DATA) data: any,
     ) {
         this.institutionStammdatenList = data.institutionList;
-        this.currentTagesschule = data.currentTagesschule;
     }
 
     public ngOnInit(): void {
@@ -59,12 +56,9 @@ export class DialogImportFromOtherInstitution implements OnInit {
     private filterStammdatenList(institutionStammdaten: TSInstitutionStammdaten[]): Array<TSInstitutionStammdaten> {
         const filtered: TSInstitutionStammdaten[] = [];
         institutionStammdaten.forEach(stammdaten => {
-            // stammdatenTagesschule && einstellungenTagesschule müssen existieren. es darf nicht dieselbe Tagesschule
-            // wie die aktuell ausgewählte sein
             // tslint:disable-next-line:early-exit
             if (stammdaten.institutionStammdatenTagesschule &&
-                stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule &&
-                stammdaten.institution.id !== this.currentTagesschule.id) {
+                stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule) {
                 // nur dynamische module und nur wenn module exsitieren
                 stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule = this.filterEinstellungenTagesschule(
                     stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule

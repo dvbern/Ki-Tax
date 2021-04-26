@@ -1856,7 +1856,7 @@
     "ZURUECKWECHSELN_ZU_DYNAMISCH": "Zur dynamischen Erstellung zurückwechseln",
     "MODUL_CREATION_TYP": "Erstellungsart der Module (z.B. für Scolaris)",
     "SCOLARIS": "Module für Scolaris erstellen (fix)",
-    "IMPORT_FROM_OTHER_INSTITUTION": "Module von anderer Tagesschule importieren",
+    "IMPORT_FROM_OTHER_INSTITUTION": "Module von anderer Tagesschule oder Periode importieren",
     "KEINE_MODULE_ZUM_IMPORTIEREN": "Sie haben bei Ihren Tagesschulen keine Module, die Sie importieren können",
     "WARNING_APPEND_OTHER_MODULES": "Achtung: Importierte Module werden an die bestehenden angehängt",
     "IMPORT": "importieren",

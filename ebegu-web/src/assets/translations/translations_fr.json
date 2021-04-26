@@ -1856,7 +1856,7 @@
     "ZURUECKWECHSELN_ZU_DYNAMISCH": "Retourner à la création dynamique",
     "MODUL_CREATION_TYP": "Type de création du module (par ex. pour Scolaris)",
     "SCOLARIS": "Créer un module pour Scolaris (fixe)",
-    "IMPORT_FROM_OTHER_INSTITUTION": "Importer des modules d'autres écoles à journée continue",
+    "IMPORT_FROM_OTHER_INSTITUTION": "Importer des modules d'autres écoles à journée continue ou période",
     "KEINE_MODULE_ZUM_IMPORTIEREN": "Vous n'avez aucun modules que vous pouvez importer pour votre école à journée continue",
     "WARNING_APPEND_OTHER_MODULES": "Attention: les modules importés seront ajouté à ceux existant",
     "IMPORT": "importer",

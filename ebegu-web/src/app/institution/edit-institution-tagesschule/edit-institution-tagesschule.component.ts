@@ -17,7 +17,7 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
 import {Observable} from 'rxjs';
@@ -71,7 +71,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         private readonly translate: TranslateService,
         private readonly dialog: MatDialog,
         private readonly ref: ChangeDetectorRef,
-        private readonly authServiceRS: AuthServiceRS
+        private readonly authServiceRS: AuthServiceRS,
     ) {
     }
 
@@ -104,7 +104,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
     private sortByPeriod(): void {
         this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule =
             TagesschuleUtil.sortEinstellungenTagesschuleByPeriod(
-                this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
+                this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule,
             );
     }
 
@@ -125,7 +125,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     public addModulTagesschuleGroup(einstellungenTagesschule: TSEinstellungenTagesschule): void {
         if (einstellungenTagesschule.modulTagesschuleGroups.length > 0
-                || !this.canEditEinstellungen(einstellungenTagesschule)) {
+            || !this.canEditEinstellungen(einstellungenTagesschule)) {
             // Es ist nicht das erste Modul, wir muessen nicht mehr fragen, ob der Benutzer
             // evtl. Scolaris will ODER die Anmeldung ist eh schon offen und wir koennen keine
             // ScolarisModule mehr erstellen
@@ -137,7 +137,8 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
             title: 'TS_DIALOG_FIRSTMODUL_TITLE',
             text: 'TS_DIALOG_FIRSTMODUL_TEXT',
             actionOneButtonLabel: 'TS_DIALOG_FIRSTMODUL_ACTION1',
-            actionTwoButtonLabel: 'TS_DIALOG_FIRSTMODUL_ACTION2'};
+            actionTwoButtonLabel: 'TS_DIALOG_FIRSTMODUL_ACTION2',
+        };
         dialogConfig.role = 'dialog';
         this.dialog.open(DvNgThreeButtonDialogComponent, dialogConfig).afterClosed().toPromise().then(result => {
             // 1=Dynamisch, 2=Scolaris, undefined=Abbrechen
@@ -161,7 +162,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     public editModulTagesschuleGroup(
         einstellungenTagesschule: TSEinstellungenTagesschule,
-        group: TSModulTagesschuleGroup
+        group: TSModulTagesschuleGroup,
     ): void {
         if (this.canEditModule(einstellungenTagesschule, group)) {
             this.openModul(einstellungenTagesschule, group);
@@ -170,7 +171,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     private openModul(
         einstellungenTagesschule: TSEinstellungenTagesschule,
-        group: TSModulTagesschuleGroup
+        group: TSModulTagesschuleGroup,
     ): void {
         if (!this.editMode) {
             return;
@@ -188,7 +189,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     public removeModulTagesschuleGroup(
         einstellungenTagesschule: TSEinstellungenTagesschule,
-        group: TSModulTagesschuleGroup
+        group: TSModulTagesschuleGroup,
     ): void {
         const index = this.getIndexOfElementwithIdentifier(group, einstellungenTagesschule.modulTagesschuleGroups);
         if (index > -1) {
@@ -198,7 +199,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     public applyModulTagesschuleGroup(
         einstellungenTagesschule: TSEinstellungenTagesschule,
-        group: TSModulTagesschuleGroup
+        group: TSModulTagesschuleGroup,
     ): void {
         const index = this.getIndexOfElementwithIdentifier(group, einstellungenTagesschule.modulTagesschuleGroups);
         if (index > -1) {
@@ -211,8 +212,10 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         this.ref.markForCheck();
     }
 
-    public getIndexOfElementwithIdentifier(entityToSearch: TSModulTagesschuleGroup,
-                                           listToSearchIn: Array<TSModulTagesschuleGroup>): number {
+    public getIndexOfElementwithIdentifier(
+        entityToSearch: TSModulTagesschuleGroup,
+        listToSearchIn: Array<TSModulTagesschuleGroup>,
+    ): number {
         if (EbeguUtil.isNullOrUndefined(entityToSearch)) {
             return -1;
         }
@@ -251,7 +254,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
                 },
                 () => {
                     this.errorService.addMesageAsError('error');
-                }
+                },
             );
     }
 
@@ -274,7 +277,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
                 },
                 () => {
                     this.errorService.addMesageAsError('error');
-                }
+                },
             );
     }
 
@@ -293,7 +296,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         });
     }
 
-    private createModulGroupScolaris(modulname: TSModulTagesschuleName
+    private createModulGroupScolaris(modulname: TSModulTagesschuleName,
     ): TSModulTagesschuleGroup {
         const group = new TSModulTagesschuleGroup();
         group.modulTagesschuleName = modulname;
@@ -329,18 +332,20 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     public importFromOtherInstitution(einstellungenTagesschule: TSEinstellungenTagesschule): void {
         einstellungenTagesschule.modulTagesschuleTyp = TSModulTagesschuleTyp.DYNAMISCH;
-        this.institutionStammdatenRS.getAllTagesschulenForCurrentBenutzer().then((institutionStammdatenList: TSInstitutionStammdaten[]) => {
-            this.openDialogImportFromOtherInstitution$(institutionStammdatenList).subscribe((modules: TSModulTagesschuleGroup[]) => {
-                if (!modules) {
-                    return;
-                }
-                einstellungenTagesschule.modulTagesschuleGroups = einstellungenTagesschule.modulTagesschuleGroups
-                    .concat(modules);
-                this.ref.markForCheck();
-            }, () => {
-                this.errorService.addMesageAsError('error');
+        this.institutionStammdatenRS.getAllTagesschulenForCurrentBenutzer()
+            .then((institutionStammdatenList: TSInstitutionStammdaten[]) => {
+                this.openDialogImportFromOtherInstitution$(institutionStammdatenList.filter(is => is.id !== this.stammdaten.id)
+                    .concat(this.stammdaten)).subscribe((modules: TSModulTagesschuleGroup[]) => {
+                    if (!modules) {
+                        return;
+                    }
+                    einstellungenTagesschule.modulTagesschuleGroups = einstellungenTagesschule.modulTagesschuleGroups
+                        .concat(modules);
+                    this.ref.markForCheck();
+                }, () => {
+                    this.errorService.addMesageAsError('error');
+                });
             });
-        });
     }
 
     private openDialogImportFromOtherInstitution$(institutionList: TSInstitutionStammdaten[]): Observable<TSModulTagesschuleGroup[]> {
@@ -350,7 +355,6 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             institutionList,
-            currentTagesschule: this.stammdaten.institution
         };
         dialogConfig.panelClass = this.panelClass;
         // Wir übergeben die Group an den Dialog. Bei OK erhalten wir die (veränderte) Group zurück, sonst undefined
@@ -391,8 +395,10 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         return group.identifier;
     }
 
-    public canEditModule(einstellungenTagesschule: TSEinstellungenTagesschule,
-                         group: TSModulTagesschuleGroup): boolean {
+    public canEditModule(
+        einstellungenTagesschule: TSEinstellungenTagesschule,
+        group: TSModulTagesschuleGroup,
+    ): boolean {
         if (group.isNew()) {
             return true;
         }
@@ -412,8 +418,10 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         return false;
     }
 
-    public getEditDeleteButtonTooltip(einstellungenTagesschule: TSEinstellungenTagesschule,
-                                      group: TSModulTagesschuleGroup): string {
+    public getEditDeleteButtonTooltip(
+        einstellungenTagesschule: TSEinstellungenTagesschule,
+        group: TSModulTagesschuleGroup,
+    ): string {
         if (!this.canEditModule(einstellungenTagesschule, group)) {
             return this.translate.instant('MODUL_NICHT_BEARBEITBAR_TOOLTIP');
         }
@@ -423,7 +431,8 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
     public showGesuchsperiode(gueltigkeit: TSDateRange): boolean {
         let showGesuchsperiode = gueltigkeit.gueltigBis.isAfter(this.stammdaten.gueltigkeit.gueltigAb);
         if (EbeguUtil.isNotNullOrUndefined(this.stammdaten.gueltigkeit.gueltigBis)) {
-            showGesuchsperiode = showGesuchsperiode && gueltigkeit.gueltigAb.isBefore(this.stammdaten.gueltigkeit.gueltigBis);
+            showGesuchsperiode =
+                showGesuchsperiode && gueltigkeit.gueltigAb.isBefore(this.stammdaten.gueltigkeit.gueltigBis);
         }
         return showGesuchsperiode;
     }
@@ -468,7 +477,8 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
     }
 
     public isScolaris(modulTagesschuleGroups: Array<TSModulTagesschuleGroup>): boolean {
-        if (EbeguUtil.isNotNullOrUndefined(modulTagesschuleGroups[0]) && modulTagesschuleGroups[0].modulTagesschuleName.startsWith('SCOLARIS_')) {
+        if (EbeguUtil.isNotNullOrUndefined(modulTagesschuleGroups[0]) && modulTagesschuleGroups[0].modulTagesschuleName.startsWith(
+            'SCOLARIS_')) {
             return true;
         }
         return false;
