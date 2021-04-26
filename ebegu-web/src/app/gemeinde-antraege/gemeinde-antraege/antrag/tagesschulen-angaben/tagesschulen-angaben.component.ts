@@ -498,7 +498,7 @@ export class TagesschulenAngabenComponent {
                 .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
             this.form.get('anzahlEingeschriebeneKinderKindergarten')
                 .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
-            this.form.get('anzahlEingeschriebeneKinderBasisstufe')
+            this.form.get('anzahlEingeschriebeneKinderSekundarstufe')
                 .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
             this.form.get('anzahlEingeschriebeneKinderPrimarstufe')
                 .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
