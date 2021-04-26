@@ -59,10 +59,6 @@ export class DialogImportFromOtherInstitution implements OnInit {
             // tslint:disable-next-line:early-exit
             if (stammdaten.institutionStammdatenTagesschule &&
                 stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule) {
-                // nur dynamische module und nur wenn module exsitieren
-                stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule = this.filterEinstellungenTagesschule(
-                    stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
-                );
                 // nur wenn mindestens eine Periode mit dynamischen stammdaten
                 if (stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.length > 0) {
                     filtered.push(stammdaten);
@@ -75,7 +71,7 @@ export class DialogImportFromOtherInstitution implements OnInit {
     /**
      * Filtert einstellungen. ModulTagesschuleTyp muss dynamisch sein und es muss mindestens ein modul existieren.
      */
-    private filterEinstellungenTagesschule(einstellungenTagesschule: Array<TSEinstellungenTagesschule>):
+    public filterEinstellungenTagesschule(einstellungenTagesschule: Array<TSEinstellungenTagesschule>):
         TSEinstellungenTagesschule[] {
         return einstellungenTagesschule.filter(einstellung => {
             return einstellung.modulTagesschuleTyp === TSModulTagesschuleTyp.DYNAMISCH
