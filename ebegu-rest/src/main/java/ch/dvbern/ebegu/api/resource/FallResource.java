@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.SozialdienstFallDokumentService;
 import io.swagger.annotations.Api;
@@ -95,6 +96,9 @@ public class FallResource {
 
 	@Inject
 	private SozialdienstFallDokumentService sozialdienstFallDokumentService;
+
+	@Inject
+	private Authorizer authorizer;
 
 	@ApiOperation(value = "Creates a new Fall in the database. The transfer object also has a relation to Gesuch " +
 		"which is stored in the database as well.", response = JaxFall.class)
@@ -232,6 +236,7 @@ public class FallResource {
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallID));
 
 		Objects.requireNonNull(fall.getSozialdienstFall());
+		authorizer.checkWriteAuthorization(fall);
 		fall.getSozialdienstFall().setStatus(SozialdienstFallStatus.ENTZOGEN);
 
 		Fall persistedFall = this.fallService.saveFall(fall);
