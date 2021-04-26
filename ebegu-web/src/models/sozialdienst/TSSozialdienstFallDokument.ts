@@ -1,3 +1,5 @@
+import * as moment from 'moment';
+import {TSFile} from '../TSFile';
 /*
  * Copyright (C) 2021 DV Bern AG, Switzerland
  *
@@ -15,10 +17,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+export class TSSozialdienstFallDokument extends TSFile {
 
-public enum SozialdienstFallStatus {
-	AKTIV,
-	INAKTIV,
-	ENTZOGEN
+private _timestampUpload: moment.Moment;
+
+public get timestampUpload(): moment.Moment {
+        return this._timestampUpload;
+    }
+
+public set timestampUpload(value: moment.Moment) {
+        this._timestampUpload = value;
+    }
 }

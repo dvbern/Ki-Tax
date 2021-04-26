@@ -103,16 +103,6 @@ public interface FallService {
 	@Nonnull
 	Optional<String> getCurrentEmailAddress(@Nonnull String fallID);
 
-	@Nonnull
-	Fall uploadSozialdienstVollmachtDokument(
-		@Nonnull String fallId,
-		@Nonnull byte[] content);
-
-	Fall removeVollmachtDokument(@Nonnull String fallId);
-
-	boolean existVollmachtDokument(@Nonnull String fallId);
-
-	byte[] downloadVollmachtDokument(@Nonnull String fallId);
 
 	byte[] generateVollmachtDokument(@Nonnull String fallId, @Nonnull Sprache sprache) throws MergeDocException;
 }
