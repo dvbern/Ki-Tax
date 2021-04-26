@@ -1725,8 +1725,11 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles()) &&
 			antrag.getAngabenInstitutionContainers()
 				.stream()
-				.anyMatch(container -> container.getInstitution().getId()
-					.equals(Objects.requireNonNull(principalBean.getBenutzer().getInstitution()).getId()))) {
+				.anyMatch(container -> institutionService.getInstitutionenReadableForCurrentBenutzer(false)
+					.stream()
+					.anyMatch(userInstitution -> userInstitution.getId().equals(container.getInstitution().getId()))
+				)
+		) {
 			return;
 		}
 		throwViolation(antrag);

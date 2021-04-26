@@ -194,7 +194,7 @@ export class TagesschulenAngabenComponent {
         return !this.authService.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles()) && (
             (this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) &&
                 this.latsAngabenInstitutionContainer?.status !== TSLastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT) ||
-            (this.authService.isOneOfRoles(TSRoleUtil.getInstitutionRoles()) &&
+            (this.authService.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()) &&
                 this.latsAngabenInstitutionContainer?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN)
         );
     }
@@ -493,7 +493,7 @@ export class TagesschulenAngabenComponent {
                 .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
             this.form.get('anzahlEingeschriebeneKinderKindergarten')
                 .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
-            this.form.get('anzahlEingeschriebeneKinderBasisstufe')
+            this.form.get('anzahlEingeschriebeneKinderSekundarstufe')
                 .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
             this.form.get('anzahlEingeschriebeneKinderPrimarstufe')
                 .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);

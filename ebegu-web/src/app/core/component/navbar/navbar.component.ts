@@ -87,6 +87,10 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                     this.changeDetectorRef.markForCheck();
                     this.gemeindeAntragVisible.next(
                         this.authServiceRS.isOneOfRoles(PERMISSIONS.LASTENAUSGLEICH_TAGESSCHULE) ||
+                        this.authServiceRS.isOneOfRoles([
+                            TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
+                            TSRole.ADMIN_TRAEGERSCHAFT,
+                        ]) ||
                         this.authServiceRS.isOneOfRoles(PERMISSIONS.FERIENBETREUUNG) ||
                         (this.authServiceRS.isOneOfRoles([
                             TSRole.ADMIN_INSTITUTION,
