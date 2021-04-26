@@ -16,10 +16,9 @@
  */
 
 import {Component, Inject, OnInit} from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TSModulTagesschuleTyp} from '../../../../models/enums/TSModulTagesschuleTyp';
 import {TSEinstellungenTagesschule} from '../../../../models/TSEinstellungenTagesschule';
-import {TSInstitution} from '../../../../models/TSInstitution';
 import {TSInstitutionStammdaten} from '../../../../models/TSInstitutionStammdaten';
 import {TSModulTagesschuleGroup} from '../../../../models/TSModulTagesschuleGroup';
 import {InstitutionStammdatenRS} from '../../../core/service/institutionStammdatenRS.rest';
@@ -56,13 +55,11 @@ export class DialogImportFromOtherInstitution implements OnInit {
     private filterStammdatenList(institutionStammdaten: TSInstitutionStammdaten[]): Array<TSInstitutionStammdaten> {
         const filtered: TSInstitutionStammdaten[] = [];
         institutionStammdaten.forEach(stammdaten => {
-            // tslint:disable-next-line:early-exit
+            // nur wenn mindestens eine Periode mit stammdaten
             if (stammdaten.institutionStammdatenTagesschule &&
-                stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule) {
-                // nur wenn mindestens eine Periode mit dynamischen stammdaten
-                if (stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.length > 0) {
-                    filtered.push(stammdaten);
-                }
+                stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule &&
+                stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.length > 0) {
+                filtered.push(stammdaten);
             }
         });
         return filtered;
@@ -85,7 +82,7 @@ export class DialogImportFromOtherInstitution implements OnInit {
     }
 
     // module müssen kopiert werden, um sicherzustellen, dass nicht dieselben ids verwendet werden.
-    private copyModules(): TSModulTagesschuleGroup[]  {
+    private copyModules(): TSModulTagesschuleGroup[] {
         return this.selectedEinstellungTagesschule.modulTagesschuleGroups.map(module => module.getCopy());
     }
 
