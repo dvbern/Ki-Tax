@@ -227,7 +227,11 @@ export class DVQuicksearchListController implements IController {
     }
 
     public showPapierGesuchIcon(row: TSAbstractAntragDTO): boolean {
-        return row instanceof TSAntragDTO && !row.hasBesitzer();
+        return row instanceof TSAntragDTO && !row.hasBesitzer()  && !row.isSozialdienst;
+    }
+
+    public showSozialdienstGesuchIcon(row: TSAbstractAntragDTO): boolean {
+        return row instanceof TSAntragDTO && row.isSozialdienst;
     }
 
     public isTagesschulangebotEnabled(): boolean {

@@ -264,8 +264,9 @@
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
                     </td>
                     <td class="ellipsis" title="{{vm.getAntragTypBezeichnung(row)}}">
-                        <i class="fa fa-desktop margin-ri" aria-hidden="true" ng-show="row.hasBesitzer()"></i>
-                        <i class="fa fa-file-text-o" aria-hidden="true" ng-show="!row.hasBesitzer()"></i>
+                        <i class="fa fa-desktop margin-ri" aria-hidden="true" ng-show="row.hasBesitzer() && !row.isSozialdienst"></i>
+                        <i class="fa fa-file-text-o" aria-hidden="true" ng-show="!row.hasBesitzer() && !row.isSozialdienst"></i>
+                        <i class="fa fa-handshake-o margin-ri" ng-show="row.isSozialdienst"></i>
                         <span ng-bind="vm.getAntragTypBezeichnung(row)" class="margin-left-5"></span>
                     </td>
                     <td class="ellipsis"
