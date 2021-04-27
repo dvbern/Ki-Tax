@@ -222,7 +222,7 @@
                             <span ng-if="vm.agbVorhanden">{{'BETREUUNG_TAGESSCHULE_AGB_START' | translate}}
                                 <a role="button"
                                    ng-click="vm.downloadGemeindeGesuchsperiodeDokument();$event.stopPropagation()">{{'BETREUUNG_TAGESSCHULE_AGB_DOK'
-										| translate}}</a>
+                                    | translate}}</a>
                                 {{'BETREUUNG_TAGESSCHULE_AGB_END' | translate}}
                             </span>
                             <span
@@ -269,6 +269,26 @@
                 </div>
             </div>
         </div>
+        <span dv-show-element
+              dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()"
+              dv-show-expression="vm.showFalscheAngabenTagesschule() && vm.aktuellGueltig">
+               <!--falsche Angaben Tagesschule-->
+            <div class="row">
+                <div class="col-md-12">
+                    <a href="" ng-click="vm.tsPlatzAnfordern()"
+                       data-translate="FALSCHE_ANGABEN"></a>
+                </div>
+            </div>
+        </span>
+        <!--Angabe korrigieren-->
+        <div class="row" dv-show-element
+             dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()"
+             dv-show-expression="vm.showAngabenKorrigieren()">
+            <div class="col-md-12">
+                <a href="" ng-click="vm.tsPlatzAnfordern()"
+                   data-translate="ANGABEN_KORRIGIEREN"></a>
+            </div>
+        </div>
 
     </fieldset>
 
@@ -279,16 +299,16 @@
     <!--todo verbesserung in eigene Direktive da in betreuungFerieninsel dupliziert-->
     <div class="dv-navigation dv-navigation-flex">
         <span dv-show-element
-             dv-show-allowed-roles="vm.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles()"
-             dv-show-expression="vm.betreuung.isEnabled() && !vm.isFreigabequittungAusstehend()">
+              dv-show-allowed-roles="vm.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles()"
+              dv-show-expression="vm.betreuung.isEnabled() && !vm.isFreigabequittungAusstehend()">
             <dv-loading-button button-click="vm.anmelden()" type="submit" button-class="save">
                 <span class="uppercase" data-translate="{{vm.getButtonTextSpeichern()}}"></span>
             </dv-loading-button>
         </span>
 
         <span dv-show-element
-             dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()"
-             dv-show-expression="vm.isFalscheInstitutionAndUserInRole() && vm.aktuellGueltig">
+              dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()"
+              dv-show-expression="vm.isFalscheInstitutionAndUserInRole() && vm.aktuellGueltig">
 
             <dv-loading-button button-click="vm.anmelden()"
                                type="submit"
@@ -303,8 +323,8 @@
         </span>
 
         <span dv-show-element
-             dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionSchulamtRoles()"
-             dv-show-expression="vm.showButtonsInstitution() && vm.aktuellGueltig">
+              dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionSchulamtRoles()"
+              dv-show-expression="vm.showButtonsInstitution() && vm.aktuellGueltig">
 
                 <dv-loading-button button-disabled="vm.showErrorMessageNoModule"
                                    button-click="vm.saveAnmeldungSchulamtUebernehmen()"
@@ -320,9 +340,9 @@
                 </dv-loading-button>
 
                 <dv-loading-button
-                                   button-click="vm.saveAnmeldungSchulamtFalscheInstitution()"
-                                   type="button"
-                                   button-class="save">
+                    button-click="vm.saveAnmeldungSchulamtFalscheInstitution()"
+                    type="button"
+                    button-class="save">
                     <span class="uppercase" data-translate="AKTION_SCHULAMT_FALSCHE_INSTITUTION"></span>
                 </dv-loading-button>
 
