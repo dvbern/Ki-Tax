@@ -100,8 +100,8 @@ export class AddSozialdienstComponent implements OnInit {
                         this.persistSozialdienst();
                     },
                 );
-            } else if (exception.error.errorCodeEnum === 'EXISTING_USER_MAIL') {
-                this.errorService.addMesageAsError(this.translate.instant('ERROR_USER_EXISTS'));
+            } else {
+                this.errorService.addMesageAsError(this.translate.instant(exception.error.errorCodeEnum));
             }
         });
     }

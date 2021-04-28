@@ -1263,8 +1263,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Nonnull
 	private Eingangsart calculateEingangsart(Gesuch gesuchToCreate) {
 		Eingangsart eingangsart;
-		if (this.principalBean.isCallerInRole(UserRole.GESUCHSTELLER)
-			|| gesuchToCreate.getFall().getSozialdienstFall() != null) {
+		if (this.principalBean.isCallerInAnyOfRole(
+			UserRole.GESUCHSTELLER,
+			UserRole.ADMIN_SOZIALDIENST,
+			UserRole.SACHBEARBEITER_SOZIALDIENST)
+			|| (gesuchToCreate.getFall().getSozialdienstFall() != null
+			&& this.principalBean.isCallerInRole(UserRole.SUPER_ADMIN))) {
 			eingangsart = Eingangsart.ONLINE;
 		} else {
 			eingangsart = Eingangsart.PAPIER;
