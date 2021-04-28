@@ -75,6 +75,7 @@ import ch.dvbern.ebegu.services.GeneratedDokumentService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.RueckforderungDokumentService;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
+import ch.dvbern.ebegu.services.SozialdienstFallDokumentService;
 import ch.dvbern.ebegu.services.VorlageService;
 import ch.dvbern.ebegu.services.ZahlungService;
 import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungDokumentService;
@@ -167,6 +168,9 @@ public class DownloadResource {
 
 	@Inject
 	private AVClient avClient;
+
+	@Inject
+	private SozialdienstFallDokumentService sozialdienstFallDokumentService;
 
 	@SuppressWarnings("ConstantConditions")
 	@SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
@@ -665,7 +669,7 @@ public class DownloadResource {
 		String id = converter.toEntityId(jaxId);
 
 		final FileMetadata dokument = rueckforderungDokumentService.findDokument(id)
-			.orElseThrow(() -> new EbeguEntityNotFoundException("getDokumentAccessTokenDokument",
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getDokumentAccessTokenRueckforderungDokument",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, id));
 
 		return getFileDownloadResponse(uriInfo, ip, dokument);
@@ -677,7 +681,7 @@ public class DownloadResource {
 	@Path("/{dokumentId}/ferienbetreuungDokument")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getDokumentAccessTokenFerienbetreuunggDokument(
+	public Response getDokumentAccessTokenFerienbetreuungDokument(
 		@Nonnull @Valid @PathParam("dokumentId") JaxId jaxId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException {
 
@@ -687,7 +691,7 @@ public class DownloadResource {
 		String id = converter.toEntityId(jaxId);
 
 		final FileMetadata dokument = ferienbetreuungDokumentService.findDokument(id)
-			.orElseThrow(() -> new EbeguEntityNotFoundException("getDokumentAccessTokenDokument",
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getDokumentAccessTokenFerienbetreuungDokument",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, id));
 
 		return getFileDownloadResponse(uriInfo, ip, dokument);
@@ -771,5 +775,27 @@ public class DownloadResource {
 			throw new EbeguRuntimeException("getNotverordnungVerfuegungenAccessTokenGeneratedDokument",
 				"Verfuegungen konnten nicht erstellt werden", e, auftragIdentifier);
 		}
+	}
+
+	@ApiOperation("Erstellt ein Token f&uuml;r den Download eines Dokumentes.")
+	@Nonnull
+	@GET
+	@Path("/{dokumentId}/sozialdienstFallDokument")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDokumentAccessTokenSozialdienstFallDokument(
+		@Nonnull @Valid @PathParam("dokumentId") JaxId jaxId,
+		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException {
+
+		String ip = getIP(request);
+
+		requireNonNull(jaxId.getId());
+		String id = converter.toEntityId(jaxId);
+
+		final FileMetadata dokument = sozialdienstFallDokumentService.findDokument(id)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getDokumentAccessTokenSozialdienstFallDokument",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, id));
+
+		return getFileDownloadResponse(uriInfo, ip, dokument);
 	}
 }

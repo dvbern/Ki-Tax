@@ -54,8 +54,6 @@ import org.slf4j.LoggerFactory;
  */
 public class Testfall_Sozialdienst extends AbstractTestfall {
 
-	private static final Logger LOG = LoggerFactory.getLogger(Testfall_Sozialdienst.class);
-
 	private final Sozialdienst sozialdienst;
 
 	public Testfall_Sozialdienst(
@@ -85,23 +83,10 @@ public class Testfall_Sozialdienst extends AbstractTestfall {
 		adresse.setPlz("3000");
 		adresse.setOrt("Bern");
 		sozialdienstFall.setAdresse(adresse);
-		sozialdienstFall.setVollmacht(getVollmachtExample());
 
 		fall.setSozialdienstFall(sozialdienstFall);
 
 		return fall;
-	}
-
-	private byte[] getVollmachtExample() {
-		byte[] vollmacht = new byte[0];
-		try {
-			vollmacht = IOUtils.toByteArray(MandantPdfGenerator.class.getResourceAsStream(
-				"/ExampleVollmacht.pdf"));
-		}
-		catch (IOException e) {
-			LOG.error("ExampleVollmacht.pdf koennte nicht geladen werden: {}", e.getMessage());
-		}
-		return vollmacht;
 	}
 
 	@Override

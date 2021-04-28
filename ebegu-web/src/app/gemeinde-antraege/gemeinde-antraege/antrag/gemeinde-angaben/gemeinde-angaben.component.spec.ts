@@ -94,6 +94,7 @@ describe('GemeindeAngabenComponent', () => {
         container.gesuchsperiode.gueltigkeit = new TSDateRange(moment(), moment());
         container.angabenDeklaration = new TSLastenausgleichTagesschuleAngabenGemeinde();
         container.angabenKorrektur = new TSLastenausgleichTagesschuleAngabenGemeinde();
+        container.angabenInstitutionContainers = [];
         lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
             of(container),
         );

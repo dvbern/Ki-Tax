@@ -55,7 +55,6 @@ import static ch.dvbern.ebegu.util.Constants.TEN_MB;
 public class SozialdienstFall extends AbstractEntity {
 
 	private static final long serialVersionUID = -3978972308622826784L;
-	private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
 	@NotNull @Nonnull
 	@ManyToOne(optional = false)
@@ -102,11 +101,6 @@ public class SozialdienstFall extends AbstractEntity {
 	@Column(nullable = true)
 	private LocalDate geburtsdatumGs2;
 
-	@Nullable
-	@Column(nullable = true, length = TEN_MB) // 10 megabytes
-	@Lob
-	private byte[] vollmacht;
-
 	@Nonnull
 	public Sozialdienst getSozialdienst() {
 		return sozialdienst;
@@ -150,22 +144,6 @@ public class SozialdienstFall extends AbstractEntity {
 
 	public void setGeburtsdatum(@Nonnull LocalDate geburtsdatum) {
 		this.geburtsdatum = geburtsdatum;
-	}
-
-	@Nonnull
-	public byte[] getVollmacht() {
-		if (vollmacht == null) {
-			return EMPTY_BYTE_ARRAY;
-		}
-		return Arrays.copyOf(vollmacht, vollmacht.length);
-	}
-
-	public void setVollmacht(@Nullable byte[] vollmacht) {
-		if (vollmacht == null) {
-			this.vollmacht = null;
-		} else {
-			this.vollmacht = Arrays.copyOf(vollmacht, vollmacht.length);
-		}
 	}
 
 	@Nonnull

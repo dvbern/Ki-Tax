@@ -42,7 +42,8 @@
                     (<a target="_blank" [href]="kitaxHost + kitaxResponse.url">Ki-Tax {{kitaxResponse.fallNummer}}</a>)
                 </span>
                 <i *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesButGesuchsteller()"
-                   class="fa" [ngClass]="{'fa-desktop': isOnlineGesuch(), 'fa-file-text-o': !isOnlineGesuch()}"></i>
+                   class="fa"
+                   [ngClass]="{'fa-desktop': isOnlineGesuch() && ! isSozialdienstGesuch(), 'fa-file-text-o': !isOnlineGesuch() && ! isSozialdienstGesuch(), 'fa-handshake-o': isSozialdienstGesuch()}"></i>
             </div>
 
         </div>

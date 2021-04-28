@@ -38,7 +38,7 @@ public interface SozialdienstService {
 	 * Creates a new Sozialdienst. Name and BSFNummer must be unique. If they already exist an Exception will be thrown
 	 */
 	@Nonnull
-	Sozialdienst createSozialdienst(@Nonnull Sozialdienst sozialdienst);
+	Sozialdienst createSozialdienst(@Nonnull String adminMail, @Nonnull Sozialdienst sozialdienst);
 
 	/**
 	 * Gibt die Sozialdienst mit der uebergebenen ID zurueck.

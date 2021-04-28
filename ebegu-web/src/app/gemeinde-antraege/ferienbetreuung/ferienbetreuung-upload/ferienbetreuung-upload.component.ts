@@ -15,14 +15,14 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
-import {NEVER} from 'rxjs';
+import {NEVER, Subscription} from 'rxjs';
 import {concatMap} from 'rxjs/operators';
-import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {FerienbetreuungAngabenStatus} from '../../../../models/enums/FerienbetreuungAngabenStatus';
+import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungDokument} from '../../../../models/gemeindeantrag/TSFerienbetreuungDokument';
 import {TSDownloadFile} from '../../../../models/TSDownloadFile';
@@ -46,12 +46,13 @@ const LOG = LogFactory.createLog('FerienbetreuungUploadComponent');
     styleUrls: ['./ferienbetreuung-upload.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FerienbetreuungUploadComponent implements OnInit {
+export class FerienbetreuungUploadComponent implements OnInit, OnDestroy {
 
     public dokumente: TSFerienbetreuungDokument[];
+    public filesTooBig: File[];
 
     private container: TSFerienbetreuungAngabenContainer;
-    public filesTooBig: File[];
+    private subscription: Subscription;
 
     public constructor(
         private readonly ferienbetreuungService: FerienbetreuungService,
@@ -68,7 +69,7 @@ export class FerienbetreuungUploadComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.ferienbetreuungService.getFerienbetreuungContainer()
+        this.subscription = this.ferienbetreuungService.getFerienbetreuungContainer()
             .pipe(concatMap(container => {
                 this.container = container;
                 return this.ferienbetreuungDokumentService.getAllDokumente(container.id);
@@ -79,6 +80,10 @@ export class FerienbetreuungUploadComponent implements OnInit {
             }, error => {
             LOG.error(error);
         });
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     public download(dokument: TSFerienbetreuungDokument, attachment: boolean): void {

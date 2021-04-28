@@ -16,6 +16,7 @@
 import {downgradeComponent} from '@angular/upgrade/static';
 import * as angular from 'angular';
 import {CORE_JS_MODULE} from '../app/core/core.angularjs.module';
+import {FileUploadComponent} from '../app/shared/component/file-upload/file-upload.component';
 import {AbwesenheitViewComponentConfig} from './component/abwesenheitView/abwesenheitView';
 import {BetreuungFerieninselViewComponentConfig} from './component/betreuungFerieninselView/betreuungFerieninselView';
 import {BetreuungInputComponentConfig} from './component/betreuungInput/betreuung-input.component';
@@ -97,5 +98,11 @@ export const GESUCH_JS_MODULE =
         .directive('dvEingabeBasisjahr', downgradeComponent({component: DvEingabeBasisjahrComponent}))
         .directive('dvSwitch', downgradeComponent({component: DvSwitchComponent}))
         .directive('betreuungOverrideWarning', downgradeComponent({component: BetreuungOverrideWarningComponent}))
+        .directive('dvFileUpload',
+            downgradeComponent({
+                component: FileUploadComponent,
+                inputs: ['title', 'files', 'readOnly', 'readOnlyDelete'],
+                outputs: ['download', 'delete', 'uploadFile']
+            }))
         .component('sozialdienstFallCreationView', new SozialdienstFallCreationViewComponentConfig())
 ;

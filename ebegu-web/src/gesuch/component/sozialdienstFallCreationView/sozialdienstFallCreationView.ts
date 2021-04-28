@@ -23,13 +23,17 @@ import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSSozialdienstFallStatus} from '../../../models/enums/TSSozialdienstFallStatus';
 import {TSSprache} from '../../../models/enums/TSSprache';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSSozialdienstFall} from '../../../models/sozialdienst/TSSozialdienstFall';
+import {TSSozialdienstFallDokument} from '../../../models/sozialdienst/TSSozialdienstFallDokument';
+import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {INewFallStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
 import {FallRS} from '../../service/fallRS.rest';
@@ -40,6 +44,7 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 const okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
+const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 
 export class SozialdienstFallCreationViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -67,10 +72,10 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         '$timeout',
     ];
 
-    private isVollmachtHochgeladen: boolean;
     private gesuchsperiodeId: string;
 
     public showAntragsteller2Error: boolean = false;
+    public dokumente: TSSozialdienstFallDokument[];
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -112,8 +117,8 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         if (this.gesuchModelManager.getFall().sozialdienstFall.isNew()) {
             return;
         }
-        this.fallRS.existVollmachtDokument(this.gesuchModelManager.getFall().id).then(
-            result => this.isVollmachtHochgeladen = result,
+        this.fallRS.getAllVollmachtDokumente(this.gesuchModelManager.getFall().sozialdienstFall.id).then(
+            dokumente => this.dokumente = dokumente,
         );
     }
 
@@ -179,7 +184,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     }
 
     public isSozialdienstFallReadOnly(): boolean {
-        if (this.isSozialdienstFallAktiv() || this.isVollmachtHochgeladen) {
+        if (this.isSozialdienstFallAktiv() || this.isSozialdienstFallEntzogen()) {
             return true;
         }
         return false;
@@ -189,9 +194,13 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         return this.gesuchModelManager.getFall().sozialdienstFall?.status === TSSozialdienstFallStatus.AKTIV;
     }
 
+    public isSozialdienstFallEntzogen(): boolean {
+        return this.gesuchModelManager.getFall().sozialdienstFall?.status === TSSozialdienstFallStatus.ENTZOGEN;
+    }
+
     public isAktivierungMoeglich(): boolean {
         if (this.gesuchModelManager.getFall().sozialdienstFall?.status === TSSozialdienstFallStatus.INAKTIV
-            && this.isVollmachtHochgeladen) {
+            && this.dokumente && this.dokumente.length > 0) {
             return true;
         }
         return false;
@@ -203,11 +212,39 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         this.save();
     }
 
-    public uploadVollmachtDokument(file: any[]): void {
-        if (file.length <= 0) {
+    public fallEntziehen(): void {
+        this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+            title: 'CONFIRM_VOLLMACHT_ENTZIEHEN',
+            deleteText: 'BESCHREIBUNG_VOLLMACHT_ENTZIEHEN',
+            parentController: undefined,
+            elementID: undefined,
+        }).then(() => {
+            this.fallRS.sozialdienstFallEntziehen(this.gesuchModelManager.getFall().id).then(
+                fall => {
+                    const params: INewFallStateParams = {
+                        gesuchsperiodeId: this.gesuchsperiodeId,
+                        creationAction: null,
+                        gesuchId: EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch()) ?
+                            this.gesuchModelManager.getGesuch().id :
+                            null,
+                        dossierId: null,
+                        gemeindeId: this.gesuchModelManager.getGemeinde().id,
+                        eingangsart: null,
+                        sozialdienstId: fall.sozialdienstFall.sozialdienst.id,
+                        fallId: fall.id,
+                    };
+                    this.$state.go('gesuch.sozialdienstfallcreation', params);
+                },
+            );
+        });
+    }
+
+    public uploadVollmachtDokument(event: any): void {
+        const files = event.target.files;
+        if (files.length <= 0) {
             return;
         }
-        const selectedFile = file[0];
+        const selectedFile = files[0];
         if (selectedFile.size > MAX_FILE_SIZE) {
             this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
                 title: this.$translate.instant('FILE_ZU_GROSS'),
@@ -216,22 +253,26 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         }
 
         this.uploadRS.uploadVollmachtDokument(selectedFile, this.gesuchModelManager.getFall().id)
-            .then(() => {
-                this.isVollmachtHochgeladen = true;
+            .then(dokumente => {
+                this.dokumente = this.dokumente.concat(dokumente);
             });
     }
 
-    public removeVollmachtDokument(): void {
-        this.fallRS.removeVollmachtDokument(this.gesuchModelManager.getFall().id)
+    public removeVollmachtDokument(dokument: TSSozialdienstFallDokument): void {
+        this.fallRS.removeVollmachtDokument(dokument.id)
             .then(() => {
-                this.isVollmachtHochgeladen = false;
+                this.dokumente = this.dokumente.filter(d => d.id !== dokument.id);
             });
     }
 
-    public downloadVollmachtDokument(): void {
-        this.fallRS.downloadVollmachtDokument(this.gesuchModelManager.getFall().id).then(
-            response => {
-                this.openDownloadForFile(response);
+    public downloadVollmachtDokument(dokument: TSSozialdienstFallDokument, attachment: boolean): void {
+        const win = this.downloadRS.prepareDownloadWindow();
+        this.downloadRS.getAccessTokenSozialdienstFallDokument(dokument.id)
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, attachment, win);
+            })
+            .catch(() => {
+                win.close();
             });
     }
 
@@ -271,5 +312,22 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
 
     public isFormDirty(): boolean {
         return this.form.$dirty;
+    }
+
+    public isAntragBearbeitbar(): boolean {
+        return this.isSozialdienstFallAktiv() && this.gesuchModelManager.getGesuch()
+            && (this.gesuchModelManager.getGesuch().isMutation()
+                || this.gesuchModelManager.getGesuch().isFolgegesuch())
+            && this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST);
+    }
+
+    public bearbeiten(): void {
+        this.gesuchModelManager.getFall().sozialdienstFall.status = TSSozialdienstFallStatus.INAKTIV;
+        this.form.$dirty = true;
+        this.save();
+    }
+
+    public showFallEntzogenWarning(): boolean {
+        return this.gesuchModelManager.getFall().sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN;
     }
 }

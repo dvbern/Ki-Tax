@@ -15,12 +15,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
-import {combineLatest} from 'rxjs';
+import {combineLatest, Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
@@ -46,13 +46,14 @@ const LOG = LogFactory.createLog('FerienbetreuungAngebotComponent');
     styleUrls: ['./ferienbetreuung-angebot.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungFormular implements OnInit {
+export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungFormular implements OnInit, OnDestroy {
 
     public formValidationTriggered = false;
     public bfsGemeinden: TSBfsGemeinde[];
     public container: TSFerienbetreuungAngabenContainer;
 
     private angebot: TSFerienbetreuungAngabenAngebot;
+    private subscription: Subscription;
 
     public constructor(
         protected readonly errorService: ErrorService,
@@ -71,7 +72,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
     }
 
     public ngOnInit(): void {
-        combineLatest([
+        this.subscription = combineLatest([
                 this.ferienbetreuungService.getFerienbetreuungContainer(),
                 this.authService.principal$.pipe(filter(principal => !!principal)),
             ],
@@ -87,6 +88,10 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             this.bfsGemeinden = gemeinden;
             this.cd.markForCheck();
         });
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     protected setupForm(angebot: TSFerienbetreuungAngabenAngebot): void {
@@ -121,31 +126,25 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
                 ],
             }),
             anzahlFerienwochenHerbstferien: [
-                angebot?.anzahlFerienwochenHerbstferien,
-                numberValidator(ValidationType.INTEGER)
+                angebot?.anzahlFerienwochenHerbstferien
             ],
             anzahlFerienwochenWinterferien: [
                 angebot?.anzahlFerienwochenWinterferien,
-                numberValidator(ValidationType.INTEGER)
             ],
             anzahlFerienwochenFruehlingsferien: [
                 angebot?.anzahlFerienwochenFruehlingsferien,
-                numberValidator(ValidationType.INTEGER)
             ],
             anzahlFerienwochenSommerferien: [
                 angebot?.anzahlFerienwochenSommerferien,
-                numberValidator(ValidationType.INTEGER)
             ],
             anzahlTage: [
                 angebot?.anzahlTage,
-                numberValidator(ValidationType.INTEGER)
             ],
             bemerkungenAnzahlFerienwochen: [
                 angebot?.bemerkungenAnzahlFerienwochen
             ],
             anzahlStundenProBetreuungstag: [
                 angebot?.anzahlStundenProBetreuungstag,
-                numberValidator(ValidationType.INTEGER)
             ],
             betreuungErfolgtTagsueber: [
                 angebot?.betreuungErfolgtTagsueber
@@ -179,7 +178,6 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             ],
             betreuungsschluessel: [
                 angebot?.betreuungsschluessel,
-                numberValidator(ValidationType.INTEGER)
             ],
             bemerkungenPersonal: [
                 angebot?.bemerkungenPersonal,
@@ -205,7 +203,36 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         }, {
             updateOn: 'blur',
         });
+        this.setBasicValidation();
+    }
+
+    protected setBasicValidation(): void {
+        this.removeAllValidators();
+
+        this.form.get('anzahlFerienwochenHerbstferien').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('anzahlFerienwochenWinterferien').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('anzahlFerienwochenFruehlingsferien').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('anzahlFerienwochenSommerferien').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('anzahlTage').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('anzahlStundenProBetreuungstag').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+        this.form.get('betreuungsschluessel').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
+
         this.enableAdressValidation();
+        this.triggerFormValidation();
     }
 
     // overwrite
@@ -236,7 +263,8 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
     }
 
     public save(): void {
-        this.enableAdressValidation();
+        this.formAbschliessenTriggered = false;
+        this.setBasicValidation();
 
         if (!this.form.valid) {
             this.showValidierungFehlgeschlagenErrorMessage();
