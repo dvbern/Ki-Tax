@@ -51,4 +51,8 @@ export class TSFerienbetreuungAbstractAngaben extends TSAbstractEntity {
     public isInPruefungKanton(): boolean {
         return this.status === TSFerienbetreuungFormularStatus.IN_PRUEFUNG_KANTON;
     }
+
+    public isInBearbeitung(): boolean {
+        return this.status === TSFerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE;
+    }
 }

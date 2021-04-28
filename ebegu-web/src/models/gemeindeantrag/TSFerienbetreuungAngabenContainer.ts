@@ -86,4 +86,20 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
             FerienbetreuungAngabenStatus.ABGELEHNT
         ].includes(this.status);
     }
+
+    public isInPruefungKanton(): boolean {
+        return this.status === FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON;
+    }
+
+    public isInBearbeitungGemeinde(): boolean {
+        return this.status === FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE;
+    }
+
+    public isGeprueft(): boolean {
+        return [
+            FerienbetreuungAngabenStatus.GEPRUEFT,
+            FerienbetreuungAngabenStatus.VERFUEGT,
+            FerienbetreuungAngabenStatus.ABGELEHNT
+        ].includes(this.status);
+    }
 }

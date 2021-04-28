@@ -21,7 +21,6 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {BehaviorSubject} from 'rxjs';
-import {FerienbetreuungAngabenStatus} from '../../../models/enums/FerienbetreuungAngabenStatus';
 import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSFerienbetreuungAbstractAngaben} from '../../../models/gemeindeantrag/TSFerienbetreuungAbstractAngaben';
 import {TSFerienbetreuungAngabenContainer} from '../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
@@ -108,37 +107,53 @@ export abstract class AbstractFerienbetreuungFormular {
         angaben: TSFerienbetreuungAbstractAngaben,
         principal: TSBenutzer,
     ): void {
-        if (container.isAtLeastInPruefungKanton()) {
+        if (container.isInPruefungKanton()) {
+            if (principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) && angaben.isInBearbeitung()) {
+                if (angaben.isInBearbeitung()) {
+                    this.canSeeSave.next(true);
+                    this.canSeeAbschliessen.next(true);
+                    this.canSeeFalscheAngaben.next(false);
+                } else {
+                    this.canSeeSave.next(false);
+                    this.canSeeAbschliessen.next(false);
+                    this.canSeeFalscheAngaben.next(true);
+                }
+            } else {
+                this.setCanSeeNoActions();
+            }
+            // tslint:disable-next-line:no-collapsible-if
+        } else if (container.isInBearbeitungGemeinde() && !principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
             if (angaben.isAtLeastAbgeschlossenGemeinde()) {
                 this.canSeeAbschliessen.next(false);
                 this.canSeeSave.next(false);
-                if (container.status === FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE) {
-                    this.canSeeFalscheAngaben.next(true);
-                } else {
-                    this.canSeeFalscheAngaben.next(false);
-                }
+                this.canSeeFalscheAngaben.next(true);
             } else {
                 this.canSeeAbschliessen.next(true);
                 this.canSeeSave.next(true);
                 this.canSeeFalscheAngaben.next(false);
             }
-            // tslint:disable-next-line:no-collapsible-if
         } else {
-            if (principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
-                this.canSeeAbschliessen.next(false);
-                this.canSeeSave.next(false);
-                this.canSeeFalscheAngaben.next(false);
-            }
+            this.setCanSeeNoActions();
         }
     }
 
+    private setCanSeeNoActions(): void {
+        this.canSeeAbschliessen.next(false);
+        this.canSeeSave.next(false);
+        this.canSeeFalscheAngaben.next(false);
+    }
+
     protected disableFormBasedOnStateAndPrincipal(
-        angaben: TSFerienbetreuungAbstractAngaben,
         principal: TSBenutzer,
+        container: TSFerienbetreuungAngabenContainer,
+        angaben: TSFerienbetreuungAbstractAngaben,
     ): void {
-        if (angaben?.isGeprueft() ||
-            angaben?.isAtLeastAbgeschlossenGemeinde() &&
-            principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
+        if (angaben.isAtLeastAbgeschlossenGemeinde() ||
+            container?.isGeprueft() ||
+            container?.isInBearbeitungGemeinde() &&
+            principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles()) ||
+            container?.isInPruefungKanton() &&
+            principal.hasOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles())) {
             this.form.disable();
         }
     }
@@ -150,7 +165,7 @@ export abstract class AbstractFerienbetreuungFormular {
     ): void {
         this.setupForm(angaben);
 
-        this.disableFormBasedOnStateAndPrincipal(angaben, principal);
+        this.disableFormBasedOnStateAndPrincipal(principal, container, angaben);
         this.setupRoleBasedPropertiesForPrincipal(container, angaben, principal);
 
         this.cd.markForCheck();

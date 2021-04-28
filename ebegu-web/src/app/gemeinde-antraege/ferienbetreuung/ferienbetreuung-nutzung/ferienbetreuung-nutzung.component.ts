@@ -43,7 +43,7 @@ const LOG = LogFactory.createLog('FerienbetreuungNutzungComponent');
 export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungFormular implements OnInit, OnDestroy {
 
     private nutzung: TSFerienbetreuungAngabenNutzung;
-    private container: TSFerienbetreuungAngabenContainer;
+    public container: TSFerienbetreuungAngabenContainer;
     private subscription: Subscription;
 
     public constructor(
