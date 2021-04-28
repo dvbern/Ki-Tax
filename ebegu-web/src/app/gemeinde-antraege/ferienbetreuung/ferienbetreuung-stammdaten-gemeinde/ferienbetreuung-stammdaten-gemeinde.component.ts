@@ -51,7 +51,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
     public bfsGemeinden: TSBfsGemeinde[];
 
     private stammdaten: TSFerienbetreuungAngabenStammdaten;
-    private container: TSFerienbetreuungAngabenContainer;
+    public container: TSFerienbetreuungAngabenContainer;
     private subscription: Subscription;
 
     public constructor(
