@@ -67,7 +67,8 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
             this.authService.principal$,
         ]).subscribe(([container, principal]) => {
             this.container = container;
-            this.nutzung = container.angabenDeklaration?.nutzung;
+            this.nutzung = container.isAtLeastInPruefungKanton() ?
+                container.angabenKorrektur?.nutzung : container.angabenDeklaration?.nutzung;
             this.setupFormAndPermissions(container, this.nutzung, principal);
             this.unsavedChangesService.registerForm(this.form);
         }, error => {

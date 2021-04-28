@@ -65,7 +65,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         private readonly fb: FormBuilder,
         private readonly gemeindeRS: GemeindeRS,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly unsavedChangesService: UnsavedChangesService
+        private readonly unsavedChangesService: UnsavedChangesService,
     ) {
         super(errorService, translate, dialog, cd, wizardRS, uiRouterGlobals);
     }
@@ -76,7 +76,8 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
             this.authServiceRS.principal$,
         ]).subscribe(([container, principal]) => {
             this.container = container;
-            this.stammdaten = container.angabenDeklaration?.stammdaten;
+            this.stammdaten = container.isAtLeastInPruefungKanton() ?
+                container.angabenKorrektur?.stammdaten : container.angabenDeklaration?.stammdaten;
             this.setupFormAndPermissions(container, this.stammdaten, principal);
             this.unsavedChangesService.registerForm(this.form);
         }, error => {
@@ -136,10 +137,10 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                 stammdaten?.stammdatenKontaktpersonFunktion,
             ],
             stammdatenKontaktpersonTelefon: [
-                stammdaten?.stammdatenKontaktpersonTelefon
+                stammdaten?.stammdatenKontaktpersonTelefon,
             ],
             stammdatenKontaktpersonEmail: [
-                stammdaten?.stammdatenKontaktpersonEmail
+                stammdaten?.stammdatenKontaktpersonEmail,
             ],
             auszahlungsdaten: this.fb.group({
                 kontoinhaber: [
@@ -175,10 +176,10 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         this.removeAllValidators();
 
         this.form.get('stammdatenKontaktpersonTelefon').setValidators(
-            Validators.pattern(CONSTANTS.PATTERN_PHONE)
+            Validators.pattern(CONSTANTS.PATTERN_PHONE),
         );
         this.form.get('stammdatenKontaktpersonEmail').setValidators(
-            Validators.pattern(CONSTANTS.PATTERN_EMAIL)
+            Validators.pattern(CONSTANTS.PATTERN_EMAIL),
         );
 
         this.enableStammdatenAuszahlungValidation();

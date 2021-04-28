@@ -68,7 +68,8 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
             this.authService.principal$,
         ]).subscribe(([container, principal]) => {
             this.container = container;
-            this.kostenEinnahmen = container.angabenDeklaration?.kostenEinnahmen;
+            this.kostenEinnahmen = container.isAtLeastInPruefungKanton() ?
+                container.angabenKorrektur?.kostenEinnahmen : container.angabenDeklaration?.kostenEinnahmen;
             this.setupFormAndPermissions(container, this.kostenEinnahmen, principal);
             this.unsavedChangesService.registerForm(this.form);
         }, error => {

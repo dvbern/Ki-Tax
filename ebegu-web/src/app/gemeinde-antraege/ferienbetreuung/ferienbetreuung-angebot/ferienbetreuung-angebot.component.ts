@@ -78,7 +78,8 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             ],
         ).subscribe(([container, principal]) => {
             this.container = container;
-            this.angebot = container.angabenDeklaration?.angebot;
+            this.angebot = container.isAtLeastInPruefungKanton() ?
+                container.angabenKorrektur?.angebot : container.angabenDeklaration?.angebot;
             this.setupFormAndPermissions(container, this.angebot, principal);
             this.unsavedChangesService.registerForm(this.form);
         }, error => {

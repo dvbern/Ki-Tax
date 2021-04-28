@@ -77,4 +77,13 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
     public set internerKommentar(value: string) {
         this._internerKommentar = value;
     }
+
+    public isAtLeastInPruefungKanton(): boolean {
+        return [
+            FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON,
+            FerienbetreuungAngabenStatus.GEPRUEFT,
+            FerienbetreuungAngabenStatus.VERFUEGT,
+            FerienbetreuungAngabenStatus.ABGELEHNT
+        ].includes(this.status);
+    }
 }

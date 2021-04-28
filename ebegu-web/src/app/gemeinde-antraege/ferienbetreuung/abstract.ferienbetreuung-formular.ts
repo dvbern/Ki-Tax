@@ -108,7 +108,7 @@ export abstract class AbstractFerienbetreuungFormular {
         angaben: TSFerienbetreuungAbstractAngaben,
         principal: TSBenutzer,
     ): void {
-        if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
+        if (container.isAtLeastInPruefungKanton()) {
             if (angaben.isAtLeastAbgeschlossenGemeinde()) {
                 this.canSeeAbschliessen.next(false);
                 this.canSeeSave.next(false);
@@ -122,12 +122,12 @@ export abstract class AbstractFerienbetreuungFormular {
                 this.canSeeSave.next(true);
                 this.canSeeFalscheAngaben.next(false);
             }
-        } else if (principal.hasOneOfRoles(TSRoleUtil.getMandantRoles())) {
-            this.canSeeAbschliessen.next(false);
-            if (angaben.isInPruefungKanton()) {
-                this.canSeeSave.next(true);
-            } else {
+            // tslint:disable-next-line:no-collapsible-if
+        } else {
+            if (principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
+                this.canSeeAbschliessen.next(false);
                 this.canSeeSave.next(false);
+                this.canSeeFalscheAngaben.next(false);
             }
         }
     }
@@ -136,13 +136,9 @@ export abstract class AbstractFerienbetreuungFormular {
         angaben: TSFerienbetreuungAbstractAngaben,
         principal: TSBenutzer,
     ): void {
-        /*TODO: reenable once mandant has more than readonly permission and remove other code
         if (angaben?.isGeprueft() ||
             angaben?.isAtLeastAbgeschlossenGemeinde() &&
             principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
-            this.form.disable();
-        }*/
-        if (angaben?.isAtLeastAbgeschlossenGemeinde() || principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
             this.form.disable();
         }
     }
