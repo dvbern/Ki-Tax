@@ -2487,7 +2487,8 @@
     "NEUE_MITTEILUNG_SOZIALDIENST": "Nouveau message au service de soutien",
     "ERROR_ANTRAGSTELLER_SZ_NOT_VOLLSTAENDIG": "L'auteur de la demande numéro 2 n'est pas obligatoire mais ne doit pas être remplis que partiellement!",
     "SOZIALDIENST_INFO_VOLLMACHT_FORM_DIRTY": "Vous avez effectué des changements dans le formulaire. Veuillez les sauvegarder avant de pouvoir générer la Vollmacht et la télécharger",
-    "ERROR_USER_EXISTS": "Es existiert bereits ein/e Benutzer/in mit dieser E-Mail Adresse",
+    "EXISTING_USER_MAIL": "Es existiert bereits ein/e Benutzer/in mit dieser E-Mail Adresse",
     "SOZIALDIENST_WARNING_FALL_ENTZOGEN": "La procuration à été retirée. Le cas est bloqué pour le service de soutien",
+    "ERROR_DUPLICATE_SOZIALDIENST_NAME": "Es existiert bereits ein Unterstützungsdienst mit diesem Namen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

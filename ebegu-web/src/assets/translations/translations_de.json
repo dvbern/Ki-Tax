@@ -2481,13 +2481,14 @@
     "VOLLMACHT_HOCHLADEN": "Vollmacht hochladen",
     "VOLLMACHT_DOKUMENT": "Vollmacht Dokument",
     "SOZIALDIENSTFALL_ENTZIEHEN": "Vollmacht entziehen",
-    "CONFIRM_VOLLMACHT_ENTZIEHEN": "Wollen Sie wirklich der Vollmahct entziehen?",
-    "BESCHREIBUNG_VOLLMACHT_ENTZIEHEN": "Dieser Aktion kann nicht ruckgängig gemacht werden. Der Unterstützungdienst verwantwortlich für diesem Fall kann nachher nur Readonly zugreifen. Weitere Bearbeitungen sind dann nur bei der Gemeinde erlaubt.",
+    "CONFIRM_VOLLMACHT_ENTZIEHEN": "Wollen Sie die Vollmacht wirklich entziehen?",
+    "BESCHREIBUNG_VOLLMACHT_ENTZIEHEN": "Diese Aktion kann nicht rückgängig gemacht werden. Der verwantwortliche Unterstützungdienst hat danach nur noch Leserechte für den Fall. Diesen Fall kann danach nur noch die Gemeinde bearbeiten.",
     "SOZIALDIENSTFALL_AKTIVIEREN": "Fall eröffnen",
     "NEUE_MITTEILUNG_SOZIALDIENST": "Neue Mitteilung an den Unterstützungsdienst",
     "ERROR_ANTRAGSTELLER_SZ_NOT_VOLLSTAENDIG": "Die Angaben zur Antragsteller/in 2 müssen vollständig ausgefüllt sein oder leer gelassen werden",
     "SOZIALDIENST_INFO_VOLLMACHT_FORM_DIRTY": "Sie haben Änderungen im Formular gemacht. Bitte speichern Sie diese, bevor Sie die Vollmacht erneut herunterladen können",
-    "ERROR_USER_EXISTS": "Es existiert bereits ein/e Benutzer/in mit dieser E-Mail Adresse",
+    "EXISTING_USER_MAIL": "Es existiert bereits ein/e Benutzer/in mit dieser E-Mail Adresse",
     "SOZIALDIENST_WARNING_FALL_ENTZOGEN": "Die Vollmacht wurde entzogen. Der Fall ist für den Unterstützungdienst gesperrt!",
+    "ERROR_DUPLICATE_SOZIALDIENST_NAME": "Es existiert bereits ein Unterstützungsdienst mit diesem Namen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
