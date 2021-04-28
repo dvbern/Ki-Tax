@@ -17,7 +17,6 @@
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
-import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSSozialdienstStatus} from '../../../models/enums/TSSozialdienstStatus';
@@ -48,7 +47,6 @@ export class AddSozialdienstComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly benutzerRS: BenutzerRS,
         private readonly dialog: MatDialog,
-        private readonly translate: TranslateService,
     ) {
     }
 
@@ -101,7 +99,7 @@ export class AddSozialdienstComponent implements OnInit {
                     },
                 );
             } else {
-                this.errorService.addMesageAsError(this.translate.instant(exception.error.errorCodeEnum));
+                this.errorService.addMesageAsError(exception.error.translatedMessage);
             }
         });
     }
