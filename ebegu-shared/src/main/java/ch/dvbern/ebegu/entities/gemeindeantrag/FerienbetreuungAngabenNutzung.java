@@ -89,12 +89,13 @@ public class FerienbetreuungAngabenNutzung extends AbstractEntity {
 
 	public FerienbetreuungAngabenNutzung(FerienbetreuungAngabenNutzung toCopy) {
 		this.anzahlBetreuungstageKinderBern = toCopy.anzahlBetreuungstageKinderBern;
-		this.betreuungstageKinderDieserGemeinde = betreuungstageKinderDieserGemeindeSonderschueler;
+		this.betreuungstageKinderDieserGemeinde = toCopy.betreuungstageKinderDieserGemeinde;
 		this.betreuungstageKinderDieserGemeindeSonderschueler = toCopy.betreuungstageKinderDieserGemeindeSonderschueler;
 		this.davonBetreuungstageKinderAndererGemeinden = toCopy.davonBetreuungstageKinderAndererGemeinden;
 		this.davonBetreuungstageKinderAndererGemeindenSonderschueler = toCopy.davonBetreuungstageKinderAndererGemeindenSonderschueler;
 
 		this.anzahlBetreuteKinder = toCopy.anzahlBetreuteKinder;
+		this.anzahlBetreuteKinderSonderschueler = toCopy.anzahlBetreuteKinderSonderschueler;
 		this.anzahlBetreuteKinder1Zyklus = toCopy.anzahlBetreuteKinder1Zyklus;
 		this.anzahlBetreuteKinder2Zyklus = toCopy.anzahlBetreuteKinder2Zyklus;
 		this.anzahlBetreuteKinder3Zyklus = toCopy.anzahlBetreuteKinder3Zyklus;

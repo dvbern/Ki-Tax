@@ -134,7 +134,7 @@
                                        translate>ERROR_REQUIRED
                             </mat-error>
                             <dv-bisher-x
-                                [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse.strasse"
+                                [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.strasse"
                                 [korrektur]="form.get('angebotAdresse').get('strasse').value"
                                 [showBisher]="container.isAtLeastInPruefungKanton()"
                                 [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
@@ -154,7 +154,7 @@
                                    class="form-control dv-input"/>
                         </mat-form-field>
                         <dv-bisher-x
-                            [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse.hausnummer"
+                            [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.hausnummer"
                             [korrektur]="form.get('angebotAdresse').get('hausnummer').value"
                             [showBisher]="container.isAtLeastInPruefungKanton()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
@@ -179,7 +179,7 @@
                                        translate>ERROR_REQUIRED
                             </mat-error>
                             <dv-bisher-x
-                                [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse.plz"
+                                [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.plz"
                                 [korrektur]="form.get('angebotAdresse').get('plz').value"
                                 [showBisher]="container.isAtLeastInPruefungKanton()"
                                 [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
@@ -203,7 +203,7 @@
                                        translate>ERROR_REQUIRED
                             </mat-error>
                             <dv-bisher-x
-                                [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse.ort"
+                                [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.ort"
                                 [korrektur]="form.get('angebotAdresse').get('ort').value"
                                 [showBisher]="container.isAtLeastInPruefungKanton()"
                                 [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
