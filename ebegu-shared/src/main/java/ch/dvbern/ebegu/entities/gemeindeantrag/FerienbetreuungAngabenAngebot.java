@@ -215,6 +215,9 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 		this.angebotVereineUndPrivateIntegriert = toCopy.angebotVereineUndPrivateIntegriert;
 		this.bemerkungenKooperation = toCopy.bemerkungenKooperation;
 
+		this.anzahlStundenProBetreuungstag = toCopy.anzahlStundenProBetreuungstag;
+		this.betreuungErfolgtTagsueber = toCopy.betreuungErfolgtTagsueber;
+
 		this.leitungDurchPersonMitAusbildung = toCopy.leitungDurchPersonMitAusbildung;
 		this.betreuungDurchPersonenMitErfahrung = toCopy.betreuungDurchPersonenMitErfahrung;
 		this.anzahlKinderAngemessen = toCopy.anzahlKinderAngemessen;
