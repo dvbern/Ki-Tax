@@ -87,9 +87,9 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
                 takeUntil(this.unsubscribe),
             ), this.authService.principal$,
         ]).pipe(
-            map(([inBearbeitungGemeinde, principal]) => {
-                return (principal.hasRole(TSRole.SUPER_ADMIN) && inBearbeitungGemeinde) ||
-                    principal.hasOneOfRoles(TSRoleUtil.getMandantRoles());
+            map(([inBearbeitungKanton, principal]) => {
+                return (principal.hasRole(TSRole.SUPER_ADMIN) && inBearbeitungKanton) ||
+                    principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
             }),
         );
     }
