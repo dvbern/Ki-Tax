@@ -109,17 +109,13 @@ export abstract class AbstractFerienbetreuungFormular {
     ): void {
         if (container.isInPruefungKanton()) {
             if (principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) && angaben.isInBearbeitung()) {
-                if (angaben.isInBearbeitung()) {
-                    this.canSeeSave.next(true);
-                    this.canSeeAbschliessen.next(true);
-                    this.canSeeFalscheAngaben.next(false);
-                } else {
-                    this.canSeeSave.next(false);
-                    this.canSeeAbschliessen.next(false);
-                    this.canSeeFalscheAngaben.next(true);
-                }
+                this.canSeeSave.next(true);
+                this.canSeeAbschliessen.next(true);
+                this.canSeeFalscheAngaben.next(false);
             } else {
-                this.setCanSeeNoActions();
+                this.canSeeSave.next(false);
+                this.canSeeAbschliessen.next(false);
+                this.canSeeFalscheAngaben.next(true);
             }
             // tslint:disable-next-line:no-collapsible-if
         } else if (container.isInBearbeitungGemeinde() && !principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {

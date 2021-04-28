@@ -32,24 +32,7 @@ export class TSFerienbetreuungAbstractAngaben extends TSAbstractEntity {
     public isAtLeastAbgeschlossenGemeinde(): boolean {
         return [
             TSFerienbetreuungFormularStatus.ABGESCHLOSSEN,
-            TSFerienbetreuungFormularStatus.IN_PRUEFUNG_KANTON,
-            TSFerienbetreuungFormularStatus.GEPRUEFT,
         ].includes(this.status);
-    }
-
-    public isAtLeastInPruefungKanton(): boolean {
-        return [
-            TSFerienbetreuungFormularStatus.IN_PRUEFUNG_KANTON,
-            TSFerienbetreuungFormularStatus.GEPRUEFT,
-        ].includes(this.status);
-    }
-
-    public isGeprueft(): boolean {
-        return this.status === TSFerienbetreuungFormularStatus.GEPRUEFT;
-    }
-
-    public isInPruefungKanton(): boolean {
-        return this.status === TSFerienbetreuungFormularStatus.IN_PRUEFUNG_KANTON;
     }
 
     public isInBearbeitung(): boolean {

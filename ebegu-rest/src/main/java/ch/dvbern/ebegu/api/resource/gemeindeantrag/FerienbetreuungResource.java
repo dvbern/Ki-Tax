@@ -285,7 +285,8 @@ public class FerienbetreuungResource {
 		authorizer.checkWriteAuthorization(container);
 
 		Preconditions.checkArgument(
-			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE,
+			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE ||
+			container.getStatus() == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON,
 			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE");
 
 		FerienbetreuungAngabenStammdaten stammdaten =
@@ -419,7 +420,8 @@ public class FerienbetreuungResource {
 		authorizer.checkWriteAuthorization(container);
 
 		Preconditions.checkArgument(
-			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE,
+			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE ||
+				container.getStatus() == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON,
 			"FerienbetreuungAngabenContainer must be in state ABGESCHLOSSEN");
 
 		FerienbetreuungAngabenAngebot angebot =
@@ -542,7 +544,8 @@ public class FerienbetreuungResource {
 		authorizer.checkWriteAuthorization(container);
 
 		Preconditions.checkArgument(
-			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE,
+			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE ||
+				container.getStatus() == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON,
 			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE");
 
 		FerienbetreuungAngabenNutzung nutzung =
@@ -670,7 +673,8 @@ public class FerienbetreuungResource {
 		authorizer.checkWriteAuthorization(container);
 
 		Preconditions.checkArgument(
-			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE,
+			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE ||
+				container.getStatus() == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON,
 			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE");
 
 		FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen =
