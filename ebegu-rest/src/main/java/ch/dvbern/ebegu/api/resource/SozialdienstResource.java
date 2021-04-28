@@ -52,7 +52,6 @@ import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
 import ch.dvbern.ebegu.enums.SozialdienstStatus;
 import ch.dvbern.ebegu.services.Authorizer;
-import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.SozialdienstService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -73,9 +72,6 @@ public class SozialdienstResource {
 
 	@Inject
 	private SozialdienstService sozialdienstService;
-
-	@Inject
-	private BenutzerService benutzerService;
 
 	@Inject
 	private Authorizer authorizer;
