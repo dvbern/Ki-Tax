@@ -101,23 +101,7 @@ public class SozialdienstResource {
 		Sozialdienst convertedSozialdienst =
 			jaxSozialdienstConverter.sozialdienstToEntity(sozialdienstJAXP, new Sozialdienst());
 
-		Sozialdienst persistedSozialdienst = this.sozialdienstService.createSozialdienst(convertedSozialdienst);
-
-		final Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
-			.map(b -> {
-				if (b.getRole() != UserRole.GESUCHSTELLER) {
-					// an existing user cannot be used to create a new Sozial / Unterstuetzung Dienst
-					throw new EbeguRuntimeException(
-						KibonLogLevel.INFO,
-						"createSozialdienst",
-						ErrorCodeEnum.EXISTING_USER_MAIL,
-						adminMail);
-				}
-				return b;
-			})
-			.orElseGet(() -> benutzerService.createAdminSozialdienstByEmail(adminMail, persistedSozialdienst));
-
-		benutzerService.einladen(Einladung.forSozialdienst(benutzer, persistedSozialdienst));
+		Sozialdienst persistedSozialdienst = this.sozialdienstService.createSozialdienst(adminMail, convertedSozialdienst);
 
 		return jaxSozialdienstConverter.sozialdienstToJAX(persistedSozialdienst);
 	}

@@ -23,24 +23,32 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten_;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst_;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.AbstractBaseService;
+import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.SozialdienstService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
@@ -62,6 +70,9 @@ public class SozialdienstServiceBean extends AbstractBaseService implements Sozi
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
+	@Inject
+	private BenutzerService benutzerService;
+
 	@Nonnull
 	@Override
 	public Sozialdienst saveSozialdienst(
@@ -75,8 +86,9 @@ public class SozialdienstServiceBean extends AbstractBaseService implements Sozi
 	}
 
 	@Nonnull
+	@Transactional
 	@Override
-	public Sozialdienst createSozialdienst(@Nonnull Sozialdienst sozialdienst) {
+	public Sozialdienst createSozialdienst(@Nonnull String adminMail, @Nonnull Sozialdienst sozialdienst) {
 		Optional<Sozialdienst> sozialdienstOpt =
 			criteriaQueryHelper.getEntityByUniqueAttribute(Sozialdienst.class, sozialdienst.getName(), Sozialdienst_.name);
 		if (sozialdienstOpt.isPresent()) {
@@ -88,7 +100,25 @@ public class SozialdienstServiceBean extends AbstractBaseService implements Sozi
 				ErrorCodeEnum.ERROR_DUPLICATE_SOZIALDIENST_NAME);
 		}
 
-		return saveSozialdienst(sozialdienst);
+		Sozialdienst persistedSozialdienst = saveSozialdienst(sozialdienst);
+
+		final Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
+			.map(b -> {
+				if (b.getRole() != UserRole.GESUCHSTELLER) {
+					// an existing user cannot be used to create a new Sozial / Unterstuetzung Dienst
+					throw new EbeguRuntimeException(
+						KibonLogLevel.INFO,
+						"createSozialdienst",
+						ErrorCodeEnum.EXISTING_USER_MAIL,
+						adminMail);
+				}
+				return b;
+			})
+			.orElseGet(() -> benutzerService.createAdminSozialdienstByEmail(adminMail, persistedSozialdienst));
+
+		benutzerService.einladen(Einladung.forSozialdienst(benutzer, persistedSozialdienst));
+
+		return persistedSozialdienst;
 	}
 
 	@Nonnull
