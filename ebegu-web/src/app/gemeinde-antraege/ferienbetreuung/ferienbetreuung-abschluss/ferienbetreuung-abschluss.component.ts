@@ -82,13 +82,12 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
     public geprueftVisible(): Observable<boolean> {
         return combineLatest([
             this.ferienbetreuungsService.getFerienbetreuungContainer().pipe(
-                map(latsContainer => latsContainer.status ===
-                    FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON),
+                map(latsContainer => latsContainer.isAtLeastInPruefungKanton()),
                 takeUntil(this.unsubscribe),
             ), this.authService.principal$,
         ]).pipe(
-            map(([inBearbeitungKanton, principal]) => {
-                return (principal.hasRole(TSRole.SUPER_ADMIN) && inBearbeitungKanton) ||
+            map(([alLeastInPruefungKanton, principal]) => {
+                return (principal.hasRole(TSRole.SUPER_ADMIN) && alLeastInPruefungKanton) ||
                     principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
             }),
         );
@@ -127,7 +126,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
                 mergeMap(() => this.ferienbetreuungsService.getFerienbetreuungContainer().pipe(first())),
                 mergeMap(container => this.ferienbetreuungsService.ferienbetreuungAngabenGeprueft(container)),
                 takeUntil(this.unsubscribe),
-            ).subscribe(() => this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH')),
+            ).subscribe(() => this.wizardRS.updateSteps(this.WIZARD_TYPE, this.container.id),
             () => this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR')));
     }
 
@@ -141,8 +140,8 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
     }
 
     public alreadyGeprueft(): boolean {
-        return this.container.status === FerienbetreuungAngabenStatus.GEPRUEFT ||
-            this.container.status === FerienbetreuungAngabenStatus.ABGELEHNT ||
-            this.container.status === FerienbetreuungAngabenStatus.VERFUEGT;
+        return this.container?.status === FerienbetreuungAngabenStatus.GEPRUEFT ||
+            this.container?.status === FerienbetreuungAngabenStatus.ABGELEHNT ||
+            this.container?.status === FerienbetreuungAngabenStatus.VERFUEGT;
     }
 }

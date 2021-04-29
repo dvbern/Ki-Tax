@@ -25,7 +25,7 @@
         <span translate>FERIENBETREUUNG_FREIGABE_AN_KANTON</span>
     </dv-loading-button>
     <dv-loading-button
-        *ngIf="geprueftVisible() | async"
+        *ngIf="(geprueftVisible() | async) && !alreadyGeprueft()"
         type="button"
         [buttonDisabled]="alreadyGeprueft()"
         (buttonClick)="geprueft()">
@@ -34,4 +34,7 @@
 </div>
 <p *ngIf="(abschliessenVisible() | async) && alreadyFreigegeben()"
    [innerHTML]="'FERIENBETREUUNG_FREIGEGEBEN_AN_KANTON' | translate">
+</p>
+<p *ngIf="(geprueftVisible() | async) && alreadyGeprueft()"
+   [innerHTML]="'FERIENBETREUUNG_GEPRUEFT' | translate">
 </p>

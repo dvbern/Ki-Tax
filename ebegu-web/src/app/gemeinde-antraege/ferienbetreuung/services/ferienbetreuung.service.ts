@@ -239,7 +239,7 @@ export class FerienbetreuungService {
     }
 
     public ferienbetreuungAngabenGeprueft(
-        container: TSFerienbetreuungAngabenContainer
+        container: TSFerienbetreuungAngabenContainer,
     ): Observable<TSFerienbetreuungAngabenContainer> {
         return this.http.put(
             `${this.API_BASE_URL}/geprueft/${encodeURIComponent(container.id)}`,
@@ -248,14 +248,14 @@ export class FerienbetreuungService {
             map(
                 restAngaben => this.ebeguRestUtil.parseFerienbetreuungContainer(new TSFerienbetreuungAngabenContainer(),
                     restAngaben),
-                tap(() => this.updateFerienbetreuungContainerStore(container.id)),
             ),
+            tap(() => this.updateFerienbetreuungContainerStore(container.id)),
         );
 
     }
 
     public ferienbetreuungAngabenFreigeben(
-        container: TSFerienbetreuungAngabenContainer
+        container: TSFerienbetreuungAngabenContainer,
     ): Observable<TSFerienbetreuungAngabenContainer> {
         return this.http.put(
             `${this.API_BASE_URL}/abschliessen/${encodeURIComponent(container.id)}`,

@@ -175,6 +175,37 @@ public class FerienbetreuungResource {
 	}
 
 	@ApiOperation(
+		value = "Markiert den FerienbetreuungAngabenContainer als Geprüft",
+		response = JaxFerienbetreuungAngabenContainer.class)
+	@PUT
+	@Path("/geprueft/{containerId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, SACHBEARBEITER_MANDANT, ADMIN_MANDANT })
+	public JaxFerienbetreuungAngabenContainer ferienBetreuungGeprueft(
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response,
+		@Nonnull @NotNull @PathParam("containerId") JaxId containerId
+	) {
+		Objects.requireNonNull(containerId);
+		Objects.requireNonNull(containerId.getId());
+
+		authorizer.checkReadAuthorizationFerienbetreuung(containerId.getId());
+
+		FerienbetreuungAngabenContainer container =
+			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"saveFerienbetreuungStammdaten",
+					containerId.getId()));
+
+		authorizer.checkWriteAuthorization(container);
+
+		FerienbetreuungAngabenContainer persisted =
+			ferienbetreuungService.ferienbetreuungAngabenGeprueft(container);
+		return converter.ferienbetreuungAngabenContainerToJax(persisted);
+	}
+
+	@ApiOperation(
 		value = "Speichert FerienbetreuungAngabenStammdaten in der Datenbank",
 		response = JaxFerienbetreuungAngabenStammdaten.class)
 	@Nonnull

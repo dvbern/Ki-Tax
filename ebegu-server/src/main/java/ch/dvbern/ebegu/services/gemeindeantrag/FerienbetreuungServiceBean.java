@@ -437,7 +437,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			@Nonnull FerienbetreuungAngabenContainer container) {
 		Preconditions.checkArgument(
 			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE,
-			"FerienbetreuungAngabenStammdaten must be in state IN_BEARBEITUNG_GEMEINDE"
+			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE"
 		);
 
 		Preconditions.checkArgument(
@@ -447,6 +447,27 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 		container.copyForFreigabe();
 		container.setStatus(FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON);
+
+		return persistence.merge(container);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenContainer ferienbetreuungAngabenGeprueft(
+			@Nonnull FerienbetreuungAngabenContainer container) {
+		assert container.getAngabenKorrektur() != null;
+
+		Preconditions.checkArgument(
+			container.getStatus() == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON,
+			"FerienbetreuungAngabenContainer must be in state IN_PRUEFUNG_KANTON"
+		);
+
+		Preconditions.checkArgument(
+			container.getAngabenKorrektur().isReadyForFreigeben(),
+			"angaben incomplete"
+		);
+
+		container.setStatus(FerienbetreuungAngabenStatus.GEPRUEFT);
 
 		return persistence.merge(container);
 	}
