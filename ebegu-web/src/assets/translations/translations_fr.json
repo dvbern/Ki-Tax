@@ -2451,7 +2451,7 @@
     "FERIENBETREUUNG_DOKUMENT_UPLOAD_TITLE": "Concept de la structure d’accueil ; contrat de prestations",
     "FERIENBETREUUNG_FREIGABE_AN_KANTON": "Validation de la demande soumise au canton",
     "FERIENBETREUUNG_FREIGEGEBEN_AN_KANTON": "Vous avez soumis votre demande au canton. Vous pouvez toujours consulter vos données mais vous ne pouvez plus les modifier. En cas de problèmes, veuillez écrire à <a href='mailto:oeco.inc@be.ch'>oeco.inc@be.ch</a>.<br>Votre demande sera examinée en octobre et les contributions cantonales devraient vous être versées d’ici la fin de l’année civile.",
-    "ANTRAEGE_ERSTELLT": "Les demandes ont été créées",
+    "ANTRAEGE_ERSTELLT": "{{amount}} demandes ont été créées",
     "ANTRAG_ERSTELLT": "La demande a été créée",
     "ERROR_FB_SONDERSCHUELER": "le nombre de jour de garde pour les écoliers spéciaux ne doit pas être plus élevé que le nombre de jour de garde de la commune",
     "ERROR_FB_BETREUUNGSTAGE": "\"Le nombre de jour de garde d'enfant provenant de la commune proposée\" plus \"le nombre de jour de garde d'enfant provenant d'autres communes\" doit être égal au \"nombre de jour de garde du canton de Bern\"",
