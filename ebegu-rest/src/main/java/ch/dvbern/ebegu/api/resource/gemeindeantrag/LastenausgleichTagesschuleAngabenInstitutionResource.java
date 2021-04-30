@@ -226,6 +226,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN,
 		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS,
+		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_TRAEGERSCHAFT,
 		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
 	public JaxLastenausgleichTagesschuleAngabenInstitutionContainer falscheAngaben(
 		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainerJax

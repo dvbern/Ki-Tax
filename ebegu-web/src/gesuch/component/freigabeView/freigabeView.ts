@@ -20,6 +20,7 @@ import {ApplicationPropertyRS} from '../../../app/core/rest-services/application
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {isAtLeastFreigegeben, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {TSSozialdienstFallStatus} from '../../../models/enums/TSSozialdienstFallStatus';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
@@ -196,7 +197,10 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
             this.wizardStepManager.isStepStatusOk(TSWizardStepName.BETREUUNG)
             && !this.isGesuchReadonly()
             && (this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_GS)
-                || this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST));
+                || this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST))
+            && (!this.gesuchModelManager.getFall().isSozialdienstFall()
+                || (this.gesuchModelManager.getFall().isSozialdienstFall()
+                    && this.gesuchModelManager.getFall().sozialdienstFall.status === TSSozialdienstFallStatus.AKTIV));
     }
 
     public isNotFreigegeben(): boolean {

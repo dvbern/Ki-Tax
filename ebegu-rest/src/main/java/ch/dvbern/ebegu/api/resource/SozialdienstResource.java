@@ -47,14 +47,11 @@ import ch.dvbern.ebegu.api.converter.JaxSozialdienstConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienst;
 import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienstStammdaten;
-import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
-import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
 import ch.dvbern.ebegu.enums.SozialdienstStatus;
 import ch.dvbern.ebegu.services.Authorizer;
-import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.SozialdienstService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -77,9 +74,6 @@ public class SozialdienstResource {
 	private SozialdienstService sozialdienstService;
 
 	@Inject
-	private BenutzerService benutzerService;
-
-	@Inject
 	private Authorizer authorizer;
 
 	@ApiOperation(value = "Erstellt eine neue Sozialdienst in der Datenbank", response = JaxSozialdienst.class)
@@ -97,12 +91,7 @@ public class SozialdienstResource {
 		Sozialdienst convertedSozialdienst =
 			jaxSozialdienstConverter.sozialdienstToEntity(sozialdienstJAXP, new Sozialdienst());
 
-		Sozialdienst persistedSozialdienst = this.sozialdienstService.createSozialdienst(convertedSozialdienst);
-
-		final Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
-			.orElseGet(() -> benutzerService.createAdminSozialdienstByEmail(adminMail, persistedSozialdienst));
-
-		benutzerService.einladen(Einladung.forSozialdienst(benutzer, persistedSozialdienst));
+		Sozialdienst persistedSozialdienst = this.sozialdienstService.createSozialdienst(adminMail, convertedSozialdienst);
 
 		return jaxSozialdienstConverter.sozialdienstToJAX(persistedSozialdienst);
 	}

@@ -27,6 +27,7 @@ import {TSKitaxResponse} from '../../../models/dto/TSKitaxResponse';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {getTSEingangsartFromRole, TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../models/enums/TSRole';
+import {TSSozialdienstFallStatus} from '../../../models/enums/TSSozialdienstFallStatus';
 import {TSDossier} from '../../../models/TSDossier';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -267,7 +268,10 @@ export class FallToolbarComponent implements OnChanges {
 
     public showCreateNewDossier(): boolean {
         return !this.isOnlineGesuch() === !this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
-            && this.availableGemeindeList.length !== 0;
+            && this.availableGemeindeList.length !== 0
+            &&  !(this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle())
+                && this.selectedDossier?.fall.isSozialdienstFall()
+                && this.selectedDossier?.fall.sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN);
     }
 
     /**
@@ -348,5 +352,11 @@ export class FallToolbarComponent implements OnChanges {
                 });
             }
         });
+    }
+
+    public isSozialdienstGesuch(): boolean {
+        return this.selectedDossier
+            && this.selectedDossier.fall
+            && this.selectedDossier.fall.isSozialdienstFall();
     }
 }

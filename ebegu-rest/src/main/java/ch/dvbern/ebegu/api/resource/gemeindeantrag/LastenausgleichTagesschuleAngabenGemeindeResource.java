@@ -52,6 +52,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.authentication.AuthorizerImpl;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeService;
 import io.swagger.annotations.Api;
@@ -92,6 +93,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	@Inject
 	private PrincipalBean principal;
 
+	@Inject
+	private InstitutionService institutionService;
+
 	@ApiOperation(
 		value = "Gibt den LastenausgleichTagesschuleAngabenGemeindeContainer mit der uebergebenen Id zurueck",
 		response = JaxLastenausgleichTagesschuleAngabenGemeindeContainer.class)
@@ -101,7 +105,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION, ADMIN_INSTITUTION,
-		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT })
 	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer findLastenausgleichTagesschuleAngabenGemeindeContainer(
 		@Nonnull @NotNull @PathParam("latsGemeindeAngabenJaxId") JaxId latsGemeindeAngabenJaxId
 	) {
@@ -124,8 +129,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 					jaxLastenausgleichTagesschuleAngabenGemeindeContainer.setAngabenInstitutionContainers(
 						jaxLastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenInstitutionContainers()
 							.stream()
-							.filter(instiContainer -> Objects.requireNonNull(principal.getBenutzer().getInstitution())
-								.getId().equals(instiContainer.getInstitution().getId())
+							.filter(instiContainer -> institutionService.getInstitutionenReadableForCurrentBenutzer(
+								false)
+								.stream()
+								.anyMatch(userInstitution -> userInstitution.getId()
+									.equals(instiContainer.getInstitution().getId()))
 							).collect(Collectors.toSet()));
 					jaxLastenausgleichTagesschuleAngabenGemeindeContainer.setAngabenDeklaration(null);
 					jaxLastenausgleichTagesschuleAngabenGemeindeContainer.setAngabenKorrektur(null);
@@ -194,7 +202,6 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
 	}
 
-
 	@SuppressWarnings("PMD.PreserveStackTrace")
 	@ApiOperation(
 		value = "Schliesst das LastenausgleichTagesschuleAngabenGemeinde Formular ab",
@@ -206,7 +213,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
 		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS })
-	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeFuerInstitutionenAbschliessen(
+	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeAbschliessen(
 		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainerJax,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response
@@ -355,7 +362,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Nonnull
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS,
+		SACHBEARBEITER_TS })
 	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer falscheAngaben(
 		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainerJax,
 		@Context UriInfo uriInfo,

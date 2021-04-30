@@ -71,6 +71,7 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
+import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
@@ -428,7 +429,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		boolean allowedSozialdienst = false;
 		if (!allowedJAORGS && !allowedSchulamt && !allowedSteueramt
 			&& principalBean.isCallerInAnyOfRole(ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST)
-			&& AntragStatus.IN_BEARBEITUNG_SOZIALDIENST == gesuch.getStatus()) {
+			&& AntragStatus.IN_BEARBEITUNG_SOZIALDIENST == gesuch.getStatus()
+			&& gesuch.getFall().getSozialdienstFall() != null
+			&& gesuch.getFall().getSozialdienstFall().getStatus() != SozialdienstFallStatus.ENTZOGEN) {
 			allowedSozialdienst = true;
 		}
 
@@ -1722,8 +1725,11 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles()) &&
 			antrag.getAngabenInstitutionContainers()
 				.stream()
-				.anyMatch(container -> container.getInstitution().getId()
-					.equals(Objects.requireNonNull(principalBean.getBenutzer().getInstitution()).getId()))) {
+				.anyMatch(container -> institutionService.getInstitutionenReadableForCurrentBenutzer(false)
+					.stream()
+					.anyMatch(userInstitution -> userInstitution.getId().equals(container.getInstitution().getId()))
+				)
+		) {
 			return;
 		}
 		throwViolation(antrag);
@@ -1898,6 +1904,35 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
+	public void checkReadAuthorization(@Nullable SozialdienstFall sozialdienstFall) {
+		this.checkWriteAuthorization(sozialdienstFall);
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable SozialdienstFall sozialdienstFall) {
+		if (sozialdienstFall != null) {
+			boolean allSozialdienstAllowed =
+				principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT);
+			if (allSozialdienstAllowed || principalBean.isCallerInAnyOfRole(UserRole.getTsBgAndGemeindeRoles())) {
+				return;
+			}
+			if (principalBean.isCallerInAnyOfRole(ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST)) {
+				Sozialdienst benutzerSozialdienst = principalBean.getBenutzer().getSozialdienst();
+				Objects.requireNonNull(
+					benutzerSozialdienst,
+					String.format(
+						"Sozialdienst des Sachbearbeiters muss gesetzt sein: {%s} ",
+						principalBean.getBenutzer()));
+				if (benutzerSozialdienst.equals(sozialdienstFall.getSozialdienst())) {
+					return;
+				}
+			}
+
+			throwViolation(sozialdienstFall);
+		}
+	}
+
+	@Override
 	public void checkWriteAuthorization(@Nonnull FerienbetreuungAngabenContainer container) {
 		Objects.requireNonNull(container);
 		switch (container.getStatus()) {
@@ -1949,7 +1984,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				return;
 			}
 			throwViolation(container);
-		} case IN_PRUEFUNG_KANTON: {
+		}
+		case IN_PRUEFUNG_KANTON: {
 			if (principalBean.isCallerInAnyOfRole(getMandantSuperadminRoles())) {
 				return;
 			}

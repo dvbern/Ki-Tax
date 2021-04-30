@@ -53,20 +53,25 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.converter.JaxFerienbetreuungConverter;
+import ch.dvbern.ebegu.api.converter.JaxSozialdienstConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDokument;
 import ch.dvbern.ebegu.api.dtos.JaxDokumentGrund;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungDokument;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungDokument;
+import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienstFallDokument;
 import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
 import ch.dvbern.ebegu.api.resource.util.TransferFile;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.RueckforderungDokument;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFallDokument;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.RueckforderungDokumentTyp;
@@ -85,6 +90,7 @@ import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.RueckforderungDokumentService;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
+import ch.dvbern.ebegu.services.SozialdienstFallDokumentService;
 import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungDokumentService;
 import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
 import ch.dvbern.ebegu.util.Constants;
@@ -149,6 +155,9 @@ public class UploadResource {
 	private JaxBConverter converter;
 
 	@Inject
+	private JaxSozialdienstConverter sozialdienstConverter;
+
+	@Inject
 	private JaxFerienbetreuungConverter ferienbetreuungConverter;
 
 	@Inject
@@ -170,6 +179,9 @@ public class UploadResource {
 	private FerienbetreuungDokumentService ferienbetreuungDokumentService;
 
 	@Inject
+	private SozialdienstFallDokumentService sozialdienstFallDokumentService;
+
+	@Inject
 	private FallService fallService;
 
 	private static final String PART_FILE = "file";
@@ -179,6 +191,9 @@ public class UploadResource {
 	private static final String GESUCHID_HEADER = "x-gesuchID";
 
 	private static final String UPLOAD_WARNING = "Need to upload something";
+	private static final String FILENAME_WARNING = "filename must be given";
+
+	private static final String CONTENT_TYPE = "*/*; charset=UTF-8";
 
 	private static final Logger LOG = LoggerFactory.getLogger(UploadResource.class);
 
@@ -186,16 +201,19 @@ public class UploadResource {
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@PermitAll
-	public Response uploadFiles(@Context HttpServletRequest request, @Context UriInfo uriInfo, MultipartFormDataInput input)
+	public Response uploadFiles(
+		@Context HttpServletRequest request,
+		@Context UriInfo uriInfo,
+		MultipartFormDataInput input)
 		throws IOException, MimeTypeParseException {
 
-		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, "*/*; charset=UTF-8");
+		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, CONTENT_TYPE);
 
 		String[] encodedFilenames = getFilenamesFromHeader(request);
 
 		// check if filenames available
 		if (encodedFilenames == null || encodedFilenames.length == 0) {
-			final String problemString = "filename must be given";
+			final String problemString = FILENAME_WARNING;
 			LOG.error(problemString);
 			return Response.serverError().entity(problemString).build();
 		}
@@ -221,7 +239,8 @@ public class UploadResource {
 		try (InputStream dokGrund = input.getFormDataPart(PART_DOKUMENT_GRUND, InputStream.class, null)) {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.registerModule(new JavaTimeModule());
-			jaxDokumentGrund = mapper.readValue(IOUtils.toString(dokGrund, StandardCharsets.UTF_8), JaxDokumentGrund.class);
+			jaxDokumentGrund =
+				mapper.readValue(IOUtils.toString(dokGrund, StandardCharsets.UTF_8), JaxDokumentGrund.class);
 		} catch (IOException e) {
 			final String problemString = "Can't parse DokumentGrund from Jax to object";
 			LOG.error(problemString, e);
@@ -239,7 +258,8 @@ public class UploadResource {
 		// Die neu hochgeladenen Files gehen nicht verloren, sie befinden sich im "input"
 		DokumentGrund dokumentGrundToMerge = new DokumentGrund();
 		if (jaxDokumentGrund.getId() != null) {
-			Optional<DokumentGrund> existingDokumentGrundOptional = dokumentGrundService.findDokumentGrund(jaxDokumentGrund.getId());
+			Optional<DokumentGrund> existingDokumentGrundOptional =
+				dokumentGrundService.findDokumentGrund(jaxDokumentGrund.getId());
 			if (existingDokumentGrundOptional.isPresent()) {
 				dokumentGrundToMerge = existingDokumentGrundOptional.get();
 				jaxDokumentGrund = converter.dokumentGrundToJax(dokumentGrundToMerge);
@@ -286,13 +306,13 @@ public class UploadResource {
 		MultipartFormDataInput input)
 		throws IOException, MimeTypeParseException {
 
-		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, "*/*; charset=UTF-8");
+		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, CONTENT_TYPE);
 
 		String[] encodedFilenames = getFilenamesFromHeader(request);
 
 		// check if filenames available
 		if (encodedFilenames == null || encodedFilenames.length == 0) {
-			final String problemString = "filename must be given";
+			final String problemString = FILENAME_WARNING;
 			LOG.error(problemString);
 			return Response.serverError().entity(problemString).build();
 		}
@@ -300,7 +320,8 @@ public class UploadResource {
 		// Get RueckforderungId from request Parameter
 		String rueckforderungId = converter.toEntityId(rueckforderungFormularJAXPId);
 
-		Optional<RueckforderungFormular> rueckforderungFormular = rueckforderungFormularService.findRueckforderungFormular(rueckforderungId);
+		Optional<RueckforderungFormular> rueckforderungFormular =
+			rueckforderungFormularService.findRueckforderungFormular(rueckforderungId);
 		if (!rueckforderungFormular.isPresent()) {
 			final String problemString = "Can't find RueckforderungFormular on DB";
 			LOG.error(problemString);
@@ -309,7 +330,11 @@ public class UploadResource {
 
 		// for every file create a new RueckforderungsDokument linked with the given RueckforderungsFormular
 		List<JaxRueckforderungDokument> jaxRueckforderungDokuments =
-			extractFilesFromInputAndCreateRueckforderungsDokumenten(encodedFilenames, input, rueckforderungFormular.get(), rueckforderungDokumentTyp);
+			extractFilesFromInputAndCreateRueckforderungsDokumenten(
+				encodedFilenames,
+				input,
+				rueckforderungFormular.get(),
+				rueckforderungDokumentTyp);
 
 		URI uri = uriInfo.getBaseUriBuilder()
 			.path(UploadResource.class)
@@ -319,6 +344,56 @@ public class UploadResource {
 		return Response.created(uri).entity(jaxRueckforderungDokuments).build();
 	}
 
+	@ApiOperation(value = "Speichert ein oder mehrere SozialdienstFall Vollmacht Dokument in der Datenbank", response =
+		JaxSozialdienstFallDokument.class)
+	@Path("/uploadSozialdienstFallsDokument/{fallId}")
+	@POST
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE,
+		SACHBEARBEITER_GEMEINDE, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
+	public Response uploadSozialdienstFallsDokument(
+		@Nonnull @NotNull @PathParam("fallId") JaxId fallJAXPId,
+		@Context HttpServletRequest request, @Context UriInfo uriInfo,
+		MultipartFormDataInput input)
+		throws IOException, MimeTypeParseException {
+
+		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, CONTENT_TYPE);
+
+		String[] encodedFilenames = getFilenamesFromHeader(request);
+
+		// check if filenames available
+		if (encodedFilenames == null || encodedFilenames.length == 0) {
+			final String problemString = FILENAME_WARNING;
+			LOG.error(problemString);
+			return Response.serverError().entity(problemString).build();
+		}
+
+		// Get SozialdienstFallId from request Parameter
+		String fallId = converter.toEntityId(fallJAXPId);
+
+		Optional<Fall> fall = fallService.findFall(fallId);
+		if (!fall.isPresent() || fall.get().getSozialdienstFall() == null) {
+			final String problemString = "Can't find Fall on DB or not a SozialdienstFall";
+			LOG.error(problemString);
+			return Response.serverError().entity(problemString).build();
+		}
+
+		// for every file create a new RueckforderungsDokument linked with the given RueckforderungsFormular
+		JaxSozialdienstFallDokument jaxSozialdienstFallDokuments =
+			extractFileFromInputAndCreateVollmachtDokumenten(
+				encodedFilenames,
+				input,
+				fall.get().getSozialdienstFall());
+
+		URI uri = uriInfo.getBaseUriBuilder()
+			.path(UploadResource.class)
+			.path('/' + fall.get().getSozialdienstFall().getId())
+			.build();
+
+		return Response.created(uri).entity(jaxSozialdienstFallDokuments).build();
+	}
+
 	@ApiOperation(value = "Speichert ein oder mehrere FerienbetreuungDokumente in der Datenbank", response =
 		JaxRueckforderungDokument.class)
 	@Path("/ferienbetreuungDokumente/{ferienbetreuungContainerId}")
@@ -326,20 +401,21 @@ public class UploadResource {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG })
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+		SACHBEARBEITER_FERIENBETREUUNG })
 	public Response uploadFerienbetreuungDokumente(
 		@Nonnull @NotNull @PathParam("ferienbetreuungContainerId") JaxId ferienbetreuungContainerJAXPId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo,
 		MultipartFormDataInput input)
 		throws IOException, MimeTypeParseException {
 
-		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, "*/*; charset=UTF-8");
+		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, CONTENT_TYPE);
 
 		String[] encodedFilenames = getFilenamesFromHeader(request);
 
 		// check if filenames available
 		if (encodedFilenames == null || encodedFilenames.length == 0) {
-			final String problemString = "filename must be given";
+			final String problemString = FILENAME_WARNING;
 			LOG.error(problemString);
 			return Response.serverError().entity(problemString).build();
 		}
@@ -349,7 +425,9 @@ public class UploadResource {
 
 		FerienbetreuungAngabenContainer container =
 			ferienbetreuungService.findFerienbetreuungAngabenContainer(ferienbetreuungContainerId)
-			.orElseThrow(() -> new EbeguRuntimeException("uploadFerienbetreuungDokumente", ferienbetreuungContainerId));
+				.orElseThrow(() -> new EbeguRuntimeException(
+					"uploadFerienbetreuungDokumente",
+					ferienbetreuungContainerId));
 
 		// for every file create a new FerienbetreuungDokument linked with the given FerienbetreuungContainer
 		List<JaxFerienbetreuungDokument> jaxFerienbetreuungDokumente =
@@ -407,7 +485,12 @@ public class UploadResource {
 
 		TransferFile file = fileList.get(0);
 
-		gemeindeService.uploadGemeindeGesuchsperiodeDokument(gemeindeId, gesuchsperiodeId, sprache, dokumentTyp, file.getContent());
+		gemeindeService.uploadGemeindeGesuchsperiodeDokument(
+			gemeindeId,
+			gesuchsperiodeId,
+			sprache,
+			dokumentTyp,
+			file.getContent());
 
 		return Response.ok().build();
 	}
@@ -503,7 +586,7 @@ public class UploadResource {
 
 			// when uploading a new document we check the flag so we know that something has been uploaded
 			if (rueckforderungFormular.getStatus() == RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2 ||
-				rueckforderungFormular.getStatus() == RueckforderungStatus.VERFUEGT_PROVISORISCH ) {
+				rueckforderungFormular.getStatus() == RueckforderungStatus.VERFUEGT_PROVISORISCH) {
 				rueckforderungFormular.setUncheckedDocuments(true);
 			}
 
@@ -518,6 +601,41 @@ public class UploadResource {
 		}
 
 		return rueckforderungJaxDokuments;
+	}
+
+	private JaxSozialdienstFallDokument extractFileFromInputAndCreateVollmachtDokumenten(
+		@Nonnull String[] encodedFilenames,
+		@Nonnull MultipartFormDataInput input,
+		@Nonnull SozialdienstFall sozialdienstFall
+	) throws MimeTypeParseException, IOException {
+		String partrileName = PART_FILE;
+
+		JaxSozialdienstFallDokument sozialdienstFallJaxDokuments = null;
+
+		// do for every file:
+		List<InputPart> inputParts = input.getFormDataMap().get(partrileName);
+		if (inputParts != null && inputParts.stream().findAny().isPresent()) {
+
+			UploadFileInfo fileInfo = extractFileInfo(inputParts, encodedFilenames[0], partrileName, input);
+
+			// safe File to Filesystem, if we just analyze the input stream tika classifies all files as octet streams
+			fileSaverService.save(fileInfo, sozialdienstFall.getId());
+			checkFiletypeAllowed(fileInfo);
+
+			// create and add the new file to RueckforderungsDokument object and persist it
+			SozialdienstFallDokument sozialdienstFallDokument = new SozialdienstFallDokument();
+			sozialdienstFallDokument.setSozialdienstFall(sozialdienstFall);
+			sozialdienstFallDokument.setFilepfad(fileInfo.getPath());
+			sozialdienstFallDokument.setFilename(fileInfo.getFilename());
+			sozialdienstFallDokument.setFilesize(fileInfo.getSizeString());
+
+			SozialdienstFallDokument documentFromDB =
+				sozialdienstFallDokumentService.saveVollmachtDokument(sozialdienstFallDokument);
+
+			sozialdienstFallJaxDokuments = sozialdienstConverter.sozialdienstFallDokumentToJax(documentFromDB);
+		}
+
+		return sozialdienstFallJaxDokuments;
 	}
 
 	private List<JaxFerienbetreuungDokument> extractFilesFromInputAndCreateFerienbetreuungDokumente(
@@ -562,7 +680,11 @@ public class UploadResource {
 		return jaxFerienbetreuungDokumente;
 	}
 
-	private UploadFileInfo extractFileInfo(List<InputPart> inputParts, String encodedFilename, String partrileName, MultipartFormDataInput input)
+	private UploadFileInfo extractFileInfo(
+		List<InputPart> inputParts,
+		String encodedFilename,
+		String partrileName,
+		MultipartFormDataInput input)
 		throws IOException, MimeTypeParseException {
 		UploadFileInfo fileInfo = RestUtil.parseUploadFile(inputParts.stream().findAny().get());
 
@@ -633,24 +755,5 @@ public class UploadResource {
 		dokument.setFilesize(uploadFileInfo.getSizeString());
 		jaxDokumentGrund.getDokumente().add(dokument);
 		LOG.info("Add on {} file {}", jaxDokumentGrund.getDokumentTyp(), uploadFileInfo.getFilename());
-	}
-
-	@ApiOperation("Stores the Vollmacht zu einen gewissen SozialdienstFall und setzt der Fall als aktiv")
-	@POST
-	@Path("/sozialdienstfall/{fallid}")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({SUPER_ADMIN, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST})
-	public Response saveVollmachtDokument(
-		@Nonnull @NotNull @PathParam("fallid") String fallId,
-		@Nonnull @NotNull MultipartFormDataInput input) {
-
-		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
-		Validate.notEmpty(fileList, UPLOAD_WARNING);
-
-		fallService.uploadSozialdienstVollmachtDokument(fallId,
-			fileList.get(0).getContent());
-
-		return Response.ok().build();
 	}
 }

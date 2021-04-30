@@ -78,6 +78,8 @@ public class Einladung {
 		case SACHBEARBEITER_BG:
 		case ADMIN_TS:
 		case SACHBEARBEITER_TS:
+		case SACHBEARBEITER_FERIENBETREUUNG:
+		case ADMIN_FERIENBETREUUNG:
 		case JURIST:
 		case REVISOR:
 		case STEUERAMT:
@@ -91,6 +93,12 @@ public class Einladung {
 			return new Einladung(EinladungTyp.TRAEGERSCHAFT, eingeladener, eingeladener.getTraegerschaft());
 		case ADMIN_INSTITUTION:
 			return new Einladung(EinladungTyp.INSTITUTION, eingeladener, eingeladener.getInstitution());
+		case SACHBEARBEITER_SOZIALDIENST:
+		case ADMIN_SOZIALDIENST:
+			if(eingeladener.getSozialdienst() == null) {
+				throw new IllegalArgumentException();
+			}
+			return forSozialdienst(eingeladener, eingeladener.getSozialdienst());
 		case GESUCHSTELLER:
 			throw new IllegalArgumentException();
 		default:

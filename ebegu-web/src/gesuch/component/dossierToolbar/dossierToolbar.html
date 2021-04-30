@@ -141,6 +141,16 @@
             </div>
 
             <!--Kontakt-->
+            <div dv-show-element
+                 dv-show-allowed-roles="vmx.TSRoleUtil.getSozialdienstRolle()">
+                <button ng-click="vmx.showKontakt()" id="kontaktButton"
+                        aria-label="{{'ARIA_KONTAKT_MENU' | translate}}">
+                    <i class="ellipsis-icon fa fa-info-circle"></i>
+                    <span class="uppercase"  data-translate="TOOLBAR_KONTAKT"></span>
+                </button>
+            </div>
+
+            <!--Kontakt-->
             <md-menu ng-if="vmx.showKontaktMenu()">
                 <button ng-click="$mdMenu.open()" aria-label="{{vmx.getCurrentGesuchsperiode()}}">
                     <i class="ellipsis-icon fa fa-envelope"></i>

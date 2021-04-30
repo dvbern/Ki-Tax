@@ -358,7 +358,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_TS,
             TSRole.SACHBEARBEITER_TS,
             TSRole.SACHBEARBEITER_SOZIALDIENST,
-            TSRole.ADMIN_SOZIALDIENST
+            TSRole.ADMIN_SOZIALDIENST,
         ];
     }
 
@@ -680,7 +680,7 @@ export class TSRoleUtil {
         return this.getAmtRole().concat(this.getSozialdienstRolle());
     }
 
-    public static getGemeindeOrBGOrTSorMandantRoles(): ReadonlyArray<TSRole> {
-        return this.getGemeindeOrBGOrTSRoles().concat(this.getMandantRoles());
+    public static getGemeindeBGTSAndAllSozialdienstRoles(): ReadonlyArray<TSRole> {
+        return this.getGemeindeOrBGOrTSRoles().concat(this.getAllRolesForSozialdienst());
     }
 }

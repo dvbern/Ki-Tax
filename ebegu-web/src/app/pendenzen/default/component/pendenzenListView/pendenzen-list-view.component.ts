@@ -108,6 +108,7 @@ export class PendenzenListViewComponent {
                         verantwortlicheTS: antragDto.verantwortlicherTS,
                         verantwortlicheBG: antragDto.verantwortlicherBG,
                         hasBesitzer: () => antragDto.hasBesitzer(),
+                        isSozialdienst: antragDto.isSozialdienst,
                     };
                 }));
             });

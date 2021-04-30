@@ -22,7 +22,6 @@ import {TSGesuchBetreuungenStatus} from './enums/TSGesuchBetreuungenStatus';
 import {TSAbstractAntragDTO} from './TSAbstractAntragDTO';
 
 export class TSAntragDTO extends TSAbstractAntragDTO {
-
     private static readonly YEAR_2000 = 2000;
 
     private _antragId: string;
@@ -51,6 +50,7 @@ export class TSAntragDTO extends TSAbstractAntragDTO {
     private _gemeinde: string;
     private _fallId: string;
     private _gemeindeId: string;
+    private _isSozialdienst: boolean;
 
     public constructor() {
         super();
@@ -296,11 +296,20 @@ export class TSAntragDTO extends TSAbstractAntragDTO {
     public set gemeindeId(value: string) {
         this._gemeindeId = value;
     }
+
     public get fallId(): string {
         return this._fallId;
     }
 
     public set fallId(value: string) {
         this._fallId = value;
+    }
+
+    public get isSozialdienst(): boolean {
+        return this._isSozialdienst;
+    }
+
+    public set isSozialdienst(value: boolean) {
+        this._isSozialdienst = value;
     }
 }

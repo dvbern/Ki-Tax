@@ -60,15 +60,17 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.base.Preconditions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Service fuer den Lastenausgleich der Tagesschulen
@@ -96,6 +98,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	@Inject
 	private LastenausgleichTagesschuleAngabenGemeindeStatusHistoryService historyService;
 
+	@Inject
+	private InstitutionService institutionService;
+
+	private static final Logger LOG =
+		LoggerFactory.getLogger(LastenausgleichTagesschuleAngabenGemeindeServiceBean.class);
+
 	@Override
 	@Nonnull
 	public List<? extends GemeindeAntrag> createLastenausgleichTagesschuleGemeinde(
@@ -113,10 +121,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			Optional<LastenausgleichTagesschuleAngabenGemeindeContainer> existingOptional =
 				findLastenausgleichTagesschuleAngabenGemeindeContainer(gemeinde, gesuchsperiode);
 			if (existingOptional.isPresent()) {
-				throw new EntityExistsException(
-					LastenausgleichTagesschuleAngabenGemeindeContainer.class,
-					"LastenausgleichTagesschule Gemeinde Angaben existieren für gemeinde und periode bereits",
-					gemeinde.getName() + ' ' + gesuchsperiode.getGesuchsperiodeString());
+				LOG.info(
+					"LastenausgleichTagesschule Gemeinde Angaben existieren für {} und periode {} bereits",
+					gemeinde.getName(),
+					gesuchsperiode.getGesuchsperiodeString());
+				continue;
 			}
 			LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer =
 				new LastenausgleichTagesschuleAngabenGemeindeContainer();
@@ -131,6 +140,10 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
 				saveLastenausgleichTagesschuleGemeinde(fallContainer, true);
 			angabenInstitutionService.createLastenausgleichTagesschuleInstitution(saved);
+			LOG.info(
+				"LastenausgleichTagesschule Gemeinde Angaben für {} und periode {} erstellt",
+				gemeinde.getName(),
+				gesuchsperiode.getGesuchsperiodeString());
 			result.add(saved);
 		}
 		return result;
@@ -278,7 +291,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		@Nullable String status,
 		@Nullable String timestampMutiert) {
 		// institution users have much less permissions, so we handle this in on its own
-		if (principal.isCallerInAnyOfRole(UserRole.ADMIN_INSTITUTION, UserRole.SACHBEARBEITER_INSTITUTION)) {
+		if (principal.isCallerInAnyOfRole(
+			UserRole.ADMIN_INSTITUTION,
+			UserRole.SACHBEARBEITER_INSTITUTION,
+			UserRole.SACHBEARBEITER_TRAEGERSCHAFT,
+			UserRole.ADMIN_TRAEGERSCHAFT)) {
 			return getLastenausgleicheTagesschulenForInstitution(periode, status);
 		}
 		Set<Gemeinde> gemeinden = principal.getBenutzer().extractGemeindenForUser();
@@ -396,8 +413,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			JoinType.LEFT);
 
 		Predicate institutionIn = join.get(LastenausgleichTagesschuleAngabenInstitutionContainer_.institution)
-			.in(Objects.requireNonNull(principal.getBenutzer()
-				.getInstitution()));
+			.in(Objects.requireNonNull(institutionService.getInstitutionenReadableForCurrentBenutzer(false)));
 
 		Predicate notNeu = cb.not(
 			cb.equal(

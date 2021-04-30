@@ -17,16 +17,21 @@
 
 package ch.dvbern.ebegu.api.converter;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienst;
 import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienstFall;
+import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienstFallDokument;
 import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienstStammdaten;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFallDokument;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -140,5 +145,25 @@ public class JaxSozialdienstConverter extends AbstractConverter {
 		jaxSozialdienstFall.setAdresse(adresseToJAX(persistedSozialdienstFall.getAdresse()));
 		jaxSozialdienstFall.setSozialdienst(sozialdienstToJAX(persistedSozialdienstFall.getSozialdienst()));
 		return jaxSozialdienstFall;
+	}
+
+	@Nonnull
+	public List<JaxSozialdienstFallDokument> sozialdienstFallDokumentListToJax(
+		@Nonnull List<SozialdienstFallDokument> sozialdienstFallDokumentList) {
+		return sozialdienstFallDokumentList.stream()
+			.map(this::sozialdienstFallDokumentToJax)
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	public JaxSozialdienstFallDokument sozialdienstFallDokumentToJax(
+		@Nonnull SozialdienstFallDokument sozialdienstFallDokument) {
+		JaxSozialdienstFallDokument jaxSozialdienstFallDokument =
+			convertAbstractVorgaengerFieldsToJAX(sozialdienstFallDokument, new JaxSozialdienstFallDokument());
+		convertFileToJax(sozialdienstFallDokument, jaxSozialdienstFallDokument);
+
+		jaxSozialdienstFallDokument.setTimestampUpload(sozialdienstFallDokument.getTimestampUpload());
+
+		return jaxSozialdienstFallDokument;
 	}
 }

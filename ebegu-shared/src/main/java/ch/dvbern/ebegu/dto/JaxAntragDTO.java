@@ -165,6 +165,8 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 	@NotNull
 	private String gemeindeId;
 
+	private boolean isSozialdienst = false;
+
 	public String getAntragId() {
 		return antragId;
 	}
@@ -382,4 +384,11 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 		this.gemeindeId = gemeindeId;
 	}
 
+	public boolean isSozialdienst() {
+		return isSozialdienst;
+	}
+
+	public void setSozialdienst(boolean sozialdienst) {
+		isSozialdienst = sozialdienst;
+	}
 }

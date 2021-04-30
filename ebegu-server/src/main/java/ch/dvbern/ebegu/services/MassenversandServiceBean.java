@@ -80,6 +80,10 @@ public class MassenversandServiceBean extends AbstractBaseService implements Mas
 
 		List<String> gesuchIds = gesuchService.getAllGesuchIDsForFall(fall.getId());
 
+		if(gesuchIds.isEmpty()) {
+			return;
+		}
+
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Massenversand> query = cb.createQuery(Massenversand.class);
 		Root<Massenversand> root = query.from(Massenversand.class);

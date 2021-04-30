@@ -15,10 +15,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+package ch.dvbern.ebegu.services;
 
-public enum SozialdienstFallStatus {
-	AKTIV,
-	INAKTIV,
-	ENTZOGEN
+import java.util.List;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFallDokument;
+
+public interface SozialdienstFallDokumentService {
+
+	@Nonnull
+	Optional<SozialdienstFallDokument> findDokument(@Nonnull String key);
+
+	@Nonnull
+	List<SozialdienstFallDokument> findDokumente(@Nonnull String sozialdienstFallId);
+
+	void removeDokument(@Nonnull SozialdienstFallDokument dokument);
+
+	@Nonnull
+	SozialdienstFallDokument saveVollmachtDokument(@Nonnull SozialdienstFallDokument sozialdienstFallDokument);
 }

@@ -48,6 +48,7 @@ import {TSErrorType} from '../../models/enums/TSErrorType';
 import {TSGesuchBetreuungenStatus} from '../../models/enums/TSGesuchBetreuungenStatus';
 import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
 import {TSRole} from '../../models/enums/TSRole';
+import {TSSozialdienstFallStatus} from '../../models/enums/TSSozialdienstFallStatus';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import {TSAdresse} from '../../models/TSAdresse';
@@ -644,17 +645,26 @@ export class GesuchModelManager {
         }
 
         let gesuchsteller: TSGesuchsteller;
+        gesuchsteller = new TSGesuchsteller();
         if (this.gesuchstellerNumber === 1 && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
             const principal = this.authServiceRS.getPrincipal();
             const name = principal ? principal.nachname : undefined;
             const vorname = principal ? principal.vorname : undefined;
             const email = principal ? principal.email : undefined;
-            gesuchsteller = new TSGesuchsteller();
             gesuchsteller.vorname = vorname;
             gesuchsteller.nachname = name;
             gesuchsteller.mail = email;
-        } else {
-            gesuchsteller = new TSGesuchsteller();
+        }
+        if (this.getFall().isSozialdienstFall()) {
+            if (this.gesuchstellerNumber === 1) {
+                gesuchsteller.vorname = this.getFall().sozialdienstFall.vorname;
+                gesuchsteller.nachname = this.getFall().sozialdienstFall.name;
+                gesuchsteller.geburtsdatum = this.getFall().sozialdienstFall.geburtsdatum;
+            } else {
+                gesuchsteller.vorname = this.getFall().sozialdienstFall.vornameGs2;
+                gesuchsteller.nachname = this.getFall().sozialdienstFall.nameGs2;
+                gesuchsteller.geburtsdatum = this.getFall().sozialdienstFall.geburtsdatumGs2;
+            }
         }
         this.setStammdatenToWorkWith(new TSGesuchstellerContainer(gesuchsteller));
         // Nur GS 1 muss die Wohnadresse angeben!
@@ -764,6 +774,14 @@ export class GesuchModelManager {
         const wohnAdresseContanier = new TSAdresseContainer();
         const wohnAdresse = new TSAdresse();
         wohnAdresse.adresseTyp = TSAdressetyp.WOHNADRESSE;
+        if (this.getFall().isSozialdienstFall()) {
+            wohnAdresse.strasse = this.getFall().sozialdienstFall.adresse.strasse;
+            wohnAdresse.plz = this.getFall().sozialdienstFall.adresse.plz;
+            wohnAdresse.zusatzzeile = this.getFall().sozialdienstFall.adresse.zusatzzeile;
+            wohnAdresse.hausnummer = this.getFall().sozialdienstFall.adresse.hausnummer;
+            wohnAdresse.ort = this.getFall().sozialdienstFall.adresse.ort;
+        }
+
         wohnAdresseContanier.showDatumVon = false;
         wohnAdresseContanier.adresseJA = wohnAdresse;
         return [wohnAdresseContanier];
@@ -1458,7 +1476,9 @@ export class GesuchModelManager {
         if (this.authServiceRS.isOneOfRoles([TSRole.GESUCHSTELLER].concat(TSRoleUtil.getSozialdienstRolle()))) {
             // readonly fuer gs wenn gesuch freigegeben oder weiter
             const gesuchReadonly = !this.getGesuch() || isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status);
-            return gesuchReadonly || periodeReadonly;
+            const sozialdienstFallEntzogen = this.getFall().isSozialdienstFall()
+                 && this.getFall().sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN;
+            return gesuchReadonly || periodeReadonly || sozialdienstFallEntzogen;
         }
 
         return periodeReadonly;

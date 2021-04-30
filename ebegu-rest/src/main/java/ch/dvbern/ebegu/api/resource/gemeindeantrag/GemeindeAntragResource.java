@@ -246,7 +246,7 @@ public class GemeindeAntragResource {
 	@GET
 	@Path("{gemeindeAntragId}/tagesschulenantraege")
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
-		ADMIN_GEMEINDE,
+		ADMIN_GEMEINDE, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_TRAEGERSCHAFT,
 		ADMIN_TS, SACHBEARBEITER_TS, SACHBEARBEITER_GEMEINDE })
 	public List<JaxLastenausgleichTagesschuleAngabenInstitutionContainer> getTagesschuleAntraegeFuerGemeinedAntrag(
 		@Nonnull @Valid @PathParam("gemeindeAntragId") String gemeindeAntragId
@@ -273,7 +273,9 @@ public class GemeindeAntragResource {
 						UserRole.ADMIN_TS,
 						UserRole.SACHBEARBEITER_TS,
 						UserRole.ADMIN_INSTITUTION,
-						UserRole.SACHBEARBEITER_INSTITUTION);
+						UserRole.SACHBEARBEITER_INSTITUTION,
+						UserRole.SACHBEARBEITER_TRAEGERSCHAFT,
+						UserRole.ADMIN_TRAEGERSCHAFT);
 				}
 				return true;
 			})

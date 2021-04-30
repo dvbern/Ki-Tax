@@ -46,7 +46,7 @@
                         class="form-control"
                         [required]="true">
 
-                    <option *ngFor="let einstellungTagesschule of selectedInstitutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule"
+                    <option *ngFor="let einstellungTagesschule of filterEinstellungenTagesschule(selectedInstitutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule)"
                             [ngValue]="einstellungTagesschule">
                         {{einstellungTagesschule.gesuchsperiode.gesuchsperiodeString}}
                     </option>

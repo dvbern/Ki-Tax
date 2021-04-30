@@ -37,7 +37,8 @@ import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../models/gemeindeant
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
-import {TSSozialdienstStammdaten} from '../models/sozialdienst/TSSozaildienstStammdaten';
+import {TSSozialdienstFallDokument} from '../models/sozialdienst/TSSozialdienstFallDokument';
+import {TSSozialdienstStammdaten} from '../models/sozialdienst/TSSozialdienstStammdaten';
 import {TSSozialdienst} from '../models/sozialdienst/TSSozialdienst';
 import {TSSozialdienstFall} from '../models/sozialdienst/TSSozialdienstFall';
 import {TSAbstractAntragEntity} from '../models/TSAbstractAntragEntity';
@@ -2586,6 +2587,7 @@ export class EbeguRestUtil {
         restPendenz.dokumenteHochgeladen = pendenz.dokumenteHochgeladen;
         restPendenz.fallId = pendenz.fallId;
         restPendenz.gemeindeId = pendenz.gemeindeId;
+        restPendenz.isSozialdienst = pendenz.isSozialdienst;
         return restPendenz;
     }
 
@@ -2619,6 +2621,7 @@ export class EbeguRestUtil {
         antragTS.gemeinde = antragFromServer.gemeinde;
         antragTS.fallId = antragFromServer.fallId;
         antragTS.gemeindeId = antragFromServer.gemeindeId;
+        antragTS.isSozialdienst = antragFromServer.isSozialdienst;
         return antragTS;
     }
 
@@ -2912,10 +2915,7 @@ export class EbeguRestUtil {
 
     private parseDokument(dokument: TSDokument, dokumentFromServer: any): TSDokument {
         if (dokumentFromServer) {
-            this.parseAbstractMutableEntity(dokument, dokumentFromServer);
-            dokument.filename = dokumentFromServer.filename;
-            dokument.filepfad = dokumentFromServer.filepfad;
-            dokument.filesize = dokumentFromServer.filesize;
+            this.parseTSFileDokument(dokument, dokumentFromServer);
             dokument.timestampUpload = DateUtil.localDateTimeToMoment(dokumentFromServer.timestampUpload);
             dokument.userUploaded = this.parseUser(new TSBenutzer(), dokumentFromServer.userUploaded);
             return dokument;
@@ -4283,10 +4283,7 @@ export class EbeguRestUtil {
         dokumentFromServer: any,
     ): TSRueckforderungDokument {
         if (dokumentFromServer) {
-            this.parseAbstractMutableEntity(dokument, dokumentFromServer);
-            dokument.filename = dokumentFromServer.filename;
-            dokument.filepfad = dokumentFromServer.filepfad;
-            dokument.filesize = dokumentFromServer.filesize;
+            this.parseTSFileDokument(dokument, dokumentFromServer);
             dokument.timestampUpload = DateUtil.localDateTimeToMoment(dokumentFromServer.timestampUpload);
             dokument.rueckforderungDokumentTyp = dokumentFromServer.rueckforderungDokumentTyp;
             return dokument;
@@ -5123,10 +5120,7 @@ export class EbeguRestUtil {
         if (!dokumentFromServer) {
             return undefined;
         }
-        this.parseAbstractMutableEntity(dokument, dokumentFromServer);
-        dokument.filename = dokumentFromServer.filename;
-        dokument.filepfad = dokumentFromServer.filepfad;
-        dokument.filesize = dokumentFromServer.filesize;
+        this.parseTSFileDokument(dokument, dokumentFromServer);
         dokument.timestampUpload = DateUtil.localDateTimeToMoment(dokumentFromServer.timestampUpload);
         return dokument;
     }
@@ -5175,7 +5169,7 @@ export class EbeguRestUtil {
 
     public parseAnzahlEingeschriebeneKinder(
         anzahlEingeschriebeneKinder: TSAnzahlEingeschriebeneKinder,
-        restAnzahlEingeschriebeneKinder: any
+        restAnzahlEingeschriebeneKinder: any,
     ): TSAnzahlEingeschriebeneKinder {
         anzahlEingeschriebeneKinder.overall = restAnzahlEingeschriebeneKinder.overall;
         anzahlEingeschriebeneKinder.vorschulalter = restAnzahlEingeschriebeneKinder.vorschulalter;
@@ -5187,12 +5181,41 @@ export class EbeguRestUtil {
 
     public parseDurchschnittKinderProTag(
         tsDurchschnittKinderProTag: TSDurchschnittKinderProTag,
-        restDurchschnittKinderProTag: any
+        restDurchschnittKinderProTag: any,
     ): TSDurchschnittKinderProTag {
         tsDurchschnittKinderProTag.fruehbetreuung = restDurchschnittKinderProTag.fruehbetreuung;
         tsDurchschnittKinderProTag.mittagsbetreuung = restDurchschnittKinderProTag.mittagsbetreuung;
         tsDurchschnittKinderProTag.nachmittagsbetreuung1 = restDurchschnittKinderProTag.nachmittagsbetreuung1;
         tsDurchschnittKinderProTag.nachmittagsbetreuung2 = restDurchschnittKinderProTag.nachmittagsbetreuung2;
         return tsDurchschnittKinderProTag;
+    }
+
+    public parseSozialdienstFallDokumente(data: any): TSSozialdienstFallDokument[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseSozialdienstFallDokument(new TSSozialdienstFallDokument(), item))
+            : [this.parseSozialdienstFallDokument(new TSSozialdienstFallDokument(), data)];
+    }
+
+    public parseSozialdienstFallDokument(
+        vollMachtDokument: TSSozialdienstFallDokument,
+        dokumentFromServer: any,
+    ): TSSozialdienstFallDokument {
+        if (!dokumentFromServer) {
+            return undefined;
+        }
+        this.parseTSFileDokument(vollMachtDokument, dokumentFromServer);
+        vollMachtDokument.timestampUpload = DateUtil.localDateTimeToMoment(dokumentFromServer.timestampUpload);
+        return vollMachtDokument;
+    }
+
+    private parseTSFileDokument(dokument: TSFile, dokumentFromServer: any): TSFile {
+        this.parseAbstractMutableEntity(dokument, dokumentFromServer);
+        dokument.filename = dokumentFromServer.filename;
+        dokument.filepfad = dokumentFromServer.filepfad;
+        dokument.filesize = dokumentFromServer.filesize;
+        return dokument;
     }
 }
