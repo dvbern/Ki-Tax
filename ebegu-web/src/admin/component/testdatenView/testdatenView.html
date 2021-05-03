@@ -191,6 +191,12 @@
                             <span [textContent]="'Testfall Unterstützungsdienste'"></span>
                         </button>
                     </li>
+                    <li *ngIf="!this.selectedBesitzer">
+                        <button type="button" class="dv-btn btn-link btn-testfall"
+                                (click)="createTestFallType('LATS')">
+                            <span [textContent]="'Testfall LATS'"></span>
+                        </button>
+                    </li>
                 </ul>
             </div>
 

@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.WizardStep;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -75,6 +76,7 @@ import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.testfaelle.AbstractASIVTestfall;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
+import ch.dvbern.ebegu.testfaelle.testantraege.Testantrag_LATS;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.testfaelle.Testfall03_PerreiraMarcia;
@@ -268,6 +270,12 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 					);
 				final Gesuch gesuch = createAndSaveGesuch(testfallSozialdienst, verfuegen, null);
 				responseString.append("Fall Sozialdienst Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
+			} else if(LATS.equals(fallid)){
+				final LastenausgleichTagesschuleAngabenGemeindeContainer latsContainer = new Testantrag_LATS(
+					gemeinde,
+					gesuchsperiode,
+					institutionStammdatenService.getAllTagesschulenForGesuchsperiodeAndGemeinde(gesuchsperiode, gemeinde)
+				);
 			} else if ("all".equals(fallid)) {
 				createAndSaveGesuch(new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, besitzer);
 				createAndSaveGesuch(new Testfall02_FeutzYvonne(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, besitzer);
