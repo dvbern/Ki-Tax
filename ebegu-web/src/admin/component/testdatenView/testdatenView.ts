@@ -14,10 +14,11 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {IPromise} from 'angular';
 import * as moment from 'moment';
 import {Observable} from 'rxjs';
+import {DvNgConfirmDialogComponent} from '../../../app/core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgLinkDialogComponent} from '../../../app/core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
 import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
@@ -26,6 +27,7 @@ import {ApplicationPropertyRS} from '../../../app/core/rest-services/application
 import {BenutzerRS} from '../../../app/core/service/benutzerRS.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../models/TSGemeinde';
@@ -57,6 +59,12 @@ export class TestdatenViewComponent implements OnInit {
 
     public devMode: boolean;
 
+    public gesuchsperiodeGemeindeAntrag: TSGesuchsperiode;
+    public gemeindeGemeindeAntrag: TSGemeinde;
+    public gemeindeAntragStatus: string;
+    public gemeindeAntragTyp: TSGemeindeAntragTyp;
+    public gemeindeAntragTypeList: TSGemeindeAntragTyp[];
+
     public constructor(
         public readonly testFaelleRS: TestFaelleRS,
         private readonly benutzerRS: BenutzerRS,
@@ -82,6 +90,7 @@ export class TestdatenViewComponent implements OnInit {
             this.gemeindeList = angular.copy(response);
             this.gemeindeList.sort((a, b) => a.name.localeCompare(b.name));
         });
+        this.initGemeindeAntragTypes();
     }
 
     public createTestFallType(testFall: string): void {
@@ -240,5 +249,60 @@ export class TestdatenViewComponent implements OnInit {
             link,
         };
         return this.dialog.open(DvNgLinkDialogComponent, dialogConfig).afterClosed();
+    }
+
+    public async createGemeindeAntragTestDaten(): Promise<void> {
+
+        // tslint:disable-next-line:no-collapsible-if
+        if (this.latsSelected() && !this.gemeindeGemeindeAntrag) {
+            if (!await this.confirmDialog(
+                'Ohne ausgewählte Gemeinde werden die LATS Formular für ALLE Gemeinden erstellt/überschrieben. Fortfahren?')) {
+                return;
+            }
+        }
+
+        if (!this.gesuchsperiodeGemeindeAntrag ||
+            this.ferienbetreuungSelected() && !this.gemeindeGemeindeAntrag) {
+            this.errorService.addMesageAsError('Gemeinde und Gesuchsperiode müssen ausgewählt sein');
+            return;
+        }
+
+        this.testFaelleRS.createGemeindeAntragTestDaten(this.gemeindeAntragTyp,
+            this.gesuchsperiodeGemeindeAntrag,
+            this.gemeindeGemeindeAntrag,
+            this.gemeindeAntragStatus);
+    }
+
+    private initGemeindeAntragTypes(): void {
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then(configs => {
+                this.gemeindeAntragTypeList = [];
+                if (configs.ferienbetreuungAktiv) {
+                    this.gemeindeAntragTypeList.push(TSGemeindeAntragTyp.FERIENBETREUUNG);
+                }
+                if (configs.lastenausgleichTagesschulenAktiv) {
+                    this.gemeindeAntragTypeList.push(TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN);
+                }
+                this.gemeindeAntragTyp = this.gemeindeAntragTypeList[0];
+            }, error => {
+                console.error(error);
+            });
+    }
+
+    private ferienbetreuungSelected(): boolean {
+        return this.gemeindeAntragTyp === TSGemeindeAntragTyp.FERIENBETREUUNG;
+    }
+
+    private latsSelected(): boolean {
+        return this.gemeindeAntragTyp === TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN;
+    }
+
+    private async confirmDialog(text: string): Promise<boolean> {
+        return this.dialog.open(DvNgConfirmDialogComponent, {
+            data: {
+                frage: text,
+            },
+        }).afterClosed()
+            .toPromise();
     }
 }
