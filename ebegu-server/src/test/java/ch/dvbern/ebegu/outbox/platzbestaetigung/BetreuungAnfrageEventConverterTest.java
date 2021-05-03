@@ -58,7 +58,7 @@ public class BetreuungAnfrageEventConverterTest {
 		BetreuungAnfrageAddedEvent event = converter.of(kitaBetreuung);
 
 		assertThat(event, is(pojo(ExportedEvent.class)
-			.where(ExportedEvent::getAggregateId, is(kitaBetreuung.getId()))
+			.where(ExportedEvent::getAggregateId, is(kitaBetreuung.getBGNummer()))
 			.where(ExportedEvent::getAggregateType, is("BetreuungAnfrage"))
 			.where(ExportedEvent::getType, is("BetreuungAnfrageAdded")))
 		);

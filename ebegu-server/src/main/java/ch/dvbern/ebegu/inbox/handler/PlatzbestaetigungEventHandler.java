@@ -83,7 +83,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 	private static final Logger LOG = LoggerFactory.getLogger(PlatzbestaetigungEventHandler.class);
 
-	static final String TECHNICAL_BENUTZER_ID = "88888888-2222-2222-2222-222222222222";
 	private static final String BETREFF_KEY = "mutationsmeldung_betreff_von";
 	private static final String MESSAGE_KEY = "mutationsmeldung_message";
 	private static final String MESSAGE_MAHLZEIT_KEY = "mutationsmeldung_message_mahlzeitverguenstigung_mit_tarif";
@@ -130,7 +129,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 		if (!processing.isProcessingSuccess()) {
 			String message = processing.getMessage();
-			LOG.warn("Event für Betreuung mit RefNr: {} nicht verarbeitet: {}", dto.getRefnr(), message);
+			LOG.warn("Platzbestaetigung Event für Betreuung mit RefNr: {} nicht verarbeitet: {}", dto.getRefnr(), message);
 		}
 	}
 
@@ -249,14 +248,27 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	private Processing handlePlatzbestaetigung(@Nonnull ProcessingContext ctx) {
 		boolean isReadyForBestaetigen = updateBetreuungForPlatzbestaetigung(ctx);
 
+		final DateRange institutionGueltigkeit = ctx.getBetreuung().getInstitutionStammdaten().getGueltigkeit();
+		if (ctx.getBetreuung().getBetreuungspensumContainers()
+			.stream()
+			.anyMatch(betreuungspensumContainer -> !institutionGueltigkeit.contains(betreuungspensumContainer.getGueltigkeit()))) {
+			String message =
+				ValidationMessageUtil.getMessage("invalid_betreuungszeitraum_for_institutionsstammdaten");
+
+			message = MessageFormat.format(message, Constants.DATE_FORMATTER.format(institutionGueltigkeit
+				.getGueltigAb()), Constants.DATE_FORMATTER.format(institutionGueltigkeit.getGueltigBis()));
+
+			return Processing.failure(message);
+		}
+
 		if (isReadyForBestaetigen) {
 			//noinspection ResultOfMethodCallIgnored
 			betreuungService.betreuungPlatzBestaetigen(ctx.getBetreuung());
-			LOG.info("Betreuung mit RefNr: {} automatisch bestätigt", ctx.getDto().getRefnr());
+			LOG.info("PlatzbestaetigungEvent Betreuung mit RefNr: {} automatisch bestätigt", ctx.getDto().getRefnr());
 		} else {
 			//noinspection ResultOfMethodCallIgnored
 			betreuungService.saveBetreuung(ctx.getBetreuung(), false);
-			LOG.info("Betreuung mit RefNr: {} eingelesen, aber nicht automatisch bestätigt", ctx.getDto().getRefnr());
+			LOG.info("PlatzbestaetigungEvent Betreuung mit RefNr: {} eingelesen, aber nicht automatisch bestätigt", ctx.getDto().getRefnr());
 		}
 
 		return Processing.success();
@@ -269,6 +281,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 		if (!ctx.isGueltigkeitCoveringPeriode()) {
 			ctx.requireHumanConfirmation();
+			LOG.info("PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat Zeitabschnitten ausser die Gesuchsperiode gültigkeit", ctx.getDto().getRefnr());
 		}
 
 		setErweitereBeduerfnisseBestaetigt(ctx);
@@ -305,6 +318,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		if (incomingName == null && incomingBfsNumber == null) {
 			// Gemeinde not received, cannot evaluate -> abort automated processing
 			ctx.requireHumanConfirmation();
+			LOG.info("PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat keine Gemeinde spezifiziert", ctx.getDto().getRefnr());
 			return;
 		}
 
@@ -352,7 +366,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		}
 
 		mitteilungService.replaceBetreungsmitteilungen(betreuungsmitteilung);
-		LOG.info("Mutationsmeldung erstellt für die Betreuung mit RefNr: {}", ctx.getDto().getRefnr());
+		LOG.info("PlatzbestaetigungEvent: Mutationsmeldung erstellt für die Betreuung mit RefNr: {}", ctx.getDto().getRefnr());
 
 		return Processing.success();
 	}

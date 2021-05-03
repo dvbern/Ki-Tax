@@ -113,6 +113,8 @@ public class OutboxEventKafkaProducer {
 
 			producer.close();
 
+			events.forEach(event -> LOG.info("Event of type: {} with the aggregate id: {} was successfully exported",event.getAggregateType(), event.getAggregateId()));
+
 			events.forEach(entityManager::remove);
 
 		} catch (RuntimeException e) {
