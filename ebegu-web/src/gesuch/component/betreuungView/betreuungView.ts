@@ -1385,4 +1385,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public isInstitutionMobileSelection(): boolean {
         return 'none' === document.getElementById('institution_search').style.display;
     }
+
+    public anmeldungSchulamtFalscheAngaben(): void {
+        const params = {gesuchId: this.getGesuchId()};
+        this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST, GESUCH_BETREUUNGEN, params);
+    }
 }
