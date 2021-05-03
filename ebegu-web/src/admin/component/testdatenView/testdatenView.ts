@@ -87,6 +87,7 @@ export class TestdatenViewComponent implements OnInit {
     public createTestFallType(testFall: string): void {
         if (!this.selectedGesuchsperiode ||
             !this.selectedGemeinde) {
+            this.errorService.addMesageAsError('Gemeinde und Gesuchsperiode müssen ausgewählt sein');
             return;
         }
         let bestaetigt = false;
