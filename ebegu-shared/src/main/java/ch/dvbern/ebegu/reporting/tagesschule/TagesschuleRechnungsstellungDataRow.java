@@ -48,146 +48,181 @@ import org.apache.commons.lang.builder.CompareToBuilder;
  */
 public class TagesschuleRechnungsstellungDataRow implements Comparable<TagesschuleRechnungsstellungDataRow> {
 
-	private @Nullable String tagesschule;
-	private @Nullable String nachnameKind;
-	private @Nullable String vornameKind;
-	private @Nullable LocalDate geburtsdatumKind;
-	private @Nullable String referenznummer;
+	@Nullable
+	private String tagesschule;
+	@Nullable
+	private String nachnameKind;
+	@Nullable
+	private String vornameKind;
+	@Nullable
+	private LocalDate geburtsdatumKind;
+	@Nullable
+	private String referenznummer;
 
-	private @Nullable String rechnungsadresseVorname;
-	private @Nullable String rechnungsadresseNachname;
-	private @Nullable String rechnungsadresseStrasse;
-	private @Nullable String rechnungsadresseHausnummer;
-	private @Nullable String rechnungsadressePlz;
-	private @Nullable String rechnungsadresseOrt;
+	@Nullable
+	private String rechnungsadresseVorname;
+	@Nullable
+	private String rechnungsadresseNachname;
+	@Nullable
+	private String rechnungsadresseStrasse;
+	@Nullable
+	private String rechnungsadresseHausnummer;
+	@Nullable
+	private String rechnungsadressePlz;
+	@Nullable
+	private String rechnungsadresseOrt;
 
-	private @Nullable LocalDate datumAb;
-	private @Nullable BigDecimal massgebendesEinkommenVorFamAbzug;
-	private @Nullable BigDecimal famGroesse;
-	private @Nullable BigDecimal massgebendesEinkommenNachFamAbzug;
-	private @Nullable ErklaerungEinkommen erklaerungEinkommen;
-	private @Nullable LocalDate eintrittsdatum;
-	private @Nullable BigDecimal gebuehrProStundeMitBetreuung;
-	private @Nullable BigDecimal gebuehrProStundeOhneBetreuung;
+	@Nullable
+	private LocalDate datumAb;
+	@Nullable
+	private BigDecimal massgebendesEinkommenVorFamAbzug;
+	@Nullable
+	private BigDecimal famGroesse;
+	@Nullable
+	private BigDecimal massgebendesEinkommenNachFamAbzug;
+	@Nullable
+	private Boolean ekvVorhanden;
+	@Nullable
+	private ErklaerungEinkommen erklaerungEinkommen;
+	@Nullable
+	private LocalDate eintrittsdatum;
+	@Nullable
+	private BigDecimal gebuehrProStundeMitBetreuung;
+	@Nullable
+	private BigDecimal gebuehrProStundeOhneBetreuung;
 
-
-	public @Nullable  String getTagesschule() {
+	@Nullable
+	public String getTagesschule() {
 		return tagesschule;
 	}
 
-	public void setTagesschule(@Nullable  String tagesschule) {
+	public void setTagesschule(@Nullable String tagesschule) {
 		this.tagesschule = tagesschule;
 	}
 
-	public @Nullable  String getNachnameKind() {
+	@Nullable
+	public String getNachnameKind() {
 		return nachnameKind;
 	}
 
-	public void setNachnameKind(@Nullable  String nachnameKind) {
+	public void setNachnameKind(@Nullable String nachnameKind) {
 		this.nachnameKind = nachnameKind;
 	}
 
-	public @Nullable  String getVornameKind() {
+	@Nullable
+	public String getVornameKind() {
 		return vornameKind;
 	}
 
-	public void setVornameKind(@Nullable  String vornameKind) {
+	public void setVornameKind(@Nullable String vornameKind) {
 		this.vornameKind = vornameKind;
 	}
 
-	public @Nullable  LocalDate getGeburtsdatumKind() {
+	@Nullable
+	public LocalDate getGeburtsdatumKind() {
 		return geburtsdatumKind;
 	}
 
-	public void setGeburtsdatumKind(@Nullable  LocalDate geburtsdatumKind) {
+	public void setGeburtsdatumKind(@Nullable LocalDate geburtsdatumKind) {
 		this.geburtsdatumKind = geburtsdatumKind;
 	}
 
-	public @Nullable  String getReferenznummer() {
+	@Nullable
+	public String getReferenznummer() {
 		return referenznummer;
 	}
 
-	public void setReferenznummer(@Nullable  String referenznummer) {
+	public void setReferenznummer(@Nullable String referenznummer) {
 		this.referenznummer = referenznummer;
 	}
 
-	public @Nullable  String getRechnungsadresseVorname() {
+	@Nullable
+	public String getRechnungsadresseVorname() {
 		return rechnungsadresseVorname;
 	}
 
-	public void setRechnungsadresseVorname(@Nullable  String rechnungsadresseVorname) {
+	public void setRechnungsadresseVorname(@Nullable String rechnungsadresseVorname) {
 		this.rechnungsadresseVorname = rechnungsadresseVorname;
 	}
 
-	public @Nullable  String getRechnungsadresseNachname() {
+	@Nullable
+	public String getRechnungsadresseNachname() {
 		return rechnungsadresseNachname;
 	}
 
-	public void setRechnungsadresseNachname(@Nullable  String rechnungsadresseNachname) {
+	public void setRechnungsadresseNachname(@Nullable String rechnungsadresseNachname) {
 		this.rechnungsadresseNachname = rechnungsadresseNachname;
 	}
 
-	public @Nullable  String getRechnungsadresseStrasse() {
+	@Nullable
+	public String getRechnungsadresseStrasse() {
 		return rechnungsadresseStrasse;
 	}
 
-	public void setRechnungsadresseStrasse(@Nullable  String rechnungsadresseStrasse) {
+	public void setRechnungsadresseStrasse(@Nullable String rechnungsadresseStrasse) {
 		this.rechnungsadresseStrasse = rechnungsadresseStrasse;
 	}
 
-	public @Nullable  String getRechnungsadresseHausnummer() {
+	@Nullable
+	public String getRechnungsadresseHausnummer() {
 		return rechnungsadresseHausnummer;
 	}
 
-	public void setRechnungsadresseHausnummer(@Nullable  String rechnungsadresseHausnummer) {
+	public void setRechnungsadresseHausnummer(@Nullable String rechnungsadresseHausnummer) {
 		this.rechnungsadresseHausnummer = rechnungsadresseHausnummer;
 	}
 
-	public @Nullable  String getRechnungsadressePlz() {
+	@Nullable
+	public String getRechnungsadressePlz() {
 		return rechnungsadressePlz;
 	}
 
-	public void setRechnungsadressePlz(@Nullable  String rechnungsadressePlz) {
+	public void setRechnungsadressePlz(@Nullable String rechnungsadressePlz) {
 		this.rechnungsadressePlz = rechnungsadressePlz;
 	}
 
-	public @Nullable  String getRechnungsadresseOrt() {
+	@Nullable
+	public String getRechnungsadresseOrt() {
 		return rechnungsadresseOrt;
 	}
 
-	public void setRechnungsadresseOrt(@Nullable  String rechnungsadresseOrt) {
+	public void setRechnungsadresseOrt(@Nullable String rechnungsadresseOrt) {
 		this.rechnungsadresseOrt = rechnungsadresseOrt;
 	}
 
-	public @Nullable  LocalDate getDatumAb() {
+	@Nullable
+	public LocalDate getDatumAb() {
 		return datumAb;
 	}
 
-	public void setDatumAb(@Nullable  LocalDate datumAb) {
+	public void setDatumAb(@Nullable LocalDate datumAb) {
 		this.datumAb = datumAb;
 	}
 
-	public @Nullable  BigDecimal getMassgebendesEinkommenVorFamAbzug() {
+	@Nullable
+	public BigDecimal getMassgebendesEinkommenVorFamAbzug() {
 		return massgebendesEinkommenVorFamAbzug;
 	}
 
-	public void setMassgebendesEinkommenVorFamAbzug(@Nullable  BigDecimal massgebendesEinkommenVorFamAbzug) {
+	public void setMassgebendesEinkommenVorFamAbzug(@Nullable BigDecimal massgebendesEinkommenVorFamAbzug) {
 		this.massgebendesEinkommenVorFamAbzug = massgebendesEinkommenVorFamAbzug;
 	}
 
-	public @Nullable  BigDecimal getFamGroesse() {
+	@Nullable
+	public BigDecimal getFamGroesse() {
 		return famGroesse;
 	}
 
-	public void setFamGroesse(@Nullable  BigDecimal famGroesse) {
+	public void setFamGroesse(@Nullable BigDecimal famGroesse) {
 		this.famGroesse = famGroesse;
 	}
 
-	public @Nullable  BigDecimal getMassgebendesEinkommenNachFamAbzug() {
+	@Nullable
+	public BigDecimal getMassgebendesEinkommenNachFamAbzug() {
 		return massgebendesEinkommenNachFamAbzug;
 	}
 
-	public void setMassgebendesEinkommenNachFamAbzug(@Nullable  BigDecimal massgebendesEinkommenNachFamAbzug) {
+	public void setMassgebendesEinkommenNachFamAbzug(@Nullable BigDecimal massgebendesEinkommenNachFamAbzug) {
 		this.massgebendesEinkommenNachFamAbzug = massgebendesEinkommenNachFamAbzug;
 	}
 
@@ -200,28 +235,40 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 		this.erklaerungEinkommen = erklaerungEinkommen;
 	}
 
-	public @Nullable  LocalDate getEintrittsdatum() {
+	@Nullable
+	public LocalDate getEintrittsdatum() {
 		return eintrittsdatum;
 	}
 
-	public void setEintrittsdatum(@Nullable  LocalDate eintrittsdatum) {
+	public void setEintrittsdatum(@Nullable LocalDate eintrittsdatum) {
 		this.eintrittsdatum = eintrittsdatum;
 	}
 
-	public @Nullable  BigDecimal getGebuehrProStundeMitBetreuung() {
+	@Nullable
+	public BigDecimal getGebuehrProStundeMitBetreuung() {
 		return gebuehrProStundeMitBetreuung;
 	}
 
-	public void setGebuehrProStundeMitBetreuung(@Nullable  BigDecimal gebuehrProStundeMitBetreuung) {
+	public void setGebuehrProStundeMitBetreuung(@Nullable BigDecimal gebuehrProStundeMitBetreuung) {
 		this.gebuehrProStundeMitBetreuung = gebuehrProStundeMitBetreuung;
 	}
 
-	public @Nullable  BigDecimal getGebuehrProStundeOhneBetreuung() {
+	@Nullable
+	public BigDecimal getGebuehrProStundeOhneBetreuung() {
 		return gebuehrProStundeOhneBetreuung;
 	}
 
-	public void setGebuehrProStundeOhneBetreuung(@Nullable  BigDecimal gebuehrProStundeOhneBetreuung) {
+	public void setGebuehrProStundeOhneBetreuung(@Nullable BigDecimal gebuehrProStundeOhneBetreuung) {
 		this.gebuehrProStundeOhneBetreuung = gebuehrProStundeOhneBetreuung;
+	}
+
+	@Nullable
+	public Boolean getEkvVorhanden() {
+		return ekvVorhanden;
+	}
+
+	public void setEkvVorhanden(@Nullable Boolean ekvVorhanden) {
+		this.ekvVorhanden = ekvVorhanden;
 	}
 
 	@Nonnull
@@ -281,18 +328,35 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 		dataRow.massgebendesEinkommenVorFamAbzug = bgCalculationResult.getMassgebendesEinkommenVorAbzugFamgr();
 		dataRow.famGroesse = bgCalculationResult.getFamGroesse();
 
-		dataRow.massgebendesEinkommenNachFamAbzug = MathUtil.minimum(bgCalculationResult.getMassgebendesEinkommen(), BigDecimal.ZERO);
+		dataRow.massgebendesEinkommenNachFamAbzug =
+			MathUtil.minimum(bgCalculationResult.getMassgebendesEinkommen(), BigDecimal.ZERO);
+		dataRow.ekvVorhanden = getEkvVorhanden(anmeldungTagesschule);
 		dataRow.erklaerungEinkommen = getErklaerungEinkommen(anmeldungTagesschule);
 
-		final TSCalculationResult tsMitBetreuung = bgCalculationResult.getTsCalculationResultMitPaedagogischerBetreuung();
+		final TSCalculationResult tsMitBetreuung =
+			bgCalculationResult.getTsCalculationResultMitPaedagogischerBetreuung();
 		if (tsMitBetreuung != null) {
 			dataRow.gebuehrProStundeMitBetreuung = tsMitBetreuung.getGebuehrProStunde();
 		}
-		final TSCalculationResult tsOhneBetreuung = bgCalculationResult.getTsCalculationResultOhnePaedagogischerBetreuung();
+		final TSCalculationResult tsOhneBetreuung =
+			bgCalculationResult.getTsCalculationResultOhnePaedagogischerBetreuung();
 		if (tsOhneBetreuung != null) {
 			dataRow.gebuehrProStundeOhneBetreuung = tsOhneBetreuung.getGebuehrProStunde();
 		}
 		return dataRow;
+	}
+
+	private static Boolean getEkvVorhanden(@Nullable AnmeldungTagesschule anmeldungTagesschule) {
+		if (anmeldungTagesschule == null) {
+			return false;
+		}
+		Gesuch gesuch = anmeldungTagesschule.getKind().getGesuch();
+		if (gesuch.getEinkommensverschlechterungInfoContainer() == null) {
+			return false;
+		}
+		return gesuch.getEinkommensverschlechterungInfoContainer()
+			.getEinkommensverschlechterungInfoJA()
+			.getEinkommensverschlechterung();
 	}
 
 	// massgebendes Einkommen nach Familienabzug kann aus verschiedenen Gründen kleiner oder gleich 0 sein
@@ -326,13 +390,13 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 			return ErklaerungEinkommen.SOZIALHILFEBEZUEGER;
 		}
 		// 3)
-		if (familiensituationJA.getVerguenstigungGewuenscht() != null && !familiensituationJA.getVerguenstigungGewuenscht()) {
+		if (familiensituationJA.getVerguenstigungGewuenscht() != null
+			&& !familiensituationJA.getVerguenstigungGewuenscht()) {
 			return ErklaerungEinkommen.KEIN_EINKOMMEN_DEKLARIERT;
 		}
 		// 4)
 		return ErklaerungEinkommen.KEINE_ERKLAERUNG;
 	}
-
 
 	@Override
 	public boolean equals(Object o) {

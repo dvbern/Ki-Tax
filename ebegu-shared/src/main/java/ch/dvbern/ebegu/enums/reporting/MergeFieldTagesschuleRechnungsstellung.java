@@ -25,6 +25,7 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatRowMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_X_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
 
@@ -49,6 +50,7 @@ public enum MergeFieldTagesschuleRechnungsstellung implements MergeFieldProvider
 	massgebendesEinkommenVorFamAbzugTitle(new SimpleMergeField<>("massgebendesEinkommenVorFamAbzugTitle", STRING_CONVERTER)),
 	famGroesseTitle(new SimpleMergeField<>("famGroesseTitle", STRING_CONVERTER)),
 	massgebendesEinkommenNachFamAbzugTitle(new SimpleMergeField<>("massgebendesEinkommenNachFamAbzugTitle", STRING_CONVERTER)),
+	einkommensverschlechterungTitle(new SimpleMergeField<>("einkommensverschlechterungTitle", STRING_CONVERTER)),
 	erklaerungEinkommenTitle(new SimpleMergeField<>("erklaerungEinkommenTitle", STRING_CONVERTER)),
 	eintrittsdatumTitle(new SimpleMergeField<>("eintrittsdatumTitle", STRING_CONVERTER)),
 	gebuehrProStundeMitBetreuungTitle(new SimpleMergeField<>("gebuehrProStundeMitBetreuungTitle", STRING_CONVERTER)),
@@ -70,6 +72,7 @@ public enum MergeFieldTagesschuleRechnungsstellung implements MergeFieldProvider
 	massgebendesEinkommenVorFamAbzug(new SimpleMergeField<>("massgebendesEinkommenVorFamAbzug", BIGDECIMAL_CONVERTER)),
 	famGroesse(new SimpleMergeField<>("famGroesse", BIGDECIMAL_CONVERTER)),
 	massgebendesEinkommenNachFamAbzug(new SimpleMergeField<>("massgebendesEinkommenNachFamAbzug", BIGDECIMAL_CONVERTER)),
+	einkommensverschlechterung(new SimpleMergeField<>("einkommensverschlechterung", BOOLEAN_X_CONVERTER)),
 	erklaerungEinkommen(new SimpleMergeField<>("erklaerungEinkommen", STRING_CONVERTER)),
 	eintrittsdatum(new SimpleMergeField<>("eintrittsdatum", DATE_CONVERTER)),
 	gebuehrProStundeMitBetreuung(new SimpleMergeField<>("gebuehrProStundeMitBetreuung", BIGDECIMAL_CONVERTER)),
