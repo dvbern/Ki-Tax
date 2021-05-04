@@ -78,7 +78,7 @@ export class GemeindeAngabenComponent implements OnInit {
         private readonly wizardRS: WizardStepXRS,
         private readonly uiRouterGlobals: UIRouterGlobals,
         private readonly dialog: MatDialog,
-        private readonly unsavedChangesService: UnsavedChangesService
+        private readonly unsavedChangesService: UnsavedChangesService,
     ) {
     }
 
@@ -125,7 +125,7 @@ export class GemeindeAngabenComponent implements OnInit {
             this.formularInitForm = this.fb.group({
                 alleAngabenInKibonErfasst: [
                     this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst,
-                    Validators.required
+                    Validators.required,
                 ],
             });
         }
@@ -484,7 +484,8 @@ export class GemeindeAngabenComponent implements OnInit {
                         .setValue('');
                 }
 
-                this.angabenForm.get('erwarteterKostenbeitragGemeinde').setValue((values[0] * this.kostenbeitragGemeinde).toFixed(2));
+                this.angabenForm.get('erwarteterKostenbeitragGemeinde')
+                    .setValue((values[0] * this.kostenbeitragGemeinde).toFixed(2));
                 this.angabenForm.get('einnahmenElterngebuehrenRO').setValue(values[2]);
             },
             () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')),
@@ -556,11 +557,14 @@ export class GemeindeAngabenComponent implements OnInit {
         }
         // tslint:disable-next-line:max-line-length
         if (this.lATSAngabenGemeindeContainer.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON) {
-            this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.value;
+            this.lATSAngabenGemeindeContainer.angabenKorrektur = new TSLastenausgleichTagesschuleAngabenGemeinde();
+            Object.assign(this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.value);
         } else {
-            this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.value;
+            this.lATSAngabenGemeindeContainer.angabenDeklaration = new TSLastenausgleichTagesschuleAngabenGemeinde();
+            Object.assign(this.lATSAngabenGemeindeContainer.angabenDeklaration, this.angabenForm.value);
         }
-        this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst = this.formularInitForm.get('alleAngabenInKibonErfasst').value;
+        this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst =
+            this.formularInitForm.get('alleAngabenInKibonErfasst').value;
         this.lastenausgleichTSService.saveLATSAngabenGemeindeContainer(this.lATSAngabenGemeindeContainer);
         this.angabenForm.markAsPristine();
 
@@ -581,9 +585,11 @@ export class GemeindeAngabenComponent implements OnInit {
 
         // tslint:disable-next-line:max-line-length
         if (this.lATSAngabenGemeindeContainer.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON) {
-            this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.value;
+            this.lATSAngabenGemeindeContainer.angabenKorrektur = new TSLastenausgleichTagesschuleAngabenGemeinde();
+            Object.assign(this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.value);
         } else {
-            this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.value;
+            this.lATSAngabenGemeindeContainer.angabenDeklaration = new TSLastenausgleichTagesschuleAngabenGemeinde();
+            Object.assign(this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.value);
         }
         this.errorService.clearAll();
         this.lastenausgleichTSService.latsAngabenGemeindeFormularAbschliessen(this.lATSAngabenGemeindeContainer)
