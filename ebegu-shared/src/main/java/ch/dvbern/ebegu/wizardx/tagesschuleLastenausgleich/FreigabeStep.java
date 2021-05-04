@@ -65,13 +65,20 @@ public class FreigabeStep implements WizardStep<TagesschuleWizard> {
 
 	@Override
 	public boolean isDisabled(@Nonnull TagesschuleWizard wizard) {
-		if(wizard.getRole().isRoleGemeindeabhaengig() || wizard.getRole().isSuperadmin()) {
+		if (wizard.getRole().isSuperadmin()) {
+			if (wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isInBearbeitungGemeinde()) {
+				return !wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer()
+					.isAngabenDeklarationAbgeschlossen();
+			}
+			return !wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAngabenKorrekturAbgeschlossen();
+		}
+		if (wizard.getRole().isRoleGemeindeabhaengig()) {
 			return !(wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAngabenDeklarationAbgeschlossen()
 				&& wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().allInstitutionenGeprueft());
 		}
 
-			return !((wizard.getRole().isRoleMandant() || wizard.getRole().isSuperadmin()) &&
-				wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAngabenKorrekturAbgeschlossen());
+		return !((wizard.getRole().isRoleMandant() || wizard.getRole().isSuperadmin()) &&
+			wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAngabenKorrekturAbgeschlossen());
 
 	}
 

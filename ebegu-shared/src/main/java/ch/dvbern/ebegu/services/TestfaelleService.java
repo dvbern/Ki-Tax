@@ -117,6 +117,6 @@ public interface TestfaelleService {
 	@Nonnull
 	Collection<LastenausgleichTagesschuleAngabenGemeindeContainer> createAndSaveLATSTestdaten(
 		@Nonnull String gesuchsperiodeId,
-		@Nonnull String gemeindeId,
+		@Nullable String gemeindeId,
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeStatus status);
 }

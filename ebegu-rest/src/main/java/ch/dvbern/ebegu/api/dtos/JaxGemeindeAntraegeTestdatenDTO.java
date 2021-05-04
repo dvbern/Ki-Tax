@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
@@ -27,6 +28,7 @@ public class JaxGemeindeAntraegeTestdatenDTO extends JaxAbstractDTO {
 	private static final long serialVersionUID = 7154032563940613244L;
 
 	@NotNull
+	@Nonnull
 	private JaxGesuchsperiode gesuchsperiode;
 
 	@Nullable
@@ -35,11 +37,13 @@ public class JaxGemeindeAntraegeTestdatenDTO extends JaxAbstractDTO {
 	@NotNull
 	private LastenausgleichTagesschuleAngabenGemeindeStatus status;
 
+	@Nonnull
+	@NotNull
 	public JaxGesuchsperiode getGesuchsperiode() {
 		return gesuchsperiode;
 	}
 
-	public void setGesuchsperiode(JaxGesuchsperiode gesuchsperiode) {
+	public void setGesuchsperiode(@Nonnull JaxGesuchsperiode gesuchsperiode) {
 		this.gesuchsperiode = gesuchsperiode;
 	}
 

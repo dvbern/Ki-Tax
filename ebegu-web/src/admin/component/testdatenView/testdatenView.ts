@@ -61,7 +61,7 @@ export class TestdatenViewComponent implements OnInit {
 
     public gesuchsperiodeGemeindeAntrag: TSGesuchsperiode;
     public gemeindeGemeindeAntrag: TSGemeinde;
-    public gemeindeAntragStatus: string;
+    public gemeindeAntragStatus: string = 'IN_BEARBEITUNG_GEMEINDE';
     public gemeindeAntragTyp: TSGemeindeAntragTyp;
     public gemeindeAntragTypeList: TSGemeindeAntragTyp[];
 

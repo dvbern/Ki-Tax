@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -267,9 +268,11 @@ public class TestfaelleResource {
 	public Response createTestdatenLATS(
 		@Nonnull @NotNull @Valid JaxGemeindeAntraegeTestdatenDTO jaxGemeindeAntraegeTestdatenDTO) {
 
+		final String gemeindeId = jaxGemeindeAntraegeTestdatenDTO.getGemeinde() != null ? jaxGemeindeAntraegeTestdatenDTO.getGemeinde().getId() : null;
 		final Collection<LastenausgleichTagesschuleAngabenGemeindeContainer> latsContainers =
-			testfaelleService.createAndSaveLATSTestdaten(jaxGemeindeAntraegeTestdatenDTO.getGesuchsperiode().getId(),
-				jaxGemeindeAntraegeTestdatenDTO.getGemeinde().getId(),
+			testfaelleService.createAndSaveLATSTestdaten(
+				Objects.requireNonNull(jaxGemeindeAntraegeTestdatenDTO.getGesuchsperiode().getId()),
+				gemeindeId,
 				jaxGemeindeAntraegeTestdatenDTO.getStatus());
 		return Response.ok().build();
 	}

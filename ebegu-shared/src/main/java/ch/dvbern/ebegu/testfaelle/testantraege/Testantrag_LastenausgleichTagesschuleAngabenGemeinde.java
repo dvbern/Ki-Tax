@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 
 public class Testantrag_LastenausgleichTagesschuleAngabenGemeinde {
 
@@ -29,9 +30,15 @@ public class Testantrag_LastenausgleichTagesschuleAngabenGemeinde {
 
 	private LastenausgleichTagesschuleAngabenGemeinde angaben;
 
-	public Testantrag_LastenausgleichTagesschuleAngabenGemeinde(BigDecimal institutionsBetreuungsstundenSum) {
+	public Testantrag_LastenausgleichTagesschuleAngabenGemeinde(
+		BigDecimal institutionsBetreuungsstundenSum,
+		LastenausgleichTagesschuleAngabenGemeindeStatus status) {
 		this.angaben = new LastenausgleichTagesschuleAngabenGemeinde();
-		this.angaben.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
+		if(status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE) {
+			this.angaben.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
+		} else {
+			this.angaben.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN);
+		}
 		// A
 		this.angaben.setBedarfBeiElternAbgeklaert(true);
 		this.angaben.setAngebotFuerFerienbetreuungVorhanden(true);

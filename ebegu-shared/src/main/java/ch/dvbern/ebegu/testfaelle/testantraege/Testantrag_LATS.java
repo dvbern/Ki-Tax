@@ -41,16 +41,15 @@ public class Testantrag_LATS {
 		this.container = new LastenausgleichTagesschuleAngabenGemeindeContainer();
 		this.container.setGemeinde(gemeinde);
 		this.container.setGesuchsperiode(gesuchsperiode);
-
+		// First set it to IN_BEARBEITUNG_GEMEINDE so we can calculate the deklaration correctly
 		this.container.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE);
 		this.container.setAlleAngabenInKibonErfasst(false);
 
-		allTagesschulenForGesuchsperiodeAndGemeinde.forEach(institutionStammdaten -> {
-			this.container.getAngabenInstitutionContainers()
-				.add((new Testantrag_LastenausgleichTagesschuleAngabenInstitutionContainer(
-					this.container,
-					institutionStammdaten.getInstitution())).getContainer());
-		});
+		allTagesschulenForGesuchsperiodeAndGemeinde.forEach(institutionStammdaten -> this.container.getAngabenInstitutionContainers()
+			.add((new Testantrag_LastenausgleichTagesschuleAngabenInstitutionContainer(
+				this.container,
+				status,
+				institutionStammdaten.getInstitution())).getContainer()));
 
 		BigDecimal institutionsBetreuungsstundenSum = this.container.getAngabenInstitutionContainers()
 			.stream()
@@ -63,8 +62,13 @@ public class Testantrag_LATS {
 						.getBetreuungsstundenEinschliesslichBesondereBeduerfnisse()), BigDecimal::add);
 
 		this.container.setAngabenDeklaration(
-			(new Testantrag_LastenausgleichTagesschuleAngabenGemeinde(institutionsBetreuungsstundenSum)).getAngaben()
+			(new Testantrag_LastenausgleichTagesschuleAngabenGemeinde(institutionsBetreuungsstundenSum, status)).getAngaben()
 		);
+		if(status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON) {
+			this.container.copyForFreigabe();
+		}
+		// now set correct state
+		this.container.setStatus(status);
 	}
 
 	public LastenausgleichTagesschuleAngabenGemeindeContainer getContainer() {
