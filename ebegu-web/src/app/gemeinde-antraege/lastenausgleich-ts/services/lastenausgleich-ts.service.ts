@@ -68,11 +68,11 @@ export class LastenausgleichTSService {
     }
 
     public saveLATSAngabenGemeindeContainer(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
+        this.errorService.clearAll();
         this.http.put(
             `${this.API_BASE_URL}/save`,
             this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
         ).subscribe(result => {
-            this.errorService.clearAll();
             this.errorService.addMesageAsInfo(this.translate.instant('SAVED'));
             this.next(result);
         }, error => {

@@ -298,11 +298,10 @@ export class TagesschulenAngabenComponent {
         } else {
             this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
         }
-
+        this.errorService.clearAll();
         this.tagesschulenAngabenRS.saveTagesschuleAngaben(this.latsAngabenInstitutionContainer).subscribe(result => {
             this.form = this.setupForm(result?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
                 result?.angabenDeklaration : result?.angabenKorrektur);
-            this.errorService.clearAll();
             this.errorService.addMesageAsInfo(this.translate.instant('SAVED'));
             this.form.markAsPristine();
         }, error => {

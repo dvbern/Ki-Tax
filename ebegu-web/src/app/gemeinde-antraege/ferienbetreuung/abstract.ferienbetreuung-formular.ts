@@ -169,6 +169,7 @@ export abstract class AbstractFerienbetreuungFormular {
     }
 
     protected handleSaveError(error: any): void {
+        this.errorService.clearAll();
         if (error.error?.includes('Not all required properties are set')) {
             this.enableAndTriggerFormValidation();
             this.showValidierungFehlgeschlagenErrorMessage();
