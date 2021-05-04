@@ -21,27 +21,34 @@ import java.math.BigDecimal;
 
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
 
-public class Testantrag_LastenausgleichTagesschuleAngabenInstitution extends LastenausgleichTagesschuleAngabenInstitution {
+public class Testantrag_LastenausgleichTagesschuleAngabenInstitution {
+
+	private LastenausgleichTagesschuleAngabenInstitution angabenInstitution;
 
 	public Testantrag_LastenausgleichTagesschuleAngabenInstitution() {
+		this.angabenInstitution = new LastenausgleichTagesschuleAngabenInstitution();
 		// A
-		setLehrbetrieb(true);
+		this.angabenInstitution.setLehrbetrieb(true);
 		// B
-		this.setAnzahlEingeschriebeneKinder(new BigDecimal(25));
-		this.setAnzahlEingeschriebeneKinderKindergarten(new BigDecimal(10));
-		this.setAnzahlEingeschriebeneKinderSekundarstufe(new BigDecimal(10));
-		this.setAnzahlEingeschriebeneKinderPrimarstufe(new BigDecimal(5));
-		this.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(new BigDecimal(5));
-		this.setDurchschnittKinderProTagFruehbetreuung(new BigDecimal(5));
-		this.setDurchschnittKinderProTagMittag(new BigDecimal(5));
-		this.setDurchschnittKinderProTagNachmittag1(new BigDecimal(5));
-		this.setDurchschnittKinderProTagNachmittag2(new BigDecimal(5));
-		this.setBetreuungsstundenEinschliesslichBesondereBeduerfnisse(new BigDecimal(150));
+		this.angabenInstitution.setAnzahlEingeschriebeneKinder(new BigDecimal(25));
+		this.angabenInstitution.setAnzahlEingeschriebeneKinderKindergarten(new BigDecimal(10));
+		this.angabenInstitution.setAnzahlEingeschriebeneKinderSekundarstufe(new BigDecimal(10));
+		this.angabenInstitution.setAnzahlEingeschriebeneKinderPrimarstufe(new BigDecimal(5));
+		this.angabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(new BigDecimal(5));
+		this.angabenInstitution.setDurchschnittKinderProTagFruehbetreuung(new BigDecimal(5));
+		this.angabenInstitution.setDurchschnittKinderProTagMittag(new BigDecimal(5));
+		this.angabenInstitution.setDurchschnittKinderProTagNachmittag1(new BigDecimal(5));
+		this.angabenInstitution.setDurchschnittKinderProTagNachmittag2(new BigDecimal(5));
+		this.angabenInstitution.setBetreuungsstundenEinschliesslichBesondereBeduerfnisse(new BigDecimal(150));
 		// C
-		this.setSchuleAufBasisOrganisatorischesKonzept(true);
-		this.setSchuleAufBasisPaedagogischesKonzept(true);
-		this.setRaeumlicheVoraussetzungenEingehalten(true);
-		this.setBetreuungsverhaeltnisEingehalten(true);
-		this.setErnaehrungsGrundsaetzeEingehalten(true);
+		this.angabenInstitution.setSchuleAufBasisOrganisatorischesKonzept(true);
+		this.angabenInstitution.setSchuleAufBasisPaedagogischesKonzept(true);
+		this.angabenInstitution.setRaeumlicheVoraussetzungenEingehalten(true);
+		this.angabenInstitution.setBetreuungsverhaeltnisEingehalten(true);
+		this.angabenInstitution.setErnaehrungsGrundsaetzeEingehalten(true);
+	}
+
+	public LastenausgleichTagesschuleAngabenInstitution getAngabenInstitution() {
+		return angabenInstitution;
 	}
 }

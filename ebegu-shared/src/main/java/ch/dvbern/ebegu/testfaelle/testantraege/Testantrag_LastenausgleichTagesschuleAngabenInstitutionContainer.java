@@ -18,18 +18,26 @@
 package ch.dvbern.ebegu.testfaelle.testantraege;
 
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionStatus;
 
-public class Testantrag_LastenausgleichTagesschuleAngabenInstitutionContainer
-	extends ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer {
+public class Testantrag_LastenausgleichTagesschuleAngabenInstitutionContainer{
+
+	private LastenausgleichTagesschuleAngabenInstitutionContainer container;
 
 	public Testantrag_LastenausgleichTagesschuleAngabenInstitutionContainer(
-		Testantrag_LATS testantrag_lats,
+		LastenausgleichTagesschuleAngabenGemeindeContainer testantrag_lats,
 		Institution institution) {
-		this.setAngabenGemeinde(testantrag_lats);
-		this.setInstitution(institution);
-		this.setStatus(LastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN);
+		this.container = new LastenausgleichTagesschuleAngabenInstitutionContainer();
+		this.container.setAngabenGemeinde(testantrag_lats);
+		this.container.setInstitution(institution);
+		this.container.setStatus(LastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN);
 
-		this.setAngabenDeklaration(new Testantrag_LastenausgleichTagesschuleAngabenInstitution());
+		this.container.setAngabenDeklaration((new Testantrag_LastenausgleichTagesschuleAngabenInstitution()).getAngabenInstitution());
+	}
+
+	public LastenausgleichTagesschuleAngabenInstitutionContainer getContainer() {
+		return container;
 	}
 }

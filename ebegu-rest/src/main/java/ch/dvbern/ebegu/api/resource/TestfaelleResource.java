@@ -16,15 +16,20 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.time.LocalDate;
+import java.util.Collection;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -32,8 +37,10 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeAntraegeTestdatenDTO;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.SchulungService;
@@ -68,7 +75,6 @@ public class TestfaelleResource {
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
 
-
 	@ApiOperation(value = "Erstellt einen Testfall aus mehreren vordefinierten Testfaellen. Folgende Einstellungen " +
 		"sind moeglich: Gesuchsperiode, Gemeinde, Status der Betreuungen, Gesuch verfuegen", response = String.class)
 	@GET
@@ -83,12 +89,19 @@ public class TestfaelleResource {
 		@PathParam("verfuegen") boolean verfuegen) {
 
 		assertTestfaelleAccessAllowed();
-		StringBuilder responseString = testfaelleService.createAndSaveTestfaelle(fallid, betreuungenBestaetigt, verfuegen, gesuchsperiodeId, gemeindeId);
+		StringBuilder responseString = testfaelleService.createAndSaveTestfaelle(fallid,
+			betreuungenBestaetigt,
+			verfuegen,
+			gesuchsperiodeId,
+			gemeindeId);
 		return Response.ok(responseString.toString()).build();
 	}
 
-	@ApiOperation(value = "Erstellt einen Testfall aus mehreren vordefinierten Testfaellen fuer einen Gesuchsteller " +
-		"(Online Gesuch). Folgende Einstellungen sind moeglich: Gesuchsperiode, Gemeinde, Status der Betreuungen, Gesuch " +
+	@ApiOperation(value = "Erstellt einen Testfall aus mehreren vordefinierten Testfaellen fuer einen Gesuchsteller "
+		+
+		"(Online Gesuch). Folgende Einstellungen sind moeglich: Gesuchsperiode, Gemeinde, Status der Betreuungen, "
+		+ "Gesuch "
+		+
 		"verfuegen, gewuenschter Gesuchsteller", response = String.class)
 	@GET
 	@Path("/testfallgs/{fallid}/{gesuchsperiodeId}/{gemeindeId}/{betreuungenBestaetigt}/{verfuegen}/{username}")
@@ -103,7 +116,12 @@ public class TestfaelleResource {
 		@PathParam("username") String username) {
 
 		assertTestfaelleAccessAllowed();
-		StringBuilder responseString = testfaelleService.createAndSaveAsOnlineGesuch(fallid, betreuungenBestaetigt, verfuegen, username, gesuchsperiodeId, gemeindeId);
+		StringBuilder responseString = testfaelleService.createAndSaveAsOnlineGesuch(fallid,
+			betreuungenBestaetigt,
+			verfuegen,
+			username,
+			gesuchsperiodeId,
+			gemeindeId);
 		return Response.ok(responseString.toString()).build();
 	}
 
@@ -135,7 +153,8 @@ public class TestfaelleResource {
 		LocalDate mutationsdatum = DateUtil.parseStringToDateOrReturnNow(stringMutationsdatum);
 		LocalDate aenderungPer = DateUtil.parseStringToDateOrReturnNow(stringAenderungPer);
 
-		final Gesuch gesuch = testfaelleService.mutierenHeirat(dossierId, gesuchsperiodeid, mutationsdatum, aenderungPer, false);
+		final Gesuch gesuch =
+			testfaelleService.mutierenHeirat(dossierId, gesuchsperiodeid, mutationsdatum, aenderungPer, false);
 		if (gesuch != null) {
 			return Response.ok(FALL + gesuch.getFall().getFallNummer() + " mutiert zu heirat").build();
 		}
@@ -157,7 +176,8 @@ public class TestfaelleResource {
 		LocalDate mutationsdatum = DateUtil.parseStringToDateOrReturnNow(stringMutationsdatum);
 		LocalDate aenderungPer = DateUtil.parseStringToDateOrReturnNow(stringAenderungPer);
 
-		final Gesuch gesuch = testfaelleService.mutierenScheidung(dossierId, gesuchsperiodeid, mutationsdatum, aenderungPer, false);
+		final Gesuch gesuch =
+			testfaelleService.mutierenScheidung(dossierId, gesuchsperiodeid, mutationsdatum, aenderungPer, false);
 		if (gesuch != null) {
 			return Response.ok(FALL + gesuch.getFall().getFallNummer() + " mutiert zu scheidung").build();
 		}
@@ -239,15 +259,36 @@ public class TestfaelleResource {
 		return Response.ok().build();
 	}
 
+	@ApiOperation(value = "Sendet ein Beispiel aller Mails an die uebergebene Adresse", response = String.class)
+	@POST
+	@Path("/gemeinde-antraege/LASTENAUSGLEICH_TAGESSCHULEN")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response createTestdatenLATS(
+		@Nonnull @NotNull @Valid JaxGemeindeAntraegeTestdatenDTO jaxGemeindeAntraegeTestdatenDTO) {
+
+		final Collection<LastenausgleichTagesschuleAngabenGemeindeContainer> latsContainers =
+			testfaelleService.createAndSaveLATSTestdaten(jaxGemeindeAntraegeTestdatenDTO.getGesuchsperiode().getId(),
+				jaxGemeindeAntraegeTestdatenDTO.getGemeinde().getId(),
+				jaxGemeindeAntraegeTestdatenDTO.getStatus());
+		return Response.ok().build();
+	}
+
 	private void assertTestfaelleAccessAllowed() {
 		// Testfaelle duerfen nur erstellt werden, wenn das Flag gesetzt ist und das Dummy Login eingeschaltet ist
 		if (!ebeguConfiguration.isDummyLoginEnabled()) {
-			throw new EbeguRuntimeException("assertTestfaelleAccessAllowed", ErrorCodeEnum.ERROR_TESTFAELLE_DISABLED, "Testfaelle duerfen nur verwendet werden,"
-				+ " wenn das DummyLogin fuer diese Umgebung eingeschaltet ist");
+			throw new EbeguRuntimeException(
+				"assertTestfaelleAccessAllowed",
+				ErrorCodeEnum.ERROR_TESTFAELLE_DISABLED,
+				"Testfaelle duerfen nur verwendet werden,"
+					+ " wenn das DummyLogin fuer diese Umgebung eingeschaltet ist");
 		}
 		if (!ebeguConfiguration.isTestfaelleEnabled()) {
-			throw new EbeguRuntimeException("assertTestfaelleAccessAllowed", ErrorCodeEnum.ERROR_TESTFAELLE_DISABLED, "Testfaelle duerfen nur verwendet "
-				+ "werden, wenn diese ueber ein SystemProperty eingeschaltet sind");
+			throw new EbeguRuntimeException(
+				"assertTestfaelleAccessAllowed",
+				ErrorCodeEnum.ERROR_TESTFAELLE_DISABLED,
+				"Testfaelle duerfen nur verwendet "
+					+ "werden, wenn diese ueber ein SystemProperty eingeschaltet sind");
 		}
 	}
 }

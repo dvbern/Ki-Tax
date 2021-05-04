@@ -140,7 +140,11 @@ export class TestFaelleRS {
         status: string,
     ): IPromise<string> {
         return this.http.post<string>(`${this.serviceURL}/gemeinde-antraege/${antragTyp}`,
-            {gesuchsperiode, gemeinde, status})
+            {
+                gesuchsperiode: this.ebeguRestUtil.gesuchsperiodeToRestObject({}, gesuchsperiode),
+                gemeinde: this.ebeguRestUtil.gemeindeToRestObject({}, gemeinde),
+                status,
+            })
             .then(response => response.data);
     }
 }

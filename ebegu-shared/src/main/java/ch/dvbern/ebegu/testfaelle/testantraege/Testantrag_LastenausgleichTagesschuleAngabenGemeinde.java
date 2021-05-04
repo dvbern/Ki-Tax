@@ -20,40 +20,49 @@ package ch.dvbern.ebegu.testfaelle.testantraege;
 import java.math.BigDecimal;
 
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 
-public class Testantrag_LastenausgleichTagesschuleAngabenGemeinde extends LastenausgleichTagesschuleAngabenGemeinde {
+public class Testantrag_LastenausgleichTagesschuleAngabenGemeinde {
 
 	private final BigDecimal GELEISTETE_BETREUUNGSSTUNDEN_OHNE_BESONDERE_BEDUERFNISSE = new BigDecimal(5);
 	private final BigDecimal DAVON_ZU_WENIGER_ALS_50_PROZENT_NORMLOHN = new BigDecimal(5);
 
+	private LastenausgleichTagesschuleAngabenGemeinde angaben;
+
 	public Testantrag_LastenausgleichTagesschuleAngabenGemeinde(BigDecimal institutionsBetreuungsstundenSum) {
+		this.angaben = new LastenausgleichTagesschuleAngabenGemeinde();
+		this.angaben.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
 		// A
-		this.setBedarfBeiElternAbgeklaert(true);
-		this.setAngebotFuerFerienbetreuungVorhanden(true);
-		this.setAngebotVerfuegbarFuerAlleSchulstufen(true);
+		this.angaben.setBedarfBeiElternAbgeklaert(true);
+		this.angaben.setAngebotFuerFerienbetreuungVorhanden(true);
+		this.angaben.setAngebotVerfuegbarFuerAlleSchulstufen(true);
 		// B
-		this.setGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse(
+		this.angaben.setGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse(
 			GELEISTETE_BETREUUNGSSTUNDEN_OHNE_BESONDERE_BEDUERFNISSE);
-		this.setGeleisteteBetreuungsstundenBesondereBeduerfnisse(
+		this.angaben.setGeleisteteBetreuungsstundenBesondereBeduerfnisse(
 			institutionsBetreuungsstundenSum.subtract(GELEISTETE_BETREUUNGSSTUNDEN_OHNE_BESONDERE_BEDUERFNISSE)
 		);
-		this.setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete(DAVON_ZU_WENIGER_ALS_50_PROZENT_NORMLOHN);
-		this.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(institutionsBetreuungsstundenSum.subtract(
+		this.angaben.setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete(DAVON_ZU_WENIGER_ALS_50_PROZENT_NORMLOHN);
+		this.angaben.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(institutionsBetreuungsstundenSum.subtract(
 			DAVON_ZU_WENIGER_ALS_50_PROZENT_NORMLOHN));
-		this.setEinnahmenElterngebuehren(new BigDecimal(1500));
-		this.setTagesschuleTeilweiseGeschlossen(false);
-		this.setErsteRateAusbezahlt(new BigDecimal(1000));
+		this.angaben.setEinnahmenElterngebuehren(new BigDecimal(1500));
+		this.angaben.setTagesschuleTeilweiseGeschlossen(false);
+		this.angaben.setErsteRateAusbezahlt(new BigDecimal(1000));
 		// C
-		this.setGesamtKostenTagesschule(new BigDecimal(15000));
-		this.setEinnnahmenVerpflegung(new BigDecimal(1500));
-		this.setEinnahmenSubventionenDritter(new BigDecimal(1500));
-		this.setUeberschussErzielt(false);
+		this.angaben.setGesamtKostenTagesschule(new BigDecimal(15000));
+		this.angaben.setEinnnahmenVerpflegung(new BigDecimal(1500));
+		this.angaben.setEinnahmenSubventionenDritter(new BigDecimal(1500));
+		this.angaben.setUeberschussErzielt(false);
 		// E
-		this.setBetreuungsstundenDokumentiertUndUeberprueft(true);
-		this.setElterngebuehrenGemaessVerordnungBerechnet(true);
-		this.setEinkommenElternBelegt(true);
-		this.setMaximalTarif(true);
-		this.setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal(true);
-		this.setAusbildungenMitarbeitendeBelegt(true);
+		this.angaben.setBetreuungsstundenDokumentiertUndUeberprueft(true);
+		this.angaben.setElterngebuehrenGemaessVerordnungBerechnet(true);
+		this.angaben.setEinkommenElternBelegt(true);
+		this.angaben.setMaximalTarif(true);
+		this.angaben.setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal(true);
+		this.angaben.setAusbildungenMitarbeitendeBelegt(true);
+	}
+
+	public LastenausgleichTagesschuleAngabenGemeinde getAngaben() {
+		return angaben;
 	}
 }

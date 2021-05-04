@@ -20,9 +20,11 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
@@ -70,10 +72,12 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeService;
 import ch.dvbern.ebegu.testfaelle.AbstractASIVTestfall;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
 import ch.dvbern.ebegu.testfaelle.testantraege.Testantrag_LATS;
@@ -163,6 +167,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private TestfaelleService testfaelleService;
 	@Inject
 	private SozialdienstService sozialdienstService;
+	@Inject
+	private LastenausgleichTagesschuleAngabenGemeindeService latsService;
 
 
 	@Override
@@ -270,12 +276,6 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 					);
 				final Gesuch gesuch = createAndSaveGesuch(testfallSozialdienst, verfuegen, null);
 				responseString.append("Fall Sozialdienst Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
-			} else if(LATS.equals(fallid)){
-				final LastenausgleichTagesschuleAngabenGemeindeContainer latsContainer = new Testantrag_LATS(
-					gemeinde,
-					gesuchsperiode,
-					institutionStammdatenService.getAllTagesschulenForGesuchsperiodeAndGemeinde(gesuchsperiode, gemeinde)
-				);
 			} else if ("all".equals(fallid)) {
 				createAndSaveGesuch(new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, besitzer);
 				createAndSaveGesuch(new Testfall02_FeutzYvonne(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, besitzer);
@@ -1015,6 +1015,40 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	public Gesuch antragMutieren(@Nonnull Gesuch antrag, @Nullable LocalDate eingangsdatum) {
 		Gesuch mutation = Gesuch.createMutation(antrag.getDossier(), antrag.getGesuchsperiode(), eingangsdatum);
 		return gesuchService.createGesuch(mutation);
+	}
+
+	@Nonnull
+	@Override
+	public Collection<LastenausgleichTagesschuleAngabenGemeindeContainer> createAndSaveLATSTestdaten(
+		@Nonnull String gesuchsperiodeId,
+		@Nullable String gemeindeId,
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeStatus status) {
+		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId)
+			.orElseThrow(() -> new IllegalArgumentException());
+		if (gemeindeId != null) {
+			Gemeinde gemeinde =
+				gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new IllegalArgumentException());
+			return Collections.singleton(createAndSaveLATSTestdatenForGemeinde(status, gesuchsperiode, gemeinde));
+		}
+		return gemeindeService.getAktiveGemeinden()
+			.stream()
+			.map(gemeinde -> createAndSaveLATSTestdatenForGemeinde(status, gesuchsperiode, gemeinde))
+			.collect(Collectors.toSet());
+	}
+
+	@Nonnull
+	private LastenausgleichTagesschuleAngabenGemeindeContainer createAndSaveLATSTestdatenForGemeinde(
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeStatus status,
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Gemeinde gemeinde) {
+		final Collection<InstitutionStammdaten> allTagesschulenForGesuchsperiodeAndGemeinde =
+			institutionStammdatenService.getAllTagesschulenForGesuchsperiodeAndGemeinde(gesuchsperiode, gemeinde);
+		LastenausgleichTagesschuleAngabenGemeindeContainer testantrag = (new Testantrag_LATS(
+			gemeinde,
+			gesuchsperiode, allTagesschulenForGesuchsperiodeAndGemeinde,
+			status).getContainer());
+		latsService.deleteLastenausgleichTagesschuleAngabenGemeindeContainer(gemeinde, gesuchsperiode);
+		return latsService.saveLastenausgleichTagesschuleGemeinde(testantrag);
 	}
 
 	@Nonnull

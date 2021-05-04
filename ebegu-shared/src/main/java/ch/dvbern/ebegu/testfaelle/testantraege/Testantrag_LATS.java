@@ -28,28 +28,31 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 
-public class Testantrag_LATS extends LastenausgleichTagesschuleAngabenGemeindeContainer {
+public class Testantrag_LATS {
 
 	private static final long serialVersionUID = -5434973108213523011L;
+	private final LastenausgleichTagesschuleAngabenGemeindeContainer container;
 
 	public Testantrag_LATS(
 		Gemeinde gemeinde,
 		Gesuchsperiode gesuchsperiode,
-		Collection<InstitutionStammdaten> allTagesschulenForGesuchsperiodeAndGemeinde) {
-		this.setGemeinde(gemeinde);
-		this.setGesuchsperiode(gesuchsperiode);
+		Collection<InstitutionStammdaten> allTagesschulenForGesuchsperiodeAndGemeinde,
+		LastenausgleichTagesschuleAngabenGemeindeStatus status) {
+		this.container = new LastenausgleichTagesschuleAngabenGemeindeContainer();
+		this.container.setGemeinde(gemeinde);
+		this.container.setGesuchsperiode(gesuchsperiode);
 
-		this.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE);
-		this.setAlleAngabenInKibonErfasst(false);
+		this.container.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE);
+		this.container.setAlleAngabenInKibonErfasst(false);
 
 		allTagesschulenForGesuchsperiodeAndGemeinde.forEach(institutionStammdaten -> {
-			this.getAngabenInstitutionContainers()
-				.add(new Testantrag_LastenausgleichTagesschuleAngabenInstitutionContainer(
-					this,
-					institutionStammdaten.getInstitution()));
+			this.container.getAngabenInstitutionContainers()
+				.add((new Testantrag_LastenausgleichTagesschuleAngabenInstitutionContainer(
+					this.container,
+					institutionStammdaten.getInstitution())).getContainer());
 		});
 
-		BigDecimal institutionsBetreuungsstundenSum = this.getAngabenInstitutionContainers()
+		BigDecimal institutionsBetreuungsstundenSum = this.container.getAngabenInstitutionContainers()
 			.stream()
 			.reduce(
 				new BigDecimal(0),
@@ -59,10 +62,12 @@ public class Testantrag_LATS extends LastenausgleichTagesschuleAngabenGemeindeCo
 					Objects.requireNonNull(instiContainer.getAngabenDeklaration())
 						.getBetreuungsstundenEinschliesslichBesondereBeduerfnisse()), BigDecimal::add);
 
-		this.setAngabenDeklaration(
-			new Testantrag_LastenausgleichTagesschuleAngabenGemeinde(institutionsBetreuungsstundenSum)
+		this.container.setAngabenDeklaration(
+			(new Testantrag_LastenausgleichTagesschuleAngabenGemeinde(institutionsBetreuungsstundenSum)).getAngaben()
 		);
-		this.setAngabenInstitutionContainers(new HashSet<>());
+	}
 
+	public LastenausgleichTagesschuleAngabenGemeindeContainer getContainer() {
+		return container;
 	}
 }

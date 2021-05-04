@@ -185,6 +185,26 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
 	}
 
+	@Nonnull
+	@Override
+	public void deleteLastenausgleichTagesschuleAngabenGemeindeContainer(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
+
+		findLastenausgleichTagesschuleAngabenGemeindeContainer(
+			gemeinde,
+			gesuchsperiode).ifPresent(container -> {
+			deleteHistoryForContainer(container);
+			persistence.remove(container);
+		});
+	}
+
+	private void deleteHistoryForContainer(LastenausgleichTagesschuleAngabenGemeindeContainer container) {
+		List<LastenausgleichTagesschuleAngabenGemeindeStatusHistory> historyList =
+			historyService.findHistoryForContainer(container);
+		historyList.forEach(entry -> persistence.remove(entry));
+	}
+
 	@Override
 	@Nonnull
 	public LastenausgleichTagesschuleAngabenGemeindeContainer saveLastenausgleichTagesschuleGemeinde(
