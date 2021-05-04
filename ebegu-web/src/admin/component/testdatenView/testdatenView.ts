@@ -270,7 +270,9 @@ export class TestdatenViewComponent implements OnInit {
         this.testFaelleRS.createGemeindeAntragTestDaten(this.gemeindeAntragTyp,
             this.gesuchsperiodeGemeindeAntrag,
             this.gemeindeGemeindeAntrag,
-            this.gemeindeAntragStatus);
+            this.gemeindeAntragStatus).then(() => {
+                this.errorService.addMesageAsInfo('Gemeindeanträge erstellt');
+        }, () => this.errorService.addMesageAsError('Anträge konnten nicht erstellt werden'));
     }
 
     private initGemeindeAntragTypes(): void {
