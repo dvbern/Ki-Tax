@@ -166,14 +166,17 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		// if isNew or not published and Jugendamt -> generate Event for Kafka when API enabled and institution bekannt
 		if (exportBetreuung(isNew, mergedBetreuung)) {
 			if (ebeguConfiguration.isBetreuungAnfrageApiEnabled()
-				&& !betreuung.getInstitutionStammdaten().getId().equals(Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA)
-				&& !betreuung.getInstitutionStammdaten().getId().equals(Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE)) {
+				&& !betreuung.getInstitutionStammdaten()
+				.getId()
+				.equals(Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA)
+				&& !betreuung.getInstitutionStammdaten()
+				.getId()
+				.equals(Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE)) {
 				BetreuungAnfrageAddedEvent betreuungAnfrageAddedEvent =
 					betreuungAnfrageEventConverter.of(mergedBetreuung);
 				this.event.fire(betreuungAnfrageAddedEvent);
 				mergedBetreuung.setEventPublished(true);
-			}
-			else {
+			} else {
 				mergedBetreuung.setEventPublished(false);
 			}
 		}
@@ -189,6 +192,11 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		Gesuch mergedGesuch = gesuchService.updateBetreuungenStatus(mergedBetreuung.extractGesuch());
 
 		updateVerantwortliche(mergedGesuch, mergedBetreuung, false, isNew);
+
+		LOG.info(
+			"Betreuung mit RefNr: {} wurde geaendert und gespeichert mit Status: {}",
+			mergedBetreuung.getBGNummer(),
+			mergedBetreuung.getBetreuungsstatus());
 
 		return mergedBetreuung;
 	}
@@ -363,6 +371,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				"Mail InfoBetreuungAbgelehnt konnte nicht verschickt werden fuer Betreuung",
 				betreuung.getId());
 		}
+		LOG.info("Betreuung mit RefNr: {} wurde abgewiesen", betreuung.getBGNummer());
+
 		return persistedBetreuung;
 	}
 
@@ -393,6 +403,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				"Mail InfoBetreuungenBestaetigt konnte nicht verschickt werden fuer Betreuung",
 				betreuung.getId());
 		}
+		LOG.info("Betreuung mit RefNr: {} wurde bestaetigt", betreuung.getBGNummer());
 		return persistedBetreuung;
 	}
 
@@ -738,7 +749,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			null,
 			null,
 			WizardStepName.BETREUUNG); //auch bei entfernen wizard updaten
-
 		mailService.sendInfoBetreuungGeloescht(Collections.singletonList(betreuungToRemove));
 	}
 
@@ -803,7 +813,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		// the betreuung needs to be removed from the object as well
 		gesuch.getKindContainers()
 			.forEach(kind -> kind.getBetreuungen().removeIf(bet -> bet.getId().equalsIgnoreCase(betreuung.getId())));
-
+		LOG.info("Betreuung mit RefNr: {} wurde geloescht", betreuung.getBGNummer());
 		gesuchService.updateBetreuungenStatus(gesuch);
 	}
 

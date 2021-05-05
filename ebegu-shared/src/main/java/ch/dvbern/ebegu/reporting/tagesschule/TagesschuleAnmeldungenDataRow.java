@@ -21,7 +21,6 @@ import java.time.LocalDate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -31,22 +30,36 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
  */
 public class TagesschuleAnmeldungenDataRow {
 
-	private @Nullable String nachnameKind;
-	private @Nullable String vornameKind;
-	private @Nullable LocalDate geburtsdatum;
-	private @Nullable String nachnameAntragsteller1;
-	private @Nullable String vornameAntragsteller1;
-	private @Nullable String emailAntragsteller1;
-	private @Nullable String nachnameAntragsteller2;
-	private @Nullable String vornameAntragsteller2;
-	private @Nullable String emailAntragsteller2;
-	private @Nullable String referenznummer;
-	private @Nullable LocalDate eintrittsdatum;
-	private @Nonnull Betreuungsstatus status;
+	@Nullable
+	private String nachnameKind;
+	@Nullable
+	private String vornameKind;
+	@Nullable
+	private LocalDate geburtsdatum;
+	@Nullable
+	private String nachnameAntragsteller1;
+	@Nullable
+	private String vornameAntragsteller1;
+	@Nullable
+	private String emailAntragsteller1;
+	@Nullable
+	private String nachnameAntragsteller2;
+	@Nullable
+	private String vornameAntragsteller2;
+	@Nullable
+	private String emailAntragsteller2;
+	@Nullable
+	private String referenznummer;
+	@Nullable
+	private LocalDate eintrittsdatum;
+	@Nonnull
+	private Betreuungsstatus status;
 	private boolean isZweiwoechentlich;
-	private @Nonnull AnmeldungTagesschule anmeldungTagesschule;
+	@Nonnull
+	private AnmeldungTagesschule anmeldungTagesschule;
 
-	public @Nullable String getNachnameKind() {
+	@Nullable
+	public String getNachnameKind() {
 		return nachnameKind;
 	}
 
@@ -54,7 +67,8 @@ public class TagesschuleAnmeldungenDataRow {
 		this.nachnameKind = nachnameKind;
 	}
 
-	public @Nullable String getVornameKind() {
+	@Nullable
+	public String getVornameKind() {
 		return vornameKind;
 	}
 
@@ -62,11 +76,13 @@ public class TagesschuleAnmeldungenDataRow {
 		this.vornameKind = vornameKind;
 	}
 
-	public @Nullable LocalDate getGeburtsdatum() {
+	@Nullable
+	public LocalDate getGeburtsdatum() {
 		return geburtsdatum;
 	}
 
-	public @Nullable String getNachnameAntragsteller1() {
+	@Nullable
+	public String getNachnameAntragsteller1() {
 		return nachnameAntragsteller1;
 	}
 
@@ -74,7 +90,8 @@ public class TagesschuleAnmeldungenDataRow {
 		this.nachnameAntragsteller1 = nachnameAntragsteller1;
 	}
 
-	public @Nullable String getVornameAntragsteller1() {
+	@Nullable
+	public String getVornameAntragsteller1() {
 		return vornameAntragsteller1;
 	}
 
@@ -82,7 +99,8 @@ public class TagesschuleAnmeldungenDataRow {
 		this.vornameAntragsteller1 = vornameAntragsteller1;
 	}
 
-	public @Nullable String getEmailAntragsteller1() {
+	@Nullable
+	public String getEmailAntragsteller1() {
 		return emailAntragsteller1;
 	}
 
@@ -90,7 +108,8 @@ public class TagesschuleAnmeldungenDataRow {
 		this.emailAntragsteller1 = emailAntragsteller1;
 	}
 
-	public @Nullable String getNachnameAntragsteller2() {
+	@Nullable
+	public String getNachnameAntragsteller2() {
 		return nachnameAntragsteller2;
 	}
 
@@ -98,7 +117,8 @@ public class TagesschuleAnmeldungenDataRow {
 		this.nachnameAntragsteller2 = nachnameAntragsteller2;
 	}
 
-	public @Nullable String getVornameAntragsteller2() {
+	@Nullable
+	public String getVornameAntragsteller2() {
 		return vornameAntragsteller2;
 	}
 
@@ -106,7 +126,8 @@ public class TagesschuleAnmeldungenDataRow {
 		this.vornameAntragsteller2 = vornameAntragsteller2;
 	}
 
-	public @Nullable String getEmailAntragsteller2() {
+	@Nullable
+	public String getEmailAntragsteller2() {
 		return emailAntragsteller2;
 	}
 
@@ -118,7 +139,8 @@ public class TagesschuleAnmeldungenDataRow {
 		this.geburtsdatum = geburtsdatum;
 	}
 
-	public @Nullable String getReferenznummer() {
+	@Nullable
+	public String getReferenznummer() {
 		return referenznummer;
 	}
 
@@ -126,7 +148,8 @@ public class TagesschuleAnmeldungenDataRow {
 		this.referenznummer = referenznummer;
 	}
 
-	public @Nullable LocalDate getEintrittsdatum() {
+	@Nullable
+	public LocalDate getEintrittsdatum() {
 		return eintrittsdatum;
 	}
 
@@ -135,11 +158,11 @@ public class TagesschuleAnmeldungenDataRow {
 	}
 
 	@Nonnull
-	public @NotNull Betreuungsstatus getStatus() {
+	public Betreuungsstatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(@Nonnull @NotNull Betreuungsstatus status) {
+	public void setStatus(@Nonnull Betreuungsstatus status) {
 		this.status = status;
 	}
 

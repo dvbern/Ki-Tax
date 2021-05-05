@@ -72,6 +72,7 @@ public class TagesschuleRechnungsstellungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.massgebendesEinkommenVorFamAbzug, dataRow.getMassgebendesEinkommenVorFamAbzug());
 			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.famGroesse, dataRow.getFamGroesse());
 			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.massgebendesEinkommenNachFamAbzug, dataRow.getMassgebendesEinkommenNachFamAbzug());
+			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.einkommensverschlechterung, dataRow.getEkvVorhanden());
 			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.erklaerungEinkommen, ServerMessageUtil.translateEnumValue(dataRow.getErklaerungEinkommen(), locale));
 			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.eintrittsdatum, dataRow.getEintrittsdatum());
 			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.gebuehrProStundeMitBetreuung, dataRow.getGebuehrProStundeMitBetreuung());
@@ -103,6 +104,7 @@ public class TagesschuleRechnungsstellungExcelConverter implements ExcelConverte
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.massgebendesEinkommenVorFamAbzugTitle, ServerMessageUtil.getMessage("Reports_massgebendesEinkommenVorFamAbzugTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.famGroesseTitle, ServerMessageUtil.getMessage("Reports_famGroesseTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.massgebendesEinkommenNachFamAbzugTitle, ServerMessageUtil.getMessage("Reports_massgebendesEinkommenNachFamAbzugTitle", locale));
+		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.einkommensverschlechterungTitle, ServerMessageUtil.getMessage("Reports_einkommensverschlechterungTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.erklaerungEinkommenTitle, ServerMessageUtil.getMessage("Reports_erklaerungEinkommenTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.eintrittsdatumTitle, ServerMessageUtil.getMessage("Reports_eintrittsdatumTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.gebuehrProStundeMitBetreuungTitle, ServerMessageUtil.getMessage("Reports_gebuehrProStundeMitBetreuungTitle", locale));

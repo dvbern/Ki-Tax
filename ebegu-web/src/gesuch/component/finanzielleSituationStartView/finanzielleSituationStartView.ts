@@ -120,6 +120,9 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
         return this.gesuchModelManager.saveFinanzielleSituationStart()
             .then((gesuch: TSGesuch) => {
                 return gesuch;
+            }).catch(error => {
+                this.initialModel.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+                throw(error);
             });
     }
 
@@ -290,9 +293,16 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
         }
 
         if (this.areZahlungsdatenEditable() && this.isGesuchReadonly()) {
-            const properties = this.ebeguRestUtil.alwaysEditablePropertiesToRestObject({}, this.gesuchModelManager.getGesuch());
+            if (!this.form.$dirty) {
+                // If there are no changes in form we don't need to try to update the zahlung informations
+                // promise immediately
+                return this.$q.when(this.gesuchModelManager.getGesuch());
+            }
+            const properties = this.ebeguRestUtil.alwaysEditablePropertiesToRestObject({},
+                this.gesuchModelManager.getGesuch());
 
-            properties.keineMahlzeitenverguenstigungBeantragt = this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
+            properties.keineMahlzeitenverguenstigungBeantragt =
+                this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
             properties.iban = this.model.zahlungsinformationen.iban?.toLocaleUpperCase();
             properties.kontoinhaber = this.model.zahlungsinformationen.kontoinhaber;
             properties.abweichendeZahlungsadresse = this.model.zahlungsinformationen.abweichendeZahlungsadresse;

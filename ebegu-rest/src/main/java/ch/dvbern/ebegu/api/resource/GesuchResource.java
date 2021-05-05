@@ -1030,7 +1030,8 @@ public class GesuchResource {
 			"updateAlwaysEditableProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, antragId));
 
 		converter.alwaysEditablePropertiesToGesuch(properties,gesuch);
-		gesuchService.updateGesuch(gesuch, false);
+		// No Authcheck required as allowed users can change those datas independently from the Gesuch status
+		gesuchService.updateGesuch(gesuch, false, null, false);
 
 		return converter.gesuchToJAX(gesuch);
 	}

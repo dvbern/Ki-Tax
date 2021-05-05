@@ -39,7 +39,7 @@ public class BetreuungAnfrageEventConverter {
 		BetreuungAnfrageEventDTO dto = toBetreuungAnfrageEvent(betreuung);
 		byte[] payload = AvroConverter.toAvroBinary(dto);
 
-		return new BetreuungAnfrageAddedEvent(betreuung.getId(), payload, dto.getSchema());
+		return new BetreuungAnfrageAddedEvent(betreuung.getBGNummer(), payload, dto.getSchema());
 	}
 
 	/**

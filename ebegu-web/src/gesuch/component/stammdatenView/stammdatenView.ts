@@ -172,6 +172,11 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
                 properties.telefonGS1 = this.getModelJA().telefon;
                 properties.telefonAuslandGS1 = this.getModelJA().telefonAusland;
             }
+            if (!this.form.$dirty) {
+                // If there are no changes in form we don't need to try to update email or the telefon
+                // promise immediately
+                return this.$q.when(this.model);
+            }
 
             return this.gesuchModelManager.updateAlwaysEditableProperties(properties).then( g => {
                 if (this.gesuchstellerNumber === 2) {
