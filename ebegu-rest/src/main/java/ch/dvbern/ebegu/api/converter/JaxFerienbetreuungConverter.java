@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngaben;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenAngebot;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenContainer;
@@ -44,6 +45,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 @RequestScoped
 public class JaxFerienbetreuungConverter extends AbstractConverter {
@@ -59,6 +61,17 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 			persistence.merge(entity); // MERGE -- hibernate will throw an exception if the version does not match the
 		// version in the DB
 		persistence.getEntityManager().flush(); // FLUSH -- otherwise the version is not incremented yet
+		return saved; // return the saved object with the updated version number (beware: it is only updated if there
+		// was an actual change)
+	}
+
+	@Nonnull
+	private <T extends AbstractEntity> T checkVersionAndSave(@Nonnull T entity, long version) {
+		persistence.getEntityManager().detach(entity); // DETACH -- otherwise we cannot set the version manually
+		entity.setVersion(version); // SETVERSION -- set the version we had
+		T saved =
+			persistence.merge(entity); // MERGE -- hibernate will throw an exception if the version does not match the
+		// version in the DB
 		return saved; // return the saved object with the updated version number (beware: it is only updated if there
 		// was an actual change)
 	}
@@ -171,7 +184,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 				if (adresse == null) {
 					adresse = new Adresse();
 				}
-				auszahlungsdaten.setAdresseKontoinhaber(adresseToEntity(
+				auszahlungsdaten.setAdresseKontoinhaber(super.adresseToEntity(
 					jaxStammdaten.getAdresseKontoinhaber(),
 					adresse));
 			}
@@ -490,6 +503,14 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxFerienbetreuungDokument.setTimestampUpload(jaxFerienbetreuungDokument.getTimestampUpload());
 
 		return jaxFerienbetreuungDokument;
+	}
+
+	@Override
+	@Nonnull
+	@CanIgnoreReturnValue
+	public Adresse adresseToEntity(@Nonnull final JaxAdresse jaxAdresse, @Nonnull final Adresse adresse) {
+		Adresse entity = super.adresseToEntity(jaxAdresse, adresse);
+		return checkVersionAndSave(entity, jaxAdresse.getVersion());
 	}
 
 }

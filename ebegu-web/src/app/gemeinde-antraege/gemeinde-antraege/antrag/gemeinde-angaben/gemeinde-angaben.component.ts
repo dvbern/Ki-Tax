@@ -85,6 +85,8 @@ export class GemeindeAngabenComponent implements OnInit {
     public ngOnInit(): void {
         this.subscription = this.lastenausgleichTSService.getLATSAngabenGemeindeContainer()
             .subscribe(container => {
+                this.lATSAngabenGemeindeContainer = new TSLastenausgleichTagesschuleAngabenGemeindeContainer();
+                Object.assign(this.lATSAngabenGemeindeContainer, container);
                 this.lATSAngabenGemeindeContainer = container;
                 if (this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst !== null) {
                     const gemeindeAngaben = container.getAngabenToWorkWith();

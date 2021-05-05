@@ -128,6 +128,9 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                 ort: [
                     stammdaten?.stammdatenAdresse?.ort,
                 ],
+                version: [
+                    stammdaten?.stammdatenAdresse?.version
+                ]
             }),
             stammdatenKontaktpersonVorname: [
                 stammdaten?.stammdatenKontaktpersonVorname,
@@ -161,6 +164,9 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                     plz: [
                         stammdaten?.adresseKontoinhaber?.plz,
                     ],
+                    version: [
+                        stammdaten?.adresseKontoinhaber?.version
+                    ]
                 }),
                 iban: [
                     stammdaten?.iban,
