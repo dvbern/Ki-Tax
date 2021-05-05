@@ -140,7 +140,7 @@
                             translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
                         </mat-error>
                         <dv-bisher-x
-                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse.organisation"
+                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.organisation"
                             [korrektur]="form.get('stammdatenAdresse').get('organisation').value"
                             [showBisher]="container.isAtLeastInPruefungKanton()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
@@ -166,7 +166,7 @@
                                 translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
                             </mat-error>
                             <dv-bisher-x
-                                [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse.strasse"
+                                [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.strasse"
                                 [korrektur]="form.get('stammdatenAdresse').get('strasse').value"
                                 [showBisher]="container.isAtLeastInPruefungKanton()"
                                 [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
@@ -186,7 +186,7 @@
                                    class="form-control dv-input"/>
                         </mat-form-field>
                         <dv-bisher-x
-                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse.hausnummer"
+                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.hausnummer"
                             [korrektur]="form.get('stammdatenAdresse').get('hausnummer').value"
                             [showBisher]="container.isAtLeastInPruefungKanton()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
@@ -213,7 +213,7 @@
                             </mat-error>
                         </mat-form-field>
                         <dv-bisher-x
-                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse.plz"
+                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.plz"
                             [korrektur]="form.get('stammdatenAdresse').get('plz').value"
                             [showBisher]="container.isAtLeastInPruefungKanton()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
@@ -237,7 +237,7 @@
                                 translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
                             </mat-error>
                             <dv-bisher-x
-                                [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse.ort"
+                                [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.ort"
                                 [korrektur]="form.get('stammdatenAdresse').get('ort').value"
                                 [showBisher]="container.isAtLeastInPruefungKanton()"
                                 [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
@@ -465,7 +465,7 @@
                                     translate>ERROR_AUSZAHLUNGSDATEN_NICHT_VOLLSTAENDING
                                 </mat-error>
                                 <dv-bisher-x
-                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber.strasse"
+                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.strasse"
                                     [korrektur]="form.get('auszahlungsdaten').get('adresseKontoinhaber').get('strasse').value"
                                     [showBisher]="container.isAtLeastInPruefungKanton()"
                                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
@@ -485,7 +485,7 @@
                                        class="form-control dv-input"/>
                             </mat-form-field>
                             <dv-bisher-x
-                                [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber.hausnummer"
+                                [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.hausnummer"
                                 [korrektur]="form.get('auszahlungsdaten').get('adresseKontoinhaber').get('hausnummer').value"
                                 [showBisher]="container.isAtLeastInPruefungKanton()"
                                 [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
@@ -510,7 +510,7 @@
                                     translate>ERROR_REQUIRED
                                 </mat-error>
                                 <dv-bisher-x
-                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber.plz"
+                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.plz"
                                     [korrektur]="form.get('auszahlungsdaten').get('adresseKontoinhaber').get('plz').value"
                                     [showBisher]="container.isAtLeastInPruefungKanton()"
                                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
@@ -535,7 +535,7 @@
                                     translate>ERROR_AUSZAHLUNGSDATEN_NICHT_VOLLSTAENDING
                                 </mat-error>
                                 <dv-bisher-x
-                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber.ort"
+                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.ort"
                                     [korrektur]="form.get('auszahlungsdaten').get('adresseKontoinhaber').get('ort').value"
                                     [showBisher]="container.isAtLeastInPruefungKanton()"
                                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
