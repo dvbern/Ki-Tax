@@ -38,9 +38,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import ch.dvbern.ebegu.api.dtos.JaxGemeindeAntraegeTestdatenDTO;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeAntraegeFBTestdatenDTO;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeAntraegeLATSTestdatenDTO;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -260,19 +263,35 @@ public class TestfaelleResource {
 		return Response.ok().build();
 	}
 
-	@ApiOperation(value = "Sendet ein Beispiel aller Mails an die uebergebene Adresse", response = String.class)
+	@ApiOperation(value = "Erstellt LATS testdaten", response = String.class)
 	@POST
 	@Path("/gemeinde-antraege/LASTENAUSGLEICH_TAGESSCHULEN")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response createTestdatenLATS(
-		@Nonnull @NotNull @Valid JaxGemeindeAntraegeTestdatenDTO jaxGemeindeAntraegeTestdatenDTO) {
+		@Nonnull @NotNull @Valid JaxGemeindeAntraegeLATSTestdatenDTO jaxGemeindeAntraegeTestdatenDTO) {
 
 		final String gemeindeId = jaxGemeindeAntraegeTestdatenDTO.getGemeinde() != null ? jaxGemeindeAntraegeTestdatenDTO.getGemeinde().getId() : null;
 		final Collection<LastenausgleichTagesschuleAngabenGemeindeContainer> latsContainers =
 			testfaelleService.createAndSaveLATSTestdaten(
 				Objects.requireNonNull(jaxGemeindeAntraegeTestdatenDTO.getGesuchsperiode().getId()),
 				gemeindeId,
+				jaxGemeindeAntraegeTestdatenDTO.getStatus());
+		return Response.ok().build();
+	}
+
+	@ApiOperation(value = "Sendet ein Beispiel aller Mails an die uebergebene Adresse", response = String.class)
+	@POST
+	@Path("/gemeinde-antraege/FERIENBETREUUNG")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response createTestdatenFerienbetreuung(
+		@Nonnull @NotNull @Valid JaxGemeindeAntraegeFBTestdatenDTO jaxGemeindeAntraegeTestdatenDTO) {
+
+		final FerienbetreuungAngabenContainer ferienbetreuungContainer =
+			testfaelleService.createAndSaveFerienbetreuungTestdaten(
+				Objects.requireNonNull(jaxGemeindeAntraegeTestdatenDTO.getGesuchsperiode().getId()),
+				Objects.requireNonNull(jaxGemeindeAntraegeTestdatenDTO.getGemeinde().getId()),
 				jaxGemeindeAntraegeTestdatenDTO.getStatus());
 		return Response.ok().build();
 	}

@@ -23,7 +23,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 
-public class JaxGemeindeAntraegeTestdatenDTO extends JaxAbstractDTO {
+public class JaxGemeindeAntraegeLATSTestdatenDTO extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = 7154032563940613244L;
 

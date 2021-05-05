@@ -48,6 +48,9 @@ public interface FerienbetreuungService {
 	Optional<FerienbetreuungAngabenContainer> findFerienbetreuungAngabenContainer(@Nonnull String containerId);
 
 	@Nonnull
+	FerienbetreuungAngabenContainer saveFerienbetreuungAngabenContainer(@Nonnull FerienbetreuungAngabenContainer container);
+
+	@Nonnull
 	FerienbetreuungAngabenContainer createFerienbetreuungAntrag(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
 
 	void saveKommentar(@Nonnull String id, @Nonnull String kommentar);
@@ -107,4 +110,6 @@ public interface FerienbetreuungService {
 	@Nonnull
 	FerienbetreuungAngabenContainer ferienbetreuungAngabenAbschliessen(
 		@Nonnull FerienbetreuungAngabenContainer container);
+
+	void deleteFerienbetreuungAntragIfExists(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
 }

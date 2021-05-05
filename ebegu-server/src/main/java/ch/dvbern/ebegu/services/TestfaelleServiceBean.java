@@ -57,6 +57,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.WizardStep;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -72,14 +73,17 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeService;
 import ch.dvbern.ebegu.testfaelle.AbstractASIVTestfall;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
+import ch.dvbern.ebegu.testfaelle.testantraege.Testantrag_FB;
 import ch.dvbern.ebegu.testfaelle.testantraege.Testantrag_LATS;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
@@ -169,6 +173,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private SozialdienstService sozialdienstService;
 	@Inject
 	private LastenausgleichTagesschuleAngabenGemeindeService latsService;
+	@Inject
+	private FerienbetreuungService ferienbetreuungService;
 
 
 	@Override
@@ -1034,6 +1040,21 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			.stream()
 			.map(gemeinde -> createAndSaveLATSTestdatenForGemeinde(status, gesuchsperiode, gemeinde))
 			.collect(Collectors.toSet());
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenContainer createAndSaveFerienbetreuungTestdaten(
+		@Nonnull String gesuchsperiodeId,
+		@Nonnull String gemeindeId,
+		@Nonnull FerienbetreuungAngabenStatus status) {
+		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId)
+			.orElseThrow(() -> new IllegalArgumentException());
+			Gemeinde gemeinde =
+				gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new IllegalArgumentException());
+		FerienbetreuungAngabenContainer testantrag = (new Testantrag_FB(gesuchsperiode, gemeinde, status)).getContainer();
+		ferienbetreuungService.deleteFerienbetreuungAntragIfExists(gemeinde, gesuchsperiode);
+		return ferienbetreuungService.saveFerienbetreuungAngabenContainer(testantrag);
 	}
 
 	@Nonnull

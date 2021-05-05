@@ -83,6 +83,9 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	@Inject
 	private PrincipalBean principal;
 
+	@Inject
+	private FerienbetreuungDokumentService ferienbetreuungDokumentService;
+
 	@Nonnull
 	@Override
 	public List<FerienbetreuungAngabenContainer> getFerienbetreuungAntraege(
@@ -177,6 +180,13 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			persistence.find(FerienbetreuungAngabenContainer.class, containerId);
 
 		return Optional.ofNullable(container);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenContainer saveFerienbetreuungAngabenContainer(
+		@Nonnull FerienbetreuungAngabenContainer container) {
+		return persistence.merge(container);
 	}
 
 	@Nonnull
@@ -449,6 +459,18 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 		container.setStatus(FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON);
 
 		return persistence.merge(container);
+	}
+
+	@Override
+	public void deleteFerienbetreuungAntragIfExists(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
+
+		this.getFerienbetreuungAntraege(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null)
+			.forEach(antrag -> {
+				this.ferienbetreuungDokumentService.findDokumente(antrag.getId()).forEach(dokument -> persistence.remove(dokument));
+				persistence.remove(antrag);
+			});
 	}
 }
 
