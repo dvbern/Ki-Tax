@@ -539,4 +539,33 @@ public class InstitutionResource {
 			.anyMatch(o1 -> institutionExternalClients.stream()
 				.anyMatch(o2 -> !o1.equals(o2) && o1.getGueltigkeit().intersects(o2.getGueltigkeit())));
 	}
+
+	@ApiOperation(value = "Find and return a list of all editable Institutionen of the currently logged in Benutzer. "
+		+ "Returns all for admins", responseContainer = "List", response = JaxInstitution.class)
+	@Nonnull
+	@GET
+	@Path("/gemeinde/listdto/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
+	public List<JaxInstitutionListDTO> getInstitutionenForGemeinde(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId
+	) {
+		requireNonNull(gemeindeJAXPId.getId());
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(
+			() -> new EbeguEntityNotFoundException(
+				"getInstitutionenForGemeinde",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gemeindeId)
+		);
+
+		Map<Institution, InstitutionStammdaten> institutionInstitutionStammdatenMap =
+			institutionService.getInstitutionenInstitutionStammdatenForGemeinde(gemeinde);
+
+		return institutionInstitutionStammdatenMap.entrySet()
+			.stream()
+			.map(map -> converter.institutionListDTOToJAX(map))
+			.collect(Collectors.toList());
+	}
 }

@@ -22,8 +22,10 @@ import {Observable} from 'rxjs';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssignment';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
+import {TSInstitutionListDTO} from '../../../models/TSInstitutionListDTO';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
+import {InstitutionRS} from '../../core/service/institutionRS.rest';
 
 @Component({
     selector: 'dv-edit-gemeinde-ts',
@@ -48,14 +50,16 @@ export class EditGemeindeComponentTS implements OnInit {
     @Output() public readonly usernameScolarisChange: EventEmitter<string> = new EventEmitter();
 
     public readonly CONSTANTS = CONSTANTS;
+    private _tagesschulen: TSInstitutionListDTO[];
 
-    public constructor() {
+    public constructor(private readonly institutionRS: InstitutionRS) {
     }
 
     public ngOnInit(): void {
         if (!this.gemeindeId) {
             return;
         }
+        this.updateInstitutionenList();
     }
 
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
@@ -72,5 +76,21 @@ export class EditGemeindeComponentTS implements OnInit {
 
     public isUsernameScolarisNotNullOrUndefined(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.usernameScolaris);
+    }
+
+    public updateInstitutionenList(): void {
+        this.institutionRS.getInstitutionenForGemeinde(this.gemeindeId).then(
+            result => {
+                this._tagesschulen = result;
+            },
+        );
+    }
+
+    public get tagesschulen(): TSInstitutionListDTO[] {
+        return this._tagesschulen;
+    }
+
+    public gotoTagesschule(id: string): void {
+        console.log('it works tagesschule liste: ' + id);
     }
 }
