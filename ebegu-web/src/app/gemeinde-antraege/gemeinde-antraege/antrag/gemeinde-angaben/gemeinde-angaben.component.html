@@ -555,8 +555,7 @@
             </dv-input-container-x>
 
             <dv-input-container-x>
-                <label required
-                       [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('einnahmenSubventionenDritter').errors}">
+                <label [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('einnahmenSubventionenDritter').errors}">
                     {{'LATS_EINNAHMEN_SUBVENTIONEN_DRITTER' | translate}}
                 </label>
                 <mat-form-field floatLabel="always">

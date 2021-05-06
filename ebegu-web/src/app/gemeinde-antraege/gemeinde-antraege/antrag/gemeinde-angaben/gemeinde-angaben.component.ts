@@ -293,7 +293,7 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm.get('einnnahmenVerpflegung')
             .setValidators([Validators.required, this.numberValidator()]);
         this.angabenForm.get('einnahmenSubventionenDritter')
-            .setValidators([Validators.required, this.numberValidator()]);
+            .setValidators([this.numberValidator()]);
         this.angabenForm.get('ueberschussErzielt')
             .setValidators([Validators.required]);
         // tslint:disable-next-line:no-identical-functions
