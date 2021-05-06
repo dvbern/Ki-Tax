@@ -575,4 +575,11 @@ export class TagesschulenAngabenComponent {
                 this.stichtag.next(date);
             });
     }
+
+    public allAnzahlFieldsFilledOut(): boolean {
+        return this.form?.get('anzahlEingeschriebeneKinder').value?.toString().length > 0 &&
+            this.form?.get('anzahlEingeschriebeneKinderKindergarten').value?.toString().length > 0 &&
+            this.form?.get('anzahlEingeschriebeneKinderPrimarstufe').value?.toString().length > 0 &&
+            this.form?.get('anzahlEingeschriebeneKinderSekundarstufe').value?.toString().length > 0;
+    }
 }

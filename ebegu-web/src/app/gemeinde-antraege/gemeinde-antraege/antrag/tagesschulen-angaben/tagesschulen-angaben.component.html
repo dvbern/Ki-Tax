@@ -167,7 +167,7 @@
             </mat-form-field>
         </dv-input-container-x>
 
-        <div class="well well-status-warten" *ngIf="abweichungenAnzahlKinder !== 0">
+        <div class="well well-status-warten" *ngIf="allAnzahlFieldsFilledOut() && abweichungenAnzahlKinder !== 0">
             <i class="fa fa-exclamation" aria-hidden="true"></i>
             <span>
                 <span translate>LATS_ABWEICHUNGEN_ANZAHL_KINDER</span>
