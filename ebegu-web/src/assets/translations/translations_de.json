@@ -2331,6 +2331,7 @@
     "LATS_ABWEICHUNGEN_ANZAHL_KINDER_VORSCHULALTER_HINT_MEHRZAHL": " {{numberAntraege}} Anträge wurden für Kinder im Vorschulalter gemacht",
     "LATS_ABWEICHUNGEN_ANZAHL_KINDER_VORSCHULALTER_HINT": " Ein Antrag wurde für ein Kind im Vorschulalter gemacht",
     "LATS_ABSCHLIESSEN_NOCH_NICHT_MOEGLICH": "Der Antrag kann erst abgeschlossen werden, wenn alle Formulare der Tagesschulen ausgefüllt und geprüft worden sind. Sie können die Angaben aber zwischenspeichern.",
+    "LATS_FREIGABE_REMINDER": "Bitte geben Sie die Abrechnung nun im Bereich «Freigabe» zur Prüfung an den Kanton frei.",
     "ERROR_POSITIVE_NUMBER": "Bitte geben Sie eine positive ganze Zahl ein",
     "ERR_GEMEINDEN_LADEN": "Gemeinden konnten nicht geladen werden",
     "GEMEINDE_ANTRAEGE_ANTRAG_ERSTELLEN": "Antrag erstellen",

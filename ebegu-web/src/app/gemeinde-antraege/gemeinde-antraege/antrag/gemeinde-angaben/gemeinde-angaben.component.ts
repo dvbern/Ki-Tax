@@ -35,6 +35,7 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../
 import {TSEinstellung} from '../../../../../models/TSEinstellung';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {DvNgOkDialogComponent} from '../../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {WizardStepXRS} from '../../../../core/service/wizardStepXRS.rest';
@@ -628,6 +629,11 @@ export class GemeindeAngabenComponent implements OnInit {
         } else {
             this.errorService.clearAll();
         }
+        this.dialog.open(DvNgOkDialogComponent, {
+            data: {
+                title: this.translateService.instant('LATS_FREIGABE_REMINDER')
+            }
+        });
         this.cd.markForCheck();
         this.wizardRS.updateSteps(this.WIZARD_TYPE, this.uiRouterGlobals.params.id);
     }
