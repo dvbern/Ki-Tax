@@ -78,7 +78,7 @@ export class GemeindeAngabenComponent implements OnInit {
         private readonly wizardRS: WizardStepXRS,
         private readonly uiRouterGlobals: UIRouterGlobals,
         private readonly dialog: MatDialog,
-        private readonly unsavedChangesService: UnsavedChangesService
+        private readonly unsavedChangesService: UnsavedChangesService,
     ) {
     }
 
@@ -125,7 +125,7 @@ export class GemeindeAngabenComponent implements OnInit {
             this.formularInitForm = this.fb.group({
                 alleAngabenInKibonErfasst: [
                     this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst,
-                    Validators.required
+                    Validators.required,
                 ],
             });
         }
@@ -397,12 +397,13 @@ export class GemeindeAngabenComponent implements OnInit {
         combineLatest([
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').valueChanges.pipe(
                 startWith(gemeindeAngabenFromServer?.davonStundenZuNormlohnMehrAls50ProzentAusgebildete),
+                map(this.parseFloatSafe),
             ),
             this.lohnnormkostenSettingMoreThanFifty$,
         ]).subscribe(valueAndParameter => {
             const value = valueAndParameter[0];
             const lohnkostenParam = parseFloat(valueAndParameter[1].value);
-            const roundedValue = (value && lohnkostenParam) ? +(value * lohnkostenParam).toFixed(2) : 0;
+            const roundedValue = (value && lohnkostenParam) ? (value * lohnkostenParam).toFixed(2) : 0;
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
                 .setValue(roundedValue);
             this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
@@ -420,7 +421,7 @@ export class GemeindeAngabenComponent implements OnInit {
         ]).subscribe(valueAndParamter => {
             const value = valueAndParamter[0];
             const lohnkostenParam = parseFloat(valueAndParamter[1].value);
-            const roundedValue = (value && lohnkostenParam) ? +(value * lohnkostenParam).toFixed(2) : 0;
+            const roundedValue = (value && lohnkostenParam) ? (value * lohnkostenParam).toFixed(2) : 0;
             this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
                 .setValue(roundedValue);
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
@@ -431,18 +432,26 @@ export class GemeindeAngabenComponent implements OnInit {
     // tslint:disable-next-line:max-line-length
     private setupLastenausgleichsberechtigterBetragCalculations(gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde): void {
         combineLatest([
-            this.angabenForm.get('normlohnkostenBetreuungBerechnet').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('normlohnkostenBetreuungBerechnet')
+                .valueChanges
+                .pipe(
+                    startWith(0),
+                    map(this.parseFloatSafe)
+                ),
             this.angabenForm.get('einnahmenElterngebuehren')
                 .valueChanges
-                .pipe(startWith(gemeindeAngabenFromServer?.einnahmenElterngebuehren || 0)),
+                .pipe(
+                    startWith(gemeindeAngabenFromServer?.einnahmenElterngebuehren || 0),
+                    map(this.parseFloatSafe)
+                ),
         ]).subscribe(values => {
                 this.angabenForm.get('lastenausgleichsberechtigerBetrag').setValue(
                     // round to 0.2
-                    Math.round((values[0] - values[1])),
+                    (values[0] - values[1]).toFixed(2),
                 );
                 this.angabenForm.get('lastenausgleichsberechtigerBetragRO').setValue(
                     // round to 0.2
-                    Math.round((values[0] - values[1])),
+                    (values[0] - values[1]).toFixed(2),
                 );
             },
             () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')),
@@ -470,8 +479,8 @@ export class GemeindeAngabenComponent implements OnInit {
                 .valueChanges
                 .pipe(startWith(gemeindeAngabenFromServer?.einnahmenSubventionenDritter || 0)),
         ]).subscribe(values => {
-                const gemeindeBeitragOderUeberschuss = values[0] - values[1] - values[2] - values[3] - values[4];
-                if (gemeindeBeitragOderUeberschuss < 0) {
+                const gemeindeBeitragOderUeberschuss = (values[0] - values[1] - values[2] - values[3] - values[4]).toFixed(2);
+                if (+gemeindeBeitragOderUeberschuss < 0) {
                     this.angabenForm.get('kostenueberschussGemeinde')
                         .setValue(gemeindeBeitragOderUeberschuss);
                     this.angabenForm.get('kostenbeitragGemeinde')
@@ -483,8 +492,9 @@ export class GemeindeAngabenComponent implements OnInit {
                         .setValue('');
                 }
 
-                this.angabenForm.get('erwarteterKostenbeitragGemeinde').setValue((values[0] * this.kostenbeitragGemeinde).toFixed(2));
-                this.angabenForm.get('einnahmenElterngebuehrenRO').setValue(values[2]);
+                this.angabenForm.get('erwarteterKostenbeitragGemeinde')
+                    .setValue((values[0] * this.kostenbeitragGemeinde).toFixed(2));
+                this.angabenForm.get('einnahmenElterngebuehrenRO').setValue(values[2].toFixed(2));
             },
             () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')),
         );
@@ -502,7 +512,7 @@ export class GemeindeAngabenComponent implements OnInit {
             ],
         ).subscribe(value => {
                 this.angabenForm.get('normlohnkostenBetreuungBerechnet')
-                    .setValue(+(parseFloat(value[0] || 0) + parseFloat(value[1] || 0)).toFixed(2));
+                    .setValue((parseFloat(value[0] || 0) + parseFloat(value[1] || 0)).toFixed(2));
             },
             () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')),
         );
@@ -511,7 +521,12 @@ export class GemeindeAngabenComponent implements OnInit {
     // tslint:disable-next-line:max-line-length
     private setupSchlusszahlungenCalculations(gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde): void {
         combineLatest([
-            this.angabenForm.get('lastenausgleichsberechtigerBetrag').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('lastenausgleichsberechtigerBetrag')
+                .valueChanges
+                .pipe(
+                    startWith(0),
+                    map(this.parseFloatSafe)
+                ),
             this.angabenForm.get('ersteRateAusbezahlt')
                 .valueChanges
                 .pipe(
@@ -521,7 +536,7 @@ export class GemeindeAngabenComponent implements OnInit {
             // tslint:disable-next-line:no-identical-functions
         ]).subscribe(values => {
             this.angabenForm.get('schlusszahlung').setValue(
-                +(values[0] - values[1]).toFixed(2),
+                (values[0] - values[1]).toFixed(2),
             );
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
     }
@@ -559,7 +574,8 @@ export class GemeindeAngabenComponent implements OnInit {
         } else {
             this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.value;
         }
-        this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst = this.formularInitForm.get('alleAngabenInKibonErfasst').value;
+        this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst =
+            this.formularInitForm.get('alleAngabenInKibonErfasst').value;
         this.lastenausgleichTSService.saveLATSAngabenGemeindeContainer(this.lATSAngabenGemeindeContainer);
         this.angabenForm.markAsPristine();
 
