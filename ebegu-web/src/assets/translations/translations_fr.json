@@ -2208,6 +2208,7 @@
     "GEMEINDE_GUELTIG_BIS": "Fin de validitée de la commune",
     "LASTENAUSGLEICH_TAGESSCHULEN_ANGABEN_GEMEINDE": "Données de la commune",
     "LASTENAUSGLEICH_TAGESSCHULEN_ANGABEN_TAGESSCHULEN": "Données des écoles à journée continue",
+    "LASTENAUSGLEICH_TAGESSCHULEN_ANGABEN_TAGESSCHULEN_TITLE": "Données des écoles à journée continue - {{name}}",
     "LASTENAUSGLEICH_TAGESSCHULEN_FREIGABE": "Libération",
     "LASTENAUSGLEICH_TAGESSCHULEN_LASTENAUSGLEICH": "Compensation des charges",
     "LASTENAUSGLEICH_TAGESSCHULEN": "Compensation des charges pour les écoles à journée continue",
