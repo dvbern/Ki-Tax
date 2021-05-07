@@ -17,6 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
+import {StateService} from '@uirouter/core';
 import {Moment} from 'moment';
 import {Observable} from 'rxjs';
 import {TSBenutzer} from '../../../models/TSBenutzer';
@@ -51,8 +52,12 @@ export class EditGemeindeComponentTS implements OnInit {
 
     public readonly CONSTANTS = CONSTANTS;
     private _tagesschulen: TSInstitutionListDTO[];
+    public showTSList: boolean = false;
 
-    public constructor(private readonly institutionRS: InstitutionRS) {
+    public constructor(
+        private readonly $state: StateService,
+        private readonly institutionRS: InstitutionRS,
+    ) {
     }
 
     public ngOnInit(): void {
@@ -81,7 +86,7 @@ export class EditGemeindeComponentTS implements OnInit {
     public updateInstitutionenList(): void {
         this.institutionRS.getInstitutionenForGemeinde(this.gemeindeId).then(
             result => {
-                this._tagesschulen = result;
+                this._tagesschulen = result.sort((a, b) => a.name.localeCompare(b.name));
             },
         );
     }
@@ -91,6 +96,17 @@ export class EditGemeindeComponentTS implements OnInit {
     }
 
     public gotoTagesschule(id: string): void {
-        console.log('it works tagesschule liste: ' + id);
+        this.$state.go('institution.edit', {
+            institutionId: id,
+            editMode: false,
+        });
+    }
+
+    public showListTS(): void {
+        this.showTSList = true;
+    }
+
+    public hideTSList(): void {
+        this.showTSList = false;
     }
 }
