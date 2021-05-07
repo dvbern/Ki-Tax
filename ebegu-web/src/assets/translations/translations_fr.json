@@ -2469,7 +2469,7 @@
     "SOZIALDIENST_TITLE": "Service de soutien",
     "SOZIALDIENSTE_TITLE": "services de soutien",
     "VOLLMACHT_DATEI_NAME": "Procuration",
-    "VOLLMACHT_HERUNTERLADEN": "Télécharger le document de Vollmacht",
+    "VOLLMACHT_HERUNTERLADEN": "Télécharger le document de procuration",
     "PDF_VOLLMACHT_DE_HERUNTERLADEN": "Générer et télécharger le document de Vollamcht en Allemand",
     "PDF_VOLLMACHT_FR_HERUNTERLADEN": "Générer et télécharger le document de Vollamcht en Français",
     "SOZIALDIENST_GESUCH_WILLKOMMEN_TEXT": "Afin de pouvoir créer une procuration, les données concernant le mandant sont nécessaires.",
@@ -2489,5 +2489,6 @@
     "ERROR_ANTRAGSTELLER_SZ_NOT_VOLLSTAENDIG": "L'auteur de la demande numéro 2 n'est pas obligatoire mais ne doit pas être remplis que partiellement!",
     "SOZIALDIENST_INFO_VOLLMACHT_FORM_DIRTY": "Vous avez effectué des changements dans le formulaire. Veuillez les sauvegarder avant de pouvoir générer la Vollmacht et la télécharger",
     "SOZIALDIENST_WARNING_FALL_ENTZOGEN": "La procuration à été retirée. Le cas est bloqué pour le service de soutien",
+    "BEARBEITEN": "Éditer",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
