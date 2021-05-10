@@ -22,7 +22,6 @@ import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {combineLatest, Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
-import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenNutzung} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
@@ -43,7 +42,6 @@ const LOG = LogFactory.createLog('FerienbetreuungNutzungComponent');
 export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungFormular implements OnInit, OnDestroy {
 
     private nutzung: TSFerienbetreuungAngabenNutzung;
-    public container: TSFerienbetreuungAngabenContainer;
     private subscription: Subscription;
 
     public constructor(

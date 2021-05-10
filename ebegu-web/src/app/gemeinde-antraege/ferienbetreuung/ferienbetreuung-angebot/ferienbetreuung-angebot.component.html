@@ -875,7 +875,8 @@
             type="button"
             [buttonDisabled]="formularReadOnly()"
             (buttonClick)="onAbschliessen()">
-            <span translate>ABSCHLIESSEN</span>
+            <span *ngIf="!container?.isInPruefungKanton()" translate>ABSCHLIESSEN</span>
+            <span *ngIf="container?.isInPruefungKanton()" translate>GEPRUEFT</span>
         </dv-loading-button>
     </div>
 

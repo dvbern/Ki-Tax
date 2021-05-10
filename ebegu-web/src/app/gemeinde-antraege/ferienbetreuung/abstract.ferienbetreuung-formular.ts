@@ -36,6 +36,8 @@ export abstract class AbstractFerienbetreuungFormular {
     public formValidationTriggered = false;
     public formAbschliessenTriggered = false;
 
+    public container: TSFerienbetreuungAngabenContainer;
+
     private readonly WIZARD_TYPE = TSWizardStepXTyp.FERIENBETREUUNG;
 
     public readonly canSeeSave: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);

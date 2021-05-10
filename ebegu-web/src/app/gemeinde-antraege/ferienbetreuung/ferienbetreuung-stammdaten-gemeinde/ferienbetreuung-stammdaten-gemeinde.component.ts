@@ -25,7 +25,6 @@ import {combineLatest, Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSFerienbetreuungFormularStatus} from '../../../../models/enums/TSFerienbetreuungFormularStatus';
-import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenStammdaten} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenStammdaten';
 import {TSAdresse} from '../../../../models/TSAdresse';
 import {TSBfsGemeinde} from '../../../../models/TSBfsGemeinde';
@@ -51,7 +50,6 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
     public bfsGemeinden: TSBfsGemeinde[];
 
     private stammdaten: TSFerienbetreuungAngabenStammdaten;
-    public container: TSFerienbetreuungAngabenContainer;
     private subscription: Subscription;
 
     public constructor(
