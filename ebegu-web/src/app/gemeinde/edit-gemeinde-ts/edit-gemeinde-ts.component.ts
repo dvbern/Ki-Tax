@@ -86,7 +86,8 @@ export class EditGemeindeComponentTS implements OnInit {
     public updateInstitutionenList(): void {
         this.institutionRS.getInstitutionenForGemeinde(this.gemeindeId).then(
             result => {
-                this._tagesschulen = result.sort((a, b) => a.name.localeCompare(b.name));
+                this._tagesschulen = result;
+                this._tagesschulen.sort((a, b) => a.name.localeCompare(b.name));
             },
         );
     }
