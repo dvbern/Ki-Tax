@@ -199,8 +199,6 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             bemerkungenTarifsystem: [
                 angebot?.bemerkungenTarifsystem,
             ],
-        }, {
-            updateOn: 'blur',
         });
         this.setBasicValidation();
     }
