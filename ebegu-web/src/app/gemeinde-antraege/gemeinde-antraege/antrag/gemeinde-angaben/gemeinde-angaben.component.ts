@@ -398,7 +398,7 @@ export class GemeindeAngabenComponent implements OnInit {
         combineLatest([
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').valueChanges.pipe(
                 startWith(gemeindeAngabenFromServer?.davonStundenZuNormlohnMehrAls50ProzentAusgebildete),
-                map(this.parseFloatSafe),
+                map(value => this.parseFloatSafe(value)),
             ),
             this.lohnnormkostenSettingMoreThanFifty$,
         ]).subscribe(valueAndParameter => {
@@ -437,13 +437,13 @@ export class GemeindeAngabenComponent implements OnInit {
                 .valueChanges
                 .pipe(
                     startWith(0),
-                    map(this.parseFloatSafe)
+                    map(value => this.parseFloatSafe(value))
                 ),
             this.angabenForm.get('einnahmenElterngebuehren')
                 .valueChanges
                 .pipe(
                     startWith(gemeindeAngabenFromServer?.einnahmenElterngebuehren || 0),
-                    map(this.parseFloatSafe)
+                    map(value => this.parseFloatSafe(value))
                 ),
         ]).subscribe(values => {
                 this.angabenForm.get('lastenausgleichsberechtigerBetrag').setValue(
@@ -526,7 +526,7 @@ export class GemeindeAngabenComponent implements OnInit {
                 .valueChanges
                 .pipe(
                     startWith(0),
-                    map(this.parseFloatSafe)
+                    map(value => this.parseFloatSafe(value))
                 ),
             this.angabenForm.get('ersteRateAusbezahlt')
                 .valueChanges
