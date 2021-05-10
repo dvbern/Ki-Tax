@@ -16,6 +16,7 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {StateService} from '@uirouter/core';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
@@ -42,6 +43,9 @@ describe('FerienbetreuungAbschlussComponent', () => {
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
         ['principal$']);
 
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
+        ['go']);
+
     const container = new TSFerienbetreuungAngabenContainer();
     container.angabenDeklaration = null;
     authServiceSpy.principal$ = of(dummyUser);
@@ -53,6 +57,7 @@ describe('FerienbetreuungAbschlussComponent', () => {
                 {provide: FerienbetreuungService, useValue: ferienbetreuungServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: StateService, useValue: stateServiceSpy},
             ],
             declarations: [FerienbetreuungAbschlussComponent],
         })

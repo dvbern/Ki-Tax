@@ -15,7 +15,6 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSFerienbetreuungFormularStatus} from '../enums/TSFerienbetreuungFormularStatus';
 import {TSAdresse} from '../TSAdresse';
 import {TSFerienbetreuungAbstractAngaben} from './TSFerienbetreuungAbstractAngaben';
 
