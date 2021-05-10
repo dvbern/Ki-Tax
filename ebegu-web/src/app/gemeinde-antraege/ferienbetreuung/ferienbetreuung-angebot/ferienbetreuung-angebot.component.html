@@ -364,6 +364,12 @@
                           id="bemerkungen_id"
                           formControlName="bemerkungenAnzahlFerienwochen"
                           class="form-control dv-input"></textarea>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenAnzahlFerienwochen"
+                        [korrektur]="form.get('bemerkungenAnzahlFerienwochen').value"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -472,7 +478,7 @@
                         </mat-option>
                     </mat-select>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.finanziellBeteiligteGemeinden"
+                        [deklaration]="container?.angabenDeklaration?.angebot?.finanziellBeteiligteGemeinden.join(', ')"
                         [korrektur]="form.get('finanziellBeteiligteGemeinden').value"
                         [showBisher]="container.isAtLeastInPruefungKanton()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
@@ -618,6 +624,12 @@
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                         <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                     </mat-radio-group>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.angebot?.betreuungDurchPersonenMitErfahrung"
+                        [korrektur]="form.get('betreuungDurchPersonenMitErfahrung').value"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </dv-radio-container-x>
             </dv-input-container-x>
 
