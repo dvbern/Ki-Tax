@@ -111,4 +111,7 @@ public interface FerienbetreuungService {
 	@Nonnull
 	FerienbetreuungAngabenContainer ferienbetreuungAngabenGeprueft(
 		@Nonnull FerienbetreuungAngabenContainer container);
+
+	@Nonnull FerienbetreuungAngabenContainer ferienbetreuungAngabenZurueckAnGemeinde(
+		@Nonnull FerienbetreuungAngabenContainer container);
 }

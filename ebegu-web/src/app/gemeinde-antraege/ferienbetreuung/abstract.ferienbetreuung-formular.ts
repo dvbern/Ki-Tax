@@ -121,7 +121,7 @@ export abstract class AbstractFerienbetreuungFormular {
             }
             // tslint:disable-next-line:no-collapsible-if
         } else if (container.isInBearbeitungGemeinde() && !principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
-            if (angaben.isAtLeastAbgeschlossenGemeinde()) {
+            if (angaben.isAbgeschlossen()) {
                 this.canSeeAbschliessen.next(false);
                 this.canSeeSave.next(false);
                 this.canSeeFalscheAngaben.next(true);
@@ -146,7 +146,7 @@ export abstract class AbstractFerienbetreuungFormular {
         container: TSFerienbetreuungAngabenContainer,
         angaben: TSFerienbetreuungAbstractAngaben,
     ): void {
-        if (angaben.isAtLeastAbgeschlossenGemeinde() ||
+        if (angaben.isAbgeschlossen() ||
             container?.isGeprueft() ||
             container?.isInBearbeitungGemeinde() &&
             principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles()) ||

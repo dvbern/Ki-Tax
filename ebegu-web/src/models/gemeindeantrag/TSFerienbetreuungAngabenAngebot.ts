@@ -282,10 +282,4 @@ export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAn
     public set bemerkungenTarifsystem(value: string) {
         this._bemerkungenTarifsystem = value;
     }
-
-    public isAtLeastAbgeschlossenGemeinde(): boolean {
-        return [
-            TSFerienbetreuungFormularStatus.ABGESCHLOSSEN,
-        ].includes(this.status);
-    }
 }

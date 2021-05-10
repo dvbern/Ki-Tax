@@ -18,6 +18,7 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
+import {StateService} from '@uirouter/core';
 import {combineLatest, Observable, Subject} from 'rxjs';
 import {filter, first, map, mergeMap, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -51,6 +52,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly wizardRS: WizardStepXRS,
         private readonly authService: AuthServiceRS,
+        private readonly stateService: StateService
     ) {
     }
 
@@ -143,5 +145,18 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
         return this.container?.status === FerienbetreuungAngabenStatus.GEPRUEFT ||
             this.container?.status === FerienbetreuungAngabenStatus.ABGELEHNT ||
             this.container?.status === FerienbetreuungAngabenStatus.VERFUEGT;
+    }
+
+    public readyForGeprueft(): boolean {
+        return this.container?.angabenKorrektur?.angebot?.isAbgeschlossen() &&
+            this.container?.angabenKorrektur?.nutzung?.isAbgeschlossen() &&
+            this.container?.angabenKorrektur?.stammdaten?.isAbgeschlossen() &&
+            this.container?.angabenKorrektur?.kostenEinnahmen?.isAbgeschlossen();
+    }
+
+    public zurueckAnGemeinde(): void {
+        this.ferienbetreuungsService.zurueckAnGemeinde(this.container).subscribe(
+            () => this.stateService.go('gemeindeantrage.view'),
+            () => this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR')));
     }
 }

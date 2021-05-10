@@ -212,4 +212,8 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 			angabenKorrektur = new FerienbetreuungAngaben(angabenDeklaration);
 		}
 	}
+
+	public boolean isInBearbeitungGemeinde() {
+		return status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE;
+	}
 }
