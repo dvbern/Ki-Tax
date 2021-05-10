@@ -64,13 +64,13 @@ public class LastenausgleichTagesschuleAngabenInstitutionContainer extends Abstr
 
 	@Nullable
 	@Valid
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(optional = true, cascade = CascadeType.MERGE, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_lats_institution_container_institutiondeklaration_id"), nullable = true)
 	private LastenausgleichTagesschuleAngabenInstitution angabenDeklaration;
 
 	@Nullable
 	@Valid
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(optional = true, cascade = CascadeType.MERGE, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_lats_institution_container_institutionkorrektur_id"), nullable = true)
 	private LastenausgleichTagesschuleAngabenInstitution angabenKorrektur;
 

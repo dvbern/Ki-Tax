@@ -37,8 +37,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
@@ -52,6 +54,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.hibernate.StaleObjectStateException;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -254,11 +257,16 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					latsInstitutionContainerJax.getId()));
 
-		final LastenausgleichTagesschuleAngabenInstitutionContainer converted =
-			converter.lastenausgleichTagesschuleAngabenInstitutionContainerToEntity(
-				latsInstitutionContainerJax,
-				latsInstitutionContainer);
-		return converted;
+		try {
+			final LastenausgleichTagesschuleAngabenInstitutionContainer converted =
+				converter.lastenausgleichTagesschuleAngabenInstitutionContainerToEntity(
+					latsInstitutionContainerJax,
+					latsInstitutionContainer,
+					true);
+			return converted;
+		} catch (StaleObjectStateException e) {
+			throw new WebApplicationException(e, Status.CONFLICT);
+		}
 	}
 
 	@ApiOperation(

@@ -253,6 +253,8 @@ export class TagesschulenAngabenComponent {
             ernaehrungsGrundsaetzeEingehalten: latsAngabenInstiution?.ernaehrungsGrundsaetzeEingehalten,
             // Bemerkungen
             bemerkungen: latsAngabenInstiution?.bemerkungen,
+            // hidden fields
+            version: latsAngabenInstiution?.version,
         });
 
         return form;
@@ -296,16 +298,18 @@ export class TagesschulenAngabenComponent {
         } else {
             this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
         }
-
+        this.errorService.clearAll();
         this.tagesschulenAngabenRS.saveTagesschuleAngaben(this.latsAngabenInstitutionContainer).subscribe(result => {
-            this.setupForm(result?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
+            this.form = this.setupForm(result?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
                 result?.angabenDeklaration : result?.angabenKorrektur);
-            this.errorService.clearAll();
             this.errorService.addMesageAsInfo(this.translate.instant('SAVED'));
             this.form.markAsPristine();
         }, error => {
             if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
                 this.errorService.addMesageAsError(this.translate.instant('ERROR_NUMBER'));
+            }
+            if (error.status === HTTP_ERROR_CODES.CONFLICT) {
+                this.errorService.addMesageAsError(this.translate.instant('ERROR_DATA_CHANGED'));
             }
         });
     }

@@ -23,7 +23,9 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
+import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngaben;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenAngebot;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenContainer;
@@ -31,6 +33,7 @@ import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenKostenEi
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungDokument;
+import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
@@ -40,10 +43,49 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinna
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
+import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 @RequestScoped
 public class JaxFerienbetreuungConverter extends AbstractConverter {
+
+	@Inject
+	private Persistence persistence;
+
+	@Nonnull
+	private <T extends AbstractEntity> T checkVersionSaveAndFlush(@Nonnull T entity, long version) {
+		persistence.getEntityManager().detach(entity); // DETACH -- otherwise we cannot set the version manually
+		entity.setVersion(version); // SETVERSION -- set the version we had
+		T saved =
+			persistence.merge(entity); // MERGE -- hibernate will throw an exception if the version does not match the
+		// version in the DB
+		persistence.getEntityManager().flush(); // FLUSH -- otherwise the version is not incremented yet
+		return saved; // return the saved object with the updated version number (beware: it is only updated if there
+		// was an actual change)
+	}
+
+	@Nonnull
+	private <T extends AbstractEntity> T checkVersionAndSave(@Nonnull T entity, long version) {
+		persistence.getEntityManager().detach(entity); // DETACH -- otherwise we cannot set the version manually
+		entity.setVersion(version); // SETVERSION -- set the version we had
+		T saved =
+			persistence.merge(entity); // MERGE -- hibernate will throw an exception if the version does not match the
+		// version in the DB
+		return saved; // return the saved object with the updated version number (beware: it is only updated if there
+		// was an actual change)
+	}
+
+	/**
+	 * Behandlung des Version-Attributes fuer OptimisticLocking.
+	 * Nachdem die Business-Logik durchgefuehrt worden ist, stimmt moeglicherweise die
+	 * Version bereits wieder nicht mehr. Darum muss am Schluss, also beim Konvertieren
+	 * von Entity zurueck zu Jax, nochmals geflusht werden, damit der Client die
+	 * richtige Version zurueckerhaelt, sonst klappt das naechste Speichern nicht mehr.
+	 */
+	private void flush() {
+		persistence.getEntityManager().flush(); // FLUSH -- otherwise the version is not incremented yet
+	}
 
 	@Nonnull
 	public FerienbetreuungAngabenContainer ferienbetreuungenAngabenContainerToEntity(
@@ -70,7 +112,6 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		return container;
 	}
 
-
 	@Nonnull
 	public FerienbetreuungAngaben ferienbetreuungenAngabenToEntity(
 		@Nonnull JaxFerienbetreuungAngaben jaxContainer,
@@ -79,25 +120,25 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		convertAbstractFieldsToEntity(jaxContainer, ferienbetreuungAngaben);
 
 		// stammdaten
-		ferienbetreuungAngabenStammdatenToEntity(
+		ferienbetreuungAngaben.setFerienbetreuungAngabenStammdaten(ferienbetreuungAngabenStammdatenToEntity(
 			jaxContainer.getStammdaten(),
 			ferienbetreuungAngaben.getFerienbetreuungAngabenStammdaten()
-		);
+		));
 		// angebot
-		ferienbetreuungAngabenAngebotToEntity(
+		ferienbetreuungAngaben.setFerienbetreuungAngabenAngebot(ferienbetreuungAngabenAngebotToEntity(
 			jaxContainer.getAngebot(),
 			ferienbetreuungAngaben.getFerienbetreuungAngabenAngebot()
-		);
+		));
 		// nutzung
-		ferienbetreuungAngabenNutzungToEntity(
+		ferienbetreuungAngaben.setFerienbetreuungAngabenNutzung(ferienbetreuungAngabenNutzungToEntity(
 			jaxContainer.getNutzung(),
 			ferienbetreuungAngaben.getFerienbetreuungAngabenNutzung()
-		);
+		));
 		// kosten und einnahmen
-		ferienbetreuungAngabenKostenEinnahmenToEntity(
+		ferienbetreuungAngaben.setFerienbetreuungAngabenKostenEinnahmen(ferienbetreuungAngabenKostenEinnahmenToEntity(
 			jaxContainer.getKostenEinnahmen(),
 			ferienbetreuungAngaben.getFerienbetreuungAngabenKostenEinnahmen()
-		);
+		));
 
 		// never save resultate from client
 
@@ -105,7 +146,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 
 	}
 
-	public void ferienbetreuungAngabenStammdatenToEntity(
+	public FerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenToEntity(
 		@Nonnull JaxFerienbetreuungAngabenStammdaten jaxStammdaten,
 		@Nonnull FerienbetreuungAngabenStammdaten stammdaten
 	) {
@@ -143,16 +184,20 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 				if (adresse == null) {
 					adresse = new Adresse();
 				}
-				auszahlungsdaten.setAdresseKontoinhaber(adresseToEntity(jaxStammdaten.getAdresseKontoinhaber(), adresse));
+				auszahlungsdaten.setAdresseKontoinhaber(super.adresseToEntity(
+					jaxStammdaten.getAdresseKontoinhaber(),
+					adresse));
 			}
 			stammdaten.setAuszahlungsdaten(auszahlungsdaten);
 		} else {
 			stammdaten.setAuszahlungsdaten(null);
 		}
 		stammdaten.setVermerkAuszahlung(jaxStammdaten.getVermerkAuszahlung());
+
+		return (checkVersionSaveAndFlush(stammdaten, jaxStammdaten.getVersion()));
 	}
 
-	public void ferienbetreuungAngabenAngebotToEntity(
+	public FerienbetreuungAngabenAngebot ferienbetreuungAngabenAngebotToEntity(
 		@Nonnull JaxFerienbetreuungAngabenAngebot jaxAngebot,
 		@Nonnull FerienbetreuungAngabenAngebot angebot
 	) {
@@ -200,9 +245,11 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		angebot.setFerienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet(jaxAngebot.getFerienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet());
 		angebot.setKinderAusAnderenGemeindenZahlenAnderenTarif(jaxAngebot.getKinderAusAnderenGemeindenZahlenAnderenTarif());
 		angebot.setBemerkungenTarifsystem(jaxAngebot.getBemerkungenTarifsystem());
+
+		return checkVersionSaveAndFlush(angebot, jaxAngebot.getVersion());
 	}
 
-	public void ferienbetreuungAngabenNutzungToEntity(
+	public FerienbetreuungAngabenNutzung ferienbetreuungAngabenNutzungToEntity(
 		@Nonnull JaxFerienbetreuungAngabenNutzung jaxNutzung,
 		@Nonnull FerienbetreuungAngabenNutzung nutzung
 	) {
@@ -218,9 +265,11 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		nutzung.setAnzahlBetreuteKinder1Zyklus(jaxNutzung.getAnzahlBetreuteKinder1Zyklus());
 		nutzung.setAnzahlBetreuteKinder2Zyklus(jaxNutzung.getAnzahlBetreuteKinder2Zyklus());
 		nutzung.setAnzahlBetreuteKinder3Zyklus(jaxNutzung.getAnzahlBetreuteKinder3Zyklus());
+
+		return checkVersionSaveAndFlush(nutzung, jaxNutzung.getVersion());
 	}
 
-	public void ferienbetreuungAngabenKostenEinnahmenToEntity(
+	public FerienbetreuungAngabenKostenEinnahmen ferienbetreuungAngabenKostenEinnahmenToEntity(
 		@Nonnull JaxFerienbetreuungAngabenKostenEinnahmen jaxKostenEinnahmen,
 		@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen
 	) {
@@ -234,12 +283,16 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		kostenEinnahmen.setBemerkungenKosten(jaxKostenEinnahmen.getBemerkungenKosten());
 		kostenEinnahmen.setElterngebuehren(jaxKostenEinnahmen.getElterngebuehren());
 		kostenEinnahmen.setWeitereEinnahmen(jaxKostenEinnahmen.getWeitereEinnahmen());
+
+		return checkVersionSaveAndFlush(kostenEinnahmen, jaxKostenEinnahmen.getVersion());
 	}
 
 	@Nonnull
 	public JaxFerienbetreuungAngabenContainer ferienbetreuungAngabenContainerToJax(
 		@Nonnull final FerienbetreuungAngabenContainer container
 	) {
+		flush();
+
 		JaxFerienbetreuungAngabenContainer jaxContainer = new JaxFerienbetreuungAngabenContainer();
 		convertAbstractFieldsToJAX(container, jaxContainer);
 
@@ -259,6 +312,8 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	public JaxFerienbetreuungAngaben ferienbetreuungAngabenToJax(
 		@Nonnull final FerienbetreuungAngaben ferienbetreuungAngaben
 	) {
+		flush();
+
 		JaxFerienbetreuungAngaben jaxFerienbetreuungAngaben = new JaxFerienbetreuungAngaben();
 		convertAbstractFieldsToJAX(ferienbetreuungAngaben, jaxFerienbetreuungAngaben);
 
@@ -298,6 +353,8 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	public JaxFerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenToJax(
 		@Nonnull FerienbetreuungAngabenStammdaten stammdaten
 	) {
+		flush();
+
 		JaxFerienbetreuungAngabenStammdaten jaxStammdaten = new JaxFerienbetreuungAngabenStammdaten();
 
 		convertAbstractFieldsToJAX(stammdaten, jaxStammdaten);
@@ -332,6 +389,8 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	public JaxFerienbetreuungAngabenAngebot ferienbetreuungAngabenAngebotToJax(
 		@Nonnull FerienbetreuungAngabenAngebot angebot
 	) {
+		flush();
+
 		JaxFerienbetreuungAngabenAngebot jaxAngebot = new JaxFerienbetreuungAngabenAngebot();
 
 		convertAbstractFieldsToJAX(angebot, jaxAngebot);
@@ -379,6 +438,8 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	public JaxFerienbetreuungAngabenNutzung ferienbetreuungAngabenNutzungToJax(
 		@Nonnull FerienbetreuungAngabenNutzung nutzung
 	) {
+		flush();
+
 		JaxFerienbetreuungAngabenNutzung jaxNutzung = new JaxFerienbetreuungAngabenNutzung();
 
 		convertAbstractFieldsToJAX(nutzung, jaxNutzung);
@@ -403,6 +464,8 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	public JaxFerienbetreuungAngabenKostenEinnahmen ferienbetreuungAngabenKostenEinnahmenToJax(
 		@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen
 	) {
+		flush();
+
 		JaxFerienbetreuungAngabenKostenEinnahmen jaxKostenEinnahmen = new JaxFerienbetreuungAngabenKostenEinnahmen();
 
 		convertAbstractFieldsToJAX(kostenEinnahmen, jaxKostenEinnahmen);
@@ -422,12 +485,14 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	public List<JaxFerienbetreuungDokument> ferienbetreuungDokumentListToJax(@Nonnull List<FerienbetreuungDokument> dokumente) {
+	public List<JaxFerienbetreuungDokument> ferienbetreuungDokumentListToJax(
+		@Nonnull List<FerienbetreuungDokument> dokumente) {
 		return dokumente.stream().map(d -> ferienbetreuungDokumentToJax(d)).collect(Collectors.toList());
 	}
 
 	@Nonnull
-	public JaxFerienbetreuungDokument ferienbetreuungDokumentToJax(@Nonnull FerienbetreuungDokument ferienbetreuungDokument) {
+	public JaxFerienbetreuungDokument ferienbetreuungDokumentToJax(
+		@Nonnull FerienbetreuungDokument ferienbetreuungDokument) {
 
 		JaxFerienbetreuungDokument jaxFerienbetreuungDokument = convertAbstractVorgaengerFieldsToJAX(
 			ferienbetreuungDokument,
@@ -438,6 +503,14 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxFerienbetreuungDokument.setTimestampUpload(jaxFerienbetreuungDokument.getTimestampUpload());
 
 		return jaxFerienbetreuungDokument;
+	}
+
+	@Override
+	@Nonnull
+	@CanIgnoreReturnValue
+	public Adresse adresseToEntity(@Nonnull final JaxAdresse jaxAdresse, @Nonnull final Adresse adresse) {
+		Adresse entity = super.adresseToEntity(jaxAdresse, adresse);
+		return checkVersionAndSave(entity, jaxAdresse.getVersion());
 	}
 
 }

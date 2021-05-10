@@ -88,13 +88,13 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	@Nullable
 	@Valid
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(optional = true, cascade = CascadeType.MERGE, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_lats_fall_container_falldeklaration_id"), nullable = true)
 	private LastenausgleichTagesschuleAngabenGemeinde angabenDeklaration;
 
 	@Nullable
 	@Valid
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(optional = true, cascade = CascadeType.MERGE, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_lats_fall_container_fallkorrektur_id"), nullable = true)
 	private LastenausgleichTagesschuleAngabenGemeinde angabenKorrektur;
 

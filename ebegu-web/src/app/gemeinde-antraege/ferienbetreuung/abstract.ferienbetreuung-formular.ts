@@ -28,6 +28,7 @@ import {TSFerienbetreuungAngabenContainer} from '../../../models/gemeindeantrag/
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {HTTP_ERROR_CODES} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
 
@@ -168,9 +169,12 @@ export abstract class AbstractFerienbetreuungFormular {
     }
 
     protected handleSaveError(error: any): void {
+        this.errorService.clearAll();
         if (error.error?.includes('Not all required properties are set')) {
             this.enableAndTriggerFormValidation();
             this.showValidierungFehlgeschlagenErrorMessage();
+        } else if (error.status === HTTP_ERROR_CODES.CONFLICT) {
+            this.errorService.addMesageAsError(this.translate.instant('ERROR_DATA_CHANGED'));
         } else {
             this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR'));
         }

@@ -97,6 +97,9 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
             return;
         }
         this.form = this.fb.group({
+            version: [
+                stammdaten?.version
+            ],
             traegerschaft: [
                 stammdaten?.traegerschaft,
             ],
@@ -125,6 +128,9 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                 ort: [
                     stammdaten?.stammdatenAdresse?.ort,
                 ],
+                version: [
+                    stammdaten?.stammdatenAdresse?.version
+                ]
             }),
             stammdatenKontaktpersonVorname: [
                 stammdaten?.stammdatenKontaktpersonVorname,
@@ -158,6 +164,9 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                     plz: [
                         stammdaten?.adresseKontoinhaber?.plz,
                     ],
+                    version: [
+                        stammdaten?.adresseKontoinhaber?.version
+                    ]
                 }),
                 iban: [
                     stammdaten?.iban,
@@ -290,10 +299,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                 this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
                 this.errorService.clearAll();
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
-            }, err => {
-                LOG.error(err);
-                this.errorService.addMesageAsError(this.translate.instant('FERIENBETREUUNG_PERSIST_ERROR'));
-            });
+            }, err => this.handleSaveError(err));
     }
 
     private extractFormValues(): TSFerienbetreuungAngabenStammdaten {
