@@ -448,7 +448,11 @@ export class TagesschulenAngabenComponent {
         return !this.authService.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
     }
 
-    public onFalscheAngaben(): void {
+    public async onFalscheAngaben(): Promise<void> {
+
+        if (!(await this.confirmDialog(this.translate.instant('LATS_CONFIRM_OPEN_GEMEINDE_FORMULAR')))) {
+            return;
+        }
         const falscheAngabenObs$ = this.latsAngabenInstitutionContainer.isGeprueftGemeinde() ?
             this.tagesschulenAngabenRS.falscheAngabenGemeinde(this.latsAngabenInstitutionContainer) :
             this.tagesschulenAngabenRS.falscheAngabenTS(this.latsAngabenInstitutionContainer);

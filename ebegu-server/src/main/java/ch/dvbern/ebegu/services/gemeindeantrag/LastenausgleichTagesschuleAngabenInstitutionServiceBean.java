@@ -62,6 +62,7 @@ import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -216,6 +217,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer fallContainer) {
 
 		authorizer.checkWriteAuthorization(fallContainer);
+		authorizer.checkWriteAuthorization(fallContainer.getAngabenGemeinde());
 
 		Preconditions.checkState(
 			fallContainer.getAngabenGemeinde().isInBearbeitungGemeinde(),
@@ -223,8 +225,19 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		);
 
 		Preconditions.checkState(
+			fallContainer.getAngabenGemeinde().getAngabenDeklaration() != null,
+			"LastenausgleichTagesschuleAngabenGemeindeContainer muss in Bearbeitung Gemeinde sein"
+		);
+
+		Preconditions.checkState(
 			fallContainer.isAntragAbgeschlossen(),
 			"LastenausgleichTagesschuleAngabenInstitutionContainer muss im Status GEPRUEFT sein");
+
+		// gemeinde angaben have to be reopened if closed
+		if (fallContainer.getAngabenGemeinde().getAngabenDeklaration().isAbgeschlossen()) {
+			fallContainer.getAngabenGemeinde().getAngabenDeklaration().setStatus(
+				LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
+		}
 
 		fallContainer.setStatus(LastenausgleichTagesschuleAngabenInstitutionStatus.IN_PRUEFUNG_GEMEINDE);
 
@@ -253,7 +266,8 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 	}
 
 	@Override
-	public @Nonnull Map<String, Integer> calculateAnzahlEingeschriebeneKinder(
+	public @Nonnull
+	Map<String, Integer> calculateAnzahlEingeschriebeneKinder(
 		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer container
 	) {
 		Preconditions.checkNotNull(container);
@@ -309,7 +323,8 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 	}
 
 	@Override
-	public @Nonnull Map<String, BigDecimal> calculateDurchschnittKinderProTag(
+	public @Nonnull
+	Map<String, BigDecimal> calculateDurchschnittKinderProTag(
 		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer container
 	) {
 		Preconditions.checkNotNull(container);
@@ -320,7 +335,9 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 			container.getInstitution().getId(), false
 		);
 		if (stammdaten == null) {
-			throw new EbeguEntityNotFoundException("calculateDurchschnittKinderProTag", container.getInstitution().getId());
+			throw new EbeguEntityNotFoundException(
+				"calculateDurchschnittKinderProTag",
+				container.getInstitution().getId());
 		}
 
 		List<AnmeldungTagesschule> anmeldungenTagesschule =
@@ -378,9 +395,10 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 	private List<AnmeldungTagesschule> findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode(
 		@Nonnull InstitutionStammdaten stammdaten,
 		@Nonnull Gesuchsperiode gesuchsperiode
-		) {
+	) {
 
-		List<Einstellung> einstellungList = einstellungService.findEinstellungen(EinstellungKey.LATS_STICHTAG, gesuchsperiode);
+		List<Einstellung> einstellungList =
+			einstellungService.findEinstellungen(EinstellungKey.LATS_STICHTAG, gesuchsperiode);
 		if (einstellungList.size() != 1) {
 			throw new EbeguRuntimeException(
 				"findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode",
@@ -403,7 +421,6 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		Join<AnmeldungTagesschule, BelegungTagesschule> joinBelegungTagesschule =
 			root.join(AnmeldungTagesschule_.belegungTagesschule);
 
-
 		final Predicate predicateGesuch = cb.equal(
 			joinKindContainer.get(KindContainer_.gesuch)
 				.get(Gesuch_.gesuchsperiode)
@@ -413,19 +430,24 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		final Predicate predicateStammdaten = cb.equal(
 			root.get(
 				AnmeldungTagesschule_.institutionStammdaten).get(InstitutionStammdaten_.id),
-				stammdaten.getId()
+			stammdaten.getId()
 		);
 		final Predicate predicateGueltig = cb.equal(root.get(AnmeldungTagesschule_.gueltig), Boolean.TRUE);
 		final Predicate predicateEingeschrieben = cb.lessThanOrEqualTo(
 			joinBelegungTagesschule.get(BelegungTagesschule_.eintrittsdatum),
-			 stichtag
+			stichtag
 		);
 		final Predicate predicateUebernommen = cb.equal(
 			root.get(AnmeldungTagesschule_.betreuungsstatus),
 			Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
 		);
 
-		query.where(predicateGesuch, predicateStammdaten, predicateGueltig, predicateEingeschrieben, predicateUebernommen);
+		query.where(
+			predicateGesuch,
+			predicateStammdaten,
+			predicateGueltig,
+			predicateEingeschrieben,
+			predicateUebernommen);
 
 		return persistence.getCriteriaResults(query);
 
