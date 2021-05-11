@@ -59,24 +59,25 @@
             <dv-input-container-x [verticalAlign]="true">
                 <label for="am-angebot-beteiligte-gemeinden"
                        translate>FERIENBETREUUNG_AM_ANGEBOT_BETEILIGTE_GEMEINDEN</label>
-                <mat-select *ngIf="bfsGemeinden?.length"
-                            class="form-control"
-                            formControlName="amAngebotBeteiligteGemeinden"
-                            name="amAngebotBeteiligteGemeinden"
-                            id="am-angebot-beteiligte-gemeinden"
-                            [disabled]="form.get('amAngebotBeteiligteGemeinden').disabled"
-                            [multiple]="true">
-                    <mat-option *ngFor="let gemeinde of bfsGemeinden"
-                                [value]="gemeinde.name">
-                        {{gemeinde.name}}
-                    </mat-option>
-                </mat-select>
-                <dv-bisher-x
-                    [deklaration]="container?.angabenDeklaration?.stammdaten?.amAngebotBeteiligteGemeinden?.join(', ')"
-                    [korrektur]="form.get('amAngebotBeteiligteGemeinden').value?.join(', ')"
-                    [showBisher]="container.isAtLeastInPruefungKanton()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                </dv-bisher-x>
+                <mat-form-field *ngIf="bfsGemeinden?.length">
+                    <mat-select class="form-control"
+                                formControlName="amAngebotBeteiligteGemeinden"
+                                name="amAngebotBeteiligteGemeinden"
+                                id="am-angebot-beteiligte-gemeinden"
+                                [disabled]="form.get('amAngebotBeteiligteGemeinden').disabled"
+                                [multiple]="true">
+                        <mat-option *ngFor="let gemeinde of bfsGemeinden"
+                                    [value]="gemeinde.name">
+                            {{gemeinde.name}}
+                        </mat-option>
+                    </mat-select>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.stammdaten?.amAngebotBeteiligteGemeinden?.join(', ')"
+                        [korrektur]="form.get('amAngebotBeteiligteGemeinden').value?.join(', ')"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
+                </mat-form-field>
             </dv-input-container-x>
 
 
