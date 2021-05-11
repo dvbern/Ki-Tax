@@ -13,11 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {downgradeComponent} from '@angular/upgrade/static';
 import {CORE_JS_MODULE} from '../core/core.angularjs.module';
-import {ZahlungsauftragViewComponentConfig} from './component/zahlungsauftragView';
+import {ZahlungsauftragViewXComponent} from '../zahlung/zahlungsauftrag-view-x/zahlungsauftrag-view-x.component';
 import {zahlungsauftragRun} from './zahlungsauftrag.route';
 
 export const ZAHLUNGSAUFTRAG_VIEW_JS_MODULE =
     angular.module('ebeguWeb.zahlungsauftrag', [CORE_JS_MODULE.name])
         .run(zahlungsauftragRun)
-        .component('zahlungsauftragView', new ZahlungsauftragViewComponentConfig());
+        .directive('zahlungsauftragView', downgradeComponent({component: ZahlungsauftragViewXComponent}));

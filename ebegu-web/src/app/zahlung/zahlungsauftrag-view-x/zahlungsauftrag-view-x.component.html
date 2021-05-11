@@ -1,0 +1,256 @@
+<!--
+  ~ Ki-Tax: System for the management of external childcare subsidies
+  ~ Copyright (C) 2017 City of Bern Switzerland
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<div class="zahlungsauftrag-view" dv-show-element
+     dv-show-allowed-roles="['ADMIN_BG', 'SUPER_ADMIN' , 'SACHBEARBEITER_BG','ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE',
+     'ADMIN_INSTITUTION', 'SACHBEARBEITER_INSTITUTION', 'ADMIN_TRAEGERSCHAFT', 'SACHBEARBEITER_TRAEGERSCHAFT', 'JURIST', 'REVISOR',
+     'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
+
+    <!-- Toggle fuer den Auszahlungstyp (anstelle von Tabs, da GUI sonst identisch) -->
+    <div *ngIf="showAuszahlungsTypToggle()" class="switch-auszahlungstyp">
+        <dv-switch
+            (switchValueChange)="toggleAuszahlungslaufTyp()"
+            [switchOptionLeft]="'GEMEINDE_INSTITUTION'"
+            [switchOptionRight]="'GEMEINDE_ANTRAGSTELLER'"
+            [(switchValue)]="zahlungslaufTyp"
+        ></dv-switch>
+    </div>
+
+    <form role="form" name="form" class="" unsaved-warning-form="" novalidate>
+        <div class="row" dv-show-element dv-show-allowed-roles="['ADMIN_BG', 'ADMIN_GEMEINDE', 'SUPER_ADMIN']">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="row zahlungen-form" layout="row">
+
+                    <!-- Gemeinde -->
+                    <div ng-class="{'col-md-3': !testMode,'col-md-2': testMode}">
+                        <div class="form-group">
+                            <label class="md-no-float" for="gemeinde"
+                            translate>GEMEINDE</label>
+                            <div class="dv-select-style">
+                                <select ng-model="gemeinde"
+                                        name="gemeinde"
+                                        class="form-control"
+                                        id="gemeinde"
+                                        ng-required="true"
+                                        ng-options="gemeinde.name for gemeinde in gemeindenList | orderBy: 'name'  track by gemeinde.name">
+                                </select>
+                                <dv-error-messages for="form.gemeinde.$error"
+                                                   class="error"></dv-error-messages>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div ng-class="{'col-md-3': !testMode,'col-md-2': testMode}">
+                        <div class="form-group">
+                            <label class="md-no-float" for="faelligkeitsdatum" translate>ZAHLUNG_FAELLIGKEITSDATUM</label>
+                            <dv-datepicker name="faelligkeitsdatum" id="faelligkeitsdatum"
+                                           ng-model="faelligkeitsdatum" ng-required="true"
+                                           class="input-element">
+                            </dv-datepicker>
+                            <dv-error-messages for="form.faelligkeitsdatum.$error"
+                                               class="error"></dv-error-messages>
+                        </div>
+                    </div>
+                    <div class="col-md-2" *ngIf="testMode">
+                        <div class="form-group">
+                            <label class="md-no-float" for="datumGeneriert"
+                                   translate>ZAHLUNG_GENERIERT</label>
+                            <dv-datepicker name="datumGeneriert" id="datumGeneriert"
+                                           ng-model="datumGeneriert"
+                                           class="input-element"
+                                           dv-min-date="minDateForTestlauf">
+                            </dv-datepicker>
+                            <dv-error-messages for="form.datumGeneriert.$error"
+                                               class="error"></dv-error-messages>
+                        </div>
+                    </div>
+                    <div ng-class="{'col-md-4': !testMode,'col-md-3': testMode}">
+                        <div class="form-group">
+                            <label class="md-no-float" translate
+                                   for="beschrieb">ZAHLUNG_BESCHRIEB</label>
+                            <input id="beschrieb" name="beschrieb"
+                                   ng-model="beschrieb"
+                                   class="form-control input-dv input-element" required>
+                            <dv-error-messages for="form.beschrieb.$error"
+                                               class="error"></dv-error-messages>
+                        </div>
+                    </div>
+                    <div ng-class="{'col-md-3': !testMode,'col-md-2': testMode}" flex layout="row"
+                         layout-align="center center">
+                        <dv-loading-button button-click="createZahlungsauftrag()"
+                                           aria-label="{{getLabelZahlungslaufErstellen()}}" type="submit">
+                            <span class="uppercase">{{getLabelZahlungslaufErstellen()}}</span>
+                        </dv-loading-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="col-md-12" ng-show="showInfotext()">
+        <p translate>ZAHLUNGSLAUF_INFO_1</p>
+        <p translate>ZAHLUNGSLAUF_INFO_2</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-11 ">
+            <h3 translate>ZAHLUNGSAUFTRAEGE</h3>
+        </div>
+        <div class="col-md-1 text-right">
+            <h3 ng-bind="getZahlungsauftraegeFiltered().length"></h3>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table st-table="displayedCollection" st-safe-src="getZahlungsauftraegeFiltered()"
+               st-delay="20" class="table ebegu-table fixedtable table-striped">
+            <thead>
+            <tr dv-show-element dv-show-allowed-roles="['SUPER_ADMIN']">
+                <th></th>
+                <th></th>
+                <th>
+                    <div class="dv-select-style">
+                        <select st-input-event="change" name="gemeinde"
+                                st-search="gemeinde.name" class="form-control"
+                                ng-options="gemeinde.name for gemeinde in gemeindenList | orderBy: 'name'  track by gemeinde.name"
+                                ng-model="selectedGemeinde">
+                            <option value="">{{"ALLE" | translate}}</option>
+                        </select>
+                    </div>
+                </th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr>
+                <th st-sort="datumFaellig" class="sortable zahlungsauftrag-percent-15 uppercase"
+                    translate>ZAHLUNG_FAELLIGKEIT</th>
+                <th st-sort-default="reverse" st-sort="datumGeneriert" class="sortable zahlungsauftrag-percent-10 uppercase"
+                    translate>ZAHLUNG_GENERIERT</th>
+                <th st-sort="gemeinde.name" class="sortable zahlungsauftrag-percent-15 uppercase"
+                    translate>GEMEINDE</th>
+                <th translate dv-show-element class="zahlungsauftrag-percent-10 uppercase"
+                    dv-show-allowed-roles="['ADMIN_BG', 'ADMIN_GEMEINDE', 'SUPER_ADMIN']">ZAHLUNG_PAIN001</th>
+                <th translate class="zahlungsauftrag-percent-15 uppercase">ZAHLUNG_DETAILPOSITIONEN</th>
+                <th class="zahlungsauftrag-percent-15 sortable uppercase" st-sort="betragTotalAuftrag"
+                    id="betragTotalAuftrag">ZAHLUNG_TOTAL</th>
+                <th st-sort="beschrieb" class="sortable zahlungsauftrag-percent-35 uppercase" translate>ZAHLUNG_BESCHRIEB</th>
+                <th st-sort="status" class="sortable zahlungsauftrag-percent-10 uppercase"
+                    translate>ZAHLUNG_STATUS</th>
+                <th class="zahlungsauftrag-percent-5" dv-show-element
+                    dv-show-allowed-roles="['ADMIN_BG', 'ADMIN_GEMEINDE', 'SUPER_ADMIN']"></th>
+                <th class="zahlungsauftrag-percent-5" dv-show-element
+                    dv-show-allowed-roles="['ADMIN_BG', 'ADMIN_GEMEINDE', 'SUPER_ADMIN']"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let row of getZahlungsauftraegeFiltered()" (click)="gotoZahlung(row)"
+                ng-class="rowClass(row.id)">
+                <!-- datumFaellig edit-->
+                <td *ngIf="isEditMode(row.id)" ng-click="$event.stopPropagation()">
+                    <div class="form-group">
+                        <dv-datepicker name="faelligkeitsdatumRow" id="faelligkeitsdatumRow"
+                                       ng-model="zahlungsauftragToEdit.datumFaellig" ng-required="true"
+                                       class="input-element">
+                        </dv-datepicker>
+                        <div ng-messages="form.faelligkeitsdatumRow.$error" role="alert"
+                             class="error"></div>
+                    </div>
+                </td>
+                <!-- datumFaellig -->
+                <td *ngIf="!isEditMode(row.id)"
+                    title="{{row.datumFaellig | date: 'DD.MM.YYYY'}}">{{row.datumFaellig | date:'DD.MM.YYYY'}}</td>
+                <!-- datumGeneriert -->
+                <td title="{{row.datumGeneriert | date: 'DD.MM.YYYY'}}">{{row.datumGeneriert | date: 'DD.MM.YYYY'}}</td>
+                <!-- Gemeinde -->
+                <td title="{{row.gemeinde.name}}">{{row.gemeinde.name}}</td>
+                <!-- downloadPain -->
+                <td class="symbol" dv-show-element
+                    dv-show-allowed-roles="['ADMIN_BG', 'ADMIN_GEMEINDE', 'SUPER_ADMIN']">
+                    <dv-loading-button type="button" button-click="downloadPain(row)"
+                                       button-class="dv-btn-operation">
+                        <i class="fa fa-lg fa-file-code-o"></i>
+                    </dv-loading-button>
+                </td>
+                <!-- downloadAllDetails -->
+                <td class="symbol">
+                    <dv-loading-button type="button" (buttonClick)="downloadAllDetails(row)"
+                                       button-class="dv-btn-operation">
+                        <i class="fa fa-lg fa-file-excel-o"></i>
+                    </dv-loading-button>
+                </td>
+                <!-- BetragTotalAuftrag -->
+                <td class="ellipsis numeric-column">
+                    <i class="fa fa-exclamation-triangle warning-negative-zahlungen"
+                       *ngIf="row.hasNegativeZahlungen"
+                       aria-hidden="true"
+                       title="{{'TOOLTIP_NEGATIVE_WERTE' | translate}}"></i>
+                    <span ng-bind="row.betragTotalAuftrag | currency : '' : 2"
+                          title="{{row.betragTotalAuftrag}}"></span>
+                </td>
+                <!-- beschrieb -->
+                <td *ngIf="!isEditMode(row.id)" class="ellipsis" title="{{row.beschrieb}}"
+                    ng-bind="row.beschrieb"></td>
+                <!-- beschrieb edit -->
+                <td *ngIf="isEditMode(row.id)" ng-click="$event.stopPropagation()">
+                    <div class="form-group">
+                        <input id="beschriebRow" name="beschriebRow"
+                               ng-model="zahlungsauftragToEdit.beschrieb"
+                               class="input-element" required>
+                        <div ng-messages="form.beschriebRow.$error" role="alert" class="error"></div>
+                    </div>
+                </td>
+                <!-- status -->
+                <td class="ellipsis" title="{{'ZAHLUNGSAUFTRAG_' + getCalculatedStatus(row) | translate}}">
+                    <span ng-bind="'ZAHLUNGSAUFTRAG_' + getCalculatedStatus(row) | translate"></span>
+                </td>
+                <!-- edit / save button -->
+                <td class="symbol text-center" ng-click="$event.stopPropagation()" dv-show-element
+                    dv-show-allowed-roles="['ADMIN_BG', 'ADMIN_GEMEINDE', 'SUPER_ADMIN']">
+                    <dv-loading-button *ngIf="isEditable(row.status) && !isEditMode(row.id)"
+                                       type="button" button-click="edit(row)"
+                                       button-class="dv-btn-operation">
+                        <i class="fa fa-lg fa-pencil-square-o"></i>
+                    </dv-loading-button>
+                    <dv-loading-button *ngIf="isEditMode(row.id) && isEditValid()"
+                                       type="button" button-click="save(row)"
+                                       button-class="dv-btn-operation">
+                        <i class="fa fa-lg fa-floppy-o"></i>
+                    </dv-loading-button>
+                </td>
+                <!-- ausloesen button -->
+                <td class="symbol text-center" ng-click="$event.stopPropagation()" dv-show-element
+                    dv-show-allowed-roles="['ADMIN_BG', 'ADMIN_GEMEINDE', 'SUPER_ADMIN']">
+                    <dv-loading-button *ngIf="isEditable(row.status) && !isEditMode(row.id)"
+                                       type="button" button-click="ausloesen(row.id)"
+                                       button-class="dv-btn-operation">
+                        <i class="fa fa-lg fa-arrow-right" style="color: green"></i>
+                    </dv-loading-button>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="7" class="text-center">
+                    <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="5"></div>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

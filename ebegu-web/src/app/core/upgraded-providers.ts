@@ -22,6 +22,7 @@ import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {TestFaelleRS} from '../../admin/service/testFaelleRS.rest';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {DossierRS} from '../../gesuch/service/dossierRS.rest';
+import {ExportRS} from '../../gesuch/service/exportRS.rest';
 import {FallRS} from '../../gesuch/service/fallRS.rest';
 import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../gesuch/service/gesuchModelManager';
@@ -42,6 +43,7 @@ import {LastenausgleichRS} from './service/lastenausgleichRS.rest';
 import {MandantRS} from './service/mandantRS.rest';
 import {MitteilungRS} from './service/mitteilungRS.rest';
 import {NotrechtRS} from './service/notrechtRS.rest';
+import {ReportRS} from './service/reportRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
 import {ZahlungRS} from './service/zahlungRS.rest';
@@ -368,6 +370,17 @@ export const gesuchModelManagerProvider = {
     deps: ['$injector'],
 };
 
+// ExportRS
+export function reportRSFactory(i: IInjectorService): ReportRS {
+    return i.get('ReportRS');
+}
+
+export const reportRSProvider = {
+    provide: ReportRS,
+    useFactory: reportRSFactory,
+    deps: ['$injector'],
+};
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -396,4 +409,5 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     notrechtRSProvider,
     searchRSProvider,
     gesuchModelManagerProvider,
+    reportRSProvider
 ];

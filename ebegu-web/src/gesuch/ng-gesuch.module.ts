@@ -28,9 +28,12 @@ import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.componen
         FallToolbarComponent,
         DvSwitchComponent,
         BetreuungOverrideWarningComponent,
-        DvEingabeBasisjahrComponent
+        DvEingabeBasisjahrComponent,
     ],
-    })
+    exports: [
+        DvSwitchComponent,
+    ],
+})
 
 export class NgGesuchModule {
 }
