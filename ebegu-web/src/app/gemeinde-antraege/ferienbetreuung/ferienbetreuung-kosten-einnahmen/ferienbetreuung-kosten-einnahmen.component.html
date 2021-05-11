@@ -179,13 +179,13 @@
                           id="bemerkungen_kosten_id"
                           formControlName="bemerkungenKosten"
                           class="form-control dv-input"></textarea>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.bemerkungenKosten"
+                        [korrektur]="form.get('bemerkungenKosten').value"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
-                <dv-bisher-x
-                    [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.bemerkungenKosten"
-                    [korrektur]="form.get('bemerkungenKosten').value"
-                    [showBisher]="container.isAtLeastInPruefungKanton()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                </dv-bisher-x>
             </dv-input-container-x>
 
         </div>
