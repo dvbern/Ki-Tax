@@ -77,7 +77,7 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 	private String traegerschaft;
 
 	@Nullable
-	@OneToOne(optional = true, cascade = CascadeType.MERGE, orphanRemoval = true)
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_stammdaten_adresse_id"))
 	private Adresse stammdatenAdresse;
 
