@@ -113,7 +113,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                 organisation: [
                     stammdaten?.stammdatenAdresse?.organisation,
                 ],
-                zusatz: [
+                zusatzzeile: [
                     stammdaten?.stammdatenAdresse?.zusatzzeile,
                 ],
                 strasse: [
@@ -163,6 +163,9 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                     ],
                     plz: [
                         stammdaten?.adresseKontoinhaber?.plz,
+                    ],
+                    zusatzzeile: [
+                        stammdaten?.adresseKontoinhaber?.zusatzzeile,
                     ],
                     version: [
                         stammdaten?.adresseKontoinhaber?.version

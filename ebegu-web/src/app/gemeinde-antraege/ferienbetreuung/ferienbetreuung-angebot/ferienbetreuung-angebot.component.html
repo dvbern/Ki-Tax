@@ -168,6 +168,18 @@
                             </mat-error>
                         </mat-form-field>
                     </dv-input-container-x>
+                    <dv-input-container-x [verticalAlign]="true" class="col-xs-12">
+                        <label for="adresse_stammdaten_zusatz_id">
+                            {{'ADRESSE_ZUSATZZEILE' | translate}}
+                        </label>
+                        <mat-form-field floatLabel="always">
+                            <input type="text"
+                                   id="adresse_stammdaten_zusatz_id"
+                                   matInput
+                                   formControlName="zusatzzeile"
+                                   class="form-control dv-input"/>
+                        </mat-form-field>
+                    </dv-input-container-x>
                 </div>
             </div>
 

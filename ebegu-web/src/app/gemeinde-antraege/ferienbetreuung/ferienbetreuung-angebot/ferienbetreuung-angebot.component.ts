@@ -127,6 +127,9 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
                 ort: [
                     angebot?.angebotAdresse?.ort,
                 ],
+                zusatzzeile: [
+                    angebot?.angebotAdresse?.zusatzzeile
+                ]
             }),
             anzahlFerienwochenHerbstferien: [
                 angebot?.anzahlFerienwochenHerbstferien

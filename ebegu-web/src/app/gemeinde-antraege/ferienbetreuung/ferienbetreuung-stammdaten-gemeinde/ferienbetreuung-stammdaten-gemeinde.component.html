@@ -68,19 +68,52 @@
             </dv-input-container-x>
 
 
-        <dv-input-container-x [verticalAlign]="true">
-            <label for="seitWannFerienbetreuungen_id">
-                {{'FERIENBETREUUNG_SEIT_WANN' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <input id="seitWannFerienbetreuungen_id"
-                       type="text"
-                       matInput
-                       formControlName="seitWannFerienbetreuungen"
-                       class="form-control dv-input"/>
-            </mat-form-field>
-        </dv-input-container-x>
+            <dv-input-container-x [verticalAlign]="true">
+                <label for="seitWannFerienbetreuungen_id">
+                    {{'FERIENBETREUUNG_SEIT_WANN' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input id="seitWannFerienbetreuungen_id"
+                           type="text"
+                           matInput
+                           formControlName="seitWannFerienbetreuungen"
+                           class="form-control dv-input"/>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <!--<div class="row">
+                <label class="double-label">
+                    {{'FERIENBETREUUNG_SEIT_WANN' | translate}}
+                </label>
+                <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+                    <label for="seitWannFerienbetreuungenTag_id">
+                        {{'MONTH' | translate}}
+                    </label>
+                    <div class="flex-whitespace-item"></div>
+                    <mat-form-field floatLabel="always">
+                        <input id="seitWannFerienbetreuungenTag_id"
+                               type="text"
+                               matInput
+                               formControlName="seitWannFerienbetreuungenTag"
+                               class="form-control dv-input"/>
+                    </mat-form-field>
+                </dv-input-container-x>
+
+                <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+                    <label for="seitWannFerienbetreuungenJahr_id">
+                        {{'PARAMETER_JAHR' | translate}}
+                    </label>
+                    <div class="flex-whitespace-item"></div>
+                    <mat-form-field floatLabel="always">
+                        <input id="seitWannFerienbetreuungenJahr_id"
+                               type="text"
+                               matInput
+                               formControlName="seitWannFerienbetreuungenJahr"
+                               class="form-control dv-input"/>
+                    </mat-form-field>
+                </dv-input-container-x>
+            </div>-->
 
         </div>
 
@@ -194,6 +227,19 @@
                                 *ngIf="form?.get('stammdatenAdresse').get('ort').errors?.required"
                                 translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
                             </mat-error>
+                        </mat-form-field>
+                    </dv-input-container-x>
+
+                    <dv-input-container-x [verticalAlign]="true" class="col-xs-12">
+                        <label for="adresse_stammdaten_zusatz_id">
+                            {{'ADRESSE_ZUSATZZEILE' | translate}}
+                        </label>
+                        <mat-form-field floatLabel="always">
+                            <input type="text"
+                                   id="adresse_stammdaten_zusatz_id"
+                                   matInput
+                                   formControlName="zusatzzeile"
+                                   class="form-control dv-input"/>
                         </mat-form-field>
                     </dv-input-container-x>
                 </div>
@@ -433,6 +479,21 @@
                                     *ngIf="formValidationTriggered && form?.get('auszahlungsdaten').get('adresseKontoinhaber').get('ort').errors?.required"
                                     translate>ERROR_AUSZAHLUNGSDATEN_NICHT_VOLLSTAENDING
                                 </mat-error>
+                            </mat-form-field>
+                        </dv-input-container-x>
+                    </div>
+
+                    <div class="row">
+                        <dv-input-container-x [verticalAlign]="true" class="col-xs-12">
+                            <label for="adresse_kontoinhaber_ort_id">
+                                {{'ADRESSE_ZUSATZZEILE' | translate}}
+                            </label>
+                            <mat-form-field floatLabel="always">
+                                <input type="text"
+                                       id="adresse_kontoinhaber_zusatz_id"
+                                       matInput
+                                       formControlName="zusatzzeile"
+                                       class="form-control dv-input"/>
                             </mat-form-field>
                         </dv-input-container-x>
                     </div>
