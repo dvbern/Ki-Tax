@@ -19,7 +19,7 @@
     <h1 class="access-for-all-title" translate>FERIENBETREUUNG_NUTZUNG</h1>
     <div class="row view-title">
         <div class="col-md-12">
-            <h2 translate>FERIENBETREUUNG_NUTZUNG</h2>
+            <h2>{{'FERIENBETREUUNG_NUTZUNG' | translate:{periode: container?.gesuchsperiode?.gesuchsperiodeString, von: container?.gesuchsperiode?.gueltigkeit.gueltigAb.format('DD.MM.YYYY'), bis: container?.gesuchsperiode?.gueltigkeit.gueltigBis.format('DD.MM.YYYY')} }}</h2>
             <hr class="header"/>
         </div>
     </div>
