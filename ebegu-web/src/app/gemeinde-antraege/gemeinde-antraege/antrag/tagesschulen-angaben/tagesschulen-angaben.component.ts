@@ -28,6 +28,7 @@ import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSLastenausgleichTagesschuleAngabenInstitutionStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenInstitutionStatus';
+import {TSRole} from '../../../../../models/enums/TSRole';
 import {TSWizardStepXTyp} from '../../../../../models/enums/TSWizardStepXTyp';
 import {TSAnzahlEingeschriebeneKinder} from '../../../../../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
 import {TSDurchschnittKinderProTag} from '../../../../../models/gemeindeantrag/TSDurchschnittKinderProTag';
@@ -76,6 +77,7 @@ export class TagesschulenAngabenComponent {
     public gemeindeAntragContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
 
     public autoFilled: boolean = false;
+    private isInstiUser: boolean = false;
 
     public readonly canSeeSave: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public readonly canSeeAbschliessen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -128,6 +130,7 @@ export class TagesschulenAngabenComponent {
             this.setupRoleBasedPropertiesForPrincipal(this.gemeindeAntragContainer,
                 this.latsAngabenInstitutionContainer,
                 principal);
+            this.isInstiUser = principal.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
             this.angabenAusKibon = container.alleAngabenInKibonErfasst;
             this.unsavedChangesService.registerForm(this.form);
             this.cd.markForCheck();
@@ -169,7 +172,11 @@ export class TagesschulenAngabenComponent {
                     this.canSeeSave.next(true);
                     this.canSeeAbschliessen.next(true);
                     this.canSeeFreigeben.next(false);
-                    this.canSeeFalscheAngaben.next(false);
+                    if (principal.hasRole(TSRole.SUPER_ADMIN)) {
+                        this.canSeeFalscheAngaben.next(true);
+                    } else {
+                        this.canSeeFalscheAngaben.next(false);
+                    }
                 }
             }
             if (angaben.isGeprueftGemeinde()) {
@@ -474,7 +481,12 @@ export class TagesschulenAngabenComponent {
 
     public async onFalscheAngaben(): Promise<void> {
 
-        if (!(await this.confirmDialog(this.translate.instant('LATS_CONFIRM_OPEN_GEMEINDE_FORMULAR')))) {
+        const gemeindeMustBeReopenedCheckRequired = !this.isInstiUser &&
+            this.gemeindeAntragContainer?.isInBearbeitungGemeinde() &&
+            !this.gemeindeAntragContainer.angabenDeklaration?.isInBearbeitung();
+
+        if (gemeindeMustBeReopenedCheckRequired && !(await this.confirmDialog(this.translate.instant(
+            'LATS_CONFIRM_OPEN_GEMEINDE_FORMULAR')))) {
             return;
         }
         const falscheAngabenObs$ = this.latsAngabenInstitutionContainer.isGeprueftGemeinde() ?
