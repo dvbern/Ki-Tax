@@ -226,8 +226,12 @@
                 <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagFruehbetreuung').errors?.required"
                            translate>ERROR_REQUIRED
                 </mat-error>
-                <mat-error *ngIf="form.get('durchschnittKinderProTagFruehbetreuung').errors?.isNotPositiveInteger"
-                           translate>ERROR_POSITIVE_NUMBER
+                <mat-error *ngIf="form.get('durchschnittKinderProTagFruehbetreuung').errors?.isNotFloat"
+                           translate>ERROR_NUMBER
+                </mat-error>
+                <mat-error
+                    *ngIf="form.get('durchschnittKinderProTagFruehbetreuung').errors?.pattern && !form.get('durchschnittKinderProTagFruehbetreuung').errors?.isNotFloat">
+                    {{'ERROR_STEP' | translate:{value: 0.01} }}
                 </mat-error>
                 <dv-bisher-x
                     [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagFruehbetreuung"
@@ -250,8 +254,12 @@
                 <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagMittag').errors?.required"
                            translate>ERROR_REQUIRED
                 </mat-error>
-                <mat-error *ngIf="form.get('durchschnittKinderProTagMittag').errors?.isNotPositiveInteger"
-                           translate>ERROR_POSITIVE_NUMBER
+                <mat-error *ngIf="form.get('durchschnittKinderProTagMittag').errors?.isNotFloat"
+                           translate>ERROR_NUMBER
+                </mat-error>
+                <mat-error
+                    *ngIf="form.get('durchschnittKinderProTagMittag').errors?.pattern && !form.get('durchschnittKinderProTagMittag').errors?.isNotFloat">
+                    {{'ERROR_STEP' | translate:{value: 0.01} }}
                 </mat-error>
                 <dv-bisher-x
                     [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagMittag"
@@ -274,8 +282,12 @@
                 <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag1').errors?.required"
                            translate>ERROR_REQUIRED
                 </mat-error>
-                <mat-error *ngIf="form.get('durchschnittKinderProTagNachmittag1').errors?.isNotPositiveInteger"
-                           translate>ERROR_POSITIVE_NUMBER
+                <mat-error *ngIf="form.get('durchschnittKinderProTagNachmittag1').errors?.isNotFloat"
+                           translate>ERROR_NUMBER
+                </mat-error>
+                <mat-error
+                    *ngIf="form.get('durchschnittKinderProTagNachmittag1').errors?.pattern && !form.get('durchschnittKinderProTagNachmittag1').errors?.isNotFloat">
+                    {{'ERROR_STEP' | translate:{value: 0.01} }}
                 </mat-error>
                 <dv-bisher-x
                     [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagNachmittag1"
@@ -298,8 +310,12 @@
                 <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag2').errors?.required"
                            translate>ERROR_REQUIRED
                 </mat-error>
-                <mat-error *ngIf="form.get('durchschnittKinderProTagNachmittag2').errors?.isNotPositiveInteger"
-                           translate>ERROR_POSITIVE_NUMBER
+                <mat-error *ngIf="form.get('durchschnittKinderProTagNachmittag2').errors?.isNotFloat"
+                           translate>ERROR_NUMBER
+                </mat-error>
+                <mat-error
+                    *ngIf="form.get('durchschnittKinderProTagNachmittag2').errors?.pattern && !form.get('durchschnittKinderProTagNachmittag2').errors?.isNotFloat">
+                    {{'ERROR_STEP' | translate:{value: 0.01} }}
                 </mat-error>
                 <dv-bisher-x
                     [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagNachmittag2"

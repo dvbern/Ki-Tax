@@ -226,19 +226,31 @@ export class TagesschulenAngabenComponent {
             ],
             durchschnittKinderProTagFruehbetreuung: [
                 latsAngabenInstiution?.durchschnittKinderProTagFruehbetreuung,
-                numberValidator(ValidationType.ANY_NUMBER),
+                Validators.compose([
+                    numberValidator(ValidationType.ANY_NUMBER),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                ]),
             ],
             durchschnittKinderProTagMittag: [
                 latsAngabenInstiution?.durchschnittKinderProTagMittag,
-                numberValidator(ValidationType.ANY_NUMBER),
+                Validators.compose([
+                    numberValidator(ValidationType.ANY_NUMBER),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                ]),
             ],
             durchschnittKinderProTagNachmittag1: [
                 latsAngabenInstiution?.durchschnittKinderProTagNachmittag1,
-                numberValidator(ValidationType.ANY_NUMBER),
+                Validators.compose([
+                    numberValidator(ValidationType.ANY_NUMBER),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                ]),
             ],
             durchschnittKinderProTagNachmittag2: [
                 latsAngabenInstiution?.durchschnittKinderProTagNachmittag2,
-                numberValidator(ValidationType.ANY_NUMBER),
+                Validators.compose([
+                    numberValidator(ValidationType.ANY_NUMBER),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                ]),
             ],
             betreuungsstundenEinschliesslichBesondereBeduerfnisse:
                 [
@@ -395,13 +407,25 @@ export class TagesschulenAngabenComponent {
             this.form.get('anzahlEingeschriebeneKinderPrimarstufe')
                 .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
             this.form.get('durchschnittKinderProTagFruehbetreuung')
-                .setValidators([Validators.required, numberValidator(ValidationType.ANY_NUMBER)]);
+                .setValidators([
+                    Validators.required, numberValidator(ValidationType.ANY_NUMBER),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                ]);
             this.form.get('durchschnittKinderProTagMittag')
-                .setValidators([Validators.required, numberValidator(ValidationType.ANY_NUMBER)]);
+                .setValidators([
+                    Validators.required, numberValidator(ValidationType.ANY_NUMBER),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                ]);
             this.form.get('durchschnittKinderProTagNachmittag1')
-                .setValidators([Validators.required, numberValidator(ValidationType.ANY_NUMBER)]);
+                .setValidators([
+                    Validators.required, numberValidator(ValidationType.ANY_NUMBER),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                ]);
             this.form.get('durchschnittKinderProTagNachmittag2')
-                .setValidators([Validators.required, numberValidator(ValidationType.ANY_NUMBER)]);
+                .setValidators([
+                    Validators.required, numberValidator(ValidationType.ANY_NUMBER),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                ]);
             this.form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse')
                 .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
         }
@@ -502,13 +526,25 @@ export class TagesschulenAngabenComponent {
             this.form.get('anzahlEingeschriebeneKinderPrimarstufe')
                 .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
             this.form.get('durchschnittKinderProTagFruehbetreuung')
-                .setValidators([numberValidator(ValidationType.ANY_NUMBER)]);
+                .setValidators([
+                    numberValidator(ValidationType.ANY_NUMBER),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                ]);
             this.form.get('durchschnittKinderProTagMittag')
-                .setValidators([numberValidator(ValidationType.ANY_NUMBER)]);
+                .setValidators([
+                    numberValidator(ValidationType.ANY_NUMBER),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                ]);
             this.form.get('durchschnittKinderProTagNachmittag1')
-                .setValidators([numberValidator(ValidationType.ANY_NUMBER)]);
+                .setValidators([
+                    numberValidator(ValidationType.ANY_NUMBER),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                ]);
             this.form.get('durchschnittKinderProTagNachmittag2')
-                .setValidators([numberValidator(ValidationType.ANY_NUMBER)]);
+                .setValidators([
+                    numberValidator(ValidationType.ANY_NUMBER),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                ]);
             this.form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse')
                 .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
         }
