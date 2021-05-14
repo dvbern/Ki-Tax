@@ -569,7 +569,7 @@ export class GemeindeAngabenComponent implements OnInit {
             this.formularInitForm.get('alleAngabenInKibonErfasst').value;
         this.lastenausgleichTSService.saveLATSAngabenGemeindeContainer(this.lATSAngabenGemeindeContainer);
         this.angabenForm.markAsPristine();
-
+        this.unsavedChangesService.registerForm(this.angabenForm);
     }
 
     public async onAbschliessen(): Promise<void> {
@@ -618,6 +618,7 @@ export class GemeindeAngabenComponent implements OnInit {
             this.errorService.addMesageAsError(this.translateService.instant(
                 'LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'));
             this.angabenForm.markAsPristine();
+            this.unsavedChangesService.registerForm(this.angabenForm);
         } else {
             this.errorService.clearAll();
         }

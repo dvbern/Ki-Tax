@@ -304,13 +304,9 @@ export class TagesschulenAngabenComponent {
                 result?.angabenDeklaration : result?.angabenKorrektur);
             this.errorService.addMesageAsInfo(this.translate.instant('SAVED'));
             this.form.markAsPristine();
+            this.unsavedChangesService.registerForm(this.form);
         }, error => {
-            if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
-                this.errorService.addMesageAsError(this.translate.instant('ERROR_NUMBER'));
-            }
-            if (error.status === HTTP_ERROR_CODES.CONFLICT) {
-                this.errorService.addMesageAsError(this.translate.instant('ERROR_DATA_CHANGED'));
-            }
+            this.manageSaveErrorCodes(error);
         });
     }
 
@@ -339,8 +335,9 @@ export class TagesschulenAngabenComponent {
                 this.errorService.clearAll();
                 this.cd.markForCheck();
                 this.form.markAsPristine();
-            }, () => {
-                this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
+                this.unsavedChangesService.registerForm(this.form);
+            }, error => {
+                this.manageSaveErrorCodes(error);
             });
     }
 
@@ -379,9 +376,10 @@ export class TagesschulenAngabenComponent {
                 this.errorService.clearAll();
                 this.cd.markForCheck();
                 this.form.markAsPristine();
+                this.unsavedChangesService.registerForm(this.form);
                 this.navigateBack();
-            }, () => {
-                this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
+            }, error => {
+                this.manageSaveErrorCodes(error);
             });
     }
 
@@ -467,7 +465,7 @@ export class TagesschulenAngabenComponent {
                 'LastenausgleichTagesschuleAngabenGemeindeContainer muss in Bearbeitung Gemeinde sein')) {
                 this.errorService.addMesageAsError(this.translate.instant('LATS_FA_INSTI_NUR_WENN_GEMEINDE_OFFEN'));
             }
-            this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
+            this.manageSaveErrorCodes(error);
         });
     }
 
@@ -578,5 +576,15 @@ export class TagesschulenAngabenComponent {
                 const date = moment(setting.value).format(CONSTANTS.DATE_FORMAT);
                 this.stichtag.next(date);
             });
+    }
+
+    public manageSaveErrorCodes(error: any): void {
+        if (error.status === HTTP_ERROR_CODES.CONFLICT) {
+            this.errorService.addMesageAsError(this.translate.instant('ERROR_DATA_CHANGED'));
+        } else if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
+            this.errorService.addMesageAsError(this.translate.instant('ERROR_NUMBER'));
+        } else {
+            this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
+        }
     }
 }

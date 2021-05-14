@@ -5874,7 +5874,7 @@ public class JaxBConverter extends AbstractConverter {
 		// Bemerkungen
 		angabenGemeinde.setBemerkungen(jaxAngabenGemeinde.getBemerkungen());
 
-		return checkVersionSaveAndFlush(angabenGemeinde, jaxAngabenGemeinde.getVersion());
+		return angabenGemeinde;
 	}
 
 	@Nonnull
