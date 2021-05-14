@@ -41,6 +41,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response.Status;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractFinanzielleSituation;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractInstitutionStammdaten;
@@ -293,6 +295,7 @@ import com.google.common.base.Strings;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
+import org.hibernate.StaleObjectStateException;
 import org.hibernate.envers.DefaultRevisionEntity;
 import org.hibernate.envers.RevisionType;
 import org.slf4j.Logger;
@@ -5829,6 +5832,12 @@ public class JaxBConverter extends AbstractConverter {
 		@Nonnull JaxLastenausgleichTagesschuleAngabenGemeinde jaxAngabenGemeinde,
 		@Nonnull LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde
 	) {
+		if (angabenGemeinde.getVersion() != jaxAngabenGemeinde.getVersion()) {
+			throw new WebApplicationException(new StaleObjectStateException(
+				"Die LastenausgleichTagesschuleAngabenGemeinde Versionen stimmen nicht",
+				angabenGemeinde.getId()), Status.CONFLICT);
+		}
+
 		convertAbstractFieldsToEntity(jaxAngabenGemeinde, angabenGemeinde);
 
 		angabenGemeinde.setStatus(jaxAngabenGemeinde.getStatus());
@@ -6001,6 +6010,14 @@ public class JaxBConverter extends AbstractConverter {
 		@Nonnull LastenausgleichTagesschuleAngabenInstitution angabenInstitution,
 		@Nonnull boolean performOptimisticLockCheck
 	) {
+		if (performOptimisticLockCheck) {
+			if (angabenInstitution.getVersion() != jaxAngabenInstitution.getVersion()) {
+				throw new WebApplicationException(new StaleObjectStateException(
+					"Die LastenausgleichTagesschuleAngabenInstitution Versionen stimmen nicht",
+					angabenInstitution.getId()), Status.CONFLICT);
+			}
+		}
+
 		convertAbstractFieldsToEntity(jaxAngabenInstitution, angabenInstitution);
 
 		// A: Informationen zur Tagesschule
@@ -6025,9 +6042,6 @@ public class JaxBConverter extends AbstractConverter {
 		// Bemerkungen
 		angabenInstitution.setBemerkungen(jaxAngabenInstitution.getBemerkungen());
 
-		if(performOptimisticLockCheck) {
-			return checkVersionSaveAndFlush(angabenInstitution, jaxAngabenInstitution.getVersion());
-		}
 		return angabenInstitution;
 	}
 }

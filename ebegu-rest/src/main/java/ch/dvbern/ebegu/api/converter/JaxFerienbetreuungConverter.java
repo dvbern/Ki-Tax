@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response.Status;
 
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngaben;
@@ -46,35 +48,13 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import org.hibernate.StaleObjectStateException;
 
 @RequestScoped
 public class JaxFerienbetreuungConverter extends AbstractConverter {
 
 	@Inject
 	private Persistence persistence;
-
-	@Nonnull
-	private <T extends AbstractEntity> T checkVersionSaveAndFlush(@Nonnull T entity, long version) {
-		persistence.getEntityManager().detach(entity); // DETACH -- otherwise we cannot set the version manually
-		entity.setVersion(version); // SETVERSION -- set the version we had
-		T saved =
-			persistence.merge(entity); // MERGE -- hibernate will throw an exception if the version does not match the
-		// version in the DB
-		persistence.getEntityManager().flush(); // FLUSH -- otherwise the version is not incremented yet
-		return saved; // return the saved object with the updated version number (beware: it is only updated if there
-		// was an actual change)
-	}
-
-	@Nonnull
-	private <T extends AbstractEntity> T checkVersionAndSave(@Nonnull T entity, long version) {
-		persistence.getEntityManager().detach(entity); // DETACH -- otherwise we cannot set the version manually
-		entity.setVersion(version); // SETVERSION -- set the version we had
-		T saved =
-			persistence.merge(entity); // MERGE -- hibernate will throw an exception if the version does not match the
-		// version in the DB
-		return saved; // return the saved object with the updated version number (beware: it is only updated if there
-		// was an actual change)
-	}
 
 	/**
 	 * Behandlung des Version-Attributes fuer OptimisticLocking.
@@ -150,6 +130,11 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		@Nonnull JaxFerienbetreuungAngabenStammdaten jaxStammdaten,
 		@Nonnull FerienbetreuungAngabenStammdaten stammdaten
 	) {
+		if (stammdaten.getVersion() != jaxStammdaten.getVersion()) {
+			throw new WebApplicationException(new StaleObjectStateException("Die FerienbetreuungAngabenStammdaten Versionen stimmen nicht",
+				stammdaten.getId()), Status.CONFLICT);
+		}
+
 		convertAbstractFieldsToEntity(jaxStammdaten, stammdaten);
 
 		if (jaxStammdaten.getAmAngebotBeteiligteGemeinden() != null) {
@@ -194,13 +179,17 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		}
 		stammdaten.setVermerkAuszahlung(jaxStammdaten.getVermerkAuszahlung());
 
-		return (checkVersionSaveAndFlush(stammdaten, jaxStammdaten.getVersion()));
+		return stammdaten;
 	}
 
 	public FerienbetreuungAngabenAngebot ferienbetreuungAngabenAngebotToEntity(
 		@Nonnull JaxFerienbetreuungAngabenAngebot jaxAngebot,
 		@Nonnull FerienbetreuungAngabenAngebot angebot
 	) {
+		if (angebot.getVersion() != jaxAngebot.getVersion()) {
+			throw new WebApplicationException(new StaleObjectStateException("Die FerienbetreuungAngabenAngebot Versionen stimmen nicht",
+				angebot.getId()), Status.CONFLICT);
+		}
 		convertAbstractFieldsToEntity(jaxAngebot, angebot);
 
 		angebot.setAngebot(jaxAngebot.getAngebot());
@@ -246,13 +235,17 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		angebot.setKinderAusAnderenGemeindenZahlenAnderenTarif(jaxAngebot.getKinderAusAnderenGemeindenZahlenAnderenTarif());
 		angebot.setBemerkungenTarifsystem(jaxAngebot.getBemerkungenTarifsystem());
 
-		return checkVersionSaveAndFlush(angebot, jaxAngebot.getVersion());
+		return angebot;
 	}
 
 	public FerienbetreuungAngabenNutzung ferienbetreuungAngabenNutzungToEntity(
 		@Nonnull JaxFerienbetreuungAngabenNutzung jaxNutzung,
 		@Nonnull FerienbetreuungAngabenNutzung nutzung
 	) {
+		if (nutzung.getVersion() != jaxNutzung.getVersion()) {
+			throw new WebApplicationException(new StaleObjectStateException("Die FerienbetreuungAngabenNutzung Versionen stimmen nicht",
+				nutzung.getId()), Status.CONFLICT);
+		}
 		convertAbstractFieldsToEntity(jaxNutzung, nutzung);
 
 		nutzung.setAnzahlBetreuungstageKinderBern(jaxNutzung.getAnzahlBetreuungstageKinderBern());
@@ -266,13 +259,17 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		nutzung.setAnzahlBetreuteKinder2Zyklus(jaxNutzung.getAnzahlBetreuteKinder2Zyklus());
 		nutzung.setAnzahlBetreuteKinder3Zyklus(jaxNutzung.getAnzahlBetreuteKinder3Zyklus());
 
-		return checkVersionSaveAndFlush(nutzung, jaxNutzung.getVersion());
+		return nutzung;
 	}
 
 	public FerienbetreuungAngabenKostenEinnahmen ferienbetreuungAngabenKostenEinnahmenToEntity(
 		@Nonnull JaxFerienbetreuungAngabenKostenEinnahmen jaxKostenEinnahmen,
 		@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen
 	) {
+		if (kostenEinnahmen.getVersion() != jaxKostenEinnahmen.getVersion()) {
+			throw new WebApplicationException(new StaleObjectStateException("Die FerienbetreuungAngabenKostenEinnahmen Versionen stimmen nicht",
+				kostenEinnahmen.getId()), Status.CONFLICT);
+		}
 		convertAbstractFieldsToEntity(jaxKostenEinnahmen, kostenEinnahmen);
 
 		kostenEinnahmen.setPersonalkosten(jaxKostenEinnahmen.getPersonalkosten());
@@ -284,7 +281,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		kostenEinnahmen.setElterngebuehren(jaxKostenEinnahmen.getElterngebuehren());
 		kostenEinnahmen.setWeitereEinnahmen(jaxKostenEinnahmen.getWeitereEinnahmen());
 
-		return checkVersionSaveAndFlush(kostenEinnahmen, jaxKostenEinnahmen.getVersion());
+		return kostenEinnahmen;
 	}
 
 	@Nonnull
@@ -509,8 +506,12 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	@Nonnull
 	@CanIgnoreReturnValue
 	public Adresse adresseToEntity(@Nonnull final JaxAdresse jaxAdresse, @Nonnull final Adresse adresse) {
+		if (adresse.getVersion() != jaxAdresse.getVersion()) {
+			throw new WebApplicationException(new StaleObjectStateException("Die Ferienbetreuung Adresse Versionen stimmen nicht",
+				adresse.getId()), Status.CONFLICT);
+		}
 		Adresse entity = super.adresseToEntity(jaxAdresse, adresse);
-		return checkVersionAndSave(entity, jaxAdresse.getVersion());
+		return entity;
 	}
 
 }
