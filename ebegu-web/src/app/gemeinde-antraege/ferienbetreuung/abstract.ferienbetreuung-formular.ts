@@ -114,10 +114,12 @@ export abstract class AbstractFerienbetreuungFormular {
                 this.canSeeSave.next(true);
                 this.canSeeAbschliessen.next(true);
                 this.canSeeFalscheAngaben.next(false);
-            } else {
+            } else if(principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) && angaben.isAbgeschlossen()) {
                 this.canSeeSave.next(false);
                 this.canSeeAbschliessen.next(false);
                 this.canSeeFalscheAngaben.next(true);
+            } else {
+                this.setCanSeeNoActions();
             }
             // tslint:disable-next-line:no-collapsible-if
         } else if (container.isInBearbeitungGemeinde() && !principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
