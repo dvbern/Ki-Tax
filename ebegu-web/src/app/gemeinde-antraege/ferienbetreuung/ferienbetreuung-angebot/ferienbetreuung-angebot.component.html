@@ -351,6 +351,9 @@
                     <mat-error *ngIf="form && form.get('anzahlStundenProBetreuungstag').errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
+                    <mat-error *ngIf="form && form.get('anzahlStundenProBetreuungstag').errors?.isNotHalf"
+                               translate>ERROR_NOT_HALF
+                    </mat-error>
                 </mat-form-field>
             </dv-input-container-x>
 

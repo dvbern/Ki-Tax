@@ -2340,7 +2340,7 @@
     "FERIENBETREUUNG_ANGEBOT": "Angebot",
     "FERIENBETREUUNG_ANGEBOT_SCHULJAHR": "Angebot im Schuljahr {{periode}} ({{von}} - {{bis}})",
     "FERIENBETREUUNG_NUTZUNG": "Nutzung",
-    "FERIENBETREUUNG_NUTZUNG_TITLE": "Betreuungstage {{periode}} - ({{von}} - {{bis}})",
+    "FERIENBETREUUNG_NUTZUNG_TITLE": "Betreuungstage {{periode}} ({{von}} - {{bis}})",
     "FERIENBETREUUNG_KOSTEN_EINNAHMEN": "Kosten und Einnahmen",
     "FERIENBETREUUNG_UPLOAD": "Upload",
     "FERIENBETREUUNG_ABSCHLUSS": "Abschluss",

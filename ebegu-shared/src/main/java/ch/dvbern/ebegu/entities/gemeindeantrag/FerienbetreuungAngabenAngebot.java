@@ -211,6 +211,7 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 
 		this.anzahlFerienwochenFruehlingsferien = toCopy.anzahlFerienwochenFruehlingsferien;
 		this.anzahlFerienwochenSommerferien = toCopy.anzahlFerienwochenSommerferien;
+		this.anzahlFerienwochenSportferien = toCopy.anzahlFerienwochenSportferien;
 		this.anzahlFerienwochenHerbstferien = toCopy.anzahlFerienwochenHerbstferien;
 		this.anzahlFerienwochenWinterferien = toCopy.anzahlFerienwochenWinterferien;
 		this.anzahlTage = toCopy.anzahlTage;
@@ -219,6 +220,7 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 		this.finanziellBeteiligteGemeinden = new HashSet<>(toCopy.finanziellBeteiligteGemeinden);
 
 		this.gemeindeFuehrtAngebotSelber = toCopy.gemeindeFuehrtAngebotSelber;
+		this.gemeindeFuehrtAngebotInKooperation = toCopy.gemeindeFuehrtAngebotInKooperation;
 		this.gemeindeBeauftragtExterneAnbieter = toCopy.gemeindeBeauftragtExterneAnbieter;
 		this.angebotVereineUndPrivateIntegriert = toCopy.angebotVereineUndPrivateIntegriert;
 		this.bemerkungenKooperation = toCopy.bemerkungenKooperation;
