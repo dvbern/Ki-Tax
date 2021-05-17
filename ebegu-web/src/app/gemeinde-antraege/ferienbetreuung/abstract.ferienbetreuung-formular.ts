@@ -114,7 +114,7 @@ export abstract class AbstractFerienbetreuungFormular {
                 this.canSeeSave.next(true);
                 this.canSeeAbschliessen.next(true);
                 this.canSeeFalscheAngaben.next(false);
-            } else if(principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) && angaben.isAbgeschlossen()) {
+            } else if (principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) && angaben.isAbgeschlossen()) {
                 this.canSeeSave.next(false);
                 this.canSeeAbschliessen.next(false);
                 this.canSeeFalscheAngaben.next(true);
@@ -153,7 +153,7 @@ export abstract class AbstractFerienbetreuungFormular {
             container?.isInBearbeitungGemeinde() &&
             principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles()) ||
             container?.isInPruefungKanton() &&
-            principal.hasOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles())) {
+            principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrFBOnlyRoles())) {
             this.form.disable();
         }
     }
