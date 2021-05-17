@@ -90,6 +90,10 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 
 	@Nullable
 	@Column()
+	private BigDecimal anzahlFerienwochenSportferien;
+
+	@Nullable
+	@Column()
 	private BigDecimal anzahlFerienwochenSommerferien;
 
 	@Nullable
@@ -131,6 +135,10 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 	@Nullable
 	@Column()
 	private Boolean gemeindeFuehrtAngebotSelber;
+
+	@Nullable
+	@Column()
+	private Boolean gemeindeFuehrtAngebotInKooperation;
 
 	@Nullable
 	@Column()
@@ -543,5 +551,23 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 
 	public boolean isGeprueft() {
 		return status == FerienbetreuungFormularStatus.GEPRUEFT;
+	}
+
+	@Nullable
+	public BigDecimal getAnzahlFerienwochenSportferien() {
+		return anzahlFerienwochenSportferien;
+	}
+
+	public void setAnzahlFerienwochenSportferien(@Nullable BigDecimal anzahlFerienwochenSportferien) {
+		this.anzahlFerienwochenSportferien = anzahlFerienwochenSportferien;
+	}
+
+	@Nullable
+	public Boolean getGemeindeFuehrtAngebotInKooperation() {
+		return gemeindeFuehrtAngebotInKooperation;
+	}
+
+	public void setGemeindeFuehrtAngebotInKooperation(@Nullable Boolean gemeindeFuehrtAngebotInKooperation) {
+		this.gemeindeFuehrtAngebotInKooperation = gemeindeFuehrtAngebotInKooperation;
 	}
 }

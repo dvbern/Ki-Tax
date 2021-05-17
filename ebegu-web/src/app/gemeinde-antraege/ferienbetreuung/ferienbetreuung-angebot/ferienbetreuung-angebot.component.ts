@@ -137,6 +137,9 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             anzahlFerienwochenWinterferien: [
                 angebot?.anzahlFerienwochenWinterferien,
             ],
+            anzahlFerienwochenSportferien: [
+                angebot?.anzahlFerienwochenSportferien,
+            ],
             anzahlFerienwochenFruehlingsferien: [
                 angebot?.anzahlFerienwochenFruehlingsferien,
             ],
@@ -163,6 +166,9 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             ],
             gemeindeFuehrtAngebotSelber: [
                 angebot?.gemeindeFuehrtAngebotSelber,
+            ],
+            gemeindeFuehrtAngebotInKooperation: [
+                angebot?.gemeindeFuehrtAngebotInKooperation,
             ],
             gemeindeBeauftragtExterneAnbieter: [
                 angebot?.gemeindeBeauftragtExterneAnbieter,
