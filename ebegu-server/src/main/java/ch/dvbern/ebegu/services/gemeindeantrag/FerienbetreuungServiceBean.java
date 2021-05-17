@@ -480,8 +480,13 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			container.getStatus() == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON,
 			"FerienbetreuungAngabenContainer must be in state IN_PRUEFUNG_KANTON"
 		);
+		Preconditions.checkArgument(
+			container.getAngabenKorrektur() != null,
+			"FerienbetreuungAngabenContainer must not be null"
+		);
 
 		container.setStatus(FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE);
+
 		container.getAngabenDeklaration()
 			.getFerienbetreuungAngabenAngebot()
 			.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
@@ -492,6 +497,20 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			.getFerienbetreuungAngabenStammdaten()
 			.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
 		container.getAngabenDeklaration()
+			.getFerienbetreuungAngabenKostenEinnahmen()
+			.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
+		// reopen all korrekutr formulare that might have been geprueft
+		// TODO: rename status to IN_BEARBEITUNG and write migration
+		container.getAngabenKorrektur()
+			.getFerienbetreuungAngabenAngebot()
+			.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
+		container.getAngabenKorrektur()
+			.getFerienbetreuungAngabenNutzung()
+			.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
+		container.getAngabenKorrektur()
+			.getFerienbetreuungAngabenStammdaten()
+			.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
+		container.getAngabenKorrektur()
 			.getFerienbetreuungAngabenKostenEinnahmen()
 			.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
 
