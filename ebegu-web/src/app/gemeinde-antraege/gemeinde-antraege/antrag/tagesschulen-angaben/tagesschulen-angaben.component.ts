@@ -332,7 +332,7 @@ export class TagesschulenAngabenComponent {
     public async onFreigeben(): Promise<void> {
         this.formFreigebenTriggered = true;
         this.enableFormValidation();
-
+        this.errorService.clearAll();
         if (!this.form.valid) {
             this.errorService.addMesageAsError(
                 this.translate.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
