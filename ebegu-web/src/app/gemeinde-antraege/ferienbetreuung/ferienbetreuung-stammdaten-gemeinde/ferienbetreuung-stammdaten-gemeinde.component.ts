@@ -83,7 +83,8 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
             LOG.error(error);
         });
         this.gemeindeRS.getAllBfsGemeinden().then(gemeinden => {
-            this.bfsGemeinden = gemeinden.sort((a, b) => a.name.localeCompare(b.name));
+            this.bfsGemeinden = gemeinden;
+            this.bfsGemeinden.sort((a, b) => a.name.localeCompare(b.name));
             this.cd.markForCheck();
         });
     }
