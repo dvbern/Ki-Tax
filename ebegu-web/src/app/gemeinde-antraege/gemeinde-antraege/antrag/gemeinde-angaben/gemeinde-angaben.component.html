@@ -372,6 +372,10 @@
                     <mat-error *ngIf="angabenForm.get('einnahmenElterngebuehren').errors?.noNumberError"
                                translate>ERROR_NUMBER
                     </mat-error>
+                    <mat-error
+                        *ngIf="angabenForm.get('einnahmenElterngebuehren').errors?.pattern && !angabenForm.get('einnahmenElterngebuehren').errors?.noNumberError">
+                        {{'ERROR_STEP' | translate:{value: 0.01} }}
+                    </mat-error>
                     <dv-bisher-x
                         [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.einnahmenElterngebuehren"
                         [korrektur]="angabenForm.get('einnahmenElterngebuehren').value"
@@ -422,6 +426,10 @@
                     <mat-error
                         *ngIf="angabenForm.get('rueckerstattungenElterngebuehrenSchliessung').errors?.noNumberError"
                         translate>ERROR_NUMBER
+                    </mat-error>
+                    <mat-error
+                        *ngIf="angabenForm.get('rueckerstattungenElterngebuehrenSchliessung').errors?.pattern && !angabenForm.get('rueckerstattungenElterngebuehrenSchliessung').errors?.noNumberError">
+                        {{'ERROR_STEP' | translate:{value: 0.01} }}
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.rueckerstattungenElterngebuehrenSchliessung"
@@ -501,6 +509,10 @@
                     <mat-error *ngIf="angabenForm.get('gesamtKostenTagesschule').errors?.noNumberError"
                                translate>ERROR_NUMBER
                     </mat-error>
+                    <mat-error
+                        *ngIf="angabenForm.get('gesamtKostenTagesschule').errors?.pattern && !angabenForm.get('gesamtKostenTagesschule').errors?.noNumberError">
+                        {{'ERROR_STEP' | translate:{value: 0.01} }}
+                    </mat-error>
                     <dv-bisher-x
                         [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.gesamtKostenTagesschule"
                         [korrektur]="angabenForm.get('gesamtKostenTagesschule').value"
@@ -545,6 +557,10 @@
                     <mat-error *ngIf="angabenForm.get('einnnahmenVerpflegung').errors?.noNumberError"
                                translate>ERROR_NUMBER
                     </mat-error>
+                    <mat-error
+                        *ngIf="angabenForm.get('einnnahmenVerpflegung').errors?.pattern && !angabenForm.get('einnnahmenVerpflegung').errors?.noNumberError">
+                        {{'ERROR_STEP' | translate:{value: 0.01} }}
+                    </mat-error>
                     <dv-bisher-x
                         [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.einnnahmenVerpflegung"
                         [korrektur]="angabenForm.get('einnnahmenVerpflegung').value"
@@ -555,8 +571,7 @@
             </dv-input-container-x>
 
             <dv-input-container-x>
-                <label required
-                       [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('einnahmenSubventionenDritter').errors}">
+                <label [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('einnahmenSubventionenDritter').errors}">
                     {{'LATS_EINNAHMEN_SUBVENTIONEN_DRITTER' | translate}}
                 </label>
                 <mat-form-field floatLabel="always">
@@ -567,6 +582,10 @@
                     </mat-error>
                     <mat-error *ngIf="angabenForm.get('einnahmenSubventionenDritter').errors?.noNumberError"
                                translate>ERROR_NUMBER
+                    </mat-error>
+                    <mat-error
+                        *ngIf="angabenForm.get('einnahmenSubventionenDritter').errors?.pattern && !angabenForm.get('einnahmenSubventionenDritter').errors?.noNumberError">
+                        {{'ERROR_STEP' | translate:{value: 0.01} }}
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.einnahmenSubventionenDritter"
@@ -647,6 +666,10 @@
                         </mat-error>
                         <mat-error *ngIf="angabenForm.get('ueberschussVerwendung').errors?.noNumberError"
                                    translate>ERROR_NUMBER
+                        </mat-error>
+                        <mat-error
+                            *ngIf="angabenForm.get('ueberschussVerwendung').errors?.pattern && !angabenForm.get('ueberschussVerwendung').errors?.noNumberError">
+                            {{'ERROR_STEP' | translate:{value: 0.01} }}
                         </mat-error>
                         <dv-bisher-x
                             [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.ueberschussVerwendung"

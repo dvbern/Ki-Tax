@@ -35,7 +35,8 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../
 import {TSEinstellung} from '../../../../../models/TSEinstellung';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
-import {HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
+import {DvNgOkDialogComponent} from '../../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
+import {CONSTANTS, HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {WizardStepXRS} from '../../../../core/service/wizardStepXRS.rest';
 import {numberValidator, ValidationType} from '../../../../shared/validators/number-validator.directive';
@@ -174,7 +175,10 @@ export class GemeindeAngabenComponent implements OnInit {
                     initialGemeindeAngaben?.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete,
                     numberValidator(ValidationType.POSITIVE_INTEGER),
                 ],
-            einnahmenElterngebuehren: [initialGemeindeAngaben?.einnahmenElterngebuehren, this.numberValidator()],
+            einnahmenElterngebuehren: [
+                initialGemeindeAngaben?.einnahmenElterngebuehren, Validators.compose([this.numberValidator(),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]),
+            ],
             ersteRateAusbezahlt: [
                 initialGemeindeAngaben?.ersteRateAusbezahlt,
                 numberValidator(ValidationType.POSITIVE_INTEGER),
@@ -182,14 +186,23 @@ export class GemeindeAngabenComponent implements OnInit {
             tagesschuleTeilweiseGeschlossen: [initialGemeindeAngaben?.tagesschuleTeilweiseGeschlossen],
             rueckerstattungenElterngebuehrenSchliessung: [
                 initialGemeindeAngaben?.rueckerstattungenElterngebuehrenSchliessung,
+                Validators.compose([
                 this.numberValidator(),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]),
             ],
             // C
-            gesamtKostenTagesschule: [initialGemeindeAngaben?.gesamtKostenTagesschule, this.numberValidator()],
-            einnnahmenVerpflegung: [initialGemeindeAngaben?.einnnahmenVerpflegung, this.numberValidator()],
+            gesamtKostenTagesschule: [
+                initialGemeindeAngaben?.gesamtKostenTagesschule, Validators.compose([this.numberValidator(),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)])
+            ],
+            einnnahmenVerpflegung: [
+                initialGemeindeAngaben?.einnnahmenVerpflegung, Validators.compose([this.numberValidator(),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)])
+            ],
             einnahmenSubventionenDritter: [
                 initialGemeindeAngaben?.einnahmenSubventionenDritter,
-                this.numberValidator(),
+                Validators.compose([this.numberValidator(),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)])
             ],
             ueberschussErzielt: [initialGemeindeAngaben?.ueberschussErzielt],
             ueberschussVerwendung: [initialGemeindeAngaben?.ueberschussVerwendung],
@@ -266,11 +279,17 @@ export class GemeindeAngabenComponent implements OnInit {
                 this.plausibilisierungAddition(),
             ]);
         this.angabenForm.get('einnahmenElterngebuehren')
-            .setValidators([Validators.required, this.numberValidator()]);
+            .setValidators([
+                Validators.required, this.numberValidator(),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+            ]);
         this.angabenForm.get('tagesschuleTeilweiseGeschlossen')
             .setValidators([Validators.required]);
         this.angabenForm.get('rueckerstattungenElterngebuehrenSchliessung')
-            .setValidators([Validators.required, this.numberValidator()]);
+            .setValidators([
+                Validators.required, this.numberValidator(),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+            ]);
         this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
             .setValidators([
                 this.plausibilisierungTageschulenStunden(),
@@ -292,11 +311,20 @@ export class GemeindeAngabenComponent implements OnInit {
 
         // C
         this.angabenForm.get('gesamtKostenTagesschule')
-            .setValidators([Validators.required, this.numberValidator()]);
+            .setValidators([
+                Validators.required, this.numberValidator(),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+            ]);
         this.angabenForm.get('einnnahmenVerpflegung')
-            .setValidators([Validators.required, this.numberValidator()]);
+            .setValidators([
+                Validators.required, this.numberValidator(),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+            ]);
         this.angabenForm.get('einnahmenSubventionenDritter')
-            .setValidators([Validators.required, this.numberValidator()]);
+            .setValidators([
+                this.numberValidator(),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+            ]);
         this.angabenForm.get('ueberschussErzielt')
             .setValidators([Validators.required]);
         // tslint:disable-next-line:no-identical-functions
@@ -400,12 +428,13 @@ export class GemeindeAngabenComponent implements OnInit {
         combineLatest([
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').valueChanges.pipe(
                 startWith(gemeindeAngabenFromServer?.davonStundenZuNormlohnMehrAls50ProzentAusgebildete),
+                map(value => this.parseFloatSafe(value)),
             ),
             this.lohnnormkostenSettingMoreThanFifty$,
         ]).subscribe(valueAndParameter => {
             const value = valueAndParameter[0];
             const lohnkostenParam = parseFloat(valueAndParameter[1].value);
-            const roundedValue = (value && lohnkostenParam) ? +(value * lohnkostenParam).toFixed(2) : 0;
+            const roundedValue = (value && lohnkostenParam) ? (value * lohnkostenParam).toFixed(2) : 0;
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
                 .setValue(roundedValue);
             this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
@@ -423,7 +452,7 @@ export class GemeindeAngabenComponent implements OnInit {
         ]).subscribe(valueAndParamter => {
             const value = valueAndParamter[0];
             const lohnkostenParam = parseFloat(valueAndParamter[1].value);
-            const roundedValue = (value && lohnkostenParam) ? +(value * lohnkostenParam).toFixed(2) : 0;
+            const roundedValue = (value && lohnkostenParam) ? (value * lohnkostenParam).toFixed(2) : 0;
             this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
                 .setValue(roundedValue);
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
@@ -434,18 +463,26 @@ export class GemeindeAngabenComponent implements OnInit {
     // tslint:disable-next-line:max-line-length
     private setupLastenausgleichsberechtigterBetragCalculations(gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde): void {
         combineLatest([
-            this.angabenForm.get('normlohnkostenBetreuungBerechnet').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('normlohnkostenBetreuungBerechnet')
+                .valueChanges
+                .pipe(
+                    startWith(0),
+                    map(value => this.parseFloatSafe(value)),
+                ),
             this.angabenForm.get('einnahmenElterngebuehren')
                 .valueChanges
-                .pipe(startWith(gemeindeAngabenFromServer?.einnahmenElterngebuehren || 0)),
+                .pipe(
+                    startWith(gemeindeAngabenFromServer?.einnahmenElterngebuehren || 0),
+                    map(value => this.parseFloatSafe(value)),
+                ),
         ]).subscribe(values => {
                 this.angabenForm.get('lastenausgleichsberechtigerBetrag').setValue(
                     // round to 0.2
-                    Math.round((values[0] - values[1])),
+                    (values[0] - values[1]).toFixed(2),
                 );
                 this.angabenForm.get('lastenausgleichsberechtigerBetragRO').setValue(
                     // round to 0.2
-                    Math.round((values[0] - values[1])),
+                    (values[0] - values[1]).toFixed(2),
                 );
             },
             () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')),
@@ -473,8 +510,8 @@ export class GemeindeAngabenComponent implements OnInit {
                 .valueChanges
                 .pipe(startWith(gemeindeAngabenFromServer?.einnahmenSubventionenDritter || 0)),
         ]).subscribe(values => {
-                const gemeindeBeitragOderUeberschuss = values[0] - values[1] - values[2] - values[3] - values[4];
-                if (gemeindeBeitragOderUeberschuss < 0) {
+                const gemeindeBeitragOderUeberschuss = (values[0] - values[1] - values[2] - values[3] - values[4]).toFixed(2);
+                if (+gemeindeBeitragOderUeberschuss < 0) {
                     this.angabenForm.get('kostenueberschussGemeinde')
                         .setValue(gemeindeBeitragOderUeberschuss);
                     this.angabenForm.get('kostenbeitragGemeinde')
@@ -488,7 +525,7 @@ export class GemeindeAngabenComponent implements OnInit {
 
                 this.angabenForm.get('erwarteterKostenbeitragGemeinde')
                     .setValue((values[0] * this.kostenbeitragGemeinde).toFixed(2));
-                this.angabenForm.get('einnahmenElterngebuehrenRO').setValue(values[2]);
+                this.angabenForm.get('einnahmenElterngebuehrenRO').setValue(values[2].toFixed(2));
             },
             () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')),
         );
@@ -506,7 +543,7 @@ export class GemeindeAngabenComponent implements OnInit {
             ],
         ).subscribe(value => {
                 this.angabenForm.get('normlohnkostenBetreuungBerechnet')
-                    .setValue(+(parseFloat(value[0] || 0) + parseFloat(value[1] || 0)).toFixed(2));
+                    .setValue((parseFloat(value[0] || 0) + parseFloat(value[1] || 0)).toFixed(2));
             },
             () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')),
         );
@@ -515,7 +552,12 @@ export class GemeindeAngabenComponent implements OnInit {
     // tslint:disable-next-line:max-line-length
     private setupSchlusszahlungenCalculations(gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde): void {
         combineLatest([
-            this.angabenForm.get('lastenausgleichsberechtigerBetrag').valueChanges.pipe(startWith(0)),
+            this.angabenForm.get('lastenausgleichsberechtigerBetrag')
+                .valueChanges
+                .pipe(
+                    startWith(0),
+                    map(value => this.parseFloatSafe(value)),
+                ),
             this.angabenForm.get('ersteRateAusbezahlt')
                 .valueChanges
                 .pipe(
@@ -525,7 +567,7 @@ export class GemeindeAngabenComponent implements OnInit {
             // tslint:disable-next-line:no-identical-functions
         ]).subscribe(values => {
             this.angabenForm.get('schlusszahlung').setValue(
-                +(values[0] - values[1]).toFixed(2),
+                (values[0] - values[1]).toFixed(2),
             );
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
     }
@@ -569,7 +611,7 @@ export class GemeindeAngabenComponent implements OnInit {
             this.formularInitForm.get('alleAngabenInKibonErfasst').value;
         this.lastenausgleichTSService.saveLATSAngabenGemeindeContainer(this.lATSAngabenGemeindeContainer);
         this.angabenForm.markAsPristine();
-
+        this.unsavedChangesService.registerForm(this.angabenForm);
     }
 
     public async onAbschliessen(): Promise<void> {
@@ -618,9 +660,15 @@ export class GemeindeAngabenComponent implements OnInit {
             this.errorService.addMesageAsError(this.translateService.instant(
                 'LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'));
             this.angabenForm.markAsPristine();
+            this.unsavedChangesService.registerForm(this.angabenForm);
         } else {
             this.errorService.clearAll();
         }
+        this.dialog.open(DvNgOkDialogComponent, {
+            data: {
+                title: this.translateService.instant('LATS_FREIGABE_REMINDER'),
+            },
+        });
         this.cd.markForCheck();
         this.wizardRS.updateSteps(this.WIZARD_TYPE, this.uiRouterGlobals.params.id);
     }
@@ -725,10 +773,16 @@ export class GemeindeAngabenComponent implements OnInit {
                 numberValidator(ValidationType.POSITIVE_INTEGER),
             ]);
         this.angabenForm.get('einnahmenElterngebuehren')
-            .setValidators([this.numberValidator()]);
+            .setValidators([
+                this.numberValidator(),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+            ]);
         this.angabenForm.get('tagesschuleTeilweiseGeschlossen').clearValidators();
         this.angabenForm.get('rueckerstattungenElterngebuehrenSchliessung')
-            .setValidators([this.numberValidator()]);
+            .setValidators([
+                this.numberValidator(),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+            ]);
         this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').clearValidators();
         this.angabenForm.get('ersteRateAusbezahlt')
             .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
@@ -737,7 +791,10 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm.get('tagesschuleTeilweiseGeschlossen').valueChanges.subscribe(value => {
             if (value === true) {
                 this.angabenForm.get('rueckerstattungenElterngebuehrenSchliessung')
-                    .setValidators([this.numberValidator()]);
+                    .setValidators([
+                        this.numberValidator(),
+                        Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                    ]);
             } else {
                 this.angabenForm.get('rueckerstattungenElterngebuehrenSchliessung')
                     .setValidators(null);
@@ -746,11 +803,20 @@ export class GemeindeAngabenComponent implements OnInit {
 
         // C
         this.angabenForm.get('gesamtKostenTagesschule')
-            .setValidators([this.numberValidator()]);
+            .setValidators([
+                this.numberValidator(),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+            ]);
         this.angabenForm.get('einnnahmenVerpflegung')
-            .setValidators([this.numberValidator()]);
+            .setValidators([
+                this.numberValidator(),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+            ]);
         this.angabenForm.get('einnahmenSubventionenDritter')
-            .setValidators([this.numberValidator()]);
+            .setValidators([
+                this.numberValidator(),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+            ]);
         this.angabenForm.get('ueberschussErzielt').clearValidators();
         this.angabenForm.get('ueberschussVerwendung').clearValidators();
 
