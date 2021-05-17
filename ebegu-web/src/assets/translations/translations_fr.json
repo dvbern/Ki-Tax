@@ -2493,5 +2493,6 @@
     "SOZIALDIENST_INFO_VOLLMACHT_FORM_DIRTY": "Vous avez effectué des changements dans le formulaire. Veuillez les sauvegarder avant de pouvoir générer la Vollmacht et la télécharger",
     "SOZIALDIENST_WARNING_FALL_ENTZOGEN": "La procuration à été retirée. Le cas est bloqué pour le service de soutien",
     "BEARBEITEN": "Éditer",
+    "TAGESSCHULEN_DER_GEMEINDEN": "Écoles à journée continue de la commune:",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
