@@ -39,7 +39,8 @@ const LOG = LogFactory.createLog('FerienbetreuungKostenEinnahmenComponent');
     styleUrls: ['./ferienbetreuung-kosten-einnahmen.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetreuungFormular implements OnInit, OnDestroy {
+export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetreuungFormular implements OnInit,
+    OnDestroy {
 
     public form: FormGroup;
     private kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen;
@@ -55,7 +56,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly fb: FormBuilder,
         private readonly authService: AuthServiceRS,
-        private readonly unsavedChangesService: UnsavedChangesService
+        private readonly unsavedChangesService: UnsavedChangesService,
     ) {
         super(errorService, translate, dialog, cd, wizardRS, uiRouterGlobals);
     }
@@ -119,25 +120,25 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         this.removeAllValidators();
 
         this.form.get('personalkosten').setValidators(
-            numberValidator(ValidationType.INTEGER)
+            numberValidator(ValidationType.INTEGER),
         );
         this.form.get('personalkostenLeitungAdmin').setValidators(
-            numberValidator(ValidationType.INTEGER)
+            numberValidator(ValidationType.INTEGER),
         );
         this.form.get('sachkosten').setValidators(
-            numberValidator(ValidationType.INTEGER)
+            numberValidator(ValidationType.INTEGER),
         );
         this.form.get('verpflegungskosten').setValidators(
-            numberValidator(ValidationType.INTEGER)
+            numberValidator(ValidationType.INTEGER),
         );
         this.form.get('weitereKosten').setValidators(
-            numberValidator(ValidationType.INTEGER)
+            numberValidator(ValidationType.INTEGER),
         );
         this.form.get('elterngebuehren').setValidators(
-            numberValidator(ValidationType.INTEGER)
+            numberValidator(ValidationType.INTEGER),
         );
         this.form.get('weitereEinnahmen').setValidators(
-            numberValidator(ValidationType.INTEGER)
+            numberValidator(ValidationType.INTEGER),
         );
         this.triggerFormValidation();
     }
