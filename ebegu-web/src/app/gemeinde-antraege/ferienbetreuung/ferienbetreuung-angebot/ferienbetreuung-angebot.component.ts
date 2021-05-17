@@ -231,7 +231,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             numberValidator(ValidationType.INTEGER)
         );
         this.form.get('anzahlStundenProBetreuungstag').setValidators(
-            numberValidator(ValidationType.INTEGER)
+            numberValidator(ValidationType.HALF)
         );
         this.form.get('betreuungsschluessel').setValidators(
             numberValidator(ValidationType.INTEGER)
