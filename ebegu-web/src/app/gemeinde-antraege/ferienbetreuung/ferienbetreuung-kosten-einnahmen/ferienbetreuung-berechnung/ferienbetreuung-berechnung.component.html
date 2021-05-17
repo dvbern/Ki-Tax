@@ -188,6 +188,7 @@
                 <span class="flex-whitespace-item"></span>
                 <p>
                     <span *ngIf="berechnung.beteiligungZuTief">{{'FERIENBETREUUNG_FAZIT_ZU_TIEF' | translate}}</span>
+                    <span *ngIf="!berechnung.beteiligungZuTief">{{'FERIENBETREUUNG_FAZIT_AUSREICHEND' | translate}}</span>
                 </p>
             </div>
         </div>
