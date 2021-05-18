@@ -120,4 +120,7 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer);
 
 	void deleteLastenausgleicheTagesschule(@Nonnull Gesuchsperiode gesuchsperiode);
+
+	@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeZurueckAnGemeinde(
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container);
 }

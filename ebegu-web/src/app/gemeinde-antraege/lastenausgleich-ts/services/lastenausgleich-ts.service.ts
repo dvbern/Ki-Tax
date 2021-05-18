@@ -144,4 +144,19 @@ export class LastenausgleichTSService {
             this.next(reopenendContainer);
         }, err => console.error(err));
     }
+
+    public zurueckAnGemeinde(
+        container: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
+    ): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
+        return this.http.put(
+            `${this.API_BASE_URL}/zurueck-an-gemeinde`,
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
+        ).pipe(
+            map(restContainer => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
+                new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),
+                restContainer),
+            ),
+            tap(parsedContainer => this.updateLATSAngabenGemeindeContainerStore(parsedContainer.id)),
+        );
+    }
 }

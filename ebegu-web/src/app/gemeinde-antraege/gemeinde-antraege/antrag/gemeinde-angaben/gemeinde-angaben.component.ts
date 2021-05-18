@@ -734,12 +734,25 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     public falscheAngabenVisible(): boolean {
-        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles().concat(TSRole.SUPER_ADMIN))) {
-            return false;
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles())) {
+            return this.lATSAngabenGemeindeContainer?.isInBearbeitungGemeinde() &&
+                    this.lATSAngabenGemeindeContainer?.angabenDeklaration.status ===
+                    TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
         }
-        return this.lATSAngabenGemeindeContainer?.isInBearbeitungGemeinde() &&
-            this.lATSAngabenGemeindeContainer?.angabenDeklaration.status ===
-            TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
+            return this.lATSAngabenGemeindeContainer?.isInBearbeitungKanton() &&
+                    this.lATSAngabenGemeindeContainer?.angabenKorrektur.status ===
+                    TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
+        }
+        if (this.authServiceRS.isRole(TSRole.SUPER_ADMIN)) {
+            return this.lATSAngabenGemeindeContainer?.isInBearbeitungGemeinde() &&
+                    this.lATSAngabenGemeindeContainer?.angabenDeklaration.status ===
+                    TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN ||
+                    this.lATSAngabenGemeindeContainer?.isInBearbeitungKanton() &&
+                    this.lATSAngabenGemeindeContainer?.angabenKorrektur.status ===
+                    TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
+        }
+        return false;
     }
 
     public getLastYear(): number {

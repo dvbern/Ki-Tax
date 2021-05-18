@@ -30,4 +30,11 @@
         (buttonClick)="geprueft()">
         <span translate>LATS_GEPRUEFT_KANTON</span>
     </dv-loading-button>
+    <dv-loading-button
+        *ngIf="canViewGeprueftButton | async"
+        [buttonDisabled]="!(isInPruefungKanton() | async)"
+        type="button"
+        (buttonClick)="zurueckAnGemeinde()">
+        <span translate>ZURUECK_AN_GEMEINDE_TITLE</span>
+    </dv-loading-button>
 </div>

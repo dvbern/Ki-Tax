@@ -19,6 +19,8 @@ package ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
@@ -65,14 +67,13 @@ public class FreigabeStep implements WizardStep<TagesschuleWizard> {
 
 	@Override
 	public boolean isDisabled(@Nonnull TagesschuleWizard wizard) {
-		if(wizard.getRole().isRoleGemeindeabhaengig() || wizard.getRole().isSuperadmin()) {
-			return !(wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAngabenDeklarationAbgeschlossen()
-				&& wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().allInstitutionenGeprueft());
-		}
+		LastenausgleichTagesschuleAngabenGemeindeContainer container =
+			wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer();
+		UserRole role = wizard.getRole();
 
-			return !((wizard.getRole().isRoleMandant() || wizard.getRole().isSuperadmin()) &&
-				wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAngabenKorrekturAbgeschlossen());
-
+		return container.isInBearbeitungGemeinde() && (role.isRoleMandant()
+			|| !(container.isAngabenDeklarationAbgeschlossen()
+			&& container.allInstitutionenGeprueft()));
 	}
 
 	@Override

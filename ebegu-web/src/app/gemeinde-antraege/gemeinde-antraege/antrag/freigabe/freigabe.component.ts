@@ -24,10 +24,13 @@ import {filter, first, map, mergeMap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRole} from '../../../../../models/enums/TSRole';
+import {TSWizardStepXTyp} from '../../../../../models/enums/TSWizardStepXTyp';
+import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
+import {WizardStepXRS} from '../../../../core/service/wizardStepXRS.rest';
 import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
 
 @Component({
@@ -42,8 +45,12 @@ export class FreigabeComponent implements OnInit {
 
     @Input() public lastenausgleichID: string;
 
+    private container: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
+    private readonly WIZARD_TYPE = TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN;
+
     public canViewFreigabeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public canViewGeprueftButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public canViewZurueckGemeindeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     public constructor(
         private readonly translate: TranslateService,
@@ -52,6 +59,7 @@ export class FreigabeComponent implements OnInit {
         private readonly dialog: MatDialog,
         private readonly $state: StateService,
         private readonly authService: AuthServiceRS,
+        private readonly wizardStepXRS: WizardStepXRS,
     ) {
     }
 
@@ -60,22 +68,33 @@ export class FreigabeComponent implements OnInit {
             this.latsService.getLATSAngabenGemeindeContainer(),
             this.authService.principal$,
         ]).subscribe(([container, principal]) => {
+            this.container = container;
             if (principal.hasRole(TSRole.SUPER_ADMIN)) {
-                if (container.isAtLeastInBearbeitungKanton()) {
+                if (container.isInBearbeitungKanton()) {
                     this.canViewFreigabeButton.next(false);
                     this.canViewGeprueftButton.next(true);
-                } else {
+                    this.canViewZurueckGemeindeButton.next(true);
+                } else if (container.isInBearbeitungGemeinde()) {
                     this.canViewFreigabeButton.next(true);
                     this.canViewGeprueftButton.next(false);
+                    this.canViewZurueckGemeindeButton.next(false);
                 }
             }
-            if (principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
+            if (principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles()) && container.isInBearbeitungKanton()) {
                 this.canViewFreigabeButton.next(false);
                 this.canViewGeprueftButton.next(true);
+                this.canViewZurueckGemeindeButton.next(true);
             }
-            if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles())) {
+            if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles()) && container.isInBearbeitungGemeinde()) {
                 this.canViewFreigabeButton.next(true);
                 this.canViewGeprueftButton.next(false);
+                this.canViewZurueckGemeindeButton.next(false);
+            }
+            // tslint:disable-next-line:early-exit
+            if (container.isAtLeastGeprueft()) {
+                this.canViewFreigabeButton.next(false);
+                this.canViewGeprueftButton.next(false);
+                this.canViewZurueckGemeindeButton.next(false);
             }
         }, () => this.errorService.addMesageAsInfo(this.translate.instant('DATA_RETRIEVAL_ERROR')));
     }
@@ -142,5 +161,11 @@ export class FreigabeComponent implements OnInit {
                 TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON),
         );
 
+    }
+
+    public zurueckAnGemeinde(): void {
+        this.latsService.zurueckAnGemeinde(this.container)
+            .subscribe(() => this.wizardStepXRS.updateSteps(this.WIZARD_TYPE, this.container.id),
+                () => this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR')));
     }
 }

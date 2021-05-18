@@ -526,8 +526,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer) {
 
 		Preconditions.checkState(
-			fallContainer.isInBearbeitungGemeinde(),
-			"LastenausgleichTagesschuleAngabenGemeindeContainer muss in Bearbeitung Gemeinde sein"
+			fallContainer.isInBearbeitungGemeinde() || fallContainer.isinPruefungKanton(),
+			"LastenausgleichTagesschuleAngabenGemeindeContainer muss in Bearbeitung Gemeinde oder Kanton sein"
 		);
 
 		LastenausgleichTagesschuleAngabenGemeinde angaben;
@@ -573,6 +573,31 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 			persistence.remove(container);
 		});
+	}
+
+	@Nonnull
+	@Override
+	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeZurueckAnGemeinde(
+			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
+		Preconditions.checkState(
+			container.isinPruefungKanton(),
+			"LastenausgleichTagesschuleAngabenGemeindeContainer muss in Prüfung Kanton sein"
+		);
+		Preconditions.checkState(
+			container.getAngabenDeklaration() != null,
+			"LastenausgleichTagesschuleAngabenGemeindeContainer angabenDeklaration must not be null"
+		);
+		Preconditions.checkState(
+			container.getAngabenKorrektur() != null,
+			"LastenausgleichTagesschuleAngabenGemeindeContainer angabenDeklaration must not be null"
+		);
+
+		// reopen gemeinde formular, don't reopen insti formulare
+		container.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE);
+		container.getAngabenDeklaration().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
+		container.getAngabenKorrektur().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
+
+		return persistence.persist(container);
 	}
 }
 
