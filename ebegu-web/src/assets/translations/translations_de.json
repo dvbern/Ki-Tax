@@ -2493,5 +2493,7 @@
     "SOZIALDIENST_INFO_VOLLMACHT_FORM_DIRTY": "Sie haben Änderungen im Formular gemacht. Bitte speichern Sie diese, bevor Sie die Vollmacht erneut herunterladen können",
     "SOZIALDIENST_WARNING_FALL_ENTZOGEN": "Die Vollmacht wurde entzogen. Der Fall ist für den Unterstützungdienst gesperrt!",
     "BEARBEITEN": "Bearbeiten",
+    "OFFENTLICHE_TRAEGERSCHAFT": "Offentliche Trägerschaft",
+    "PRIVATE_TRAEGERSCHAFT": "Private Trägerschaft",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

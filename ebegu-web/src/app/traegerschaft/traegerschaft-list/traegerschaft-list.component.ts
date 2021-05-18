@@ -70,7 +70,7 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
     }
 
     public loadData(): void {
-        const deleteAllowed = this.isDeleteAllowed();
+        const readDeleteAllowed = this.isReadDeleteAllowed();
         this.antragList$ = from(this.traegerschaftRS.getAllActiveTraegerschaften()
             .then(traegerschaftList => {
                 const entitaetListItems: DVEntitaetListItem[] = [];
@@ -80,8 +80,8 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
                             id: traegerschaft.id,
                             name: traegerschaft.name,
                             institutionCount: traegerschaft.institutionCount,
-                            canEdit: true,
-                            canRemove: deleteAllowed,
+                            canEdit: readDeleteAllowed,
+                            canRemove: readDeleteAllowed,
                         };
                         entitaetListItems.push(dvListItem);
                     },
@@ -91,7 +91,7 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
             }));
     }
 
-    public isDeleteAllowed(): boolean {
+    public isReadDeleteAllowed(): boolean {
         return this.isSuperAdmin();
     }
 
@@ -100,7 +100,7 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
     }
 
     public openTraegerschaft(id: string): void {
-        if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getAdministratorBgTsGemeindeRole())) {
+        if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getSuperAdminRoles())) {
             this.$state.go('traegerschaft.edit', {traegerschaftId: id});
         }
     }
@@ -132,7 +132,7 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
     }
 
     private setDisplayedColumns(): void {
-        this.hiddenDVTableColumns = this.isDeleteAllowed()
+        this.hiddenDVTableColumns = this.isReadDeleteAllowed()
             ? ['status', 'type', ]
             : ['status', 'type', 'remove'];
     }
