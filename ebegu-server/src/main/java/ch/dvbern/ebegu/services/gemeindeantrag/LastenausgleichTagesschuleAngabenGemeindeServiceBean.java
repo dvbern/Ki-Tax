@@ -447,6 +447,10 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON,
 			"LastenausgleichAngabenGemeindeContainer muss im Status IN_PRUEFUNG sein");
 		Objects.requireNonNull(fallContainer.getAngabenKorrektur());
+		Preconditions.checkState(
+			fallContainer.getAngabenKorrektur().getStatus() == LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN,
+			"Die Angaben der Gemeinde müssen abgeschlossen sein"
+		);
 
 		fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT);
 		return saveLastenausgleichTagesschuleGemeinde(fallContainer, true);

@@ -25,7 +25,7 @@
     </dv-loading-button>
     <dv-loading-button
         *ngIf="canViewGeprueftButton | async"
-        [buttonDisabled]="!(isInPruefungKanton() | async)"
+        [buttonDisabled]="!isReadyForGeprueft()"
         type="button"
         (buttonClick)="geprueft()">
         <span translate>LATS_GEPRUEFT_KANTON</span>

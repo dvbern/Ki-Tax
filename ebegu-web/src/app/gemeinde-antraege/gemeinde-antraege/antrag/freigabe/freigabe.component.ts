@@ -168,4 +168,8 @@ export class FreigabeComponent implements OnInit {
             .subscribe(() => this.wizardStepXRS.updateSteps(this.WIZARD_TYPE, this.container.id),
                 () => this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR')));
     }
+
+    public isReadyForGeprueft(): boolean {
+        return this.container?.isInBearbeitungKanton() && this.container?.angabenKorrektur.isAbgeschlossen();
+    }
 }

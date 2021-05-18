@@ -87,6 +87,8 @@ export class LastenausgleichTSService {
         return this.http.put<void>(
             `${this.API_BASE_URL}/saveKommentar/${encodeURIComponent(containerId)}`,
             kommentar,
+        ).pipe(
+            tap(() => this.updateLATSAngabenGemeindeContainerStore(containerId))
         );
     }
 

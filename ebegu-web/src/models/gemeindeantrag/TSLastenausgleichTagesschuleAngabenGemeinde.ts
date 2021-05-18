@@ -65,4 +65,8 @@ export class TSLastenausgleichTagesschuleAngabenGemeinde extends TSAbstractEntit
             TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN,
         ].includes(this.status);
     }
+
+    public isAbgeschlossen(): boolean {
+        return this.status === TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
+    }
 }
