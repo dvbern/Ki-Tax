@@ -922,14 +922,14 @@
 
         </div>
 
-        <div class="well well-status-warten" *ngIf="!abschliessenVisible()">
+        <div class="well well-status-warten" *ngIf="!lATSAngabenGemeindeContainer?.allAngabenInstitutionContainersGeprueft()">
             <i class="fa fa-exclamation" aria-hidden="true"></i>
             <span>
                 <span translate>LATS_ABSCHLIESSEN_NOCH_NICHT_MOEGLICH</span>
             </span>
         </div>
 
-        <div class="row" *ngIf="falscheAngabenVisible()">
+        <div class="row" *ngIf="falscheAngabenVisible | async">
             <div class="col-md-12">
                 <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
             </div>
@@ -939,6 +939,7 @@
             <dv-loading-button
                 class="uppercase"
                 type="button"
+                *ngIf="saveVisible | async"
                 [ngClass]="{'secondary': !formularNotEditable()}"
                 [buttonDisabled]="formularNotEditable()"
                 (buttonClick)="onAngabenFormSubmit()">
@@ -947,7 +948,7 @@
             <dv-loading-button
                 class="uppercase"
                 type="button"
-                *ngIf="abschliessenVisible()"
+                *ngIf="abschliessenVisible | async"
                 [buttonDisabled]="formularNotEditable()"
                 (buttonClick)="onAbschliessen()">
                 <span translate>ABSCHLIESSEN</span>
