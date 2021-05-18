@@ -71,9 +71,10 @@ public class FreigabeStep implements WizardStep<TagesschuleWizard> {
 			wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer();
 		UserRole role = wizard.getRole();
 
-		return container.isInBearbeitungGemeinde() && (role.isRoleMandant()
-			|| !(container.isAngabenDeklarationAbgeschlossen()
-			&& container.allInstitutionenGeprueft()));
+		return container.isInStatusNeu() ||
+			container.isInBearbeitungGemeinde() && (role.isRoleMandant()
+				|| !(container.isAngabenDeklarationAbgeschlossen()
+				&& container.allInstitutionenGeprueft()));
 	}
 
 	@Override

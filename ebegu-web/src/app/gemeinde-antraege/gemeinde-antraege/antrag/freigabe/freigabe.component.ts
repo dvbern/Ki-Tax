@@ -176,7 +176,7 @@ export class FreigabeComponent implements OnInit {
             return;
         }
         this.latsService.zurueckAnGemeinde(this.container)
-            .subscribe(() => this.wizardStepXRS.updateSteps(this.WIZARD_TYPE, this.container.id),
+            .subscribe(() => this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_GEMEINDE', {id: this.container.id}),
                 () => this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR')));
     }
 
