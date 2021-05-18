@@ -15,6 +15,13 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
+<p *ngIf="canSeeFreigegebenText | async"
+   [innerHTML]="'FERIENBETREUUNG_FREIGEGEBEN_AN_KANTON' | translate">
+</p>
+<p *ngIf="canSeeGeprueftText | async"
+   [innerHTML]="'FERIENBETREUUNG_GEPRUEFT' | translate">
+</p>
+
 <div class="actions">
     <dv-loading-button
         *ngIf="canViewFreigabeButton | async"

@@ -51,6 +51,8 @@ export class FreigabeComponent implements OnInit {
     public canViewFreigabeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public canViewGeprueftButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public canViewZurueckGemeindeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public canSeeFreigegebenText: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public canSeeGeprueftText: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     public constructor(
         private readonly translate: TranslateService,
@@ -70,6 +72,8 @@ export class FreigabeComponent implements OnInit {
         ]).subscribe(([container, principal]) => {
             this.container = container;
             if (principal.hasRole(TSRole.SUPER_ADMIN)) {
+                this.canSeeFreigegebenText.next(false);
+                this.canSeeGeprueftText.next(false);
                 if (container.isInBearbeitungKanton()) {
                     this.canViewFreigabeButton.next(false);
                     this.canViewGeprueftButton.next(true);
@@ -84,17 +88,23 @@ export class FreigabeComponent implements OnInit {
                 this.canViewFreigabeButton.next(false);
                 this.canViewGeprueftButton.next(true);
                 this.canViewZurueckGemeindeButton.next(true);
+                this.canSeeFreigegebenText.next(false);
+                this.canSeeGeprueftText.next(false);
             }
-            if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles()) && container.isInBearbeitungGemeinde()) {
-                this.canViewFreigabeButton.next(true);
+            if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles())) {
+                this.canViewFreigabeButton.next(container.isInBearbeitungGemeinde());
                 this.canViewGeprueftButton.next(false);
                 this.canViewZurueckGemeindeButton.next(false);
+                this.canSeeFreigegebenText.next(container.isAtLeastInBearbeitungKanton());
+                this.canSeeGeprueftText.next(false);
             }
             // tslint:disable-next-line:early-exit
             if (container.isAtLeastGeprueft()) {
                 this.canViewFreigabeButton.next(false);
                 this.canViewGeprueftButton.next(false);
                 this.canViewZurueckGemeindeButton.next(false);
+                this.canSeeFreigegebenText.next(principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles()));
+                this.canSeeGeprueftText.next(principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()));
             }
         }, () => this.errorService.addMesageAsInfo(this.translate.instant('DATA_RETRIEVAL_ERROR')));
     }
@@ -155,18 +165,27 @@ export class FreigabeComponent implements OnInit {
             () => this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR')));
     }
 
+    public async zurueckAnGemeinde(): Promise<void> {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            frage: this.translate.instant('ZURUECK_AN_GEMEINDE'),
+        };
+        if (!await (this.dialog.open(DvNgConfirmDialogComponent, dialogConfig))
+            .afterClosed()
+            .toPromise()) {
+            return;
+        }
+        this.latsService.zurueckAnGemeinde(this.container)
+            .subscribe(() => this.wizardStepXRS.updateSteps(this.WIZARD_TYPE, this.container.id),
+                () => this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR')));
+    }
+
     public isInPruefungKanton(): Observable<boolean> {
         return this.latsService.getLATSAngabenGemeindeContainer().pipe(
             map(latsContainer => latsContainer.status ===
                 TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON),
         );
 
-    }
-
-    public zurueckAnGemeinde(): void {
-        this.latsService.zurueckAnGemeinde(this.container)
-            .subscribe(() => this.wizardStepXRS.updateSteps(this.WIZARD_TYPE, this.container.id),
-                () => this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR')));
     }
 
     public isReadyForGeprueft(): boolean {
