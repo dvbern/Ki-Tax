@@ -86,6 +86,9 @@ export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
         this.form = new FormGroup({
             kommentar: this.kommentarControl
         });
+        if (this.lATSAngabenGemeindeContainer?.isAtLeastGeprueft()) {
+            this.form.disable();
+        }
     }
 
 }
