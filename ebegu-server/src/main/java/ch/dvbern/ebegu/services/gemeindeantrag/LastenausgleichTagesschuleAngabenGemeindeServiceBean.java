@@ -530,7 +530,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer) {
 
 		Preconditions.checkState(
-			fallContainer.isInBearbeitungGemeinde() || fallContainer.isinPruefungKanton(),
+			fallContainer.isInBearbeitungGemeinde() || fallContainer.isInPruefungKanton(),
 			"LastenausgleichTagesschuleAngabenGemeindeContainer muss in Bearbeitung Gemeinde oder Kanton sein"
 		);
 
@@ -584,7 +584,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeZurueckAnGemeinde(
 			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
 		Preconditions.checkState(
-			container.isinPruefungKanton(),
+			container.isInPruefungKanton(),
 			"LastenausgleichTagesschuleAngabenGemeindeContainer muss in Prüfung Kanton sein"
 		);
 		Preconditions.checkState(
