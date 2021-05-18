@@ -61,7 +61,6 @@ export class FreigabeComponent implements OnInit {
         private readonly dialog: MatDialog,
         private readonly $state: StateService,
         private readonly authService: AuthServiceRS,
-        private readonly wizardStepXRS: WizardStepXRS,
     ) {
     }
 
