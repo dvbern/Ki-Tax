@@ -474,6 +474,12 @@
                     <mat-error *ngIf="angabenForm.get('ersteRateAusbezahlt').errors?.isNotPositiveInteger"
                                translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.ersteRateAusbezahlt"
+                        [korrektur]="angabenForm.get('ersteRateAusbezahlt').value"
+                        [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
