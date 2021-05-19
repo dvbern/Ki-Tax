@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
@@ -42,7 +42,6 @@ const LOG = LogFactory.createLog('FerienbetreuungKostenEinnahmenComponent');
 })
 export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetreuungFormular implements OnInit, OnDestroy {
 
-    public form: FormGroup;
     public container: TSFerienbetreuungAngabenContainer;
     private kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen;
     private subscription: Subscription;

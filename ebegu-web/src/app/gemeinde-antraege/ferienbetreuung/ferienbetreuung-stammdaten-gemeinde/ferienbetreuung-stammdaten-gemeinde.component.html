@@ -66,55 +66,22 @@
                     </mat-option>
                 </mat-select>
             </dv-input-container-x>
-
-
-            <dv-input-container-x [verticalAlign]="true">
-                <label for="seitWannFerienbetreuungen_id">
-                    {{'FERIENBETREUUNG_SEIT_WANN' | translate}}
-                </label>
-                <div class="flex-whitespace-item"></div>
-                <mat-form-field floatLabel="always">
-                    <input id="seitWannFerienbetreuungen_id"
-                           type="text"
-                           matInput
-                           formControlName="seitWannFerienbetreuungen"
-                           class="form-control dv-input"/>
-                </mat-form-field>
-            </dv-input-container-x>
-
-            <!--<div class="row">
-                <label class="double-label">
-                    {{'FERIENBETREUUNG_SEIT_WANN' | translate}}
-                </label>
-                <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
-                    <label for="seitWannFerienbetreuungenTag_id">
-                        {{'MONTH' | translate}}
-                    </label>
-                    <div class="flex-whitespace-item"></div>
-                    <mat-form-field floatLabel="always">
-                        <input id="seitWannFerienbetreuungenTag_id"
-                               type="text"
-                               matInput
-                               formControlName="seitWannFerienbetreuungenTag"
-                               class="form-control dv-input"/>
-                    </mat-form-field>
-                </dv-input-container-x>
-
-                <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
-                    <label for="seitWannFerienbetreuungenJahr_id">
-                        {{'PARAMETER_JAHR' | translate}}
-                    </label>
-                    <div class="flex-whitespace-item"></div>
-                    <mat-form-field floatLabel="always">
-                        <input id="seitWannFerienbetreuungenJahr_id"
-                               type="text"
-                               matInput
-                               formControlName="seitWannFerienbetreuungenJahr"
-                               class="form-control dv-input"/>
-                    </mat-form-field>
-                </dv-input-container-x>
-            </div>-->
-
+            <div>
+                <input class="dv-mat-datepicker"
+                       type="text"
+                       name="inputId"
+                       id="inputId"
+                       [matDatepicker]="dp"
+                       placeholder="mm.jjjj"
+                       formControlName="seitWannFerienbetreuungen">
+                <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+                <mat-datepicker #dp
+                                startView="multi-year"
+                                (yearSelected)="chosenYearHandler($event)"
+                                (monthSelected)="chosenMonthHandler($event, dp)"
+                                panelClass="example-month-picker">
+                </mat-datepicker>
+            </div>
         </div>
 
         <mat-divider></mat-divider>

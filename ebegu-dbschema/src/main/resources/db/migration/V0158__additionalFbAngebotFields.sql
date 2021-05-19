@@ -33,3 +33,6 @@ ALTER TABLE `ferienbetreuung_angaben_angebot_aud`
 UPDATE `ferienbetreuung_angaben_angebot` SET gemeinde_fuehrt_angebot_in_kooperation=1
  	WHERE gemeinde_fuehrt_angebot_in_kooperation IS NULL AND NOT status='IN_BEARBEITUNG_GMEINDE';
 
+ALTER TABLE ferienbetreuung_angaben_stammdaten MODIFY COLUMN seit_wann_ferienbetreuungen DATE;
+
+ALTER TABLE ferienbetreuung_angaben_stammdaten_aud MODIFY COLUMN seit_wann_ferienbetreuungen DATE;

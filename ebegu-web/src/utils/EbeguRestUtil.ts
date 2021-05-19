@@ -4847,7 +4847,7 @@ export class EbeguRestUtil {
         }
         this.abstractEntityToRestObject(restStammdaten, stammdatenTS);
         restStammdaten.amAngebotBeteiligteGemeinden = stammdatenTS.amAngebotBeteiligteGemeinden;
-        restStammdaten.seitWannFerienbetreuungen = stammdatenTS.seitWannFerienbetreuungen;
+        restStammdaten.seitWannFerienbetreuungen = DateUtil.momentToLocalDate(stammdatenTS.seitWannFerienbetreuungen);
         restStammdaten.traegerschaft = stammdatenTS.traegerschaft;
         restStammdaten.stammdatenAdresse = this.adresseToRestObject({}, stammdatenTS.stammdatenAdresse);
         restStammdaten.stammdatenKontaktpersonVorname = stammdatenTS.stammdatenKontaktpersonVorname;
@@ -5001,7 +5001,7 @@ export class EbeguRestUtil {
         this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
         stammdatenTS.status = stammdatenFromServer.status;
         stammdatenTS.amAngebotBeteiligteGemeinden = stammdatenFromServer.amAngebotBeteiligteGemeinden;
-        stammdatenTS.seitWannFerienbetreuungen = stammdatenFromServer.seitWannFerienbetreuungen;
+        stammdatenTS.seitWannFerienbetreuungen = DateUtil.localDateToMoment(stammdatenFromServer.seitWannFerienbetreuungen);
         stammdatenTS.traegerschaft = stammdatenFromServer.traegerschaft;
         stammdatenTS.stammdatenAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.stammdatenAdresse);
         stammdatenTS.stammdatenKontaktpersonVorname = stammdatenFromServer.stammdatenKontaktpersonVorname;
