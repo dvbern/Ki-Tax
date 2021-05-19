@@ -136,11 +136,18 @@ public interface VerfuegungService {
 	 * Da je nach Zahlungslauftyp ein unterschiedliches Feld analyisiert werden muss, muss der Zahlungslauftyp
 	 * uebergeben werden.
 	 */
-	void findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+	void findVerrechnetenOrIgnoriertenZeitabschnittOnVorgaengerVerfuegung(
 		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
 		@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu,
 		@Nonnull Betreuung betreuungNeu,
 		@Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte);
+
+	void findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
+		@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu,
+		@Nonnull Betreuung betreuungNeu,
+		@Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte
+	);
 
 	/**
 	 * Returns all Zeitabschnitte within the given year that are gueltig.
