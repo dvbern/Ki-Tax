@@ -1412,11 +1412,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		case ADMIN_MANDANT:
 		case SACHBEARBEITER_MANDANT: {
-			if (institutionStammdaten.isNew() && !institutionStammdaten.getInstitution().getStatus().isEnabled()) {
-				// Es handelt sich um eine Einladung, dies muss moeglich sein
-				return true;
-			}
-			return false;
+			return institutionStammdaten.getBetreuungsangebotTyp().isBerechnetesAngebot() && isMandantMatching(
+				institutionStammdaten.getInstitution());
 		}
 		case SUPER_ADMIN: {
 			// Superadmin darf alles
