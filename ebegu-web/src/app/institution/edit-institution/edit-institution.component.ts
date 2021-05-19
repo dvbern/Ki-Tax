@@ -443,7 +443,11 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     public isCheckRequiredEnabled(): boolean {
-        return this.isCheckRequired && !this.editMode && this.isStammdatenEditable();
+        return this.isCheckRequired && !this.editMode && this.stammdatenCheckVisible();
+    }
+
+    private stammdatenCheckVisible(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles());
     }
 
     public isBetreuungsgutschein(): boolean {
