@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.api.validation.EbeguExceptionReport;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
+import ch.dvbern.ebegu.util.Constants;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.StaleObjectStateException;
 import org.jboss.resteasy.api.validation.ResteasyViolationException;
@@ -76,7 +77,7 @@ public class EbeguConstraintValidationExceptionMapper
 			org.hibernate.exception.ConstraintViolationException constraintViolationException =
 				(org.hibernate.exception.ConstraintViolationException) exception.getCause().getCause();
 			ErrorCodeEnum errorCodeEnum;
-			String constraintName = constraintViolationException.getConstraintName().toUpperCase();
+			String constraintName = constraintViolationException.getConstraintName().toUpperCase(Constants.DEFAULT_LOCALE);
 			try{
 				String enumConstraintError = "ERROR_" + constraintName;
 				errorCodeEnum = ErrorCodeEnum.valueOf(enumConstraintError);
