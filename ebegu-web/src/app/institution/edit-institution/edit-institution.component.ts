@@ -32,7 +32,11 @@ import {StateService, Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
 import * as moment from 'moment';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {isJugendamt, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {
+    getBgInstitutionenAndTsBetreuungsangebote,
+    isJugendamt,
+    TSBetreuungsangebotTyp,
+} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSAdresse} from '../../../models/TSAdresse';
@@ -192,7 +196,9 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     public isStammdatenEditable(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles());
+        return getBgInstitutionenAndTsBetreuungsangebote().includes(this.stammdaten.betreuungsangebotTyp) ?
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getBgInstitutionAndTsProfilEditRoles()) :
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles());
     }
 
     public isDateStartEndDisabled(): boolean {
