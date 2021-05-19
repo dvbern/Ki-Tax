@@ -26,7 +26,6 @@ import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.re
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {FerienbetreuungAngabenStatus} from '../../../../models/enums/FerienbetreuungAngabenStatus';
 import {TSFerienbetreuungAngabenAngebot} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
-import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSAdresse} from '../../../../models/TSAdresse';
 import {TSBfsGemeinde} from '../../../../models/TSBfsGemeinde';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
@@ -50,7 +49,6 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
 
     public formValidationTriggered = false;
     public bfsGemeinden: TSBfsGemeinde[];
-    public container: TSFerienbetreuungAngabenContainer;
 
     private angebot: TSFerienbetreuungAngabenAngebot;
     private subscription: Subscription;
@@ -78,7 +76,8 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             ],
         ).subscribe(([container, principal]) => {
             this.container = container;
-            this.angebot = container.angabenDeklaration?.angebot;
+            this.angebot = container.isAtLeastInPruefungKanton() ?
+                container.angabenKorrektur?.angebot : container.angabenDeklaration?.angebot;
             this.setupFormAndPermissions(container, this.angebot, principal);
             this.unsavedChangesService.registerForm(this.form);
         }, error => {
@@ -203,8 +202,6 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             bemerkungenTarifsystem: [
                 angebot?.bemerkungenTarifsystem,
             ],
-        }, {
-            updateOn: 'blur',
         });
         this.setBasicValidation();
     }

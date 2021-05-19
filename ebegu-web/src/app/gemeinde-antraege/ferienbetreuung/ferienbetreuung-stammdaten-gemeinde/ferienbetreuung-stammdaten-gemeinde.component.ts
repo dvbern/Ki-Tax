@@ -25,7 +25,6 @@ import {combineLatest, Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSFerienbetreuungFormularStatus} from '../../../../models/enums/TSFerienbetreuungFormularStatus';
-import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenStammdaten} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenStammdaten';
 import {TSAdresse} from '../../../../models/TSAdresse';
 import {TSBfsGemeinde} from '../../../../models/TSBfsGemeinde';
@@ -51,7 +50,6 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
     public bfsGemeinden: TSBfsGemeinde[];
 
     private stammdaten: TSFerienbetreuungAngabenStammdaten;
-    private container: TSFerienbetreuungAngabenContainer;
     private subscription: Subscription;
 
     public constructor(
@@ -65,7 +63,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         private readonly fb: FormBuilder,
         private readonly gemeindeRS: GemeindeRS,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly unsavedChangesService: UnsavedChangesService
+        private readonly unsavedChangesService: UnsavedChangesService,
     ) {
         super(errorService, translate, dialog, cd, wizardRS, uiRouterGlobals);
     }
@@ -76,7 +74,8 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
             this.authServiceRS.principal$,
         ]).subscribe(([container, principal]) => {
             this.container = container;
-            this.stammdaten = container.angabenDeklaration?.stammdaten;
+            this.stammdaten = container.isAtLeastInPruefungKanton() ?
+                container.angabenKorrektur?.stammdaten : container.angabenDeklaration?.stammdaten;
             this.setupFormAndPermissions(container, this.stammdaten, principal);
             this.unsavedChangesService.registerForm(this.form);
         }, error => {
@@ -142,10 +141,10 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                 stammdaten?.stammdatenKontaktpersonFunktion,
             ],
             stammdatenKontaktpersonTelefon: [
-                stammdaten?.stammdatenKontaktpersonTelefon
+                stammdaten?.stammdatenKontaktpersonTelefon,
             ],
             stammdatenKontaktpersonEmail: [
-                stammdaten?.stammdatenKontaktpersonEmail
+                stammdaten?.stammdatenKontaktpersonEmail,
             ],
             auszahlungsdaten: this.fb.group({
                 kontoinhaber: [
@@ -184,10 +183,10 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         this.removeAllValidators();
 
         this.form.get('stammdatenKontaktpersonTelefon').setValidators(
-            Validators.pattern(CONSTANTS.PATTERN_PHONE)
+            Validators.pattern(CONSTANTS.PATTERN_PHONE),
         );
         this.form.get('stammdatenKontaktpersonEmail').setValidators(
-            Validators.pattern(CONSTANTS.PATTERN_EMAIL)
+            Validators.pattern(CONSTANTS.PATTERN_EMAIL),
         );
 
         this.enableStammdatenAuszahlungValidation();
@@ -316,7 +315,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         this.stammdaten.stammdatenKontaktpersonFunktion = this.form.get('stammdatenKontaktpersonFunktion').value;
         this.stammdaten.stammdatenKontaktpersonTelefon = this.form.get('stammdatenKontaktpersonTelefon').value;
         this.stammdaten.stammdatenKontaktpersonEmail = this.form.get('stammdatenKontaktpersonEmail').value;
-        this.stammdaten.iban = this.form.get('auszahlungsdaten').get('iban').value;
+        this.stammdaten.iban = this.form.get('auszahlungsdaten').get('iban').value.toUpperCase();
         this.stammdaten.kontoinhaber = this.form.get('auszahlungsdaten').get('kontoinhaber').value;
 
         const adresseKontoinhaber = new TSAdresse().from(this.form.get('auszahlungsdaten')

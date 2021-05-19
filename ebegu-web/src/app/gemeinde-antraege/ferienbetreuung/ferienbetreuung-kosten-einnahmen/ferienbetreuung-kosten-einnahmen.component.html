@@ -57,6 +57,12 @@
                     <mat-error *ngIf="form && form.get('personalkosten').errors?.isNotInteger"
                                translate>ERROR_NOT_INTEGER
                     </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.personalkosten"
+                        [korrektur]="form.get('personalkosten').value"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -74,6 +80,12 @@
                     <mat-error *ngIf="form && form.get('personalkostenLeitungAdmin').errors?.isNotInteger"
                                translate>ERROR_NOT_INTEGER
                     </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.personalkostenLeitungAdmin"
+                        [korrektur]="form.get('personalkostenLeitungAdmin').value"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -98,6 +110,12 @@
                     <mat-error *ngIf="form && form.get('sachkosten').errors?.isNotInteger"
                                translate>ERROR_NOT_INTEGER
                     </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.sachkosten"
+                        [korrektur]="form.get('sachkosten').value"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -119,6 +137,12 @@
                     <mat-error *ngIf="form && form.get('verpflegungskosten').errors?.isNotInteger"
                                translate>ERROR_NOT_INTEGER
                     </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.verpflegungskosten"
+                        [korrektur]="form.get('verpflegungskosten').value"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -137,6 +161,12 @@
                     <mat-error *ngIf="form && form.get('weitereKosten').errors?.isNotInteger"
                                translate>ERROR_NOT_INTEGER
                     </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.weitereKosten"
+                        [korrektur]="form.get('weitereKosten').value"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -149,6 +179,12 @@
                           id="bemerkungen_kosten_id"
                           formControlName="bemerkungenKosten"
                           class="form-control dv-input"></textarea>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.bemerkungenKosten"
+                        [korrektur]="form.get('bemerkungenKosten').value"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -183,6 +219,12 @@
                     <mat-error *ngIf="form && form.get('elterngebuehren').errors?.isNotInteger"
                                translate>ERROR_NOT_INTEGER
                     </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.elterngebuehren"
+                        [korrektur]="form.get('elterngebuehren').value"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -207,6 +249,12 @@
                     <mat-error *ngIf="form && form.get('weitereEinnahmen').errors?.isNotInteger"
                                translate>ERROR_NOT_INTEGER
                     </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.weitereEinnahmen"
+                        [korrektur]="form.get('weitereEinnahmen').value"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -238,7 +286,8 @@
             *ngIf="canSeeAbschliessen | async"
             type="button"
             (buttonClick)="onAbschliessen()">
-            <span translate>ABSCHLIESSEN</span>
+            <span *ngIf="!container?.isInPruefungKanton()" translate>ABSCHLIESSEN</span>
+            <span *ngIf="container?.isInPruefungKanton()" translate>GEPRUEFT</span>
         </dv-loading-button>
     </div>
 

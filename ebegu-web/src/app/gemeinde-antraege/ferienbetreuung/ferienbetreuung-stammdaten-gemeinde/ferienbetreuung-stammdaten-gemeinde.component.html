@@ -46,6 +46,12 @@
                            matInput
                            formControlName="traegerschaft"
                            class="form-control dv-input"/>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.stammdaten?.traegerschaft"
+                        [korrektur]="form.get('traegerschaft').value"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -53,34 +59,47 @@
             <dv-input-container-x [verticalAlign]="true">
                 <label for="am-angebot-beteiligte-gemeinden"
                        translate>FERIENBETREUUNG_AM_ANGEBOT_BETEILIGTE_GEMEINDEN</label>
-                <mat-select *ngIf="bfsGemeinden?.length"
-                            class="form-control"
-                            formControlName="amAngebotBeteiligteGemeinden"
-                            name="amAngebotBeteiligteGemeinden"
-                            id="am-angebot-beteiligte-gemeinden"
-                            [disabled]="form.get('amAngebotBeteiligteGemeinden').disabled"
-                            [multiple]="true">
-                    <mat-option *ngFor="let gemeinde of bfsGemeinden"
-                                [value]="gemeinde.name">
-                        {{gemeinde.name}}
-                    </mat-option>
-                </mat-select>
+                <mat-form-field *ngIf="bfsGemeinden?.length">
+                    <mat-select class="form-control"
+                                formControlName="amAngebotBeteiligteGemeinden"
+                                name="amAngebotBeteiligteGemeinden"
+                                id="am-angebot-beteiligte-gemeinden"
+                                [disabled]="form.get('amAngebotBeteiligteGemeinden').disabled"
+                                [multiple]="true">
+                        <mat-option *ngFor="let gemeinde of bfsGemeinden"
+                                    [value]="gemeinde.name">
+                            {{gemeinde.name}}
+                        </mat-option>
+                    </mat-select>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.stammdaten?.amAngebotBeteiligteGemeinden?.join(', ')"
+                        [korrektur]="form.get('amAngebotBeteiligteGemeinden').value?.join(', ')"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
+                </mat-form-field>
             </dv-input-container-x>
 
 
-        <dv-input-container-x [verticalAlign]="true">
-            <label for="seitWannFerienbetreuungen_id">
-                {{'FERIENBETREUUNG_SEIT_WANN' | translate}}
-            </label>
-            <div class="flex-whitespace-item"></div>
-            <mat-form-field floatLabel="always">
-                <input id="seitWannFerienbetreuungen_id"
-                       type="text"
-                       matInput
-                       formControlName="seitWannFerienbetreuungen"
-                       class="form-control dv-input"/>
-            </mat-form-field>
-        </dv-input-container-x>
+            <dv-input-container-x [verticalAlign]="true">
+                <label for="seitWannFerienbetreuungen_id">
+                    {{'FERIENBETREUUNG_SEIT_WANN' | translate}}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input id="seitWannFerienbetreuungen_id"
+                           type="text"
+                           matInput
+                           formControlName="seitWannFerienbetreuungen"
+                           class="form-control dv-input"/>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.stammdaten?.seitWannFerienbetreuungen"
+                        [korrektur]="form.get('seitWannFerienbetreuungen').value"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
+                </mat-form-field>
+            </dv-input-container-x>
 
         </div>
 
@@ -121,6 +140,12 @@
                             *ngIf="form?.get('stammdatenAdresse').get('organisation').errors?.required"
                             translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
                         </mat-error>
+                        <dv-bisher-x
+                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.organisation"
+                            [korrektur]="form.get('stammdatenAdresse').get('organisation').value"
+                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
 
@@ -141,6 +166,12 @@
                                 *ngIf="form?.get('stammdatenAdresse').get('strasse').errors?.required"
                                 translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
                             </mat-error>
+                            <dv-bisher-x
+                                [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.strasse"
+                                [korrektur]="form.get('stammdatenAdresse').get('strasse').value"
+                                [showBisher]="container.isAtLeastInPruefungKanton()"
+                                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                            </dv-bisher-x>
                         </mat-form-field>
                     </dv-input-container-x>
 
@@ -155,6 +186,12 @@
                                    formControlName="hausnummer"
                                    class="form-control dv-input"/>
                         </mat-form-field>
+                        <dv-bisher-x
+                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.hausnummer"
+                            [korrektur]="form.get('stammdatenAdresse').get('hausnummer').value"
+                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
                     </dv-input-container-x>
                 </div>
 
@@ -176,6 +213,12 @@
                                 translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
                             </mat-error>
                         </mat-form-field>
+                        <dv-bisher-x
+                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.plz"
+                            [korrektur]="form.get('stammdatenAdresse').get('plz').value"
+                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
                     </dv-input-container-x>
 
                     <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
@@ -194,6 +237,12 @@
                                 *ngIf="form?.get('stammdatenAdresse').get('ort').errors?.required"
                                 translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
                             </mat-error>
+                            <dv-bisher-x
+                                [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.ort"
+                                [korrektur]="form.get('stammdatenAdresse').get('ort').value"
+                                [showBisher]="container.isAtLeastInPruefungKanton()"
+                                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                            </dv-bisher-x>
                         </mat-form-field>
                     </dv-input-container-x>
                 </div>
@@ -206,12 +255,12 @@
         <div class="max-width-container-750">
 
             <h3 translate class="uppercase margin-bottom-20" id="kontaktperson-header">
-            <span>
-                {{'FERIENBETREUUNG_KONTAKTPERSON' | translate}}
-                <dv-tooltip inputId="kontaktperson-header"
-                            [text]="'FERIENBETREUUNG_KONTAKTPERSON_HINT' | translate">
-                </dv-tooltip>
-            </span>
+                    <span>
+                        {{'FERIENBETREUUNG_KONTAKTPERSON' | translate}}
+                        <dv-tooltip inputId="kontaktperson-header"
+                                    [text]="'FERIENBETREUUNG_KONTAKTPERSON_HINT' | translate">
+                        </dv-tooltip>
+                    </span>
                 <span class="flex-whitespace-item"></span>
                 <button type="button"
                         (click)="fillBenutzer()"
@@ -239,6 +288,12 @@
                             *ngIf="formValidationTriggered && form?.get('stammdatenKontaktpersonVorname').errors?.required"
                             translate>ERROR_REQUIRED
                         </mat-error>
+                        <dv-bisher-x
+                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenKontaktpersonVorname"
+                            [korrektur]="form.get('stammdatenKontaktpersonVorname').value"
+                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
 
@@ -258,6 +313,12 @@
                             *ngIf="formValidationTriggered && form?.get('stammdatenKontaktpersonNachname').errors?.required"
                             translate>ERROR_REQUIRED
                         </mat-error>
+                        <dv-bisher-x
+                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenKontaktpersonNachname"
+                            [korrektur]="form.get('stammdatenKontaktpersonNachname').value"
+                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
             </div>
@@ -272,6 +333,12 @@
                            matInput
                            formControlName="stammdatenKontaktpersonFunktion"
                            class="form-control dv-input"/>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenKontaktpersonFunktion"
+                        [korrektur]="form.get('stammdatenKontaktpersonFunktion').value"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -297,6 +364,12 @@
                             *ngIf="formValidationTriggered && form?.get('stammdatenKontaktpersonTelefon').errors?.pattern"
                             translate>ERROR_PHONE
                         </mat-error>
+                        <dv-bisher-x
+                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenKontaktpersonTelefon"
+                            [korrektur]="form.get('stammdatenKontaktpersonTelefon').value"
+                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
 
@@ -320,6 +393,12 @@
                             *ngIf="formValidationTriggered && form?.get('stammdatenKontaktpersonEmail').errors?.pattern"
                             translate>ERROR_EMAIL
                         </mat-error>
+                        <dv-bisher-x
+                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenKontaktpersonEmail"
+                            [korrektur]="form.get('stammdatenKontaktpersonEmail').value"
+                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
             </div>
@@ -357,6 +436,12 @@
                                     *ngIf="formValidationTriggered && form?.get('auszahlungsdaten').get('kontoinhaber').errors?.required"
                                     translate>ERROR_AUSZAHLUNGSDATEN_NICHT_VOLLSTAENDING
                                 </mat-error>
+                                <dv-bisher-x
+                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.kontoinhaber"
+                                    [korrektur]="form.get('auszahlungsdaten').get('kontoinhaber').value"
+                                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                                </dv-bisher-x>
                             </mat-form-field>
                         </dv-input-container-x>
                     </div>
@@ -380,6 +465,12 @@
                                     *ngIf="formValidationTriggered && form?.get('auszahlungsdaten').get('adresseKontoinhaber').get('strasse').errors?.required"
                                     translate>ERROR_AUSZAHLUNGSDATEN_NICHT_VOLLSTAENDING
                                 </mat-error>
+                                <dv-bisher-x
+                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.strasse"
+                                    [korrektur]="form.get('auszahlungsdaten').get('adresseKontoinhaber').get('strasse').value"
+                                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                                </dv-bisher-x>
                             </mat-form-field>
                         </dv-input-container-x>
 
@@ -394,9 +485,14 @@
                                        formControlName="hausnummer"
                                        class="form-control dv-input"/>
                             </mat-form-field>
+                            <dv-bisher-x
+                                [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.hausnummer"
+                                [korrektur]="form.get('auszahlungsdaten').get('adresseKontoinhaber').get('hausnummer').value"
+                                [showBisher]="container.isAtLeastInPruefungKanton()"
+                                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                            </dv-bisher-x>
                         </dv-input-container-x>
                     </div>
-
                     <div class="row">
                         <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
                             <label for="adresse_kontoinhaber_plz_id"
@@ -414,6 +510,12 @@
                                     *ngIf="formValidationTriggered && form?.get('auszahlungsdaten').get('adresseKontoinhaber').get('plz').errors?.required"
                                     translate>ERROR_REQUIRED
                                 </mat-error>
+                                <dv-bisher-x
+                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.plz"
+                                    [korrektur]="form.get('auszahlungsdaten').get('adresseKontoinhaber').get('plz').value"
+                                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                                </dv-bisher-x>
                             </mat-form-field>
                         </dv-input-container-x>
 
@@ -433,6 +535,12 @@
                                     *ngIf="formValidationTriggered && form?.get('auszahlungsdaten').get('adresseKontoinhaber').get('ort').errors?.required"
                                     translate>ERROR_AUSZAHLUNGSDATEN_NICHT_VOLLSTAENDING
                                 </mat-error>
+                                <dv-bisher-x
+                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.ort"
+                                    [korrektur]="form.get('auszahlungsdaten').get('adresseKontoinhaber').get('ort').value"
+                                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                                </dv-bisher-x>
                             </mat-form-field>
                         </dv-input-container-x>
                     </div>
@@ -461,10 +569,17 @@
                                     *ngIf="form?.get('auszahlungsdaten').get('iban').errors?.iban && form.get('auszahlungsdaten').get('iban').dirty"
                                     translate>ERROR_IBAN
                                 </mat-error>
+                                <dv-bisher-x
+                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.iban"
+                                    [korrektur]="form.get('auszahlungsdaten').get('iban').value"
+                                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                                </dv-bisher-x>
                             </mat-form-field>
                         </dv-input-container-x>
 
                     </div>
+
                     <div class="col-xs-6">
                         <dv-input-container-x [verticalAlign]="true">
                             <label for="vermerk_auszahlung_id">
@@ -476,8 +591,17 @@
                                        matInput
                                        formControlName="vermerkAuszahlung"
                                        class="form-control dv-input"/>
+                                <dv-bisher-x
+                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.vermerkAuszahlung"
+                                    [korrektur]="form.get('auszahlungsdaten').get('vermerkAuszahlung').value"
+                                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                                </dv-bisher-x>
                             </mat-form-field>
+
                         </dv-input-container-x>
+
+
                     </div>
                 </div>
             </div>
@@ -500,7 +624,8 @@
             *ngIf="canSeeAbschliessen | async"
             type="button"
             (buttonClick)="onAbschliessen()">
-            <span translate>ABSCHLIESSEN</span>
+            <span *ngIf="!container?.isInPruefungKanton()" translate>ABSCHLIESSEN</span>
+            <span *ngIf="container?.isInPruefungKanton()" translate>GEPRUEFT</span>
         </dv-loading-button>
     </div>
 </div>

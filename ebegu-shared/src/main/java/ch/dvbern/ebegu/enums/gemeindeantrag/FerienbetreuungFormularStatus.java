@@ -21,6 +21,4 @@ public enum FerienbetreuungFormularStatus {
 
 	IN_BEARBEITUNG_GEMEINDE,
 	ABGESCHLOSSEN,
-	IN_PRUEFUNG_KANTON,
-	GEPRUEFT,
 }

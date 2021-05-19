@@ -287,7 +287,4 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 		return status == FerienbetreuungFormularStatus.ABGESCHLOSSEN;
 	}
 
-	public boolean isGeprueft() {
-		return status == FerienbetreuungFormularStatus.GEPRUEFT;
-	}
 }

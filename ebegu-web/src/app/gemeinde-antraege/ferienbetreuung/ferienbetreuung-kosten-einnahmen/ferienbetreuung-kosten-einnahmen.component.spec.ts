@@ -21,7 +21,10 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
+import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
+import {TSFerienbetreuungAngabenKostenEinnahmen} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {WindowRef} from '../../../core/service/windowRef.service';
 import {SharedModule} from '../../../shared/shared.module';
@@ -51,7 +54,8 @@ describe('FerienbetreuungKostenEinnahmenComponent', () => {
     let fixture: ComponentFixture<FerienbetreuungKostenEinnahmenComponent>;
 
     const container = new TSFerienbetreuungAngabenContainer();
-    container.angabenDeklaration = null;
+    container.angabenDeklaration = new TSFerienbetreuungAngaben();
+    container.angabenDeklaration.kostenEinnahmen = new TSFerienbetreuungAngabenKostenEinnahmen();
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -70,7 +74,7 @@ describe('FerienbetreuungKostenEinnahmenComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy}
             ]
-        })
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 

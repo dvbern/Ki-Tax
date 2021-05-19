@@ -683,4 +683,9 @@ export class TSRoleUtil {
     public static getGemeindeBGTSAndAllSozialdienstRoles(): ReadonlyArray<TSRole> {
         return this.getGemeindeOrBGOrTSRoles().concat(this.getAllRolesForSozialdienst());
     }
+
+    public static getGemeindeOrFBOnlyRoles(): ReadonlyArray<TSRole> {
+        return this.getGemeindeOrBGOrTSRoles()
+            .concat([TSRole.SACHBEARBEITER_FERIENBETREUUNG, TSRole.ADMIN_FERIENBETREUUNG]);
+    }
 }
