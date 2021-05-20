@@ -227,7 +227,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(zeitabschnitt.getVerfuegung().getBetreuung());
 
 		List<VerfuegungZeitabschnitt> zeitabschnittListe = new ArrayList<>();
-		verfuegungService.findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+		verfuegungService.findVerrechnetenOrIgnoriertenZeitabschnittOnVorgaengerVerfuegung(
 			ZahlungslaufTyp.GEMEINDE_INSTITUTION,
 			zeitabschnitt,
 			zeitabschnitt.getVerfuegung().getBetreuung(),
