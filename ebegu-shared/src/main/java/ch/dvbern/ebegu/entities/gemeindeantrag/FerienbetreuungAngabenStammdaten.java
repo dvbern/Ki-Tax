@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities.gemeindeantrag;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -67,9 +68,8 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 	private Set<String> amAngebotBeteiligteGemeinden = new HashSet<>();
 
 	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	@Column()
-	private String seitWannFerienbetreuungen;
+	@Column(nullable = true)
+	private LocalDate seitWannFerienbetreuungen;
 
 	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
@@ -159,11 +159,11 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 	}
 
 	@Nullable
-	public String getSeitWannFerienbetreuungen() {
+	public LocalDate getSeitWannFerienbetreuungen() {
 		return seitWannFerienbetreuungen;
 	}
 
-	public void setSeitWannFerienbetreuungen(@Nullable String seitWannFerienbetreuungen) {
+	public void setSeitWannFerienbetreuungen(@Nullable LocalDate seitWannFerienbetreuungen) {
 		this.seitWannFerienbetreuungen = seitWannFerienbetreuungen;
 	}
 

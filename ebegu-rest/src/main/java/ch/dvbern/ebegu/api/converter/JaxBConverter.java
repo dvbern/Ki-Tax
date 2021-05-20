@@ -1358,6 +1358,8 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(persistedTraegerschaft, jaxTraegerschaft);
 		jaxTraegerschaft.setName(persistedTraegerschaft.getName());
 		jaxTraegerschaft.setActive(persistedTraegerschaft.getActive());
+		jaxTraegerschaft.setEmail(persistedTraegerschaft.getEmail());
+		jaxTraegerschaft.setOffentlich(persistedTraegerschaft.getOffentlich());
 
 		Collection<Institution> institutionen =
 			institutionService.getAllInstitutionenFromTraegerschaft(persistedTraegerschaft.getId());
@@ -1399,6 +1401,8 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToEntity(traegerschaftJAXP, traegerschaft);
 		traegerschaft.setName(traegerschaftJAXP.getName());
 		traegerschaft.setActive(traegerschaftJAXP.getActive());
+		traegerschaft.setEmail(traegerschaftJAXP.getEmail());
+		traegerschaft.setOffentlich(traegerschaftJAXP.getOffentlich());
 
 		return traegerschaft;
 	}

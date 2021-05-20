@@ -35,7 +35,6 @@ import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenKostenEi
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungDokument;
-import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
@@ -205,6 +204,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		}
 		angebot.setAnzahlFerienwochenHerbstferien(jaxAngebot.getAnzahlFerienwochenHerbstferien());
 		angebot.setAnzahlFerienwochenWinterferien(jaxAngebot.getAnzahlFerienwochenWinterferien());
+		angebot.setAnzahlFerienwochenSportferien(jaxAngebot.getAnzahlFerienwochenSportferien());
 		angebot.setAnzahlFerienwochenFruehlingsferien(jaxAngebot.getAnzahlFerienwochenFruehlingsferien());
 		angebot.setAnzahlFerienwochenSommerferien(jaxAngebot.getAnzahlFerienwochenSommerferien());
 		angebot.setAnzahlTage(jaxAngebot.getAnzahlTage());
@@ -220,6 +220,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		}
 
 		angebot.setGemeindeFuehrtAngebotSelber(jaxAngebot.getGemeindeFuehrtAngebotSelber());
+		angebot.setGemeindeFuehrtAngebotInKooperation(jaxAngebot.getGemeindeFuehrtAngebotInKooperation());
 		angebot.setGemeindeBeauftragtExterneAnbieter(jaxAngebot.getGemeindeBeauftragtExterneAnbieter());
 		angebot.setAngebotVereineUndPrivateIntegriert(jaxAngebot.getAngebotVereineUndPrivateIntegriert());
 		angebot.setBemerkungenKooperation(jaxAngebot.getBemerkungenKooperation());
@@ -404,6 +405,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		}
 		jaxAngebot.setAnzahlFerienwochenHerbstferien(angebot.getAnzahlFerienwochenHerbstferien());
 		jaxAngebot.setAnzahlFerienwochenWinterferien(angebot.getAnzahlFerienwochenWinterferien());
+		jaxAngebot.setAnzahlFerienwochenSportferien(angebot.getAnzahlFerienwochenSportferien());
 		jaxAngebot.setAnzahlFerienwochenFruehlingsferien(angebot.getAnzahlFerienwochenFruehlingsferien());
 		jaxAngebot.setAnzahlFerienwochenSommerferien(angebot.getAnzahlFerienwochenSommerferien());
 		jaxAngebot.setAnzahlTage(angebot.getAnzahlTage());
@@ -413,6 +415,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxAngebot.setBemerkungenOeffnungszeiten(angebot.getBemerkungenOeffnungszeiten());
 		jaxAngebot.setFinanziellBeteiligteGemeinden(angebot.getFinanziellBeteiligteGemeinden());
 		jaxAngebot.setGemeindeFuehrtAngebotSelber(angebot.getGemeindeFuehrtAngebotSelber());
+		jaxAngebot.setGemeindeFuehrtAngebotInKooperation(angebot.getGemeindeFuehrtAngebotInKooperation());
 		jaxAngebot.setGemeindeBeauftragtExterneAnbieter(angebot.getGemeindeBeauftragtExterneAnbieter());
 		jaxAngebot.setAngebotVereineUndPrivateIntegriert(angebot.getAngebotVereineUndPrivateIntegriert());
 		jaxAngebot.setBemerkungenKooperation(angebot.getBemerkungenKooperation());

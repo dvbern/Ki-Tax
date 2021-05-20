@@ -17,9 +17,12 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormBuilder, ValidatorFn, Validators} from '@angular/forms';
+import {MAT_DATE_FORMATS} from '@angular/material/core';
+import {MatDatepicker} from '@angular/material/datepicker';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
+import * as moment from 'moment';
 import {ibanValidator} from 'ngx-iban';
 import {combineLatest, Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -39,11 +42,26 @@ import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
 const LOG = LogFactory.createLog('FerienbetreuungStammdatenGemeindeComponent');
 
+export const MY_FORMATS = {
+    parse: {
+        dateInput: 'MM/YYYY',
+    },
+    display: {
+        dateInput: 'MM/YYYY',
+        monthYearLabel: 'MMM YYYY',
+        dateA11yLabel: 'LL',
+        monthYearA11yLabel: 'MMMM YYYY',
+    },
+};
+
 @Component({
     selector: 'dv-ferienbetreuung-stammdaten-gemeinde',
     templateUrl: './ferienbetreuung-stammdaten-gemeinde.component.html',
     styleUrls: ['./ferienbetreuung-stammdaten-gemeinde.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
+    ],
 })
 export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbetreuungFormular implements OnInit {
 
@@ -51,6 +69,8 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
 
     private stammdaten: TSFerienbetreuungAngabenStammdaten;
     private subscription: Subscription;
+
+    public date?: moment.Moment;
 
     public constructor(
         protected readonly errorService: ErrorService,
@@ -83,6 +103,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         });
         this.gemeindeRS.getAllBfsGemeinden().then(gemeinden => {
             this.bfsGemeinden = gemeinden;
+            this.bfsGemeinden.sort((a, b) => a.name.localeCompare(b.name));
             this.cd.markForCheck();
         });
     }
@@ -97,7 +118,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         }
         this.form = this.fb.group({
             version: [
-                stammdaten?.version
+                stammdaten?.version,
             ],
             traegerschaft: [
                 stammdaten?.traegerschaft,
@@ -112,7 +133,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                 organisation: [
                     stammdaten?.stammdatenAdresse?.organisation,
                 ],
-                zusatz: [
+                zusatzzeile: [
                     stammdaten?.stammdatenAdresse?.zusatzzeile,
                 ],
                 strasse: [
@@ -128,8 +149,8 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                     stammdaten?.stammdatenAdresse?.ort,
                 ],
                 version: [
-                    stammdaten?.stammdatenAdresse?.version
-                ]
+                    stammdaten?.stammdatenAdresse?.version,
+                ],
             }),
             stammdatenKontaktpersonVorname: [
                 stammdaten?.stammdatenKontaktpersonVorname,
@@ -163,9 +184,12 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                     plz: [
                         stammdaten?.adresseKontoinhaber?.plz,
                     ],
+                    zusatzzeile: [
+                        stammdaten?.adresseKontoinhaber?.zusatzzeile,
+                    ],
                     version: [
-                        stammdaten?.adresseKontoinhaber?.version
-                    ]
+                        stammdaten?.adresseKontoinhaber?.version,
+                    ],
                 }),
                 iban: [
                     stammdaten?.iban,
@@ -374,5 +398,20 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
 
     public fillActionsVisible(): boolean {
         return this.stammdaten?.status === TSFerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE;
+    }
+
+    public chosenYearHandler(normalizedYear: moment.Moment): void {
+        const control = this.form.get('seitWannFerienbetreuungen');
+        const ctrlValue = control.value || moment();
+        ctrlValue.year(normalizedYear.year());
+        control.setValue(ctrlValue);
+    }
+
+    public chosenMonthHandler(normalizedMonth: moment.Moment, datepicker: MatDatepicker<moment.Moment>): void {
+        const control = this.form.get('seitWannFerienbetreuungen');
+        const ctrlValue = control.value || moment();
+        ctrlValue.month(normalizedMonth.month());
+        control.setValue(ctrlValue.startOf('month'));
+        datepicker.close();
     }
 }
