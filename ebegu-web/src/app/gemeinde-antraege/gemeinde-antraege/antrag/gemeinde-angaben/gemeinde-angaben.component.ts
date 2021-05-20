@@ -21,7 +21,7 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
-import {combineLatest, Subject, Subscription} from 'rxjs';
+import {BehaviorSubject, combineLatest, Subject, Subscription} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
@@ -32,6 +32,7 @@ import {TSRole} from '../../../../../models/enums/TSRole';
 import {TSWizardStepXTyp} from '../../../../../models/enums/TSWizardStepXTyp';
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {TSEinstellung} from '../../../../../models/TSEinstellung';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
@@ -64,6 +65,10 @@ export class GemeindeAngabenComponent implements OnInit {
     public lohnnormkostenSettingMoreThanFifty$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
     public lohnnormkostenSettingLessThanFifty$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
 
+    public saveVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public abschliessenVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public falscheAngabenVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
     private readonly kostenbeitragGemeinde = 0.2;
     private readonly WIZARD_TYPE: TSWizardStepXTyp = TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN;
 
@@ -84,28 +89,29 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.subscription = this.lastenausgleichTSService.getLATSAngabenGemeindeContainer()
-            .subscribe(container => {
-                this.lATSAngabenGemeindeContainer = new TSLastenausgleichTagesschuleAngabenGemeindeContainer();
-                Object.assign(this.lATSAngabenGemeindeContainer, container);
-                this.lATSAngabenGemeindeContainer = container;
-                if (this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst !== null) {
-                    const gemeindeAngaben = container.getAngabenToWorkWith();
-                    this.setupForm(gemeindeAngaben);
-                    this.setupCalculcations(gemeindeAngaben);
-                }
-                this.initLATSGemeindeInitializationForm();
-                this.settings.findEinstellung(TSEinstellungKey.LATS_LOHNNORMKOSTEN,
+        this.subscription = combineLatest([
+            this.lastenausgleichTSService.getLATSAngabenGemeindeContainer(),
+            this.authServiceRS.principal$
+        ]).subscribe(([container, principal]) => {
+            this.lATSAngabenGemeindeContainer = container;
+            if (this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst !== null) {
+                const gemeindeAngaben = container.getAngabenToWorkWith();
+                this.setupForm(gemeindeAngaben);
+                this.setupCalculcations(gemeindeAngaben);
+            }
+            this.initLATSGemeindeInitializationForm(container, principal);
+            this.setupPermissions(container, principal);
+            this.settings.findEinstellung(TSEinstellungKey.LATS_LOHNNORMKOSTEN,
                     this.lATSAngabenGemeindeContainer.gemeinde?.id,
                     this.lATSAngabenGemeindeContainer.gesuchsperiode?.id)
                     .then(setting => this.lohnnormkostenSettingMoreThanFifty$.next(setting));
-                this.settings.findEinstellung(TSEinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50,
+            this.settings.findEinstellung(TSEinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50,
                     this.lATSAngabenGemeindeContainer.gemeinde?.id,
                     this.lATSAngabenGemeindeContainer.gesuchsperiode?.id)
                     .then(setting => this.lohnnormkostenSettingLessThanFifty$.next(setting));
-                this.unsavedChangesService.registerForm(this.angabenForm);
-                this.cd.markForCheck();
-            }, () => this.errorService.addMesageAsError(this.translateService.instant('DATA_RETRIEVAL_ERROR')));
+            this.unsavedChangesService.registerForm(this.angabenForm);
+            this.cd.markForCheck();
+        }, () => this.errorService.addMesageAsError(this.translateService.instant('DATA_RETRIEVAL_ERROR')));
 
     }
 
@@ -119,20 +125,26 @@ export class GemeindeAngabenComponent implements OnInit {
         }
     }
 
-    private initLATSGemeindeInitializationForm(): void {
+    private initLATSGemeindeInitializationForm(
+            container: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
+            principal: TSBenutzer,
+    ): void {
         if (this.formularInitForm) {
             this.formularInitForm.patchValue({
-                alleAngabenInKibonErfasst: this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst,
+                alleAngabenInKibonErfasst: container.alleAngabenInKibonErfasst,
             });
         } else {
             this.formularInitForm = this.fb.group({
                 alleAngabenInKibonErfasst: [
-                    this.lATSAngabenGemeindeContainer?.alleAngabenInKibonErfasst,
+                    container.alleAngabenInKibonErfasst,
                     Validators.required,
                 ],
             });
         }
-        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
+        if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles()
+                .concat(TSRole.SUPER_ADMIN)) && container.isInBearbeitungGemeinde() && container.angabenDeklaration.isInBearbeitung()) {
+            this.formularInitForm.enable();
+        } else {
             this.formularInitForm.disable();
         }
     }
@@ -733,15 +745,6 @@ export class GemeindeAngabenComponent implements OnInit {
         this.lastenausgleichTSService.falscheAngaben(this.lATSAngabenGemeindeContainer);
     }
 
-    public falscheAngabenVisible(): boolean {
-        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles().concat(TSRole.SUPER_ADMIN))) {
-            return false;
-        }
-        return this.lATSAngabenGemeindeContainer?.isInBearbeitungGemeinde() &&
-            this.lATSAngabenGemeindeContainer?.angabenDeklaration.status ===
-            TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
-    }
-
     public getLastYear(): number {
         return this.lATSAngabenGemeindeContainer?.gesuchsperiode?.getBasisJahrPlus1();
     }
@@ -839,7 +842,53 @@ export class GemeindeAngabenComponent implements OnInit {
         };
     }
 
-    public abschliessenVisible(): boolean {
-        return this.lATSAngabenGemeindeContainer?.allAngabenInstitutionContainersGeprueft();
+    // tslint:disable-next-line:cognitive-complexity
+    private setupPermissions(
+            container: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
+            principal: TSBenutzer,
+    ): void {
+        if (container.isAtLeastGeprueft()) {
+            this.saveVisible.next(false);
+            this.abschliessenVisible.next(false);
+            this.falscheAngabenVisible.next(false);
+            return;
+        }
+        if (principal.hasRole(TSRole.SUPER_ADMIN)) {
+            const angaben = container.isInBearbeitungGemeinde() ?
+                    container.angabenDeklaration :
+                    container.angabenKorrektur;
+            if (angaben.isInBearbeitung()) {
+                this.saveVisible.next(true);
+                this.abschliessenVisible.next(container.allAngabenInstitutionContainersGeprueft());
+                this.falscheAngabenVisible.next(false);
+            } else {
+                this.saveVisible.next(false);
+                this.abschliessenVisible.next(false);
+                this.falscheAngabenVisible.next(true);
+            }
+        }
+        if (principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
+            if (container.isInBearbeitungGemeinde()) {
+                this.saveVisible.next(false);
+                this.abschliessenVisible.next(false);
+                this.falscheAngabenVisible.next(false);
+            } else {
+                this.saveVisible.next(container.angabenKorrektur.isInBearbeitung());
+                this.abschliessenVisible.next(container.angabenKorrektur.isInBearbeitung());
+                this.falscheAngabenVisible.next(!container.angabenKorrektur.isInBearbeitung());
+            }
+        }
+        // tslint:disable-next-line:early-exit
+        if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles())) {
+            if (container.isInBearbeitungGemeinde()) {
+                this.saveVisible.next(container.angabenDeklaration.isInBearbeitung());
+                this.abschliessenVisible.next(container.angabenDeklaration.isInBearbeitung() && container.allAngabenInstitutionContainersGeprueft());
+                this.falscheAngabenVisible.next(!container.angabenDeklaration.isInBearbeitung());
+            } else {
+                this.saveVisible.next(false);
+                this.abschliessenVisible.next(false);
+                this.falscheAngabenVisible.next(false);
+            }
+        }
     }
 }

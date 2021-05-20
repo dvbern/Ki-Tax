@@ -23,6 +23,7 @@ import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
+import {WizardStepXRS} from '../../../../core/service/wizardStepXRS.rest';
 import {MaterialModule} from '../../../../shared/material.module';
 import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
 
@@ -36,6 +37,8 @@ const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
     ['go']);
 const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
     ['getPrincipal', 'isOneOfRoles']);
+const wizardStepXRSSpy = jasmine.createSpyObj<WizardStepXRS>(WizardStepXRS.name,
+    ['updateSteps']);
 
 authServiceSpy.principal$ = of(new TSBenutzer());
 
@@ -56,7 +59,8 @@ describe('FreigabeComponent', () => {
                 {provide: TranslateService, useValue: translateServiceSpy},
                 {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
-                {provide: AuthServiceRS, useValue: authServiceSpy}
+                {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: WizardStepXRS, useValue: wizardStepXRSSpy}
             ],
         })
             .compileComponents();
