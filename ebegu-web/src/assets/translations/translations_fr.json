@@ -2500,5 +2500,7 @@
     "SOZIALDIENST_WARNING_FALL_ENTZOGEN": "La procuration à été retirée. Le cas est bloqué pour le service de soutien",
     "BEARBEITEN": "Éditer",
     "TAGESSCHULEN_DER_GEMEINDEN": "Écoles à journée continue de la commune:",
+    "OFFENTLICHE_TRAEGERSCHAFT": "Offentliche Trägerschaft",
+    "PRIVATE_TRAEGERSCHAFT": "Private Trägerschaft",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

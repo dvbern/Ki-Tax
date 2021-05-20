@@ -89,16 +89,6 @@ public class SozialdienstServiceBean extends AbstractBaseService implements Sozi
 	@Transactional
 	@Override
 	public Sozialdienst createSozialdienst(@Nonnull String adminMail, @Nonnull Sozialdienst sozialdienst) {
-		Optional<Sozialdienst> sozialdienstOpt =
-			criteriaQueryHelper.getEntityByUniqueAttribute(Sozialdienst.class, sozialdienst.getName(), Sozialdienst_.name);
-		if (sozialdienstOpt.isPresent()) {
-			throw new EntityExistsException(
-				KibonLogLevel.INFO,
-				Sozialdienst.class,
-				"name",
-				sozialdienst.getName(),
-				ErrorCodeEnum.ERROR_DUPLICATE_SOZIALDIENST_NAME);
-		}
 
 		Sozialdienst persistedSozialdienst = saveSozialdienst(sozialdienst);
 

@@ -42,6 +42,12 @@ public class JaxTraegerschaft extends JaxAbstractDTO {
 	@Nullable
 	private String institutionNames = "";
 
+	@Nullable
+	private String email;
+
+	@Nullable
+	private Boolean offentlich;
+
 	public String getName() {
 		return name;
 	}
@@ -73,5 +79,23 @@ public class JaxTraegerschaft extends JaxAbstractDTO {
 
 	public void setInstitutionNames(@Nullable String institutionNames) {
 		this.institutionNames = institutionNames;
+	}
+
+	@Nullable
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(@Nullable String email) {
+		this.email = email;
+	}
+
+	@Nullable
+	public Boolean getOffentlich() {
+		return offentlich;
+	}
+
+	public void setOffentlich(@Nullable Boolean offentlich) {
+		this.offentlich = offentlich;
 	}
 }
