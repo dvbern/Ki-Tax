@@ -90,6 +90,10 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 
 	@Nullable
 	@Column()
+	private BigDecimal anzahlFerienwochenSportferien;
+
+	@Nullable
+	@Column()
 	private BigDecimal anzahlFerienwochenSommerferien;
 
 	@Nullable
@@ -131,6 +135,10 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 	@Nullable
 	@Column()
 	private Boolean gemeindeFuehrtAngebotSelber;
+
+	@Nullable
+	@Column()
+	private Boolean gemeindeFuehrtAngebotInKooperation;
 
 	@Nullable
 	@Column()
@@ -203,6 +211,7 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 
 		this.anzahlFerienwochenFruehlingsferien = toCopy.anzahlFerienwochenFruehlingsferien;
 		this.anzahlFerienwochenSommerferien = toCopy.anzahlFerienwochenSommerferien;
+		this.anzahlFerienwochenSportferien = toCopy.anzahlFerienwochenSportferien;
 		this.anzahlFerienwochenHerbstferien = toCopy.anzahlFerienwochenHerbstferien;
 		this.anzahlFerienwochenWinterferien = toCopy.anzahlFerienwochenWinterferien;
 		this.anzahlTage = toCopy.anzahlTage;
@@ -211,6 +220,7 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 		this.finanziellBeteiligteGemeinden = new HashSet<>(toCopy.finanziellBeteiligteGemeinden);
 
 		this.gemeindeFuehrtAngebotSelber = toCopy.gemeindeFuehrtAngebotSelber;
+		this.gemeindeFuehrtAngebotInKooperation = toCopy.gemeindeFuehrtAngebotInKooperation;
 		this.gemeindeBeauftragtExterneAnbieter = toCopy.gemeindeBeauftragtExterneAnbieter;
 		this.angebotVereineUndPrivateIntegriert = toCopy.angebotVereineUndPrivateIntegriert;
 		this.bemerkungenKooperation = toCopy.bemerkungenKooperation;
@@ -542,5 +552,23 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 
 	public boolean isAbgeschlossen() {
 		return status == FerienbetreuungFormularStatus.ABGESCHLOSSEN;
+	}
+
+	@Nullable
+	public BigDecimal getAnzahlFerienwochenSportferien() {
+		return anzahlFerienwochenSportferien;
+	}
+
+	public void setAnzahlFerienwochenSportferien(@Nullable BigDecimal anzahlFerienwochenSportferien) {
+		this.anzahlFerienwochenSportferien = anzahlFerienwochenSportferien;
+	}
+
+	@Nullable
+	public Boolean getGemeindeFuehrtAngebotInKooperation() {
+		return gemeindeFuehrtAngebotInKooperation;
+	}
+
+	public void setGemeindeFuehrtAngebotInKooperation(@Nullable Boolean gemeindeFuehrtAngebotInKooperation) {
+		this.gemeindeFuehrtAngebotInKooperation = gemeindeFuehrtAngebotInKooperation;
 	}
 }

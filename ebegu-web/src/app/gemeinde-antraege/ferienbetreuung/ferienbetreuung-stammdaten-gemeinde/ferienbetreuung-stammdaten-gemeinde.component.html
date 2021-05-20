@@ -79,28 +79,28 @@
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
-
-
-            <dv-input-container-x [verticalAlign]="true">
-                <label for="seitWannFerienbetreuungen_id">
-                    {{'FERIENBETREUUNG_SEIT_WANN' | translate}}
-                </label>
-                <div class="flex-whitespace-item"></div>
-                <mat-form-field floatLabel="always">
-                    <input id="seitWannFerienbetreuungen_id"
-                           type="text"
-                           matInput
-                           formControlName="seitWannFerienbetreuungen"
-                           class="form-control dv-input"/>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.stammdaten?.seitWannFerienbetreuungen"
-                        [korrektur]="form.get('seitWannFerienbetreuungen').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </mat-form-field>
-            </dv-input-container-x>
-
+            <div class="margin-bottom-20">
+                <input class="dv-mat-datepicker"
+                       type="text"
+                       name="inputId"
+                       id="inputId"
+                       [matDatepicker]="dp"
+                       placeholder="mm.jjjj"
+                       formControlName="seitWannFerienbetreuungen">
+                <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+                <mat-datepicker #dp
+                                startView="multi-year"
+                                (yearSelected)="chosenYearHandler($event)"
+                                (monthSelected)="chosenMonthHandler($event, dp)"
+                                panelClass="example-month-picker">
+                </mat-datepicker>
+                <dv-bisher-x
+                    [deklaration]="container?.angabenDeklaration?.stammdaten?.seitWannFerienbetreuungen"
+                    [korrektur]="form.get('seitWannFerienbetreuungen').value"
+                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                </dv-bisher-x>
+            </div>
         </div>
 
         <mat-divider></mat-divider>
@@ -240,6 +240,25 @@
                             <dv-bisher-x
                                 [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.ort"
                                 [korrektur]="form.get('stammdatenAdresse').get('ort').value"
+                                [showBisher]="container.isAtLeastInPruefungKanton()"
+                                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                            </dv-bisher-x>
+                        </mat-form-field>
+                    </dv-input-container-x>
+
+                    <dv-input-container-x [verticalAlign]="true" class="col-xs-12">
+                        <label for="adresse_stammdaten_zusatz_id">
+                            {{'ADRESSE_ZUSATZZEILE' | translate}}
+                        </label>
+                        <mat-form-field floatLabel="always">
+                            <input type="text"
+                                   id="adresse_stammdaten_zusatz_id"
+                                   matInput
+                                   formControlName="zusatzzeile"
+                                   class="form-control dv-input"/>
+                            <dv-bisher-x
+                                [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.zusatzzeile"
+                                [korrektur]="form.get('stammdatenAdresse').get('zusatzzeile').value"
                                 [showBisher]="container.isAtLeastInPruefungKanton()"
                                 [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                             </dv-bisher-x>
@@ -544,6 +563,27 @@
                             </mat-form-field>
                         </dv-input-container-x>
                     </div>
+
+                    <div class="row">
+                        <dv-input-container-x [verticalAlign]="true" class="col-xs-12">
+                            <label for="adresse_kontoinhaber_ort_id">
+                                {{'ADRESSE_ZUSATZZEILE' | translate}}
+                            </label>
+                            <mat-form-field floatLabel="always">
+                                <input type="text"
+                                       id="adresse_kontoinhaber_zusatz_id"
+                                       matInput
+                                       formControlName="zusatzzeile"
+                                       class="form-control dv-input"/>
+                                <dv-bisher-x
+                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.zusatzzeile"
+                                    [korrektur]="form.get('auszahlungsdaten').get('adresseKontoinhaber').get('zusatzzeile').value"
+                                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                                </dv-bisher-x>
+                            </mat-form-field>
+                        </dv-input-container-x>
+                    </div>
                 </div>
 
                 <div class="row">
@@ -610,7 +650,7 @@
 
     <div class="row margin-top-20" *ngIf="canSeeFalscheAngaben | async">
         <div class="col-md-12">
-            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
+            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>ANGABEN_KORRIGIEREN</a>
         </div>
     </div>
 

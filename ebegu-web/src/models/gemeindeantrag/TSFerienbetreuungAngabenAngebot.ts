@@ -26,6 +26,7 @@ export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAn
     private _angebotAdresse: TSAdresse;
     private _anzahlFerienwochenHerbstferien: number;
     private _anzahlFerienwochenWinterferien: number;
+    private _anzahlFerienwochenSportferien: number;
     private _anzahlFerienwochenFruehlingsferien: number;
     private _anzahlFerienwochenSommerferien: number;
     private _anzahlTage: number;
@@ -35,6 +36,7 @@ export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAn
     private _bemerkungenOeffnungszeiten: string;
     private _finanziellBeteiligteGemeinden: string[];
     private _gemeindeFuehrtAngebotSelber: boolean;
+    private _gemeindeFuehrtAngebotInKooperation: boolean;
     private _gemeindeBeauftragtExterneAnbieter: boolean;
     private _angebotVereineUndPrivateIntegriert: boolean;
     private _bemerkungenKooperation: boolean;
@@ -96,6 +98,14 @@ export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAn
 
     public set anzahlFerienwochenWinterferien(value: number) {
         this._anzahlFerienwochenWinterferien = value;
+    }
+
+    public get anzahlFerienwochenSportferien(): number {
+        return this._anzahlFerienwochenSportferien;
+    }
+
+    public set anzahlFerienwochenSportferien(value: number) {
+        this._anzahlFerienwochenSportferien = value;
     }
 
     public get anzahlFerienwochenFruehlingsferien(): number {
@@ -168,6 +178,14 @@ export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAn
 
     public set gemeindeFuehrtAngebotSelber(value: boolean) {
         this._gemeindeFuehrtAngebotSelber = value;
+    }
+
+    public get gemeindeFuehrtAngebotInKooperation(): boolean {
+        return this._gemeindeFuehrtAngebotInKooperation;
+    }
+
+    public set gemeindeFuehrtAngebotInKooperation(value: boolean) {
+        this._gemeindeFuehrtAngebotInKooperation = value;
     }
 
     public get gemeindeBeauftragtExterneAnbieter(): boolean {

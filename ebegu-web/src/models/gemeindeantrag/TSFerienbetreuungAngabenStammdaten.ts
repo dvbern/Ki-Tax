@@ -17,11 +17,12 @@
 
 import {TSAdresse} from '../TSAdresse';
 import {TSFerienbetreuungAbstractAngaben} from './TSFerienbetreuungAbstractAngaben';
+import * as moment from 'moment';
 
 export class TSFerienbetreuungAngabenStammdaten extends TSFerienbetreuungAbstractAngaben {
 
     private _amAngebotBeteiligteGemeinden: string[];
-    private _seitWannFerienbetreuungen: string;
+    private _seitWannFerienbetreuungen: moment.Moment;
     private _traegerschaft: string;
     private _stammdatenAdresse: TSAdresse;
     private _stammdatenKontaktpersonVorname: string;
@@ -42,11 +43,11 @@ export class TSFerienbetreuungAngabenStammdaten extends TSFerienbetreuungAbstrac
         this._amAngebotBeteiligteGemeinden = value;
     }
 
-    public get seitWannFerienbetreuungen(): string {
+    public get seitWannFerienbetreuungen(): moment.Moment {
         return this._seitWannFerienbetreuungen;
     }
 
-    public set seitWannFerienbetreuungen(value: string) {
+    public set seitWannFerienbetreuungen(value:  moment.Moment) {
         this._seitWannFerienbetreuungen = value;
     }
 

@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
@@ -42,7 +42,6 @@ const LOG = LogFactory.createLog('FerienbetreuungKostenEinnahmenComponent');
 export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetreuungFormular implements OnInit,
     OnDestroy {
 
-    public form: FormGroup;
     private kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen;
     private subscription: Subscription;
 
@@ -151,7 +150,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         this.form.get('personalkostenLeitungAdmin').setValidators([numberValidator(ValidationType.INTEGER)]);
         this.form.get('sachkosten').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
         this.form.get('verpflegungskosten')
-            .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+            .setValidators([numberValidator(ValidationType.INTEGER)]);
         this.form.get('weitereKosten').setValidators([numberValidator(ValidationType.INTEGER)]);
         this.form.get('elterngebuehren').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
         this.form.get('weitereEinnahmen').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);

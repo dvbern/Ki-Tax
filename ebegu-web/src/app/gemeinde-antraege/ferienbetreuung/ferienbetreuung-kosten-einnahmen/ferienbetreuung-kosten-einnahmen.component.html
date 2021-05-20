@@ -121,7 +121,6 @@
 
             <dv-input-container-x>
                 <label for="verpflegungskosten_id"
-                       required
                        [ngClass]="{'label-required-error': form && form.get('verpflegungskosten').errors}">
                     {{'FERIENBETREUUNG_VERPFLEGUNGSKOSTEN_INSGESAMT' | translate }}
                 </label>
@@ -272,7 +271,7 @@
 
     <div class="row margin-top-20" *ngIf="canSeeFalscheAngaben | async">
         <div class="col-md-12">
-            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
+            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>ANGABEN_KORRIGIEREN</a>
         </div>
     </div>
 

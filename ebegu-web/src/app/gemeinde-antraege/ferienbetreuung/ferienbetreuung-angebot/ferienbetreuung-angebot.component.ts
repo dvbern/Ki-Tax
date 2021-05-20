@@ -85,6 +85,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         });
         this.gemeindeRS.getAllBfsGemeinden().then(gemeinden => {
             this.bfsGemeinden = gemeinden;
+            this.bfsGemeinden.sort((a, b) => a.name.localeCompare(b.name));
             this.cd.markForCheck();
         });
     }
@@ -126,12 +127,21 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
                 ort: [
                     angebot?.angebotAdresse?.ort,
                 ],
+                zusatzzeile: [
+                    angebot?.angebotAdresse?.zusatzzeile
+                ],
+                version: [
+                    angebot?.angebotAdresse?.version
+                ]
             }),
             anzahlFerienwochenHerbstferien: [
                 angebot?.anzahlFerienwochenHerbstferien
             ],
             anzahlFerienwochenWinterferien: [
                 angebot?.anzahlFerienwochenWinterferien,
+            ],
+            anzahlFerienwochenSportferien: [
+                angebot?.anzahlFerienwochenSportferien,
             ],
             anzahlFerienwochenFruehlingsferien: [
                 angebot?.anzahlFerienwochenFruehlingsferien,
@@ -159,6 +169,9 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             ],
             gemeindeFuehrtAngebotSelber: [
                 angebot?.gemeindeFuehrtAngebotSelber,
+            ],
+            gemeindeFuehrtAngebotInKooperation: [
+                angebot?.gemeindeFuehrtAngebotInKooperation,
             ],
             gemeindeBeauftragtExterneAnbieter: [
                 angebot?.gemeindeBeauftragtExterneAnbieter,
@@ -225,7 +238,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             numberValidator(ValidationType.INTEGER)
         );
         this.form.get('anzahlStundenProBetreuungstag').setValidators(
-            numberValidator(ValidationType.INTEGER)
+            numberValidator(ValidationType.HALF)
         );
         this.form.get('betreuungsschluessel').setValidators(
             numberValidator(ValidationType.INTEGER)

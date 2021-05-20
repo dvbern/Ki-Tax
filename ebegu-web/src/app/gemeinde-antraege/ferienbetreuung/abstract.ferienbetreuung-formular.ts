@@ -156,6 +156,8 @@ export abstract class AbstractFerienbetreuungFormular {
             container?.isInPruefungKanton() &&
             principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrFBOnlyRoles())) {
             this.form.disable();
+        } else {
+            this.form.enable();
         }
     }
 
@@ -165,6 +167,7 @@ export abstract class AbstractFerienbetreuungFormular {
         principal: TSBenutzer,
     ): void {
         this.setupForm(angaben);
+        this.cd.detectChanges();
 
         this.disableFormBasedOnStateAndPrincipal(principal, container, angaben);
         this.setupRoleBasedPropertiesForPrincipal(container, angaben, principal);

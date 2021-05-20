@@ -91,14 +91,16 @@
                 <span class="flex-whitespace-item"></span>
                 <p>{{'30_CHF' | translate}}</p>
                 <p>
+                    <span>x</span>
                     <span>{{berechnung.betreuungstageKinderDieserGemeindeMinusSonderschueler}}</span>
                 </p>
             </div>
             <div>
-                <p class="intent-1">{{'FERIENBETREUUNG_PLUS_SONDERSCHUELER' | translate}}</p>
+                <p class="intent-1">{{'FERIENBETREUUNG_BERECHNUNG_ANZAHL_KINDER_DIESE_GEMEINDE' | translate}} {{'FERIENBETREUUNG_PLUS_SONDERSCHUELER' | translate}}</p>
                 <span class="flex-whitespace-item"></span>
                 <p>{{'60_CHF' | translate}}</p>
                 <p>
+                    <span>x</span>
                     <span>{{berechnung.betreuungstageKinderDieserGemeindeSonderschueler}}</span>
                 </p>
             </div>
@@ -107,14 +109,16 @@
                 <span class="flex-whitespace-item"></span>
                 <p>{{'30_CHF' | translate}}</p>
                 <p>
+                    <span>x</span>
                     <span>{{berechnung.betreuungstageKinderAndererGemeindeMinusSonderschueler}}</span>
                 </p>
             </div>
             <div>
-                <p class="intent-1">{{'FERIENBETREUUNG_PLUS_SONDERSCHUELER' | translate}}</p>
+                <p class="intent-1">{{'FERIENBETREUUNG_BERECHNUNG_ANZAHL_KINDER_ANDERE_GEMEINDE' | translate}} {{'FERIENBETREUUNG_PLUS_SONDERSCHUELER' | translate}}</p>
                 <span class="flex-whitespace-item"></span>
                 <p>{{'60_CHF' | translate}}</p>
                 <p>
+                    <span>x</span>
                     <span>{{berechnung.betreuungstageKinderAndererGemeindenSonderschueler}}</span>
                 </p>
             </div>
@@ -184,10 +188,11 @@
                 </p>
             </div>
             <div class="result">
-                <p>{{'FERIENBETREUUNG_FAZIT' | translate}}</p>
+                <p></p>
                 <span class="flex-whitespace-item"></span>
                 <p>
                     <span *ngIf="berechnung.beteiligungZuTief">{{'FERIENBETREUUNG_FAZIT_ZU_TIEF' | translate}}</span>
+                    <span *ngIf="!berechnung.beteiligungZuTief">{{'FERIENBETREUUNG_FAZIT_AUSREICHEND' | translate}}</span>
                 </p>
             </div>
         </div>
