@@ -310,6 +310,16 @@ public final class PensumMappingUtil {
 
 		target.addAll(extended);
 		target.removeIf(z -> !periode.intersects(z.getGueltigkeit()));
+
+
+		DateRange institutionGuektigkeit = ctx.getBetreuung().getInstitutionStammdaten().getGueltigkeit();
+
+		//Remove Zeitabschnitten ausser die Institution Gueltigkeit
+		target.removeIf(z -> !institutionGuektigkeit.intersects(z.getGueltigkeit()));
+		//Adapt die Potentielle uberschrittende Zeitabschnitten
+		target.forEach(z ->
+			z.setGueltigkeit(institutionGuektigkeit.getOverlap(z.getGueltigkeit()).get())
+		);
 	}
 
 	/**

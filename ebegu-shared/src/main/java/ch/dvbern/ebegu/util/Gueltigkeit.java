@@ -31,4 +31,7 @@ public interface Gueltigkeit {
 
 	@Nonnull
 	DateRange getGueltigkeit();
+
+	@Nonnull
+	void setGueltigkeit(@Nonnull DateRange gueltigkeit);
 }
