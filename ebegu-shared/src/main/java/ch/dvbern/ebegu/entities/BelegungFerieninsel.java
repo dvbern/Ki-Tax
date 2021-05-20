@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,9 +33,11 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Ferienname;
+import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
 
@@ -68,6 +71,11 @@ public class BelegungFerieninsel extends AbstractMutableEntity {
 	)
 	private List<BelegungFerieninselTag> tage = new ArrayList<>();
 
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
+	@Nullable
+	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
+	private String notfallAngaben;
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -86,7 +94,9 @@ public class BelegungFerieninsel extends AbstractMutableEntity {
 		boolean tageSame = this.getTage().stream().allMatch(
 			(tageList) -> that.getTage().stream().anyMatch(otherPensenCont -> otherPensenCont.isSame(tageList)));
 
-		return tageSame && Objects.equals(ferienname, that.ferienname);
+		return tageSame && Objects.equals(ferienname, that.ferienname) && Objects.equals(
+			notfallAngaben,
+			that.notfallAngaben);
 	}
 
 	public Ferienname getFerienname() {
@@ -105,14 +115,27 @@ public class BelegungFerieninsel extends AbstractMutableEntity {
 		this.tage = tage;
 	}
 
+	@Nullable
+	public String getNotfallAngaben() {
+		return notfallAngaben;
+	}
+
+	public void setNotfallAngaben(@Nullable String notfallAngaben) {
+		this.notfallAngaben = notfallAngaben;
+	}
+
 	@Nonnull
-	public BelegungFerieninsel copyBelegungFerieninsel(@Nonnull BelegungFerieninsel target, @Nonnull AntragCopyType copyType) {
+	public BelegungFerieninsel copyBelegungFerieninsel(
+		@Nonnull BelegungFerieninsel target,
+		@Nonnull AntragCopyType copyType) {
 		super.copyAbstractEntity(target, copyType);
 		switch (copyType) {
 		case MUTATION:
 			target.setFerienname(ferienname);
+			target.setNotfallAngaben(notfallAngaben);
 			for (BelegungFerieninselTag belegungFerieninselTag : tage) {
-				target.getTage().add(belegungFerieninselTag.copyBelegungFerieninselTag(new BelegungFerieninselTag(), copyType));
+				target.getTage()
+					.add(belegungFerieninselTag.copyBelegungFerieninselTag(new BelegungFerieninselTag(), copyType));
 			}
 			break;
 		case ERNEUERUNG:

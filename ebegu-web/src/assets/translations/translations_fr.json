@@ -1367,6 +1367,7 @@
     "WARN_ANGEBOT_NOCH_NICHT_FREIGEGEBEN": "Cette offre n'a pas encore été validée.  Veuillez traiter l'offre actuelle. ",
     "WARN_ANGEBOT_MUTIERT": "Cette offre a été modifiée. Veuillez traiter l'offre actuellement valable. ",
     "FERIENINSELTAGE": "Pour quels jours souhaitez-vous inscrire votre enfant à la Ferieninsel ?",
+    "FERIENINSEL_NOTFALLANGABEN":"Mitteilungen / Besonderes (z.B. Medikamente, Allergien/Unverträglichkeiten, ADS, kein Schweinefleisch usw.)",
     "ANMELDEN_FERIENINSEL": "Soumettre définitivement l'inscription",
     "ANMELDEN_TAGESSCHULE": "Soumettre définitivement l'inscription",
     "CONFIRM_SAVE_FERIENINSEL": "Voulez-vous vraiment finaliser l'inscription définitive de votre enfant ?",
