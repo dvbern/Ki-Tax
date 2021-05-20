@@ -15,13 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {UpgradeModule} from '@angular/upgrade/static';
+import {TranslateModule} from '@ngx-translate/core';
+import {StateService} from '@uirouter/core';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
-import {GemeindeModule} from '../gemeinde.module';
 import {EditGemeindeComponentTS} from './edit-gemeinde-ts.component';
 
 describe('EditGemeindeComponentTS', () => {
@@ -29,27 +33,26 @@ describe('EditGemeindeComponentTS', () => {
     let component: EditGemeindeComponentTS;
     let fixture: ComponentFixture<EditGemeindeComponentTS>;
 
+    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getInstitutionenForGemeinde']);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(waitForAsync(() => {
-
         TestBed.configureTestingModule({
-            imports: [
-                SharedModule,
-                NoopAnimationsModule,
-                MaterialModule,
-                GemeindeModule,
-            ],
-            schemas: [],
-            providers: [
-                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-            ],
-            declarations: [
-            ],
+            declarations:
+                [EditGemeindeComponentTS],
+            imports: [MaterialModule, TranslateModule.forRoot(), UpgradeModule, BrowserAnimationsModule],
+            schemas:
+                [CUSTOM_ELEMENTS_SCHEMA],
+            providers:
+                [
+                    {provide: InstitutionRS, useValue: insitutionSpy},
+                    {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                    {provide: StateService, useValue: stateServiceSpy}
+                ],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
         ).compileComponents();
-
     }));
 
     beforeEach(waitForAsync(() => {

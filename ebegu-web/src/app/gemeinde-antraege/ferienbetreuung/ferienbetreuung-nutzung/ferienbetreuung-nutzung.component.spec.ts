@@ -22,7 +22,9 @@ import {UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
+import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
+import {TSFerienbetreuungAngabenNutzung} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {SharedModule} from '../../../shared/shared.module';
 import {UnsavedChangesService} from '../../services/unsaved-changes.service';
@@ -51,7 +53,8 @@ describe('FerienbetreuungNutzungComponent', () => {
     let fixture: ComponentFixture<FerienbetreuungNutzungComponent>;
 
     const container = new TSFerienbetreuungAngabenContainer();
-    container.angabenDeklaration = null;
+    container.angabenDeklaration = new TSFerienbetreuungAngaben();
+    container.angabenDeklaration.nutzung = new TSFerienbetreuungAngabenNutzung();
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({

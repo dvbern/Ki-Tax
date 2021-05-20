@@ -46,7 +46,7 @@ public class NutzungStep implements WizardStep<FerienbetreuungWizard> {
 			return Objects.requireNonNull(wizard.getFerienbetreuungAngabenContainer()
 				.getAngabenKorrektur())
 				.getFerienbetreuungAngabenNutzung()
-				.isGeprueft() ?
+				.isAbgeschlossen() ?
 				WizardStateEnum.OK :
 				WizardStateEnum.IN_BEARBEITUNG;
 		}

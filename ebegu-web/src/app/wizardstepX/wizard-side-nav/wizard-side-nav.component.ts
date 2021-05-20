@@ -36,6 +36,7 @@ export class WizardSideNavComponent implements OnInit {
     @Input() public readonly status: string;
     @Input() public readonly gemeinde: TSGemeinde;
     @Input() public readonly gesuchsperiode: TSGesuchsperiode;
+    @Input() public readonly subHeader: string;
 
     public wizardSteps$: Observable<TSWizardStepX[]>;
 

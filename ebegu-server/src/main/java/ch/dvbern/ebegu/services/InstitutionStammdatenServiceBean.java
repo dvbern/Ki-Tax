@@ -411,4 +411,28 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		typedQuery.setParameter(GP_END, gesuchsperiode.getGueltigkeit().getGueltigBis());
 		return typedQuery.getResultList();
 	}
+
+	@Override
+	@Nonnull
+	public Collection<InstitutionStammdaten> getAllTagesschulenForGemeinde(
+		@Nonnull Gemeinde gemeinde
+	) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
+		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+		Join<InstitutionStammdaten, InstitutionStammdatenTagesschule> joinTagesschule =
+			root.join(InstitutionStammdaten_.institutionStammdatenTagesschule, JoinType.LEFT);
+		query.select(root);
+
+		ParameterExpression<Gemeinde> gemeindeParam = cb.parameter(Gemeinde.class, GEMEINDEN);
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(cb.equal(root.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE));
+		predicates.add(cb.equal(joinTagesschule.get(InstitutionStammdatenTagesschule_.gemeinde), gemeindeParam));
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+
+		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);
+		typedQuery.setParameter(GEMEINDEN, gemeinde);
+		return typedQuery.getResultList();
+	}
 }

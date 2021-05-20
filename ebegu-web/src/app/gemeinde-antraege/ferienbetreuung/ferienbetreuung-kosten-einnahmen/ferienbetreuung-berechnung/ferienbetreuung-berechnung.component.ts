@@ -22,7 +22,7 @@ import {
     Input,
     OnDestroy,
     OnInit,
-    SimpleChanges
+    SimpleChanges,
 } from '@angular/core';
 import {FormGroup} from '@angular/forms';
 import {combineLatest, Subscription} from 'rxjs';
@@ -38,7 +38,7 @@ const LOG = LogFactory.createLog('FerienbetreuungBerechnungComponent');
     selector: 'dv-ferienbetreuung-berechnung',
     templateUrl: './ferienbetreuung-berechnung.component.html',
     styleUrls: ['./ferienbetreuung-berechnung.component.less'],
-    changeDetection: ChangeDetectionStrategy.Default
+    changeDetection: ChangeDetectionStrategy.Default,
 })
 export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy {
 
@@ -54,7 +54,7 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy {
 
     public constructor(
         private readonly ferienbetreuungService: FerienbetreuungService,
-        private readonly cd: ChangeDetectorRef
+        private readonly cd: ChangeDetectorRef,
     ) {
     }
 
@@ -84,7 +84,9 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy {
         if (!this.form) {
             return;
         }
-        const angaben = this.container?.angabenDeklaration;
+        const angaben = this.container?.isAtLeastInPruefungKanton() ?
+            this.container?.angabenKorrektur :
+            this.container?.angabenDeklaration;
         combineLatest([
             this.form.get('personalkosten').valueChanges.pipe(
                 startWith(angaben?.kostenEinnahmen.personalkosten),
@@ -103,7 +105,7 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy {
             ),
             this.form.get('weitereEinnahmen').valueChanges.pipe(
                 startWith(angaben?.kostenEinnahmen.weitereEinnahmen),
-            )
+            ),
         ]).subscribe(formValues => {
             this.berechnung.personalkosten = formValues[0];
             this.berechnung.sachkosten = formValues[1];

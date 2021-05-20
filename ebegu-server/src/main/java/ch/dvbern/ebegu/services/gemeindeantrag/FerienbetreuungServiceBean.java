@@ -147,8 +147,6 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 		return persistence.getCriteriaResults(query);
 	}
 
-
-
 	private Predicate createTimestampMutiertPredicate(
 		@Nonnull String timestampMutiert,
 		CriteriaBuilder cb,
@@ -204,7 +202,9 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	}
 
 	@Nonnull
-	private Optional<FerienbetreuungAngabenContainer> findFerienbetreuungAngabenContainer(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+	private Optional<FerienbetreuungAngabenContainer> findFerienbetreuungAngabenContainer(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
 		Objects.requireNonNull(gemeinde, "gemeinde muss gesetzt sein");
 		Objects.requireNonNull(gesuchsperiode, "gesuchsperiode muss gesetzt sein");
 
@@ -404,7 +404,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	@Nonnull
 	@Override
 	public FerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenAbschliessen(
-			@Nonnull FerienbetreuungAngabenStammdaten stammdaten) {
+		@Nonnull FerienbetreuungAngabenStammdaten stammdaten) {
 		Preconditions.checkArgument(stammdaten.isReadyForAbschluss(), NOT_ALL_PROPERTIES_SET);
 		Preconditions.checkArgument(
 			stammdaten.getStatus() == FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE,
@@ -434,10 +434,10 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	@Nonnull
 	@Override
 	public FerienbetreuungAngabenContainer ferienbetreuungAngabenAbschliessen(
-			@Nonnull FerienbetreuungAngabenContainer container) {
+		@Nonnull FerienbetreuungAngabenContainer container) {
 		Preconditions.checkArgument(
 			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE,
-			"FerienbetreuungAngabenStammdaten must be in state IN_BEARBEITUNG_GEMEINDE"
+			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE"
 		);
 
 		Preconditions.checkArgument(
@@ -447,6 +447,72 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 		container.copyForFreigabe();
 		container.setStatus(FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON);
+
+		return persistence.merge(container);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenContainer ferienbetreuungAngabenGeprueft(
+		@Nonnull FerienbetreuungAngabenContainer container) {
+		assert container.getAngabenKorrektur() != null;
+
+		Preconditions.checkArgument(
+			container.getStatus() == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON,
+			"FerienbetreuungAngabenContainer must be in state IN_PRUEFUNG_KANTON"
+		);
+
+		Preconditions.checkArgument(
+			container.getAngabenKorrektur().isReadyForFreigeben(),
+			"angaben incomplete"
+		);
+
+		container.setStatus(FerienbetreuungAngabenStatus.GEPRUEFT);
+
+		return persistence.merge(container);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungAngabenContainer ferienbetreuungAngabenZurueckAnGemeinde(
+		@Nonnull FerienbetreuungAngabenContainer container) {
+		Preconditions.checkArgument(
+			container.getStatus() == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON,
+			"FerienbetreuungAngabenContainer must be in state IN_PRUEFUNG_KANTON"
+		);
+		Preconditions.checkArgument(
+			container.getAngabenKorrektur() != null,
+			"FerienbetreuungAngabenContainer must not be null"
+		);
+
+		container.setStatus(FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE);
+
+		container.getAngabenDeklaration()
+			.getFerienbetreuungAngabenAngebot()
+			.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
+		container.getAngabenDeklaration()
+			.getFerienbetreuungAngabenNutzung()
+			.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
+		container.getAngabenDeklaration()
+			.getFerienbetreuungAngabenStammdaten()
+			.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
+		container.getAngabenDeklaration()
+			.getFerienbetreuungAngabenKostenEinnahmen()
+			.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
+		// reopen all korrekutr formulare that might have been geprueft
+		// TODO: rename status to IN_BEARBEITUNG and write migration
+		container.getAngabenKorrektur()
+			.getFerienbetreuungAngabenAngebot()
+			.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
+		container.getAngabenKorrektur()
+			.getFerienbetreuungAngabenNutzung()
+			.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
+		container.getAngabenKorrektur()
+			.getFerienbetreuungAngabenStammdaten()
+			.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
+		container.getAngabenKorrektur()
+			.getFerienbetreuungAngabenKostenEinnahmen()
+			.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
 
 		return persistence.merge(container);
 	}

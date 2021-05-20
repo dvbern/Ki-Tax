@@ -46,7 +46,7 @@ public class AngebotStep implements WizardStep<FerienbetreuungWizard> {
 			return Objects.requireNonNull(wizard.getFerienbetreuungAngabenContainer()
 				.getAngabenKorrektur())
 				.getFerienbetreuungAngabenAngebot()
-				.isGeprueft() ?
+				.isAbgeschlossen() ?
 				WizardStateEnum.OK :
 				WizardStateEnum.IN_BEARBEITUNG;
 		}

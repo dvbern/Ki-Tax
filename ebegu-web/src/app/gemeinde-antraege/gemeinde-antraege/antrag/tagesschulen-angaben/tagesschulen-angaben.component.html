@@ -164,6 +164,12 @@
                 <mat-error *ngIf="form.get('anzahlEingeschriebeneKinderSekundarstufe').errors?.isNotPositiveInteger"
                            translate>ERROR_POSITIVE_NUMBER
                 </mat-error>
+                <dv-bisher-x
+                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderSekundarstufe"
+                    [korrektur]="form.get('anzahlEingeschriebeneKinderSekundarstufe').value"
+                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
+                    [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
+                </dv-bisher-x>
             </mat-form-field>
         </dv-input-container-x>
 
@@ -523,7 +529,7 @@
 
         <div class="row" *ngIf="canSeeFalscheAngaben | async">
             <div class="col-md-12">
-                <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
+                <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>ANGABEN_KORRIGIEREN</a>
             </div>
         </div>
 

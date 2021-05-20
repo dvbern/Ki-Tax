@@ -47,7 +47,7 @@ public class StammdatenGemeindeStep implements WizardStep<FerienbetreuungWizard>
 			return Objects.requireNonNull(wizard.getFerienbetreuungAngabenContainer()
 				.getAngabenKorrektur())
 				.getFerienbetreuungAngabenStammdaten()
-				.isGeprueft() ?
+				.isAbgeschlossen() ?
 				WizardStateEnum.OK :
 				WizardStateEnum.IN_BEARBEITUNG;
 		}

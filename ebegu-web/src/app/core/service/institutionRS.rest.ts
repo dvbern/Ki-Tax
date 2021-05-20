@@ -137,4 +137,10 @@ export class InstitutionRS {
             return response.data;
         });
     }
+
+    public getInstitutionenForGemeinde(gemeindeId: string): IPromise<TSInstitutionListDTO[]> {
+        return this.$http.get(`${this.serviceURL}/gemeinde/listdto/${gemeindeId}`).then((response: any) => {
+            return this.ebeguRestUtil.parseInstitutionenListDTO(response.data);
+        });
+    }
 }

@@ -23,7 +23,9 @@ import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
+import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
+import {TSFerienbetreuungAngabenStammdaten} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenStammdaten';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {SharedModule} from '../../../shared/shared.module';
 import {UnsavedChangesService} from '../../services/unsaved-changes.service';
@@ -52,7 +54,8 @@ describe('FerienbetreuungStammdatenGemeindeComponent', () => {
     let fixture: ComponentFixture<FerienbetreuungStammdatenGemeindeComponent>;
 
     const container = new TSFerienbetreuungAngabenContainer();
-    container.angabenDeklaration = null;
+    container.angabenDeklaration = new TSFerienbetreuungAngaben();
+    container.angabenDeklaration.stammdaten = new TSFerienbetreuungAngabenStammdaten();
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({

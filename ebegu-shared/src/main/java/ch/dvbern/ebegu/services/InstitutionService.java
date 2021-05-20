@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -126,4 +127,6 @@ public interface InstitutionService {
 
 	@Nonnull
 	boolean isCurrentUserTagesschuleNutzende(@Nonnull boolean restrictedForSCH);
+
+	Map<Institution, InstitutionStammdaten> getInstitutionenInstitutionStammdatenForGemeinde(Gemeinde gemeinde);
 }
