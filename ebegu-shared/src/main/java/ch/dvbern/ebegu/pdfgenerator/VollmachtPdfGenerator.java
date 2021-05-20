@@ -229,7 +229,7 @@ public class VollmachtPdfGenerator extends BaseGenerator<VollmachtPdfLayoutConfi
 			absender.add("");
 			absender.add("");
 			absender.add(this.sozialdienstFall.getNameGs2() + " " + this.sozialdienstFall.getVornameGs2());
-			absender.add(Constants.DATE_FORMATTER.format(this.sozialdienstFall.getGeburtsdatum()));
+			absender.add(Constants.DATE_FORMATTER.format(this.sozialdienstFall.getGeburtsdatumGs2()));
 		}
 		return absender;
 	}
