@@ -703,6 +703,15 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		final Gesuch gesuch = mitteilung.getBetreuung().extractGesuch();
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
+		if(gesuch.getStatus() == AntragStatus.FREIGEGEBEN || gesuch.getStatus() == AntragStatus.FREIGABEQUITTUNG){
+			throw new EbeguExistingAntragException(
+				"applyBetreuungsmitteilung",
+				ErrorCodeEnum.ERROR_NOCH_NICHT_FREIGEGEBENE_ANTRAG,
+				null,
+				gesuch.getDossier().getId(),
+				gesuch.getGesuchsperiode().getId());
+		}
+
 		// neustes Gesuch lesen
 		final Optional<Gesuch> neustesGesuchOpt;
 		try {
@@ -759,7 +768,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			throw new EbeguRuntimeException(
 				KibonLogLevel.INFO,
 				"applyBetreuungsmitteilung",
-				ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_GESUCH_NICHT_FREIGEGEBEN,
+				ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_GESUCH_NICHT_FREIGEGEBEN_INBEARBEITUNG,
 				neustesGesuch.getId());
 		}
 		return gesuch;
