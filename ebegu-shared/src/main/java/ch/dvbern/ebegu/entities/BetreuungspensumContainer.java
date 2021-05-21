@@ -97,6 +97,12 @@ public class BetreuungspensumContainer extends AbstractMutableEntity
 		return betreuungspensumJA.getGueltigkeit();
 	}
 
+	@Nonnull
+	@Override
+	public void setGueltigkeit(@Nonnull DateRange gueltigkeit) {
+		betreuungspensumJA.setGueltigkeit(gueltigkeit);
+	}
+
 	@SuppressWarnings({ "OverlyComplexBooleanExpression" })
 	@Override
 	public boolean isSame(AbstractEntity other) {
