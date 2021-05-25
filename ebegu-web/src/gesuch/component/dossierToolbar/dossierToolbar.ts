@@ -53,6 +53,7 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {GesuchRS} from '../../service/gesuchRS.rest';
 import IPromise = angular.IPromise;
 import IScope = angular.IScope;
+import ITranslateService = angular.translate.ITranslateService;
 
 const showKontaktTemplate = require('../../../gesuch/dialog/showKontaktTemplate.html');
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
@@ -109,6 +110,7 @@ export class DossierToolbarController implements IDVFocusableController {
         'DossierRS',
         'GemeindeRS',
         'SozialdienstRS',
+        '$translate',
     ];
 
     public antragList: Array<TSAntragDTO>;
@@ -150,6 +152,7 @@ export class DossierToolbarController implements IDVFocusableController {
                        private readonly dossierRS: DossierRS,
                        private readonly gemeindeRS: GemeindeRS,
                        private readonly sozialdienstRS: SozialdienstRS,
+                       private readonly $translate: ITranslateService,
     ) {
 
     }
@@ -722,7 +725,11 @@ export class DossierToolbarController implements IDVFocusableController {
     }
 
     private gemeindeStammdatenToHtml(stammdaten: TSGemeindeStammdaten): string {
-        let html = `<span class="margin-top-20">${stammdaten.adresse.organisation ?
+        const htmlIntro = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle()) ?
+            `<h3 class="margin-top-20">${this.$translate.instant('BEI_FRAGEN_GEMEINDE_KONTAKTIEREN')}</h3>
+            <span>` :
+            `<span class="margin-top-20">`;
+        let html = htmlIntro + `${stammdaten.adresse.organisation ?
             stammdaten.adresse.organisation :
             ''}
                           ${stammdaten.gemeinde.name}</span><br>
