@@ -47,16 +47,18 @@ public class Testantrag_LastenausgleichTagesschuleAngabenGemeinde {
 		if(institutionsBetreuungsstundenSum.compareTo(BigDecimal.ZERO) == 0) {
 			this.angaben.setGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse(BigDecimal.ZERO);
 			this.angaben.setGeleisteteBetreuungsstundenBesondereBeduerfnisse(BigDecimal.ZERO);
+			this.angaben.setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete(BigDecimal.ZERO);
+			this.angaben.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(BigDecimal.ZERO);
 		} else {
 			this.angaben.setGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse(
 				GELEISTETE_BETREUUNGSSTUNDEN_OHNE_BESONDERE_BEDUERFNISSE);
 			this.angaben.setGeleisteteBetreuungsstundenBesondereBeduerfnisse(
 				institutionsBetreuungsstundenSum.subtract(GELEISTETE_BETREUUNGSSTUNDEN_OHNE_BESONDERE_BEDUERFNISSE)
 			);
+			this.angaben.setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete(DAVON_ZU_WENIGER_ALS_50_PROZENT_NORMLOHN);
+			this.angaben.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(institutionsBetreuungsstundenSum.subtract(
+				DAVON_ZU_WENIGER_ALS_50_PROZENT_NORMLOHN));
 		}
-		this.angaben.setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete(DAVON_ZU_WENIGER_ALS_50_PROZENT_NORMLOHN);
-		this.angaben.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(institutionsBetreuungsstundenSum.subtract(
-			DAVON_ZU_WENIGER_ALS_50_PROZENT_NORMLOHN));
 		this.angaben.setEinnahmenElterngebuehren(new BigDecimal(1500));
 		this.angaben.setTagesschuleTeilweiseGeschlossen(false);
 		this.angaben.setErsteRateAusbezahlt(new BigDecimal(1000));
