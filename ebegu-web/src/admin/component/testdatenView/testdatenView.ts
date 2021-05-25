@@ -26,6 +26,7 @@ import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRS} from '../../../app/core/service/benutzerRS.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
+import {GemeindeAntragService} from '../../../app/gemeinde-antraege/services/gemeinde-antrag.service';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSBenutzer} from '../../../models/TSBenutzer';
@@ -60,7 +61,7 @@ export class TestdatenViewComponent implements OnInit {
     public devMode: boolean;
 
     public gesuchsperiodeGemeindeAntrag: TSGesuchsperiode;
-    public gemeindeGemeindeAntrag: TSGemeinde;
+    public gemeindeForGemeindeAntrag: TSGemeinde;
     public gemeindeAntragStatus: string = 'IN_BEARBEITUNG_GEMEINDE';
     public gemeindeAntragTyp: TSGemeindeAntragTyp;
     public gemeindeAntragTypeList: TSGemeindeAntragTyp[];
@@ -73,6 +74,7 @@ export class TestdatenViewComponent implements OnInit {
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly gemeindeRS: GemeindeRS,
         private readonly dialog: MatDialog,
+        private readonly gemeindeAntragRS: GemeindeAntragService,
     ) {
     }
 
@@ -254,7 +256,7 @@ export class TestdatenViewComponent implements OnInit {
     public async createGemeindeAntragTestDaten(): Promise<void> {
 
         // tslint:disable-next-line:no-collapsible-if
-        if (this.latsSelected() && !this.gemeindeGemeindeAntrag) {
+        if (this.latsSelected() && !this.gemeindeForGemeindeAntrag) {
             if (!await this.confirmDialog(
                 'Ohne ausgewählte Gemeinde werden die LATS Formular für ALLE Gemeinden erstellt/überschrieben. Fortfahren?')) {
                 return;
@@ -262,17 +264,32 @@ export class TestdatenViewComponent implements OnInit {
         }
 
         if (!this.gesuchsperiodeGemeindeAntrag ||
-            this.ferienbetreuungSelected() && !this.gemeindeGemeindeAntrag) {
+            this.ferienbetreuungSelected() && !this.gemeindeForGemeindeAntrag) {
             this.errorService.addMesageAsError('Gemeinde und Gesuchsperiode müssen ausgewählt sein');
+            return;
+        }
+
+        if (this.gemeindeForGemeindeAntrag && !await this.overwriteIfGemeindeAntragExists()) {
             return;
         }
 
         this.testFaelleRS.createGemeindeAntragTestDaten(this.gemeindeAntragTyp,
             this.gesuchsperiodeGemeindeAntrag,
-            this.gemeindeGemeindeAntrag,
+            this.gemeindeForGemeindeAntrag,
             this.gemeindeAntragStatus).then(() => {
-                this.errorService.addMesageAsInfo('Gemeindeanträge erstellt');
+            this.errorService.addMesageAsInfo('Gemeindeanträge erstellt');
         }, () => this.errorService.addMesageAsError('Anträge konnten nicht erstellt werden'));
+    }
+
+    private async overwriteIfGemeindeAntragExists(): Promise<boolean> {
+        const antraege = await this.gemeindeAntragRS.getGemeindeAntraege({
+            antragTyp: this.gemeindeAntragTyp,
+            gesuchsperiodeString: this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString,
+            gemeinde: this.gemeindeForGemeindeAntrag.name,
+        }, {}).toPromise();
+        return antraege.length === 0 || this.confirmDialog(
+            'Es existiert bereits ein Antrag für die gewählte Gemeinde und Periode. Fortfahren?',
+        );
     }
 
     private initGemeindeAntragTypes(): void {
