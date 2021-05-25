@@ -111,5 +111,12 @@ public interface FerienbetreuungService {
 	FerienbetreuungAngabenContainer ferienbetreuungAngabenAbschliessen(
 		@Nonnull FerienbetreuungAngabenContainer container);
 
+	@Nonnull
+	FerienbetreuungAngabenContainer ferienbetreuungAngabenGeprueft(
+		@Nonnull FerienbetreuungAngabenContainer container);
+
+	@Nonnull FerienbetreuungAngabenContainer ferienbetreuungAngabenZurueckAnGemeinde(
+		@Nonnull FerienbetreuungAngabenContainer container);
+
 	void deleteFerienbetreuungAntragIfExists(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
 }

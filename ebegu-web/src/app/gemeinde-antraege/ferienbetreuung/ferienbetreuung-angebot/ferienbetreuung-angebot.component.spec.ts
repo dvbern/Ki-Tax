@@ -18,10 +18,14 @@
 import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
+import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
+import {TSFerienbetreuungAngabenAngebot} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
@@ -35,7 +39,7 @@ import {FerienbetreuungAngebotComponent} from './ferienbetreuung-angebot.compone
 const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAllBfsGemeinden']);
 const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(
     FerienbetreuungService.name,
-    ['getFerienbetreuungContainer']
+    ['getFerienbetreuungContainer'],
 );
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
     ['addMesageAsError', 'addMesageAsInfo']);
@@ -55,7 +59,8 @@ describe('FerienbetreuungAngebotComponent', () => {
     let fixture: ComponentFixture<FerienbetreuungAngebotComponent>;
 
     const container = new TSFerienbetreuungAngabenContainer();
-    container.angabenDeklaration = null;
+    container.angabenDeklaration = new TSFerienbetreuungAngaben();
+    container.angabenDeklaration.angebot = new TSFerienbetreuungAngabenAngebot();
     authServiceSpy.principal$ = of(dummyUser);
 
     beforeEach(async () => {
@@ -65,7 +70,8 @@ describe('FerienbetreuungAngebotComponent', () => {
                 FormsModule,
                 ReactiveFormsModule,
                 SharedModule,
-                HttpClientModule
+                HttpClientModule,
+                BrowserAnimationsModule,
             ],
             providers: [
                 WindowRef,
@@ -74,9 +80,9 @@ describe('FerienbetreuungAngebotComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
-                {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy}
-            ]
-        })
+                {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy},
+            ],
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 

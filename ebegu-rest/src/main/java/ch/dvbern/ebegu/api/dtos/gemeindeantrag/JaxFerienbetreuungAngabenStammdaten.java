@@ -17,14 +17,17 @@
 
 package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
+import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
 public class JaxFerienbetreuungAngabenStammdaten extends JaxAbstractDTO {
 
@@ -34,7 +37,8 @@ public class JaxFerienbetreuungAngabenStammdaten extends JaxAbstractDTO {
 	private Set<String> amAngebotBeteiligteGemeinden;
 
 	@Nullable
-	private String seitWannFerienbetreuungen;
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private LocalDate seitWannFerienbetreuungen;
 
 	@Nullable
 	private String traegerschaft;
@@ -83,11 +87,11 @@ public class JaxFerienbetreuungAngabenStammdaten extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public String getSeitWannFerienbetreuungen() {
+	public LocalDate getSeitWannFerienbetreuungen() {
 		return seitWannFerienbetreuungen;
 	}
 
-	public void setSeitWannFerienbetreuungen(@Nullable String seitWannFerienbetreuungen) {
+	public void setSeitWannFerienbetreuungen(@Nullable LocalDate seitWannFerienbetreuungen) {
 		this.seitWannFerienbetreuungen = seitWannFerienbetreuungen;
 	}
 

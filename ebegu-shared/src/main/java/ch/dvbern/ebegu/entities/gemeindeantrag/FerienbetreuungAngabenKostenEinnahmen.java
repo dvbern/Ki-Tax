@@ -182,7 +182,6 @@ public class FerienbetreuungAngabenKostenEinnahmen extends AbstractEntity {
 		List<Serializable> nonNullObj = Arrays.asList(
 			this.personalkosten,
 			this.sachkosten,
-			this.verpflegungskosten,
 			this.elterngebuehren,
 			this.weitereEinnahmen
 		);
@@ -201,9 +200,5 @@ public class FerienbetreuungAngabenKostenEinnahmen extends AbstractEntity {
 
 	public boolean isAbgeschlossen() {
 		return status == FerienbetreuungFormularStatus.ABGESCHLOSSEN;
-	}
-
-	public boolean isGeprueft() {
-		return status == FerienbetreuungFormularStatus.GEPRUEFT;
 	}
 }

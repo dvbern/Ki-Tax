@@ -262,6 +262,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		}
 
 		if (isReadyForBestaetigen) {
+			ctx.getBetreuung().setDatumBestaetigung(LocalDate.now());
 			//noinspection ResultOfMethodCallIgnored
 			betreuungService.betreuungPlatzBestaetigen(ctx.getBetreuung());
 			LOG.info("PlatzbestaetigungEvent Betreuung mit RefNr: {} automatisch bestätigt", ctx.getDto().getRefnr());

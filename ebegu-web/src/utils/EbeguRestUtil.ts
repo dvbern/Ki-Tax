@@ -1287,6 +1287,8 @@ export class EbeguRestUtil {
             this.abstractMutableEntityToRestObject(restTragerschaft, traegerschaft);
             restTragerschaft.name = traegerschaft.name;
             restTragerschaft.active = traegerschaft.active;
+            restTragerschaft.email = traegerschaft.email;
+            restTragerschaft.offentlich = traegerschaft.offentlich;
             return restTragerschaft;
         }
         return undefined;
@@ -1306,6 +1308,8 @@ export class EbeguRestUtil {
             this.parseAbstractMutableEntity(traegerschaftTS, traegerschaftFromServer);
             traegerschaftTS.name = traegerschaftFromServer.name;
             traegerschaftTS.active = traegerschaftFromServer.active;
+            traegerschaftTS.email = traegerschaftFromServer.email;
+            traegerschaftTS.offentlich = traegerschaftFromServer.offentlich;
             traegerschaftTS.institutionCount = traegerschaftFromServer.institutionCount;
             traegerschaftTS.institutionNames = traegerschaftFromServer.institutionNames;
             return traegerschaftTS;
@@ -4847,7 +4851,7 @@ export class EbeguRestUtil {
         }
         this.abstractEntityToRestObject(restStammdaten, stammdatenTS);
         restStammdaten.amAngebotBeteiligteGemeinden = stammdatenTS.amAngebotBeteiligteGemeinden;
-        restStammdaten.seitWannFerienbetreuungen = stammdatenTS.seitWannFerienbetreuungen;
+        restStammdaten.seitWannFerienbetreuungen = DateUtil.momentToLocalDate(stammdatenTS.seitWannFerienbetreuungen);
         restStammdaten.traegerschaft = stammdatenTS.traegerschaft;
         restStammdaten.stammdatenAdresse = this.adresseToRestObject({}, stammdatenTS.stammdatenAdresse);
         restStammdaten.stammdatenKontaktpersonVorname = stammdatenTS.stammdatenKontaktpersonVorname;
@@ -4875,6 +4879,7 @@ export class EbeguRestUtil {
         restAngebot.angebotAdresse = this.adresseToRestObject({}, angebotTS.angebotAdresse);
         restAngebot.anzahlFerienwochenHerbstferien = angebotTS.anzahlFerienwochenHerbstferien;
         restAngebot.anzahlFerienwochenWinterferien = angebotTS.anzahlFerienwochenWinterferien;
+        restAngebot.anzahlFerienwochenSportferien = angebotTS.anzahlFerienwochenSportferien;
         restAngebot.anzahlFerienwochenFruehlingsferien = angebotTS.anzahlFerienwochenFruehlingsferien;
         restAngebot.anzahlFerienwochenSommerferien = angebotTS.anzahlFerienwochenSommerferien;
         restAngebot.anzahlTage = angebotTS.anzahlTage;
@@ -4884,6 +4889,7 @@ export class EbeguRestUtil {
         restAngebot.bemerkungenOeffnungszeiten = angebotTS.bemerkungenOeffnungszeiten;
         restAngebot.finanziellBeteiligteGemeinden = angebotTS.finanziellBeteiligteGemeinden;
         restAngebot.gemeindeFuehrtAngebotSelber = angebotTS.gemeindeFuehrtAngebotSelber;
+        restAngebot.gemeindeFuehrtAngebotInKooperation = angebotTS.gemeindeFuehrtAngebotInKooperation;
         restAngebot.gemeindeBeauftragtExterneAnbieter = angebotTS.gemeindeBeauftragtExterneAnbieter;
         restAngebot.angebotVereineUndPrivateIntegriert = angebotTS.angebotVereineUndPrivateIntegriert;
         restAngebot.bemerkungenKooperation = angebotTS.bemerkungenKooperation;
@@ -4999,7 +5005,7 @@ export class EbeguRestUtil {
         this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
         stammdatenTS.status = stammdatenFromServer.status;
         stammdatenTS.amAngebotBeteiligteGemeinden = stammdatenFromServer.amAngebotBeteiligteGemeinden;
-        stammdatenTS.seitWannFerienbetreuungen = stammdatenFromServer.seitWannFerienbetreuungen;
+        stammdatenTS.seitWannFerienbetreuungen = DateUtil.localDateToMoment(stammdatenFromServer.seitWannFerienbetreuungen);
         stammdatenTS.traegerschaft = stammdatenFromServer.traegerschaft;
         stammdatenTS.stammdatenAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.stammdatenAdresse);
         stammdatenTS.stammdatenKontaktpersonVorname = stammdatenFromServer.stammdatenKontaktpersonVorname;
@@ -5029,6 +5035,7 @@ export class EbeguRestUtil {
         angebotTS.angebotAdresse = this.parseAdresse(new TSAdresse(), angebotFromServer.angebotAdresse);
         angebotTS.anzahlFerienwochenHerbstferien = angebotFromServer.anzahlFerienwochenHerbstferien;
         angebotTS.anzahlFerienwochenWinterferien = angebotFromServer.anzahlFerienwochenWinterferien;
+        angebotTS.anzahlFerienwochenSportferien = angebotFromServer.anzahlFerienwochenSportferien;
         angebotTS.anzahlFerienwochenFruehlingsferien = angebotFromServer.anzahlFerienwochenFruehlingsferien;
         angebotTS.anzahlFerienwochenSommerferien = angebotFromServer.anzahlFerienwochenSommerferien;
         angebotTS.anzahlTage = angebotFromServer.anzahlTage;
@@ -5038,6 +5045,7 @@ export class EbeguRestUtil {
         angebotTS.bemerkungenOeffnungszeiten = angebotFromServer.bemerkungenOeffnungszeiten;
         angebotTS.finanziellBeteiligteGemeinden = angebotFromServer.finanziellBeteiligteGemeinden;
         angebotTS.gemeindeFuehrtAngebotSelber = angebotFromServer.gemeindeFuehrtAngebotSelber;
+        angebotTS.gemeindeFuehrtAngebotInKooperation = angebotFromServer.gemeindeFuehrtAngebotInKooperation;
         angebotTS.gemeindeBeauftragtExterneAnbieter = angebotFromServer.gemeindeBeauftragtExterneAnbieter;
         angebotTS.angebotVereineUndPrivateIntegriert = angebotFromServer.angebotVereineUndPrivateIntegriert;
         angebotTS.bemerkungenKooperation = angebotFromServer.bemerkungenKooperation;

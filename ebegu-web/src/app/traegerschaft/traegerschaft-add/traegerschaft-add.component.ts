@@ -38,7 +38,6 @@ export class TraegerschaftAddComponent implements OnInit {
     @ViewChild(NgForm, { static: true }) public form: NgForm;
 
     public traegerschaft: TSTraegerschaft = undefined;
-    public adminMail: string = undefined;
 
     // this semaphore will prevent a navigation to be executed again until the process is not finished
     public isTransitionInProgress: boolean = false;
@@ -54,7 +53,6 @@ export class TraegerschaftAddComponent implements OnInit {
 
     public ngOnInit(): void {
         this.traegerschaft = new TSTraegerschaft();
-        this.adminMail = '';
     }
 
     public cancel(): void {
@@ -74,7 +72,7 @@ export class TraegerschaftAddComponent implements OnInit {
     }
 
     private save(): void {
-        this.traegerschaftRS.createTraegerschaft(this.traegerschaft, this.adminMail)
+        this.traegerschaftRS.createTraegerschaft(this.traegerschaft, this.traegerschaft.email)
             .then(neueTraegerschaft => {
                 this.createTraegerschaftSuccessCallback(neueTraegerschaft);
             }).catch((exception: TSExceptionReport[]) => {
@@ -83,7 +81,7 @@ export class TraegerschaftAddComponent implements OnInit {
                 const adminRolle = 'TSRole_ADMIN_TRAEGERSCHAFT';
                 const dialogConfig = new MatDialogConfig();
                 dialogConfig.data = {
-                    emailAdresse: this.adminMail,
+                    emailAdresse: this.traegerschaft.email,
                     administratorRolle: adminRolle,
                     gesuchstellerName: exception[0].argumentList[1],
                 };
@@ -117,7 +115,7 @@ export class TraegerschaftAddComponent implements OnInit {
     }
 
     private persistTraegerschaft(): void {
-        this.traegerschaftRS.createTraegerschaft(this.traegerschaft, this.adminMail)
+        this.traegerschaftRS.createTraegerschaft(this.traegerschaft, this.traegerschaft.email)
             .then(neueTraegerschaft => {
                 this.createTraegerschaftSuccessCallback(neueTraegerschaft);
             });

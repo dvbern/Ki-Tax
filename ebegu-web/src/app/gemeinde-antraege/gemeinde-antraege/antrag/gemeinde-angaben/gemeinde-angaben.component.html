@@ -372,6 +372,10 @@
                     <mat-error *ngIf="angabenForm.get('einnahmenElterngebuehren').errors?.noNumberError"
                                translate>ERROR_NUMBER
                     </mat-error>
+                    <mat-error
+                        *ngIf="angabenForm.get('einnahmenElterngebuehren').errors?.pattern && !angabenForm.get('einnahmenElterngebuehren').errors?.noNumberError">
+                        {{'ERROR_STEP' | translate:{value: 0.01} }}
+                    </mat-error>
                     <dv-bisher-x
                         [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.einnahmenElterngebuehren"
                         [korrektur]="angabenForm.get('einnahmenElterngebuehren').value"
@@ -423,6 +427,10 @@
                         *ngIf="angabenForm.get('rueckerstattungenElterngebuehrenSchliessung').errors?.noNumberError"
                         translate>ERROR_NUMBER
                     </mat-error>
+                    <mat-error
+                        *ngIf="angabenForm.get('rueckerstattungenElterngebuehrenSchliessung').errors?.pattern && !angabenForm.get('rueckerstattungenElterngebuehrenSchliessung').errors?.noNumberError">
+                        {{'ERROR_STEP' | translate:{value: 0.01} }}
+                    </mat-error>
                     <dv-bisher-x
                         [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.rueckerstattungenElterngebuehrenSchliessung"
                         [korrektur]="angabenForm.get('rueckerstattungenElterngebuehrenSchliessung').value"
@@ -466,6 +474,12 @@
                     <mat-error *ngIf="angabenForm.get('ersteRateAusbezahlt').errors?.isNotPositiveInteger"
                                translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.ersteRateAusbezahlt"
+                        [korrektur]="angabenForm.get('ersteRateAusbezahlt').value"
+                        [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -500,6 +514,10 @@
                     </mat-error>
                     <mat-error *ngIf="angabenForm.get('gesamtKostenTagesschule').errors?.noNumberError"
                                translate>ERROR_NUMBER
+                    </mat-error>
+                    <mat-error
+                        *ngIf="angabenForm.get('gesamtKostenTagesschule').errors?.pattern && !angabenForm.get('gesamtKostenTagesschule').errors?.noNumberError">
+                        {{'ERROR_STEP' | translate:{value: 0.01} }}
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.gesamtKostenTagesschule"
@@ -545,6 +563,10 @@
                     <mat-error *ngIf="angabenForm.get('einnnahmenVerpflegung').errors?.noNumberError"
                                translate>ERROR_NUMBER
                     </mat-error>
+                    <mat-error
+                        *ngIf="angabenForm.get('einnnahmenVerpflegung').errors?.pattern && !angabenForm.get('einnnahmenVerpflegung').errors?.noNumberError">
+                        {{'ERROR_STEP' | translate:{value: 0.01} }}
+                    </mat-error>
                     <dv-bisher-x
                         [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.einnnahmenVerpflegung"
                         [korrektur]="angabenForm.get('einnnahmenVerpflegung').value"
@@ -555,8 +577,7 @@
             </dv-input-container-x>
 
             <dv-input-container-x>
-                <label required
-                       [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('einnahmenSubventionenDritter').errors}">
+                <label [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('einnahmenSubventionenDritter').errors}">
                     {{'LATS_EINNAHMEN_SUBVENTIONEN_DRITTER' | translate}}
                 </label>
                 <mat-form-field floatLabel="always">
@@ -567,6 +588,10 @@
                     </mat-error>
                     <mat-error *ngIf="angabenForm.get('einnahmenSubventionenDritter').errors?.noNumberError"
                                translate>ERROR_NUMBER
+                    </mat-error>
+                    <mat-error
+                        *ngIf="angabenForm.get('einnahmenSubventionenDritter').errors?.pattern && !angabenForm.get('einnahmenSubventionenDritter').errors?.noNumberError">
+                        {{'ERROR_STEP' | translate:{value: 0.01} }}
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.einnahmenSubventionenDritter"
@@ -647,6 +672,10 @@
                         </mat-error>
                         <mat-error *ngIf="angabenForm.get('ueberschussVerwendung').errors?.noNumberError"
                                    translate>ERROR_NUMBER
+                        </mat-error>
+                        <mat-error
+                            *ngIf="angabenForm.get('ueberschussVerwendung').errors?.pattern && !angabenForm.get('ueberschussVerwendung').errors?.noNumberError">
+                            {{'ERROR_STEP' | translate:{value: 0.01} }}
                         </mat-error>
                         <dv-bisher-x
                             [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.ueberschussVerwendung"
@@ -893,16 +922,16 @@
 
         </div>
 
-        <div class="well well-status-warten" *ngIf="!abschliessenVisible()">
+        <div class="well well-status-warten" *ngIf="!lATSAngabenGemeindeContainer?.allAngabenInstitutionContainersGeprueft()">
             <i class="fa fa-exclamation" aria-hidden="true"></i>
             <span>
                 <span translate>LATS_ABSCHLIESSEN_NOCH_NICHT_MOEGLICH</span>
             </span>
         </div>
 
-        <div class="row" *ngIf="falscheAngabenVisible()">
+        <div class="row" *ngIf="falscheAngabenVisible | async">
             <div class="col-md-12">
-                <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
+                <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>ANGABEN_KORRIGIEREN</a>
             </div>
         </div>
 
@@ -910,6 +939,7 @@
             <dv-loading-button
                 class="uppercase"
                 type="button"
+                *ngIf="saveVisible | async"
                 [ngClass]="{'secondary': !formularNotEditable()}"
                 [buttonDisabled]="formularNotEditable()"
                 (buttonClick)="onAngabenFormSubmit()">
@@ -918,7 +948,7 @@
             <dv-loading-button
                 class="uppercase"
                 type="button"
-                *ngIf="abschliessenVisible()"
+                *ngIf="abschliessenVisible | async"
                 [buttonDisabled]="formularNotEditable()"
                 (buttonClick)="onAbschliessen()">
                 <span translate>ABSCHLIESSEN</span>

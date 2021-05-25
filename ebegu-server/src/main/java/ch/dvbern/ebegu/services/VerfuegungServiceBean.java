@@ -682,7 +682,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	}
 
 	@Override
-	public void findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+	public void findVerrechnetenOrIgnoriertenZeitabschnittOnVorgaengerVerfuegung(
 		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
 		@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu,
 		@Nonnull Betreuung betreuungNeu,
@@ -696,6 +696,40 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 				VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = zahlungslaufHelper.getZahlungsstatus(zeitabschnitt);
 
 				if ((zahlungsstatus.isVerrechnet() || zahlungsstatus.isIgnoriert())){
+					if(isNotInZeitabschnitteList(zeitabschnitt, vorgaengerZeitabschnitte, zahlungslaufHelper)) {
+						// Diesen ins Result, iteration weiterführen und von allen den Vorgänger suchen bis VERRECHNET oder
+						// kein Vorgaenger
+						vorgaengerZeitabschnitte.add(zeitabschnitt);
+					}
+				} else {
+					Betreuung vorgaengerBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+					Objects.requireNonNull(vorgaengerBetreuung);
+					// Es gab keine bereits Verrechneten Zeitabschnitte auf dieser Verfuegung -> eins weiter
+					// zurueckgehen
+					findVerrechnetenOrIgnoriertenZeitabschnittOnVorgaengerVerfuegung(
+						zahlungslaufTyp,
+						zeitabschnittNeu,
+						vorgaengerBetreuung,
+						vorgaengerZeitabschnitte);
+				}
+			}));
+	}
+
+	@Override
+	public void findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
+		@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu,
+		@Nonnull Betreuung betreuungNeu,
+		@Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte
+	) {
+		final ZahlungslaufHelper zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlungslaufTyp);
+
+		findVorgaengerAusbezahlteVerfuegung(zahlungslaufTyp, betreuungNeu)
+			.map(verfuegung -> findZeitabschnitteOnVerfuegung(zeitabschnittNeu.getGueltigkeit(), verfuegung))
+			.ifPresent(zeitabschnitte -> zeitabschnitte.forEach(zeitabschnitt -> {
+				VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = zahlungslaufHelper.getZahlungsstatus(zeitabschnitt);
+
+				if ((zahlungsstatus.isVerrechnet())){
 					if(isNotInZeitabschnitteList(zeitabschnitt, vorgaengerZeitabschnitte, zahlungslaufHelper)) {
 						// Diesen ins Result, iteration weiterführen und von allen den Vorgänger suchen bis VERRECHNET oder
 						// kein Vorgaenger

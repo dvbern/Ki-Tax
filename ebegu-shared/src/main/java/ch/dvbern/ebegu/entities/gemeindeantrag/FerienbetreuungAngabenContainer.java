@@ -208,8 +208,12 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 
 	public void copyForFreigabe() {
 		// Nur moeglich, wenn noch nicht freigegeben und ueberhaupt Daten zum kopieren vorhanden
-		if (status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE) {
+		if (status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE && angabenKorrektur == null) {
 			angabenKorrektur = new FerienbetreuungAngaben(angabenDeklaration);
 		}
+	}
+
+	public boolean isInBearbeitungGemeinde() {
+		return status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE;
 	}
 }

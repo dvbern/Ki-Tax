@@ -202,6 +202,8 @@ describe('EbeguRestUtil', () => {
                 myTraegerschaft.name = 'myTraegerschaft';
                 myTraegerschaft.active = undefined;
                 myTraegerschaft.institutionCount = undefined;
+                myTraegerschaft.email = 'test@traegerschaft.ch';
+                myTraegerschaft.offentlich = true;
                 myTraegerschaft.institutionNames = undefined;
                 TestDataUtil.setAbstractMutableFieldsUndefined(myTraegerschaft);
 
@@ -541,6 +543,8 @@ describe('EbeguRestUtil', () => {
     function createInstitution(): TSInstitution {
         const traegerschaft = new TSTraegerschaft();
         traegerschaft.name = 'myTraegerschaft';
+        traegerschaft.email = 'test@insti.ch';
+        traegerschaft.offentlich = true;
         traegerschaft.active = undefined;
         traegerschaft.institutionCount = undefined;
         traegerschaft.institutionNames = undefined;

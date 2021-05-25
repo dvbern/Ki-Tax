@@ -21,13 +21,13 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {BehaviorSubject} from 'rxjs';
-import {FerienbetreuungAngabenStatus} from '../../../models/enums/FerienbetreuungAngabenStatus';
 import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSFerienbetreuungAbstractAngaben} from '../../../models/gemeindeantrag/TSFerienbetreuungAbstractAngaben';
 import {TSFerienbetreuungAngabenContainer} from '../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {HTTP_ERROR_CODES} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
 
@@ -36,6 +36,8 @@ export abstract class AbstractFerienbetreuungFormular {
     public form: FormGroup;
     public formValidationTriggered = false;
     public formAbschliessenTriggered = false;
+
+    public container: TSFerienbetreuungAngabenContainer;
 
     private readonly WIZARD_TYPE = TSWizardStepXTyp.FERIENBETREUUNG;
 
@@ -108,42 +110,54 @@ export abstract class AbstractFerienbetreuungFormular {
         angaben: TSFerienbetreuungAbstractAngaben,
         principal: TSBenutzer,
     ): void {
-        if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
-            if (angaben.isAtLeastAbgeschlossenGemeinde()) {
+        if (container.isInPruefungKanton()) {
+            if (principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) && angaben.isInBearbeitung()) {
+                this.canSeeSave.next(true);
+                this.canSeeAbschliessen.next(true);
+                this.canSeeFalscheAngaben.next(false);
+            } else if (principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) && angaben.isAbgeschlossen()) {
+                this.canSeeSave.next(false);
+                this.canSeeAbschliessen.next(false);
+                this.canSeeFalscheAngaben.next(true);
+            } else {
+                this.setCanSeeNoActions();
+            }
+            // tslint:disable-next-line:no-collapsible-if
+        } else if (container.isInBearbeitungGemeinde() && !principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
+            if (angaben.isAbgeschlossen()) {
                 this.canSeeAbschliessen.next(false);
                 this.canSeeSave.next(false);
-                if (container.status === FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE) {
-                    this.canSeeFalscheAngaben.next(true);
-                } else {
-                    this.canSeeFalscheAngaben.next(false);
-                }
+                this.canSeeFalscheAngaben.next(true);
             } else {
                 this.canSeeAbschliessen.next(true);
                 this.canSeeSave.next(true);
                 this.canSeeFalscheAngaben.next(false);
             }
-        } else if (principal.hasOneOfRoles(TSRoleUtil.getMandantRoles())) {
-            this.canSeeAbschliessen.next(false);
-            if (angaben.isInPruefungKanton()) {
-                this.canSeeSave.next(true);
-            } else {
-                this.canSeeSave.next(false);
-            }
+        } else {
+            this.setCanSeeNoActions();
         }
     }
 
+    private setCanSeeNoActions(): void {
+        this.canSeeAbschliessen.next(false);
+        this.canSeeSave.next(false);
+        this.canSeeFalscheAngaben.next(false);
+    }
+
     protected disableFormBasedOnStateAndPrincipal(
-        angaben: TSFerienbetreuungAbstractAngaben,
         principal: TSBenutzer,
+        container: TSFerienbetreuungAngabenContainer,
+        angaben: TSFerienbetreuungAbstractAngaben,
     ): void {
-        /*TODO: reenable once mandant has more than readonly permission and remove other code
-        if (angaben?.isGeprueft() ||
-            angaben?.isAtLeastAbgeschlossenGemeinde() &&
-            principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
+        if (angaben.isAbgeschlossen() ||
+            container?.isGeprueft() ||
+            container?.isInBearbeitungGemeinde() &&
+            principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles()) ||
+            container?.isInPruefungKanton() &&
+            principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrFBOnlyRoles())) {
             this.form.disable();
-        }*/
-        if (angaben?.isAtLeastAbgeschlossenGemeinde() || principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
-            this.form.disable();
+        } else {
+            this.form.enable();
         }
     }
 
@@ -153,8 +167,9 @@ export abstract class AbstractFerienbetreuungFormular {
         principal: TSBenutzer,
     ): void {
         this.setupForm(angaben);
+        this.cd.detectChanges();
 
-        this.disableFormBasedOnStateAndPrincipal(angaben, principal);
+        this.disableFormBasedOnStateAndPrincipal(principal, container, angaben);
         this.setupRoleBasedPropertiesForPrincipal(container, angaben, principal);
 
         this.cd.markForCheck();
@@ -168,9 +183,12 @@ export abstract class AbstractFerienbetreuungFormular {
     }
 
     protected handleSaveError(error: any): void {
+        this.errorService.clearAll();
         if (error.error?.includes('Not all required properties are set')) {
             this.enableAndTriggerFormValidation();
             this.showValidierungFehlgeschlagenErrorMessage();
+        } else if (error.status === HTTP_ERROR_CODES.CONFLICT) {
+            this.errorService.addMesageAsError(this.translate.instant('ERROR_DATA_CHANGED'));
         } else {
             this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR'));
         }

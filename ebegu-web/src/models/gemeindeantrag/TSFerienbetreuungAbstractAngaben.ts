@@ -29,26 +29,13 @@ export class TSFerienbetreuungAbstractAngaben extends TSAbstractEntity {
         this._status = value;
     }
 
-    public isAtLeastAbgeschlossenGemeinde(): boolean {
+    public isInBearbeitung(): boolean {
+        return this.status === TSFerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE;
+    }
+
+    public isAbgeschlossen(): boolean {
         return [
             TSFerienbetreuungFormularStatus.ABGESCHLOSSEN,
-            TSFerienbetreuungFormularStatus.IN_PRUEFUNG_KANTON,
-            TSFerienbetreuungFormularStatus.GEPRUEFT,
         ].includes(this.status);
-    }
-
-    public isAtLeastInPruefungKanton(): boolean {
-        return [
-            TSFerienbetreuungFormularStatus.IN_PRUEFUNG_KANTON,
-            TSFerienbetreuungFormularStatus.GEPRUEFT,
-        ].includes(this.status);
-    }
-
-    public isGeprueft(): boolean {
-        return this.status === TSFerienbetreuungFormularStatus.GEPRUEFT;
-    }
-
-    public isInPruefungKanton(): boolean {
-        return this.status === TSFerienbetreuungFormularStatus.IN_PRUEFUNG_KANTON;
     }
 }

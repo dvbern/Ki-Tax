@@ -114,4 +114,7 @@ public interface InstitutionStammdatenService {
 	Collection<InstitutionStammdaten> getAllTagesschulenForGesuchsperiodeAndGemeinde(
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Gemeinde gemeinde);
+
+	@Nonnull
+	Collection<InstitutionStammdaten> getAllTagesschulenForGemeinde(@Nonnull Gemeinde gemeinde);
 }

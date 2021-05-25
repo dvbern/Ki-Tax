@@ -22,7 +22,7 @@ import {map, tap} from 'rxjs/operators';
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
-import {CONSTANTS} from '../../../core/constants/CONSTANTS';
+import {CONSTANTS, HTTP_ERROR_CODES} from '../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 
@@ -68,20 +68,27 @@ export class LastenausgleichTSService {
     }
 
     public saveLATSAngabenGemeindeContainer(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
+        this.errorService.clearAll();
         this.http.put(
             `${this.API_BASE_URL}/save`,
             this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
         ).subscribe(result => {
-            this.errorService.clearAll();
             this.errorService.addMesageAsInfo(this.translate.instant('SAVED'));
             this.next(result);
-        }, error => LOG.error(error));
+        }, error => {
+            if (error.status === HTTP_ERROR_CODES.CONFLICT) {
+                this.errorService.addMesageAsError(this.translate.instant('ERROR_DATA_CHANGED'));
+            }
+            LOG.error(error);
+        });
     }
 
     public saveLATSKommentar(containerId: string, kommentar: string): Observable<void> {
         return this.http.put<void>(
             `${this.API_BASE_URL}/saveKommentar/${encodeURIComponent(containerId)}`,
             kommentar,
+        ).pipe(
+            tap(() => this.updateLATSAngabenGemeindeContainerStore(containerId))
         );
     }
 
@@ -138,5 +145,20 @@ export class LastenausgleichTSService {
             this.errorService.clearAll();
             this.next(reopenendContainer);
         }, err => console.error(err));
+    }
+
+    public zurueckAnGemeinde(
+        container: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
+    ): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
+        return this.http.put(
+            `${this.API_BASE_URL}/zurueck-an-gemeinde`,
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
+        ).pipe(
+            map(restContainer => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
+                new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),
+                restContainer),
+            ),
+            tap(parsedContainer => this.updateLATSAngabenGemeindeContainerStore(parsedContainer.id)),
+        );
     }
 }
