@@ -255,6 +255,11 @@ export class TestdatenViewComponent implements OnInit {
 
     public async createGemeindeAntragTestDaten(): Promise<void> {
 
+        if (this.latsSelected() && !this.gesuchsperiodeGemeindeAntrag) {
+            this.errorService.addMesageAsError('Gesuchsperiode muss ausgewählt sein');
+            return;
+        }
+
         // tslint:disable-next-line:no-collapsible-if
         if (this.latsSelected() && !this.gemeindeForGemeindeAntrag) {
             if (!await this.confirmDialog(
@@ -277,6 +282,7 @@ export class TestdatenViewComponent implements OnInit {
             this.gesuchsperiodeGemeindeAntrag,
             this.gemeindeForGemeindeAntrag,
             this.gemeindeAntragStatus).then(() => {
+            this.errorService.clearAll();
             this.errorService.addMesageAsInfo('Gemeindeanträge erstellt');
         }, () => this.errorService.addMesageAsError('Anträge konnten nicht erstellt werden'));
     }
