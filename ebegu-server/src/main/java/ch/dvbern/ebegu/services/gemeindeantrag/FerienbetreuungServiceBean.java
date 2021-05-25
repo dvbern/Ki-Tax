@@ -83,9 +83,6 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	@Inject
 	private PrincipalBean principal;
 
-	@Inject
-	private FerienbetreuungDokumentService ferienbetreuungDokumentService;
-
 	@Nonnull
 	@Override
 	public List<FerienbetreuungAngabenContainer> getFerienbetreuungAntraege(
