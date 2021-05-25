@@ -55,7 +55,7 @@ public class Testantrag_FerienbetreuungAngabenAngebot {
 		if(status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE) {
 			this.angebot.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
 		} else {
-			this.angebot.setStatus(FerienbetreuungFormularStatus.IN_PRUEFUNG_KANTON);
+			this.angebot.setStatus(FerienbetreuungFormularStatus.ABGESCHLOSSEN);
 		}
 	}
 

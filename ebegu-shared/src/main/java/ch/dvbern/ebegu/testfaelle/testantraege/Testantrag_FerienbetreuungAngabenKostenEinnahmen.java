@@ -41,7 +41,7 @@ public class Testantrag_FerienbetreuungAngabenKostenEinnahmen {
 		if(status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE) {
 			this.kostenEinnahmen.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
 		} else {
-			this.kostenEinnahmen.setStatus(FerienbetreuungFormularStatus.IN_PRUEFUNG_KANTON);
+			this.kostenEinnahmen.setStatus(FerienbetreuungFormularStatus.ABGESCHLOSSEN);
 		}
 	}
 

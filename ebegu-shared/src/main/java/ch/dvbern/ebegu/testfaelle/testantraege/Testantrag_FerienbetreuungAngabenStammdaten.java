@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.testfaelle.testantraege;
 
+import java.time.LocalDate;
+
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
@@ -31,7 +33,7 @@ public class Testantrag_FerienbetreuungAngabenStammdaten {
 	public Testantrag_FerienbetreuungAngabenStammdaten(FerienbetreuungAngabenStatus status) {
 		this.stammdaten = new FerienbetreuungAngabenStammdaten();
 
-		this.stammdaten.setSeitWannFerienbetreuungen("Dezember");
+		this.stammdaten.setSeitWannFerienbetreuungen(LocalDate.now());
 		Adresse stammdatenAdresse = new Adresse();
 		stammdatenAdresse.setStrasse("Stammdatenstrasse");
 		stammdatenAdresse.setPlz("3000");
@@ -57,7 +59,7 @@ public class Testantrag_FerienbetreuungAngabenStammdaten {
 		if(status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE) {
 			this.stammdaten.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
 		} else {
-			this.stammdaten.setStatus(FerienbetreuungFormularStatus.IN_PRUEFUNG_KANTON);
+			this.stammdaten.setStatus(FerienbetreuungFormularStatus.ABGESCHLOSSEN);
 		}
 
 	}
