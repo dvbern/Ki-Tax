@@ -96,13 +96,6 @@ export class EditGemeindeComponentTS implements OnInit {
         return this._tagesschulen;
     }
 
-    public gotoTagesschule(id: string): void {
-        this.$state.go('institution.edit', {
-            institutionId: id,
-            editMode: false,
-        });
-    }
-
     public showListTS(): void {
         this.showTSList = true;
     }

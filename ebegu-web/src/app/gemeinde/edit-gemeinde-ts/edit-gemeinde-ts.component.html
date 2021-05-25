@@ -301,7 +301,8 @@
                         <i *ngIf="showTSList" class="fa fa-minus-circle" (click)="hideTSList()"></i>
                         <ul *ngIf="showTSList">
                             <li *ngFor="let tagesschule of tagesschulen">
-                            <a (click)="gotoTagesschule(tagesschule.id)">
+                            <a uiSref="institution.edit"
+                                [uiParams]="{institutionId: tagesschule.id, editMode: false}">
                                 {{tagesschule.name}}
                             </a>
                             </li>
