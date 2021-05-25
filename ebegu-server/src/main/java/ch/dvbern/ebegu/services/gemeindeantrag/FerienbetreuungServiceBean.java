@@ -83,6 +83,9 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	@Inject
 	private PrincipalBean principal;
 
+	@Inject
+	private FerienbetreuungDokumentService ferienbetreuungDokumentService;
+
 	@Nonnull
 	@Override
 	public List<FerienbetreuungAngabenContainer> getFerienbetreuungAntraege(
@@ -484,6 +487,8 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			container.getAngabenKorrektur() != null,
 			"FerienbetreuungAngabenContainer must not be null"
 		);
+
+		container.copyForZurueckAnGemeinde();
 
 		container.setStatus(FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE);
 
