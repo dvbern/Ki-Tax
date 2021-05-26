@@ -2335,7 +2335,7 @@
     "LATS_ABSCHLIESSEN_NOCH_NICHT_MOEGLICH": "La demande ne peut être terminée que lorsque tous les formulaires des écoles à journée continue sont remplis et contrôlés. Vous pouvez par contre sauvegarder vos données.",
     "LATS_FREIGABE_REMINDER": "Veuillez libérer la facturation sous le menu «Validation» pour le contrôle auprès du canton.",
     "LATS_CONFIRM_OPEN_GEMEINDE_FORMULAR": "Si vous ouvrez le formulaire pour l'éditer à nouveau, le formulaire \"Données de la commune\" sera aussi ouvert pour l'édition. Voulez-vous continuer?",
-    "LATS_FREIGABE_REMINDER_KANTON": "Bitte schliessen Sie die Prüfung der Abrechnung nun im Bereich «Freigabe» ab.",
+    "LATS_FREIGABE_REMINDER_KANTON": "Veuillez fermer le contrôle de la facturation sous le menu «Validation».",
     "ERROR_POSITIVE_NUMBER": "Veuillez entrer un nombre positif entier",
     "ERR_GEMEINDEN_LADEN": "Les communes n'ont pas pu être chargées",
     "GEMEINDE_ANTRAEGE_ANTRAG_ERSTELLEN": "Créer une demande",
