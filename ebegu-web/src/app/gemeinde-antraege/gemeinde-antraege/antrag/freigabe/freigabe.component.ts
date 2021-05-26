@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
@@ -37,6 +37,7 @@ import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/las
     templateUrl: './freigabe.component.html',
     styleUrls: ['./freigabe.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None
 })
 export class FreigabeComponent implements OnInit {
 
@@ -137,7 +138,7 @@ export class FreigabeComponent implements OnInit {
                             this.ROUTING_DELAY);
                     }
                 } else {
-                    this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
+                    this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
                 }
             });
     }
@@ -160,7 +161,7 @@ export class FreigabeComponent implements OnInit {
                 filter(result => !!result),
                 mergeMap(() => this.latsService.getLATSAngabenGemeindeContainer().pipe(first())),
             ).subscribe(container => this.latsService.latsGemeindeAntragGeprueft(container),
-            () => this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR')));
+            () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED')));
     }
 
     public async zurueckAnGemeinde(): Promise<void> {
@@ -175,7 +176,7 @@ export class FreigabeComponent implements OnInit {
         }
         this.latsService.zurueckAnGemeinde(this.container)
             .subscribe(() => this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_GEMEINDE', {id: this.container.id}),
-                () => this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR')));
+                () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED')));
     }
 
     public isInPruefungKanton(): Observable<boolean> {
