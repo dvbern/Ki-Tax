@@ -41,6 +41,7 @@
         *ngIf="canViewGeprueftButton | async"
         [buttonDisabled]="!(isInPruefungKanton() | async)"
         type="button"
+        class="secondary"
         (buttonClick)="zurueckAnGemeinde()">
         <span translate>ZURUECK_AN_GEMEINDE_TITLE</span>
     </dv-loading-button>
