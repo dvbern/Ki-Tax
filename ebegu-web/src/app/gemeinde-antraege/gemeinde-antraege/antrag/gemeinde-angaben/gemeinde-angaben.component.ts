@@ -91,7 +91,7 @@ export class GemeindeAngabenComponent implements OnInit {
     public ngOnInit(): void {
         this.subscription = combineLatest([
             this.lastenausgleichTSService.getLATSAngabenGemeindeContainer(),
-            this.authServiceRS.principal$
+            this.authServiceRS.principal$,
         ]).subscribe(([container, principal]) => {
             this.lATSAngabenGemeindeContainer = container;
             if (this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst !== null) {
@@ -102,13 +102,13 @@ export class GemeindeAngabenComponent implements OnInit {
             this.initLATSGemeindeInitializationForm(container, principal);
             this.setupPermissions(container, principal);
             this.settings.findEinstellung(TSEinstellungKey.LATS_LOHNNORMKOSTEN,
-                    this.lATSAngabenGemeindeContainer.gemeinde?.id,
-                    this.lATSAngabenGemeindeContainer.gesuchsperiode?.id)
-                    .then(setting => this.lohnnormkostenSettingMoreThanFifty$.next(setting));
+                this.lATSAngabenGemeindeContainer.gemeinde?.id,
+                this.lATSAngabenGemeindeContainer.gesuchsperiode?.id)
+                .then(setting => this.lohnnormkostenSettingMoreThanFifty$.next(setting));
             this.settings.findEinstellung(TSEinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50,
-                    this.lATSAngabenGemeindeContainer.gemeinde?.id,
-                    this.lATSAngabenGemeindeContainer.gesuchsperiode?.id)
-                    .then(setting => this.lohnnormkostenSettingLessThanFifty$.next(setting));
+                this.lATSAngabenGemeindeContainer.gemeinde?.id,
+                this.lATSAngabenGemeindeContainer.gesuchsperiode?.id)
+                .then(setting => this.lohnnormkostenSettingLessThanFifty$.next(setting));
             this.unsavedChangesService.registerForm(this.angabenForm);
             this.cd.markForCheck();
         }, () => this.errorService.addMesageAsError(this.translateService.instant('DATA_RETRIEVAL_ERROR')));
@@ -126,8 +126,8 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     private initLATSGemeindeInitializationForm(
-            container: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
-            principal: TSBenutzer,
+        container: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
+        principal: TSBenutzer,
     ): void {
         if (this.formularInitForm) {
             this.formularInitForm.patchValue({
@@ -142,7 +142,7 @@ export class GemeindeAngabenComponent implements OnInit {
             });
         }
         if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles()
-                .concat(TSRole.SUPER_ADMIN)) && container.isInBearbeitungGemeinde() && container.angabenDeklaration.isInBearbeitung()) {
+            .concat(TSRole.SUPER_ADMIN)) && container.isInBearbeitungGemeinde() && container.angabenDeklaration.isInBearbeitung()) {
             this.formularInitForm.enable();
         } else {
             this.formularInitForm.disable();
@@ -188,8 +188,10 @@ export class GemeindeAngabenComponent implements OnInit {
                     numberValidator(ValidationType.POSITIVE_INTEGER),
                 ],
             einnahmenElterngebuehren: [
-                initialGemeindeAngaben?.einnahmenElterngebuehren, Validators.compose([this.numberValidator(),
-                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]),
+                initialGemeindeAngaben?.einnahmenElterngebuehren, Validators.compose([
+                    this.numberValidator(),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                ]),
             ],
             ersteRateAusbezahlt: [
                 initialGemeindeAngaben?.ersteRateAusbezahlt,
@@ -199,22 +201,29 @@ export class GemeindeAngabenComponent implements OnInit {
             rueckerstattungenElterngebuehrenSchliessung: [
                 initialGemeindeAngaben?.rueckerstattungenElterngebuehrenSchliessung,
                 Validators.compose([
-                this.numberValidator(),
-                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]),
+                    this.numberValidator(),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                ]),
             ],
             // C
             gesamtKostenTagesschule: [
-                initialGemeindeAngaben?.gesamtKostenTagesschule, Validators.compose([this.numberValidator(),
-                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)])
+                initialGemeindeAngaben?.gesamtKostenTagesschule, Validators.compose([
+                    this.numberValidator(),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                ]),
             ],
             einnnahmenVerpflegung: [
-                initialGemeindeAngaben?.einnnahmenVerpflegung, Validators.compose([this.numberValidator(),
-                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)])
+                initialGemeindeAngaben?.einnnahmenVerpflegung, Validators.compose([
+                    this.numberValidator(),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                ]),
             ],
             einnahmenSubventionenDritter: [
                 initialGemeindeAngaben?.einnahmenSubventionenDritter,
-                Validators.compose([this.numberValidator(),
-                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)])
+                Validators.compose([
+                    this.numberValidator(),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                ]),
             ],
             ueberschussErzielt: [initialGemeindeAngaben?.ueberschussErzielt],
             ueberschussVerwendung: [initialGemeindeAngaben?.ueberschussVerwendung],
@@ -678,7 +687,9 @@ export class GemeindeAngabenComponent implements OnInit {
         }
         this.dialog.open(DvNgOkDialogComponent, {
             data: {
-                title: this.translateService.instant('LATS_FREIGABE_REMINDER'),
+                title: this.translateService.instant(container.isInBearbeitungGemeinde() ?
+                    'LATS_FREIGABE_REMINDER' :
+                    'LATS_FREIGABE_REMINDER_KANTON'),
             },
         });
         this.cd.markForCheck();
@@ -844,8 +855,8 @@ export class GemeindeAngabenComponent implements OnInit {
 
     // tslint:disable-next-line:cognitive-complexity
     private setupPermissions(
-            container: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
-            principal: TSBenutzer,
+        container: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
+        principal: TSBenutzer,
     ): void {
         if (container.isAtLeastGeprueft()) {
             this.saveVisible.next(false);
@@ -855,8 +866,8 @@ export class GemeindeAngabenComponent implements OnInit {
         }
         if (principal.hasRole(TSRole.SUPER_ADMIN)) {
             const angaben = container.isInBearbeitungGemeinde() ?
-                    container.angabenDeklaration :
-                    container.angabenKorrektur;
+                container.angabenDeklaration :
+                container.angabenKorrektur;
             if (angaben.isInBearbeitung()) {
                 this.saveVisible.next(true);
                 this.abschliessenVisible.next(container.allAngabenInstitutionContainersGeprueft());
