@@ -67,6 +67,8 @@
                                 <mat-radio-button [value]="false">{{'PRIVATE_TRAEGERSCHAFT'|translate}}
                                 </mat-radio-button>
                             </mat-radio-group>
+                            <dv-error-messages *ngIf="form.submitted" [errorObject]="form.controls.offentlich_oder_privat?.errors"
+                                               inputId="offentlich_oder_privat"></dv-error-messages>
                         </div>
                     </div>
                 </div>
