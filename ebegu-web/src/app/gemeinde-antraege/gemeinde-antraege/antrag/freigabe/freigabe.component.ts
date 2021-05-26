@@ -137,7 +137,7 @@ export class FreigabeComponent implements OnInit {
                             this.ROUTING_DELAY);
                     }
                 } else {
-                    this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
+                    this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
                 }
             });
     }

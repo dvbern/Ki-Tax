@@ -111,7 +111,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
             .subscribe(() => {
                 this.wizardRS.updateSteps(this.WIZARD_TYPE, this.container.id);
             }, () => {
-                this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
+                this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
 
             });
     }
