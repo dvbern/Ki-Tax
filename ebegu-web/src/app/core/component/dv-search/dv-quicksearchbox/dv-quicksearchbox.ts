@@ -102,7 +102,8 @@ export class DvQuicksearchboxController {
             const totalResEntry = new TSSearchResultEntry();
             const alleFaelleEntry = new TSAntragDTO();
             alleFaelleEntry.familienName =
-                this.$translate.instant('QUICKSEARCH_ALL_RESULTS', {totalNum: quickSearchResult.totalResultSize});
+                this.$translate.instant('QUICKSEARCH_ALL_RESULTS',
+                    {totalNum: quickSearchResult.resultEntities.length});
             totalResEntry.entity = 'ALL';
             totalResEntry.antragDTO = alleFaelleEntry;
             limitedResults.push(totalResEntry);

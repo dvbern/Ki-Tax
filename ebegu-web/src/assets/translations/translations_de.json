@@ -757,7 +757,7 @@
     "FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION": "Minimales Pensum für Fachstelle sprachliche Integration",
     "PLATZBESTAETIGUNG": "Platzbestätigung",
     "PLATZBESTAETIGUNG_MUTATION": "Platz mutieren",
-    "QUICKSEARCH_ALL_RESULTS": "Alle Resultate (bis zu {{totalNum}} weitere)",
+    "QUICKSEARCH_ALL_RESULTS": "Alle Resultate ({{totalNum}})",
     "VERFUEGUNGEN_NOCH_KEINE": "Noch keine Verfügungen erfasst",
     "TRAEGERSCHAFT": "Trägerschaft",
     "TRAEGERSCHAFTEN": "Trägerschaften",

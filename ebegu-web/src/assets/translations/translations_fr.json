@@ -757,7 +757,7 @@
     "FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION": "Taux minimal pour le service spécialisé Intégration linguistique",
     "PLATZBESTAETIGUNG": "Confirmation de place",
     "PLATZBESTAETIGUNG_MUTATION": "Changer la place",
-    "QUICKSEARCH_ALL_RESULTS": "Tous les résultats (jusqu'à {{totalNum}} suivants)",
+    "QUICKSEARCH_ALL_RESULTS": "Tous les résultats ({{totalNum}})",
     "VERFUEGUNGEN_NOCH_KEINE": "Aucun résultat",
     "TRAEGERSCHAFT": "Organisme responsable",
     "TRAEGERSCHAFTEN": "Organismes responsables",
