@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
@@ -37,6 +37,7 @@ import {FerienbetreuungService} from '../services/ferienbetreuung.service';
     templateUrl: './ferienbetreuung-abschluss.component.html',
     styleUrls: ['./ferienbetreuung-abschluss.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None,
 })
 export class FerienbetreuungAbschlussComponent implements OnInit {
 
@@ -52,7 +53,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly wizardRS: WizardStepXRS,
         private readonly authService: AuthServiceRS,
-        private readonly stateService: StateService
+        private readonly stateService: StateService,
     ) {
     }
 
@@ -111,7 +112,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
             .subscribe(() => {
                 this.wizardRS.updateSteps(this.WIZARD_TYPE, this.container.id);
             }, () => {
-                this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
+                this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
 
             });
     }
@@ -129,7 +130,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
                 mergeMap(container => this.ferienbetreuungsService.ferienbetreuungAngabenGeprueft(container)),
                 takeUntil(this.unsubscribe),
             ).subscribe(() => this.wizardRS.updateSteps(this.WIZARD_TYPE, this.container.id),
-            () => this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR')));
+            () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED')));
     }
 
     public ngOnDestroy(): void {
@@ -154,9 +155,20 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
             this.container?.angabenKorrektur?.kostenEinnahmen?.isAbgeschlossen();
     }
 
-    public zurueckAnGemeinde(): void {
+    public async zurueckAnGemeinde(): Promise<void> {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            frage: this.translate.instant('ZURUECK_AN_GEMEINDE'),
+        };
+
+        if (!await (this.dialog.open(DvNgConfirmDialogComponent, dialogConfig))
+            .afterClosed()
+            .toPromise()) {
+            return;
+        }
+
         this.ferienbetreuungsService.zurueckAnGemeinde(this.container).subscribe(
             () => this.stateService.go('gemeindeantrage.view'),
-            () => this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR')));
+            () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED')));
     }
 }

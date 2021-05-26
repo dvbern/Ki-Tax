@@ -206,8 +206,9 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 		this.angebot = toCopy.angebot;
 		this.angebotKontaktpersonVorname = toCopy.angebotKontaktpersonVorname;
 		this.angebotKontaktpersonNachname = toCopy.angebotKontaktpersonNachname;
-		assert toCopy.angebotAdresse != null;
-		this.angebotAdresse = toCopy.angebotAdresse.copyAdresse(new Adresse(), AntragCopyType.MUTATION);
+		if(toCopy.angebotAdresse != null) {
+			this.angebotAdresse = toCopy.angebotAdresse.copyAdresse(new Adresse(), AntragCopyType.MUTATION);
+		}
 
 		this.anzahlFerienwochenFruehlingsferien = toCopy.anzahlFerienwochenFruehlingsferien;
 		this.anzahlFerienwochenSommerferien = toCopy.anzahlFerienwochenSommerferien;
