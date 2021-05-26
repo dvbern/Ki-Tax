@@ -129,7 +129,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
                 mergeMap(container => this.ferienbetreuungsService.ferienbetreuungAngabenGeprueft(container)),
                 takeUntil(this.unsubscribe),
             ).subscribe(() => this.wizardRS.updateSteps(this.WIZARD_TYPE, this.container.id),
-            () => this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR')));
+            () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED')));
     }
 
     public ngOnDestroy(): void {
@@ -157,6 +157,6 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
     public zurueckAnGemeinde(): void {
         this.ferienbetreuungsService.zurueckAnGemeinde(this.container).subscribe(
             () => this.stateService.go('gemeindeantrage.view'),
-            () => this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR')));
+            () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED')));
     }
 }

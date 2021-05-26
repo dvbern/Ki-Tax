@@ -190,7 +190,7 @@ export abstract class AbstractFerienbetreuungFormular {
         } else if (error.status === HTTP_ERROR_CODES.CONFLICT) {
             this.errorService.addMesageAsError(this.translate.instant('ERROR_DATA_CHANGED'));
         } else {
-            this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR'));
+            this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
         }
     }
 

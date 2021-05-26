@@ -695,10 +695,10 @@ export class GemeindeAngabenComponent implements OnInit {
                 this.errorService.addMesageAsError(this.translateService.instant(
                     'LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'));
             } else {
-                this.errorService.addMesageAsError(this.translateService.instant('SAVE_ERROR'));
+                this.errorService.addMesageAsError(this.translateService.instant('ERROR_UNEXPECTED'));
             }
         } else {
-            this.errorService.addMesageAsError(this.translateService.instant('SAVE_ERROR'));
+            this.errorService.addMesageAsError(this.translateService.instant('ERROR_UNEXPECTED'));
         }
     }
 
