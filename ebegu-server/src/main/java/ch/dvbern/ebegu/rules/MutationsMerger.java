@@ -174,7 +174,8 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				// use strict comparison for MVZ since we have a possible clash with betreuung changes
 				if(massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) < 0) {
 					// use input vorgaenger since anteil monat is already included in result vorgaenger and will be calculated later in Rechner for this abschnitt
-					inputData.setVerguenstigungMahlzeitenTotal(getValueOrZero(inputVorangehenderAbschnitt.getVerguenstigungMahlzeitenTotal()));
+					// TODO: input is not stored find solution to either check if is already untermonatig or store input => KIBON-1932
+					inputData.setVerguenstigungMahlzeitenTotal(getValueOrZero(resultVorangehenderAbschnitt.getVerguenstigungMahlzeitenTotal()));
 				}
 				if (resultVorangehenderAbschnitt.getTsCalculationResultMitPaedagogischerBetreuung() != null) {
 					inputData.getTsInputMitBetreuung().setVerpflegungskostenVerguenstigt(
