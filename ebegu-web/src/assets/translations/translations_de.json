@@ -634,7 +634,8 @@
     "FERIENINSEL": "Ferieninseln",
     "BEZEICHNUNG": "Bezeichnung",
     "TAETIGKEIT_WAEHLEN": "Beschäftigungsart wählen",
-    "TAETIGKEIT_WAEHLEN_HELP": "<b>Einschränkung der Betreuungsfähigkeit aus gesundheitlichen Gründen (ASIV Art. 34d, Abs. 1, Bst. e und BGSDV Art. 6)</b></br></br>Wählen Sie \"Gesundheitliche Indikation\", wenn die Eltern das Kind dauerhaft nicht betreuen können aufgrund</br></br><ul><li>a einer eigenen anhaltenden gesundheitlichen Einschränkung,</li><li>b einer anhaltenden gesundheitlichen Einschränkung eines weiteren in ihrer Obhut stehenden Kindes oder </li><li>c eines dauerhaft in ihrer Pflege stehenden nahen Familienangehörigen.</li></ul></br>Die behandelnde Ärztin oder der behandelnde Arzt hat die Einschränkung der Betreuungsfähigkeit zu bestätigen und den Umfang des familienergänzenden Betreuungsbedarfs zu bezeichnen.</br></br><b>Freiwilligenarbeit</b></br></br>Nachgewiesene Freiwilligenarbeit gilt bis zu einem Umfang von maximal 6 Stunden/Woche bzw. 15% als Erwerbspensum.",
+    "TAETIGKEIT_WAEHLEN_HELP": "<b>Einschränkung der Betreuungsfähigkeit aus gesundheitlichen Gründen (ASIV Art. 34d, Abs. 1, Bst. e und BGSDV Art. 6)</b></br></br>Wählen Sie \"Gesundheitliche Indikation\", wenn die Eltern das Kind dauerhaft nicht betreuen können aufgrund</br></br><ul><li>a einer eigenen anhaltenden gesundheitlichen Einschränkung,</li><li>b einer anhaltenden gesundheitlichen Einschränkung eines weiteren in ihrer Obhut stehenden Kindes oder </li><li>c eines dauerhaft in ihrer Pflege stehenden nahen Familienangehörigen.</li></ul></br>Die behandelnde Ärztin oder der behandelnde Arzt hat die Einschränkung der Betreuungsfähigkeit zu bestätigen und den Umfang des familienergänzenden Betreuungsbedarfs zu bezeichnen.",
+    "TAETIGKEIT_WAEHLEN_HELP_BERN": "<b>Einschränkung der Betreuungsfähigkeit aus gesundheitlichen Gründen (ASIV Art. 34d, Abs. 1, Bst. e und BGSDV Art. 6)</b></br></br>Wählen Sie \"Gesundheitliche Indikation\", wenn die Eltern das Kind dauerhaft nicht betreuen können aufgrund</br></br><ul><li>a einer eigenen anhaltenden gesundheitlichen Einschränkung,</li><li>b einer anhaltenden gesundheitlichen Einschränkung eines weiteren in ihrer Obhut stehenden Kindes oder </li><li>c eines dauerhaft in ihrer Pflege stehenden nahen Familienangehörigen.</li></ul></br>Die behandelnde Ärztin oder der behandelnde Arzt hat die Einschränkung der Betreuungsfähigkeit zu bestätigen und den Umfang des familienergänzenden Betreuungsbedarfs zu bezeichnen.</br></br><b>Freiwilligenarbeit</b></br></br>Nachgewiesene Freiwilligenarbeit gilt bis zu einem Umfang von maximal 6 Stunden/Woche bzw. 15% als Erwerbspensum.",
     "UNSAVED_WARNING": "Achtung: Sie haben möglicherweise ungespeicherte Änderungen welche verloren gehen wenn Sie die Seite verlassen.",
     "UNSAVED_WARNING_RELOAD": "Achtung: Sie haben möglicherweise ungespeicherte Änderungen welche verloren gehen wenn Sie die Seite neu laden.",
     "BETREUUNG": "Betreuung",
@@ -2333,6 +2334,7 @@
     "LATS_ABWEICHUNGEN_ANZAHL_KINDER_VORSCHULALTER_HINT": " Ein Antrag wurde für ein Kind im Vorschulalter gemacht",
     "LATS_ABSCHLIESSEN_NOCH_NICHT_MOEGLICH": "Der Antrag kann erst abgeschlossen werden, wenn alle Formulare der Tagesschulen ausgefüllt und geprüft worden sind. Sie können die Angaben aber zwischenspeichern.",
     "LATS_FREIGABE_REMINDER": "Bitte geben Sie die Abrechnung nun im Bereich «Freigabe» zur Prüfung an den Kanton frei.",
+    "LATS_FREIGABE_REMINDER_KANTON": "Bitte schliessen Sie die Prüfung der Abrechnung nun im Bereich «Freigabe» ab.",
     "LATS_CONFIRM_OPEN_GEMEINDE_FORMULAR": "Wenn Sie dieses Formular wider zur Bearbeitung öffnen, wird auch das Formular \"Gemeinde Angaben\" wieder zur Bearbeitung geöffnet. Möchten Sie fortfahren?",
     "ERROR_POSITIVE_NUMBER": "Bitte geben Sie eine positive ganze Zahl ein",
     "ERR_GEMEINDEN_LADEN": "Gemeinden konnten nicht geladen werden",
@@ -2499,8 +2501,8 @@
     "SOZIALDIENST_INFO_VOLLMACHT_FORM_DIRTY": "Sie haben Änderungen im Formular gemacht. Bitte speichern Sie diese, bevor Sie die Vollmacht erneut herunterladen können",
     "SOZIALDIENST_WARNING_FALL_ENTZOGEN": "Die Vollmacht wurde entzogen. Der Fall ist für den Unterstützungdienst gesperrt!",
     "BEARBEITEN": "Bearbeiten",
-    "TAGESSCHULEN_DER_GEMEINDEN": "Tagesschulen der Gemeinden:",
-    "OFFENTLICHE_TRAEGERSCHAFT": "Offentliche Trägerschaft",
+    "TAGESSCHULEN_DER_GEMEINDEN": "Tagesschulen der Gemeinde",
+    "OFFENTLICHE_TRAEGERSCHAFT": "Öffentliche Trägerschaft",
     "PRIVATE_TRAEGERSCHAFT": "Private Trägerschaft",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

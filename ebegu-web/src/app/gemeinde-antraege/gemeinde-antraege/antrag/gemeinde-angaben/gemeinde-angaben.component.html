@@ -951,7 +951,8 @@
                 *ngIf="abschliessenVisible | async"
                 [buttonDisabled]="formularNotEditable()"
                 (buttonClick)="onAbschliessen()">
-                <span translate>ABSCHLIESSEN</span>
+                <span *ngIf="lATSAngabenGemeindeContainer?.isInBearbeitungGemeinde()" translate>ABSCHLIESSEN</span>
+                <span *ngIf="lATSAngabenGemeindeContainer?.isInBearbeitungKanton()" translate>GEPRUEFT</span>
             </dv-loading-button>
         </div>
 

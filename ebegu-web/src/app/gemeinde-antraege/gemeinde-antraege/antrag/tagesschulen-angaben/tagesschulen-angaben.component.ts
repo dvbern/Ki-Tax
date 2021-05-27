@@ -636,7 +636,7 @@ export class TagesschulenAngabenComponent {
         } else if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
             this.errorService.addMesageAsError(this.translate.instant('ERROR_NUMBER'));
         } else {
-            this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
+            this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
         }
     }
 

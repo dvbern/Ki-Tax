@@ -97,7 +97,6 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 			if (vorangehenderAbschnitt != null) {
 				BGCalculationInput inputAsiv = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
 				BGCalculationResult resultAsivVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationResultAsiv();
-				BGCalculationInput inputAsivVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationInputAsiv();
 
 				boolean finSitAbgelehnt = FinSitStatus.ABGELEHNT == platz.extractGesuch().getFinSitStatus();
 				LocalDateTime timestampVerfuegtVorgaenger = null;
@@ -109,7 +108,6 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				} else {
 					// Der Spezialfall bei Verminderung des Einkommens gilt nur, wenn die FinSit akzeptiert/null war!
 					handleVerminderungEinkommen(inputAsiv,
-						inputAsivVorangehenderAbschnitt,
 						resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
 				}
 				handleAnpassungErweiterteBeduerfnisse(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
@@ -125,7 +123,7 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 						handleAbgelehnteFinsit(inputGemeinde, resultGemeindeVorangehenderAbschnitt, timestampVerfuegtVorgaenger);
 					} else {
 						// Der Spezialfall bei Verminderung des Einkommens gilt nur, wenn die FinSit akzeptiert/null war!
-						handleVerminderungEinkommen(inputGemeinde, inputGemeindeVorangehenderAbschnitt, resultGemeindeVorangehenderAbschnitt, mutationsEingansdatum);
+						handleVerminderungEinkommen(inputGemeinde, resultGemeindeVorangehenderAbschnitt, mutationsEingansdatum);
 					}
 					handleAnpassungErweiterteBeduerfnisse(inputGemeinde, resultGemeindeVorangehenderAbschnitt, mutationsEingansdatum);
 					handleAnpassungAnspruch(inputGemeinde, resultGemeindeVorangehenderAbschnitt, mutationsEingansdatum);
@@ -153,7 +151,6 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 
 	private void handleVerminderungEinkommen(
 		@Nonnull BGCalculationInput inputData,
-		@Nonnull BGCalculationInput inputVorangehenderAbschnitt,
 		@Nonnull BGCalculationResult resultVorangehenderAbschnitt,
 		@Nonnull LocalDate mutationsEingansdatum
 	) {
@@ -174,7 +171,8 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				// use strict comparison for MVZ since we have a possible clash with betreuung changes
 				if(massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) < 0) {
 					// use input vorgaenger since anteil monat is already included in result vorgaenger and will be calculated later in Rechner for this abschnitt
-					inputData.setVerguenstigungMahlzeitenTotal(getValueOrZero(inputVorangehenderAbschnitt.getVerguenstigungMahlzeitenTotal()));
+					// TODO: input is not stored find solution to either check if is already untermonatig or store input => KIBON-1932
+					inputData.setVerguenstigungMahlzeitenTotal(getValueOrZero(resultVorangehenderAbschnitt.getVerguenstigungMahlzeitenTotal()));
 				}
 				if (resultVorangehenderAbschnitt.getTsCalculationResultMitPaedagogischerBetreuung() != null) {
 					inputData.getTsInputMitBetreuung().setVerpflegungskostenVerguenstigt(

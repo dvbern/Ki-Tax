@@ -495,6 +495,8 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			"FerienbetreuungAngabenContainer must not be null"
 		);
 
+		container.copyForZurueckAnGemeinde();
+
 		container.setStatus(FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE);
 
 		container.getAngabenDeklaration()

@@ -133,8 +133,11 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 		this.seitWannFerienbetreuungen = ferienbetreuungAngabenStammdatenToCopy.seitWannFerienbetreuungen;
 		this.traegerschaft = ferienbetreuungAngabenStammdatenToCopy.traegerschaft;
 		// Stammdaten adresse
-		this.stammdatenAdresse = Objects.requireNonNull(ferienbetreuungAngabenStammdatenToCopy.stammdatenAdresse)
-			.copyAdresse(new Adresse(), AntragCopyType.MUTATION);
+		if (ferienbetreuungAngabenStammdatenToCopy.stammdatenAdresse != null) {
+			this.stammdatenAdresse = ferienbetreuungAngabenStammdatenToCopy.stammdatenAdresse.copyAdresse(
+				new Adresse(),
+				AntragCopyType.MUTATION);
+		}
 		// Kontaktperson
 		this.stammdatenKontaktpersonVorname = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonVorname;
 		this.stammdatenKontaktpersonNachname = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonNachname;
@@ -142,9 +145,12 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 		this.stammdatenKontaktpersonEmail = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonEmail;
 		this.stammdatenKontaktpersonTelefon = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonTelefon;
 		// Auszahlungsdaten
-		this.auszahlungsdaten = Objects.requireNonNull(ferienbetreuungAngabenStammdatenToCopy.auszahlungsdaten).copyAuszahlungsdaten(
-			new Auszahlungsdaten(),
-			AntragCopyType.MUTATION);
+		if (ferienbetreuungAngabenStammdatenToCopy.auszahlungsdaten != null) {
+			this.auszahlungsdaten = ferienbetreuungAngabenStammdatenToCopy.auszahlungsdaten.copyAuszahlungsdaten(
+				new Auszahlungsdaten(),
+				AntragCopyType.MUTATION);
+		}
+
 		this.vermerkAuszahlung = ferienbetreuungAngabenStammdatenToCopy.vermerkAuszahlung;
 
 	}
