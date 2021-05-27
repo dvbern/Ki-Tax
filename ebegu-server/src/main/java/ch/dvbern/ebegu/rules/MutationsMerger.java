@@ -115,7 +115,6 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 
 				BGCalculationInput inputGemeinde = verfuegungZeitabschnitt.getBgCalculationInputGemeinde();
 				BGCalculationResult resultGemeindeVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationResultGemeinde();
-				BGCalculationInput inputGemeindeVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationInputGemeinde();
 
 				if (vorangehenderAbschnitt.isHasGemeindeSpezifischeBerechnung() && resultGemeindeVorangehenderAbschnitt != null) {
 					if (finSitAbgelehnt) {
