@@ -59,9 +59,9 @@ public class Testantrag_LastenausgleichTagesschuleAngabenGemeinde {
 			this.angaben.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(institutionsBetreuungsstundenSum.subtract(
 				DAVON_ZU_WENIGER_ALS_50_PROZENT_NORMLOHN));
 		}
-		this.angaben.setEinnahmenElterngebuehren(new BigDecimal(1500));
+		this.angaben.setEinnahmenElterngebuehren(new BigDecimal(500));
 		this.angaben.setTagesschuleTeilweiseGeschlossen(false);
-		this.angaben.setErsteRateAusbezahlt(new BigDecimal(1000));
+		this.angaben.setErsteRateAusbezahlt(new BigDecimal(350));
 		// C
 		this.angaben.setGesamtKostenTagesschule(new BigDecimal(15000));
 		this.angaben.setEinnnahmenVerpflegung(new BigDecimal(1500));
