@@ -71,6 +71,7 @@ export class BetreuungTagesschuleViewComponentConfig implements IComponentOption
         anmeldungSchulamtAblehnen: '&',
         anmeldungSchulamtFalscheInstitution: '&',
         anmeldungSchulamtFalscheAngaben: '&',
+        anmeldungSchulamtStornieren: '&',
         form: '=',
     };
     public template = require('./betreuungTagesschuleView.html');
@@ -407,6 +408,21 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             this.preSave();
             this.anmeldungSchulamtAblehnen();
         }
+    }
+
+    public saveAnmeldungSchulamtStornieren(): void {
+        if (!this.form.$valid) {
+            return;
+        }
+        this.dvDialog.showRemoveDialog(dialogTemplate, this.form, RemoveDialogController, {
+            title: 'CONFIRM_STORNIEREN_TAGESSCHULE',
+            deleteText: '',
+            parentController: undefined,
+            elementID: undefined,
+        }).then(() => {
+            this.preSave();
+            this.anmeldungSchulamtStornieren();
+        });
     }
 
     public saveAnmeldungSchulamtFalscheInstitution(): void {

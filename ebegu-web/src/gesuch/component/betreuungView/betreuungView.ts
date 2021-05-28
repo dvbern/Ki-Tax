@@ -541,6 +541,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
     }
 
+    public anmeldungSchulamtStornieren(): void {
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT, PENDENZEN_BETREUUNG, undefined);
+        } else {
+            const params = {gesuchId: this.getGesuchId()};
+            this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT, GESUCH_BETREUUNGEN, params);
+        }
+    }
+
     private copyBGNumberLToClipboard(): void {
         const bgNumber = this.ebeguUtil.calculateBetreuungsIdFromBetreuung(this.gesuchModelManager.getFall(),
             this.gesuchModelManager.getDossier().gemeinde, this.getBetreuungModel());

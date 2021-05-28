@@ -307,7 +307,7 @@
         </span>
 
         <span dv-show-element
-              dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()"
+              dv-show-allowed-roles="vm.TSRoleUtil.getSchulamtRoles()"
               dv-show-expression="vm.isFalscheInstitutionAndUserInRole() && vm.aktuellGueltig">
 
             <dv-loading-button button-click="vm.anmelden()"
@@ -320,6 +320,12 @@
                                button-class="save">
                 <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"></span>
             </dv-loading-button>
+             <dv-loading-button
+                 button-click="vm.saveAnmeldungSchulamtStornieren()"
+                 type="button"
+                 button-class="save">
+                    <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_STORNIEREN"></span>
+                </dv-loading-button>
         </span>
 
         <span dv-show-element
@@ -337,6 +343,14 @@
                                    type="button"
                                    button-class="save">
                     <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"></span>
+                </dv-loading-button>
+
+                <dv-loading-button
+                    dv-show-allowed-roles="vm.TSRoleUtil.getSchulamtRoles()"
+                    button-click="vm.saveAnmeldungSchulamtStornieren()"
+                    type="button"
+                    button-class="save">
+                    <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_STORNIEREN"></span>
                 </dv-loading-button>
 
                 <dv-loading-button

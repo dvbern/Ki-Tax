@@ -656,6 +656,7 @@
     "SCHULAMT_ANMELDUNG_ABGELEHNT": "Anmeldung abgelehnt",
     "SCHULAMT_FALSCHE_INSTITUTION": "Falsche Institution",
     "SCHULAMT_MODULE_AKZEPTIERT": "Module akzeptiert",
+    "SCHULAMT_ANMELDUNG_STORNIERT": "Anmeldung storniert",
     "ABGEWIESEN": "Abgewiesen",
     "BESTAETIGT": "Bestätigt",
     "AUSGELOEST": "Ausgelöst",
@@ -2504,5 +2505,6 @@
     "TAGESSCHULEN_DER_GEMEINDEN": "Tagesschulen der Gemeinde",
     "OFFENTLICHE_TRAEGERSCHAFT": "Öffentliche Trägerschaft",
     "PRIVATE_TRAEGERSCHAFT": "Private Trägerschaft",
+    "CONFIRM_STORNIEREN_TAGESSCHULE": "Wollen Sie die Anmeldung wirklich stornieren?",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

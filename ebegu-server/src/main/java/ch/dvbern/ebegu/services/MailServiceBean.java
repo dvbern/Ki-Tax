@@ -733,14 +733,30 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			} else {
 				LOG.warn("skipping InfoGemeindeLastenausgleichDurch because Gemeinde Email is null");
 			}
-		}  catch (EbeguEntityNotFoundException nf) {
+		} catch (EbeguEntityNotFoundException nf) {
 			LOG.error("Gemeindestammdaten not Found: ", gemeinde.getId(), nf);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			logExceptionAccordingToEnvironment(
 				e,
 				"Mail InfoGemeindeLastenausgleichDurch konnte nicht verschickt werden fuer Gemeinde",
 				gemeinde.getName());
 		}
+	}
+
+	@Override
+	public void sendInfoSchulamtAnmeldungStorniert(AbstractAnmeldung abstractAnmeldung) throws MailException {
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(
+			abstractAnmeldung.extractGesuch(),
+			gemeindeService);
+		sendMail(
+			abstractAnmeldung.extractGesuch(),
+			"InfoSchulamtAnmeldungStorniert",
+			(gesuchsteller, adr) -> mailTemplateConfig.getInfoSchulamtAnmeldungStorniert(
+				abstractAnmeldung,
+				gesuchsteller,
+				adr,
+				sprache),
+			AntragStatus.values()
+		);
 	}
 }

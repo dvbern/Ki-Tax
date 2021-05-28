@@ -222,4 +222,6 @@ public interface BetreuungService {
 	@Nonnull
 	AbstractAnmeldung anmeldungSchulamtModuleAkzeptieren(@Valid @Nonnull AbstractAnmeldung anmeldung);
 
+	@Nonnull
+	AbstractAnmeldung anmeldungSchulamtStornieren(@Valid @Nonnull AbstractAnmeldung anmeldung);
 }

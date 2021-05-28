@@ -1158,6 +1158,33 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		}
 	}
 
+	@Override
+	@Nonnull
+	public AbstractAnmeldung anmeldungSchulamtStornieren(@Valid @Nonnull AbstractAnmeldung anmeldung) {
+		Objects.requireNonNull(anmeldung, BETREUUNG_DARF_NICHT_NULL_SEIN);
+		authorizer.checkWriteAuthorization(anmeldung);
+
+		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT);
+		AbstractAnmeldung persistedBetreuung = savePlatz(anmeldung);
+		try {
+			// Bei Ablehnung einer Anmeldung muss eine E-Mail geschickt werden
+			GemeindeStammdaten gemeindeStammdaten =
+				gemeindeService.getGemeindeStammdatenByGemeindeId(persistedBetreuung.extractGesuch()
+					.getDossier()
+					.getGemeinde()
+					.getId()).get();
+			if (gemeindeStammdaten.getBenachrichtigungTsEmailAuto()) {
+				mailService.sendInfoSchulamtAnmeldungStorniert(persistedBetreuung);
+			}
+		} catch (MailException e) {
+			logExceptionAccordingToEnvironment(
+				e,
+				"Mail InfoSchulamtAnmeldungStorniert konnte nicht verschickt werden fuer Betreuung",
+				anmeldung.getId());
+		}
+		return persistedBetreuung;
+	}
+
 	private void checkNotKorrekturmodusWithFerieninselOnly(@Nonnull Gesuch gesuch) {
 		// Im Korrekturmodus Gemeinde darf bei nur-Ferieninsel-Gesuchen keine Betreuung hinzufuegt
 		// werden, da sonst die FinSit ungueltig wird, diese aber durch die Gemeinde nicht korrigiert
