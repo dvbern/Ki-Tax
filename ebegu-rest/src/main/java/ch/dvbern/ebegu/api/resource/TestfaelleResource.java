@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.api.resource;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -276,7 +277,7 @@ public class TestfaelleResource {
 				Objects.requireNonNull(jaxGemeindeAntraegeTestdatenDTO.getGesuchsperiode().getId()),
 				gemeindeId,
 				jaxGemeindeAntraegeTestdatenDTO.getStatus());
-		return Response.ok().build();
+		return Response.ok(latsContainers.stream().map(container -> container.getId()).collect(Collectors.joining(","))).build();
 	}
 
 	@ApiOperation(value = "Erstellt FB testdaten", response = String.class)
@@ -292,7 +293,7 @@ public class TestfaelleResource {
 				Objects.requireNonNull(jaxGemeindeAntraegeTestdatenDTO.getGesuchsperiode().getId()),
 				Objects.requireNonNull(jaxGemeindeAntraegeTestdatenDTO.getGemeinde().getId()),
 				jaxGemeindeAntraegeTestdatenDTO.getStatus());
-		return Response.ok().build();
+		return Response.ok(ferienbetreuungContainer.getId()).build();
 	}
 
 	private void assertTestfaelleAccessAllowed() {

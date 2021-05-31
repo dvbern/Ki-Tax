@@ -281,9 +281,17 @@ export class TestdatenViewComponent implements OnInit {
         this.testFaelleRS.createGemeindeAntragTestDaten(this.gemeindeAntragTyp,
             this.gesuchsperiodeGemeindeAntrag,
             this.gemeindeForGemeindeAntrag,
-            this.gemeindeAntragStatus).then(() => {
+            this.gemeindeAntragStatus).then(response => {
             this.errorService.clearAll();
-            this.errorService.addMesageAsInfo('Gemeindeanträge erstellt');
+            if (this.ferienbetreuungSelected()) {
+                this.createAndOpenLinkDialog$(`Ferienbetreuung für ${this.gemeindeForGemeindeAntrag.name} ${this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString} erstellt`,
+                    `#/ferienbetreuung/${response}/stammdaten-gemeinde`);
+            } else if (this.gemeindeForGemeindeAntrag) {
+                this.createAndOpenLinkDialog$(`LATS für ${this.gemeindeForGemeindeAntrag.name} ${this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString} erstellt`,
+                    `#/lastenausgleich-ts/${response}/angaben-gemeinde`);
+            } else {
+                this.errorService.addMesageAsInfo('Anträge für Periode erstellt');
+            }
         }, () => this.errorService.addMesageAsError('Anträge konnten nicht erstellt werden'));
     }
 
