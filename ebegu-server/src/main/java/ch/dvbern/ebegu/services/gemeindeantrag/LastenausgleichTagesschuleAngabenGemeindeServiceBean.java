@@ -44,6 +44,7 @@ import javax.persistence.criteria.SetJoin;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
@@ -60,7 +61,9 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
+import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -100,6 +103,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 	@Inject
 	private InstitutionService institutionService;
+
+	@Inject
+	private EbeguConfiguration configuration;
 
 	private static final Logger LOG =
 		LoggerFactory.getLogger(LastenausgleichTagesschuleAngabenGemeindeServiceBean.class);
@@ -190,6 +196,18 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	public void deleteLastenausgleichTagesschuleAngabenGemeindeContainer(
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull Gesuchsperiode gesuchsperiode) {
+
+		if (!configuration.getIsDevmode()) {
+			throw new EbeguRuntimeException(
+				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer",
+				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer ist nur im Devmode möglich");
+		}
+
+		if (!principal.isCallerInRole(UserRole.SUPER_ADMIN)) {
+			throw new EbeguRuntimeException(
+				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer",
+				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer ist nur als SuperAdmin möglich");
+		}
 
 		findLastenausgleichTagesschuleAngabenGemeindeContainer(
 			gemeinde,
