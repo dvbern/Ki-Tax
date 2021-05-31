@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import {Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
+import {DvSimpleTableColumnDefinition} from './dv-simple-table-column-definition';
 
 @Component({
     selector: 'dv-simple-table',
@@ -22,7 +23,7 @@ import {MatTableDataSource} from '@angular/material/table';
 export class DvSimpleTableComponent implements OnInit, OnChanges {
 
     @Input() public data: any[] = [];
-    @Input() public columns: { displayedName: string, attributeName: string }[];
+    @Input() public columns: DvSimpleTableColumnDefinition[];
 
     @Output() public readonly rowClicked: EventEmitter<any> = new EventEmitter<any>();
 
@@ -59,7 +60,24 @@ export class DvSimpleTableComponent implements OnInit, OnChanges {
         }
         // copy so we don't manipulate the original input array
         this.datasource.data = [].concat(this.data).sort(((a, b) => sortEvent.direction === 'asc' ?
-            a[sortEvent.active].localeCompare(b[sortEvent.active]) :
-            b[sortEvent.active].localeCompare(a[sortEvent.active])));
+            this.compare(a[sortEvent.active], b[sortEvent.active]) :
+            this.compare(b[sortEvent.active], a[sortEvent.active])));
+    }
+
+    private compare(a: any, b: any): number {
+        if (typeof a === 'string' && typeof b === 'string') {
+            return a.localeCompare(b);
+        }
+        if (typeof a === 'number' && typeof b === 'number') {
+            return a - b;
+        }
+        throw new Error('Compare type not defined');
+    }
+
+    public getDisplayValue(element: any, column: any): string {
+        if (column.displayFunction !== undefined) {
+            return column.displayFunction(element[column.attributeName]);
+        }
+        return element[column.attributeName];
     }
 }

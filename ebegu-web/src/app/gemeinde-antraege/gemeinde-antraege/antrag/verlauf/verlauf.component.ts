@@ -1,8 +1,10 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
+import * as moment from 'moment';
 import {TSLastenausgleichTagesschulenStatusHistory} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
 import {CONSTANTS} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
+import {DvSimpleTableColumnDefinition} from '../../../../shared/component/dv-simple-table/dv-simple-table-column-definition';
 import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
 
 @Component({
@@ -15,11 +17,23 @@ export class VerlaufComponent implements OnInit {
 
     @Input() public lastenausgleichId: string;
 
-    public history: {timestampVon: string, status: string, benutzer: string}[];
-    public columns = [
-        {displayedName: 'DATUM', attributeName: 'timestampVon'},
-        {displayedName: 'AKTION', attributeName: 'status'},
-        {displayedName: 'BENUTZER', attributeName: 'benutzer'},
+    public history: {timestampVon: number, status: string, benutzer: string}[];
+    public columns: DvSimpleTableColumnDefinition[] = [
+        {
+            displayedName: 'DATUM',
+            attributeName: 'timestampVon',
+            displayFunction: (d: number) => {
+                return moment(d).format(CONSTANTS.DATE_TIME_FORMAT);
+            }
+        },
+        {
+            displayedName: 'AKTION',
+            attributeName: 'status'
+        },
+        {
+            displayedName: 'BENUTZER',
+            attributeName: 'benutzer'
+        },
     ];
 
     public constructor(
@@ -47,7 +61,7 @@ export class VerlaufComponent implements OnInit {
     private mapHistoryForSimpleTable(data: TSLastenausgleichTagesschulenStatusHistory[]): void {
         this.history = data.map(d => {
             return {
-                timestampVon: d.timestampVon.format(CONSTANTS.DATE_TIME_FORMAT),
+                timestampVon: d.timestampVon.toDate().getTime(),
                 status: d.status,
                 benutzer: d.benutzer.getFullName()
             };
