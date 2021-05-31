@@ -5247,6 +5247,6 @@ export class EbeguRestUtil {
         historyTS.timestampVon = DateUtil.localDateTimeToMoment(historyFromServer.timestampVon);
         historyTS.timestampBis = DateUtil.localDateTimeToMoment(historyFromServer.timestampBis);
         historyTS.status = historyFromServer.status;
-        return historyFromServer;
+        return historyTS;
     }
 }
