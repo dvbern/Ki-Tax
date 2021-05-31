@@ -167,7 +167,7 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 
 	@Nullable
 	@Column()
-	private BigDecimal betreuungsschluessel;
+	private String betreuungsschluessel;
 
 	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
@@ -434,11 +434,11 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 	}
 
 	@Nullable
-	public BigDecimal getBetreuungsschluessel() {
+	public String getBetreuungsschluessel() {
 		return betreuungsschluessel;
 	}
 
-	public void setBetreuungsschluessel(@Nullable BigDecimal betreuungsschluessel) {
+	public void setBetreuungsschluessel(@Nullable String betreuungsschluessel) {
 		this.betreuungsschluessel = betreuungsschluessel;
 	}
 
