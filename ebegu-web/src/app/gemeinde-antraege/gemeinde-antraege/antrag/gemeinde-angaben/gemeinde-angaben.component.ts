@@ -20,7 +20,7 @@ import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from '
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
-import {UIRouterGlobals} from '@uirouter/core';
+import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {BehaviorSubject, combineLatest, Subject, Subscription} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
@@ -85,6 +85,7 @@ export class GemeindeAngabenComponent implements OnInit {
         private readonly uiRouterGlobals: UIRouterGlobals,
         private readonly dialog: MatDialog,
         private readonly unsavedChangesService: UnsavedChangesService,
+        private readonly $state: StateService,
     ) {
     }
 
@@ -691,6 +692,12 @@ export class GemeindeAngabenComponent implements OnInit {
                     'LATS_FREIGABE_REMINDER' :
                     'LATS_FREIGABE_REMINDER_KANTON'),
             },
+        }).afterClosed().subscribe(confirmation => {
+            if (confirmation) {
+                this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.FREIGABE');
+            }
+        }, () => {
+            this.errorService.addMesageAsInfo(this.translateService.instant('ERROR_UNEXPECTED'));
         });
         this.cd.markForCheck();
         this.wizardRS.updateSteps(this.WIZARD_TYPE, this.uiRouterGlobals.params.id);
