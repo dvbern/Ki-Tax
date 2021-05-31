@@ -66,7 +66,8 @@ public class VollmachtPdfGenerator extends BaseGenerator<VollmachtPdfLayoutConfi
 	private static final int ABSENDER_2_X_POSITION = 100;
 	private static final float ABSENDER_LINE_HEIGHT = PdfUtil.FONT_SIZE + 4;
 
-	private static final String UNTERSCHRIFT_PLACEHOLDER = "X  ________________________________________________________";
+	private static final String UNTERSCHRIFT_PLACEHOLDER =
+		"X  ________________________________________________________";
 
 	protected Locale sprache;
 	private BaseGenerator<VollmachtPdfLayoutConfiguration> pdfGenerator;
@@ -142,8 +143,10 @@ public class VollmachtPdfGenerator extends BaseGenerator<VollmachtPdfLayoutConfi
 		placeAntragsteller2(dirPdfContentByte);
 
 		Paragraph paragraph1 =
-			PdfUtil.createParagraph(translate(VOLLMACHT_PARAGRAPH_1,
-				this.sozialdienstFall.getSozialdienst().getName()),
+			PdfUtil.createParagraph(
+				translate(
+					VOLLMACHT_PARAGRAPH_1,
+					this.sozialdienstFall.getSozialdienst().getName()),
 				2,
 				PdfUtil.DEFAULT_FONT);
 		paragraph1.setSpacingAfter(15);
@@ -165,7 +168,7 @@ public class VollmachtPdfGenerator extends BaseGenerator<VollmachtPdfLayoutConfi
 		Paragraph unterschriftZeile1 = PdfUtil.createParagraph(UNTERSCHRIFT_PLACEHOLDER, 1, PdfUtil.DEFAULT_FONT);
 		unterschrift.setSpacingAfter(0);
 		document.add(unterschriftZeile1);
-		if(isZweiAntragstellende()){
+		if (isZweiAntragstellende()) {
 			Paragraph unterschriftZeile2 = PdfUtil.createParagraph(UNTERSCHRIFT_PLACEHOLDER, 2, PdfUtil.DEFAULT_FONT);
 			unterschrift.setSpacingAfter(5);
 			document.add(unterschriftZeile2);
@@ -229,7 +232,9 @@ public class VollmachtPdfGenerator extends BaseGenerator<VollmachtPdfLayoutConfi
 			absender.add("");
 			absender.add("");
 			absender.add(this.sozialdienstFall.getNameGs2() + " " + this.sozialdienstFall.getVornameGs2());
-			absender.add(Constants.DATE_FORMATTER.format(this.sozialdienstFall.getGeburtsdatum()));
+			absender.add(this.sozialdienstFall.getGeburtsdatumGs2() != null ?
+				Constants.DATE_FORMATTER.format(this.sozialdienstFall.getGeburtsdatumGs2()) :
+				"");
 		}
 		return absender;
 	}

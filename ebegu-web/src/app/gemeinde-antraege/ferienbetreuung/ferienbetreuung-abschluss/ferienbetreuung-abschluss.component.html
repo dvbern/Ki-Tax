@@ -25,8 +25,14 @@
         <span translate>FERIENBETREUUNG_FREIGABE_AN_KANTON</span>
     </dv-loading-button>
     <dv-loading-button
-        *ngIf="geprueftVisible() | async"
+        *ngIf="(geprueftVisible() | async) && !alreadyGeprueft()"
         type="button"
+        class="secondary"
+        (buttonClick)="zurueckAnGemeinde()">
+        <span translate>ZURUECK_AN_GEMEINDE_TITLE</span>
+    </dv-loading-button>
+    <dv-loading-button
+        *ngIf="(geprueftVisible() | async) && !alreadyGeprueft() && readyForGeprueft()"
         [buttonDisabled]="alreadyGeprueft()"
         (buttonClick)="geprueft()">
         <span translate>LATS_GEPRUEFT_KANTON</span>
@@ -34,4 +40,7 @@
 </div>
 <p *ngIf="(abschliessenVisible() | async) && alreadyFreigegeben()"
    [innerHTML]="'FERIENBETREUUNG_FREIGEGEBEN_AN_KANTON' | translate">
+</p>
+<p *ngIf="(geprueftVisible() | async) && alreadyGeprueft()"
+   [innerHTML]="'FERIENBETREUUNG_GEPRUEFT' | translate">
 </p>

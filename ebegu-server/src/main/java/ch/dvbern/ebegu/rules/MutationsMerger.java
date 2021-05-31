@@ -107,7 +107,8 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 					handleAbgelehnteFinsit(inputAsiv, resultAsivVorangehenderAbschnitt, timestampVerfuegtVorgaenger);
 				} else {
 					// Der Spezialfall bei Verminderung des Einkommens gilt nur, wenn die FinSit akzeptiert/null war!
-					handleVerminderungEinkommen(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
+					handleVerminderungEinkommen(inputAsiv,
+						resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
 				}
 				handleAnpassungErweiterteBeduerfnisse(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
 				handleAnpassungAnspruch(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
@@ -166,7 +167,12 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				inputData.setFamGroesse(resultVorangehenderAbschnitt.getFamGroesse());
 				inputData.setAbzugFamGroesse(resultVorangehenderAbschnitt.getAbzugFamGroesse());
 
-				inputData.setVerguenstigungMahlzeitenTotal(getValueOrZero(resultVorangehenderAbschnitt.getVerguenstigungMahlzeitenTotal()));
+				// use strict comparison for MVZ since we have a possible clash with betreuung changes
+				if(massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) < 0) {
+					// use input vorgaenger since anteil monat is already included in result vorgaenger and will be calculated later in Rechner for this abschnitt
+					// TODO: input is not stored find solution to either check if is already untermonatig or store input => KIBON-1932
+					inputData.setVerguenstigungMahlzeitenTotal(getValueOrZero(resultVorangehenderAbschnitt.getVerguenstigungMahlzeitenTotal()));
+				}
 				if (resultVorangehenderAbschnitt.getTsCalculationResultMitPaedagogischerBetreuung() != null) {
 					inputData.getTsInputMitBetreuung().setVerpflegungskostenVerguenstigt(
 						getValueOrZero(

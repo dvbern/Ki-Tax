@@ -447,6 +447,10 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON,
 			"LastenausgleichAngabenGemeindeContainer muss im Status IN_PRUEFUNG sein");
 		Objects.requireNonNull(fallContainer.getAngabenKorrektur());
+		Preconditions.checkState(
+			fallContainer.getAngabenKorrektur().getStatus() == LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN,
+			"Die Angaben der Gemeinde müssen abgeschlossen sein"
+		);
 
 		fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT);
 		return saveLastenausgleichTagesschuleGemeinde(fallContainer, true);
@@ -526,8 +530,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer) {
 
 		Preconditions.checkState(
-			fallContainer.isInBearbeitungGemeinde(),
-			"LastenausgleichTagesschuleAngabenGemeindeContainer muss in Bearbeitung Gemeinde sein"
+			fallContainer.isInBearbeitungGemeinde() || fallContainer.isInPruefungKanton(),
+			"LastenausgleichTagesschuleAngabenGemeindeContainer muss in Bearbeitung Gemeinde oder Kanton sein"
 		);
 
 		LastenausgleichTagesschuleAngabenGemeinde angaben;
@@ -573,6 +577,33 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 			persistence.remove(container);
 		});
+	}
+
+	@Nonnull
+	@Override
+	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeZurueckAnGemeinde(
+			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
+		Preconditions.checkState(
+			container.isInPruefungKanton(),
+			"LastenausgleichTagesschuleAngabenGemeindeContainer muss in Prüfung Kanton sein"
+		);
+		Preconditions.checkState(
+			container.getAngabenDeklaration() != null,
+			"LastenausgleichTagesschuleAngabenGemeindeContainer angabenDeklaration must not be null"
+		);
+		Preconditions.checkState(
+			container.getAngabenKorrektur() != null,
+			"LastenausgleichTagesschuleAngabenGemeindeContainer angabenDeklaration must not be null"
+		);
+
+		container.copyForZurueckAnGemeinde();
+
+		// reopen gemeinde formular, don't reopen insti formulare
+		container.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE);
+		container.getAngabenDeklaration().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
+		container.getAngabenKorrektur().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
+
+		return persistence.persist(container);
 	}
 }
 

@@ -65,6 +65,17 @@ export function getSchulamtBetreuungsangebotTypValues(): Array<TSBetreuungsangeb
     ];
 }
 
+export function getBgInstitutionenAndTsBetreuungsangebote(): ReadonlyArray<TSBetreuungsangebotTyp> {
+    return getBgInstitutionenBetreuungsangebote().concat([TSBetreuungsangebotTyp.TAGESSCHULE]);
+}
+
+export function getBgInstitutionenBetreuungsangebote(): ReadonlyArray<TSBetreuungsangebotTyp> {
+    return [
+        TSBetreuungsangebotTyp.KITA,
+        TSBetreuungsangebotTyp.TAGESFAMILIEN,
+    ];
+}
+
 export function isSchulamt(status: TSBetreuungsangebotTyp): boolean {
     return status === TSBetreuungsangebotTyp.TAGESSCHULE || status === TSBetreuungsangebotTyp.FERIENINSEL;
 }

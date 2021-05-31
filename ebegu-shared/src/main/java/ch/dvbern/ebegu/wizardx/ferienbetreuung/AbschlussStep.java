@@ -47,14 +47,15 @@ public class AbschlussStep implements WizardStep<FerienbetreuungWizard> {
 				return WizardStateEnum.OK;
 			}
 
-			if (Objects.requireNonNull(wizard.getFerienbetreuungAngabenContainer().getAngabenKorrektur()).isReadyForFreigeben()) {
+			if (Objects.requireNonNull(wizard.getFerienbetreuungAngabenContainer().getAngabenKorrektur())
+				.isReadyForFreigeben()) {
 				return WizardStateEnum.IN_BEARBEITUNG;
 			}
 			// step should be disabled
 			return WizardStateEnum.NONE;
 		}
 		// IN_BEARBEITUNG_GEMEINDE
-		if(wizard.getFerienbetreuungAngabenContainer().getAngabenDeklaration().isReadyForFreigeben()) {
+		if (wizard.getFerienbetreuungAngabenContainer().getAngabenDeklaration().isReadyForFreigeben()) {
 			return WizardStateEnum.IN_BEARBEITUNG;
 		}
 		// step should be disabled
@@ -69,12 +70,17 @@ public class AbschlussStep implements WizardStep<FerienbetreuungWizard> {
 
 	@Override
 	public boolean isDisabled(@Nonnull FerienbetreuungWizard wizard) {
-		if (wizard.getRole().isRoleGemeindeabhaengig()) {
+		if (wizard.getRole().isRoleMandant()) {
+			return wizard.getFerienbetreuungAngabenContainer().isInBearbeitungGemeinde();
+		}
+		if (wizard.getRole().isRoleGemeindeabhaengig() ||
+			(wizard.getRole().isSuperadmin() && wizard.getFerienbetreuungAngabenContainer()
+				.isInBearbeitungGemeinde())) {
 			return wizard.getFerienbetreuungAngabenContainer().getDokumente() == null ||
 				wizard.getFerienbetreuungAngabenContainer().getDokumente().isEmpty() ||
 				!wizard.getFerienbetreuungAngabenContainer().getAngabenDeklaration().isReadyForFreigeben();
 		}
-		return !wizard.getFerienbetreuungAngabenContainer().isReadyForGeprueft();
+		return false;
 	}
 
 	@Override

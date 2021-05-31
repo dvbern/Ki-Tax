@@ -161,6 +161,22 @@ export class TSRoleUtil {
         ];
     }
 
+    public static getBgInstitutionAndTsProfilEditRoles(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_MANDANT,
+            TSRole.ADMIN_INSTITUTION,
+            TSRole.ADMIN_TRAEGERSCHAFT,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.ADMIN_BG,
+            TSRole.ADMIN_TS,
+            TSRole.SACHBEARBEITER_MANDANT,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.SACHBEARBEITER_BG,
+            TSRole.SACHBEARBEITER_TS,
+        ];
+    }
+
     public static getTraegerschaftInstitutionRoles(): ReadonlyArray<TSRole> {
         return [
             TSRole.SUPER_ADMIN,
@@ -682,5 +698,10 @@ export class TSRoleUtil {
 
     public static getGemeindeBGTSAndAllSozialdienstRoles(): ReadonlyArray<TSRole> {
         return this.getGemeindeOrBGOrTSRoles().concat(this.getAllRolesForSozialdienst());
+    }
+
+    public static getGemeindeOrFBOnlyRoles(): ReadonlyArray<TSRole> {
+        return this.getGemeindeOrBGOrTSRoles()
+            .concat([TSRole.SACHBEARBEITER_FERIENBETREUUNG, TSRole.ADMIN_FERIENBETREUUNG]);
     }
 }

@@ -362,8 +362,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Nonnull
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS,
-		SACHBEARBEITER_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG,
+		SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS })
 	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer falscheAngaben(
 		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainerJax,
 		@Context UriInfo uriInfo,
@@ -379,6 +379,34 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 		final LastenausgleichTagesschuleAngabenGemeindeContainer wiederEroeffnet =
 			angabenGemeindeService.lastenausgleichTagesschuleGemeindeWiederOeffnen(converted);
+
+		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(wiederEroeffnet);
+	}
+
+	@ApiOperation(
+		value = "Setzt ein LastenausgleichTagesschuleAngabenGemeinde von IN_PRUEFUNG_KANTON auf IN_BEARBEITUNG_GEMEINDE",
+		response = Void.class)
+	@PUT
+	@Path("/zurueck-an-gemeinde")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Nonnull
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer zurueckAnGemeinde(
+		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainerJax,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(latsGemeindeContainerJax.getId());
+		Objects.requireNonNull(latsGemeindeContainerJax.getGemeinde().getId());
+
+		authorizer.checkWriteAuthorizationLATSGemeindeAntrag(latsGemeindeContainerJax.getId());
+
+		final LastenausgleichTagesschuleAngabenGemeindeContainer converted =
+			getConvertedLastenausgleichTagesschuleAngabenGemeindeContainer(latsGemeindeContainerJax);
+
+		final LastenausgleichTagesschuleAngabenGemeindeContainer wiederEroeffnet =
+			angabenGemeindeService.lastenausgleichTagesschuleGemeindeZurueckAnGemeinde(converted);
 
 		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(wiederEroeffnet);
 	}

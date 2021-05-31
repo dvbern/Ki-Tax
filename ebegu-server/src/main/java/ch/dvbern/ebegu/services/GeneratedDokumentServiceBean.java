@@ -1067,10 +1067,13 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 					sprache.getLocale());
 		}
 
-		WriteProtectedDokument documentIfExistsAndIsWriteProtected =
-			getDocumentIfExistsAndIsWriteProtected(gesuch.getId(), fileNameForGeneratedDokumentTyp, forceCreation);
-		if (documentIfExistsAndIsWriteProtected != null) {
-			return documentIfExistsAndIsWriteProtected;
+		// Wir wollen wirklich bei TS Anmeldungen der Dokument erneu erstellen als man es mehrmals verfuegen kann
+		if(!forceCreation){
+			WriteProtectedDokument documentIfExistsAndIsWriteProtected =
+				getDocumentIfExistsAndIsWriteProtected(gesuch.getId(), fileNameForGeneratedDokumentTyp, forceCreation);
+			if (documentIfExistsAndIsWriteProtected != null) {
+				return documentIfExistsAndIsWriteProtected;
+			}
 		}
 
 		WriteProtectedDokument persistedDokument = null;

@@ -198,10 +198,23 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	public void copyForFreigabe() {
 		// Nur moeglich, wenn noch nicht freigegeben und ueberhaupt Daten zum kopieren vorhanden
+		// Wir kopieren nicht, wenn Kanton bereits Daten erfasst hat
 		if (status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE
 			&& angabenDeklaration != null) {
 			angabenKorrektur = new LastenausgleichTagesschuleAngabenGemeinde(angabenDeklaration);
 		}
+	}
+
+	public void copyForZurueckAnGemeinde() {
+		Preconditions.checkState(
+			angabenKorrektur != null,
+			"angabenKorrektur must not be null"
+		);
+		Preconditions.checkState(
+			status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON,
+			"container must be in state IN_PRUEFUNG_KANTON"
+		);
+		angabenDeklaration = new LastenausgleichTagesschuleAngabenGemeinde(angabenKorrektur);
 	}
 
 	@Nonnull
@@ -354,5 +367,13 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	public boolean isAntragGeprueft() {
 		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT;
+	}
+
+	public boolean isInPruefungKanton() {
+		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON;
+	}
+
+	public boolean isInStatusNeu() {
+		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.NEU;
 	}
 }

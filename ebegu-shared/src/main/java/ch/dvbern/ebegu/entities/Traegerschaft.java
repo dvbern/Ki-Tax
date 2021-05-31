@@ -18,13 +18,16 @@ package ch.dvbern.ebegu.entities;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -50,6 +53,15 @@ public class Traegerschaft extends AbstractMutableEntity implements Displayable 
 	@Column(nullable = false)
 	private Boolean active = true;
 
+	@Nullable
+	@Column(nullable = true)
+	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.email.message}")
+	private String email;
+
+	@Nullable
+	@Column(nullable = true)
+	private Boolean offentlich;
+
 	public Traegerschaft() {
 	}
 
@@ -69,6 +81,24 @@ public class Traegerschaft extends AbstractMutableEntity implements Displayable 
 
 	public void setActive(Boolean active) {
 		this.active = active;
+	}
+
+	@Nullable
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(@Nullable String email) {
+		this.email = email;
+	}
+
+	@Nullable
+	public Boolean getOffentlich() {
+		return offentlich;
+	}
+
+	public void setOffentlich(@Nullable Boolean offentlich) {
+		this.offentlich = offentlich;
 	}
 
 	@Override

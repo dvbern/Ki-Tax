@@ -8,14 +8,15 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum TSFerienbetreuungFormularStatus {
-    IN_BEARBEITUNG_GEMEINDE = 'IN_BEARBEITUNG_GEMEINDE',
-    ABGESCHLOSSEN = 'ABGESCHLOSSEN',
-}
+alter table traegerschaft add if not exists email VARCHAR(255);
+alter table traegerschaft_aud add if not exists email VARCHAR(255);
+
+alter table traegerschaft add if not exists offentlich bit;
+alter table traegerschaft_aud add if not exists offentlich bit;

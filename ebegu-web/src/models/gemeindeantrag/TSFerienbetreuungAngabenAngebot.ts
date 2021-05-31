@@ -15,7 +15,6 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSFerienbetreuungFormularStatus} from '../enums/TSFerienbetreuungFormularStatus';
 import {TSAdresse} from '../TSAdresse';
 import {TSFerienbetreuungAbstractAngaben} from './TSFerienbetreuungAbstractAngaben';
 
@@ -27,6 +26,7 @@ export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAn
     private _angebotAdresse: TSAdresse;
     private _anzahlFerienwochenHerbstferien: number;
     private _anzahlFerienwochenWinterferien: number;
+    private _anzahlFerienwochenSportferien: number;
     private _anzahlFerienwochenFruehlingsferien: number;
     private _anzahlFerienwochenSommerferien: number;
     private _anzahlTage: number;
@@ -36,6 +36,7 @@ export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAn
     private _bemerkungenOeffnungszeiten: string;
     private _finanziellBeteiligteGemeinden: string[];
     private _gemeindeFuehrtAngebotSelber: boolean;
+    private _gemeindeFuehrtAngebotInKooperation: boolean;
     private _gemeindeBeauftragtExterneAnbieter: boolean;
     private _angebotVereineUndPrivateIntegriert: boolean;
     private _bemerkungenKooperation: boolean;
@@ -97,6 +98,14 @@ export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAn
 
     public set anzahlFerienwochenWinterferien(value: number) {
         this._anzahlFerienwochenWinterferien = value;
+    }
+
+    public get anzahlFerienwochenSportferien(): number {
+        return this._anzahlFerienwochenSportferien;
+    }
+
+    public set anzahlFerienwochenSportferien(value: number) {
+        this._anzahlFerienwochenSportferien = value;
     }
 
     public get anzahlFerienwochenFruehlingsferien(): number {
@@ -169,6 +178,14 @@ export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAn
 
     public set gemeindeFuehrtAngebotSelber(value: boolean) {
         this._gemeindeFuehrtAngebotSelber = value;
+    }
+
+    public get gemeindeFuehrtAngebotInKooperation(): boolean {
+        return this._gemeindeFuehrtAngebotInKooperation;
+    }
+
+    public set gemeindeFuehrtAngebotInKooperation(value: boolean) {
+        this._gemeindeFuehrtAngebotInKooperation = value;
     }
 
     public get gemeindeBeauftragtExterneAnbieter(): boolean {
@@ -281,28 +298,5 @@ export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAn
 
     public set bemerkungenTarifsystem(value: string) {
         this._bemerkungenTarifsystem = value;
-    }
-
-    public isAtLeastAbgeschlossenGemeinde(): boolean {
-        return [
-            TSFerienbetreuungFormularStatus.ABGESCHLOSSEN,
-            TSFerienbetreuungFormularStatus.IN_PRUEFUNG_KANTON,
-            TSFerienbetreuungFormularStatus.GEPRUEFT,
-        ].includes(this.status);
-    }
-
-    public isAtLeastInPruefungKanton(): boolean {
-        return [
-            TSFerienbetreuungFormularStatus.IN_PRUEFUNG_KANTON,
-            TSFerienbetreuungFormularStatus.GEPRUEFT,
-        ].includes(this.status);
-    }
-
-    public isGeprueft(): boolean {
-        return this.status === TSFerienbetreuungFormularStatus.GEPRUEFT;
-    }
-
-    public isInPruefungKanton(): boolean {
-        return this.status === TSFerienbetreuungFormularStatus.IN_PRUEFUNG_KANTON;
     }
 }

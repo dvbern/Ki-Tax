@@ -41,7 +41,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
-import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
+import com.google.common.base.Preconditions;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
@@ -211,5 +211,21 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 		if (status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE) {
 			angabenKorrektur = new FerienbetreuungAngaben(angabenDeklaration);
 		}
+	}
+
+	public void copyForZurueckAnGemeinde() {
+		Preconditions.checkState(
+			status == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON,
+			"FerienbetreuungAngabenContainer must be in state IN_PRUEFUNG_KANTON"
+		);
+		Preconditions.checkState(
+			angabenKorrektur != null,
+			"angabenKorrektur must not be null"
+		);
+		angabenDeklaration = new FerienbetreuungAngaben(angabenKorrektur);
+	}
+
+	public boolean isInBearbeitungGemeinde() {
+		return status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE;
 	}
 }

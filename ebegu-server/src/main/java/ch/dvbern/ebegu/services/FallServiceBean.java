@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer_;
 import ch.dvbern.ebegu.entities.Gesuchsteller_;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFallDokument;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
@@ -98,6 +99,9 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 
 	@Inject
 	private PDFService pdfService;
+
+	@Inject
+	private SozialdienstFallDokumentService sozialdienstFallDokumentService;
 
 	@Nonnull
 	@Override
@@ -182,6 +186,10 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 		// Remove all depending objects
 		mitteilungService.removeAllMitteilungenForFall(loadedFall);
 		massenversandService.removeMassenversandGesucheForFall(loadedFall);
+		if(loadedFall.isSozialdienstFall()) {
+			sozialdienstFallDokumentService.removeDokumenteForSozialdienstFall(
+				requireNonNull(loadedFall.getSozialdienstFall()).getId());
+		}
 		// Alle Dossier des Falls loeschen (die entsprechenden Gesuchen werden damit auch geloescht
 		Collection<Dossier> dossiersByFall = dossierService.findDossiersByFall(fall.getId());
 		for (Dossier dossier : dossiersByFall) {

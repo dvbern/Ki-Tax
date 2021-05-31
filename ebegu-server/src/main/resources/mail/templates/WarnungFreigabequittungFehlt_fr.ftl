@@ -42,6 +42,9 @@ ${templateConfiguration.mailCss}
 		</p>
 	</#if>
 	<p>
+		Il s’agit d’un message automatique. Veuillez ne pas en tenir compte si vous avez déjà remis votre confirmation des données dans l’intervalle.
+	</p>
+	<p>
 		Nous vous présentons nos meilleures salutations.<br/>
 		Votre commune ${gesuch.dossier.gemeinde.name}
 	</p>
@@ -49,7 +52,6 @@ ${templateConfiguration.mailCss}
 		<#if configuration.isDevmode>
 		<b>Le présent message est envoyé par un système test utilisé pour les tutoriels. Les demandes via ce système ne donnent pas droit à un versement.</b><br><br>
 		</#if>
-		Merci de ne pas répondre à ce message automatique.
 	</p>
 </div>
 
