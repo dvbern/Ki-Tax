@@ -2464,6 +2464,7 @@
     "FERIENBETREUUNG_FREIGEGEBEN_AN_KANTON": "Sie haben das Gesuch an den Kanton eingereicht. Sie können Ihre Eingaben weiterhin einsehen, sind aber nicht mehr in der Lage, Ihre Eingaben zu mutieren. Wenden Sie sich ansonsten an <a href='mailto:sea.bkd@be.ch'>sea.bkd@be.ch</a>.<br>Die Prüfung der Gesuche erfolgt im Oktober, die Auszahlung voraussichtlich bis Jahresende.",
     "ANTRAEGE_ERSTELLT": "{{amount}} Anträge wurden erstellt",
     "FERIENBETREUUNG_GEPRUEFT": "Sie haben das Gesuch geprüft. Sie können die Eingaben der Gemeinde und Ihre Korrekturen weiterhin einsehen, sind aber nicht mehr in der Lage, Ihre Eingaben zu mutieren.",
+    "FERIENBETREUUNG_ANGABEN_KORRIGIEREN": "Angaben korrigieren",
     "ANTRAG_ERSTELLT": "Der Antrag wurde erstellt",
     "ERROR_FB_SONDERSCHUELER": "Anzahl Betreuungstage für Sonderschüeler dürfen nicht höher sein, als die Anzahl der Betreuungstage der Gemeinde",
     "ERROR_FB_BETREUUNGSTAGE": "\"Betreuungstage von Kindern der anbietenden Gemeinde\" plus \"Betreuungstage von Kindern aus anderen Gemeinden\" muss gleich \"Anzahl Betreuungstage Kanton Bern\" sein",
