@@ -1,3 +1,4 @@
+import {Location} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
@@ -40,7 +41,8 @@ export class VerlaufComponent implements OnInit {
         private readonly lastenausgleichTSService: LastenausgleichTSService,
         private readonly errorService: ErrorService,
         private readonly $translate: TranslateService,
-        private readonly cd: ChangeDetectorRef
+        private readonly cd: ChangeDetectorRef,
+        private readonly location: Location
     ) {
     }
 
@@ -66,5 +68,9 @@ export class VerlaufComponent implements OnInit {
                 benutzer: d.benutzer.getFullName()
             };
         });
+    }
+
+    public navigateBack(): void {
+        this.location.back();
     }
 }
