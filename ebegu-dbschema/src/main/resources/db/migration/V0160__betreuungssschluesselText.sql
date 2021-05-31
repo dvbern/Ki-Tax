@@ -16,3 +16,4 @@
  */
 
 ALTER TABLE ferienbetreuung_angaben_angebot MODIFY betreuungsschluessel TEXT;
+ALTER TABLE ferienbetreuung_angaben_angebot_aud MODIFY betreuungsschluessel TEXT;
