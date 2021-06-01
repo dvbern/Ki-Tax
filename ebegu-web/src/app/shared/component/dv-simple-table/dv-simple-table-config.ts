@@ -18,11 +18,11 @@ import {SortDirection} from '@angular/material/sort';
 
 export class DvSimpleTableConfig {
     // sets cursor style. Should be true, if clickEvent is defined
-    private _cursorPointer: boolean;
+    private readonly _cursorPointer: boolean;
     // name of column for initial sorting
-    private _initialSortColumn: string;
+    private readonly _initialSortColumn: string;
     // direction for initial sorting
-    private _initialSortDirection: SortDirection;
+    private readonly _initialSortDirection: SortDirection;
 
     /**
      * @param initialSortColumn: name of column for initial sorting

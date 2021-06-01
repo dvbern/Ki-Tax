@@ -20,6 +20,7 @@ import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateModule} from '@ngx-translate/core';
+import {StateService} from '@uirouter/core';
 import {of} from 'rxjs';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
@@ -33,6 +34,7 @@ import {LastenausgleichTsKommentarComponent} from './lastenausgleich-ts-kommenta
 const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(LastenausgleichTSService.name,
     ['getLATSAngabenGemeindeContainer']);
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
 
 describe('LastenausgleichTsKommentarComponent', () => {
     let component: LastenausgleichTsKommentarComponent;
@@ -55,6 +57,7 @@ describe('LastenausgleichTsKommentarComponent', () => {
                 WindowRef,
                 {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: StateService, useValue: stateServiceSpy},
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
