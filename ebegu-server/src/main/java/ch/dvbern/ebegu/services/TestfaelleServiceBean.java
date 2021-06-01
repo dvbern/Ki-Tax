@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,6 +57,8 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFallDokument;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
@@ -101,6 +104,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.FreigabeCopyUtil;
+import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -161,6 +165,10 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private TestfaelleService testfaelleService;
 	@Inject
 	private SozialdienstService sozialdienstService;
+	@Inject
+	private FileSaverService fileSaverService;
+	@Inject
+	private SozialdienstFallDokumentService sozialdienstFallDokumentService;
 
 
 	@Override
@@ -267,6 +275,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 					sozialdienst
 					);
 				final Gesuch gesuch = createAndSaveGesuch(testfallSozialdienst, verfuegen, null);
+				requireNonNull(gesuch.getFall().getSozialdienstFall());
+				createAndSaveSozialdiesntFallDokument(gesuch.getFall().getSozialdienstFall());
 				responseString.append("Fall Sozialdienst Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if ("all".equals(fallid)) {
 				createAndSaveGesuch(new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, besitzer);
@@ -1014,4 +1024,29 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		return sozialdienstService.findSozialdienst(AbstractTestfall.ID_BERNER_SOZIALDIENST)
 			.orElseThrow(() -> new EbeguEntityNotFoundException("getBernerSozialdienst", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 	}
+
+	private void createAndSaveSozialdiesntFallDokument(@Nonnull SozialdienstFall sozialdienstFall) {
+		try{
+			UploadFileInfo fileInfo = new UploadFileInfo("vollmacht.pdf", new MimeType("text/pdf"));
+			fileInfo.setFilename("vollmacht.pdf");
+
+			fileInfo.setBytes(new byte['0']);
+
+			// safe File to Filesystem, if we just analyze the input stream tika classifies all files as octet streams
+			fileSaverService.save(fileInfo, sozialdienstFall.getId());
+
+			// create and add the new file to RueckforderungsDokument object and persist it
+			SozialdienstFallDokument sozialdienstFallDokument = new SozialdienstFallDokument();
+			sozialdienstFallDokument.setSozialdienstFall(sozialdienstFall);
+			sozialdienstFallDokument.setFilepfad(fileInfo.getPath());
+			sozialdienstFallDokument.setFilename(fileInfo.getFilename());
+			sozialdienstFallDokument.setFilesize(fileInfo.getSizeString());
+
+			sozialdienstFallDokumentService.saveVollmachtDokument(sozialdienstFallDokument);
+		}
+		catch (MimeTypeParseException e) {
+			LOG.error("Could not save Sozialdienst Vollmacht Dokument");
+		}
+	}
+
 }
