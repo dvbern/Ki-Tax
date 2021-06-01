@@ -203,13 +203,17 @@ export class EditInstitutionComponent implements OnInit {
 
     public isDateStartEndDisabled(): boolean {
         if (this.isBetreuungsgutschein()) {
-            return !this.isSuperAdmin();
+            return !(this.isSuperAdmin() || this.isMandant());
         }
         return false;
     }
 
     public isSuperAdmin(): boolean {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    public isMandant(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 
     public isRegistering(): boolean {
