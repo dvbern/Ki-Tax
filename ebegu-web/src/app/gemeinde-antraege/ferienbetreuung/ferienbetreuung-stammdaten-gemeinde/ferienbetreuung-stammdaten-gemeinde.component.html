@@ -73,7 +73,7 @@
                     </mat-select>
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.stammdaten?.amAngebotBeteiligteGemeinden?.join(', ')"
-                        [korrektur]="form.get('amAngebotBeteiligteGemeinden').value?.join(', ')"
+                        [korrektur]="form.get('amAngebotBeteiligteGemeinden').value?.sort().join(', ')"
                         [showBisher]="container.isAtLeastInPruefungKanton()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>

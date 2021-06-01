@@ -520,8 +520,8 @@
                         </mat-option>
                     </mat-select>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.finanziellBeteiligteGemeinden.join(', ')"
-                        [korrektur]="form.get('finanziellBeteiligteGemeinden').value"
+                        [deklaration]="container?.angabenDeklaration?.angebot?.finanziellBeteiligteGemeinden?.join(', ')"
+                        [korrektur]="form.get('finanziellBeteiligteGemeinden').value?.sort().join(', ')"
                         [showBisher]="container.isAtLeastInPruefungKanton()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
