@@ -77,5 +77,26 @@
         &-seperator {
             height: 0;
         }
+
+        @media screen and (min-width: 600px) {
+            &:first-of-type {
+                margin-left: auto;
+            }
+            &:last-of-type {
+                margin-right: auto;
+            }
+        }
+    }
+
+    .mobile-center-center {
+        align-content: center;
+        max-width: 100%;
+        align-items: center;
+        -ms-flex-align: center;
+        -ms-flex-line-pack: center;
+        -ms-flex-pack: center;
+        @media screen and (min-width: 600px) {
+            justify-content: flex-start;
+        }
     }
 }
