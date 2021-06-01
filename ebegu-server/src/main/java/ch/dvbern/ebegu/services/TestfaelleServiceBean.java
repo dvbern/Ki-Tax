@@ -57,7 +57,6 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
-import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFallDokument;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -275,7 +274,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 					sozialdienst
 					);
 				final Gesuch gesuch = createAndSaveGesuch(testfallSozialdienst, verfuegen, null);
-				createAndSaveSozialdiesntFallDokument(gesuch.getFall());
+				createAndSaveSozialdienstFallDokument(gesuch.getFall());
 				responseString.append("Fall Sozialdienst Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if ("all".equals(fallid)) {
 				createAndSaveGesuch(new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, besitzer);
@@ -1024,7 +1023,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			.orElseThrow(() -> new EbeguEntityNotFoundException("getBernerSozialdienst", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 	}
 
-	private void createAndSaveSozialdiesntFallDokument(@Nonnull Fall fall) {
+	private void createAndSaveSozialdienstFallDokument(@Nonnull Fall fall) {
 		requireNonNull(fall.getSozialdienstFall());
 		try{
 			UploadFileInfo fileInfo = new UploadFileInfo("vollmacht.pdf", new MimeType("text/pdf"));
@@ -1032,10 +1031,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 			fileInfo.setBytes(fallService.generateVollmachtDokument(fall.getId(), Sprache.DEUTSCH));
 
-			// safe File to Filesystem, if we just analyze the input stream tika classifies all files as octet streams
 			fileSaverService.save(fileInfo, fall.getSozialdienstFall().getId());
 
-			// create and add the new file to RueckforderungsDokument object and persist it
 			SozialdienstFallDokument sozialdienstFallDokument = new SozialdienstFallDokument();
 			sozialdienstFallDokument.setSozialdienstFall(fall.getSozialdienstFall());
 			sozialdienstFallDokument.setFilepfad(fileInfo.getPath());
