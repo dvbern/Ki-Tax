@@ -275,8 +275,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 					sozialdienst
 					);
 				final Gesuch gesuch = createAndSaveGesuch(testfallSozialdienst, verfuegen, null);
-				requireNonNull(gesuch.getFall().getSozialdienstFall());
-				createAndSaveSozialdiesntFallDokument(gesuch.getFall().getSozialdienstFall());
+				createAndSaveSozialdiesntFallDokument(gesuch.getFall());
 				responseString.append("Fall Sozialdienst Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if ("all".equals(fallid)) {
 				createAndSaveGesuch(new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, besitzer);
@@ -1025,26 +1024,27 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			.orElseThrow(() -> new EbeguEntityNotFoundException("getBernerSozialdienst", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 	}
 
-	private void createAndSaveSozialdiesntFallDokument(@Nonnull SozialdienstFall sozialdienstFall) {
+	private void createAndSaveSozialdiesntFallDokument(@Nonnull Fall fall) {
+		requireNonNull(fall.getSozialdienstFall());
 		try{
 			UploadFileInfo fileInfo = new UploadFileInfo("vollmacht.pdf", new MimeType("text/pdf"));
 			fileInfo.setFilename("vollmacht.pdf");
 
-			fileInfo.setBytes(new byte['0']);
+			fileInfo.setBytes(fallService.generateVollmachtDokument(fall.getId(), Sprache.DEUTSCH));
 
 			// safe File to Filesystem, if we just analyze the input stream tika classifies all files as octet streams
-			fileSaverService.save(fileInfo, sozialdienstFall.getId());
+			fileSaverService.save(fileInfo, fall.getSozialdienstFall().getId());
 
 			// create and add the new file to RueckforderungsDokument object and persist it
 			SozialdienstFallDokument sozialdienstFallDokument = new SozialdienstFallDokument();
-			sozialdienstFallDokument.setSozialdienstFall(sozialdienstFall);
+			sozialdienstFallDokument.setSozialdienstFall(fall.getSozialdienstFall());
 			sozialdienstFallDokument.setFilepfad(fileInfo.getPath());
 			sozialdienstFallDokument.setFilename(fileInfo.getFilename());
 			sozialdienstFallDokument.setFilesize(fileInfo.getSizeString());
 
 			sozialdienstFallDokumentService.saveVollmachtDokument(sozialdienstFallDokument);
 		}
-		catch (MimeTypeParseException e) {
+		catch (MimeTypeParseException | MergeDocException e) {
 			LOG.error("Could not save Sozialdienst Vollmacht Dokument");
 		}
 	}
