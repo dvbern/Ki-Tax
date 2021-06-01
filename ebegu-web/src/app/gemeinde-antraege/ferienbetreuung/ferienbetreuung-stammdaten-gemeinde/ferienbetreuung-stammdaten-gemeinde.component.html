@@ -128,7 +128,7 @@
                     <label for="stammdaten_adresse_anschrift_id"
                            required
                            [ngClass]="{'label-required-error': form?.get('stammdatenAdresse').get('organisation').errors}">
-                        {{'ADRESSE_ANSCHRIFT' | translate}}
+                        {{'FERIENBETREUUNG_ANSCHRIFT' | translate}}
                     </label>
                     <mat-form-field floatLabel="always">
                         <input type="text"
@@ -248,7 +248,7 @@
 
                     <dv-input-container-x [verticalAlign]="true" class="col-xs-12">
                         <label for="adresse_stammdaten_zusatz_id">
-                            {{'ADRESSE_ZUSATZZEILE' | translate}}
+                            {{'FERIENBETREUUNG_ZUSATZ' | translate}}
                         </label>
                         <mat-form-field floatLabel="always">
                             <input type="text"
@@ -650,7 +650,7 @@
 
     <div class="row margin-top-20" *ngIf="canSeeFalscheAngaben | async">
         <div class="col-md-12">
-            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>ANGABEN_KORRIGIEREN</a>
+            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FERIENBETREUUNG_ANGABEN_KORRIGIEREN</a>
         </div>
     </div>
 
