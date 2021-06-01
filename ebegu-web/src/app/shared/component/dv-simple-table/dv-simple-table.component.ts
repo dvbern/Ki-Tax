@@ -12,6 +12,7 @@ import {
 import {Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {DvSimpleTableColumnDefinition} from './dv-simple-table-column-definition';
+import {DvSimpleTableConfig} from './dv-simple-table-config';
 
 @Component({
     selector: 'dv-simple-table',
@@ -24,6 +25,7 @@ export class DvSimpleTableComponent implements OnInit, OnChanges {
 
     @Input() public data: any[] = [];
     @Input() public columns: DvSimpleTableColumnDefinition[];
+    @Input() public config: DvSimpleTableConfig;
 
     @Output() public readonly rowClicked: EventEmitter<any> = new EventEmitter<any>();
 

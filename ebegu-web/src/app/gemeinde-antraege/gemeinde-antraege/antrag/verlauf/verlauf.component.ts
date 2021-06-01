@@ -6,6 +6,7 @@ import {TSLastenausgleichTagesschulenStatusHistory} from '../../../../../models/
 import {CONSTANTS} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {DvSimpleTableColumnDefinition} from '../../../../shared/component/dv-simple-table/dv-simple-table-column-definition';
+import {DvSimpleTableConfig} from '../../../../shared/component/dv-simple-table/dv-simple-table-config';
 import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
 
 @Component({
@@ -36,6 +37,7 @@ export class VerlaufComponent implements OnInit {
             attributeName: 'benutzer'
         },
     ];
+    public tableConfig = new DvSimpleTableConfig('timestampVon', 'desc', false);
 
     public constructor(
         private readonly lastenausgleichTSService: LastenausgleichTSService,
