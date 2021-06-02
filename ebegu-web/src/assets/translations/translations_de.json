@@ -2506,5 +2506,9 @@
     "TAGESSCHULEN_DER_GEMEINDEN": "Tagesschulen der Gemeinde",
     "OFFENTLICHE_TRAEGERSCHAFT": "Öffentliche Trägerschaft",
     "PRIVATE_TRAEGERSCHAFT": "Private Trägerschaft",
+    "LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE": "Anteil der Lastenausgleich Tagesschule Anträge der deutschsprachigen Gemeinden, die zur Zweitprüfung ausgewählt werden sollen",
+    "LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_FR": "Anteil der Lastenausgleich Tagesschule Anträge der französischsprachigen Gemeinden, die zur Zweitprüfung ausgewählt werden sollen",
+    "LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE": "Ab welcher Anzahl Betreuungsstunden sollen Lastenausgleich Tagesschule Anträge der deutschsprachigen Gemeinden automatisch zur Zweitprüfung ausgewählt werden",
+    "LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR": "Ab welcher Anzahl Betreuungsstunden sollen Lastenausgleich Tagesschule Anträge der französischsprachigen Gemeinden automatisch zur Zweitprüfung ausgewählt werden",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

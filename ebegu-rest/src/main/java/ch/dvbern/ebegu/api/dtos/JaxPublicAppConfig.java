@@ -1,5 +1,7 @@
 package ch.dvbern.ebegu.api.dtos;
 
+import java.math.BigDecimal;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -25,6 +27,11 @@ public class JaxPublicAppConfig {
 	private String notverordnungDefaultEinreichefristPrivat;
 	private boolean ferienbetreuungAktiv;
 	private boolean lastenausgleichTagesschulenAktiv;
+	private BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDe;
+	private BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungFr;
+	private BigDecimal lastenausgleichTagesschulenAutoZweitpruefungDe;
+	private BigDecimal lastenausgleichTagesschulenAutoZweitpruefungFr;
+
 
 	public JaxPublicAppConfig(
 		String currentNode,
@@ -40,7 +47,11 @@ public class JaxPublicAppConfig {
 		String notverordnungDefaultEinreichefristOeffentlich,
 		String notverordnungDefaultEinreichefristPrivat,
 		boolean ferienbetreuungAktiv,
-		boolean lastenausgleichTagesschulenAktiv
+		boolean lastenausgleichTagesschulenAktiv,
+		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDe,
+		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungFr,
+		BigDecimal lastenausgleichTagesschulenAutoZweitpruefungDe,
+		BigDecimal lastenausgleichTagesschulenAutoZweitpruefungFr
 	) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
@@ -56,6 +67,10 @@ public class JaxPublicAppConfig {
 		this.notverordnungDefaultEinreichefristPrivat = notverordnungDefaultEinreichefristPrivat;
 		this.ferienbetreuungAktiv = ferienbetreuungAktiv;
 		this.lastenausgleichTagesschulenAktiv = lastenausgleichTagesschulenAktiv;
+		this.lastenausgleichTagesschulenAnteilZweitpruefungDe = lastenausgleichTagesschulenAnteilZweitpruefungDe;
+		this.lastenausgleichTagesschulenAnteilZweitpruefungFr = lastenausgleichTagesschulenAnteilZweitpruefungFr;
+		this.lastenausgleichTagesschulenAutoZweitpruefungDe = lastenausgleichTagesschulenAutoZweitpruefungDe;
+		this.lastenausgleichTagesschulenAutoZweitpruefungFr = lastenausgleichTagesschulenAutoZweitpruefungFr;
 	}
 
 	public String getCurrentNode() {
@@ -168,5 +183,37 @@ public class JaxPublicAppConfig {
 
 	public void setLastenausgleichTagesschulenAktiv(boolean lastenausgleichTagesschulenAktiv) {
 		this.lastenausgleichTagesschulenAktiv = lastenausgleichTagesschulenAktiv;
+	}
+
+	public BigDecimal getLastenausgleichTagesschulenAnteilZweitpruefungDe() {
+		return lastenausgleichTagesschulenAnteilZweitpruefungDe;
+	}
+
+	public void setLastenausgleichTagesschulenAnteilZweitpruefungDe(BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDe) {
+		this.lastenausgleichTagesschulenAnteilZweitpruefungDe = lastenausgleichTagesschulenAnteilZweitpruefungDe;
+	}
+
+	public BigDecimal getLastenausgleichTagesschulenAnteilZweitpruefungFr() {
+		return lastenausgleichTagesschulenAnteilZweitpruefungFr;
+	}
+
+	public void setLastenausgleichTagesschulenAnteilZweitpruefungFr(BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungFr) {
+		this.lastenausgleichTagesschulenAnteilZweitpruefungFr = lastenausgleichTagesschulenAnteilZweitpruefungFr;
+	}
+
+	public BigDecimal getLastenausgleichTagesschulenAutoZweitpruefungDe() {
+		return lastenausgleichTagesschulenAutoZweitpruefungDe;
+	}
+
+	public void setLastenausgleichTagesschulenAutoZweitpruefungDe(BigDecimal lastenausgleichTagesschulenAutoZweitpruefungDe) {
+		this.lastenausgleichTagesschulenAutoZweitpruefungDe = lastenausgleichTagesschulenAutoZweitpruefungDe;
+	}
+
+	public BigDecimal getLastenausgleichTagesschulenAutoZweitpruefungFr() {
+		return lastenausgleichTagesschulenAutoZweitpruefungFr;
+	}
+
+	public void setLastenausgleichTagesschulenAutoZweitpruefungFr(BigDecimal lastenausgleichTagesschulenAutoZweitpruefungFr) {
+		this.lastenausgleichTagesschulenAutoZweitpruefungFr = lastenausgleichTagesschulenAutoZweitpruefungFr;
 	}
 }
