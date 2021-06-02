@@ -37,10 +37,10 @@ import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../models/gemeindeant
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
-import {TSSozialdienstFallDokument} from '../models/sozialdienst/TSSozialdienstFallDokument';
-import {TSSozialdienstStammdaten} from '../models/sozialdienst/TSSozialdienstStammdaten';
 import {TSSozialdienst} from '../models/sozialdienst/TSSozialdienst';
 import {TSSozialdienstFall} from '../models/sozialdienst/TSSozialdienstFall';
+import {TSSozialdienstFallDokument} from '../models/sozialdienst/TSSozialdienstFallDokument';
+import {TSSozialdienstStammdaten} from '../models/sozialdienst/TSSozialdienstStammdaten';
 import {TSAbstractAntragEntity} from '../models/TSAbstractAntragEntity';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
 import {TSAbstractDecimalPensumEntity} from '../models/TSAbstractDecimalPensumEntity';
@@ -4887,7 +4887,8 @@ export class EbeguRestUtil {
         restAngebot.anzahlStundenProBetreuungstag = angebotTS.anzahlStundenProBetreuungstag;
         restAngebot.betreuungErfolgtTagsueber = angebotTS.betreuungErfolgtTagsueber;
         restAngebot.bemerkungenOeffnungszeiten = angebotTS.bemerkungenOeffnungszeiten;
-        restAngebot.finanziellBeteiligteGemeinden = angebotTS.finanziellBeteiligteGemeinden.sort();
+        angebotTS.finanziellBeteiligteGemeinden.sort();
+        restAngebot.finanziellBeteiligteGemeinden = angebotTS.finanziellBeteiligteGemeinden;
         restAngebot.gemeindeFuehrtAngebotSelber = angebotTS.gemeindeFuehrtAngebotSelber;
         restAngebot.gemeindeFuehrtAngebotInKooperation = angebotTS.gemeindeFuehrtAngebotInKooperation;
         restAngebot.gemeindeBeauftragtExterneAnbieter = angebotTS.gemeindeBeauftragtExterneAnbieter;
@@ -5004,7 +5005,8 @@ export class EbeguRestUtil {
         }
         this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
         stammdatenTS.status = stammdatenFromServer.status;
-        stammdatenTS.amAngebotBeteiligteGemeinden = stammdatenFromServer.amAngebotBeteiligteGemeinden.sort();
+        stammdatenFromServer.amAngebotBeteiligteGemeinden.sort();
+        stammdatenTS.amAngebotBeteiligteGemeinden = stammdatenFromServer.amAngebotBeteiligteGemeinden;
         stammdatenTS.seitWannFerienbetreuungen = DateUtil.localDateToMoment(stammdatenFromServer.seitWannFerienbetreuungen);
         stammdatenTS.traegerschaft = stammdatenFromServer.traegerschaft;
         stammdatenTS.stammdatenAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.stammdatenAdresse);
