@@ -4887,7 +4887,7 @@ export class EbeguRestUtil {
         restAngebot.anzahlStundenProBetreuungstag = angebotTS.anzahlStundenProBetreuungstag;
         restAngebot.betreuungErfolgtTagsueber = angebotTS.betreuungErfolgtTagsueber;
         restAngebot.bemerkungenOeffnungszeiten = angebotTS.bemerkungenOeffnungszeiten;
-        restAngebot.finanziellBeteiligteGemeinden = angebotTS.finanziellBeteiligteGemeinden;
+        restAngebot.finanziellBeteiligteGemeinden = angebotTS.finanziellBeteiligteGemeinden.sort();
         restAngebot.gemeindeFuehrtAngebotSelber = angebotTS.gemeindeFuehrtAngebotSelber;
         restAngebot.gemeindeFuehrtAngebotInKooperation = angebotTS.gemeindeFuehrtAngebotInKooperation;
         restAngebot.gemeindeBeauftragtExterneAnbieter = angebotTS.gemeindeBeauftragtExterneAnbieter;
@@ -5004,7 +5004,7 @@ export class EbeguRestUtil {
         }
         this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
         stammdatenTS.status = stammdatenFromServer.status;
-        stammdatenTS.amAngebotBeteiligteGemeinden = stammdatenFromServer.amAngebotBeteiligteGemeinden;
+        stammdatenTS.amAngebotBeteiligteGemeinden = stammdatenFromServer.amAngebotBeteiligteGemeinden.sort();
         stammdatenTS.seitWannFerienbetreuungen = DateUtil.localDateToMoment(stammdatenFromServer.seitWannFerienbetreuungen);
         stammdatenTS.traegerschaft = stammdatenFromServer.traegerschaft;
         stammdatenTS.stammdatenAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.stammdatenAdresse);

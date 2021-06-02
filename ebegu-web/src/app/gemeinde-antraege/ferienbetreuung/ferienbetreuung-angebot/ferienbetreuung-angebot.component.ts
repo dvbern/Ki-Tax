@@ -240,9 +240,6 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         this.form.get('anzahlStundenProBetreuungstag').setValidators(
             numberValidator(ValidationType.HALF)
         );
-        this.form.get('betreuungsschluessel').setValidators(
-            numberValidator(ValidationType.INTEGER)
-        );
 
         this.enableAdressValidation();
         this.triggerFormValidation();
@@ -272,7 +269,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         this.form.get('betreuungDurchPersonenMitErfahrung').setValidators(Validators.required);
         this.form.get('anzahlKinderAngemessen').setValidators(Validators.required);
         this.form.get('betreuungsschluessel')
-            .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+            .setValidators([Validators.required]);
     }
 
     public save(): void {

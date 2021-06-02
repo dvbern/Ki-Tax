@@ -73,13 +73,15 @@
                     </mat-select>
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.stammdaten?.amAngebotBeteiligteGemeinden?.join(', ')"
-                        [korrektur]="form.get('amAngebotBeteiligteGemeinden').value?.join(', ')"
+                        [korrektur]="form.get('amAngebotBeteiligteGemeinden').value?.sort().join(', ')"
                         [showBisher]="container.isAtLeastInPruefungKanton()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
-            <div class="margin-bottom-20">
+            <div class="margin-bottom-20 label-black">
+                <label for="inputId"
+                       translate>FERIENBETREUUNG_SEIT_WANN</label>
                 <input class="dv-mat-datepicker"
                        type="text"
                        name="inputId"
@@ -194,6 +196,24 @@
                         </dv-bisher-x>
                     </dv-input-container-x>
                 </div>
+                <dv-input-container-x [verticalAlign]="true">
+                    <label for="adresse_stammdaten_zusatz_id">
+                        {{'ADRESSE_ZUSATZZEILE' | translate}}
+                    </label>
+                    <mat-form-field floatLabel="always">
+                        <input type="text"
+                               id="adresse_stammdaten_zusatz_id"
+                               matInput
+                               formControlName="zusatzzeile"
+                               class="form-control dv-input"/>
+                        <dv-bisher-x
+                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.zusatzzeile"
+                            [korrektur]="form.get('stammdatenAdresse').get('zusatzzeile').value"
+                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
 
                 <div class="row">
                     <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
@@ -513,6 +533,26 @@
                         </dv-input-container-x>
                     </div>
                     <div class="row">
+                        <dv-input-container-x [verticalAlign]="true" class="col-xs-12">
+                            <label for="adresse_kontoinhaber_ort_id">
+                                {{'ADRESSE_ZUSATZZEILE' | translate}}
+                            </label>
+                            <mat-form-field floatLabel="always">
+                                <input type="text"
+                                       id="adresse_kontoinhaber_zusatz_id"
+                                       matInput
+                                       formControlName="zusatzzeile"
+                                       class="form-control dv-input"/>
+                                <dv-bisher-x
+                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.zusatzzeile"
+                                    [korrektur]="form.get('auszahlungsdaten').get('adresseKontoinhaber').get('zusatzzeile').value"
+                                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                                </dv-bisher-x>
+                            </mat-form-field>
+                        </dv-input-container-x>
+                    </div>
+                    <div class="row">
                         <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
                             <label for="adresse_kontoinhaber_plz_id"
                                    required
@@ -564,26 +604,7 @@
                         </dv-input-container-x>
                     </div>
 
-                    <div class="row">
-                        <dv-input-container-x [verticalAlign]="true" class="col-xs-12">
-                            <label for="adresse_kontoinhaber_ort_id">
-                                {{'ADRESSE_ZUSATZZEILE' | translate}}
-                            </label>
-                            <mat-form-field floatLabel="always">
-                                <input type="text"
-                                       id="adresse_kontoinhaber_zusatz_id"
-                                       matInput
-                                       formControlName="zusatzzeile"
-                                       class="form-control dv-input"/>
-                                <dv-bisher-x
-                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.zusatzzeile"
-                                    [korrektur]="form.get('auszahlungsdaten').get('adresseKontoinhaber').get('zusatzzeile').value"
-                                    [showBisher]="container.isAtLeastInPruefungKanton()"
-                                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                                </dv-bisher-x>
-                            </mat-form-field>
-                        </dv-input-container-x>
-                    </div>
+
                 </div>
 
                 <div class="row">
