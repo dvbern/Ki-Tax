@@ -330,7 +330,7 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 
 		dataRow.massgebendesEinkommenNachFamAbzug =
 			MathUtil.minimum(bgCalculationResult.getMassgebendesEinkommen(), BigDecimal.ZERO);
-		dataRow.ekvVorhanden = getEkvVorhanden(anmeldungTagesschule);
+		dataRow.ekvVorhanden = getEkvVorhanden(anmeldungTagesschule, monatsStart);
 		dataRow.erklaerungEinkommen = getErklaerungEinkommen(anmeldungTagesschule);
 
 		final TSCalculationResult tsMitBetreuung =
@@ -346,7 +346,7 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 		return dataRow;
 	}
 
-	private static Boolean getEkvVorhanden(@Nullable AnmeldungTagesschule anmeldungTagesschule) {
+	private static Boolean getEkvVorhanden(@Nullable AnmeldungTagesschule anmeldungTagesschule, @Nonnull LocalDate monatStart) {
 		if (anmeldungTagesschule == null) {
 			return false;
 		}
@@ -354,9 +354,15 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 		if (gesuch.getEinkommensverschlechterungInfoContainer() == null) {
 			return false;
 		}
+		if (gesuch.getGesuchsperiode().getBasisJahr() == monatStart.getYear()){
+			return gesuch.getEinkommensverschlechterungInfoContainer()
+				.getEinkommensverschlechterungInfoJA()
+				.getEkvFuerBasisJahrPlus1();
+		}
 		return gesuch.getEinkommensverschlechterungInfoContainer()
 			.getEinkommensverschlechterungInfoJA()
-			.getEinkommensverschlechterung();
+			.getEkvFuerBasisJahrPlus2();
+
 	}
 
 	// massgebendes Einkommen nach Familienabzug kann aus verschiedenen Gründen kleiner oder gleich 0 sein
