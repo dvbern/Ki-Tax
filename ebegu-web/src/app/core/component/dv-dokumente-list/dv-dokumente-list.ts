@@ -19,7 +19,7 @@ import {OkHtmlDialogController} from '../../../../gesuch/dialog/OkHtmlDialogCont
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
-import {isAnyStatusOfVerfuegtButSchulamt} from '../../../../models/enums/TSAntragStatus';
+import {isAnyStatusOfGeprueftVerfuegenVerfuegtButSchulamt} from '../../../../models/enums/TSAntragStatus';
 import {TSDokumentGrundPersonType} from '../../../../models/enums/TSDokumentGrundPersonType';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSDokument} from '../../../../models/TSDokument';
@@ -247,9 +247,9 @@ export class DVDokumenteListController implements IController {
     public isDokumenteUploadDisabled(): boolean {
         // Dokument-Upload ist eigentlich in jedem Status möglich, aber nicht für alle Rollen. Also nicht
         // gleichbedeutend mit readonly auf dem Gesuch
-        // Jedoch darf der Gesuchsteller nach der Verfuegung nichts mehr hochladen
+        // Jedoch darf der Gesuchsteller nach der Verfuegung und in Bearbeitung Gemeinde/JA nichts mehr hochladen
         const gsAndVerfuegt = this.gesuchModelManager.getGesuch()
-            && isAnyStatusOfVerfuegtButSchulamt(this.gesuchModelManager.getGesuch().status)
+            && isAnyStatusOfGeprueftVerfuegenVerfuegtButSchulamt(this.gesuchModelManager.getGesuch().status)
             && this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
         return gsAndVerfuegt || this.authServiceRS.isOneOfRoles(TSRoleUtil.getReadOnlyRoles());
     }
