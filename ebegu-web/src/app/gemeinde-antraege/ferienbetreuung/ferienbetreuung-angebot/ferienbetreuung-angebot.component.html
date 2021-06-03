@@ -162,6 +162,25 @@
                     </dv-input-container-x>
                 </div>
 
+                <dv-input-container-x [verticalAlign]="true">
+                    <label for="adresse_stammdaten_zusatz_id">
+                        {{'ADRESSE_ZUSATZZEILE' | translate}}
+                    </label>
+                    <mat-form-field floatLabel="always">
+                        <input type="text"
+                               id="adresse_stammdaten_zusatz_id"
+                               matInput
+                               formControlName="zusatzzeile"
+                               class="form-control dv-input"/>
+                        <dv-bisher-x
+                            [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.zusatzzeile"
+                            [korrektur]="form.get('angebotAdresse').get('zusatzzeile').value"
+                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
+
                 <div class="row">
                     <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
                         <label required
@@ -205,24 +224,6 @@
                             <dv-bisher-x
                                 [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.ort"
                                 [korrektur]="form.get('angebotAdresse').get('ort').value"
-                                [showBisher]="container.isAtLeastInPruefungKanton()"
-                                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                            </dv-bisher-x>
-                        </mat-form-field>
-                    </dv-input-container-x>
-                    <dv-input-container-x [verticalAlign]="true" class="col-xs-12">
-                        <label for="adresse_stammdaten_zusatz_id">
-                            {{'ADRESSE_ZUSATZZEILE' | translate}}
-                        </label>
-                        <mat-form-field floatLabel="always">
-                            <input type="text"
-                                   id="adresse_stammdaten_zusatz_id"
-                                   matInput
-                                   formControlName="zusatzzeile"
-                                   class="form-control dv-input"/>
-                            <dv-bisher-x
-                                [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.zusatzzeile"
-                                [korrektur]="form.get('angebotAdresse').get('zusatzzeile').value"
                                 [showBisher]="container.isAtLeastInPruefungKanton()"
                                 [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                             </dv-bisher-x>
@@ -519,8 +520,8 @@
                         </mat-option>
                     </mat-select>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.finanziellBeteiligteGemeinden.join(', ')"
-                        [korrektur]="form.get('finanziellBeteiligteGemeinden').value"
+                        [deklaration]="container?.angabenDeklaration?.angebot?.finanziellBeteiligteGemeinden?.join(', ')"
+                        [korrektur]="form.get('finanziellBeteiligteGemeinden').value?.sort().join(', ')"
                         [showBisher]="container.isAtLeastInPruefungKanton()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
@@ -717,7 +718,7 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
-            <dv-input-container-x>
+            <dv-input-container-x [verticalAlign]="true">
                 <label for="betreuungsschluessel_id"
                        required
                        [ngClass]="{'label-required-error': form && form.get('betreuungsschluessel').errors}">
@@ -917,7 +918,7 @@
 
     <div class="row margin-top-20" *ngIf="canSeeFalscheAngaben | async">
         <div class="col-md-12">
-            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>ANGABEN_KORRIGIEREN</a>
+            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FERIENBETREUUNG_ANGABEN_KORRIGIEREN</a>
         </div>
     </div>
 

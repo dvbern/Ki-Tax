@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.services;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -26,6 +27,10 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
 
 /**
@@ -55,6 +60,7 @@ public interface TestfaelleService {
 	String ASIV9 = "ASIV9";
 	String ASIV10 = "ASIV10";
 	String SOZIALDIENST = "Sozialdienst";
+	String LATS = "LATS";
 
 	String heirat = "1";
 
@@ -109,4 +115,14 @@ public interface TestfaelleService {
 
 	@Nonnull
 	Gesuch antragMutieren(@Nonnull Gesuch antrag, @Nullable LocalDate eingangsdatum);
+
+	@Nonnull
+	Collection<LastenausgleichTagesschuleAngabenGemeindeContainer> createAndSaveLATSTestdaten(
+		@Nonnull String gesuchsperiodeId,
+		@Nullable String gemeindeId,
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeStatus status);
+
+	@Nonnull
+	FerienbetreuungAngabenContainer createAndSaveFerienbetreuungTestdaten(
+		@Nonnull String gesuchsperiodeId, @Nonnull String gemeindeId, @Nonnull FerienbetreuungAngabenStatus status);
 }
