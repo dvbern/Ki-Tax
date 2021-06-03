@@ -414,9 +414,10 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         if (!this.form.$valid) {
             return;
         }
+        const deleteText = (this.isScolaris) ? 'CONFIRM_STORNIEREN_TAGESSCHULE_WARNING_SCOLARIS' : '';
         this.dvDialog.showRemoveDialog(dialogTemplate, this.form, RemoveDialogController, {
             title: 'CONFIRM_STORNIEREN_TAGESSCHULE',
-            deleteText: '',
+            deleteText,
             parentController: undefined,
             elementID: undefined,
         }).then(() => {
