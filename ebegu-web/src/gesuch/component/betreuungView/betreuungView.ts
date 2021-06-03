@@ -375,7 +375,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
     }
 
-    private save(newStatus: TSBetreuungsstatus, nextStep: string, params: any): void {
+    private save(newStatus: TSBetreuungsstatus, nextStep?: string, params?: any): void {
         this.isSavingData = true;
         const oldStatus = this.model.betreuungsstatus;
         if (this.getBetreuungModel() && this.isSchulamt()) {
@@ -388,7 +388,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.gesuchModelManager.setBetreuungToWorkWith(this.model); // setze model
             this.isSavingData = false;
             this.form.$setPristine();
-            this.$state.go(nextStep, params);
+            if (nextStep && params) {
+                this.$state.go(nextStep, params);
+            }
 
         }).catch((exception: TSExceptionReport[]) => {
             // starting over
@@ -1396,7 +1398,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public anmeldungSchulamtFalscheAngaben(): void {
-        const params = {gesuchId: this.getGesuchId()};
-        this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST, GESUCH_BETREUUNGEN, params);
+        this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
     }
 }
