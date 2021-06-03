@@ -37,5 +37,6 @@ export function isBetreuungsstatusTSAusgeloest(status: TSBetreuungsstatus): bool
         || status === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT
         || status === TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT
         || status === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
-        || status === TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION;
+        || status === TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION
+        || status === TSBetreuungsstatus.STORNIERT;
 }
