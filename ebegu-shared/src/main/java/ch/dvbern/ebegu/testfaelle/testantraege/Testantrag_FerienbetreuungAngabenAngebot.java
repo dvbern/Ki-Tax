@@ -46,7 +46,7 @@ public class Testantrag_FerienbetreuungAngabenAngebot {
 
 		this.angebot.setLeitungDurchPersonMitAusbildung(true);
 		this.angebot.setAnzahlKinderAngemessen(true);
-		this.angebot.setBetreuungsschluessel(new BigDecimal(25));
+		this.angebot.setBetreuungsschluessel("25");
 
 		this.angebot.setAnzahlStundenProBetreuungstag(new BigDecimal(8));
 		this.angebot.setBetreuungDurchPersonenMitErfahrung(true);
