@@ -20,10 +20,10 @@ package ch.dvbern.ebegu.entities.gemeindeantrag;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -65,7 +65,7 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 	)
 	@Column(nullable = false)
 	@Nonnull
-	private Set<String> amAngebotBeteiligteGemeinden = new HashSet<>();
+	private Set<String> amAngebotBeteiligteGemeinden = new TreeSet<>();
 
 	@Nullable
 	@Column(nullable = true)
@@ -129,7 +129,7 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 
 	public FerienbetreuungAngabenStammdaten(FerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenToCopy) {
 		this.amAngebotBeteiligteGemeinden =
-			new HashSet<>(ferienbetreuungAngabenStammdatenToCopy.getAmAngebotBeteiligteGemeinden());
+			new TreeSet<>(ferienbetreuungAngabenStammdatenToCopy.getAmAngebotBeteiligteGemeinden());
 		this.seitWannFerienbetreuungen = ferienbetreuungAngabenStammdatenToCopy.seitWannFerienbetreuungen;
 		this.traegerschaft = ferienbetreuungAngabenStammdatenToCopy.traegerschaft;
 		// Stammdaten adresse

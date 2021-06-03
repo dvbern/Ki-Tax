@@ -19,7 +19,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {UIRouterGlobals} from '@uirouter/core';
+import {StateService, UIRouterGlobals} from '@uirouter/core';
 import * as moment from 'moment';
 
 import {of} from 'rxjs';
@@ -46,6 +46,7 @@ const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSServic
     ['getLATSAngabenGemeindeContainer']);
 const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles', 'getPrincipalRole']);
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
 const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, [
     'saveEinstellung',
     'findEinstellung'
@@ -79,7 +80,8 @@ describe('GemeindeAngabenComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: EinstellungRS, useValue: einstellungServiceSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
-                {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy}
+                {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy},
+                {provide: StateService, useValue: stateServiceSpy}
             ],
 
         })
