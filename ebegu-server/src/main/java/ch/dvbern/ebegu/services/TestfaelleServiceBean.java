@@ -26,6 +26,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,6 +61,7 @@ import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFallDokument;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
@@ -111,6 +113,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.FreigabeCopyUtil;
+import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -175,6 +178,10 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private LastenausgleichTagesschuleAngabenGemeindeService latsService;
 	@Inject
 	private FerienbetreuungService ferienbetreuungService;
+	@Inject
+	private FileSaverService fileSaverService;
+	@Inject
+	private SozialdienstFallDokumentService sozialdienstFallDokumentService;
 
 
 	@Override
@@ -281,6 +288,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 					sozialdienst
 					);
 				final Gesuch gesuch = createAndSaveGesuch(testfallSozialdienst, verfuegen, null);
+				createAndSaveSozialdienstFallDokument(gesuch.getFall());
 				responseString.append("Fall Sozialdienst Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if ("all".equals(fallid)) {
 				createAndSaveGesuch(new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, besitzer);
@@ -1077,4 +1085,28 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		return sozialdienstService.findSozialdienst(AbstractTestfall.ID_BERNER_SOZIALDIENST)
 			.orElseThrow(() -> new EbeguEntityNotFoundException("getBernerSozialdienst", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 	}
+
+	private void createAndSaveSozialdienstFallDokument(@Nonnull Fall fall) {
+		requireNonNull(fall.getSozialdienstFall());
+		try{
+			UploadFileInfo fileInfo = new UploadFileInfo("vollmacht.pdf", new MimeType("text/pdf"));
+			fileInfo.setFilename("vollmacht.pdf");
+
+			fileInfo.setBytes(fallService.generateVollmachtDokument(fall.getId(), Sprache.DEUTSCH));
+
+			fileSaverService.save(fileInfo, fall.getSozialdienstFall().getId());
+
+			SozialdienstFallDokument sozialdienstFallDokument = new SozialdienstFallDokument();
+			sozialdienstFallDokument.setSozialdienstFall(fall.getSozialdienstFall());
+			sozialdienstFallDokument.setFilepfad(fileInfo.getPath());
+			sozialdienstFallDokument.setFilename(fileInfo.getFilename());
+			sozialdienstFallDokument.setFilesize(fileInfo.getSizeString());
+
+			sozialdienstFallDokumentService.saveVollmachtDokument(sozialdienstFallDokument);
+		}
+		catch (MimeTypeParseException | MergeDocException e) {
+			LOG.error("Could not save Sozialdienst Vollmacht Dokument");
+		}
+	}
+
 }
