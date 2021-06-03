@@ -535,4 +535,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             || this.gesuchModelManager.isGesuchReadonlyForRole()
             || this.getGesuch().gesperrtWegenBeschwerde;
     }
+
+    public showStornierenForRole(): boolean {
+        return this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getSchulamtRoles());
+    }
 }

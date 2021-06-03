@@ -138,7 +138,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         $scope: IScope,
         berechnungsManager: BerechnungsManager,
         private readonly errorService: ErrorService,
-        private readonly authServiceRS: AuthServiceRS,
+        protected readonly authServiceRS: AuthServiceRS,
         wizardStepManager: WizardStepManager,
         private readonly $stateParams: IBetreuungStateParams,
         private readonly mitteilungRS: MitteilungRS,

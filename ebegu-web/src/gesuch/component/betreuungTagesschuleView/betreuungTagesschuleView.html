@@ -346,7 +346,7 @@
                 </dv-loading-button>
 
                 <dv-loading-button
-                    dv-show-allowed-roles="vm.TSRoleUtil.getSchulamtRoles()"
+                    ng-if="vm.showStornierenForRole()"
                     button-click="vm.saveAnmeldungSchulamtStornieren()"
                     type="button"
                     button-class="save">
