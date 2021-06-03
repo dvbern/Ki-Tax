@@ -359,7 +359,7 @@ public class BetreuungResource {
 		return converter.platzToJAX(persistedBetreuung);
 	}
 
-	@ApiOperation(value = "Schulamt-Anmeldung wird durch die Institution abgelehnt", response = JaxBetreuung.class)
+	@ApiOperation(value = "Schulamt-Anmeldung wird durch die Gemeinde storniert", response = JaxBetreuung.class)
 	@Nonnull
 	@PUT
 	@Path("/schulamt/stornieren")

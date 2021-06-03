@@ -1413,6 +1413,7 @@
     "SCHULAMT_ANMELDUNG_UEBERNEHMEN": "Reprendre l'inscription",
     "SCHULAMT_ANMELDUNG_ABLEHNEN": "Refuser",
     "SCHULAMT_ANMELDUNG_AKZEPTIEREN": "Accepter",
+    "SCHULAMT_ANMELDUNG_STORNIEREN": "Stornieren",
     "AKTION_SCHULAMT_FALSCHE_INSTITUTION": "Institution erronée",
     "CONFIRM_UEBERNAHME_SCHULAMT": "Reprendre l'inscription définitivement ? ",
     "BESCHREIBUNG_UEBERNAHME_SCHULAMT": "La prise en charge a été reprise dans le presse-papier. Veuillez reprendre les données dans Scolaris avant de cliquer sur ok.",

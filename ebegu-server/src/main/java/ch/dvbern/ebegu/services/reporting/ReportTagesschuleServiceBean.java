@@ -353,7 +353,6 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		Predicate predicateBerechtigt =
 			joinAnmeldungTagesschule.get(AnmeldungTagesschule_.institutionStammdaten).in(allowedTagesschulenParam);
 
-		// Aus meiner Sicht sollten nur die Ubergenomme Anmeldungen fuer die Rechnungstellung gilten
 		Predicate predicateAnmeldungStatus = cb.equal(
 			joinAnmeldungTagesschule.get(AnmeldungTagesschule_.betreuungsstatus),
 			Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);

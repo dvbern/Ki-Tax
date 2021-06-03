@@ -1413,6 +1413,7 @@
     "SCHULAMT_ANMELDUNG_UEBERNEHMEN": "Übernehmen",
     "SCHULAMT_ANMELDUNG_ABLEHNEN": "Ablehnen",
     "SCHULAMT_ANMELDUNG_AKZEPTIEREN": "Akzeptieren",
+    "SCHULAMT_ANMELDUNG_STORNIEREN": "Stornieren",
     "AKTION_SCHULAMT_FALSCHE_INSTITUTION": "Falsche Institution",
     "CONFIRM_UEBERNAHME_SCHULAMT": "Anmeldung definitiv übernehmen?",
     "BESCHREIBUNG_UEBERNAHME_SCHULAMT": "Die BetreuungsId wurde in die Zwischenablage übernommen, bitte übernehmen Sie die Daten in Scolaris, bevor Sie okay klicken",

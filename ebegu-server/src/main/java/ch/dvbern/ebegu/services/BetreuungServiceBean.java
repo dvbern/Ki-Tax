@@ -1167,7 +1167,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT);
 		AbstractAnmeldung persistedBetreuung = savePlatz(anmeldung);
 		try {
-			// Bei Ablehnung einer Anmeldung muss eine E-Mail geschickt werden
+			// Bei Stornierung einer Anmeldung muss eine E-Mail geschickt werden
 			GemeindeStammdaten gemeindeStammdaten =
 				gemeindeService.getGemeindeStammdatenByGemeindeId(persistedBetreuung.extractGesuch()
 					.getDossier()
