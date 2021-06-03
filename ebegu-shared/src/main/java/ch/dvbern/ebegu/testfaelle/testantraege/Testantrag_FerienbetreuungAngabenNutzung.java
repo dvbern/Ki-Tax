@@ -31,16 +31,16 @@ public class Testantrag_FerienbetreuungAngabenNutzung {
 		this.nutzung = new FerienbetreuungAngabenNutzung();
 
 		this.nutzung.setAnzahlBetreuungstageKinderBern(new BigDecimal(16));
-		this.nutzung.setBetreuungstageKinderDieserGemeinde(new BigDecimal(10));
+		this.nutzung.setBetreuungstageKinderDieserGemeinde(BigDecimal.TEN);
 		this.nutzung.setBetreuungstageKinderDieserGemeindeSonderschueler(new BigDecimal(3));
 		this.nutzung.setDavonBetreuungstageKinderAndererGemeinden(new BigDecimal(6));
 		this.nutzung.setDavonBetreuungstageKinderAndererGemeindenSonderschueler(new BigDecimal(3));
 
 		this.nutzung.setAnzahlBetreuteKinder(new BigDecimal(26));
-		this.nutzung.setAnzahlBetreuteKinderSonderschueler(new BigDecimal(10));
-		this.nutzung.setAnzahlBetreuteKinder1Zyklus(new BigDecimal(10));
-		this.nutzung.setAnzahlBetreuteKinder2Zyklus(new BigDecimal(10));
-		this.nutzung.setAnzahlBetreuteKinder3Zyklus(new BigDecimal(10));
+		this.nutzung.setAnzahlBetreuteKinderSonderschueler(BigDecimal.TEN);
+		this.nutzung.setAnzahlBetreuteKinder1Zyklus(BigDecimal.TEN);
+		this.nutzung.setAnzahlBetreuteKinder2Zyklus(BigDecimal.TEN);
+		this.nutzung.setAnzahlBetreuteKinder3Zyklus(BigDecimal.TEN);
 
 		if(status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE) {
 			this.nutzung.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);

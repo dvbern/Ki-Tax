@@ -19,7 +19,6 @@ package ch.dvbern.ebegu.testfaelle.testantraege;
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Objects;
 
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -54,7 +53,7 @@ public class Testantrag_LATS {
 		BigDecimal institutionsBetreuungsstundenSum = this.container.getAngabenInstitutionContainers()
 			.stream()
 			.reduce(
-				new BigDecimal(0),
+				BigDecimal.ZERO,
 				(partialResult, instiContainer) -> partialResult.add(instiContainer.isAntragAtLeastInPruefungGemeinde() ?
 					Objects.requireNonNull(instiContainer.getAngabenKorrektur())
 						.getBetreuungsstundenEinschliesslichBesondereBeduerfnisse() :

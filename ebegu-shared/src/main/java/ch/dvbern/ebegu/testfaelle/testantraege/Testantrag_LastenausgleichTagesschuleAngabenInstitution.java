@@ -31,8 +31,8 @@ public class Testantrag_LastenausgleichTagesschuleAngabenInstitution {
 		this.angabenInstitution.setLehrbetrieb(true);
 		// B
 		this.angabenInstitution.setAnzahlEingeschriebeneKinder(new BigDecimal(25));
-		this.angabenInstitution.setAnzahlEingeschriebeneKinderKindergarten(new BigDecimal(10));
-		this.angabenInstitution.setAnzahlEingeschriebeneKinderSekundarstufe(new BigDecimal(10));
+		this.angabenInstitution.setAnzahlEingeschriebeneKinderKindergarten(BigDecimal.TEN);
+		this.angabenInstitution.setAnzahlEingeschriebeneKinderSekundarstufe(BigDecimal.TEN);
 		this.angabenInstitution.setAnzahlEingeschriebeneKinderPrimarstufe(new BigDecimal(5));
 		this.angabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(new BigDecimal(5));
 		this.angabenInstitution.setDurchschnittKinderProTagFruehbetreuung(new BigDecimal(5));

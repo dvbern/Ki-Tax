@@ -47,7 +47,7 @@ public class Testantrag_LastenausgleichTagesschuleAngabenInstitutionContainer{
 		}
 	}
 
-	public LastenausgleichTagesschuleAngabenInstitutionContainer getContainer() {
+	public final LastenausgleichTagesschuleAngabenInstitutionContainer getContainer() {
 		return container;
 	}
 }
