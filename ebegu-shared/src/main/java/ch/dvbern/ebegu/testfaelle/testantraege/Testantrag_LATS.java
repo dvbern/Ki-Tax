@@ -32,6 +32,9 @@ public class Testantrag_LATS {
 	private static final long serialVersionUID = -5434973108213523011L;
 	private final LastenausgleichTagesschuleAngabenGemeindeContainer container;
 
+	// Testantrag_LastenausgleichTagesschuleAngabenInstitutionContainer#getContainer which causes this
+	// message is already final
+	@SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
 	public Testantrag_LATS(
 		Gemeinde gemeinde,
 		Gesuchsperiode gesuchsperiode,
