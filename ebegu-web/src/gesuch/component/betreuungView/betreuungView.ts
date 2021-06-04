@@ -388,7 +388,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.gesuchModelManager.setBetreuungToWorkWith(this.model); // setze model
             this.isSavingData = false;
             this.form.$setPristine();
-            if (nextStep && params) {
+            if (nextStep) {
                 this.$state.go(nextStep, params);
             }
 
