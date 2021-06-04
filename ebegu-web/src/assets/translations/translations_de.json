@@ -656,6 +656,7 @@
     "SCHULAMT_ANMELDUNG_ABGELEHNT": "Anmeldung abgelehnt",
     "SCHULAMT_FALSCHE_INSTITUTION": "Falsche Institution",
     "SCHULAMT_MODULE_AKZEPTIERT": "Module akzeptiert",
+    "SCHULAMT_ANMELDUNG_STORNIERT": "Anmeldung storniert",
     "ABGEWIESEN": "Abgewiesen",
     "BESTAETIGT": "Bestätigt",
     "AUSGELOEST": "Ausgelöst",
@@ -1412,6 +1413,7 @@
     "SCHULAMT_ANMELDUNG_UEBERNEHMEN": "Übernehmen",
     "SCHULAMT_ANMELDUNG_ABLEHNEN": "Ablehnen",
     "SCHULAMT_ANMELDUNG_AKZEPTIEREN": "Akzeptieren",
+    "SCHULAMT_ANMELDUNG_STORNIEREN": "Stornieren",
     "AKTION_SCHULAMT_FALSCHE_INSTITUTION": "Falsche Institution",
     "CONFIRM_UEBERNAHME_SCHULAMT": "Anmeldung definitiv übernehmen?",
     "BESCHREIBUNG_UEBERNAHME_SCHULAMT": "Die BetreuungsId wurde in die Zwischenablage übernommen, bitte übernehmen Sie die Daten in Scolaris, bevor Sie okay klicken",
@@ -2506,6 +2508,8 @@
     "TAGESSCHULEN_DER_GEMEINDEN": "Tagesschulen der Gemeinde",
     "OFFENTLICHE_TRAEGERSCHAFT": "Öffentliche Trägerschaft",
     "PRIVATE_TRAEGERSCHAFT": "Private Trägerschaft",
+    "CONFIRM_STORNIEREN_TAGESSCHULE": "Wollen Sie die Anmeldung wirklich stornieren?",
+    "CONFIRM_STORNIEREN_TAGESSCHULE_WARNING_SCOLARIS": "Achtung: In Scolaris müssen Sie die Anmeldung selber ebenfalls stornieren.",
     "BEI_FRAGEN_GEMEINDE_KONTAKTIEREN": "Bei Fragen kontaktieren Sie bitte Ihre Wohnsitzgemeinde",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -201,4 +201,6 @@ public interface MailService {
 	void sendInfoRueckforderungProvisorischVerfuegt(@Nonnull RueckforderungFormular rueckforderungFormular) throws MailException;
 
 	void sendInfoLastenausgleichGemeinde(@Nonnull Gemeinde gemeinde, @Nonnull Lastenausgleich lastenausgleich);
+
+	void sendInfoSchulamtAnmeldungStorniert(AbstractAnmeldung abstractAnmeldung) throws MailException;
 }

@@ -619,7 +619,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Predicate predBetreuungNummer = cb.equal(root.get(AbstractAnmeldung_.betreuungNummer), betreuungNummer);
 		Predicate predBetreuungAusgeloest =
-			root.get(AbstractAnmeldung_.betreuungsstatus).in(Betreuungsstatus.anmeldungsstatusAusgeloest);
+			root.get(AbstractAnmeldung_.betreuungsstatus).in(Betreuungsstatus.anmeldungsstatusAusgeloestNotStorniert);
 		Predicate predKindNummer = cb.equal(kindjoin.get(KindContainer_.kindNummer), kindNummer);
 		Predicate predFallNummer = cb.equal(gesuchFallJoin.get(Fall_.fallNummer), fallnummer);
 		Predicate predGesuchsperiode = cb.equal(kindContainerGesuchJoin.get(Gesuch_.gesuchsperiode), gesuchsperiode);
@@ -1156,6 +1156,33 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				mailService.sendInfoOffenePendenzenInstitution(stammdaten);
 			}
 		}
+	}
+
+	@Override
+	@Nonnull
+	public AbstractAnmeldung anmeldungSchulamtStornieren(@Valid @Nonnull AbstractAnmeldung anmeldung) {
+		Objects.requireNonNull(anmeldung, BETREUUNG_DARF_NICHT_NULL_SEIN);
+		authorizer.checkWriteAuthorization(anmeldung);
+
+		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT);
+		AbstractAnmeldung persistedBetreuung = savePlatz(anmeldung);
+		try {
+			// Bei Stornierung einer Anmeldung muss eine E-Mail geschickt werden
+			GemeindeStammdaten gemeindeStammdaten =
+				gemeindeService.getGemeindeStammdatenByGemeindeId(persistedBetreuung.extractGesuch()
+					.getDossier()
+					.getGemeinde()
+					.getId()).get();
+			if (gemeindeStammdaten.getBenachrichtigungTsEmailAuto()) {
+				mailService.sendInfoSchulamtAnmeldungStorniert(persistedBetreuung);
+			}
+		} catch (MailException e) {
+			logExceptionAccordingToEnvironment(
+				e,
+				"Mail InfoSchulamtAnmeldungStorniert konnte nicht verschickt werden fuer Betreuung",
+				anmeldung.getId());
+		}
+		return persistedBetreuung;
 	}
 
 	private void checkNotKorrekturmodusWithFerieninselOnly(@Nonnull Gesuch gesuch) {

@@ -656,6 +656,7 @@
     "SCHULAMT_ANMELDUNG_ABGELEHNT": "Inscription refusée",
     "SCHULAMT_FALSCHE_INSTITUTION": "Institution erronée",
     "SCHULAMT_MODULE_AKZEPTIERT": "Modules acceptés",
+    "SCHULAMT_ANMELDUNG_STORNIERT": "Inscription annulée",
     "ABGEWIESEN": "Rejeté",
     "BESTAETIGT": "Confirmé",
     "AUSGELOEST": "Envoyé",
@@ -1412,6 +1413,7 @@
     "SCHULAMT_ANMELDUNG_UEBERNEHMEN": "Reprendre l'inscription",
     "SCHULAMT_ANMELDUNG_ABLEHNEN": "Refuser",
     "SCHULAMT_ANMELDUNG_AKZEPTIEREN": "Accepter",
+    "SCHULAMT_ANMELDUNG_STORNIEREN": "Stornieren",
     "AKTION_SCHULAMT_FALSCHE_INSTITUTION": "Institution erronée",
     "CONFIRM_UEBERNAHME_SCHULAMT": "Reprendre l'inscription définitivement ? ",
     "BESCHREIBUNG_UEBERNAHME_SCHULAMT": "La prise en charge a été reprise dans le presse-papier. Veuillez reprendre les données dans Scolaris avant de cliquer sur ok.",
@@ -2506,6 +2508,8 @@
     "TAGESSCHULEN_DER_GEMEINDEN": "Écoles à journée continue de la commune",
     "OFFENTLICHE_TRAEGERSCHAFT": "Organisme responsable public",
     "PRIVATE_TRAEGERSCHAFT": "Organisme responsable privé",
+    "CONFIRM_STORNIEREN_TAGESSCHULE": "Wollen Sie die Anmeldung wirklich stornieren?",
+    "CONFIRM_STORNIEREN_TAGESSCHULE_WARNING_SCOLARIS": "Achtung: In Scolaris müssen Sie die Anmeldung selber ebenfalls stornieren.",
     "BEI_FRAGEN_GEMEINDE_KONTAKTIEREN": "Bei Fragen kontaktieren Sie bitte Ihre Wohnsitzgemeinde",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
