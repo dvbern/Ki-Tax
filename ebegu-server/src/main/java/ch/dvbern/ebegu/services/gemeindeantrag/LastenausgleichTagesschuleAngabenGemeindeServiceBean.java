@@ -86,6 +86,8 @@ import org.slf4j.LoggerFactory;
 public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends AbstractBaseService
 	implements LastenausgleichTagesschuleAngabenGemeindeService {
 
+	private final String ANGABEN_KORREKTUR_NOT_NULL = "angabenKorrektur must not be null";
+
 	@Inject
 	private Persistence persistence;
 
@@ -494,7 +496,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		if (fallContainer.isAtLeastInBearbeitungKanton()) {
 			Preconditions.checkState(
 				fallContainer.getAngabenKorrektur() != null,
-				"angabenKorrektur must not be null"
+				ANGABEN_KORREKTUR_NOT_NULL
 			);
 			formular = fallContainer.getAngabenKorrektur();
 		} else {
@@ -554,7 +556,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		if (fallContainer.isAtLeastInBearbeitungKanton()) {
 			Preconditions.checkState(
 				fallContainer.getAngabenKorrektur() != null,
-				"angabenKorrektur must not be null"
+				ANGABEN_KORREKTUR_NOT_NULL
 			);
 			angaben = fallContainer.getAngabenKorrektur();
 		} else {
@@ -629,17 +631,17 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 		Preconditions.checkState(
 			container.getAngabenKorrektur() != null,
-			"angabenKorrektur must not be null"
+			ANGABEN_KORREKTUR_NOT_NULL
 		);
 
 		Preconditions.checkState(
 			container.getAngabenKorrektur().getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse() != null,
-			"angabenKorrektur must not be null"
+			ANGABEN_KORREKTUR_NOT_NULL
 		);
 
 		Preconditions.checkState(
 			container.getAngabenKorrektur().getGeleisteteBetreuungsstundenBesondereBeduerfnisse() != null,
-			"angabenKorrektur must not be null"
+			ANGABEN_KORREKTUR_NOT_NULL
 		);
 
 		AtomicBoolean selected = new AtomicBoolean(false);
