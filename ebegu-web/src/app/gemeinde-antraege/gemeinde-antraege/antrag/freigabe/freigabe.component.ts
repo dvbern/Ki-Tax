@@ -37,7 +37,7 @@ import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/las
     templateUrl: './freigabe.component.html',
     styleUrls: ['./freigabe.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class FreigabeComponent implements OnInit {
 
@@ -182,7 +182,8 @@ export class FreigabeComponent implements OnInit {
     public isInPruefungKanton(): Observable<boolean> {
         return this.latsService.getLATSAngabenGemeindeContainer().pipe(
             map(latsContainer => latsContainer.status ===
-                TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON),
+                TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON ||
+                latsContainer.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG),
         );
 
     }

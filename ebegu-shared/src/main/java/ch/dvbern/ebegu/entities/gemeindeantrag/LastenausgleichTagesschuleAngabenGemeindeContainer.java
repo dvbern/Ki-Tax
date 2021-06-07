@@ -370,10 +370,15 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	}
 
 	public boolean isInPruefungKanton() {
-		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON;
+		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON ||
+			status == LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG;
 	}
 
 	public boolean isInStatusNeu() {
 		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.NEU;
+	}
+
+	public boolean isInZweitpruefung() {
+		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG;
 	}
 }

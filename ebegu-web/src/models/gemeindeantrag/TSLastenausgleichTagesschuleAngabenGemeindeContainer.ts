@@ -54,6 +54,7 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
         return [
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU,
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON,
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG,
         ].includes(this.status);
     }
 
@@ -95,6 +96,13 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
         return [
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT,
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.VERFUEGT,
+        ].includes(this.status);
+    }
+
+    public isinPruefungKanton(): boolean {
+        return [
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON,
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG,
         ].includes(this.status);
     }
 }

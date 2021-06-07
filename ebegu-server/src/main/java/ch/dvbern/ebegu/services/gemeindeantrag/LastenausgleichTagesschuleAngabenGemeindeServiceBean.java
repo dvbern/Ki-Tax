@@ -453,18 +453,20 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 		// Nur moeglich, wenn noch nicht geprüft
 		Preconditions.checkState(
-			fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON,
-			"LastenausgleichAngabenGemeindeContainer muss im Status IN_PRUEFUNG sein");
+			fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON ||
+			fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG,
+			"LastenausgleichAngabenGemeindeContainer muss im Status IN_PRUEFUNG oder ZWEITPRUEFUNG sein");
 		Objects.requireNonNull(fallContainer.getAngabenKorrektur());
 		Preconditions.checkState(
 			fallContainer.getAngabenKorrektur().getStatus() == LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN,
 			"Die Angaben der Gemeinde müssen abgeschlossen sein"
 		);
 
-		fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT);
-
-		if (this.selectedForZweitpruefung(fallContainer)) {
+		if (!fallContainer.isInZweitpruefung() && this.selectedForZweitpruefung(fallContainer)) {
 			fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG);
+			fallContainer.getAngabenKorrektur().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
+		} else {
+			fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT);
 		}
 		return saveLastenausgleichTagesschuleGemeinde(fallContainer, true);
 	}
@@ -624,10 +626,6 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	@Nonnull
 	@Override
 	public boolean selectedForZweitpruefung(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
-		Preconditions.checkState(
-			container.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT,
-			"LastenausgleichTagesschuleAngabenGemeindeContainer must be in state GEPRUEFT"
-		);
 
 		Preconditions.checkState(
 			container.getAngabenKorrektur() != null,
