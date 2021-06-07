@@ -86,7 +86,7 @@ import org.slf4j.LoggerFactory;
 public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends AbstractBaseService
 	implements LastenausgleichTagesschuleAngabenGemeindeService {
 
-	private final String ANGABEN_KORREKTUR_NOT_NULL = "angabenKorrektur must not be null";
+	private static final String ANGABEN_KORREKTUR_NOT_NULL = "angabenKorrektur must not be null";
 
 	@Inject
 	private Persistence persistence;
