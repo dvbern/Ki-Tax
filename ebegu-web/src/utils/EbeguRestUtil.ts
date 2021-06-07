@@ -4887,7 +4887,8 @@ export class EbeguRestUtil {
         restAngebot.anzahlStundenProBetreuungstag = angebotTS.anzahlStundenProBetreuungstag;
         restAngebot.betreuungErfolgtTagsueber = angebotTS.betreuungErfolgtTagsueber;
         restAngebot.bemerkungenOeffnungszeiten = angebotTS.bemerkungenOeffnungszeiten;
-        restAngebot.finanziellBeteiligteGemeinden = angebotTS.finanziellBeteiligteGemeinden.sort();
+        angebotTS.finanziellBeteiligteGemeinden.sort();
+        restAngebot.finanziellBeteiligteGemeinden = angebotTS.finanziellBeteiligteGemeinden;
         restAngebot.gemeindeFuehrtAngebotSelber = angebotTS.gemeindeFuehrtAngebotSelber;
         restAngebot.gemeindeFuehrtAngebotInKooperation = angebotTS.gemeindeFuehrtAngebotInKooperation;
         restAngebot.gemeindeBeauftragtExterneAnbieter = angebotTS.gemeindeBeauftragtExterneAnbieter;
