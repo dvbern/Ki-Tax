@@ -668,7 +668,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 				BigDecimal betreuungsstundenTotal = container.getAngabenKorrektur()
 					.getGeleisteteBetreuungsstundenBesondereBeduerfnisse()
-					.add(container.getAngabenKorrektur().getGeleisteteBetreuungsstundenBesondereBeduerfnisse());
+					.add(container.getAngabenKorrektur().getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse());
 
 				selected.set(betreuungsstundenTotal.compareTo(betreuungsstundenForAutoZweitpruefung) >= 0 ||
 					randomNumber.compareTo(anteilGemeindenForZweitpruefung) <= 0);
