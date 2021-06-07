@@ -28,6 +28,7 @@ import {TSWizardStepXTyp} from '../../../../../models/enums/TSWizardStepXTyp';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {DvNgOkDialogComponent} from '../../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
@@ -160,7 +161,17 @@ export class FreigabeComponent implements OnInit {
             .pipe(
                 filter(result => !!result),
                 mergeMap(() => this.latsService.getLATSAngabenGemeindeContainer().pipe(first())),
-            ).subscribe(container => this.latsService.latsGemeindeAntragGeprueft(container),
+                mergeMap(container => this.latsService.latsGemeindeAntragGeprueft(container))
+            ).subscribe(container => {
+                // tslint:disable-next-line:early-exit
+                if (container.isInZweitPruefung()) {
+                    const dialogConfigInfo = new MatDialogConfig();
+                    dialogConfigInfo.data = {
+                        title: this.translate.instant('LATS_INFO_SELECTED_FOR_ZWEITPRUEFUNG')
+                    };
+                    this.dialog.open(DvNgOkDialogComponent, dialogConfigInfo);
+                }
+            },
             () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED')));
     }
 
