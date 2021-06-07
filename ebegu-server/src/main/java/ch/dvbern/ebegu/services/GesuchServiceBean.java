@@ -1559,8 +1559,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
 		Root<Gesuch> root = query.from(Gesuch.class);
-		// Status in Bearbeitung GS
-		Predicate predicateStatus = cb.equal(root.get(Gesuch_.status), AntragStatus.IN_BEARBEITUNG_GS);
+		// Status in Bearbeitung GS oder SZ/UD
+		Predicate predicateStatus =
+			root.get(Gesuch_.status).in(AntragStatus.IN_BEARBEITUNG_GS, AntragStatus.IN_BEARBEITUNG_SOZIALDIENST);
 		// Irgendwann am Stichtag erstellt:
 		Predicate predicateDatum = cb.lessThan(root.get(AbstractEntity_.timestampErstellt), stichtag);
 		// Noch nicht gewarnt
@@ -1650,7 +1651,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			try {
 				betreuungen.addAll(gesuch.extractAllBetreuungen());
 				GesuchDeletionCause typ;
-				if (gesuch.getStatus() == AntragStatus.IN_BEARBEITUNG_GS) {
+				if (gesuch.getStatus() == AntragStatus.IN_BEARBEITUNG_GS
+					|| gesuch.getStatus() == AntragStatus.IN_BEARBEITUNG_SOZIALDIENST) {
 					typ = GesuchDeletionCause.BATCHJOB_NICHT_FREIGEGEBEN;
 				} else {
 					typ = GesuchDeletionCause.BATCHJOB_KEINE_QUITTUNG;
@@ -1698,7 +1700,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Root<Gesuch> root = query.from(Gesuch.class);
 
 		// Entweder IN_BEARBEITUNG_GS und vor stichtagFehlendeFreigabe erstellt
-		Predicate predicateStatusNichtFreigegeben = cb.equal(root.get(Gesuch_.status), AntragStatus.IN_BEARBEITUNG_GS);
+		Predicate predicateStatusNichtFreigegeben =
+			root.get(Gesuch_.status).in(AntragStatus.IN_BEARBEITUNG_GS, AntragStatus.IN_BEARBEITUNG_SOZIALDIENST);
 		Predicate predicateGewarntNichtFreigegeben = cb.isNotNull(root.get(Gesuch_.datumGewarntNichtFreigegeben));
 		Predicate predicateDatumNichtFreigegeben =
 			cb.lessThan(root.get(Gesuch_.datumGewarntNichtFreigegeben), stichtagFehlendeFreigabe);
