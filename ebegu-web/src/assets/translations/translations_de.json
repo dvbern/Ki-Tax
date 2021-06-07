@@ -2511,5 +2511,6 @@
     "CONFIRM_STORNIEREN_TAGESSCHULE": "Wollen Sie die Anmeldung wirklich stornieren?",
     "CONFIRM_STORNIEREN_TAGESSCHULE_WARNING_SCOLARIS": "Achtung: In Scolaris müssen Sie die Anmeldung selber ebenfalls stornieren.",
     "BEI_FRAGEN_GEMEINDE_KONTAKTIEREN": "Bei Fragen kontaktieren Sie bitte Ihre Wohnsitzgemeinde",
+    "VERLAUF_ANZEIGEN": "Verlauf anzeigen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

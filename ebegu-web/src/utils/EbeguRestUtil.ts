@@ -37,6 +37,7 @@ import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../models/gemeindeant
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
+import {TSLastenausgleichTagesschulenStatusHistory} from '../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
 import {TSSozialdienst} from '../models/sozialdienst/TSSozialdienst';
 import {TSSozialdienstFall} from '../models/sozialdienst/TSSozialdienstFall';
 import {TSSozialdienstFallDokument} from '../models/sozialdienst/TSSozialdienstFallDokument';
@@ -5227,5 +5228,27 @@ export class EbeguRestUtil {
         dokument.filepfad = dokumentFromServer.filepfad;
         dokument.filesize = dokumentFromServer.filesize;
         return dokument;
+    }
+
+    public parseLatsHistoryList(data: Array<any>): TSLastenausgleichTagesschulenStatusHistory[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseLatsHistory(new TSLastenausgleichTagesschulenStatusHistory(), item))
+            : [this.parseLatsHistory(new TSLastenausgleichTagesschulenStatusHistory(), data)];
+    }
+
+    public parseLatsHistory(
+        historyTS: TSLastenausgleichTagesschulenStatusHistory,
+        historyFromServer: any,
+    ): TSLastenausgleichTagesschulenStatusHistory {
+        this.parseAbstractEntity(historyTS, historyFromServer);
+        historyTS.containerId = historyFromServer.containerId;
+        historyTS.benutzer = this.parseUser(new TSBenutzer(), historyFromServer.benutzer);
+        historyTS.timestampVon = DateUtil.localDateTimeToMoment(historyFromServer.timestampVon);
+        historyTS.timestampBis = DateUtil.localDateTimeToMoment(historyFromServer.timestampBis);
+        historyTS.status = historyFromServer.status;
+        return historyTS;
     }
 }
