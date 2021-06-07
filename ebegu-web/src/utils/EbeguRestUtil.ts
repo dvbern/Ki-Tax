@@ -5244,7 +5244,7 @@ export class EbeguRestUtil {
         historyFromServer: any,
     ): TSLastenausgleichTagesschulenStatusHistory {
         this.parseAbstractEntity(historyTS, historyFromServer);
-        historyTS.containerId = historyFromServer.gesuchId;
+        historyTS.containerId = historyFromServer.containerId;
         historyTS.benutzer = this.parseUser(new TSBenutzer(), historyFromServer.benutzer);
         historyTS.timestampVon = DateUtil.localDateTimeToMoment(historyFromServer.timestampVon);
         historyTS.timestampBis = DateUtil.localDateTimeToMoment(historyFromServer.timestampBis);
