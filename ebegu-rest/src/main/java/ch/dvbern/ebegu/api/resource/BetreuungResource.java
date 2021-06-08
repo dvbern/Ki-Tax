@@ -359,6 +359,34 @@ public class BetreuungResource {
 		return converter.platzToJAX(persistedBetreuung);
 	}
 
+	@ApiOperation(value = "Schulamt-Anmeldung wird durch die Gemeinde storniert", response = JaxBetreuung.class)
+	@Nonnull
+	@PUT
+	@Path("/schulamt/stornieren")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
+	public JaxBetreuung anmeldungSchulamtStornieren(@Nonnull @NotNull @Valid JaxBetreuung betreuungJAXP,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(betreuungJAXP.getId());
+		Objects.requireNonNull(betreuungJAXP.getKindId());
+
+		// Sicherstellen, dass der Status des Server-Objektes genau dem erwarteten Status entspricht
+		// Anmeldungen stornieren kann man entweder im Status SCHULAMT_ANMELDUNG_AUSGELOEST oder
+		// SCHULAMT_FALSCHE_INSTITUTION
+		resourceHelper.assertBetreuungStatusEqual(betreuungJAXP.getId(),
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST, Betreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION);
+
+		AbstractAnmeldung convertedBetreuung = converter.platzToStoreableEntity(betreuungJAXP);
+		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
+		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch(), convertedBetreuung);
+		AbstractAnmeldung persistedBetreuung = this.betreuungService.anmeldungSchulamtStornieren(convertedBetreuung);
+
+		return converter.platzToJAX(persistedBetreuung);
+	}
+
 	@ApiOperation(value = "Sucht die Betreuung mit der übergebenen Id in der Datenbank. Dabei wird geprüft, ob der " +
 		"eingeloggte Benutzer für die gesuchte Betreuung berechtigt ist", response = JaxBetreuung.class)
 	@Nullable

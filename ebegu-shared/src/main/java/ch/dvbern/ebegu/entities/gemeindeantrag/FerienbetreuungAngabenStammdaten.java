@@ -20,10 +20,10 @@ package ch.dvbern.ebegu.entities.gemeindeantrag;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -65,7 +65,7 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 	)
 	@Column(nullable = false)
 	@Nonnull
-	private Set<String> amAngebotBeteiligteGemeinden = new HashSet<>();
+	private Set<String> amAngebotBeteiligteGemeinden = new TreeSet<>();
 
 	@Nullable
 	@Column(nullable = true)
@@ -129,12 +129,15 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 
 	public FerienbetreuungAngabenStammdaten(FerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdatenToCopy) {
 		this.amAngebotBeteiligteGemeinden =
-			new HashSet<>(ferienbetreuungAngabenStammdatenToCopy.getAmAngebotBeteiligteGemeinden());
+			new TreeSet<>(ferienbetreuungAngabenStammdatenToCopy.getAmAngebotBeteiligteGemeinden());
 		this.seitWannFerienbetreuungen = ferienbetreuungAngabenStammdatenToCopy.seitWannFerienbetreuungen;
 		this.traegerschaft = ferienbetreuungAngabenStammdatenToCopy.traegerschaft;
 		// Stammdaten adresse
-		this.stammdatenAdresse = Objects.requireNonNull(ferienbetreuungAngabenStammdatenToCopy.stammdatenAdresse)
-			.copyAdresse(new Adresse(), AntragCopyType.MUTATION);
+		if (ferienbetreuungAngabenStammdatenToCopy.stammdatenAdresse != null) {
+			this.stammdatenAdresse = ferienbetreuungAngabenStammdatenToCopy.stammdatenAdresse.copyAdresse(
+				new Adresse(),
+				AntragCopyType.MUTATION);
+		}
 		// Kontaktperson
 		this.stammdatenKontaktpersonVorname = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonVorname;
 		this.stammdatenKontaktpersonNachname = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonNachname;
@@ -142,9 +145,12 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 		this.stammdatenKontaktpersonEmail = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonEmail;
 		this.stammdatenKontaktpersonTelefon = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonTelefon;
 		// Auszahlungsdaten
-		this.auszahlungsdaten = Objects.requireNonNull(ferienbetreuungAngabenStammdatenToCopy.auszahlungsdaten).copyAuszahlungsdaten(
-			new Auszahlungsdaten(),
-			AntragCopyType.MUTATION);
+		if (ferienbetreuungAngabenStammdatenToCopy.auszahlungsdaten != null) {
+			this.auszahlungsdaten = ferienbetreuungAngabenStammdatenToCopy.auszahlungsdaten.copyAuszahlungsdaten(
+				new Auszahlungsdaten(),
+				AntragCopyType.MUTATION);
+		}
+
 		this.vermerkAuszahlung = ferienbetreuungAngabenStammdatenToCopy.vermerkAuszahlung;
 
 	}

@@ -113,6 +113,7 @@ import ch.dvbern.ebegu.api.dtos.JaxInstitutionUpdate;
 import ch.dvbern.ebegu.api.dtos.JaxKind;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
 import ch.dvbern.ebegu.api.dtos.JaxLastenausgleich;
+import ch.dvbern.ebegu.api.dtos.JaxLastenausgleichTagesschulenStatusHistory;
 import ch.dvbern.ebegu.api.dtos.JaxMahnung;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
@@ -235,6 +236,7 @@ import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
@@ -6047,5 +6049,16 @@ public class JaxBConverter extends AbstractConverter {
 		angabenInstitution.setBemerkungen(jaxAngabenInstitution.getBemerkungen());
 
 		return angabenInstitution;
+	}
+
+	public JaxLastenausgleichTagesschulenStatusHistory latsStatusHistoryToJAX(LastenausgleichTagesschuleAngabenGemeindeStatusHistory latsStatusHistory) {
+		final JaxLastenausgleichTagesschulenStatusHistory jaxStatusHistory = new JaxLastenausgleichTagesschulenStatusHistory();
+		convertAbstractFieldsToJAX(latsStatusHistory, jaxStatusHistory);
+		jaxStatusHistory.setContainerId(latsStatusHistory.getAngabenGemeindeContainer().getId());
+		jaxStatusHistory.setStatus(latsStatusHistory.getStatus());
+		jaxStatusHistory.setBenutzer(benutzerToJaxBenutzer(latsStatusHistory.getBenutzer()));
+		jaxStatusHistory.setTimestampVon(latsStatusHistory.getTimestampVon());
+		jaxStatusHistory.setTimestampBis(latsStatusHistory.getTimestampBis());
+		return jaxStatusHistory;
 	}
 }

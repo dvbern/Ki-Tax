@@ -102,7 +102,7 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	private Boolean anzahlKinderAngemessen;
 
 	@Nullable
-	private BigDecimal betreuungsschluessel;
+	private String betreuungsschluessel;
 
 	@Nullable
 	private String bemerkungenPersonal;
@@ -318,11 +318,11 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public BigDecimal getBetreuungsschluessel() {
+	public String getBetreuungsschluessel() {
 		return betreuungsschluessel;
 	}
 
-	public void setBetreuungsschluessel(@Nullable BigDecimal betreuungsschluessel) {
+	public void setBetreuungsschluessel(@Nullable String betreuungsschluessel) {
 		this.betreuungsschluessel = betreuungsschluessel;
 	}
 
