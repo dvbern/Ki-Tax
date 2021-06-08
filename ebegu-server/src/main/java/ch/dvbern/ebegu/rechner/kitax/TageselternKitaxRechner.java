@@ -138,7 +138,7 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 
 		// Die Mahlzeiten werden immer fuer den ganzen Monat eingegeben und fuer das effektive
 		// Betreuungspensum. Wir muessen daher noch auf den Anteil des Monats reduzieren.
-		handleAnteileMahlzeitenverguenstigung(result, anteilMonat, input.isStrictEinkommensVerminderung());
+		handleAnteileMahlzeitenverguenstigung(result, anteilMonat, input.isPensenBereitsGekuerzt());
 
 		// Bemerkung hinzufuegen
 		input.addBemerkung(MsgKey.FEBR_INFO, locale);

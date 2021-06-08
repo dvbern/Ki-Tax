@@ -163,7 +163,7 @@ public class BGCalculationInput {
 
 	// Wir müssen beim Rechner für die MZV wissen, ob es sich um eine Einkommensverminderung handelt
 	// um zu wissen, ob die Pensen heruntergerechnet werden müssen
-	private boolean isStrictEinkommensVerminderung = false;
+	private boolean pensenBereitsGekuerzt = false;
 
 	private PensumUnits pensumUnit = PensumUnits.PERCENTAGE;
 
@@ -221,7 +221,7 @@ public class BGCalculationInput {
 		this.betreuungInGemeinde = toCopy.betreuungInGemeinde;
 		this.ruleValidity = toCopy.ruleValidity;
 		this.pensumUnit = toCopy.pensumUnit;
-		this.isStrictEinkommensVerminderung = toCopy.isStrictEinkommensVerminderung;
+		this.pensenBereitsGekuerzt = toCopy.pensenBereitsGekuerzt;
 	}
 
 	@Nonnull
@@ -910,11 +910,11 @@ public class BGCalculationInput {
 		setAnspruchspensumRest(anspruchVorRegel);
 	}
 
-	public boolean isStrictEinkommensVerminderung() {
-		return isStrictEinkommensVerminderung;
+	public boolean isPensenBereitsGekuerzt() {
+		return pensenBereitsGekuerzt;
 	}
 
-	public void setStrictEinkommensVerminderung(boolean strictEinkommensVerminderung) {
-		isStrictEinkommensVerminderung = strictEinkommensVerminderung;
+	public void setPensenBereitsGekuerzt(boolean pensenBereitsGekuerzt) {
+		this.pensenBereitsGekuerzt = pensenBereitsGekuerzt;
 	}
 }
