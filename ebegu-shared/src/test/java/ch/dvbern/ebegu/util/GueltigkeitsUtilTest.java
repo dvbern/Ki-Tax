@@ -27,7 +27,6 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.types.DateRange;
 import com.github.npathai.hamcrestopt.OptionalMatchers;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -195,9 +194,8 @@ class GueltigkeitsUtilTest {
 			return gueltigkeit;
 		}
 
-		@NotNull
 		@Override
-		public void setGueltigkeit(@NotNull DateRange gueltigkeit) {
+		public void setGueltigkeit(@Nonnull DateRange gueltigkeit) {
 			this.gueltigkeit = gueltigkeit;
 		}
 	}
