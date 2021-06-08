@@ -402,4 +402,5 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung"/>
 	<entity class="ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen"/>
 	<entity class="ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument"/>
+	<entity class="ch.dvbern.ebegu.entities.BetreuungMonitoring"/>
 </entity-mappings>

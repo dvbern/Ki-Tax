@@ -62,6 +62,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBenutzerNoDetails;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigung;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigungHistory;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungMonitoring;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensum;
@@ -163,6 +164,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.BetreuungMonitoring;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
@@ -6060,5 +6062,17 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStatusHistory.setTimestampVon(latsStatusHistory.getTimestampVon());
 		jaxStatusHistory.setTimestampBis(latsStatusHistory.getTimestampBis());
 		return jaxStatusHistory;
+	}
+
+	@Nonnull
+	public JaxBetreuungMonitoring betreuungMonitoringToJax(
+		@Nonnull BetreuungMonitoring betreuungMonitoring) {
+		final JaxBetreuungMonitoring jaxBetreuungMonitoring = new JaxBetreuungMonitoring();
+		convertAbstractFieldsToJAX(betreuungMonitoring, jaxBetreuungMonitoring);
+		jaxBetreuungMonitoring.setBenutzer(betreuungMonitoring.getBenutzer());
+		jaxBetreuungMonitoring.setInfoText(betreuungMonitoring.getInfoText());
+		jaxBetreuungMonitoring.setRefNummer(betreuungMonitoring.getRefNummer());
+		jaxBetreuungMonitoring.setTimestamp(betreuungMonitoring.getTimestamp());
+		return jaxBetreuungMonitoring;
 	}
 }

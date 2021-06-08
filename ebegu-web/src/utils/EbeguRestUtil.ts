@@ -69,6 +69,7 @@ import {TSBenutzerNoDetails} from '../models/TSBenutzerNoDetails';
 import {TSBerechtigung} from '../models/TSBerechtigung';
 import {TSBerechtigungHistory} from '../models/TSBerechtigungHistory';
 import {TSBetreuung} from '../models/TSBetreuung';
+import {TSBetreuungMonitoring} from '../models/TSBetreuungMonitoring';
 import {TSBetreuungsmitteilung} from '../models/TSBetreuungsmitteilung';
 import {TSBetreuungsmitteilungPensum} from '../models/TSBetreuungsmitteilungPensum';
 import {TSBetreuungspensum} from '../models/TSBetreuungspensum';
@@ -5008,7 +5009,8 @@ export class EbeguRestUtil {
         stammdatenTS.status = stammdatenFromServer.status;
         stammdatenFromServer.amAngebotBeteiligteGemeinden.sort();
         stammdatenTS.amAngebotBeteiligteGemeinden = stammdatenFromServer.amAngebotBeteiligteGemeinden;
-        stammdatenTS.seitWannFerienbetreuungen = DateUtil.localDateToMoment(stammdatenFromServer.seitWannFerienbetreuungen);
+        stammdatenTS.seitWannFerienbetreuungen =
+            DateUtil.localDateToMoment(stammdatenFromServer.seitWannFerienbetreuungen);
         stammdatenTS.traegerschaft = stammdatenFromServer.traegerschaft;
         stammdatenTS.stammdatenAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.stammdatenAdresse);
         stammdatenTS.stammdatenKontaktpersonVorname = stammdatenFromServer.stammdatenKontaktpersonVorname;
@@ -5228,6 +5230,27 @@ export class EbeguRestUtil {
         dokument.filepfad = dokumentFromServer.filepfad;
         dokument.filesize = dokumentFromServer.filesize;
         return dokument;
+    }
+
+    public parseTSBetreuungMonitoringList(data: any): TSBetreuungMonitoring[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseTSBetreuungMonitoring(new TSBetreuungMonitoring(), item))
+            : [this.parseTSBetreuungMonitoring(new TSBetreuungMonitoring(), data)];
+    }
+
+    private parseTSBetreuungMonitoring(
+        betreuungMonitoring: TSBetreuungMonitoring,
+        betreuungMonitoringFromServer: any,
+    ): TSBetreuungMonitoring {
+        this.parseAbstractEntity(betreuungMonitoring, betreuungMonitoringFromServer);
+        betreuungMonitoring.refNummer = betreuungMonitoringFromServer.refNummer;
+        betreuungMonitoring.benutzer = betreuungMonitoringFromServer.benutzer;
+        betreuungMonitoring.infoText = betreuungMonitoringFromServer.infoText;
+        betreuungMonitoring.timestamp = DateUtil.localDateTimeToMoment(betreuungMonitoringFromServer.timestamp);
+        return betreuungMonitoring;
     }
 
     public parseLatsHistoryList(data: Array<any>): TSLastenausgleichTagesschulenStatusHistory[] {
