@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.entities.HasMandant;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
+import ch.dvbern.ebegu.entities.InternePendenz;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
@@ -2006,6 +2007,20 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return;
 		}
 		throwViolation(container);
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nonnull InternePendenz internePendenz) {
+		// User muss Gemeinderolle haben und Gesuch lesen können
+		checkReadAuthorization(internePendenz.getGesuch());
+		if (!principalBean.isCallerInAnyOfRole(UserRole.getSuperadminAllGemeindeRoles())) {
+			throwViolation(internePendenz);
+		};
+	}
+
+	@Override
+	public void checkReadAuthorization(@Nonnull InternePendenz internePendenz) {
+		checkWriteAuthorization(internePendenz);
 	}
 
 	private boolean isAllowedAdminOrSachbearbeiter(Sozialdienst sozialdienst) {
