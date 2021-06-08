@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -133,7 +134,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
 	private BetreuungEventHelper betreuungEventHelper;
-
 
 	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
@@ -318,7 +318,43 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 
 		@Test
-		void ignoreWhenNoZeitabschnittInGueltigkeit() {
+		void ignoreWhenNoInstitutionGueltigkeitAndClientGueltigkeitOverlap() {
+			LocalDate gueltigAb = LocalDate.of(2021, 5, 1);
+			DateRange institutionGueltigkeit = new DateRange(gueltigAb, Constants.END_OF_TIME);
+
+			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
+			Betreuung betreuung = betreuungWithSingleContainer();
+			betreuung.getInstitutionStammdaten().setGueltigkeit(institutionGueltigkeit);
+
+			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false))
+				.andReturn(Optional.of(betreuung));
+			mockClient(new DateRange(Constants.START_OF_TIME, gueltigAb.minusDays(1)));
+
+			testIgnored(dto, "Die Institution Gültigkeit überlappt nicht mit der Client Gültigkeit.");
+		}
+
+		@Test
+		void ignoreWhenNoZeitabschnittInInstitutionGueltigkeit() {
+			LocalDate gueltigAb = LocalDate.of(2021, 5, 1);
+			DateRange dtoGueltigkeit =
+				new DateRange(gesuchsperiode.getGueltigkeit().getGueltigAb(), gueltigAb.minusDays(1));
+			DateRange institutionGueltigkeit = new DateRange(gueltigAb, Constants.END_OF_TIME);
+
+			BetreuungEventDTO dto = createBetreuungEventDTO(createZeitabschnittDTO(dtoGueltigkeit));
+			Betreuung betreuung = betreuungWithSingleContainer();
+			betreuung.getInstitutionStammdaten().setGueltigkeit(institutionGueltigkeit);
+
+			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false))
+				.andReturn(Optional.of(betreuung));
+			mockClient(Constants.DEFAULT_GUELTIGKEIT);
+
+			testIgnored(
+				dto,
+				"Kein Zeitabschnitt liegt innerhalb Client Gültigkeit & Periode & Institution Gültigkeit.");
+		}
+
+		@Test
+		void ignoreWhenNoZeitabschnittInClientGueltigkeit() {
 			LocalDate gesuchsperiodeAb = gesuchsperiode.getGueltigkeit().getGueltigAb();
 			LocalDate zeitabschnittBis = gesuchsperiodeAb.plusMonths(8).minusDays(1);
 
@@ -331,7 +367,9 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				.andReturn(Optional.of(betreuung));
 			mockClient(new DateRange(zeitabschnittBis.plusDays(1), Constants.END_OF_TIME));
 
-			testIgnored(dto, "Kein Zeitabschnitt liegt innerhalb Client Gültigkeit & Periode.");
+			testIgnored(
+				dto,
+				"Kein Zeitabschnitt liegt innerhalb Client Gültigkeit & Periode & Institution Gültigkeit.");
 		}
 
 		@ParameterizedTest
@@ -399,6 +437,21 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void automaticPlatzbestaetigung() {
+			expect(betreuungService.betreuungPlatzBestaetigen(betreuung))
+				.andReturn(betreuung);
+
+			testProcessingSuccess();
+		}
+
+		@ParameterizedTest
+		@EnumSource(value = AntragStatus.class,
+			names = { "IN_BEARBEITUNG_GS", "IN_BEARBEITUNG_SOZIALDIENST" },
+			mode = Mode.INCLUDE)
+		void updatesPlatzbestaetigungWhenNotYetFreigegeben(@Nonnull AntragStatus antragStatus) {
+			betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
+			Gesuch gesuch = betreuung.extractGesuch();
+			gesuch.setStatus(antragStatus);
+
 			expect(betreuungService.betreuungPlatzBestaetigen(betreuung))
 				.andReturn(betreuung);
 
@@ -543,7 +596,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			 * periode. Otherwise it is not possible to augment the data with Zeitabschnitte from another client.
 			 */
 			@Test
-			void requireHumanConfirmatinWhenClientGueltigkeitIsNotCoveringEntirePeriod() {
+			void requireHumanConfirmationWhenClientGueltigkeitIsNotCoveringEntirePeriod() {
 				clientGueltigkeit =
 					new DateRange(gesuchsperiode.getGueltigkeit().getGueltigAb().plusDays(1), Constants.END_OF_TIME);
 
@@ -556,7 +609,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				clientGueltigkeit = new DateRange(LocalDate.of(2020, 12, 31), LocalDate.of(2021, 5, 31));
 
 				// ZeitabschnittDTO's must be distinct, otherwise they get merged together to one large Zeitabschnitt.
-				// -> set distinct Betreuungsosten
+				// -> set distinct Betreuungskosten
 				// see also test #mergesIdenticalZeitabschnitte()
 				AtomicInteger betreuungsKosten = new AtomicInteger(1234);
 
@@ -996,6 +1049,45 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 					betreuungspensum,
 					clientGueltigkeit.getGueltigBis().plusDays(1),
 					betreuungspensum.getGueltigkeit().getGueltigBis())
+			));
+		}
+
+		@Test
+		void splitDtoZeitabschnitteWithInstitutionGueltigkeit() {
+			DateRange institutionGueltigkeit = new DateRange(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 5, 31));
+			betreuung.getInstitutionStammdaten().setGueltigkeit(institutionGueltigkeit);
+
+			ZeitabschnittDTO beforeGueltigAb =
+				createZeitabschnittDTO(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 14));
+
+			ZeitabschnittDTO overlapGueltigAb =
+				createZeitabschnittDTO(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 1, 31));
+
+			ZeitabschnittDTO containedInGueltigkeit =
+				createZeitabschnittDTO(LocalDate.of(2021, 2, 1), LocalDate.of(2021, 3, 31));
+			containedInGueltigkeit.setBetreuungspensum(BigDecimal.valueOf(75));
+
+			ZeitabschnittDTO overlapGueltigBis =
+				createZeitabschnittDTO(LocalDate.of(2021, 4, 10), LocalDate.of(2021, 5, 31));
+
+			ZeitabschnittDTO afterGueltigBis =
+				createZeitabschnittDTO(LocalDate.of(2021, 7, 1), LocalDate.of(2021, 7, 31));
+
+			dto.setZeitabschnitte(Arrays.asList(
+				beforeGueltigAb,
+				overlapGueltigAb,
+				containedInGueltigkeit,
+				overlapGueltigBis,
+				afterGueltigBis));
+
+			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
+
+			testProcessingSuccess();
+
+			assertThat(capture.getValue().getBetreuungspensen(), contains(
+				matches(overlapGueltigAb, institutionGueltigkeit.getGueltigAb(), LocalDate.of(2021, 1, 31)),
+				matches(containedInGueltigkeit, containedInGueltigkeit.getVon(), containedInGueltigkeit.getBis()),
+				matches(overlapGueltigBis, LocalDate.of(2021, 4, 10), institutionGueltigkeit.getGueltigBis())
 			));
 		}
 

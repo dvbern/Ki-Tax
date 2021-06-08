@@ -194,7 +194,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			return Processing.failure("Der Client hat innerhalb der Periode keinen Berechtigung.");
 		}
 
-		Processing validationProcess = validateZeitabschnitteGueltigkeit(dto, overlap.get());
+		DateRange institutionGueltigkeit = betreuung.getInstitutionStammdaten().getGueltigkeit();
+		Processing validationProcess = validateZeitabschnitteGueltigkeit(dto, overlap.get(), institutionGueltigkeit);
 		if (!validationProcess.isProcessingSuccess()) {
 			return validationProcess;
 		}
@@ -204,9 +205,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 		Betreuungsstatus status = betreuung.getBetreuungsstatus();
 
-		if (status == Betreuungsstatus.WARTEN
-			|| (status == Betreuungsstatus.BESTAETIGT
-			&& betreuung.extractGesuch().getStatus() == AntragStatus.IN_BEARBEITUNG_GS)) {
+		if (isPlatzbestaetigungStatus(status, betreuung.extractGesuch().getStatus())) {
 			return handlePlatzbestaetigung(ctx);
 		}
 
@@ -220,7 +219,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	@Nonnull
 	private Processing validateZeitabschnitteGueltigkeit(
 		@Nonnull BetreuungEventDTO dto,
-		@Nonnull DateRange gueltigkeitInPeriode) {
+		@Nonnull DateRange clientGueltigkeitInPeriode,
+		@Nonnull DateRange institutionGueltigkeit) {
 
 		List<DateRange> ranges = dto.getZeitabschnitte().stream()
 			.map(z -> new DateRange(z.getVon(), z.getBis()))
@@ -230,11 +230,32 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			return Processing.failure("Zeitabschnitte dürfen nicht überlappen.");
 		}
 
-		if (ranges.stream().noneMatch(r -> r.intersects(gueltigkeitInPeriode))) {
-			return Processing.failure("Kein Zeitabschnitt liegt innerhalb Client Gültigkeit & Periode.");
+		Optional<DateRange> writableOverlap = clientGueltigkeitInPeriode.getOverlap(institutionGueltigkeit);
+		if (writableOverlap.isEmpty()) {
+			return Processing.failure("Die Institution Gültigkeit überlappt nicht mit der Client Gültigkeit.");
+		}
+
+		if (ranges.stream().noneMatch(r -> r.intersects(writableOverlap.get()))) {
+			return Processing.failure(
+				"Kein Zeitabschnitt liegt innerhalb Client Gültigkeit & Periode & Institution Gültigkeit.");
 		}
 
 		return Processing.success();
+	}
+
+	private boolean isPlatzbestaetigungStatus(
+		@Nonnull Betreuungsstatus status,
+		@Nonnull AntragStatus antragStatus) {
+		if (status == Betreuungsstatus.WARTEN) {
+			return true;
+		}
+
+		return status == Betreuungsstatus.BESTAETIGT && isNotYetFreigegeben(antragStatus);
+	}
+
+	private boolean isNotYetFreigegeben(@Nonnull AntragStatus antragStatus) {
+		return antragStatus == AntragStatus.IN_BEARBEITUNG_GS
+			|| antragStatus == AntragStatus.IN_BEARBEITUNG_SOZIALDIENST;
 	}
 
 	protected boolean isMutationsMitteilungStatus(@Nonnull Betreuungsstatus status) {
