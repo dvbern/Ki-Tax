@@ -53,6 +53,7 @@ public class AbstractDateRangedEntity extends AbstractMutableEntity implements G
 		return gueltigkeit;
 	}
 
+	@Override
 	public void setGueltigkeit(@Nonnull DateRange gueltigkeit) {
 		this.gueltigkeit = new DateRange(gueltigkeit);
 	}
