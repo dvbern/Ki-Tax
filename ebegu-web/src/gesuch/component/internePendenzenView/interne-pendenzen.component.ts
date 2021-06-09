@@ -16,11 +16,13 @@
  */
 
 import {Location} from '@angular/common';
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TSInternePendenz} from '../../../models/TSInternePendenz';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {InternePendenzDialogComponent} from './interne-pendenz-dialog/interne-pendenz-dialog.component';
+import {InternePendenzenRS} from './internePendenzenRS';
 
 @Component({
     selector: 'interne-pendenzen-view',
@@ -34,7 +36,10 @@ export class InternePendenzenComponent implements OnInit {
 
     public constructor(
         private readonly location: Location,
-        private dialog: MatDialog
+        private readonly dialog: MatDialog,
+        private readonly internePendenzenRS: InternePendenzenRS,
+        private readonly cd: ChangeDetectorRef,
+        private readonly gesuchModelManager: GesuchModelManager,
     ) {
     }
 
@@ -43,10 +48,17 @@ export class InternePendenzenComponent implements OnInit {
 
     public async addInternePendenz(): Promise<void> {
         let newPendenz = new TSInternePendenz();
+        newPendenz.gesuch = this.gesuchModelManager.getGesuch();
         newPendenz = await this.openPendenzDialog(newPendenz);
-        if (EbeguUtil.isNotNullOrUndefined(newPendenz)) {
-            this.internePendenzen.push(newPendenz);
+        if (EbeguUtil.isNullOrUndefined(newPendenz)) {
+            return;
         }
+        this.internePendenzenRS.createInternePendenz(newPendenz)
+            .subscribe(savedPendenz => {
+                this.internePendenzen.push(savedPendenz);
+                this.cd.markForCheck();
+                console.log(this.internePendenzen);
+            });
     }
 
     private openPendenzDialog(internePendenz: TSInternePendenz): Promise<TSInternePendenz> {

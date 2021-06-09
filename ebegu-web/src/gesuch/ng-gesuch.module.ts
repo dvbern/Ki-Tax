@@ -21,6 +21,7 @@ import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 import {InternePendenzDialogComponent} from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
+import {InternePendenzenRS} from './component/internePendenzenView/internePendenzenRS';
 
 @NgModule({
     imports: [
@@ -34,6 +35,9 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
         InternePendenzenComponent,
         InternePendenzDialogComponent
     ],
+    providers: [
+        InternePendenzenRS
+    ]
     })
 
 export class NgGesuchModule {

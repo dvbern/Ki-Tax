@@ -58,7 +58,7 @@ public class InternePendenz extends AbstractEntity {
 	@Nonnull
 	@NotNull
 	@Column(nullable = false)
-	private Boolean erledigt = false;
+	private Boolean erledigt;
 
 	@Nonnull
 	public Gesuch getGesuch() {

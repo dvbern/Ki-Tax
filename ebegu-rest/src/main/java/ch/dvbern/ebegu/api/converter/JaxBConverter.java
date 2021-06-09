@@ -6067,8 +6067,9 @@ public class JaxBConverter extends AbstractConverter {
 	public InternePendenz internePendenzToEntity(
 		@Nonnull JaxInternePendenz jaxInternePendenz, @Nonnull InternePendenz internePendenz
 	) {
+		Objects.requireNonNull(jaxInternePendenz.getGesuch().getId());
 		convertAbstractFieldsToEntity(jaxInternePendenz, internePendenz);
-		Gesuch gesuch = gesuchService.findGesuch(internePendenz.getGesuch().getId())
+		Gesuch gesuch = gesuchService.findGesuch(jaxInternePendenz.getGesuch().getId())
 			.orElseThrow(() -> new EbeguRuntimeException(
 				"internePendenzToEntity",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,

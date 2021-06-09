@@ -23,7 +23,7 @@ export class TSInternePendenz extends TSAbstractEntity {
     private _gesuch: TSGesuch;
     private _termin: moment.Moment;
     private _text: string;
-    private _erledigt: boolean;
+    private _erledigt: boolean = false;
 
     public get gesuch(): TSGesuch {
         return this._gesuch;

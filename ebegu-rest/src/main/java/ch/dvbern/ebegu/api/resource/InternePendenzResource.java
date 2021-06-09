@@ -129,8 +129,6 @@ public class InternePendenzResource {
 		@Nonnull @NotNull @Valid JaxInternePendenz jaxInternePendenz
 	) {
 		Objects.requireNonNull(jaxInternePendenz);
-		Objects.requireNonNull(jaxInternePendenz.getId());
-		internePendenzService.findInternePendenz(jaxInternePendenz.getId());
 		InternePendenz internePendenz = jaxBConverter.internePendenzToEntity(jaxInternePendenz, new InternePendenz());
 		InternePendenz created = internePendenzService.createInternePendenz(internePendenz);
 		return jaxBConverter.internePendenzToJax(created);
