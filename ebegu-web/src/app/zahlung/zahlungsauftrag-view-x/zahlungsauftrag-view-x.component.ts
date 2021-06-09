@@ -1,7 +1,7 @@
-import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
 import {FormGroup} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
-import {StateService} from '@uirouter/core';
+import {StateService, UIRouterGlobals} from '@uirouter/core';
 import * as moment from 'moment';
 import {of, Subject} from 'rxjs';
 import {switchMap, takeUntil} from 'rxjs/operators';
@@ -65,10 +65,21 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         private readonly authServiceRS: AuthServiceRS,
         private readonly translate: TranslateService,
         private readonly gemeindeRS: GemeindeRS,
+        private readonly uiRouterGlobals: UIRouterGlobals,
+        private readonly cd: ChangeDetectorRef
     ) {
     }
 
     public ngOnInit(): void {
+        const isMahlzeitenzahlungen = EbeguUtil.isNotNullAndTrue(this.uiRouterGlobals.params.isMahlzeitenzahlungen);
+        this.zahlungslaufTyp = isMahlzeitenzahlungen
+            ? TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER
+            : TSZahlungslaufTyp.GEMEINDE_INSTITUTION;
+        this.updateZahlungsauftrag();
+        this.updateGemeindenList();
+        this.applicationPropertyRS.isZahlungenTestMode().then((response: any) => {
+            this.testMode = response;
+        });
     }
 
     private updateZahlungsauftrag(): void {
@@ -248,6 +259,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
             .subscribe(
                 gemeinden => {
                     this.berechtigteGemeindenList = gemeinden;
+                    this.cd.markForCheck();
                 },
                 err => LOG.error(err),
             );

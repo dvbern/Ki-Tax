@@ -161,8 +161,7 @@ export class ZahlungRS {
             case TSRole.REVISOR:
             case TSRole.ADMIN_MANDANT:
             case TSRole.SACHBEARBEITER_MANDANT:
-                return from(this.getAllZahlungsauftraege())
-                    .pipe(map(a => angular.copy(a)));
+                return from(this.getAllZahlungsauftraege());
             default:
                 return of([]);
         }

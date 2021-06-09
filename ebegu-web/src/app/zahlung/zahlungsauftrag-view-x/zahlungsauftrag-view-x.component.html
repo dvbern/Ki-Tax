@@ -34,49 +34,51 @@
                 <div class="row zahlungen-form" layout="row">
 
                     <!-- Gemeinde -->
-                    <div ng-class="{'col-md-3': !testMode,'col-md-2': testMode}">
+                    <div [ngClass]="{'col-md-3': !testMode,'col-md-2': testMode}">
                         <div class="form-group">
                             <label class="md-no-float" for="gemeinde"
                             translate>GEMEINDE</label>
                             <div class="dv-select-style">
-                                <select ng-model="gemeinde"
+                                <select [(ngModel)]="gemeinde"
                                         name="gemeinde"
                                         class="form-control"
                                         id="gemeinde"
-                                        ng-required="true"
-                                        ng-options="gemeinde.name for gemeinde in gemeindenList | orderBy: 'name'  track by gemeinde.name">
+                                        required="true">
+                                    <option *ngFor="let gemeinde1 of gemeindenList" [value]="gemeinde1.name">{{gemeinde1.name}}</option>
                                 </select>
-                                <dv-error-messages for="form.gemeinde.$error"
-                                                   class="error"></dv-error-messages>
                             </div>
                         </div>
                     </div>
 
-                    <div ng-class="{'col-md-3': !testMode,'col-md-2': testMode}">
+                    <div [ngClass]="{'col-md-3': !testMode,'col-md-2': testMode}">
                         <div class="form-group">
-                            <label class="md-no-float" for="faelligkeitsdatum" translate>ZAHLUNG_FAELLIGKEITSDATUM</label>
-                            <dv-datepicker name="faelligkeitsdatum" id="faelligkeitsdatum"
-                                           ng-model="faelligkeitsdatum" ng-required="true"
-                                           class="input-element">
-                            </dv-datepicker>
-                            <dv-error-messages for="form.faelligkeitsdatum.$error"
-                                               class="error"></dv-error-messages>
+                            <label class="md-no-float" for="faelligkeitsdatumPicker" translate>ZAHLUNG_FAELLIGKEITSDATUM</label>
+                            <input class="dv-mat-datepicker" type="text"
+                                   name="faelligkeitsdatumPicker" id="faelligkeitsdatumPicker"
+                                   [(ngModel)]="faelligkeitsdatum"
+                                   [matDatepicker]="faelligkeitsdatumPicker"
+                                   placeholder="{{'DATE_PLACEHOLDER' | translate}}"
+                                   required>
+                            <mat-datepicker-toggle matSuffix
+                                                   [for]="faelligkeitsdatumPicker"></mat-datepicker-toggle>
+                            <mat-datepicker #faelligkeitsdatumPicker></mat-datepicker>
                         </div>
                     </div>
                     <div class="col-md-2" *ngIf="testMode">
                         <div class="form-group">
-                            <label class="md-no-float" for="datumGeneriert"
+                            <label class="md-no-float" for="datumGeneriertPicker"
                                    translate>ZAHLUNG_GENERIERT</label>
-                            <dv-datepicker name="datumGeneriert" id="datumGeneriert"
-                                           ng-model="datumGeneriert"
-                                           class="input-element"
-                                           dv-min-date="minDateForTestlauf">
-                            </dv-datepicker>
-                            <dv-error-messages for="form.datumGeneriert.$error"
-                                               class="error"></dv-error-messages>
+                            <input class="dv-mat-datepicker" type="text"
+                                   name="datumGeneriertPicker" id="datumGeneriertPicker"
+                                   [(ngModel)]="datumGeneriert"
+                                   [matDatepicker]="datumGeneriertPicker"
+                                   required>
+                            <mat-datepicker-toggle matSuffix
+                                                   [for]="datumGeneriertPicker"></mat-datepicker-toggle>
+                            <mat-datepicker #datumGeneriertPicker></mat-datepicker>
                         </div>
                     </div>
-                    <div ng-class="{'col-md-4': !testMode,'col-md-3': testMode}">
+                    <div [ngClass]="{'col-md-4': !testMode,'col-md-3': testMode}">
                         <div class="form-group">
                             <label class="md-no-float" translate
                                    for="beschrieb">ZAHLUNG_BESCHRIEB</label>
@@ -87,7 +89,7 @@
                                                class="error"></dv-error-messages>
                         </div>
                     </div>
-                    <div ng-class="{'col-md-3': !testMode,'col-md-2': testMode}" flex layout="row"
+                    <div [ngClass]="{'col-md-3': !testMode,'col-md-2': testMode}" flex layout="row"
                          layout-align="center center">
                         <dv-loading-button button-click="createZahlungsauftrag()"
                                            aria-label="{{getLabelZahlungslaufErstellen()}}" type="submit">
@@ -164,10 +166,10 @@
                 <!-- datumFaellig edit-->
                 <td *ngIf="isEditMode(row.id)" ng-click="$event.stopPropagation()">
                     <div class="form-group">
-                        <dv-datepicker name="faelligkeitsdatumRow" id="faelligkeitsdatumRow"
+                        <!--<dv-datepicker name="faelligkeitsdatumRow" id="faelligkeitsdatumRow"
                                        ng-model="zahlungsauftragToEdit.datumFaellig" ng-required="true"
                                        class="input-element">
-                        </dv-datepicker>
+                        </dv-datepicker>-->
                         <div ng-messages="form.faelligkeitsdatumRow.$error" role="alert"
                              class="error"></div>
                     </div>
