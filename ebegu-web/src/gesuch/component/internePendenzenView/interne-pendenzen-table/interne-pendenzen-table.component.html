@@ -1,0 +1,41 @@
+<div class="dv-table dv-simple-table margin-bottom-20" *ngIf="datasource && internePendenzen?.length">
+    <div class="mat-elevation-z0">
+        <mat-table matSort
+                   [dataSource]="datasource"
+                   (matSortChange)="sortData($event)"
+                   [matSortActive]="initialSortColumn"
+                   [matSortDirection]="initialSortDirection">
+
+            <ng-container matColumnDef="termin">
+                <mat-header-cell mat-sort-header="termin" *matHeaderCellDef class="ellipsis">
+                    <span>{{'TERMIN' | translate}}</span>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="ellipsis">
+                    <span [title]="element.termin">{{element.termin | ebeguDate}}</span>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="text">
+                <mat-header-cell mat-sort-header="text" *matHeaderCellDef class="ellipsis">
+                    <span>{{'PENDENZ' | translate}}</span>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="ellipsis">
+                    <span [title]="element.text">{{element.text}}</span>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="erledigt">
+                <mat-header-cell mat-sort-header="erledigt" *matHeaderCellDef class="ellipsis">
+                    <span>{{'ERLEDIGT' | translate}}</span>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="ellipsis">
+                    <span [title]="element.erledigt">{{element.erledigt}}</span>
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="shownColumns"></mat-header-row>
+            <mat-row *matRowDef="let element; columns: shownColumns;"
+                     (click)="onRowClicked(element, $event)"></mat-row>
+        </mat-table>
+    </div>
+</div>

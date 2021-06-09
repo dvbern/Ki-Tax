@@ -39,7 +39,6 @@ export class InternePendenzDialogComponent {
     }
 
     public ngOnInit(): void {
-        console.log(this.internePendenz);
     }
 
     public close(): void {

@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
+import {TSGesuch} from '../../../models/TSGesuch';
 import {TSInternePendenz} from '../../../models/TSInternePendenz';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
@@ -25,6 +26,16 @@ export class InternePendenzenRS {
             this.ebeguRestUtil.internePendenzToRestObject({}, internePendenz)
         ).pipe(map(pendenzFromServer => {
             return this.ebeguRestUtil.parseInternePendenz(new TSInternePendenz(), pendenzFromServer)
+        }));
+    }
+
+    public findInternePendenzenForGesuch(gesuch: TSGesuch): Observable<TSInternePendenz[]> {
+        return this.http.get<any[]>(
+            `${this.serviceURL}/all/${gesuch.id}`
+        ).pipe(map(pendenzenFromServer => {
+            return pendenzenFromServer.map(pendenzFromServer => {
+                return this.ebeguRestUtil.parseInternePendenz(new TSInternePendenz(), pendenzFromServer);
+            });
         }));
     }
 

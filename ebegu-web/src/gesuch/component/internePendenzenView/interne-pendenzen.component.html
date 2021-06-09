@@ -25,6 +25,9 @@
             <hr class="header"/>
         </div>
     </div>
+    <dv-interne-pendenzen-table
+        *ngIf="internePendenzen?.length"
+        [internePendenzen]="internePendenzen"></dv-interne-pendenzen-table>
     <div id="add-pendenz">
         <button type="button" (click)="addInternePendenz()"
                 class="dv-btn dv-btn-operation">

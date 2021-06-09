@@ -20,6 +20,7 @@ import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-e
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 import {InternePendenzDialogComponent} from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
+import {InternePendenzenTableComponent} from './component/internePendenzenView/interne-pendenzen-table/interne-pendenzen-table.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
 import {InternePendenzenRS} from './component/internePendenzenView/internePendenzenRS';
 
@@ -33,7 +34,8 @@ import {InternePendenzenRS} from './component/internePendenzenView/internePenden
         BetreuungOverrideWarningComponent,
         DvEingabeBasisjahrComponent,
         InternePendenzenComponent,
-        InternePendenzDialogComponent
+        InternePendenzDialogComponent,
+        InternePendenzenTableComponent
     ],
     providers: [
         InternePendenzenRS

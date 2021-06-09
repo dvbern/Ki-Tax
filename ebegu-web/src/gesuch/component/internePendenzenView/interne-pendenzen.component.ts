@@ -44,6 +44,15 @@ export class InternePendenzenComponent implements OnInit {
     }
 
     public ngOnInit(): void {
+        this.getPendenzen();
+    }
+
+    public getPendenzen(): void {
+        this.internePendenzenRS.findInternePendenzenForGesuch(this.gesuchModelManager.getGesuch())
+            .subscribe(internePendenzen => {
+                this.internePendenzen = internePendenzen;
+                this.cd.markForCheck();
+            });
     }
 
     public async addInternePendenz(): Promise<void> {
@@ -55,9 +64,9 @@ export class InternePendenzenComponent implements OnInit {
         }
         this.internePendenzenRS.createInternePendenz(newPendenz)
             .subscribe(savedPendenz => {
-                this.internePendenzen.push(savedPendenz);
+                // concat to change ref of element and trigger changeDetection of child
+                this.internePendenzen = this.internePendenzen.concat([savedPendenz]);
                 this.cd.markForCheck();
-                console.log(this.internePendenzen);
             });
     }
 

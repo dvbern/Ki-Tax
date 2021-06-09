@@ -5272,8 +5272,8 @@ export class EbeguRestUtil {
         this.parseAbstractEntity(internePendenz, internePendentFromServer);
         internePendenz.gesuch = this.parseGesuch(new TSGesuch(), internePendentFromServer.gesuch);
         internePendenz.termin = DateUtil.localDateToMoment(internePendentFromServer.termin);
-        internePendenz.text = internePendenz.text;
-        internePendenz.erledigt = internePendenz.erledigt;
+        internePendenz.text = internePendentFromServer.text;
+        internePendenz.erledigt = internePendentFromServer.erledigt;
         return internePendenz;
     }
 }
