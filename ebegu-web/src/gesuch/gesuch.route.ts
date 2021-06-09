@@ -729,6 +729,28 @@ export class EbeguSozialhilfeZeitraumState implements Ng1StateDeclaration {
     };
 }
 
+export class EbeguInternePendenzenState implements Ng1StateDeclaration {
+    public name = 'gesuch.internePendenzen';
+    public url = '/internePendenzen/:gesuchId';
+
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<interne-pendenzen-view>',
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuch: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getGemeindeRoles(),
+    };
+}
+
 const ng1States: Ng1StateDeclaration[] = [
     new EbeguGesuchState(),
     new EbeguFamiliensituationState(),
@@ -759,6 +781,7 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguBetreuungMitteilungState(),
     new EbeguSozialhilfeZeitraumListState(),
     new EbeguSozialhilfeZeitraumState(),
+    new EbeguInternePendenzenState(),
     // new OnboardingTest()
 ];
 

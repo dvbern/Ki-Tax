@@ -18,10 +18,12 @@ import * as angular from 'angular';
 import {CORE_JS_MODULE} from '../app/core/core.angularjs.module';
 import {FileUploadComponent} from '../app/shared/component/file-upload/file-upload.component';
 import {AbwesenheitViewComponentConfig} from './component/abwesenheitView/abwesenheitView';
+import {BetreuungAbweichungenViewComponentConfig} from './component/betreuungAbweichungenView/betreuungAbweichungenView';
 import {BetreuungFerieninselViewComponentConfig} from './component/betreuungFerieninselView/betreuungFerieninselView';
 import {BetreuungInputComponentConfig} from './component/betreuungInput/betreuung-input.component';
 import {BetreuungListViewComponentConfig} from './component/betreuungListView/betreuungListView';
 import {BetreuungMitteilungViewComponentConfig} from './component/betreuungMitteilungView/betreuungMitteilungView';
+import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
 import {BetreuungTagesschuleViewComponentConfig} from './component/betreuungTagesschuleView/betreuungTagesschuleView';
 import {BetreuungViewComponentConfig} from './component/betreuungView/betreuungView';
 import {DokumenteViewComponentConfig} from './component/DokumenteView/dokumenteView';
@@ -32,7 +34,6 @@ import {
 import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
 import {DvFinanzielleSituationRequire} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
-import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
 import {EinkommensverschlechterungInfoViewComponentConfig} from './component/einkommensverschlechterungInfoView/einkommensverschlechterungInfoView';
 import {EinkommensverschlechterungResultateViewComponentConfig} from './component/einkommensverschlechterungResultateView/einkommensverschlechterungResultateView';
 import {EinkommensverschlechterungViewComponentConfig} from './component/einkommensverschlechterungView/einkommensverschlechterungView';
@@ -45,6 +46,7 @@ import {FinanzielleSituationResultateViewComponentConfig} from './component/fina
 import {FinanzielleSituationStartViewComponentConfig} from './component/finanzielleSituationStartView/finanzielleSituationStartView';
 import {FinanzielleSituationViewComponentConfig} from './component/finanzielleSituationView/finanzielleSituationView';
 import {FreigabeViewComponentConfig} from './component/freigabeView/freigabeView';
+import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
 import {KinderListViewComponentConfig} from './component/kinderListView/kinderListView';
 import {KindViewComponentConfig} from './component/kindView/kindView';
 import {KommentarViewComponentConfig} from './component/kommentarView/kommentarView';
@@ -56,7 +58,6 @@ import {UmzugViewComponentConfig} from './component/umzugView/umzugView';
 import {VerfuegenListViewComponentConfig} from './component/verfuegenListView/verfuegenListView';
 import {VerfuegenViewComponentConfig} from './component/verfuegenView/verfuegenView';
 import {gesuchRun} from './gesuch.route';
-import {BetreuungAbweichungenViewComponentConfig} from './component/betreuungAbweichungenView/betreuungAbweichungenView';
 
 export const GESUCH_JS_MODULE =
     angular.module('ebeguWeb.gesuch', [CORE_JS_MODULE.name])
@@ -105,4 +106,5 @@ export const GESUCH_JS_MODULE =
                 outputs: ['download', 'delete', 'uploadFile']
             }))
         .component('sozialdienstFallCreationView', new SozialdienstFallCreationViewComponentConfig())
+        .directive('internePendenzenView', downgradeComponent({component: InternePendenzenComponent}))
 ;
