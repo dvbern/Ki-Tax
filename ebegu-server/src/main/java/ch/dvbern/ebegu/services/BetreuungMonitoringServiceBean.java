@@ -23,9 +23,15 @@ import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.BetreuungMonitoring;
+import ch.dvbern.ebegu.entities.BetreuungMonitoring_;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.lib.cdipersistence.Persistence;
 
 /**
  * Service fuer BetreuungMonitoring
@@ -37,9 +43,26 @@ public class BetreuungMonitoringServiceBean extends AbstractBaseService implemen
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
+	@Inject
+	private Persistence persistence;
+
 	@Nonnull
 	@Override
 	public Collection<BetreuungMonitoring> getAllBetreuungMonitoringInfos() {
-		return criteriaQueryHelper.getAll(BetreuungMonitoring.class);
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<BetreuungMonitoring> query = cb.createQuery(BetreuungMonitoring.class);
+		Root<BetreuungMonitoring> root = query.from(BetreuungMonitoring.class);
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
+		return persistence.getEntityManager().createQuery(query).setMaxResults(200).getResultList();
+	}
+
+	public Collection<BetreuungMonitoring> getAllBetreuungMonitoringFuerRefNummer(@Nonnull String refNummer){
+		return criteriaQueryHelper.getEntitiesByAttribute(BetreuungMonitoring.class, refNummer,
+			BetreuungMonitoring_.refNummer);
+	}
+
+	@Nonnull
+	public BetreuungMonitoring saveBetreuungMonitoring(@Nonnull BetreuungMonitoring betreuungMonitoring){
+		return persistence.persist(betreuungMonitoring);
 	}
 }
