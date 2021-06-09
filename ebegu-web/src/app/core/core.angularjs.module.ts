@@ -130,6 +130,7 @@ import {AdresseRS} from './service/adresseRS.rest';
 import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
 import {BatchJobRS} from './service/batchRS.rest';
 import {BenutzerRS} from './service/benutzerRS.rest';
+import {BetreuungMonitoringRS} from '../../admin/service/betreuungMonitoringRS.rest';
 import {BetreuungRS} from './service/betreuungRS.rest';
 import {DownloadRS} from './service/downloadRS.rest';
 import {DVsTPersistService} from './service/dVsTPersistService';
@@ -241,6 +242,7 @@ export const CORE_JS_MODULE = angular
     .service('NotrechtRS', NotrechtRS)
     .service('EinstellungRS', EinstellungRS)
     .service('SozialhilfeZeitraumRS', SozialhilfeZeitraumRS)
+    .service('BetreuungMonitoringRS', BetreuungMonitoringRS)
     .factory('PosteingangService', downgradeInjectable(PosteingangService) as any)
     .factory('AuthLifeCycleService', downgradeInjectable(AuthLifeCycleService) as any)
     .factory('GesuchGenerator', downgradeInjectable(GesuchGenerator) as any)

@@ -19,12 +19,9 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {TSBetreuungMonitoring} from '../../../models/TSBetreuungMonitoring';
-import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
-import {CONSTANTS} from '../constants/CONSTANTS';
-import {LogFactory} from '../logging/LogFactory';
-
-const LOG = LogFactory.createLog('SozialdienstRS');
+import {TSBetreuungMonitoring} from '../../models/TSBetreuungMonitoring';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
+import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 
 @Injectable({
     providedIn: 'root',
@@ -44,9 +41,15 @@ export class BetreuungMonitoringRS {
     }
 
     public getBetreuungMonitoringList(): Observable<TSBetreuungMonitoring[]> {
-        return this.$http.get<any[]>(this.serviceURL).pipe(map(response => {
-            LOG.debug('PARSING Sozialdienst REST array object', response);
+        return this.$http.get<any[]>(`${this.serviceURL}/last`).pipe(map(response => {
             return this.ebeguRestUtil.parseTSBetreuungMonitoringList(response);
         }));
+    }
+
+    public getBetreuungMonitoringBeiRefNummer(refNummer: string): Observable<TSBetreuungMonitoring[]> {
+        return this.$http.get<any[]>(`${this.serviceURL}/${encodeURIComponent(refNummer)}`)
+            .pipe(map(response => {
+                return this.ebeguRestUtil.parseTSBetreuungMonitoringList(response);
+            }));
     }
 }

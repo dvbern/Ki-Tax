@@ -25,9 +25,11 @@ import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -54,12 +56,25 @@ public class BetreuungMonitoringResource {
 		, responseContainer = "List", response = JaxInstitution.class)
 	@Nonnull
 	@GET
-	@Path("/all")
+	@Path("/last")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(SUPER_ADMIN)
-	public List<JaxBetreuungMonitoring> getInstitutionenEditableForCurrentBenutzer() {
-		return betreuungMonitoringService.getAllBetreuungMonitoringInfos().stream()
+	public List<JaxBetreuungMonitoring> getAllBetreuungMonitoringInfos() { return betreuungMonitoringService.getAllBetreuungMonitoringInfos().stream()
+			.map(betreuungMonitoring -> converter.betreuungMonitoringToJax(betreuungMonitoring))
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	@GET
+	@Path("/{refnummer}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed(SUPER_ADMIN)
+	public List<JaxBetreuungMonitoring> getAllBetreuungMonitoringInfosBeiReferenzNummer(
+		@Nonnull @NotNull @PathParam("refnummer") String referenzNummer
+		) {
+		return betreuungMonitoringService.getAllBetreuungMonitoringFuerRefNummer(referenzNummer).stream()
 			.map(betreuungMonitoring -> converter.betreuungMonitoringToJax(betreuungMonitoring))
 			.collect(Collectors.toList());
 	}

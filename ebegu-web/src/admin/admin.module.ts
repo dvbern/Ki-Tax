@@ -20,7 +20,6 @@ import {InstitutionRS} from '../app/core/service/institutionRS.rest';
 import {adminRun} from './admin.route';
 import {AdminViewComponentConfig} from './component/adminView/adminView';
 import {BenutzerListViewComponentConfig} from './component/benutzerListView/benutzerListView';
-import {BetreuungMonitoringComponent} from './component/betreuung-monitoring/betreuung-monitoring.component';
 import {GesuchsperiodeViewComponentConfig} from './component/gesuchsperiodeView/gesuchsperiodeView';
 import {ParameterViewComponentConfig} from './component/parameterView/parameterView';
 import {DailyBatchRS} from './service/dailyBatchRS.rest';
@@ -41,6 +40,7 @@ export const ADMIN_JS_MODULE = angular.module('ebeguWeb.admin', [CORE_JS_MODULE.
     .component('dvAdminView', new AdminViewComponentConfig())
     .component('dvParameterView', new ParameterViewComponentConfig())
     .component('dvGesuchsperiodeView', new GesuchsperiodeViewComponentConfig())
+    .component('benutzerListView', new BenutzerListViewComponentConfig())
     .run(adminRun);
 
 export default ADMIN_JS_MODULE;

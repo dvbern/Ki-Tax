@@ -2512,5 +2512,13 @@
     "CONFIRM_STORNIEREN_TAGESSCHULE_WARNING_SCOLARIS": "Achtung: In Scolaris müssen Sie die Anmeldung selber ebenfalls stornieren.",
     "BEI_FRAGEN_GEMEINDE_KONTAKTIEREN": "Bei Fragen kontaktieren Sie bitte Ihre Wohnsitzgemeinde",
     "VERLAUF_ANZEIGEN": "Verlauf anzeigen",
+    "REFNUMMER_EINGEBEN": "Referenznummer eingeben",
+    "BETREUUNG_MONITORING_NOCH_KEINE": "Keine Monitoring Daten gefunden",
+    "REFNUMMER": "Referenznummer",
+    "INFO_TEXT": "Informationen",
+    "TIMESTAMP": "Timestamp",
+    "BETREUUNG_MONITORING_TITLE": "Betreuung Monitoring",
+    "AFA_BETREUUNG_MONITORING": "Betreuung Monitoring",
+    "MENU_BETREUUNG_MONITORING": "Betreuung Monitoring",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

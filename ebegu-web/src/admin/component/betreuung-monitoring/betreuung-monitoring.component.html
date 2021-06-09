@@ -24,7 +24,66 @@
             <hr class="header">
         </div>
 
+        <div class="filter">
+            <input class="filter"
+                   matInput
+                   type="text"
+                   (keyup)="doFilter($event.target.value)"
+                   placeholder="{{'REFNUMMER_EINGEBEN' | translate}}">
+        </div>
 
+        <!--Tabelle zum anzeigen der berechtigten Entitaet -->
+        <div class="table-responsive gemeinden-table">
+            <mat-table #table [dataSource]="dataSource" matSort>
+
+                <!-- Column refNummer -->
+                <ng-container matColumnDef="refNummer">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'REFNUMMER' | translate}}
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        {{item.refNummer}}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Column benutzer -->
+                <ng-container matColumnDef="benutzer">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'BENUTZER' | translate}}
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        {{item.benutzer}}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Column infoText -->
+                <ng-container matColumnDef="infoText">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'INFO_TEXT' | translate}}
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        {{item.infoText}}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Column timestamp -->
+                <ng-container matColumnDef="timestamp">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'TIMESTAMP' | translate}}
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        {{item.timestamp.format('DD.MM.YYYY HH:mm:ss')}}
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" class="pointer-cursor"></mat-row>
+            </mat-table>
+            <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
+            <div class="mat-row" *ngIf="showNoContentMessage()"
+                 [textContent]="'BETREUUNG_MONITORING_NOCH_KEINE' | translate">
+            </div>
+        </div>
 
     </div>
 </div>

@@ -20,10 +20,12 @@ package ch.dvbern.ebegu.api.dtos;
 import java.time.LocalDateTime;
 
 import javax.annotation.Nonnull;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 
 /**
  * DTO fuer Monitoren Aenderung der Betreuungen,
@@ -42,6 +44,7 @@ public class JaxBetreuungMonitoring extends JaxAbstractDTO {
 	private String infoText;
 
 	@Nonnull
+	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
 	private LocalDateTime timestamp;
 
 	@Nonnull
