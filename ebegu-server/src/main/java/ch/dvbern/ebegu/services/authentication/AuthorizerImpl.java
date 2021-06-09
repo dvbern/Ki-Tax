@@ -1412,11 +1412,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		case ADMIN_MANDANT:
 		case SACHBEARBEITER_MANDANT: {
-			if (institutionStammdaten.isNew() && !institutionStammdaten.getInstitution().getStatus().isEnabled()) {
-				// Es handelt sich um eine Einladung, dies muss moeglich sein
-				return true;
-			}
-			return false;
+			return institutionStammdaten.getBetreuungsangebotTyp().isBerechnetesAngebot() && isMandantMatching(
+				institutionStammdaten.getInstitution());
 		}
 		case SUPER_ADMIN: {
 			// Superadmin darf alles
@@ -1953,7 +1950,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				return;
 			}
 			throwViolation(container);
+			break;
 		}
+		case GEPRUEFT:
 		case VERFUEGT:
 		case ABGELEHNT:
 			throwViolation(container);
@@ -1973,7 +1972,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			).orElseThrow(() -> new EbeguEntityNotFoundException("checkReadAuthorizationFerienbetreuung", id));
 
 		switch (container.getStatus()) {
-		case IN_BEARBEITUNG_GEMEINDE: {
+		case IN_BEARBEITUNG_GEMEINDE:
+		case IN_PRUEFUNG_KANTON:
+		case GEPRUEFT: {
 			if (principalBean.isCallerInAnyOfRole(getMandantSuperadminRoles())) {
 				return;
 			}
@@ -1984,18 +1985,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				return;
 			}
 			throwViolation(container);
-		}
-		case IN_PRUEFUNG_KANTON: {
-			if (principalBean.isCallerInAnyOfRole(getMandantSuperadminRoles())) {
-				return;
-			}
-			boolean isFBRole = principalBean.isCallerInAnyOfRole(
-				UserRole.getAllGemeindeFerienbetreuungRoles()
-			);
-			if (isFBRole && principalBean.belongsToGemeinde(container.getGemeinde())) {
-				return;
-			}
-			throwViolation(container);
+			break;
 		}
 		case VERFUEGT:
 		case ABGELEHNT:

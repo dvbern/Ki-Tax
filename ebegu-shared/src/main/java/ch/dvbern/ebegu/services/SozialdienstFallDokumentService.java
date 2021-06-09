@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFallDokument;
 
 public interface SozialdienstFallDokumentService {
@@ -36,4 +37,6 @@ public interface SozialdienstFallDokumentService {
 
 	@Nonnull
 	SozialdienstFallDokument saveVollmachtDokument(@Nonnull SozialdienstFallDokument sozialdienstFallDokument);
+
+	void removeDokumenteForSozialdienstFall(@Nonnull String sozialdienstFallId);
 }

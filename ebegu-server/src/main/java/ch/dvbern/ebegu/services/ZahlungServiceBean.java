@@ -427,7 +427,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Objects.requireNonNull(verfuegung);
 		Objects.requireNonNull(verfuegung.getBetreuung());
 
-		verfuegungService.findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+		verfuegungService.findVerrechnetenOrIgnoriertenZeitabschnittOnVorgaengerVerfuegung(
 			helper.getZahlungslaufTyp(),
 			zeitabschnittNeu,
 			verfuegung.getBetreuung(),

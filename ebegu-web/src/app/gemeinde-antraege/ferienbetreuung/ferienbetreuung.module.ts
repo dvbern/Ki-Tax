@@ -17,7 +17,7 @@
 
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {ReactiveFormsModule} from '@angular/forms';
 import {SharedModule} from '../../shared/shared.module';
 import {WizardstepXModule} from '../../wizardstepX/wizardstep-x.module';
 import {FerienbetreuungAbschlussComponent} from './ferienbetreuung-abschluss/ferienbetreuung-abschluss.component';
@@ -52,7 +52,6 @@ import {FerienbetreuungService} from './services/ferienbetreuung.service';
         FerienbetreuungRoutingModule,
         WizardstepXModule,
         SharedModule,
-        FormsModule,
         ReactiveFormsModule,
     ],
     providers: [

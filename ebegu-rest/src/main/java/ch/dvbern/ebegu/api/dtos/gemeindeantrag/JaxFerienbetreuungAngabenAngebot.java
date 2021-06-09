@@ -51,6 +51,9 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 	private BigDecimal anzahlFerienwochenWinterferien;
 
 	@Nullable
+	private BigDecimal anzahlFerienwochenSportferien;
+
+	@Nullable
 	private BigDecimal anzahlFerienwochenFruehlingsferien;
 
 	@Nullable
@@ -76,6 +79,9 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 
 	@Nullable
 	private Boolean gemeindeFuehrtAngebotSelber;
+
+	@Nullable
+	private Boolean gemeindeFuehrtAngebotInKooperation;
 
 	@Nullable
 	private Boolean gemeindeBeauftragtExterneAnbieter;
@@ -392,5 +398,23 @@ public class JaxFerienbetreuungAngabenAngebot extends JaxAbstractDTO {
 
 	public void setStatus(@Nonnull FerienbetreuungFormularStatus status) {
 		this.status = status;
+	}
+
+	@Nullable
+	public BigDecimal getAnzahlFerienwochenSportferien() {
+		return anzahlFerienwochenSportferien;
+	}
+
+	public void setAnzahlFerienwochenSportferien(@Nullable BigDecimal anzahlFerienwochenSportferien) {
+		this.anzahlFerienwochenSportferien = anzahlFerienwochenSportferien;
+	}
+
+	@Nullable
+	public Boolean getGemeindeFuehrtAngebotInKooperation() {
+		return gemeindeFuehrtAngebotInKooperation;
+	}
+
+	public void setGemeindeFuehrtAngebotInKooperation(@Nullable Boolean gemeindeFuehrtAngebotInKooperation) {
+		this.gemeindeFuehrtAngebotInKooperation = gemeindeFuehrtAngebotInKooperation;
 	}
 }

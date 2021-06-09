@@ -1477,7 +1477,7 @@ export class GesuchModelManager {
             // readonly fuer gs wenn gesuch freigegeben oder weiter
             const gesuchReadonly = !this.getGesuch() || isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status);
             const sozialdienstFallEntzogen = this.getFall().isSozialdienstFall()
-                 && this.getFall().sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN;
+                && this.getFall().sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN;
             return gesuchReadonly || periodeReadonly || sozialdienstFallEntzogen;
         }
 
@@ -1689,5 +1689,13 @@ export class GesuchModelManager {
                     return this.createNewDossierForCurrentFall();
                 },
             );
+    }
+
+    public isGemeindeBern(): boolean {
+        if (EbeguUtil.isNotNullOrUndefined(this.getGemeinde())
+            && this.getGemeinde().bfsNummer === CONSTANTS.BERN_BFS_NUMMER) {
+            return true;
+        }
+        return false;
     }
 }

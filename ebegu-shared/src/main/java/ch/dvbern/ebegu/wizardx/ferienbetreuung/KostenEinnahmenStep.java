@@ -46,7 +46,7 @@ public class KostenEinnahmenStep implements WizardStep<FerienbetreuungWizard> {
 			return Objects.requireNonNull(wizard.getFerienbetreuungAngabenContainer()
 				.getAngabenKorrektur())
 				.getFerienbetreuungAngabenKostenEinnahmen()
-				.isGeprueft() ?
+				.isAbgeschlossen() ?
 				WizardStateEnum.OK :
 				WizardStateEnum.IN_BEARBEITUNG;
 		}

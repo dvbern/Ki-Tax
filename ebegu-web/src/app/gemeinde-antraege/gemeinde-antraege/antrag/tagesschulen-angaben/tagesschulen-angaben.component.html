@@ -16,10 +16,10 @@
   -->
 
 <div class="tagesschule-angaben">
-    <h1 class="access-for-all-title">{{'LASTENAUSGLEICH_TAGESSCHULEN_ANGABEN_TAGESSCHULEN' | translate}}</h1>
+    <h1 class="access-for-all-title">{{'LASTENAUSGLEICH_TAGESSCHULEN_ANGABEN_TAGESSCHULEN_TITLE' | translate: {name: latsAngabenInstitutionContainer?.institution?.name} }}</h1>
     <div class="row view-title">
         <div class="col-md-12">
-            <h2 translate>LASTENAUSGLEICH_TAGESSCHULEN_ANGABEN_TAGESSCHULEN</h2>
+            <h2>{{'LASTENAUSGLEICH_TAGESSCHULEN_ANGABEN_TAGESSCHULEN_TITLE' | translate:{name: latsAngabenInstitutionContainer?.institution.name} }}</h2>
             <hr class="header"/>
         </div>
     </div>
@@ -164,10 +164,16 @@
                 <mat-error *ngIf="form.get('anzahlEingeschriebeneKinderSekundarstufe').errors?.isNotPositiveInteger"
                            translate>ERROR_POSITIVE_NUMBER
                 </mat-error>
+                <dv-bisher-x
+                    [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderSekundarstufe"
+                    [korrektur]="form.get('anzahlEingeschriebeneKinderSekundarstufe').value"
+                    [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
+                    [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
+                </dv-bisher-x>
             </mat-form-field>
         </dv-input-container-x>
 
-        <div class="well well-status-warten" *ngIf="abweichungenAnzahlKinder !== 0">
+        <div class="well well-status-warten" *ngIf="allAnzahlFieldsFilledOut() && abweichungenAnzahlKinder !== 0">
             <i class="fa fa-exclamation" aria-hidden="true"></i>
             <span>
                 <span translate>LATS_ABWEICHUNGEN_ANZAHL_KINDER</span>
@@ -226,8 +232,12 @@
                 <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagFruehbetreuung').errors?.required"
                            translate>ERROR_REQUIRED
                 </mat-error>
-                <mat-error *ngIf="form.get('durchschnittKinderProTagFruehbetreuung').errors?.isNotPositiveInteger"
-                           translate>ERROR_POSITIVE_NUMBER
+                <mat-error *ngIf="form.get('durchschnittKinderProTagFruehbetreuung').errors?.isNotFloat"
+                           translate>ERROR_NUMBER
+                </mat-error>
+                <mat-error
+                    *ngIf="form.get('durchschnittKinderProTagFruehbetreuung').errors?.pattern && !form.get('durchschnittKinderProTagFruehbetreuung').errors?.isNotFloat">
+                    {{'ERROR_STEP' | translate:{value: 0.01} }}
                 </mat-error>
                 <dv-bisher-x
                     [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagFruehbetreuung"
@@ -250,8 +260,12 @@
                 <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagMittag').errors?.required"
                            translate>ERROR_REQUIRED
                 </mat-error>
-                <mat-error *ngIf="form.get('durchschnittKinderProTagMittag').errors?.isNotPositiveInteger"
-                           translate>ERROR_POSITIVE_NUMBER
+                <mat-error *ngIf="form.get('durchschnittKinderProTagMittag').errors?.isNotFloat"
+                           translate>ERROR_NUMBER
+                </mat-error>
+                <mat-error
+                    *ngIf="form.get('durchschnittKinderProTagMittag').errors?.pattern && !form.get('durchschnittKinderProTagMittag').errors?.isNotFloat">
+                    {{'ERROR_STEP' | translate:{value: 0.01} }}
                 </mat-error>
                 <dv-bisher-x
                     [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagMittag"
@@ -274,8 +288,12 @@
                 <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag1').errors?.required"
                            translate>ERROR_REQUIRED
                 </mat-error>
-                <mat-error *ngIf="form.get('durchschnittKinderProTagNachmittag1').errors?.isNotPositiveInteger"
-                           translate>ERROR_POSITIVE_NUMBER
+                <mat-error *ngIf="form.get('durchschnittKinderProTagNachmittag1').errors?.isNotFloat"
+                           translate>ERROR_NUMBER
+                </mat-error>
+                <mat-error
+                    *ngIf="form.get('durchschnittKinderProTagNachmittag1').errors?.pattern && !form.get('durchschnittKinderProTagNachmittag1').errors?.isNotFloat">
+                    {{'ERROR_STEP' | translate:{value: 0.01} }}
                 </mat-error>
                 <dv-bisher-x
                     [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagNachmittag1"
@@ -298,8 +316,12 @@
                 <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag2').errors?.required"
                            translate>ERROR_REQUIRED
                 </mat-error>
-                <mat-error *ngIf="form.get('durchschnittKinderProTagNachmittag2').errors?.isNotPositiveInteger"
-                           translate>ERROR_POSITIVE_NUMBER
+                <mat-error *ngIf="form.get('durchschnittKinderProTagNachmittag2').errors?.isNotFloat"
+                           translate>ERROR_NUMBER
+                </mat-error>
+                <mat-error
+                    *ngIf="form.get('durchschnittKinderProTagNachmittag2').errors?.pattern && !form.get('durchschnittKinderProTagNachmittag2').errors?.isNotFloat">
+                    {{'ERROR_STEP' | translate:{value: 0.01} }}
                 </mat-error>
                 <dv-bisher-x
                     [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagNachmittag2"
@@ -507,7 +529,7 @@
 
         <div class="row" *ngIf="canSeeFalscheAngaben | async">
             <div class="col-md-12">
-                <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FALSCHE_ANGABEN</a>
+                <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>ANGABEN_KORRIGIEREN</a>
             </div>
         </div>
 

@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.BerechtigungHistory_;
 import ch.dvbern.ebegu.entities.Berechtigung_;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -317,6 +318,19 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 			return isTagesschule.get();
 		});
+	}
+
+	@Override
+	public Map<Institution, InstitutionStammdaten> getInstitutionenInstitutionStammdatenForGemeinde(Gemeinde gemeinde) {
+		Map<Institution, InstitutionStammdaten> institutionInstitutionStammdatenMap = new HashedMap<>();
+
+		institutionStammdatenService.getAllTagesschulenForGemeinde(gemeinde)
+			.forEach(institutionStammdaten -> {
+				institutionInstitutionStammdatenMap.put(
+					institutionStammdaten.getInstitution(),
+					institutionStammdaten);
+			});
+		return institutionInstitutionStammdatenMap;
 	}
 
 	@Override

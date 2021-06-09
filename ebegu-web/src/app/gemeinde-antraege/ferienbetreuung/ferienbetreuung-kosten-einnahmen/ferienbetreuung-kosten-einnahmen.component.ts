@@ -16,13 +16,12 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {combineLatest, Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
-import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenKostenEinnahmen} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
@@ -40,10 +39,9 @@ const LOG = LogFactory.createLog('FerienbetreuungKostenEinnahmenComponent');
     styleUrls: ['./ferienbetreuung-kosten-einnahmen.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetreuungFormular implements OnInit, OnDestroy {
+export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetreuungFormular implements OnInit,
+    OnDestroy {
 
-    public form: FormGroup;
-    public container: TSFerienbetreuungAngabenContainer;
     private kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen;
     private subscription: Subscription;
 
@@ -57,7 +55,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly fb: FormBuilder,
         private readonly authService: AuthServiceRS,
-        private readonly unsavedChangesService: UnsavedChangesService
+        private readonly unsavedChangesService: UnsavedChangesService,
     ) {
         super(errorService, translate, dialog, cd, wizardRS, uiRouterGlobals);
     }
@@ -68,7 +66,8 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
             this.authService.principal$,
         ]).subscribe(([container, principal]) => {
             this.container = container;
-            this.kostenEinnahmen = container.angabenDeklaration?.kostenEinnahmen;
+            this.kostenEinnahmen = container.isAtLeastInPruefungKanton() ?
+                container.angabenKorrektur?.kostenEinnahmen : container.angabenDeklaration?.kostenEinnahmen;
             this.setupFormAndPermissions(container, this.kostenEinnahmen, principal);
             this.unsavedChangesService.registerForm(this.form);
         }, error => {
@@ -123,25 +122,25 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         this.removeAllValidators();
 
         this.form.get('personalkosten').setValidators(
-            numberValidator(ValidationType.INTEGER)
+            numberValidator(ValidationType.INTEGER),
         );
         this.form.get('personalkostenLeitungAdmin').setValidators(
-            numberValidator(ValidationType.INTEGER)
+            numberValidator(ValidationType.INTEGER),
         );
         this.form.get('sachkosten').setValidators(
-            numberValidator(ValidationType.INTEGER)
+            numberValidator(ValidationType.INTEGER),
         );
         this.form.get('verpflegungskosten').setValidators(
-            numberValidator(ValidationType.INTEGER)
+            numberValidator(ValidationType.INTEGER),
         );
         this.form.get('weitereKosten').setValidators(
-            numberValidator(ValidationType.INTEGER)
+            numberValidator(ValidationType.INTEGER),
         );
         this.form.get('elterngebuehren').setValidators(
-            numberValidator(ValidationType.INTEGER)
+            numberValidator(ValidationType.INTEGER),
         );
         this.form.get('weitereEinnahmen').setValidators(
-            numberValidator(ValidationType.INTEGER)
+            numberValidator(ValidationType.INTEGER),
         );
         this.triggerFormValidation();
     }
@@ -151,7 +150,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         this.form.get('personalkostenLeitungAdmin').setValidators([numberValidator(ValidationType.INTEGER)]);
         this.form.get('sachkosten').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
         this.form.get('verpflegungskosten')
-            .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+            .setValidators([numberValidator(ValidationType.INTEGER)]);
         this.form.get('weitereKosten').setValidators([numberValidator(ValidationType.INTEGER)]);
         this.form.get('elterngebuehren').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
         this.form.get('weitereEinnahmen').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);

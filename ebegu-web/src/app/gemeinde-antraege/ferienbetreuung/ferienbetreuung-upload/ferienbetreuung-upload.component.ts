@@ -44,7 +44,7 @@ const LOG = LogFactory.createLog('FerienbetreuungUploadComponent');
     selector: 'dv-ferienbetreuung-upload',
     templateUrl: './ferienbetreuung-upload.component.html',
     styleUrls: ['./ferienbetreuung-upload.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FerienbetreuungUploadComponent implements OnInit, OnDestroy {
 
@@ -64,7 +64,7 @@ export class FerienbetreuungUploadComponent implements OnInit, OnDestroy {
         private readonly dialog: MatDialog,
         private readonly downloadRS: DownloadRS,
         private readonly wizardRS: WizardStepXRS,
-        private readonly authService: AuthServiceRS
+        private readonly authService: AuthServiceRS,
     ) {
     }
 
@@ -78,8 +78,8 @@ export class FerienbetreuungUploadComponent implements OnInit, OnDestroy {
                 this.dokumente = dokumente;
                 this.cd.markForCheck();
             }, error => {
-            LOG.error(error);
-        });
+                LOG.error(error);
+            });
     }
 
     public ngOnDestroy(): void {
@@ -144,8 +144,11 @@ export class FerienbetreuungUploadComponent implements OnInit, OnDestroy {
     }
 
     public isReadonly(): boolean {
-        return this.container?.status !== FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE
-            || this.authService.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
+        return (this.container?.status === FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE
+            && this.authService.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) ||
+            (this.container?.status === FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON &&
+                this.authService.isOneOfRoles(TSRoleUtil.getGemeindeOrFBOnlyRoles())) ||
+            this.container?.isGeprueft();
     }
 
     /**

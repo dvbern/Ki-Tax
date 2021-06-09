@@ -38,7 +38,7 @@
                                             <input id="anschrift_ts_id"
                                                    type="text"
                                                    name="anschrift_ts_id"
-												   #nameAnschriftTS="ngModel"
+                                                   #nameAnschriftTS="ngModel"
                                                    [(ngModel)]="stammdaten.tsAdresse.organisation"
                                                    [maxlength]="255"
                                                    class="form-control"
@@ -57,7 +57,7 @@
                                                translate
                                                for="strasse_ts_id">ADRESSE_STRASSE</label>
                                         <input id="strasse_ts_id" type="text" name="strasse_ts_id"
-											   #nameStrasseTS="ngModel"
+                                               #nameStrasseTS="ngModel"
                                                [(ngModel)]="stammdaten.tsAdresse.strasse"
                                                [maxlength]="255" class="form-control" required>
                                         <dv-error-messages [errorObject]="nameStrasseTS.errors"
@@ -71,7 +71,7 @@
                                         <input id="hausnummer_ts_id"
                                                type="text"
                                                name="hausnummer_ts_id"
-											   #nameHausnummerTS="ngModel"
+                                               #nameHausnummerTS="ngModel"
                                                [(ngModel)]="stammdaten.tsAdresse.hausnummer"
                                                [maxlength]="255"
                                                class="form-control">
@@ -112,7 +112,7 @@
                                             <dv-tooltip [text]="'ANGABEN_VON_STAMMDATEN'|translate"></dv-tooltip>
                                         </label>
                                         <input id="email_ts_id" type="text" name="email_ts_id"
-											   #nameEmailTS="ngModel"
+                                               #nameEmailTS="ngModel"
                                                [(ngModel)]="stammdaten.tsEmail"
                                                [pattern]="CONSTANTS.PATTERN_EMAIL"
                                                class="form-control">
@@ -129,7 +129,7 @@
                                             <dv-tooltip [text]="'ANGABEN_VON_STAMMDATEN'|translate"></dv-tooltip>
                                         </label>
                                         <input id="telefonnummer_ts_id" type="text" name="telefonnummer_ts_id"
-											   #nameTelefonnummerTS="ngModel"
+                                               #nameTelefonnummerTS="ngModel"
                                                [(ngModel)]="stammdaten.tsTelefon"
                                                [pattern]="CONSTANTS.PATTERN_PHONE"
                                                class="form-control">
@@ -151,7 +151,7 @@
                                     id="verantwortliche_ts_id"
                                     name="verantwortliche_ts_id"
                                     class="form-control"
-									#nameVerantwortlicheTS='ngModel'
+                                    #nameVerantwortlicheTS='ngModel'
                                     [compareWith]="compareBenutzer">
                             <mat-option *ngFor="let vts of stammdaten.benutzerListeTS" [value]="vts">
                                 {{vts.vorname}} {{vts.nachname}}
@@ -290,6 +290,24 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Tagesschulen der Gemeinden -->
+                <div class="col-sm-6">
+                    <h3>
+                        {{'TAGESSCHULEN_DER_GEMEINDEN' | translate}}
+                        <i *ngIf="!showTSList" class="fa fa-plus-circle" (click)="showListTS()"></i>
+                        <i *ngIf="showTSList" class="fa fa-minus-circle" (click)="hideTSList()"></i>
+                        <ul *ngIf="showTSList">
+                            <li *ngFor="let tagesschule of tagesschulen">
+                            <a uiSref="institution.edit"
+                                [uiParams]="{institutionId: tagesschule.id, editMode: false}">
+                                {{tagesschule.name}}
+                            </a>
+                            </li>
+                        </ul>
+                    </h3>
                 </div>
             </div>
             <div class="mt-2">

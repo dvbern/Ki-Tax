@@ -19,9 +19,16 @@ import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
-import {getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
+import {
+    getTSAntragStatusValuesByRole,
+    isAnyStatusOfVerfuegt,
+    TSAntragStatus,
+} from '../../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
-import {getTSBetreuungsangebotTypValuesForMandant, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
+import {
+    getTSBetreuungsangebotTypValuesForMandant,
+    TSBetreuungsangebotTyp,
+} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAbstractAntragDTO} from '../../../../models/TSAbstractAntragDTO';
 import {TSAntragDTO} from '../../../../models/TSAntragDTO';
 import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
@@ -30,6 +37,7 @@ import {TSGemeinde} from '../../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
 import {TSInstitution} from '../../../../models/TSInstitution';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {GesuchsperiodeRS} from '../../../core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../core/service/institutionRS.rest';
@@ -59,7 +67,7 @@ export class DVQuicksearchListController implements IController {
 
     public static $inject: string[] = [
         '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
-        '$state', 'AuthServiceRS', 'GemeindeRS'
+        '$state', 'AuthServiceRS', 'GemeindeRS',
     ];
 
     public antraege: Array<TSAntragDTO> = []; // muss hier gesuch haben damit Felder die wir anzeigen muessen da sind
@@ -214,12 +222,21 @@ export class DVQuicksearchListController implements IController {
             gesuchId: antragDTO.antragId,
             dossierId: antragDTO.dossierId,
         };
-        if (isCtrlKeyPressed) {
-            const url = this.$state.href('gesuch.fallcreation', navObj);
-            window.open(url, '_blank');
-        } else {
-            this.$state.go('gesuch.fallcreation', navObj);
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            if (isAnyStatusOfVerfuegt(antragDTO.status)) {
+                this.goTo('gesuch.verfuegen',
+                    {gesuchId: antragDTO.antragId},
+                    isCtrlKeyPressed,
+                );
+            } else {
+                this.goTo('gesuch.betreuungen',
+                    {gesuchId: antragDTO.antragId},
+                    isCtrlKeyPressed,
+                );
+            }
+            return;
         }
+        this.goTo('gesuch.fallcreation', navObj, isCtrlKeyPressed);
     }
 
     public showOnlineGesuchIcon(row: TSAbstractAntragDTO): boolean {
@@ -227,7 +244,7 @@ export class DVQuicksearchListController implements IController {
     }
 
     public showPapierGesuchIcon(row: TSAbstractAntragDTO): boolean {
-        return row instanceof TSAntragDTO && !row.hasBesitzer()  && !row.isSozialdienst;
+        return row instanceof TSAntragDTO && !row.hasBesitzer() && !row.isSozialdienst;
     }
 
     public showSozialdienstGesuchIcon(row: TSAbstractAntragDTO): boolean {
@@ -236,5 +253,14 @@ export class DVQuicksearchListController implements IController {
 
     public isTagesschulangebotEnabled(): boolean {
         return this.authServiceRS.hasMandantAngebotTS();
+    }
+
+    private goTo(state: string, params: any, isCtrlKeyPressed: boolean): void {
+        if (isCtrlKeyPressed) {
+            const url = this.$state.href(state, params);
+            window.open(url, '_blank');
+        } else {
+            this.$state.go(state, params);
+        }
     }
 }

@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.entities;
 import javax.persistence.PostLoad;
 import javax.persistence.PreUpdate;
 
+import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +38,12 @@ public class WriteProtectedDokumentListener {
 		if (writeProtectedDokument.isOrginalWriteProtected() && !writeProtectedDokument.isWriteProtected()) {
 			LOG.warn("Write protection auf GeneratedDokument darf nicht mehr entfernt werden!");
 			writeProtectedDokument.setWriteProtected(true);
+		}
+
+		// Ausnahme, Writeprotected Dokument die durfen uberschreiben werden...
+		if (writeProtectedDokument.getTyp().equals(GeneratedDokumentTyp.ANMELDEBESTAETIGUNGMITTARIF)
+			|| writeProtectedDokument.getTyp().equals(GeneratedDokumentTyp.ANMELDEBESTAETIGUNGOHNETARIF)) {
+			return;
 		}
 
 		// Wenn es writeProtection nicht neu ist, darf es nicht gespeichert werden! (Wenn WriteProtection neu gesetzt

@@ -15,9 +15,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
+import {StateService} from '@uirouter/core';
 import {combineLatest, Observable, Subject} from 'rxjs';
 import {filter, first, map, mergeMap, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -36,6 +37,7 @@ import {FerienbetreuungService} from '../services/ferienbetreuung.service';
     templateUrl: './ferienbetreuung-abschluss.component.html',
     styleUrls: ['./ferienbetreuung-abschluss.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None,
 })
 export class FerienbetreuungAbschlussComponent implements OnInit {
 
@@ -51,6 +53,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly wizardRS: WizardStepXRS,
         private readonly authService: AuthServiceRS,
+        private readonly stateService: StateService,
     ) {
     }
 
@@ -82,14 +85,13 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
     public geprueftVisible(): Observable<boolean> {
         return combineLatest([
             this.ferienbetreuungsService.getFerienbetreuungContainer().pipe(
-                map(latsContainer => latsContainer.status ===
-                    FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON),
+                map(latsContainer => latsContainer.isAtLeastInPruefungKanton()),
                 takeUntil(this.unsubscribe),
             ), this.authService.principal$,
         ]).pipe(
-            map(([inBearbeitungGemeinde, principal]) => {
-                return (principal.hasRole(TSRole.SUPER_ADMIN) && inBearbeitungGemeinde) ||
-                    principal.hasOneOfRoles(TSRoleUtil.getMandantRoles());
+            map(([alLeastInPruefungKanton, principal]) => {
+                return (principal.hasRole(TSRole.SUPER_ADMIN) && alLeastInPruefungKanton) ||
+                    principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
             }),
         );
     }
@@ -110,7 +112,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
             .subscribe(() => {
                 this.wizardRS.updateSteps(this.WIZARD_TYPE, this.container.id);
             }, () => {
-                this.errorService.addMesageAsError(this.translate.instant('ERROR_SAVE'));
+                this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
 
             });
     }
@@ -127,8 +129,8 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
                 mergeMap(() => this.ferienbetreuungsService.getFerienbetreuungContainer().pipe(first())),
                 mergeMap(container => this.ferienbetreuungsService.ferienbetreuungAngabenGeprueft(container)),
                 takeUntil(this.unsubscribe),
-            ).subscribe(() => this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH')),
-            () => this.errorService.addMesageAsError(this.translate.instant('SAVE_ERROR')));
+            ).subscribe(() => this.wizardRS.updateSteps(this.WIZARD_TYPE, this.container.id),
+            () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED')));
     }
 
     public ngOnDestroy(): void {
@@ -141,8 +143,32 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
     }
 
     public alreadyGeprueft(): boolean {
-        return this.container.status === FerienbetreuungAngabenStatus.GEPRUEFT ||
-            this.container.status === FerienbetreuungAngabenStatus.ABGELEHNT ||
-            this.container.status === FerienbetreuungAngabenStatus.VERFUEGT;
+        return this.container?.status === FerienbetreuungAngabenStatus.GEPRUEFT ||
+            this.container?.status === FerienbetreuungAngabenStatus.ABGELEHNT ||
+            this.container?.status === FerienbetreuungAngabenStatus.VERFUEGT;
+    }
+
+    public readyForGeprueft(): boolean {
+        return this.container?.angabenKorrektur?.angebot?.isAbgeschlossen() &&
+            this.container?.angabenKorrektur?.nutzung?.isAbgeschlossen() &&
+            this.container?.angabenKorrektur?.stammdaten?.isAbgeschlossen() &&
+            this.container?.angabenKorrektur?.kostenEinnahmen?.isAbgeschlossen();
+    }
+
+    public async zurueckAnGemeinde(): Promise<void> {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            frage: this.translate.instant('ZURUECK_AN_GEMEINDE'),
+        };
+
+        if (!await (this.dialog.open(DvNgConfirmDialogComponent, dialogConfig))
+            .afterClosed()
+            .toPromise()) {
+            return;
+        }
+
+        this.ferienbetreuungsService.zurueckAnGemeinde(this.container).subscribe(
+            () => this.stateService.go('gemeindeantrage.view'),
+            () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED')));
     }
 }

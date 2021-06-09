@@ -39,22 +39,22 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 	private static final long serialVersionUID = -4376690435594903597L;
 
 	@Nonnull
-	@OneToOne(cascade = CascadeType.MERGE, orphanRemoval = true,fetch = FetchType.EAGER)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_stammdaten_ferienbetreuung"), nullable = false)
 	private FerienbetreuungAngabenStammdaten ferienbetreuungAngabenStammdaten = new FerienbetreuungAngabenStammdaten();
 
 	@Nonnull
-	@OneToOne(cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_angebot_ferienbetreuung"), nullable = false)
 	private FerienbetreuungAngabenAngebot ferienbetreuungAngabenAngebot = new FerienbetreuungAngabenAngebot();
 
 	@Nonnull
-	@OneToOne(cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_nutzung_ferienbetreuung"), nullable = false)
 	private FerienbetreuungAngabenNutzung ferienbetreuungAngabenNutzung = new FerienbetreuungAngabenNutzung();
 
 	@Nonnull
-	@OneToOne(cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_kosten_einnahmen_ferienbetreuung"), nullable = false)
 	private FerienbetreuungAngabenKostenEinnahmen ferienbetreuungAngabenKostenEinnahmen = new FerienbetreuungAngabenKostenEinnahmen();
 

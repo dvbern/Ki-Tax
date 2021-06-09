@@ -111,4 +111,11 @@ public class SozialdienstFallDokumentServiceBean extends AbstractBaseService imp
 
 		return mergedRueckforderungDokument;
 	}
+
+	@Override
+	public void removeDokumenteForSozialdienstFall(@Nonnull String sozialdienstFallId) {
+		for(SozialdienstFallDokument dokument: findDokumente(sozialdienstFallId)) {
+			removeDokument(dokument);
+		}
+	}
 }

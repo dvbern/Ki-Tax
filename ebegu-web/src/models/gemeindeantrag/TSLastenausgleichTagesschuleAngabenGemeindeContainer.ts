@@ -90,4 +90,11 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
             return prev && cur.isGeprueftGemeinde();
         }, true);
     }
+
+    public isAtLeastGeprueft(): boolean {
+        return [
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT,
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.VERFUEGT,
+        ].includes(this.status);
+    }
 }

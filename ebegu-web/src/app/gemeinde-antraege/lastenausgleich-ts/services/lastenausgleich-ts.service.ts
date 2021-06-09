@@ -87,6 +87,8 @@ export class LastenausgleichTSService {
         return this.http.put<void>(
             `${this.API_BASE_URL}/saveKommentar/${encodeURIComponent(containerId)}`,
             kommentar,
+        ).pipe(
+            tap(() => this.updateLATSAngabenGemeindeContainerStore(containerId))
         );
     }
 
@@ -143,5 +145,20 @@ export class LastenausgleichTSService {
             this.errorService.clearAll();
             this.next(reopenendContainer);
         }, err => console.error(err));
+    }
+
+    public zurueckAnGemeinde(
+        container: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
+    ): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
+        return this.http.put(
+            `${this.API_BASE_URL}/zurueck-an-gemeinde`,
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
+        ).pipe(
+            map(restContainer => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
+                new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),
+                restContainer),
+            ),
+            tap(parsedContainer => this.updateLATSAngabenGemeindeContainerStore(parsedContainer.id)),
+        );
     }
 }

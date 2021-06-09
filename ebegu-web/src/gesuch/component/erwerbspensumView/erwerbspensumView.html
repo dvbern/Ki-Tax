@@ -60,8 +60,10 @@
                             <div class="form-group">
                                 <label class="md-no-float required" for="taetigkeit">
                                     <span data-translate="TAETIGKEIT_WAEHLEN"></span>
-                                    <dv-tooltip input-id="taetigkeit"
+                                    <dv-tooltip ng-if="!vm.gesuchModelManager.isGemeindeBern()" input-id="taetigkeit"
                                                 text="'TAETIGKEIT_WAEHLEN_HELP' | translate"></dv-tooltip>
+                                    <dv-tooltip ng-if="vm.gesuchModelManager.isGemeindeBern()" input-id="taetigkeit"
+                                                text="'TAETIGKEIT_WAEHLEN_HELP_BERN' | translate"></dv-tooltip>
                                 </label>
                                 <div class="dv-select-style">
                                     <select aria-describedby="taetigkeit-error"

@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities.gemeindeantrag;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -67,9 +68,8 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 	private Set<String> amAngebotBeteiligteGemeinden = new HashSet<>();
 
 	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	@Column()
-	private String seitWannFerienbetreuungen;
+	@Column(nullable = true)
+	private LocalDate seitWannFerienbetreuungen;
 
 	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
@@ -77,7 +77,7 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 	private String traegerschaft;
 
 	@Nullable
-	@OneToOne(optional = true, cascade = CascadeType.MERGE, orphanRemoval = true)
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_stammdaten_adresse_id"))
 	private Adresse stammdatenAdresse;
 
@@ -133,8 +133,11 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 		this.seitWannFerienbetreuungen = ferienbetreuungAngabenStammdatenToCopy.seitWannFerienbetreuungen;
 		this.traegerschaft = ferienbetreuungAngabenStammdatenToCopy.traegerschaft;
 		// Stammdaten adresse
-		this.stammdatenAdresse = Objects.requireNonNull(ferienbetreuungAngabenStammdatenToCopy.stammdatenAdresse)
-			.copyAdresse(new Adresse(), AntragCopyType.MUTATION);
+		if (ferienbetreuungAngabenStammdatenToCopy.stammdatenAdresse != null) {
+			this.stammdatenAdresse = ferienbetreuungAngabenStammdatenToCopy.stammdatenAdresse.copyAdresse(
+				new Adresse(),
+				AntragCopyType.MUTATION);
+		}
 		// Kontaktperson
 		this.stammdatenKontaktpersonVorname = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonVorname;
 		this.stammdatenKontaktpersonNachname = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonNachname;
@@ -142,9 +145,12 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 		this.stammdatenKontaktpersonEmail = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonEmail;
 		this.stammdatenKontaktpersonTelefon = ferienbetreuungAngabenStammdatenToCopy.stammdatenKontaktpersonTelefon;
 		// Auszahlungsdaten
-		this.auszahlungsdaten = Objects.requireNonNull(ferienbetreuungAngabenStammdatenToCopy.auszahlungsdaten).copyAuszahlungsdaten(
-			new Auszahlungsdaten(),
-			AntragCopyType.MUTATION);
+		if (ferienbetreuungAngabenStammdatenToCopy.auszahlungsdaten != null) {
+			this.auszahlungsdaten = ferienbetreuungAngabenStammdatenToCopy.auszahlungsdaten.copyAuszahlungsdaten(
+				new Auszahlungsdaten(),
+				AntragCopyType.MUTATION);
+		}
+
 		this.vermerkAuszahlung = ferienbetreuungAngabenStammdatenToCopy.vermerkAuszahlung;
 
 	}
@@ -159,11 +165,11 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 	}
 
 	@Nullable
-	public String getSeitWannFerienbetreuungen() {
+	public LocalDate getSeitWannFerienbetreuungen() {
 		return seitWannFerienbetreuungen;
 	}
 
-	public void setSeitWannFerienbetreuungen(@Nullable String seitWannFerienbetreuungen) {
+	public void setSeitWannFerienbetreuungen(@Nullable LocalDate seitWannFerienbetreuungen) {
 		this.seitWannFerienbetreuungen = seitWannFerienbetreuungen;
 	}
 
@@ -287,7 +293,4 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 		return status == FerienbetreuungFormularStatus.ABGESCHLOSSEN;
 	}
 
-	public boolean isGeprueft() {
-		return status == FerienbetreuungFormularStatus.GEPRUEFT;
-	}
 }

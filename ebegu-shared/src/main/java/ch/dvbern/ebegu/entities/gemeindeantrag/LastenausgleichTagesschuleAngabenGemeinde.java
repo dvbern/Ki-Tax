@@ -466,4 +466,8 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	public void setUeberschussVerwendung(@Nullable String ueberschussVerwendung) {
 		this.ueberschussVerwendung = ueberschussVerwendung;
 	}
+
+	public boolean isAbgeschlossen() {
+		return status == LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
+	}
 }
