@@ -43,7 +43,7 @@ export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAn
     private _leitungDurchPersonMitAusbildung: string;
     private _betreuungDurchPersonenMitErfahrung: boolean;
     private _anzahlKinderAngemessen: boolean;
-    private _betreuungsschluessel: number;
+    private _betreuungsschluessel: string;
     private _bemerkungenPersonal: string;
     private _fixerTarifKinderDerGemeinde: boolean;
     private _einkommensabhaengigerTarifKinderDerGemeinde: boolean;
@@ -236,11 +236,11 @@ export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAn
         this._anzahlKinderAngemessen = value;
     }
 
-    public get betreuungsschluessel(): number {
+    public get betreuungsschluessel(): string {
         return this._betreuungsschluessel;
     }
 
-    public set betreuungsschluessel(value: number) {
+    public set betreuungsschluessel(value: string) {
         this._betreuungsschluessel = value;
     }
 

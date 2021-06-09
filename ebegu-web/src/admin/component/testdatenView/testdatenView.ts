@@ -14,10 +14,11 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {IPromise} from 'angular';
 import * as moment from 'moment';
 import {Observable} from 'rxjs';
+import {DvNgConfirmDialogComponent} from '../../../app/core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgLinkDialogComponent} from '../../../app/core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
 import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
@@ -25,7 +26,9 @@ import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRS} from '../../../app/core/service/benutzerRS.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
+import {GemeindeAntragService} from '../../../app/gemeinde-antraege/services/gemeinde-antrag.service';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../models/TSGemeinde';
@@ -57,6 +60,12 @@ export class TestdatenViewComponent implements OnInit {
 
     public devMode: boolean;
 
+    public gesuchsperiodeGemeindeAntrag: TSGesuchsperiode;
+    public gemeindeForGemeindeAntrag: TSGemeinde;
+    public gemeindeAntragStatus: string = 'IN_BEARBEITUNG_GEMEINDE';
+    public gemeindeAntragTyp: TSGemeindeAntragTyp;
+    public gemeindeAntragTypeList: TSGemeindeAntragTyp[];
+
     public constructor(
         public readonly testFaelleRS: TestFaelleRS,
         private readonly benutzerRS: BenutzerRS,
@@ -65,6 +74,7 @@ export class TestdatenViewComponent implements OnInit {
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly gemeindeRS: GemeindeRS,
         private readonly dialog: MatDialog,
+        private readonly gemeindeAntragRS: GemeindeAntragService,
     ) {
     }
 
@@ -82,11 +92,13 @@ export class TestdatenViewComponent implements OnInit {
             this.gemeindeList = angular.copy(response);
             this.gemeindeList.sort((a, b) => a.name.localeCompare(b.name));
         });
+        this.initGemeindeAntragTypes();
     }
 
     public createTestFallType(testFall: string): void {
         if (!this.selectedGesuchsperiode ||
             !this.selectedGemeinde) {
+            this.errorService.addMesageAsError('Gemeinde und Gesuchsperiode müssen ausgewählt sein');
             return;
         }
         let bestaetigt = false;
@@ -239,5 +251,91 @@ export class TestdatenViewComponent implements OnInit {
             link,
         };
         return this.dialog.open(DvNgLinkDialogComponent, dialogConfig).afterClosed();
+    }
+
+    public async createGemeindeAntragTestDaten(): Promise<void> {
+
+        if (this.latsSelected() && !this.gesuchsperiodeGemeindeAntrag) {
+            this.errorService.addMesageAsError('Gesuchsperiode muss ausgewählt sein');
+            return;
+        }
+
+        // tslint:disable-next-line:no-collapsible-if
+        if (this.latsSelected() && !this.gemeindeForGemeindeAntrag) {
+            if (!await this.confirmDialog(
+                'Ohne ausgewählte Gemeinde werden die LATS Formular für ALLE Gemeinden erstellt/überschrieben. Fortfahren?')) {
+                return;
+            }
+        }
+
+        if (!this.gesuchsperiodeGemeindeAntrag ||
+            this.ferienbetreuungSelected() && !this.gemeindeForGemeindeAntrag) {
+            this.errorService.addMesageAsError('Gemeinde und Gesuchsperiode müssen ausgewählt sein');
+            return;
+        }
+
+        if (this.gemeindeForGemeindeAntrag && !await this.overwriteIfGemeindeAntragExists()) {
+            return;
+        }
+
+        this.testFaelleRS.createGemeindeAntragTestDaten(this.gemeindeAntragTyp,
+            this.gesuchsperiodeGemeindeAntrag,
+            this.gemeindeForGemeindeAntrag,
+            this.gemeindeAntragStatus).then(response => {
+            this.errorService.clearAll();
+            if (this.ferienbetreuungSelected()) {
+                this.createAndOpenLinkDialog$(`Ferienbetreuung für ${this.gemeindeForGemeindeAntrag.name} ${this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString} erstellt`,
+                    `#/ferienbetreuung/${response}/stammdaten-gemeinde`);
+            } else if (this.gemeindeForGemeindeAntrag) {
+                this.createAndOpenLinkDialog$(`LATS für ${this.gemeindeForGemeindeAntrag.name} ${this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString} erstellt`,
+                    `#/lastenausgleich-ts/${response}/angaben-gemeinde`);
+            } else {
+                this.errorService.addMesageAsInfo('Anträge für Periode erstellt');
+            }
+        }, () => this.errorService.addMesageAsError('Anträge konnten nicht erstellt werden'));
+    }
+
+    private async overwriteIfGemeindeAntragExists(): Promise<boolean> {
+        const antraege = await this.gemeindeAntragRS.getGemeindeAntraege({
+            antragTyp: this.gemeindeAntragTyp,
+            gesuchsperiodeString: this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString,
+            gemeinde: this.gemeindeForGemeindeAntrag.name,
+        }, {}).toPromise();
+        return antraege.length === 0 || this.confirmDialog(
+            'Es existiert bereits ein Antrag für die gewählte Gemeinde und Periode. Fortfahren?',
+        );
+    }
+
+    private initGemeindeAntragTypes(): void {
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then(configs => {
+                this.gemeindeAntragTypeList = [];
+                if (configs.ferienbetreuungAktiv) {
+                    this.gemeindeAntragTypeList.push(TSGemeindeAntragTyp.FERIENBETREUUNG);
+                }
+                if (configs.lastenausgleichTagesschulenAktiv) {
+                    this.gemeindeAntragTypeList.push(TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN);
+                }
+                this.gemeindeAntragTyp = this.gemeindeAntragTypeList[0];
+            }, error => {
+                console.error(error);
+            });
+    }
+
+    private ferienbetreuungSelected(): boolean {
+        return this.gemeindeAntragTyp === TSGemeindeAntragTyp.FERIENBETREUUNG;
+    }
+
+    private latsSelected(): boolean {
+        return this.gemeindeAntragTyp === TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN;
+    }
+
+    private async confirmDialog(text: string): Promise<boolean> {
+        return this.dialog.open(DvNgConfirmDialogComponent, {
+            data: {
+                frage: text,
+            },
+        }).afterClosed()
+            .toPromise();
     }
 }

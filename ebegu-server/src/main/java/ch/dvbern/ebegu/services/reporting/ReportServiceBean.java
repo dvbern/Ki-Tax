@@ -1979,7 +1979,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
 	public List<BenutzerDataRow> getReportDataBenutzer(@Nonnull Locale locale) {
-		Pair<Long, List<Benutzer>> searchResultPair = benutzerService.searchBenutzer(new BenutzerTableFilterDTO());
+		Pair<Long, List<Benutzer>> searchResultPair = benutzerService.searchBenutzer(new BenutzerTableFilterDTO(), true);
 		List<Benutzer> benutzerList = searchResultPair.getRight();
 
 		Map<String, EnumSet<BetreuungsangebotTyp>> betreuungsangebotMap = new HashMap<>();

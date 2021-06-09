@@ -51,7 +51,7 @@ public final class BetreuungUtil {
 		if (betreuungen != null) {
 			return betreuungen.stream().anyMatch(betreuung -> {
 				if (!Objects.equals(betreuung.getId(), betreuungJAXP.getId())) {
-					return !betreuung.getBetreuungsstatus().isStorniert() &&
+					return !betreuung.getBetreuungsstatus().isSchulamtAnmeldungStorniert() &&
 						isSameInstitution(betreuungJAXP, betreuung);
 				}
 				return false;

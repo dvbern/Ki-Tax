@@ -164,11 +164,13 @@ public class BetreuungsgutscheinEvaluator {
 
 				//initiale Restansprueche vorberechnen
 				if ((platz.getBetreuungsstatus() == Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG
-					&& platz.getVerfuegungOrVorgaengerAusbezahlteVerfuegung(ZahlungslaufTyp.GEMEINDE_INSTITUTION) == null)
+					&& platz.getVerfuegungOrVorgaengerVerfuegung() == null)
 					|| platz.getBetreuungsstatus() == Betreuungsstatus.NICHT_EINGETRETEN) {
 					// es kann sein dass eine neue Betreuung in der Mutation abgelehnt wird, dann gibts keinen
 					// Vorgaenger und keine aktuelle verfuegung und wir muessen keinen restanspruch berechnen (vergl
 					// EBEGU-890)
+					// getVerfuegungOrVorgaengerVerfuegung gibt nur Verfügungen zurück, die nicht im Status
+					// GESCHLOSSEN_OHNE_VERFUEGUNG sind
 					continue;
 				}
 				if (platz.getBetreuungsstatus().isGeschlossenJA() || platz.getBetreuungsstatus().isGeschlossenSchulamt()) {

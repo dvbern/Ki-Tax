@@ -39,7 +39,8 @@ public enum Betreuungsstatus {
 	SCHULAMT_MODULE_AKZEPTIERT,
 	SCHULAMT_ANMELDUNG_UEBERNOMMEN,
 	SCHULAMT_ANMELDUNG_ABGELEHNT,
-	SCHULAMT_FALSCHE_INSTITUTION;
+	SCHULAMT_FALSCHE_INSTITUTION,
+	SCHULAMT_ANMELDUNG_STORNIERT;
 
 	private static final Set<Betreuungsstatus> all = EnumSet.allOf(Betreuungsstatus.class);
 	private static final Set<Betreuungsstatus> none = EnumSet.noneOf(Betreuungsstatus.class);
@@ -47,7 +48,7 @@ public enum Betreuungsstatus {
 	public static final Set<Betreuungsstatus> hasVerfuegung = EnumSet.of(VERFUEGT, NICHT_EINGETRETEN, UNBEKANNTE_INSTITUTION);
 	public static final Set<Betreuungsstatus> forPendenzInstitution = EnumSet.of(WARTEN, SCHULAMT_ANMELDUNG_AUSGELOEST);
 	public static final Set<Betreuungsstatus> forPendenzSchulamt = EnumSet.of(SCHULAMT_ANMELDUNG_AUSGELOEST, SCHULAMT_FALSCHE_INSTITUTION);
-	public static final Set<Betreuungsstatus> anmeldungsstatusAusgeloest = EnumSet.of(SCHULAMT_ANMELDUNG_AUSGELOEST,
+	public static final Set<Betreuungsstatus> anmeldungsstatusAusgeloestNotStorniert = EnumSet.of(SCHULAMT_ANMELDUNG_AUSGELOEST,
 		SCHULAMT_ANMELDUNG_UEBERNOMMEN, SCHULAMT_ANMELDUNG_ABGELEHNT, SCHULAMT_FALSCHE_INSTITUTION, SCHULAMT_MODULE_AKZEPTIERT);
 
 	public boolean isGeschlossenJA() {
@@ -55,7 +56,7 @@ public enum Betreuungsstatus {
 	}
 
 	public boolean isGeschlossenSchulamt() {
-		return SCHULAMT_ANMELDUNG_UEBERNOMMEN == this;
+		return SCHULAMT_ANMELDUNG_UEBERNOMMEN == this || SCHULAMT_ANMELDUNG_ABGELEHNT == this || SCHULAMT_ANMELDUNG_STORNIERT == this;
 	}
 
 	/**
@@ -64,12 +65,12 @@ public enum Betreuungsstatus {
 	public boolean isGeschlossen() {
 		return VERFUEGT == this || GESCHLOSSEN_OHNE_VERFUEGUNG == this || NICHT_EINGETRETEN == this
 			|| SCHULAMT_ANMELDUNG_UEBERNOMMEN == this || SCHULAMT_ANMELDUNG_ABGELEHNT == this || SCHULAMT_ANMELDUNG_AUSGELOEST == this
-			|| SCHULAMT_FALSCHE_INSTITUTION == this;
+			|| SCHULAMT_FALSCHE_INSTITUTION == this || SCHULAMT_ANMELDUNG_STORNIERT == this;
 	}
 
 	public boolean isAnyStatusOfVerfuegt() {
 		return VERFUEGT == this
-			|| SCHULAMT_ANMELDUNG_UEBERNOMMEN == this || SCHULAMT_ANMELDUNG_ABGELEHNT == this;
+			|| SCHULAMT_ANMELDUNG_UEBERNOMMEN == this || SCHULAMT_ANMELDUNG_ABGELEHNT == this || SCHULAMT_ANMELDUNG_STORNIERT == this;
 	}
 
 	public boolean isSendToInstitution() {
@@ -79,7 +80,7 @@ public enum Betreuungsstatus {
 	public boolean isSchulamt() {
 		return SCHULAMT_ANMELDUNG_ERFASST  == this || SCHULAMT_ANMELDUNG_AUSGELOEST == this
 			|| SCHULAMT_ANMELDUNG_UEBERNOMMEN == this|| SCHULAMT_ANMELDUNG_ABGELEHNT == this  || SCHULAMT_FALSCHE_INSTITUTION == this
-			|| SCHULAMT_MODULE_AKZEPTIERT == this;
+			|| SCHULAMT_MODULE_AKZEPTIERT == this || SCHULAMT_ANMELDUNG_STORNIERT == this;
 	}
 
 	public boolean isSchulamtStatusWithPotentialVerfuegung() {
@@ -87,11 +88,15 @@ public enum Betreuungsstatus {
 		// Wenn aber im EG eine Anmeldung im Status AUSGELOEST ist, und eine Mutation erstellt wird,
 		// so wird die Anmeldung des EG ebenfalls gespeichert, damit wir beim Berechnen mit dem
 		// richtigen FinSit rechnen! (siehe MutationMerger)
-		return SCHULAMT_ANMELDUNG_AUSGELOEST == this || SCHULAMT_ANMELDUNG_UEBERNOMMEN == this;
+		return SCHULAMT_ANMELDUNG_AUSGELOEST == this || SCHULAMT_ANMELDUNG_UEBERNOMMEN == this || SCHULAMT_ANMELDUNG_STORNIERT == this;
 	}
 
 	public boolean isSchulamtAnmeldungUebernommen() {
 		return SCHULAMT_ANMELDUNG_UEBERNOMMEN == this;
+	}
+
+	public boolean isSchulamtAnmeldungStorniert() {
+		return SCHULAMT_ANMELDUNG_STORNIERT == this;
 	}
 
 	public boolean isStorniert() {

@@ -20,10 +20,10 @@ package ch.dvbern.ebegu.entities.gemeindeantrag;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -130,7 +130,7 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 	)
 	@Column(nullable = false)
 	@Nonnull
-	private Set<String> finanziellBeteiligteGemeinden = new HashSet<>();
+	private Set<String> finanziellBeteiligteGemeinden = new TreeSet<>();
 
 	@Nullable
 	@Column()
@@ -167,7 +167,7 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 
 	@Nullable
 	@Column()
-	private BigDecimal betreuungsschluessel;
+	private String betreuungsschluessel;
 
 	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
@@ -218,7 +218,7 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 		this.anzahlTage = toCopy.anzahlTage;
 		this.bemerkungenAnzahlFerienwochen = toCopy.bemerkungenAnzahlFerienwochen;
 
-		this.finanziellBeteiligteGemeinden = new HashSet<>(toCopy.finanziellBeteiligteGemeinden);
+		this.finanziellBeteiligteGemeinden = new TreeSet<>(toCopy.finanziellBeteiligteGemeinden);
 
 		this.gemeindeFuehrtAngebotSelber = toCopy.gemeindeFuehrtAngebotSelber;
 		this.gemeindeFuehrtAngebotInKooperation = toCopy.gemeindeFuehrtAngebotInKooperation;
@@ -434,11 +434,11 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 	}
 
 	@Nullable
-	public BigDecimal getBetreuungsschluessel() {
+	public String getBetreuungsschluessel() {
 		return betreuungsschluessel;
 	}
 
-	public void setBetreuungsschluessel(@Nullable BigDecimal betreuungsschluessel) {
+	public void setBetreuungsschluessel(@Nullable String betreuungsschluessel) {
 		this.betreuungsschluessel = betreuungsschluessel;
 	}
 
