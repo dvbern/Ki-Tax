@@ -17,7 +17,9 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
@@ -26,6 +28,8 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.InternePendenz;
+import ch.dvbern.ebegu.entities.InternePendenz_;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 /**
@@ -42,20 +46,44 @@ public class InternePendenzServiceBean extends AbstractBaseService implements In
 	private Authorizer authorizer;
 
 	@Inject
-	private GesuchService gesuchService;
+	private CriteriaQueryHelper criteriaQueryHelper;
 
 	@Nonnull
 	@Override
-	public InternePendenz saveInternePendenz(@Nonnull InternePendenz internePendenz) {
+	public Optional<InternePendenz> findInternePendenz(@Nonnull String internePendenzId) {
+		Objects.requireNonNull(internePendenzId);
+
+		Optional<InternePendenz> internePendenz = Optional.ofNullable(persistence.find(InternePendenz.class, internePendenzId));
+		internePendenz.ifPresent(pendenz -> authorizer.checkReadAuthorization(pendenz));
+		return internePendenz;
+	}
+
+	@Nonnull
+	@Override
+	public InternePendenz updateInternePendenz(@Nonnull InternePendenz internePendenz) {
+		Objects.requireNonNull(internePendenz);
+		Objects.requireNonNull(internePendenz.getId());
+
 		authorizer.checkWriteAuthorization(internePendenz);
 		return persistence.merge(internePendenz);
 	}
 
 	@Nonnull
 	@Override
-	public List<InternePendenz> findInternePendenzenForGesuch(@Nonnull Gesuch gesuch) {
+	public InternePendenz createInternePendenz(@Nonnull InternePendenz internePendenz) {
+		Objects.requireNonNull(internePendenz);
+
+		return persistence.persist(internePendenz);
+	}
+
+	@Nonnull
+	@Override
+	public Collection<InternePendenz> findInternePendenzenForGesuch(@Nonnull Gesuch gesuch) {
+		Objects.requireNonNull(gesuch);
+		Objects.requireNonNull(gesuch.getId());
+
 		authorizer.checkReadAuthorization(gesuch);
-		return null;
+		return criteriaQueryHelper.getEntitiesByAttribute(InternePendenz.class, gesuch, InternePendenz_.gesuch);
 	}
 
 	@Nonnull
@@ -66,6 +94,8 @@ public class InternePendenzServiceBean extends AbstractBaseService implements In
 
 	@Override
 	public void deleteInternePendenz(@Nonnull InternePendenz internePendenz) {
+		Objects.requireNonNull(internePendenz);
+
 		authorizer.checkWriteAuthorization(internePendenz);
 		persistence.remove(internePendenz);
 	}

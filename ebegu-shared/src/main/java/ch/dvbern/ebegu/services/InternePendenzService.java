@@ -17,7 +17,8 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -26,17 +27,24 @@ import ch.dvbern.ebegu.entities.InternePendenz;
 
 public interface InternePendenzService {
 
+	@Nonnull
+	Optional<InternePendenz> findInternePendenz(@Nonnull String internePendenzId);
+
 	/**
 	 * Erstellt oder migriert die interne Pendenz
 	 */
 	@Nonnull
-	InternePendenz saveInternePendenz(@Nonnull InternePendenz internePendenz);
+	InternePendenz updateInternePendenz(@Nonnull InternePendenz internePendenz);
+
+	@Nonnull
+	InternePendenz createInternePendenz(@Nonnull InternePendenz internePendenz);
 
 	/**
 	 * Gibt alle internen Pendenzen für das Gesuch zurück
+	 * @return
 	 */
 	@Nonnull
-	List<InternePendenz> findInternePendenzenForGesuch(@Nonnull Gesuch gesuch);
+	Collection<InternePendenz> findInternePendenzenForGesuch(@Nonnull Gesuch gesuch);
 
 	/**
 	 * Gibt die Anzahl der internen Pendenzen für das Gesuch zurück
