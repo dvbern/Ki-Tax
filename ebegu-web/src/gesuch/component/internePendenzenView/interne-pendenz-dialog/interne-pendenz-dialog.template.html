@@ -19,9 +19,47 @@
       [ngClass]="{'ng-submitted': form.submitted}"
       (ngSubmit)="save()"
       novalidate>
-    <mat-dialog-content class="interne-pendenz-dialog">
+    <mat-dialog-content>
 
         <div *ngIf="internePendenz">
+
+            <h2 translate *ngIf="isBearbeiten()">INTERNE_PENDENZ_BEARBEITEN</h2>
+            <h2 translate *ngIf="!isBearbeiten()">INTERNE_PENDENZ_ERSTELLEN</h2>
+
+            <div class="form-group margin-top-20">
+                <label class="md-no-float" translate for="termin_id">TERMIN</label>
+                <input class="dv-mat-datepicker"
+                       type="text"
+                       id="termin_id"
+                       name="termin"
+                       required
+                       #terminRef="ngModel"
+                       [(ngModel)]="internePendenz.termin"
+                       [min]="getMinDateTermin()"
+                       [matDatepicker]="terminPicker"
+                       placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}">
+                <mat-datepicker-toggle matSuffix [for]="terminPicker"></mat-datepicker-toggle>
+                <mat-datepicker #terminPicker></mat-datepicker>
+                <dv-error-messages input-id="termin_id"
+                                   [errorObject]="terminRef.errors">
+                </dv-error-messages>
+            </div>
+
+            <div class="form-group">
+                <label class="md-no-float" translate for="text_id">PENDENZ</label>
+                <textarea name="text"
+                          class="form-control " rows="5"
+                          #text="ngModel"
+                          id="text_id"
+                          required
+                          [(ngModel)]="internePendenz.text"
+                          maxlength="4000">
+                </textarea>
+                <dv-error-messages input-id="text_id"
+                                   [errorObject]="text.errors">
+                </dv-error-messages>
+            </div>
+
         </div>
 
     </mat-dialog-content>

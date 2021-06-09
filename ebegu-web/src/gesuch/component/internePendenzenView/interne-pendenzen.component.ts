@@ -52,6 +52,7 @@ export class InternePendenzenComponent implements OnInit {
     private openPendenzDialog(internePendenz: TSInternePendenz): Promise<TSInternePendenz> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {internePendenz};
+        dialogConfig.panelClass = 'interne-pendenzen-dialog';
         return this.dialog.open(InternePendenzDialogComponent, dialogConfig).afterClosed().toPromise();
     }
 

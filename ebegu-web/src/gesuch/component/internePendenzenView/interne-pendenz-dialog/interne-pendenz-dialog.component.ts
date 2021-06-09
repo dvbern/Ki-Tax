@@ -47,6 +47,16 @@ export class InternePendenzDialogComponent {
     }
 
     public save(): void {
+        if (this.form.valid) {
+            this.dialogRef.close(this.internePendenz);
+        }
+    }
 
+    public getMinDateTermin(): Date {
+        return new Date();
+    }
+
+    public isBearbeiten(): boolean {
+        return !this.internePendenz.isNew();
     }
 }
