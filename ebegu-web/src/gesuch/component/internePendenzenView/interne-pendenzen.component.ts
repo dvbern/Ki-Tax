@@ -17,6 +17,10 @@
 
 import {Location} from '@angular/common';
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {TSInternePendenz} from '../../../models/TSInternePendenz';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {InternePendenzDialogComponent} from './interne-pendenz-dialog/interne-pendenz-dialog.component';
 
 @Component({
     selector: 'interne-pendenzen-view',
@@ -26,12 +30,29 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 })
 export class InternePendenzenComponent implements OnInit {
 
+    public internePendenzen: TSInternePendenz[] = [];
+
     public constructor(
-        private readonly location: Location
+        private readonly location: Location,
+        private dialog: MatDialog
     ) {
     }
 
     public ngOnInit(): void {
+    }
+
+    public async addInternePendenz(): Promise<void> {
+        let newPendenz = new TSInternePendenz();
+        newPendenz = await this.openPendenzDialog(newPendenz);
+        if (EbeguUtil.isNotNullOrUndefined(newPendenz)) {
+            this.internePendenzen.push(newPendenz);
+        }
+    }
+
+    private openPendenzDialog(internePendenz: TSInternePendenz): Promise<TSInternePendenz> {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {internePendenz};
+        return this.dialog.open(InternePendenzDialogComponent, dialogConfig).afterClosed().toPromise();
     }
 
     public navigateBack(): void {

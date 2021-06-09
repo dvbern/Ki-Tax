@@ -19,6 +19,7 @@ import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWa
 import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
+import {InternePendenzDialogComponent} from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
 
 @NgModule({
@@ -30,7 +31,8 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
         DvSwitchComponent,
         BetreuungOverrideWarningComponent,
         DvEingabeBasisjahrComponent,
-        InternePendenzenComponent
+        InternePendenzenComponent,
+        InternePendenzDialogComponent
     ],
     })
 

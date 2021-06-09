@@ -46,6 +46,7 @@ import {FinanzielleSituationResultateViewComponentConfig} from './component/fina
 import {FinanzielleSituationStartViewComponentConfig} from './component/finanzielleSituationStartView/finanzielleSituationStartView';
 import {FinanzielleSituationViewComponentConfig} from './component/finanzielleSituationView/finanzielleSituationView';
 import {FreigabeViewComponentConfig} from './component/freigabeView/freigabeView';
+import {InternePendenzDialogComponent} from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
 import {KinderListViewComponentConfig} from './component/kinderListView/kinderListView';
 import {KindViewComponentConfig} from './component/kindView/kindView';
@@ -107,4 +108,5 @@ export const GESUCH_JS_MODULE =
             }))
         .component('sozialdienstFallCreationView', new SozialdienstFallCreationViewComponentConfig())
         .directive('internePendenzenView', downgradeComponent({component: InternePendenzenComponent}))
+        .directive('internePendenzenDialog', downgradeComponent({component: InternePendenzDialogComponent}))
 ;
