@@ -138,7 +138,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         $scope: IScope,
         berechnungsManager: BerechnungsManager,
         private readonly errorService: ErrorService,
-        private readonly authServiceRS: AuthServiceRS,
+        protected readonly authServiceRS: AuthServiceRS,
         wizardStepManager: WizardStepManager,
         private readonly $stateParams: IBetreuungStateParams,
         private readonly mitteilungRS: MitteilungRS,
@@ -375,7 +375,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
     }
 
-    private save(newStatus: TSBetreuungsstatus, nextStep: string, params: any): void {
+    private save(newStatus: TSBetreuungsstatus, nextStep?: string, params?: any): void {
         this.isSavingData = true;
         const oldStatus = this.model.betreuungsstatus;
         if (this.getBetreuungModel() && this.isSchulamt()) {
@@ -388,7 +388,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.gesuchModelManager.setBetreuungToWorkWith(this.model); // setze model
             this.isSavingData = false;
             this.form.$setPristine();
-            this.$state.go(nextStep, params);
+            if (nextStep) {
+                this.$state.go(nextStep, params);
+            }
 
         }).catch((exception: TSExceptionReport[]) => {
             // starting over
@@ -538,6 +540,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         } else {
             const params = {gesuchId: this.getGesuchId()};
             this.save(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION, GESUCH_BETREUUNGEN, params);
+        }
+    }
+
+    public anmeldungSchulamtStornieren(): void {
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT, PENDENZEN_BETREUUNG, undefined);
+        } else {
+            const params = {gesuchId: this.getGesuchId()};
+            this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT, GESUCH_BETREUUNGEN, params);
         }
     }
 
@@ -1387,7 +1398,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public anmeldungSchulamtFalscheAngaben(): void {
-        const params = {gesuchId: this.getGesuchId()};
-        this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST, GESUCH_BETREUUNGEN, params);
+        this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
     }
 }

@@ -16,13 +16,16 @@
 import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {of} from 'rxjs';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRS} from '../../../app/core/service/benutzerRS.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 import {TestdatenViewComponent} from './testdatenView';
 
@@ -44,12 +47,30 @@ describe('testdatenView', () => {
             ['getAllGesuchsperioden', 'removeGesuchsperiode']);
         gesuchsperiodeRSSpy.getAllGesuchsperioden.and.resolveTo([]);
         const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
-            ['isDevMode']);
+            ['isDevMode', 'getPublicPropertiesCached']);
         applicationPropertyRSSpy.isDevMode.and.resolveTo(false);
+        applicationPropertyRSSpy.getPublicPropertiesCached.and.resolveTo({
+            backgroundColor: '',
+            currentNode: '',
+            devmode: false,
+            dummyMode: false,
+            ferienbetreuungAktiv: false,
+            kitaxEndpoint: '',
+            kitaxHost: '',
+            lastenausgleichTagesschulenAktiv: false,
+            notverordnungDefaultEinreichefristOeffentlich: '',
+            notverordnungDefaultEinreichefristPrivat: '',
+            personenSucheDisabled: false,
+            sentryEnvName: '',
+            whitelist: '',
+            zahlungentestmode: false
+        });
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
         gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);
         const i18nServiceSpy = jasmine
             .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$']);
+        authServiceSpy.principal$ = of(new TSBenutzer());
 
         TestBed.configureTestingModule({
             imports: [
@@ -65,6 +86,7 @@ describe('testdatenView', () => {
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: MAT_DATE_LOCALE, useValue: 'de-CH'},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy},
             ],
             declarations: [TestdatenViewComponent],
         })

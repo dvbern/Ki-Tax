@@ -46,5 +46,6 @@ public enum MailTemplate {
 	NotrechtBestaetigungPruefungStufe1,
 	NotrechtProvisorischeVerfuegung,
 	InfoGesuchVerfuegtVerantwortlicherTS,
-	InfoGemeindeLastenausgleichDurch
+	InfoGemeindeLastenausgleichDurch,
+	InfoSchulamtAnmeldungStorniert
 }

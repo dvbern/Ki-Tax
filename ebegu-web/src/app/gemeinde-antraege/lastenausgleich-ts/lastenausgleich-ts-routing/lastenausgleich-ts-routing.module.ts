@@ -23,6 +23,7 @@ import {GemeindeAngabenComponent} from '../../gemeinde-antraege/antrag/gemeinde-
 import {LastenausgleichTsBerechnungComponent} from '../../gemeinde-antraege/antrag/lastenausgleich-ts-berechnung/lastenausgleich-ts-berechnung.component';
 import {TagesschulenAngabenComponent} from '../../gemeinde-antraege/antrag/tagesschulen-angaben/tagesschulen-angaben.component';
 import {TagesschulenListComponent} from '../../gemeinde-antraege/antrag/tagesschulen-list/tagesschulen-list.component';
+import {VerlaufComponent} from '../../gemeinde-antraege/antrag/verlauf/verlauf.component';
 import {LastenausgleichTSComponent} from '../lastenausgleich-ts/lastenausgleich-ts.component';
 import {TagesschulenUiViewComponent} from '../tagesschulen-ui-view/tagesschulen-ui-view.component';
 
@@ -87,6 +88,19 @@ const states: NgHybridStateDeclaration[] = [
         name: 'LASTENAUSGLEICH_TAGESSCHULEN.FREIGABE',
         url: '/freigabe',
         component: FreigabeComponent,
+    },
+    {
+        name: 'LASTENAUSGLEICH_TAGESSCHULEN.VERLAUF',
+        url: '/verlauf',
+        component: VerlaufComponent,
+        resolve: [
+            {
+                token: 'institutionContainerId',
+                deps: [Transition],
+                resolveFn: (trans: Transition) =>
+                    (trans.params().institutionId),
+            },
+        ],
     },
     {
         name: 'lastenausgleich-ts.lastenausgleich',

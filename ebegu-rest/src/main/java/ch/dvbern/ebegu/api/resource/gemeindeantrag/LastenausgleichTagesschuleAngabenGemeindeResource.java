@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.api.resource.gemeindeantrag;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,25 +47,28 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.dtos.JaxLastenausgleichTagesschulenStatusHistory;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.authentication.AuthorizerImpl;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeService;
+import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
@@ -95,6 +99,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 	@Inject
 	private InstitutionService institutionService;
+
+	@Inject
+	private LastenausgleichTagesschuleAngabenGemeindeStatusHistoryService historyService;
 
 	@ApiOperation(
 		value = "Gibt den LastenausgleichTagesschuleAngabenGemeindeContainer mit der uebergebenen Id zurueck",
@@ -409,5 +416,39 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 			angabenGemeindeService.lastenausgleichTagesschuleGemeindeZurueckAnGemeinde(converted);
 
 		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(wiederEroeffnet);
+	}
+
+	@ApiOperation(
+		value = "Gibt den Statushistory für die übergebene latsContainerId zurueck",
+		response = JaxLastenausgleichTagesschulenStatusHistory.class)
+	@Nullable
+	@GET
+	@Path("/verlauf/{containerJaxId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS })
+	public List<JaxLastenausgleichTagesschulenStatusHistory> findLatsStatusHistroy(
+		@Nonnull @NotNull @PathParam("containerJaxId") JaxId containerJaxId
+	) {
+		Objects.requireNonNull(containerJaxId);
+		Objects.requireNonNull(containerJaxId.getId());
+
+		LastenausgleichTagesschuleAngabenGemeindeContainer container =
+			angabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(containerJaxId.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"findLatsStatusHistroy",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					containerJaxId.getId()
+				));
+
+		authorizer.checkReadAuthorization(container);
+
+		List<LastenausgleichTagesschuleAngabenGemeindeStatusHistory> historyList =
+			historyService.findHistoryForContainer(container);
+
+		return historyList.stream()
+			.map(history -> converter.latsStatusHistoryToJAX(history))
+			.collect(Collectors.toList());
 	}
 }

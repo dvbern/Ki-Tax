@@ -37,10 +37,11 @@ import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../models/gemeindeant
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
-import {TSSozialdienstFallDokument} from '../models/sozialdienst/TSSozialdienstFallDokument';
-import {TSSozialdienstStammdaten} from '../models/sozialdienst/TSSozialdienstStammdaten';
+import {TSLastenausgleichTagesschulenStatusHistory} from '../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
 import {TSSozialdienst} from '../models/sozialdienst/TSSozialdienst';
 import {TSSozialdienstFall} from '../models/sozialdienst/TSSozialdienstFall';
+import {TSSozialdienstFallDokument} from '../models/sozialdienst/TSSozialdienstFallDokument';
+import {TSSozialdienstStammdaten} from '../models/sozialdienst/TSSozialdienstStammdaten';
 import {TSAbstractAntragEntity} from '../models/TSAbstractAntragEntity';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
 import {TSAbstractDecimalPensumEntity} from '../models/TSAbstractDecimalPensumEntity';
@@ -3869,6 +3870,7 @@ export class EbeguRestUtil {
         if (receivedBelegungFerieninsel) {
             this.parseAbstractMutableEntity(belegungFerieninselTS, receivedBelegungFerieninsel);
             belegungFerieninselTS.ferienname = receivedBelegungFerieninsel.ferienname;
+            belegungFerieninselTS.notfallAngaben = receivedBelegungFerieninsel.notfallAngaben;
             belegungFerieninselTS.tage = this.parseBelegungFerieninselTagList(receivedBelegungFerieninsel.tage);
             return belegungFerieninselTS;
         }
@@ -3909,6 +3911,7 @@ export class EbeguRestUtil {
         if (belegungFerieninselTS) {
             this.abstractMutableEntityToRestObject(restBelegungFerieninsel, belegungFerieninselTS);
             restBelegungFerieninsel.ferienname = belegungFerieninselTS.ferienname;
+            restBelegungFerieninsel.notfallAngaben = belegungFerieninselTS.notfallAngaben;
             restBelegungFerieninsel.tage = [];
             if (Array.isArray(belegungFerieninselTS.tage)) {
                 belegungFerieninselTS.tage.forEach(t => {
@@ -5005,7 +5008,8 @@ export class EbeguRestUtil {
         }
         this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
         stammdatenTS.status = stammdatenFromServer.status;
-        stammdatenTS.amAngebotBeteiligteGemeinden = stammdatenFromServer.amAngebotBeteiligteGemeinden.sort();
+        stammdatenFromServer.amAngebotBeteiligteGemeinden.sort();
+        stammdatenTS.amAngebotBeteiligteGemeinden = stammdatenFromServer.amAngebotBeteiligteGemeinden;
         stammdatenTS.seitWannFerienbetreuungen = DateUtil.localDateToMoment(stammdatenFromServer.seitWannFerienbetreuungen);
         stammdatenTS.traegerschaft = stammdatenFromServer.traegerschaft;
         stammdatenTS.stammdatenAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.stammdatenAdresse);
@@ -5226,5 +5230,27 @@ export class EbeguRestUtil {
         dokument.filepfad = dokumentFromServer.filepfad;
         dokument.filesize = dokumentFromServer.filesize;
         return dokument;
+    }
+
+    public parseLatsHistoryList(data: Array<any>): TSLastenausgleichTagesschulenStatusHistory[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseLatsHistory(new TSLastenausgleichTagesschulenStatusHistory(), item))
+            : [this.parseLatsHistory(new TSLastenausgleichTagesschulenStatusHistory(), data)];
+    }
+
+    public parseLatsHistory(
+        historyTS: TSLastenausgleichTagesschulenStatusHistory,
+        historyFromServer: any,
+    ): TSLastenausgleichTagesschulenStatusHistory {
+        this.parseAbstractEntity(historyTS, historyFromServer);
+        historyTS.containerId = historyFromServer.containerId;
+        historyTS.benutzer = this.parseUser(new TSBenutzer(), historyFromServer.benutzer);
+        historyTS.timestampVon = DateUtil.localDateTimeToMoment(historyFromServer.timestampVon);
+        historyTS.timestampBis = DateUtil.localDateTimeToMoment(historyFromServer.timestampBis);
+        historyTS.status = historyFromServer.status;
+        return historyTS;
     }
 }

@@ -21,6 +21,7 @@ import {Observable, ReplaySubject} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {TSLastenausgleichTagesschulenStatusHistory} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
 import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
 import {CONSTANTS, HTTP_ERROR_CODES} from '../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
@@ -169,5 +170,13 @@ export class LastenausgleichTSService {
             ),
             tap(parsedContainer => this.updateLATSAngabenGemeindeContainerStore(parsedContainer.id)),
         );
+    }
+
+    public getVerlauf(containerId: string): Observable<TSLastenausgleichTagesschulenStatusHistory[]> {
+        return this.http.get<any[]>(
+            `${this.API_BASE_URL}/verlauf/${containerId}`
+        ).pipe(map(data => {
+            return this.ebeguRestUtil.parseLatsHistoryList(data);
+        }));
     }
 }

@@ -101,6 +101,17 @@ export class BetreuungRS {
             .then(response => this.parseBetreuung(response, gesuchId));
     }
 
+    public anmeldungSchulamtStorniert(
+        betreuung: TSBetreuung,
+        gesuchId: string,
+    ): IPromise<TSBetreuung> {
+
+        const restBetreuung = this.ebeguRestUtil.betreuungToRestObject({}, betreuung);
+        const url = `${this.serviceURL}/schulamt/stornieren/`;
+        return this.http.put(url, restBetreuung)
+            .then(response => this.parseBetreuung(response, gesuchId));
+    }
+
     public removeBetreuung(betreuungId: string, gesuchId: string): IPromise<any> {
         return this.http.delete(`${this.serviceURL}/${encodeURIComponent(betreuungId)}`)
             .then(responseDeletion => {

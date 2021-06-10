@@ -199,6 +199,13 @@ export function isVerfuegtOrSTV(status: TSAntragStatus): boolean {
         || status === TSAntragStatus.KEIN_ANGEBOT;
 }
 
+export function isAnyStatusOfGeprueftVerfuegenVerfuegtButSchulamt(status: TSAntragStatus): boolean {
+    return isAnyStatusOfVerfuegtButSchulamt(status)
+        || status === TSAntragStatus.IN_BEARBEITUNG_JA
+        || status === TSAntragStatus.GEPRUEFT
+        || status === TSAntragStatus.VERFUEGEN;
+}
+
 /**
  * Returns true when the status of the Gesuch is VERFUEGEN or VERFUEGT or NUR_SCHULAMT
  */

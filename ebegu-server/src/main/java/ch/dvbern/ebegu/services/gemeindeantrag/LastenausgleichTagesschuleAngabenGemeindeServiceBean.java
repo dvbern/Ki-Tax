@@ -47,6 +47,7 @@ import javax.persistence.criteria.SetJoin;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
@@ -65,6 +66,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.Authorizer;
@@ -108,6 +110,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 	@Inject
 	private InstitutionService institutionService;
+
+	@Inject
+	private EbeguConfiguration configuration;
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
@@ -194,6 +199,38 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 		query.where(cb.and(gemeindePredicate, gesuchsperiodePredicate));
 		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
+	}
+
+	@Nonnull
+	@Override
+	public void deleteLastenausgleichTagesschuleAngabenGemeindeContainer(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
+
+		if (!configuration.getIsDevmode()) {
+			throw new EbeguRuntimeException(
+				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer",
+				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer ist nur im Devmode möglich");
+		}
+
+		if (!principal.isCallerInRole(UserRole.SUPER_ADMIN)) {
+			throw new EbeguRuntimeException(
+				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer",
+				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer ist nur als SuperAdmin möglich");
+		}
+
+		findLastenausgleichTagesschuleAngabenGemeindeContainer(
+			gemeinde,
+			gesuchsperiode).ifPresent(container -> {
+			deleteHistoryForContainer(container);
+			persistence.remove(container);
+		});
+	}
+
+	private void deleteHistoryForContainer(LastenausgleichTagesschuleAngabenGemeindeContainer container) {
+		List<LastenausgleichTagesschuleAngabenGemeindeStatusHistory> historyList =
+			historyService.findHistoryForContainer(container);
+		historyList.forEach(entry -> persistence.remove(entry));
 	}
 
 	@Override
@@ -620,7 +657,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		container.getAngabenDeklaration().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
 		container.getAngabenKorrektur().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
 
-		return persistence.persist(container);
+		return saveLastenausgleichTagesschuleGemeinde(container, true);
 	}
 
 
