@@ -48,7 +48,9 @@
                  ui-sref="gesuch.internePendenzen({gesuchId:vm.getGesuch().id})">
                 <button type="button"
                         class="dv-btn kommentar-button" aria-label="{{'INTERNE_PENDENZEN' | translate}}">
-                    <span data-translate="INTERNE_PENDENZEN"></span>
+                    <span>{{'INTERNE_PENDENZEN' | translate}}
+                        <span ng-if="vm.numberInternePendenzen >= 0">&nbsp;({{vm.numberInternePendenzen}})</span>
+                    </span>
                 </button>
             </div>
         </div>

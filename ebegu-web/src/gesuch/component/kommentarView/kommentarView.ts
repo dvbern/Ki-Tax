@@ -38,6 +38,7 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {GesuchRS} from '../../service/gesuchRS.rest';
 import {GlobalCacheService} from '../../service/globalCacheService';
 import {WizardStepManager} from '../../service/wizardStepManager';
+import {InternePendenzenRS} from '../internePendenzenView/internePendenzenRS';
 import ISidenavService = angular.material.ISidenavService;
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -70,13 +71,15 @@ export class KommentarViewController {
         '$state',
         '$mdSidenav',
         '$q',
-        'applicationPropertyRS'
+        'applicationPropertyRS',
+        'InternePendenzenRS'
     ];
 
     public form: IFormController;
     public dokumentePapiergesuch: TSDokumentGrund;
     public readonly TSRoleUtil = TSRoleUtil;
     public isPersonensucheDisabled: boolean = true;
+    public numberInternePendenzen: number;
 
     public constructor(
         private readonly $log: ILogService,
@@ -93,6 +96,7 @@ export class KommentarViewController {
         private readonly $mdSidenav: ISidenavService,
         private readonly $q: IQService,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly internePendenzenRS: InternePendenzenRS
     ) {
 
         if (!this.isGesuchUnsaved()) {
@@ -101,6 +105,7 @@ export class KommentarViewController {
         this.applicationPropertyRS.isPersonensucheDisabled().then((response: any) => {
             this.isPersonensucheDisabled = response;
         });
+        this.getNumberInternePendenzen();
     }
 
     private getPapiergesuchFromServer(): IPromise<TSDokumenteDTO> {
@@ -122,6 +127,15 @@ export class KommentarViewController {
                 }
                 return promiseValue;
             });
+    }
+
+    private getNumberInternePendenzen(): void {
+        if (!this.getGesuch()) {
+            return;
+        }
+        this.internePendenzenRS.countInternePendenzenForGesuch(this.getGesuch())
+            .subscribe(numberInternePendenzen => this.numberInternePendenzen = numberInternePendenzen,
+                error => this.$log.error(error));
     }
 
     public getGesuch(): TSGesuch {

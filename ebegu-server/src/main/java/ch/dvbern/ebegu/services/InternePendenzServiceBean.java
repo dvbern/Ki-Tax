@@ -17,7 +17,9 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -25,6 +27,10 @@ import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.InternePendenz;
@@ -88,8 +94,24 @@ public class InternePendenzServiceBean extends AbstractBaseService implements In
 
 	@Nonnull
 	@Override
-	public Integer countInternePendenzenForGesuch(@Nonnull Gesuch gesuch) {
-		return null;
+	public Long countInternePendenzenForGesuch(@Nonnull Gesuch gesuch) {
+		Objects.requireNonNull(gesuch);
+		Objects.requireNonNull(gesuch.getId());
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Long> query = cb.createQuery(Long.class);
+		Root<InternePendenz> root = query.from(InternePendenz.class);
+
+		List<Predicate> predicates = new ArrayList<>();
+
+		Predicate predicateNichtErledigt = cb.equal(root.get(InternePendenz_.erledigt), false);
+		predicates.add(predicateNichtErledigt);
+		Predicate predicateGesuch = cb.equal(root.get(InternePendenz_.gesuch), gesuch);
+		predicates.add(predicateGesuch);
+
+		query.select(cb.countDistinct(root));
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		return persistence.getCriteriaSingleResult(query);
 	}
 
 	@Override

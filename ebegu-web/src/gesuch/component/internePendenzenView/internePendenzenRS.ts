@@ -54,5 +54,11 @@ export class InternePendenzenRS {
         }));
     }
 
+    public countInternePendenzenForGesuch(gesuch: TSGesuch): Observable<number> {
+        return this.http.get<number>(
+            `${this.serviceURL}/count/${gesuch.id}`
+        );
+    }
+
 
 }

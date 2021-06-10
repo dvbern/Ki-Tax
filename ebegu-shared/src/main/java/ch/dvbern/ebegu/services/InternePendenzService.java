@@ -50,7 +50,7 @@ public interface InternePendenzService {
 	 * Gibt die Anzahl der internen Pendenzen für das Gesuch zurück
 	 */
 	@Nonnull
-	Integer countInternePendenzenForGesuch(@Nonnull Gesuch gesuch);
+	Long countInternePendenzenForGesuch(@Nonnull Gesuch gesuch);
 
 	/**
 	 * Löscht die interne Pendenz

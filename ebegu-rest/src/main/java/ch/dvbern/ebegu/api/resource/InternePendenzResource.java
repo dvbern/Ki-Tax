@@ -163,22 +163,22 @@ public class InternePendenzResource {
 		response = JaxInternePendenz.class)
 	@Nonnull
 	@GET
-	@Path("/all/{gemeindeId}")
+	@Path("/all/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, })
 	public List<JaxInternePendenz> findInternePendenzenForGesuch(
-		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeId
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchId
 	) {
-		Objects.requireNonNull(gemeindeId);
-		Objects.requireNonNull(gemeindeId.getId());
+		Objects.requireNonNull(gesuchId);
+		Objects.requireNonNull(gesuchId.getId());
 
-		Gesuch gesuch = gesuchService.findGesuch(gemeindeId.getId()).orElseThrow(() -> {
+		Gesuch gesuch = gesuchService.findGesuch(gesuchId.getId()).orElseThrow(() -> {
 			throw new EbeguRuntimeException(
 				"findInternePendenzenForGesuch",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				gemeindeId.getId());
+				gesuchId.getId());
 		});
 
 		// Gemeindebenutzer müssen Gesuch nur lesen können, um eine Pendenz erstellen zu dürfen
@@ -187,5 +187,34 @@ public class InternePendenzResource {
 		return internePendenzService.findInternePendenzenForGesuch(gesuch).stream()
 			.map(internePendenz -> jaxBConverter.internePendenzToJax(internePendenz))
 			.collect(Collectors.toList());
+	}
+
+	@ApiOperation(
+		value = "Zählt die Anzahl nicht erledigter Pendenzen für die Gemeinde",
+		response = Long.class)
+	@Nonnull
+	@GET
+	@Path("/count/{gesuchId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, })
+	public Long countInternePendenzenForGesuch(
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchId
+	) {
+		Objects.requireNonNull(gesuchId);
+		Objects.requireNonNull(gesuchId.getId());
+
+		Gesuch gesuch = gesuchService.findGesuch(gesuchId.getId()).orElseThrow(() -> {
+			throw new EbeguRuntimeException(
+				"countInternePendenzenForGesuch",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gesuchId.getId());
+		});
+
+		// Gemeindebenutzer müssen Gesuch nur lesen können, um die Anzahl offener Pendenzen sehen zu können.
+		authorizer.checkReadAuthorization(gesuch);
+
+		return internePendenzService.countInternePendenzenForGesuch(gesuch);
 	}
 }
