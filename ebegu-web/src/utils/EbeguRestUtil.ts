@@ -3870,6 +3870,7 @@ export class EbeguRestUtil {
         if (receivedBelegungFerieninsel) {
             this.parseAbstractMutableEntity(belegungFerieninselTS, receivedBelegungFerieninsel);
             belegungFerieninselTS.ferienname = receivedBelegungFerieninsel.ferienname;
+            belegungFerieninselTS.notfallAngaben = receivedBelegungFerieninsel.notfallAngaben;
             belegungFerieninselTS.tage = this.parseBelegungFerieninselTagList(receivedBelegungFerieninsel.tage);
             return belegungFerieninselTS;
         }
@@ -3910,6 +3911,7 @@ export class EbeguRestUtil {
         if (belegungFerieninselTS) {
             this.abstractMutableEntityToRestObject(restBelegungFerieninsel, belegungFerieninselTS);
             restBelegungFerieninsel.ferienname = belegungFerieninselTS.ferienname;
+            restBelegungFerieninsel.notfallAngaben = belegungFerieninselTS.notfallAngaben;
             restBelegungFerieninsel.tage = [];
             if (Array.isArray(belegungFerieninselTS.tage)) {
                 belegungFerieninselTS.tage.forEach(t => {
