@@ -2516,6 +2516,7 @@
     "PENDENZ": "Pendenz",
     "PENDENZ_ERSTELLEN": "Interne Pendenz erstellen",
     "PENDENZ_BEARBEITEN": "Interne Pendenz bearbeiten",
+    "PENDENZ_ERLEDIGT": "Pendenz erledigt",
     "TERMIN": "Termin",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

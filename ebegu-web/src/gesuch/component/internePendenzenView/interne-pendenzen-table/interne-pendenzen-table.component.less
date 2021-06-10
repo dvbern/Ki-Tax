@@ -1,4 +1,26 @@
+@import (reference) '../../../../style/variables.less';
+
 mat-table {
     background: none;
     cursor: pointer;
+}
+
+.erledigt {
+    color: @dgreen;
+}
+
+.center {
+    text-align: center;
+}
+
+mat-row, mat-header-row {
+
+    mat-cell:first-child, mat-header-cell:first-child {
+        flex: 0 0 110px;
+    }
+
+    mat-cell:last-child, mat-header-cell:last-child {
+        flex: 0 0 110px;
+        justify-content: center !important;
+    }
 }
