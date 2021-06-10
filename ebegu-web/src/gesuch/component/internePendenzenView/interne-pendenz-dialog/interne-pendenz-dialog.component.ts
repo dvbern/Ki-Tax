@@ -30,12 +30,14 @@ export class InternePendenzDialogComponent {
     @ViewChild(NgForm, { static: true }) public form: NgForm;
 
     public internePendenz: TSInternePendenz;
+    public readonlyMode = false;
 
     public constructor(
         private readonly dialogRef: MatDialogRef<InternePendenzDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any,
     ) {
         this.internePendenz = data.internePendenz;
+        this.readonlyMode = !this.isNew();
     }
 
     public ngOnInit(): void {
@@ -55,7 +57,7 @@ export class InternePendenzDialogComponent {
         return new Date();
     }
 
-    public isBearbeiten(): boolean {
-        return !this.internePendenz.isNew();
+    public isNew(): boolean {
+        return this.internePendenz.isNew();
     }
 }

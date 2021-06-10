@@ -23,8 +23,9 @@
 
         <div *ngIf="internePendenz">
 
-            <h2 translate *ngIf="isBearbeiten()">INTERNE_PENDENZ_BEARBEITEN</h2>
-            <h2 translate *ngIf="!isBearbeiten()">INTERNE_PENDENZ_ERSTELLEN</h2>
+            <h2 translate *ngIf="!isNew() && readonlyMode">PENDENZ</h2>
+            <h2 translate *ngIf="!isNew() && !readonlyMode">PENDENZ_BEARBEITEN</h2>
+            <h2 translate *ngIf="isNew()">PENDENZ_ERSTELLEN</h2>
 
             <div class="form-group margin-top-20">
                 <label class="md-no-float" translate for="termin_id">TERMIN</label>
@@ -33,6 +34,7 @@
                        id="termin_id"
                        name="termin"
                        required
+                       [disabled]="readonlyMode"
                        #terminRef="ngModel"
                        [(ngModel)]="internePendenz.termin"
                        [min]="getMinDateTermin()"
@@ -52,6 +54,7 @@
                           #text="ngModel"
                           id="text_id"
                           required
+                          [disabled]="readonlyMode"
                           [(ngModel)]="internePendenz.text"
                           maxlength="4000">
                 </textarea>
@@ -74,6 +77,7 @@
     <mat-dialog-actions>
         <div class="dv-dialog-actions">
             <button type="submit" class="dv-btn" [textContent]="'OK' | translate"></button>
+            <button type="button" class="dv-btn" [textContent]="'BEARBEITEN' | translate" *ngIf="readonlyMode" (click)="readonlyMode = false"></button>
             <button type="button" class="dv-btn cancel-button" (click)="close()" [textContent]="'CANCEL' | translate"></button>
         </div>
     </mat-dialog-actions>

@@ -2514,8 +2514,8 @@
     "VERLAUF_ANZEIGEN": "Verlauf anzeigen",
     "INTERNE_PENDENZEN": "Interne Pendenzen",
     "PENDENZ": "Pendenz",
-    "INTERNE_PENDENZ_ERSTELLEN": "Interne Pendenz erstellen",
-    "INTERNE_PENDENZ_BEARBEITEN": "Interne Pendenz bearbeiten",
+    "PENDENZ_ERSTELLEN": "Pendenz erstellen",
+    "PENDENZ_BEARBEITEN": "Pendenz bearbeiten",
     "TERMIN": "Termin",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
