@@ -48,6 +48,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
     public testMode: boolean = false;
     public minDateForTestlauf: moment.Moment;
     public gemeinde: TSGemeinde;
+    public filterGemeinde: TSGemeinde = null;
     // Anzuzeigende Gemeinden fuer den gewaehlten Zahlungslauftyp
     public gemeindenList: Array<TSGemeinde> = [];
     // Alle Gemeinden fuer die ich berechtigt bin fuer die normalen Auftraege
@@ -70,7 +71,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         private readonly gemeindeRS: GemeindeRS,
         private readonly uiRouterGlobals: UIRouterGlobals,
         private readonly cd: ChangeDetectorRef,
-        private readonly dialog: MatDialog
+        private readonly dialog: MatDialog,
     ) {
     }
 
@@ -133,7 +134,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
                     this.gemeinde,
                     this.beschrieb,
                     this.faelligkeitsdatum,
-                    this.datumGeneriert
+                    this.datumGeneriert,
                 ).then((response: TSZahlungsauftrag) => {
                     this.zahlungsAuftraege.push(response);
                     this.resetEditZahlungsauftrag();
@@ -330,7 +331,9 @@ export class ZahlungsauftragViewXComponent implements OnInit {
     }
 
     public getZahlungsauftraegeFiltered(): TSZahlungsauftrag[] {
-        return this.zahlungsAuftraegeFiltered;
+        return this.zahlungsAuftraegeFiltered.filter(zahlungsAuftrag => this.filterGemeinde ?
+            zahlungsAuftrag.gemeinde.id === this.filterGemeinde.id :
+            true);
     }
 
     public showInfotext(): boolean {
