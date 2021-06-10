@@ -18,6 +18,7 @@
 import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {of} from 'rxjs';
+import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {SharedModule} from '../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
@@ -28,7 +29,8 @@ import {InternePendenzenRS} from './internePendenzenRS';
 const internePendenzenRSSpy = jasmine.createSpyObj<InternePendenzenRS>(InternePendenzenRS.name,
     ['findInternePendenzenForGesuch']);
 const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
-    []);
+    ['getGesuch']);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
 
 describe('InternePendenzenComponent', () => {
     let component: InternePendenzenComponent;
@@ -41,7 +43,11 @@ describe('InternePendenzenComponent', () => {
                 HttpClientModule
             ],
             declarations: [InternePendenzenComponent],
-            providers: [gesuchModelManagerSpy]
+            providers: [
+                {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: InternePendenzenRS, useValue: internePendenzenRSSpy},
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
