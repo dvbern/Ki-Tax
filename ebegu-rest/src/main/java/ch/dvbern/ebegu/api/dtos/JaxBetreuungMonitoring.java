@@ -34,6 +34,8 @@ import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxBetreuungMonitoring extends JaxAbstractDTO {
 
+	private static final long serialVersionUID = 4137612715491396554L;
+
 	@Nonnull
 	private String refNummer;
 
