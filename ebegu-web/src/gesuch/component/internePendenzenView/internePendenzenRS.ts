@@ -38,6 +38,12 @@ export class InternePendenzenRS {
         }));
     }
 
+    public deleteInternePendenz(internePendenz: TSInternePendenz): Observable<void> {
+        return this.http.delete<void>(
+            `${this.serviceURL}/${internePendenz.id}`,
+        );
+    }
+
     public findInternePendenzenForGesuch(gesuch: TSGesuch): Observable<TSInternePendenz[]> {
         return this.http.get<any[]>(
             `${this.serviceURL}/all/${gesuch.id}`

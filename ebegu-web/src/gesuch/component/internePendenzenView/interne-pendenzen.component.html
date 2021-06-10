@@ -29,6 +29,7 @@
         *ngIf="internePendenzen?.length"
         [internePendenzen]="internePendenzen"
         (rowClicked)="editPendenz($event)"
+        (deletePendenz)="deletePendenz($event)"
     ></dv-interne-pendenzen-table>
     <div id="add-pendenz">
         <button type="button" (click)="addInternePendenz()"

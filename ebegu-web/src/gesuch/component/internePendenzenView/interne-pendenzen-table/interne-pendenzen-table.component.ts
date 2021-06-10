@@ -1,7 +1,9 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, SimpleChanges} from '@angular/core';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatSort, Sort, SortDirection} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {isMoment, Moment} from 'moment';
+import {DvNgRemoveDialogComponent} from '../../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {TSInternePendenz} from '../../../../models/TSInternePendenz';
 
 @Component({
@@ -17,15 +19,19 @@ export class InternePendenzenTableComponent implements OnInit {
 
     @Output()
     public readonly rowClicked: EventEmitter<TSInternePendenz> = new EventEmitter<TSInternePendenz>();
+    @Output()
+    public readonly deletePendenz: EventEmitter<TSInternePendenz> = new EventEmitter<TSInternePendenz>();
 
     public datasource: MatTableDataSource<TSInternePendenz>;
     public readonly initialSortColumn = 'termin';
     public readonly initialSortDirection: SortDirection = 'asc';
-    public readonly shownColumns = ['termin', 'text', 'erledigt'];
+    public readonly shownColumns = ['termin', 'text', 'erledigt', 'delete'];
 
     private currentSort: Sort = new MatSort();
 
-    public constructor() {
+    public constructor(
+        private readonly dialog: MatDialog
+    ) {
         this.datasource = new MatTableDataSource<TSInternePendenz>(this.internePendenzen);
     }
 
@@ -78,4 +84,20 @@ export class InternePendenzenTableComponent implements OnInit {
         throw new Error('Compare type not defined');
     }
 
+    public async delete(pendenz: TSInternePendenz, $event: MouseEvent): Promise<void> {
+        $event.stopPropagation();
+        const confirmation = await this.confirmDelete();
+        if (confirmation) {
+            this.deletePendenz.emit(pendenz);
+        }
+    }
+
+    public confirmDelete(): Promise<boolean> {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'PENDENZ_WIRKLICH_LOESCHEN',
+        };
+        return this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
+            .afterClosed().toPromise();
+    }
 }

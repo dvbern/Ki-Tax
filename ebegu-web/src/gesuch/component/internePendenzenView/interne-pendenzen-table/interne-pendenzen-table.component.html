@@ -29,8 +29,17 @@
                     <span>{{'ERLEDIGT' | translate}}</span>
                 </mat-header-cell>
                 <mat-cell *matCellDef="let pendenz" class="ellipsis center">
-                    <span *ngIf="pendenz.erledigt" [title]="'PENDENZ_ERLEDIGT'">
-                        <i class="fa fa-check erledigt" aria-hidden="true"></i>
+                    <span *ngIf="pendenz.erledigt" [title]="'PENDENZ_ERLEDIGT' | translate">
+                        <i class="fa fa-lg fa-check erledigt" aria-hidden="true"></i>
+                    </span>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="delete">
+                <mat-header-cell *matHeaderCellDef class="ellipsis"></mat-header-cell>
+                <mat-cell *matCellDef="let pendenz" class="ellipsis center">
+                    <span [title]="'DELETE' | translate" (click)="delete(pendenz, $event)">
+                        <i class="fa fa-lg fa-trash-o" aria-hidden="true"></i>
                     </span>
                 </mat-cell>
             </ng-container>

@@ -2517,6 +2517,7 @@
     "PENDENZ_ERSTELLEN": "Pendenz erstellen",
     "PENDENZ_BEARBEITEN": "Pendenz bearbeiten",
     "PENDENZ_ERLEDIGT": "Pendenz erledigt",
+    "PENDENZ_WIRKLICH_LOESCHEN": "Wollen Sie diese Pendenz wirklich löschen?",
     "TERMIN": "Termin",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

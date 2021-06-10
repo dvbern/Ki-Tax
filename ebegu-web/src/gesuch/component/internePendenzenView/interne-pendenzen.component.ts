@@ -85,6 +85,16 @@ export class InternePendenzenComponent implements OnInit {
             });
     }
 
+    public deletePendenz(deletedPendenz: TSInternePendenz): void {
+        this.internePendenzenRS.deleteInternePendenz(deletedPendenz)
+            .subscribe(() => {
+                this.internePendenzen = this.internePendenzen.filter(p => {
+                    return p.id !== deletedPendenz.id;
+                });
+                this.cd.markForCheck();
+            });
+    }
+
     private openPendenzDialog(internePendenz: TSInternePendenz): Promise<TSInternePendenz> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {internePendenz};
