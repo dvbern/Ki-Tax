@@ -14,7 +14,8 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions, IFormController, ILogService, IPromise, IQService} from 'angular';
+import {IComponentOptions, IController, IFormController, ILogService, IPromise, IQService} from 'angular';
+import {Subscription} from 'rxjs';
 import {MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
@@ -55,7 +56,7 @@ export class KommentarViewComponentConfig implements IComponentOptions {
 /**
  * Controller fuer den Kommentare
  */
-export class KommentarViewController {
+export class KommentarViewController implements IController {
 
     public static $inject: string[] = [
         '$log',
@@ -80,6 +81,7 @@ export class KommentarViewController {
     public readonly TSRoleUtil = TSRoleUtil;
     public isPersonensucheDisabled: boolean = true;
     public numberInternePendenzen: number;
+    private subscription: Subscription;
 
     public constructor(
         private readonly $log: ILogService,
@@ -108,6 +110,10 @@ export class KommentarViewController {
         this.getNumberInternePendenzen();
     }
 
+    public $onDestroy(): void {
+        this.subscription.unsubscribe();
+    }
+
     private getPapiergesuchFromServer(): IPromise<TSDokumenteDTO> {
         if (!this.getGesuch()) {
             return this.$q.resolve(undefined);
@@ -133,9 +139,12 @@ export class KommentarViewController {
         if (!this.getGesuch()) {
             return;
         }
-        this.internePendenzenRS.countInternePendenzenForGesuch(this.getGesuch())
-            .subscribe(numberInternePendenzen => this.numberInternePendenzen = numberInternePendenzen,
-                error => this.$log.error(error));
+        this.subscription = this.internePendenzenRS.getPendenzCountUpdated$(this.getGesuch())
+            .subscribe(() => {
+                this.internePendenzenRS.countInternePendenzenForGesuch(this.getGesuch())
+                    .subscribe(numberInternePendenzen => this.numberInternePendenzen = numberInternePendenzen,
+                        error => this.$log.error(error));
+            });
     }
 
     public getGesuch(): TSGesuch {

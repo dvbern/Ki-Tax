@@ -1,7 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {Observable, ReplaySubject} from 'rxjs';
+import {map, tap} from 'rxjs/operators';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import {TSGesuch} from '../../../models/TSGesuch';
 import {TSInternePendenz} from '../../../models/TSInternePendenz';
@@ -14,6 +14,11 @@ export class InternePendenzenRS {
 
     public readonly serviceURL: string = `${CONSTANTS.REST_API}gesuch/internependenz`;
     private readonly ebeguRestUtil = new EbeguRestUtil();
+    // we create an object with gesuchIds as keys and a Subject as values.
+    // every time we update, delete, add a InternePendenz, we trigger
+    // next() of the associated Subject.
+    // this way, the subscriber knows, when to reload the internePendenzCount
+    private internePendenzCountUpdates: any;
 
     public constructor(
         private http: HttpClient
@@ -24,7 +29,9 @@ export class InternePendenzenRS {
         return this.http.post(
             this.serviceURL,
             this.ebeguRestUtil.internePendenzToRestObject({}, internePendenz)
-        ).pipe(map(pendenzFromServer => {
+        ).pipe(tap(() => {
+            this.setPendenzCountUpdated$(internePendenz.gesuch);
+        })).pipe(map(pendenzFromServer => {
             return this.ebeguRestUtil.parseInternePendenz(new TSInternePendenz(), pendenzFromServer)
         }));
     }
@@ -33,7 +40,9 @@ export class InternePendenzenRS {
         return this.http.put(
             this.serviceURL,
             this.ebeguRestUtil.internePendenzToRestObject({}, internePendenz)
-        ).pipe(map(pendenzFromServer => {
+        ).pipe(tap(() => {
+            this.setPendenzCountUpdated$(internePendenz.gesuch);
+        })).pipe(map(pendenzFromServer => {
             return this.ebeguRestUtil.parseInternePendenz(new TSInternePendenz(), pendenzFromServer)
         }));
     }
@@ -41,7 +50,9 @@ export class InternePendenzenRS {
     public deleteInternePendenz(internePendenz: TSInternePendenz): Observable<void> {
         return this.http.delete<void>(
             `${this.serviceURL}/${internePendenz.id}`,
-        );
+        ).pipe(tap(() => {
+            this.setPendenzCountUpdated$(internePendenz.gesuch);
+        }));
     }
 
     public findInternePendenzenForGesuch(gesuch: TSGesuch): Observable<TSInternePendenz[]> {
@@ -58,6 +69,28 @@ export class InternePendenzenRS {
         return this.http.get<number>(
             `${this.serviceURL}/count/${gesuch.id}`
         );
+    }
+
+    public getPendenzCountUpdated$(gesuch: TSGesuch): Observable<void> {
+        if (!this.internePendenzCountUpdates || !this.internePendenzCountUpdates[gesuch.id]) {
+            this.initInternePendenzCount(gesuch);
+        }
+        return this.internePendenzCountUpdates[gesuch.id];
+    }
+
+    private setPendenzCountUpdated$(gesuch: TSGesuch): void {
+        if (!this.internePendenzCountUpdates || !this.internePendenzCountUpdates[gesuch.id]) {
+            this.initInternePendenzCount(gesuch);
+        }
+        this.internePendenzCountUpdates[gesuch.id].next();
+    }
+
+    private initInternePendenzCount(gesuch: TSGesuch): void {
+        if (!this.internePendenzCountUpdates) {
+            this.internePendenzCountUpdates = {};
+        }
+        this.internePendenzCountUpdates[gesuch.id] = new ReplaySubject<void>(1);
+        this.internePendenzCountUpdates[gesuch.id].next();
     }
 
 
