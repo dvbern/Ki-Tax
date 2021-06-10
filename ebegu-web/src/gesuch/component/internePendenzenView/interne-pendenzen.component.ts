@@ -18,6 +18,8 @@
 import {Location} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {TranslateService} from '@ngx-translate/core';
+import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {TSInternePendenz} from '../../../models/TSInternePendenz';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
@@ -40,6 +42,8 @@ export class InternePendenzenComponent implements OnInit {
         private readonly internePendenzenRS: InternePendenzenRS,
         private readonly cd: ChangeDetectorRef,
         private readonly gesuchModelManager: GesuchModelManager,
+        private readonly errorService: ErrorService,
+        private readonly translate: TranslateService
     ) {
     }
 
@@ -52,7 +56,7 @@ export class InternePendenzenComponent implements OnInit {
             .subscribe(internePendenzen => {
                 this.internePendenzen = internePendenzen;
                 this.cd.markForCheck();
-            });
+            }, error => this.handleError(error));
     }
 
     public async addInternePendenz(): Promise<void> {
@@ -67,7 +71,7 @@ export class InternePendenzenComponent implements OnInit {
                 // concat to change ref of element and trigger changeDetection of child
                 this.internePendenzen = this.internePendenzen.concat([savedPendenz]);
                 this.cd.markForCheck();
-            });
+            }, error => this.handleError(error));
     }
 
     public async editPendenz(pendenz: TSInternePendenz): Promise<void> {
@@ -82,7 +86,7 @@ export class InternePendenzenComponent implements OnInit {
                 });
                 this.internePendenzen.push(savedPendenz);
                 this.cd.markForCheck();
-            });
+            }, error => this.handleError(error));
     }
 
     public deletePendenz(deletedPendenz: TSInternePendenz): void {
@@ -92,7 +96,7 @@ export class InternePendenzenComponent implements OnInit {
                     return p.id !== deletedPendenz.id;
                 });
                 this.cd.markForCheck();
-            });
+            }, error => this.handleError(error));
     }
 
     private openPendenzDialog(internePendenz: TSInternePendenz): Promise<TSInternePendenz> {
@@ -104,5 +108,11 @@ export class InternePendenzenComponent implements OnInit {
 
     public navigateBack(): void {
         this.location.back();
+    }
+
+    private handleError(error: Error): void {
+        this.errorService.clearAll();
+        this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
+        console.error(error);
     }
 }
