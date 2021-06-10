@@ -1,10 +1,11 @@
-import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
-import {FormGroup} from '@angular/forms';
+import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild} from '@angular/core';
+import {FormGroup, NgForm} from '@angular/forms';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
 import * as moment from 'moment';
 import {of, Subject} from 'rxjs';
-import {switchMap, takeUntil} from 'rxjs/operators';
+import {filter, switchMap, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSZahlungsauftragsstatus} from '../../../models/enums/TSZahlungsauftragstatus';
@@ -15,7 +16,8 @@ import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSZahlungsauftrag} from '../../../models/TSZahlungsauftrag';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {DvDialog} from '../../core/directive/dv-dialog/dv-dialog';
+import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
@@ -31,6 +33,8 @@ const LOG = LogFactory.createLog('ZahlungsauftragViewXComponent');
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ZahlungsauftragViewXComponent implements OnInit {
+
+    @ViewChild(NgForm) private readonly form: NgForm;
 
     public zahlungsauftragToEdit: TSZahlungsauftrag;
     public zahlungsAuftraege: TSZahlungsauftrag[] = [];
@@ -50,7 +54,6 @@ export class ZahlungsauftragViewXComponent implements OnInit {
     public berechtigteGemeindenList: Array<TSGemeinde> = [];
     // Alle Gemeinden fuer die ich berechtigt bin fuer die Mahlzeitenverguenstigungen
     public berechtigteGemeindenMitMahlzeitenList: Array<TSGemeinde> = [];
-    private form: FormGroup;
 
     private readonly unsubscribe$ = new Subject<void>();
 
@@ -66,7 +69,8 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly gemeindeRS: GemeindeRS,
         private readonly uiRouterGlobals: UIRouterGlobals,
-        private readonly cd: ChangeDetectorRef
+        private readonly cd: ChangeDetectorRef,
+        private readonly dialog: MatDialog
     ) {
     }
 
@@ -113,6 +117,30 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         if (!this.form.valid) {
             return;
         }
+
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: this.translate.instant('ZAHLUNG_ERSTELLEN_CONFIRM'),
+            text: this.translate.instant('ZAHLUNG_ERSTELLEN_INFO'),
+        };
+
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
+            .afterClosed()
+            .pipe(filter(result => !!result))
+            .subscribe(() => {
+                this.zahlungRS.createZahlungsauftrag(
+                    this.zahlungslaufTyp,
+                    this.gemeinde,
+                    this.beschrieb,
+                    this.faelligkeitsdatum,
+                    this.datumGeneriert
+                ).then((response: TSZahlungsauftrag) => {
+                    this.zahlungsAuftraege.push(response);
+                    this.resetEditZahlungsauftrag();
+                    this.resetForm();
+                    this.cd.markForCheck();
+                });
+            });
 
         // tslint:disable-next-line:no-commented-code
         /*this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
@@ -197,7 +225,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
                     this.zahlungsAuftraege[index] = response;
                 }
                 // nach dem es gespeichert wird, muessen wir das Form wieder auf clean setzen
-                this.form.markAsPristine();
+                this.form.form.markAsPristine();
                 this.resetEditZahlungsauftrag();
             });
     }
@@ -238,8 +266,8 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         this.beschrieb = undefined;
         this.faelligkeitsdatum = undefined;
         this.datumGeneriert = undefined;
-        this.form.markAsPristine();
-        this.form.markAsPristine();
+        this.form.form.markAsPristine();
+        this.form.form.markAsPristine();
         this.toggleAuszahlungslaufTyp();
     }
 
