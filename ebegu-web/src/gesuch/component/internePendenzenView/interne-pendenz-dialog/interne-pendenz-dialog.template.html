@@ -60,6 +60,13 @@
                 </dv-error-messages>
             </div>
 
+            <div class="form-group">
+                <mat-checkbox id="erledigt_id" name="erledigt_name"
+                              [(ngModel)]="internePendenz.erledigt">
+                    {{'ERLEDIGT' | translate}}
+                </mat-checkbox>
+            </div>
+
         </div>
 
     </mat-dialog-content>

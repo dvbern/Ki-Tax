@@ -10,8 +10,8 @@
                 <mat-header-cell mat-sort-header="termin" *matHeaderCellDef class="ellipsis">
                     <span>{{'TERMIN' | translate}}</span>
                 </mat-header-cell>
-                <mat-cell *matCellDef="let element" class="ellipsis">
-                    <span [title]="element.termin">{{element.termin | ebeguDate}}</span>
+                <mat-cell *matCellDef="let pendenz" class="ellipsis">
+                    <span [title]="pendenz.termin">{{pendenz.termin | ebeguDate}}</span>
                 </mat-cell>
             </ng-container>
 
@@ -19,8 +19,8 @@
                 <mat-header-cell mat-sort-header="text" *matHeaderCellDef class="ellipsis">
                     <span>{{'PENDENZ' | translate}}</span>
                 </mat-header-cell>
-                <mat-cell *matCellDef="let element" class="ellipsis">
-                    <span [title]="element.text">{{element.text}}</span>
+                <mat-cell *matCellDef="let pendenz" class="ellipsis">
+                    <span [title]="pendenz.text">{{pendenz.text}}</span>
                 </mat-cell>
             </ng-container>
 
@@ -28,14 +28,14 @@
                 <mat-header-cell mat-sort-header="erledigt" *matHeaderCellDef class="ellipsis">
                     <span>{{'ERLEDIGT' | translate}}</span>
                 </mat-header-cell>
-                <mat-cell *matCellDef="let element" class="ellipsis">
-                    <span [title]="element.erledigt">{{element.erledigt}}</span>
+                <mat-cell *matCellDef="let pendenz" class="ellipsis">
+                    <span [title]="pendenz.erledigt">{{pendenz.erledigt}}</span>
                 </mat-cell>
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="shownColumns"></mat-header-row>
-            <mat-row *matRowDef="let element; columns: shownColumns;"
-                     (click)="onRowClicked(element, $event)"></mat-row>
+            <mat-row *matRowDef="let pendenz; columns: shownColumns;"
+                     (click)="onRowClicked(pendenz)"></mat-row>
         </mat-table>
     </div>
 </div>

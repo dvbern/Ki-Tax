@@ -29,6 +29,15 @@ export class InternePendenzenRS {
         }));
     }
 
+    public updateInternePendenz(internePendenz: TSInternePendenz): Observable<TSInternePendenz> {
+        return this.http.put(
+            this.serviceURL,
+            this.ebeguRestUtil.internePendenzToRestObject({}, internePendenz)
+        ).pipe(map(pendenzFromServer => {
+            return this.ebeguRestUtil.parseInternePendenz(new TSInternePendenz(), pendenzFromServer)
+        }));
+    }
+
     public findInternePendenzenForGesuch(gesuch: TSGesuch): Observable<TSInternePendenz[]> {
         return this.http.get<any[]>(
             `${this.serviceURL}/all/${gesuch.id}`

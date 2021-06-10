@@ -70,6 +70,21 @@ export class InternePendenzenComponent implements OnInit {
             });
     }
 
+    public async editPendenz(pendenz: TSInternePendenz): Promise<void> {
+        const editedPendenz = await this.openPendenzDialog(pendenz);
+        if (EbeguUtil.isNullOrUndefined(editedPendenz)) {
+            return;
+        }
+        this.internePendenzenRS.updateInternePendenz(editedPendenz)
+            .subscribe(savedPendenz => {
+                this.internePendenzen = this.internePendenzen.filter(p => {
+                    return p.id !== editedPendenz.id;
+                });
+                this.internePendenzen.push(savedPendenz);
+                this.cd.markForCheck();
+            });
+    }
+
     private openPendenzDialog(internePendenz: TSInternePendenz): Promise<TSInternePendenz> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {internePendenz};
