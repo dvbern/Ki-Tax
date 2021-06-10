@@ -21,7 +21,7 @@ export class InternePendenzenRS {
     private internePendenzCountUpdates: any;
 
     public constructor(
-        private http: HttpClient
+        private readonly http: HttpClient
     ) {
     }
 
@@ -32,7 +32,7 @@ export class InternePendenzenRS {
         ).pipe(tap(() => {
             this.setPendenzCountUpdated$(internePendenz.gesuch);
         })).pipe(map(pendenzFromServer => {
-            return this.ebeguRestUtil.parseInternePendenz(new TSInternePendenz(), pendenzFromServer)
+            return this.ebeguRestUtil.parseInternePendenz(new TSInternePendenz(), pendenzFromServer);
         }));
     }
 
@@ -43,7 +43,7 @@ export class InternePendenzenRS {
         ).pipe(tap(() => {
             this.setPendenzCountUpdated$(internePendenz.gesuch);
         })).pipe(map(pendenzFromServer => {
-            return this.ebeguRestUtil.parseInternePendenz(new TSInternePendenz(), pendenzFromServer)
+            return this.ebeguRestUtil.parseInternePendenz(new TSInternePendenz(), pendenzFromServer);
         }));
     }
 
@@ -92,6 +92,5 @@ export class InternePendenzenRS {
         this.internePendenzCountUpdates[gesuch.id] = new ReplaySubject<void>(1);
         this.internePendenzCountUpdates[gesuch.id].next();
     }
-
 
 }

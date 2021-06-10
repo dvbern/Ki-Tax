@@ -15,28 +15,46 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {of} from 'rxjs';
+import {SharedModule} from '../../../app/shared/shared.module';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
 
 import {InternePendenzenComponent} from './interne-pendenzen.component';
+import {InternePendenzenRS} from './internePendenzenRS';
+
+const internePendenzenRSSpy = jasmine.createSpyObj<InternePendenzenRS>(InternePendenzenRS.name,
+    ['findInternePendenzenForGesuch']);
+const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
+    []);
 
 describe('InternePendenzenComponent', () => {
-  let component: InternePendenzenComponent;
-  let fixture: ComponentFixture<InternePendenzenComponent>;
+    let component: InternePendenzenComponent;
+    let fixture: ComponentFixture<InternePendenzenComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ InternePendenzenComponent ]
-    })
-    .compileComponents();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [
+                SharedModule,
+                HttpClientModule
+            ],
+            declarations: [InternePendenzenComponent],
+            providers: [gesuchModelManagerSpy]
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(InternePendenzenComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(InternePendenzenComponent);
+        component = fixture.componentInstance;
+        internePendenzenRSSpy.findInternePendenzenForGesuch.and.returnValue(of([]));
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

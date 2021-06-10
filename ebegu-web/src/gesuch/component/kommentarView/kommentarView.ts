@@ -144,7 +144,7 @@ export class KommentarViewController implements IController {
                 this.internePendenzenRS.countInternePendenzenForGesuch(this.getGesuch())
                     .subscribe(numberInternePendenzen => this.numberInternePendenzen = numberInternePendenzen,
                         error => this.$log.error(error));
-            });
+            }, error => this.$log.error(error));
     }
 
     public getGesuch(): TSGesuch {

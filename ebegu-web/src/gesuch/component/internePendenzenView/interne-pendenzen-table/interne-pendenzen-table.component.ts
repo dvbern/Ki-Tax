@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output,
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatSort, Sort, SortDirection} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
-import {isMoment, Moment} from 'moment';
+import {isMoment} from 'moment';
 import {DvNgRemoveDialogComponent} from '../../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {TSInternePendenz} from '../../../../models/TSInternePendenz';
 
@@ -77,9 +77,7 @@ export class InternePendenzenTableComponent implements OnInit {
             return a - b;
         }
         if (isMoment(a) && isMoment(b)) {
-            const dateA = a as Moment;
-            const dateB = b as Moment;
-            return dateA.toDate().getTime() - dateB.toDate().getTime();
+            return a.toDate().getTime() - b.toDate().getTime();
         }
         throw new Error('Compare type not defined');
     }
