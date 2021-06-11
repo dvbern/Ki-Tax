@@ -1638,9 +1638,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setMassgEink(zeitabschnitt.getMassgebendesEinkommen());
 		row.setEinkommensjahr(zeitabschnitt.getEinkommensjahr());
 		if (gueltigeGesuch.getEinkommensverschlechterungInfoContainer() != null) {
-			row.setEkvVorhanden(gueltigeGesuch.getEinkommensverschlechterungInfoContainer()
-				.getEinkommensverschlechterungInfoJA()
-				.getEinkommensverschlechterung());
+			row.setEkvVorhandenBasisJahr1(gueltigeGesuch.getEinkommensverschlechterungInfoContainer()
+				.getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus1());
+			row.setEkvVorhandenBasisJahr2(gueltigeGesuch.getEinkommensverschlechterungInfoContainer()
+				.getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus2());
+			row.setEkvAnnuliertBasisJahr1(gueltigeGesuch.getEinkommensverschlechterungInfoContainer()
+				.getEinkommensverschlechterungInfoJA().getEkvBasisJahrPlus1Annulliert());
+			row.setEkvAnnuliertBasisJahr2(gueltigeGesuch.getEinkommensverschlechterungInfoContainer()
+				.getEinkommensverschlechterungInfoJA().getEkvBasisJahrPlus2Annulliert());
 		}
 		row.setStvGeprueft(gesuch.isGeprueftSTV());
 		if (gueltigeGesuch.getGesuchsteller1() != null &&
