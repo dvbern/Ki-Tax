@@ -18,12 +18,15 @@ package ch.dvbern.ebegu.api.dtos;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import ch.dvbern.ebegu.enums.Ferienname;
+import ch.dvbern.ebegu.util.Constants;
 
 /**
  * DTO for the Belegung of a Ferieninsel in a Betreuung.
@@ -40,6 +43,10 @@ public class JaxBelegungFerieninsel extends JaxAbstractDTO {
 	@NotNull
 	private List<JaxBelegungFerieninselTag> tage = new ArrayList<>();
 
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
+	@Nullable
+	private String notfallAngaben;
+
 	public Ferienname getFerienname() {
 		return ferienname;
 	}
@@ -54,5 +61,14 @@ public class JaxBelegungFerieninsel extends JaxAbstractDTO {
 
 	public void setTage(List<JaxBelegungFerieninselTag> tage) {
 		this.tage = tage;
+	}
+
+	@Nullable
+	public String getNotfallAngaben() {
+		return notfallAngaben;
+	}
+
+	public void setNotfallAngaben(@Nullable String notfallAngaben) {
+		this.notfallAngaben = notfallAngaben;
 	}
 }

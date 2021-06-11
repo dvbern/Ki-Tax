@@ -711,4 +711,18 @@ public class MailTemplateConfiguration {
 		paramMap.put("jahr", lastenausgleich.getJahr().toString());
 		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGemeindeLastenausgleichDurch, sprachen), paramMap);
 	}
+
+	public String getInfoSchulamtAnmeldungStorniert(
+		@Nonnull AbstractAnmeldung betreuung,
+		@Nonnull Gesuchsteller gesuchsteller,
+		@Nonnull String empfaengerMail,
+		@Nonnull Sprache sprache) {
+
+		return processTemplateAnmeldung(
+			MailTemplate.InfoSchulamtAnmeldungStorniert,
+			betreuung,
+			gesuchsteller,
+			paramsWithEmpfaenger(empfaengerMail),
+			sprache);
+	}
 }

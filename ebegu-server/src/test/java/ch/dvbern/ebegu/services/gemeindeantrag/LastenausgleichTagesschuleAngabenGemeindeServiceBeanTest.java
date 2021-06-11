@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -49,6 +50,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBeanTest extends Ab
 
 	@Inject
 	private LastenausgleichTagesschuleAngabenGemeindeService angabenGemeindeService;
+
+	@Inject
+	private LastenausgleichTagesschuleAngabenGemeindeStatusHistoryService historyService;
 
 	@Inject
 	private Persistence persistence;
@@ -178,5 +182,44 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBeanTest extends Ab
 		// Jetzt sollten beide Container vorhanden sein
 		Assert.assertNotNull(latsGemeindeContainer.getAngabenKorrektur());
 		Assert.assertNotNull(latsGemeindeContainer.getAngabenDeklaration());
+	}
+
+	@Test
+	public void lastenausgleichTagesschuleZurueckAnGemeindeTest() {
+		LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer =
+			TestDataUtil.createLastenausgleichTagesschuleAngabenGemeindeContainer(gesuchsperiode2021, gemeindeParis);
+		latsGemeindeContainer.setAlleAngabenInKibonErfasst(true);
+		// Eingaben der Gemeinde
+		latsGemeindeContainer.setAngabenDeklaration(TestDataUtil.createLastenausgleichTagesschuleAngabenGemeinde());
+		latsGemeindeContainer = angabenGemeindeService.saveLastenausgleichTagesschuleGemeinde(latsGemeindeContainer);
+		latsGemeindeContainer = angabenGemeindeService.lastenausgleichTagesschuleGemeindeFuerInstitutionenFreigeben(latsGemeindeContainer);
+
+		// Eingaben des Kantons
+		latsGemeindeContainer.setAngabenKorrektur(TestDataUtil.createLastenausgleichTagesschuleAngabenGemeinde());
+		latsGemeindeContainer = angabenGemeindeService.saveLastenausgleichTagesschuleGemeinde(latsGemeindeContainer);
+		Assert.assertEquals(
+			LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE,
+			latsGemeindeContainer.getStatus());
+
+		// einreichen zur Prüfung Kanton
+		latsGemeindeContainer = angabenGemeindeService.lastenausgleichTagesschuleGemeindeEinreichen(latsGemeindeContainer);
+
+		// zurück an Gemeinde
+		angabenGemeindeService.lastenausgleichTagesschuleGemeindeZurueckAnGemeinde(latsGemeindeContainer);
+		Assert.assertEquals(
+			LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE,
+			latsGemeindeContainer.getStatus()
+		);
+		// es sollen immer noch beide Container vorhanden sein
+		Assert.assertNotNull(latsGemeindeContainer.getAngabenKorrektur());
+		Assert.assertNotNull(latsGemeindeContainer.getAngabenDeklaration());
+
+		// Verlauf soll gespeichert sein
+		List<LastenausgleichTagesschuleAngabenGemeindeStatusHistory> history = historyService.findHistoryForContainer(latsGemeindeContainer);
+		LastenausgleichTagesschuleAngabenGemeindeStatusHistory lastHistoryEntry = history.get(history.size() - 1);
+		Assert.assertEquals(
+			LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE,
+			lastHistoryEntry.getStatus()
+		);
 	}
 }

@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -44,6 +47,7 @@ import javax.persistence.criteria.SetJoin;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
@@ -55,12 +59,16 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer_;
+import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
+import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -79,6 +87,8 @@ import org.slf4j.LoggerFactory;
 @Local(LastenausgleichTagesschuleAngabenGemeindeService.class)
 public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends AbstractBaseService
 	implements LastenausgleichTagesschuleAngabenGemeindeService {
+
+	private static final String ANGABEN_KORREKTUR_NOT_NULL = "angabenKorrektur must not be null";
 
 	@Inject
 	private Persistence persistence;
@@ -100,6 +110,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 	@Inject
 	private InstitutionService institutionService;
+
+	@Inject
+	private EbeguConfiguration configuration;
+
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
 
 	private static final Logger LOG =
 		LoggerFactory.getLogger(LastenausgleichTagesschuleAngabenGemeindeServiceBean.class);
@@ -183,6 +199,38 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 		query.where(cb.and(gemeindePredicate, gesuchsperiodePredicate));
 		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
+	}
+
+	@Nonnull
+	@Override
+	public void deleteLastenausgleichTagesschuleAngabenGemeindeContainer(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
+
+		if (!configuration.getIsDevmode()) {
+			throw new EbeguRuntimeException(
+				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer",
+				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer ist nur im Devmode möglich");
+		}
+
+		if (!principal.isCallerInRole(UserRole.SUPER_ADMIN)) {
+			throw new EbeguRuntimeException(
+				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer",
+				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer ist nur als SuperAdmin möglich");
+		}
+
+		findLastenausgleichTagesschuleAngabenGemeindeContainer(
+			gemeinde,
+			gesuchsperiode).ifPresent(container -> {
+			deleteHistoryForContainer(container);
+			persistence.remove(container);
+		});
+	}
+
+	private void deleteHistoryForContainer(LastenausgleichTagesschuleAngabenGemeindeContainer container) {
+		List<LastenausgleichTagesschuleAngabenGemeindeStatusHistory> historyList =
+			historyService.findHistoryForContainer(container);
+		historyList.forEach(entry -> persistence.remove(entry));
 	}
 
 	@Override
@@ -444,15 +492,21 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 		// Nur moeglich, wenn noch nicht geprüft
 		Preconditions.checkState(
-			fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON,
-			"LastenausgleichAngabenGemeindeContainer muss im Status IN_PRUEFUNG sein");
+			fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON ||
+			fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG,
+			"LastenausgleichAngabenGemeindeContainer muss im Status IN_PRUEFUNG oder ZWEITPRUEFUNG sein");
 		Objects.requireNonNull(fallContainer.getAngabenKorrektur());
 		Preconditions.checkState(
 			fallContainer.getAngabenKorrektur().getStatus() == LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN,
 			"Die Angaben der Gemeinde müssen abgeschlossen sein"
 		);
 
-		fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT);
+		if (!fallContainer.isInZweitpruefung() && this.selectedForZweitpruefung(fallContainer)) {
+			fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG);
+			fallContainer.getAngabenKorrektur().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
+		} else {
+			fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT);
+		}
 		return saveLastenausgleichTagesschuleGemeinde(fallContainer, true);
 	}
 
@@ -479,7 +533,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		if (fallContainer.isAtLeastInBearbeitungKanton()) {
 			Preconditions.checkState(
 				fallContainer.getAngabenKorrektur() != null,
-				"angabenKorrektur must not be null"
+				ANGABEN_KORREKTUR_NOT_NULL
 			);
 			formular = fallContainer.getAngabenKorrektur();
 		} else {
@@ -539,7 +593,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		if (fallContainer.isAtLeastInBearbeitungKanton()) {
 			Preconditions.checkState(
 				fallContainer.getAngabenKorrektur() != null,
-				"angabenKorrektur must not be null"
+				ANGABEN_KORREKTUR_NOT_NULL
 			);
 			angaben = fallContainer.getAngabenKorrektur();
 		} else {
@@ -603,7 +657,63 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		container.getAngabenDeklaration().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
 		container.getAngabenKorrektur().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
 
-		return persistence.persist(container);
+		return saveLastenausgleichTagesschuleGemeinde(container, true);
+	}
+
+
+
+	@Nonnull
+	@Override
+	public boolean selectedForZweitpruefung(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
+
+		Preconditions.checkState(
+			container.getAngabenKorrektur() != null,
+			ANGABEN_KORREKTUR_NOT_NULL
+		);
+
+		Preconditions.checkState(
+			container.getAngabenKorrektur().getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse() != null,
+			ANGABEN_KORREKTUR_NOT_NULL
+		);
+
+		Preconditions.checkState(
+			container.getAngabenKorrektur().getGeleisteteBetreuungsstundenBesondereBeduerfnisse() != null,
+			ANGABEN_KORREKTUR_NOT_NULL
+		);
+
+		AtomicBoolean selected = new AtomicBoolean(false);
+		gemeindeService.getGemeindeStammdatenByGemeindeId(container.getGemeinde().getId())
+			.ifPresentOrElse(stammdaten -> {
+
+				KorrespondenzSpracheTyp spracheTyp = stammdaten.getKorrespondenzsprache();
+				BigDecimal betreuungsstundenForAutoZweitpruefung;
+				BigDecimal anteilGemeindenForZweitpruefung;
+
+				if (spracheTyp == KorrespondenzSpracheTyp.FR) {
+					betreuungsstundenForAutoZweitpruefung =
+						applicationPropertyService.findApplicationPropertyAsBigDecimal(
+							ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR);
+					anteilGemeindenForZweitpruefung = applicationPropertyService.findApplicationPropertyAsBigDecimal(
+						ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_FR);
+				} else {
+					betreuungsstundenForAutoZweitpruefung =
+						applicationPropertyService.findApplicationPropertyAsBigDecimal(
+							ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE);
+					anteilGemeindenForZweitpruefung = applicationPropertyService.findApplicationPropertyAsBigDecimal(
+						ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE);
+				}
+
+				BigDecimal randomNumber = new BigDecimal(Math.random(), MathContext.DECIMAL64);
+
+				BigDecimal betreuungsstundenTotal = container.getAngabenKorrektur()
+					.getGeleisteteBetreuungsstundenBesondereBeduerfnisse()
+					.add(container.getAngabenKorrektur().getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse());
+
+				selected.set(betreuungsstundenTotal.compareTo(betreuungsstundenForAutoZweitpruefung) >= 0 ||
+					randomNumber.compareTo(anteilGemeindenForZweitpruefung) <= 0);
+			}, () -> selected.set(false));
+
+		return selected.get();
 	}
 }
 

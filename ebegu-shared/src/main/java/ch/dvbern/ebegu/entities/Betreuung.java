@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -345,33 +344,15 @@ public class Betreuung extends AbstractPlatz {
 	}
 
 	/**
-	 * @return die Verfuegung oder ausbezahlte Vorgaengerverfuegung dieser Betreuung
-	 */
-	@Override
-	@Nullable
-	public Verfuegung getVerfuegungOrVorgaengerAusbezahlteVerfuegung(@Nonnull ZahlungslaufTyp zahlungslaufTyp) {
-		if (getVerfuegung() != null) {
-			return getVerfuegung();
-		}
-		return getVorgaengerAusbezahlteVerfuegung(zahlungslaufTyp);
-	}
-
-	/**
 	 * @return die Verfuegung oder Vorgaengerverfuegung dieser Betreuung
 	 */
+	@Override
 	@Nullable
 	public Verfuegung getVerfuegungOrVorgaengerVerfuegung() {
 		if (getVerfuegung() != null) {
 			return getVerfuegung();
 		}
 		return getVorgaengerVerfuegung();
-	}
-
-	@Nullable
-	public Verfuegung getVorgaengerAusbezahlteVerfuegung(@Nonnull ZahlungslaufTyp zahlungslaufTyp) {
-		checkVorgaengerInitialized();
-		Objects.requireNonNull(vorgaengerAusbezahlteVerfuegungProAuszahlungstyp);
-		return vorgaengerAusbezahlteVerfuegungProAuszahlungstyp.get(zahlungslaufTyp);
 	}
 
 	@Nullable
