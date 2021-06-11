@@ -183,7 +183,7 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	 * @return die Verfuegung oder ausbezahlte Vorgaengerverfuegung dieser Betreuung
 	 */
 	@Nullable
-	public Verfuegung getVerfuegungOrVorgaengerAusbezahlteVerfuegung(@Nonnull ZahlungslaufTyp zahlungslaufTyp) {
+	public Verfuegung getVerfuegungOrVorgaengerVerfuegung() {
 		if (getVerfuegung() != null) {
 			return getVerfuegung();
 		}

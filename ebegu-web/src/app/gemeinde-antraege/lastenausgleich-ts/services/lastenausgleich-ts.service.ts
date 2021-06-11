@@ -89,7 +89,7 @@ export class LastenausgleichTSService {
             `${this.API_BASE_URL}/saveKommentar/${encodeURIComponent(containerId)}`,
             kommentar,
         ).pipe(
-            tap(() => this.updateLATSAngabenGemeindeContainerStore(containerId))
+            tap(() => this.updateLATSAngabenGemeindeContainerStore(containerId)),
         );
     }
 
@@ -117,13 +117,22 @@ export class LastenausgleichTSService {
         );
     }
 
-    public latsGemeindeAntragGeprueft(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
-        this.http.put(
+    public latsGemeindeAntragGeprueft(
+        container: TSLastenausgleichTagesschuleAngabenGemeindeContainer
+    ): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
+        return this.http.put(
             `${this.API_BASE_URL}/geprueft`,
             this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
-        ).subscribe(result => {
-            this.next(result);
-        }, error => LOG.error(error));
+        ).pipe(
+            tap(result => {
+                    this.next(result);
+                },
+            ),
+            map(result => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
+                new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),
+                result)
+            )
+        );
     }
 
     // tslint:disable-next-line:max-line-length

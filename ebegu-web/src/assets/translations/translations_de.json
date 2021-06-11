@@ -758,7 +758,7 @@
     "FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION": "Minimales Pensum für Fachstelle sprachliche Integration",
     "PLATZBESTAETIGUNG": "Platzbestätigung",
     "PLATZBESTAETIGUNG_MUTATION": "Platz mutieren",
-    "QUICKSEARCH_ALL_RESULTS": "Alle Resultate (bis zu {{totalNum}} weitere)",
+    "QUICKSEARCH_ALL_RESULTS": "Alle Resultate",
     "VERFUEGUNGEN_NOCH_KEINE": "Noch keine Verfügungen erfasst",
     "TRAEGERSCHAFT": "Trägerschaft",
     "TRAEGERSCHAFTEN": "Trägerschaften",
@@ -1370,6 +1370,7 @@
     "WARN_ANGEBOT_NOCH_NICHT_FREIGEGEBEN": "Dieses Angebot wurde noch nicht freigegeben. Bitte bearbeiten Sie das aktuell gültige Angebot.",
     "WARN_ANGEBOT_MUTIERT": "Dieses Angebot wurde mutiert. Bitte bearbeiten Sie das aktuell gültige Angebot.",
     "FERIENINSELTAGE": "An welchen Tagen möchten Sie Ihr Kind für die Ferieninsel anmelden?",
+    "FERIENINSEL_NOTFALLANGABEN":"Mitteilungen / Besonderes (z.B. Medikamente, Allergien/Unverträglichkeiten, ADS, kein Schweinefleisch usw.)",
     "ANMELDEN_FERIENINSEL": "Definitiv Anmelden",
     "ANMELDEN_TAGESSCHULE": "Definitiv Anmelden",
     "CONFIRM_SAVE_FERIENINSEL": "Sind Sie sicher, dass Sie Ihr Kind definitiv anmelden wollen?",
@@ -2520,5 +2521,10 @@
     "BETREUUNG_MONITORING_TITLE": "Betreuung Monitoring",
     "AFA_BETREUUNG_MONITORING": "Betreuung Monitoring",
     "MENU_BETREUUNG_MONITORING": "Betreuung Monitoring",
+    "LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE": "Anteil der Lastenausgleich Tagesschule Anträge der deutschsprachigen Gemeinden, die zur Zweitprüfung ausgewählt werden sollen",
+    "LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_FR": "Anteil der Lastenausgleich Tagesschule Anträge der französischsprachigen Gemeinden, die zur Zweitprüfung ausgewählt werden sollen",
+    "LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE": "Ab welcher Anzahl Betreuungsstunden sollen Lastenausgleich Tagesschule Anträge der deutschsprachigen Gemeinden automatisch zur Zweitprüfung ausgewählt werden",
+    "LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR": "Ab welcher Anzahl Betreuungsstunden sollen Lastenausgleich Tagesschule Anträge der französischsprachigen Gemeinden automatisch zur Zweitprüfung ausgewählt werden",
+    "LATS_INFO_SELECTED_FOR_ZWEITPRUEFUNG": "Dieser Antrag wurde vom System automatisch zur Zweitprüfung ausgewählt",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
