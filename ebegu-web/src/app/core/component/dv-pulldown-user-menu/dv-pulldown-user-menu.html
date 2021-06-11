@@ -45,6 +45,13 @@
                 </md-button>
             </md-menu-item>
 
+            <!-- BetreuungMonitoring -->
+            <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()">
+                <md-button ui-sref-active="active" ui-sref="admin.betreuungMonitoring" aria-label="{{'ADMIN' | translate}}">
+                    <a href="#" ng-click="$event.preventDefault();" data-translate="MENU_BETREUUNG_MONITORING"></a>
+                </md-button>
+            </md-menu-item>
+
             <!-- Benutzerverwaltung -->
             <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllAdministratorRevisorRole()">
                 <md-button ui-sref-active="active" ui-sref="admin.benutzerlist" aria-label="{{'BENUTZER' | translate}}">

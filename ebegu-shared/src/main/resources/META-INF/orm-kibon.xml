@@ -404,4 +404,5 @@ WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchP
 	<entity class="ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen"/>
 	<entity class="ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument"/>
 	<entity class="ch.dvbern.ebegu.entities.InternePendenz"/>
+	<entity class="ch.dvbern.ebegu.entities.BetreuungMonitoring"/>
 </entity-mappings>

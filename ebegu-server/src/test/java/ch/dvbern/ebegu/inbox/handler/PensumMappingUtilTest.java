@@ -81,7 +81,7 @@ class PensumMappingUtilTest {
 		DateRange gueltigket = getClientPeriodeGueltigkeit(betreuung);
 
 		ProcessingContext ctx =
-			new ProcessingContext(betreuung, betreuungEventDTO, gueltigket, true);
+			new ProcessingContext(betreuung, betreuungEventDTO, gueltigket, true, "clientName");
 
 		BetreuungsmitteilungPensum actual =
 			PensumMappingUtil.toAbstractMahlzeitenPensum(new BetreuungsmitteilungPensum(), z, ctx);
@@ -100,7 +100,7 @@ class PensumMappingUtilTest {
 		DateRange gueltigket = getClientPeriodeGueltigkeit(betreuung);
 
 		ProcessingContext ctx =
-			new ProcessingContext(betreuung, betreuungEventDTO, gueltigket, false);
+			new ProcessingContext(betreuung, betreuungEventDTO, gueltigket, false, "clientName");
 
 		BetreuungsmitteilungPensum actual =
 			PensumMappingUtil.toAbstractMahlzeitenPensum(new BetreuungsmitteilungPensum(), z, ctx);

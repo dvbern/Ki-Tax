@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -58,6 +59,7 @@ import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.BetreuungMonitoring;
 import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.Dossier;
@@ -148,6 +150,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private Event<ExportedEvent> event;
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
+	@Inject
+	private BetreuungMonitoringService betreuungMonitoringService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
 
@@ -193,10 +197,29 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		updateVerantwortliche(mergedGesuch, mergedBetreuung, false, isNew);
 
-		LOG.info(
-			"Betreuung mit RefNr: {} wurde geaendert und gespeichert mit Status: {}",
-			mergedBetreuung.getBGNummer(),
-			mergedBetreuung.getBetreuungsstatus());
+		if(!isNew){
+			LOG.info(
+				"Betreuung mit RefNr: {} wurde geaendert und gespeichert mit Status: {}",
+				mergedBetreuung.getBGNummer(),
+				mergedBetreuung.getBetreuungsstatus());
+
+			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(mergedBetreuung.getBGNummer(),
+				principalBean.getBenutzer().getUsername(),
+				"Die Betreuung wurde geaendert und gespeichert mit Status: " + mergedBetreuung.getBetreuungsstatus(),
+				LocalDateTime.now()));
+		}
+		else{
+			LOG.info(
+				"Betreuung mit RefNr: {} wurde erstellt mit Status: {}",
+				mergedBetreuung.getBGNummer(),
+				mergedBetreuung.getBetreuungsstatus());
+
+			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(mergedBetreuung.getBGNummer(),
+				principalBean.getBenutzer().getUsername(),
+				"Die Betreuung wurde erstellt mit Status: " + mergedBetreuung.getBetreuungsstatus(),
+				LocalDateTime.now()));
+		}
+
 
 		return mergedBetreuung;
 	}
@@ -372,7 +395,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				betreuung.getId());
 		}
 		LOG.info("Betreuung mit RefNr: {} wurde abgewiesen", betreuung.getBGNummer());
-
+		betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(betreuung.getBGNummer(),
+			principalBean.getBenutzer().getUsername(),
+			"Die Betreuung wurde abgewiesen",
+			LocalDateTime.now()));
 		return persistedBetreuung;
 	}
 
@@ -404,6 +430,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				betreuung.getId());
 		}
 		LOG.info("Betreuung mit RefNr: {} wurde bestaetigt", betreuung.getBGNummer());
+		betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(betreuung.getBGNummer(),
+			principalBean.getBenutzer().getUsername(),
+			"Die Betreuung wurde bestaetigt",
+			LocalDateTime.now()));
 		return persistedBetreuung;
 	}
 
@@ -814,6 +844,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		gesuch.getKindContainers()
 			.forEach(kind -> kind.getBetreuungen().removeIf(bet -> bet.getId().equalsIgnoreCase(betreuung.getId())));
 		LOG.info("Betreuung mit RefNr: {} wurde geloescht", betreuung.getBGNummer());
+		betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(betreuung.getBGNummer(),
+			principalBean.getBenutzer().getUsername(),
+			"Die Betreuung wurde geloescht",
+			LocalDateTime.now()));
 		gesuchService.updateBetreuungenStatus(gesuch);
 	}
 

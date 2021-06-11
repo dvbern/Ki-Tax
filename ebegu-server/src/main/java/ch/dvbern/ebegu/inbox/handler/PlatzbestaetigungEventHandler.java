@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.entities.AbstractDecimalPensum;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.BetreuungMonitoring;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -58,6 +59,7 @@ import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
+import ch.dvbern.ebegu.services.BetreuungMonitoringService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
@@ -115,6 +117,9 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	@Inject
 	private BetreuungEventHelper betreuungEventHelper;
 
+	@Inject
+	private BetreuungMonitoringService betreuungMonitoringService;
+
 	@Override
 	protected void processEvent(
 		@Nonnull LocalDateTime eventTime,
@@ -131,6 +136,10 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 				"Platzbestaetigung Event für Betreuung mit RefNr: {} nicht verarbeitet: {}",
 				dto.getRefnr(),
 				message);
+			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(dto.getRefnr(),
+				clientName,
+				"Eine Platzbestaetigung Event wurde nicht verarbeitet: " + message,
+				LocalDateTime.now()));
 		}
 	}
 
@@ -201,7 +210,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		}
 
 		boolean mahlzeitVergunstigungEnabled = isEnabled(betreuung, GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED);
-		ProcessingContext ctx = new ProcessingContext(betreuung, dto, overlap.get(), mahlzeitVergunstigungEnabled);
+		ProcessingContext ctx = new ProcessingContext(betreuung, dto, overlap.get(), mahlzeitVergunstigungEnabled,
+			client.getExternalClient().getClientName());
 
 		Betreuungsstatus status = betreuung.getBetreuungsstatus();
 
@@ -277,12 +287,20 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			//noinspection ResultOfMethodCallIgnored
 			betreuungService.betreuungPlatzBestaetigen(ctx.getBetreuung());
 			LOG.info("PlatzbestaetigungEvent Betreuung mit RefNr: {} automatisch bestätigt", ctx.getDto().getRefnr());
+			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(ctx.getDto().getRefnr(),
+				ctx.getClientName(),
+				"PlatzbestaetigungEvent automatisch bestätigt",
+				LocalDateTime.now()));
 		} else {
 			//noinspection ResultOfMethodCallIgnored
 			betreuungService.saveBetreuung(ctx.getBetreuung(), false);
 			LOG.info(
 				"PlatzbestaetigungEvent Betreuung mit RefNr: {} eingelesen, aber nicht automatisch bestätigt",
 				ctx.getDto().getRefnr());
+			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(ctx.getDto().getRefnr(),
+				ctx.getClientName(),
+				"PlatzbestaetigungEvent eingelesen, aber nicht automatisch bestätigt: " + ctx.getHumanConfirmationMessage(),
+				LocalDateTime.now()));
 		}
 
 		return Processing.success();
@@ -296,9 +314,10 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		if (!ctx.isGueltigkeitCoveringPeriode()) {
 			ctx.requireHumanConfirmation();
 			LOG.info(
-				"PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat Zeitabschnitten ausser die Schnittstelle oder"
-					+ " Gesuchsperiode gültigkeit",
+				"PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat Zeitabschnitte die ausserhalb der Schnittstellen- oder"
+					+ " Gesuchsperiode-Gültigkeit liegen",
 				ctx.getDto().getRefnr());
+			ctx.setHumanConfirmationMessage("PlatzbestaetigungEvent hat Zeitabschnitte die ausserhalb der Schnittstellen- oder Gesuchsperiode-Gültigkeit liegen");
 		}
 
 		setErweitereBeduerfnisseBestaetigt(ctx);
@@ -338,6 +357,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			LOG.info(
 				"PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat keine Gemeinde spezifiziert",
 				ctx.getDto().getRefnr());
+			ctx.setHumanConfirmationMessage("PlatzbestaetigungEvent hat keine Gemeinde spezifiziert");
 			return;
 		}
 
@@ -375,7 +395,10 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		LOG.info(
 			"PlatzbestaetigungEvent: Mutationsmeldung erstellt für die Betreuung mit RefNr: {}",
 			ctx.getDto().getRefnr());
-
+		betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(ctx.getDto().getRefnr(),
+			ctx.getClientName(),
+			"PlatzbestaetigungEvent: Mutationsmeldung erstellt",
+			LocalDateTime.now()));
 		return Processing.success();
 	}
 
