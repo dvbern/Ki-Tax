@@ -314,10 +314,10 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		if (!ctx.isGueltigkeitCoveringPeriode()) {
 			ctx.requireHumanConfirmation();
 			LOG.info(
-				"PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat Zeitabschnitten ausser die Schnittstelle oder"
-					+ " Gesuchsperiode gültigkeit",
+				"PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat Zeitabschnitte die ausserhalb der Schnittstellen- oder"
+					+ " Gesuchsperiode-Gültigkeit liegen",
 				ctx.getDto().getRefnr());
-			ctx.setHumanConfirmationMessage("PlatzbestaetigungEvent hat Zeitabschnitten ausser die Schnittstelle oder Gesuchsperiode gültigkeit");
+			ctx.setHumanConfirmationMessage("PlatzbestaetigungEvent hat Zeitabschnitte die ausserhalb der Schnittstellen- oder Gesuchsperiode-Gültigkeit liegen");
 		}
 
 		setErweitereBeduerfnisseBestaetigt(ctx);

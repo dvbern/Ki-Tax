@@ -88,7 +88,7 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 			LOG.warn("Stornierung Event für Betreuung mit RefNr: {} nicht verarbeitet: {}", key, message);
 			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(key,
 				clientName,
-				"Eine Stornierung Event wurde nicht verarbeitet: " + message,
+				"Stornierung Event wurde nicht verarbeitet: " + message,
 				LocalDateTime.now()));
 		}
 	}
@@ -143,15 +143,15 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 			//Betreuung schon Bestaetigt => MutationMitteilung mit Storniereung erfassen
 			Betreuungsmitteilung betreuungsmitteilung = createBetreuungsStornierenMitteilung(betreuung, refNummer);
 			mitteilungService.replaceBetreungsmitteilungen(betreuungsmitteilung);
-			LOG.info("Mutationsmeldung erstellt für stornieren die Betreuung mit RefNr: {}", refNummer);
+			LOG.info("Mutationsmeldung  zum Stornieren der Betreuung erstellt mit RefNr: {}", refNummer);
 			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(refNummer,
 				clientName,
-				"Mutationsmeldung erstellt für stornieren die Betreuung",
+				"Mutationsmeldung zum Stornieren der Betreuung erstellt",
 				LocalDateTime.now()));
 			return Processing.success();
 		}
 		return Processing.failure(
-			"Die Betreuung befindet sich in einen Status wo eine Stornierung nicht erlaubt ist.");
+			"Die Betreuung befindet sich in einen Status in dem eine Stornierung nicht erlaubt ist.");
 	}
 
 	@Nonnull
@@ -167,10 +167,10 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 			);
 			betreuung.setBetreuungsstatus(Betreuungsstatus.STORNIERT);
 			betreuungService.saveBetreuung(betreuung, false);
-			LOG.info("Betreuung mit RefNr: {} würde automatisch storniert", refNummer);
+			LOG.info("Betreuung mit RefNr: {} wurde automatisch storniert", refNummer);
 			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(refNummer,
 				clientName,
-				"Betreuung würde automatisch storniert",
+				"Betreuung wurde automatisch storniert",
 				LocalDateTime.now()));
 		} else {
 			// TODO: um einen Platz zu abweisen braucht man einen Grund geben

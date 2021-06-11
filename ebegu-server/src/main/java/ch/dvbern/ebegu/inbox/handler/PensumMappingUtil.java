@@ -283,7 +283,7 @@ public final class PensumMappingUtil {
 			target.setVollstaendig(false);
 			ctx.requireHumanConfirmation();
 			LOG.info("PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat kein Hauptmahlzeiten Tarif", ctx.getDto().getRefnr());
-			ctx.setHumanConfirmationMessage("PlatzbestaetigungEvent hat kein Hauptmahlzeiten Tarif");
+			ctx.setHumanConfirmationMessage("PlatzbestaetigungEvent hat keinen Hauptmahlzeiten Tarif");
 		}
 		if (zeitabschnittDTO.getTarifProNebenmahlzeiten() != null) {
 			target.setTarifProNebenmahlzeit(zeitabschnittDTO.getTarifProNebenmahlzeiten());
@@ -291,7 +291,7 @@ public final class PensumMappingUtil {
 			target.setVollstaendig(false);
 			ctx.requireHumanConfirmation();
 			LOG.info("PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat kein Nebenmahlzeiten Tarif", ctx.getDto().getRefnr());
-			ctx.setHumanConfirmationMessage("PlatzbestaetigungEvent hat kein Nebenmahlzeiten Tarif");
+			ctx.setHumanConfirmationMessage("PlatzbestaetigungEvent hat keinen Nebenmahlzeiten Tarif");
 		}
 	}
 
