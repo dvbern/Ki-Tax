@@ -1,10 +1,10 @@
-import {Component, OnInit, ChangeDetectionStrategy, ViewChild, ChangeDetectorRef, AfterViewInit} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
+import {TSBetreuungMonitoring} from '../../../models/TSBetreuungMonitoring';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {BetreuungMonitoringRS} from '../../service/betreuungMonitoringRS.rest';
-import {TSBetreuungMonitoring} from '../../../models/TSBetreuungMonitoring';
 
 @Component({
     selector: 'dv-betreuung-monitoring',
@@ -17,6 +17,7 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
     public displayedColumns: string[] = ['refNummer', 'benutzer', 'infoText', 'timestamp'];
 
     public dataSource: MatTableDataSource<TSBetreuungMonitoring>;
+    public refNummerTooShort: boolean = false;
 
     @ViewChild(MatSort, {static: true}) public sort: MatSort;
     @ViewChild(MatPaginator, {static: true}) public paginator: MatPaginator;
@@ -85,5 +86,9 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
                 disableClear: false,
             },
         );
+    }
+
+    public validateRefNummber(refNummer: string): void {
+        this.refNummerTooShort = refNummer.length < this.MIN_REF_NUMMER_SIZE && refNummer.length !== 0;
     }
 }

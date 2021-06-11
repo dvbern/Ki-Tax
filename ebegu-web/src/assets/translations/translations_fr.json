@@ -64,6 +64,7 @@
     "ERROR_UNAUTHORIZED": "Vous n'avez pas les autorisations pour cette action. ",
     "ERROR_NOT_HALF": "Veuillez donner le nombre entier oder la moitié",
     "ERROR_NOT_INTEGER": "Veuillez entrer un nombre entier",
+    "ERROR_REFERENZNUMMER_NICHT_VOLLSTAENDIG": "Bitte vollständige Referenznummer eingeben",
     "ERWERBSPENSUM_LOESCHEN": "Voulez-vous vraiment supprimer le taux d'activité ?",
     "ERWERBSPENSUM_LOESCHEN_GS_MUTATION": "Vous êtes sur le point de supprimer un taux en cours ou déjà passé.  Veuillez vous assurer que vous avez saisi correctement tous les taux d'activité de l'ensemble de la période couverte par la demande. ",
     "FAELLE_LIST": "Tous les cas",

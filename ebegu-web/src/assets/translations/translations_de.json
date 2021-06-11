@@ -64,6 +64,7 @@
     "ERROR_UNAUTHORIZED": "Sie sind für diese Aktion nicht berechtigt",
     "ERROR_NOT_HALF": "Bitte ganze oder halbe Zahl eingeben",
     "ERROR_NOT_INTEGER": "Bitte ganze Zahl eingeben",
+    "ERROR_REFERENZNUMMER_NICHT_VOLLSTAENDIG": "Bitte vollständige Referenznummer eingeben",
     "ERWERBSPENSUM_LOESCHEN": "Wollen Sie das Beschäftigungspensum wirklich löschen?",
     "ERWERBSPENSUM_LOESCHEN_GS_MUTATION": "Sie sind dabei, ein bereits laufendes oder vergangenes Pensum zu löschen. Bitte stellen Sie sicher, dass Sie alle Beschäftigungspensen der ganzen Periode korrekt eingegeben haben",
     "FAELLE_LIST": "Alle Fälle",
