@@ -127,6 +127,7 @@ import {TSInstitutionStammdatenFerieninsel} from '../models/TSInstitutionStammda
 import {TSInstitutionStammdatenSummary} from '../models/TSInstitutionStammdatenSummary';
 import {TSInstitutionStammdatenTagesschule} from '../models/TSInstitutionStammdatenTagesschule';
 import {TSInstitutionUpdate} from '../models/TSInstitutionUpdate';
+import {TSInternePendenz} from '../models/TSInternePendenz';
 import {TSKind} from '../models/TSKind';
 import {TSKindContainer} from '../models/TSKindContainer';
 import {TSKindDublette} from '../models/TSKindDublette';
@@ -5252,5 +5253,29 @@ export class EbeguRestUtil {
         historyTS.timestampBis = DateUtil.localDateTimeToMoment(historyFromServer.timestampBis);
         historyTS.status = historyFromServer.status;
         return historyTS;
+    }
+
+    public internePendenzToRestObject(internePendenzRest: any, internePendenz: TSInternePendenz): any {
+        if (!internePendenz) {
+            return undefined;
+        }
+        this.abstractEntityToRestObject(internePendenzRest, internePendenz);
+        internePendenzRest.gesuch = this.gesuchToRestObject({}, internePendenz.gesuch);
+        internePendenzRest.termin = DateUtil.momentToLocalDate(internePendenz.termin);
+        internePendenzRest.text = internePendenz.text;
+        internePendenzRest.erledigt = internePendenz.erledigt;
+        return internePendenzRest;
+    }
+
+    public parseInternePendenz(internePendenz: TSInternePendenz, internePendentFromServer: any): TSInternePendenz {
+        if (!internePendentFromServer) {
+            return undefined;
+        }
+        this.parseAbstractEntity(internePendenz, internePendentFromServer);
+        internePendenz.gesuch = this.parseGesuch(new TSGesuch(), internePendentFromServer.gesuch);
+        internePendenz.termin = DateUtil.localDateToMoment(internePendentFromServer.termin);
+        internePendenz.text = internePendentFromServer.text;
+        internePendenz.erledigt = internePendentFromServer.erledigt;
+        return internePendenz;
     }
 }

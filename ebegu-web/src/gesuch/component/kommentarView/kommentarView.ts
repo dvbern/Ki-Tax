@@ -14,7 +14,8 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions, IFormController, ILogService, IPromise, IQService} from 'angular';
+import {IComponentOptions, IController, IFormController, ILogService, IPromise, IQService} from 'angular';
+import {Subscription} from 'rxjs';
 import {MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
@@ -38,6 +39,7 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {GesuchRS} from '../../service/gesuchRS.rest';
 import {GlobalCacheService} from '../../service/globalCacheService';
 import {WizardStepManager} from '../../service/wizardStepManager';
+import {InternePendenzenRS} from '../internePendenzenView/internePendenzenRS';
 import ISidenavService = angular.material.ISidenavService;
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -54,7 +56,7 @@ export class KommentarViewComponentConfig implements IComponentOptions {
 /**
  * Controller fuer den Kommentare
  */
-export class KommentarViewController {
+export class KommentarViewController implements IController {
 
     public static $inject: string[] = [
         '$log',
@@ -70,13 +72,16 @@ export class KommentarViewController {
         '$state',
         '$mdSidenav',
         '$q',
-        'applicationPropertyRS'
+        'applicationPropertyRS',
+        'InternePendenzenRS'
     ];
 
     public form: IFormController;
     public dokumentePapiergesuch: TSDokumentGrund;
     public readonly TSRoleUtil = TSRoleUtil;
     public isPersonensucheDisabled: boolean = true;
+    public numberInternePendenzen: number;
+    private subscription: Subscription;
 
     public constructor(
         private readonly $log: ILogService,
@@ -93,6 +98,7 @@ export class KommentarViewController {
         private readonly $mdSidenav: ISidenavService,
         private readonly $q: IQService,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly internePendenzenRS: InternePendenzenRS
     ) {
 
         if (!this.isGesuchUnsaved()) {
@@ -101,6 +107,11 @@ export class KommentarViewController {
         this.applicationPropertyRS.isPersonensucheDisabled().then((response: any) => {
             this.isPersonensucheDisabled = response;
         });
+        this.getNumberInternePendenzen();
+    }
+
+    public $onDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     private getPapiergesuchFromServer(): IPromise<TSDokumenteDTO> {
@@ -122,6 +133,18 @@ export class KommentarViewController {
                 }
                 return promiseValue;
             });
+    }
+
+    private getNumberInternePendenzen(): void {
+        if (!this.getGesuch()) {
+            return;
+        }
+        this.subscription = this.internePendenzenRS.getPendenzCountUpdated$(this.getGesuch())
+            .subscribe(() => {
+                this.internePendenzenRS.countInternePendenzenForGesuch(this.getGesuch())
+                    .subscribe(numberInternePendenzen => this.numberInternePendenzen = numberInternePendenzen,
+                        error => this.$log.error(error));
+            }, error => this.$log.error(error));
     }
 
     public getGesuch(): TSGesuch {

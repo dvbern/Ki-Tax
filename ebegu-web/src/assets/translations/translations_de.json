@@ -2518,5 +2518,12 @@
     "LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE": "Ab welcher Anzahl Betreuungsstunden sollen Lastenausgleich Tagesschule Anträge der deutschsprachigen Gemeinden automatisch zur Zweitprüfung ausgewählt werden",
     "LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR": "Ab welcher Anzahl Betreuungsstunden sollen Lastenausgleich Tagesschule Anträge der französischsprachigen Gemeinden automatisch zur Zweitprüfung ausgewählt werden",
     "LATS_INFO_SELECTED_FOR_ZWEITPRUEFUNG": "Dieser Antrag wurde vom System automatisch zur Zweitprüfung ausgewählt",
+    "INTERNE_PENDENZEN": "Interne Pendenzen",
+    "PENDENZ": "Pendenz",
+    "PENDENZ_ERSTELLEN": "Pendenz erstellen",
+    "PENDENZ_BEARBEITEN": "Pendenz bearbeiten",
+    "PENDENZ_ERLEDIGT": "Pendenz erledigt",
+    "PENDENZ_WIRKLICH_LOESCHEN": "Wollen Sie diese Pendenz wirklich löschen?",
+    "TERMIN": "Termin",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

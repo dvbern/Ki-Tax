@@ -110,6 +110,7 @@ import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionUpdate;
+import ch.dvbern.ebegu.api.dtos.JaxInternePendenz;
 import ch.dvbern.ebegu.api.dtos.JaxKind;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
 import ch.dvbern.ebegu.api.dtos.JaxLastenausgleich;
@@ -208,6 +209,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
+import ch.dvbern.ebegu.entities.InternePendenz;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
@@ -6061,5 +6063,34 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStatusHistory.setTimestampVon(latsStatusHistory.getTimestampVon());
 		jaxStatusHistory.setTimestampBis(latsStatusHistory.getTimestampBis());
 		return jaxStatusHistory;
+	}
+
+	public InternePendenz internePendenzToEntity(
+		@Nonnull JaxInternePendenz jaxInternePendenz, @Nonnull InternePendenz internePendenz
+	) {
+		Objects.requireNonNull(jaxInternePendenz.getGesuch().getId());
+		convertAbstractFieldsToEntity(jaxInternePendenz, internePendenz);
+		Gesuch gesuch = gesuchService.findGesuch(jaxInternePendenz.getGesuch().getId())
+			.orElseThrow(() -> new EbeguRuntimeException(
+				"internePendenzToEntity",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				internePendenz.getGesuch().getId()));
+		internePendenz.setGesuch(gesuch);
+		internePendenz.setTermin(jaxInternePendenz.getTermin());
+		internePendenz.setText(jaxInternePendenz.getText());
+		internePendenz.setErledigt(jaxInternePendenz.getErledigt());
+		return internePendenz;
+	}
+
+	public JaxInternePendenz internePendenzToJax(@Nonnull final InternePendenz internePendenz) {
+		final JaxInternePendenz jaxInternePendenz = new JaxInternePendenz();
+		convertAbstractFieldsToJAX(internePendenz, jaxInternePendenz);
+		jaxInternePendenz.setGesuch(
+			gesuchToJAX(internePendenz.getGesuch())
+		);
+		jaxInternePendenz.setTermin(internePendenz.getTermin());
+		jaxInternePendenz.setText(internePendenz.getText());
+		jaxInternePendenz.setErledigt(internePendenz.getErledigt());
+		return jaxInternePendenz;
 	}
 }

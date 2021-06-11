@@ -19,6 +19,10 @@ import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWa
 import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
+import {InternePendenzDialogComponent} from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
+import {InternePendenzenTableComponent} from './component/internePendenzenView/interne-pendenzen-table/interne-pendenzen-table.component';
+import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
+import {InternePendenzenRS} from './component/internePendenzenView/internePendenzenRS';
 
 @NgModule({
     imports: [
@@ -28,8 +32,14 @@ import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.componen
         FallToolbarComponent,
         DvSwitchComponent,
         BetreuungOverrideWarningComponent,
-        DvEingabeBasisjahrComponent
+        DvEingabeBasisjahrComponent,
+        InternePendenzenComponent,
+        InternePendenzDialogComponent,
+        InternePendenzenTableComponent
     ],
+    providers: [
+        InternePendenzenRS
+    ]
     })
 
 export class NgGesuchModule {
