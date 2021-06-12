@@ -15,19 +15,37 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {VerlaufRoutingModule} from './verlauf-routing/verlauf-routing.module';
-import {VerlaufComponent} from './verlauf.component';
+import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
+import {VerlaufComponent} from '../verlauf.component';
+
+const states: NgHybridStateDeclaration[] = [
+    {
+        parent: 'app',
+        name: 'verlauf',
+        abstract: true,
+        url: '/verlauf',
+        component: UiViewComponent,
+        data: {
+            roles: TSRoleUtil.getJugendamtAndSchulamtRole(),
+        },
+    },
+    {
+        name: 'verlauf.view',
+        url: '/:gesuchId',
+        component: VerlaufComponent,
+    }
+];
 
 @NgModule({
-    declarations: [
-        VerlaufComponent
-    ],
     imports: [
-        CommonModule,
-        VerlaufRoutingModule
+        UIRouterUpgradeModule.forChild({states}),
+    ],
+    exports: [
+        UIRouterUpgradeModule,
     ],
 })
-export class VerlaufModule {
+export class VerlaufRoutingModule {
 }

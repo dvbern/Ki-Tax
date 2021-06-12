@@ -15,19 +15,16 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {CommonModule} from '@angular/common';
-import {NgModule} from '@angular/core';
-import {VerlaufRoutingModule} from './verlauf-routing/verlauf-routing.module';
-import {VerlaufComponent} from './verlauf.component';
+import {VerlaufRoutingModule} from './verlauf-routing.module';
 
-@NgModule({
-    declarations: [
-        VerlaufComponent
-    ],
-    imports: [
-        CommonModule,
-        VerlaufRoutingModule
-    ],
-})
-export class VerlaufModule {
-}
+describe('VerlaufRoutingModule', () => {
+    let verlaufRoutingModule: VerlaufRoutingModule;
+
+    beforeEach(() => {
+        verlaufRoutingModule = new VerlaufRoutingModule();
+    });
+
+    it('should create an instance', () => {
+        expect(verlaufRoutingModule).toBeTruthy();
+    });
+});
