@@ -15,28 +15,22 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {Directive, ElementRef, Injector, Input} from '@angular/core';
+import {UpgradeComponent} from '@angular/upgrade/static';
 
-import {VerlaufComponent} from './verlauf.component';
+@Directive({
+    selector: 'dossier-toolbar-gesuchsteller'
+})
+export class NewDossierToolbarGesuchsteller extends UpgradeComponent {
 
-describe('VerlaufComponent', () => {
-  let component: VerlaufComponent;
-  let fixture: ComponentFixture<VerlaufComponent>;
+    @Input() public gesuchid: string;
+    @Input() public dossierId: string;
+    @Input() public fallId: string;
+    @Input() public isDashboardScreen: string;
+    @Input() public hideActionButtons: string;
+    @Input() public forceLoadingFromFall: string;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ VerlaufComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(VerlaufComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    public constructor(elementRef: ElementRef, injector: Injector) {
+        super('dossierToolbarGesuchsteller', elementRef, injector);
+    }
+}

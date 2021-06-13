@@ -1,1 +1,77 @@
-<p>verlauf works!</p>
+
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<dv-fall-toolbar [fallId]="getFallId()" [dossierId]="dossier?.id" hide-xs hide-sm>
+</dv-fall-toolbar>
+
+<dossier-toolbar flex="nogrow"
+                     *ngIf="dossierToolbarVisible()"
+                     dossierId="{{dossier?.id}}">
+</dossier-toolbar>
+
+<dossier-toolbar-gesuchsteller flex="nogrow"
+                                   class="dossier-toolbar-gesuchsteller"
+                                   dossierId="{{dossier?.id}}"
+                                   *ngIf="dossierToolbarGesuchstellerVisible()">
+</dossier-toolbar-gesuchsteller>
+
+<!--<div class="dv-view overflow-auto" flex="auto">
+    <div class="row">
+        <div class="col-md-11">
+            <h3 data-translate="VERLAUF_LIST"></h3>
+        </div>
+        <div class="col-md-1 text-right">
+            <h3 ng-bind="vm.getVerlaufList() ? vm.getVerlaufList().length : 0"></h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-responsive">
+            <table st-table="displayedCollection" st-safe-src="vm.getVerlaufList()"
+                   st-delay="20"
+                   class="table table-striped ebegu-table">
+                <thead>
+                <tr>
+                    <th st-sort="timestampErstellt" class="sortable uppercase" data-translate="DATUM"></th>
+                    <th st-sort="id" class="sortable uppercase" data-translate="VERSION"></th>
+                    <th st-sort="status" class="sortable uppercase" data-translate="AKTION"></th>
+                    <th st-sort="benutzer" class="sortable uppercase" data-translate="BEARBEITER"></th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="row in displayedCollection" st-select-row="row" st-select-mode="single">
+                    <td class="ellipsis" title="{{row.timestampVon  | amDateFormat : 'DD.MM.YYYY'}}"
+                        ng-bind="row.timestampVon | amDateFormat : 'DD.MM.YYYY'"></td>
+                    <td class="ellipsis" title="">{{vm.gesuche[row.gesuchId]}}</td>
+                    <td class="ellipsis" title="{{row.status | translate}}" ng-bind="row.status | translate"></td>
+                    <td class="ellipsis" title="{{row.benutzer.getFullName()}}"
+                        ng-bind="row.benutzer.getFullName()"></td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="9" class="text-center">
+                        <div st-pagination="" st-items-by-page="vm.itemsByPage" st-displayed-pages="5"></div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+
+        </div>
+    </div>
+</div>-->
