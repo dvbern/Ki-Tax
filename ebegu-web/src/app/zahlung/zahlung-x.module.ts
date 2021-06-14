@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {CurrencyPipe} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {NgGesuchModule} from '../../gesuch/ng-gesuch.module';
 import {CoreModule} from '../core/core.module';
@@ -24,6 +25,7 @@ import {ZahlungsauftragViewXComponent} from './zahlungsauftrag-view-x/zahlungsau
 @NgModule({
     imports: [SharedModule, NgGesuchModule, CoreModule],
     declarations: [ZahlungsauftragViewXComponent],
+    providers: [CurrencyPipe]
 })
 export class ZahlungXModule {
 

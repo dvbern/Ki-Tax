@@ -1,6 +1,9 @@
-import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild} from '@angular/core';
-import {FormGroup, NgForm} from '@angular/forms';
+import {CurrencyPipe} from '@angular/common';
+import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef} from '@angular/core';
+import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {Sort} from '@angular/material/sort';
+import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
 import * as moment from 'moment';
@@ -23,6 +26,7 @@ import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropert
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {ReportRS} from '../../core/service/reportRS.rest';
 import {ZahlungRS} from '../../core/service/zahlungRS.rest';
+import {DvSimpleTableColumnDefinition} from '../../shared/component/dv-simple-table/dv-simple-table-column-definition';
 
 const LOG = LogFactory.createLog('ZahlungsauftragViewXComponent');
 
@@ -35,6 +39,8 @@ const LOG = LogFactory.createLog('ZahlungsauftragViewXComponent');
 export class ZahlungsauftragViewXComponent implements OnInit {
 
     @ViewChild(NgForm) private readonly form: NgForm;
+    public datasource: MatTableDataSource<any> = new MatTableDataSource<any>();
+    public data: TSZahlungsauftrag[] = [];
 
     public zahlungsauftragToEdit: TSZahlungsauftrag;
     public zahlungsAuftraege: TSZahlungsauftrag[] = [];
@@ -56,6 +62,8 @@ export class ZahlungsauftragViewXComponent implements OnInit {
     // Alle Gemeinden fuer die ich berechtigt bin fuer die Mahlzeitenverguenstigungen
     public berechtigteGemeindenMitMahlzeitenList: Array<TSGemeinde> = [];
 
+    public tableColumns: DvSimpleTableColumnDefinition[] = [];
+
     private readonly unsubscribe$ = new Subject<void>();
 
     private showMahlzeitenZahlungslaeufe: boolean = false;
@@ -72,6 +80,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         private readonly uiRouterGlobals: UIRouterGlobals,
         private readonly cd: ChangeDetectorRef,
         private readonly dialog: MatDialog,
+        private readonly currency: CurrencyPipe
     ) {
     }
 
@@ -85,6 +94,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         this.applicationPropertyRS.isZahlungenTestMode().then((response: any) => {
             this.testMode = response;
         });
+        this.setupTableColumns();
     }
 
     private updateZahlungsauftrag(): void {
@@ -101,6 +111,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
             .subscribe(
                 zahlungsAuftraege => {
                     this.zahlungsAuftraege = zahlungsAuftraege;
+                    this.datasource.data = zahlungsAuftraege;
                     this.toggleAuszahlungslaufTyp();
                 },
                 err => LOG.error(err),
@@ -340,4 +351,68 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         return this.zahlungslaufTyp === TSZahlungslaufTyp.GEMEINDE_INSTITUTION;
     }
 
+    private setupTableColumns(): void {
+        this.tableColumns = [
+            {
+                displayedName: this.translate.instant('ZAHLUNG_FAELLIGKEIT'),
+                attributeName: 'datumFaellig',
+                displayFunction: (date: moment.Moment) => date.format('DD.MM.YYYY'),
+            },
+            {
+                displayedName: this.translate.instant('ZAHLUNG_GENERIERT'),
+                attributeName: 'datumGeneriert',
+                displayFunction: (date: moment.Moment) => date.format('DD.MM.YYYY'),
+            },
+            {
+                displayedName: this.translate.instant('GEMEINDE'),
+                attributeName: 'gemeinde',
+                displayFunction: (gemeinde: TSGemeinde) => gemeinde.name
+            },
+            {
+                displayedName: this.translate.instant('BETRAG'),
+                attributeName: 'betragTotalAuftrag',
+                displayFunction: (betrag: number) => this.currency.transform(betrag, '', '')
+            },
+            {
+                displayedName: this.translate.instant('BESCHRIEB'),
+                attributeName: 'beschrieb',
+            },
+            {
+                displayedName: this.translate.instant('STATUS'),
+                attributeName: 'status',
+            },
+        ];
+    }
+
+    public getColumnsAttributeName(): string[] {
+        return this.tableColumns?.map(column => column.attributeName).concat(['zahlungPain', 'zahlungPainExcel']);
+    }
+
+    public getDisplayValue(element: any, column: any): string {
+        if (column.displayFunction !== undefined) {
+            return column.displayFunction(element[column.attributeName], element);
+        }
+        return element[column.attributeName];
+    }
+
+    public sortData(sortEvent: Sort): void {
+        if (sortEvent.direction === '') {
+            this.datasource.data = this.data;
+            return;
+        }
+        // copy so we don't manipulate the original input array
+        this.datasource.data = [].concat(this.data).sort(((a, b) => sortEvent.direction === 'asc' ?
+            this.compare(a[sortEvent.active], b[sortEvent.active]) :
+            this.compare(b[sortEvent.active], a[sortEvent.active])));
+    }
+
+    private compare(a: any, b: any): number {
+        if (typeof a === 'string' && typeof b === 'string') {
+            return a.localeCompare(b);
+        }
+        if (typeof a === 'number' && typeof b === 'number') {
+            return a - b;
+        }
+        throw new Error('Compare type not defined');
+    }
 }
