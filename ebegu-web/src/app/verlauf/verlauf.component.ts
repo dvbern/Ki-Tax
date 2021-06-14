@@ -28,6 +28,7 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {CONSTANTS} from '../core/constants/CONSTANTS';
 import {AntragStatusHistoryRS} from '../core/service/antragStatusHistoryRS.rest';
 import {DvSimpleTableColumnDefinition} from '../shared/component/dv-simple-table/dv-simple-table-column-definition';
+import {DvSimpleTableConfig} from '../shared/component/dv-simple-table/dv-simple-table-config';
 
 @Component({
     selector: 'dv-verlauf',
@@ -53,6 +54,12 @@ export class VerlaufComponent implements OnInit {
         {displayedName: 'BEARBEITER', attributeName: 'benutzer'}
     ];
     public tableData: any[];
+    public tableConfig = new DvSimpleTableConfig(
+        'timestampVon',
+        'asc',
+        false,
+        5
+    );
 
     public constructor(
         private readonly $state: StateService,

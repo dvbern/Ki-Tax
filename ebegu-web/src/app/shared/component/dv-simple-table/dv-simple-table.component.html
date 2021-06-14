@@ -21,4 +21,14 @@
                      [ngClass]="{'pointer-cursor': config?.cursorPointer !== false}"></mat-row>
         </mat-table>
     </div>
+    <div class="bottom-pagination" *ngIf="config?.paginate">
+        <nav>
+            <ul class="pagination">
+                <li *ngFor="let index of paginationItems" [ngClass]="{'active': index - 1 === page}">
+                    <a (click)="applyPaginator(index - 1)">{{index}}</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
 </div>
+
