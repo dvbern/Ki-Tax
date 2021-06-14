@@ -232,7 +232,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 			assertThat(
 				result,
 				failed(stringContainsInOrder(
-					"Die Betreuung befindet sich in einen Status wo eine Stornierung nicht erlaubt ist."))
+					"Die Betreuung befindet sich in einen Status in dem eine Stornierung nicht erlaubt ist."))
 			);
 			verifyAll();
 		}
