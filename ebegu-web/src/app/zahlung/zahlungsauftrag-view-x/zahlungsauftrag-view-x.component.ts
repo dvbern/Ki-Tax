@@ -342,9 +342,11 @@ export class ZahlungsauftragViewXComponent implements OnInit {
     }
 
     public getZahlungsauftraegeFiltered(): TSZahlungsauftrag[] {
-        return this.zahlungsAuftraegeFiltered.filter(zahlungsAuftrag => this.filterGemeinde ?
+        this.datasource.data = this.zahlungsAuftraegeFiltered.filter(zahlungsAuftrag => this.filterGemeinde ?
             zahlungsAuftrag.gemeinde.id === this.filterGemeinde.id :
             true);
+
+        return this.datasource.data;
     }
 
     public showInfotext(): boolean {
