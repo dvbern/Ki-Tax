@@ -99,7 +99,7 @@ export class DvSimpleTableComponent implements OnInit, OnChanges {
      * Navigates to given page if paginator is set. otherwise, sortedData is just bound to datasource
      */
     public applyPaginator(pageIndex: number): void {
-        if (!this.config.paginate) {
+        if (!this.config || !this.config.paginate) {
             this.datasource.data = [].concat(this.sortedData);
             return;
         }

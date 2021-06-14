@@ -78,7 +78,7 @@ export class VerlaufComponent implements OnInit {
             return;
         }
 
-        const gesuchResponse: TSGesuch = await this.gesuchRS.findGesuch(this.uiRouterGlobals.params.gesuchId);
+        const gesuchResponse = await this.gesuchRS.findGesuch(this.uiRouterGlobals.params.gesuchId);
         this.dossier = gesuchResponse.dossier;
         const gesuchsperiode = gesuchResponse.gesuchsperiode;
         if (this.dossier === undefined) {
