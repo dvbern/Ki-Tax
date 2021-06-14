@@ -15,8 +15,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
+import * as moment from 'moment';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {GesuchRS} from '../../gesuch/service/gesuchRS.rest';
 import {TSAntragStatusHistory} from '../../models/TSAntragStatusHistory';
@@ -24,7 +25,9 @@ import {TSDossier} from '../../models/TSDossier';
 import {TSGesuch} from '../../models/TSGesuch';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
+import {CONSTANTS} from '../core/constants/CONSTANTS';
 import {AntragStatusHistoryRS} from '../core/service/antragStatusHistoryRS.rest';
+import {DvSimpleTableColumnDefinition} from '../shared/component/dv-simple-table/dv-simple-table-column-definition';
 
 @Component({
     selector: 'dv-verlauf',
@@ -39,6 +42,17 @@ export class VerlaufComponent implements OnInit {
     public itemsByPage: number = 20;
     public readonly TSRoleUtil = TSRoleUtil;
     public verlauf: Array<TSAntragStatusHistory>;
+    public readonly tableColumns: DvSimpleTableColumnDefinition[] = [
+        {
+            displayedName: 'DATUM', attributeName: 'timestampVon', displayFunction: (d: any) => {
+                return moment(d).format(CONSTANTS.DATE_FORMAT);
+            }
+        },
+        {displayedName: 'VERSION', attributeName: 'version'},
+        {displayedName: 'AKTION', attributeName: 'status'},
+        {displayedName: 'BEARBEITER', attributeName: 'benutzer'}
+    ];
+    public tableData: any[];
 
     public constructor(
         private readonly $state: StateService,
@@ -46,36 +60,45 @@ export class VerlaufComponent implements OnInit {
         private readonly antragStatusHistoryRS: AntragStatusHistoryRS,
         private readonly uiRouterGlobals: UIRouterGlobals,
         private readonly ebeguUtil: EbeguUtil,
-        private readonly authService: AuthServiceRS
+        private readonly authService: AuthServiceRS,
+        private readonly cd: ChangeDetectorRef
     ) {
     }
 
-    public ngOnInit(): void {
+    public async ngOnInit(): Promise<void> {
         if (!this.uiRouterGlobals.params.gesuchId) {
             this.cancel();
             return;
         }
 
-        this.gesuchRS.findGesuch(this.uiRouterGlobals.params.gesuchId).then((gesuchResponse: TSGesuch) => {
-            this.dossier = gesuchResponse.dossier;
-            const gesuchsperiode = gesuchResponse.gesuchsperiode;
-            if (this.dossier === undefined) {
-                this.cancel();
-            }
-            this.antragStatusHistoryRS.loadAllAntragStatusHistoryByGesuchsperiode(this.dossier, gesuchsperiode)
-                .then((response: TSAntragStatusHistory[]) => {
-                    this.verlauf = response;
-                });
-            this.gesuchRS.getAllAntragDTOForDossier(this.dossier.id).then(response => {
-                response.forEach(item => {
-                    this.gesuche[item.antragId] = this.ebeguUtil.getAntragTextDateAsString(
-                        item.antragTyp,
-                        item.eingangsdatum,
-                        item.laufnummer,
-                    );
-                });
-            });
+        const gesuchResponse: TSGesuch = await this.gesuchRS.findGesuch(this.uiRouterGlobals.params.gesuchId);
+        this.dossier = gesuchResponse.dossier;
+        const gesuchsperiode = gesuchResponse.gesuchsperiode;
+        if (this.dossier === undefined) {
+            this.cancel();
+        }
+
+        const allAntragDTO = await this.gesuchRS.getAllAntragDTOForDossier(this.dossier.id);
+        allAntragDTO.forEach(item => {
+            this.gesuche[item.antragId] = this.ebeguUtil.getAntragTextDateAsString(
+                item.antragTyp,
+                item.eingangsdatum,
+                item.laufnummer,
+            );
         });
+
+        this.antragStatusHistoryRS.loadAllAntragStatusHistoryByGesuchsperiode(this.dossier, gesuchsperiode)
+            .then((response: TSAntragStatusHistory[]) => {
+                this.tableData = response.map(r => {
+                    const tableEntry: any = {};
+                    tableEntry.timestampVon = r.timestampVon.toDate().getTime();
+                    tableEntry.version = this.gesuche[r.gesuchId];
+                    tableEntry.status = r.status;
+                    tableEntry.benutzer = r.benutzer.getFullName();
+                    return tableEntry;
+                });
+                this.cd.markForCheck();
+            });
     }
 
     public getVerlaufList(): Array<TSAntragStatusHistory> {
