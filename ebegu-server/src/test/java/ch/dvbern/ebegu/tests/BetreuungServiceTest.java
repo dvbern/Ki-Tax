@@ -111,7 +111,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		assertEquals(GesuchBetreuungenStatus.WARTEN, betreuung.extractGesuch().getGesuchBetreuungenStatus());
 		betreuung.setGrundAblehnung("abgewiesen");
 		betreuung.setBetreuungsstatus(Betreuungsstatus.ABGEWIESEN);
-		betreuungService.saveBetreuung(betreuung, false);
+		betreuungService.saveBetreuung(betreuung, false, null);
 		Optional<Betreuung> updatedBetreuung = betreuungService.findBetreuung(persitedBetreuung.getId());
 		assertTrue(updatedBetreuung.isPresent());
 
@@ -295,31 +295,31 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		// (1) Pensum exakt gleich wie Kita-Zeitraum
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom);
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(kitaUntil);
-		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
+		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung, null);
 		assertNotNull(betreuung);
 
 		// (2) Pensum innerhalb Kita-Zeitraum
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.plusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(kitaUntil.minusDays(1));
-		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
+		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung, null);
 		assertNotNull(betreuung);
 
 		// (3) Pensum ausserhalb Kita-Zeitraum
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.minusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(kitaUntil.plusDays(1));
-		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
+		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung, null);
 		assertNotNull(betreuung);
 
 		// (4) Pensum innerhalb Kita-Zeitraum mit bis=END_OF_TIME
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.plusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
-		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
+		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung, null);
 		assertNotNull(betreuung);
 
 		// (5) Pensum ausserhalb Kita-Zeitraum mit bis=END_OF_TIME
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.minusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
-		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
+		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung, null);
 		assertNotNull(betreuung);
 	}
 
@@ -340,20 +340,20 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		// (1) Pensum exakt gleich wie Kita-Zeitraum
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom);
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(kitaUntil);
-		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
+		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung, null);
 		assertNotNull(betreuung);
 
 		// (2) Pensum innerhalb Kita-Zeitraum
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.plusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(kitaUntil.minusDays(1));
-		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
+		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung, null);
 		assertNotNull(betreuung);
 
 		// (3) Pensum ausserhalb Kita-Zeitraum
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.minusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(kitaUntil.plusDays(1));
 		try {
-			betreuungService.betreuungPlatzBestaetigen(betreuung);
+			betreuungService.betreuungPlatzBestaetigen(betreuung, null);
 			fail("Exception expected");
 		} catch (Exception e) {
 			// Expected
@@ -362,14 +362,14 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		// (4) Pensum innerhalb Kita-Zeitraum mit bis=END_OF_TIME
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.plusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
-		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
+		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung, null);
 		assertNotNull(betreuung);
 
 		// (5) Pensum ausserhalb Kita-Zeitraum mit bis=END_OF_TIME
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.minusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
 		try {
-			betreuungService.betreuungPlatzBestaetigen(betreuung);
+			betreuungService.betreuungPlatzBestaetigen(betreuung, null);
 			fail("Exception expected");
 		} catch (Exception e) {
 			// Expected
@@ -393,20 +393,20 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		// (1) Pensum exakt gleich wie Kita-Zeitraum
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom);
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(kitaUntil);
-		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
+		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung, null);
 		assertNotNull(betreuung);
 
 		// (2) Pensum innerhalb Kita-Zeitraum
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.plusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(kitaUntil.minusDays(1));
-		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
+		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung, null);
 		assertNotNull(betreuung);
 
 		// (3) Pensum ausserhalb Kita-Zeitraum
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.minusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(kitaUntil.plusDays(1));
 		try {
-			betreuungService.betreuungPlatzBestaetigen(betreuung);
+			betreuungService.betreuungPlatzBestaetigen(betreuung, null);
 			fail("Exception expected");
 		} catch (Exception e) {
 			// Expected
@@ -416,7 +416,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.plusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
 		try {
-			betreuungService.betreuungPlatzBestaetigen(betreuung);
+			betreuungService.betreuungPlatzBestaetigen(betreuung, null);
 			fail("Exception expected");
 		} catch (Exception e) {
 			// Expected
@@ -426,7 +426,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.minusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
 		try {
-			betreuungService.betreuungPlatzBestaetigen(betreuung);
+			betreuungService.betreuungPlatzBestaetigen(betreuung, null);
 			fail("Exception expected");
 		} catch (Exception e) {
 			// Expected
@@ -438,7 +438,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now(), null, gesuchsperiode);
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 
-		Betreuung persistedBetreuung = betreuungService.saveBetreuung(betreuung, false);
+		Betreuung persistedBetreuung = betreuungService.saveBetreuung(betreuung, false, null);
 
 		Assert.assertNotNull(persistedBetreuung);
 		Assert.assertNotNull(persistedBetreuung.getErweiterteBetreuungContainer());

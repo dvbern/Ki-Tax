@@ -334,7 +334,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 
 			mockClient(clientGueltigkeit);
 
-			expect(betreuungService.saveBetreuung(betreuung, false))
+			expect(betreuungService.saveBetreuung(betreuung, false, CLIENT_NAME))
 				.andReturn(betreuung);
 		}
 

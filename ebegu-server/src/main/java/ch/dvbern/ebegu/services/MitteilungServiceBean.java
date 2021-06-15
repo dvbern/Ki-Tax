@@ -1251,7 +1251,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			} else {
 				existingBetreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN);
 			}
-			betreuungService.saveBetreuung(existingBetreuung, false);
+			betreuungService.saveBetreuung(existingBetreuung, false, null);
 			mitteilung.setApplied(true);
 			mitteilung.setMitteilungStatus(MitteilungStatus.ERLEDIGT);
 			// Nach erfolgreicher Uebernahme der Daten in die neue Mitteilung soll die Mitteilung mit dieser

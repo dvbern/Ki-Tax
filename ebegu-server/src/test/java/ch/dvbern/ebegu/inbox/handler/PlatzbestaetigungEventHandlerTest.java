@@ -444,7 +444,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void automaticPlatzbestaetigung() {
-			expect(betreuungService.betreuungPlatzBestaetigen(betreuung))
+			expect(betreuungService.betreuungPlatzBestaetigen(betreuung, "testClient"))
 				.andReturn(betreuung);
 
 			testProcessingSuccess();
@@ -459,7 +459,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			Gesuch gesuch = betreuung.extractGesuch();
 			gesuch.setStatus(antragStatus);
 
-			expect(betreuungService.betreuungPlatzBestaetigen(betreuung))
+			expect(betreuungService.betreuungPlatzBestaetigen(betreuung, "testClient"))
 				.andReturn(betreuung);
 
 			testProcessingSuccess();
@@ -873,12 +873,12 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 
 		private void expectPlatzBestaetigung() {
-			expect(betreuungService.betreuungPlatzBestaetigen(betreuung))
+			expect(betreuungService.betreuungPlatzBestaetigen(betreuung, "testClient"))
 				.andReturn(betreuung);
 		}
 
 		private void expectHumanConfirmation() {
-			expect(betreuungService.saveBetreuung(betreuung, false))
+			expect(betreuungService.saveBetreuung(betreuung, false, "testClient"))
 				.andReturn(betreuung);
 		}
 	}

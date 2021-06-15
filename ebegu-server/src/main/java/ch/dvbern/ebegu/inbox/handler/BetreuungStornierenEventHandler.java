@@ -166,7 +166,7 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 				}
 			);
 			betreuung.setBetreuungsstatus(Betreuungsstatus.STORNIERT);
-			betreuungService.saveBetreuung(betreuung, false);
+			betreuungService.saveBetreuung(betreuung, false, clientName);
 			LOG.info("Betreuung mit RefNr: {} wurde automatisch storniert", refNummer);
 			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(refNummer,
 				clientName,

@@ -285,7 +285,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		if (isReadyForBestaetigen) {
 			ctx.getBetreuung().setDatumBestaetigung(LocalDate.now());
 			//noinspection ResultOfMethodCallIgnored
-			betreuungService.betreuungPlatzBestaetigen(ctx.getBetreuung());
+			betreuungService.betreuungPlatzBestaetigen(ctx.getBetreuung(), ctx.getClientName());
 			LOG.info("PlatzbestaetigungEvent Betreuung mit RefNr: {} automatisch bestätigt", ctx.getDto().getRefnr());
 			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(ctx.getDto().getRefnr(),
 				ctx.getClientName(),
@@ -293,7 +293,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 				LocalDateTime.now()));
 		} else {
 			//noinspection ResultOfMethodCallIgnored
-			betreuungService.saveBetreuung(ctx.getBetreuung(), false);
+			betreuungService.saveBetreuung(ctx.getBetreuung(), false, ctx.getClientName());
 			LOG.info(
 				"PlatzbestaetigungEvent Betreuung mit RefNr: {} eingelesen, aber nicht automatisch bestätigt",
 				ctx.getDto().getRefnr());
