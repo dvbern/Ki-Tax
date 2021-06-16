@@ -20,6 +20,7 @@ import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSZahlungsauftrag} from '../../../models/TSZahlungsauftrag';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
@@ -203,22 +204,27 @@ export class ZahlungsauftragViewXComponent implements OnInit {
 
     // tslint:disable-next-line:no-unused
     public ausloesen(zahlungsauftragId: string): void {
-        // tslint:disable-next-line:no-commented-code
-        /*this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-            title: this.$translate.instant('ZAHLUNG_AUSLOESEN_CONFIRM'),
-            deleteText: this.$translate.instant('ZAHLUNG_AUSLOESEN_INFO'),
-            parentController: undefined,
-            elementID: undefined,
-        }).then(() => {   // User confirmed removal
-            this.zahlungRS.zahlungsauftragAusloesen(zahlungsauftragId).then((response: TSZahlungsauftrag) => {
-                const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsAuftraege);
-                if (index > -1) {
-                    this.zahlungsAuftraege[index] = response;
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: this.translate.instant('ZAHLUNG_AUSLOESEN_CONFIRM'),
+            text: this.translate.instant('ZAHLUNG_AUSLOESEN_INFO'),
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
+            .afterClosed()
+            .subscribe(result => {   // User confirmed removal
+                if (!result) {
+                    return;
                 }
-                EbeguUtil.handleSmarttablesUpdateBug(this.zahlungsAuftraege);
-                this.toggleAuszahlungslaufTyp();
+                this.zahlungRS.zahlungsauftragAusloesen(zahlungsauftragId).then((response: TSZahlungsauftrag) => {
+                    const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsAuftraege);
+                    if (index > -1) {
+                        this.zahlungsAuftraege[index] = response;
+                    }
+                    EbeguUtil.handleSmarttablesUpdateBug(this.zahlungsAuftraege);
+                    this.toggleAuszahlungslaufTyp();
+                    this.cd.markForCheck();
+                });
             });
-        });*/
     }
 
     public edit(zahlungsauftrag: TSZahlungsauftrag): void {
@@ -389,6 +395,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         allColumnNames.splice(4, 0, `beschrieb`);
         if (this.principal?.hasOneOfRoles(TSRoleUtil.getAdministratorBgGemeindeRoles())) {
             allColumnNames.push('editSave');
+            allColumnNames.push('ausloesen');
         }
         return allColumnNames;
     }

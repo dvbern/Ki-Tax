@@ -247,6 +247,21 @@
                     </mat-cell>
                 </ng-container>
 
+                <ng-container [matColumnDef]="'ausloesen'">
+                    <mat-header-cell *matHeaderCellDef class="ellipsis">
+                        <span translate></span>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="ellipsis">
+                        <td class="symbol text-center">
+                            <dv-loading-button *ngIf="isEditable(element.status) && !isEditMode(element.id)"
+                                               type="button" (buttonClick)="ausloesen(element.id)"
+                                               [buttonClass]="'dv-btn-operation'">
+                                <i class="fa fa-lg fa-arrow-right" style="color: green"></i>
+                            </dv-loading-button>
+                        </td>
+                    </mat-cell>
+                </ng-container>
+
                 <mat-header-row *matHeaderRowDef="getColumnsAttributeName()"></mat-header-row>
                 <mat-row *matRowDef="let element; columns: getColumnsAttributeName();"></mat-row>
             </mat-table>
