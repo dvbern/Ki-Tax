@@ -37,6 +37,7 @@ import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../models/gemeindeant
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
+import {TSLastenausgleichTagesschulenStatusHistory} from '../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
 import {TSSozialdienst} from '../models/sozialdienst/TSSozialdienst';
 import {TSSozialdienstFall} from '../models/sozialdienst/TSSozialdienstFall';
 import {TSSozialdienstFallDokument} from '../models/sozialdienst/TSSozialdienstFallDokument';
@@ -68,6 +69,7 @@ import {TSBenutzerNoDetails} from '../models/TSBenutzerNoDetails';
 import {TSBerechtigung} from '../models/TSBerechtigung';
 import {TSBerechtigungHistory} from '../models/TSBerechtigungHistory';
 import {TSBetreuung} from '../models/TSBetreuung';
+import {TSBetreuungMonitoring} from '../models/TSBetreuungMonitoring';
 import {TSBetreuungsmitteilung} from '../models/TSBetreuungsmitteilung';
 import {TSBetreuungsmitteilungPensum} from '../models/TSBetreuungsmitteilungPensum';
 import {TSBetreuungspensum} from '../models/TSBetreuungspensum';
@@ -126,6 +128,7 @@ import {TSInstitutionStammdatenFerieninsel} from '../models/TSInstitutionStammda
 import {TSInstitutionStammdatenSummary} from '../models/TSInstitutionStammdatenSummary';
 import {TSInstitutionStammdatenTagesschule} from '../models/TSInstitutionStammdatenTagesschule';
 import {TSInstitutionUpdate} from '../models/TSInstitutionUpdate';
+import {TSInternePendenz} from '../models/TSInternePendenz';
 import {TSKind} from '../models/TSKind';
 import {TSKindContainer} from '../models/TSKindContainer';
 import {TSKindDublette} from '../models/TSKindDublette';
@@ -3869,6 +3872,7 @@ export class EbeguRestUtil {
         if (receivedBelegungFerieninsel) {
             this.parseAbstractMutableEntity(belegungFerieninselTS, receivedBelegungFerieninsel);
             belegungFerieninselTS.ferienname = receivedBelegungFerieninsel.ferienname;
+            belegungFerieninselTS.notfallAngaben = receivedBelegungFerieninsel.notfallAngaben;
             belegungFerieninselTS.tage = this.parseBelegungFerieninselTagList(receivedBelegungFerieninsel.tage);
             return belegungFerieninselTS;
         }
@@ -3909,6 +3913,7 @@ export class EbeguRestUtil {
         if (belegungFerieninselTS) {
             this.abstractMutableEntityToRestObject(restBelegungFerieninsel, belegungFerieninselTS);
             restBelegungFerieninsel.ferienname = belegungFerieninselTS.ferienname;
+            restBelegungFerieninsel.notfallAngaben = belegungFerieninselTS.notfallAngaben;
             restBelegungFerieninsel.tage = [];
             if (Array.isArray(belegungFerieninselTS.tage)) {
                 belegungFerieninselTS.tage.forEach(t => {
@@ -5007,7 +5012,8 @@ export class EbeguRestUtil {
         stammdatenTS.status = stammdatenFromServer.status;
         stammdatenFromServer.amAngebotBeteiligteGemeinden.sort();
         stammdatenTS.amAngebotBeteiligteGemeinden = stammdatenFromServer.amAngebotBeteiligteGemeinden;
-        stammdatenTS.seitWannFerienbetreuungen = DateUtil.localDateToMoment(stammdatenFromServer.seitWannFerienbetreuungen);
+        stammdatenTS.seitWannFerienbetreuungen =
+            DateUtil.localDateToMoment(stammdatenFromServer.seitWannFerienbetreuungen);
         stammdatenTS.traegerschaft = stammdatenFromServer.traegerschaft;
         stammdatenTS.stammdatenAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.stammdatenAdresse);
         stammdatenTS.stammdatenKontaktpersonVorname = stammdatenFromServer.stammdatenKontaktpersonVorname;
@@ -5227,5 +5233,72 @@ export class EbeguRestUtil {
         dokument.filepfad = dokumentFromServer.filepfad;
         dokument.filesize = dokumentFromServer.filesize;
         return dokument;
+    }
+
+    public parseTSBetreuungMonitoringList(data: any): TSBetreuungMonitoring[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseTSBetreuungMonitoring(new TSBetreuungMonitoring(), item))
+            : [this.parseTSBetreuungMonitoring(new TSBetreuungMonitoring(), data)];
+    }
+
+    private parseTSBetreuungMonitoring(
+        betreuungMonitoring: TSBetreuungMonitoring,
+        betreuungMonitoringFromServer: any,
+    ): TSBetreuungMonitoring {
+        this.parseAbstractEntity(betreuungMonitoring, betreuungMonitoringFromServer);
+        betreuungMonitoring.refNummer = betreuungMonitoringFromServer.refNummer;
+        betreuungMonitoring.benutzer = betreuungMonitoringFromServer.benutzer;
+        betreuungMonitoring.infoText = betreuungMonitoringFromServer.infoText;
+        betreuungMonitoring.timestamp = DateUtil.localDateTimeToMoment(betreuungMonitoringFromServer.timestamp);
+        return betreuungMonitoring;
+    }
+
+    public parseLatsHistoryList(data: Array<any>): TSLastenausgleichTagesschulenStatusHistory[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseLatsHistory(new TSLastenausgleichTagesschulenStatusHistory(), item))
+            : [this.parseLatsHistory(new TSLastenausgleichTagesschulenStatusHistory(), data)];
+    }
+
+    public parseLatsHistory(
+        historyTS: TSLastenausgleichTagesschulenStatusHistory,
+        historyFromServer: any,
+    ): TSLastenausgleichTagesschulenStatusHistory {
+        this.parseAbstractEntity(historyTS, historyFromServer);
+        historyTS.containerId = historyFromServer.containerId;
+        historyTS.benutzer = this.parseUser(new TSBenutzer(), historyFromServer.benutzer);
+        historyTS.timestampVon = DateUtil.localDateTimeToMoment(historyFromServer.timestampVon);
+        historyTS.timestampBis = DateUtil.localDateTimeToMoment(historyFromServer.timestampBis);
+        historyTS.status = historyFromServer.status;
+        return historyTS;
+    }
+
+    public internePendenzToRestObject(internePendenzRest: any, internePendenz: TSInternePendenz): any {
+        if (!internePendenz) {
+            return undefined;
+        }
+        this.abstractEntityToRestObject(internePendenzRest, internePendenz);
+        internePendenzRest.gesuch = this.gesuchToRestObject({}, internePendenz.gesuch);
+        internePendenzRest.termin = DateUtil.momentToLocalDate(internePendenz.termin);
+        internePendenzRest.text = internePendenz.text;
+        internePendenzRest.erledigt = internePendenz.erledigt;
+        return internePendenzRest;
+    }
+
+    public parseInternePendenz(internePendenz: TSInternePendenz, internePendentFromServer: any): TSInternePendenz {
+        if (!internePendentFromServer) {
+            return undefined;
+        }
+        this.parseAbstractEntity(internePendenz, internePendentFromServer);
+        internePendenz.gesuch = this.parseGesuch(new TSGesuch(), internePendentFromServer.gesuch);
+        internePendenz.termin = DateUtil.localDateToMoment(internePendentFromServer.termin);
+        internePendenz.text = internePendentFromServer.text;
+        internePendenz.erledigt = internePendentFromServer.erledigt;
+        return internePendenz;
     }
 }

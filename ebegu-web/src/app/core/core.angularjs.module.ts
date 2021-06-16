@@ -42,6 +42,7 @@ import {AUTHENTICATION_JS_MODULE} from '../../authentication/authentication.modu
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import router from '../../dvbModules/router/router.module';
 import {environment} from '../../environments/environment';
+import {InternePendenzenRS} from '../../gesuch/component/internePendenzenView/internePendenzenRS';
 import {BerechnungsManager} from '../../gesuch/service/berechnungsManager';
 import {DokumenteRS} from '../../gesuch/service/dokumenteRS.rest';
 import {DossierRS} from '../../gesuch/service/dossierRS.rest';
@@ -130,6 +131,7 @@ import {AdresseRS} from './service/adresseRS.rest';
 import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
 import {BatchJobRS} from './service/batchRS.rest';
 import {BenutzerRS} from './service/benutzerRS.rest';
+import {BetreuungMonitoringRS} from '../../admin/service/betreuungMonitoringRS.rest';
 import {BetreuungRS} from './service/betreuungRS.rest';
 import {DownloadRS} from './service/downloadRS.rest';
 import {DVsTPersistService} from './service/dVsTPersistService';
@@ -150,6 +152,7 @@ import {NotrechtRS} from './service/notrechtRS.rest';
 import {ReportAsyncRS} from './service/reportAsyncRS.rest';
 import {ReportRS} from './service/reportRS.rest';
 import {SearchIndexRS} from './service/searchIndexRS.rest';
+import {SozialdienstRS} from './service/SozialdienstRS.rest';
 import {SozialhilfeZeitraumRS} from './service/sozialhilfeZeitraumRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
@@ -157,7 +160,6 @@ import {VerfuegungRS} from './service/verfuegungRS.rest';
 import {HttpVersionInterceptor} from './service/version/HttpVersionInterceptor';
 import {WizardStepXRS} from './service/wizardStepXRS.rest';
 import {ZahlungRS} from './service/zahlungRS.rest';
-import { SozialdienstRS } from './service/SozialdienstRS.rest';
 
 const dependencies = [
     /* Angular modules */
@@ -241,11 +243,13 @@ export const CORE_JS_MODULE = angular
     .service('NotrechtRS', NotrechtRS)
     .service('EinstellungRS', EinstellungRS)
     .service('SozialhilfeZeitraumRS', SozialhilfeZeitraumRS)
+    .service('BetreuungMonitoringRS', BetreuungMonitoringRS)
     .factory('PosteingangService', downgradeInjectable(PosteingangService) as any)
     .factory('AuthLifeCycleService', downgradeInjectable(AuthLifeCycleService) as any)
     .factory('GesuchGenerator', downgradeInjectable(GesuchGenerator) as any)
     .factory('I18nServiceRSRest', downgradeInjectable(I18nServiceRSRest) as any)
     .factory('SozialdienstRS', downgradeInjectable(SozialdienstRS) as any)
+    .factory('InternePendenzenRS', downgradeInjectable(InternePendenzenRS) as any)
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())

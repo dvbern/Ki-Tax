@@ -120,6 +120,7 @@ import static ch.dvbern.ebegu.services.util.FilterFunctions.setRoleFilterForCurr
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setSuperAdminFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setTraegerschaftFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setSozialdienstFilterForCurrentUser;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.setAntragstellerFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -919,21 +920,25 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	public Pair<Long, List<Benutzer>> searchBenutzer(@Nonnull BenutzerTableFilterDTO benutzerTableFilterDto) {
-		Long countResult = searchBenutzer(benutzerTableFilterDto, SearchMode.COUNT).getLeft();
+	public Pair<Long, List<Benutzer>> searchBenutzer(
+		@Nonnull BenutzerTableFilterDTO benutzerTableFilterDto,
+		@Nonnull Boolean forStatistik) {
+		Long countResult = searchBenutzer(benutzerTableFilterDto, SearchMode.COUNT, forStatistik).getLeft();
 
 		if (countResult.equals(0L)) {    // no result found
 			return new ImmutablePair<>(0L, Collections.emptyList());
 		}
 
-		Pair<Long, List<Benutzer>> searchResult = searchBenutzer(benutzerTableFilterDto, SearchMode.SEARCH);
+		Pair<Long, List<Benutzer>> searchResult =
+			searchBenutzer(benutzerTableFilterDto, SearchMode.SEARCH, forStatistik);
 		return new ImmutablePair<>(countResult, searchResult.getRight());
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")
 	private Pair<Long, List<Benutzer>> searchBenutzer(
 		@Nonnull BenutzerTableFilterDTO benutzerTableFilterDTO,
-		@Nonnull SearchMode mode) {
+		@Nonnull SearchMode mode,
+		@Nonnull Boolean forStatistik) {
 
 		final String methodName = "searchBenutzer";
 
@@ -1014,9 +1019,19 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			// They cannot see superadmin users
 			setSuperAdminFilterForCurrentUser(user, currentBerechtigungJoin, predicates);
 
-			setGemeindeFilterForCurrentUser(user, gemeindeSetJoin, predicates);
+			// KIBON-1668: diese 2 Filtern muessen fur Statistik und Mandant Rolle nicht verwendet werden
+			// als man als Mandant alle Benutzende lesen wollen in die stat, aber nur die von der Mandant bearbeiten
+			if (!(forStatistik && principalBean.isCallerInAnyOfRole(
+				UserRole.ADMIN_MANDANT,
+				UserRole.SACHBEARBEITER_MANDANT))) {
+				setGemeindeFilterForCurrentUser(user, gemeindeSetJoin, predicates);
 
-			setRoleFilterForCurrentUser(user, currentBerechtigungJoin, predicates);
+				setRoleFilterForCurrentUser(user, currentBerechtigungJoin, predicates);
+			}
+			else {
+				// Mandant Benutzende cannot see Antragstellende users in Statistik
+				setAntragstellerFilterForCurrentUser(currentBerechtigungJoin, predicates);
+			}
 		}
 
 		if (principalBean.isCallerInRole(UserRole.ADMIN_INSTITUTION)) {
@@ -1094,7 +1109,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			// institution
 			if (predicateObjectDto.getInstitution() != null) {
 				predicates.add(cb.equal(institutionJoin.get(Institution_.name), predicateObjectDto.getInstitution()));
-				predicatesTS.add(cb.equal(institutionJoin.get(Institution_.name),
+				predicatesTS.add(cb.equal(
+					institutionJoin.get(Institution_.name),
 					predicateObjectDto.getInstitution()));
 			}
 			// traegerschaft

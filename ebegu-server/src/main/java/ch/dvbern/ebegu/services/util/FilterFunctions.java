@@ -160,6 +160,16 @@ public final class FilterFunctions {
 		}
 	}
 
+	public static void setAntragstellerFilterForCurrentUser(
+		@Nonnull Join<Benutzer, Berechtigung> joinBerechtigungen,
+		@Nonnull List<Predicate> predicates
+	) {
+		Predicate predicateRoleNotAntragsteller =
+			joinBerechtigungen.get(Berechtigung_.role).in(UserRole.GESUCHSTELLER).not();
+		predicates.add(predicateRoleNotAntragsteller);
+
+	}
+
 	public static void setSozialdienstFilterForCurrentUser(
 		@Nonnull Benutzer currentBenutzer,
 		@Nonnull Join<Benutzer, Berechtigung> joinCurrentBerechtigung,
@@ -169,7 +179,8 @@ public final class FilterFunctions {
 		final Sozialdienst userSozialdienst = currentBenutzer.getCurrentBerechtigung().getSozialdienst();
 		Objects.requireNonNull(userSozialdienst);
 
-		Predicate sameSozialdienst = cb.equal(joinCurrentBerechtigung.get(Berechtigung_.sozialdienst), userSozialdienst);
+		Predicate sameSozialdienst =
+			cb.equal(joinCurrentBerechtigung.get(Berechtigung_.sozialdienst), userSozialdienst);
 		predicates.add(sameSozialdienst);
 	}
 }

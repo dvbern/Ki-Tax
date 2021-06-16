@@ -33,17 +33,23 @@ public class ProcessingContext {
 	private final DateRange gueltigkeitInPeriode;
 	private final boolean mahlzeitVerguenstigungEnabled;
 
+	@Nonnull
+	private final String clientName;
+
+	private String humanConfirmationMessage;
+
 	private boolean isReadyForBestaetigen = true;
 
 	public ProcessingContext(
 		@Nonnull Betreuung betreuung,
 		@Nonnull BetreuungEventDTO dto,
 		@Nonnull DateRange clientGueltigkeitInPeriode,
-		boolean mahlzeitVerguenstigungEnabled) {
+		boolean mahlzeitVerguenstigungEnabled, @Nonnull String clientName) {
 		this.betreuung = betreuung;
 		this.dto = dto;
 		this.gueltigkeitInPeriode = clientGueltigkeitInPeriode;
 		this.mahlzeitVerguenstigungEnabled = mahlzeitVerguenstigungEnabled;
+		this.clientName = clientName;
 	}
 
 	public void requireHumanConfirmation() {
@@ -75,5 +81,18 @@ public class ProcessingContext {
 
 	public boolean isReadyForBestaetigen() {
 		return isReadyForBestaetigen;
+	}
+
+	@Nonnull
+	public String getClientName() {
+		return clientName;
+	}
+
+	public String getHumanConfirmationMessage() {
+		return humanConfirmationMessage;
+	}
+
+	public void setHumanConfirmationMessage(String humanConfirmationMessage) {
+		this.humanConfirmationMessage = humanConfirmationMessage;
 	}
 }

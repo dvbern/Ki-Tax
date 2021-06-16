@@ -77,8 +77,13 @@ public abstract class AbstractRechner {
 	 * berechneteVerguenstigung = eingegebeneVerguenstigung * 0.5
 	 */
 	protected void handleAnteileMahlzeitenverguenstigung(
-		@Nonnull BGCalculationResult result, @Nonnull BigDecimal anteilMonat
+		@Nonnull BGCalculationResult result, @Nonnull BigDecimal anteilMonat, boolean isEinkommensVerminderung
 	) {
+		// Falls es eine Einkommensverminderung ist, wird die MZV beim MutationsMerger vom Vorgänger übernommen.
+		// Diese ist bereits heruntergerechnet, wir sind fertig
+		if(isEinkommensVerminderung) {
+			return;
+		}
 		// Falls der Zeitabschnitt untermonatlich ist, muessen sowohl die Anzahl Mahlzeiten wie auch die Kosten
 		// derselben mit dem Anteil des Monats korrigiert werden
 		final BigDecimal mahlzeitenTotal = result.getVerguenstigungMahlzeitenTotal();

@@ -278,7 +278,7 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		Betreuung testBetreuung = TestDataUtil.createDefaultBetreuung();
 		persistStammdaten(testBetreuung.getInstitutionStammdaten());
 		testBetreuung.setKind(returnedKind);
-		Betreuung betreuung = betreuungService.saveBetreuung(testBetreuung, false);
+		Betreuung betreuung = betreuungService.saveBetreuung(testBetreuung, false, null);
 		checkNextNumberBetreuung(converter.toJaxId(betreuung.getKind()), 2);
 		return betreuung;
 	}

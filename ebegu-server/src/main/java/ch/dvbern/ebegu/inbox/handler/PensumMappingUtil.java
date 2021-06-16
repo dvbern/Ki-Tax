@@ -283,6 +283,7 @@ public final class PensumMappingUtil {
 			target.setVollstaendig(false);
 			ctx.requireHumanConfirmation();
 			LOG.info("PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat kein Hauptmahlzeiten Tarif", ctx.getDto().getRefnr());
+			ctx.setHumanConfirmationMessage("PlatzbestaetigungEvent hat keinen Hauptmahlzeiten Tarif");
 		}
 		if (zeitabschnittDTO.getTarifProNebenmahlzeiten() != null) {
 			target.setTarifProNebenmahlzeit(zeitabschnittDTO.getTarifProNebenmahlzeiten());
@@ -290,6 +291,7 @@ public final class PensumMappingUtil {
 			target.setVollstaendig(false);
 			ctx.requireHumanConfirmation();
 			LOG.info("PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat kein Nebenmahlzeiten Tarif", ctx.getDto().getRefnr());
+			ctx.setHumanConfirmationMessage("PlatzbestaetigungEvent hat keinen Nebenmahlzeiten Tarif");
 		}
 	}
 
@@ -310,6 +312,16 @@ public final class PensumMappingUtil {
 
 		target.addAll(extended);
 		target.removeIf(z -> !periode.intersects(z.getGueltigkeit()));
+
+
+		DateRange institutionGueltigkeit = ctx.getBetreuung().getInstitutionStammdaten().getGueltigkeit();
+
+		//Remove Zeitabschnitte ausserhalb der Institution Gueltigkeit
+		target.removeIf(z -> !institutionGueltigkeit.intersects(z.getGueltigkeit()));
+		//Adapt die Potentielle uberschrittende Zeitabschnitten
+		target.forEach(z ->
+			z.setGueltigkeit(institutionGueltigkeit.getOverlap(z.getGueltigkeit()).get())
+		);
 	}
 
 	/**

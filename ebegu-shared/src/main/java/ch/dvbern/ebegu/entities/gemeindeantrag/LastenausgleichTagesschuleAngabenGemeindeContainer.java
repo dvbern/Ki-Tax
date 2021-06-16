@@ -211,7 +211,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 			"angabenKorrektur must not be null"
 		);
 		Preconditions.checkState(
-			status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON,
+			status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON ||
+				status == LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG,
 			"container must be in state IN_PRUEFUNG_KANTON"
 		);
 		angabenDeklaration = new LastenausgleichTagesschuleAngabenGemeinde(angabenKorrektur);
@@ -235,8 +236,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	}
 
 	public boolean isReadyForFreigabe() {
-		return status ==  LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE &&
-			isAngabenDeklarationAbgeschlossen()	&&
+		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE &&
+			isAngabenDeklarationAbgeschlossen() &&
 			allInstitutionenGeprueft();
 	}
 
@@ -370,10 +371,15 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	}
 
 	public boolean isInPruefungKanton() {
-		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON;
+		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON ||
+			status == LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG;
 	}
 
 	public boolean isInStatusNeu() {
 		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.NEU;
+	}
+
+	public boolean isInZweitpruefung() {
+		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG;
 	}
 }

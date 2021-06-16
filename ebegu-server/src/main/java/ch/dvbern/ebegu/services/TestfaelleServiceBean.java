@@ -83,10 +83,9 @@ import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeService;
+import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistoryService;
 import ch.dvbern.ebegu.testfaelle.AbstractASIVTestfall;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
-import ch.dvbern.ebegu.testfaelle.testantraege.Testantrag_FB;
-import ch.dvbern.ebegu.testfaelle.testantraege.Testantrag_LATS;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.testfaelle.Testfall03_PerreiraMarcia;
@@ -109,6 +108,8 @@ import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_08;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_09;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_10;
 import ch.dvbern.ebegu.testfaelle.Testfall_Sozialdienst;
+import ch.dvbern.ebegu.testfaelle.testantraege.Testantrag_FB;
+import ch.dvbern.ebegu.testfaelle.testantraege.Testantrag_LATS;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -176,6 +177,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private SozialdienstService sozialdienstService;
 	@Inject
 	private LastenausgleichTagesschuleAngabenGemeindeService latsService;
+	@Inject
+	private LastenausgleichTagesschuleAngabenGemeindeStatusHistoryService historyService;
 	@Inject
 	private FerienbetreuungService ferienbetreuungService;
 	@Inject
@@ -786,7 +789,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private void saveBetreuungen(@Nonnull Gesuch gesuch, @Nonnull List<WizardStep> wizardStepsFromGesuch) {
 		setWizardStepInStatus(wizardStepsFromGesuch, WizardStepName.BETREUUNG, WizardStepStatus.IN_BEARBEITUNG);
 		final List<Betreuung> allBetreuungen = gesuch.extractAllBetreuungen();
-		allBetreuungen.forEach(betreuung -> betreuungService.saveBetreuung(betreuung, false));
+		allBetreuungen.forEach(betreuung -> betreuungService.saveBetreuung(betreuung, false, null));
 		setWizardStepVerfuegbar(wizardStepsFromGesuch, WizardStepName.BETREUUNG);
 	}
 
@@ -1077,7 +1080,9 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			gesuchsperiode, allTagesschulenForGesuchsperiodeAndGemeinde,
 			status).getContainer());
 		latsService.deleteLastenausgleichTagesschuleAngabenGemeindeContainer(gemeinde, gesuchsperiode);
-		return latsService.saveLastenausgleichTagesschuleGemeinde(testantrag);
+		LastenausgleichTagesschuleAngabenGemeindeContainer savedAntrag = latsService.saveLastenausgleichTagesschuleGemeinde(testantrag);
+		historyService.saveLastenausgleichTagesschuleStatusChange(savedAntrag);
+		return savedAntrag;
 	}
 
 	@Nonnull

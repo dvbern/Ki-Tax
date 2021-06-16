@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,6 +28,7 @@ import java.util.Set;
 
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
@@ -58,6 +60,7 @@ import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.BetreuungMonitoring;
 import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.Dossier;
@@ -148,12 +151,17 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private Event<ExportedEvent> event;
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
+	@Inject
+	private BetreuungMonitoringService betreuungMonitoringService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
 
 	@Override
 	@Nonnull
-	public Betreuung saveBetreuung(@Valid @Nonnull Betreuung betreuung, @Nonnull Boolean isAbwesenheit) {
+	public Betreuung saveBetreuung(
+		@Valid @Nonnull Betreuung betreuung,
+		@Nonnull Boolean isAbwesenheit,
+		@Nullable String externalClient) {
 		Objects.requireNonNull(betreuung);
 		authorizer.checkWriteAuthorization(betreuung);
 
@@ -193,10 +201,29 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		updateVerantwortliche(mergedGesuch, mergedBetreuung, false, isNew);
 
-		LOG.info(
-			"Betreuung mit RefNr: {} wurde geaendert und gespeichert mit Status: {}",
-			mergedBetreuung.getBGNummer(),
-			mergedBetreuung.getBetreuungsstatus());
+		if (!isNew) {
+			LOG.info(
+				"Betreuung mit RefNr: {} wurde geaendert und gespeichert mit Status: {}",
+				mergedBetreuung.getBGNummer(),
+				mergedBetreuung.getBetreuungsstatus());
+
+			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(
+				mergedBetreuung.getBGNummer(),
+				externalClient != null ? externalClient : principalBean.getBenutzer().getUsername(),
+				"Die Betreuung wurde geaendert und gespeichert mit Status: " + mergedBetreuung.getBetreuungsstatus(),
+				LocalDateTime.now()));
+		} else {
+			LOG.info(
+				"Betreuung mit RefNr: {} wurde erstellt mit Status: {}",
+				mergedBetreuung.getBGNummer(),
+				mergedBetreuung.getBetreuungsstatus());
+
+			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(
+				mergedBetreuung.getBGNummer(),
+				externalClient != null ? externalClient : principalBean.getBenutzer().getUsername(),
+				"Die Betreuung wurde erstellt mit Status: " + mergedBetreuung.getBetreuungsstatus(),
+				LocalDateTime.now()));
+		}
 
 		return mergedBetreuung;
 	}
@@ -291,13 +318,13 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		return mergedBetreuung;
 	}
 
-	private <T extends AbstractPlatz> T savePlatz(T platz) {
+	private <T extends AbstractPlatz> T savePlatz(T platz, @Nullable String externalClient) {
 		if (platz.getBetreuungsangebotTyp().isFerieninsel()) {
 			return (T) saveAnmeldungFerieninsel((AnmeldungFerieninsel) platz);
 		} else if (platz instanceof AnmeldungTagesschule) {
 			return (T) saveAnmeldungTagesschule((AnmeldungTagesschule) platz);
 		} else {
-			return (T) saveBetreuung((Betreuung) platz, false);
+			return (T) saveBetreuung((Betreuung) platz, false, externalClient);
 		}
 	}
 
@@ -358,10 +385,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	public Betreuung betreuungPlatzAbweisen(@Valid @Nonnull Betreuung betreuung) {
+	public Betreuung betreuungPlatzAbweisen(@Valid @Nonnull Betreuung betreuung, @Nullable String externalClient) {
 		Objects.requireNonNull(betreuung, BETREUUNG_DARF_NICHT_NULL_SEIN);
 		betreuung.setBetreuungsstatus(Betreuungsstatus.ABGEWIESEN);
-		Betreuung persistedBetreuung = saveBetreuung(betreuung, false);
+		Betreuung persistedBetreuung = saveBetreuung(betreuung, false, externalClient);
 		try {
 			// Bei Ablehnung einer Betreuung muss eine E-Mail geschickt werden
 			mailService.sendInfoBetreuungAbgelehnt(persistedBetreuung);
@@ -372,13 +399,17 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				betreuung.getId());
 		}
 		LOG.info("Betreuung mit RefNr: {} wurde abgewiesen", betreuung.getBGNummer());
-
+		betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(
+			betreuung.getBGNummer(),
+			externalClient != null ? externalClient : principalBean.getBenutzer().getUsername(),
+			"Die Betreuung wurde abgewiesen",
+			LocalDateTime.now()));
 		return persistedBetreuung;
 	}
 
 	@Override
 	@Nonnull
-	public Betreuung betreuungPlatzBestaetigen(@Valid @Nonnull Betreuung betreuung) {
+	public Betreuung betreuungPlatzBestaetigen(@Valid @Nonnull Betreuung betreuung, @Nullable String externalClient) {
 		Objects.requireNonNull(betreuung, BETREUUNG_DARF_NICHT_NULL_SEIN);
 
 		// Erst jetzt kann der Zeitraum der Betreuung im Vergleich zur Institution geprueft werden
@@ -390,7 +421,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		}
 
 		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
-		Betreuung persistedBetreuung = saveBetreuung(betreuung, false);
+		Betreuung persistedBetreuung = saveBetreuung(betreuung, false, externalClient);
 		try {
 			Gesuch gesuch = betreuung.extractGesuch();
 			if (gesuch.areAllBetreuungenBestaetigt()) {
@@ -404,6 +435,11 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				betreuung.getId());
 		}
 		LOG.info("Betreuung mit RefNr: {} wurde bestaetigt", betreuung.getBGNummer());
+		betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(
+			betreuung.getBGNummer(),
+			externalClient != null ? externalClient : principalBean.getBenutzer().getUsername(),
+			"Die Betreuung wurde bestaetigt",
+			LocalDateTime.now()));
 		return persistedBetreuung;
 	}
 
@@ -414,7 +450,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		authorizer.checkWriteAuthorization(anmeldung);
 
 		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
-		AbstractAnmeldung persistedBetreuung = savePlatz(anmeldung);
+		AbstractAnmeldung persistedBetreuung = savePlatz(anmeldung, null);
 		if (anmeldung.getBetreuungsangebotTyp().isTagesschule()) {
 			AnmeldungTagesschule anmeldungTagesschule =
 				findAnmeldungTagesschule(anmeldung.getId()).orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -470,7 +506,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		authorizer.checkWriteAuthorization(anmeldung);
 
 		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT);
-		AbstractAnmeldung persistedBetreuung = savePlatz(anmeldung);
+		AbstractAnmeldung persistedBetreuung = savePlatz(anmeldung, null);
 		boolean tagis = false;
 		if (anmeldung.getBetreuungsangebotTyp().isTagesschule()) {
 			AnmeldungTagesschule anmeldungTagesschule =
@@ -506,7 +542,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		authorizer.checkWriteAuthorization(anmeldung);
 
 		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION);
-		AbstractAnmeldung persistedBetreuung = savePlatz(anmeldung);
+		AbstractAnmeldung persistedBetreuung = savePlatz(anmeldung, null);
 		return persistedBetreuung;
 	}
 
@@ -743,7 +779,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		handleDependingMitteilungenWhenDeletingBetreuung(betreuungId, betreuungToRemove);
 
 		final String gesuchId = betreuungToRemove.extractGesuch().getId();
-		removeBetreuung(betreuungToRemove);
+		removeBetreuung(betreuungToRemove, null);
 		wizardStepService.updateSteps(
 			gesuchId,
 			null,
@@ -803,7 +839,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Override
 	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION",
 		justification = "ErweiterteBetreuungContainer must be set to null")
-	public void removeBetreuung(@Nonnull Betreuung betreuung) {
+	public void removeBetreuung(@Nonnull Betreuung betreuung, @Nullable String externalClient) {
 		Objects.requireNonNull(betreuung);
 		authorizer.checkWriteAuthorization(betreuung);
 		final Gesuch gesuch = betreuung.extractGesuch();
@@ -814,6 +850,11 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		gesuch.getKindContainers()
 			.forEach(kind -> kind.getBetreuungen().removeIf(bet -> bet.getId().equalsIgnoreCase(betreuung.getId())));
 		LOG.info("Betreuung mit RefNr: {} wurde geloescht", betreuung.getBGNummer());
+		betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(
+			betreuung.getBGNummer(),
+			externalClient != null ? externalClient : principalBean.getBenutzer().getUsername(),
+			"Die Betreuung wurde geloescht",
+			LocalDateTime.now()));
 		gesuchService.updateBetreuungenStatus(gesuch);
 	}
 
@@ -1093,7 +1134,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Nonnull
 	private Betreuung closeBetreuung(@Nonnull Betreuung betreuung, @Nonnull Betreuungsstatus status) {
 		betreuung.setBetreuungsstatus(status);
-		final Betreuung persistedBetreuung = saveBetreuung(betreuung, false);
+		final Betreuung persistedBetreuung = saveBetreuung(betreuung, false, null);
 		authorizer.checkWriteAuthorization(persistedBetreuung);
 		wizardStepService.updateSteps(persistedBetreuung.extractGesuch().getId(), null, null,
 			WizardStepName.VERFUEGEN);
@@ -1165,7 +1206,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		authorizer.checkWriteAuthorization(anmeldung);
 
 		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT);
-		AbstractAnmeldung persistedBetreuung = savePlatz(anmeldung);
+		AbstractAnmeldung persistedBetreuung = savePlatz(anmeldung, null);
 		try {
 			// Bei Stornierung einer Anmeldung muss eine E-Mail geschickt werden
 			GemeindeStammdaten gemeindeStammdaten =

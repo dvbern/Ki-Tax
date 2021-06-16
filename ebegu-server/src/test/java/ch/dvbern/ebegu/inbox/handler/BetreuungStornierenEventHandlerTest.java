@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
+import ch.dvbern.ebegu.services.BetreuungMonitoringService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.MitteilungService;
@@ -56,6 +57,7 @@ import org.easymock.EasyMock;
 import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
+import org.easymock.MockType;
 import org.easymock.TestSubject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -104,6 +106,10 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
 	private BetreuungEventHelper betreuungEventHelper;
+
+	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
+	@Mock(MockType.NICE)
+	private BetreuungMonitoringService betreuungMonitoringService;
 
 	private Gesuch gesuch_1GS = null;
 	private Gesuchsperiode gesuchsperiode = null;
@@ -226,7 +232,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 			assertThat(
 				result,
 				failed(stringContainsInOrder(
-					"Die Betreuung befindet sich in einen Status wo eine Stornierung nicht erlaubt ist."))
+					"Die Betreuung befindet sich in einen Status in dem eine Stornierung nicht erlaubt ist."))
 			);
 			verifyAll();
 		}
@@ -328,7 +334,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 
 			mockClient(clientGueltigkeit);
 
-			expect(betreuungService.saveBetreuung(betreuung, false))
+			expect(betreuungService.saveBetreuung(betreuung, false, CLIENT_NAME))
 				.andReturn(betreuung);
 		}
 

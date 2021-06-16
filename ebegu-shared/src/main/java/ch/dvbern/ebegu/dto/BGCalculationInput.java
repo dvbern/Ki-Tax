@@ -161,6 +161,10 @@ public class BGCalculationInput {
 
 	private BigDecimal verguenstigungMahlzeitenTotal = BigDecimal.ZERO;
 
+	// Wir müssen beim Rechner für die MZV wissen, ob es sich um eine Einkommensverminderung handelt
+	// um zu wissen, ob die Pensen heruntergerechnet werden müssen
+	private boolean pensenBereitsGekuerzt = false;
+
 	private PensumUnits pensumUnit = PensumUnits.PERCENTAGE;
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
@@ -217,6 +221,7 @@ public class BGCalculationInput {
 		this.betreuungInGemeinde = toCopy.betreuungInGemeinde;
 		this.ruleValidity = toCopy.ruleValidity;
 		this.pensumUnit = toCopy.pensumUnit;
+		this.pensenBereitsGekuerzt = toCopy.pensenBereitsGekuerzt;
 	}
 
 	@Nonnull
@@ -903,5 +908,13 @@ public class BGCalculationInput {
 		int anspruchVorRegel = getAnspruchspensumProzent();
 		setAnspruchspensumProzent(0);
 		setAnspruchspensumRest(anspruchVorRegel);
+	}
+
+	public boolean isPensenBereitsGekuerzt() {
+		return pensenBereitsGekuerzt;
+	}
+
+	public void setPensenBereitsGekuerzt(boolean pensenBereitsGekuerzt) {
+		this.pensenBereitsGekuerzt = pensenBereitsGekuerzt;
 	}
 }

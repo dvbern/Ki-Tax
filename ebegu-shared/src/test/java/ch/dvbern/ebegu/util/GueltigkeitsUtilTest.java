@@ -177,7 +177,7 @@ class GueltigkeitsUtilTest {
 
 	static class GueltigkeitImp implements Gueltigkeit {
 
-		private final DateRange gueltigkeit;
+		private DateRange gueltigkeit;
 
 		private GueltigkeitImp(@Nonnull DateRange gueltigkeit) {
 			this.gueltigkeit = gueltigkeit;
@@ -192,6 +192,11 @@ class GueltigkeitsUtilTest {
 		@Override
 		public DateRange getGueltigkeit() {
 			return gueltigkeit;
+		}
+
+		@Override
+		public void setGueltigkeit(@Nonnull DateRange gueltigkeit) {
+			this.gueltigkeit = gueltigkeit;
 		}
 	}
 }

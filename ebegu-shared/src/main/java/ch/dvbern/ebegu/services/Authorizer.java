@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InternePendenz;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
@@ -286,4 +287,8 @@ public interface Authorizer {
 	void checkReadAuthorizationFerienbetreuung(@Nonnull String id);
 
 	void checkReadAuthorization(@Nonnull FerienbetreuungAngabenContainer container);
+
+	void checkWriteAuthorization(@Nonnull InternePendenz internePendenz);
+
+	void checkReadAuthorization(@Nonnull InternePendenz internePendenz);
 }

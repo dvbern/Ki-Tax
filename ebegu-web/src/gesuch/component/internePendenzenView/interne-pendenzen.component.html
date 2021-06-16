@@ -1,0 +1,48 @@
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="interne-pendenzen-view gesuch-modul">
+    <h1 class="access-for-all-title" translate>INTERNE_PENDENZEN</h1>
+    <div class="row view-title">
+        <div class="col-md-12">
+            <h2>
+                <span translate>INTERNE_PENDENZEN</span>
+            </h2>
+            <hr class="header"/>
+        </div>
+    </div>
+    <dv-interne-pendenzen-table
+        *ngIf="internePendenzen?.length"
+        [internePendenzen]="internePendenzen"
+        (rowClicked)="editPendenz($event)"
+        (deletePendenz)="deletePendenz($event)"
+    ></dv-interne-pendenzen-table>
+    <div id="add-pendenz">
+        <button type="button" (click)="addInternePendenz()"
+                class="dv-btn dv-btn-operation">
+            <i class="fa fa-lg fa-plus-circle"></i>
+            <span translate>PENDENZ_ERSTELLEN</span>
+        </button>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dv-navigation dv-navigation-flex">
+                <button (click)="navigateBack()" type="button" class="dv-btn cancel-button uppercase" translate>ZURUECK_ONLY</button>
+            </div>
+        </div>
+    </div>
+</div>
