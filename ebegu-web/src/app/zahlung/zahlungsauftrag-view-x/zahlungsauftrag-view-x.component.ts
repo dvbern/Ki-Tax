@@ -1,8 +1,8 @@
 import {CurrencyPipe} from '@angular/common';
-import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
-import {Sort} from '@angular/material/sort';
+import {MatSort, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
@@ -19,7 +19,6 @@ import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSZahlungsauftrag} from '../../../models/TSZahlungsauftrag';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
@@ -39,7 +38,8 @@ const LOG = LogFactory.createLog('ZahlungsauftragViewXComponent');
 export class ZahlungsauftragViewXComponent implements OnInit {
 
     @ViewChild(NgForm) private readonly form: NgForm;
-    public datasource: MatTableDataSource<any> = new MatTableDataSource<any>();
+    @ViewChild(MatSort) public sort: MatSort;
+    public datasource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
     public data: TSZahlungsauftrag[] = [];
 
     public zahlungsauftragToEdit: TSZahlungsauftrag;
@@ -80,8 +80,20 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         private readonly uiRouterGlobals: UIRouterGlobals,
         private readonly cd: ChangeDetectorRef,
         private readonly dialog: MatDialog,
-        private readonly currency: CurrencyPipe
+        private readonly currency: CurrencyPipe,
     ) {
+    }
+
+    private static sortingDataAccessor(data: TSZahlungsauftrag, header: string): string | number {
+        switch (header) {
+            case 'gemeinde':
+                return data.gemeinde.name;
+            case 'datumFaellig':
+                return data.datumFaellig.valueOf();
+            case 'datumGeneriert':
+                return data.datumGeneriert.valueOf();
+            default: return (data as any)[header];
+        }
     }
 
     public ngOnInit(): void {
@@ -95,6 +107,12 @@ export class ZahlungsauftragViewXComponent implements OnInit {
             this.testMode = response;
         });
         this.setupTableColumns();
+    }
+
+    public ngAfterViewInit(): void {
+
+        this.datasource.sort = this.sort;
+        this.datasource.sortingDataAccessor = ZahlungsauftragViewXComponent.sortingDataAccessor;
     }
 
     private updateZahlungsauftrag(): void {
@@ -368,12 +386,12 @@ export class ZahlungsauftragViewXComponent implements OnInit {
             {
                 displayedName: this.translate.instant('GEMEINDE'),
                 attributeName: 'gemeinde',
-                displayFunction: (gemeinde: TSGemeinde) => gemeinde.name
+                displayFunction: (gemeinde: TSGemeinde) => gemeinde.name,
             },
             {
                 displayedName: this.translate.instant('BETRAG'),
                 attributeName: 'betragTotalAuftrag',
-                displayFunction: (betrag: number) => this.currency.transform(betrag, '', '')
+                displayFunction: (betrag: number) => this.currency.transform(betrag, '', ''),
             },
             {
                 displayedName: this.translate.instant('BESCHRIEB'),
@@ -395,26 +413,5 @@ export class ZahlungsauftragViewXComponent implements OnInit {
             return column.displayFunction(element[column.attributeName], element);
         }
         return element[column.attributeName];
-    }
-
-    public sortData(sortEvent: Sort): void {
-        if (sortEvent.direction === '') {
-            this.datasource.data = this.data;
-            return;
-        }
-        // copy so we don't manipulate the original input array
-        this.datasource.data = [].concat(this.data).sort(((a, b) => sortEvent.direction === 'asc' ?
-            this.compare(a[sortEvent.active], b[sortEvent.active]) :
-            this.compare(b[sortEvent.active], a[sortEvent.active])));
-    }
-
-    private compare(a: any, b: any): number {
-        if (typeof a === 'string' && typeof b === 'string') {
-            return a.localeCompare(b);
-        }
-        if (typeof a === 'number' && typeof b === 'number') {
-            return a - b;
-        }
-        throw new Error('Compare type not defined');
     }
 }
