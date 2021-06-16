@@ -704,4 +704,8 @@ export class TSRoleUtil {
         return this.getGemeindeOrBGOrTSRoles()
             .concat([TSRole.SACHBEARBEITER_FERIENBETREUUNG, TSRole.ADMIN_FERIENBETREUUNG]);
     }
+
+    public static getAdministratorBgGemeindeRoles(): ReadonlyArray<TSRole> {
+        return [TSRole.ADMIN_GEMEINDE, TSRole.ADMIN_BG, TSRole.SUPER_ADMIN];
+    }
 }

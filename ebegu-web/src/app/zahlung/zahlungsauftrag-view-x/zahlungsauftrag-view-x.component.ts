@@ -7,13 +7,14 @@ import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
 import * as moment from 'moment';
-import {of, Subject} from 'rxjs';
+import {Observable, of, Subject} from 'rxjs';
 import {filter, switchMap, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSZahlungsauftragsstatus} from '../../../models/enums/TSZahlungsauftragstatus';
 import {TSZahlungslaufTyp} from '../../../models/enums/TSZahlungslaufTyp';
 import {TSZahlungsstatus} from '../../../models/enums/TSZahlungsstatus';
+import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSZahlungsauftrag} from '../../../models/TSZahlungsauftrag';
@@ -68,6 +69,8 @@ export class ZahlungsauftragViewXComponent implements OnInit {
 
     private showMahlzeitenZahlungslaeufe: boolean = false;
 
+    public principal: TSBenutzer;
+
     public constructor(
         private readonly zahlungRS: ZahlungRS,
         private readonly $state: StateService,
@@ -81,6 +84,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         private readonly cd: ChangeDetectorRef,
         private readonly dialog: MatDialog,
         private readonly currency: CurrencyPipe,
+        private readonly authService: AuthServiceRS,
     ) {
     }
 
@@ -92,7 +96,8 @@ export class ZahlungsauftragViewXComponent implements OnInit {
                 return data.datumFaellig.valueOf();
             case 'datumGeneriert':
                 return data.datumGeneriert.valueOf();
-            default: return (data as any)[header];
+            default:
+                return (data as any)[header];
         }
     }
 
@@ -107,6 +112,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
             this.testMode = response;
         });
         this.setupTableColumns();
+        this.authServiceRS.principal$.subscribe(user => this.principal = user);
     }
 
     public ngAfterViewInit(): void {
@@ -171,26 +177,6 @@ export class ZahlungsauftragViewXComponent implements OnInit {
                     this.cd.markForCheck();
                 });
             });
-
-        // tslint:disable-next-line:no-commented-code
-        /*this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-            title: this.$translate.instant('ZAHLUNG_ERSTELLEN_CONFIRM'),
-            deleteText: this.$translate.instant('ZAHLUNG_ERSTELLEN_INFO'),
-            parentController: undefined,
-            elementID: undefined,
-        }).then(() => {   // User confirmed removal
-            this.zahlungRS.createZahlungsauftrag(
-                this.zahlungslaufTyp,
-                this.gemeinde,
-                this.beschrieb,
-                this.faelligkeitsdatum,
-                this.datumGeneriert,
-            ).then((response: TSZahlungsauftrag) => {
-                this.zahlungsAuftraege.push(response);
-                this.resetEditZahlungsauftrag();
-                this.resetForm();
-            });
-        });*/
     }
 
     public downloadPain(zahlungsauftrag: TSZahlungsauftrag): angular.IPromise<void | never> {
@@ -265,7 +251,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
     }
 
     public isEditMode(zahlungsauftragId: string): boolean {
-        return this.zahlungsauftragToEdit && this.zahlungsauftragToEdit.id === zahlungsauftragId;
+        return this.zahlungsauftragToEdit?.id === zahlungsauftragId;
     }
 
     public isEditValid(): boolean {
@@ -280,6 +266,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
 
     private resetEditZahlungsauftrag(): void {
         this.zahlungsauftragToEdit = null;
+        this.cd.markForCheck();
     }
 
     public rowClass(zahlungsauftragId: string): string {
@@ -374,11 +361,6 @@ export class ZahlungsauftragViewXComponent implements OnInit {
     private setupTableColumns(): void {
         this.tableColumns = [
             {
-                displayedName: this.translate.instant('ZAHLUNG_FAELLIGKEIT'),
-                attributeName: 'datumFaellig',
-                displayFunction: (date: moment.Moment) => date.format('DD.MM.YYYY'),
-            },
-            {
                 displayedName: this.translate.instant('ZAHLUNG_GENERIERT'),
                 attributeName: 'datumGeneriert',
                 displayFunction: (date: moment.Moment) => date.format('DD.MM.YYYY'),
@@ -394,10 +376,6 @@ export class ZahlungsauftragViewXComponent implements OnInit {
                 displayFunction: (betrag: number) => this.currency.transform(betrag, '', ''),
             },
             {
-                displayedName: this.translate.instant('BESCHRIEB'),
-                attributeName: 'beschrieb',
-            },
-            {
                 displayedName: this.translate.instant('STATUS'),
                 attributeName: 'status',
             },
@@ -405,7 +383,14 @@ export class ZahlungsauftragViewXComponent implements OnInit {
     }
 
     public getColumnsAttributeName(): string[] {
-        return this.tableColumns?.map(column => column.attributeName).concat(['zahlungPain', 'zahlungPainExcel']);
+        const allColumnNames = this.tableColumns?.map(column => column.attributeName);
+        allColumnNames.splice(0, 0, 'datumFaellig');
+        allColumnNames.splice(2, 0, `zahlungPain`, 'zahlungPainExcel');
+        allColumnNames.splice(4, 0, `beschrieb`);
+        if (this.principal?.hasOneOfRoles(TSRoleUtil.getAdministratorBgGemeindeRoles())) {
+            allColumnNames.push('editSave');
+        }
+        return allColumnNames;
     }
 
     public getDisplayValue(element: any, column: any): string {

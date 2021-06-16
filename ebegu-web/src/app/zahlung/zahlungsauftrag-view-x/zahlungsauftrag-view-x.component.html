@@ -141,7 +141,7 @@
             </thead>
         </table>
     </div>
-    <div class="dv-table dv-simple-table" *ngIf="datasource">
+    <div class="dv-table dv-simple-table" *ngIf="datasource && principal">
         <div class="mat-elevation-z0">
             <mat-table matSort
                        [dataSource]="datasource">
@@ -176,6 +176,74 @@
                                            [buttonClass]="'dv-btn-operation'">
                             <i class="fa fa-lg fa-file-code-o"></i>
                         </dv-loading-button>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container [matColumnDef]="'editSave'">
+                    <mat-header-cell *matHeaderCellDef class="ellipsis">
+                        <span translate></span>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="ellipsis">
+                        <dv-loading-button *ngIf="isEditable(element.status) && !isEditMode(element.id)"
+                                           type="button" (buttonClick)="edit(element)"
+                                           [buttonClass]="'dv-btn-operation'">
+                            <i class="fa fa-lg fa-pencil-square-o"></i>
+                        </dv-loading-button>
+                        <dv-loading-button *ngIf="isEditMode(element.id) && isEditValid()"
+                                           type="button" (buttonClick)="save(element)"
+                                           [buttonClass]="'dv-btn-operation'">
+                            <i class="fa fa-lg fa-floppy-o"></i>
+                        </dv-loading-button>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container [matColumnDef]="'datumFaellig'">
+                    <mat-header-cell *matHeaderCellDef class="ellipsis">
+                        <span translate>ZAHLUNG_FAELLIGKEIT</span>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="ellipsis">
+
+                            <div *ngIf="isEditMode(element.id)" class="form-group">
+                                <label class="md-no-float" for="faelligkeitsdatumRow"
+                                       translate>ZAHLUNG_GENERIERT</label>
+                                <input class="dv-mat-datepicker" type="text"
+                                       name="faelligkeitsdatumRow" id="faelligkeitsdatumRow"
+                                       [(ngModel)]="zahlungsauftragToEdit.datumFaellig"
+                                       [matDatepicker]="faelligkeitsdatumRow"
+                                       required>
+                                <mat-datepicker-toggle matSuffix
+                                                       [for]="faelligkeitsdatumRow"></mat-datepicker-toggle>
+                                <mat-datepicker #faelligkeitsdatumRow></mat-datepicker>
+                                <div ng-messages="vm.form.faelligkeitsdatumRow.$error" role="alert"
+                                     class="error"></div>
+                            </div>
+                        <!-- datumFaellig -->
+                        <span *ngIf="!isEditMode(element.id)" [attr.title]="element.datumFaellig.format('DD.MM.YYYY')">
+                            {{element.datumFaellig.format('DD.MM.YYYY')}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container [matColumnDef]="'beschrieb'">
+                    <mat-header-cell *matHeaderCellDef class="ellipsis">
+                        <span translate>BESCHRIEB</span>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="ellipsis">
+
+                            <div *ngIf="isEditMode(element.id)" class="form-group">
+                                <label class="md-no-float" for="beschriebRow"
+                                       translate>BESCHRIEB</label>
+                                <input type="text"
+                                       name="beschriebRow" id="beschriebRow"
+                                       [(ngModel)]="zahlungsauftragToEdit.beschrieb"
+                                       required>
+                                <div ng-messages="vm.form.faelligkeitsdatumRow.$error" role="alert"
+                                     class="error"></div>
+                            </div>
+                        <!-- datumFaellig -->
+                        <span *ngIf="!isEditMode(element.id)" [attr.title]="element.beschrieb">
+                            {{element.beschrieb}}
+                        </span>
                     </mat-cell>
                 </ng-container>
 
