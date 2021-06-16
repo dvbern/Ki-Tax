@@ -64,7 +64,10 @@ public interface BenutzerService {
 	 * and Vorname will be set to "UNKNOWN"
 	 */
 	@Nonnull
-	Benutzer createAdminGemeindeByEmail(@Nonnull String adminMail, @Nonnull UserRole userRole, @Nonnull Gemeinde gemeinde);
+	Benutzer createAdminGemeindeByEmail(
+		@Nonnull String adminMail,
+		@Nonnull UserRole userRole,
+		@Nonnull Gemeinde gemeinde);
 
 	/**
 	 * Creates a new user of Role ADMIN_INSTITUTION with the given adminMail as email and as username and the given
@@ -89,7 +92,6 @@ public interface BenutzerService {
 	 */
 	@Nonnull
 	Benutzer createAdminSozialdienstByEmail(@Nonnull String adminMail, @Nonnull Sozialdienst sozialdienst);
-
 
 	/**
 	 * Saves the given Benutzer and sends him an Einladungsemail
@@ -200,7 +202,8 @@ public interface BenutzerService {
 	Collection<Benutzer> getAllBenutzerBgOrGemeinde();
 
 	/**
-	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG, Sachbearbeiter_TS, Admin_TS oder
+	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG, Sachbearbeiter_TS, Admin_TS
+	 * oder
 	 * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
 	 *
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
@@ -256,7 +259,9 @@ public interface BenutzerService {
 	 * Sucht Benutzer, welche den übergebenen Filterkriterien entsprechen
 	 */
 	@Nonnull
-	Pair<Long, List<Benutzer>> searchBenutzer(@Nonnull BenutzerTableFilterDTO benutzerTableFilterDto);
+	Pair<Long, List<Benutzer>> searchBenutzer(
+		@Nonnull BenutzerTableFilterDTO benutzerTableFilterDto,
+		@Nonnull Boolean forStatistik);
 
 	/**
 	 * Setzt alle Benutzer mit abgelaufenen Rollen auf die Rolle GESUCHSTELLER zurück.

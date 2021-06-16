@@ -21,6 +21,7 @@ import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {BenutzerComponent} from '../app/benutzer/benutzer/benutzer.component';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
+import {BetreuungMonitoringComponent} from './component/betreuung-monitoring/betreuung-monitoring.component';
 import {DebuggingComponent} from './component/debugging/debugging.component';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 
@@ -49,6 +50,14 @@ const states: Ng2StateDeclaration[] = [
         url: '/benutzerlist/benutzer/:benutzerId',
         data: {
             roles: TSRoleUtil.getAllAdministratorRevisorRole(),
+        },
+    },
+    {
+        name: 'admin.betreuungMonitoring',
+        url: '/betreuungMonitoring',
+        component: BetreuungMonitoringComponent,
+        data: {
+            roles: TSRoleUtil.getSuperAdminRoles(),
         },
     },
 ];

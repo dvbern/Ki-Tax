@@ -62,6 +62,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBenutzerNoDetails;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigung;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigungHistory;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungMonitoring;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensum;
@@ -110,9 +111,11 @@ import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionUpdate;
+import ch.dvbern.ebegu.api.dtos.JaxInternePendenz;
 import ch.dvbern.ebegu.api.dtos.JaxKind;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
 import ch.dvbern.ebegu.api.dtos.JaxLastenausgleich;
+import ch.dvbern.ebegu.api.dtos.JaxLastenausgleichTagesschulenStatusHistory;
 import ch.dvbern.ebegu.api.dtos.JaxMahnung;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
@@ -162,6 +165,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.BetreuungMonitoring;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
@@ -207,6 +211,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
+import ch.dvbern.ebegu.entities.InternePendenz;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
@@ -235,6 +240,7 @@ import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
@@ -4753,6 +4759,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		convertAbstractVorgaengerFieldsToEntity(belegungFerieninselJAX, belegungFerieninsel);
 		belegungFerieninsel.setFerienname(belegungFerieninselJAX.getFerienname());
+		belegungFerieninsel.setNotfallAngaben(belegungFerieninselJAX.getNotfallAngaben());
 		belegungFerieninselTageListToEntity(belegungFerieninselJAX.getTage(), belegungFerieninsel.getTage());
 
 		return belegungFerieninsel;
@@ -4805,7 +4812,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(persistedBelegungFerieninsel, jaxBelegungFerieninsel);
 		jaxBelegungFerieninsel.setFerienname(persistedBelegungFerieninsel.getFerienname());
 		jaxBelegungFerieninsel.setTage(belegungFerieninselTageListToJAX(persistedBelegungFerieninsel.getTage()));
-
+		jaxBelegungFerieninsel.setNotfallAngaben(persistedBelegungFerieninsel.getNotfallAngaben());
 		return jaxBelegungFerieninsel;
 	}
 
@@ -6047,5 +6054,57 @@ public class JaxBConverter extends AbstractConverter {
 		angabenInstitution.setBemerkungen(jaxAngabenInstitution.getBemerkungen());
 
 		return angabenInstitution;
+	}
+
+	public JaxLastenausgleichTagesschulenStatusHistory latsStatusHistoryToJAX(LastenausgleichTagesschuleAngabenGemeindeStatusHistory latsStatusHistory) {
+		final JaxLastenausgleichTagesschulenStatusHistory jaxStatusHistory = new JaxLastenausgleichTagesschulenStatusHistory();
+		convertAbstractFieldsToJAX(latsStatusHistory, jaxStatusHistory);
+		jaxStatusHistory.setContainerId(latsStatusHistory.getAngabenGemeindeContainer().getId());
+		jaxStatusHistory.setStatus(latsStatusHistory.getStatus());
+		jaxStatusHistory.setBenutzer(benutzerToJaxBenutzer(latsStatusHistory.getBenutzer()));
+		jaxStatusHistory.setTimestampVon(latsStatusHistory.getTimestampVon());
+		jaxStatusHistory.setTimestampBis(latsStatusHistory.getTimestampBis());
+		return jaxStatusHistory;
+	}
+
+	public InternePendenz internePendenzToEntity(
+		@Nonnull JaxInternePendenz jaxInternePendenz, @Nonnull InternePendenz internePendenz
+	) {
+		Objects.requireNonNull(jaxInternePendenz.getGesuch().getId());
+		convertAbstractFieldsToEntity(jaxInternePendenz, internePendenz);
+		Gesuch gesuch = gesuchService.findGesuch(jaxInternePendenz.getGesuch().getId())
+			.orElseThrow(() -> new EbeguRuntimeException(
+				"internePendenzToEntity",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				internePendenz.getGesuch().getId()));
+		internePendenz.setGesuch(gesuch);
+		internePendenz.setTermin(jaxInternePendenz.getTermin());
+		internePendenz.setText(jaxInternePendenz.getText());
+		internePendenz.setErledigt(jaxInternePendenz.getErledigt());
+		return internePendenz;
+	}
+
+	public JaxInternePendenz internePendenzToJax(@Nonnull final InternePendenz internePendenz) {
+		final JaxInternePendenz jaxInternePendenz = new JaxInternePendenz();
+		convertAbstractFieldsToJAX(internePendenz, jaxInternePendenz);
+		jaxInternePendenz.setGesuch(
+			gesuchToJAX(internePendenz.getGesuch())
+		);
+		jaxInternePendenz.setTermin(internePendenz.getTermin());
+		jaxInternePendenz.setText(internePendenz.getText());
+		jaxInternePendenz.setErledigt(internePendenz.getErledigt());
+		return jaxInternePendenz;
+	}
+
+	@Nonnull
+	public JaxBetreuungMonitoring betreuungMonitoringToJax(
+		@Nonnull BetreuungMonitoring betreuungMonitoring) {
+		final JaxBetreuungMonitoring jaxBetreuungMonitoring = new JaxBetreuungMonitoring();
+		convertAbstractFieldsToJAX(betreuungMonitoring, jaxBetreuungMonitoring);
+		jaxBetreuungMonitoring.setBenutzer(betreuungMonitoring.getBenutzer());
+		jaxBetreuungMonitoring.setInfoText(betreuungMonitoring.getInfoText());
+		jaxBetreuungMonitoring.setRefNummer(betreuungMonitoring.getRefNummer());
+		jaxBetreuungMonitoring.setTimestamp(betreuungMonitoring.getTimestamp());
+		return jaxBetreuungMonitoring;
 	}
 }

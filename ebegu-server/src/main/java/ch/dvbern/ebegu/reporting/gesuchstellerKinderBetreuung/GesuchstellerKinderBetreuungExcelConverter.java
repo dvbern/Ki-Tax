@@ -165,7 +165,11 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.familienabzug, dataRow.getFamilienabzug());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.massgEink, dataRow.getMassgEink());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.einkommensjahr, dataRow.getEinkommensjahr());
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.ekvVorhanden, dataRow.getEkvVorhanden());
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.ekvVorhandenBasisJahr1, dataRow.getEkvVorhandenBasisJahr1());
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.ekvVorhandenBasisJahr2, dataRow.getEkvVorhandenBasisJahr2());
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.ekvAnnuliertBasisJahr1, dataRow.getEkvAnnuliertBasisJahr1());
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.ekvAnnuliertBasisJahr2, dataRow.getEkvAnnuliertBasisJahr2());
+
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.stvGeprueft, dataRow.getStvGeprueft());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.veranlagt, dataRow.getVeranlagt());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.sozialhilfebezueger, dataRow.isSozialhilfeBezueger());
@@ -330,8 +334,17 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.einkommensjahrTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.einkommensjahrTitle, ServerMessageUtil.getMessage("Reports_einkommensjahrTitle", locale));
 
-		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.einkommensverschlechterungTitle.getMergeField());
-		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.einkommensverschlechterungTitle, ServerMessageUtil.getMessage("Reports_einkommensverschlechterungTitle", locale));
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.einkommensverschlechterungBasisJahr1Title.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.einkommensverschlechterungBasisJahr1Title, ServerMessageUtil.getMessage("Reports_einkommensverschlechterungBasisJahr1Title", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.einkommensverschlechterungBasisJahr2Title.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.einkommensverschlechterungBasisJahr2Title, ServerMessageUtil.getMessage("Reports_einkommensverschlechterungBasisJahr2Title", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.einkommensverschlechterungBasisJahr1AnnuliertTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.einkommensverschlechterungBasisJahr1AnnuliertTitle, ServerMessageUtil.getMessage("Reports_einkommensverschlechterungBasisJahr1AnnuliertTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.einkommensverschlechterungBasisJahr2AnnuliertTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.einkommensverschlechterungBasisJahr2AnnuliertTitle, ServerMessageUtil.getMessage("Reports_einkommensverschlechterungBasisJahr2AnnuliertTitle", locale));
 
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.sozialhilfebezuegerTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.sozialhilfebezuegerTitle, ServerMessageUtil.getMessage("Reports_sozialhilfebezuegerTitle", locale));

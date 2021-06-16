@@ -646,7 +646,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		return persistence.getCriteriaSingleResult(query);
 	}
 
-	private Predicate countNewMitteilungenPredicatesForSozialdienstBenutzer(@Nonnull Benutzer loggedInBenutzer, CriteriaBuilder cb, Root<Mitteilung> root) {
+	private Predicate countNewMitteilungenPredicatesForSozialdienstBenutzer(
+		@Nonnull Benutzer loggedInBenutzer,
+		CriteriaBuilder cb,
+		Root<Mitteilung> root) {
 
 		Join<Mitteilung, Dossier> joinDossier = root.join(Mitteilung_.dossier, JoinType.INNER);
 		Join<Dossier, Fall> joinFall = joinDossier.join(Dossier_.fall);
@@ -703,6 +706,15 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		final Gesuch gesuch = mitteilung.getBetreuung().extractGesuch();
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
+		if (gesuch.getStatus() == AntragStatus.FREIGEGEBEN || gesuch.getStatus() == AntragStatus.FREIGABEQUITTUNG) {
+			throw new EbeguExistingAntragException(
+				"applyBetreuungsmitteilung",
+				ErrorCodeEnum.ERROR_NOCH_NICHT_FREIGEGEBENE_ANTRAG,
+				null,
+				gesuch.getDossier().getId(),
+				gesuch.getGesuchsperiode().getId());
+		}
+
 		// neustes Gesuch lesen
 		final Optional<Gesuch> neustesGesuchOpt;
 		try {
@@ -759,7 +771,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			throw new EbeguRuntimeException(
 				KibonLogLevel.INFO,
 				"applyBetreuungsmitteilung",
-				ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_GESUCH_NICHT_FREIGEGEBEN,
+				ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_GESUCH_NICHT_FREIGEGEBEN_INBEARBEITUNG,
 				neustesGesuch.getId());
 		}
 		return gesuch;
@@ -916,7 +928,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					cb.equal(joinSozialdienst.get(SozialdienstFall_.sozialdienst), user.getSozialdienst());
 				predicates.add(sozialdienstFall);
 			} else {
-				throw new EbeguRuntimeException("mitteilungTableFilterDto",
+				throw new EbeguRuntimeException(
+					"mitteilungTableFilterDto",
 					"Sozialdienst not defined for Sozialdienstuser");
 			}
 		} else {
@@ -988,7 +1001,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 						cb.equal(joinEmpfaenger.get(Benutzer_.fullName), predicateObjectDto.getEmpfaenger())
 					));
 			}
-			if (predicateObjectDto.getEmpfaengerVerantwortung() != null  && joinEmpfaengerBerechtigungen != null) {
+			if (predicateObjectDto.getEmpfaengerVerantwortung() != null && joinEmpfaengerBerechtigungen != null) {
 				Verantwortung verantwortung = Verantwortung.valueOf(predicateObjectDto.getEmpfaengerVerantwortung());
 				switch (verantwortung) {
 				case VERANTWORTUNG_BG:
@@ -1238,7 +1251,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			} else {
 				existingBetreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN);
 			}
-			betreuungService.saveBetreuung(existingBetreuung, false);
+			betreuungService.saveBetreuung(existingBetreuung, false, null);
 			mitteilung.setApplied(true);
 			mitteilung.setMitteilungStatus(MitteilungStatus.ERLEDIGT);
 			// Nach erfolgreicher Uebernahme der Daten in die neue Mitteilung soll die Mitteilung mit dieser

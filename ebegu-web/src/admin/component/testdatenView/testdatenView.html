@@ -191,7 +191,65 @@
                             <span [textContent]="'Testfall Unterstützungsdienste'"></span>
                         </button>
                     </li>
+                    <li *ngIf="!this.selectedBesitzer">
+                        <button type="button" class="dv-btn btn-link btn-testfall"
+                                (click)="createTestFallType('LATS')">
+                            <span [textContent]="'Testfall LATS'"></span>
+                        </button>
+                    </li>
                 </ul>
+            </div>
+
+            <!-- Tutorial-Daten -->
+            <h2 class="margin-top-20">Gemeindeanträge erstellen</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row margin-top-10">
+                        <div class="col-sm-3">
+                            <mat-radio-group name="creationType" [(ngModel)]="gemeindeAntragStatus" required>
+                                <mat-radio-button value="IN_BEARBEITUNG_GEMEINDE" selected="">In Bearbeitung Gemeinde</mat-radio-button>
+                                <mat-radio-button value="IN_PRUEFUNG_KANTON">In Prüfung Kanton</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="md-no-float" for="periode">
+                                Antragtyp
+                            </label>
+                            <mat-select [(ngModel)]="gemeindeAntragTyp" id="gemeindeAntragTyp" name="gemeindeAntragTyp" class="input-testfall">
+                                <mat-option *ngFor="let typ of gemeindeAntragTypeList" [value]="typ">
+                                    {{typ | translate}}
+                                </mat-option>
+                            </mat-select>
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="md-no-float" for="periode">
+                                Gemeinde
+                            </label>
+                            <mat-select [(ngModel)]="gemeindeForGemeindeAntrag" id="gemeindeGemeindeAntrag" name="gemeindeGemeindeAntrag" class="input-testfall">
+                                <mat-option *ngFor="let gem of gemeindeList" [value]="gem">
+                                    {{gem.name}}
+                                </mat-option>
+                            </mat-select>
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="md-no-float" for="periode">
+                                Gesuchsperiode
+                            </label>
+                            <mat-select [(ngModel)]="gesuchsperiodeGemeindeAntrag" id="gesuchsperiodeGemeindeAntrag" name="gesuchsperiodeGemeindeAntrag" class="input-testfall">
+                                <mat-option *ngFor="let gp of gesuchsperiodeList" [value]="gp">
+                                    {{gp.gesuchsperiodeString}}
+                                </mat-option>
+                            </mat-select>
+                        </div>
+                        <div class="col-sm-3">
+                            <button dvNgDebounceClick (debounceClick)="createGemeindeAntragTestDaten()"
+                                    class="dv-btn testfall-button">
+                                Test-Gemeindeanträge erstellen
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
             </div>
 
             <!--Gesuche eines GS loeschen-->

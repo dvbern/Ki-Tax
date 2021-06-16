@@ -19,6 +19,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
+import {StateService} from '@uirouter/core';
 import {ReplaySubject, Subscription} from 'rxjs';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
@@ -45,7 +46,8 @@ export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
         private readonly lastenausgleichTSService: LastenausgleichTSService,
         private readonly ref: ChangeDetectorRef,
         private readonly errorService: ErrorService,
-        private readonly translate: TranslateService
+        private readonly translate: TranslateService,
+        private readonly $state: StateService,
     ) {
     }
 
@@ -92,4 +94,7 @@ export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
         }
     }
 
+    public showVerlauf(): void {
+        this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.VERLAUF');
+    }
 }

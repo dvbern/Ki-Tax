@@ -1,0 +1,93 @@
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+<div class="admin-modul" flex="auto">
+
+    <div class="col-md-8 col-md-offset-2">
+
+        <h1 class="access-for-all-title" translate>AFA_BETREUUNG_MONITORING</h1>
+        <div class="view-title">
+            <h2 translate>BETREUUNG_MONITORING_TITLE</h2>
+            <hr class="header">
+        </div>
+
+        <div class="filter margin-bottom-20">
+            <input class="filter"
+                   matInput
+                   type="text"
+                   (keyup)="doFilter($event.target.value)"
+                   (blur)="validateRefNummber($event.target.value)"
+                   placeholder="{{'REFNUMMER_EINGEBEN' | translate}}">
+            <mat-error *ngIf="refNummerTooShort"
+                       translate>ERROR_REFERENZNUMMER_NICHT_VOLLSTAENDIG
+            </mat-error>
+        </div>
+
+        <!--Tabelle zum anzeigen der berechtigten Entitaet -->
+        <div class="table-responsive monitoring-table">
+            <mat-table #table [dataSource]="dataSource" matSort>
+
+                <!-- Column refNummer -->
+                <ng-container matColumnDef="refNummer">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'REFNUMMER' | translate}}
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        {{item.refNummer}}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Column benutzer -->
+                <ng-container matColumnDef="benutzer">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'BENUTZER' | translate}}
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        {{item.benutzer}}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Column infoText -->
+                <ng-container matColumnDef="infoText">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'INFO_TEXT' | translate}}
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        {{item.infoText}}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Column timestamp -->
+                <ng-container matColumnDef="timestamp">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'TIMESTAMP' | translate}}
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        {{item.timestamp.format('DD.MM.YYYY HH:mm:ss')}}
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" class="pointer-cursor"></mat-row>
+            </mat-table>
+            <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
+            <div class="mat-row" *ngIf="showNoContentMessage()"
+                 [textContent]="'BETREUUNG_MONITORING_NOCH_KEINE' | translate">
+            </div>
+        </div>
+
+    </div>
+</div>

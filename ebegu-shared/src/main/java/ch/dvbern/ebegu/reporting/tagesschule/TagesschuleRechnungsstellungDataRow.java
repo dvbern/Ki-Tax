@@ -83,6 +83,8 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 	@Nullable
 	private Boolean ekvVorhanden;
 	@Nullable
+	private Boolean ekvAnnuliert;
+	@Nullable
 	private ErklaerungEinkommen erklaerungEinkommen;
 	@Nullable
 	private LocalDate eintrittsdatum;
@@ -271,6 +273,15 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 		this.ekvVorhanden = ekvVorhanden;
 	}
 
+	@Nullable
+	public Boolean getEkvAnnuliert() {
+		return ekvAnnuliert;
+	}
+
+	public void setEkvAnnuliert(@Nullable Boolean ekvAnnuliert) {
+		this.ekvAnnuliert = ekvAnnuliert;
+	}
+
 	@Nonnull
 	public static Collection<TagesschuleRechnungsstellungDataRow> createRows(
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
@@ -330,7 +341,8 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 
 		dataRow.massgebendesEinkommenNachFamAbzug =
 			MathUtil.minimum(bgCalculationResult.getMassgebendesEinkommen(), BigDecimal.ZERO);
-		dataRow.ekvVorhanden = getEkvVorhanden(anmeldungTagesschule);
+		dataRow.ekvVorhanden = getEkvVorhandenValue(anmeldungTagesschule, monatsStart);
+		dataRow.ekvAnnuliert = getEkvAnnuliertValue(anmeldungTagesschule, monatsStart);
 		dataRow.erklaerungEinkommen = getErklaerungEinkommen(anmeldungTagesschule);
 
 		final TSCalculationResult tsMitBetreuung =
@@ -346,7 +358,7 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 		return dataRow;
 	}
 
-	private static Boolean getEkvVorhanden(@Nullable AnmeldungTagesschule anmeldungTagesschule) {
+	private static Boolean getEkvVorhandenValue(@Nullable AnmeldungTagesschule anmeldungTagesschule, @Nonnull LocalDate monatStart) {
 		if (anmeldungTagesschule == null) {
 			return false;
 		}
@@ -354,9 +366,34 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 		if (gesuch.getEinkommensverschlechterungInfoContainer() == null) {
 			return false;
 		}
+		if (gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb().getYear() == monatStart.getYear()){
+			return gesuch.getEinkommensverschlechterungInfoContainer()
+				.getEinkommensverschlechterungInfoJA()
+				.getEkvFuerBasisJahrPlus1();
+		}
 		return gesuch.getEinkommensverschlechterungInfoContainer()
 			.getEinkommensverschlechterungInfoJA()
-			.getEinkommensverschlechterung();
+			.getEkvFuerBasisJahrPlus2();
+
+	}
+
+	private static Boolean getEkvAnnuliertValue(@Nullable AnmeldungTagesschule anmeldungTagesschule, @Nonnull LocalDate monatStart) {
+		if (anmeldungTagesschule == null) {
+			return false;
+		}
+		Gesuch gesuch = anmeldungTagesschule.getKind().getGesuch();
+		if (gesuch.getEinkommensverschlechterungInfoContainer() == null) {
+			return false;
+		}
+		if (gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb().getYear() == monatStart.getYear()){
+			return gesuch.getEinkommensverschlechterungInfoContainer()
+				.getEinkommensverschlechterungInfoJA()
+				.getEkvBasisJahrPlus1Annulliert();
+		}
+		return gesuch.getEinkommensverschlechterungInfoContainer()
+			.getEinkommensverschlechterungInfoJA()
+			.getEkvBasisJahrPlus2Annulliert();
+
 	}
 
 	// massgebendes Einkommen nach Familienabzug kann aus verschiedenen Gründen kleiner oder gleich 0 sein

@@ -842,6 +842,8 @@ export class GesuchModelManager {
                 return this.betreuungRS.anmeldungSchulamtAblehnen(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION:
                 return this.betreuungRS.anmeldungSchulamtFalscheInstitution(betreuungToSave, this.gesuch.id);
+            case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT:
+                return this.betreuungRS.anmeldungSchulamtStorniert(betreuungToSave, this.gesuch.id);
             case null:
                 return this.betreuungRS.saveBetreuung(betreuungToSave, this.gesuch.id, abwesenheit);
             default:

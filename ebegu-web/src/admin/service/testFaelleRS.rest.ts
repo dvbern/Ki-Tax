@@ -15,6 +15,9 @@
 
 import {IHttpPromise, IHttpService} from 'angular';
 import * as moment from 'moment';
+import {TSGemeindeAntragTyp} from '../../models/enums/TSGemeindeAntragTyp';
+import {TSGemeinde} from '../../models/TSGemeinde';
+import {TSGesuchsperiode} from '../../models/TSGesuchsperiode';
 import {DateUtil} from '../../utils/DateUtil';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import IPromise = angular.IPromise;
@@ -128,5 +131,20 @@ export class TestFaelleRS {
 
     public processScript(scriptNr: string): IHttpPromise<any> {
         return this.http.get(`${this.serviceURL}/processscript/${scriptNr}`);
+    }
+
+    public createGemeindeAntragTestDaten(
+        antragTyp: TSGemeindeAntragTyp,
+        gesuchsperiode: TSGesuchsperiode,
+        gemeinde: TSGemeinde,
+        status: string,
+    ): IPromise<string> {
+        return this.http.post<string>(`${this.serviceURL}/gemeinde-antraege/${antragTyp}`,
+            {
+                gesuchsperiode: this.ebeguRestUtil.gesuchsperiodeToRestObject({}, gesuchsperiode),
+                gemeinde: this.ebeguRestUtil.gemeindeToRestObject({}, gemeinde),
+                status,
+            })
+            .then(response => response.data);
     }
 }

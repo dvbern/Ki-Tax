@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.validation.Valid;
 
 import ch.dvbern.ebegu.entities.AbstractAnmeldung;
@@ -42,7 +43,7 @@ public interface BetreuungService {
 	 * @param betreuung Die Betreuung als DTO
 	 */
 	@Nonnull
-	Betreuung saveBetreuung(@Valid @Nonnull Betreuung betreuung, @Nonnull Boolean isAbwesenheit);
+	Betreuung saveBetreuung(@Valid @Nonnull Betreuung betreuung, @Nonnull Boolean isAbwesenheit, @Nullable String externalClient);
 
 	/**
 	 * Speichert die AnmeldungTagesschule neu in der DB falls der Key noch nicht existiert. Sonst wird die existierende AnmeldungTagesschule aktualisiert
@@ -62,14 +63,14 @@ public interface BetreuungService {
 	 * Setzt die Betreuungsplatzanfrage auf ABGEWIESEN und sendet dem Gesuchsteller eine E-Mail
 	 */
 	@Nonnull
-	Betreuung betreuungPlatzAbweisen(@Valid @Nonnull Betreuung betreuung);
+	Betreuung betreuungPlatzAbweisen(@Valid @Nonnull Betreuung betreuung, @Nullable String externalClient);
 
 	/**
 	 * Setzt die Betreuungsplatzanfrage auf BESTAETIGT und sendet dem Gesuchsteller eine E-Mail,
 	 * falls damit alle Betreuungen des Gesuchs bestaetigt sind.
 	 */
 	@Nonnull
-	Betreuung betreuungPlatzBestaetigen(@Valid @Nonnull Betreuung betreuung);
+	Betreuung betreuungPlatzBestaetigen(@Valid @Nonnull Betreuung betreuung, @Nullable String externalClient);
 
 	/**
 	 * Setzt die Schulamt-Anmeldung auf SCHULAMT_ANMELDUNG_ABGELEHNT und sendet dem Gesuchsteller eine E-Mail
@@ -160,7 +161,7 @@ public interface BetreuungService {
 	/**
 	 * entfernt eine Betreuuung aus der Databse. Um diese Methode aufzurufen muss man sich vorher vergewissern, dass die Betreuuung existiert
 	 */
-	void removeBetreuung(@Nonnull Betreuung betreuung);
+	void removeBetreuung(@Nonnull Betreuung betreuung, @Nullable String externalClient);
 
 	/**
 	 * Gibt die Pendenzen fuer einen Benutzer mit Rolle Institution oder Traegerschaft zurueck.
@@ -222,4 +223,6 @@ public interface BetreuungService {
 	@Nonnull
 	AbstractAnmeldung anmeldungSchulamtModuleAkzeptieren(@Valid @Nonnull AbstractAnmeldung anmeldung);
 
+	@Nonnull
+	AbstractAnmeldung anmeldungSchulamtStornieren(@Valid @Nonnull AbstractAnmeldung anmeldung);
 }

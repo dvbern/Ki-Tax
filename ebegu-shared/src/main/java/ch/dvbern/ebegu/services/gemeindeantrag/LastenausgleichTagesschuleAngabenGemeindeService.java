@@ -55,6 +55,14 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 		@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
+	 * Sucht den LastenausgleichTagesschuleAngabenGemeindeContainer mit der uebergebenen gemeinde und gesuchsperiode
+	 * und entfernt ihn
+	 */
+	@Nonnull
+	void deleteLastenausgleichTagesschuleAngabenGemeindeContainer(
+		@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
+
+	/**
 	 * Speichert den LastenausgleichTagesschule, ohne Eintrag in die StatusHistory-Tabelle
 	 */
 	@Nonnull
@@ -123,4 +131,7 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 
 	@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeZurueckAnGemeinde(
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container);
+
+	@Nonnull
+	boolean selectedForZweitpruefung(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container);
 }
