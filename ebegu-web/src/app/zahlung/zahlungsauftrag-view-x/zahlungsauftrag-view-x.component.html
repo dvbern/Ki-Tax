@@ -13,18 +13,15 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="zahlungsauftrag-view" dv-show-element
-     dv-show-allowed-roles="['ADMIN_BG', 'SUPER_ADMIN' , 'SACHBEARBEITER_BG','ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE',
-     'ADMIN_INSTITUTION', 'SACHBEARBEITER_INSTITUTION', 'ADMIN_TRAEGERSCHAFT', 'SACHBEARBEITER_TRAEGERSCHAFT', 'JURIST', 'REVISOR',
-     'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
+<div class="zahlungsauftrag-view">
 
     <!-- Toggle fuer den Auszahlungstyp (anstelle von Tabs, da GUI sonst identisch) -->
     <div *ngIf="showAuszahlungsTypToggle()" class="switch-auszahlungstyp">
         <dv-switch
-            (switchValueChange)="toggleAuszahlungslaufTyp()"
             [switchOptionLeft]="'GEMEINDE_INSTITUTION'"
             [switchOptionRight]="'GEMEINDE_ANTRAGSTELLER'"
             [(switchValue)]="zahlungslaufTyp"
+            (switchValueChange)="toggleAuszahlungslaufTyp()"
         ></dv-switch>
     </div>
 

@@ -39,7 +39,7 @@ const LOG = LogFactory.createLog('ZahlungsauftragViewXComponent');
 })
 export class ZahlungsauftragViewXComponent implements OnInit {
 
-    @ViewChild(NgForm) private readonly form: NgForm;
+    @ViewChild(NgForm) public readonly form: NgForm;
     @ViewChild(MatSort) public sort: MatSort;
     public datasource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
     public data: TSZahlungsauftrag[] = [];
@@ -85,7 +85,6 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         private readonly cd: ChangeDetectorRef,
         private readonly dialog: MatDialog,
         private readonly currency: CurrencyPipe,
-        private readonly authService: AuthServiceRS,
     ) {
     }
 
@@ -109,6 +108,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
             : TSZahlungslaufTyp.GEMEINDE_INSTITUTION;
         this.updateZahlungsauftrag();
         this.updateGemeindenList();
+        this.updateShowMahlzeitenZahlungslaeufe();
         this.applicationPropertyRS.isZahlungenTestMode().then((response: any) => {
             this.testMode = response;
         });
