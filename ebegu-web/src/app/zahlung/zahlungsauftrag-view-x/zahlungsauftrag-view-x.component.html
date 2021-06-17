@@ -153,7 +153,7 @@
                     <mat-header-cell [mat-sort-header]="column.attributeName" *matHeaderCellDef class="ellipsis">
                         <span>{{column.displayedName | translate}}</span>
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element" class="ellipsis">
+                    <mat-cell *matCellDef="let element" class="ellipsis pointer-cursor" (click)="gotoZahlung(element)">
                         <span [title]="getDisplayValue(element, column)  | translate" [innerHTML]="getDisplayValue(element, column) | translate"></span>
                     </mat-cell>
                 </ng-container>
@@ -221,9 +221,11 @@
                                      class="error"></div>
                             </div>
                         <!-- datumFaellig -->
-                        <span *ngIf="!isEditMode(element.id)" [attr.title]="element.datumFaellig.format('DD.MM.YYYY')">
-                            {{element.datumFaellig.format('DD.MM.YYYY')}}
-                        </span>
+                        <div *ngIf="!isEditMode(element.id)" (click)="gotoZahlung(element)" class="pointer-cursor full-width-heigth">
+                            <span [attr.title]="element.datumFaellig.format('DD.MM.YYYY')">
+                                {{element.datumFaellig.format('DD.MM.YYYY')}}
+                            </span>
+                        </div>
                     </mat-cell>
                 </ng-container>
 
@@ -244,9 +246,11 @@
                                      class="error"></div>
                             </div>
                         <!-- datumFaellig -->
-                        <span *ngIf="!isEditMode(element.id)" [attr.title]="element.beschrieb">
-                            {{element.beschrieb}}
-                        </span>
+                        <div *ngIf="!isEditMode(element.id)" (click)="gotoZahlung(element)" class="pointer-cursor full-width-heigth">
+                            <span [attr.title]="element.beschrieb" >
+                                {{element.beschrieb}}
+                            </span>
+                        </div>
                     </mat-cell>
                 </ng-container>
 
