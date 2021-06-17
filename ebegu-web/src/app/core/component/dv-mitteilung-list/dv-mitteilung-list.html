@@ -41,7 +41,6 @@
                 <form role="form" name="vm.form">
                     <!-- Receiver -->
                     <div ng-if="vm.isCurrentUserAmt()" class="row">
-                        Neue Mitteilung an die:
                             <div class="col-sm-12 dv-input-container-medium">
                                 <div class="form-group">
                                     <label class="md-no-float"
@@ -158,6 +157,9 @@
                                     </div>
                                     <div ng-if="!!mitteilung.betreuung.institutionStammdaten.institution">
                                         <span data-translate="INSTITUTION"></span>: <i class='fa fa-building'></i><span>{{mitteilung.betreuung.institutionStammdaten.institution.name}}</span>
+                                    </div>
+                                    <div ng-if="!!mitteilung.institution">
+                                        <span data-translate="INSTITUTION"></span>: <i class='fa fa-building'></i><span>{{mitteilung.institution.name}}</span>
                                     </div>
                                 </div>
                                 <div class="message-delegation">

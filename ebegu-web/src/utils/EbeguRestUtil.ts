@@ -3345,7 +3345,7 @@ export class EbeguRestUtil {
                 tsMitteilung.betreuung = this.parseBetreuung(new TSBetreuung(), mitteilungFromServer.betreuung);
             }
             if (mitteilungFromServer.institution) {
-                tsMitteilung.institution = this.parseInstitution(new TSInstitution(), tsMitteilung.institution);
+                tsMitteilung.institution = this.parseInstitution(new TSInstitution(), mitteilungFromServer.institution);
             }
             tsMitteilung.senderTyp = mitteilungFromServer.senderTyp;
             tsMitteilung.empfaengerTyp = mitteilungFromServer.empfaengerTyp;
