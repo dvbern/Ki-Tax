@@ -40,7 +40,8 @@
                                         class="form-control"
                                         id="gemeinde"
                                         name="gemeinde"
-                                        required="true">
+                                        required>
+                                    <option [ngValue]="null"></option>
                                     <option *ngFor="let gemeindeEntry of gemeindenList" [ngValue]="gemeindeEntry">{{gemeindeEntry.name}}</option>
                                 </select>
                                 <dv-error-messages [errorObject]="form?.form.get('gemeinde')?.errors"
@@ -61,6 +62,8 @@
                             <mat-datepicker-toggle matSuffix
                                                    [for]="faelligkeitsdatumPicker"></mat-datepicker-toggle>
                             <mat-datepicker #faelligkeitsdatumPicker></mat-datepicker>
+                            <dv-error-messages [errorObject]="form?.form.get('faelligkeitsdatum')?.errors"
+                                               class="error"></dv-error-messages>
                         </div>
                     </div>
                     <div class="col-md-2" *ngIf="testMode">
@@ -71,10 +74,13 @@
                                    name="datumGeneriertPicker" id="datumGeneriertPicker"
                                    [(ngModel)]="datumGeneriert"
                                    [matDatepicker]="datumGeneriertPicker"
+                                   placeholder="{{'DATE_PLACEHOLDER' | translate}}"
                                    required>
                             <mat-datepicker-toggle matSuffix
                                                    [for]="datumGeneriertPicker"></mat-datepicker-toggle>
                             <mat-datepicker #datumGeneriertPicker></mat-datepicker>
+                            <dv-error-messages [errorObject]="form?.form.get('datumGeneriert')?.errors"
+                                               class="error"></dv-error-messages>
                         </div>
                     </div>
                     <div [ngClass]="{'col-md-4': !testMode,'col-md-3': testMode}">
@@ -91,7 +97,7 @@
                     <div [ngClass]="{'col-md-3': !testMode,'col-md-2': testMode}" flex layout="row"
                          layout-align="center center">
                         <dv-loading-button (buttonClick)="createZahlungsauftrag()"
-                                           aria-label="{{getLabelZahlungslaufErstellen()}}" type="submit">
+                                           [ariaLabel]="getLabelZahlungslaufErstellen()" type="submit">
                             <span class="uppercase">{{getLabelZahlungslaufErstellen()}}</span>
                         </dv-loading-button>
                     </div>
