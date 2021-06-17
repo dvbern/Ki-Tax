@@ -2,6 +2,7 @@ import {CurrencyPipe} from '@angular/common';
 import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {PageEvent} from '@angular/material/paginator';
 import {MatSort, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
@@ -20,7 +21,6 @@ import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSZahlungsauftrag} from '../../../models/TSZahlungsauftrag';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
@@ -72,6 +72,10 @@ export class ZahlungsauftragViewXComponent implements OnInit {
 
     public principal: TSBenutzer;
 
+    public paginationItems: number[];
+    public page: number = 0;
+    private readonly PAGE_SIZE: number = 20;
+
     public constructor(
         private readonly zahlungRS: ZahlungRS,
         private readonly $state: StateService,
@@ -114,6 +118,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         });
         this.setupTableColumns();
         this.authServiceRS.principal$.subscribe(user => this.principal = user);
+        this.translate.onDefaultLangChange.subscribe(() => this.setupTableColumns());
     }
 
     public ngAfterViewInit(): void {
@@ -330,18 +335,35 @@ export class ZahlungsauftragViewXComponent implements OnInit {
                 // Mahlzeiten aktiviert hat, wird der Toggle angezeigt
                 this.showMahlzeitenZahlungslaeufe = true;
                 this.berechtigteGemeindenMitMahlzeitenList = value;
+                this.cd.markForCheck();
             }
         });
     }
 
     public toggleAuszahlungslaufTyp(): void {
-        this.zahlungsAuftraegeFiltered =
-            this.zahlungsAuftraege
-                .filter(value => value.zahlungslaufTyp === this.zahlungslaufTyp);
+        this.filterZahlungsAuftraege();
         this.gemeindenList
             = TSZahlungslaufTyp.GEMEINDE_INSTITUTION === this.zahlungslaufTyp
             ? Array.from(this.berechtigteGemeindenList)
             : Array.from(this.berechtigteGemeindenMitMahlzeitenList);
+        this.applyPagination(this.page, this.PAGE_SIZE);
+    }
+
+    public filterZahlungsAuftraege(): void {
+        this.page = 0;
+        this.zahlungsAuftraegeFiltered =
+            this.zahlungsAuftraege.filter(value => value.zahlungslaufTyp === this.zahlungslaufTyp &&
+                (!this.filterGemeinde || this.filterGemeinde.id === value.gemeinde.id));
+        this.updatePagination(this.zahlungsAuftraegeFiltered);
+        this.datasource.data = this.zahlungsAuftraegeFiltered;
+    }
+
+    private updatePagination(items: TSZahlungsauftrag[]): void {
+        this.paginationItems = [];
+        for (let i = Math.max(1, this.page - 4); i <= Math.min(Math.ceil(items.length / this.PAGE_SIZE),
+            this.page + 5); i++) {
+            this.paginationItems.push(i);
+        }
     }
 
     public showAuszahlungsTypToggle(): boolean {
@@ -350,14 +372,6 @@ export class ZahlungsauftragViewXComponent implements OnInit {
 
     public getLabelZahlungslaufErstellen(): string {
         return this.translate.instant('BUTTON_' + this.zahlungslaufTyp);
-    }
-
-    public getZahlungsauftraegeFiltered(): TSZahlungsauftrag[] {
-        this.datasource.data = this.zahlungsAuftraegeFiltered.filter(zahlungsAuftrag => this.filterGemeinde ?
-            zahlungsAuftrag.gemeinde.id === this.filterGemeinde.id :
-            true);
-
-        return this.datasource.data;
     }
 
     public showInfotext(): boolean {
@@ -377,12 +391,12 @@ export class ZahlungsauftragViewXComponent implements OnInit {
                 displayFunction: (gemeinde: TSGemeinde) => gemeinde.name,
             },
             {
-                displayedName: this.translate.instant('BETRAG'),
+                displayedName: this.translate.instant('ZAHLUNG_TOTAL'),
                 attributeName: 'betragTotalAuftrag',
                 displayFunction: (betrag: number) => this.currency.transform(betrag, '', ''),
             },
             {
-                displayedName: this.translate.instant('STATUS'),
+                displayedName: this.translate.instant('ZAHLUNG_STATUS'),
                 attributeName: 'status',
             },
         ];
@@ -391,8 +405,8 @@ export class ZahlungsauftragViewXComponent implements OnInit {
     public getColumnsAttributeName(): string[] {
         const allColumnNames = this.tableColumns?.map(column => column.attributeName);
         allColumnNames.splice(0, 0, 'datumFaellig');
-        allColumnNames.splice(2, 0, `zahlungPain`, 'zahlungPainExcel');
-        allColumnNames.splice(4, 0, `beschrieb`);
+        allColumnNames.splice(3, 0, `zahlungPain`, 'zahlungPainExcel');
+        allColumnNames.splice(5, 0, `beschrieb`);
         if (this.principal?.hasOneOfRoles(TSRoleUtil.getAdministratorBgGemeindeRoles())) {
             allColumnNames.push('editSave');
             allColumnNames.push('ausloesen');
@@ -405,5 +419,19 @@ export class ZahlungsauftragViewXComponent implements OnInit {
             return column.displayFunction(element[column.attributeName], element);
         }
         return element[column.attributeName];
+    }
+
+    public handlePagination(pageEvent: Partial<PageEvent>): void {
+        this.page = pageEvent.pageIndex;
+
+        this.applyPagination(this.page, this.PAGE_SIZE);
+    }
+
+    public applyPagination(page: number, pageSize: any): void {
+        const offset = page * pageSize;
+        this.datasource.data = this.zahlungsAuftraegeFiltered.slice(offset,
+            Math.min(offset + pageSize, this.zahlungsAuftraegeFiltered.length));
+        this.datasource.sort = this.sort;
+        this.cd.markForCheck();
     }
 }

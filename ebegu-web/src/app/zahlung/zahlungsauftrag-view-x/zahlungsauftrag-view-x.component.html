@@ -116,7 +116,7 @@
             <h3 translate>ZAHLUNGSAUFTRAEGE</h3>
         </div>
         <div class="col-md-1 text-right">
-            <h3>{{getZahlungsauftraegeFiltered().length}}</h3>
+            <h3>{{zahlungsAuftraegeFiltered.length}}</h3>
         </div>
     </div>
     <div class="table-responsive">
@@ -127,7 +127,7 @@
                 <th></th>
                 <th>
                     <div class="dv-select-style">
-                        <select name="gemeindeFilter" [(ngModel)]="filterGemeinde">
+                        <select name="gemeindeFilter" [(ngModel)]="filterGemeinde" (ngModelChange)="filterZahlungsAuftraege()">
                             <option [ngValue]="null" selected>{{"ALLE" | translate}}</option>
                             <option *ngFor="let gemeindeItem of gemeindenList" [ngValue]="gemeindeItem">{{gemeindeItem.name}}</option>
                         </select>
@@ -160,7 +160,7 @@
 
                 <ng-container [matColumnDef]="'zahlungPain'">
                     <mat-header-cell *matHeaderCellDef class="ellipsis">
-                        <span translate>ZAHLUNGSDATEI</span>
+                        <span translate>ZAHLUNG_PAIN001</span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
                         <dv-loading-button type="button" (buttonClick)="downloadPain(element)"
@@ -172,7 +172,7 @@
 
                 <ng-container [matColumnDef]="'zahlungPainExcel'">
                     <mat-header-cell *matHeaderCellDef class="ellipsis">
-                        <span translate>ZAHLUNGSDATEI</span>
+                        <span translate>ZAHLUNG_DETAILPOSITIONEN</span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
                         <dv-loading-button type="button" (buttonClick)="downloadAllDetails(element)"
@@ -229,7 +229,7 @@
 
                 <ng-container [matColumnDef]="'beschrieb'">
                     <mat-header-cell *matHeaderCellDef class="ellipsis">
-                        <span translate>BESCHRIEB</span>
+                        <span translate>ZAHLUNG_BESCHRIEB</span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
 
@@ -268,6 +268,16 @@
                 <mat-header-row *matHeaderRowDef="getColumnsAttributeName()"></mat-header-row>
                 <mat-row *matRowDef="let element; columns: getColumnsAttributeName();"></mat-row>
             </mat-table>
+
+            <div class="bottom-pagination">
+                <nav>
+                    <ul class="pagination">
+                        <li *ngFor="let index of paginationItems" [ngClass]="{'active': index - 1 === page}">
+                            <a (click)="handlePagination({pageIndex: index - 1})">{{index}}</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
 </div>
