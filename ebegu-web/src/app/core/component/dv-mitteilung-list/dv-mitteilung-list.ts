@@ -87,6 +87,8 @@ export class DVMitteilungListController implements IOnInit {
     public readonly TSRole = TSRole;
     public readonly TSRoleUtil = TSRoleUtil;
     public isLoaded: boolean = true;
+    public empfaenger: any;
+    public empfaengerValues: Array<any>;
 
     public constructor(
         private readonly $stateParams: IMitteilungenStateParams,
@@ -167,6 +169,29 @@ export class DVMitteilungListController implements IOnInit {
         }
         this.currentMitteilung.mitteilungStatus = TSMitteilungStatus.NEU;
         this.currentMitteilung.sender = currentUser;
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles())) {
+            this.initReceiverList();
+        }
+    }
+
+    private initReceiverList(): void {
+        //
+        this.empfaengerValues = new Array();
+        this.empfaengerValues.push({
+            key: null,
+            value: this.ebeguUtil.translateString('GESUCHSTELLER'),
+        });
+        this.dossierRS.findAllInstitutionen(this.dossier.id).then(
+            institutionen => {
+                institutionen.forEach(
+                    institution =>
+                        this.empfaengerValues.push({
+                            key: institution,
+                            value: institution.name,
+                        }),
+                );
+            },
+        );
     }
 
     public getCurrentMitteilung(): TSMitteilung {
@@ -408,5 +433,11 @@ export class DVMitteilungListController implements IOnInit {
 
     public isMitteilungEmpfaengerSozialdienst(mitteilung: TSMitteilung): boolean {
         return mitteilung.empfaengerTyp === TSMitteilungTeilnehmerTyp.SOZIALDIENST;
+    }
+
+    public changeEmpfaenger(): void {
+        if (this.empfaenger.key) {
+            this.currentMitteilung.institution = this.empfaenger.key;
+        }
     }
 }

@@ -258,7 +258,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			case ADMIN_GEMEINDE:
 			case SACHBEARBEITER_TS:
 			case ADMIN_TS: {
-				if (mitteilung.getFall().getSozialdienstFall() != null) {
+				if (mitteilung.getInstitution() != null){
+					//Bei Institution Mitteilungen sollen schon der Institution ID Bestimmt sein
+					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.INSTITUTION);
+				}
+				else if (mitteilung.getFall().getSozialdienstFall() != null) {
 					// Sozialdienst hat kein Empfanger
 					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.SOZIALDIENST);
 				} else {
@@ -281,7 +285,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					mitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(mitteilung));
 					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 					mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.INSTITUTION);
-				} else if (mitteilung.getFall().getSozialdienstFall() != null) {
+				}
+				else if (mitteilung.getBetreuung() != null){
+					//Die Betreuung ist gesetzt bei Mitteilungen an die Gemeinde, so ruckwirkend wird auch sein
+					//es gibt keine Benutzer als empfanger
+					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.INSTITUTION);
+				}
+				else if (mitteilung.getFall().getSozialdienstFall() != null) {
 					// Sozialdienst hat kein Empfanger
 					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.SOZIALDIENST);
 					mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.JUGENDAMT);

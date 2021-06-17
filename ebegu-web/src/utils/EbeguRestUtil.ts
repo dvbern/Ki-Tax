@@ -3344,6 +3344,9 @@ export class EbeguRestUtil {
             if (mitteilungFromServer.betreuung) {
                 tsMitteilung.betreuung = this.parseBetreuung(new TSBetreuung(), mitteilungFromServer.betreuung);
             }
+            if (mitteilungFromServer.institution) {
+                tsMitteilung.institution = this.parseInstitution(new TSInstitution(), tsMitteilung.institution);
+            }
             tsMitteilung.senderTyp = mitteilungFromServer.senderTyp;
             tsMitteilung.empfaengerTyp = mitteilungFromServer.empfaengerTyp;
             tsMitteilung.sender = this.parseUser(new TSBenutzer(), mitteilungFromServer.sender);
@@ -3363,6 +3366,9 @@ export class EbeguRestUtil {
             restMitteilung.dossier = this.dossierToRestObject({}, tsMitteilung.dossier);
             if (tsMitteilung.betreuung) {
                 restMitteilung.betreuung = this.betreuungToRestObject({}, tsMitteilung.betreuung);
+            }
+            if (tsMitteilung.institution) {
+                restMitteilung.institution = this.institutionToRestObject({}, tsMitteilung.institution);
             }
             restMitteilung.senderTyp = tsMitteilung.senderTyp;
             restMitteilung.empfaengerTyp = tsMitteilung.empfaengerTyp;

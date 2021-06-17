@@ -16,6 +16,7 @@
 import {IHttpPromise, IHttpService, IPromise} from 'angular';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import {TSDossier} from '../../models/TSDossier';
+import {TSInstitution} from '../../models/TSInstitution';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
 export class DossierRS implements IEntityRS {
@@ -69,5 +70,12 @@ export class DossierRS implements IEntityRS {
 
     public setVerantwortlicherTS(dossierId: string, username: string): IHttpPromise<TSDossier> {
         return this.$http.put(`${this.serviceURL}/verantwortlicherTS/${encodeURIComponent(dossierId)}`, username);
+    }
+
+    public findAllInstitutionen(dossierId: string): IPromise<Array<TSInstitution>> {
+        return this.$http.get(`${this.serviceURL}/findAllInstitutionen/${encodeURIComponent(dossierId)}`)
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseInstitutionen(response.data);
+            });
     }
 }

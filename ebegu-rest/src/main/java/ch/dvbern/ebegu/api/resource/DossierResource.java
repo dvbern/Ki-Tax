@@ -48,10 +48,12 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
@@ -277,5 +279,28 @@ public class DossierResource {
 
 		}
 		return Response.ok().build();
+	}
+
+	@ApiOperation(value = "Returns all Institutions from alle Antraege die wurden einmal verwenden",
+		responseContainer = "List", response = JaxInstitution.class)
+	@Nullable
+	@GET
+	@Path("/findAllInstitutionen/{dossierId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
+	public List<JaxInstitution> findAllInstitutionen(@Nonnull @NotNull @PathParam("dossierId") JaxId jaxDossierId) {
+		Objects.requireNonNull(jaxDossierId.getId());
+
+		Dossier dossier = dossierService.findDossier(jaxDossierId.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherTS",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, jaxDossierId.getId()));
+
+		Collection<Institution> institutions = dossierService.findAllInstitutionen(dossier);
+
+		//noinspection ConstantConditions -> here JaxAbstractDTO::getTimestampErstellt cannot be null
+		return institutions.stream()
+			.distinct()
+			.map(institution -> converter.institutionToJAX(institution))
+			.collect(Collectors.toList());
 	}
 }

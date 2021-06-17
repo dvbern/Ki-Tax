@@ -46,6 +46,7 @@ import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
@@ -260,6 +261,25 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 			}
 		}
 		return erstesEinreichungsdatum != null ? erstesEinreichungsdatum : LocalDate.now();
+	}
+
+	@Override
+	public Collection<Institution> findAllInstitutionen(
+		@Nonnull Dossier dossier) {
+		List<Institution> institutions = new ArrayList<>();
+		gesuchService.getAllGesuchForDossier(dossier.getId()).forEach(
+			gesuch -> {
+				gesuch.extractAllBetreuungen().forEach(
+					betreuung -> {
+						if (!institutions.contains(betreuung.getInstitutionStammdaten().getInstitution())) {
+							institutions.add(betreuung.getInstitutionStammdaten().getInstitution());
+						}
+					}
+				);
+			}
+		);
+
+		return institutions;
 	}
 
 	private void validateVerantwortlicher(@Nonnull Dossier dossier, @Nonnull Class validationGroup) {

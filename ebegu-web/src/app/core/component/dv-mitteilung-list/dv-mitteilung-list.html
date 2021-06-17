@@ -21,9 +21,9 @@
                       data-translate="NEUE_MITTEILUNG_GEMEINDE"
                       data-translate-value-gemeinde="{{vm.dossier.gemeinde.name}}"></span>
                 <span ng-if="!vm.betreuung && vm.isCurrentUserAmt() && !vm.isCurrentMitteilungSozialdienst()"
-                      data-translate="NEUE_MITTEILUNG_GESUCHSTELLER"></span>
+                      data-translate="NEUE_MITTEILUNG"></span>
                 <span ng-if="!vm.betreuung && vm.isCurrentUserAmt() && vm.isCurrentMitteilungSozialdienst()"
-                      data-translate="NEUE_MITTEILUNG_SOZIALDIENST"></span>
+                      data-translate="NEUE_MITTEILUNG"></span>
                 <span ng-if="vm.betreuung"
                       data-translate="NEUE_MITTEILUNG_BETREUUNG"
                       data-translate-value-gemeinde="{{vm.dossier.gemeinde.name}}"
@@ -39,6 +39,30 @@
             <!-- Entwurf / Neue Mitteilung -->
             <div ng-if="vm.getCurrentMitteilung()">
                 <form role="form" name="vm.form">
+                    <!-- Receiver -->
+                    <div ng-if="vm.isCurrentUserAmt()" class="row">
+                        Neue Mitteilung an die:
+                            <div class="col-sm-12 dv-input-container-medium">
+                                <div class="form-group">
+                                    <label class="md-no-float"
+                                           for="empfaenger">
+                                        <span data-translate="EMPFAENGER_WAEHLEN" class="required"></span>
+                                    </label>
+                                    <div class="dv-select-style">
+                                        <select aria-describedby="empfaenger-error" name="empfaenger"
+                                                id="empfaenger"
+                                                ng-model="vm.empfaenger"
+                                                class="form-control"
+                                                ng-options="empfaenger as empfaenger.value for empfaenger in vm.empfaengerValues"
+                                                ng-required="true"
+                                                ng-change="vm.changeEmpfaenger()">
+                                        </select>
+                                        <dv-error-messages input-id="empfaenger"
+                                                           for="vm.form.empfaenger.$error"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
                     <!--Subject-->
                     <div class="row">
                         <div class="col-xs-12">
