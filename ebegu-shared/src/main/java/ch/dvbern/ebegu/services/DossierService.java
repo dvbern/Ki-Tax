@@ -119,6 +119,4 @@ public interface DossierService {
 	 */
 	@Nonnull
 	LocalDate getErstesEinreichungsdatum(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
-
-	Collection<Institution> findAllInstitutionen(@Nonnull Dossier dossier);
 }

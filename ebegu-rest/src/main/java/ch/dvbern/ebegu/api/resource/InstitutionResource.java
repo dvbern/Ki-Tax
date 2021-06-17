@@ -61,6 +61,7 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.EinstellungenFerieninsel;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.ExternalClient;
@@ -566,6 +567,25 @@ public class InstitutionResource {
 		return institutionInstitutionStammdatenMap.entrySet()
 			.stream()
 			.map(map -> converter.institutionListDTOToJAX(map))
+			.collect(Collectors.toList());
+	}
+
+	@ApiOperation(value = "Returns all Institutions from alle Antraege die wurden einmal verwenden",
+		responseContainer = "List", response = JaxInstitution.class)
+	@Nullable
+	@GET
+	@Path("/findAllInstitutionen/{dossierId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
+	public List<JaxInstitution> findAllInstitutionen(@Nonnull @NotNull @PathParam("dossierId") JaxId jaxDossierId) {
+		Objects.requireNonNull(jaxDossierId.getId());
+
+		Collection<Institution> institutions = institutionService.findAllInstitutionen(jaxDossierId.getId());
+
+		return institutions.stream()
+			.distinct()
+			.map(institution -> converter.institutionToJAX(institution))
 			.collect(Collectors.toList());
 	}
 }

@@ -33,6 +33,7 @@ import {IMitteilungenStateParams} from '../../../mitteilungen/mitteilungen.route
 import {PosteingangService} from '../../../posteingang/service/posteingang.service';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import {BetreuungRS} from '../../service/betreuungRS.rest';
+import {InstitutionRS} from '../../service/institutionRS.rest';
 import {MitteilungRS} from '../../service/mitteilungRS.rest';
 import IFormController = angular.IFormController;
 import IQService = angular.IQService;
@@ -75,6 +76,7 @@ export class DVMitteilungListController implements IOnInit {
         '$timeout',
         'DossierRS',
         'PosteingangService',
+        'InstitutionRS'
     ];
 
     public dossier: TSDossier;
@@ -106,6 +108,7 @@ export class DVMitteilungListController implements IOnInit {
         private readonly $timeout: ITimeoutService,
         private readonly dossierRS: DossierRS,
         private readonly posteingangService: PosteingangService,
+        private readonly institutionRS: InstitutionRS,
     ) {
     }
 
@@ -181,7 +184,7 @@ export class DVMitteilungListController implements IOnInit {
             key: null,
             value: this.ebeguUtil.translateString('GESUCHSTELLER'),
         });
-        this.dossierRS.findAllInstitutionen(this.dossier.id).then(
+        this.institutionRS.findAllInstitutionen(this.dossier.id).then(
             institutionen => {
                 institutionen.forEach(
                     institution =>

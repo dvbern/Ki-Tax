@@ -704,4 +704,8 @@ export class TSRoleUtil {
         return this.getGemeindeOrBGOrTSRoles()
             .concat([TSRole.SACHBEARBEITER_FERIENBETREUUNG, TSRole.ADMIN_FERIENBETREUUNG]);
     }
+
+    public static getAllRolesForPosteingang(): ReadonlyArray<TSRole> {
+        return this.getAdministratorOrAmtOrSozialdienstRolle().concat(this.getTraegerschaftInstitutionRoles());
+    }
 }

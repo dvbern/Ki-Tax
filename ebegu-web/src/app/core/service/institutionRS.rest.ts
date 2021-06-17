@@ -143,4 +143,11 @@ export class InstitutionRS {
             return this.ebeguRestUtil.parseInstitutionenListDTO(response.data);
         });
     }
+
+    public findAllInstitutionen(dossierId: string): IPromise<Array<TSInstitution>> {
+        return this.$http.get(`${this.serviceURL}/findAllInstitutionen/${encodeURIComponent(dossierId)}`)
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseInstitutionen(response.data);
+            });
+    }
 }

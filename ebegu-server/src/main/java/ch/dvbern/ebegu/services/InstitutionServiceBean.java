@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.BerechtigungHistory_;
 import ch.dvbern.ebegu.entities.Berechtigung_;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
@@ -101,6 +102,9 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Inject
 	private Authorizer authorizer;
+
+	@Inject
+	private GesuchService gesuchService;
 
 	@Nonnull
 	@Override
@@ -453,6 +457,25 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 		institution.getInstitutionExternalClients().clear();
 		institution.getInstitutionExternalClients().addAll(new HashSet<>(newInstitutionExternalClients));
+	}
+
+	@Override
+	public Collection<Institution> findAllInstitutionen(
+		@Nonnull String dossierId) {
+		List<Institution> institutions = new ArrayList<>();
+		gesuchService.getAllGesuchForDossier(dossierId).forEach(
+			gesuch -> {
+				gesuch.extractAllBetreuungen().forEach(
+					betreuung -> {
+						if (!institutions.contains(betreuung.getInstitutionStammdaten().getInstitution())) {
+							institutions.add(betreuung.getInstitutionStammdaten().getInstitution());
+						}
+					}
+				);
+			}
+		);
+
+		return institutions;
 	}
 
 	private void checkForLinkedBerechtigungen(@Nonnull Institution institution) {
