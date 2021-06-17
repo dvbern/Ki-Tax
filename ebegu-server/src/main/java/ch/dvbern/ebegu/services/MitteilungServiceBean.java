@@ -481,7 +481,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	public Collection<Mitteilung> getMitteilungenForCurrentRolle(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier, "dossier muss gesetzt sein");
 		authorizer.checkReadAuthorizationDossier(dossier);
-		return getMitteilungenForCurrentRolle(Mitteilung_.dossier, dossier);
+		return getMitteilungenForCurrentRolle(Mitteilung_.dossier, dossier).stream().filter(
+			this::isMitteilungReadableForInstitution
+		).collect(Collectors.toList());
 	}
 
 	@Nonnull
@@ -684,8 +686,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			|| loggedInBenutzer.getRole() == UserRole.SACHBEARBEITER_INSTITUTION) {
 			institution =
 				cb.equal(root.get(Mitteilung_.institution), loggedInBenutzer.getInstitution());
-		}
-		else {
+		} else {
 			Join<Mitteilung, Institution> joinInstitution = root.join(Mitteilung_.institution, JoinType.LEFT);
 			institution =
 				cb.equal(joinInstitution.get(Institution_.traegerschaft), loggedInBenutzer.getTraegerschaft());
@@ -966,11 +967,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					"Sozialdienst not defined for Sozialdienstuser");
 			}
 		} else if (user.getCurrentBerechtigung().getRole().isRoleTraegerschaftInstitution()) {
-			if(user.getInstitution() != null) {
+			if (user.getInstitution() != null) {
 				Predicate institution = cb.equal(root.get(Mitteilung_.institution), user.getInstitution());
 				predicates.add(institution);
-			}
-			else {
+			} else {
 				Join<Mitteilung, Institution> joinInstitution = root.join(Mitteilung_.institution, JoinType.LEFT);
 				Predicate traegerschaft =
 					cb.equal(joinInstitution.get(Institution_.traegerschaft), user.getTraegerschaft());
@@ -1395,6 +1395,48 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Long count = (Long) persistence.getCriteriaSingleResult(query);
 
 		return count > 0;
+	}
+
+	/**
+	 * Wir muessen nur pruefen ob der Institution stimmt fuer die Institution und Traegerschaft Benutzern
+	 * als der Zugriff auf der Dossier heiss nicht das man alles sehen darf mit EmpfaengerTyp Institution
+	 */
+	private boolean isMitteilungReadableForInstitution(Mitteilung mitteilung) {
+		if (principalBean.isCallerInAnyOfRole(UserRole.ADMIN_INSTITUTION, UserRole.SACHBEARBEITER_INSTITUTION)) {
+			if (principalBean.getBenutzer().getInstitution() != null) {
+				if (mitteilung.getInstitution() != null) {
+					return principalBean.getBenutzer().getInstitution().equals(mitteilung.getInstitution());
+				}
+				if (mitteilung.getBetreuung() != null) {
+					return principalBean.getBenutzer()
+						.getInstitution()
+						.equals(mitteilung.getBetreuung().getInstitutionStammdaten().getInstitution());
+				}
+			}
+			return false;
+		} else if (principalBean.isCallerInAnyOfRole(
+			UserRole.ADMIN_TRAEGERSCHAFT,
+			UserRole.SACHBEARBEITER_TRAEGERSCHAFT)) {
+			if (principalBean.getBenutzer().getTraegerschaft() != null) {
+				if (mitteilung.getInstitution() != null && mitteilung.getInstitution().getTraegerschaft() != null) {
+					return principalBean.getBenutzer()
+						.getTraegerschaft()
+						.equals(mitteilung.getInstitution().getTraegerschaft());
+				}
+				if (mitteilung.getBetreuung() != null
+					&& mitteilung.getBetreuung().getInstitutionStammdaten().getInstitution().getTraegerschaft()
+					!= null) {
+					return principalBean.getBenutzer()
+						.getTraegerschaft()
+						.equals(mitteilung.getBetreuung()
+							.getInstitutionStammdaten()
+							.getInstitution()
+							.getTraegerschaft());
+				}
+			}
+			return false;
+		}
+		return true;
 	}
 }
 

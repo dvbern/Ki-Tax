@@ -112,7 +112,7 @@
 
             <!-- Mitteilungen -->
             <div dv-show-element
-                 dv-show-allowed-roles="vmx.TSRoleUtil.getGesuchstellerJugendamtSchulamtOtherAmtRoles()"
+                 dv-show-allowed-roles="vmx.TSRoleUtil.getAllRolesForDossierMitteilungen()"
                  dv-show-expression="!vmx.getGesuch().isNew()">
                 <button ng-click="vmx.openMitteilungen()"
                         aria-label="{{'TOOLBAR_MITTEILUNGEN' | translate}}" style="text-align: center;">

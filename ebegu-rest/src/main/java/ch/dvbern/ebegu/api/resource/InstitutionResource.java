@@ -570,7 +570,7 @@ public class InstitutionResource {
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Returns all Institutions from alle Antraege die wurden einmal verwenden",
+	@ApiOperation(value = "Returns all Institutions from dieser Dossier die wurden einmal verwenden",
 		responseContainer = "List", response = JaxInstitution.class)
 	@Nullable
 	@GET

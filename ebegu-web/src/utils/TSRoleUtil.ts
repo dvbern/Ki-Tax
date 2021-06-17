@@ -208,6 +208,11 @@ export class TSRoleUtil {
     }
 
     // noinspection JSUnusedGlobalSymbols Es wird doch benutzt
+    public static getTraegerschaftOnlyRoles(): ReadonlyArray<TSRole> {
+        return [TSRole.ADMIN_TRAEGERSCHAFT, TSRole.SACHBEARBEITER_TRAEGERSCHAFT];
+    }
+
+    // noinspection JSUnusedGlobalSymbols Es wird doch benutzt
     public static getTraegerschaftInstitutionSteueramtOnlyRoles(): ReadonlyArray<TSRole> {
         return [
             TSRole.ADMIN_INSTITUTION,
@@ -619,6 +624,10 @@ export class TSRoleUtil {
         return PERMISSIONS[Permission.ROLE_INSTITUTION].concat(TSRole.SUPER_ADMIN);
     }
 
+    public static getInstitutionOnlyRoles(): ReadonlyArray<TSRole> {
+        return PERMISSIONS[Permission.ROLE_INSTITUTION];
+    }
+
     public static getFerienbetreuungRoles(): ReadonlyArray<TSRole> {
         return PERMISSIONS[Permission.FERIENBETREUUNG];
     }
@@ -707,5 +716,9 @@ export class TSRoleUtil {
 
     public static getAllRolesForPosteingang(): ReadonlyArray<TSRole> {
         return this.getAdministratorOrAmtOrSozialdienstRolle().concat(this.getTraegerschaftInstitutionRoles());
+    }
+
+    public static getAllRolesForDossierMitteilungen(): ReadonlyArray<TSRole> {
+        return this.getGesuchstellerJugendamtSchulamtOtherAmtRoles().concat(this.getTraegerschaftInstitutionRoles());
     }
 }

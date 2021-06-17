@@ -40,7 +40,7 @@
             <div ng-if="vm.getCurrentMitteilung()">
                 <form role="form" name="vm.form">
                     <!-- Receiver -->
-                    <div ng-if="vm.isCurrentUserAmt()" class="row">
+                    <div ng-if="vm.isCurrentUserAmt() || vm.isCurrentUserTraegerschaft()" class="row">
                             <div class="col-sm-12 dv-input-container-medium">
                                 <div class="form-group">
                                     <label class="md-no-float"

@@ -467,6 +467,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			gesuch -> {
 				gesuch.extractAllBetreuungen().forEach(
 					betreuung -> {
+						if (principalBean.getBenutzer().getTraegerschaft() != null &&
+							!principalBean.getBenutzer().getTraegerschaft().equals(betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft())) {
+								return;
+						}
 						if (!institutions.contains(betreuung.getInstitutionStammdaten().getInstitution())) {
 							institutions.add(betreuung.getInstitutionStammdaten().getInstitution());
 						}

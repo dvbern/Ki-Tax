@@ -76,7 +76,7 @@ export class DVMitteilungListController implements IOnInit {
         '$timeout',
         'DossierRS',
         'PosteingangService',
-        'InstitutionRS'
+        'InstitutionRS',
     ];
 
     public dossier: TSDossier;
@@ -154,8 +154,7 @@ export class DVMitteilungListController implements IOnInit {
 
     private initMitteilungForCurrentBenutzer(): void {
         const isGesuchsteller = this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
-        const hasBesitzerOrSozialdienst = this.dossier.fall.besitzer || this.dossier.fall.sozialdienstFall;
-        const isJugendamtOrSchulamtAndFallHasBesitzer = hasBesitzerOrSozialdienst && this.authServiceRS.isOneOfRoles(
+        const isJugendamtOrSchulamtAndFallHasBesitzer = this.authServiceRS.isOneOfRoles(
             TSRoleUtil.getAdministratorJugendamtSchulamtRoles(),
         );
         const isInstitutionsUser = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
@@ -172,18 +171,25 @@ export class DVMitteilungListController implements IOnInit {
         }
         this.currentMitteilung.mitteilungStatus = TSMitteilungStatus.NEU;
         this.currentMitteilung.sender = currentUser;
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles())) {
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles()
+            .concat(TSRoleUtil.getTraegerschaftOnlyRoles()))) {
             this.initReceiverList();
+        }
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionOnlyRoles())) {
+            this.currentMitteilung.institution = currentUser.currentBerechtigung.institution;
         }
     }
 
     private initReceiverList(): void {
-        //
         this.empfaengerValues = new Array();
-        this.empfaengerValues.push({
-            key: null,
-            value: this.ebeguUtil.translateString('GESUCHSTELLER'),
-        });
+        if (this.isCurrentUserAmt() && (this.dossier.fall.besitzer || this.dossier.fall.sozialdienstFall)) {
+            this.empfaengerValues.push({
+                key: null,
+                value: this.dossier.fall.sozialdienstFall ?
+                    this.dossier.fall.sozialdienstFall.sozialdienst.name :
+                    this.ebeguUtil.translateString('GESUCHSTELLER'),
+            });
+        }
         this.institutionRS.findAllInstitutionen(this.dossier.id).then(
             institutionen => {
                 institutionen.forEach(
@@ -442,5 +448,9 @@ export class DVMitteilungListController implements IOnInit {
         if (this.empfaenger.key) {
             this.currentMitteilung.institution = this.empfaenger.key;
         }
+    }
+
+    private isCurrentUserTraegerschaft(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftOnlyRoles());
     }
 }
