@@ -535,7 +535,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 		Gesuch gesuch1516_1 = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.VERFUEGT);
 		persistence.persist(gesuch1516_1);
-		Gesuch gesuch1516_2 = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.IN_BEARBEITUNG_JA);
+		Gesuch gesuch1516_2 = TestDataUtil.createMutation(dossier, periodeToUpdate, AntragStatus.IN_BEARBEITUNG_JA, 1);
 		persistence.persist(gesuch1516_2);
 		Gesuch gesuch1415_1 = TestDataUtil.createGesuch(dossier, otherPeriod, AntragStatus.IN_BEARBEITUNG_JA);
 		persistence.persist(gesuch1415_1);
@@ -558,7 +558,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 		Gesuch gesuch1516_1 = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.VERFUEGT);
 		persistence.persist(gesuch1516_1);
-		Gesuch gesuch1516_2 = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.VERFUEGT);
+		Gesuch gesuch1516_2 = TestDataUtil.createMutation(dossier, periodeToUpdate, AntragStatus.VERFUEGT, 1);
 		persistence.persist(gesuch1516_2);
 		Gesuch gesuch1415_1 = TestDataUtil.createGesuch(dossier, otherPeriod, AntragStatus.VERFUEGT);
 		persistence.persist(gesuch1415_1);
@@ -597,7 +597,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 		Gesuch gesuch1516_1 = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.VERFUEGT);
 		persistence.persist(gesuch1516_1);
-		Gesuch gesuch1516_2 = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.VERFUEGT);
+		Gesuch gesuch1516_2 = TestDataUtil.createMutation(dossier, periodeToUpdate, AntragStatus.VERFUEGT, 1);
 		persistence.persist(gesuch1516_2);
 		Gesuch gesuch1415_1 = TestDataUtil.createGesuch(dossier, otherPeriod, AntragStatus.VERFUEGT);
 		persistence.persist(gesuch1415_1);
