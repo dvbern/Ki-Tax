@@ -22,6 +22,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Massenversand;
 
 public interface MassenversandService {
@@ -39,4 +40,9 @@ public interface MassenversandService {
 	 * Löscht alle Massenversand-Gesuch Verbindungen für einen Fall
 	 */
 	void removeMassenversandGesucheForFall(@Nonnull Fall fall);
+
+	/**
+	 * Löscht alle Massenversand-Gesuch Verbindungen für einen Fall
+	 */
+	void removeMassenversandGesucheForGesuch(@Nonnull Gesuch gesuch);
 }
