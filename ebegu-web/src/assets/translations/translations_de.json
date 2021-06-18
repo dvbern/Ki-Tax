@@ -2534,5 +2534,6 @@
     "PENDENZ_WIRKLICH_LOESCHEN": "Wollen Sie diese Pendenz wirklich löschen?",
     "TERMIN": "Termin",
     "EMPFAENGER_WAEHLEN": "An: ",
+    "SENDER_WAEHLEN": "Mitteilung von: ",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

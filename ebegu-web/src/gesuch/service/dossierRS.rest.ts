@@ -16,7 +16,6 @@
 import {IHttpPromise, IHttpService, IPromise} from 'angular';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import {TSDossier} from '../../models/TSDossier';
-import {TSInstitution} from '../../models/TSInstitution';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
 export class DossierRS implements IEntityRS {

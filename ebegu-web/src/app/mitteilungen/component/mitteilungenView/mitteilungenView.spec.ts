@@ -27,6 +27,7 @@ import {TSMitteilung} from '../../../../models/TSMitteilung';
 import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
 import {DVMitteilungListController} from '../../../core/component/dv-mitteilung-list/dv-mitteilung-list';
 import {BetreuungRS} from '../../../core/service/betreuungRS.rest';
+import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 import {MitteilungRS} from '../../../core/service/mitteilungRS.rest';
 import {MITTEILUNGEN_JS_MODULE} from '../../mitteilungen.module';
 import {IMitteilungenStateParams} from '../../mitteilungen.route';
@@ -48,6 +49,7 @@ describe('mitteilungenView', () => {
     let verantwortlicher: TSBenutzerNoDetails;
     let scope: angular.IScope;
     let $timeout: ITimeoutService;
+    let institutionRS: InstitutionRS;
 
     beforeEach(angular.mock.module(MITTEILUNGEN_JS_MODULE.name));
 
@@ -62,6 +64,7 @@ describe('mitteilungenView', () => {
         $timeout = $injector.get('$timeout');
         $rootScope = $injector.get('$rootScope');
         $q = $injector.get('$q');
+        institutionRS = $injector.get('InstitutionRS');
         scope = $rootScope.$new();
 
         // prepare fall
@@ -195,7 +198,7 @@ describe('mitteilungenView', () => {
         spyOn(mitteilungRS, 'setAllNewMitteilungenOfDossierGelesen').and.returnValue($q.resolve([]));
         controller = new DVMitteilungListController(stateParams, mitteilungRS, authServiceRS, betreuungRS, $q, null,
             $rootScope, undefined, undefined, undefined, undefined, scope, $timeout,
-            dossierRS, undefined);
+            dossierRS, undefined, institutionRS);
         controller.$onInit();   // hack, muesste wohl eher so gehen
                                 // http://stackoverflow.com/questions/38631204/how-to-trigger-oninit-or-onchanges-implictly-in-unit-testing-angular-component
         $rootScope.$apply();

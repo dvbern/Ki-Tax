@@ -45,7 +45,8 @@
                                 <div class="form-group">
                                     <label class="md-no-float"
                                            for="empfaenger">
-                                        <span data-translate="EMPFAENGER_WAEHLEN" class="required"></span>
+                                        <span ng-if="!vm.isCurrentUserTraegerschaft()" data-translate="EMPFAENGER_WAEHLEN" class="required"></span>
+                                        <span ng-if="vm.isCurrentUserTraegerschaft()" data-translate="SENDER_WAEHLEN" class="required"></span>
                                     </label>
                                     <div class="dv-select-style">
                                         <select aria-describedby="empfaenger-error" name="empfaenger"
