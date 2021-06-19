@@ -83,8 +83,11 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 @Analyzer(definition = "EBEGUGermanAnalyzer")
 @EntityListeners({ GesuchStatusListener.class, GesuchGueltigListener.class })
 @Table(
-	uniqueConstraints = @UniqueConstraint(columnNames = { "dossier_id", "gesuchsperiode_id", "gueltig" },
+	uniqueConstraints = { @UniqueConstraint(columnNames = { "dossier_id", "gesuchsperiode_id", "gueltig" },
 		name = "UK_gueltiges_gesuch"),
+		@UniqueConstraint(columnNames = { "laufnummer", "dossier_id", "gesuchsperiode_id" },
+			name = "UK_gesuch_laufnummer_dossier_gesuchsperiode")
+	},
 	indexes = @Index(name = "IX_gesuch_timestamp_erstellt", columnList = "timestampErstellt")
 )
 public class Gesuch extends AbstractMutableEntity implements Searchable {
@@ -942,7 +945,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		}
 	}
 
-	private void copyEinkommensverschlechterungInfoContainer(@Nonnull Gesuch target,
+	private void copyEinkommensverschlechterungInfoContainer(
+		@Nonnull Gesuch target,
 		@Nonnull AntragCopyType copyType) {
 		if (this.getEinkommensverschlechterungInfoContainer() != null) {
 			target.setEinkommensverschlechterungInfoContainer(this.getEinkommensverschlechterungInfoContainer()
@@ -1033,7 +1037,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		@Nonnull Gesuchsperiode gesuchsperiodeOfTarget,
 		@Nonnull Eingangsart eingangsartOfTarget,
 		@Nonnull LocalDate regelStartDatum) {
-		return this.copyGesuch(folgegesuch,
+		return this.copyGesuch(
+			folgegesuch,
 			AntragCopyType.ERNEUERUNG,
 			eingangsartOfTarget,
 			AntragTyp.ERNEUERUNGSGESUCH,
@@ -1049,7 +1054,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		@Nonnull Dossier dossierOfTarget,
 		@Nonnull Gesuchsperiode gesuchsperiodeOfTarget,
 		@Nonnull LocalDate regelStartDatum) {
-		return this.copyGesuch(target,
+		return this.copyGesuch(
+			target,
 			AntragCopyType.ERNEUERUNG_NEUES_DOSSIER,
 			eingangsartOfTarget,
 			AntragTyp.ERSTGESUCH,
@@ -1061,7 +1067,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Nonnull
 	public Gesuch copyForMutationNeuesDossier(
 		@Nonnull Gesuch target, @Nonnull Eingangsart eingangsartOfTarget, @Nonnull Dossier dossierOfTarget) {
-		return this.copyGesuch(target,
+		return this.copyGesuch(
+			target,
 			AntragCopyType.MUTATION_NEUES_DOSSIER,
 			eingangsartOfTarget,
 			AntragTyp.ERSTGESUCH,

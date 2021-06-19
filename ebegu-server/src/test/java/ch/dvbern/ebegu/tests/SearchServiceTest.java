@@ -272,19 +272,21 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testGetPendenzenForSteueramtUser() {
 		Dossier dossier = TestDataUtil.createAndPersistDossierAndFall(persistence);
+		Dossier dossier1 = TestDataUtil.createAndPersistDossierAndFall(persistence);
+		Dossier dossier2 = TestDataUtil.createAndPersistDossierAndFall(persistence);
 		final Gesuchsperiode gesuchsperiode1516 = TestDataUtil.createCustomGesuchsperiode(2015, 2016);
 		final Gesuchsperiode periodeToUpdate = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode1516);
 
 		Gesuch gesuchVerfuegt = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.VERFUEGT);
 		persistence.persist(gesuchVerfuegt);
 
-		Gesuch gesuchSTV = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.PRUEFUNG_STV);
+		Gesuch gesuchSTV = TestDataUtil.createMutation(dossier, periodeToUpdate, AntragStatus.PRUEFUNG_STV, 1);
 		persistence.persist(gesuchSTV);
 
-		Gesuch gesuchGeprueftSTV = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.GEPRUEFT_STV);
+		Gesuch gesuchGeprueftSTV = TestDataUtil.createGesuch(dossier1, periodeToUpdate, AntragStatus.GEPRUEFT_STV);
 		persistence.persist(gesuchGeprueftSTV);
 
-		Gesuch gesuchBearbeitungSTV = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.IN_BEARBEITUNG_STV);
+		Gesuch gesuchBearbeitungSTV = TestDataUtil.createGesuch(dossier2, periodeToUpdate, AntragStatus.IN_BEARBEITUNG_STV);
 		persistence.persist(gesuchBearbeitungSTV);
 
 		AntragTableFilterDTO filterDTO = TestDataUtil.createAntragTableFilterDTO();

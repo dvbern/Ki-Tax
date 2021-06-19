@@ -115,6 +115,7 @@ import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
 import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -1957,6 +1958,16 @@ public final class TestDataUtil {
 		gesuch.setDossier(dossier);
 		gesuch.setGesuchsperiode(periodeToUpdate);
 		gesuch.setStatus(status);
+		return gesuch;
+	}
+
+	public static Gesuch createMutation(Dossier dossier, Gesuchsperiode periodeToUpdate, AntragStatus status, int laufnummer) {
+		Gesuch gesuch = new Gesuch();
+		gesuch.setDossier(dossier);
+		gesuch.setGesuchsperiode(periodeToUpdate);
+		gesuch.setStatus(status);
+		gesuch.setTyp(AntragTyp.MUTATION);
+		gesuch.setLaufnummer(laufnummer);
 		return gesuch;
 	}
 
