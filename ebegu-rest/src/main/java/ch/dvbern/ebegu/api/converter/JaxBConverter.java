@@ -4482,7 +4482,7 @@ public class JaxBConverter extends AbstractConverter {
 		if (mitteilungJAXP.getEmpfaenger() != null) {
 			Benutzer empfaenger = benutzerService.findBenutzer(mitteilungJAXP.getEmpfaenger().getUsername())
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
-					"mitteilungToEntity",
+					"mitteilungToEntity - findBenutzer",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					mitteilungJAXP.getEmpfaenger()));
 			// because the user doesn't come from the client but from the server
@@ -4509,7 +4509,7 @@ public class JaxBConverter extends AbstractConverter {
 				mitteilung.setInstitution(institutionFromDB.get());
 			} else {
 				throw new EbeguEntityNotFoundException(
-					"mitteilungToEntity",
+					"mitteilungToEntity - getInstitution",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					mitteilungJAXP.getInstitution().getId());
 			}
