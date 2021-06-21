@@ -21,9 +21,9 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SharedModule} from '../shared/shared.module';
 import {FerienbetreuungModule} from './ferienbetreuung/ferienbetreuung.module';
 import {GemeindeAntraegeRoutingModule} from './gemeinde-antraege-routing/gemeinde-antraege-routing.module';
-import {VerlaufComponent} from './gemeinde-antraege/antrag/verlauf/verlauf.component';
 import {GemeindeAntraegeComponent} from './gemeinde-antraege/gemeinde-antraege.component';
 import {LastenausgleichTSModule} from './lastenausgleich-ts/lastenausgleich-ts.module';
+import {VerlaufComponent} from './lastenausgleich-ts/verlauf/verlauf.component';
 import {UnsavedChangesService} from './services/unsaved-changes.service';
 
 @NgModule({

@@ -2,8 +2,8 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/angular';
 import {of} from 'rxjs';
-import {ErrorService} from '../../../../core/errors/service/ErrorService';
-import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {LastenausgleichTSService} from '../services/lastenausgleich-ts.service';
 
 import {VerlaufComponent} from './verlauf.component';
 

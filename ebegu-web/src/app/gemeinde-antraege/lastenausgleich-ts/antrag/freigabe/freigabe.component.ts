@@ -31,7 +31,7 @@ import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confi
 import {DvNgOkDialogComponent} from '../../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
-import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
+import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 @Component({
     selector: 'dv-freigabe',

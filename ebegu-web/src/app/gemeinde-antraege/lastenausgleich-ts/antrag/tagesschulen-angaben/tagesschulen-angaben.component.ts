@@ -44,9 +44,9 @@ import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../../core/service/wizardStepXRS.rest';
 import {numberValidator, ValidationType} from '../../../../shared/validators/number-validator.directive';
-import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
-import {TagesschuleAngabenRS} from '../../../lastenausgleich-ts/services/tagesschule-angaben.service.rest';
 import {UnsavedChangesService} from '../../../services/unsaved-changes.service';
+import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
+import {TagesschuleAngabenRS} from '../../services/tagesschule-angaben.service.rest';
 
 const LOG = LogFactory.createLog('TagesschulenAngabenComponent');
 
