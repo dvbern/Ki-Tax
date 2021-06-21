@@ -36,11 +36,9 @@ export class ZahlungviewXComponent implements OnInit {
     private zahlungen: TSZahlung[] = [];
     private isMahlzeitenzahlungen: boolean = false;
     public datasource: MatTableDataSource<TSZahlung[]>;
-    public canSeeBestaetigen = false;
 
     public itemsByPage: number = 20;
     public tableColumns: any[];
-    private principal: TSBenutzer;
 
     public constructor(
         private readonly $state: StateService,
@@ -69,8 +67,6 @@ export class ZahlungviewXComponent implements OnInit {
                             return this.zahlungRS.getZahlungsauftragForRole$(
                                 principal.getCurrentRole(), zahlungsauftragId);
                         }
-                        this.canSeeBestaetigen = principal.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
-                        this.principal = principal;
                     }
 
                     return of(null);
@@ -85,7 +81,7 @@ export class ZahlungviewXComponent implements OnInit {
                 },
                 err => LOG.error(err),
             );
-        this.setupTableColumns()
+        this.setupTableColumns();
     }
 
     public gotToUebersicht(): void {
@@ -107,11 +103,13 @@ export class ZahlungviewXComponent implements OnInit {
 
     public bestaetigen(zahlung: TSZahlung): void {
         this.zahlungRS.zahlungBestaetigen(zahlung.id).then((response: TSZahlung) => {
-            const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungen);
-            if (index > -1) {
-                this.zahlungen[index] = response;
+            const index: number = EbeguUtil.getIndexOfElementwithID(response, this.zahlungen);
+            if (index < 0) {
+                return;
             }
-            EbeguUtil.handleSmarttablesUpdateBug(this.zahlungen);
+            this.zahlungen[index] = response;
+            this.datasource = new MatTableDataSource<TSZahlung[]>(this.zahlungen as any);
+            this.cd.markForCheck();
         });
     }
 
@@ -136,10 +134,6 @@ export class ZahlungviewXComponent implements OnInit {
                 attributeName: 'betragTotalZahlung',
                 displayFunction: (betrag: number) => this.currency.transform(betrag, '', ''),
             },
-            {
-                displayedName: this.translate.instant('ZAHLUNG_STATUS'),
-                attributeName: 'status',
-            },
         ];
     }
 
@@ -153,9 +147,7 @@ export class ZahlungviewXComponent implements OnInit {
     public getColumnsAttributeName(): string[] {
         const mapped = this.tableColumns.map(column => column.attributeName);
         mapped.splice(1, 0, 'zahlungPainExcel');
-        if (this.principal?.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-            mapped.push('bestaetigen');
-        }
+        mapped.push('status');
         return mapped;
     }
 }

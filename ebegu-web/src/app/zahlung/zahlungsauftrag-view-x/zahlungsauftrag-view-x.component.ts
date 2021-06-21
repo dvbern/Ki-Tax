@@ -1,17 +1,18 @@
 import {CurrencyPipe} from '@angular/common';
-import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {PageEvent} from '@angular/material/paginator';
-import {MatSort, Sort} from '@angular/material/sort';
+import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
 import * as moment from 'moment';
-import {Observable, of, Subject} from 'rxjs';
+import {of, Subject} from 'rxjs';
 import {filter, switchMap, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSZahlungsauftragsstatus} from '../../../models/enums/TSZahlungsauftragstatus';
 import {TSZahlungslaufTyp} from '../../../models/enums/TSZahlungslaufTyp';
 import {TSZahlungsstatus} from '../../../models/enums/TSZahlungsstatus';
@@ -399,6 +400,8 @@ export class ZahlungsauftragViewXComponent implements OnInit {
             {
                 displayedName: this.translate.instant('ZAHLUNG_STATUS'),
                 attributeName: 'status',
+                // tslint:disable-next-line:no-unused
+                displayFunction: (status: TSZahlungsauftragsstatus, element: TSZahlungsauftrag) => this.getCalculatedStatus(element)
             },
         ];
     }
@@ -434,5 +437,13 @@ export class ZahlungsauftragViewXComponent implements OnInit {
             Math.min(offset + pageSize, this.zahlungsAuftraegeFiltered.length));
         this.datasource.sort = this.sort;
         this.cd.markForCheck();
+    }
+
+    public showForm(): boolean {
+        return this.principal?.hasOneOfRoles(TSRoleUtil.getAdministratorBgGemeindeRoles());
+    }
+
+    public showGemeindeFilter(): boolean {
+        return this.principal?.hasRole(TSRole.SUPER_ADMIN);
     }
 }
