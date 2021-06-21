@@ -77,6 +77,7 @@
                                     <th translate>MODUL_ZEITRAUM</th>
                                     <th translate>MODUL_VERPFLEGUNG</th>
                                     <th translate>MODUL_VERFUEGBAR</th>
+                                    <th translate>MODUL_PAEDAGOGISCH_BETREUT_SHORT</th>
                                     <th translate>MODUL_INTERVALL</th>
                                     <th *ngIf="editMode || schnittstelleInfosVisible()"></th>
                                 </tr>
@@ -102,6 +103,14 @@
                                     <td title="{{getWochentageAsString(group)}}"
                                         (click)="editModulTagesschuleGroup(einstellungGP, group)">
                                         {{getWochentageAsString(group)}}
+                                    </td>
+                                    <td *ngIf="group.wirdPaedagogischBetreut" [title]="'JA' | translate"
+                                        (click)="editModulTagesschuleGroup(einstellungGP, group)">
+                                        {{'LABEL_JA' | translate}}
+                                    </td>
+                                    <td *ngIf="!group.wirdPaedagogischBetreut" [title]="'NEIN' | translate"
+                                        (click)="editModulTagesschuleGroup(einstellungGP, group)">
+                                        {{'LABEL_NEIN' | translate}}
                                     </td>
                                     <td title="{{group.intervall | translate}}"
                                         (click)="editModulTagesschuleGroup(einstellungGP, group)">
