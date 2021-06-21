@@ -18,18 +18,27 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.ExternalClient_;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient_;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ExternalClientType;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -44,6 +53,9 @@ public class ExternalClientServiceBean extends AbstractBaseService implements Ex
 	@Inject
 	private Persistence persistence;
 
+	@Inject
+	private InstitutionStammdatenService institutionStammdatenService;
+
 	@Nonnull
 	@Override
 	public Collection<ExternalClient> getAllForGemeinde() {
@@ -53,9 +65,31 @@ public class ExternalClientServiceBean extends AbstractBaseService implements Ex
 
 	@Nonnull
 	@Override
-	public Collection<ExternalClient> getAllForInstitution() {
-		return criteriaQueryHelper.getEntitiesByAttribute(
-			ExternalClient.class, ExternalClientType.EXCHANGE_SERVICE_USER, ExternalClient_.type);
+	public Collection<ExternalClient> getAllForInstitution(@Nonnull Institution institution) {
+		InstitutionStammdaten institutionStammdaten =
+			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institution.getId(), true);
+		Objects.requireNonNull(institutionStammdaten);
+
+		Set<ExternalClientType> types = new HashSet<>();
+		// EXCHANGE_SERVICE_USER is allowed for both roles
+		types.add(ExternalClientType.EXCHANGE_SERVICE_USER);
+
+		if (institutionStammdaten.getBetreuungsangebotTyp() == BetreuungsangebotTyp.KITA
+			|| institutionStammdaten.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESFAMILIEN
+		) {
+			types.add(ExternalClientType.EXCHANGE_SERVICE_USER_BG);
+		} else if (institutionStammdaten.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESSCHULE) {
+			types.add(ExternalClientType.EXCHANGE_SERVICE_USER_TS);
+		}
+
+		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
+		final CriteriaQuery<ExternalClient> query = builder.createQuery(ExternalClient.class);
+		final Root<ExternalClient> root = query.from(ExternalClient.class);
+		Predicate typePredicate = root.get(ExternalClient_.type).in(types);
+		query.where(typePredicate);
+
+		return persistence.getEntityManager().createQuery(query)
+			.getResultList();
 	}
 
 	@Nonnull

@@ -460,7 +460,7 @@ public class InstitutionResource {
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				institutionJAXPId.getId()));
 
-		Collection<ExternalClient> availableClients = externalClientService.getAllForInstitution();
+		Collection<ExternalClient> availableClients = externalClientService.getAllForInstitution(institution);
 
 		Collection<InstitutionExternalClient> institutionExternalClients =
 			externalClientService.getInstitutionExternalClientForInstitution(institution);
