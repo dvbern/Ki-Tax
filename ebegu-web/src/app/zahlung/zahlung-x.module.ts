@@ -21,10 +21,11 @@ import {NgGesuchModule} from '../../gesuch/ng-gesuch.module';
 import {CoreModule} from '../core/core.module';
 import {SharedModule} from '../shared/shared.module';
 import {ZahlungsauftragViewXComponent} from './zahlungsauftrag-view-x/zahlungsauftrag-view-x.component';
+import { ZahlungviewXComponent } from './zahlungview-x/zahlungview-x.component';
 
 @NgModule({
     imports: [SharedModule, NgGesuchModule, CoreModule],
-    declarations: [ZahlungsauftragViewXComponent],
+    declarations: [ZahlungsauftragViewXComponent, ZahlungviewXComponent],
     providers: [CurrencyPipe]
 })
 export class ZahlungXModule {
