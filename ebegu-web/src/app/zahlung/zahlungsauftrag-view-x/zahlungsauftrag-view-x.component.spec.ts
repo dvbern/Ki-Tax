@@ -16,7 +16,7 @@ import {SharedModule} from '../../shared/shared.module';
 
 import {ZahlungsauftragViewXComponent} from './zahlungsauftrag-view-x.component';
 
-fdescribe('ZahlungsauftragViewXComponent', () => {
+describe('ZahlungsauftragViewXComponent', () => {
     let component: ZahlungsauftragViewXComponent;
     let fixture: ComponentFixture<ZahlungsauftragViewXComponent>;
 
