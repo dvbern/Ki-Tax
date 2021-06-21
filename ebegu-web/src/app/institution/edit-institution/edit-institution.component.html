@@ -235,7 +235,7 @@
                         </div>
                     </div>
 
-                    <div *ngIf="externalClients && !isTagesschule() && !isFerieninsel()" class="col-sm-6">
+                    <div *ngIf="externalClients && allPossibleClients.length && !isFerieninsel()" class="col-sm-6">
                         <h3 translate>PERMITTED_EXTERNAL_CLIENTS</h3>
                         <div *ngFor="let client of allPossibleClients">
                             <div class="row picker-min-height">
@@ -339,7 +339,7 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <div class="form-group" *ngIf="externalClients && !isTagesschule() && !isFerieninsel()">
+                            <div class="form-group" *ngIf="externalClients && getSortedAssignedClients().length && !isFerieninsel()">
                                 <h3 translate>PERMITTED_EXTERNAL_CLIENTS</h3>
                                 <div *ngFor="let assignedClient of getSortedAssignedClients(); let i = index">
                                     <div class="row">
