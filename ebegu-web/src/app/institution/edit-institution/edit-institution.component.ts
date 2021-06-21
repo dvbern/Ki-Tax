@@ -530,6 +530,8 @@ export class EditInstitutionComponent implements OnInit {
                 this.externalClients.assignedClients.splice(idx, 1);
             }
         }
+        // update references to trigger change detection of children
+        this.externalClients.assignedClients = [].concat(this.externalClients.assignedClients);
     }
 
     public isClientAssigned(client: TSExternalClient): boolean {

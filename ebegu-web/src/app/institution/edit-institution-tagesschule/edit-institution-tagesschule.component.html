@@ -107,17 +107,26 @@
                                         (click)="editModulTagesschuleGroup(einstellungGP, group)">
                                         {{group.intervall | translate}}
                                     </td>
-                                    <td *ngIf="editMode" [title]="getEditDeleteButtonTooltip(einstellungGP, group)">
+                                    <td *ngIf="editMode">
                                         <button type="button" class="dv-btn dv-btn-operation"
+                                                [title]="getEditDeleteButtonTooltip(einstellungGP, group)"
                                                 (click)="editModulTagesschuleGroup(einstellungGP, group)"
                                                 [disabled]="!canEditModule(einstellungGP, group)">
                                             <i class="fa fa-lg fa-edit"></i>
                                         </button>
                                         &nbsp;
                                         <button type="button" class="dv-btn dv-btn-operation"
+                                                [title]="getEditDeleteButtonTooltip(einstellungGP, group)"
                                                 (click)="removeModulTagesschuleGroup(einstellungGP, group)"
                                                 [disabled]="!canEditModule(einstellungGP, group)">
                                             <i class="fa fa-lg fa-trash-o"></i>
+                                        </button>
+                                        &nbsp;
+                                        <button type="button" class="dv-btn dv-btn-operation"
+                                                [title]="'SCHNITTSTELLE_INFO_TOOLTIP' | translate "
+                                                *ngIf="schnittstelleInfosVisible()"
+                                                (click)="showSchnittstelleInfos(group)">
+                                            <i class="fa fa-lg fa-cogs"></i>
                                         </button>
                                     </td>
                                 </tr>

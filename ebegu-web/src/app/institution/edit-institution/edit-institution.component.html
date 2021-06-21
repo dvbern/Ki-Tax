@@ -280,6 +280,7 @@
             <div *ngIf="isTagesschule() && stammdaten && stammdaten.institutionStammdatenTagesschule">
                 <dv-edit-institution-tagesschule
                     [stammdaten]="stammdaten"
+                    [assignedClients]="this.externalClients.assignedClients"
                     [editMode]="editMode">
                 </dv-edit-institution-tagesschule>
             </div>

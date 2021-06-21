@@ -2534,5 +2534,6 @@
     "PENDENZ_ERLEDIGT": "Pendenz erledigt",
     "PENDENZ_WIRKLICH_LOESCHEN": "Wollen Sie diese Pendenz wirklich löschen?",
     "TERMIN": "Termin",
+    "SCHNITTSTELLE_INFO_TOOLTIP": "Informationen zur Schnittstelle anzeigen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

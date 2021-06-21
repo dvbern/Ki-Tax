@@ -2534,5 +2534,6 @@
     "PENDENZ_ERLEDIGT": "Cas en suspens interne réglé",
     "PENDENZ_WIRKLICH_LOESCHEN": "Voulez vous vraiment supprimer ce cas en suspens?",
     "TERMIN": "Délai",
+    "SCHNITTSTELLE_INFO_TOOLTIP": "Informationen zur Schnittstelle anzeigen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

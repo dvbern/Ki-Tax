@@ -31,6 +31,7 @@ import {TSRole} from '../../../models/enums/TSRole';
 import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
+import {TSInstitutionExternalClient} from '../../../models/TSInstitutionExternalClient';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSModulTagesschule} from '../../../models/TSModulTagesschule';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
@@ -58,6 +59,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     @Input() public stammdaten: TSInstitutionStammdaten;
     @Input() public editMode: boolean = false;
+    @Input() private assignedClients: TSInstitutionExternalClient[];
 
     public gemeindeList: TSGemeinde[] = [];
     private readonly panelClass = 'dv-mat-dialog-ts';
@@ -482,5 +484,13 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
             return true;
         }
         return false;
+    }
+
+    public schnittstelleInfosVisible(): boolean {
+        return this.assignedClients.length > 0;
+    }
+
+    public showSchnittstelleInfos(group: TSModulTagesschuleGroup): void {
+
     }
 }
