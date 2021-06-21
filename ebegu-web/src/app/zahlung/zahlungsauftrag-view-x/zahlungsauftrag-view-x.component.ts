@@ -450,7 +450,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         this.applyPagination(this.page, this.PAGE_SIZE);
     }
 
-    public applyPagination(page: number, pageSize: any): void {
+    public applyPagination(page: number, pageSize: number): void {
         const offset = page * pageSize;
         this.datasource.data = this.zahlungsAuftraegeFiltered.slice(offset,
             Math.min(offset + pageSize, this.zahlungsAuftraegeFiltered.length));

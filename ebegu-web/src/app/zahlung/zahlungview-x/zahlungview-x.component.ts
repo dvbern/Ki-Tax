@@ -98,7 +98,7 @@ export class ZahlungviewXComponent implements OnInit {
 
     public bestaetigen(zahlung: TSZahlung): void {
         this.zahlungRS.zahlungBestaetigen(zahlung.id).then((response: TSZahlung) => {
-            const index: number = EbeguUtil.getIndexOfElementwithID(response, this.zahlungen);
+            const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungen);
             if (index < 0) {
                 return;
             }
