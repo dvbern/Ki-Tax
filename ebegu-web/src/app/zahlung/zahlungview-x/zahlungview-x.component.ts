@@ -4,29 +4,24 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
-import * as moment from 'moment';
 import {of} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSZahlungsstatus} from '../../../models/enums/TSZahlungsstatus';
-import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
-import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSZahlung} from '../../../models/TSZahlung';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {ReportRS} from '../../core/service/reportRS.rest';
 import {ZahlungRS} from '../../core/service/zahlungRS.rest';
 
-const LOG = LogFactory.createLog('ZahlungViewController');
+const LOG = LogFactory.createLog('ZahlungviewXComponent');
 
 @Component({
     selector: 'dv-zahlungview-x',
     templateUrl: './zahlungview-x.component.html',
-    styleUrls: ['./zahlungview-x.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ZahlungviewXComponent implements OnInit {

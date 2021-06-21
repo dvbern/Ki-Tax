@@ -22,7 +22,6 @@ import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {TestFaelleRS} from '../../admin/service/testFaelleRS.rest';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {DossierRS} from '../../gesuch/service/dossierRS.rest';
-import {ExportRS} from '../../gesuch/service/exportRS.rest';
 import {FallRS} from '../../gesuch/service/fallRS.rest';
 import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../gesuch/service/gesuchModelManager';

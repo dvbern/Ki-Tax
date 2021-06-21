@@ -123,8 +123,8 @@ export class ZahlungsauftragViewXComponent implements OnInit {
             this.testMode = response;
         });
         this.setupTableColumns();
-        this.authServiceRS.principal$.subscribe(user => this.principal = user);
-        this.translate.onDefaultLangChange.subscribe(() => this.setupTableColumns());
+        this.authServiceRS.principal$.subscribe(user => this.principal = user, error => LOG.error(error));
+        this.translate.onDefaultLangChange.subscribe(() => this.setupTableColumns(), (error: any) => LOG.error(error));
         this.transition.onStart({exiting: 'zahlungsauftrag.view'}, () => {
             console.log('move out');
             this.stateStore.store(this.SORT_STORE_KEY, this.sort);
@@ -198,7 +198,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
                     this.resetForm();
                     this.cd.markForCheck();
                 });
-            });
+            }, error => LOG.error(error));
     }
 
     public downloadPain(zahlungsauftrag: TSZahlungsauftrag): angular.IPromise<void | never> {
@@ -245,7 +245,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
                     this.toggleAuszahlungslaufTyp();
                     this.cd.markForCheck();
                 });
-            });
+            }, error => LOG.error(error));
     }
 
     public edit(zahlungsauftrag: TSZahlungsauftrag): void {
@@ -346,13 +346,14 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         }
         // Abfragen, welche meiner berechtigten Gemeinden Mahlzeitenverguenstigung haben
         this.gemeindeRS.getGemeindenWithMahlzeitenverguenstigungForBenutzer().then(value => {
-            if (value.length > 0) {
-                // Sobald mindestens eine Gemeinde in mindestens einer Gesuchsperiode die
-                // Mahlzeiten aktiviert hat, wird der Toggle angezeigt
-                this.showMahlzeitenZahlungslaeufe = true;
-                this.berechtigteGemeindenMitMahlzeitenList = value;
-                this.cd.markForCheck();
+            if (value.length <= 0) {
+                return;
             }
+            // Sobald mindestens eine Gemeinde in mindestens einer Gesuchsperiode die
+            // Mahlzeiten aktiviert hat, wird der Toggle angezeigt
+            this.showMahlzeitenZahlungslaeufe = true;
+            this.berechtigteGemeindenMitMahlzeitenList = value;
+            this.cd.markForCheck();
         });
     }
 
@@ -415,8 +416,8 @@ export class ZahlungsauftragViewXComponent implements OnInit {
             {
                 displayedName: this.translate.instant('ZAHLUNG_STATUS'),
                 attributeName: 'status',
-                // tslint:disable-next-line:no-unused
                 displayFunction: (
+                    // tslint:disable-next-line:no-unused
                     status: TSZahlungsauftragsstatus,
                     element: TSZahlungsauftrag,
                 ) => this.getCalculatedStatus(element),

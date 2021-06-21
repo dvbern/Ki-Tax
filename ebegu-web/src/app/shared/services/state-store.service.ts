@@ -9,7 +9,7 @@ import {Injectable} from '@angular/core';
 })
 export class StateStoreService {
 
-    private _store: Map<string, object> = new Map<string, object>();
+    private readonly _store: Map<string, object> = new Map<string, object>();
 
     public constructor() {
     }
