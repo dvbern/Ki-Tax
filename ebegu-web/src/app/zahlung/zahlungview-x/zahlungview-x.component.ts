@@ -10,10 +10,12 @@ import {map, switchMap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSZahlungsstatus} from '../../../models/enums/TSZahlungsstatus';
+import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSZahlung} from '../../../models/TSZahlung';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {ReportRS} from '../../core/service/reportRS.rest';
@@ -34,9 +36,11 @@ export class ZahlungviewXComponent implements OnInit {
     private zahlungen: TSZahlung[] = [];
     private isMahlzeitenzahlungen: boolean = false;
     public datasource: MatTableDataSource<TSZahlung[]>;
+    public canSeeBestaetigen = false;
 
     public itemsByPage: number = 20;
     public tableColumns: any[];
+    private principal: TSBenutzer;
 
     public constructor(
         private readonly $state: StateService,
@@ -65,6 +69,8 @@ export class ZahlungviewXComponent implements OnInit {
                             return this.zahlungRS.getZahlungsauftragForRole$(
                                 principal.getCurrentRole(), zahlungsauftragId);
                         }
+                        this.canSeeBestaetigen = principal.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
+                        this.principal = principal;
                     }
 
                     return of(null);
@@ -147,6 +153,9 @@ export class ZahlungviewXComponent implements OnInit {
     public getColumnsAttributeName(): string[] {
         const mapped = this.tableColumns.map(column => column.attributeName);
         mapped.splice(1, 0, 'zahlungPainExcel');
+        if (this.principal?.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            mapped.push('bestaetigen');
+        }
         return mapped;
     }
 }
