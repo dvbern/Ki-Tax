@@ -28,6 +28,7 @@ import {DialogImportFromOtherInstitution} from './edit-institution-tagesschule/d
 import {EditInstitutionTagesschuleComponent} from './edit-institution-tagesschule/edit-institution-tagesschule.component';
 import {EditInstitutionComponent} from './edit-institution/edit-institution.component';
 import {ModulTagesschuleDialogComponent} from './edit-modul-tagesschule/modul-tagesschule-dialog.component';
+import {InfoSchnittstelleDialogComponent} from './info-schnittstelle-dialog/info-schnittstelle-dialog.component';
 import {InstitutionRoutingModule} from './institution-routing/institution-routing.module';
 import {InstitutionListComponent} from './list-institution/institution-list.component';
 
@@ -52,7 +53,8 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
         EditInstitutionFerieninselComponent,
         ModulTagesschuleDialogComponent,
         DialogImportFromOtherInstitution,
-        EditBetreuungsstandortComponent
+        EditBetreuungsstandortComponent,
+        InfoSchnittstelleDialogComponent
     ],
     providers: [],
 })

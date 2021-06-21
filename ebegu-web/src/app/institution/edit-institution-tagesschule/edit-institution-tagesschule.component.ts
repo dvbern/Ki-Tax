@@ -45,6 +45,7 @@ import {ErrorService} from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {ModulTagesschuleDialogComponent} from '../edit-modul-tagesschule/modul-tagesschule-dialog.component';
+import {InfoSchnittstelleDialogComponent} from '../info-schnittstelle-dialog/info-schnittstelle-dialog.component';
 import {DialogImportFromOtherInstitution} from './dialog-import-from-other-institution/dialog-import-from-other-institution.component';
 
 @Component({
@@ -491,6 +492,9 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
     }
 
     public showSchnittstelleInfos(group: TSModulTagesschuleGroup): void {
-
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {modulTagesschuleGroup: group};
+        dialogConfig.panelClass = this.panelClass;
+        this.dialog.open(InfoSchnittstelleDialogComponent, dialogConfig).afterClosed().subscribe();
     }
 }
