@@ -341,6 +341,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
     }
 
     public toggleAuszahlungslaufTyp(): void {
+        this.filterGemeinde = null;
         this.filterZahlungsAuftraege();
         this.gemeindenList
             = TSZahlungslaufTyp.GEMEINDE_INSTITUTION === this.zahlungslaufTyp
