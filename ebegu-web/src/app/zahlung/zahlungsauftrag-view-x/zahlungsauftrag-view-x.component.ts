@@ -3,10 +3,10 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {PageEvent} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
+import {MatSort, MatSortHeader} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
-import {StateService, UIRouterGlobals} from '@uirouter/core';
+import {StateService, TransitionService, UIRouterGlobals} from '@uirouter/core';
 import * as moment from 'moment';
 import {of, Subject} from 'rxjs';
 import {filter, switchMap, takeUntil} from 'rxjs/operators';
@@ -29,6 +29,7 @@ import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {ReportRS} from '../../core/service/reportRS.rest';
 import {ZahlungRS} from '../../core/service/zahlungRS.rest';
 import {DvSimpleTableColumnDefinition} from '../../shared/component/dv-simple-table/dv-simple-table-column-definition';
+import {StateStoreService} from '../../shared/services/state-store.service';
 
 const LOG = LogFactory.createLog('ZahlungsauftragViewXComponent');
 
@@ -77,6 +78,8 @@ export class ZahlungsauftragViewXComponent implements OnInit {
     public page: number = 0;
     private readonly PAGE_SIZE: number = 20;
 
+    private readonly SORT_STORE_KEY = 'zahlungsauftrag-view-sort';
+
     public constructor(
         private readonly zahlungRS: ZahlungRS,
         private readonly $state: StateService,
@@ -90,6 +93,8 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         private readonly cd: ChangeDetectorRef,
         private readonly dialog: MatDialog,
         private readonly currency: CurrencyPipe,
+        private readonly transition: TransitionService,
+        private readonly stateStore: StateStoreService,
     ) {
     }
 
@@ -120,10 +125,20 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         this.setupTableColumns();
         this.authServiceRS.principal$.subscribe(user => this.principal = user);
         this.translate.onDefaultLangChange.subscribe(() => this.setupTableColumns());
+        this.transition.onStart({exiting: 'zahlungsauftrag.view'}, () => {
+            console.log('move out');
+            this.stateStore.store(this.SORT_STORE_KEY, this.sort);
+        });
     }
 
     public ngAfterViewInit(): void {
 
+        if (this.stateStore.has(this.SORT_STORE_KEY)) {
+            const stored = this.stateStore.get(this.SORT_STORE_KEY) as MatSort;
+            this.sort.active = stored.active;
+            this.sort.direction = stored.direction;
+            (this.sort.sortables.get(stored.active) as MatSortHeader)._setAnimationTransitionState({toState: 'active'});
+        }
         this.datasource.sort = this.sort;
         this.datasource.sortingDataAccessor = ZahlungsauftragViewXComponent.sortingDataAccessor;
     }
@@ -401,7 +416,10 @@ export class ZahlungsauftragViewXComponent implements OnInit {
                 displayedName: this.translate.instant('ZAHLUNG_STATUS'),
                 attributeName: 'status',
                 // tslint:disable-next-line:no-unused
-                displayFunction: (status: TSZahlungsauftragsstatus, element: TSZahlungsauftrag) => this.getCalculatedStatus(element)
+                displayFunction: (
+                    status: TSZahlungsauftragsstatus,
+                    element: TSZahlungsauftrag,
+                ) => this.getCalculatedStatus(element),
             },
         ];
     }
