@@ -2,7 +2,7 @@ import {CurrencyPipe} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
-import {PageEvent} from '@angular/material/paginator';
+import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {MatSort, MatSortHeader} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
@@ -43,6 +43,8 @@ export class ZahlungsauftragViewXComponent implements OnInit {
 
     @ViewChild(NgForm) public readonly form: NgForm;
     @ViewChild(MatSort) public sort: MatSort;
+    @ViewChild(MatPaginator) private readonly paginator: MatPaginator;
+
     public datasource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
     public data: TSZahlungsauftrag[] = [];
 
@@ -76,7 +78,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
 
     public paginationItems: number[];
     public page: number = 0;
-    private readonly PAGE_SIZE: number = 20;
+    public readonly PAGE_SIZE: number = 20;
 
     private readonly SORT_STORE_KEY = 'zahlungsauftrag-view-sort';
 
@@ -126,7 +128,6 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         this.authServiceRS.principal$.subscribe(user => this.principal = user, error => LOG.error(error));
         this.translate.onDefaultLangChange.subscribe(() => this.setupTableColumns(), (error: any) => LOG.error(error));
         this.transition.onStart({exiting: 'zahlungsauftrag.view'}, () => {
-            console.log('move out');
             this.stateStore.store(this.SORT_STORE_KEY, this.sort);
         });
     }
@@ -141,6 +142,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         }
         this.datasource.sort = this.sort;
         this.datasource.sortingDataAccessor = ZahlungsauftragViewXComponent.sortingDataAccessor;
+        this.datasource.paginator = this.paginator;
     }
 
     private updateZahlungsauftrag(): void {
@@ -364,7 +366,6 @@ export class ZahlungsauftragViewXComponent implements OnInit {
             = TSZahlungslaufTyp.GEMEINDE_INSTITUTION === this.zahlungslaufTyp
             ? Array.from(this.berechtigteGemeindenList)
             : Array.from(this.berechtigteGemeindenMitMahlzeitenList);
-        this.applyPagination(this.page, this.PAGE_SIZE);
     }
 
     public filterZahlungsAuftraege(): void {
@@ -446,16 +447,11 @@ export class ZahlungsauftragViewXComponent implements OnInit {
 
     public handlePagination(pageEvent: Partial<PageEvent>): void {
         this.page = pageEvent.pageIndex;
-
-        this.applyPagination(this.page, this.PAGE_SIZE);
-    }
-
-    public applyPagination(page: number, pageSize: number): void {
-        const offset = page * pageSize;
-        this.datasource.data = this.zahlungsAuftraegeFiltered.slice(offset,
-            Math.min(offset + pageSize, this.zahlungsAuftraegeFiltered.length));
-        this.datasource.sort = this.sort;
+        this.paginator.pageIndex = this.page;
+        // @ts-ignore Ugly workaround, but otherwise, paginator will not update the data
+        this.paginator._emitPageEvent(this.page);
         this.cd.markForCheck();
+
     }
 
     public showForm(): boolean {

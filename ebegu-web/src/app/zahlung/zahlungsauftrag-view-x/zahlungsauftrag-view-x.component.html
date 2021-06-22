@@ -202,7 +202,7 @@
                 </ng-container>
 
                 <ng-container [matColumnDef]="'datumFaellig'">
-                    <mat-header-cell *matHeaderCellDef class="ellipsis">
+                    <mat-header-cell *matHeaderCellDef class="ellipsis" [mat-sort-header]="'datumFaellig'">
                         <span translate>ZAHLUNG_FAELLIGKEIT</span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
@@ -231,7 +231,7 @@
                 </ng-container>
 
                 <ng-container [matColumnDef]="'beschrieb'">
-                    <mat-header-cell *matHeaderCellDef class="ellipsis">
+                    <mat-header-cell *matHeaderCellDef class="ellipsis" [mat-sort-header]="'beschrieb'">
                         <span translate>ZAHLUNG_BESCHRIEB</span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
@@ -273,6 +273,8 @@
                 <mat-header-row *matHeaderRowDef="getColumnsAttributeName()"></mat-header-row>
                 <mat-row *matRowDef="let element; columns: getColumnsAttributeName();"></mat-row>
             </mat-table>
+
+            <mat-paginator [pageSize]="PAGE_SIZE"></mat-paginator>
 
             <div class="bottom-pagination">
                 <nav>
