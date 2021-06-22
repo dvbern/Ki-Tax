@@ -20,11 +20,12 @@ import {NgModule} from '@angular/core';
 import {NgGesuchModule} from '../../gesuch/ng-gesuch.module';
 import {CoreModule} from '../core/core.module';
 import {SharedModule} from '../shared/shared.module';
+import {ZahlungRoutingModule} from './zahlung-routing/zahlung-routing.module';
 import {ZahlungsauftragViewXComponent} from './zahlungsauftrag-view-x/zahlungsauftrag-view-x.component';
 import { ZahlungviewXComponent } from './zahlungview-x/zahlungview-x.component';
 
 @NgModule({
-    imports: [SharedModule, NgGesuchModule, CoreModule],
+    imports: [SharedModule, NgGesuchModule, CoreModule, ZahlungRoutingModule],
     declarations: [ZahlungsauftragViewXComponent, ZahlungviewXComponent],
     providers: [CurrencyPipe]
 })
