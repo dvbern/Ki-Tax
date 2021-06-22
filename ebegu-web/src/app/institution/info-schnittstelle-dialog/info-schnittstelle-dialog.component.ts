@@ -37,7 +37,7 @@ export class InfoSchnittstelleDialogComponent {
     public constructor(
         private readonly dialogRef: MatDialogRef<InfoSchnittstelleDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any,
-        private clipboard: Clipboard
+        private readonly clipboard: Clipboard
     ) {
         this.modulTagesschuleGroup = data.modulTagesschuleGroup;
         this.institution = data.institution;
