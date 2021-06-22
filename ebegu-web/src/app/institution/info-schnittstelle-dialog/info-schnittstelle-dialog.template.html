@@ -25,9 +25,12 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td>{{'ID_INSTITUTION' | translate}}</td>
+                    <td>{{'INSTITUTION_ID' | translate}}</td>
                     <td>{{institution.id}}</td>
-                    <td><i class="fa fa-clipboard fa-lg" [title]="'COPY_TO_CLIPBOARD' | translate"></i></td>
+                    <td (click)="copyToClipboard(institution.id, 'institution')">
+                        <i *ngIf="!copied['institution']" class="fa fa-clipboard fa-lg" [title]="'COPY_TO_CLIPBOARD' | translate"></i>
+                        <i *ngIf="copied['institution']" class="fa fa-check fa-lg" [title]="'COPIED' | translate"></i>
+                    </td>
                 </tr>
                 <tr>
                     <td>{{'MODUL_NAME' | translate}}</td>
@@ -37,7 +40,10 @@
                 <tr>
                     <td>{{'MODUL_ID' | translate}}</td>
                     <td>{{modulTagesschuleGroup.id}}</td>
-                    <td><i class="fa fa-clipboard fa-lg" [title]="'COPY_TO_CLIPBOARD' | translate"></i></td>
+                    <td (click)="copyToClipboard(modulTagesschuleGroup.id,'modul')">
+                        <i *ngIf="!copied['modul']" class="fa fa-clipboard fa-lg" [title]="'COPY_TO_CLIPBOARD' | translate"></i>
+                        <i *ngIf="copied['modul']" class="fa fa-check fa-lg" [title]="'COPIED' | translate"></i>
+                    </td>
                 </tr>
             </table>
         </div>

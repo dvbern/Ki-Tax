@@ -15,6 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {Clipboard} from '@angular/cdk/clipboard';
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TSInstitution} from '../../../models/TSInstitution';
@@ -29,16 +30,26 @@ export class InfoSchnittstelleDialogComponent {
 
     public modulTagesschuleGroup: TSModulTagesschuleGroup;
     public institution: TSInstitution;
+    public copied: any = {};
+
+    private readonly resetCopiedAfterMS = 1000;
 
     public constructor(
         private readonly dialogRef: MatDialogRef<InfoSchnittstelleDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any,
+        private clipboard: Clipboard
     ) {
         this.modulTagesschuleGroup = data.modulTagesschuleGroup;
         this.institution = data.institution;
     }
 
     public ngOnInit(): void {
+    }
+
+    public copyToClipboard(text: string, key: string): void {
+        this.clipboard.copy(text);
+        this.copied[key] = true;
+        setTimeout(() => this.copied[key] = false, this.resetCopiedAfterMS);
     }
 
     public close(): void {

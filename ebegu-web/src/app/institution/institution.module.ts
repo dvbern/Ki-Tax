@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {ClipboardModule} from '@angular/cdk/clipboard';
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {NgxIbanModule} from 'ngx-iban';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
@@ -39,6 +40,7 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
         MaterialModule,
         NgxIbanModule,
         NgxMaterialTimepickerModule,
+        ClipboardModule
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
