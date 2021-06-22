@@ -7,6 +7,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TSBenutzer} from '../../../models/TSBenutzer';
+import {ErrorService} from '../../core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {ReportRS} from '../../core/service/reportRS.rest';
@@ -31,6 +32,7 @@ describe('ZahlungsauftragViewXComponent', () => {
     const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
     const currencySpy = jasmine.createSpyObj(CurrencyPipe.name, ['']);
     const transitionSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name, ['onStart']);
+    const errorServiceSpy = jasmine.createSpyObj(ErrorService.name);
 
     uiRouterGlobalsSpy.params = {} as any;
     authServiceSpy.principal$ = of(new TSBenutzer());
@@ -55,7 +57,8 @@ describe('ZahlungsauftragViewXComponent', () => {
                 {provide: StateStoreService, useValue: stateStoreSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
                 {provide: CurrencyPipe, useValue: currencySpy},
-                {provide: TransitionService, useValue: transitionSpy}
+                {provide: TransitionService, useValue: transitionSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
             ],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

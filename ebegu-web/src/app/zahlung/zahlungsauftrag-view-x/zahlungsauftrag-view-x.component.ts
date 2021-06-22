@@ -23,6 +23,7 @@ import {TSZahlungsauftrag} from '../../../models/TSZahlungsauftrag';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {ErrorService} from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
@@ -97,6 +98,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         private readonly currency: CurrencyPipe,
         private readonly transition: TransitionService,
         private readonly stateStore: StateStoreService,
+        private readonly errorService: ErrorService,
     ) {
     }
 
@@ -195,6 +197,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
                     this.faelligkeitsdatum,
                     this.datumGeneriert,
                 ).then((response: TSZahlungsauftrag) => {
+                    this.errorService.addMesageAsInfo(this.translate.instant('ZAHLUNG_ERSTELLT'));
                     this.zahlungsAuftraege.push(response);
                     this.resetEditZahlungsauftrag();
                     this.resetForm();
@@ -312,8 +315,9 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         this.beschrieb = undefined;
         this.faelligkeitsdatum = undefined;
         this.datumGeneriert = undefined;
+        this.gemeinde = null;
         this.form.form.markAsPristine();
-        this.form.form.markAsPristine();
+        this.form.form.markAsUntouched();
         this.toggleAuszahlungslaufTyp();
     }
 

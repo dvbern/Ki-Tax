@@ -1201,6 +1201,7 @@
     "ZAHLUNG_BESCHRIEB": "Description",
     "ZAHLUNG_DETAILPOSITIONEN": "Fichier de versement (Excel)",
     "ZAHLUNG_ERSTELLEN": "ÉTABLIR UN VERSEMENT",
+    "ZAHLUNG_ERSTELLT": "Versement créé",
     "ZAHLUNG_UEBERSICHT": "Aperçu",
     "ZAHLUNGSLAUF_INFO_1": "Dans le premier ordre de versement d'un mois, toutes les demandes libérées et actuelles seront payées (paiement régulié). En plus de cela, on controllera toutes les demandes libérées depuis le dernier ordre de versement: si il y a une correction rétroactive, elle sera incluse dans l'ordre de versement. Ces corrections peuvent être négatives, mais seront compensées avec le paiement régulier. Si un autre ordre de versement est créé au cours du même mois, seules les corrections effectuées depuis le dernier ordre de versement seront exécutées. Normalement nous vous recommandons de ne créer un ordre de versement qu'une fois par mois, sinon le paiement total peut être négatif.",
     "ZAHLUNGSLAUF_INFO_2": "Les versements négatifs doivent être réglé en dehors de kiBon.",
