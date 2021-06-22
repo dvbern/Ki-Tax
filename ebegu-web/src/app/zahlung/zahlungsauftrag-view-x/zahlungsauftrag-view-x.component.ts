@@ -206,7 +206,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
             }, error => LOG.error(error));
     }
 
-    public downloadPain(zahlungsauftrag: TSZahlungsauftrag): angular.IPromise<void | never> {
+    public downloadPain(zahlungsauftrag: TSZahlungsauftrag): Promise<void> {
         const win = this.downloadRS.prepareDownloadWindow();
         return this.downloadRS.getPain001AccessTokenGeneratedDokument(zahlungsauftrag.id)
             .then((downloadFile: TSDownloadFile) => {
@@ -214,7 +214,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
             })
             .catch(() => {
                 win.close();
-            });
+            }) as Promise<void>;
     }
 
     public downloadAllDetails(zahlungsauftrag: TSZahlungsauftrag): void {
