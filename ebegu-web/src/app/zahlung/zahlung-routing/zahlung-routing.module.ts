@@ -19,9 +19,12 @@ import {NgModule} from '@angular/core';
 import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
-import {IBooleanStateParams} from '../../zahlungsauftrag/zahlungsauftrag.route';
+import {ZahlungsauftragViewXComponent} from '../zahlungsauftrag-view-x/zahlungsauftrag-view-x.component';
 import {ZahlungviewXComponent} from '../zahlungview-x/zahlungview-x.component';
 
+export class IBooleanStateParams {
+    public isMahlzeitenzahlungen: boolean;
+}
 const states: NgHybridStateDeclaration[] = [
     {
         parent: 'app',
@@ -39,6 +42,24 @@ const states: NgHybridStateDeclaration[] = [
         component: ZahlungviewXComponent,
         params: {
             isMahlzeitenzahlungen: IBooleanStateParams,
+        },
+    },
+    {
+        parent: 'app',
+        abstract: true,
+        name: 'zahlungsauftrag',
+        component: UiViewComponent,
+        url: '/zahlungsauftrag',
+        data: {
+            roles: TSRoleUtil.getAllRolesForZahlungen(),
+        },
+    },
+    {
+        name: 'zahlungsauftrag.view',
+        component: ZahlungsauftragViewXComponent,
+        url: '',
+        params: {
+            isMahlzeitenzahlungen: false,
         },
     },
 ];
