@@ -493,7 +493,10 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     public showSchnittstelleInfos(group: TSModulTagesschuleGroup): void {
         const dialogConfig = new MatDialogConfig();
-        dialogConfig.data = {modulTagesschuleGroup: group};
+        dialogConfig.data = {
+            modulTagesschuleGroup: group,
+            institution: this.stammdaten.institution
+        };
         dialogConfig.panelClass = this.panelClass;
         this.dialog.open(InfoSchnittstelleDialogComponent, dialogConfig).afterClosed().subscribe();
     }

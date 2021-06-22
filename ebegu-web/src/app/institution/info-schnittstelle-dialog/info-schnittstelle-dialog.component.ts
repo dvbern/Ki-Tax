@@ -17,6 +17,7 @@
 
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {TSInstitution} from '../../../models/TSInstitution';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 
 @Component({
@@ -27,12 +28,14 @@ import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 export class InfoSchnittstelleDialogComponent {
 
     public modulTagesschuleGroup: TSModulTagesschuleGroup;
+    public institution: TSInstitution;
 
     public constructor(
         private readonly dialogRef: MatDialogRef<InfoSchnittstelleDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any,
     ) {
         this.modulTagesschuleGroup = data.modulTagesschuleGroup;
+        this.institution = data.institution;
     }
 
     public ngOnInit(): void {

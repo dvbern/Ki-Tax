@@ -17,12 +17,35 @@
     <mat-dialog-content>
 
         <div *ngIf="modulTagesschuleGroup">
+            <h2>{{'INFORMATIONEN_FUER_SCHNITTSTELLE' | translate}}</h2>
+            <table class="infos margin-top-50 margin-bottom-50">
+                <tr>
+                    <td>{{'INSTITUTIONSNAME' | translate}}</td>
+                    <td>{{institution.name}}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>{{'ID_INSTITUTION' | translate}}</td>
+                    <td>{{institution.id}}</td>
+                    <td><i class="fa fa-clipboard fa-lg" [title]="'COPY_TO_CLIPBOARD' | translate"></i></td>
+                </tr>
+                <tr>
+                    <td>{{'MODUL_NAME' | translate}}</td>
+                    <td>{{modulTagesschuleGroup.bezeichnung.textDeutsch}} / {{modulTagesschuleGroup.bezeichnung.textFranzoesisch}}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>{{'MODUL_ID' | translate}}</td>
+                    <td>{{modulTagesschuleGroup.id}}</td>
+                    <td><i class="fa fa-clipboard fa-lg" [title]="'COPY_TO_CLIPBOARD' | translate"></i></td>
+                </tr>
+            </table>
         </div>
 
     </mat-dialog-content>
 
     <mat-dialog-actions>
         <div class="dv-dialog-actions">
-            <button type="button" class="dv-btn cancel-button" (click)="close()" [textContent]="'CANCEL' | translate"></button>
+            <button type="button" class="dv-btn cancel-button" (click)="close()" [textContent]="'ZURUECK_ONLY' | translate"></button>
         </div>
     </mat-dialog-actions>
