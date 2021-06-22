@@ -67,13 +67,12 @@ export class DvSimpleTableComponent implements OnInit, OnChanges {
     public sortData(sortEvent: Sort): void {
         if (sortEvent.direction === '') {
             this.datasource.data = this.data;
-            return;
+        } else {
+            // save sorted Data in separate variable. we use that for pagination
+            this.sortedData = [].concat(this.data).sort(((a, b) => sortEvent.direction === 'asc' ?
+                this.compare(a[sortEvent.active], b[sortEvent.active]) :
+                this.compare(b[sortEvent.active], a[sortEvent.active])));
         }
-        // save sorted Data in separate variable. we use that for pagination
-        this.sortedData = [].concat(this.data).sort(((a, b) => sortEvent.direction === 'asc' ?
-            this.compare(a[sortEvent.active], b[sortEvent.active]) :
-            this.compare(b[sortEvent.active], a[sortEvent.active])));
-
         // go to page 0 after sorting
         this.applyPaginator(0);
     }
