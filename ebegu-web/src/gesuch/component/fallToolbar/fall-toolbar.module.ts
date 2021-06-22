@@ -17,25 +17,20 @@
 
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {NewDossierToolbar} from '../../gesuch/component/dossierToolbar/newDossierToolbar';
-import {NewDossierToolbarGesuchsteller} from '../../gesuch/component/dossierToolbar/newDossierToolbarGesuchsteller';
-import {FallToolbarModule} from '../../gesuch/component/fallToolbar/fall-toolbar.module';
-import {SharedModule} from '../shared/shared.module';
-import {VerlaufRoutingModule} from './verlauf-routing/verlauf-routing.module';
-import {VerlaufComponent} from './verlauf.component';
+import {SharedModule} from '../../../app/shared/shared.module';
+import {FallToolbarComponent} from './fallToolbar.component';
 
 @NgModule({
     declarations: [
-        VerlaufComponent,
-        NewDossierToolbar,
-        NewDossierToolbarGesuchsteller
+        FallToolbarComponent
     ],
     imports: [
         CommonModule,
-        VerlaufRoutingModule,
-        FallToolbarModule,
         SharedModule
     ],
+    exports: [
+        FallToolbarComponent
+    ]
 })
-export class VerlaufModule {
+export class FallToolbarModule {
 }

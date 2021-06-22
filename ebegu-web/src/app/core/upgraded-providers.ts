@@ -30,6 +30,7 @@ import {SearchRS} from '../../gesuch/service/searchRS.rest';
 import {SupportRS} from '../../gesuch/service/supportRS.rest';
 import {WizardStepManager} from '../../gesuch/service/wizardStepManager';
 import {WizardSubStepManager} from '../../gesuch/service/wizardSubStepManager';
+import {EbeguUtil} from '../../utils/EbeguUtil';
 import {ErrorService} from './errors/service/ErrorService';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
@@ -368,6 +369,17 @@ export const gesuchModelManagerProvider = {
     deps: ['$injector'],
 };
 
+// EbeguUtil
+export function ebeguUtilFactory(i: IInjectorService): EbeguUtil {
+    return i.get('EbeguUtil');
+}
+
+export const ebeguUtilProvider = {
+    provide: EbeguUtil,
+    useFactory: ebeguUtilFactory,
+    deps: ['$injector'],
+};
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -396,4 +408,5 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     notrechtRSProvider,
     searchRSProvider,
     gesuchModelManagerProvider,
+    ebeguUtilProvider
 ];

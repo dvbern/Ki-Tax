@@ -27,7 +27,7 @@ const ng1States: Ng1StateDeclaration[] = [
     {
         parent: 'app',
         abstract: true,
-        name: 'verlauf',
+        name: 'verlauf-old',
         data: {
             roles: TSRoleUtil.getJugendamtAndSchulamtRole(),
         },

@@ -35,6 +35,7 @@ import {NgPosteingangModule} from './posteingang/ng-posteingang.module';
 import {SharedModule} from './shared/shared.module';
 import {SozialdienstModule} from './sozialdienst/sozialdienst.module';
 import {TraegerschaftModule} from './traegerschaft/traegerschaft.module';
+import {VerlaufModule} from './verlauf/verlauf.module';
 import {WelcomeModule} from './welcome/welcome.module';
 import {WizardstepXModule} from './wizardstepX/wizardstep-x.module';
 
@@ -64,7 +65,8 @@ import {WizardstepXModule} from './wizardstepX/wizardstep-x.module';
         GemeindeAntraegeModule,
         WizardstepXModule,
         SozialdienstModule,
-        PendenzenXModule
+        PendenzenXModule,
+        VerlaufModule
     ],
 })
 
