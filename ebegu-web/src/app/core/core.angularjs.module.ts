@@ -156,7 +156,6 @@ import {UploadRS} from './service/uploadRS.rest';
 import {VerfuegungRS} from './service/verfuegungRS.rest';
 import {HttpVersionInterceptor} from './service/version/HttpVersionInterceptor';
 import {WizardStepXRS} from './service/wizardStepXRS.rest';
-import {ZahlungRS} from './service/zahlungRS.rest';
 import { SozialdienstRS } from './service/SozialdienstRS.rest';
 
 const dependencies = [
@@ -232,7 +231,6 @@ export const CORE_JS_MODULE = angular
     .service('WizardStepRS', WizardStepRS)
     .service('AntragStatusHistoryRS', AntragStatusHistoryRS)
     .service('MitteilungRS', MitteilungRS)
-    .service('ZahlungRS', ZahlungRS)
     .service('LastenausgleichRS', LastenausgleichRS)
     .service('GlobalCacheService', GlobalCacheService)
     .service('ExportRS', ExportRS)

@@ -45,7 +45,6 @@ import {NotrechtRS} from './service/notrechtRS.rest';
 import {ReportRS} from './service/reportRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
-import {ZahlungRS} from './service/zahlungRS.rest';
 import IInjectorService = angular.auto.IInjectorService;
 
 // tslint:disable:naming-convention
@@ -135,17 +134,6 @@ export function databaseMigrationRSProviderServiceFactory(i: IInjectorService): 
 export const databaseMigrationRSProvider = {
     provide: DatabaseMigrationRS,
     useFactory: databaseMigrationRSProviderServiceFactory,
-    deps: ['$injector'],
-};
-
-// ZahlungRS
-export function zahlungRSProviderServiceFactory(i: IInjectorService): ZahlungRS {
-    return i.get('ZahlungRS');
-}
-
-export const zahlungRSProvider = {
-    provide: ZahlungRS,
-    useFactory: zahlungRSProviderServiceFactory,
     deps: ['$injector'],
 };
 
@@ -389,7 +377,6 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     benutzerRSProvider,
     gesuchsperiodeRSProvider,
     databaseMigrationRSProvider,
-    zahlungRSProvider,
     gesuchRSProvider,
     dailyBatchRSProvider,
     gemeindeRSProvider,
