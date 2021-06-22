@@ -195,6 +195,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private VerfuegungService verfuegungService;
 	@Inject
 	private EinstellungService einstellungService;
+	@Inject
+	private MassenversandService massenversandService;
 
 	@Nonnull
 	@Override
@@ -568,6 +570,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		fileSaverService.removeAllFromSubfolder(gesToRemove.getId());
 		antragStatusHistoryService.removeAllAntragStatusHistoryFromGesuch(gesToRemove);
 		zahlungService.deleteZahlungspositionenOfGesuch(gesToRemove);
+		massenversandService.removeMassenversandGesucheForGesuch(gesToRemove);
 		// Wir loeschen hier alle Mitteilungn und Abweichungen.
 		// Im Fall einer Loeschung einer OnlineMutation sind die Mitteilungen und auch die Abweichungen
 		// zu diesem Zeitpunkt bereits auf das Vorgaenger Gesuch umgehaengt.
