@@ -28,9 +28,9 @@ import {LogFactory} from '../../core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {ReportRS} from '../../core/service/reportRS.rest';
-import {ZahlungRS} from '../../core/service/zahlungRS.rest';
 import {DvSimpleTableColumnDefinition} from '../../shared/component/dv-simple-table/dv-simple-table-column-definition';
 import {StateStoreService} from '../../shared/services/state-store.service';
+import {ZahlungRS} from '../services/zahlungRS.rest';
 
 const LOG = LogFactory.createLog('ZahlungsauftragViewXComponent');
 
@@ -196,13 +196,15 @@ export class ZahlungsauftragViewXComponent implements OnInit {
                     this.beschrieb,
                     this.faelligkeitsdatum,
                     this.datumGeneriert,
-                ).then((response: TSZahlungsauftrag) => {
-                    this.errorService.addMesageAsInfo(this.translate.instant('ZAHLUNG_ERSTELLT'));
-                    this.zahlungsAuftraege.push(response);
-                    this.resetEditZahlungsauftrag();
-                    this.resetForm();
-                    this.cd.markForCheck();
-                });
+                ).subscribe((response: TSZahlungsauftrag) => {
+                        this.errorService.addMesageAsInfo(this.translate.instant('ZAHLUNG_ERSTELLT'));
+                        this.zahlungsAuftraege.push(response);
+                        this.resetEditZahlungsauftrag();
+                        this.resetForm();
+                        this.cd.markForCheck();
+                    },
+                    error => this.errorService.addMesageAsError(
+                        error?.error?.translatedMessage || this.translate.instant('ERROR_UNEXPECTED')));
             }, error => LOG.error(error));
     }
 
@@ -212,7 +214,9 @@ export class ZahlungsauftragViewXComponent implements OnInit {
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
             })
-            .catch(() => {
+            .catch(error => {
+                this.errorService.addMesageAsError(error?.error?.translatedMessage || this.translate.instant(
+                    'ERROR_UNEXPECTED'));
                 win.close();
             }) as Promise<void>;
     }
@@ -223,7 +227,10 @@ export class ZahlungsauftragViewXComponent implements OnInit {
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
-            .catch(() => {
+            // tslint:disable-next-line:no-identical-functions
+            .catch(error => {
+                this.errorService.addMesageAsError(error?.error?.translatedMessage || this.translate.instant(
+                    'ERROR_UNEXPECTED'));
                 win.close();
             });
     }
@@ -241,15 +248,17 @@ export class ZahlungsauftragViewXComponent implements OnInit {
                 if (!result) {
                     return;
                 }
-                this.zahlungRS.zahlungsauftragAusloesen(zahlungsauftragId).then((response: TSZahlungsauftrag) => {
-                    const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsAuftraege);
-                    if (index > -1) {
-                        this.zahlungsAuftraege[index] = response;
-                    }
-                    EbeguUtil.handleSmarttablesUpdateBug(this.zahlungsAuftraege);
-                    this.toggleAuszahlungslaufTyp();
-                    this.cd.markForCheck();
-                });
+                this.zahlungRS.zahlungsauftragAusloesen(zahlungsauftragId).subscribe((response: TSZahlungsauftrag) => {
+                        const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsAuftraege);
+                        if (index > -1) {
+                            this.zahlungsAuftraege[index] = response;
+                        }
+                        EbeguUtil.handleSmarttablesUpdateBug(this.zahlungsAuftraege);
+                        this.toggleAuszahlungslaufTyp();
+                        this.cd.markForCheck();
+                    },
+                    error => this.errorService.addMesageAsError(
+                        error?.error?.translatedMessage || this.translate.instant('ERROR_UNEXPECTED')));
             }, error => LOG.error(error));
     }
 
@@ -266,8 +275,7 @@ export class ZahlungsauftragViewXComponent implements OnInit {
             this.zahlungsauftragToEdit.beschrieb,
             this.zahlungsauftragToEdit.datumFaellig,
             this.zahlungsauftragToEdit.id,
-        )
-            .then((response: TSZahlungsauftrag) => {
+        ).subscribe((response: TSZahlungsauftrag) => {
                 const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsAuftraege);
                 if (index > -1) {
                     this.zahlungsAuftraege[index] = response;
@@ -275,7 +283,9 @@ export class ZahlungsauftragViewXComponent implements OnInit {
                 // nach dem es gespeichert wird, muessen wir das Form wieder auf clean setzen
                 this.form.form.markAsPristine();
                 this.resetEditZahlungsauftrag();
-            });
+            },
+            error => this.errorService.addMesageAsError(error?.error?.translatedMessage || this.translate.instant(
+                'ERROR_UNEXPECTED')));
     }
 
     public isEditable(status: TSZahlungsauftragsstatus): boolean {

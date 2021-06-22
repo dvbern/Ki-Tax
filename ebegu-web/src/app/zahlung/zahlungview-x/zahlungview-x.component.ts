@@ -12,10 +12,11 @@ import {TSZahlungsstatus} from '../../../models/enums/TSZahlungsstatus';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSZahlung} from '../../../models/TSZahlung';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {ErrorService} from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {ReportRS} from '../../core/service/reportRS.rest';
-import {ZahlungRS} from '../../core/service/zahlungRS.rest';
+import {ZahlungRS} from '../services/zahlungRS.rest';
 
 const LOG = LogFactory.createLog('ZahlungviewXComponent');
 
@@ -45,6 +46,7 @@ export class ZahlungviewXComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly currency: CurrencyPipe,
         private readonly cd: ChangeDetectorRef,
+        private readonly errorService: ErrorService,
     ) {
     }
 
@@ -97,7 +99,7 @@ export class ZahlungviewXComponent implements OnInit {
     }
 
     public bestaetigen(zahlung: TSZahlung): void {
-        this.zahlungRS.zahlungBestaetigen(zahlung.id).then((response: TSZahlung) => {
+        this.zahlungRS.zahlungBestaetigen(zahlung.id).subscribe((response: TSZahlung) => {
             const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungen);
             if (index < 0) {
                 return;
@@ -105,7 +107,7 @@ export class ZahlungviewXComponent implements OnInit {
             this.zahlungen[index] = response;
             this.datasource = new MatTableDataSource<TSZahlung[]>(this.zahlungen as any);
             this.cd.markForCheck();
-        });
+        }, error => this.errorService.addMesageAsError(error?.translatedMessage || this.translate.instant('ERROR_UNEXPECTED')));
     }
 
     // noinspection JSMethodCanBeStatic

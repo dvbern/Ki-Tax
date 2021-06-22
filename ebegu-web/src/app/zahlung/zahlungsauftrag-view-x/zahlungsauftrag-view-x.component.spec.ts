@@ -11,9 +11,9 @@ import {ErrorService} from '../../core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {ReportRS} from '../../core/service/reportRS.rest';
-import {ZahlungRS} from '../../core/service/zahlungRS.rest';
 import {StateStoreService} from '../../shared/services/state-store.service';
 import {SharedModule} from '../../shared/shared.module';
+import {ZahlungRS} from '../services/zahlungRS.rest';
 
 import {ZahlungsauftragViewXComponent} from './zahlungsauftrag-view-x.component';
 
@@ -32,7 +32,7 @@ describe('ZahlungsauftragViewXComponent', () => {
     const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
     const currencySpy = jasmine.createSpyObj(CurrencyPipe.name, ['']);
     const transitionSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name, ['onStart']);
-    const errorServiceSpy = jasmine.createSpyObj(ErrorService.name);
+    const errorServiceSpy = jasmine.createSpyObj(ErrorService.name, ['clearAll']);
 
     uiRouterGlobalsSpy.params = {} as any;
     authServiceSpy.principal$ = of(new TSBenutzer());
