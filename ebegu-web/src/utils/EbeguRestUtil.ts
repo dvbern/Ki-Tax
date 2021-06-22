@@ -1291,7 +1291,6 @@ export class EbeguRestUtil {
             restTragerschaft.name = traegerschaft.name;
             restTragerschaft.active = traegerschaft.active;
             restTragerschaft.email = traegerschaft.email;
-            restTragerschaft.offentlich = traegerschaft.offentlich;
             return restTragerschaft;
         }
         return undefined;
@@ -1312,7 +1311,6 @@ export class EbeguRestUtil {
             traegerschaftTS.name = traegerschaftFromServer.name;
             traegerschaftTS.active = traegerschaftFromServer.active;
             traegerschaftTS.email = traegerschaftFromServer.email;
-            traegerschaftTS.offentlich = traegerschaftFromServer.offentlich;
             traegerschaftTS.institutionCount = traegerschaftFromServer.institutionCount;
             traegerschaftTS.institutionNames = traegerschaftFromServer.institutionNames;
             return traegerschaftTS;

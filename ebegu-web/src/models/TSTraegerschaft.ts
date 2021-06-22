@@ -22,7 +22,6 @@ export class TSTraegerschaft extends TSAbstractMutableEntity {
     private _institutionNames: string;
     private _institutionCount: number;
     private _email: string;
-    private _offentlich: boolean;
 
     public constructor() {
         super();
@@ -66,13 +65,5 @@ export class TSTraegerschaft extends TSAbstractMutableEntity {
 
     public set email(value: string) {
         this._email = value;
-    }
-
-    public get offentlich(): boolean {
-        return this._offentlich;
-    }
-
-    public set offentlich(value: boolean) {
-        this._offentlich = value;
     }
 }
