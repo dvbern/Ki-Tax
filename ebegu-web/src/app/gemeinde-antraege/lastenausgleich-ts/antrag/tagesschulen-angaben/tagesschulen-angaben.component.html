@@ -529,7 +529,8 @@
 
         <div class="row" *ngIf="canSeeFalscheAngaben | async">
             <div class="col-md-12">
-                <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FERIENBETREUUNG_ANGABEN_KORRIGIEREN</a>
+                <a class="pointer-cursor" *ngIf="isInstiUser || latsAngabenInstitutionContainer?.isGeprueftGemeinde()" (click)="onFalscheAngaben()" translate>FERIENBETREUUNG_ANGABEN_KORRIGIEREN</a>
+                <a class="pointer-cursor" *ngIf="!isInstiUser && latsAngabenInstitutionContainer?.isInPruefungGemeinde()" (click)="onFalscheAngaben()" translate>FERIENBETREUUNG_ANGABEN_ZURUECK_AN_INSTITUTION</a>
             </div>
         </div>
 

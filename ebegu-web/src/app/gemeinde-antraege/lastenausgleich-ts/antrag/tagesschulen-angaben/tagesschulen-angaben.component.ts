@@ -77,7 +77,7 @@ export class TagesschulenAngabenComponent {
     public gemeindeAntragContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
 
     public autoFilled: boolean = false;
-    private isInstiUser: boolean = false;
+    public isInstiUser: boolean = false;
 
     public readonly canSeeSave: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public readonly canSeeAbschliessen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);

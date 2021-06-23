@@ -2469,6 +2469,7 @@
     "ANTRAEGE_ERSTELLT": "{{amount}} Anträge wurden erstellt",
     "FERIENBETREUUNG_GEPRUEFT": "Sie haben das Gesuch geprüft. Sie können die Eingaben der Gemeinde und Ihre Korrekturen weiterhin einsehen, sind aber nicht mehr in der Lage, Ihre Eingaben zu mutieren.",
     "FERIENBETREUUNG_ANGABEN_KORRIGIEREN": "Angaben korrigieren",
+    "FERIENBETREUUNG_ANGABEN_ZURUECK_AN_INSTITUTION": "Zurück an Institution",
     "FERIENBETREUUNG_ANSCHRIFT": "Anschrift",
     "FERIENBETREUUNG_ZUSATZ": "Adresszusatz",
     "ANTRAG_ERSTELLT": "Der Antrag wurde erstellt",
