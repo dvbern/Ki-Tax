@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.lib.date.feiertage.FeiertageHelper;
 
 /**
@@ -115,5 +116,12 @@ public final class DateUtil {
 	public static String incrementYear(@Nonnull String dateStr) {
 		LocalDate date = Date.valueOf(dateStr).toLocalDate();
 		return date.plus(1, ChronoUnit.YEARS).toString();
+	}
+
+	public static DateRange limitToDateRange(DateRange range, DateRange gesuchsperiode) {
+		// Wir nehmen das spätere VON und das frühere BIS
+		LocalDate von = DateUtil.getMax(range.getGueltigAb(), gesuchsperiode.getGueltigAb());
+		LocalDate bis = DateUtil.getMin(range.getGueltigBis(), gesuchsperiode.getGueltigBis());
+		return new DateRange(von, bis);
 	}
 }

@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -42,11 +41,9 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
@@ -74,13 +71,9 @@ import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.MitteilungService;
-import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MitteilungUtil;
 import ch.dvbern.ebegu.util.MonitoringUtil;
-import ch.dvbern.ebegu.util.ValidationMessageUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.tuple.Pair;
@@ -133,9 +126,6 @@ public class MitteilungResource {
 
 	@Inject
 	private EinstellungService einstellungService;
-
-	@Inject
-	private GesuchService gesuchService;
 
 	@ApiOperation(value = "Speichert eine Mitteilung", response = JaxMitteilung.class)
 	@Nullable
@@ -201,35 +191,6 @@ public class MitteilungResource {
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
 		MitteilungUtil.initializeBetreuungsmitteilung(betreuungsmitteilung, betreuung, currentBenutzer, locale);
-
-		gesuchService.findGesuch(Objects.requireNonNull(betreuung.getOwningGesuchId())).ifPresent(gesuch -> {
-			if (betreuungsmitteilung.getBetreuungspensen()
-				.stream()
-				.anyMatch(betreuungsmitteilungPensum -> betreuungsmitteilungPensum.getGueltigkeit()
-					.getGueltigAb()
-					.isAfter(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()))) {
-
-				throw new WebApplicationException("BETREUUNG_STARTS_AFTER_GESUCHSPERIODE", Status.BAD_REQUEST);
-
-			}
-
-			if (betreuungsmitteilung.getBetreuungspensen()
-				.stream()
-				.anyMatch(betreuungsmitteilungPensum -> !betreuung.getInstitutionStammdaten()
-					.getGueltigkeit()
-					.contains(betreuungsmitteilungPensum.getGueltigkeit()))) {
-				String message =
-					ValidationMessageUtil.getMessage("invalid_betreuungszeitraum_for_institutionsstammdaten");
-				final DateRange institutionGueltigkeit = betreuung.getInstitutionStammdaten().getGueltigkeit();
-				message = MessageFormat.format(message, Constants.DATE_FORMATTER.format(institutionGueltigkeit
-					.getGueltigAb()), Constants.DATE_FORMATTER.format(institutionGueltigkeit.getGueltigBis()));
-				throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
-					.entity(message)
-					.type(MediaType.TEXT_PLAIN_TYPE)
-					.build());
-
-			}
-		});
 
 		betreuungsmitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldung(
 			betreuungsmitteilung.getBetreuungspensen(),
