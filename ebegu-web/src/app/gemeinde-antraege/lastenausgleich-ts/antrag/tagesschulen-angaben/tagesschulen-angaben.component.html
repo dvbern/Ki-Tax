@@ -334,7 +334,8 @@
 
                 <dv-input-container-x>
                     <label
-                        [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').errors}">
+                        [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').errors}"
+                    required>
                         {{'LATS_BETREUUNGSSTUNDEN_EINSCHLIESSLICH_BESONDERE_BEDUERFNISSE' | translate:{schuljahr: gesuchsPeriode?.gesuchsperiodeString} }}
                         <dv-tooltip
                             [text]="'LATS_BETREUUNGSSTUNDEN_EINSCHLIESSLICH_BESONDERE_BEDUERFNISSE_INFO' | translate:{year: gemeindeAntragContainer?.gesuchsperiode?.gesuchsperiodeString}"></dv-tooltip>
