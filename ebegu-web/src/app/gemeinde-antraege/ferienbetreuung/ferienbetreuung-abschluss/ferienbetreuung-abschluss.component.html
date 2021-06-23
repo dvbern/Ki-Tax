@@ -25,7 +25,7 @@
         <span translate>FERIENBETREUUNG_FREIGABE_AN_KANTON</span>
     </dv-loading-button>
     <dv-loading-button
-        *ngIf="(geprueftVisible() | async) && !alreadyGeprueft()"
+        *ngIf="(geprueftVisible() | async) && !alreadyGeprueft() && container.isAtLeastInPruefungKanton()"
         type="button"
         class="secondary"
         (buttonClick)="zurueckAnGemeinde()">
