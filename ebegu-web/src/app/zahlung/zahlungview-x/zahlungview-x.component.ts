@@ -1,5 +1,5 @@
 import {CurrencyPipe} from '@angular/common';
-import {Component, OnInit, ChangeDetectionStrategy, ViewChild, ChangeDetectorRef} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
@@ -23,6 +23,7 @@ const LOG = LogFactory.createLog('ZahlungviewXComponent');
 @Component({
     selector: 'dv-zahlungview-x',
     templateUrl: './zahlungview-x.component.html',
+    styleUrls: ['./zahlungview-x.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ZahlungviewXComponent implements OnInit {
