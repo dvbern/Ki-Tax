@@ -24,6 +24,8 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
 
+import ch.dvbern.ebegu.validators.CheckBetreuungMitteilungZeitraumInGesuchsperiode;
+import ch.dvbern.ebegu.validators.CheckBetreuungMitteilungZeitraumInstitutionsStammdatenZeitraum;
 import ch.dvbern.ebegu.validators.CheckBetreuungsmitteilung;
 import ch.dvbern.ebegu.validators.CheckBetreuungsmitteilungDatesOverlapping;
 import org.hibernate.envers.Audited;
@@ -33,6 +35,8 @@ import org.hibernate.envers.Audited;
  */
 @CheckBetreuungsmitteilung
 @CheckBetreuungsmitteilungDatesOverlapping
+@CheckBetreuungMitteilungZeitraumInGesuchsperiode
+@CheckBetreuungMitteilungZeitraumInstitutionsStammdatenZeitraum
 @Audited
 @Entity
 public class Betreuungsmitteilung extends Mitteilung {
