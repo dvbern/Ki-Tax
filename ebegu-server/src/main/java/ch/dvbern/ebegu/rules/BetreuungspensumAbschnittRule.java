@@ -67,17 +67,9 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		List<VerfuegungZeitabschnitt> betreuungspensumAbschnitte = new ArrayList<>();
 		Set<BetreuungspensumContainer> betreuungspensen = betreuung.getBetreuungspensumContainers();
 
-		final boolean gemeindeWithKitax = KitaxUtil.isGemeindeWithKitaxUebergangsloesung(betreuung.extractGemeinde())
+		final boolean possibleKitaxRechner = KitaxUtil.isGemeindeWithKitaxUebergangsloesung(betreuung.extractGemeinde())
 			&& betreuung.getBetreuungsangebotTyp().isJugendamt();
 
-		boolean betreuungInGemeinde;
-		// wenn das Flag betreuungInGemeinde nicht aktiviert ist, ist der BG beim Ki-Tax Rechner immer 0.
-		if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null) {
-			betreuungInGemeinde = betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getBetreuungInGemeinde();
-		} else {
-			betreuungInGemeinde = betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungGS().getBetreuungInGemeinde();
-		}
-		final boolean possibleKitaxRechner = gemeindeWithKitax && betreuungInGemeinde;
 
 		// es handelt sich um FEBR und wir müssen die Pensen gemäss dem alten System umrechnen.
 		if (possibleKitaxRechner) {
