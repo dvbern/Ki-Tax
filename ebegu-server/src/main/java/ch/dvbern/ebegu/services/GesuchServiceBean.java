@@ -1141,6 +1141,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			gesuch.setStatus(AntragStatus.NUR_SCHULAMT);
 			wizardStepService.setWizardStepOkay(gesuch.getId(), WizardStepName.VERFUEGEN);
 
+			final Gesuch persistedGesuch = updateGesuch(gesuch, true);
+
 			if (gesuch.getVorgaengerId() != null) {
 				final Optional<Gesuch> vorgaengerOpt = findGesuch(gesuch.getVorgaengerId());
 				vorgaengerOpt.ifPresent(this::setGesuchAndVorgaengerUngueltig);
@@ -1148,8 +1150,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 			// neues Gesuch erst nachdem das andere auf ungültig gesetzt wurde setzen wegen unique key
 			gesuch.setGueltig(true);
-
-			final Gesuch persistedGesuch = updateGesuch(gesuch, true);
 
 			createFinSitDokument(persistedGesuch, "setAbschliessen");
 
