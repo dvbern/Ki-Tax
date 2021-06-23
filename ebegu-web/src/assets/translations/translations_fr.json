@@ -1853,6 +1853,7 @@
     "MODUL_ZEITRAUM": "De - À",
     "MODUL_VERPFLEGUNG": "Frais de repas",
     "MODUL_VERFUEGBAR": "Disponible le",
+    "MODUL_PAEDAGOGISCH_BETREUT_SHORT": "Accompagnement pédagogique",
     "MODUL_INTERVALL": "Intervalle",
     "MODUL_TAGESSCHULE_ERLAEUTERUNG": "Ajouter une explication pour les modules",
     "MODUL_PAEDAGOGISCH_BETREUT": "Avec accompagnement pédagogique",
@@ -2532,5 +2533,11 @@
     "PENDENZ_ERLEDIGT": "Cas en suspens interne réglé",
     "PENDENZ_WIRKLICH_LOESCHEN": "Voulez vous vraiment supprimer ce cas en suspens?",
     "TERMIN": "Délai",
+    "SCHNITTSTELLE_INFO_TOOLTIP": "Informationen zur Schnittstelle anzeigen",
+    "SCHNITTSTELLE_MODUL_BEZEICHNUNG": "Modul Bezeichnung",
+    "INFORMATIONEN_FUER_SCHNITTSTELLE": "Informationen für die Schnittstelle",
+    "INSTITUTION_ID": "Institution ID",
+    "MODUL_ID": "Modul ID",
+    "COPY_TO_CLIPBOARD": "In Zwischenablage kopieren",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

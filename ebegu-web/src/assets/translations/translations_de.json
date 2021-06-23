@@ -1853,6 +1853,7 @@
     "MODUL_ZEITRAUM": "Von - Bis",
     "MODUL_VERPFLEGUNG": "Verpflegungskosten",
     "MODUL_VERFUEGBAR": "Verfügbar am",
+    "MODUL_PAEDAGOGISCH_BETREUT_SHORT": "Pädagogisch betreut",
     "MODUL_INTERVALL": "Intervall",
     "MODUL_TAGESSCHULE_ERLAEUTERUNG": "Erläuterung zu den Modulen hinzufügen",
     "MODUL_PAEDAGOGISCH_BETREUT": "Wird pädagogisch betreut",
@@ -2532,5 +2533,11 @@
     "PENDENZ_ERLEDIGT": "Pendenz erledigt",
     "PENDENZ_WIRKLICH_LOESCHEN": "Wollen Sie diese Pendenz wirklich löschen?",
     "TERMIN": "Termin",
+    "SCHNITTSTELLE_INFO_TOOLTIP": "Informationen zur Schnittstelle anzeigen",
+    "SCHNITTSTELLE_MODUL_BEZEICHNUNG": "Modul Bezeichnung",
+    "INFORMATIONEN_FUER_SCHNITTSTELLE": "Informationen für die Schnittstelle",
+    "INSTITUTION_ID": "Institution ID",
+    "MODUL_ID": "Modul ID",
+    "COPY_TO_CLIPBOARD": "In Zwischenablage kopieren",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

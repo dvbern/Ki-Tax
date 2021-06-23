@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,12 +15,4 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
-
-public enum ExternalClientType {
-	// EXCHANGE_SERVICE_USER is allowed for BG and TS
-	EXCHANGE_SERVICE_USER,
-	EXCHANGE_SERVICE_USER_BG,
-	EXCHANGE_SERVICE_USER_TS,
-	GEMEINDE_SCOLARIS_SERVICE
-}
+UPDATE external_client SET type = 'EXCHANGE_SERVICE_USER_BG' WHERE type = 'EXCHANGE_SERVICE_USER';

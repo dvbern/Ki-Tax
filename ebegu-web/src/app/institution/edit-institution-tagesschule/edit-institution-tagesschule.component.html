@@ -77,8 +77,9 @@
                                     <th translate>MODUL_ZEITRAUM</th>
                                     <th translate>MODUL_VERPFLEGUNG</th>
                                     <th translate>MODUL_VERFUEGBAR</th>
+                                    <th translate>MODUL_PAEDAGOGISCH_BETREUT_SHORT</th>
                                     <th translate>MODUL_INTERVALL</th>
-                                    <th *ngIf="editMode"></th>
+                                    <th *ngIf="editMode || schnittstelleInfosVisible()"></th>
                                 </tr>
                                 </thead>
                                 <tbody *ngIf="einstellungGP.modulTagesschuleGroups?.length > 0">
@@ -103,21 +104,38 @@
                                         (click)="editModulTagesschuleGroup(einstellungGP, group)">
                                         {{getWochentageAsString(group)}}
                                     </td>
+                                    <td *ngIf="group.wirdPaedagogischBetreut" [title]="'JA' | translate"
+                                        (click)="editModulTagesschuleGroup(einstellungGP, group)">
+                                        {{'LABEL_JA' | translate}}
+                                    </td>
+                                    <td *ngIf="!group.wirdPaedagogischBetreut" [title]="'NEIN' | translate"
+                                        (click)="editModulTagesschuleGroup(einstellungGP, group)">
+                                        {{'LABEL_NEIN' | translate}}
+                                    </td>
                                     <td title="{{group.intervall | translate}}"
                                         (click)="editModulTagesschuleGroup(einstellungGP, group)">
                                         {{group.intervall | translate}}
                                     </td>
-                                    <td *ngIf="editMode" [title]="getEditDeleteButtonTooltip(einstellungGP, group)">
-                                        <button type="button" class="dv-btn dv-btn-operation"
+                                    <td *ngIf="editMode || schnittstelleInfosVisible()">
+                                        <button *ngIf="editMode" type="button" class="dv-btn dv-btn-operation"
+                                                [title]="getEditDeleteButtonTooltip(einstellungGP, group)"
                                                 (click)="editModulTagesschuleGroup(einstellungGP, group)"
                                                 [disabled]="!canEditModule(einstellungGP, group)">
                                             <i class="fa fa-lg fa-edit"></i>
                                         </button>
                                         &nbsp;
-                                        <button type="button" class="dv-btn dv-btn-operation"
+                                        <button *ngIf="editMode" type="button" class="dv-btn dv-btn-operation"
+                                                [title]="getEditDeleteButtonTooltip(einstellungGP, group)"
                                                 (click)="removeModulTagesschuleGroup(einstellungGP, group)"
                                                 [disabled]="!canEditModule(einstellungGP, group)">
                                             <i class="fa fa-lg fa-trash-o"></i>
+                                        </button>
+                                        &nbsp;
+                                        <button type="button" class="dv-btn dv-btn-operation"
+                                                [title]="'SCHNITTSTELLE_INFO_TOOLTIP' | translate "
+                                                *ngIf="schnittstelleInfosVisible()"
+                                                (click)="showSchnittstelleInfos(group)">
+                                            <i class="fa fa-lg fa-cogs"></i>
                                         </button>
                                     </td>
                                 </tr>
