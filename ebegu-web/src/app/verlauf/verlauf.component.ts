@@ -33,7 +33,6 @@ import {DvSimpleTableConfig} from '../shared/component/dv-simple-table/dv-simple
 @Component({
     selector: 'dv-verlauf',
     templateUrl: './verlauf.component.html',
-    styleUrls: ['./verlauf.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VerlaufComponent implements OnInit {
