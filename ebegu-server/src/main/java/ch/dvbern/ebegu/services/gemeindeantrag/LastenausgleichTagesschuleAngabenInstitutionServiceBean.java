@@ -19,8 +19,10 @@ package ch.dvbern.ebegu.services.gemeindeantrag;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +54,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
+import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer_;
@@ -323,8 +326,8 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 	}
 
 	@Override
-	public @Nonnull
-	Map<String, BigDecimal> calculateDurchschnittKinderProTag(
+	@Nonnull
+	public Map<String, BigDecimal> calculateDurchschnittKinderProTag(
 		@Nonnull LastenausgleichTagesschuleAngabenInstitutionContainer container
 	) {
 		Preconditions.checkNotNull(container);
@@ -356,39 +359,60 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		double nachmittagbetreuung1 = 0;
 		double nachmittagbetreuung2 = 0;
 
+		Map<DayOfWeek, Boolean> fruehbetreuungWeekdaysWithBetreuung = new EnumMap<>(DayOfWeek.class);
+		Map<DayOfWeek, Boolean> mittagbetreuungWeekdaysWithBetreuung = new EnumMap<>(DayOfWeek.class);
+		Map<DayOfWeek, Boolean> nachmittagbetreuung1WeekdaysWithBetreuung = new EnumMap<>(DayOfWeek.class);
+		Map<DayOfWeek, Boolean> nachmittagbetreuung2WeekdaysWithBetreuung = new EnumMap<>(DayOfWeek.class);
+
 		for (AnmeldungTagesschule anmeldungTagesschule : anmeldungenTagesschule) {
 			BelegungTagesschule belegungTagesschule = anmeldungTagesschule.getBelegungTagesschule();
 			if (belegungTagesschule == null) {
 				continue;
 			}
 			for (BelegungTagesschuleModul modul : belegungTagesschule.getBelegungTagesschuleModule()) {
-				ModulTagesschuleGroup group = modul.getModulTagesschule().getModulTagesschuleGroup();
+				ModulTagesschule modulTagesschule = modul.getModulTagesschule();
+				ModulTagesschuleGroup group = modulTagesschule.getModulTagesschuleGroup();
 				// we count Zweiwöchentliche Module as 0.5
 				double increment = (modul.getIntervall() == BelegungTagesschuleModulIntervall.WOECHENTLICH) ? 1 : 0.5;
 				if (group.isFruehbetreuung()) {
 					fruehbetreuung += increment;
+					fruehbetreuungWeekdaysWithBetreuung.put(modulTagesschule.getWochentag(), true);
 				} else if (group.isMittagsbetreuung()) {
 					mittagbetreuung += increment;
+					mittagbetreuungWeekdaysWithBetreuung.put(modulTagesschule.getWochentag(), true);
 				} else if (group.isNachmittagbetreuung1()) {
 					nachmittagbetreuung1 += increment;
+					nachmittagbetreuung1WeekdaysWithBetreuung.put(modulTagesschule.getWochentag(), true);
 				} else if (group.isNachmittagbetreuung2()) {
 					nachmittagbetreuung2 += increment;
+					nachmittagbetreuung2WeekdaysWithBetreuung.put(modulTagesschule.getWochentag(), true);
 				}
 			}
 		}
 
 		HashMap<String, BigDecimal> durchschnittKinder = new HashMap<>();
-		durchschnittKinder.put("fruehbetreuung", this.divideBy5(fruehbetreuung));
-		durchschnittKinder.put("mittagsbetreuung", this.divideBy5(mittagbetreuung));
-		durchschnittKinder.put("nachmittagsbetreuung1", this.divideBy5(nachmittagbetreuung1));
-		durchschnittKinder.put("nachmittagsbetreuung2", this.divideBy5(nachmittagbetreuung2));
+		durchschnittKinder.put(
+			"fruehbetreuung",
+			this.divideByWeekdaysWithBetreuung(fruehbetreuung, fruehbetreuungWeekdaysWithBetreuung));
+		durchschnittKinder.put(
+			"mittagsbetreuung",
+			this.divideByWeekdaysWithBetreuung(mittagbetreuung, mittagbetreuungWeekdaysWithBetreuung));
+		durchschnittKinder.put(
+			"nachmittagsbetreuung1",
+			this.divideByWeekdaysWithBetreuung(nachmittagbetreuung1, nachmittagbetreuung1WeekdaysWithBetreuung));
+		durchschnittKinder.put(
+			"nachmittagsbetreuung2",
+			this.divideByWeekdaysWithBetreuung(nachmittagbetreuung2, nachmittagbetreuung2WeekdaysWithBetreuung));
 
 		return durchschnittKinder;
 	}
 
-	private BigDecimal divideBy5(double number) {
+	private BigDecimal divideByWeekdaysWithBetreuung(double number, Map<DayOfWeek, Boolean> weekdaysWithBetreuung) {
 		BigDecimal dividend = new BigDecimal(String.valueOf(number));
-		return MathUtil.ZWEI_NACHKOMMASTELLE.divide(dividend, new BigDecimal("5.00"));
+		BigDecimal divisor = new BigDecimal(weekdaysWithBetreuung.size());
+		return divisor.compareTo(BigDecimal.ZERO) == 0 ?
+			BigDecimal.ZERO :
+			MathUtil.ZWEI_NACHKOMMASTELLE.divide(dividend, divisor);
 	}
 
 	@Nonnull
