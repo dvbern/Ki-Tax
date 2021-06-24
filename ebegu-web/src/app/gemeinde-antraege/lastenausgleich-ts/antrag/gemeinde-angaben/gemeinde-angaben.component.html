@@ -442,7 +442,7 @@
                 </dv-input-container-x>
 
             </div>
-            <div class="controlling-box">
+            <div class="controlling-box" *ngIf="controllingCalculator">
                 <table class="besondere-beduerfnisse-controlling">
                     <tr>
                         <td>{{'LATS_CONTROLLING_ANTEIL_BETRSONDERE_BEDUERFNISSE' | translate}} {{lATSAngabenGemeindeContainer?.gesuchsperiode.gesuchsperiodeString}}</td>
@@ -470,7 +470,7 @@
                 <table class="elternbeitrag-controlling">
                     <tr>
                         <td>{{ 'LATS_CONTROLLING_ANTEIL_ELTERNBEITRAEGE' | translate }} {{lATSAngabenGemeindeContainer?.gesuchsperiode.gesuchsperiodeString}}</td>
-                        <td>12345</td>
+                        <td>{{controllingCalculator.anteilElternbeitraegeCurrentPeriode$ | async}}</td>
                     </tr>
                     <tr>
                         <td>{{ 'LATS_CONTROLLING_ANTEIL_ELTERNBEITRAEGE' | translate }} {{lATSAngabenGemeindeContainer?.gesuchsperiode | previousPeriodeStr}}</td>
@@ -727,7 +727,7 @@
                 </div>
 
             </div>
-            <div class="controlling-box">
+            <div class="controlling-box" *ngIf="controllingCalculator">
                 <table class="kostenbeitrag-controlling">
                     <tr>
                         <td>{{ 'LATS_CONTROLLING_KOSTENANTEIL' | translate }}</td>

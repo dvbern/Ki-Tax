@@ -44,6 +44,7 @@ import {numberValidator, ValidationType} from '../../../../shared/validators/num
 import {GemeindeAntragService} from '../../../services/gemeinde-antrag.service';
 import {UnsavedChangesService} from '../../../services/unsaved-changes.service';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
+import {TSControllingCalculator} from './TSControllingCalculator';
 
 @Component({
     selector: 'dv-gemeinde-angaben',
@@ -68,6 +69,8 @@ export class GemeindeAngabenComponent implements OnInit {
     public saveVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public abschliessenVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public falscheAngabenVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+    public controllingCalculator: TSControllingCalculator;
 
     private readonly kostenbeitragGemeinde = 0.2;
     private readonly WIZARD_TYPE: TSWizardStepXTyp = TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN;
@@ -111,6 +114,7 @@ export class GemeindeAngabenComponent implements OnInit {
                 this.lATSAngabenGemeindeContainer.gesuchsperiode?.id)
                 .then(setting => this.lohnnormkostenSettingLessThanFifty$.next(setting));
             this.unsavedChangesService.registerForm(this.angabenForm);
+            this.initControlling();
             this.cd.markForCheck();
         }, () => this.errorService.addMesageAsError(this.translateService.instant('DATA_RETRIEVAL_ERROR')));
 
@@ -907,6 +911,17 @@ export class GemeindeAngabenComponent implements OnInit {
                 this.abschliessenVisible.next(false);
                 this.falscheAngabenVisible.next(false);
             }
+        }
+    }
+
+    public controllingActive(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())
+        && this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton();
+    }
+
+    private initControlling(): void {
+        if (this.controllingActive()) {
+            this.controllingCalculator = new TSControllingCalculator(this.angabenForm);
         }
     }
 }
