@@ -920,8 +920,13 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     private initControlling(): void {
-        if (this.controllingActive()) {
-            this.controllingCalculator = new TSControllingCalculator(this.angabenForm);
+        if (!this.controllingActive()) {
+            return;
         }
+        this.lastenausgleichTSService.findAntragOfPreviousPeriode(this.lATSAngabenGemeindeContainer)
+            .subscribe(previousAntrag => {
+                console.log(previousAntrag);
+                this.controllingCalculator = new TSControllingCalculator(this.angabenForm);
+            });
     }
 }

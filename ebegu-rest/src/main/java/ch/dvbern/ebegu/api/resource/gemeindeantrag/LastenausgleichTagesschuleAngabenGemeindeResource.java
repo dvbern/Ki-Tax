@@ -451,4 +451,30 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 			.map(history -> converter.latsStatusHistoryToJAX(history))
 			.collect(Collectors.toList());
 	}
+
+
+	@ApiOperation(
+		value = "Findet den Lastenausgleichantrag des Vorjahres zum übergebenen Antrag",
+		response = Void.class)
+	@GET
+	@Path("/previous-antrag/{currentContainerJaxId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Nullable
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer findAntragOfPreviousPeriode(
+		@Nonnull @NotNull @PathParam("currentContainerJaxId") JaxId currentContainerJaxId,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(currentContainerJaxId);
+		Objects.requireNonNull(currentContainerJaxId.getId());
+		LastenausgleichTagesschuleAngabenGemeindeContainer previousAntrag =
+			angabenGemeindeService.findContainerOfPreviousPeriode(currentContainerJaxId.getId());
+
+		if (previousAntrag == null) {
+			return null;
+		}
+		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(previousAntrag);
+	}
 }

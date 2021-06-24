@@ -179,4 +179,15 @@ export class LastenausgleichTSService {
             return this.ebeguRestUtil.parseLatsHistoryList(data);
         }));
     }
+
+    public findAntragOfPreviousPeriode(antrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer):
+        Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
+        return this.http.get<any>(
+            `${this.API_BASE_URL}/previous-antrag/${encodeURIComponent(antrag.id)}`,
+        ).pipe(
+            map(restContainer => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
+                new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),
+                restContainer),
+            ));
+    }
 }
