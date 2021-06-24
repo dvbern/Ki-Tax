@@ -484,46 +484,44 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		if (Objects.isNull(institutionAngaben.getLehrbetrieb())) {
 			throw new WebApplicationException("isLehrbetrieb must not be null", Status.BAD_REQUEST);
 		}
-		if (!alleAngabenInKibonErfasst) {
-			if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinder())) {
-				throw new WebApplicationException("anzahlEingeschribeneKinder must not be null", Status.BAD_REQUEST);
-			}
-			if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderSekundarstufe())) {
-				throw new WebApplicationException(
-					"anzahlEingeschriebeneKinderBasisstufe must not be null",
-					Status.BAD_REQUEST);
-			}
-			if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderKindergarten())) {
-				throw new WebApplicationException(
-					"anzahlEingeschriebeneKinderKindergarten must not be null",
-					Status.BAD_REQUEST);
-			}
-			if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderPrimarstufe())) {
-				throw new WebApplicationException(
-					"anzahlEingeschriebeneKinderPrimarstufe must not be null",
-					Status.BAD_REQUEST);
-			}
-			if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagFruehbetreuung())) {
-				throw new WebApplicationException(
-					"anzahlDurchschnittKinderProTagFruehbetreuung must not be null",
-					Status.BAD_REQUEST);
-			}
-			if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagMittag())) {
-				throw new WebApplicationException(
-					"anzahlDurchschnittKinderProTagMittag must not be null",
-					Status.BAD_REQUEST);
-			}
-			;
-			if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagNachmittag1())) {
-				throw new WebApplicationException(
-					"anzahlDurchschnittKinderProTagNachmittag1 must not be null",
-					Status.BAD_REQUEST);
-			}
-			if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagNachmittag2())) {
-				throw new WebApplicationException(
-					"anzahlDurchschnittKinderProTagNachmittag2 must not be null",
-					Status.BAD_REQUEST);
-			}
+		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinder())) {
+			throw new WebApplicationException("anzahlEingeschribeneKinder must not be null", Status.BAD_REQUEST);
+		}
+		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderSekundarstufe())) {
+			throw new WebApplicationException(
+				"anzahlEingeschriebeneKinderBasisstufe must not be null",
+				Status.BAD_REQUEST);
+		}
+		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderKindergarten())) {
+			throw new WebApplicationException(
+				"anzahlEingeschriebeneKinderKindergarten must not be null",
+				Status.BAD_REQUEST);
+		}
+		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderPrimarstufe())) {
+			throw new WebApplicationException(
+				"anzahlEingeschriebeneKinderPrimarstufe must not be null",
+				Status.BAD_REQUEST);
+		}
+		if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagFruehbetreuung())) {
+			throw new WebApplicationException(
+				"anzahlDurchschnittKinderProTagFruehbetreuung must not be null",
+				Status.BAD_REQUEST);
+		}
+		if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagMittag())) {
+			throw new WebApplicationException(
+				"anzahlDurchschnittKinderProTagMittag must not be null",
+				Status.BAD_REQUEST);
+		}
+		;
+		if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagNachmittag1())) {
+			throw new WebApplicationException(
+				"anzahlDurchschnittKinderProTagNachmittag1 must not be null",
+				Status.BAD_REQUEST);
+		}
+		if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagNachmittag2())) {
+			throw new WebApplicationException(
+				"anzahlDurchschnittKinderProTagNachmittag2 must not be null",
+				Status.BAD_REQUEST);
 		}
 		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen())) {
 			throw new WebApplicationException(
