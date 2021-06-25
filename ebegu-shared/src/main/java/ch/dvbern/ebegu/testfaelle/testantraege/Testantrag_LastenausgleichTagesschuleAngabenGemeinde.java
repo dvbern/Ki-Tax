@@ -18,7 +18,9 @@
 package ch.dvbern.ebegu.testfaelle.testantraege;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
@@ -27,13 +29,22 @@ public class Testantrag_LastenausgleichTagesschuleAngabenGemeinde {
 
 	private final BigDecimal GELEISTETE_BETREUUNGSSTUNDEN_OHNE_BESONDERE_BEDUERFNISSE = new BigDecimal(5);
 	private final BigDecimal DAVON_ZU_WENIGER_ALS_50_PROZENT_NORMLOHN = new BigDecimal(5);
+	private final BigDecimal KOSTENBEITRAG_GEMEINDE = new BigDecimal("0.2");
 
 	private LastenausgleichTagesschuleAngabenGemeinde angaben;
+	private BigDecimal normlohnkosten;
+	private BigDecimal normlohnkostenLessThan50;
 
 	public Testantrag_LastenausgleichTagesschuleAngabenGemeinde(
 		BigDecimal institutionsBetreuungsstundenSum,
-		LastenausgleichTagesschuleAngabenGemeindeStatus status) {
+		LastenausgleichTagesschuleAngabenGemeindeStatus status,
+		Einstellung normlohnkosten,
+		Einstellung normlohnkostenLessThen50
+	) {
 		this.angaben = new LastenausgleichTagesschuleAngabenGemeinde();
+		this.normlohnkosten = normlohnkosten.getValueAsBigDecimal();
+		this.normlohnkostenLessThan50 = normlohnkostenLessThen50.getValueAsBigDecimal();
+
 		if(status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE) {
 			this.angaben.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
 		} else {
@@ -74,6 +85,59 @@ public class Testantrag_LastenausgleichTagesschuleAngabenGemeinde {
 		this.angaben.setMaximalTarif(true);
 		this.angaben.setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal(true);
 		this.angaben.setAusbildungenMitarbeitendeBelegt(true);
+		// Berechnungen
+		setupCalculations(normlohnkosten);
+	}
+
+	private void setupCalculations(Einstellung normlohnkosten) {
+		Objects.requireNonNull(this.angaben.getGeleisteteBetreuungsstundenBesondereBeduerfnisse());
+		Objects.requireNonNull(this.angaben.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete());
+		Objects.requireNonNull(this.angaben.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
+
+		this.angaben.setLastenausgleichberechtigteBetreuungsstunden(
+			this.angaben.getGeleisteteBetreuungsstundenBesondereBeduerfnisse()
+				.add(this.angaben.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse())
+		);
+		this.angaben.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet(
+			this.angaben.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete().multiply(this.normlohnkosten)
+		);
+		this.angaben.setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet(
+			this.angaben.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete().multiply(this.normlohnkostenLessThan50)
+		);
+
+		Objects.requireNonNull(this.angaben.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet());
+		this.angaben.setNormlohnkostenBetreuungBerechnet(
+			this.angaben.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet()
+				.add(this.angaben.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet())
+		);
+
+		Objects.requireNonNull(this.angaben.getNormlohnkostenBetreuungBerechnet());
+		this.angaben.setLastenausgleichsberechtigerBetrag(
+			this.angaben.getNormlohnkostenBetreuungBerechnet()
+				.subtract(this.angaben.getEinnahmenElterngebuehren())
+		);
+
+		Objects.requireNonNull(this.angaben.getGesamtKostenTagesschule());
+		BigDecimal gemeindeBetragOderUeberschuss = this.angaben.getGesamtKostenTagesschule()
+			.subtract(this.angaben.getLastenausgleichsberechtigerBetrag())
+			.subtract(this.angaben.getEinnahmenElterngebuehren())
+			.subtract(this.angaben.getEinnnahmenVerpflegung())
+			.subtract(this.angaben.getEinnahmenSubventionenDritter());
+
+		if (gemeindeBetragOderUeberschuss.compareTo(BigDecimal.ZERO) < 0) {
+			this.angaben.setKostenueberschussGemeinde(gemeindeBetragOderUeberschuss);
+		} else {
+			this.angaben.setKostenbeitragGemeinde(gemeindeBetragOderUeberschuss);
+		}
+
+		this.angaben.setErwarteterKostenbeitragGemeinde(
+			this.angaben.getGesamtKostenTagesschule().multiply(this.KOSTENBEITRAG_GEMEINDE)
+		);
+
+		Objects.requireNonNull(this.angaben.getLastenausgleichsberechtigerBetrag());
+		this.angaben.setSchlusszahlung(
+			this.angaben.getLastenausgleichsberechtigerBetrag().subtract(this.angaben.getErsteRateAusbezahlt())
+		);
 	}
 
 	public LastenausgleichTagesschuleAngabenGemeinde getAngaben() {
