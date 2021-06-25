@@ -5832,6 +5832,16 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAngabenGemeinde.setAusbildungenMitarbeitendeBelegt(angabenGemeinde.getAusbildungenMitarbeitendeBelegt());
 		// Bemerkungen
 		jaxAngabenGemeinde.setBemerkungen(angabenGemeinde.getBemerkungen());
+		// Berechnungen
+		jaxAngabenGemeinde.setLastenausgleichberechtigteBetreuungsstunden(angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden());
+		jaxAngabenGemeinde.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet(angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet());
+		jaxAngabenGemeinde.setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet(angabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet());
+		jaxAngabenGemeinde.setNormlohnkostenBetreuungBerechnet(angabenGemeinde.getNormlohnkostenBetreuungBerechnet());
+		jaxAngabenGemeinde.setLastenausgleichsberechtigerBetrag(angabenGemeinde.getLastenausgleichsberechtigerBetrag());
+		jaxAngabenGemeinde.setKostenbeitragGemeinde(angabenGemeinde.getKostenbeitragGemeinde());
+		jaxAngabenGemeinde.setKostenueberschussGemeinde(angabenGemeinde.getKostenueberschussGemeinde());
+		jaxAngabenGemeinde.setErwarteterKostenbeitragGemeinde(angabenGemeinde.getErwarteterKostenbeitragGemeinde());
+		jaxAngabenGemeinde.setSchlusszahlung(angabenGemeinde.getSchlusszahlung());
 
 		return jaxAngabenGemeinde;
 	}
@@ -5882,6 +5892,16 @@ public class JaxBConverter extends AbstractConverter {
 		angabenGemeinde.setAusbildungenMitarbeitendeBelegt(jaxAngabenGemeinde.getAusbildungenMitarbeitendeBelegt());
 		// Bemerkungen
 		angabenGemeinde.setBemerkungen(jaxAngabenGemeinde.getBemerkungen());
+		// Berechnungen
+		angabenGemeinde.setLastenausgleichberechtigteBetreuungsstunden(jaxAngabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden());
+		angabenGemeinde.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet(jaxAngabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet());
+		angabenGemeinde.setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet(jaxAngabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet());
+		angabenGemeinde.setNormlohnkostenBetreuungBerechnet(jaxAngabenGemeinde.getNormlohnkostenBetreuungBerechnet());
+		angabenGemeinde.setLastenausgleichsberechtigerBetrag(jaxAngabenGemeinde.getLastenausgleichsberechtigerBetrag());
+		angabenGemeinde.setKostenbeitragGemeinde(jaxAngabenGemeinde.getKostenbeitragGemeinde());
+		angabenGemeinde.setKostenueberschussGemeinde(jaxAngabenGemeinde.getKostenueberschussGemeinde());
+		angabenGemeinde.setErwarteterKostenbeitragGemeinde(jaxAngabenGemeinde.getErwarteterKostenbeitragGemeinde());
+		angabenGemeinde.setSchlusszahlung(jaxAngabenGemeinde.getSchlusszahlung());
 
 		return angabenGemeinde;
 	}

@@ -628,10 +628,10 @@ export class GemeindeAngabenComponent implements OnInit {
         // tslint:disable-next-line:max-line-length
         if (this.lATSAngabenGemeindeContainer.isinPruefungKanton()) {
             this.lATSAngabenGemeindeContainer.angabenKorrektur = new TSLastenausgleichTagesschuleAngabenGemeinde();
-            Object.assign(this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.value);
+            Object.assign(this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.getRawValue());
         } else {
             this.lATSAngabenGemeindeContainer.angabenDeklaration = new TSLastenausgleichTagesschuleAngabenGemeinde();
-            Object.assign(this.lATSAngabenGemeindeContainer.angabenDeklaration, this.angabenForm.value);
+            Object.assign(this.lATSAngabenGemeindeContainer.angabenDeklaration, this.angabenForm.getRawValue());
         }
         this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst =
             this.formularInitForm.get('alleAngabenInKibonErfasst').value;
@@ -656,10 +656,10 @@ export class GemeindeAngabenComponent implements OnInit {
         // tslint:disable-next-line:max-line-length
         if (this.lATSAngabenGemeindeContainer.isinPruefungKanton()) {
             this.lATSAngabenGemeindeContainer.angabenKorrektur = new TSLastenausgleichTagesschuleAngabenGemeinde();
-            Object.assign(this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.value);
+            Object.assign(this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.getRawValue());
         } else {
             this.lATSAngabenGemeindeContainer.angabenDeklaration = new TSLastenausgleichTagesschuleAngabenGemeinde();
-            Object.assign(this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.value);
+            Object.assign(this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.getRawValue());
         }
         this.errorService.clearAll();
         this.lastenausgleichTSService.latsAngabenGemeindeFormularAbschliessen(this.lATSAngabenGemeindeContainer)
