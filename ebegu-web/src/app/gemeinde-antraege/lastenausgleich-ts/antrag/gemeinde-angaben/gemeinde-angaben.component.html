@@ -446,35 +446,35 @@
                 <table class="besondere-beduerfnisse-controlling">
                     <tr>
                         <td>{{'LATS_CONTROLLING_ANTEIL_BETRSONDERE_BEDUERFNISSE' | translate}} {{lATSAngabenGemeindeContainer?.gesuchsperiode.gesuchsperiodeString}}</td>
-                        <td>12345</td>
+                        <td></td>
                     </tr>
                     <tr>
                         <td>{{'LATS_CONTROLLING_ANTEIL_BETRSONDERE_BEDUERFNISSE' | translate}} {{lATSAngabenGemeindeContainer?.gesuchsperiode | previousPeriodeStr}}</td>
-                        <td>12345</td>
+                        <td></td>
                     </tr>
                 </table>
                 <table class="betreuungsstunden-controlling">
                     <tr>
                         <td>{{"LATS_CONTROLLING_ERWARTETE_BETREUUNGSSTUNDEN" | translate}} {{lATSAngabenGemeindeContainer?.gesuchsperiode.gesuchsperiodeString}}</td>
-                        <td>12345</td>
+                        <td></td>
                     </tr>
                     <tr>
                         <td>{{'LATS_CONTROLLING_BETREUUNGSSTUNDEN_SCHULJAHR' | translate}} {{lATSAngabenGemeindeContainer?.gesuchsperiode | previousPeriodeStr}}</td>
-                        <td>23456</td>
+                        <td>{{ previousAntrag?.angabenKorrektur.lastenausgleichberechtigteBetreuungsstunden }}</td>
                     </tr>
                     <tr>
                         <td>{{ 'LATS_CONTROLLING_VERAENDERUNG_BETREUUNGSSTUNDEN' | translate }}</td>
-                        <td>40%</td>
+                        <td>{{ controllingCalculator.veraenderungBetreuungsstunden$ | async }}</td>
                     </tr>
                 </table>
                 <table class="elternbeitrag-controlling">
                     <tr>
                         <td>{{ 'LATS_CONTROLLING_ANTEIL_ELTERNBEITRAEGE' | translate }} {{lATSAngabenGemeindeContainer?.gesuchsperiode.gesuchsperiodeString}}</td>
-                        <td>{{controllingCalculator.anteilElternbeitraegeCurrentPeriode$ | async}}</td>
+                        <td>{{ controllingCalculator.anteilElternbeitraegeCurrentPeriode$ | async }}</td>
                     </tr>
                     <tr>
                         <td>{{ 'LATS_CONTROLLING_ANTEIL_ELTERNBEITRAEGE' | translate }} {{lATSAngabenGemeindeContainer?.gesuchsperiode | previousPeriodeStr}}</td>
-                        <td>12345</td>
+                        <td>{{ controllingCalculator.anteilElternbeitraegePreviousPeriode$ | async }}</td>
                     </tr>
                 </table>
             </div>
@@ -731,13 +731,13 @@
                 <table class="kostenbeitrag-controlling">
                     <tr>
                         <td>{{ 'LATS_CONTROLLING_KOSTENANTEIL' | translate }}</td>
-                        <td>12345</td>
+                        <td></td>
                     </tr>
                 </table>
                 <table class="ertragsueberschuss-controlling">
                     <tr>
                         <td>{{ 'LATS_CONTROLLING_KOSTENANTEIL' | translate }}</td>
-                        <td>12345</td>
+                        <td></td>
                     </tr>
                 </table>
             </div>

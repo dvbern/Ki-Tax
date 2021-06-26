@@ -18,6 +18,7 @@
 import {FormGroup} from '@angular/forms';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
+import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 
 export class TSControllingCalculator {
 
@@ -31,12 +32,17 @@ export class TSControllingCalculator {
     private _kostenanteilGemeindeGesamtkosten: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
     private _erstragsanteilGemeindeGesamtkosten: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
     private _anteilElternbeitraegeCurrentPeriode: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
-    private _anteilElternbeitraegeLastPeriode: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
+    private _anteilElternbeitraegePreviousPeriode: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
 
     private _angabenForm: FormGroup;
+    private _previousAntrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
 
-    public constructor(angabenForm: FormGroup) {
+    public constructor(
+        angabenForm: FormGroup,
+        previousAntrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
+    ) {
         this._angabenForm = angabenForm;
+        this._previousAntrag = previousAntrag;
         this.setupCalculations();
     }
 
@@ -72,11 +78,33 @@ export class TSControllingCalculator {
         return this._anteilElternbeitraegeCurrentPeriode.asObservable();
     }
 
-    public get anteilElternbeitraegeLastPeriode$(): Observable<string> {
-        return this._anteilElternbeitraegeLastPeriode.asObservable();
+    public get anteilElternbeitraegePreviousPeriode$(): Observable<string> {
+        return this._anteilElternbeitraegePreviousPeriode.asObservable();
     }
 
     private setupCalculations(): void {
+        this.calculateVeraenderungBetreuungsstunden();
+        this.calculateAnteilElternbeitraegeCurrentPeriode();
+        this.calculateAnteilElternbeitraegePreviousPeriode();
+    }
+
+    private calculateVeraenderungBetreuungsstunden(): void {
+        if (!(this._previousAntrag?.angabenKorrektur?.lastenausgleichberechtigteBetreuungsstunden)) {
+            this._veraenderungBetreuungsstunden.next('?');
+            return;
+        }
+        this._angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
+            .valueChanges
+            .pipe(
+                startWith(this._angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').value)
+            ).subscribe(value => {
+                const veraenderung =
+                    value / this._previousAntrag.angabenKorrektur.lastenausgleichberechtigteBetreuungsstunden;
+                this._veraenderungBetreuungsstunden.next(veraenderung.toFixed(2));
+            });
+    }
+
+    private calculateAnteilElternbeitraegeCurrentPeriode(): void {
         combineLatest([
             this._angabenForm.get('einnahmenElterngebuehren')
                 .valueChanges
@@ -96,5 +124,15 @@ export class TSControllingCalculator {
                 (values[0] / values[1]).toFixed(2),
             );
         });
+    }
+
+    private calculateAnteilElternbeitraegePreviousPeriode(): void {
+        if (!(this._previousAntrag?.angabenKorrektur?.einnahmenElterngebuehren)) {
+            this._anteilElternbeitraegePreviousPeriode.next('?');
+            return;
+        }
+        const result = this._previousAntrag.angabenKorrektur.einnahmenElterngebuehren /
+            this._previousAntrag.angabenKorrektur.normlohnkostenBetreuungBerechnet;
+        this._anteilElternbeitraegePreviousPeriode.next(result.toFixed(2));
     }
 }

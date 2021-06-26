@@ -71,6 +71,7 @@ export class GemeindeAngabenComponent implements OnInit {
     public falscheAngabenVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     public controllingCalculator: TSControllingCalculator;
+    public previousAntrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
 
     private readonly kostenbeitragGemeinde = 0.2;
     private readonly WIZARD_TYPE: TSWizardStepXTyp = TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN;
@@ -925,8 +926,7 @@ export class GemeindeAngabenComponent implements OnInit {
         }
         this.lastenausgleichTSService.findAntragOfPreviousPeriode(this.lATSAngabenGemeindeContainer)
             .subscribe(previousAntrag => {
-                console.log(previousAntrag);
-                this.controllingCalculator = new TSControllingCalculator(this.angabenForm);
+                this.controllingCalculator = new TSControllingCalculator(this.angabenForm, previousAntrag);
             });
     }
 }
