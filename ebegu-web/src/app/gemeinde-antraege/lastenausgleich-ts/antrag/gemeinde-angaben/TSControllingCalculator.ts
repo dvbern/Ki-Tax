@@ -126,6 +126,10 @@ export class TSControllingCalculator {
                 ),
             ],
         ).subscribe(values => {
+            if (values[0] === 0) {
+                this._anteilStundenBesondereBeduerfnisseCurrentPeriode.next('0');
+                return;
+            }
             const result = values[0] / 3 / values[1];
             this._anteilStundenBesondereBeduerfnisseCurrentPeriode.next(this.toPercent(result));
         });
