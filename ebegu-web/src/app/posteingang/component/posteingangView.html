@@ -19,7 +19,7 @@
             <div class="col-md-8 col-md-offset-1">
                 <h3 data-translate="POSTEINGANG"></h3>
             </div>
-            <div ng-if="!vm.isSozialdienst()" class="col-md-2 text-right closed-mitteilungen posteingang-view-resultCombo">
+            <div ng-if="!vm.isSozialdienstOrInstitution()" class="col-md-2 text-right closed-mitteilungen posteingang-view-resultCombo">
                 <md-checkbox ng-model="vm.includeClosed" name="includeClosed" id="includeClosed"
                              ng-change="vm.clickedIncludeClosed()"
                              aria-label="{{'POSTEINGANG_INCLUDE_CLOSED'|translate}}">
@@ -55,10 +55,10 @@
                         <th st-sort="sentDatum" class="sortable row-sentDatum uppercase"
                             data-translate="POSTEINGANG_DATUM"></th>
                         <!-- Verantwortliche Person -->
-                        <th ng-if="!vm.isSozialdienst()" st-sort="empfaenger" class="sortable row-empfaenger uppercase"
+                        <th ng-if="!vm.isSozialdienstOrInstitution()" st-sort="empfaenger" class="sortable row-empfaenger uppercase"
                             data-translate="POSTEINGANG_AN"></th>
                         <!-- Amt -->
-                        <th ng-if="!vm.isSozialdienst()" st-sort="empfaengerVerantwortung"
+                        <th ng-if="!vm.isSozialdienstOrInstitution()" st-sort="empfaengerVerantwortung"
                             class="sortable uppercase"
                             data-translate="POSTEINGANG_VERANTWORTUNG"></th>
                         <!-- Status -->
@@ -88,13 +88,13 @@
                         <!-- Datum -->
                         <th><input st-search="sentDatum" class="form-control" type="text"/></th>
                         <!-- An -->
-                        <th ng-if="!vm.isSozialdienst()">
+                        <th ng-if="!vm.isSozialdienstOrInstitution()">
                             <dv-userselect input-id="empfaenger" dv-usersearch="empfaenger"
                                            initial-all="vm.isSuperAdmin() ? true : false"
                                            show-selection-all="true" sachbearbeiter-gemeinde="true"></dv-userselect>
                         </th>
                         <!-- Verantwortung -->
-                        <th ng-if="!vm.isSozialdienst()">
+                        <th ng-if="!vm.isSozialdienstOrInstitution()">
                             <div class="dv-select-style">
                                 <select st-input-event="change" name="empfaengerVerantwortung" id="empfaengerVerantwortung"
                                         st-search="empfaengerVerantwortung" class="form-control"
@@ -141,11 +141,11 @@
                         <td class="ellipsis" title="{{row.sentDatum | amDateFormat : 'DD.MM.YYYY'}}"
                             ng-bind="row.sentDatum | amDateFormat : 'DD.MM.YYYY'"></td>
                         <!-- An -->
-                        <td ng-if="!vm.isSozialdienst()" class="ellipsis">
+                        <td ng-if="!vm.isSozialdienstOrInstitution()" class="ellipsis">
                             <dv-benutzer-entry [benutzer]="row.empfaenger"
                                                no-icons="true"></dv-benutzer-entry>
                         <!-- Verantwortung -->
-                        <td ng-if="!vm.isSozialdienst()" class="ellipsis">
+                        <td ng-if="!vm.isSozialdienstOrInstitution()" class="ellipsis">
                             <dv-benutzer-entry [benutzer]="row.empfaenger" no-name="true"></dv-benutzer-entry>
                         </td>
                         <!-- Status -->

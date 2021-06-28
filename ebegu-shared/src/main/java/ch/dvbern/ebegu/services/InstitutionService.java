@@ -129,4 +129,6 @@ public interface InstitutionService {
 	boolean isCurrentUserTagesschuleNutzende(@Nonnull boolean restrictedForSCH);
 
 	Map<Institution, InstitutionStammdaten> getInstitutionenInstitutionStammdatenForGemeinde(Gemeinde gemeinde);
+
+	Collection<Institution> findAllInstitutionen(@Nonnull String dossierId);
 }

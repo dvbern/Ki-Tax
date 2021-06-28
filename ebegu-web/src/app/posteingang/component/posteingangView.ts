@@ -138,4 +138,8 @@ export class PosteingangViewController implements IController {
     public isSozialdienst(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
     }
+
+    public isSozialdienstOrInstitution(): boolean {
+        return this.isSozialdienst() || this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
+    }
 }

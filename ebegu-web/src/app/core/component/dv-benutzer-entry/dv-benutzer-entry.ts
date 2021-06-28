@@ -60,7 +60,7 @@ export class DvBenutzerEntry {
             case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
             case TSRole.ADMIN_INSTITUTION:
             case TSRole.SACHBEARBEITER_INSTITUTION:
-                return [['fa fa-home', 'VERANTWORTUNG_INSTITUTION']];
+                return [['fa fa-building', 'VERANTWORTUNG_INSTITUTION']];
             case TSRole.ADMIN_SOZIALDIENST:
             case TSRole.SACHBEARBEITER_SOZIALDIENST:
                 return [['fa fa-handshake-o', 'VERANTWORTUNG_SOZIALDIENST']];

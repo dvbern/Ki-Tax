@@ -4480,7 +4480,7 @@ public class JaxBConverter extends AbstractConverter {
 		if (mitteilungJAXP.getEmpfaenger() != null) {
 			Benutzer empfaenger = benutzerService.findBenutzer(mitteilungJAXP.getEmpfaenger().getUsername())
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
-					"mitteilungToEntity",
+					"mitteilungToEntity - findBenutzer",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					mitteilungJAXP.getEmpfaenger()));
 			// because the user doesn't come from the client but from the server
@@ -4498,6 +4498,21 @@ public class JaxBConverter extends AbstractConverter {
 
 		if (mitteilungJAXP.getBetreuung() != null) {
 			mitteilung.setBetreuung(betreuungToEntity(mitteilungJAXP.getBetreuung(), new Betreuung()));
+		}
+		if (mitteilungJAXP.getInstitution() != null && mitteilungJAXP.getInstitution().getId() != null) {
+			final Optional<Institution> institutionFromDB =
+				institutionService.findInstitution(mitteilungJAXP.getInstitution().getId(), false);
+			if (institutionFromDB.isPresent()) {
+				// Institution darf nicht vom Client ueberschrieben werden
+				mitteilung.setInstitution(institutionFromDB.get());
+			} else {
+				throw new EbeguEntityNotFoundException(
+					"mitteilungToEntity - getInstitution",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					mitteilungJAXP.getInstitution().getId());
+			}
+		} else {
+			mitteilung.setInstitution(null);
 		}
 		mitteilung.setMessage(mitteilungJAXP.getMessage());
 		mitteilung.setMitteilungStatus(mitteilungJAXP.getMitteilungStatus());
@@ -4528,6 +4543,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxMitteilung.setDossier(this.dossierToJAX(persistedMitteilung.getDossier()));
 		if (persistedMitteilung.getBetreuung() != null) {
 			jaxMitteilung.setBetreuung(betreuungToJAX(persistedMitteilung.getBetreuung()));
+		}
+		if(persistedMitteilung.getInstitution() != null) {
+			jaxMitteilung.setInstitution(institutionToJAX(persistedMitteilung.getInstitution()));
 		}
 		jaxMitteilung.setMessage(persistedMitteilung.getMessage());
 		jaxMitteilung.setMitteilungStatus(persistedMitteilung.getMitteilungStatus());

@@ -73,6 +73,9 @@ public class JaxMitteilung extends JaxAbstractDTO {
 	private LocalDateTime sentDatum;
 
 	@Nullable
+	private JaxInstitution institution;
+
+	@Nullable
 	public JaxDossier getDossier() {
 		return dossier;
 	}
@@ -159,5 +162,14 @@ public class JaxMitteilung extends JaxAbstractDTO {
 
 	public void setSentDatum(@Nullable LocalDateTime sentDatum) {
 		this.sentDatum = sentDatum;
+	}
+
+	@Nullable
+	public JaxInstitution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(@Nullable JaxInstitution institution) {
+		this.institution = institution;
 	}
 }

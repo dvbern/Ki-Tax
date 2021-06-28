@@ -99,6 +99,11 @@ public class Mitteilung extends AbstractMutableEntity {
 	@Column(nullable = true)
 	private LocalDateTime sentDatum;
 
+	@Nullable
+	@ManyToOne(optional = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_mitteilung_institution_id"))
+	private Institution institution;
+
 	@NotNull
 	public Fall getFall() {
 		return dossier.getFall();
@@ -228,5 +233,14 @@ public class Mitteilung extends AbstractMutableEntity {
 			.append("empfaenger", empfaenger)
 			.append("mitteilungStatus", mitteilungStatus)
 			.toString();
+	}
+
+	@Nullable
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(@Nullable Institution institution) {
+		this.institution = institution;
 	}
 }
