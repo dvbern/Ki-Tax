@@ -90,8 +90,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
             ), this.authService.principal$,
         ]).pipe(
             map(([alLeastInPruefungKanton, principal]) => {
-                return (principal.hasRole(TSRole.SUPER_ADMIN) && alLeastInPruefungKanton) ||
-                    principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
+                return principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) && alLeastInPruefungKanton;
             }),
         );
     }
