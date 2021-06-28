@@ -165,8 +165,8 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 
 		Objects.requireNonNull(institutionContainer.getAngabenDeklaration());
 		checkInstitutionAngabenComplete(
-			institutionContainer.getAngabenDeklaration(),
-			institutionContainer.getAngabenGemeinde().getAlleAngabenInKibonErfasst());
+			institutionContainer.getAngabenDeklaration()
+		);
 
 		institutionContainer.copyForFreigabe();
 		institutionContainer.setStatus(LastenausgleichTagesschuleAngabenInstitutionStatus.IN_PRUEFUNG_GEMEINDE);
@@ -188,8 +188,8 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 
 		Objects.requireNonNull(institutionContainer.getAngabenKorrektur());
 		checkInstitutionAngabenComplete(
-			institutionContainer.getAngabenKorrektur(),
-			institutionContainer.getAngabenGemeinde().getAlleAngabenInKibonErfasst());
+			institutionContainer.getAngabenKorrektur()
+		);
 
 		institutionContainer.setStatus(LastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT);
 		return persistence.merge(institutionContainer);
@@ -479,8 +479,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 
 	// we check this since the attributes can be cached and can be null then, but must not be when changing status
 	private void checkInstitutionAngabenComplete(
-		LastenausgleichTagesschuleAngabenInstitution institutionAngaben,
-		Boolean alleAngabenInKibonErfasst) {
+		LastenausgleichTagesschuleAngabenInstitution institutionAngaben) {
 		if (Objects.isNull(institutionAngaben.getLehrbetrieb())) {
 			throw new WebApplicationException("isLehrbetrieb must not be null", Status.BAD_REQUEST);
 		}
