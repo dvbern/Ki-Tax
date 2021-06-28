@@ -28,16 +28,25 @@ import java.util.Set;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
+import org.easymock.EasyMockExtension;
+import org.easymock.EasyMockSupport;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class CalculationUnitTest {
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+
+@ExtendWith(EasyMockExtension.class)
+public class CalculationUnitTest extends EasyMockSupport {
 
 	@Test()
 	public void testIsFruebetreuung() {
@@ -150,11 +159,46 @@ public class CalculationUnitTest {
 	public void testCalculateDurchschnittKinderProTag() {
 		LastenausgleichTagesschuleAngabenInstitutionServiceBean latsService = new LastenausgleichTagesschuleAngabenInstitutionServiceBean();
 
+		List<AnmeldungTagesschule> anmeldungen = getTestAnmeldungTagesschulen();
+
+		Map<String, BigDecimal> result = latsService.calculateDurchschnittKinderProTag(anmeldungen);
+		// keine Mittagsbetreuung und keine Nachmittagsbetreuung2
+		Assert.assertEquals(new BigDecimal("0.00"), (BigDecimal) result.get("mittagsbetreuung"));
+		Assert.assertEquals(new BigDecimal("0.00"), (BigDecimal) result.get("nachmittagsbetreuung2"));
+		// 8 Module in Kategorie Frühbetreuung in 5 Tagen
+		Assert.assertEquals(new BigDecimal("1.60"), (BigDecimal) result.get("fruehbetreuung"));
+		// 2 Wöchentliche Module und 3 zweiwöchentliche Module in Kategorie Nachmittagsbetreuung1 in 5 Tagen
+		Assert.assertEquals(new BigDecimal("0.70"), (BigDecimal) result.get("nachmittagsbetreuung1"));
+	}
+
+	@Test
+	public void testCountBetreuungsstundenPerYearForTagesschuleAndPeriode() {
+		LastenausgleichTagesschuleAngabenInstitutionServiceBean latsAngabenInstitutionServiceMock =
+			partialMockBuilder(LastenausgleichTagesschuleAngabenInstitutionServiceBean.class)
+				.addMockedMethod("findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode")
+				.createMock();
+
+		InstitutionStammdaten stammdaten = new InstitutionStammdaten();
+		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
+		expect(latsAngabenInstitutionServiceMock.findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode(
+			stammdaten,
+			gesuchsperiode
+		)).andReturn(getTestAnmeldungTagesschulen());
+
+		replay(latsAngabenInstitutionServiceMock);
+
+		BigDecimal betreuungsstunden = latsAngabenInstitutionServiceMock.countBetreuungsstundenPerYearForTagesschuleAndPeriode(stammdaten, gesuchsperiode);
+		Assert.assertEquals(new BigDecimal("1452.75"), betreuungsstunden);
+	}
+
+	private List<AnmeldungTagesschule> getTestAnmeldungTagesschulen() {
 		ModulTagesschuleGroup group1 = new ModulTagesschuleGroup();
 		group1.setZeitVon(LocalTime.of(8, 0));
+		group1.setZeitBis(LocalTime.of(12, 0));
 
 		ModulTagesschuleGroup group2 = new ModulTagesschuleGroup();
 		group2.setZeitVon(LocalTime.of(14, 0));
+		group2.setZeitBis(LocalTime.of(15, 30));
 
 		ModulTagesschule modul1 = new ModulTagesschule();
 		modul1.setModulTagesschuleGroup(group1);
@@ -268,14 +312,6 @@ public class CalculationUnitTest {
 		List<AnmeldungTagesschule> anmeldungen = new ArrayList<>();
 		anmeldungen.add(anmeldung1);
 		anmeldungen.add(anmeldung2);
-
-		Map<String, BigDecimal> result = latsService.calculateDurchschnittKinderProTag(anmeldungen);
-		// keine Mittagsbetreuung und keine Nachmittagsbetreuung2
-		Assert.assertEquals(new BigDecimal("0.00"), (BigDecimal) result.get("mittagsbetreuung"));
-		Assert.assertEquals(new BigDecimal("0.00"), (BigDecimal) result.get("nachmittagsbetreuung2"));
-		// 8 Module in Kategorie Frühbetreuung in 5 Tagen
-		Assert.assertEquals(new BigDecimal("1.60"), (BigDecimal) result.get("fruehbetreuung"));
-		// 2 Wöchentliche Module und 3 zweiwöchentliche Module in Kategorie Nachmittagsbetreuung1 in 5 Tagen
-		Assert.assertEquals(new BigDecimal("0.70"), (BigDecimal) result.get("nachmittagsbetreuung1"));
+		return anmeldungen;
 	}
 }

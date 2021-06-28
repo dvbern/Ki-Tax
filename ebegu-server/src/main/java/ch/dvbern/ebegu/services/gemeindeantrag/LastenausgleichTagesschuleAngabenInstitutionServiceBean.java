@@ -419,7 +419,8 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 	}
 
 	@Nonnull
-	private List<AnmeldungTagesschule> findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode(
+	@Override
+	public List<AnmeldungTagesschule> findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode(
 		@Nonnull InstitutionStammdaten stammdaten,
 		@Nonnull Gesuchsperiode gesuchsperiode
 	) {

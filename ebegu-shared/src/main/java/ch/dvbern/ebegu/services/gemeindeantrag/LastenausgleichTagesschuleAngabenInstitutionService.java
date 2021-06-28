@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -95,4 +96,10 @@ public interface LastenausgleichTagesschuleAngabenInstitutionService {
 
 	@Nonnull
 	BigDecimal countBetreuungsstundenPerYearForTagesschuleAndPeriode(InstitutionStammdaten stammdaten, Gesuchsperiode gesuchsperiode);
+
+	@Nonnull
+	List<AnmeldungTagesschule> findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode(
+		@Nonnull InstitutionStammdaten stammdaten,
+		@Nonnull Gesuchsperiode gesuchsperiode
+	);
 }
