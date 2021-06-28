@@ -19,23 +19,26 @@ import {FormGroup} from '@angular/forms';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {LogFactory} from '../../../../core/logging/LogFactory';
+
+const LOG = LogFactory.createLog('TSControllingCalculator');
 
 export class TSControllingCalculator {
 
-    private _erwarteteBetreuungsstundenCurrentPeriode: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
-    private _erwarteteBetreuungsstundenLastPeriode: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
-    private _veraenderungBetreuungsstunden: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
-    private _anteilStundenBesondereBeduerfnisseCurrentPeriode: BehaviorSubject<string> =
+    private readonly _veraenderungBetreuungsstunden: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
+    private readonly _anteilStundenBesondereBeduerfnisseCurrentPeriode: BehaviorSubject<string> =
         new BehaviorSubject<string>(undefined);
-    private _anteilStundenBesondereBeduerfnissePreviousPeriode: BehaviorSubject<string> =
+    private readonly _anteilStundenBesondereBeduerfnissePreviousPeriode: BehaviorSubject<string> =
         new BehaviorSubject<string>(undefined);
-    private _kostenanteilGemeindeGesamtkosten: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
-    private _erstragsanteilGemeindeGesamtkosten: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
-    private _anteilElternbeitraegeCurrentPeriode: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
-    private _anteilElternbeitraegePreviousPeriode: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
+    private readonly _kostenanteilGemeindeGesamtkosten: BehaviorSubject<string> =
+        new BehaviorSubject<string>(undefined);
+    private readonly _erstragsanteilGemeindeGesamtkosten: BehaviorSubject<string> =
+        new BehaviorSubject<string>(undefined);
+    private readonly _anteilElternbeitraegeCurrentPeriode: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
+    private readonly _anteilElternbeitraegePreviousPeriode: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
 
-    private _angabenForm: FormGroup;
-    private _previousAntrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
+    private readonly _angabenForm: FormGroup;
+    private readonly _previousAntrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
 
     public constructor(
         angabenForm: FormGroup,
@@ -44,14 +47,6 @@ export class TSControllingCalculator {
         this._angabenForm = angabenForm;
         this._previousAntrag = previousAntrag;
         this.setupCalculations();
-    }
-
-    public get erwarteteBetreuungsstundenCurrentPeriode$(): Observable<string> {
-        return this._erwarteteBetreuungsstundenCurrentPeriode.asObservable();
-    }
-
-    public get erwarteteBetreuungsstundenLastPeriode$(): Observable<string> {
-        return this._erwarteteBetreuungsstundenLastPeriode.asObservable();
     }
 
     public get veraenderungBetreuungsstunden$(): Observable<string> {
@@ -106,7 +101,7 @@ export class TSControllingCalculator {
                     value / this._previousAntrag.angabenKorrektur.lastenausgleichberechtigteBetreuungsstunden;
                 veraenderung = veraenderung - 1;
                 this._veraenderungBetreuungsstunden.next(this.toPercent(veraenderung));
-            });
+            }, this.handleError);
     }
 
     private calculateBesondereBeduerfnisseCurrentPeriode(): void {
@@ -132,7 +127,7 @@ export class TSControllingCalculator {
             }
             const result = values[0] / 3 / values[1];
             this._anteilStundenBesondereBeduerfnisseCurrentPeriode.next(this.toPercent(result));
-        });
+        }, this.handleError);
     }
 
     private calculateBesondereBeduerfnissePreviousPeriode(): void {
@@ -164,7 +159,7 @@ export class TSControllingCalculator {
             this._anteilElternbeitraegeCurrentPeriode.next(
                 (this.toPercent(values[0] / values[1])),
             );
-        });
+        }, this.handleError);
     }
 
     private calculateAnteilElternbeitraegePreviousPeriode(): void {
@@ -200,7 +195,7 @@ export class TSControllingCalculator {
             }
             const result = values[0] / values[1];
             this._kostenanteilGemeindeGesamtkosten.next(this.toPercent(result));
-        });
+        }, this.handleError);
     }
 
     private calculateUeberschussAnteil(): void {
@@ -226,10 +221,15 @@ export class TSControllingCalculator {
             }
             const result = -(values[0] / values[1]);
             this._erstragsanteilGemeindeGesamtkosten.next(this.toPercent(result));
-        });
+        }, this.handleError);
     }
 
     private toPercent(value: number): string {
         return (value * 100).toFixed(1) + '%';
+    }
+
+    private handleError(error: Error): void {
+        LOG.error(error);
+        console.error(error);
     }
 }
