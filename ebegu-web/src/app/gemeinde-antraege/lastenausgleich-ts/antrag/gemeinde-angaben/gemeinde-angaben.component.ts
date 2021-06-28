@@ -927,6 +927,7 @@ export class GemeindeAngabenComponent implements OnInit {
         this.lastenausgleichTSService.findAntragOfPreviousPeriode(this.lATSAngabenGemeindeContainer)
             .subscribe(previousAntrag => {
                 this.controllingCalculator = new TSControllingCalculator(this.angabenForm, previousAntrag);
+                this.cd.markForCheck();
             });
     }
 }

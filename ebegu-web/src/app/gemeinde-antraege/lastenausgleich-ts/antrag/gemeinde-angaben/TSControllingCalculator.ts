@@ -100,9 +100,10 @@ export class TSControllingCalculator {
             .pipe(
                 startWith(this._angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').value)
             ).subscribe(value => {
-                const veraenderung =
+                let veraenderung =
                     value / this._previousAntrag.angabenKorrektur.lastenausgleichberechtigteBetreuungsstunden;
-                this._veraenderungBetreuungsstunden.next(veraenderung.toFixed(2));
+                veraenderung = veraenderung - 1;
+                this._veraenderungBetreuungsstunden.next(this.toPercent(veraenderung));
             });
     }
 
@@ -124,7 +125,7 @@ export class TSControllingCalculator {
             ],
         ).subscribe(values => {
             const result = values[0] / 3 / values[1];
-            this._anteilStundenBesondereBeduerfnisseCurrentPeriode.next(result.toFixed(2));
+            this._anteilStundenBesondereBeduerfnisseCurrentPeriode.next(this.toPercent(result));
         });
     }
 
@@ -135,7 +136,7 @@ export class TSControllingCalculator {
         }
         const result = this._previousAntrag.angabenKorrektur.geleisteteBetreuungsstundenBesondereBeduerfnisse / 3 /
             this._previousAntrag.angabenKorrektur.lastenausgleichberechtigteBetreuungsstunden;
-        this._anteilStundenBesondereBeduerfnissePreviousPeriode.next(result.toFixed(2));
+        this._anteilStundenBesondereBeduerfnissePreviousPeriode.next(this.toPercent(result));
     }
 
     private calculateAnteilElternbeitraegeCurrentPeriode(): void {
@@ -155,7 +156,7 @@ export class TSControllingCalculator {
             // tslint:disable-next-line:no-identical-functions
         ]).subscribe(values => {
             this._anteilElternbeitraegeCurrentPeriode.next(
-                (values[0] / values[1]).toFixed(2),
+                (this.toPercent(values[0] / values[1])),
             );
         });
     }
@@ -167,6 +168,10 @@ export class TSControllingCalculator {
         }
         const result = this._previousAntrag.angabenKorrektur.einnahmenElterngebuehren /
             this._previousAntrag.angabenKorrektur.normlohnkostenBetreuungBerechnet;
-        this._anteilElternbeitraegePreviousPeriode.next(result.toFixed(2));
+        this._anteilElternbeitraegePreviousPeriode.next(this.toPercent(result));
+    }
+
+    private toPercent(value: number): string {
+        return (value * 100).toFixed(1) + '%';
     }
 }
