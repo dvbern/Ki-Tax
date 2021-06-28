@@ -31,9 +31,9 @@ public class Testantrag_LastenausgleichTagesschuleAngabenGemeinde {
 	private final BigDecimal DAVON_ZU_WENIGER_ALS_50_PROZENT_NORMLOHN = new BigDecimal(5);
 	private final BigDecimal KOSTENBEITRAG_GEMEINDE = new BigDecimal("0.2");
 
-	private LastenausgleichTagesschuleAngabenGemeinde angaben;
-	private BigDecimal normlohnkosten;
-	private BigDecimal normlohnkostenLessThan50;
+	private final LastenausgleichTagesschuleAngabenGemeinde angaben;
+	private final BigDecimal normlohnkosten;
+	private final BigDecimal normlohnkostenLessThan50;
 
 	public Testantrag_LastenausgleichTagesschuleAngabenGemeinde(
 		BigDecimal institutionsBetreuungsstundenSum,
@@ -86,10 +86,10 @@ public class Testantrag_LastenausgleichTagesschuleAngabenGemeinde {
 		this.angaben.setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal(true);
 		this.angaben.setAusbildungenMitarbeitendeBelegt(true);
 		// Berechnungen
-		setupCalculations(normlohnkosten);
+		setupCalculations();
 	}
 
-	private void setupCalculations(Einstellung normlohnkosten) {
+	private void setupCalculations() {
 		Objects.requireNonNull(this.angaben.getGeleisteteBetreuungsstundenBesondereBeduerfnisse());
 		Objects.requireNonNull(this.angaben.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete());
 		Objects.requireNonNull(this.angaben.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
