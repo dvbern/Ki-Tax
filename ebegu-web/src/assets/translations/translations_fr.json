@@ -2347,6 +2347,7 @@
     "LATS_CONTROLLING_VERAENDERUNG_BETREUUNGSSTUNDEN": "Veränderung Betreuungsstunden zum letzten Schuljahr",
     "LATS_CONTROLLING_ANTEIL_ELTERNBEITRAEGE": "Anteil Elternbeiträge an Normlohnkosten Schuljahr",
     "LATS_CONTROLLING_KOSTENANTEIL": "Kostenanteil Gemeinde an Gesamtkosten",
+    "LATS_CONTROLLING_UEBERSCHUSSANTEIL": "Anteil Überschuss an Gesamtkosten",
     "ERROR_POSITIVE_NUMBER": "Veuillez entrer un nombre positif entier",
     "ERR_GEMEINDEN_LADEN": "Les communes n'ont pas pu être chargées",
     "GEMEINDE_ANTRAEGE_ANTRAG_ERSTELLEN": "Créer une demande",

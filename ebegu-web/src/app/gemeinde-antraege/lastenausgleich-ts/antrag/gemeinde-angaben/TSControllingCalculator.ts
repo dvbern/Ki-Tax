@@ -88,6 +88,8 @@ export class TSControllingCalculator {
         this.calculateBesondereBeduerfnissePreviousPeriode();
         this.calculateAnteilElternbeitraegeCurrentPeriode();
         this.calculateAnteilElternbeitraegePreviousPeriode();
+        this.calculateKostenanteilGemeinde();
+        this.calculateUeberschussAnteil();
     }
 
     private calculateVeraenderungBetreuungsstunden(): void {
@@ -169,6 +171,58 @@ export class TSControllingCalculator {
         const result = this._previousAntrag.angabenKorrektur.einnahmenElterngebuehren /
             this._previousAntrag.angabenKorrektur.normlohnkostenBetreuungBerechnet;
         this._anteilElternbeitraegePreviousPeriode.next(this.toPercent(result));
+    }
+
+    private calculateKostenanteilGemeinde(): void {
+        combineLatest(
+            [
+                this._angabenForm.get('kostenbeitragGemeinde')
+                    .valueChanges
+                    .pipe(
+                        startWith(this._angabenForm.get('kostenbeitragGemeinde').value),
+                        map(parseFloat),
+                    ),
+                this._angabenForm.get('gesamtKostenTagesschule')
+                    .valueChanges
+                    .pipe(
+                        startWith(this._angabenForm.get('gesamtKostenTagesschule').value),
+                        map(parseFloat),
+                    ),
+            ]
+        ).subscribe(values => {
+            if (isNaN(values[0])) {
+                this._kostenanteilGemeindeGesamtkosten.next('-');
+                return;
+            }
+            const result = values[0] / values[1];
+            this._kostenanteilGemeindeGesamtkosten.next(this.toPercent(result));
+        });
+    }
+
+    private calculateUeberschussAnteil(): void {
+        combineLatest(
+            [
+                this._angabenForm.get('kostenueberschussGemeinde')
+                    .valueChanges
+                    .pipe(
+                        startWith(this._angabenForm.get('kostenueberschussGemeinde').value),
+                        map(parseFloat),
+                    ),
+                this._angabenForm.get('gesamtKostenTagesschule')
+                    .valueChanges
+                    .pipe(
+                        startWith(this._angabenForm.get('gesamtKostenTagesschule').value),
+                        map(parseFloat),
+                    ),
+            ]
+        ).subscribe(values => {
+            if (isNaN(values[0])) {
+                this._erstragsanteilGemeindeGesamtkosten.next('-');
+                return;
+            }
+            const result = -(values[0] / values[1]);
+            this._erstragsanteilGemeindeGesamtkosten.next(this.toPercent(result));
+        });
     }
 
     private toPercent(value: number): string {
