@@ -25,7 +25,7 @@ import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {WizardStepXRS} from '../../../../core/service/wizardStepXRS.rest';
 import {MaterialModule} from '../../../../shared/material.module';
-import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
+import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 import {FreigabeComponent} from './freigabe.component';
 

@@ -20,34 +20,46 @@ import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
+import * as moment from 'moment';
+
 import {of} from 'rxjs';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {TSEinstellung} from '../../../../../models/TSEinstellung';
+import {TSGemeinde} from '../../../../../models/TSGemeinde';
+import {TSGesuchsperiode} from '../../../../../models/TSGesuchsperiode';
+import {TSDateRange} from '../../../../../models/types/TSDateRange';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {WindowRef} from '../../../../core/service/windowRef.service';
 import {MaterialModule} from '../../../../shared/material.module';
 import {SharedModule} from '../../../../shared/shared.module';
-import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
+import {WizardstepXModule} from '../../../../wizardstepX/wizardstep-x.module';
 import {UnsavedChangesService} from '../../../services/unsaved-changes.service';
+import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
-import {TagesschulenAngabenComponent} from './tagesschulen-angaben.component';
+import {GemeindeAngabenComponent} from './gemeinde-angaben.component';
 
 const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(LastenausgleichTSService.name,
     ['getLATSAngabenGemeindeContainer']);
-const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
-const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
-const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['saveEinstellung']);
-const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
-const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['href', 'go']);
-const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['findEinstellung']);
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles', 'getPrincipalRole']);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, [
+    'saveEinstellung',
+    'findEinstellung'
+]);
+
 const unsavedChangesServiceSpy = jasmine.createSpyObj<UnsavedChangesService>(UnsavedChangesService.name,
     ['registerForm']);
 
-describe('TagesschulenAngabenComponent', () => {
-    let component: TagesschulenAngabenComponent;
-    let fixture: ComponentFixture<TagesschulenAngabenComponent>;
+const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
+
+describe('GemeindeAngabenComponent', () => {
+    let component: GemeindeAngabenComponent;
+    let fixture: ComponentFixture<GemeindeAngabenComponent>;
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
@@ -58,8 +70,9 @@ describe('TagesschulenAngabenComponent', () => {
                 HttpClientModule,
                 MaterialModule,
                 BrowserAnimationsModule,
+                WizardstepXModule,
             ],
-            declarations: [TagesschulenAngabenComponent],
+            declarations: [GemeindeAngabenComponent],
             providers: [
                 WindowRef,
                 {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
@@ -67,24 +80,31 @@ describe('TagesschulenAngabenComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: EinstellungRS, useValue: einstellungServiceSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
-                {provide: StateService, useValue: stateServiceSpy},
-                {provide: EinstellungRS, useValue: einstellungRSSpy},
-                {provide: StateService, useValue: stateServiceSpy},
-                {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy}
+                {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy},
+                {provide: StateService, useValue: stateServiceSpy}
             ],
+
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     }));
 
     beforeEach(() => {
+        const container = new TSLastenausgleichTagesschuleAngabenGemeindeContainer();
+        container.gemeinde = new TSGemeinde();
+        container.gesuchsperiode = new TSGesuchsperiode();
+        container.gesuchsperiode.gueltigkeit = new TSDateRange(moment(), moment());
+        container.angabenDeklaration = new TSLastenausgleichTagesschuleAngabenGemeinde();
+        container.angabenKorrektur = new TSLastenausgleichTagesschuleAngabenGemeinde();
+        container.angabenInstitutionContainers = [];
         lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
-            of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer()),
+            of(container),
         );
-        einstellungRSSpy.findEinstellung.and.returnValue(
-            of(null).toPromise()
+        einstellungServiceSpy.findEinstellung.and.returnValue(
+            of(new TSEinstellung()).toPromise(),
         );
-        fixture = TestBed.createComponent(TagesschulenAngabenComponent);
+        einstellungServiceSpy.findEinstellung.and.returnValue(Promise.resolve(new TSEinstellung()));
+        fixture = TestBed.createComponent(GemeindeAngabenComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

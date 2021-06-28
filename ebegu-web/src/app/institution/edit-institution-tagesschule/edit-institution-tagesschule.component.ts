@@ -31,6 +31,7 @@ import {TSRole} from '../../../models/enums/TSRole';
 import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
+import {TSInstitutionExternalClient} from '../../../models/TSInstitutionExternalClient';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSModulTagesschule} from '../../../models/TSModulTagesschule';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
@@ -41,10 +42,14 @@ import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {DvNgThreeButtonDialogComponent} from '../../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
+import {LogFactory} from '../../core/logging/LogFactory';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {ModulTagesschuleDialogComponent} from '../edit-modul-tagesschule/modul-tagesschule-dialog.component';
+import {InfoSchnittstelleDialogComponent} from '../info-schnittstelle-dialog/info-schnittstelle-dialog.component';
 import {DialogImportFromOtherInstitution} from './dialog-import-from-other-institution/dialog-import-from-other-institution.component';
+
+const LOG = LogFactory.createLog('EditInstitutionTagesschuleComponent');
 
 @Component({
     selector: 'dv-edit-institution-tagesschule',
@@ -58,6 +63,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     @Input() public stammdaten: TSInstitutionStammdaten;
     @Input() public editMode: boolean = false;
+    @Input() private readonly assignedClients: TSInstitutionExternalClient[];
 
     public gemeindeList: TSGemeinde[] = [];
     private readonly panelClass = 'dv-mat-dialog-ts';
@@ -482,5 +488,25 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
             return true;
         }
         return false;
+    }
+
+    public schnittstelleInfosVisible(): boolean {
+        return this.assignedClients.length > 0;
+    }
+
+    public showSchnittstelleInfos(group: TSModulTagesschuleGroup): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            modulTagesschuleGroup: group,
+            institution: this.stammdaten.institution
+        };
+        dialogConfig.panelClass = this.panelClass;
+        this.dialog.open(InfoSchnittstelleDialogComponent, dialogConfig).afterClosed().subscribe(
+            () => {},
+            error => {
+                LOG.error(error);
+                console.error(error);
+            }
+        );
     }
 }

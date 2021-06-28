@@ -41,9 +41,9 @@ import {CONSTANTS, HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS'
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {WizardStepXRS} from '../../../../core/service/wizardStepXRS.rest';
 import {numberValidator, ValidationType} from '../../../../shared/validators/number-validator.directive';
-import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
 import {GemeindeAntragService} from '../../../services/gemeinde-antrag.service';
 import {UnsavedChangesService} from '../../../services/unsaved-changes.service';
+import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 @Component({
     selector: 'dv-gemeinde-angaben',

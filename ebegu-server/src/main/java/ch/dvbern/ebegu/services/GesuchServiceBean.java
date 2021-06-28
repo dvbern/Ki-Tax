@@ -195,6 +195,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private VerfuegungService verfuegungService;
 	@Inject
 	private EinstellungService einstellungService;
+	@Inject
+	private MassenversandService massenversandService;
 
 	@Nonnull
 	@Override
@@ -568,6 +570,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		fileSaverService.removeAllFromSubfolder(gesToRemove.getId());
 		antragStatusHistoryService.removeAllAntragStatusHistoryFromGesuch(gesToRemove);
 		zahlungService.deleteZahlungspositionenOfGesuch(gesToRemove);
+		massenversandService.removeMassenversandGesucheForGesuch(gesToRemove);
 		// Wir loeschen hier alle Mitteilungn und Abweichungen.
 		// Im Fall einer Loeschung einer OnlineMutation sind die Mitteilungen und auch die Abweichungen
 		// zu diesem Zeitpunkt bereits auf das Vorgaenger Gesuch umgehaengt.
@@ -1138,6 +1141,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			gesuch.setStatus(AntragStatus.NUR_SCHULAMT);
 			wizardStepService.setWizardStepOkay(gesuch.getId(), WizardStepName.VERFUEGEN);
 
+			final Gesuch persistedGesuch = updateGesuch(gesuch, true);
+
 			if (gesuch.getVorgaengerId() != null) {
 				final Optional<Gesuch> vorgaengerOpt = findGesuch(gesuch.getVorgaengerId());
 				vorgaengerOpt.ifPresent(this::setGesuchAndVorgaengerUngueltig);
@@ -1145,8 +1150,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 			// neues Gesuch erst nachdem das andere auf ungültig gesetzt wurde setzen wegen unique key
 			gesuch.setGueltig(true);
-
-			final Gesuch persistedGesuch = updateGesuch(gesuch, true);
 
 			createFinSitDokument(persistedGesuch, "setAbschliessen");
 

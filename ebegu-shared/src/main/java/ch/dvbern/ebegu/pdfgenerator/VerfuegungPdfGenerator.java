@@ -70,6 +70,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	private static final String ERSETZT_VERFUEGUNG = "PdfGeneration_Ersetzt_Verfuegung";
 	private static final String VERFUEGUNG_TITLE = "PdfGeneration_Verfuegung_Title";
 	private static final String ANGEBOT = "PdfGeneration_Betreuungsangebot";
+	private static final String GEMEINDE = "PdfGeneration_Gemeinde";
 	private static final String VERFUEGUNG_CONTENT_1 = "PdfGeneration_Verfuegung_Content_1";
 	private static final String VERFUEGUNG_CONTENT_2 = "PdfGeneration_Verfuegung_Content_2";
 	private static final String VERFUEGUNG_ERKLAERUNG_FEBR = "PdfGeneration_Verfuegung_Erklaerung_FEBR";
@@ -284,6 +285,8 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 			? UNKNOWN_INSTITUTION_NAME
 			: betreuung.getInstitutionStammdaten().getInstitution().getName();
 
+		final String gemeinde = getGemeindeStammdaten().getGemeinde().getName();
+
 		List<TableRowLabelValue> intro = new ArrayList<>();
 		intro.add(new TableRowLabelValue(REFERENZNUMMER, betreuung.getBGNummer()));
 		intro.add(new TableRowLabelValue(NAME_KIND, betreuung.getKind().getKindJA().getFullName()));
@@ -294,6 +297,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		}
 		intro.add(new TableRowLabelValue(ANGEBOT, translateEnumValue(betreuung.getBetreuungsangebotTyp())));
 		intro.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, institutionName));
+		intro.add(new TableRowLabelValue(GEMEINDE, gemeinde));
 		return PdfUtil.createIntroTable(intro, sprache);
 	}
 

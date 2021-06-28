@@ -23,19 +23,24 @@ export class DvSimpleTableConfig {
     private readonly _initialSortColumn: string;
     // direction for initial sorting
     private readonly _initialSortDirection: SortDirection;
-
+    // number of items per page for client-side pagination. if undefined given, no pagination is set
+    private readonly _paginate?: number;
     /**
      * @param initialSortColumn: name of column for initial sorting
      * @param initialSortDirection: direction for initial sorting
      * @param cursorPointer: sets cursor style. Should be true, if clickEvent is defined
+     * @param paginate: number of items per page for client-side pagination. if undefined given, no pagination is set
      */
     public constructor(
         initialSortColumn: string,
         initialSortDirection: SortDirection = 'asc',
-        cursorPointer: boolean = true) {
+        cursorPointer: boolean = true,
+        paginate?: number
+        ) {
         this._initialSortColumn = initialSortColumn;
         this._initialSortDirection = initialSortDirection;
         this._cursorPointer = cursorPointer;
+        this._paginate = paginate;
     }
 
     public get cursorPointer(): boolean {
@@ -48,5 +53,9 @@ export class DvSimpleTableConfig {
 
     public get initialSortDirection(): SortDirection {
         return this._initialSortDirection;
+    }
+
+    public get paginate(): number {
+        return this._paginate;
     }
 }
