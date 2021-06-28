@@ -190,4 +190,11 @@ export class LastenausgleichTSService {
                 restContainer),
             ));
     }
+
+    public getErwarteteBetreuungsstunden(antrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer):
+        Observable<number> {
+        return this.http.get<number>(
+            `${this.API_BASE_URL}/erwartete-betreuungsstunden/${encodeURIComponent(antrag.id)}`,
+        );
+    }
 }

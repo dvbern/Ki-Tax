@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.services.gemeindeantrag;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -74,6 +75,8 @@ import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.base.Preconditions;
+
+import static ch.dvbern.ebegu.util.Constants.LATS_NUMBER_WEEKS_PER_YEAR;
 
 /**
  * Service fuer den Lastenausgleich der Tagesschulen, Formulare der Institutionen
@@ -389,6 +392,30 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 	private BigDecimal divideBy5(double number) {
 		BigDecimal dividend = new BigDecimal(String.valueOf(number));
 		return MathUtil.ZWEI_NACHKOMMASTELLE.divide(dividend, new BigDecimal("5.00"));
+	}
+
+	@Nonnull
+	@Override
+	public BigDecimal countBetreuungsstundenPerYearForTagesschuleAndPeriode(InstitutionStammdaten stammdaten, Gesuchsperiode gesuchsperiode) {
+		List<AnmeldungTagesschule> anmeldungenTagesschule =
+			findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode(stammdaten, gesuchsperiode);
+
+		BigDecimal hours = BigDecimal.ZERO;
+		for (AnmeldungTagesschule anmeldungTagesschule : anmeldungenTagesschule) {
+			BelegungTagesschule belegungTagesschule = anmeldungTagesschule.getBelegungTagesschule();
+			if (belegungTagesschule == null) {
+				continue;
+			}
+			for (BelegungTagesschuleModul modul : belegungTagesschule.getBelegungTagesschuleModule()) {
+				ModulTagesschuleGroup group = modul.getModulTagesschule().getModulTagesschuleGroup();
+				// we count Zweiwöchentliche Module as 0.5
+				double multiplicator = (modul.getIntervall() == BelegungTagesschuleModulIntervall.WOECHENTLICH) ? 1 : 0.5;
+				long durationInMinutes = group.getZeitVon().until(group.getZeitBis(), ChronoUnit.MINUTES);
+				double durationInHours = (float) durationInMinutes / 60;
+				hours = hours.add(new BigDecimal(durationInHours * multiplicator));
+			}
+		}
+		return hours.multiply(new BigDecimal(LATS_NUMBER_WEEKS_PER_YEAR));
 	}
 
 	@Nonnull

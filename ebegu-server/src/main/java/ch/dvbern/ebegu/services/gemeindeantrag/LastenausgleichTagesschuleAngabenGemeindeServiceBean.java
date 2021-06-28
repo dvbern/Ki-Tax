@@ -54,6 +54,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -75,6 +76,7 @@ import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.InstitutionService;
+import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
@@ -119,6 +121,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
+
+	@Inject
+	private InstitutionStammdatenService institutionStammdatenService;
 
 	private static final Logger LOG =
 		LoggerFactory.getLogger(LastenausgleichTagesschuleAngabenGemeindeServiceBean.class);
@@ -768,6 +773,33 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		}
 		return null;
 
+	}
+
+	@Nullable
+	@Override
+	public Number calculateErwarteteBetreuungsstunden(String containerId) {
+
+		LastenausgleichTagesschuleAngabenGemeindeContainer currentAntrag =
+			findLastenausgleichTagesschuleAngabenGemeindeContainer(containerId)
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"calculateErwarteteBetreuungsstunden",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					containerId)
+				);
+
+		authorizer.checkReadAuthorization(currentAntrag);
+
+
+		Collection<InstitutionStammdaten> allTagesschulen = this.institutionStammdatenService.getAllTagesschulenForGemeinde(currentAntrag.getGemeinde());
+		BigDecimal erwarteteBetreuungsstunden = BigDecimal.ZERO;
+		for (InstitutionStammdaten stammdaten : allTagesschulen) {
+			BigDecimal result = this.angabenInstitutionService.countBetreuungsstundenPerYearForTagesschuleAndPeriode(
+				stammdaten,
+				currentAntrag.getGesuchsperiode()
+			);
+			erwarteteBetreuungsstunden = erwarteteBetreuungsstunden.add(result);
+		};
+		return erwarteteBetreuungsstunden;
 	}
 }
 

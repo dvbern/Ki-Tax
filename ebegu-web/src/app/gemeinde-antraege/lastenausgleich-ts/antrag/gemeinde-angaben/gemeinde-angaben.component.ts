@@ -72,6 +72,7 @@ export class GemeindeAngabenComponent implements OnInit {
 
     public controllingCalculator: TSControllingCalculator;
     public previousAntrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
+    public erwarteteBetreuungsstunden: number;
 
     private readonly kostenbeitragGemeinde = 0.2;
     private readonly WIZARD_TYPE: TSWizardStepXTyp = TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN;
@@ -924,10 +925,13 @@ export class GemeindeAngabenComponent implements OnInit {
         if (!this.controllingActive()) {
             return;
         }
-        this.lastenausgleichTSService.findAntragOfPreviousPeriode(this.lATSAngabenGemeindeContainer)
-            .subscribe(previousAntrag => {
-                this.previousAntrag = previousAntrag;
-                this.controllingCalculator = new TSControllingCalculator(this.angabenForm, previousAntrag);
+        combineLatest([
+            this.lastenausgleichTSService.findAntragOfPreviousPeriode(this.lATSAngabenGemeindeContainer),
+            this.lastenausgleichTSService.getErwarteteBetreuungsstunden(this.lATSAngabenGemeindeContainer)
+        ]).subscribe(results => {
+                this.previousAntrag = results[0];
+                this.erwarteteBetreuungsstunden = results[1];
+                this.controllingCalculator = new TSControllingCalculator(this.angabenForm, results[0]);
                 this.cd.markForCheck();
             });
     }

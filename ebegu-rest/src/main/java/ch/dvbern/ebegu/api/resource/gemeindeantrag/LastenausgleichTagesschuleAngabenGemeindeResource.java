@@ -455,7 +455,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 	@ApiOperation(
 		value = "Findet den Lastenausgleichantrag des Vorjahres zum übergebenen Antrag",
-		response = Void.class)
+		response = JaxLastenausgleichTagesschuleAngabenGemeindeContainer.class)
 	@GET
 	@Path("/previous-antrag/{currentContainerJaxId}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -476,5 +476,25 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 			return null;
 		}
 		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(previousAntrag);
+	}
+
+	@ApiOperation(
+		value = "Berechnet die erwarteten Betreuungsstunden für den übergebenen Antrag",
+		response = Number.class)
+	@GET
+	@Path("/erwartete-betreuungsstunden/{containerJaxId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Nullable
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Number calculateErwarteteBetreuungsstunden(
+		@Nonnull @NotNull @PathParam("containerJaxId") JaxId containerJaxId,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(containerJaxId);
+		Objects.requireNonNull(containerJaxId.getId());
+
+		return angabenGemeindeService.calculateErwarteteBetreuungsstunden(containerJaxId.getId());
 	}
 }

@@ -139,6 +139,7 @@ public final class Constants {
 	public static final String CSV_NEW_LINE = "\n";
 
 	public static final int MAX_MODULGROUPS_TAGESSCHULE = 20;
+	public static final int LATS_NUMBER_WEEKS_PER_YEAR = 39;
 
 	private Constants() {
 		//this prevents even the native class from
