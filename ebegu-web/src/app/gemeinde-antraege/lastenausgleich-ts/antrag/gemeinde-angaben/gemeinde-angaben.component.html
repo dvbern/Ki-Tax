@@ -446,11 +446,11 @@
                 <table class="besondere-beduerfnisse-controlling">
                     <tr>
                         <td>{{'LATS_CONTROLLING_ANTEIL_BETRSONDERE_BEDUERFNISSE' | translate}} {{lATSAngabenGemeindeContainer?.gesuchsperiode.gesuchsperiodeString}}</td>
-                        <td></td>
+                        <td>{{ controllingCalculator.anteilStundenBesondereBeduerfnisseCurrentPeriode$ | async }}</td>
                     </tr>
                     <tr>
                         <td>{{'LATS_CONTROLLING_ANTEIL_BETRSONDERE_BEDUERFNISSE' | translate}} {{lATSAngabenGemeindeContainer?.gesuchsperiode | previousPeriodeStr}}</td>
-                        <td></td>
+                        <td>{{ controllingCalculator.anteilStundenBesondereBeduerfnissePreviousPeriode$ | async }}</td>
                     </tr>
                 </table>
                 <table class="betreuungsstunden-controlling">

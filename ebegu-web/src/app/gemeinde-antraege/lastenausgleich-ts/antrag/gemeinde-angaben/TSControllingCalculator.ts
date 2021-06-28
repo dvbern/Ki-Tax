@@ -27,7 +27,7 @@ export class TSControllingCalculator {
     private _veraenderungBetreuungsstunden: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
     private _anteilStundenBesondereBeduerfnisseCurrentPeriode: BehaviorSubject<string> =
         new BehaviorSubject<string>(undefined);
-    private _anteilStundenBesondereBeduerfnisseLastPeriode: BehaviorSubject<string> =
+    private _anteilStundenBesondereBeduerfnissePreviousPeriode: BehaviorSubject<string> =
         new BehaviorSubject<string>(undefined);
     private _kostenanteilGemeindeGesamtkosten: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
     private _erstragsanteilGemeindeGesamtkosten: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
@@ -62,8 +62,8 @@ export class TSControllingCalculator {
         return this._anteilStundenBesondereBeduerfnisseCurrentPeriode.asObservable();
     }
 
-    public get anteilStundenBesondereBeduerfnisseLastPeriode$(): Observable<string> {
-        return this._anteilStundenBesondereBeduerfnisseLastPeriode.asObservable();
+    public get anteilStundenBesondereBeduerfnissePreviousPeriode$(): Observable<string> {
+        return this._anteilStundenBesondereBeduerfnissePreviousPeriode.asObservable();
     }
 
     public get kostenanteilGemeindeGesamtkosten$(): Observable<string> {
@@ -84,6 +84,8 @@ export class TSControllingCalculator {
 
     private setupCalculations(): void {
         this.calculateVeraenderungBetreuungsstunden();
+        this.calculateBesondereBeduerfnisseCurrentPeriode();
+        this.calculateBesondereBeduerfnissePreviousPeriode();
         this.calculateAnteilElternbeitraegeCurrentPeriode();
         this.calculateAnteilElternbeitraegePreviousPeriode();
     }
@@ -102,6 +104,38 @@ export class TSControllingCalculator {
                     value / this._previousAntrag.angabenKorrektur.lastenausgleichberechtigteBetreuungsstunden;
                 this._veraenderungBetreuungsstunden.next(veraenderung.toFixed(2));
             });
+    }
+
+    private calculateBesondereBeduerfnisseCurrentPeriode(): void {
+        combineLatest(
+            [
+                this._angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse')
+                    .valueChanges
+                    .pipe(
+                        startWith(this._angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').value),
+                        map(parseFloat),
+                    ),
+            this._angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
+                .valueChanges
+                .pipe(
+                    startWith(this._angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').value),
+                    map(parseFloat),
+                ),
+            ],
+        ).subscribe(values => {
+            const result = values[0] / 3 / values[1];
+            this._anteilStundenBesondereBeduerfnisseCurrentPeriode.next(result.toFixed(2));
+        });
+    }
+
+    private calculateBesondereBeduerfnissePreviousPeriode(): void {
+        if (!(this._previousAntrag?.angabenKorrektur?.lastenausgleichberechtigteBetreuungsstunden)) {
+            this._anteilStundenBesondereBeduerfnissePreviousPeriode.next('?');
+            return;
+        }
+        const result = this._previousAntrag.angabenKorrektur.geleisteteBetreuungsstundenBesondereBeduerfnisse / 3 /
+            this._previousAntrag.angabenKorrektur.lastenausgleichberechtigteBetreuungsstunden;
+        this._anteilStundenBesondereBeduerfnissePreviousPeriode.next(result.toFixed(2));
     }
 
     private calculateAnteilElternbeitraegeCurrentPeriode(): void {
