@@ -272,6 +272,10 @@ export class DVMitteilungListController implements IOnInit {
         return mitteilung && mitteilung.sender && mitteilung.senderTyp === TSMitteilungTeilnehmerTyp.GESUCHSTELLER;
     }
 
+    public isMitteilungEmpfaengerInstitution(mitteilung: TSMitteilung): boolean {
+        return mitteilung.empfaengerTyp === TSMitteilungTeilnehmerTyp.INSTITUTION;
+    }
+
     private getMitteilungTeilnehmerTypForUserRole(role: TSRole): TSMitteilungTeilnehmerTyp {
         switch (role) {
             case TSRole.GESUCHSTELLER:
