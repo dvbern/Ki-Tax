@@ -61,7 +61,6 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.EinstellungenFerieninsel;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.ExternalClient;
@@ -570,7 +569,7 @@ public class InstitutionResource {
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Returns all Institutions from dieser Dossier die wurden einmal verwenden",
+	@ApiOperation(value = "Gibt alle Institutionen zurück, die mindestens einmal in diesem Dossier verwendet wurden",
 		responseContainer = "List", response = JaxInstitution.class)
 	@Nullable
 	@GET

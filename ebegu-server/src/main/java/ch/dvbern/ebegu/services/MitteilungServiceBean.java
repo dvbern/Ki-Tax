@@ -1412,6 +1412,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 						.getInstitution()
 						.equals(mitteilung.getBetreuung().getInstitutionStammdaten().getInstitution());
 				}
+				return false;
 			}
 			return false;
 		} else if (principalBean.isCallerInAnyOfRole(
@@ -1433,6 +1434,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 							.getInstitution()
 							.getTraegerschaft());
 				}
+				return false;
 			}
 			return false;
 		}
