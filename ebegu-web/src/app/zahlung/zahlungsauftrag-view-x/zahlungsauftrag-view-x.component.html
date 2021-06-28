@@ -62,7 +62,7 @@
                             <mat-datepicker-toggle matSuffix
                                                    [for]="faelligkeitsdatumPicker"></mat-datepicker-toggle>
                             <mat-datepicker #faelligkeitsdatumPicker></mat-datepicker>
-                            <dv-error-messages [errorObject]="form?.form.get('faelligkeitsdatum')?.errors"
+                            <dv-error-messages [errorObject]="(form?.form.get('faelligkeitsdatumPicker').dirty || form?.submitted) && form?.form.get('faelligkeitsdatumPicker')?.errors"
                                                class="error"></dv-error-messages>
                         </div>
                     </div>
@@ -74,12 +74,11 @@
                                    name="datumGeneriertPicker" id="datumGeneriertPicker"
                                    [(ngModel)]="datumGeneriert"
                                    [matDatepicker]="datumGeneriertPicker"
-                                   placeholder="{{'DATE_PLACEHOLDER' | translate}}"
-                                   required>
+                                   placeholder="{{'DATE_PLACEHOLDER' | translate}}">
                             <mat-datepicker-toggle matSuffix
                                                    [for]="datumGeneriertPicker"></mat-datepicker-toggle>
                             <mat-datepicker #datumGeneriertPicker></mat-datepicker>
-                            <dv-error-messages [errorObject]="form?.form.get('datumGeneriert')?.errors"
+                            <dv-error-messages [errorObject]="form?.form.get('datumGeneriertPicker')?.errors"
                                                class="error"></dv-error-messages>
                         </div>
                     </div>

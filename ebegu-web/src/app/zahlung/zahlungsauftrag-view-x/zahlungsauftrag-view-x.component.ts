@@ -1,5 +1,5 @@
 import {CurrencyPipe} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
@@ -40,7 +40,7 @@ const LOG = LogFactory.createLog('ZahlungsauftragViewXComponent');
     styleUrls: ['./zahlungsauftrag-view-x.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ZahlungsauftragViewXComponent implements OnInit {
+export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
 
     @ViewChild(NgForm) public readonly form: NgForm;
     @ViewChild(MatSort) public sort: MatSort;
