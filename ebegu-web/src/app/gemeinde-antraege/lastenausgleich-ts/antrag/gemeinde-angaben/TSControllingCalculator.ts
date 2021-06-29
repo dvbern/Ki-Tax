@@ -99,7 +99,7 @@ export class TSControllingCalculator {
             ).subscribe(value => {
                 let veraenderung =
                     value / this._previousAntrag.angabenKorrektur.lastenausgleichberechtigteBetreuungsstunden;
-                veraenderung = veraenderung - 1;
+                veraenderung -= 1;
                 this._veraenderungBetreuungsstunden.next(this.toPercent(veraenderung));
             }, this.handleError);
     }
