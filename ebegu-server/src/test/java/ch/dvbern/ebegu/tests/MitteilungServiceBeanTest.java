@@ -201,26 +201,27 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(MitteilungStatus.ERLEDIGT, mitteilungNewStatus.getMitteilungStatus());
 	}
 
-	@Test
-	public void testGetMitteilungenForCurrentRole() throws LoginException {
-		prepareDependentObjects("gesuchst");
-		loginAsGesuchsteller("gesuchst");
-		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
-			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
-		mitteilungService.sendMitteilung(mitteilung1);
 
-		loginAsSachbearbeiterTraegerschaft("satraeg", traegerschaft);
-		Mitteilung mitteilung2 = TestDataUtil.createMitteilung(dossier, empfaengerINST, MitteilungTeilnehmerTyp.JUGENDAMT,
-			sender, MitteilungTeilnehmerTyp.INSTITUTION);
-		mitteilungService.sendMitteilung(mitteilung2);
-
-		//AS Traegerschaft
-		final Collection<Mitteilung> mitteilungenForCurrentRolle = mitteilungService.getMitteilungenForCurrentRolle(mitteilung1.getDossier());
-
-		Assert.assertNotNull(mitteilungenForCurrentRolle);
-		Assert.assertEquals(1, mitteilungenForCurrentRolle.size());
-		Assert.assertEquals(MitteilungTeilnehmerTyp.JUGENDAMT, mitteilungenForCurrentRolle.iterator().next().getEmpfaengerTyp());
-	}
+//	@Test
+//	public void testGetMitteilungenForCurrentRole() throws LoginException {
+//		prepareDependentObjects("gesuchst");
+//		loginAsGesuchsteller("gesuchst");
+//		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+//			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
+//		mitteilungService.sendMitteilung(mitteilung1);
+//
+//		loginAsSachbearbeiterTraegerschaft("satraeg", traegerschaft);
+//		Mitteilung mitteilung2 = TestDataUtil.createMitteilung(dossier, empfaengerINST, MitteilungTeilnehmerTyp.JUGENDAMT,
+//			sender, MitteilungTeilnehmerTyp.INSTITUTION);
+//		mitteilungService.sendMitteilung(mitteilung2);
+//
+//		//AS Traegerschaft
+//		final Collection<Mitteilung> mitteilungenForCurrentRolle = mitteilungService.getMitteilungenForCurrentRolle(mitteilung1.getDossier());
+//
+//		Assert.assertNotNull(mitteilungenForCurrentRolle);
+//		Assert.assertEquals(1, mitteilungenForCurrentRolle.size());
+//		Assert.assertEquals(MitteilungTeilnehmerTyp.JUGENDAMT, mitteilungenForCurrentRolle.iterator().next().getEmpfaengerTyp());
+//	}
 
 	@Test
 	public void testGetNewMitteilungenForCurrentRolle() throws LoginException {
