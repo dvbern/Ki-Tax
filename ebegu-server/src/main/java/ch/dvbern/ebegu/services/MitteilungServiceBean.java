@@ -1412,7 +1412,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 						.getInstitution()
 						.equals(mitteilung.getBetreuung().getInstitutionStammdaten().getInstitution());
 				}
-				return false;
+				throw new EbeguRuntimeException("isMitteilungReadableForInstitution", "Mitteilung for INSTITUTION should have institution or betreuung");
 			}
 			return false;
 		} else if (principalBean.isCallerInAnyOfRole(
@@ -1434,7 +1434,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 							.getInstitution()
 							.getTraegerschaft());
 				}
-				return false;
+				throw new EbeguRuntimeException("isMitteilungReadableForInstitution", "Mitteilung for TRAEGERSCHAFT should have institution, traegerschaft or betreuung");
 			}
 			return false;
 		}
