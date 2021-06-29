@@ -39,6 +39,7 @@ import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -52,6 +53,8 @@ import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Gesuchsperiode_;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -67,11 +70,13 @@ import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGem
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.InstitutionService;
+import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
@@ -116,6 +121,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
+
+	@Inject
+	private InstitutionStammdatenService institutionStammdatenService;
 
 	private static final Logger LOG =
 		LoggerFactory.getLogger(LastenausgleichTagesschuleAngabenGemeindeServiceBean.class);
@@ -714,6 +722,84 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			}, () -> selected.set(false));
 
 		return selected.get();
+	}
+
+	@Override
+	public @Nullable LastenausgleichTagesschuleAngabenGemeindeContainer findContainerOfPreviousPeriode(@Nonnull String currentAntragId) {
+		LastenausgleichTagesschuleAngabenGemeindeContainer currentAntrag =
+			findLastenausgleichTagesschuleAngabenGemeindeContainer(currentAntragId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"findContainerOfPreviousPeriode",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				currentAntragId)
+			);
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<LastenausgleichTagesschuleAngabenGemeindeContainer> query =
+			cb.createQuery(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
+		Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root =
+			query.from(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
+
+		Join<LastenausgleichTagesschuleAngabenGemeindeContainer, Gesuchsperiode> joinGesuchperiode =
+			root.join(LastenausgleichTagesschuleAngabenGemeindeContainer_.gesuchsperiode);
+
+		Predicate predicateGemeinde = cb.equal(
+			root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde),
+			currentAntrag.getGemeinde()
+		);
+
+		Expression<Integer> yearExpression = cb.function(
+			"YEAR",
+			Integer.class,
+			joinGesuchperiode.get(Gesuchsperiode_.gueltigkeit).get(DateRange_.gueltigBis)
+		);
+		Integer currentStartYear = currentAntrag.getGesuchsperiode().getGueltigkeit().getGueltigAb().getYear();
+		Predicate predicateYear = cb.equal(
+			yearExpression,
+			currentStartYear
+		);
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicateGemeinde, predicateYear));
+		List<LastenausgleichTagesschuleAngabenGemeindeContainer> containerList = persistence.getCriteriaResults(query);
+
+		if (containerList.size() > 1) {
+			throw new EbeguRuntimeException("findContainerOfPreviousPeriode", "Too many results found for container " + currentAntrag.getId());
+		}
+
+		if (containerList.size() == 1) {
+			LastenausgleichTagesschuleAngabenGemeindeContainer previousAntrag = containerList.get(0);
+			authorizer.checkReadAuthorization(previousAntrag);
+			return previousAntrag;
+		}
+		return null;
+
+	}
+
+	@Nullable
+	@Override
+	public Number calculateErwarteteBetreuungsstunden(String containerId) {
+
+		LastenausgleichTagesschuleAngabenGemeindeContainer currentAntrag =
+			findLastenausgleichTagesschuleAngabenGemeindeContainer(containerId)
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"calculateErwarteteBetreuungsstunden",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					containerId)
+				);
+
+		authorizer.checkReadAuthorization(currentAntrag);
+
+
+		Collection<InstitutionStammdaten> allTagesschulen = this.institutionStammdatenService.getAllTagesschulenForGemeinde(currentAntrag.getGemeinde());
+		BigDecimal erwarteteBetreuungsstunden = BigDecimal.ZERO;
+		for (InstitutionStammdaten stammdaten : allTagesschulen) {
+			BigDecimal result = this.angabenInstitutionService.countBetreuungsstundenPerYearForTagesschuleAndPeriode(
+				stammdaten,
+				currentAntrag.getGesuchsperiode()
+			);
+			erwarteteBetreuungsstunden = erwarteteBetreuungsstunden.add(result);
+		};
+		return erwarteteBetreuungsstunden;
 	}
 }
 

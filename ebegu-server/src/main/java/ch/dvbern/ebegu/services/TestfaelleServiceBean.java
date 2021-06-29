@@ -42,6 +42,7 @@ import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fall;
@@ -65,6 +66,7 @@ import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFallDokument;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
@@ -185,6 +187,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private FileSaverService fileSaverService;
 	@Inject
 	private SozialdienstFallDokumentService sozialdienstFallDokumentService;
+	@Inject
+	private EinstellungService einstellungService;
 
 
 	@Override
@@ -1045,11 +1049,20 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		if (gemeindeId != null) {
 			Gemeinde gemeinde =
 				gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new IllegalArgumentException());
-			return Collections.singleton(createAndSaveLATSTestdatenForGemeinde(status, gesuchsperiode, gemeinde));
+			Einstellung normlohnkosten = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN, gemeinde, gesuchsperiode);
+			Einstellung normlohnkostenLessThen50 = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50, gemeinde, gesuchsperiode);
+			return Collections.singleton(createAndSaveLATSTestdatenForGemeinde(status, gesuchsperiode, gemeinde, normlohnkosten, normlohnkostenLessThen50));
 		}
-		return gemeindeService.getAktiveGemeinden()
+
+		Collection<Gemeinde> allGemeinden = gemeindeService.getAktiveGemeinden();
+		// we need normlohnkosten only for first gemeinde, since this value is always identical for one gesuchsperiode
+		Gemeinde firstGemeinde = allGemeinden.iterator().next();
+		Einstellung normlohnkosten = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN, firstGemeinde, gesuchsperiode);
+		Einstellung normlohnkostenLessThen50 = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50, firstGemeinde, gesuchsperiode);
+
+		return allGemeinden
 			.stream()
-			.map(gemeinde -> createAndSaveLATSTestdatenForGemeinde(status, gesuchsperiode, gemeinde))
+			.map(gemeinde -> createAndSaveLATSTestdatenForGemeinde(status, gesuchsperiode, gemeinde, normlohnkosten, normlohnkostenLessThen50))
 			.collect(Collectors.toSet());
 	}
 
@@ -1072,13 +1085,20 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private LastenausgleichTagesschuleAngabenGemeindeContainer createAndSaveLATSTestdatenForGemeinde(
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeStatus status,
 		@Nonnull Gesuchsperiode gesuchsperiode,
-		@Nonnull Gemeinde gemeinde) {
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Einstellung normlohnkosten,
+		@Nonnull Einstellung normlohnkostenLessThen50
+	) {
 		final Collection<InstitutionStammdaten> allTagesschulenForGesuchsperiodeAndGemeinde =
 			institutionStammdatenService.getAllTagesschulenForGesuchsperiodeAndGemeinde(gesuchsperiode, gemeinde);
 		LastenausgleichTagesschuleAngabenGemeindeContainer testantrag = (new Testantrag_LATS(
 			gemeinde,
-			gesuchsperiode, allTagesschulenForGesuchsperiodeAndGemeinde,
-			status).getContainer());
+			gesuchsperiode,
+			allTagesschulenForGesuchsperiodeAndGemeinde,
+			status,
+			normlohnkosten,
+			normlohnkostenLessThen50
+		).getContainer());
 		latsService.deleteLastenausgleichTagesschuleAngabenGemeindeContainer(gemeinde, gesuchsperiode);
 		LastenausgleichTagesschuleAngabenGemeindeContainer savedAntrag = latsService.saveLastenausgleichTagesschuleGemeinde(testantrag);
 		historyService.saveLastenausgleichTagesschuleStatusChange(savedAntrag);

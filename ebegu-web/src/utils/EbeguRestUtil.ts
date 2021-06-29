@@ -4495,6 +4495,25 @@ export class EbeguRestUtil {
             // Bemerkungen
             gemeindeTS.bemerkungen =
                 gemeindeFromServer.bemerkungen;
+            // Berechnungen
+            gemeindeTS.lastenausgleichberechtigteBetreuungsstunden =
+                gemeindeFromServer.lastenausgleichberechtigteBetreuungsstunden;
+            gemeindeTS.davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet =
+                gemeindeFromServer.davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet;
+            gemeindeTS.davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet =
+                gemeindeFromServer.davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet;
+            gemeindeTS.normlohnkostenBetreuungBerechnet =
+                gemeindeFromServer.normlohnkostenBetreuungBerechnet;
+            gemeindeTS.lastenausgleichsberechtigerBetrag =
+                gemeindeFromServer.lastenausgleichsberechtigerBetrag;
+            gemeindeTS.kostenbeitragGemeinde =
+                gemeindeFromServer.kostenbeitragGemeinde;
+            gemeindeTS.kostenueberschussGemeinde =
+                gemeindeFromServer.kostenueberschussGemeinde;
+            gemeindeTS.erwarteterKostenbeitragGemeinde =
+                gemeindeFromServer.erwarteterKostenbeitragGemeinde;
+            gemeindeTS.schlusszahlung =
+                gemeindeFromServer.schlusszahlung;
             return gemeindeTS;
         }
         return undefined;
@@ -4564,6 +4583,25 @@ export class EbeguRestUtil {
             // Bemerkungen
             restAngabenGemeinde.bemerkungen =
                 tsAngabenGemeinde.bemerkungen;
+            // Berechnungen
+            restAngabenGemeinde.lastenausgleichberechtigteBetreuungsstunden =
+                tsAngabenGemeinde.lastenausgleichberechtigteBetreuungsstunden;
+            restAngabenGemeinde.davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet =
+                tsAngabenGemeinde.davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet;
+            restAngabenGemeinde.davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet =
+                tsAngabenGemeinde.davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet;
+            restAngabenGemeinde.normlohnkostenBetreuungBerechnet =
+                tsAngabenGemeinde.normlohnkostenBetreuungBerechnet;
+            restAngabenGemeinde.lastenausgleichsberechtigerBetrag =
+                tsAngabenGemeinde.lastenausgleichsberechtigerBetrag;
+            restAngabenGemeinde.kostenbeitragGemeinde =
+                tsAngabenGemeinde.kostenbeitragGemeinde;
+            restAngabenGemeinde.kostenueberschussGemeinde =
+                tsAngabenGemeinde.kostenueberschussGemeinde;
+            restAngabenGemeinde.erwarteterKostenbeitragGemeinde =
+                tsAngabenGemeinde.erwarteterKostenbeitragGemeinde;
+            restAngabenGemeinde.schlusszahlung =
+                tsAngabenGemeinde.schlusszahlung;
             return restAngabenGemeinde;
         }
         return undefined;

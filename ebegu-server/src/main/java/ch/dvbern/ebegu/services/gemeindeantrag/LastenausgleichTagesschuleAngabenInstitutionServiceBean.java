@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -77,6 +78,8 @@ import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.base.Preconditions;
+
+import static ch.dvbern.ebegu.util.Constants.LATS_NUMBER_WEEKS_PER_YEAR;
 
 /**
  * Service fuer den Lastenausgleich der Tagesschulen, Formulare der Institutionen
@@ -416,7 +419,32 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 	}
 
 	@Nonnull
-	private List<AnmeldungTagesschule> findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode(
+	@Override
+	public BigDecimal countBetreuungsstundenPerYearForTagesschuleAndPeriode(InstitutionStammdaten stammdaten, Gesuchsperiode gesuchsperiode) {
+		List<AnmeldungTagesschule> anmeldungenTagesschule =
+			findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode(stammdaten, gesuchsperiode);
+
+		BigDecimal hours = BigDecimal.ZERO;
+		for (AnmeldungTagesschule anmeldungTagesschule : anmeldungenTagesschule) {
+			BelegungTagesschule belegungTagesschule = anmeldungTagesschule.getBelegungTagesschule();
+			if (belegungTagesschule == null) {
+				continue;
+			}
+			for (BelegungTagesschuleModul modul : belegungTagesschule.getBelegungTagesschuleModule()) {
+				ModulTagesschuleGroup group = modul.getModulTagesschule().getModulTagesschuleGroup();
+				// we count Zweiwöchentliche Module as 0.5
+				double multiplicator = (modul.getIntervall() == BelegungTagesschuleModulIntervall.WOECHENTLICH) ? 1 : 0.5;
+				long durationInMinutes = group.getZeitVon().until(group.getZeitBis(), ChronoUnit.MINUTES);
+				double durationInHours = (float) durationInMinutes / 60;
+				hours = hours.add(new BigDecimal(durationInHours * multiplicator));
+			}
+		}
+		return hours.multiply(new BigDecimal(LATS_NUMBER_WEEKS_PER_YEAR));
+	}
+
+	@Nonnull
+	@Override
+	public List<AnmeldungTagesschule> findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode(
 		@Nonnull InstitutionStammdaten stammdaten,
 		@Nonnull Gesuchsperiode gesuchsperiode
 	) {
