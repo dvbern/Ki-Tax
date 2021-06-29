@@ -2478,7 +2478,7 @@
     "ANTRAEGE_ERSTELLT": "{{amount}} demandes ont été créées",
     "FERIENBETREUUNG_GEPRUEFT": "Vous avez contrôllé la demande. Vous pouvez continuer à consulter les saisies de la commune ainsi que vos corrections, vous n'êtes par contre plus en mesure de changer vos données.",
     "FERIENBETREUUNG_ANGABEN_KORRIGIEREN": "Corriger les données",
-    "FERIENBETREUUNG_ANGABEN_ZURUECK_AN_INSTITUTION": "Zurück an Institution",
+    "FERIENBETREUUNG_ANGABEN_ZURUECK_AN_INSTITUTION": "Retour à l'institution",
     "ANTRAG_ERSTELLT": "La demande a été créée",
     "ERROR_FB_SONDERSCHUELER": "le nombre de jour de garde pour les écoliers spéciaux ne doit pas être plus élevé que le nombre de jour de garde de la commune",
     "ERROR_FB_BETREUUNGSTAGE": "\"Le nombre de jour de garde d'enfant provenant de la commune proposée\" plus \"le nombre de jour de garde d'enfant provenant d'autres communes\" doit être égal au \"nombre de jour de garde du canton de Bern\"",
