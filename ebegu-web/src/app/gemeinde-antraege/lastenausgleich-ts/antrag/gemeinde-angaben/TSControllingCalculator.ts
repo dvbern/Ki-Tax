@@ -101,7 +101,7 @@ export class TSControllingCalculator {
                     value / this._previousAntrag.angabenKorrektur.lastenausgleichberechtigteBetreuungsstunden;
                 veraenderung -= 1;
                 this._veraenderungBetreuungsstunden.next(this.toPercent(veraenderung));
-            }, this.handleError);
+            }, err => this.handleError(err));
     }
 
     private calculateBesondereBeduerfnisseCurrentPeriode(): void {
@@ -127,7 +127,7 @@ export class TSControllingCalculator {
             }
             const result = values[0] / 3 / values[1];
             this._anteilStundenBesondereBeduerfnisseCurrentPeriode.next(this.toPercent(result));
-        }, this.handleError);
+        }, err => this.handleError(err));
     }
 
     private calculateBesondereBeduerfnissePreviousPeriode(): void {
@@ -159,7 +159,7 @@ export class TSControllingCalculator {
             this._anteilElternbeitraegeCurrentPeriode.next(
                 (this.toPercent(values[0] / values[1])),
             );
-        }, this.handleError);
+        }, err => this.handleError(err));
     }
 
     private calculateAnteilElternbeitraegePreviousPeriode(): void {
@@ -195,7 +195,7 @@ export class TSControllingCalculator {
             }
             const result = values[0] / values[1];
             this._kostenanteilGemeindeGesamtkosten.next(this.toPercent(result));
-        }, this.handleError);
+        }, err => this.handleError(err));
     }
 
     private calculateUeberschussAnteil(): void {
@@ -221,7 +221,7 @@ export class TSControllingCalculator {
             }
             const result = -(values[0] / values[1]);
             this._erstragsanteilGemeindeGesamtkosten.next(this.toPercent(result));
-        }, this.handleError);
+        }, err => this.handleError(err));
     }
 
     private toPercent(value: number): string {

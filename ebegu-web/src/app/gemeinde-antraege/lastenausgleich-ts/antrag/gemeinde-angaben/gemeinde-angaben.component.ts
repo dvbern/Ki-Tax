@@ -39,12 +39,15 @@ import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confi
 import {DvNgOkDialogComponent} from '../../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {CONSTANTS, HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
+import {LogFactory} from '../../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../../core/service/wizardStepXRS.rest';
 import {numberValidator, ValidationType} from '../../../../shared/validators/number-validator.directive';
 import {GemeindeAntragService} from '../../../services/gemeinde-antrag.service';
 import {UnsavedChangesService} from '../../../services/unsaved-changes.service';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 import {TSControllingCalculator} from './TSControllingCalculator';
+
+const LOG = LogFactory.createLog('GemeindeAngabenComponent');
 
 @Component({
     selector: 'dv-gemeinde-angaben',
@@ -933,6 +936,9 @@ export class GemeindeAngabenComponent implements OnInit {
                 this.erwarteteBetreuungsstunden = results[1];
                 this.controllingCalculator = new TSControllingCalculator(this.angabenForm, results[0]);
                 this.cd.markForCheck();
-            });
+            }, err => {
+            LOG.error(err);
+            console.error(err);
+        });
     }
 }
