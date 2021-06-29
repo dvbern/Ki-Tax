@@ -59,6 +59,17 @@ export class TSLastenausgleichTagesschuleAngabenGemeinde extends TSAbstractEntit
     // Bemerkungen
     public bemerkungen: string;
 
+    // Berechnungen
+    public lastenausgleichberechtigteBetreuungsstunden: number;
+    public davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet: number;
+    public davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet: number;
+    public normlohnkostenBetreuungBerechnet: number;
+    public lastenausgleichsberechtigerBetrag: number;
+    public kostenbeitragGemeinde: number;
+    public kostenueberschussGemeinde: number;
+    public erwarteterKostenbeitragGemeinde: number;
+    public schlusszahlung: number;
+
     public isInBearbeitung(): boolean {
         return [
             TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG,

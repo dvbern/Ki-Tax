@@ -134,4 +134,9 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 
 	@Nonnull
 	boolean selectedForZweitpruefung(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container);
+
+	@Nullable
+	LastenausgleichTagesschuleAngabenGemeindeContainer findContainerOfPreviousPeriode(@Nonnull String currentAntragId);
+
+	@Nullable Number calculateErwarteteBetreuungsstunden(String containerId);
 }

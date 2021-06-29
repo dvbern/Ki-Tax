@@ -163,6 +163,44 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	@Column(nullable = true)
 	private String bemerkungen;
 
+	// Berechnungen
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal lastenausgleichberechtigteBetreuungsstunden;
+
+	@Nullable
+	@Column(name="stunden_mehr_als_50_prozent_ausgebildete_berechnet", nullable = true)
+	private BigDecimal davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet;
+
+	@Nullable
+	@Column(name="stunden_weniger_als_50_prozent_ausgebildete_berechnet", nullable = true)
+	private BigDecimal davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal normlohnkostenBetreuungBerechnet;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal lastenausgleichsberechtigerBetrag;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal kostenbeitragGemeinde;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal kostenueberschussGemeinde;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal erwarteterKostenbeitragGemeinde;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal schlusszahlung;
+
+
 	public LastenausgleichTagesschuleAngabenGemeinde() {
 
 	}
@@ -469,5 +507,86 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 
 	public boolean isAbgeschlossen() {
 		return status == LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
+	}
+
+	@Nullable
+	public BigDecimal getLastenausgleichberechtigteBetreuungsstunden() {
+		return lastenausgleichberechtigteBetreuungsstunden;
+	}
+
+	public void setLastenausgleichberechtigteBetreuungsstunden(@Nullable BigDecimal lastenausgleichberechtigteBetreuungsstunden) {
+		this.lastenausgleichberechtigteBetreuungsstunden = lastenausgleichberechtigteBetreuungsstunden;
+	}
+
+	@Nullable
+	public BigDecimal getDavonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet() {
+		return davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet;
+	}
+
+	public void setDavonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet(@Nullable BigDecimal davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet) {
+		this.davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet = davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet;
+	}
+
+	@Nullable
+	public BigDecimal getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet() {
+		return davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet;
+	}
+
+	public void setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet(@Nullable BigDecimal davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet) {
+		this.davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet = davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet;
+	}
+
+	@Nullable
+	public BigDecimal getNormlohnkostenBetreuungBerechnet() {
+		return normlohnkostenBetreuungBerechnet;
+	}
+
+	public void setNormlohnkostenBetreuungBerechnet(@Nullable BigDecimal normlohnkostenBetreuungBerechnet) {
+		this.normlohnkostenBetreuungBerechnet = normlohnkostenBetreuungBerechnet;
+	}
+
+	@Nullable
+	public BigDecimal getLastenausgleichsberechtigerBetrag() {
+		return lastenausgleichsberechtigerBetrag;
+	}
+
+	public void setLastenausgleichsberechtigerBetrag(@Nullable BigDecimal lastenausgleichsberechtigerBetrag) {
+		this.lastenausgleichsberechtigerBetrag = lastenausgleichsberechtigerBetrag;
+	}
+
+	@Nullable
+	public BigDecimal getKostenbeitragGemeinde() {
+		return kostenbeitragGemeinde;
+	}
+
+	public void setKostenbeitragGemeinde(@Nullable BigDecimal kostenbeitragGemeinde) {
+		this.kostenbeitragGemeinde = kostenbeitragGemeinde;
+	}
+
+	@Nullable
+	public BigDecimal getKostenueberschussGemeinde() {
+		return kostenueberschussGemeinde;
+	}
+
+	public void setKostenueberschussGemeinde(@Nullable BigDecimal kostenueberschussGemeinde) {
+		this.kostenueberschussGemeinde = kostenueberschussGemeinde;
+	}
+
+	@Nullable
+	public BigDecimal getErwarteterKostenbeitragGemeinde() {
+		return erwarteterKostenbeitragGemeinde;
+	}
+
+	public void setErwarteterKostenbeitragGemeinde(@Nullable BigDecimal erwarteterKostenbeitragGemeinde) {
+		this.erwarteterKostenbeitragGemeinde = erwarteterKostenbeitragGemeinde;
+	}
+
+	@Nullable
+	public BigDecimal getSchlusszahlung() {
+		return schlusszahlung;
+	}
+
+	public void setSchlusszahlung(@Nullable BigDecimal schlusszahlung) {
+		this.schlusszahlung = schlusszahlung;
 	}
 }
