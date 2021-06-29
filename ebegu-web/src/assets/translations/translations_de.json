@@ -2533,6 +2533,7 @@
     "LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE": "Ab welcher Anzahl Betreuungsstunden sollen Lastenausgleich Tagesschule Anträge der deutschsprachigen Gemeinden automatisch zur Zweitprüfung ausgewählt werden",
     "LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR": "Ab welcher Anzahl Betreuungsstunden sollen Lastenausgleich Tagesschule Anträge der französischsprachigen Gemeinden automatisch zur Zweitprüfung ausgewählt werden",
     "LATS_INFO_SELECTED_FOR_ZWEITPRUEFUNG": "Dieser Antrag wurde vom System automatisch zur Zweitprüfung ausgewählt",
+    "LATS_FREIGEGEBEN_AN_KANTON": "Sie haben das Gesuch an den Kanton eingereicht. Sie können Ihre Eingaben weiterhin einsehen, sind aber nicht mehr in der Lage, Ihre Eingaben zu mutieren. Wenden Sie sich ansonsten an <a href='mailto:sea.bkd@be.ch'>sea.bkd@be.ch</a>.",
     "INTERNE_PENDENZEN": "Interne Pendenzen",
     "PENDENZ": "Pendenz",
     "PENDENZ_ERSTELLEN": "Pendenz erstellen",

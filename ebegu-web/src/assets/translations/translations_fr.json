@@ -2533,6 +2533,7 @@
     "LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE": "A partir de combien d'heures de prise en charge doit-on automatiquement choisir pour un deuxième contrôle une demande de compensation des charges pour les écoles à journée continue pour les communes germanophones",
     "LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR": "A partir de combien d'heures de prise en charge doit-on automatiquement choisir pour un deuxième contrôle une demande de compensation des charges pour les écoles à journée continue pour les communes francophones",
     "LATS_INFO_SELECTED_FOR_ZWEITPRUEFUNG": "Cette demande a été automatiquement choisie pour un deuxième contrôle",
+    "LATS_FREIGEGEBEN_AN_KANTON": "Vous avez soumis votre demande au canton. Vous pouvez toujours consulter vos données mais vous ne pouvez plus les modifier. En cas de problèmes, veuillez écrire à <a href='mailto:oeco.inc@be.ch'>oeco.inc@be.ch</a>.",
     "INTERNE_PENDENZEN": "Cas en suspens interne",
     "PENDENZ": "Cas en suspens",
     "PENDENZ_ERSTELLEN": "Créer un cas en suspens interne",
