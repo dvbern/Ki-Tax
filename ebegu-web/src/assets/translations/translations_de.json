@@ -978,7 +978,7 @@
     "VERFUEGEN": "Verfügen",
     "VERFUEGEN_NICHT_EINTRETEN": "Nicht Eintreten",
     "VERFUEGEN_ABLEHNEN": "Ablehnen",
-    "VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT": "Ja, wir haben die Begründungen geprüft und wo sinnvoll ergänzt. Korrekturen an berechnungsrelevanten Gesuchsdaten (wie z.B. Erwerbspensum, Lohn) wurden begründet und wenn angezeigt wurde das rechtliche Gehör gewährt.",
+    "VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT": "Ja, wir haben die Begründung geprüft und wo erforderlich ergänzt. Korrekturen an berechnungsrelevanten Gesuchsdaten (wie z.B. Erwerbspensum, Lohn) wurden begründet und wenn nötig oder angezeigt wurde das rechtliche Gehör gewährt. Das Ergebnis eines gewährten rechtlichen Gehörs wurde aufgenommen und in der Begründung wurde dazu Stellung genommen.",
     "ERROR_CONFIRM_BEMERKUNGEN_KONTROLLIERT_REQUIRED": "Bitte bestätigen Sie die Begründungen um diese Betreuung zu verfügen",
     "VERFUEGT": "Verfügt",
     "PRUEFUNG_STV": "Prüfung Steuerbüro der Gemeinde",

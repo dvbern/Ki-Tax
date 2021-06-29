@@ -978,7 +978,7 @@
     "VERFUEGEN": "Rendre une décision",
     "VERFUEGEN_NICHT_EINTRETEN": "NE PAS ENTRER EN MATIÈRE",
     "VERFUEGEN_ABLEHNEN": "Refuser",
-    "VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT": "Oui, nous avons examiné et complété les motifs lorsque cela était indiqué. Les corrections apportées aux données de la demande déterminantes pour le calcul (comme le taux d'activité ou le salaire) ont été justifiées. Le droit d’être entendu a été dûment accordé.",
+    "VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT": "Oui, nous avons examiné et complété les motifs le cas échéant. Les corrections apportées aux données de la demande déterminantes pour le calcul (comme le taux d'activité ou le salaire) ont été justifiées. Le droit d’être entendu a été dûment accordé lorsque cela était nécessaire ou indiqué. Les avis recueillis dans le cadre des voies de droit ont été pris en compte et il a été pris position dans les motifs.",
     "ERROR_CONFIRM_BEMERKUNGEN_KONTROLLIERT_REQUIRED": "Veuillez confirmer les motifs pour rendre une décision concernant cette prise en charge.",
     "VERFUEGT": "Décision rendue",
     "PRUEFUNG_STV": "Examen bureau des impôts de la commune",
