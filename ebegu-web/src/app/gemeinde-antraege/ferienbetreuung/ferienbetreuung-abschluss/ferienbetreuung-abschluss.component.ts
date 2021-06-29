@@ -41,9 +41,9 @@ import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 })
 export class FerienbetreuungAbschlussComponent implements OnInit {
 
-    private readonly WIZARD_TYPE = TSWizardStepXTyp.FERIENBETREUUNG;
-    private container: TSFerienbetreuungAngabenContainer;
+    public container: TSFerienbetreuungAngabenContainer;
 
+    private readonly WIZARD_TYPE = TSWizardStepXTyp.FERIENBETREUUNG;
     private readonly unsubscribe: Subject<boolean> = new Subject<boolean>();
 
     public constructor(
