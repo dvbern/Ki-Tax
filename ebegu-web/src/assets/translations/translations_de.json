@@ -2539,6 +2539,7 @@
     "PENDENZ_ERSTELLEN": "Pendenz erstellen",
     "PENDENZ_BEARBEITEN": "Pendenz bearbeiten",
     "PENDENZ_ERLEDIGT": "Pendenz erledigt",
+    "PENDENZ_ERLEDIGT_CHECKBOX": "erledigt",
     "PENDENZ_WIRKLICH_LOESCHEN": "Wollen Sie diese Pendenz wirklich löschen?",
     "TERMIN": "Termin",
     "EMPFAENGER_WAEHLEN": "An: ",
