@@ -104,3 +104,53 @@ mat-divider {
 dv-input-container-x > .dv-input-container > mat-form-field.flex-grow {
     flex: 1 0 180px;
 }
+
+.form-with-controlling {
+    align-items: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+
+    .controlling-box {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        margin-bottom: 2rem;
+    }
+
+    .max-width-container-750 {
+        margin-right: 4rem;
+    }
+
+    table {
+        table-layout: auto;
+        width: 325px;
+        td {
+            font-weight: normal;
+            padding: 1rem 0;
+            white-space: normal;
+        }
+        td:last-child {
+            text-align: right;
+            width: 45px;
+        }
+    }
+
+    @media(min-width: 1787px) {
+        .besondere-beduerfnisse-controlling {
+            margin-top: 55px;
+        }
+
+        .betreuungsstunden-controlling {
+            margin-top: 38px;
+        }
+
+        .elternbeitrag-controlling {
+            margin-top: 82px;
+        }
+
+        .kostenbeitrag-controlling {
+            margin-top: 400px;
+        }
+    }
+}

@@ -93,6 +93,10 @@ public enum UserRole {
 		return  getInstitutionTraegerschaftAdminRoles().contains(this);
 	}
 
+	public boolean isRoleTraegerschaftInstitution() {
+		return getInstitutionTraegerschaftRoles().contains(this);
+	}
+
 	public static List<UserRole> getAllAdminSuperAdminRevisorRoles() {
 		return Arrays.asList(SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_MANDANT, ADMIN_INSTITUTION,
 			ADMIN_TRAEGERSCHAFT, REVISOR);

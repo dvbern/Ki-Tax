@@ -21,9 +21,9 @@
                       data-translate="NEUE_MITTEILUNG_GEMEINDE"
                       data-translate-value-gemeinde="{{vm.dossier.gemeinde.name}}"></span>
                 <span ng-if="!vm.betreuung && vm.isCurrentUserAmt() && !vm.isCurrentMitteilungSozialdienst()"
-                      data-translate="NEUE_MITTEILUNG_GESUCHSTELLER"></span>
+                      data-translate="NEUE_MITTEILUNG"></span>
                 <span ng-if="!vm.betreuung && vm.isCurrentUserAmt() && vm.isCurrentMitteilungSozialdienst()"
-                      data-translate="NEUE_MITTEILUNG_SOZIALDIENST"></span>
+                      data-translate="NEUE_MITTEILUNG"></span>
                 <span ng-if="vm.betreuung"
                       data-translate="NEUE_MITTEILUNG_BETREUUNG"
                       data-translate-value-gemeinde="{{vm.dossier.gemeinde.name}}"
@@ -39,6 +39,30 @@
             <!-- Entwurf / Neue Mitteilung -->
             <div ng-if="vm.getCurrentMitteilung()">
                 <form role="form" name="vm.form">
+                    <!-- Receiver -->
+                    <div ng-if="vm.isCurrentUserAmt() || vm.isCurrentUserTraegerschaft()" class="row">
+                            <div class="col-sm-12 dv-input-container-medium">
+                                <div class="form-group">
+                                    <label class="md-no-float"
+                                           for="empfaenger">
+                                        <span ng-if="!vm.isCurrentUserTraegerschaft()" data-translate="EMPFAENGER_WAEHLEN" class="required"></span>
+                                        <span ng-if="vm.isCurrentUserTraegerschaft()" data-translate="SENDER_WAEHLEN" class="required"></span>
+                                    </label>
+                                    <div class="dv-select-style">
+                                        <select aria-describedby="empfaenger-error" name="empfaenger"
+                                                id="empfaenger"
+                                                ng-model="vm.empfaenger"
+                                                class="form-control"
+                                                ng-options="empfaenger as empfaenger.value for empfaenger in vm.empfaengerValues"
+                                                ng-required="true"
+                                                ng-change="vm.changeEmpfaenger()">
+                                        </select>
+                                        <dv-error-messages input-id="empfaenger"
+                                                           for="vm.form.empfaenger.$error"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
                     <!--Subject-->
                     <div class="row">
                         <div class="col-xs-12">
@@ -124,15 +148,20 @@
                                             ng-bind="mitteilung.sentDatum | amDateFormat : 'DD.MM.YYYY / HH:mm'"></span>
                                     </div>
                                     <div>
-                                        <span data-translate="VON_COLON"></span><dv-benutzer-entry [benutzer]="mitteilung.sender"></dv-benutzer-entry>
+                                        <span ng-if="!vm.isSenderTypInstitution(mitteilung)" data-translate="VON_COLON"></span><dv-benutzer-entry [benutzer]="mitteilung.sender"></dv-benutzer-entry>
+                                        <span ng-if="vm.isSenderTypInstitution(mitteilung)">&nbsp;({{'INSTITUTION' | translate}}&nbsp;{{mitteilung.institution.name}})</span>
                                     </div>
                                     <div>
-                                        <span data-translate="AN_COLON"></span><dv-benutzer-entry ng-if="!vm.isMitteilungEmpfaengerSozialdienst(mitteilung)" [benutzer]="mitteilung.empfaenger"></dv-benutzer-entry>
+                                        <span data-translate="AN_COLON"></span>
+                                        <dv-benutzer-entry ng-if="!vm.isMitteilungEmpfaengerSozialdienst(mitteilung)" [benutzer]="mitteilung.empfaenger"></dv-benutzer-entry>
                                         <span ng-if="vm.isMitteilungEmpfaengerSozialdienst(mitteilung)">
                                             <i class="fa fa-handshake-o" [title]="'VERANTWORTUNG_SOZIALDIENST' | translate"> </i>
                                             {{mitteilung.dossier.fall.sozialdienstFall.sozialdienst.name}}</span>
+                                        <span ng-if="vm.isMitteilungEmpfaengerInstitution(mitteilung)">
+                                            <i class='fa fa-building'></i><span>{{'INSTITUTION' | translate}}&nbsp;{{mitteilung.institution.name}}</span>
+                                        </span>
                                     </div>
-                                    <div ng-if="!!mitteilung.betreuung.institutionStammdaten.institution">
+                                    <div ng-if="!!mitteilung.betreuung.institutionStammdaten.institution && !mitteilung.institution">
                                         <span data-translate="INSTITUTION"></span>: <i class='fa fa-building'></i><span>{{mitteilung.betreuung.institutionStammdaten.institution.name}}</span>
                                     </div>
                                 </div>

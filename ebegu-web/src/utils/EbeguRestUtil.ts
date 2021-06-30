@@ -1291,7 +1291,6 @@ export class EbeguRestUtil {
             restTragerschaft.name = traegerschaft.name;
             restTragerschaft.active = traegerschaft.active;
             restTragerschaft.email = traegerschaft.email;
-            restTragerschaft.offentlich = traegerschaft.offentlich;
             return restTragerschaft;
         }
         return undefined;
@@ -1312,7 +1311,6 @@ export class EbeguRestUtil {
             traegerschaftTS.name = traegerschaftFromServer.name;
             traegerschaftTS.active = traegerschaftFromServer.active;
             traegerschaftTS.email = traegerschaftFromServer.email;
-            traegerschaftTS.offentlich = traegerschaftFromServer.offentlich;
             traegerschaftTS.institutionCount = traegerschaftFromServer.institutionCount;
             traegerschaftTS.institutionNames = traegerschaftFromServer.institutionNames;
             return traegerschaftTS;
@@ -3344,6 +3342,9 @@ export class EbeguRestUtil {
             if (mitteilungFromServer.betreuung) {
                 tsMitteilung.betreuung = this.parseBetreuung(new TSBetreuung(), mitteilungFromServer.betreuung);
             }
+            if (mitteilungFromServer.institution) {
+                tsMitteilung.institution = this.parseInstitution(new TSInstitution(), mitteilungFromServer.institution);
+            }
             tsMitteilung.senderTyp = mitteilungFromServer.senderTyp;
             tsMitteilung.empfaengerTyp = mitteilungFromServer.empfaengerTyp;
             tsMitteilung.sender = this.parseUser(new TSBenutzer(), mitteilungFromServer.sender);
@@ -3363,6 +3364,9 @@ export class EbeguRestUtil {
             restMitteilung.dossier = this.dossierToRestObject({}, tsMitteilung.dossier);
             if (tsMitteilung.betreuung) {
                 restMitteilung.betreuung = this.betreuungToRestObject({}, tsMitteilung.betreuung);
+            }
+            if (tsMitteilung.institution) {
+                restMitteilung.institution = this.institutionToRestObject({}, tsMitteilung.institution);
             }
             restMitteilung.senderTyp = tsMitteilung.senderTyp;
             restMitteilung.empfaengerTyp = tsMitteilung.empfaengerTyp;
@@ -4491,6 +4495,25 @@ export class EbeguRestUtil {
             // Bemerkungen
             gemeindeTS.bemerkungen =
                 gemeindeFromServer.bemerkungen;
+            // Berechnungen
+            gemeindeTS.lastenausgleichberechtigteBetreuungsstunden =
+                gemeindeFromServer.lastenausgleichberechtigteBetreuungsstunden;
+            gemeindeTS.davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet =
+                gemeindeFromServer.davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet;
+            gemeindeTS.davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet =
+                gemeindeFromServer.davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet;
+            gemeindeTS.normlohnkostenBetreuungBerechnet =
+                gemeindeFromServer.normlohnkostenBetreuungBerechnet;
+            gemeindeTS.lastenausgleichsberechtigerBetrag =
+                gemeindeFromServer.lastenausgleichsberechtigerBetrag;
+            gemeindeTS.kostenbeitragGemeinde =
+                gemeindeFromServer.kostenbeitragGemeinde;
+            gemeindeTS.kostenueberschussGemeinde =
+                gemeindeFromServer.kostenueberschussGemeinde;
+            gemeindeTS.erwarteterKostenbeitragGemeinde =
+                gemeindeFromServer.erwarteterKostenbeitragGemeinde;
+            gemeindeTS.schlusszahlung =
+                gemeindeFromServer.schlusszahlung;
             return gemeindeTS;
         }
         return undefined;
@@ -4560,6 +4583,25 @@ export class EbeguRestUtil {
             // Bemerkungen
             restAngabenGemeinde.bemerkungen =
                 tsAngabenGemeinde.bemerkungen;
+            // Berechnungen
+            restAngabenGemeinde.lastenausgleichberechtigteBetreuungsstunden =
+                tsAngabenGemeinde.lastenausgleichberechtigteBetreuungsstunden;
+            restAngabenGemeinde.davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet =
+                tsAngabenGemeinde.davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet;
+            restAngabenGemeinde.davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet =
+                tsAngabenGemeinde.davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet;
+            restAngabenGemeinde.normlohnkostenBetreuungBerechnet =
+                tsAngabenGemeinde.normlohnkostenBetreuungBerechnet;
+            restAngabenGemeinde.lastenausgleichsberechtigerBetrag =
+                tsAngabenGemeinde.lastenausgleichsberechtigerBetrag;
+            restAngabenGemeinde.kostenbeitragGemeinde =
+                tsAngabenGemeinde.kostenbeitragGemeinde;
+            restAngabenGemeinde.kostenueberschussGemeinde =
+                tsAngabenGemeinde.kostenueberschussGemeinde;
+            restAngabenGemeinde.erwarteterKostenbeitragGemeinde =
+                tsAngabenGemeinde.erwarteterKostenbeitragGemeinde;
+            restAngabenGemeinde.schlusszahlung =
+                tsAngabenGemeinde.schlusszahlung;
             return restAngabenGemeinde;
         }
         return undefined;

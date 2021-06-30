@@ -123,6 +123,26 @@ public class JaxLastenausgleichTagesschuleAngabenGemeinde extends JaxAbstractDTO
 	@Nullable
 	private String bemerkungen;
 
+	// Berechnungen
+	@Nullable
+	private BigDecimal lastenausgleichberechtigteBetreuungsstunden;
+	@Nullable
+	private BigDecimal davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet;
+	@Nullable
+	private BigDecimal davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet;
+	@Nullable
+	private BigDecimal normlohnkostenBetreuungBerechnet;
+	@Nullable
+	private BigDecimal lastenausgleichsberechtigerBetrag;
+	@Nullable
+	private BigDecimal kostenbeitragGemeinde;
+	@Nullable
+	private BigDecimal kostenueberschussGemeinde;
+	@Nullable
+	private BigDecimal erwarteterKostenbeitragGemeinde;
+	@Nullable
+	private BigDecimal schlusszahlung;
+
 	@Nonnull
 	public Boolean getBedarfBeiElternAbgeklaert() {
 		return bedarfBeiElternAbgeklaert;
@@ -365,5 +385,86 @@ public class JaxLastenausgleichTagesschuleAngabenGemeinde extends JaxAbstractDTO
 
 	public void setUeberschussVerwendung(@Nullable String ueberschussVerwendung) {
 		this.ueberschussVerwendung = ueberschussVerwendung;
+	}
+
+	@Nullable
+	public BigDecimal getLastenausgleichberechtigteBetreuungsstunden() {
+		return lastenausgleichberechtigteBetreuungsstunden;
+	}
+
+	public void setLastenausgleichberechtigteBetreuungsstunden(@Nullable BigDecimal lastenausgleichberechtigteBetreuungsstunden) {
+		this.lastenausgleichberechtigteBetreuungsstunden = lastenausgleichberechtigteBetreuungsstunden;
+	}
+
+	@Nullable
+	public BigDecimal getDavonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet() {
+		return davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet;
+	}
+
+	public void setDavonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet(@Nullable BigDecimal davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet) {
+		this.davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet = davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet;
+	}
+
+	@Nullable
+	public BigDecimal getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet() {
+		return davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet;
+	}
+
+	public void setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet(@Nullable BigDecimal davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet) {
+		this.davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet = davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet;
+	}
+
+	@Nullable
+	public BigDecimal getNormlohnkostenBetreuungBerechnet() {
+		return normlohnkostenBetreuungBerechnet;
+	}
+
+	public void setNormlohnkostenBetreuungBerechnet(@Nullable BigDecimal normlohnkostenBetreuungBerechnet) {
+		this.normlohnkostenBetreuungBerechnet = normlohnkostenBetreuungBerechnet;
+	}
+
+	@Nullable
+	public BigDecimal getLastenausgleichsberechtigerBetrag() {
+		return lastenausgleichsberechtigerBetrag;
+	}
+
+	public void setLastenausgleichsberechtigerBetrag(@Nullable BigDecimal lastenausgleichsberechtigerBetrag) {
+		this.lastenausgleichsberechtigerBetrag = lastenausgleichsberechtigerBetrag;
+	}
+
+	@Nullable
+	public BigDecimal getKostenbeitragGemeinde() {
+		return kostenbeitragGemeinde;
+	}
+
+	public void setKostenbeitragGemeinde(@Nullable BigDecimal kostenbeitragGemeinde) {
+		this.kostenbeitragGemeinde = kostenbeitragGemeinde;
+	}
+
+	@Nullable
+	public BigDecimal getKostenueberschussGemeinde() {
+		return kostenueberschussGemeinde;
+	}
+
+	public void setKostenueberschussGemeinde(@Nullable BigDecimal kostenueberschussGemeinde) {
+		this.kostenueberschussGemeinde = kostenueberschussGemeinde;
+	}
+
+	@Nullable
+	public BigDecimal getErwarteterKostenbeitragGemeinde() {
+		return erwarteterKostenbeitragGemeinde;
+	}
+
+	public void setErwarteterKostenbeitragGemeinde(@Nullable BigDecimal erwarteterKostenbeitragGemeinde) {
+		this.erwarteterKostenbeitragGemeinde = erwarteterKostenbeitragGemeinde;
+	}
+
+	@Nullable
+	public BigDecimal getSchlusszahlung() {
+		return schlusszahlung;
+	}
+
+	public void setSchlusszahlung(@Nullable BigDecimal schlusszahlung) {
+		this.schlusszahlung = schlusszahlung;
 	}
 }

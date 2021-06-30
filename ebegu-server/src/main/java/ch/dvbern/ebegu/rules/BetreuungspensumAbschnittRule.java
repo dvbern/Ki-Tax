@@ -106,6 +106,19 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 					pensenToUse.add(restPensumAsiv);
 				}
 
+				boolean betreuungInGemeinde;
+				// wenn das Flag betreuungInGemeinde nicht aktiviert ist, ist der BG beim Ki-Tax Rechner immer 0.
+				// dann muss auch nichts umgerechnet werden. Dies verhindert spätere Nullpointer, wenn die Öffnungszeiten
+				// abgefragt werden.
+				if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null) {
+					betreuungInGemeinde = betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getBetreuungInGemeinde();
+				} else {
+					betreuungInGemeinde = betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungGS().getBetreuungInGemeinde();
+				}
+				if (!betreuungInGemeinde) {
+					recalculationNecessary = false;
+				}
+
 				if (recalculationNecessary) {
 					String kitaName = betreuung.getInstitutionStammdaten().getInstitution().getName();
 					final BigDecimal convertedPensum = KitaxUtil.recalculatePensumKonvertierung(kitaName, kitaxParameter, betreuungspensum);

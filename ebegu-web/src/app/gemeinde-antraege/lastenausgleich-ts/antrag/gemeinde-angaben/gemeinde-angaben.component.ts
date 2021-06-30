@@ -39,11 +39,15 @@ import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confi
 import {DvNgOkDialogComponent} from '../../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {CONSTANTS, HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
+import {LogFactory} from '../../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../../core/service/wizardStepXRS.rest';
 import {numberValidator, ValidationType} from '../../../../shared/validators/number-validator.directive';
-import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
 import {GemeindeAntragService} from '../../../services/gemeinde-antrag.service';
 import {UnsavedChangesService} from '../../../services/unsaved-changes.service';
+import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
+import {TSControllingCalculator} from './TSControllingCalculator';
+
+const LOG = LogFactory.createLog('GemeindeAngabenComponent');
 
 @Component({
     selector: 'dv-gemeinde-angaben',
@@ -68,6 +72,10 @@ export class GemeindeAngabenComponent implements OnInit {
     public saveVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public abschliessenVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public falscheAngabenVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+    public controllingCalculator: TSControllingCalculator;
+    public previousAntrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
+    public erwarteteBetreuungsstunden: number;
 
     private readonly kostenbeitragGemeinde = 0.2;
     private readonly WIZARD_TYPE: TSWizardStepXTyp = TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN;
@@ -111,6 +119,7 @@ export class GemeindeAngabenComponent implements OnInit {
                 this.lATSAngabenGemeindeContainer.gesuchsperiode?.id)
                 .then(setting => this.lohnnormkostenSettingLessThanFifty$.next(setting));
             this.unsavedChangesService.registerForm(this.angabenForm);
+            this.initControlling();
             this.cd.markForCheck();
         }, () => this.errorService.addMesageAsError(this.translateService.instant('DATA_RETRIEVAL_ERROR')));
 
@@ -624,10 +633,10 @@ export class GemeindeAngabenComponent implements OnInit {
         // tslint:disable-next-line:max-line-length
         if (this.lATSAngabenGemeindeContainer.isinPruefungKanton()) {
             this.lATSAngabenGemeindeContainer.angabenKorrektur = new TSLastenausgleichTagesschuleAngabenGemeinde();
-            Object.assign(this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.value);
+            Object.assign(this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.getRawValue());
         } else {
             this.lATSAngabenGemeindeContainer.angabenDeklaration = new TSLastenausgleichTagesschuleAngabenGemeinde();
-            Object.assign(this.lATSAngabenGemeindeContainer.angabenDeklaration, this.angabenForm.value);
+            Object.assign(this.lATSAngabenGemeindeContainer.angabenDeklaration, this.angabenForm.getRawValue());
         }
         this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst =
             this.formularInitForm.get('alleAngabenInKibonErfasst').value;
@@ -652,10 +661,10 @@ export class GemeindeAngabenComponent implements OnInit {
         // tslint:disable-next-line:max-line-length
         if (this.lATSAngabenGemeindeContainer.isinPruefungKanton()) {
             this.lATSAngabenGemeindeContainer.angabenKorrektur = new TSLastenausgleichTagesschuleAngabenGemeinde();
-            Object.assign(this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.value);
+            Object.assign(this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.getRawValue());
         } else {
             this.lATSAngabenGemeindeContainer.angabenDeklaration = new TSLastenausgleichTagesschuleAngabenGemeinde();
-            Object.assign(this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.value);
+            Object.assign(this.lATSAngabenGemeindeContainer.angabenDeklaration = this.angabenForm.getRawValue());
         }
         this.errorService.clearAll();
         this.lastenausgleichTSService.latsAngabenGemeindeFormularAbschliessen(this.lATSAngabenGemeindeContainer)
@@ -908,5 +917,28 @@ export class GemeindeAngabenComponent implements OnInit {
                 this.falscheAngabenVisible.next(false);
             }
         }
+    }
+
+    public controllingActive(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())
+        && this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton();
+    }
+
+    private initControlling(): void {
+        if (!this.controllingActive()) {
+            return;
+        }
+        combineLatest([
+            this.lastenausgleichTSService.findAntragOfPreviousPeriode(this.lATSAngabenGemeindeContainer),
+            this.lastenausgleichTSService.getErwarteteBetreuungsstunden(this.lATSAngabenGemeindeContainer)
+        ]).subscribe(results => {
+                this.previousAntrag = results[0];
+                this.erwarteteBetreuungsstunden = results[1];
+                this.controllingCalculator = new TSControllingCalculator(this.angabenForm, results[0]);
+                this.cd.markForCheck();
+            }, err => {
+            LOG.error(err);
+            console.error(err);
+        });
     }
 }

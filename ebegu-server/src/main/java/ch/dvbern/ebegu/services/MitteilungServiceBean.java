@@ -82,6 +82,8 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Mitteilung;
@@ -258,7 +260,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			case ADMIN_GEMEINDE:
 			case SACHBEARBEITER_TS:
 			case ADMIN_TS: {
-				if (mitteilung.getFall().getSozialdienstFall() != null) {
+				if (mitteilung.getInstitution() != null) {
+					//Bei Institution Mitteilungen sollen schon der Institution ID Bestimmt sein
+					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.INSTITUTION);
+				} else if (mitteilung.getFall().getSozialdienstFall() != null) {
 					// Sozialdienst hat kein Empfanger
 					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.SOZIALDIENST);
 				} else {
@@ -281,6 +286,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					mitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(mitteilung));
 					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 					mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.INSTITUTION);
+				} else if (mitteilung.getBetreuung() != null) {
+					//Die Betreuung ist gesetzt bei Mitteilungen an die Gemeinde, so ruckwirkend wird auch sein
+					//es gibt keine Benutzer als empfanger
+					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.INSTITUTION);
 				} else if (mitteilung.getFall().getSozialdienstFall() != null) {
 					// Sozialdienst hat kein Empfanger
 					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.SOZIALDIENST);
@@ -472,7 +481,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	public Collection<Mitteilung> getMitteilungenForCurrentRolle(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier, "dossier muss gesetzt sein");
 		authorizer.checkReadAuthorizationDossier(dossier);
-		return getMitteilungenForCurrentRolle(Mitteilung_.dossier, dossier);
+		return getMitteilungenForCurrentRolle(Mitteilung_.dossier, dossier).stream().filter(
+			this::isMitteilungReadableForInstitution
+		).collect(Collectors.toList());
 	}
 
 	@Nonnull
@@ -638,6 +649,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 			predicates.add(getPredicateEmpfaengerMitteilungTyp(cb, root));
 
+		} else if (loggedInBenutzer.getRole().isRoleTraegerschaftInstitution()) {
+			predicates.add(countNewMitteilungenPredicatesForInstitutionBenutzer(loggedInBenutzer, cb, root));
+
+			predicates.add(getPredicateEmpfaengerMitteilungTyp(cb, root));
+
 		} else {
 			predicates.add(cb.equal(root.get(Mitteilung_.empfaenger), loggedInBenutzer));
 		}
@@ -659,6 +675,24 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			cb.equal(joinSozialdienst.get(SozialdienstFall_.sozialdienst), loggedInBenutzer.getSozialdienst());
 
 		return sozialdienstFall;
+	}
+
+	private Predicate countNewMitteilungenPredicatesForInstitutionBenutzer(
+		@Nonnull Benutzer loggedInBenutzer,
+		CriteriaBuilder cb,
+		Root<Mitteilung> root) {
+		Predicate institution = null;
+		if (loggedInBenutzer.getRole() == UserRole.ADMIN_INSTITUTION
+			|| loggedInBenutzer.getRole() == UserRole.SACHBEARBEITER_INSTITUTION) {
+			institution =
+				cb.equal(root.get(Mitteilung_.institution), loggedInBenutzer.getInstitution());
+		} else {
+			Join<Mitteilung, Institution> joinInstitution = root.join(Mitteilung_.institution, JoinType.LEFT);
+			institution =
+				cb.equal(joinInstitution.get(Institution_.traegerschaft), loggedInBenutzer.getTraegerschaft());
+		}
+
+		return institution;
 	}
 
 	private Predicate getPredicateEmpfaengerMitteilungTyp(CriteriaBuilder cb, Root<Mitteilung> root) {
@@ -931,6 +965,16 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				throw new EbeguRuntimeException(
 					"mitteilungTableFilterDto",
 					"Sozialdienst not defined for Sozialdienstuser");
+			}
+		} else if (user.getCurrentBerechtigung().getRole().isRoleTraegerschaftInstitution()) {
+			if (user.getInstitution() != null) {
+				Predicate institution = cb.equal(root.get(Mitteilung_.institution), user.getInstitution());
+				predicates.add(institution);
+			} else {
+				Join<Mitteilung, Institution> joinInstitution = root.join(Mitteilung_.institution, JoinType.LEFT);
+				Predicate traegerschaft =
+					cb.equal(joinInstitution.get(Institution_.traegerschaft), user.getTraegerschaft());
+				predicates.add(traegerschaft);
 			}
 		} else {
 			// nur hier definieren, Left join auf dem Root koennen nicht null sein eben wenn nicht vewendet und
@@ -1351,6 +1395,50 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Long count = (Long) persistence.getCriteriaSingleResult(query);
 
 		return count > 0;
+	}
+
+	/**
+	 * Wir muessen nur pruefen ob der Institution stimmt fuer die Institution und Traegerschaft Benutzern
+	 * als der Zugriff auf der Dossier heiss nicht das man alles sehen darf mit EmpfaengerTyp Institution
+	 */
+	private boolean isMitteilungReadableForInstitution(Mitteilung mitteilung) {
+		if (principalBean.isCallerInAnyOfRole(UserRole.ADMIN_INSTITUTION, UserRole.SACHBEARBEITER_INSTITUTION)) {
+			if (principalBean.getBenutzer().getInstitution() != null) {
+				if (mitteilung.getInstitution() != null) {
+					return principalBean.getBenutzer().getInstitution().equals(mitteilung.getInstitution());
+				}
+				if (mitteilung.getBetreuung() != null) {
+					return principalBean.getBenutzer()
+						.getInstitution()
+						.equals(mitteilung.getBetreuung().getInstitutionStammdaten().getInstitution());
+				}
+				throw new EbeguRuntimeException("isMitteilungReadableForInstitution", "Mitteilung for INSTITUTION should have institution or betreuung");
+			}
+			return false;
+		} else if (principalBean.isCallerInAnyOfRole(
+			UserRole.ADMIN_TRAEGERSCHAFT,
+			UserRole.SACHBEARBEITER_TRAEGERSCHAFT)) {
+			if (principalBean.getBenutzer().getTraegerschaft() != null) {
+				if (mitteilung.getInstitution() != null && mitteilung.getInstitution().getTraegerschaft() != null) {
+					return principalBean.getBenutzer()
+						.getTraegerschaft()
+						.equals(mitteilung.getInstitution().getTraegerschaft());
+				}
+				if (mitteilung.getBetreuung() != null
+					&& mitteilung.getBetreuung().getInstitutionStammdaten().getInstitution().getTraegerschaft()
+					!= null) {
+					return principalBean.getBenutzer()
+						.getTraegerschaft()
+						.equals(mitteilung.getBetreuung()
+							.getInstitutionStammdaten()
+							.getInstitution()
+							.getTraegerschaft());
+				}
+				throw new EbeguRuntimeException("isMitteilungReadableForInstitution", "Mitteilung for TRAEGERSCHAFT should have institution, traegerschaft or betreuung");
+			}
+			return false;
+		}
+		return true;
 	}
 }
 

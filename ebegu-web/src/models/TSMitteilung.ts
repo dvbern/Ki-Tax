@@ -20,8 +20,16 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSBenutzer} from './TSBenutzer';
 import {TSBetreuung} from './TSBetreuung';
 import {TSDossier} from './TSDossier';
+import {TSInstitution} from './TSInstitution';
 
 export class TSMitteilung extends TSAbstractMutableEntity {
+    public get institution(): TSInstitution {
+        return this._institution;
+    }
+
+    public set institution(value: TSInstitution) {
+        this._institution = value;
+    }
 
     private _dossier: TSDossier;
     private _betreuung: TSBetreuung;
@@ -33,6 +41,7 @@ export class TSMitteilung extends TSAbstractMutableEntity {
     private _message: string;
     private _mitteilungStatus: TSMitteilungStatus;
     private _sentDatum: moment.Moment;
+    private _institution: TSInstitution;
 
     public constructor(
         dossier?: TSDossier,
@@ -45,6 +54,7 @@ export class TSMitteilung extends TSAbstractMutableEntity {
         message?: string,
         mitteilungStatus?: TSMitteilungStatus,
         sentDatum?: moment.Moment,
+        institution?: TSInstitution,
     ) {
         super();
         this._dossier = dossier;
@@ -57,6 +67,7 @@ export class TSMitteilung extends TSAbstractMutableEntity {
         this._message = message;
         this._mitteilungStatus = mitteilungStatus;
         this._sentDatum = sentDatum;
+        this._institution = institution;
     }
 
     public get dossier(): TSDossier {

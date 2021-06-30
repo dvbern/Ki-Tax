@@ -29,7 +29,7 @@ const ng1States: Ng1StateDeclaration[] = [
         abstract: true,
         name: 'posteingang',
         data: {
-            roles: TSRoleUtil.getAdministratorOrAmtOrSozialdienstRolle(),
+            roles: TSRoleUtil.getAllRolesForPosteingang(),
         },
     },
     {

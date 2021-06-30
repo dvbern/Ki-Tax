@@ -58,10 +58,6 @@ public class Traegerschaft extends AbstractMutableEntity implements Displayable 
 	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.email.message}")
 	private String email;
 
-	@Nullable
-	@Column(nullable = true)
-	private Boolean offentlich;
-
 	public Traegerschaft() {
 	}
 
@@ -90,15 +86,6 @@ public class Traegerschaft extends AbstractMutableEntity implements Displayable 
 
 	public void setEmail(@Nullable String email) {
 		this.email = email;
-	}
-
-	@Nullable
-	public Boolean getOffentlich() {
-		return offentlich;
-	}
-
-	public void setOffentlich(@Nullable Boolean offentlich) {
-		this.offentlich = offentlich;
 	}
 
 	@Override

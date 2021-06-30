@@ -44,12 +44,12 @@ public class CheckBetreuungZeitraumInstitutionsStammdatenZeitraumValidator imple
 	public boolean isValid(Betreuung betreuung, ConstraintValidatorContext context) {
 		DateRange institutionStammdatenDateRange = betreuung.getInstitutionStammdaten().getGueltigkeit();
 		// Uns interessiert grundsaetzlich nur der Bereich innerhalb der Gesuchsperiode
-		DateRange stammdatenWithinGP = limitToDateRange(institutionStammdatenDateRange, betreuung.extractGesuchsperiode().getGueltigkeit());
+		DateRange stammdatenWithinGP = DateUtil.limitToDateRange(institutionStammdatenDateRange, betreuung.extractGesuchsperiode().getGueltigkeit());
 
 		for (BetreuungspensumContainer betreuungspensumContainer : betreuung.getBetreuungspensumContainers()) {
 			DateRange pensumDateRange = betreuungspensumContainer.getBetreuungspensumJA().getGueltigkeit();
 			// Uns interessiert grundsaetzlich nur der Bereich innerhalb der Gesuchsperiode
-			DateRange betreuungWithinGP = limitToDateRange(pensumDateRange, betreuung.extractGesuchsperiode().getGueltigkeit());
+			DateRange betreuungWithinGP = DateUtil.limitToDateRange(pensumDateRange, betreuung.extractGesuchsperiode().getGueltigkeit());
 			// Da wir jetzt nur noch die Gesuchsperiode betrachten, darf die Betreuung NIE ausserhalb der Stammdaten sein
 			if (!stammdatenWithinGP.contains(betreuungWithinGP)) {
 				// Sonderfall: Fuer die Stadt Bern nach FEBR sind teilweise auch Kitas zugelassen,
@@ -63,13 +63,6 @@ public class CheckBetreuungZeitraumInstitutionsStammdatenZeitraumValidator imple
 			}
 		}
 		return true;
-	}
-
-	private DateRange limitToDateRange(DateRange range, DateRange gesuchsperiode) {
-		// Wir nehmen das spätere VON und das frühere BIS
-		LocalDate von = DateUtil.getMax(range.getGueltigAb(), gesuchsperiode.getGueltigAb());
-		LocalDate bis = DateUtil.getMin(range.getGueltigBis(), gesuchsperiode.getGueltigBis());
-		return new DateRange(von, bis);
 	}
 
 	private void setConstraintViolationMessage(@NotNull DateRange institutionStammdatenDateRange, @NotNull ConstraintValidatorContext context) {

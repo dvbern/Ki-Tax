@@ -2,12 +2,12 @@ import {Location} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
-import {TSLastenausgleichTagesschulenStatusHistory} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
-import {CONSTANTS} from '../../../../core/constants/CONSTANTS';
-import {ErrorService} from '../../../../core/errors/service/ErrorService';
-import {DvSimpleTableColumnDefinition} from '../../../../shared/component/dv-simple-table/dv-simple-table-column-definition';
-import {DvSimpleTableConfig} from '../../../../shared/component/dv-simple-table/dv-simple-table-config';
-import {LastenausgleichTSService} from '../../../lastenausgleich-ts/services/lastenausgleich-ts.service';
+import {TSLastenausgleichTagesschulenStatusHistory} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
+import {CONSTANTS} from '../../../core/constants/CONSTANTS';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {DvSimpleTableColumnDefinition} from '../../../shared/component/dv-simple-table/dv-simple-table-column-definition';
+import {DvSimpleTableConfig} from '../../../shared/component/dv-simple-table/dv-simple-table-config';
+import {LastenausgleichTSService} from '../services/lastenausgleich-ts.service';
 
 @Component({
     selector: 'dv-verlauf',
