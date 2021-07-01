@@ -62,7 +62,7 @@
                             <mat-datepicker-toggle matSuffix
                                                    [for]="faelligkeitsdatumPicker"></mat-datepicker-toggle>
                             <mat-datepicker #faelligkeitsdatumPicker></mat-datepicker>
-                            <dv-error-messages [errorObject]="(form?.form.get('faelligkeitsdatumPicker').dirty || form?.submitted) && form?.form.get('faelligkeitsdatumPicker')?.errors"
+                            <dv-error-messages [errorObject]="(form?.form.get('faelligkeitsdatumPicker')?.dirty || form?.submitted) && form?.form.get('faelligkeitsdatumPicker')?.errors"
                                                class="error"></dv-error-messages>
                         </div>
                     </div>
