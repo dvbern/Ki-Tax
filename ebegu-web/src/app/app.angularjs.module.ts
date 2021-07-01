@@ -33,9 +33,6 @@ import {POSTEINGANG_JS_MODULE} from './posteingang/posteingang.module';
 import {QUICKSEARCH_JS_MODULE} from './quicksearch/quicksearch.module';
 import {SEARCH_JS_MODULE} from './searchResult/search.module';
 import {STATISTIK_JS_MODULE} from './statistik/statistik.module';
-import {VERLAUF_JS_MODULE} from './verlauf/verlauf.module';
-import {ZAHLUNG_JS_MODULE} from './zahlung/zahlung.module';
-import {ZAHLUNGSAUFTRAG_VIEW_JS_MODULE} from './zahlungsauftrag/zahlungsauftrag.module';
 
 export const APP_JS_MODULE = angular.module('ebeguWeb', [
         'ui.router',
