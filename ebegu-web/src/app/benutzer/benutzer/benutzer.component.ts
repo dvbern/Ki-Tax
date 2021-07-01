@@ -17,7 +17,7 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
@@ -300,11 +300,17 @@ export class BenutzerComponent implements OnInit {
                     }
                     this.benutzerRS.removeBenutzer(this.selectedUser.username).then(() => {
                         this.gotoBenutzerlist('BENUTZER_DELETED_MESSAGE');
+                    }).catch(errorList => {
+                        if (errorList?.find((error: any) => error._argumentList?.includes(
+                            'FK_gemeindestammdaten_defaultbenutzer_id'))) {
+                            this.errorService.clearAll();
+                            this.errorService.addMesageAsError(this.translate.instant('ERROR_DEFAULT_BENUTZER_NICHT_LOESCHBAR'));
+                        }
                     });
                 },
                 () => {
                     this.log.error('error in observable. deleteBenutzer');
-                }
+                },
             );
     }
 
@@ -326,7 +332,7 @@ export class BenutzerComponent implements OnInit {
                 },
                 () => {
                     this.log.error('error in observable. deleteExternalUuidForBenutzer');
-                }
+                },
             );
     }
 
@@ -337,7 +343,7 @@ export class BenutzerComponent implements OnInit {
             }
             this.errorService.addMesageAsInfo(this.translate.instant(
                 infoMessageKey,
-                {fullName: this.selectedUser.getFullName()}
+                {fullName: this.selectedUser.getFullName()},
             ));
         });
     }

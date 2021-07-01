@@ -166,7 +166,7 @@ public class BetreuungResource {
 
 		convertedBetreuung.setKind(kindContainer);
 
-		Betreuung persistedBetreuung = this.betreuungService.saveBetreuung(convertedBetreuung, abwesenheit);
+		Betreuung persistedBetreuung = this.betreuungService.saveBetreuung(convertedBetreuung, abwesenheit, null);
 		return converter.betreuungToJAX(persistedBetreuung);
 	}
 
@@ -239,7 +239,7 @@ public class BetreuungResource {
 		List<JaxBetreuung> resultBetreuungen = new ArrayList<>();
 		betreuungenJAXP.forEach(betreuungJAXP -> {
 			Betreuung convertedBetreuung = converter.betreuungToStoreableEntity(betreuungJAXP);
-			Betreuung persistedBetreuung = this.betreuungService.saveBetreuung(convertedBetreuung, abwesenheit);
+			Betreuung persistedBetreuung = this.betreuungService.saveBetreuung(convertedBetreuung, abwesenheit, null);
 
 			resultBetreuungen.add(converter.betreuungToJAX(persistedBetreuung));
 		});
@@ -269,7 +269,7 @@ public class BetreuungResource {
 
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
 		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch());
-		Betreuung persistedBetreuung = this.betreuungService.betreuungPlatzAbweisen(convertedBetreuung);
+		Betreuung persistedBetreuung = this.betreuungService.betreuungPlatzAbweisen(convertedBetreuung, null);
 
 		return converter.betreuungToJAX(persistedBetreuung);
 	}
@@ -297,7 +297,7 @@ public class BetreuungResource {
 
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
 		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch());
-		Betreuung persistedBetreuung = this.betreuungService.betreuungPlatzBestaetigen(convertedBetreuung);
+		Betreuung persistedBetreuung = this.betreuungService.betreuungPlatzBestaetigen(convertedBetreuung, null);
 
 		return converter.betreuungToJAX(persistedBetreuung);
 	}
@@ -551,7 +551,7 @@ public class BetreuungResource {
 
 		converter.setBetreuungInbetreuungsAbweichungen(toStore, betreuung);
 		betreuung.setBetreuungspensumAbweichungen(toStore);
-		betreuungService.saveBetreuung(betreuung, false);
+		betreuungService.saveBetreuung(betreuung, false, null);
 		return converter.betreuungspensumAbweichungenToJax(betreuung);
 	}
 

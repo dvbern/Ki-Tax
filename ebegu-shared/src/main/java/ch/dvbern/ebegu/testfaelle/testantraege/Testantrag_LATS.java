@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Objects;
 
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -39,7 +40,10 @@ public class Testantrag_LATS {
 		Gemeinde gemeinde,
 		Gesuchsperiode gesuchsperiode,
 		Collection<InstitutionStammdaten> allTagesschulenForGesuchsperiodeAndGemeinde,
-		LastenausgleichTagesschuleAngabenGemeindeStatus status) {
+		LastenausgleichTagesschuleAngabenGemeindeStatus status,
+		Einstellung normlohnkosten,
+		Einstellung normlohnkostenLessThen50
+	) {
 		this.container = new LastenausgleichTagesschuleAngabenGemeindeContainer();
 		this.container.setGemeinde(gemeinde);
 		this.container.setGesuchsperiode(gesuchsperiode);
@@ -64,7 +68,12 @@ public class Testantrag_LATS {
 						.getBetreuungsstundenEinschliesslichBesondereBeduerfnisse()), BigDecimal::add);
 
 		this.container.setAngabenDeklaration(
-			(new Testantrag_LastenausgleichTagesschuleAngabenGemeinde(institutionsBetreuungsstundenSum, status)).getAngaben()
+			(new Testantrag_LastenausgleichTagesschuleAngabenGemeinde(
+				institutionsBetreuungsstundenSum,
+				status,
+				normlohnkosten,
+				normlohnkostenLessThen50
+			)).getAngaben()
 		);
 		if(status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON) {
 			this.container.copyForFreigabe();

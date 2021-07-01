@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
@@ -250,12 +251,34 @@ public class ApplicationPropertyResource {
 		ApplicationProperty lastenausgleichTagesschulenAktiv  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AKTIV)
 				.orElseThrow(() -> notFound);
+		ApplicationProperty lastenausgleichTagesschulenAnteilZweitpruefungDe  =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE)
+				.orElseThrow(() -> notFound);
+		ApplicationProperty lastenausgleichTagesschulenAnteilZweitpruefungFr  =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_FR)
+				.orElseThrow(() -> notFound);
+		ApplicationProperty lastenausgleichTagesschulenAutoZweitpruefungDe  =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE)
+				.orElseThrow(() -> notFound);
+		ApplicationProperty lastenausgleichTagesschulenAutoZweitpruefungFr  =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR)
+				.orElseThrow(() -> notFound);
 
 		String nodeName = "";
+		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDeConverted;
+		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungFrConverted;
+		BigDecimal lastenausgleichTagesschulenAutoZweitpruefungDeConverted;
+		BigDecimal lastenausgleichTagesschulenAutoZweitpruefungFrConverted;
 		try {
 			nodeName = InetAddress.getLocalHost().getHostName();
+			lastenausgleichTagesschulenAnteilZweitpruefungDeConverted = new BigDecimal(lastenausgleichTagesschulenAnteilZweitpruefungDe.getValue());
+			lastenausgleichTagesschulenAnteilZweitpruefungFrConverted = new BigDecimal(lastenausgleichTagesschulenAnteilZweitpruefungFr.getValue());
+			lastenausgleichTagesschulenAutoZweitpruefungDeConverted = new BigDecimal(lastenausgleichTagesschulenAutoZweitpruefungDe.getValue());
+			lastenausgleichTagesschulenAutoZweitpruefungFrConverted = new BigDecimal(lastenausgleichTagesschulenAutoZweitpruefungFr.getValue());
 		} catch (UnknownHostException e) {
 			throw new EbeguRuntimeException("getHostName", "Hostname konnte nicht ermittelt werden", e);
+		} catch (NumberFormatException e) {
+			throw new EbeguRuntimeException("new BigDecimal()", "Fehler beim Parsen einer Einstellung", e);
 		}
 		JaxPublicAppConfig pubAppConf = new JaxPublicAppConfig(
 			nodeName,
@@ -271,7 +294,11 @@ public class ApplicationPropertyResource {
 			einreichefristOeffentlich.getValue(),
 			einreichefristPrivat.getValue(),
 			ferienbetreuungAktiv.getValue().equals("true"),
-			lastenausgleichTagesschulenAktiv.getValue().equals("true")
+			lastenausgleichTagesschulenAktiv.getValue().equals("true"),
+			lastenausgleichTagesschulenAnteilZweitpruefungDeConverted,
+			lastenausgleichTagesschulenAnteilZweitpruefungFrConverted,
+			lastenausgleichTagesschulenAutoZweitpruefungDeConverted,
+			lastenausgleichTagesschulenAutoZweitpruefungFrConverted
 		);
 		return Response.ok(pubAppConf).build();
 	}

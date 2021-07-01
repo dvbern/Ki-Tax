@@ -1,0 +1,48 @@
+<!--
+  ~ Copyright (C) 2020 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<p *ngIf="canSeeFreigegebenText | async"
+   [innerHTML]="'LATS_FREIGEGEBEN_AN_KANTON' | translate">
+</p>
+<p *ngIf="canSeeGeprueftText | async"
+   [innerHTML]="'FERIENBETREUUNG_GEPRUEFT' | translate">
+</p>
+
+<div class="actions">
+    <dv-loading-button
+        *ngIf="canViewFreigabeButton | async"
+        [buttonDisabled]="!(isInBearbeitungGemeinde() | async)"
+        (buttonClick)="freigeben()"
+        type="button">
+        <span translate>LATS_FREIGABE_PRUEFUNG_KANTON</span>
+    </dv-loading-button>
+    <dv-loading-button
+        *ngIf="canViewGeprueftButton | async"
+        [buttonDisabled]="!isReadyForGeprueft()"
+        type="button"
+        (buttonClick)="geprueft()">
+        <span translate>LATS_GEPRUEFT_KANTON</span>
+    </dv-loading-button>
+    <dv-loading-button
+        *ngIf="canViewGeprueftButton | async"
+        [buttonDisabled]="!(isInPruefungKanton() | async)"
+        type="button"
+        class="secondary"
+        (buttonClick)="zurueckAnGemeinde()">
+        <span translate>ZURUECK_AN_GEMEINDE_TITLE</span>
+    </dv-loading-button>
+</div>

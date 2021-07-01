@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -77,13 +78,21 @@ public class MassenversandServiceBean extends AbstractBaseService implements Mas
 
 	@Override
 	public void removeMassenversandGesucheForFall(@Nonnull final Fall fall) {
-
 		List<String> gesuchIds = gesuchService.getAllGesuchIDsForFall(fall.getId());
-
 		if(gesuchIds.isEmpty()) {
 			return;
 		}
+		removeGesuchs(gesuchIds);
+	}
 
+	@Override
+	public void removeMassenversandGesucheForGesuch(@Nonnull final Gesuch gesuch) {
+		List<String> gesuchIds = new ArrayList<>();
+		gesuchIds.add(gesuch.getId());
+		removeGesuchs(gesuchIds);
+	}
+
+	private void removeGesuchs(@Nonnull List<String> gesuchIds){
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Massenversand> query = cb.createQuery(Massenversand.class);
 		Root<Massenversand> root = query.from(Massenversand.class);

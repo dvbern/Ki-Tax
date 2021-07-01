@@ -1,0 +1,84 @@
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<form role="form"
+	  #form="ngForm"
+      [ngClass]="{'ng-submitted': form.submitted}"
+      (ngSubmit)="save()"
+      novalidate>
+    <mat-dialog-content>
+
+        <div *ngIf="internePendenz">
+
+            <h2 translate *ngIf="!isNew() && readonlyMode">PENDENZ</h2>
+            <h2 translate *ngIf="!isNew() && !readonlyMode">PENDENZ_BEARBEITEN</h2>
+            <h2 translate *ngIf="isNew()">PENDENZ_ERSTELLEN</h2>
+
+            <div class="form-group margin-top-20">
+                <label class="md-no-float" translate for="termin_id">TERMIN</label>
+                <input class="dv-mat-datepicker"
+                       type="text"
+                       id="termin_id"
+                       name="termin"
+                       required
+                       [disabled]="readonlyMode"
+                       #terminRef="ngModel"
+                       [(ngModel)]="internePendenz.termin"
+                       [min]="getMinDateTermin()"
+                       [matDatepicker]="terminPicker"
+                       placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}">
+                <mat-datepicker-toggle matSuffix [for]="terminPicker"></mat-datepicker-toggle>
+                <mat-datepicker #terminPicker></mat-datepicker>
+                <dv-error-messages input-id="termin_id"
+                                   [errorObject]="terminRef.errors">
+                </dv-error-messages>
+            </div>
+
+            <div class="form-group">
+                <label class="md-no-float" translate for="text_id">PENDENZ</label>
+                <textarea name="text"
+                          class="form-control " rows="5"
+                          #text="ngModel"
+                          id="text_id"
+                          required
+                          [disabled]="readonlyMode"
+                          [(ngModel)]="internePendenz.text"
+                          maxlength="4000">
+                </textarea>
+                <dv-error-messages input-id="text_id"
+                                   [errorObject]="text.errors">
+                </dv-error-messages>
+            </div>
+
+            <div class="form-group">
+                <mat-checkbox id="erledigt_id" name="erledigt_name"
+                              [(ngModel)]="internePendenz.erledigt">
+                    {{'PENDENZ_ERLEDIGT_CHECKBOX' | translate}}
+                </mat-checkbox>
+            </div>
+
+        </div>
+
+    </mat-dialog-content>
+
+    <mat-dialog-actions>
+        <div class="dv-dialog-actions">
+            <button type="submit" class="dv-btn" [textContent]="'OK' | translate"></button>
+            <button type="button" class="dv-btn" [textContent]="'BEARBEITEN' | translate" *ngIf="readonlyMode" (click)="readonlyMode = false"></button>
+            <button type="button" class="dv-btn cancel-button" (click)="close()" [textContent]="'CANCEL' | translate"></button>
+        </div>
+    </mat-dialog-actions>
+</form>

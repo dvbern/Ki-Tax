@@ -18,14 +18,14 @@
 import {NgModule} from '@angular/core';
 import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {Transition} from '@uirouter/core';
-import {FreigabeComponent} from '../../gemeinde-antraege/antrag/freigabe/freigabe.component';
-import {GemeindeAngabenComponent} from '../../gemeinde-antraege/antrag/gemeinde-angaben/gemeinde-angaben.component';
-import {LastenausgleichTsBerechnungComponent} from '../../gemeinde-antraege/antrag/lastenausgleich-ts-berechnung/lastenausgleich-ts-berechnung.component';
-import {TagesschulenAngabenComponent} from '../../gemeinde-antraege/antrag/tagesschulen-angaben/tagesschulen-angaben.component';
-import {TagesschulenListComponent} from '../../gemeinde-antraege/antrag/tagesschulen-list/tagesschulen-list.component';
-import {VerlaufComponent} from '../../gemeinde-antraege/antrag/verlauf/verlauf.component';
+import {FreigabeComponent} from '../antrag/freigabe/freigabe.component';
+import {GemeindeAngabenComponent} from '../antrag/gemeinde-angaben/gemeinde-angaben.component';
+import {LastenausgleichTsBerechnungComponent} from '../antrag/lastenausgleich-ts-berechnung/lastenausgleich-ts-berechnung.component';
+import {TagesschulenAngabenComponent} from '../antrag/tagesschulen-angaben/tagesschulen-angaben.component';
+import {TagesschulenListComponent} from '../antrag/tagesschulen-list/tagesschulen-list.component';
 import {LastenausgleichTSComponent} from '../lastenausgleich-ts/lastenausgleich-ts.component';
 import {TagesschulenUiViewComponent} from '../tagesschulen-ui-view/tagesschulen-ui-view.component';
+import {VerlaufComponent} from '../verlauf/verlauf.component';
 
 const states: NgHybridStateDeclaration[] = [
     {

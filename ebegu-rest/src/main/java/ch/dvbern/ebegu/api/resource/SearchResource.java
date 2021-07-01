@@ -139,9 +139,8 @@ public class SearchResource {
 
 	@ApiOperation(value =
 		"Gibt eine Liste mit allen Betreuungen die pendent sind und zur Institution oder Traegerschaft des "
-			+ "eingeloggten Benutzers "
-			+
-			"gehoeren zurueck. Fuer das Schulamt werden alle SCH-Anmeldungen zurueckgegeben",
+			+ "eingeloggten Benutzers gehoeren zurueck. "
+			+ "Fuer das Schulamt werden alle SCH-Anmeldungen zurueckgegeben",
 		responseContainer = "List",
 		response = JaxPendenzBetreuungen.class)
 	@Nonnull
@@ -217,8 +216,7 @@ public class SearchResource {
 	}
 
 	@ApiOperation(value = "Sucht Antraege mit den uebergebenen Suchkriterien/Filtern. Es werden nur Antraege zurueck"
-		+ " " +
-		"gegeben, fuer die der eingeloggte Benutzer berechtigt ist.", response = JaxAntragSearchresultDTO.class)
+		+ "gegeben, fuer die der eingeloggte Benutzer berechtigt ist.", response = JaxAntragSearchresultDTO.class)
 	@Nonnull
 	@POST
 	@Path("/search")

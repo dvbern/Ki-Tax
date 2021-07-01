@@ -120,6 +120,7 @@ import static ch.dvbern.ebegu.services.util.FilterFunctions.setRoleFilterForCurr
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setSuperAdminFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setTraegerschaftFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setSozialdienstFilterForCurrentUser;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.setAntragstellerFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -1026,6 +1027,10 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				setGemeindeFilterForCurrentUser(user, gemeindeSetJoin, predicates);
 
 				setRoleFilterForCurrentUser(user, currentBerechtigungJoin, predicates);
+			}
+			else {
+				// Mandant Benutzende cannot see Antragstellende users in Statistik
+				setAntragstellerFilterForCurrentUser(currentBerechtigungJoin, predicates);
 			}
 		}
 

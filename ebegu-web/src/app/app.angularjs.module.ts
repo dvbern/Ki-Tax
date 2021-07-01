@@ -34,6 +34,8 @@ import {QUICKSEARCH_JS_MODULE} from './quicksearch/quicksearch.module';
 import {SEARCH_JS_MODULE} from './searchResult/search.module';
 import {STATISTIK_JS_MODULE} from './statistik/statistik.module';
 import {VERLAUF_JS_MODULE} from './verlauf/verlauf.module';
+import {ZAHLUNG_JS_MODULE} from './zahlung/zahlung.module';
+import {ZAHLUNGSAUFTRAG_VIEW_JS_MODULE} from './zahlungsauftrag/zahlungsauftrag.module';
 
 export const APP_JS_MODULE = angular.module('ebeguWeb', [
         'ui.router',
@@ -53,7 +55,6 @@ export const APP_JS_MODULE = angular.module('ebeguWeb', [
         STATISTIK_JS_MODULE.name,
         LASTENAUSGLEICH_VIEW_JS_MODULE.name,
         ALLE_VERFUEGUNGEN_JS_MODULE.name,
-        VERLAUF_JS_MODULE.name,
         QUICKSEARCH_JS_MODULE.name,
     ])
         .component('appRoot', APP_ANGULARJS_COMPONENT)

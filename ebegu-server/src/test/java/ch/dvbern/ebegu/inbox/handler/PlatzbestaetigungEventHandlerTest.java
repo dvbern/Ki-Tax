@@ -34,6 +34,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.BetreuungMonitoring;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
@@ -54,6 +55,7 @@ import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
+import ch.dvbern.ebegu.services.BetreuungMonitoringService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
@@ -71,6 +73,7 @@ import org.easymock.EasyMock;
 import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
+import org.easymock.MockType;
 import org.easymock.TestSubject;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeEach;
@@ -138,6 +141,10 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
 	private InstitutionExternalClient institutionExternalClient;
+
+	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
+	@Mock(MockType.NICE)
+	private BetreuungMonitoringService betreuungMonitoringService;
 
 	private Gesuch gesuch_1GS = null;
 	private Gesuchsperiode gesuchsperiode = null;
@@ -437,7 +444,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void automaticPlatzbestaetigung() {
-			expect(betreuungService.betreuungPlatzBestaetigen(betreuung))
+			expect(betreuungService.betreuungPlatzBestaetigen(betreuung, CLIENT_NAME))
 				.andReturn(betreuung);
 
 			testProcessingSuccess();
@@ -452,7 +459,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			Gesuch gesuch = betreuung.extractGesuch();
 			gesuch.setStatus(antragStatus);
 
-			expect(betreuungService.betreuungPlatzBestaetigen(betreuung))
+			expect(betreuungService.betreuungPlatzBestaetigen(betreuung, CLIENT_NAME))
 				.andReturn(betreuung);
 
 			testProcessingSuccess();
@@ -866,12 +873,12 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 
 		private void expectPlatzBestaetigung() {
-			expect(betreuungService.betreuungPlatzBestaetigen(betreuung))
+			expect(betreuungService.betreuungPlatzBestaetigen(betreuung, CLIENT_NAME))
 				.andReturn(betreuung);
 		}
 
 		private void expectHumanConfirmation() {
-			expect(betreuungService.saveBetreuung(betreuung, false))
+			expect(betreuungService.saveBetreuung(betreuung, false, CLIENT_NAME))
 				.andReturn(betreuung);
 		}
 	}
@@ -930,7 +937,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				.where(Betreuungsmitteilung::getEmpfaengerTyp, is(MitteilungTeilnehmerTyp.JUGENDAMT))
 				.where(Betreuungsmitteilung::getEmpfaenger, sameInstance(dossier.getFall().getBesitzer()))
 				.where(Betreuungsmitteilung::getMitteilungStatus, is(MitteilungStatus.NEU))
-				.where(Betreuungsmitteilung::getSubject, is("Mutationsmeldung von TestClient"))
+				.where(Betreuungsmitteilung::getSubject, is("Mutationsmeldung von foo"))
 				.where(Betreuungsmitteilung::getBetreuung, sameInstance(betreuung))
 				.where(Betreuungsmitteilung::getBetreuungspensen, contains(
 					matches(betreuungspensum, betreuungspensum.getGueltigkeit().getGueltigAb(), GO_LIVE.minusDays(1)),
@@ -1286,9 +1293,9 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			mockClient(clientGueltigkeit);
 
 			ExternalClient mockClient = new ExternalClient();
-			mockClient.setClientName("TestClient");
+			mockClient.setClientName(CLIENT_NAME);
 			expect(institutionExternalClient.getExternalClient())
-				.andReturn(mockClient);
+				. andStubReturn(mockClient);
 
 			withMahlzeitenverguenstigung(withMahlzeitenEnabled);
 
@@ -1315,11 +1322,16 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 	private void mockClient(@Nonnull DateRange clientGueltigkeit) {
 		institutionExternalClient = mock(InstitutionExternalClient.class);
 
+		ExternalClient mockClient = new ExternalClient();
+		mockClient.setClientName(CLIENT_NAME);
+		expect(institutionExternalClient.getExternalClient())
+			.andStubReturn(mockClient);
+
 		expect(betreuungEventHelper.getExternalClient(eq(CLIENT_NAME), anyObject()))
 			.andReturn(Optional.of(institutionExternalClient));
 
 		expect(institutionExternalClient.getGueltigkeit())
-			.andReturn(clientGueltigkeit);
+			.andStubReturn(clientGueltigkeit);
 	}
 
 	private void withMahlzeitenverguenstigung(boolean enabled) {

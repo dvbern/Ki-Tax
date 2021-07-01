@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {ClipboardModule} from '@angular/cdk/clipboard';
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {NgxIbanModule} from 'ngx-iban';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
@@ -28,6 +29,7 @@ import {DialogImportFromOtherInstitution} from './edit-institution-tagesschule/d
 import {EditInstitutionTagesschuleComponent} from './edit-institution-tagesschule/edit-institution-tagesschule.component';
 import {EditInstitutionComponent} from './edit-institution/edit-institution.component';
 import {ModulTagesschuleDialogComponent} from './edit-modul-tagesschule/modul-tagesschule-dialog.component';
+import {InfoSchnittstelleDialogComponent} from './info-schnittstelle-dialog/info-schnittstelle-dialog.component';
 import {InstitutionRoutingModule} from './institution-routing/institution-routing.module';
 import {InstitutionListComponent} from './list-institution/institution-list.component';
 
@@ -38,6 +40,7 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
         MaterialModule,
         NgxIbanModule,
         NgxMaterialTimepickerModule,
+        ClipboardModule
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
@@ -52,7 +55,8 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
         EditInstitutionFerieninselComponent,
         ModulTagesschuleDialogComponent,
         DialogImportFromOtherInstitution,
-        EditBetreuungsstandortComponent
+        EditBetreuungsstandortComponent,
+        InfoSchnittstelleDialogComponent
     ],
     providers: [],
 })

@@ -30,6 +30,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.BetreuungMonitoring;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -42,6 +43,7 @@ import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
+import ch.dvbern.ebegu.services.BetreuungMonitoringService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.MitteilungService;
@@ -70,6 +72,9 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 	@Inject
 	private GemeindeService gemeindeService;
 
+	@Inject
+	private BetreuungMonitoringService betreuungMonitoringService;
+
 	@Override
 	protected void processEvent(
 		@Nonnull LocalDateTime eventTime,
@@ -81,6 +86,10 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 		if (!processing.isProcessingSuccess()) {
 			String message = processing.getMessage();
 			LOG.warn("Stornierung Event für Betreuung mit RefNr: {} nicht verarbeitet: {}", key, message);
+			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(key,
+				clientName,
+				"Stornierung Event wurde nicht verarbeitet: " + message,
+				LocalDateTime.now()));
 		}
 	}
 
@@ -110,14 +119,15 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 
 		return betreuungEventHelper.getExternalClient(clientName, betreuung)
 			.map(externalClient -> processEventForExternalClient(betreuung, externalClient.getGueltigkeit(),
-				refNummer))
+				refNummer, clientName))
 			.orElseGet(() -> betreuungEventHelper.clientNotFoundFailure(clientName, betreuung));
 	}
 
 	private Processing processEventForExternalClient(
 		Betreuung betreuung,
 		DateRange clientGueltigkeit,
-		String refNummer) {
+		String refNummer,
+		String clientName) {
 		DateRange gesuchsperiode = betreuung.extractGesuchsperiode().getGueltigkeit();
 		Optional<DateRange> overlap = gesuchsperiode.getOverlap(clientGueltigkeit);
 		if (overlap.isEmpty()) {
@@ -126,22 +136,26 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 
 		//Betreuung in Status Warten, entweder stornieren oder abweisen:
 		if (betreuung.getBetreuungsstatus() == Betreuungsstatus.WARTEN) {
-			return handleStatusAenderung(betreuung, refNummer);
+			return handleStatusAenderung(betreuung, refNummer, clientName);
 		}
 
 		if (isMutationsMitteilungStatus(betreuung.getBetreuungsstatus())) {
 			//Betreuung schon Bestaetigt => MutationMitteilung mit Storniereung erfassen
 			Betreuungsmitteilung betreuungsmitteilung = createBetreuungsStornierenMitteilung(betreuung, refNummer);
 			mitteilungService.replaceBetreungsmitteilungen(betreuungsmitteilung);
-			LOG.info("Mutationsmeldung erstellt für stornieren die Betreuung mit RefNr: {}", refNummer);
+			LOG.info("Mutationsmeldung  zum Stornieren der Betreuung erstellt mit RefNr: {}", refNummer);
+			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(refNummer,
+				clientName,
+				"Mutationsmeldung zum Stornieren der Betreuung erstellt",
+				LocalDateTime.now()));
 			return Processing.success();
 		}
 		return Processing.failure(
-			"Die Betreuung befindet sich in einen Status wo eine Stornierung nicht erlaubt ist.");
+			"Die Betreuung befindet sich in einen Status in dem eine Stornierung nicht erlaubt ist.");
 	}
 
 	@Nonnull
-	private Processing handleStatusAenderung(Betreuung betreuung, String refNummer) {
+	private Processing handleStatusAenderung(Betreuung betreuung, String refNummer, String clientName) {
 		// Mutation => stornieren, sonst abweisen
 		if (betreuung.getVorgaengerId() != null) {
 			betreuung.setDatumBestaetigung(LocalDate.now());
@@ -152,8 +166,12 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 				}
 			);
 			betreuung.setBetreuungsstatus(Betreuungsstatus.STORNIERT);
-			betreuungService.saveBetreuung(betreuung, false);
-			LOG.info("Betreuung mit RefNr: {} würde automatisch storniert", refNummer);
+			betreuungService.saveBetreuung(betreuung, false, clientName);
+			LOG.info("Betreuung mit RefNr: {} wurde automatisch storniert", refNummer);
+			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(refNummer,
+				clientName,
+				"Betreuung wurde automatisch storniert",
+				LocalDateTime.now()));
 		} else {
 			// TODO: um einen Platz zu abweisen braucht man einen Grund geben
 			// betreuung.setGrundAblehnung(??????);

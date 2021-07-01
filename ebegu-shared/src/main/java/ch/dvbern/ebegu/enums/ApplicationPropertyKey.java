@@ -97,7 +97,26 @@ public enum ApplicationPropertyKey {
 	/**
 	 * Wenn TRUE ist Lastenausgleich Tagesschulen aktiviert
 	 */
-	LASTENAUSGLEICH_TAGESSCHULEN_AKTIV
+	LASTENAUSGLEICH_TAGESSCHULEN_AKTIV,
 
+	/**
+	 * Setzt fest, was für ein Anteil der LATS Anträge der deutschsprachigen Gemeinden zur Zweitprüfung ausgewählt wird
+	 */
+	LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE,
+
+	/**
+	 * Setzt fest, ab welcher Anzahl Betreuungsstunden der LATS Antrag der deutschsprachigen Gemeinden zur Zweitprüfung ausgewählt wird
+	 */
+	LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE,
+
+	/**
+	 * Setzt fest, was für ein Anteil der LATS Anträge der deutschsprachigen Gemeinden zur Zweitprüfung ausgewählt wird
+	 */
+	LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_FR,
+
+	/**
+	 * Setzt fest, ab welcher Anzahl Betreuungsstunden der LATS Antrag der deutschsprachigen Gemeinden zur Zweitprüfung ausgewählt wird
+	 */
+	LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR,
 
 }

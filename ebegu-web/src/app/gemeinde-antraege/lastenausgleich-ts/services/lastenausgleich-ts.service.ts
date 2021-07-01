@@ -89,7 +89,7 @@ export class LastenausgleichTSService {
             `${this.API_BASE_URL}/saveKommentar/${encodeURIComponent(containerId)}`,
             kommentar,
         ).pipe(
-            tap(() => this.updateLATSAngabenGemeindeContainerStore(containerId))
+            tap(() => this.updateLATSAngabenGemeindeContainerStore(containerId)),
         );
     }
 
@@ -117,13 +117,22 @@ export class LastenausgleichTSService {
         );
     }
 
-    public latsGemeindeAntragGeprueft(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
-        this.http.put(
+    public latsGemeindeAntragGeprueft(
+        container: TSLastenausgleichTagesschuleAngabenGemeindeContainer
+    ): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
+        return this.http.put(
             `${this.API_BASE_URL}/geprueft`,
             this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
-        ).subscribe(result => {
-            this.next(result);
-        }, error => LOG.error(error));
+        ).pipe(
+            tap(result => {
+                    this.next(result);
+                },
+            ),
+            map(result => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
+                new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),
+                result)
+            )
+        );
     }
 
     // tslint:disable-next-line:max-line-length
@@ -169,5 +178,23 @@ export class LastenausgleichTSService {
         ).pipe(map(data => {
             return this.ebeguRestUtil.parseLatsHistoryList(data);
         }));
+    }
+
+    public findAntragOfPreviousPeriode(antrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer):
+        Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
+        return this.http.get<any>(
+            `${this.API_BASE_URL}/previous-antrag/${encodeURIComponent(antrag.id)}`,
+        ).pipe(
+            map(restContainer => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
+                new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),
+                restContainer),
+            ));
+    }
+
+    public getErwarteteBetreuungsstunden(antrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer):
+        Observable<number> {
+        return this.http.get<number>(
+            `${this.API_BASE_URL}/erwartete-betreuungsstunden/${encodeURIComponent(antrag.id)}`,
+        );
     }
 }

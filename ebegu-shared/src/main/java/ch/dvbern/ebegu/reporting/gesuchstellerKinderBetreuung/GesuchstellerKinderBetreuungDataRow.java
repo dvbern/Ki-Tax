@@ -78,7 +78,10 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private BigDecimal familienabzug;
 	@Nullable private BigDecimal massgEink;
 	@Nullable private Integer einkommensjahr;
-	@Nullable private Boolean ekvVorhanden;
+	@Nullable private Boolean ekvVorhandenBasisJahr1;
+	@Nullable private Boolean ekvVorhandenBasisJahr2;
+	@Nullable private Boolean ekvAnnuliertBasisJahr1;
+	@Nullable private Boolean ekvAnnuliertBasisJahr2;
 	@Nullable private Boolean stvGeprueft;
 	@Nullable private Boolean veranlagt;
 	@Nullable private Boolean sozialhilfeBezueger;
@@ -496,15 +499,6 @@ public class GesuchstellerKinderBetreuungDataRow {
 	}
 
 	@Nullable
-	public Boolean getEkvVorhanden() {
-		return ekvVorhanden;
-	}
-
-	public void setEkvVorhanden(@Nullable Boolean ekvVorhanden) {
-		this.ekvVorhanden = ekvVorhanden;
-	}
-
-	@Nullable
 	public Boolean getStvGeprueft() {
 		return stvGeprueft;
 	}
@@ -775,5 +769,41 @@ public class GesuchstellerKinderBetreuungDataRow {
 
 	public void setGs2EwpFreiwillig(@Nonnull Integer gs2EwpFreiwillig) {
 		this.gs2EwpFreiwillig = gs2EwpFreiwillig;
+	}
+
+	@Nullable
+	public Boolean getEkvVorhandenBasisJahr1() {
+		return ekvVorhandenBasisJahr1;
+	}
+
+	public void setEkvVorhandenBasisJahr1(@Nullable Boolean ekvVorhandenBasisJahr1) {
+		this.ekvVorhandenBasisJahr1 = ekvVorhandenBasisJahr1;
+	}
+
+	@Nullable
+	public Boolean getEkvVorhandenBasisJahr2() {
+		return ekvVorhandenBasisJahr2;
+	}
+
+	public void setEkvVorhandenBasisJahr2(@Nullable Boolean ekvVorhandenBasisJahr2) {
+		this.ekvVorhandenBasisJahr2 = ekvVorhandenBasisJahr2;
+	}
+
+	@Nullable
+	public Boolean getEkvAnnuliertBasisJahr1() {
+		return ekvAnnuliertBasisJahr1;
+	}
+
+	public void setEkvAnnuliertBasisJahr1(@Nullable Boolean ekvAnnuliertBasisJahr1) {
+		this.ekvAnnuliertBasisJahr1 = ekvAnnuliertBasisJahr1;
+	}
+
+	@Nullable
+	public Boolean getEkvAnnuliertBasisJahr2() {
+		return ekvAnnuliertBasisJahr2;
+	}
+
+	public void setEkvAnnuliertBasisJahr2(@Nullable Boolean ekvAnnuliertBasisJahr2) {
+		this.ekvAnnuliertBasisJahr2 = ekvAnnuliertBasisJahr2;
 	}
 }

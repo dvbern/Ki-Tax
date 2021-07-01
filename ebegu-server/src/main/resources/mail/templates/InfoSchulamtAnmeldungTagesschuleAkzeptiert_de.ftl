@@ -25,7 +25,7 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		Wir bestätigen Ihnen Ihre Anmeldung für ${betreuung.kind.kindJA.fullName} an der Tagesschule "${betreuung.institutionStammdaten.institution.name}". Die Anmeldebestätigung kann <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegenView/${betreuung.extractGesuch().id}/${betreuung.betreuungNummer}/${betreuung.kind.kindNummer}">hier</a> eingesehen werden.
-		Ihr Antrag auf einen vergünstigten Tarif wurde noch nicht gerprüft. Nach Abschluss der Prüfung erhalten Sie eine neue Bestätigung mit der definitiven Gebühr.
+		Ihr Antrag auf einen vergünstigten Tarif wurde noch nicht geprüft. Nach Abschluss der Prüfung erhalten Sie eine neue Bestätigung mit der definitiven Gebühr.
 	</p>
 	<p>
 		Freundliche Grüsse <br/>

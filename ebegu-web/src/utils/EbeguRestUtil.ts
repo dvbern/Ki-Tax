@@ -69,6 +69,7 @@ import {TSBenutzerNoDetails} from '../models/TSBenutzerNoDetails';
 import {TSBerechtigung} from '../models/TSBerechtigung';
 import {TSBerechtigungHistory} from '../models/TSBerechtigungHistory';
 import {TSBetreuung} from '../models/TSBetreuung';
+import {TSBetreuungMonitoring} from '../models/TSBetreuungMonitoring';
 import {TSBetreuungsmitteilung} from '../models/TSBetreuungsmitteilung';
 import {TSBetreuungsmitteilungPensum} from '../models/TSBetreuungsmitteilungPensum';
 import {TSBetreuungspensum} from '../models/TSBetreuungspensum';
@@ -127,6 +128,7 @@ import {TSInstitutionStammdatenFerieninsel} from '../models/TSInstitutionStammda
 import {TSInstitutionStammdatenSummary} from '../models/TSInstitutionStammdatenSummary';
 import {TSInstitutionStammdatenTagesschule} from '../models/TSInstitutionStammdatenTagesschule';
 import {TSInstitutionUpdate} from '../models/TSInstitutionUpdate';
+import {TSInternePendenz} from '../models/TSInternePendenz';
 import {TSKind} from '../models/TSKind';
 import {TSKindContainer} from '../models/TSKindContainer';
 import {TSKindDublette} from '../models/TSKindDublette';
@@ -1289,7 +1291,6 @@ export class EbeguRestUtil {
             restTragerschaft.name = traegerschaft.name;
             restTragerschaft.active = traegerschaft.active;
             restTragerschaft.email = traegerschaft.email;
-            restTragerschaft.offentlich = traegerschaft.offentlich;
             return restTragerschaft;
         }
         return undefined;
@@ -1310,7 +1311,6 @@ export class EbeguRestUtil {
             traegerschaftTS.name = traegerschaftFromServer.name;
             traegerschaftTS.active = traegerschaftFromServer.active;
             traegerschaftTS.email = traegerschaftFromServer.email;
-            traegerschaftTS.offentlich = traegerschaftFromServer.offentlich;
             traegerschaftTS.institutionCount = traegerschaftFromServer.institutionCount;
             traegerschaftTS.institutionNames = traegerschaftFromServer.institutionNames;
             return traegerschaftTS;
@@ -3342,6 +3342,9 @@ export class EbeguRestUtil {
             if (mitteilungFromServer.betreuung) {
                 tsMitteilung.betreuung = this.parseBetreuung(new TSBetreuung(), mitteilungFromServer.betreuung);
             }
+            if (mitteilungFromServer.institution) {
+                tsMitteilung.institution = this.parseInstitution(new TSInstitution(), mitteilungFromServer.institution);
+            }
             tsMitteilung.senderTyp = mitteilungFromServer.senderTyp;
             tsMitteilung.empfaengerTyp = mitteilungFromServer.empfaengerTyp;
             tsMitteilung.sender = this.parseUser(new TSBenutzer(), mitteilungFromServer.sender);
@@ -3361,6 +3364,9 @@ export class EbeguRestUtil {
             restMitteilung.dossier = this.dossierToRestObject({}, tsMitteilung.dossier);
             if (tsMitteilung.betreuung) {
                 restMitteilung.betreuung = this.betreuungToRestObject({}, tsMitteilung.betreuung);
+            }
+            if (tsMitteilung.institution) {
+                restMitteilung.institution = this.institutionToRestObject({}, tsMitteilung.institution);
             }
             restMitteilung.senderTyp = tsMitteilung.senderTyp;
             restMitteilung.empfaengerTyp = tsMitteilung.empfaengerTyp;
@@ -3870,6 +3876,7 @@ export class EbeguRestUtil {
         if (receivedBelegungFerieninsel) {
             this.parseAbstractMutableEntity(belegungFerieninselTS, receivedBelegungFerieninsel);
             belegungFerieninselTS.ferienname = receivedBelegungFerieninsel.ferienname;
+            belegungFerieninselTS.notfallAngaben = receivedBelegungFerieninsel.notfallAngaben;
             belegungFerieninselTS.tage = this.parseBelegungFerieninselTagList(receivedBelegungFerieninsel.tage);
             return belegungFerieninselTS;
         }
@@ -3910,6 +3917,7 @@ export class EbeguRestUtil {
         if (belegungFerieninselTS) {
             this.abstractMutableEntityToRestObject(restBelegungFerieninsel, belegungFerieninselTS);
             restBelegungFerieninsel.ferienname = belegungFerieninselTS.ferienname;
+            restBelegungFerieninsel.notfallAngaben = belegungFerieninselTS.notfallAngaben;
             restBelegungFerieninsel.tage = [];
             if (Array.isArray(belegungFerieninselTS.tage)) {
                 belegungFerieninselTS.tage.forEach(t => {
@@ -4487,6 +4495,25 @@ export class EbeguRestUtil {
             // Bemerkungen
             gemeindeTS.bemerkungen =
                 gemeindeFromServer.bemerkungen;
+            // Berechnungen
+            gemeindeTS.lastenausgleichberechtigteBetreuungsstunden =
+                gemeindeFromServer.lastenausgleichberechtigteBetreuungsstunden;
+            gemeindeTS.davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet =
+                gemeindeFromServer.davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet;
+            gemeindeTS.davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet =
+                gemeindeFromServer.davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet;
+            gemeindeTS.normlohnkostenBetreuungBerechnet =
+                gemeindeFromServer.normlohnkostenBetreuungBerechnet;
+            gemeindeTS.lastenausgleichsberechtigerBetrag =
+                gemeindeFromServer.lastenausgleichsberechtigerBetrag;
+            gemeindeTS.kostenbeitragGemeinde =
+                gemeindeFromServer.kostenbeitragGemeinde;
+            gemeindeTS.kostenueberschussGemeinde =
+                gemeindeFromServer.kostenueberschussGemeinde;
+            gemeindeTS.erwarteterKostenbeitragGemeinde =
+                gemeindeFromServer.erwarteterKostenbeitragGemeinde;
+            gemeindeTS.schlusszahlung =
+                gemeindeFromServer.schlusszahlung;
             return gemeindeTS;
         }
         return undefined;
@@ -4556,6 +4583,25 @@ export class EbeguRestUtil {
             // Bemerkungen
             restAngabenGemeinde.bemerkungen =
                 tsAngabenGemeinde.bemerkungen;
+            // Berechnungen
+            restAngabenGemeinde.lastenausgleichberechtigteBetreuungsstunden =
+                tsAngabenGemeinde.lastenausgleichberechtigteBetreuungsstunden;
+            restAngabenGemeinde.davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet =
+                tsAngabenGemeinde.davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet;
+            restAngabenGemeinde.davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet =
+                tsAngabenGemeinde.davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet;
+            restAngabenGemeinde.normlohnkostenBetreuungBerechnet =
+                tsAngabenGemeinde.normlohnkostenBetreuungBerechnet;
+            restAngabenGemeinde.lastenausgleichsberechtigerBetrag =
+                tsAngabenGemeinde.lastenausgleichsberechtigerBetrag;
+            restAngabenGemeinde.kostenbeitragGemeinde =
+                tsAngabenGemeinde.kostenbeitragGemeinde;
+            restAngabenGemeinde.kostenueberschussGemeinde =
+                tsAngabenGemeinde.kostenueberschussGemeinde;
+            restAngabenGemeinde.erwarteterKostenbeitragGemeinde =
+                tsAngabenGemeinde.erwarteterKostenbeitragGemeinde;
+            restAngabenGemeinde.schlusszahlung =
+                tsAngabenGemeinde.schlusszahlung;
             return restAngabenGemeinde;
         }
         return undefined;
@@ -5008,7 +5054,8 @@ export class EbeguRestUtil {
         stammdatenTS.status = stammdatenFromServer.status;
         stammdatenFromServer.amAngebotBeteiligteGemeinden.sort();
         stammdatenTS.amAngebotBeteiligteGemeinden = stammdatenFromServer.amAngebotBeteiligteGemeinden;
-        stammdatenTS.seitWannFerienbetreuungen = DateUtil.localDateToMoment(stammdatenFromServer.seitWannFerienbetreuungen);
+        stammdatenTS.seitWannFerienbetreuungen =
+            DateUtil.localDateToMoment(stammdatenFromServer.seitWannFerienbetreuungen);
         stammdatenTS.traegerschaft = stammdatenFromServer.traegerschaft;
         stammdatenTS.stammdatenAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.stammdatenAdresse);
         stammdatenTS.stammdatenKontaktpersonVorname = stammdatenFromServer.stammdatenKontaktpersonVorname;
@@ -5230,6 +5277,27 @@ export class EbeguRestUtil {
         return dokument;
     }
 
+    public parseTSBetreuungMonitoringList(data: any): TSBetreuungMonitoring[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseTSBetreuungMonitoring(new TSBetreuungMonitoring(), item))
+            : [this.parseTSBetreuungMonitoring(new TSBetreuungMonitoring(), data)];
+    }
+
+    private parseTSBetreuungMonitoring(
+        betreuungMonitoring: TSBetreuungMonitoring,
+        betreuungMonitoringFromServer: any,
+    ): TSBetreuungMonitoring {
+        this.parseAbstractEntity(betreuungMonitoring, betreuungMonitoringFromServer);
+        betreuungMonitoring.refNummer = betreuungMonitoringFromServer.refNummer;
+        betreuungMonitoring.benutzer = betreuungMonitoringFromServer.benutzer;
+        betreuungMonitoring.infoText = betreuungMonitoringFromServer.infoText;
+        betreuungMonitoring.timestamp = DateUtil.localDateTimeToMoment(betreuungMonitoringFromServer.timestamp);
+        return betreuungMonitoring;
+    }
+
     public parseLatsHistoryList(data: Array<any>): TSLastenausgleichTagesschulenStatusHistory[] {
         if (!data) {
             return [];
@@ -5250,5 +5318,29 @@ export class EbeguRestUtil {
         historyTS.timestampBis = DateUtil.localDateTimeToMoment(historyFromServer.timestampBis);
         historyTS.status = historyFromServer.status;
         return historyTS;
+    }
+
+    public internePendenzToRestObject(internePendenzRest: any, internePendenz: TSInternePendenz): any {
+        if (!internePendenz) {
+            return undefined;
+        }
+        this.abstractEntityToRestObject(internePendenzRest, internePendenz);
+        internePendenzRest.gesuch = this.gesuchToRestObject({}, internePendenz.gesuch);
+        internePendenzRest.termin = DateUtil.momentToLocalDate(internePendenz.termin);
+        internePendenzRest.text = internePendenz.text;
+        internePendenzRest.erledigt = internePendenz.erledigt;
+        return internePendenzRest;
+    }
+
+    public parseInternePendenz(internePendenz: TSInternePendenz, internePendentFromServer: any): TSInternePendenz {
+        if (!internePendentFromServer) {
+            return undefined;
+        }
+        this.parseAbstractEntity(internePendenz, internePendentFromServer);
+        internePendenz.gesuch = this.parseGesuch(new TSGesuch(), internePendentFromServer.gesuch);
+        internePendenz.termin = DateUtil.localDateToMoment(internePendentFromServer.termin);
+        internePendenz.text = internePendentFromServer.text;
+        internePendenz.erledigt = internePendentFromServer.erledigt;
+        return internePendenz;
     }
 }

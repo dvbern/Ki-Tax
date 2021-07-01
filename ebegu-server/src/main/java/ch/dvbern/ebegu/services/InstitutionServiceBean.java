@@ -102,6 +102,9 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@Inject
 	private Authorizer authorizer;
 
+	@Inject
+	private GesuchService gesuchService;
+
 	@Nonnull
 	@Override
 	public Institution updateInstitution(@Nonnull Institution institution) {
@@ -453,6 +456,34 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 		institution.getInstitutionExternalClients().clear();
 		institution.getInstitutionExternalClients().addAll(new HashSet<>(newInstitutionExternalClients));
+	}
+
+	@Override
+	public Collection<Institution> findAllInstitutionen(
+		@Nonnull String dossierId) {
+		List<Institution> institutions = new ArrayList<>();
+		gesuchService.getAllGesuchForDossier(dossierId).forEach(
+			gesuch -> {
+				gesuch.extractAllBetreuungen().forEach(
+					betreuung -> {
+						if (principalBean.getBenutzer().getTraegerschaft() != null &&
+							!principalBean.getBenutzer().getTraegerschaft().equals(betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft())) {
+								return;
+						}
+						if (!institutions.contains(betreuung.getInstitutionStammdaten().getInstitution())) {
+							institutions.add(betreuung.getInstitutionStammdaten().getInstitution());
+						}
+					}
+				);
+				gesuch.extractAllAnmeldungen().forEach(anmeldung -> {
+					if (!institutions.contains(anmeldung.getInstitutionStammdaten().getInstitution())) {
+						institutions.add(anmeldung.getInstitutionStammdaten().getInstitution());
+					}
+				});
+			}
+		);
+
+		return institutions;
 	}
 
 	private void checkForLinkedBerechtigungen(@Nonnull Institution institution) {

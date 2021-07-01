@@ -228,6 +228,9 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         this.form.get('anzahlFerienwochenWinterferien').setValidators(
             numberValidator(ValidationType.INTEGER)
         );
+        this.form.get('anzahlFerienwochenSportferien').setValidators(
+            numberValidator(ValidationType.INTEGER)
+        );
         this.form.get('anzahlFerienwochenFruehlingsferien').setValidators(
             numberValidator(ValidationType.INTEGER)
         );
@@ -253,6 +256,8 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         this.form.get('anzahlFerienwochenHerbstferien')
             .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
         this.form.get('anzahlFerienwochenWinterferien')
+            .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+        this.form.get('anzahlFerienwochenSportferien')
             .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
         this.form.get('anzahlFerienwochenFruehlingsferien')
             .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);

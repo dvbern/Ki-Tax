@@ -33,6 +33,7 @@ import {IMitteilungenStateParams} from '../../../mitteilungen/mitteilungen.route
 import {PosteingangService} from '../../../posteingang/service/posteingang.service';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import {BetreuungRS} from '../../service/betreuungRS.rest';
+import {InstitutionRS} from '../../service/institutionRS.rest';
 import {MitteilungRS} from '../../service/mitteilungRS.rest';
 import IFormController = angular.IFormController;
 import IQService = angular.IQService;
@@ -75,6 +76,7 @@ export class DVMitteilungListController implements IOnInit {
         '$timeout',
         'DossierRS',
         'PosteingangService',
+        'InstitutionRS',
     ];
 
     public dossier: TSDossier;
@@ -87,6 +89,8 @@ export class DVMitteilungListController implements IOnInit {
     public readonly TSRole = TSRole;
     public readonly TSRoleUtil = TSRoleUtil;
     public isLoaded: boolean = true;
+    public empfaenger: any;
+    public empfaengerValues: Array<any>;
 
     public constructor(
         private readonly $stateParams: IMitteilungenStateParams,
@@ -104,6 +108,7 @@ export class DVMitteilungListController implements IOnInit {
         private readonly $timeout: ITimeoutService,
         private readonly dossierRS: DossierRS,
         private readonly posteingangService: PosteingangService,
+        private readonly institutionRS: InstitutionRS,
     ) {
     }
 
@@ -149,8 +154,7 @@ export class DVMitteilungListController implements IOnInit {
 
     private initMitteilungForCurrentBenutzer(): void {
         const isGesuchsteller = this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
-        const hasBesitzerOrSozialdienst = this.dossier.fall.besitzer || this.dossier.fall.sozialdienstFall;
-        const isJugendamtOrSchulamtAndFallHasBesitzer = hasBesitzerOrSozialdienst && this.authServiceRS.isOneOfRoles(
+        const isJugendamtOrSchulamtAndFallHasBesitzer = this.authServiceRS.isOneOfRoles(
             TSRoleUtil.getAdministratorJugendamtSchulamtRoles(),
         );
         const isInstitutionsUser = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
@@ -167,6 +171,36 @@ export class DVMitteilungListController implements IOnInit {
         }
         this.currentMitteilung.mitteilungStatus = TSMitteilungStatus.NEU;
         this.currentMitteilung.sender = currentUser;
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles()
+            .concat(TSRoleUtil.getTraegerschaftOnlyRoles()))) {
+            this.initReceiverList();
+        }
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionOnlyRoles())) {
+            this.currentMitteilung.institution = currentUser.currentBerechtigung.institution;
+        }
+    }
+
+    private initReceiverList(): void {
+        this.empfaengerValues = new Array();
+        if (this.isCurrentUserAmt() && (this.dossier.fall.besitzer || this.dossier.fall.sozialdienstFall)) {
+            this.empfaengerValues.push({
+                key: null,
+                value: this.dossier.fall.sozialdienstFall ?
+                    this.dossier.fall.sozialdienstFall.sozialdienst.name :
+                    this.ebeguUtil.translateString('GESUCHSTELLER'),
+            });
+        }
+        this.institutionRS.findAllInstitutionen(this.dossier.id).then(
+            institutionen => {
+                institutionen.forEach(
+                    institution =>
+                        this.empfaengerValues.push({
+                            key: institution,
+                            value: institution.name,
+                        }),
+                );
+            },
+        );
     }
 
     public getCurrentMitteilung(): TSMitteilung {
@@ -236,6 +270,10 @@ export class DVMitteilungListController implements IOnInit {
 
     public isSenderTypGesuchsteller(mitteilung: TSMitteilung): boolean {
         return mitteilung && mitteilung.sender && mitteilung.senderTyp === TSMitteilungTeilnehmerTyp.GESUCHSTELLER;
+    }
+
+    public isMitteilungEmpfaengerInstitution(mitteilung: TSMitteilung): boolean {
+        return mitteilung.empfaengerTyp === TSMitteilungTeilnehmerTyp.INSTITUTION;
     }
 
     private getMitteilungTeilnehmerTypForUserRole(role: TSRole): TSMitteilungTeilnehmerTyp {
@@ -408,5 +446,15 @@ export class DVMitteilungListController implements IOnInit {
 
     public isMitteilungEmpfaengerSozialdienst(mitteilung: TSMitteilung): boolean {
         return mitteilung.empfaengerTyp === TSMitteilungTeilnehmerTyp.SOZIALDIENST;
+    }
+
+    public changeEmpfaenger(): void {
+        if (this.empfaenger.key) {
+            this.currentMitteilung.institution = this.empfaenger.key;
+        }
+    }
+
+    private isCurrentUserTraegerschaft(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftOnlyRoles());
     }
 }

@@ -42,6 +42,19 @@
             </div>
         </div>
 
+        <div class="kommentar-padding">
+            <div dv-show-element
+                 dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()"
+                 ui-sref="gesuch.internePendenzen({gesuchId:vm.getGesuch().id})">
+                <button type="button"
+                        class="dv-btn kommentar-button" aria-label="{{'INTERNE_PENDENZEN' | translate}}">
+                    <span>{{'INTERNE_PENDENZEN' | translate}}
+                        <span ng-if="vm.numberInternePendenzen >= 0">&nbsp;({{vm.numberInternePendenzen}})</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
         <div dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getSteueramtOnlyRoles()">
             <div class="kommentar-padding">
                 <dv-input-container class="form-group kommentar-feld">

@@ -115,6 +115,7 @@ import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
 import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -1960,6 +1961,16 @@ public final class TestDataUtil {
 		return gesuch;
 	}
 
+	public static Gesuch createMutation(Dossier dossier, Gesuchsperiode periodeToUpdate, AntragStatus status, int laufnummer) {
+		Gesuch gesuch = new Gesuch();
+		gesuch.setDossier(dossier);
+		gesuch.setGesuchsperiode(periodeToUpdate);
+		gesuch.setStatus(status);
+		gesuch.setTyp(AntragTyp.MUTATION);
+		gesuch.setLaufnummer(laufnummer);
+		return gesuch;
+	}
+
 	@SuppressWarnings("MagicNumber")
 	public static Betreuungsmitteilung createBetreuungmitteilung(
 		Dossier dossier, Benutzer empfaenger, MitteilungTeilnehmerTyp empfaengerTyp,
@@ -2036,7 +2047,7 @@ public final class TestDataUtil {
 		persistence.persist(betreuung.getKind());
 
 		betreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN);
-		final Betreuung savedBetreuung = betreuungService.saveBetreuung(betreuung, false);
+		final Betreuung savedBetreuung = betreuungService.saveBetreuung(betreuung, false, null);
 
 		return savedBetreuung;
 
