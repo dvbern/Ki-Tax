@@ -149,7 +149,7 @@
                                     </div>
                                     <div>
                                         <span ng-if="!vm.isSenderTypInstitution(mitteilung)" data-translate="VON_COLON"></span><dv-benutzer-entry [benutzer]="mitteilung.sender"></dv-benutzer-entry>
-                                        <span ng-if="vm.isSenderTypInstitution(mitteilung)">&nbsp;({{'INSTITUTION' | translate}}&nbsp;{{mitteilung.institution.name}})</span>
+                                        <span ng-if="vm.isSenderTypInstitution(mitteilung) && mitteilung.institution.name">&nbsp;({{'INSTITUTION' | translate}}&nbsp;{{mitteilung.institution.name}})</span>
                                     </div>
                                     <div>
                                         <span data-translate="AN_COLON"></span>

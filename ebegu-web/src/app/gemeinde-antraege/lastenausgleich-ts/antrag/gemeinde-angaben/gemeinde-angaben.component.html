@@ -460,7 +460,8 @@
                     </tr>
                     <tr>
                         <td>{{'LATS_CONTROLLING_BETREUUNGSSTUNDEN_SCHULJAHR' | translate}} {{lATSAngabenGemeindeContainer?.gesuchsperiode | previousPeriodeStr}}</td>
-                        <td>{{ previousAntrag?.angabenKorrektur.lastenausgleichberechtigteBetreuungsstunden }}</td>
+                        <td *ngIf="previousAntrag?.angabenKorrektur?.lastenausgleichberechtigteBetreuungsstunden">{{ previousAntrag?.angabenKorrektur?.lastenausgleichberechtigteBetreuungsstunden }}</td>
+                        <td *ngIf="!(previousAntrag?.angabenKorrektur?.lastenausgleichberechtigteBetreuungsstunden)">?</td>
                     </tr>
                     <tr>
                         <td>{{ 'LATS_CONTROLLING_VERAENDERUNG_BETREUUNGSSTUNDEN' | translate }}</td>
