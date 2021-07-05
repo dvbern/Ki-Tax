@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.Eingangsart;
@@ -1180,16 +1181,22 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		AtomicBoolean hasSCHAngebote = new AtomicBoolean(false);
 		AtomicBoolean hasBGAngebote = new AtomicBoolean(false);
 		kindContainers.stream()
-			.filter(kindContainer -> !kindContainer.getBetreuungen().isEmpty())
-			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
-			.collect(Collectors.toList())
-			.forEach(betreuung -> {
-				if (betreuung.isAngebotSchulamt()) {
-					hasSCHAngebote.set(true);
-				} else {
-					hasBGAngebote.set(true);
-				}
-			});
+				.filter(kindContainer -> !(kindContainer.getBetreuungen().isEmpty()
+						&& kindContainer.getAnmeldungenTagesschule().isEmpty()))
+				.flatMap(kindContainer -> {
+					Set<AbstractPlatz> plaetze = new HashSet<>();
+					plaetze.addAll(kindContainer.getBetreuungen());
+					plaetze.addAll(kindContainer.getAnmeldungenTagesschule());
+					return plaetze.stream();
+				})
+				.collect(Collectors.toList())
+				.forEach(platz -> {
+					if (platz.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESSCHULE) {
+						hasSCHAngebote.set(true);
+					} else {
+						hasBGAngebote.set(true);
+					}
+				});
 		if (hasSCHAngebote.get() && hasBGAngebote.get()) {
 			return GesuchTypFromAngebotTyp.MISCH_GESUCH;
 		}
