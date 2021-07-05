@@ -1999,6 +1999,15 @@ public final class TestDataUtil {
 		return mitteilung;
 	}
 
+	public static Mitteilung createMitteilungForInstitution(
+		Dossier dossier, Benutzer empfaenger, MitteilungTeilnehmerTyp empfaengerTyp,
+		Benutzer sender, MitteilungTeilnehmerTyp senderTyp, Institution institution) {
+		Mitteilung mitteilung = new Mitteilung();
+		fillOutMitteilung(dossier, empfaenger, empfaengerTyp, sender, senderTyp, mitteilung);
+		mitteilung.setInstitution(institution);
+		return mitteilung;
+	}
+
 	private static void fillOutMitteilung(
 		Dossier dossier,
 		Benutzer empfaenger,
