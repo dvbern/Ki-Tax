@@ -32,7 +32,7 @@ export class ZahlungviewXComponent implements OnInit {
 
     private zahlungen: TSZahlung[] = [];
     private isMahlzeitenzahlungen: boolean = false;
-    public datasource: MatTableDataSource<TSZahlung[]>;
+    public datasource: MatTableDataSource<TSZahlung> = new MatTableDataSource<TSZahlung>([]);
 
     public itemsByPage: number = 20;
     public tableColumns: any[];
@@ -74,7 +74,8 @@ export class ZahlungviewXComponent implements OnInit {
             .subscribe(
                 zahlungen => {
                     this.zahlungen = zahlungen;
-                    this.datasource = new MatTableDataSource<TSZahlung[]>(zahlungen);
+                    this.datasource.data = zahlungen;
+                    this.datasource.sort = this.sort;
                     this.cd.markForCheck();
                 },
                 err => LOG.error(err),
@@ -106,7 +107,7 @@ export class ZahlungviewXComponent implements OnInit {
                 return;
             }
             this.zahlungen[index] = response;
-            this.datasource = new MatTableDataSource<TSZahlung[]>(this.zahlungen as any);
+            this.datasource.data = this.zahlungen;
             this.cd.markForCheck();
         }, error => this.errorService.addMesageAsError(error?.translatedMessage || this.translate.instant('ERROR_UNEXPECTED')));
     }
