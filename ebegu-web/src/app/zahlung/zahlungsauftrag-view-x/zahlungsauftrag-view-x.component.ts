@@ -130,7 +130,11 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
         this.authServiceRS.principal$.subscribe(user => this.principal = user, error => LOG.error(error));
         this.translate.onDefaultLangChange.subscribe(() => this.setupTableColumns(), (error: any) => LOG.error(error));
         this.transition.onStart({exiting: 'zahlungsauftrag.view'}, () => {
-            this.stateStore.store(this.SORT_STORE_KEY, this.sort);
+            if (this.sort.active) {
+                this.stateStore.store(this.SORT_STORE_KEY, this.sort);
+            } else {
+                this.stateStore.delete(this.SORT_STORE_KEY);
+            }
         });
     }
 
@@ -140,7 +144,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
             const stored = this.stateStore.get(this.SORT_STORE_KEY) as MatSort;
             this.sort.active = stored.active;
             this.sort.direction = stored.direction;
-            (this.sort.sortables.get(stored.active) as MatSortHeader)._setAnimationTransitionState({toState: 'active'});
+            (this.sort.sortables.get(stored.active) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
         }
         this.datasource.sort = this.sort;
         this.datasource.sortingDataAccessor = ZahlungsauftragViewXComponent.sortingDataAccessor;
