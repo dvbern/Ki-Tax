@@ -217,11 +217,12 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 
 		Iterator<AnmeldungTagesschule> anmeldungTagesschuleIterator =
 			kindContainer.getAnmeldungenTagesschule()
-				.stream()
-				.filter(anmeldungTagesschule -> anmeldungTagesschule.getInstitutionStammdaten()
-					.getId()
-					.equals(stammdatenID))
-				.iterator();
+					.stream()
+					.filter(anmeldungTagesschule -> anmeldungTagesschule.getInstitutionStammdaten()
+							.getId()
+							.equals(stammdatenID) &&
+							anmeldungTagesschule.getBetreuungsstatus() != Betreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT)
+					.iterator();
 		AnmeldungTagesschule anmeldungTagesschule = anmeldungTagesschuleIterator.next();
 
 		// es darf hier nur einge Anmeldung geben. Ist bereits nach Gesuchsperiode gefiltert.
