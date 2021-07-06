@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
@@ -108,6 +109,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	private Benutzer empfaengerINST;
 	private Benutzer sender;
 	private Gesuchsperiode gesuchsperiode;
+	private Institution institution;
 
 	@Before
 	public void init() {
@@ -127,7 +129,9 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		dossier.setGemeinde(TestDataUtil.getGemeindeParis(persistence));
 		fall = persistence.persist(fall);
 
-		traegerschaft = persistence.persist(TestDataUtil.createDefaultTraegerschaft());
+		institution = TestDataUtil.createAndPersistDefaultInstitution(persistence);
+		traegerschaft = institution.getTraegerschaft();
+
 		empfaengerINST = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, "insti", traegerschaft, null, mandant, persistence, null, null);
 		persistence.persist(empfaengerINST);
 
@@ -202,26 +206,26 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 
-//	@Test
-//	public void testGetMitteilungenForCurrentRole() throws LoginException {
-//		prepareDependentObjects("gesuchst");
-//		loginAsGesuchsteller("gesuchst");
-//		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
-//			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
-//		mitteilungService.sendMitteilung(mitteilung1);
-//
-//		loginAsSachbearbeiterTraegerschaft("satraeg", traegerschaft);
-//		Mitteilung mitteilung2 = TestDataUtil.createMitteilung(dossier, empfaengerINST, MitteilungTeilnehmerTyp.JUGENDAMT,
-//			sender, MitteilungTeilnehmerTyp.INSTITUTION);
-//		mitteilungService.sendMitteilung(mitteilung2);
-//
-//		//AS Traegerschaft
-//		final Collection<Mitteilung> mitteilungenForCurrentRolle = mitteilungService.getMitteilungenForCurrentRolle(mitteilung1.getDossier());
-//
-//		Assert.assertNotNull(mitteilungenForCurrentRolle);
-//		Assert.assertEquals(1, mitteilungenForCurrentRolle.size());
-//		Assert.assertEquals(MitteilungTeilnehmerTyp.JUGENDAMT, mitteilungenForCurrentRolle.iterator().next().getEmpfaengerTyp());
-//	}
+	@Test
+	public void testGetMitteilungenForCurrentRole() throws LoginException {
+		prepareDependentObjects("gesuchst");
+		loginAsGesuchsteller("gesuchst");
+		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
+		mitteilungService.sendMitteilung(mitteilung1);
+
+		loginAsSachbearbeiterTraegerschaft("satraeg", traegerschaft);
+		Mitteilung mitteilung2 = TestDataUtil.createMitteilungForInstitution(dossier, empfaengerINST, MitteilungTeilnehmerTyp.JUGENDAMT,
+			sender, MitteilungTeilnehmerTyp.INSTITUTION, institution);
+		mitteilungService.sendMitteilung(mitteilung2);
+
+		//AS Traegerschaft
+		final Collection<Mitteilung> mitteilungenForCurrentRolle = mitteilungService.getMitteilungenForCurrentRolle(mitteilung1.getDossier());
+
+		Assert.assertNotNull(mitteilungenForCurrentRolle);
+		Assert.assertEquals(1, mitteilungenForCurrentRolle.size());
+		Assert.assertEquals(MitteilungTeilnehmerTyp.JUGENDAMT, mitteilungenForCurrentRolle.iterator().next().getEmpfaengerTyp());
+	}
 
 	@Test
 	public void testGetNewMitteilungenForCurrentRolle() throws LoginException {
