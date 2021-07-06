@@ -691,7 +691,6 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			gesuch.setFinSitStatus(FinSitStatus.AKZEPTIERT);
 
 			gesuch.getKindContainers().stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
-				.filter(betreuung -> !betreuung.isAngebotSchulamt())
 				.forEach(betreuung -> verfuegungService.verfuegen(
 					gesuch.getId(),
 					betreuung.getId(),

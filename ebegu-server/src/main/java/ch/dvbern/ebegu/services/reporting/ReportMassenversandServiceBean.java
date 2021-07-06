@@ -33,6 +33,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -277,6 +278,10 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 
 					kindContainer.getBetreuungen().stream()
 						.map(Betreuung::getInstitutionStammdaten)
+						.forEach(instStammdaten -> setInstitutionName(kindCol, instStammdaten));
+
+					kindContainer.getAnmeldungenTagesschule().stream()
+						.map(AnmeldungTagesschule::getInstitutionStammdaten)
 						.forEach(instStammdaten -> setInstitutionName(kindCol, instStammdaten));
 
 					return kindCol;
