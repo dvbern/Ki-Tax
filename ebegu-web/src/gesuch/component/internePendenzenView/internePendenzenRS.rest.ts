@@ -21,12 +21,16 @@ export class InternePendenzenRS {
     private internePendenzCountUpdates: any;
 
     public constructor(
-        private readonly http: HttpClient
+        private readonly $http: HttpClient
     ) {
     }
 
+    public getServiceName(): string {
+        return 'InternePendenzenRS';
+    }
+
     public createInternePendenz(internePendenz: TSInternePendenz): Observable<TSInternePendenz> {
-        return this.http.post(
+        return this.$http.post(
             this.serviceURL,
             this.ebeguRestUtil.internePendenzToRestObject({}, internePendenz)
         ).pipe(tap(() => {
@@ -37,7 +41,7 @@ export class InternePendenzenRS {
     }
 
     public updateInternePendenz(internePendenz: TSInternePendenz): Observable<TSInternePendenz> {
-        return this.http.put(
+        return this.$http.put(
             this.serviceURL,
             this.ebeguRestUtil.internePendenzToRestObject({}, internePendenz)
         ).pipe(tap(() => {
@@ -48,7 +52,7 @@ export class InternePendenzenRS {
     }
 
     public deleteInternePendenz(internePendenz: TSInternePendenz): Observable<void> {
-        return this.http.delete<void>(
+        return this.$http.delete<void>(
             `${this.serviceURL}/${internePendenz.id}`,
         ).pipe(tap(() => {
             this.setPendenzCountUpdated$(internePendenz.gesuch);
@@ -56,7 +60,7 @@ export class InternePendenzenRS {
     }
 
     public findInternePendenzenForGesuch(gesuch: TSGesuch): Observable<TSInternePendenz[]> {
-        return this.http.get<any[]>(
+        return this.$http.get<any[]>(
             `${this.serviceURL}/all/${gesuch.id}`
         ).pipe(map(pendenzenFromServer => {
             return pendenzenFromServer.map(pendenzFromServer => {
@@ -66,7 +70,7 @@ export class InternePendenzenRS {
     }
 
     public countInternePendenzenForGesuch(gesuch: TSGesuch): Observable<number> {
-        return this.http.get<number>(
+        return this.$http.get<number>(
             `${this.serviceURL}/count/${gesuch.id}`
         );
     }

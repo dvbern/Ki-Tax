@@ -15,7 +15,6 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController, IFormController, ILogService, IPromise, IQService} from 'angular';
-import {Subscription} from 'rxjs';
 import {MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
@@ -39,7 +38,6 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {GesuchRS} from '../../service/gesuchRS.rest';
 import {GlobalCacheService} from '../../service/globalCacheService';
 import {WizardStepManager} from '../../service/wizardStepManager';
-import {InternePendenzenRS} from '../internePendenzenView/internePendenzenRS';
 import ISidenavService = angular.material.ISidenavService;
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -73,15 +71,12 @@ export class KommentarViewController implements IController {
         '$mdSidenav',
         '$q',
         'applicationPropertyRS',
-        'InternePendenzenRS'
     ];
 
     public form: IFormController;
     public dokumentePapiergesuch: TSDokumentGrund;
     public readonly TSRoleUtil = TSRoleUtil;
     public isPersonensucheDisabled: boolean = true;
-    public numberInternePendenzen: number;
-    private subscription: Subscription;
 
     public constructor(
         private readonly $log: ILogService,
@@ -98,7 +93,6 @@ export class KommentarViewController implements IController {
         private readonly $mdSidenav: ISidenavService,
         private readonly $q: IQService,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
-        private readonly internePendenzenRS: InternePendenzenRS
     ) {
 
         if (!this.isGesuchUnsaved()) {
@@ -107,11 +101,6 @@ export class KommentarViewController implements IController {
         this.applicationPropertyRS.isPersonensucheDisabled().then((response: any) => {
             this.isPersonensucheDisabled = response;
         });
-        this.getNumberInternePendenzen();
-    }
-
-    public $onDestroy(): void {
-        this.subscription.unsubscribe();
     }
 
     private getPapiergesuchFromServer(): IPromise<TSDokumenteDTO> {
@@ -135,16 +124,11 @@ export class KommentarViewController implements IController {
             });
     }
 
-    private getNumberInternePendenzen(): void {
+    public getNumberInternePendenzen(): number {
         if (!this.getGesuch()) {
-            return;
+            return 0;
         }
-        this.subscription = this.internePendenzenRS.getPendenzCountUpdated$(this.getGesuch())
-            .subscribe(() => {
-                this.internePendenzenRS.countInternePendenzenForGesuch(this.getGesuch())
-                    .subscribe(numberInternePendenzen => this.numberInternePendenzen = numberInternePendenzen,
-                        error => this.$log.error(error));
-            }, error => this.$log.error(error));
+        return this.gesuchModelManager.numberInternePendenzen;
     }
 
     public getGesuch(): TSGesuch {
@@ -277,7 +261,7 @@ export class KommentarViewController implements IController {
     }
 
     public isInBearbeitungSTV(): boolean {
-        return  this.getGesuch() ? (this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_STV) : false;
+        return this.getGesuch() ? (this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_STV) : false;
     }
 
     public freigebenSTV(): void {

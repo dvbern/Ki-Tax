@@ -24,7 +24,7 @@ import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponen
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 
 import {InternePendenzenComponent} from './interne-pendenzen.component';
-import {InternePendenzenRS} from './internePendenzenRS';
+import {InternePendenzenRS} from './internePendenzenRS.rest';
 
 const internePendenzenRSSpy = jasmine.createSpyObj<InternePendenzenRS>(InternePendenzenRS.name,
     ['findInternePendenzenForGesuch']);
