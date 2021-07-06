@@ -53,8 +53,10 @@ public final class VerfuegungUtil {
 				Optional<VerfuegungZeitabschnitt> oldSameZeitabschnitt = findZeitabschnittSameGueltigkeit(letztVerfuegteZeitabschnitte, newZeitabschnitt);
 				if (oldSameZeitabschnitt.isPresent()) {
 					newZeitabschnitt.setSameVerfuegteVerfuegungsrelevanteDatenForAsivAndGemeinde(newZeitabschnitt.isSameBerechnung(oldSameZeitabschnitt.get()));
+					newZeitabschnitt.setSameVerfuegteMahlzeitenVerguenstigungForAsivAndGemeinde(newZeitabschnitt.isSameMZV(oldSameZeitabschnitt.get()));
 				} else { // no Zeitabschnitt with the same Gueltigkeit has been found, so it must be different
 					newZeitabschnitt.setSameVerfuegteVerfuegungsrelevanteDatenForAsivAndGemeinde(false);
+					newZeitabschnitt.setSameVerfuegteMahlzeitenVerguenstigungForAsivAndGemeinde(false);
 				}
 			}
 		}

@@ -53,6 +53,9 @@ public class BGCalculationInput {
 	// Wird nur benoetigt, um clientseitig die frage nach ignorieren zu stellen, muss fuer Mahlzeiten separat berechnet werden!
 	private boolean sameAusbezahlteVerguenstigung;
 	private boolean sameAusbezahlteMahlzeiten;
+	// Dieser Wert wird gebraucht, um zu wissen ob die Korrektur relevant für den Verfügungsprozessist, da die Mutation nicht
+	// ohne Verfügung geschlossen werden darf, wenn sich die MZV ändern. Ansonsten würden diese bei den Zahlungen ignoriert
+	private boolean sameVerfuegteMahlzeitenVerguenstigung;
 
 	@Nullable
 	private Integer erwerbspensumGS1 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
@@ -916,5 +919,13 @@ public class BGCalculationInput {
 
 	public void setPensenBereitsGekuerzt(boolean pensenBereitsGekuerzt) {
 		this.pensenBereitsGekuerzt = pensenBereitsGekuerzt;
+	}
+
+	public boolean isSameVerfuegteMahlzeitenVerguenstigung() {
+		return sameVerfuegteMahlzeitenVerguenstigung;
+	}
+
+	public void setSameVerfuegteMahlzeitenVerguenstigung(boolean sameVerfuegteMahlzeitenVerguenstigung) {
+		this.sameVerfuegteMahlzeitenVerguenstigung = sameVerfuegteMahlzeitenVerguenstigung;
 	}
 }

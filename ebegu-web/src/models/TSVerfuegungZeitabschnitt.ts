@@ -41,6 +41,7 @@ export class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
     public minimalesEwpUnterschritten: boolean;
     public sameAusbezahlteVerguenstigung: boolean; // Fuer Frage nach Ignorieren
     public sameAusbezahlteMahlzeiten: boolean; // Fuer Frage nach Ignorieren bei Mahlzeiten
+    public sameVerfuegteMahlzeitenVerguenstigung: boolean; // Fuer Check ob geschlossen ohne Verfuegung moeglich ist
     public sameVerfuegteVerfuegungsrelevanteDaten: boolean; // Fuer Anzeige "Identische Berechnung"
     public verfuegteAnzahlZeiteinheiten: number;
     public verguenstigung: number;

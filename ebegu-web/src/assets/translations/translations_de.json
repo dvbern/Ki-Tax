@@ -1051,6 +1051,7 @@
     "GSDASHBOARD_ANTRAEGE": "Aktuelle Anträge",
     "GSDASHBOARD_KEINE_PERIODEN": "Betreuungsgutscheine werden in {{gemeinde}} erst ab dem Schuljahr {{periodenjahre}} ausgestellt. Da diese Periode noch nicht aktiviert wurde, können aktuell noch keine Betreuungsgutscheine beantragt werden.",
     "IDENTISCHE_BERECHNUNG": "Identische Berechnung",
+    "NUR_MAHLZEITEN_GEANDERT": "In dieser Mutation haben sich nur die Mahlzeitenvergünstigungen geändert",
     "VERFUEGEN_VERZICHTEN": "Auf Verfügen verzichten",
     "TROTZDEM_VERFUEGEN": "Trotzdem Verfügen",
     "AENDERUNG_PER": "Änderung per",
