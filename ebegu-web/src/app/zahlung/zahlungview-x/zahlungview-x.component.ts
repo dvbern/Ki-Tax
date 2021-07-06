@@ -1,9 +1,9 @@
 import {CurrencyPipe} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
-import {MatSort} from '@angular/material/sort';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {MatSort, MatSortHeader} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
-import {StateService, UIRouterGlobals} from '@uirouter/core';
+import {StateService, TransitionService, UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -16,6 +16,7 @@ import {ErrorService} from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {ReportRS} from '../../core/service/reportRS.rest';
+import {StateStoreService} from '../../shared/services/state-store.service';
 import {ZahlungRS} from '../services/zahlungRS.rest';
 
 const LOG = LogFactory.createLog('ZahlungviewXComponent');
@@ -26,7 +27,7 @@ const LOG = LogFactory.createLog('ZahlungviewXComponent');
     styleUrls: ['./zahlungview-x.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ZahlungviewXComponent implements OnInit {
+export class ZahlungviewXComponent implements OnInit, AfterViewInit {
 
     @ViewChild(MatSort) public sort: MatSort;
 
@@ -36,6 +37,7 @@ export class ZahlungviewXComponent implements OnInit {
 
     public itemsByPage: number = 20;
     public tableColumns: any[];
+    private readonly SORT_STORE_KEY = 'zahlungview-x-sort' ;
 
     public constructor(
         private readonly $state: StateService,
@@ -48,6 +50,8 @@ export class ZahlungviewXComponent implements OnInit {
         private readonly currency: CurrencyPipe,
         private readonly cd: ChangeDetectorRef,
         private readonly errorService: ErrorService,
+        private readonly transition: TransitionService,
+        private readonly stateStore: StateStoreService
     ) {
     }
 
@@ -81,6 +85,24 @@ export class ZahlungviewXComponent implements OnInit {
                 err => LOG.error(err),
             );
         this.setupTableColumns();
+
+        this.transition.onStart({exiting: 'zahlung.view'}, () => {
+            if (this.sort.active) {
+                this.stateStore.store(this.SORT_STORE_KEY, this.sort);
+            } else {
+                this.stateStore.delete(this.SORT_STORE_KEY);
+            }
+        });
+    }
+
+    public ngAfterViewInit(): void {
+        // tslint:disable-next-line:early-exit
+        if (this.stateStore.has(this.SORT_STORE_KEY)) {
+            const stored = this.stateStore.get(this.SORT_STORE_KEY) as MatSort;
+            this.sort.active = stored.active;
+            this.sort.direction = stored.direction;
+            (this.sort.sortables.get(stored.active) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
+        }
     }
 
     public gotToUebersicht(): void {
