@@ -1185,13 +1185,12 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 						&& kindContainer.getAnmeldungenTagesschule().isEmpty()))
 				.flatMap(kindContainer -> {
 					Set<AbstractPlatz> plaetze = new HashSet<>();
-					plaetze.addAll(kindContainer.getBetreuungen());
-					plaetze.addAll(kindContainer.getAnmeldungenTagesschule());
+					plaetze.addAll(kindContainer.getAllPlaetze());
 					return plaetze.stream();
 				})
 				.collect(Collectors.toList())
 				.forEach(platz -> {
-					if (platz.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESSCHULE) {
+					if (platz.isAngebotSchulamt()) {
 						hasSCHAngebote.set(true);
 					} else {
 						hasBGAngebote.set(true);
