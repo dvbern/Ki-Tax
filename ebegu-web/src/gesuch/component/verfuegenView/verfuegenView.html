@@ -532,8 +532,8 @@
                     <div class="row margin-top-20" ng-show="vm.sameVerfuegteVerfuegungsrelevanteDaten">
                         <div class="col-md-12">
                             <div class="well well-status-warten">
-                                <span ng-show="!vm.mahlzeitenChanged" data-translate="IDENTISCHE_BERECHNUNG"></span>
-                                <span ng-show="vm.mahlzeitenChanged" data-translate="NUR_MAHLZEITEN_GEANDERT"></span>
+                                <span ng-show="!vm.mahlzeitenChanged || !vm.showMahlzeitenverguenstigung()" data-translate="IDENTISCHE_BERECHNUNG"></span>
+                                <span ng-show="vm.mahlzeitenChanged && vm.showMahlzeitenverguenstigung()" data-translate="NUR_MAHLZEITEN_GEANDERT"></span>
                             </div>
                         </div>
                     </div>
