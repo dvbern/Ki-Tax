@@ -37,21 +37,21 @@ export class ZahlungviewXComponent implements OnInit, AfterViewInit {
 
     public itemsByPage: number = 20;
     public tableColumns: any[];
-    private readonly SORT_STORE_KEY = 'zahlungview-x-sort' ;
+    private readonly SORT_STORE_KEY = 'zahlungview-x-sort';
 
     public constructor(
-        private readonly $state: StateService,
-        private readonly downloadRS: DownloadRS,
-        private readonly reportRS: ReportRS,
-        private readonly zahlungRS: ZahlungRS,
-        private readonly authServiceRS: AuthServiceRS,
-        private readonly routerGlobals: UIRouterGlobals,
-        private readonly translate: TranslateService,
-        private readonly currency: CurrencyPipe,
-        private readonly cd: ChangeDetectorRef,
-        private readonly errorService: ErrorService,
-        private readonly transition: TransitionService,
-        private readonly stateStore: StateStoreService
+            private readonly $state: StateService,
+            private readonly downloadRS: DownloadRS,
+            private readonly reportRS: ReportRS,
+            private readonly zahlungRS: ZahlungRS,
+            private readonly authServiceRS: AuthServiceRS,
+            private readonly routerGlobals: UIRouterGlobals,
+            private readonly translate: TranslateService,
+            private readonly currency: CurrencyPipe,
+            private readonly cd: ChangeDetectorRef,
+            private readonly errorService: ErrorService,
+            private readonly transition: TransitionService,
+            private readonly stateStore: StateStoreService,
     ) {
     }
 
@@ -61,29 +61,29 @@ export class ZahlungviewXComponent implements OnInit, AfterViewInit {
         }
 
         this.authServiceRS.principal$
-            .pipe(
-                switchMap(principal => {
-                    if (principal) {
-                        const zahlungsauftragId = this.routerGlobals.params.zahlungsauftragId;
-                        if (this.routerGlobals.params.zahlungsauftragId) {
-                            return this.zahlungRS.getZahlungsauftragForRole$(
-                                principal.getCurrentRole(), zahlungsauftragId);
-                        }
-                    }
+                .pipe(
+                        switchMap(principal => {
+                            if (principal) {
+                                const zahlungsauftragId = this.routerGlobals.params.zahlungsauftragId;
+                                if (this.routerGlobals.params.zahlungsauftragId) {
+                                    return this.zahlungRS.getZahlungsauftragForRole$(
+                                            principal.getCurrentRole(), zahlungsauftragId);
+                                }
+                            }
 
-                    return of(null);
-                }),
-                map(zahlungsauftrag => zahlungsauftrag ? zahlungsauftrag.zahlungen : []),
-            )
-            .subscribe(
-                zahlungen => {
-                    this.zahlungen = zahlungen;
-                    this.datasource.data = zahlungen;
-                    this.datasource.sort = this.sort;
-                    this.cd.markForCheck();
-                },
-                err => LOG.error(err),
-            );
+                            return of(null);
+                        }),
+                        map(zahlungsauftrag => zahlungsauftrag ? zahlungsauftrag.zahlungen : []),
+                )
+                .subscribe(
+                        zahlungen => {
+                            this.zahlungen = zahlungen;
+                            this.datasource.data = zahlungen;
+                            this.datasource.sort = this.sort;
+                            this.cd.markForCheck();
+                        },
+                        err => LOG.error(err),
+                );
         this.setupTableColumns();
 
         this.transition.onStart({exiting: 'zahlung.view'}, () => {
@@ -114,24 +114,26 @@ export class ZahlungviewXComponent implements OnInit, AfterViewInit {
     public downloadDetails(zahlung: TSZahlung): void {
         const win = this.downloadRS.prepareDownloadWindow();
         this.reportRS.getZahlungReportExcel(zahlung.id)
-            .then((downloadFile: TSDownloadFile) => {
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
-            })
-            .catch(() => {
-                win.close();
-            });
+                .then((downloadFile: TSDownloadFile) => {
+                    this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+                })
+                .catch(() => {
+                    win.close();
+                });
     }
 
     public bestaetigen(zahlung: TSZahlung): void {
         this.zahlungRS.zahlungBestaetigen(zahlung.id).subscribe((response: TSZahlung) => {
-            const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungen);
-            if (index < 0) {
-                return;
-            }
-            this.zahlungen[index] = response;
-            this.datasource.data = this.zahlungen;
-            this.cd.markForCheck();
-        }, error => this.errorService.addMesageAsError(error?.translatedMessage || this.translate.instant('ERROR_UNEXPECTED')));
+                    const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungen);
+                    if (index < 0) {
+                        return;
+                    }
+                    this.zahlungen[index] = response;
+                    this.datasource.data = this.zahlungen;
+                    this.cd.markForCheck();
+                },
+                error => this.errorService.addMesageAsError(error?.translatedMessage || this.translate.instant(
+                        'ERROR_UNEXPECTED')));
     }
 
     // noinspection JSMethodCanBeStatic
