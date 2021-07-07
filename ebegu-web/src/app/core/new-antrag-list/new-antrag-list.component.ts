@@ -343,6 +343,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             this.matSort.active = stored.predicate;
             this.matSort.direction = stored.reverse ? 'asc' : 'desc';
             (this.matSort.sortables.get(stored.predicate) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
+            this.sortChange.emit(this.sort);
         }
     }
 
@@ -375,6 +376,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         this.filterPredicate = (fromStore && this.filterId && this.stateStore.has(this.filterId)) ?
                 this.stateStore.get(this.filterId) :
                 {...this.initialFilter};
+        this.filterChange.emit(this.filterPredicate);
     }
 
     public ngOnDestroy(): void {
