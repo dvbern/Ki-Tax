@@ -330,11 +330,6 @@ public class Betreuung extends AbstractPlatz {
 		return BetreuungsangebotTyp.TAGESFAMILIEN == getBetreuungsangebotTyp();
 	}
 
-	@Transient
-	public boolean isAngebotSchulamt() {
-		return BetreuungsangebotTyp.TAGESSCHULE == getBetreuungsangebotTyp() || BetreuungsangebotTyp.FERIENINSEL == getBetreuungsangebotTyp();
-	}
-
 	/**
 	 * Since it is used in email templates we need to pass the language as a String parameter
 	 */
