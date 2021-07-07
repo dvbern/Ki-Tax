@@ -235,7 +235,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
 
     public displayedColumns: string[];
 
-    private filterPredicate: DVAntragListFilter;
+    public filterPredicate: DVAntragListFilter;
 
     private readonly unsubscribe$ = new Subject<void>();
     /**
@@ -283,7 +283,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         this.updateGesuchsperiodenList();
         this.updateGemeindenList();
         this.initStateStores();
-        this.initFilter();
+        this.initFilter(true);
         this.initDisplayedColumns();
         this.initBenutzerLists();
     }
@@ -371,8 +371,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             );
     }
 
-    private initFilter(): void {
-        this.filterPredicate = (this.stateStoreId && this.stateStore.has(this.stateStoreId)) ?
+    private initFilter(fromStore: boolean = false): void {
+        this.filterPredicate = (fromStore && this.filterId && this.stateStore.has(this.filterId)) ?
                 this.stateStore.get(this.filterId) :
                 {...this.initialFilter};
     }
@@ -618,25 +618,26 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         return list.find(user => user.getFullName() === name);
     }
 
+    // must be called after filterPredicate is initialized
     private initBenutzerLists(): void {
         if (this.isPendenzGemeindeRolle()) {
             this.benutzerRS.getAllBenutzerBgTsOrGemeinde().then(response => {
                 this.userListBgTsOrGemeinde = response;
                 this.initialGemeindeUser =
-                    this.findUserByNameInList(this.initialFilter?.verantwortlicherGemeinde, response);
+                    this.findUserByNameInList(this.filterPredicate?.verantwortlicherGemeinde, response);
                 this.changeDetectorRef.markForCheck();
             });
         } else {
             this.benutzerRS.getAllBenutzerBgOrGemeinde().then(response => {
                 this.userListBgOrGemeinde = response;
                 this.initialBgGemeindeUser =
-                    this.findUserByNameInList(this.initialFilter?.verantwortlicherBG, response);
+                    this.findUserByNameInList(this.filterPredicate?.verantwortlicherBG, response);
                 this.changeDetectorRef.markForCheck();
             });
             this.benutzerRS.getAllBenutzerTsOrGemeinde().then(response => {
                 this.userListTsOrGemeinde = response;
                 this.initialTsGemeindeUser =
-                    this.findUserByNameInList(this.initialFilter?.verantwortlicherTS, response);
+                    this.findUserByNameInList(this.filterPredicate?.verantwortlicherTS, response);
                 this.changeDetectorRef.markForCheck();
             });
         }
@@ -656,11 +657,12 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         this.transitionService.onStart({exiting: this.uiRouterGlobals.$current.name}, () => {
             if (this.sort.predicate) {
                 this.stateStore.store(this.sortId, this.sort);
-                this.stateStore.store(this.filterId, this.filterPredicate);
             } else {
                 this.stateStore.delete(this.sortId);
                 this.stateStore.delete(this.filterId);
             }
+
+            this.stateStore.store(this.filterId, this.filterPredicate);
         });
 
     }
