@@ -59,6 +59,11 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 	private FerienbetreuungAngabenKostenEinnahmen ferienbetreuungAngabenKostenEinnahmen = new FerienbetreuungAngabenKostenEinnahmen();
 
 	@Nullable
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_berechnungen_ferienbetreuung"), nullable = false)
+	private FerienbetreuungBerechnungen ferienbetreuungBerechnungen = new FerienbetreuungBerechnungen();
+
+	@Nullable
 	@Column()
 	private BigDecimal kantonsbeitrag;
 
@@ -141,4 +146,12 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 			&& ferienbetreuungAngabenKostenEinnahmen.isReadyForFreigeben();
 	}
 
+	@Nullable
+	public FerienbetreuungBerechnungen getFerienbetreuungBerechnungen() {
+		return ferienbetreuungBerechnungen;
+	}
+
+	public void setFerienbetreuungBerechnungen(@Nullable FerienbetreuungBerechnungen ferienbetreuungBerechnungen) {
+		this.ferienbetreuungBerechnungen = ferienbetreuungBerechnungen;
+	}
 }

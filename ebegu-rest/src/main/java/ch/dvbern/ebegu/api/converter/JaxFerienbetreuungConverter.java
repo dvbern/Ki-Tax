@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenContaine
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenKostenEinnahmen;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenStammdaten;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungBerechnungen;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungDokument;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
@@ -43,6 +44,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungBerechnungen;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
@@ -339,12 +341,39 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		);
 		jaxFerienbetreuungAngaben.setKostenEinnahmen(kostenEinnahmen);
 
+		// berechnungen
+		if (ferienbetreuungAngaben.getFerienbetreuungBerechnungen() != null) {
+			JaxFerienbetreuungBerechnungen berechnungen = ferienbetreuungBerechnungenToJax(
+					ferienbetreuungAngaben.getFerienbetreuungBerechnungen()
+			);
+			jaxFerienbetreuungAngaben.setBerechnungen(berechnungen);
+		}
+
 		// resultate
 		jaxFerienbetreuungAngaben.setGemeindebeitrag(ferienbetreuungAngaben.getGemeindebeitrag());
 		jaxFerienbetreuungAngaben.setKantonsbeitrag(ferienbetreuungAngaben.getKantonsbeitrag());
 
 		return jaxFerienbetreuungAngaben;
 
+	}
+
+	private JaxFerienbetreuungBerechnungen ferienbetreuungBerechnungenToJax(FerienbetreuungBerechnungen ferienbetreuungBerechnungen) {
+		flush();
+
+		JaxFerienbetreuungBerechnungen jaxBerechnungen = new JaxFerienbetreuungBerechnungen();
+
+		convertAbstractFieldsToJAX(ferienbetreuungBerechnungen, jaxBerechnungen);
+
+		jaxBerechnungen.setTotalKosten(jaxBerechnungen.getTotalKosten());
+		jaxBerechnungen.setBetreuungstageKinderDieserGemeindeMinusSonderschueler(jaxBerechnungen.getBetreuungstageKinderDieserGemeindeMinusSonderschueler());
+		jaxBerechnungen.setBetreuungstageKinderAndererGemeindeMinusSonderschueler(jaxBerechnungen.getBetreuungstageKinderAndererGemeindeMinusSonderschueler());
+		jaxBerechnungen.setTotalKantonsbeitrag(jaxBerechnungen.getTotalKantonsbeitrag());
+		jaxBerechnungen.setTotalEinnahmen(jaxBerechnungen.getTotalEinnahmen());
+		jaxBerechnungen.setBeitragKinderAnbietendenGemeinde(jaxBerechnungen.getBeitragKinderAnbietendenGemeinde());
+		jaxBerechnungen.setBeteiligungAnbietendenGemeinde(jaxBerechnungen.getBeteiligungAnbietendenGemeinde());
+		jaxBerechnungen.setBeteiligungZuTief(jaxBerechnungen.getBeteiligungZuTief());
+
+		return jaxBerechnungen;
 	}
 
 	@Nonnull
