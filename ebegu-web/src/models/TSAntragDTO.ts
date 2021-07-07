@@ -22,6 +22,13 @@ import {TSGesuchBetreuungenStatus} from './enums/TSGesuchBetreuungenStatus';
 import {TSAbstractAntragDTO} from './TSAbstractAntragDTO';
 
 export class TSAntragDTO extends TSAbstractAntragDTO {
+    public get internePendenz(): boolean {
+        return this._internePendenz;
+    }
+
+    public set internePendenz(value: boolean) {
+        this._internePendenz = value;
+    }
     private static readonly YEAR_2000 = 2000;
 
     private _antragId: string;
@@ -46,6 +53,7 @@ export class TSAntragDTO extends TSAbstractAntragDTO {
     private _beschwerdeHaengig: boolean;
     private _laufnummer: number;
     private _gesuchBetreuungenStatus: TSGesuchBetreuungenStatus;
+    private _internePendenz: boolean;
     private _dokumenteHochgeladen: boolean;
     private _gemeinde: string;
     private _fallId: string;

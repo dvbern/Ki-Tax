@@ -99,6 +99,16 @@
                     <span [title]="element.status | translate">{{element.status | translate}}</span></mat-cell>
             </ng-container>
 
+            <ng-container matColumnDef="internePendenz">
+                <mat-header-cell mat-sort-header="internePendenz" *matHeaderCellDef><span translate>INTERNE_PENDENZ</span>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <span *ngIf="element.internePendenz" [title]="'INTERNE_PENDENZ' | translate">
+                        <i class="fa fa-file-o" aria-hidden="true" ng-show="row.internePendenz"></i>
+                    </span>
+                </mat-cell>
+            </ng-container>
+
             <ng-container matColumnDef="dokumenteHochgeladen">
                 <mat-header-cell mat-sort-header="dokumenteHochgeladen" *matHeaderCellDef><span translate>DOKUMENTE_HOCHGELADEN_KURZ</span>
                 </mat-header-cell>
@@ -219,6 +229,21 @@
                             <mat-option selected><span translate>ALLE</span></mat-option>
                             <mat-option *ngFor="let periode of gesuchsperiodenList"
                                         [value]="periode">{{periode}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-header-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="internePendenz-filter">
+                <mat-header-cell *matHeaderCellDef="let column">
+                    <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
+                        <div class="select-background"></div>
+                        <mat-label translate>ALLE</mat-label>
+                        <mat-select (selectionChange)="filterInternePendenz($event.value)"
+                                    panelClass="mat-select-panel1">
+                            <mat-option selected><span translate>ALLE</span></mat-option>
+                            <mat-option [value]="true"><span translate>LABEL_JA</span></mat-option>
+                            <mat-option [value]="false"><span translate>LABEL_NEIN</span></mat-option>
                         </mat-select>
                     </mat-form-field>
                 </mat-header-cell>

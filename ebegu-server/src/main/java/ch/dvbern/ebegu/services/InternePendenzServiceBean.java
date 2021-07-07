@@ -78,7 +78,7 @@ public class InternePendenzServiceBean extends AbstractBaseService implements In
 	@Override
 	public InternePendenz createInternePendenz(@Nonnull InternePendenz internePendenz) {
 		Objects.requireNonNull(internePendenz);
-
+		internePendenz.getGesuch().setInternePendenz(true);
 		return persistence.persist(internePendenz);
 	}
 

@@ -252,6 +252,10 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	// einscannen der Freigabequittung wissen, ob es sich um die aktuelle Freigabequittung handelt.
 	private Integer anzahlGesuchZurueckgezogen = 0;
 
+	@NotNull
+	@Column(nullable = false)
+	private Boolean internePendenz = false;
+
 	public Gesuch() {
 	}
 
@@ -1273,5 +1277,13 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			return getDossier().getVerantwortlicherTS();
 		}
 		return getDossier().getVerantwortlicherBG();
+	}
+
+	public Boolean getInternePendenz() {
+		return internePendenz;
+	}
+
+	public void setInternePendenz(Boolean internePendenz) {
+		this.internePendenz = internePendenz;
 	}
 }

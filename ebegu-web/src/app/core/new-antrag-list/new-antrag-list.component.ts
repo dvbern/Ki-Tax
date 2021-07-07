@@ -196,6 +196,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         'periode-filter',
         'aenderungsdatum-filter',
         'status-filter',
+        'internePendenz-filter',
         'dokumenteHochgeladen-filter',
         'angebote-filter',
         'institutionen-filter',
@@ -213,6 +214,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         'periode',
         'aenderungsdatum',
         'status',
+        'internePendenz',
         'dokumenteHochgeladen',
         'angebote',
         'institutionen',
@@ -301,6 +303,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
                 this.hiddenColumns.push('verantwortlicheBG');
                 this.hiddenColumns.push('verantwortlicheTS');
                 this.hiddenColumns.push('verantwortlicheGemeinde');
+                this.hiddenColumns.push('internePendenz');
                 this.hiddenColumns.push('dokumenteHochgeladen');
             }
         }
@@ -379,6 +382,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
                         antragTyp: antragDto.antragTyp,
                         periode: antragDto.gesuchsperiodeString,
                         aenderungsdatum: antragDto.aenderungsdatum,
+                        internePendenz: antragDto.internePendenz,
                         dokumenteHochgeladen: antragDto.dokumenteHochgeladen,
                         angebote: antragDto.angebote,
                         institutionen: antragDto.institutionen,
@@ -467,6 +471,11 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
 
     public filterDocumentsUploaded(documentsUploaded: boolean): void {
         this.filterPredicate.dokumenteHochgeladen = documentsUploaded;
+        this.applyFilter();
+    }
+
+    public filterInternePendenz(internePendenz: boolean): void {
+        this.filterPredicate.internePendenz = internePendenz;
         this.applyFilter();
     }
 
