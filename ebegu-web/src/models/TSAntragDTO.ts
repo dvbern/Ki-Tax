@@ -48,6 +48,7 @@ export class TSAntragDTO extends TSAbstractAntragDTO {
     private _laufnummer: number;
     private _gesuchBetreuungenStatus: TSGesuchBetreuungenStatus;
     private _internePendenz: boolean;
+    private _internePendenzAbgelaufen: boolean;
     private _dokumenteHochgeladen: boolean;
     private _gemeinde: string;
     private _fallId: string;
@@ -321,5 +322,13 @@ export class TSAntragDTO extends TSAbstractAntragDTO {
 
     public set internePendenz(value: boolean) {
         this._internePendenz = value;
+    }
+
+    public get internePendenzAbgelaufen(): boolean {
+        return this._internePendenzAbgelaufen;
+    }
+
+    public set internePendenzAbgelaufen(value: boolean) {
+        this._internePendenzAbgelaufen = value;
     }
 }

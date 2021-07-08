@@ -180,6 +180,24 @@ public class AntragPredicateObjectDTO implements Serializable {
 		this.verantwortlicherGemeinde = verantwortlicherGemeinde;
 	}
 
+	@Nullable
+	public String getFamilienNameForLike() {
+		return StringUtils.isEmpty(familienName) ? null : familienName + '%';
+	}
+
+	@Nullable
+	public String getKindNameForLike() {
+		return StringUtils.isEmpty(kinder) ? null : '%' + kinder + '%';
+	}
+
+	public Boolean getInternePendenz() {
+		return internePendenz;
+	}
+
+	public void setInternePendenz(Boolean internePendenz) {
+		this.internePendenz = internePendenz;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
@@ -205,23 +223,5 @@ public class AntragPredicateObjectDTO implements Serializable {
 			return Integer.valueOf(fallNummer);
 		}
 		return -1;
-	}
-
-	@Nullable
-	public String getFamilienNameForLike() {
-		return StringUtils.isEmpty(familienName) ? null : familienName + '%';
-	}
-
-	@Nullable
-	public String getKindNameForLike() {
-		return StringUtils.isEmpty(kinder) ? null : '%' + kinder + '%';
-	}
-
-	public Boolean getInternePendenz() {
-		return internePendenz;
-	}
-
-	public void setInternePendenz(Boolean internePendenz) {
-		this.internePendenz = internePendenz;
 	}
 }

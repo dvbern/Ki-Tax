@@ -2624,6 +2624,7 @@ export class EbeguRestUtil {
         antragTS.eingangsart = antragFromServer.eingangsart;
         antragTS.besitzerUsername = antragFromServer.besitzerUsername;
         antragTS.internePendenz = antragFromServer.internePendenz;
+        antragTS.internePendenzAbgelaufen = antragFromServer.internePendenzAbgelaufen;
         antragTS.dokumenteHochgeladen = antragFromServer.dokumenteHochgeladen;
         antragTS.gemeinde = antragFromServer.gemeinde;
         antragTS.fallId = antragFromServer.fallId;
