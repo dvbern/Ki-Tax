@@ -37,11 +37,10 @@ CREATE TABLE ferienbetreuung_berechnungen_aud(
     id binary(16) not null,
     rev integer not null,
     revtype tinyint,
-    timestamp_erstellt datetime not null,
-    timestamp_mutiert datetime not null,
-    user_erstellt varchar(255) not null,
-    user_mutiert varchar(255) not null,
-    version bigint not null,
+    timestamp_erstellt datetime,
+    timestamp_mutiert datetime,
+    user_erstellt varchar(255),
+    user_mutiert varchar(255),
     total_kosten DECIMAL(19,2),
     betreuungstage_kinder_dieser_gemeinde_minus_sonderschueler DECIMAL(19,2),
     betreuungstage_kinder_anderer_gemeinde_minus_sonderschueler DECIMAL(19,2),
@@ -54,6 +53,7 @@ CREATE TABLE ferienbetreuung_berechnungen_aud(
 );
 
 ALTER TABLE ferienbetreuung_angaben ADD IF NOT EXISTS ferienbetreuung_berechnungen_id BINARY(16);
+ALTER TABLE ferienbetreuung_angaben_aud ADD IF NOT EXISTS ferienbetreuung_berechnungen_id BINARY(16);
 
 alter table ferienbetreuung_angaben
     add constraint FK_ferienbetreuung_berechnungen_ferienbetreuung

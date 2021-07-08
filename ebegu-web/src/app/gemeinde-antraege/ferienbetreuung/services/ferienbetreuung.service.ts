@@ -26,6 +26,7 @@ import {TSFerienbetreuungAngabenStammdaten} from '../../../../models/gemeindeant
 import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../../core/constants/CONSTANTS';
 import {LogFactory} from '../../../core/logging/LogFactory';
+import {TSFerienbetreuungBerechnung} from '../ferienbetreuung-kosten-einnahmen/TSFerienbetreuungBerechnung';
 
 const LOG = LogFactory.createLog('FerienbetreuungService');
 
@@ -241,9 +242,10 @@ export class FerienbetreuungService {
     public ferienbetreuungAngabenGeprueft(
         container: TSFerienbetreuungAngabenContainer,
     ): Observable<TSFerienbetreuungAngabenContainer> {
+        container.calculateBerechnungen();
         return this.http.put(
             `${this.API_BASE_URL}/geprueft/${encodeURIComponent(container.id)}`,
-            {},
+            this.ebeguRestUtil.ferienbetreuungContainerToRestObject({}, container),
         ).pipe(
             map(
                 restAngaben => this.ebeguRestUtil.parseFerienbetreuungContainer(new TSFerienbetreuungAngabenContainer(),

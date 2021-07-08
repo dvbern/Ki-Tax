@@ -15,6 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {TSFerienbetreuungBerechnung} from '../../app/gemeinde-antraege/ferienbetreuung/ferienbetreuung-kosten-einnahmen/TSFerienbetreuungBerechnung';
 import {TSAbstractEntity} from '../TSAbstractEntity';
 import {TSFerienbetreuungAngabenAngebot} from './TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenKostenEinnahmen} from './TSFerienbetreuungAngabenKostenEinnahmen';
@@ -22,11 +23,19 @@ import {TSFerienbetreuungAngabenNutzung} from './TSFerienbetreuungAngabenNutzung
 import {TSFerienbetreuungAngabenStammdaten} from './TSFerienbetreuungAngabenStammdaten';
 
 export class TSFerienbetreuungAngaben extends TSAbstractEntity {
+    public get berechnungen(): TSFerienbetreuungBerechnung {
+        return this._berechnungen;
+    }
+
+    public set berechnungen(value: TSFerienbetreuungBerechnung) {
+        this._berechnungen = value;
+    }
 
     private _stammdaten: TSFerienbetreuungAngabenStammdaten;
     private _angebot: TSFerienbetreuungAngabenAngebot;
     private _nutzung: TSFerienbetreuungAngabenNutzung;
     private _kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen;
+    private _berechnungen: TSFerienbetreuungBerechnung;
     private _kantonsbeitrag: number;
     private _gemeindebeitrag: number;
 

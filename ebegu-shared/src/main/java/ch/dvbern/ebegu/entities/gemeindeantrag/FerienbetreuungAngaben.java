@@ -60,7 +60,7 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 
 	@Nullable
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_berechnungen_ferienbetreuung"), nullable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_berechnungen_ferienbetreuung"), nullable = true)
 	private FerienbetreuungBerechnungen ferienbetreuungBerechnungen = new FerienbetreuungBerechnungen();
 
 	@Nullable
