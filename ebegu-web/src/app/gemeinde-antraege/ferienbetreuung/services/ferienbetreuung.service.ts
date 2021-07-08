@@ -26,7 +26,6 @@ import {TSFerienbetreuungAngabenStammdaten} from '../../../../models/gemeindeant
 import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../../core/constants/CONSTANTS';
 import {LogFactory} from '../../../core/logging/LogFactory';
-import {TSFerienbetreuungBerechnung} from '../ferienbetreuung-kosten-einnahmen/TSFerienbetreuungBerechnung';
 
 const LOG = LogFactory.createLog('FerienbetreuungService');
 
