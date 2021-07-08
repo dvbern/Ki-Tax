@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -120,5 +121,45 @@ public class InternePendenzServiceBean extends AbstractBaseService implements In
 
 		authorizer.checkWriteAuthorization(internePendenz);
 		persistence.remove(internePendenz);
+	}
+
+	@Nonnull
+	@Override
+	public Collection<InternePendenz> findAlleAbgelaufendeInternePendenzen() {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<InternePendenz> query = cb.createQuery(InternePendenz.class);
+		Root<InternePendenz> root = query.from(InternePendenz.class);
+
+		List<Predicate> predicates = new ArrayList<>();
+
+		Predicate predicateNichtErledigt = cb.equal(root.get(InternePendenz_.erledigt), false);
+		predicates.add(predicateNichtErledigt);
+
+		Predicate predicateAbgelaufen = cb.lessThanOrEqualTo(root.get(InternePendenz_.termin), LocalDate.now());
+		predicates.add(predicateAbgelaufen);
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		return persistence.getCriteriaResults(query);
+	}
+
+	@Nonnull
+	@Override
+	public boolean hasGesuchAbgelaufendeInternePendenzen(@Nonnull Gesuch gesuch) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<InternePendenz> query = cb.createQuery(InternePendenz.class);
+		Root<InternePendenz> root = query.from(InternePendenz.class);
+
+		List<Predicate> predicates = new ArrayList<>();
+
+		Predicate predicateNichtErledigt = cb.equal(root.get(InternePendenz_.erledigt), false);
+		predicates.add(predicateNichtErledigt);
+
+		Predicate predicateAbgelaufen = cb.lessThanOrEqualTo(root.get(InternePendenz_.termin), LocalDate.now());
+		predicates.add(predicateAbgelaufen);
+
+		Predicate predicateGesuch = cb.equal(root.get(InternePendenz_.gesuch), gesuch);
+		predicates.add(predicateGesuch);
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		return persistence.getCriteriaResults(query).stream().count() > 0;
 	}
 }

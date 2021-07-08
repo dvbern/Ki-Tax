@@ -4361,7 +4361,7 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setFallId(gesuch.getFall().getId());
 		antrag.setGemeindeId(gesuch.getDossier().getGemeinde().getId());
 		antrag.setSozialdienst(gesuch.getDossier().getFall().isSozialdienstFall());
-
+		antrag.setInternePendenz(gesuch.getInternePendenz());
 		return antrag;
 	}
 

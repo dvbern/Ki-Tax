@@ -2623,8 +2623,8 @@ export class EbeguRestUtil {
         antragTS.gesuchBetreuungenStatus = antragFromServer.gesuchBetreuungenStatus;
         antragTS.eingangsart = antragFromServer.eingangsart;
         antragTS.besitzerUsername = antragFromServer.besitzerUsername;
-        antragTS.dokumenteHochgeladen = antragFromServer.internePendenz;
-        antragTS.internePendenz = antragFromServer.dokumenteHochgeladen;
+        antragTS.internePendenz = antragFromServer.internePendenz;
+        antragTS.dokumenteHochgeladen = antragFromServer.dokumenteHochgeladen;
         antragTS.gemeinde = antragFromServer.gemeinde;
         antragTS.fallId = antragFromServer.fallId;
         antragTS.gemeindeId = antragFromServer.gemeindeId;

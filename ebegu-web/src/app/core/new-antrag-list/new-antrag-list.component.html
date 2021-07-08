@@ -100,11 +100,11 @@
             </ng-container>
 
             <ng-container matColumnDef="internePendenz">
-                <mat-header-cell mat-sort-header="internePendenz" *matHeaderCellDef><span translate>INTERNE_PENDENZ</span>
+                <mat-header-cell mat-sort-header="internePendenz" *matHeaderCellDef><span translate>INTERNE_PENDENZ_KURZ</span>
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <span *ngIf="element.internePendenz" [title]="'INTERNE_PENDENZ' | translate">
-                        <i class="fa fa-file-o" aria-hidden="true" ng-show="row.internePendenz"></i>
+                        <i class="fa fa-ticket" aria-hidden="true"></i>
                     </span>
                 </mat-cell>
             </ng-container>
@@ -114,7 +114,7 @@
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <span *ngIf="element.dokumenteHochgeladen" [title]="'DOKUMENTE_HOCHGELADEN' | translate">
-                        <i class="fa fa-file-o" aria-hidden="true" ng-show="row.dokumenteHochgeladen"></i>
+                        <i class="fa fa-file-o" aria-hidden="true"></i>
                     </span>
                 </mat-cell>
             </ng-container>

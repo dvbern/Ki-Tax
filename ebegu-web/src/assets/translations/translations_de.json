@@ -2551,5 +2551,7 @@
     "MODUL_ID": "Modul ID",
     "COPY_TO_CLIPBOARD": "In Zwischenablage kopieren",
     "ERROR_DEFAULT_BENUTZER_NICHT_LOESCHBAR": "Dieser Account ist die/der Default Verantwortliche einer Gemeinde und kann deshalb nicht gelöscht werden.",
+    "INTERNE_PENDENZ_KURZ": "Int. Pen.",
+    "INTERNE_PENDENZ": "Interne Pendenz",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

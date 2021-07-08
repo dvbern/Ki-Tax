@@ -102,6 +102,7 @@ export class PendenzenListViewComponent {
                         antragTyp: antragDto.antragTyp,
                         periode: antragDto.gesuchsperiodeString,
                         aenderungsdatum: antragDto.aenderungsdatum,
+                        internePendenz: antragDto.internePendenz,
                         dokumenteHochgeladen: antragDto.dokumenteHochgeladen,
                         angebote: antragDto.angebote,
                         institutionen: antragDto.institutionen,

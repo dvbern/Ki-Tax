@@ -22,13 +22,7 @@ import {TSGesuchBetreuungenStatus} from './enums/TSGesuchBetreuungenStatus';
 import {TSAbstractAntragDTO} from './TSAbstractAntragDTO';
 
 export class TSAntragDTO extends TSAbstractAntragDTO {
-    public get internePendenz(): boolean {
-        return this._internePendenz;
-    }
 
-    public set internePendenz(value: boolean) {
-        this._internePendenz = value;
-    }
     private static readonly YEAR_2000 = 2000;
 
     private _antragId: string;
@@ -319,5 +313,13 @@ export class TSAntragDTO extends TSAbstractAntragDTO {
 
     public set isSozialdienst(value: boolean) {
         this._isSozialdienst = value;
+    }
+
+    public get internePendenz(): boolean {
+        return this._internePendenz;
+    }
+
+    public set internePendenz(value: boolean) {
+        this._internePendenz = value;
     }
 }
