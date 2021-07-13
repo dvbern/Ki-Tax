@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.outbox.institution;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.KontaktAngaben;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.types.DateRange;
@@ -43,7 +45,10 @@ import ch.dvbern.kibon.exchange.commons.institution.InstitutionEventDTO;
 import ch.dvbern.kibon.exchange.commons.institution.InstitutionEventDTO.Builder;
 import ch.dvbern.kibon.exchange.commons.institution.InstitutionStatus;
 import ch.dvbern.kibon.exchange.commons.institution.KontaktAngabenDTO;
+import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulDTO;
 import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
+import ch.dvbern.kibon.exchange.commons.types.Gesuchsperiode;
+import ch.dvbern.kibon.exchange.commons.types.ModulIntervall;
 import ch.dvbern.kibon.exchange.commons.types.Wochentag;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import ch.dvbern.kibon.exchange.commons.util.TimestampConverter;
@@ -110,6 +115,36 @@ public class InstitutionEventConverter {
 				.setAnzahlPlaetze(MathUtil.ZWEI_NACHKOMMASTELLE.from(bgStammdaten.getAnzahlPlaetze()))
 				.setAnzahlPlaetzeFirmen(MathUtil.ZWEI_NACHKOMMASTELLE.from(bgStammdaten.getAnzahlPlaetzeFirmen()))
 			;
+		}
+		InstitutionStammdatenTagesschule institutionStammdatenTagesschule = stammdaten.getInstitutionStammdatenTagesschule();
+		if(institutionStammdatenTagesschule != null) {
+			List<ModulDTO> modulDTOS = new ArrayList<>();
+			institutionStammdatenTagesschule.extractAllModulTagesschuleGroup().forEach(
+				modulTagesschuleGroup -> {
+					ch.dvbern.kibon.exchange.commons.tagesschulen.ModulDTO.Builder moduleBuilder = ModulDTO.newBuilder()
+						.setId(modulTagesschuleGroup.getId())
+						.setBezeichnungDE(modulTagesschuleGroup.getBezeichnung().getTextDeutsch())
+						.setBezeichnungFR(modulTagesschuleGroup.getBezeichnung().getTextFranzoesisch())
+						.setZeitVon(TimeConverter.serialize(modulTagesschuleGroup.getZeitVon()))
+						.setZeitBis(TimeConverter.serialize(modulTagesschuleGroup.getZeitBis()))
+						.setIntervall(ModulIntervall.valueOf(modulTagesschuleGroup.getIntervall().name()))
+						.setPadaegogischBetreut(modulTagesschuleGroup.isWirdPaedagogischBetreut())
+						.setVerpflegungsKosten(modulTagesschuleGroup.getVerpflegungskosten() != null ? modulTagesschuleGroup.getVerpflegungskosten() : BigDecimal.ZERO);
+					List<Integer> tages = new ArrayList<>();
+					modulTagesschuleGroup.getModule().forEach(
+						modulTagesschule -> tages.add(modulTagesschule.getWochentag().getValue())
+					);
+					moduleBuilder.setWochentage(tages);
+
+					ch.dvbern.ebegu.entities.Gesuchsperiode gesuchsperiode = modulTagesschuleGroup.getEinstellungenTagesschule().getGesuchsperiode();
+
+					moduleBuilder.setGesuchsperiode(Gesuchsperiode.newBuilder().setId(gesuchsperiode.getId())
+						.setGueltigAb(gesuchsperiode.getGueltigkeit().getGueltigAb())
+						.setGueltigBis(gesuchsperiode.getGueltigkeit().getGueltigBis()).build());
+					modulDTOS.add(moduleBuilder.build());
+				}
+			);
+			builder.setModule(modulDTOS);
 		}
 
 		return builder.build();
