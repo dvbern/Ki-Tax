@@ -2551,5 +2551,6 @@
     "MODUL_ID": "ID du module",
     "COPY_TO_CLIPBOARD": "Copier dans le presse-papiers",
     "ERROR_DEFAULT_BENUTZER_NICHT_LOESCHBAR": "Ce compte est le / la responsable standard(e) pour une commune et ne peut donc pas être effacé.",
+    "INSTITUTION_EINGELADEN_WARN_TEXT": "Attention, les données de base de l'institution ne sont pas encore remplies, il n'est donc pas possible de confirmer la place!",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
