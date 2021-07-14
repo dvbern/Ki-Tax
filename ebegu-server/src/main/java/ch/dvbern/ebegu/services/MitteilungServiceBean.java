@@ -900,6 +900,26 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		sendBetreuungsmitteilung(mitteilung);
 	}
 
+	@Override
+	public boolean hasInstitutionOffeneMitteilungen(Institution institution) {
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Mitteilung> query = cb.createQuery(Mitteilung.class);
+		Root<Mitteilung> root = query.from(Mitteilung.class);
+
+		Predicate predicateLinkedObject =
+			cb.equal(root.get(Mitteilung_.institution), institution);
+		Predicate predicateNeu =
+			cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.NEU);
+		Predicate predicateEmpfaenger =
+			cb.equal(root.get(Mitteilung_.empfaengerTyp), MitteilungTeilnehmerTyp.INSTITUTION);
+
+		query.where(predicateLinkedObject, predicateNeu, predicateEmpfaenger);
+
+		final List<Mitteilung> result = persistence.getCriteriaResults(query);
+		return !result.isEmpty();
+	}
+
 	@Nonnull
 	@Override
 	public Pair<Long, List<Mitteilung>> searchMitteilungen(
