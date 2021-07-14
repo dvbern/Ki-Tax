@@ -1121,17 +1121,17 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Pair<Long, List<Mitteilung>> result = null;
 		switch (mode) {
 		case SEARCH:
-			List<String> gesuchIds =
+			List<String> mitteilungIds =
 				persistence.getCriteriaResults(query); //select all ids in order, may contain duplicates
 			List<Mitteilung> pagedResult;
 			if (mitteilungTableFilterDto.getPagination() != null) {
 				int firstIndex = mitteilungTableFilterDto.getPagination().getStart();
 				Integer maxresults = mitteilungTableFilterDto.getPagination().getNumber();
 				List<String> orderedIdsToLoad =
-					SearchUtil.determineDistinctIdsToLoad(gesuchIds, firstIndex, maxresults);
+					SearchUtil.determineDistinctIdsToLoad(mitteilungIds, firstIndex, maxresults);
 				pagedResult = findMitteilungen(orderedIdsToLoad);
 			} else {
-				pagedResult = findMitteilungen(gesuchIds);
+				pagedResult = findMitteilungen(mitteilungIds);
 			}
 			result = new ImmutablePair<>(null, pagedResult);
 			break;
@@ -1228,20 +1228,20 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		}
 	}
 
-	private List<Mitteilung> findMitteilungen(@Nonnull List<String> gesuchIds) {
-		if (!gesuchIds.isEmpty()) {
+	private List<Mitteilung> findMitteilungen(@Nonnull List<String> mitteilungIds) {
+		if (!mitteilungIds.isEmpty()) {
 			final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 			final CriteriaQuery<Mitteilung> query = cb.createQuery(Mitteilung.class);
 			Root<Mitteilung> root = query.from(Mitteilung.class);
-			Predicate predicate = root.get(AbstractEntity_.id).in(gesuchIds);
+			Predicate predicate = root.get(AbstractEntity_.id).in(mitteilungIds);
 			query.where(predicate);
 			//reduce to unique gesuche
 			List<Mitteilung> listWithDuplicates = persistence.getCriteriaResults(query);
 			LinkedHashSet<Mitteilung> set = new LinkedHashSet<>();
 			//richtige reihenfolge beibehalten
-			for (String gesuchId : gesuchIds) {
+			for (String mitteilungId : mitteilungIds) {
 				listWithDuplicates.stream()
-					.filter(gesuch -> gesuch.getId().equals(gesuchId))
+					.filter(mitteilung -> mitteilung.getId().equals(mitteilungId))
 					.findFirst()
 					.ifPresent(set::add);
 			}
