@@ -2514,6 +2514,7 @@
     "ERROR_ANTRAGSTELLER_SZ_NOT_VOLLSTAENDIG": "Die Angaben zur Antragsteller/in 2 müssen vollständig ausgefüllt sein oder leer gelassen werden",
     "SOZIALDIENST_INFO_VOLLMACHT_FORM_DIRTY": "Sie haben Änderungen im Formular gemacht. Bitte speichern Sie diese, bevor Sie die Vollmacht erneut herunterladen können",
     "SOZIALDIENST_WARNING_FALL_ENTZOGEN": "Die Vollmacht wurde entzogen. Der Fall ist für den Unterstützungdienst gesperrt!",
+    "SOZIALDIENST_NOCH_EINGELADEN": "Eure Unterstützdienst ist noch im Status Eingalden. Sie müssen eure Stammdaten ausfüllen um einen neuen Fall eröffnen zu können!",
     "BEARBEITEN": "Bearbeiten",
     "TAGESSCHULEN_DER_GEMEINDEN": "Tagesschulen der Gemeinde",
     "CONFIRM_STORNIEREN_TAGESSCHULE": "Wollen Sie die Anmeldung wirklich stornieren?",
