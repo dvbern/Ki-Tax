@@ -2514,6 +2514,7 @@
     "ERROR_ANTRAGSTELLER_SZ_NOT_VOLLSTAENDIG": "L'auteur de la demande numéro 2 n'est pas obligatoire mais ne doit pas être remplis que partiellement!",
     "SOZIALDIENST_INFO_VOLLMACHT_FORM_DIRTY": "Vous avez effectué des changements dans le formulaire. Veuillez les sauvegarder avant de pouvoir générer la Vollmacht et la télécharger",
     "SOZIALDIENST_WARNING_FALL_ENTZOGEN": "La procuration à été retirée. Le cas est bloqué pour le service de soutien",
+    "SOZIALDIENSTFALL_REAKTIVIEREN": "Réactiver le cas",
     "BEARBEITEN": "Éditer",
     "TAGESSCHULEN_DER_GEMEINDEN": "Écoles à journée continue de la commune",
     "CONFIRM_STORNIEREN_TAGESSCHULE": "Voulez-vous vraiment annuler l'inscription ?",
