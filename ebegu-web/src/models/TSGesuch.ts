@@ -279,13 +279,13 @@ export class TSGesuch extends TSAbstractAntragEntity {
 
     private areThereNoBetreuungenAtAll(): boolean {
         const kinderWithBetreuungList = this.getKinderWithBetreuungList();
-        let noBetreuung = true;
+        let noBetreuungAtAll = true;
         for (const kind of kinderWithBetreuungList) {
             if (kind.betreuungen.length > 0) {
-                noBetreuung = false;
+                noBetreuungAtAll = false;
             }
         }
-        return noBetreuung;
+        return noBetreuungAtAll;
     }
 
     /**
