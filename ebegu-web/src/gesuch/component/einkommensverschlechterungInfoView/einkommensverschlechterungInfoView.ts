@@ -213,9 +213,11 @@ export class EinkommensverschlechterungInfoViewController
         if (this.getEinkommensverschlechterungsInfo().einkommensverschlechterung) {
             if (this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1 === undefined) {
                 this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1 = false;
+                this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus1Annulliert = false;
             }
             if (this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2 === undefined) {
                 this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2 = false;
+                this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus2Annulliert = false;
             }
 
             this.initializeEKVContainers();
@@ -224,6 +226,8 @@ export class EinkommensverschlechterungInfoViewController
             // sollen
             this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1 = false;
             this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2 = false;
+            this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus1Annulliert = false;
+            this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus2Annulliert = false;
         }
 
         return this.einkommensverschlechterungInfoRS.saveEinkommensverschlechterungInfo(
