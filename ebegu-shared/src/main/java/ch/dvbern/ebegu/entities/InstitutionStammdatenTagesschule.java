@@ -102,8 +102,8 @@ public class InstitutionStammdatenTagesschule extends AbstractEntity implements 
 	@Nonnull
 	public List<ModulTagesschuleGroup> extractAllModulTagesschuleGroup() {
 		final List<ModulTagesschuleGroup> list = new ArrayList<>();
-		for (final EinstellungenTagesschule kind : getEinstellungenTagesschule()) {
-			Set<ModulTagesschuleGroup> modulTagesschuleGroups = kind.getModulTagesschuleGroups();
+		for (final EinstellungenTagesschule einstellungenTagesschule : getEinstellungenTagesschule()) {
+			Set<ModulTagesschuleGroup> modulTagesschuleGroups = einstellungenTagesschule.getModulTagesschuleGroups();
 			if (CollectionUtils.isNotEmpty(modulTagesschuleGroups)) {
 				list.addAll(modulTagesschuleGroups);
 			}

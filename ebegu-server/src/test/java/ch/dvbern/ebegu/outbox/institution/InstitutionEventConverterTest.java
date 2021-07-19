@@ -26,10 +26,12 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Betreuungsstandort;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.KontaktAngaben;
+import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
@@ -38,6 +40,7 @@ import ch.dvbern.kibon.exchange.commons.institution.GemeindeDTO;
 import ch.dvbern.kibon.exchange.commons.institution.InstitutionEventDTO;
 import ch.dvbern.kibon.exchange.commons.institution.InstitutionStatus;
 import ch.dvbern.kibon.exchange.commons.institution.KontaktAngabenDTO;
+import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulDTO;
 import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
 import ch.dvbern.kibon.exchange.commons.types.Wochentag;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
@@ -178,5 +181,34 @@ public class InstitutionEventConverterTest {
 		betreuungsstandort.setWebseite("https://www.kibon.ch");
 
 		return betreuungsstandort;
+	}
+
+	@Test
+	public void testTagesschuleChangedEvent() {
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
+		InstitutionStammdaten institutionStammdaten  = TestDataUtil.createInstitutionStammdatenTagesschuleBern(gesuchsperiode);
+		Institution institution = institutionStammdaten.getInstitution();
+		InstitutionChangedEvent event = converter.of(institutionStammdaten);
+
+		assertThat(event, is(pojo(ExportedEvent.class)
+			.where(ExportedEvent::getAggregateId, is(institution.getId()))
+			.where(ExportedEvent::getAggregateType, is("Institution"))
+			.where(ExportedEvent::getType, is("InstitutionChanged")))
+		);
+
+		//noinspection deprecation
+		InstitutionEventDTO specificRecord = AvroConverter.fromAvroBinary(event.getSchema(), event.getPayload());
+
+		assertThat(specificRecord, is(pojo(InstitutionEventDTO.class)
+			.where(InstitutionEventDTO::getId, is(institution.getId()))
+			.where(InstitutionEventDTO::getName, is(institution.getName()))
+			.where(InstitutionEventDTO::getStatus, is(InstitutionStatus.valueOf(institution.getStatus().name())))));
+
+		for(int i = 0; i < specificRecord.getModule().size(); i++) {
+			ModulTagesschuleGroup modulTagesschuleGroup = institutionStammdaten.getInstitutionStammdatenTagesschule().extractAllModulTagesschuleGroup().get(i);
+			assertThat(specificRecord.getModule().get(i), is(pojo(ModulDTO.class)
+			.where(ModulDTO::getId, is(modulTagesschuleGroup.getId()))));
+		}
+
 	}
 }
