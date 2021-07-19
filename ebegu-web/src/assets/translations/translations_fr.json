@@ -2515,6 +2515,7 @@
     "SOZIALDIENST_INFO_VOLLMACHT_FORM_DIRTY": "Vous avez effectué des changements dans le formulaire. Veuillez les sauvegarder avant de pouvoir générer la Vollmacht et la télécharger",
     "SOZIALDIENST_WARNING_FALL_ENTZOGEN": "La procuration à été retirée. Le cas est bloqué pour le service de soutien",
     "SOZIALDIENSTFALL_REAKTIVIEREN": "Réactiver le cas",
+    "SOZIALDIENST_NOCH_EINGELADEN": "Votre service de soutient a encore le status d'invité. Vous devez remplir vos données de base afin de pouvoir ouvrir un nouveau cas!",
     "BEARBEITEN": "Éditer",
     "TAGESSCHULEN_DER_GEMEINDEN": "Écoles à journée continue de la commune",
     "CONFIRM_STORNIEREN_TAGESSCHULE": "Voulez-vous vraiment annuler l'inscription ?",
@@ -2552,5 +2553,6 @@
     "MODUL_ID": "ID du module",
     "COPY_TO_CLIPBOARD": "Copier dans le presse-papiers",
     "ERROR_DEFAULT_BENUTZER_NICHT_LOESCHBAR": "Ce compte est le / la responsable standard(e) pour une commune et ne peut donc pas être effacé.",
+    "INSTITUTION_EINGELADEN_WARN_TEXT": "Attention, les données de base de l'institution ne sont pas encore remplies, il n'est donc pas possible de confirmer la place!",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

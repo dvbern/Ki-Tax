@@ -13,22 +13,7 @@ pipeline {
 		disableConcurrentBuilds()
 	}
 	stages {
-		stage("Backend only") {
-			when {not {changeset 'ebegu-web/**'}}
-			steps {
-				withMaven(jdk: 'OpenJDK_11.0.4', options: [
-						junitPublisher(healthScaleFactor: 1.0),
-						findbugsPublisher(disabled: true),
-						spotbugsPublisher(disabled: true),
-						artifactsPublisher(disabled: true)
-				]) {
-					sh './mvnw -B -U -T 1C -P dvbern.oss -P ci clean test'
-				}
-			}
-		}
-
 		stage("Backend & Frontend") {
-			when {changeset 'ebegu-web/**'}
 			steps {
 				withMaven(jdk: 'OpenJDK_11.0.4', options: [
 						junitPublisher(healthScaleFactor: 1.0),
