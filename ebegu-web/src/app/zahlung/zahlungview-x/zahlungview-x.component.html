@@ -64,10 +64,10 @@
                             <span translate>ZAHLUNG_STATUS</span>
                         </mat-header-cell>
                         <mat-cell *matCellDef="let element" class="ellipsis">
-                            <a type="button" class="btn-link link-underline pointer-cursor" (click)="bestaetigen(element)" *ngIf="!isBestaetigt(element.status)">
+                            <a type="button" class="btn-link link-underline pointer-cursor" (click)="bestaetigen(element)" *ngIf="canBestaetigen(element.status)">
                                 <span translate style="color: #D50025">ZAHLUNG_ERHALTEN</span>
                             </a>
-                            <span *ngIf="isBestaetigt(element.status)">{{element.status | translate}}</span>
+                            <span *ngIf="!canBestaetigen(element.status)">{{element.status | translate}}</span>
                         </mat-cell>
                     </ng-container>
 

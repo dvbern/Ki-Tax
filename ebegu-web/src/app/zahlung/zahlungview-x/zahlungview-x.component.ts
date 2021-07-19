@@ -9,9 +9,11 @@ import {map, switchMap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSZahlungsstatus} from '../../../models/enums/TSZahlungsstatus';
+import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSZahlung} from '../../../models/TSZahlung';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
@@ -38,6 +40,7 @@ export class ZahlungviewXComponent implements OnInit, AfterViewInit {
     public itemsByPage: number = 20;
     public tableColumns: any[];
     private readonly SORT_STORE_KEY = 'zahlungview-x-sort';
+    private principal: TSBenutzer;
 
     public constructor(
             private readonly $state: StateService,
@@ -64,6 +67,7 @@ export class ZahlungviewXComponent implements OnInit, AfterViewInit {
                 .pipe(
                         switchMap(principal => {
                             if (principal) {
+                                this.principal = principal;
                                 const zahlungsauftragId = this.routerGlobals.params.zahlungsauftragId;
                                 if (this.routerGlobals.params.zahlungsauftragId) {
                                     return this.zahlungRS.getZahlungsauftragForRole$(
@@ -136,9 +140,10 @@ export class ZahlungviewXComponent implements OnInit, AfterViewInit {
                         'ERROR_UNEXPECTED')));
     }
 
-    // noinspection JSMethodCanBeStatic
-    public isBestaetigt(zahlungstatus: TSZahlungsstatus): boolean {
-        return zahlungstatus === TSZahlungsstatus.BESTAETIGT;
+    public canBestaetigen(zahlungsstatus: TSZahlungsstatus): boolean {
+        return zahlungsstatus === TSZahlungsstatus.AUSGELOEST &&
+                this.principal.hasOneOfRoles(TSRoleUtil.getInstitutionRoles()) &&
+                !this.isMahlzeitenzahlungen;
     }
 
     private setupTableColumns(): void {
