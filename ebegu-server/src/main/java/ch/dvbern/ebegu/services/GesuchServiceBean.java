@@ -197,6 +197,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private EinstellungService einstellungService;
 	@Inject
 	private MassenversandService massenversandService;
+	@Inject
+	private InternePendenzService internePendenzService;
 
 	@Nonnull
 	@Override
@@ -576,6 +578,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		// zu diesem Zeitpunkt bereits auf das Vorgaenger Gesuch umgehaengt.
 		mitteilungService.removeAllBetreuungMitteilungenForGesuch(gesToRemove);
 		mitteilungService.removeAllBetreuungspensumAbweichungenForGesuch(gesToRemove);
+		internePendenzService.deleteAllInternePendenz(gesToRemove);
+
 		resetMutierteAnmeldungen(gesToRemove);
 
 		// Jedes Loeschen eines Gesuchs muss protokolliert werden
