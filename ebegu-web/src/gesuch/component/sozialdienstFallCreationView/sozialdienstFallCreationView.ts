@@ -315,10 +315,6 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         this.save();
     }
 
-    public isSozialdienstFallEntgezogen(): boolean {
-        return this.gesuchModelManager.getFall().sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN;
-    }
-
     public getSozialdienstName(): string {
         return this.gesuchModelManager.getFall().sozialdienstFall.sozialdienst.name;
     }

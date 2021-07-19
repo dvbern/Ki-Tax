@@ -37,7 +37,7 @@
             </div>
         </div>
     </div>
-    <div class="row" ng-if="vm.isSozialdienstFallEntgezogen()">
+    <div class="row" ng-if="vm.isSozialdienstFallEntzogen()">
         <div class="col-md-12">
             <br/>
             <div class="well well-status-warten">
@@ -321,7 +321,7 @@
                     <!-- Fall zurueck entziehen soll nur Superadmin moeglich sein-->
                     <span dv-show-element
                           dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()"
-                          dv-show-expression="vm.isSozialdienstFallEntgezogen()">
+                          dv-show-expression="vm.isSozialdienstFallEntzogen()">
                         <dv-loading-button button-click="vm.fallAktivieren()" type="submit">
                             <span class="uppercase" data-translate="SOZIALDIENSTFALL_REAKTIVIEREN"></span>
                         </dv-loading-button>
