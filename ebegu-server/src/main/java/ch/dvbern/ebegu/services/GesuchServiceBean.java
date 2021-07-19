@@ -110,6 +110,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
+import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
@@ -1872,6 +1873,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				throw new EbeguRuntimeException("removeGesuchstellerAntrag",
 					ErrorCodeEnum.ERROR_DELETION_ANTRAG_NOT_ALLOWED, gesuch.getStatus());
 			}
+			if(checkIsSZFallAndEntgezogen(gesuch)) {
+				throw new EbeguRuntimeException("removeSozialdienstAntrag",
+					ErrorCodeEnum.ERROR_UD_FALL_ENTZOGEN_DELETION_NOT_ALLOWED, gesuch.getStatus());
+			}
 		} else {
 			// Alle anderen berechtigten Rollen:
 			// Antrag muss Papier sein, und darf noch nicht verfuegen/verfuegt sein
@@ -1881,6 +1886,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			if (gesuch.getStatus().isAnyStatusOfVerfuegtOrVefuegen()) {
 				throw new EbeguRuntimeException("removeAntrag", ErrorCodeEnum.ERROR_DELETION_ANTRAG_NOT_ALLOWED,
 					gesuch.getStatus());
+			}
+			if(checkIsSZFallAndEntgezogen(gesuch)) {
+				throw new EbeguRuntimeException("removeAntrag",
+					ErrorCodeEnum.ERROR_UD_FALL_ENTZOGEN_DELETION_NOT_ALLOWED, gesuch.getStatus());
 			}
 		}
 		// Entscheiden, was geloescht werden soll
@@ -2469,6 +2478,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		query.distinct(true);
 		return persistence.getCriteriaResults(query);
 	}
+
+	private boolean checkIsSZFallAndEntgezogen(Gesuch gesuch) {
+		return gesuch.getFall().getSozialdienstFall() != null
+			&& gesuch.getFall().getSozialdienstFall().getStatus() == SozialdienstFallStatus.ENTZOGEN;
+	}
+
 }
 
 
