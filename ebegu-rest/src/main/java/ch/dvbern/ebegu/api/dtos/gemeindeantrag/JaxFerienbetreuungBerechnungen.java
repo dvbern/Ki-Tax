@@ -25,6 +25,8 @@ import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 
 public class JaxFerienbetreuungBerechnungen extends JaxAbstractDTO {
 
+	private static final long serialVersionUID = 5946998195854570129L;
+	
 	@Nonnull
 	private BigDecimal totalKosten;
 
