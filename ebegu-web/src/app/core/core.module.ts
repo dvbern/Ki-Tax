@@ -52,8 +52,7 @@ export function paginatorI18nFactory(translateService: TranslateService): Pagina
         // Insert global singleton services here that have no configuration (ExceptionService, LoggerService etc.)
         ...UPGRADED_PROVIDERS,
         ...UPGRADED_HTTP_INTERCEPTOR_PROVIDERS,
-        { provide: HTTP_INTERCEPTORS, useClass: XsrfInterceptor, multi: true },
-            HTTP_INTERCEPTOR_PROVIDERS,
+        HTTP_INTERCEPTOR_PROVIDERS,
         TranslatePipe,
         WindowRef,
         VersionService,
