@@ -24,7 +24,7 @@ import {AuthLifeCycleService} from './authLifeCycle.service';
 import {HttpBufferX} from './HttpBufferX';
 
 @Injectable()
-export class HttpAuthInterceptor implements HttpInterceptor {
+export class HttpAuthInterceptorX implements HttpInterceptor {
 
     public constructor(
         private readonly authLifeCycleService: AuthLifeCycleService,

@@ -18,6 +18,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {NgAdminModule} from '../admin/ng-admin.module';
+import {AuthenticationXModule} from '../authentication/authentication-x.module';
 import {NgAuthenticationModule} from '../authentication/ng-authentication.module';
 import {NgGesuchModule} from '../gesuch/ng-gesuch.module';
 import {AppRoutingModule} from './app-routing.module';
@@ -49,6 +50,7 @@ import {WizardstepXModule} from './wizardstepX/wizardstep-x.module';
         CoreModule.forRoot(),
         SharedModule,
 
+        AuthenticationXModule,
         AppRoutingModule,
         BenutzerModule,
         EinladungModule,
