@@ -57,6 +57,9 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
     }
 
     public latsDokumentErstellen(): void {
-
+        this.latsService.latsDocxErstellen(this.latsContainer).subscribe(
+            () => {},
+            () => this.errorService.addMesageAsInfo(this.translate.instant('ERROR_UNEXPECTED'))
+        );
     }
 }

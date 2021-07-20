@@ -197,4 +197,10 @@ export class LastenausgleichTSService {
             `${this.API_BASE_URL}/erwartete-betreuungsstunden/${encodeURIComponent(antrag.id)}`,
         );
     }
+
+    public latsDocxErstellen(antrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer): Observable<void> {
+        return this.http.post<void>(
+            `${this.API_BASE_URL}/docx-erstellen/${encodeURIComponent(antrag.id)}`, {}
+        );
+    }
 }

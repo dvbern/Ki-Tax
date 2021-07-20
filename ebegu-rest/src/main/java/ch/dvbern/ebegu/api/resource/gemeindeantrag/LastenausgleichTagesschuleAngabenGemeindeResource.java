@@ -34,6 +34,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -59,6 +60,7 @@ import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.authentication.AuthorizerImpl;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeService;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistoryService;
+import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleDokumentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -87,6 +89,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 	@Inject
 	private LastenausgleichTagesschuleAngabenGemeindeService angabenGemeindeService;
+
+	@Inject
+	private LastenausgleichTagesschuleDokumentService latsDokumentService;
 
 	@Inject
 	private JaxBConverter converter;
@@ -363,7 +368,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 	@ApiOperation(
 		value = "Setzt ein LastenausgleichTagesschuleAngabenGemeinde von Abgeschlossen auf In Bearbeitung Gemeinde",
-		response = Void.class)
+		response = JaxLastenausgleichTagesschuleAngabenGemeindeContainer.class)
 	@PUT
 	@Path("/falsche-angaben")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -496,5 +501,26 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		Objects.requireNonNull(containerJaxId.getId());
 
 		return angabenGemeindeService.calculateErwarteteBetreuungsstunden(containerJaxId.getId());
+	}
+
+
+	@ApiOperation(
+		value = "Erstellt ein Docx Dokument zum Lastenausgleich Tagesschulen für den übergebenen Gemeindeantrag",
+		response = Void.class)
+	@POST
+	@Path("/docx-erstellen/{containerJaxId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public void dokumentErstellen(
+		@Nonnull @NotNull @PathParam("containerJaxId") JaxId containerJaxId,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(containerJaxId);
+		Objects.requireNonNull(containerJaxId.getId());
+
+		latsDokumentService.createDocx(containerJaxId.getId());
+
 	}
 }
