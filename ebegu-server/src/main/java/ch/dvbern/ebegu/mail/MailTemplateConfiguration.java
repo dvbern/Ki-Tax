@@ -82,6 +82,8 @@ public class MailTemplateConfiguration {
 	public static final String BETRAG2 = "betrag2";
 	public static final String BETREUUNG = "betreuung";
 	public static final String FTL_FILE_EXTENSION = ".ftl";
+	public static final String UNGELESENDE_MITTEILUNG = "ungelesendeMitteilung";
+	public static final String OFFENE_PENDENZEN = "offenePendenzen";
 
 	private final Configuration freeMarkerConfiguration;
 
@@ -389,14 +391,18 @@ public class MailTemplateConfiguration {
 	 * InfoOffenePendenzenInstitution is sent in two languages FR and DE since we don't know the language of the institution.
 	 */
 	@Nonnull
-	public String getInfoOffenePendenzenInstitution(
+	public String getInfoOffenePendenzenNeuMitteilungInstitution(
 		@Nonnull InstitutionStammdaten institutionStammdaten,
-		@Nonnull String empfaengerMail
+		@Nonnull String empfaengerMail,
+		boolean offenePendenzen,
+		boolean ungelesendeMitteilung
 	) {
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
+		paramMap.put(UNGELESENDE_MITTEILUNG, ungelesendeMitteilung);
+		paramMap.put(OFFENE_PENDENZEN, offenePendenzen);
 
-		return doProcessTemplate(MailTemplate.InfoOffenePendenzenInstitution.name() + FTL_FILE_EXTENSION, paramMap);
+		return doProcessTemplate(MailTemplate.InfoOffenePendenzenNeueMitteilungInstitution.name() + FTL_FILE_EXTENSION, paramMap);
 	}
 
 	public String getInfoGemeindeAngebotAktiviert(
