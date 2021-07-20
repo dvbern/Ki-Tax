@@ -28,6 +28,6 @@ public class StringMergeField extends AbstractMergeField<String> {
 	@Override
 	@Nonnull
 	public String getConvertedValue() {
-		return "Test";
+		return this.getValue();
 	}
 }

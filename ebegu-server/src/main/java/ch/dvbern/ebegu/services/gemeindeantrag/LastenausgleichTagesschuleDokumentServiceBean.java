@@ -21,12 +21,14 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.docxmerger.DocxDocument;
+import ch.dvbern.ebegu.docxmerger.lats.LatsDocxDTO;
+import ch.dvbern.ebegu.docxmerger.lats.LatsDocxMerger;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
-import ch.dvbern.ebegu.util.Constants;
 
 /**
  * Service fuer den Lastenausgleich der Tagesschulen
@@ -54,11 +56,11 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 
 		authorizer.checkReadAuthorization(currentAntrag);
 
-		String path = getPath(currentAntrag);
-	}
-
-	private String getPath(LastenausgleichTagesschuleAngabenGemeindeContainer antrag) {
-		return Constants.TEMP_REPORT_FOLDERNAME + "/lats/" + antrag.getId();
+		DocxDocument document = new DocxDocument("");
+		LatsDocxMerger merger = new LatsDocxMerger(document);
+		merger.addMergeFields(new LatsDocxDTO());
+		merger.merge();
+		document.hashCode();
 	}
 }
 

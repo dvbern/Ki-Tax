@@ -21,16 +21,19 @@ import java.util.ArrayList;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.docxmerger.DocxDocument;
 import ch.dvbern.ebegu.docxmerger.DocxMerger;
-import ch.dvbern.ebegu.docxmerger.mergefield.BooleanMergeField;
 import ch.dvbern.ebegu.docxmerger.mergefield.StringMergeField;
 
 public class LatsDocxMerger extends DocxMerger<LatsDocxDTO> {
 
+	public LatsDocxMerger(DocxDocument docxDocument) {
+		super(docxDocument);
+	}
+
 	@Override
 	public void addMergeFields(@Nonnull LatsDocxDTO dto) {
 		this.mergeFields = new ArrayList<>();
-		this.mergeFields.add(new BooleanMergeField("Test", true));
-		this.mergeFields.add(new StringMergeField("Test", "Test"));
+		this.mergeFields.add(new StringMergeField("TEST", "Replacement"));
 	}
 }

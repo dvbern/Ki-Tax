@@ -25,11 +25,15 @@ import ch.dvbern.ebegu.docxmerger.mergefield.AbstractMergeField;
 
 public abstract class DocxMerger<T> {
 	protected List<AbstractMergeField> mergeFields;
+	protected DocxDocument docxDocument;
+
+	public DocxMerger(DocxDocument docxDocument) {
+		this.docxDocument = docxDocument;
+	}
 
 	@Nonnull
-	public DocxDocument merge(@Nonnull DocxDocument document) {
-		this.mergeFields.forEach(AbstractMergeField::getConvertedValue);
-		return document;
+	public void merge() {
+		this.mergeFields.forEach(mergeField -> docxDocument.replacePlaceholder(mergeField.getPlaceholder(), mergeField.getConvertedValue()));
 	}
 
 	public abstract void addMergeFields(T dto);

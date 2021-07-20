@@ -27,6 +27,6 @@ public class BooleanMergeField extends AbstractMergeField<Boolean> {
 
 	@Override
 	public @Nonnull String getConvertedValue() {
-		return null;
+		return this.getValue().toString();
 	}
 }

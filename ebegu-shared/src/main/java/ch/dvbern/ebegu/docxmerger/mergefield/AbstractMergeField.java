@@ -20,6 +20,10 @@ package ch.dvbern.ebegu.docxmerger.mergefield;
 import javax.annotation.Nonnull;
 
 public abstract class AbstractMergeField<T> {
+
+	private static final String STARTING_TAG = "{";
+	private static final String CLOSING_TAG = "}";
+
 	@Nonnull private String name;
 	@Nonnull private T value;
 
@@ -48,4 +52,8 @@ public abstract class AbstractMergeField<T> {
 	public void setValue(@Nonnull T value) {
 		this.value = value;
 	}
+
+	public String getPlaceholder() {
+		return STARTING_TAG + this.name + CLOSING_TAG;
+	};
 }
