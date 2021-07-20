@@ -158,6 +158,7 @@ import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
 import {VerfuegungRS} from './service/verfuegungRS.rest';
 import {HttpVersionInterceptor} from './service/version/HttpVersionInterceptor';
+import {VersionService} from './service/version/version.service';
 import {WizardStepXRS} from './service/wizardStepXRS.rest';
 import {ZahlungRS} from './service/zahlungRS.rest';
 
@@ -250,6 +251,7 @@ export const CORE_JS_MODULE = angular
     .factory('I18nServiceRSRest', downgradeInjectable(I18nServiceRSRest) as any)
     .factory('SozialdienstRS', downgradeInjectable(SozialdienstRS) as any)
     .factory('InternePendenzenRS', downgradeInjectable(InternePendenzenRS) as any)
+    .factory('VersionService', downgradeInjectable(VersionService) as any)
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())
