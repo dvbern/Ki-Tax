@@ -2514,6 +2514,8 @@
     "ERROR_ANTRAGSTELLER_SZ_NOT_VOLLSTAENDIG": "Die Angaben zur Antragsteller/in 2 müssen vollständig ausgefüllt sein oder leer gelassen werden",
     "SOZIALDIENST_INFO_VOLLMACHT_FORM_DIRTY": "Sie haben Änderungen im Formular gemacht. Bitte speichern Sie diese, bevor Sie die Vollmacht erneut herunterladen können",
     "SOZIALDIENST_WARNING_FALL_ENTZOGEN": "Die Vollmacht wurde entzogen. Der Fall ist für den Unterstützungdienst gesperrt!",
+    "SOZIALDIENSTFALL_REAKTIVIEREN": "Fall erneut aktivieren",
+    "SOZIALDIENST_NOCH_EINGELADEN": "Ihr Unterstützdienst befindet sich noch im Status Eingeladen. Sie müssen zuerst die Stammdaten ausfüllen um einen Fall eröffnen zu können!",
     "BEARBEITEN": "Bearbeiten",
     "TAGESSCHULEN_DER_GEMEINDEN": "Tagesschulen der Gemeinde",
     "CONFIRM_STORNIEREN_TAGESSCHULE": "Wollen Sie die Anmeldung wirklich stornieren?",
@@ -2551,5 +2553,6 @@
     "MODUL_ID": "Modul ID",
     "COPY_TO_CLIPBOARD": "In Zwischenablage kopieren",
     "ERROR_DEFAULT_BENUTZER_NICHT_LOESCHBAR": "Dieser Account ist die/der Default Verantwortliche einer Gemeinde und kann deshalb nicht gelöscht werden.",
+    "INSTITUTION_EINGELADEN_WARN_TEXT": "Achtung, die Stammdaten der Institution sind noch nicht ausgefüllt. Eine Platzbestätigung ist damit noch nicht möglich!",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

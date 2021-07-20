@@ -25,10 +25,12 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -49,6 +51,8 @@ public class ResourceHelper {
 
 	public static final String ASSERT_GESUCH_STATUS_EQUAL = "assertGesuchStatusEqual";
 	public static final String ASSERT_BETREUUNG_STATUS_EQUAL = "assertBetreuungStatusEqual";
+	public static final String ASSERT_INSTITUTION_NOT_EINGELADEN = "assertInstitutionNotEingeladen";
+
 	@Inject
 	private GesuchService gesuchService;
 
@@ -189,6 +193,20 @@ public class ResourceHelper {
 				msg,
 				ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE,
 				betreuungId);
+		}
+	}
+
+	public void assertInstitutionNichtEingeladet(
+		@Nonnull Institution institution) {
+		requireNonNull(institution);
+
+		if (institution.getStatus() == InstitutionStatus.EINGELADEN) {
+			String msg = "Expected Institution not to be in Status Eingeladen";
+			throw new EbeguRuntimeException(
+				ASSERT_INSTITUTION_NOT_EINGELADEN,
+				msg,
+				ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE,
+				institution.getId());
 		}
 	}
 }
