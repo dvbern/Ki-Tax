@@ -16,18 +16,47 @@
  */
 
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
+import {BehaviorSubject, combineLatest} from 'rxjs';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {TSBenutzer} from '../../../../../models/TSBenutzer';
+import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
+import {ErrorService} from '../../../../core/errors/service/ErrorService';
+import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 @Component({
-  selector: 'dv-lastenausgleich-ts-berechnung',
-  templateUrl: './lastenausgleich-ts-berechnung.component.html',
-  styleUrls: ['./lastenausgleich-ts-berechnung.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-lastenausgleich-ts-berechnung',
+    templateUrl: './lastenausgleich-ts-berechnung.component.html',
+    styleUrls: ['./lastenausgleich-ts-berechnung.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LastenausgleichTsBerechnungComponent implements OnInit {
 
-  public constructor() { }
+    public canViewDokumentErstellenButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private latsContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
+    private principal: TSBenutzer | null;
 
-  public ngOnInit(): void {
-  }
+    public constructor(
+        private readonly translate: TranslateService,
+        private readonly errorService: ErrorService,
+        private readonly latsService: LastenausgleichTSService,
+        private readonly authService: AuthServiceRS,
+    ) {
+    }
 
+    public ngOnInit(): void {
+        combineLatest([
+            this.latsService.getLATSAngabenGemeindeContainer(),
+            this.authService.principal$,
+        ]).subscribe(values => {
+            this.latsContainer = values[0];
+            this.principal = values[1];
+            this.canViewDokumentErstellenButton.next(this.principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()));
+        }, () => this.errorService.addMesageAsInfo(this.translate.instant('DATA_RETRIEVAL_ERROR')));
+    }
+
+    public latsDokumentErstellen(): void {
+
+    }
 }

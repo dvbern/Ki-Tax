@@ -2292,6 +2292,7 @@
     "LATS_FRAGE_INSTITUTION_FORMULAR_GEPRUEFT": "Est-ce que le formulaire doit-il vraiment être libéré pour la vérification auprès du canton ?",
     "LATS_FREIGABE_PRUEFUNG_KANTON": "Libéré pour la vérification par le canton",
     "LATS_GEPRUEFT_KANTON": "Vérifiée par le canton",
+    "LATS_DOKUMENT_ERSTELLEN": "Lastenausgleich Dokument erstellen",
     "LATS_GEMEINDE_ANGABEN_ERROR": "Il y a des erreurs dans le formulaire pour les données de la commune",
     "LATS_NICHT_ALLE_INSTITUTIONEN_ABGESCHLOSSEN": "Les données des institutions ne sont pas toutes libérées et vérifiées",
     "LATS_FRAGE_GEMEINDE_ANTRAG_FREIGABE": "Voulez-vous vraiment libérer le formulaire pour la vérification par le canton ?",
