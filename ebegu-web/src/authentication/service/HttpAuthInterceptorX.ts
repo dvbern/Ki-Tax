@@ -15,24 +15,20 @@
 
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {IQService} from 'angular';
-import {from, Observable} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {CONSTANTS, HTTP_ERROR_CODES} from '../../app/core/constants/CONSTANTS';
 import {isIgnorableHttpError} from '../../app/core/errors/service/HttpErrorInterceptor';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {AuthLifeCycleService} from './authLifeCycle.service';
-import {HttpBuffer} from './HttpBuffer';
+import {HttpBufferX} from './HttpBufferX';
 
 @Injectable()
 export class HttpAuthInterceptor implements HttpInterceptor {
 
-    public static $inject = ['AuthLifeCycleService', '$q', 'CONSTANTS', 'httpBuffer'];
-
     public constructor(
         private readonly authLifeCycleService: AuthLifeCycleService,
-        private readonly $q: IQService,
-        private readonly httpBuffer: HttpBuffer,
+        private readonly httpBuffer: HttpBufferX,
     ) {
     }
 
@@ -53,10 +49,10 @@ export class HttpAuthInterceptor implements HttpInterceptor {
                         }
                         // all requests that failed due to notAuthenticated are appended to httpBuffer. Use
                         // httpBuffer.retryAll to submit them.
-                        const deferred = this.$q.defer();
+                        const deferred = new Subject<HttpEvent<any>>();
                         this.httpBuffer.append(req, deferred);
                         this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHENTICATED, err.message);
-                        return from(deferred.promise) as Observable<HttpEvent<any>>;
+                        return deferred;
                     case HTTP_ERROR_CODES.FORBIDDEN:
                         this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHORISED, err.message);
                         throw err;
