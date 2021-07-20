@@ -81,6 +81,16 @@ export class ErrorMessagesComponent implements OnChanges, OnDestroy {
         }
 
         const firstErroneousKey = Object.keys(errors)
+            // sort required to the end so more precise errors precede
+            .sort((a, b) => {
+                if (a === 'required') {
+                    return 1;
+                }
+                if (b === 'required') {
+                    return -1;
+                }
+                return a.localeCompare(b);
+            })
             .find(key => !!errors[key]);
 
         return firstErroneousKey || '';
