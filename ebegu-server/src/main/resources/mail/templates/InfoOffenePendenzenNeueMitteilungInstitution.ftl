@@ -14,7 +14,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – <#if offenePendenzen == true>Offene Pendenzen<#if ungelesendeMitteilung == true> und</#if></#if><#if ungelesendeMitteilung == true> Neue Mitteilungen</#if> (${institutionStammdaten.institution.name}) / <#if offenePendenzen == true>Confirmation de places en attente<#if ungelesendeMitteilung == true> et</#if></#if><#if ungelesendeMitteilung == true> nouveau message</#if> (${institutionStammdaten.institution.name})</title>
+    <title>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – <#if offenePendenzen == true>Offene Pendenzen<#if ungelesendeMitteilung == true> und</#if></#if><#if ungelesendeMitteilung == true> neue Mitteilungen</#if> (${institutionStammdaten.institution.name}) / <#if offenePendenzen == true>Confirmation de places en attente<#if ungelesendeMitteilung == true> et</#if></#if><#if ungelesendeMitteilung == true> nouveau message</#if> (${institutionStammdaten.institution.name})</title>
 
 </head>
 
@@ -34,7 +34,7 @@ ${templateConfiguration.mailCss}
     </#if>
     <#if ungelesendeMitteilung == true>
 	<p>
-		Wir möchten Sie <#if offenePendenzen == true> auch</#if>darüber informieren, dass für Ihre Institution ${institutionStammdaten.institution.name} in kiBon neue Mitteilungen gibt.
+		Wir möchten Sie <#if offenePendenzen == true> ausserdem </#if>darüber informieren, dass Sie für Ihre Institution ${institutionStammdaten.institution.name} ungelesene Nachrichten im Posteingang haben.
 		Sie können diese
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/posteingang">hier</a>
 		einsehen.
@@ -61,7 +61,7 @@ ${templateConfiguration.mailCss}
 	</#if>
     <#if ungelesendeMitteilung == true>
 		<p>
-			Nous vous informons<#if offenePendenzen == true> aussi</#if> qu'il y a des nouveaux messages pour l'institution ${institutionStammdaten.institution.name} dans kiBon.
+			Nous vous informons<#if offenePendenzen == true> aussi </#if> qu'il y a des nouveaux messages pour l'institution ${institutionStammdaten.institution.name} dans kiBon.
 			Vous pouvez les consulter
 			<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/posteingang">ici</a>.
 		</p>
