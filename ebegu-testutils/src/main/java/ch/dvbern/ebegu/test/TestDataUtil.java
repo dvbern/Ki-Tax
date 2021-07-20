@@ -114,6 +114,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
+import ch.dvbern.ebegu.enums.AbholungTagesschule;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
@@ -964,7 +965,7 @@ public final class TestDataUtil {
 		belegungTagesschule.setEintrittsdatum(LocalDate.now());
 		if (withModulBelegung) {
 			belegungTagesschule.setBelegungTagesschuleModule(new TreeSet<>());
-
+			belegungTagesschule.setAbholungTagesschule(AbholungTagesschule.ALLEINE_NACH_HAUSE);
 			Set<ModulTagesschule> modulTagesschuleSet = createDefaultModuleTagesschuleSet(true,
 				LocalTime.of(12,0), LocalTime.of(14,0), "Mittag", "Midi");
 			modulTagesschuleSet.forEach(
