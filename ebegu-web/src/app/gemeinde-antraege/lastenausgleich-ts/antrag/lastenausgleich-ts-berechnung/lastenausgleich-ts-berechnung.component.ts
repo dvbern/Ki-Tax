@@ -65,13 +65,13 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
         }, () => this.errorService.addMesageAsInfo(this.translate.instant('DATA_RETRIEVAL_ERROR')));
     }
 
-    public ascreateLatsDocumentDe(): void {
+    public createLatsDocumentDe(): void {
         this.downloadingDeFile.next(true);
         this.latsService.latsDocxErstellen(this.latsContainer, TSSprache.DEUTSCH)
             .subscribe(
                 response => {
                     this.createDownloadFile(response, TSSprache.DEUTSCH);
-                    this.downloadingFrFile.next(false);
+                    this.downloadingDeFile.next(false);
                 },
                 async err => {
                     const message = JSON.parse(await err.error.text());

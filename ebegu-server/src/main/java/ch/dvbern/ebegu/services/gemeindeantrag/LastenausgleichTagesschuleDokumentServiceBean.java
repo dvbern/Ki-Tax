@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -48,8 +50,9 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 	Authorizer authorizer;
 
 	@Override
+	@Nonnull
 	public byte[] createDocx(@Nonnull String containerId, @Nonnull Sprache sprache) {
-		LastenausgleichTagesschuleAngabenGemeindeContainer currentAntrag =
+		LastenausgleichTagesschuleAngabenGemeindeContainer container =
 			lastenausgleichTagesschuleAngabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(containerId)
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
 					"createDocx",
@@ -57,24 +60,39 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 					containerId)
 				);
 
-		authorizer.checkReadAuthorization(currentAntrag);
+		authorizer.checkReadAuthorization(container);
 
-		byte[] template = currentAntrag.getGesuchsperiode().getVorlageVerfuegungLatsWithSprache(sprache);
+		byte[] template = container.getGesuchsperiode().getVorlageVerfuegungLatsWithSprache(sprache);
 		if (template.length == 0) {
 			throw new EbeguRuntimeException(
 				"createDocx",
-				"LATS Template not found für Gesuchsperiode " + currentAntrag.getGesuchsperiode().getGesuchsperiodeString() + " und Sprache " + sprache,
+				"LATS Template not found für Gesuchsperiode " + container.getGesuchsperiode().getGesuchsperiodeString() + " und Sprache " + sprache,
 				ErrorCodeEnum.ERROR_LATS_VERFUEGUNG_TEMPLATE_NOT_FOUND,
-				currentAntrag.getGesuchsperiode().getGesuchsperiodeString(),
+				container.getGesuchsperiode().getGesuchsperiodeString(),
 				sprache
 			);
 		}
 
 		DocxDocument document = new DocxDocument(template);
 		LatsDocxMerger merger = new LatsDocxMerger(document);
-		merger.addMergeFields(new LatsDocxDTO());
+		merger.addMergeFields(toLatsDocxDTO(container));
 		merger.merge();
 		return document.getDocument();
+	}
+
+	@Nonnull
+	private LatsDocxDTO toLatsDocxDTO(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
+
+		Objects.requireNonNull(container.getAngabenKorrektur());
+		Objects.requireNonNull(container.getAngabenKorrektur().getLastenausgleichberechtigteBetreuungsstunden());
+
+		assert container.getAngabenKorrektur().getLastenausgleichberechtigteBetreuungsstunden() != null;
+		LatsDocxDTO dto = new LatsDocxDTO(
+			container.getGemeinde().getName(),
+			container.getAngabenKorrektur().getLastenausgleichberechtigteBetreuungsstunden()
+		);
+
+		return dto;
 	}
 }
 

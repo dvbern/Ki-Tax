@@ -17,23 +17,34 @@
 
 package ch.dvbern.ebegu.docxmerger.lats;
 
+import java.math.BigDecimal;
+
+import javax.annotation.Nonnull;
+
 public class LatsDocxDTO {
-	String test1;
-	Boolean test2;
+	@Nonnull private String gemeindeName;
+	@Nonnull private BigDecimal geleisteteBetreuungsstunden;
 
-	public String getTest1() {
-		return test1;
+	public LatsDocxDTO(@Nonnull String gemeindeName, @Nonnull BigDecimal geleisteteBetreuungsstunden) {
+		this.gemeindeName = gemeindeName;
+		this.geleisteteBetreuungsstunden = geleisteteBetreuungsstunden;
 	}
 
-	public void setTest1(String test1) {
-		this.test1 = test1;
+	@Nonnull
+	public String getGemeindeName() {
+		return gemeindeName;
 	}
 
-	public Boolean getTest2() {
-		return test2;
+	public void setGemeindeName(@Nonnull String gemeindeName) {
+		this.gemeindeName = gemeindeName;
 	}
 
-	public void setTest2(Boolean test2) {
-		this.test2 = test2;
+	@Nonnull
+	public BigDecimal getGeleisteteBetreuungsstunden() {
+		return geleisteteBetreuungsstunden;
+	}
+
+	public void setGeleisteteBetreuungsstunden(@Nonnull BigDecimal geleisteteBetreuungsstunden) {
+		this.geleisteteBetreuungsstunden = geleisteteBetreuungsstunden;
 	}
 }

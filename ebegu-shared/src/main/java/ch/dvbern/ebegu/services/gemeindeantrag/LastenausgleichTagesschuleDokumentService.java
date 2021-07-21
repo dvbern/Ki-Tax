@@ -23,6 +23,7 @@ import ch.dvbern.ebegu.enums.Sprache;
 
 public interface LastenausgleichTagesschuleDokumentService {
 
+	@Nonnull
 	byte[] createDocx(@Nonnull String containerId, @Nonnull Sprache sprache);
 
 }

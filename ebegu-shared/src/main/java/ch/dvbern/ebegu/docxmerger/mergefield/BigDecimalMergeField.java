@@ -17,16 +17,27 @@
 
 package ch.dvbern.ebegu.docxmerger.mergefield;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import javax.annotation.Nonnull;
 
-public class BooleanMergeField extends AbstractMergeField<Boolean> {
+public class BigDecimalMergeField extends AbstractMergeField<BigDecimal> {
 
-	public BooleanMergeField(@Nonnull String name, @Nonnull Boolean value) {
+	private final int scale;
+
+	public BigDecimalMergeField(@Nonnull String name, @Nonnull BigDecimal value) {
+		this(name, value, 2);
+	}
+
+	public BigDecimalMergeField(@Nonnull String name, @Nonnull BigDecimal value, @Nonnull Integer precision) {
 		super(name, value);
+		this.scale = precision;
 	}
 
 	@Override
-	public @Nonnull String getConvertedValue() {
-		return this.getValue().toString();
+	@Nonnull
+	public String getConvertedValue() {
+		return this.getValue().setScale(this.scale, RoundingMode.HALF_UP).toString();
 	}
 }
