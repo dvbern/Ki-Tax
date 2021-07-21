@@ -28,8 +28,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -85,6 +83,18 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
 	private byte[] vorlageMerkblattTsFr;
+
+	@Nullable
+	@Column(nullable = true, length = TEN_MB) // 10 megabytes
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	private byte[] vorlageVerfuegungLatsDe;
+
+	@Nullable
+	@Column(nullable = true, length = TEN_MB) // 10 megabytes
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	private byte[] vorlageVerfuegungLatsFr;
 
 
 	@Nonnull
@@ -209,6 +219,55 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 			return this.getVorlageMerkblattTsDe();
 		case FRANZOESISCH:
 			return this.getVorlageMerkblattTsFr();
+		default:
+			return EMPTY_BYTE_ARRAY;
+		}
+	}
+
+	@Nonnull
+	public byte[] getVorlageVerfuegungLatsDe() {
+		if (vorlageVerfuegungLatsDe == null) {
+			return EMPTY_BYTE_ARRAY;
+		}
+		return Arrays.copyOf(vorlageVerfuegungLatsDe, vorlageVerfuegungLatsDe.length);
+	}
+
+	public void setVorlageVerfuegungLatsDe(@Nullable byte[] vorlageVerfuegungLatsDe) {
+		if (vorlageVerfuegungLatsDe == null) {
+			this.vorlageVerfuegungLatsDe = null;
+		} else {
+			this.vorlageVerfuegungLatsDe = Arrays.copyOf(vorlageVerfuegungLatsDe, vorlageVerfuegungLatsDe.length);
+		}
+	}
+
+	@Nonnull
+	public byte[] getVorlageVerfuegungLatsFr() {
+		if (vorlageVerfuegungLatsFr == null) {
+			return EMPTY_BYTE_ARRAY;
+		}
+		return Arrays.copyOf(vorlageVerfuegungLatsFr, vorlageVerfuegungLatsFr.length);
+	}
+
+	public void setVorlageVerfuegungLatsFr(@Nullable byte[] vorlageVerfuegungLatsFr) {
+		if (vorlageVerfuegungLatsFr == null) {
+			this.vorlageVerfuegungLatsFr = null;
+		} else {
+			this.vorlageVerfuegungLatsFr = Arrays.copyOf(vorlageVerfuegungLatsFr, vorlageVerfuegungLatsFr.length);
+		}
+	}
+
+	/**
+	 * Returns the correct VerfuegungErlaeuterung for the given language
+	 */
+	@Nonnull
+	public byte[] getVorlageVerfuegungLatsWithSprache(
+		@Nonnull Sprache sprache
+	) {
+		switch (sprache) {
+		case DEUTSCH:
+			return this.getVorlageVerfuegungLatsDe();
+		case FRANZOESISCH:
+			return this.getVorlageVerfuegungLatsFr();
 		default:
 			return EMPTY_BYTE_ARRAY;
 		}
