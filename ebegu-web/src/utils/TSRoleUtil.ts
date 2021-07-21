@@ -721,4 +721,10 @@ export class TSRoleUtil {
     public static getAllRolesForDossierMitteilungen(): ReadonlyArray<TSRole> {
         return this.getGesuchstellerJugendamtSchulamtOtherAmtRoles().concat(this.getTraegerschaftInstitutionRoles());
     }
+
+    public static getGemeindeAntragRoles(): ReadonlyArray<TSRole> {
+        return PERMISSIONS[Permission.LASTENAUSGLEICH_TAGESSCHULE]
+            .concat(PERMISSIONS[Permission.FERIENBETREUUNG])
+            .concat(this.getTraegerschaftInstitutionOnlyRoles());
+    }
 }
