@@ -62,7 +62,7 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 
 		authorizer.checkReadAuthorization(container);
 
-		byte[] template = container.getGesuchsperiode().getVorlageVerfuegungLatsWithSprache(sprache);
+		final byte[] template = container.getGesuchsperiode().getVorlageVerfuegungLatsWithSprache(sprache);
 		if (template.length == 0) {
 			throw new EbeguRuntimeException(
 				"createDocx",

@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.docxmerger;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.annotation.Nonnull;
 
@@ -29,11 +30,11 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 
 public class DocxDocument {
-	@Nonnull private byte[] template;
+	@Nonnull private final byte[] template;
 	private XWPFDocument xwpfDocument;
 
 	public DocxDocument(@Nonnull byte[] template) {
-		this.template = template;
+		this.template = Arrays.copyOf(template, template.length);
 		this.createDocument();
 	}
 
