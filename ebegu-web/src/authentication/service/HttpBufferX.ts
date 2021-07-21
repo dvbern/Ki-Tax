@@ -18,8 +18,11 @@
 import {HttpClient, HttpRequest} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
+import {NgAuthenticationModule} from '../ng-authentication.module';
 
-@Injectable()
+@Injectable({
+    providedIn: NgAuthenticationModule
+})
 export class HttpBufferX {
 
     private buffer: Array<{request: HttpRequest<any>, deferred: Subject<any>}> = [];
