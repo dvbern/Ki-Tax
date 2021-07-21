@@ -65,7 +65,7 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
         }, () => this.errorService.addMesageAsInfo(this.translate.instant('DATA_RETRIEVAL_ERROR')));
     }
 
-    public createLatsDocumentDe(): void {
+    public ascreateLatsDocumentDe(): void {
         this.downloadingDeFile.next(true);
         this.latsService.latsDocxErstellen(this.latsContainer, TSSprache.DEUTSCH)
             .subscribe(
@@ -73,9 +73,9 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
                     this.createDownloadFile(response, TSSprache.DEUTSCH);
                     this.downloadingFrFile.next(false);
                 },
-                err => {
-                    this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
-                    console.error(err);
+                async err => {
+                    const message = JSON.parse(await err.error.text());
+                    this.errorService.addMesageAsError(message.translatedMessage);
                 });
     }
 
@@ -87,9 +87,9 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
                     this.createDownloadFile(response, TSSprache.DEUTSCH);
                     this.downloadingFrFile.next(false);
                 },
-                err => {
-                    this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
-                    console.error(err);
+                async err => {
+                    const message = JSON.parse(await err.error.text());
+                    this.errorService.addMesageAsError(message.translatedMessage);
                 }
             );
     }

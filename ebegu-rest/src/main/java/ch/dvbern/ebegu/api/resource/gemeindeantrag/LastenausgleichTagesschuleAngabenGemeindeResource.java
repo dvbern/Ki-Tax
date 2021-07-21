@@ -525,7 +525,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		Objects.requireNonNull(containerJaxId);
 		Objects.requireNonNull(containerJaxId.getId());
 
-		byte[] document = latsDokumentService.createDocx(containerJaxId.getId(), sprache);
+		byte[] document;
+		document = latsDokumentService.createDocx(containerJaxId.getId(), sprache);
 
 		if (document != null && document.length > 0) {
 			try {
@@ -537,7 +538,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 			}
 		}
 
-		return Response.status(Status.NO_CONTENT).build();
+		throw new EbeguRuntimeException("dokumentErstellen", "Lats Template has no content");
 
 	}
 }

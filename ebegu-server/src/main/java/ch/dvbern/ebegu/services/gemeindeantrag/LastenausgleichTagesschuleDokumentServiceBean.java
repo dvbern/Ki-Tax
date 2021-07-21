@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
 
@@ -59,6 +60,15 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 		authorizer.checkReadAuthorization(currentAntrag);
 
 		byte[] template = currentAntrag.getGesuchsperiode().getVorlageVerfuegungLatsWithSprache(sprache);
+		if (template.length == 0) {
+			throw new EbeguRuntimeException(
+				"createDocx",
+				"LATS Template not found für Gesuchsperiode " + currentAntrag.getGesuchsperiode().getGesuchsperiodeString() + " und Sprache " + sprache,
+				ErrorCodeEnum.ERROR_LATS_VERFUEGUNG_TEMPLATE_NOT_FOUND,
+				currentAntrag.getGesuchsperiode().getGesuchsperiodeString(),
+				sprache
+			);
+		}
 
 		DocxDocument document = new DocxDocument(template);
 		LatsDocxMerger merger = new LatsDocxMerger(document);
