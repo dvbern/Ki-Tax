@@ -90,4 +90,8 @@ public class DocxDocument {
 		}
 		return out.toByteArray();
 	}
+
+	public XWPFDocument getXwpfDocument() {
+		return xwpfDocument;
+	}
 }
