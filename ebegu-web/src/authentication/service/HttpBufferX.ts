@@ -22,7 +22,7 @@ import {Subject} from 'rxjs';
 @Injectable()
 export class HttpBufferX {
 
-    private buffer: Array<{request: HttpRequest<any>, deferred: Subject<any>}>;
+    private buffer: Array<{request: HttpRequest<any>, deferred: Subject<any>}> = [];
 
     public constructor(
         private http: HttpClient

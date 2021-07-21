@@ -16,6 +16,7 @@
  */
 
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
+import {HttpAuthInterceptorX} from '../../../authentication/service/HttpAuthInterceptorX';
 import {HttpI18nInterceptorX} from '../../i18n/httpInterceptor/http-i18n-Interceptor-X';
 import {XsrfInterceptor} from '../../i18n/httpInterceptor/XsrfInterceptor';
 import {HttpVersionInterceptorX} from '../service/version/HttpVersionInterceptorX';
@@ -24,4 +25,5 @@ export const HTTP_INTERCEPTOR_PROVIDERS = [
     { provide: HTTP_INTERCEPTORS, useClass: HttpVersionInterceptorX, multi: true},
     { provide: HTTP_INTERCEPTORS, useClass: XsrfInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HttpI18nInterceptorX, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpAuthInterceptorX, multi: true },
 ];

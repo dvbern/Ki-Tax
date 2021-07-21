@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {HttpRequest} from '@angular/common/http';
 import * as angular from 'angular';
 
 import * as Raven from 'raven-js';
@@ -30,6 +31,7 @@ import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {AuthLifeCycleService} from './authLifeCycle.service';
 import {HttpBuffer} from './HttpBuffer';
+import {HttpBufferX} from './HttpBufferX';
 import ICookiesService = angular.cookies.ICookiesService;
 import IHttpService = angular.IHttpService;
 import IPromise = angular.IPromise;
@@ -45,6 +47,7 @@ export class AuthServiceRS {
         '$http', '$q', '$timeout', '$cookies', 'EbeguRestUtil', 'httpBuffer',
         'AuthLifeCycleService',
         'BenutzerRS',
+        'HttpBufferX'
     ];
 
     private principal?: TSBenutzer;
@@ -66,6 +69,7 @@ export class AuthServiceRS {
         private readonly httpBuffer: HttpBuffer,
         private readonly authLifeCycleService: AuthLifeCycleService,
         private readonly benutzerRS: BenutzerRS,
+        private readonly httpBufferX: HttpBufferX
     ) {
     }
 
@@ -101,6 +105,7 @@ export class AuthServiceRS {
         ).then(() => {
             // try to reload buffered requests
             this.httpBuffer.retryAll((config: IRequestConfig) => config);
+            this.httpBufferX.retryAll((request: HttpRequest<any>) => request);
             // ensure that there is ALWAYS a logout-event before the login-event by throwing it right before login
             this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out before logging in');
             // Response cookies are not immediately accessible, so lets wait for a bit

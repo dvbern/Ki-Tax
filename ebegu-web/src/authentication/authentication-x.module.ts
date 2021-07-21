@@ -28,7 +28,6 @@ import {HttpBufferX} from './service/HttpBufferX';
         SharedModule,
     ],
     providers: [
-        HttpAuthInterceptorX,
         HttpBufferX
     ]
 })

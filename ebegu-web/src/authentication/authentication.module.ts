@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {downgradeInjectable} from '@angular/upgrade/static';
 import * as angular from 'angular';
 import {authenticationRoutes} from './authentication.route';
 import {LoginComponentConfig} from './login/login.component';
@@ -20,6 +21,7 @@ import {SCHULUNG_COMPONENT_CONFIG} from './schulung/schulung.component';
 import {AuthServiceRS} from './service/AuthServiceRS.rest';
 import {HttpAuthInterceptor} from './service/HttpAuthInterceptor';
 import {HttpBuffer} from './service/HttpBuffer';
+import {HttpBufferX} from './service/HttpBufferX';
 import {authenticationHookRunBlock} from './state-hooks/onBefore/authentication.hook';
 import {authorisationHookRunBlock} from './state-hooks/onBefore/authorisation.hook';
 import {debugHookRunBlock} from './state-hooks/onBefore/debug.hook';
@@ -46,4 +48,5 @@ export const AUTHENTICATION_JS_MODULE =
         .service('AuthServiceRS', AuthServiceRS)
         .service('httpBuffer', HttpBuffer)
         .component('dvSchulung', SCHULUNG_COMPONENT_CONFIG)
-        .component('dvLogin', LoginComponentConfig);
+        .component('dvLogin', LoginComponentConfig)
+        .factory('HttpBufferX', downgradeInjectable(HttpBufferX) as any);
