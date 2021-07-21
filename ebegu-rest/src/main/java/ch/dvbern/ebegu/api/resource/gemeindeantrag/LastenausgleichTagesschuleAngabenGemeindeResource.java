@@ -528,7 +528,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		byte[] document;
 		document = latsDokumentService.createDocx(containerJaxId.getId(), sprache);
 
-		if (document != null && document.length > 0) {
+		if (document.length > 0) {
 			try {
 				return RestUtil.buildDownloadResponse(true, ".docx",
 					"application/octet-stream", document);
