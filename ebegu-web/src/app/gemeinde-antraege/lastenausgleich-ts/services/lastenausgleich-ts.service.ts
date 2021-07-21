@@ -198,9 +198,9 @@ export class LastenausgleichTSService {
         );
     }
 
-    public latsDocxErstellen(antrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer): Observable<void> {
-        return this.http.post<void>(
-            `${this.API_BASE_URL}/docx-erstellen/${encodeURIComponent(antrag.id)}`, {}
+    public latsDocxErstellen(antrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer): Observable<any> {
+        return this.http.post(
+            `${this.API_BASE_URL}/docx-erstellen/${encodeURIComponent(antrag.id)}`, {}, {responseType: 'blob'}
         );
     }
 }

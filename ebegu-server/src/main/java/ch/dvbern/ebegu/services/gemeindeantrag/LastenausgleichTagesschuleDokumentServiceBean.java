@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.docxmerger.lats.LatsDocxDTO;
 import ch.dvbern.ebegu.docxmerger.lats.LatsDocxMerger;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
@@ -45,7 +46,7 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 	Authorizer authorizer;
 
 	@Override
-	public void createDocx(String containerId) {
+	public byte[] createDocx(String containerId) {
 		LastenausgleichTagesschuleAngabenGemeindeContainer currentAntrag =
 			lastenausgleichTagesschuleAngabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(containerId)
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -56,11 +57,13 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 
 		authorizer.checkReadAuthorization(currentAntrag);
 
-		DocxDocument document = new DocxDocument("");
+		byte[] template = currentAntrag.getGesuchsperiode().getVorlageVerfuegungLatsWithSprache(Sprache.DEUTSCH);
+
+		DocxDocument document = new DocxDocument(template);
 		LatsDocxMerger merger = new LatsDocxMerger(document);
 		merger.addMergeFields(new LatsDocxDTO());
 		merger.merge();
-		document.hashCode();
+		return document.getDocument();
 	}
 }
 

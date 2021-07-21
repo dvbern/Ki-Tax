@@ -19,6 +19,6 @@ package ch.dvbern.ebegu.services.gemeindeantrag;
 
 public interface LastenausgleichTagesschuleDokumentService {
 
-	void createDocx(String containerId);
+	byte[] createDocx(String containerId);
 
 }

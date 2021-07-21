@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.api.resource.gemeindeantrag;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -50,12 +51,14 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxLastenausgleichTagesschulenStatusHistory;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.authentication.AuthorizerImpl;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeService;
@@ -506,13 +509,13 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 	@ApiOperation(
 		value = "Erstellt ein Docx Dokument zum Lastenausgleich Tagesschulen für den übergebenen Gemeindeantrag",
-		response = Void.class)
+		response = Response.class)
 	@POST
 	@Path("/docx-erstellen/{containerJaxId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public void dokumentErstellen(
+	public Response dokumentErstellen(
 		@Nonnull @NotNull @PathParam("containerJaxId") JaxId containerJaxId,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response
@@ -520,7 +523,19 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		Objects.requireNonNull(containerJaxId);
 		Objects.requireNonNull(containerJaxId.getId());
 
-		latsDokumentService.createDocx(containerJaxId.getId());
+		byte[] document = latsDokumentService.createDocx(containerJaxId.getId());
+
+		if (document != null && document.length > 0) {
+			try {
+				return RestUtil.buildDownloadResponse(true, ".docx",
+					"application/octet-stream", document);
+
+			} catch (IOException e) {
+				throw new EbeguRuntimeException("dokumentErstellen", "error occured while building response", e);
+			}
+		}
+
+		return Response.status(Status.NO_CONTENT).build();
 
 	}
 }

@@ -17,8 +17,8 @@
 
 package ch.dvbern.ebegu.docxmerger;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
@@ -29,25 +29,19 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 
 public class DocxDocument {
-	@Nonnull private String templatePath;
+	@Nonnull private byte[] template;
 	private XWPFDocument xwpfDocument;
 
-	public DocxDocument(@Nonnull String templatePath) {
-		this.templatePath = templatePath;
+	public DocxDocument(@Nonnull byte[] template) {
+		this.template = template;
 		this.createDocument();
 	}
 
 	private void createDocument() {
-		File file = new File(templatePath);
 		try {
-			file.createNewFile();
+			this.xwpfDocument = new XWPFDocument(new ByteArrayInputStream(template));
 		} catch (IOException e) {
-			throw new EbeguRuntimeException("createDocument", "could not create file: " + this.templatePath, e);
-		}
-		try {
-			this.xwpfDocument = new XWPFDocument(new FileInputStream(file));
-		} catch (IOException e) {
-			throw new EbeguRuntimeException("createDocument", "document not found: " + this.templatePath, e);
+			throw new EbeguRuntimeException("createDocument", "could not create document", e);
 		}
 	}
 
@@ -68,5 +62,17 @@ public class DocxDocument {
 		if (!found) {
 			throw new EbeguRuntimeException("replacePlaceholder", "placeholder not found in text: " + placeholder);
 		}
+	}
+
+	public byte[] getDocument() {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try {
+			xwpfDocument.write(out);
+			out.close();
+			xwpfDocument.close();
+		} catch (IOException e) {
+			throw new EbeguRuntimeException("getDocument", "Error while converting xwpfDocument to byte array", e);
+		}
+		return out.toByteArray();
 	}
 }

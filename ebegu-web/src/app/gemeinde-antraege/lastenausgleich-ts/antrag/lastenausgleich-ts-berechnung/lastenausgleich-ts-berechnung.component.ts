@@ -23,6 +23,7 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
+import {DownloadRS} from '../../../../core/service/downloadRS.rest';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 @Component({
@@ -42,6 +43,7 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly latsService: LastenausgleichTSService,
         private readonly authService: AuthServiceRS,
+        private readonly downloadRS: DownloadRS
     ) {
     }
 
@@ -58,8 +60,22 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
 
     public latsDokumentErstellen(): void {
         this.latsService.latsDocxErstellen(this.latsContainer).subscribe(
-            () => {},
-            () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'))
+            response => this.createDownloadFile(response),
+            err => {
+                this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
+                console.error(err);
+            }
         );
+    }
+
+    private createDownloadFile(response: BlobPart): void {
+        const file = new Blob([response], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+        const filename = this.getFilename();
+        this.downloadRS.openDownload(file, filename);
+    }
+
+    private getFilename(): string {
+        return this.translate.instant('LATS_VERFUEGUNG_DOKUMENT_NAME')
+            + ` ${this.latsContainer.gesuchsperiode.gesuchsperiodeString} ${this.latsContainer.gemeinde.name}.docx`;
     }
 }
