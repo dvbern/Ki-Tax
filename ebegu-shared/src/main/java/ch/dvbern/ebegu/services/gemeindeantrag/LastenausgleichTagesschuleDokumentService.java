@@ -17,8 +17,12 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.enums.Sprache;
+
 public interface LastenausgleichTagesschuleDokumentService {
 
-	byte[] createDocx(String containerId);
+	byte[] createDocx(@Nonnull String containerId, @Nonnull Sprache sprache);
 
 }

@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -511,19 +512,20 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		value = "Erstellt ein Docx Dokument zum Lastenausgleich Tagesschulen für den übergebenen Gemeindeantrag",
 		response = Response.class)
 	@POST
-	@Path("/docx-erstellen/{containerJaxId}")
+	@Path("/docx-erstellen/{containerJaxId}/{sprache}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response dokumentErstellen(
 		@Nonnull @NotNull @PathParam("containerJaxId") JaxId containerJaxId,
+		@Nonnull @PathParam("sprache") Sprache sprache,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response
 	) {
 		Objects.requireNonNull(containerJaxId);
 		Objects.requireNonNull(containerJaxId.getId());
 
-		byte[] document = latsDokumentService.createDocx(containerJaxId.getId());
+		byte[] document = latsDokumentService.createDocx(containerJaxId.getId(), sprache);
 
 		if (document != null && document.length > 0) {
 			try {

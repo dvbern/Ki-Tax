@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -46,7 +47,7 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 	Authorizer authorizer;
 
 	@Override
-	public byte[] createDocx(String containerId) {
+	public byte[] createDocx(@Nonnull String containerId, @Nonnull Sprache sprache) {
 		LastenausgleichTagesschuleAngabenGemeindeContainer currentAntrag =
 			lastenausgleichTagesschuleAngabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(containerId)
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -57,7 +58,7 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 
 		authorizer.checkReadAuthorization(currentAntrag);
 
-		byte[] template = currentAntrag.getGesuchsperiode().getVorlageVerfuegungLatsWithSprache(Sprache.DEUTSCH);
+		byte[] template = currentAntrag.getGesuchsperiode().getVorlageVerfuegungLatsWithSprache(sprache);
 
 		DocxDocument document = new DocxDocument(template);
 		LatsDocxMerger merger = new LatsDocxMerger(document);

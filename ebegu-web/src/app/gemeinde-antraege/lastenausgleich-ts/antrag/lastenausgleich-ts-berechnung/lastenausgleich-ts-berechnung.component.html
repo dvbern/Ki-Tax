@@ -15,11 +15,23 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="actions">
-    <dv-loading-button
-        (buttonClick)="latsDokumentErstellen()"
+<button type="button" class="dv-btn btn-link link-underline"
         *ngIf="canViewDokumentErstellenButton | async"
-        type="button">
-        <span translate>LATS_DOKUMENT_ERSTELLEN</span>
-    </dv-loading-button>
+        (click)="createLatsDocumentDe()">
+    <i *ngIf="!(downloadingDeFile | async)" class="fa fa-file-text-o"></i>
+    <i *ngIf="downloadingDeFile | async" class="fa fa-circle-o-notch fa-spin fa-fw"></i>
+    &nbsp;
+    <span translate>LATS_DOKUMENT_ERSTELLEN_DE</span>
+</button>
+<br/>
+<button type="button" class="dv-btn btn-link link-underline"
+        *ngIf="canViewDokumentErstellenButton | async"
+        (click)="createLatsDocumentFr()">
+    <i *ngIf="!(downloadingFrFile | async)" class="fa fa-file-text-o"></i>
+    <i *ngIf="downloadingFrFile | async" class="fa fa-circle-o-notch fa-spin fa-fw"></i>
+    &nbsp;
+    <span translate>LATS_DOKUMENT_ERSTELLEN_FR</span>
+</button>
+
+<div class="actions">
 </div>

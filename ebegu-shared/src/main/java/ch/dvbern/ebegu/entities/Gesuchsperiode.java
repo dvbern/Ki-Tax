@@ -32,6 +32,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -269,7 +270,7 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 		case FRANZOESISCH:
 			return this.getVorlageVerfuegungLatsFr();
 		default:
-			return EMPTY_BYTE_ARRAY;
+			throw new EbeguRuntimeException("getVorlageVerfuegungLatsWithSprache", "Sprache not defined", sprache);
 		}
 	}
 

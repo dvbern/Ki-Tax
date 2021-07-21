@@ -19,6 +19,7 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {BehaviorSubject, combineLatest} from 'rxjs';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {TSSprache} from '../../../../../models/enums/TSSprache';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
@@ -34,7 +35,13 @@ import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.servic
 })
 export class LastenausgleichTsBerechnungComponent implements OnInit {
 
+    private static readonly FILENAME_DE = 'Verfügung Tagesschulen kiBon';
+    private static readonly FILENAME_FR = 'Modèle Décisions EJC kibon';
+
     public canViewDokumentErstellenButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public downloadingDeFile: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    public downloadingFrFile: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
     private latsContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
     private principal: TSBenutzer | null;
 
@@ -58,24 +65,47 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
         }, () => this.errorService.addMesageAsInfo(this.translate.instant('DATA_RETRIEVAL_ERROR')));
     }
 
-    public latsDokumentErstellen(): void {
-        this.latsService.latsDocxErstellen(this.latsContainer).subscribe(
-            response => this.createDownloadFile(response),
-            err => {
-                this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
-                console.error(err);
-            }
-        );
+    public createLatsDocumentDe(): void {
+        this.downloadingDeFile.next(true);
+        this.latsService.latsDocxErstellen(this.latsContainer, TSSprache.DEUTSCH)
+            .subscribe(
+                response => {
+                    this.createDownloadFile(response, TSSprache.DEUTSCH);
+                    this.downloadingFrFile.next(false);
+                },
+                err => {
+                    this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
+                    console.error(err);
+                });
     }
 
-    private createDownloadFile(response: BlobPart): void {
+    public createLatsDocumentFr(): void {
+        this.downloadingFrFile.next(true);
+        this.latsService.latsDocxErstellen(this.latsContainer, TSSprache.FRANZOESISCH)
+            .subscribe(
+                response => {
+                    this.createDownloadFile(response, TSSprache.DEUTSCH);
+                    this.downloadingFrFile.next(false);
+                },
+                err => {
+                    this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
+                    console.error(err);
+                }
+            );
+    }
+
+    private createDownloadFile(response: BlobPart, sprache: TSSprache): void {
         const file = new Blob([response], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
-        const filename = this.getFilename();
+        const filename = this.getFilename(sprache);
         this.downloadRS.openDownload(file, filename);
     }
 
-    private getFilename(): string {
-        return this.translate.instant('LATS_VERFUEGUNG_DOKUMENT_NAME')
-            + ` ${this.latsContainer.gesuchsperiode.gesuchsperiodeString} ${this.latsContainer.gemeinde.name}.docx`;
+    private getFilename(sprache: TSSprache): string {
+        let filename;
+        (sprache === TSSprache.DEUTSCH)
+            ? filename = LastenausgleichTsBerechnungComponent.FILENAME_DE
+            : filename = LastenausgleichTsBerechnungComponent.FILENAME_FR;
+
+        return `${filename} ${this.latsContainer.gesuchsperiode.gesuchsperiodeString} ${this.latsContainer.gemeinde.name}.docx`;
     }
 }
