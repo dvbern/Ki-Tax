@@ -25,20 +25,20 @@ import {NgAuthenticationModule} from '../ng-authentication.module';
 })
 export class HttpBufferX {
 
-    private buffer: Array<{request: HttpRequest<any>, deferred: Subject<any>}> = [];
+    private buffer: Array<{request: HttpRequest<any>, deferred$: Subject<any>}> = [];
 
     public constructor(
-        private http: HttpClient
+        private readonly http: HttpClient
     ) {
     }
 
     /**
      * Appends HTTP request object with deferred response attached to buffer.
      */
-    public append(request: HttpRequest<any>, deferred: Subject<any>): void {
+    public append(request: HttpRequest<any>, deferred$: Subject<any>): void {
         this.buffer.push({
             request,
-            deferred
+            deferred$
         });
     }
 
@@ -47,7 +47,7 @@ export class HttpBufferX {
      */
     public rejectAll(reason: any): void {
         if (reason) {
-            this.buffer.forEach(b => b.deferred.error(reason));
+            this.buffer.forEach(b => b.deferred$.error(reason));
         }
         this.buffer = [];
     }
@@ -56,14 +56,14 @@ export class HttpBufferX {
      * Retries all the buffered requests clears the buffer.
      */
     public retryAll(updater: (transformable: HttpRequest<any>) => HttpRequest<any>): void {
-        this.buffer.forEach(b => this.retryHttpRequest(updater(b.request), b.deferred));
+        this.buffer.forEach(b => this.retryHttpRequest(updater(b.request), b.deferred$));
         this.buffer = [];
     }
 
-    private retryHttpRequest(request: HttpRequest<any>, deferred: Subject<any>): void {
+    private retryHttpRequest(request: HttpRequest<any>, deferred$: Subject<any>): void {
         this.http.request(request).subscribe(response => {
-            deferred.next(response);
-            deferred.complete();
-        });
+            deferred$.next(response);
+            deferred$.complete();
+        }, error => console.error(error));
     }
 }

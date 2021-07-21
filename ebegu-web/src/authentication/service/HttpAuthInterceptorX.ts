@@ -54,10 +54,10 @@ export class HttpAuthInterceptorX implements HttpInterceptor {
                         }
                         // all requests that failed due to notAuthenticated are appended to httpBuffer. Use
                         // httpBuffer.retryAll to submit them.
-                        const deferred = new Subject<HttpEvent<any>>();
-                        this.httpBuffer.append(req, deferred);
+                        const deferred$ = new Subject<HttpEvent<any>>();
+                        this.httpBuffer.append(req, deferred$);
                         this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHENTICATED, err.message);
-                        return deferred;
+                        return deferred$;
                     case HTTP_ERROR_CODES.FORBIDDEN:
                         this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHORISED, err.message);
                         throw err;

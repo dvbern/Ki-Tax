@@ -22,8 +22,6 @@ import {AuthServiceRS} from './service/AuthServiceRS.rest';
 import {HttpAuthInterceptor} from './service/HttpAuthInterceptor';
 import {HttpBuffer} from './service/HttpBuffer';
 import {HttpBufferX} from './service/HttpBufferX';
-import {authenticationHookRunBlock} from './state-hooks/onBefore/authentication.hook';
-import {authorisationHookRunBlock} from './state-hooks/onBefore/authorisation.hook';
 import {debugHookRunBlock} from './state-hooks/onBefore/debug.hook';
 import {dummyLoginHookRunBlock} from './state-hooks/onBefore/dummyLogin.hook';
 import {errorAfterLoginHookRunBlock} from './state-hooks/onError/errorAfterLogin.hook';
@@ -35,8 +33,6 @@ import {clearErrorsHookRunBlock} from './state-hooks/onSuccess/clearErrors.hook'
 export const AUTHENTICATION_JS_MODULE =
     angular.module('dvbAngular.authentication', ['ngCookies'])
         .run(debugHookRunBlock)
-        .run(authenticationHookRunBlock)
-        .run(authorisationHookRunBlock)
         .run(dummyLoginHookRunBlock)
         .run(errorAfterLoginHookRunBlock)
         .run(erorGSRegistrationIncompleteHookRunBlock)
@@ -44,9 +40,9 @@ export const AUTHENTICATION_JS_MODULE =
         .run(errorRecoveryHookRunBlock)
         .run(clearErrorsHookRunBlock)
         .run(authenticationRoutes)
+        .factory('HttpBufferX', downgradeInjectable(HttpBufferX) as any)
         .service('HttpAuthInterceptor', HttpAuthInterceptor)
         .service('AuthServiceRS', AuthServiceRS)
         .service('httpBuffer', HttpBuffer)
         .component('dvSchulung', SCHULUNG_COMPONENT_CONFIG)
-        .component('dvLogin', LoginComponentConfig)
-        .factory('HttpBufferX', downgradeInjectable(HttpBufferX) as any);
+        .component('dvLogin', LoginComponentConfig);
