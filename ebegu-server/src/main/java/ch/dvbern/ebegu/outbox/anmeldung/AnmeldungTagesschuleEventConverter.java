@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Adresse;
@@ -32,7 +33,6 @@ import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.services.GesuchstellerAdresseService;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.AbholungTagesschule;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulAuswahlDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungDetailsDTO;
@@ -48,17 +48,15 @@ import ch.dvbern.kibon.exchange.commons.types.KindDTO;
 
 import static java.util.Objects.requireNonNull;
 
+@ApplicationScoped
 public class AnmeldungTagesschuleEventConverter {
 
-	@Inject
-	GesuchstellerAdresseService gesuchstellerAdresseService;
-
 	@Nonnull
-	public AnmeldungTagesschuleAddedEvent of(@Nonnull AnmeldungTagesschule anmeldung) {
+	public AnmeldungTagesschuleEvent of(@Nonnull AnmeldungTagesschule anmeldung) {
 		TagesschuleAnmeldungEventDTO dto = toTagesschuleAnmeldungEventDTO(anmeldung);
 		byte[] payload = AvroConverter.toAvroBinary(dto);
 
-		return new AnmeldungTagesschuleAddedEvent(anmeldung.getBGNummer(), payload, dto.getSchema());
+		return new AnmeldungTagesschuleEvent(anmeldung.getBGNummer(), payload, dto.getSchema());
 	}
 
 	/**

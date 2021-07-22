@@ -25,7 +25,7 @@ import ch.dvbern.ebegu.outbox.ExportedEvent;
 import org.apache.avro.Schema;
 import org.jetbrains.annotations.NotNull;
 
-public class AnmeldungTagesschuleAddedEvent implements ExportedEvent {
+public class AnmeldungTagesschuleEvent implements ExportedEvent {
 
 	@Nonnull
 	private final String anmeldungId;
@@ -36,7 +36,7 @@ public class AnmeldungTagesschuleAddedEvent implements ExportedEvent {
 	@Nonnull
 	private final Schema schema;
 
-	public AnmeldungTagesschuleAddedEvent(
+	public AnmeldungTagesschuleEvent(
 		@Nonnull String anmeldungId,
 		@Nonnull byte[] anmeldung,
 		@Nonnull Schema schema) {
@@ -60,7 +60,7 @@ public class AnmeldungTagesschuleAddedEvent implements ExportedEvent {
 	@NotNull
 	@Override
 	public String getType() {
-		return "AnmeldungAdded";
+		return "AnmeldungTagesschule";
 	}
 
 	@NotNull

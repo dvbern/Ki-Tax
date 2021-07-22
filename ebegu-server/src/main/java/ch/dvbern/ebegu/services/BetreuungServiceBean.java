@@ -96,6 +96,7 @@ import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.outbox.anmeldung.AnmeldungTagesschuleEventConverter;
 import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageAddedEvent;
 import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageEventConverter;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -153,6 +154,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private EbeguConfiguration ebeguConfiguration;
 	@Inject
 	private BetreuungMonitoringService betreuungMonitoringService;
+	@Inject
+	private AnmeldungTagesschuleEventConverter anmeldungTagesschuleEventConverter;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
 
@@ -274,7 +277,19 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST == mergedBetreuung.getBetreuungsstatus();
 		updateVerantwortliche(mergedGesuch, mergedBetreuung, isAnmeldungSchulamtAusgeloest, isNew);
 
+		//Export Tagesschule Anmeldung oder moegliche Aenderungen an der exchange-service
+		if(isAnmeldungSchulamtAusgeloest || anmeldungTagesschule.getBetreuungsstatus()
+			== Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT || anmeldungTagesschule.getBetreuungsstatus()
+			== Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN) {
+			fireAnmeldungTagesschuleAdddedEvent(anmeldungTagesschule);
+		}
+
 		return mergedBetreuung;
+	}
+
+	@Override
+	public void fireAnmeldungTagesschuleAdddedEvent(@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
+		event.fire(anmeldungTagesschuleEventConverter.of(anmeldungTagesschule));
 	}
 
 	@Nonnull

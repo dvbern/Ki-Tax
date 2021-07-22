@@ -225,4 +225,6 @@ public interface BetreuungService {
 
 	@Nonnull
 	AbstractAnmeldung anmeldungSchulamtStornieren(@Valid @Nonnull AbstractAnmeldung anmeldung);
+
+	void fireAnmeldungTagesschuleAdddedEvent(@Nonnull AnmeldungTagesschule anmeldungTagesschule);
 }

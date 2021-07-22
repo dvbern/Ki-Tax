@@ -71,12 +71,12 @@ public class AnmeldungTagesschuleEventConverterTest {
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
 		AnmeldungTagesschule anmeldungTagesschule =
 			TestDataUtil.createAnmeldungTagesschuleWithModules(betreuung.getKind(), betreuung.extractGesuchsperiode());
-		AnmeldungTagesschuleAddedEvent anmeldungTagesschuleAddedEvent = converter.of(anmeldungTagesschule);
+		AnmeldungTagesschuleEvent anmeldungTagesschuleAddedEvent = converter.of(anmeldungTagesschule);
 
 		assertThat(anmeldungTagesschuleAddedEvent, is(pojo(ExportedEvent.class)
 			.where(ExportedEvent::getAggregateId, is(anmeldungTagesschule.getBGNummer()))
 			.where(ExportedEvent::getAggregateType, is("Anmeldung"))
-			.where(ExportedEvent::getType, is("AnmeldungAdded")))
+			.where(ExportedEvent::getType, is("AnmeldungTagesschule")))
 		);
 
 		//noinspection deprecation
