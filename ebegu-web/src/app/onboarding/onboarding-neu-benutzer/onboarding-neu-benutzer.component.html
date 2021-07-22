@@ -26,15 +26,11 @@
         <form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
             <div class="neu-bg-checkbox">
                 <mat-checkbox id="betreuungsgutscheinBeantragen_id" name="betreuungsgutscheinBeantragen_id"
-                              [(ngModel)]="betreuungsgutscheinBeantragen">
-                    {{'ONBOARDING_BG_BEANTRAGEN'|translate}}
-                </mat-checkbox>
+                              [(ngModel)]="betreuungsgutscheinBeantragen">{{'ONBOARDING_BG_BEANTRAGEN'|translate}}</mat-checkbox>
             </div>
-            <div class="neu-ts-checkbox" *ngIf="isTSAngebotEnabled">
+            <div class="neu-ts-checkbox margin-top-10" *ngIf="isTSAngebotEnabled">
                 <mat-checkbox id="tsBeantragen_id" name="tsBeantragen_id"
-                              [(ngModel)]="tsBeantragen">
-                    {{'ONBOARDING_TS_BEANTRAGEN'|translate}}
-                </mat-checkbox>
+                              [(ngModel)]="tsBeantragen">{{'ONBOARDING_TS_BEANTRAGEN'|translate}}</mat-checkbox>
             </div>
             <div class="onboarding-nb-gemeinde-container">
                 <div class="onboarding-nb-gemeinde-input-container">
