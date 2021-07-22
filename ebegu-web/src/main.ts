@@ -15,14 +15,11 @@
 
 import {enableProdMode, NgZone} from '@angular/core';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
-import {TransitionService} from '@uirouter/angular';
 import {UIRouter, UrlService} from '@uirouter/core';
 import * as angular from 'angular';
 import {APP_JS_MODULE} from './app/app.angularjs.module';
 import {AppModule} from './app/app.module';
-import {AuthServiceRS} from './authentication/service/AuthServiceRS.rest';
-import {authenticationHookRunBlockX} from './authentication/state-hooks/onBefore/authentication-x.hook';
-import {authorisationHookRunBlockX} from './authentication/state-hooks/onBefore/authorisation-x.hook';
+import {initHooks} from './authentication/state-hooks/init-hooks';
 import {environment} from './environments/environment';
 
 (window as any).angular = angular;
@@ -48,15 +45,8 @@ platformBrowserDynamic().bootstrapModule(AppModule).then(platformRef => {
     };
 
     platformRef.injector.get<NgZone>(NgZone).run(startRouter);
-    // TODO: Move to ng-authentication.module once AuthServiceRS is migrated
-    authenticationHookRunBlockX(
-        platformRef.injector.get<TransitionService>(TransitionService),
-        platformRef.injector.get<AuthServiceRS>(AuthServiceRS)
-    );
-    authorisationHookRunBlockX(
-        platformRef.injector.get<TransitionService>(TransitionService),
-        platformRef.injector.get<AuthServiceRS>(AuthServiceRS)
-    );
+    // TODO: Move to ng-authentication.module once fully migrated
+    initHooks(platformRef);
 })
     .catch(err => console.error('App bootstrap error:', err));
 

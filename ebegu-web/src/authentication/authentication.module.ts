@@ -22,7 +22,6 @@ import {AuthServiceRS} from './service/AuthServiceRS.rest';
 import {HttpAuthInterceptor} from './service/HttpAuthInterceptor';
 import {HttpBuffer} from './service/HttpBuffer';
 import {HttpBufferX} from './service/HttpBufferX';
-import {debugHookRunBlock} from './state-hooks/onBefore/debug.hook';
 import {dummyLoginHookRunBlock} from './state-hooks/onBefore/dummyLogin.hook';
 import {errorAfterLoginHookRunBlock} from './state-hooks/onError/errorAfterLogin.hook';
 import {erorGSRegistrationIncompleteHookRunBlock} from './state-hooks/onError/errorGSRegistrationIncomplete.hook';
@@ -32,7 +31,6 @@ import {clearErrorsHookRunBlock} from './state-hooks/onSuccess/clearErrors.hook'
 
 export const AUTHENTICATION_JS_MODULE =
     angular.module('dvbAngular.authentication', ['ngCookies'])
-        .run(debugHookRunBlock)
         .run(dummyLoginHookRunBlock)
         .run(errorAfterLoginHookRunBlock)
         .run(erorGSRegistrationIncompleteHookRunBlock)
