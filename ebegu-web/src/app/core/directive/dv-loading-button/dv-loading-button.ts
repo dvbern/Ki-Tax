@@ -16,8 +16,12 @@
 import {SimpleChanges} from '@angular/core';
 import {IComponentOptions, IController} from 'angular';
 import {TSHTTPEvent} from '../../events/TSHTTPEvent';
+import {LogFactory} from '../../logging/LogFactory';
+import {BroadcastService} from '../../service/broadcast.service';
 import IFormController = angular.IFormController;
 import ITimeoutService = angular.ITimeoutService;
+
+const LOG = LogFactory.createLog('DVLoadingButton');
 
 interface IDVLoadingButtonController {
     isDisabled: boolean;
@@ -52,7 +56,7 @@ export class DVLoadingButton implements IComponentOptions {
  *         data-translate="SAVE"></span> </dv-loading-button>
  */
 export class DVLoadingButtonController implements IDVLoadingButtonController, IController {
-    public static $inject: string[] = ['$scope', '$timeout'];
+    public static $inject: string[] = ['$scope', '$timeout', 'BroadcastService'];
 
     public buttonClicked: ($event: any) => void;
     public isDisabled: boolean;
@@ -66,6 +70,7 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
     public constructor(
         private readonly $scope: any,
         private readonly $timeout: ITimeoutService,
+        private readonly broadcastService: BroadcastService
     ) {
     }
 
@@ -108,6 +113,10 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
         this.$scope.$on(TSHTTPEvent.REQUEST_FINISHED, () => {
             this.isDisabled = false;
         });
+
+        this.broadcastService.on$(TSHTTPEvent.REQUEST_FINISHED).subscribe(() => {
+            this.isDisabled = false;
+        }, error => LOG.error(error));
 
     }
 

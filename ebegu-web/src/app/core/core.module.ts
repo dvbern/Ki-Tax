@@ -24,6 +24,7 @@ import {PaginatorI18n} from '../i18n/PaginatorI18n';
 import {DEFAULT_LOCALE} from './constants/CONSTANTS';
 import {HTTP_INTERCEPTOR_PROVIDERS} from './http-interceptors/interceptors';
 import {UPGRADED_HTTP_INTERCEPTOR_PROVIDERS} from './httpInterceptorProviders';
+import {BroadcastService} from './service/broadcast.service';
 import {VersionService} from './service/version/version.service';
 import {WindowRef} from './service/windowRef.service';
 import {configureRaven, RavenErrorHandler} from './sentry/sentryConfigurator';
@@ -54,6 +55,7 @@ export function paginatorI18nFactory(translateService: TranslateService): Pagina
         TranslatePipe,
         WindowRef,
         VersionService,
+        BroadcastService,
     ],
     declarations: [
         // Insert app wide single use components (NavComponent, SpinnerComponent). Try not to declare anything here.

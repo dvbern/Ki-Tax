@@ -133,6 +133,7 @@ import {BatchJobRS} from './service/batchRS.rest';
 import {BenutzerRS} from './service/benutzerRS.rest';
 import {BetreuungMonitoringRS} from '../../admin/service/betreuungMonitoringRS.rest';
 import {BetreuungRS} from './service/betreuungRS.rest';
+import {BroadcastService} from './service/broadcast.service';
 import {DownloadRS} from './service/downloadRS.rest';
 import {DVsTPersistService} from './service/dVsTPersistService';
 import {ErwerbspensumRS} from './service/erwerbspensumRS.rest';
@@ -252,6 +253,7 @@ export const CORE_JS_MODULE = angular
     .factory('SozialdienstRS', downgradeInjectable(SozialdienstRS) as any)
     .factory('InternePendenzenRS', downgradeInjectable(InternePendenzenRS) as any)
     .factory('VersionService', downgradeInjectable(VersionService) as any)
+    .factory('BroadcastService', downgradeInjectable(BroadcastService) as any)
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())
