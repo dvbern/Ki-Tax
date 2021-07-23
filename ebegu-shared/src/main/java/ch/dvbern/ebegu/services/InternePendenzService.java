@@ -56,4 +56,6 @@ public interface InternePendenzService {
 	 * Löscht die interne Pendenz
 	 */
 	void deleteInternePendenz(@Nonnull InternePendenz internePendenz);
+
+	void deleteAllInternePendenz(@Nonnull Gesuch gesuch);
 }

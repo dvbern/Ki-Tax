@@ -202,7 +202,7 @@ public interface BetreuungService {
 	/**
 	 * Sendet eine E-Mail an alle Institutionen die aktuell offene Pendenzen haben.
 	 */
-	void sendInfoOffenePendenzenInstitution();
+	void sendInfoOffenePendenzenNeuMitteilungInstitution();
 
 	/**
 	 * entfernt eine Anmeldung aus der Datenbank

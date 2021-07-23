@@ -647,6 +647,10 @@ export class DossierToolbarController implements IDVFocusableController {
             // JA: Darf nicht verfuegen oder verfuegt sein und muss Papier sein
             return false;
         }
+        if (this.getGesuch().dossier.fall.sozialdienstFall
+            && this.getGesuch().dossier.fall.sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN) {
+            return false;
+        }
         return true;
     }
 

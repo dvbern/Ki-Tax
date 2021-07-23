@@ -1,0 +1,80 @@
+<!--
+  ~ Ki-Tax: System for the management of external childcare subsidies
+  ~ Copyright (C) 2017 City of Bern Switzerland
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<div class="zahlung-view">
+    <div class="col-md-12">
+
+        <div class="row">
+            <div class="col-md-12">
+                <dv-loading-button type="button" (buttonClick)="gotToUebersicht()"
+                                   [buttonClass]="'dv-btn-operation'">
+                    <i class="fa fa-lg fa-chevron-left"></i>
+                    <span class="uppercase margin-left-5" translate>ZAHLUNG_UEBERSICHT</span>
+                </dv-loading-button>
+            </div>
+
+            <div class="col-md-11">
+                <h3 translate>ZAHLUNG</h3>
+            </div>
+            <div class="col-md-1 text-right">
+                <h3>{{datasource?.data.length || 0}}</h3>
+            </div>
+        </div>
+
+        <div class="dv-table dv-simple-table" *ngIf="datasource">
+            <div class="mat-elevation-z0">
+                <mat-table matSort
+                           [dataSource]="datasource">
+
+                    <ng-container *ngFor="let column of tableColumns" [matColumnDef]="column.attributeName">
+                        <mat-header-cell [mat-sort-header]="column.attributeName" *matHeaderCellDef class="ellipsis">
+                            <span>{{column.displayedName | translate}}</span>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element" class="ellipsis">
+                            <span [title]="getDisplayValue(element, column)  | translate" [innerHTML]="getDisplayValue(element, column) | translate"></span>
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container [matColumnDef]="'zahlungPainExcel'">
+                        <mat-header-cell *matHeaderCellDef class="ellipsis">
+                            <span translate>ZAHLUNG_DETAILPOSITIONEN</span>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element" class="ellipsis">
+                            <dv-loading-button type="button" (buttonClick)="downloadDetails(element)"
+                                               [buttonClass]="'dv-btn-operation'">
+                                <i class="fa fa-lg fa-file-code-o"></i>
+                            </dv-loading-button>
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container [matColumnDef]="'status'">
+                        <mat-header-cell *matHeaderCellDef class="ellipsis">
+                            <span translate>ZAHLUNG_STATUS</span>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element" class="ellipsis">
+                            <a type="button" class="btn-link link-underline pointer-cursor" (click)="bestaetigen(element)" *ngIf="canBestaetigen(element.status)">
+                                <span translate style="color: #D50025">ZAHLUNG_ERHALTEN</span>
+                            </a>
+                            <span *ngIf="!canBestaetigen(element.status)">{{element.status | translate}}</span>
+                        </mat-cell>
+                    </ng-container>
+
+                    <mat-header-row *matHeaderRowDef="getColumnsAttributeName()"></mat-header-row>
+                    <mat-row *matRowDef="let element; columns: getColumnsAttributeName();"></mat-row>
+                </mat-table>
+            </div>
+        </div>
+    </div>
+</div>

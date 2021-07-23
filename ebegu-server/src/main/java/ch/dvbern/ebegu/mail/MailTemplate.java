@@ -39,7 +39,7 @@ public enum MailTemplate {
 	InfoBetreuungenBestaetigt,
 	InfoBetreuungAbgelehnt,
 	InfoStatistikGeneriert,
-	InfoOffenePendenzenInstitution,
+	InfoOffenePendenzenNeueMitteilungInstitution,
 	InfoSchulamtAnmeldungTagesschuleAkzeptiert,
 	InfoGemeindeAngebotAktiviert,
 	NotrechtGenerischeMitteilung,
