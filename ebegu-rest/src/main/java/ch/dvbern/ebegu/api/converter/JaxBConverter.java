@@ -4366,7 +4366,7 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setSozialdienst(gesuch.getDossier().getFall().isSozialdienstFall());
 		antrag.setInternePendenz(gesuch.getInternePendenz());
 		if(antrag.hasInternePendenz()) {
-			antrag.setInternePendenzAbgelaufen(internePendenzService.hasGesuchAbgelaufendeInternePendenzen(gesuch));
+			antrag.setInternePendenzAbgelaufen(internePendenzService.hasGesuchAbgelaufeneInternePendenzen(gesuch));
 		}
 		else{
 			antrag.setInternePendenzAbgelaufen(false);

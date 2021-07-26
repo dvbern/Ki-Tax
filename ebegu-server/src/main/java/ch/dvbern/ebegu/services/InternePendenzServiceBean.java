@@ -143,7 +143,7 @@ public class InternePendenzServiceBean extends AbstractBaseService implements In
 
 	@Nonnull
 	@Override
-	public boolean hasGesuchAbgelaufendeInternePendenzen(@Nonnull Gesuch gesuch) {
+	public boolean hasGesuchAbgelaufeneInternePendenzen(@Nonnull Gesuch gesuch) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<InternePendenz> query = cb.createQuery(InternePendenz.class);
 		Root<InternePendenz> root = query.from(InternePendenz.class);

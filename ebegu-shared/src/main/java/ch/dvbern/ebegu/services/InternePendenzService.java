@@ -67,5 +67,5 @@ public interface InternePendenzService {
 	 * return eine Liste von alle Interne Pendenzen die sind abgelaufen
 	 */
 	@Nonnull
-	boolean hasGesuchAbgelaufendeInternePendenzen(@Nonnull Gesuch gesuch);
+	boolean hasGesuchAbgelaufeneInternePendenzen(@Nonnull Gesuch gesuch);
 }

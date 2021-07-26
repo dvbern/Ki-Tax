@@ -209,7 +209,7 @@ export class GesuchModelManager {
                     this.internePendenzenRS.findInternePendenzenForGesuch(this.getGesuch()).subscribe(pendenzen => {
                         this.hasAbgelaufenePendenz =
                             pendenzen.reduce((has, current) =>
-                                current.termin.isBefore(moment().startOf('day')) && !current.erledigt || has, false);
+                                current.termin.isBefore(moment()) && !current.erledigt || has, false);
                     });
                 }, error => this.log.error(error));
         }
