@@ -40,7 +40,8 @@ describe('testdatenView', () => {
                 'createTestFall', 'createTestFallGS', 'removeFaelleOfGS', 'mutiereFallHeirat',
                 'mutiereFallScheidung', 'resetSchulungsdaten', 'deleteSchulungsdaten',
             ]);
-        const benutzerRSSpy = jasmine.createSpyObj<AngularXBenutzerRS>(AngularXBenutzerRS.name, ['getAllGesuchsteller']);
+        const benutzerRSSpy = jasmine.createSpyObj<AngularXBenutzerRS>(AngularXBenutzerRS.name,
+            ['getAllGesuchsteller']);
         benutzerRSSpy.getAllGesuchsteller.and.resolveTo([]);
         const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
         const gesuchsperiodeRSSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
