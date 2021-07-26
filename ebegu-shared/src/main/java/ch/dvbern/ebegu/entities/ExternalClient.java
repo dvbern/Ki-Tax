@@ -30,6 +30,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.ExternalClientInstitutionType;
 import ch.dvbern.ebegu.enums.ExternalClientType;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
@@ -56,6 +57,11 @@ public class ExternalClient extends AbstractEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private @NotNull ExternalClientType type;
+
+	@Nonnull
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
+	private @NotNull ExternalClientInstitutionType institutionType;
 
 	public ExternalClient() {
 		this.clientName = "";
@@ -97,5 +103,14 @@ public class ExternalClient extends AbstractEntity {
 
 	public void setType(@Nonnull ExternalClientType type) {
 		this.type = type;
+	}
+
+	@Nonnull
+	public ExternalClientInstitutionType getInstitutionType() {
+		return institutionType;
+	}
+
+	public void setInstitutionType(@Nonnull ExternalClientInstitutionType institutionType) {
+		this.institutionType = institutionType;
 	}
 }
