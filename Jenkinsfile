@@ -13,35 +13,33 @@ pipeline {
 		disableConcurrentBuilds()
 	}
 	stages {
-		stages {
-           stage("Backend only") {
-              when {not {anyOf {changeset 'ebegu-web/**'; environment name: 'BUILD_NUMBER', value: '1'}}}
-              steps {
-                 withMaven(jdk: 'OpenJDK_11.0.4', options: [
-                       junitPublisher(healthScaleFactor: 1.0),
-                       findbugsPublisher(disabled: true),
-                       spotbugsPublisher(disabled: true),
-                       artifactsPublisher(disabled: true)
-                 ]) {
-                    sh './mvnw -B -U -T 1C -P dvbern.oss -P ci clean test'
-                 }
-              }
-           }
-           stage("Backend & Frontend") {
-              when {anyOf {changeset 'ebegu-web/**'; environment name: 'BUILD_NUMBER', value: '1'}}
-              steps {
-                 withMaven(jdk: 'OpenJDK_11.0.4', options: [
-                       junitPublisher(healthScaleFactor: 1.0),
-                       findbugsPublisher(disabled: true),
-                       spotbugsPublisher(disabled: true),
-                       artifactsPublisher(disabled: true)
-                 ]) {
-                    sh './mvnw -B -U -T 1C -P dvbern.oss -P ci -P frontend clean test'
-                 }
+        stage("Backend only") {
+           when {not {anyOf {changeset 'ebegu-web/**'; environment name: 'BUILD_NUMBER', value: '1'}}}
+           steps {
+              withMaven(jdk: 'OpenJDK_11.0.4', options: [
+                    junitPublisher(healthScaleFactor: 1.0),
+                    findbugsPublisher(disabled: true),
+                    spotbugsPublisher(disabled: true),
+                    artifactsPublisher(disabled: true)
+              ]) {
+                 sh './mvnw -B -U -T 1C -P dvbern.oss -P ci clean test'
               }
            }
         }
-	}
+        stage("Backend & Frontend") {
+           when {anyOf {changeset 'ebegu-web/**'; environment name: 'BUILD_NUMBER', value: '1'}}
+           steps {
+              withMaven(jdk: 'OpenJDK_11.0.4', options: [
+                    junitPublisher(healthScaleFactor: 1.0),
+                    findbugsPublisher(disabled: true),
+                    spotbugsPublisher(disabled: true),
+                    artifactsPublisher(disabled: true)
+              ]) {
+                 sh './mvnw -B -U -T 1C -P dvbern.oss -P ci -P frontend clean test'
+              }
+           }
+        }
+    }
 
 	post {
 		always {
