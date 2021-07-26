@@ -34,7 +34,7 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {DvNgGesuchstellerDialogComponent} from '../../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
-import {BenutzerRS} from '../../core/service/benutzerRS.rest';
+import {AngularXBenutzerRS} from '../../core/service/angularXBenutzerRS.rest';
 
 @Component({
     selector: 'dv-add-gemeinde',
@@ -67,7 +67,7 @@ export class AddGemeindeComponent implements OnInit {
         private readonly gemeindeRS: GemeindeRS,
         private readonly translate: TranslateService,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly benutzerRS: BenutzerRS,
+        private readonly benutzerRS: AngularXBenutzerRS,
         private readonly dialog: MatDialog,
     ) {
     }

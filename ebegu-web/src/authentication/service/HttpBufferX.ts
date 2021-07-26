@@ -18,10 +18,10 @@
 import {HttpClient, HttpRequest} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
-import {NgAuthenticationModule} from '../ng-authentication.module';
+import {CoreModule} from '../../app/core/core.module';
 
 @Injectable({
-    providedIn: NgAuthenticationModule
+    providedIn: CoreModule
 })
 export class HttpBufferX {
 

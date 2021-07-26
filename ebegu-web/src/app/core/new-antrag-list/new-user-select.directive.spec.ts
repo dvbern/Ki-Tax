@@ -22,7 +22,7 @@ import {TranslateModule} from '@ngx-translate/core';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {DvUserSelectConfig} from '../directive/dv-userselect/dv-userselect';
-import {BenutzerRS} from '../service/benutzerRS.rest';
+import {AngularXBenutzerRS} from '../service/angularXBenutzerRS.rest';
 import {NewUserSelectDirective} from './new-user-select.directive';
 import {bootstrap, html} from './test_helpers';
 
@@ -34,7 +34,7 @@ import {bootstrap, html} from './test_helpers';
 class TestComponent {
 }
 
-const benutzerRSSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['getBenutzerBgOrGemeindeForGemeinde', 'getAllBenutzerBgOrGemeinde']);
+const benutzerRSSpy = jasmine.createSpyObj<AngularXBenutzerRS>(AngularXBenutzerRS.name, ['getBenutzerBgOrGemeindeForGemeinde', 'getAllBenutzerBgOrGemeinde']);
 const authRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['loginRequest']);
 
 benutzerRSSpy.getAllBenutzerBgOrGemeinde.and.returnValue(Promise.resolve([]));

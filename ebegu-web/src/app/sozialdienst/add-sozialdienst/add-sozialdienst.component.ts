@@ -24,7 +24,7 @@ import {TSSozialdienst} from '../../../models/sozialdienst/TSSozialdienst';
 import {DvNgGesuchstellerDialogComponent} from '../../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
-import {BenutzerRS} from '../../core/service/benutzerRS.rest';
+import {AngularXBenutzerRS} from '../../core/service/angularXBenutzerRS.rest';
 import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
 
 @Component({
@@ -45,7 +45,7 @@ export class AddSozialdienstComponent implements OnInit {
         private readonly $state: StateService,
         private readonly sozialdienstRS: SozialdienstRS,
         private readonly errorService: ErrorService,
-        private readonly benutzerRS: BenutzerRS,
+        private readonly benutzerRS: AngularXBenutzerRS,
         private readonly dialog: MatDialog,
     ) {
     }

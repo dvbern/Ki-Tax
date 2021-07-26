@@ -33,7 +33,7 @@ import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {DvNgGesuchstellerDialogComponent} from '../../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
-import {BenutzerRS} from '../../core/service/benutzerRS.rest';
+import {AngularXBenutzerRS} from '../../core/service/angularXBenutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 
@@ -67,7 +67,7 @@ export class AddInstitutionComponent implements OnInit {
         private readonly traegerschaftRS: TraegerschaftRS,
         private readonly translate: TranslateService,
         private readonly gemeindeRS: GemeindeRS,
-        private readonly benutzerRS: BenutzerRS,
+        private readonly benutzerRS: AngularXBenutzerRS,
         private readonly dialog: MatDialog,
     ) {
     }

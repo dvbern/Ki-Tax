@@ -23,7 +23,7 @@ import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {ErrorService} from '../../core/errors/service/ErrorService';
-import {BenutzerRS} from '../../core/service/benutzerRS.rest';
+import {AngularXBenutzerRS} from '../../core/service/angularXBenutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
@@ -38,7 +38,7 @@ describe('AddInstitutionComponent', () => {
     const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
         ['getInstitutionenReadableForCurrentBenutzer']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
-    const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['removeBenutzer']);
+    const benutzerServiceSpy = jasmine.createSpyObj<AngularXBenutzerRS>(AngularXBenutzerRS.name, ['removeBenutzer']);
     const transitionServiceSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
     const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name,
@@ -62,7 +62,7 @@ describe('AddInstitutionComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: InstitutionRS, useValue: insitutionServiceSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
-                {provide: BenutzerRS, useValue: benutzerServiceSpy},
+                {provide: AngularXBenutzerRS, useValue: benutzerServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},

@@ -25,7 +25,7 @@ import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {ErrorService} from '../../core/errors/service/ErrorService';
-import {BenutzerRS} from '../../core/service/benutzerRS.rest';
+import {AngularXBenutzerRS} from '../../core/service/angularXBenutzerRS.rest';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
@@ -39,7 +39,7 @@ describe('AddGemeindeComponent', () => {
     const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name,
         ['getGemeindenForPrincipal$', 'findGemeinde', 'getUnregisteredBfsGemeinden']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
-    const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['removeBenutzer']);
+    const benutzerServiceSpy = jasmine.createSpyObj<AngularXBenutzerRS>(AngularXBenutzerRS.name, ['removeBenutzer']);
     const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['saveEinstellung']);
     const gesuchsperiodeServiceSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
         ['getAllGesuchsperioden']);
@@ -62,7 +62,7 @@ describe('AddGemeindeComponent', () => {
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: BenutzerRS, useValue: benutzerServiceSpy},
+                {provide: AngularXBenutzerRS, useValue: benutzerServiceSpy},
                 {provide: EinstellungRS, useValue: einstellungServiceSpy},
                 {provide: GesuchsperiodeRS, useValue: gesuchsperiodeServiceSpy},
                 {provide: Transition, useValue: transitionSpy},

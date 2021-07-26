@@ -19,7 +19,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
-import {BenutzerRS} from '../../../app/core/service/benutzerRS.rest';
+import {AngularXBenutzerRS} from '../../../app/core/service/angularXBenutzerRS.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
@@ -40,7 +40,7 @@ describe('testdatenView', () => {
                 'createTestFall', 'createTestFallGS', 'removeFaelleOfGS', 'mutiereFallHeirat',
                 'mutiereFallScheidung', 'resetSchulungsdaten', 'deleteSchulungsdaten',
             ]);
-        const benutzerRSSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['getAllGesuchsteller']);
+        const benutzerRSSpy = jasmine.createSpyObj<AngularXBenutzerRS>(AngularXBenutzerRS.name, ['getAllGesuchsteller']);
         benutzerRSSpy.getAllGesuchsteller.and.resolveTo([]);
         const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
         const gesuchsperiodeRSSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
@@ -79,7 +79,7 @@ describe('testdatenView', () => {
             ],
             providers: [
                 {provide: TestFaelleRS, useValue: testFaelleRSSpy},
-                {provide: BenutzerRS, useValue: benutzerRSSpy},
+                {provide: AngularXBenutzerRS, useValue: benutzerRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: GesuchsperiodeRS, useValue: gesuchsperiodeRSSpy},
                 {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},

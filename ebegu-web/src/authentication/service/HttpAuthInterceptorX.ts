@@ -18,11 +18,14 @@ import {Injectable} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {CONSTANTS, HTTP_ERROR_CODES} from '../../app/core/constants/CONSTANTS';
+import {CoreModule} from '../../app/core/core.module';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {AuthLifeCycleService} from './authLifeCycle.service';
 import {HttpBufferX} from './HttpBufferX';
 
-@Injectable()
+@Injectable({
+    providedIn: CoreModule,
+})
 export class HttpAuthInterceptorX implements HttpInterceptor {
 
     public constructor(

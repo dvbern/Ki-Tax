@@ -24,7 +24,7 @@ import {TSBenutzerStatus} from '../../../models/enums/TSBenutzerStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
-import {BenutzerRS} from '../../core/service/benutzerRS.rest';
+import {AngularXBenutzerRS} from '../../core/service/angularXBenutzerRS.rest';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 
 @Component({
@@ -39,7 +39,7 @@ export class BenutzerEinladenComponent {
     public readonly CONSTANTS = CONSTANTS;
 
     public constructor(
-        private readonly benutzerRS: BenutzerRS,
+        private readonly benutzerRS: AngularXBenutzerRS,
         private readonly authServiceRS: AuthServiceRS,
         private readonly stateService: StateService,
         private readonly errorService: ErrorService,

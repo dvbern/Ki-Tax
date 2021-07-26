@@ -22,10 +22,11 @@ import {TSBerechtigungHistory} from '../../../models/TSBerechtigungHistory';
 import {TSUserSearchresultDTO} from '../../../models/TSUserSearchresultDTO';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../constants/CONSTANTS';
+import {CoreModule} from '../core.module';
 import {LogFactory} from '../logging/LogFactory';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: CoreModule,
 })
 export class AngularXBenutzerRS {
 

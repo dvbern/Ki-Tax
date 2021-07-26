@@ -20,7 +20,7 @@ import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Transition, UIRouterModule} from '@uirouter/angular';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {ErrorService} from '../../core/errors/service/ErrorService';
-import {BenutzerRS} from '../../core/service/benutzerRS.rest';
+import {AngularXBenutzerRS} from '../../core/service/angularXBenutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
@@ -35,7 +35,7 @@ describe('BenutzerComponent', () => {
     beforeEach(waitForAsync(() => {
         const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getAllInstitutionen']);
         const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
-        const benutzerSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name,
+        const benutzerSpy = jasmine.createSpyObj<AngularXBenutzerRS>(AngularXBenutzerRS.name,
             [
                 'getBerechtigungHistoriesForBenutzer', 'saveBenutzerBerechtigungen', 'findBenutzer',
                 'inactivateBenutzer', 'reactivateBenutzer',
@@ -60,7 +60,7 @@ describe('BenutzerComponent', () => {
                     useValue: traegerschaftSpy,
                 },
                 {
-                    provide: BenutzerRS,
+                    provide: AngularXBenutzerRS,
                     useValue: benutzerSpy,
                 },
                 {provide: AuthServiceRS, useValue: authServiceSpy},

@@ -21,7 +21,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {ErrorService} from '../../core/errors/service/ErrorService';
-import {BenutzerRS} from '../../core/service/benutzerRS.rest';
+import {AngularXBenutzerRS} from '../../core/service/angularXBenutzerRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {MaterialModule} from '../../shared/material.module';
@@ -41,7 +41,7 @@ describe('TraegerschaftAddComponent', () => {
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-    const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['removeBenutzer']);
+    const benutzerServiceSpy = jasmine.createSpyObj<AngularXBenutzerRS>(AngularXBenutzerRS.name, ['removeBenutzer']);
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
@@ -57,7 +57,7 @@ describe('TraegerschaftAddComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftRSSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: BenutzerRS, useValue: benutzerServiceSpy},
+                {provide: AngularXBenutzerRS, useValue: benutzerServiceSpy},
             ],
             declarations: [TraegerschaftAddComponent],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES

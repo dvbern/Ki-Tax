@@ -18,8 +18,8 @@
 import {Component, Inject} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import {AngularXBenutzerRS} from '../../service/angularXBenutzerRS.rest';
 import {MitteilungRS} from '../../service/mitteilungRS.rest';
-import {BenutzerRS} from '../../service/benutzerRS.rest';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {map, startWith} from 'rxjs/operators';
 import {Observable} from 'rxjs';
@@ -46,7 +46,7 @@ export class DvNgMitteilungDelegationDialogComponent {
         private readonly dialogRef: MatDialogRef<DvNgMitteilungDelegationDialogComponent>,
         private readonly dialogSupport: MatDialog,
         private readonly mitteilungRS: MitteilungRS,
-        private readonly benutzerRS: BenutzerRS,
+        private readonly benutzerRS: AngularXBenutzerRS,
         @Inject(MAT_DIALOG_DATA) data: any,
     ) {
         this.mitteilungId = data.mitteilungId;
