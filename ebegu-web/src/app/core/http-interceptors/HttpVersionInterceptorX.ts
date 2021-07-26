@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,29 +15,31 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {HEADER_ACCEPT_LANGUAGE} from '../../core/constants/CONSTANTS';
-import {I18nServiceRSRest} from '../services/i18nServiceRS.rest';
+import {tap} from 'rxjs/operators';
+import {VersionService} from '../service/version/version.service';
+import {CONSTANTS} from '../constants/CONSTANTS';
 
+/**
+ * this interceptor boradcasts a  VERSION_MATCH or VERSION_MISMATCH event whenever a rest service responds
+ */
 @Injectable()
-export class HttpI18nInterceptorX implements HttpInterceptor {
+export class HttpVersionInterceptorX implements HttpInterceptor {
 
     public constructor(
-            private readonly i18nService: I18nServiceRSRest,
+            private readonly versionService: VersionService,
     ) {
     }
 
     public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        const language =  req.headers.get(HEADER_ACCEPT_LANGUAGE) ?
-                `${this.i18nService.currentLanguage()}, ${req.headers.get(HEADER_ACCEPT_LANGUAGE)}`
-                : this.i18nService.currentLanguage();
-
-        const clone = req.clone({
-            headers: req.headers.set('Accept-Language', language)
-        });
-
-        return next.handle(clone);
+        return next.handle(req).pipe(tap((response: HttpResponse<any>) => {
+            if (response instanceof HttpResponse &&
+                    response.headers &&
+                    req.url.indexOf(CONSTANTS.REST_API) === 0) {
+                this.versionService.updateBackendVersion(response.headers.get('x-ebegu-version'));
+            }
+        }));
     }
 }
