@@ -18,9 +18,6 @@
 package ch.dvbern.ebegu.enums;
 
 public enum ExternalClientType {
-	// EXCHANGE_SERVICE_USER is allowed for BG and TS
 	EXCHANGE_SERVICE_USER,
-	EXCHANGE_SERVICE_USER_BG,
-	EXCHANGE_SERVICE_USER_TS,
 	GEMEINDE_SCOLARIS_SERVICE
 }
