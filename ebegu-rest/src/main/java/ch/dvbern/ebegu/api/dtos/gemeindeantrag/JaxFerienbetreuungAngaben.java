@@ -41,6 +41,9 @@ public class JaxFerienbetreuungAngaben extends JaxAbstractDTO {
 	JaxFerienbetreuungAngabenKostenEinnahmen kostenEinnahmen;
 
 	@Nullable
+	JaxFerienbetreuungBerechnungen berechnungen;
+
+	@Nullable
 	private BigDecimal kantonsbeitrag;
 
 	@Nullable
@@ -98,5 +101,14 @@ public class JaxFerienbetreuungAngaben extends JaxAbstractDTO {
 
 	public void setGemeindebeitrag(@Nullable BigDecimal gemeindebeitrag) {
 		this.gemeindebeitrag = gemeindebeitrag;
+	}
+
+	@Nullable
+	public JaxFerienbetreuungBerechnungen getBerechnungen() {
+		return berechnungen;
+	}
+
+	public void setBerechnungen(@Nullable JaxFerienbetreuungBerechnungen berechnungen) {
+		this.berechnungen = berechnungen;
 	}
 }

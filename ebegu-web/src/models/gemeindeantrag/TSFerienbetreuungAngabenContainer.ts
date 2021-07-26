@@ -15,6 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {TSFerienbetreuungBerechnung} from '../../app/gemeinde-antraege/ferienbetreuung/ferienbetreuung-kosten-einnahmen/TSFerienbetreuungBerechnung';
 import {FerienbetreuungAngabenStatus} from '../enums/FerienbetreuungAngabenStatus';
 import {TSAbstractEntity} from '../TSAbstractEntity';
 import {TSGemeinde} from '../TSGemeinde';
@@ -101,5 +102,40 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
             FerienbetreuungAngabenStatus.VERFUEGT,
             FerienbetreuungAngabenStatus.ABGELEHNT
         ].includes(this.status);
+    }
+
+    public calculateBerechnungen(): void {
+        if (this.angabenKorrektur === null) {
+            throw new Error('Angaben Korrektur must not be null to complete the calculations');
+        }
+        const berechnungen = new TSFerienbetreuungBerechnung();
+        if (!this.angabenKorrektur.kostenEinnahmen.isAbgeschlossen()) {
+            throw new Error('Kosten Einnahmen müssen abgeschlossen sein um die Berchnungen durchzuführen');
+        }
+        if (!this.angabenKorrektur.nutzung.isAbgeschlossen()) {
+            throw new Error('Nutzung muss abgeschlossen sein um die Berchnungen durchzuführen');
+        }
+        const kostenEinnahmen = this.angabenKorrektur.kostenEinnahmen;
+        const nutzung = this.angabenKorrektur.nutzung;
+
+        berechnungen.personalkosten = kostenEinnahmen.personalkosten;
+        berechnungen.sachkosten = kostenEinnahmen.sachkosten;
+        berechnungen.verpflegungskosten = kostenEinnahmen.verpflegungskosten;
+        berechnungen.weitereKosten = kostenEinnahmen.weitereKosten;
+
+        berechnungen.anzahlBetreuungstageKinderBern = nutzung.anzahlBetreuungstageKinderBern;
+        berechnungen.betreuungstageKinderDieserGemeinde = nutzung.betreuungstageKinderDieserGemeinde;
+        berechnungen.betreuungstageKinderDieserGemeindeSonderschueler =
+                nutzung.betreuungstageKinderDieserGemeindeSonderschueler;
+        berechnungen.betreuungstageKinderAndererGemeinde = nutzung.davonBetreuungstageKinderAndererGemeinden;
+        berechnungen.betreuungstageKinderAndererGemeindenSonderschueler =
+                nutzung.davonBetreuungstageKinderAndererGemeindenSonderschueler;
+
+        berechnungen.einnahmenElterngebuehren = kostenEinnahmen.elterngebuehren;
+        berechnungen.weitereEinnahmen = kostenEinnahmen.weitereEinnahmen;
+
+        berechnungen.calculate();
+
+        this.angabenKorrektur.berechnungen = berechnungen;
     }
 }
