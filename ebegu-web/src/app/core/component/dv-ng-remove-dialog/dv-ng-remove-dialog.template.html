@@ -15,8 +15,8 @@
 
 <h2 mat-dialog-title [textContent]="title | translate"></h2>
 
-<mat-dialog-content *ngIf="text">
-    <span [textContent]="text | translate"></span>
+<mat-dialog-content *ngIf="text" class="margin-bottom-20">
+    <span [innerHTML]="text | translate"></span>
 </mat-dialog-content>
 
 <mat-dialog-actions>

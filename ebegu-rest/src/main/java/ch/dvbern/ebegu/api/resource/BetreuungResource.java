@@ -295,6 +295,9 @@ public class BetreuungResource {
 
 		Betreuung convertedBetreuung = converter.betreuungToStoreableEntity(betreuungJAXP);
 
+		// Sicherstellen, dass die Institution ist nicht eingeladen zu vermeiden das die Bankkontodaten fehlen
+		resourceHelper.assertInstitutionNichtEingeladet(convertedBetreuung.getInstitutionStammdaten().getInstitution());
+
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
 		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch());
 		Betreuung persistedBetreuung = this.betreuungService.betreuungPlatzBestaetigen(convertedBetreuung, null);
