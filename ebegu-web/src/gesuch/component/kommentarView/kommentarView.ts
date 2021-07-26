@@ -131,6 +131,13 @@ export class KommentarViewController implements IController {
         return this.gesuchModelManager.numberInternePendenzen;
     }
 
+    public hasAbgelaufenePendenz(): boolean {
+        if (!this.getGesuch()) {
+            return false;
+        }
+        return this.gesuchModelManager.hasAbgelaufenePendenz;
+    }
+
     public getGesuch(): TSGesuch {
         return this.gesuchModelManager.getGesuch();
     }

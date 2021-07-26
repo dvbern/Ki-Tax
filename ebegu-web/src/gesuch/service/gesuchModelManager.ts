@@ -110,6 +110,7 @@ export class GesuchModelManager {
     public gemeindeStammdaten: TSGemeindeStammdaten;
     public gemeindeKonfiguration: TSGemeindeKonfiguration;
     public numberInternePendenzen: number;
+    public hasAbgelaufenePendenz: boolean;
 
     public ewkResultat: TSEWKResultat;
 
@@ -205,6 +206,11 @@ export class GesuchModelManager {
                     this.internePendenzenRS.countInternePendenzenForGesuch(this.getGesuch())
                         .subscribe(numberInternePendenzen => this.numberInternePendenzen = numberInternePendenzen,
                             error => this.log.error(error));
+                    this.internePendenzenRS.findInternePendenzenForGesuch(this.getGesuch()).subscribe(pendenzen => {
+                        this.hasAbgelaufenePendenz =
+                            pendenzen.reduce((has, current) =>
+                                current.termin.isBefore(moment().startOf('day')) && !current.erledigt || has, false);
+                    });
                 }, error => this.log.error(error));
         }
         // Liste zuruecksetzen, da u.U. im Folgegesuch andere Stammdaten gelten!
