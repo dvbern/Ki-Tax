@@ -210,7 +210,7 @@ export class GesuchModelManager {
                         this.hasAbgelaufenePendenz =
                             pendenzen.reduce((has, current) =>
                                 current.termin.isBefore(moment()) && !current.erledigt || has, false);
-                    });
+                    }, error => this.log.error(error));
                 }, error => this.log.error(error));
         }
         // Liste zuruecksetzen, da u.U. im Folgegesuch andere Stammdaten gelten!
