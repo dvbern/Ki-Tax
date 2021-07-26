@@ -20,7 +20,7 @@
 
         <div class="row">
             <div class="col-md-12">
-                <dv-new-antrag-list (row-clicked)="vm.editFall($event.antrag, $event.event)"></dv-new-antrag-list>
+                <dv-new-antrag-list (row-clicked)="vm.editFall($event.antrag, $event.event)" [state-store-id]="'alle-faelle'"></dv-new-antrag-list>
             </div>
         </div>
     </div>
