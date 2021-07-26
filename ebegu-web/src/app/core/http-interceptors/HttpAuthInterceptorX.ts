@@ -24,6 +24,7 @@ import {CoreModule} from '../core.module';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import {HttpBufferX} from '../../../authentication/service/HttpBufferX';
+import {isIgnorableHttpError} from '../errors/service/HttpErrorInterceptorX';
 
 @Injectable({
     providedIn: CoreModule,
@@ -34,12 +35,6 @@ export class HttpAuthInterceptorX implements HttpInterceptor {
         private readonly authLifeCycleService: AuthLifeCycleService,
         private readonly httpBuffer: HttpBufferX,
     ) {
-    }
-
-    // TODO: move to HTTPErrorInterceptor once migrated
-    private static isIgnorableHttpError<T>(request: HttpRequest<T>): boolean {
-        return request?.url?.includes('notokenrefresh') ||
-            request?.url?.includes('emaillogin/gui/registration/createmaillogin');
     }
 
     public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -53,7 +48,8 @@ export class HttpAuthInterceptorX implements HttpInterceptor {
                             throw err;
                         }
                         // if this request was a background polling request we do not want to relogin or show errors
-                        if (HttpAuthInterceptorX.isIgnorableHttpError(req)) {
+                        if (
+                            isIgnorableHttpError(req)) {
                             console.debug('rejecting failed notokenrefresh response');
                             throw err;
                         }
