@@ -218,13 +218,13 @@ public class DailyBatchBean implements DailyBatch {
 	}
 
 	@Override
-	public void runBatchInfoOffenePendenzenInstitution() {
+	public void runBatchInfoOffenePendenzenNeueMitteilungInstitution() {
 		try {
-			LOGGER.info("Starting Job InfoOffenePendenzenInstitution...");
-			betreuungService.sendInfoOffenePendenzenInstitution();
-			LOGGER.info("... Job InfoOffenePendenzenInstitution finished");
+			LOGGER.info("Starting Job InfoOffenePendenzenNeueMitteilungInstitution...");
+			betreuungService.sendInfoOffenePendenzenNeuMitteilungInstitution();
+			LOGGER.info("... Job InfoOffenePendenzenNeueMitteilungInstitution finished");
 		} catch (RuntimeException e) {
-			LOGGER.error("Batch-Job InfoOffenePendenzenInstitution konnte nicht durchgefuehrt werden!", e);
+			LOGGER.error("Batch-Job InfoOffenePendenzenNeueMitteilungInstitution konnte nicht durchgefuehrt werden!", e);
 		}
 	}
 

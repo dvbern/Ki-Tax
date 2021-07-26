@@ -489,12 +489,19 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	public void sendInfoOffenePendenzenInstitution(@Nonnull InstitutionStammdaten institutionStammdaten) {
+	public void sendInfoOffenePendenzenNeuMitteilungInstitution(
+		@Nonnull InstitutionStammdaten institutionStammdaten,
+		boolean offenePendenzen,
+		boolean ungelesendeMitteilung) {
 		String mailaddress = institutionStammdaten.getMail();
 		try {
 			if (StringUtils.isNotEmpty(mailaddress)) {
 				String message = mailTemplateConfig
-					.getInfoOffenePendenzenInstitution(institutionStammdaten, mailaddress);
+					.getInfoOffenePendenzenNeuMitteilungInstitution(
+						institutionStammdaten,
+						mailaddress,
+						offenePendenzen,
+						ungelesendeMitteilung);
 				sendMessageWithTemplate(message, mailaddress);
 				LOG.debug("Email fuer InfoOffenePendenzenInstitution wurde versendet an {}", mailaddress);
 			} else {

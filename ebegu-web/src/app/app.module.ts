@@ -38,6 +38,7 @@ import {TraegerschaftModule} from './traegerschaft/traegerschaft.module';
 import {VerlaufModule} from './verlauf/verlauf.module';
 import {WelcomeModule} from './welcome/welcome.module';
 import {WizardstepXModule} from './wizardstepX/wizardstep-x.module';
+import {ZahlungXModule} from './zahlung/zahlung-x.module';
 
 @NgModule({
     imports: [
@@ -65,6 +66,8 @@ import {WizardstepXModule} from './wizardstepX/wizardstep-x.module';
         GemeindeAntraegeModule,
         WizardstepXModule,
         SozialdienstModule,
+        PendenzenXModule,
+        ZahlungXModule,
         PendenzenXModule,
         VerlaufModule
     ],

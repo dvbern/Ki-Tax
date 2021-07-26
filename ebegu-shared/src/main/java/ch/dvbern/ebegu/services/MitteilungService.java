@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -209,4 +210,6 @@ public interface MitteilungService {
 	 * Erstellt und sendet eine Mutationsmeldung aus den bestehenden Betreuungspensen und BetreuungspensumAbweichungen
 	 */
 	void createMutationsmeldungAbweichungen(@Nonnull Betreuungsmitteilung mitteilung, @Nonnull Betreuung betreuung);
+
+	boolean hasInstitutionOffeneMitteilungen(Institution institution);
 }

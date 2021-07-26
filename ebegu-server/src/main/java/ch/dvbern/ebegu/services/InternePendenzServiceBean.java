@@ -121,4 +121,11 @@ public class InternePendenzServiceBean extends AbstractBaseService implements In
 		authorizer.checkWriteAuthorization(internePendenz);
 		persistence.remove(internePendenz);
 	}
+
+	@Override
+	public void deleteAllInternePendenz(@Nonnull Gesuch gesuch) {
+		findInternePendenzenForGesuch(gesuch).forEach(
+			this::deleteInternePendenz
+		);
+	}
 }

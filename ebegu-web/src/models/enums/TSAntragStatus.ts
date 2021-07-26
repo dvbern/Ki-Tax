@@ -45,6 +45,7 @@ export const IN_BEARBEITUNG_BASE_NAME = 'IN_BEARBEITUNG';
 export function getTSAntragStatusValues(): Array<TSAntragStatus> {
     return [
         TSAntragStatus.IN_BEARBEITUNG_GS,
+        TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST,
         TSAntragStatus.FREIGABEQUITTUNG,
         TSAntragStatus.NUR_SCHULAMT,
         TSAntragStatus.FREIGEGEBEN,
@@ -88,7 +89,8 @@ export function getTSAntragStatusValuesByRole(userrole: TSRole): Array<TSAntragS
         case TSRole.ADMIN_MANDANT:
         case TSRole.SACHBEARBEITER_MANDANT:
             return getTSAntragStatusValues().filter(element => (element !== TSAntragStatus.IN_BEARBEITUNG_GS
-                && element !== TSAntragStatus.FREIGABEQUITTUNG));
+                && element !== TSAntragStatus.FREIGABEQUITTUNG
+                && element !== TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST));
         case TSRole.ADMIN_INSTITUTION:
         case TSRole.SACHBEARBEITER_INSTITUTION:
         case TSRole.ADMIN_TRAEGERSCHAFT:
