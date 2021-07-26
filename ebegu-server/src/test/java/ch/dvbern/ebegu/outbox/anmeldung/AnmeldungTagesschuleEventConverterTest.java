@@ -128,7 +128,7 @@ public class AnmeldungTagesschuleEventConverterTest {
 
 	private IsPojo<ModulAuswahlDTO> matchesModulAuswahlDTO(BelegungTagesschuleModul belegungTagesschuleModul) {
 		return pojo(ModulAuswahlDTO.class)
-			.where(ModulAuswahlDTO::getModulId, is(belegungTagesschuleModul.getModulTagesschule().getId()))
+			.where(ModulAuswahlDTO::getModulId, is(belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().getId()))
 			.where(ModulAuswahlDTO::getIntervall, is(Intervall.valueOf(belegungTagesschuleModul.getIntervall().name())))
 			.where(ModulAuswahlDTO::getWeekday, is(belegungTagesschuleModul.getModulTagesschule().getWochentag().getValue()));
 	}
