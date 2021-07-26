@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {BenutzerRS} from '../../app/core/service/benutzerRS.rest';
+import {AngularXBenutzerRS} from '../../app/core/service/angularXBenutzerRS.rest';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {TSAntragDTO} from '../../models/TSAntragDTO';
 import {TSBenutzer} from '../../models/TSBenutzer';
@@ -57,7 +57,7 @@ export class FreigabeController {
         private readonly gesuch: TSAntragDTO,
         private readonly $mdDialog: IDialogService,
         private readonly gesuchRS: GesuchRS,
-        private readonly benutzerRS: BenutzerRS,
+        private readonly benutzerRS: AngularXBenutzerRS,
         private readonly authService: AuthServiceRS,
         private readonly gemeindeRS: GemeindeRS,
         private readonly dossierRS: DossierRS,

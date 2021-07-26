@@ -19,7 +19,7 @@ import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
 import {TSGesuch} from '../../../../models/TSGesuch';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import {BenutzerRS} from '../../service/benutzerRS.rest';
+import {AngularXBenutzerRS} from '../../service/angularXBenutzerRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class DvVerantwortlicherselect implements IDirective {
@@ -52,7 +52,7 @@ export class VerantwortlicherselectController implements IController {
     public userList: Array<TSBenutzerNoDetails>;
 
     public constructor(
-        private readonly benutzerRS: BenutzerRS,
+        private readonly benutzerRS: AngularXBenutzerRS,
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly $translate: ITranslateService,
     ) {
