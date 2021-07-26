@@ -31,6 +31,7 @@ import {
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
@@ -1377,5 +1378,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public anmeldungSchulamtFalscheAngaben(): void {
         this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+    }
+
+    public isStammdatenAusgefuellt(): boolean {
+        return this.instStamm.institution.status !== TSInstitutionStatus.EINGELADEN;
     }
 }

@@ -691,7 +691,6 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			gesuch.setFinSitStatus(FinSitStatus.AKZEPTIERT);
 
 			gesuch.getKindContainers().stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
-				.filter(betreuung -> !betreuung.isAngebotSchulamt())
 				.forEach(betreuung -> verfuegungService.verfuegen(
 					gesuch.getId(),
 					betreuung.getId(),
@@ -979,7 +978,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			testAllMailsInSprache(Sprache.DEUTSCH, gesuch, firstBetreuung, gesuchsperiode, mailadresse);
 			testAllMailsInSprache(Sprache.FRANZOESISCH, gesuch, firstBetreuung, gesuchsperiode, mailadresse);
 			// Sprachunabhängige Mails
-			mailService.sendInfoOffenePendenzenInstitution(firstBetreuung.getInstitutionStammdaten());
+			mailService.sendInfoOffenePendenzenNeuMitteilungInstitution(firstBetreuung.getInstitutionStammdaten(), true,false);
 			mailService.sendBenutzerEinladung(besitzer, einladung);
 			mailService.sendInfoMitteilungErhalten(mitteilung);
 			LOG.info("Es sollten 31 Mails verschickt worden sein an {}", mailadresse);

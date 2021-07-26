@@ -342,4 +342,9 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	public String getOwningDossierId() {
 		return extractGesuch().getDossier().getId();
 	}
+
+	@Transient
+	public boolean isAngebotSchulamt() {
+		return BetreuungsangebotTyp.TAGESSCHULE == getBetreuungsangebotTyp() || BetreuungsangebotTyp.FERIENINSEL == getBetreuungsangebotTyp();
+	}
 }

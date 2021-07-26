@@ -9,6 +9,7 @@ import {TSBenutzer} from '../../../models/TSBenutzer';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {ReportRS} from '../../core/service/reportRS.rest';
+import {StateStoreService} from '../../shared/services/state-store.service';
 import {SharedModule} from '../../shared/shared.module';
 import {ZahlungRS} from '../services/zahlungRS.rest';
 
@@ -27,6 +28,7 @@ describe('ZahlungviewXComponent', () => {
     const currencySpy = jasmine.createSpyObj(CurrencyPipe.name, ['']);
     const transitionSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name, ['onStart']);
     const errorServiceSpy = jasmine.createSpyObj(ErrorService.name, ['clearAll']);
+    const stateStoreSpy = jasmine.createSpyObj<StateStoreService>(StateStoreService.name, ['get', 'has']);
 
     authServiceSpy.principal$ = of(new TSBenutzer());
 
@@ -44,6 +46,7 @@ describe('ZahlungviewXComponent', () => {
                 {provide: CurrencyPipe, useValue: currencySpy},
                 {provide: TransitionService, useValue: transitionSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: StateStoreService, useValue: stateStoreSpy},
             ],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
