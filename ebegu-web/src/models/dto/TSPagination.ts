@@ -15,6 +15,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {PaginationDTO} from '../../app/shared/interfaces/PaginationDTO';
+
 export class TSPagination {
 
     private _number: number = 20;
@@ -47,5 +49,13 @@ export class TSPagination {
 
     public calculatePage(): number {
         return Math.floor(this.start / this.number);
+    }
+
+    public toPaginationDTO(): PaginationDTO {
+        return {
+            number: this.number,
+            totalItemCount: this.totalItemCount,
+            start: this.start
+        };
     }
 }

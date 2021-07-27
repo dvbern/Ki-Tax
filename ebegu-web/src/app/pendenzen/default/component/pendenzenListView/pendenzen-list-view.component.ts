@@ -79,8 +79,11 @@ export class PendenzenListViewComponent {
     }
 
     private loadData(): void {
-        this.searchRS.getPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort})
-            .then(response => {
+        this.searchRS.getPendenzenList({
+            pagination: this.pagination.toPaginationDTO(),
+            search: this.search,
+            sort: this.sort
+        }).then(response => {
                 this.pagination.totalItemCount = response.totalResultSize ? response.totalResultSize : 0;
                 // we lose the "this" if we don't map here
                 this.data$.next(response.antragDTOs.map(antragDto => {
