@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
@@ -81,6 +82,9 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 
 	@Inject
 	private Persistence persistence;
+
+	@Inject
+	private InternePendenzService internePendenzService;
 
 
 	@Override
@@ -161,7 +165,23 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 
 		// General role based predicates
 		Predicate inClauseStatus = root.get(Gesuch_.status).in(allowedAntragStatus);
-		predicates.add(inClauseStatus);
+
+		if(searchForPendenzen) {
+			List<String> gesuchIds = internePendenzService.findAlleAbgelaufendeInternePendenzen().stream().map(
+				internePendenz -> internePendenz.getGesuch().getId()
+			).collect(Collectors.toList());
+			if(gesuchIds.size() > 0) {
+				Predicate extraStatus = root.get(Gesuch_.status).in(AntragStatus.VERFUEGT, AntragStatus.NUR_SCHULAMT);
+				Predicate gesuchsIds = root.get(AbstractEntity_.id).in(gesuchIds);
+				predicates.add(cb.and(cb.or(inClauseStatus, cb.and(extraStatus, gesuchsIds))));
+			}
+			else{
+				predicates.add(inClauseStatus);
+			}
+		}
+		else {
+			predicates.add(inClauseStatus);
+		}
 
 		setGemeindeFilterForCurrentUser(user, joinGemeinde, predicates);
 
@@ -379,6 +399,9 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 					cb.and(
 						cb.or(predicateBG, predicateTS)
 					));
+			}
+			if (predicateObjectDto.getInternePendenz() != null) {
+				predicates.add(cb.equal(root.get(Gesuch_.internePendenz), predicateObjectDto.getInternePendenz()));
 			}
 		}
 		// Construct the select- and where-clause

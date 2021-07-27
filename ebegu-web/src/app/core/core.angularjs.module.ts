@@ -42,7 +42,7 @@ import {AUTHENTICATION_JS_MODULE} from '../../authentication/authentication.modu
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import router from '../../dvbModules/router/router.module';
 import {environment} from '../../environments/environment';
-import {InternePendenzenRS} from '../../gesuch/component/internePendenzenView/internePendenzenRS';
+import {InternePendenzenRS} from '../../gesuch/component/internePendenzenView/internePendenzenRS.rest';
 import {BerechnungsManager} from '../../gesuch/service/berechnungsManager';
 import {DokumenteRS} from '../../gesuch/service/dokumenteRS.rest';
 import {DossierRS} from '../../gesuch/service/dossierRS.rest';

@@ -208,6 +208,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         'periode-filter',
         'aenderungsdatum-filter',
         'status-filter',
+        'internePendenz-filter',
         'dokumenteHochgeladen-filter',
         'angebote-filter',
         'institutionen-filter',
@@ -225,6 +226,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         'periode',
         'aenderungsdatum',
         'status',
+        'internePendenz',
         'dokumenteHochgeladen',
         'angebote',
         'institutionen',
@@ -323,6 +325,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
                 this.hiddenColumns.push('verantwortlicheBG');
                 this.hiddenColumns.push('verantwortlicheTS');
                 this.hiddenColumns.push('verantwortlicheGemeinde');
+                this.hiddenColumns.push('internePendenz');
                 this.hiddenColumns.push('dokumenteHochgeladen');
             }
         }
@@ -417,6 +420,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
                         antragTyp: antragDto.antragTyp,
                         periode: antragDto.gesuchsperiodeString,
                         aenderungsdatum: antragDto.aenderungsdatum,
+                        internePendenz: antragDto.internePendenz,
+                        internePendenzAbgelaufen: antragDto.internePendenzAbgelaufen,
                         dokumenteHochgeladen: antragDto.dokumenteHochgeladen,
                         angebote: antragDto.angebote,
                         institutionen: antragDto.institutionen,
@@ -505,6 +510,11 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
 
     public filterDocumentsUploaded(documentsUploaded: boolean): void {
         this.filterPredicate.dokumenteHochgeladen = documentsUploaded;
+        this.applyFilter();
+    }
+
+    public filterInternePendenz(internePendenz: boolean): void {
+        this.filterPredicate.internePendenz = internePendenz;
         this.applyFilter();
     }
 

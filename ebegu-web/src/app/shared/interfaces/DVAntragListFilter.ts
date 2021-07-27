@@ -25,6 +25,7 @@ export interface DVAntragListFilter {
     eingangsdatumSTV?: string;
     aenderungsdatum?: string;
     status?: string;
+    internePendenz?: boolean;
     dokumenteHochgeladen?: boolean;
     angebote?: string;
     institutionen?: string;

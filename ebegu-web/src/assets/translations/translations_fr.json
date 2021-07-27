@@ -568,7 +568,7 @@
     "VERANTWORTLICHER_SCHULAMT": "Responsable école à journée continue",
     "VERANTWORTLICHER_JUGENDAMT": "Responsable bon de garde",
     "NO_VERANTWORTLICHER_SELECTED": "Aucun resp.",
-    "DOKUMENTE_HOCHGELADEN_KURZ": "Document",
+    "DOKUMENTE_HOCHGELADEN_KURZ": "Doc",
     "EINGANG": "Réception",
     "PERIODE": "Période",
     "FAMILIE": "Famille",
@@ -2554,6 +2554,8 @@
     "MODUL_ID": "ID du module",
     "COPY_TO_CLIPBOARD": "Copier dans le presse-papiers",
     "ERROR_DEFAULT_BENUTZER_NICHT_LOESCHBAR": "Ce compte est le / la responsable standard(e) pour une commune et ne peut donc pas être effacé.",
+    "INTERNE_PENDENZ_KURZ": "Tâche int.",
+    "INTERNE_PENDENZ": "Tâche interne",
     "INSTITUTION_EINGELADEN_WARN_TEXT": "Attention, les données de base de l'institution ne sont pas encore remplies, il n'est donc pas possible de confirmer la place!",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

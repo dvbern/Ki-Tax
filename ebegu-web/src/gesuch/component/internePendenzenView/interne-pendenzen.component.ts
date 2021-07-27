@@ -24,7 +24,7 @@ import {TSInternePendenz} from '../../../models/TSInternePendenz';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {InternePendenzDialogComponent} from './interne-pendenz-dialog/interne-pendenz-dialog.component';
-import {InternePendenzenRS} from './internePendenzenRS';
+import {InternePendenzenRS} from './internePendenzenRS.rest';
 
 @Component({
     selector: 'interne-pendenzen-view',

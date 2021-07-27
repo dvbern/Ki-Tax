@@ -280,6 +280,7 @@ import ch.dvbern.ebegu.services.GesuchstellerAdresseService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+import ch.dvbern.ebegu.services.InternePendenzService;
 import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
@@ -385,6 +386,8 @@ public class JaxBConverter extends AbstractConverter {
 	private SozialdienstService sozialdienstService;
 	@Inject
 	private JaxSozialdienstConverter jaxSozialdienstConverter;
+	@Inject
+	private InternePendenzService internePendenzService;
 
 	public JaxBConverter() {
 		//nop
@@ -4363,7 +4366,13 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setFallId(gesuch.getFall().getId());
 		antrag.setGemeindeId(gesuch.getDossier().getGemeinde().getId());
 		antrag.setSozialdienst(gesuch.getDossier().getFall().isSozialdienstFall());
-
+		antrag.setInternePendenz(gesuch.getInternePendenz());
+		if(antrag.hasInternePendenz()) {
+			antrag.setInternePendenzAbgelaufen(internePendenzService.hasGesuchAbgelaufeneInternePendenzen(gesuch));
+		}
+		else{
+			antrag.setInternePendenzAbgelaufen(false);
+		}
 		return antrag;
 	}
 
