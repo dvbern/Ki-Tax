@@ -23,6 +23,7 @@ import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS
 import {GemeindeRS} from '../../../../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
 import {SearchRS} from '../../../../../gesuch/service/searchRS.rest';
+import {TSPagination} from '../../../../../models/dto/TSPagination';
 import {TSAntragStatus} from '../../../../../models/enums/TSAntragStatus';
 import {TSAntragDTO} from '../../../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../../../models/TSAntragSearchresultDTO';
@@ -44,15 +45,8 @@ export class PendenzenListViewComponent {
     public hasGemeindenInStatusAngemeldet: boolean = false;
 
     public data$: BehaviorSubject<DVAntragListItem[]> = new BehaviorSubject<DVAntragListItem[]>([]);
-    public pagination: {
-        number: number,
-        totalItemCount: number,
-        start: number
-    } = {
-        number: 20,
-        totalItemCount: 0,
-        start: 0,
-    };
+    public pagination: TSPagination = new TSPagination();
+
     private readonly search: { predicateObject: DVAntragListFilter } = {
         predicateObject: {},
     };
@@ -196,6 +190,6 @@ export class PendenzenListViewComponent {
     }
 
     public calculatePage(): number {
-        return Math.floor(this.pagination.start / this.pagination.number);
+        return this.pagination.calculatePage();
     }
 }

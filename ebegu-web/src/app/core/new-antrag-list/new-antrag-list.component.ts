@@ -428,17 +428,19 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
                 });
             }));
 
-        dataToLoad$.subscribe((result: DVAntragListItem[]) => {
-            this.datasource.data = result;
-            this.updatePagination();
-            // TODO: we need this because the angualarJS Service returns an IPromise. Angular does not detect changes in
-            //  these since they are not zone-aware. Remove once the service is migrated
-            this.changeDetectorRef.markForCheck();
-        }, error => {
-            this.translate.get('DATA_RETRIEVAL_ERROR', error).subscribe(message => {
-                this.errorService.addMesageAsError(message);
-            }, translateError => console.error('Could not load translation', translateError));
-        });
+        dataToLoad$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((result: DVAntragListItem[]) => {
+                this.datasource.data = result;
+                this.updatePagination();
+                // TODO: we need this because the angualarJS Service returns an IPromise. Angular does not detect
+                // changes in these since they are not zone-aware. Remove once the service is migrated
+                this.changeDetectorRef.markForCheck();
+            }, error => {
+                this.translate.get('DATA_RETRIEVAL_ERROR', error).subscribe(message => {
+                    this.errorService.addMesageAsError(message);
+                }, translateError => console.error('Could not load translation', translateError));
+            });
     }
 
     private updatePagination(): void {

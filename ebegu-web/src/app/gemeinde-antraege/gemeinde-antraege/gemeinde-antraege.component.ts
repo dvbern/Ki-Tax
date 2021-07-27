@@ -31,6 +31,7 @@ import {BehaviorSubject, combineLatest, from, NEVER, Observable, of} from 'rxjs'
 import {catchError, concatMap, filter, map, mergeMap, tap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {TSPagination} from '../../../models/dto/TSPagination';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -48,6 +49,7 @@ import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
 import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
+import {DVPaginationEvent} from '../../shared/interfaces/DVPaginationEvent';
 import {GemeindeAntragService} from '../services/gemeinde-antrag.service';
 
 const LOG = LogFactory.createLog('GemeindeAntraegeComponent');
@@ -79,6 +81,9 @@ export class GemeindeAntraegeComponent implements OnInit {
     public formGroup: FormGroup;
     public totalItems: number;
     public gemeinden: TSGemeinde[];
+
+    public pagination: TSPagination = new TSPagination();
+    private readonly paginationChangedSubj = new BehaviorSubject<TSPagination>(this.pagination);
 
     private readonly filterDebounceSubject: BehaviorSubject<DVAntragListFilter> =
         new BehaviorSubject<DVAntragListFilter>({});
@@ -124,9 +129,16 @@ export class GemeindeAntraegeComponent implements OnInit {
     }
 
     private loadAntragList(): void {
-        this.antragList$ = combineLatest([this.filterDebounceSubject, this.sortDebounceSubject]).pipe(
-            mergeMap(filterAndSort => this.gemeindeAntragService.getGemeindeAntraege(filterAndSort[0], filterAndSort[1])
-                .pipe(catchError(() => this.translate.get('DATA_RETRIEVAL_ERROR').pipe(
+        this.antragList$ = combineLatest([
+            this.filterDebounceSubject,
+            this.sortDebounceSubject,
+            this.paginationChangedSubj.asObservable()
+        ]).pipe(
+            mergeMap(filterSortAndPag => this.gemeindeAntragService.getGemeindeAntraege(
+                filterSortAndPag[0],
+                filterSortAndPag[1],
+                filterSortAndPag[2]
+            ).pipe(catchError(() => this.translate.get('DATA_RETRIEVAL_ERROR').pipe(
                     tap(msg => this.errorService.addMesageAsError(msg)),
                     mergeMap(() => of([] as TSGemeindeAntrag[])),
                 )))),
@@ -321,5 +333,16 @@ export class GemeindeAntraegeComponent implements OnInit {
             filter(principal => !!principal),
             map(() => this.authService.isOneOfRoles(TSRoleUtil.getFerienbetreuungRoles()))
         );
+    }
+
+    public calculatePage(): number {
+        return this.pagination.calculatePage();
+    }
+
+    public onPagination(paginationEvent: DVPaginationEvent): void {
+        this.pagination.number = paginationEvent.pageSize;
+        this.pagination.start = paginationEvent.page * paginationEvent.pageSize;
+
+        this.paginationChangedSubj.next(this.pagination);
     }
 }

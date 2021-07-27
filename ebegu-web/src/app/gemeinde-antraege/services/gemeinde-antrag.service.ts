@@ -19,6 +19,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSPagination} from '../../../models/dto/TSPagination';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
@@ -47,10 +48,14 @@ export class GemeindeAntragService {
     ) {
     }
 
-    public getGemeindeAntraege(filter: DVAntragListFilter, sort: {
-        predicate?: string,
-        reverse?: boolean
-    }): Observable<TSGemeindeAntrag[]> {
+    public getGemeindeAntraege(
+        filter: DVAntragListFilter,
+        sort: {
+            predicate?: string,
+            reverse?: boolean
+        },
+        pagination: TSPagination): Observable<TSGemeindeAntrag[]> {
+
         let params = new HttpParams();
         if (filter.gemeinde) {
             params = params.append('gemeinde', filter.gemeinde);
