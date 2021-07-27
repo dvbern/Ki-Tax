@@ -54,9 +54,21 @@
     }
     .zahlungen-form {
         background: @contrast-light;
+        flex-wrap: wrap;
         margin-bottom: 4rem;
         padding-bottom: 1rem;
+        padding-left: 2.2rem;
         padding-top: 4rem;
+
+        & > div {
+            flex: 1 1 auto;
+            padding-left: 0;
+            padding-right: 4rem;
+        }
+
+        & > div:first-child {
+            padding-left: 0;
+        }
     }
 
     #betragTotalAuftrag, .numeric-column {
@@ -71,5 +83,47 @@
     .switch-auszahlungstyp {
         margin-bottom: 5rem;
     }
+
+    .table-responsive {
+        th {
+            border-bottom: 0;
+        }
+
+        table {
+            margin-bottom: 0;
+        }
+    }
+
+    .bottom-pagination {
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .full-width-heigth {
+        align-items: center;
+        display: flex;
+        height: 100%;
+        width: 100%;
+    }
+
+    ::ng-deep mat-header-cell[aria-sort='descending'] >  .mat-sort-header-sorted .mat-sort-header-arrow > .mat-sort-header-indicator {
+        transform: translateY(10px) !important;
+    }
+
+    mat-paginator {
+        display: none;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: center;
+        > div {
+            max-width: 1230px;
+            width: 100%;
+        }
+    }
+
 }
 

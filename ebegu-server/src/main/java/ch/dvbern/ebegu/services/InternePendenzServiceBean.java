@@ -162,4 +162,11 @@ public class InternePendenzServiceBean extends AbstractBaseService implements In
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		return persistence.getCriteriaResults(query).stream().count() > 0;
 	}
+
+	@Override
+	public void deleteAllInternePendenz(@Nonnull Gesuch gesuch) {
+		findInternePendenzenForGesuch(gesuch).forEach(
+			this::deleteInternePendenz
+		);
+	}
 }

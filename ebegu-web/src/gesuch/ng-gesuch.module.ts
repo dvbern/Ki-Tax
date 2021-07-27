@@ -23,7 +23,6 @@ import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
 import {InternePendenzDialogComponent} from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
 import {InternePendenzenTableComponent} from './component/internePendenzenView/interne-pendenzen-table/interne-pendenzen-table.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
-import {InternePendenzenRS} from './component/internePendenzenView/internePendenzenRS.rest';
 
 @NgModule({
     imports: [
@@ -39,10 +38,10 @@ import {InternePendenzenRS} from './component/internePendenzenView/internePenden
         InternePendenzDialogComponent,
         InternePendenzenTableComponent
     ],
-    providers: [
-        InternePendenzenRS
-    ]
-    })
+    exports: [
+        DvSwitchComponent,
+    ],
+})
 
 export class NgGesuchModule {
 }

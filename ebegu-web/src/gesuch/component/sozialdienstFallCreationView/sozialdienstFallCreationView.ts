@@ -221,19 +221,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         }).then(() => {
             this.fallRS.sozialdienstFallEntziehen(this.gesuchModelManager.getFall().id).then(
                 fall => {
-                    const params: INewFallStateParams = {
-                        gesuchsperiodeId: this.gesuchsperiodeId,
-                        creationAction: null,
-                        gesuchId: EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch()) ?
-                            this.gesuchModelManager.getGesuch().id :
-                            null,
-                        dossierId: null,
-                        gemeindeId: this.gesuchModelManager.getGemeinde().id,
-                        eingangsart: null,
-                        sozialdienstId: fall.sozialdienstFall.sozialdienst.id,
-                        fallId: fall.id,
-                    };
-                    this.$state.go('gesuch.sozialdienstfallcreation', params);
+                    this.gesuchModelManager.getDossier().fall = fall;
                 },
             );
         });
@@ -327,7 +315,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         this.save();
     }
 
-    public showFallEntzogenWarning(): boolean {
-        return this.gesuchModelManager.getFall().sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN;
+    public getSozialdienstName(): string {
+        return this.gesuchModelManager.getFall().sozialdienstFall.sozialdienst.name;
     }
 }

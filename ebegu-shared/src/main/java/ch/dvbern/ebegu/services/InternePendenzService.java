@@ -68,4 +68,6 @@ public interface InternePendenzService {
 	 */
 	@Nonnull
 	boolean hasGesuchAbgelaufeneInternePendenzen(@Nonnull Gesuch gesuch);
+
+	void deleteAllInternePendenz(@Nonnull Gesuch gesuch);
 }

@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.reporting.ReportMassenversandService;
@@ -57,8 +58,10 @@ public class ReportMassenversandServiceBeanArquillianTest extends AbstractEbeguL
 
 	@Test
 	public void checkVerfuegungenPresent() {
-		final Collection<Betreuung> all = criteriaQueryHelper.getAll(Betreuung.class);
-		Assert.assertEquals(19, all.size());
+		final Collection<Betreuung> allBetreuungen = criteriaQueryHelper.getAll(Betreuung.class);
+		final Collection<AnmeldungTagesschule> allAnmeldungen = criteriaQueryHelper.getAll(AnmeldungTagesschule.class);
+		Assert.assertEquals(15, allBetreuungen.size());
+		Assert.assertEquals(4, allAnmeldungen.size());
 
 	}
 

@@ -72,6 +72,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 	private static final String KLASSE = "PdfGeneration_AnmeldungBestaetigung_Klasse";
 	private static final String INSTITUTION = "PdfGeneration_AnmeldungBestaetigung_institution";
 	private static final String BEMERKUNG = "PdfGeneration_AnmeldungBestaetigung_bemerkung";
+	private static final String KIND_GEBURTSDATUM = "PdfGeneration_AnmeldungBestaetigung_KindGeburtsdatum";
 
 	private static final String ANMELDUNG_BESTAETIGUNG_INTRO_MODULE =
 		"PdfGeneration_AnmeldungBestaetigung_IntroModule";
@@ -300,6 +301,10 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		} else {
 			table.addCell(new Phrase("", defaultFont));
 		}
+		table.addCell(new Phrase(translate(KIND_GEBURTSDATUM), defaultFont));
+		table.addCell(new Phrase(Constants.DATE_FORMATTER.format(
+			kind.getGeburtsdatum()), defaultFont));
+		table.completeRow();
 		return table;
 	}
 
