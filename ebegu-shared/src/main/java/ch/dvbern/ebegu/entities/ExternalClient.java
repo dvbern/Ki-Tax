@@ -62,10 +62,10 @@ public class ExternalClient extends AbstractEntity {
 	 * Spezifiziert, welche Art(en) von Institutionen diesen ExternalClient sehen und freigeben können
 	 * EXCHANGE_SERVICE_INSTITUTION steht dabei für ALLE Arten von Institutionen
 	 */
-	@Nonnull
+	@Nullable
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
-	private @NotNull ExternalClientInstitutionType institutionType;
+	private ExternalClientInstitutionType institutionType;
 
 	public ExternalClient() {
 		this.clientName = "";
@@ -73,7 +73,7 @@ public class ExternalClient extends AbstractEntity {
 		this.institutionType = ExternalClientInstitutionType.EXCHANGE_SERVICE_INSTITUTION;
 	}
 
-	public ExternalClient(@Nonnull String clientName, @Nonnull ExternalClientType type, @Nonnull ExternalClientInstitutionType institutionType) {
+	public ExternalClient(@Nonnull String clientName, @Nonnull ExternalClientType type, @Nullable ExternalClientInstitutionType institutionType) {
 		this.clientName = clientName;
 		this.type = type;
 		this.institutionType = institutionType;
@@ -111,7 +111,7 @@ public class ExternalClient extends AbstractEntity {
 		this.type = type;
 	}
 
-	@Nonnull
+	@Nullable
 	public ExternalClientInstitutionType getInstitutionType() {
 		return institutionType;
 	}
