@@ -19,10 +19,10 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {TSPagination} from '../../../models/dto/TSPagination';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
+import {TSGemeindeAntragPaginationDTO} from '../../../models/gemeindeantrag/TSGemeindeAntragPaginationDTO';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {TSGemeinde} from '../../../models/TSGemeinde';
@@ -31,6 +31,7 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
+import {PaginationDTO} from '../../shared/interfaces/PaginationDTO';
 
 const LOG = LogFactory.createLog('GemeindeAntragService');
 
@@ -54,7 +55,7 @@ export class GemeindeAntragService {
             predicate?: string,
             reverse?: boolean
         },
-        pagination: TSPagination): Observable<TSGemeindeAntrag[]> {
+        paginationDTO: PaginationDTO): Observable<TSGemeindeAntragPaginationDTO> {
 
         let params = new HttpParams();
         if (filter.gemeinde) {
@@ -72,11 +73,13 @@ export class GemeindeAntragService {
         if (filter.aenderungsdatum) {
             params = params.append('timestampMutiert', filter.aenderungsdatum);
         }
+        params = params.append('paginationStart', paginationDTO.start.toFixed(0));
+        params = params.append('paginationNumber', paginationDTO.number.toFixed(0));
+
         return this.http.get<TSGemeindeAntrag[]>(this.API_BASE_URL, {
             params,
         }).pipe(
-            map(antraege => this.ebeguRestUtil.parseGemeindeAntragList(antraege)),
-            map(antraege => this.sortAntraege(antraege, sort)),
+            map(antraege => this.ebeguRestUtil.parseGemeindeAntragPaginationDTO(antraege))
         );
     }
 

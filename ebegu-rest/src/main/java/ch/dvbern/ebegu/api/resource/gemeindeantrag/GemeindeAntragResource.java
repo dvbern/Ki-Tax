@@ -29,6 +29,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -43,6 +44,7 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxGemeindeAntrag;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxGemeindeAntragPaginationDTO;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
@@ -226,20 +228,47 @@ public class GemeindeAntragResource {
 		SACHBEARBEITER_INSTITUTION, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_BG,
 		SACHBEARBEITER_BG,
 		SACHBEARBEITER_FERIENBETREUUNG, ADMIN_FERIENBETREUUNG })
-	public List<JaxGemeindeAntrag> getAllGemeindeAntraege(
+	public JaxGemeindeAntragPaginationDTO getAllGemeindeAntraege(
 		@Nullable @QueryParam("gemeinde") String gemeinde,
 		@Nullable @QueryParam("periode") String periode,
 		@Nullable @QueryParam("typ") String typ,
 		@Nullable @QueryParam("status") String status,
-		@Nullable @QueryParam("timestampMutiert") String timestampMutiert
+		@Nullable @QueryParam("timestampMutiert") String timestampMutiert,
+		@Nonnull @QueryParam("paginationStart") String paginationStart,
+		@Nonnull @QueryParam("paginationNumber") String paginationNumber
 	) {
-		return converter.gemeindeAntragListToJax(
-			(List<GemeindeAntrag>) gemeindeAntragService.getGemeindeAntraege(
-				gemeinde,
-				periode,
-				typ,
-				status,
-				timestampMutiert));
+
+		int paginationStartInt;
+		int paginationNumberInt;
+
+		try {
+			paginationStartInt = Integer.parseInt(paginationStart);
+			paginationNumberInt = Integer.parseInt(paginationNumber);
+		} catch (NumberFormatException e) {
+			throw new BadRequestException("bad format of paginationStart or paginationNumber", e);
+		}
+
+		List<GemeindeAntrag> gemeindeAntraege = (List<GemeindeAntrag>) gemeindeAntragService.getGemeindeAntraege(
+			gemeinde,
+			periode,
+			typ,
+			status,
+			timestampMutiert);
+
+		/*
+		  Since we are fetching the data from different tables, there is no way to do pagination on DB side.
+		  We have to fetch all data but this way, we don't have to send all data to client
+		 */
+		int toIndex = Math.min(paginationStartInt + paginationNumberInt, gemeindeAntraege.size());
+		List<JaxGemeindeAntrag> jaxGemeindeAntraege = converter.gemeindeAntragListToJax(
+			gemeindeAntraege.subList(paginationStartInt,toIndex)
+		);
+
+		JaxGemeindeAntragPaginationDTO jaxGemeindeAntragPaginationDTO = new JaxGemeindeAntragPaginationDTO();
+		jaxGemeindeAntragPaginationDTO.setGemeindeAntragList(jaxGemeindeAntraege);
+		jaxGemeindeAntragPaginationDTO.setTotalCount(gemeindeAntraege.size());
+
+		return jaxGemeindeAntragPaginationDTO;
 	}
 
 	@ApiOperation("Gibt alle Tagesschuleanträge des Gemeinde-Antrags zurück, die für die Benutzerin sichtbar sind")

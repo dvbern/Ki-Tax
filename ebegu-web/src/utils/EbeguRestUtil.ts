@@ -34,6 +34,7 @@ import {TSFerienbetreuungAngabenNutzung} from '../models/gemeindeantrag/TSFerien
 import {TSFerienbetreuungAngabenStammdaten} from '../models/gemeindeantrag/TSFerienbetreuungAngabenStammdaten';
 import {TSFerienbetreuungDokument} from '../models/gemeindeantrag/TSFerienbetreuungDokument';
 import {TSGemeindeAntrag} from '../models/gemeindeantrag/TSGemeindeAntrag';
+import {TSGemeindeAntragPaginationDTO} from '../models/gemeindeantrag/TSGemeindeAntragPaginationDTO';
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
@@ -4353,6 +4354,13 @@ export class EbeguRestUtil {
         externalClientRest.clientName = externalClientTS.clientName;
         externalClientRest.type = externalClientTS.type;
         return externalClientRest;
+    }
+
+    public parseGemeindeAntragPaginationDTO(data: any): TSGemeindeAntragPaginationDTO {
+        const dto = new TSGemeindeAntragPaginationDTO();
+        dto.gemeindeAntraege = this.parseGemeindeAntragList(data.gemeindeAntragList);
+        dto.totalCount = data.totalCount;
+        return dto;
     }
 
     public parseGemeindeAntragList(data: Array<any>): TSGemeindeAntrag[] {

@@ -35,7 +35,7 @@ import {TSPagination} from '../../../models/dto/TSPagination';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRole} from '../../../models/enums/TSRole';
-import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
+import {TSGemeindeAntragPaginationDTO} from '../../../models/gemeindeantrag/TSGemeindeAntragPaginationDTO';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
@@ -137,13 +137,14 @@ export class GemeindeAntraegeComponent implements OnInit {
             mergeMap(filterSortAndPag => this.gemeindeAntragService.getGemeindeAntraege(
                 filterSortAndPag[0],
                 filterSortAndPag[1],
-                filterSortAndPag[2]
+                filterSortAndPag[2].toPaginationDTO()
             ).pipe(catchError(() => this.translate.get('DATA_RETRIEVAL_ERROR').pipe(
                     tap(msg => this.errorService.addMesageAsError(msg)),
-                    mergeMap(() => of([] as TSGemeindeAntrag[])),
+                    mergeMap(() => of(new TSGemeindeAntragPaginationDTO())),
                 )))),
-            map(gemeindeAntraege => {
-                return gemeindeAntraege.map(antrag => {
+            tap(dto => this.totalItems = dto.totalCount),
+            map(dto => {
+                return dto.gemeindeAntraege.map(antrag => {
                     return {
                         antragId: antrag.id,
                         gemeinde: antrag.gemeinde.name,
@@ -154,7 +155,6 @@ export class GemeindeAntraegeComponent implements OnInit {
                     };
                 });
             }),
-            tap(gemeindeAntraege => this.totalItems = gemeindeAntraege.length),
         );
     }
 
