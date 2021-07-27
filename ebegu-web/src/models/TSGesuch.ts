@@ -277,6 +277,17 @@ export class TSGesuch extends TSAbstractAntragEntity {
         return true;
     }
 
+    private areThereNoBetreuungenAtAll(): boolean {
+        const kinderWithBetreuungList = this.getKinderWithBetreuungList();
+        let noBetreuungAtAll = true;
+        for (const kind of kinderWithBetreuungList) {
+            if (kind.betreuungen.length > 0) {
+                noBetreuungAtAll = false;
+            }
+        }
+        return noBetreuungAtAll;
+    }
+
     /**
      * Returns true when all Betreuungen are of kind SCHULAMT.
      * Returns false also if there are no Kinder with betreuungsbedarf
@@ -290,7 +301,8 @@ export class TSGesuch extends TSAbstractAntragEntity {
      * Returns false also if there are no Kinder with betreuungsbedarf
      */
     public areThereOnlyFerieninsel(): boolean {
-        return this.areThereOnlyAngeboteOfType([TSBetreuungsangebotTyp.FERIENINSEL]);
+        return this.areThereOnlyAngeboteOfType([TSBetreuungsangebotTyp.FERIENINSEL])
+            && !this.areThereNoBetreuungenAtAll;
     }
 
     /**
