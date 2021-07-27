@@ -15,9 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-ALTER TABLE external_client ADD COLUMN IF NOT EXISTS `institution_type` VARCHAR(255) DEFAULT 'EXCHANGE_SERVICE_INSTITUTION';
+ALTER TABLE external_client ADD COLUMN IF NOT EXISTS `institution_type` VARCHAR(255) ;
 
 UPDATE external_client SET `type` = 'EXCHANGE_SERVICE_USER' WHERE `type` = 'EXCHANGE_SERVICE_USER_BG' OR `type` = 'EXCHANGE_SERVICE_USER_TS';
 
-UPDATE external_client SET `institution_type` = 'EXCHANGE_SERVICE_INSTITUTION' WHERE `institution_type` IS NULL AND (
+UPDATE external_client SET `institution_type` = 'EXCHANGE_SERVICE_INSTITUTION_BG' WHERE `institution_type` IS NULL AND (
     `type` = 'EXCHANGE_SERVICE_USER' OR `type` = 'EXCHANGE_SERVICE_USER_BG' OR `type` = 'EXCHANGE_SERVICE_USER_TS');
