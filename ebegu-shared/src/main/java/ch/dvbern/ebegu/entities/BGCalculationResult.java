@@ -344,6 +344,16 @@ public class BGCalculationResult extends AbstractEntity {
 	}
 
 	/**
+	 * Vergleicht, ob die effektive Mahlzeitenvergünstigung gleich ist
+	 */
+	public static boolean isSameMZVResult(@Nullable BGCalculationResult thisEntity, @Nullable BGCalculationResult otherEntity) {
+		return (thisEntity == null && otherEntity == null)
+				|| (thisEntity != null && otherEntity != null) && (
+					MathUtil.isSame(thisEntity.getVerguenstigungMahlzeitenTotal(), otherEntity.getVerguenstigungMahlzeitenTotal())
+				);
+	}
+
+	/**
 	 * Aller persistierten Daten ohne Kommentar
 	 */
 	@SuppressWarnings({ "OverlyComplexBooleanExpression", "AccessingNonPublicFieldOfAnotherObject",

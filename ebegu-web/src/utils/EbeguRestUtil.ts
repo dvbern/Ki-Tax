@@ -3019,6 +3019,7 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.sameAusbezahlteVerguenstigung =
                 zeitabschnittFromServer.sameAusbezahlteVerguenstigung;
             verfuegungZeitabschnittTS.sameAusbezahlteMahlzeiten = zeitabschnittFromServer.sameAusbezahlteMahlzeiten;
+            verfuegungZeitabschnittTS.sameVerfuegteMahlzeitenVerguenstigung = zeitabschnittFromServer.sameVerfuegteMahlzeitenVerguenstigung;
             verfuegungZeitabschnittTS.sameVerfuegteVerfuegungsrelevanteDaten =
                 zeitabschnittFromServer.sameVerfuegteVerfuegungsrelevanteDaten;
             verfuegungZeitabschnittTS.verfuegteAnzahlZeiteinheiten =

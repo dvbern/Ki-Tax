@@ -799,4 +799,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		result.setFamGroesse(input.getFamGroesseNonNull());
 		result.setVerguenstigungMahlzeitenTotal(input.getVerguenstigungMahlzeitenTotal());
 	}
+
+	public boolean isSameMZV(VerfuegungZeitabschnitt other) {
+		return BGCalculationResult.isSameMZVResult(this.bgCalculationResultAsiv, other.bgCalculationResultAsiv) &&
+				BGCalculationResult.isSameMZVResult(this.bgCalculationResultGemeinde, other.bgCalculationResultGemeinde);
+	}
+
+	public void setSameVerfuegteMahlzeitenVerguenstigungForAsivAndGemeinde(boolean same) {
+		this.bgCalculationInputAsiv.setSameVerfuegteMahlzeitenVerguenstigung(same);
+		this.bgCalculationInputGemeinde.setSameVerfuegteMahlzeitenVerguenstigung(same);
+	}
 }
