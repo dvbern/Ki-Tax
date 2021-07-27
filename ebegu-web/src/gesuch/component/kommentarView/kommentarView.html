@@ -49,8 +49,9 @@
                 <button type="button"
                         class="dv-btn kommentar-button" aria-label="{{'INTERNE_PENDENZEN' | translate}}">
                     <span>{{'INTERNE_PENDENZEN' | translate}}
-                        <span class="pendenz-count" ng-class="{'pendenz-abgelaufen': vm.hasAbgelaufenePendenz()}">
+                        <span class="pendenz-count">
                             ({{vm.getNumberInternePendenzen()}})</span>
+                        <i ng-if="vm.hasAbgelaufenePendenz()" class="fa fa-exclamation-triangle"></i>
                     </span>
 
                 </button>
