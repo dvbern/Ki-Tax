@@ -73,6 +73,12 @@ export class GemeindeAntragService {
         if (filter.aenderungsdatum) {
             params = params.append('timestampMutiert', filter.aenderungsdatum);
         }
+        if (sort.predicate) {
+            params = params.append('sortPredicate', sort.predicate);
+        }
+        if (sort.reverse) {
+            params = params.append('sortReverse', `${sort.reverse}`);
+        }
         params = params.append('paginationStart', paginationDTO.start.toFixed(0));
         params = params.append('paginationNumber', paginationDTO.number.toFixed(0));
 
@@ -113,40 +119,6 @@ export class GemeindeAntragService {
             `${this.API_BASE_URL}/create/${toCreate.antragTyp}/gesuchsperiode/${toCreate.periode}/gemeinde/${toCreate.gemeinde}`,
             toCreate)
             .pipe(map(jaxAntrag => this.ebeguRestUtil.parseGemeindeAntragList(jaxAntrag)));
-    }
-
-    private sortAntraege(
-        antraege: TSGemeindeAntrag[],
-        sort: { predicate?: string; reverse?: boolean },
-    ): TSGemeindeAntrag[] {
-        switch (sort.predicate) {
-            case 'status':
-                return sort.reverse ?
-                    antraege.sort((a, b) => a.statusString.localeCompare(b.statusString)) :
-                    antraege.sort((a, b) => b.statusString.localeCompare(a.statusString));
-            case 'gemeinde':
-                return sort.reverse ?
-                    antraege.sort((a, b) => a.gemeinde.name.localeCompare(b.gemeinde.name)) :
-                    antraege.sort((a, b) => b.gemeinde.name.localeCompare(a.gemeinde.name));
-            case 'antragTyp':
-                return sort.reverse ?
-                    antraege.sort((a, b) => a.gemeindeAntragTyp.localeCompare(b.gemeindeAntragTyp)) :
-                    antraege.sort((a, b) => b.gemeindeAntragTyp.localeCompare(a.gemeindeAntragTyp));
-            case 'gesuchsperiodeString':
-                return sort.reverse ?
-                    antraege.sort((a, b) =>
-                        a.gesuchsperiode.gesuchsperiodeString.localeCompare(b.gesuchsperiode.gesuchsperiodeString)) :
-                    antraege.sort((a, b) =>
-                        b.gesuchsperiode.gesuchsperiodeString.localeCompare(a.gesuchsperiode.gesuchsperiodeString));
-            case 'aenderungsdatum':
-                return sort.reverse ?
-                    antraege.sort((a, b) =>
-                        b.timestampMutiert.diff(a.timestampMutiert)) :
-                    antraege.sort((a, b) =>
-                        a.timestampMutiert.diff(b.timestampMutiert));
-            default:
-                return antraege;
-        }
     }
 
     public gemeindeAntragTypStringToWizardStepTyp(wizardTypStr: string): TSWizardStepXTyp | undefined {

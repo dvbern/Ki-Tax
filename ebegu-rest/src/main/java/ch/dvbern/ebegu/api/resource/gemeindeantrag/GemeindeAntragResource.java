@@ -235,7 +235,9 @@ public class GemeindeAntragResource {
 		@Nullable @QueryParam("status") String status,
 		@Nullable @QueryParam("timestampMutiert") String timestampMutiert,
 		@Nonnull @QueryParam("paginationStart") String paginationStart,
-		@Nonnull @QueryParam("paginationNumber") String paginationNumber
+		@Nonnull @QueryParam("paginationNumber") String paginationNumber,
+		@Nullable @QueryParam("sortPredicate") String sortPredicate,
+		@Nullable @QueryParam("sortReverse") String sortReverse
 	) {
 
 		int paginationStartInt;
@@ -243,9 +245,16 @@ public class GemeindeAntragResource {
 
 		try {
 			paginationStartInt = Integer.parseInt(paginationStart);
+		} catch (NumberFormatException e) {
+			throw new BadRequestException("bad format of paginationStart", e);
+		}
+		try {
 			paginationNumberInt = Integer.parseInt(paginationNumber);
 		} catch (NumberFormatException e) {
-			throw new BadRequestException("bad format of paginationStart or paginationNumber", e);
+			throw new BadRequestException("bad format of paginationNumber", e);
+		}
+		if (sortReverse != null && !(sortReverse.equals("true") || sortReverse.equals("false"))) {
+			throw new BadRequestException("bad format of sortReverse");
 		}
 
 		List<GemeindeAntrag> gemeindeAntraege = (List<GemeindeAntrag>) gemeindeAntragService.getGemeindeAntraege(
@@ -259,16 +268,56 @@ public class GemeindeAntragResource {
 		  Since we are fetching the data from different tables, there is no way to do pagination on DB side.
 		  We have to fetch all data but this way, we don't have to send all data to client
 		 */
-		int toIndex = Math.min(paginationStartInt + paginationNumberInt, gemeindeAntraege.size());
-		List<JaxGemeindeAntrag> jaxGemeindeAntraege = converter.gemeindeAntragListToJax(
-			gemeindeAntraege.subList(paginationStartInt,toIndex)
-		);
+		List<GemeindeAntrag> gemeindeAntraegeSorted = sort(sortPredicate, Boolean.parseBoolean(sortReverse), gemeindeAntraege);
+		List<GemeindeAntrag> gemeindeAntraegePaginated = paginate(paginationStartInt, paginationNumberInt, gemeindeAntraegeSorted);
 
+		List<JaxGemeindeAntrag> jaxGemeindeAntraege = converter.gemeindeAntragListToJax(gemeindeAntraegePaginated);
 		JaxGemeindeAntragPaginationDTO jaxGemeindeAntragPaginationDTO = new JaxGemeindeAntragPaginationDTO();
 		jaxGemeindeAntragPaginationDTO.setGemeindeAntragList(jaxGemeindeAntraege);
 		jaxGemeindeAntragPaginationDTO.setTotalCount(gemeindeAntraege.size());
 
 		return jaxGemeindeAntragPaginationDTO;
+	}
+
+	@Nonnull
+	private List<GemeindeAntrag> sort(
+		@Nullable String sortPredicate,
+		@Nullable Boolean sortReverse,
+		List<GemeindeAntrag> gemeindeAntraege
+	) {
+		if (sortPredicate == null) {
+			return gemeindeAntraege;
+		}
+		int reverseMultiplicator = (sortReverse != null && sortReverse) ? 1 : -1;
+		return gemeindeAntraege.stream().sorted((a, b) -> {
+			switch (sortPredicate) {
+			case "status":
+				return a.getStatusString().compareTo(b.getStatusString()) * reverseMultiplicator;
+			case "gemeinde":
+				return a.getGemeinde().getName().compareTo(b.getGemeinde().getName()) * reverseMultiplicator;
+			case "antragTyp":
+				return a.getGemeindeAntragTyp().name().compareTo(b.getGemeindeAntragTyp().name()) * reverseMultiplicator;
+			case "gesuchsperiodeString":
+				return a.getGesuchsperiode().getGesuchsperiodeString().compareTo(b.getGesuchsperiode().getGesuchsperiodeString()) * reverseMultiplicator;
+			case "aenderungsdatum": {
+				if (a.getTimestampMutiert() == null) {
+					return -1 * reverseMultiplicator;
+				}
+				if (b.getTimestampMutiert() == null) {
+					return reverseMultiplicator;
+				}
+				return a.getTimestampMutiert().compareTo(b.getTimestampMutiert()) * reverseMultiplicator;
+			}
+			default:
+				throw new BadRequestException("wrong sortPredicate" + sortPredicate);
+			}
+		}).collect(Collectors.toList());
+	}
+
+	@Nonnull
+	private List<GemeindeAntrag> paginate(int paginationStartInt, int paginationNumberInt, List<GemeindeAntrag> gemeindeAntraege) {
+		int toIndex = Math.min(paginationStartInt + paginationNumberInt, gemeindeAntraege.size());
+		return gemeindeAntraege.subList(paginationStartInt,toIndex);
 	}
 
 	@ApiOperation("Gibt alle Tagesschuleanträge des Gemeinde-Antrags zurück, die für die Benutzerin sichtbar sind")
