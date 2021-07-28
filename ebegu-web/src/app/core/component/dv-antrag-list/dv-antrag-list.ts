@@ -207,6 +207,8 @@ export class DVAntragListController implements IController {
                 return;
             }
             this.displayedCollection = [].concat(result.antragDTOs);
+            pagination.totalItemCount = this.totalResultCount;
+            pagination.numberOfPages = Math.ceil(this.totalResultCount / pagination.number);
         });
     };
 
