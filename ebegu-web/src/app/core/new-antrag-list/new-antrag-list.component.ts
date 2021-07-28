@@ -263,6 +263,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     public initialTsGemeindeUser: TSBenutzerNoDetails;
     private sortId: string;
     private filterId: string;
+    private paginationId: string;
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
@@ -286,6 +287,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         this.updateGemeindenList();
         this.initStateStores();
         this.initFilter(true);
+        this.initPaginate();
         this.initDisplayedColumns();
         this.initBenutzerLists();
     }
@@ -380,6 +382,17 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
                 this.stateStore.get(this.filterId) :
                 {...this.initialFilter};
         this.filterChange.emit(this.filterPredicate);
+    }
+
+    private initPaginate(): void {
+        if (this.stateStore.has(this.paginationId)) {
+            const pageStore = this.stateStore.get(this.paginationId) as {page: number};
+            this.page = pageStore.page;
+        }
+        const pageEvent = new PageEvent();
+        pageEvent.pageIndex = this.page;
+        pageEvent.pageSize = this.pageSize;
+        this.handlePagination(pageEvent);
     }
 
     public ngOnDestroy(): void {
@@ -667,13 +680,16 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         }
         this.sortId = `${this.stateStoreId}-sort`;
         this.filterId = `${this.stateStoreId}-filter`;
+        this.paginationId = `${this.stateStoreId}-pagination`;
 
         this.transitionService.onStart({exiting: this.uiRouterGlobals.$current.name}, () => {
             if (this.sort.predicate) {
                 this.stateStore.store(this.sortId, this.sort);
             } else {
                 this.stateStore.delete(this.sortId);
-                this.stateStore.delete(this.filterId);
+            }
+            if (!this.disablePagination) {
+                this.stateStore.store(this.paginationId, {page: this.page});
             }
 
             this.stateStore.store(this.filterId, this.filterPredicate);
