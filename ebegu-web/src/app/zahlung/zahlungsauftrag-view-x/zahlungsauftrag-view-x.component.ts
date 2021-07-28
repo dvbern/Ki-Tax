@@ -102,7 +102,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
     ) {
     }
 
-    private static sortingDataAccessor(data: TSZahlungsauftrag, header: string): string | number {
+    private sortingDataAccessor(data: TSZahlungsauftrag, header: string): string | number {
         switch (header) {
             case 'gemeinde':
                 return data.gemeinde.name;
@@ -110,6 +110,8 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
                 return data.datumFaellig.valueOf();
             case 'datumGeneriert':
                 return data.datumGeneriert.valueOf();
+            case 'status':
+                return this.getCalculatedStatus(data);
             default:
                 return (data as any)[header];
         }
@@ -147,7 +149,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
             (this.sort.sortables.get(stored.active) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
         }
         this.datasource.sort = this.sort;
-        this.datasource.sortingDataAccessor = ZahlungsauftragViewXComponent.sortingDataAccessor;
+        this.datasource.sortingDataAccessor = this.sortingDataAccessor.bind(this);
         this.datasource.paginator = this.paginator;
     }
 
