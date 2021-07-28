@@ -16,6 +16,10 @@
  */
 @import (reference) '../../../style/variables.less';
 
+:host {
+    max-height: none !important; /* override styles from general ui-view */
+}
+
 .onboarding-login {
     line-height: 2.8rem;
     margin-left: 11vw;
