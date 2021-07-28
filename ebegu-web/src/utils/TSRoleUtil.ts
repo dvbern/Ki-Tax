@@ -725,4 +725,18 @@ export class TSRoleUtil {
     public static getAllRolesForDossierMitteilungen(): ReadonlyArray<TSRole> {
         return this.getGesuchstellerJugendamtSchulamtOtherAmtRoles().concat(this.getTraegerschaftInstitutionRoles());
     }
+
+    public static getGemeindeBgTSMandantRoles(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.ADMIN_BG,
+            TSRole.SACHBEARBEITER_BG,
+            TSRole.ADMIN_TS,
+            TSRole.SACHBEARBEITER_TS
+        ];
+    }
 }
