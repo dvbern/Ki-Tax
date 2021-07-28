@@ -19,3 +19,5 @@ alter table gesuch add column interne_pendenz BIT NOT NULL;
 alter table gesuch_aud add column interne_pendenz BIT;
 update gesuch set interne_pendenz = false;
 update gesuch_aud set interne_pendenz = false;
+update interne_pendenz inner join gesuch g on interne_pendenz.gesuch_id = g.id set g.interne_pendenz = true where g.interne_pendenz = false AND erledigt = false;
+update interne_pendenz inner join gesuch_aud g on interne_pendenz.gesuch_id = g.id set g.interne_pendenz = true where g.interne_pendenz = false AND erledigt = false;
