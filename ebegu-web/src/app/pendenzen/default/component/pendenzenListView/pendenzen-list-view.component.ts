@@ -18,7 +18,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {StateService} from '@uirouter/core';
 import {BehaviorSubject, from} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {filter, map, tap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
@@ -74,7 +74,9 @@ export class PendenzenListViewComponent {
     }
 
     public ngOnInit(): void {
-        this.authServiceRS.principal$.subscribe(principal => {
+        this.authServiceRS.principal$
+        .pipe(filter(principal => !!principal))
+        .subscribe(principal => {
             this.initialFilter.verantwortlicherGemeinde = principal.getFullName();
             this.search.predicateObject = this.initialFilter;
             this.loadData();
