@@ -302,6 +302,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     }
 
     public onFilterChange(filterChange: DVAntragListFilter): void {
+        this.pagination.start = 0;
         this.filterDebounceSubject.next(filterChange);
     }
 
