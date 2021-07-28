@@ -520,8 +520,7 @@ public class GesuchResource {
 	@Path("/setAbschliessen/{antragId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		SACHBEARBEITER_TS, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS })
 	public Response setAbschliessen(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
 		@Context UriInfo uriInfo,
