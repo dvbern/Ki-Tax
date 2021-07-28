@@ -726,6 +726,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
     }
 
+    public angabenKorrigieren(): void {
+        this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
+            title: 'BG_ANMELDUNG_ERNEUT_OEFFNEN',
+        }).then(() => {
+            this.platzAnfordern();
+        });
+    }
+
     public platzAnfordern(): void {
         if (this.isGesuchValid() && this.getBetreuungModel().vertrag) {
             this.flagErrorVertrag = false;
@@ -1377,7 +1385,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public anmeldungSchulamtFalscheAngaben(): void {
-        this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+        this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
+            title: 'TS_ANMELDUNG_ERNEUT_OEFFNEN',
+        }).then(() => {
+            this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+        });
     }
 
     public isStammdatenAusgefuellt(): boolean {

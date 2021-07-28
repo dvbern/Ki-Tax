@@ -568,7 +568,7 @@
     "VERANTWORTLICHER_SCHULAMT": "Responsable école à journée continue",
     "VERANTWORTLICHER_JUGENDAMT": "Responsable bon de garde",
     "NO_VERANTWORTLICHER_SELECTED": "Aucun resp.",
-    "DOKUMENTE_HOCHGELADEN_KURZ": "Document",
+    "DOKUMENTE_HOCHGELADEN_KURZ": "Doc",
     "EINGANG": "Réception",
     "PERIODE": "Période",
     "FAMILIE": "Famille",
@@ -1794,6 +1794,8 @@
     "TESTLOGIN_REDIRECT_WARNING_TITLE": "Vous allez être redirigé vers le <b>système de test du BE-LOGIN</b>",
     "TESTLOGIN_REDIRECT_WARNING_CONTENT": "<br>(<b>Attention:</b> la vue de l'environnement de test du BE-Login ressemble exactement au \"vrai\" BE-Login - les deux environnements ne sont par contre <b>pas</b> lié entre eux)<br><br>Si vous n'avez pas encore créer de BE-Login test, vous devez prendre connaissance de ce qui suit:<br>Vous devez <b>créer un nouveau BE-Login pour cet environnement de test</b> &rArr; Nouvel enregistrement.<br><br>Afin de créer un BE-Login, vous devez utiliser l'adresse email avec laquelle vous avez été invité dans l'environnement de test.<br><br>Si vous avez oublié votre BE-Login de test, veuillez vous adresser directement au <b>support du BE-Login</b> (031 636 99 99) et indiquer qu'il s'agit de l'environnement de test (envoyer l'url)",
     "ERNEUTE_PLATZBESTAETIGUNG_POPUP_TEXT": "Cette modification requiert une nouvelle confirmation de place étant donné que l'institution doit confirmer qu'elle a facturé le besoin de prise en charge extraordinaire.",
+    "TS_ANMELDUNG_ERNEUT_OEFFNEN": "Voulez vous vraiment modifier à nouveau l'inscription à l'école à journée continue?",
+    "BG_ANMELDUNG_ERNEUT_OEFFNEN": "Voulez vous vraiment modifier à nouveau la prise en charge?",
     "VERSION_ERROR_TEXT": "La version du client {{frontendVersion}} n'est pas la même version que celle du serveur {{backendVersion}}. Veuillez télécharger la page entièrement (F5)",
     "KORREKTURZAHLUNG_DIALOG_FRAGE": "Le changement que vous allez effectuer implique des corrections dans les montants déjà versés. Voulez-vous continuer ?",
     "KORREKTURZAHLUNG_DIALOG_OPTION_JA": "Oui, tenir compte des corrections lors du prochain versement.",
@@ -2554,6 +2556,8 @@
     "MODUL_ID": "ID du module",
     "COPY_TO_CLIPBOARD": "Copier dans le presse-papiers",
     "ERROR_DEFAULT_BENUTZER_NICHT_LOESCHBAR": "Ce compte est le / la responsable standard(e) pour une commune et ne peut donc pas être effacé.",
+    "INTERNE_PENDENZ_KURZ": "Tâche int.",
+    "INTERNE_PENDENZ": "Tâche interne",
     "INSTITUTION_EINGELADEN_WARN_TEXT": "Attention, les données de base de l'institution ne sont pas encore remplies, il n'est donc pas possible de confirmer la place!",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

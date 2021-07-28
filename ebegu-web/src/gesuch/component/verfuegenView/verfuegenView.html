@@ -532,7 +532,8 @@
                     <div class="row margin-top-20" ng-show="vm.sameVerfuegteVerfuegungsrelevanteDaten">
                         <div class="col-md-12">
                             <div class="well well-status-warten">
-                                <span data-translate="IDENTISCHE_BERECHNUNG"></span>
+                                <span ng-show="!vm.mahlzeitenChanged || !vm.showMahlzeitenverguenstigung()" data-translate="IDENTISCHE_BERECHNUNG"></span>
+                                <span ng-show="vm.mahlzeitenChanged && vm.showMahlzeitenverguenstigung()" data-translate="NUR_MAHLZEITEN_GEANDERT"></span>
                             </div>
                         </div>
                     </div>
@@ -543,16 +544,16 @@
                           dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()">
                         <dv-loading-button input-id="buttonVerfuegen" type="submit"
                                            button-click="vm.save()"
-                                           ng-if="!vm.sameVerfuegteVerfuegungsrelevanteDaten && vm.showVerfuegung">
+                                           ng-if="(!vm.sameVerfuegteVerfuegungsrelevanteDaten || vm.mahlzeitenChanged) && vm.showVerfuegung">
                             <span class="uppercase" data-translate="VERFUEGEN"></span>
                         </dv-loading-button>
                         <dv-loading-button input-id="buttonNichtEintreten" type="submit"
                                            button-click="vm.nichtEintreten()"
-                                           ng-if="!vm.sameVerfuegteVerfuegungsrelevanteDaten && vm.showVerfuegung && vm.gesuchModelManager.isGesuch()">
+                                           ng-if="(!vm.sameVerfuegteVerfuegungsrelevanteDaten || vm.mahlzeitenChanged) && vm.showVerfuegung && vm.gesuchModelManager.isGesuch()">
                             <span class="uppercase" data-translate="VERFUEGEN_NICHT_EINTRETEN"></span>
                         </dv-loading-button>
                         <span class="ie11-fix"
-                              ng-show="!vm.sameVerfuegteVerfuegungsrelevanteDaten && vm.showVerfuegung && !vm.gesuchModelManager.isGesuch()">
+                              ng-show="(!vm.sameVerfuegteVerfuegungsrelevanteDaten || vm.mahlzeitenChanged) && vm.showVerfuegung && !vm.gesuchModelManager.isGesuch()">
                             <!--Mutation wird nicht akzeptiert -> schliessen ohne Verfuegung. Der Status ist passt meiner Meinung
                             nach nicht 100% aber im Moment passt der am besten. (siehe auch EBEGU-890) -->
                             <dv-loading-button input-id="buttonAblehnen" type="submit"
@@ -562,14 +563,14 @@
                             </dv-loading-button>
                         </span>
                         <span class="ie11-fix"
-                              ng-show="vm.showVerfuegung && vm.sameVerfuegteVerfuegungsrelevanteDaten">
+                              ng-show="vm.showVerfuegung && vm.sameVerfuegteVerfuegungsrelevanteDaten && !vm.mahlzeitenChanged">
                             <dv-loading-button input-id="buttonVerzichten" type="submit"
                                                button-click="vm.schliessenOhneVerfuegen()">
                                 <span class="uppercase" data-translate="VERFUEGEN_VERZICHTEN"></span>
                             </dv-loading-button>
                         </span>
                         <span class="ie11-fix"
-                              ng-show="vm.showVerfuegung && vm.sameVerfuegteVerfuegungsrelevanteDaten">
+                              ng-show="vm.showVerfuegung && vm.sameVerfuegteVerfuegungsrelevanteDaten && !vm.mahlzeitenChanged">
                             <dv-loading-button input-id="buttonTrotzdemVerfuegen" type="submit"
                                                button-click="vm.save()">
                                 <span class="uppercase" data-translate="TROTZDEM_VERFUEGEN"></span>

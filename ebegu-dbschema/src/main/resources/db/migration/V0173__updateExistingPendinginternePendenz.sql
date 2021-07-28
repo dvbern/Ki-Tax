@@ -14,27 +14,5 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import * as moment from 'moment';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 
-export interface DVAntragListItem {
-    fallNummer?: number;
-    dossierId?: string;
-    antragId?: string;
-    gemeinde?: string;
-    status?: string;
-    familienName?: string;
-    kinder?: string[];
-    antragTyp?: string;
-    periode?: string;
-    aenderungsdatum?: moment.Moment;
-    internePendenz?: boolean;
-    dokumenteHochgeladen?: boolean;
-    angebote?: TSBetreuungsangebotTyp[];
-    institutionen?: string[];
-    verantwortlicheTS?: string;
-    verantwortlicheBG?: string;
-    isSozialdienst?: boolean;
-
-    hasBesitzer?(): boolean;
-}
+update interne_pendenz inner join gesuch g on interne_pendenz.gesuch_id = g.id set g.interne_pendenz = true where g.interne_pendenz = false AND erledigt = false;
