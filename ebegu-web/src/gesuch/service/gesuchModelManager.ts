@@ -201,17 +201,19 @@ export class GesuchModelManager {
                     this.neustesGesuch = resp;
                 });
             }
-            this.subscription = this.internePendenzenRS.getPendenzCountUpdated$(this.getGesuch())
+            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeBgTSMandantRoles())) {
+                this.subscription = this.internePendenzenRS.getPendenzCountUpdated$(this.getGesuch())
                 .subscribe(() => {
                     this.internePendenzenRS.countInternePendenzenForGesuch(this.getGesuch())
-                        .subscribe(numberInternePendenzen => this.numberInternePendenzen = numberInternePendenzen,
-                            error => this.log.error(error));
+                    .subscribe(numberInternePendenzen => this.numberInternePendenzen = numberInternePendenzen,
+                        error => this.log.error(error));
                     this.internePendenzenRS.findInternePendenzenForGesuch(this.getGesuch()).subscribe(pendenzen => {
                         this.hasAbgelaufenePendenz =
                             pendenzen.reduce((has, current) =>
                                 current.termin.isBefore(moment()) && !current.erledigt || has, false);
                     }, error => this.log.error(error));
                 }, error => this.log.error(error));
+            }
         }
         // Liste zuruecksetzen, da u.U. im Folgegesuch andere Stammdaten gelten!
         this.ewkResultat = undefined;
@@ -1720,6 +1722,6 @@ export class GesuchModelManager {
     }
 
     public $onDestroy(): void {
-        this.subscription.unsubscribe();
+        this.subscription?.unsubscribe();
     }
 }
