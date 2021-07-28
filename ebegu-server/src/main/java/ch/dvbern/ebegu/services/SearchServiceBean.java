@@ -88,26 +88,35 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 
 
 	@Override
-	public Pair<Long, List<Gesuch>> searchPendenzen(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
-		return countAndSearchAntraege(antragTableFilterDto, true);
+	public List<Gesuch> searchPendenzen(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
+		return searchAntraege(antragTableFilterDto, true);
 	}
 
 	@Override
-	public Pair<Long, List<Gesuch>> searchAllAntraege(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
-		return countAndSearchAntraege(antragTableFilterDto, false);
+	public List<Gesuch> searchAllAntraege(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
+		return searchAntraege(antragTableFilterDto, false);
+	}
+
+	@Override
+	public Long countPendenzen(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
+		return countAntraege(antragTableFilterDto, true);
+	}
+
+	@Override
+	public Long countAllAntraege(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
+		return countAntraege(antragTableFilterDto, false);
 	}
 
 	@Nonnull
-	private Pair<Long, List<Gesuch>> countAndSearchAntraege(@Nonnull AntragTableFilterDTO antragTableFilterDto, boolean searchForPendenzen) {
-		Pair<Long, List<Gesuch>> result;
+	private List<Gesuch> searchAntraege(@Nonnull AntragTableFilterDTO antragTableFilterDto, boolean searchForPendenzen) {
+		Pair<Long, List<Gesuch>> searchResult = searchAntraege(antragTableFilterDto, SearchMode.SEARCH, searchForPendenzen);
+		return searchResult.getRight();
+	}
+
+	@Nonnull
+	private Long countAntraege(@Nonnull AntragTableFilterDTO antragTableFilterDto, boolean searchForPendenzen) {
 		Long countResult = searchAntraege(antragTableFilterDto, SearchMode.COUNT, searchForPendenzen).getLeft();
-		if (countResult.equals(0L)) {    // no result found
-			result = new ImmutablePair<>(0L, Collections.emptyList());
-		} else {
-			Pair<Long, List<Gesuch>> searchResult = searchAntraege(antragTableFilterDto, SearchMode.SEARCH, searchForPendenzen);
-			result = new ImmutablePair<>(countResult, searchResult.getRight());
-		}
-		return result;
+		return countResult;
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")

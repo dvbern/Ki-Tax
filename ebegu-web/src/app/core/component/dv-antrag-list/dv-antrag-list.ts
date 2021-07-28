@@ -19,9 +19,16 @@ import {takeUntil} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
-import {getTSAntragStatusPendenzValues, getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
+import {
+    getTSAntragStatusPendenzValues,
+    getTSAntragStatusValuesByRole,
+    TSAntragStatus,
+} from '../../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
-import {getTSBetreuungsangebotTypValuesForMandant, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
+import {
+    getTSBetreuungsangebotTypValuesForMandant,
+    TSBetreuungsangebotTyp,
+} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAbstractAntragEntity} from '../../../../models/TSAbstractAntragEntity';
 import {TSAntragDTO} from '../../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../../models/TSAntragSearchresultDTO';
@@ -67,7 +74,7 @@ export class DVAntragListController implements IController {
         '$window',
         'GemeindeRS',
         'EinstellungRS',
-        '$translate'
+        '$translate',
     ];
 
     public totalResultCount: number;
@@ -117,7 +124,7 @@ export class DVAntragListController implements IController {
         private readonly $window: IWindowService,
         private readonly gemeindeRS: GemeindeRS,
         private readonly einstellungRS: EinstellungRS,
-        private readonly $translate: ITranslateService
+        private readonly $translate: ITranslateService,
     ) {
     }
 
@@ -199,9 +206,6 @@ export class DVAntragListController implements IController {
             if (!result) {
                 return;
             }
-
-            pagination.totalItemCount = result.totalResultSize;
-            pagination.numberOfPages = Math.ceil(result.totalResultSize / pagination.number);
             this.displayedCollection = [].concat(result.antragDTOs);
         });
     };

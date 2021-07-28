@@ -19,13 +19,10 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GesuchModelManager} from '../../../gesuch/service/gesuchModelManager';
-import {SearchRS} from '../../../gesuch/service/searchRS.rest';
 import {isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
-import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ILogService = angular.ILogService;
-import IPromise = angular.IPromise;
 
 export class FaelleListViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -46,22 +43,7 @@ export class FaelleListViewController {
         private readonly $state: StateService,
         private readonly $log: ILogService,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly searchRS: SearchRS,
     ) {
-    }
-
-    public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {
-        this.$log.debug('Triggering ServerFiltering with Filter Object', tableFilterState);
-        return this.searchRS.searchAntraege(tableFilterState).then((response: TSAntragSearchresultDTO) => {
-            this.totalResultCount = response.totalResultSize ? response.totalResultSize.toString() : '0';
-            this.antragList = response.antragDTOs;
-            return response;
-        });
-
-    }
-
-    public getAntragList(): Array<TSAntragDTO> {
-        return this.antragList;
     }
 
     /**
@@ -90,14 +72,14 @@ export class FaelleListViewController {
                     isCtrlKeyPressed);
             }
         } else if (antrag.status === TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST) {
-                const navObj: any = {
-                    gesuchId: antrag.antragId,
-                    dossierId: antrag.dossierId,
-                    fallId: antrag.fallId,
-                    gemeindeId: antrag.gemeindeId,
-                };
-                this.openGesuch(antrag, 'gesuch.sozialdienstfallcreation', navObj, isCtrlKeyPressed);
-            } else {
+            const navObj: any = {
+                gesuchId: antrag.antragId,
+                dossierId: antrag.dossierId,
+                fallId: antrag.fallId,
+                gemeindeId: antrag.gemeindeId,
+            };
+            this.openGesuch(antrag, 'gesuch.sozialdienstfallcreation', navObj, isCtrlKeyPressed);
+        } else {
             this.openGesuch(antrag, 'gesuch.fallcreation',
                 {gesuchId: antrag.antragId, dossierId: antrag.dossierId},
                 isCtrlKeyPressed);

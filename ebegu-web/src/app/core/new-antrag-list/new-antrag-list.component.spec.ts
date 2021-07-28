@@ -119,11 +119,9 @@ describe('NewAntragListComponent', () => {
             get antragDTOs(): TSAntragDTO[] {
                 return [];
             },
-            get totalResultSize(): number {
-                return 0;
-            },
         } as any;
         searchRSSpy.searchAntraege.and.returnValue(Promise.resolve(dummySearchResult));
+        searchRSSpy.countAntraege.and.returnValue(Promise.resolve(0));
         benutzerRSSpy.getAllBenutzerBgOrGemeinde.and.resolveTo([]);
         benutzerRSSpy.getAllBenutzerTsOrGemeinde.and.resolveTo([]);
     }));

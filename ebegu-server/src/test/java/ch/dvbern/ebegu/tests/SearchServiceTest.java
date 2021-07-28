@@ -104,16 +104,16 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		filterDTO.getSort().setPredicate("fallNummer");
 		filterDTO.getSort().setReverse(true);     //aufsteigend
 		//nach fallnummer geordnete liste
-		final Pair<Long, List<Gesuch>> resultpair = searchService.searchAllAntraege(filterDTO);
-		Assert.assertEquals(Long.valueOf(5), resultpair.getLeft());
-		List<Gesuch> foundGesuche = resultpair.getRight();
+		List<Gesuch> foundGesuche = searchService.searchAllAntraege(filterDTO);
+		Long count = searchService.countAllAntraege(filterDTO);
+		Assert.assertEquals(Long.valueOf(5), count);
 		Assert.assertEquals(gesuch.getId(), foundGesuche.get(2).getId());
 		Assert.assertEquals(gesuch3.getId(), foundGesuche.get(4).getId());
 		//genau anders rum ordnen
 		filterDTO.getSort().setReverse(false); //absteigend
-		Pair<Long, List<Gesuch>> resultpair2 = searchService.searchAllAntraege(filterDTO);
-		Assert.assertEquals(Long.valueOf(5), resultpair2.getLeft());
-		List<Gesuch> foundGesucheReversed = resultpair2.getRight();
+		List<Gesuch> foundGesucheReversed = searchService.searchAllAntraege(filterDTO);
+		Long countReversed = searchService.countAllAntraege(filterDTO);
+		Assert.assertEquals(Long.valueOf(5), countReversed);
 		Assert.assertEquals(gesuch3.getId(), foundGesucheReversed.get(0).getId());
 
 	}
@@ -128,14 +128,14 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 
 		AntragTableFilterDTO filterDTO = TestDataUtil.createAntragTableFilterDTO();
-		Pair<Long, List<Gesuch>> noFilterResult = searchService.searchAllAntraege(filterDTO);
-		Assert.assertEquals(Long.valueOf(4), noFilterResult.getLeft());
+		Long noFilterResultCount = searchService.countAllAntraege(filterDTO);
+		Assert.assertEquals(Long.valueOf(4), noFilterResultCount);
 
 		filterDTO.getSearch().getPredicateObject().setFamilienName("Becker");
 		//nach fallnummer geordnete liste
-		Pair<Long, List<Gesuch>> resultpair = searchService.searchAllAntraege(filterDTO);
-		Assert.assertEquals(Long.valueOf(1), resultpair.getLeft());
-		List<Gesuch> foundGesuche = resultpair.getRight();
+		List<Gesuch> foundGesuche = searchService.searchAllAntraege(filterDTO);
+		Long countResult = searchService.countAllAntraege(filterDTO);
+		Assert.assertEquals(Long.valueOf(1), countResult);
 		final Gesuch foundGesuch0 = foundGesuche.get(0);
 		Assert.assertNotNull(foundGesuch0.getGesuchsteller1());
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
@@ -153,22 +153,25 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		filterDTO.getPagination().setStart(0);
 		filterDTO.getPagination().setNumber(10);
 		//max 10 resultate davon 3 gefunden
-		Pair<Long, List<Gesuch>> resultpair = searchService.searchAllAntraege(filterDTO);
-		Assert.assertEquals(Long.valueOf(3), resultpair.getLeft());
-		Assert.assertEquals(3, resultpair.getRight().size());
+		List<Gesuch> result = searchService.searchAllAntraege(filterDTO);
+		Long countResult = searchService.countAllAntraege(filterDTO);
+		Assert.assertEquals(Long.valueOf(3), countResult);
+		Assert.assertEquals(3, result.size());
 
 		//max 0 resultate -> leere liste
 		filterDTO.getPagination().setStart(0);
 		filterDTO.getPagination().setNumber(0);
-		Pair<Long, List<Gesuch>> noresult = searchService.searchAllAntraege(filterDTO);
-		Assert.assertEquals(Long.valueOf(3), noresult.getLeft()); //wir erwarten 0 Resultate aber count 3
-		Assert.assertEquals(0, noresult.getRight().size());
+		List<Gesuch> noresult = searchService.searchAllAntraege(filterDTO);
+		Long noresultCount = searchService.countAllAntraege(filterDTO);
+		Assert.assertEquals(Long.valueOf(3), noresultCount); //wir erwarten 0 Resultate aber count 3
+		Assert.assertEquals(0, noresult.size());
 
 		filterDTO.getPagination().setStart(0);
 		filterDTO.getPagination().setNumber(2);
-		Pair<Long, List<Gesuch>> twopages = searchService.searchAllAntraege(filterDTO);
-		Assert.assertEquals(Long.valueOf(3), twopages.getLeft());
-		Assert.assertEquals(2, twopages.getRight().size());
+		List<Gesuch> twopages = searchService.searchAllAntraege(filterDTO);
+		Long twopagesCount = searchService.countAllAntraege(filterDTO);
+		Assert.assertEquals(Long.valueOf(3), twopagesCount);
+		Assert.assertEquals(2, twopages.size());
 
 	}
 
@@ -190,21 +193,23 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(TestDataUtil.PERIODE_JAHR_1 + "/" + TestDataUtil.PERIODE_JAHR_2, periode.getGesuchsperiodeString());
 		filterDTO.getSearch().getPredicateObject().setGesuchsperiodeString(periode.getGesuchsperiodeString());
 
-		Pair<Long, List<Gesuch>> firstResult = searchService.searchAllAntraege(filterDTO);
-		Assert.assertEquals(Long.valueOf(2), firstResult.getLeft());
+		Long firstResultCount = searchService.countAllAntraege(filterDTO);
+		Assert.assertEquals(Long.valueOf(2), firstResultCount);
 
 		Assert.assertEquals((TestDataUtil.PERIODE_JAHR_1 + 1) + "/" + (TestDataUtil.PERIODE_JAHR_2 + 1), nextPeriode.getGesuchsperiodeString());
 		filterDTO.getSearch().getPredicateObject().setGesuchsperiodeString(nextPeriode.getGesuchsperiodeString());
 
-		Pair<Long, List<Gesuch>> result = searchService.searchAllAntraege(filterDTO);
-		Assert.assertEquals(Long.valueOf(1), result.getLeft());
-		Assert.assertEquals(gesuch.getId(), result.getRight().get(0).getId());
+		List<Gesuch> result = searchService.searchAllAntraege(filterDTO);
+		Long resultCount = searchService.countAllAntraege(filterDTO);
+		Assert.assertEquals(Long.valueOf(1), resultCount);
+		Assert.assertEquals(gesuch.getId(), result.get(0).getId());
 
 		//search nach kurzem string
 		filterDTO.getSearch().getPredicateObject().setGesuchsperiodeString((TestDataUtil.PERIODE_JAHR_1 + 1) + "/" + (TestDataUtil.PERIODE_JAHR_2 - 2000 + 1));
-		Pair<Long, List<Gesuch>> thirdResult = searchService.searchAllAntraege(filterDTO);
-		Assert.assertEquals(Long.valueOf(1), thirdResult.getLeft());
-		Assert.assertEquals(gesuch.getId(), thirdResult.getRight().get(0).getId());
+		List<Gesuch> thirdResult = searchService.searchAllAntraege(filterDTO);
+		Long thirdResultCount = searchService.countAllAntraege(filterDTO);
+		Assert.assertEquals(Long.valueOf(1), thirdResultCount);
+		Assert.assertEquals(gesuch.getId(), thirdResult.get(0).getId());
 
 	}
 
@@ -214,13 +219,14 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 
 		AntragTableFilterDTO filterDTO = TestDataUtil.createAntragTableFilterDTO();
-		Pair<Long, List<Gesuch>> firstResult = searchService.searchAllAntraege(filterDTO);
-		Assert.assertEquals(Long.valueOf(2), firstResult.getLeft());
+		Long firstResultCount = searchService.countAllAntraege(filterDTO);
+		Assert.assertEquals(Long.valueOf(2), firstResultCount);
 
 		loginAsGesuchsteller("gesuchst");
-		Pair<Long, List<Gesuch>> secondResult = searchService.searchAllAntraege(filterDTO);
-		Assert.assertEquals(Long.valueOf(0), secondResult.getLeft());
-		Assert.assertEquals(0, secondResult.getRight().size());
+		List<Gesuch> secondResult = searchService.searchAllAntraege(filterDTO);
+		Long secondResultCount = searchService.countAllAntraege(filterDTO);
+		Assert.assertEquals(Long.valueOf(0), secondResultCount);
+		Assert.assertEquals(0, secondResult.size());
 	}
 
 	@Test
@@ -233,17 +239,18 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 			AntragStatus.IN_BEARBEITUNG_JA, gesuchsperiode);
 
 		AntragTableFilterDTO filterDTO = TestDataUtil.createAntragTableFilterDTO();
-		Pair<Long, List<Gesuch>> firstResult = searchService.searchAllAntraege(filterDTO);
-		Assert.assertEquals(Long.valueOf(2), firstResult.getLeft()); //SuperAdmin sieht alles
+		Long firstResultCount = searchService.countAllAntraege(filterDTO);
+		Assert.assertEquals(Long.valueOf(2), firstResultCount); //SuperAdmin sieht alles
 
 		//Die Gesuche sollten im Status IN_BEARBEITUNG_GS sein und zu keinem oder einem Traegerschafts Sachbearbeiter gehoeren, trotzdem sollten wir sie finden
 		//		Benutzer user = TestDataUtil.createDummySuperAdmin(persistence);
 		//kita Weissenstein
 		Institution institutionToSet = gesuch.extractAllBetreuungen().iterator().next().getInstitutionStammdaten().getInstitution();
 		loginAsSachbearbeiterInst("sainst", institutionToSet);
-		Pair<Long, List<Gesuch>> secondResult = searchService.searchAllAntraege(filterDTO);
-		Assert.assertEquals(Long.valueOf(2), secondResult.getLeft());
-		Assert.assertEquals(2, secondResult.getRight().size());
+		List<Gesuch> secondResult = searchService.searchAllAntraege(filterDTO);
+		Long secondResultCount = searchService.countAllAntraege(filterDTO);
+		Assert.assertEquals(Long.valueOf(2), secondResultCount);
+		Assert.assertEquals(2, secondResult.size());
 
 		gesuch.getDossier().setVerantwortlicherBG(null);
 		persistence.merge(gesuch);
@@ -255,17 +262,19 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		gesDagmar.getDossier().setVerantwortlicherBG(verantwortlicherUser);
 		persistence.merge(gesDagmar);
 		//es muessen immer noch beide gefunden werden da die betreuungen immer noch zu inst des users gehoeren
-		Pair<Long, List<Gesuch>> thirdResult = searchService.searchAllAntraege(filterDTO);
-		Assert.assertEquals(Long.valueOf(2), thirdResult.getLeft());
-		Assert.assertEquals(2, thirdResult.getRight().size());
+		List<Gesuch> thirdResult = searchService.searchAllAntraege(filterDTO);
+		Long thirdResultCount = searchService.countAllAntraege(filterDTO);
+		Assert.assertEquals(Long.valueOf(2), thirdResultCount);
+		Assert.assertEquals(2, thirdResult.size());
 
 		//aendere user zu einer anderen institution  -> darf nichts mehr finden
 		Institution otherInst = TestDataUtil.createAndPersistDefaultInstitution(persistence);
 		loginAsSachbearbeiterInst("sainst2", otherInst);
 
-		Pair<Long, List<Gesuch>> fourthResult = searchService.searchAllAntraege(filterDTO);
-		Assert.assertEquals(Long.valueOf(0), fourthResult.getLeft());
-		Assert.assertEquals(0, fourthResult.getRight().size());
+		List<Gesuch> fourthResult = searchService.searchAllAntraege(filterDTO);
+		Long fourthResultCount = searchService.countAllAntraege(filterDTO);
+		Assert.assertEquals(Long.valueOf(0), fourthResultCount);
+		Assert.assertEquals(0, fourthResult.size());
 
 	}
 
@@ -294,11 +303,11 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		filterDTO.getSort().setReverse(true);
 
 		loginAsSteueramt();
-		final Pair<Long, List<Gesuch>> pendenzenSTV = searchService.searchAllAntraege(filterDTO);
-
+		final List<Gesuch> pendenzenSTV = searchService.searchAllAntraege(filterDTO);
+		Long pendenzSTVCount = searchService.countAllAntraege(filterDTO);
 		Assert.assertNotNull(pendenzenSTV);
-		Assert.assertEquals(2, pendenzenSTV.getKey().intValue());
-		for (Gesuch pendenz : pendenzenSTV.getValue()) {
+		Assert.assertEquals(2, pendenzSTVCount.intValue());
+		for (Gesuch pendenz : pendenzenSTV) {
 			Assert.assertTrue(pendenz.getStatus() == AntragStatus.IN_BEARBEITUNG_STV
 				|| pendenz.getStatus() == AntragStatus.PRUEFUNG_STV);
 		}
@@ -316,13 +325,14 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 
 		// es muss 2 Faelle geben
 		AntragTableFilterDTO filterDTO = TestDataUtil.createAntragTableFilterDTO();
-		Pair<Long, List<Gesuch>> allantraege = searchService.searchAllAntraege(filterDTO);
-		Assert.assertEquals(Long.valueOf(2), allantraege.getLeft());
+		Long allantraegeCount = searchService.countAllAntraege(filterDTO);
+		Assert.assertEquals(Long.valueOf(2), allantraegeCount);
 
 		// davon nur einer ist eine Pendenz
-		Pair<Long, List<Gesuch>> pendenzen = searchService.searchPendenzen(filterDTO);
-		Assert.assertEquals(Long.valueOf(1), pendenzen.getLeft());
-		Assert.assertSame(AntragStatus.IN_BEARBEITUNG_JA, pendenzen.getValue().get(0).getStatus());
+		List<Gesuch> pendenzen = searchService.searchPendenzen(filterDTO);
+		Long pendenzenCount = searchService.countPendenzen(filterDTO);
+		Assert.assertEquals(Long.valueOf(1), pendenzenCount);
+		Assert.assertSame(AntragStatus.IN_BEARBEITUNG_JA, pendenzen.get(0).getStatus());
 	}
 
 	/**
@@ -337,19 +347,20 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 
 		AntragTableFilterDTO filterDTO = TestDataUtil.createAntragTableFilterDTO();
 
-		Pair<Long, List<Gesuch>> pendenzen = searchService.searchPendenzen(filterDTO);
-		Assert.assertEquals(Long.valueOf(1), pendenzen.getLeft());
-		Assert.assertSame(AntragStatus.IN_BEARBEITUNG_JA, pendenzen.getValue().get(0).getStatus());
+		List<Gesuch> pendenzen = searchService.searchPendenzen(filterDTO);
+		Long pendenzenCount = searchService.countPendenzen(filterDTO);
+		Assert.assertEquals(Long.valueOf(1), pendenzenCount);
+		Assert.assertSame(AntragStatus.IN_BEARBEITUNG_JA, pendenzen.get(0).getStatus());
 
 		gesuch.setFinSitStatus(FinSitStatus.ABGELEHNT);
 		persistence.merge(gesuch);
 
-		Pair<Long, List<Gesuch>> pendenzenSCH = searchService.searchPendenzen(filterDTO);
-		Assert.assertEquals(Long.valueOf(0), pendenzenSCH.getLeft());
+		Long pendenzenSCHCount = searchService.countPendenzen(filterDTO);
+		Assert.assertEquals(Long.valueOf(0), pendenzenSCHCount);
 
 		loginAsSachbearbeiterJA();
-		Pair<Long, List<Gesuch>> pendenzenJA = searchService.searchPendenzen(filterDTO);
-		Assert.assertEquals(Long.valueOf(1), pendenzenJA.getLeft());
+		Long pendenzenJACount = searchService.countPendenzen(filterDTO);
+		Assert.assertEquals(Long.valueOf(1), pendenzenJACount);
 	}
 
 	/**
@@ -364,16 +375,17 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 
 		AntragTableFilterDTO filterDTO = TestDataUtil.createAntragTableFilterDTO();
 
-		Pair<Long, List<Gesuch>> pendenzen = searchService.searchPendenzen(filterDTO);
-		Assert.assertEquals(Long.valueOf(1), pendenzen.getLeft());
-		Assert.assertSame(AntragStatus.IN_BEARBEITUNG_JA, pendenzen.getValue().get(0).getStatus());
+		List<Gesuch> pendenzen = searchService.searchPendenzen(filterDTO);
+		Long pendenzenCount = searchService.countPendenzen(filterDTO);
+		Assert.assertEquals(Long.valueOf(1), pendenzenCount);
+		Assert.assertSame(AntragStatus.IN_BEARBEITUNG_JA, pendenzen.get(0).getStatus());
 
 		gesuch.setFinSitStatus(FinSitStatus.AKZEPTIERT);
 		gesuch.setStatus(AntragStatus.NUR_SCHULAMT);
 		persistence.merge(gesuch);
 
-		Pair<Long, List<Gesuch>> pendenzenEmpty = searchService.searchPendenzen(filterDTO);
-		Assert.assertEquals(Long.valueOf(0), pendenzenEmpty.getLeft());
+		Long pendenzenEmptyCount = searchService.countPendenzen(filterDTO);
+		Assert.assertEquals(Long.valueOf(0), pendenzenEmptyCount);
 	}
 
 	private void convertToSCHGesuch(Gesuch gesuch) {

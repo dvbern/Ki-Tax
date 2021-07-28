@@ -77,6 +77,7 @@ export class PendenzenListViewComponent {
         this.authServiceRS.principal$.subscribe(principal => {
             this.initialFilter.verantwortlicherGemeinde = principal.getFullName();
             this.search.predicateObject = this.initialFilter;
+            this.countData();
             this.loadData();
         }, error => {
             LOG.error(error);
@@ -84,10 +85,15 @@ export class PendenzenListViewComponent {
         this.initHasGemeindenInStatusAngemeldet();
     }
 
+    private countData(): void {
+        this.searchRS.countPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort}).then(
+            response => this.pagination.totalItemCount = response ? response : 0,
+        );
+    }
+
     private loadData(): void {
         this.searchRS.getPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort})
             .then(response => {
-                this.pagination.totalItemCount = response.totalResultSize ? response.totalResultSize : 0;
                 // we lose the "this" if we don't map here
                 this.data$.next(response.antragDTOs.map(antragDto => {
                     return {
@@ -121,17 +127,6 @@ export class PendenzenListViewComponent {
             ...filter,
         };
         this.loadData();
-    }
-
-    public passFilterToServer(tableFilterState: any): void {
-        LOG.debug('Triggering ServerFiltering with Filter Object', tableFilterState);
-        from(this.searchRS.getPendenzenList(tableFilterState))
-            .pipe(tap((response: TSAntragSearchresultDTO) => {
-                this.pagination.totalItemCount = response.totalResultSize ? response.totalResultSize : 0;
-            }), map(response => response.antragDTOs.map(antragDTO => {
-                return antragDTO as DVAntragListItem;
-            })));
-
     }
 
     public editpendenzJA(pendenz: TSAntragDTO, event: any): void {

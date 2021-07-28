@@ -18,11 +18,9 @@ import {TSAntragDTO} from './TSAntragDTO';
 export class TSAntragSearchresultDTO {
 
     private _antragDTOs: Array<TSAntragDTO>;
-    private _totalResultSize: number;
 
-    public constructor(antragDTOs?: Array<TSAntragDTO>, totalResultSize?: number) {
+    public constructor(antragDTOs?: Array<TSAntragDTO>) {
         this._antragDTOs = antragDTOs;
-        this._totalResultSize = totalResultSize;
     }
 
     public get antragDTOs(): Array<TSAntragDTO> {
@@ -31,13 +29,5 @@ export class TSAntragSearchresultDTO {
 
     public set antragDTOs(value: Array<TSAntragDTO>) {
         this._antragDTOs = value;
-    }
-
-    public get totalResultSize(): number {
-        return this._totalResultSize;
-    }
-
-    public set totalResultSize(value: number) {
-        this._totalResultSize = value;
     }
 }
