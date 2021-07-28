@@ -1051,6 +1051,7 @@
     "GSDASHBOARD_ANTRAEGE": "Demandes actuelles",
     "GSDASHBOARD_KEINE_PERIODEN": "Les bons de garde ne sont émis dans la commune de {{gemeinde}} qu'à partir de l'année scolaire {{periodenjahre}}. Etant donné que cette période n'est pas encore active, aucun bon de garde ne peut actuellement être demandé.",
     "IDENTISCHE_BERECHNUNG": "Calcul identique",
+    "NUR_MAHLZEITEN_GEANDERT": "Dans cette mutation seulement les réductions de repas ont changé",
     "VERFUEGEN_VERZICHTEN": "Renoncer à rendre une décision",
     "TROTZDEM_VERFUEGEN": "Rendre une décision",
     "AENDERUNG_PER": "Changement au",
