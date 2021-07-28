@@ -1496,8 +1496,8 @@ export class GesuchModelManager {
         if (this.authServiceRS.isOneOfRoles([TSRole.GESUCHSTELLER].concat(TSRoleUtil.getSozialdienstRolle()))) {
             // readonly fuer gs wenn gesuch freigegeben oder weiter
             const gesuchReadonly = !this.getGesuch() || isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status);
-            const sozialdienstFallEntzogen = this.getFall().isSozialdienstFall()
-                && this.getFall().sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN;
+            const sozialdienstFallEntzogen = this.getFall()?.isSozialdienstFall()
+                && this.getFall()?.sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN;
             return gesuchReadonly || periodeReadonly || sozialdienstFallEntzogen;
         }
 
