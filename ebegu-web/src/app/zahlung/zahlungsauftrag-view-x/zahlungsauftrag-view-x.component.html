@@ -126,7 +126,7 @@
                 <th></th>
                 <th>
                     <div class="dv-select-style">
-                        <select name="gemeindeFilter" [(ngModel)]="filterGemeinde" (ngModelChange)="filterZahlungsAuftraege()">
+                        <select name="gemeindeFilter" [(ngModel)]="filterGemeinde" (ngModelChange)="updateZahlungsauftrag()">
                             <option [ngValue]="null" selected>{{"ALLE" | translate}}</option>
                             <option *ngFor="let gemeindeItem of gemeindenList" [ngValue]="gemeindeItem">{{gemeindeItem.name}}</option>
                         </select>
@@ -145,7 +145,7 @@
     </div>
     <div class="dv-table dv-simple-table table-striped" *ngIf="datasource && principal">
         <div class="mat-elevation-z0">
-            <mat-table matSort
+            <mat-table matSort (matSortChange)="sortData($event)"
                        [dataSource]="datasource">
 
                 <ng-container *ngFor="let column of tableColumns" [matColumnDef]="column.attributeName">

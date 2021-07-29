@@ -17,6 +17,7 @@
 
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {MatSort} from '@angular/material/sort';
 import * as moment from 'moment';
 import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -49,8 +50,17 @@ export class ZahlungRS {
         return 'ZahlungRS';
     }
 
-    public getAllZahlungsauftraege(): Observable<TSZahlungsauftrag[]> {
-        return this.http.get(`${this.serviceURL}/all`).pipe(
+    public getAllZahlungsauftraege(sort: MatSort, page: number, pageSize: number, filterGemeinde: TSGemeinde):
+        Observable<TSZahlungsauftrag[]> {
+        return this.http.get(`${this.serviceURL}/all`, {
+            params: {
+                sortPredicate: sort?.active,
+                sortReverse: sort?.direction,
+                paginationStart: (page * pageSize).toFixed(0),
+                paginationNumber: pageSize.toFixed(0),
+                gemeinde: filterGemeinde?.id
+            }
+        }).pipe(
             map((response: any) => {
                 return this.ebeguRestUtil.parseZahlungsauftragList(response);
             }),
@@ -170,7 +180,13 @@ export class ZahlungRS {
         }
     }
 
-    public getZahlungsauftraegeForRole$(role: TSRole): Observable<TSZahlungsauftrag[]> {
+    public getZahlungsauftraegeForRole$(
+        role: TSRole,
+        sort: MatSort,
+        page: number,
+        pageSize: number,
+        filterGemeinde: TSGemeinde
+    ): Observable<TSZahlungsauftrag[]> {
         switch (role) {
             case TSRole.ADMIN_INSTITUTION:
             case TSRole.SACHBEARBEITER_INSTITUTION:
@@ -186,7 +202,7 @@ export class ZahlungRS {
             case TSRole.REVISOR:
             case TSRole.ADMIN_MANDANT:
             case TSRole.SACHBEARBEITER_MANDANT:
-                return this.getAllZahlungsauftraege();
+                return this.getAllZahlungsauftraege(sort, page, pageSize, filterGemeinde);
             default:
                 return of([]);
         }
