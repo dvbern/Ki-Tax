@@ -78,7 +78,7 @@ describe('NewAntragListComponent', () => {
     const gesuchPeriodeSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
         ['findGesuchsperiode', 'getAllGesuchsperioden']);
     const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
-    const searchRSSpy = jasmine.createSpyObj<SearchRS>(SearchRS.name, ['searchAntraege']);
+    const searchRSSpy = jasmine.createSpyObj<SearchRS>(SearchRS.name, ['searchAntraege', 'countAntraege']);
     const authRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
         ['getPrincipalRole', 'hasMandantAngebotTS', 'isOneOfRoles']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
