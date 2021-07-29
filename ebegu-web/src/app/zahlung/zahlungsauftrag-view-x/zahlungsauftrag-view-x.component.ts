@@ -43,7 +43,7 @@ const LOG = LogFactory.createLog('ZahlungsauftragViewXComponent');
 export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
 
     @ViewChild(NgForm) public readonly form: NgForm;
-    @ViewChild(MatSort) public sort: MatSort
+    @ViewChild(MatSort) public sort: MatSort;
     @ViewChild(MatPaginator) private readonly paginator: MatPaginator;
 
     public datasource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
