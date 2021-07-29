@@ -16,9 +16,6 @@
  */
 @import (reference) '../../../style/variables.less';
 
-:host {
-    max-height: none !important; /* override styles from general ui-view */
-}
 
 .onboarding-login {
     line-height: 2.8rem;
@@ -52,6 +49,7 @@
     align-items: center;
     display: flex;
     justify-content: center;
+    max-height: none !important; /* override styles from general ui-view */
 }
 
 .onboarding-welcome {
