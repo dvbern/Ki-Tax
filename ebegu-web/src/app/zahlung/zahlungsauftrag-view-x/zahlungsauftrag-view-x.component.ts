@@ -146,8 +146,12 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
             const stored = this.stateStore.get(this.SORT_STORE_KEY) as MatSort;
             this.sort.active = stored.active;
             this.sort.direction = stored.direction;
-            (this.sort.sortables.get(stored.active) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
+        } else {
+            // initial sorting
+            this.sort.active = 'datumFaellig';
+            this.sort.direction = 'desc';
         }
+        (this.sort.sortables.get(this.sort.active) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
         this.datasource.sort = this.sort;
         this.datasource.sortingDataAccessor = this.sortingDataAccessor.bind(this);
         this.datasource.paginator = this.paginator;
