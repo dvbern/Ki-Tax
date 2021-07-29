@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {MatSort} from '@angular/material/sort';
 import * as moment from 'moment';
@@ -28,6 +28,7 @@ import {TSZahlung} from '../../../models/TSZahlung';
 import {TSZahlungsauftrag} from '../../../models/TSZahlungsauftrag';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
 
@@ -46,20 +47,37 @@ export class ZahlungRS {
     ) {
     }
 
+    private static getSearchParams(
+        sort: MatSort | undefined,
+        page: number,
+        pageSize: number,
+        filterGemeinde: TSGemeinde | undefined
+    ): HttpParams {
+
+        let searchParams: HttpParams = new HttpParams();
+
+        if (sort) {
+            searchParams = searchParams.append('sortPredicate', sort.active.toString());
+            searchParams = searchParams.append('sortReverse', String(sort.direction === 'desc'));
+        }
+        if (EbeguUtil.isNullOrUndefined(page) || !pageSize) {
+            throw Error('page or pageSize not set');
+        }
+        if (filterGemeinde) {
+            searchParams = searchParams.append('gemeinde', filterGemeinde.id);
+        }
+
+        return searchParams;
+    }
+
     public getServiceName(): string {
         return 'ZahlungRS';
     }
 
-    public getAllZahlungsauftraege(sort: MatSort, page: number, pageSize: number, filterGemeinde: TSGemeinde):
+    public getAllZahlungsauftraege(searchParams: HttpParams):
         Observable<TSZahlungsauftrag[]> {
         return this.http.get(`${this.serviceURL}/all`, {
-            params: {
-                sortPredicate: sort?.active,
-                sortReverse: sort?.direction,
-                paginationStart: (page * pageSize).toFixed(0),
-                paginationNumber: pageSize.toFixed(0),
-                gemeinde: filterGemeinde?.id
-            }
+            params: searchParams
         }).pipe(
             map((response: any) => {
                 return this.ebeguRestUtil.parseZahlungsauftragList(response);
@@ -67,8 +85,10 @@ export class ZahlungRS {
         );
     }
 
-    public getAllZahlungsauftraegeInstitution(): Observable<TSZahlungsauftrag[]> {
-        return this.http.get(`${this.serviceURL}/institution`).pipe(
+    public getAllZahlungsauftraegeInstitution(searchParams: HttpParams): Observable<TSZahlungsauftrag[]> {
+        return this.http.get(`${this.serviceURL}/institution`, {
+            params: searchParams
+        }).pipe(
             map((response: any) => {
                 return this.ebeguRestUtil.parseZahlungsauftragList(response);
             }),
@@ -187,12 +207,13 @@ export class ZahlungRS {
         pageSize: number,
         filterGemeinde: TSGemeinde
     ): Observable<TSZahlungsauftrag[]> {
+        const searchParams = ZahlungRS.getSearchParams(sort, page, pageSize, filterGemeinde);
         switch (role) {
             case TSRole.ADMIN_INSTITUTION:
             case TSRole.SACHBEARBEITER_INSTITUTION:
             case TSRole.ADMIN_TRAEGERSCHAFT:
             case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
-                return this.getAllZahlungsauftraegeInstitution();
+                return this.getAllZahlungsauftraegeInstitution(searchParams);
             case TSRole.SUPER_ADMIN:
             case TSRole.ADMIN_BG:
             case TSRole.SACHBEARBEITER_BG:
@@ -202,7 +223,7 @@ export class ZahlungRS {
             case TSRole.REVISOR:
             case TSRole.ADMIN_MANDANT:
             case TSRole.SACHBEARBEITER_MANDANT:
-                return this.getAllZahlungsauftraege(sort, page, pageSize, filterGemeinde);
+                return this.getAllZahlungsauftraege(searchParams);
             default:
                 return of([]);
         }

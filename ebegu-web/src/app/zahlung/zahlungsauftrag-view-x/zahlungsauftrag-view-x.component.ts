@@ -1,9 +1,9 @@
 import {CurrencyPipe} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
-import {MatSort, MatSortHeader, Sort} from '@angular/material/sort';
+import {MatSort, MatSortHeader, Sort, SortDirection} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, TransitionService, UIRouterGlobals} from '@uirouter/core';
@@ -40,7 +40,7 @@ const LOG = LogFactory.createLog('ZahlungsauftragViewXComponent');
     styleUrls: ['./zahlungsauftrag-view-x.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ZahlungsauftragViewXComponent implements OnInit {
+export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
 
     @ViewChild(NgForm) public readonly form: NgForm;
     @ViewChild(MatSort) public sort: MatSort;
@@ -81,6 +81,10 @@ export class ZahlungsauftragViewXComponent implements OnInit {
     public page: number = 0;
     public readonly PAGE_SIZE: number = 20;
 
+    public readonly DEFAULT_SORT = {
+        active: 'datumFaellig',
+        direction: 'desc'
+    };
     private readonly SORT_STORE_KEY = 'zahlungsauftrag-view-sort';
 
     public constructor(
@@ -107,8 +111,6 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         this.zahlungslaufTyp = isMahlzeitenzahlungen
             ? TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER
             : TSZahlungslaufTyp.GEMEINDE_INSTITUTION;
-        this.initSort();
-        this.updateZahlungsauftrag();
         this.updateGemeindenList();
         this.updateShowMahlzeitenZahlungslaeufe();
         this.applicationPropertyRS.isZahlungenTestMode().then((response: any) => {
@@ -126,14 +128,21 @@ export class ZahlungsauftragViewXComponent implements OnInit {
         });
     }
 
+    public ngAfterViewInit(): void {
+        this.initSort();
+        this.updateZahlungsauftrag();
+    }
+
     private initSort(): void {
-        if (!this.stateStore.has(this.SORT_STORE_KEY)) {
-            return;
+        if (this.stateStore.has(this.SORT_STORE_KEY)) {
+            const stored = this.stateStore.get(this.SORT_STORE_KEY) as MatSort;
+            this.sort.active = stored.active;
+            this.sort.direction = stored.direction;
+        } else {
+            this.sort.active = this.DEFAULT_SORT.active;
+            this.sort.direction = this.DEFAULT_SORT.direction as SortDirection;
         }
-        const stored = this.stateStore.get(this.SORT_STORE_KEY) as MatSort;
-        this.sort.active = stored.active;
-        this.sort.direction = stored.direction;
-        (this.sort.sortables.get(stored.active) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
+        (this.sort.sortables.get(this.sort.active) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
     }
 
     private updateZahlungsauftrag(): void {
