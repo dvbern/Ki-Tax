@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IController, IFilterService, IPromise, IWindowService} from 'angular';
+import {IComponentOptions, IController, IFilterService, IPromise, IScope, IWindowService} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
@@ -75,6 +75,7 @@ export class DVAntragListController implements IController {
         'GemeindeRS',
         'EinstellungRS',
         '$translate',
+        '$scope',
     ];
 
     public totalResultCount: number;
@@ -125,6 +126,7 @@ export class DVAntragListController implements IController {
         private readonly gemeindeRS: GemeindeRS,
         private readonly einstellungRS: EinstellungRS,
         private readonly $translate: ITranslateService,
+        private readonly $scope: IScope,
     ) {
     }
 
@@ -143,6 +145,15 @@ export class DVAntragListController implements IController {
         if (this.addButtonVisible === undefined) {
             this.addButtonVisible = 'false';
         }
+        this.$scope.$watch(() => {
+            return this.totalResultCount;
+        }, (newValue, oldValue) => {
+            if (newValue === oldValue) {
+                return;
+            }
+            this.pagination.totalItemCount = this.totalResultCount;
+            this.pagination.numberOfPages = Math.ceil(this.totalResultCount / this.pagination.number);
+        });
     }
 
     public $onDestroy(): void {
@@ -207,8 +218,6 @@ export class DVAntragListController implements IController {
                 return;
             }
             this.displayedCollection = [].concat(result.antragDTOs);
-            pagination.totalItemCount = this.totalResultCount;
-            pagination.numberOfPages = Math.ceil(this.totalResultCount / pagination.number);
         });
     };
 
