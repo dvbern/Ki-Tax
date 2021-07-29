@@ -17,15 +17,13 @@
 
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {StateService} from '@uirouter/core';
-import {BehaviorSubject, from} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {BehaviorSubject} from 'rxjs';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
 import {SearchRS} from '../../../../../gesuch/service/searchRS.rest';
 import {TSAntragStatus} from '../../../../../models/enums/TSAntragStatus';
 import {TSAntragDTO} from '../../../../../models/TSAntragDTO';
-import {TSAntragSearchresultDTO} from '../../../../../models/TSAntragSearchresultDTO';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../../../core/logging/LogFactory';
 import {DVAntragListFilter} from '../../../../shared/interfaces/DVAntragListFilter';

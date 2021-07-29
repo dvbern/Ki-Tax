@@ -35,7 +35,6 @@ export class FaelleListViewController {
 
     public static $inject: string[] = ['GesuchModelManager', '$state', '$log', 'AuthServiceRS', 'SearchRS'];
 
-    private antragList: Array<TSAntragDTO>;
     public totalResultCount: string = '0';
 
     public constructor(

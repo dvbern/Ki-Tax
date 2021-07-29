@@ -61,7 +61,6 @@ export class PendenzenSteueramtListViewController implements IController {
         return this.searchRS.searchAntraege(tableFilterState).then((response: TSAntragSearchresultDTO) => {
             return response;
         });
-
     }
 
     private openPendenz(pendenz: TSAntragDTO, isCtrlKeyPressed: boolean): void {
