@@ -116,6 +116,10 @@ public class InternePendenzResource {
 			internePendenz.getGesuch().setInternePendenz(false);
 			gesuchService.updateGesuch(internePendenz.getGesuch(), false);
 		}
+		else if (!internePendenz.getGesuch().getInternePendenz()){
+			internePendenz.getGesuch().setInternePendenz(true);
+			gesuchService.updateGesuch(internePendenz.getGesuch(), false);
+		}
 		return jaxBConverter.internePendenzToJax(persisted);
 	}
 

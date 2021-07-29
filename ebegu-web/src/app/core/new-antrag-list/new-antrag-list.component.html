@@ -104,8 +104,8 @@
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <span *ngIf="element.internePendenz" [title]="'INTERNE_PENDENZ' | translate">
-                        <i *ngIf="!element.internePendenzAbgelaufen" class="fa fa-ticket pendenz-icon" aria-hidden="true"></i>
-                        <i *ngIf="element.internePendenzAbgelaufen" class="fa fa-ticket pendenz-icon abgelaufen" aria-hidden="true"></i>
+                        <i *ngIf="!element.internePendenzAbgelaufen" class="fa fa-thumb-tack pendenz-icon" aria-hidden="true"></i>
+                        <i *ngIf="element.internePendenzAbgelaufen" class="fa fa-thumb-tack pendenz-icon abgelaufen" aria-hidden="true"></i>
                     </span>
                 </mat-cell>
             </ng-container>
