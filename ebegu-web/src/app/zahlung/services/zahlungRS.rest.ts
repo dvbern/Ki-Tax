@@ -63,6 +63,8 @@ export class ZahlungRS {
         if (EbeguUtil.isNullOrUndefined(page) || !pageSize) {
             throw Error('page or pageSize not set');
         }
+        searchParams = searchParams.append('page', page.toFixed(0));
+        searchParams = searchParams.append('pageSize', pageSize.toFixed(0));
         if (filterGemeinde) {
             searchParams = searchParams.append('gemeinde', filterGemeinde.id);
         }

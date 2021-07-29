@@ -39,11 +39,14 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.ws.rs.BadRequestException;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.dto.ZahlungenSearchParamsDTO;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -52,6 +55,7 @@ import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
@@ -80,12 +84,12 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
-import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
+import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -598,27 +602,78 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 	@Override
 	@Nonnull
-	public Collection<Zahlungsauftrag> getAllZahlungsauftraege() {
+	public Collection<Zahlungsauftrag> getAllZahlungsauftraege(@Nonnull ZahlungenSearchParamsDTO zahlungenSearchParamsDTO) {
 		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
 			"getBenutzersOfRole", "Non logged in user should never reach this"));
 
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Zahlungsauftrag> query = cb.createQuery(Zahlungsauftrag.class);
+		Root<Zahlungsauftrag> root = query.from(Zahlungsauftrag.class);
+		Join<Zahlungsauftrag, Gemeinde> joinGemeinde = root.join(Zahlungsauftrag_.gemeinde);
+
+		List<Predicate> predicates = new ArrayList<>();
+
+		if (zahlungenSearchParamsDTO.getGemeinde() != null) {
+			predicates.add(cb.equal(root.get(Zahlungsauftrag_.gemeinde), zahlungenSearchParamsDTO.getGemeinde()));
+		}
+
 		if (currentBenutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
-			final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-			final CriteriaQuery<Zahlungsauftrag> query = cb.createQuery(Zahlungsauftrag.class);
-
-			Root<Zahlungsauftrag> root = query.from(Zahlungsauftrag.class);
-			Join<Zahlungsauftrag, Gemeinde> joinGemeinde = root.join(Zahlungsauftrag_.gemeinde);
-
-			List<Predicate> predicates = new ArrayList<>();
 			Collection<Gemeinde> gemeindenForUser = currentBenutzer.extractGemeindenForUser();
 			Predicate inGemeinde = joinGemeinde.in(gemeindenForUser);
 			predicates.add(inGemeinde);
-
-			query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
-			return persistence.getCriteriaResults(query);
 		}
-		// Nicht Gemeinde-abhängige duerfen alle Auftraege sehen
-		return new ArrayList<>(criteriaQueryHelper.getAll(Zahlungsauftrag.class));
+		if (predicates.size() > 0) {
+			query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		}
+		setSortOrder(query, zahlungenSearchParamsDTO, root, joinGemeinde, cb);
+
+		return persistence.getEntityManager()
+			.createQuery(query)
+			.setFirstResult(zahlungenSearchParamsDTO.getPage() * zahlungenSearchParamsDTO.getPageSize())
+			.setMaxResults(zahlungenSearchParamsDTO.getPageSize())
+			.getResultList();
+	}
+
+	private void setSortOrder(
+		@Nonnull CriteriaQuery<Zahlungsauftrag> query,
+		@Nonnull ZahlungenSearchParamsDTO zahlungenSearchParamsDTO,
+		@Nonnull Root<Zahlungsauftrag> root,
+		@Nonnull Join<Zahlungsauftrag, Gemeinde> joinGemeinde,
+		@Nonnull CriteriaBuilder cb
+	) {
+		if (zahlungenSearchParamsDTO.getSortPredicate() == null) {
+			return;
+		}
+
+		Expression<?> sortExpression;
+		switch (zahlungenSearchParamsDTO.getSortPredicate()) {
+		case "datumFaellig":
+			sortExpression = root.get(Zahlungsauftrag_.datumFaellig);
+			break;
+		case "beschrieb":
+			sortExpression = root.get(Zahlungsauftrag_.beschrieb);
+			break;
+		case "datumGeneriert":
+			sortExpression = root.get(Zahlungsauftrag_.datumGeneriert);
+			break;
+		case "gemeinde":
+			sortExpression = joinGemeinde.get(Gemeinde_.name);
+			break;
+		case "betragTotalAuftrag":
+			sortExpression = root.get(Zahlungsauftrag_.betragTotalAuftrag);
+			break;
+		case "status":
+			sortExpression = root.get(Zahlungsauftrag_.status);
+			break;
+		default:
+			throw new BadRequestException("wrong sort predicate: " + zahlungenSearchParamsDTO.getSortPredicate());
+		}
+
+		if (zahlungenSearchParamsDTO.getSortReverse() != null && zahlungenSearchParamsDTO.getSortReverse()) {
+			query.orderBy(cb.desc(sortExpression));
+		} else if (zahlungenSearchParamsDTO.getSortReverse() != null && !zahlungenSearchParamsDTO.getSortReverse()) {
+			query.orderBy(cb.asc(sortExpression));
+		}
 	}
 
 	@Override
