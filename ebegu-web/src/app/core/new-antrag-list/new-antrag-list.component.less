@@ -66,6 +66,12 @@
         min-width: 0 !important;
     }
 
+    /* stylelint-disable-next-line selector-class-pattern */
+    .mat-column-internePendenz, .mat-column-internePendenz-filter {
+        flex: 1 1 !important;
+        min-width: 0 !important;
+    }
+
     mat-cell.mat-cell:last-of-type {
         padding-right: 6px;
     }
@@ -128,5 +134,17 @@
 
     .mat-focused .mat-form-field-label {
         color: rgba(0, 0, 0, 0.54);
+    }
+
+    mat-header-cell[aria-sort='descending'] > .mat-sort-header-sorted > .mat-sort-header-arrow > .mat-sort-header-indicator {
+        transform: translateY(10px) !important;
+    }
+
+    .pendenz-icon {
+        font-size: medium;
+
+        &.abgelaufen {
+            color: @primary;
+        }
     }
 }

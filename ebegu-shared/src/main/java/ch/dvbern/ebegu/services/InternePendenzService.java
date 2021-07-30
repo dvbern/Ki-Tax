@@ -56,4 +56,18 @@ public interface InternePendenzService {
 	 * Löscht die interne Pendenz
 	 */
 	void deleteInternePendenz(@Nonnull InternePendenz internePendenz);
+
+	/**
+	 * return eine Liste von alle Interne Pendenzen die sind abgelaufen
+	 */
+	@Nonnull
+	Collection<InternePendenz> findAlleAbgelaufendeInternePendenzen();
+
+	/**
+	 * return eine Liste von alle Interne Pendenzen die sind abgelaufen
+	 */
+	@Nonnull
+	boolean hasGesuchAbgelaufeneInternePendenzen(@Nonnull Gesuch gesuch);
+
+	void deleteAllInternePendenz(@Nonnull Gesuch gesuch);
 }

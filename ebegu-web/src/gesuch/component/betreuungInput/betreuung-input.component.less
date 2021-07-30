@@ -42,8 +42,10 @@ md-input-container:not(.md-input-has-value) input:not(:focus),
     }
     .betreuung-input-switch{
         float:left;
-        margin-left: -32px;
         width: auto;
+        @media only screen and (min-width: 600px) {
+            margin-left: -32px;
+        }
     }
     .dv-betreuung-input-info-label{
         float:left;

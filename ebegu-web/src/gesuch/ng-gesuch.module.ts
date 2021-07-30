@@ -14,6 +14,7 @@
  */
 
 import {NgModule} from '@angular/core';
+import {UpgradeModule} from '@angular/upgrade/static';
 import {SharedModule} from '../app/shared/shared.module';
 import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
 import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
@@ -22,10 +23,10 @@ import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
 import {InternePendenzDialogComponent} from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
 import {InternePendenzenTableComponent} from './component/internePendenzenView/interne-pendenzen-table/interne-pendenzen-table.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
-import {InternePendenzenRS} from './component/internePendenzenView/internePendenzenRS';
 
 @NgModule({
     imports: [
+        UpgradeModule,
         SharedModule,
         FallToolbarModule
     ],
@@ -37,10 +38,10 @@ import {InternePendenzenRS} from './component/internePendenzenView/internePenden
         InternePendenzDialogComponent,
         InternePendenzenTableComponent
     ],
-    providers: [
-        InternePendenzenRS
-    ]
-    })
+    exports: [
+        DvSwitchComponent,
+    ],
+})
 
 export class NgGesuchModule {
 }

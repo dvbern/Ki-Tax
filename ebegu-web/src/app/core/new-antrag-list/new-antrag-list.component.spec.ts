@@ -19,6 +19,8 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {TranslateModule} from '@ngx-translate/core';
+import {TransitionService} from '@uirouter/angular';
+import {UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
@@ -27,6 +29,7 @@ import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {MaterialModule} from '../../shared/material.module';
+import {StateStoreService} from '../../shared/services/state-store.service';
 import {ErrorService} from '../errors/service/ErrorService';
 import {BenutzerRS} from '../service/benutzerRS.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
@@ -82,6 +85,12 @@ describe('NewAntragListComponent', () => {
         ['addMesageAsError']);
     const benutzerRSSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name,
         ['getAllBenutzerBgOrGemeinde', 'getAllBenutzerTsOrGemeinde']);
+    const transitionServiceSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name,
+        ['onStart']);
+    const stateStoreServiceSpy = jasmine.createSpyObj<StateStoreService>(StateStoreService.name,
+        ['has', 'get']);
+    const uiRouterGlobals = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
+        ['$current']);
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -95,6 +104,9 @@ describe('NewAntragListComponent', () => {
                 {provide: SearchRS, useValue: searchRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: BenutzerRS, useValue: benutzerRSSpy},
+                {provide: TransitionService, useValue: transitionServiceSpy},
+                {provide: StateStoreService, useValue: stateStoreServiceSpy},
+                {provide: UIRouterGlobals, useValue: uiRouterGlobals},
             ],
         }).compileComponents();
 

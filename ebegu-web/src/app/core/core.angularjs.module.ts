@@ -42,7 +42,7 @@ import {AUTHENTICATION_JS_MODULE} from '../../authentication/authentication.modu
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import router from '../../dvbModules/router/router.module';
 import {environment} from '../../environments/environment';
-import {InternePendenzenRS} from '../../gesuch/component/internePendenzenView/internePendenzenRS';
+import {InternePendenzenRS} from '../../gesuch/component/internePendenzenView/internePendenzenRS.rest';
 import {BerechnungsManager} from '../../gesuch/service/berechnungsManager';
 import {DokumenteRS} from '../../gesuch/service/dokumenteRS.rest';
 import {DossierRS} from '../../gesuch/service/dossierRS.rest';
@@ -159,7 +159,6 @@ import {UploadRS} from './service/uploadRS.rest';
 import {VerfuegungRS} from './service/verfuegungRS.rest';
 import {HttpVersionInterceptor} from './service/version/HttpVersionInterceptor';
 import {WizardStepXRS} from './service/wizardStepXRS.rest';
-import {ZahlungRS} from './service/zahlungRS.rest';
 
 const dependencies = [
     /* Angular modules */
@@ -234,7 +233,6 @@ export const CORE_JS_MODULE = angular
     .service('WizardStepRS', WizardStepRS)
     .service('AntragStatusHistoryRS', AntragStatusHistoryRS)
     .service('MitteilungRS', MitteilungRS)
-    .service('ZahlungRS', ZahlungRS)
     .service('LastenausgleichRS', LastenausgleichRS)
     .service('GlobalCacheService', GlobalCacheService)
     .service('ExportRS', ExportRS)

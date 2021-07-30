@@ -26,7 +26,9 @@ import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSCreationAction} from '../../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../../models/enums/TSRole';
+import {TSSozialdienstStatus} from '../../../../models/enums/TSSozialdienstStatus';
 import {TSSozialdienst} from '../../../../models/sozialdienst/TSSozialdienst';
+import {TSSozialdienstStammdaten} from '../../../../models/sozialdienst/TSSozialdienstStammdaten';
 import {TSGemeinde} from '../../../../models/TSGemeinde';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
@@ -39,6 +41,7 @@ import {GesuchsperiodeRS} from '../../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../service/institutionRS.rest';
 import {SozialdienstRS} from '../../service/SozialdienstRS.rest';
 import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
+import {DvNgOkDialogComponent} from '../dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgSozialdienstDialogComponent} from '../dv-ng-sozialdienst-dialog/dv-ng-sozialdienst-dialog.component';
 
 const LOG = LogFactory.createLog('NavbarComponent');
@@ -138,11 +141,26 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         )
             .subscribe(
                 sozialdienstId => {
-                    this.createNewFall(sozialdienstId);
+                    this.sozialdienstRS.getSozialdienstStammdaten(sozialdienstId)
+                        .toPromise()
+                        .then((response: TSSozialdienstStammdaten) => {
+                            if (response.sozialdienst.status === TSSozialdienstStatus.EINGELADEN) {
+                                this.createAndOpenOkDialog(this.translate.instant('SOZIALDIENST_NOCH_EINGELADEN'));
+                                return;
+                            }
+                            this.createNewFall(sozialdienstId);
+                        });
                 }
                 ,
                 err => LOG.error(err),
             );
+    }
+
+    private createAndOpenOkDialog(title: string): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {title};
+
+        this.dialog.open(DvNgOkDialogComponent, dialogConfig).afterClosed();
     }
 
     private createNewFall(sozialdienstId: string): void {

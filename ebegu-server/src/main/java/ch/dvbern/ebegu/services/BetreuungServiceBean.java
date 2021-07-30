@@ -1184,17 +1184,23 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	}
 
 	@Override
-	public void sendInfoOffenePendenzenInstitution() {
+	public void sendInfoOffenePendenzenNeuMitteilungInstitution() {
 		Collection<InstitutionStammdaten> activeInstitutionen =
 			institutionStammdatenService.getAllInstitonStammdatenForBatchjobs();
 		for (InstitutionStammdaten stammdaten : activeInstitutionen) {
 			final Institution institution = stammdaten.getInstitution();
-			Collection<AbstractPlatz> pendenzen = new ArrayList<>();
-			pendenzen.addAll(getPendenzenForInstitution(institution));
-			pendenzen.addAll(getPendenzenAnmeldungTagesschuleForInstitution(institution));
-			pendenzen.addAll(getPendenzenAnmeldungFerieninselForInstitution(institution));
-			if (CollectionUtils.isNotEmpty(pendenzen) && stammdaten.getSendMailWennOffenePendenzen()) {
-				mailService.sendInfoOffenePendenzenInstitution(stammdaten);
+			if (stammdaten.getSendMailWennOffenePendenzen()) {
+				Collection<AbstractPlatz> pendenzen = new ArrayList<>();
+				pendenzen.addAll(getPendenzenForInstitution(institution));
+				pendenzen.addAll(getPendenzenAnmeldungTagesschuleForInstitution(institution));
+				pendenzen.addAll(getPendenzenAnmeldungFerieninselForInstitution(institution));
+				boolean ungelesendeMitteilung = mitteilungService.hasInstitutionOffeneMitteilungen(institution);
+				if (CollectionUtils.isNotEmpty(pendenzen) || ungelesendeMitteilung) {
+					mailService.sendInfoOffenePendenzenNeuMitteilungInstitution(
+						stammdaten,
+						CollectionUtils.isNotEmpty(pendenzen),
+						ungelesendeMitteilung);
+				}
 			}
 		}
 	}
@@ -1234,7 +1240,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		if (korrekturmodusGemeinde) {
 			List<AbstractPlatz> allPlaetze = gesuch.extractAllPlaetze();
 			BetreuungsangebotTyp dominantType = EbeguUtil.getDominantBetreuungsangebotTyp(allPlaetze);
-			if (dominantType == BetreuungsangebotTyp.FERIENINSEL) {
+			if (!allPlaetze.isEmpty() && dominantType == BetreuungsangebotTyp.FERIENINSEL) {
 				throw new EbeguRuntimeException(KibonLogLevel.NONE, "checkNotKorrekturmodusWithFerieninselOnly",
 					ErrorCodeEnum.ERROR_KORREKTURMODUS_FI_ONLY);
 			}

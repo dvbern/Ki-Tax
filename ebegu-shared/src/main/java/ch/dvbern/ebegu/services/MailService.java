@@ -170,7 +170,7 @@ public interface MailService {
 	/**
 	 * Sendet eine E-Mail an eine Institution mit der Info, dass es offene Pendenzen gibt
 	 */
-	void sendInfoOffenePendenzenInstitution(@Nonnull InstitutionStammdaten institutionStammdaten);
+	void sendInfoOffenePendenzenNeuMitteilungInstitution(@Nonnull InstitutionStammdaten institutionStammdaten, boolean offenePendenzen, boolean ungelesendeMitteilung);
 
 	/**
 	 * Sendet eine Email mit der Information, dass eine Anmeldung fuer ein Schulamt-Angebot ins Backend uebernommen

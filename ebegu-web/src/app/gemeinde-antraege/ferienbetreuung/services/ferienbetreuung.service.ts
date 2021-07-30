@@ -241,9 +241,10 @@ export class FerienbetreuungService {
     public ferienbetreuungAngabenGeprueft(
         container: TSFerienbetreuungAngabenContainer,
     ): Observable<TSFerienbetreuungAngabenContainer> {
+        container.calculateBerechnungen();
         return this.http.put(
             `${this.API_BASE_URL}/geprueft/${encodeURIComponent(container.id)}`,
-            {},
+            this.ebeguRestUtil.ferienbetreuungContainerToRestObject({}, container),
         ).pipe(
             map(
                 restAngaben => this.ebeguRestUtil.parseFerienbetreuungContainer(new TSFerienbetreuungAngabenContainer(),

@@ -43,9 +43,9 @@ import {LastenausgleichRS} from './service/lastenausgleichRS.rest';
 import {MandantRS} from './service/mandantRS.rest';
 import {MitteilungRS} from './service/mitteilungRS.rest';
 import {NotrechtRS} from './service/notrechtRS.rest';
+import {ReportRS} from './service/reportRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
-import {ZahlungRS} from './service/zahlungRS.rest';
 import IInjectorService = angular.auto.IInjectorService;
 
 // tslint:disable:naming-convention
@@ -135,17 +135,6 @@ export function databaseMigrationRSProviderServiceFactory(i: IInjectorService): 
 export const databaseMigrationRSProvider = {
     provide: DatabaseMigrationRS,
     useFactory: databaseMigrationRSProviderServiceFactory,
-    deps: ['$injector'],
-};
-
-// ZahlungRS
-export function zahlungRSProviderServiceFactory(i: IInjectorService): ZahlungRS {
-    return i.get('ZahlungRS');
-}
-
-export const zahlungRSProvider = {
-    provide: ZahlungRS,
-    useFactory: zahlungRSProviderServiceFactory,
     deps: ['$injector'],
 };
 
@@ -369,6 +358,17 @@ export const gesuchModelManagerProvider = {
     deps: ['$injector'],
 };
 
+// ExportRS
+export function reportRSFactory(i: IInjectorService): ReportRS {
+    return i.get('ReportRS');
+}
+
+export const reportRSProvider = {
+    provide: ReportRS,
+    useFactory: reportRSFactory,
+    deps: ['$injector'],
+};
+
 // EbeguUtil
 export function ebeguUtilFactory(i: IInjectorService): EbeguUtil {
     return i.get('EbeguUtil');
@@ -389,7 +389,6 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     benutzerRSProvider,
     gesuchsperiodeRSProvider,
     databaseMigrationRSProvider,
-    zahlungRSProvider,
     gesuchRSProvider,
     dailyBatchRSProvider,
     gemeindeRSProvider,
@@ -408,5 +407,6 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     notrechtRSProvider,
     searchRSProvider,
     gesuchModelManagerProvider,
-    ebeguUtilProvider
+    reportRSProvider,
+    ebeguUtilProvider,
 ];

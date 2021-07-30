@@ -31,6 +31,7 @@ import {
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
@@ -725,6 +726,17 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
     }
 
+    public angabenKorrigieren(): void {
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
+            title: 'BG_ANMELDUNG_ERNEUT_OEFFNEN',
+            deleteText: '',
+            cancelText: 'LABEL_NEIN',
+            confirmText: 'LABEL_JA',
+        }).then(() => {
+            this.platzAnfordern();
+        });
+    }
+
     public platzAnfordern(): void {
         if (this.isGesuchValid() && this.getBetreuungModel().vertrag) {
             this.flagErrorVertrag = false;
@@ -1376,6 +1388,17 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public anmeldungSchulamtFalscheAngaben(): void {
-        this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
+            title: 'TS_ANMELDUNG_ERNEUT_OEFFNEN',
+            deleteText: '',
+            cancelText: 'LABEL_ABBRECHEN',
+            confirmText: 'LABEL_SPEICHERN',
+        }).then(() => {
+            this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+        });
+    }
+
+    public isStammdatenAusgefuellt(): boolean {
+        return this.instStamm.institution.status !== TSInstitutionStatus.EINGELADEN;
     }
 }

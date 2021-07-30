@@ -687,7 +687,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         const status = this.getAntragStatus();
         return (TSAntragStatus.IN_BEARBEITUNG_JA === status || TSAntragStatus.GEPRUEFT === status)
             && this.gesuchModelManager.areThereOnlySchulamtAngebote()
-            && this.gesuchModelManager.getGesuch().isThereAnyBetreuung();
+            && this.gesuchModelManager.getGesuch().isThereAnyBetreuung()
+            && this.authServiceRs.isOneOfRoles(TSRoleUtil.getSchulamtRoles());
     }
 
     public isFinSitChoosen(): boolean {
