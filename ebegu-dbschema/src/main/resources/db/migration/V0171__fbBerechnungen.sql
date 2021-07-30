@@ -49,7 +49,7 @@ CREATE TABLE ferienbetreuung_berechnungen_aud(
     beitrag_kinder_anbietenden_gemeinde DECIMAL(19,2),
     beteiligung_anbietenden_gemeinde DECIMAL(19,2),
     beteiligung_zu_tief BIT(1),
-    PRIMARY KEY (id)
+    PRIMARY KEY (id, rev)
 );
 
 ALTER TABLE ferienbetreuung_angaben ADD IF NOT EXISTS ferienbetreuung_berechnungen_id BINARY(16);

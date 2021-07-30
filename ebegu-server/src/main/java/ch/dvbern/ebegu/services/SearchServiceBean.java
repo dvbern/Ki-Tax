@@ -86,7 +86,6 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	@Inject
 	private InternePendenzService internePendenzService;
 
-
 	@Override
 	public List<Gesuch> searchPendenzen(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
 		return searchAntraege(antragTableFilterDto, true);
@@ -155,40 +154,47 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 
 		SetJoin<Gesuch, KindContainer> joinKindContainers = root.join(Gesuch_.kindContainers, JoinType.LEFT);
 
-		SetJoin<KindContainer, Betreuung> joinBetreuungen = joinKindContainers.join(KindContainer_.betreuungen, JoinType.LEFT);
-		SetJoin<KindContainer, AnmeldungTagesschule> joinAnmeldungTagesschule = joinKindContainers.join(KindContainer_.anmeldungenTagesschule, JoinType.LEFT);
-		SetJoin<KindContainer, AnmeldungFerieninsel> joinAnmeldungFerieninsel = joinKindContainers.join(KindContainer_.anmeldungenFerieninsel, JoinType.LEFT);
+		SetJoin<KindContainer, Betreuung> joinBetreuungen =
+			joinKindContainers.join(KindContainer_.betreuungen, JoinType.LEFT);
+		SetJoin<KindContainer, AnmeldungTagesschule> joinAnmeldungTagesschule =
+			joinKindContainers.join(KindContainer_.anmeldungenTagesschule, JoinType.LEFT);
+		SetJoin<KindContainer, AnmeldungFerieninsel> joinAnmeldungFerieninsel =
+			joinKindContainers.join(KindContainer_.anmeldungenFerieninsel, JoinType.LEFT);
 
 		Join<KindContainer, Kind> joinKinder = joinKindContainers.join(KindContainer_.kindJA, JoinType.LEFT);
 
-		Join<Betreuung, InstitutionStammdaten> joinInstitutionstammdatenBetreuungen = joinBetreuungen.join(Betreuung_.institutionStammdaten, JoinType.LEFT);
-		Join<AnmeldungTagesschule, InstitutionStammdaten> joinInstitutionstammdatenTagesschule = joinAnmeldungTagesschule.join(AbstractPlatz_.institutionStammdaten, JoinType.LEFT);
-		Join<AnmeldungFerieninsel, InstitutionStammdaten> joinInstitutionstammdatenFerieninsel = joinAnmeldungFerieninsel.join(AbstractPlatz_.institutionStammdaten, JoinType.LEFT);
+		Join<Betreuung, InstitutionStammdaten> joinInstitutionstammdatenBetreuungen =
+			joinBetreuungen.join(Betreuung_.institutionStammdaten, JoinType.LEFT);
+		Join<AnmeldungTagesschule, InstitutionStammdaten> joinInstitutionstammdatenTagesschule =
+			joinAnmeldungTagesschule.join(AbstractPlatz_.institutionStammdaten, JoinType.LEFT);
+		Join<AnmeldungFerieninsel, InstitutionStammdaten> joinInstitutionstammdatenFerieninsel =
+			joinAnmeldungFerieninsel.join(AbstractPlatz_.institutionStammdaten, JoinType.LEFT);
 
-		Join<InstitutionStammdaten, Institution> joinInstitutionBetreuungen = joinInstitutionstammdatenBetreuungen.join(InstitutionStammdaten_.institution, JoinType.LEFT);
-		Join<InstitutionStammdaten, Institution> joinInstitutionTagesschule = joinInstitutionstammdatenTagesschule.join(InstitutionStammdaten_.institution, JoinType.LEFT);
-		Join<InstitutionStammdaten, Institution> joinInstitutionFerieninsel = joinInstitutionstammdatenFerieninsel.join(InstitutionStammdaten_.institution, JoinType.LEFT);
+		Join<InstitutionStammdaten, Institution> joinInstitutionBetreuungen =
+			joinInstitutionstammdatenBetreuungen.join(InstitutionStammdaten_.institution, JoinType.LEFT);
+		Join<InstitutionStammdaten, Institution> joinInstitutionTagesschule =
+			joinInstitutionstammdatenTagesschule.join(InstitutionStammdaten_.institution, JoinType.LEFT);
+		Join<InstitutionStammdaten, Institution> joinInstitutionFerieninsel =
+			joinInstitutionstammdatenFerieninsel.join(InstitutionStammdaten_.institution, JoinType.LEFT);
 
 		//prepare predicates
 		List<Predicate> predicates = new ArrayList<>();
 
 		// General role based predicates
 		Predicate inClauseStatus = root.get(Gesuch_.status).in(allowedAntragStatus);
-
-		if(searchForPendenzen) {
-			List<String> gesuchIds = internePendenzService.findAlleAbgelaufendeInternePendenzen().stream().map(
+		List<String> internePendenzGesuchIds = null;
+		if (searchForPendenzen) {
+			internePendenzGesuchIds = internePendenzService.findAlleAbgelaufendeInternePendenzen().stream().map(
 				internePendenz -> internePendenz.getGesuch().getId()
 			).collect(Collectors.toList());
-			if(gesuchIds.size() > 0) {
+			if (internePendenzGesuchIds.size() > 0) {
 				Predicate extraStatus = root.get(Gesuch_.status).in(AntragStatus.VERFUEGT, AntragStatus.NUR_SCHULAMT);
-				Predicate gesuchsIds = root.get(AbstractEntity_.id).in(gesuchIds);
+				Predicate gesuchsIds = root.get(AbstractEntity_.id).in(internePendenzGesuchIds);
 				predicates.add(cb.and(cb.or(inClauseStatus, cb.and(extraStatus, gesuchsIds))));
-			}
-			else{
+			} else {
 				predicates.add(inClauseStatus);
 			}
-		}
-		else {
+		} else {
 			predicates.add(inClauseStatus);
 		}
 
@@ -211,7 +217,13 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		case ADMIN_MANDANT:
 		case SACHBEARBEITER_MANDANT:
 			if (searchForPendenzen) {
-				predicates.add(createPredicateJAOrMischGesuche(cb, joinDossier));
+				Predicate jaOrMischGesuche = createPredicateJAOrMischGesuche(cb, joinDossier);
+				if (!internePendenzGesuchIds.isEmpty()) {
+					Predicate gesuchsIds = root.get(AbstractEntity_.id).in(internePendenzGesuchIds);
+					predicates.add(cb.and(cb.or(jaOrMischGesuche, gesuchsIds)));
+				} else {
+					predicates.add(jaOrMischGesuche);
+				}
 			}
 			break;
 		case STEUERAMT:
@@ -226,19 +238,27 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				switch (BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())) {
 				case KITA:
 				case TAGESFAMILIEN:
-					predicates.add(cb.equal(joinInstitutionBetreuungen.get(Institution_.traegerschaft), user.getTraegerschaft()));
+					predicates.add(cb.equal(
+						joinInstitutionBetreuungen.get(Institution_.traegerschaft),
+						user.getTraegerschaft()));
 					break;
 				case TAGESSCHULE:
-					predicates.add(cb.equal(joinInstitutionFerieninsel.get(Institution_.traegerschaft), user.getTraegerschaft()));
+					predicates.add(cb.equal(
+						joinInstitutionFerieninsel.get(Institution_.traegerschaft),
+						user.getTraegerschaft()));
 					break;
 				case FERIENINSEL:
-					predicates.add(cb.equal(joinInstitutionTagesschule.get(Institution_.traegerschaft), user.getTraegerschaft()));
+					predicates.add(cb.equal(
+						joinInstitutionTagesschule.get(Institution_.traegerschaft),
+						user.getTraegerschaft()));
 					break;
 				default:
-					throw new EbeguRuntimeException("searchAntraege", "BetreuungsangebotTyp nicht gefunden: " + BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote()));
+					throw new EbeguRuntimeException(
+						"searchAntraege",
+						"BetreuungsangebotTyp nicht gefunden: "
+							+ BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote()));
 				}
-			}
-			else{
+			} else {
 				predicates.add(
 					cb.or(
 						cb.equal(joinInstitutionBetreuungen.get(Institution_.traegerschaft), user.getTraegerschaft()),
@@ -246,11 +266,18 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 						cb.equal(joinInstitutionTagesschule.get(Institution_.traegerschaft), user.getTraegerschaft())
 					));
 			}
-			predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinAnmeldungTagesschule, joinAnmeldungFerieninsel, joinInstitutionstammdatenBetreuungen, joinInstitutionstammdatenTagesschule, joinInstitutionstammdatenFerieninsel));
+			predicates.add(createPredicateAusgeloesteSCHJAAngebote(
+				cb,
+				joinAnmeldungTagesschule,
+				joinAnmeldungFerieninsel,
+				joinInstitutionstammdatenBetreuungen,
+				joinInstitutionstammdatenTagesschule,
+				joinInstitutionstammdatenFerieninsel));
 			break;
 		case ADMIN_INSTITUTION:
 		case SACHBEARBEITER_INSTITUTION:
-			// es geht hier nicht um die joinInstitution des zugewiesenen benutzers sondern um die joinInstitution des eingeloggten benutzers
+			// es geht hier nicht um die joinInstitution des zugewiesenen benutzers sondern um die joinInstitution des
+			// eingeloggten benutzers
 			if (predicateObjectDto != null && predicateObjectDto.getAngebote() != null) {
 				switch (BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())) {
 				case KITA:
@@ -264,7 +291,10 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 					predicates.add(cb.equal(joinInstitutionFerieninsel, user.getInstitution()));
 					break;
 				default:
-					throw new EbeguRuntimeException("searchAntraege", "BetreuungsangebotTyp nicht gefunden: " + BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote()));
+					throw new EbeguRuntimeException(
+						"searchAntraege",
+						"BetreuungsangebotTyp nicht gefunden: "
+							+ BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote()));
 				}
 			} else {
 				predicates.add(
@@ -274,12 +304,24 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 						cb.equal(joinInstitutionTagesschule, user.getInstitution())
 					));
 			}
-			predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinAnmeldungTagesschule, joinAnmeldungFerieninsel, joinInstitutionstammdatenBetreuungen, joinInstitutionstammdatenTagesschule, joinInstitutionstammdatenFerieninsel));
+			predicates.add(createPredicateAusgeloesteSCHJAAngebote(
+				cb,
+				joinAnmeldungTagesschule,
+				joinAnmeldungFerieninsel,
+				joinInstitutionstammdatenBetreuungen,
+				joinInstitutionstammdatenTagesschule,
+				joinInstitutionstammdatenFerieninsel));
 			break;
 		case SACHBEARBEITER_TS:
 		case ADMIN_TS:
 			if (searchForPendenzen) {
-				predicates.add(createPredicateSCHOrMischGesuche(cb, root, joinDossier));
+				Predicate schOrMischGesuche = createPredicateSCHOrMischGesuche(cb, root, joinDossier);
+				if (!internePendenzGesuchIds.isEmpty()) {
+					Predicate gesuchsIds = root.get(AbstractEntity_.id).in(internePendenzGesuchIds);
+					predicates.add(cb.and(cb.or(schOrMischGesuche, gesuchsIds)));
+				} else {
+					predicates.add(schOrMischGesuche);
+				}
 			}
 			break;
 		default:
@@ -290,7 +332,8 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 
 		if (predicateObjectDto != null) {
 			if (predicateObjectDto.getFallNummer() != null) {
-				// Die Fallnummer muss als String mit LIKE verglichen werden: Bei Eingabe von "14" soll der Fall "114" kommen
+				// Die Fallnummer muss als String mit LIKE verglichen werden: Bei Eingabe von "14" soll der Fall "114"
+				// kommen
 				Expression<String> fallNummerAsString = joinFall.get(Fall_.fallNummer).as(String.class);
 				String fallNummerWithWildcards = SearchUtil.withWildcards(predicateObjectDto.getFallNummer());
 				predicates.add(cb.like(fallNummerAsString, fallNummerWithWildcards));
@@ -302,12 +345,18 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			if (predicateObjectDto.getFamilienName() != null) {
 				Join<Gesuch, GesuchstellerContainer> gesuchsteller1 = root.join(Gesuch_.gesuchsteller1, JoinType.LEFT);
 				Join<Gesuch, GesuchstellerContainer> gesuchsteller2 = root.join(Gesuch_.gesuchsteller2, JoinType.LEFT);
-				Join<GesuchstellerContainer, Gesuchsteller> gesuchsteller1JA = gesuchsteller1.join(GesuchstellerContainer_.gesuchstellerJA, JoinType.LEFT);
-				Join<GesuchstellerContainer, Gesuchsteller> gesuchsteller2JA = gesuchsteller2.join(GesuchstellerContainer_.gesuchstellerJA, JoinType.LEFT);
+				Join<GesuchstellerContainer, Gesuchsteller> gesuchsteller1JA =
+					gesuchsteller1.join(GesuchstellerContainer_.gesuchstellerJA, JoinType.LEFT);
+				Join<GesuchstellerContainer, Gesuchsteller> gesuchsteller2JA =
+					gesuchsteller2.join(GesuchstellerContainer_.gesuchstellerJA, JoinType.LEFT);
 				predicates.add(
 					cb.or(
-						cb.like(gesuchsteller1JA.get(AbstractPersonEntity_.nachname), predicateObjectDto.getFamilienNameForLike()),
-						cb.like(gesuchsteller2JA.get(AbstractPersonEntity_.nachname), predicateObjectDto.getFamilienNameForLike())
+						cb.like(
+							gesuchsteller1JA.get(AbstractPersonEntity_.nachname),
+							predicateObjectDto.getFamilienNameForLike()),
+						cb.like(
+							gesuchsteller2JA.get(AbstractPersonEntity_.nachname),
+							predicateObjectDto.getFamilienNameForLike())
 					));
 			}
 			if (predicateObjectDto.getAntragTyp() != null) {
@@ -322,13 +371,17 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				Path<DateRange> dateRangePath = joinGesuchsperiode.get(AbstractDateRangedEntity_.gueltigkeit);
 				predicates.add(
 					cb.and(
-						cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigAb)), years[0]),
-						cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigBis)), years[1]))
+						cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigAb)),
+							years[0]),
+						cb.equal(
+							cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigBis)),
+							years[1]))
 				);
 			}
 			if (predicateObjectDto.getEingangsdatum() != null) {
 				try {
-					LocalDate searchDate = LocalDate.parse(predicateObjectDto.getEingangsdatum(), Constants.DATE_FORMATTER);
+					LocalDate searchDate =
+						LocalDate.parse(predicateObjectDto.getEingangsdatum(), Constants.DATE_FORMATTER);
 					predicates.add(cb.equal(root.get(Gesuch_.eingangsdatum), searchDate));
 				} catch (DateTimeParseException e) {
 					// Kein gueltiges Datum. Es kann kein Gesuch geben, welches passt. Wir geben leer zurueck
@@ -337,7 +390,8 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			}
 			if (predicateObjectDto.getEingangsdatumSTV() != null) {
 				try {
-					LocalDate searchDate = LocalDate.parse(predicateObjectDto.getEingangsdatumSTV(), Constants.DATE_FORMATTER);
+					LocalDate searchDate =
+						LocalDate.parse(predicateObjectDto.getEingangsdatumSTV(), Constants.DATE_FORMATTER);
 					predicates.add(cb.equal(root.get(Gesuch_.eingangsdatumSTV), searchDate));
 				} catch (DateTimeParseException e) {
 					// Kein gueltiges Datum. Es kann kein Gesuch geben, welches passt. Wir geben leer zurueck
@@ -347,8 +401,10 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			if (predicateObjectDto.getAenderungsdatum() != null) {
 				try {
 					// Wir wollen ohne Zeit vergleichen
-					Expression<LocalDate> timestampAsLocalDate = root.get(AbstractEntity_.timestampMutiert).as(LocalDate.class);
-					LocalDate searchDate = LocalDate.parse(predicateObjectDto.getAenderungsdatum(), Constants.DATE_FORMATTER);
+					Expression<LocalDate> timestampAsLocalDate =
+						root.get(AbstractEntity_.timestampMutiert).as(LocalDate.class);
+					LocalDate searchDate =
+						LocalDate.parse(predicateObjectDto.getAenderungsdatum(), Constants.DATE_FORMATTER);
 					predicates.add(cb.equal(timestampAsLocalDate, searchDate));
 				} catch (DateTimeParseException e) {
 					// Kein gueltiges Datum. Es kann kein Gesuch geben, welches passt. Wir geben leer zurueck
@@ -358,52 +414,78 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			if (predicateObjectDto.getStatus() != null) {
 				createPredicateGesuchBetreuungenStatus(cb, root, predicates, predicateObjectDto.getStatus());
 				// Achtung, hier muss von Client zu Server Status konvertiert werden!
-				Collection<AntragStatus> antragStatus = AntragStatusConverterUtil.convertStatusToEntityForRole(AntragStatusDTO.valueOf(predicateObjectDto.getStatus()), role);
+				Collection<AntragStatus> antragStatus = AntragStatusConverterUtil.convertStatusToEntityForRole(
+					AntragStatusDTO.valueOf(predicateObjectDto.getStatus()),
+					role);
 				predicates.add(root.get(Gesuch_.status).in(antragStatus));
 			}
 			if (predicateObjectDto.getDokumenteHochgeladen() != null) {
-				predicates.add(cb.equal(root.get(Gesuch_.dokumenteHochgeladen), predicateObjectDto.getDokumenteHochgeladen()));
+				predicates.add(cb.equal(
+					root.get(Gesuch_.dokumenteHochgeladen),
+					predicateObjectDto.getDokumenteHochgeladen()));
 			}
 			if (predicateObjectDto.getAngebote() != null) {
 				switch (BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())) {
-					case KITA:
-					case TAGESFAMILIEN:
-						predicates.add(cb.equal(joinInstitutionstammdatenBetreuungen.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())));
-						break;
-					case TAGESSCHULE:
-						predicates.add(cb.equal(joinInstitutionstammdatenTagesschule.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())));
-						break;
-					case FERIENINSEL:
-						predicates.add(cb.equal(joinInstitutionstammdatenFerieninsel.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())));
-						break;
+				case KITA:
+				case TAGESFAMILIEN:
+					predicates.add(cb.equal(
+						joinInstitutionstammdatenBetreuungen.get(InstitutionStammdaten_.betreuungsangebotTyp),
+						BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())));
+					break;
+				case TAGESSCHULE:
+					predicates.add(cb.equal(
+						joinInstitutionstammdatenTagesschule.get(InstitutionStammdaten_.betreuungsangebotTyp),
+						BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())));
+					break;
+				case FERIENINSEL:
+					predicates.add(cb.equal(
+						joinInstitutionstammdatenFerieninsel.get(InstitutionStammdaten_.betreuungsangebotTyp),
+						BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())));
+					break;
 				}
 			}
 			if (predicateObjectDto.getInstitutionen() != null) {
 				predicates.add(
 					cb.or(
-						cb.equal(joinInstitutionBetreuungen.get(Institution_.name), predicateObjectDto.getInstitutionen()),
-						cb.equal(joinInstitutionFerieninsel.get(Institution_.name), predicateObjectDto.getInstitutionen()),
-						cb.equal(joinInstitutionTagesschule.get(Institution_.name), predicateObjectDto.getInstitutionen())
+						cb.equal(
+							joinInstitutionBetreuungen.get(Institution_.name),
+							predicateObjectDto.getInstitutionen()),
+						cb.equal(
+							joinInstitutionFerieninsel.get(Institution_.name),
+							predicateObjectDto.getInstitutionen()),
+						cb.equal(
+							joinInstitutionTagesschule.get(Institution_.name),
+							predicateObjectDto.getInstitutionen())
 					));
 			}
 			if (predicateObjectDto.getKinder() != null) {
-				predicates.add(cb.like(joinKinder.get(AbstractPersonEntity_.vorname), predicateObjectDto.getKindNameForLike()));
+				predicates.add(cb.like(
+					joinKinder.get(AbstractPersonEntity_.vorname),
+					predicateObjectDto.getKindNameForLike()));
 			}
 			if (predicateObjectDto.getVerantwortlicherBG() != null && !role.isRoleSozialdienstabhaengig()) {
 				predicates.add(
 					cb.and(
-						cb.equal(joinVerantwortlicherBG.get(Benutzer_.fullName), predicateObjectDto.getVerantwortlicherBG())
+						cb.equal(
+							joinVerantwortlicherBG.get(Benutzer_.fullName),
+							predicateObjectDto.getVerantwortlicherBG())
 					));
 			}
 			if (predicateObjectDto.getVerantwortlicherTS() != null && !role.isRoleSozialdienstabhaengig()) {
 				predicates.add(
 					cb.and(
-						cb.equal(joinVerantwortlicherTS.get(Benutzer_.fullName), predicateObjectDto.getVerantwortlicherTS())
+						cb.equal(
+							joinVerantwortlicherTS.get(Benutzer_.fullName),
+							predicateObjectDto.getVerantwortlicherTS())
 					));
 			}
 			if (predicateObjectDto.getVerantwortlicherGemeinde() != null && !role.isRoleSozialdienstabhaengig()) {
-				Predicate predicateBG = cb.equal(joinVerantwortlicherBG.get(Benutzer_.fullName), predicateObjectDto.getVerantwortlicherGemeinde());
-				Predicate predicateTS = cb.equal(joinVerantwortlicherTS.get(Benutzer_.fullName), predicateObjectDto.getVerantwortlicherGemeinde());
+				Predicate predicateBG = cb.equal(
+					joinVerantwortlicherBG.get(Benutzer_.fullName),
+					predicateObjectDto.getVerantwortlicherGemeinde());
+				Predicate predicateTS = cb.equal(
+					joinVerantwortlicherTS.get(Benutzer_.fullName),
+					predicateObjectDto.getVerantwortlicherGemeinde());
 				predicates.add(
 					cb.and(
 						cb.or(predicateBG, predicateTS)
@@ -419,7 +501,15 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
 			query.select(root.get(AbstractEntity_.id))
 				.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
-			constructOrderByClause(antragTableFilterDto, cb, query, root, joinKinder, joinGesuchsperiode, joinInstitutionstammdatenBetreuungen, joinInstitutionBetreuungen);
+			constructOrderByClause(
+				antragTableFilterDto,
+				cb,
+				query,
+				root,
+				joinKinder,
+				joinGesuchsperiode,
+				joinInstitutionstammdatenBetreuungen,
+				joinInstitutionBetreuungen);
 			break;
 		case COUNT:
 			//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
@@ -432,12 +522,14 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		Pair<Long, List<Gesuch>> result = null;
 		switch (mode) {
 		case SEARCH:
-			List<String> gesuchIds = persistence.getCriteriaResults(query); //select all ids in order, may contain duplicates
+			List<String> gesuchIds =
+				persistence.getCriteriaResults(query); //select all ids in order, may contain duplicates
 			List<Gesuch> pagedResult;
 			if (antragTableFilterDto.getPagination() != null) {
 				int firstIndex = antragTableFilterDto.getPagination().getStart();
 				Integer maxresults = antragTableFilterDto.getPagination().getNumber();
-				List<String> orderedIdsToLoad = SearchUtil.determineDistinctIdsToLoad(gesuchIds, firstIndex, maxresults);
+				List<String> orderedIdsToLoad =
+					SearchUtil.determineDistinctIdsToLoad(gesuchIds, firstIndex, maxresults);
 				pagedResult = findGesuche(orderedIdsToLoad);
 			} else {
 				pagedResult = findGesuche(gesuchIds);
@@ -473,41 +565,68 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	 * TS- oder Mischgesuche sind alle, die VerantwortlicherTS gesetzt haben, VerantwortlicherBG interessiert nicht.
 	 * Fuer TS sind sie nur so lange in der Pendenzenliste, wie das FinSit-Flag nicht gesetzt ist
 	 */
-	private Predicate createPredicateSCHOrMischGesuche(CriteriaBuilder cb, Root<Gesuch> root, Join<Gesuch, Dossier> dossier) {
-		// Grundsaetzlich gilt: Wenn ein Verantwortlicher TS gesetzt ist, ist es sichtbar bis die FinSit ausgefuellt wurde
+	private Predicate createPredicateSCHOrMischGesuche(
+		CriteriaBuilder cb,
+		Root<Gesuch> root,
+		Join<Gesuch, Dossier> dossier) {
+		// Grundsaetzlich gilt: Wenn ein Verantwortlicher TS gesetzt ist, ist es sichtbar bis die FinSit ausgefuellt
+		// wurde
 		final Predicate predicateIsVerantwortlicherTS = cb.isNotNull(dossier.get(Dossier_.verantwortlicherTS));
 		final Predicate predicateIsFlagFinSitNotSet = cb.isNull(root.get(Gesuch_.finSitStatus));
-		final Predicate predicateISVerTSAndFinSitNotSet = cb.and(predicateIsVerantwortlicherTS,
+		final Predicate predicateISVerTSAndFinSitNotSet = cb.and(
+			predicateIsVerantwortlicherTS,
 			predicateIsFlagFinSitNotSet);
 		// Aber: Falls KEIN Verantwortlicher BG gesetzt ist, muss es u.U. laenger sichtbar sein
 		final Predicate predicateIsNoVerantwortlicherBG = cb.isNull(dossier.get(Dossier_.verantwortlicherBG));
-		final Predicate predicateISVerTSAndNoBG = cb.and(predicateIsVerantwortlicherTS, predicateIsNoVerantwortlicherBG);
+		final Predicate predicateISVerTSAndNoBG =
+			cb.and(predicateIsVerantwortlicherTS, predicateIsNoVerantwortlicherBG);
 		return cb.or(predicateISVerTSAndFinSitNotSet, predicateISVerTSAndNoBG);
 	}
-
 
 	/**
 	 * ((TS or FI) and notAusgeloest) or (otherAngebotTyps)
 	 */
-	private Predicate createPredicateAusgeloesteSCHJAAngebote(CriteriaBuilder cb, SetJoin<KindContainer, AnmeldungTagesschule> joinAnmeldungTagesschule, SetJoin<KindContainer, AnmeldungFerieninsel> joinAnmeldungFerieninsel, Join<Betreuung, InstitutionStammdaten> joinInstitutionstammdatenBetreuungen, Join<AnmeldungTagesschule, InstitutionStammdaten> joinInstitutionstammdatenTagesschule, Join<AnmeldungFerieninsel, InstitutionStammdaten> joinInstitutionstammdatenFerieninsel) {
-		Predicate predicateTSOderFINotAusgelost = createPredicateAusgeloesteSCHAngebote(cb, joinAnmeldungTagesschule, joinAnmeldungFerieninsel, joinInstitutionstammdatenTagesschule, joinInstitutionstammdatenFerieninsel);
+	private Predicate createPredicateAusgeloesteSCHJAAngebote(
+		CriteriaBuilder cb,
+		SetJoin<KindContainer, AnmeldungTagesschule> joinAnmeldungTagesschule,
+		SetJoin<KindContainer, AnmeldungFerieninsel> joinAnmeldungFerieninsel,
+		Join<Betreuung, InstitutionStammdaten> joinInstitutionstammdatenBetreuungen,
+		Join<AnmeldungTagesschule, InstitutionStammdaten> joinInstitutionstammdatenTagesschule,
+		Join<AnmeldungFerieninsel, InstitutionStammdaten> joinInstitutionstammdatenFerieninsel) {
+		Predicate predicateTSOderFINotAusgelost = createPredicateAusgeloesteSCHAngebote(cb,
+			joinAnmeldungTagesschule,
+			joinAnmeldungFerieninsel,
+			joinInstitutionstammdatenTagesschule,
+			joinInstitutionstammdatenFerieninsel);
 		Predicate predicateNotTSOderFI = createPredicateJAAngebote(cb, joinInstitutionstammdatenBetreuungen);
 		return cb.or(predicateTSOderFINotAusgelost, predicateNotTSOderFI);
 	}
 
-
 	/**
 	 * (TS or FI) and notAusgeloest
 	 */
-	private Predicate createPredicateAusgeloesteSCHAngebote(CriteriaBuilder cb, SetJoin<KindContainer, AnmeldungTagesschule> joinAnmeldungTagesschule, SetJoin<KindContainer, AnmeldungFerieninsel> joinAnmeldungFerieninsel, Join<AnmeldungTagesschule, InstitutionStammdaten> joinInstitutionstammdatenTagesschule, Join<AnmeldungFerieninsel, InstitutionStammdaten> joinInstitutionstammdatenFerieninsel) {
+	private Predicate createPredicateAusgeloesteSCHAngebote(
+		CriteriaBuilder cb,
+		SetJoin<KindContainer, AnmeldungTagesschule> joinAnmeldungTagesschule,
+		SetJoin<KindContainer, AnmeldungFerieninsel> joinAnmeldungFerieninsel,
+		Join<AnmeldungTagesschule, InstitutionStammdaten> joinInstitutionstammdatenTagesschule,
+		Join<AnmeldungFerieninsel, InstitutionStammdaten> joinInstitutionstammdatenFerieninsel) {
 
 		//(TS or FI) and notAusgeloest)
-		Predicate predicateTagesschule = cb.equal(joinInstitutionstammdatenTagesschule.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
-		Predicate predicateFerieninsel = cb.equal(joinInstitutionstammdatenFerieninsel.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.FERIENINSEL);
+		Predicate predicateTagesschule = cb.equal(
+			joinInstitutionstammdatenTagesschule.get(InstitutionStammdaten_.betreuungsangebotTyp),
+			BetreuungsangebotTyp.TAGESSCHULE);
+		Predicate predicateFerieninsel = cb.equal(
+			joinInstitutionstammdatenFerieninsel.get(InstitutionStammdaten_.betreuungsangebotTyp),
+			BetreuungsangebotTyp.FERIENINSEL);
 		Predicate predicateTSOderFI = cb.or(predicateTagesschule, predicateFerieninsel);
 
-		Predicate predicateTagesschuleNotErfasst = cb.notEqual(joinAnmeldungTagesschule.get(Betreuung_.betreuungsstatus), Betreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST);
-		Predicate predicateFerieninselNotErfasst = cb.notEqual(joinAnmeldungFerieninsel.get(Betreuung_.betreuungsstatus), Betreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST);
+		Predicate predicateTagesschuleNotErfasst = cb.notEqual(
+			joinAnmeldungTagesschule.get(Betreuung_.betreuungsstatus),
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST);
+		Predicate predicateFerieninselNotErfasst = cb.notEqual(
+			joinAnmeldungFerieninsel.get(Betreuung_.betreuungsstatus),
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST);
 		Predicate predicateTSOderFINotErfasst = cb.or(predicateTagesschuleNotErfasst, predicateFerieninselNotErfasst);
 
 		return cb.and(predicateTSOderFI, predicateTSOderFINotErfasst);
@@ -516,10 +635,16 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	/**
 	 * Alle Angebottypen die nicht Schulamt sind.
 	 */
-	private Predicate createPredicateJAAngebote(CriteriaBuilder cb, Join<Betreuung, InstitutionStammdaten> institutionstammdaten) {
+	private Predicate createPredicateJAAngebote(
+		CriteriaBuilder cb,
+		Join<Betreuung, InstitutionStammdaten> institutionstammdaten) {
 		//all otherAngebotTyps
-		Predicate predicateNotTagesschule = cb.notEqual(institutionstammdaten.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
-		Predicate predicateNotFerieninsel = cb.notEqual(institutionstammdaten.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.FERIENINSEL);
+		Predicate predicateNotTagesschule = cb.notEqual(
+			institutionstammdaten.get(InstitutionStammdaten_.betreuungsangebotTyp),
+			BetreuungsangebotTyp.TAGESSCHULE);
+		Predicate predicateNotFerieninsel = cb.notEqual(
+			institutionstammdaten.get(InstitutionStammdaten_.betreuungsangebotTyp),
+			BetreuungsangebotTyp.FERIENINSEL);
 		return cb.and(predicateNotTagesschule, predicateNotFerieninsel);
 	}
 
@@ -527,18 +652,25 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	 * Adds a predicate to the predicates list if it is needed to filter by gesuchBetreuungenStatus. This will be
 	 * needed just when the Status is GEPRUEFT, PLATZBESTAETIGUNG_WARTEN or PLATZBESTAETIGUNG_ABGEWIESEN
 	 */
-	private void createPredicateGesuchBetreuungenStatus(CriteriaBuilder cb, Root<Gesuch> root, List<Predicate> predicates, String status) {
+	private void createPredicateGesuchBetreuungenStatus(
+		CriteriaBuilder cb,
+		Root<Gesuch> root,
+		List<Predicate> predicates,
+		String status) {
 		if (AntragStatusDTO.PLATZBESTAETIGUNG_WARTEN.toString().equalsIgnoreCase(status)) {
 			predicates.add(cb.equal(root.get(Gesuch_.gesuchBetreuungenStatus), GesuchBetreuungenStatus.WARTEN));
 		} else if (AntragStatusDTO.PLATZBESTAETIGUNG_ABGEWIESEN.toString().equalsIgnoreCase(status)) {
 			predicates.add(cb.equal(root.get(Gesuch_.gesuchBetreuungenStatus), GesuchBetreuungenStatus.ABGEWIESEN));
 		} else if (AntragStatusDTO.GEPRUEFT.toString().equalsIgnoreCase(status)) {
-			predicates.add(cb.equal(root.get(Gesuch_.gesuchBetreuungenStatus), GesuchBetreuungenStatus.ALLE_BESTAETIGT));
+			predicates.add(cb.equal(
+				root.get(Gesuch_.gesuchBetreuungenStatus),
+				GesuchBetreuungenStatus.ALLE_BESTAETIGT));
 		}
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")
-	private void constructOrderByClause(@Nonnull AntragTableFilterDTO antragTableFilterDto, CriteriaBuilder cb, CriteriaQuery query,
+	private void constructOrderByClause(
+		@Nonnull AntragTableFilterDTO antragTableFilterDto, CriteriaBuilder cb, CriteriaQuery query,
 		Root<Gesuch> root, Join<KindContainer, Kind> kinder,
 		Join<Gesuch, Gesuchsperiode> gesuchsperiode,
 		Join<Betreuung, InstitutionStammdaten> institutionstammdaten,
@@ -610,7 +742,8 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				expression = root.get(Gesuch_.dossier).get(Dossier_.gemeinde).get(Gemeinde_.name);
 				break;
 			default:
-				LOG.warn("Using default sort by FallNummer because there is no specific clause for predicate {}",
+				LOG.warn(
+					"Using default sort by FallNummer because there is no specific clause for predicate {}",
 					antragTableFilterDto.getSort().getPredicate());
 				expression = root.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.fallNummer);
 				break;
@@ -626,7 +759,9 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	private String[] ensureYearFormat(String gesuchsperiodeString) {
 		String[] years = gesuchsperiodeString.split("/");
 		if (years.length != 2) {
-			throw new EbeguRuntimeException("ensureYearFormat", "Der Gesuchsperioden string war nicht im erwarteten Format x/y sondern " + gesuchsperiodeString);
+			throw new EbeguRuntimeException(
+				"ensureYearFormat",
+				"Der Gesuchsperioden string war nicht im erwarteten Format x/y sondern " + gesuchsperiodeString);
 		}
 		String[] result = new String[2];
 		result[0] = changeTwoDigitYearToFourDigit(years[0]);
@@ -635,7 +770,8 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	}
 
 	private String changeTwoDigitYearToFourDigit(String year) {
-		//im folgenden wandeln wir z.B 16  in 2016 um. Funktioniert bis ins jahr 2099, da die Periode 2099/2100 mit dieser Methode nicht geht
+		//im folgenden wandeln wir z.B 16  in 2016 um. Funktioniert bis ins jahr 2099, da die Periode 2099/2100 mit
+		// dieser Methode nicht geht
 		String currentYearAsString = String.valueOf(LocalDate.now().getYear());
 		if (year.length() == currentYearAsString.length()) {
 			return year;
@@ -643,7 +779,9 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		if (year.length() < currentYearAsString.length()) { // jahr ist im kurzformat
 			return currentYearAsString.substring(0, currentYearAsString.length() - year.length()) + year;
 		}
-		throw new EbeguRuntimeException("changeTwoDigitYearToFourDigit", "Der Gesuchsperioden string war nicht im erwarteten Format yy oder yyyy sondern " + year);
+		throw new EbeguRuntimeException(
+			"changeTwoDigitYearToFourDigit",
+			"Der Gesuchsperioden string war nicht im erwarteten Format yy oder yyyy sondern " + year);
 	}
 
 	private List<Gesuch> findGesuche(@Nonnull List<String> gesuchIds) {
