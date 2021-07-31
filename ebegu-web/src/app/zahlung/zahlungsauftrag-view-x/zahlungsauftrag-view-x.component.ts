@@ -146,7 +146,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
         (this.sort.sortables.get(this.sort.active) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
     }
 
-    private updateZahlungsauftrag(): void {
+    public updateZahlungsauftrag(): void {
         this.authServiceRS.principal$
             .pipe(
                 switchMap(principal => {
@@ -167,6 +167,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
                 result => {
                     this.zahlungsAuftraege = result.resultList;
                     this.datasource.data = result.resultList;
+                    this.updatePagination(result.totalResultSize);
                     this.toggleAuszahlungslaufTyp();
                 },
                 err => LOG.error(err),
@@ -392,9 +393,9 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
         this.updateZahlungsauftrag();
     }
 
-    private updatePagination(items: TSZahlungsauftrag[]): void {
+    private updatePagination(totalResultSize: number): void {
         this.paginationItems = [];
-        for (let i = Math.max(1, this.page - 4); i <= Math.min(Math.ceil(items.length / this.PAGE_SIZE),
+        for (let i = Math.max(1, this.page - 4); i <= Math.min(Math.ceil(totalResultSize / this.PAGE_SIZE),
             this.page + 5); i++) {
             this.paginationItems.push(i);
         }
