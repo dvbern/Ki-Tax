@@ -602,14 +602,47 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 	@Override
 	@Nonnull
-	public Collection<Zahlungsauftrag> getAllZahlungsauftraege(@Nonnull ZahlungenSearchParamsDTO zahlungenSearchParamsDTO) {
-		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-			"getBenutzersOfRole", "Non logged in user should never reach this"));
-
+	public Collection<Zahlungsauftrag> getAllZahlungsauftraege(
+		@Nonnull ZahlungenSearchParamsDTO zahlungenSearchParamsDTO
+	) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Zahlungsauftrag> query = cb.createQuery(Zahlungsauftrag.class);
 		Root<Zahlungsauftrag> root = query.from(Zahlungsauftrag.class);
 		Join<Zahlungsauftrag, Gemeinde> joinGemeinde = root.join(Zahlungsauftrag_.gemeinde);
+
+		List<Predicate> predicates = createPredicatesForZahlungen(zahlungenSearchParamsDTO, cb, root, joinGemeinde);
+		if (predicates.size() > 0) {
+			query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		}
+		setSortOrder(query, zahlungenSearchParamsDTO, root, joinGemeinde, cb);
+
+		return persistence.getEntityManager()
+			.createQuery(query)
+			.setFirstResult(zahlungenSearchParamsDTO.getPage() * zahlungenSearchParamsDTO.getPageSize())
+			.setMaxResults(zahlungenSearchParamsDTO.getPageSize())
+			.getResultList();
+	}
+
+	@Nonnull
+	@Override
+	public Long countAllZahlungsauftraege(ZahlungenSearchParamsDTO zahlungenSearchParamsDTO) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Long> query = cb.createQuery(Long.class);
+		Root<Zahlungsauftrag> root = query.from(Zahlungsauftrag.class);
+		Join<Zahlungsauftrag, Gemeinde> joinGemeinde = root.join(Zahlungsauftrag_.gemeinde);
+
+		query.select(cb.count(root));
+
+		List<Predicate> predicates = createPredicatesForZahlungen(zahlungenSearchParamsDTO, cb, root, joinGemeinde);
+		if (predicates.size() > 0) {
+			query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		}
+		return persistence.getCriteriaSingleResult(query);
+	}
+
+	private List<Predicate> createPredicatesForZahlungen(ZahlungenSearchParamsDTO zahlungenSearchParamsDTO, CriteriaBuilder cb, Root<Zahlungsauftrag> root, Join<Zahlungsauftrag, Gemeinde> joinGemeinde) {
+		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"createPredicatesForZahlungen", "Non logged in user should never reach this"));
 
 		List<Predicate> predicates = new ArrayList<>();
 
@@ -622,16 +655,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			Predicate inGemeinde = joinGemeinde.in(gemeindenForUser);
 			predicates.add(inGemeinde);
 		}
-		if (predicates.size() > 0) {
-			query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
-		}
-		setSortOrder(query, zahlungenSearchParamsDTO, root, joinGemeinde, cb);
-
-		return persistence.getEntityManager()
-			.createQuery(query)
-			.setFirstResult(zahlungenSearchParamsDTO.getPage() * zahlungenSearchParamsDTO.getPageSize())
-			.setMaxResults(zahlungenSearchParamsDTO.getPageSize())
-			.getResultList();
+		return predicates;
 	}
 
 	private void setSortOrder(

@@ -42,6 +42,7 @@ import javax.ws.rs.core.MediaType;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.dtos.JaxPaginationDTO;
 import ch.dvbern.ebegu.api.dtos.JaxZahlung;
 import ch.dvbern.ebegu.api.dtos.JaxZahlungsauftrag;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
@@ -105,14 +106,14 @@ public class ZahlungResource {
 	private GemeindeService gemeindeService;
 
 	@ApiOperation(value = "Gibt alle Zahlungsauftraege zurueck.",
-		responseContainer = "List", response = JaxZahlungsauftrag.class)
+		response = JaxPaginationDTO.class)
 	@Nullable
 	@GET
 	@Path("/all")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<JaxZahlungsauftrag> getAllZahlungsauftraege(
+	public JaxPaginationDTO<JaxZahlungsauftrag> getAllZahlungsauftraege(
 		@Nullable @QueryParam("gemeinde") String filterGemeinde,
 		@Nullable @QueryParam("sortPredicate") String sortPredicate,
 		@Nullable @QueryParam("sortReverse") String sortReverseParam,
@@ -122,9 +123,15 @@ public class ZahlungResource {
 		ZahlungenSearchParamsDTO zahlungenSearchParamsDTO =
 			toZahlungenSearchParamsDTO(filterGemeinde, sortPredicate, sortReverseParam, pageParam, pageSizeParam);
 
-		return zahlungService.getAllZahlungsauftraege(zahlungenSearchParamsDTO).stream()
+		List<JaxZahlungsauftrag> zahlungsauftraege = zahlungService.getAllZahlungsauftraege(zahlungenSearchParamsDTO).stream()
 			.map(zahlungsauftrag -> converter.zahlungsauftragToJAX(zahlungsauftrag, false))
 			.collect(Collectors.toList());
+		Long count = zahlungService.countAllZahlungsauftraege(zahlungenSearchParamsDTO);
+
+		JaxPaginationDTO<JaxZahlungsauftrag> jaxPaginationDTO = new JaxPaginationDTO<>();
+		jaxPaginationDTO.setResultList(zahlungsauftraege);
+		jaxPaginationDTO.setTotalCount(count);
+		return jaxPaginationDTO;
 	}
 
 	@ApiOperation(value = "Gibt alle Zahlungsauftraege aller Institutionen zurueck, fuer welche der eingeloggte " +

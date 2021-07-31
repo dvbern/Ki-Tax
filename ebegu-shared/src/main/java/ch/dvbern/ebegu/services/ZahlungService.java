@@ -95,6 +95,12 @@ public interface ZahlungService {
 	Collection<Zahlungsauftrag> getAllZahlungsauftraege(ZahlungenSearchParamsDTO zahlungenSearchParamsDTO);
 
 	/**
+	 *
+	 */
+	@Nonnull
+	Long countAllZahlungsauftraege(ZahlungenSearchParamsDTO zahlungenSearchParamsDTO);
+
+	/**
 	 * Eine Kita kann/muss den Zahlungseingang bestaetigen
 	 */
 	@Nonnull

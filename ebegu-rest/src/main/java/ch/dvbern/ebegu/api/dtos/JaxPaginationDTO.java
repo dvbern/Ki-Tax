@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
+package ch.dvbern.ebegu.api.dtos;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,26 +24,26 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxGemeindeAntragPaginationDTO  implements Serializable {
+public class JaxPaginationDTO<T> implements Serializable {
 
 	private static final long serialVersionUID = 5308207699695004831L;
 
-	private List<JaxGemeindeAntrag> gemeindeAntragList;
-	private int totalCount;
+	private List<T> resultList;
+	private long totalCount;
 
-	public List<JaxGemeindeAntrag> getGemeindeAntragList() {
-		return gemeindeAntragList;
+	public List<T> getResultList() {
+		return resultList;
 	}
 
-	public void setGemeindeAntragList(List<JaxGemeindeAntrag> gemeindeAntragList) {
-		this.gemeindeAntragList = gemeindeAntragList;
+	public void setResultList(List<T> resultList) {
+		this.resultList = resultList;
 	}
 
-	public int getTotalCount() {
+	public long getTotalCount() {
 		return totalCount;
 	}
 
-	public void setTotalCount(int totalCount) {
+	public void setTotalCount(long totalCount) {
 		this.totalCount = totalCount;
 	}
 }

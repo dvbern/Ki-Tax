@@ -43,8 +43,8 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.dtos.JaxPaginationDTO;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxGemeindeAntrag;
-import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxGemeindeAntragPaginationDTO;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
@@ -228,7 +228,7 @@ public class GemeindeAntragResource {
 		SACHBEARBEITER_INSTITUTION, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_BG,
 		SACHBEARBEITER_BG,
 		SACHBEARBEITER_FERIENBETREUUNG, ADMIN_FERIENBETREUUNG })
-	public JaxGemeindeAntragPaginationDTO getAllGemeindeAntraege(
+	public JaxPaginationDTO<JaxGemeindeAntrag> getAllGemeindeAntraege(
 		@Nullable @QueryParam("gemeinde") String gemeinde,
 		@Nullable @QueryParam("periode") String periode,
 		@Nullable @QueryParam("typ") String typ,
@@ -272,8 +272,8 @@ public class GemeindeAntragResource {
 		List<GemeindeAntrag> gemeindeAntraegePaginated = paginate(paginationStartInt, paginationNumberInt, gemeindeAntraegeSorted);
 
 		List<JaxGemeindeAntrag> jaxGemeindeAntraege = converter.gemeindeAntragListToJax(gemeindeAntraegePaginated);
-		JaxGemeindeAntragPaginationDTO jaxGemeindeAntragPaginationDTO = new JaxGemeindeAntragPaginationDTO();
-		jaxGemeindeAntragPaginationDTO.setGemeindeAntragList(jaxGemeindeAntraege);
+		JaxPaginationDTO<JaxGemeindeAntrag> jaxGemeindeAntragPaginationDTO = new JaxPaginationDTO<JaxGemeindeAntrag>();
+		jaxGemeindeAntragPaginationDTO.setResultList(jaxGemeindeAntraege);
 		jaxGemeindeAntragPaginationDTO.setTotalCount(gemeindeAntraege.size());
 
 		return jaxGemeindeAntragPaginationDTO;
