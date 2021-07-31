@@ -47,10 +47,10 @@ import {
     TSBetreuungsangebotTyp,
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
-import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSInstitution} from '../../../models/TSInstitution';
+import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
@@ -418,9 +418,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         };
         const dataToLoad$ = this.data$ ?
             this.data$ :
-            from(this.searchRS.searchAntraege(body)).pipe(map((result: TSAntragSearchresultDTO) => {
+            from(this.searchRS.searchAntraege(body)).pipe(map((result: TSPaginationResultDTO<TSAntragDTO>) => {
                 this.totalItems = result.totalResultSize;
-                return result.antragDTOs.map(antragDto => {
+                return result.resultList.map(antragDto => {
                     return {
                         fallNummer: antragDto.fallNummer,
                         dossierId: antragDto.dossierId,

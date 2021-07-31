@@ -35,9 +35,10 @@ import {TSPagination} from '../../../models/dto/TSPagination';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRole} from '../../../models/enums/TSRole';
-import {TSGemeindeAntragPaginationDTO} from '../../../models/gemeindeantrag/TSGemeindeAntragPaginationDTO';
+import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
 import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
@@ -140,11 +141,11 @@ export class GemeindeAntraegeComponent implements OnInit {
                 filterSortAndPag[2].toPaginationDTO()
             ).pipe(catchError(() => this.translate.get('DATA_RETRIEVAL_ERROR').pipe(
                     tap(msg => this.errorService.addMesageAsError(msg)),
-                    mergeMap(() => of(new TSGemeindeAntragPaginationDTO())),
+                    mergeMap(() => of(new TSPaginationResultDTO<TSGemeindeAntrag>())),
                 )))),
-            tap(dto => this.totalItems = dto.totalCount),
+            tap(dto => this.totalItems = dto.totalResultSize),
             map(dto => {
-                return dto.gemeindeAntraege.map(antrag => {
+                return dto.resultList.map(antrag => {
                     return {
                         antragId: antrag.id,
                         gemeinde: antrag.gemeinde.name,

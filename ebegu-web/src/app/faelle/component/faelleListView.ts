@@ -22,7 +22,7 @@ import {GesuchModelManager} from '../../../gesuch/service/gesuchModelManager';
 import {SearchRS} from '../../../gesuch/service/searchRS.rest';
 import {isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
-import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
+import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
@@ -50,11 +50,11 @@ export class FaelleListViewController {
     ) {
     }
 
-    public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {
+    public passFilterToServer = (tableFilterState: any): IPromise<TSPaginationResultDTO<TSAntragDTO>> => {
         this.$log.debug('Triggering ServerFiltering with Filter Object', tableFilterState);
-        return this.searchRS.searchAntraege(tableFilterState).then((response: TSAntragSearchresultDTO) => {
+        return this.searchRS.searchAntraege(tableFilterState).then((response: TSPaginationResultDTO<TSAntragDTO>) => {
             this.totalResultCount = response.totalResultSize ? response.totalResultSize.toString() : '0';
-            this.antragList = response.antragDTOs;
+            this.antragList = response.resultList;
             return response;
         });
 

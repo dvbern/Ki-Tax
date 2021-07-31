@@ -26,7 +26,7 @@ import {SearchRS} from '../../../../../gesuch/service/searchRS.rest';
 import {TSPagination} from '../../../../../models/dto/TSPagination';
 import {TSAntragStatus} from '../../../../../models/enums/TSAntragStatus';
 import {TSAntragDTO} from '../../../../../models/TSAntragDTO';
-import {TSAntragSearchresultDTO} from '../../../../../models/TSAntragSearchresultDTO';
+import {TSPaginationResultDTO} from '../../../../../models/TSPaginationResultDTO';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../../../core/logging/LogFactory';
 import {DVAntragListFilter} from '../../../../shared/interfaces/DVAntragListFilter';
@@ -86,7 +86,7 @@ export class PendenzenListViewComponent {
         }).then(response => {
                 this.pagination.totalItemCount = response.totalResultSize ? response.totalResultSize : 0;
                 // we lose the "this" if we don't map here
-                this.data$.next(response.antragDTOs.map(antragDto => {
+                this.data$.next(response.resultList.map(antragDto => {
                     return {
                         fallNummer: antragDto.fallNummer,
                         dossierId: antragDto.dossierId,
@@ -123,9 +123,9 @@ export class PendenzenListViewComponent {
     public passFilterToServer(tableFilterState: any): void {
         LOG.debug('Triggering ServerFiltering with Filter Object', tableFilterState);
         from(this.searchRS.getPendenzenList(tableFilterState))
-            .pipe(tap((response: TSAntragSearchresultDTO) => {
+            .pipe(tap((response: TSPaginationResultDTO<TSAntragDTO>) => {
                 this.pagination.totalItemCount = response.totalResultSize ? response.totalResultSize : 0;
-            }), map(response => response.antragDTOs.map(antragDTO => {
+            }), map(response => response.resultList.map(antragDTO => {
                 return antragDTO as DVAntragListItem;
             })));
 

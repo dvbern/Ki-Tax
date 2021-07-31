@@ -19,15 +19,22 @@ import {takeUntil} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
-import {getTSAntragStatusPendenzValues, getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
+import {
+    getTSAntragStatusPendenzValues,
+    getTSAntragStatusValuesByRole,
+    TSAntragStatus
+} from '../../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
-import {getTSBetreuungsangebotTypValuesForMandant, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
+import {
+    getTSBetreuungsangebotTypValuesForMandant,
+    TSBetreuungsangebotTyp
+} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAbstractAntragEntity} from '../../../../models/TSAbstractAntragEntity';
 import {TSAntragDTO} from '../../../../models/TSAntragDTO';
-import {TSAntragSearchresultDTO} from '../../../../models/TSAntragSearchresultDTO';
 import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../../models/TSGemeinde';
 import {TSInstitution} from '../../../../models/TSInstitution';
+import {TSPaginationResultDTO} from '../../../../models/TSPaginationResultDTO';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
@@ -195,14 +202,14 @@ export class DVAntragListController implements IController {
             return;
         }
 
-        this.onFilterChange({tableState: tableFilterState}).then((result: TSAntragSearchresultDTO) => {
+        this.onFilterChange({tableState: tableFilterState}).then((result: TSPaginationResultDTO<TSAntragDTO>) => {
             if (!result) {
                 return;
             }
 
             pagination.totalItemCount = result.totalResultSize;
             pagination.numberOfPages = Math.ceil(result.totalResultSize / pagination.number);
-            this.displayedCollection = [].concat(result.antragDTOs);
+            this.displayedCollection = [].concat(result.resultList);
         });
     };
 

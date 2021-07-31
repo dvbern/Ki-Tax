@@ -24,6 +24,7 @@ import {map} from 'rxjs/operators';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSZahlungslaufTyp} from '../../../models/enums/TSZahlungslaufTyp';
 import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
 import {TSZahlung} from '../../../models/TSZahlung';
 import {TSZahlungsauftrag} from '../../../models/TSZahlungsauftrag';
 import {DateUtil} from '../../../utils/DateUtil';
@@ -77,24 +78,27 @@ export class ZahlungRS {
     }
 
     public getAllZahlungsauftraege(searchParams: HttpParams):
-        Observable<TSZahlungsauftrag[]> {
+        Observable<TSPaginationResultDTO<TSZahlungsauftrag>> {
         return this.http.get(`${this.serviceURL}/all`, {
             params: searchParams
         }).pipe(
-            map((response: any) => {
-                return this.ebeguRestUtil.parseZahlungsauftragList(response);
-            }),
+            map(response => this.parseZahlungenResultDTO(response)),
         );
     }
 
-    public getAllZahlungsauftraegeInstitution(searchParams: HttpParams): Observable<TSZahlungsauftrag[]> {
+    public getAllZahlungsauftraegeInstitution(searchParams: HttpParams): Observable<TSPaginationResultDTO<TSZahlungsauftrag>> {
         return this.http.get(`${this.serviceURL}/institution`, {
             params: searchParams
         }).pipe(
-            map((response: any) => {
-                return this.ebeguRestUtil.parseZahlungsauftragList(response);
-            }),
+            map(response => this.parseZahlungenResultDTO(response)),
         );
+    }
+
+    private parseZahlungenResultDTO(response: any): TSPaginationResultDTO<TSZahlungsauftrag> {
+        const dto = new TSPaginationResultDTO<TSZahlungsauftrag>();
+        dto.resultList = this.ebeguRestUtil.parseZahlungsauftragList(response.resultList);
+        dto.totalResultSize = response.totalCount;
+        return dto;
     }
 
     public getZahlungsauftrag(zahlungsauftragId: string): Observable<TSZahlungsauftrag> {
@@ -208,7 +212,7 @@ export class ZahlungRS {
         page: number,
         pageSize: number,
         filterGemeinde: TSGemeinde
-    ): Observable<TSZahlungsauftrag[]> {
+    ): Observable<TSPaginationResultDTO<TSZahlungsauftrag>> {
         const searchParams = ZahlungRS.getSearchParams(sort, page, pageSize, filterGemeinde);
         switch (role) {
             case TSRole.ADMIN_INSTITUTION:
@@ -227,7 +231,7 @@ export class ZahlungRS {
             case TSRole.SACHBEARBEITER_MANDANT:
                 return this.getAllZahlungsauftraege(searchParams);
             default:
-                return of([]);
+                return of(new TSPaginationResultDTO([], 0));
         }
     }
 }

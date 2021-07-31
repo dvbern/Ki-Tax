@@ -27,8 +27,8 @@ import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
-import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {TSGesuch} from '../../../models/TSGesuch';
+import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {FAELLE_JS_MODULE} from '../faelle.module';
 import {FaelleListViewController} from './faelleListView';
@@ -126,7 +126,7 @@ describe('faelleListView', () => {
         mockPendenz.dossierId = '11111111';
         const dtoList = [mockPendenz];
         const totalSize = 1;
-        const searchresult = new TSAntragSearchresultDTO(dtoList, totalSize);
+        const searchresult = new TSPaginationResultDTO(dtoList, totalSize);
         spyOn(searchRS, 'searchAntraege').and.returnValue($q.when(searchresult));
         return mockPendenz;
     }

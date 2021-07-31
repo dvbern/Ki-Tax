@@ -22,10 +22,10 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
-import {TSGemeindeAntragPaginationDTO} from '../../../models/gemeindeantrag/TSGemeindeAntragPaginationDTO';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
@@ -55,7 +55,7 @@ export class GemeindeAntragService {
             predicate?: string,
             reverse?: boolean
         },
-        paginationDTO: PaginationDTO): Observable<TSGemeindeAntragPaginationDTO> {
+        paginationDTO: PaginationDTO): Observable<TSPaginationResultDTO<TSGemeindeAntrag>> {
 
         let params = new HttpParams();
         if (filter.gemeinde) {
@@ -82,10 +82,15 @@ export class GemeindeAntragService {
         params = params.append('paginationStart', paginationDTO.start.toFixed(0));
         params = params.append('paginationNumber', paginationDTO.number.toFixed(0));
 
-        return this.http.get<TSGemeindeAntrag[]>(this.API_BASE_URL, {
+        return this.http.get<any>(this.API_BASE_URL, {
             params,
         }).pipe(
-            map(antraege => this.ebeguRestUtil.parseGemeindeAntragPaginationDTO(antraege))
+            map(result => {
+                const dto = new TSPaginationResultDTO<TSGemeindeAntrag>();
+                dto.resultList = this.ebeguRestUtil.parseGemeindeAntragList(result.resultList);
+                dto.totalResultSize = result.totalCount;
+                return dto;
+            })
         );
     }
 

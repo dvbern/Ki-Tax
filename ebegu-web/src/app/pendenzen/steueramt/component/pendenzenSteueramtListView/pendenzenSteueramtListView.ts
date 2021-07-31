@@ -21,7 +21,7 @@ import {IController} from 'angular';
 import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
 import {SearchRS} from '../../../../../gesuch/service/searchRS.rest';
 import {TSAntragDTO} from '../../../../../models/TSAntragDTO';
-import {TSAntragSearchresultDTO} from '../../../../../models/TSAntragSearchresultDTO';
+import {TSPaginationResultDTO} from '../../../../../models/TSPaginationResultDTO';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 
 export class PendenzenSteueramtListViewComponentConfig implements IComponentOptions {
@@ -53,9 +53,9 @@ export class PendenzenSteueramtListViewController implements IController {
         }
     }
 
-    public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {
+    public passFilterToServer = (tableFilterState: any): IPromise<TSPaginationResultDTO<TSAntragDTO>> => {
         this.$log.debug('Triggering ServerFiltering with Filter Object', tableFilterState);
-        return this.searchRS.searchAntraege(tableFilterState).then((response: TSAntragSearchresultDTO) => {
+        return this.searchRS.searchAntraege(tableFilterState).then((response: TSPaginationResultDTO<TSAntragDTO>) => {
             this.totalResultCount = response.totalResultSize ? response.totalResultSize.toString() : '0';
             return response;
         });

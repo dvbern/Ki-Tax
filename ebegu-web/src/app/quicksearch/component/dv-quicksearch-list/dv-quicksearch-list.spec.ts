@@ -24,8 +24,8 @@ import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAntragDTO} from '../../../../models/TSAntragDTO';
-import {TSAntragSearchresultDTO} from '../../../../models/TSAntragSearchresultDTO';
 import {TSGesuch} from '../../../../models/TSGesuch';
+import {TSPaginationResultDTO} from '../../../../models/TSPaginationResultDTO';
 import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../../../core/core.angularjs.module';
 import {GesuchsperiodeRS} from '../../../core/service/gesuchsperiodeRS.rest';
@@ -142,7 +142,7 @@ describe('DVQuicksearchList', () => {
         mockAntrag.gesuchsperiodeGueltigAb = undefined;
         mockAntrag.gesuchsperiodeGueltigBis = undefined;
         spyOn(searchRS, 'getPendenzenList')
-            .and.returnValue($q.resolve(new TSAntragSearchresultDTO([mockAntrag], 1)));
+            .and.returnValue($q.resolve(new TSPaginationResultDTO([mockAntrag], 1)));
         return mockAntrag;
     }
 

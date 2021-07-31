@@ -19,6 +19,7 @@ import {TSZahlungsstatus} from '../../../models/enums/TSZahlungsstatus';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
 import {TSZahlungsauftrag} from '../../../models/TSZahlungsauftrag';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -159,13 +160,13 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
                         );
                     }
 
-                    return of([]);
+                    return of(new TSPaginationResultDTO<TSZahlungsauftrag>([], 0));
                 }),
             )
             .subscribe(
-                zahlungsAuftraege => {
-                    this.zahlungsAuftraege = zahlungsAuftraege;
-                    this.datasource.data = zahlungsAuftraege;
+                result => {
+                    this.zahlungsAuftraege = result.resultList;
+                    this.datasource.data = result.resultList;
                     this.toggleAuszahlungslaufTyp();
                 },
                 err => LOG.error(err),

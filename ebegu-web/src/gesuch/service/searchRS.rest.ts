@@ -16,7 +16,7 @@
 import {IHttpResponse, IHttpService, IPromise} from 'angular';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import {TSAntragDTO} from '../../models/TSAntragDTO';
-import {TSAntragSearchresultDTO} from '../../models/TSAntragSearchresultDTO';
+import {TSPaginationResultDTO} from '../../models/TSPaginationResultDTO';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
 export class SearchRS implements IEntityRS {
@@ -36,20 +36,20 @@ export class SearchRS implements IEntityRS {
         return 'SearchRS';
     }
 
-    public searchAntraege(antragSearch: any): IPromise<TSAntragSearchresultDTO> {
+    public searchAntraege(antragSearch: any): IPromise<TSPaginationResultDTO<TSAntragDTO>> {
         return this.$http.post(`${this.serviceURL}/search/`, antragSearch)
             .then(response => this.toAntragSearchresult(response));
     }
 
-    public getPendenzenList(antragSearch: any): IPromise<TSAntragSearchresultDTO> {
+    public getPendenzenList(antragSearch: any): IPromise<TSPaginationResultDTO<TSAntragDTO>> {
         return this.$http.post(`${this.serviceURL}/jugendamt/`, antragSearch)
             .then(response => this.toAntragSearchresult(response));
     }
 
-    private toAntragSearchresult(response: IHttpResponse<any>): TSAntragSearchresultDTO {
+    private toAntragSearchresult(response: IHttpResponse<any>): TSPaginationResultDTO<TSAntragDTO> {
         const tsAntragDTOS = this.ebeguRestUtil.parseAntragDTOs(response.data.antragDTOs);
 
-        return new TSAntragSearchresultDTO(tsAntragDTOS, response.data.paginationDTO.totalItemCount);
+        return new TSPaginationResultDTO(tsAntragDTOS, response.data.paginationDTO.totalItemCount);
     }
 
     public getAntraegeOfDossier(dossierId: string): IPromise<Array<TSAntragDTO>> {

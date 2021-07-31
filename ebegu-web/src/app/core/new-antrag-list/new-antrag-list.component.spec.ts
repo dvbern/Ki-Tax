@@ -26,8 +26,8 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SearchRS} from '../../../gesuch/service/searchRS.rest';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
-import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
+import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
 import {MaterialModule} from '../../shared/material.module';
 import {StateStoreService} from '../../shared/services/state-store.service';
 import {ErrorService} from '../errors/service/ErrorService';
@@ -115,7 +115,7 @@ describe('NewAntragListComponent', () => {
         gemeindeRSSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
         authRSSpy.getPrincipalRole.and.returnValue(undefined);
         authRSSpy.hasMandantAngebotTS.and.returnValue(false);
-        const dummySearchResult: TSAntragSearchresultDTO = {
+        const dummySearchResult: TSPaginationResultDTO<TSAntragDTO> = {
             get antragDTOs(): TSAntragDTO[] {
                 return [];
             },

@@ -15,25 +15,29 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSGemeindeAntrag} from './TSGemeindeAntrag';
+export class TSPaginationResultDTO<T> {
 
-export class TSGemeindeAntragPaginationDTO {
-    private _gemeindeAntraege: TSGemeindeAntrag[];
-    private _totalCount: number;
+    private _resultList: Array<T>;
+    private _totalResultSize: number;
 
-    public get gemeindeAntraege(): TSGemeindeAntrag[] {
-        return this._gemeindeAntraege;
+    public constructor(resultList?: Array<T>, totalResultSize?: number) {
+        this._resultList = resultList;
+        this._totalResultSize = totalResultSize;
     }
 
-    public set gemeindeAntraege(value: TSGemeindeAntrag[]) {
-        this._gemeindeAntraege = value;
+    public get resultList(): Array<T> {
+        return this._resultList;
     }
 
-    public get totalCount(): number {
-        return this._totalCount;
+    public set resultList(value: Array<T>) {
+        this._resultList = value;
     }
 
-    public set totalCount(value: number) {
-        this._totalCount = value;
+    public get totalResultSize(): number {
+        return this._totalResultSize;
+    }
+
+    public set totalResultSize(value: number) {
+        this._totalResultSize = value;
     }
 }
