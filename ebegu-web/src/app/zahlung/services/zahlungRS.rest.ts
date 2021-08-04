@@ -52,8 +52,8 @@ export class ZahlungRS {
         sort: MatSort | undefined,
         page: number,
         pageSize: number,
-        filterGemeinde: TSGemeinde | undefined
-    ): HttpParams {
+        filterGemeinde: TSGemeinde | undefined,
+        zahlungslaufTyp: TSZahlungslaufTyp): HttpParams {
 
         let searchParams: HttpParams = new HttpParams();
 
@@ -69,6 +69,10 @@ export class ZahlungRS {
         if (filterGemeinde) {
             searchParams = searchParams.append('gemeinde', filterGemeinde.id);
         }
+        if (!zahlungslaufTyp) {
+            throw Error('zahlungslauftyp not set');
+        }
+        searchParams = searchParams.append('zahlungslaufTyp', zahlungslaufTyp);
 
         return searchParams;
     }
@@ -211,9 +215,10 @@ export class ZahlungRS {
         sort: MatSort,
         page: number,
         pageSize: number,
-        filterGemeinde: TSGemeinde
+        filterGemeinde: TSGemeinde,
+        zahlungslaufTyp: TSZahlungslaufTyp
     ): Observable<TSPaginationResultDTO<TSZahlungsauftrag>> {
-        const searchParams = ZahlungRS.getSearchParams(sort, page, pageSize, filterGemeinde);
+        const searchParams = ZahlungRS.getSearchParams(sort, page, pageSize, filterGemeinde, zahlungslaufTyp);
         switch (role) {
             case TSRole.ADMIN_INSTITUTION:
             case TSRole.SACHBEARBEITER_INSTITUTION:

@@ -156,7 +156,8 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
                             this.sort,
                             this.page,
                             this.PAGE_SIZE,
-                            this.filterGemeinde
+                            this.filterGemeinde,
+                            this.zahlungslaufTyp
                         );
                     }
 
@@ -168,7 +169,6 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
                     this.zahlungsAuftraege = result.resultList;
                     this.datasource.data = result.resultList;
                     this.updatePagination(result.totalResultSize);
-                    this.toggleAuszahlungslaufTyp();
                 },
                 err => LOG.error(err),
             );
@@ -259,8 +259,6 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
                         if (index > -1) {
                             this.zahlungsAuftraege[index] = response;
                         }
-                        EbeguUtil.handleSmarttablesUpdateBug(this.zahlungsAuftraege);
-                        this.toggleAuszahlungslaufTyp();
                         this.cd.markForCheck();
                     },
                     error => this.errorService.addMesageAsError(
@@ -334,7 +332,6 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
         this.gemeinde = null;
         this.form.form.markAsPristine();
         this.form.form.markAsUntouched();
-        this.toggleAuszahlungslaufTyp();
     }
 
     public getCalculatedStatus(zahlungsauftrag: TSZahlungsauftrag): any {
@@ -385,6 +382,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
             = TSZahlungslaufTyp.GEMEINDE_INSTITUTION === this.zahlungslaufTyp
             ? Array.from(this.berechtigteGemeindenList)
             : Array.from(this.berechtigteGemeindenMitMahlzeitenList);
+        this.updateZahlungsauftrag();
     }
 
     public sortData($event: Sort): void {

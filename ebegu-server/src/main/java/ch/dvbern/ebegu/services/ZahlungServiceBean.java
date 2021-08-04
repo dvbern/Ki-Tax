@@ -612,9 +612,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Join<Zahlungsauftrag, Gemeinde> joinGemeinde = root.join(Zahlungsauftrag_.gemeinde);
 
 		List<Predicate> predicates = createPredicatesForZahlungen(zahlungenSearchParamsDTO, cb, root, joinGemeinde);
-		if (predicates.size() > 0) {
-			query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
-		}
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+
 		setSortOrder(query, zahlungenSearchParamsDTO, root, joinGemeinde, cb);
 
 		return persistence.getEntityManager()
@@ -635,9 +634,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		query.select(cb.count(root));
 
 		List<Predicate> predicates = createPredicatesForZahlungen(zahlungenSearchParamsDTO, cb, root, joinGemeinde);
-		if (predicates.size() > 0) {
-			query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
-		}
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+
 		return persistence.getCriteriaSingleResult(query);
 	}
 
@@ -651,6 +649,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		if (zahlungenSearchParamsDTO.getGemeinde() != null) {
 			predicates.add(cb.equal(root.get(Zahlungsauftrag_.gemeinde), zahlungenSearchParamsDTO.getGemeinde()));
 		}
+		predicates.add(cb.equal(root.get(Zahlungsauftrag_.zahlungslaufTyp), zahlungenSearchParamsDTO.getZahlungslaufTyp()));
+
 		// institutionen
 		if (currentBenutzer.getCurrentBerechtigung().getRole().isInstitutionRole()) {
 			Join<Zahlungsauftrag, Zahlung> joinZahlung = root.join(Zahlungsauftrag_.zahlungen);
@@ -658,7 +658,6 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			List<String> allowedInstitutionenIds = zahlungenSearchParamsDTO.getAllowedInstitutionIds();
 
 			predicates.add(cb.notEqual(root.get(Zahlungsauftrag_.status), ZahlungauftragStatus.ENTWURF));
-			predicates.add(cb.equal(root.get(Zahlungsauftrag_.zahlungslaufTyp), ZahlungslaufTyp.GEMEINDE_INSTITUTION));
 			predicates.add(joinZahlung.get(Zahlung_.empfaengerId).in(allowedInstitutionenIds));
 		}
 		// gemeinden

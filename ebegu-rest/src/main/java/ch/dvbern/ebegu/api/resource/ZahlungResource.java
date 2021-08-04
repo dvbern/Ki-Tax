@@ -118,10 +118,19 @@ public class ZahlungResource {
 		@Nullable @QueryParam("sortPredicate") String sortPredicate,
 		@Nullable @QueryParam("sortReverse") String sortReverseParam,
 		@Nonnull @QueryParam("page") String pageParam,
-		@Nonnull @QueryParam("pageSize") String pageSizeParam
+		@Nonnull @QueryParam("pageSize") String pageSizeParam,
+		@Nonnull @QueryParam("zahlungslaufTyp") String zahlungslaufTyp
 	) {
 		ZahlungenSearchParamsDTO zahlungenSearchParamsDTO =
-			toZahlungenSearchParamsDTO(filterGemeinde, sortPredicate, sortReverseParam, pageParam, pageSizeParam, null);
+			toZahlungenSearchParamsDTO(
+				filterGemeinde,
+				sortPredicate,
+				sortReverseParam,
+				pageParam,
+				pageSizeParam,
+				ZahlungslaufTyp.valueOf(zahlungslaufTyp),
+				null
+			);
 
 		List<JaxZahlungsauftrag> zahlungsauftraege = zahlungService.getAllZahlungsauftraege(zahlungenSearchParamsDTO).stream()
 			.map(zahlungsauftrag -> converter.zahlungsauftragToJAX(zahlungsauftrag, false))
@@ -152,7 +161,15 @@ public class ZahlungResource {
 	) {
 
 		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
-		ZahlungenSearchParamsDTO zahlungenSearchParamsDTO = toZahlungenSearchParamsDTO(filterGemeinde, sortPredicate, sortReverseParam, pageParam, pageSizeParam, allowedInst);
+		ZahlungenSearchParamsDTO zahlungenSearchParamsDTO = toZahlungenSearchParamsDTO(
+			filterGemeinde,
+			sortPredicate,
+			sortReverseParam,
+			pageParam,
+			pageSizeParam,
+			ZahlungslaufTyp.GEMEINDE_INSTITUTION,
+			allowedInst
+		);
 
 		List<JaxZahlungsauftrag> zahlungenList = zahlungService.getAllZahlungsauftraege(zahlungenSearchParamsDTO).stream()
 			.map(zahlungsauftrag -> converter.zahlungsauftragToJAX(zahlungsauftrag, principalBean.discoverMostPrivilegedRole(), allowedInst))
@@ -172,6 +189,7 @@ public class ZahlungResource {
 		@Nullable String sortReverseParam,
 		@Nonnull String pageParam,
 		@Nonnull String pageSizeParam,
+		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
 		@Nullable Collection<Institution> allowedInst
 	) {
 		String message = "invalid param: ";
@@ -209,6 +227,9 @@ public class ZahlungResource {
 		} else {
 			throw new BadRequestException(message + "sortReverse");
 		}
+
+		zahlungenParams.setZahlungslaufTyp(zahlungslaufTyp);
+
 		if (allowedInst != null) {
 			if (allowedInst.size() == 0) {
 				throw new BadRequestException(message + "allowedInst");

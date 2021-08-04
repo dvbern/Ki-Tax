@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 
 public class ZahlungenSearchParamsDTO {
 	@Nonnull Integer page;
@@ -30,6 +31,7 @@ public class ZahlungenSearchParamsDTO {
 	@Nullable Gemeinde gemeinde;
 	@Nullable String sortPredicate;
 	@Nullable Boolean sortReverse;
+	@Nonnull ZahlungslaufTyp zahlungslaufTyp;
 	@Nullable List<String> allowedInstitutionIds;
 
 	public ZahlungenSearchParamsDTO(@Nonnull Integer page, @Nonnull Integer pageSize) {
@@ -80,6 +82,15 @@ public class ZahlungenSearchParamsDTO {
 
 	public void setSortReverse(@Nullable Boolean sortReverse) {
 		this.sortReverse = sortReverse;
+	}
+
+	@Nonnull
+	public ZahlungslaufTyp getZahlungslaufTyp() {
+		return zahlungslaufTyp;
+	}
+
+	public void setZahlungslaufTyp(@Nonnull ZahlungslaufTyp zahlungslaufTyp) {
+		this.zahlungslaufTyp = zahlungslaufTyp;
 	}
 
 	@Nullable
