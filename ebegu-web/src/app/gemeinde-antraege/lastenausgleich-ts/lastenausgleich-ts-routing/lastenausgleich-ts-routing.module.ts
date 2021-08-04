@@ -103,7 +103,7 @@ const states: NgHybridStateDeclaration[] = [
         ],
     },
     {
-        name: 'lastenausgleich-ts.lastenausgleich',
+        name: 'LASTENAUSGLEICH_TAGESSCHULEN.LASTENAUSGLEICH',
         url: '/lastenausgleich',
         component: LastenausgleichTsBerechnungComponent,
     },
