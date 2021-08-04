@@ -13,15 +13,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IController, IFilterService, IPromise, IWindowService} from 'angular';
+import {IComponentOptions, IController, IFilterService, IPromise, IScope, IWindowService} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
-import {getTSAntragStatusPendenzValues, getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
+import {
+    getTSAntragStatusPendenzValues,
+    getTSAntragStatusValuesByRole,
+    TSAntragStatus,
+} from '../../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
-import {getTSBetreuungsangebotTypValuesForMandant, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
+import {
+    getTSBetreuungsangebotTypValuesForMandant,
+    TSBetreuungsangebotTyp,
+} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAbstractAntragEntity} from '../../../../models/TSAbstractAntragEntity';
 import {TSAntragDTO} from '../../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../../models/TSAntragSearchresultDTO';
@@ -67,7 +74,8 @@ export class DVAntragListController implements IController {
         '$window',
         'GemeindeRS',
         'EinstellungRS',
-        '$translate'
+        '$translate',
+        '$scope',
     ];
 
     public totalResultCount: number;
@@ -117,7 +125,8 @@ export class DVAntragListController implements IController {
         private readonly $window: IWindowService,
         private readonly gemeindeRS: GemeindeRS,
         private readonly einstellungRS: EinstellungRS,
-        private readonly $translate: ITranslateService
+        private readonly $translate: ITranslateService,
+        private readonly $scope: IScope,
     ) {
     }
 
@@ -136,6 +145,15 @@ export class DVAntragListController implements IController {
         if (this.addButtonVisible === undefined) {
             this.addButtonVisible = 'false';
         }
+        this.$scope.$watch(() => {
+            return this.totalResultCount;
+        }, (newValue, oldValue) => {
+            if (newValue === oldValue) {
+                return;
+            }
+            this.pagination.totalItemCount = this.totalResultCount;
+            this.pagination.numberOfPages = Math.ceil(this.totalResultCount / this.pagination.number);
+        });
     }
 
     public $onDestroy(): void {
@@ -199,9 +217,6 @@ export class DVAntragListController implements IController {
             if (!result) {
                 return;
             }
-
-            pagination.totalItemCount = result.totalResultSize;
-            pagination.numberOfPages = Math.ceil(result.totalResultSize / pagination.number);
             this.displayedCollection = [].concat(result.antragDTOs);
         });
     };

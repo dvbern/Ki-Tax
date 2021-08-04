@@ -276,7 +276,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         private readonly benutzerRS: BenutzerRS,
         private readonly transitionService: TransitionService,
         private readonly stateStore: StateStoreService,
-        private readonly uiRouterGlobals: UIRouterGlobals
+        private readonly uiRouterGlobals: UIRouterGlobals,
     ) {
     }
 
@@ -340,7 +340,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     private initSort(): void {
         // tslint:disable-next-line:early-exit
         if (this.stateStoreId && this.stateStore.has(this.sortId)) {
-            const stored = this.stateStore.get(this.sortId) as {predicate?: string, reverse?: boolean};
+            const stored = this.stateStore.get(this.sortId) as { predicate?: string, reverse?: boolean };
             this.sort.predicate = stored.predicate;
             this.sort.reverse = stored.reverse;
             this.matSort.active = stored.predicate;
@@ -377,8 +377,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
 
     private initFilter(fromStore: boolean = false): void {
         this.filterPredicate = (fromStore && this.filterId && this.stateStore.has(this.filterId)) ?
-                this.stateStore.get(this.filterId) :
-                {...this.initialFilter};
+            this.stateStore.get(this.filterId) :
+            {...this.initialFilter};
         this.filterChange.emit(this.filterPredicate);
     }
 
@@ -406,7 +406,6 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         const dataToLoad$ = this.data$ ?
             this.data$ :
             from(this.searchRS.searchAntraege(body)).pipe(map((result: TSAntragSearchresultDTO) => {
-                this.totalItems = result.totalResultSize;
                 return result.antragDTOs.map(antragDto => {
                     return {
                         fallNummer: antragDto.fallNummer,
@@ -432,6 +431,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
                     };
                 });
             }));
+
+        from(this.searchRS.countAntraege(body).then(result => this.totalItems = result));
 
         dataToLoad$.subscribe((result: DVAntragListItem[]) => {
             this.datasource.data = result;
