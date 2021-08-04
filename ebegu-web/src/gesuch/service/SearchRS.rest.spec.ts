@@ -76,7 +76,6 @@ describe('searchRS', () => {
                 });
                 $httpBackend.flush();
                 expect(foundPendenzen).toBeDefined();
-                expect(foundPendenzen.totalResultSize).toBe(1);
                 TestDataUtil.compareDefinedProperties(foundPendenzen.antragDTOs[0], tsAntragDTO);
             });
         });
