@@ -1,5 +1,13 @@
 import {CurrencyPipe} from '@angular/common';
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
@@ -12,7 +20,6 @@ import {of, Subject} from 'rxjs';
 import {filter, switchMap, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
-import {TSRole} from '../../../models/enums/TSRole';
 import {TSZahlungsauftragsstatus} from '../../../models/enums/TSZahlungsauftragstatus';
 import {TSZahlungslaufTyp} from '../../../models/enums/TSZahlungslaufTyp';
 import {TSZahlungsstatus} from '../../../models/enums/TSZahlungsstatus';
@@ -41,7 +48,7 @@ const LOG = LogFactory.createLog('ZahlungsauftragViewXComponent');
     styleUrls: ['./zahlungsauftrag-view-x.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
+export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChild(NgForm) public readonly form: NgForm;
     @ViewChild(MatSort) public sort: MatSort;
@@ -52,7 +59,6 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
 
     public zahlungsauftragToEdit: TSZahlungsauftrag;
     public zahlungsAuftraege: TSZahlungsauftrag[] = [];
-    public zahlungsAuftraegeFiltered: TSZahlungsauftrag[] = [];
 
     public zahlungslaufTyp: TSZahlungslaufTyp;
     public beschrieb: string;
@@ -140,6 +146,10 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
         this.updateZahlungsauftrag();
     }
 
+    public ngOnDestroy(): void {
+        this.unsubscribe$.next();
+    }
+
     private initSort(): void {
         if (this.stateStore.has(this.SORT_STORE_KEY)) {
             const stored = this.stateStore.get(this.SORT_STORE_KEY) as MatSort;
@@ -154,6 +164,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
 
     public updateZahlungsauftrag(): void {
         this.authServiceRS.principal$
+            .pipe(takeUntil(this.unsubscribe$))
             .pipe(
                 switchMap(principal => {
                     if (principal) {
@@ -213,6 +224,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
                         this.zahlungsAuftraege.push(response);
                         this.resetEditZahlungsauftrag();
                         this.resetForm();
+                        this.updateZahlungsauftrag();
                         this.cd.markForCheck();
                     },
                     error => this.errorService.addMesageAsError(
@@ -265,6 +277,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
                         if (index > -1) {
                             this.zahlungsAuftraege[index] = response;
                         }
+                        this.updateZahlungsauftrag();
                         this.cd.markForCheck();
                     },
                     error => this.errorService.addMesageAsError(
@@ -485,6 +498,6 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
     }
 
     public showGemeindeFilter(): boolean {
-        return this.principal?.hasRole(TSRole.SUPER_ADMIN);
+        return this.gemeindenList.length > 1;
     }
 }

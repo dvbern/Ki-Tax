@@ -115,13 +115,13 @@
             <h3 translate>ZAHLUNGSAUFTRAEGE</h3>
         </div>
         <div class="col-md-1 text-right">
-            <h3>{{zahlungsAuftraegeFiltered.length}}</h3>
+            <h3>{{zahlungsAuftraege.length}}</h3>
         </div>
     </div>
     <div class="table-responsive" *ngIf="showGemeindeFilter()">
         <table class="table ebegu-table fixedtable table-striped">
             <thead>
-            <tr dv-show-element dv-show-allowed-roles="['SUPER_ADMIN']">
+            <tr>
                 <th></th>
                 <th></th>
                 <th>
