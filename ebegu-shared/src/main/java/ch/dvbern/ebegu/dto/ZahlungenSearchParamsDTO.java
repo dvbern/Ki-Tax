@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.dto;
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -28,6 +30,7 @@ public class ZahlungenSearchParamsDTO {
 	@Nullable Gemeinde gemeinde;
 	@Nullable String sortPredicate;
 	@Nullable Boolean sortReverse;
+	@Nullable List<String> allowedInstitutionIds;
 
 	public ZahlungenSearchParamsDTO(@Nonnull Integer page, @Nonnull Integer pageSize) {
 		this.page = page;
@@ -77,5 +80,14 @@ public class ZahlungenSearchParamsDTO {
 
 	public void setSortReverse(@Nullable Boolean sortReverse) {
 		this.sortReverse = sortReverse;
+	}
+
+	@Nullable
+	public List<String> getAllowedInstitutionIds() {
+		return allowedInstitutionIds;
+	}
+
+	public void setAllowedInstitutionIds(@Nullable List<String> allowedInstitutionIds) {
+		this.allowedInstitutionIds = allowedInstitutionIds;
 	}
 }

@@ -47,11 +47,11 @@ import ch.dvbern.ebegu.api.dtos.JaxZahlung;
 import ch.dvbern.ebegu.api.dtos.JaxZahlungsauftrag;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.ZahlungenSearchParamsDTO;
+import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
-import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -121,7 +121,7 @@ public class ZahlungResource {
 		@Nonnull @QueryParam("pageSize") String pageSizeParam
 	) {
 		ZahlungenSearchParamsDTO zahlungenSearchParamsDTO =
-			toZahlungenSearchParamsDTO(filterGemeinde, sortPredicate, sortReverseParam, pageParam, pageSizeParam);
+			toZahlungenSearchParamsDTO(filterGemeinde, sortPredicate, sortReverseParam, pageParam, pageSizeParam, null);
 
 		List<JaxZahlungsauftrag> zahlungsauftraege = zahlungService.getAllZahlungsauftraege(zahlungenSearchParamsDTO).stream()
 			.map(zahlungsauftrag -> converter.zahlungsauftragToJAX(zahlungsauftrag, false))
@@ -143,7 +143,7 @@ public class ZahlungResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMIN_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT})
-	public List<JaxZahlungsauftrag> getAllZahlungsauftraegeInstitution(
+	public JaxPaginationDTO<JaxZahlungsauftrag> getAllZahlungsauftraegeInstitution(
 		@Nullable @QueryParam("gemeinde") String filterGemeinde,
 		@Nullable @QueryParam("sortPredicate") String sortPredicate,
 		@Nullable @QueryParam("sortReverse") String sortReverseParam,
@@ -152,14 +152,18 @@ public class ZahlungResource {
 	) {
 
 		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
-		ZahlungenSearchParamsDTO zahlungenSearchParamsDTO = toZahlungenSearchParamsDTO(filterGemeinde, sortPredicate, sortReverseParam, pageParam, pageSizeParam);
+		ZahlungenSearchParamsDTO zahlungenSearchParamsDTO = toZahlungenSearchParamsDTO(filterGemeinde, sortPredicate, sortReverseParam, pageParam, pageSizeParam, allowedInst);
 
-		return zahlungService.getAllZahlungsauftraege(zahlungenSearchParamsDTO).stream()
-			.filter(zahlungsauftrag -> zahlungsauftrag.getStatus() != ZahlungauftragStatus.ENTWURF)
-			.filter(zahlungsauftrag -> zahlungsauftrag.getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_INSTITUTION)
+		List<JaxZahlungsauftrag> zahlungenList = zahlungService.getAllZahlungsauftraege(zahlungenSearchParamsDTO).stream()
 			.map(zahlungsauftrag -> converter.zahlungsauftragToJAX(zahlungsauftrag, principalBean.discoverMostPrivilegedRole(), allowedInst))
-			.filter(zahlungsauftrag -> !zahlungsauftrag.getZahlungen().isEmpty())
 			.collect(Collectors.toList());
+
+		Long count = zahlungService.countAllZahlungsauftraege(zahlungenSearchParamsDTO);
+
+		JaxPaginationDTO<JaxZahlungsauftrag> jaxPaginationDTO = new JaxPaginationDTO<>();
+		jaxPaginationDTO.setResultList(zahlungenList);
+		jaxPaginationDTO.setTotalCount(count);
+		return jaxPaginationDTO;
 	}
 
 	private ZahlungenSearchParamsDTO toZahlungenSearchParamsDTO(
@@ -167,7 +171,8 @@ public class ZahlungResource {
 		@Nullable String sortPredicate,
 		@Nullable String sortReverseParam,
 		@Nonnull String pageParam,
-		@Nonnull String pageSizeParam
+		@Nonnull String pageSizeParam,
+		@Nullable Collection<Institution> allowedInst
 	) {
 		String message = "invalid param: ";
 		int page;
@@ -201,9 +206,20 @@ public class ZahlungResource {
 		if (sortReverseParam == null || sortReverseParam.equals("true") || sortReverseParam.equals("false")) {
 			zahlungenParams.setSortPredicate(sortPredicate);
 			zahlungenParams.setSortReverse(Boolean.parseBoolean(sortReverseParam));
-			return zahlungenParams;
+		} else {
+			throw new BadRequestException(message + "sortReverse");
 		}
-		throw new BadRequestException(message + "sortReverse");
+		if (allowedInst != null) {
+			if (allowedInst.size() == 0) {
+				throw new BadRequestException(message + "allowedInst");
+			} else {
+				List<String> allowedInstIds = allowedInst.stream()
+					.map(AbstractEntity::getId)
+					.collect(Collectors.toList());
+				zahlungenParams.setAllowedInstitutionIds(allowedInstIds);
+			}
+		}
+		return zahlungenParams;
 	}
 
 	@ApiOperation(value = "Gibt den Zahlungsauftrag mit der uebergebenen Id zurueck.",

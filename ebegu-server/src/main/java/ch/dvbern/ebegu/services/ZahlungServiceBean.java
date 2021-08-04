@@ -68,6 +68,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
 import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.entities.Zahlung;
+import ch.dvbern.ebegu.entities.Zahlung_;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag_;
 import ch.dvbern.ebegu.entities.Zahlungsposition;
@@ -646,10 +647,21 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 		List<Predicate> predicates = new ArrayList<>();
 
+		// general
 		if (zahlungenSearchParamsDTO.getGemeinde() != null) {
 			predicates.add(cb.equal(root.get(Zahlungsauftrag_.gemeinde), zahlungenSearchParamsDTO.getGemeinde()));
 		}
+		// institutionen
+		if (currentBenutzer.getCurrentBerechtigung().getRole().isInstitutionRole()) {
+			Join<Zahlungsauftrag, Zahlung> joinZahlung = root.join(Zahlungsauftrag_.zahlungen);
+			Objects.requireNonNull(zahlungenSearchParamsDTO.getAllowedInstitutionIds());
+			List<String> allowedInstitutionenIds = zahlungenSearchParamsDTO.getAllowedInstitutionIds();
 
+			predicates.add(cb.notEqual(root.get(Zahlungsauftrag_.status), ZahlungauftragStatus.ENTWURF));
+			predicates.add(cb.equal(root.get(Zahlungsauftrag_.zahlungslaufTyp), ZahlungslaufTyp.GEMEINDE_INSTITUTION));
+			predicates.add(joinZahlung.get(Zahlung_.empfaengerId).in(allowedInstitutionenIds));
+		}
+		// gemeinden
 		if (currentBenutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
 			Collection<Gemeinde> gemeindenForUser = currentBenutzer.extractGemeindenForUser();
 			Predicate inGemeinde = joinGemeinde.in(gemeindenForUser);
@@ -686,9 +698,17 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		case "betragTotalAuftrag":
 			sortExpression = root.get(Zahlungsauftrag_.betragTotalAuftrag);
 			break;
-		case "status":
-			sortExpression = root.get(Zahlungsauftrag_.status);
+		case "status": {
+			Benutzer currentBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+				"setSortOrder", "Non logged in user should never reach this"));
+
+			if (currentBenutzer.getCurrentBerechtigung().getRole().isInstitutionRole()) {
+				sortExpression = createInstitutionStatusSortPredicate(query, zahlungenSearchParamsDTO, root, cb);
+			} else {
+				sortExpression = root.get(Zahlungsauftrag_.status);
+			}
 			break;
+		}
 		default:
 			throw new BadRequestException("wrong sort predicate: " + zahlungenSearchParamsDTO.getSortPredicate());
 		}
@@ -698,6 +718,33 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		} else if (zahlungenSearchParamsDTO.getSortReverse() != null && !zahlungenSearchParamsDTO.getSortReverse()) {
 			query.orderBy(cb.asc(sortExpression));
 		}
+	}
+
+	// if user is in institution role, we have to calculate the status from all zahlungen, user is allowed to see
+	// we count the number of zahlungen which are not AUSGELOEST (not yet BESTAETIGT) and order it by them
+	private Expression<?> createInstitutionStatusSortPredicate(
+		@Nonnull CriteriaQuery<Zahlungsauftrag> query,
+		@Nonnull ZahlungenSearchParamsDTO zahlungenSearchParamsDTO,
+		@Nonnull Root<Zahlungsauftrag> root,
+		@Nonnull CriteriaBuilder cb
+	) {
+		Expression<?> sortExpression;
+		List<String> allowedInstitutionenIds = zahlungenSearchParamsDTO.getAllowedInstitutionIds();
+		Join<Zahlungsauftrag, Zahlung> joinZahlung = root.join(Zahlungsauftrag_.zahlungen);
+		query.groupBy(root.get(Zahlungsauftrag_.id));
+
+		Predicate ausgeloestAndInstitutionId = cb.and(
+			cb.equal(joinZahlung.get(Zahlung_.STATUS), ZahlungStatus.AUSGELOEST),
+			joinZahlung.get(Zahlung_.empfaengerId).in(allowedInstitutionenIds)
+		);
+
+		sortExpression = cb.sum(
+			cb.selectCase()
+				.when(ausgeloestAndInstitutionId, 1)
+				.otherwise(0)
+				.as(Number.class)
+		);
+		return sortExpression;
 	}
 
 	@Override
