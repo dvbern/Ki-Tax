@@ -57,14 +57,16 @@ export class DvPosteingangComponent implements OnDestroy {
                     }
 
                     // not for GS
-                    if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
+                    if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())
+                        || principal.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
+                        || principal.hasOneOfRoles(TSRoleUtil.getSozialdienstRolle())) {
                         const fiveMin = 300000;
                         return timer(0, fiveMin)
                             .pipe(takeUntil(this.unsubscribe$))
                             .pipe(switchMap(() => this.getMitteilungenCount$()));
                     }
 
-                    if (principal.hasOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles())) {
+                    if (principal.hasOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
                         return this.getMitteilungenCount$();
                     }
 
