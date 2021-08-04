@@ -55,7 +55,7 @@ export class ZahlungRS {
         filterGemeinde: TSGemeinde | undefined,
         zahlungslaufTyp: TSZahlungslaufTyp): HttpParams {
 
-        let searchParams: HttpParams = new HttpParams();
+        let searchParams = new HttpParams();
 
         if (sort) {
             searchParams = searchParams.append('sortPredicate', sort.active.toString());
