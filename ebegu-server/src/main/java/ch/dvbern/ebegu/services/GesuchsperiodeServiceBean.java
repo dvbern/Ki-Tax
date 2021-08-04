@@ -157,6 +157,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				// Merkblatt Tagesschulen kopieren
 				gesuchsperiode.setVorlageMerkblattTsDe(lastGesuchsperiode.getVorlageMerkblattTsDe());
 				gesuchsperiode.setVorlageMerkblattTsFr(lastGesuchsperiode.getVorlageMerkblattTsFr());
+				// Vorlage Verfügung Lats kopieren
+				gesuchsperiode.setVorlageVerfuegungLatsDe(lastGesuchsperiode.getVorlageVerfuegungLatsDe());
+				gesuchsperiode.setVorlageVerfuegungLatsFr(lastGesuchsperiode.getVorlageVerfuegungLatsFr());
 			}
 		}
 		return saveGesuchsperiode(gesuchsperiode);
@@ -496,6 +499,15 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				// in case we don't recognize the language we don't do anything, so we don't overwrite accidentaly
 				return gesuchsperiode;
 			}
+		} else if (dokumentTyp.equals(DokumentTyp.VORLAGE_VERFUEGUNG_LATS)) {
+			if (sprache == Sprache.DEUTSCH) {
+				gesuchsperiode.setVorlageVerfuegungLatsDe(content);
+			} else if (sprache == Sprache.FRANZOESISCH) {
+				gesuchsperiode.setVorlageVerfuegungLatsFr(content);
+			} else {
+				// in case we don't recognize the language we don't do anything, so we don't overwrite accidentaly
+				return gesuchsperiode;
+			}
 		} else {
 			return gesuchsperiode;
 		}
@@ -532,6 +544,15 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				// in case we don't recognize the language we don't do anything, so we don't remove accidentaly
 				return gesuchsperiode;
 			}
+		} else if (dokumentTyp.equals(DokumentTyp.VORLAGE_VERFUEGUNG_LATS)) {
+			if (sprache == Sprache.DEUTSCH) {
+				gesuchsperiode.setVorlageVerfuegungLatsDe(null);
+			} else if (sprache == Sprache.FRANZOESISCH) {
+				gesuchsperiode.setVorlageVerfuegungLatsFr(null);
+			} else {
+				// in case we don't recognize the language we don't do anything, so we don't remove accidentaly
+				return gesuchsperiode;
+			}
 		} else {
 			return gesuchsperiode;
 		}
@@ -555,6 +576,8 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			return gesuchsperiode.getVerfuegungErlaeuterungWithSprache(sprache).length != 0;
 		} else if (dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)) {
 			return gesuchsperiode.getVorlageMerkblattTsWithSprache(sprache).length != 0;
+		} else if (dokumentTyp.equals(DokumentTyp.VORLAGE_VERFUEGUNG_LATS)) {
+			return gesuchsperiode.getVorlageVerfuegungLatsWithSprache(sprache).length != 0;
 		}
 
 		return false;
@@ -572,6 +595,10 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		} else if (dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)) {
 			return gesuchsperiode
 				.map(gesuchsperiode1 -> gesuchsperiode1.getVorlageMerkblattTsWithSprache(sprache))
+				.orElse(null);
+		} else if (dokumentTyp.equals(DokumentTyp.VORLAGE_VERFUEGUNG_LATS)) {
+			return gesuchsperiode
+				.map(gesuchsperiode1 -> gesuchsperiode1.getVorlageVerfuegungLatsWithSprache(sprache))
 				.orElse(null);
 		}
 		return new byte[0];

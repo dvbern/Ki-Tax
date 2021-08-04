@@ -49,6 +49,8 @@ export class GesuchsperiodeViewComponentConfig implements IComponentOptions {
 
 export class GesuchsperiodeViewController extends AbstractAdminViewController {
 
+    private static readonly DOKUMENT_TYP_NOT_DEFINED = 'DokumentTyp not defined';
+
     public static $inject = [
         'EinstellungRS',
         'DvDialog',
@@ -75,6 +77,9 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
 
     public isVorlageMerkblattDE: boolean = false;
     public isVorlageMerkblattFR: boolean = false;
+
+    public isVorlageVerfuegungLatsDE: boolean = false;
+    public isVorlageVerfuegungLatsFR: boolean = false;
 
     public constructor(
         private readonly einstellungenRS: EinstellungRS,
@@ -236,10 +241,19 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
 
         this.uploadRS.uploadGesuchsperiodeDokument(selectedFile, sprache, this.gesuchsperiode.id, dokumentTyp)
             .then(() => {
-                if (dokumentTyp === TSDokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG) {
-                    this.setErlauterungBoolean(true, sprache);
-                } else if (dokumentTyp === TSDokumentTyp.VORLAGE_MERKBLATT_TS) {
-                    this.setVorlageMerkblattTSBoolean(true, sprache);
+                switch (dokumentTyp) {
+                    case TSDokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG: {
+                        this.setErlauterungBoolean(true, sprache);
+                        break;
+                    } case TSDokumentTyp.VORLAGE_MERKBLATT_TS: {
+                        this.setVorlageMerkblattTSBoolean(true, sprache);
+                        break;
+                    } case TSDokumentTyp.VORLAGE_VERFUEGUNG_LATS: {
+                        this.setVorlageVerfuegungLatsBoolean(true, sprache);
+                        break;
+                    } default: {
+                        throw new Error(GesuchsperiodeViewController.DOKUMENT_TYP_NOT_DEFINED);
+                    }
                 }
             });
     }
@@ -247,10 +261,19 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     public removeGesuchsperiodeDokument(sprache: TSSprache, dokumentTyp: TSDokumentTyp): void {
         this.gesuchsperiodeRS.removeGesuchsperiodeDokument(this.gesuchsperiode.id, sprache, dokumentTyp)
             .then(() => {
-                if (dokumentTyp === TSDokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG) {
-                    this.setErlauterungBoolean(false, sprache);
-                } else if (dokumentTyp === TSDokumentTyp.VORLAGE_MERKBLATT_TS) {
-                    this.setVorlageMerkblattTSBoolean(false, sprache);
+                switch (dokumentTyp) {
+                    case TSDokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG: {
+                        this.setErlauterungBoolean(false, sprache);
+                        break;
+                    } case TSDokumentTyp.VORLAGE_MERKBLATT_TS: {
+                        this.setVorlageMerkblattTSBoolean(false, sprache);
+                        break;
+                    } case TSDokumentTyp.VORLAGE_VERFUEGUNG_LATS: {
+                        this.setVorlageVerfuegungLatsBoolean(false, sprache);
+                        break;
+                    } default: {
+                        throw new Error(GesuchsperiodeViewController.DOKUMENT_TYP_NOT_DEFINED);
+                    }
                 }
             });
     }
@@ -260,13 +283,24 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             response => {
                 let file;
                 let filename;
-                if (dokumentTyp === TSDokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG) {
-                    file = new Blob([response], {type: 'application/pdf'});
-                    filename = this.$translate.instant('ERLAUTERUNG_ZUR_VERFUEGUNG_DATEI_NAME');
-                } else if (dokumentTyp === TSDokumentTyp.VORLAGE_MERKBLATT_TS) {
-                    file = new Blob([response],
-                        {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
-                    filename = this.$translate.instant('VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME');
+                switch (dokumentTyp) {
+                    case TSDokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG: {
+                        file = new Blob([response], {type: 'application/pdf'});
+                        filename = this.$translate.instant('ERLAUTERUNG_ZUR_VERFUEGUNG_DATEI_NAME');
+                        break;
+                    } case TSDokumentTyp.VORLAGE_MERKBLATT_TS: {
+                        file = new Blob([response],
+                            {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+                        filename = this.$translate.instant('VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME');
+                        break;
+                    } case TSDokumentTyp.VORLAGE_VERFUEGUNG_LATS: {
+                        file = new Blob([response],
+                            {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+                        filename = this.$translate.instant('VORLAGE_VERFUEGUNG_LATS_DATEI_NAME');
+                        break;
+                    } default: {
+                        throw new Error(GesuchsperiodeViewController.DOKUMENT_TYP_NOT_DEFINED);
+                    }
                 }
                 this.downloadRS.openDownload(file, filename);
             });
@@ -306,6 +340,16 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             result => {
                 this.isVorlageMerkblattFR = !!result;
             });
+        this.gesuchsperiodeRS.existDokument(
+            gesuchsperiode.id, TSSprache.DEUTSCH, TSDokumentTyp.VORLAGE_VERFUEGUNG_LATS).then(
+            result => {
+                this.isVorlageVerfuegungLatsDE = !!result;
+            });
+        this.gesuchsperiodeRS.existDokument(
+            gesuchsperiode.id, TSSprache.FRANZOESISCH, TSDokumentTyp.VORLAGE_VERFUEGUNG_LATS).then(
+            result => {
+                this.isVorlageVerfuegungLatsFR = !!result;
+            });
     }
 
     private setVorlageMerkblattTSBoolean(value: boolean, sprache: TSSprache): void {
@@ -315,6 +359,19 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
                 break;
             case TSSprache.DEUTSCH:
                 this.isVorlageMerkblattDE = value;
+                break;
+            default:
+                return;
+        }
+    }
+
+    private setVorlageVerfuegungLatsBoolean(value: boolean, sprache: TSSprache): void {
+        switch (sprache) {
+            case TSSprache.FRANZOESISCH:
+                this.isVorlageVerfuegungLatsFR = value;
+                break;
+            case TSSprache.DEUTSCH:
+                this.isVorlageVerfuegungLatsDE = value;
                 break;
             default:
                 return;
