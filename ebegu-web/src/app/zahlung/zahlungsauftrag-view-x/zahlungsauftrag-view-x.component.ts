@@ -87,6 +87,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
         direction: 'desc'
     };
     private readonly SORT_STORE_KEY = 'zahlungsauftrag-view-sort';
+    private readonly FILTER_STORE_KEY = 'zahlungsauftrag-view-filter';
 
     public constructor(
         private readonly zahlungRS: ZahlungRS,
@@ -112,7 +113,6 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
         this.zahlungslaufTyp = isMahlzeitenzahlungen
             ? TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER
             : TSZahlungslaufTyp.GEMEINDE_INSTITUTION;
-        this.updateGemeindenList();
         this.updateShowMahlzeitenZahlungslaeufe();
         this.applicationPropertyRS.isZahlungenTestMode().then((response: any) => {
             this.testMode = response;
@@ -126,11 +126,17 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
             } else {
                 this.stateStore.delete(this.SORT_STORE_KEY);
             }
+            if (this.filterGemeinde) {
+                this.stateStore.store(this.FILTER_STORE_KEY, this.filterGemeinde);
+            } else {
+                this.stateStore.delete(this.FILTER_STORE_KEY);
+            }
         });
     }
 
     public ngAfterViewInit(): void {
         this.initSort();
+        this.initGemeindenListAndFilter();
         this.updateZahlungsauftrag();
     }
 
@@ -344,16 +350,25 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
         return zahlungsauftrag.status;
     }
 
-    private updateGemeindenList(): void {
+    private initGemeindenListAndFilter(): void {
         this.gemeindeRS.getGemeindenForPrincipal$()
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 gemeinden => {
                     this.berechtigteGemeindenList = gemeinden;
+                    this.toggleAuszahlungslaufTyp();
+                    this.initFilterFromStore();
                     this.cd.markForCheck();
                 },
                 err => LOG.error(err),
             );
+    }
+
+    private initFilterFromStore(): void {
+        if (this.stateStore.has(this.FILTER_STORE_KEY)) {
+            this.filterGemeinde = this.stateStore.get(this.FILTER_STORE_KEY) as TSGemeinde;
+            this.updateZahlungsauftrag();
+        }
     }
 
     private updateShowMahlzeitenZahlungslaeufe(): void {
