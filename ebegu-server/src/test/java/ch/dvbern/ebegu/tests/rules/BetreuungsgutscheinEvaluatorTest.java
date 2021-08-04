@@ -194,7 +194,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		kindContainer.getBetreuungen().add(betreuung);
 		betreuung.getKind().setKindJA(new Kind());
 		betreuung.getKind().setGesuch(gesuch);
-		betreuung.getKind().getKindJA().setGeburtsdatum(LocalDate.now().minusYears(4));
+		betreuung.getKind().getKindJA().setGeburtsdatum(LocalDate.of(2017, 1, 7));
 		betreuung.getKind().getKindJA().setKinderabzugErstesHalbjahr(Kinderabzug.GANZER_ABZUG);
 		betreuung.getKind().getKindJA().setKinderabzugZweitesHalbjahr(Kinderabzug.GANZER_ABZUG);
 		gesuch.getKindContainers().add(betreuung.getKind());
