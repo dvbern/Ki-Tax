@@ -290,6 +290,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					//Die Betreuung ist gesetzt bei Mitteilungen an die Gemeinde, so ruckwirkend wird auch sein
 					//es gibt keine Benutzer als empfanger
 					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.INSTITUTION);
+				} else if (mitteilung.getInstitution() != null) {
+					//Bei Institution Mitteilungen sollen schon der Institution ID Bestimmt sein
+					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.INSTITUTION);
+					mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 				} else if (mitteilung.getFall().getSozialdienstFall() != null) {
 					// Sozialdienst hat kein Empfanger
 					mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.SOZIALDIENST);
@@ -1432,7 +1436,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 						.getInstitution()
 						.equals(mitteilung.getBetreuung().getInstitutionStammdaten().getInstitution());
 				}
-				throw new EbeguRuntimeException("isMitteilungReadableForInstitution", "Mitteilung for INSTITUTION should have institution or betreuung");
+				throw new EbeguRuntimeException(
+					"isMitteilungReadableForInstitution",
+					"Mitteilung for INSTITUTION should have institution or betreuung");
 			}
 			return false;
 		} else if (principalBean.isCallerInAnyOfRole(
@@ -1454,7 +1460,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 							.getInstitution()
 							.getTraegerschaft());
 				}
-				throw new EbeguRuntimeException("isMitteilungReadableForInstitution", "Mitteilung for TRAEGERSCHAFT should have institution, traegerschaft or betreuung");
+				throw new EbeguRuntimeException(
+					"isMitteilungReadableForInstitution",
+					"Mitteilung for TRAEGERSCHAFT should have institution, traegerschaft or betreuung");
 			}
 			return false;
 		}
