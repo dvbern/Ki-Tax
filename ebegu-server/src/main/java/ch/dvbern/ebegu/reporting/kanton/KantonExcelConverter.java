@@ -165,6 +165,7 @@ public class KantonExcelConverter implements ExcelConverter {
 		return basicStyle;
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	private void addHeaders(
 		@Nonnull ExcelMergerDTO excelMerger,
 		@Nonnull List<MergeField<?>> mergeFields,
