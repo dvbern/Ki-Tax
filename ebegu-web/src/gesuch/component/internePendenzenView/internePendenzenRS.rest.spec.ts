@@ -1,7 +1,6 @@
 import {HttpClientModule} from '@angular/common/http';
 import {TestBed} from '@angular/core/testing';
-
-import {InternePendenzenRS} from './internePendenzenRS';
+import {InternePendenzenRS} from './internePendenzenRS.rest';
 
 describe('InternePendenzenRS', () => {
     let service: InternePendenzenRS;

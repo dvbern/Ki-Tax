@@ -16,27 +16,47 @@
  */
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {TranslateService} from '@ngx-translate/core';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {ErrorService} from '../../../../core/errors/service/ErrorService';
+import {DownloadRS} from '../../../../core/service/downloadRS.rest';
+import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 import {LastenausgleichTsBerechnungComponent} from './lastenausgleich-ts-berechnung.component';
 
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
+const translateSpy = jasmine.createSpyObj<TranslateService>(TranslateService.name, ['instant']);
+const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name, ['openDownload']);
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+    ['principal$', 'isOneOfRoles']);
+const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(LastenausgleichTSService.name,
+    ['getLATSAngabenGemeindeContainer', 'latsDocxErstellen']);
+
 describe('LastenausgleichTsBerechnungComponent', () => {
-  let component: LastenausgleichTsBerechnungComponent;
-  let fixture: ComponentFixture<LastenausgleichTsBerechnungComponent>;
+    let component: LastenausgleichTsBerechnungComponent;
+    let fixture: ComponentFixture<LastenausgleichTsBerechnungComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ LastenausgleichTsBerechnungComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            declarations: [LastenausgleichTsBerechnungComponent],
+            providers: [
+                {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: TranslateService, useValue: translateSpy},
+                {provide: DownloadRS, useValue: downloadRSSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
+            ]
+        })
+            .compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(LastenausgleichTsBerechnungComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(LastenausgleichTsBerechnungComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

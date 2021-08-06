@@ -14,6 +14,7 @@
  */
 
 import {NgModule} from '@angular/core';
+import {UpgradeModule} from '@angular/upgrade/static';
 import {SharedModule} from '../app/shared/shared.module';
 import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
 import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
@@ -25,6 +26,7 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
 
 @NgModule({
     imports: [
+        UpgradeModule,
         SharedModule,
         FallToolbarModule
     ],

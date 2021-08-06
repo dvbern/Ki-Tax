@@ -142,7 +142,7 @@ describe('DVQuicksearchList', () => {
         mockAntrag.gesuchsperiodeGueltigAb = undefined;
         mockAntrag.gesuchsperiodeGueltigBis = undefined;
         spyOn(searchRS, 'getPendenzenList')
-            .and.returnValue($q.resolve(new TSAntragSearchresultDTO([mockAntrag], 1)));
+            .and.returnValue($q.resolve(new TSAntragSearchresultDTO([mockAntrag])));
         return mockAntrag;
     }
 

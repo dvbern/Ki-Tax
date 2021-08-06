@@ -19,6 +19,7 @@ import {Injectable} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Observable, ReplaySubject} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
+import {TSSprache} from '../../../../models/enums/TSSprache';
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSLastenausgleichTagesschulenStatusHistory} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
@@ -195,6 +196,15 @@ export class LastenausgleichTSService {
         Observable<number> {
         return this.http.get<number>(
             `${this.API_BASE_URL}/erwartete-betreuungsstunden/${encodeURIComponent(antrag.id)}`,
+        );
+    }
+
+    public latsDocxErstellen(antrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer, sprache: TSSprache):
+        Observable<any> {
+        return this.http.post(
+            `${this.API_BASE_URL}/docx-erstellen/${encodeURIComponent(antrag.id)}/${sprache}`,
+            {},
+            {responseType: 'blob'}
         );
     }
 }

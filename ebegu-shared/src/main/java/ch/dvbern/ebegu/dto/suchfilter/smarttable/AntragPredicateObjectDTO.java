@@ -50,6 +50,7 @@ public class AntragPredicateObjectDTO implements Serializable {
 	private String verantwortlicherTS; //Dossier.verwantwortlicherTS.name
 	private String verantwortlicherGemeinde; //Dossier.verwantwortlicherBG.name OR Dossier.verantwortlicherTS.name
 	private String kinder; //Gesuch.kindContainers.kindJa.vorname
+	private Boolean internePendenz;
 
 	public String getKinder() {
 		return kinder;
@@ -179,6 +180,24 @@ public class AntragPredicateObjectDTO implements Serializable {
 		this.verantwortlicherGemeinde = verantwortlicherGemeinde;
 	}
 
+	@Nullable
+	public String getFamilienNameForLike() {
+		return StringUtils.isEmpty(familienName) ? null : familienName + '%';
+	}
+
+	@Nullable
+	public String getKindNameForLike() {
+		return StringUtils.isEmpty(kinder) ? null : '%' + kinder + '%';
+	}
+
+	public Boolean getInternePendenz() {
+		return internePendenz;
+	}
+
+	public void setInternePendenz(Boolean internePendenz) {
+		this.internePendenz = internePendenz;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
@@ -195,6 +214,7 @@ public class AntragPredicateObjectDTO implements Serializable {
 			.append("verantwortlicherBG", verantwortlicherBG)
 			.append("verantwortlicherTS", verantwortlicherTS)
 			.append("kinder", kinder)
+			.append("internePendenz", internePendenz)
 			.toString();
 	}
 
@@ -203,15 +223,5 @@ public class AntragPredicateObjectDTO implements Serializable {
 			return Integer.valueOf(fallNummer);
 		}
 		return -1;
-	}
-
-	@Nullable
-	public String getFamilienNameForLike() {
-		return StringUtils.isEmpty(familienName) ? null : familienName + '%';
-	}
-
-	@Nullable
-	public String getKindNameForLike() {
-		return StringUtils.isEmpty(kinder) ? null : '%' + kinder + '%';
 	}
 }

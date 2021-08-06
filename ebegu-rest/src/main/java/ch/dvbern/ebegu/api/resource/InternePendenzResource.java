@@ -112,6 +112,14 @@ public class InternePendenzResource {
 
 		jaxBConverter.internePendenzToEntity(jaxInternePendenz, internePendenz);
 		InternePendenz persisted = internePendenzService.updateInternePendenz(internePendenz);
+		if(internePendenzService.countInternePendenzenForGesuch(internePendenz.getGesuch()) == 0){
+			internePendenz.getGesuch().setInternePendenz(false);
+			gesuchService.updateGesuch(internePendenz.getGesuch(), false);
+		}
+		else if (!internePendenz.getGesuch().getInternePendenz()){
+			internePendenz.getGesuch().setInternePendenz(true);
+			gesuchService.updateGesuch(internePendenz.getGesuch(), false);
+		}
 		return jaxBConverter.internePendenzToJax(persisted);
 	}
 
@@ -155,6 +163,10 @@ public class InternePendenzResource {
 				internePendenzId.getId()
 			));
 		internePendenzService.deleteInternePendenz(internePendenz);
+		if(internePendenzService.countInternePendenzenForGesuch(internePendenz.getGesuch()) == 0){
+			internePendenz.getGesuch().setInternePendenz(false);
+			gesuchService.updateGesuch(internePendenz.getGesuch(), false);
+		}
 		return Response.ok().build();
 	}
 

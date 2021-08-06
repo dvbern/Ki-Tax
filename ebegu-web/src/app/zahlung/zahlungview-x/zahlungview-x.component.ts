@@ -142,7 +142,7 @@ export class ZahlungviewXComponent implements OnInit, AfterViewInit {
 
     public canBestaetigen(zahlungsstatus: TSZahlungsstatus): boolean {
         return zahlungsstatus === TSZahlungsstatus.AUSGELOEST &&
-                this.principal.hasOneOfRoles(TSRoleUtil.getInstitutionRoles()) &&
+                this.principal.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles()) &&
                 !this.isMahlzeitenzahlungen;
     }
 

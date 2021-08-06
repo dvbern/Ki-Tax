@@ -42,15 +42,18 @@
             </div>
         </div>
 
-        <div class="kommentar-padding">
+        <div class="pendenz-padding">
             <div dv-show-element
-                 dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()"
+                 dv-show-allowed-roles="vm.TSRoleUtil.getGemeindeRoles()"
                  ui-sref="gesuch.internePendenzen({gesuchId:vm.getGesuch().id})">
                 <button type="button"
                         class="dv-btn kommentar-button" aria-label="{{'INTERNE_PENDENZEN' | translate}}">
                     <span>{{'INTERNE_PENDENZEN' | translate}}
-                        <span ng-if="vm.numberInternePendenzen >= 0">&nbsp;({{vm.numberInternePendenzen}})</span>
+                        <span class="pendenz-count">
+                            ({{vm.getNumberInternePendenzen()}})</span>
+                        <i ng-if="vm.hasAbgelaufenePendenz()" class="fa fa-exclamation-triangle"></i>
                     </span>
+
                 </button>
             </div>
         </div>

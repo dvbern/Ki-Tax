@@ -102,7 +102,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
     ) {
     }
 
-    private static sortingDataAccessor(data: TSZahlungsauftrag, header: string): string | number {
+    private sortingDataAccessor(data: TSZahlungsauftrag, header: string): string | number {
         switch (header) {
             case 'gemeinde':
                 return data.gemeinde.name;
@@ -110,6 +110,8 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
                 return data.datumFaellig.valueOf();
             case 'datumGeneriert':
                 return data.datumGeneriert.valueOf();
+            case 'status':
+                return this.getCalculatedStatus(data);
             default:
                 return (data as any)[header];
         }
@@ -144,10 +146,14 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
             const stored = this.stateStore.get(this.SORT_STORE_KEY) as MatSort;
             this.sort.active = stored.active;
             this.sort.direction = stored.direction;
-            (this.sort.sortables.get(stored.active) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
+        } else {
+            // initial sorting
+            this.sort.active = 'datumFaellig';
+            this.sort.direction = 'desc';
         }
+        (this.sort.sortables.get(this.sort.active) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
         this.datasource.sort = this.sort;
-        this.datasource.sortingDataAccessor = ZahlungsauftragViewXComponent.sortingDataAccessor;
+        this.datasource.sortingDataAccessor = this.sortingDataAccessor.bind(this);
         this.datasource.paginator = this.paginator;
     }
 
@@ -468,6 +474,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
         this.paginator.pageIndex = this.page;
         // @ts-ignore Ugly workaround, but otherwise, paginator will not update the data
         this.paginator._emitPageEvent(this.page);
+        this.updatePagination(this.zahlungsAuftraegeFiltered);
         this.cd.markForCheck();
 
     }
