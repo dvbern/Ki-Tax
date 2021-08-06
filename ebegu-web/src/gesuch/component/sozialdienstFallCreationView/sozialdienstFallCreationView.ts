@@ -122,18 +122,28 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         );
     }
 
-    // tslint:disable-next-line:cognitive-complexity
-    public save(): void {
+    private validateForm(): boolean {
         this.showAntragsteller2Error = false;
         this.validateZweiteAntragsteller();
         if (!this.isGesuchValid() || this.showAntragsteller2Error) {
-            return undefined;
+            return false;
         }
         if (!this.form.$dirty && !this.gesuchModelManager.getFall().sozialdienstFall.isNew()) {
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
-            return;
+            return false;
         }
+        return true;
+    }
+
+    public save(): void {
+        if (this.validateForm()) {
+            this.saveData();
+        }
+    }
+
+    // tslint:disable-next-line:cognitive-complexity
+    private saveData(): void {
         this.errorService.clearAll();
         this.gesuchModelManager.saveFall().then(
             fall => {
@@ -207,9 +217,11 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     }
 
     public fallAktivieren(): void {
-        this.gesuchModelManager.getFall().sozialdienstFall.status = TSSozialdienstFallStatus.AKTIV;
         this.form.$dirty = true;
-        this.save();
+        if (this.validateForm()) {
+            this.gesuchModelManager.getFall().sozialdienstFall.status = TSSozialdienstFallStatus.AKTIV;
+            this.save();
+        }
     }
 
     public fallEntziehen(): void {
