@@ -474,6 +474,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
         this.paginator.pageIndex = this.page;
         // @ts-ignore Ugly workaround, but otherwise, paginator will not update the data
         this.paginator._emitPageEvent(this.page);
+        this.updatePagination(this.zahlungsAuftraegeFiltered);
         this.cd.markForCheck();
 
     }
