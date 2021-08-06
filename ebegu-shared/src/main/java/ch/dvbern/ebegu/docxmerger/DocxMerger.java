@@ -15,21 +15,26 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSAntragDTO} from './TSAntragDTO';
+package ch.dvbern.ebegu.docxmerger;
 
-export class TSAntragSearchresultDTO {
+import java.util.List;
 
-    private _antragDTOs: Array<TSAntragDTO>;
+import javax.annotation.Nonnull;
 
-    public constructor(antragDTOs?: Array<TSAntragDTO>) {
-        this._antragDTOs = antragDTOs;
-    }
+import ch.dvbern.ebegu.docxmerger.mergefield.AbstractMergeField;
 
-    public get antragDTOs(): Array<TSAntragDTO> {
-        return this._antragDTOs;
-    }
+public abstract class DocxMerger<T> {
+	protected List<AbstractMergeField> mergeFields;
+	protected DocxDocument docxDocument;
 
-    public set antragDTOs(value: Array<TSAntragDTO>) {
-        this._antragDTOs = value;
-    }
+	public DocxMerger(DocxDocument docxDocument) {
+		this.docxDocument = docxDocument;
+	}
+
+	@Nonnull
+	public void merge() {
+		this.mergeFields.forEach(mergeField -> docxDocument.replacePlaceholder(mergeField.getPlaceholder(), mergeField.getConvertedValue()));
+	}
+
+	public abstract void addMergeFields(T dto);
 }

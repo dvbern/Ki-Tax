@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IController, IFilterService, IPromise, IWindowService} from 'angular';
+import {IComponentOptions, IController, IFilterService, IPromise, IScope, IWindowService} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
@@ -22,19 +22,19 @@ import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {
     getTSAntragStatusPendenzValues,
     getTSAntragStatusValuesByRole,
-    TSAntragStatus
+    TSAntragStatus,
 } from '../../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
 import {
     getTSBetreuungsangebotTypValuesForMandant,
-    TSBetreuungsangebotTyp
+    TSBetreuungsangebotTyp,
 } from '../../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAbstractAntragEntity} from '../../../../models/TSAbstractAntragEntity';
 import {TSAntragDTO} from '../../../../models/TSAntragDTO';
+import {TSAntragSearchresultDTO} from '../../../../models/TSAntragSearchresultDTO';
 import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../../models/TSGemeinde';
 import {TSInstitution} from '../../../../models/TSInstitution';
-import {TSPaginationResultDTO} from '../../../../models/TSPaginationResultDTO';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
@@ -74,7 +74,8 @@ export class DVAntragListController implements IController {
         '$window',
         'GemeindeRS',
         'EinstellungRS',
-        '$translate'
+        '$translate',
+        '$scope',
     ];
 
     public totalResultCount: number;
@@ -124,7 +125,8 @@ export class DVAntragListController implements IController {
         private readonly $window: IWindowService,
         private readonly gemeindeRS: GemeindeRS,
         private readonly einstellungRS: EinstellungRS,
-        private readonly $translate: ITranslateService
+        private readonly $translate: ITranslateService,
+        private readonly $scope: IScope,
     ) {
     }
 
@@ -143,6 +145,15 @@ export class DVAntragListController implements IController {
         if (this.addButtonVisible === undefined) {
             this.addButtonVisible = 'false';
         }
+        this.$scope.$watch(() => {
+            return this.totalResultCount;
+        }, (newValue, oldValue) => {
+            if (newValue === oldValue) {
+                return;
+            }
+            this.pagination.totalItemCount = this.totalResultCount;
+            this.pagination.numberOfPages = Math.ceil(this.totalResultCount / this.pagination.number);
+        });
     }
 
     public $onDestroy(): void {
@@ -202,14 +213,11 @@ export class DVAntragListController implements IController {
             return;
         }
 
-        this.onFilterChange({tableState: tableFilterState}).then((result: TSPaginationResultDTO<TSAntragDTO>) => {
+        this.onFilterChange({tableState: tableFilterState}).then((result: TSAntragSearchresultDTO) => {
             if (!result) {
                 return;
             }
-
-            pagination.totalItemCount = result.totalResultSize;
-            pagination.numberOfPages = Math.ceil(result.totalResultSize / pagination.number);
-            this.displayedCollection = [].concat(result.resultList);
+            this.displayedCollection = [].concat(result.antragDTOs);
         });
     };
 

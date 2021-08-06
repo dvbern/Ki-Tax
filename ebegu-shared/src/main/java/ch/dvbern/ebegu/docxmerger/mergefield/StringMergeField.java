@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,16 +8,26 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+package ch.dvbern.ebegu.docxmerger.mergefield;
 
-public enum ExternalClientType {
-	EXCHANGE_SERVICE_USER,
-	GEMEINDE_SCOLARIS_SERVICE
+import javax.annotation.Nonnull;
+
+public class StringMergeField extends AbstractMergeField<String> {
+
+	public StringMergeField(@Nonnull String name, @Nonnull String value) {
+		super(name, value);
+	}
+
+	@Override
+	@Nonnull
+	public String getConvertedValue() {
+		return this.getValue();
+	}
 }

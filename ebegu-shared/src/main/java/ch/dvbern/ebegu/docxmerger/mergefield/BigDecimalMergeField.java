@@ -15,21 +15,29 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSAntragDTO} from './TSAntragDTO';
+package ch.dvbern.ebegu.docxmerger.mergefield;
 
-export class TSAntragSearchresultDTO {
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
-    private _antragDTOs: Array<TSAntragDTO>;
+import javax.annotation.Nonnull;
 
-    public constructor(antragDTOs?: Array<TSAntragDTO>) {
-        this._antragDTOs = antragDTOs;
-    }
+public class BigDecimalMergeField extends AbstractMergeField<BigDecimal> {
 
-    public get antragDTOs(): Array<TSAntragDTO> {
-        return this._antragDTOs;
-    }
+	private final int scale;
 
-    public set antragDTOs(value: Array<TSAntragDTO>) {
-        this._antragDTOs = value;
-    }
+	public BigDecimalMergeField(@Nonnull String name, @Nonnull BigDecimal value) {
+		this(name, value, 2);
+	}
+
+	public BigDecimalMergeField(@Nonnull String name, @Nonnull BigDecimal value, @Nonnull Integer precision) {
+		super(name, value);
+		this.scale = precision;
+	}
+
+	@Override
+	@Nonnull
+	public String getConvertedValue() {
+		return this.getValue().setScale(this.scale, RoundingMode.HALF_UP).toString();
+	}
 }

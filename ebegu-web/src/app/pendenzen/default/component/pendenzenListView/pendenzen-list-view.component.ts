@@ -17,16 +17,13 @@
 
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {StateService} from '@uirouter/core';
-import {BehaviorSubject, from} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {BehaviorSubject} from 'rxjs';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
 import {SearchRS} from '../../../../../gesuch/service/searchRS.rest';
-import {TSPagination} from '../../../../../models/dto/TSPagination';
 import {TSAntragStatus} from '../../../../../models/enums/TSAntragStatus';
 import {TSAntragDTO} from '../../../../../models/TSAntragDTO';
-import {TSPaginationResultDTO} from '../../../../../models/TSPaginationResultDTO';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../../../core/logging/LogFactory';
 import {DVAntragListFilter} from '../../../../shared/interfaces/DVAntragListFilter';
@@ -45,8 +42,15 @@ export class PendenzenListViewComponent {
     public hasGemeindenInStatusAngemeldet: boolean = false;
 
     public data$: BehaviorSubject<DVAntragListItem[]> = new BehaviorSubject<DVAntragListItem[]>([]);
-    public pagination: TSPagination = new TSPagination();
-
+    public pagination: {
+        number: number,
+        totalItemCount: number,
+        start: number
+    } = {
+        number: 20,
+        totalItemCount: 0,
+        start: 0,
+    };
     private readonly search: { predicateObject: DVAntragListFilter } = {
         predicateObject: {},
     };
@@ -71,6 +75,7 @@ export class PendenzenListViewComponent {
         this.authServiceRS.principal$.subscribe(principal => {
             this.initialFilter.verantwortlicherGemeinde = principal.getFullName();
             this.search.predicateObject = this.initialFilter;
+            this.countData();
             this.loadData();
         }, error => {
             LOG.error(error);
@@ -78,15 +83,17 @@ export class PendenzenListViewComponent {
         this.initHasGemeindenInStatusAngemeldet();
     }
 
+    private countData(): void {
+        this.searchRS.countPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort}).then(
+            response => this.pagination.totalItemCount = response ? response : 0,
+        );
+    }
+
     private loadData(): void {
-        this.searchRS.getPendenzenList({
-            pagination: this.pagination.toPaginationDTO(),
-            search: this.search,
-            sort: this.sort
-        }).then(response => {
-                this.pagination.totalItemCount = response.totalResultSize ? response.totalResultSize : 0;
+        this.searchRS.getPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort})
+            .then(response => {
                 // we lose the "this" if we don't map here
-                this.data$.next(response.resultList.map(antragDto => {
+                this.data$.next(response.antragDTOs.map(antragDto => {
                     return {
                         fallNummer: antragDto.fallNummer,
                         dossierId: antragDto.dossierId,
@@ -118,17 +125,6 @@ export class PendenzenListViewComponent {
             ...filter,
         };
         this.loadData();
-    }
-
-    public passFilterToServer(tableFilterState: any): void {
-        LOG.debug('Triggering ServerFiltering with Filter Object', tableFilterState);
-        from(this.searchRS.getPendenzenList(tableFilterState))
-            .pipe(tap((response: TSPaginationResultDTO<TSAntragDTO>) => {
-                this.pagination.totalItemCount = response.totalResultSize ? response.totalResultSize : 0;
-            }), map(response => response.resultList.map(antragDTO => {
-                return antragDTO as DVAntragListItem;
-            })));
-
     }
 
     public editpendenzJA(pendenz: TSAntragDTO, event: any): void {
@@ -195,6 +191,6 @@ export class PendenzenListViewComponent {
     }
 
     public calculatePage(): number {
-        return this.pagination.calculatePage();
+        return Math.floor(this.pagination.start / this.pagination.number);
     }
 }

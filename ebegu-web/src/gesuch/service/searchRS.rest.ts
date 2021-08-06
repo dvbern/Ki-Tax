@@ -16,7 +16,7 @@
 import {IHttpResponse, IHttpService, IPromise} from 'angular';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import {TSAntragDTO} from '../../models/TSAntragDTO';
-import {TSPaginationResultDTO} from '../../models/TSPaginationResultDTO';
+import {TSAntragSearchresultDTO} from '../../models/TSAntragSearchresultDTO';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
 export class SearchRS implements IEntityRS {
@@ -36,20 +36,34 @@ export class SearchRS implements IEntityRS {
         return 'SearchRS';
     }
 
-    public searchAntraege(antragSearch: any): IPromise<TSPaginationResultDTO<TSAntragDTO>> {
+    public searchAntraege(antragSearch: any): IPromise<TSAntragSearchresultDTO> {
         return this.$http.post(`${this.serviceURL}/search/`, antragSearch)
             .then(response => this.toAntragSearchresult(response));
     }
 
-    public getPendenzenList(antragSearch: any): IPromise<TSPaginationResultDTO<TSAntragDTO>> {
+    public countAntraege(antragSearch: any): IPromise<number> {
+        return this.$http.post(`${this.serviceURL}/search/count`, antragSearch)
+            .then((response: any) => {
+                 return response.data;
+            });
+    }
+
+    public getPendenzenList(antragSearch: any): IPromise<TSAntragSearchresultDTO> {
         return this.$http.post(`${this.serviceURL}/jugendamt/`, antragSearch)
             .then(response => this.toAntragSearchresult(response));
     }
 
-    private toAntragSearchresult(response: IHttpResponse<any>): TSPaginationResultDTO<TSAntragDTO> {
+    public countPendenzenList(antragSearch: any): IPromise<number> {
+        return this.$http.post(`${this.serviceURL}/jugendamt/count`, antragSearch)
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
+    private toAntragSearchresult(response: IHttpResponse<any>): TSAntragSearchresultDTO {
         const tsAntragDTOS = this.ebeguRestUtil.parseAntragDTOs(response.data.antragDTOs);
 
-        return new TSPaginationResultDTO(tsAntragDTOS, response.data.paginationDTO.totalItemCount);
+        return new TSAntragSearchresultDTO(tsAntragDTOS);
     }
 
     public getAntraegeOfDossier(dossierId: string): IPromise<Array<TSAntragDTO>> {

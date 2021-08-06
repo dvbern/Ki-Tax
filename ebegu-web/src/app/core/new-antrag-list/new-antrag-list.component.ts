@@ -47,10 +47,10 @@ import {
     TSBetreuungsangebotTyp,
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
+import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSInstitution} from '../../../models/TSInstitution';
-import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
@@ -263,7 +263,6 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     public initialTsGemeindeUser: TSBenutzerNoDetails;
     private sortId: string;
     private filterId: string;
-    private paginationId: string;
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
@@ -277,7 +276,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         private readonly benutzerRS: BenutzerRS,
         private readonly transitionService: TransitionService,
         private readonly stateStore: StateStoreService,
-        private readonly uiRouterGlobals: UIRouterGlobals
+        private readonly uiRouterGlobals: UIRouterGlobals,
     ) {
     }
 
@@ -287,7 +286,6 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         this.updateGemeindenList();
         this.initStateStores();
         this.initFilter(true);
-        this.initPaginate();
         this.initDisplayedColumns();
         this.initBenutzerLists();
     }
@@ -342,7 +340,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     private initSort(): void {
         // tslint:disable-next-line:early-exit
         if (this.stateStoreId && this.stateStore.has(this.sortId)) {
-            const stored = this.stateStore.get(this.sortId) as {predicate?: string, reverse?: boolean};
+            const stored = this.stateStore.get(this.sortId) as { predicate?: string, reverse?: boolean };
             this.sort.predicate = stored.predicate;
             this.sort.reverse = stored.reverse;
             this.matSort.active = stored.predicate;
@@ -379,20 +377,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
 
     private initFilter(fromStore: boolean = false): void {
         this.filterPredicate = (fromStore && this.filterId && this.stateStore.has(this.filterId)) ?
-                this.stateStore.get(this.filterId) :
-                {...this.initialFilter};
+            this.stateStore.get(this.filterId) :
+            {...this.initialFilter};
         this.filterChange.emit(this.filterPredicate);
-    }
-
-    private initPaginate(): void {
-        if (this.stateStore.has(this.paginationId)) {
-            const pageStore = this.stateStore.get(this.paginationId) as {page: number};
-            this.page = pageStore.page;
-        }
-        const pageEvent = new PageEvent();
-        pageEvent.pageIndex = this.page;
-        pageEvent.pageSize = this.pageSize;
-        this.handlePagination(pageEvent);
     }
 
     public ngOnDestroy(): void {
@@ -418,9 +405,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         };
         const dataToLoad$ = this.data$ ?
             this.data$ :
-            from(this.searchRS.searchAntraege(body)).pipe(map((result: TSPaginationResultDTO<TSAntragDTO>) => {
-                this.totalItems = result.totalResultSize;
-                return result.resultList.map(antragDto => {
+            from(this.searchRS.searchAntraege(body)).pipe(map((result: TSAntragSearchresultDTO) => {
+                return result.antragDTOs.map(antragDto => {
                     return {
                         fallNummer: antragDto.fallNummer,
                         dossierId: antragDto.dossierId,
@@ -446,19 +432,19 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
                 });
             }));
 
-        dataToLoad$
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe((result: DVAntragListItem[]) => {
-                this.datasource.data = result;
-                this.updatePagination();
-                // TODO: we need this because the angualarJS Service returns an IPromise. Angular does not detect
-                // changes in these since they are not zone-aware. Remove once the service is migrated
-                this.changeDetectorRef.markForCheck();
-            }, error => {
-                this.translate.get('DATA_RETRIEVAL_ERROR', error).subscribe(message => {
-                    this.errorService.addMesageAsError(message);
-                }, translateError => console.error('Could not load translation', translateError));
-            });
+        from(this.searchRS.countAntraege(body).then(result => this.totalItems = result));
+
+        dataToLoad$.subscribe((result: DVAntragListItem[]) => {
+            this.datasource.data = result;
+            this.updatePagination();
+            // TODO: we need this because the angualarJS Service returns an IPromise. Angular does not detect changes in
+            //  these since they are not zone-aware. Remove once the service is migrated
+            this.changeDetectorRef.markForCheck();
+        }, error => {
+            this.translate.get('DATA_RETRIEVAL_ERROR', error).subscribe(message => {
+                this.errorService.addMesageAsError(message);
+            }, translateError => console.error('Could not load translation', translateError));
+        });
     }
 
     private updatePagination(): void {
@@ -680,16 +666,13 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         }
         this.sortId = `${this.stateStoreId}-sort`;
         this.filterId = `${this.stateStoreId}-filter`;
-        this.paginationId = `${this.stateStoreId}-pagination`;
 
         this.transitionService.onStart({exiting: this.uiRouterGlobals.$current.name}, () => {
             if (this.sort.predicate) {
                 this.stateStore.store(this.sortId, this.sort);
             } else {
                 this.stateStore.delete(this.sortId);
-            }
-            if (!this.disablePagination) {
-                this.stateStore.store(this.paginationId, {page: this.page});
+                this.stateStore.delete(this.filterId);
             }
 
             this.stateStore.store(this.filterId, this.filterPredicate);

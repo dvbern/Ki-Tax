@@ -21,7 +21,7 @@ import {IController} from 'angular';
 import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
 import {SearchRS} from '../../../../../gesuch/service/searchRS.rest';
 import {TSAntragDTO} from '../../../../../models/TSAntragDTO';
-import {TSPaginationResultDTO} from '../../../../../models/TSPaginationResultDTO';
+import {TSAntragSearchresultDTO} from '../../../../../models/TSAntragSearchresultDTO';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 
 export class PendenzenSteueramtListViewComponentConfig implements IComponentOptions {
@@ -53,13 +53,14 @@ export class PendenzenSteueramtListViewController implements IController {
         }
     }
 
-    public passFilterToServer = (tableFilterState: any): IPromise<TSPaginationResultDTO<TSAntragDTO>> => {
+    public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {
         this.$log.debug('Triggering ServerFiltering with Filter Object', tableFilterState);
-        return this.searchRS.searchAntraege(tableFilterState).then((response: TSPaginationResultDTO<TSAntragDTO>) => {
-            this.totalResultCount = response.totalResultSize ? response.totalResultSize.toString() : '0';
+        this.searchRS.countAntraege(tableFilterState).then((response: any) => {
+            this.totalResultCount = response ? response.toString() : '0';
+        });
+        return this.searchRS.searchAntraege(tableFilterState).then((response: TSAntragSearchresultDTO) => {
             return response;
         });
-
     }
 
     private openPendenz(pendenz: TSAntragDTO, isCtrlKeyPressed: boolean): void {

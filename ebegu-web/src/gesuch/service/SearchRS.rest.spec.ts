@@ -19,7 +19,7 @@ import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp';
 import {TSAntragDTO} from '../../models/TSAntragDTO';
-import {TSPaginationResultDTO} from '../../models/TSPaginationResultDTO';
+import {TSAntragSearchresultDTO} from '../../models/TSAntragSearchresultDTO';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {TestDataUtil} from '../../utils/TestDataUtil.spec';
 import {SearchRS} from './searchRS.rest';
@@ -70,14 +70,13 @@ describe('searchRS', () => {
                 const filter: any = {};
                 $httpBackend.expectPOST(searchRS.serviceURL + '/jugendamt/', filter).respond(searchResult);
 
-                let foundPendenzen: TSPaginationResultDTO<TSAntragDTO>;
+                let foundPendenzen: TSAntragSearchresultDTO;
                 searchRS.getPendenzenList(filter).then(result => {
                     foundPendenzen = result;
                 });
                 $httpBackend.flush();
                 expect(foundPendenzen).toBeDefined();
-                expect(foundPendenzen.totalResultSize).toBe(1);
-                TestDataUtil.compareDefinedProperties(foundPendenzen.resultList[0], tsAntragDTO);
+                TestDataUtil.compareDefinedProperties(foundPendenzen.antragDTOs[0], tsAntragDTO);
             });
         });
     });

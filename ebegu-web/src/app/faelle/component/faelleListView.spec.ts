@@ -20,7 +20,6 @@ import {IHttpBackendService, ILogService, IQService, IScope} from 'angular';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GesuchModelManager} from '../../../gesuch/service/gesuchModelManager';
 import {GesuchRS} from '../../../gesuch/service/gesuchRS.rest';
-import {SearchRS} from '../../../gesuch/service/searchRS.rest';
 import {WizardStepManager} from '../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
@@ -28,7 +27,6 @@ import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSGesuch} from '../../../models/TSGesuch';
-import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {FAELLE_JS_MODULE} from '../faelle.module';
 import {FaelleListViewController} from './faelleListView';
@@ -37,7 +35,6 @@ describe('faelleListView', () => {
 
     let authServiceRS: AuthServiceRS;
     let gesuchRS: GesuchRS;
-    let searchRS: SearchRS;
     let faelleListViewController: FaelleListViewController;
     let $q: IQService;
     let $scope: IScope;
@@ -55,7 +52,6 @@ describe('faelleListView', () => {
     beforeEach(angular.mock.inject($injector => {
         authServiceRS = $injector.get('AuthServiceRS');
         gesuchRS = $injector.get('GesuchRS');
-        searchRS = $injector.get('SearchRS');
         $q = $injector.get('$q');
         $scope = $injector.get('$rootScope');
         $httpBackend = $injector.get('$httpBackend');
@@ -73,18 +69,9 @@ describe('faelleListView', () => {
                 faelleListViewController = new FaelleListViewController(gesuchModelManager,
                     $state,
                     $log,
-                    authServiceRS,
-                    searchRS);
+                    authServiceRS);
 
-                faelleListViewController.passFilterToServer({});
-                // tslint:disable-next-line:no-unbound-method
-                expect(searchRS.searchAntraege).toHaveBeenCalledTimes(1);
                 $scope.$apply();
-
-                const list = faelleListViewController.getAntragList();
-                expect(list).toBeDefined();
-                expect(list.length).toBe(1);
-                expect(list[0]).toEqual(mockAntrag);
             });
         });
         describe('editPendenzJA', () => {
@@ -124,10 +111,6 @@ describe('faelleListView', () => {
         mockPendenz.verantwortlicherTS = 'Juan Arbolado';
 
         mockPendenz.dossierId = '11111111';
-        const dtoList = [mockPendenz];
-        const totalSize = 1;
-        const searchresult = new TSPaginationResultDTO(dtoList, totalSize);
-        spyOn(searchRS, 'searchAntraege').and.returnValue($q.when(searchresult));
         return mockPendenz;
     }
 
@@ -145,8 +128,7 @@ describe('faelleListView', () => {
         faelleListViewController = new FaelleListViewController(gesuchModelManager,
             $state,
             $log,
-            authServiceRS,
-            searchRS);
+            authServiceRS);
 
         const tsGesuch = new TSGesuch();
         spyOn(gesuchRS, 'findGesuch').and.returnValue($q.when(tsGesuch));
