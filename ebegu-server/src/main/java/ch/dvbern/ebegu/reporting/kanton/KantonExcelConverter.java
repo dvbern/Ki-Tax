@@ -123,7 +123,7 @@ public class KantonExcelConverter implements ExcelConverter {
 		cell.setCellStyle(basicStyle);
 		this.fillXRowWithStyle(targetRow, basicStyle, 1, 6);
 		CellStyle procentStyle = this.createBasicStyle(sheet);
-		procentStyle.setDataFormat(sheet.getWorkbook().createDataFormat().getFormat("0.0%"));
+		procentStyle.setDataFormat(sheet.getWorkbook().createDataFormat().getFormat("0%"));
 		nbrCell = nbrCell + 8;
 		this.createCellWithFormula(targetRow, procentStyle, 7, "SUM(H9:H" + nbrCell + ")");
 		this.createCellWithFormula(targetRow, procentStyle, 8, "SUM(I9:I" + nbrCell + ")");
