@@ -55,7 +55,9 @@ export class VersionService implements OnDestroy {
     }
 
     public get $backendVersionChange(): Observable<string> {
-        return this._$backendVersionChange;
+        return this._$backendVersionChange.pipe(
+            takeUntil(this._$unsubcribe),
+        );
     }
 
     public ngOnDestroy(): void {
