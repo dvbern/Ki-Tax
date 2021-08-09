@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.ZahlungenSearchParamsDTO;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
@@ -91,7 +92,13 @@ public interface ZahlungService {
 	 * Gibt alle Zahlungsauftraege zurueck
 	 */
 	@Nonnull
-	Collection<Zahlungsauftrag> getAllZahlungsauftraege();
+	Collection<Zahlungsauftrag> getAllZahlungsauftraege(ZahlungenSearchParamsDTO zahlungenSearchParamsDTO);
+
+	/**
+	 *
+	 */
+	@Nonnull
+	Long countAllZahlungsauftraege(ZahlungenSearchParamsDTO zahlungenSearchParamsDTO);
 
 	/**
 	 * Eine Kita kann/muss den Zahlungseingang bestaetigen

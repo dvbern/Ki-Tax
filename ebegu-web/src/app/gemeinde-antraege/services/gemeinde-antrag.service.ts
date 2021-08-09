@@ -25,11 +25,13 @@ import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag'
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
+import {PaginationDTO} from '../../shared/interfaces/PaginationDTO';
 
 const LOG = LogFactory.createLog('GemeindeAntragService');
 
@@ -47,10 +49,14 @@ export class GemeindeAntragService {
     ) {
     }
 
-    public getGemeindeAntraege(filter: DVAntragListFilter, sort: {
-        predicate?: string,
-        reverse?: boolean
-    }): Observable<TSGemeindeAntrag[]> {
+    public getGemeindeAntraege(
+        filter: DVAntragListFilter,
+        sort: {
+            predicate?: string,
+            reverse?: boolean
+        },
+        paginationDTO: PaginationDTO): Observable<TSPaginationResultDTO<TSGemeindeAntrag>> {
+
         let params = new HttpParams();
         if (filter.gemeinde) {
             params = params.append('gemeinde', filter.gemeinde);
@@ -67,11 +73,24 @@ export class GemeindeAntragService {
         if (filter.aenderungsdatum) {
             params = params.append('timestampMutiert', filter.aenderungsdatum);
         }
-        return this.http.get<TSGemeindeAntrag[]>(this.API_BASE_URL, {
+        if (sort.predicate) {
+            params = params.append('sortPredicate', sort.predicate);
+        }
+        if (sort.reverse) {
+            params = params.append('sortReverse', `${sort.reverse}`);
+        }
+        params = params.append('paginationStart', paginationDTO.start.toFixed(0));
+        params = params.append('paginationNumber', paginationDTO.number.toFixed(0));
+
+        return this.http.get<any>(this.API_BASE_URL, {
             params,
         }).pipe(
-            map(antraege => this.ebeguRestUtil.parseGemeindeAntragList(antraege)),
-            map(antraege => this.sortAntraege(antraege, sort)),
+            map(result => {
+                const dto = new TSPaginationResultDTO<TSGemeindeAntrag>();
+                dto.resultList = this.ebeguRestUtil.parseGemeindeAntragList(result.resultList);
+                dto.totalResultSize = result.totalCount;
+                return dto;
+            })
         );
     }
 
@@ -105,40 +124,6 @@ export class GemeindeAntragService {
             `${this.API_BASE_URL}/create/${toCreate.antragTyp}/gesuchsperiode/${toCreate.periode}/gemeinde/${toCreate.gemeinde}`,
             toCreate)
             .pipe(map(jaxAntrag => this.ebeguRestUtil.parseGemeindeAntragList(jaxAntrag)));
-    }
-
-    private sortAntraege(
-        antraege: TSGemeindeAntrag[],
-        sort: { predicate?: string; reverse?: boolean },
-    ): TSGemeindeAntrag[] {
-        switch (sort.predicate) {
-            case 'status':
-                return sort.reverse ?
-                    antraege.sort((a, b) => a.statusString.localeCompare(b.statusString)) :
-                    antraege.sort((a, b) => b.statusString.localeCompare(a.statusString));
-            case 'gemeinde':
-                return sort.reverse ?
-                    antraege.sort((a, b) => a.gemeinde.name.localeCompare(b.gemeinde.name)) :
-                    antraege.sort((a, b) => b.gemeinde.name.localeCompare(a.gemeinde.name));
-            case 'antragTyp':
-                return sort.reverse ?
-                    antraege.sort((a, b) => a.gemeindeAntragTyp.localeCompare(b.gemeindeAntragTyp)) :
-                    antraege.sort((a, b) => b.gemeindeAntragTyp.localeCompare(a.gemeindeAntragTyp));
-            case 'gesuchsperiodeString':
-                return sort.reverse ?
-                    antraege.sort((a, b) =>
-                        a.gesuchsperiode.gesuchsperiodeString.localeCompare(b.gesuchsperiode.gesuchsperiodeString)) :
-                    antraege.sort((a, b) =>
-                        b.gesuchsperiode.gesuchsperiodeString.localeCompare(a.gesuchsperiode.gesuchsperiodeString));
-            case 'aenderungsdatum':
-                return sort.reverse ?
-                    antraege.sort((a, b) =>
-                        b.timestampMutiert.diff(a.timestampMutiert)) :
-                    antraege.sort((a, b) =>
-                        a.timestampMutiert.diff(b.timestampMutiert));
-            default:
-                return antraege;
-        }
     }
 
     public gemeindeAntragTypStringToWizardStepTyp(wizardTypStr: string): TSWizardStepXTyp | undefined {

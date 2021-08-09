@@ -15,21 +15,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSAntragDTO} from './TSAntragDTO';
-
-export class TSAntragSearchresultDTO {
-
-    private _antragDTOs: Array<TSAntragDTO>;
-
-    public constructor(antragDTOs?: Array<TSAntragDTO>) {
-        this._antragDTOs = antragDTOs;
-    }
-
-    public get antragDTOs(): Array<TSAntragDTO> {
-        return this._antragDTOs;
-    }
-
-    public set antragDTOs(value: Array<TSAntragDTO>) {
-        this._antragDTOs = value;
-    }
+export interface PaginationDTO {
+    number: number;
+    totalItemCount: number;
+    start: number;
 }
