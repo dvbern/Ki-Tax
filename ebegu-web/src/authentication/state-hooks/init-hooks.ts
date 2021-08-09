@@ -19,8 +19,8 @@ import {NgModuleRef} from '@angular/core';
 import {TransitionService} from '@uirouter/angular';
 import {AppModule} from '../../app/app.module';
 import {AuthServiceRS} from '../service/AuthServiceRS.rest';
-import {authenticationHookRunBlockX} from './onBefore/authentication-x.hook';
-import {authorisationHookRunBlockX} from './onBefore/authorisation-x.hook';
+import {authenticationHookRunBlockX} from './onBefore/authenticationX.hook';
+import {authorisationHookRunBlockX} from './onBefore/authorisationX.hook';
 import {debugHookRunBlock} from './onBefore/debug.hook';
 
 export function initHooks(platformRef: NgModuleRef<AppModule>): void {
