@@ -19,7 +19,6 @@ import {LoginComponentConfig} from './login/login.component';
 import {SCHULUNG_COMPONENT_CONFIG} from './schulung/schulung.component';
 import {AuthServiceRS} from './service/AuthServiceRS.rest';
 import {HttpAuthInterceptor} from './service/HttpAuthInterceptor';
-import {HttpBuffer} from './service/HttpBuffer';
 import {dummyLoginHookRunBlock} from './state-hooks/onBefore/dummyLogin.hook';
 import {errorAfterLoginHookRunBlock} from './state-hooks/onError/errorAfterLogin.hook';
 import {erorGSRegistrationIncompleteHookRunBlock} from './state-hooks/onError/errorGSRegistrationIncomplete.hook';
@@ -38,6 +37,5 @@ export const AUTHENTICATION_JS_MODULE =
         .run(authenticationRoutes)
         .service('HttpAuthInterceptor', HttpAuthInterceptor)
         .service('AuthServiceRS', AuthServiceRS)
-        .service('httpBuffer', HttpBuffer)
         .component('dvSchulung', SCHULUNG_COMPONENT_CONFIG)
         .component('dvLogin', LoginComponentConfig);

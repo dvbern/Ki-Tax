@@ -19,7 +19,6 @@ import {AngularXBenutzerRS} from '../app/core/service/angularXBenutzerRS.rest';
 import {VersionService} from '../app/core/service/version/version.service';
 import {I18nServiceRSRest} from '../app/i18n/services/i18nServiceRS.rest';
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
-import {HttpBufferX} from '../authentication/service/HttpBufferX';
 import {GesuchGenerator} from '../gesuch/service/gesuchGenerator';
 import {TSAuthEvent} from '../models/enums/TSAuthEvent';
 import {TSBrowserLanguage} from '../models/enums/TSBrowserLanguage';
@@ -84,16 +83,11 @@ class I18nServiceMock extends I18nServiceRSRest {
     }
 }
 
-class HttpBufferXMock extends HttpBufferX {
-
-}
-
 export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('I18nServiceRSRest', I18nServiceMock);
     $provide.service('AuthLifeCycleService', AuthLifeCycleServiceMock);
     $provide.service('GesuchGenerator', GesuchGeneratorMock);
     $provide.service('BenutzerRS', AngularXBenutzerRS);
-    $provide.service('HttpBufferX', HttpBufferXMock);
     $provide.service('VersionService', VersionService);
     $provide.value('LOCALE_ID', 'de-CH');
 }

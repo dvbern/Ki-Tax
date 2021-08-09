@@ -35,12 +35,12 @@ import 'angular-utf8-base64';
 import 'ng-file-upload';
 import 'raven-js';
 import 'raven-js/plugins/angular';
+import {BetreuungMonitoringRS} from '../../admin/service/betreuungMonitoringRS.rest';
 // tslint:enable-no-import-side-effect
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {AUTHENTICATION_JS_MODULE} from '../../authentication/authentication.module';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
-import {HttpBufferX} from '../../authentication/service/HttpBufferX';
 import router from '../../dvbModules/router/router.module';
 import {environment} from '../../environments/environment';
 import {InternePendenzenRS} from '../../gesuch/component/internePendenzenView/internePendenzenRS';
@@ -132,7 +132,6 @@ import {AdresseRS} from './service/adresseRS.rest';
 import {AngularXBenutzerRS} from './service/angularXBenutzerRS.rest';
 import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
 import {BatchJobRS} from './service/batchRS.rest';
-import {BetreuungMonitoringRS} from '../../admin/service/betreuungMonitoringRS.rest';
 import {BetreuungRS} from './service/betreuungRS.rest';
 import {BroadcastService} from './service/broadcast.service';
 import {DownloadRS} from './service/downloadRS.rest';
@@ -255,7 +254,6 @@ export const CORE_JS_MODULE = angular
     .factory('VersionService', downgradeInjectable(VersionService) as any)
     .factory('BroadcastService', downgradeInjectable(BroadcastService) as any)
     .factory('BenutzerRS', downgradeInjectable(AngularXBenutzerRS) as any)
-    .factory('HttpBufferX', downgradeInjectable(HttpBufferX) as any)
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())

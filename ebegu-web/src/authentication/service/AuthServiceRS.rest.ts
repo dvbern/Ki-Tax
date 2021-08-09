@@ -29,13 +29,10 @@ import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {AuthLifeCycleService} from './authLifeCycle.service';
-import {HttpBuffer} from './HttpBuffer';
-import {HttpBufferX} from './HttpBufferX';
 import ICookiesService = angular.cookies.ICookiesService;
 import IHttpService = angular.IHttpService;
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
-import IRequestConfig = angular.IRequestConfig;
 import ITimeoutService = angular.ITimeoutService;
 
 const LOG = LogFactory.createLog('AuthServiceRS');
@@ -43,10 +40,9 @@ const LOG = LogFactory.createLog('AuthServiceRS');
 export class AuthServiceRS {
 
     public static $inject = [
-        '$http', '$q', '$timeout', '$cookies', 'EbeguRestUtil', 'httpBuffer',
+        '$http', '$q', '$timeout', '$cookies', 'EbeguRestUtil',
         'AuthLifeCycleService',
         'BenutzerRS',
-        'HttpBufferX'
     ];
 
     private principal?: TSBenutzer;
@@ -65,10 +61,8 @@ export class AuthServiceRS {
         private readonly $timeout: ITimeoutService,
         private readonly $cookies: ICookiesService,
         private readonly ebeguRestUtil: EbeguRestUtil,
-        private readonly httpBuffer: HttpBuffer,
         private readonly authLifeCycleService: AuthLifeCycleService,
         private readonly benutzerRS: AngularXBenutzerRS,
-        private readonly httpBufferX: HttpBufferX
     ) {
     }
 
@@ -102,9 +96,6 @@ export class AuthServiceRS {
             CONSTANTS.REST_API + 'auth/login',
             this.ebeguRestUtil.userToRestObject({}, userCredentials)
         ).then(() => {
-            // try to reload buffered requests
-            this.httpBuffer.retryAll((config: IRequestConfig) => config);
-            this.httpBufferX.retryAll(request => request);
             // ensure that there is ALWAYS a logout-event before the login-event by throwing it right before login
             this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out before logging in');
             // Response cookies are not immediately accessible, so lets wait for a bit

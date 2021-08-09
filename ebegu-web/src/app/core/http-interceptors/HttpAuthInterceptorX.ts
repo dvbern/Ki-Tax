@@ -19,11 +19,10 @@ import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest}
 import {Injectable} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {catchError} from 'rxjs/operators';
+import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
+import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import {CONSTANTS, HTTP_ERROR_CODES} from '../constants/CONSTANTS';
 import {CoreModule} from '../core.module';
-import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
-import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
-import {HttpBufferX} from '../../../authentication/service/HttpBufferX';
 import {isIgnorableHttpError} from '../errors/service/HttpErrorInterceptorX';
 
 @Injectable({
@@ -32,8 +31,7 @@ import {isIgnorableHttpError} from '../errors/service/HttpErrorInterceptorX';
 export class HttpAuthInterceptorX implements HttpInterceptor {
 
     public constructor(
-        private readonly authLifeCycleService: AuthLifeCycleService,
-        private readonly httpBuffer: HttpBufferX,
+        private readonly authLifeCycleService: AuthLifeCycleService
     ) {
     }
 
@@ -53,10 +51,7 @@ export class HttpAuthInterceptorX implements HttpInterceptor {
                             console.debug('rejecting failed notokenrefresh response');
                             throw err;
                         }
-                        // all requests that failed due to notAuthenticated are appended to httpBuffer. Use
-                        // httpBuffer.retryAll to submit them.
                         const deferred$ = new Subject<HttpEvent<any>>();
-                        this.httpBuffer.append(req, deferred$);
                         this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHENTICATED, err.message);
                         return deferred$;
                     case HTTP_ERROR_CODES.FORBIDDEN:
