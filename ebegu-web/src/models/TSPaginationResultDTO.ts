@@ -8,28 +8,36 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSAntragDTO} from './TSAntragDTO';
+export class TSPaginationResultDTO<T> {
 
-export class TSAntragSearchresultDTO {
+    private _resultList: Array<T>;
+    private _totalResultSize: number;
 
-    private _antragDTOs: Array<TSAntragDTO>;
-
-    public constructor(antragDTOs?: Array<TSAntragDTO>) {
-        this._antragDTOs = antragDTOs;
+    public constructor(resultList?: Array<T>, totalResultSize?: number) {
+        this._resultList = resultList;
+        this._totalResultSize = totalResultSize;
     }
 
-    public get antragDTOs(): Array<TSAntragDTO> {
-        return this._antragDTOs;
+    public get resultList(): Array<T> {
+        return this._resultList;
     }
 
-    public set antragDTOs(value: Array<TSAntragDTO>) {
-        this._antragDTOs = value;
+    public set resultList(value: Array<T>) {
+        this._resultList = value;
+    }
+
+    public get totalResultSize(): number {
+        return this._totalResultSize;
+    }
+
+    public set totalResultSize(value: number) {
+        this._totalResultSize = value;
     }
 }

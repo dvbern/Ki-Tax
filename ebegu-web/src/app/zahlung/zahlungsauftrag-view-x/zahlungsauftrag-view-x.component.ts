@@ -87,6 +87,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
     public paginationItems: number[];
     public page: number = 0;
     public readonly PAGE_SIZE: number = 20;
+    public totalResult: number = 0;
 
     public readonly DEFAULT_SORT = {
         active: 'datumFaellig',
@@ -410,6 +411,8 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
             = TSZahlungslaufTyp.GEMEINDE_INSTITUTION === this.zahlungslaufTyp
             ? Array.from(this.berechtigteGemeindenList)
             : Array.from(this.berechtigteGemeindenMitMahlzeitenList);
+        this.totalResult = 0;
+        this.page = 0;
         this.updateZahlungsauftrag();
     }
 
@@ -420,6 +423,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
     }
 
     private updatePagination(totalResultSize: number): void {
+        this.totalResult = totalResultSize;
         this.paginationItems = [];
         for (let i = Math.max(1, this.page - 4); i <= Math.min(Math.ceil(totalResultSize / this.PAGE_SIZE),
             this.page + 5); i++) {
