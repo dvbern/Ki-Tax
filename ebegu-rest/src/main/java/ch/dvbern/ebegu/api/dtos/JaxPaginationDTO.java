@@ -15,21 +15,35 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSAntragDTO} from './TSAntragDTO';
+package ch.dvbern.ebegu.api.dtos;
 
-export class TSAntragSearchresultDTO {
+import java.io.Serializable;
+import java.util.List;
 
-    private _antragDTOs: Array<TSAntragDTO>;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
-    public constructor(antragDTOs?: Array<TSAntragDTO>) {
-        this._antragDTOs = antragDTOs;
-    }
+@XmlAccessorType(XmlAccessType.FIELD)
+public class JaxPaginationDTO<T> implements Serializable {
 
-    public get antragDTOs(): Array<TSAntragDTO> {
-        return this._antragDTOs;
-    }
+	private static final long serialVersionUID = 5308207699695004831L;
 
-    public set antragDTOs(value: Array<TSAntragDTO>) {
-        this._antragDTOs = value;
-    }
+	private List<T> resultList;
+	private long totalCount;
+
+	public List<T> getResultList() {
+		return resultList;
+	}
+
+	public void setResultList(List<T> resultList) {
+		this.resultList = resultList;
+	}
+
+	public long getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(long totalCount) {
+		this.totalCount = totalCount;
+	}
 }

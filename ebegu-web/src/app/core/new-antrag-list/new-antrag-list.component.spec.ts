@@ -26,8 +26,8 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SearchRS} from '../../../gesuch/service/searchRS.rest';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
-import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
+import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {MaterialModule} from '../../shared/material.module';
 import {StateStoreService} from '../../shared/services/state-store.service';
 import {ErrorService} from '../errors/service/ErrorService';

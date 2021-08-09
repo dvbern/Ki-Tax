@@ -15,18 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {MatSort} from '@angular/material/sort';
 import * as moment from 'moment';
 import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSZahlungslaufTyp} from '../../../models/enums/TSZahlungslaufTyp';
 import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
 import {TSZahlung} from '../../../models/TSZahlung';
 import {TSZahlungsauftrag} from '../../../models/TSZahlungsauftrag';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
 
@@ -45,24 +48,61 @@ export class ZahlungRS {
     ) {
     }
 
+    private static getSearchParams(
+        sort: MatSort | undefined,
+        page: number,
+        pageSize: number,
+        filterGemeinde: TSGemeinde | undefined,
+        zahlungslaufTyp: TSZahlungslaufTyp): HttpParams {
+
+        let searchParams = new HttpParams();
+
+        if (sort) {
+            searchParams = searchParams.append('sortPredicate', sort.active.toString());
+            searchParams = searchParams.append('sortReverse', String(sort.direction === 'desc'));
+        }
+        if (EbeguUtil.isNullOrUndefined(page) || !pageSize) {
+            throw Error('page or pageSize not set');
+        }
+        searchParams = searchParams.append('page', page.toFixed(0));
+        searchParams = searchParams.append('pageSize', pageSize.toFixed(0));
+        if (filterGemeinde) {
+            searchParams = searchParams.append('gemeinde', filterGemeinde.id);
+        }
+        if (!zahlungslaufTyp) {
+            throw Error('zahlungslauftyp not set');
+        }
+        searchParams = searchParams.append('zahlungslaufTyp', zahlungslaufTyp);
+
+        return searchParams;
+    }
+
     public getServiceName(): string {
         return 'ZahlungRS';
     }
 
-    public getAllZahlungsauftraege(): Observable<TSZahlungsauftrag[]> {
-        return this.http.get(`${this.serviceURL}/all`).pipe(
-            map((response: any) => {
-                return this.ebeguRestUtil.parseZahlungsauftragList(response);
-            }),
+    public getAllZahlungsauftraege(searchParams: HttpParams):
+        Observable<TSPaginationResultDTO<TSZahlungsauftrag>> {
+        return this.http.get(`${this.serviceURL}/all`, {
+            params: searchParams
+        }).pipe(
+            map(response => this.parseZahlungenResultDTO(response)),
         );
     }
 
-    public getAllZahlungsauftraegeInstitution(): Observable<TSZahlungsauftrag[]> {
-        return this.http.get(`${this.serviceURL}/institution`).pipe(
-            map((response: any) => {
-                return this.ebeguRestUtil.parseZahlungsauftragList(response);
-            }),
+    public getAllZahlungsauftraegeInstitution(searchParams: HttpParams): Observable<TSPaginationResultDTO<TSZahlungsauftrag>> {
+        return this.http.get(`${this.serviceURL}/institution`, {
+            params: searchParams
+        }).pipe(
+            map(response => this.parseZahlungenResultDTO(response)),
         );
+    }
+
+    private parseZahlungenResultDTO(response: any): TSPaginationResultDTO<TSZahlungsauftrag> {
+        const dto = new TSPaginationResultDTO<TSZahlungsauftrag>();
+        dto.resultList = this.ebeguRestUtil.parseZahlungsauftragList(response.resultList);
+        dto.totalResultSize = response.totalCount;
+        return dto;
     }
 
     public getZahlungsauftrag(zahlungsauftragId: string): Observable<TSZahlungsauftrag> {
@@ -170,13 +210,21 @@ export class ZahlungRS {
         }
     }
 
-    public getZahlungsauftraegeForRole$(role: TSRole): Observable<TSZahlungsauftrag[]> {
+    public getZahlungsauftraegeForRole$(
+        role: TSRole,
+        sort: MatSort,
+        page: number,
+        pageSize: number,
+        filterGemeinde: TSGemeinde,
+        zahlungslaufTyp: TSZahlungslaufTyp
+    ): Observable<TSPaginationResultDTO<TSZahlungsauftrag>> {
+        const searchParams = ZahlungRS.getSearchParams(sort, page, pageSize, filterGemeinde, zahlungslaufTyp);
         switch (role) {
             case TSRole.ADMIN_INSTITUTION:
             case TSRole.SACHBEARBEITER_INSTITUTION:
             case TSRole.ADMIN_TRAEGERSCHAFT:
             case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
-                return this.getAllZahlungsauftraegeInstitution();
+                return this.getAllZahlungsauftraegeInstitution(searchParams);
             case TSRole.SUPER_ADMIN:
             case TSRole.ADMIN_BG:
             case TSRole.SACHBEARBEITER_BG:
@@ -186,9 +234,9 @@ export class ZahlungRS {
             case TSRole.REVISOR:
             case TSRole.ADMIN_MANDANT:
             case TSRole.SACHBEARBEITER_MANDANT:
-                return this.getAllZahlungsauftraege();
+                return this.getAllZahlungsauftraege(searchParams);
             default:
-                return of([]);
+                return of(new TSPaginationResultDTO([], 0));
         }
     }
 }

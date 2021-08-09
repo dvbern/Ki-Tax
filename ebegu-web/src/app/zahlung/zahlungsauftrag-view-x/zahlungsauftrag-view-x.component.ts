@@ -1,9 +1,17 @@
 import {CurrencyPipe} from '@angular/common';
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
-import {MatSort, MatSortHeader} from '@angular/material/sort';
+import {MatSort, MatSortHeader, Sort, SortDirection} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, TransitionService, UIRouterGlobals} from '@uirouter/core';
@@ -12,13 +20,13 @@ import {of, Subject} from 'rxjs';
 import {filter, switchMap, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
-import {TSRole} from '../../../models/enums/TSRole';
 import {TSZahlungsauftragsstatus} from '../../../models/enums/TSZahlungsauftragstatus';
 import {TSZahlungslaufTyp} from '../../../models/enums/TSZahlungslaufTyp';
 import {TSZahlungsstatus} from '../../../models/enums/TSZahlungsstatus';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
 import {TSZahlungsauftrag} from '../../../models/TSZahlungsauftrag';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -40,7 +48,7 @@ const LOG = LogFactory.createLog('ZahlungsauftragViewXComponent');
     styleUrls: ['./zahlungsauftrag-view-x.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
+export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChild(NgForm) public readonly form: NgForm;
     @ViewChild(MatSort) public sort: MatSort;
@@ -51,7 +59,6 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
 
     public zahlungsauftragToEdit: TSZahlungsauftrag;
     public zahlungsAuftraege: TSZahlungsauftrag[] = [];
-    public zahlungsAuftraegeFiltered: TSZahlungsauftrag[] = [];
 
     public zahlungslaufTyp: TSZahlungslaufTyp;
     public beschrieb: string;
@@ -61,7 +68,6 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
     public testMode: boolean = false;
     public minDateForTestlauf: moment.Moment;
     public gemeinde: TSGemeinde;
-    public filterGemeinde: TSGemeinde = null;
     // Anzuzeigende Gemeinden fuer den gewaehlten Zahlungslauftyp
     public gemeindenList: Array<TSGemeinde> = [];
     // Alle Gemeinden fuer die ich berechtigt bin fuer die normalen Auftraege
@@ -77,11 +83,18 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
 
     public principal: TSBenutzer;
 
+    public filterGemeinde: TSGemeinde = null;
     public paginationItems: number[];
     public page: number = 0;
     public readonly PAGE_SIZE: number = 20;
+    public totalResult: number = 0;
 
+    public readonly DEFAULT_SORT = {
+        active: 'datumFaellig',
+        direction: 'desc'
+    };
     private readonly SORT_STORE_KEY = 'zahlungsauftrag-view-sort';
+    private readonly FILTER_STORE_KEY = 'zahlungsauftrag-view-filter';
 
     public constructor(
         private readonly zahlungRS: ZahlungRS,
@@ -102,28 +115,11 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
     ) {
     }
 
-    private sortingDataAccessor(data: TSZahlungsauftrag, header: string): string | number {
-        switch (header) {
-            case 'gemeinde':
-                return data.gemeinde.name;
-            case 'datumFaellig':
-                return data.datumFaellig.valueOf();
-            case 'datumGeneriert':
-                return data.datumGeneriert.valueOf();
-            case 'status':
-                return this.getCalculatedStatus(data);
-            default:
-                return (data as any)[header];
-        }
-    }
-
     public ngOnInit(): void {
         const isMahlzeitenzahlungen = EbeguUtil.isNotNullAndTrue(this.uiRouterGlobals.params.isMahlzeitenzahlungen);
         this.zahlungslaufTyp = isMahlzeitenzahlungen
             ? TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER
             : TSZahlungslaufTyp.GEMEINDE_INSTITUTION;
-        this.updateZahlungsauftrag();
-        this.updateGemeindenList();
         this.updateShowMahlzeitenZahlungslaeufe();
         this.applicationPropertyRS.isZahlungenTestMode().then((response: any) => {
             this.testMode = response;
@@ -137,42 +133,60 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
             } else {
                 this.stateStore.delete(this.SORT_STORE_KEY);
             }
+            if (this.filterGemeinde) {
+                this.stateStore.store(this.FILTER_STORE_KEY, this.filterGemeinde);
+            } else {
+                this.stateStore.delete(this.FILTER_STORE_KEY);
+            }
         });
     }
 
     public ngAfterViewInit(): void {
+        this.initSort();
+        this.initGemeindenListAndFilter();
+        this.updateZahlungsauftrag();
+    }
 
+    public ngOnDestroy(): void {
+        this.unsubscribe$.next();
+    }
+
+    private initSort(): void {
         if (this.stateStore.has(this.SORT_STORE_KEY)) {
             const stored = this.stateStore.get(this.SORT_STORE_KEY) as MatSort;
             this.sort.active = stored.active;
             this.sort.direction = stored.direction;
         } else {
-            // initial sorting
-            this.sort.active = 'datumFaellig';
-            this.sort.direction = 'desc';
+            this.sort.active = this.DEFAULT_SORT.active;
+            this.sort.direction = this.DEFAULT_SORT.direction as SortDirection;
         }
         (this.sort.sortables.get(this.sort.active) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
-        this.datasource.sort = this.sort;
-        this.datasource.sortingDataAccessor = this.sortingDataAccessor.bind(this);
-        this.datasource.paginator = this.paginator;
     }
 
-    private updateZahlungsauftrag(): void {
+    public updateZahlungsauftrag(): void {
         this.authServiceRS.principal$
+            .pipe(takeUntil(this.unsubscribe$))
             .pipe(
                 switchMap(principal => {
                     if (principal) {
-                        return this.zahlungRS.getZahlungsauftraegeForRole$(principal.getCurrentRole());
+                        return this.zahlungRS.getZahlungsauftraegeForRole$(
+                            principal.getCurrentRole(),
+                            this.sort,
+                            this.page,
+                            this.PAGE_SIZE,
+                            this.filterGemeinde,
+                            this.zahlungslaufTyp
+                        );
                     }
 
-                    return of([]);
+                    return of(new TSPaginationResultDTO<TSZahlungsauftrag>([], 0));
                 }),
             )
             .subscribe(
-                zahlungsAuftraege => {
-                    this.zahlungsAuftraege = zahlungsAuftraege;
-                    this.datasource.data = zahlungsAuftraege;
-                    this.toggleAuszahlungslaufTyp();
+                result => {
+                    this.zahlungsAuftraege = result.resultList;
+                    this.datasource.data = result.resultList;
+                    this.updatePagination(result.totalResultSize);
                 },
                 err => LOG.error(err),
             );
@@ -211,6 +225,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
                         this.zahlungsAuftraege.push(response);
                         this.resetEditZahlungsauftrag();
                         this.resetForm();
+                        this.updateZahlungsauftrag();
                         this.cd.markForCheck();
                     },
                     error => this.errorService.addMesageAsError(
@@ -263,8 +278,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
                         if (index > -1) {
                             this.zahlungsAuftraege[index] = response;
                         }
-                        EbeguUtil.handleSmarttablesUpdateBug(this.zahlungsAuftraege);
-                        this.toggleAuszahlungslaufTyp();
+                        this.updateZahlungsauftrag();
                         this.cd.markForCheck();
                     },
                     error => this.errorService.addMesageAsError(
@@ -338,7 +352,6 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
         this.gemeinde = null;
         this.form.form.markAsPristine();
         this.form.form.markAsUntouched();
-        this.toggleAuszahlungslaufTyp();
     }
 
     public getCalculatedStatus(zahlungsauftrag: TSZahlungsauftrag): any {
@@ -351,16 +364,25 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
         return zahlungsauftrag.status;
     }
 
-    private updateGemeindenList(): void {
+    private initGemeindenListAndFilter(): void {
         this.gemeindeRS.getGemeindenForPrincipal$()
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 gemeinden => {
                     this.berechtigteGemeindenList = gemeinden;
+                    this.toggleAuszahlungslaufTyp();
+                    this.initFilterFromStore();
                     this.cd.markForCheck();
                 },
                 err => LOG.error(err),
             );
+    }
+
+    private initFilterFromStore(): void {
+        if (this.stateStore.has(this.FILTER_STORE_KEY)) {
+            this.filterGemeinde = this.stateStore.get(this.FILTER_STORE_KEY) as TSGemeinde;
+            this.updateZahlungsauftrag();
+        }
     }
 
     private updateShowMahlzeitenZahlungslaeufe(): void {
@@ -385,28 +407,34 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
 
     public toggleAuszahlungslaufTyp(): void {
         this.filterGemeinde = null;
-        this.filterZahlungsAuftraege();
         this.gemeindenList
             = TSZahlungslaufTyp.GEMEINDE_INSTITUTION === this.zahlungslaufTyp
             ? Array.from(this.berechtigteGemeindenList)
             : Array.from(this.berechtigteGemeindenMitMahlzeitenList);
-    }
-
-    public filterZahlungsAuftraege(): void {
+        this.totalResult = 0;
         this.page = 0;
-        this.zahlungsAuftraegeFiltered =
-            this.zahlungsAuftraege.filter(value => value.zahlungslaufTyp === this.zahlungslaufTyp &&
-                (!this.filterGemeinde || this.filterGemeinde.id === value.gemeinde.id));
-        this.updatePagination(this.zahlungsAuftraegeFiltered);
-        this.datasource.data = this.zahlungsAuftraegeFiltered;
+        this.updateZahlungsauftrag();
     }
 
-    private updatePagination(items: TSZahlungsauftrag[]): void {
+    public sortData($event: Sort): void {
+        this.sort.active = $event.active;
+        this.sort.direction = $event.direction;
+        this.updateZahlungsauftrag();
+    }
+
+    private updatePagination(totalResultSize: number): void {
+        this.totalResult = totalResultSize;
         this.paginationItems = [];
-        for (let i = Math.max(1, this.page - 4); i <= Math.min(Math.ceil(items.length / this.PAGE_SIZE),
+        for (let i = Math.max(1, this.page - 4); i <= Math.min(Math.ceil(totalResultSize / this.PAGE_SIZE),
             this.page + 5); i++) {
             this.paginationItems.push(i);
         }
+    }
+
+    public handlePagination(pageEvent: Partial<PageEvent>): void {
+        this.page = pageEvent.pageIndex;
+        this.paginator.pageIndex = this.page;
+        this.updateZahlungsauftrag();
     }
 
     public showAuszahlungsTypToggle(): boolean {
@@ -469,21 +497,11 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
         return element[column.attributeName];
     }
 
-    public handlePagination(pageEvent: Partial<PageEvent>): void {
-        this.page = pageEvent.pageIndex;
-        this.paginator.pageIndex = this.page;
-        // @ts-ignore Ugly workaround, but otherwise, paginator will not update the data
-        this.paginator._emitPageEvent(this.page);
-        this.updatePagination(this.zahlungsAuftraegeFiltered);
-        this.cd.markForCheck();
-
-    }
-
     public showForm(): boolean {
         return this.principal?.hasOneOfRoles(TSRoleUtil.getAdministratorBgGemeindeRoles());
     }
 
     public showGemeindeFilter(): boolean {
-        return this.principal?.hasRole(TSRole.SUPER_ADMIN);
+        return this.gemeindenList.length > 1;
     }
 }
