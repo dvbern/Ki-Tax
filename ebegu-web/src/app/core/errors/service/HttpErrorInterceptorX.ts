@@ -35,8 +35,6 @@ export function isIgnorableHttpError<T>(request: HttpRequest<T>): boolean {
 
 export class HttpErrorInterceptor implements HttpInterceptor {
 
-    public static $inject = ['$q', 'ErrorService', '$log'];
-
     public constructor(
         private readonly $q: IQService,
         private readonly errorService: ErrorService,
