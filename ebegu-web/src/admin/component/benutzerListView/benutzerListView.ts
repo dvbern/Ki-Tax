@@ -17,7 +17,7 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions, ILogService, IPromise} from 'angular';
 import {Permission} from '../../../app/authorisation/Permission';
 import {PERMISSIONS} from '../../../app/authorisation/Permissions';
-import {AngularXBenutzerRS} from '../../../app/core/service/angularXBenutzerRS.rest';
+import {BenutzerRSX} from '../../../app/core/service/benutzerRSX.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSUserSearchresultDTO} from '../../../models/TSUserSearchresultDTO';
@@ -44,7 +44,7 @@ export class BenutzerListViewController extends AbstractAdminViewController {
         private readonly $state: StateService,
         private readonly $log: ILogService,
         authServiceRS: AuthServiceRS,
-        private readonly benutzerRS: AngularXBenutzerRS,
+        private readonly benutzerRS: BenutzerRSX,
     ) {
         super(authServiceRS);
     }

@@ -55,7 +55,7 @@ import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
 import {DVPaginationEvent} from '../../shared/interfaces/DVPaginationEvent';
 import {ErrorService} from '../errors/service/ErrorService';
 import {LogFactory} from '../logging/LogFactory';
-import {AngularXBenutzerRS} from '../service/angularXBenutzerRS.rest';
+import {BenutzerRSX} from '../service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
 
@@ -257,7 +257,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly translate: TranslateService,
         private readonly errorService: ErrorService,
-        private readonly benutzerRS: AngularXBenutzerRS,
+        private readonly benutzerRS: BenutzerRSX,
     ) {
     }
 

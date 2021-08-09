@@ -24,7 +24,7 @@ import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
-import {AngularXBenutzerRS} from '../../../app/core/service/angularXBenutzerRS.rest';
+import {BenutzerRSX} from '../../../app/core/service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {GemeindeAntragService} from '../../../app/gemeinde-antraege/services/gemeinde-antrag.service';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
@@ -68,7 +68,7 @@ export class TestdatenViewComponent implements OnInit {
 
     public constructor(
         public readonly testFaelleRS: TestFaelleRS,
-        private readonly benutzerRS: AngularXBenutzerRS,
+        private readonly benutzerRS: BenutzerRSX,
         private readonly errorService: ErrorService,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,

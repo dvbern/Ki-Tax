@@ -13,13 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
-import { MAT_DATE_LOCALE } from '@angular/material/core';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {MAT_DATE_LOCALE} from '@angular/material/core';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
-import {AngularXBenutzerRS} from '../../../app/core/service/angularXBenutzerRS.rest';
+import {BenutzerRSX} from '../../../app/core/service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
@@ -40,7 +40,7 @@ describe('testdatenView', () => {
                 'createTestFall', 'createTestFallGS', 'removeFaelleOfGS', 'mutiereFallHeirat',
                 'mutiereFallScheidung', 'resetSchulungsdaten', 'deleteSchulungsdaten',
             ]);
-        const benutzerRSSpy = jasmine.createSpyObj<AngularXBenutzerRS>(AngularXBenutzerRS.name,
+        const benutzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name,
             ['getAllGesuchsteller']);
         benutzerRSSpy.getAllGesuchsteller.and.resolveTo([]);
         const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
@@ -80,7 +80,7 @@ describe('testdatenView', () => {
             ],
             providers: [
                 {provide: TestFaelleRS, useValue: testFaelleRSSpy},
-                {provide: AngularXBenutzerRS, useValue: benutzerRSSpy},
+                {provide: BenutzerRSX, useValue: benutzerRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: GesuchsperiodeRS, useValue: gesuchsperiodeRSSpy},
                 {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},

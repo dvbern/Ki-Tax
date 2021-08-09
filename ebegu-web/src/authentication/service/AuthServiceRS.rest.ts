@@ -21,7 +21,7 @@ import {Permission} from '../../app/authorisation/Permission';
 import {PERMISSIONS} from '../../app/authorisation/Permissions';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {LogFactory} from '../../app/core/logging/LogFactory';
-import {AngularXBenutzerRS} from '../../app/core/service/angularXBenutzerRS.rest';
+import {BenutzerRSX} from '../../app/core/service/benutzerRSX.rest';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSBenutzer} from '../../models/TSBenutzer';
@@ -62,7 +62,7 @@ export class AuthServiceRS {
         private readonly $cookies: ICookiesService,
         private readonly ebeguRestUtil: EbeguRestUtil,
         private readonly authLifeCycleService: AuthLifeCycleService,
-        private readonly benutzerRS: AngularXBenutzerRS,
+        private readonly benutzerRS: BenutzerRSX,
     ) {
     }
 

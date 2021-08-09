@@ -28,7 +28,7 @@ import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {MaterialModule} from '../../shared/material.module';
 import {ErrorService} from '../errors/service/ErrorService';
-import {AngularXBenutzerRS} from '../service/angularXBenutzerRS.rest';
+import {BenutzerRSX} from '../service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
 
@@ -80,7 +80,7 @@ describe('NewAntragListComponent', () => {
         ['getPrincipalRole', 'hasMandantAngebotTS', 'isOneOfRoles']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
         ['addMesageAsError']);
-    const benutzerRSSpy = jasmine.createSpyObj<AngularXBenutzerRS>(AngularXBenutzerRS.name,
+    const benutzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name,
         ['getAllBenutzerBgOrGemeinde', 'getAllBenutzerTsOrGemeinde']);
 
     beforeEach(async(() => {
@@ -94,7 +94,7 @@ describe('NewAntragListComponent', () => {
                 {provide: AuthServiceRS, useValue: authRSSpy},
                 {provide: SearchRS, useValue: searchRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: AngularXBenutzerRS, useValue: benutzerRSSpy},
+                {provide: BenutzerRSX, useValue: benutzerRSSpy},
             ],
         }).compileComponents();
 

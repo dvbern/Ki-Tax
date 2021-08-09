@@ -28,9 +28,9 @@ import {LogFactory} from '../logging/LogFactory';
 @Injectable({
     providedIn: CoreModule,
 })
-export class AngularXBenutzerRS {
+export class BenutzerRSX {
 
-    private readonly LOG = LogFactory.createLog(AngularXBenutzerRS.name);
+    private readonly LOG = LogFactory.createLog(BenutzerRSX.name);
 
     public readonly serviceURL: string;
     public readonly ebeguRestUtil: EbeguRestUtil = new EbeguRestUtil();

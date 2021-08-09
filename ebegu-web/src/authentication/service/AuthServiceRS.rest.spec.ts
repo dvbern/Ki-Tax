@@ -15,7 +15,7 @@
 
 import * as angular from 'angular';
 import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
-import {AngularXBenutzerRS} from '../../app/core/service/angularXBenutzerRS.rest';
+import {BenutzerRSX} from '../../app/core/service/benutzerRSX.rest';
 import {GesuchModelManager} from '../../gesuch/service/gesuchModelManager';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSRole} from '../../models/enums/TSRole';
@@ -35,7 +35,7 @@ describe('AuthServiceRS', () => {
     let $timeout: angular.ITimeoutService;
     let $cookies: angular.cookies.ICookiesService;
     let gesuchModelManager: GesuchModelManager;
-    let benutzerRS: AngularXBenutzerRS;
+    let benutzerRS: BenutzerRSX;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
     beforeEach(angular.mock.module(AUTHENTICATION_JS_MODULE.name));

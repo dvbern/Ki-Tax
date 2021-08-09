@@ -20,7 +20,7 @@ import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.re
 import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
 import {LogFactory} from '../../logging/LogFactory';
-import {AngularXBenutzerRS} from '../../service/angularXBenutzerRS.rest';
+import {BenutzerRSX} from '../../service/benutzerRSX.rest';
 
 const LOG = LogFactory.createLog('UserselectController');
 
@@ -67,7 +67,7 @@ export class UserselectController implements IController {
     public sachbearbeiterGemeinde: boolean;
 
     public constructor(
-        private readonly benutzerRS: AngularXBenutzerRS,
+        private readonly benutzerRS: BenutzerRSX,
         private readonly authServiceRS: AuthServiceRS,
     ) {
 

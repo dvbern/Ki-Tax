@@ -19,7 +19,7 @@ import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
 import {TSDossier} from '../../../../models/TSDossier';
 import {TSGesuch} from '../../../../models/TSGesuch';
 import {CORE_JS_MODULE} from '../../core.angularjs.module';
-import {AngularXBenutzerRS} from '../../service/angularXBenutzerRS.rest';
+import {BenutzerRSX} from '../../service/benutzerRSX.rest';
 import {VerantwortlicherselectController} from './dv-verantwortlicherselect';
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -27,7 +27,7 @@ describe('dvVerantwortlicherSelect', () => {
 
     let gesuchModelManager: GesuchModelManager;
     let verantwortlicherselectController: VerantwortlicherselectController;
-    let benutzerRS: AngularXBenutzerRS;
+    let benutzerRS: BenutzerRSX;
     let benutzer: TSBenutzerNoDetails;
     let $translate: ITranslateService;
 

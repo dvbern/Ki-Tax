@@ -129,9 +129,9 @@ import {gemeindenToString} from './filters/gemeinden-to-string.filter';
 import {NewAntragListComponent} from './new-antrag-list/new-antrag-list.component';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {AdresseRS} from './service/adresseRS.rest';
-import {AngularXBenutzerRS} from './service/angularXBenutzerRS.rest';
 import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
 import {BatchJobRS} from './service/batchRS.rest';
+import {BenutzerRSX} from './service/benutzerRSX.rest';
 import {BetreuungRS} from './service/betreuungRS.rest';
 import {BroadcastService} from './service/broadcast.service';
 import {DownloadRS} from './service/downloadRS.rest';
@@ -253,7 +253,7 @@ export const CORE_JS_MODULE = angular
     .factory('InternePendenzenRS', downgradeInjectable(InternePendenzenRS) as any)
     .factory('VersionService', downgradeInjectable(VersionService) as any)
     .factory('BroadcastService', downgradeInjectable(BroadcastService) as any)
-    .factory('BenutzerRS', downgradeInjectable(AngularXBenutzerRS) as any)
+    .factory('BenutzerRS', downgradeInjectable(BenutzerRSX) as any)
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())

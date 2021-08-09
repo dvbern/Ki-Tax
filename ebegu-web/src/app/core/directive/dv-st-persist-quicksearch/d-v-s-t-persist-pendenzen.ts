@@ -16,7 +16,7 @@
 import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {DVQuicksearchListController} from '../../../quicksearch/component/dv-quicksearch-list/dv-quicksearch-list';
-import {AngularXBenutzerRS} from '../../service/angularXBenutzerRS.rest';
+import {BenutzerRSX} from '../../service/benutzerRSX.rest';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
 import {InstitutionRS} from '../../service/institutionRS.rest';
 
@@ -32,7 +32,7 @@ export class DVSTPersistPendenzen implements IDirective {
     public link: IDirectiveLinkFn;
 
     public constructor(
-        private readonly benutzerRS: AngularXBenutzerRS,
+        private readonly benutzerRS: BenutzerRSX,
         private readonly institutionRS: InstitutionRS,
         private readonly dVsTPersistService: DVsTPersistService,
         private readonly gemeindeRS: GemeindeRS,

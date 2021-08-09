@@ -38,7 +38,7 @@ import {PERMISSIONS} from '../../authorisation/Permissions';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
-import {AngularXBenutzerRS} from '../../core/service/angularXBenutzerRS.rest';
+import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 
 const LOG = LogFactory.createLog('BenutzerComponent');
 
@@ -74,7 +74,7 @@ export class BenutzerComponent implements OnInit {
         private readonly $state: StateService,
         private readonly translate: TranslateService,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly benutzerRS: AngularXBenutzerRS,
+        private readonly benutzerRS: BenutzerRSX,
         private readonly dialog: MatDialog,
         private readonly errorService: ErrorService,
     ) {

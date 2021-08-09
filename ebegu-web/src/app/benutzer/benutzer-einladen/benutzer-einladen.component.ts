@@ -24,8 +24,8 @@ import {TSBenutzerStatus} from '../../../models/enums/TSBenutzerStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
-import {AngularXBenutzerRS} from '../../core/service/angularXBenutzerRS.rest';
 import {ErrorService} from '../../core/errors/service/ErrorService';
+import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 
 @Component({
     selector: 'dv-benutzer-einladen',
@@ -39,7 +39,7 @@ export class BenutzerEinladenComponent {
     public readonly CONSTANTS = CONSTANTS;
 
     public constructor(
-        private readonly benutzerRS: AngularXBenutzerRS,
+        private readonly benutzerRS: BenutzerRSX,
         private readonly authServiceRS: AuthServiceRS,
         private readonly stateService: StateService,
         private readonly errorService: ErrorService,

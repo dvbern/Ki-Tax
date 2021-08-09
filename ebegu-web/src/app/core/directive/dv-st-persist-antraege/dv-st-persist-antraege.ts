@@ -22,7 +22,7 @@ import {TSAuthEvent} from '../../../../models/enums/TSAuthEvent';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DVAntragListController} from '../../component/dv-antrag-list/dv-antrag-list';
 import {LogFactory} from '../../logging/LogFactory';
-import {AngularXBenutzerRS} from '../../service/angularXBenutzerRS.rest';
+import {BenutzerRSX} from '../../service/benutzerRSX.rest';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
 import {InstitutionRS} from '../../service/institutionRS.rest';
 
@@ -46,7 +46,7 @@ export class DVSTPersistAntraege implements IDirective {
     public obss: Subscription;
 
     public constructor(
-        private readonly benutzerRS: AngularXBenutzerRS,
+        private readonly benutzerRS: BenutzerRSX,
         private readonly institutionRS: InstitutionRS,
         private readonly authServiceRS: AuthServiceRS,
         private readonly dVsTPersistService: DVsTPersistService,
