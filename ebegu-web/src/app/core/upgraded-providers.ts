@@ -39,7 +39,6 @@ import {DownloadRS} from './service/downloadRS.rest';
 import {GesuchsperiodeRS} from './service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from './service/institutionRS.rest';
 import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
-import {LastenausgleichRS} from './service/lastenausgleichRS.rest';
 import {MandantRS} from './service/mandantRS.rest';
 import {MitteilungRS} from './service/mitteilungRS.rest';
 import {NotrechtRS} from './service/notrechtRS.rest';
@@ -135,17 +134,6 @@ export function databaseMigrationRSProviderServiceFactory(i: IInjectorService): 
 export const databaseMigrationRSProvider = {
     provide: DatabaseMigrationRS,
     useFactory: databaseMigrationRSProviderServiceFactory,
-    deps: ['$injector'],
-};
-
-// LastenausgleichRS
-export function lastenausgleichRSProviderServiceFactory(i: IInjectorService): LastenausgleichRS {
-    return i.get('LastenausgleichRS');
-}
-
-export const lastenausgleichRSProvider = {
-    provide: LastenausgleichRS,
-    useFactory: lastenausgleichRSProviderServiceFactory,
     deps: ['$injector'],
 };
 

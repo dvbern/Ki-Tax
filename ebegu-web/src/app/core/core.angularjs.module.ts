@@ -35,6 +35,7 @@ import 'angular-utf8-base64';
 import 'ng-file-upload';
 import 'raven-js';
 import 'raven-js/plugins/angular';
+import {BetreuungMonitoringRS} from '../../admin/service/betreuungMonitoringRS.rest';
 // tslint:enable-no-import-side-effect
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
@@ -131,7 +132,6 @@ import {AdresseRS} from './service/adresseRS.rest';
 import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
 import {BatchJobRS} from './service/batchRS.rest';
 import {BenutzerRS} from './service/benutzerRS.rest';
-import {BetreuungMonitoringRS} from '../../admin/service/betreuungMonitoringRS.rest';
 import {BetreuungRS} from './service/betreuungRS.rest';
 import {DownloadRS} from './service/downloadRS.rest';
 import {DVsTPersistService} from './service/dVsTPersistService';
@@ -144,7 +144,6 @@ import {HttpResponseInterceptor} from './service/HttpResponseInterceptor';
 import {InstitutionRS} from './service/institutionRS.rest';
 import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
 import {KindRS} from './service/kindRS.rest';
-import {LastenausgleichRS} from './service/lastenausgleichRS.rest';
 import {ListResourceRS} from './service/listResourceRS.rest';
 import {MandantRS} from './service/mandantRS.rest';
 import {MitteilungRS} from './service/mitteilungRS.rest';
@@ -233,7 +232,6 @@ export const CORE_JS_MODULE = angular
     .service('WizardStepRS', WizardStepRS)
     .service('AntragStatusHistoryRS', AntragStatusHistoryRS)
     .service('MitteilungRS', MitteilungRS)
-    .service('LastenausgleichRS', LastenausgleichRS)
     .service('GlobalCacheService', GlobalCacheService)
     .service('ExportRS', ExportRS)
     .service('DossierRS', DossierRS)

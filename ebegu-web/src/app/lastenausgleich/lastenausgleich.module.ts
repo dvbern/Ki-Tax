@@ -15,10 +15,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import {NgModule} from '@angular/core';
+import {SharedModule} from '../shared/shared.module';
 import {LastenausgleichViewXComponent} from './component/lastenausgleich-view-x/lastenausgleich-view-x.component';
 import {LastenausgleichRoutingModule} from './lastenausgleich.route';
+import {LastenausgleichRS} from './services/lastenausgleichRS.rest';
 
 @NgModule({
     declarations: [
@@ -26,7 +28,11 @@ import {LastenausgleichRoutingModule} from './lastenausgleich.route';
     ],
     imports: [
         CommonModule,
-        LastenausgleichRoutingModule
+        LastenausgleichRoutingModule,
+        SharedModule
+    ],
+    providers: [
+        LastenausgleichRS
     ]
 })
 export class LastenausgleichModule {
