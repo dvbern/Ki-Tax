@@ -15,9 +15,15 @@
 
 import {SimpleChanges} from '@angular/core';
 import {IComponentOptions, IController} from 'angular';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 import {TSHTTPEvent} from '../../events/TSHTTPEvent';
+import {LogFactory} from '../../logging/LogFactory';
+import {BroadcastService} from '../../service/broadcast.service';
 import IFormController = angular.IFormController;
 import ITimeoutService = angular.ITimeoutService;
+
+const LOG = LogFactory.createLog('DVLoadingButton');
 
 interface IDVLoadingButtonController {
     isDisabled: boolean;
@@ -52,7 +58,7 @@ export class DVLoadingButton implements IComponentOptions {
  *         data-translate="SAVE"></span> </dv-loading-button>
  */
 export class DVLoadingButtonController implements IDVLoadingButtonController, IController {
-    public static $inject: string[] = ['$scope', '$timeout'];
+    public static $inject: string[] = ['$scope', '$timeout', 'BroadcastService'];
 
     public buttonClicked: ($event: any) => void;
     public isDisabled: boolean;
@@ -63,9 +69,12 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
     public buttonDisabled: boolean; // true wenn unser element programmatisch disabled wird
     public buttonClick: () => void;
 
+    private readonly _unsubscribe: Subject<void> = new Subject<void>();
+
     public constructor(
         private readonly $scope: any,
         private readonly $timeout: ITimeoutService,
+        private readonly broadcastService: BroadcastService
     ) {
     }
 
@@ -109,6 +118,16 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
             this.isDisabled = false;
         });
 
+        this.broadcastService.on$(TSHTTPEvent.REQUEST_FINISHED)
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe(() => {
+            this.isDisabled = false;
+        }, error => LOG.error(error));
+
+    }
+
+    public $onDestroy(): void {
+        this._unsubscribe.next();
     }
 
     // beispiel wie man auf changes eines attributes von aussen reagieren kann

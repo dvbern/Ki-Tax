@@ -17,17 +17,15 @@ import {IHttpInterceptor, IHttpResponse, IPromise, IQService} from 'angular';
 import {isIgnorableHttpError} from '../../app/core/errors/service/HttpErrorInterceptor';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {AuthLifeCycleService} from './authLifeCycle.service';
-import {HttpBuffer} from './HttpBuffer';
 
 export class HttpAuthInterceptor implements IHttpInterceptor {
 
-    public static $inject = ['AuthLifeCycleService', '$q', 'CONSTANTS', 'httpBuffer'];
+    public static $inject = ['AuthLifeCycleService', '$q', 'CONSTANTS'];
 
     public constructor(
         private readonly authLifeCycleService: AuthLifeCycleService,
         private readonly $q: IQService,
         private readonly CONSTANTS: any,
-        private readonly httpBuffer: HttpBuffer,
     ) {
     }
 
@@ -46,10 +44,7 @@ export class HttpAuthInterceptor implements IHttpInterceptor {
                     console.debug('rejecting failed notokenrefresh response');
                     return this.$q.reject(response);
                 }
-                // all requests that failed due to notAuthenticated are appended to httpBuffer. Use httpBuffer.retryAll
-                // to submit them.
                 const deferred = this.$q.defer();
-                this.httpBuffer.append(response.config, deferred);
                 this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHENTICATED, response);
                 return deferred.promise as IPromise<IHttpResponse<T>>;
             case http403:

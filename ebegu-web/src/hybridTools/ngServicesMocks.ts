@@ -15,7 +15,8 @@
 
 import * as angular from 'angular';
 import {Observable, of} from 'rxjs';
-import {BenutzerRS} from '../app/core/service/benutzerRS.rest';
+import {BenutzerRSX} from '../app/core/service/benutzerRSX.rest';
+import {VersionService} from '../app/core/service/version/version.service';
 import {I18nServiceRSRest} from '../app/i18n/services/i18nServiceRS.rest';
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
 import {InternePendenzenRS} from '../gesuch/component/internePendenzenView/internePendenzenRS.rest';
@@ -87,7 +88,8 @@ export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('I18nServiceRSRest', I18nServiceMock);
     $provide.service('AuthLifeCycleService', AuthLifeCycleServiceMock);
     $provide.service('GesuchGenerator', GesuchGeneratorMock);
-    $provide.service('BenutzerRS', BenutzerRS);
     $provide.service('InternePendenzenRS', InternePendenzenRS);
+    $provide.service('BenutzerRS', BenutzerRSX);
+    $provide.service('VersionService', VersionService);
     $provide.value('LOCALE_ID', 'de-CH');
 }

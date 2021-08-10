@@ -17,7 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
@@ -33,7 +33,7 @@ import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {DvNgGesuchstellerDialogComponent} from '../../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
-import {BenutzerRS} from '../../core/service/benutzerRS.rest';
+import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 
@@ -67,7 +67,7 @@ export class AddInstitutionComponent implements OnInit {
         private readonly traegerschaftRS: TraegerschaftRS,
         private readonly translate: TranslateService,
         private readonly gemeindeRS: GemeindeRS,
-        private readonly benutzerRS: BenutzerRS,
+        private readonly benutzerRS: BenutzerRSX,
         private readonly dialog: MatDialog,
     ) {
     }
