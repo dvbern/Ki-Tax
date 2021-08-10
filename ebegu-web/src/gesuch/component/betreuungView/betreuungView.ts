@@ -727,8 +727,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public angabenKorrigieren(): void {
-        this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
             title: 'BG_ANMELDUNG_ERNEUT_OEFFNEN',
+            deleteText: '',
+            cancelText: 'LABEL_NEIN',
+            confirmText: 'LABEL_JA',
         }).then(() => {
             this.platzAnfordern();
         });
@@ -1385,8 +1388,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public anmeldungSchulamtFalscheAngaben(): void {
-        this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
             title: 'TS_ANMELDUNG_ERNEUT_OEFFNEN',
+            deleteText: '',
+            cancelText: 'LABEL_ABBRECHEN',
+            confirmText: 'LABEL_SPEICHERN',
         }).then(() => {
             this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
         });

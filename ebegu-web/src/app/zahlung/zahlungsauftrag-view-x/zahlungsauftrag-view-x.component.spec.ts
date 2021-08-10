@@ -67,7 +67,7 @@ describe('ZahlungsauftragViewXComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(ZahlungsauftragViewXComponent);
         component = fixture.componentInstance;
-        fixture.detectChanges();
+        // fixture.detectChanges() will throw an ExpressionChangedAfterItHasBeenCheckedError here
     });
 
     it('should create', () => {

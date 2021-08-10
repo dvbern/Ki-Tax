@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.dto.ZahlungenSearchParamsDTO;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -101,6 +102,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	private Gesuchsperiode gesuchsperiode;
 	private String gemeindeId;
+	private final ZahlungenSearchParamsDTO zahlungenSearchParamsDTO = new ZahlungenSearchParamsDTO(0, 20, ZahlungslaufTyp.GEMEINDE_INSTITUTION);
 
 	private static final int BASISJAHR_PLUS_1 = 2017;
 	private static final int BASISJAHR_PLUS_2 = 2018;
@@ -526,12 +528,12 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void getAllZahlungsauftraege() {
-		Assert.assertTrue(zahlungService.getAllZahlungsauftraege().isEmpty());
+		Assert.assertTrue(zahlungService.getAllZahlungsauftraege(zahlungenSearchParamsDTO).isEmpty());
 
 		createGesuch(true);
 		zahlungService.zahlungsauftragErstellen(
 			ZahlungslaufTyp.GEMEINDE_INSTITUTION, gemeindeId, DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
-		Assert.assertFalse(zahlungService.getAllZahlungsauftraege().isEmpty());
+		Assert.assertFalse(zahlungService.getAllZahlungsauftraege(zahlungenSearchParamsDTO).isEmpty());
 	}
 
 	@Test
@@ -660,11 +662,11 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(gesuch);
 		zahlungService.zahlungsauftragErstellen(
 			ZahlungslaufTyp.GEMEINDE_INSTITUTION, gemeindeId, DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
-		Assert.assertFalse(zahlungService.getAllZahlungsauftraege().isEmpty());
+		Assert.assertFalse(zahlungService.getAllZahlungsauftraege(zahlungenSearchParamsDTO).isEmpty());
 
 		zahlungService.deleteZahlungspositionenOfGesuch(gesuch);
 
-		Assert.assertTrue(zahlungService.getAllZahlungsauftraege().isEmpty());
+		Assert.assertTrue(zahlungService.getAllZahlungsauftraege(zahlungenSearchParamsDTO).isEmpty());
 	}
 
 	@NotNull

@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
+import ch.dvbern.ebegu.enums.ExternalClientInstitutionType;
 import ch.dvbern.ebegu.enums.ExternalClientType;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.types.DateRange;
@@ -41,7 +42,7 @@ public class InstitutionClientEventConverterTest {
 	@Nonnull
 	private final InstitutionClientEventConverter converter = new InstitutionClientEventConverter();
 
-	private static final ExternalClient CLIENT = new ExternalClient("foo", ExternalClientType.EXCHANGE_SERVICE_USER);
+	private static final ExternalClient CLIENT = new ExternalClient("foo", ExternalClientType.EXCHANGE_SERVICE_USER, ExternalClientInstitutionType.EXCHANGE_SERVICE_INSTITUTION);
 	private static final String INSTITUTION_ID = "1";
 
 	@Test

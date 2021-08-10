@@ -20,6 +20,7 @@ import {IComponentOptions, IScope} from 'angular';
 import {MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -31,6 +32,7 @@ import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSSozialdienstFall} from '../../../models/sozialdienst/TSSozialdienstFall';
 import {TSSozialdienstFallDokument} from '../../../models/sozialdienst/TSSozialdienstFallDokument';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSFall} from '../../../models/TSFall';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
@@ -45,6 +47,8 @@ import ITranslateService = angular.translate.ITranslateService;
 
 const okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
+
+const LOG = LogFactory.createLog('SozialdienstFallCreationViewController');
 
 export class SozialdienstFallCreationViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -122,39 +126,56 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         );
     }
 
-    // tslint:disable-next-line:cognitive-complexity
-    public save(): void {
+    private validateForm(): boolean {
         this.showAntragsteller2Error = false;
         this.validateZweiteAntragsteller();
         if (!this.isGesuchValid() || this.showAntragsteller2Error) {
-            return undefined;
+            return false;
         }
         if (!this.form.$dirty && !this.gesuchModelManager.getFall().sozialdienstFall.isNew()) {
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
-            return;
+            return false;
         }
+        return true;
+    }
+
+    public save(): void {
+        if (this.validateForm()) {
+            this.saveData();
+        }
+    }
+
+    // tslint:disable-next-line:cognitive-complexity
+    private saveData(): void {
         this.errorService.clearAll();
         this.gesuchModelManager.saveFall().then(
             fall => {
                 if (fall.sozialdienstFall.status === TSSozialdienstFallStatus.AKTIV) {
                     this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
                 }
-                const params: INewFallStateParams = {
-                    gesuchsperiodeId: this.gesuchsperiodeId,
-                    creationAction: null,
-                    gesuchId: EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch()) ?
-                        this.gesuchModelManager.getGesuch().id :
-                        null,
-                    dossierId: null,
-                    gemeindeId: this.gesuchModelManager.getGemeinde().id,
-                    eingangsart: null,
-                    sozialdienstId: fall.sozialdienstFall.sozialdienst.id,
-                    fallId: fall.id,
-                };
-                this.$state.go('gesuch.sozialdienstfallcreation', params);
+                this.navigateToSozialdienstFallCreation(fall);
             },
-        );
+        ).catch(err => {
+            LOG.error('Could not save SozialdienstFall', err);
+            this.navigateToSozialdienstFallCreation(this.gesuchModelManager.getFall());
+        });
+    }
+
+    private navigateToSozialdienstFallCreation(fall: TSFall): void {
+        const params: INewFallStateParams = {
+            gesuchsperiodeId: this.gesuchsperiodeId,
+            creationAction: null,
+            gesuchId: EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch()) ?
+                this.gesuchModelManager.getGesuch().id :
+                null,
+            dossierId: null,
+            gemeindeId: this.gesuchModelManager.getGemeinde().id,
+            eingangsart: null,
+            sozialdienstId: fall.sozialdienstFall.sozialdienst.id,
+            fallId: fall.id,
+        };
+        this.$state.go('gesuch.sozialdienstfallcreation', params);
     }
 
     public weiter(): void {
@@ -207,9 +228,11 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     }
 
     public fallAktivieren(): void {
-        this.gesuchModelManager.getFall().sozialdienstFall.status = TSSozialdienstFallStatus.AKTIV;
         this.form.$dirty = true;
-        this.save();
+        if (this.validateForm()) {
+            this.gesuchModelManager.getFall().sozialdienstFall.status = TSSozialdienstFallStatus.AKTIV;
+            this.save();
+        }
     }
 
     public fallEntziehen(): void {

@@ -736,7 +736,13 @@ export class TSRoleUtil {
             TSRole.ADMIN_BG,
             TSRole.SACHBEARBEITER_BG,
             TSRole.ADMIN_TS,
-            TSRole.SACHBEARBEITER_TS
+            TSRole.SACHBEARBEITER_TS,
         ];
+    }
+
+    public static getGemeindeAntragRoles(): ReadonlyArray<TSRole> {
+        return PERMISSIONS[Permission.LASTENAUSGLEICH_TAGESSCHULE]
+            .concat(PERMISSIONS[Permission.FERIENBETREUUNG])
+            .concat(this.getTraegerschaftInstitutionOnlyRoles());
     }
 }

@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.ExternalClientInstitutionType;
 import ch.dvbern.ebegu.enums.ExternalClientType;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -70,22 +71,22 @@ public class ExternalClientServiceBean extends AbstractBaseService implements Ex
 			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institution.getId(), true);
 		Objects.requireNonNull(institutionStammdaten);
 
-		Set<ExternalClientType> types = new HashSet<>();
+		Set<ExternalClientInstitutionType> types = new HashSet<>();
 		// EXCHANGE_SERVICE_USER is allowed for both roles
-		types.add(ExternalClientType.EXCHANGE_SERVICE_USER);
+		types.add(ExternalClientInstitutionType.EXCHANGE_SERVICE_INSTITUTION);
 
 		if (institutionStammdaten.getBetreuungsangebotTyp() == BetreuungsangebotTyp.KITA
 			|| institutionStammdaten.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESFAMILIEN
 		) {
-			types.add(ExternalClientType.EXCHANGE_SERVICE_USER_BG);
+			types.add(ExternalClientInstitutionType.EXCHANGE_SERVICE_INSTITUTION_BG);
 		} else if (institutionStammdaten.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESSCHULE) {
-			types.add(ExternalClientType.EXCHANGE_SERVICE_USER_TS);
+			types.add(ExternalClientInstitutionType.EXCHANGE_SERVICE_INSTITUTION_TS);
 		}
 
 		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
 		final CriteriaQuery<ExternalClient> query = builder.createQuery(ExternalClient.class);
 		final Root<ExternalClient> root = query.from(ExternalClient.class);
-		Predicate typePredicate = root.get(ExternalClient_.type).in(types);
+		Predicate typePredicate = root.get(ExternalClient_.institutionType).in(types);
 		query.where(typePredicate);
 
 		return persistence.getEntityManager().createQuery(query)

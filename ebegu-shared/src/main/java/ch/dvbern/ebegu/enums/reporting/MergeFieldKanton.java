@@ -58,7 +58,7 @@ public enum MergeFieldKanton implements MergeFieldProvider {
 	auswertungVon(new SimpleMergeField<>("auswertungVon", DATE_CONVERTER)),
 	auswertungBis(new SimpleMergeField<>("auswertungBis", DATE_CONVERTER)),
 
-	repeatKantonRow(new RepeatRowMergeField("repeatKantonRow")),
+	repeatRow(new RepeatRowMergeField("repeatRow")),
 
 	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
 	bgNummer(new SimpleMergeField<>("bgNummer", STRING_CONVERTER)),

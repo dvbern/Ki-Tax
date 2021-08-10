@@ -24,10 +24,11 @@ import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
-import {BenutzerRS} from '../../../app/core/service/benutzerRS.rest';
+import {BenutzerRSX} from '../../../app/core/service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {GemeindeAntragService} from '../../../app/gemeinde-antraege/services/gemeinde-antrag.service';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {TSPagination} from '../../../models/dto/TSPagination';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
@@ -68,7 +69,7 @@ export class TestdatenViewComponent implements OnInit {
 
     public constructor(
         public readonly testFaelleRS: TestFaelleRS,
-        private readonly benutzerRS: BenutzerRS,
+        private readonly benutzerRS: BenutzerRSX,
         private readonly errorService: ErrorService,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
@@ -297,11 +298,14 @@ export class TestdatenViewComponent implements OnInit {
 
     private async overwriteIfGemeindeAntragExists(): Promise<boolean> {
         const antraege = await this.gemeindeAntragRS.getGemeindeAntraege({
-            antragTyp: this.gemeindeAntragTyp,
-            gesuchsperiodeString: this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString,
-            gemeinde: this.gemeindeForGemeindeAntrag.name,
-        }, {}).toPromise();
-        return antraege.length === 0 || this.confirmDialog(
+                antragTyp: this.gemeindeAntragTyp,
+                gesuchsperiodeString: this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString,
+                gemeinde: this.gemeindeForGemeindeAntrag.name,
+            },
+            {},
+            new TSPagination()
+        ).toPromise();
+        return antraege.resultList.length === 0 || this.confirmDialog(
             'Es existiert bereits ein Antrag für die gewählte Gemeinde und Periode. Fortfahren?',
         );
     }

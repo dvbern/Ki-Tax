@@ -17,12 +17,12 @@
 
 import {Component, Inject} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import {MitteilungRS} from '../../service/mitteilungRS.rest';
-import {BenutzerRS} from '../../service/benutzerRS.rest';
-import {TSBenutzer} from '../../../../models/TSBenutzer';
-import {map, startWith} from 'rxjs/operators';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Observable} from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
+import {TSBenutzer} from '../../../../models/TSBenutzer';
+import {BenutzerRSX} from '../../service/benutzerRSX.rest';
+import {MitteilungRS} from '../../service/mitteilungRS.rest';
 
 /**
  * Component fuer den GemeindeDialog. In einem Select muss der Benutzer die Gemeinde auswaehlen.
@@ -46,7 +46,7 @@ export class DvNgMitteilungDelegationDialogComponent {
         private readonly dialogRef: MatDialogRef<DvNgMitteilungDelegationDialogComponent>,
         private readonly dialogSupport: MatDialog,
         private readonly mitteilungRS: MitteilungRS,
-        private readonly benutzerRS: BenutzerRS,
+        private readonly benutzerRS: BenutzerRSX,
         @Inject(MAT_DIALOG_DATA) data: any,
     ) {
         this.mitteilungId = data.mitteilungId;

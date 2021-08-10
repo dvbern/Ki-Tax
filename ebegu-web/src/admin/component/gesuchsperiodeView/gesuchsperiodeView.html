@@ -299,6 +299,98 @@
                         </div>
                     </div>
 
+                    <!--Vorlage Verfügung Lastenausgleich Tagesschulen -->
+                    <div class="row view-title margin-top-30" ng-if="vm.gesuchsperiode && !vm.gesuchsperiode.isNew()">
+                        <div class="col-md-12">
+                            <h1>
+                                <span data-translate="VORLAGE_VERFUEGUNG_LATS"></span>
+                            </h1>
+                            <hr class="header"/>
+                            <table class="table table-striped" width="100%">
+                                <tbody>
+                                <tr>
+                                    <td
+                                        translate="VORLAGE_VERFUEGUNG_LATS_DE"></td>
+                                    <td width="2%"
+                                        class="symbol"
+                                        tabindex="-1"
+                                        ng-click="$event.stopPropagation()">
+                                        <button
+                                            ngf-select="vm.uploadGesuchsperiodeDokument($files, 'DEUTSCH', 'VORLAGE_VERFUEGUNG_LATS')"
+                                            ngf-multiple="false"
+                                            accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                            class="dv-btn fa fa-upload dv-btn-operation"
+                                            title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                                            aria-label="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                                            tabindex="0">
+                                        </button>
+                                    </td>
+                                    <td width="2%"
+                                        class="symbol"
+                                        tabindex="-1">
+                                        <button ng-click="vm.downloadGesuchsperiodeDokument('DEUTSCH', 'VORLAGE_VERFUEGUNG_LATS');$event.stopPropagation()"
+                                                ng-disabled="!vm.isVorlageVerfuegungLatsDE"
+                                                class="dv-btn fa fa-eye dv-btn-operation"
+                                                title="{{'DOKUMENT_DOWNLOAD' | translate}}"
+                                                [attr.aria-label]="'DOKUMENT_DOWNLOAD' | translate"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                    </td>
+                                    <td width="2%"
+                                        class="symbol"
+                                        tabindex="-1">
+                                        <button ng-click="vm.removeGesuchsperiodeDokument('DEUTSCH', 'VORLAGE_VERFUEGUNG_LATS');$event.stopPropagation()"
+                                                ng-disabled="!vm.isVorlageVerfuegungLatsDE"
+                                                class="dv-btn fa fa-trash dv-btn-operation"
+                                                title="{{'DOKUMENT_DELETE' | translate}}"
+                                                [attr.aria-label]="'DOKUMENT_DELETE' | translate"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td translate="VORLAGE_VERFUEGUNG_LATS_FR"></td>
+                                    <td width="2%"
+                                        class="symbol"
+                                        tabindex="-1"
+                                        ng-click="$event.stopPropagation()">
+                                        <button ngf-select="vm.uploadGesuchsperiodeDokument($files, 'FRANZOESISCH', 'VORLAGE_VERFUEGUNG_LATS')"
+                                                ngf-multiple="false"
+                                                accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                                class="dv-btn fa fa-upload dv-btn-operation"
+                                                title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                                                aria-label="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                                                tabindex="0">
+                                        </button>
+                                    </td>
+                                    <td width="2%"
+                                        class="symbol"
+                                        tabindex="-1">
+                                        <button ng-click="vm.downloadGesuchsperiodeDokument('FRANZOESISCH', 'VORLAGE_VERFUEGUNG_LATS');$event.stopPropagation()"
+                                                ng-disabled="!vm.isVorlageVerfuegungLatsFR"
+                                                class="dv-btn fa fa-eye dv-btn-operation"
+                                                title="{{'DOKUMENT_DOWNLOAD' | translate}}"
+                                                [attr.aria-label]="'DOKUMENT_DOWNLOAD' | translate"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                    </td>
+                                    <td width="2%"
+                                        class="symbol"
+                                        tabindex="-1">
+                                        <button ng-click="vm.removeGesuchsperiodeDokument('FRANZOESISCH', 'VORLAGE_VERFUEGUNG_LATS');$event.stopPropagation()"
+                                                ng-disabled="!vm.isVorlageVerfuegungLatsFR"
+                                                class="dv-btn fa fa-trash dv-btn-operation"
+                                                title="{{'DOKUMENT_DELETE' | translate}}"
+                                                [attr.aria-label]="'DOKUMENT_DELETE' | translate"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                     <!-- Liste der Parameter der Gesuchsperiode -->
                     <div ng-if="vm.gesuchsperiode && !vm.gesuchsperiode.isNew()" class="row margin-top-30">
                         <div class="col-md-12">
