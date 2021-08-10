@@ -34,6 +34,11 @@ public class ZahlungenSearchParamsDTO {
 	@Nonnull ZahlungslaufTyp zahlungslaufTyp;
 	@Nullable List<String> allowedInstitutionIds;
 
+	public ZahlungenSearchParamsDTO(@Nonnull Integer page, @Nonnull Integer pageSize, @Nonnull ZahlungslaufTyp zahlungslaufTyp) {
+		this(page, pageSize);
+		this.zahlungslaufTyp = zahlungslaufTyp;
+	}
+
 	public ZahlungenSearchParamsDTO(@Nonnull Integer page, @Nonnull Integer pageSize) {
 		this.page = page;
 		this.pageSize = pageSize;

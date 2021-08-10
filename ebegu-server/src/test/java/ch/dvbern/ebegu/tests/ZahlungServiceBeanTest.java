@@ -102,7 +102,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	private Gesuchsperiode gesuchsperiode;
 	private String gemeindeId;
-	private final ZahlungenSearchParamsDTO zahlungenSearchParamsDTO = new ZahlungenSearchParamsDTO(0, 20);
+	private final ZahlungenSearchParamsDTO zahlungenSearchParamsDTO = new ZahlungenSearchParamsDTO(0, 20, ZahlungslaufTyp.GEMEINDE_INSTITUTION);
 
 	private static final int BASISJAHR_PLUS_1 = 2017;
 	private static final int BASISJAHR_PLUS_2 = 2018;
