@@ -48,18 +48,40 @@
         }
     }
     .lastenausgleich-form {
+        display: flex;
         background: @contrast-light;
         margin-bottom: 4rem;
-        padding-bottom: 1rem;
-        padding-top: 4rem;
-    }
-    .actions {
-        > dv-loading-button {
+        justify-content: space-evenly;
+        align-items: flex-end;
+        padding: 4rem 2rem 1rem;
+
+        > div {
+            margin: 0 1rem;
+        }
+
+        .actions {
+            display: flex;
+            margin-bottom: 3rem;
+        }
+
+        .dv-loading-button {
             margin-right: 0.5rem;
             span.fa {
                 font-size: 1.8rem;
             }
         }
     }
+
+    .flex-grow-2 {
+        flex-grow: 2;
+    };
+
+    .flex-grow-3 {
+        flex-grow: 3;
+    };
+
+    .flex-grow-4 {
+        flex-grow: 4;
+    };
 }
 

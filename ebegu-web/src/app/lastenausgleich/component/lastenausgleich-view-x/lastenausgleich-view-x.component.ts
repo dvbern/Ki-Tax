@@ -87,7 +87,7 @@ export class LastenausgleichViewXComponent implements OnInit {
             }, err => LOG.error(err));
     }
 
-    // public downloadZemisExcel(): void {
+     public downloadZemisExcel(): void {
     //     this.dvDialog.showDialog(inputYearDialogTemplate, ZemisDialogController,  {upload: false})
     //         .then((zemisDialogData: ZemisDialogDTO) => {
     //             if (!zemisDialogData) {
@@ -106,7 +106,7 @@ export class LastenausgleichViewXComponent implements OnInit {
     //         }, err => {
     //             LOG.error(err);
     //         });
-    // }
+     }
 
     private handleDownloadError(err: Error, win: Window): void {
         LOG.error(err);

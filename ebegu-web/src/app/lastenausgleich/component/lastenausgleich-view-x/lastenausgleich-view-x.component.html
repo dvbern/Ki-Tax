@@ -18,61 +18,54 @@
 <div class="lastenausgleich-view" *ngIf="showLastenausgleich()">
 
    <form role="form" #form=ngForm name="form"  [ngClass]="{'ng-submitted': form.submitted}" unsaved-warning-form="" novalidate *ngIf="showActions()">
-        <div class="row actions">
-            <div>
-                <div class="row lastenausgleich-form flex-row-start-center">
+        <div>
+            <div class="row lastenausgleich-form">
 
-                    <!-- Jahr -->
-                    <div class="col-xs-3">
-                        <div class="form-group">
-                            <label class="md-no-float" translate
-                                   for="jahr">LASTENAUSGLEICH_JAHR</label>
-                            <input id="jahr" name="jahr"
-                                   [(ngModel)]="jahr"
-                                   type="number"
-                                   min="2000"
-                                   step="1"
-                                   class="form-control input-dv input-element" required>
-                            <dv-error-messages [errorObject]="form?.form.get('jahr')?.errors"
-                                               class="error"></dv-error-messages>
-                        </div>
+                <!-- Jahr -->
+                <div class="flex-grow-3">
+                    <div class="form-group">
+                        <label class="md-no-float" translate
+                               for="jahr">LASTENAUSGLEICH_JAHR</label>
+                        <input id="jahr" name="jahr"
+                               [(ngModel)]="jahr"
+                               type="number"
+                               min="2000"
+                               step="1"
+                               class="form-control input-dv input-element" required>
+                        <dv-error-messages [errorObject]="form?.form.get('jahr')?.errors"
+                                           class="error"></dv-error-messages>
                     </div>
+                </div>
 
-                    <!-- Selbstbehalt pro 100% Platz -->
-                    <div class="col-xs-3">
-                        <div class="form-group">
-                            <label class="md-no-float" translate
-                                   for="jahr">LASTENAUSGLEICH_SELBSTBEHALT</label>
-                            <input id="selbstbehaltPro100ProzentPlatz" name="selbstbehaltPro100ProzentPlatz"
-                                   [(ngModel)]="selbstbehaltPro100ProzentPlatz"
-                                   type="number"
-                                   min="0"
-                                   step="1"
-                                   class="form-control input-dv input-element" required>
-                            <dv-error-messages [errorObject]="form?.form.get('selbstbehaltPro100ProzentPlatz')?.errors"
-                                               class="error"></dv-error-messages>
-                        </div>
+                <!-- Selbstbehalt pro 100% Platz -->
+                <div class="flex-grow-3">
+                    <div class="form-group">
+                        <label class="md-no-float" translate
+                               for="jahr">LASTENAUSGLEICH_SELBSTBEHALT</label>
+                        <input id="selbstbehaltPro100ProzentPlatz" name="selbstbehaltPro100ProzentPlatz"
+                               [(ngModel)]="selbstbehaltPro100ProzentPlatz"
+                               type="number"
+                               min="0"
+                               step="1"
+                               class="form-control input-dv input-element" required>
+                        <dv-error-messages [errorObject]="form?.form.get('selbstbehaltPro100ProzentPlatz')?.errors"
+                                           class="error"></dv-error-messages>
                     </div>
-
-
-<!--                    <div [ngClass]="{'col-md-4': !testMode,'col-md-3': testMode}">-->
-<!--                        <div class="form-group">-->
-<!--                            <label class="md-no-float" translate-->
-<!--                                   for="beschrieb">ZAHLUNG_BESCHRIEB</label>-->
-<!--                            <input id="beschrieb" name="beschrieb"-->
-<!--                                   [(ngModel)]="beschrieb"-->
-<!--                                   class="form-control input-dv input-element" required>-->
-<!--                            <dv-error-messages [errorObject]="form?.form.get('beschrieb')?.errors"-->
-<!--                                               class="error"></dv-error-messages>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div flex layout="row"-->
-<!--                         layout-align="center center">-->
-<!--                        <dv-loading-button (buttonClick)="createZahlungsauftrag()"-->
-<!--                                           [ariaLabel]="getLabelZahlungslaufErstellen()" type="submit">-->
-<!--                            <span class="uppercase">{{getLabelZahlungslaufErstellen()}}</span>-->
-<!--                        </dv-loading-button>-->
-<!--                    </div>-->
+                </div>
+                <div class="flex-grow-2"></div>
+                <div class="flex-grow-4 actions">
+                    <dv-loading-button (buttonClick)="createLastenausgleich()"
+                                       [ariaLabel]="'LASTENAUSGLEICH_ERSTELLEN' | translate">
+                        <span class="uppercase" translate>LASTENAUSGLEICH_ERSTELLEN</span>
+                    </dv-loading-button>
+                    <dv-loading-button (buttonClick)="downloadZemisExcel()"
+                                       [ariaLabel]="'ZEMIS_LISTE_HERUNTERLADEN' | translate">
+                        <span class="fa fa-download"></span>
+                    </dv-loading-button>
+                    <dv-loading-button (buttonClick)="uploadZemisExcel()"
+                                       [ariaLabel]="'ZEMIS_LISTE_HOCHLADEN' | translate">
+                        <span class="fa fa-upload"></span>
+                    </dv-loading-button>
                 </div>
             </div>
         </div>
