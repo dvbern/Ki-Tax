@@ -1,1 +1,156 @@
-<p>lastenausgleich-view-x works!</p>
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="lastenausgleich-view" *ngIf="showLastenausgleich()">
+
+   <form role="form" #form=ngForm name="form"  [ngClass]="{'ng-submitted': form.submitted}" unsaved-warning-form="" novalidate *ngIf="showActions()">
+        <div class="row actions">
+            <div>
+                <div class="row lastenausgleich-form flex-row-start-center">
+
+                    <!-- Jahr -->
+                    <div class="col-xs-3">
+                        <div class="form-group">
+                            <label class="md-no-float" translate
+                                   for="jahr">LASTENAUSGLEICH_JAHR</label>
+                            <input id="jahr" name="jahr"
+                                   [(ngModel)]="jahr"
+                                   type="number"
+                                   min="2000"
+                                   step="1"
+                                   class="form-control input-dv input-element" required>
+                            <dv-error-messages [errorObject]="form?.form.get('jahr')?.errors"
+                                               class="error"></dv-error-messages>
+                        </div>
+                    </div>
+
+                    <!-- Selbstbehalt pro 100% Platz -->
+                    <div class="col-xs-3">
+                        <div class="form-group">
+                            <label class="md-no-float" translate
+                                   for="jahr">LASTENAUSGLEICH_SELBSTBEHALT</label>
+                            <input id="selbstbehaltPro100ProzentPlatz" name="selbstbehaltPro100ProzentPlatz"
+                                   [(ngModel)]="selbstbehaltPro100ProzentPlatz"
+                                   type="number"
+                                   min="0"
+                                   step="1"
+                                   class="form-control input-dv input-element" required>
+                            <dv-error-messages [errorObject]="form?.form.get('selbstbehaltPro100ProzentPlatz')?.errors"
+                                               class="error"></dv-error-messages>
+                        </div>
+                    </div>
+
+
+<!--                    <div [ngClass]="{'col-md-4': !testMode,'col-md-3': testMode}">-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="md-no-float" translate-->
+<!--                                   for="beschrieb">ZAHLUNG_BESCHRIEB</label>-->
+<!--                            <input id="beschrieb" name="beschrieb"-->
+<!--                                   [(ngModel)]="beschrieb"-->
+<!--                                   class="form-control input-dv input-element" required>-->
+<!--                            <dv-error-messages [errorObject]="form?.form.get('beschrieb')?.errors"-->
+<!--                                               class="error"></dv-error-messages>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div flex layout="row"-->
+<!--                         layout-align="center center">-->
+<!--                        <dv-loading-button (buttonClick)="createZahlungsauftrag()"-->
+<!--                                           [ariaLabel]="getLabelZahlungslaufErstellen()" type="submit">-->
+<!--                            <span class="uppercase">{{getLabelZahlungslaufErstellen()}}</span>-->
+<!--                        </dv-loading-button>-->
+<!--                    </div>-->
+                </div>
+            </div>
+        </div>
+    </form>
+
+<!--    <div class="row">-->
+<!--        <div class="col-md-11 ">-->
+<!--            <h3 data-translate="LASTENAUSGLEICH_LIST"></h3>-->
+<!--        </div>-->
+<!--        <div class="col-md-1 text-right">-->
+<!--            <h3 ng-bind="vm.lastenausgleiche.length"></h3>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="table-responsive">-->
+<!--        <table st-table="displayedCollection" st-safe-src="vm.lastenausgleiche"-->
+<!--               st-delay="20" class="table ebegu-table fixedtable table-striped">-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th st-sort-default="reverse" st-sort="jahr"-->
+<!--                    ng-class="{'sortable': true, 'uppercase': true, 'lastenausgleich-percent-15': vm.canDownloadCSV(), 'lastenausgleich-percent-25': !vm.canDownloadCSV()}"-->
+<!--                    data-translate="LASTENAUSGLEICH_JAHR"></th>-->
+<!--                <th st-sort="datumGeneriert"-->
+<!--                    ng-class="{'sortable': true, 'uppercase': true, 'lastenausgleich-percent-15': vm.canDownloadCSV(), 'lastenausgleich-percent-25': !vm.canDownloadCSV()}"-->
+<!--                    data-translate="LASTENAUSGLEICH_GENERIERT"></th>-->
+<!--                <th st-sort="totalAlleGemeinden"-->
+<!--                    ng-class="{'sortable': true, 'uppercase': true, 'lastenausgleich-percent-15': vm.canDownloadCSV(), 'lastenausgleich-percent-25': !vm.canDownloadCSV()}"-->
+<!--                    data-translate="LASTENAUSGLEICH_TOTALBETRAG"></th>-->
+<!--                <th data-translate="LASTENAUSGLEICH_EXCEL"-->
+<!--                    ng-class="{'uppercase': true, 'lastenausgleich-percent-15': vm.canDownloadCSV(), 'lastenausgleich-percent-25': !vm.canDownloadCSV()}"></th>-->
+<!--                <th ng-if="vm.canDownloadCSV()"-->
+<!--                    data-translate="LASTENAUSGLEICH_CSV"-->
+<!--                    ng-class="{'uppercase': true, 'lastenausgleich-percent-15': vm.canDownloadCSV(), 'lastenausgleich-percent-25': !vm.canDownloadCSV()}"></th>-->
+<!--                <th ng-if="vm.isRemoveAllowed()" class="uppercase"-->
+<!--                    data-translate="LASTENAUSGLEICH_REMOVE"></th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            <tr ng-repeat="row in displayedCollection">-->
+<!--                &lt;!&ndash; Jahr &ndash;&gt;-->
+<!--                <td title="{{row.jahr}}" ng-bind="row.jahr"></td>-->
+<!--                &lt;!&ndash; Datum Generiert &ndash;&gt;-->
+<!--                <td title="{{row.timestampErstellt | amDateFormat : 'DD.MM.YYYY'}}"-->
+<!--                    ng-bind="row.timestampErstellt | amDateFormat : 'DD.MM.YYYY'"></td>-->
+<!--                &lt;!&ndash; Total Betrag &ndash;&gt;-->
+<!--                <td class="ellipsis numeric-column">-->
+<!--                    <span ng-bind="row.totalAlleGemeinden | currency : '' : 2"-->
+<!--                          title="{{row.totalAlleGemeinden}}"></span>-->
+<!--                </td>-->
+<!--                &lt;!&ndash; Download Excel &ndash;&gt;-->
+<!--                <td class="symbol">-->
+<!--                    <dv-loading-button type="button"-->
+<!--                                       button-click="vm.downloadExcel(row)"-->
+<!--                                       button-class="dv-btn-operation">-->
+<!--                        <i class="fa fa-lg fa-file-excel-o"></i>-->
+<!--                    </dv-loading-button>-->
+<!--                </td>-->
+<!--                &lt;!&ndash; Download CSV &ndash;&gt;-->
+<!--                <td ng-if="vm.canDownloadCSV()" class="symbol">-->
+<!--                    <dv-loading-button type="button" button-click="vm.downloadCsv(row)" button-class="dv-btn-operation">-->
+<!--                        <i class="fa fa-lg fa-file-code-o"></i>-->
+<!--                    </dv-loading-button>-->
+<!--                </td>-->
+<!--                <th ng-if="vm.isRemoveAllowed()">-->
+<!--                    <dv-loading-button type="button"-->
+<!--                                       button-click="vm.removeLastenausgleich(row)"-->
+<!--                                       button-class="dv-btn-operation">-->
+<!--                        <i class="fa fa-lg fa-trash-o" aria-label="{{'LASTENAUSGLEICH_DELETE' | translate}}"></i>-->
+<!--                    </dv-loading-button>-->
+<!--                </th>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--            <tfoot>-->
+<!--            <tr>-->
+<!--                <td colspan="5" class="text-center">-->
+<!--                    <div st-pagination="" st-items-by-page="vm.itemsByPage" st-displayed-pages="5"></div>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            </tfoot>-->
+<!--        </table>-->
+<!--    </div>-->
+</div>
