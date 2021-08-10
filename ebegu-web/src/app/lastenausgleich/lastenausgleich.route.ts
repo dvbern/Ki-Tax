@@ -15,28 +15,35 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
+import {NgModule} from '@angular/core';
+import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
+import {LastenausgleichViewXComponent} from './component/lastenausgleich-view-x/lastenausgleich-view-x.component';
 
-lastenausgleichRun.$inject = ['RouterHelper'];
-
-export function lastenausgleichRun(routerHelper: RouterHelper): void {
-    routerHelper.configureStates(ng1States);
-}
-
-const ng1States: Ng1StateDeclaration[] = [
+const states: NgHybridStateDeclaration[] = [
     {
         parent: 'app',
-        abstract: true,
         name: 'lastenausgleich',
+        abstract: true,
+        component: LastenausgleichViewXComponent,
         data: {
             roles: TSRoleUtil.getAllRolesForLastenausgleich(),
         },
     },
     {
         name: 'lastenausgleich.view',
-        template: '<lastenausgleich-view flex="auto" class="overflow-scroll">',
-        url: '/lastenausgleich',
+        url: '/gemeinde-antraege',
+        component: LastenausgleichViewXComponent,
     },
 ];
+
+@NgModule({
+    imports: [
+        UIRouterUpgradeModule.forChild({states}),
+    ],
+    exports: [
+        UIRouterUpgradeModule,
+    ],
+})
+export class LastenausgleichRoutingModule {
+}
