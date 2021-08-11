@@ -71,7 +71,8 @@ public class AnmeldungTagesschuleEventConverter {
 			.setKind(toKindDTO(anmeldung.getKind().getKindJA()))
 			.setStatus(TagesschuleAnmeldungStatus.valueOf(anmeldung.getBetreuungsstatus().name()))
 			.setVersion((int) anmeldung.getVersion())
-			.setFreigegebenAm(anmeldung.extractGesuch().getFreigabeDatum())
+			.setFreigegebenAm(anmeldung.extractGesuch().getFreigabeDatum() != null ? anmeldung.extractGesuch().getFreigabeDatum() : requireNonNull(
+				anmeldung.extractGesuch().getEingangsdatum()))
 			.setGesuchsperiode(Gesuchsperiode.newBuilder()
 				.setId(anmeldung.extractGesuch().getGesuchsperiode().getId())
 				.setGueltigAb(anmeldung.extractGesuch().getGesuchsperiode().getGueltigkeit().getGueltigAb())
@@ -130,9 +131,10 @@ public class AnmeldungTagesschuleEventConverter {
 			.setPlanKlasse(anmeldungTagesschule.getBelegungTagesschule().getPlanKlasse())
 			.setAbweichungZweitesSemester(anmeldungTagesschule.getBelegungTagesschule().isAbweichungZweitesSemester())
 			.setModulSelection(toModulAuswahlDTOList(anmeldungTagesschule.getBelegungTagesschule()))
-			.setAbholung(AbholungTagesschule.valueOf(anmeldungTagesschule.getBelegungTagesschule()
+			.setAbholung(anmeldungTagesschule.getBelegungTagesschule()
+				.getAbholungTagesschule() != null ? AbholungTagesschule.valueOf(anmeldungTagesschule.getBelegungTagesschule()
 				.getAbholungTagesschule()
-				.name()))
+				.name()) : null)
 			.build();
 	}
 
