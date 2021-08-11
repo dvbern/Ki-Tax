@@ -30,6 +30,8 @@ import {LogFactory} from '../../../core/logging/LogFactory';
 import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {UploadRS} from '../../../core/service/uploadRS.rest';
 import {LastenausgleichRS} from '../../services/lastenausgleichRS.rest';
+import {ZemisDialogComponent} from '../zemisDialog/zemis-dialog.component';
+import {ZemisDialogDTO} from '../zemisDialog/zemisDialog.interface';
 
 const LOG = LogFactory.createLog('LastenausgleichViewXComponent');
 
@@ -87,26 +89,32 @@ export class LastenausgleichViewXComponent implements OnInit {
             }, err => LOG.error(err));
     }
 
-     public downloadZemisExcel(): void {
-    //     this.dvDialog.showDialog(inputYearDialogTemplate, ZemisDialogController,  {upload: false})
-    //         .then((zemisDialogData: ZemisDialogDTO) => {
-    //             if (!zemisDialogData) {
-    //                 return;
-    //             }
-    //             if (!zemisDialogData.jahr) {
-    //                 LOG.error('year undefined');
-    //             }
-    //             const win = this.downloadRS.prepareDownloadWindow();
-    //             this.lastenausgleichRS.getZemisExcel(zemisDialogData.jahr)
-    //                 .subscribe((downloadFile: TSDownloadFile) => {
-    //                     this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
-    //                 }, err => {
-    //                     this.handleDownloadError(err, win);
-    //                 });
-    //         }, err => {
-    //             LOG.error(err);
-    //         });
-     }
+    public downloadZemisExcel(): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            upload: false
+        };
+        this.dialog.open(ZemisDialogComponent, dialogConfig)
+            .afterClosed()
+            .subscribe((zemisDialogData: ZemisDialogDTO) => {
+                if (!zemisDialogData) {
+                    return;
+                }
+                if (!zemisDialogData.jahr) {
+                    LOG.error('year undefined');
+                    return;
+                }
+                const win = this.downloadRS.prepareDownloadWindow();
+                this.lastenausgleichRS.getZemisExcel(zemisDialogData.jahr)
+                    .subscribe((downloadFile: TSDownloadFile) => {
+                        this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+                    }, err => {
+                        this.handleDownloadError(err, win);
+                    });
+            }, err => {
+                LOG.error(err);
+            });
+    }
 
     private handleDownloadError(err: Error, win: Window): void {
         LOG.error(err);
@@ -115,31 +123,35 @@ export class LastenausgleichViewXComponent implements OnInit {
     }
 
     public uploadZemisExcel(): void {
-
-        // this.dvDialog.showDialog(inputYearDialogTemplate, ZemisDialogController, {upload: true})
-        //     .then((zemisDialogData: ZemisDialogDTO) => {
-        //         if (!zemisDialogData) {
-        //             return;
-        //         }
-        //         if (!zemisDialogData.file) {
-        //             LOG.error('file undefined');
-        //         }
-        //         this.uploadRS.uploadZemisExcel(zemisDialogData.file)
-        //             .then(() => {
-        //                 this.errorService.addMesageAsInfo(this.translate.instant(
-        //                     'ZEMIS_UPLOAD_FINISHED'
-        //                 ));
-        //             })
-        //             .catch(err => {
-        //                     LOG.error('Fehler beim Speichern', err);
-        //                 }
-        //             );
-        //         this.errorService.addMesageAsInfo(this.translate.instant(
-        //             'ZEMIS_UPLOAD_STARTED'
-        //         ));
-        //     }, err => {
-        //         LOG.error(err);
-        //     });
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            upload: true
+        };
+        this.dialog.open(ZemisDialogComponent, dialogConfig)
+            .afterClosed()
+            .subscribe((zemisDialogData: ZemisDialogDTO) => {
+                if (!zemisDialogData) {
+                    return;
+                }
+                if (!zemisDialogData.file) {
+                    LOG.error('file undefined');
+                }
+                this.uploadRS.uploadZemisExcel(zemisDialogData.file)
+                    .then(() => {
+                        this.errorService.addMesageAsInfo(this.translate.instant(
+                            'ZEMIS_UPLOAD_FINISHED'
+                        ));
+                    })
+                    .catch(err => {
+                            LOG.error('Fehler beim Speichern', err);
+                        }
+                    );
+                this.errorService.addMesageAsInfo(this.translate.instant(
+                    'ZEMIS_UPLOAD_STARTED'
+                ));
+            }, err => {
+                LOG.error(err);
+            });
     }
 
     public downloadExcel(lastenausgleich: TSLastenausgleich): void {

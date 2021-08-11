@@ -41,7 +41,7 @@
                 <div class="flex-grow-3">
                     <div class="form-group">
                         <label class="md-no-float" translate
-                               for="jahr">LASTENAUSGLEICH_SELBSTBEHALT</label>
+                               for="selbstbehaltPro100ProzentPlatz">LASTENAUSGLEICH_SELBSTBEHALT</label>
                         <input id="selbstbehaltPro100ProzentPlatz" name="selbstbehaltPro100ProzentPlatz"
                                [(ngModel)]="selbstbehaltPro100ProzentPlatz"
                                type="number"
@@ -54,15 +54,15 @@
                 </div>
                 <div class="flex-grow-2"></div>
                 <div class="flex-grow-4 actions">
-                    <dv-loading-button (buttonClick)="createLastenausgleich()"
-                                       [ariaLabel]="'LASTENAUSGLEICH_ERSTELLEN' | translate">
+                    <dv-loading-button (buttonClick)="createLastenausgleich()" inputId="lastenausgleichErstellen"
+                                       [ariaLabel]="'LASTENAUSGLEICH_ERSTELLEN' | translate" type="submit">
                         <span class="uppercase" translate>LASTENAUSGLEICH_ERSTELLEN</span>
                     </dv-loading-button>
-                    <dv-loading-button (buttonClick)="downloadZemisExcel()"
+                    <dv-loading-button (buttonClick)="downloadZemisExcel()" inputId="downloadZemisExcel"
                                        [ariaLabel]="'ZEMIS_LISTE_HERUNTERLADEN' | translate">
                         <span class="fa fa-download"></span>
                     </dv-loading-button>
-                    <dv-loading-button (buttonClick)="uploadZemisExcel()"
+                    <dv-loading-button (buttonClick)="uploadZemisExcel()" inputId="uploadZemisExcel"
                                        [ariaLabel]="'ZEMIS_LISTE_HOCHLADEN' | translate">
                         <span class="fa fa-upload"></span>
                     </dv-loading-button>
