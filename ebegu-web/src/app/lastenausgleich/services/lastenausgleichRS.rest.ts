@@ -18,7 +18,7 @@
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {tap} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSLastenausgleich} from '../../../models/TSLastenausgleich';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
@@ -38,8 +38,8 @@ export class LastenausgleichRS {
 
     public getAllLastenausgleiche(): Observable<TSLastenausgleich[]> {
         return this.http.get(`${this.API_BASE_URL}/all`)
-            .pipe(tap((response: any) => {
-                return this.ebeguRestUtil.parseLastenausgleichList(response.data);
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseLastenausgleichList(response);
             }));
     }
 
@@ -55,8 +55,8 @@ export class LastenausgleichRS {
         return this.http.get(`${this.API_BASE_URL}/create`,
             {
                 params,
-            }).pipe(tap((httpresponse: any) => {
-            return this.ebeguRestUtil.parseLastenausgleich(new TSLastenausgleich(), httpresponse.data);
+            }).pipe(map((httpresponse: any) => {
+            return this.ebeguRestUtil.parseLastenausgleich(new TSLastenausgleich(), httpresponse);
         }));
     }
 
@@ -68,8 +68,8 @@ export class LastenausgleichRS {
         return this.http.get(`${this.API_BASE_URL}/excel`,
             {
                 params
-            }).pipe(tap((response: any) => {
-            return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            }).pipe(map((response: any) => {
+            return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response);
         }));
     }
 
@@ -81,8 +81,8 @@ export class LastenausgleichRS {
         return this.http.get(`${this.API_BASE_URL}/csv`,
             {
                 params
-            }).pipe(tap((response: any) => {
-                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            }).pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response);
         }));
     }
 
@@ -94,15 +94,12 @@ export class LastenausgleichRS {
         return this.http.get(`${this.API_BASE_URL}/zemisexcel`,
             {
                 params
-            }).pipe(tap((response: any) => {
-                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            }).pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response);
         }));
     }
 
     public removeLastenausgleich(lastenausgleichId: string): Observable<any> {
-        return this.http.delete(`${this.API_BASE_URL}/${encodeURIComponent(lastenausgleichId)}`)
-            .pipe(tap(value => {
-                return value.data;
-            }));
+        return this.http.delete(`${this.API_BASE_URL}/${encodeURIComponent(lastenausgleichId)}`);
     }
 }
