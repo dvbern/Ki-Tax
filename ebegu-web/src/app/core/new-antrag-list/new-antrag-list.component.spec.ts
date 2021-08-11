@@ -31,7 +31,7 @@ import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {MaterialModule} from '../../shared/material.module';
 import {StateStoreService} from '../../shared/services/state-store.service';
 import {ErrorService} from '../errors/service/ErrorService';
-import {BenutzerRS} from '../service/benutzerRS.rest';
+import {BenutzerRSX} from '../service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
 
@@ -83,7 +83,7 @@ describe('NewAntragListComponent', () => {
         ['getPrincipalRole', 'hasMandantAngebotTS', 'isOneOfRoles']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
         ['addMesageAsError']);
-    const benutzerRSSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name,
+    const benutzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name,
         ['getAllBenutzerBgOrGemeinde', 'getAllBenutzerTsOrGemeinde']);
     const transitionServiceSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name,
         ['onStart']);
@@ -103,7 +103,7 @@ describe('NewAntragListComponent', () => {
                 {provide: AuthServiceRS, useValue: authRSSpy},
                 {provide: SearchRS, useValue: searchRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: BenutzerRS, useValue: benutzerRSSpy},
+                {provide: BenutzerRSX, useValue: benutzerRSSpy},
                 {provide: TransitionService, useValue: transitionServiceSpy},
                 {provide: StateStoreService, useValue: stateStoreServiceSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobals},

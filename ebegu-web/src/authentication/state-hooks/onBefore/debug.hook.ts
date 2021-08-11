@@ -25,7 +25,6 @@ const LOG = LogFactory.createLog('debugHookRunBlock');
 /**
  * This file contains a Transition Hook which enables debug output when ?debug is appended to the URL.
  */
-debugHookRunBlock.$inject = ['$transitions'];
 
 export function debugHookRunBlock($transitions: TransitionService): void {
     $transitions.onBefore({

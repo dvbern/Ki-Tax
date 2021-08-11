@@ -21,7 +21,7 @@ import {Permission} from '../../app/authorisation/Permission';
 import {PERMISSIONS} from '../../app/authorisation/Permissions';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {LogFactory} from '../../app/core/logging/LogFactory';
-import {BenutzerRS} from '../../app/core/service/benutzerRS.rest';
+import {BenutzerRSX} from '../../app/core/service/benutzerRSX.rest';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSBenutzer} from '../../models/TSBenutzer';
@@ -29,12 +29,10 @@ import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {AuthLifeCycleService} from './authLifeCycle.service';
-import {HttpBuffer} from './HttpBuffer';
 import ICookiesService = angular.cookies.ICookiesService;
 import IHttpService = angular.IHttpService;
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
-import IRequestConfig = angular.IRequestConfig;
 import ITimeoutService = angular.ITimeoutService;
 
 const LOG = LogFactory.createLog('AuthServiceRS');
@@ -42,7 +40,7 @@ const LOG = LogFactory.createLog('AuthServiceRS');
 export class AuthServiceRS {
 
     public static $inject = [
-        '$http', '$q', '$timeout', '$cookies', 'EbeguRestUtil', 'httpBuffer',
+        '$http', '$q', '$timeout', '$cookies', 'EbeguRestUtil',
         'AuthLifeCycleService',
         'BenutzerRS',
     ];
@@ -63,9 +61,8 @@ export class AuthServiceRS {
         private readonly $timeout: ITimeoutService,
         private readonly $cookies: ICookiesService,
         private readonly ebeguRestUtil: EbeguRestUtil,
-        private readonly httpBuffer: HttpBuffer,
         private readonly authLifeCycleService: AuthLifeCycleService,
-        private readonly benutzerRS: BenutzerRS,
+        private readonly benutzerRS: BenutzerRSX,
     ) {
     }
 
@@ -99,8 +96,6 @@ export class AuthServiceRS {
             CONSTANTS.REST_API + 'auth/login',
             this.ebeguRestUtil.userToRestObject({}, userCredentials)
         ).then(() => {
-            // try to reload buffered requests
-            this.httpBuffer.retryAll((config: IRequestConfig) => config);
             // ensure that there is ALWAYS a logout-event before the login-event by throwing it right before login
             this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out before logging in');
             // Response cookies are not immediately accessible, so lets wait for a bit

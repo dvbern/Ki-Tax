@@ -52,6 +52,9 @@ export const HEADER_ACCEPT_LANGUAGE = 'Accept-Language';
 export const MAX_FILE_SIZE = 10485760;
 
 export const HTTP_ERROR_CODES = {
-    CONFLICT: 409,
     BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    NOT_FOUND: 404,
+    FORBIDDEN: 403,
+    CONFLICT: 409,
 };
