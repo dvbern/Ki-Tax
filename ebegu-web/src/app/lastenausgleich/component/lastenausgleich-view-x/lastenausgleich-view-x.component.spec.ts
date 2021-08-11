@@ -15,28 +15,60 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {MatDialog} from '@angular/material/dialog';
+import {TranslateService} from '@ngx-translate/core';
+import {of} from 'rxjs';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../../core/rest-services/applicationPropertyRS.rest';
+import {DownloadRS} from '../../../core/service/downloadRS.rest';
+import {UploadRS} from '../../../core/service/uploadRS.rest';
 
 import {LastenausgleichViewXComponent} from './lastenausgleich-view-x.component';
 
+const translateSpy = jasmine.createSpyObj<TranslateService>(TranslateService.name, ['instant']);
+const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name,
+    ['prepareDownloadWindow', 'startDownload']);
+const uploadRSSpy = jasmine.createSpyObj<UploadRS>(UploadRS.name, ['uploadZemisExcel']);
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
+const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDevMode']);
+const matDialogSpy = jasmine.createSpyObj<MatDialog>(MatDialog.name, ['open']);
+
 describe('LastenausgleichViewXComponent', () => {
-  let component: LastenausgleichViewXComponent;
-  let fixture: ComponentFixture<LastenausgleichViewXComponent>;
+    let component: LastenausgleichViewXComponent;
+    let fixture: ComponentFixture<LastenausgleichViewXComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ LastenausgleichViewXComponent ]
-    })
-    .compileComponents();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [LastenausgleichViewXComponent],
+            providers: [
+                {provide: TranslateService, useValue: translateSpy},
+                {provide: DownloadRS, useValue: downloadRSSpy},
+                {provide: UploadRS, useValue: uploadRSSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
+                {provide: MatDialog, useValue: matDialogSpy},
+            ],
+            imports: [
+                HttpClientModule
+            ]
+        })
+            .compileComponents();
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(LastenausgleichViewXComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        applicationPropertyRSSpy.isDevMode.and.returnValue(of(true).toPromise());
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(LastenausgleichViewXComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

@@ -31,7 +31,7 @@ export class ZemisDialogComponent {
     public file: File;
     public upload: boolean;
 
-    @ViewChild(NgForm) private form: NgForm;
+    @ViewChild(NgForm) private readonly form: NgForm;
 
     public constructor(
         private readonly dialogRef: MatDialogRef<ZemisDialogComponent>,

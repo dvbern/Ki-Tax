@@ -100,6 +100,9 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
         this.lastenausgleichRS.getAllLastenausgleiche().subscribe((response: TSLastenausgleich[]) => {
             this.lastenausgleiche = response;
             this.addToDataSource(response);
+        }, err => {
+            LOG.error(err);
+            this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
         });
     }
 
@@ -132,7 +135,8 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
     }
 
     private addToDataSource(lastenausgleiche: TSLastenausgleich[]): void {
-        this.datasource.data = lastenausgleiche.sort((a, b) => b.jahr - a.jahr);
+        lastenausgleiche.sort((a, b) => b.jahr - a.jahr);
+        this.datasource.data = lastenausgleiche;
         this.cd.markForCheck();
     }
 
