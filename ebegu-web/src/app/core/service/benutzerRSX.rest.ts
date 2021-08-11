@@ -22,14 +22,15 @@ import {TSBerechtigungHistory} from '../../../models/TSBerechtigungHistory';
 import {TSUserSearchresultDTO} from '../../../models/TSUserSearchresultDTO';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../constants/CONSTANTS';
+import {CoreModule} from '../core.module';
 import {LogFactory} from '../logging/LogFactory';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: CoreModule,
 })
-export class AngularXBenutzerRS {
+export class BenutzerRSX {
 
-    private readonly LOG = LogFactory.createLog(AngularXBenutzerRS.name);
+    private readonly LOG = LogFactory.createLog(BenutzerRSX.name);
 
     public readonly serviceURL: string;
     public readonly ebeguRestUtil: EbeguRestUtil = new EbeguRestUtil();

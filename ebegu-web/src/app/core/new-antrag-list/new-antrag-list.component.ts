@@ -59,7 +59,7 @@ import {DVPaginationEvent} from '../../shared/interfaces/DVPaginationEvent';
 import {StateStoreService} from '../../shared/services/state-store.service';
 import {ErrorService} from '../errors/service/ErrorService';
 import {LogFactory} from '../logging/LogFactory';
-import {BenutzerRS} from '../service/benutzerRS.rest';
+import {BenutzerRSX} from '../service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
 
@@ -273,10 +273,10 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly translate: TranslateService,
         private readonly errorService: ErrorService,
-        private readonly benutzerRS: BenutzerRS,
         private readonly transitionService: TransitionService,
         private readonly stateStore: StateStoreService,
         private readonly uiRouterGlobals: UIRouterGlobals,
+        private readonly benutzerRS: BenutzerRSX,
     ) {
     }
 
