@@ -71,79 +71,86 @@
         </div>
     </form>
 
-<!--    <div class="row">-->
-<!--        <div class="col-md-11 ">-->
-<!--            <h3 data-translate="LASTENAUSGLEICH_LIST"></h3>-->
-<!--        </div>-->
-<!--        <div class="col-md-1 text-right">-->
-<!--            <h3 ng-bind="vm.lastenausgleiche.length"></h3>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="table-responsive">-->
-<!--        <table st-table="displayedCollection" st-safe-src="vm.lastenausgleiche"-->
-<!--               st-delay="20" class="table ebegu-table fixedtable table-striped">-->
-<!--            <thead>-->
-<!--            <tr>-->
-<!--                <th st-sort-default="reverse" st-sort="jahr"-->
-<!--                    ng-class="{'sortable': true, 'uppercase': true, 'lastenausgleich-percent-15': vm.canDownloadCSV(), 'lastenausgleich-percent-25': !vm.canDownloadCSV()}"-->
-<!--                    data-translate="LASTENAUSGLEICH_JAHR"></th>-->
-<!--                <th st-sort="datumGeneriert"-->
-<!--                    ng-class="{'sortable': true, 'uppercase': true, 'lastenausgleich-percent-15': vm.canDownloadCSV(), 'lastenausgleich-percent-25': !vm.canDownloadCSV()}"-->
-<!--                    data-translate="LASTENAUSGLEICH_GENERIERT"></th>-->
-<!--                <th st-sort="totalAlleGemeinden"-->
-<!--                    ng-class="{'sortable': true, 'uppercase': true, 'lastenausgleich-percent-15': vm.canDownloadCSV(), 'lastenausgleich-percent-25': !vm.canDownloadCSV()}"-->
-<!--                    data-translate="LASTENAUSGLEICH_TOTALBETRAG"></th>-->
-<!--                <th data-translate="LASTENAUSGLEICH_EXCEL"-->
-<!--                    ng-class="{'uppercase': true, 'lastenausgleich-percent-15': vm.canDownloadCSV(), 'lastenausgleich-percent-25': !vm.canDownloadCSV()}"></th>-->
-<!--                <th ng-if="vm.canDownloadCSV()"-->
-<!--                    data-translate="LASTENAUSGLEICH_CSV"-->
-<!--                    ng-class="{'uppercase': true, 'lastenausgleich-percent-15': vm.canDownloadCSV(), 'lastenausgleich-percent-25': !vm.canDownloadCSV()}"></th>-->
-<!--                <th ng-if="vm.isRemoveAllowed()" class="uppercase"-->
-<!--                    data-translate="LASTENAUSGLEICH_REMOVE"></th>-->
-<!--            </tr>-->
-<!--            </thead>-->
-<!--            <tbody>-->
-<!--            <tr ng-repeat="row in displayedCollection">-->
-<!--                &lt;!&ndash; Jahr &ndash;&gt;-->
-<!--                <td title="{{row.jahr}}" ng-bind="row.jahr"></td>-->
-<!--                &lt;!&ndash; Datum Generiert &ndash;&gt;-->
-<!--                <td title="{{row.timestampErstellt | amDateFormat : 'DD.MM.YYYY'}}"-->
-<!--                    ng-bind="row.timestampErstellt | amDateFormat : 'DD.MM.YYYY'"></td>-->
-<!--                &lt;!&ndash; Total Betrag &ndash;&gt;-->
-<!--                <td class="ellipsis numeric-column">-->
-<!--                    <span ng-bind="row.totalAlleGemeinden | currency : '' : 2"-->
-<!--                          title="{{row.totalAlleGemeinden}}"></span>-->
-<!--                </td>-->
-<!--                &lt;!&ndash; Download Excel &ndash;&gt;-->
-<!--                <td class="symbol">-->
-<!--                    <dv-loading-button type="button"-->
-<!--                                       button-click="vm.downloadExcel(row)"-->
-<!--                                       button-class="dv-btn-operation">-->
-<!--                        <i class="fa fa-lg fa-file-excel-o"></i>-->
-<!--                    </dv-loading-button>-->
-<!--                </td>-->
-<!--                &lt;!&ndash; Download CSV &ndash;&gt;-->
-<!--                <td ng-if="vm.canDownloadCSV()" class="symbol">-->
-<!--                    <dv-loading-button type="button" button-click="vm.downloadCsv(row)" button-class="dv-btn-operation">-->
-<!--                        <i class="fa fa-lg fa-file-code-o"></i>-->
-<!--                    </dv-loading-button>-->
-<!--                </td>-->
-<!--                <th ng-if="vm.isRemoveAllowed()">-->
-<!--                    <dv-loading-button type="button"-->
-<!--                                       button-click="vm.removeLastenausgleich(row)"-->
-<!--                                       button-class="dv-btn-operation">-->
-<!--                        <i class="fa fa-lg fa-trash-o" aria-label="{{'LASTENAUSGLEICH_DELETE' | translate}}"></i>-->
-<!--                    </dv-loading-button>-->
-<!--                </th>-->
-<!--            </tr>-->
-<!--            </tbody>-->
-<!--            <tfoot>-->
-<!--            <tr>-->
-<!--                <td colspan="5" class="text-center">-->
-<!--                    <div st-pagination="" st-items-by-page="vm.itemsByPage" st-displayed-pages="5"></div>-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--            </tfoot>-->
-<!--        </table>-->
-<!--    </div>-->
+    <div class="table-header">
+        <div>
+            <h3 translate>LASTENAUSGLEICH_LIST</h3>
+        </div>
+        <div>
+            <h3>{{lastenausgleiche.length}}</h3>
+        </div>
+    </div>
+
+    <div class="dv-table dv-simple-table table-striped" *ngIf="datasource">
+
+        <mat-table [dataSource]="datasource">
+
+            <ng-container matColumnDef="jahr">
+                <th mat-header-cell *matHeaderCellDef class="ellipsis">
+                    <span translate>LASTENAUSGLEICH_JAHR</span>
+                </th>
+                <td mat-cell *matCellDef="let element" class="ellipsis">
+                    {{element.jahr}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="lastenausgleichGeneneriert">
+                <th mat-header-cell *matHeaderCellDef class="ellipsis">
+                    <span translate>LASTENAUSGLEICH_GENERIERT</span>
+                </th>
+                <td mat-cell *matCellDef="let element" class="ellipsis">
+                    {{element.timestampErstellt | ebeguDate}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="totalAlleGemeinden">
+                <th mat-header-cell *matHeaderCellDef class="ellipsis">
+                    <span translate>LASTENAUSGLEICH_TOTALBETRAG</span>
+                </th>
+                <td mat-cell *matCellDef="let element" class="ellipsis">
+                    {{element.totalAlleGemeinden | number:"1.2-2"}} {{'CHF' | translate}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="lastenausgleichExcel">
+                <th mat-header-cell *matHeaderCellDef class="ellipsis">
+                    <span translate>LASTENAUSGLEICH_EXCEL</span>
+                </th>
+                <td mat-cell *matCellDef="let element" class="ellipsis">
+                    <dv-loading-button type="button" (buttonClick)="downloadExcel(element)"
+                                       [buttonClass]="'dv-btn-operation'">
+                        <i class="fa fa-lg fa-file-excel-o"></i>
+                    </dv-loading-button>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="lastenausgleichCsv">
+                <th mat-header-cell *matHeaderCellDef class="ellipsis">
+                    <span translate>LASTENAUSGLEICH_CSV</span>
+                </th>
+                <td mat-cell *matCellDef="let element" class="ellipsis">
+                    <dv-loading-button type="button" (buttonClick)="downloadCsv(element)"
+                                       [buttonClass]="'dv-btn-operation'">
+                        <i class="fa fa-lg fa-file-code-o"></i>
+                    </dv-loading-button>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="lastenausgleichRemove">
+                <th mat-header-cell *matHeaderCellDef class="ellipsis">
+                    <span translate>LASTENAUSGLEICH_REMOVE</span>
+                </th>
+                <td mat-cell *matCellDef="let element" class="ellipsis">
+                    <dv-loading-button type="button" (buttonClick)="removeLastenausgleich(element)"
+                                       [buttonClass]="'dv-btn-operation'">
+                        <i class="fa fa-lg fa-trash-o"></i>
+                    </dv-loading-button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="columndefs"></tr>
+            <tr mat-row *matRowDef="let row; columns: columndefs;"></tr>
+
+        </mat-table>
+
+    </div>
 </div>

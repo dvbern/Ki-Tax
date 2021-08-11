@@ -15,10 +15,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
+import {from, Observable, Subject} from 'rxjs';
+import {map, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSDownloadFile} from '../../../../models/TSDownloadFile';
@@ -27,6 +30,7 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../../core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {UploadRS} from '../../../core/service/uploadRS.rest';
 import {LastenausgleichRS} from '../../services/lastenausgleichRS.rest';
@@ -41,14 +45,18 @@ const LOG = LogFactory.createLog('LastenausgleichViewXComponent');
   styleUrls: ['./lastenausgleich-view-x.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LastenausgleichViewXComponent implements OnInit {
+export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
 
     public jahr: number;
     public selbstbehaltPro100ProzentPlatz: number;
     public lastenausgleiche: TSLastenausgleich[] = [];
     public readonly TSRoleUtil = TSRoleUtil;
+    public datasource: MatTableDataSource<TSLastenausgleich> = new MatTableDataSource<TSLastenausgleich>([]);
+    public columndefs: string[] = [];
 
     @ViewChild(NgForm) private readonly form: NgForm;
+
+    private readonly unsubscribe$ = new Subject<void>();
 
     public constructor(
         private readonly lastenausgleichRS: LastenausgleichRS,
@@ -57,16 +65,41 @@ export class LastenausgleichViewXComponent implements OnInit {
         private readonly downloadRS: DownloadRS,
         private readonly uploadRS: UploadRS,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly errorService: ErrorService
+        private readonly errorService: ErrorService,
+        private readonly cd: ChangeDetectorRef,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) { }
 
     public ngOnInit(): void {
         this.getAllLastenausgleiche();
+        this.initColumnDefs();
+    }
+
+    public ngOnDestroy(): void {
+        this.unsubscribe$.next();
+    }
+
+    private initColumnDefs(): void {
+        this.columndefs = [
+            'jahr',
+            'lastenausgleichGeneneriert',
+            'totalAlleGemeinden',
+            'lastenausgleichExcel',
+            'lastenausgleichCsv',
+        ];
+        this.isRemoveAllowed()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(res => {
+            if (res) {
+                this.columndefs.push('lastenausgleichRemove');
+            }
+        }, err => LOG.error(err));
     }
 
     private getAllLastenausgleiche(): void {
         this.lastenausgleichRS.getAllLastenausgleiche().subscribe((response: TSLastenausgleich[]) => {
             this.lastenausgleiche = response;
+            this.addToDataSource(response);
         });
     }
 
@@ -85,8 +118,22 @@ export class LastenausgleichViewXComponent implements OnInit {
                 this.lastenausgleichRS.createLastenausgleich(this.jahr, this.selbstbehaltPro100ProzentPlatz)
                     .subscribe((response: TSLastenausgleich) => {
                         this.lastenausgleiche.push(response);
-                    });
-            }, err => LOG.error(err));
+                        this.addToDataSource(this.lastenausgleiche);
+                    }, err => {
+                        const message = (err.error?.translatedMessage)
+                            ? err.error.translatedMessage
+                            : this.translate.instant('ERROR_UNEXPECTED');
+                        this.errorService.addMesageAsError(message);
+                        LOG.error(err);
+                });
+            }, err => {
+                LOG.error(err);
+            });
+    }
+
+    private addToDataSource(lastenausgleiche: TSLastenausgleich[]): void {
+        this.datasource.data = lastenausgleiche.sort((a, b) => b.jahr - a.jahr);
+        this.cd.markForCheck();
     }
 
     public downloadZemisExcel(): void {
@@ -174,8 +221,9 @@ export class LastenausgleichViewXComponent implements OnInit {
             });
     }
 
-    public isRemoveAllowed(): boolean {
-        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    public isRemoveAllowed(): Observable<boolean> {
+        return from(this.applicationPropertyRS.isDevMode())
+            .pipe(map(res => res && this.authServiceRS.isRole(TSRole.SUPER_ADMIN)));
     }
 
     public canDownloadCSV(): boolean {
