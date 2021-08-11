@@ -1,0 +1,52 @@
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<form role="form" #form=ngForm name="form">
+    <mat-dialog-content tabindex="-1">
+            <dv-input-container-x verticalAlign="true" class="form-group" *ngIf="!upload">
+                <label class="md-no-float required" for="download-year" translate>LASTENAUSGLEICH_JAHR</label>
+                <input type="number"
+                       id="download-year"
+                       name="download-year"
+                       [(ngModel)]="jahr"
+                       class="form-control contrast-input"
+                       required
+                       tabindex="0"
+                       aria-describedby="jahr-error">
+                <dv-error-messages [errorObject]="form?.form.get('download-year')?.errors"
+                                   class="error"></dv-error-messages>
+            </dv-input-container-x>
+            <div class="form-group margin-top-20 margin-bottom-20" *ngIf="upload">
+                <label for="file"></label>
+                <input type="file"
+                       id="file"
+                       tabindex="0"
+                       accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                       (change)="handleFileInput($event)">
+            </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions>
+        <button class="dv-btn" type="submit" (click)="ok()"
+                [disabled]="upload && !file">
+            <span class="ng-binding ng-scope" translate>LABEL_OK</span>
+        </button>
+        <button class="dv-btn cancel-button" type="button"
+                (click)="cancel()">
+            <span class="ng-binding ng-scope" translate>CANCEL</span>
+        </button>
+    </mat-dialog-actions>
+</form>

@@ -14,8 +14,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+@import (reference) '../../../../style/variables.less';
+@import (reference) '../../../../style/mixins.less';
 
-export interface ZemisDialogDTO {
-    jahr?: number;
-    file?: File;
+mat-dialog-actions {
+    display: flex;
+    justify-content: center;
+
+    > button:first-child {
+        margin-right: 1rem;
+        min-width: 60px;
+    }
+}
+
+::ng-deep input.contrast-input {
+    background-color: @contrast-lighter;
 }
