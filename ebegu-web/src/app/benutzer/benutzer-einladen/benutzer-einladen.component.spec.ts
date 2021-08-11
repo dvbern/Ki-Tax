@@ -16,14 +16,14 @@
  */
 
 import {APP_BASE_HREF} from '@angular/common';
-import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {UIRouterModule} from '@uirouter/angular';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {ErrorService} from '../../core/errors/service/ErrorService';
-import {BenutzerRS} from '../../core/service/benutzerRS.rest';
+import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
@@ -43,7 +43,7 @@ describe('BenutzerEinladenComponent', () => {
     const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
     const sozialdienstRSSpy = jasmine.createSpyObj<SozialdienstRS>(SozialdienstRS.name,
         ['getSozialdienstList']);
-    const benutzerSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['einladen']);
+    const benutzerSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, ['einladen']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
@@ -66,7 +66,7 @@ describe('BenutzerEinladenComponent', () => {
                 {provide: APP_BASE_HREF, useValue: '/'},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeSpy},
-                {provide: BenutzerRS, useValue: benutzerSpy},
+                {provide: BenutzerRSX, useValue: benutzerSpy},
                 {provide: InstitutionRS, useValue: insitutionSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
                 {provide: SozialdienstRS, useValue: sozialdienstRSSpy},

@@ -22,7 +22,7 @@ import {TSRole} from '../../../models/enums/TSRole';
 import {AuthServiceRS} from '../../service/AuthServiceRS.rest';
 import {OnBeforePriorities} from './onBeforePriorities';
 
-const LOG = LogFactory.createLog('authenticationHookRunBlock');
+const LOG = LogFactory.createLog('authenticationHookRunBlockX');
 
 /**
  * This file contains a Transition Hook which protects a
@@ -32,22 +32,20 @@ const LOG = LogFactory.createLog('authenticationHookRunBlock');
  * - The user is not authenticated
  * - The user is navigating to a state that requires authentication
  */
-authenticationHookRunBlock.$inject = ['$transitions'];
 
-export function authenticationHookRunBlock($transitions: TransitionService): void {
+export function authenticationHookRunBlockX($transitions: TransitionService, authService: AuthServiceRS): void {
     // Matches all states except those that have TSRole.ANONYMOUS in data.roles.
     const requiresAuthCriteria: HookMatchCriteria = {
         to: state => state.data && Array.isArray(state.data.roles) && !state.data.roles.includes(TSRole.ANONYMOUS),
     };
 
     // Register the "requires authentication" hook with the TransitionsService
-    $transitions.onBefore(requiresAuthCriteria, redirectToLogin, {priority: OnBeforePriorities.AUTHENTICATION});
+    $transitions.onBefore(requiresAuthCriteria, transition => redirectToLogin(transition, authService), {priority: OnBeforePriorities.AUTHENTICATION});
 }
 
 // Function that returns a redirect for the current transition to the login state
 // if the user is not currently authenticated (according to the AuthService)
-function redirectToLogin(transition: Transition): HookResult {
-    const authService: AuthServiceRS = transition.injector().get('AuthServiceRS');
+function redirectToLogin(transition: Transition, authService: AuthServiceRS): HookResult {
     const $state = transition.router.stateService;
 
     return authService.principal$
