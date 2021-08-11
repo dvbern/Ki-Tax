@@ -132,7 +132,6 @@ import {AdresseRS} from './service/adresseRS.rest';
 import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
 import {BatchJobRS} from './service/batchRS.rest';
 import {BenutzerRSX} from './service/benutzerRSX.rest';
-import {BetreuungMonitoringRS} from '../../admin/service/betreuungMonitoringRS.rest';
 import {BetreuungRS} from './service/betreuungRS.rest';
 import {BroadcastService} from './service/broadcast.service';
 import {DownloadRS} from './service/downloadRS.rest';
