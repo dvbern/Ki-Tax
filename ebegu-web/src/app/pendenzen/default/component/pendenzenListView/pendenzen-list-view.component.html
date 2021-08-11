@@ -30,6 +30,7 @@
 
                 <dv-new-antrag-list *ngIf="initialFilter.verantwortlicherGemeinde"
                                     [data$]="data$"
+                                    [stateStoreId]="'pendenzen-list-view'"
                                     [title]="'PENDENZEN_LIST' | translate"
                                     [initialFilter]="initialFilter"
                                     [page]="calculatePage()"

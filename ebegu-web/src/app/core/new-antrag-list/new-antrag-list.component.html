@@ -99,12 +99,23 @@
                     <span [title]="element.status | translate">{{element.status | translate}}</span></mat-cell>
             </ng-container>
 
+            <ng-container matColumnDef="internePendenz">
+                <mat-header-cell mat-sort-header="internePendenz" *matHeaderCellDef><span translate>INTERNE_PENDENZ_KURZ</span>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <span *ngIf="element.internePendenz" [title]="'INTERNE_PENDENZ' | translate">
+                        <i *ngIf="!element.internePendenzAbgelaufen" class="fa fa-thumb-tack pendenz-icon" aria-hidden="true"></i>
+                        <i *ngIf="element.internePendenzAbgelaufen" class="fa fa-thumb-tack pendenz-icon abgelaufen" aria-hidden="true"></i>
+                    </span>
+                </mat-cell>
+            </ng-container>
+
             <ng-container matColumnDef="dokumenteHochgeladen">
                 <mat-header-cell mat-sort-header="dokumenteHochgeladen" *matHeaderCellDef><span translate>DOKUMENTE_HOCHGELADEN_KURZ</span>
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <span *ngIf="element.dokumenteHochgeladen" [title]="'DOKUMENTE_HOCHGELADEN' | translate">
-                        <i class="fa fa-file-o" aria-hidden="true" ng-show="row.dokumenteHochgeladen"></i>
+                        <i class="fa fa-file-o" aria-hidden="true"></i>
                     </span>
                 </mat-cell>
             </ng-container>
@@ -149,7 +160,7 @@
             <ng-container matColumnDef="fallNummer-filter">
                 <mat-header-cell *matHeaderCellDef="let column">
                     <mat-form-field class="dv-faelle-mat-form-field">
-                        <input matInput (keyup)="filterFall($event.target.value)">
+                        <input [value]="filterPredicate.fallNummer || null" matInput (keyup)="filterFall($event.target.value)">
                     </mat-form-field>
                 </mat-header-cell>
             </ng-container>
@@ -159,7 +170,7 @@
                     <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
                         <div class="select-background"></div>
                         <mat-label translate>ALLE</mat-label>
-                        <mat-select (selectionChange)="filterGemeinde($event.value)" panelClass="mat-select-panel1">
+                        <mat-select [value]="filterPredicate.gemeinde" (selectionChange)="filterGemeinde($event.value)" panelClass="mat-select-panel1">
                             <mat-option><span translate>ALLE</span></mat-option>
                             <mat-option *ngFor="let gemeinde of gemeindenList"
                                         [value]="gemeinde.name">{{gemeinde.name}}</mat-option>
@@ -173,7 +184,7 @@
                     <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
                         <div class="select-background"></div>
                         <mat-label translate>ALLE</mat-label>
-                        <mat-select (selectionChange)="filterType($event.value)" panelClass="mat-select-panel1">
+                        <mat-select [value]="filterPredicate.antragTyp" (selectionChange)="filterType($event.value)" panelClass="mat-select-panel1">
                             <mat-option selected><span translate>ALLE</span></mat-option>
                             <mat-option *ngFor="let type of getAntragTypen()" [value]="type">
                                 <span translate>{{type}}</span></mat-option>
@@ -187,7 +198,7 @@
                     <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
                         <div class="select-background"></div>
                         <mat-label translate>ALLE</mat-label>
-                        <mat-select (selectionChange)="filterStatus($event.value)" panelClass="mat-select-panel1">
+                        <mat-select [value]="filterPredicate.status" (selectionChange)="filterStatus($event.value)" panelClass="mat-select-panel1">
                             <mat-option selected><span translate>ALLE</span></mat-option>
                             <mat-option *ngFor="let status of getAntragStatus()"
                                         [value]="status"><span translate>{{status}}</span></mat-option>
@@ -201,7 +212,7 @@
                     <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
                         <div class="select-background"></div>
                         <mat-label translate>ALLE</mat-label>
-                        <mat-select (selectionChange)="filterAngebot($event.value)" panelClass="mat-select-panel1">
+                        <mat-select [value]="filterPredicate.angebote" (selectionChange)="filterAngebot($event.value)" panelClass="mat-select-panel1">
                             <mat-option selected><span translate>ALLE</span></mat-option>
                             <mat-option *ngFor="let angebot of getBetreuungsangebotTypen()"
                                         [value]="angebot"><span translate>{{angebot}}</span></mat-option>
@@ -215,10 +226,25 @@
                     <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
                         <div class="select-background"></div>
                         <mat-label translate>ALLE</mat-label>
-                        <mat-select (selectionChange)="filterPeriode($event.value)" panelClass="mat-select-panel1">
+                        <mat-select [value]="filterPredicate.gesuchsperiodeString" (selectionChange)="filterPeriode($event.value)" panelClass="mat-select-panel1">
                             <mat-option selected><span translate>ALLE</span></mat-option>
                             <mat-option *ngFor="let periode of gesuchsperiodenList"
                                         [value]="periode">{{periode}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-header-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="internePendenz-filter">
+                <mat-header-cell *matHeaderCellDef="let column">
+                    <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
+                        <div class="select-background"></div>
+                        <mat-label translate>ALLE</mat-label>
+                        <mat-select (selectionChange)="filterInternePendenz($event.value)"
+                                    panelClass="mat-select-panel1">
+                            <mat-option selected><span translate>ALLE</span></mat-option>
+                            <mat-option [value]="true"><span translate>LABEL_JA</span></mat-option>
+                            <mat-option [value]="false"><span translate>LABEL_NEIN</span></mat-option>
                         </mat-select>
                     </mat-form-field>
                 </mat-header-cell>
@@ -229,7 +255,7 @@
                     <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
                         <div class="select-background"></div>
                         <mat-label translate>ALLE</mat-label>
-                        <mat-select (selectionChange)="filterDocumentsUploaded($event.value)"
+                        <mat-select [value]="filterPredicate.dokumenteHochgeladen" (selectionChange)="filterDocumentsUploaded($event.value)"
                                     panelClass="mat-select-panel1">
                             <mat-option selected><span translate>ALLE</span></mat-option>
                             <mat-option [value]="true"><span translate>LABEL_JA</span></mat-option>
@@ -243,7 +269,7 @@
             <ng-container matColumnDef="familienName-filter">
                 <mat-header-cell *matHeaderCellDef="let column">
                     <mat-form-field class="dv-faelle-mat-form-field">
-                        <input matInput (keyup)="filterFamilie($event.target.value)">
+                        <input [value]="filterPredicate.familienName || null" matInput (keyup)="filterFamilie($event.target.value)">
                     </mat-form-field>
                 </mat-header-cell>
             </ng-container>
@@ -251,7 +277,7 @@
             <ng-container matColumnDef="kinder-filter">
                 <mat-header-cell *matHeaderCellDef="let column">
                     <mat-form-field class="dv-faelle-mat-form-field">
-                        <input matInput (keyup)="filterKinder($event.target.value)">
+                        <input [value]="filterPredicate.kinder || null" matInput (keyup)="filterKinder($event.target.value)">
                     </mat-form-field>
                 </mat-header-cell>
             </ng-container>
@@ -259,7 +285,7 @@
             <ng-container matColumnDef="aenderungsdatum-filter">
                 <mat-header-cell *matHeaderCellDef="let column">
                     <mat-form-field class="dv-faelle-mat-form-field">
-                        <input matInput (keyup)="filterGeaendert($event.target.value)">
+                        <input [value]="filterPredicate.aenderungsdatum || null" matInput (keyup)="filterGeaendert($event.target.value)">
                     </mat-form-field>
                 </mat-header-cell>
             </ng-container>
@@ -268,6 +294,7 @@
                 <mat-header-cell *matHeaderCellDef="let column">
                     <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
                         <input matInput
+                               [value]="filterPredicate.institutionen || null"
                                [placeholder]="'SUCHBEGRIFF_EINGEBEN' | translate"
                                (keyup)="filterInstitution($event.target.value)"
                                [matAutocomplete]="auto">

@@ -167,6 +167,10 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 
 	private boolean isSozialdienst = false;
 
+	private boolean internePendenz = false;
+
+	private Boolean internePendenzAbgelaufen = false;
+
 	public String getAntragId() {
 		return antragId;
 	}
@@ -390,5 +394,21 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 
 	public void setSozialdienst(boolean sozialdienst) {
 		isSozialdienst = sozialdienst;
+	}
+
+	public boolean hasInternePendenz() {
+		return internePendenz;
+	}
+
+	public void setInternePendenz(boolean internePendenz) {
+		this.internePendenz = internePendenz;
+	}
+
+	public Boolean getInternePendenzAbgelaufen() {
+		return internePendenzAbgelaufen;
+	}
+
+	public void setInternePendenzAbgelaufen(Boolean internePendenzAbgelaufen) {
+		this.internePendenzAbgelaufen = internePendenzAbgelaufen;
 	}
 }

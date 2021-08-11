@@ -24,6 +24,7 @@ import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 
 import ch.dvbern.ebegu.entities.ExternalClient;
+import ch.dvbern.ebegu.enums.ExternalClientInstitutionType;
 import ch.dvbern.ebegu.enums.ExternalClientType;
 import ch.dvbern.ebegu.tests.util.ValidationTestHelper;
 import ch.dvbern.ebegu.validators.ExternalClientOfType;
@@ -36,9 +37,9 @@ public class ExternalClientOfTypeValidatorTest {
 	@SuppressWarnings("FieldCanBeLocal")
 	private ValidatorFactory customFactory;
 
-	private static final ExternalClient VALID = new ExternalClient("foo", ExternalClientType.EXCHANGE_SERVICE_USER);
+	private static final ExternalClient VALID = new ExternalClient("foo", ExternalClientType.EXCHANGE_SERVICE_USER, ExternalClientInstitutionType.EXCHANGE_SERVICE_INSTITUTION);
 	@SuppressWarnings("ConstantConditions")
-	private static final ExternalClient INVALID = new ExternalClient("bar", null);
+	private static final ExternalClient INVALID = new ExternalClient("bar", null, ExternalClientInstitutionType.EXCHANGE_SERVICE_INSTITUTION);
 
 	@Before
 	public void setUp() {

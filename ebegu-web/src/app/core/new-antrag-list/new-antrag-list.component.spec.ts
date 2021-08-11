@@ -19,16 +19,19 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {TranslateModule} from '@ngx-translate/core';
+import {TransitionService} from '@uirouter/angular';
+import {UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SearchRS} from '../../../gesuch/service/searchRS.rest';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
-import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
+import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {MaterialModule} from '../../shared/material.module';
+import {StateStoreService} from '../../shared/services/state-store.service';
 import {ErrorService} from '../errors/service/ErrorService';
-import {BenutzerRS} from '../service/benutzerRS.rest';
+import {BenutzerRSX} from '../service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
 
@@ -75,13 +78,19 @@ describe('NewAntragListComponent', () => {
     const gesuchPeriodeSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
         ['findGesuchsperiode', 'getAllGesuchsperioden']);
     const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
-    const searchRSSpy = jasmine.createSpyObj<SearchRS>(SearchRS.name, ['searchAntraege']);
+    const searchRSSpy = jasmine.createSpyObj<SearchRS>(SearchRS.name, ['searchAntraege', 'countAntraege']);
     const authRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
         ['getPrincipalRole', 'hasMandantAngebotTS', 'isOneOfRoles']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
         ['addMesageAsError']);
-    const benutzerRSSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name,
+    const benutzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name,
         ['getAllBenutzerBgOrGemeinde', 'getAllBenutzerTsOrGemeinde']);
+    const transitionServiceSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name,
+        ['onStart']);
+    const stateStoreServiceSpy = jasmine.createSpyObj<StateStoreService>(StateStoreService.name,
+        ['has', 'get']);
+    const uiRouterGlobals = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
+        ['$current']);
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -94,7 +103,10 @@ describe('NewAntragListComponent', () => {
                 {provide: AuthServiceRS, useValue: authRSSpy},
                 {provide: SearchRS, useValue: searchRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: BenutzerRS, useValue: benutzerRSSpy},
+                {provide: BenutzerRSX, useValue: benutzerRSSpy},
+                {provide: TransitionService, useValue: transitionServiceSpy},
+                {provide: StateStoreService, useValue: stateStoreServiceSpy},
+                {provide: UIRouterGlobals, useValue: uiRouterGlobals},
             ],
         }).compileComponents();
 
@@ -107,11 +119,9 @@ describe('NewAntragListComponent', () => {
             get antragDTOs(): TSAntragDTO[] {
                 return [];
             },
-            get totalResultSize(): number {
-                return 0;
-            },
         } as any;
         searchRSSpy.searchAntraege.and.returnValue(Promise.resolve(dummySearchResult));
+        searchRSSpy.countAntraege.and.returnValue(Promise.resolve(0));
         benutzerRSSpy.getAllBenutzerBgOrGemeinde.and.resolveTo([]);
         benutzerRSSpy.getAllBenutzerTsOrGemeinde.and.resolveTo([]);
     }));

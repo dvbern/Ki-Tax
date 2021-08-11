@@ -35,6 +35,7 @@ import 'angular-utf8-base64';
 import 'ng-file-upload';
 import 'raven-js';
 import 'raven-js/plugins/angular';
+import {BetreuungMonitoringRS} from '../../admin/service/betreuungMonitoringRS.rest';
 // tslint:enable-no-import-side-effect
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
@@ -42,7 +43,7 @@ import {AUTHENTICATION_JS_MODULE} from '../../authentication/authentication.modu
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import router from '../../dvbModules/router/router.module';
 import {environment} from '../../environments/environment';
-import {InternePendenzenRS} from '../../gesuch/component/internePendenzenView/internePendenzenRS';
+import {InternePendenzenRS} from '../../gesuch/component/internePendenzenView/internePendenzenRS.rest';
 import {BerechnungsManager} from '../../gesuch/service/berechnungsManager';
 import {DokumenteRS} from '../../gesuch/service/dokumenteRS.rest';
 import {DossierRS} from '../../gesuch/service/dossierRS.rest';
@@ -130,9 +131,9 @@ import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest'
 import {AdresseRS} from './service/adresseRS.rest';
 import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
 import {BatchJobRS} from './service/batchRS.rest';
-import {BenutzerRS} from './service/benutzerRS.rest';
-import {BetreuungMonitoringRS} from '../../admin/service/betreuungMonitoringRS.rest';
+import {BenutzerRSX} from './service/benutzerRSX.rest';
 import {BetreuungRS} from './service/betreuungRS.rest';
+import {BroadcastService} from './service/broadcast.service';
 import {DownloadRS} from './service/downloadRS.rest';
 import {DVsTPersistService} from './service/dVsTPersistService';
 import {ErwerbspensumRS} from './service/erwerbspensumRS.rest';
@@ -158,6 +159,7 @@ import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
 import {VerfuegungRS} from './service/verfuegungRS.rest';
 import {HttpVersionInterceptor} from './service/version/HttpVersionInterceptor';
+import {VersionService} from './service/version/version.service';
 import {WizardStepXRS} from './service/wizardStepXRS.rest';
 
 const dependencies = [
@@ -225,7 +227,6 @@ export const CORE_JS_MODULE = angular
     .service('BatchJobRS', BatchJobRS)
     .service('BetreuungRS', BetreuungRS)
     .service('GesuchsperiodeRS', GesuchsperiodeRS)
-    .service('BenutzerRS', BenutzerRS)
     .service('VerfuegungRS', VerfuegungRS)
     .service('DokumenteRS', DokumenteRS)
     .service('UploadRS', UploadRS)
@@ -248,6 +249,9 @@ export const CORE_JS_MODULE = angular
     .factory('I18nServiceRSRest', downgradeInjectable(I18nServiceRSRest) as any)
     .factory('SozialdienstRS', downgradeInjectable(SozialdienstRS) as any)
     .factory('InternePendenzenRS', downgradeInjectable(InternePendenzenRS) as any)
+    .factory('VersionService', downgradeInjectable(VersionService) as any)
+    .factory('BroadcastService', downgradeInjectable(BroadcastService) as any)
+    .factory('BenutzerRS', downgradeInjectable(BenutzerRSX) as any)
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())

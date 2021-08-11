@@ -19,7 +19,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService} from '@uirouter/core';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {ErrorService} from '../../core/errors/service/ErrorService';
-import {BenutzerRS} from '../../core/service/benutzerRS.rest';
+import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
 import {MaterialModule} from '../../shared/material.module';
@@ -32,7 +32,7 @@ describe('AddSozialdienstComponent', () => {
     let fixture: ComponentFixture<AddSozialdienstComponent>;
 
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
-    const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['removeBenutzer']);
+    const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, ['removeBenutzer']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
     const sozialdienstRSSpy = jasmine.createSpyObj<SozialdienstRS>(SozialdienstRS.name,
         ['createSozialdienst']);
@@ -50,7 +50,7 @@ describe('AddSozialdienstComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: SozialdienstRS, useValue: sozialdienstRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: BenutzerRS, useValue: benutzerServiceSpy},
+                {provide: BenutzerRSX, useValue: benutzerServiceSpy},
             ],
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

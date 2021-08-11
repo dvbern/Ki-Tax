@@ -89,12 +89,13 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public sameVerfuegteVerfuegungsrelevanteDaten: boolean;
     public fragenObIgnorieren: boolean;
     public fragenObIgnorierenMahlzeiten: boolean;
+    public mahlzeitenChanged: boolean;
     public verfuegungsBemerkungenKontrolliert: boolean = false;
     public isVerfuegenClicked: boolean = false;
     public showPercent: boolean;
     public showHours: boolean;
-    public showVerfuegung: boolean;
 
+    public showVerfuegung: boolean;
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
     public tagesschuleZeitabschnitteMitBetreuung: Array<TSVerfuegungZeitabschnitt>;
     public tagesschuleZeitabschnitteOhneBetreuung: Array<TSVerfuegungZeitabschnitt>;
@@ -184,6 +185,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     private setParamsDependingOnCurrentVerfuegung(): void {
         this.setSameVerfuegteVerfuegungsrelevanteDaten();
         this.setFragenObIgnorieren();
+        this.setMahlzeitenChanges();
     }
 
     private initDevModeParameter(): void {
@@ -218,6 +220,14 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         if (this.getVerfuegenToWorkWith()) {
             this.fragenObIgnorieren = this.getVerfuegenToWorkWith().fragenObIgnorieren();
             this.fragenObIgnorierenMahlzeiten = this.getVerfuegenToWorkWith().fragenObIgnorierenMahlzeiten();
+        }
+    }
+
+    private setMahlzeitenChanges(): void {
+        this.mahlzeitenChanged = false; // by default
+
+        if (this.getVerfuegenToWorkWith()) {
+            this.mahlzeitenChanged = this.getVerfuegenToWorkWith().mahlzeitenChangedSincePreviousVerfuegung();
         }
     }
 

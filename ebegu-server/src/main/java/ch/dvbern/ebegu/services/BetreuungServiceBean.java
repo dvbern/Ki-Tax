@@ -1255,7 +1255,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		if (korrekturmodusGemeinde) {
 			List<AbstractPlatz> allPlaetze = gesuch.extractAllPlaetze();
 			BetreuungsangebotTyp dominantType = EbeguUtil.getDominantBetreuungsangebotTyp(allPlaetze);
-			if (dominantType == BetreuungsangebotTyp.FERIENINSEL) {
+			if (!allPlaetze.isEmpty() && dominantType == BetreuungsangebotTyp.FERIENINSEL) {
 				throw new EbeguRuntimeException(KibonLogLevel.NONE, "checkNotKorrekturmodusWithFerieninselOnly",
 					ErrorCodeEnum.ERROR_KORREKTURMODUS_FI_ONLY);
 			}

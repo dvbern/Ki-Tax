@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {
+    AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
@@ -29,9 +30,11 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
-import {Sort} from '@angular/material/sort';
+import {MatSort, MatSortHeader, Sort} from '@angular/material/sort';
 import {MatTable, MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
+import {TransitionService} from '@uirouter/angular';
+import {UIRouterGlobals} from '@uirouter/core';
 import {BehaviorSubject, forkJoin, from, Observable, of, Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -53,9 +56,10 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
 import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
 import {DVPaginationEvent} from '../../shared/interfaces/DVPaginationEvent';
+import {StateStoreService} from '../../shared/services/state-store.service';
 import {ErrorService} from '../errors/service/ErrorService';
 import {LogFactory} from '../logging/LogFactory';
-import {BenutzerRS} from '../service/benutzerRS.rest';
+import {BenutzerRSX} from '../service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
 
@@ -69,10 +73,11 @@ const LOG = LogFactory.createLog('DVAntragListController');
     // we need this to overwrite angular material styles
     encapsulation: ViewEncapsulation.None,
 })
-export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
+export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
 
     @ViewChild(MatPaginator) public paginator: MatPaginator;
     @ViewChild(MatTable) private readonly table: MatTable<DVAntragListItem>;
+    @ViewChild(MatSort) private readonly matSort: MatSort;
 
     /**
      * Emits when the user clicks on a row
@@ -179,6 +184,13 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
     @Input()
     public title: string;
 
+    /**
+     * Used for the state store to identify the component. If not provided, the filter and sort are
+     * not stored on navigation
+     */
+    @Input()
+    public readonly stateStoreId: string;
+
     public gesuchsperiodenList: Array<string> = [];
     private allInstitutionen: TSInstitution[];
     public institutionenList$: BehaviorSubject<TSInstitution[]> = new BehaviorSubject<TSInstitution[]>([]);
@@ -196,6 +208,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         'periode-filter',
         'aenderungsdatum-filter',
         'status-filter',
+        'internePendenz-filter',
         'dokumenteHochgeladen-filter',
         'angebote-filter',
         'institutionen-filter',
@@ -213,6 +226,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         'periode',
         'aenderungsdatum',
         'status',
+        'internePendenz',
         'dokumenteHochgeladen',
         'angebote',
         'institutionen',
@@ -223,7 +237,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
 
     public displayedColumns: string[];
 
-    private filterPredicate: DVAntragListFilter;
+    public filterPredicate: DVAntragListFilter;
 
     private readonly unsubscribe$ = new Subject<void>();
     /**
@@ -247,6 +261,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
     public initialGemeindeUser: TSBenutzerNoDetails;
     public initialBgGemeindeUser: TSBenutzerNoDetails;
     public initialTsGemeindeUser: TSBenutzerNoDetails;
+    private sortId: string;
+    private filterId: string;
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
@@ -257,7 +273,10 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly translate: TranslateService,
         private readonly errorService: ErrorService,
-        private readonly benutzerRS: BenutzerRS,
+        private readonly transitionService: TransitionService,
+        private readonly stateStore: StateStoreService,
+        private readonly uiRouterGlobals: UIRouterGlobals,
+        private readonly benutzerRS: BenutzerRSX,
     ) {
     }
 
@@ -265,10 +284,15 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         this.updateInstitutionenList();
         this.updateGesuchsperiodenList();
         this.updateGemeindenList();
-        this.initFilter();
+        this.initStateStores();
+        this.initFilter(true);
         this.initDisplayedColumns();
-        this.initTable();
         this.initBenutzerLists();
+    }
+
+    public ngAfterViewInit(): void {
+        this.initSort();
+        this.initTable();
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
@@ -301,6 +325,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
                 this.hiddenColumns.push('verantwortlicheBG');
                 this.hiddenColumns.push('verantwortlicheTS');
                 this.hiddenColumns.push('verantwortlicheGemeinde');
+                this.hiddenColumns.push('internePendenz');
                 this.hiddenColumns.push('dokumenteHochgeladen');
             }
         }
@@ -310,6 +335,19 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
     private updateColumns(): void {
         this.displayedColumns = this.allColumns.filter(column => !this.hiddenColumns.includes(column));
         this.filterColumns = this.displayedColumns.map(column => `${column}-filter`);
+    }
+
+    private initSort(): void {
+        // tslint:disable-next-line:early-exit
+        if (this.stateStoreId && this.stateStore.has(this.sortId)) {
+            const stored = this.stateStore.get(this.sortId) as { predicate?: string, reverse?: boolean };
+            this.sort.predicate = stored.predicate;
+            this.sort.reverse = stored.reverse;
+            this.matSort.active = stored.predicate;
+            this.matSort.direction = stored.reverse ? 'asc' : 'desc';
+            (this.matSort.sortables.get(stored.predicate) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
+            this.sortChange.emit(this.sort);
+        }
     }
 
     public updateInstitutionenList(): void {
@@ -337,8 +375,11 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
             );
     }
 
-    private initFilter(): void {
-        this.filterPredicate = {...this.initialFilter};
+    private initFilter(fromStore: boolean = false): void {
+        this.filterPredicate = (fromStore && this.filterId && this.stateStore.has(this.filterId)) ?
+            this.stateStore.get(this.filterId) :
+            {...this.initialFilter};
+        this.filterChange.emit(this.filterPredicate);
     }
 
     public ngOnDestroy(): void {
@@ -365,7 +406,6 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         const dataToLoad$ = this.data$ ?
             this.data$ :
             from(this.searchRS.searchAntraege(body)).pipe(map((result: TSAntragSearchresultDTO) => {
-                this.totalItems = result.totalResultSize;
                 return result.antragDTOs.map(antragDto => {
                     return {
                         fallNummer: antragDto.fallNummer,
@@ -379,6 +419,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
                         antragTyp: antragDto.antragTyp,
                         periode: antragDto.gesuchsperiodeString,
                         aenderungsdatum: antragDto.aenderungsdatum,
+                        internePendenz: antragDto.internePendenz,
+                        internePendenzAbgelaufen: antragDto.internePendenzAbgelaufen,
                         dokumenteHochgeladen: antragDto.dokumenteHochgeladen,
                         angebote: antragDto.angebote,
                         institutionen: antragDto.institutionen,
@@ -389,6 +431,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
                     };
                 });
             }));
+
+        from(this.searchRS.countAntraege(body).then(result => this.totalItems = result));
 
         dataToLoad$.subscribe((result: DVAntragListItem[]) => {
             this.datasource.data = result;
@@ -467,6 +511,11 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
 
     public filterDocumentsUploaded(documentsUploaded: boolean): void {
         this.filterPredicate.dokumenteHochgeladen = documentsUploaded;
+        this.applyFilter();
+    }
+
+    public filterInternePendenz(internePendenz: boolean): void {
+        this.filterPredicate.internePendenz = internePendenz;
         this.applyFilter();
     }
 
@@ -582,25 +631,26 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
         return list.find(user => user.getFullName() === name);
     }
 
+    // must be called after filterPredicate is initialized
     private initBenutzerLists(): void {
         if (this.isPendenzGemeindeRolle()) {
             this.benutzerRS.getAllBenutzerBgTsOrGemeinde().then(response => {
                 this.userListBgTsOrGemeinde = response;
                 this.initialGemeindeUser =
-                    this.findUserByNameInList(this.initialFilter?.verantwortlicherGemeinde, response);
+                    this.findUserByNameInList(this.filterPredicate?.verantwortlicherGemeinde, response);
                 this.changeDetectorRef.markForCheck();
             });
         } else {
             this.benutzerRS.getAllBenutzerBgOrGemeinde().then(response => {
                 this.userListBgOrGemeinde = response;
                 this.initialBgGemeindeUser =
-                    this.findUserByNameInList(this.initialFilter?.verantwortlicherBG, response);
+                    this.findUserByNameInList(this.filterPredicate?.verantwortlicherBG, response);
                 this.changeDetectorRef.markForCheck();
             });
             this.benutzerRS.getAllBenutzerTsOrGemeinde().then(response => {
                 this.userListTsOrGemeinde = response;
                 this.initialTsGemeindeUser =
-                    this.findUserByNameInList(this.initialFilter?.verantwortlicherTS, response);
+                    this.findUserByNameInList(this.filterPredicate?.verantwortlicherTS, response);
                 this.changeDetectorRef.markForCheck();
             });
         }
@@ -608,6 +658,26 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges {
 
     public isPendenzGemeindeRolle(): boolean {
         return this.pendenz && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles());
+    }
+
+    private initStateStores(): void {
+        if (!this.stateStoreId) {
+            return;
+        }
+        this.sortId = `${this.stateStoreId}-sort`;
+        this.filterId = `${this.stateStoreId}-filter`;
+
+        this.transitionService.onStart({exiting: this.uiRouterGlobals.$current.name}, () => {
+            if (this.sort.predicate) {
+                this.stateStore.store(this.sortId, this.sort);
+            } else {
+                this.stateStore.delete(this.sortId);
+                this.stateStore.delete(this.filterId);
+            }
+
+            this.stateStore.store(this.filterId, this.filterPredicate);
+        });
+
     }
 
     public getVerantwortlicheBgAndTs(antrag: DVAntragListItem): string {

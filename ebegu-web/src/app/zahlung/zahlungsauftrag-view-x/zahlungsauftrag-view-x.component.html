@@ -115,18 +115,18 @@
             <h3 translate>ZAHLUNGSAUFTRAEGE</h3>
         </div>
         <div class="col-md-1 text-right">
-            <h3>{{zahlungsAuftraegeFiltered.length}}</h3>
+            <h3>{{totalResult}}</h3>
         </div>
     </div>
     <div class="table-responsive" *ngIf="showGemeindeFilter()">
         <table class="table ebegu-table fixedtable table-striped">
             <thead>
-            <tr dv-show-element dv-show-allowed-roles="['SUPER_ADMIN']">
+            <tr>
                 <th></th>
                 <th></th>
                 <th>
                     <div class="dv-select-style">
-                        <select name="gemeindeFilter" [(ngModel)]="filterGemeinde" (ngModelChange)="filterZahlungsAuftraege()">
+                        <select name="gemeindeFilter" [(ngModel)]="filterGemeinde" (ngModelChange)="updateZahlungsauftrag()">
                             <option [ngValue]="null" selected>{{"ALLE" | translate}}</option>
                             <option *ngFor="let gemeindeItem of gemeindenList" [ngValue]="gemeindeItem">{{gemeindeItem.name}}</option>
                         </select>
@@ -145,7 +145,7 @@
     </div>
     <div class="dv-table dv-simple-table table-striped" *ngIf="datasource && principal">
         <div class="mat-elevation-z0">
-            <mat-table matSort
+            <mat-table matSort (matSortChange)="sortData($event)"
                        [dataSource]="datasource">
 
                 <ng-container *ngFor="let column of tableColumns" [matColumnDef]="column.attributeName">

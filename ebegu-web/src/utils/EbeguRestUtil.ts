@@ -14,6 +14,7 @@
  */
 
 import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../app/core/constants/CONSTANTS';
+import {TSFerienbetreuungBerechnung} from '../app/gemeinde-antraege/ferienbetreuung/ferienbetreuung-kosten-einnahmen/TSFerienbetreuungBerechnung';
 import {TSDokumenteDTO} from '../models/dto/TSDokumenteDTO';
 import {TSFinanzielleSituationResultateDTO} from '../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSKitaxResponse} from '../models/dto/TSKitaxResponse';
@@ -2589,6 +2590,7 @@ export class EbeguRestUtil {
         restPendenz.gesuchBetreuungenStatus = pendenz.gesuchBetreuungenStatus;
         restPendenz.eingangsart = pendenz.eingangsart;
         restPendenz.besitzerUsername = pendenz.besitzerUsername;
+        restPendenz.internePendenz = pendenz.internePendenz;
         restPendenz.dokumenteHochgeladen = pendenz.dokumenteHochgeladen;
         restPendenz.fallId = pendenz.fallId;
         restPendenz.gemeindeId = pendenz.gemeindeId;
@@ -2622,6 +2624,8 @@ export class EbeguRestUtil {
         antragTS.gesuchBetreuungenStatus = antragFromServer.gesuchBetreuungenStatus;
         antragTS.eingangsart = antragFromServer.eingangsart;
         antragTS.besitzerUsername = antragFromServer.besitzerUsername;
+        antragTS.internePendenz = antragFromServer.internePendenz;
+        antragTS.internePendenzAbgelaufen = antragFromServer.internePendenzAbgelaufen;
         antragTS.dokumenteHochgeladen = antragFromServer.dokumenteHochgeladen;
         antragTS.gemeinde = antragFromServer.gemeinde;
         antragTS.fallId = antragFromServer.fallId;
@@ -3018,6 +3022,7 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.sameAusbezahlteVerguenstigung =
                 zeitabschnittFromServer.sameAusbezahlteVerguenstigung;
             verfuegungZeitabschnittTS.sameAusbezahlteMahlzeiten = zeitabschnittFromServer.sameAusbezahlteMahlzeiten;
+            verfuegungZeitabschnittTS.sameVerfuegteMahlzeitenVerguenstigung = zeitabschnittFromServer.sameVerfuegteMahlzeitenVerguenstigung;
             verfuegungZeitabschnittTS.sameVerfuegteVerfuegungsrelevanteDaten =
                 zeitabschnittFromServer.sameVerfuegteVerfuegungsrelevanteDaten;
             verfuegungZeitabschnittTS.verfuegteAnzahlZeiteinheiten =
@@ -4871,7 +4876,7 @@ export class EbeguRestUtil {
         restContainer.angabenDeklaration = this.ferienbetreuungToRestObject({}, containerTS.angabenDeklaration);
         restContainer.angabenKorrektur = this.ferienbetreuungToRestObject({}, containerTS.angabenKorrektur);
         restContainer.internerKommentar = containerTS.internerKommentar;
-        return containerTS;
+        return restContainer;
     }
 
     private ferienbetreuungToRestObject(restFerienbetreuung: any, ferienbetreuungTS: TSFerienbetreuungAngaben): any {
@@ -4885,7 +4890,11 @@ export class EbeguRestUtil {
         restFerienbetreuung.nutzung = this.ferienbetreuungNutzungToRestObject({}, ferienbetreuungTS.nutzung);
         restFerienbetreuung.kostenEinnahmen =
             this.ferienbetreuungKostenEinnahmenToRestObject({}, ferienbetreuungTS.kostenEinnahmen);
-        return ferienbetreuungTS;
+        if (ferienbetreuungTS.berechnungen) {
+           restFerienbetreuung.berechnungen =
+                   this.ferienbetreuungBerechnungenToRestObject({}, ferienbetreuungTS.berechnungen);
+        }
+        return restFerienbetreuung;
         // never send kantonsbeitrag and gemeindebeitrag to server
     }
 
@@ -5160,6 +5169,21 @@ export class EbeguRestUtil {
         kostenEinnahmenTS.elterngebuehren = kostenEinnahmenFromServer.elterngebuehren;
         kostenEinnahmenTS.weitereEinnahmen = kostenEinnahmenFromServer.weitereEinnahmen;
         return kostenEinnahmenTS;
+    }
+
+    private ferienbetreuungBerechnungenToRestObject(restBerechnung: any, berechnung: TSFerienbetreuungBerechnung): any {
+        restBerechnung.totalKosten = berechnung.totalKosten;
+        restBerechnung.betreuungstageKinderDieserGemeindeMinusSonderschueler =
+                berechnung.betreuungstageKinderDieserGemeindeMinusSonderschueler;
+        restBerechnung.betreuungstageKinderAndererGemeindeMinusSonderschueler =
+                berechnung.betreuungstageKinderAndererGemeindeMinusSonderschueler;
+        restBerechnung.totalKantonsbeitrag = berechnung.totalKantonsbeitrag;
+        restBerechnung.totalEinnahmen = berechnung.totalEinnahmen;
+        restBerechnung.beitragKinderAnbietendenGemeinde = berechnung.beitragFuerKinderDerAnbietendenGemeinde;
+        restBerechnung.beteiligungAnbietendenGemeinde = berechnung.beteiligungDurchAnbietendeGemeinde;
+        restBerechnung.beteiligungZuTief = berechnung.beteiligungZuTief;
+
+        return restBerechnung;
     }
 
     public parseFerienbetreuungDokumente(data: any): TSFerienbetreuungDokument[] {

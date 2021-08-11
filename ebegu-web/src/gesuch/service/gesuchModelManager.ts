@@ -15,6 +15,7 @@
 
 import {ILogService, IPromise, IQService} from 'angular';
 import * as moment from 'moment';
+import {Subscription} from 'rxjs';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {ErrorService} from '../../app/core/errors/service/ErrorService';
 import {AntragStatusHistoryRS} from '../../app/core/service/antragStatusHistoryRS.rest';
@@ -78,6 +79,7 @@ import {TSKindContainer} from '../../models/TSKindContainer';
 import {TSVerfuegung} from '../../models/TSVerfuegung';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
+import {InternePendenzenRS} from '../component/internePendenzenView/internePendenzenRS.rest';
 import {DossierRS} from './dossierRS.rest';
 import {EinkommensverschlechterungContainerRS} from './einkommensverschlechterungContainerRS.rest';
 import {FinanzielleSituationRS} from './finanzielleSituationRS.rest';
@@ -94,7 +96,7 @@ export class GesuchModelManager {
         'ErwerbspensumRS', 'InstitutionStammdatenRS', 'BetreuungRS', '$log', 'AuthServiceRS',
         'EinkommensverschlechterungContainerRS', 'VerfuegungRS', 'WizardStepManager',
         'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', '$q', 'AuthLifeCycleService', 'EwkRS',
-        'GlobalCacheService', 'DossierRS', 'GesuchGenerator', 'GemeindeRS',
+        'GlobalCacheService', 'DossierRS', 'GesuchGenerator', 'GemeindeRS', 'InternePendenzenRS',
     ];
     private gesuch: TSGesuch;
     private neustesGesuch: boolean;
@@ -107,11 +109,15 @@ export class GesuchModelManager {
     private activInstitutionenForGemeindeList: Array<TSInstitutionStammdaten>;
     public gemeindeStammdaten: TSGemeindeStammdaten;
     public gemeindeKonfiguration: TSGemeindeKonfiguration;
+    public numberInternePendenzen: number;
+    public hasAbgelaufenePendenz: boolean;
 
     public ewkResultat: TSEWKResultat;
 
     // initialize empty KinderContainer list to avoid infinite loop in smart table
     public emptyKinderList: Array<TSKindContainer> = [];
+
+    private subscription: Subscription;
 
     public constructor(
         private readonly gesuchRS: GesuchRS,
@@ -137,6 +143,7 @@ export class GesuchModelManager {
         private readonly dossierRS: DossierRS,
         private readonly gesuchGenerator: GesuchGenerator,
         private readonly gemeindeRS: GemeindeRS,
+        private readonly internePendenzenRS: InternePendenzenRS,
     ) {
     }
 
@@ -193,6 +200,19 @@ export class GesuchModelManager {
                 this.gesuchRS.isNeuestesGesuch(this.gesuch.id).then((resp: boolean) => {
                     this.neustesGesuch = resp;
                 });
+            }
+            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeBgTSMandantRoles())) {
+                this.subscription = this.internePendenzenRS.getPendenzCountUpdated$(this.getGesuch())
+                .subscribe(() => {
+                    this.internePendenzenRS.countInternePendenzenForGesuch(this.getGesuch())
+                    .subscribe(numberInternePendenzen => this.numberInternePendenzen = numberInternePendenzen,
+                        error => this.log.error(error));
+                    this.internePendenzenRS.findInternePendenzenForGesuch(this.getGesuch()).subscribe(pendenzen => {
+                        this.hasAbgelaufenePendenz =
+                            pendenzen.reduce((has, current) =>
+                                current.termin.isBefore(moment()) && !current.erledigt || has, false);
+                    }, error => this.log.error(error));
+                }, error => this.log.error(error));
             }
         }
         // Liste zuruecksetzen, da u.U. im Folgegesuch andere Stammdaten gelten!
@@ -1699,5 +1719,9 @@ export class GesuchModelManager {
             return true;
         }
         return false;
+    }
+
+    public $onDestroy(): void {
+        this.subscription?.unsubscribe();
     }
 }

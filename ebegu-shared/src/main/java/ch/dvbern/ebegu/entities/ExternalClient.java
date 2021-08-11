@@ -30,6 +30,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.ExternalClientInstitutionType;
 import ch.dvbern.ebegu.enums.ExternalClientType;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
@@ -57,14 +58,25 @@ public class ExternalClient extends AbstractEntity {
 	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private @NotNull ExternalClientType type;
 
+	/**
+	 * Spezifiziert, welche Art(en) von Institutionen diesen ExternalClient sehen und freigeben können
+	 * EXCHANGE_SERVICE_INSTITUTION steht dabei für ALLE Arten von Institutionen
+	 */
+	@Nullable
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
+	private ExternalClientInstitutionType institutionType;
+
 	public ExternalClient() {
 		this.clientName = "";
 		this.type = ExternalClientType.EXCHANGE_SERVICE_USER;
+		this.institutionType = ExternalClientInstitutionType.EXCHANGE_SERVICE_INSTITUTION;
 	}
 
-	public ExternalClient(@Nonnull String clientName, @Nonnull ExternalClientType type) {
+	public ExternalClient(@Nonnull String clientName, @Nonnull ExternalClientType type, @Nullable ExternalClientInstitutionType institutionType) {
 		this.clientName = clientName;
 		this.type = type;
+		this.institutionType = institutionType;
 	}
 
 	@Override
@@ -97,5 +109,14 @@ public class ExternalClient extends AbstractEntity {
 
 	public void setType(@Nonnull ExternalClientType type) {
 		this.type = type;
+	}
+
+	@Nullable
+	public ExternalClientInstitutionType getInstitutionType() {
+		return institutionType;
+	}
+
+	public void setInstitutionType(@Nonnull ExternalClientInstitutionType institutionType) {
+		this.institutionType = institutionType;
 	}
 }

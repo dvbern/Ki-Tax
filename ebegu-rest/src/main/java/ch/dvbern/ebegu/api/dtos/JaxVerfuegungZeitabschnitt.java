@@ -126,6 +126,7 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	private boolean sameAusbezahlteVerguenstigung;
 	private boolean sameAusbezahlteMahlzeiten;
+	private boolean sameVerfuegteMahlzeitenVerguenstigung;
 
 	@Nullable
 	private JaxTsCalculationResult tsCalculationResultMitPaedagogischerBetreuung;
@@ -424,4 +425,11 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		this.verguenstigungMahlzeitTotal = verguenstigungMahlzeitTotal;
 	}
 
+	public boolean isSameVerfuegteMahlzeitenVerguenstigung() {
+		return sameVerfuegteMahlzeitenVerguenstigung;
+	}
+
+	public void setSameVerfuegteMahlzeitenVerguenstigung(boolean sameVerfuegteMahlzeitenVerguenstigung) {
+		this.sameVerfuegteMahlzeitenVerguenstigung = sameVerfuegteMahlzeitenVerguenstigung;
+	}
 }

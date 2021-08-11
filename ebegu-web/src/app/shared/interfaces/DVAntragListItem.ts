@@ -28,6 +28,7 @@ export interface DVAntragListItem {
     antragTyp?: string;
     periode?: string;
     aenderungsdatum?: moment.Moment;
+    internePendenz?: boolean;
     dokumenteHochgeladen?: boolean;
     angebote?: TSBetreuungsangebotTyp[];
     institutionen?: string[];

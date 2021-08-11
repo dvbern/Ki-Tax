@@ -24,5 +24,9 @@ public enum LastenausgleichTagesschuleAngabenGemeindeStatus {
 	IN_PRUEFUNG_KANTON,
 	ZWEITPRUEFUNG, // Zufaellig ausgewaehlte werden zur Zweitpruefung gesetzt
 	GEPRUEFT,
-	VERFUEGT // Ausbezahlt
+	VERFUEGT; // Ausbezahlt
+
+	public boolean atLeastGeprueft() {
+		return this.equals(GEPRUEFT) || this.equals(VERFUEGT);
+	}
 }
