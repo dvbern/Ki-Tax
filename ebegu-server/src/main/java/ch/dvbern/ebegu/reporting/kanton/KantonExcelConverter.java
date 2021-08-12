@@ -110,7 +110,9 @@ public class KantonExcelConverter implements ExcelConverter {
 			}
 			rowFiller.fillRow(excelRowGroup);
 		});
-		this.addTotalRow(rowFiller, data.size());
+		if (!data.isEmpty()){
+			this.addTotalRow(rowFiller, data.size());
+		}
 	}
 
 	private void addTotalRow(RowFiller rowFiller, int nbrCell) {

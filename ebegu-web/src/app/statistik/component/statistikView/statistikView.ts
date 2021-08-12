@@ -18,6 +18,7 @@ import * as moment from 'moment';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
+import {TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSStatistikParameterType} from '../../../../models/enums/TSStatistikParameterType';
 import {TSBatchJobInformation} from '../../../../models/TSBatchJobInformation';
@@ -92,6 +93,7 @@ export class StatistikViewController implements IController {
     private showMahlzeitenStatistik: boolean = false;
     public gemeindenMahlzeitenverguenstigungen: TSGemeinde[];
     private flagShowErrorNoGesuchSelected: boolean = false;
+    private showKantonStatistik: boolean = false;
 
     public constructor(
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
@@ -131,6 +133,7 @@ export class StatistikViewController implements IController {
                 this.institutionStammdatenList = StatistikViewController.sortInstitutions(institutionStammdatenList);
             });
         this.updateShowMahlzeitenStatistik();
+        this.updateShowKantonStatistik();
         this.refreshUserJobs();
         this.initBatchJobPolling();
     }
@@ -257,7 +260,7 @@ export class StatistikViewController implements IController {
                         title: this.$translate.instant('MASSENVERSAND_ERSTELLEN_CONFIRM_TITLE'),
                         deleteText: this.$translate.instant('MASSENVERSAND_ERSTELLEN_CONFIRM_INFO'),
                         parentController: undefined,
-                        elementID: undefined
+                        elementID: undefined,
                     }).then(() => { // User confirmed removal
                         this.createMassenversand();
                     });
@@ -431,5 +434,19 @@ export class StatistikViewController implements IController {
             !this.statistikParameter.bgGesuche
             && !this.statistikParameter.mischGesuche
             && !this.statistikParameter.tsGesuche;
+    }
+
+    public updateShowKantonStatistik(): void {
+        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            this.showKantonStatistik = true;
+            return;
+        }
+        this.institutionStammdatenRS.getBetreuungsangeboteForInstitutionenOfCurrentBenutzer().then(response => {
+            response.forEach(angebottyp => {
+                if (angebottyp !== TSBetreuungsangebotTyp.TAGESSCHULE) {
+                    this.showKantonStatistik = true;
+                }
+            });
+        });
     }
 }
