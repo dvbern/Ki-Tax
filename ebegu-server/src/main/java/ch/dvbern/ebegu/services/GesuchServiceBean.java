@@ -1020,10 +1020,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			LOG.info("Freigabe des Gesuchs {} wurde zurückgezogen", gesuch.getJahrFallAndGemeindenummer());
 
 			// Den Gesuchsstatus auf In Bearbeitung GS oder Sozialdienst zurücksetzen
-			if (gesuch.getFall().getSozialdienstFall() == null) {
-				gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_GS);
-			} else {
+			if (gesuch.getFall().isSozialdienstFall()) {
 				gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_SOZIALDIENST);
+			} else {
+				gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_GS);
 			}
 			// Das Freigabedatum muss wieder zurückgesetzt werden, falls es ein Online Gesuch ist
 			gesuch.setFreigabeDatum(null);
