@@ -110,9 +110,12 @@ public class DocxDocument {
 		int currStringIndex = 0;
 		for (int i = 0; i < runs.size(); i++) {
 			XWPFRun run = runs.get(i);
+			if (run.getText(0) == null) {
+				continue;
+			}
 			String textOfRun = run.getText(0);
 			// store initial run text length
-			int textOfRunLength = run.getText(0).length();
+			int textOfRunLength = textOfRun.length();
 			// check if placeholder starts in current run
 			if (currStringIndex + textOfRunLength >= placeholderIndex) {
 				// starting point could be at index 0 or somewhere in the middle
