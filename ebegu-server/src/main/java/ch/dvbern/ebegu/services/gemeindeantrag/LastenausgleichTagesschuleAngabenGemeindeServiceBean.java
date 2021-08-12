@@ -80,6 +80,7 @@ import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
@@ -384,6 +385,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			query.where(periodePredicate);
 		}
 		if (status != null) {
+			if (!EnumUtil.isOneOf(status, LastenausgleichTagesschuleAngabenGemeindeStatus.values())) {
+				return new ArrayList<>();
+			}
 			final Predicate statusPredicate = createStatusPredicate(status, cb, root);
 			query.where(
 				statusPredicate
@@ -483,6 +487,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			query.where(periodePredicate);
 		}
 		if (status != null) {
+			if (!EnumUtil.isOneOf(status, LastenausgleichTagesschuleAngabenGemeindeStatus.values())) {
+				return new ArrayList<>();
+			}
 			final Predicate statusPredicate = createStatusPredicate(status, cb, root);
 			query.where(
 				statusPredicate

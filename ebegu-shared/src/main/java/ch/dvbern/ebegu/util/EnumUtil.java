@@ -57,6 +57,31 @@ public final class EnumUtil {
 	}
 
 	/**
+	 * Gibt true{@code true} zurück wenn der Parameter <tt>toTest</tt> einem der Werte <tt>otherValues</tt>
+	 * entspricht
+	 */
+	@SafeVarargs
+	public static <T extends Enum<T>> boolean isOneOf(@Nullable final String toTest, @Nonnull final T... otherValues) {
+		return isOneOf(toTest, Arrays.asList(otherValues));
+	}
+
+	/**
+	 * Gibt true{@code true} zurück wenn der Parameter <tt>toTest</tt> einem der Werte <tt>otherValues</tt>
+	 * entspricht
+	 */
+	public static <T extends Enum<T>> boolean isOneOf(@Nullable final String toTest, @Nonnull final List<T> otherValues) {
+		if (toTest == null) {
+			return false;
+		}
+		for (final T enumType : otherValues) {
+			if (enumType.name().equals(toTest)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Gibt true{@code true} zurück wenn der Parameter <tt>toTest</tt> keinem der Werte <tt>otherValues</tt>
 	 * entspricht
 	 */

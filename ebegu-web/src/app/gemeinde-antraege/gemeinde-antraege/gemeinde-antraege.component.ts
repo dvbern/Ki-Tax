@@ -75,6 +75,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         'institutionen',
         'verantwortlicheTS',
         'verantwortlicheBG',
+        'internePendenz'
     ];
 
     public antragList$: Observable<DVAntragListItem[]>;
