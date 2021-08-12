@@ -18,10 +18,12 @@
 import {NgModuleRef} from '@angular/core';
 import {TransitionService} from '@uirouter/angular';
 import {AppModule} from '../../app/app.module';
+import {MandantService} from '../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../service/AuthServiceRS.rest';
 import {authenticationHookRunBlockX} from './onBefore/authenticationX.hook';
 import {authorisationHookRunBlockX} from './onBefore/authorisationX.hook';
 import {debugHookRunBlock} from './onBefore/debug.hook';
+import {mandantCheck} from './onBefore/mandant.hook';
 
 export function initHooks(platformRef: NgModuleRef<AppModule>): void {
 
@@ -35,5 +37,9 @@ export function initHooks(platformRef: NgModuleRef<AppModule>): void {
     );
     debugHookRunBlock(
         platformRef.injector.get<TransitionService>(TransitionService)
+    );
+    mandantCheck(
+        platformRef.injector.get<TransitionService>(TransitionService),
+        platformRef.injector.get<MandantService>(MandantService),
     );
 }
