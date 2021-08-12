@@ -106,7 +106,7 @@ export class AuthServiceRS {
     public initWithCookie(): IPromise<TSBenutzer> {
         LOG.debug('initWithCookie');
 
-        const authIdbase64 = this.$cookies.get('authId');
+        const authIdbase64 = this.$cookies.get('authIdSuperuser') || this.$cookies.get('authId');
         if (!authIdbase64) {
             LOG.info('no login cookie available');
             this.clearPrincipal();

@@ -22,6 +22,7 @@ import java.util.Base64;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -48,6 +49,7 @@ import ch.dvbern.ebegu.api.dtos.JaxAuthAccessElementCookieData;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.authentication.AuthAccessElement;
 import ch.dvbern.ebegu.authentication.AuthLoginElement;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AuthorisierterBenutzer;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -90,6 +92,9 @@ public class AuthResource {
 
 	@Inject
 	private LoginProviderInfoRestService loginProviderInfoRestService;
+
+	@Inject
+	private PrincipalBean principal;
 
 	@Path("/portalAccountPage")
 	@Consumes(MediaType.WILDCARD)
@@ -160,8 +165,13 @@ public class AuthResource {
 	@Path("/login")
 	@PermitAll
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response login(@Nonnull JaxBenutzer loginElement) {
+	public Response login(
+			@Nonnull JaxBenutzer loginElement,
+			@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN) Cookie authTokenCookie,
+			@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN_SUPERUSER) Cookie authTokenCookieSuperuser) {
 		if (configuration.isDummyLoginEnabled()) {
+
+			Response res = this.logout(authTokenCookie, authTokenCookieSuperuser);
 
 			// zuerst im Container einloggen, sonst schlaegt in den Entities die Mandanten-Validierung fehl
 			if (!usernameRoleChecker.checkLogin(loginElement.getUsername(), loginElement.getPassword())) {
@@ -201,20 +211,32 @@ public class AuthResource {
 			JaxAuthAccessElementCookieData element = convertToJaxAuthAccessElement(access);
 			boolean cookieSecure = isCookieSecure();
 
+			boolean isSuperAdmin = benutzer.getCurrentBerechtigung().getRole().isSuperadmin();
+			
+			String domain = isSuperAdmin ?
+					AuthConstants.COOKIE_DOMAIN_SUPERUSER :
+					AuthConstants.COOKIE_DOMAIN;
+
 			// Cookie to store auth_token, HTTP-Only Cookie --> Protection from XSS
-			NewCookie authCookie = new NewCookie(AuthConstants.COOKIE_AUTH_TOKEN, access.getAuthToken(),
-				AuthConstants.COOKIE_PATH, AuthConstants.COOKIE_DOMAIN, "authentication",
+			NewCookie authCookie = new NewCookie(isSuperAdmin ? AuthConstants.COOKIE_AUTH_TOKEN_SUPERUSER : AuthConstants.COOKIE_AUTH_TOKEN, access.getAuthToken(),
+				AuthConstants.COOKIE_PATH, domain, "authentication",
 				AuthConstants.COOKIE_TIMEOUT_SECONDS, cookieSecure, true);
 			// Readable Cookie for XSRF Protection (the Cookie can only be read from our Domain)
 			NewCookie xsrfCookie = new NewCookie(AuthConstants.COOKIE_XSRF_TOKEN, access.getXsrfToken(),
-				AuthConstants.COOKIE_PATH, AuthConstants.COOKIE_DOMAIN, "XSRF",
+				AuthConstants.COOKIE_PATH, domain, "XSRF",
 				AuthConstants.COOKIE_TIMEOUT_SECONDS, cookieSecure, false);
 			// Readable Cookie storing user data
-			NewCookie principalCookie = new NewCookie(AuthConstants.COOKIE_PRINCIPAL, encodeAuthAccessElement(element),
-				AuthConstants.COOKIE_PATH, AuthConstants.COOKIE_DOMAIN, "principal",
+			NewCookie principalCookie = new NewCookie(isSuperAdmin ? AuthConstants.COOKIE_PRINCIPAL_SUPERUSER : AuthConstants.COOKIE_PRINCIPAL, encodeAuthAccessElement(element),
+				AuthConstants.COOKIE_PATH, domain, "principal",
 				AuthConstants.COOKIE_TIMEOUT_SECONDS, cookieSecure, false);
 
-			return Response.noContent().cookie(authCookie, xsrfCookie, principalCookie).build();
+			return Response.noContent()
+					.cookie(authCookie,
+							xsrfCookie,
+							principalCookie,
+							res.getCookies().get(isSuperAdmin ? AuthConstants.COOKIE_AUTH_TOKEN : AuthConstants.COOKIE_AUTH_TOKEN_SUPERUSER),
+							res.getCookies().get(isSuperAdmin ? AuthConstants.COOKIE_PRINCIPAL : AuthConstants.COOKIE_PRINCIPAL_SUPERUSER))
+					.build();
 		}
 
 		LOG.warn("Dummy Login is disabled, returning 410");
@@ -254,19 +276,28 @@ public class AuthResource {
 	@Path("/logout")
 	@PermitAll
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response logout(@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN) Cookie authTokenCookie) {
+	public Response logout(
+			@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN) Cookie authTokenCookie,
+			@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN_SUPERUSER) Cookie authTokenCookieSuperuser) {
 		try {
-			if (authTokenCookie != null) {
-				String authToken = Objects.requireNonNull(authTokenCookie.getValue());
+			AtomicBoolean isSuperAdmin = new AtomicBoolean(false);
+			if (authTokenCookie != null || authTokenCookieSuperuser != null) {
+				String authToken = Objects.requireNonNull(authTokenCookieSuperuser != null ? authTokenCookieSuperuser.getValue() : authTokenCookie.getValue());
+				authService.findByTokenValue(authTokenCookieSuperuser != null ? authTokenCookieSuperuser.getValue() : authTokenCookie.getValue()).ifPresentOrElse(
+						(benutzer) -> isSuperAdmin.set(benutzer.getCurrentBerechtigung().getRole().isSuperadmin()),
+						() -> isSuperAdmin.set(false));
 				if (!authService.logoutAndDelete(authToken)) {
 					LOG.debug("Could not remove authToken in database");
 				}
 			}
 			// Always Respond with expired cookies
 			boolean cookieSecure = isCookieSecure();
-			NewCookie authCookie = expireCookie(AuthConstants.COOKIE_AUTH_TOKEN, cookieSecure, true);
-			NewCookie xsrfCookie = expireCookie(AuthConstants.COOKIE_XSRF_TOKEN, cookieSecure, false);
-			NewCookie principalCookie = expireCookie(AuthConstants.COOKIE_PRINCIPAL, cookieSecure, false);
+
+			NewCookie authCookie = expireCookie(isSuperAdmin.get() ? AuthConstants.COOKIE_AUTH_TOKEN_SUPERUSER : AuthConstants.COOKIE_AUTH_TOKEN, cookieSecure, true, isSuperAdmin.get());
+			NewCookie xsrfCookie = expireCookie(AuthConstants.COOKIE_XSRF_TOKEN, cookieSecure, false,
+					isSuperAdmin.get());
+			NewCookie principalCookie = expireCookie(isSuperAdmin.get() ? AuthConstants.COOKIE_PRINCIPAL_SUPERUSER : AuthConstants.COOKIE_PRINCIPAL, cookieSecure, false,
+					isSuperAdmin.get());
 			return Response.noContent().cookie(authCookie, xsrfCookie, principalCookie).build();
 		} catch (NoSuchElementException e) {
 			LOG.info("Token Decoding from Cookies failed", e);
@@ -275,8 +306,9 @@ public class AuthResource {
 	}
 
 	@Nonnull
-	private NewCookie expireCookie(@Nonnull String name, boolean secure, boolean httpOnly) {
-		return new NewCookie(name, "", AuthConstants.COOKIE_PATH, AuthConstants.COOKIE_DOMAIN, "", 0, secure, httpOnly);
+	private NewCookie expireCookie(@Nonnull String name, boolean secure, boolean httpOnly, boolean isSuperAdmin) {
+		String domain =isSuperAdmin? AuthConstants.COOKIE_DOMAIN_SUPERUSER : AuthConstants.COOKIE_DOMAIN;
+		return new NewCookie(name, "", AuthConstants.COOKIE_PATH, domain, "", 0, secure, httpOnly);
 	}
 
 	/**
