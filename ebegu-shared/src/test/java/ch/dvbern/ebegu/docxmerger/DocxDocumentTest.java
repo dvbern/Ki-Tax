@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.docxmerger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -40,6 +41,28 @@ public class DocxDocumentTest {
 		XWPFParagraph paragraph2 = document.createParagraph();
 		XWPFRun run3 = paragraph2.createRun();
 		run3.setText("{placeholder}");
+
+		XWPFParagraph paragraph3 = document.createParagraph();
+		XWPFRun run4 = paragraph3.createRun();
+		run4.setText("{");
+		XWPFRun run5 = paragraph3.createRun();
+		run5.setText("placeholder}");
+
+		XWPFParagraph paragraph4 = document.createParagraph();
+		XWPFRun run6 = paragraph4.createRun();
+		run6.setText("{");
+		XWPFRun run7 = paragraph4.createRun();
+		run7.setText("placeholder} some other text");
+
+		XWPFParagraph paragraph5 = document.createParagraph();
+		XWPFRun run8 = paragraph5.createRun();
+		run8.setText("abcd {");
+		XWPFRun run9 = paragraph5.createRun();
+		run9.setText("place");
+		XWPFRun run10 = paragraph5.createRun();
+		run10.setText("holder} some other text");
+
+
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		document.write(out);
@@ -70,6 +93,32 @@ public class DocxDocumentTest {
 
 		docxDocument.replacePlaceholder("{placeholder2}", "replaced");
 		Assert.assertEquals("the second text (replaced) placeholder in brackets", xwpfDocument.getParagraphs().get(0).getRuns().get(1).getText(0));
+
+		/* test following:
+		* run1: "{"
+		* run2: "placeholder}"
+		* */
+		List<XWPFRun> paragraph3Runs = xwpfDocument.getParagraphs().get(2).getRuns();
+		Assert.assertEquals("replaced", paragraph3Runs.get(0).getText(0));
+		Assert.assertEquals("", paragraph3Runs.get(1).getText(0));
+
+		/* test following:
+		 * run1: "{"
+		 * run2: "placeholder} some other text"
+		 * */
+		List<XWPFRun> paragraph4Runs = xwpfDocument.getParagraphs().get(3).getRuns();
+		Assert.assertEquals("replaced", paragraph4Runs.get(0).getText(0));
+		Assert.assertEquals(" some other text", paragraph4Runs.get(1).getText(0));
+
+		/* test following:
+		 * run1: "abcd {"
+		 * run2: "place"
+		 * run3: "holder} some other text"
+		 * */
+		List<XWPFRun> paragraph5Runs = xwpfDocument.getParagraphs().get(4).getRuns();
+		Assert.assertEquals("abcd replaced", paragraph5Runs.get(0).getText(0));
+		Assert.assertEquals("", paragraph5Runs.get(1).getText(0));
+		Assert.assertEquals(" some other text", paragraph5Runs.get(2).getText(0));
 	}
 
 	@Test(expected = EbeguRuntimeException.class)
