@@ -97,7 +97,7 @@
                                             <label class="required" translate for="fiAktivierungsdatum_{{i}}">
                                                 FI_START</label>
                                             <input class="dv-mat-datepicker" type="text"
-                                                   name="'fiAktivierungsdatum_'+i" id="fiAktivierungsdatum_{{i}}"
+                                                   [name]="'fiAktivierungsdatum_'+i" id="fiAktivierungsdatum_{{i}}"
                                                    [(ngModel)]="konfigurationsListe[i].konfigFerieninselAktivierungsdatum"
                                                    [matDatepicker]="fiAktivierungsdatum"
                                                    (dateChange)="ferieninselAktivierungsdatumChanged(konfigurationsListe[i])"
