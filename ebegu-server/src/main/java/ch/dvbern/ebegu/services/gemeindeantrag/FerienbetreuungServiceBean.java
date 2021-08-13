@@ -17,9 +17,9 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -65,6 +65,7 @@ import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.base.Preconditions;
 
@@ -138,6 +139,10 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			);
 		}
 		if (status != null) {
+			if (!EnumUtil.isOneOf(status, FerienbetreuungAngabenStatus.values())) {
+				return new ArrayList<>();
+			}
+
 			predicates.add(
 				cb.equal(
 					root.get(FerienbetreuungAngabenContainer_.status),
@@ -553,7 +558,8 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 		this.getFerienbetreuungAntraege(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null)
 			.forEach(antrag -> {
-				this.ferienbetreuungDokumentService.findDokumente(antrag.getId()).forEach(dokument -> persistence.remove(dokument));
+				this.ferienbetreuungDokumentService.findDokumente(antrag.getId())
+					.forEach(dokument -> persistence.remove(dokument));
 				persistence.remove(antrag);
 			});
 	}
