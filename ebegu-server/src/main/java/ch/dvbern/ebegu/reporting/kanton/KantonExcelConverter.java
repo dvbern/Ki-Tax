@@ -46,6 +46,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Dependent
 public class KantonExcelConverter implements ExcelConverter {
 
+	private static final String EMPTY_STRING = " ";
+
 	@Override
 	public void applyAutoSize(@Nonnull Sheet sheet) {
 	}
@@ -78,6 +80,10 @@ public class KantonExcelConverter implements ExcelConverter {
 		RowFiller rowFiller,
 		@Nonnull List<KantonDataRow> data
 	) {
+		if (data.isEmpty()) {
+			addEmptyRow(rowFiller);
+			return;
+		}
 		data.forEach(dataRow -> {
 			ExcelMergerDTO excelRowGroup = new ExcelMergerDTO();
 			excelRowGroup.addValue(MergeFieldKanton.gemeinde, dataRow.getGemeinde());
@@ -100,19 +106,35 @@ public class KantonExcelConverter implements ExcelConverter {
 				excelRowGroup.addValue(MergeFieldKanton.verguenstigungGemeinde, dataRow.getVerguenstigungGemeinde());
 				excelRowGroup.addValue(MergeFieldKanton.verguenstigungTotal, dataRow.getVerguenstigungTotal());
 			} else {
-				excelRowGroup.addValue(MergeFieldKanton.bgPensumKanton, BigDecimal.ZERO);
-				excelRowGroup.addValue(MergeFieldKanton.bgPensumGemeinde, BigDecimal.ZERO);
-				excelRowGroup.addValue(MergeFieldKanton.bgPensumTotal, BigDecimal.ZERO);
-				excelRowGroup.addValue(MergeFieldKanton.elternbeitrag, BigDecimal.ZERO);
-				excelRowGroup.addValue(MergeFieldKanton.verguenstigungKanton, BigDecimal.ZERO);
-				excelRowGroup.addValue(MergeFieldKanton.verguenstigungGemeinde, BigDecimal.ZERO);
-				excelRowGroup.addValue(MergeFieldKanton.verguenstigungTotal, BigDecimal.ZERO);
+				addEmptyCalculations(excelRowGroup);
 			}
 			rowFiller.fillRow(excelRowGroup);
 		});
-		if (!data.isEmpty()){
-			this.addTotalRow(rowFiller, data.size());
-		}
+		this.addTotalRow(rowFiller, data.size());
+	}
+
+	private void addEmptyRow(RowFiller rowFiller) {
+		ExcelMergerDTO excelRowGroup = new ExcelMergerDTO();
+		excelRowGroup.addValue(MergeFieldKanton.gemeinde, EMPTY_STRING);
+		excelRowGroup.addValue(MergeFieldKanton.bgNummer, EMPTY_STRING);
+		excelRowGroup.addValue(MergeFieldKanton.gesuchId, EMPTY_STRING);
+		excelRowGroup.addValue(MergeFieldKanton.name, EMPTY_STRING);
+		excelRowGroup.addValue(MergeFieldKanton.vorname, EMPTY_STRING);
+		excelRowGroup.addValue(MergeFieldKanton.geburtsdatum, null);
+		excelRowGroup.addValue(MergeFieldKanton.zeitabschnittVon, null);
+		excelRowGroup.addValue(MergeFieldKanton.zeitabschnittBis, null);
+		addEmptyCalculations(excelRowGroup);
+		rowFiller.fillRow(excelRowGroup);
+	}
+
+	private void addEmptyCalculations(ExcelMergerDTO excelRowGroup) {
+		excelRowGroup.addValue(MergeFieldKanton.bgPensumKanton, BigDecimal.ZERO);
+		excelRowGroup.addValue(MergeFieldKanton.bgPensumGemeinde, BigDecimal.ZERO);
+		excelRowGroup.addValue(MergeFieldKanton.bgPensumTotal, BigDecimal.ZERO);
+		excelRowGroup.addValue(MergeFieldKanton.elternbeitrag, BigDecimal.ZERO);
+		excelRowGroup.addValue(MergeFieldKanton.verguenstigungKanton, BigDecimal.ZERO);
+		excelRowGroup.addValue(MergeFieldKanton.verguenstigungGemeinde, BigDecimal.ZERO);
+		excelRowGroup.addValue(MergeFieldKanton.verguenstigungTotal, BigDecimal.ZERO);
 	}
 
 	private void addTotalRow(RowFiller rowFiller, int nbrCell) {
