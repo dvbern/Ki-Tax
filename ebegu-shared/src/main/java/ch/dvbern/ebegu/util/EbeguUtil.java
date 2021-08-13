@@ -259,11 +259,12 @@ public final class EbeguUtil {
 				.getFinanzielleSituationJA())) {
 				return false;
 			}
-			if (gesuch.getGesuchsteller2() != null
-				&& gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null
+			if (gesuch.getGesuchsteller2() != null &&
+				(gesuch.getGesuchsteller2().getFinanzielleSituationContainer() == null ||
+				(gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null
 				&& !isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2()
 				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA())
+				.getFinanzielleSituationJA())))
 			) {
 				return false;
 			}

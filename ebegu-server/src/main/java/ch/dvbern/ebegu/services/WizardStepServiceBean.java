@@ -53,7 +53,6 @@ import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.WizardStep_;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -938,10 +937,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 
 			List<AbstractPlatz> allPlaetze = wizardStep.getGesuch().extractAllPlaetze();
 
-			BetreuungsangebotTyp dominantType = EbeguUtil.getDominantBetreuungsangebotTyp(allPlaetze);
-			if (dominantType == BetreuungsangebotTyp.FERIENINSEL) {
-				setWizardStepOkOrMutiert(wizardStep);
-			} else if (!EbeguUtil.isFinanzielleSituationIntroducedAndComplete(wizardStep.getGesuch(),
+			 if (!EbeguUtil.isFinanzielleSituationIntroducedAndComplete(wizardStep.getGesuch(),
 				wizardStep.getWizardStepName())
 				&& (EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch())
 					|| !EbeguUtil.isFamilienSituationVollstaendig(wizardStep.getGesuch()))
