@@ -95,7 +95,6 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
         private readonly uiRouterGlobals: UIRouterGlobals,
         private readonly cd: ChangeDetectorRef,
         private readonly dialog: MatDialog,
-        private readonly currency: CurrencyPipe,
         private readonly transition: TransitionService,
         private readonly stateStore: StateStoreService,
         private readonly errorService: ErrorService,
@@ -434,11 +433,6 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
                 displayFunction: (gemeinde: TSGemeinde) => gemeinde.name,
             },
             {
-                displayedName: this.translate.instant('ZAHLUNG_TOTAL'),
-                attributeName: 'betragTotalAuftrag',
-                displayFunction: (betrag: number) => this.currency.transform(betrag, '', ''),
-            },
-            {
                 displayedName: this.translate.instant('ZAHLUNG_STATUS'),
                 attributeName: 'status',
                 displayFunction: (
@@ -455,6 +449,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit {
         allColumnNames.splice(0, 0, 'datumFaellig');
         allColumnNames.splice(3, 0, `zahlungPain`, 'zahlungPainExcel');
         allColumnNames.splice(5, 0, `beschrieb`);
+        allColumnNames.splice(6, 0, `betragTotalAuftrag`);
         if (this.principal?.hasOneOfRoles(TSRoleUtil.getAdministratorBgGemeindeRoles())) {
             allColumnNames.push('editSave');
             allColumnNames.push('ausloesen');
