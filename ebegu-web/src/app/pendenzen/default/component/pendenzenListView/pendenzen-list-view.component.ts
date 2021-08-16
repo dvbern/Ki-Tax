@@ -131,9 +131,9 @@ export class PendenzenListViewComponent {
             });
     }
 
-    public onFilterChange(filter: DVAntragListFilter): void {
+    public onFilterChange(listFilter: DVAntragListFilter): void {
         this.search.predicateObject = {
-            ...filter,
+            ...listFilter,
         };
         this.loadData();
     }
