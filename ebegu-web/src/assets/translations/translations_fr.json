@@ -2271,7 +2271,7 @@
     "LATS_KOSTENBETEILIGUNG_GEMEINDE": "C) Contribution de la commune aux coûts",
     "LATS_EXPLANATION_SUB_HEADER_KOSTENBETEILIGUNG_GEMEINDE": "Ces données sont destinées à alimenter les statistiques et permettent de vérifier l'estimation cantonale des coûts normatifs",
     "LATS_GESAMTKOSTEN_TAGESSCHULE": "Coûts globaux de l'école à journée continue d'après les comptes communaux annuels, calculés pour l'année scolaire {{jahr}}:",
-    "LATS_EINNAHMEN_VERPFLEGUNG": "./. recettes effectives provenant des charges :",
+    "LATS_EINNAHMEN_VERPFLEGUNG": "./. recettes effectives provenant des repas :",
     "LATS_EINNAHMEN_ELTERNGEBUEHREN": "./. recettes provenant des émoluments versés par les parents (hors repas) :",
     "LATS_EINNAHMEN_SUBVENTIONEN_DRITTER": "./. éventuelles recettes provenant de subventions de tiers (par ex. incitation\nfinancière de la Confédération, autres recettes éventuelles et sponsoring) :",
     "LATS_KOSTENBEITRAG_GEMEINDE": "Contribution de la commune aux coûts :",
