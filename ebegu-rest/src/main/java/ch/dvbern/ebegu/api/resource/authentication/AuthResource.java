@@ -167,11 +167,10 @@ public class AuthResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response login(
 			@Nonnull JaxBenutzer loginElement,
-			@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN) Cookie authTokenCookie,
-			@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN_SUPERUSER) Cookie authTokenCookieSuperuser) {
+			@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN) Cookie authTokenCookie) {
 		if (configuration.isDummyLoginEnabled()) {
 
-			Response res = this.logout(authTokenCookie, authTokenCookieSuperuser);
+			Response res = this.logout(authTokenCookie);
 
 			// zuerst im Container einloggen, sonst schlaegt in den Entities die Mandanten-Validierung fehl
 			if (!usernameRoleChecker.checkLogin(loginElement.getUsername(), loginElement.getPassword())) {
@@ -213,9 +212,7 @@ public class AuthResource {
 
 			boolean isSuperAdmin = benutzer.getCurrentBerechtigung().getRole().isSuperadmin();
 			
-			String domain = isSuperAdmin ?
-					AuthConstants.COOKIE_DOMAIN_SUPERUSER :
-					AuthConstants.COOKIE_DOMAIN;
+			String domain = AuthConstants.COOKIE_DOMAIN;
 
 			// Cookie to store auth_token, HTTP-Only Cookie --> Protection from XSS
 			NewCookie authCookie = new NewCookie(isSuperAdmin ? AuthConstants.COOKIE_AUTH_TOKEN_SUPERUSER : AuthConstants.COOKIE_AUTH_TOKEN, access.getAuthToken(),
@@ -277,15 +274,10 @@ public class AuthResource {
 	@PermitAll
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response logout(
-			@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN) Cookie authTokenCookie,
-			@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN_SUPERUSER) Cookie authTokenCookieSuperuser) {
+			@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN) Cookie authTokenCookie) {
 		try {
-			AtomicBoolean isSuperAdmin = new AtomicBoolean(false);
-			if (authTokenCookie != null || authTokenCookieSuperuser != null) {
-				String authToken = Objects.requireNonNull(authTokenCookieSuperuser != null ? authTokenCookieSuperuser.getValue() : authTokenCookie.getValue());
-				authService.findByTokenValue(authTokenCookieSuperuser != null ? authTokenCookieSuperuser.getValue() : authTokenCookie.getValue()).ifPresentOrElse(
-						(benutzer) -> isSuperAdmin.set(benutzer.getCurrentBerechtigung().getRole().isSuperadmin()),
-						() -> isSuperAdmin.set(false));
+			if (authTokenCookie != null ) {
+				String authToken = Objects.requireNonNull(authTokenCookie.getValue());
 				if (!authService.logoutAndDelete(authToken)) {
 					LOG.debug("Could not remove authToken in database");
 				}
@@ -293,11 +285,9 @@ public class AuthResource {
 			// Always Respond with expired cookies
 			boolean cookieSecure = isCookieSecure();
 
-			NewCookie authCookie = expireCookie(isSuperAdmin.get() ? AuthConstants.COOKIE_AUTH_TOKEN_SUPERUSER : AuthConstants.COOKIE_AUTH_TOKEN, cookieSecure, true, isSuperAdmin.get());
-			NewCookie xsrfCookie = expireCookie(AuthConstants.COOKIE_XSRF_TOKEN, cookieSecure, false,
-					isSuperAdmin.get());
-			NewCookie principalCookie = expireCookie(isSuperAdmin.get() ? AuthConstants.COOKIE_PRINCIPAL_SUPERUSER : AuthConstants.COOKIE_PRINCIPAL, cookieSecure, false,
-					isSuperAdmin.get());
+			NewCookie authCookie = expireCookie(AuthConstants.COOKIE_AUTH_TOKEN, cookieSecure, true);
+			NewCookie xsrfCookie = expireCookie(AuthConstants.COOKIE_XSRF_TOKEN, cookieSecure, false);
+			NewCookie principalCookie = expireCookie(AuthConstants.COOKIE_PRINCIPAL, cookieSecure, false);
 			return Response.noContent().cookie(authCookie, xsrfCookie, principalCookie).build();
 		} catch (NoSuchElementException e) {
 			LOG.info("Token Decoding from Cookies failed", e);
@@ -306,9 +296,8 @@ public class AuthResource {
 	}
 
 	@Nonnull
-	private NewCookie expireCookie(@Nonnull String name, boolean secure, boolean httpOnly, boolean isSuperAdmin) {
-		String domain =isSuperAdmin? AuthConstants.COOKIE_DOMAIN_SUPERUSER : AuthConstants.COOKIE_DOMAIN;
-		return new NewCookie(name, "", AuthConstants.COOKIE_PATH, domain, "", 0, secure, httpOnly);
+	private NewCookie expireCookie(@Nonnull String name, boolean secure, boolean httpOnly) {
+		return new NewCookie(name, "", AuthConstants.COOKIE_PATH, AuthConstants.COOKIE_DOMAIN, "", 0, secure, httpOnly);
 	}
 
 	/**

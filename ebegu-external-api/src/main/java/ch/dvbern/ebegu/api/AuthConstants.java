@@ -20,8 +20,7 @@ package ch.dvbern.ebegu.api;
  */
 public interface AuthConstants {
 	String COOKIE_PATH = "/";
-	String COOKIE_DOMAIN_SUPERUSER = "local-kibon.dvbern.ch";
-	String COOKIE_DOMAIN = null;
+	String COOKIE_DOMAIN = "local-kibon.dvbern.ch";
 	String COOKIE_PRINCIPAL = "authId";
 	String COOKIE_PRINCIPAL_SUPERUSER = "authIdSuperuser";
 	String COOKIE_AUTH_TOKEN = "authToken";
