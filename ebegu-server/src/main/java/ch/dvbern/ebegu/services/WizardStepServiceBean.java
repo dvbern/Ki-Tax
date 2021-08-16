@@ -934,9 +934,6 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	private void checkFinSitStatusForBetreuungen(@Nonnull WizardStep wizardStep) {
 		if (wizardStep.getWizardStepName() == WizardStepName.EINKOMMENSVERSCHLECHTERUNG
 			|| wizardStep.getWizardStepName() == WizardStepName.FINANZIELLE_SITUATION) {
-
-			List<AbstractPlatz> allPlaetze = wizardStep.getGesuch().extractAllPlaetze();
-
 			 if (!EbeguUtil.isFinanzielleSituationIntroducedAndComplete(wizardStep.getGesuch(),
 				wizardStep.getWizardStepName())
 				&& (EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch())
