@@ -81,7 +81,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     public antragList$: Observable<DVAntragListItem[]>;
     public gesuchsperioden: TSGesuchsperiode[];
     public formGroup: FormGroup;
-    public totalItems: number;
+    public totalItems = 0;
     public gemeinden: TSGemeinde[];
 
     public pagination: TSPagination = new TSPagination();
