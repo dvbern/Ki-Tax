@@ -433,8 +433,6 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
                 });
             }));
 
-        from(this.searchRS.countAntraege(body).then(result => this.totalItems = result));
-
         dataToLoad$.subscribe((result: DVAntragListItem[]) => {
             this.datasource.data = result;
             this.updatePagination();
@@ -446,6 +444,19 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
                 this.errorService.addMesageAsError(message);
             }, translateError => console.error('Could not load translation', translateError));
         });
+
+        this.loadTotalCount(body);
+    }
+
+    // TODO: Doctor: Refactor totalItems into Observable for smoother subscription handling
+    private loadTotalCount(body: {
+        search: { predicateObject: DVAntragListFilter };
+        pagination: { number: any; start: number };
+        sort: { predicate?: string; reverse?: boolean }
+    }): void {
+        if (!this.totalItems) {
+            this.searchRS.countAntraege(body).then(result => this.totalItems = result);
+        }
     }
 
     private updatePagination(): void {
