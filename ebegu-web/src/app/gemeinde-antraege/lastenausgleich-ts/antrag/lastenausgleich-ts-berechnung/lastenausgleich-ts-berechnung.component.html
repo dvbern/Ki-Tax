@@ -15,6 +15,8 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
+<h2 class="margin-bottom-50" translate>LATS_VERFUEGUNG</h2>
+
 <form role="form" #form=ngForm name="form">
     <div class="form-group">
         <label class="md-no-float" for="betreuungsstundenPrognoseId">
@@ -26,7 +28,7 @@
                id="betreuungsstundenPrognoseId"
                [(ngModel)]="betreuungsstundenPrognose">
     </div>
-    <p>{{'BERECHNUNG_AUS_KIBON' | translate }}: {{betreuungsstundenPrognoseFromKiBon}}</p>
+    <p>{{'LATS_BERECHNUNG_AUS_KIBON' | translate }}: {{betreuungsstundenPrognoseFromKiBon}}</p>
 </form>
 
 <button type="button" class="dv-btn btn-link link-underline"
