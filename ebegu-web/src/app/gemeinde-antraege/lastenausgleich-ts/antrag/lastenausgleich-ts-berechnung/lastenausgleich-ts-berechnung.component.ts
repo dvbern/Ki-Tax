@@ -74,9 +74,17 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
                     this.downloadingDeFile.next(false);
                 },
                 async err => {
-                    const message = JSON.parse(await err.error.text());
-                    this.errorService.addMesageAsError(message.translatedMessage);
+                    await this.handleErrors(err);
                 });
+    }
+
+    private async handleErrors(err: any): Promise<void> {
+        const message = JSON.parse(await err.error.text());
+        if (message.translatedMessage) {
+            this.errorService.addMesageAsError(message.translatedMessage);
+        } else {
+            this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
+        }
     }
 
     public createLatsDocumentFr(): void {
@@ -88,8 +96,7 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
                     this.downloadingFrFile.next(false);
                 },
                 async err => {
-                    const message = JSON.parse(await err.error.text());
-                    this.errorService.addMesageAsError(message.translatedMessage);
+                    this.handleErrors(err);
                 }
             );
     }
