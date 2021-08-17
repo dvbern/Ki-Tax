@@ -17,6 +17,6 @@ export class DummyMandantSelectionComponent {
     }
 
     public selectMandant(mandant: string): void {
-        this.mandantService.selectMandant(mandant, this.routerGlobals.params.path);
+        this.mandantService.selectMandant(mandant, this.routerGlobals.params.path || '');
     }
 }

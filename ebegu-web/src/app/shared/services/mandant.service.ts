@@ -19,7 +19,7 @@ export class MandantService {
     private readonly LOCAL_STORE_KEY = 'mandant';
 
     public constructor(
-        private windowRef: WindowRef
+        private windowRef: WindowRef,
     ) {
     }
 
@@ -55,9 +55,27 @@ export class MandantService {
 
         this.windowRef.nativeLocalStorage.setItem('mandant', parsedMandant);
 
+        const host = this.removeMandantFromCompleteHost();
+
         if (parsedMandant !== KiBonMandant.NONE) {
-            window.open(`${window.location.protocol}//${parsedMandant}.${window.location.host}/${url}`,
+            window.open(`${window.location.protocol}//${parsedMandant}.${host}/${url}`,
                 '_self');
         }
+    }
+
+    private removeMandantFromCompleteHost(): string {
+        const completeHost = window.location.host;
+        const mandantCandidates = Object.values(KiBonMandant).filter(el => el.length > 0);
+
+        let shortenedHost = window.location.host;
+
+        mandantCandidates.forEach(mandantCandidate => {
+            const idx = completeHost.indexOf(mandantCandidate);
+            if (idx >= 0) {
+                shortenedHost = shortenedHost.substring(idx + mandantCandidate.length + 1);
+            }
+        });
+
+        return shortenedHost;
     }
 }
