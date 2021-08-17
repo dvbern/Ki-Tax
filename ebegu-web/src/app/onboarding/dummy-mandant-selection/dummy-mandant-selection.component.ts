@@ -1,4 +1,5 @@
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {UIRouterGlobals} from '@uirouter/core';
 import {MandantService} from '../../shared/services/mandant.service';
 
 @Component({
@@ -11,10 +12,11 @@ export class DummyMandantSelectionComponent {
 
     public constructor(
         private mandantService: MandantService,
+        private routerGlobals: UIRouterGlobals
     ) {
     }
 
     public selectMandant(mandant: string): void {
-        this.mandantService.selectMandant(mandant);
+        this.mandantService.selectMandant(mandant, this.routerGlobals.params.path);
     }
 }

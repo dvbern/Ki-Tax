@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {HookResult, StateService, TransitionService} from '@uirouter/core';
+import {HookResult, StateService, Transition, TransitionService} from '@uirouter/core';
 import {map, take} from 'rxjs/operators';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {KiBonMandant, MandantService} from '../../../app/shared/services/mandant.service';
@@ -38,12 +38,12 @@ export function mandantCheck($transitions: TransitionService, mandantService: Ma
     // Register the "requires authentication" hook with the TransitionsService
     $transitions.onBefore({
         to: state => !state.name.includes('mandant')
-    }, () => redirectToMandantSelection(mandantService, $state), {priority: OnBeforePriorities.AUTHENTICATION});
+    }, transition => redirectToMandantSelection(mandantService, $state, transition), {priority: OnBeforePriorities.AUTHENTICATION});
 }
 
 // Function that returns a redirect for the current transition to the login state
 // if the user is not currently authenticated (according to the AuthService)
-function redirectToMandantSelection(mandantService: MandantService, $state: StateService): HookResult {
+function redirectToMandantSelection(mandantService: MandantService, $state: StateService, transition: Transition): HookResult {
 
     return mandantService.mandant$
         .pipe(
@@ -54,7 +54,9 @@ function redirectToMandantSelection(mandantService: MandantService, $state: Stat
                 if (mandant === KiBonMandant.NONE) {
                     console.log('redirecting to mandant selection');
 
-                    return $state.target('mandant');
+                    const path = transition.router.stateService.href(transition.to(), transition.params());
+
+                    return $state.target('mandant', {path});
                 }
 
                 // continue the original transition

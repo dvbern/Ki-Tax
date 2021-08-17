@@ -36,11 +36,11 @@ export class MandantService {
     return this._mandant$.asObservable();
   }
 
-  public selectMandant(mandant: string): void {
+  public selectMandant(mandant: string, url: string): void {
     const parsedMandant = this.findMandant(mandant);
 
     if (parsedMandant !== KiBonMandant.NONE) {
-      window.open(`${window.location.protocol}//${parsedMandant}.${window.location.host}${window.location.hash}`,
+      window.open(`${window.location.protocol}//${parsedMandant}.${window.location.host}/${url}`,
           '_self');
     }
   }

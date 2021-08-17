@@ -64,7 +64,7 @@ export const STATES: NgHybridStateDeclaration[] = [
     {
         parent: 'app',
         name: 'mandant',
-        url: '/mandant',
+        url: '/mandant?path',
         data: {
             roles: TSRoleUtil.getAllRoles(),
         },
