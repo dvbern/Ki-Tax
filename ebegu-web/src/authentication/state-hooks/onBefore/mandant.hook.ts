@@ -19,6 +19,7 @@ import {HookResult, StateService, Transition, TransitionService} from '@uirouter
 import {map, take} from 'rxjs/operators';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {KiBonMandant, MandantService} from '../../../app/shared/services/mandant.service';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {OnBeforePriorities} from './onBeforePriorities';
 
 const LOG = LogFactory.createLog('authenticationHookRunBlockX');
@@ -34,34 +35,49 @@ mandantCheck.$inject = ['$transitions', 'MandantService', '$state'];
  * - The user is navigating to a state that requires authentication
  */
 
-export function mandantCheck($transitions: TransitionService, mandantService: MandantService, $state: StateService): void {
+export function mandantCheck(
+    $transitions: TransitionService,
+    mandantService: MandantService,
+    $state: StateService,
+): void {
     // Register the "requires authentication" hook with the TransitionsService
     $transitions.onBefore({
-        to: state => !state.name.includes('mandant')
-    }, transition => redirectToMandantSelection(mandantService, $state, transition), {priority: OnBeforePriorities.AUTHENTICATION});
+            to: state => !state.name.includes('mandant'),
+        },
+        transition => redirectToMandantSelection(mandantService, $state, transition),
+        {priority: OnBeforePriorities.AUTHENTICATION});
 }
 
 // Function that returns a redirect for the current transition to the login state
 // if the user is not currently authenticated (according to the AuthService)
-function redirectToMandantSelection(mandantService: MandantService, $state: StateService, transition: Transition): HookResult {
+function redirectToMandantSelection(
+    mandantService: MandantService,
+    $state: StateService,
+    transition: Transition,
+): HookResult {
 
     return mandantService.mandant$
-        .pipe(
-            take(1),
-            map(mandant => {
-                LOG.debug('checking mandant', mandant);
+    .pipe(
+        take(1),
+        map(mandant => {
+            LOG.debug('checking mandant', mandant);
 
-                if (mandant === KiBonMandant.NONE) {
-                    console.log('redirecting to mandant selection');
+            if (mandant === KiBonMandant.NONE) {
 
-                    const path = transition.router.stateService.href(transition.to(), transition.params());
-
-                    return $state.target('mandant', {path});
+                const path = transition.router.stateService.href(transition.to(), transition.params());
+                const localStorageMandant = localStorage.getItem('mandant');
+                if (EbeguUtil.isNotNullOrUndefined(localStorageMandant)) {
+                    mandantService.selectMandant(localStorageMandant, path);
                 }
 
-                // continue the original transition
-                return true;
-            }),
-        )
-        .toPromise();
+                console.log('redirecting to mandant selection');
+
+                return $state.target('mandant', {path});
+            }
+
+            // continue the original transition
+            return true;
+        }),
+    )
+    .toPromise();
 }
