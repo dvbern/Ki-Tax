@@ -164,7 +164,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
      * otherwise 0
      */
     @Input()
-    public totalItems: number = 0;
+    public totalItems: number;
 
     /**
      * Hides pagination
