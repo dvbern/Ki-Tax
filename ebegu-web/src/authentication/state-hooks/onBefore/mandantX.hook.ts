@@ -15,15 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {HookResult, StateService, TransitionService} from '@uirouter/core';
+import {HookResult, Transition, TransitionService} from '@uirouter/core';
 import {map, take} from 'rxjs/operators';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {KiBonMandant, MandantService} from '../../../app/shared/services/mandant.service';
 import {OnBeforePriorities} from './onBeforePriorities';
 
 const LOG = LogFactory.createLog('authenticationHookRunBlockX');
-
-mandantCheck.$inject = ['$transitions', 'MandantService', '$state'];
 
 /**
  * This file contains a Transition Hook which protects a
@@ -34,18 +32,16 @@ mandantCheck.$inject = ['$transitions', 'MandantService', '$state'];
  * - The user is navigating to a state that requires authentication
  */
 
-export function mandantCheck($transitions: TransitionService, mandantService: MandantService, $state: StateService): void {
+export function mandantCheckX($transitions: TransitionService, mandantService: MandantService): void {
     // Register the "requires authentication" hook with the TransitionsService
-    $transitions.onBefore({
-        to: state => !state.name.includes('mandant')
-    }, () => redirectToMandantSelection(mandantService, $state), {priority: OnBeforePriorities.AUTHENTICATION});
+    $transitions.onBefore({}, transition => redirectToMandantSelection(transition, mandantService), {priority: OnBeforePriorities.AUTHENTICATION});
 }
 
 // Function that returns a redirect for the current transition to the login state
 // if the user is not currently authenticated (according to the AuthService)
-function redirectToMandantSelection(mandantService: MandantService, $state: StateService): HookResult {
+function redirectToMandantSelection(transition: Transition, authService: MandantService): HookResult {
 
-    return mandantService.mandant$
+    return authService.mandant$
         .pipe(
             take(1),
             map(mandant => {
@@ -54,7 +50,7 @@ function redirectToMandantSelection(mandantService: MandantService, $state: Stat
                 if (mandant === KiBonMandant.NONE) {
                     console.log('redirecting to mandant selection');
 
-                    return $state.target('mandant');
+                    // return $state.target('mandant.selection', undefined, {location: false});
                 }
 
                 // continue the original transition

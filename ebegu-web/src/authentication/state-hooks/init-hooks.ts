@@ -23,7 +23,7 @@ import {AuthServiceRS} from '../service/AuthServiceRS.rest';
 import {authenticationHookRunBlockX} from './onBefore/authenticationX.hook';
 import {authorisationHookRunBlockX} from './onBefore/authorisationX.hook';
 import {debugHookRunBlock} from './onBefore/debug.hook';
-import {mandantCheck} from './onBefore/mandant.hook';
+import {mandantCheckX} from './onBefore/mandantX.hook';
 
 export function initHooks(platformRef: NgModuleRef<AppModule>): void {
 
@@ -38,7 +38,7 @@ export function initHooks(platformRef: NgModuleRef<AppModule>): void {
     debugHookRunBlock(
         platformRef.injector.get<TransitionService>(TransitionService)
     );
-    mandantCheck(
+    mandantCheckX(
         platformRef.injector.get<TransitionService>(TransitionService),
         platformRef.injector.get<MandantService>(MandantService),
     );
