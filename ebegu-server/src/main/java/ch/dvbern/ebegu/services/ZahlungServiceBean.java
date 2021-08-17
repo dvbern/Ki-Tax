@@ -613,6 +613,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 		List<Predicate> predicates = createPredicatesForZahlungen(zahlungenSearchParamsDTO, cb, root, joinGemeinde);
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		query.distinct(true);
 
 		setSortOrder(query, zahlungenSearchParamsDTO, root, joinGemeinde, cb);
 
@@ -635,6 +636,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 		List<Predicate> predicates = createPredicatesForZahlungen(zahlungenSearchParamsDTO, cb, root, joinGemeinde);
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		query.distinct(true);
 
 		return persistence.getCriteriaSingleResult(query);
 	}

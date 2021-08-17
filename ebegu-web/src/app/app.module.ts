@@ -69,8 +69,8 @@ import {ZahlungXModule} from './zahlung/zahlung-x.module';
         PendenzenXModule,
         ZahlungXModule,
         PendenzenXModule,
-        VerlaufModule,
-    ],
+        VerlaufModule
+    ]
 })
 
 export class AppModule {

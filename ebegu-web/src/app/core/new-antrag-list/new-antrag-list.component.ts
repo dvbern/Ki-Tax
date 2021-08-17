@@ -94,6 +94,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
      * 'periode',
      * 'aenderungsdatum',
      * 'status',
+     * 'internePendenz',
      * 'dokumenteHochgeladen',
      * 'angebote',
      * 'institutionen',

@@ -17,7 +17,8 @@
 
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {StateService} from '@uirouter/core';
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, Subject} from 'rxjs';
+import {filter, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
@@ -62,6 +63,8 @@ export class PendenzenListViewComponent {
 
     public initialFilter: DVAntragListFilter = {};
 
+    private readonly unsubscribe$ = new Subject<void>();
+
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly $state: StateService,
@@ -72,15 +75,23 @@ export class PendenzenListViewComponent {
     }
 
     public ngOnInit(): void {
-        this.authServiceRS.principal$.subscribe(principal => {
-            this.initialFilter.verantwortlicherGemeinde = principal.getFullName();
-            this.search.predicateObject = this.initialFilter;
-            this.countData();
-            this.loadData();
-        }, error => {
-            LOG.error(error);
-        });
+        this.authServiceRS.principal$
+            .pipe(filter(principal => !!principal))
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(principal => {
+                this.initialFilter.verantwortlicherGemeinde = principal.getFullName();
+                this.search.predicateObject = this.initialFilter;
+                this.countData();
+                this.loadData();
+            }, error => {
+                LOG.error(error);
+            });
         this.initHasGemeindenInStatusAngemeldet();
+    }
+
+    public ngOnDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     private countData(): void {
@@ -120,9 +131,9 @@ export class PendenzenListViewComponent {
             });
     }
 
-    public onFilterChange(filter: DVAntragListFilter): void {
+    public onFilterChange(listFilter: DVAntragListFilter): void {
         this.search.predicateObject = {
-            ...filter,
+            ...listFilter,
         };
         this.loadData();
     }

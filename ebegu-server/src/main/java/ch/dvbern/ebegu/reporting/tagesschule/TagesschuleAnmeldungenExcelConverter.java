@@ -104,10 +104,14 @@ public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.vornameAntragsteller1, dataRow.getVornameAntragsteller1());
 			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.nachnameAntragsteller1, dataRow.getNachnameAntragsteller1());
 			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.emailAntragsteller1, dataRow.getEmailAntragsteller1());
+			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.mobileAntragsteller1, dataRow.getMobileAntragsteller1());
+			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.telefonAntragsteller1, dataRow.getTelefonAntragsteller1());
 
 			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.vornameAntragsteller2, dataRow.getVornameAntragsteller2());
 			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.nachnameAntragsteller2, dataRow.getNachnameAntragsteller2());
 			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.emailAntragsteller2, dataRow.getEmailAntragsteller2());
+			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.mobileAntragsteller2, dataRow.getMobileAntragsteller2());
+			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.telefonAntragsteller2, dataRow.getTelefonAntragsteller2());
 
 			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.referenznummer, dataRow.getReferenznummer());
 			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.eintrittsdatum, dataRow.getEintrittsdatum());
@@ -171,6 +175,8 @@ public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.vornameTitle, ServerMessageUtil.getMessage("Reports_vornameTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.geburtsdatumTitle, ServerMessageUtil.getMessage("Reports_geburtsdatumTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.emailTitle, ServerMessageUtil.getMessage("Reports_emailTitle", locale));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.mobileTitle, ServerMessageUtil.getMessage("Reports_mobileTitle", locale));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.telefonTitle, ServerMessageUtil.getMessage("Reports_telefonTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.referenznummerTitle, ServerMessageUtil.getMessage(
 			"Reports_bgNummerTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.eintrittsdatumTitle, ServerMessageUtil.getMessage("Reports_eintrittsdatumTitle", locale));

@@ -73,14 +73,6 @@ public class DocxDocumentTest {
 	}
 
 	@Test
-	public void testCreateDocument() throws IOException {
-		byte[] initialDocument = createWordTemplate();
-		DocxDocument docxDocument = new DocxDocument(initialDocument);
-		byte[] outputDocument = docxDocument.getDocument();
-		Assert.assertArrayEquals(initialDocument, outputDocument);
-	}
-
-	@Test
 	public void testReplacePlaceholder() throws IOException {
 		DocxDocument docxDocument = new DocxDocument(createWordTemplate());
 		docxDocument.replacePlaceholder("{placeholder}", "replaced");
