@@ -43,11 +43,19 @@ public class TagesschuleAnmeldungenDataRow {
 	@Nullable
 	private String emailAntragsteller1;
 	@Nullable
+	private String mobileAntragsteller1;
+	@Nullable
+	private String telefonAntragsteller1;
+	@Nullable
 	private String nachnameAntragsteller2;
 	@Nullable
 	private String vornameAntragsteller2;
 	@Nullable
 	private String emailAntragsteller2;
+	@Nullable
+	private String mobileAntragsteller2;
+	@Nullable
+	private String telefonAntragsteller2;
 	@Nullable
 	private String referenznummer;
 	@Nullable
@@ -181,5 +189,41 @@ public class TagesschuleAnmeldungenDataRow {
 
 	public void setAnmeldungTagesschule(@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
 		this.anmeldungTagesschule = anmeldungTagesschule;
+	}
+
+	@Nullable
+	public String getMobileAntragsteller1() {
+		return mobileAntragsteller1;
+	}
+
+	public void setMobileAntragsteller1(@Nullable String mobileAntragsteller1) {
+		this.mobileAntragsteller1 = mobileAntragsteller1;
+	}
+
+	@Nullable
+	public String getTelefonAntragsteller1() {
+		return telefonAntragsteller1;
+	}
+
+	public void setTelefonAntragsteller1(@Nullable String telefonAntragsteller1) {
+		this.telefonAntragsteller1 = telefonAntragsteller1;
+	}
+
+	@Nullable
+	public String getMobileAntragsteller2() {
+		return mobileAntragsteller2;
+	}
+
+	public void setMobileAntragsteller2(@Nullable String mobileAntragsteller2) {
+		this.mobileAntragsteller2 = mobileAntragsteller2;
+	}
+
+	@Nullable
+	public String getTelefonAntragsteller2() {
+		return telefonAntragsteller2;
+	}
+
+	public void setTelefonAntragsteller2(@Nullable String telefonAntragsteller2) {
+		this.telefonAntragsteller2 = telefonAntragsteller2;
 	}
 }

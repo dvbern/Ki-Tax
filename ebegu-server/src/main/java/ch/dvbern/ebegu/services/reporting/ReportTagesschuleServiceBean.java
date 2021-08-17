@@ -243,6 +243,8 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 			tdr.setVornameAntragsteller1(gesuchsteller1JA.getVorname());
 			tdr.setNachnameAntragsteller1(gesuchsteller1JA.getNachname());
 			tdr.setEmailAntragsteller1(gesuchsteller1JA.getMail());
+			tdr.setMobileAntragsteller1(gesuchsteller1JA.getMobile());
+			tdr.setTelefonAntragsteller1(gesuchsteller1JA.getTelefon());
 		}
 
 		GesuchstellerContainer gesuchsteller2 = kindContainer.getGesuch().getGesuchsteller2();
@@ -251,6 +253,8 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 			tdr.setVornameAntragsteller2(gesuchsteller2JA.getVorname());
 			tdr.setNachnameAntragsteller2(gesuchsteller2JA.getNachname());
 			tdr.setEmailAntragsteller2(gesuchsteller2JA.getMail());
+			tdr.setMobileAntragsteller2(gesuchsteller2JA.getMobile());
+			tdr.setTelefonAntragsteller2(gesuchsteller2JA.getTelefon());
 		}
 
 		tdr.setStatus(anmeldungTagesschule.getBetreuungsstatus());
