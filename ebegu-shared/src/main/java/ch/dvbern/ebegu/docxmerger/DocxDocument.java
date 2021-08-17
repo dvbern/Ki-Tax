@@ -58,7 +58,7 @@ public class DocxDocument {
 		}
 	}
 
-	public boolean replaceInParagraphs(String placeholder, String replacement) {
+	private boolean replaceInParagraphs(String placeholder, String replacement) {
 		boolean found = false;
 		for (XWPFParagraph paragraph : xwpfDocument.getParagraphs()) {
 			boolean foundInThisRun = replaceInRuns(placeholder, replacement, paragraph.getRuns());

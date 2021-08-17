@@ -19,32 +19,240 @@ package ch.dvbern.ebegu.docxmerger.lats;
 
 import java.math.BigDecimal;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class LatsDocxDTO {
-	@Nonnull private String gemeindeName;
-	@Nonnull private BigDecimal geleisteteBetreuungsstunden;
+	@Nullable private String userName;
+	@Nullable private String userEmail;
+	@Nullable private String gemeindeAnschrift;
+	@Nullable private String gemeindeStrasse;
+	@Nullable private String gemeindeNr;
+	@Nullable private String gemeindePLZ;
+	@Nullable private String gemeindeOrt;
+	@Nullable private String dateToday;
+	@Nullable private String gemeindeName;
+	@Nullable private BigDecimal betreuungsstunden;
+	@Nullable private BigDecimal betreuungsstundenProg;
+	@Nullable private BigDecimal normlohnkosten;
+	@Nullable private BigDecimal normlohnkostenProg;
+	@Nullable private BigDecimal normlohnkostenTotal;
+	@Nullable private BigDecimal normlohnkostenTotalProg;
+	@Nullable private BigDecimal elterngebuehren;
+	@Nullable private BigDecimal elterngebuehrenProg;
+	@Nullable private BigDecimal lastenausgleichsberechtigterBetrag;
+	@Nullable private BigDecimal lastenausgleichsberechtigterBetragProg;
+	@Nullable private BigDecimal ersteRate;
+	@Nullable private BigDecimal ersteRateProg;
+	@Nullable private BigDecimal zweiteRate;
+	@Nullable private BigDecimal auszahlungTotal;
 
-	public LatsDocxDTO(@Nonnull String gemeindeName, @Nonnull BigDecimal geleisteteBetreuungsstunden) {
-		this.gemeindeName = gemeindeName;
-		this.geleisteteBetreuungsstunden = geleisteteBetreuungsstunden;
+	public LatsDocxDTO() {
 	}
 
-	@Nonnull
+	@Nullable
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(@Nullable String userName) {
+		this.userName = userName;
+	}
+
+	@Nullable
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(@Nullable String userEmail) {
+		this.userEmail = userEmail;
+	}
+
+	@Nullable
+	public String getGemeindeAnschrift() {
+		return gemeindeAnschrift;
+	}
+
+	public void setGemeindeAnschrift(@Nullable String gemeindeAnschrift) {
+		this.gemeindeAnschrift = gemeindeAnschrift;
+	}
+
+	@Nullable
+	public String getGemeindeStrasse() {
+		return gemeindeStrasse;
+	}
+
+	public void setGemeindeStrasse(@Nullable String gemeindeStrasse) {
+		this.gemeindeStrasse = gemeindeStrasse;
+	}
+
+	@Nullable
+	public String getGemeindeNr() {
+		return gemeindeNr;
+	}
+
+	public void setGemeindeNr(@Nullable String gemeindeNr) {
+		this.gemeindeNr = gemeindeNr;
+	}
+
+	@Nullable
+	public String getGemeindePLZ() {
+		return gemeindePLZ;
+	}
+
+	public void setGemeindePLZ(@Nullable String gemeindePLZ) {
+		this.gemeindePLZ = gemeindePLZ;
+	}
+
+	@Nullable
+	public String getGemeindeOrt() {
+		return gemeindeOrt;
+	}
+
+	public void setGemeindeOrt(@Nullable String gemeindeOrt) {
+		this.gemeindeOrt = gemeindeOrt;
+	}
+
+	@Nullable
+	public String getDateToday() {
+		return dateToday;
+	}
+
+	public void setDateToday(@Nullable String dateToday) {
+		this.dateToday = dateToday;
+	}
+
+	@Nullable
 	public String getGemeindeName() {
 		return gemeindeName;
 	}
 
-	public void setGemeindeName(@Nonnull String gemeindeName) {
+	public void setGemeindeName(@Nullable String gemeindeName) {
 		this.gemeindeName = gemeindeName;
 	}
 
-	@Nonnull
-	public BigDecimal getGeleisteteBetreuungsstunden() {
-		return geleisteteBetreuungsstunden;
+	@Nullable
+	public BigDecimal getBetreuungsstunden() {
+		return betreuungsstunden;
 	}
 
-	public void setGeleisteteBetreuungsstunden(@Nonnull BigDecimal geleisteteBetreuungsstunden) {
-		this.geleisteteBetreuungsstunden = geleisteteBetreuungsstunden;
+	public void setBetreuungsstunden(@Nullable BigDecimal betreuungsstunden) {
+		this.betreuungsstunden = betreuungsstunden;
+	}
+
+	@Nullable
+	public BigDecimal getBetreuungsstundenProg() {
+		return betreuungsstundenProg;
+	}
+
+	public void setBetreuungsstundenProg(@Nullable BigDecimal betreuungsstundenProg) {
+		this.betreuungsstundenProg = betreuungsstundenProg;
+	}
+
+	@Nullable
+	public BigDecimal getNormlohnkosten() {
+		return normlohnkosten;
+	}
+
+	public void setNormlohnkosten(@Nullable BigDecimal normlohnkosten) {
+		this.normlohnkosten = normlohnkosten;
+	}
+
+	@Nullable
+	public BigDecimal getNormlohnkostenProg() {
+		return normlohnkostenProg;
+	}
+
+	public void setNormlohnkostenProg(@Nullable BigDecimal normlohnkostenProg) {
+		this.normlohnkostenProg = normlohnkostenProg;
+	}
+
+	@Nullable
+	public BigDecimal getNormlohnkostenTotal() {
+		return normlohnkostenTotal;
+	}
+
+	public void setNormlohnkostenTotal(@Nullable BigDecimal normlohnkostenTotal) {
+		this.normlohnkostenTotal = normlohnkostenTotal;
+	}
+
+	@Nullable
+	public BigDecimal getNormlohnkostenTotalProg() {
+		return normlohnkostenTotalProg;
+	}
+
+	public void setNormlohnkostenTotalProg(@Nullable BigDecimal normlohnkostenTotalProg) {
+		this.normlohnkostenTotalProg = normlohnkostenTotalProg;
+	}
+
+	@Nullable
+	public BigDecimal getElterngebuehren() {
+		return elterngebuehren;
+	}
+
+	public void setElterngebuehren(@Nullable BigDecimal elterngebuehren) {
+		this.elterngebuehren = elterngebuehren;
+	}
+
+	@Nullable
+	public BigDecimal getElterngebuehrenProg() {
+		return elterngebuehrenProg;
+	}
+
+	public void setElterngebuehrenProg(@Nullable BigDecimal elterngebuehrenProg) {
+		this.elterngebuehrenProg = elterngebuehrenProg;
+	}
+
+	@Nullable
+	public BigDecimal getLastenausgleichsberechtigterBetrag() {
+		return lastenausgleichsberechtigterBetrag;
+	}
+
+	public void setLastenausgleichsberechtigterBetrag(@Nullable BigDecimal lastenausgleichsberechtigterBetrag) {
+		this.lastenausgleichsberechtigterBetrag = lastenausgleichsberechtigterBetrag;
+	}
+
+	@Nullable
+	public BigDecimal getLastenausgleichsberechtigterBetragProg() {
+		return lastenausgleichsberechtigterBetragProg;
+	}
+
+	public void setLastenausgleichsberechtigterBetragProg(@Nullable BigDecimal lastenausgleichsberechtigterBetragProg) {
+		this.lastenausgleichsberechtigterBetragProg = lastenausgleichsberechtigterBetragProg;
+	}
+
+	@Nullable
+	public BigDecimal getErsteRate() {
+		return ersteRate;
+	}
+
+	public void setErsteRate(@Nullable BigDecimal ersteRate) {
+		this.ersteRate = ersteRate;
+	}
+
+	@Nullable
+	public BigDecimal getErsteRateProg() {
+		return ersteRateProg;
+	}
+
+	public void setErsteRateProg(@Nullable BigDecimal ersteRateProg) {
+		this.ersteRateProg = ersteRateProg;
+	}
+
+	@Nullable
+	public BigDecimal getZweiteRate() {
+		return zweiteRate;
+	}
+
+	public void setZweiteRate(@Nullable BigDecimal zweiteRate) {
+		this.zweiteRate = zweiteRate;
+	}
+
+	@Nullable
+	public BigDecimal getAuszahlungTotal() {
+		return auszahlungTotal;
+	}
+
+	public void setAuszahlungTotal(@Nullable BigDecimal auszahlungTotal) {
+		this.auszahlungTotal = auszahlungTotal;
 	}
 }

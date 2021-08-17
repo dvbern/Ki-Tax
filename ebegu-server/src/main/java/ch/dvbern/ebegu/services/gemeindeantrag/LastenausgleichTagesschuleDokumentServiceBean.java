@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -24,9 +25,12 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.docxmerger.DocxDocument;
 import ch.dvbern.ebegu.docxmerger.lats.LatsDocxDTO;
 import ch.dvbern.ebegu.docxmerger.lats.LatsDocxMerger;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
@@ -34,6 +38,8 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
+import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.util.Constants;
 
 /**
  * Service fuer den Lastenausgleich der Tagesschulen
@@ -48,6 +54,12 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 
 	@Inject
 	Authorizer authorizer;
+
+	@Inject
+	PrincipalBean principalBean;
+
+	@Inject
+	GemeindeService gemeindeService;
 
 	@Override
 	@Nonnull
@@ -84,15 +96,46 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 	private LatsDocxDTO toLatsDocxDTO(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
 
 		Objects.requireNonNull(container.getAngabenKorrektur());
-		Objects.requireNonNull(container.getAngabenKorrektur().getLastenausgleichberechtigteBetreuungsstunden());
+		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde = container.getAngabenKorrektur();
 
-		assert container.getAngabenKorrektur().getLastenausgleichberechtigteBetreuungsstunden() != null;
-		LatsDocxDTO dto = new LatsDocxDTO(
-			container.getGemeinde().getName(),
-			container.getAngabenKorrektur().getLastenausgleichberechtigteBetreuungsstunden()
+		LatsDocxDTO dto = new LatsDocxDTO();
+		dto.setUserName(this.principalBean.getBenutzer().getFullName());
+		dto.setUserEmail(this.principalBean.getBenutzer().getEmail());
+
+		GemeindeStammdaten stammdaten = this.gemeindeService.getGemeindeStammdatenByGemeindeId(container.getGemeinde().getId()).orElseThrow(() ->
+			new EbeguEntityNotFoundException("toLatsDocxDTO", container.getGemeinde().getId())
 		);
 
+		dto.setGemeindeAnschrift(stammdaten.getAdresse().getOrganisation());
+		dto.setGemeindeStrasse(stammdaten.getAdresse().getStrasse());
+		dto.setGemeindeNr(stammdaten.getAdresse().getHausnummer());
+		dto.setGemeindePLZ(stammdaten.getAdresse().getPlz());
+		dto.setGemeindeOrt(stammdaten.getAdresse().getOrt());
+		dto.setDateToday(Constants.DATE_FORMATTER.format(LocalDate.now()));
+		dto.setGemeindeName(container.getGemeinde().getName());
+
+		dto.setBetreuungsstunden(angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden());
+		setNormlohnkosten(dto);
+		dto.setNormlohnkostenTotal(angabenGemeinde.getNormlohnkostenBetreuungBerechnet());
+		dto.setElterngebuehren(angabenGemeinde.getEinnahmenElterngebuehren());
+		dto.setLastenausgleichsberechtigterBetrag(angabenGemeinde.getLastenausgleichsberechtigerBetrag());
+		calculateAndSetRaten(dto);
+
+		calculateAndSetPrognoseValues(dto);
+
 		return dto;
+	}
+
+	private void calculateAndSetRaten(@Nonnull LatsDocxDTO dto) {
+
+	}
+
+	private void setNormlohnkosten(@Nonnull LatsDocxDTO dto) {
+
+	}
+
+	private void calculateAndSetPrognoseValues(@Nonnull LatsDocxDTO dto) {
+
 	}
 }
 
