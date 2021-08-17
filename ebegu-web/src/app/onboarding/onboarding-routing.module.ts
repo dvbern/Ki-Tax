@@ -68,7 +68,7 @@ export const STATES: NgHybridStateDeclaration[] = [
         data: {
             roles: TSRoleUtil.getAllRoles(),
         },
-        component: DummyMandantSelectionComponent
+        component: DummyMandantSelectionComponent,
     },
     {
         name: 'onboarding.anmeldung',

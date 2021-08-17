@@ -1,16 +1,20 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {MandantService} from '../../shared/services/mandant.service';
 
 @Component({
-  selector: 'dv-dummy-mandant-selection',
-  templateUrl: './dummy-mandant-selection.component.html',
-  styleUrls: ['./dummy-mandant-selection.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-dummy-mandant-selection',
+    templateUrl: './dummy-mandant-selection.component.html',
+    styleUrls: ['./dummy-mandant-selection.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DummyMandantSelectionComponent implements OnInit {
+export class DummyMandantSelectionComponent {
 
-  constructor() { }
+    public constructor(
+        private mandantService: MandantService,
+    ) {
+    }
 
-  ngOnInit(): void {
-  }
-
+    public selectMandant(mandant: string): void {
+        this.mandantService.selectMandant(mandant);
+    }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, Observable, ReplaySubject, Subject} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 export enum KiBonMandant {
   BE= 'be',
@@ -22,7 +22,7 @@ export class MandantService {
   }
 
   private findMandant(hostname: string): KiBonMandant {
-    switch (hostname) {
+    switch (hostname.toLocaleLowerCase()) {
       case 'be':
         return KiBonMandant.BE;
       case 'lu':
@@ -36,7 +36,12 @@ export class MandantService {
     return this._mandant$.asObservable();
   }
 
-  public hasMandant() {
-    return false;
+  public selectMandant(mandant: string): void {
+    const parsedMandant = this.findMandant(mandant);
+
+    if (parsedMandant !== KiBonMandant.NONE) {
+      window.open(`${window.location.protocol}//${parsedMandant}.${window.location.host}${window.location.hash}`,
+          '_self');
+    }
   }
 }
