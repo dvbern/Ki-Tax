@@ -68,9 +68,10 @@ export class MandantService {
         const mandantCandidates = Object.values(KiBonMandant).filter(el => el.length > 0);
 
         let shortenedHost = window.location.host;
+        const firstDotIdx = shortenedHost.indexOf('.');
 
         mandantCandidates.forEach(mandantCandidate => {
-            const idx = completeHost.indexOf(mandantCandidate);
+            const idx = completeHost.substring(0, firstDotIdx).indexOf(mandantCandidate);
             if (idx >= 0) {
                 shortenedHost = shortenedHost.substring(idx + mandantCandidate.length + 1);
             }
