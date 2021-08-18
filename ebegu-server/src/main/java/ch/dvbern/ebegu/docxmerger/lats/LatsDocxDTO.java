@@ -45,6 +45,7 @@ public class LatsDocxDTO {
 	@Nullable private BigDecimal ersteRateProg;
 	@Nullable private BigDecimal zweiteRate;
 	@Nullable private BigDecimal auszahlungTotal;
+	@Nullable private String textPaedagogischOderNicht;
 
 	public LatsDocxDTO() {
 	}
@@ -254,5 +255,14 @@ public class LatsDocxDTO {
 
 	public void setAuszahlungTotal(@Nullable BigDecimal auszahlungTotal) {
 		this.auszahlungTotal = auszahlungTotal;
+	}
+
+	@Nullable
+	public String getTextPaedagogischOderNicht() {
+		return textPaedagogischOderNicht;
+	}
+
+	public void setTextPaedagogischOderNicht(@Nullable String textPaedagogischOderNicht) {
+		this.textPaedagogischOderNicht = textPaedagogischOderNicht;
 	}
 }

@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 
 /**
  * Service fuer den Lastenausgleich der Tagesschulen
@@ -97,13 +98,17 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 
 		DocxDocument document = new DocxDocument(template);
 		LatsDocxMerger merger = new LatsDocxMerger(document);
-		merger.addMergeFields(toLatsDocxDTO(container, betreuungsstundenPrognose));
+		merger.addMergeFields(toLatsDocxDTO(container, betreuungsstundenPrognose, sprache));
 		merger.merge();
 		return document.getDocument();
 	}
 
 	@Nonnull
-	private LatsDocxDTO toLatsDocxDTO(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container, @Nonnull BigDecimal betreuungsstundenPrognose) {
+	private LatsDocxDTO toLatsDocxDTO(
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container,
+		@Nonnull BigDecimal betreuungsstundenPrognose,
+		Sprache sprache
+	) {
 
 		Objects.requireNonNull(container.getAngabenKorrektur());
 		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde = container.getAngabenKorrektur();
@@ -125,7 +130,7 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 		dto.setGemeindeName(container.getGemeinde().getName());
 
 		dto.setBetreuungsstunden(angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden());
-		setNormlohnkosten(dto, angabenGemeinde, container);
+		setNormlohnkosten(dto, angabenGemeinde, container, sprache);
 		dto.setNormlohnkostenTotal(angabenGemeinde.getNormlohnkostenBetreuungBerechnet());
 		dto.setElterngebuehren(angabenGemeinde.getEinnahmenElterngebuehren());
 		dto.setLastenausgleichsberechtigterBetrag(angabenGemeinde.getLastenausgleichsberechtigerBetrag());
@@ -139,23 +144,44 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 	private void setNormlohnkosten(
 		@Nonnull LatsDocxDTO dto,
 		@Nonnull LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde,
-		LastenausgleichTagesschuleAngabenGemeindeContainer container
-	) {
-		List<String> normLohnStr = new ArrayList<>();
+		LastenausgleichTagesschuleAngabenGemeindeContainer container,
+		Sprache sprache) {
+		List<String> normLohnBetrag = new ArrayList<>();
+		List<String> normLohnText = new ArrayList<>();
+
 		if (angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete() != null
 		&& angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete().compareTo(BigDecimal.ZERO) > 0) {
 			Einstellung lohnnormkosten = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN, container.getGemeinde(), container.getGesuchsperiode());
-			normLohnStr.add(lohnnormkosten.getValue());
+			normLohnBetrag.add(lohnnormkosten.getValue());
+
+			String text = ServerMessageUtil.getMessage(
+				"lats_verfuegung_text_paedagogisch",
+				sprache.getLocale(),
+				container.getGemeinde().getName(),
+				lohnnormkosten.getValue()
+			);
+			normLohnText.add(text);
 		}
 		if (angabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete() != null
 			&& angabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete().compareTo(BigDecimal.ZERO) > 0) {
 			Einstellung lohnnormkosten = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50, container.getGemeinde(), container.getGesuchsperiode());
-			normLohnStr.add(lohnnormkosten.getValue());
+			normLohnBetrag.add(lohnnormkosten.getValue());
+
+			String text = ServerMessageUtil.getMessage(
+				"lats_verfuegung_text_nicht_paedagogisch",
+				sprache.getLocale(),
+				container.getGemeinde().getName(),
+				lohnnormkosten.getValue()
+			);
+			normLohnText.add(text);
 		}
-		String result = String.join(" / ", normLohnStr);
-		dto.setNormlohnkosten(result);
+		String betragResult = String.join(" / ", normLohnBetrag);
+		dto.setNormlohnkosten(betragResult);
 		// same values used for following periode
-		dto.setNormlohnkostenProg(result);
+		dto.setNormlohnkostenProg(betragResult);
+
+		String textResult = String.join(" ODER ", normLohnText);
+		dto.setTextPaedagogischOderNicht(textResult);
 	}
 
 	private void calculateAndSetPrognoseValues(

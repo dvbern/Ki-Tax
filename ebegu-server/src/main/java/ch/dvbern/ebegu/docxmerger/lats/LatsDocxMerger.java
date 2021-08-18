@@ -58,5 +58,6 @@ public class LatsDocxMerger extends DocxMerger<LatsDocxDTO> {
 		this.mergeFields.add(new BigDecimalMergeField("ersteRateProg", dto.getErsteRateProg()));
 		this.mergeFields.add(new BigDecimalMergeField("zweiteRate", dto.getZweiteRate()));
 		this.mergeFields.add(new BigDecimalMergeField("auszahlungTotal", dto.getAuszahlungTotal()));
+		this.mergeFields.add(new StringMergeField("textPaedagogischOderNicht", dto.getTextPaedagogischOderNicht()));
 	}
 }
