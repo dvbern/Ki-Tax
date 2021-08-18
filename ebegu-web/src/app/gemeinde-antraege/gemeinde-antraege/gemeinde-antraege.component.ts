@@ -44,6 +44,7 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {HTTP_ERROR_CODES} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
+import {ErrorServiceX} from '../../core/errors/service/ErrorServiceX';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
@@ -106,7 +107,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         private readonly gesuchsperiodenService: GesuchsperiodeRS,
         private readonly fb: FormBuilder,
         private readonly $state: StateService,
-        private readonly errorService: ErrorService,
+        private readonly errorService: ErrorServiceX,
         private readonly translate: TranslateService,
         private readonly cd: ChangeDetectorRef,
         private readonly wizardStepXRS: WizardStepXRS,

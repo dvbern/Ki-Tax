@@ -13,32 +13,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {
+    HttpErrorResponse,
+    HttpEvent,
+    HttpHandler,
+    HttpInterceptor,
+    HttpRequest,
+} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {TSErrorLevel} from '../../../../models/enums/TSErrorLevel';
 import {TSErrorType} from '../../../../models/enums/TSErrorType';
 import {TSExceptionReport} from '../../../../models/TSExceptionReport';
 import {HTTP_ERROR_CODES} from '../../constants/CONSTANTS';
-import {ErrorService} from './ErrorService';
-import ILogService = angular.ILogService;
-import IQService = angular.IQService;
+import {LogFactory} from '../../logging/LogFactory';
+import {ErrorServiceX} from './ErrorServiceX';
 
-/**
- * notokenrefresh is sent by the Mitteilungservice to indicate if there is a new Mitteilung
- * emaillogin/gui/registration/createmaillogin is the URL of BE-Login used to burn timeout
- */
-export function isIgnorableHttpError<T>(request: HttpRequest<T>): boolean {
-    return request.url.includes('notokenrefresh')
-        || request.url.includes('emaillogin/gui/registration/createmaillogin');
-}
+const LOG = LogFactory.createLog('HttpErrorInterceptorX');
 
-export class HttpErrorInterceptor implements HttpInterceptor {
+@Injectable()
+export class HttpErrorInterceptorX implements HttpInterceptor {
 
     public constructor(
-        private readonly $q: IQService,
-        private readonly errorService: ErrorService,
-        private readonly $log: ILogService,
+        private readonly errorService: ErrorServiceX,
     ) {
     }
 
@@ -55,7 +53,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                     throw err;
                 }
 
-                if (err.status !== HTTP_ERROR_CODES.UNAUTHORIZED && !isIgnorableHttpError(req)) {
+                if (err.status !== HTTP_ERROR_CODES.UNAUTHORIZED ) {
                     // here we could analyze the http status of the response. But instead we check if the  response has
                     // the format of a known response such as errortypes such as violationReport or ExceptionReport and
                     // transform it as such. If the response matches know expected format we create an unexpected
@@ -108,8 +106,8 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                 'ERROR_DATA_CHANGED',
                 response.message));
         } else {
-            this.$log.error(`ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`);
-            this.$log.error('ResponseData:' + JSON.stringify(response.message));
+            LOG.error(`ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`);
+            LOG.error('ResponseData:' + JSON.stringify(response.message));
             // the error objects is neither a ViolationReport nor a ExceptionReport. Create a generic error msg
             errors = [];
             errors.push(new TSExceptionReport(TSErrorType.INTERNAL,

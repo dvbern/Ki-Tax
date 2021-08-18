@@ -25,9 +25,11 @@ import {TSErrorLevel} from '../../../../../models/enums/TSErrorLevel';
 import {TSExceptionReport} from '../../../../../models/TSExceptionReport';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvDialog} from '../../../directive/dv-dialog/dv-dialog';
+import {BroadcastService} from '../../../service/broadcast.service';
 import {ErrorService} from '../../service/ErrorService';
 
 const removeDialogTemplate = require('../../../../../gesuch/dialog/removeDialogTemplate.html');
+
 
 export class DvErrorMessagesPanelComponentConfig implements IComponentOptions {
     public scope = {};
@@ -47,6 +49,7 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
         'DvDialog',
         'GesuchRS',
         'WizardStepManager',
+        'BroadcastService'
     ];
 
     public errors: Array<TSExceptionReport> = [];
@@ -58,6 +61,7 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
         private readonly dvDialog: DvDialog,
         private readonly gesuchRS: GesuchRS,
         private readonly wizardStepManager: WizardStepManager,
+        private readonly broadcastService: BroadcastService
     ) {
     }
 
@@ -68,12 +72,29 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
             this.errors = [];
             this.hide();
         });
+
+
+        this.broadcastService.on$(TSMessageEvent[TSMessageEvent.ERROR_UPDATE])
+            .subscribe(message => this.displayMessagesX(message));
+        this.broadcastService.on$(TSMessageEvent[TSMessageEvent.INFO_UPDATE])
+             .subscribe(message => this.displayMessagesX(message));
+        this.broadcastService.on$(TSMessageEvent[TSMessageEvent.CLEAR]).subscribe(() => {
+            this.errors = [];
+            this.hide();
+        });
     }
 
     public displayMessages = (_event: any, errors: Array<TSExceptionReport>) => {
         this.resetTransitionInProgressFlag();
 
         this.errors = errors;
+        this.show();
+    };
+
+    public displayMessagesX = (report: {type: any, payload: any}) => {
+        this.resetTransitionInProgressFlag();
+
+        this.errors = report.payload;
         this.show();
     };
 
