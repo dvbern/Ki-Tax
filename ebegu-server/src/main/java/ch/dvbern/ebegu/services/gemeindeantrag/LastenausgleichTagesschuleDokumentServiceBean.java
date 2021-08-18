@@ -17,7 +17,10 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -29,17 +32,21 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.docxmerger.DocxDocument;
 import ch.dvbern.ebegu.docxmerger.lats.LatsDocxDTO;
 import ch.dvbern.ebegu.docxmerger.lats.LatsDocxMerger;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
+import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MathUtil;
 
 /**
  * Service fuer den Lastenausgleich der Tagesschulen
@@ -61,9 +68,12 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 	@Inject
 	GemeindeService gemeindeService;
 
+	@Inject
+	EinstellungService einstellungService;
+
 	@Override
 	@Nonnull
-	public byte[] createDocx(@Nonnull String containerId, @Nonnull Sprache sprache) {
+	public byte[] createDocx(@Nonnull String containerId, @Nonnull Sprache sprache, @Nonnull BigDecimal betreuungsstundenPrognose) {
 		LastenausgleichTagesschuleAngabenGemeindeContainer container =
 			lastenausgleichTagesschuleAngabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(containerId)
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -87,13 +97,13 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 
 		DocxDocument document = new DocxDocument(template);
 		LatsDocxMerger merger = new LatsDocxMerger(document);
-		merger.addMergeFields(toLatsDocxDTO(container));
+		merger.addMergeFields(toLatsDocxDTO(container, betreuungsstundenPrognose));
 		merger.merge();
 		return document.getDocument();
 	}
 
 	@Nonnull
-	private LatsDocxDTO toLatsDocxDTO(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
+	private LatsDocxDTO toLatsDocxDTO(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container, @Nonnull BigDecimal betreuungsstundenPrognose) {
 
 		Objects.requireNonNull(container.getAngabenKorrektur());
 		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde = container.getAngabenKorrektur();
@@ -115,27 +125,84 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 		dto.setGemeindeName(container.getGemeinde().getName());
 
 		dto.setBetreuungsstunden(angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden());
-		setNormlohnkosten(dto);
+		setNormlohnkosten(dto, angabenGemeinde, container);
 		dto.setNormlohnkostenTotal(angabenGemeinde.getNormlohnkostenBetreuungBerechnet());
 		dto.setElterngebuehren(angabenGemeinde.getEinnahmenElterngebuehren());
 		dto.setLastenausgleichsberechtigterBetrag(angabenGemeinde.getLastenausgleichsberechtigerBetrag());
-		calculateAndSetRaten(dto);
 
-		calculateAndSetPrognoseValues(dto);
+		calculateAndSetPrognoseValues(dto, angabenGemeinde, betreuungsstundenPrognose);
+		calculateAndSetZahlungen(dto, angabenGemeinde);
 
 		return dto;
 	}
 
-	private void calculateAndSetRaten(@Nonnull LatsDocxDTO dto) {
-
+	private void setNormlohnkosten(
+		@Nonnull LatsDocxDTO dto,
+		@Nonnull LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde,
+		LastenausgleichTagesschuleAngabenGemeindeContainer container
+	) {
+		List<String> normLohnStr = new ArrayList<>();
+		if (angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete() != null
+		&& angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete().compareTo(BigDecimal.ZERO) > 0) {
+			Einstellung lohnnormkosten = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN, container.getGemeinde(), container.getGesuchsperiode());
+			normLohnStr.add(lohnnormkosten.getValue());
+		}
+		if (angabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete() != null
+			&& angabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete().compareTo(BigDecimal.ZERO) > 0) {
+			Einstellung lohnnormkosten = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50, container.getGemeinde(), container.getGesuchsperiode());
+			normLohnStr.add(lohnnormkosten.getValue());
+		}
+		String result = String.join(" / ", normLohnStr);
+		dto.setNormlohnkosten(result);
+		// same values used for following periode
+		dto.setNormlohnkostenProg(result);
 	}
 
-	private void setNormlohnkosten(@Nonnull LatsDocxDTO dto) {
+	private void calculateAndSetPrognoseValues(
+		@Nonnull LatsDocxDTO dto,
+		@Nonnull LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde,
+		@Nonnull BigDecimal betreuungsstundenPrognose
+	) {
 
+		dto.setBetreuungsstundenProg(betreuungsstundenPrognose);
+
+		// for gemeinden with both normlohnkosten, use same distribution => use same calculated normlohnkosten
+		BigDecimal normlohnkostenCalculated = MathUtil.EXACT.divide(
+			angabenGemeinde.getNormlohnkostenBetreuungBerechnet(),
+			angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden()
+			);
+
+		Objects.requireNonNull(normlohnkostenCalculated);
+		dto.setNormlohnkostenTotalProg(normlohnkostenCalculated.multiply(betreuungsstundenPrognose));
+
+		BigDecimal proportion = MathUtil.EXACT.divide(
+			betreuungsstundenPrognose,
+			angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden()
+		);
+
+		Objects.requireNonNull(angabenGemeinde.getEinnahmenElterngebuehren());
+		// use proportional bigger elternbeitrag in following year
+		dto.setElterngebuehrenProg(angabenGemeinde.getEinnahmenElterngebuehren().multiply(proportion));
+
+		Objects.requireNonNull(dto.getNormlohnkostenTotalProg());
+		BigDecimal lastenausgleichBetragProg = dto.getNormlohnkostenTotalProg().subtract(dto.getElterngebuehrenProg());
+		dto.setLastenausgleichsberechtigterBetragProg(lastenausgleichBetragProg);
+
+		// zweite rate following schuljahr is 50% of lastenausgleichberechtigter Betrag
+		BigDecimal ersteRateProg = MathUtil.EXACT.multiply(dto.getLastenausgleichsberechtigterBetragProg(), new BigDecimal("0.5"));
+		dto.setErsteRateProg(ersteRateProg);
 	}
 
-	private void calculateAndSetPrognoseValues(@Nonnull LatsDocxDTO dto) {
+	private void calculateAndSetZahlungen(@Nonnull LatsDocxDTO dto, LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde) {
+		dto.setErsteRate(angabenGemeinde.getErsteRateAusbezahlt());
 
+		Objects.requireNonNull(dto.getLastenausgleichsberechtigterBetrag());
+		BigDecimal zweiteRate = dto.getLastenausgleichsberechtigterBetrag().subtract(dto.getErsteRate());
+		dto.setZweiteRate(zweiteRate);
+
+		Objects.requireNonNull(dto.getErsteRateProg());
+		BigDecimal totalAuszahlung = dto.getErsteRateProg().add(dto.getZweiteRate());
+		dto.setAuszahlungTotal(totalAuszahlung);
 	}
 }
 

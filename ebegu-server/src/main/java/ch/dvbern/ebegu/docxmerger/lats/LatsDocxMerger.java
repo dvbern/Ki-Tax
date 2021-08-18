@@ -46,8 +46,8 @@ public class LatsDocxMerger extends DocxMerger<LatsDocxDTO> {
 		this.mergeFields.add(new StringMergeField("gemeindeName", dto.getGemeindeName()));
 		this.mergeFields.add(new BigDecimalMergeField("betreuungsstunden", dto.getBetreuungsstunden()));
 		this.mergeFields.add(new BigDecimalMergeField("betreuungsstundenProg", dto.getBetreuungsstundenProg()));
-		this.mergeFields.add(new BigDecimalMergeField("normlohnkosten", dto.getNormlohnkosten()));
-		this.mergeFields.add(new BigDecimalMergeField("normlohnkostenProg", dto.getNormlohnkostenProg()));
+		this.mergeFields.add(new StringMergeField("normlohnkosten", dto.getNormlohnkosten()));
+		this.mergeFields.add(new StringMergeField("normlohnkostenProg", dto.getNormlohnkostenProg()));
 		this.mergeFields.add(new BigDecimalMergeField("normlohnkostenTotal", dto.getNormlohnkostenTotal()));
 		this.mergeFields.add(new BigDecimalMergeField("normlohnkostenTotalProg", dto.getNormlohnkostenTotalProg()));
 		this.mergeFields.add(new BigDecimalMergeField("elterngebuehren", dto.getElterngebuehren()));

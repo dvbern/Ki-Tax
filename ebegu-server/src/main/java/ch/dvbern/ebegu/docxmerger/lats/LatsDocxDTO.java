@@ -33,8 +33,8 @@ public class LatsDocxDTO {
 	@Nullable private String gemeindeName;
 	@Nullable private BigDecimal betreuungsstunden;
 	@Nullable private BigDecimal betreuungsstundenProg;
-	@Nullable private BigDecimal normlohnkosten;
-	@Nullable private BigDecimal normlohnkostenProg;
+	@Nullable private String normlohnkosten;
+	@Nullable private String normlohnkostenProg;
 	@Nullable private BigDecimal normlohnkostenTotal;
 	@Nullable private BigDecimal normlohnkostenTotalProg;
 	@Nullable private BigDecimal elterngebuehren;
@@ -149,20 +149,20 @@ public class LatsDocxDTO {
 	}
 
 	@Nullable
-	public BigDecimal getNormlohnkosten() {
+	public String getNormlohnkosten() {
 		return normlohnkosten;
 	}
 
-	public void setNormlohnkosten(@Nullable BigDecimal normlohnkosten) {
+	public void setNormlohnkosten(@Nullable String normlohnkosten) {
 		this.normlohnkosten = normlohnkosten;
 	}
 
 	@Nullable
-	public BigDecimal getNormlohnkostenProg() {
+	public String getNormlohnkostenProg() {
 		return normlohnkostenProg;
 	}
 
-	public void setNormlohnkostenProg(@Nullable BigDecimal normlohnkostenProg) {
+	public void setNormlohnkostenProg(@Nullable String normlohnkostenProg) {
 		this.normlohnkostenProg = normlohnkostenProg;
 	}
 

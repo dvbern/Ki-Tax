@@ -50,6 +50,7 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxLastenausgleichTagesschulenStatusHistory;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxBetreuungsstundenPrognose;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
@@ -517,6 +518,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response dokumentErstellen(
+		@Nonnull JaxBetreuungsstundenPrognose betreuungsstundenPrognose,
 		@Nonnull @NotNull @PathParam("containerJaxId") JaxId containerJaxId,
 		@Nonnull @PathParam("sprache") Sprache sprache,
 		@Context UriInfo uriInfo,
@@ -526,7 +528,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		Objects.requireNonNull(containerJaxId.getId());
 
 		byte[] document;
-		document = latsDokumentService.createDocx(containerJaxId.getId(), sprache);
+		document = latsDokumentService.createDocx(containerJaxId.getId(), sprache, betreuungsstundenPrognose.getBetreuungsstundenPrognose());
 
 		if (document.length > 0) {
 			try {
