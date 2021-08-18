@@ -103,7 +103,12 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
     }
 
     private async handleErrors(err: any): Promise<void> {
-        const message = JSON.parse(await err.error.text());
+        let message;
+        try {
+            message = JSON.parse(await err.error.text());
+        } catch (err) {
+            this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
+        }
         if (message.translatedMessage) {
             this.errorService.addMesageAsError(message.translatedMessage);
         } else {
