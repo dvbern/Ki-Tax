@@ -87,13 +87,13 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
         let errors: Array<TSExceptionReport>;
         // Alle daten loggen um das Debuggen zu vereinfachen
         // noinspection IfStatementWithTooManyBranchesJS
-        if (this.isDataViolationResponse(response.message)) {
-            errors = this.convertViolationReport(response.message);
+        if (this.isDataViolationResponse(response.error)) {
+            errors = this.convertViolationReport(response.error);
 
-        } else if (this.isDataEbeguExceptionReport(response.message)) {
-            errors = this.convertEbeguExceptionReport(response.message);
+        } else if (this.isDataEbeguExceptionReport(response.error)) {
+            errors = this.convertEbeguExceptionReport(response.error);
 
-        } else if (this.isFileUploadException(response.message)) {
+        } else if (this.isFileUploadException(response.error)) {
             errors = [];
             errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
                 TSErrorLevel.SEVERE,
