@@ -78,9 +78,6 @@ export class LastenausgleichTSService {
             this.errorService.addMesageAsInfo(this.translate.instant('SAVED'));
             this.next(result);
         }, error => {
-            if (error.status === HTTP_ERROR_CODES.CONFLICT) {
-                this.errorService.addMesageAsError(this.translate.instant('ERROR_DATA_CHANGED'));
-            }
             LOG.error(error);
         });
     }

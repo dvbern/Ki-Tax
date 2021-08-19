@@ -211,13 +211,9 @@ public class GemeindeAntragResource {
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				gemeindeId));
 
-		try {
-			final GemeindeAntrag gemeindeAntrag =
+		final GemeindeAntrag gemeindeAntrag =
 				gemeindeAntragService.createGemeindeAntrag(gemeinde, gesuchsperiode, gemeindeAntragTyp);
-			return converter.gemeindeAntragToJax(gemeindeAntrag);
-		} catch (EntityExistsException e) {
-			throw new WebApplicationException(e, Status.CONFLICT);
-		}
+		return converter.gemeindeAntragToJax(gemeindeAntrag);
 	}
 
 	@ApiOperation("Gibt alle Gemeindeanträge zurück, die die Benutzerin sehen kann")
