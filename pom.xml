@@ -61,8 +61,8 @@
         <version.hamcrest>2.2</version.hamcrest>
         <version.poi>4.1.2</version.poi>
         <version.iso20022>4.2.0</version.iso20022>
-        <version.jaxb-api>2.3.3</version.jaxb-api>
-        <version.jaxb-runtime>2.3.3</version.jaxb-runtime>
+        <version.jakarata-xml>2.3.3</version.jakarata-xml>
+        <version.jaxb-runtime>2.3.5</version.jaxb-runtime>
 		<version.junit.jupiter>5.7.0</version.junit.jupiter>
         <version.junit.platform>1.7.0</version.junit.platform>
         <ebegu-code-conventions.version>1.0.2</ebegu-code-conventions.version>
@@ -279,12 +279,12 @@
             <dependency>
                 <groupId>jakarta.xml.ws</groupId>
                 <artifactId>jakarta.xml.ws-api</artifactId>
-                <version>2.3.3</version>
+                <version>${version.jakarata-xml}</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.xml.ws</groupId>
                 <artifactId>jaxws-rt</artifactId>
-                <version>2.3.3</version>
+                <version>2.3.5</version>
             </dependency>
             <dependency>
                 <groupId>org.jvnet.staxex</groupId>
@@ -301,7 +301,7 @@
             <dependency>
                 <groupId>jakarta.xml.bind</groupId>
                 <artifactId>jakarta.xml.bind-api</artifactId>
-                <version>${version.jaxb-runtime}</version>
+                <version>${version.jakarata-xml}</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jaxb</groupId>
@@ -312,7 +312,7 @@
             <dependency>
                 <groupId>com.sun.xml.ws</groupId>
                 <artifactId>jaxws-ri</artifactId>
-                <version>2.3.3</version>
+                <version>2.3.5</version>
                 <type>pom</type>
             </dependency>
             <dependency><!-- wegen Versionskonflikten -->

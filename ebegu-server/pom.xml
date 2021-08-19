@@ -254,7 +254,7 @@
                             <dependency>
                                 <groupId>jakarta.xml.bind</groupId>
                                 <artifactId>jakarta.xml.bind-api</artifactId>
-                                <version>${version.jaxb-api}</version>
+                                <version>${version.jakarata-xml}</version>
                             </dependency>
                             <dependency>
                                 <groupId>org.glassfish.jaxb</groupId>
