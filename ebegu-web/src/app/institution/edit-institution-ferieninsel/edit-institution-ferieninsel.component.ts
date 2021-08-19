@@ -57,13 +57,12 @@ export class EditInstitutionFerieninselComponent implements OnInit, OnChanges {
     }
 
     private sortByPeriod(): void {
-        this.stammdaten.institutionStammdatenFerieninsel.einstellungenFerieninsel =
-            this.stammdaten.institutionStammdatenFerieninsel.einstellungenFerieninsel.sort((a, b) => {
-                if (a.gesuchsperiode && b.gesuchsperiode) {
-                    return b.gesuchsperiode.gesuchsperiodeString.localeCompare(a.gesuchsperiode.gesuchsperiodeString);
-                }
-                return -1;
-            });
+        this.stammdaten.institutionStammdatenFerieninsel.einstellungenFerieninsel.sort((a, b) => {
+            if (a.gesuchsperiode && b.gesuchsperiode) {
+                return b.gesuchsperiode.gesuchsperiodeString.localeCompare(a.gesuchsperiode.gesuchsperiodeString);
+            }
+            return -1;
+        });
     }
 
     public trackById(einstellungGP: TSEinstellungenFerieninsel): string {
