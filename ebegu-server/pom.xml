@@ -252,8 +252,8 @@
                             <!--            JAXB modul einfuegen-->
                             <!-- Runtime -->
                             <dependency>
-                                <groupId>javax.xml.bind</groupId>
-                                <artifactId>jaxb-api</artifactId>
+                                <groupId>jakarta.xml.bind</groupId>
+                                <artifactId>jakarta.xml.bind-api</artifactId>
                                 <version>${version.jaxb-api}</version>
                             </dependency>
                             <dependency>
