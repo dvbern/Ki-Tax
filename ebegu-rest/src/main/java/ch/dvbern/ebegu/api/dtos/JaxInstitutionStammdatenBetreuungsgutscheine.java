@@ -82,6 +82,29 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 	private String alternativeEmailFamilienportal;
 
 	@Nonnull
+	private Integer oeffnungstageProJahr;
+
+	@Nonnull
+	private BigDecimal auslastungInstitutionen;
+
+	@Nonnull
+	private BigDecimal anzahlKinderWarteliste;
+
+	@Nonnull
+	private BigDecimal summePensumWarteliste;
+
+	@Nonnull
+	private BigDecimal dauerWarteliste;
+
+	private boolean fruehEroeffnung;
+
+	private boolean spaetEroeffnung;
+
+	private boolean wochenendeEroeffnung;
+
+	private boolean uebernachtungMoeglich;
+
+	@Nonnull
 	private Set<JaxBetreuungsstandort> betreuungsstandorte = new HashSet<>();
 
 	@Nullable
@@ -239,5 +262,82 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 
 	public void setBetreuungsstandorte(@Nonnull Set<JaxBetreuungsstandort> betreuungsstandorte) {
 		this.betreuungsstandorte = betreuungsstandorte;
+	}
+
+	@Nonnull
+	public Integer getOeffnungstageProJahr() {
+		return oeffnungstageProJahr;
+	}
+
+	public void setOeffnungstageProJahr(@Nonnull Integer oeffnungstageProJahr) {
+		this.oeffnungstageProJahr = oeffnungstageProJahr;
+	}
+
+	@Nonnull
+	public BigDecimal getAuslastungInstitutionen() {
+		return auslastungInstitutionen;
+	}
+
+	public void setAuslastungInstitutionen(@Nonnull BigDecimal auslastungInstitutionen) {
+		this.auslastungInstitutionen = auslastungInstitutionen;
+	}
+
+	@Nonnull
+	public BigDecimal getAnzahlKinderWarteliste() {
+		return anzahlKinderWarteliste;
+	}
+
+	public void setAnzahlKinderWarteliste(@Nonnull BigDecimal anzahlKinderWarteliste) {
+		this.anzahlKinderWarteliste = anzahlKinderWarteliste;
+	}
+
+	@Nonnull
+	public BigDecimal getSummePensumWarteliste() {
+		return summePensumWarteliste;
+	}
+
+	public void setSummePensumWarteliste(@Nonnull BigDecimal summePensumWarteliste) {
+		this.summePensumWarteliste = summePensumWarteliste;
+	}
+
+	@Nonnull
+	public BigDecimal getDauerWarteliste() {
+		return dauerWarteliste;
+	}
+
+	public void setDauerWarteliste(@Nonnull BigDecimal dauerWarteliste) {
+		this.dauerWarteliste = dauerWarteliste;
+	}
+
+	public boolean isFruehEroeffnung() {
+		return fruehEroeffnung;
+	}
+
+	public void setFruehEroeffnung(boolean fruehEroeffnung) {
+		this.fruehEroeffnung = fruehEroeffnung;
+	}
+
+	public boolean isSpaetEroeffnung() {
+		return spaetEroeffnung;
+	}
+
+	public void setSpaetEroeffnung(boolean spaetEroeffnung) {
+		this.spaetEroeffnung = spaetEroeffnung;
+	}
+
+	public boolean isWochenendeEroeffnung() {
+		return wochenendeEroeffnung;
+	}
+
+	public void setWochenendeEroeffnung(boolean wochenendeEroeffnung) {
+		this.wochenendeEroeffnung = wochenendeEroeffnung;
+	}
+
+	public boolean isUebernachtungMoeglich() {
+		return uebernachtungMoeglich;
+	}
+
+	public void setUebernachtungMoeglich(boolean uebernachtungMoeglich) {
+		this.uebernachtungMoeglich = uebernachtungMoeglich;
 	}
 }

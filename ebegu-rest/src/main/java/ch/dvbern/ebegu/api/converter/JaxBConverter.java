@@ -1599,6 +1599,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstStammdaten.setInstitution(institutionToJAX(persistedInstStammdaten.getInstitution()));
 		jaxInstStammdaten.setAdresse(adresseToJAX(persistedInstStammdaten.getAdresse()));
 		jaxInstStammdaten.setSendMailWennOffenePendenzen(persistedInstStammdaten.getSendMailWennOffenePendenzen());
+		jaxInstStammdaten.setErinnerungMail(persistedInstStammdaten.getErinnerungMail());
+		jaxInstStammdaten.setGrundSchliessung(persistedInstStammdaten.getGrundSchliessung());
 		return jaxInstStammdaten;
 	}
 
@@ -1673,7 +1675,8 @@ public class JaxBConverter extends AbstractConverter {
 			institutionStammdaten.setInstitutionStammdatenFerieninsel(convertedIsFI);
 		}
 		institutionStammdaten.setSendMailWennOffenePendenzen(institutionStammdatenJAXP.isSendMailWennOffenePendenzen());
-
+		institutionStammdaten.setErinnerungMail(institutionStammdatenJAXP.getErinnerungMail());
+		institutionStammdaten.setGrundSchliessung(institutionStammdatenJAXP.getGrundSchliessung());
 		adresseToEntity(institutionStammdatenJAXP.getAdresse(), institutionStammdaten.getAdresse());
 	}
 
@@ -1715,6 +1718,19 @@ public class JaxBConverter extends AbstractConverter {
 			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedAdresseKontoinhaber));
 		}
 		jaxInstStammdaten.setAlternativeEmailFamilienportal(persistedInstStammdaten.getAlternativeEmailFamilienportal());
+
+		jaxInstStammdaten.setAuslastungInstitutionen(persistedInstStammdaten.getAuslastungInstitutionen());
+		jaxInstStammdaten.setOeffnungstageProJahr(persistedInstStammdaten.getOeffnungstageProJahr());
+		jaxInstStammdaten.setAnzahlKinderWarteliste(persistedInstStammdaten.getAnzahlKinderWarteliste());
+		jaxInstStammdaten.setDauerWarteliste(persistedInstStammdaten.getDauerWarteliste());
+		jaxInstStammdaten.setSummePensumWarteliste(persistedInstStammdaten.getSummePensumWarteliste());
+		jaxInstStammdaten.setFruehEroeffnung(persistedInstStammdaten.isFruehEroeffnung());
+		jaxInstStammdaten.setSpaetEroeffnung(persistedInstStammdaten.isSpaetEroeffnung());
+		jaxInstStammdaten.setWochenendeEroeffnung(persistedInstStammdaten.isWochenendeEroeffnung());
+		jaxInstStammdaten.setUebernachtungMoeglich(persistedInstStammdaten.isUebernachtungMoeglich());
+
+
+
 		return jaxInstStammdaten;
 	}
 
@@ -1964,6 +1980,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstStammdatenTagesschule.setGemeinde(gemeindeToJAX(persistedInstStammdatenTagesschule.getGemeinde()));
 		jaxInstStammdatenTagesschule.setEinstellungenTagesschule(einstellungenTagesschuleListToJAX(
 			persistedInstStammdatenTagesschule.getEinstellungenTagesschule()));
+
 		return jaxInstStammdatenTagesschule;
 	}
 
@@ -4899,6 +4916,12 @@ public class JaxBConverter extends AbstractConverter {
 		gemeindeService.findGemeinde(jaxStammdaten.getGemeinde().getId())
 			.ifPresent(stammdaten::setGemeinde);
 
+		if(jaxStammdaten.getGemeindeAusgabestelle() != null) {
+			Objects.requireNonNull(jaxStammdaten.getGemeindeAusgabestelle().getId());
+			gemeindeService.findGemeinde(jaxStammdaten.getGemeindeAusgabestelle().getId())
+				.ifPresent(stammdaten::setGemeindeAusgabestelle);
+		}
+
 		gemeindeStammdatenAdressenToEntity(jaxStammdaten, stammdaten);
 		stammdaten.setMail(jaxStammdaten.getMail());
 		stammdaten.setTelefon(jaxStammdaten.getTelefon());
@@ -4948,6 +4971,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		stammdaten.setUsernameScolaris(jaxStammdaten.getUsernameScolaris());
+		stammdaten.setGutscheinSelberAusgestellt(jaxStammdaten.getGutscheinSelberAusgestellt());
 
 		return stammdaten;
 	}
