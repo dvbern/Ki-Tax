@@ -25,7 +25,7 @@
 
     <groupId>ch.dvbern.ebegu</groupId>
     <artifactId>ebegu</artifactId>
-    <version>2021.11.1</version>
+    <version>2021.11.2</version>
     <packaging>pom</packaging>
 
     <name>eBEGU - Multimodule Project</name>
