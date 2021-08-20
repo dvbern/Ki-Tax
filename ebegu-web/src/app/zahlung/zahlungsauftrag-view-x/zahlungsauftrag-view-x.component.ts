@@ -217,7 +217,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
                     this.gemeinde,
                     this.beschrieb,
                     this.faelligkeitsdatum,
-                    this.datumGeneriert || moment(),
+                    this.datumGeneriert,
                 ).subscribe((response: TSZahlungsauftrag) => {
                         this.errorService.addMesageAsInfo(this.translate.instant('ZAHLUNG_ERSTELLT'));
                         this.zahlungsAuftraege.push(response);
