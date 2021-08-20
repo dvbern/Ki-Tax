@@ -1729,8 +1729,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstStammdaten.setWochenendeEroeffnung(persistedInstStammdaten.isWochenendeEroeffnung());
 		jaxInstStammdaten.setUebernachtungMoeglich(persistedInstStammdaten.isUebernachtungMoeglich());
 
-
-
 		return jaxInstStammdaten;
 	}
 
@@ -1808,6 +1806,16 @@ public class JaxBConverter extends AbstractConverter {
 			institutionStammdaten.getBetreuungsstandorte(),
 			institutionStammdaten)
 		);
+
+		institutionStammdaten.setAuslastungInstitutionen(institutionStammdatenJAXP.getAuslastungInstitutionen());
+		institutionStammdaten.setOeffnungstageProJahr(institutionStammdatenJAXP.getOeffnungstageProJahr());
+		institutionStammdaten.setAnzahlKinderWarteliste(institutionStammdatenJAXP.getAnzahlKinderWarteliste());
+		institutionStammdaten.setDauerWarteliste(institutionStammdatenJAXP.getDauerWarteliste());
+		institutionStammdaten.setSummePensumWarteliste(institutionStammdatenJAXP.getSummePensumWarteliste());
+		institutionStammdaten.setFruehEroeffnung(institutionStammdatenJAXP.isFruehEroeffnung());
+		institutionStammdaten.setSpaetEroeffnung(institutionStammdatenJAXP.isSpaetEroeffnung());
+		institutionStammdaten.setWochenendeEroeffnung(institutionStammdatenJAXP.isWochenendeEroeffnung());
+		institutionStammdaten.setUebernachtungMoeglich(institutionStammdatenJAXP.isUebernachtungMoeglich());
 
 		return institutionStammdaten;
 	}
@@ -5073,6 +5081,11 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		jaxStammdaten.setUsernameScolaris(stammdaten.getUsernameScolaris());
+
+		jaxStammdaten.setGutscheinSelberAusgestellt(stammdaten.getGutscheinSelberAusgestellt());
+		if(stammdaten.getGemeindeAusgabestelle() != null) {
+			jaxStammdaten.setGemeindeAusgabestelle(gemeindeToJAX(stammdaten.getGemeindeAusgabestelle()));
+		}
 
 		return jaxStammdaten;
 	}

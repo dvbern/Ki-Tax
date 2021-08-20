@@ -382,6 +382,8 @@ describe('EbeguRestUtil', () => {
                 myInstitutionStammdaten.mail = 'my-mail';
                 myInstitutionStammdaten.telefon = 'my-phone';
                 myInstitutionStammdaten.gueltigkeit = new TSDateRange(DateUtil.today(), DateUtil.today());
+                myInstitutionStammdaten.erinnerungMail = 'my-erinnerung-mail';
+                myInstitutionStammdaten.grundSchliessung = 'my ground';
 
                 TestDataUtil.setAbstractMutableFieldsUndefined(myInstitutionStammdaten);
                 TestDataUtil.setAbstractFieldsUndefined(myInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine);
@@ -400,6 +402,8 @@ describe('EbeguRestUtil', () => {
                 expect(restInstitutionStammdaten.betreuungsangebotTyp)
                     .toEqual(myInstitutionStammdaten.betreuungsangebotTyp);
                 expect(restInstitutionStammdaten.institution.name).toEqual(myInstitutionStammdaten.institution.name);
+                expect(restInstitutionStammdaten.erinnerungMail).toEqual(myInstitutionStammdaten.erinnerungMail);
+                expect(restInstitutionStammdaten.grundSchliessung).toEqual(myInstitutionStammdaten.grundSchliessung);
 
                 const transformedInstitutionStammdaten = ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(),
                     restInstitutionStammdaten);
