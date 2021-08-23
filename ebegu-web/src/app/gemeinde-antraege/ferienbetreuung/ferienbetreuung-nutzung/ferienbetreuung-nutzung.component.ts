@@ -81,7 +81,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
     public async onAbschliessen(): Promise<void> {
         if (await this.checkReadyForAbschliessen()) {
             this.ferienbetreuungService.nutzungAbschliessen(this.container.id, this.form.value)
-                .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
+                .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveErrors(error));
         }
     }
 
@@ -234,11 +234,11 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
                 this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
                 this.errorService.clearAll();
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
-            }, err => this.handleSaveError(err));
+            }, err => this.handleSaveErrors(err));
     }
 
     public onFalscheAngaben(): void {
         this.ferienbetreuungService.falscheAngabenNutzung(this.container.id, this.nutzung)
-            .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
+            .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveErrors(error));
     }
 }

@@ -25,6 +25,7 @@ import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSFerienbetreuungAbstractAngaben} from '../../../models/gemeindeantrag/TSFerienbetreuungAbstractAngaben';
 import {TSFerienbetreuungAngabenContainer} from '../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSExceptionReport} from '../../../models/TSExceptionReport';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {HTTP_ERROR_CODES} from '../../core/constants/CONSTANTS';
@@ -182,15 +183,11 @@ export abstract class AbstractFerienbetreuungFormular {
         this.wizardRS.updateSteps(this.WIZARD_TYPE, this.uiRouterGlobals.params.id);
     }
 
-    protected handleSaveError(error: any): void {
+    protected handleSaveErrors(errors: TSExceptionReport[]): void {
         this.errorService.clearAll();
-        if (error.error?.includes('Not all required properties are set')) {
+        if (errors.find(error => error.customMessage.includes('Not all required properties are set'))) {
             this.enableAndTriggerFormValidation();
             this.showValidierungFehlgeschlagenErrorMessage();
-        } else if (error.status === HTTP_ERROR_CODES.CONFLICT) {
-            this.errorService.addMesageAsError(this.translate.instant('ERROR_DATA_CHANGED'));
-        } else {
-            this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
         }
     }
 

@@ -206,10 +206,11 @@ export class GemeindeAntraegeComponent implements OnInit {
         ).subscribe(() => {
                 this.loadAntragList();
                 this.cd.markForCheck();
+            // tslint:disable-next-line:no-identical-functions
             }, err => {
                 const msg = this.translate.instant('DELETE_ANTRAEGE_ERROR');
                 this.errorService.addMesageAsError(msg);
-                console.error(err);
+                LOG.error(err);
             });
     }
 
@@ -243,7 +244,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                     this.formGroup.get('antragTyp').setValue(this.types[0]);
                 }
             }, error => {
-                console.error(error);
+                LOG.error(error);
             });
 
     }

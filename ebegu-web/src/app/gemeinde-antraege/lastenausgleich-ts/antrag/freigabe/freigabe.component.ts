@@ -24,8 +24,8 @@ import {filter, first, map, mergeMap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRole} from '../../../../../models/enums/TSRole';
-import {TSWizardStepXTyp} from '../../../../../models/enums/TSWizardStepXTyp';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {TSExceptionReport} from '../../../../../models/TSExceptionReport';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgOkDialogComponent} from '../../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
@@ -47,7 +47,6 @@ export class FreigabeComponent implements OnInit {
     @Input() public lastenausgleichID: string;
 
     private container: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
-    private readonly WIZARD_TYPE = TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN;
 
     public canViewFreigabeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public canViewGeprueftButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -123,24 +122,22 @@ export class FreigabeComponent implements OnInit {
             )
             .subscribe(() => {
                 this.$state.go('gemeindeantraege.view');
-            }, error => {
+            }, (errors: TSExceptionReport[]) => {
                 // tslint:disable-next-line:early-exit
-                if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
-                    if (error.error.includes('angabenDeklaration')) {
-                        this.errorService.addMesageAsError(this.translate.instant('LATS_GEMEINDE_ANGABEN_ERROR'));
-                        setTimeout(() => this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_GEMEINDE',
-                            {triggerValidation: true},
-                            {}),
-                            this.ROUTING_DELAY);
-                    } else if (error.error.includes('LastenausgleichAngabenInstitution')) {
-                        this.errorService.addMesageAsError(this.translate.instant(
-                            'LATS_NICHT_ALLE_INSTITUTIONEN_ABGESCHLOSSEN'));
-                        setTimeout(() => this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.LIST'),
-                            this.ROUTING_DELAY);
-                    }
-                } else {
-                    this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
-                }
+                errors.forEach(error => {
+                        if (error.customMessage.includes('angabenDeklaration')) {
+                            this.errorService.addMesageAsError(this.translate.instant('LATS_GEMEINDE_ANGABEN_ERROR'));
+                            setTimeout(() => this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_GEMEINDE',
+                                    {triggerValidation: true},
+                                    {}),
+                                this.ROUTING_DELAY);
+                        } else if (error.customMessage.includes('LastenausgleichAngabenInstitution')) {
+                            this.errorService.addMesageAsError(this.translate.instant(
+                                'LATS_NICHT_ALLE_INSTITUTIONEN_ABGESCHLOSSEN'));
+                            setTimeout(() => this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.LIST'),
+                                this.ROUTING_DELAY);
+                        }
+                })
             });
     }
 

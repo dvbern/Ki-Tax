@@ -24,9 +24,11 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
+import {LogFactory} from '../../../../core/logging/LogFactory';
 import {DownloadRS} from '../../../../core/service/downloadRS.rest';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
+const LOG = LogFactory.createLog('LastenausgleichTsBerechnungComponent');
 @Component({
     selector: 'dv-lastenausgleich-ts-berechnung',
     templateUrl: './lastenausgleich-ts-berechnung.component.html',
@@ -74,8 +76,7 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
                     this.downloadingDeFile.next(false);
                 },
                 async err => {
-                    const message = JSON.parse(await err.error.text());
-                    this.errorService.addMesageAsError(message.translatedMessage);
+                    LOG.error(err);
                 });
     }
 
@@ -88,8 +89,7 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
                     this.downloadingFrFile.next(false);
                 },
                 async err => {
-                    const message = JSON.parse(await err.error.text());
-                    this.errorService.addMesageAsError(message.translatedMessage);
+                    LOG.error(err);
                 }
             );
     }
