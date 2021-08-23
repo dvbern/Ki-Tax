@@ -242,6 +242,11 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				//Meldung nicht Rechtzeitig: Der Anspruch kann sich erst auf den Folgemonat des Eingangsdatum erhöhen
 				inputData.setAnspruchspensumProzent(anspruchAufVorgaengerVerfuegung);
 				inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
+				// use input vorgaenger since anteil monat is already included in result vorgaenger and will be calculated later in Rechner for this abschnitt
+				inputData.setPensenBereitsGekuerzt(true);
+				Objects.requireNonNull(resultVorangehenderAbschnitt);
+				// wenn sich Anspruch erst auf Folgemonat erhöht, soll auch die Mahlzeitenvergünstigung erst auf Folgemonat angepasst werden.
+				inputData.setVerguenstigungMahlzeitenTotal(resultVorangehenderAbschnitt.getVerguenstigungMahlzeitenTotal());
 			}
 		} else if (anspruchberechtigtesPensum < anspruchAufVorgaengerVerfuegung) {
 			// Anspruch wird kleiner
