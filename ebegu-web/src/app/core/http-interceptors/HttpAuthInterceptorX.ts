@@ -22,7 +22,7 @@ import {catchError} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import {CONSTANTS, HTTP_ERROR_CODES} from '../constants/CONSTANTS';
-import {isIgnorableHttpError} from '../errors/service/HttpErrorInterceptorX';
+import {HttpErrorInterceptorX} from '../errors/service/HttpErrorInterceptorX';
 
 @Injectable({
     providedIn: 'root',
@@ -46,7 +46,7 @@ export class HttpAuthInterceptorX implements HttpInterceptor {
                         }
                         // if this request was a background polling request we do not want to relogin or show errors
                         if (
-                            isIgnorableHttpError(req)) {
+                            HttpErrorInterceptorX.isIgnorableHttpError(req)) {
                             console.debug('rejecting failed notokenrefresh response');
                             throw err;
                         }

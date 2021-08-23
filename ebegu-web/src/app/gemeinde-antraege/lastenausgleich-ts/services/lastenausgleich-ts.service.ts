@@ -24,7 +24,7 @@ import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../models/ge
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSLastenausgleichTagesschulenStatusHistory} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
 import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
-import {CONSTANTS, HTTP_ERROR_CODES} from '../../../core/constants/CONSTANTS';
+import {CONSTANTS} from '../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 
@@ -78,9 +78,6 @@ export class LastenausgleichTSService {
             this.errorService.addMesageAsInfo(this.translate.instant('SAVED'));
             this.next(result);
         }, error => {
-            if (error.status === HTTP_ERROR_CODES.CONFLICT) {
-                this.errorService.addMesageAsError(this.translate.instant('ERROR_DATA_CHANGED'));
-            }
             LOG.error(error);
         });
     }
