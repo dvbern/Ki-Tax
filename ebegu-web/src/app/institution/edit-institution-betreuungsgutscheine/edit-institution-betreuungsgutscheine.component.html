@@ -86,6 +86,16 @@
                         <dv-error-messages [errorObject]="zeitBis.control.errors"
                                            inputId="zeitBis"></dv-error-messages>
                     </div>
+                    <div class="form-group">
+                        <label class="required" translate for="oeffnungstageProJahr_id">INSTITUTION_OEFFNUNGSTAGE_PRO_JAHR</label>
+                        <input id="oeffnungstageProJahr_id" type="number" name="oeffnungstageProJahr_id" #oeffnungstageProJahr="ngModel"
+                               [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungstageProJahr"
+                               class="form-control"
+                               customMinMax [minValue]="0"
+                               required>
+                        <dv-error-messages [errorObject]="oeffnungstageProJahr.errors"
+                                           inputId="oeffnungstageProJahr_id"></dv-error-messages>
+                    </div>
                 </div>
                 <div class="col-sm-6" *ngIf="incompleteOeffnungszeiten && stammdaten.oeffnungszeiten">
                     <p translate [translateParams]="{value: stammdaten.oeffnungszeiten}">OEFFNUNGSZEITEN_OBSOLETE</p>

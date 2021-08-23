@@ -70,7 +70,7 @@ ALTER TABLE gemeinde_stammdaten_aud ADD COLUMN IF NOT EXISTS gutschein_selber_au
 ALTER TABLE gemeinde_stammdaten ADD COLUMN IF NOT EXISTS gemeinde_ausgabestelle_id BINARY(16);
 ALTER TABLE gemeinde_stammdaten_aud ADD COLUMN IF NOT EXISTS gemeinde_ausgabestelle_id BINARY(16);
 
-ALTER TABLE zahlungsauftrag
-	ADD CONSTRAINT FK_gemeinde_stammdaten_gemeinde_id
+ALTER TABLE gemeinde_stammdaten
+	ADD CONSTRAINT FK_gemeinde_stammdaten_gemeinde_ausgabestelle_id
 		FOREIGN KEY (gemeinde_ausgabestelle_id)
 			REFERENCES gemeinde (id);

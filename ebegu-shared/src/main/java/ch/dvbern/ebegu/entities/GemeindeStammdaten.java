@@ -251,7 +251,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	@Nullable
 	@ManyToOne(optional = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeinde_stammdaten_gemeinde_id"), nullable = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeinde_stammdaten_gemeinde_ausgabestelle_id"), nullable = true)
 	private Gemeinde gemeindeAusgabestelle;
 
 	@Nonnull

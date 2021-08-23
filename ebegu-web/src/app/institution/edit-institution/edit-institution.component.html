@@ -220,9 +220,26 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row" *ngIf="stammdaten.gueltigkeit.gueltigBis">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label translate for="grundSchliessung_id">GRUND_SCHLIESSUNG</label>
+                                    <textarea name="grundSchliessung_name"
+                                              class="form-control " rows="3"
+                                              #grundSchliessung="ngModel"
+                                              id="grundSchliessung_id"
+                                              [(ngModel)]="stammdaten.grundSchliessung"
+                                              maxlength="4000"
+                                              required>
+                                    </textarea>
+                                    <dv-error-messages [errorObject]="grundSchliessung.errors"
+                                                       inputId="grundSchliessung_id"></dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
                             <!-- Mail senden bei offenen Pendenzen -->
-                            <div class="col-sm-6">
+                            <div class="col-sm-12">
                                 <h3 translate>INSTITUTION_BENACHRICHTIGUNGEN</h3>
                                 <div class="form-group">
                                     <mat-checkbox id="sendMailWennOffenePendenzen_id"
@@ -340,7 +357,8 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <div class="form-group" *ngIf="externalClients && getSortedAssignedClients().length && !isFerieninsel()">
+                            <div class="form-group"
+                                 *ngIf="externalClients && getSortedAssignedClients().length && !isFerieninsel()">
                                 <h3 translate>PERMITTED_EXTERNAL_CLIENTS</h3>
                                 <div *ngFor="let assignedClient of getSortedAssignedClients(); let i = index">
                                     <div class="row">
