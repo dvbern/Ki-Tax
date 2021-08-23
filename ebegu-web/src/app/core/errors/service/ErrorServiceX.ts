@@ -33,7 +33,7 @@ export class ErrorServiceX {
     }
 
     public getErrors(): Array<TSExceptionReport> {
-        //TODO: no use angular
+        // TODO: no use angular
         return angular.copy(this.errors);
     }
 

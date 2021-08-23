@@ -29,7 +29,6 @@ import {TSExceptionReport} from '../../../../../models/TSExceptionReport';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgOkDialogComponent} from '../../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
-import {HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
@@ -137,7 +136,7 @@ export class FreigabeComponent implements OnInit {
                             setTimeout(() => this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.LIST'),
                                 this.ROUTING_DELAY);
                         }
-                })
+                });
             });
     }
 
