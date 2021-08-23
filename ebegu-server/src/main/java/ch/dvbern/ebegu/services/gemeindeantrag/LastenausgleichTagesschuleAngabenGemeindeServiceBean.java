@@ -24,6 +24,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -363,6 +364,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root =
 			query.from(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
 
+		Set<Predicate> predicates = new HashSet<>();
+
 		if (!principal.isCallerInAnyOfRole(
 			UserRole.SUPER_ADMIN,
 			UserRole.ADMIN_MANDANT,
@@ -370,11 +373,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 			Predicate gemeindeIn =
 				root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde).in(gemeinden);
-			query.where(gemeindeIn);
+			predicates.add(gemeindeIn);
 		}
 
 		if (gemeinde != null) {
-			query.where(
+			predicates.add(
 				cb.equal(
 					root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde).get(Gemeinde_.name),
 					gemeinde)
@@ -382,23 +385,26 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		}
 		if (periode != null) {
 			final Predicate periodePredicate = createPeriodePredicate(periode, cb, root);
-			query.where(periodePredicate);
+			predicates.add(periodePredicate);
 		}
 		if (status != null) {
 			if (!EnumUtil.isOneOf(status, LastenausgleichTagesschuleAngabenGemeindeStatus.values())) {
 				return new ArrayList<>();
 			}
 			final Predicate statusPredicate = createStatusPredicate(status, cb, root);
-			query.where(
+			predicates.add(
 				statusPredicate
 			);
 		}
 		if (timestampMutiert != null) {
 			final Predicate timestampMutiertPredicate = createTimestampMutiertPredicate(timestampMutiert, cb, root);
-			query.where(
+			predicates.add(
 				timestampMutiertPredicate
 			);
 		}
+
+		Predicate[] predicatesArray = new Predicate[predicates.size()];
+		query.where(predicates.toArray(predicatesArray));
 
 		List<LastenausgleichTagesschuleAngabenGemeindeContainer> containerList = persistence.getCriteriaResults(query);
 
