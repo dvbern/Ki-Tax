@@ -21,7 +21,7 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {from, Observable, Subject} from 'rxjs';
-import {map, takeUntil} from 'rxjs/operators';
+import {map, mergeMap, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSDownloadFile} from '../../../../models/TSDownloadFile';
@@ -88,7 +88,6 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
             'lastenausgleichCsv',
         ];
         this.isRemoveAllowed()
-            .pipe(takeUntil(this.unsubscribe$))
             .subscribe(res => {
             if (res) {
                 this.columndefs.push('lastenausgleichRemove');
@@ -102,7 +101,6 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
             this.addToDataSource(response);
         }, err => {
             LOG.error(err);
-            this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
         });
     }
 
@@ -117,19 +115,14 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
             .afterClosed()
-            .subscribe(() => {
-                this.lastenausgleichRS.createLastenausgleich(this.jahr, this.selbstbehaltPro100ProzentPlatz)
-                    .subscribe((response: TSLastenausgleich) => {
-                        this.lastenausgleiche.push(response);
-                        this.addToDataSource(this.lastenausgleiche);
-                    }, err => {
-                        const message = (err.error?.translatedMessage)
-                            ? err.error.translatedMessage
-                            : this.translate.instant('ERROR_UNEXPECTED');
-                        this.errorService.addMesageAsError(message);
-                        LOG.error(err);
-                });
-            }, err => {
+            .pipe(
+                mergeMap(() =>
+                    this.lastenausgleichRS.createLastenausgleich(this.jahr, this.selbstbehaltPro100ProzentPlatz))
+            )
+            .subscribe((response: TSLastenausgleich) => {
+                this.lastenausgleiche.push(response);
+                this.addToDataSource(this.lastenausgleiche);
+                }, err => {
                 LOG.error(err);
             });
     }
@@ -169,7 +162,6 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
 
     private handleDownloadError(err: Error, win: Window): void {
         LOG.error(err);
-        this.errorService.addMesageAsError('ERROR_UNEXPECED');
         win.close();
     }
 
@@ -227,11 +219,10 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
 
     public isRemoveAllowed(): Observable<boolean> {
         return from(this.applicationPropertyRS.isDevMode())
-            .pipe(map(res => res && this.authServiceRS.isRole(TSRole.SUPER_ADMIN)));
-    }
-
-    public canDownloadCSV(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+            .pipe(
+                takeUntil(this.unsubscribe$),
+                map(res => res && this.authServiceRS.isRole(TSRole.SUPER_ADMIN))
+            );
     }
 
     public removeLastenausgleich(lastenausgleich: TSLastenausgleich): void {
@@ -243,14 +234,14 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
 
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
             .afterClosed()
+            .pipe(
+                mergeMap(() => this.lastenausgleichRS.removeLastenausgleich(lastenausgleich.id)),
+            )
             .subscribe(() => {
-                this.lastenausgleichRS.removeLastenausgleich(lastenausgleich.id).subscribe(() => {
-                    this.getAllLastenausgleiche();
-                }, err => {
-                    this.errorService.addMesageAsError(err);
-                    LOG.error(err);
-                });
-            }, err => LOG.error(err));
+                this.getAllLastenausgleiche();
+            }, err => {
+                LOG.error(err);
+            });
     }
 
     public showLastenausgleich(): boolean {
