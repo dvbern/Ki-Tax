@@ -36,9 +36,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
@@ -56,7 +54,6 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
@@ -134,18 +131,15 @@ public class GemeindeAntragResource {
 
 		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJaxId);
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId).
-			orElseThrow(() -> new EbeguEntityNotFoundException(
-				"createAllGemeindeAntraege",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				gesuchsperiodeId));
+				orElseThrow(() -> new EbeguEntityNotFoundException(
+						"createAllGemeindeAntraege",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+						gesuchsperiodeId));
 
-		try {
-			final List<GemeindeAntrag> gemeindeAntragList =
+		final List<GemeindeAntrag> gemeindeAntragList =
 				gemeindeAntragService.createAllGemeindeAntraege(gesuchsperiode, gemeindeAntragTyp);
-			return converter.gemeindeAntragListToJax(gemeindeAntragList);
-		} catch (EntityExistsException e) {
-			throw new WebApplicationException(e, Status.CONFLICT);
-		}
+		return converter.gemeindeAntragListToJax(gemeindeAntragList);
+
 	}
 
 	@ApiOperation(
@@ -211,13 +205,9 @@ public class GemeindeAntragResource {
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				gemeindeId));
 
-		try {
-			final GemeindeAntrag gemeindeAntrag =
+		final GemeindeAntrag gemeindeAntrag =
 				gemeindeAntragService.createGemeindeAntrag(gemeinde, gesuchsperiode, gemeindeAntragTyp);
-			return converter.gemeindeAntragToJax(gemeindeAntrag);
-		} catch (EntityExistsException e) {
-			throw new WebApplicationException(e, Status.CONFLICT);
-		}
+		return converter.gemeindeAntragToJax(gemeindeAntrag);
 	}
 
 	@ApiOperation("Gibt alle Gemeindeanträge zurück, die die Benutzerin sehen kann")
