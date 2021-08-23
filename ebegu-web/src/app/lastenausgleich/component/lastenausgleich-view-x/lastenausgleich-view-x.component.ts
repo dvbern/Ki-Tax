@@ -70,6 +70,11 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
         private readonly applicationPropertyRS: ApplicationPropertyRS
     ) { }
 
+    private static handleDownloadError(err: Error, win: Window): void {
+        LOG.error(err);
+        win.close();
+    }
+
     public ngOnInit(): void {
         this.getAllLastenausgleiche();
         this.initColumnDefs();
@@ -153,16 +158,11 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
                     .subscribe((downloadFile: TSDownloadFile) => {
                         this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
                     }, err => {
-                        this.handleDownloadError(err, win);
+                        LastenausgleichViewXComponent.handleDownloadError(err, win);
                     });
             }, err => {
                 LOG.error(err);
             });
-    }
-
-    private handleDownloadError(err: Error, win: Window): void {
-        LOG.error(err);
-        win.close();
     }
 
     public uploadZemisExcel(): void {
@@ -203,7 +203,7 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
             .subscribe((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             }, err => {
-                this.handleDownloadError(err, win);
+                LastenausgleichViewXComponent.handleDownloadError(err, win);
             });
     }
 
@@ -213,7 +213,7 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
             .subscribe((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             }, err => {
-                this.handleDownloadError(err, win);
+                LastenausgleichViewXComponent.handleDownloadError(err, win);
             });
     }
 
