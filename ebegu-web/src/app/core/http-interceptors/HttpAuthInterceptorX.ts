@@ -22,11 +22,10 @@ import {catchError} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import {CONSTANTS, HTTP_ERROR_CODES} from '../constants/CONSTANTS';
-import {CoreModule} from '../core.module';
 import {isIgnorableHttpError} from '../errors/service/HttpErrorInterceptorX';
 
 @Injectable({
-    providedIn: CoreModule,
+    providedIn: 'root',
 })
 export class HttpAuthInterceptorX implements HttpInterceptor {
 
