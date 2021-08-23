@@ -223,7 +223,7 @@
                         <div class="row" *ngIf="stammdaten.gueltigkeit.gueltigBis">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label translate for="grundSchliessung_id">GRUND_SCHLIESSUNG</label>
+                                    <label translate for="grundSchliessung_id">INSTITUTION_GRUND_SCHLIESSUNG</label>
                                     <textarea name="grundSchliessung_name"
                                               class="form-control " rows="3"
                                               #grundSchliessung="ngModel"
@@ -247,6 +247,28 @@
                                                   [(ngModel)]="stammdaten.sendMailWennOffenePendenzen">
                                         {{'INSTITUTION_BENACHRICHTIGUNG_PENDENZEN'|translate}}
                                     </mat-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="stammdaten.sendMailWennOffenePendenzen">
+                            <!-- E-Mail -->
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label translate for="erinnerung_mail_id">
+                                        {{'INSTITUTION_ERINNERUNG_MAIL'|translate}}
+                                        <dv-tooltip id="erinnerungmail-tooltip"
+                                                    [text]="'INSTITUTION_ERINNERUNG_MAIL_INFO'|translate"></dv-tooltip>
+                                    </label>
+                                    <input id="erinnerung_mail_id"
+                                           type="email"
+                                           name="erinnerung_mail_id"
+                                           #name="ngModel"
+                                           [(ngModel)]="stammdaten.erinnerungMail"
+                                           email
+                                           [maxlength]="255"
+                                           class="form-control">
+                                    <dv-error-messages [errorObject]="form.controls.erinnerung_mail_id?.errors"
+                                                       inputId="erinnerung_mail_id"></dv-error-messages>
                                 </div>
                             </div>
                         </div>
