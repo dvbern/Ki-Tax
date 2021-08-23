@@ -100,7 +100,13 @@
                 <div class="col-sm-6" *ngIf="incompleteOeffnungszeiten && stammdaten.oeffnungszeiten">
                     <p translate [translateParams]="{value: stammdaten.oeffnungszeiten}">OEFFNUNGSZEITEN_OBSOLETE</p>
                 </div>
-                <!--                    Abweichungen-->
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="title">
+                        <h3 translate>AUSSERORDENTLICHE_OEFFNUNGSZEITEN</h3>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-sm-3">
@@ -443,6 +449,12 @@
                 <p>{{getOeffnungsTageAbkuerzungListe()}}</p>
                 <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.offenVon}} -
                     {{stammdaten.institutionStammdatenBetreuungsgutscheine.offenBis}}</p>
+                <p>{{'INSTITUTION_OEFFNUNGSTAGE_PRO_JAHR' | translate}}: {{stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungstageProJahr}}</p>
+                <h3 translate>AUSSERORDENTLICHE_OEFFNUNGSZEITEN</h3>
+                <p *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.fruehEroeffnung">{{'INSTITUTION_FRUEH_EROEFFNUNG'|translate}}</p>
+                <p *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.spaetEroeffnung">{{'INSTITUTION_SPAET_EROEFFNUNG'|translate}}</p>
+                <p *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.wochenendeEroeffnung">{{'INSTITUTION_WOCHENENDE_EROEFFNUNG'|translate}}</p>
+                <p *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.uebernachtungMoeglich">{{'INSTITUTION_UEBERNACHTUNG_MOEGLICH'|translate}}</p>
                 <p class="nl2br">{{stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungsAbweichungen}}</p>
             </div>
         </div>
@@ -531,14 +543,11 @@
                 <p *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.subventioniertePlaetze"
                    translate>INSTITUTION_SUBVENTIONIERTE_PLAETZE</p>
             </div>
-        </div>
-
-        <!-- Benachrichtugnseinstellungen -->
-        <div class="col-sm-6">
             <div class="form-group">
-                <h3 translate>INSTITUTION_BENACHRICHTIGUNGEN</h3>
-                <p *ngIf="stammdaten.sendMailWennOffenePendenzen"
-                   translate>INSTITUTION_BENACHRICHTIGUNG_PENDENZEN</p>
+                <p>{{'INSTITUTION_AUSLASTUNG_INSTITUTIONEN' | translate}}: {{stammdaten.institutionStammdatenBetreuungsgutscheine.auslastungInstitutionen}}</p>
+                <p>{{'INSTITUTION_ANZAHL_KINDER_WARTELISTE' | translate}}: {{stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlKinderWarteliste}}</p>
+                <p>{{'INSTITUTION_SUMME_PENSUM_WARTELISTE' | translate}}: {{stammdaten.institutionStammdatenBetreuungsgutscheine.summePensumWarteliste}}</p>
+                <p>{{'INSTITUTION_DAUER_WARTELISTE' | translate}}: {{stammdaten.institutionStammdatenBetreuungsgutscheine.dauerWarteliste}}</p>
             </div>
         </div>
 
@@ -548,10 +557,6 @@
                 <h3 translate>INSTITUTION_ALTERSKATEGORIE</h3>
                 <p>{{getAlterskategorien()}}</p>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-6">
             <div class="form-group" *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit
              || stammdaten.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit">
                 <h3 translate>TARIFE_MAHLZEITEN</h3>

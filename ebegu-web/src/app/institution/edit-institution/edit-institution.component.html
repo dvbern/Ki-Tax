@@ -375,6 +375,7 @@
                                 <h3 *ngIf="isFerieninsel()" translate>
                                     FERIENINSEL_ANMELDUNG_START_END</h3>
                                 <p>{{getGueltigkeitTodisplay()}}</p>
+                                <p>{{stammdaten.grundSchliessung}}</p>
                             </div>
                         </div>
 
@@ -391,6 +392,18 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- Benachrichtugnseinstellungen -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <h3 translate>INSTITUTION_BENACHRICHTIGUNGEN</h3>
+                                <p *ngIf="stammdaten.sendMailWennOffenePendenzen"
+                                   translate>INSTITUTION_BENACHRICHTIGUNG_PENDENZEN</p>
+                                <p *ngIf="stammdaten.erinnerungMail">
+                                    <a href="mailto:{{stammdaten.erinnerungMail}}">{{stammdaten.erinnerungMail}}</a></p>
                             </div>
                         </div>
                     </div>
