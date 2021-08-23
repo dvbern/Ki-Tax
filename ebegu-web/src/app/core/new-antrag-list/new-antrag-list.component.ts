@@ -454,9 +454,13 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         pagination: { number: any; start: number };
         sort: { predicate?: string; reverse?: boolean }
     }): void {
-        if (EbeguUtil.isNullOrUndefined(this.totalItems)) {
-            this.searchRS.countAntraege(body).then(result => this.totalItems = result);
+        if (!EbeguUtil.isNullOrUndefined(this.data$)) {
+            return;
         }
+        this.searchRS.countAntraege(body).then(result => {
+            this.totalItems = result;
+            this.changeDetectorRef.markForCheck();
+        });
     }
 
     private updatePagination(): void {
