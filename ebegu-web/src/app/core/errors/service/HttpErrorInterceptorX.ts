@@ -13,13 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {
-    HttpErrorResponse,
-    HttpEvent,
-    HttpHandler,
-    HttpInterceptor,
-    HttpRequest,
-} from '@angular/common/http';
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest,} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {catchError} from 'rxjs/operators';
@@ -38,6 +32,11 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
     public constructor(
         private readonly errorService: ErrorServiceX,
     ) {
+    }
+
+    public static isIgnorableHttpError<T>(request: HttpRequest<T>): boolean {
+        return request?.url?.includes('notokenrefresh') ||
+            request?.url?.includes('emaillogin/gui/registration/createmaillogin');
     }
 
     public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
