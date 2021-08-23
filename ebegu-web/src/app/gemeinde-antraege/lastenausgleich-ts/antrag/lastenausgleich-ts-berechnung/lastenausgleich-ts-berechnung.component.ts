@@ -77,6 +77,7 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
                 },
                 async err => {
                     LOG.error(err);
+                    this.downloadingDeFile.next(false);
                 });
     }
 
@@ -90,6 +91,7 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
                 },
                 async err => {
                     LOG.error(err);
+                    this.downloadingFrFile.next(false);
                 }
             );
     }
