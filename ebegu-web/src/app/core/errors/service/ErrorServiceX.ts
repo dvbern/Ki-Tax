@@ -32,9 +32,8 @@ export class ErrorServiceX {
     ) {
     }
 
-    public getErrors(): Array<TSExceptionReport> {
-        //TODO: no use angular
-        return angular.copy(this.errors);
+    public getErrors(): ReadonlyArray<TSExceptionReport> {
+        return this.errors;
     }
 
     /**
