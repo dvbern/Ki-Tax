@@ -38,7 +38,7 @@ import {TSExceptionReport} from '../../../../../models/TSExceptionReport';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgOkDialogComponent} from '../../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
-import {CONSTANTS, HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
+import {CONSTANTS} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../../core/service/wizardStepXRS.rest';
