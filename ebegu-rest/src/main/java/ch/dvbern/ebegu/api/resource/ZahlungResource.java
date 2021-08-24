@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.activation.MimeTypeParseException;
@@ -53,9 +54,11 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.GeneratedDokumentService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.ZahlungService;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.jboss.ejb3.annotation.TransactionTimeout;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -203,6 +206,7 @@ public class ZahlungResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE})
+	@TransactionTimeout(value = Constants.MAX_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	public JaxZahlungsauftrag createZahlung(
 		@QueryParam("zahlungslaufTyp") String sZahlungslaufTyp,
 		@QueryParam("gemeindeId") String gemeindeId,
