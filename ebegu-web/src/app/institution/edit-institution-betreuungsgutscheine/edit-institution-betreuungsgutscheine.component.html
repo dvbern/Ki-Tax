@@ -329,7 +329,7 @@
                         </mat-checkbox>
                     </div>
                 </div>
-
+                <h3 translate>TARIFE_MAHLZEITEN</h3>
             </div>
             <!-- Subventionierte Plätze -->
             <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-6">
@@ -375,7 +375,6 @@
         <div class="row">
             <div class="col-sm-6">
                 <div class="form-group">
-                    <h3 translate>TARIFE_MAHLZEITEN</h3>
                     <div class="form-group">
                         <label translate for="tarifProHauptmahlzeit">TARIF_PRO_HAUPTMAHLZEIT</label>
                         <input id="tarifProHauptmahlzeit" type="number" name="tarifProHauptmahlzeit"
@@ -411,22 +410,6 @@
                     <dv-error-messages [errorObject]="auslastungInstitutionen.errors"
                                        inputId="auslastungInstitutionen_id"></dv-error-messages>
                 </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <label class="required" translate for="anzahlKinderWarteliste_id">INSTITUTION_ANZAHL_KINDER_WARTELISTE</label>
-                    <input id="anzahlKinderWarteliste_id" type="number" name="anzahlKinderWarteliste_id"
-                           #anzahlKinderWarteliste="ngModel"
-                           [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlKinderWarteliste"
-                           class="form-control"
-                           customMinMax [minValue]="0"
-                           [pattern]="CONSTANTS.PATTERN_BETRAG"
-                           required>
-                    <dv-error-messages [errorObject]="anzahlKinderWarteliste.errors"
-                                       inputId="anzahlKinderWarteliste_id"></dv-error-messages>
-                </div>
-            </div>
-            <div class="col-sm-3">
                 <div class="form-group">
                     <label class="required"
                            translate
@@ -444,6 +427,18 @@
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
+                    <label class="required" translate for="anzahlKinderWarteliste_id">INSTITUTION_ANZAHL_KINDER_WARTELISTE</label>
+                    <input id="anzahlKinderWarteliste_id" type="number" name="anzahlKinderWarteliste_id"
+                           #anzahlKinderWarteliste="ngModel"
+                           [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlKinderWarteliste"
+                           class="form-control"
+                           customMinMax [minValue]="0"
+                           [pattern]="CONSTANTS.PATTERN_BETRAG"
+                           required>
+                    <dv-error-messages [errorObject]="anzahlKinderWarteliste.errors"
+                                       inputId="anzahlKinderWarteliste_id"></dv-error-messages>
+                </div>
+                <div class="form-group">
                     <label class="required" translate for="dauerWarteliste_id">INSTITUTION_DAUER_WARTELISTE</label>
                     <input id="dauerWarteliste_id" type="number" name="dauerWarteliste_id"
                            #dauerWarteliste="ngModel"
@@ -457,7 +452,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </fieldset>
 

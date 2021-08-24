@@ -91,7 +91,8 @@
                     <!-- E-Mail -->
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="required" translate for="e_mail_id">EMAIL</label>
+                            <label *ngIf="isBetreuungsgutschein()" class="required" translate for="e_mail_id">EMAIL_BG</label>
+                            <label *ngIf="!isBetreuungsgutschein()" class="required" translate for="e_mail_id">EMAIL</label>
                             <input id="e_mail_id" type="email" name="e_mail_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.mail"
                                    email

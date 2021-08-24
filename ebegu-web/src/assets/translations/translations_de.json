@@ -132,6 +132,7 @@
     "VORNAME": "Vorname",
     "NAME": "Name",
     "EMAIL": "E-Mail",
+    "EMAIL_BG": "E-Mail Kita-Leitung",
     "MOBILE": "Mobile",
     "TELEFON": "Telefon",
     "GEBURTSDATUM": "Geburtsdatum",
