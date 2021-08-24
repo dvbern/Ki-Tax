@@ -171,6 +171,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                 },
                 err => {
                     const msg = this.translate.instant('ERR_GEMEINDEN_LADEN');
+                    this.errorService.clearAll();
                     this.errorService.addMesageAsError(msg);
                     LOG.error(err);
                 },
@@ -182,6 +183,7 @@ export class GemeindeAntraegeComponent implements OnInit {
             this.triedSending = true;
             return;
         }
+        this.errorService.clearAll();
         this.gemeindeAntragService.createAllAntrage(this.formGroup.value).subscribe(result => {
             this.loadAntragList();
             this.cd.markForCheck();
@@ -206,10 +208,12 @@ export class GemeindeAntraegeComponent implements OnInit {
         ).subscribe(() => {
                 this.loadAntragList();
                 this.cd.markForCheck();
+            // tslint:disable-next-line:no-identical-functions
             }, err => {
                 const msg = this.translate.instant('DELETE_ANTRAEGE_ERROR');
+                this.errorService.clearAll();
                 this.errorService.addMesageAsError(msg);
-                console.error(err);
+                LOG.error(err);
             });
     }
 
@@ -243,7 +247,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                     this.formGroup.get('antragTyp').setValue(this.types[0]);
                 }
             }, error => {
-                console.error(error);
+                LOG.error(error);
             });
 
     }
@@ -264,6 +268,7 @@ export class GemeindeAntraegeComponent implements OnInit {
             this.triedSending = true;
             return;
         }
+        this.errorService.clearAll();
         // tslint:disable-next-line:no-identical-functions
         this.gemeindeAntragService.createAntrag(this.formGroup.value).subscribe(() => {
             this.loadAntragList();

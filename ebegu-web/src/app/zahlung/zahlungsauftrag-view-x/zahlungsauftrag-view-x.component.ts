@@ -226,8 +226,8 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
                         this.updateZahlungsauftrag();
                         this.cd.markForCheck();
                     },
-                    error => this.errorService.addMesageAsError(
-                        error?.error?.translatedMessage || this.translate.instant('ERROR_UNEXPECTED')));
+                    error => LOG.error(error)
+                );
             }, error => LOG.error(error));
     }
 

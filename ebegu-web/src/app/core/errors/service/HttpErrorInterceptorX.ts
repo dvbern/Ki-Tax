@@ -41,7 +41,7 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
 
     public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(req).pipe(
-            catchError((err: HttpErrorResponse) => {
+            catchError(async (err: HttpErrorResponse) => {
                 if (!(err instanceof HttpErrorResponse)) {
                     throw err;
                 }
@@ -57,7 +57,7 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
                     // the format of a known response such as errortypes such as violationReport or ExceptionReport and
                     // transform it as such. If the response matches know expected format we create an unexpected
                     // error.
-                    const errors = this.handleErrorResponse(req, err);
+                    const errors = await this.handleErrorResponse(req, err);
                     this.errorService.handleErrors(errors);
                     throw errors;
                 }
@@ -75,7 +75,10 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
      * The expected types are ViolationReport objects from JAXRS if there was a beanValidation error
      * or EbeguExceptionReports in case there was some other application exception
      */
-    private handleErrorResponse(request: HttpRequest<any>, response: HttpErrorResponse): Array<TSExceptionReport> {
+    private async handleErrorResponse(
+        request: HttpRequest<any>,
+        response: HttpErrorResponse,
+    ): Promise<Array<TSExceptionReport>> {
         const url = request.url || '';
         if (response.status === HTTP_ERROR_CODES.NOT_FOUND && (
             url.includes('ebegu.dvbern.ch')
@@ -92,6 +95,10 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
         } else if (this.isDataEbeguExceptionReport(response.error)) {
             errors = this.convertEbeguExceptionReport(response.error);
 
+        } else if (this.isBlob(response.error)) {
+            errors = [];
+            const errorObject = JSON.parse(await response.error.text());
+            errors.push(TSExceptionReport.createFromExceptionReport(errorObject));
         } else if (this.isFileUploadException(response.error)) {
             errors = [];
             errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
@@ -187,9 +194,13 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
 
     }
 
-    private isFileUploadException(response: string): boolean {
+    private isFileUploadException(response: string | Blob): boolean {
         if (!response) {
             return false;
+        }
+
+        if (response instanceof Blob) {
+            return true;
         }
 
         const msg = 'java.io.IOException: UT000020: Connection terminated as request was larger than ';
@@ -202,5 +213,9 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
             return false;
         }
         return data.status === HTTP_ERROR_CODES.CONFLICT;
+    }
+
+    private isBlob(error: any): boolean {
+        return error instanceof Blob;
     }
 }

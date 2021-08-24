@@ -18,13 +18,14 @@
 import {Location} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
-import {TranslateService} from '@ngx-translate/core';
-import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSInternePendenz} from '../../../models/TSInternePendenz';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {InternePendenzDialogComponent} from './interne-pendenz-dialog/interne-pendenz-dialog.component';
 import {InternePendenzenRS} from './internePendenzenRS.rest';
+
+const LOG = LogFactory.createLog('InternePendenzenComponent');
 
 @Component({
     selector: 'interne-pendenzen-view',
@@ -42,8 +43,6 @@ export class InternePendenzenComponent implements OnInit {
         private readonly internePendenzenRS: InternePendenzenRS,
         private readonly cd: ChangeDetectorRef,
         private readonly gesuchModelManager: GesuchModelManager,
-        private readonly errorService: ErrorService,
-        private readonly translate: TranslateService
     ) {
     }
 
@@ -111,8 +110,6 @@ export class InternePendenzenComponent implements OnInit {
     }
 
     private handleError(error: Error): void {
-        this.errorService.clearAll();
-        this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
-        console.error(error);
+        LOG.error(error);
     }
 }

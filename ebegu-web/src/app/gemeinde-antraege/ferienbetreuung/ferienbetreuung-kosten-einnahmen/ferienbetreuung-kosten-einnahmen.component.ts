@@ -168,13 +168,13 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
                 this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
                 this.errorService.clearAll();
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
-            }, err => this.handleSaveError(err));
+            }, err => this.handleSaveErrors(err));
     }
 
     public async onAbschliessen(): Promise<void> {
         if (await this.checkReadyForAbschliessen()) {
             this.ferienbetreuungService.kostenEinnahmenAbschliessen(this.container.id, this.form.value)
-                .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
+                .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveErrors(error));
         }
     }
 
@@ -192,6 +192,6 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
 
     public onFalscheAngaben(): void {
         this.ferienbetreuungService.falscheAngabenKostenEinnahmen(this.container.id, this.kostenEinnahmen)
-            .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
+            .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveErrors(error));
     }
 }

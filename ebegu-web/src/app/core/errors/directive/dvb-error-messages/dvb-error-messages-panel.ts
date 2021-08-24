@@ -15,7 +15,7 @@
 
 import IComponentOptions = angular.IComponentOptions;
 import IScope = angular.IScope;
-import {IController, IOnInit} from 'angular';
+import {IController, ILogService, IOnInit} from 'angular';
 import {RemoveDialogController} from '../../../../../gesuch/dialog/RemoveDialogController';
 import {GesuchRS} from '../../../../../gesuch/service/gesuchRS.rest';
 import {WizardStepManager} from '../../../../../gesuch/service/wizardStepManager';
@@ -25,12 +25,10 @@ import {TSErrorLevel} from '../../../../../models/enums/TSErrorLevel';
 import {TSExceptionReport} from '../../../../../models/TSExceptionReport';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvDialog} from '../../../directive/dv-dialog/dv-dialog';
-import {LogFactory} from '../../../logging/LogFactory';
 import {BroadcastService} from '../../../service/broadcast.service';
 import {ErrorService} from '../../service/ErrorService';
 
 const removeDialogTemplate = require('../../../../../gesuch/dialog/removeDialogTemplate.html');
-const LOG = LogFactory.createLog('DvErrorMessagesPanelComponentConfig');
 
 export class DvErrorMessagesPanelComponentConfig implements IComponentOptions {
     public scope = {};
@@ -50,7 +48,8 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
         'DvDialog',
         'GesuchRS',
         'WizardStepManager',
-        'BroadcastService'
+        'BroadcastService',
+        '$log'
     ];
 
     public errors: Array<TSExceptionReport> = [];
@@ -62,7 +61,8 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
         private readonly dvDialog: DvDialog,
         private readonly gesuchRS: GesuchRS,
         private readonly wizardStepManager: WizardStepManager,
-        private readonly broadcastService: BroadcastService
+        private readonly broadcastService: BroadcastService,
+        private readonly $log: ILogService
     ) {
     }
 
@@ -75,13 +75,15 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
         });
 
         this.broadcastService.on$(TSMessageEvent[TSMessageEvent.ERROR_UPDATE])
-            .subscribe(message => this.displayMessagesX(message), err => LOG.error(err));
+            .subscribe(message => this.displayMessagesX(message),
+            error => this.$log.error(error));
         this.broadcastService.on$(TSMessageEvent[TSMessageEvent.INFO_UPDATE])
-             .subscribe(message => this.displayMessagesX(message), err => LOG.error(err));
+            .subscribe(message => this.displayMessagesX(message),
+            error => this.$log.error(error));
         this.broadcastService.on$(TSMessageEvent[TSMessageEvent.CLEAR]).subscribe(() => {
             this.errors = [];
             this.hide();
-        }, err => LOG.error(err));
+        }, error => this.$log.error(error));
     }
 
     public displayMessages = (_event: any, errors: Array<TSExceptionReport>) => {
