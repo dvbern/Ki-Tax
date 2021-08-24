@@ -80,7 +80,7 @@ public class GemeindeKennzahlenResource {
 			response = JaxGemeindeKennzahlen.class)
 	@Nullable
 	@GET
-	@Path("/find/{id}")
+	@Path("/{id}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
@@ -141,7 +141,7 @@ public class GemeindeKennzahlenResource {
 				+ "frei",
 		response = GemeindeKennzahlen.class)
 	@PUT
-	@Path("/abschliessen/{id}")
+	@Path("/{id}/abschliessen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG })
@@ -172,7 +172,7 @@ public class GemeindeKennzahlenResource {
 		value = "Gibt die Gemeinde Kennzahlen zurück an die Gemeinde",
 		response = JaxGemeindeKennzahlen.class)
 	@PUT
-	@Path("/zurueck-an-gemeinde/{id}")
+	@Path("/{id}/zurueck-an-gemeinde")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, SACHBEARBEITER_MANDANT, ADMIN_MANDANT })

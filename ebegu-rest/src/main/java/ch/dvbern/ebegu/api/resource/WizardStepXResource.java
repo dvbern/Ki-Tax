@@ -266,6 +266,12 @@ public class WizardStepXResource {
 
 			wizard = new FerienbetreuungWizard(userRole, ferienbetreuungAngabenContainer);
 			break;
+		case GEMEINDE_KENNZAHLEN:
+			GemeindeKennzahlen gemeindeKennzahlen = gemeindeKennzahlenService.findGemeindeKennzahlen(id)
+					.orElseThrow(() -> new EbeguEntityNotFoundException("getAllWizardSteps", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+
+			wizard = new GemeindeKennzahlenWizard(userRole, gemeindeKennzahlen);
+			break;
 		default:
 			return jaxWizardStepXList;
 		}

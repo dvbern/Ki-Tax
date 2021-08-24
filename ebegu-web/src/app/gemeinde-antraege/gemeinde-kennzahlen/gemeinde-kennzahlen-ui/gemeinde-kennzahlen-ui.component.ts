@@ -14,15 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {Component, OnInit, ChangeDetectionStrategy, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
 import {TSGemeindeKennzahlen} from '../../../../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
+import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
+import {GemeindeKennzahlenService} from '../gemeinde-kennzahlen.service';
 
 @Component({
     selector: 'dv-gemeinde-kennzahlen-ui',
     templateUrl: './gemeinde-kennzahlen-ui.component.html',
     styleUrls: ['./gemeinde-kennzahlen-ui.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None
 })
 export class GemeindeKennzahlenUiComponent implements OnInit {
 
@@ -32,10 +35,18 @@ export class GemeindeKennzahlenUiComponent implements OnInit {
     public wizardTyp = TSWizardStepXTyp.GEMEINDE_KENNZAHLEN;
     public gemeindeKennzahlen: TSGemeindeKennzahlen;
 
-    constructor() {
+    public constructor(
+        private readonly gemeindeKennzahlenService: GemeindeKennzahlenService,
+        private readonly wizardService: WizardStepXRS,
+    ) {
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
+        this.gemeindeKennzahlenService.getGemeindeKennzahlenAntrag().subscribe(antrag => {
+            this.gemeindeKennzahlen = antrag;
+            this.wizardService.updateSteps(this.wizardTyp, this.gemeindeKennzahlen.id);
+        });
+        this.gemeindeKennzahlenService.updateGemeindeKennzahlenAntragStore(this.gemeindeKennzahlenId);
     }
 
 }

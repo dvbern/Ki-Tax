@@ -15,41 +15,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-@import (reference) 'src/style/variables.less';
-@import (reference) 'src/style/mixins.less';
+import {TestBed} from '@angular/core/testing';
 
-.gemeinde-kennzahlen-container {
-	background-color: @contrast-light;
-	display: flex;
-	flex-direction: column;
-	height: 100%;
+import {GemeindeKennzahlenService} from './gemeinde-kennzahlen.service';
 
-	.antrag-container {
-		display: flex;
-		flex: auto;
-		flex-grow: 1;
-		overflow: auto;
+describe('GemeindeKennzahlenService', () => {
+    let service: GemeindeKennzahlenService;
 
-		dv-wizard-side-nav {
-			background-color: @contrast-lightest;
-			display: flex;
-			flex-direction: column;
-			width: 35.5rem;
-		}
+    beforeEach(() => {
+        TestBed.configureTestingModule({});
+        service = TestBed.inject(GemeindeKennzahlenService);
+    });
 
-		.antrag {
-			box-sizing: border-box;
-			flex-basis: 0;
-			flex-grow: 1;
-
-			::ng-deep ui-view > *:not(dv-tagesschulen-ui-view) {
-				padding: 5rem 2.5rem 0 5rem;
-			}
-		}
-
-		dv-ferienbetreuung-kommantar {
-			background-color: @contrast-lightest;
-			width: 45rem;
-		}
-	}
-}
+    it('should be created', () => {
+        expect(service).toBeTruthy();
+    });
+});

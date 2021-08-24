@@ -2567,5 +2567,6 @@
     "INTERNE_PENDENZ": "Interne Pendenz",
     "INSTITUTION_EINGELADEN_WARN_TEXT": "Achtung, die Stammdaten der Institution sind noch nicht ausgefüllt. Eine Platzbestätigung ist damit noch nicht möglich!",
     "GEMEINDE_KENNZAHLEN": "Gemeinde Kennzahlen",
+    "GEMEINDE_KENNZAHLEN_FORMULAR": "Kennzahlen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
