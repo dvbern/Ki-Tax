@@ -507,93 +507,94 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 	// we check this since the attributes can be cached and can be null then, but must not be when changing status
 	private void checkInstitutionAngabenComplete(
 			LastenausgleichTagesschuleAngabenInstitution institutionAngaben) {
+		final String functionName= "checkInstitutionAngabenComplete";
 		if (Objects.isNull(institutionAngaben.getLehrbetrieb())) {
 			throw new EbeguRuntimeException(
-					"checkInstitutionAngabenComplete",
+					functionName,
 					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
 					"isLehrbetrieb must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinder())) {
 			throw new EbeguRuntimeException(
-					"checkInstitutionAngabenComplete",
+					functionName,
 					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
 					"anzahlEingeschribeneKinder must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderSekundarstufe())) {
 			throw new EbeguRuntimeException(
-					"checkInstitutionAngabenComplete",
+					functionName,
 					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
 					"anzahlEingeschriebeneKinderBasisstufe must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderKindergarten())) {
 			throw new EbeguRuntimeException(
-					"checkInstitutionAngabenComplete",
+					functionName,
 					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
 					"anzahlEingeschriebeneKinderKindergarten must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderPrimarstufe())) {
 			throw new EbeguRuntimeException(
-					"checkInstitutionAngabenComplete",
+					functionName,
 					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
 					"anzahlEingeschriebeneKinderPrimarstufe must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagFruehbetreuung())) {
 			throw new EbeguRuntimeException(
-					"checkInstitutionAngabenComplete",
+					functionName,
 					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
 					"anzahlDurchschnittKinderProTagFruehbetreuung must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagMittag())) {
 			throw new EbeguRuntimeException(
-					"checkInstitutionAngabenComplete",
+					functionName,
 					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
 					"anzahlDurchschnittKinderProTagMittag must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagNachmittag1())) {
 			throw new EbeguRuntimeException(
-					"checkInstitutionAngabenComplete",
+					functionName,
 					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
 					"anzahlDurchschnittKinderProTagNachmittag1 must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagNachmittag2())) {
 			throw new EbeguRuntimeException(
-					"checkInstitutionAngabenComplete",
+					functionName,
 					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
 					"anzahlDurchschnittKinderProTagNachmittag2 must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen())) {
 			throw new EbeguRuntimeException(
-					"checkInstitutionAngabenComplete",
+					functionName,
 					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
 					"anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getBetreuungsverhaeltnisEingehalten())) {
 			throw new EbeguRuntimeException(
-					"checkInstitutionAngabenComplete",
+					functionName,
 					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
 					"betreuungsverhaeltnisEingehalten must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getErnaehrungsGrundsaetzeEingehalten())) {
 			throw new EbeguRuntimeException(
-					"checkInstitutionAngabenComplete",
+					functionName,
 					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
 					"ernaehrungsGrundsaetzeEingehalten must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getSchuleAufBasisOrganisatorischesKonzept())) {
 			throw new EbeguRuntimeException(
-					"checkInstitutionAngabenComplete",
+					functionName,
 					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
 					"schuleAufBasisOrganisatorischesKonzepts must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getRaeumlicheVoraussetzungenEingehalten())) {
 			throw new EbeguRuntimeException(
-					"checkInstitutionAngabenComplete",
+					functionName,
 					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
 					"raeumlicheVoraussetungenEingehalten must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getSchuleAufBasisPaedagogischesKonzept())) {
 			throw new EbeguRuntimeException(
-					"checkInstitutionAngabenComplete",
+					functionName,
 					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
 					"schuleAufBasisPaedagogischesKonzepts must not be null");
 		}

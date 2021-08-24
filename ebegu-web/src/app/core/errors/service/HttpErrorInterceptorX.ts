@@ -34,6 +34,11 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
     ) {
     }
 
+    public static isIgnorableHttpError<T>(request: HttpRequest<T>): boolean {
+        return request?.url?.includes('notokenrefresh') ||
+            request?.url?.includes('emaillogin/gui/registration/createmaillogin');
+    }
+
     public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(req).pipe(
             catchError(async (err: HttpErrorResponse) => {
