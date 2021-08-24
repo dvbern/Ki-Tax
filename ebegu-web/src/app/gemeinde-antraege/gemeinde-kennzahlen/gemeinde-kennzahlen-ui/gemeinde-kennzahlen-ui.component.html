@@ -1,0 +1,16 @@
+<div class="ferienbetreuung-container">
+	<div class="antrag-container">
+		<dv-wizard-side-nav
+				[id]="gemeindeKennzahlenId"
+				[wizardTyp]="wizardTyp"
+				[status]="gemeindeKennzahlen?.status | translate"
+				[gemeinde]="gemeindeKennzahlen?.gemeinde"
+				[gesuchsperiode]="gemeindeKennzahlen?.gesuchsperiode"
+				[subHeader]="'GEMEINDE_KENNZAHLEN' | translate"
+		>
+		</dv-wizard-side-nav>
+		<div class="antrag">
+			<ui-view></ui-view>
+		</div>
+	</div>
+</div>
