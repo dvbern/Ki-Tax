@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.api.converter.gemeindeantraege;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.converter.AbstractConverter;
@@ -28,6 +29,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennza
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 
+@RequestScoped
 public class JaxGemeindeKennzahlenConverter extends AbstractConverter {
 
 	@Inject

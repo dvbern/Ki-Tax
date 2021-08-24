@@ -47,8 +47,8 @@ public interface GemeindeKennzahlenService {
 	 */
 	@Nonnull
 	List<GemeindeKennzahlen> getGemeindeKennzahlen(
-			@Nullable Gemeinde gemeinde,
-			@Nullable Gesuchsperiode gesuchsperiode,
+			@Nullable String gemeinde,
+			@Nullable String gesuchsperiode,
 			@Nullable String status,
 			@Nullable String timestampMutiert);
 

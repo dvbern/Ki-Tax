@@ -28,7 +28,7 @@ create table gemeinde_kennzahlen (
     nachfrage_erfuellt bit,
     nachfrage_anzahl bigint,
     nachfrage_dauer DECIMAL (19,2),
-    kostenlekung_andere bit,
+    kostenlenkung_andere bit,
     welche_kostenlenkungsmassnahmen VARCHAR(255),
     primary key (id)
 );
@@ -47,7 +47,7 @@ create table gemeinde_kennzahlen_aud (
     nachfrage_erfuellt bit,
     nachfrage_anzahl bigint,
     nachfrage_dauer DECIMAL (19,2),
-    kostenlekung_andere bit,
+    kostenlenkung_andere bit,
     welche_kostenlenkungsmassnahmen VARCHAR(255),
 	primary key (id, rev)
 );

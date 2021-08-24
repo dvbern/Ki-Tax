@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.services.gemeindeantrag;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -34,11 +35,15 @@ import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlenStatus;
@@ -46,6 +51,8 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennza
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
@@ -89,7 +96,7 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	}
 
 	private boolean antragAlreadyExisting(Gemeinde gemeinde, Gesuchsperiode gesuchsperiode) {
-		boolean hasAntrag =  !getGemeindeKennzahlen(gemeinde, gesuchsperiode, null, null).isEmpty();
+		boolean hasAntrag = !getGemeindeKennzahlen(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null).isEmpty();
 		if (hasAntrag) {
 			LOG.info("Gemeinde {} already has an antrag in GS {}", gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString());
 		}
@@ -132,8 +139,8 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	@Nonnull
 	@Override
 	public List<GemeindeKennzahlen> getGemeindeKennzahlen(
-			@Nullable Gemeinde gemeinde,
-			@Nullable Gesuchsperiode gesuchsperiode,
+			@Nullable String gemeinde,
+			@Nullable String gesuchsperiode,
 			@Nullable String status,
 			@Nullable String timestampMutiert) {
 
@@ -178,9 +185,9 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	private Predicate createGemeindePredicate(
 			CriteriaBuilder cb,
 			Root<GemeindeKennzahlen> root,
-			Gemeinde gemeinde) {
+			String gemeinde) {
 		return cb.equal(
-				root.get(GemeindeKennzahlen_.gemeinde),
+				root.get(GemeindeKennzahlen_.gemeinde).get(Gemeinde_.name),
 				gemeinde
 		);
 	}
@@ -188,10 +195,17 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	private Predicate createGesuchsperiodePredicate(
 			CriteriaBuilder cb,
 			Root<GemeindeKennzahlen> root,
-			Gesuchsperiode gesuchsperiode) {
-		return cb.equal(
-				root.get(GemeindeKennzahlen_.gesuchsperiode),
-				gesuchsperiode
+			String gesuchsperiode) {
+		String[] years = Arrays.stream(gesuchsperiode.split("/"))
+				.map(year -> year.length() == 4 ? year : "20".concat(year))
+				.collect(Collectors.toList())
+				.toArray(String[]::new);
+		Path<DateRange> dateRangePath =
+				root.join(GemeindeKennzahlen_.gesuchsperiode, JoinType.INNER)
+						.get(AbstractDateRangedEntity_.gueltigkeit);
+		return cb.and(
+				cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigAb)), years[0]),
+				cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigBis)), years[1])
 		);
 	}
 
@@ -224,7 +238,7 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	@Override
 	public void deleteGemeindeKennzahlen(
 			@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
-		getGemeindeKennzahlen(gemeinde, gesuchsperiode, null, null)
+		getGemeindeKennzahlen(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null)
 				.forEach(gemeindeKennzahlen -> {
 					persistence.remove(gemeindeKennzahlen);
 					LOG.warn(
