@@ -76,7 +76,7 @@ public class GemeindeKennzahlenResource {
 	private AuthorizerImpl authorizer;
 
 	@ApiOperation(
-			value = "Gibt den FerienbetreuungAngabenContainer mit der uebergebenen Id zurueck",
+			value = "Gibt die GemeindeKennzahlen mit der uebergebenen Id zurueck",
 			response = JaxGemeindeKennzahlen.class)
 	@Nullable
 	@GET
@@ -103,7 +103,7 @@ public class GemeindeKennzahlenResource {
 	}
 
 	@ApiOperation(
-			value = "Speichert FerienbetreuungAngabenStammdaten in der Datenbank",
+			value = "Speichert GemeindeKennzahlen in der Datenbank",
 			response = JaxGemeindeKennzahlen.class)
 	@Nonnull
 	@PUT
