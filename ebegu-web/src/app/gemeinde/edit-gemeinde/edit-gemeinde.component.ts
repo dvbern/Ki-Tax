@@ -78,6 +78,7 @@ export class EditGemeindeComponent implements OnInit {
     private initiallyAssignedClients: TSExternalClient[];
     public externalClients: TSExternalClientAssignment;
     public usernameScolaris: string;
+    public gemeindeList: TSGemeinde[] = [];
 
     public constructor(
         private readonly $transition$: Transition,
@@ -151,6 +152,8 @@ export class EditGemeindeComponent implements OnInit {
                     this.usernameScolaris = stammdaten.usernameScolaris;
                 }
                 this.gemeindeWarningService.init(stammdaten.konfigurationsListe);
+
+                this.loadGemeindenList();
                 return stammdaten;
             }));
 
@@ -162,6 +165,14 @@ export class EditGemeindeComponent implements OnInit {
             err => {
                 LOG.error(err);
             });
+    }
+
+    private loadGemeindenList(): void {
+        this.gemeindeRS.getAktiveGueltigeGemeinden().then(response => {
+            this.gemeindeList = response;
+            this.gemeindeList.sort((a, b) => a.name.localeCompare(b.name));
+            this.gemeindeList.filter(gemeinde => gemeinde.id !== this.gemeindeId);
+        });
     }
 
     private initializeEmptyUnrequiredFields(stammdaten: TSGemeindeStammdaten): void {

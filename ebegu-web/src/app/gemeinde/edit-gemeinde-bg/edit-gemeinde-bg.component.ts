@@ -28,6 +28,7 @@ import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -51,6 +52,7 @@ export class EditGemeindeComponentBG implements OnInit {
     @Input() public altBGAdresse: boolean;
     @Input() public beguStartDatum: Moment;
     @Input() public keineBeschwerdeAdresse: boolean;
+    @Input() public gemeindeList: TSGemeinde[];
 
     @Output() public readonly altBGAdresseChange: EventEmitter<boolean> = new EventEmitter();
     @Output() public readonly keineBeschwerdeAdresseChange: EventEmitter<boolean> = new EventEmitter();
@@ -62,6 +64,7 @@ export class EditGemeindeComponentBG implements OnInit {
     public konfigurationsListe: TSGemeindeKonfiguration[];
     public gemeindeStatus: TSGemeindeStatus;
     public einschulungTypGemeindeValues: Array<TSEinschulungTyp>;
+    public gemeinden: Array<TSGemeinde>;
     private navigationDest: StateDeclaration;
 
     public constructor(

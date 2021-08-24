@@ -20,6 +20,35 @@
     <div *ngIf="editMode; else viewModeTemplate">
         <fieldset ngModelGroup="dv-edit-gemeinde-bg">
             <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <mat-checkbox id="gutscheinSelberAusgestellt_id" name="gutscheinSelberAusgestellt_id"
+                                      [(ngModel)]="stammdaten.gutscheinSelberAusgestellt">
+                            {{'GUTSCHEIN_SELBER_AUSGESTELLT'|translate}}
+                        </mat-checkbox>
+                    </div>
+                </div>
+                <div *ngIf="stammdaten.gutscheinSelberAusgestellt" class="col-sm-6">
+                    <div class="form-group">
+                        <label class="required" class="md-no-float" translate for="gemeindeAusgabestelle">GEMEINDE_AUSWAEHLEN</label>
+                        <select [(ngModel)]="stammdaten.gemeindeAusgabestelle"
+                                name="gemeindeAusgabestelle"
+                                class="form-control"
+                                id="gemeinde"
+                                [required]="true">
+                            <option *ngFor="let gemeinde of (gemeindeList)"
+                                    [ngValue]="gemeinde">
+                                {{gemeinde.name}}
+                            </option>
+                        </select>
+                        <dv-error-messages [errorObject]="gemeindeAusgabestelle.errors"
+                                           inputId="gemeindeAusgabestelle"
+                                           class="input-error">
+                        </dv-error-messages>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <!--                bankverbindung für auszahlungen-->
                 <div class="col-sm-6">
                     <h3 translate for="korrespondenzsprache_id">BANKVERBINDUNG</h3>

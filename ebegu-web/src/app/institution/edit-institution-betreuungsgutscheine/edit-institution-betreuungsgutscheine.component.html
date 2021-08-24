@@ -214,10 +214,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row ">
+                    <div *ngIf="abweichendeZahlungsAdresse" class="row ">
                         <!-- Strasse -->
                         <div class="col-sm-10">
-                            <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
+                            <div class="form-group">
                                 <label class="required" translate for="za_strasse_id">ADRESSE_STRASSE</label>
                                 <input id="za_strasse_id" type="text" name="za_strasse_id" #strasse="ngModel"
                                        [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.strasse"
@@ -228,7 +228,7 @@
                         </div>
                         <!-- Hausnummer -->
                         <div class="col-sm-2">
-                            <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
+                            <div class="form-group">
                                 <label translate for="za_hausnummer_id">ADRESSE_NUMMER</label>
                                 <input id="za_hausnummer_id" type="text" name="za_hausnummer_id" #hausnr="ngModel"
                                        [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.hausnummer"
@@ -238,10 +238,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div *ngIf="abweichendeZahlungsAdresse" class="row">
                         <!-- PLZ -->
                         <div class="col-sm-2">
-                            <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
+                            <div class="form-group">
                                 <label class="required" translate for="za_plz_id">ADRESSE_PLZ</label>
                                 <input id="za_plz_id" type="text" name="za_plz_id" #plz="ngModel"
                                        [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.plz"
@@ -251,7 +251,7 @@
                         </div>
                         <!-- Ort -->
                         <div class="col-sm-10">
-                            <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
+                            <div class="form-group">
                                 <label class="required" translate for="za_ort_id">ADRESSE_ORT</label>
                                 <input id="za_ort_id" type="text" name="za_ort_id" #ort="ngModel"
                                        [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.ort"
