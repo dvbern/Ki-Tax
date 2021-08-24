@@ -29,7 +29,7 @@ const states: NgHybridStateDeclaration[] = [
         component: GemeindeKennzahlenUiComponent,
         resolve: [
             {
-                token: 'gemeinde',
+                token: 'gemeindeKennzahlenId',
                 deps: [Transition],
                 resolveFn: (trans: Transition) =>
                     (trans.params().id),
@@ -37,7 +37,7 @@ const states: NgHybridStateDeclaration[] = [
         ],
     },
     {
-        name: 'GEMEINDE_KENNZAHLEN',
+        name: 'GEMEINDE_KENNZAHLEN.FORMULAR',
         url: '/formular',
         component: GemeindeKennzahlenFormularComponent
     }
