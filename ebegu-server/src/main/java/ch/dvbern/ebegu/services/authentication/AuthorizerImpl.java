@@ -66,6 +66,8 @@ import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
+import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlenStatus;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -87,6 +89,7 @@ import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
 import ch.dvbern.ebegu.services.gemeindeantrag.GemeindeAntragService;
+import ch.dvbern.ebegu.services.gemeindeantrag.GemeindeKennzahlenService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -111,6 +114,7 @@ import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
 import static ch.dvbern.ebegu.enums.UserRole.SUPER_ADMIN;
 import static ch.dvbern.ebegu.enums.UserRole.getAllAdminRoles;
+import static ch.dvbern.ebegu.enums.UserRole.getBgAndGemeindeRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getMandantSuperadminRoles;
 import static ch.dvbern.ebegu.util.Constants.ANONYMOUS_USER_USERNAME;
 import static ch.dvbern.ebegu.util.Constants.LOGINCONNECTOR_USER_USERNAME;
@@ -154,6 +158,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Inject
 	private FerienbetreuungService ferienbetreuungService;
+
+	@Inject
+	private GemeindeKennzahlenService gemeindeKennzahlenService;
 
 	/**
 	 * All non-gemeinde-roles are allowed to see any gemeinde. This is needed because Institutionen and Gesuchsteller
@@ -2022,6 +2029,36 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	@Override
 	public void checkReadAuthorization(@Nonnull InternePendenz internePendenz) {
 		checkWriteAuthorization(internePendenz);
+	}
+
+	@Override
+	public void checkReadAuthorization(@Nonnull String id) {
+		GemeindeKennzahlen gemeindeKennzahlen = gemeindeKennzahlenService.findGemeindeKennzahlen(id)
+				.orElseThrow(() -> new EbeguEntityNotFoundException("checkReadAuthorizationGemeindeKennzahlen", id));
+
+		checkReadAuthorization(gemeindeKennzahlen);
+	}
+
+	@Override
+	public void checkReadAuthorization(@Nonnull GemeindeKennzahlen gemeindeKennzahlen) {
+		if (principalBean.isCallerInRole(SUPER_ADMIN)) {
+			return;
+		}
+
+		if (gemeindeKennzahlen.getStatus() == GemeindeKennzahlenStatus.IN_BEARBEITUNG_GEMEINDE &&
+			!principalBean.isCallerInAnyOfRole(getBgAndGemeindeRoles())) {
+			throwViolation(gemeindeKennzahlen);
+		}
+
+		if (!principalBean.isCallerInAnyOfRole(UserRole.getMandantBgGemeindeRoles())) {
+			throwViolation(gemeindeKennzahlen);
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(
+			@Nonnull GemeindeKennzahlen gemeindeKennzahlen) {
+		checkReadAuthorization(gemeindeKennzahlen);
 	}
 
 	private boolean isAllowedAdminOrSachbearbeiter(Sozialdienst sozialdienst) {
