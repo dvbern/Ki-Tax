@@ -96,4 +96,12 @@ export class TSGemeindeKennzahlen extends TSAbstractEntity {
     public set gemeinde(value: TSGemeinde) {
         this._gemeinde = value;
     }
+
+    public isInBearbeitungGemeinde(): boolean {
+        return this.status === TSGemeindeKennzahlenStatus.IN_BEARBEITUNG_GEMEINDE;
+    }
+
+    public isAbgeschlossen(): boolean {
+        return this.status === TSGemeindeKennzahlenStatus.ABGESCHLOSSEN;
+    }
 }

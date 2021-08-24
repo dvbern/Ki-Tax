@@ -1,1 +1,142 @@
-<p>gemeinde-kennzahlen-formular works!</p>
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="gemeinde-kennzahlen">
+
+	<h1 class="access-for-all-title" translate>FERIENBETREUUNG_ANGEBOT</h1>
+	<div class="row view-title">
+		<div class="col-md-12">
+			<h2>{{'GEMEINDE_KENNZAHLEN' | translate}}</h2>
+			<hr class="header"/>
+		</div>
+	</div>
+
+	<form *ngIf="form$ | async as form" [formGroup]="form">
+
+		<div class="max-width-container-750">
+
+			<dv-input-container-x>
+				<label required
+					   for="nachfrageErfuellt_id"
+					   [ngClass]="{'label-error': form.get('nachfrageErfuellt').errors}">
+					{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_ERFUELLT' | translate }}
+				</label>
+				<mat-form-field floatLabel="always">
+					<input matInput
+						   id="nachfrageErfuellt_id"
+						   formControlName="nachfrageErfuellt"
+						   class="form-control dv-input"/>
+					<mat-error *ngIf="form.get('nachfrageErfuellt').errors?.required"
+							   translate>ERROR_REQUIRED
+					</mat-error>
+				</mat-form-field>
+			</dv-input-container-x>
+
+			<dv-input-container-x>
+				<label required
+					   for="nachfrageAnzahl_id"
+					   [ngClass]="{'label-error': form.get('nachfrageAnzahl').errors}">
+					{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_ANZAHL' | translate }}
+				</label>
+				<mat-form-field floatLabel="always">
+					<input matInput
+						   id="nachfrageAnzahl_id"
+						   formControlName="nachfrageAnzahl"
+						   class="form-control dv-input"/>
+					<mat-error *ngIf="form.get('nachfrageAnzahl').errors?.required"
+							   translate>ERROR_REQUIRED
+					</mat-error>
+				</mat-form-field>
+			</dv-input-container-x>
+
+			<dv-input-container-x>
+				<label required
+					   for="nachfrageDauer_id"
+					   [ngClass]="{'label-error': form.get('nachfrageDauer').errors}">
+					{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_DAUER' | translate }}
+				</label>
+				<mat-form-field floatLabel="always">
+					<input matInput
+						   id="nachfrageDauer_id"
+						   formControlName="nachfrageDauer"
+						   class="form-control dv-input"/>
+					<mat-error *ngIf="form && form.get('nachfrageDauer').errors?.required"
+							   translate>ERROR_REQUIRED
+					</mat-error>
+				</mat-form-field>
+			</dv-input-container-x>
+
+			<div formGroupName="kostenlenkung">
+				<dv-input-container-x>
+					<label required
+						   [ngClass]="{'label-required-error': form.get('kostenlenkung').get('kostenlenkungAndere').errors}"
+						   for="kostenlenkungAndere-radio-group">
+						{{'GEMEINDE_KENNZAHLEN_KOSTENLENKUNG_ANDERE' | translate}}
+					</label>
+					<dv-radio-container-x>
+						<mat-radio-group
+								aria-labelledby="kostenlenkungAndere-radio-group"
+								id="kostenlenkungAndere-radio-group"
+								class=""
+								name="kostenlenkungAndere"
+								horizontal
+								formControlName="kostenlenkungAndere">
+							<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+							<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+						</mat-radio-group>
+					</dv-radio-container-x>
+				</dv-input-container-x>
+
+				<dv-input-container-x *ngIf="form.get('kostenlenkung').get('kostenlenkungAndere').value === true">
+					<label required
+						   for="nachfrageErfuellt_id"
+						   [ngClass]="{'label-error': form.get('kostenlenkung').get('welcheKostenlenkungsmassnahmen').errors}">
+						{{'GEMEINDE_KENNZAHLEN_WELCHE_KOSTENLENKUNGSMASSNAHMEN' | translate }}
+					</label>
+					<mat-form-field floatLabel="always">
+						<input matInput
+							   id="welcheKostenlenkungsmassnahmen_id"
+							   formControlName="welcheKostenlenkungsmassnahmen"
+							   class="form-control dv-input"/>
+						<mat-error *ngIf="form.get('kostenlenkung').get('welcheKostenlenkungsmassnahmen').errors?.required"
+								   translate>ERROR_REQUIRED
+						</mat-error>
+					</mat-form-field>
+				</dv-input-container-x>
+			</div>
+		</div>
+
+	</form>
+
+	<div class="actions margin-top-50 max-width-container-750">
+		<button type="button" class="dv-btn cancel-button"
+				*ngIf="canSeeSaveAndAbschliessen$ | async"
+				[textContent]="'SAVE' | translate">
+		</button>
+		<dv-loading-button
+				*ngIf="canSeeSaveAndAbschliessen$ | async"
+				type="button">
+			<span translate>ABSCHLIESSEN</span>
+		</dv-loading-button>
+		<dv-loading-button
+				*ngIf="canSeeZurueckAnGemeinde$ | async"
+				type="button">
+			<span translate>ZURUECK_AN_GEMEINDE</span>
+		</dv-loading-button>
+	</div>
+
+</div>

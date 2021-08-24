@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
 import {TSGemeindeKennzahlen} from '../../../../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
@@ -25,7 +25,6 @@ import {GemeindeKennzahlenService} from '../gemeinde-kennzahlen.service';
     templateUrl: './gemeinde-kennzahlen-ui.component.html',
     styleUrls: ['./gemeinde-kennzahlen-ui.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    encapsulation: ViewEncapsulation.None
 })
 export class GemeindeKennzahlenUiComponent implements OnInit {
 

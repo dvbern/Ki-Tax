@@ -16,7 +16,9 @@
  */
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import {ReactiveFormsModule} from '@angular/forms';
 import {TranslateModule} from '@ngx-translate/core';
+import {SharedModule} from '../../shared/shared.module';
 import {WizardstepXModule} from '../../wizardstepX/wizardstep-x.module';
 import {GemeindeKennzahlenFormularComponent} from './gemeinde-kennzahlen-formular/gemeinde-kennzahlen-formular.component';
 import {GemeindeKennzahlenRoutingModule} from './gemeinde-kennzahlen-routing/gemeinde-kennzahlen-routing.module';
@@ -29,6 +31,8 @@ import {GemeindeKennzahlenUiComponent} from './gemeinde-kennzahlen-ui/gemeinde-k
         TranslateModule,
         WizardstepXModule,
         GemeindeKennzahlenRoutingModule,
+        SharedModule,
+        ReactiveFormsModule,
     ],
 })
 export class GemeindeKennzahlenModule {
