@@ -23,6 +23,7 @@ import java.math.BigInteger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
@@ -34,7 +35,10 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
+import org.hibernate.envers.Audited;
 
+@Audited
+@Entity
 public class GemeindeKennzahlen extends AbstractEntity implements GemeindeAntrag {
 
 	private static final long serialVersionUID = 8854741977608451344L;

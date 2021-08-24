@@ -53,6 +53,9 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 	private FerienbetreuungService ferienbetreuungService;
 
 	@Inject
+	private GemeindeKennzahlenService gemeindeKennzahlenService;
+
+	@Inject
 	private PrincipalBean principal;
 
 	@Override
