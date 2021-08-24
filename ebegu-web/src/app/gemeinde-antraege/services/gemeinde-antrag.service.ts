@@ -141,6 +141,9 @@ export class GemeindeAntragService {
         if (wizardTypStr === 'FERIENBETREUUNG') {
             return TSWizardStepXTyp.FERIENBETREUUNG;
         }
+        if (wizardTypStr === 'GEMEINDE_KENNZAHLEN') {
+            return TSWizardStepXTyp.GEMEINDE_KENNZAHLEN;
+        }
         LOG.error('wrong wizardTypStr provided');
         return undefined;
     }

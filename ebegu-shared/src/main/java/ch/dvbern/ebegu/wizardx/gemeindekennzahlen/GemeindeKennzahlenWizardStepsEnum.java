@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,10 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.wizardx;
+package ch.dvbern.ebegu.wizardx.gemeindekennzahlen;
 
-public enum WizardTyp {
-	LASTENAUSGLEICH_TAGESSCHULEN,
-	FERIENBETREUUNG,
-	GEMEINDE_KENNZAHLEN
+public enum GemeindeKennzahlenWizardStepsEnum {
+	FORMULAR
 }

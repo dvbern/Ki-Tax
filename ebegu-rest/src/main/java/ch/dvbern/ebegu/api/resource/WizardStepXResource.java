@@ -42,16 +42,19 @@ import ch.dvbern.ebegu.api.dtos.JaxWizardStepX;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
+import ch.dvbern.ebegu.services.gemeindeantrag.GemeindeKennzahlenService;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeService;
 import ch.dvbern.ebegu.wizardx.Wizard;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
 import ch.dvbern.ebegu.wizardx.ferienbetreuung.FerienbetreuungWizard;
+import ch.dvbern.ebegu.wizardx.gemeindekennzahlen.GemeindeKennzahlenWizard;
 import ch.dvbern.ebegu.wizardx.tagesschuleLastenausgleich.TagesschuleWizard;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -76,6 +79,9 @@ public class WizardStepXResource {
 
 	@Inject
 	private InstitutionService institutionService;
+
+	@Inject
+	private GemeindeKennzahlenService gemeindeKennzahlenService;
 
 	@ApiOperation(value = "Gibt den ersten Step.", response = JaxWizardStepX.class)
 	@Nullable
@@ -110,6 +116,11 @@ public class WizardStepXResource {
 					.orElseThrow(() -> new EbeguEntityNotFoundException("initWizardStep", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
 			wizard = new FerienbetreuungWizard(userRole, ferienbetreuungAngabenContainer);
+			break;
+		case GEMEINDE_KENNZAHLEN:
+			GemeindeKennzahlen gemeindeKennzahlen = gemeindeKennzahlenService.findGemeindeKennzahlen(id)
+					.orElseThrow(() -> new EbeguEntityNotFoundException("initWizardStep", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+			wizard = new GemeindeKennzahlenWizard(userRole, gemeindeKennzahlen);
 			break;
 		default:
 			return null;
