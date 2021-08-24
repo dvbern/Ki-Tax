@@ -98,12 +98,35 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 
 	@Nonnull
 	@Override
-	public Optional<GemeindeKennzahlen> findGemeindeAntrag(@Nonnull String id) {
+	public Optional<GemeindeKennzahlen> findGemeindeKennzahlen(@Nonnull String id) {
 		Objects.requireNonNull(id, ID_MUSS_GESETZT_SEIN);
 
 		GemeindeKennzahlen gemeindeKennzahlen = persistence.find(GemeindeKennzahlen.class, id);
 
 		return Optional.ofNullable(gemeindeKennzahlen);
+	}
+
+	@Nonnull
+	@Override
+	public GemeindeKennzahlen saveGemeindeKennzahlen(
+			@Nonnull GemeindeKennzahlen gemeindeKennzahlen) {
+		return persistence.merge(gemeindeKennzahlen);
+	}
+
+	@Nonnull
+	@Override
+	public GemeindeKennzahlen gemeindeKennzahlenAbschliessen(
+			@Nonnull GemeindeKennzahlen gemeindeKennzahlen) {
+		gemeindeKennzahlen.setStatus(GemeindeKennzahlenStatus.ABGESCHLOSSEN);
+		return persistence.merge(gemeindeKennzahlen);
+	}
+
+	@Nonnull
+	@Override
+	public GemeindeKennzahlen gemeindeKennzahlenZurueckAnGemeinde(
+			@Nonnull GemeindeKennzahlen gemeindeKennzahlen) {
+		gemeindeKennzahlen.setStatus(GemeindeKennzahlenStatus.IN_BEARBEITUNG_GEMEINDE);
+		return persistence.merge(gemeindeKennzahlen);
 	}
 
 	@Nonnull

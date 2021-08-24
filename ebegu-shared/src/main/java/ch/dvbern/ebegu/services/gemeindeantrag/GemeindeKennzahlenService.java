@@ -39,7 +39,7 @@ public interface GemeindeKennzahlenService {
 	List<GemeindeKennzahlen> createGemeindeKennzahlen(@Nonnull Gesuchsperiode gesuchsperiode);
 
 	@Nonnull
-	Optional<GemeindeKennzahlen> findGemeindeAntrag(@Nonnull String id);
+	Optional<GemeindeKennzahlen> findGemeindeKennzahlen(@Nonnull String id);
 
 	/**
 	 * Gibt alle GemeindeAntraege der Benutzerin zurück. Falls gesuchsperiode und/oder antragstyp mitgegeben werden
@@ -52,9 +52,14 @@ public interface GemeindeKennzahlenService {
 			@Nullable String status,
 			@Nullable String timestampMutiert);
 
+	@Nonnull GemeindeKennzahlen saveGemeindeKennzahlen(@Nonnull GemeindeKennzahlen gemeindeKennzahlen);
+
+	@Nonnull GemeindeKennzahlen gemeindeKennzahlenAbschliessen(@Nonnull GemeindeKennzahlen gemeindeKennzahlen);
+
+	@Nonnull GemeindeKennzahlen gemeindeKennzahlenZurueckAnGemeinde(@Nonnull GemeindeKennzahlen gemeindeKennzahlen);
+
 	/**
 	 * Löscht alle GemeindeKennzahlen-Anträge für die Gemeinde und Gesuchsperiode
 	 */
 	void deleteGemeindeKennzahlen(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
-
 }

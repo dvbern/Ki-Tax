@@ -207,6 +207,20 @@ public enum UserRole {
 		return Arrays.asList(SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT);
 	}
 
+	public static List<UserRole> getMandantBgGemeindeRoles() {
+		List<UserRole> roles = new ArrayList<>();
+		roles.add(SUPER_ADMIN);
+		roles.addAll(getMandantBgGemeindeOnlyRoles());
+		return roles;
+	}
+
+	public static List<UserRole> getMandantBgGemeindeOnlyRoles() {
+		List<UserRole> roles = new ArrayList<>();
+		roles.addAll(getMandantRoles());
+		roles.addAll(getBgAndGemeindeRoles());
+		return roles;
+	}
+
 	public static List<UserRole> getRolesByAbhaengigkeit(RollenAbhaengigkeit abhaengigkeit) {
 		return Arrays.stream(UserRole.values())
 			.filter(userRole -> userRole.getRollenAbhaengigkeit() == abhaengigkeit)
