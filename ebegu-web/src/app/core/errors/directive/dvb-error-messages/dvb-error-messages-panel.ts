@@ -27,6 +27,7 @@ import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvDialog} from '../../../directive/dv-dialog/dv-dialog';
 import {BroadcastService} from '../../../service/broadcast.service';
 import {ErrorService} from '../../service/ErrorService';
+import {ErrorServiceX} from '../../service/ErrorServiceX';
 
 const removeDialogTemplate = require('../../../../../gesuch/dialog/removeDialogTemplate.html');
 
@@ -49,7 +50,8 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
         'GesuchRS',
         'WizardStepManager',
         'BroadcastService',
-        '$log'
+        '$log',
+        'ErrorServiceX'
     ];
 
     public errors: Array<TSExceptionReport> = [];
@@ -62,7 +64,8 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
         private readonly gesuchRS: GesuchRS,
         private readonly wizardStepManager: WizardStepManager,
         private readonly broadcastService: BroadcastService,
-        private readonly $log: ILogService
+        private readonly $log: ILogService,
+        private readonly errorServiceX: ErrorServiceX
     ) {
     }
 
@@ -158,6 +161,7 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
 
     public clear(): void {
         this.errorService.clearAll();
+        this.errorServiceX.clearAll();
     }
 
     public messageStyle(): string {
