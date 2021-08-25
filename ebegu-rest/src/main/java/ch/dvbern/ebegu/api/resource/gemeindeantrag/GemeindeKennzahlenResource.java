@@ -31,6 +31,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -84,7 +85,7 @@ public class GemeindeKennzahlenResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-			ADMIN_BG, SACHBEARBEITER_BG})
+			ADMIN_BG, SACHBEARBEITER_BG })
 	public JaxGemeindeKennzahlen findGemeindeKennzahlen(
 			@Nonnull @NotNull @PathParam("id") JaxId id
 	) {
@@ -103,16 +104,46 @@ public class GemeindeKennzahlenResource {
 	}
 
 	@ApiOperation(
-			value = "Speichert GemeindeKennzahlen in der Datenbank",
+			value = "Schliesst den GemeindeKennzahlen-Antrag als Gemeinde ab und gibt ihn zur Prüfung durch die "
+					+ "Kantone "
+					+ "frei",
 			response = JaxGemeindeKennzahlen.class)
-	@Nonnull
+	@PUT
+	@Path("/{id}/abschliessen")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG })
+	public JaxGemeindeKennzahlen gemeindeKennzahlenAbschliessen(
+			@Context UriInfo uriInfo,
+			@Context HttpServletResponse response,
+			@Nonnull @NotNull @PathParam("id") JaxId id
+	) {
+		Objects.requireNonNull(id);
+		Objects.requireNonNull(id.getId());
+
+		GemeindeKennzahlen gemeindeKennzahlen =
+				gemeindeKennzahlenService.findGemeindeKennzahlen(id.getId())
+						.orElseThrow(() -> new EbeguEntityNotFoundException(
+								"gemeindeKennzahlenAbschliessen",
+								id.getId()));
+
+		authorizer.checkWriteAuthorization(gemeindeKennzahlen);
+
+		GemeindeKennzahlen persisted =
+				gemeindeKennzahlenService.gemeindeKennzahlenAbschliessen(gemeindeKennzahlen);
+		return converter.gemeindeKennzahlenToJax(persisted);
+	}
+
+	@ApiOperation(
+			value = "Speichert den GemeindeKennzahlen-Antrag als Gemeinde ab",
+			response = JaxGemeindeKennzahlen.class)
 	@PUT
 	@Path("/{id}/save")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG })
-	public JaxGemeindeKennzahlen saveGemeindeKennzahlen(
-			@Nonnull @NotNull @Valid JaxGemeindeKennzahlen jaxStammdaten,
+	public JaxGemeindeKennzahlen gemeindeKennzahlenSpeichern(
+			@Nonnull @Valid JaxGemeindeKennzahlen jaxStammdaten,
 			@Context UriInfo uriInfo,
 			@Context HttpServletResponse response,
 			@Nonnull @NotNull @PathParam("id") JaxId id
@@ -137,49 +168,17 @@ public class GemeindeKennzahlenResource {
 	}
 
 	@ApiOperation(
-		value = "Schliesst den GemeindeKennzahlen-Antrag als Gemeinde ab und gibt ihn zur Prüfung durch die Kantone "
-				+ "frei",
-		response = GemeindeKennzahlen.class)
-	@PUT
-	@Path("/{id}/abschliessen")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG })
-	public JaxGemeindeKennzahlen gemeindeKennzahlenAbschliessen(
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response,
-		@Nonnull @NotNull @PathParam("id") JaxId id
-	) {
-		Objects.requireNonNull(id);
-		Objects.requireNonNull(id.getId());
-
-		authorizer.checkReadAuthorizationFerienbetreuung(id.getId());
-
-		GemeindeKennzahlen gemeindeKennzahlen =
-			gemeindeKennzahlenService.findGemeindeKennzahlen(id.getId())
-				.orElseThrow(() -> new EbeguEntityNotFoundException(
-					"gemeindeKennzahlenAbschliessen",
-					id.getId()));
-
-		authorizer.checkWriteAuthorization(gemeindeKennzahlen);
-
-		GemeindeKennzahlen persisted =
-			gemeindeKennzahlenService.gemeindeKennzahlenAbschliessen(gemeindeKennzahlen);
-		return converter.gemeindeKennzahlenToJax(persisted);
-	}
-
-	@ApiOperation(
-		value = "Gibt die Gemeinde Kennzahlen zurück an die Gemeinde",
-		response = JaxGemeindeKennzahlen.class)
+			value = "Gibt die Gemeinde Kennzahlen zurück an die Gemeinde",
+			response = JaxGemeindeKennzahlen.class)
 	@PUT
 	@Path("/{id}/zurueck-an-gemeinde")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, SACHBEARBEITER_MANDANT, ADMIN_MANDANT })
 	public JaxGemeindeKennzahlen gemeindeKennzahlenZurueckAnDieGemeinde(
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response,
-		@Nonnull @NotNull @PathParam("id") JaxId id
+			@Context UriInfo uriInfo,
+			@Context HttpServletResponse response,
+			@Nonnull @NotNull @PathParam("id") JaxId id
 	) {
 		Objects.requireNonNull(id);
 		Objects.requireNonNull(id.getId());

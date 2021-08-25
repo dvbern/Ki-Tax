@@ -49,7 +49,7 @@ export class GemeindeKennzahlenService {
     }
 
     public saveGemeindeKennzahlen(antrag: TSGemeindeKennzahlen): Observable<TSGemeindeKennzahlen> {
-        return this.http.put(`${this.API_URL}/${antrag.id}/save`,
+        return this.http.put(`${this.API_URL}/${encodeURIComponent(antrag.id)}/save`,
             this.restUtil.gemeindeKennzahlenToRestObject({}, antrag))
             .pipe(
                 map(antragFromServer => this.restUtil.parseGemeindeKennzahlen(new TSGemeindeKennzahlen(),
@@ -59,7 +59,7 @@ export class GemeindeKennzahlenService {
     }
 
     public gemeindeKennzahlenAbschliessen(antrag: TSGemeindeKennzahlen): Observable<TSGemeindeKennzahlen> {
-        return this.http.put(`${this.API_URL}/${antrag.id}/abschliessen`, {})
+        return this.http.put(`${this.API_URL}/${encodeURIComponent(antrag.id)}/abschliessen`, {})
             .pipe(
                 map(antragFromServer => this.restUtil.parseGemeindeKennzahlen(new TSGemeindeKennzahlen(),
                     antragFromServer)),
@@ -68,7 +68,7 @@ export class GemeindeKennzahlenService {
     }
 
     public gemeindeKennzahlenZurueckAnGemeinde(antrag: TSGemeindeKennzahlen): Observable<TSGemeindeKennzahlen> {
-        return this.http.put(`${this.API_URL}/${antrag.id}/zurueck-an-gemeinde`, {})
+        return this.http.put(`${this.API_URL}/${encodeURIComponent(antrag.id)}/zurueck-an-gemeinde`, {})
             .pipe(
                 map(antragFromServer => this.restUtil.parseGemeindeKennzahlen(new TSGemeindeKennzahlen(),
                     antragFromServer)),
