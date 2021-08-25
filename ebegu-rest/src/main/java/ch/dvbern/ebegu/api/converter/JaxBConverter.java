@@ -4928,6 +4928,8 @@ public class JaxBConverter extends AbstractConverter {
 			Objects.requireNonNull(jaxStammdaten.getGemeindeAusgabestelle().getId());
 			gemeindeService.findGemeinde(jaxStammdaten.getGemeindeAusgabestelle().getId())
 				.ifPresent(stammdaten::setGemeindeAusgabestelle);
+		} else {
+			stammdaten.setGemeindeAusgabestelle(null);
 		}
 
 		gemeindeStammdatenAdressenToEntity(jaxStammdaten, stammdaten);
