@@ -120,23 +120,25 @@
 			</div>
 		</div>
 
-	</form>
+		<div class="actions margin-top-50 max-width-container-750">
 
-	<div class="actions margin-top-50 max-width-container-750">
-		<button type="button" class="dv-btn cancel-button"
-				*ngIf="canSeeSaveAndAbschliessen$ | async"
-				[textContent]="'SAVE' | translate">
-		</button>
-		<dv-loading-button
-				*ngIf="canSeeSaveAndAbschliessen$ | async"
-				type="button">
-			<span translate>ABSCHLIESSEN</span>
-		</dv-loading-button>
-		<dv-loading-button
-				*ngIf="canSeeZurueckAnGemeinde$ | async"
-				type="button">
-			<span translate>ZURUECK_AN_GEMEINDE</span>
-		</dv-loading-button>
-	</div>
+			<button type="button" class="dv-btn cancel-button"
+					*ngIf="canSeeSaveAndAbschliessen$ | async"
+					(click)="save(form.value)"
+					[textContent]="'SAVE' | translate">
+			</button>
+			<dv-loading-button
+					*ngIf="canSeeSaveAndAbschliessen$ | async"
+					type="button"
+					(buttonClick)="abschliessen(form)">
+				<span translate>ABSCHLIESSEN</span>
+			</dv-loading-button>
+			<dv-loading-button
+					*ngIf="canSeeZurueckAnGemeinde$ | async"
+					type="button">
+				<span translate>ZURUECK_AN_GEMEINDE</span>
+			</dv-loading-button>
+		</div>
+	</form>
 
 </div>
