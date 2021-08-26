@@ -29,7 +29,7 @@
 
 		<div class="max-width-container-750">
 
-			<dv-input-container-x>
+			<dv-input-container-x [noMargin]="true">
 				<label required
 					   [ngClass]="{'label-error': validationTiggered && nachfrageErfuellt.errors}"
 					   for="nachfrageErfuellt-radio-group">
@@ -52,7 +52,7 @@
 				</dv-radio-container-x>
 			</dv-input-container-x>
 
-			<dv-input-container-x>
+			<dv-input-container-x [noMargin]="true">
 				<label required
 					   [ngClass]="{'label-error': nachfrageAnzahl.errors}"
 					   for="nachfrageAnzahl_id">
@@ -70,7 +70,7 @@
 				</mat-form-field>
 			</dv-input-container-x>
 
-			<dv-input-container-x>
+			<dv-input-container-x [noMargin]="true">
 				<label required
 					   [ngClass]="{'label-error': nachfrageDauer.errors}"
 					   for="nachfrageDauer_id">
@@ -88,7 +88,7 @@
 				</mat-form-field>
 			</dv-input-container-x>
 
-			<dv-input-container-x>
+			<dv-input-container-x [noMargin]="true">
 				<label required
 					   [ngClass]="{'label-error': kostenlenkungAndere.errors}"
 					   for="kostenlenkungAndere-radio-group">
@@ -111,7 +111,7 @@
 				</dv-radio-container-x>
 			</dv-input-container-x>
 
-			<dv-input-container-x *ngIf="kostenlenkungAndere.value === true">
+			<dv-input-container-x *ngIf="kostenlenkungAndere.value === true" [noMargin]="true">
 				<label required
 					   for="welcheKostenlenkungsmassnahmen_id"
 					   [ngClass]="{'label-error': welcheKostenlenkungsmassnahmen.errors}">
