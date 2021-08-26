@@ -114,6 +114,7 @@ public class GemeindeKennzahlenResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG })
 	public JaxGemeindeKennzahlen gemeindeKennzahlenAbschliessen(
+			@Nonnull @Valid JaxGemeindeKennzahlen jaxStammdaten,
 			@Context UriInfo uriInfo,
 			@Context HttpServletResponse response,
 			@Nonnull @NotNull @PathParam("id") JaxId id
@@ -129,15 +130,20 @@ public class GemeindeKennzahlenResource {
 
 		authorizer.checkWriteAuthorization(gemeindeKennzahlen);
 
+		gemeindeKennzahlen = converter.gemeindeKennzahlenToEntity(jaxStammdaten, gemeindeKennzahlen);
+
 		GemeindeKennzahlen persisted =
-				gemeindeKennzahlenService.gemeindeKennzahlenAbschliessen(gemeindeKennzahlen);
-		return converter.gemeindeKennzahlenToJax(persisted);
+				gemeindeKennzahlenService.saveGemeindeKennzahlen(gemeindeKennzahlen);
+
+		GemeindeKennzahlen abgeschlosseneKennzahlen = gemeindeKennzahlenService.gemeindeKennzahlenAbschliessen(persisted);
+
+		return converter.gemeindeKennzahlenToJax(abgeschlosseneKennzahlen);
 	}
 
 	@ApiOperation(
 			value = "Speichert den GemeindeKennzahlen-Antrag als Gemeinde ab",
 			response = JaxGemeindeKennzahlen.class)
-	@PUT
+	@POST
 	@Path("/{id}/save")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

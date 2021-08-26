@@ -49,7 +49,7 @@ export class GemeindeKennzahlenService {
     }
 
     public saveGemeindeKennzahlen(antrag: TSGemeindeKennzahlen): Observable<TSGemeindeKennzahlen> {
-        return this.http.put(`${this.API_URL}/${encodeURIComponent(antrag.id)}/save`,
+        return this.http.post(`${this.API_URL}/${encodeURIComponent(antrag.id)}/save`,
             this.restUtil.gemeindeKennzahlenToRestObject({}, antrag))
             .pipe(
                 map(antragFromServer => this.restUtil.parseGemeindeKennzahlen(new TSGemeindeKennzahlen(),
