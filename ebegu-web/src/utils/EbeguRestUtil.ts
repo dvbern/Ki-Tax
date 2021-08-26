@@ -948,6 +948,7 @@ export class EbeguRestUtil {
         return restGemeinde;
     }
 
+    // tslint:disable-next-line:cognitive-complexity
     public gemeindeStammdatenToRestObject(restStammdaten: any, stammdaten: TSGemeindeStammdaten): TSGemeindeStammdaten {
         if (stammdaten) {
             this.abstractEntityToRestObject(restStammdaten, stammdaten);
