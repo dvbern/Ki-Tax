@@ -108,7 +108,7 @@ public class GemeindeKennzahlenResource {
 					+ "Kantone "
 					+ "frei",
 			response = JaxGemeindeKennzahlen.class)
-	@PUT
+	@POST
 	@Path("/{id}/abschliessen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -188,8 +188,6 @@ public class GemeindeKennzahlenResource {
 	) {
 		Objects.requireNonNull(id);
 		Objects.requireNonNull(id.getId());
-
-		authorizer.checkReadAuthorizationFerienbetreuung(id.getId());
 
 		GemeindeKennzahlen gemeindeKennzahlen =
 				gemeindeKennzahlenService.findGemeindeKennzahlen(id.getId())
