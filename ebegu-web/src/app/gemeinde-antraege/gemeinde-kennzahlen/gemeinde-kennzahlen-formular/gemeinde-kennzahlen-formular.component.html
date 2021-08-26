@@ -25,112 +25,121 @@
 		</div>
 	</div>
 
-	<form *ngIf="form$ | async as form" [formGroup]="form">
+	<form *ngIf="antrag$ | async as antrag">
 
 		<div class="max-width-container-750">
 
 			<dv-input-container-x>
 				<label required
-					   for="nachfrageErfuellt_id"
-					   [ngClass]="{'label-error': form.get('nachfrageErfuellt').errors}">
-					{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_ERFUELLT' | translate }}
+					   [ngClass]="{'label-error': validationTiggered && nachfrageErfuellt.errors}"
+					   for="nachfrageErfuellt-radio-group">
+					{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_ERFUELLT' | translate}}
 				</label>
-				<mat-form-field floatLabel="always">
-					<input matInput
-						   id="nachfrageErfuellt_id"
-						   formControlName="nachfrageErfuellt"
-						   class="form-control dv-input"/>
-					<mat-error *ngIf="form.get('nachfrageErfuellt').errors?.required"
-							   translate>ERROR_REQUIRED
-					</mat-error>
-				</mat-form-field>
+				<dv-radio-container-x>
+					<mat-radio-group
+							aria-labelledby="nachfrageErfuellt-radio-group"
+							id="nachfrageErfuellt-radio-group"
+							class=""
+							name="nachfrageErfuellt"
+                            #nachfrageErfuellt="ngModel"
+							horizontal
+							required
+							[(ngModel)]="antrag.nachfrageErfuellt">
+						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+					</mat-radio-group>
+					<dv-error-messages [errorObject]="validationTiggered && nachfrageErfuellt.errors"></dv-error-messages>
+				</dv-radio-container-x>
 			</dv-input-container-x>
 
 			<dv-input-container-x>
 				<label required
-					   for="nachfrageAnzahl_id"
-					   [ngClass]="{'label-error': form.get('nachfrageAnzahl').errors}">
+					   [ngClass]="{'label-error': nachfrageAnzahl.errors}"
+					   for="nachfrageAnzahl_id">
 					{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_ANZAHL' | translate }}
 				</label>
 				<mat-form-field floatLabel="always">
 					<input matInput
+						   name="nachfrageAnzahl"
+                           #nachfrageAnzahl="ngModel"
 						   id="nachfrageAnzahl_id"
-						   formControlName="nachfrageAnzahl"
+						   required
+						   [(ngModel)]="antrag.nachfrageAnzahl"
 						   class="form-control dv-input"/>
-					<mat-error *ngIf="form.get('nachfrageAnzahl').errors?.required"
-							   translate>ERROR_REQUIRED
-					</mat-error>
+					<dv-error-messages [errorObject]="validationTiggered && nachfrageAnzahl.errors"></dv-error-messages>
 				</mat-form-field>
 			</dv-input-container-x>
 
 			<dv-input-container-x>
 				<label required
-					   for="nachfrageDauer_id"
-					   [ngClass]="{'label-error': form.get('nachfrageDauer').errors}">
+					   [ngClass]="{'label-error': nachfrageDauer.errors}"
+					   for="nachfrageDauer_id">
 					{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_DAUER' | translate }}
 				</label>
 				<mat-form-field floatLabel="always">
 					<input matInput
 						   id="nachfrageDauer_id"
-						   formControlName="nachfrageDauer"
+						   name="nachfrageDauer"
+                           #nachfrageDauer="ngModel"
+						   required
+						   [(ngModel)]="antrag.nachfrageDauer"
 						   class="form-control dv-input"/>
-					<mat-error *ngIf="form && form.get('nachfrageDauer').errors?.required"
-							   translate>ERROR_REQUIRED
-					</mat-error>
+					<dv-error-messages [errorObject]="validationTiggered && nachfrageDauer.errors"></dv-error-messages>
 				</mat-form-field>
 			</dv-input-container-x>
 
-			<div formGroupName="kostenlenkung">
-				<dv-input-container-x>
-					<label required
-						   [ngClass]="{'label-required-error': form.get('kostenlenkung').get('kostenlenkungAndere').errors}"
-						   for="kostenlenkungAndere-radio-group">
-						{{'GEMEINDE_KENNZAHLEN_KOSTENLENKUNG_ANDERE' | translate}}
-					</label>
-					<dv-radio-container-x>
-						<mat-radio-group
-								aria-labelledby="kostenlenkungAndere-radio-group"
-								id="kostenlenkungAndere-radio-group"
-								class=""
-								name="kostenlenkungAndere"
-								horizontal
-								formControlName="kostenlenkungAndere">
-							<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-							<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-						</mat-radio-group>
-					</dv-radio-container-x>
-				</dv-input-container-x>
+			<dv-input-container-x>
+				<label required
+					   [ngClass]="{'label-error': kostenlenkungAndere.errors}"
+					   for="kostenlenkungAndere-radio-group">
+					{{'GEMEINDE_KENNZAHLEN_KOSTENLENKUNG_ANDERE' | translate}}
+				</label>
+				<dv-radio-container-x>
+					<mat-radio-group
+							aria-labelledby="kostenlenkungAndere-radio-group"
+							id="kostenlenkungAndere-radio-group"
+							class=""
+							name="kostenlenkungAndere"
+							#kostenlenkungAndere="ngModel"
+							horizontal
+							required
+							[(ngModel)]="antrag.kostenlenkungAndere">
+						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+					</mat-radio-group>
+					<dv-error-messages [errorObject]="validationTiggered && kostenlenkungAndere.errors"></dv-error-messages>
+				</dv-radio-container-x>
+			</dv-input-container-x>
 
-				<dv-input-container-x *ngIf="form.get('kostenlenkung').get('kostenlenkungAndere').value === true">
-					<label required
-						   for="nachfrageErfuellt_id"
-						   [ngClass]="{'label-error': form.get('kostenlenkung').get('welcheKostenlenkungsmassnahmen').errors}">
-						{{'GEMEINDE_KENNZAHLEN_WELCHE_KOSTENLENKUNGSMASSNAHMEN' | translate }}
-					</label>
-					<mat-form-field floatLabel="always">
-						<input matInput
-							   id="welcheKostenlenkungsmassnahmen_id"
-							   formControlName="welcheKostenlenkungsmassnahmen"
-							   class="form-control dv-input"/>
-						<mat-error *ngIf="form.get('kostenlenkung').get('welcheKostenlenkungsmassnahmen').errors?.required"
-								   translate>ERROR_REQUIRED
-						</mat-error>
-					</mat-form-field>
-				</dv-input-container-x>
-			</div>
+			<dv-input-container-x *ngIf="kostenlenkungAndere.value === true">
+				<label required
+					   for="welcheKostenlenkungsmassnahmen_id"
+					   [ngClass]="{'label-error': welcheKostenlenkungsmassnahmen.errors}">
+					{{'GEMEINDE_KENNZAHLEN_WELCHE_KOSTENLENKUNGSMASSNAHMEN' | translate }}
+				</label>
+				<mat-form-field floatLabel="always">
+					<input matInput
+						   id="welcheKostenlenkungsmassnahmen_id"
+						   required
+						   [(ngModel)]="antrag.welcheKostenlenkungsmassnahmen"
+						   name="welcheKostenlenkungsmassnahmen"
+						   #welcheKostenlenkungsmassnahmen="ngModel"
+						   class="form-control dv-input"/>
+					<dv-error-messages [errorObject]="validationTiggered && welcheKostenlenkungsmassnahmen.errors"></dv-error-messages>
+				</mat-form-field>
+			</dv-input-container-x>
 		</div>
-
 		<div class="actions margin-top-50 max-width-container-750">
 
 			<button type="button" class="dv-btn cancel-button"
 					*ngIf="canSeeSaveAndAbschliessen$ | async"
-					(click)="save(form.value)"
+					(click)="save(antrag)"
 					[textContent]="'SAVE' | translate">
 			</button>
 			<dv-loading-button
 					*ngIf="canSeeSaveAndAbschliessen$ | async"
 					type="button"
-					(buttonClick)="abschliessen(form)">
+					(buttonClick)="abschliessen(antrag)">
 				<span translate>ABSCHLIESSEN</span>
 			</dv-loading-button>
 			<dv-loading-button
@@ -140,5 +149,6 @@
 			</dv-loading-button>
 		</div>
 	</form>
+
 
 </div>

@@ -14,15 +14,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
-import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn} from '@angular/forms';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+    FormBuilder,
+    NgForm,
+} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {combineLatest, Observable, ReplaySubject, Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSGemeindeKennzahlen} from '../../../../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
-import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {GemeindeKennzahlenService} from '../gemeinde-kennzahlen.service';
@@ -35,12 +37,14 @@ import {GemeindeKennzahlenService} from '../gemeinde-kennzahlen.service';
 })
 export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
 
+    @ViewChild(NgForm) public form: NgForm;
+
     public canSeeSaveAndAbschliessen$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
     public canSeeZurueckAnGemeinde$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
-    public form$: Observable<FormGroup>;
-    private validationTiggered: boolean = false;
+    public validationTiggered: boolean = false;
     private unsubscribe$: Subject<any> = new Subject<any>();
+    public antrag$: Observable<TSGemeindeKennzahlen>;
 
     public constructor(
         private readonly gemeindeKennzahlenService: GemeindeKennzahlenService,
@@ -50,19 +54,6 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
         private readonly errorService: ErrorService,
         private readonly translate: TranslateService,
     ) {
-    }
-
-    private static formToModel(form: any): TSGemeindeKennzahlen {
-        const model = new TSGemeindeKennzahlen();
-        model.id = form.id;
-        model.version = form.version;
-        model.nachfrageErfuellt = form.nachfrageErfuellt;
-        model.nachfrageAnzahl = form.nachfrageAnzahl;
-        model.nachfrageDauer = form.nachfrageDauer;
-        model.kostenlenkungAndere = form.kostenlenkung.kostenlenkungAndere;
-        model.welcheKostenlenkungsmassnahmen = form.kostenlenkung.welcheKostenlenkungsmassnahmen;
-
-        return model;
     }
 
     public ngOnInit(): void {
@@ -111,51 +102,11 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
     }
 
     private setupForm(): void {
-        this.form$ = this.gemeindeKennzahlenService.getGemeindeKennzahlenAntrag()
-            .pipe(
-                map(antrag => {
-                    return this.fb.group({
-                        id: [antrag.id],
-                        version: [antrag.version],
-                        nachfrageErfuellt: [antrag.nachfrageErfuellt, [this.requiredIfAbschliessen()]],
-                        nachfrageAnzahl: [antrag.nachfrageAnzahl, this.requiredIfAbschliessen()],
-                        nachfrageDauer: [antrag.nachfrageDauer, this.requiredIfAbschliessen()],
-                        kostenlenkung: this.fb.group({
-                            kostenlenkungAndere: [antrag.kostenlenkungAndere],
-                            welcheKostenlenkungsmassnahmen: [antrag.welcheKostenlenkungsmassnahmen],
-                        }, {validators: this.kostenlenkungValidationIfAbschliessen()}),
-                    });
-                }),
-            );
+        this.antrag$ = this.gemeindeKennzahlenService.getGemeindeKennzahlenAntrag();
     }
 
-    private requiredIfAbschliessen(): ValidatorFn {
-        return (control: AbstractControl): ValidationErrors | null => {
-            return this.validationTiggered && EbeguUtil.isNullOrUndefined(control.value) ? {required: true} : null;
-        };
-    }
-
-    private kostenlenkungValidationIfAbschliessen(): ValidatorFn {
-        return (control: FormGroup): ValidationErrors | null => {
-            const errors: {
-                kostenlenkungAndere?: { required: boolean },
-                welcheKostenlenkungsmassnahmen?: { required: boolean },
-            } = {};
-            const isKostenlenkungAndere = control.get('kostenlenkungAndere').value;
-            if (EbeguUtil.isNullOrUndefined(isKostenlenkungAndere)) {
-                errors.kostenlenkungAndere = {required: true};
-            } else if (isKostenlenkungAndere === true && EbeguUtil.isNullOrUndefined(control.get(
-                'welcheKostenlenkungsmassnahmen').value)) {
-                errors.welcheKostenlenkungsmassnahmen = {required: true};
-            }
-            const hasErrors = EbeguUtil.isNotNullOrUndefined(errors.kostenlenkungAndere) || EbeguUtil.isNullOrUndefined(
-                errors.welcheKostenlenkungsmassnahmen);
-            return this.validationTiggered && hasErrors ? errors : null;
-        };
-    }
-
-    public save(form: any): void {
-        this.gemeindeKennzahlenService.saveGemeindeKennzahlen(GemeindeKennzahlenFormularComponent.formToModel(form))
+    public save(antrag: TSGemeindeKennzahlen): void {
+        this.gemeindeKennzahlenService.saveGemeindeKennzahlen(antrag)
             .subscribe(() => this.handleSaveSuccess());
     }
 
@@ -164,27 +115,15 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
         this.errorService.addMesageAsInfo(this.translate.instant('SAVED'));
     }
 
-    public abschliessen(form: FormGroup): void {
+    public abschliessen(antrag: TSGemeindeKennzahlen): void {
         this.validationTiggered = true;
-        this.triggerFormValidation(form);
 
-        if (!form.valid) {
+        if (!this.form.valid) {
             return;
         }
 
-        this.gemeindeKennzahlenService.gemeindeKennzahlenAbschliessen(GemeindeKennzahlenFormularComponent.formToModel(
-            form.value))
+        this.gemeindeKennzahlenService.gemeindeKennzahlenAbschliessen(antrag)
             .subscribe(() => this.handleSaveSuccess());
     }
 
-    private triggerFormValidation(form: FormGroup): void {
-        for (const key in form.controls) {
-            if (form.get(key) !== null) {
-                form.get(key).markAsTouched();
-                form.get(key).updateValueAndValidity();
-            }
-        }
-        form.markAsTouched();
-        form.updateValueAndValidity();
-    }
 }
