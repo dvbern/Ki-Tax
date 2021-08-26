@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,9 +97,15 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	}
 
 	private boolean antragAlreadyExisting(Gemeinde gemeinde, Gesuchsperiode gesuchsperiode) {
-		boolean hasAntrag = !getGemeindeKennzahlen(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null).isEmpty();
+		boolean hasAntrag = !getGemeindeKennzahlen(gemeinde.getName(),
+				gesuchsperiode.getGesuchsperiodeString(),
+				null,
+				null).isEmpty();
 		if (hasAntrag) {
-			LOG.info("Gemeinde {} already has an antrag in GS {}", gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString());
+			LOG.info(
+					"Gemeinde {} already has an antrag in GS {}",
+					gemeinde.getName(),
+					gesuchsperiode.getGesuchsperiodeString());
 		}
 		return hasAntrag;
 	}
@@ -124,8 +131,25 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	@Override
 	public GemeindeKennzahlen gemeindeKennzahlenAbschliessen(
 			@Nonnull GemeindeKennzahlen gemeindeKennzahlen) {
+		checkRequiredFieldsNotNull(gemeindeKennzahlen);
 		gemeindeKennzahlen.setStatus(GemeindeKennzahlenStatus.ABGESCHLOSSEN);
 		return persistence.merge(gemeindeKennzahlen);
+	}
+
+	private void checkRequiredFieldsNotNull(GemeindeKennzahlen gemeindeKennzahlen) {
+		Preconditions.checkState(
+				gemeindeKennzahlen.getNachfrageErfuellt() != null,
+				"nachfrageErfuellt must not be null");
+		Preconditions.checkState(gemeindeKennzahlen.getNachfrageAnzahl() != null, "nachfrageAnzahl must not be null");
+		Preconditions.checkState(gemeindeKennzahlen.getNachfrageDauer() != null, "nachfrageDauer must not be null");
+		Preconditions.checkState(
+				gemeindeKennzahlen.getKostenlenkungAndere() != null,
+				"kostenlenkungAndere must not be null");
+		if (gemeindeKennzahlen.getKostenlenkungAndere()) {
+			Preconditions.checkState(
+					gemeindeKennzahlen.getWelcheKostenlenkungsmassnahmen() != null,
+					"welcheKostenlenkungsmassnahmen must not be null if kostenlenkungAndere is true");
+		}
 	}
 
 	@Nonnull
