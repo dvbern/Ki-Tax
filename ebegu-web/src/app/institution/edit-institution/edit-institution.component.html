@@ -404,7 +404,7 @@
                                 <p *ngIf="stammdaten.sendMailWennOffenePendenzen"
                                    translate>INSTITUTION_BENACHRICHTIGUNG_PENDENZEN</p>
                                 <p *ngIf="stammdaten.erinnerungMail">
-                                    <a href="mailto:{{stammdaten.erinnerungMail}}">{{stammdaten.erinnerungMail}}</a></p>
+                                    {{'INSTITUTION_ERINNERUNG_MAIL' | translate}}:&nbsp;<a href="mailto:{{stammdaten.erinnerungMail}}">{{stammdaten.erinnerungMail}}</a></p>
                             </div>
                         </div>
                     </div>
