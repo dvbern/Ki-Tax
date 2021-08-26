@@ -429,6 +429,8 @@ export class DVMitteilungListController implements IOnInit {
 
     public canUebergeben(mitteilung: TSMitteilung): boolean {
         return mitteilung.empfaengerTyp !== TSMitteilungTeilnehmerTyp.GESUCHSTELLER &&
+            mitteilung.empfaengerTyp !== TSMitteilungTeilnehmerTyp.INSTITUTION &&
+            mitteilung.empfaengerTyp !== TSMitteilungTeilnehmerTyp.SOZIALDIENST &&
             this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole()) &&
             !mitteilung.isErledigt();
     }
@@ -450,7 +452,7 @@ export class DVMitteilungListController implements IOnInit {
     }
 
     public changeEmpfaenger(): void {
-        if (this.empfaenger.key) {
+        if (this.empfaenger?.key) {
             this.currentMitteilung.institution = this.empfaenger.key;
         }
     }

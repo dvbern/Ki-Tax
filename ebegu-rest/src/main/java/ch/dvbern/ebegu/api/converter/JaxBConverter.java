@@ -5777,7 +5777,6 @@ public class JaxBConverter extends AbstractConverter {
 
 		convertAbstractFieldsToJAX(gemeindeContainer, jaxGemeindeContainer);
 
-		gemeindeContainer.setStatus(jaxGemeindeContainer.getStatus());
 		// Die Gemeinde und die Periode duerfen nie vom Client uebernommen werden
 		gemeindeService.findGemeinde(jaxGemeindeContainer.getGemeinde().getId())
 			.ifPresent(gemeindeContainer::setGemeinde);
@@ -5887,8 +5886,6 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		convertAbstractFieldsToEntity(jaxAngabenGemeinde, angabenGemeinde);
-
-		angabenGemeinde.setStatus(jaxAngabenGemeinde.getStatus());
 
 		// A: Allgemeine Angaben
 		angabenGemeinde.setBedarfBeiElternAbgeklaert(jaxAngabenGemeinde.getBedarfBeiElternAbgeklaert());

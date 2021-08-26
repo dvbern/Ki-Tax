@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.api.resource.gemeindeantrag;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,7 +27,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -34,31 +34,34 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxLastenausgleichTagesschulenStatusHistory;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.authentication.AuthorizerImpl;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeService;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistoryService;
+import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleDokumentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -87,6 +90,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 	@Inject
 	private LastenausgleichTagesschuleAngabenGemeindeService angabenGemeindeService;
+
+	@Inject
+	private LastenausgleichTagesschuleDokumentService latsDokumentService;
 
 	@Inject
 	private JaxBConverter converter;
@@ -233,20 +239,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		final LastenausgleichTagesschuleAngabenGemeindeContainer converted =
 			getConvertedLastenausgleichTagesschuleAngabenGemeindeContainer(latsGemeindeContainerJax);
 
-		try {
-			final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
+		final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
 				angabenGemeindeService.lastenausgleichTagesschuleGemeindeFormularAbschliessen(converted);
 
-			return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
-		} catch (EJBTransactionRolledbackException e) {
-			if (e.getCause() instanceof IllegalArgumentException || e.getCause() instanceof IllegalStateException) {
-				throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
-					.entity(e.getMessage())
-					.type(MediaType.TEXT_PLAIN)
-					.build());
-			}
-			throw e;
-		}
+		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
+
 	}
 
 	@SuppressWarnings("PMD.PreserveStackTrace")
@@ -273,19 +270,10 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		final LastenausgleichTagesschuleAngabenGemeindeContainer converted =
 			getConvertedLastenausgleichTagesschuleAngabenGemeindeContainer(latsGemeindeContainerJax);
 
-		try {
-			final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
+		final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
 				angabenGemeindeService.lastenausgleichTagesschuleGemeindeEinreichen(converted);
-			return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
-		} catch (EJBTransactionRolledbackException e) {
-			if (e.getCause() instanceof IllegalArgumentException) {
-				throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
-					.entity(e.getMessage())
-					.type(MediaType.TEXT_PLAIN)
-					.build());
-			}
-			throw new EJBTransactionRolledbackException(e.getMessage(), e);
-		}
+		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
+
 	}
 
 	@ApiOperation(
@@ -363,7 +351,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 	@ApiOperation(
 		value = "Setzt ein LastenausgleichTagesschuleAngabenGemeinde von Abgeschlossen auf In Bearbeitung Gemeinde",
-		response = Void.class)
+		response = JaxLastenausgleichTagesschuleAngabenGemeindeContainer.class)
 	@PUT
 	@Path("/falsche-angaben")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -496,5 +484,40 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		Objects.requireNonNull(containerJaxId.getId());
 
 		return angabenGemeindeService.calculateErwarteteBetreuungsstunden(containerJaxId.getId());
+	}
+
+
+	@ApiOperation(
+		value = "Erstellt ein Docx Dokument zum Lastenausgleich Tagesschulen für den übergebenen Gemeindeantrag",
+		response = Response.class)
+	@POST
+	@Path("/docx-erstellen/{containerJaxId}/{sprache}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Response dokumentErstellen(
+		@Nonnull @NotNull @PathParam("containerJaxId") JaxId containerJaxId,
+		@Nonnull @PathParam("sprache") Sprache sprache,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(containerJaxId);
+		Objects.requireNonNull(containerJaxId.getId());
+
+		byte[] document;
+		document = latsDokumentService.createDocx(containerJaxId.getId(), sprache);
+
+		if (document.length > 0) {
+			try {
+				return RestUtil.buildDownloadResponse(true, ".docx",
+					"application/octet-stream", document);
+
+			} catch (IOException e) {
+				throw new EbeguRuntimeException("dokumentErstellen", "error occured while building response", e);
+			}
+		}
+
+		throw new EbeguRuntimeException("dokumentErstellen", "Lats Template has no content");
+
 	}
 }

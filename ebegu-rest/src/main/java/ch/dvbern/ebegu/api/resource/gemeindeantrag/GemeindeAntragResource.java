@@ -29,19 +29,19 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.dtos.JaxPaginationDTO;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxGemeindeAntrag;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
@@ -54,7 +54,6 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
@@ -132,18 +131,15 @@ public class GemeindeAntragResource {
 
 		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJaxId);
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId).
-			orElseThrow(() -> new EbeguEntityNotFoundException(
-				"createAllGemeindeAntraege",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				gesuchsperiodeId));
+				orElseThrow(() -> new EbeguEntityNotFoundException(
+						"createAllGemeindeAntraege",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+						gesuchsperiodeId));
 
-		try {
-			final List<GemeindeAntrag> gemeindeAntragList =
+		final List<GemeindeAntrag> gemeindeAntragList =
 				gemeindeAntragService.createAllGemeindeAntraege(gesuchsperiode, gemeindeAntragTyp);
-			return converter.gemeindeAntragListToJax(gemeindeAntragList);
-		} catch (EntityExistsException e) {
-			throw new WebApplicationException(e, Status.CONFLICT);
-		}
+		return converter.gemeindeAntragListToJax(gemeindeAntragList);
+
 	}
 
 	@ApiOperation(
@@ -209,13 +205,9 @@ public class GemeindeAntragResource {
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				gemeindeId));
 
-		try {
-			final GemeindeAntrag gemeindeAntrag =
+		final GemeindeAntrag gemeindeAntrag =
 				gemeindeAntragService.createGemeindeAntrag(gemeinde, gesuchsperiode, gemeindeAntragTyp);
-			return converter.gemeindeAntragToJax(gemeindeAntrag);
-		} catch (EntityExistsException e) {
-			throw new WebApplicationException(e, Status.CONFLICT);
-		}
+		return converter.gemeindeAntragToJax(gemeindeAntrag);
 	}
 
 	@ApiOperation("Gibt alle Gemeindeanträge zurück, die die Benutzerin sehen kann")
@@ -226,20 +218,96 @@ public class GemeindeAntragResource {
 		SACHBEARBEITER_INSTITUTION, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_BG,
 		SACHBEARBEITER_BG,
 		SACHBEARBEITER_FERIENBETREUUNG, ADMIN_FERIENBETREUUNG })
-	public List<JaxGemeindeAntrag> getAllGemeindeAntraege(
+	public JaxPaginationDTO<JaxGemeindeAntrag> getAllGemeindeAntraege(
 		@Nullable @QueryParam("gemeinde") String gemeinde,
 		@Nullable @QueryParam("periode") String periode,
 		@Nullable @QueryParam("typ") String typ,
 		@Nullable @QueryParam("status") String status,
-		@Nullable @QueryParam("timestampMutiert") String timestampMutiert
+		@Nullable @QueryParam("timestampMutiert") String timestampMutiert,
+		@Nonnull @QueryParam("paginationStart") String paginationStart,
+		@Nonnull @QueryParam("paginationNumber") String paginationNumber,
+		@Nullable @QueryParam("sortPredicate") String sortPredicate,
+		@Nullable @QueryParam("sortReverse") String sortReverse
 	) {
-		return converter.gemeindeAntragListToJax(
-			(List<GemeindeAntrag>) gemeindeAntragService.getGemeindeAntraege(
-				gemeinde,
-				periode,
-				typ,
-				status,
-				timestampMutiert));
+
+		int paginationStartInt;
+		int paginationNumberInt;
+
+		try {
+			paginationStartInt = Integer.parseInt(paginationStart);
+		} catch (NumberFormatException e) {
+			throw new BadRequestException("bad format of paginationStart", e);
+		}
+		try {
+			paginationNumberInt = Integer.parseInt(paginationNumber);
+		} catch (NumberFormatException e) {
+			throw new BadRequestException("bad format of paginationNumber", e);
+		}
+		if (sortReverse != null && !(sortReverse.equals("true") || sortReverse.equals("false"))) {
+			throw new BadRequestException("bad format of sortReverse");
+		}
+
+		List<GemeindeAntrag> gemeindeAntraege = (List<GemeindeAntrag>) gemeindeAntragService.getGemeindeAntraege(
+			gemeinde,
+			periode,
+			typ,
+			status,
+			timestampMutiert);
+
+		/*
+		  Since we are fetching the data from different tables, there is no way to do pagination on DB side.
+		  We have to fetch all data but this way, we don't have to send all data to client
+		 */
+		List<GemeindeAntrag> gemeindeAntraegeSorted = sort(sortPredicate, Boolean.parseBoolean(sortReverse), gemeindeAntraege);
+		List<GemeindeAntrag> gemeindeAntraegePaginated = paginate(paginationStartInt, paginationNumberInt, gemeindeAntraegeSorted);
+
+		List<JaxGemeindeAntrag> jaxGemeindeAntraege = converter.gemeindeAntragListToJax(gemeindeAntraegePaginated);
+		JaxPaginationDTO<JaxGemeindeAntrag> jaxGemeindeAntragPaginationDTO = new JaxPaginationDTO<JaxGemeindeAntrag>();
+		jaxGemeindeAntragPaginationDTO.setResultList(jaxGemeindeAntraege);
+		jaxGemeindeAntragPaginationDTO.setTotalCount(gemeindeAntraege.size());
+
+		return jaxGemeindeAntragPaginationDTO;
+	}
+
+	@Nonnull
+	private List<GemeindeAntrag> sort(
+		@Nullable String sortPredicate,
+		@Nullable Boolean sortReverse,
+		List<GemeindeAntrag> gemeindeAntraege
+	) {
+		if (sortPredicate == null) {
+			return gemeindeAntraege;
+		}
+		int reverseMultiplicator = (sortReverse != null && sortReverse) ? 1 : -1;
+		return gemeindeAntraege.stream().sorted((a, b) -> {
+			switch (sortPredicate) {
+			case "status":
+				return a.getStatusString().compareTo(b.getStatusString()) * reverseMultiplicator;
+			case "gemeinde":
+				return a.getGemeinde().getName().compareTo(b.getGemeinde().getName()) * reverseMultiplicator;
+			case "antragTyp":
+				return a.getGemeindeAntragTyp().name().compareTo(b.getGemeindeAntragTyp().name()) * reverseMultiplicator;
+			case "gesuchsperiodeString":
+				return a.getGesuchsperiode().getGesuchsperiodeString().compareTo(b.getGesuchsperiode().getGesuchsperiodeString()) * reverseMultiplicator;
+			case "aenderungsdatum": {
+				if (a.getTimestampMutiert() == null) {
+					return -1 * reverseMultiplicator;
+				}
+				if (b.getTimestampMutiert() == null) {
+					return reverseMultiplicator;
+				}
+				return a.getTimestampMutiert().compareTo(b.getTimestampMutiert()) * reverseMultiplicator;
+			}
+			default:
+				throw new BadRequestException("wrong sortPredicate" + sortPredicate);
+			}
+		}).collect(Collectors.toList());
+	}
+
+	@Nonnull
+	private List<GemeindeAntrag> paginate(int paginationStartInt, int paginationNumberInt, List<GemeindeAntrag> gemeindeAntraege) {
+		int toIndex = Math.min(paginationStartInt + paginationNumberInt, gemeindeAntraege.size());
+		return gemeindeAntraege.subList(paginationStartInt,toIndex);
 	}
 
 	@ApiOperation("Gibt alle Tagesschuleanträge des Gemeinde-Antrags zurück, die für die Benutzerin sichtbar sind")

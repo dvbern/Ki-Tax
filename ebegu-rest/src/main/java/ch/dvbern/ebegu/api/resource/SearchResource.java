@@ -128,12 +128,34 @@ public class SearchResource {
 		@Context HttpServletResponse response) {
 
 		return MonitoringUtil.monitor(SearchResource.class, "getAllPendenzenJA", () -> {
-			Pair<Long, List<Gesuch>> searchResultPair = searchService.searchPendenzen(antragSearch);
-			List<Gesuch> foundAntraege = searchResultPair.getRight();
+			List<Gesuch> foundAntraege = searchService.searchPendenzen(antragSearch);
 
 			List<JaxAntragDTO> antragDTOList = convertAntraegeToDTO(foundAntraege);
-			JaxAntragSearchresultDTO resultDTO = buildResultDTO(antragSearch, searchResultPair, antragDTOList);
+			JaxAntragSearchresultDTO resultDTO = buildResultDTO(antragSearch, antragDTOList);
 			return Response.ok(resultDTO).build();
+		});
+	}
+
+	/**
+	 * Count allen Pendenzen des Jugendamtes zurueck.
+	 */
+	@ApiOperation(value = "Gibt der Count von allen Pendenzen des Jugendamtes zurueck",
+		 response = Long.class)
+	@Nonnull
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/jugendamt/count")
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		SACHBEARBEITER_TS, ADMIN_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
+	public Response countAllPendenzenJA(
+		@Nonnull @NotNull AntragTableFilterDTO antragSearch,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		return MonitoringUtil.monitor(SearchResource.class, "getAllPendenzenJA", () -> {
+			Long count = searchService.countPendenzen(antragSearch);
+			return Response.ok(count).build();
 		});
 	}
 
@@ -185,7 +207,7 @@ public class SearchResource {
 	}
 
 	@ApiOperation(value = "Gibt alle Antraege des eingegebenen Dossiers fuer den eingeloggten Gesuchsteller zurueck.",
-		responseContainer = "List", response = JaxAntragDTO.class)
+		 response = JaxAntragDTO.class)
 	@Nonnull
 	@GET
 	@Consumes(MediaType.WILDCARD)
@@ -229,12 +251,31 @@ public class SearchResource {
 		@Context HttpServletResponse response) {
 
 		return MonitoringUtil.monitor(GesuchResource.class, "searchAntraege", () -> {
-			Pair<Long, List<Gesuch>> searchResultPair = searchService.searchAllAntraege(antragSearch);
-			List<Gesuch> foundAntraege = searchResultPair.getRight();
+			List<Gesuch> foundAntraege = searchService.searchAllAntraege(antragSearch);
 
 			List<JaxAntragDTO> antragDTOList = convertAntraegeToDTO(foundAntraege);
-			JaxAntragSearchresultDTO resultDTO = buildResultDTO(antragSearch, searchResultPair, antragDTOList);
+			JaxAntragSearchresultDTO resultDTO = buildResultDTO(antragSearch, antragDTOList);
 			return Response.ok(resultDTO).build();
+		});
+	}
+
+	@ApiOperation(value = "Count Antraege mit den uebergebenen Suchkriterien/Filtern. Es werden nur Antraege zurueck"
+		+ "gegeben, fuer die der eingeloggte Benutzer berechtigt ist.", response = Long.class)
+	@Nonnull
+	@POST
+	@Path("/search/count")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
+	public Response countAntraege(
+		@Nonnull @NotNull AntragTableFilterDTO antragSearch,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		return MonitoringUtil.monitor(GesuchResource.class, "searchAntraege", () -> {
+			Long count = searchService.countAllAntraege(antragSearch);
+
+			return Response.ok(count).build();
 		});
 	}
 
@@ -255,12 +296,10 @@ public class SearchResource {
 	@Nonnull
 	private JaxAntragSearchresultDTO buildResultDTO(
 		@Nonnull @NotNull AntragTableFilterDTO antragSearch,
-		Pair<Long, List<Gesuch>> searchResultPair,
 		List<JaxAntragDTO> antragDTOList) {
 		JaxAntragSearchresultDTO resultDTO = new JaxAntragSearchresultDTO();
 		resultDTO.setAntragDTOs(antragDTOList);
 		PaginationDTO pagination = antragSearch.getPagination();
-		pagination.setTotalItemCount(searchResultPair.getLeft());
 		resultDTO.setPaginationDTO(pagination);
 		return resultDTO;
 	}

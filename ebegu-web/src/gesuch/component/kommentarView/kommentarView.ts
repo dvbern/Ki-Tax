@@ -25,6 +25,7 @@ import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSDokument} from '../../../models/TSDokument';
 import {TSDokumentGrund} from '../../../models/TSDokumentGrund';
 import {TSGesuch} from '../../../models/TSGesuch';
@@ -299,5 +300,13 @@ export class KommentarViewController implements IController {
 
     public showGeresAbfrage(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.isPersonensucheDisabled) && !this.isPersonensucheDisabled;
+    }
+
+    public getRolesForInternePendenzen(): TSRole[] {
+        return TSRoleUtil.getGemeindeRoles().filter(role => {
+            return role !== TSRole.REVISOR
+            && role !== TSRole.JURIST
+            && role !== TSRole.STEUERAMT;
+        });
     }
 }

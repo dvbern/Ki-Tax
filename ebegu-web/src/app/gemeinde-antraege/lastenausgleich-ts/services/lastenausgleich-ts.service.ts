@@ -19,11 +19,12 @@ import {Injectable} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Observable, ReplaySubject} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
+import {TSSprache} from '../../../../models/enums/TSSprache';
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSLastenausgleichTagesschulenStatusHistory} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
 import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
-import {CONSTANTS, HTTP_ERROR_CODES} from '../../../core/constants/CONSTANTS';
+import {CONSTANTS} from '../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
 
@@ -77,9 +78,6 @@ export class LastenausgleichTSService {
             this.errorService.addMesageAsInfo(this.translate.instant('SAVED'));
             this.next(result);
         }, error => {
-            if (error.status === HTTP_ERROR_CODES.CONFLICT) {
-                this.errorService.addMesageAsError(this.translate.instant('ERROR_DATA_CHANGED'));
-            }
             LOG.error(error);
         });
     }
@@ -195,6 +193,15 @@ export class LastenausgleichTSService {
         Observable<number> {
         return this.http.get<number>(
             `${this.API_BASE_URL}/erwartete-betreuungsstunden/${encodeURIComponent(antrag.id)}`,
+        );
+    }
+
+    public latsDocxErstellen(antrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer, sprache: TSSprache):
+        Observable<any> {
+        return this.http.post(
+            `${this.API_BASE_URL}/docx-erstellen/${encodeURIComponent(antrag.id)}/${sprache}`,
+            {},
+            {responseType: 'blob'}
         );
     }
 }

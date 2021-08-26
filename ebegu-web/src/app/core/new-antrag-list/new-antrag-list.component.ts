@@ -59,7 +59,7 @@ import {DVPaginationEvent} from '../../shared/interfaces/DVPaginationEvent';
 import {StateStoreService} from '../../shared/services/state-store.service';
 import {ErrorService} from '../errors/service/ErrorService';
 import {LogFactory} from '../logging/LogFactory';
-import {BenutzerRS} from '../service/benutzerRS.rest';
+import {BenutzerRSX} from '../service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
 
@@ -94,6 +94,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
      * 'periode',
      * 'aenderungsdatum',
      * 'status',
+     * 'internePendenz',
      * 'dokumenteHochgeladen',
      * 'angebote',
      * 'institutionen',
@@ -163,7 +164,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
      * otherwise 0
      */
     @Input()
-    public totalItems: number = 0;
+    public totalItems: number;
 
     /**
      * Hides pagination
@@ -273,10 +274,10 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly translate: TranslateService,
         private readonly errorService: ErrorService,
-        private readonly benutzerRS: BenutzerRS,
         private readonly transitionService: TransitionService,
         private readonly stateStore: StateStoreService,
-        private readonly uiRouterGlobals: UIRouterGlobals
+        private readonly uiRouterGlobals: UIRouterGlobals,
+        private readonly benutzerRS: BenutzerRSX,
     ) {
     }
 
@@ -340,7 +341,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     private initSort(): void {
         // tslint:disable-next-line:early-exit
         if (this.stateStoreId && this.stateStore.has(this.sortId)) {
-            const stored = this.stateStore.get(this.sortId) as {predicate?: string, reverse?: boolean};
+            const stored = this.stateStore.get(this.sortId) as { predicate?: string, reverse?: boolean };
             this.sort.predicate = stored.predicate;
             this.sort.reverse = stored.reverse;
             this.matSort.active = stored.predicate;
@@ -377,8 +378,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
 
     private initFilter(fromStore: boolean = false): void {
         this.filterPredicate = (fromStore && this.filterId && this.stateStore.has(this.filterId)) ?
-                this.stateStore.get(this.filterId) :
-                {...this.initialFilter};
+            this.stateStore.get(this.filterId) :
+            {...this.initialFilter};
         this.filterChange.emit(this.filterPredicate);
     }
 
@@ -406,7 +407,6 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         const dataToLoad$ = this.data$ ?
             this.data$ :
             from(this.searchRS.searchAntraege(body)).pipe(map((result: TSAntragSearchresultDTO) => {
-                this.totalItems = result.totalResultSize;
                 return result.antragDTOs.map(antragDto => {
                     return {
                         fallNummer: antragDto.fallNummer,
@@ -443,6 +443,23 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             this.translate.get('DATA_RETRIEVAL_ERROR', error).subscribe(message => {
                 this.errorService.addMesageAsError(message);
             }, translateError => console.error('Could not load translation', translateError));
+        });
+
+        this.loadTotalCount(body);
+    }
+
+    // TODO: Doctor: Refactor totalItems into Observable for smoother subscription handling
+    private loadTotalCount(body: {
+        search: { predicateObject: DVAntragListFilter };
+        pagination: { number: any; start: number };
+        sort: { predicate?: string; reverse?: boolean }
+    }): void {
+        if (!EbeguUtil.isNullOrUndefined(this.data$)) {
+            return;
+        }
+        this.searchRS.countAntraege(body).then(result => {
+            this.totalItems = result;
+            this.changeDetectorRef.markForCheck();
         });
     }
 

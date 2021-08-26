@@ -41,15 +41,29 @@ export class SearchRS implements IEntityRS {
             .then(response => this.toAntragSearchresult(response));
     }
 
+    public countAntraege(antragSearch: any): IPromise<number> {
+        return this.$http.post(`${this.serviceURL}/search/count`, antragSearch)
+            .then((response: any) => {
+                 return response.data;
+            });
+    }
+
     public getPendenzenList(antragSearch: any): IPromise<TSAntragSearchresultDTO> {
         return this.$http.post(`${this.serviceURL}/jugendamt/`, antragSearch)
             .then(response => this.toAntragSearchresult(response));
     }
 
+    public countPendenzenList(antragSearch: any): IPromise<number> {
+        return this.$http.post(`${this.serviceURL}/jugendamt/count`, antragSearch)
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
     private toAntragSearchresult(response: IHttpResponse<any>): TSAntragSearchresultDTO {
         const tsAntragDTOS = this.ebeguRestUtil.parseAntragDTOs(response.data.antragDTOs);
 
-        return new TSAntragSearchresultDTO(tsAntragDTOS, response.data.paginationDTO.totalItemCount);
+        return new TSAntragSearchresultDTO(tsAntragDTOS);
     }
 
     public getAntraegeOfDossier(dossierId: string): IPromise<Array<TSAntragDTO>> {

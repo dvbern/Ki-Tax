@@ -466,6 +466,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
 			datumVon);
 		predicatesToUse.add(predicateEnd);
+
+		Predicate predicateGesuchsperiode = root.get(VerfuegungZeitabschnitt_.verfuegung)
+				.get(Verfuegung_.betreuung)
+				.get(Betreuung_.kind)
+				.get(KindContainer_.gesuch)
+				.get(Gesuch_.gesuchsperiode).in(relevanteGesuchsperioden);
+		predicatesToUse.add(predicateGesuchsperiode);
+
 		// Nur neueste Verfuegung jedes Falls beachten
 		Predicate predicateGueltig = builder.equal(joinBetreuung.get(Betreuung_.gueltig), Boolean.TRUE);
 		predicatesToUse.add(predicateGueltig);
@@ -578,19 +586,18 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
 		List<KantonDataRow> reportData = getReportDataKanton(datumVon, datumBis, locale);
-		ExcelMergerDTO excelMergerDTO =
-			kantonExcelConverter.toExcelMergerDTO(reportData, locale, datumVon, datumBis);
 
-		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		kantonExcelConverter.applyAutoSize(sheet);
+		final XSSFSheet xsslSheet =
+			(XSSFSheet) kantonExcelConverter.mergeHeaderFieldsStichtag(
+				reportData,
+				sheet,
+				locale,
+				datumVon,
+				datumBis
+				);
 
-		byte[] bytes = createWorkbook(workbook);
-
-		return fileSaverService.save(
-			bytes,
-			getFileName(reportVorlage, locale),
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
+		final RowFiller rowFiller = fillAndMergeRows(reportVorlage, xsslSheet, reportData);
+		return saveExcelDokument(reportVorlage, rowFiller, locale);
 	}
 
 	// MitarbeterInnen
@@ -1864,6 +1871,27 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			locale
 		);
 		gesuchstellerKinderBetreuungExcelConverter.applyAutoSize(sheet);
+
+		return rowFiller;
+	}
+
+	@Nonnull
+	private RowFiller fillAndMergeRows(
+		ReportVorlage reportResource,
+		XSSFSheet sheet,
+		List<KantonDataRow> reportData
+	) {
+
+		RowFiller rowFiller = RowFiller.initRowFiller(
+			sheet,
+			MergeFieldProvider.toMergeFields(reportResource.getMergeFields()),
+			Math.max(reportData.size(), 1));
+
+		kantonExcelConverter.mergeRows(
+			rowFiller,
+			reportData
+		);
+		kantonExcelConverter.applyAutoSize(sheet);
 
 		return rowFiller;
 	}

@@ -291,7 +291,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
                 this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
                 this.errorService.clearAll();
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
-            }, err => this.handleSaveError(err));
+            }, err => this.handleSaveErrors(err));
     }
 
     private formToObject(): TSFerienbetreuungAngabenAngebot {
@@ -316,13 +316,13 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
     public async onAbschliessen(): Promise<void> {
         if (await this.checkReadyForAbschliessen()) {
             this.ferienbetreuungService.angebotAbschliessen(this.container.id, this.formToObject())
-                .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
+                .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveErrors(error));
         }
     }
 
     public onFalscheAngaben(): void {
         this.ferienbetreuungService.falscheAngabenAngebot(this.container.id, this.angebot)
-            .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
+            .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveErrors(error));
     }
 
     // tslint:disable-next-line:cognitive-complexity

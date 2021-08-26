@@ -17,15 +17,14 @@
 
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {StateService} from '@uirouter/core';
-import {BehaviorSubject, from} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {BehaviorSubject, Subject} from 'rxjs';
+import {filter, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
 import {SearchRS} from '../../../../../gesuch/service/searchRS.rest';
 import {TSAntragStatus} from '../../../../../models/enums/TSAntragStatus';
 import {TSAntragDTO} from '../../../../../models/TSAntragDTO';
-import {TSAntragSearchresultDTO} from '../../../../../models/TSAntragSearchresultDTO';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../../../core/logging/LogFactory';
 import {DVAntragListFilter} from '../../../../shared/interfaces/DVAntragListFilter';
@@ -64,6 +63,8 @@ export class PendenzenListViewComponent {
 
     public initialFilter: DVAntragListFilter = {};
 
+    private readonly unsubscribe$ = new Subject<void>();
+
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly $state: StateService,
@@ -74,20 +75,34 @@ export class PendenzenListViewComponent {
     }
 
     public ngOnInit(): void {
-        this.authServiceRS.principal$.subscribe(principal => {
-            this.initialFilter.verantwortlicherGemeinde = principal.getFullName();
-            this.search.predicateObject = this.initialFilter;
-            this.loadData();
-        }, error => {
-            LOG.error(error);
-        });
+        this.authServiceRS.principal$
+            .pipe(filter(principal => !!principal))
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(principal => {
+                this.initialFilter.verantwortlicherGemeinde = principal.getFullName();
+                this.search.predicateObject = this.initialFilter;
+                this.countData();
+                this.loadData();
+            }, error => {
+                LOG.error(error);
+            });
         this.initHasGemeindenInStatusAngemeldet();
+    }
+
+    public ngOnDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
+    }
+
+    private countData(): void {
+        this.searchRS.countPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort}).then(
+            response => this.pagination.totalItemCount = response ? response : 0,
+        );
     }
 
     private loadData(): void {
         this.searchRS.getPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort})
             .then(response => {
-                this.pagination.totalItemCount = response.totalResultSize ? response.totalResultSize : 0;
                 // we lose the "this" if we don't map here
                 this.data$.next(response.antragDTOs.map(antragDto => {
                     return {
@@ -116,22 +131,11 @@ export class PendenzenListViewComponent {
             });
     }
 
-    public onFilterChange(filter: DVAntragListFilter): void {
+    public onFilterChange(listFilter: DVAntragListFilter): void {
         this.search.predicateObject = {
-            ...filter,
+            ...listFilter,
         };
         this.loadData();
-    }
-
-    public passFilterToServer(tableFilterState: any): void {
-        LOG.debug('Triggering ServerFiltering with Filter Object', tableFilterState);
-        from(this.searchRS.getPendenzenList(tableFilterState))
-            .pipe(tap((response: TSAntragSearchresultDTO) => {
-                this.pagination.totalItemCount = response.totalResultSize ? response.totalResultSize : 0;
-            }), map(response => response.antragDTOs.map(antragDTO => {
-                return antragDTO as DVAntragListItem;
-            })));
-
     }
 
     public editpendenzJA(pendenz: TSAntragDTO, event: any): void {

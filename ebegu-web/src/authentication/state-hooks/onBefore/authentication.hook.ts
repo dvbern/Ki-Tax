@@ -51,20 +51,20 @@ function redirectToLogin(transition: Transition): HookResult {
     const $state = transition.router.stateService;
 
     return authService.principal$
-        .pipe(
-            take(1),
-            map(principal => {
-                LOG.debug('checking authentication of principal', principal);
+    .pipe(
+        take(1),
+        map(principal => {
+            LOG.debug('checking authentication of principal', principal);
 
-                if (!principal) {
-                    LOG.debug('redirecting to login page');
+            if (!principal) {
+                LOG.debug('redirecting to login page');
 
-                    return $state.target('authentication.login', undefined, {location: false});
-                }
+                return $state.target('authentication.login', undefined, {location: false});
+            }
 
-                // continue the original transition
-                return true;
-            }),
-        )
-        .toPromise();
+            // continue the original transition
+            return true;
+        }),
+    )
+    .toPromise();
 }

@@ -35,6 +35,7 @@ import 'angular-utf8-base64';
 import 'ng-file-upload';
 import 'raven-js';
 import 'raven-js/plugins/angular';
+import {BetreuungMonitoringRS} from '../../admin/service/betreuungMonitoringRS.rest';
 // tslint:enable-no-import-side-effect
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
@@ -123,6 +124,7 @@ import {DVValueinput} from './directive/dv-valueinput/dv-valueinput';
 import {DvVerantwortlicherselect} from './directive/dv-verantwortlicherselect/dv-verantwortlicherselect';
 import {DvSearchListComponent} from './dv-search-list/dv-search-list.component';
 import {ERRORS_JS_MODULE} from './errors/errors';
+import {ErrorServiceX} from './errors/service/ErrorServiceX';
 import {arrayToString} from './filters/array-to-string.filter';
 import {gemeindenToString} from './filters/gemeinden-to-string.filter';
 import {NewAntragListComponent} from './new-antrag-list/new-antrag-list.component';
@@ -130,9 +132,9 @@ import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest'
 import {AdresseRS} from './service/adresseRS.rest';
 import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
 import {BatchJobRS} from './service/batchRS.rest';
-import {BenutzerRS} from './service/benutzerRS.rest';
-import {BetreuungMonitoringRS} from '../../admin/service/betreuungMonitoringRS.rest';
+import {BenutzerRSX} from './service/benutzerRSX.rest';
 import {BetreuungRS} from './service/betreuungRS.rest';
+import {BroadcastService} from './service/broadcast.service';
 import {DownloadRS} from './service/downloadRS.rest';
 import {DVsTPersistService} from './service/dVsTPersistService';
 import {ErwerbspensumRS} from './service/erwerbspensumRS.rest';
@@ -158,6 +160,7 @@ import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
 import {VerfuegungRS} from './service/verfuegungRS.rest';
 import {HttpVersionInterceptor} from './service/version/HttpVersionInterceptor';
+import {VersionService} from './service/version/version.service';
 import {WizardStepXRS} from './service/wizardStepXRS.rest';
 
 const dependencies = [
@@ -225,7 +228,6 @@ export const CORE_JS_MODULE = angular
     .service('BatchJobRS', BatchJobRS)
     .service('BetreuungRS', BetreuungRS)
     .service('GesuchsperiodeRS', GesuchsperiodeRS)
-    .service('BenutzerRS', BenutzerRS)
     .service('VerfuegungRS', VerfuegungRS)
     .service('DokumenteRS', DokumenteRS)
     .service('UploadRS', UploadRS)
@@ -248,6 +250,10 @@ export const CORE_JS_MODULE = angular
     .factory('I18nServiceRSRest', downgradeInjectable(I18nServiceRSRest) as any)
     .factory('SozialdienstRS', downgradeInjectable(SozialdienstRS) as any)
     .factory('InternePendenzenRS', downgradeInjectable(InternePendenzenRS) as any)
+    .factory('VersionService', downgradeInjectable(VersionService) as any)
+    .factory('BroadcastService', downgradeInjectable(BroadcastService) as any)
+    .factory('BenutzerRS', downgradeInjectable(BenutzerRSX) as any)
+    .factory('ErrorServiceX', downgradeInjectable(ErrorServiceX) as any)
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())

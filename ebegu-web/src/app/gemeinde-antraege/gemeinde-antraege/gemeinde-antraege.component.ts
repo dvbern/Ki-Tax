@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {HttpErrorResponse} from '@angular/common/http';
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
@@ -31,23 +30,26 @@ import {BehaviorSubject, combineLatest, from, NEVER, Observable, of} from 'rxjs'
 import {catchError, concatMap, filter, map, mergeMap, tap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {TSPagination} from '../../../models/dto/TSPagination';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
+import {TSExceptionReport} from '../../../models/TSExceptionReport';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
 import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
-import {HTTP_ERROR_CODES} from '../../core/constants/CONSTANTS';
-import {ErrorService} from '../../core/errors/service/ErrorService';
+import {ErrorServiceX} from '../../core/errors/service/ErrorServiceX';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
 import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
 import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
+import {DVPaginationEvent} from '../../shared/interfaces/DVPaginationEvent';
 import {GemeindeAntragService} from '../services/gemeinde-antrag.service';
 
 const LOG = LogFactory.createLog('GemeindeAntraegeComponent');
@@ -72,13 +74,17 @@ export class GemeindeAntraegeComponent implements OnInit {
         'institutionen',
         'verantwortlicheTS',
         'verantwortlicheBG',
+        'internePendenz'
     ];
 
     public antragList$: Observable<DVAntragListItem[]>;
     public gesuchsperioden: TSGesuchsperiode[];
     public formGroup: FormGroup;
-    public totalItems: number;
+    public totalItems = 0;
     public gemeinden: TSGemeinde[];
+
+    public pagination: TSPagination = new TSPagination();
+    private readonly paginationChangedSubj = new BehaviorSubject<TSPagination>(this.pagination);
 
     private readonly filterDebounceSubject: BehaviorSubject<DVAntragListFilter> =
         new BehaviorSubject<DVAntragListFilter>({});
@@ -99,7 +105,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         private readonly gesuchsperiodenService: GesuchsperiodeRS,
         private readonly fb: FormBuilder,
         private readonly $state: StateService,
-        private readonly errorService: ErrorService,
+        private readonly errorService: ErrorServiceX,
         private readonly translate: TranslateService,
         private readonly cd: ChangeDetectorRef,
         private readonly wizardStepXRS: WizardStepXRS,
@@ -124,14 +130,22 @@ export class GemeindeAntraegeComponent implements OnInit {
     }
 
     private loadAntragList(): void {
-        this.antragList$ = combineLatest([this.filterDebounceSubject, this.sortDebounceSubject]).pipe(
-            mergeMap(filterAndSort => this.gemeindeAntragService.getGemeindeAntraege(filterAndSort[0], filterAndSort[1])
-                .pipe(catchError(() => this.translate.get('DATA_RETRIEVAL_ERROR').pipe(
+        this.antragList$ = combineLatest([
+            this.filterDebounceSubject,
+            this.sortDebounceSubject,
+            this.paginationChangedSubj.asObservable()
+        ]).pipe(
+            mergeMap(filterSortAndPag => this.gemeindeAntragService.getGemeindeAntraege(
+                filterSortAndPag[0],
+                filterSortAndPag[1],
+                filterSortAndPag[2].toPaginationDTO()
+            ).pipe(catchError(() => this.translate.get('DATA_RETRIEVAL_ERROR').pipe(
                     tap(msg => this.errorService.addMesageAsError(msg)),
-                    mergeMap(() => of([] as TSGemeindeAntrag[])),
+                    mergeMap(() => of(new TSPaginationResultDTO<TSGemeindeAntrag>())),
                 )))),
-            map(gemeindeAntraege => {
-                return gemeindeAntraege.map(antrag => {
+            tap(dto => this.totalItems = dto.totalResultSize),
+            map(dto => {
+                return dto.resultList.map(antrag => {
                     return {
                         antragId: antrag.id,
                         gemeinde: antrag.gemeinde.name,
@@ -142,7 +156,6 @@ export class GemeindeAntraegeComponent implements OnInit {
                     };
                 });
             }),
-            tap(gemeindeAntraege => this.totalItems = gemeindeAntraege.length),
         );
     }
 
@@ -158,6 +171,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                 },
                 err => {
                     const msg = this.translate.instant('ERR_GEMEINDEN_LADEN');
+                    this.errorService.clearAll();
                     this.errorService.addMesageAsError(msg);
                     LOG.error(err);
                 },
@@ -169,12 +183,13 @@ export class GemeindeAntraegeComponent implements OnInit {
             this.triedSending = true;
             return;
         }
+        this.errorService.clearAll();
         this.gemeindeAntragService.createAllAntrage(this.formGroup.value).subscribe(result => {
             this.loadAntragList();
             this.cd.markForCheck();
             this.errorService.addMesageAsInfo(this.translate.instant('ANTRAEGE_ERSTELLT', {amount: result.length}));
-        }, err => {
-            this.handleCreateAntragError(err);
+        }, (err: TSExceptionReport[]) => {
+            this.handleCreateAntragErrors(err);
         });
     }
 
@@ -193,10 +208,12 @@ export class GemeindeAntraegeComponent implements OnInit {
         ).subscribe(() => {
                 this.loadAntragList();
                 this.cd.markForCheck();
+            // tslint:disable-next-line:no-identical-functions
             }, err => {
                 const msg = this.translate.instant('DELETE_ANTRAEGE_ERROR');
+                this.errorService.clearAll();
                 this.errorService.addMesageAsError(msg);
-                console.error(err);
+                LOG.error(err);
             });
     }
 
@@ -230,7 +247,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                     this.formGroup.get('antragTyp').setValue(this.types[0]);
                 }
             }, error => {
-                console.error(error);
+                LOG.error(error);
             });
 
     }
@@ -251,23 +268,15 @@ export class GemeindeAntraegeComponent implements OnInit {
             this.triedSending = true;
             return;
         }
+        this.errorService.clearAll();
         // tslint:disable-next-line:no-identical-functions
         this.gemeindeAntragService.createAntrag(this.formGroup.value).subscribe(() => {
             this.loadAntragList();
             this.cd.markForCheck();
             this.errorService.addMesageAsInfo(this.translate.instant('ANTRAG_ERSTELLT'));
         }, err => {
-            this.handleCreateAntragError(err);
+            this.handleCreateAntragErrors(err);
         });
-    }
-
-    private handleCreateAntragError(error: HttpErrorResponse): void {
-        const errorMessage$ = error.status === HTTP_ERROR_CODES.CONFLICT ?
-            this.translate.get('GEMEINDE_ANTRAG_EXISTS_ERROR') : this.translate.get('CREATE_ANTRAG_ERROR');
-
-        errorMessage$.subscribe(message => {
-            this.errorService.addMesageAsError(message);
-        }, translateError => console.error('Could no translate', translateError));
     }
 
     public navigate(antrag: DVAntragListItem, event: MouseEvent): void {
@@ -290,6 +299,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     }
 
     public onFilterChange(filterChange: DVAntragListFilter): void {
+        this.pagination.start = 0;
         this.filterDebounceSubject.next(filterChange);
     }
 
@@ -321,5 +331,20 @@ export class GemeindeAntraegeComponent implements OnInit {
             filter(principal => !!principal),
             map(() => this.authService.isOneOfRoles(TSRoleUtil.getFerienbetreuungRoles()))
         );
+    }
+
+    public calculatePage(): number {
+        return this.pagination.calculatePage();
+    }
+
+    public onPagination(paginationEvent: DVPaginationEvent): void {
+        this.pagination.number = paginationEvent.pageSize;
+        this.pagination.start = paginationEvent.page * paginationEvent.pageSize;
+
+        this.paginationChangedSubj.next(this.pagination);
+    }
+
+    private handleCreateAntragErrors(errors: TSExceptionReport[]): void {
+        LOG.info(errors.map(err => err.customMessage).join('; '));
     }
 }

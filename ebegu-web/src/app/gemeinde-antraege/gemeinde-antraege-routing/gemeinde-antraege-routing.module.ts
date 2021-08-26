@@ -17,6 +17,7 @@
 
 import {NgModule} from '@angular/core';
 import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {GemeindeAntraegeComponent} from '../gemeinde-antraege/gemeinde-antraege.component';
 
 const states: NgHybridStateDeclaration[] = [
@@ -25,6 +26,9 @@ const states: NgHybridStateDeclaration[] = [
         name: 'gemeindeantrage',
         abstract: true,
         component: GemeindeAntraegeComponent,
+        data: {
+            roles: TSRoleUtil.getGemeindeAntragRoles()
+        }
     },
     {
         name: 'gemeindeantrage.view',

@@ -19,6 +19,7 @@ import {UIRouter, UrlService} from '@uirouter/core';
 import * as angular from 'angular';
 import {APP_JS_MODULE} from './app/app.angularjs.module';
 import {AppModule} from './app/app.module';
+import {initHooks} from './authentication/state-hooks/init-hooks';
 import {environment} from './environments/environment';
 
 (window as any).angular = angular;
@@ -44,6 +45,8 @@ platformBrowserDynamic().bootstrapModule(AppModule).then(platformRef => {
     };
 
     platformRef.injector.get<NgZone>(NgZone).run(startRouter);
+    // TODO: Move to ng-authentication.module once fully migrated
+    initHooks(platformRef);
 })
     .catch(err => console.error('App bootstrap error:', err));
 

@@ -32,13 +32,17 @@ public interface SearchService {
 	 *
 	 * @return Resultatpaar, der erste Wert im Paar ist die Anzahl Resultate, der zweite Wert ist die Resultatliste
 	 */
-	Pair<Long, List<Gesuch>> searchPendenzen(AntragTableFilterDTO antragTableFilterDto);
+	List<Gesuch> searchPendenzen(AntragTableFilterDTO antragTableFilterDto);
+
+	Long countPendenzen(AntragTableFilterDTO antragTableFilterDto);
 
 	/**
 	 * Methode welche jeweils eine bestimmte Menge an Suchresultate fuer die Paginatete Suchtabelle zuruckgibt,
 	 *
 	 * @return Resultatpaar, der erste Wert im Paar ist die Anzahl Resultate, der zweite Wert ist die Resultatliste
 	 */
-	Pair<Long, List<Gesuch>> searchAllAntraege(AntragTableFilterDTO antragTableFilterDto);
+	List<Gesuch> searchAllAntraege(AntragTableFilterDTO antragTableFilterDto);
+
+	Long countAllAntraege(AntragTableFilterDTO antragTableFilterDto);
 
 }

@@ -28,6 +28,7 @@ import javax.enterprise.event.Event;
 import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
+import ch.dvbern.ebegu.enums.ExternalClientInstitutionType;
 import ch.dvbern.ebegu.enums.ExternalClientType;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.outbox.institutionclient.AbstractInstitutionClientEvent;
@@ -69,11 +70,11 @@ public class InstitutionServiceBeanTest {
 	private Event<ExportedEvent> exportedEvent;
 
 	@Nonnull
-	private final ExternalClient client1 = new ExternalClient("1", ExternalClientType.EXCHANGE_SERVICE_USER);
+	private final ExternalClient client1 = new ExternalClient("1", ExternalClientType.EXCHANGE_SERVICE_USER, ExternalClientInstitutionType.EXCHANGE_SERVICE_INSTITUTION);
 	@Nonnull
-	private final ExternalClient client2 = new ExternalClient("2", ExternalClientType.EXCHANGE_SERVICE_USER);
+	private final ExternalClient client2 = new ExternalClient("2", ExternalClientType.EXCHANGE_SERVICE_USER, ExternalClientInstitutionType.EXCHANGE_SERVICE_INSTITUTION);
 	@Nonnull
-	private final ExternalClient client3 = new ExternalClient("3", ExternalClientType.EXCHANGE_SERVICE_USER);
+	private final ExternalClient client3 = new ExternalClient("3", ExternalClientType.EXCHANGE_SERVICE_USER, ExternalClientInstitutionType.EXCHANGE_SERVICE_INSTITUTION);
 
 	@Nonnull
 	private InstitutionExternalClient institutionExternalClient1;
