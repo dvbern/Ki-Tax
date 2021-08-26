@@ -25,7 +25,7 @@
 		</div>
 	</div>
 
-	<form *ngIf="antrag$ | async as antrag">
+	<form *ngIf="antragAndPrincipal$ | async as antragAndPrincipal">
 
 		<div class="max-width-container-750">
 
@@ -43,8 +43,9 @@
 							name="nachfrageErfuellt"
                             #nachfrageErfuellt="ngModel"
 							horizontal
+							[disabled]="isFormDisabledFor(antragAndPrincipal)"
 							required
-							[(ngModel)]="antrag.nachfrageErfuellt">
+							[(ngModel)]="antragAndPrincipal[0].nachfrageErfuellt">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
 						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
 					</mat-radio-group>
@@ -64,7 +65,8 @@
                            #nachfrageAnzahl="ngModel"
 						   id="nachfrageAnzahl_id"
 						   required
-						   [(ngModel)]="antrag.nachfrageAnzahl"
+						   [disabled]="isFormDisabledFor(antragAndPrincipal)"
+						   [(ngModel)]="antragAndPrincipal[0].nachfrageAnzahl"
 						   class="form-control dv-input"/>
 					<dv-error-messages [errorObject]="validationTiggered && nachfrageAnzahl.errors"></dv-error-messages>
 				</mat-form-field>
@@ -82,7 +84,8 @@
 						   name="nachfrageDauer"
                            #nachfrageDauer="ngModel"
 						   required
-						   [(ngModel)]="antrag.nachfrageDauer"
+						   [disabled]="isFormDisabledFor(antragAndPrincipal)"
+						   [(ngModel)]="antragAndPrincipal[0].nachfrageDauer"
 						   class="form-control dv-input"/>
 					<dv-error-messages [errorObject]="validationTiggered && nachfrageDauer.errors"></dv-error-messages>
 				</mat-form-field>
@@ -102,8 +105,9 @@
 							name="kostenlenkungAndere"
 							#kostenlenkungAndere="ngModel"
 							horizontal
+							[disabled]="isFormDisabledFor(antragAndPrincipal)"
 							required
-							[(ngModel)]="antrag.kostenlenkungAndere">
+							[(ngModel)]="antragAndPrincipal[0].kostenlenkungAndere">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
 						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
 					</mat-radio-group>
@@ -121,8 +125,9 @@
 					<input matInput
 						   id="welcheKostenlenkungsmassnahmen_id"
 						   required
-						   [(ngModel)]="antrag.welcheKostenlenkungsmassnahmen"
+						   [(ngModel)]="antragAndPrincipal[0].welcheKostenlenkungsmassnahmen"
 						   name="welcheKostenlenkungsmassnahmen"
+						   [disabled]="isFormDisabledFor(antragAndPrincipal)"
 						   #welcheKostenlenkungsmassnahmen="ngModel"
 						   class="form-control dv-input"/>
 					<dv-error-messages [errorObject]="validationTiggered && welcheKostenlenkungsmassnahmen.errors"></dv-error-messages>
@@ -133,19 +138,20 @@
 
 			<button type="button" class="dv-btn cancel-button"
 					*ngIf="canSeeSaveAndAbschliessen$ | async"
-					(click)="save(antrag)"
+					(click)="save(antragAndPrincipal[0])"
 					[textContent]="'SAVE' | translate">
 			</button>
 			<dv-loading-button
 					*ngIf="canSeeSaveAndAbschliessen$ | async"
 					type="button"
-					(buttonClick)="abschliessen(antrag)">
+					(buttonClick)="abschliessen(antragAndPrincipal[0])">
 				<span translate>ABSCHLIESSEN</span>
 			</dv-loading-button>
 			<dv-loading-button
 					*ngIf="canSeeZurueckAnGemeinde$ | async"
+					(buttonClick)="zurueckAnGemeinde(antragAndPrincipal[0])"
 					type="button">
-				<span translate>ZURUECK_AN_GEMEINDE</span>
+				<span translate>ZURUECK_AN_GEMEINDE_TITLE</span>
 			</dv-loading-button>
 		</div>
 	</form>

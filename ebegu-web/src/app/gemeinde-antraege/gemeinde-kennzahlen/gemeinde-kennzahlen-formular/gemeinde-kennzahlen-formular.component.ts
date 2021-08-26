@@ -15,16 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {
-    FormBuilder,
-    NgForm,
-} from '@angular/forms';
+import {FormBuilder, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {combineLatest, Observable, ReplaySubject, Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSGemeindeKennzahlen} from '../../../../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
+import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {GemeindeKennzahlenService} from '../gemeinde-kennzahlen.service';
@@ -44,7 +42,7 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
 
     public validationTiggered: boolean = false;
     private unsubscribe$: Subject<any> = new Subject<any>();
-    public antrag$: Observable<TSGemeindeKennzahlen>;
+    public antragAndPrincipal$: Observable<[TSGemeindeKennzahlen, (TSBenutzer | null)]>;
 
     public constructor(
         private readonly gemeindeKennzahlenService: GemeindeKennzahlenService,
@@ -102,7 +100,10 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
     }
 
     private setupForm(): void {
-        this.antrag$ = this.gemeindeKennzahlenService.getGemeindeKennzahlenAntrag();
+        this.antragAndPrincipal$ = combineLatest([
+            this.gemeindeKennzahlenService.getGemeindeKennzahlenAntrag(),
+            this.authService.principal$,
+        ]);
     }
 
     public save(antrag: TSGemeindeKennzahlen): void {
@@ -126,4 +127,15 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
             .subscribe(() => this.handleSaveSuccess());
     }
 
+    public isFormDisabledFor([antrag, principal]: [TSGemeindeKennzahlen, (TSBenutzer | null)]): boolean {
+        if (principal === null) {
+            return true;
+        }
+        return antrag.isAbgeschlossen() || !principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles()
+            .concat(TSRole.SUPER_ADMIN));
+    }
+
+    public zurueckAnGemeinde(antrag: TSGemeindeKennzahlen): void {
+        this.gemeindeKennzahlenService.gemeindeKennzahlenZurueckAnGemeinde(antrag).subscribe();
+    }
 }
