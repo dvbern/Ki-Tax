@@ -98,8 +98,10 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
 
     public displayMessagesX = (report: {type: any, payload: any}) => {
         this.resetTransitionInProgressFlag();
-
-        this.errors = report.payload;
+        // TODO: remove once migrated to angularX
+        setTimeout(() => {
+            this.errors = report.payload;
+        }, 0);
         this.show();
     };
 
