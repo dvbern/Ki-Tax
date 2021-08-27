@@ -323,7 +323,7 @@ public interface EbeguConfiguration {
 
 	String getNotverordnungEmpfaengerMail();
 
-	String getKafkaPlatzbestaetigungGroupId();
+	String getKafkaConsumerGroupId();
 
 	String getMassenmutationEmpfaengerMail();
 }
