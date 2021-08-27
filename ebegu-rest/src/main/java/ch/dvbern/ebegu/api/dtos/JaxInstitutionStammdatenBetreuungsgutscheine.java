@@ -81,19 +81,19 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 	@Nullable
 	private String alternativeEmailFamilienportal;
 
-	@Nonnull
+	@Nullable
 	private Integer oeffnungstageProJahr;
 
-	@Nonnull
+	@Nullable
 	private BigDecimal auslastungInstitutionen;
 
-	@Nonnull
+	@Nullable
 	private BigDecimal anzahlKinderWarteliste;
 
-	@Nonnull
+	@Nullable
 	private BigDecimal summePensumWarteliste;
 
-	@Nonnull
+	@Nullable
 	private BigDecimal dauerWarteliste;
 
 	private boolean fruehEroeffnung;
@@ -264,48 +264,48 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 		this.betreuungsstandorte = betreuungsstandorte;
 	}
 
-	@Nonnull
+	@Nullable
 	public Integer getOeffnungstageProJahr() {
 		return oeffnungstageProJahr;
 	}
 
-	public void setOeffnungstageProJahr(@Nonnull Integer oeffnungstageProJahr) {
+	public void setOeffnungstageProJahr(@Nullable Integer oeffnungstageProJahr) {
 		this.oeffnungstageProJahr = oeffnungstageProJahr;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getAuslastungInstitutionen() {
 		return auslastungInstitutionen;
 	}
 
-	public void setAuslastungInstitutionen(@Nonnull BigDecimal auslastungInstitutionen) {
+	public void setAuslastungInstitutionen(@Nullable BigDecimal auslastungInstitutionen) {
 		this.auslastungInstitutionen = auslastungInstitutionen;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getAnzahlKinderWarteliste() {
 		return anzahlKinderWarteliste;
 	}
 
-	public void setAnzahlKinderWarteliste(@Nonnull BigDecimal anzahlKinderWarteliste) {
+	public void setAnzahlKinderWarteliste(@Nullable BigDecimal anzahlKinderWarteliste) {
 		this.anzahlKinderWarteliste = anzahlKinderWarteliste;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getSummePensumWarteliste() {
 		return summePensumWarteliste;
 	}
 
-	public void setSummePensumWarteliste(@Nonnull BigDecimal summePensumWarteliste) {
+	public void setSummePensumWarteliste(@Nullable BigDecimal summePensumWarteliste) {
 		this.summePensumWarteliste = summePensumWarteliste;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getDauerWarteliste() {
 		return dauerWarteliste;
 	}
 
-	public void setDauerWarteliste(@Nonnull BigDecimal dauerWarteliste) {
+	public void setDauerWarteliste(@Nullable BigDecimal dauerWarteliste) {
 		this.dauerWarteliste = dauerWarteliste;
 	}
 

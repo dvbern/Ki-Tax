@@ -140,30 +140,30 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	@Nonnull
 	private Set<Betreuungsstandort> betreuungsstandorte = new HashSet<>();
 
-	@NotNull
+	@Nullable
 	@Min(0)
 	@Column(nullable = false)
-	private Integer oeffnungstageProJahr = 0;
+	private Integer oeffnungstageProJahr;
 
+	@Nullable
 	@Min(0)
-	@NotNull
 	@Column(nullable = false)
-	private BigDecimal auslastungInstitutionen = BigDecimal.ZERO;
+	private BigDecimal auslastungInstitutionen;
 
+	@Nullable
 	@Min(0)
-	@NotNull
 	@Column(nullable = false)
-	private BigDecimal anzahlKinderWarteliste = BigDecimal.ZERO;
+	private BigDecimal anzahlKinderWarteliste;
 
+	@Nullable
 	@Min(0)
-	@NotNull
 	@Column(nullable = false)
-	private BigDecimal summePensumWarteliste = BigDecimal.ZERO;
+	private BigDecimal summePensumWarteliste;
 
+	@Nullable
 	@Min(0)
-	@NotNull
 	@Column(nullable = false)
-	private BigDecimal dauerWarteliste = BigDecimal.ZERO;
+	private BigDecimal dauerWarteliste;
 
 	@NotNull
 	@Column(nullable = false)
@@ -370,43 +370,48 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 		return builder.toComparison();
 	}
 
+	@Nullable
 	public Integer getOeffnungstageProJahr() {
 		return oeffnungstageProJahr;
 	}
 
-	public void setOeffnungstageProJahr(Integer oeffnungstageProJahr) {
+	public void setOeffnungstageProJahr(@Nullable Integer oeffnungstageProJahr) {
 		this.oeffnungstageProJahr = oeffnungstageProJahr;
 	}
 
+	@Nullable
 	public BigDecimal getAuslastungInstitutionen() {
 		return auslastungInstitutionen;
 	}
 
-	public void setAuslastungInstitutionen(BigDecimal auslastungInstitutionen) {
+	public void setAuslastungInstitutionen(@Nullable BigDecimal auslastungInstitutionen) {
 		this.auslastungInstitutionen = auslastungInstitutionen;
 	}
 
+	@Nullable
 	public BigDecimal getAnzahlKinderWarteliste() {
 		return anzahlKinderWarteliste;
 	}
 
-	public void setAnzahlKinderWarteliste(BigDecimal anzahlKinderWarteliste) {
+	public void setAnzahlKinderWarteliste(@Nullable BigDecimal anzahlKinderWarteliste) {
 		this.anzahlKinderWarteliste = anzahlKinderWarteliste;
 	}
 
+	@Nullable
 	public BigDecimal getSummePensumWarteliste() {
 		return summePensumWarteliste;
 	}
 
-	public void setSummePensumWarteliste(BigDecimal summePensumWarteliste) {
+	public void setSummePensumWarteliste(@Nullable BigDecimal summePensumWarteliste) {
 		this.summePensumWarteliste = summePensumWarteliste;
 	}
 
+	@Nullable
 	public BigDecimal getDauerWarteliste() {
 		return dauerWarteliste;
 	}
 
-	public void setDauerWarteliste(BigDecimal dauerWarteliste) {
+	public void setDauerWarteliste(@Nullable BigDecimal dauerWarteliste) {
 		this.dauerWarteliste = dauerWarteliste;
 	}
 

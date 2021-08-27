@@ -15,35 +15,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-ALTER TABLE institution_stammdaten_betreuungsgutscheine ADD COLUMN IF NOT EXISTS oeffnungstage_pro_jahr INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE institution_stammdaten_betreuungsgutscheine ADD COLUMN IF NOT EXISTS oeffnungstage_pro_jahr INTEGER;
 ALTER TABLE institution_stammdaten_betreuungsgutscheine_aud ADD COLUMN IF NOT EXISTS oeffnungstage_pro_jahr INTEGER;
 
-ALTER TABLE institution_stammdaten_betreuungsgutscheine
-	ALTER COLUMN oeffnungstage_pro_jahr DROP DEFAULT;
-
-ALTER TABLE institution_stammdaten_betreuungsgutscheine ADD COLUMN IF NOT EXISTS auslastung_institutionen DECIMAL(19, 2) NOT NULL DEFAULT 0.00;
+ALTER TABLE institution_stammdaten_betreuungsgutscheine ADD COLUMN IF NOT EXISTS auslastung_institutionen DECIMAL(19, 2);
 ALTER TABLE institution_stammdaten_betreuungsgutscheine_aud ADD COLUMN IF NOT EXISTS auslastung_institutionen DECIMAL(19, 2);
 
-ALTER TABLE institution_stammdaten_betreuungsgutscheine
-	ALTER COLUMN auslastung_institutionen DROP DEFAULT;
-
-ALTER TABLE institution_stammdaten_betreuungsgutscheine ADD COLUMN IF NOT EXISTS anzahl_kinder_warteliste DECIMAL(19, 2) NOT NULL DEFAULT 0.00;
+ALTER TABLE institution_stammdaten_betreuungsgutscheine ADD COLUMN IF NOT EXISTS anzahl_kinder_warteliste DECIMAL(19, 2);
 ALTER TABLE institution_stammdaten_betreuungsgutscheine_aud ADD COLUMN IF NOT EXISTS anzahl_kinder_warteliste DECIMAL(19, 2);
 
-ALTER TABLE institution_stammdaten_betreuungsgutscheine
-	ALTER COLUMN anzahl_kinder_warteliste DROP DEFAULT;
-
-ALTER TABLE institution_stammdaten_betreuungsgutscheine ADD COLUMN IF NOT EXISTS summe_pensum_warteliste DECIMAL(19, 2) NOT NULL DEFAULT 0.00;
+ALTER TABLE institution_stammdaten_betreuungsgutscheine ADD COLUMN IF NOT EXISTS summe_pensum_warteliste DECIMAL(19, 2);
 ALTER TABLE institution_stammdaten_betreuungsgutscheine_aud ADD COLUMN IF NOT EXISTS summe_pensum_warteliste DECIMAL(19, 2);
 
-ALTER TABLE institution_stammdaten_betreuungsgutscheine
-	ALTER COLUMN summe_pensum_warteliste DROP DEFAULT;
-
-ALTER TABLE institution_stammdaten_betreuungsgutscheine ADD COLUMN IF NOT EXISTS dauer_warteliste DECIMAL(19, 2) NOT NULL DEFAULT 0.00;
+ALTER TABLE institution_stammdaten_betreuungsgutscheine ADD COLUMN IF NOT EXISTS dauer_warteliste DECIMAL(19, 2);
 ALTER TABLE institution_stammdaten_betreuungsgutscheine_aud ADD COLUMN IF NOT EXISTS dauer_warteliste DECIMAL(19, 2);
-
-ALTER TABLE institution_stammdaten_betreuungsgutscheine
-	ALTER COLUMN dauer_warteliste DROP DEFAULT;
 
 ALTER TABLE institution_stammdaten_betreuungsgutscheine ADD COLUMN IF NOT EXISTS frueh_eroeffnung BOOLEAN NOT NULL DEFAULT FALSE;
 ALTER TABLE institution_stammdaten_betreuungsgutscheine_aud ADD COLUMN IF NOT EXISTS frueh_eroeffnung BOOLEAN;
