@@ -53,6 +53,10 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 	private String oeffnungszeiten;
 	@NotNull @Nonnull
 	private JaxAdresse adresse;
+	@Nullable
+	private String grundSchliessung;
+	@Nullable
+	private String erinnerungMail;
 
 	private boolean sendMailWennOffenePendenzen = true;
 
@@ -153,5 +157,23 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 
 	public void setSendMailWennOffenePendenzen(boolean sendMailWennOffenePendenzen) {
 		this.sendMailWennOffenePendenzen = sendMailWennOffenePendenzen;
+	}
+
+	@Nullable
+	public String getGrundSchliessung() {
+		return grundSchliessung;
+	}
+
+	public void setGrundSchliessung(@Nullable String grundSchliessung) {
+		this.grundSchliessung = grundSchliessung;
+	}
+
+	@Nullable
+	public String getErinnerungMail() {
+		return erinnerungMail;
+	}
+
+	public void setErinnerungMail(@Nullable String erinnerungMail) {
+		this.erinnerungMail = erinnerungMail;
 	}
 }
