@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Institution;
@@ -57,6 +58,18 @@ public class BetreuungEventHelper {
 	public Processing clientNotFoundFailure(@Nonnull String clientName, @Nonnull Betreuung betreuung) {
 		Institution institution = betreuung.getInstitutionStammdaten().getInstitution();
 
+		return clientNotFoundFailure(clientName, institution);
+	}
+
+	@Nonnull
+	public Processing clientNotFoundFailure(@Nonnull String clientName, @Nonnull AnmeldungTagesschule anmeldungTagesschule) {
+		Institution institution = anmeldungTagesschule.getInstitutionStammdaten().getInstitution();
+
+		return clientNotFoundFailure(clientName, institution);
+	}
+
+	@Nonnull
+	private Processing clientNotFoundFailure(@Nonnull String clientName, @Nonnull Institution institution) {
 		return Processing.failure(String.format(
 			"Kein InstitutionExternalClient Namens >>%s<< ist der Institution %s/%s zugewiesen",
 			clientName,
@@ -67,9 +80,26 @@ public class BetreuungEventHelper {
 	@Nonnull
 	public Optional<InstitutionExternalClient> getExternalClient(
 		@Nonnull String clientName,
+		@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
+
+		Institution institution = anmeldungTagesschule.getInstitutionStammdaten().getInstitution();
+		return getExternalClientForInstitution(clientName, institution);
+	}
+
+	@Nonnull
+	public Optional<InstitutionExternalClient> getExternalClient(
+		@Nonnull String clientName,
 		@Nonnull Betreuung betreuung) {
 
 		Institution institution = betreuung.getInstitutionStammdaten().getInstitution();
+		return getExternalClientForInstitution(clientName, institution);
+	}
+
+	@Nonnull
+	private Optional<InstitutionExternalClient> getExternalClientForInstitution(
+		@Nonnull String clientName,
+		@Nonnull Institution institution) {
+
 		Collection<InstitutionExternalClient> institutionExternalClients =
 			externalClientService.getInstitutionExternalClientForInstitution(institution);
 

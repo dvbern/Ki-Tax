@@ -995,7 +995,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			final Gesuch merged = persistence.merge(gesuch);
 			antragStatusHistoryService.saveStatusChange(merged, null);
 			//Bei Freigabe muessen die Anmeldung an der Exchange Service exportiert werden
-			merged.extractAllAnmeldungenTagesschule().forEach(anmeldungTagesschule -> betreuungService.fireAnmeldungTagesschuleAdddedEvent(anmeldungTagesschule));
+			merged.extractAllAnmeldungenTagesschule().forEach(anmeldungTagesschule -> betreuungService.fireAnmeldungTagesschuleAddedEvent(anmeldungTagesschule));
 
 			return merged;
 		}
