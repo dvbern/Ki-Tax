@@ -30,6 +30,8 @@ import javax.annotation.security.RunAs;
 import javax.ejb.Asynchronous;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
@@ -137,6 +139,7 @@ public class SuperAdminServiceBean implements SuperAdminService {
 
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void removeFallAndBenutzer(@Nonnull String benutzernameToRemove, @Nonnull Benutzer eingeloggterBenutzer){
 		Benutzer benutzer = benutzerService.findBenutzer(benutzernameToRemove).orElseThrow(() -> new EbeguEntityNotFoundException(
 			"removeBenutzer",
@@ -156,6 +159,7 @@ public class SuperAdminServiceBean implements SuperAdminService {
 		}
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	private void removeFallAndBenutzerForced(@Nonnull Benutzer benutzerToRemove, @Nonnull Benutzer eingeloggterBenutzer) {
 		LOG.warn("Der Benutzer mit Benutzername: {} und Rolle {} wird gelöscht durch Benutzer {} mit Rolle {}",
 			benutzerToRemove.getUsername(),

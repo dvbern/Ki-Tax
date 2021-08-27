@@ -23,7 +23,6 @@ import javax.ejb.ApplicationException;
 
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 
-@ApplicationException(rollback = false)
 public class BenutzerExistException extends EbeguRuntimeException {
 
 	private static final long serialVersionUID = 430436378419395145L;
