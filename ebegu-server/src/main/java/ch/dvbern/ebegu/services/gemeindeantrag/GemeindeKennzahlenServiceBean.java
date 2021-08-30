@@ -271,6 +271,18 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 							gesuchsperiode.getGesuchsperiodeString());
 				});
 	}
+
+	@Override
+	public void deleteGemeindeKennzahlen(@Nonnull Gesuchsperiode gesuchsperiode) {
+		getGemeindeKennzahlen(null, gesuchsperiode.getGesuchsperiodeString(), null, null)
+				.forEach(gemeindeKennzahlen -> {
+					persistence.remove(gemeindeKennzahlen);
+					LOG.warn(
+							"Removed GemeindeKennzahlen for Gemeinde {} in GS {}",
+							gemeindeKennzahlen.getGemeinde().getName(),
+							gesuchsperiode.getGesuchsperiodeString());
+				});
+	}
 }
 
 

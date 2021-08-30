@@ -191,6 +191,10 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 			lastenausgleichTagesschuleAngabenGemeindeService.deleteLastenausgleicheTagesschule(gesuchsperiode);
 			return;
 		}
+		if (gemeindeAntragTyp == GEMEINDE_KENNZAHLEN) {
+			gemeindeKennzahlenService.deleteGemeindeKennzahlen(gesuchsperiode);
+			return;
+		}
 		throw new NotImplementedException("DeleteGemeindeAntraege für typ "
 			+ gemeindeAntragTyp
 			+ " nicht implementiert");

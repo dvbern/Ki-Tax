@@ -62,4 +62,6 @@ public interface GemeindeKennzahlenService {
 	 * Löscht alle GemeindeKennzahlen-Anträge für die Gemeinde und Gesuchsperiode
 	 */
 	void deleteGemeindeKennzahlen(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
+
+	void deleteGemeindeKennzahlen(@Nonnull Gesuchsperiode gesuchsperiode);
 }
