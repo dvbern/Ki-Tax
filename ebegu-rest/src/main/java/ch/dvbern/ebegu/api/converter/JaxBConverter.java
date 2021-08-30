@@ -4249,6 +4249,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(vorlage);
 		requireNonNull(jaxVorlage);
 		convertAbstractVorgaengerFieldsToEntity(jaxVorlage, vorlage);
+		convertMandantFieldsToEntity(vorlage);
 		convertFileToEnity(jaxVorlage, vorlage);
 		return vorlage;
 	}
