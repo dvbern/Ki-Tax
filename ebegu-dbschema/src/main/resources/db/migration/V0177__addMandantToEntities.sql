@@ -41,3 +41,12 @@ ALTER TABLE fachstelle
 		FOREIGN KEY (mandant_id)
 			REFERENCES mandant (id);
 
+
+ALTER TABLE gesuchsperiode ADD COLUMN IF NOT EXISTS mandant_id BINARY(16) NOT NULL DEFAULT (UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', '')));
+ALTER TABLE gesuchsperiode_aud ADD COLUMN IF NOT EXISTS mandant_id BINARY(16);
+
+ALTER TABLE gesuchsperiode
+	ADD CONSTRAINT FK_fachstelle_mandant_id
+		FOREIGN KEY (mandant_id)
+			REFERENCES mandant (id);
+

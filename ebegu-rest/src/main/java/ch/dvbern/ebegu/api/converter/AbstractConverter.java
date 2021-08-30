@@ -424,6 +424,7 @@ public class AbstractConverter {
 		@Nonnull Gesuchsperiode gesuchsperiode) {
 
 		convertAbstractDateRangedFieldsToEntity(jaxGesuchsperiode, gesuchsperiode);
+		convertMandantFieldsToEntity(gesuchsperiode);
 		gesuchsperiode.setStatus(jaxGesuchsperiode.getStatus());
 
 		return gesuchsperiode;
