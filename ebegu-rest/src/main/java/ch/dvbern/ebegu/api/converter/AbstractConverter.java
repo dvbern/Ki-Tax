@@ -366,6 +366,7 @@ public class AbstractConverter {
 		requireNonNull(jaxGemeinde.getTagesschulanmeldungenStartdatum());
 		requireNonNull(jaxGemeinde.getFerieninselanmeldungenStartdatum());
 		convertAbstractFieldsToEntity(jaxGemeinde, gemeinde);
+		convertMandantFieldsToEntity(gemeinde);
 		gemeinde.setName(jaxGemeinde.getName());
 		gemeinde.setStatus(jaxGemeinde.getStatus());
 		gemeinde.setGemeindeNummer(jaxGemeinde.getGemeindeNummer());

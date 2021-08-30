@@ -930,6 +930,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(fall);
 		requireNonNull(fallJAXP);
 		convertAbstractVorgaengerFieldsToEntity(fallJAXP, fall);
+		convertMandantFieldsToEntity(fall);
 		//Fall nummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt, dasselbe fuer NextKindNumber
 		if (fallJAXP.getBesitzer() != null) {
 			Optional<Benutzer> besitzer = benutzerService.findBenutzer(fallJAXP.getBesitzer().getUsername());
