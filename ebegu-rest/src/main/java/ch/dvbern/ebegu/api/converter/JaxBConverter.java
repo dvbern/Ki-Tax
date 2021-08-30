@@ -477,6 +477,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(einstellung);
 		requireNonNull(jaxEinstellung);
 		convertAbstractFieldsToEntity(jaxEinstellung, einstellung);
+		convertMandantFieldsToEntity(einstellung);
 		einstellung.setKey(jaxEinstellung.getKey());
 		einstellung.setValue(jaxEinstellung.getValue());
 		if (jaxEinstellung.getGemeindeId() != null) {
