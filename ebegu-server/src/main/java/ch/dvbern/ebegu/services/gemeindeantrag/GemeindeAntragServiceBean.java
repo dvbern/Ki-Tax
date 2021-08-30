@@ -146,10 +146,8 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 		}
 
 		if (principal.isCallerInAnyOfRole(
-			UserRole.ADMIN_FERIENBETREUUNG,
-			UserRole.SACHBEARBEITER_FERIENBETREUUNG,
-			UserRole.ADMIN_BG,
-			UserRole.SACHBEARBEITER_BG)) {
+				UserRole.ADMIN_FERIENBETREUUNG,
+				UserRole.SACHBEARBEITER_FERIENBETREUUNG)) {
 			return antraege;
 		}
 
@@ -157,6 +155,10 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 			List<GemeindeKennzahlen> gemeindeKennzahlenAntraege =
 					gemeindeKennzahlenService.getGemeindeKennzahlen(gemeindeId, periodeId, status, timestampMutiert);
 			antraege.addAll(gemeindeKennzahlenAntraege);
+		}
+
+		if (principal.isCallerInAnyOfRole(UserRole.ADMIN_BG, UserRole.SACHBEARBEITER_BG)) {
+			return antraege;
 		}
 
 		List<LastenausgleichTagesschuleAngabenGemeindeContainer> latsAntraege =
