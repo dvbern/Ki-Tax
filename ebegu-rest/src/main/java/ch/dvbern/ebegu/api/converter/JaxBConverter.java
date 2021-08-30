@@ -1542,6 +1542,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(institutionJAXP);
 		Institution institution = new Institution();
 		convertAbstractVorgaengerFieldsToEntity(institutionJAXP, institution);
+		convertMandantFieldsToEntity(institution);
 		institution.setName(institutionJAXP.getName());
 		institution.setStatus(institutionJAXP.getStatus());
 		institution.setStammdatenCheckRequired(institutionJAXP.isStammdatenCheckRequired());
