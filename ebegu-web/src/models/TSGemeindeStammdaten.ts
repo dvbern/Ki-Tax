@@ -65,6 +65,8 @@ export class TSGemeindeStammdaten extends TSAbstractEntity {
     public externalClients: string[];
     public usernameScolaris: string;
     public emailBeiGesuchsperiodeOeffnung: boolean;
+    public gutscheinSelberAusgestellt: boolean;
+    public gemeindeAusgabestelle: TSGemeinde;
 
     public getGemeindeKonfigurationForGesuchsperiode(gesuchsperiode: TSGesuchsperiode): TSGemeindeKonfiguration {
         for (const konfigurationsListeElement of this.konfigurationsListe) {

@@ -322,7 +322,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
                 this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
                 this.errorService.clearAll();
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
-            }, err => this.handleSaveError(err));
+            }, err => this.handleSaveErrors(err));
     }
 
     private extractFormValues(): TSFerienbetreuungAngabenStammdaten {
@@ -377,13 +377,13 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
     public async onAbschliessen(): Promise<void> {
         if (await this.checkReadyForAbschliessen()) {
             this.ferienbetreuungService.stammdatenAbschliessen(this.container.id, this.extractFormValues())
-                .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
+                .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveErrors(error));
         }
     }
 
     public onFalscheAngaben(): void {
         this.ferienbetreuungService.falscheAngabenStammdaten(this.container.id, this.extractFormValues())
-            .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveError(error));
+            .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveErrors(error));
     }
 
     private enableStammdatenAuszahlungValidation(): void {

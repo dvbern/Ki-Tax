@@ -27,7 +27,7 @@ describe('dvbErrorMessages', () => {
 
     beforeEach(angular.mock.inject($injector => {
         controller = new DvErrorMessagesPanelComponent($injector.get('$rootScope'), $injector.get('ErrorService'),
-            undefined, undefined, undefined);
+            undefined, undefined, undefined, undefined, undefined, undefined);
         // mock 'show' method, because in unit tests, jqLite is used instead of jQuery, but jqLite does not support
         // selectors
         spyOn(controller, 'show').and.returnValue();

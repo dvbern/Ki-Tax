@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {filter} from 'rxjs/operators';
+import {TSMessageEvent} from '../../../models/enums/TSErrorEvent';
 import {TSHTTPEvent} from '../events/TSHTTPEvent';
 import {TSVersionCheckEvent} from '../events/TSVersionCheckEvent';
 
 // Extend this type if you need more events
-declare type BroadcastMessageType = TSHTTPEvent | TSVersionCheckEvent;
+declare type BroadcastMessageType = TSHTTPEvent | TSVersionCheckEvent | TSMessageEvent;
 
 interface BroadcastMessage<T extends BroadcastMessageType> {
   type: T;
@@ -24,7 +25,7 @@ export class BroadcastService {
 
   public constructor() { }
 
-  public broadcast(type: BroadcastMessageType, payload: any): void {
+  public broadcast(type: BroadcastMessageType, payload?: any): void {
     this.broadcaster.next({type, payload});
   }
 

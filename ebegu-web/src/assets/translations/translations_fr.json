@@ -2194,7 +2194,7 @@
     "OFFEN_VON": "Ouvert de",
     "OFFEN_BIS": "Ouvert jusqu'à",
     "OEFFNUNGSZEITEN_ABWEICHUNGEN": "Différences",
-    "OEFFNUNGSZEITEN_OBSOLETE": "Saisie précédente",
+    "OEFFNUNGSZEITEN_OBSOLETE": "Saisie précédente: {{value}}",
     "ZWEITER_BETREUUNGSSTANDORT_ANGEBEN": "Entrer un deuxième lieu de garde pour le portail famille",
     "CREATE_MASSENMUTATION_BERN_DIALOG_TITLE": "Activer le calcul OPIS pour la ville de Berne",
     "CREATE_MASSENMUTATION_BERN_DIALOG_TEXT": "Attention: cette fonction va déclencher une mutation de masse pour toutes les demandes de la ville de Berne. Vous ne pourrez plus revenir en arrière. Voulez-vous continuer ?",

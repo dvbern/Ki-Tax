@@ -113,6 +113,14 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity implements K
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_inst_stammdaten_inst_stammdaten_ferieninsel_id"), nullable = true)
 	private InstitutionStammdatenFerieninsel institutionStammdatenFerieninsel;
 
+	@Nullable
+	@Column
+	private String grundSchliessung;
+
+	@Nullable
+	@Column
+	private String erinnerungMail;
+
 	public InstitutionStammdaten() {
 	}
 
@@ -302,5 +310,23 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity implements K
 	public String getMessageForAccessException() {
 		return "bgNummer: " + this.getBetreuungsangebotTyp()
 			+ ", institution: " + this.getInstitution().getMessageForAccessException();
+	}
+
+	@Nullable
+	public String getGrundSchliessung() {
+		return grundSchliessung;
+	}
+
+	public void setGrundSchliessung(@Nullable String grundSchliessung) {
+		this.grundSchliessung = grundSchliessung;
+	}
+
+	@Nullable
+	public String getErinnerungMail() {
+		return erinnerungMail;
+	}
+
+	public void setErinnerungMail(@Nullable String erinnerungMail) {
+		this.erinnerungMail = erinnerungMail;
 	}
 }

@@ -124,6 +124,7 @@ import {DVValueinput} from './directive/dv-valueinput/dv-valueinput';
 import {DvVerantwortlicherselect} from './directive/dv-verantwortlicherselect/dv-verantwortlicherselect';
 import {DvSearchListComponent} from './dv-search-list/dv-search-list.component';
 import {ERRORS_JS_MODULE} from './errors/errors';
+import {ErrorServiceX} from './errors/service/ErrorServiceX';
 import {arrayToString} from './filters/array-to-string.filter';
 import {gemeindenToString} from './filters/gemeinden-to-string.filter';
 import {NewAntragListComponent} from './new-antrag-list/new-antrag-list.component';
@@ -252,6 +253,7 @@ export const CORE_JS_MODULE = angular
     .factory('VersionService', downgradeInjectable(VersionService) as any)
     .factory('BroadcastService', downgradeInjectable(BroadcastService) as any)
     .factory('BenutzerRS', downgradeInjectable(BenutzerRSX) as any)
+    .factory('ErrorServiceX', downgradeInjectable(ErrorServiceX) as any)
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())

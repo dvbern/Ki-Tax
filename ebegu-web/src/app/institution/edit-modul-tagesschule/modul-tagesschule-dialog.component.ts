@@ -24,6 +24,7 @@ import {
 } from '../../../models/enums/TSModulTagesschuleIntervall';
 import {TSModulTagesschuleName} from '../../../models/enums/TSModulTagesschuleName';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
 @Component({
     selector: 'modul-tagesschule-dialog',
@@ -36,6 +37,8 @@ export class ModulTagesschuleDialogComponent {
 
     public modulTagesschuleGroup: TSModulTagesschuleGroup;
     public noDaySelected: boolean = false;
+
+    public readonly CONSTANTS = CONSTANTS;
 
     public constructor(
         private readonly dialogRef: MatDialogRef<ModulTagesschuleDialogComponent>,

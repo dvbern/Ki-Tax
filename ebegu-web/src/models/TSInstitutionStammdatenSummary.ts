@@ -37,6 +37,8 @@ export class TSInstitutionStammdatenSummary extends TSAbstractDateRangedEntity {
     public institutionStammdatenTagesschule: TSInstitutionStammdatenTagesschule = undefined;
     public institutionStammdatenFerieninsel: TSInstitutionStammdatenFerieninsel = undefined;
     public sendMailWennOffenePendenzen: boolean = true;
+    public erinnerungMail: string = undefined;
+    public grundSchliessung: string = undefined;
 
     public constructor() {
         super();

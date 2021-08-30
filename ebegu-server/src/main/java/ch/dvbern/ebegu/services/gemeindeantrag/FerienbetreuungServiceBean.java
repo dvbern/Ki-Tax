@@ -61,6 +61,7 @@ import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -208,9 +209,11 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 		if (existingOptional.isPresent()) {
 			throw new EntityExistsException(
-				FerienbetreuungAngabenContainer.class,
-				"FerienbetreuungContainer existiert für Gemeinde und Periode bereits",
-				gemeinde.getName() + ' ' + gesuchsperiode.getGesuchsperiodeString());
+					KibonLogLevel.ERROR,
+					FerienbetreuungAngabenContainer.class,
+					"FerienbetreuungContainer existiert für Gemeinde und Periode bereits",
+					gemeinde.getName() + ' ' + gesuchsperiode.getGesuchsperiodeString(),
+					ErrorCodeEnum.ERROR_FERIENBETREUUNG_ALREADY_EXISTS);
 		}
 
 		FerienbetreuungAngabenContainer container = new FerienbetreuungAngabenContainer();

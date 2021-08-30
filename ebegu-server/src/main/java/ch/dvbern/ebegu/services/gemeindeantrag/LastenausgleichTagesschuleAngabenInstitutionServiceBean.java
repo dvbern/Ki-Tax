@@ -39,8 +39,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response.Status;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
@@ -66,6 +64,7 @@ import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -507,76 +506,97 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 
 	// we check this since the attributes can be cached and can be null then, but must not be when changing status
 	private void checkInstitutionAngabenComplete(
-		LastenausgleichTagesschuleAngabenInstitution institutionAngaben) {
+			LastenausgleichTagesschuleAngabenInstitution institutionAngaben) {
+		final String functionName= "checkInstitutionAngabenComplete";
 		if (Objects.isNull(institutionAngaben.getLehrbetrieb())) {
-			throw new WebApplicationException("isLehrbetrieb must not be null", Status.BAD_REQUEST);
+			throw new EbeguRuntimeException(
+					functionName,
+					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
+					"isLehrbetrieb must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinder())) {
-			throw new WebApplicationException("anzahlEingeschribeneKinder must not be null", Status.BAD_REQUEST);
+			throw new EbeguRuntimeException(
+					functionName,
+					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
+					"anzahlEingeschribeneKinder must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderSekundarstufe())) {
-			throw new WebApplicationException(
-				"anzahlEingeschriebeneKinderBasisstufe must not be null",
-				Status.BAD_REQUEST);
+			throw new EbeguRuntimeException(
+					functionName,
+					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
+					"anzahlEingeschriebeneKinderBasisstufe must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderKindergarten())) {
-			throw new WebApplicationException(
-				"anzahlEingeschriebeneKinderKindergarten must not be null",
-				Status.BAD_REQUEST);
+			throw new EbeguRuntimeException(
+					functionName,
+					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
+					"anzahlEingeschriebeneKinderKindergarten must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderPrimarstufe())) {
-			throw new WebApplicationException(
-				"anzahlEingeschriebeneKinderPrimarstufe must not be null",
-				Status.BAD_REQUEST);
+			throw new EbeguRuntimeException(
+					functionName,
+					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
+					"anzahlEingeschriebeneKinderPrimarstufe must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagFruehbetreuung())) {
-			throw new WebApplicationException(
-				"anzahlDurchschnittKinderProTagFruehbetreuung must not be null",
-				Status.BAD_REQUEST);
+			throw new EbeguRuntimeException(
+					functionName,
+					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
+					"anzahlDurchschnittKinderProTagFruehbetreuung must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagMittag())) {
-			throw new WebApplicationException(
-				"anzahlDurchschnittKinderProTagMittag must not be null",
-				Status.BAD_REQUEST);
+			throw new EbeguRuntimeException(
+					functionName,
+					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
+					"anzahlDurchschnittKinderProTagMittag must not be null");
 		}
-		;
 		if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagNachmittag1())) {
-			throw new WebApplicationException(
-				"anzahlDurchschnittKinderProTagNachmittag1 must not be null",
-				Status.BAD_REQUEST);
+			throw new EbeguRuntimeException(
+					functionName,
+					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
+					"anzahlDurchschnittKinderProTagNachmittag1 must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getDurchschnittKinderProTagNachmittag2())) {
-			throw new WebApplicationException(
-				"anzahlDurchschnittKinderProTagNachmittag2 must not be null",
-				Status.BAD_REQUEST);
+			throw new EbeguRuntimeException(
+					functionName,
+					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
+					"anzahlDurchschnittKinderProTagNachmittag2 must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen())) {
-			throw new WebApplicationException(
-				"anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen must not be null",
-				Status.BAD_REQUEST);
+			throw new EbeguRuntimeException(
+					functionName,
+					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
+					"anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getBetreuungsverhaeltnisEingehalten())) {
-			throw new WebApplicationException("betreuungsverhaeltnisEingehalten must not be null", Status.BAD_REQUEST);
+			throw new EbeguRuntimeException(
+					functionName,
+					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
+					"betreuungsverhaeltnisEingehalten must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getErnaehrungsGrundsaetzeEingehalten())) {
-			throw new WebApplicationException(
-				"ernaehrungsGrundsaetzeEingehalten must not be null",
-				Status.BAD_REQUEST);
+			throw new EbeguRuntimeException(
+					functionName,
+					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
+					"ernaehrungsGrundsaetzeEingehalten must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getSchuleAufBasisOrganisatorischesKonzept())) {
-			throw new WebApplicationException(
-				"schuleAufBasisOrganisatorischesKonzepts must not be null",
-				Status.BAD_REQUEST);
+			throw new EbeguRuntimeException(
+					functionName,
+					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
+					"schuleAufBasisOrganisatorischesKonzepts must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getRaeumlicheVoraussetzungenEingehalten())) {
-			throw new WebApplicationException(
-				"raeumlicheVoraussetungenEingehalten must not be null",
-				Status.BAD_REQUEST);
+			throw new EbeguRuntimeException(
+					functionName,
+					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
+					"raeumlicheVoraussetungenEingehalten must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getSchuleAufBasisPaedagogischesKonzept())) {
-			throw new WebApplicationException(
-				"schuleAufBasisPaedagogischesKonzepts must not be null",
-				Status.BAD_REQUEST);
+			throw new EbeguRuntimeException(
+					functionName,
+					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
+					"schuleAufBasisPaedagogischesKonzepts must not be null");
 		}
 	}
 }
