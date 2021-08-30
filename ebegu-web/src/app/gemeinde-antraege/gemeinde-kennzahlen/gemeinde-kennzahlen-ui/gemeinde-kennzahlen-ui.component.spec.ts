@@ -15,28 +15,43 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {of} from 'rxjs';
+import {TSGemeindeKennzahlen} from '../../../../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
+import {SharedModule} from '../../../shared/shared.module';
+import {GemeindeKennzahlenService} from '../gemeinde-kennzahlen.service';
 
-import { GemeindeKennzahlenUiComponent } from './gemeinde-kennzahlen-ui.component';
+import {GemeindeKennzahlenUiComponent} from './gemeinde-kennzahlen-ui.component';
 
 describe('GemeindeKennzahlenUiComponent', () => {
-  let component: GemeindeKennzahlenUiComponent;
-  let fixture: ComponentFixture<GemeindeKennzahlenUiComponent>;
+    let component: GemeindeKennzahlenUiComponent;
+    let fixture: ComponentFixture<GemeindeKennzahlenUiComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ GemeindeKennzahlenUiComponent ]
-    })
-    .compileComponents();
-  });
+    const gemeindeKennzahlenServiceSpy = jasmine.createSpyObj<GemeindeKennzahlenService>(GemeindeKennzahlenService.name,
+        ['getGemeindeKennzahlenAntrag', 'updateGemeindeKennzahlenAntragStore']);
+    gemeindeKennzahlenServiceSpy.getGemeindeKennzahlenAntrag.and.returnValue(of(new TSGemeindeKennzahlen()));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(GemeindeKennzahlenUiComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [SharedModule],
+            declarations: [GemeindeKennzahlenUiComponent],
+            providers: [
+                {
+                    provide: GemeindeKennzahlenService,
+                    useValue: gemeindeKennzahlenServiceSpy
+                }
+            ]
+        })
+            .compileComponents();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(GemeindeKennzahlenUiComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

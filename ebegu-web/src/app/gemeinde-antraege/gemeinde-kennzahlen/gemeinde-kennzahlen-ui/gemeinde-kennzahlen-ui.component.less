@@ -19,32 +19,32 @@
 @import (reference) 'src/style/mixins.less';
 
 .gemeinde-kennzahlen-container {
-	background-color: @contrast-light;
-	display: flex;
-	flex-direction: column;
-	height: 100%;
+    background-color: @contrast-light;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 
-	.antrag-container {
-		display: flex;
-		flex: auto;
-		flex-grow: 1;
-		overflow: auto;
+    .antrag-container {
+        display: flex;
+        flex: auto;
+        flex-grow: 1;
+        overflow: auto;
 
-		dv-wizard-side-nav {
-			background-color: @contrast-lightest;
-			display: flex;
-			flex-direction: column;
-			width: 35.5rem;
-		}
+        dv-wizard-side-nav {
+            background-color: @contrast-lightest;
+            display: flex;
+            flex-direction: column;
+            width: 35.5rem;
+        }
 
-		.antrag {
-			box-sizing: border-box;
-			flex-basis: 0;
-			flex-grow: 1;
+        .antrag {
+            box-sizing: border-box;
+            flex-basis: 0;
+            flex-grow: 1;
 
-			::ng-deep ui-view > dv-gemeinde-kennzahlen-formular {
-				padding: 5rem 2.5rem 0 5rem;
-			}
-		}
-	}
+            ::ng-deep ui-view > dv-gemeinde-kennzahlen-formular {
+                padding: 5rem 2.5rem 0 5rem;
+            }
+        }
+    }
 }

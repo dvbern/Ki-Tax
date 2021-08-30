@@ -17,8 +17,11 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
 import {TSGemeindeKennzahlen} from '../../../../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
+import {LogFactory} from '../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
 import {GemeindeKennzahlenService} from '../gemeinde-kennzahlen.service';
+
+const LOG = LogFactory.createLog('GemeindeKennzahlenUiComponent');
 
 @Component({
     selector: 'dv-gemeinde-kennzahlen-ui',
@@ -42,9 +45,10 @@ export class GemeindeKennzahlenUiComponent implements OnInit {
 
     public ngOnInit(): void {
         this.gemeindeKennzahlenService.getGemeindeKennzahlenAntrag().subscribe(antrag => {
-            this.gemeindeKennzahlen = antrag;
-            this.wizardService.updateSteps(this.wizardTyp, this.gemeindeKennzahlen.id);
-        });
+                this.gemeindeKennzahlen = antrag;
+                this.wizardService.updateSteps(this.wizardTyp, this.gemeindeKennzahlen.id);
+            },
+            error => LOG.error(error));
         this.gemeindeKennzahlenService.updateGemeindeKennzahlenAntragStore(this.gemeindeKennzahlenId);
     }
 

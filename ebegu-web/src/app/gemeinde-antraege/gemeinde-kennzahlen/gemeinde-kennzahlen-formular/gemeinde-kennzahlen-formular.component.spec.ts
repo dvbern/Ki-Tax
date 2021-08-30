@@ -15,28 +15,60 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {of} from 'rxjs';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {TSGemeindeKennzahlen} from '../../../../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
+import {TSBenutzer} from '../../../../models/TSBenutzer';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {SharedModule} from '../../../shared/shared.module';
+import {GemeindeKennzahlenService} from '../gemeinde-kennzahlen.service';
 
-import { GemeindeKennzahlenFormularComponent } from './gemeinde-kennzahlen-formular.component';
+import {GemeindeKennzahlenFormularComponent} from './gemeinde-kennzahlen-formular.component';
 
 describe('GemeindeKennzahlenFormularComponent', () => {
-  let component: GemeindeKennzahlenFormularComponent;
-  let fixture: ComponentFixture<GemeindeKennzahlenFormularComponent>;
+    let component: GemeindeKennzahlenFormularComponent;
+    let fixture: ComponentFixture<GemeindeKennzahlenFormularComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ GemeindeKennzahlenFormularComponent ]
-    })
-    .compileComponents();
-  });
+    const gemeindeKennzahlenServiceSpy = jasmine.createSpyObj<GemeindeKennzahlenService>(GemeindeKennzahlenService.name,
+        ['getGemeindeKennzahlenAntrag']);
+    gemeindeKennzahlenServiceSpy.getGemeindeKennzahlenAntrag.and.returnValue(of(new TSGemeindeKennzahlen()));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(GemeindeKennzahlenFormularComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$']);
+    authServiceSpy.principal$ = of(new TSBenutzer());
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
+
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [SharedModule, BrowserAnimationsModule ],
+            declarations: [GemeindeKennzahlenFormularComponent],
+            providers: [
+                {
+                    provide: GemeindeKennzahlenService,
+                    useValue: gemeindeKennzahlenServiceSpy,
+                },
+                {
+                    provide: AuthServiceRS,
+                    useValue: authServiceSpy,
+                },
+                {
+                    provide: ErrorService,
+                    useValue: errorServiceSpy
+                }
+            ],
+        })
+            .compileComponents();
+    });
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(GemeindeKennzahlenFormularComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

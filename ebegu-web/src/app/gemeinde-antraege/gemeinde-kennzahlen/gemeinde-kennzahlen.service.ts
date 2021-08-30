@@ -22,6 +22,9 @@ import {map, tap} from 'rxjs/operators';
 import {TSGemeindeKennzahlen} from '../../../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
+import {LogFactory} from '../../core/logging/LogFactory';
+
+const LOG = LogFactory.createLog('GemeindeKennzahlenService');
 
 @Injectable({
     providedIn: 'root',
@@ -29,7 +32,7 @@ import {CONSTANTS} from '../../core/constants/CONSTANTS';
 export class GemeindeKennzahlenService {
 
     private readonly API_URL = `${CONSTANTS.REST_API}gemeindekennzahlen`;
-    private restUtil = new EbeguRestUtil();
+    private readonly restUtil = new EbeguRestUtil();
 
     private readonly _gemeindeKennzahlenAntragStore$ = new Subject<TSGemeindeKennzahlen>();
 
@@ -45,7 +48,8 @@ export class GemeindeKennzahlenService {
             .pipe(
                 map(antrag => this.restUtil.parseGemeindeKennzahlen(new TSGemeindeKennzahlen(), antrag)),
             )
-            .subscribe(antrag => this._gemeindeKennzahlenAntragStore$.next(antrag));
+            .subscribe(antrag => this._gemeindeKennzahlenAntragStore$.next(antrag),
+                error => LOG.error(error));
     }
 
     public saveGemeindeKennzahlen(antrag: TSGemeindeKennzahlen): Observable<TSGemeindeKennzahlen> {
