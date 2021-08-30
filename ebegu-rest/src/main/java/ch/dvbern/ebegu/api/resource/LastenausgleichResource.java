@@ -145,7 +145,8 @@ public class LastenausgleichResource {
 		BigDecimal selbstbehaltPro100ProzentPlatz = MathUtil.DEFAULT.from(sSelbstbehaltPro100ProzentPlatz);
 
 		Lastenausgleich lastenausgleich =
-			lastenausgleichService.createLastenausgleich(jahr, selbstbehaltPro100ProzentPlatz);
+			lastenausgleichService.createLastenausgleich(jahr, selbstbehaltPro100ProzentPlatz,
+					Objects.requireNonNull(principalBean.getMandant()));
 
 		return converter.lastenausgleichToJAX(lastenausgleich);
 	}
