@@ -46,7 +46,7 @@ ALTER TABLE gesuchsperiode ADD COLUMN IF NOT EXISTS mandant_id BINARY(16) NOT NU
 ALTER TABLE gesuchsperiode_aud ADD COLUMN IF NOT EXISTS mandant_id BINARY(16);
 
 ALTER TABLE gesuchsperiode
-	ADD CONSTRAINT FK_fachstelle_mandant_id
+	ADD CONSTRAINT FK_gesuchsperiode_mandant_id
 		FOREIGN KEY (mandant_id)
 			REFERENCES mandant (id);
 
