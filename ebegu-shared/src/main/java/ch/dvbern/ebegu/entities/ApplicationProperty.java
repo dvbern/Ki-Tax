@@ -21,6 +21,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
@@ -28,6 +31,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import org.hibernate.envers.Audited;
+import org.jetbrains.annotations.Nullable;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
@@ -40,7 +44,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 @Table(
 	uniqueConstraints = @UniqueConstraint(columnNames = "name", name = "UK_application_property_name")
 )
-public class ApplicationProperty extends AbstractMutableEntity {
+public class ApplicationProperty extends AbstractMutableEntity implements HasMandant {
 
 	private static final long serialVersionUID = -7687645920282879260L;
 	@NotNull
@@ -52,6 +56,13 @@ public class ApplicationProperty extends AbstractMutableEntity {
 	@NotNull
 	@Column(nullable = false, length = DB_TEXTAREA_LENGTH)
 	private String value;
+
+
+	@NotNull
+	@OneToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_application_property_mandant_id"))
+	private Mandant mandant;
+
 
 	public ApplicationProperty() {
 	}
@@ -94,4 +105,14 @@ public class ApplicationProperty extends AbstractMutableEntity {
 		this.value = value;
 	}
 
+	@NotNull
+	@Override
+	public Mandant getMandant() {
+		return mandant;
+	}
+
+	@Override
+	public void setMandant(@NotNull Mandant mandant) {
+		this.mandant = mandant;
+	}
 }

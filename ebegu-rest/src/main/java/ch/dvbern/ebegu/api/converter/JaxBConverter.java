@@ -451,6 +451,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(jaxAP);
 
 		convertAbstractVorgaengerFieldsToEntity(jaxAP, applicationProperty);
+		convertMandantFieldsToEntity(applicationProperty);
 		applicationProperty.setName(Enum.valueOf(ApplicationPropertyKey.class, jaxAP.getName()));
 		applicationProperty.setValue(jaxAP.getValue());
 
