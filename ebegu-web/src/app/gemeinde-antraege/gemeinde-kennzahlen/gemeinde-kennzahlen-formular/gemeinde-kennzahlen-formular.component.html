@@ -122,14 +122,17 @@
 					{{'GEMEINDE_KENNZAHLEN_WELCHE_KOSTENLENKUNGSMASSNAHMEN' | translate }}
 				</label>
 				<mat-form-field floatLabel="always">
-					<input matInput
-						   id="welcheKostenlenkungsmassnahmen_id"
-						   required
-						   [(ngModel)]="antragAndPrincipal[0].welcheKostenlenkungsmassnahmen"
-						   name="welcheKostenlenkungsmassnahmen"
-						   [disabled]="isFormDisabledFor(antragAndPrincipal)"
-						   #welcheKostenlenkungsmassnahmen="ngModel"
-						   class="form-control dv-input"/>
+					<mat-select class="form-control"
+								required
+								name="welcheKostenlenkungsmassnahmen"
+								[(ngModel)]="antragAndPrincipal[0].welcheKostenlenkungsmassnahmen"
+                                #welcheKostenlenkungsmassnahmen="ngModel"
+								id="welcheKostenlenkungsmassnahmen_id"
+								[disabled]="isFormDisabledFor(antragAndPrincipal)">
+						<mat-option [value]="'1'">PLACEHOLDER 1</mat-option>
+						<mat-option [value]="'2'">PLACEHOLDER 2</mat-option>
+						<mat-option [value]="'3'">PLACEHOLDER 3</mat-option>
+					</mat-select>
 					<dv-error-messages [errorObject]="validationTiggered && welcheKostenlenkungsmassnahmen.errors"></dv-error-messages>
 				</mat-form-field>
 			</dv-input-container-x>
