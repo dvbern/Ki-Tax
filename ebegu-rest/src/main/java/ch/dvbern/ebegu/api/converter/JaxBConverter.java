@@ -1404,6 +1404,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(traegerschaft);
 		requireNonNull(traegerschaftJAXP);
 		convertAbstractVorgaengerFieldsToEntity(traegerschaftJAXP, traegerschaft);
+		convertMandantFieldsToEntity(traegerschaft);
 		traegerschaft.setName(traegerschaftJAXP.getName());
 		traegerschaft.setActive(traegerschaftJAXP.getActive());
 		traegerschaft.setEmail(traegerschaftJAXP.getEmail());

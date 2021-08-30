@@ -21,6 +21,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
@@ -40,7 +43,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 @Table(
 	uniqueConstraints =	@UniqueConstraint(columnNames = "name", name = "UK_Traegerschaft_name")
 )
-public class Traegerschaft extends AbstractMutableEntity implements Displayable {
+public class Traegerschaft extends AbstractMutableEntity implements Displayable, HasMandant {
 
 	private static final long serialVersionUID = -8403454439884704618L;
 
@@ -57,6 +60,11 @@ public class Traegerschaft extends AbstractMutableEntity implements Displayable 
 	@Column(nullable = true)
 	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.email.message}")
 	private String email;
+
+	@NotNull
+	@OneToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_traegerschaft_mandant_id"))
+	private Mandant mandant;
 
 	public Traegerschaft() {
 	}
@@ -102,5 +110,16 @@ public class Traegerschaft extends AbstractMutableEntity implements Displayable 
 		}
 		final Traegerschaft otherTraegerschaft = (Traegerschaft) other;
 		return Objects.equals(getName(), otherTraegerschaft.getName());
+	}
+
+	@Override
+	@NotNull
+	public Mandant getMandant() {
+		return mandant;
+	}
+
+	@Override
+	public void setMandant(@NotNull Mandant mandant) {
+		this.mandant = mandant;
 	}
 }
