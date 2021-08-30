@@ -21,7 +21,7 @@ import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSGemeindeKennzahlen} from '../../../../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
-import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {ErrorServiceX} from '../../../core/errors/service/ErrorServiceX';
 import {SharedModule} from '../../../shared/shared.module';
 import {GemeindeKennzahlenService} from '../gemeinde-kennzahlen.service';
 
@@ -38,7 +38,7 @@ describe('GemeindeKennzahlenFormularComponent', () => {
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$']);
     authServiceSpy.principal$ = of(new TSBenutzer());
 
-    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
+    const errorServiceSpy = jasmine.createSpyObj<ErrorServiceX>(ErrorServiceX.name, ['addMesageAsInfo']);
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -54,7 +54,7 @@ describe('GemeindeKennzahlenFormularComponent', () => {
                     useValue: authServiceSpy,
                 },
                 {
-                    provide: ErrorService,
+                    provide: ErrorServiceX,
                     useValue: errorServiceSpy
                 }
             ],

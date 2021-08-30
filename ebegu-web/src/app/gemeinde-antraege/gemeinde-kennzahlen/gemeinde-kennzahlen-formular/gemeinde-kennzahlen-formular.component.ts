@@ -24,7 +24,7 @@ import {TSRole} from '../../../../models/enums/TSRole';
 import {TSGemeindeKennzahlen} from '../../../../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {ErrorServiceX} from '../../../core/errors/service/ErrorServiceX';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {GemeindeKennzahlenService} from '../gemeinde-kennzahlen.service';
 
@@ -51,8 +51,7 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
         private readonly gemeindeKennzahlenService: GemeindeKennzahlenService,
         private readonly authService: AuthServiceRS,
         private readonly fb: FormBuilder,
-        // TODO: replace with X
-        private readonly errorService: ErrorService,
+        private readonly errorService: ErrorServiceX,
         private readonly translate: TranslateService,
     ) {
     }
