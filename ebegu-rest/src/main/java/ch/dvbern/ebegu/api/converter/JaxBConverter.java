@@ -144,7 +144,6 @@ import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAnga
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitution;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.api.util.RestUtil;
-import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
@@ -319,8 +318,6 @@ import static java.util.Objects.requireNonNull;
 @SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity", "PMD.CollapsibleIfStatements" })
 public class JaxBConverter extends AbstractConverter {
 
-	@Inject
-	private PrincipalBean principalBean;
 
 	public static final String DROPPED_DUPLICATE_CONTAINER = "dropped duplicate container ";
 	public static final String DROPPED_DUPLICATE_ABWEICHUNG = "dropped duplicate abweichung ";
@@ -1502,7 +1499,7 @@ public class JaxBConverter extends AbstractConverter {
 	 * @return TRUE when the Traegerschaft of the institution was updated
 	 */
 	private boolean updateTraegerschaft(@Nonnull JaxInstitutionUpdate update, @Nonnull Institution institution) {
-		if (!principalBean.isCallerInRole(UserRole.SUPER_ADMIN)) {
+		if (!getPrincipalBean().isCallerInRole(UserRole.SUPER_ADMIN)) {
 			// only SUPER_ADMIN may change Traegerschaft
 			return false;
 		}

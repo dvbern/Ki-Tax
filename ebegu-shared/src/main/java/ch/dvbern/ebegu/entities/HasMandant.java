@@ -29,6 +29,8 @@ public interface HasMandant {
 	@Nullable
 	Mandant getMandant();
 
+	void setMandant(@Nullable Mandant mandant);
+
 	@Nonnull
 	String getId();
 
