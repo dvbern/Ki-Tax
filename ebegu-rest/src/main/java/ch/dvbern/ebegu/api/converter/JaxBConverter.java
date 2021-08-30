@@ -1418,6 +1418,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(fachstelleJAXP);
 		requireNonNull(fachstelle);
 		convertAbstractVorgaengerFieldsToEntity(fachstelleJAXP, fachstelle);
+		convertMandantFieldsToEntity(fachstelle);
 		fachstelle.setName(fachstelleJAXP.getName());
 		fachstelle.setFachstelleAnspruch(fachstelleJAXP.isFachstelleAnspruch());
 		fachstelle.setFachstelleErweiterteBetreuung(fachstelleJAXP.isFachstelleErweiterteBetreuung());

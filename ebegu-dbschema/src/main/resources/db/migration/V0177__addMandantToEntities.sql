@@ -24,12 +24,20 @@ ALTER TABLE traegerschaft
 			REFERENCES mandant (id);
 
 
-
 ALTER TABLE application_property ADD COLUMN IF NOT EXISTS mandant_id BINARY(16) NOT NULL DEFAULT (UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', '')));
 ALTER TABLE application_property_aud ADD COLUMN IF NOT EXISTS mandant_id BINARY(16);
 
 ALTER TABLE application_property
 	ADD CONSTRAINT FK_application_property_mandant_id
+		FOREIGN KEY (mandant_id)
+			REFERENCES mandant (id);
+
+
+ALTER TABLE fachstelle ADD COLUMN IF NOT EXISTS mandant_id BINARY(16) NOT NULL DEFAULT (UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', '')));
+ALTER TABLE fachstelle_aud ADD COLUMN IF NOT EXISTS mandant_id BINARY(16);
+
+ALTER TABLE fachstelle
+	ADD CONSTRAINT FK_fachstelle_mandant_id
 		FOREIGN KEY (mandant_id)
 			REFERENCES mandant (id);
 
