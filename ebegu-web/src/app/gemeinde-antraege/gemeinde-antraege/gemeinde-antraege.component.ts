@@ -98,6 +98,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     });
     public triedSending: boolean = false;
     public types: TSGemeindeAntragTyp[];
+    public creatableTypes: TSGemeindeAntragTyp[];
     public deletePossible$: Observable<boolean>;
 
     public constructor(
@@ -243,8 +244,9 @@ export class GemeindeAntraegeComponent implements OnInit {
         combineLatest([principal$, properties$])
             .subscribe(data => {
                 this.types = this.getFilterAntragTypes(data[1]);
-                if (this.types.length === 1) {
-                    this.formGroup.get('antragTyp').setValue(this.types[0]);
+                this.creatableTypes = this.getCreatableAntragTypes(data[1]);
+                if (this.creatableTypes.length === 1) {
+                    this.formGroup.get('antragTyp').setValue(this.creatableTypes[0]);
                 }
             }, error => {
                 LOG.error(error);
@@ -253,14 +255,26 @@ export class GemeindeAntraegeComponent implements OnInit {
     }
 
     private getFilterAntragTypes(config: TSPublicAppConfig): TSGemeindeAntragTyp[] {
-        this.types = this.gemeindeAntragService.getTypesForRole();
+        let types = this.gemeindeAntragService.getFilterableTypesForRole();
+        types = this.filterActiveAntragTypes(config, types);
+        return types;
+    }
+
+    private filterActiveAntragTypes(config: TSPublicAppConfig, types: TSGemeindeAntragTyp[]): TSGemeindeAntragTyp[] {
+        let filteredTypes = types;
         if (!config.ferienbetreuungAktiv) {
-            this.types = this.types.filter(d => d !== TSGemeindeAntragTyp.FERIENBETREUUNG);
+            filteredTypes = filteredTypes.filter(d => d !== TSGemeindeAntragTyp.FERIENBETREUUNG);
         }
         if (!config.lastenausgleichTagesschulenAktiv) {
-            this.types = this.types.filter(d => d !== TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN);
+            filteredTypes = types.filter(d => d !== TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN);
         }
-        return this.types;
+        return filteredTypes;
+    }
+
+    private getCreatableAntragTypes(config: TSPublicAppConfig): TSGemeindeAntragTyp[] {
+        let types = this.gemeindeAntragService.getCreatableTypesForRole();
+        types = this.filterActiveAntragTypes(config, types);
+        return types;
     }
 
     public createAntrag(): void {
@@ -315,6 +329,13 @@ export class GemeindeAntraegeComponent implements OnInit {
         return this.formGroup?.get('antragTyp').value === TSGemeindeAntragTyp.FERIENBETREUUNG;
     }
 
+    public isMandant(): Observable<boolean> {
+        return this.authService.principal$
+            .pipe(
+                map(principal => principal && principal.hasOneOfRoles(TSRoleUtil.getMandantRoles())),
+            );
+    }
+
     public onAntragTypChange(): void {
         const gemeindeControl = this.formGroup.get('gemeinde');
         if (this.ferienBetreuungSelected()) {
@@ -329,7 +350,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     public canCreateAntrag(): Observable<boolean> {
         return this.authService.principal$.pipe(
             filter(principal => !!principal),
-            map(() => this.authService.isOneOfRoles(TSRoleUtil.getFerienbetreuungRoles()))
+            map(() => this.authService.isOneOfRoles(TSRoleUtil.getFerienbetreuungRoles())),
         );
     }
 

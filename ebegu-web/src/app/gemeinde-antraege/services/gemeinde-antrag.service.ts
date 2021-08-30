@@ -94,13 +94,24 @@ export class GemeindeAntragService {
         );
     }
 
-    public getTypesForRole(): TSGemeindeAntragTyp[] {
+    public getFilterableTypesForRole(): TSGemeindeAntragTyp[] {
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
             return [TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN, TSGemeindeAntragTyp.FERIENBETREUUNG,
                 TSGemeindeAntragTyp.GEMEINDE_KENNZAHLEN];
         }
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles())) {
             return [TSGemeindeAntragTyp.FERIENBETREUUNG, TSGemeindeAntragTyp.GEMEINDE_KENNZAHLEN];
+        }
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrTSRoles())) {
+            return [TSGemeindeAntragTyp.FERIENBETREUUNG, TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN];
+        }
+        return [TSGemeindeAntragTyp.FERIENBETREUUNG];
+    }
+
+    public getCreatableTypesForRole(): TSGemeindeAntragTyp[] {
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
+            return [TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN, TSGemeindeAntragTyp.FERIENBETREUUNG,
+                TSGemeindeAntragTyp.GEMEINDE_KENNZAHLEN];
         }
         return [TSGemeindeAntragTyp.FERIENBETREUUNG];
     }
