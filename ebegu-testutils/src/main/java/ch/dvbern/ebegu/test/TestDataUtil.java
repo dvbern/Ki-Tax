@@ -515,6 +515,7 @@ public final class TestDataUtil {
 		fachstelle.setName(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE);
 		fachstelle.setFachstelleAnspruch(true);
 		fachstelle.setFachstelleErweiterteBetreuung(false);
+		fachstelle.setMandant(createDefaultMandant());
 		return fachstelle;
 	}
 
@@ -541,6 +542,7 @@ public final class TestDataUtil {
 	public static Traegerschaft createDefaultTraegerschaft() {
 		Traegerschaft traegerschaft = new Traegerschaft();
 		traegerschaft.setName("Traegerschaft" + UUID.randomUUID().toString());
+		traegerschaft.setMandant(createDefaultMandant());
 		return traegerschaft;
 	}
 
@@ -1056,6 +1058,7 @@ public final class TestDataUtil {
 	public static Gesuchsperiode createGesuchsperiodeXXYY(int yearFrom, int yearTo) {
 		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
+		gesuchsperiode.setMandant(createDefaultMandant());
 		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(yearFrom, Month.AUGUST, 1), LocalDate.of(yearTo,
 			Month.JULY, 31)));
 		return gesuchsperiode;

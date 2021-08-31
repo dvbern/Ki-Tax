@@ -118,10 +118,10 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Before
 	public void init() {
+		mandant = TestDataUtil.getMandantKantonBern(persistence);
 		gesuchsperiode = createGesuchsperiode();
 		insertInstitutionen();
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
-		mandant = TestDataUtil.getMandantKantonBern(persistence);
 		gemeindeId = Objects.requireNonNull(TestDataUtil.getGemeindeParis(persistence)).getId();
 	}
 
@@ -579,6 +579,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	protected Gesuchsperiode createGesuchsperiode() {
 		Gesuchsperiode customGesuchsperiode = TestDataUtil.createCustomGesuchsperiode(BASISJAHR_PLUS_1, BASISJAHR_PLUS_2);
 		customGesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
+		customGesuchsperiode.setMandant(mandant);
 		return gesuchsperiodeService.saveGesuchsperiode(customGesuchsperiode);
 	}
 
