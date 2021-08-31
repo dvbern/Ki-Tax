@@ -14,7 +14,7 @@ pipeline {
 	}
 	stages {
         stage("Backend only") {
-           when {not {anyOf {changeset 'ebegu-web/**'; environment name: 'BUILD_NUMBER', value: '1'}}}
+           when {not {anyOf {changeset 'ebegu-web/**'; environment name: 'BUILD_NUMBER', value: '1'; branch 'hotfix/*'}}}
            steps {
               withMaven(jdk: 'OpenJDK_11.0.4', options: [
                     junitPublisher(healthScaleFactor: 1.0),
@@ -27,7 +27,11 @@ pipeline {
            }
         }
         stage("Backend & Frontend") {
-           when {anyOf {changeset 'ebegu-web/**'; environment name: 'BUILD_NUMBER', value: '1'}}
+           when {allOf {
+           			anyOf {changeset 'ebegu-web/**'; environment name: 'BUILD_NUMBER', value: '1'}
+           			not {branch 'hotfix/*'}
+           			}
+           		}
            steps {
               withMaven(jdk: 'OpenJDK_11.0.4', options: [
                     junitPublisher(healthScaleFactor: 1.0),
@@ -36,6 +40,19 @@ pipeline {
                     artifactsPublisher(disabled: true)
               ]) {
                  sh './mvnw -B -U -T 1C -P dvbern.oss -P ci -P frontend clean test'
+              }
+           }
+        }
+		stage("Backend & Frontend hotfix") {
+           when {branch 'hotfix/*'}
+           steps {
+              withMaven(jdk: 'OpenJDK_11.0.4', options: [
+                    junitPublisher(healthScaleFactor: 1.0),
+                    findbugsPublisher(disabled: true),
+                    spotbugsPublisher(disabled: true),
+                    artifactsPublisher(disabled: true)
+              ]) {
+                 sh './mvnw -B -U -T 1C -P dvbern.oss -P test-wildfly-managed -P ci -P frontend clean install'
               }
            }
         }

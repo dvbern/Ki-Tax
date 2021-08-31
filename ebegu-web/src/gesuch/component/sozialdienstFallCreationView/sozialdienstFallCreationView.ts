@@ -25,6 +25,7 @@ import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSSozialdienstFallStatus} from '../../../models/enums/TSSozialdienstFallStatus';
 import {TSSprache} from '../../../models/enums/TSSprache';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
@@ -211,6 +212,14 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         return false;
     }
 
+    public isSozialdienstDokumentReadOnly(): boolean {
+        if (this.isSozialdienstFallAktiv() || (this.isSozialdienstFallEntzogen()
+            && !this.authServiceRS.isRole(TSRole.SUPER_ADMIN))) {
+            return true;
+        }
+        return false;
+    }
+
     public isSozialdienstFallAktiv(): boolean {
         return this.gesuchModelManager.getFall().sozialdienstFall?.status === TSSozialdienstFallStatus.AKTIV;
     }
@@ -222,6 +231,13 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     public isAktivierungMoeglich(): boolean {
         if (this.gesuchModelManager.getFall().sozialdienstFall?.status === TSSozialdienstFallStatus.INAKTIV
             && this.dokumente && this.dokumente.length > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public isReaktivierungMoeglich(): boolean {
+        if (this.isSozialdienstFallEntzogen() && this.dokumente && this.dokumente.length > 0) {
             return true;
         }
         return false;

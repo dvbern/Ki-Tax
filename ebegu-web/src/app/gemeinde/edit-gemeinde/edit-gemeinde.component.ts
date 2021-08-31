@@ -78,6 +78,7 @@ export class EditGemeindeComponent implements OnInit {
     private initiallyAssignedClients: TSExternalClient[];
     public externalClients: TSExternalClientAssignment;
     public usernameScolaris: string;
+    public gemeindeList$: Observable<TSGemeinde[]>;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -88,7 +89,7 @@ export class EditGemeindeComponent implements OnInit {
         private readonly authServiceRS: AuthServiceRS,
         private readonly dialog: MatDialog,
         private readonly changeDetectorRef: ChangeDetectorRef,
-        private readonly gemeindeWarningService: GemeindeWarningService
+        private readonly gemeindeWarningService: GemeindeWarningService,
     ) {
     }
 
@@ -106,6 +107,8 @@ export class EditGemeindeComponent implements OnInit {
         this.isRegisteringGemeinde = this.$transition$.params().isRegistering;
 
         this.tageschuleEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
+
+        this.loadGemeindenList();
 
         this.loadStammdaten();
 
@@ -151,6 +154,7 @@ export class EditGemeindeComponent implements OnInit {
                     this.usernameScolaris = stammdaten.usernameScolaris;
                 }
                 this.gemeindeWarningService.init(stammdaten.konfigurationsListe);
+
                 return stammdaten;
             }));
 
@@ -162,6 +166,15 @@ export class EditGemeindeComponent implements OnInit {
             err => {
                 LOG.error(err);
             });
+    }
+
+    private loadGemeindenList(): void {
+        this.gemeindeList$ = from(
+            this.gemeindeRS.getAktiveGueltigeGemeinden().then(response => {
+                return response.filter(gemeinde => gemeinde.id !== this.gemeindeId)
+                    .sort((a, b) => a.name.localeCompare(b.name));
+            }));
+
     }
 
     private initializeEmptyUnrequiredFields(stammdaten: TSGemeindeStammdaten): void {
@@ -231,6 +244,10 @@ export class EditGemeindeComponent implements OnInit {
         stammdaten.usernameScolaris = EbeguUtil.isEmptyStringNullOrUndefined(this.usernameScolaris)
             ? undefined
             : this.usernameScolaris;
+        // falls Gutschein selber ausgestellt sollen keine Gemeinde Ausgabestelle definiert werden
+        if (stammdaten.gutscheinSelberAusgestellt) {
+            stammdaten.gemeindeAusgabestelle = undefined;
+        }
 
         try {
             await this.gemeindeRS.saveGemeindeStammdaten(stammdaten);
@@ -393,7 +410,7 @@ export class EditGemeindeComponent implements OnInit {
     private async showSaveWarningDialog(): Promise<void> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            title: this.translate.instant('GEMEINDE_TAB_SAVE_WARNING')
+            title: this.translate.instant('GEMEINDE_TAB_SAVE_WARNING'),
         };
         this.dialog
             .open(DvNgOkDialogComponent, dialogConfig)
@@ -409,7 +426,7 @@ export class EditGemeindeComponent implements OnInit {
     private async showDangerousSaveDialog(): Promise<boolean> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: this.translate.instant('GEMEINDE_DANGEROUS_SAVING')
+            frage: this.translate.instant('GEMEINDE_DANGEROUS_SAVING'),
         };
         return this.dialog
             .open(DvNgConfirmDialogComponent, dialogConfig)

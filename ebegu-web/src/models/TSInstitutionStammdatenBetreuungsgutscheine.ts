@@ -40,6 +40,15 @@ export class TSInstitutionStammdatenBetreuungsgutscheine extends TSAbstractEntit
     public oeffnungsAbweichungen: string;
     public alternativeEmailFamilienportal: string = undefined;
     public betreuungsstandorte: TSBetreuungsstandort[] = [];
+    public oeffnungstageProJahr: number = undefined;
+    public auslastungInstitutionen: number = undefined;
+    public anzahlKinderWarteliste: number = undefined;
+    public summePensumWarteliste: number = undefined;
+    public dauerWarteliste: number = undefined;
+    public fruehEroeffnung: boolean = undefined;
+    public spaetEroeffnung: boolean = undefined;
+    public wochenendeEroeffnung: boolean = undefined;
+    public uebernachtungMoeglich: boolean = undefined;
 
     public constructor() {
         super();

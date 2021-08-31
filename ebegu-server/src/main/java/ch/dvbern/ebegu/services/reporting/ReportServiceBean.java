@@ -1885,7 +1885,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		RowFiller rowFiller = RowFiller.initRowFiller(
 			sheet,
 			MergeFieldProvider.toMergeFields(reportResource.getMergeFields()),
-			reportData.size());
+			Math.max(reportData.size(), 1));
 
 		kantonExcelConverter.mergeRows(
 			rowFiller,
