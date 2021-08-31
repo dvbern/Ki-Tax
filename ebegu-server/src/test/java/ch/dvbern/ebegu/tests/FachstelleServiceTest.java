@@ -44,7 +44,6 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(Arquillian.class)
 @Category(IntegrationTest.class)
-@UsingDataSet("datasets/empty.xml")
 @Transactional(TransactionMode.DISABLED)
 public class FachstelleServiceTest extends AbstractEbeguLoginTest {
 

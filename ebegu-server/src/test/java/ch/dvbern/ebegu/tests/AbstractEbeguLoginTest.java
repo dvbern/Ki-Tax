@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.util.JBossLoginContextFactory;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.jboss.arquillian.persistence.UsingDataSet;
 import org.junit.After;
 import org.junit.Before;
 import org.slf4j.Logger;
@@ -47,6 +48,7 @@ import static ch.dvbern.ebegu.test.util.JBossLoginContextFactory.createLoginCont
  * Diese Klasse loggt vor jeder testmethode als superadmin ein und danach wieder aus.
  * Zudem wird der superadmin in der dp erstellt
  */
+@UsingDataSet("datasets/default-mandant.xml")
 public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEbeguLoginTest.class);

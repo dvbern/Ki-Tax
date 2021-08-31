@@ -43,7 +43,6 @@ import static ch.dvbern.ebegu.test.TestDataUtil.SEQUENCE;
 
 @RunWith(Arquillian.class)
 @Category(IntegrationTest.class)
-@UsingDataSet("datasets/empty.xml")
 @Transactional(TransactionMode.DISABLED)
 public class EinstellungServiceBeanTest extends AbstractEbeguLoginTest {
 

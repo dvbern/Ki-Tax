@@ -43,7 +43,6 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 @Category(IntegrationTest.class)
-@UsingDataSet("datasets/empty.xml")
 @Transactional(TransactionMode.DISABLED)
 public class EinstellungServiceTest extends AbstractEbeguLoginTest {
 
