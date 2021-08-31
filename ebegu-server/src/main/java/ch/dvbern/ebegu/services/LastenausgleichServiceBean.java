@@ -119,6 +119,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		}).collect(Collectors.toSet());
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	@Override
 	@Nonnull
 	public Lastenausgleich createLastenausgleich(
