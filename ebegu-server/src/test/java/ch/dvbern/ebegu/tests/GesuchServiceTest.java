@@ -207,6 +207,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Assert.assertNotNull(gesuchService);
 		Gemeinde bern = TestDataUtil.getGemeindeParis(persistence);
 		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService, gesuchsperiode);
+		final Mandant mandant = TestDataUtil.getMandantKantonBern(persistence);
 
 		Collection<InstitutionStammdaten> stammdaten = criteriaQueryHelper.getAll(InstitutionStammdaten.class);
 		Gesuch gesuch2 = testfaelleService.createAndSaveGesuch(new Testfall02_FeutzYvonne(gesuch.getGesuchsperiode(), stammdaten, true, bern), true, null);
@@ -220,7 +221,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 			bern.getId(),
 			LocalDate.now(),
 			"Testauftrag",
-			gesuch2.getGesuchsperiode().getGueltigkeit().getGueltigAb().plusMonths(1).atTime(0, 0, 0));
+			gesuch2.getGesuchsperiode().getGueltigkeit().getGueltigAb().plusMonths(1).atTime(0, 0, 0), mandant);
 
 		//check all objects exist
 		Assert.assertEquals(2, readGesucheAsAdmin().size());

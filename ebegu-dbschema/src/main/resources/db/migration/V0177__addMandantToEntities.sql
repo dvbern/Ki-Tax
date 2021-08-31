@@ -67,3 +67,12 @@ ALTER TABLE vorlage
 	ADD CONSTRAINT FK_vorlage_mandant_id
 		FOREIGN KEY (mandant_id)
 			REFERENCES mandant (id);
+
+
+ALTER TABLE zahlungsauftrag ADD COLUMN IF NOT EXISTS mandant_id BINARY(16) NOT NULL DEFAULT (UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', '')));
+ALTER TABLE zahlungsauftrag_aud ADD COLUMN IF NOT EXISTS mandant_id BINARY(16);
+
+ALTER TABLE zahlungsauftrag
+	ADD CONSTRAINT FK_zahlungsauftrag_mandant_id
+		FOREIGN KEY (mandant_id)
+			REFERENCES mandant (id);

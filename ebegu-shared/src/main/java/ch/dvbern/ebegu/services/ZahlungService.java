@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.ZahlungenSearchParamsDTO;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
@@ -44,7 +45,8 @@ public interface ZahlungService {
 		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
 		@Nonnull String gemeindeId,
 		@Nonnull LocalDate datumFaelligkeit,
-		@Nonnull String beschreibung);
+		@Nonnull String beschreibung,
+		@Nonnull Mandant mandant);
 
 	/**
 	 * Ermittelt alle im aktuellen Monat gueltigen Verfuegungen, sowie aller seit dem letzten Auftrag eingeganegenen
@@ -57,7 +59,8 @@ public interface ZahlungService {
 		@Nonnull String gemeindeId,
 		@Nonnull LocalDate datumFaelligkeit,
 		@Nonnull String beschreibung,
-		@Nonnull LocalDateTime datumGeneriert);
+		@Nonnull LocalDateTime datumGeneriert,
+		@Nonnull Mandant mandant);
 
 	/**
 	 * Aktualisiert das Fälligkeitsdatum und die Beschreibung im übergebenen Auftrag. Die Zahlungspositionen werden

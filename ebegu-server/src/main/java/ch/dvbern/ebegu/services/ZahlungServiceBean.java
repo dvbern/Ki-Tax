@@ -62,6 +62,7 @@ import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Pain001Dokument;
 import ch.dvbern.ebegu.entities.Pain001Dokument_;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -159,14 +160,16 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
 		@Nonnull String gemeindeId,
 		@Nonnull LocalDate datumFaelligkeit,
-		@Nonnull String beschreibung
+		@Nonnull String beschreibung,
+		@Nonnull Mandant mandant
 	) {
 		return zahlungsauftragErstellen(
 			zahlungslaufTyp,
 			gemeindeId,
 			datumFaelligkeit,
 			beschreibung,
-			LocalDateTime.now());
+			LocalDateTime.now(),
+			mandant);
 	}
 
 	@Override
@@ -178,7 +181,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		@Nonnull String gemeindeId,
 		@Nonnull LocalDate datumFaelligkeit,
 		@Nonnull String beschreibung,
-		@Nonnull LocalDateTime datumGeneriert
+		@Nonnull LocalDateTime datumGeneriert,
+		@Nonnull Mandant mandant
 	) {
 		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("zahlungsauftragErstellen",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
@@ -198,6 +202,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		zahlungsauftrag.setDatumFaellig(datumFaelligkeit);
 		zahlungsauftrag.setDatumGeneriert(datumGeneriert);
 		zahlungsauftrag.setGemeinde(gemeinde);
+		zahlungsauftrag.setMandant(mandant);
 
 		// Alle aktuellen (d.h. der letzte Antrag jedes Falles) Verfuegungen suchen, welche ein Kita-Angebot haben
 		// Wir brauchen folgende Daten:

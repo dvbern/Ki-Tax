@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -36,6 +37,7 @@ import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.TestdataCreationService;
 import ch.dvbern.ebegu.services.ZahlungService;
 import ch.dvbern.ebegu.test.IntegrationTest;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.TestfallName;
 import ch.dvbern.ebegu.util.testdata.ErstgesuchConfig;
 import ch.dvbern.ebegu.util.testdata.MutationConfig;
@@ -75,6 +77,7 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 	private Zahlungsauftrag lastZahlungsauftrag;
 	private LocalDateTime datumGeneriertErsterZahlungsauftrag;
 	private LocalDate eingangsdatum;
+	private Mandant mandant;
 
 
 	@Override
@@ -98,7 +101,8 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 				gemeinde.getId(),
 				LocalDate.now().plusDays(3),
 				"Zahlung Normal August",
-				datumGeneriertErsterZahlungsauftrag);
+				datumGeneriertErsterZahlungsauftrag,
+				mandant);
 		lastZahlungsauftrag = zahlungService.zahlungsauftragAusloesen(lastZahlungsauftrag.getId());
 
 		erstgesuch = gesuchService.findGesuch(erstgesuch.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("findGesuch",
@@ -183,7 +187,8 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 			gemeinde.getId(),
 			LocalDate.now().plusDays(3),
 			"Zahlung Repetition August",
-			lastZahlungsauftrag.getDatumGeneriert().plusDays(1));
+			lastZahlungsauftrag.getDatumGeneriert().plusDays(1),
+			mandant);
 
 		Assert.assertNotNull(mutation);
 		List<VerfuegungZeitabschnitt> alleZeitabschnitte = getAllZeitabschnitteOrderedByGesuchAndDatum();
@@ -211,7 +216,8 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 			gemeinde.getId(),
 			LocalDate.now().plusDays(3),
 			"Zahlung Normal September",
-			lastZahlungsauftrag.getDatumGeneriert().plusMonths(1));
+			lastZahlungsauftrag.getDatumGeneriert().plusMonths(1),
+			mandant);
 
 		Assert.assertNotNull(mutation);
 		List<VerfuegungZeitabschnitt> alleZeitabschnitte = getAllZeitabschnitteOrderedByGesuchAndDatum();
