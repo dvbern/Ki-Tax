@@ -104,7 +104,7 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 	}
 
 	@Nonnull
-	LatsDocxDTO toLatsDocxDTO(
+	protected LatsDocxDTO toLatsDocxDTO(
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container,
 		@Nonnull BigDecimal betreuungsstundenPrognose,
 		Sprache sprache
