@@ -987,10 +987,10 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	// HELP METHODS
 
 	private void insertApplicationProperties() {
-		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_FREIGABE, "" + ANZAHL_TAGE_BIS_WARNUNG_FREIGABE);
-		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG, "" + ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG);
-		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE, "" + ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE);
-		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG, "" + ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG);
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_FREIGABE, "" + ANZAHL_TAGE_BIS_WARNUNG_FREIGABE, mandant);
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG, "" + ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG, mandant);
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE, "" + ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE, mandant);
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG, "" + ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG, mandant);
 	}
 
 	private Gesuch createGesuchInBearbeitungGS(LocalDateTime timestampErstellt) {

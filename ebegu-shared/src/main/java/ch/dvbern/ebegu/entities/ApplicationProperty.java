@@ -68,6 +68,16 @@ public class ApplicationProperty extends AbstractMutableEntity implements HasMan
 	public ApplicationProperty() {
 	}
 
+	public ApplicationProperty(final ApplicationPropertyKey key, final String value) {
+		this.name = key;
+		this.value = value;
+	}
+
+	public ApplicationProperty(ApplicationPropertyKey key, String value, Mandant mandant) {
+		this(key, value);
+		this.mandant = mandant;
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality

@@ -17,10 +17,12 @@ package ch.dvbern.ebegu.tests;
 import java.util.Optional;
 
 import ch.dvbern.ebegu.entities.ApplicationProperty;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.mocks.CriteriaQueryHelperMock;
 import ch.dvbern.ebegu.mocks.PersistenceMock;
 import ch.dvbern.ebegu.services.ApplicationPropertyServiceBean;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import org.needle4j.annotation.InjectIntoMany;
 import org.needle4j.annotation.ObjectUnderTest;
 import org.needle4j.junit.NeedleRule;
@@ -48,7 +50,8 @@ public class ApplicationPropertyServiceTest {
 	@Test
 	public void saveOrUpdateApplicationPropertyTest() {
 		Assert.assertNotNull(applicationPropertyService);
-		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, "testValue");
+		Mandant mandant = TestDataUtil.getMandantKantonBern(persistence);
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, "testValue", mandant);
 		Assert.assertEquals(1, applicationPropertyService.getAllApplicationProperties().size());
 		Optional<ApplicationProperty> propertyOptional = applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED);
 		Assert.assertTrue(propertyOptional.isPresent());
@@ -64,15 +67,17 @@ public class ApplicationPropertyServiceTest {
 
 	@Test
 	public void updateApplicationPropertyTest() {
+		Mandant mandant = TestDataUtil.getMandantKantonBern(persistence);
 		insertNewEntity();
-		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, "changed");
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, "changed", mandant);
 		Optional<ApplicationProperty> propertyOptional = applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED);
 		Assert.assertTrue(propertyOptional.isPresent());
 		Assert.assertEquals("changed", propertyOptional.get().getValue());
 	}
 
 	private void insertNewEntity() {
-		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, "testValue");
+		Mandant mandant = TestDataUtil.getMandantKantonBern(persistence);
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, "testValue", mandant);
 		Assert.assertEquals(1, applicationPropertyService.getAllApplicationProperties().size());
 		Optional<ApplicationProperty> propertyOptional = applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED);
 		Assert.assertNotNull(propertyOptional);

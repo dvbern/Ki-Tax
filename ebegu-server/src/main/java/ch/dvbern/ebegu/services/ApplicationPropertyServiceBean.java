@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.entities.ApplicationProperty_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -76,7 +77,8 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	@Override
 	public ApplicationProperty saveOrUpdateApplicationProperty(
 		@Nonnull final ApplicationPropertyKey key,
-		@Nonnull final String value) {
+		@Nonnull final String value,
+		@Nonnull final Mandant mandant) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(value);
 		Optional<ApplicationProperty> property = readApplicationProperty(key);
@@ -91,7 +93,7 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 			}
 			return mergedProperty;
 		}
-		return persistence.persist(new ApplicationProperty(key, value));
+		return persistence.persist(new ApplicationProperty(key, value, mandant));
 	}
 
 	private void createMutationForEachClosedAntragForBern() {

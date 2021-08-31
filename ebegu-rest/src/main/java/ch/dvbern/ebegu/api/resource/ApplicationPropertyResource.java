@@ -51,6 +51,7 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxApplicationProperties;
 import ch.dvbern.ebegu.api.dtos.JaxPublicAppConfig;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
@@ -87,6 +88,9 @@ public class ApplicationPropertyResource {
 
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	private static final Logger LOG = LoggerFactory.getLogger(ApplicationPropertyResource.class.getSimpleName());
 
@@ -163,7 +167,7 @@ public class ApplicationPropertyResource {
 		ApplicationProperty modifiedProperty =
 			this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(
 				ApplicationPropertyKey.class,
-				key), value);
+				key), value, Objects.requireNonNull(principalBean.getMandant()));
 
 		URI uri = uriInfo.getBaseUriBuilder()
 			.path(ApplicationPropertyResource.class)
@@ -189,7 +193,7 @@ public class ApplicationPropertyResource {
 		ApplicationProperty modifiedProperty =
 			this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(
 				ApplicationPropertyKey.class,
-				key), value);
+				key), value, Objects.requireNonNull(principalBean.getMandant()));
 
 		return converter.applicationPropertyToJAX(modifiedProperty);
 	}
