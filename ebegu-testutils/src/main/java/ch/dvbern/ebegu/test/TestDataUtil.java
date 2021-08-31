@@ -1042,11 +1042,13 @@ public final class TestDataUtil {
 
 	public static Gesuchsperiode createAndPersistGesuchsperiode1718(Persistence persistence) {
 		Gesuchsperiode gesuchsperiodeXXYY = createGesuchsperiodeXXYY(2017, 2018);
+		gesuchsperiodeXXYY.setMandant(getMandantKantonBern(persistence));
 		return persistence.persist(gesuchsperiodeXXYY);
 	}
 
 	public static Gesuchsperiode createAndPersistCustomGesuchsperiode(Persistence persistence, int yearFrom, int yearTo) {
 		Gesuchsperiode gesuchsperiodeXXYY = createGesuchsperiodeXXYY(yearFrom, yearTo);
+		gesuchsperiodeXXYY.setMandant(getMandantKantonBern(persistence));
 		return persistence.persist(gesuchsperiodeXXYY);
 	}
 
