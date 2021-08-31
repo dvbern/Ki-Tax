@@ -66,7 +66,7 @@ public class AnmeldungBestaetigungEventKafkaConsumer {
 	private AnmeldungBestaetigungEventHandler eventHandler;
 
 	@Inject
-	MessageProcessor processor;
+	private MessageProcessor processor;
 
 	private Consumer<String, TagesschuleBestaetigungEventDTO> consumer = null;
 
@@ -101,7 +101,8 @@ public class AnmeldungBestaetigungEventKafkaConsumer {
 				return;
 			}
 
-			ConsumerRecords<String, TagesschuleBestaetigungEventDTO> consumerRecordes = consumer.poll(Duration.ofMillis(5000));
+			ConsumerRecords<String, TagesschuleBestaetigungEventDTO> consumerRecordes =
+				consumer.poll(Duration.ofMillis(5000));
 			consumerRecordes.forEach(this::process);
 			consumer.commitSync();
 		} catch (Exception e) {

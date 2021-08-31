@@ -24,9 +24,8 @@ import javax.annotation.Nonnull;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -55,15 +54,8 @@ public class BetreuungEventHelper {
 	}
 
 	@Nonnull
-	public Processing clientNotFoundFailure(@Nonnull String clientName, @Nonnull Betreuung betreuung) {
-		Institution institution = betreuung.getInstitutionStammdaten().getInstitution();
-
-		return clientNotFoundFailure(clientName, institution);
-	}
-
-	@Nonnull
-	public Processing clientNotFoundFailure(@Nonnull String clientName, @Nonnull AnmeldungTagesschule anmeldungTagesschule) {
-		Institution institution = anmeldungTagesschule.getInstitutionStammdaten().getInstitution();
+	public Processing clientNotFoundFailure(@Nonnull String clientName, @Nonnull AbstractPlatz platz) {
+		Institution institution = platz.getInstitutionStammdaten().getInstitution();
 
 		return clientNotFoundFailure(clientName, institution);
 	}
@@ -80,18 +72,9 @@ public class BetreuungEventHelper {
 	@Nonnull
 	public Optional<InstitutionExternalClient> getExternalClient(
 		@Nonnull String clientName,
-		@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
+		@Nonnull AbstractPlatz platz) {
 
-		Institution institution = anmeldungTagesschule.getInstitutionStammdaten().getInstitution();
-		return getExternalClientForInstitution(clientName, institution);
-	}
-
-	@Nonnull
-	public Optional<InstitutionExternalClient> getExternalClient(
-		@Nonnull String clientName,
-		@Nonnull Betreuung betreuung) {
-
-		Institution institution = betreuung.getInstitutionStammdaten().getInstitution();
+		Institution institution = platz.getInstitutionStammdaten().getInstitution();
 		return getExternalClientForInstitution(clientName, institution);
 	}
 

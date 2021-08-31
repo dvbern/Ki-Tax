@@ -21,8 +21,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -30,14 +33,19 @@ import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
 
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.KontaktAngaben;
+import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.enums.ModulTagesschuleIntervall;
+import ch.dvbern.ebegu.outbox.shared.SharedEventConverter;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.kibon.exchange.commons.institution.AltersKategorie;
 import ch.dvbern.kibon.exchange.commons.institution.GemeindeDTO;
@@ -46,13 +54,16 @@ import ch.dvbern.kibon.exchange.commons.institution.InstitutionEventDTO.Builder;
 import ch.dvbern.kibon.exchange.commons.institution.InstitutionStatus;
 import ch.dvbern.kibon.exchange.commons.institution.KontaktAngabenDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulDTO;
+import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleModuleDTO;
 import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
-import ch.dvbern.kibon.exchange.commons.types.Gesuchsperiode;
-import ch.dvbern.kibon.exchange.commons.types.ModulIntervall;
+import ch.dvbern.kibon.exchange.commons.types.Intervall;
 import ch.dvbern.kibon.exchange.commons.types.Wochentag;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
-import ch.dvbern.kibon.exchange.commons.util.TimestampConverter;
 import ch.dvbern.kibon.exchange.commons.util.TimeConverter;
+import ch.dvbern.kibon.exchange.commons.util.TimestampConverter;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.StringUtils;
 
 @ApplicationScoped
 public class InstitutionEventConverter {
@@ -87,67 +98,55 @@ public class InstitutionEventConverter {
 			stammdaten.getInstitutionStammdatenBetreuungsgutscheine().getAlternativeEmailFamilienportal() :
 			null;
 
-		KontaktAngabenDTO institutionKontaktAngaben = toKontaktAngabenDTO(stammdaten, alternativeEmail, false);
+		String email = preferAlternativeEmail(stammdaten, alternativeEmail);
+		KontaktAngabenDTO kontaktAngaben = toKontaktAngabenDTO(stammdaten, email);
 
+		//noinspection ConstantConditions
 		Builder builder = InstitutionEventDTO.newBuilder()
 			.setId(institution.getId())
 			.setName(institution.getName())
 			.setTraegerschaft(getTraegerschaft(institution))
 			.setBetreuungsArt(BetreuungsangebotTyp.valueOf(stammdaten.getBetreuungsangebotTyp().name()))
 			.setStatus(InstitutionStatus.valueOf(institution.getStatus().name()))
-			.setAdresse(institutionKontaktAngaben)
+			.setAdresse(kontaktAngaben)
 			.setTimestampMutiert(TimestampConverter.serialize(TimestampConverter.of(LocalDateTime.now())));
 
 		InstitutionStammdatenBetreuungsgutscheine bgStammdaten =
 			stammdaten.getInstitutionStammdatenBetreuungsgutscheine();
 		if (bgStammdaten != null) {
-			builder
-				.setBetreuungsGutscheineAb(stammdaten.getGueltigkeit().getGueltigAb())
-				.setBetreuungsGutscheineBis(getGueltigBis(stammdaten.getGueltigkeit()))
-				.setBetreuungsAdressen(getBetreuungsAdressen(institutionKontaktAngaben, bgStammdaten,
-					alternativeEmail))
-				.setOeffnungsTage(getOeffnungsTage(bgStammdaten))
-				.setOffenVon(TimeConverter.serialize(bgStammdaten.getOffenVon()))
-				.setOffenBis(TimeConverter.serialize(bgStammdaten.getOffenBis()))
-				.setOeffnungsAbweichungen(bgStammdaten.getOeffnungsAbweichungen())
-				.setAltersKategorien(getAltersKategorien(bgStammdaten))
-				.setSubventioniertePlaetze(bgStammdaten.getSubventioniertePlaetze())
-				.setAnzahlPlaetze(MathUtil.ZWEI_NACHKOMMASTELLE.from(bgStammdaten.getAnzahlPlaetze()))
-				.setAnzahlPlaetzeFirmen(MathUtil.ZWEI_NACHKOMMASTELLE.from(bgStammdaten.getAnzahlPlaetzeFirmen()))
-			;
+			List<KontaktAngabenDTO> adressen = getBetreuungsAdressen(kontaktAngaben, bgStammdaten, alternativeEmail);
+			setStammdatenBetreuungsgutscheine(builder, stammdaten.getGueltigkeit(), adressen, bgStammdaten);
 		}
-		InstitutionStammdatenTagesschule institutionStammdatenTagesschule = stammdaten.getInstitutionStammdatenTagesschule();
-		if(institutionStammdatenTagesschule != null) {
-			List<ModulDTO> modulDTOS = new ArrayList<>();
-			institutionStammdatenTagesschule.extractAllModulTagesschuleGroup().forEach(
-				modulTagesschuleGroup -> {
-					ch.dvbern.kibon.exchange.commons.tagesschulen.ModulDTO.Builder moduleBuilder = ModulDTO.newBuilder()
-						.setId(modulTagesschuleGroup.getId())
-						.setBezeichnungDE(modulTagesschuleGroup.getBezeichnung().getTextDeutsch())
-						.setBezeichnungFR(modulTagesschuleGroup.getBezeichnung().getTextFranzoesisch())
-						.setZeitVon(TimeConverter.serialize(modulTagesschuleGroup.getZeitVon()))
-						.setZeitBis(TimeConverter.serialize(modulTagesschuleGroup.getZeitBis()))
-						.setIntervall(ModulIntervall.valueOf(modulTagesschuleGroup.getIntervall().name()))
-						.setPadaegogischBetreut(modulTagesschuleGroup.isWirdPaedagogischBetreut())
-						.setVerpflegungsKosten(modulTagesschuleGroup.getVerpflegungskosten() != null ? modulTagesschuleGroup.getVerpflegungskosten() : BigDecimal.ZERO);
-					List<Integer> tages = new ArrayList<>();
-					modulTagesschuleGroup.getModule().forEach(
-						modulTagesschule -> tages.add(modulTagesschule.getWochentag().getValue())
-					);
-					moduleBuilder.setWochentage(tages);
 
-					ch.dvbern.ebegu.entities.Gesuchsperiode gesuchsperiode = modulTagesschuleGroup.getEinstellungenTagesschule().getGesuchsperiode();
-
-					moduleBuilder.setGesuchsperiode(Gesuchsperiode.newBuilder().setId(gesuchsperiode.getId())
-						.setGueltigAb(gesuchsperiode.getGueltigkeit().getGueltigAb())
-						.setGueltigBis(gesuchsperiode.getGueltigkeit().getGueltigBis()).build());
-					modulDTOS.add(moduleBuilder.build());
-				}
-			);
-			builder.setModule(modulDTOS);
+		InstitutionStammdatenTagesschule tsStammdaten = stammdaten.getInstitutionStammdatenTagesschule();
+		if (tsStammdaten != null) {
+			setStammdatenTagesschule(builder, tsStammdaten);
 		}
 
 		return builder.build();
+	}
+
+	@Nonnull
+	@CanIgnoreReturnValue
+	private Builder setStammdatenBetreuungsgutscheine(
+		@Nonnull Builder builder,
+		@Nonnull DateRange gueltigkeit,
+		@Nonnull List<KontaktAngabenDTO> betreuungsAdressen,
+		@Nonnull InstitutionStammdatenBetreuungsgutscheine bgStammdaten) {
+
+		//noinspection ConstantConditions
+		return builder
+			.setBetreuungsGutscheineAb(gueltigkeit.getGueltigAb())
+			.setBetreuungsGutscheineBis(getGueltigBis(gueltigkeit))
+			.setBetreuungsAdressen(betreuungsAdressen)
+			.setOeffnungsTage(getOeffnungsTage(bgStammdaten))
+			.setOffenVon(TimeConverter.serialize(bgStammdaten.getOffenVon()))
+			.setOffenBis(TimeConverter.serialize(bgStammdaten.getOffenBis()))
+			.setOeffnungsAbweichungen(bgStammdaten.getOeffnungsAbweichungen())
+			.setAltersKategorien(getAltersKategorien(bgStammdaten))
+			.setSubventioniertePlaetze(bgStammdaten.getSubventioniertePlaetze())
+			.setAnzahlPlaetze(MathUtil.ZWEI_NACHKOMMASTELLE.from(bgStammdaten.getAnzahlPlaetze()))
+			.setAnzahlPlaetzeFirmen(MathUtil.ZWEI_NACHKOMMASTELLE.from(bgStammdaten.getAnzahlPlaetzeFirmen()));
 	}
 
 	@Nonnull
@@ -157,7 +156,7 @@ public class InstitutionEventConverter {
 		@Nullable String alternativeEmail) {
 
 		List<KontaktAngabenDTO> betreuungsStandorte = bgStammdaten.getBetreuungsstandorte().stream()
-			.map(kontaktAngaben -> toKontaktAngabenDTO(kontaktAngaben, alternativeEmail, true))
+			.map(k -> toKontaktAngabenDTO(k, preferKontaktAngabenEmail(k, alternativeEmail)))
 			.collect(Collectors.toList());
 
 		// implicitly, the institution address is also a betreuungs address
@@ -207,10 +206,10 @@ public class InstitutionEventConverter {
 	@Nonnull
 	private KontaktAngabenDTO toKontaktAngabenDTO(
 		@Nonnull KontaktAngaben kontaktAngaben,
-		@Nullable String alternativeEmailFamilienportal,
-		@Nonnull boolean isBetreuungStandorte) {
+		@Nullable String email) {
 		Adresse adr = kontaktAngaben.getAdresse();
 
+		//noinspection ConstantConditions
 		return KontaktAngabenDTO.newBuilder()
 			.setAnschrift(adr.getOrganisation())
 			.setStrasse(adr.getStrasse())
@@ -220,16 +219,33 @@ public class InstitutionEventConverter {
 			.setOrt(adr.getOrt())
 			.setLand(adr.getLand().name())
 			.setGemeinde(toGemeindeDTO(adr))
-			.setEmail(isBetreuungStandorte ?
-				(kontaktAngaben.getMail() != null ? kontaktAngaben.getMail() : alternativeEmailFamilienportal)
-				: (alternativeEmailFamilienportal != null ? alternativeEmailFamilienportal : kontaktAngaben.getMail()))
+			.setEmail(email)
 			.setTelefon(kontaktAngaben.getTelefon())
 			.setWebseite(kontaktAngaben.getWebseite())
 			.build();
 	}
 
+	@Nullable
+	private String preferKontaktAngabenEmail(
+		@Nonnull KontaktAngaben kontaktAngaben,
+		@Nullable String alternativeEmailFamilienportal) {
+
+		return Optional.ofNullable(kontaktAngaben.getMail())
+			.orElse(alternativeEmailFamilienportal);
+	}
+
+	@Nullable
+	private String preferAlternativeEmail(
+		@Nonnull KontaktAngaben kontaktAngaben,
+		@Nullable String alternativeEmailFamilienportal) {
+
+		return Optional.ofNullable(alternativeEmailFamilienportal)
+			.orElseGet(kontaktAngaben::getMail);
+	}
+
 	@Nonnull
 	private GemeindeDTO toGemeindeDTO(@Nonnull Adresse adr) {
+		//noinspection ConstantConditions
 		return GemeindeDTO.newBuilder()
 			.setName(adr.getGemeinde())
 			.setBfsNummer(adr.getBfsNummer())
@@ -242,5 +258,66 @@ public class InstitutionEventConverter {
 	@Nullable
 	private LocalDate getGueltigBis(@Nonnull DateRange gueltigkeit) {
 		return Constants.END_OF_TIME.equals(gueltigkeit.getGueltigBis()) ? null : gueltigkeit.getGueltigBis();
+	}
+
+	@Nonnull
+	@CanIgnoreReturnValue
+	private Builder setStammdatenTagesschule(
+		@Nonnull Builder builder,
+		@Nonnull InstitutionStammdatenTagesschule tsStammdaten) {
+
+		List<TagesschuleModuleDTO> tagesschuleModule = tsStammdaten.getEinstellungenTagesschule().stream()
+			.map(this::toTagesschuleModuleDTO)
+			.collect(Collectors.toList());
+
+		return builder.setTagesschuleModule(tagesschuleModule);
+	}
+
+	@Nonnull
+	private TagesschuleModuleDTO toTagesschuleModuleDTO(@Nonnull EinstellungenTagesschule e) {
+		return TagesschuleModuleDTO.newBuilder()
+			.setGesuchsperiode(SharedEventConverter.toGesuchsperiode(e.getGesuchsperiode()))
+			.setModule(toModule(e.getModulTagesschuleGroups()))
+			.build();
+	}
+
+
+
+	@Nonnull
+	private List<ModulDTO> toModule(@Nonnull Set<ModulTagesschuleGroup> modulTagesschuleGroups) {
+		return modulTagesschuleGroups.stream()
+			.map(this::toModul)
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	private ModulDTO toModul(@Nonnull ModulTagesschuleGroup modulGroup) {
+		List<Wochentag> wochentage = modulGroup.getModule().stream()
+			.map(modulTagesschule -> Wochentag.valueOf(modulTagesschule.getWochentag().name()))
+			.collect(Collectors.toList());
+
+		return ModulDTO.newBuilder()
+			.setId(modulGroup.getId())
+			.setBezeichnungDE(EbeguUtil.coalesce(modulGroup.getBezeichnung().getTextDeutsch(), StringUtils.EMPTY))
+			.setBezeichnungFR(EbeguUtil.coalesce(modulGroup.getBezeichnung().getTextFranzoesisch(), StringUtils.EMPTY))
+			.setZeitVon(modulGroup.getZeitVon())
+			.setZeitBis(modulGroup.getZeitBis())
+			.setWochentage(wochentage)
+			.setErlaubteIntervalle(toErlaubteIntervalle(modulGroup.getIntervall()))
+			.setWirdPaedagogischBetreut(modulGroup.isWirdPaedagogischBetreut())
+			.setVerpflegungsKosten(EbeguUtil.coalesce(modulGroup.getVerpflegungskosten(), BigDecimal.ZERO))
+			.build();
+	}
+
+	@Nonnull
+	public static List<Intervall> toErlaubteIntervalle(@Nonnull ModulTagesschuleIntervall intervall) {
+		switch (intervall) {
+		case WOECHENTLICH:
+			return Collections.singletonList(Intervall.WOECHENTLICH);
+		case WOECHENTLICH_ODER_ALLE_ZWEI_WOCHEN:
+			return Arrays.asList(Intervall.WOECHENTLICH, Intervall.ALLE_ZWEI_WOCHEN);
+		default:
+			throw new NotImplementedException("Missing converions of " + intervall + " to ModulIntervalle");
+		}
 	}
 }

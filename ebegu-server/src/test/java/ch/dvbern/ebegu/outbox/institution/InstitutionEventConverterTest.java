@@ -26,10 +26,11 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Betreuungsstandort;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.KontaktAngaben;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
@@ -41,15 +42,19 @@ import ch.dvbern.kibon.exchange.commons.institution.InstitutionEventDTO;
 import ch.dvbern.kibon.exchange.commons.institution.InstitutionStatus;
 import ch.dvbern.kibon.exchange.commons.institution.KontaktAngabenDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulDTO;
+import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleModuleDTO;
 import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
+import ch.dvbern.kibon.exchange.commons.types.Gesuchsperiode;
 import ch.dvbern.kibon.exchange.commons.types.Wochentag;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import ch.dvbern.kibon.exchange.commons.util.TimeConverter;
 import com.spotify.hamcrest.pojo.IsPojo;
+import org.hamcrest.Matcher;
 import org.junit.Test;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
+import static java.util.Objects.requireNonNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.contains;
@@ -57,7 +62,6 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.startsWith;
 
 public class InstitutionEventConverterTest {
 
@@ -185,8 +189,8 @@ public class InstitutionEventConverterTest {
 
 	@Test
 	public void testTagesschuleChangedEvent() {
-		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
-		InstitutionStammdaten institutionStammdaten  = TestDataUtil.createInstitutionStammdatenTagesschuleBern(gesuchsperiode);
+		InstitutionStammdaten institutionStammdaten =
+			TestDataUtil.createInstitutionStammdatenTagesschuleBern(TestDataUtil.createGesuchsperiode1718());
 		Institution institution = institutionStammdaten.getInstitution();
 		InstitutionChangedEvent event = converter.of(institutionStammdaten);
 
@@ -202,13 +206,51 @@ public class InstitutionEventConverterTest {
 		assertThat(specificRecord, is(pojo(InstitutionEventDTO.class)
 			.where(InstitutionEventDTO::getId, is(institution.getId()))
 			.where(InstitutionEventDTO::getName, is(institution.getName()))
-			.where(InstitutionEventDTO::getStatus, is(InstitutionStatus.valueOf(institution.getStatus().name())))));
+			.where(InstitutionEventDTO::getStatus, is(InstitutionStatus.valueOf(institution.getStatus().name())))
+			.where(InstitutionEventDTO::getTagesschuleModule, contains(
+				matchesTagesschuleModule(requireNonNull(institutionStammdaten.getInstitutionStammdatenTagesschule()))
+			))
+		));
+	}
 
-		for(int i = 0; i < specificRecord.getModule().size(); i++) {
-			ModulTagesschuleGroup modulTagesschuleGroup = institutionStammdaten.getInstitutionStammdatenTagesschule().extractAllModulTagesschuleGroup().get(i);
-			assertThat(specificRecord.getModule().get(i), is(pojo(ModulDTO.class)
-			.where(ModulDTO::getId, is(modulTagesschuleGroup.getId()))));
-		}
+	@Nonnull
+	private Matcher<TagesschuleModuleDTO>[] matchesTagesschuleModule(
+		@Nonnull InstitutionStammdatenTagesschule stammdaten) {
+		//noinspection unchecked
+		return stammdaten.getEinstellungenTagesschule()
+			.stream()
+			.map(this::moduleMatcher)
+			.toArray(Matcher[]::new);
+	}
 
+	@Nonnull
+	private Matcher<TagesschuleModuleDTO> moduleMatcher(@Nonnull EinstellungenTagesschule einstellungen) {
+		return pojo(TagesschuleModuleDTO.class)
+			.where(TagesschuleModuleDTO::getGesuchsperiode, isGesuchsperiode(einstellungen.getGesuchsperiode()))
+			.where(TagesschuleModuleDTO::getModule, containsInAnyOrder(
+				moduleForEinstellung(einstellungen)
+			));
+	}
+
+	@Nonnull
+	private Matcher<Gesuchsperiode> isGesuchsperiode(@Nonnull ch.dvbern.ebegu.entities.Gesuchsperiode gesuchsperiode) {
+		return pojo(Gesuchsperiode.class)
+			.where(Gesuchsperiode::getId, is(gesuchsperiode.getId()))
+			.where(Gesuchsperiode::getGueltigAb, is(gesuchsperiode.getGueltigkeit().getGueltigAb()))
+			.where(Gesuchsperiode::getGueltigBis, is(gesuchsperiode.getGueltigkeit().getGueltigBis()));
+	}
+
+	@Nonnull
+	private Matcher<ModulDTO>[] moduleForEinstellung(@Nonnull EinstellungenTagesschule einstellungen) {
+		//noinspection unchecked
+		return einstellungen.getModulTagesschuleGroups().stream()
+			.map(this::isModul)
+			.toArray(Matcher[]::new);
+	}
+
+	@Nonnull
+	private Matcher<ModulDTO> isModul(@Nonnull ModulTagesschuleGroup group) {
+		return pojo(ModulDTO.class)
+			.where(ModulDTO::getId, is(group.getId()));
 	}
 }

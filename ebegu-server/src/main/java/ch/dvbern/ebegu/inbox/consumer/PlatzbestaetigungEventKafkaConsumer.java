@@ -66,7 +66,7 @@ public class PlatzbestaetigungEventKafkaConsumer {
 	private PlatzbestaetigungEventHandler eventHandler;
 
 	@Inject
-	MessageProcessor processor;
+	private MessageProcessor processor;
 
 	private Consumer<String, BetreuungEventDTO> consumer = null;
 

@@ -62,7 +62,7 @@ public class BetreuungStornierenEventKafkaConsumer {
 	private BetreuungStornierenEventHandler eventHandler;
 
 	@Inject
-	MessageProcessor processor;
+	private MessageProcessor processor;
 
 	private Consumer<String, String> consumer = null;
 

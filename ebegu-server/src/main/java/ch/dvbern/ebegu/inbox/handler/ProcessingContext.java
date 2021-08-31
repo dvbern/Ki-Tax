@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.inbox.handler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.types.DateRange;
@@ -34,9 +35,10 @@ public class ProcessingContext {
 	private final boolean mahlzeitVerguenstigungEnabled;
 
 	@Nonnull
-	private final String clientName;
+	private final EventMonitor eventMonitor;
 
-	private String humanConfirmationMessage;
+	@Nullable
+	private String humanConfirmationMessage = null;
 
 	private boolean isReadyForBestaetigen = true;
 
@@ -44,12 +46,13 @@ public class ProcessingContext {
 		@Nonnull Betreuung betreuung,
 		@Nonnull BetreuungEventDTO dto,
 		@Nonnull DateRange clientGueltigkeitInPeriode,
-		boolean mahlzeitVerguenstigungEnabled, @Nonnull String clientName) {
+		boolean mahlzeitVerguenstigungEnabled,
+		@Nonnull EventMonitor eventMonitor) {
 		this.betreuung = betreuung;
 		this.dto = dto;
 		this.gueltigkeitInPeriode = clientGueltigkeitInPeriode;
 		this.mahlzeitVerguenstigungEnabled = mahlzeitVerguenstigungEnabled;
-		this.clientName = clientName;
+		this.eventMonitor = eventMonitor;
 	}
 
 	public void requireHumanConfirmation() {
@@ -83,16 +86,17 @@ public class ProcessingContext {
 		return isReadyForBestaetigen;
 	}
 
-	@Nonnull
-	public String getClientName() {
-		return clientName;
-	}
-
+	@Nullable
 	public String getHumanConfirmationMessage() {
 		return humanConfirmationMessage;
 	}
 
-	public void setHumanConfirmationMessage(String humanConfirmationMessage) {
+	public void setHumanConfirmationMessage(@Nullable String humanConfirmationMessage) {
 		this.humanConfirmationMessage = humanConfirmationMessage;
+	}
+
+	@Nonnull
+	public EventMonitor getEventMonitor() {
+		return eventMonitor;
 	}
 }

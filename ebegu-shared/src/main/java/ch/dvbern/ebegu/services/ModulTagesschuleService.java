@@ -43,18 +43,18 @@ public interface ModulTagesschuleService {
 	 * Laedt das ModulTagesschule mit der id aus der DB.
 	 *
 	 * @param modulTagesschuleId PK des Moduls
-	 * @return Modul mit der gegebenen id oder null falls nicht vorhanden
+	 * @return Modul mit der gegebenen id
 	 */
 	@Nonnull
 	Optional<ModulTagesschule> findModul(@Nonnull String modulTagesschuleId);
 
 	/**
-	 * Load das ModulTagessschuleGroup mit der id aus der DB
+	 * Laedt ModulTagessschuleGroup mit der id aus der DB
 	 *
-	 * @param modulTagesschuleGroupId
-	 * @return
+	 * @param modulTagesschuleGroupId PK der Group
+	 * @return Modul mit der gegebenen id
 	 */
-	Optional<ModulTagesschuleGroup> findModulTagesschuleGroup(@Nonnull String modulTagesschuleGroupId)
+	Optional<ModulTagesschuleGroup> findModulTagesschuleGroup(@Nonnull String modulTagesschuleGroupId);
 
 	/**
 	 * entfernt ein Modul aus der Database

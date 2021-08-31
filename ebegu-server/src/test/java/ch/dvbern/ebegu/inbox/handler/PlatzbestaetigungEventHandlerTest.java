@@ -34,7 +34,6 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.BetreuungMonitoring;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
@@ -149,6 +148,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 	private Gesuch gesuch_1GS = null;
 	private Gesuchsperiode gesuchsperiode = null;
 	private Gemeinde gemeinde = null;
+	private EventMonitor eventMonitor = null;
 
 	@BeforeEach
 	void setUp() {
@@ -162,6 +162,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		testfall_1GS.createFall();
 		testfall_1GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 		gesuch_1GS = testfall_1GS.fillInGesuch();
+		eventMonitor = new EventMonitor(betreuungMonitoringService, EVENT_TIME, "fake", CLIENT_NAME);
 	}
 
 	@ParameterizedTest
@@ -233,13 +234,16 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			LocalDateTime eventTime = LocalDateTime.of(2020, 12, 1, 10, 1);
 			LocalDateTime betreuungMutiertTime = eventTime.plusSeconds(1);
 			betreuung.setTimestampMutiert(betreuungMutiertTime);
+			String refnr = dto.getRefnr();
 
-			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false))
+			expect(betreuungService.findBetreuungByBGNummer(refnr, false))
 				.andReturn(Optional.of(betreuung));
 
 			replayAll();
 
-			Processing result = handler.attemptProcessing(eventTime, dto, CLIENT_NAME);
+			EventMonitor monitor = new EventMonitor(betreuungMonitoringService, eventTime, refnr, CLIENT_NAME);
+
+			Processing result = handler.attemptProcessing(monitor, dto);
 			assertThat(result, failed("Die Betreuung wurde verändert, nachdem das BetreuungEvent generiert wurde."));
 			verifyAll();
 		}
@@ -286,7 +290,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			replayAll();
 
-			Processing result = handler.attemptProcessing(EVENT_TIME, dto, CLIENT_NAME);
+			Processing result = handler.attemptProcessing(eventMonitor, dto);
 			assertThat(
 				result,
 				failed(stringContainsInOrder(
@@ -306,7 +310,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				.andReturn(Optional.of(betreuung));
 			mockClient(new DateRange(2022));
 
-			testIgnored(dto, "Der Client hat innerhalb der Periode keinen Berechtigung.");
+			testIgnored(dto, "Der Client hat innerhalb der Periode keine Berechtigung.");
 		}
 
 		@Test
@@ -395,7 +399,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			replayAll();
 
-			Processing result = handler.attemptProcessing(EVENT_TIME, dto, CLIENT_NAME);
+			Processing result = handler.attemptProcessing(eventMonitor, dto);
 			assertThat(
 				result, failed(stringContainsInOrder("Die Betreuung hat einen ungültigen Status: ", status.name()))
 			);
@@ -405,7 +409,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		private void testIgnored(@Nonnull BetreuungEventDTO dto, @Nonnull String message) {
 			replayAll();
 
-			Processing result = handler.attemptProcessing(EVENT_TIME, dto, CLIENT_NAME);
+			Processing result = handler.attemptProcessing(eventMonitor, dto);
 			assertThat(result, failed(message));
 			verifyAll();
 		}
@@ -859,7 +863,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			replayAll();
 
-			Processing result = handler.attemptProcessing(EVENT_TIME, dto, CLIENT_NAME);
+			Processing result = handler.attemptProcessing(eventMonitor, dto);
 			assertThat(result.isProcessingSuccess(), is(true));
 			verifyAll();
 		}
@@ -956,8 +960,8 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			// ignoring the dates, because their formatting is not platform independent
 			assertThat(capture.getValue().getMessage(), stringContainsInOrder(
-				"Pensum 1 von ", " bis ", ": 50%, monatliche Betreuungskosten: CHF 2’000\n",
-				"Pensum 2 von ", " bis ", ": 80%, monatliche Betreuungskosten: CHF 2’000"));
+				"Pensum 1 von ", " bis ", ": 50%, monatliche Betreuungskosten: CHF ", "\n",
+				"Pensum 2 von ", " bis ", ": 80%, monatliche Betreuungskosten: CHF "));
 		}
 
 		@Test
@@ -966,12 +970,12 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			testProcessingSuccess();
 
-			// ignoring the dates, because their formatting is not platform independent
+			// ignoring dates & currency, because their formatting is not platform independent
 			assertThat(capture.getValue().getMessage(), stringContainsInOrder(
-				"Pensum 1 von ", " bis ", ": 50%, monatliche Betreuungskosten: CHF 2’000, "
-					+ "monatliche Hauptmahlzeiten: 0 à CHF 0, monatliche Nebenmahlzeiten: 0 à CHF 0\n",
-				"Pensum 2 von ", " bis ", ": 80%, monatliche Betreuungskosten: CHF 2’000, "
-					+ "monatliche Hauptmahlzeiten: 0 à CHF 0, monatliche Nebenmahlzeiten: 0 à CHF 0"));
+				"Pensum 1 von ", " bis ", ": 50%, monatliche Betreuungskosten: CHF ",
+				"monatliche Hauptmahlzeiten: 0 à CHF 0, monatliche Nebenmahlzeiten: 0 à CHF 0\n",
+				"Pensum 2 von ", " bis ", ": 80%, monatliche Betreuungskosten: CHF ",
+				"monatliche Hauptmahlzeiten: 0 à CHF 0, monatliche Nebenmahlzeiten: 0 à CHF 0"));
 		}
 
 		@Test
@@ -1183,7 +1187,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			replayAll();
 
-			Processing result = handler.attemptProcessing(EVENT_TIME, dto, CLIENT_NAME);
+			Processing result = handler.attemptProcessing(eventMonitor, dto);
 			assertThat(result, failed("Die Betreuungsmeldung und die Betreuung sind identisch."));
 			verifyAll();
 		}
@@ -1198,7 +1202,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			replayAll();
 
-			Processing result = handler.attemptProcessing(EVENT_TIME, dto, CLIENT_NAME);
+			Processing result = handler.attemptProcessing(eventMonitor, dto);
 			assertThat(
 				result,
 				failed("Die Betreuungsmeldung ist identisch mit der neusten offenen Betreuungsmeldung."));
@@ -1237,7 +1241,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			replayAll();
 
-			Processing result = handler.attemptProcessing(EVENT_TIME, dto, CLIENT_NAME);
+			Processing result = handler.attemptProcessing(eventMonitor, dto);
 			assertThat(result, failed("Die Betreuungsmeldung und die Betreuung sind identisch."));
 			verifyAll();
 		}
@@ -1281,7 +1285,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			replayAll();
 
-			Processing result = handler.attemptProcessing(EVENT_TIME, dto, CLIENT_NAME);
+			Processing result = handler.attemptProcessing(eventMonitor, dto);
 			assertThat(result.isProcessingSuccess(), is(true));
 			verifyAll();
 		}
@@ -1295,7 +1299,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			ExternalClient mockClient = new ExternalClient();
 			mockClient.setClientName(CLIENT_NAME);
 			expect(institutionExternalClient.getExternalClient())
-				. andStubReturn(mockClient);
+				.andStubReturn(mockClient);
 
 			withMahlzeitenverguenstigung(withMahlzeitenEnabled);
 

@@ -45,6 +45,7 @@ import ch.dvbern.kibon.exchange.commons.types.Gesuchsperiode;
 import ch.dvbern.kibon.exchange.commons.types.GesuchstellerDTO;
 import ch.dvbern.kibon.exchange.commons.types.Intervall;
 import ch.dvbern.kibon.exchange.commons.types.KindDTO;
+import ch.dvbern.kibon.exchange.commons.types.Wochentag;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import com.spotify.hamcrest.pojo.IsPojo;
 import org.junit.Test;
@@ -117,7 +118,7 @@ public class AnmeldungTagesschuleEventConverterTest {
 			.where(TagesschuleAnmeldungDetailsDTO::getPlanKlasse, is(anmeldungTagesschule.getBelegungTagesschule().getPlanKlasse()))
 			.where(TagesschuleAnmeldungDetailsDTO::getAbweichungZweitesSemester, is(anmeldungTagesschule.getBelegungTagesschule().isAbweichungZweitesSemester()))
 			.where(TagesschuleAnmeldungDetailsDTO::getAbholung, is(AbholungTagesschule.ALLEINE_NACH_HAUSE))
-			.where(TagesschuleAnmeldungDetailsDTO::getModulSelection, contains(
+			.where(TagesschuleAnmeldungDetailsDTO::getModule, contains(
 				matchesModulAuswahlDTO(iterator.next()),
 				matchesModulAuswahlDTO(iterator.next()),
 				matchesModulAuswahlDTO(iterator.next()),
@@ -130,7 +131,7 @@ public class AnmeldungTagesschuleEventConverterTest {
 		return pojo(ModulAuswahlDTO.class)
 			.where(ModulAuswahlDTO::getModulId, is(belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().getId()))
 			.where(ModulAuswahlDTO::getIntervall, is(Intervall.valueOf(belegungTagesschuleModul.getIntervall().name())))
-			.where(ModulAuswahlDTO::getWeekday, is(belegungTagesschuleModul.getModulTagesschule().getWochentag().getValue()));
+			.where(ModulAuswahlDTO::getWeekday, is(Wochentag.valueOf(belegungTagesschuleModul.getModulTagesschule().getWochentag().name())));
 	}
 
 	@Nonnull

@@ -56,11 +56,14 @@ public class BetreuungMonitoringServiceBean extends AbstractBaseService implemen
 		return persistence.getEntityManager().createQuery(query).setMaxResults(200).getResultList();
 	}
 
+	@Override
+	@Nonnull
 	public Collection<BetreuungMonitoring> getAllBetreuungMonitoringFuerRefNummer(@Nonnull String refNummer){
 		return criteriaQueryHelper.getEntitiesByAttribute(BetreuungMonitoring.class, refNummer,
 			BetreuungMonitoring_.refNummer);
 	}
 
+	@Override
 	@Nonnull
 	public BetreuungMonitoring saveBetreuungMonitoring(@Nonnull BetreuungMonitoring betreuungMonitoring){
 		return persistence.persist(betreuungMonitoring);

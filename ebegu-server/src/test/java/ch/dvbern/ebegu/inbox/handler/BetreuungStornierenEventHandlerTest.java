@@ -115,6 +115,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 	private Gesuchsperiode gesuchsperiode = null;
 	private Gemeinde gemeinde = null;
 	private String refNummer = "20.007305.002.1.3";
+	private EventMonitor eventMonitor = null;
 
 	@BeforeEach
 	void setUp() {
@@ -128,6 +129,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 		testfall_1GS.createFall();
 		testfall_1GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 		gesuch_1GS = testfall_1GS.fillInGesuch();
+		eventMonitor = new EventMonitor(betreuungMonitoringService, EVENT_TIME, refNummer, CLIENT_NAME);
 	}
 
 	@ParameterizedTest
@@ -174,7 +176,9 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 
 			replayAll();
 
-			Processing result = handler.attemptProcessing(eventTime, refNummer, CLIENT_NAME);
+			EventMonitor monitor = new EventMonitor(betreuungMonitoringService, eventTime, refNummer, CLIENT_NAME);
+
+			Processing result = handler.attemptProcessing(monitor);
 			assertThat(result, failed("Die Betreuung wurde verändert, nachdem das BetreuungEvent generiert wurde."));
 			verifyAll();
 		}
@@ -192,7 +196,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 
 			replayAll();
 
-			Processing result = handler.attemptProcessing(EVENT_TIME, refNummer, CLIENT_NAME);
+			Processing result = handler.attemptProcessing(eventMonitor);
 			assertThat(
 				result,
 				failed(stringContainsInOrder(
@@ -228,7 +232,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 
 			replayAll();
 
-			Processing result = handler.attemptProcessing(EVENT_TIME, refNummer, CLIENT_NAME);
+			Processing result = handler.attemptProcessing(eventMonitor);
 			assertThat(
 				result,
 				failed(stringContainsInOrder(
@@ -240,7 +244,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 		private void testIgnored(@Nonnull String message) {
 			replayAll();
 
-			Processing result = handler.attemptProcessing(EVENT_TIME, refNummer, CLIENT_NAME);
+			Processing result = handler.attemptProcessing(eventMonitor);
 			assertThat(result, failed(message));
 			verifyAll();
 		}
@@ -323,7 +327,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 
 			replayAll();
 
-			Processing result = handler.attemptProcessing(EVENT_TIME, refNummer, CLIENT_NAME);
+			Processing result = handler.attemptProcessing(eventMonitor);
 			assertThat(result.isProcessingSuccess(), is(true));
 			verifyAll();
 		}
