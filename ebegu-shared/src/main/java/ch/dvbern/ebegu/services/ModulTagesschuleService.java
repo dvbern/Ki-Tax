@@ -54,7 +54,7 @@ public interface ModulTagesschuleService {
 	 * @param modulTagesschuleGroupId
 	 * @return
 	 */
-	Optional<ModulTagesschuleGroup> findModulTagesschuleGroup(@Nonnull String modulTagesschuleGroupId)
+	Optional<ModulTagesschuleGroup> findModulTagesschuleGroup(@Nonnull String modulTagesschuleGroupId);
 
 	/**
 	 * entfernt ein Modul aus der Database

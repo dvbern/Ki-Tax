@@ -165,18 +165,13 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 		void ignoreEventWhenBetreuungMutiertAfterEventTimestamp() {
 			Betreuung betreuung = betreuungWithSingleContainer();
 
-			LocalDateTime eventTime = LocalDateTime.of(2020, 12, 1, 10, 1);
-			LocalDateTime betreuungMutiertTime = eventTime.plusSeconds(1);
+			LocalDateTime betreuungMutiertTime = EVENT_TIME.plusSeconds(1);
 			betreuung.setTimestampMutiert(betreuungMutiertTime);
 
 			expect(betreuungService.findBetreuungByBGNummer(refNummer, false))
 				.andReturn(Optional.of(betreuung));
 
-			replayAll();
-
-			Processing result = handler.attemptProcessing(eventTime, refNummer, CLIENT_NAME);
-			assertThat(result, failed("Die Betreuung wurde verändert, nachdem das BetreuungEvent generiert wurde."));
-			verifyAll();
+			testIgnored("Die Betreuung wurde verändert, nachdem das BetreuungEvent generiert wurde.");
 		}
 
 		@Test
@@ -364,7 +359,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 	private void mockClient(@Nonnull DateRange clientGueltigkeit) {
 		InstitutionExternalClient institutionExternalClient = mock(InstitutionExternalClient.class);
 
-		expect(betreuungEventHelper.getExternalClient(eq(CLIENT_NAME), anyObject()))
+		expect(betreuungEventHelper.getExternalClient(eq(CLIENT_NAME), EasyMock.<Betreuung> anyObject()))
 			.andReturn(Optional.of(institutionExternalClient));
 
 		expect(institutionExternalClient.getGueltigkeit())

@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.BetreuungMonitoring;
-import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.enums.AbholungTagesschule;
@@ -46,8 +45,6 @@ import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulAuswahlDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleBestaetigungEventDTO;
-import ch.dvbern.kibon.exchange.commons.types.Wochentag;
-import org.infinispan.container.versioning.irac.MapEntry$___Marshaller_37a121f54771729f5bc90dae7b319161c44a1e9491f8af866c7aba312bf9651e;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,7 +89,6 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 				"Eine Anmeldungbestaetigung Event wurde nicht verarbeitet: " + message,
 				LocalDateTime.now()));
 		}
-
 	}
 
 	protected Processing attemptProcessing(
@@ -164,7 +160,7 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 
 		mergeDtoModuleInAnmeldung(anmeldungTagesschule, dto, clientName);
 
-		if (anmeldungDirektUebernehmen(anmeldungTagesschule.extractGesuch())) {
+		if (anmeldungDirektUebernehmen(anmeldungTagesschule.extractGesuch().getStatus())) {
 			verfuegungService.anmeldungTagesschuleUebernehmen(anmeldungTagesschule);
 			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(
 				dto.getRefnr(),
@@ -183,9 +179,9 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 		return Processing.success();
 	}
 
-	private boolean anmeldungDirektUebernehmen(Gesuch gesuch) {
-		return gesuch.getStatus().isAnyStatusOfVerfuegt() || gesuch.getStatus() == AntragStatus.VERFUEGEN
-			|| gesuch.getStatus() == AntragStatus.KEIN_KONTINGENT;
+	protected boolean anmeldungDirektUebernehmen(AntragStatus status) {
+		return status.isAnyStatusOfVerfuegt() || status == AntragStatus.VERFUEGEN
+			|| status == AntragStatus.KEIN_KONTINGENT;
 	}
 
 	private void copyAnmeldungDtoDatenInAnmeldung(
@@ -195,7 +191,9 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 			.setAbholungTagesschule(AbholungTagesschule.valueOf(dto.getAbholung().name()));
 		anmeldungTagesschule.getBelegungTagesschule().setBemerkung(dto.getBemerkung());
 		anmeldungTagesschule.getBelegungTagesschule().setAbweichungZweitesSemester(dto.getAbweichungZweitesSemester());
-		anmeldungTagesschule.getBelegungTagesschule().setEintrittsdatum(dto.getEintrittsdatum());
+		if(dto.getEintrittsdatum() != null) {
+			anmeldungTagesschule.getBelegungTagesschule().setEintrittsdatum(dto.getEintrittsdatum());
+		}
 		anmeldungTagesschule.getBelegungTagesschule().setPlanKlasse(dto.getPlanKlasse());
 	}
 
@@ -225,11 +223,11 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 	}
 
 	private boolean isNotFoundInDTO(BelegungTagesschuleModul belegungTagesschuleModul, TagesschuleBestaetigungEventDTO dto) {
-		Optional<ModulAuswahlDTO> modulAuswahlDTOOpt = dto.getModule().stream().findFirst().filter(modulAuswahlDTO ->
+		Optional<ModulAuswahlDTO> modulAuswahlDTOOpt = dto.getModule().stream().filter(modulAuswahlDTO ->
 			modulAuswahlDTO.getModulId().equals(belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().getId())
 				&& belegungTagesschuleModul.getModulTagesschule().getWochentag().getValue() == modulAuswahlDTO.getWeekday()
-		);
-		return modulAuswahlDTOOpt.isPresent();
+		).findFirst();
+		return modulAuswahlDTOOpt.isEmpty();
 	}
 
 	private void updateOrAddDTOModuleInExistingAnmeldung(
@@ -239,17 +237,16 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 		String refNummer,
 		String clientName) {
 		Optional<ModulTagesschule> modulTagesschuleOpt =
-			modulTagesschuleGroup.getModule().stream().findFirst().filter(modulTagesschule ->
-				modulTagesschule.getWochentag().equals(DayOfWeek.of(modulAuswahlDTO.getWeekday())));
+			modulTagesschuleGroup.getModule().stream().filter(modulTagesschule ->
+				modulTagesschule.getWochentag().equals(DayOfWeek.of(modulAuswahlDTO.getWeekday()))).findFirst();
 
 		if(modulTagesschuleOpt.isPresent()) {
 			ModulTagesschule modulTagesschule = modulTagesschuleOpt.get();
 			Optional<BelegungTagesschuleModul> belegungTagesschuleModulOpt = anmeldungTagesschule.getBelegungTagesschule()
 				.getBelegungTagesschuleModule()
 				.stream()
-				.findFirst()
 				.filter(belegungTagesschuleModul -> belegungTagesschuleModul.getModulTagesschule()
-					.equals(modulTagesschule));
+					.equals(modulTagesschule)).findFirst();
 			BelegungTagesschuleModul belegungTagesschuleModul = belegungTagesschuleModulOpt.isPresent() ? belegungTagesschuleModulOpt.get() : new BelegungTagesschuleModul();
 			belegungTagesschuleModul.setIntervall(BelegungTagesschuleModulIntervall.valueOf(modulAuswahlDTO.getIntervall().name()));
 			if (!belegungTagesschuleModulOpt.isPresent()) {
@@ -262,7 +259,7 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(
 				refNummer,
 				clientName,
-				"Tagesschuleanmeldung einen ModulTagesschuleGroup wurde nicht gefunden: " + modulAuswahlDTO.getModulId(),
+				"Tagesschuleanmeldung einen Modul wurde nicht gefunden fuer die ModulTagesschuleGroup: " + modulAuswahlDTO.getModulId(),
 				LocalDateTime.now()));
 		}
 	}
