@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.entities;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
@@ -33,7 +34,7 @@ public class Vorlage extends FileMetadata implements HasMandant {
 	private static final long serialVersionUID = -895840426585785097L;
 
 	@NotNull
-	@OneToOne(optional = false)
+	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_vorlage_mandant_id"))
 	private Mandant mandant;
 

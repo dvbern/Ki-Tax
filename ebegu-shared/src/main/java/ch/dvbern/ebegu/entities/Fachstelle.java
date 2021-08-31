@@ -22,6 +22,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
@@ -50,7 +51,7 @@ public class Fachstelle extends AbstractMutableEntity implements HasMandant {
 	private boolean fachstelleErweiterteBetreuung;
 
 	@NotNull
-	@OneToOne(optional = false)
+	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_fachstelle_mandant_id"))
 	private Mandant mandant;
 

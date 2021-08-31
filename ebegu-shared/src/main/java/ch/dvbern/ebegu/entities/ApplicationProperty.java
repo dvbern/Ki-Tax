@@ -23,6 +23,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -59,7 +60,7 @@ public class ApplicationProperty extends AbstractMutableEntity implements HasMan
 
 
 	@NotNull
-	@OneToOne(optional = false)
+	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_application_property_mandant_id"))
 	private Mandant mandant;
 
@@ -82,11 +83,6 @@ public class ApplicationProperty extends AbstractMutableEntity implements HasMan
 		final ApplicationProperty otherApplicationProperty = (ApplicationProperty) other;
 		return getName() == otherApplicationProperty.getName() &&
 			Objects.equals(getValue(), otherApplicationProperty.getValue());
-	}
-
-	public ApplicationProperty(final ApplicationPropertyKey key, final String value) {
-		this.name = key;
-		this.value = value;
 	}
 
 	public ApplicationPropertyKey getName() {

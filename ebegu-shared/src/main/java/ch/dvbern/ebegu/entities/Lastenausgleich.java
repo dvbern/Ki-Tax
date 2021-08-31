@@ -30,6 +30,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
@@ -67,7 +68,7 @@ public class Lastenausgleich extends AbstractEntity implements HasMandant {
 	private List<LastenausgleichDetail> lastenausgleichDetails = new ArrayList<>();
 
 	@NotNull
-	@OneToOne(optional = false)
+	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_lastenausgleich_mandant_id"))
 	private Mandant mandant;
 

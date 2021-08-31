@@ -99,7 +99,7 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity implements HasMand
 	private Boolean hasNegativeZahlungen = false;
 
 	@NotNull
-	@OneToOne(optional = false)
+	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_zahlungsauftrag_mandant_id"))
 	private Mandant mandant;
 

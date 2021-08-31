@@ -30,6 +30,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
@@ -60,7 +61,7 @@ public class Gesuchsperiode extends AbstractDateRangedEntity implements HasManda
 	private GesuchsperiodeStatus status = GesuchsperiodeStatus.ENTWURF;
 
 	@NotNull
-	@OneToOne(optional = false)
+	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gesuchsperiode_mandant_id"))
 	private Mandant mandant;
 
