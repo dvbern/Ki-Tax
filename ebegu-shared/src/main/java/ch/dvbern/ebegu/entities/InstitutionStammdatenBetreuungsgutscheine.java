@@ -141,23 +141,23 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	private Set<Betreuungsstandort> betreuungsstandorte = new HashSet<>();
 
 	@Nullable
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private Integer oeffnungstageProJahr;
 
 	@Nullable
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private BigDecimal auslastungInstitutionen;
 
 	@Nullable
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private BigDecimal anzahlKinderWarteliste;
 
 	@Nullable
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private BigDecimal summePensumWarteliste;
 
 	@Nullable
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private BigDecimal dauerWarteliste;
 
 	@NotNull
