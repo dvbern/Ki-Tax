@@ -878,7 +878,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 			LocalDate.of(1980, Month.MARCH, 25), gesuchsperiode);
 		TestDataUtil.gesuchVerfuegen(gesuchFeutz, gesuchService);
 
-		final Gesuchsperiode otherGesuchsperiode = TestDataUtil.createGesuchsperiode1617();
+		final Gesuchsperiode otherGesuchsperiode = TestDataUtil.createGesuchsperiode1617AndPersist(persistence);
 		persistence.persist(otherGesuchsperiode);
 
 		final List<Gesuch> gesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(

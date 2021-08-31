@@ -1041,19 +1041,31 @@ public final class TestDataUtil {
 	}
 
 	public static Gesuchsperiode createAndPersistGesuchsperiode1718(Persistence persistence) {
-		Gesuchsperiode gesuchsperiodeXXYY = createGesuchsperiodeXXYY(2017, 2018);
-		gesuchsperiodeXXYY.setMandant(getMandantKantonBern(persistence));
+		Gesuchsperiode gesuchsperiodeXXYY = createGesuchsperiodeXXYYAndPersist(2017, 2018, persistence);
 		return persistence.persist(gesuchsperiodeXXYY);
 	}
 
 	public static Gesuchsperiode createAndPersistCustomGesuchsperiode(Persistence persistence, int yearFrom, int yearTo) {
-		Gesuchsperiode gesuchsperiodeXXYY = createGesuchsperiodeXXYY(yearFrom, yearTo);
-		gesuchsperiodeXXYY.setMandant(getMandantKantonBern(persistence));
+		Gesuchsperiode gesuchsperiodeXXYY = createGesuchsperiodeXXYYAndPersist(yearFrom, yearTo, persistence);
 		return persistence.persist(gesuchsperiodeXXYY);
 	}
 
 	public static Gesuchsperiode createGesuchsperiode1617() {
 		return createGesuchsperiodeXXYY(2016, 2017);
+	}
+
+	public static Gesuchsperiode createGesuchsperiode1617AndPersist(Persistence persistence) {
+		return createGesuchsperiodeXXYYAndPersist(2016, 2017, persistence);
+	}
+
+	@Nonnull
+	public static Gesuchsperiode createGesuchsperiodeXXYYAndPersist(int yearFrom, int yearTo, Persistence persistence) {
+		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
+		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
+		gesuchsperiode.setMandant(getMandantKantonBern(persistence));
+		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(yearFrom, Month.AUGUST, 1), LocalDate.of(yearTo,
+			Month.JULY, 31)));
+		return gesuchsperiode;
 	}
 
 	@Nonnull
@@ -1595,6 +1607,7 @@ public final class TestDataUtil {
 		Benutzer benutzer = createAndPersistBenutzer(persistence);
 		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
 		gesuch.getDossier().setVerantwortlicherBG(benutzer);
+		gesuch.getGesuchsperiode().setMandant(getMandantKantonBern(persistence));
 		persistence.persist(gesuch.getFall());
 
 		persistence.persist(gesuch.getDossier());
@@ -1608,6 +1621,7 @@ public final class TestDataUtil {
 	public static Gesuch createAndPersistGesuch(Persistence persistence, AntragStatus status) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch(status);
 		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
+		gesuch.getGesuchsperiode().setMandant(getMandantKantonBern(persistence));
 		persistence.persist(gesuch.getFall());
 		persistence.persist(gesuch.getDossier());
 		persistence.persist(gesuch.getGesuchsperiode());
