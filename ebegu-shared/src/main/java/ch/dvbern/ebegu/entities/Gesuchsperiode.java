@@ -334,7 +334,7 @@ public class Gesuchsperiode extends AbstractDateRangedEntity implements HasManda
 	}
 
 	@Override
-	public void setMandant(@NotNull Mandant mandant) {
+	public void setMandant(Mandant mandant) {
 		this.mandant = mandant;
 	}
 }

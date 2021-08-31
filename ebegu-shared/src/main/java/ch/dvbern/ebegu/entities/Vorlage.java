@@ -65,7 +65,7 @@ public class Vorlage extends FileMetadata implements HasMandant {
 	}
 
 	@Override
-	public void setMandant(@NotNull Mandant mandant) {
+	public void setMandant(Mandant mandant) {
 		this.mandant = mandant;
 	}
 }

@@ -112,7 +112,7 @@ public class ApplicationProperty extends AbstractMutableEntity implements HasMan
 	}
 
 	@Override
-	public void setMandant(@NotNull Mandant mandant) {
+	public void setMandant(Mandant mandant) {
 		this.mandant = mandant;
 	}
 }

@@ -139,7 +139,7 @@ public class Lastenausgleich extends AbstractEntity implements HasMandant {
 	}
 
 	@Override
-	public void setMandant(@NotNull Mandant mandant) {
+	public void setMandant(Mandant mandant) {
 		this.mandant = mandant;
 	}
 }
