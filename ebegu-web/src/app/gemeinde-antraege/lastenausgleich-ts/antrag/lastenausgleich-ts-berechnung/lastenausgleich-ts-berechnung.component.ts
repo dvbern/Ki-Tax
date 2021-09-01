@@ -29,11 +29,12 @@ import {DownloadRS} from '../../../../core/service/downloadRS.rest';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 const LOG = LogFactory.createLog('LastenausgleichTsBerechnungComponent');
+
 @Component({
     selector: 'dv-lastenausgleich-ts-berechnung',
     templateUrl: './lastenausgleich-ts-berechnung.component.html',
     styleUrls: ['./lastenausgleich-ts-berechnung.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LastenausgleichTsBerechnungComponent implements OnInit {
 
@@ -55,7 +56,7 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
         private readonly latsService: LastenausgleichTSService,
         private readonly authService: AuthServiceRS,
         private readonly downloadRS: DownloadRS,
-        private readonly cd: ChangeDetectorRef
+        private readonly cd: ChangeDetectorRef,
     ) {
     }
 
@@ -76,15 +77,18 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
         this.latsService.latsDocxErstellen(
             this.latsContainer,
             TSSprache.DEUTSCH,
-            this.betreuungsstundenPrognose || this.betreuungsstundenPrognoseFromKiBon
+            this.betreuungsstundenPrognose || this.betreuungsstundenPrognoseFromKiBon,
         ).subscribe(
-                response => {
-                    this.createDownloadFile(response, TSSprache.DEUTSCH);
-                    this.downloadingDeFile.next(false);
-                },
-                async err => {
-                    await this.handleErrors(err);
-                });
+            response => {
+                this.createDownloadFile(response, TSSprache.DEUTSCH);
+                this.downloadingDeFile.next(false);
+            },
+            async err => {
+                LOG.error(err);
+                this.errorService.addMesageAsError(err?.translatedMessage || this.translate.instant(
+                    'ERROR_UNEXPECTED'));
+                this.downloadingDeFile.next(false);
+            });
     }
 
     public createLatsDocumentFr(): void {
@@ -92,34 +96,24 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
         this.latsService.latsDocxErstellen(
             this.latsContainer,
             TSSprache.FRANZOESISCH,
-            this.betreuungsstundenPrognose || this.betreuungsstundenPrognoseFromKiBon
+            this.betreuungsstundenPrognose || this.betreuungsstundenPrognoseFromKiBon,
         ).subscribe(
-                response => {
-                    this.createDownloadFile(response, TSSprache.FRANZOESISCH);
-                    this.downloadingFrFile.next(false);
-                },
-                async err => {
-                    this.handleErrors(err);
-                }
-            );
-    }
-
-    private async handleErrors(err: any): Promise<void> {
-        let message;
-        try {
-            message = JSON.parse(await err.error.text());
-        } catch (err) {
-            this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
-        }
-        if (message.translatedMessage) {
-            this.errorService.addMesageAsError(message.translatedMessage);
-        } else {
-            this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
-        }
+            response => {
+                this.createDownloadFile(response, TSSprache.FRANZOESISCH);
+                this.downloadingFrFile.next(false);
+            },
+            async err => {
+                LOG.error(err);
+                this.errorService.addMesageAsError(err?.translatedMessage || this.translate.instant(
+                    'ERROR_UNEXPECTED'));
+                this.downloadingFrFile.next(false);
+            },
+        );
     }
 
     private createDownloadFile(response: BlobPart, sprache: TSSprache): void {
-        const file = new Blob([response], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+        const file = new Blob([response],
+            {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
         const filename = this.getFilename(sprache);
         this.downloadRS.openDownload(file, filename);
     }
