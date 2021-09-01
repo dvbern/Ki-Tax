@@ -45,4 +45,11 @@
         (buttonClick)="zurueckAnGemeinde()">
         <span translate>ZURUECK_AN_GEMEINDE_TITLE</span>
     </dv-loading-button>
+    <dv-loading-button
+        *ngIf="canSeeZurueckInPruefungButton | async"
+        type="button"
+        class="secondary"
+        (buttonClick)="zurueckInPruefung()">
+        <span translate>ZURUECK_IN_PRUEFUNG_TITLE</span>
+    </dv-loading-button>
 </div>

@@ -689,6 +689,32 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		return saved;
 	}
 
+	@Nonnull
+	@Override
+	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeZurueckInPruefungKanton(
+			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
+		Preconditions.checkState(
+			container.isAntragGeprueft(),
+			"LastenausgleichTagesschuleAngabenGemeindeContainer Geprüft sein"
+		);
+		Preconditions.checkState(
+			container.getAngabenDeklaration() != null,
+			"LastenausgleichTagesschuleAngabenGemeindeContainer angabenDeklaration must not be null"
+		);
+		Preconditions.checkState(
+			container.getAngabenKorrektur() != null,
+			"LastenausgleichTagesschuleAngabenGemeindeContainer angabenDeklaration must not be null"
+		);
+
+		// reopen gemeinde korrektur formular, don't reopen insti or deklaration formulare
+		container.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON);
+		container.getAngabenKorrektur().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
+
+		LastenausgleichTagesschuleAngabenGemeindeContainer saved = saveLastenausgleichTagesschuleGemeinde(container, true);
+
+		return saved;
+	}
+
 
 
 	@Nonnull

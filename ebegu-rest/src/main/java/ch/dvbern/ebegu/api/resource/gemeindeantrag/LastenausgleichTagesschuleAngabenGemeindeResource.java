@@ -407,6 +407,34 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	}
 
 	@ApiOperation(
+		value = "Setzt ein LastenausgleichTagesschuleAngabenGemeinde von GEPRUEFT auf IN_PRUEFUNG_KANTON",
+		response = Void.class)
+	@PUT
+	@Path("/zurueck-in-pruefung")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Nonnull
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer zurueckInPruefungKanton(
+		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainerJax,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(latsGemeindeContainerJax.getId());
+		Objects.requireNonNull(latsGemeindeContainerJax.getGemeinde().getId());
+
+		authorizer.checkWriteAuthorizationLATSGemeindeAntrag(latsGemeindeContainerJax.getId());
+
+		final LastenausgleichTagesschuleAngabenGemeindeContainer converted =
+			getConvertedLastenausgleichTagesschuleAngabenGemeindeContainer(latsGemeindeContainerJax);
+
+		final LastenausgleichTagesschuleAngabenGemeindeContainer wiederEroeffnet =
+			angabenGemeindeService.lastenausgleichTagesschuleGemeindeZurueckInPruefungKanton(converted);
+
+		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(wiederEroeffnet);
+	}
+
+	@ApiOperation(
 		value = "Gibt den Statushistory für die übergebene latsContainerId zurueck",
 		response = JaxLastenausgleichTagesschulenStatusHistory.class)
 	@Nullable

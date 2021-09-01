@@ -50,6 +50,7 @@ export class FreigabeComponent implements OnInit {
     public canViewFreigabeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public canViewGeprueftButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public canViewZurueckGemeindeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public canSeeZurueckInPruefungButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public canSeeFreigegebenText: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public canSeeGeprueftText: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -76,6 +77,7 @@ export class FreigabeComponent implements OnInit {
                     this.canViewFreigabeButton.next(false);
                     this.canViewGeprueftButton.next(true);
                     this.canViewZurueckGemeindeButton.next(true);
+                    this.canSeeZurueckInPruefungButton.next(false);
                 } else if (container.isInBearbeitungGemeinde()) {
                     this.canViewFreigabeButton.next(true);
                     this.canViewGeprueftButton.next(false);
@@ -87,22 +89,21 @@ export class FreigabeComponent implements OnInit {
                 this.canViewGeprueftButton.next(true);
                 this.canViewZurueckGemeindeButton.next(true);
                 this.canSeeFreigegebenText.next(false);
-                this.canSeeGeprueftText.next(false);
+                this.canSeeZurueckInPruefungButton.next(false);
             }
             if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles())) {
                 this.canViewFreigabeButton.next(container.isInBearbeitungGemeinde());
                 this.canViewGeprueftButton.next(false);
                 this.canViewZurueckGemeindeButton.next(false);
                 this.canSeeFreigegebenText.next(container.isAtLeastInBearbeitungKanton());
-                this.canSeeGeprueftText.next(false);
             }
             // tslint:disable-next-line:early-exit
-            if (container.isAtLeastGeprueft()) {
+            if (container.isGeprueft()) {
                 this.canViewFreigabeButton.next(false);
                 this.canViewGeprueftButton.next(false);
                 this.canViewZurueckGemeindeButton.next(false);
+                this.canSeeZurueckInPruefungButton.next(principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()));
                 this.canSeeFreigegebenText.next(principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles()));
-                this.canSeeGeprueftText.next(principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()));
             }
         }, () => this.errorService.addMesageAsInfo(this.translate.instant('DATA_RETRIEVAL_ERROR')));
     }
@@ -197,5 +198,26 @@ export class FreigabeComponent implements OnInit {
 
     public isReadyForGeprueft(): boolean {
         return this.container?.isInBearbeitungKanton() && this.container?.angabenKorrektur.isAbgeschlossen();
+    }
+
+    public isGeprueft(): Observable<boolean> {
+        return this.latsService.getLATSAngabenGemeindeContainer().pipe(
+            map(container => container.isGeprueft())
+        );
+    }
+
+    public async zurueckInPruefung(): Promise<void> {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            frage: this.translate.instant('ZURUECK_IN_PRUEFUNG'),
+        };
+        if (!await (this.dialog.open(DvNgConfirmDialogComponent, dialogConfig))
+            .afterClosed()
+            .toPromise()) {
+            return;
+        }
+        this.latsService.zurueckInPruefung(this.container)
+            .subscribe(() => {},
+                () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED')));
     }
 }
