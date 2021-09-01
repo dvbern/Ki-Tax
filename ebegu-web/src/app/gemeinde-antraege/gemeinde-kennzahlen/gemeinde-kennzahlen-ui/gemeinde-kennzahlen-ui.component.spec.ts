@@ -17,6 +17,7 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {of} from 'rxjs';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
 import {TSGemeindeKennzahlen} from '../../../../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {SharedModule} from '../../../shared/shared.module';
 import {GemeindeKennzahlenService} from '../gemeinde-kennzahlen.service';
@@ -41,7 +42,7 @@ describe('GemeindeKennzahlenUiComponent', () => {
                     useValue: gemeindeKennzahlenServiceSpy
                 }
             ]
-        })
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 

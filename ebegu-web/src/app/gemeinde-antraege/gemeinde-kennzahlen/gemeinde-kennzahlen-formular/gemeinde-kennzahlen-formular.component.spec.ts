@@ -19,6 +19,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
 import {TSGemeindeKennzahlen} from '../../../../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {ErrorServiceX} from '../../../core/errors/service/ErrorServiceX';
@@ -42,7 +43,7 @@ describe('GemeindeKennzahlenFormularComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [SharedModule, BrowserAnimationsModule ],
+            imports: [SharedModule, BrowserAnimationsModule],
             declarations: [GemeindeKennzahlenFormularComponent],
             providers: [
                 {
@@ -55,10 +56,10 @@ describe('GemeindeKennzahlenFormularComponent', () => {
                 },
                 {
                     provide: ErrorServiceX,
-                    useValue: errorServiceSpy
-                }
+                    useValue: errorServiceSpy,
+                },
             ],
-        })
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 
