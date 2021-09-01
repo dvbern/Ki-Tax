@@ -47,9 +47,9 @@ export class FreigabeComponent implements OnInit {
 
     private container: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
 
-    public canViewFreigabeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public canViewGeprueftButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public canViewZurueckGemeindeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public canSeeFreigabeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public canSeeGeprueftButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public canSeeZurueckGemeindeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public canSeeZurueckInPruefungButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public canSeeFreigegebenText: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -72,34 +72,34 @@ export class FreigabeComponent implements OnInit {
             if (principal.hasRole(TSRole.SUPER_ADMIN)) {
                 this.canSeeFreigegebenText.next(false);
                 if (container.isInBearbeitungKanton()) {
-                    this.canViewFreigabeButton.next(false);
-                    this.canViewGeprueftButton.next(true);
-                    this.canViewZurueckGemeindeButton.next(true);
+                    this.canSeeFreigabeButton.next(false);
+                    this.canSeeGeprueftButton.next(true);
+                    this.canSeeZurueckGemeindeButton.next(true);
                     this.canSeeZurueckInPruefungButton.next(false);
                 } else if (container.isInBearbeitungGemeinde()) {
-                    this.canViewFreigabeButton.next(true);
-                    this.canViewGeprueftButton.next(false);
-                    this.canViewZurueckGemeindeButton.next(false);
+                    this.canSeeFreigabeButton.next(true);
+                    this.canSeeGeprueftButton.next(false);
+                    this.canSeeZurueckGemeindeButton.next(false);
                 }
             }
             if (principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles()) && container.isInBearbeitungKanton()) {
-                this.canViewFreigabeButton.next(false);
-                this.canViewGeprueftButton.next(true);
-                this.canViewZurueckGemeindeButton.next(true);
+                this.canSeeFreigabeButton.next(false);
+                this.canSeeGeprueftButton.next(true);
+                this.canSeeZurueckGemeindeButton.next(true);
                 this.canSeeFreigegebenText.next(false);
                 this.canSeeZurueckInPruefungButton.next(false);
             }
             if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles())) {
-                this.canViewFreigabeButton.next(container.isInBearbeitungGemeinde());
-                this.canViewGeprueftButton.next(false);
-                this.canViewZurueckGemeindeButton.next(false);
+                this.canSeeFreigabeButton.next(container.isInBearbeitungGemeinde());
+                this.canSeeGeprueftButton.next(false);
+                this.canSeeZurueckGemeindeButton.next(false);
                 this.canSeeFreigegebenText.next(container.isAtLeastInBearbeitungKanton());
             }
             // tslint:disable-next-line:early-exit
             if (container.isGeprueft()) {
-                this.canViewFreigabeButton.next(false);
-                this.canViewGeprueftButton.next(false);
-                this.canViewZurueckGemeindeButton.next(false);
+                this.canSeeFreigabeButton.next(false);
+                this.canSeeGeprueftButton.next(false);
+                this.canSeeZurueckGemeindeButton.next(false);
                 this.canSeeZurueckInPruefungButton.next(principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()));
                 this.canSeeFreigegebenText.next(principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles()));
             }
