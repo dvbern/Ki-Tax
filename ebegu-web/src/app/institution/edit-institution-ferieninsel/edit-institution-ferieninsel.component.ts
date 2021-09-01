@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSEinstellungenFerieninsel} from '../../../models/TSEinstellungenFerieninsel';
@@ -32,7 +32,7 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
     viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ],
 })
 
-export class EditInstitutionFerieninselComponent {
+export class EditInstitutionFerieninselComponent implements OnInit, OnChanges {
 
     @Input() public stammdaten: TSInstitutionStammdaten;
     @Input() public editMode: boolean;
@@ -47,6 +47,21 @@ export class EditInstitutionFerieninselComponent {
     public ngOnInit(): void {
         this.gemeindeRS.getAllGemeinden().then(allGemeinden => {
             this.gemeindeList = allGemeinden;
+        });
+    }
+
+    public ngOnChanges(changes: SimpleChanges): void {
+        if (changes.stammdaten && changes.stammdaten.currentValue) {
+            this.sortByPeriod();
+        }
+    }
+
+    private sortByPeriod(): void {
+        this.stammdaten.institutionStammdatenFerieninsel.einstellungenFerieninsel.sort((a, b) => {
+            if (a.gesuchsperiode && b.gesuchsperiode) {
+                return b.gesuchsperiode.gesuchsperiodeString.localeCompare(a.gesuchsperiode.gesuchsperiodeString);
+            }
+            return -1;
         });
     }
 
