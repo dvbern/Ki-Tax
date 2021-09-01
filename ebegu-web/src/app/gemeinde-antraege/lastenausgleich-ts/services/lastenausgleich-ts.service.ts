@@ -196,11 +196,14 @@ export class LastenausgleichTSService {
         );
     }
 
-    public latsDocxErstellen(antrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer, sprache: TSSprache):
-        Observable<any> {
+    public latsDocxErstellen(
+        antrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
+        sprache: TSSprache,
+        betreuungsstundenPrognose: number
+    ): Observable<any> {
         return this.http.post(
             `${this.API_BASE_URL}/docx-erstellen/${encodeURIComponent(antrag.id)}/${sprache}`,
-            {},
+            {betreuungsstundenPrognose},
             {responseType: 'blob'}
         );
     }

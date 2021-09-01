@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,17 +15,23 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#betreuungsstundenPrognoseId {
-    max-width: 30rem;
+package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
+
+import java.math.BigDecimal;
+
+import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
+
+public class JaxBetreuungsstundenPrognose extends JaxAbstractDTO {
+
+	private static final long serialVersionUID = -5896096191917846945L;
+
+	private BigDecimal betreuungsstundenPrognose;
+
+	public BigDecimal getBetreuungsstundenPrognose() {
+		return betreuungsstundenPrognose;
+	}
+
+	public void setBetreuungsstundenPrognose(BigDecimal betreuungsstundenPrognose) {
+		this.betreuungsstundenPrognose = betreuungsstundenPrognose;
+	}
 }
-
-form {
-    display: flex;
-    align-items: flex-end;
-
-    p {
-        margin-left: 1rem;
-        margin-bottom: 3rem;
-    }
-}
-

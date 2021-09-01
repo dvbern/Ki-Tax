@@ -2354,6 +2354,8 @@
     "LATS_CONTROLLING_ANTEIL_BETRSONDERE_BEDUERFNISSE": "Anteil zusätzlich verrechnete Stunden aufgrund von besonderen Betreuungsbedürfnissen",
     "LATS_CONTROLLING_ERWARTETE_BETREUUNGSSTUNDEN": "Erwartete Betreuungsstunden",
     "LATS_CONTROLLING_BETREUUNGSSTUNDEN_SCHULJAHR": "Betreuungsstunden Schuljahr",
+    "LATS_BERECHNUNG_AUS_KIBON": "Berechnung aus kiBon",
+    "LATS_VERFUEGUNG": "Lastenausgleich Verfügung",
     "LATS_CONTROLLING_VERAENDERUNG_BETREUUNGSSTUNDEN": "Veränderung Betreuungsstunden zum letzten Schuljahr",
     "LATS_CONTROLLING_ANTEIL_ELTERNBEITRAEGE": "Anteil Elternbeiträge an Normlohnkosten Schuljahr",
     "LATS_CONTROLLING_KOSTENANTEIL": "Kostenanteil Gemeinde an Gesamtkosten",
