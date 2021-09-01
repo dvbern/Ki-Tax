@@ -52,7 +52,6 @@ export class FreigabeComponent implements OnInit {
     public canViewZurueckGemeindeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public canSeeZurueckInPruefungButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public canSeeFreigegebenText: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public canSeeGeprueftText: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     public constructor(
         private readonly translate: TranslateService,
@@ -72,7 +71,6 @@ export class FreigabeComponent implements OnInit {
             this.container = container;
             if (principal.hasRole(TSRole.SUPER_ADMIN)) {
                 this.canSeeFreigegebenText.next(false);
-                this.canSeeGeprueftText.next(false);
                 if (container.isInBearbeitungKanton()) {
                     this.canViewFreigabeButton.next(false);
                     this.canViewGeprueftButton.next(true);
