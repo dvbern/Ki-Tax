@@ -1331,7 +1331,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		expect(institutionExternalClient.getExternalClient())
 			.andStubReturn(mockClient);
 
-		expect(betreuungEventHelper.getExternalClient(eq(CLIENT_NAME), anyObject()))
+		expect(betreuungEventHelper.getExternalClient(eq(CLIENT_NAME), EasyMock.<Betreuung> anyObject()))
 			.andReturn(Optional.of(institutionExternalClient));
 
 		expect(institutionExternalClient.getGueltigkeit())

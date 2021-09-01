@@ -125,7 +125,7 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 		DateRange gesuchsperiode = betreuung.extractGesuchsperiode().getGueltigkeit();
 		Optional<DateRange> overlap = gesuchsperiode.getOverlap(clientGueltigkeit);
 		if (overlap.isEmpty()) {
-			return Processing.failure("Der Client hat innerhalb der Periode keinen Berechtigung.");
+			return Processing.failure("Der Client hat innerhalb der Periode keine Berechtigung.");
 		}
 
 		//Betreuung in Status Warten, entweder stornieren oder abweisen:

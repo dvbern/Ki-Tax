@@ -34,7 +34,6 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
-import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.enums.AbholungTagesschule;
@@ -167,7 +166,7 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 
 		updateAnmeldung(eventMonitor, dto, anmeldung);
 
-		if (anmeldungDirektUebernehmen(anmeldung)) {
+		if (anmeldungDirektUebernehmen(anmeldung.extractGesuch().getStatus())) {
 			//noinspection ResultOfMethodCallIgnored
 			verfuegungService.anmeldungTagesschuleUebernehmen(anmeldung);
 			eventMonitor.record("Tagesschuleanmeldung wurde automatisch uebergenommen");
@@ -180,12 +179,10 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 		return Processing.success();
 	}
 
-	private boolean anmeldungDirektUebernehmen(@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
-		Gesuch gesuch = anmeldungTagesschule.extractGesuch();
-
-		return gesuch.getStatus().isAnyStatusOfVerfuegt()
-			|| gesuch.getStatus() == AntragStatus.VERFUEGEN
-			|| gesuch.getStatus() == AntragStatus.KEIN_KONTINGENT;
+	protected boolean anmeldungDirektUebernehmen(@Nonnull AntragStatus status) {
+		return status.isAnyStatusOfVerfuegt()
+			|| status == AntragStatus.VERFUEGEN
+			|| status == AntragStatus.KEIN_KONTINGENT;
 	}
 
 	// the API only needs to send the modules. Everything else is only optionally overwritten
