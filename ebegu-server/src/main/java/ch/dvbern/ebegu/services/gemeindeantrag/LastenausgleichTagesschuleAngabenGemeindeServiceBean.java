@@ -78,6 +78,7 @@ import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+import ch.dvbern.ebegu.services.MailService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
@@ -126,6 +127,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
+
+	@Inject
+	private MailService mailService;
 
 	private static final Logger LOG =
 		LoggerFactory.getLogger(LastenausgleichTagesschuleAngabenGemeindeServiceBean.class);
@@ -678,7 +682,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		container.getAngabenDeklaration().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
 		container.getAngabenKorrektur().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
 
-		return saveLastenausgleichTagesschuleGemeinde(container, true);
+		LastenausgleichTagesschuleAngabenGemeindeContainer saved = saveLastenausgleichTagesschuleGemeinde(container, true);
+
+		mailService.sendInfoLATSAntragZurueckAnGemeinde(saved);
+
+		return saved;
 	}
 
 
