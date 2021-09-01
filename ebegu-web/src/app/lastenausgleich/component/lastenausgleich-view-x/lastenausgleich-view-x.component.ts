@@ -220,8 +220,8 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
     public isRemoveAllowed(): Observable<boolean> {
         return from(this.applicationPropertyRS.isDevMode())
             .pipe(
-                takeUntil(this.unsubscribe$),
-                map(res => res && this.authServiceRS.isRole(TSRole.SUPER_ADMIN))
+                map(res => res && this.authServiceRS.isRole(TSRole.SUPER_ADMIN)),
+                takeUntil(this.unsubscribe$)
             );
     }
 

@@ -132,6 +132,6 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
             .subscribe(res => {
                 this.betreuungsstundenPrognoseFromKiBon = res;
                 this.cd.markForCheck();
-            });
+            }, err => LOG.error(err));
     }
 }
