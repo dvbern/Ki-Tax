@@ -51,7 +51,6 @@ import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.easymock.EasyMockExtension;
@@ -111,14 +110,13 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 	private BetreuungMonitoringService betreuungMonitoringService;
 
 	private Gesuch gesuch_1GS = null;
-	private Gesuchsperiode gesuchsperiode = null;
 	private Gemeinde gemeinde = null;
-	private String refNummer = "20.007305.002.1.3";
+	private final String refNummer = "20.007305.002.1.3";
 	private EventMonitor eventMonitor = null;
 
 	@BeforeEach
 	void setUp() {
-		gesuchsperiode = TestDataUtil.createGesuchsperiodeXXYY(2020, 2021);
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiodeXXYY(2020, 2021);
 		gemeinde = TestDataUtil.createGemeindeParis();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
@@ -244,11 +242,8 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 
 	@Nested
 	class BetreuungStornierenTest {
-		private ZeitabschnittDTO zeitabschnittDTO = null;
 		private Betreuung betreuung = null;
-		private Betreuungspensum betreuungspensum = null;
 		private DateRange clientGueltigkeit = Constants.DEFAULT_GUELTIGKEIT;
-		private boolean withMahlzeitenEnabled = true;
 
 		/**
 		 * The default setup yields an Mutationsmeldung
@@ -257,7 +252,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 		void setUp() {
 			betreuung = betreuungWithSingleContainer();
 			betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
-			betreuungspensum = getSingleContainer(betreuung);
+			Betreuungspensum betreuungspensum = getSingleContainer(betreuung);
 			// set a pensum different of default zeitabschnitt DTO, otherwiese pensen will be merged, making validation
 			// of gueltigkeiten harder
 			betreuungspensum.setPensum(BigDecimal.valueOf(50));
@@ -357,16 +352,18 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 		}
 	}
 
+	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	private void mockClient(@Nonnull DateRange clientGueltigkeit) {
 		InstitutionExternalClient institutionExternalClient = mock(InstitutionExternalClient.class);
 
-		expect(betreuungEventHelper.getExternalClient(eq(CLIENT_NAME), EasyMock.<Betreuung> anyObject()))
+		expect(betreuungEventHelper.getExternalClient(eq(CLIENT_NAME), EasyMock.<Betreuung>anyObject()))
 			.andReturn(Optional.of(institutionExternalClient));
 
 		expect(institutionExternalClient.getGueltigkeit())
 			.andReturn(clientGueltigkeit);
 	}
 
+	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	@Nonnull
 	private Betreuung betreuungWithSingleContainer() {
 		return PlatzbestaetigungTestUtil.betreuungWithSingleContainer(gesuch_1GS);

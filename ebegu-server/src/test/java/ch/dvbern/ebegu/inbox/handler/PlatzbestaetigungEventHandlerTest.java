@@ -96,7 +96,6 @@ import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.getSingleC
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.matches;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
-import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
@@ -1323,6 +1322,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 	}
 
+	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	private void mockClient(@Nonnull DateRange clientGueltigkeit) {
 		institutionExternalClient = mock(InstitutionExternalClient.class);
 
@@ -1331,13 +1331,14 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		expect(institutionExternalClient.getExternalClient())
 			.andStubReturn(mockClient);
 
-		expect(betreuungEventHelper.getExternalClient(eq(CLIENT_NAME), EasyMock.<Betreuung> anyObject()))
+		expect(betreuungEventHelper.getExternalClient(eq(CLIENT_NAME), EasyMock.<Betreuung>anyObject()))
 			.andReturn(Optional.of(institutionExternalClient));
 
 		expect(institutionExternalClient.getGueltigkeit())
 			.andStubReturn(clientGueltigkeit);
 	}
 
+	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	private void withMahlzeitenverguenstigung(boolean enabled) {
 		Einstellung einstellung = mock(Einstellung.class);
 		expect(einstellungService.findEinstellung(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED, gemeinde, gesuchsperiode))
@@ -1345,6 +1346,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		expect(einstellung.getValueAsBoolean()).andReturn(enabled);
 	}
 
+	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	@Nonnull
 	private ZeitabschnittDTO defaultZeitabschnittDTO() {
 		return PlatzbestaetigungTestUtil.createZeitabschnittDTO(
@@ -1353,6 +1355,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		);
 	}
 
+	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	@Nonnull
 	private Betreuung betreuungWithSingleContainer() {
 		return PlatzbestaetigungTestUtil.betreuungWithSingleContainer(gesuch_1GS);

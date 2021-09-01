@@ -50,9 +50,8 @@ import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import ch.dvbern.kibon.exchange.commons.util.TimeConverter;
 import com.spotify.hamcrest.pojo.IsPojo;
 import org.hamcrest.Matcher;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -75,7 +74,7 @@ public class InstitutionEventConverterTest {
 		institutionStammdaten.getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
 
 		InstitutionStammdatenBetreuungsgutscheine bgStammdaten =
-			checkNotNull(institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine());
+			requireNonNull(institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine());
 
 		Betreuungsstandort betreuungsstandort = createBetreuungsstandort();
 		bgStammdaten.getBetreuungsstandorte().add(betreuungsstandort);
@@ -104,7 +103,7 @@ public class InstitutionEventConverterTest {
 		assertThat(specificRecord, is(pojo(InstitutionEventDTO.class)
 			.where(InstitutionEventDTO::getId, is(institution.getId()))
 			.where(InstitutionEventDTO::getName, is(institution.getName()))
-			.where(InstitutionEventDTO::getTraegerschaft, is(checkNotNull(institution.getTraegerschaft()).getName()))
+			.where(InstitutionEventDTO::getTraegerschaft, is(requireNonNull(institution.getTraegerschaft()).getName()))
 			.where(InstitutionEventDTO::getStatus, is(InstitutionStatus.valueOf(institution.getStatus().name())))
 			.where(
 				InstitutionEventDTO::getBetreuungsGutscheineAb,
