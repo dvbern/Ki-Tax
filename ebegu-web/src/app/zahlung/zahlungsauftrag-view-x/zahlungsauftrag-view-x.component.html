@@ -143,7 +143,7 @@
             </thead>
         </table>
     </div>
-    <div class="dv-table dv-simple-table table-striped" *ngIf="datasource && principal">
+    <div class="dv-table dv-simple-table table-striped" *ngIf="datasource">
         <div class="mat-elevation-z0">
             <mat-table matSort (matSortChange)="sortData($event)"
                        [dataSource]="datasource">
@@ -154,6 +154,18 @@
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis pointer-cursor" (click)="gotoZahlung(element)">
                         <span [title]="getDisplayValue(element, column)  | translate" [innerHTML]="getDisplayValue(element, column) | translate"></span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container [matColumnDef]="'betragTotalAuftrag'">
+                    <mat-header-cell *matHeaderCellDef class="ellipsis">
+                        <span translate>ZAHLUNG_TOTAL</span>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="ellipsis">
+                        <i class="fa fa-exclamation-triangle warning-negative-zahlungen"
+                           *ngIf="element.hasNegativeZahlungen"
+                           [title]="'TOOLTIP_NEGATIVE_WERTE' | translate"></i>
+                        <span [title]="element.betragTotalAuftrag">{{element.betragTotalAuftrag | currency:'':''}}</span>
                     </mat-cell>
                 </ng-container>
 

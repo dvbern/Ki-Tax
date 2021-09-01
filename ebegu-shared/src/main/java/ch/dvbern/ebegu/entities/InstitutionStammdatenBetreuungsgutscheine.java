@@ -42,6 +42,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -138,6 +139,42 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "institutionStammdatenBetreuungsgutscheine", fetch = FetchType.EAGER)
 	@Nonnull
 	private Set<Betreuungsstandort> betreuungsstandorte = new HashSet<>();
+
+	@Nullable
+	@Column(nullable = true)
+	private Integer oeffnungstageProJahr;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal auslastungInstitutionen;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal anzahlKinderWarteliste;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal summePensumWarteliste;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal dauerWarteliste;
+
+	@NotNull
+	@Column(nullable = false)
+	private boolean fruehEroeffnung = false;
+
+	@NotNull
+	@Column(nullable = false)
+	private boolean spaetEroeffnung = false;
+
+	@NotNull
+	@Column(nullable = false)
+	private boolean wochenendeEroeffnung = false;
+
+	@NotNull
+	@Column(nullable = false)
+	private boolean uebernachtungMoeglich = false;
 
 	public InstitutionStammdatenBetreuungsgutscheine() {
 	}
@@ -326,5 +363,82 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 		CompareToBuilder builder = new CompareToBuilder();
 		builder.append(this.getId(), o.getId());
 		return builder.toComparison();
+	}
+
+	@Nullable
+	public Integer getOeffnungstageProJahr() {
+		return oeffnungstageProJahr;
+	}
+
+	public void setOeffnungstageProJahr(@Nullable Integer oeffnungstageProJahr) {
+		this.oeffnungstageProJahr = oeffnungstageProJahr;
+	}
+
+	@Nullable
+	public BigDecimal getAuslastungInstitutionen() {
+		return auslastungInstitutionen;
+	}
+
+	public void setAuslastungInstitutionen(@Nullable BigDecimal auslastungInstitutionen) {
+		this.auslastungInstitutionen = auslastungInstitutionen;
+	}
+
+	@Nullable
+	public BigDecimal getAnzahlKinderWarteliste() {
+		return anzahlKinderWarteliste;
+	}
+
+	public void setAnzahlKinderWarteliste(@Nullable BigDecimal anzahlKinderWarteliste) {
+		this.anzahlKinderWarteliste = anzahlKinderWarteliste;
+	}
+
+	@Nullable
+	public BigDecimal getSummePensumWarteliste() {
+		return summePensumWarteliste;
+	}
+
+	public void setSummePensumWarteliste(@Nullable BigDecimal summePensumWarteliste) {
+		this.summePensumWarteliste = summePensumWarteliste;
+	}
+
+	@Nullable
+	public BigDecimal getDauerWarteliste() {
+		return dauerWarteliste;
+	}
+
+	public void setDauerWarteliste(@Nullable BigDecimal dauerWarteliste) {
+		this.dauerWarteliste = dauerWarteliste;
+	}
+
+	public boolean isFruehEroeffnung() {
+		return fruehEroeffnung;
+	}
+
+	public void setFruehEroeffnung(boolean fruehEroeffnung) {
+		this.fruehEroeffnung = fruehEroeffnung;
+	}
+
+	public boolean isSpaetEroeffnung() {
+		return spaetEroeffnung;
+	}
+
+	public void setSpaetEroeffnung(boolean spaetEroeffnung) {
+		this.spaetEroeffnung = spaetEroeffnung;
+	}
+
+	public boolean isWochenendeEroeffnung() {
+		return wochenendeEroeffnung;
+	}
+
+	public void setWochenendeEroeffnung(boolean wochenendeEroeffnung) {
+		this.wochenendeEroeffnung = wochenendeEroeffnung;
+	}
+
+	public boolean isUebernachtungMoeglich() {
+		return uebernachtungMoeglich;
+	}
+
+	public void setUebernachtungMoeglich(boolean uebernachtungMoeglich) {
+		this.uebernachtungMoeglich = uebernachtungMoeglich;
 	}
 }

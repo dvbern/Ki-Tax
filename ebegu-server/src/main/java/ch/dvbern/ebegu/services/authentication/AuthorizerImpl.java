@@ -1759,7 +1759,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			throwViolation(antrag);
 			break;
 		}
-		case IN_PRUEFUNG_KANTON: {
+		case IN_PRUEFUNG_KANTON:
+		case ZWEITPRUEFUNG: {
 			if (principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles())) {
 				return;
 			}

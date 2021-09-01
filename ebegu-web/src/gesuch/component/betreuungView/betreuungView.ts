@@ -1401,4 +1401,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public isStammdatenAusgefuellt(): boolean {
         return this.instStamm.institution.status !== TSInstitutionStatus.EINGELADEN;
     }
+
+    public showWarningStammdaten(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
+        && !this.isStammdatenAusgefuellt();
+    }
 }

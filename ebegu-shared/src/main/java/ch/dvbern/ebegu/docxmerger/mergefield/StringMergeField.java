@@ -18,16 +18,20 @@
 package ch.dvbern.ebegu.docxmerger.mergefield;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class StringMergeField extends AbstractMergeField<String> {
 
-	public StringMergeField(@Nonnull String name, @Nonnull String value) {
+	public StringMergeField(@Nonnull String name, @Nullable String value) {
 		super(name, value);
 	}
 
 	@Override
 	@Nonnull
 	public String getConvertedValue() {
-		return this.getValue();
+		if (this.getValue() != null) {
+			return this.getValue();
+		}
+		return "";
 	}
 }

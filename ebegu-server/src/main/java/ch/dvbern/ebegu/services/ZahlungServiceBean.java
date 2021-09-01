@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
@@ -92,6 +93,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
 import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.jboss.ejb3.annotation.TransactionTimeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -170,6 +172,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@Override
 	@Nonnull
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionTimeout(value = Constants.MAX_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	public Zahlungsauftrag zahlungsauftragErstellen(
 		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
 		@Nonnull String gemeindeId,
@@ -613,6 +616,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 		List<Predicate> predicates = createPredicatesForZahlungen(zahlungenSearchParamsDTO, cb, root, joinGemeinde);
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		query.distinct(true);
 
 		setSortOrder(query, zahlungenSearchParamsDTO, root, joinGemeinde, cb);
 
@@ -635,6 +639,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 		List<Predicate> predicates = createPredicatesForZahlungen(zahlungenSearchParamsDTO, cb, root, joinGemeinde);
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		query.distinct(true);
 
 		return persistence.getCriteriaSingleResult(query);
 	}

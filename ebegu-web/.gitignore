@@ -6,5 +6,4 @@ node_modules/
 npm-debug.log
 .cache-loader
 src/environments/version.ts
-package-lock.json
 /debug.log

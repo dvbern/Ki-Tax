@@ -493,7 +493,9 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		@Nonnull InstitutionStammdaten institutionStammdaten,
 		boolean offenePendenzen,
 		boolean ungelesendeMitteilung) {
-		String mailaddress = institutionStammdaten.getMail();
+		String mailaddress = institutionStammdaten.getErinnerungMail() != null ?
+			institutionStammdaten.getErinnerungMail() :
+			institutionStammdaten.getMail();
 		try {
 			if (StringUtils.isNotEmpty(mailaddress)) {
 				String message = mailTemplateConfig

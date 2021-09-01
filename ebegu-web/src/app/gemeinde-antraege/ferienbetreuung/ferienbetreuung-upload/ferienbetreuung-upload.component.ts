@@ -118,7 +118,6 @@ export class FerienbetreuungUploadComponent implements OnInit, OnDestroy {
                 },
                 err => {
                     LOG.error(err);
-                    this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
                 });
     }
 

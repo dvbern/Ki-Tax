@@ -36,6 +36,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -241,6 +242,17 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Column(nullable = false)
 	@NotNull
 	private Boolean emailBeiGesuchsperiodeOeffnung = false;
+
+	@Nonnull
+	@Column(nullable = false)
+	@NotNull
+	private Boolean gutscheinSelberAusgestellt = true;
+
+
+	@Nullable
+	@ManyToOne(optional = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeinde_stammdaten_gemeinde_ausgabestelle_id"), nullable = true)
+	private Gemeinde gemeindeAusgabestelle;
 
 	@Nonnull
 	@ManyToMany
@@ -706,5 +718,23 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	public void setEmailBeiGesuchsperiodeOeffnung(@Nonnull Boolean emailBeiGesuchsperiodeOeffnung) {
 		this.emailBeiGesuchsperiodeOeffnung = emailBeiGesuchsperiodeOeffnung;
+	}
+
+	@Nonnull
+	public Boolean getGutscheinSelberAusgestellt() {
+		return gutscheinSelberAusgestellt;
+	}
+
+	public void setGutscheinSelberAusgestellt(@Nonnull Boolean gutscheinSelberAusgestellt) {
+		this.gutscheinSelberAusgestellt = gutscheinSelberAusgestellt;
+	}
+
+	@Nullable
+	public Gemeinde getGemeindeAusgabestelle() {
+		return gemeindeAusgabestelle;
+	}
+
+	public void setGemeindeAusgabestelle(@Nullable Gemeinde gemeindeAusgabestelle) {
+		this.gemeindeAusgabestelle = gemeindeAusgabestelle;
 	}
 }
