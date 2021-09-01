@@ -14,18 +14,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+@import (reference) '../../../../style/variables.less';
+@import (reference) '../../../../style/mixins.less';
 
-package ch.dvbern.ebegu.services.gemeindeantrag;
+mat-dialog-actions {
+    display: flex;
+    justify-content: center;
 
-import java.math.BigDecimal;
+    > button:first-child {
+        margin-right: 1rem;
+        min-width: 60px;
+    }
+}
 
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.enums.Sprache;
-
-public interface LastenausgleichTagesschuleDokumentService {
-
-	@Nonnull
-	byte[] createDocx(@Nonnull String containerId, @Nonnull Sprache sprache, @Nonnull BigDecimal betreuungsstundenPrognose);
-
+::ng-deep input.contrast-input {
+    background-color: @contrast-lighter;
 }

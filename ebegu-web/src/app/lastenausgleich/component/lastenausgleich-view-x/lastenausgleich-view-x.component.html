@@ -1,0 +1,156 @@
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="lastenausgleich-view" *ngIf="showLastenausgleich()">
+
+   <form role="form" #form=ngForm name="form"  [ngClass]="{'ng-submitted': form.submitted}" unsaved-warning-form="" novalidate *ngIf="showActions()">
+        <div>
+            <div class="row lastenausgleich-form">
+
+                <!-- Jahr -->
+                <div class="flex-grow-3">
+                    <div class="form-group">
+                        <label class="md-no-float required" translate
+                               for="jahr">LASTENAUSGLEICH_JAHR</label>
+                        <input id="jahr" name="jahr"
+                               [(ngModel)]="jahr"
+                               type="number"
+                               min="2000"
+                               step="1"
+                               class="form-control input-dv input-element" required>
+                        <dv-error-messages [errorObject]="form?.form.get('jahr')?.errors"
+                                           class="error"></dv-error-messages>
+                    </div>
+                </div>
+
+                <!-- Selbstbehalt pro 100% Platz -->
+                <div class="flex-grow-3">
+                    <div class="form-group">
+                        <label class="md-no-float required" translate
+                               for="selbstbehaltPro100ProzentPlatz">LASTENAUSGLEICH_SELBSTBEHALT</label>
+                        <input id="selbstbehaltPro100ProzentPlatz" name="selbstbehaltPro100ProzentPlatz"
+                               [(ngModel)]="selbstbehaltPro100ProzentPlatz"
+                               type="number"
+                               min="0"
+                               step="1"
+                               class="form-control input-dv input-element" required>
+                        <dv-error-messages [errorObject]="form?.form.get('selbstbehaltPro100ProzentPlatz')?.errors"
+                                           class="error"></dv-error-messages>
+                    </div>
+                </div>
+                <div class="flex-grow-2"></div>
+                <div class="flex-grow-4 actions">
+                    <dv-loading-button (buttonClick)="createLastenausgleich()" inputId="lastenausgleichErstellen"
+                                       [ariaLabel]="'LASTENAUSGLEICH_ERSTELLEN' | translate" type="submit">
+                        <span class="uppercase" translate>LASTENAUSGLEICH_ERSTELLEN</span>
+                    </dv-loading-button>
+                    <dv-loading-button (buttonClick)="downloadZemisExcel()" inputId="downloadZemisExcel"
+                                       [ariaLabel]="'ZEMIS_LISTE_HERUNTERLADEN' | translate">
+                        <span class="fa fa-download"></span>
+                    </dv-loading-button>
+                    <dv-loading-button (buttonClick)="uploadZemisExcel()" inputId="uploadZemisExcel"
+                                       [ariaLabel]="'ZEMIS_LISTE_HOCHLADEN' | translate">
+                        <span class="fa fa-upload"></span>
+                    </dv-loading-button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="table-header">
+        <div>
+            <h3 translate>LASTENAUSGLEICH_LIST</h3>
+        </div>
+        <div>
+            <h3>{{lastenausgleiche.length}}</h3>
+        </div>
+    </div>
+
+    <div class="dv-table dv-simple-table table-striped" *ngIf="datasource">
+
+        <mat-table [dataSource]="datasource">
+
+            <ng-container matColumnDef="jahr">
+                <th mat-header-cell *matHeaderCellDef class="ellipsis">
+                    <span translate>LASTENAUSGLEICH_JAHR</span>
+                </th>
+                <td mat-cell *matCellDef="let element" class="ellipsis">
+                    {{element.jahr}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="lastenausgleichGeneneriert">
+                <th mat-header-cell *matHeaderCellDef class="ellipsis">
+                    <span translate>LASTENAUSGLEICH_GENERIERT</span>
+                </th>
+                <td mat-cell *matCellDef="let element" class="ellipsis">
+                    {{element.timestampErstellt | ebeguDate}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="totalAlleGemeinden">
+                <th mat-header-cell *matHeaderCellDef class="ellipsis">
+                    <span translate>LASTENAUSGLEICH_TOTALBETRAG</span>
+                </th>
+                <td mat-cell *matCellDef="let element" class="ellipsis">
+                    {{element.totalAlleGemeinden | number:"1.2-2"}} {{'CHF' | translate}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="lastenausgleichExcel">
+                <th mat-header-cell *matHeaderCellDef class="ellipsis">
+                    <span translate>LASTENAUSGLEICH_EXCEL</span>
+                </th>
+                <td mat-cell *matCellDef="let element" class="ellipsis">
+                    <dv-loading-button type="button" (buttonClick)="downloadExcel(element)"
+                                       [buttonClass]="'dv-btn-operation'">
+                        <i class="fa fa-lg fa-file-excel-o"></i>
+                    </dv-loading-button>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="lastenausgleichCsv">
+                <th mat-header-cell *matHeaderCellDef class="ellipsis">
+                    <span translate>LASTENAUSGLEICH_CSV</span>
+                </th>
+                <td mat-cell *matCellDef="let element" class="ellipsis">
+                    <dv-loading-button type="button" (buttonClick)="downloadCsv(element)"
+                                       [buttonClass]="'dv-btn-operation'">
+                        <i class="fa fa-lg fa-file-code-o"></i>
+                    </dv-loading-button>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="lastenausgleichRemove">
+                <th mat-header-cell *matHeaderCellDef class="ellipsis">
+                    <span translate>LASTENAUSGLEICH_REMOVE</span>
+                </th>
+                <td mat-cell *matCellDef="let element" class="ellipsis">
+                    <dv-loading-button type="button" (buttonClick)="removeLastenausgleich(element)"
+                                       [buttonClass]="'dv-btn-operation'">
+                        <i class="fa fa-lg fa-trash-o"></i>
+                    </dv-loading-button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="columndefs"></tr>
+            <tr mat-row *matRowDef="let row; columns: columndefs;"></tr>
+
+        </mat-table>
+
+    </div>
+</div>

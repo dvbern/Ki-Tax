@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,24 +18,15 @@
 @import (reference) '../../../../style/mixins.less';
 
 .lastenausgleich-view {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     padding: 3rem;
-    .lastenausgleich-percent-5 {
-        width: 5%;
-    }
-    .lastenausgleich-percent-10 {
-        width: 10%;
-    }
-    .lastenausgleich-percent-15 {
-        width: 15%;
-    }
-    .lastenausgleich-percent-25 {
-        width: 25%;
-    }
-    .lastenausgleich-percent-35 {
-        width: 35%;
-    }
-    .lastenausgleich-percent-45 {
-        width: 40%;
+
+    > form {
+        flex-grow: 1;
+        max-width: 1230px;
+        width: 100%;
     }
 
     tr.errorrow td {
@@ -58,18 +49,64 @@
         }
     }
     .lastenausgleich-form {
+        align-items: flex-end;
         background: @contrast-light;
+        display: flex;
+        justify-content: space-evenly;
         margin-bottom: 4rem;
-        padding-bottom: 1rem;
-        padding-top: 4rem;
-    }
-    .actions {
-        > dv-loading-button {
+        padding: 4rem 2rem 1rem;
+
+        > div {
+            margin: 0 1rem;
+        }
+
+        .actions {
+            display: flex;
+            margin-bottom: 3rem;
+        }
+
+        dv-loading-button {
             margin-right: 0.5rem;
             span.fa {
                 font-size: 1.8rem;
             }
         }
+    }
+
+    .dv-table {
+        width: 100%;
+
+        mat-table {
+            border-collapse: collapse;
+            display: table;
+            width: 100%;
+        }
+
+        th.mat-header-cell:first-of-type, td.mat-cell:first-of-type {
+            padding-left: 1rem;
+        }
+    }
+
+    .table-header {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .flex-grow-0 {
+        flex-grow: 0;
+    }
+
+    .flex-grow-2 {
+        flex-grow: 2;
+    }
+
+    .flex-grow-3 {
+        flex-grow: 3;
+    }
+
+    .flex-grow-4 {
+        flex-grow: 4;
     }
 }
 

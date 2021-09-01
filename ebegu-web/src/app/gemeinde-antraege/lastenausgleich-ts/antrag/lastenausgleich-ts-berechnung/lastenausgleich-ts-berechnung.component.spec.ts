@@ -16,16 +16,16 @@
  */
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {TranslateService} from '@ngx-translate/core';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {DownloadRS} from '../../../../core/service/downloadRS.rest';
+import {SharedModule} from '../../../../shared/shared.module';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 import {LastenausgleichTsBerechnungComponent} from './lastenausgleich-ts-berechnung.component';
 
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
-const translateSpy = jasmine.createSpyObj<TranslateService>(TranslateService.name, ['instant']);
 const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name, ['openDownload']);
 const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
     ['principal$', 'isOneOfRoles']);
@@ -38,15 +38,15 @@ describe('LastenausgleichTsBerechnungComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [SharedModule],
             declarations: [LastenausgleichTsBerechnungComponent],
             providers: [
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: TranslateService, useValue: translateSpy},
                 {provide: DownloadRS, useValue: downloadRSSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
-            ]
-        })
+            ],
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     }));
 

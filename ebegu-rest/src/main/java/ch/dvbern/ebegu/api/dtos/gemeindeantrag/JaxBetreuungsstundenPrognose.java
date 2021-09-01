@@ -15,17 +15,23 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services.gemeindeantrag;
+package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
 
 import java.math.BigDecimal;
 
-import javax.annotation.Nonnull;
+import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 
-import ch.dvbern.ebegu.enums.Sprache;
+public class JaxBetreuungsstundenPrognose extends JaxAbstractDTO {
 
-public interface LastenausgleichTagesschuleDokumentService {
+	private static final long serialVersionUID = -5896096191917846945L;
 
-	@Nonnull
-	byte[] createDocx(@Nonnull String containerId, @Nonnull Sprache sprache, @Nonnull BigDecimal betreuungsstundenPrognose);
+	private BigDecimal betreuungsstundenPrognose;
 
+	public BigDecimal getBetreuungsstundenPrognose() {
+		return betreuungsstundenPrognose;
+	}
+
+	public void setBetreuungsstundenPrognose(BigDecimal betreuungsstundenPrognose) {
+		this.betreuungsstundenPrognose = betreuungsstundenPrognose;
+	}
 }

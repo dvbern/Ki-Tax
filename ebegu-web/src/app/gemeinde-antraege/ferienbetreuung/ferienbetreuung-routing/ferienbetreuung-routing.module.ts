@@ -18,6 +18,7 @@
 import {NgModule} from '@angular/core';
 import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {Transition} from '@uirouter/core';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {FerienbetreuungAbschlussComponent} from '../ferienbetreuung-abschluss/ferienbetreuung-abschluss.component';
 import {FerienbetreuungAngebotComponent} from '../ferienbetreuung-angebot/ferienbetreuung-angebot.component';
 import {FerienbetreuungKostenEinnahmenComponent} from '../ferienbetreuung-kosten-einnahmen/ferienbetreuung-kosten-einnahmen.component';
@@ -32,6 +33,9 @@ const states: NgHybridStateDeclaration[] = [
         name: 'FERIENBETREUUNG',
         url: '/ferienbetreuung/:id',
         component: FerienbetreuungComponent,
+        data: {
+            roles: TSRoleUtil.getFerienbetreuungRoles()
+        },
         resolve: [
             {
                 token: 'ferienbetreuungId',
