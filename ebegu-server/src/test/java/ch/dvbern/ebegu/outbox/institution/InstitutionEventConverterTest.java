@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.entities.KontaktAngaben;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.kibon.exchange.commons.institution.AltersKategorie;
 import ch.dvbern.kibon.exchange.commons.institution.GemeindeDTO;
@@ -44,7 +45,6 @@ import ch.dvbern.kibon.exchange.commons.institution.KontaktAngabenDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleModuleDTO;
 import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
-import ch.dvbern.kibon.exchange.commons.types.Gesuchsperiode;
 import ch.dvbern.kibon.exchange.commons.types.Wochentag;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import ch.dvbern.kibon.exchange.commons.util.TimeConverter;
@@ -224,19 +224,14 @@ public class InstitutionEventConverterTest {
 
 	@Nonnull
 	private Matcher<TagesschuleModuleDTO> moduleMatcher(@Nonnull EinstellungenTagesschule einstellungen) {
+		DateRange gueltigkeit = einstellungen.getGesuchsperiode().getGueltigkeit();
+
 		return pojo(TagesschuleModuleDTO.class)
-			.where(TagesschuleModuleDTO::getGesuchsperiode, isGesuchsperiode(einstellungen.getGesuchsperiode()))
+			.where(TagesschuleModuleDTO::getPeriodeVon, is(gueltigkeit.getGueltigAb()))
+			.where(TagesschuleModuleDTO::getPeriodeBis, is(gueltigkeit.getGueltigBis()))
 			.where(TagesschuleModuleDTO::getModule, containsInAnyOrder(
 				moduleForEinstellung(einstellungen)
 			));
-	}
-
-	@Nonnull
-	private Matcher<Gesuchsperiode> isGesuchsperiode(@Nonnull ch.dvbern.ebegu.entities.Gesuchsperiode gesuchsperiode) {
-		return pojo(Gesuchsperiode.class)
-			.where(Gesuchsperiode::getId, is(gesuchsperiode.getId()))
-			.where(Gesuchsperiode::getGueltigAb, is(gesuchsperiode.getGueltigkeit().getGueltigAb()))
-			.where(Gesuchsperiode::getGueltigBis, is(gesuchsperiode.getGueltigkeit().getGueltigBis()));
 	}
 
 	@Nonnull

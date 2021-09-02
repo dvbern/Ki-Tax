@@ -19,7 +19,6 @@ package ch.dvbern.ebegu.outbox.anmeldung;
 
 import java.time.LocalDate;
 import java.util.Iterator;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -35,6 +34,7 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.AbholungTagesschule;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulAuswahlDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungDetailsDTO;
@@ -42,7 +42,6 @@ import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungEventDT
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungStatus;
 import ch.dvbern.kibon.exchange.commons.types.AdresseDTO;
 import ch.dvbern.kibon.exchange.commons.types.Geschlecht;
-import ch.dvbern.kibon.exchange.commons.types.Gesuchsperiode;
 import ch.dvbern.kibon.exchange.commons.types.GesuchstellerDTO;
 import ch.dvbern.kibon.exchange.commons.types.Intervall;
 import ch.dvbern.kibon.exchange.commons.types.KindDTO;
@@ -67,8 +66,7 @@ public class AnmeldungTagesschuleEventConverterTest {
 		Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setFreigabeDatum(LocalDate.now());
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
-		assert gesuch.getGesuchsteller1() != null;
-		gesuch.getGesuchsteller1().setGesuchstellerJA(TestDataUtil.createDefaultGesuchsteller());
+		requireNonNull(gesuch.getGesuchsteller1()).setGesuchstellerJA(TestDataUtil.createDefaultGesuchsteller());
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
 		AnmeldungTagesschule anmeldungTagesschule =
 			TestDataUtil.createAnmeldungTagesschuleWithModules(betreuung.getKind(), betreuung.extractGesuchsperiode());
@@ -85,6 +83,8 @@ public class AnmeldungTagesschuleEventConverterTest {
 			anmeldungTagesschuleAddedEvent.getSchema(),
 			anmeldungTagesschuleAddedEvent.getPayload());
 
+		DateRange gesuchsperiode = gesuch.getGesuchsperiode().getGueltigkeit();
+
 		assertThat(specificRecord, is(pojo(TagesschuleAnmeldungEventDTO.class)
 			.where(
 				TagesschuleAnmeldungEventDTO::getInstitutionId,
@@ -96,10 +96,8 @@ public class AnmeldungTagesschuleEventConverterTest {
 			.where(TagesschuleAnmeldungEventDTO::getFreigegebenAm, is(gesuch.getFreigabeDatum()))
 			.where(TagesschuleAnmeldungEventDTO::getAntragstellendePerson, matchesAntragstellendePerson(gesuch))
 			.where(TagesschuleAnmeldungEventDTO::getKind, matchesKind(anmeldungTagesschule.getKind().getKindJA()))
-			.where(TagesschuleAnmeldungEventDTO::getGesuchsperiode, pojo(Gesuchsperiode.class)
-				.where(Gesuchsperiode::getId, is(gesuch.getGesuchsperiode().getId()))
-				.where(Gesuchsperiode::getGueltigAb, is(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb()))
-				.where(Gesuchsperiode::getGueltigBis, is(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis())))
+			.where(TagesschuleAnmeldungEventDTO::getPeriodeVon, is(gesuchsperiode.getGueltigAb()))
+			.where(TagesschuleAnmeldungEventDTO::getPeriodeBis, is(gesuchsperiode.getGueltigBis()))
 			.where(TagesschuleAnmeldungEventDTO::getAnmeldungsDetails, matchesAnmeldungDetails(anmeldungTagesschule))
 		));
 
@@ -143,16 +141,12 @@ public class AnmeldungTagesschuleEventConverterTest {
 
 	@Nonnull
 	private IsPojo<GesuchstellerDTO> matchesAntragstellendePerson(@Nonnull Gesuch gesuch) {
-		assert gesuch.getGesuchsteller1() != null;
-		Gesuchsteller gesuchsteller = gesuch.getGesuchsteller1().getGesuchstellerJA();
-		Adresse adresse = requireNonNull(gesuch.getGesuchsteller1()
-			.getAdressen()
-			.stream()
-			.filter(gesuchstellerAdresseContainer -> Objects
-				.equals(gesuchstellerAdresseContainer.extractAdresseTyp(), AdresseTyp.WOHNADRESSE))
+		Gesuchsteller gesuchsteller = requireNonNull(gesuch.getGesuchsteller1()).getGesuchstellerJA();
+		Adresse adresse = requireNonNull(gesuch.getGesuchsteller1().getAdressen().stream()
+			.filter(a -> a.extractAdresseTyp() == AdresseTyp.WOHNADRESSE)
 			.findFirst()
-			.get()).getGesuchstellerAdresseJA();
-		assert adresse != null;
+			.orElseThrow()
+			.getGesuchstellerAdresseJA());
 
 		return pojo(GesuchstellerDTO.class)
 			.where(GesuchstellerDTO::getNachname, is(gesuchsteller.getNachname()))

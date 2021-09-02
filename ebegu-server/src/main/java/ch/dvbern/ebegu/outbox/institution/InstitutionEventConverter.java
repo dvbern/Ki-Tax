@@ -42,7 +42,6 @@ import ch.dvbern.ebegu.entities.KontaktAngaben;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.ModulTagesschuleIntervall;
-import ch.dvbern.ebegu.outbox.shared.SharedEventConverter;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -276,7 +275,8 @@ public class InstitutionEventConverter {
 	@Nonnull
 	private TagesschuleModuleDTO toTagesschuleModuleDTO(@Nonnull EinstellungenTagesschule e) {
 		return TagesschuleModuleDTO.newBuilder()
-			.setGesuchsperiode(SharedEventConverter.toGesuchsperiode(e.getGesuchsperiode()))
+			.setPeriodeVon(e.getGesuchsperiode().getGueltigkeit().getGueltigAb())
+			.setPeriodeBis(e.getGesuchsperiode().getGueltigkeit().getGueltigBis())
 			.setModule(toModule(e.getModulTagesschuleGroups()))
 			.build();
 	}

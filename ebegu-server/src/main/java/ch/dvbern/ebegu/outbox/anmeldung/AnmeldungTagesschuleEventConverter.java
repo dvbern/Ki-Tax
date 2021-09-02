@@ -32,7 +32,6 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.outbox.shared.SharedEventConverter;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.AbholungTagesschule;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulAuswahlDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungDetailsDTO;
@@ -71,14 +70,15 @@ public class AnmeldungTagesschuleEventConverter {
 				gesuch.getFreigabeDatum() :
 				requireNonNull(gesuch.getEingangsdatum()))
 
-			.setGesuchsperiode(SharedEventConverter.toGesuchsperiode(gesuch.getGesuchsperiode()))
+			.setPeriodeVon(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb())
+			.setPeriodeBis(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis())
 			.setKind(toKindDTO(anmeldung.getKind().getKindJA()))
 			.setAntragstellendePerson(toGesuchstellerDTO(requireNonNull(gesuch.getGesuchsteller1())))
 			.setAnmeldungsDetails(toTagesschuleAnmeldungDetailsDTO(anmeldung))
 			.setStatus(TagesschuleAnmeldungStatus.valueOf(anmeldung.getBetreuungsstatus().name()))
-			.setAnmeldungZurueckgezogen(false) // TODO muss noch richtig ausgefüllt weren. Abhängig von
-			// Betreuungsstatus
-			//			.setTarife() FIXME
+			// TODO muss noch richtig ausgefüllt weren. Abhängig von Betreuungsstatus
+			.setAnmeldungZurueckgezogen(false)
+			//	TODO 		.setTarife()
 			.build();
 	}
 
