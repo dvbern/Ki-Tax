@@ -2185,6 +2185,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Nonnull
+	@SuppressWarnings("PMD.NcssMethodCount")
 	private InstitutionenDataRow institutionToDataRow(
 		@Nonnull InstitutionStammdaten institutionStammdaten,
 		@Nonnull Locale locale
