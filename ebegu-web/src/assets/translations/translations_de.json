@@ -2589,5 +2589,6 @@
     "GEMEINDE_KENNZAHLEN_NACHFRAGE_DAUER": "Für Gemeinden die Kontingentieren: Dauer, wie lange Kinder durchschnittlich auf Warteliste sind",
     "GEMEINDE_KENNZAHLEN_KOSTENLENKUNG_ANDERE": "Hat die Gemeinde weitere Kostenlenkungsmassnahmen getroffen?",
     "GEMEINDE_KENNZAHLEN_WELCHE_KOSTENLENKUNGSMASSNAHMEN": "Welche weiteren Kostenlenkungsmassnahmen wurden getroffen?",
+    "GEMEINDE_KENNZAHLEN_AKTIV": "Gemeinde Kennzahlen aktiviert",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -268,6 +268,9 @@ export class GemeindeAntraegeComponent implements OnInit {
         if (!config.lastenausgleichTagesschulenAktiv) {
             filteredTypes = types.filter(d => d !== TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN);
         }
+        if (!config.gemeindeKennzahlenAktiv) {
+            filteredTypes = types.filter(d => d !== TSGemeindeAntragTyp.GEMEINDE_KENNZAHLEN);
+        }
         return filteredTypes;
     }
 
