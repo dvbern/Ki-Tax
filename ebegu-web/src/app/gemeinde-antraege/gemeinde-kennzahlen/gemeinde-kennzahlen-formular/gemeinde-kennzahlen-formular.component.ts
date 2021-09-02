@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, NgForm} from '@angular/forms';
+import {FormBuilder, FormGroup, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {combineLatest, Observable, ReplaySubject, Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
@@ -23,7 +23,9 @@ import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.re
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSGemeindeKennzahlen} from '../../../../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {CONSTANTS} from '../../../core/constants/CONSTANTS';
 import {ErrorServiceX} from '../../../core/errors/service/ErrorServiceX';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {GemeindeKennzahlenService} from '../gemeinde-kennzahlen.service';
@@ -43,9 +45,11 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
     public canSeeSaveAndAbschliessen$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
     public canSeeZurueckAnGemeinde$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
-    public validationTiggered: boolean = false;
+    public abschlussValidationTriggered: boolean = false;
     private readonly unsubscribe$: Subject<any> = new Subject<any>();
     public antragAndPrincipal$: Observable<[TSGemeindeKennzahlen, (TSBenutzer | null)]>;
+
+    public readonly CONSTANTS = CONSTANTS;
 
     public constructor(
         private readonly gemeindeKennzahlenService: GemeindeKennzahlenService,
@@ -109,6 +113,10 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
     }
 
     public save(antrag: TSGemeindeKennzahlen): void {
+
+        if (!this.form.valid) {
+            return;
+        }
         this.gemeindeKennzahlenService.saveGemeindeKennzahlen(antrag)
             .subscribe(() => this.handleSaveSuccess(), err => LOG.error(err));
     }
@@ -119,14 +127,16 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
     }
 
     public abschliessen(antrag: TSGemeindeKennzahlen): void {
-        this.validationTiggered = true;
+        this.abschlussValidationTriggered = true;
 
-        if (!this.form.valid) {
-            return;
-        }
+        setTimeout(() => {
+            if (!this.form.valid) {
+                return;
+            }
 
-        this.gemeindeKennzahlenService.gemeindeKennzahlenAbschliessen(antrag)
-            .subscribe(() => this.handleSaveSuccess(), error => LOG.error(error));
+            this.gemeindeKennzahlenService.gemeindeKennzahlenAbschliessen(antrag)
+                .subscribe(() => this.handleSaveSuccess(), error => LOG.error(error));
+        }, 0);
     }
 
     public isFormDisabledFor([antrag, principal]: [TSGemeindeKennzahlen, (TSBenutzer | null)]): boolean {

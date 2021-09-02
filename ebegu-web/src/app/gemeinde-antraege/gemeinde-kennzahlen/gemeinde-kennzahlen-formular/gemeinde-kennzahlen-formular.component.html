@@ -25,13 +25,13 @@
 		</div>
 	</div>
 
-	<form *ngIf="antragAndPrincipal$ | async as antragAndPrincipal">
+	<form *ngIf="antragAndPrincipal$ | async as antragAndPrincipal" #form="ngForm">
 
 		<div class="max-width-container-750">
 
 			<dv-input-container-x [noMargin]="true">
 				<label required
-					   [ngClass]="{'label-error': validationTiggered && nachfrageErfuellt.errors}"
+					   [ngClass]="{'label-error': nachfrageErfuellt.errors}"
 					   for="nachfrageErfuellt-radio-group">
 					{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_ERFUELLT' | translate}}
 				</label>
@@ -44,12 +44,12 @@
                             #nachfrageErfuellt="ngModel"
 							horizontal
 							[disabled]="isFormDisabledFor(antragAndPrincipal)"
-							required
+							[required]="abschlussValidationTriggered"
 							[(ngModel)]="antragAndPrincipal[0].nachfrageErfuellt">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
 						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
 					</mat-radio-group>
-					<dv-error-messages [errorObject]="validationTiggered && nachfrageErfuellt.errors"></dv-error-messages>
+					<dv-error-messages [errorObject]="nachfrageErfuellt.errors"></dv-error-messages>
 				</dv-radio-container-x>
 			</dv-input-container-x>
 
@@ -64,11 +64,13 @@
 						   name="nachfrageAnzahl"
                            #nachfrageAnzahl="ngModel"
 						   id="nachfrageAnzahl_id"
-						   required
+						   [required]="abschlussValidationTriggered"
+						   type="number"
+						   pattern="{{CONSTANTS.PATTERN_ANY_INT}}"
 						   [disabled]="isFormDisabledFor(antragAndPrincipal)"
 						   [(ngModel)]="antragAndPrincipal[0].nachfrageAnzahl"
 						   class="form-control dv-input"/>
-					<dv-error-messages [errorObject]="validationTiggered && nachfrageAnzahl.errors"></dv-error-messages>
+					<dv-error-messages [errorObject]="nachfrageAnzahl.errors"></dv-error-messages>
 				</mat-form-field>
 			</dv-input-container-x>
 
@@ -83,11 +85,13 @@
 						   id="nachfrageDauer_id"
 						   name="nachfrageDauer"
                            #nachfrageDauer="ngModel"
-						   required
+						   [required]="abschlussValidationTriggered"
+						   type="number"
+						   pattern="{{CONSTANTS.PATTERN_TWO_DECIMALS}}"
 						   [disabled]="isFormDisabledFor(antragAndPrincipal)"
 						   [(ngModel)]="antragAndPrincipal[0].nachfrageDauer"
 						   class="form-control dv-input"/>
-					<dv-error-messages [errorObject]="validationTiggered && nachfrageDauer.errors"></dv-error-messages>
+					<dv-error-messages [errorObject]="nachfrageDauer.errors"></dv-error-messages>
 				</mat-form-field>
 			</dv-input-container-x>
 
@@ -106,12 +110,12 @@
 							#kostenlenkungAndere="ngModel"
 							horizontal
 							[disabled]="isFormDisabledFor(antragAndPrincipal)"
-							required
+							[required]="abschlussValidationTriggered"
 							[(ngModel)]="antragAndPrincipal[0].kostenlenkungAndere">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
 						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
 					</mat-radio-group>
-					<dv-error-messages [errorObject]="validationTiggered && kostenlenkungAndere.errors"></dv-error-messages>
+					<dv-error-messages [errorObject]="kostenlenkungAndere.errors"></dv-error-messages>
 				</dv-radio-container-x>
 			</dv-input-container-x>
 
@@ -123,7 +127,7 @@
 				</label>
 				<mat-form-field floatLabel="always">
 					<mat-select class="form-control"
-								required
+								[required]="abschlussValidationTriggered"
 								name="welcheKostenlenkungsmassnahmen"
 								[(ngModel)]="antragAndPrincipal[0].welcheKostenlenkungsmassnahmen"
                                 #welcheKostenlenkungsmassnahmen="ngModel"
@@ -133,7 +137,7 @@
 						<mat-option [value]="'2'">PLACEHOLDER 2</mat-option>
 						<mat-option [value]="'3'">PLACEHOLDER 3</mat-option>
 					</mat-select>
-					<dv-error-messages [errorObject]="validationTiggered && welcheKostenlenkungsmassnahmen.errors"></dv-error-messages>
+					<dv-error-messages [errorObject]="welcheKostenlenkungsmassnahmen.errors"></dv-error-messages>
 				</mat-form-field>
 			</dv-input-container-x>
 		</div>
@@ -141,12 +145,14 @@
 
 			<button type="button" class="dv-btn cancel-button"
 					*ngIf="canSeeSaveAndAbschliessen$ | async"
+					[disabled]="form.invalid"
 					(click)="save(antragAndPrincipal[0])"
 					[textContent]="'SAVE' | translate">
 			</button>
 			<dv-loading-button
 					*ngIf="canSeeSaveAndAbschliessen$ | async"
 					type="button"
+					[buttonDisabled]="form.invalid"
 					(buttonClick)="abschliessen(antragAndPrincipal[0])">
 				<span translate>ABSCHLIESSEN</span>
 			</dv-loading-button>
