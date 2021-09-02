@@ -2200,7 +2200,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setTyp(angebotTyp);
 		if (institution.getTraegerschaft() != null) {
 			row.setTraegerschaft(institution.getTraegerschaft().getName());
+			row.setTraegerschaftEmail(institution.getTraegerschaft().getEmail());
 		}
+		row.setEmailBenachrichtigungenKiBon(institutionStammdaten.getSendMailWennOffenePendenzen());
 		row.setName(institution.getName());
 		if (adresse.getOrganisation() != null) {
 			row.setAnschrift(adresse.getOrganisation());
@@ -2214,6 +2216,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setStrasse(adresse.getStrasseAndHausnummer());
 		row.setPlz(adresse.getPlz());
 		row.setOrt(adresse.getOrt());
+		row.setGemeinde(adresse.getGemeinde());
+		if (adresse.getBfsNummer() != null) {
+			row.setBfsGemeinde(adresse.getBfsNummer());
+		}
 		row.setEmail(institutionStammdaten.getMail());
 		if (!institutionStammdaten.getGueltigkeit().getGueltigAb().isEqual(Constants.START_OF_TIME)) {
 			row.setGueltigAb(institutionStammdaten.getGueltigkeit().getGueltigAb());
@@ -2221,22 +2227,36 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		if (!institutionStammdaten.getGueltigkeit().getGueltigBis().isEqual(Constants.END_OF_TIME)) {
 			row.setGueltigBis(institutionStammdaten.getGueltigkeit().getGueltigBis());
 		}
+		row.setGrundSchliessung(institutionStammdaten.getGrundSchliessung());
 
 		InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBG =
 			institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine();
 		if (institutionStammdatenBG != null) {
+			row.setFamilienportalEmail(institutionStammdatenBG.getAlternativeEmailFamilienportal());
 			if (institutionStammdatenBG.getOffenVon() != null && institutionStammdatenBG.getOffenBis() != null) {
-				row.setOeffnungszeiten(
-					institutionStammdatenBG.getOffenVon().toString()
-						+ " - "
-						+ institutionStammdatenBG.getOffenBis().toString()
-				);
+				row.setOeffnungszeitAb(institutionStammdatenBG.getOffenVon().toString());
+				row.setOeffnungszeitBis(institutionStammdatenBG.getOffenBis().toString());
 			}
 			row.setOeffnungstage(institutionStammdatenBG.getOeffnungsTage().stream()
 				.sorted()
 				.map(tag -> tag.getDisplayName(TextStyle.FULL, locale))
 				.collect(Collectors.joining(", ")));
 			row.setOeffnungsAbweichungen(institutionStammdatenBG.getOeffnungsAbweichungen());
+			if (institutionStammdatenBG.getOeffnungstageProJahr() != null) {
+				row.setOeffnungstageProJahr(institutionStammdatenBG.getOeffnungstageProJahr().toString());
+			}
+			if (institutionStammdatenBG.getAuslastungInstitutionen() != null) {
+				row.setAuslastung(institutionStammdatenBG.getAuslastungInstitutionen());
+			}
+			if (institutionStammdatenBG.getAnzahlKinderWarteliste() != null) {
+				row.setAnzahlKinderWarteliste(institutionStammdatenBG.getAnzahlKinderWarteliste());
+			}
+			if (institutionStammdatenBG.getDauerWarteliste() != null) {
+				row.setDauerWarteliste(institutionStammdatenBG.getDauerWarteliste());
+			}
+			if (institutionStammdatenBG.getSummePensumWarteliste() != null) {
+				row.setSummePensumWarteliste(institutionStammdatenBG.getSummePensumWarteliste());
+			}
 		}
 		row.setBaby(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieBaby());
 		row.setVorschulkind(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieVorschule());
