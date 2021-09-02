@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.errors.MailException;
@@ -203,4 +204,6 @@ public interface MailService {
 	void sendInfoLastenausgleichGemeinde(@Nonnull Gemeinde gemeinde, @Nonnull Lastenausgleich lastenausgleich);
 
 	void sendInfoSchulamtAnmeldungStorniert(AbstractAnmeldung abstractAnmeldung) throws MailException;
+
+	void sendInfoLATSAntragZurueckAnGemeinde(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer wiederEroeffnet);
 }

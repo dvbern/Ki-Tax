@@ -133,6 +133,10 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container);
 
 	@Nonnull
+	LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeZurueckInPruefungKanton(
+			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container);
+
+	@Nonnull
 	boolean selectedForZweitpruefung(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container);
 
 	@Nullable
