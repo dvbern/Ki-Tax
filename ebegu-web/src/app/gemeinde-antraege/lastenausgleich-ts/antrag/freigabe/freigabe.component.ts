@@ -69,25 +69,18 @@ export class FreigabeComponent implements OnInit {
             this.authService.principal$,
         ]).subscribe(([container, principal]) => {
             this.container = container;
-            if (principal.hasRole(TSRole.SUPER_ADMIN)) {
+            if (principal.hasRole(TSRole.SUPER_ADMIN) && container.isInBearbeitungGemeinde()) {
+                this.canSeeFreigabeButton.next(true);
+                this.canSeeGeprueftButton.next(false);
+                this.canSeeZurueckGemeindeButton.next(false);
                 this.canSeeFreigegebenText.next(false);
-                if (container.isInBearbeitungKanton()) {
-                    this.canSeeFreigabeButton.next(false);
-                    this.canSeeGeprueftButton.next(true);
-                    this.canSeeZurueckGemeindeButton.next(true);
-                    this.canSeeZurueckInPruefungButton.next(false);
-                } else if (container.isInBearbeitungGemeinde()) {
-                    this.canSeeFreigabeButton.next(true);
-                    this.canSeeGeprueftButton.next(false);
-                    this.canSeeZurueckGemeindeButton.next(false);
-                }
             }
-            if (principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles()) && container.isInBearbeitungKanton()) {
+            if (principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) && container.isInBearbeitungKanton()) {
                 this.canSeeFreigabeButton.next(false);
                 this.canSeeGeprueftButton.next(true);
                 this.canSeeZurueckGemeindeButton.next(true);
-                this.canSeeFreigegebenText.next(false);
                 this.canSeeZurueckInPruefungButton.next(false);
+                this.canSeeFreigegebenText.next(false);
             }
             if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles())) {
                 this.canSeeFreigabeButton.next(container.isInBearbeitungGemeinde());

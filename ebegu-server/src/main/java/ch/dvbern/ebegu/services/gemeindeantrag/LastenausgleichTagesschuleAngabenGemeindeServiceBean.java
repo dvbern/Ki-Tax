@@ -96,7 +96,8 @@ import org.slf4j.LoggerFactory;
 public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends AbstractBaseService
 	implements LastenausgleichTagesschuleAngabenGemeindeService {
 
-	private static final String ANGABEN_KORREKTUR_NOT_NULL = "angabenKorrektur must not be null";
+	private static final String ANGABEN_KORREKTUR_NOT_NULL = "LastenausgleichTagesschuleAngabenGemeindeContainer angabenKorrektur must not be null";
+	private static final String ANGABEN_DEKLARATION_NOT_NULL = "LastenausgleichTagesschuleAngabenGemeindeContainer angabenDeklaration must not be null";
 
 	@Inject
 	private Persistence persistence;
@@ -564,7 +565,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		} else {
 			Preconditions.checkState(
 				fallContainer.getAngabenDeklaration() != null,
-				"angabenDeklaration must not be null"
+				ANGABEN_DEKLARATION_NOT_NULL
 			);
 			formular = fallContainer.getAngabenDeklaration();
 		}
@@ -624,7 +625,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		} else {
 			Preconditions.checkState(
 				fallContainer.getAngabenDeklaration() != null,
-				"angabenDeklaration must not be null"
+				ANGABEN_DEKLARATION_NOT_NULL
 			);
 			angaben = fallContainer.getAngabenDeklaration();
 		}
@@ -668,11 +669,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		);
 		Preconditions.checkState(
 			container.getAngabenDeklaration() != null,
-			"LastenausgleichTagesschuleAngabenGemeindeContainer angabenDeklaration must not be null"
+			ANGABEN_DEKLARATION_NOT_NULL
 		);
 		Preconditions.checkState(
 			container.getAngabenKorrektur() != null,
-			"LastenausgleichTagesschuleAngabenGemeindeContainer angabenDeklaration must not be null"
+			ANGABEN_KORREKTUR_NOT_NULL
 		);
 
 		container.copyForZurueckAnGemeinde();
@@ -699,11 +700,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		);
 		Preconditions.checkState(
 			container.getAngabenDeklaration() != null,
-			"LastenausgleichTagesschuleAngabenGemeindeContainer angabenDeklaration must not be null"
+			ANGABEN_DEKLARATION_NOT_NULL
 		);
 		Preconditions.checkState(
 			container.getAngabenKorrektur() != null,
-			"LastenausgleichTagesschuleAngabenGemeindeContainer angabenDeklaration must not be null"
+			ANGABEN_KORREKTUR_NOT_NULL
 		);
 
 		// reopen gemeinde korrektur formular, don't reopen insti or deklaration formulare
