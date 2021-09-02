@@ -53,6 +53,10 @@ public class InstitutionenDataRow {
 	private String oeffnungstage = null;
 	private String oeffnungszeitAb = null;
 	private String oeffnungszeitBis = null;
+	private Boolean oeffnungVor630 = null;
+	private Boolean oeffnungNach1830 = null;
+	private Boolean oeffnungAnWochenenden = null;
+	private Boolean uebernachtungMoeglich = null;
 	private String ausserordentlicheOeffnungszeiten = null;
 	@Nullable
 	private String oeffnungsAbweichungen = null;
@@ -363,5 +367,37 @@ public class InstitutionenDataRow {
 
 	public void setGrundSchliessung(@Nullable String grundSchliessung) {
 		this.grundSchliessung = grundSchliessung;
+	}
+
+	public Boolean getOeffnungVor630() {
+		return oeffnungVor630;
+	}
+
+	public void setOeffnungVor630(Boolean oeffnungVor630) {
+		this.oeffnungVor630 = oeffnungVor630;
+	}
+
+	public Boolean getOeffnungNach1830() {
+		return oeffnungNach1830;
+	}
+
+	public void setOeffnungNach1830(Boolean oeffnungNach1830) {
+		this.oeffnungNach1830 = oeffnungNach1830;
+	}
+
+	public Boolean getOeffnungAnWochenenden() {
+		return oeffnungAnWochenenden;
+	}
+
+	public void setOeffnungAnWochenenden(Boolean oeffnungAnWochenenden) {
+		this.oeffnungAnWochenenden = oeffnungAnWochenenden;
+	}
+
+	public Boolean getUebernachtungMoeglich() {
+		return uebernachtungMoeglich;
+	}
+
+	public void setUebernachtungMoeglich(Boolean uebernachtungMoeglich) {
+		this.uebernachtungMoeglich = uebernachtungMoeglich;
 	}
 }

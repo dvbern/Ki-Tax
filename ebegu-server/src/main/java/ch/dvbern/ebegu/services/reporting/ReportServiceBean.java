@@ -2237,6 +2237,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				row.setOeffnungszeitAb(institutionStammdatenBG.getOffenVon().toString());
 				row.setOeffnungszeitBis(institutionStammdatenBG.getOffenBis().toString());
 			}
+			row.setOeffnungVor630(institutionStammdatenBG.isFruehEroeffnung());
+			row.setOeffnungNach1830(institutionStammdatenBG.isSpaetEroeffnung());
+			row.setOeffnungAnWochenenden(institutionStammdatenBG.isWochenendeEroeffnung());
+			row.setUebernachtungMoeglich(institutionStammdatenBG.isUebernachtungMoeglich());
 			row.setOeffnungstage(institutionStammdatenBG.getOeffnungsTage().stream()
 				.sorted()
 				.map(tag -> tag.getDisplayName(TextStyle.FULL, locale))
