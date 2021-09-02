@@ -103,7 +103,7 @@ public class InstitutionenExcelConverter implements ExcelConverter {
 			ServerMessageUtil.getMessage("Reports_traegerschaftEmailTitle", locale));
 		mergerDTO.addValue(
 				MergeFieldInstitutionen.emailTitle,
-				ServerMessageUtil.getMessage("Reports_emailTitle", locale));
+				ServerMessageUtil.getMessage("Reports_emailKitaTitle", locale));
 		mergerDTO.addValue(
 				MergeFieldInstitutionen.familienportalEmailTitle,
 				ServerMessageUtil.getMessage("Reports_familienportalEmailTitle", locale));
