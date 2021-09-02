@@ -157,9 +157,6 @@ public class InstitutionenExcelConverter implements ExcelConverter {
 			MergeFieldInstitutionen.oeffnungszeitenBisTitle,
 			ServerMessageUtil.getMessage("Reports_oeffnungszeitBisTitle", locale));
 		mergerDTO.addValue(
-			MergeFieldInstitutionen.ausserordentlicheOeffnungszeitenTitle,
-			ServerMessageUtil.getMessage("Reports_ausserordentlicheOeffnungszeitenTitle", locale));
-		mergerDTO.addValue(
 			MergeFieldInstitutionen.oeffnungsAbweichungenTitle,
 			ServerMessageUtil.getMessage("Reports_oeffnungsabweichungenTitle", locale));
 		mergerDTO.addValue(

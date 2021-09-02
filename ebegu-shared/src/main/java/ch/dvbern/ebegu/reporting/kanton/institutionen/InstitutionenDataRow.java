@@ -57,7 +57,6 @@ public class InstitutionenDataRow {
 	private Boolean oeffnungNach1830 = null;
 	private Boolean oeffnungAnWochenenden = null;
 	private Boolean uebernachtungMoeglich = null;
-	private String ausserordentlicheOeffnungszeiten = null;
 	@Nullable
 	private String oeffnungsAbweichungen = null;
 	private Boolean baby = null;
@@ -319,14 +318,6 @@ public class InstitutionenDataRow {
 
 	public void setOeffnungszeitBis(String oeffnungszeitBis) {
 		this.oeffnungszeitBis = oeffnungszeitBis;
-	}
-
-	public String getAusserordentlicheOeffnungszeiten() {
-		return ausserordentlicheOeffnungszeiten;
-	}
-
-	public void setAusserordentlicheOeffnungszeiten(String ausserordentlicheOeffnungszeiten) {
-		this.ausserordentlicheOeffnungszeiten = ausserordentlicheOeffnungszeiten;
 	}
 
 	public BigDecimal getAuslastung() {
