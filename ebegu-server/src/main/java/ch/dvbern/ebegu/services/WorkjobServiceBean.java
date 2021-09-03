@@ -77,6 +77,7 @@ import static ch.dvbern.ebegu.enums.WorkJobConstants.LANGUAGE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.OHNE_ERNEUERUNGSGESUCHE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.REPORT_VORLAGE_TYPE_PARAM;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.TEXT;
+import static ch.dvbern.ebegu.enums.WorkJobConstants.KANTON_SELBSTBEHALT;
 
 /**
  * Data Acess Object Bean zum zugriff auf Workjoben in der DB
@@ -159,6 +160,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			text,
 			false,
 			BigDecimal.ZERO,
+			null,
 			locale);
 	}
 
@@ -178,6 +180,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		@Nullable String text,
 		boolean doSave,
 		@Nonnull BigDecimal betragProKind,
+		@Nullable BigDecimal kantonSelbstbehalt,
 		@Nonnull Locale locale
 	) {
 		checkIfJobCreationAllowed(workJob, vorlage);
@@ -204,6 +207,9 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		}
 		jobParameters.setProperty(DO_SAVE, String.valueOf(doSave));
 		jobParameters.setProperty(BETRAG_PRO_KIND, String.valueOf(betragProKind));
+		if(kantonSelbstbehalt != null) {
+			jobParameters.setProperty(KANTON_SELBSTBEHALT, String.valueOf(kantonSelbstbehalt));
+		}
 		jobParameters.setProperty(REPORT_VORLAGE_TYPE_PARAM, vorlage.name());
 		jobParameters.setProperty(LANGUAGE, locale.getLanguage());
 
@@ -254,6 +260,49 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 
 	@Nonnull
 	@Override
+	public Workjob createNewReporting(
+		@Nonnull Workjob workJob,
+		@Nonnull ReportVorlage vorlage,
+		@Nullable LocalDate datumVon,
+		@Nullable LocalDate datumBis,
+		@Nullable BigDecimal kantonSelbstbehalt,
+		@Nullable String gesuchPeriodIdParam,
+		@Nonnull Locale locale) {
+		return createNewReporting(
+			workJob,
+			vorlage,
+			datumVon,
+			datumBis,
+			gesuchPeriodIdParam,
+			kantonSelbstbehalt,
+			locale);
+	}
+
+	@Nonnull
+	private Workjob createNewReporting(@Nonnull Workjob workJob, @Nonnull ReportVorlage vorlage, @Nullable LocalDate datumVon,
+		@Nullable LocalDate datumBis,
+		@Nullable String gesuchPeriodIdParam, @Nullable BigDecimal kantonSelbstbehalt, @Nonnull Locale locale) {
+		return createNewReporting(
+			workJob,
+			vorlage,
+			datumVon,
+			datumBis,
+			gesuchPeriodIdParam,
+			null,
+			false,
+			false,
+			false,
+			false,
+			null,
+			null,
+			false,
+			BigDecimal.ZERO,
+			kantonSelbstbehalt,
+			locale);
+	}
+
+	@Nonnull
+	@Override
 	public Workjob createNewReporting(@Nonnull Workjob workJob, @Nonnull ReportVorlage vorlage, boolean doSave, @Nonnull BigDecimal betragProKind,
 		@Nonnull Locale locale) {
 		return createNewReporting(
@@ -271,6 +320,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			null,
 			doSave,
 			betragProKind,
+			null,
 			locale);
 	}
 
@@ -297,6 +347,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			null,
 			false,
 			BigDecimal.ZERO,
+			null,
 			locale);
 	}
 

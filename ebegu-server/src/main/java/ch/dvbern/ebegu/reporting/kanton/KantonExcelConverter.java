@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 
 import ch.dvbern.ebegu.enums.reporting.MergeFieldKanton;
@@ -47,6 +48,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class KantonExcelConverter implements ExcelConverter {
 
 	private static final String EMPTY_STRING = " ";
+	private static final Integer TITLE_ROW_NUMBER = 9;
 
 	@Override
 	public void applyAutoSize(@Nonnull Sheet sheet) {
@@ -58,7 +60,8 @@ public class KantonExcelConverter implements ExcelConverter {
 		@Nonnull Sheet sheet,
 		@Nonnull Locale locale,
 		@Nonnull LocalDate datumVon,
-		@Nonnull LocalDate datumBis
+		@Nonnull LocalDate datumBis,
+		@Nullable BigDecimal kantonSelbstbehalt
 	) throws ExcelMergeException {
 
 		checkNotNull(data);
@@ -69,6 +72,9 @@ public class KantonExcelConverter implements ExcelConverter {
 		excelMergerDTO.addValue(MergeFieldKanton.auswertungVon, datumVon);
 		mergeFields.add(MergeFieldKanton.auswertungBis.getMergeField());
 		excelMergerDTO.addValue(MergeFieldKanton.auswertungBis, datumBis);
+		mergeFields.add(MergeFieldKanton.kantonSelbstbehalt.getMergeField());
+		excelMergerDTO.addValue(MergeFieldKanton.kantonSelbstbehalt, kantonSelbstbehalt != null ? kantonSelbstbehalt : BigDecimal.ZERO);
+
 		addHeaders(excelMergerDTO, mergeFields, locale);
 
 		ExcelMerger.mergeData(sheet, mergeFields, excelMergerDTO);
@@ -137,7 +143,7 @@ public class KantonExcelConverter implements ExcelConverter {
 		excelRowGroup.addValue(MergeFieldKanton.verguenstigungTotal, BigDecimal.ZERO);
 	}
 
-	private void addTotalRow(RowFiller rowFiller, int nbrCell) {
+	private void addTotalRow(RowFiller rowFiller, int nbrRow) {
 		//Create Total Row
 		SXSSFSheet sheet = rowFiller.getSheet();
 		SXSSFRow targetRow = sheet.createRow(sheet.getLastRowNum() + 1);
@@ -145,23 +151,27 @@ public class KantonExcelConverter implements ExcelConverter {
 		CellStyle basicStyle = this.createBasicStyle(sheet);
 		cell.setCellValue("Total");
 		cell.setCellStyle(basicStyle);
-		this.fillXRowWithStyle(targetRow, basicStyle, 1, 6);
+		this.fillXCellWithStyle(targetRow, basicStyle, 1, 6);
 		CellStyle procentStyle = this.createBasicStyle(sheet);
 		procentStyle.setDataFormat(sheet.getWorkbook().createDataFormat().getFormat("0%"));
-		nbrCell = nbrCell + 8;
-		this.createCellWithFormula(targetRow, procentStyle, 7, "SUM(H9:H" + nbrCell + ")");
-		this.createCellWithFormula(targetRow, procentStyle, 8, "SUM(I9:I" + nbrCell + ")");
-		this.createCellWithFormula(targetRow, procentStyle, 9, "SUM(J9:J" + nbrCell + ")");
-		this.fillXRowWithStyle(targetRow, basicStyle, 10, 14);
-		this.createCellWithFormula(targetRow, procentStyle, 15, "SUM(P9:P" + nbrCell + ")");
 		CellStyle zahlStyle = this.createBasicStyle(sheet);
 		zahlStyle.setDataFormat(sheet.getWorkbook().createDataFormat().getFormat("0.00"));
-		this.createCellWithFormula(targetRow, zahlStyle, 16, "SUM(Q9:Q" + nbrCell + ")");
-		this.createCellWithFormula(targetRow, zahlStyle, 17, "SUM(R9:R" + nbrCell + ")");
-		this.createCellWithFormula(targetRow, zahlStyle, 18,"SUM(S9:S" + nbrCell + ")");
-		this.createCellWithFormula(targetRow, zahlStyle, 19, "SUM(T9:T" + nbrCell + ")");
-		this.createCellWithFormula(targetRow, zahlStyle, 20,"SUM(U9:U" + nbrCell + ")");
-		this.fillXRowWithStyle(targetRow, basicStyle, 21, 22);
+
+		int lastRow = nbrRow + TITLE_ROW_NUMBER;
+		int totalRow = lastRow + 1;
+		this.createCellWithFormula(targetRow, procentStyle, 7, "SUM(H10:H" + lastRow + ")");
+		this.createCellWithFormula(targetRow, procentStyle, 8, "SUM(I10:I" + lastRow + ")");
+		this.createCellWithFormula(targetRow, procentStyle, 9, "SUM(J10:J" + lastRow + ")");
+		this.createCellWithFormula(targetRow, zahlStyle, 10, "SUM(K10:K" + lastRow + ")");
+		this.createCellWithFormula(targetRow, zahlStyle, 11, "=K"+ totalRow +"*$B$6");
+		this.fillXCellWithStyle(targetRow, basicStyle, 12, 16);
+		this.createCellWithFormula(targetRow, procentStyle, 17, "SUM(P10:P" + lastRow + ")");
+		this.createCellWithFormula(targetRow, zahlStyle, 18, "SUM(Q10:Q" + lastRow + ")");
+		this.createCellWithFormula(targetRow, zahlStyle, 19, "SUM(R10:R" + lastRow + ")");
+		this.createCellWithFormula(targetRow, zahlStyle, 20,"SUM(S10:S" + lastRow + ")");
+		this.createCellWithFormula(targetRow, zahlStyle, 21, "SUM(T10:T" + lastRow + ")");
+		this.createCellWithFormula(targetRow, zahlStyle, 22,"SUM(U10:U" + lastRow + ")");
+		this.fillXCellWithStyle(targetRow, basicStyle, 23, 24);
 	}
 
 	private void createCellWithFormula(SXSSFRow targetRow, CellStyle cellStyle, int cellNbr, String formula) {
@@ -171,7 +181,7 @@ public class KantonExcelConverter implements ExcelConverter {
 		cellSumme.setCellType(CellType.FORMULA);
 	}
 
-	private void fillXRowWithStyle(SXSSFRow targetRow, CellStyle cellStyle, int firstCellToFill, int lastCellToFill) {
+	private void fillXCellWithStyle(SXSSFRow targetRow, CellStyle cellStyle, int firstCellToFill, int lastCellToFill) {
 		for (int i = firstCellToFill; i <= lastCellToFill; i++) {
 			SXSSFCell cell = targetRow.createCell(i);
 			cell.setCellValue("");
@@ -205,6 +215,8 @@ public class KantonExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldKanton.vonTitle, ServerMessageUtil.getMessage("Reports_vonTitle", locale));
 		mergeFields.add(MergeFieldKanton.bisTitle.getMergeField());
 		excelMerger.addValue(MergeFieldKanton.bisTitle, ServerMessageUtil.getMessage("Reports_bisTitle", locale));
+		mergeFields.add(MergeFieldKanton.kantonSelbstbehaltTitle.getMergeField());
+		excelMerger.addValue(MergeFieldKanton.kantonSelbstbehaltTitle, ServerMessageUtil.getMessage("Reports_kantonSelbstbehaltTitle", locale));
 		mergeFields.add(MergeFieldKanton.gemeindeTitle.getMergeField());
 		excelMerger.addValue(
 			MergeFieldKanton.gemeindeTitle,
@@ -290,5 +302,13 @@ public class KantonExcelConverter implements ExcelConverter {
 			ServerMessageUtil.getMessage("Reports_institutionTitle", locale));
 		mergeFields.add(MergeFieldKanton.totalTitle.getMergeField());
 		excelMerger.addValue(MergeFieldKanton.totalTitle, ServerMessageUtil.getMessage("Reports_totalTitle", locale));
+		mergeFields.add(MergeFieldKanton.selbstbehaltTitle.getMergeField());
+		excelMerger.addValue(
+			MergeFieldKanton.selbstbehaltTitle,
+			ServerMessageUtil.getMessage("Reports_selbstbehaltTitle", locale));
+		mergeFields.add(MergeFieldKanton.anteilKalenderjahrTitle.getMergeField());
+		excelMerger.addValue(
+			MergeFieldKanton.anteilKalenderjahrTitle,
+			ServerMessageUtil.getMessage("Reports_anteilKalenderjahrTitle", locale));
 	}
 }

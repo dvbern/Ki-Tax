@@ -142,7 +142,11 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 				return this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, gesuchPeriodeId, locale);
 			}
 			case VORLAGE_REPORT_KANTON: {
-				return this.reportService.generateExcelReportKanton(dateFrom, dateTo, locale);
+				BigDecimal kantonSelbstbehalt = null;
+				if(getParameters().getProperty(WorkJobConstants.KANTON_SELBSTBEHALT) != null) {
+					kantonSelbstbehalt = MathUtil.DEFAULT.from(getParameters().getProperty(WorkJobConstants.KANTON_SELBSTBEHALT));
+				}
+				return this.reportService.generateExcelReportKanton(dateFrom, dateTo, kantonSelbstbehalt, locale);
 			}
 			case VORLAGE_REPORT_MITARBEITERINNEN: {
 				return this.reportService.generateExcelReportMitarbeiterinnen(dateFrom, dateTo, locale);

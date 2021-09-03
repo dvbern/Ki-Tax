@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.reporting;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.List;
@@ -80,6 +81,7 @@ public interface ReportService {
 	UploadFileInfo generateExcelReportKanton(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
+		@Nullable BigDecimal kantonSelbstbehalt,
 		@Nonnull Locale locale)
 		throws ExcelMergeException, IOException, MergeDocException, URISyntaxException;
 

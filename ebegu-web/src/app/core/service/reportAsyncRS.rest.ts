@@ -69,11 +69,12 @@ export class ReportAsyncRS {
             });
     }
 
-    public getKantonReportExcel(auswertungVon: string, auswertungBis: string): IPromise<string> {
+    public getKantonReportExcel(auswertungVon: string, auswertungBis: string, kantonSelbstbehalt: number): IPromise<string> {
 
         const reportParams = this.httpParamSerializer({
             auswertungVon,
             auswertungBis,
+            kantonSelbstbehalt,
         });
 
         return this.http.get(`${this.serviceURL}/excel/kanton?${reportParams}`, {timeout: this.reportingTimeout})
