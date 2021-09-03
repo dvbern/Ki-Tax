@@ -62,7 +62,6 @@ import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.NEWLINE;
 import static com.lowagie.text.pdf.BaseFont.EMBEDDED;
 import static com.lowagie.text.pdf.BaseFont.IDENTITY_H;
-import static com.lowagie.text.pdf.BaseFont.WINANSI;
 
 public final class PdfUtil {
 
@@ -83,15 +82,15 @@ public final class PdfUtil {
 	public static final float FONT_SIZE_H1 = 14.0f;
 	public static final float FONT_SIZE_H2 = 12.0f;
 
-	public static final Font DEFAULT_FONT = FontFactory.getFont(FONT_FACE_OPEN_SANS, WINANSI, EMBEDDED,
+	public static final Font DEFAULT_FONT = FontFactory.getFont(FONT_FACE_OPEN_SANS, IDENTITY_H, EMBEDDED,
 		FONT_SIZE, Font.NORMAL, Color.BLACK);
-	public static final Font DEFAULT_FONT_BOLD = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, WINANSI, EMBEDDED,
+	public static final Font DEFAULT_FONT_BOLD = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, IDENTITY_H, EMBEDDED,
 		FONT_SIZE, Font.NORMAL, Color.BLACK);
-	public static final Font FONT_TITLE = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, WINANSI, EMBEDDED,
+	public static final Font FONT_TITLE = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, IDENTITY_H, EMBEDDED,
 		FONT_SIZE_H1, Font.NORMAL, Color.BLACK);
-	public static final Font FONT_H1 = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, WINANSI, EMBEDDED,
+	public static final Font FONT_H1 = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, IDENTITY_H, EMBEDDED,
 		FONT_SIZE_H1, Font.NORMAL, Color.BLACK);
-	public static final Font FONT_H2 = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, WINANSI, EMBEDDED,
+	public static final Font FONT_H2 = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, IDENTITY_H, EMBEDDED,
 		FONT_SIZE_H2, Font.NORMAL, Color.BLACK);
 	public static final Font FONT_AWESOME = FontFactory.getFont(FONT_FACE_FONT_AWESOME, IDENTITY_H, EMBEDDED,
 		FONT_SIZE, Font.NORMAL, Color.BLACK);
