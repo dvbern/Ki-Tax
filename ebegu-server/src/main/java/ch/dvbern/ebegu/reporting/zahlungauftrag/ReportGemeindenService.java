@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,28 +15,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+package ch.dvbern.ebegu.reporting.zahlungauftrag;
 
-public enum ReportFileName {
-	GESUCH_STICHTAG,
-	GESUCH_ZEITRAUM,
-	KANTON,
-	MITARBEITERINNEN,
-	BENUTZER,
-	ZAHLUNG_AUFTRAG,
-	ZAHLUNG_AUFTRAG_PERIODE,
-	GESUCHSTELLER_KINDER_BETREUUNG,
-	KINDER,
-	GESUCHSTELLER,
-	MASSENVERSAND,
-	INSTITUTIONEN,
-	VERRECHNUNG_KIBON,
-	LASTENAUSGLEICH_SELBSTBEHALT,
-	LASTENAUSGLEICH_BERECHNUNG,
-	KINDER_MIT_ZEMIS_NUMMER,
-	TAGESSCHULE_ANMELDUNGEN,
-	TAGESSCHULE_RECHNUNGSSTELLUNG,
-	NOTRECHT,
-	MAHLZEITENVERGUENSTIGUNG,
-	GEMEINDEN,
+import java.util.Locale;
+
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.util.UploadFileInfo;
+import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
+
+public interface ReportGemeindenService {
+
+	@Nonnull
+	UploadFileInfo generateExcelReportGemeinden(
+			@Nonnull Locale locale
+	) throws ExcelMergeException;
 }

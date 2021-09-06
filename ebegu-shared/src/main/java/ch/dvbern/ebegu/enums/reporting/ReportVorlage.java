@@ -161,6 +161,12 @@ public enum ReportVorlage {
 		ReportFileName.MAHLZEITENVERGUENSTIGUNG,
 		Constants.DATA,
 		MergeFieldMahlzeitenverguenstigung.class
+	),
+	VORLAGE_REPORT_GEMEINDEN(
+			"/reporting/Gemeinden.xlsx",
+			ReportFileName.GEMEINDEN,
+			Constants.DATA,
+			MergeFieldGemeinden.class
 	);
 
 	@Nonnull
