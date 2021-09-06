@@ -219,4 +219,12 @@ public class JaxPublicAppConfig {
 	public void setLastenausgleichTagesschulenAutoZweitpruefungFr(BigDecimal lastenausgleichTagesschulenAutoZweitpruefungFr) {
 		this.lastenausgleichTagesschulenAutoZweitpruefungFr = lastenausgleichTagesschulenAutoZweitpruefungFr;
 	}
+
+	public boolean isGemeindeKennzahlenAktiv() {
+		return gemeindeKennzahlenAktiv;
+	}
+
+	public void setGemeindeKennzahlenAktiv(boolean gemeindeKennzahlenAktiv) {
+		this.gemeindeKennzahlenAktiv = gemeindeKennzahlenAktiv;
+	}
 }
