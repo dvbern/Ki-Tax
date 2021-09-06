@@ -159,7 +159,7 @@ public class AnmeldungTagesschuleEventConverter {
 		return ModulAuswahlDTO.newBuilder()
 			.setModulId(belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().getId())
 			.setIntervall(Intervall.valueOf(belegungTagesschuleModul.getIntervall().name()))
-			.setWeekday(Wochentag.valueOf(belegungTagesschuleModul.getModulTagesschule().getWochentag().name()))
+			.setWochentag(Wochentag.valueOf(belegungTagesschuleModul.getModulTagesschule().getWochentag().name()))
 			.build();
 	}
 }

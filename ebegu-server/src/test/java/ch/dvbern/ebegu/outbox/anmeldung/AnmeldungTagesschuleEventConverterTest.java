@@ -135,7 +135,7 @@ public class AnmeldungTagesschuleEventConverterTest {
 				ModulAuswahlDTO::getIntervall,
 				is(Intervall.valueOf(belegungTagesschuleModul.getIntervall().name())))
 			.where(
-				ModulAuswahlDTO::getWeekday,
+				ModulAuswahlDTO::getWochentag,
 				is(Wochentag.valueOf(belegungTagesschuleModul.getModulTagesschule().getWochentag().name())));
 	}
 

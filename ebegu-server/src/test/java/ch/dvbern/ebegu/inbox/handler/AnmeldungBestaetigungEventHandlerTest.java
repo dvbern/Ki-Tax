@@ -272,7 +272,7 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 		@Test
 		void testModuleNichtGefunden() {
 			List<ModulAuswahlDTO> modulAuswahlDTOList = prepareStandardCallAndModulAuswahlList();
-			modulAuswahlDTOList.get(0).setWeekday(Wochentag.SUNDAY);
+			modulAuswahlDTOList.get(0).setWochentag(Wochentag.SUNDAY);
 
 			tagesschuleBestaetigungEventDTO.setModule(modulAuswahlDTOList);
 

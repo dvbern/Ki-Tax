@@ -284,11 +284,11 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 		}
 
 		Optional<ModulTagesschule> match = group.getModule().stream()
-			.filter(m -> m.getWochentag().name().equals(dto.getWeekday().name()))
+			.filter(m -> m.getWochentag().name().equals(dto.getWochentag().name()))
 			.findAny();
 
 		if (match.isEmpty()) {
-			eventMonitor.record("ModulTagesschuleGroup %s ist an %s nicht definiert.", id, dto.getWeekday());
+			eventMonitor.record("ModulTagesschuleGroup %s ist an %s nicht definiert.", id, dto.getWochentag());
 
 			return Optional.empty();
 		}

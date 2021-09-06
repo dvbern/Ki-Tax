@@ -64,7 +64,7 @@ public final class AnmeldungTestUtil {
 	public static ModulAuswahlDTO createModulAuswahlDTO(@Nonnull String modulId, @Nonnull DayOfWeek weekday) {
 		ModulAuswahlDTO modulAuswahlDTO = new ModulAuswahlDTO();
 		modulAuswahlDTO.setModulId(modulId);
-		modulAuswahlDTO.setWeekday(Wochentag.valueOf(weekday.name()));
+		modulAuswahlDTO.setWochentag(Wochentag.valueOf(weekday.name()));
 		modulAuswahlDTO.setIntervall(Intervall.WOECHENTLICH);
 
 		return modulAuswahlDTO;
