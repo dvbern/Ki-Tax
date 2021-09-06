@@ -24,6 +24,7 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;
 import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatRowMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_X_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.LONG_CONVERTER;
@@ -65,11 +66,11 @@ public enum MergeFieldGemeinden implements MergeFieldProvider {
 
 	gesuchsperiode(new SimpleMergeField<>("gesuchsperiode", STRING_CONVERTER)),
 	limitierungKita(new SimpleMergeField<>("limitierungKita", STRING_CONVERTER)),
-	kontingentierung(new SimpleMergeField<>("kontingentierung", STRING_CONVERTER)),
+	kontingentierung(new SimpleMergeField<>("kontingentierung", BOOLEAN_X_CONVERTER)),
 	nachfrageErfuellt(new SimpleMergeField<>("nachfrageErfuellt", STRING_CONVERTER)),
-	nachfrageAnzahl(new SimpleMergeField<>("nachfrageAnzahl", STRING_CONVERTER)),
-	nachfrageDauer(new SimpleMergeField<>("nachfrageDauer", STRING_CONVERTER)),
-	kostenlenkungAndere(new SimpleMergeField<>("kostenlenkungAndere", STRING_CONVERTER)),
+	nachfrageAnzahl(new SimpleMergeField<>("nachfrageAnzahl", BIGDECIMAL_CONVERTER)),
+	nachfrageDauer(new SimpleMergeField<>("nachfrageDauer", BIGDECIMAL_CONVERTER)),
+	kostenlenkungAndere(new SimpleMergeField<>("kostenlenkungAndere", BOOLEAN_X_CONVERTER)),
 	welcheKostenlenkungsmassnahmen(new SimpleMergeField<>("welcheKostenlenkungsmassnahmen", STRING_CONVERTER)),
 	erwerbspensumZuschlag(new SimpleMergeField<>("erwerbspensumZuschlag", STRING_CONVERTER));
 
