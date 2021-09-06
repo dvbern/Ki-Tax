@@ -2586,5 +2586,13 @@
     "INSTITUTION_EINGELADEN_WARN_TEXT": "Achtung, die Stammdaten der Institution sind noch nicht ausgefüllt. Eine Platzbestätigung ist damit noch nicht möglich!",
     "GUTSCHEIN_SELBER_AUSGESTELLT": "Wird der Gutschein von der Gemeinde selber ausgestellt?",
     "GUTSCHEINAUSGABESTELLE": "Gutscheinausgabestelle",
+    "GEMEINDE_KENNZAHLEN": "Gemeinde Kennzahlen",
+    "GEMEINDE_KENNZAHLEN_FORMULAR": "Kennzahlen",
+    "GEMEINDE_KENNZAHLEN_NACHFRAGE_ERFUELLT": "Wurde das Kontingenz ausgeschöpft?",
+    "GEMEINDE_KENNZAHLEN_NACHFRAGE_ANZAHL": "Für Gemeinden die Kontingentieren: Anzahl Kinder auf Warteliste per 1.8.2020",
+    "GEMEINDE_KENNZAHLEN_NACHFRAGE_DAUER": "Für Gemeinden die Kontingentieren: Dauer, wie lange Kinder durchschnittlich auf Warteliste sind",
+    "GEMEINDE_KENNZAHLEN_KOSTENLENKUNG_ANDERE": "Hat die Gemeinde weitere Kostenlenkungsmassnahmen getroffen?",
+    "GEMEINDE_KENNZAHLEN_WELCHE_KOSTENLENKUNGSMASSNAHMEN": "Welche weiteren Kostenlenkungsmassnahmen wurden getroffen?",
+    "GEMEINDE_KENNZAHLEN_AKTIV": "Gemeinde Kennzahlen aktiviert",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

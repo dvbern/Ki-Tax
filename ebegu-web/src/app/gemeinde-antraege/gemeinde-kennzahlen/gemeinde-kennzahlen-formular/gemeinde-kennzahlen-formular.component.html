@@ -1,0 +1,169 @@
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="gemeinde-kennzahlen">
+
+	<h1 class="access-for-all-title" translate>FERIENBETREUUNG_ANGEBOT</h1>
+	<div class="row view-title">
+		<div class="col-md-12">
+			<h2>{{'GEMEINDE_KENNZAHLEN' | translate}}</h2>
+			<hr class="header"/>
+		</div>
+	</div>
+
+	<form *ngIf="antragAndPrincipal$ | async as antragAndPrincipal" #form="ngForm">
+
+		<div class="max-width-container-750">
+
+			<dv-input-container-x [noMargin]="true">
+				<label required
+					   [ngClass]="{'label-error': nachfrageErfuellt.errors}"
+					   for="nachfrageErfuellt-radio-group">
+					{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_ERFUELLT' | translate}}
+				</label>
+				<dv-radio-container-x>
+					<mat-radio-group
+							aria-labelledby="nachfrageErfuellt-radio-group"
+							id="nachfrageErfuellt-radio-group"
+							class=""
+							name="nachfrageErfuellt"
+                            #nachfrageErfuellt="ngModel"
+							horizontal
+							[disabled]="isFormDisabledFor(antragAndPrincipal)"
+							[required]="abschlussValidationTriggered"
+							[(ngModel)]="antragAndPrincipal[0].nachfrageErfuellt">
+						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+					</mat-radio-group>
+					<dv-error-messages [errorObject]="nachfrageErfuellt.errors"></dv-error-messages>
+				</dv-radio-container-x>
+			</dv-input-container-x>
+
+			<dv-input-container-x [noMargin]="true">
+				<label required
+					   [ngClass]="{'label-error': nachfrageAnzahl.errors}"
+					   for="nachfrageAnzahl_id">
+					{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_ANZAHL' | translate }}
+				</label>
+				<mat-form-field floatLabel="always">
+					<input matInput
+						   name="nachfrageAnzahl"
+                           #nachfrageAnzahl="ngModel"
+						   id="nachfrageAnzahl_id"
+						   [required]="abschlussValidationTriggered"
+						   type="number"
+						   pattern="{{CONSTANTS.PATTERN_ANY_INT}}"
+						   [disabled]="isFormDisabledFor(antragAndPrincipal)"
+						   [(ngModel)]="antragAndPrincipal[0].nachfrageAnzahl"
+						   class="form-control dv-input"/>
+					<dv-error-messages [errorObject]="nachfrageAnzahl.errors"></dv-error-messages>
+				</mat-form-field>
+			</dv-input-container-x>
+
+			<dv-input-container-x [noMargin]="true">
+				<label required
+					   [ngClass]="{'label-error': nachfrageDauer.errors}"
+					   for="nachfrageDauer_id">
+					{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_DAUER' | translate }}
+				</label>
+				<mat-form-field floatLabel="always">
+					<input matInput
+						   id="nachfrageDauer_id"
+						   name="nachfrageDauer"
+                           #nachfrageDauer="ngModel"
+						   [required]="abschlussValidationTriggered"
+						   type="number"
+						   pattern="{{CONSTANTS.PATTERN_TWO_DECIMALS}}"
+						   [disabled]="isFormDisabledFor(antragAndPrincipal)"
+						   [(ngModel)]="antragAndPrincipal[0].nachfrageDauer"
+						   class="form-control dv-input"/>
+					<dv-error-messages [errorObject]="nachfrageDauer.errors"></dv-error-messages>
+				</mat-form-field>
+			</dv-input-container-x>
+
+			<dv-input-container-x [noMargin]="true">
+				<label required
+					   [ngClass]="{'label-error': kostenlenkungAndere.errors}"
+					   for="kostenlenkungAndere-radio-group">
+					{{'GEMEINDE_KENNZAHLEN_KOSTENLENKUNG_ANDERE' | translate}}
+				</label>
+				<dv-radio-container-x>
+					<mat-radio-group
+							aria-labelledby="kostenlenkungAndere-radio-group"
+							id="kostenlenkungAndere-radio-group"
+							class=""
+							name="kostenlenkungAndere"
+							#kostenlenkungAndere="ngModel"
+							horizontal
+							[disabled]="isFormDisabledFor(antragAndPrincipal)"
+							[required]="abschlussValidationTriggered"
+							[(ngModel)]="antragAndPrincipal[0].kostenlenkungAndere">
+						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+					</mat-radio-group>
+					<dv-error-messages [errorObject]="kostenlenkungAndere.errors"></dv-error-messages>
+				</dv-radio-container-x>
+			</dv-input-container-x>
+
+			<dv-input-container-x *ngIf="kostenlenkungAndere.value === true" [noMargin]="true">
+				<label required
+					   for="welcheKostenlenkungsmassnahmen_id"
+					   [ngClass]="{'label-error': welcheKostenlenkungsmassnahmen.errors}">
+					{{'GEMEINDE_KENNZAHLEN_WELCHE_KOSTENLENKUNGSMASSNAHMEN' | translate }}
+				</label>
+				<mat-form-field floatLabel="always">
+					<mat-select class="form-control"
+								[required]="abschlussValidationTriggered"
+								name="welcheKostenlenkungsmassnahmen"
+								[(ngModel)]="antragAndPrincipal[0].welcheKostenlenkungsmassnahmen"
+                                #welcheKostenlenkungsmassnahmen="ngModel"
+								id="welcheKostenlenkungsmassnahmen_id"
+								[disabled]="isFormDisabledFor(antragAndPrincipal)">
+						<mat-option [value]="'1'">PLACEHOLDER 1</mat-option>
+						<mat-option [value]="'2'">PLACEHOLDER 2</mat-option>
+						<mat-option [value]="'3'">PLACEHOLDER 3</mat-option>
+					</mat-select>
+					<dv-error-messages [errorObject]="welcheKostenlenkungsmassnahmen.errors"></dv-error-messages>
+				</mat-form-field>
+			</dv-input-container-x>
+		</div>
+		<div class="actions margin-top-50 max-width-container-750">
+
+			<button type="button" class="dv-btn cancel-button"
+					*ngIf="canSeeSaveAndAbschliessen$ | async"
+					[disabled]="form.invalid"
+					(click)="save(antragAndPrincipal[0])"
+					[textContent]="'SAVE' | translate">
+			</button>
+			<dv-loading-button
+					*ngIf="canSeeSaveAndAbschliessen$ | async"
+					type="button"
+					[buttonDisabled]="form.invalid"
+					(buttonClick)="abschliessen(antragAndPrincipal[0])">
+				<span translate>ABSCHLIESSEN</span>
+			</dv-loading-button>
+			<dv-loading-button
+					*ngIf="canSeeZurueckAnGemeinde$ | async"
+					(buttonClick)="zurueckAnGemeinde(antragAndPrincipal[0])"
+					type="button">
+				<span translate>ZURUECK_AN_GEMEINDE_TITLE</span>
+			</dv-loading-button>
+		</div>
+	</form>
+
+
+</div>

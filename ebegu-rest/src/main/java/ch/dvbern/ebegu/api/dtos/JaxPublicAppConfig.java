@@ -27,6 +27,7 @@ public class JaxPublicAppConfig {
 	private String notverordnungDefaultEinreichefristPrivat;
 	private boolean ferienbetreuungAktiv;
 	private boolean lastenausgleichTagesschulenAktiv;
+	private boolean gemeindeKennzahlenAktiv;
 	private BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDe;
 	private BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungFr;
 	private BigDecimal lastenausgleichTagesschulenAutoZweitpruefungDe;
@@ -48,6 +49,7 @@ public class JaxPublicAppConfig {
 		String notverordnungDefaultEinreichefristPrivat,
 		boolean ferienbetreuungAktiv,
 		boolean lastenausgleichTagesschulenAktiv,
+		boolean gemeindeKennzahlenAktiv,
 		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDe,
 		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungFr,
 		BigDecimal lastenausgleichTagesschulenAutoZweitpruefungDe,
@@ -67,6 +69,7 @@ public class JaxPublicAppConfig {
 		this.notverordnungDefaultEinreichefristPrivat = notverordnungDefaultEinreichefristPrivat;
 		this.ferienbetreuungAktiv = ferienbetreuungAktiv;
 		this.lastenausgleichTagesschulenAktiv = lastenausgleichTagesschulenAktiv;
+		this.gemeindeKennzahlenAktiv = gemeindeKennzahlenAktiv;
 		this.lastenausgleichTagesschulenAnteilZweitpruefungDe = lastenausgleichTagesschulenAnteilZweitpruefungDe;
 		this.lastenausgleichTagesschulenAnteilZweitpruefungFr = lastenausgleichTagesschulenAnteilZweitpruefungFr;
 		this.lastenausgleichTagesschulenAutoZweitpruefungDe = lastenausgleichTagesschulenAutoZweitpruefungDe;
@@ -215,5 +218,13 @@ public class JaxPublicAppConfig {
 
 	public void setLastenausgleichTagesschulenAutoZweitpruefungFr(BigDecimal lastenausgleichTagesschulenAutoZweitpruefungFr) {
 		this.lastenausgleichTagesschulenAutoZweitpruefungFr = lastenausgleichTagesschulenAutoZweitpruefungFr;
+	}
+
+	public boolean isGemeindeKennzahlenAktiv() {
+		return gemeindeKennzahlenAktiv;
+	}
+
+	public void setGemeindeKennzahlenAktiv(boolean gemeindeKennzahlenAktiv) {
+		this.gemeindeKennzahlenAktiv = gemeindeKennzahlenAktiv;
 	}
 }

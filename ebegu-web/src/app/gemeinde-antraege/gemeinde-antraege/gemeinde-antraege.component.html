@@ -53,7 +53,7 @@
                                     formControlName="antragTyp"
                                     (change)="onAntragTypChange()"
                                     class="form-control">
-                                <option *ngFor="let typ of types"
+                                <option *ngFor="let typ of creatableTypes"
                                         [value]="typ" translate>{{typ}}</option>
                             </select>
                             <div class="dv-error-messages">
@@ -83,7 +83,7 @@
                         </div>
                     </div>
 
-                    <div *ngIf="!ferienBetreuungSelected()"
+                    <div *ngIf="!ferienBetreuungSelected() && isMandant() | async"
                          class="col-md-3 layout-align-center-center layout-row flex actions"
                          flex
                          layout="row"

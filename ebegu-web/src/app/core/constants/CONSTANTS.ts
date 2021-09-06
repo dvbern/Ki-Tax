@@ -21,6 +21,7 @@ export const CONSTANTS = {
     GEMEINDENUMMER_LENGTH: 3,
     ID_LENGTH: 36,
     PATTERN_ANY_NUMBER: /-?[0-9]+(\.[0-9]+)?/,
+    PATTERN_ANY_INT: '^[0-9]+$',
     PATTERN_BETRAG: '([0-9]{0,12})',
     PATTERN_TWO_DECIMALS: '^[0-9]+(\\.[0-9]{1,2})?$',
     PATTERN_PERCENTAGE: '^[0-9][0-9]?$|^100$',

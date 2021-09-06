@@ -34,10 +34,13 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import org.apache.commons.lang.NotImplementedException;
+
+import static ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp.GEMEINDE_KENNZAHLEN;
 
 /**
  * Service fuer Gemeindeantraege
@@ -53,6 +56,9 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 	private FerienbetreuungService ferienbetreuungService;
 
 	@Inject
+	private GemeindeKennzahlenService gemeindeKennzahlenService;
+
+	@Inject
 	private PrincipalBean principal;
 
 	@Override
@@ -66,6 +72,8 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 				gesuchsperiode));
 		case FERIENBETREUUNG:
 			throw new NotImplementedException("Masseninitialisierung für Ferienbetreuungen wird nicht umgesetzt");
+		case GEMEINDE_KENNZAHLEN:
+			return new ArrayList<>(gemeindeKennzahlenService.createGemeindeKennzahlen(gesuchsperiode));
 		}
 		return Collections.emptyList();
 	}
@@ -105,6 +113,9 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 			case "FERIENBETREUUNG": {
 				return ferienbetreuungService.getFerienbetreuungAntraege(gemeinde, periode, status, timestampMutiert);
 			}
+			case "GEMEINDE_KENNZAHLEN": {
+				return gemeindeKennzahlenService.getGemeindeKennzahlen(gemeinde, periode, status, timestampMutiert);
+			}
 			default:
 				throw new NotImplementedException("getGemeindeAntraege Typ: "
 					+ typ
@@ -135,10 +146,18 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 		}
 
 		if (principal.isCallerInAnyOfRole(
-			UserRole.ADMIN_FERIENBETREUUNG,
-			UserRole.SACHBEARBEITER_FERIENBETREUUNG,
-			UserRole.ADMIN_BG,
-			UserRole.SACHBEARBEITER_BG)) {
+				UserRole.ADMIN_FERIENBETREUUNG,
+				UserRole.SACHBEARBEITER_FERIENBETREUUNG)) {
+			return antraege;
+		}
+
+		if (principal.isCallerInAnyOfRole(UserRole.getMandantBgGemeindeRoles())) {
+			List<GemeindeKennzahlen> gemeindeKennzahlenAntraege =
+					gemeindeKennzahlenService.getGemeindeKennzahlen(gemeindeId, periodeId, status, timestampMutiert);
+			antraege.addAll(gemeindeKennzahlenAntraege);
+		}
+
+		if (principal.isCallerInAnyOfRole(UserRole.ADMIN_BG, UserRole.SACHBEARBEITER_BG)) {
 			return antraege;
 		}
 
@@ -172,6 +191,10 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 		@Nonnull GemeindeAntragTyp gemeindeAntragTyp) {
 		if (gemeindeAntragTyp == GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN) {
 			lastenausgleichTagesschuleAngabenGemeindeService.deleteLastenausgleicheTagesschule(gesuchsperiode);
+			return;
+		}
+		if (gemeindeAntragTyp == GEMEINDE_KENNZAHLEN) {
+			gemeindeKennzahlenService.deleteGemeindeKennzahlen(gesuchsperiode);
 			return;
 		}
 		throw new NotImplementedException("DeleteGemeindeAntraege für typ "

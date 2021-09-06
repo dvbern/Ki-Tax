@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel_;
@@ -45,6 +46,8 @@ import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 
@@ -134,5 +137,51 @@ public final class PredicateHelper<V> {
 	) {
 		final Predicate predicateMandant = cb.equal(path, eingeloggterBenutzer.getMandant());
 		return predicateMandant;
+	}
+
+	public static <T extends AbstractEntity> Predicate getPredicateFilterGesuchsperiode(
+		@Nonnull CriteriaBuilder cb,
+		@Nonnull Join<T, Gesuchsperiode> joinGesuchsperiode,
+		@Nonnull String gesuchsperiodeString
+	) {
+		String[] years = ensureYearFormat(gesuchsperiodeString);
+		Path<DateRange> dateRangePath = joinGesuchsperiode.get(AbstractDateRangedEntity_.gueltigkeit);
+		Predicate predicateGesuchsperiode =
+			cb.and(
+				cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigAb)),
+					years[0]),
+				cb.equal(
+					cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigBis)),
+					years[1]));
+
+		return predicateGesuchsperiode;
+	}
+
+	private static String[] ensureYearFormat(String gesuchsperiodeString) {
+		String[] years = gesuchsperiodeString.split("/");
+		if (years.length != 2) {
+			throw new EbeguRuntimeException(
+				"ensureYearFormat",
+				"Der Gesuchsperioden string war nicht im erwarteten Format x/y sondern " + gesuchsperiodeString);
+		}
+		String[] result = new String[2];
+		result[0] = changeTwoDigitYearToFourDigit(years[0]);
+		result[1] = changeTwoDigitYearToFourDigit(years[1]);
+		return result;
+	}
+
+	private static String changeTwoDigitYearToFourDigit(String year) {
+		//im folgenden wandeln wir z.B 16  in 2016 um. Funktioniert bis ins jahr 2099, da die Periode 2099/2100 mit
+		// dieser Methode nicht geht
+		String currentYearAsString = String.valueOf(LocalDate.now().getYear());
+		if (year.length() == currentYearAsString.length()) {
+			return year;
+		}
+		if (year.length() < currentYearAsString.length()) { // jahr ist im kurzformat
+			return currentYearAsString.substring(0, currentYearAsString.length() - year.length()) + year;
+		}
+		throw new EbeguRuntimeException(
+			"changeTwoDigitYearToFourDigit",
+			"Der Gesuchsperioden string war nicht im erwarteten Format yy oder yyyy sondern " + year);
 	}
 }

@@ -50,7 +50,6 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -78,8 +77,8 @@ import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.services.MailService;
-import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
@@ -389,8 +388,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			);
 		}
 		if (periode != null) {
-			final Predicate periodePredicate = createPeriodePredicate(periode, cb, root);
-			predicates.add(periodePredicate);
+			predicates.add(PredicateHelper.getPredicateFilterGesuchsperiode(cb,
+				root.join(LastenausgleichTagesschuleAngabenGemeindeContainer_.gesuchsperiode, JoinType.INNER),
+				periode));
 		}
 		if (status != null) {
 			if (!EnumUtil.isOneOf(status, LastenausgleichTagesschuleAngabenGemeindeStatus.values())) {
@@ -449,24 +449,6 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		return timestampMutiertPredicate;
 	}
 
-	private Predicate createPeriodePredicate(
-		@NotNull String periode,
-		CriteriaBuilder cb,
-		Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root) {
-		String[] years = Arrays.stream(periode.split("/"))
-			.map(year -> year.length() == 4 ? year : "20".concat(year))
-			.collect(Collectors.toList())
-			.toArray(String[]::new);
-		Path<DateRange> dateRangePath =
-			root.join(LastenausgleichTagesschuleAngabenGemeindeContainer_.gesuchsperiode, JoinType.INNER)
-				.get(AbstractDateRangedEntity_.gueltigkeit);
-		Predicate periodePredicate = cb.and(
-			cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigAb)), years[0]),
-			cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigBis)), years[1])
-		);
-		return periodePredicate;
-	}
-
 	private List<LastenausgleichTagesschuleAngabenGemeindeContainer> getLastenausgleicheTagesschulenForInstitution(
 		@Nullable String periode,
 		@Nullable String status) {
@@ -483,8 +465,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			LastenausgleichTagesschuleAngabenGemeindeContainer_.angabenInstitutionContainers,
 			JoinType.LEFT);
 
+		List<Predicate> predicates = new ArrayList<>();
+
 		Predicate institutionIn = join.get(LastenausgleichTagesschuleAngabenInstitutionContainer_.institution)
 			.in(Objects.requireNonNull(institutionService.getInstitutionenReadableForCurrentBenutzer(false)));
+
+		predicates.add(institutionIn);
 
 		Predicate notNeu = cb.not(
 			cb.equal(
@@ -493,19 +479,21 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		);
 		query.where(institutionIn, notNeu);
 
+		predicates.add(notNeu);
+
 		if (periode != null) {
-			final Predicate periodePredicate = createPeriodePredicate(periode, cb, root);
-			query.where(periodePredicate);
+			predicates.add(PredicateHelper.getPredicateFilterGesuchsperiode(cb,
+				root.join(LastenausgleichTagesschuleAngabenGemeindeContainer_.gesuchsperiode, JoinType.INNER),
+				periode));
 		}
 		if (status != null) {
 			if (!EnumUtil.isOneOf(status, LastenausgleichTagesschuleAngabenGemeindeStatus.values())) {
 				return new ArrayList<>();
 			}
 			final Predicate statusPredicate = createStatusPredicate(status, cb, root);
-			query.where(
-				statusPredicate
-			);
+			predicates.add(statusPredicate);
 		}
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		return persistence.getCriteriaResults(query);
 	}
 

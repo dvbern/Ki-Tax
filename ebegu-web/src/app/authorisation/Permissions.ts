@@ -104,8 +104,6 @@ export const PERMISSIONS: { [k in Permission]: ReadonlyArray<TSRole> } = {
         TSRole.SACHBEARBEITER_GEMEINDE,
         TSRole.ADMIN_BG,
         TSRole.SACHBEARBEITER_BG,
-        TSRole.ADMIN_TS,
-        TSRole.SACHBEARBEITER_TS,
         TSRole.ADMIN_FERIENBETREUUNG,
         TSRole.SACHBEARBEITER_FERIENBETREUUNG
     ],
