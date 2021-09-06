@@ -22,7 +22,7 @@ create table gemeinde_kennzahlen (
     user_erstellt varchar(255) not null,
     user_mutiert varchar(255) not null,
     version bigint not null,
-    status varchar(255),
+    status varchar(255) not null,
     gemeinde_id binary(16) not null,
     gesuchsperiode_id binary(16) not null,
     nachfrage_erfuellt bit,
@@ -66,3 +66,6 @@ alter table gemeinde_kennzahlen
 	add constraint FK_gemeinde_kennzahlen_gesuchsperiode_id
 		foreign key (gesuchsperiode_id)
 			references gesuchsperiode (id);
+
+INSERT INTO application_property (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, name, value)
+VALUES (UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')), '2020-03-20 00:00:00', '2020-03-20 00:00:00', 'flyway', 'flyway', 0, null, 'GEMEINDE_KENNZAHLEN_AKTIV', 'false');

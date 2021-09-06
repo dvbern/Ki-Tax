@@ -36,12 +36,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -51,8 +49,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennza
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.GemeindeService;
-import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.types.DateRange_;
+import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.base.Preconditions;
@@ -189,7 +186,9 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 		}
 
 		if (gesuchsperiode != null) {
-			predicates.add(createGesuchsperiodePredicate(cb, root, gesuchsperiode));
+			predicates.add(PredicateHelper.getPredicateFilterGesuchsperiode(cb,
+				root.join(GemeindeKennzahlen_.gesuchsperiode, JoinType.INNER),
+				gesuchsperiode));
 		}
 
 		if (status != null) {
@@ -213,23 +212,6 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 		return cb.equal(
 				root.get(GemeindeKennzahlen_.gemeinde).get(Gemeinde_.name),
 				gemeinde
-		);
-	}
-
-	private Predicate createGesuchsperiodePredicate(
-			CriteriaBuilder cb,
-			Root<GemeindeKennzahlen> root,
-			String gesuchsperiode) {
-		String[] years = Arrays.stream(gesuchsperiode.split("/"))
-				.map(year -> year.length() == 4 ? year : "20".concat(year))
-				.collect(Collectors.toList())
-				.toArray(String[]::new);
-		Path<DateRange> dateRangePath =
-				root.join(GemeindeKennzahlen_.gesuchsperiode, JoinType.INNER)
-						.get(AbstractDateRangedEntity_.gueltigkeit);
-		return cb.and(
-				cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigAb)), years[0]),
-				cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigBis)), years[1])
 		);
 	}
 
