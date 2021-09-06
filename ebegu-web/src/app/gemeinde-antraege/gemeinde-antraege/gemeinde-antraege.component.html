@@ -83,7 +83,7 @@
                         </div>
                     </div>
 
-                    <div *ngIf="isMandant() | async"
+                    <div *ngIf="!ferienBetreuungSelected() && isMandant() | async"
                          class="col-md-3 layout-align-center-center layout-row flex actions"
                          flex
                          layout="row"
