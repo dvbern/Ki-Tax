@@ -745,4 +745,11 @@ export class TSRoleUtil {
             .concat(PERMISSIONS[Permission.FERIENBETREUUNG])
             .concat(this.getTraegerschaftInstitutionOnlyRoles());
     }
+
+    public static getFerienbetreuungGemeindeRolesOnly(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.ADMIN_FERIENBETREUUNG,
+            TSRole.SACHBEARBEITER_FERIENBETREUUNG,
+        ];
+    }
 }

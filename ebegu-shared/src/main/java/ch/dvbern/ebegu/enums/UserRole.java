@@ -180,15 +180,8 @@ public enum UserRole {
 	}
 
 	public static List<UserRole> getAllGemeindeFerienbetreuungRoles() {
-		return Arrays.asList(ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS,
-			SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG);
-	}
-
-	public static List<UserRole> getAllGemeindeFerienbetreuungSuperadminRoles() {
-		List<UserRole> roles = new ArrayList<>();
-		roles.add(SUPER_ADMIN);
-		roles.addAll(getAllGemeindeFerienbetreuungRoles());
-		return roles;
+		return Arrays.asList(ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG,
+			ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG);
 	}
 
 	public static List<UserRole> getAllGemeindeFerienbetreuungMandantSuperadminRoles() {
