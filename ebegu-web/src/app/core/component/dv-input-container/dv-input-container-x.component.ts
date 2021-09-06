@@ -26,4 +26,5 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 export class DVInputContainerXComponent {
     @Input() public disabled = false;
     @Input() public verticalAlign = false;
+    @Input() public noMargin = false;
 }

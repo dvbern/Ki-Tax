@@ -24,6 +24,7 @@ import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
+import {TSGemeindeKennzahlen} from '../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {TSAnzahlEingeschriebeneKinder} from '../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
 import {TSDurchschnittKinderProTag} from '../models/gemeindeantrag/TSDurchschnittKinderProTag';
 import {TSFerienbetreuungAngaben} from '../models/gemeindeantrag/TSFerienbetreuungAngaben';
@@ -4021,6 +4022,7 @@ export class EbeguRestUtil {
             data.notverordnungDefaultEinreichefristOeffentlich;
         publicAppConfigTS.notverordnungDefaultEinreichefristPrivat = data.notverordnungDefaultEinreichefristPrivat;
         publicAppConfigTS.lastenausgleichTagesschulenAktiv = data.lastenausgleichTagesschulenAktiv;
+        publicAppConfigTS.gemeindeKennzahlenAktiv = data.gemeindeKennzahlenAktiv;
         publicAppConfigTS.ferienbetreuungAktiv = data.ferienbetreuungAktiv;
         return publicAppConfigTS;
 
@@ -5402,5 +5404,46 @@ export class EbeguRestUtil {
         internePendenz.text = internePendentFromServer.text;
         internePendenz.erledigt = internePendentFromServer.erledigt;
         return internePendenz;
+    }
+
+    public gemeindeKennzahlenToRestObject(gemeindeKennzahlenRest: any, gemeindeKennzahlen: TSGemeindeKennzahlen): any {
+        if (!gemeindeKennzahlen) {
+            return undefined;
+        }
+        this.abstractEntityToRestObject(gemeindeKennzahlenRest, gemeindeKennzahlen);
+
+        gemeindeKennzahlenRest.gemeinde = this.gemeindeToRestObject({}, gemeindeKennzahlen.gemeinde);
+        gemeindeKennzahlenRest.gesuchsperiode = this.gesuchsperiodeToRestObject({}, gemeindeKennzahlen.gesuchsperiode);
+
+        gemeindeKennzahlenRest.nachfrageErfuellt = gemeindeKennzahlen.nachfrageErfuellt;
+        gemeindeKennzahlenRest.nachfrageAnzahl = gemeindeKennzahlen.nachfrageAnzahl;
+        gemeindeKennzahlenRest.nachfrageDauer = gemeindeKennzahlen.nachfrageDauer;
+        gemeindeKennzahlenRest.kostenlenkungAndere = gemeindeKennzahlen.kostenlenkungAndere;
+        gemeindeKennzahlenRest.welcheKostenlenkungsmassnahmen = gemeindeKennzahlen.welcheKostenlenkungsmassnahmen;
+
+        return gemeindeKennzahlenRest;
+    }
+
+    public parseGemeindeKennzahlen(
+        gemeindeKennzahlen: TSGemeindeKennzahlen,
+        gemeindeKennzahlenFromServer: any,
+    ): TSGemeindeKennzahlen {
+        if (!gemeindeKennzahlenFromServer) {
+            return undefined;
+        }
+        this.parseAbstractEntity(gemeindeKennzahlen, gemeindeKennzahlenFromServer);
+
+        gemeindeKennzahlen.gemeinde = this.parseGemeinde(new TSGemeinde(), gemeindeKennzahlenFromServer.gemeinde);
+        gemeindeKennzahlen.gesuchsperiode =
+            this.parseGesuchsperiode(new TSGesuchsperiode(), gemeindeKennzahlenFromServer.gesuchsperiode);
+        gemeindeKennzahlen.status = gemeindeKennzahlenFromServer.status;
+
+        gemeindeKennzahlen.nachfrageErfuellt = gemeindeKennzahlenFromServer.nachfrageErfuellt;
+        gemeindeKennzahlen.nachfrageAnzahl = gemeindeKennzahlenFromServer.nachfrageAnzahl;
+        gemeindeKennzahlen.nachfrageDauer = gemeindeKennzahlenFromServer.nachfrageDauer;
+        gemeindeKennzahlen.kostenlenkungAndere = gemeindeKennzahlenFromServer.kostenlenkungAndere;
+        gemeindeKennzahlen.welcheKostenlenkungsmassnahmen = gemeindeKennzahlenFromServer.welcheKostenlenkungsmassnahmen;
+
+        return gemeindeKennzahlen;
     }
 }

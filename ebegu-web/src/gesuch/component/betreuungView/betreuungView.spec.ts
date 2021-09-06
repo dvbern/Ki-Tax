@@ -255,8 +255,6 @@ describe('betreuungView', () => {
                     .toEqual(TSBetreuungsstatus.AUSSTEHEND);
                 expect(betreuungToWorkWith.grundAblehnung).toEqual('mein Grund');
                 expect(betreuungToWorkWith.datumAblehnung).toEqual(DateUtil.today());
-                // it must be false because is the value by default
-                expect(betreuungToWorkWith.erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse).toBe(false);
                 // tslint:disable-next-line:no-unbound-method
                 expect(gesuchModelManager.saveBetreuung).toHaveBeenCalled();
             });

@@ -55,7 +55,7 @@ const controlContainerSpy = jasmine.createSpyObj<ControlContainer>(ControlContai
 const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
     ['isOneOfRoles', 'principal$', 'isRole']);
 
-const gemeindeAntragServiceSpy = jasmine.createSpyObj<GemeindeAntragService>(GemeindeAntragService.name, ['getTypesForRole']);
+const gemeindeAntragServiceSpy = jasmine.createSpyObj<GemeindeAntragService>(GemeindeAntragService.name, ['getFilterableTypesForRole', 'getCreatableTypesForRole']);
 
 const user = new TSBenutzer();
 user.currentBerechtigung = new TSBerechtigung();
@@ -124,7 +124,11 @@ describe('GemeindeAntraegeComponent', () => {
 
         gesuchPeriodeSpy.getAllActiveGesuchsperioden.and.returnValue(Promise.resolve([]));
         gemeindeRSSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
-        gemeindeAntragServiceSpy.getTypesForRole.and.returnValue([
+        gemeindeAntragServiceSpy.getFilterableTypesForRole.and.returnValue([
+            TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN,
+            TSGemeindeAntragTyp.FERIENBETREUUNG
+        ]);
+        gemeindeAntragServiceSpy.getCreatableTypesForRole.and.returnValue([
             TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN,
             TSGemeindeAntragTyp.FERIENBETREUUNG
         ]);

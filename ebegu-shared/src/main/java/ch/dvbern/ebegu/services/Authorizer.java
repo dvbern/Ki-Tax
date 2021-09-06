@@ -46,6 +46,7 @@ import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 
@@ -291,4 +292,10 @@ public interface Authorizer {
 	void checkWriteAuthorization(@Nonnull InternePendenz internePendenz);
 
 	void checkReadAuthorization(@Nonnull InternePendenz internePendenz);
+
+	void checkReadAuthorization(@Nonnull String id);
+
+	void checkReadAuthorization(@Nonnull GemeindeKennzahlen gemeindeKennzahlen);
+
+	void checkWriteAuthorization(@Nonnull GemeindeKennzahlen gemeindeKennzahlen);
 }

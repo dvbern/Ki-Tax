@@ -18,31 +18,35 @@
 <p *ngIf="canSeeFreigegebenText | async"
    [innerHTML]="'LATS_FREIGEGEBEN_AN_KANTON' | translate">
 </p>
-<p *ngIf="canSeeGeprueftText | async"
-   [innerHTML]="'FERIENBETREUUNG_GEPRUEFT' | translate">
-</p>
 
 <div class="actions">
     <dv-loading-button
-        *ngIf="canViewFreigabeButton | async"
+        *ngIf="canSeeFreigabeButton | async"
         [buttonDisabled]="!(isInBearbeitungGemeinde() | async)"
         (buttonClick)="freigeben()"
         type="button">
         <span translate>LATS_FREIGABE_PRUEFUNG_KANTON</span>
     </dv-loading-button>
     <dv-loading-button
-        *ngIf="canViewGeprueftButton | async"
+        *ngIf="canSeeGeprueftButton | async"
         [buttonDisabled]="!isReadyForGeprueft()"
         type="button"
         (buttonClick)="geprueft()">
         <span translate>LATS_GEPRUEFT_KANTON</span>
     </dv-loading-button>
     <dv-loading-button
-        *ngIf="canViewGeprueftButton | async"
+        *ngIf="canSeeGeprueftButton | async"
         [buttonDisabled]="!(isInPruefungKanton() | async)"
         type="button"
         class="secondary"
         (buttonClick)="zurueckAnGemeinde()">
         <span translate>ZURUECK_AN_GEMEINDE_TITLE</span>
+    </dv-loading-button>
+    <dv-loading-button
+        *ngIf="canSeeZurueckInPruefungButton | async"
+        type="button"
+        class="secondary"
+        (buttonClick)="zurueckInPruefung()">
+        <span translate>ZURUECK_IN_PRUEFUNG_TITLE</span>
     </dv-loading-button>
 </div>

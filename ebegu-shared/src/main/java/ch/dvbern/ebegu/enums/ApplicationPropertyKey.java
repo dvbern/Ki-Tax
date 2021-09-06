@@ -98,6 +98,10 @@ public enum ApplicationPropertyKey {
 	 * Wenn TRUE ist Lastenausgleich Tagesschulen aktiviert
 	 */
 	LASTENAUSGLEICH_TAGESSCHULEN_AKTIV,
+	/**
+	 * Wenn TRUE ist Gemeinde Kennzahlen aktiviert
+	 */
+	GEMEINDE_KENNZAHLEN_AKTIV,
 
 	/**
 	 * Setzt fest, was für ein Anteil der LATS Anträge der deutschsprachigen Gemeinden zur Zweitprüfung ausgewählt wird

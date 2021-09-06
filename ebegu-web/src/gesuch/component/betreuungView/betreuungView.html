@@ -290,15 +290,23 @@
                          dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
                          dv-show-expression="!vm.isSchulamt()">
                         <div class="col-xs-12 dv-input-container-question">
-                            <div class="checkbox">
-                                <md-checkbox ng-model="vm.getErweiterteBetreuungJA().keineKesbPlatzierung"
-                                             name="keineKesbPlatzierung"
-                                             aria-label="{{'KEINE_KESB_PLATZIERUNG'|translate}}"
-                                             dv-enable-element
-                                             dv-enable-allowed-roles="vm.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles()"
-                                             dv-enable-expression="vm.enableErweiterteBeduerfnisse()">
+                            <div class="form-group">
+                                <span class="ebegu-h1 required">
                                     <span data-translate="KEINE_KESB_PLATZIERUNG"></span>
-                                </md-checkbox>
+                                </span>
+
+                                <dv-radio-container name="keineKesbPlatzierung" class="input-element"
+                                                    ng-model="vm.getErweiterteBetreuungJA().keineKesbPlatzierung"
+                                                    aria-label="{{'KEINE_KESB_PLATZIERUNG'|translate}}"
+                                                    ng-required="true"
+                                                    aria-described-by="keineKesbPlatzierung-error"
+                                                    dv-enable-element
+                                                    dv-enable-allowed-roles="vm.allowedRoles"
+                                                    dv-enable-expression="vm.enableErweiterteBeduerfnisse()">
+                                </dv-radio-container>
+                                <dv-error-messages input-id="keineKesbPlatzierung"
+                                                   for="vm.form.keineKesbPlatzierung.$error"
+                                                   class="error"></dv-error-messages>
                                 <dv-bisher gs="vm.getErweiterteBetreuungGS().keineKesbPlatzierung"
                                            ja="vm.getErweiterteBetreuungJA().keineKesbPlatzierung"
                                            show-if-bisher-none="vm.isNotNullOrUndefined(vm.getErweiterteBetreuungGS())"></dv-bisher>
@@ -309,16 +317,24 @@
                     <!--erweiterte Beduerfnisse-->
                     <div class="row" ng-if="vm.showErweiterteBeduerfnisse() && !vm.isSchulamt()">
                         <div class="col-xs-12 dv-input-container-question">
-                            <div class="checkbox">
-                                <md-checkbox ng-model="vm.getErweiterteBetreuungJA().erweiterteBeduerfnisse"
-                                             name="erweiterteBeduerfnisse"
-                                             aria-label="{{'ERWEITERTE_BEDUERFNISSE'|translate}}"
-                                             dv-enable-element
-                                             dv-enable-allowed-roles="vm.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles()"
-                                             dv-enable-expression="vm.enableErweiterteBeduerfnisse()"
-                                             ng-change="vm.changedBesondereBeduerfnisse()">
+                            <div class="form-group">
+                                <span class="ebegu-h1 required">
                                     <span data-translate="ERWEITERTE_BEDUERFNISSE"></span>
-                                </md-checkbox>
+                                </span>
+
+                                <dv-radio-container name="erweiterteBeduerfnisse" class="input-element"
+                                                    ng-model="vm.getErweiterteBetreuungJA().erweiterteBeduerfnisse"
+                                                    aria-label="{{'ERWEITERTE_BEDUERFNISSE'|translate}}"
+                                                    aria-described-by="erweiterteBeduerfnisse-error"
+                                                    ng-change="vm.changedBesondereBeduerfnisse()"
+                                                    ng-required="true"
+                                                    dv-enable-element
+                                                    dv-enable-allowed-roles="vm.allowedRoles"
+                                                    dv-enable-expression="vm.enableErweiterteBeduerfnisse()">
+                                </dv-radio-container>
+                                <dv-error-messages input-id="erweiterteBeduerfnisse"
+                                                   for="vm.form.erweiterteBeduerfnisse.$error"
+                                                   class="error"></dv-error-messages>
                                 <dv-bisher gs="vm.getErweiterteBetreuungGS().erweiterteBeduerfnisse"
                                            ja="vm.getErweiterteBetreuungJA().erweiterteBeduerfnisse"
                                            specific-bisher-text="vm.getTextFachstelleKorrekturJA()"
