@@ -2247,7 +2247,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				.collect(Collectors.joining(", ")));
 			row.setOeffnungsAbweichungen(institutionStammdatenBG.getOeffnungsAbweichungen());
 			if (institutionStammdatenBG.getOeffnungstageProJahr() != null) {
-				row.setOeffnungstageProJahr(institutionStammdatenBG.getOeffnungstageProJahr().toString());
+				row.setOeffnungstageProJahr(institutionStammdatenBG.getOeffnungstageProJahr());
 			}
 			if (institutionStammdatenBG.getAuslastungInstitutionen() != null) {
 				row.setAuslastung(institutionStammdatenBG.getAuslastungInstitutionen());

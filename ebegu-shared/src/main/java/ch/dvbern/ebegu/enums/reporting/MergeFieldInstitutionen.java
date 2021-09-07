@@ -96,7 +96,7 @@ public enum MergeFieldInstitutionen implements MergeFieldProvider {
 	bfsGemeinde(new SimpleMergeField<>("bfsGemeinde", LONG_CONVERTER)),
 	telefon(new SimpleMergeField<>("telefon", STRING_CONVERTER)),
 	url(new SimpleMergeField<>("url", STRING_CONVERTER)),
-	oeffnungstageProJahr(new SimpleMergeField<>("oeffnungstageProJahr", STRING_CONVERTER)),
+	oeffnungstageProJahr(new SimpleMergeField<>("oeffnungstageProJahr", BIGDECIMAL_CONVERTER)),
 	emailBenachrichtigungKiBonMail(new SimpleMergeField<>("emailBenachrichtigungKiBonMail", STRING_CONVERTER)),
 	gueltigAb(new SimpleMergeField<>("gueltigAb", DATE_CONVERTER)),
 	gueltigBis(new SimpleMergeField<>("gueltigBis", DATE_CONVERTER)),

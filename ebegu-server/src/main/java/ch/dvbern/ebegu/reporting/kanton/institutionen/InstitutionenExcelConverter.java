@@ -56,6 +56,9 @@ public class InstitutionenExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(
 					MergeFieldInstitutionen.emailBenachrichtigungKiBon,
 					dataRow.getEmailBenachrichtigungenKiBon());
+			excelRowGroup.addValue(
+					MergeFieldInstitutionen.emailBenachrichtigungKiBonMail,
+					dataRow.getEmailBenachrichtigungKiBonMail());
 			excelRowGroup.addValue(MergeFieldInstitutionen.name, dataRow.getName());
 			excelRowGroup.addValue(MergeFieldInstitutionen.anschrift, dataRow.getAnschrift());
 			excelRowGroup.addValue(MergeFieldInstitutionen.strasse, dataRow.getStrasse());
@@ -69,6 +72,7 @@ public class InstitutionenExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldInstitutionen.gueltigBis, dataRow.getGueltigBis());
 			excelRowGroup.addValue(MergeFieldInstitutionen.grundSchliessung, dataRow.getGrundSchliessung());
 			excelRowGroup.addValue(MergeFieldInstitutionen.oeffnungstage, dataRow.getOeffnungstage());
+			excelRowGroup.addValue(MergeFieldInstitutionen.oeffnungstageProJahr, dataRow.getOeffnungstageProJahr());
 			excelRowGroup.addValue(MergeFieldInstitutionen.oeffnungszeitAb, dataRow.getOeffnungszeitAb());
 			excelRowGroup.addValue(MergeFieldInstitutionen.oeffnungszeitenBis, dataRow.getOeffnungszeitBis());
 			excelRowGroup.addValue(MergeFieldInstitutionen.oeffnungVor630, dataRow.getOeffnungVor630());
@@ -110,6 +114,9 @@ public class InstitutionenExcelConverter implements ExcelConverter {
 		mergerDTO.addValue(
 				MergeFieldInstitutionen.emailBenachrichtigungKiBonTitle,
 				ServerMessageUtil.getMessage("Reports_emailBenachrichtigungKiBonTitle", locale));
+		mergerDTO.addValue(
+				MergeFieldInstitutionen.emailBenachrichtigungKiBonMailTitle,
+				ServerMessageUtil.getMessage("Reports_emailBenachrichtigungKiBonMailTitle", locale));
 		mergerDTO.addValue(MergeFieldInstitutionen.nameTitle, ServerMessageUtil.getMessage("Reports_nameTitle", locale));
 		mergerDTO.addValue(MergeFieldInstitutionen.anschriftTitle, ServerMessageUtil.getMessage("Reports_anschriftTitle", locale));
 		mergerDTO.addValue(

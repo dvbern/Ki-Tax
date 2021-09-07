@@ -44,7 +44,8 @@ public class InstitutionenDataRow {
 	Long bfsGemeinde = null;
 	private String telefon = null;
 	private String url = null;
-	private String oeffnungstageProJahr = null;
+	@Nullable
+	private BigDecimal oeffnungstageProJahr = null;
 	@Nullable 
 	private LocalDate gueltigAb = null;
 	@Nullable
@@ -297,12 +298,17 @@ public class InstitutionenDataRow {
 		this.bfsGemeinde = bfsGemeinde;
 	}
 
-	public String getOeffnungstageProJahr() {
+	@Nullable
+	public BigDecimal getOeffnungstageProJahr() {
 		return oeffnungstageProJahr;
 	}
 
-	public void setOeffnungstageProJahr(String oeffnungstageProJahr) {
-		this.oeffnungstageProJahr = oeffnungstageProJahr;
+	public void setOeffnungstageProJahr(Integer oeffnungstageProJahr) {
+		if (oeffnungstageProJahr == null) {
+			this.oeffnungstageProJahr = null;
+		} else {
+			this.oeffnungstageProJahr = new BigDecimal(oeffnungstageProJahr);
+		}
 	}
 
 	public String getOeffnungszeitAb() {
