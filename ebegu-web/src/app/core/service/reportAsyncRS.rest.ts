@@ -277,6 +277,10 @@ export class ReportAsyncRS {
             });
     }
 
+    public getGemeindenReportExcel(): IPromise<string> {
+        return this.http.get(`${this.serviceURL}/excel/gemeinden`).then((response: any) => response.data);
+    }
+
     public getServiceName(): string {
         return 'ReportAsyncRS';
     }
