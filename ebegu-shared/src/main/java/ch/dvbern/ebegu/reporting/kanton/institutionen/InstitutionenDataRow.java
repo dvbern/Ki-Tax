@@ -31,6 +31,7 @@ public class InstitutionenDataRow {
 	@Nullable
 	private String familienportalEmail = null;
 	private Boolean emailBenachrichtigungenKiBon = null;
+	private String emailBenachrichtigungKiBonMail = null;
 	private String email = null;
 	private String name = null;
 	private String anschrift = null;
@@ -390,5 +391,13 @@ public class InstitutionenDataRow {
 
 	public void setUebernachtungMoeglich(Boolean uebernachtungMoeglich) {
 		this.uebernachtungMoeglich = uebernachtungMoeglich;
+	}
+
+	public String getEmailBenachrichtigungKiBonMail() {
+		return emailBenachrichtigungKiBonMail;
+	}
+
+	public void setEmailBenachrichtigungKiBonMail(String emailBenachrichtigungKiBonMail) {
+		this.emailBenachrichtigungKiBonMail = emailBenachrichtigungKiBonMail;
 	}
 }
