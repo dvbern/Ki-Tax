@@ -279,10 +279,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		updateVerantwortliche(mergedGesuch, mergedBetreuung, isAnmeldungSchulamtAusgeloest, isNew);
 
 		//Export Tagesschule Anmeldung oder moegliche Aenderungen an der exchange-service
-		if(isAnmeldungSchulamtAusgeloest || anmeldungTagesschule.getBetreuungsstatus()
-			== Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT || anmeldungTagesschule.getBetreuungsstatus()
+		if(isAnmeldungSchulamtAusgeloest || mergedBetreuung.getBetreuungsstatus()
+			== Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT || mergedBetreuung.getBetreuungsstatus()
 			== Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN) {
-			fireAnmeldungTagesschuleAddedEvent(anmeldungTagesschule);
+			fireAnmeldungTagesschuleAddedEvent(mergedBetreuung);
 		}
 
 		return mergedBetreuung;
