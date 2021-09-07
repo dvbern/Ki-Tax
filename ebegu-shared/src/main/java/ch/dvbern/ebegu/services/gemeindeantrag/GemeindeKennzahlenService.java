@@ -41,6 +41,9 @@ public interface GemeindeKennzahlenService {
 	@Nonnull
 	Optional<GemeindeKennzahlen> findGemeindeKennzahlen(@Nonnull String id);
 
+	@Nonnull
+	Optional<GemeindeKennzahlen> findAbgeschlosseneGemeindeKennzahlen(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
+
 	/**
 	 * Gibt alle GemeindeAntraege der Benutzerin zurück. Falls gesuchsperiode und/oder antragstyp mitgegeben werden
 	 * wird entsprechend gefiltert.

@@ -108,13 +108,29 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	}
 
 	@Nonnull
-	@Override
 	public Optional<GemeindeKennzahlen> findGemeindeKennzahlen(@Nonnull String id) {
 		Objects.requireNonNull(id, ID_MUSS_GESETZT_SEIN);
 
 		GemeindeKennzahlen gemeindeKennzahlen = persistence.find(GemeindeKennzahlen.class, id);
 
 		return Optional.ofNullable(gemeindeKennzahlen);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<GemeindeKennzahlen> findAbgeschlosseneGemeindeKennzahlen(
+			@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+		final List<GemeindeKennzahlen> gemeindeKennzahlen =
+				this.getGemeindeKennzahlen(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), "ABGESCHLOSSEN", null);
+		if (gemeindeKennzahlen.isEmpty()) {
+			return Optional.empty();
+		}
+		Preconditions.checkState(
+				gemeindeKennzahlen.size() == 1,
+				"Multiple GemeindeKennzahlen for Gemeinde {} and GS {}",
+				gemeinde.getName(),
+				gesuchsperiode.getGesuchsperiodeString());
+		return gemeindeKennzahlen.stream().findFirst();
 	}
 
 	@Nonnull
@@ -218,7 +234,7 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	private Predicate createStatusPredicate(CriteriaBuilder cb, Root<GemeindeKennzahlen> root, String status) {
 		return cb.equal(
 				root.get(GemeindeKennzahlen_.status),
-				status
+				GemeindeKennzahlenStatus.valueOf(status)
 		);
 	}
 
