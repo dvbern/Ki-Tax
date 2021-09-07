@@ -54,7 +54,7 @@ describe('GemeindeAntragService', () => {
 
     it('should return only Ferienbetreuung', () => {
         authServiceSpy.isOneOfRoles.and.returnValue(false);
-        expect(service.getFilterableTypesForRole()).toEqual([TSGemeindeAntragTyp.FERIENBETREUUNG]);
+        expect(service.getFilterableTypesForRole()).toEqual([TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN]);
     });
 
     it('should return Ferienbetreuung, GemeindeKennzahlen and Lastenausgleich Tagesschule', () => {
