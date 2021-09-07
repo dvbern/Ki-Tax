@@ -18,7 +18,7 @@
 package ch.dvbern.ebegu.enums.gemeindeantrag;
 
 public enum GemeindeAntragTyp {
-
 	LASTENAUSGLEICH_TAGESSCHULEN,
-	FERIENBETREUUNG
+	FERIENBETREUUNG,
+	GEMEINDE_KENNZAHLEN
 }

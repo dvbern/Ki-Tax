@@ -55,8 +55,8 @@ import ch.dvbern.ebegu.enums.SearchMode;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.services.util.SearchUtil;
-import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.Constants;
@@ -367,16 +367,10 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				}
 			}
 			if (predicateObjectDto.getGesuchsperiodeString() != null) {
-				String[] years = ensureYearFormat(predicateObjectDto.getGesuchsperiodeString());
-				Path<DateRange> dateRangePath = joinGesuchsperiode.get(AbstractDateRangedEntity_.gueltigkeit);
-				predicates.add(
-					cb.and(
-						cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigAb)),
-							years[0]),
-						cb.equal(
-							cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigBis)),
-							years[1]))
-				);
+				Predicate gesuchsperiodeFiler = PredicateHelper.getPredicateFilterGesuchsperiode(cb,
+					joinGesuchsperiode,
+					predicateObjectDto.getGesuchsperiodeString());
+				predicates.add(gesuchsperiodeFiler);
 			}
 			if (predicateObjectDto.getEingangsdatum() != null) {
 				try {
@@ -754,34 +748,6 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			expression = root.get(AbstractEntity_.timestampMutiert);
 			query.orderBy(cb.desc(expression));
 		}
-	}
-
-	private String[] ensureYearFormat(String gesuchsperiodeString) {
-		String[] years = gesuchsperiodeString.split("/");
-		if (years.length != 2) {
-			throw new EbeguRuntimeException(
-				"ensureYearFormat",
-				"Der Gesuchsperioden string war nicht im erwarteten Format x/y sondern " + gesuchsperiodeString);
-		}
-		String[] result = new String[2];
-		result[0] = changeTwoDigitYearToFourDigit(years[0]);
-		result[1] = changeTwoDigitYearToFourDigit(years[1]);
-		return result;
-	}
-
-	private String changeTwoDigitYearToFourDigit(String year) {
-		//im folgenden wandeln wir z.B 16  in 2016 um. Funktioniert bis ins jahr 2099, da die Periode 2099/2100 mit
-		// dieser Methode nicht geht
-		String currentYearAsString = String.valueOf(LocalDate.now().getYear());
-		if (year.length() == currentYearAsString.length()) {
-			return year;
-		}
-		if (year.length() < currentYearAsString.length()) { // jahr ist im kurzformat
-			return currentYearAsString.substring(0, currentYearAsString.length() - year.length()) + year;
-		}
-		throw new EbeguRuntimeException(
-			"changeTwoDigitYearToFourDigit",
-			"Der Gesuchsperioden string war nicht im erwarteten Format yy oder yyyy sondern " + year);
 	}
 
 	private List<Gesuch> findGesuche(@Nonnull List<String> gesuchIds) {

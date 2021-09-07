@@ -37,13 +37,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -63,8 +61,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.AbstractBaseService;
-import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.types.DateRange_;
+import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -125,19 +122,9 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			);
 		}
 		if (periode != null) {
-			String[] years = Arrays.stream(periode.split("/"))
-				.map(year -> year.length() == 4 ? year : "20".concat(year))
-				.collect(Collectors.toList())
-				.toArray(String[]::new);
-			Path<DateRange> dateRangePath =
-				root.join(FerienbetreuungAngabenContainer_.gesuchsperiode, JoinType.INNER)
-					.get(AbstractDateRangedEntity_.gueltigkeit);
-			predicates.add(
-				cb.and(
-					cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigAb)), years[0]),
-					cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigBis)), years[1])
-				)
-			);
+			predicates.add(PredicateHelper.getPredicateFilterGesuchsperiode(cb,
+				root.join(FerienbetreuungAngabenContainer_.gesuchsperiode, JoinType.INNER),
+				periode));
 		}
 		if (status != null) {
 			if (!EnumUtil.isOneOf(status, FerienbetreuungAngabenStatus.values())) {
@@ -209,11 +196,11 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 		if (existingOptional.isPresent()) {
 			throw new EntityExistsException(
-					KibonLogLevel.ERROR,
-					FerienbetreuungAngabenContainer.class,
-					"FerienbetreuungContainer existiert für Gemeinde und Periode bereits",
-					gemeinde.getName() + ' ' + gesuchsperiode.getGesuchsperiodeString(),
-					ErrorCodeEnum.ERROR_FERIENBETREUUNG_ALREADY_EXISTS);
+				KibonLogLevel.ERROR,
+				FerienbetreuungAngabenContainer.class,
+				"FerienbetreuungContainer existiert für Gemeinde und Periode bereits",
+				gemeinde.getName() + ' ' + gesuchsperiode.getGesuchsperiodeString(),
+				ErrorCodeEnum.ERROR_FERIENBETREUUNG_ALREADY_EXISTS);
 		}
 
 		FerienbetreuungAngabenContainer container = new FerienbetreuungAngabenContainer();

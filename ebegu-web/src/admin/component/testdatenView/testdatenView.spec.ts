@@ -56,6 +56,7 @@ describe('testdatenView', () => {
             devmode: false,
             dummyMode: false,
             ferienbetreuungAktiv: false,
+            gemeindeKennzahlenAktiv: false,
             kitaxEndpoint: '',
             kitaxHost: '',
             lastenausgleichTagesschulenAktiv: false,

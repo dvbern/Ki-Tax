@@ -18,7 +18,7 @@ import {TSFachstelle} from './TSFachstelle';
 
 export class TSErweiterteBetreuung extends TSAbstractMutableEntity {
 
-    private _erweiterteBeduerfnisse: boolean = false;
+    private _erweiterteBeduerfnisse: boolean;
     private _fachstelle: TSFachstelle;
     private _erweiterteBeduerfnisseBestaetigt: boolean = false;
     private _keineKesbPlatzierung: boolean;
