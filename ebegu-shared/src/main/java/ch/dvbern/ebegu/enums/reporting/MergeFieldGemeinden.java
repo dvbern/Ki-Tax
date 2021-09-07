@@ -68,7 +68,7 @@ public enum MergeFieldGemeinden implements MergeFieldProvider {
 	gesuchsperiode(new SimpleMergeField<>("gesuchsperiode", STRING_CONVERTER)),
 	limitierungKita(new SimpleMergeField<>("limitierungKita", STRING_CONVERTER)),
 	kontingentierung(new SimpleMergeField<>("kontingentierung", BOOLEAN_X_CONVERTER)),
-	nachfrageErfuellt(new SimpleMergeField<>("nachfrageErfuellt", STRING_CONVERTER)),
+	nachfrageErfuellt(new SimpleMergeField<>("nachfrageErfuellt", BOOLEAN_X_CONVERTER)),
 	nachfrageAnzahl(new SimpleMergeField<>("nachfrageAnzahl", BIGDECIMAL_CONVERTER)),
 	nachfrageDauer(new SimpleMergeField<>("nachfrageDauer", BIGDECIMAL_CONVERTER)),
 	kostenlenkungAndere(new SimpleMergeField<>("kostenlenkungAndere", BOOLEAN_X_CONVERTER)),

@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.reporting.gemeinden;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import javax.annotation.Nullable;
 
@@ -33,7 +34,7 @@ public class GemeindenDatenDataRow {
 	private Boolean kontingentierung;
 
 	@Nullable
-	private String nachfrageErfuellt;
+	private Boolean nachfrageErfuellt;
 
 	@Nullable
 	private BigDecimal nachfrageAnzahl;
@@ -42,10 +43,10 @@ public class GemeindenDatenDataRow {
 	private BigDecimal nachfrageDauer;
 
 	@Nullable
-	private BigDecimal kostenlenkungAndere;
+	private Boolean kostenlenkungAndere;
 
 	@Nullable
-	private BigDecimal welcheKostenlenkungsmassnahmen;
+	private String welcheKostenlenkungsmassnahmen;
 
 	@Nullable
 	private BigDecimal erwerbspensumZuschlag;
@@ -78,11 +79,11 @@ public class GemeindenDatenDataRow {
 	}
 
 	@Nullable
-	public String getNachfrageErfuellt() {
+	public Boolean getNachfrageErfuellt() {
 		return nachfrageErfuellt;
 	}
 
-	public void setNachfrageErfuellt(@Nullable String nachfrageErfuellt) {
+	public void setNachfrageErfuellt(@Nullable Boolean nachfrageErfuellt) {
 		this.nachfrageErfuellt = nachfrageErfuellt;
 	}
 
@@ -95,6 +96,14 @@ public class GemeindenDatenDataRow {
 		this.nachfrageAnzahl = nachfrageAnzahl;
 	}
 
+	public void setNachfrageAnzahl(@Nullable BigInteger nachfrageAnzahl) {
+		if (nachfrageAnzahl == null) {
+			this.nachfrageAnzahl = null;
+		} else {
+			this.nachfrageAnzahl = new BigDecimal(nachfrageAnzahl);
+		}
+	}
+
 	@Nullable
 	public BigDecimal getNachfrageDauer() {
 		return nachfrageDauer;
@@ -105,20 +114,20 @@ public class GemeindenDatenDataRow {
 	}
 
 	@Nullable
-	public BigDecimal getKostenlenkungAndere() {
+	public Boolean getKostenlenkungAndere() {
 		return kostenlenkungAndere;
 	}
 
-	public void setKostenlenkungAndere(@Nullable BigDecimal kostenlenkungAndere) {
+	public void setKostenlenkungAndere(@Nullable Boolean kostenlenkungAndere) {
 		this.kostenlenkungAndere = kostenlenkungAndere;
 	}
 
 	@Nullable
-	public BigDecimal getWelcheKostenlenkungsmassnahmen() {
+	public String getWelcheKostenlenkungsmassnahmen() {
 		return welcheKostenlenkungsmassnahmen;
 	}
 
-	public void setWelcheKostenlenkungsmassnahmen(@Nullable BigDecimal welcheKostenlenkungsmassnahmen) {
+	public void setWelcheKostenlenkungsmassnahmen(@Nullable String welcheKostenlenkungsmassnahmen) {
 		this.welcheKostenlenkungsmassnahmen = welcheKostenlenkungsmassnahmen;
 	}
 

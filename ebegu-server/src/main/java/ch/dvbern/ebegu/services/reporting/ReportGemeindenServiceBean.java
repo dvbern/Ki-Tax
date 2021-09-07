@@ -19,7 +19,6 @@ package ch.dvbern.ebegu.services.reporting;
 
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -32,7 +31,6 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.reporting.gemeinden.GemeindenDataRow;
@@ -43,6 +41,7 @@ import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.services.gemeindeantrag.GemeindeKennzahlenService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -72,6 +71,9 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
+
+	@Inject
+	private GemeindeKennzahlenService gemeindeKennzahlenService;
 
 	@Inject
 	private PrincipalBean principal;
@@ -151,7 +153,13 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 												gesuchsperiode);
 								gemeindenDatenDataRow.setErwerbspensumZuschlag(erwerbspensumZuschlag.getValueAsBigDecimal());
 
-								// TODO: Add gemeinde kennzahlen
+								gemeindeKennzahlenService.findAbgeschlosseneGemeindeKennzahlen(gemeinde, gesuchsperiode).ifPresent(gemeindeKennzahlen -> {
+									gemeindenDatenDataRow.setNachfrageErfuellt(gemeindeKennzahlen.getNachfrageErfuellt());
+									gemeindenDatenDataRow.setNachfrageAnzahl(gemeindeKennzahlen.getNachfrageAnzahl());
+									gemeindenDatenDataRow.setNachfrageDauer(gemeindeKennzahlen.getNachfrageDauer());
+									gemeindenDatenDataRow.setKostenlenkungAndere(gemeindeKennzahlen.getKostenlenkungAndere());
+									gemeindenDatenDataRow.setWelcheKostenlenkungsmassnahmen(gemeindeKennzahlen.getWelcheKostenlenkungsmassnahmen());
+								});
 
 								dataRow.getGemeindenDaten().add(gemeindenDatenDataRow);
 							});
