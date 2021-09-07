@@ -33,6 +33,7 @@ import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING
 public enum MergeFieldGemeinden implements MergeFieldProvider {
 
 	gemeindenTitle(new SimpleMergeField<>("gemeindenTitle", STRING_CONVERTER)),
+	gemeindenPeriodenTitle(new SimpleMergeField<>("gemeindenPeriodenTitle", STRING_CONVERTER)),
 	mandant(new SimpleMergeField<>("mandant", STRING_CONVERTER)),
 
 	rowGemeindeInfoRepeat(new RepeatRowMergeField("rowGemeindeInfoRepeat")),
@@ -72,7 +73,7 @@ public enum MergeFieldGemeinden implements MergeFieldProvider {
 	nachfrageDauer(new SimpleMergeField<>("nachfrageDauer", BIGDECIMAL_CONVERTER)),
 	kostenlenkungAndere(new SimpleMergeField<>("kostenlenkungAndere", BOOLEAN_X_CONVERTER)),
 	welcheKostenlenkungsmassnahmen(new SimpleMergeField<>("welcheKostenlenkungsmassnahmen", STRING_CONVERTER)),
-	erwerbspensumZuschlag(new SimpleMergeField<>("erwerbspensumZuschlag", STRING_CONVERTER));
+	erwerbspensumZuschlag(new SimpleMergeField<>("erwerbspensumZuschlag", BIGDECIMAL_CONVERTER));
 
 	@Nonnull
 	private final MergeField<?> mergeField;

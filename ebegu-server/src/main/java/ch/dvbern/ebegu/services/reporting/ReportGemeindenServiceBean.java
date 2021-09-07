@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.services.reporting;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -31,6 +32,7 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.reporting.gemeinden.GemeindenDataRow;
@@ -42,6 +44,7 @@ import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
@@ -72,6 +75,7 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 
 	@Inject
 	private PrincipalBean principal;
+	private static final String GEMEINDE_PERIODEN_SHEET_NAME = "Register 2";
 
 	@Nonnull
 	@Override
@@ -83,26 +87,31 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		Sheet sheet = workbook.getSheet(vorlage.getDataSheetName());
+		Sheet secondSheet = workbook.getSheet(GEMEINDE_PERIODEN_SHEET_NAME);
 
 		final Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden();
 
-		List<GemeindenDataRow> reportData = getReportDataGemeinden(aktiveGemeinden);
+		List<GemeindenDataRow> reportData = getReportDataGemeinden(aktiveGemeinden, locale);
 
 		ExcelMergerDTO excelMergerDTO = gemeindenExcelConverter.toExcelMergerDTO(reportData,
 				requireNonNull(principal.getMandant()), locale);
 		mergeData(sheet, excelMergerDTO, vorlage.getMergeFields());
+		mergeData(secondSheet, excelMergerDTO, vorlage.getMergeFields());
 		gemeindenExcelConverter.applyAutoSize(sheet);
+		gemeindenExcelConverter.applyAutoSize(secondSheet);
 
 		byte[] bytes = createWorkbook(workbook);
 
 		return fileSaverService.save(
 				bytes,
-				"",
+				"Gemeinden.xlsx",
 				Constants.TEMP_REPORT_FOLDERNAME,
 				getContentTypeForExport());
 	}
 
-	private List<GemeindenDataRow> getReportDataGemeinden(Collection<Gemeinde> gemeinden) {
+	private List<GemeindenDataRow> getReportDataGemeinden(
+			@Nonnull Collection<Gemeinde> gemeinden,
+			@Nonnull Locale locale) {
 		return gemeinden.stream()
 				.map(gemeinde -> {
 					GemeindenDataRow dataRow = new GemeindenDataRow();
@@ -113,26 +122,39 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 					dataRow.setAngebotTS(gemeinde.isAngebotTS());
 					dataRow.setStartdatumBG(gemeinde.getBetreuungsgutscheineStartdatum());
 
-					gemeindeService.getGemeindeStammdaten(gemeinde.getId()).ifPresent(gemeindeStammdaten -> {
-						dataRow.setKorrespondenzspracheGemeinde(gemeindeStammdaten.getKorrespondenzsprache().toString());
-					});
+					gemeindeService.getGemeindeStammdatenByGemeindeId(gemeinde.getId())
+							.ifPresent(gemeindeStammdaten -> dataRow.setKorrespondenzspracheGemeinde(
+									ServerMessageUtil.getMessage("Reports_" + gemeindeStammdaten.getKorrespondenzsprache(), locale)));
 
-					gesuchsperiodeService.getAllActiveGesuchsperioden().forEach(gesuchsperiode -> {
-						GemeindenDatenDataRow gemeindenDatenDataRow = new GemeindenDatenDataRow();
+					gesuchsperiodeService.getAllActiveGesuchsperioden()
+							.forEach(gesuchsperiode -> {
+								GemeindenDatenDataRow gemeindenDatenDataRow = new GemeindenDatenDataRow();
 
-						Einstellung kontingenierungEnabled = einstellungService.findEinstellung(EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED, gemeinde, gesuchsperiode);
-						gemeindenDatenDataRow.setKontingentierung(kontingenierungEnabled.getValueAsBoolean());
+								gemeindenDatenDataRow.setGesuchsperiode(gesuchsperiode.getGesuchsperiodeString());
 
-						Einstellung gmeindeBGBisUndMit = einstellungService.findEinstellung(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, gemeinde, gesuchsperiode);
-						gemeindenDatenDataRow.setLimitierungKita(gmeindeBGBisUndMit.getValue());
+								Einstellung kontingenierungEnabled =
+										einstellungService.findEinstellung(EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
+												gemeinde,
+												gesuchsperiode);
+								gemeindenDatenDataRow.setKontingentierung(kontingenierungEnabled.getValueAsBoolean());
 
-						Einstellung erwerbspensumZuschlag = einstellungService.findEinstellung(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG, gemeinde, gesuchsperiode);
-						gemeindenDatenDataRow.setErwerbspensumZuschlag(erwerbspensumZuschlag.getValueAsBigDecimal());
+								Einstellung gmeindeBGBisUndMit =
+										einstellungService.findEinstellung(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE,
+												gemeinde,
+												gesuchsperiode);
+								gemeindenDatenDataRow.setLimitierungKita(
+										ServerMessageUtil.getMessage("EinschulungTyp_" + gmeindeBGBisUndMit.getValue(), locale));
 
-						// TODO: Add gemeinde kennzahlen
+								Einstellung erwerbspensumZuschlag =
+										einstellungService.findEinstellung(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG,
+												gemeinde,
+												gesuchsperiode);
+								gemeindenDatenDataRow.setErwerbspensumZuschlag(erwerbspensumZuschlag.getValueAsBigDecimal());
 
-						dataRow.getGemeindenDaten().add(gemeindenDatenDataRow);
-					});
+								// TODO: Add gemeinde kennzahlen
+
+								dataRow.getGemeindenDaten().add(gemeindenDatenDataRow);
+							});
 
 					return dataRow;
 				})
