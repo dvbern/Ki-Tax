@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,35 +8,42 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
+import {NgModule} from '@angular/core';
+import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
+import {LastenausgleichViewXComponent} from './component/lastenausgleich-view-x/lastenausgleich-view-x.component';
 
-lastenausgleichRun.$inject = ['RouterHelper'];
-
-export function lastenausgleichRun(routerHelper: RouterHelper): void {
-    routerHelper.configureStates(ng1States);
-}
-
-const ng1States: Ng1StateDeclaration[] = [
+const states: NgHybridStateDeclaration[] = [
     {
         parent: 'app',
-        abstract: true,
         name: 'lastenausgleich',
+        abstract: true,
+        component: LastenausgleichViewXComponent,
         data: {
             roles: TSRoleUtil.getAllRolesForLastenausgleich(),
         },
     },
     {
         name: 'lastenausgleich.view',
-        template: '<lastenausgleich-view flex="auto" class="overflow-scroll">',
         url: '/lastenausgleich',
+        component: LastenausgleichViewXComponent,
     },
 ];
+
+@NgModule({
+    imports: [
+        UIRouterUpgradeModule.forChild({states}),
+    ],
+    exports: [
+        UIRouterUpgradeModule,
+    ],
+})
+export class LastenausgleichRoutingModule {
+}

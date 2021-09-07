@@ -452,7 +452,7 @@ export class DVMitteilungListController implements IOnInit {
     }
 
     public changeEmpfaenger(): void {
-        if (this.empfaenger.key) {
+        if (this.empfaenger?.key) {
             this.currentMitteilung.institution = this.empfaenger.key;
         }
     }

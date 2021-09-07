@@ -28,6 +28,7 @@ import {EinladungModule} from './einladung/einladung.module';
 import {GemeindeAntraegeModule} from './gemeinde-antraege/gemeinde-antraege.module';
 import {GemeindeModule} from './gemeinde/gemeinde.module';
 import {InstitutionModule} from './institution/institution.module';
+import {LastenausgleichModule} from './lastenausgleich/lastenausgleich.module';
 import {NotrechtModule} from './notrecht/notrecht.module';
 import {OnboardingModule} from './onboarding/onboarding.module';
 import {PendenzenXModule} from './pendenzen/pendenzen-x.module';
@@ -64,13 +65,14 @@ import {ZahlungXModule} from './zahlung/zahlung-x.module';
         WelcomeModule,
         NotrechtModule,
         GemeindeAntraegeModule,
+        LastenausgleichModule,
         WizardstepXModule,
         SozialdienstModule,
         PendenzenXModule,
         ZahlungXModule,
         PendenzenXModule,
-        VerlaufModule,
-    ],
+        VerlaufModule
+    ]
 })
 
 export class AppModule {

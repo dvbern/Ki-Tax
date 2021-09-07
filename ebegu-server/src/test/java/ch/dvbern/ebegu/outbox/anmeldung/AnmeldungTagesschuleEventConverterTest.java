@@ -19,13 +19,13 @@ package ch.dvbern.ebegu.outbox.anmeldung;
 
 import java.time.LocalDate;
 import java.util.Iterator;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AdresseTyp;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.AbholungTagesschule;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulAuswahlDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungDetailsDTO;
@@ -41,20 +42,19 @@ import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungEventDT
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungStatus;
 import ch.dvbern.kibon.exchange.commons.types.AdresseDTO;
 import ch.dvbern.kibon.exchange.commons.types.Geschlecht;
-import ch.dvbern.kibon.exchange.commons.types.Gesuchsperiode;
 import ch.dvbern.kibon.exchange.commons.types.GesuchstellerDTO;
 import ch.dvbern.kibon.exchange.commons.types.Intervall;
 import ch.dvbern.kibon.exchange.commons.types.KindDTO;
+import ch.dvbern.kibon.exchange.commons.types.Wochentag;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import com.spotify.hamcrest.pojo.IsPojo;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
-
 
 public class AnmeldungTagesschuleEventConverterTest {
 
@@ -66,8 +66,7 @@ public class AnmeldungTagesschuleEventConverterTest {
 		Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setFreigabeDatum(LocalDate.now());
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
-		assert gesuch.getGesuchsteller1() != null;
-		gesuch.getGesuchsteller1().setGesuchstellerJA(TestDataUtil.createDefaultGesuchsteller());
+		requireNonNull(gesuch.getGesuchsteller1()).setGesuchstellerJA(TestDataUtil.createDefaultGesuchsteller());
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
 		AnmeldungTagesschule anmeldungTagesschule =
 			TestDataUtil.createAnmeldungTagesschuleWithModules(betreuung.getKind(), betreuung.extractGesuchsperiode());
@@ -84,6 +83,8 @@ public class AnmeldungTagesschuleEventConverterTest {
 			anmeldungTagesschuleAddedEvent.getSchema(),
 			anmeldungTagesschuleAddedEvent.getPayload());
 
+		DateRange gesuchsperiode = gesuch.getGesuchsperiode().getGueltigkeit();
+
 		assertThat(specificRecord, is(pojo(TagesschuleAnmeldungEventDTO.class)
 			.where(
 				TagesschuleAnmeldungEventDTO::getInstitutionId,
@@ -91,14 +92,12 @@ public class AnmeldungTagesschuleEventConverterTest {
 			.where(
 				TagesschuleAnmeldungEventDTO::getStatus,
 				is(TagesschuleAnmeldungStatus.SCHULAMT_ANMELDUNG_AUSGELOEST))
-			.where(TagesschuleAnmeldungEventDTO::getVersion, is((int) anmeldungTagesschule.getVersion()))
+			.where(TagesschuleAnmeldungEventDTO::getVersion, is(gesuch.getLaufnummer()))
 			.where(TagesschuleAnmeldungEventDTO::getFreigegebenAm, is(gesuch.getFreigabeDatum()))
 			.where(TagesschuleAnmeldungEventDTO::getAntragstellendePerson, matchesAntragstellendePerson(gesuch))
-		.where(TagesschuleAnmeldungEventDTO::getKind, matchesKind(anmeldungTagesschule.getKind().getKindJA()))
-			.where(TagesschuleAnmeldungEventDTO::getGesuchsperiode, pojo(Gesuchsperiode.class)
-				.where(Gesuchsperiode::getId, is(gesuch.getGesuchsperiode().getId()))
-				.where(Gesuchsperiode::getGueltigAb, is(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb()))
-				.where(Gesuchsperiode::getGueltigBis, is(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis())))
+			.where(TagesschuleAnmeldungEventDTO::getKind, matchesKind(anmeldungTagesschule.getKind().getKindJA()))
+			.where(TagesschuleAnmeldungEventDTO::getPeriodeVon, is(gesuchsperiode.getGueltigAb()))
+			.where(TagesschuleAnmeldungEventDTO::getPeriodeBis, is(gesuchsperiode.getGueltigBis()))
 			.where(TagesschuleAnmeldungEventDTO::getAnmeldungsDetails, matchesAnmeldungDetails(anmeldungTagesschule))
 		));
 
@@ -106,45 +105,49 @@ public class AnmeldungTagesschuleEventConverterTest {
 
 	@Nonnull
 	private IsPojo<TagesschuleAnmeldungDetailsDTO> matchesAnmeldungDetails(AnmeldungTagesschule anmeldungTagesschule) {
-		assert anmeldungTagesschule.getBelegungTagesschule() != null;
-		assert anmeldungTagesschule.getBelegungTagesschule().getAbholungTagesschule() != null;
-		Iterator<BelegungTagesschuleModul>
-			iterator = anmeldungTagesschule.getBelegungTagesschule().getBelegungTagesschuleModule().iterator();
+		BelegungTagesschule belegung = requireNonNull(anmeldungTagesschule.getBelegungTagesschule());
+		Iterator<BelegungTagesschuleModul> iterator = belegung.getBelegungTagesschuleModule().iterator();
+
 		return pojo(TagesschuleAnmeldungDetailsDTO.class)
 			.where(TagesschuleAnmeldungDetailsDTO::getRefnr, is(anmeldungTagesschule.getBGNummer()))
-			.where(TagesschuleAnmeldungDetailsDTO::getBemerkung, is(anmeldungTagesschule.getBelegungTagesschule().getBemerkung()))
-			.where(TagesschuleAnmeldungDetailsDTO::getEintrittsdatum, is(anmeldungTagesschule.getBelegungTagesschule().getEintrittsdatum()))
-			.where(TagesschuleAnmeldungDetailsDTO::getPlanKlasse, is(anmeldungTagesschule.getBelegungTagesschule().getPlanKlasse()))
-			.where(TagesschuleAnmeldungDetailsDTO::getAbweichungZweitesSemester, is(anmeldungTagesschule.getBelegungTagesschule().isAbweichungZweitesSemester()))
+			.where(TagesschuleAnmeldungDetailsDTO::getBemerkung, is(belegung.getBemerkung()))
+			.where(TagesschuleAnmeldungDetailsDTO::getEintrittsdatum, is(belegung.getEintrittsdatum()))
+			.where(TagesschuleAnmeldungDetailsDTO::getPlanKlasse, is(belegung.getPlanKlasse()))
+			.where(
+				TagesschuleAnmeldungDetailsDTO::getAbweichungZweitesSemester,
+				is(belegung.isAbweichungZweitesSemester()))
 			.where(TagesschuleAnmeldungDetailsDTO::getAbholung, is(AbholungTagesschule.ALLEINE_NACH_HAUSE))
-			.where(TagesschuleAnmeldungDetailsDTO::getModulSelection, contains(
-				matchesModulAuswahlDTO(iterator.next()),
-				matchesModulAuswahlDTO(iterator.next()),
-				matchesModulAuswahlDTO(iterator.next()),
-				matchesModulAuswahlDTO(iterator.next())
+			.where(TagesschuleAnmeldungDetailsDTO::getModule, contains(
+					matchesModulAuswahlDTO(iterator.next()),
+					matchesModulAuswahlDTO(iterator.next()),
+					matchesModulAuswahlDTO(iterator.next()),
+					matchesModulAuswahlDTO(iterator.next())
 				)
 			);
 	}
 
 	private IsPojo<ModulAuswahlDTO> matchesModulAuswahlDTO(BelegungTagesschuleModul belegungTagesschuleModul) {
 		return pojo(ModulAuswahlDTO.class)
-			.where(ModulAuswahlDTO::getModulId, is(belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().getId()))
-			.where(ModulAuswahlDTO::getIntervall, is(Intervall.valueOf(belegungTagesschuleModul.getIntervall().name())))
-			.where(ModulAuswahlDTO::getWeekday, is(belegungTagesschuleModul.getModulTagesschule().getWochentag().getValue()));
+			.where(
+				ModulAuswahlDTO::getModulId,
+				is(belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().getId()))
+			.where(
+				ModulAuswahlDTO::getIntervall,
+				is(Intervall.valueOf(belegungTagesschuleModul.getIntervall().name())))
+			.where(
+				ModulAuswahlDTO::getWochentag,
+				is(Wochentag.valueOf(belegungTagesschuleModul.getModulTagesschule().getWochentag().name())));
 	}
 
 	@Nonnull
 	private IsPojo<GesuchstellerDTO> matchesAntragstellendePerson(@Nonnull Gesuch gesuch) {
-		assert gesuch.getGesuchsteller1() != null;
-		Gesuchsteller gesuchsteller = gesuch.getGesuchsteller1().getGesuchstellerJA();
-		Adresse adresse = requireNonNull(gesuch.getGesuchsteller1()
-			.getAdressen()
-			.stream()
-			.filter(gesuchstellerAdresseContainer -> Objects
-				.equals(gesuchstellerAdresseContainer.extractAdresseTyp(), AdresseTyp.WOHNADRESSE))
+		Gesuchsteller gesuchsteller = requireNonNull(gesuch.getGesuchsteller1()).getGesuchstellerJA();
+		Adresse adresse = requireNonNull(gesuch.getGesuchsteller1().getAdressen().stream()
+			.filter(a -> a.extractAdresseTyp() == AdresseTyp.WOHNADRESSE)
 			.findFirst()
-			.get()).getGesuchstellerAdresseJA();
-		assert adresse != null;
+			.orElseThrow()
+			.getGesuchstellerAdresseJA());
+
 		return pojo(GesuchstellerDTO.class)
 			.where(GesuchstellerDTO::getNachname, is(gesuchsteller.getNachname()))
 			.where(GesuchstellerDTO::getVorname, is(gesuchsteller.getVorname()))
@@ -162,12 +165,12 @@ public class AnmeldungTagesschuleEventConverterTest {
 	}
 
 	@Nonnull
-	private IsPojo<KindDTO> matchesKind(Kind kindJA) {
+	private IsPojo<KindDTO> matchesKind(@Nonnull Kind kindJA) {
 		return pojo(KindDTO.class)
 			.where(KindDTO::getNachname, is(kindJA.getNachname()))
 			.where(KindDTO::getVorname, is(kindJA.getVorname()))
 			.where(KindDTO::getGeburtsdatum, is(kindJA.getGeburtsdatum()))
 			.where(KindDTO::getGeschlecht, is(Geschlecht.WEIBLICH))
-		;
+			;
 	}
 }

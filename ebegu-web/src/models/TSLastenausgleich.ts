@@ -15,11 +15,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import * as moment from 'moment';
 import {TSAbstractEntity} from './TSAbstractEntity';
 
 export class TSLastenausgleich extends TSAbstractEntity {
+    private _jahr: number;
+    private _totalAlleGemeinden: moment.Moment;
 
-    public jahr: number;
-    public totalAlleGemeinden: number;
+    public get jahr(): number {
+        return this._jahr;
+    }
+
+    public set jahr(value: number) {
+        this._jahr = value;
+    }
+
+    public get totalAlleGemeinden(): moment.Moment {
+        return this._totalAlleGemeinden;
+    }
+
+    public set totalAlleGemeinden(value: moment.Moment) {
+        this._totalAlleGemeinden = value;
+    }
 
 }

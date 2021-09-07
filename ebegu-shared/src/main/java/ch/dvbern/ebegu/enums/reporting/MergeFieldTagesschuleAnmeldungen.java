@@ -41,6 +41,8 @@ public enum MergeFieldTagesschuleAnmeldungen implements MergeFieldProvider {
 	nachnameTitle(new SimpleMergeField<>("nachnameTitle", STRING_CONVERTER)),
 	vornameTitle(new SimpleMergeField<>("vornameTitle", STRING_CONVERTER)),
 	emailTitle(new SimpleMergeField<>("emailTitle", STRING_CONVERTER)),
+	mobileTitle(new SimpleMergeField<>("mobileTitle", STRING_CONVERTER)),
+	telefonTitle(new SimpleMergeField<>("telefonTitle", STRING_CONVERTER)),
 	geburtsdatumTitle(new SimpleMergeField<>("geburtsdatumTitle", STRING_CONVERTER)),
 	referenznummerTitle(new SimpleMergeField<>("referenznummerTitle", STRING_CONVERTER)),
 	eintrittsdatumTitle(new SimpleMergeField<>("eintrittsdatumTitle", STRING_CONVERTER)),
@@ -69,10 +71,14 @@ public enum MergeFieldTagesschuleAnmeldungen implements MergeFieldProvider {
 	vornameAntragsteller1(new SimpleMergeField<>("vornameAntragsteller1", STRING_CONVERTER)),
 	nachnameAntragsteller1(new SimpleMergeField<>("nachnameAntragsteller1", STRING_CONVERTER)),
 	emailAntragsteller1(new SimpleMergeField<>("emailAntragsteller1", STRING_CONVERTER)),
+	mobileAntragsteller1(new SimpleMergeField<>("mobileAntragsteller1", STRING_CONVERTER)),
+	telefonAntragsteller1(new SimpleMergeField<>("telefonAntragsteller1", STRING_CONVERTER)),
 
 	vornameAntragsteller2(new SimpleMergeField<>("vornameAntragsteller2", STRING_CONVERTER)),
 	nachnameAntragsteller2(new SimpleMergeField<>("nachnameAntragsteller2", STRING_CONVERTER)),
 	emailAntragsteller2(new SimpleMergeField<>("emailAntragsteller2", STRING_CONVERTER)),
+	mobileAntragsteller2(new SimpleMergeField<>("mobileAntragsteller2", STRING_CONVERTER)),
+	telefonAntragsteller2(new SimpleMergeField<>("telefonAntragsteller2", STRING_CONVERTER)),
 
 	referenznummer(new SimpleMergeField<>("referenznummer", STRING_CONVERTER)),
 	eintrittsdatum(new SimpleMergeField<>("eintrittsdatum", DATE_CONVERTER)),

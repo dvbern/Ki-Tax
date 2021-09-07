@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
+import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 
 /**
  * Service zum Verwalten von Modulen
@@ -42,10 +43,18 @@ public interface ModulTagesschuleService {
 	 * Laedt das ModulTagesschule mit der id aus der DB.
 	 *
 	 * @param modulTagesschuleId PK des Moduls
-	 * @return Modul mit der gegebenen id oder null falls nicht vorhanden
+	 * @return Modul mit der gegebenen id
 	 */
 	@Nonnull
 	Optional<ModulTagesschule> findModul(@Nonnull String modulTagesschuleId);
+
+	/**
+	 * Laedt ModulTagessschuleGroup mit der id aus der DB
+	 *
+	 * @param modulTagesschuleGroupId PK der Group
+	 * @return Modul mit der gegebenen id
+	 */
+	Optional<ModulTagesschuleGroup> findModulTagesschuleGroup(@Nonnull String modulTagesschuleGroupId);
 
 	/**
 	 * entfernt ein Modul aus der Database

@@ -995,7 +995,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			final Gesuch merged = persistence.merge(gesuch);
 			antragStatusHistoryService.saveStatusChange(merged, null);
 			//Bei Freigabe muessen die Anmeldung an der Exchange Service exportiert werden
-			merged.extractAllAnmeldungenTagesschule().forEach(anmeldungTagesschule -> betreuungService.fireAnmeldungTagesschuleAdddedEvent(anmeldungTagesschule));
+			merged.extractAllAnmeldungenTagesschule().forEach(anmeldungTagesschule -> betreuungService.fireAnmeldungTagesschuleAddedEvent(anmeldungTagesschule));
 
 			return merged;
 		}
@@ -1022,8 +1022,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 			LOG.info("Freigabe des Gesuchs {} wurde zurückgezogen", gesuch.getJahrFallAndGemeindenummer());
 
-			// Den Gesuchsstatus auf In Bearbeitung GS zurücksetzen
-			gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_GS);
+			// Den Gesuchsstatus auf In Bearbeitung GS oder Sozialdienst zurücksetzen
+			if (gesuch.getFall().isSozialdienstFall()) {
+				gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_SOZIALDIENST);
+			} else {
+				gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_GS);
+			}
 			// Das Freigabedatum muss wieder zurückgesetzt werden, falls es ein Online Gesuch ist
 			gesuch.setFreigabeDatum(null);
 

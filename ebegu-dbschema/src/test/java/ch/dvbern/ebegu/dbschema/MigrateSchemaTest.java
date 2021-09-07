@@ -23,10 +23,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MigrateSchemaTest {
+
+	private static final Logger LOG = LoggerFactory.getLogger(MigrateSchemaTest.class);
 
 	@Test
 	public void flywayMigrationNumbersCorrect() {
@@ -40,14 +44,15 @@ public class MigrateSchemaTest {
 					if (file.isFile()) {
 						String revNbr = getRevisionNumberFromFilename(file.getName());
 						if (usedNumbers.contains(revNbr)) {
-							Assert.fail("Fehler in Flyway-Skripts: Die Nummer " + revNbr + " ist mehrmals vergeben!");
+							Assertions.fail("Fehler in Flyway-Skripts: Die Nummer " + revNbr +
+								" ist mehrmals vergeben!");
 						}
 						usedNumbers.add(revNbr);
 					}
 				}
 			}
 		}
-		System.out.println("All Files checked!");
+		LOG.info("All FlyWay files checked!");
 	}
 
 	private String getRevisionNumberFromFilename(String filename) {

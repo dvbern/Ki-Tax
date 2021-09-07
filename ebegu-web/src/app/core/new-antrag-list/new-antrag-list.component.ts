@@ -94,6 +94,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
      * 'periode',
      * 'aenderungsdatum',
      * 'status',
+     * 'internePendenz',
      * 'dokumenteHochgeladen',
      * 'angebote',
      * 'institutionen',
@@ -163,7 +164,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
      * otherwise 0
      */
     @Input()
-    public totalItems: number = 0;
+    public totalItems: number;
 
     /**
      * Hides pagination
@@ -432,8 +433,6 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
                 });
             }));
 
-        from(this.searchRS.countAntraege(body).then(result => this.totalItems = result));
-
         dataToLoad$.subscribe((result: DVAntragListItem[]) => {
             this.datasource.data = result;
             this.updatePagination();
@@ -444,6 +443,23 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             this.translate.get('DATA_RETRIEVAL_ERROR', error).subscribe(message => {
                 this.errorService.addMesageAsError(message);
             }, translateError => console.error('Could not load translation', translateError));
+        });
+
+        this.loadTotalCount(body);
+    }
+
+    // TODO: Doctor: Refactor totalItems into Observable for smoother subscription handling
+    private loadTotalCount(body: {
+        search: { predicateObject: DVAntragListFilter };
+        pagination: { number: any; start: number };
+        sort: { predicate?: string; reverse?: boolean }
+    }): void {
+        if (!EbeguUtil.isNullOrUndefined(this.data$)) {
+            return;
+        }
+        this.searchRS.countAntraege(body).then(result => {
+            this.totalItems = result;
+            this.changeDetectorRef.markForCheck();
         });
     }
 

@@ -18,18 +18,17 @@
 package ch.dvbern.ebegu.outbox.anmeldung;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AdresseTyp;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
+import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Kind;
@@ -40,11 +39,11 @@ import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungEventDT
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungStatus;
 import ch.dvbern.kibon.exchange.commons.types.AdresseDTO;
 import ch.dvbern.kibon.exchange.commons.types.Geschlecht;
-import ch.dvbern.kibon.exchange.commons.types.Gesuchsperiode;
-import ch.dvbern.kibon.exchange.commons.types.Intervall;
-import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import ch.dvbern.kibon.exchange.commons.types.GesuchstellerDTO;
+import ch.dvbern.kibon.exchange.commons.types.Intervall;
 import ch.dvbern.kibon.exchange.commons.types.KindDTO;
+import ch.dvbern.kibon.exchange.commons.types.Wochentag;
+import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 
 import static java.util.Objects.requireNonNull;
 
@@ -59,34 +58,40 @@ public class AnmeldungTagesschuleEventConverter {
 		return new AnmeldungTagesschuleEvent(anmeldung.getBGNummer(), payload, dto.getSchema());
 	}
 
-	/**
-	 * Convert einen Kibon Betreuung Entity in einer BetreuungAnfrageEventDTO
-	 */
 	@Nonnull
 	private TagesschuleAnmeldungEventDTO toTagesschuleAnmeldungEventDTO(@Nonnull AnmeldungTagesschule anmeldung) {
+		Gesuch gesuch = anmeldung.extractGesuch();
+
 		return TagesschuleAnmeldungEventDTO.newBuilder()
 			.setInstitutionId(anmeldung.getInstitutionStammdaten().getInstitution().getId())
-			.setAntragstellendePerson(toGesuchstellerDTO(requireNonNull(anmeldung.extractGesuch().getGesuchsteller1())))
-			.setAnmeldungsDetails(toTagesschuleAnmeldungDetailsDTO(anmeldung))
+			.setVersion(gesuch.getLaufnummer())
+			// bei Papiergesuch gibt es kein Freigabedatum
+			.setFreigegebenAm(gesuch.getFreigabeDatum() != null ?
+				gesuch.getFreigabeDatum() :
+				requireNonNull(gesuch.getEingangsdatum()))
+
+			.setPeriodeVon(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb())
+			.setPeriodeBis(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis())
 			.setKind(toKindDTO(anmeldung.getKind().getKindJA()))
+			.setAntragstellendePerson(toGesuchstellerDTO(requireNonNull(gesuch.getGesuchsteller1())))
+			.setAnmeldungsDetails(toTagesschuleAnmeldungDetailsDTO(anmeldung))
 			.setStatus(TagesschuleAnmeldungStatus.valueOf(anmeldung.getBetreuungsstatus().name()))
-			.setVersion((int) anmeldung.getVersion())
-			.setFreigegebenAm(anmeldung.extractGesuch().getFreigabeDatum() != null ? anmeldung.extractGesuch().getFreigabeDatum() : requireNonNull(
-				anmeldung.extractGesuch().getEingangsdatum()))
-			.setGesuchsperiode(Gesuchsperiode.newBuilder()
-				.setId(anmeldung.extractGesuch().getGesuchsperiode().getId())
-				.setGueltigAb(anmeldung.extractGesuch().getGesuchsperiode().getGueltigkeit().getGueltigAb())
-				.setGueltigBis(anmeldung.extractGesuch().getGesuchsperiode().getGueltigkeit().getGueltigBis())
-				.build())
+			// TODO muss noch richtig ausgefüllt weren. Abhängig von Betreuungsstatus
+			.setAnmeldungZurueckgezogen(false)
+			//	TODO 		.setTarife()
 			.build();
 	}
 
 	@Nonnull
 	private GesuchstellerDTO toGesuchstellerDTO(@Nonnull GesuchstellerContainer gesuchstellerContainer) {
-		Adresse adresse = requireNonNull(gesuchstellerContainer.getAdressen().stream().filter(gesuchstellerAdresseContainer -> Objects
-			.equals(gesuchstellerAdresseContainer.extractAdresseTyp(), AdresseTyp.WOHNADRESSE)).findFirst().get()).getGesuchstellerAdresseJA();
+		Adresse adresse = gesuchstellerContainer.getAdressen().stream()
+			.filter(a -> a.extractAdresseTyp() == AdresseTyp.WOHNADRESSE)
+			.findFirst()
+			.orElseThrow()
+			.getGesuchstellerAdresseJA();
 		Gesuchsteller gesuchsteller = gesuchstellerContainer.getGesuchstellerJA();
-		requireNonNull(adresse);
+
+		//noinspection ConstantConditions
 		return GesuchstellerDTO.newBuilder()
 			.setVorname(gesuchsteller.getVorname())
 			.setNachname(gesuchsteller.getNachname())
@@ -109,6 +114,7 @@ public class AnmeldungTagesschuleEventConverter {
 
 	@Nonnull
 	private AdresseDTO toAdresseDTO(@Nonnull Adresse adresse) {
+		//noinspection ConstantConditions
 		return AdresseDTO.newBuilder()
 			.setOrt(adresse.getOrt())
 			.setLand(adresse.getLand().name())
@@ -122,33 +128,38 @@ public class AnmeldungTagesschuleEventConverter {
 	@Nonnull
 	private TagesschuleAnmeldungDetailsDTO toTagesschuleAnmeldungDetailsDTO(
 		@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
-		assert anmeldungTagesschule.getBelegungTagesschule() != null;
-		assert anmeldungTagesschule.getBelegungTagesschule().getAbholungTagesschule() != null;
+
+		BelegungTagesschule belegung = requireNonNull(anmeldungTagesschule.getBelegungTagesschule());
+
+		AbholungTagesschule abholung = belegung.getAbholungTagesschule() != null ?
+			AbholungTagesschule.valueOf(belegung.getAbholungTagesschule().name()) :
+			null;
+
+		//noinspection ConstantConditions
 		return TagesschuleAnmeldungDetailsDTO.newBuilder()
 			.setRefnr(anmeldungTagesschule.getBGNummer())
-			.setBemerkung(anmeldungTagesschule.getBelegungTagesschule().getBemerkung())
-			.setEintrittsdatum(anmeldungTagesschule.getBelegungTagesschule().getEintrittsdatum())
-			.setPlanKlasse(anmeldungTagesschule.getBelegungTagesschule().getPlanKlasse())
-			.setAbweichungZweitesSemester(anmeldungTagesschule.getBelegungTagesschule().isAbweichungZweitesSemester())
-			.setModulSelection(toModulAuswahlDTOList(anmeldungTagesschule.getBelegungTagesschule()))
-			.setAbholung(anmeldungTagesschule.getBelegungTagesschule()
-				.getAbholungTagesschule() != null ? AbholungTagesschule.valueOf(anmeldungTagesschule.getBelegungTagesschule()
-				.getAbholungTagesschule()
-				.name()) : null)
+			.setEintrittsdatum(belegung.getEintrittsdatum())
+			.setPlanKlasse(belegung.getPlanKlasse())
+			.setAbholung(abholung)
+			.setAbweichungZweitesSemester(belegung.isAbweichungZweitesSemester())
+			.setBemerkung(belegung.getBemerkung())
+			.setModule(toModulAuswahlDTOList(belegung))
 			.build();
 	}
 
 	@Nonnull
 	private List<ModulAuswahlDTO> toModulAuswahlDTOList(@Nonnull BelegungTagesschule belegungTagesschule) {
-		return belegungTagesschule.getBelegungTagesschuleModule().stream().map(this::toModulAuswahlDTO).collect(
-			Collectors.toList());
+		return belegungTagesschule.getBelegungTagesschuleModule().stream()
+			.map(this::toModulAuswahlDTO)
+			.collect(Collectors.toList());
 	}
 
+	@Nonnull
 	private ModulAuswahlDTO toModulAuswahlDTO(@Nonnull BelegungTagesschuleModul belegungTagesschuleModul) {
 		return ModulAuswahlDTO.newBuilder()
 			.setModulId(belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().getId())
 			.setIntervall(Intervall.valueOf(belegungTagesschuleModul.getIntervall().name()))
-			.setWeekday(belegungTagesschuleModul.getModulTagesschule().getWochentag().getValue())
+			.setWochentag(Wochentag.valueOf(belegungTagesschuleModul.getModulTagesschule().getWochentag().name()))
 			.build();
 	}
 }

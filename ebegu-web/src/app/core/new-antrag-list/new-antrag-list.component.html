@@ -241,6 +241,7 @@
                         <div class="select-background"></div>
                         <mat-label translate>ALLE</mat-label>
                         <mat-select (selectionChange)="filterInternePendenz($event.value)"
+                                    [value]="filterPredicate.internePendenz"
                                     panelClass="mat-select-panel1">
                             <mat-option selected><span translate>ALLE</span></mat-option>
                             <mat-option [value]="true"><span translate>LABEL_JA</span></mat-option>
