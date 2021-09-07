@@ -2217,10 +2217,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setStrasse(adresse.getStrasseAndHausnummer());
 		row.setPlz(adresse.getPlz());
 		row.setOrt(adresse.getOrt());
-		row.setGemeinde(adresse.getGemeinde());
-		if (adresse.getBfsNummer() != null) {
-			row.setBfsGemeinde(adresse.getBfsNummer());
-		}
 		row.setEmail(institutionStammdaten.getMail());
 		if (!institutionStammdaten.getGueltigkeit().getGueltigAb().isEqual(Constants.START_OF_TIME)) {
 			row.setGueltigAb(institutionStammdaten.getGueltigkeit().getGueltigAb());
@@ -2278,6 +2274,18 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				institutionStammdatenBG.getAnzahlPlaetzeFirmen().compareTo(BigDecimal.ZERO) != 0) {
 				row.setReserviertFuerFirmen(institutionStammdatenBG.getAnzahlPlaetzeFirmen());
 			}
+		}
+		Gemeinde gemeinde = null;
+		if (institutionStammdaten.getBetreuungsangebotTyp().isTagesschule() && institutionStammdaten.getInstitutionStammdatenTagesschule() != null) {
+			gemeinde = institutionStammdaten.getInstitutionStammdatenTagesschule().getGemeinde();
+		}
+
+		if (institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien() && institutionStammdaten.getInstitutionStammdatenFerieninsel() != null) {
+			gemeinde = institutionStammdaten.getInstitutionStammdatenFerieninsel().getGemeinde();
+		}
+		if (gemeinde != null) {
+			row.setGemeinde(gemeinde.getName());
+			row.setBfsGemeinde(gemeinde.getBfsNummer());
 		}
 		zuletztGeandertList.add(institutionStammdaten.getTimestampMutiert());
 		zuletztGeandertList.add(institution.getTimestampMutiert());
