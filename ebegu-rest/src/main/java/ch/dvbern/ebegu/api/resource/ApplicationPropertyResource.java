@@ -251,6 +251,9 @@ public class ApplicationPropertyResource {
 		ApplicationProperty lastenausgleichTagesschulenAktiv  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AKTIV)
 				.orElseThrow(() -> notFound);
+		ApplicationProperty gemeindeKennzahlenAktiv  =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.GEMEINDE_KENNZAHLEN_AKTIV)
+				.orElseThrow(() -> notFound);
 		ApplicationProperty lastenausgleichTagesschulenAnteilZweitpruefungDe  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE)
 				.orElseThrow(() -> notFound);
@@ -295,6 +298,7 @@ public class ApplicationPropertyResource {
 			einreichefristPrivat.getValue(),
 			ferienbetreuungAktiv.getValue().equals("true"),
 			lastenausgleichTagesschulenAktiv.getValue().equals("true"),
+			gemeindeKennzahlenAktiv.getValue().equals("true"),
 			lastenausgleichTagesschulenAnteilZweitpruefungDeConverted,
 			lastenausgleichTagesschulenAnteilZweitpruefungFrConverted,
 			lastenausgleichTagesschulenAutoZweitpruefungDeConverted,

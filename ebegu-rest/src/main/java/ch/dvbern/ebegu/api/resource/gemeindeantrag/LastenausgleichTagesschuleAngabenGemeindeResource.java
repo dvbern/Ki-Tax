@@ -27,7 +27,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -40,16 +39,15 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxLastenausgleichTagesschulenStatusHistory;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxBetreuungsstundenPrognose;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
@@ -242,20 +240,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		final LastenausgleichTagesschuleAngabenGemeindeContainer converted =
 			getConvertedLastenausgleichTagesschuleAngabenGemeindeContainer(latsGemeindeContainerJax);
 
-		try {
-			final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
+		final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
 				angabenGemeindeService.lastenausgleichTagesschuleGemeindeFormularAbschliessen(converted);
 
-			return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
-		} catch (EJBTransactionRolledbackException e) {
-			if (e.getCause() instanceof IllegalArgumentException || e.getCause() instanceof IllegalStateException) {
-				throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
-					.entity(e.getMessage())
-					.type(MediaType.TEXT_PLAIN)
-					.build());
-			}
-			throw e;
-		}
+		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
+
 	}
 
 	@SuppressWarnings("PMD.PreserveStackTrace")
@@ -282,19 +271,10 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		final LastenausgleichTagesschuleAngabenGemeindeContainer converted =
 			getConvertedLastenausgleichTagesschuleAngabenGemeindeContainer(latsGemeindeContainerJax);
 
-		try {
-			final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
+		final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
 				angabenGemeindeService.lastenausgleichTagesschuleGemeindeEinreichen(converted);
-			return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
-		} catch (EJBTransactionRolledbackException e) {
-			if (e.getCause() instanceof IllegalArgumentException) {
-				throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
-					.entity(e.getMessage())
-					.type(MediaType.TEXT_PLAIN)
-					.build());
-			}
-			throw new EJBTransactionRolledbackException(e.getMessage(), e);
-		}
+		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
+
 	}
 
 	@ApiOperation(
@@ -428,6 +408,34 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	}
 
 	@ApiOperation(
+		value = "Setzt ein LastenausgleichTagesschuleAngabenGemeinde von GEPRUEFT auf IN_PRUEFUNG_KANTON",
+		response = Void.class)
+	@PUT
+	@Path("/zurueck-in-pruefung")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Nonnull
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer zurueckInPruefungKanton(
+		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainerJax,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(latsGemeindeContainerJax.getId());
+		Objects.requireNonNull(latsGemeindeContainerJax.getGemeinde().getId());
+
+		authorizer.checkWriteAuthorizationLATSGemeindeAntrag(latsGemeindeContainerJax.getId());
+
+		final LastenausgleichTagesschuleAngabenGemeindeContainer converted =
+			getConvertedLastenausgleichTagesschuleAngabenGemeindeContainer(latsGemeindeContainerJax);
+
+		final LastenausgleichTagesschuleAngabenGemeindeContainer wiederEroeffnet =
+			angabenGemeindeService.lastenausgleichTagesschuleGemeindeZurueckInPruefungKanton(converted);
+
+		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(wiederEroeffnet);
+	}
+
+	@ApiOperation(
 		value = "Gibt den Statushistory für die übergebene latsContainerId zurueck",
 		response = JaxLastenausgleichTagesschulenStatusHistory.class)
 	@Nullable
@@ -517,6 +525,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response dokumentErstellen(
+		@Nonnull JaxBetreuungsstundenPrognose betreuungsstundenPrognose,
 		@Nonnull @NotNull @PathParam("containerJaxId") JaxId containerJaxId,
 		@Nonnull @PathParam("sprache") Sprache sprache,
 		@Context UriInfo uriInfo,
@@ -526,7 +535,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		Objects.requireNonNull(containerJaxId.getId());
 
 		byte[] document;
-		document = latsDokumentService.createDocx(containerJaxId.getId(), sprache);
+		document = latsDokumentService.createDocx(containerJaxId.getId(), sprache, betreuungsstundenPrognose.getBetreuungsstundenPrognose());
 
 		if (document.length > 0) {
 			try {

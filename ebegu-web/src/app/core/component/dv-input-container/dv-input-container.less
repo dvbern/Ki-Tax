@@ -35,7 +35,9 @@ dv-input-container-x {
             }
         }
         &:not(.vertical-align) {
-            margin-bottom: 3rem;
+            &:not(.no-margin) {
+                margin-bottom: 3rem;
+            }
             dv-radio-container-x, mat-form-field, .flex-whitespace-item {
                 //space for outline
                 flex: 0 0 180px;

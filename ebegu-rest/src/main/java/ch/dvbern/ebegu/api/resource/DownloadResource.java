@@ -552,9 +552,7 @@ public class DownloadResource {
 	@Path("/{zahlungsauftragId}/PAIN001/generated")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.WILDCARD)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Response getPain001AccessTokenGeneratedDokument(
 		@Nonnull @Valid @PathParam("zahlungsauftragId") JaxId jaxId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException,

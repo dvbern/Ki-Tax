@@ -19,6 +19,8 @@ import {LoginComponentConfig} from './login/login.component';
 import {SCHULUNG_COMPONENT_CONFIG} from './schulung/schulung.component';
 import {AuthServiceRS} from './service/AuthServiceRS.rest';
 import {HttpAuthInterceptor} from './service/HttpAuthInterceptor';
+import {authenticationHookRunBlock} from './state-hooks/onBefore/authentication.hook';
+import {authorisationHookRunBlock} from './state-hooks/onBefore/authorisation.hook';
 import {dummyLoginHookRunBlock} from './state-hooks/onBefore/dummyLogin.hook';
 import {mandantCheck} from './state-hooks/onBefore/mandant.hook';
 import {errorAfterLoginHookRunBlock} from './state-hooks/onError/errorAfterLogin.hook';
@@ -29,6 +31,8 @@ import {clearErrorsHookRunBlock} from './state-hooks/onSuccess/clearErrors.hook'
 
 export const AUTHENTICATION_JS_MODULE =
     angular.module('dvbAngular.authentication', ['ngCookies'])
+        .run(authenticationHookRunBlock)
+        .run(authorisationHookRunBlock)
         .run(mandantCheck)
         .run(dummyLoginHookRunBlock)
         .run(errorAfterLoginHookRunBlock)

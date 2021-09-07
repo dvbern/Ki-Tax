@@ -180,15 +180,8 @@ public enum UserRole {
 	}
 
 	public static List<UserRole> getAllGemeindeFerienbetreuungRoles() {
-		return Arrays.asList(ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS,
-			SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG);
-	}
-
-	public static List<UserRole> getAllGemeindeFerienbetreuungSuperadminRoles() {
-		List<UserRole> roles = new ArrayList<>();
-		roles.add(SUPER_ADMIN);
-		roles.addAll(getAllGemeindeFerienbetreuungRoles());
-		return roles;
+		return Arrays.asList(ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG,
+			ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG);
 	}
 
 	public static List<UserRole> getAllGemeindeFerienbetreuungMandantSuperadminRoles() {
@@ -205,6 +198,20 @@ public enum UserRole {
 
 	public static List<UserRole> getAllInstitutionSachbearbeiterRoles() {
 		return Arrays.asList(SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT);
+	}
+
+	public static List<UserRole> getMandantBgGemeindeRoles() {
+		List<UserRole> roles = new ArrayList<>();
+		roles.add(SUPER_ADMIN);
+		roles.addAll(getMandantBgGemeindeOnlyRoles());
+		return roles;
+	}
+
+	public static List<UserRole> getMandantBgGemeindeOnlyRoles() {
+		List<UserRole> roles = new ArrayList<>();
+		roles.addAll(getMandantRoles());
+		roles.addAll(getBgAndGemeindeRoles());
+		return roles;
 	}
 
 	public static List<UserRole> getRolesByAbhaengigkeit(RollenAbhaengigkeit abhaengigkeit) {

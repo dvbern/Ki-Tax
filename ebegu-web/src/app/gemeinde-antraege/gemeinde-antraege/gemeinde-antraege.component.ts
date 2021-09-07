@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {HttpErrorResponse} from '@angular/common/http';
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
@@ -36,14 +35,14 @@ import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
+import {TSExceptionReport} from '../../../models/TSExceptionReport';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
 import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
-import {HTTP_ERROR_CODES} from '../../core/constants/CONSTANTS';
-import {ErrorService} from '../../core/errors/service/ErrorService';
+import {ErrorServiceX} from '../../core/errors/service/ErrorServiceX';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
@@ -75,12 +74,13 @@ export class GemeindeAntraegeComponent implements OnInit {
         'institutionen',
         'verantwortlicheTS',
         'verantwortlicheBG',
+        'internePendenz'
     ];
 
     public antragList$: Observable<DVAntragListItem[]>;
     public gesuchsperioden: TSGesuchsperiode[];
     public formGroup: FormGroup;
-    public totalItems: number;
+    public totalItems = 0;
     public gemeinden: TSGemeinde[];
 
     public pagination: TSPagination = new TSPagination();
@@ -98,6 +98,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     });
     public triedSending: boolean = false;
     public types: TSGemeindeAntragTyp[];
+    public creatableTypes: TSGemeindeAntragTyp[];
     public deletePossible$: Observable<boolean>;
 
     public constructor(
@@ -105,7 +106,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         private readonly gesuchsperiodenService: GesuchsperiodeRS,
         private readonly fb: FormBuilder,
         private readonly $state: StateService,
-        private readonly errorService: ErrorService,
+        private readonly errorService: ErrorServiceX,
         private readonly translate: TranslateService,
         private readonly cd: ChangeDetectorRef,
         private readonly wizardStepXRS: WizardStepXRS,
@@ -171,6 +172,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                 },
                 err => {
                     const msg = this.translate.instant('ERR_GEMEINDEN_LADEN');
+                    this.errorService.clearAll();
                     this.errorService.addMesageAsError(msg);
                     LOG.error(err);
                 },
@@ -182,12 +184,13 @@ export class GemeindeAntraegeComponent implements OnInit {
             this.triedSending = true;
             return;
         }
+        this.errorService.clearAll();
         this.gemeindeAntragService.createAllAntrage(this.formGroup.value).subscribe(result => {
             this.loadAntragList();
             this.cd.markForCheck();
             this.errorService.addMesageAsInfo(this.translate.instant('ANTRAEGE_ERSTELLT', {amount: result.length}));
-        }, err => {
-            this.handleCreateAntragError(err);
+        }, (err: TSExceptionReport[]) => {
+            this.handleCreateAntragErrors(err);
         });
     }
 
@@ -206,10 +209,12 @@ export class GemeindeAntraegeComponent implements OnInit {
         ).subscribe(() => {
                 this.loadAntragList();
                 this.cd.markForCheck();
+            // tslint:disable-next-line:no-identical-functions
             }, err => {
                 const msg = this.translate.instant('DELETE_ANTRAEGE_ERROR');
+                this.errorService.clearAll();
                 this.errorService.addMesageAsError(msg);
-                console.error(err);
+                LOG.error(err);
             });
     }
 
@@ -239,24 +244,40 @@ export class GemeindeAntraegeComponent implements OnInit {
         combineLatest([principal$, properties$])
             .subscribe(data => {
                 this.types = this.getFilterAntragTypes(data[1]);
-                if (this.types.length === 1) {
-                    this.formGroup.get('antragTyp').setValue(this.types[0]);
+                this.creatableTypes = this.getCreatableAntragTypes(data[1]);
+                if (this.creatableTypes.length === 1) {
+                    this.formGroup.get('antragTyp').setValue(this.creatableTypes[0]);
                 }
             }, error => {
-                console.error(error);
+                LOG.error(error);
             });
 
     }
 
     private getFilterAntragTypes(config: TSPublicAppConfig): TSGemeindeAntragTyp[] {
-        this.types = this.gemeindeAntragService.getTypesForRole();
+        let types = this.gemeindeAntragService.getFilterableTypesForRole();
+        types = this.filterActiveAntragTypes(config, types);
+        return types;
+    }
+
+    private filterActiveAntragTypes(config: TSPublicAppConfig, types: TSGemeindeAntragTyp[]): TSGemeindeAntragTyp[] {
+        let filteredTypes = types;
         if (!config.ferienbetreuungAktiv) {
-            this.types = this.types.filter(d => d !== TSGemeindeAntragTyp.FERIENBETREUUNG);
+            filteredTypes = filteredTypes.filter(d => d !== TSGemeindeAntragTyp.FERIENBETREUUNG);
         }
         if (!config.lastenausgleichTagesschulenAktiv) {
-            this.types = this.types.filter(d => d !== TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN);
+            filteredTypes = types.filter(d => d !== TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN);
         }
-        return this.types;
+        if (!config.gemeindeKennzahlenAktiv) {
+            filteredTypes = types.filter(d => d !== TSGemeindeAntragTyp.GEMEINDE_KENNZAHLEN);
+        }
+        return filteredTypes;
+    }
+
+    private getCreatableAntragTypes(config: TSPublicAppConfig): TSGemeindeAntragTyp[] {
+        let types = this.gemeindeAntragService.getCreatableTypesForRole();
+        types = this.filterActiveAntragTypes(config, types);
+        return types;
     }
 
     public createAntrag(): void {
@@ -264,23 +285,15 @@ export class GemeindeAntraegeComponent implements OnInit {
             this.triedSending = true;
             return;
         }
+        this.errorService.clearAll();
         // tslint:disable-next-line:no-identical-functions
         this.gemeindeAntragService.createAntrag(this.formGroup.value).subscribe(() => {
             this.loadAntragList();
             this.cd.markForCheck();
             this.errorService.addMesageAsInfo(this.translate.instant('ANTRAG_ERSTELLT'));
         }, err => {
-            this.handleCreateAntragError(err);
+            this.handleCreateAntragErrors(err);
         });
-    }
-
-    private handleCreateAntragError(error: HttpErrorResponse): void {
-        const errorMessage$ = error.status === HTTP_ERROR_CODES.CONFLICT ?
-            this.translate.get('GEMEINDE_ANTRAG_EXISTS_ERROR') : this.translate.get('CREATE_ANTRAG_ERROR');
-
-        errorMessage$.subscribe(message => {
-            this.errorService.addMesageAsError(message);
-        }, translateError => console.error('Could no translate', translateError));
     }
 
     public navigate(antrag: DVAntragListItem, event: MouseEvent): void {
@@ -319,6 +332,13 @@ export class GemeindeAntraegeComponent implements OnInit {
         return this.formGroup?.get('antragTyp').value === TSGemeindeAntragTyp.FERIENBETREUUNG;
     }
 
+    public isMandant(): Observable<boolean> {
+        return this.authService.principal$
+            .pipe(
+                map(principal => principal && principal.hasOneOfRoles(TSRoleUtil.getMandantRoles())),
+            );
+    }
+
     public onAntragTypChange(): void {
         const gemeindeControl = this.formGroup.get('gemeinde');
         if (this.ferienBetreuungSelected()) {
@@ -333,7 +353,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     public canCreateAntrag(): Observable<boolean> {
         return this.authService.principal$.pipe(
             filter(principal => !!principal),
-            map(() => this.authService.isOneOfRoles(TSRoleUtil.getFerienbetreuungRoles()))
+            map(() => this.authService.isOneOfRoles(TSRoleUtil.getFerienbetreuungRoles())),
         );
     }
 
@@ -346,5 +366,9 @@ export class GemeindeAntraegeComponent implements OnInit {
         this.pagination.start = paginationEvent.page * paginationEvent.pageSize;
 
         this.paginationChangedSubj.next(this.pagination);
+    }
+
+    private handleCreateAntragErrors(errors: TSExceptionReport[]): void {
+        LOG.info(errors.map(err => err.customMessage).join('; '));
     }
 }

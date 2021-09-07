@@ -127,6 +127,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public korrekteKostenBestaetigung: boolean = false;
     public isBestaetigenClicked: boolean = false;
     public searchQuery: string = '';
+    public allowedRoles: ReadonlyArray<TSRole>;
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
@@ -268,7 +269,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         tsBetreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA = new TSErweiterteBetreuung();
         tsBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
 
-        tsBetreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA.keineKesbPlatzierung = false;
         tsBetreuung.kindId = this.gesuchModelManager.getKindToWorkWith().id;
         tsBetreuung.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
 
@@ -295,6 +295,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             || this.gesuchModelManager.getFachstellenErweiterteBetreuungList().length <= 0) {
             this.gesuchModelManager.updateFachstellenErweiterteBetreuungList();
         }
+        this.allowedRoles = this.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles();
     }
 
     /**
@@ -1400,5 +1401,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public isStammdatenAusgefuellt(): boolean {
         return this.instStamm.institution.status !== TSInstitutionStatus.EINGELADEN;
+    }
+
+    public showWarningStammdaten(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
+        && !this.isStammdatenAusgefuellt();
     }
 }

@@ -14,37 +14,34 @@
  */
 
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {TSErrorLevel} from '../../../../models/enums/TSErrorLevel';
 import {TSErrorType} from '../../../../models/enums/TSErrorType';
 import {TSExceptionReport} from '../../../../models/TSExceptionReport';
 import {HTTP_ERROR_CODES} from '../../constants/CONSTANTS';
-import {ErrorService} from './ErrorService';
-import ILogService = angular.ILogService;
-import IQService = angular.IQService;
+import {LogFactory} from '../../logging/LogFactory';
+import {ErrorServiceX} from './ErrorServiceX';
 
-/**
- * notokenrefresh is sent by the Mitteilungservice to indicate if there is a new Mitteilung
- * emaillogin/gui/registration/createmaillogin is the URL of BE-Login used to burn timeout
- */
-export function isIgnorableHttpError<T>(request: HttpRequest<T>): boolean {
-    return request.url.includes('notokenrefresh')
-        || request.url.includes('emaillogin/gui/registration/createmaillogin');
-}
+const LOG = LogFactory.createLog('HttpErrorInterceptorX');
 
-export class HttpErrorInterceptor implements HttpInterceptor {
+@Injectable()
+export class HttpErrorInterceptorX implements HttpInterceptor {
 
     public constructor(
-        private readonly $q: IQService,
-        private readonly errorService: ErrorService,
-        private readonly $log: ILogService,
+        private readonly errorService: ErrorServiceX,
     ) {
+    }
+
+    public static isIgnorableHttpError<T>(request: HttpRequest<T>): boolean {
+        return request?.url?.includes('notokenrefresh') ||
+            request?.url?.includes('emaillogin/gui/registration/createmaillogin');
     }
 
     public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(req).pipe(
-            catchError((err: HttpErrorResponse) => {
+            catchError(async (err: HttpErrorResponse) => {
                 if (!(err instanceof HttpErrorResponse)) {
                     throw err;
                 }
@@ -55,12 +52,12 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                     throw err;
                 }
 
-                if (err.status !== HTTP_ERROR_CODES.UNAUTHORIZED && !isIgnorableHttpError(req)) {
+                if (err.status !== HTTP_ERROR_CODES.UNAUTHORIZED ) {
                     // here we could analyze the http status of the response. But instead we check if the  response has
                     // the format of a known response such as errortypes such as violationReport or ExceptionReport and
                     // transform it as such. If the response matches know expected format we create an unexpected
                     // error.
-                    const errors = this.handleErrorResponse(req, err);
+                    const errors = await this.handleErrorResponse(req, err);
                     this.errorService.handleErrors(errors);
                     throw errors;
                 }
@@ -78,7 +75,10 @@ export class HttpErrorInterceptor implements HttpInterceptor {
      * The expected types are ViolationReport objects from JAXRS if there was a beanValidation error
      * or EbeguExceptionReports in case there was some other application exception
      */
-    private handleErrorResponse(request: HttpRequest<any>, response: HttpErrorResponse): Array<TSExceptionReport> {
+    private async handleErrorResponse(
+        request: HttpRequest<any>,
+        response: HttpErrorResponse,
+    ): Promise<Array<TSExceptionReport>> {
         const url = request.url || '';
         if (response.status === HTTP_ERROR_CODES.NOT_FOUND && (
             url.includes('ebegu.dvbern.ch')
@@ -89,13 +89,17 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         let errors: Array<TSExceptionReport>;
         // Alle daten loggen um das Debuggen zu vereinfachen
         // noinspection IfStatementWithTooManyBranchesJS
-        if (this.isDataViolationResponse(response.message)) {
-            errors = this.convertViolationReport(response.message);
+        if (this.isDataViolationResponse(response.error)) {
+            errors = this.convertViolationReport(response.error);
 
-        } else if (this.isDataEbeguExceptionReport(response.message)) {
-            errors = this.convertEbeguExceptionReport(response.message);
+        } else if (this.isDataEbeguExceptionReport(response.error)) {
+            errors = this.convertEbeguExceptionReport(response.error);
 
-        } else if (this.isFileUploadException(response.message)) {
+        } else if (this.isBlob(response.error)) {
+            errors = [];
+            const errorObject = JSON.parse(await response.error.text());
+            errors.push(TSExceptionReport.createFromExceptionReport(errorObject));
+        } else if (this.isFileUploadException(response.error)) {
             errors = [];
             errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
                 TSErrorLevel.SEVERE,
@@ -108,8 +112,8 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                 'ERROR_DATA_CHANGED',
                 response.message));
         } else {
-            this.$log.error(`ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`);
-            this.$log.error('ResponseData:' + JSON.stringify(response.message));
+            LOG.error(`ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`);
+            LOG.error('ResponseData:' + JSON.stringify(response.message));
             // the error objects is neither a ViolationReport nor a ExceptionReport. Create a generic error msg
             errors = [];
             errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
@@ -190,9 +194,13 @@ export class HttpErrorInterceptor implements HttpInterceptor {
 
     }
 
-    private isFileUploadException(response: string): boolean {
+    private isFileUploadException(response: string | Blob): boolean {
         if (!response) {
             return false;
+        }
+
+        if (response instanceof Blob) {
+            return true;
         }
 
         const msg = 'java.io.IOException: UT000020: Connection terminated as request was larger than ';
@@ -205,5 +213,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             return false;
         }
         return data.status === HTTP_ERROR_CODES.CONFLICT;
+    }
+
+    private isBlob(error: any): boolean {
+        return error instanceof Blob;
     }
 }

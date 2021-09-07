@@ -34,10 +34,11 @@ import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../../models
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {TSEinstellung} from '../../../../../models/TSEinstellung';
+import {TSExceptionReport} from '../../../../../models/TSExceptionReport';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgOkDialogComponent} from '../../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
-import {CONSTANTS, HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
+import {CONSTANTS} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../../core/service/wizardStepXRS.rest';
@@ -712,21 +713,16 @@ export class GemeindeAngabenComponent implements OnInit {
         this.wizardRS.updateSteps(this.WIZARD_TYPE, this.uiRouterGlobals.params.id);
     }
 
-    private handleSaveError(error: any): void {
-        // tslint:disable-next-line:early-exit
-        if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
-            if (error.error.includes('institution')) {
+    private handleSaveError(errors: TSExceptionReport[]): void {
+        errors.forEach(error => {
+            if (error.customMessage.includes('institution')) {
                 this.errorService.addMesageAsError(this.translateService.instant(
                     'LATS_NICHT_ALLE_INSTITUTIONEN_ABGESCHLOSSEN'));
-            } else if (error.error.includes('incomplete')) {
+            } else if (error.customMessage.includes('incomplete')) {
                 this.errorService.addMesageAsError(this.translateService.instant(
                     'LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'));
-            } else {
-                this.errorService.addMesageAsError(this.translateService.instant('ERROR_UNEXPECTED'));
             }
-        } else {
-            this.errorService.addMesageAsError(this.translateService.instant('ERROR_UNEXPECTED'));
-        }
+        });
     }
 
     public enableAndTriggerFormValidation(): void {

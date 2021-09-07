@@ -28,6 +28,7 @@ import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -51,6 +52,7 @@ export class EditGemeindeComponentBG implements OnInit {
     @Input() public altBGAdresse: boolean;
     @Input() public beguStartDatum: Moment;
     @Input() public keineBeschwerdeAdresse: boolean;
+    @Input() public gemeindeList$: Observable<TSGemeinde[]>;
 
     @Output() public readonly altBGAdresseChange: EventEmitter<boolean> = new EventEmitter();
     @Output() public readonly keineBeschwerdeAdresseChange: EventEmitter<boolean> = new EventEmitter();
@@ -89,6 +91,10 @@ export class EditGemeindeComponentBG implements OnInit {
 
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
         return b1 && b2 ? b1.username === b2.username : b1 === b2;
+    }
+
+    public compareGemeinde(g1: TSGemeinde, g2: TSGemeinde): boolean {
+        return g1 && g2 ? g1.name === g2.name : g1 === g2;
     }
 
     public altBGAdresseHasChange(newVal: boolean): void {

@@ -125,6 +125,7 @@ import {DVValueinput} from './directive/dv-valueinput/dv-valueinput';
 import {DvVerantwortlicherselect} from './directive/dv-verantwortlicherselect/dv-verantwortlicherselect';
 import {DvSearchListComponent} from './dv-search-list/dv-search-list.component';
 import {ERRORS_JS_MODULE} from './errors/errors';
+import {ErrorServiceX} from './errors/service/ErrorServiceX';
 import {arrayToString} from './filters/array-to-string.filter';
 import {gemeindenToString} from './filters/gemeinden-to-string.filter';
 import {NewAntragListComponent} from './new-antrag-list/new-antrag-list.component';
@@ -146,7 +147,6 @@ import {HttpResponseInterceptor} from './service/HttpResponseInterceptor';
 import {InstitutionRS} from './service/institutionRS.rest';
 import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
 import {KindRS} from './service/kindRS.rest';
-import {LastenausgleichRS} from './service/lastenausgleichRS.rest';
 import {ListResourceRS} from './service/listResourceRS.rest';
 import {MandantRS} from './service/mandantRS.rest';
 import {MitteilungRS} from './service/mitteilungRS.rest';
@@ -235,7 +235,6 @@ export const CORE_JS_MODULE = angular
     .service('WizardStepRS', WizardStepRS)
     .service('AntragStatusHistoryRS', AntragStatusHistoryRS)
     .service('MitteilungRS', MitteilungRS)
-    .service('LastenausgleichRS', LastenausgleichRS)
     .service('GlobalCacheService', GlobalCacheService)
     .service('ExportRS', ExportRS)
     .service('DossierRS', DossierRS)
@@ -253,6 +252,7 @@ export const CORE_JS_MODULE = angular
     .factory('VersionService', downgradeInjectable(VersionService) as any)
     .factory('BroadcastService', downgradeInjectable(BroadcastService) as any)
     .factory('BenutzerRS', downgradeInjectable(BenutzerRSX) as any)
+    .factory('ErrorServiceX', downgradeInjectable(ErrorServiceX) as any)
     .factory('MandantService', downgradeInjectable(MandantService) as any)
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvDatepicker', DVDatepicker.factory())

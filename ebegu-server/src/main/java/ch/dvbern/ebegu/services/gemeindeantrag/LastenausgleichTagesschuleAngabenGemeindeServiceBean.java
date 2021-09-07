@@ -24,6 +24,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -49,7 +50,6 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -77,9 +77,11 @@ import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
-import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.services.util.PredicateHelper;
+import ch.dvbern.ebegu.services.MailService;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
@@ -93,7 +95,8 @@ import org.slf4j.LoggerFactory;
 public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends AbstractBaseService
 	implements LastenausgleichTagesschuleAngabenGemeindeService {
 
-	private static final String ANGABEN_KORREKTUR_NOT_NULL = "angabenKorrektur must not be null";
+	private static final String ANGABEN_KORREKTUR_NOT_NULL = "LastenausgleichTagesschuleAngabenGemeindeContainer angabenKorrektur must not be null";
+	private static final String ANGABEN_DEKLARATION_NOT_NULL = "LastenausgleichTagesschuleAngabenGemeindeContainer angabenDeklaration must not be null";
 
 	@Inject
 	private Persistence persistence;
@@ -124,6 +127,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
+
+	@Inject
+	private MailService mailService;
 
 	private static final Logger LOG =
 		LoggerFactory.getLogger(LastenausgleichTagesschuleAngabenGemeindeServiceBean.class);
@@ -362,6 +368,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root =
 			query.from(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
 
+		Set<Predicate> predicates = new HashSet<>();
+
 		if (!principal.isCallerInAnyOfRole(
 			UserRole.SUPER_ADMIN,
 			UserRole.ADMIN_MANDANT,
@@ -369,32 +377,39 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 			Predicate gemeindeIn =
 				root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde).in(gemeinden);
-			query.where(gemeindeIn);
+			predicates.add(gemeindeIn);
 		}
 
 		if (gemeinde != null) {
-			query.where(
+			predicates.add(
 				cb.equal(
 					root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde).get(Gemeinde_.name),
 					gemeinde)
 			);
 		}
 		if (periode != null) {
-			final Predicate periodePredicate = createPeriodePredicate(periode, cb, root);
-			query.where(periodePredicate);
+			predicates.add(PredicateHelper.getPredicateFilterGesuchsperiode(cb,
+				root.join(LastenausgleichTagesschuleAngabenGemeindeContainer_.gesuchsperiode, JoinType.INNER),
+				periode));
 		}
 		if (status != null) {
+			if (!EnumUtil.isOneOf(status, LastenausgleichTagesschuleAngabenGemeindeStatus.values())) {
+				return new ArrayList<>();
+			}
 			final Predicate statusPredicate = createStatusPredicate(status, cb, root);
-			query.where(
+			predicates.add(
 				statusPredicate
 			);
 		}
 		if (timestampMutiert != null) {
 			final Predicate timestampMutiertPredicate = createTimestampMutiertPredicate(timestampMutiert, cb, root);
-			query.where(
+			predicates.add(
 				timestampMutiertPredicate
 			);
 		}
+
+		Predicate[] predicatesArray = new Predicate[predicates.size()];
+		query.where(predicates.toArray(predicatesArray));
 
 		List<LastenausgleichTagesschuleAngabenGemeindeContainer> containerList = persistence.getCriteriaResults(query);
 
@@ -434,24 +449,6 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		return timestampMutiertPredicate;
 	}
 
-	private Predicate createPeriodePredicate(
-		@NotNull String periode,
-		CriteriaBuilder cb,
-		Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root) {
-		String[] years = Arrays.stream(periode.split("/"))
-			.map(year -> year.length() == 4 ? year : "20".concat(year))
-			.collect(Collectors.toList())
-			.toArray(String[]::new);
-		Path<DateRange> dateRangePath =
-			root.join(LastenausgleichTagesschuleAngabenGemeindeContainer_.gesuchsperiode, JoinType.INNER)
-				.get(AbstractDateRangedEntity_.gueltigkeit);
-		Predicate periodePredicate = cb.and(
-			cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigAb)), years[0]),
-			cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigBis)), years[1])
-		);
-		return periodePredicate;
-	}
-
 	private List<LastenausgleichTagesschuleAngabenGemeindeContainer> getLastenausgleicheTagesschulenForInstitution(
 		@Nullable String periode,
 		@Nullable String status) {
@@ -468,8 +465,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			LastenausgleichTagesschuleAngabenGemeindeContainer_.angabenInstitutionContainers,
 			JoinType.LEFT);
 
+		List<Predicate> predicates = new ArrayList<>();
+
 		Predicate institutionIn = join.get(LastenausgleichTagesschuleAngabenInstitutionContainer_.institution)
 			.in(Objects.requireNonNull(institutionService.getInstitutionenReadableForCurrentBenutzer(false)));
+
+		predicates.add(institutionIn);
 
 		Predicate notNeu = cb.not(
 			cb.equal(
@@ -478,16 +479,21 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		);
 		query.where(institutionIn, notNeu);
 
+		predicates.add(notNeu);
+
 		if (periode != null) {
-			final Predicate periodePredicate = createPeriodePredicate(periode, cb, root);
-			query.where(periodePredicate);
+			predicates.add(PredicateHelper.getPredicateFilterGesuchsperiode(cb,
+				root.join(LastenausgleichTagesschuleAngabenGemeindeContainer_.gesuchsperiode, JoinType.INNER),
+				periode));
 		}
 		if (status != null) {
+			if (!EnumUtil.isOneOf(status, LastenausgleichTagesschuleAngabenGemeindeStatus.values())) {
+				return new ArrayList<>();
+			}
 			final Predicate statusPredicate = createStatusPredicate(status, cb, root);
-			query.where(
-				statusPredicate
-			);
+			predicates.add(statusPredicate);
 		}
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		return persistence.getCriteriaResults(query);
 	}
 
@@ -547,7 +553,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		} else {
 			Preconditions.checkState(
 				fallContainer.getAngabenDeklaration() != null,
-				"angabenDeklaration must not be null"
+				ANGABEN_DEKLARATION_NOT_NULL
 			);
 			formular = fallContainer.getAngabenDeklaration();
 		}
@@ -607,7 +613,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		} else {
 			Preconditions.checkState(
 				fallContainer.getAngabenDeklaration() != null,
-				"angabenDeklaration must not be null"
+				ANGABEN_DEKLARATION_NOT_NULL
 			);
 			angaben = fallContainer.getAngabenDeklaration();
 		}
@@ -651,11 +657,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		);
 		Preconditions.checkState(
 			container.getAngabenDeklaration() != null,
-			"LastenausgleichTagesschuleAngabenGemeindeContainer angabenDeklaration must not be null"
+			ANGABEN_DEKLARATION_NOT_NULL
 		);
 		Preconditions.checkState(
 			container.getAngabenKorrektur() != null,
-			"LastenausgleichTagesschuleAngabenGemeindeContainer angabenDeklaration must not be null"
+			ANGABEN_KORREKTUR_NOT_NULL
 		);
 
 		container.copyForZurueckAnGemeinde();
@@ -665,7 +671,37 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		container.getAngabenDeklaration().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
 		container.getAngabenKorrektur().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
 
-		return saveLastenausgleichTagesschuleGemeinde(container, true);
+		LastenausgleichTagesschuleAngabenGemeindeContainer saved = saveLastenausgleichTagesschuleGemeinde(container, true);
+
+		mailService.sendInfoLATSAntragZurueckAnGemeinde(saved);
+
+		return saved;
+	}
+
+	@Nonnull
+	@Override
+	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeZurueckInPruefungKanton(
+			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
+		Preconditions.checkState(
+			container.isAntragGeprueft(),
+			"LastenausgleichTagesschuleAngabenGemeindeContainer Geprüft sein"
+		);
+		Preconditions.checkState(
+			container.getAngabenDeklaration() != null,
+			ANGABEN_DEKLARATION_NOT_NULL
+		);
+		Preconditions.checkState(
+			container.getAngabenKorrektur() != null,
+			ANGABEN_KORREKTUR_NOT_NULL
+		);
+
+		// reopen gemeinde korrektur formular, don't reopen insti or deklaration formulare
+		container.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON);
+		container.getAngabenKorrektur().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
+
+		LastenausgleichTagesschuleAngabenGemeindeContainer saved = saveLastenausgleichTagesschuleGemeinde(container, true);
+
+		return saved;
 	}
 
 

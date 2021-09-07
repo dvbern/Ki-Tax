@@ -24,6 +24,7 @@ import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
+import {TSGemeindeKennzahlen} from '../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {TSAnzahlEingeschriebeneKinder} from '../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
 import {TSDurchschnittKinderProTag} from '../models/gemeindeantrag/TSDurchschnittKinderProTag';
 import {TSFerienbetreuungAngaben} from '../models/gemeindeantrag/TSFerienbetreuungAngaben';
@@ -948,6 +949,7 @@ export class EbeguRestUtil {
         return restGemeinde;
     }
 
+    // tslint:disable-next-line:cognitive-complexity
     public gemeindeStammdatenToRestObject(restStammdaten: any, stammdaten: TSGemeindeStammdaten): TSGemeindeStammdaten {
         if (stammdaten) {
             this.abstractEntityToRestObject(restStammdaten, stammdaten);
@@ -995,6 +997,11 @@ export class EbeguRestUtil {
                 restStammdaten.rechtsmittelbelehrung =
                     this.textRessourceToRestObject({}, stammdaten.rechtsmittelbelehrung);
             }
+            restStammdaten.gutscheinSelberAusgestellt = stammdaten.gutscheinSelberAusgestellt;
+            if (stammdaten.gemeindeAusgabestelle) {
+                restStammdaten.gemeindeAusgabestelle = this.gemeindeToRestObject({}, stammdaten.gemeindeAusgabestelle);
+            }
+
             return restStammdaten;
         }
         return undefined;
@@ -1053,7 +1060,11 @@ export class EbeguRestUtil {
                 stammdatenFromServer.tsVerantwortlicherNachVerfuegungBenachrichtigen;
             stammdatenTS.usernameScolaris = stammdatenFromServer.usernameScolaris;
             stammdatenTS.emailBeiGesuchsperiodeOeffnung = stammdatenFromServer.emailBeiGesuchsperiodeOeffnung;
-
+            stammdatenTS.gutscheinSelberAusgestellt = stammdatenFromServer.gutscheinSelberAusgestellt;
+            if (stammdatenFromServer.gemeindeAusgabestelle) {
+                stammdatenTS.gemeindeAusgabestelle =
+                    this.parseGemeinde(new TSGemeinde(), stammdatenFromServer.gemeindeAusgabestelle);
+            }
             return stammdatenTS;
         }
         return undefined;
@@ -1413,6 +1424,8 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.telefon = institutionStammdaten.telefon;
             restInstitutionStammdaten.webseite = institutionStammdaten.webseite;
             restInstitutionStammdaten.sendMailWennOffenePendenzen = institutionStammdaten.sendMailWennOffenePendenzen;
+            restInstitutionStammdaten.grundSchliessung = institutionStammdaten.grundSchliessung;
+            restInstitutionStammdaten.erinnerungMail = institutionStammdaten.erinnerungMail;
 
             restInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine =
                 this.institutionStammdatenBetreuungsgutscheineToRestObject({},
@@ -1423,6 +1436,7 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.institutionStammdatenFerieninsel =
                 this.institutionStammdatenFerieninselToRestObject({},
                     institutionStammdaten.institutionStammdatenFerieninsel);
+
             return restInstitutionStammdaten;
         }
         return undefined;
@@ -1445,6 +1459,8 @@ export class EbeguRestUtil {
             institutionStammdatenTS.oeffnungszeiten = institutionStammdatenFromServer.oeffnungszeiten;
             institutionStammdatenTS.sendMailWennOffenePendenzen =
                 institutionStammdatenFromServer.sendMailWennOffenePendenzen;
+            institutionStammdatenTS.erinnerungMail = institutionStammdatenFromServer.erinnerungMail;
+            institutionStammdatenTS.grundSchliessung = institutionStammdatenFromServer.grundSchliessung;
 
             institutionStammdatenTS.institutionStammdatenBetreuungsgutscheine =
                 this.parseInstitutionStammdatenBetreuungsgutscheine(new TSInstitutionStammdatenBetreuungsgutscheine(),
@@ -1511,6 +1527,16 @@ export class EbeguRestUtil {
                 (institutionStammdaten.alternativeEmailFamilienportal) ?
                     institutionStammdaten.alternativeEmailFamilienportal :
                     null;
+            restInstitutionStammdaten.oeffnungstageProJahr = institutionStammdaten.oeffnungstageProJahr;
+            restInstitutionStammdaten.auslastungInstitutionen = institutionStammdaten.auslastungInstitutionen;
+            restInstitutionStammdaten.anzahlKinderWarteliste = institutionStammdaten.anzahlKinderWarteliste;
+            restInstitutionStammdaten.summePensumWarteliste = institutionStammdaten.summePensumWarteliste;
+            restInstitutionStammdaten.dauerWarteliste = institutionStammdaten.dauerWarteliste;
+            restInstitutionStammdaten.fruehEroeffnung = institutionStammdaten.fruehEroeffnung;
+            restInstitutionStammdaten.spaetEroeffnung = institutionStammdaten.spaetEroeffnung;
+            restInstitutionStammdaten.wochenendeEroeffnung = institutionStammdaten.wochenendeEroeffnung;
+            restInstitutionStammdaten.uebernachtungMoeglich = institutionStammdaten.uebernachtungMoeglich;
+
             return restInstitutionStammdaten;
         }
         return undefined;
@@ -1561,6 +1587,16 @@ export class EbeguRestUtil {
                 institutionStammdatenFromServer.alternativeEmailFamilienportal;
             institutionStammdatenTS.betreuungsstandorte =
                 this.parseBetreuungsstandortList(institutionStammdatenFromServer.betreuungsstandorte);
+            institutionStammdatenTS.oeffnungstageProJahr = institutionStammdatenFromServer.oeffnungstageProJahr;
+            institutionStammdatenTS.auslastungInstitutionen = institutionStammdatenFromServer.auslastungInstitutionen;
+            institutionStammdatenTS.anzahlKinderWarteliste = institutionStammdatenFromServer.anzahlKinderWarteliste;
+            institutionStammdatenTS.summePensumWarteliste = institutionStammdatenFromServer.summePensumWarteliste;
+            institutionStammdatenTS.dauerWarteliste = institutionStammdatenFromServer.dauerWarteliste;
+            institutionStammdatenTS.fruehEroeffnung = institutionStammdatenFromServer.fruehEroeffnung;
+            institutionStammdatenTS.spaetEroeffnung = institutionStammdatenFromServer.spaetEroeffnung;
+            institutionStammdatenTS.wochenendeEroeffnung = institutionStammdatenFromServer.wochenendeEroeffnung;
+            institutionStammdatenTS.uebernachtungMoeglich = institutionStammdatenFromServer.uebernachtungMoeglich;
+
             return institutionStammdatenTS;
         }
         return undefined;
@@ -3022,7 +3058,8 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.sameAusbezahlteVerguenstigung =
                 zeitabschnittFromServer.sameAusbezahlteVerguenstigung;
             verfuegungZeitabschnittTS.sameAusbezahlteMahlzeiten = zeitabschnittFromServer.sameAusbezahlteMahlzeiten;
-            verfuegungZeitabschnittTS.sameVerfuegteMahlzeitenVerguenstigung = zeitabschnittFromServer.sameVerfuegteMahlzeitenVerguenstigung;
+            verfuegungZeitabschnittTS.sameVerfuegteMahlzeitenVerguenstigung =
+                zeitabschnittFromServer.sameVerfuegteMahlzeitenVerguenstigung;
             verfuegungZeitabschnittTS.sameVerfuegteVerfuegungsrelevanteDaten =
                 zeitabschnittFromServer.sameVerfuegteVerfuegungsrelevanteDaten;
             verfuegungZeitabschnittTS.verfuegteAnzahlZeiteinheiten =
@@ -3985,6 +4022,7 @@ export class EbeguRestUtil {
             data.notverordnungDefaultEinreichefristOeffentlich;
         publicAppConfigTS.notverordnungDefaultEinreichefristPrivat = data.notverordnungDefaultEinreichefristPrivat;
         publicAppConfigTS.lastenausgleichTagesschulenAktiv = data.lastenausgleichTagesschulenAktiv;
+        publicAppConfigTS.gemeindeKennzahlenAktiv = data.gemeindeKennzahlenAktiv;
         publicAppConfigTS.ferienbetreuungAktiv = data.ferienbetreuungAktiv;
         return publicAppConfigTS;
 
@@ -4891,8 +4929,8 @@ export class EbeguRestUtil {
         restFerienbetreuung.kostenEinnahmen =
             this.ferienbetreuungKostenEinnahmenToRestObject({}, ferienbetreuungTS.kostenEinnahmen);
         if (ferienbetreuungTS.berechnungen) {
-           restFerienbetreuung.berechnungen =
-                   this.ferienbetreuungBerechnungenToRestObject({}, ferienbetreuungTS.berechnungen);
+            restFerienbetreuung.berechnungen =
+                this.ferienbetreuungBerechnungenToRestObject({}, ferienbetreuungTS.berechnungen);
         }
         return restFerienbetreuung;
         // never send kantonsbeitrag and gemeindebeitrag to server
@@ -5174,9 +5212,9 @@ export class EbeguRestUtil {
     private ferienbetreuungBerechnungenToRestObject(restBerechnung: any, berechnung: TSFerienbetreuungBerechnung): any {
         restBerechnung.totalKosten = berechnung.totalKosten;
         restBerechnung.betreuungstageKinderDieserGemeindeMinusSonderschueler =
-                berechnung.betreuungstageKinderDieserGemeindeMinusSonderschueler;
+            berechnung.betreuungstageKinderDieserGemeindeMinusSonderschueler;
         restBerechnung.betreuungstageKinderAndererGemeindeMinusSonderschueler =
-                berechnung.betreuungstageKinderAndererGemeindeMinusSonderschueler;
+            berechnung.betreuungstageKinderAndererGemeindeMinusSonderschueler;
         restBerechnung.totalKantonsbeitrag = berechnung.totalKantonsbeitrag;
         restBerechnung.totalEinnahmen = berechnung.totalEinnahmen;
         restBerechnung.beitragKinderAnbietendenGemeinde = berechnung.beitragFuerKinderDerAnbietendenGemeinde;
@@ -5366,5 +5404,46 @@ export class EbeguRestUtil {
         internePendenz.text = internePendentFromServer.text;
         internePendenz.erledigt = internePendentFromServer.erledigt;
         return internePendenz;
+    }
+
+    public gemeindeKennzahlenToRestObject(gemeindeKennzahlenRest: any, gemeindeKennzahlen: TSGemeindeKennzahlen): any {
+        if (!gemeindeKennzahlen) {
+            return undefined;
+        }
+        this.abstractEntityToRestObject(gemeindeKennzahlenRest, gemeindeKennzahlen);
+
+        gemeindeKennzahlenRest.gemeinde = this.gemeindeToRestObject({}, gemeindeKennzahlen.gemeinde);
+        gemeindeKennzahlenRest.gesuchsperiode = this.gesuchsperiodeToRestObject({}, gemeindeKennzahlen.gesuchsperiode);
+
+        gemeindeKennzahlenRest.nachfrageErfuellt = gemeindeKennzahlen.nachfrageErfuellt;
+        gemeindeKennzahlenRest.nachfrageAnzahl = gemeindeKennzahlen.nachfrageAnzahl;
+        gemeindeKennzahlenRest.nachfrageDauer = gemeindeKennzahlen.nachfrageDauer;
+        gemeindeKennzahlenRest.kostenlenkungAndere = gemeindeKennzahlen.kostenlenkungAndere;
+        gemeindeKennzahlenRest.welcheKostenlenkungsmassnahmen = gemeindeKennzahlen.welcheKostenlenkungsmassnahmen;
+
+        return gemeindeKennzahlenRest;
+    }
+
+    public parseGemeindeKennzahlen(
+        gemeindeKennzahlen: TSGemeindeKennzahlen,
+        gemeindeKennzahlenFromServer: any,
+    ): TSGemeindeKennzahlen {
+        if (!gemeindeKennzahlenFromServer) {
+            return undefined;
+        }
+        this.parseAbstractEntity(gemeindeKennzahlen, gemeindeKennzahlenFromServer);
+
+        gemeindeKennzahlen.gemeinde = this.parseGemeinde(new TSGemeinde(), gemeindeKennzahlenFromServer.gemeinde);
+        gemeindeKennzahlen.gesuchsperiode =
+            this.parseGesuchsperiode(new TSGesuchsperiode(), gemeindeKennzahlenFromServer.gesuchsperiode);
+        gemeindeKennzahlen.status = gemeindeKennzahlenFromServer.status;
+
+        gemeindeKennzahlen.nachfrageErfuellt = gemeindeKennzahlenFromServer.nachfrageErfuellt;
+        gemeindeKennzahlen.nachfrageAnzahl = gemeindeKennzahlenFromServer.nachfrageAnzahl;
+        gemeindeKennzahlen.nachfrageDauer = gemeindeKennzahlenFromServer.nachfrageDauer;
+        gemeindeKennzahlen.kostenlenkungAndere = gemeindeKennzahlenFromServer.kostenlenkungAndere;
+        gemeindeKennzahlen.welcheKostenlenkungsmassnahmen = gemeindeKennzahlenFromServer.welcheKostenlenkungsmassnahmen;
+
+        return gemeindeKennzahlen;
     }
 }

@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -493,7 +494,9 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		@Nonnull InstitutionStammdaten institutionStammdaten,
 		boolean offenePendenzen,
 		boolean ungelesendeMitteilung) {
-		String mailaddress = institutionStammdaten.getMail();
+		String mailaddress = institutionStammdaten.getErinnerungMail() != null ?
+			institutionStammdaten.getErinnerungMail() :
+			institutionStammdaten.getMail();
 		try {
 			if (StringUtils.isNotEmpty(mailaddress)) {
 				String message = mailTemplateConfig
@@ -726,12 +729,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			List<Sprache> sprachen =
 				EbeguUtil.extractGemeindeSprachen(gemeinde, gemeindeService);
 
-			GemeindeStammdaten stammdaten =
-				gemeindeService.getGemeindeStammdatenByGemeindeId(gemeinde.getId()).orElseThrow(() ->
-					new EbeguEntityNotFoundException("sendInfoLastenausgleichGemeinde",
-						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeinde.getId()));
-
-			String mailaddress = stammdaten.getMail();
+			String mailaddress = findGemeindeMailAddress(gemeinde);
 			if (StringUtils.isNotEmpty(mailaddress)) {
 				String message =
 					mailTemplateConfig.getInfoGemeindeLastenausgleichDurch(lastenausgleich, sprachen, mailaddress);
@@ -766,4 +764,42 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			AntragStatus.values()
 		);
 	}
+
+	@Override
+	public void sendInfoLATSAntragZurueckAnGemeinde(
+			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer wiederEroeffnet) {
+		final List<Sprache> sprachen = EbeguUtil.extractGemeindeSprachen(wiederEroeffnet.getGemeinde(), gemeindeService);
+		final Gemeinde gemeinde = wiederEroeffnet.getGemeinde();
+		try {
+			LOG.info("Sende Mail für Gemeinde {}", gemeinde.getName());
+
+			String mailaddress = findGemeindeMailAddress(gemeinde);
+			if (StringUtils.isNotEmpty(mailaddress)) {
+				String message =
+						mailTemplateConfig.getInfoGemeindeLastenausgleichTagesschuleZurueckAnGemeinde(wiederEroeffnet, sprachen, mailaddress);
+				sendMessageWithTemplate(message, mailaddress);
+				LOG.debug("Email fuer InfoGemeindeLastenausgleichDurch wurde versendet an {}", mailaddress);
+			} else {
+				LOG.warn("skipping InfoGemeindeLastenausgleichDurch because Gemeinde Email is null");
+			}
+		} catch (EbeguEntityNotFoundException nf) {
+			LOG.error("Gemeindestammdaten not Found for {}", gemeinde.getId(), nf);
+		} catch (Exception e) {
+			logExceptionAccordingToEnvironment(
+					e,
+					"Mail InfoGemeindeLastenausgleichDurch konnte nicht verschickt werden fuer Gemeinde",
+					gemeinde.getName());
+		}
+
+	}
+
+	private String findGemeindeMailAddress(Gemeinde gemeinde) throws EbeguEntityNotFoundException {
+		GemeindeStammdaten stammdaten =
+				gemeindeService.getGemeindeStammdatenByGemeindeId(gemeinde.getId()).orElseThrow(() ->
+						new EbeguEntityNotFoundException("sendInfoLastenausgleichGemeinde",
+								ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeinde.getId()));
+
+		return stammdaten.getMail();
+	}
+
 }

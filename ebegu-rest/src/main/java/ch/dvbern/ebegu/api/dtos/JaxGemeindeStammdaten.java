@@ -113,6 +113,10 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private Boolean tsVerantwortlicherNachVerfuegungBenachrichtigen;
 	@Nonnull
 	private Boolean emailBeiGesuchsperiodeOeffnung;
+	@Nonnull
+	private Boolean gutscheinSelberAusgestellt;
+	@Nullable
+	private JaxGemeinde gemeindeAusgabestelle;
 
 	// ---------- Konfiguration ----------
 	@NotNull
@@ -462,5 +466,23 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setEmailBeiGesuchsperiodeOeffnung(@Nonnull Boolean emailBeiGesuchsperiodeOeffnung) {
 		this.emailBeiGesuchsperiodeOeffnung = emailBeiGesuchsperiodeOeffnung;
+	}
+
+	@Nonnull
+	public Boolean getGutscheinSelberAusgestellt() {
+		return gutscheinSelberAusgestellt;
+	}
+
+	public void setGutscheinSelberAusgestellt(@Nonnull Boolean gutscheinSelberAusgestellt) {
+		this.gutscheinSelberAusgestellt = gutscheinSelberAusgestellt;
+	}
+
+	@Nullable
+	public JaxGemeinde getGemeindeAusgabestelle() {
+		return gemeindeAusgabestelle;
+	}
+
+	public void setGemeindeAusgabestelle(@Nullable JaxGemeinde gemeindeAusgabestelle) {
+		this.gemeindeAusgabestelle = gemeindeAusgabestelle;
 	}
 }

@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+@import (reference) '../../../style/mixins.less';
+
 md-input-container label:not(.md-container-ignore), label {
     color: black;
 }
@@ -28,14 +30,35 @@ select {
     white-space: nowrap;
 }
 
-.lastenausgleich-view {
-    .mat-column-periode, .mat-column-periode-filter {
-        flex: 0 0 16rem !important;
-        min-width: 0 !important;
+.gemeinde-antraege-view {
+    padding: 3rem;
+
+    .gemeinde-antraege-form {
+        align-items: flex-end;
+        background: @contrast-light;
+        display: flex;
+        justify-content: space-evenly;
+        margin-bottom: 4rem;
+        padding: 4rem 2rem 1rem;
+
+        > div {
+            margin: 0 1rem;
+        }
+
+        .actions {
+            display: flex;
+            margin-bottom: 3rem;
+        }
+
+        .mat-column-periode, .mat-column-periode-filter {
+            flex: 0 0 16rem !important;
+            min-width: 0 !important;
+        }
+
+        .mat-column-aenderungsdatum, .mat-column-aenderungsdatum-filter {
+            flex: 0 0 16rem !important;
+            min-width: 0 !important;
+        }
     }
 
-    .mat-column-aenderungsdatum, .mat-column-aenderungsdatum-filter {
-        flex: 0 0 16rem !important;
-        min-width: 0 !important;
-    }
 }

@@ -21,6 +21,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAdresse} from '../../../models/TSAdresse';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
 @Component({
     selector: 'dv-edit-institution-betreuungsgutscheine',
@@ -37,6 +38,8 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnC
 
     public abweichendeZahlungsAdresse: boolean;
     public incompleteOeffnungszeiten: boolean = false;
+
+    public readonly CONSTANTS = CONSTANTS;
 
     public constructor(
         private readonly translate: TranslateService,

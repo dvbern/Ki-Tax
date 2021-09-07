@@ -21,16 +21,17 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class BigDecimalMergeField extends AbstractMergeField<BigDecimal> {
 
 	private final int scale;
 
-	public BigDecimalMergeField(@Nonnull String name, @Nonnull BigDecimal value) {
+	public BigDecimalMergeField(@Nonnull String name, @Nullable BigDecimal value) {
 		this(name, value, 2);
 	}
 
-	public BigDecimalMergeField(@Nonnull String name, @Nonnull BigDecimal value, @Nonnull Integer precision) {
+	public BigDecimalMergeField(@Nonnull String name, @Nullable BigDecimal value, @Nonnull Integer precision) {
 		super(name, value);
 		this.scale = precision;
 	}
@@ -38,6 +39,9 @@ public class BigDecimalMergeField extends AbstractMergeField<BigDecimal> {
 	@Override
 	@Nonnull
 	public String getConvertedValue() {
+		if (getValue() == null) {
+			return "";
+		}
 		return this.getValue().setScale(this.scale, RoundingMode.HALF_UP).toString();
 	}
 }

@@ -5,9 +5,12 @@ import * as moment from 'moment';
 import {TSLastenausgleichTagesschulenStatusHistory} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
 import {CONSTANTS} from '../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {LogFactory} from '../../../core/logging/LogFactory';
 import {DvSimpleTableColumnDefinition} from '../../../shared/component/dv-simple-table/dv-simple-table-column-definition';
 import {DvSimpleTableConfig} from '../../../shared/component/dv-simple-table/dv-simple-table-config';
 import {LastenausgleichTSService} from '../services/lastenausgleich-ts.service';
+
+const LOG = LogFactory.createLog('VerlaufComponent');
 
 @Component({
     selector: 'dv-verlauf',
@@ -55,10 +58,7 @@ export class VerlaufComponent implements OnInit {
                 this.mapHistoryForSimpleTable(data);
                 this.cd.markForCheck();
             }, error => {
-                this.errorService.addMesageAsError(
-                    this.$translate.instant('ERROR_UNEXPECTED')
-                );
-                console.error(error);
+                LOG.error(error);
             });
     }
 

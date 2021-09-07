@@ -36,10 +36,11 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
+import {TSExceptionReport} from '../../../../../models/TSExceptionReport';
 import {TSGesuchsperiode} from '../../../../../models/TSGesuchsperiode';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
-import {CONSTANTS, HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
+import {CONSTANTS} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../../core/logging/LogFactory';
 import {WizardStepXRS} from '../../../../core/service/wizardStepXRS.rest';
@@ -629,14 +630,8 @@ export class TagesschulenAngabenComponent {
             });
     }
 
-    public manageSaveErrorCodes(error: any): void {
-        if (error.status === HTTP_ERROR_CODES.CONFLICT) {
-            this.errorService.addMesageAsError(this.translate.instant('ERROR_DATA_CHANGED'));
-        } else if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
-            this.errorService.addMesageAsError(this.translate.instant('ERROR_NUMBER'));
-        } else {
-            this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
-        }
+    public manageSaveErrorCodes(errors: TSExceptionReport[]): void {
+        console.info(errors.map(error => error.customMessage).join('; '));
     }
 
     public allAnzahlFieldsFilledOut(): boolean {

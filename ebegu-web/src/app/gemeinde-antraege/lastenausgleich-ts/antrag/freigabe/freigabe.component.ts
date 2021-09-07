@@ -24,12 +24,11 @@ import {filter, first, map, mergeMap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRole} from '../../../../../models/enums/TSRole';
-import {TSWizardStepXTyp} from '../../../../../models/enums/TSWizardStepXTyp';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {TSExceptionReport} from '../../../../../models/TSExceptionReport';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgOkDialogComponent} from '../../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
-import {HTTP_ERROR_CODES} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
@@ -47,13 +46,12 @@ export class FreigabeComponent implements OnInit {
     @Input() public lastenausgleichID: string;
 
     private container: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
-    private readonly WIZARD_TYPE = TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN;
 
-    public canViewFreigabeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public canViewGeprueftButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public canViewZurueckGemeindeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public canSeeFreigabeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public canSeeGeprueftButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public canSeeZurueckGemeindeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public canSeeZurueckInPruefungButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public canSeeFreigegebenText: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public canSeeGeprueftText: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     public constructor(
         private readonly translate: TranslateService,
@@ -71,40 +69,32 @@ export class FreigabeComponent implements OnInit {
             this.authService.principal$,
         ]).subscribe(([container, principal]) => {
             this.container = container;
-            if (principal.hasRole(TSRole.SUPER_ADMIN)) {
+            if (principal.hasRole(TSRole.SUPER_ADMIN) && container.isInBearbeitungGemeinde()) {
+                this.canSeeFreigabeButton.next(true);
+                this.canSeeGeprueftButton.next(false);
+                this.canSeeZurueckGemeindeButton.next(false);
                 this.canSeeFreigegebenText.next(false);
-                this.canSeeGeprueftText.next(false);
-                if (container.isInBearbeitungKanton()) {
-                    this.canViewFreigabeButton.next(false);
-                    this.canViewGeprueftButton.next(true);
-                    this.canViewZurueckGemeindeButton.next(true);
-                } else if (container.isInBearbeitungGemeinde()) {
-                    this.canViewFreigabeButton.next(true);
-                    this.canViewGeprueftButton.next(false);
-                    this.canViewZurueckGemeindeButton.next(false);
-                }
             }
-            if (principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles()) && container.isInBearbeitungKanton()) {
-                this.canViewFreigabeButton.next(false);
-                this.canViewGeprueftButton.next(true);
-                this.canViewZurueckGemeindeButton.next(true);
+            if (principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) && container.isInBearbeitungKanton()) {
+                this.canSeeFreigabeButton.next(false);
+                this.canSeeGeprueftButton.next(true);
+                this.canSeeZurueckGemeindeButton.next(true);
+                this.canSeeZurueckInPruefungButton.next(false);
                 this.canSeeFreigegebenText.next(false);
-                this.canSeeGeprueftText.next(false);
             }
             if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles())) {
-                this.canViewFreigabeButton.next(container.isInBearbeitungGemeinde());
-                this.canViewGeprueftButton.next(false);
-                this.canViewZurueckGemeindeButton.next(false);
+                this.canSeeFreigabeButton.next(container.isInBearbeitungGemeinde());
+                this.canSeeGeprueftButton.next(false);
+                this.canSeeZurueckGemeindeButton.next(false);
                 this.canSeeFreigegebenText.next(container.isAtLeastInBearbeitungKanton());
-                this.canSeeGeprueftText.next(false);
             }
             // tslint:disable-next-line:early-exit
-            if (container.isAtLeastGeprueft()) {
-                this.canViewFreigabeButton.next(false);
-                this.canViewGeprueftButton.next(false);
-                this.canViewZurueckGemeindeButton.next(false);
+            if (container.isGeprueft()) {
+                this.canSeeFreigabeButton.next(false);
+                this.canSeeGeprueftButton.next(false);
+                this.canSeeZurueckGemeindeButton.next(false);
+                this.canSeeZurueckInPruefungButton.next(principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()));
                 this.canSeeFreigegebenText.next(principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles()));
-                this.canSeeGeprueftText.next(principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()));
             }
         }, () => this.errorService.addMesageAsInfo(this.translate.instant('DATA_RETRIEVAL_ERROR')));
     }
@@ -123,24 +113,22 @@ export class FreigabeComponent implements OnInit {
             )
             .subscribe(() => {
                 this.$state.go('gemeindeantraege.view');
-            }, error => {
+            }, (errors: TSExceptionReport[]) => {
                 // tslint:disable-next-line:early-exit
-                if (error.status === HTTP_ERROR_CODES.BAD_REQUEST) {
-                    if (error.error.includes('angabenDeklaration')) {
-                        this.errorService.addMesageAsError(this.translate.instant('LATS_GEMEINDE_ANGABEN_ERROR'));
-                        setTimeout(() => this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_GEMEINDE',
-                            {triggerValidation: true},
-                            {}),
-                            this.ROUTING_DELAY);
-                    } else if (error.error.includes('LastenausgleichAngabenInstitution')) {
-                        this.errorService.addMesageAsError(this.translate.instant(
-                            'LATS_NICHT_ALLE_INSTITUTIONEN_ABGESCHLOSSEN'));
-                        setTimeout(() => this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.LIST'),
-                            this.ROUTING_DELAY);
-                    }
-                } else {
-                    this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
-                }
+                errors.forEach(error => {
+                        if (error.customMessage.includes('angabenDeklaration')) {
+                            this.errorService.addMesageAsError(this.translate.instant('LATS_GEMEINDE_ANGABEN_ERROR'));
+                            setTimeout(() => this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_GEMEINDE',
+                                    {triggerValidation: true},
+                                    {}),
+                                this.ROUTING_DELAY);
+                        } else if (error.customMessage.includes('LastenausgleichAngabenInstitution')) {
+                            this.errorService.addMesageAsError(this.translate.instant(
+                                'LATS_NICHT_ALLE_INSTITUTIONEN_ABGESCHLOSSEN'));
+                            setTimeout(() => this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.LIST'),
+                                this.ROUTING_DELAY);
+                        }
+                });
             });
     }
 
@@ -201,5 +189,26 @@ export class FreigabeComponent implements OnInit {
 
     public isReadyForGeprueft(): boolean {
         return this.container?.isInBearbeitungKanton() && this.container?.angabenKorrektur.isAbgeschlossen();
+    }
+
+    public isGeprueft(): Observable<boolean> {
+        return this.latsService.getLATSAngabenGemeindeContainer().pipe(
+            map(container => container.isGeprueft())
+        );
+    }
+
+    public async zurueckInPruefung(): Promise<void> {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            frage: this.translate.instant('ZURUECK_IN_PRUEFUNG'),
+        };
+        if (!await (this.dialog.open(DvNgConfirmDialogComponent, dialogConfig))
+            .afterClosed()
+            .toPromise()) {
+            return;
+        }
+        this.latsService.zurueckInPruefung(this.container)
+            .subscribe(() => {},
+                () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED')));
     }
 }

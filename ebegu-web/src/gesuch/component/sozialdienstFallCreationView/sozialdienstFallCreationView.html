@@ -274,8 +274,8 @@
                             (delete)="vm.removeVollmachtDokument($event)"
                             (upload-file)="vm.uploadVollmachtDokument($event)"
                             [files]="vm.dokumente"
-                            [read-only]="vm.isSozialdienstFallReadOnly()"
-                            [read-only-delete]="vm.isSozialdienstFallReadOnly()"
+                            [read-only]="vm.isSozialdienstDokumentReadOnly()"
+                            [read-only-delete]="vm.isSozialdienstDokumentReadOnly()"
                         >
                         </dv-file-upload>
                     </div>
@@ -321,7 +321,7 @@
                     <!-- Fall zurueck entziehen soll nur Superadmin moeglich sein-->
                     <span dv-show-element
                           dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()"
-                          dv-show-expression="vm.isSozialdienstFallEntzogen()">
+                          dv-show-expression="vm.isReaktivierungMoeglich()">
                         <dv-loading-button button-click="vm.fallAktivieren()" type="submit">
                             <span class="uppercase" data-translate="SOZIALDIENSTFALL_REAKTIVIEREN"></span>
                         </dv-loading-button>

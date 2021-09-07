@@ -149,17 +149,21 @@ export class ZahlungRS {
         gemeinde: TSGemeinde,
         beschrieb: string,
         faelligkeitsdatum: moment.Moment,
-        datumGeneriert: moment.Moment,
+        datumGeneriert: moment.Moment | undefined,
     ): Observable<TSZahlungsauftrag> {
+        const params: any = {
+            zahlungslaufTyp: zahlungslaufTyp.toString(),
+            gemeindeId: gemeinde.id,
+            faelligkeitsdatum: DateUtil.momentToLocalDate(faelligkeitsdatum),
+            beschrieb,
+        };
+        if (datumGeneriert) {
+            params.datumGeneriert = DateUtil.momentToLocalDate(datumGeneriert);
+        }
+
         return this.http.get(`${this.serviceURL}/create`,
             {
-                params: {
-                    zahlungslaufTyp: zahlungslaufTyp.toString(),
-                    gemeindeId: gemeinde.id,
-                    faelligkeitsdatum: DateUtil.momentToLocalDate(faelligkeitsdatum),
-                    beschrieb,
-                    datumGeneriert: DateUtil.momentToLocalDate(datumGeneriert),
-                },
+                params
             },
         ).pipe(
             map((httpresponse: any) => {
