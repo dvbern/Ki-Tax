@@ -91,6 +91,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String KIBON_KAFKA_URL = "kibon.kafka.url";
 	private static final String KIBON_SCHEMA_REGISTRY_URL = "kibon.schemaregistry.url";
 	private static final String KIBON_EXCHANGE_BETREUUNGANFRAGE_ENABLED = "kibon.exchange.betreuunganfrage.enabled";
+	private static final String KIBON_EXCHANGE_TAGESSCHULE_ANMELDUNG_ENABLED = "kibon.exchange.tagesschuleanmeldung.enabled";
 	private static final String KIBON_KAFKA_CONSUMER_ENABLED = "kibon.kafka.consumer.enabled";
 	private static final String KIBON_KAFKA_CONSUMER_GROUP_ID = "kibon.kafka.consumer.group.id";
 
@@ -299,6 +300,11 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public boolean isBetreuungAnfrageApiEnabled() {
 		return getBoolean(KIBON_EXCHANGE_BETREUUNGANFRAGE_ENABLED, false);
+	}
+
+	@Override
+	public boolean isAnmeldungTagesschuleApiEnabled() {
+		return getBoolean(KIBON_EXCHANGE_TAGESSCHULE_ANMELDUNG_ENABLED, false);
 	}
 
 	@Override

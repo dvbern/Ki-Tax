@@ -72,9 +72,9 @@ public class AnmeldungBestaetigungEventKafkaConsumer {
 
 	private void startKafkaAnmeldungBestaetigungConsumer() {
 		if (ebeguConfiguration.getKafkaURL().isEmpty()
-			|| !ebeguConfiguration.isBetreuungAnfrageApiEnabled()
+			|| !ebeguConfiguration.isAnmeldungTagesschuleApiEnabled()
 			|| !ebeguConfiguration.isKafkaConsumerEnabled()) {
-			LOG.debug("Kafka URL not set or Betreuung Api is not enabled, not consuming events.");
+			LOG.debug("Kafka URL not set or Anmeldung Api is not enabled, not consuming events.");
 			return;
 		}
 		Properties props = new Properties();

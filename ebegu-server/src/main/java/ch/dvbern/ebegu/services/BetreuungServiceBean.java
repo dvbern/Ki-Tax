@@ -264,6 +264,16 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				persistence.merge(b);
 			});
 
+		boolean isAnmeldungSchulamtAusgeloest =
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST == mergedBetreuung.getBetreuungsstatus();
+
+		//Export Tagesschule Anmeldung oder moegliche Aenderungen an der exchange-service
+		if(isAnmeldungSchulamtAusgeloest || mergedBetreuung.getBetreuungsstatus()
+			== Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT || mergedBetreuung.getBetreuungsstatus()
+			== Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN) {
+			fireAnmeldungTagesschuleAddedEvent(mergedBetreuung);
+		}
+
 		// we need to manually add this new AnmeldungTagesschule to the Kind
 		final Set<AnmeldungTagesschule> betreuungen = mergedBetreuung.getKind().getAnmeldungenTagesschule();
 		betreuungen.add(mergedBetreuung);
@@ -274,23 +284,17 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Gesuch mergedGesuch = gesuchService.updateBetreuungenStatus(mergedBetreuung.extractGesuch());
 
-		boolean isAnmeldungSchulamtAusgeloest =
-			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST == mergedBetreuung.getBetreuungsstatus();
 		updateVerantwortliche(mergedGesuch, mergedBetreuung, isAnmeldungSchulamtAusgeloest, isNew);
-
-		//Export Tagesschule Anmeldung oder moegliche Aenderungen an der exchange-service
-		if(isAnmeldungSchulamtAusgeloest || mergedBetreuung.getBetreuungsstatus()
-			== Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT || mergedBetreuung.getBetreuungsstatus()
-			== Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN) {
-			fireAnmeldungTagesschuleAddedEvent(mergedBetreuung);
-		}
 
 		return mergedBetreuung;
 	}
 
 	@Override
 	public void fireAnmeldungTagesschuleAddedEvent(@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
-		event.fire(anmeldungTagesschuleEventConverter.of(anmeldungTagesschule));
+		if (ebeguConfiguration.isAnmeldungTagesschuleApiEnabled()) {
+			event.fire(anmeldungTagesschuleEventConverter.of(anmeldungTagesschule));
+			//TODO: add event published or not this is the question???
+		}
 	}
 
 	@Nonnull
