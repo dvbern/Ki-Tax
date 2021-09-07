@@ -96,7 +96,7 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 	@Column(nullable = false)
 	private ModulTagesschuleIntervall intervall = ModulTagesschuleIntervall.WOECHENTLICH;
 
-	@NotNull @Nonnull
+	@NotNull
 	@Column(nullable = false)
 	private boolean wirdPaedagogischBetreut = false;
 

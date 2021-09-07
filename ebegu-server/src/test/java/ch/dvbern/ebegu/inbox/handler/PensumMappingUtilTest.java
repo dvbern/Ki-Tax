@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.inbox.handler;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,6 +35,7 @@ import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.services.BetreuungMonitoringService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.types.DateRange;
@@ -41,8 +43,11 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
+import org.easymock.EasyMockExtension;
+import org.easymock.Mock;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -56,7 +61,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.contains;
 
+@ExtendWith(EasyMockExtension.class)
 class PensumMappingUtilTest {
+
+	@Mock
+	private BetreuungMonitoringService monitoringService = null;
 
 	@Nonnull
 	private final Gesuch gesuch = initGesuch();
@@ -79,9 +88,11 @@ class PensumMappingUtilTest {
 		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO(z);
 
 		DateRange gueltigket = getClientPeriodeGueltigkeit(betreuung);
+		EventMonitor eventMonitor =
+			new EventMonitor(monitoringService, LocalDateTime.now(), betreuungEventDTO.getRefnr(), "client");
 
 		ProcessingContext ctx =
-			new ProcessingContext(betreuung, betreuungEventDTO, gueltigket, true, "clientName");
+			new ProcessingContext(betreuung, betreuungEventDTO, gueltigket, true, eventMonitor);
 
 		BetreuungsmitteilungPensum actual =
 			PensumMappingUtil.toAbstractMahlzeitenPensum(new BetreuungsmitteilungPensum(), z, ctx);
@@ -98,9 +109,11 @@ class PensumMappingUtilTest {
 		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO(z);
 
 		DateRange gueltigket = getClientPeriodeGueltigkeit(betreuung);
+		EventMonitor eventMonitor =
+			new EventMonitor(monitoringService, LocalDateTime.now(), betreuungEventDTO.getRefnr(), "client");
 
 		ProcessingContext ctx =
-			new ProcessingContext(betreuung, betreuungEventDTO, gueltigket, false, "clientName");
+			new ProcessingContext(betreuung, betreuungEventDTO, gueltigket, false, eventMonitor);
 
 		BetreuungsmitteilungPensum actual =
 			PensumMappingUtil.toAbstractMahlzeitenPensum(new BetreuungsmitteilungPensum(), z, ctx);

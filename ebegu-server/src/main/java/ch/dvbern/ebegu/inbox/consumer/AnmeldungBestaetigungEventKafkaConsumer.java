@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,9 +31,9 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.enums.UserRoleName;
-import ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandler;
+import ch.dvbern.ebegu.inbox.handler.AnmeldungBestaetigungEventHandler;
 import ch.dvbern.ebegu.kafka.MessageProcessor;
-import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
+import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleBestaetigungEventDTO;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -55,32 +55,32 @@ import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZE
 @Startup
 @Singleton
 @RunAs(UserRoleName.SUPER_ADMIN)
-public class PlatzbestaetigungEventKafkaConsumer {
+public class AnmeldungBestaetigungEventKafkaConsumer {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PlatzbestaetigungEventKafkaConsumer.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AnmeldungBestaetigungEventKafkaConsumer.class);
 
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
 
 	@Inject
-	private PlatzbestaetigungEventHandler eventHandler;
+	private AnmeldungBestaetigungEventHandler eventHandler;
 
 	@Inject
 	private MessageProcessor processor;
 
-	private Consumer<String, BetreuungEventDTO> consumer = null;
+	private Consumer<String, TagesschuleBestaetigungEventDTO> consumer = null;
 
-	private void startKafkaPlatzbestaetigungConsumer() {
+	private void startKafkaAnmeldungBestaetigungConsumer() {
 		if (ebeguConfiguration.getKafkaURL().isEmpty()
-			|| !ebeguConfiguration.isBetreuungAnfrageApiEnabled()
+			|| !ebeguConfiguration.isAnmeldungTagesschuleApiEnabled()
 			|| !ebeguConfiguration.isKafkaConsumerEnabled()) {
-			LOG.debug("Kafka URL not set or Betreuung Api is not enabled, not consuming events.");
+			LOG.debug("Kafka URL not set or Anmeldung Api is not enabled, not consuming events.");
 			return;
 		}
 		Properties props = new Properties();
 		props.setProperty(BOOTSTRAP_SERVERS_CONFIG, ebeguConfiguration.getKafkaURL().get());
 		String groupId = ebeguConfiguration.getKafkaConsumerGroupId();
-		props.setProperty(GROUP_ID_CONFIG, "kibon-platzbestaetigung-" + groupId);
+		props.setProperty(GROUP_ID_CONFIG, "kibon-anmeldungbestaetigung-" + groupId);
 		props.setProperty(AUTO_OFFSET_RESET_CONFIG, "earliest");
 		props.setProperty(ENABLE_AUTO_COMMIT_CONFIG, "false");
 		props.setProperty(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
@@ -89,28 +89,29 @@ public class PlatzbestaetigungEventKafkaConsumer {
 		props.setProperty(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
 
 		consumer = new KafkaConsumer<>(props);
-		consumer.subscribe(Collections.singletonList("PlatzbestaetigungBetreuungEvents"));
+		consumer.subscribe(Collections.singletonList("AnmeldungBestaetigungEvents"));
 
 	}
 
-	@Schedule(info = "consume kafka events", second = "*/10", minute = "*", hour = "*", persistent = false)
-	public void runPlatzbestaetigungConsumer() {
+	@Schedule(info = "consume kafka events", second = "*/12", minute = "*", hour = "*", persistent = false)
+	public void runAnmeldungBestaetigungConsumer() {
 		try {
 			if (consumer == null) {
-				startKafkaPlatzbestaetigungConsumer();
+				startKafkaAnmeldungBestaetigungConsumer();
 				return;
 			}
 
-			ConsumerRecords<String, BetreuungEventDTO> consumerRecordes = consumer.poll(Duration.ofMillis(5000));
+			ConsumerRecords<String, TagesschuleBestaetigungEventDTO> consumerRecordes =
+				consumer.poll(Duration.ofMillis(5000));
 			consumerRecordes.forEach(this::process);
 			consumer.commitSync();
 		} catch (Exception e) {
-			LOG.error("There's a problem with the kafka Platzbestaetigung Consumer", e);
+			LOG.error("There's a problem with the kafka Anmeldungbestaetigung Consumer", e);
 		}
 	}
 
-	private void process(@Nonnull ConsumerRecord<String, BetreuungEventDTO> record) {
-		LOG.info("BetreuungEvent received for Betreuung with refnr {}", record.key());
+	private void process(@Nonnull ConsumerRecord<String, TagesschuleBestaetigungEventDTO> record) {
+		LOG.info("TagesschuleBestaetigungEvent received for Tagesschule Anmeldung with refnr {}", record.key());
 		processor.process(record, eventHandler);
 	}
 
