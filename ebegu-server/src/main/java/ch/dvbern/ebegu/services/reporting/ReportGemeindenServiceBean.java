@@ -125,8 +125,13 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 					dataRow.setStartdatumBG(gemeinde.getBetreuungsgutscheineStartdatum());
 
 					gemeindeService.getGemeindeStammdatenByGemeindeId(gemeinde.getId())
-							.ifPresent(gemeindeStammdaten -> dataRow.setKorrespondenzspracheGemeinde(
-									ServerMessageUtil.getMessage("Reports_" + gemeindeStammdaten.getKorrespondenzsprache(), locale)));
+							.ifPresent(gemeindeStammdaten -> {
+								dataRow.setKorrespondenzspracheGemeinde(
+										ServerMessageUtil.getMessage("Reports_" + gemeindeStammdaten.getKorrespondenzsprache(), locale));
+								if (!gemeindeStammdaten.getGutscheinSelberAusgestellt() && gemeindeStammdaten.getGemeindeAusgabestelle() != null) {
+									dataRow.setGutscheinausgabestelle(gemeindeStammdaten.getGemeindeAusgabestelle().getName());
+								}
+							});
 
 					gesuchsperiodeService.getAllActiveGesuchsperioden()
 							.forEach(gesuchsperiode -> {

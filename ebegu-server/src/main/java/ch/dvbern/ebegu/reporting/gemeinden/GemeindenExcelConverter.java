@@ -53,6 +53,7 @@ public class GemeindenExcelConverter implements ExcelConverter {
 			ExcelMergerDTO gemeindeInfoRegisterGroup = excelMerger.createGroup(MergeFieldGemeinden.rowGemeindeInfoRepeat);
 			gemeindeInfoRegisterGroup.addValue(MergeFieldGemeinden.nameGemeinde, gemeindenDataRow.getNameGemeinde());
 			gemeindeInfoRegisterGroup.addValue(MergeFieldGemeinden.bfsNummer, gemeindenDataRow.getBfsNummer());
+			gemeindeInfoRegisterGroup.addValue(MergeFieldGemeinden.gutscheinausgabestelle, gemeindenDataRow.getGutscheinausgabestelle());
 			gemeindeInfoRegisterGroup.addValue(MergeFieldGemeinden.korrespondenzspracheGemeinde, gemeindenDataRow.getKorrespondenzspracheGemeinde());
 			gemeindeInfoRegisterGroup.addValue(MergeFieldGemeinden.angebotBG, gemeindenDataRow.getAngebotBG());
 			gemeindeInfoRegisterGroup.addValue(MergeFieldGemeinden.angebotTS, gemeindenDataRow.getAngebotTS());
