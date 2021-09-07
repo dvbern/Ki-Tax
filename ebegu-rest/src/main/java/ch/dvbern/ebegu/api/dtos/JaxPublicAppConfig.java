@@ -32,29 +32,30 @@ public class JaxPublicAppConfig {
 	private BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungFr;
 	private BigDecimal lastenausgleichTagesschulenAutoZweitpruefungDe;
 	private BigDecimal lastenausgleichTagesschulenAutoZweitpruefungFr;
+	private boolean multimandantAktiviert;
 
 
 	public JaxPublicAppConfig(
-		String currentNode,
-		boolean devmode,
-		String whitelist,
-		boolean dummyMode,
-		String sentryEnvName,
-		String backgroundColor,
-		boolean zahlungentestmode,
-		boolean personenSucheDisabled,
-		String kitaxHost,
-		String kitaxEndpoint,
-		String notverordnungDefaultEinreichefristOeffentlich,
-		String notverordnungDefaultEinreichefristPrivat,
-		boolean ferienbetreuungAktiv,
-		boolean lastenausgleichTagesschulenAktiv,
-		boolean gemeindeKennzahlenAktiv,
-		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDe,
-		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungFr,
-		BigDecimal lastenausgleichTagesschulenAutoZweitpruefungDe,
-		BigDecimal lastenausgleichTagesschulenAutoZweitpruefungFr
-	) {
+			String currentNode,
+			boolean devmode,
+			String whitelist,
+			boolean dummyMode,
+			String sentryEnvName,
+			String backgroundColor,
+			boolean zahlungentestmode,
+			boolean personenSucheDisabled,
+			String kitaxHost,
+			String kitaxEndpoint,
+			String notverordnungDefaultEinreichefristOeffentlich,
+			String notverordnungDefaultEinreichefristPrivat,
+			boolean ferienbetreuungAktiv,
+			boolean lastenausgleichTagesschulenAktiv,
+			boolean gemeindeKennzahlenAktiv,
+			BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDe,
+			BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungFr,
+			BigDecimal lastenausgleichTagesschulenAutoZweitpruefungDe,
+			BigDecimal lastenausgleichTagesschulenAutoZweitpruefungFr,
+			boolean multimandantAktiviert) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
 		this.whitelist = whitelist;
@@ -74,6 +75,7 @@ public class JaxPublicAppConfig {
 		this.lastenausgleichTagesschulenAnteilZweitpruefungFr = lastenausgleichTagesschulenAnteilZweitpruefungFr;
 		this.lastenausgleichTagesschulenAutoZweitpruefungDe = lastenausgleichTagesschulenAutoZweitpruefungDe;
 		this.lastenausgleichTagesschulenAutoZweitpruefungFr = lastenausgleichTagesschulenAutoZweitpruefungFr;
+		this.multimandantAktiviert = multimandantAktiviert;
 	}
 
 	public String getCurrentNode() {
@@ -226,5 +228,13 @@ public class JaxPublicAppConfig {
 
 	public void setGemeindeKennzahlenAktiv(boolean gemeindeKennzahlenAktiv) {
 		this.gemeindeKennzahlenAktiv = gemeindeKennzahlenAktiv;
+	}
+
+	public boolean isMultimandantAktiviert() {
+		return multimandantAktiviert;
+	}
+
+	public void setMultimandantAktiviert(boolean multimandantAktiviert) {
+		this.multimandantAktiviert = multimandantAktiviert;
 	}
 }

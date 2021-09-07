@@ -266,6 +266,9 @@ public class ApplicationPropertyResource {
 		ApplicationProperty lastenausgleichTagesschulenAutoZweitpruefungFr  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR)
 				.orElseThrow(() -> notFound);
+		ApplicationProperty multimandantAktiv  =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.MULTIMANDANT_AKTIV)
+				.orElseThrow(() -> notFound);
 
 		String nodeName = "";
 		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDeConverted;
@@ -302,7 +305,8 @@ public class ApplicationPropertyResource {
 			lastenausgleichTagesschulenAnteilZweitpruefungDeConverted,
 			lastenausgleichTagesschulenAnteilZweitpruefungFrConverted,
 			lastenausgleichTagesschulenAutoZweitpruefungDeConverted,
-			lastenausgleichTagesschulenAutoZweitpruefungFrConverted
+			lastenausgleichTagesschulenAutoZweitpruefungFrConverted,
+			multimandantAktiv.getValue().equals("true")
 		);
 		return Response.ok(pubAppConf).build();
 	}
