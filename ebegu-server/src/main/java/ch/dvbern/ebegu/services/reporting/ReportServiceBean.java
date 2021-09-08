@@ -2187,6 +2187,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Nonnull
+	@SuppressWarnings("PMD.NcssMethodCount")
 	private InstitutionenDataRow institutionToDataRow(
 		@Nonnull InstitutionStammdaten institutionStammdaten,
 		@Nonnull Locale locale
@@ -2202,6 +2203,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setTyp(angebotTyp);
 		if (institution.getTraegerschaft() != null) {
 			row.setTraegerschaft(institution.getTraegerschaft().getName());
+			row.setTraegerschaftEmail(institution.getTraegerschaft().getEmail());
+		}
+		row.setEmailBenachrichtigungenKiBon(institutionStammdaten.getSendMailWennOffenePendenzen());
+		if (institutionStammdaten.getErinnerungMail() != null) {
+			row.setEmailBenachrichtigungKiBonMail(institutionStammdaten.getErinnerungMail());
 		}
 		row.setName(institution.getName());
 		if (adresse.getOrganisation() != null) {
@@ -2223,22 +2229,40 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		if (!institutionStammdaten.getGueltigkeit().getGueltigBis().isEqual(Constants.END_OF_TIME)) {
 			row.setGueltigBis(institutionStammdaten.getGueltigkeit().getGueltigBis());
 		}
+		row.setGrundSchliessung(institutionStammdaten.getGrundSchliessung());
 
 		InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBG =
 			institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine();
 		if (institutionStammdatenBG != null) {
+			row.setFamilienportalEmail(institutionStammdatenBG.getAlternativeEmailFamilienportal());
 			if (institutionStammdatenBG.getOffenVon() != null && institutionStammdatenBG.getOffenBis() != null) {
-				row.setOeffnungszeiten(
-					institutionStammdatenBG.getOffenVon().toString()
-						+ " - "
-						+ institutionStammdatenBG.getOffenBis().toString()
-				);
+				row.setOeffnungszeitAb(institutionStammdatenBG.getOffenVon().toString());
+				row.setOeffnungszeitBis(institutionStammdatenBG.getOffenBis().toString());
 			}
+			row.setOeffnungVor630(institutionStammdatenBG.isFruehEroeffnung());
+			row.setOeffnungNach1830(institutionStammdatenBG.isSpaetEroeffnung());
+			row.setOeffnungAnWochenenden(institutionStammdatenBG.isWochenendeEroeffnung());
+			row.setUebernachtungMoeglich(institutionStammdatenBG.isUebernachtungMoeglich());
 			row.setOeffnungstage(institutionStammdatenBG.getOeffnungsTage().stream()
 				.sorted()
 				.map(tag -> tag.getDisplayName(TextStyle.FULL, locale))
 				.collect(Collectors.joining(", ")));
 			row.setOeffnungsAbweichungen(institutionStammdatenBG.getOeffnungsAbweichungen());
+			if (institutionStammdatenBG.getOeffnungstageProJahr() != null) {
+				row.setOeffnungstageProJahr(institutionStammdatenBG.getOeffnungstageProJahr());
+			}
+			if (institutionStammdatenBG.getAuslastungInstitutionen() != null) {
+				row.setAuslastung(institutionStammdatenBG.getAuslastungInstitutionen());
+			}
+			if (institutionStammdatenBG.getAnzahlKinderWarteliste() != null) {
+				row.setAnzahlKinderWarteliste(institutionStammdatenBG.getAnzahlKinderWarteliste());
+			}
+			if (institutionStammdatenBG.getDauerWarteliste() != null) {
+				row.setDauerWarteliste(institutionStammdatenBG.getDauerWarteliste());
+			}
+			if (institutionStammdatenBG.getSummePensumWarteliste() != null) {
+				row.setSummePensumWarteliste(institutionStammdatenBG.getSummePensumWarteliste());
+			}
 		}
 		row.setBaby(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieBaby());
 		row.setVorschulkind(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieVorschule());
@@ -2255,6 +2279,18 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				institutionStammdatenBG.getAnzahlPlaetzeFirmen().compareTo(BigDecimal.ZERO) != 0) {
 				row.setReserviertFuerFirmen(institutionStammdatenBG.getAnzahlPlaetzeFirmen());
 			}
+		}
+		Gemeinde gemeinde = null;
+		if (institutionStammdaten.getBetreuungsangebotTyp().isTagesschule() && institutionStammdaten.getInstitutionStammdatenTagesschule() != null) {
+			gemeinde = institutionStammdaten.getInstitutionStammdatenTagesschule().getGemeinde();
+		}
+
+		if (institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien() && institutionStammdaten.getInstitutionStammdatenFerieninsel() != null) {
+			gemeinde = institutionStammdaten.getInstitutionStammdatenFerieninsel().getGemeinde();
+		}
+		if (gemeinde != null) {
+			row.setGemeinde(gemeinde.getName());
+			row.setBfsGemeinde(gemeinde.getBfsNummer());
 		}
 		zuletztGeandertList.add(institutionStammdaten.getTimestampMutiert());
 		zuletztGeandertList.add(institution.getTimestampMutiert());
