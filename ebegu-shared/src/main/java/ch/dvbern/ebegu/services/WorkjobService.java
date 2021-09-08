@@ -75,6 +75,17 @@ public interface WorkjobService {
 	Workjob createNewReporting(
 		@Nonnull Workjob workJob,
 		@Nonnull ReportVorlage vorlage,
+		@Nullable LocalDate datumVon,
+		@Nullable LocalDate datumBis,
+		@Nullable BigDecimal kantonSelbstbehalt,
+		@Nullable String gesuchPeriodIdParam,
+		@Nonnull Locale locale
+	);
+
+	@Nonnull
+	Workjob createNewReporting(
+		@Nonnull Workjob workJob,
+		@Nonnull ReportVorlage vorlage,
 		boolean doSave,
 		@Nonnull BigDecimal betragProKind,
 		@Nonnull Locale locale

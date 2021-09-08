@@ -572,6 +572,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	public UploadFileInfo generateExcelReportKanton(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
+		@Nullable BigDecimal kantonSelbstbehalt,
 		@Nonnull Locale locale
 	) throws ExcelMergeException {
 
@@ -593,7 +594,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				sheet,
 				locale,
 				datumVon,
-				datumBis
+				datumBis,
+				kantonSelbstbehalt
 				);
 
 		final RowFiller rowFiller = fillAndMergeRows(reportVorlage, xsslSheet, reportData);

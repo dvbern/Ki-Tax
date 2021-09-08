@@ -206,7 +206,8 @@ export class StatistikViewController implements IController {
                 return;
             case TSStatistikParameterType.KANTON:
                 this.reportAsyncRS.getKantonReportExcel(this._statistikParameter.von.format(this.DATE_PARAM_FORMAT),
-                    this._statistikParameter.bis.format(this.DATE_PARAM_FORMAT))
+                    this._statistikParameter.bis.format(this.DATE_PARAM_FORMAT),
+                    this._statistikParameter.kantonSelbstbehalt)
                     .then((batchExecutionId: string) => {
                         this.informReportGenerationStarted(batchExecutionId);
                     });

@@ -335,6 +335,19 @@
                                                                class="error"></dv-error-messages>
                                         </dv-input-container>
                                     </div>
+                                    <div class="col-xs-3 ">
+                                        <dv-input-container class="form-group">
+                                            <label class="md-no-float"
+                                                   for="kantonSelbstbehalt"
+                                                   data-translate="LASTENAUSGLEICH_SELBSTBEHALT"></label>
+                                            <input aria-describedby="kantonSelbstbehalt-error"
+                                                   id="kantonSelbstbehalt" type="number" name="kantonSelbstbehalt"
+                                                   ng-model="vm.statistikParameter.kantonSelbstbehalt"
+                                                   class="input-element">
+                                            <dv-error-messages for="kanton.kantonSelbstbehalt.$error"
+                                                               class="error"></dv-error-messages>
+                                        </dv-input-container>
+                                    </div>
                                     <div class="col-xs-3 col-xs-offset-3 statistik-button">
                                         <dv-loading-button type="submit">
                                             <span class="uppercase" data-translate="GENERIEREN"></span>
