@@ -34,7 +34,8 @@
                                 id="gemeindeantragperiode"
                                 formControlName="periode"
                                 class="form-control">
-                            <option *ngFor="let periode of gesuchsperioden"
+                            <option value="" style="display: none;"></option>
+                            <option *ngFor="let periode of getGesuchsperiodenOptions()"
                                     [value]="periode.id">{{periode.gesuchsperiodeString}}</option>
                         </select>
                         <div class="dv-error-messages">
