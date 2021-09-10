@@ -234,8 +234,8 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         this.applyFilter();
     }
 
-    public filterVerantwortung(selectedVerantwortung: string): void {
-        this.filterPredicate.selectedVerantwortung = selectedVerantwortung;
+    public filterVerantwortung(empfaengerVerantwortung: string): void {
+        this.filterPredicate.empfaengerVerantwortung = empfaengerVerantwortung;
         this.applyFilter();
     }
 

@@ -24,5 +24,5 @@ export interface DVPosteingangFilter {
     subject?: string;
     sentDatum?: string;
     empfaenger?: string;
-    selectedVerantwortung?: string;
+    empfaengerVerantwortung?: string;
 }

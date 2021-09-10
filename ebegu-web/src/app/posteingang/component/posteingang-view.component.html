@@ -96,7 +96,7 @@
                             <i class="fa fa-graduation-cap"></i><span translate>POSTEINGANG_AN</span></mat-header-cell>
                         <mat-cell *matCellDef="let element">
                             <dv-benutzer-entry [benutzer]="element.empfaenger"
-                                               no-icons="true"></dv-benutzer-entry>
+                                               [noIcons]="true"></dv-benutzer-entry>
                         </mat-cell>
                     </ng-container>
 
@@ -107,7 +107,7 @@
                         </mat-header-cell>
                         <mat-cell *matCellDef="let element">
                             <dv-benutzer-entry [benutzer]="element.empfaenger"
-                                               no-name="true"></dv-benutzer-entry>
+                                               [noName]="true"></dv-benutzer-entry>
                         </mat-cell>
                     </ng-container>
 
@@ -211,7 +211,7 @@
                             <mat-form-field class="dv-table-mat-form-field" floatLabel="never">
                                 <div class="select-background"></div>
                                 <mat-label translate>ALLE</mat-label>
-                                <mat-select [value]="filterPredicate.selectedVerantwortung"
+                                <mat-select [value]="filterPredicate.empfaengerVerantwortung"
                                             (selectionChange)="filterVerantwortung($event.value)"
                                             panelClass="mat-select-panel1">
                                     <mat-option><span translate>ALLE</span></mat-option>
