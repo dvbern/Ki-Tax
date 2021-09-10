@@ -13,7 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Directive, EventEmitter, Input, Output} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
@@ -26,7 +25,6 @@ import {TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from '../../../models/enums/TSMitteilungTeilnehmerTyp';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
-import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSDossier} from '../../../models/TSDossier';
 import {TSFall} from '../../../models/TSFall';
 import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
@@ -34,38 +32,6 @@ import {TSMitteilung} from '../../../models/TSMitteilung';
 import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {PosteingangViewComponent} from './posteingang-view.component';
-
-@Directive({
-    selector: '[dvNewUserSelect]',
-})
-class MockNewUserSelectDirective {
-    @Input()
-    public showSelectionAll: boolean;
-
-    @Input()
-    public angular2: boolean;
-
-    @Input()
-    public inputId: string;
-
-    @Input()
-    public dvUsersearch: string;
-
-    @Input()
-    public initialAll: boolean;
-
-    @Input()
-    public selectedUser: TSBenutzerNoDetails;
-
-    @Input()
-    public sachbearbeiterGemeinde: boolean;
-
-    @Input()
-    public schulamt: boolean;
-
-    @Output()
-    public readonly userChanged: EventEmitter<{ user: TSBenutzerNoDetails }> = new EventEmitter<{ user: TSBenutzerNoDetails }>();
-}
 
 describe('PosteingangViewComponent', () => {
     let component: PosteingangViewComponent;
@@ -78,7 +44,7 @@ describe('PosteingangViewComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [PosteingangViewComponent, MockNewUserSelectDirective],
+            declarations: [PosteingangViewComponent],
             imports: [MaterialModule, TranslateModule.forRoot(), UpgradeModule, BrowserAnimationsModule],
             providers: [
                 {provide: MitteilungRS, useValue: mitteilungRSSpy},
