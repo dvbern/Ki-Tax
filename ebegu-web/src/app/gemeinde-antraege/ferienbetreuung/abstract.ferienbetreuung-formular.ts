@@ -61,6 +61,11 @@ export abstract class AbstractFerienbetreuungFormular {
 
     protected abstract setBasicValidation(): void;
 
+    public getGesuchsperiodeGueltigBisPlusOneMonth(): string {
+        const moment = this.container?.gesuchsperiode?.gueltigkeit.gueltigBis.clone();
+        return moment?.add(1, 'M').format('DD.MM.YYYY');
+    }
+
     protected removeAllValidators(): void {
         for (const key in this.form.controls) {
             if (this.form.get(key) === null) {
