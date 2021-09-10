@@ -296,13 +296,14 @@
                                 </span>
 
                                 <dv-radio-container name="keineKesbPlatzierung" class="input-element"
-                                                    ng-model="vm.getErweiterteBetreuungJA().keineKesbPlatzierung"
+                                                    ng-model="vm.isKesbPlatzierung"
                                                     aria-label="{{'KEINE_KESB_PLATZIERUNG'|translate}}"
                                                     ng-required="true"
                                                     aria-described-by="keineKesbPlatzierung-error"
                                                     dv-enable-element
                                                     dv-enable-allowed-roles="vm.allowedRoles"
-                                                    dv-enable-expression="vm.enableErweiterteBeduerfnisse()">
+                                                    dv-enable-expression="vm.enableErweiterteBeduerfnisse()"
+                                                    ng-change="vm.changeKeineKesbPlatzierung()">
                                 </dv-radio-container>
                                 <dv-error-messages input-id="keineKesbPlatzierung"
                                                    for="vm.form.keineKesbPlatzierung.$error"
