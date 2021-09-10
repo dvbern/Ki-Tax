@@ -14,11 +14,18 @@
  */
 
 import {NgModule} from '@angular/core';
+import {SharedModule} from '../shared/shared.module';
+import {PosteingangViewComponent} from './component/posteingang-view.component';
+import {PosteingangRoutingModule} from './posteingang.route';
 
 @NgModule({
-    providers: [
-        // use providedIn in the class instead
+    declarations: [
+        PosteingangViewComponent
     ],
+    imports: [
+        SharedModule,
+        PosteingangRoutingModule,
+    ]
 })
 export class NgPosteingangModule {
 }

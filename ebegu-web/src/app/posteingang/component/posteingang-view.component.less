@@ -15,7 +15,7 @@
 @import (reference) '../../../style/variables.less';
 @import (reference) '../../../style/mixins.less';
 
-.posteingang-view {
+.dv-table {
     padding-top: 3rem;
 
     &-resultcount {
@@ -30,16 +30,16 @@
     }
 
     .mitteilung-neu, .mitteilung-alt {
-        td:first-child {
+        mat-row:first-child {
             padding-left: 3rem;
         }
     }
 
     .mitteilung-neu {
-        td {
+        mat-row {
             font-weight: 900;
         }
-        td:first-child {
+        mat-row:first-child {
             &:before {
                 color: @primary;
                 content: '\f111';
@@ -59,5 +59,12 @@
 
     .closed-mitteilungen md-checkbox {
         margin-right: 0;
+    }
+
+    .bottom-pagination {
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        width: 100%;
     }
 }

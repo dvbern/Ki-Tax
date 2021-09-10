@@ -13,17 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
+import {NgModule} from '@angular/core';
+import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
+import {PosteingangViewComponent} from './component/posteingang-view.component';
 
-posteingangRun.$inject = ['RouterHelper'];
-
-export function posteingangRun(routerHelper: RouterHelper): void {
-    routerHelper.configureStates(ng1States);
-}
-
-const ng1States: Ng1StateDeclaration[] = [
+const states: NgHybridStateDeclaration[] = [
     {
         parent: 'app',
         abstract: true,
@@ -34,7 +29,19 @@ const ng1States: Ng1StateDeclaration[] = [
     },
     {
         name: 'posteingang.view',
-        template: '<posteingang-view flex="auto" class="overflow-scroll">',
         url: '/posteingang',
+        component: PosteingangViewComponent,
     },
 ];
+
+@NgModule({
+    imports: [
+        UIRouterUpgradeModule.forChild({states}),
+    ],
+    exports: [
+        UIRouterUpgradeModule,
+    ],
+})
+
+export class PosteingangRoutingModule {
+}

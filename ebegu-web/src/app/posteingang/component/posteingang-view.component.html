@@ -1,0 +1,262 @@
+<!--
+  ~ Ki-Tax: System for the management of external childcare subsidies
+  ~ Copyright (C) 2017 City of Bern Switzerland
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+<div class="dv-table">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-1">
+                <h3>{{'POSTEINGANG' | translate}}</h3>
+            </div>
+            <div *ngIf="!isSozialdienstOrInstitution()"
+                 class="col-md-2 text-right closed-mitteilungen dv-table-resultCombo">
+                <mat-checkbox [(ngModel)]="includeClosed" name="includeClosed" id="includeClosed"
+                              (ngModelChange)="clickedIncludeClosed()">
+                    {{'POSTEINGANG_INCLUDE_CLOSED' | translate}}
+                </mat-checkbox>
+                <h3 class="dv-table-resultcount">{{totalResultCount}}</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1 dv-table ebegu-table table-responsive table-striped">
+                <mat-table matSort
+                           [dataSource]="displayedCollection">
+                    <!-- Von -->
+                    <ng-container matColumnDef="sender">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header="sender">
+                            <span class="no-padding-left" translate>POSTEINGANG_VON</span>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element" class="ellipsis">
+                            <span [title]="element.sender.getFullName()">{{element.sender.getFullName()}}</span>
+                        </mat-cell>
+                    </ng-container>
+
+                    <!-- Gemeinde -->
+                    <ng-container matColumnDef="gemeinde">
+                        <mat-header-cell mat-sort-header="gemeinde" *matHeaderCellDef class="ellipsis">
+                            <span translate>POSTEINGANG_GEMEINDE</span></mat-header-cell>
+                        <mat-cell *matCellDef="let element" class="ellipsis">
+                            <span [title]="element.gemeinde">{{element.gemeinde}}</span>
+                        </mat-cell>
+                    </ng-container>
+
+                    <!-- Fall-Nummer -->
+                    <ng-container matColumnDef="fallNummer">
+                        <mat-header-cell mat-sort-header="fallNummer" *matHeaderCellDef class="ellipsis">
+                            <span translate>POSTEINGANG_FALL</span>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element" class="ellipsis">
+                            <span [title]="addZerosToFallNummer(element.dossier.fall.fallNummer)">{{addZerosToFallNummer(
+                                element.dossier.fall.fallNummer)}}</span>
+                        </mat-cell>
+                    </ng-container>
+
+                    <!-- Familie -->
+                    <ng-container *ngIf="!isSozialdienst()" matColumnDef="familienName">
+                        <mat-header-cell mat-sort-header="familienName" *matHeaderCellDef class="ellipsis">
+                            <span translate>POSTEINGANG_FAMILIE</span>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element" class="ellipsis">
+                            <span [title]="element.dossier.fall.besitzer?.getFullName()">{{element.dossier.fall.besitzer?.getFullName()}}</span>
+                        </mat-cell>
+                    </ng-container>
+
+                    <!-- Betreff -->
+                    <ng-container matColumnDef="subject">
+                        <mat-header-cell mat-sort-header="subject" *matHeaderCellDef class="ellipsis">
+                            <span translate>POSTEINGANG_BETREFF</span>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element" class="ellipsis">
+                            <span [title]="element.subject">{{element.subject}}</span></mat-cell>
+                    </ng-container>
+
+                    <!-- Datum -->
+                    <ng-container matColumnDef="sentDatum">
+                        <mat-header-cell mat-sort-header="sentDatum" *matHeaderCellDef>
+                            <span translate>POSTEINGANG_DATUM</span>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                    <span [title]="element.sentDatum.format('DD.MM.YYYY')">{{element.sentDatum.format(
+                        'DD.MM.YYYY')}}</span></mat-cell>
+                    </ng-container>
+
+                    <!-- An -->
+                    <ng-container *ngIf="!isSozialdienstOrInstitution()" matColumnDef="empfaenger">
+                        <mat-header-cell mat-sort-header="empfaenger" *matHeaderCellDef translate>
+                            <i class="fa fa-graduation-cap"></i><span translate>POSTEINGANG_AN</span></mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            <dv-benutzer-entry [benutzer]="element.empfaenger"
+                                               no-icons="true"></dv-benutzer-entry>
+                        </mat-cell>
+                    </ng-container>
+
+                    <!-- Amt -->
+                    <ng-container *ngIf="!isSozialdienstOrInstitution()" matColumnDef="empfaengerVerantwortung">
+                        <mat-header-cell mat-sort-header="empfaengerVerantwortung" *matHeaderCellDef translate>
+                            <i class="fa fa-graduation-cap"></i><span translate>POSTEINGANG_VERANTWORTUNG</span>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            <dv-benutzer-entry [benutzer]="element.empfaenger"
+                                               no-name="true"></dv-benutzer-entry>
+                        </mat-cell>
+                    </ng-container>
+
+                    <!-- Status -->
+                    <ng-container matColumnDef="mitteilungStatus">
+                        <mat-header-cell mat-sort-header="mitteilungStatus" *matHeaderCellDef>
+                            <span translate>POSTEINGANG_STATUS</span>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            <span [title]="element.mitteilungStatus | translate">{{element.mitteilungStatus | translate}}</span>
+                        </mat-cell>
+                    </ng-container>
+
+                    <!-- Von -->
+                    <ng-container matColumnDef="sender-filter">
+                        <mat-header-cell *matHeaderCellDef="let column">
+                            <mat-form-field class="dv-table-mat-form-field">
+                                <input [value]="filterPredicate.sender || null"
+                                       matInput
+                                       (keyup)="filterSender($event.target.value)">
+                            </mat-form-field>
+                        </mat-header-cell>
+                    </ng-container>
+
+                    <!-- Gemeinde -->
+                    <ng-container matColumnDef="gemeinde-filter">
+                        <mat-header-cell *matHeaderCellDef="let column">
+                            <mat-form-field class="dv-table-mat-form-field" floatLabel="never">
+                                <div class="select-background"></div>
+                                <mat-label translate>ALLE</mat-label>
+                                <mat-select [value]="filterPredicate.gemeinde"
+                                            (selectionChange)="filterGemeinde($event.value)"
+                                            panelClass="mat-select-panel1">
+                                    <mat-option><span translate>ALLE</span></mat-option>
+                                    <mat-option *ngFor="let gemeinde of gemeindenList"
+                                                [value]="gemeinde.name">{{gemeinde.name}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </mat-header-cell>
+                    </ng-container>
+                    <!-- Fall-Nummer -->
+                    <ng-container matColumnDef="fallNummer-filter">
+                        <mat-header-cell *matHeaderCellDef="let column">
+                            <mat-form-field class="dv-table-mat-form-field">
+                                <input [value]="filterPredicate.fallNummer || null"
+                                       matInput
+                                       (keyup)="filterFall($event.target.value)">
+                            </mat-form-field>
+                        </mat-header-cell>
+                    </ng-container>
+
+                    <!-- Familie -->
+                    <ng-container matColumnDef="familienName-filter">
+                        <mat-header-cell *matHeaderCellDef="let column">
+                            <mat-form-field class="dv-table-mat-form-field">
+                                <input [value]="filterPredicate.familienName || null"
+                                       matInput
+                                       (keyup)="filterFamilieName($event.target.value)">
+                            </mat-form-field>
+                        </mat-header-cell>
+                    </ng-container>
+
+                    <!-- Betreff -->
+                    <ng-container matColumnDef="subject-filter">
+                        <mat-header-cell *matHeaderCellDef="let column">
+                            <mat-form-field class="dv-table-mat-form-field">
+                                <input [value]="filterPredicate.subject || null"
+                                       matInput
+                                       (keyup)="filterSubject($event.target.value)">
+                            </mat-form-field>
+                        </mat-header-cell>
+                    </ng-container>
+
+                    <!-- Datum -->
+                    <ng-container matColumnDef="sentDatum-filter">
+                        <mat-header-cell *matHeaderCellDef="let column">
+                            <mat-form-field class="dv-table-mat-form-field">
+                                <input [value]="filterPredicate.sentDatum || null"
+                                       matInput
+                                       (keyup)="filterSentDatum($event.target.value)">
+                            </mat-form-field>
+                        </mat-header-cell>
+                    </ng-container>
+
+                    <!-- An -->
+                    <ng-container *ngIf="!isSozialdienstOrInstitution()" matColumnDef="empfaenger-filter" st-table="">
+                        <mat-header-cell *matHeaderCellDef="let column">
+                            <div dvNewUserSelect
+                                 [showSelectionAll]="true"
+                                 [angular2]="true"
+                                 [initialAll]="true"
+                                 (onUserChanged)="filterEmpfaenger($event.user)"></div>
+                        </mat-header-cell>
+                    </ng-container>
+
+                    <!-- Verantwortung -->
+                    <ng-container *ngIf="!isSozialdienstOrInstitution()"
+                                  matColumnDef="empfaengerVerantwortung-filter"
+                                  st-table="">
+                        <mat-header-cell *matHeaderCellDef="let column">
+                            <mat-form-field class="dv-table-mat-form-field" floatLabel="never">
+                                <div class="select-background"></div>
+                                <mat-label translate>ALLE</mat-label>
+                                <mat-select [value]="filterPredicate.selectedVerantwortung"
+                                            (selectionChange)="filterVerantwortung($event.value)"
+                                            panelClass="mat-select-panel1">
+                                    <mat-option><span translate>ALLE</span></mat-option>
+                                    <mat-option *ngFor="let verantwortung of getVerantwortungList()"
+                                                [value]="verantwortung">{{verantwortung | translate}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </mat-header-cell>
+                    </ng-container>
+
+                    <!-- Status -->
+                    <ng-container matColumnDef="mitteilungStatus-filter">
+                        <mat-header-cell *matHeaderCellDef="let column">
+                            <mat-form-field class="dv-table-mat-form-field" floatLabel="never">
+                                <div class="select-background"></div>
+                                <mat-label translate>ALLE</mat-label>
+                                <mat-select [value]="filterPredicate.mitteilungStatus"
+                                            (selectionChange)="filterMitteilungStatus($event.value)"
+                                            panelClass="mat-select-panel1">
+                                    <mat-option selected><span translate>ALLE</span></mat-option>
+                                    <mat-option *ngFor="let status of getMitteilungsStatus()"
+                                                [value]="status"><span translate>{{status}}</span></mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </mat-header-cell>
+                    </ng-container>
+
+                    <mat-header-row *matHeaderRowDef="allColumns"
+                                    class="dv-table-mat-header-row"></mat-header-row>
+                    <mat-header-row class="dv-table-mat-header-row"
+                                    *matHeaderRowDef="filterColumns"></mat-header-row>
+                    <mat-row *matRowDef="let element; columns: allColumns;"
+                             (click)="gotoMitteilung(element)"
+                             [class]="{'mitteilung-neu': ('NEU' === element.mitteilungStatus.toString()),'mitteilung-alt': ('NEU' !== element.mitteilungStatus.toString())}"></mat-row>
+                </mat-table>
+                <div class="bottom-pagination">
+                    <nav>
+                        <ul class="pagination">
+                            <li *ngFor="let index of paginationItems" [ngClass]="{'active': index - 1 === page}">
+                                <a (click)="handlePagination({pageIndex: index - 1, pageSize: 20})">{{index}}</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
