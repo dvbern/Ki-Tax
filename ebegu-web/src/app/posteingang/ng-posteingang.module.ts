@@ -25,7 +25,7 @@ import {PosteingangRoutingModule} from './posteingang.route';
     imports: [
         SharedModule,
         PosteingangRoutingModule,
-    ]
+    ],
 })
 export class NgPosteingangModule {
 }

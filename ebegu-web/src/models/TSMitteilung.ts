@@ -158,7 +158,6 @@ export class TSMitteilung extends TSAbstractMutableEntity {
         this._institution = value;
     }
 
-
     public get senderAsString(): string {
         let senderAsString: string;
         if (this.sender.currentBerechtigung.institution) {

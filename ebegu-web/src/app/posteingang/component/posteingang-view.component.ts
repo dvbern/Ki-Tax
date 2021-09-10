@@ -165,7 +165,8 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
 
         dataToLoad$.subscribe((result: TSMtteilungSearchresultDTO) => {
             this.setResult(result);
-            }
+            },
+            err => this.log.error(err),
         );
     }
 
