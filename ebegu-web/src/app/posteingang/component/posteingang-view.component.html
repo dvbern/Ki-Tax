@@ -29,8 +29,7 @@
         </div>
         <div class="row">
             <div class="col-md-10 col-md-offset-1 dv-table ebegu-table table-responsive table-striped">
-                <mat-table matSort
-                           [dataSource]="displayedCollection">
+                <mat-table [dataSource]="displayedCollection" matSort (matSortChange)="sortData($event)">
                     <!-- Von -->
                     <ng-container matColumnDef="sender">
                         <mat-header-cell *matHeaderCellDef mat-sort-header="sender">

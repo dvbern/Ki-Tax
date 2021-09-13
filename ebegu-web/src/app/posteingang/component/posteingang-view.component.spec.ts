@@ -17,7 +17,8 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {TranslateModule} from '@ngx-translate/core';
-import {StateService} from '@uirouter/core';
+import {TransitionService} from '@uirouter/angular';
+import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
@@ -31,6 +32,7 @@ import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresu
 import {TSMitteilung} from '../../../models/TSMitteilung';
 import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
 import {MaterialModule} from '../../shared/material.module';
+import {StateStoreService} from '../../shared/services/state-store.service';
 import {PosteingangViewComponent} from './posteingang-view.component';
 
 describe('PosteingangViewComponent', () => {
@@ -41,6 +43,12 @@ describe('PosteingangViewComponent', () => {
     const mitteilungRSSpy = jasmine.createSpyObj<MitteilungRS>(MitteilungRS.name, ['searchMitteilungen']);
     const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+    const transitionServiceSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name,
+        ['onStart']);
+    const stateStoreServiceSpy = jasmine.createSpyObj<StateStoreService>(StateStoreService.name,
+        ['has', 'get']);
+    const uiRouterGlobals = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
+        ['$current']);
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -51,6 +59,9 @@ describe('PosteingangViewComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: AuthServiceRS, useValue: authRSSpy},
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
+                {provide: TransitionService, useValue: transitionServiceSpy},
+                {provide: StateStoreService, useValue: stateStoreServiceSpy},
+                {provide: UIRouterGlobals, useValue: uiRouterGlobals},
             ],
         }).compileComponents();
         gemeindeRSSpy.getGemeindenForPrincipal$.and.returnValue(of([]));

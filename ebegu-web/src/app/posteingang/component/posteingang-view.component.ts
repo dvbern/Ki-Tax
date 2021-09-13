@@ -13,10 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {PageEvent} from '@angular/material/paginator';
+import {MatSort, MatSortHeader, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
-import {StateService} from '@uirouter/core';
+import {TransitionService} from '@uirouter/angular';
+import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {from, Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -34,6 +36,7 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
 import {DVPosteingangFilter} from '../../shared/interfaces/DVPosteingangFilter';
+import {StateStoreService} from '../../shared/services/state-store.service';
 
 @Component({
     selector: 'posteingang-view',
@@ -42,6 +45,8 @@ import {DVPosteingangFilter} from '../../shared/interfaces/DVPosteingangFilter';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewInit {
+    @ViewChild(MatSort) private readonly matSort: MatSort;
+
     private readonly log: Log = LogFactory.createLog('PosteingangViewComponent');
 
     private readonly unsubscribe$ = new Subject<void>();
@@ -92,20 +97,36 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
 
     public filterPredicate: DVPosteingangFilter = {};
 
+    // StateStore Properties
+    public initialFilter: DVPosteingangFilter;
+    public readonly stateStoreId: string = 'posteingangId';
+    private sortId: string;
+    private filterId: string;
+    private readonly sort: {
+        predicate?: string,
+        reverse?: boolean
+    } = {};
+
     public constructor(
         private readonly mitteilungRS: MitteilungRS,
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly gemeindeRS: GemeindeRS,
+        private readonly transitionService: TransitionService,
+        private readonly stateStore: StateStoreService,
+        private readonly uiRouterGlobals: UIRouterGlobals,
     ) {
     }
 
     public ngOnInit(): void {
         this.updateGemeindenList();
+        this.initStateStores();
+        this.initFilter();
     }
 
     public ngAfterViewInit(): void {
         this.displayedCollection = new MatTableDataSource<TSMitteilung>([]);
+        this.initSort();
         this.passFilterToServer();
     }
 
@@ -156,15 +177,16 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
             },
             search: {
                 predicateObject: this.filterPredicate,
-            }
+            },
+            sort: this.sort,
         };
         const dataToLoad$ = from(this.mitteilungRS.searchMitteilungen(body,
-            this.includeClosed)).pipe(map( (result: TSMtteilungSearchresultDTO) => {
-                return result;
+            this.includeClosed)).pipe(map((result: TSMtteilungSearchresultDTO) => {
+            return result;
         }));
 
         dataToLoad$.subscribe((result: TSMtteilungSearchresultDTO) => {
-            this.setResult(result);
+                this.setResult(result);
             },
             err => this.log.error(err),
         );
@@ -252,11 +274,51 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         this.passFilterToServer();
     }
 
+    public sortData(sortEvent: Sort): void {
+        this.sort.predicate = sortEvent.direction.length > 0 ? sortEvent.active : null;
+        this.sort.reverse = sortEvent.direction === 'asc';
+        this.passFilterToServer();
+    }
+
     private updatePagination(): void {
         this.paginationItems = [];
         for (let i = Math.max(1, this.page - 4); i <= Math.min(Math.ceil(this.totalItem / this.pageSize),
             this.page + 5); i++) {
             this.paginationItems.push(i);
+        }
+    }
+
+    private initFilter(): void {
+        this.filterPredicate = (this.filterId && this.stateStore.has(this.filterId)) ?
+            this.stateStore.get(this.filterId) :
+            {...this.initialFilter};
+    }
+
+    private initStateStores(): void {
+        this.sortId = `${this.stateStoreId}-sort`;
+        this.filterId = `${this.stateStoreId}-filter`;
+
+        this.transitionService.onStart({exiting: this.uiRouterGlobals.$current.name}, () => {
+            if (this.sort.predicate) {
+                this.stateStore.store(this.sortId, this.sort);
+            } else {
+                this.stateStore.delete(this.sortId);
+                this.stateStore.delete(this.filterId);
+            }
+
+            this.stateStore.store(this.filterId, this.filterPredicate);
+        });
+    }
+
+    private initSort(): void {
+        // tslint:disable-next-line:early-exit
+        if (this.stateStore.has(this.sortId)) {
+            const stored = this.stateStore.get(this.sortId) as { predicate?: string, reverse?: boolean };
+            this.sort.predicate = stored.predicate;
+            this.sort.reverse = stored.reverse;
+            this.matSort.active = stored.predicate;
+            this.matSort.direction = stored.reverse ? 'asc' : 'desc';
+            (this.matSort.sortables.get(stored.predicate) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
         }
     }
 }

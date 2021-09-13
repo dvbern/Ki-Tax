@@ -37,6 +37,39 @@ import {InstitutionRS} from '../service/institutionRS.rest';
 
 import {NewAntragListComponent} from './new-antrag-list.component';
 
+// We mock the user select directive to make the setup easier since these are unit tests
+@Directive({
+    selector: '[dvNewUserSelect]',
+})
+class MockNewUserSelectDirective {
+    @Input()
+    public showSelectionAll: boolean;
+
+    @Input()
+    public angular2: boolean;
+
+    @Input()
+    public inputId: string;
+
+    @Input()
+    public dvUsersearch: string;
+
+    @Input()
+    public initialAll: boolean;
+
+    @Input()
+    public selectedUser: TSBenutzerNoDetails;
+
+    @Input()
+    public sachbearbeiterGemeinde: boolean;
+
+    @Input()
+    public schulamt: boolean;
+
+    @Output()
+    public readonly userChanged: EventEmitter<{ user: TSBenutzerNoDetails }> = new EventEmitter<{ user: TSBenutzerNoDetails }>();
+}
+
 describe('NewAntragListComponent', () => {
     let component: NewAntragListComponent;
     let fixture: ComponentFixture<NewAntragListComponent>;
@@ -61,7 +94,7 @@ describe('NewAntragListComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [NewAntragListComponent],
+            declarations: [NewAntragListComponent, MockNewUserSelectDirective],
             imports: [MaterialModule, TranslateModule.forRoot(), UpgradeModule, BrowserAnimationsModule],
             providers: [
                 {provide: InstitutionRS, useValue: insitutionSpy},
