@@ -166,7 +166,7 @@ public class KantonExcelConverter implements ExcelConverter {
 		this.createCellWithFormula(targetRow, zahlStyle, 11, "=K"+ totalRow +"*$B$6");
 		this.fillXCellWithStyle(targetRow, basicStyle, 12, 16);
 		this.createCellWithFormula(targetRow, procentStyle, 17, "SUM(P10:P" + lastRow + ")");
-		this.createCellWithFormula(targetRow, zahlStyle, 18, "SUM(Q10:Q" + lastRow + ")");
+		this.createCellWithFormula(targetRow, zahlStyle, 18, "SUM(H10:Q" + lastRow + ")");
 		this.createCellWithFormula(targetRow, zahlStyle, 19, "SUM(R10:R" + lastRow + ")");
 		this.createCellWithFormula(targetRow, zahlStyle, 20,"SUM(S10:S" + lastRow + ")");
 		this.createCellWithFormula(targetRow, zahlStyle, 21, "SUM(T10:T" + lastRow + ")");
