@@ -72,6 +72,13 @@ public interface EbeguConfiguration {
 	String getHostname();
 
 	/**
+	 * Gibt die Hostdomain des Servers zurück.
+	 *
+	 * @return die Hostdomain oder {@code null}
+	 */
+	String getHostdomain();
+
+	/**
 	 * Gibt zurueck ob es moeglich sein soll mit den dummy useren einzulaggen
 	 *
 	 * @return true oder false

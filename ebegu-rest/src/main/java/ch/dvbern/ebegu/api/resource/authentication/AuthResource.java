@@ -22,7 +22,6 @@ import java.util.Base64;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -208,7 +207,7 @@ public class AuthResource {
 			JaxAuthAccessElementCookieData element = convertToJaxAuthAccessElement(access);
 			boolean cookieSecure = isCookieSecure();
 
-			String domain = AuthConstants.COOKIE_DOMAIN;
+			String domain = configuration.getHostdomain();
 
 			// Cookie to store auth_token, HTTP-Only Cookie --> Protection from XSS
 			NewCookie authCookie = new NewCookie(AuthConstants.COOKIE_AUTH_TOKEN, access.getAuthToken(),
@@ -298,7 +297,7 @@ public class AuthResource {
 
 	@Nonnull
 	private NewCookie expireCookie(@Nonnull String name, boolean secure, boolean httpOnly) {
-		return new NewCookie(name, "", AuthConstants.COOKIE_PATH, AuthConstants.COOKIE_DOMAIN, "", 0, secure, httpOnly);
+		return new NewCookie(name, "", AuthConstants.COOKIE_PATH, configuration.getHostdomain(), "", 0, secure, httpOnly);
 	}
 
 	/**
