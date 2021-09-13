@@ -14,12 +14,12 @@ export enum KiBonMandant {
     providedIn: 'root',
 })
 export class MandantService {
+    private readonly LOCAL_STORE_KEY = 'mandant';
+
     private _mandant$: BehaviorSubject<KiBonMandant> =
-        new BehaviorSubject<KiBonMandant>(this.getMandantFromLocalStorageOrHostname());
+        new BehaviorSubject<KiBonMandant>(this.getMandantFromLocalStorageOrHostname(this.LOCAL_STORE_KEY));
 
     private _multimandantActive$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
-
-    private readonly LOCAL_STORE_KEY = 'mandant';
 
     public constructor(
         private windowRef: WindowRef,
@@ -34,8 +34,8 @@ export class MandantService {
         return this._multimandantActive$.asObservable();
     }
 
-    private getMandantFromLocalStorageOrHostname(): KiBonMandant {
-        const localStorageMandant = localStorage.getItem(this.LOCAL_STORE_KEY);
+    private getMandantFromLocalStorageOrHostname(key: string): KiBonMandant {
+        const localStorageMandant = localStorage.getItem(key);
         return EbeguUtil.isNotNullOrUndefined(localStorageMandant) ?
             this.findMandant(localStorageMandant) :
             this.parseHostname();
@@ -43,7 +43,13 @@ export class MandantService {
 
     public parseHostname(): KiBonMandant {
         const hostParts = window.location.hostname.split('.');
-        return hostParts.length > 2 ? this.findMandant(hostParts[0]) : KiBonMandant.NONE;
+        for (const part of hostParts) {
+            const potentialMandant = this.findMandant(part);
+            if (potentialMandant !== KiBonMandant.NONE) {
+                return potentialMandant;
+            }
+        }
+        return KiBonMandant.NONE;
     }
 
     private findMandant(hostname: string): KiBonMandant {
