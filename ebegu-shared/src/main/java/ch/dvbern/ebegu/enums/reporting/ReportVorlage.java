@@ -161,6 +161,12 @@ public enum ReportVorlage {
 		ReportFileName.MAHLZEITENVERGUENSTIGUNG,
 		Constants.DATA,
 		MergeFieldMahlzeitenverguenstigung.class
+	),
+	VORLAGE_REPORT_FERIENBETREUUNG(
+		"/reporting/Ferienbetreuung.xlsx",
+		ReportFileName.FERIENBETREUUNG,
+		Constants.DATA,
+		MergeFieldFerienbetreuung.class
 	);
 
 	@Nonnull

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,28 +15,31 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+package ch.dvbern.ebegu.enums.reporting;
 
-public enum ReportFileName {
-	GESUCH_STICHTAG,
-	GESUCH_ZEITRAUM,
-	KANTON,
-	MITARBEITERINNEN,
-	BENUTZER,
-	ZAHLUNG_AUFTRAG,
-	ZAHLUNG_AUFTRAG_PERIODE,
-	GESUCHSTELLER_KINDER_BETREUUNG,
-	KINDER,
-	GESUCHSTELLER,
-	MASSENVERSAND,
-	INSTITUTIONEN,
-	VERRECHNUNG_KIBON,
-	LASTENAUSGLEICH_SELBSTBEHALT,
-	LASTENAUSGLEICH_BERECHNUNG,
-	KINDER_MIT_ZEMIS_NUMMER,
-	TAGESSCHULE_ANMELDUNGEN,
-	TAGESSCHULE_RECHNUNGSSTELLUNG,
-	NOTRECHT,
-	MAHLZEITENVERGUENSTIGUNG,
-	FERIENBETREUUNG
+import javax.annotation.Nonnull;
+
+import ch.dvbern.oss.lib.excelmerger.mergefields.MergeField;
+import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;
+
+/**
+ * Merger fuer Statistik fuer Benutzer
+ */
+public enum MergeFieldFerienbetreuung implements MergeFieldProvider {
+
+	;
+
+	@Nonnull
+	private final MergeField<?> mergeField;
+
+	<V> MergeFieldFerienbetreuung(@Nonnull MergeField<V> mergeField) {
+		this.mergeField = mergeField;
+	}
+
+	@Override
+	@Nonnull
+	public <V> MergeField<V> getMergeField() {
+		//noinspection unchecked
+		return (MergeField<V>) mergeField;
+	}
 }

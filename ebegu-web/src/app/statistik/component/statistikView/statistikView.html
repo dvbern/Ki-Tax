@@ -977,6 +977,27 @@
                         </dv-accordion-tab>
                     </div>
                 </div>
+                <div dv-show-element
+                     dv-show-allowed-roles="['SUPER_ADMIN', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
+                    <dv-accordion-tab tabid="ferienbetreuung">
+                        <tab-title>
+                            <span class="uppercase" data-translate="FERIENBETREUUNG_STATISTIK"></span>
+                        </tab-title>
+                        <tab-body>
+                            <form name="ferienbetreuung"
+                                  ng-submit="vm.generateStatistik(ferienbetreuung, vm.TSStatistikParameterType.FERIENBETREUUNG)"
+                                  novalidate>
+                                <div class="row">
+                                    <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
+                                        <dv-loading-button type="submit">
+                                            <span class="uppercase" data-translate="GENERIEREN"></span>
+                                        </dv-loading-button>
+                                    </div>
+                                </div>
+                            </form>
+                        </tab-body>
+                    </dv-accordion-tab>
+                </div>
             </dv-accordion>
         </div>
     </div>
