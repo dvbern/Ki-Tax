@@ -44,11 +44,10 @@ public final class AuthDataUtil {
 
 	public static Optional<JaxAuthAccessElementCookieData> getAuthAccessElement(HttpServletRequest request) {
 		Cookie loginInfoCookie = extractCookie(request.getCookies(), AuthConstants.COOKIE_PRINCIPAL);
-		Cookie loginInfoCookieSuperuser = extractCookie(request.getCookies(), AuthConstants.COOKIE_PRINCIPAL_SUPERUSER);
-		if (loginInfoCookie == null && loginInfoCookieSuperuser == null) {
+		if (loginInfoCookie == null) {
 			return Optional.empty();
 		}
-		String encodedPrincipalJson = StringUtils.trimToNull(loginInfoCookieSuperuser != null ? loginInfoCookieSuperuser.getValue() : loginInfoCookie.getValue());
+		String encodedPrincipalJson = StringUtils.trimToNull(loginInfoCookie.getValue());
 		if (StringUtils.isEmpty(encodedPrincipalJson)) {
 			return Optional.empty();
 		}
@@ -88,8 +87,7 @@ public final class AuthDataUtil {
 	@Nonnull
 	public static Optional<String> getAuthTokenFomCookie(HttpServletRequest request) {
 		Cookie authTokenCookie = extractCookie(request.getCookies(), AuthConstants.COOKIE_AUTH_TOKEN);
-		Cookie authTokenCookieSuperuser = extractCookie(request.getCookies(), AuthConstants.COOKIE_AUTH_TOKEN_SUPERUSER);
-		String authToken = authTokenCookieSuperuser != null ? authTokenCookieSuperuser.getValue() : authTokenCookie != null ? authTokenCookie.getValue() : null;
+		String authToken = authTokenCookie != null ? authTokenCookie.getValue() : null;
 		if (StringUtils.isEmpty(authToken)) {
 			return Optional.empty();
 		}
