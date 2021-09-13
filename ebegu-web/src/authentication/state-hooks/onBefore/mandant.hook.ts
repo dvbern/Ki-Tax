@@ -16,6 +16,7 @@
  */
 
 import {HookResult, StateService, Transition, TransitionService} from '@uirouter/core';
+import {combineLatest} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {KiBonMandant, MandantService} from '../../../app/shared/services/mandant.service';
@@ -56,28 +57,37 @@ function redirectToMandantSelection(
     transition: Transition,
 ): HookResult {
 
-    return mandantService.mandant$
-    .pipe(
-        take(1),
-        map(mandant => {
-            LOG.debug('checking mandant', mandant);
+    return combineLatest([
+        mandantService.mandant$.pipe(
+            take(1)
+        ),
+        mandantService.isMultimandantActive$()
+    ])
+        .pipe(
+            map(([mandant, isMultimandanActive]) => {
 
-            if (mandant === KiBonMandant.NONE) {
-
-                const path = transition.router.stateService.href(transition.to(), transition.params());
-                const localStorageMandant = localStorage.getItem('mandant');
-                if (EbeguUtil.isNotNullOrUndefined(localStorageMandant)) {
-                    mandantService.selectMandant(localStorageMandant, path);
+                if (!isMultimandanActive) {
+                    return  true;
                 }
 
-                console.log('redirecting to mandant selection');
+                LOG.debug('checking mandant', mandant);
+                if (mandant === KiBonMandant.NONE) {
 
-                return $state.target('mandant', {path});
-            }
+                    const path = transition.router.stateService.href(transition.to(), transition.params());
+                    const localStorageMandant = localStorage.getItem('mandant');
+                    if (EbeguUtil.isNotNullOrUndefined(localStorageMandant)) {
+                        mandantService.selectMandant(localStorageMandant, path);
+                    }
 
-            // continue the original transition
-            return true;
-        }),
-    )
-    .toPromise();
+                    console.log('redirecting to mandant selection');
+
+                    return $state.target('mandant', {path});
+                }
+
+                // continue the original transition
+                return true;
+            }),
+            take(1)
+        )
+        .toPromise();
 }

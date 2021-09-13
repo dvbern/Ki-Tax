@@ -65,7 +65,8 @@ describe('testdatenView', () => {
             personenSucheDisabled: false,
             sentryEnvName: '',
             whitelist: '',
-            zahlungentestmode: false
+            zahlungentestmode: false,
+            mulitmandantAktiv: false
         });
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
         gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);

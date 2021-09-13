@@ -4024,6 +4024,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.lastenausgleichTagesschulenAktiv = data.lastenausgleichTagesschulenAktiv;
         publicAppConfigTS.gemeindeKennzahlenAktiv = data.gemeindeKennzahlenAktiv;
         publicAppConfigTS.ferienbetreuungAktiv = data.ferienbetreuungAktiv;
+        publicAppConfigTS.mulitmandantAktiv = data.multimandantAktiviert;
         return publicAppConfigTS;
 
     }

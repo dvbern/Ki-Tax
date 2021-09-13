@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, Observable, ReplaySubject} from 'rxjs';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
 
 export enum KiBonMandant {
@@ -16,11 +17,21 @@ export class MandantService {
     private _mandant$: BehaviorSubject<KiBonMandant> =
         new BehaviorSubject<KiBonMandant>(this.getMandantFromLocalStorageOrHostname());
 
+    private _multimandantActive$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
+
     private readonly LOCAL_STORE_KEY = 'mandant';
 
     public constructor(
         private windowRef: WindowRef,
+        private readonly applicationPropertyService: ApplicationPropertyRS,
     ) {
+        this.applicationPropertyService.getPublicPropertiesCached().then(properties => {
+            this._multimandantActive$.next(properties.mulitmandantAktiv);
+        });
+    }
+
+    public isMultimandantActive$(): Observable<boolean> {
+        return this._multimandantActive$.asObservable();
     }
 
     private getMandantFromLocalStorageOrHostname(): KiBonMandant {
