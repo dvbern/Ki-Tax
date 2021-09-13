@@ -116,7 +116,7 @@
 
             <md-menu-divider></md-menu-divider>
 
-            <md-menu-item>
+            <md-menu-item ng-if="vm.mandantSwitchVisible">
                 <md-button ui-sref-active="active" ui-sref="mandant" aria-label="{{'MANDANT_SWITCH' | translate}}">
                     <a href="#" ng-click="$event.preventDefault();" data-translate="MANDANT_SWITCH" aria-hidden></a>
                 </md-button>
