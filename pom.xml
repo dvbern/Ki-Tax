@@ -63,7 +63,7 @@
         <version.iso20022>4.2.0</version.iso20022>
         <version.jakarata-xml>2.3.3</version.jakarata-xml>
         <version.jaxb-runtime>2.3.5</version.jaxb-runtime>
-		<version.junit.jupiter>5.7.0</version.junit.jupiter>
+		<version.junit.jupiter>5.7.2</version.junit.jupiter>
         <version.junit.platform>1.7.0</version.junit.platform>
         <ebegu-code-conventions.version>1.0.2</ebegu-code-conventions.version>
         <maven-pmd-plugin.version>3.6</maven-pmd-plugin.version>
@@ -477,7 +477,7 @@
             <dependency>
                 <groupId>ch.dvbern.kibon</groupId>
                 <artifactId>kibon-exchange-api-commons</artifactId>
-                <version>2.4.0-SNAPSHOT</version>
+                <version>3.0.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.kafka</groupId>
@@ -487,12 +487,12 @@
             <dependency>
                 <groupId>io.confluent</groupId>
                 <artifactId>kafka-avro-serializer</artifactId>
-                <version>5.5.1</version>
+                <version>5.5.5</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.avro</groupId>
                 <artifactId>avro</artifactId>
-                <version>1.10.0</version>
+                <version>1.10.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
