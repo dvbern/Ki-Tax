@@ -226,13 +226,20 @@ public class AuthResource {
 			NewCookie principalCookie = new NewCookie(isSuperAdmin ? AuthConstants.COOKIE_PRINCIPAL_SUPERUSER : AuthConstants.COOKIE_PRINCIPAL, encodeAuthAccessElement(element),
 				AuthConstants.COOKIE_PATH, domain, "principal",
 				AuthConstants.COOKIE_TIMEOUT_SECONDS, cookieSecure, false);
+			// This is temporary code. We set a cookie with the only, current mandant BE now so that we have the mandant
+			// set for as many current active users as possible when multimandant goes live.
+			// TODO: MANDANT-GO-LIVE: Replace this with the correct mandant of the Benutzer
+			NewCookie mandantCokie = new NewCookie(AuthConstants.COOKIE_MANDANT, "BE",
+				AuthConstants.COOKIE_PATH, domain, "mandant",
+					60 * 60 * 24 * 365 * 2, cookieSecure, false);
 
 			return Response.noContent()
 					.cookie(authCookie,
 							xsrfCookie,
 							principalCookie,
 							res.getCookies().get(isSuperAdmin ? AuthConstants.COOKIE_AUTH_TOKEN : AuthConstants.COOKIE_AUTH_TOKEN_SUPERUSER),
-							res.getCookies().get(isSuperAdmin ? AuthConstants.COOKIE_PRINCIPAL : AuthConstants.COOKIE_PRINCIPAL_SUPERUSER))
+							res.getCookies().get(isSuperAdmin ? AuthConstants.COOKIE_PRINCIPAL : AuthConstants.COOKIE_PRINCIPAL_SUPERUSER),
+							mandantCokie)
 					.build();
 		}
 

@@ -28,6 +28,7 @@ public interface AuthConstants {
 	String PARAM_XSRF_TOKEN = "X-XSRF-TOKEN";
 	String COOKIE_XSRF_TOKEN = "XSRF-TOKEN";
 	String X_FORWARDED_PROTO = "X-Forwarded-Proto";
+	String COOKIE_MANDANT = "mandant";
 	int COOKIE_TIMEOUT_SECONDS = 60 * 60 * 12; //aktuell 12h
 	/**
 	 * Path to locallogin page (relative to base path) that will be used if no login connector api is specified
