@@ -64,7 +64,7 @@ export class MandantService {
     public selectMandant(mandant: string, url: string): void {
         const parsedMandant = this.findMandant(mandant);
 
-        this.windowRef.nativeLocalStorage.setItem('mandant', parsedMandant);
+        this.windowRef.nativeLocalStorage.setItem(this.LOCAL_STORE_KEY, parsedMandant);
 
         const host = this.removeMandantFromCompleteHost();
 
