@@ -15,4 +15,4 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 alter table interne_pendenz modify column text varchar(4000) not null;
-alter table interne_pendenz_aud modify column text varchar(4000) not null;
+alter table interne_pendenz_aud modify column text varchar(4000);
