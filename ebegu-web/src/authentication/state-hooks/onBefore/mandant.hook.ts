@@ -76,6 +76,7 @@ function redirectToMandantSelection(
                     const localStorageMandant = localStorage.getItem('mandant');
                     if (EbeguUtil.isNotNullOrUndefined(localStorageMandant)) {
                         mandantService.selectMandant(localStorageMandant, path);
+                        return false;
                     }
 
                     console.log('redirecting to mandant selection');
