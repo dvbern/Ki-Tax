@@ -20,7 +20,6 @@ import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
 import {TSAdresseContainer} from '../../../../models/TSAdresseContainer';
 import {TSGemeinde} from '../../../../models/TSGemeinde';
 import {TSLand} from '../../../../models/types/TSLand';
-import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {AdresseRS} from '../../service/adresseRS.rest';
 import {ListResourceRS} from '../../service/listResourceRS.rest';
@@ -35,7 +34,6 @@ export class AdresseComponentConfig implements IComponentOptions {
         organisation: '<',
         showNichtInGemeinde: '<',
         showIfBisherNone: '<',
-        showUmzugText: '<',
     };
     public template = require('./dv-adresse.html');
     public controller = DvAdresseController;
@@ -55,7 +53,6 @@ export class DvAdresseController {
     public readonly TSRoleUtil = TSRoleUtil;
     public showNichtInGemeinde: boolean;
     public bisherLand: string;
-    public showUmzugText: boolean;
 
     public constructor(
         public readonly adresseRS: AdresseRS,
@@ -109,9 +106,5 @@ export class DvAdresseController {
             && this.gesuchModelManager.getGesuch()
             && isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
             && this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
-    }
-
-    public isUmzug(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.showUmzugText) && this.showUmzugText;
     }
 }

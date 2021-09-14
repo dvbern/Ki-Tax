@@ -23,8 +23,6 @@
     "ADRESSE_LAND": "Land",
     "ADRESSE_GEMEINDE": "Gemeinde",
     "ADRESSE_GUELTIGAB": "gültig ab",
-    "ADRESSE_UMZUG_GUELTIGAB": "Letzter ganzer Tag an der alten Adresse",
-    "ADRESSE_UMZUG_GUELTIGAB_INFO": "Bsp: Wenn Sie auf den 1. September umziehen, erfassen Sie den 31. August",
     "ADRESSE_GUELTIGBIS": "gültig bis",
     "DOWNLOAD_EXPORT_FILE": "Verfügung exportieren",
     "DOWNLOAD_EXPORT_FILE_LINK": "(kompatible Programme)",
