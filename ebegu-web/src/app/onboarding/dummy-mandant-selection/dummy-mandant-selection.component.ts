@@ -11,8 +11,8 @@ import {MandantService} from '../../shared/services/mandant.service';
 export class DummyMandantSelectionComponent {
 
     public constructor(
-        private mandantService: MandantService,
-        private routerGlobals: UIRouterGlobals
+        private readonly mandantService: MandantService,
+        private readonly routerGlobals: UIRouterGlobals
     ) {
     }
 

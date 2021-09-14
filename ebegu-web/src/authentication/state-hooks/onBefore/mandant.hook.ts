@@ -38,36 +38,35 @@ mandantCheck.$inject = ['$transitions', 'MandantService', '$state'];
 
 export function mandantCheck(
     $transitions: TransitionService,
-    mandantService: MandantService,
-    $state: StateService,
 ): void {
     // Register the "requires authentication" hook with the TransitionsService
     $transitions.onBefore({
             to: state => !state.name.includes('mandant'),
         },
-        transition => redirectToMandantSelection(mandantService, $state, transition),
+        redirectToMandantSelection,
         {priority: OnBeforePriorities.AUTHENTICATION});
 }
 
 // Function that returns a redirect for the current transition to the login state
 // if the user is not currently authenticated (according to the AuthService)
 function redirectToMandantSelection(
-    mandantService: MandantService,
-    $state: StateService,
     transition: Transition,
 ): HookResult {
 
+    const mandantService: MandantService = transition.injector().get('MandantService');
+    const $state: StateService = transition.injector().get('$state');
+
     return combineLatest([
         mandantService.mandant$.pipe(
-            take(1)
+            take(1),
         ),
-        mandantService.isMultimandantActive$()
+        mandantService.isMultimandantActive$(),
     ])
         .pipe(
             map(([mandant, isMultimandanActive]) => {
 
                 if (!isMultimandanActive) {
-                    return  true;
+                    return true;
                 }
 
                 LOG.debug('checking mandant', mandant);
@@ -87,7 +86,7 @@ function redirectToMandantSelection(
                 // continue the original transition
                 return true;
             }),
-            take(1)
+            take(1),
         )
         .toPromise();
 }
