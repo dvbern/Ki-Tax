@@ -2046,12 +2046,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return;
 		}
 
-		if (gemeindeKennzahlen.getStatus() == GemeindeKennzahlenStatus.IN_BEARBEITUNG_GEMEINDE &&
-			!principalBean.isCallerInAnyOfRole(getBgAndGemeindeRoles())) {
-			throwViolation(gemeindeKennzahlen);
+		if (principalBean.isCallerInAnyOfRole(getBgAndGemeindeRoles()) &&
+				principalBean.getBenutzer().extractGemeindenForUser().contains(gemeindeKennzahlen.getGemeinde())) {
+			return;
 		}
 
-		if (!principalBean.isCallerInAnyOfRole(UserRole.getMandantBgGemeindeRoles())) {
+		if (!principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles())) {
 			throwViolation(gemeindeKennzahlen);
 		}
 	}
@@ -2059,7 +2059,17 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	@Override
 	public void checkWriteAuthorization(
 			@Nonnull GemeindeKennzahlen gemeindeKennzahlen) {
-		checkReadAuthorization(gemeindeKennzahlen);
+		if(principalBean.isCallerInRole(SUPER_ADMIN)) {
+			return;
+		}
+		// Save and Abschliessen
+		if (principalBean.isCallerInAnyOfRole(getBgAndGemeindeRoles()) && gemeindeKennzahlen.isAntragAbgeschlossen()) {
+			throwViolation(gemeindeKennzahlen);
+		}
+		// Zurück an Gemeinde
+		if (principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles()) && !gemeindeKennzahlen.isAntragAbgeschlossen()) {
+			throwViolation(gemeindeKennzahlen);
+		}
 	}
 
 	private boolean isAllowedAdminOrSachbearbeiter(Sozialdienst sozialdienst) {
