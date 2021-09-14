@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, ReplaySubject} from 'rxjs';
-import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
 
@@ -16,13 +15,13 @@ export enum KiBonMandant {
 export class MandantService {
     private readonly LOCAL_STORE_KEY = 'mandant';
 
-    private _mandant$: BehaviorSubject<KiBonMandant> =
-        new BehaviorSubject<KiBonMandant>(this.getMandantFromLocalStorageOrHostname(this.LOCAL_STORE_KEY));
+    private readonly _mandant$: BehaviorSubject<KiBonMandant> =
+        new BehaviorSubject<KiBonMandant>(this.parseHostname());
 
-    private _multimandantActive$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
+    private readonly _multimandantActive$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
     public constructor(
-        private windowRef: WindowRef,
+        private readonly windowRef: WindowRef,
         private readonly applicationPropertyService: ApplicationPropertyRS,
     ) {
         this.applicationPropertyService.getPublicPropertiesCached().then(properties => {
@@ -32,13 +31,6 @@ export class MandantService {
 
     public isMultimandantActive$(): Observable<boolean> {
         return this._multimandantActive$.asObservable();
-    }
-
-    private getMandantFromLocalStorageOrHostname(key: string): KiBonMandant {
-        const localStorageMandant = localStorage.getItem(key);
-        return EbeguUtil.isNotNullOrUndefined(localStorageMandant) ?
-            this.findMandant(localStorageMandant) :
-            this.parseHostname();
     }
 
     public parseHostname(): KiBonMandant {
