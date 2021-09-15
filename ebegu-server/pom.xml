@@ -252,9 +252,9 @@
                             <!--            JAXB modul einfuegen-->
                             <!-- Runtime -->
                             <dependency>
-                                <groupId>javax.xml.bind</groupId>
-                                <artifactId>jaxb-api</artifactId>
-                                <version>${version.jaxb-api}</version>
+                                <groupId>jakarta.xml.bind</groupId>
+                                <artifactId>jakarta.xml.bind-api</artifactId>
+                                <version>${version.jakarata-xml}</version>
                             </dependency>
                             <dependency>
                                 <groupId>org.glassfish.jaxb</groupId>
