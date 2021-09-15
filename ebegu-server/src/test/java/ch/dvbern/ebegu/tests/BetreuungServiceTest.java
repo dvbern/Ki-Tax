@@ -262,7 +262,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 			null, null, mandant, persistence, null, null);
 		persistence.persist(empfaengerJA);
 
-		final Traegerschaft traegerschaft = persistence.persist(TestDataUtil.createDefaultTraegerschaft());
+		final Traegerschaft traegerschaft = persistence.persist(TestDataUtil.createDefaultTraegerschaft(mandant));
 		Benutzer empfaengerINST = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, "insti",
 			traegerschaft, null, mandant, persistence, null, null);
 		persistence.persist(empfaengerINST);

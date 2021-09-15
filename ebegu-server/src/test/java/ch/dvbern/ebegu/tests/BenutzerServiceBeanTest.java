@@ -163,6 +163,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void createAdminTraegerschaftByEmail() {
 		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft();
+		persistence.persist(traegerschaft.getMandant());
 		persistence.persist(traegerschaft);
 		final String adminMail = "traegerschaft@mailbucket.dvbern.ch";
 		final Benutzer adminTraegerschaft = benutzerService.createAdminTraegerschaftByEmail(adminMail, traegerschaft);
