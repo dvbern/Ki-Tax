@@ -2400,7 +2400,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setStammdatenKontaktpersonEmail(stammdaten.getStammdatenKontaktpersonEmail());
 
 		if(stammdaten.getAuszahlungsdaten() != null) {
-			row.setKontoInhaber(stammdaten.getAuszahlungsdaten().getKontoinhaber());
+			row.setKontoinhaber(stammdaten.getAuszahlungsdaten().getKontoinhaber());
 			row.setIban(stammdaten.getAuszahlungsdaten().getIban().getIban());
 			row.setKontoVermerk(stammdaten.getVermerkAuszahlung());
 

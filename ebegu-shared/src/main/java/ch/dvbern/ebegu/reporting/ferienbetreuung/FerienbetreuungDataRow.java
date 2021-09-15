@@ -47,7 +47,7 @@ public class FerienbetreuungDataRow {
 	private @Nullable String stammdatenKontaktpersonFunktion = null;
 	private @Nullable String stammdatenKontaktpersonTelefon = null;
 	private @Nullable String stammdatenKontaktpersonEmail = null;
-	private String kontoInhaber = null;
+	private String kontoinhaber = null;
 	private String kontoStrasse = null;
 	private @Nullable String kontoHausnummer = null;
 	private @Nullable String kontoZusatz = null;
@@ -256,12 +256,12 @@ public class FerienbetreuungDataRow {
 		this.stammdatenKontaktpersonEmail = stammdatenKontaktPersonMail;
 	}
 
-	public String getKontoInhaber() {
-		return kontoInhaber;
+	public String getKontoinhaber() {
+		return kontoinhaber;
 	}
 
-	public void setKontoInhaber(String kontoInhaber) {
-		this.kontoInhaber = kontoInhaber;
+	public void setKontoinhaber(String kontoinhaber) {
+		this.kontoinhaber = kontoinhaber;
 	}
 
 	public String getKontoStrasse() {

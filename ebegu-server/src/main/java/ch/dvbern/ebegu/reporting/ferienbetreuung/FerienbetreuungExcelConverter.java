@@ -65,7 +65,7 @@ public class FerienbetreuungExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.stammdatenKontaktpersonTelefon, dataRow.getStammdatenKontaktpersonTelefon());
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.stammdatenKontaktpersonEmail, dataRow.getStammdatenKontaktpersonEmail());
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.stammdatenKontaktpersonFunktion, dataRow.getStammdatenKontaktpersonFunktion());
-			excelRowGroup.addValue(MergeFieldFerienbetreuung.kontoInhaber, dataRow.getKontoInhaber());
+			excelRowGroup.addValue(MergeFieldFerienbetreuung.kontoInhaber, dataRow.getKontoinhaber());
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.kontoStrasse, dataRow.getKontoStrasse());
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.kontoHausnummer, dataRow.getKontoHausnummer());
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.kontoZusatz, dataRow.getKontoZusatz());
