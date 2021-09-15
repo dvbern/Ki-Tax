@@ -546,11 +546,18 @@ public final class TestDataUtil {
 		return traegerschaft;
 	}
 
+	public static Traegerschaft createDefaultTraegerschaft(Mandant mandant) {
+		Traegerschaft traegerschaft = new Traegerschaft();
+		traegerschaft.setName("Traegerschaft" + UUID.randomUUID().toString());
+		traegerschaft.setMandant(mandant);
+		return traegerschaft;
+	}
+
 	public static Institution createDefaultInstitution() {
 		Institution institution = new Institution();
 		institution.setName("Institution1");
 		institution.setMandant(createDefaultMandant());
-		institution.setTraegerschaft(createDefaultTraegerschaft());
+		institution.setTraegerschaft(createDefaultTraegerschaft(institution.getMandant()));
 		return institution;
 	}
 
@@ -776,6 +783,7 @@ public final class TestDataUtil {
 
 	private static void saveTraegerschaftIfNecessary(@Nonnull Persistence persistence, @Nullable Traegerschaft traegerschaft) {
 		if (traegerschaft != null) {
+			saveMandantIfNecessary(persistence, traegerschaft.getMandant());
 			Traegerschaft found = persistence.find(Traegerschaft.class, traegerschaft.getId());
 			if (found == null) {
 				persistEntity(persistence, traegerschaft);
@@ -1040,6 +1048,10 @@ public final class TestDataUtil {
 		return createGesuchsperiodeXXYY(2017, 2018);
 	}
 
+	public static Gesuchsperiode createGesuchsperiode1718(Mandant mandant) {
+		return createGesuchsperiodeXXYY(2017, 2018, mandant);
+	}
+
 	public static Gesuchsperiode createAndPersistGesuchsperiode1718(Persistence persistence) {
 		Gesuchsperiode gesuchsperiodeXXYY = createGesuchsperiodeXXYYAndPersist(2017, 2018, persistence);
 		return persistence.persist(gesuchsperiodeXXYY);
@@ -1073,6 +1085,16 @@ public final class TestDataUtil {
 		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
 		gesuchsperiode.setMandant(createDefaultMandant());
+		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(yearFrom, Month.AUGUST, 1), LocalDate.of(yearTo,
+			Month.JULY, 31)));
+		return gesuchsperiode;
+	}
+
+	@Nonnull
+	public static Gesuchsperiode createGesuchsperiodeXXYY(int yearFrom, int yearTo, Mandant mandant) {
+		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
+		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
+		gesuchsperiode.setMandant(mandant);
 		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(yearFrom, Month.AUGUST, 1), LocalDate.of(yearTo,
 			Month.JULY, 31)));
 		return gesuchsperiode;
@@ -2067,6 +2089,8 @@ public final class TestDataUtil {
 		Objects.requireNonNull(betreuung.getKind().getKindGS());
 		Objects.requireNonNull(betreuung.getKind().getKindGS().getPensumFachstelle());
 		Objects.requireNonNull(betreuung.getKind().getKindJA().getPensumFachstelle());
+		saveMandantIfNecessary(persistence, betreuung.getKind().getKindGS().getPensumFachstelle().getFachstelle().getMandant());
+		saveMandantIfNecessary(persistence, betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle().getMandant());
 		persistence.persist(betreuung.getKind().getKindGS().getPensumFachstelle().getFachstelle());
 		persistence.persist(betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle());
 
