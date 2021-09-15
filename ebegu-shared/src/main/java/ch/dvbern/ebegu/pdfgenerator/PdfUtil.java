@@ -67,13 +67,13 @@ public final class PdfUtil {
 
 	// Muss vor den FontFactory.getFont aufrufen definiert werden
 	static {
-		FontFactory.register("/font/LiberationSans-Regular.ttf", "LiberationSans-Regular");
-		FontFactory.register("/font/LiberationSans-Bold.ttf", "LiberationSans-Bold");
+		FontFactory.register("/font/OpenSans-Light.ttf", "OpenSans-Light");
+		FontFactory.register("/font/OpenSans-SemiBold.ttf", "OpenSans-Bold");
 		FontFactory.register("/font/fontawesome-webfont.ttf", "fontAwesome ");
 	}
 
-	public static final String FONT_FACE_LIBERATION_SANS = "LiberationSans-Regular";
-	public static final String FONT_FACE_LIBERATION_SANS_BOLD = "LiberationSans-Bold";
+	public static final String FONT_FACE_OPEN_SANS = "OpenSans-Light";
+	public static final String FONT_FACE_OPEN_SANS_BOLD = "OpenSans-Bold";
 	public static final String FONT_FACE_FONT_AWESOME = "fontAwesome";
 	public static final String FONT_FACE_PROXIMA_NOVA_BOLD = "Proxima Nova Semibold";
 
@@ -82,15 +82,15 @@ public final class PdfUtil {
 	public static final float FONT_SIZE_H1 = 14.0f;
 	public static final float FONT_SIZE_H2 = 12.0f;
 
-	public static final Font DEFAULT_FONT = FontFactory.getFont(FONT_FACE_LIBERATION_SANS, IDENTITY_H, EMBEDDED,
+	public static final Font DEFAULT_FONT = FontFactory.getFont(FONT_FACE_OPEN_SANS, IDENTITY_H, EMBEDDED,
 		FONT_SIZE, Font.NORMAL, Color.BLACK);
-	public static final Font DEFAULT_FONT_BOLD = FontFactory.getFont(FONT_FACE_LIBERATION_SANS_BOLD, IDENTITY_H, EMBEDDED,
+	public static final Font DEFAULT_FONT_BOLD = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, IDENTITY_H, EMBEDDED,
 		FONT_SIZE, Font.NORMAL, Color.BLACK);
-	public static final Font FONT_TITLE = FontFactory.getFont(FONT_FACE_LIBERATION_SANS_BOLD, IDENTITY_H, EMBEDDED,
+	public static final Font FONT_TITLE = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, IDENTITY_H, EMBEDDED,
 		FONT_SIZE_H1, Font.NORMAL, Color.BLACK);
-	public static final Font FONT_H1 = FontFactory.getFont(FONT_FACE_LIBERATION_SANS_BOLD, IDENTITY_H, EMBEDDED,
+	public static final Font FONT_H1 = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, IDENTITY_H, EMBEDDED,
 		FONT_SIZE_H1, Font.NORMAL, Color.BLACK);
-	public static final Font FONT_H2 = FontFactory.getFont(FONT_FACE_LIBERATION_SANS_BOLD, IDENTITY_H, EMBEDDED,
+	public static final Font FONT_H2 = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, IDENTITY_H, EMBEDDED,
 		FONT_SIZE_H2, Font.NORMAL, Color.BLACK);
 	public static final Font FONT_AWESOME = FontFactory.getFont(FONT_FACE_FONT_AWESOME, IDENTITY_H, EMBEDDED,
 		FONT_SIZE, Font.NORMAL, Color.BLACK);
