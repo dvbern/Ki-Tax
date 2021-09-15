@@ -474,10 +474,11 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
     public getColumnsAttributeName(): string[] {
         const allColumnNames = this.tableColumns?.map(column => column.attributeName);
         allColumnNames.splice(0, 0, 'datumFaellig');
-        allColumnNames.splice(3, 0, `zahlungPain`, 'zahlungPainExcel');
-        allColumnNames.splice(5, 0, `beschrieb`);
-        allColumnNames.splice(6, 0, `betragTotalAuftrag`);
+        allColumnNames.splice(3, 0,  'zahlungPainExcel');
+        allColumnNames.splice(4, 0, `beschrieb`);
+        allColumnNames.splice(5, 0, `betragTotalAuftrag`);
         if (this.principal?.hasOneOfRoles(TSRoleUtil.getAdministratorBgGemeindeRoles())) {
+            allColumnNames.splice(3, 0, `zahlungPain`);
             allColumnNames.push('editSave');
             allColumnNames.push('ausloesen');
         }
