@@ -2063,13 +2063,15 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return;
 		}
 		// Save and Abschliessen
-		if (principalBean.isCallerInAnyOfRole(getBgAndGemeindeRoles()) && gemeindeKennzahlen.isAntragAbgeschlossen()) {
-			throwViolation(gemeindeKennzahlen);
+		if (principalBean.isCallerInAnyOfRole(getBgAndGemeindeRoles()) && !gemeindeKennzahlen.isAntragAbgeschlossen()) {
+			return;
 		}
 		// Zurück an Gemeinde
-		if (principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles()) && !gemeindeKennzahlen.isAntragAbgeschlossen()) {
-			throwViolation(gemeindeKennzahlen);
+		if (principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles()) && gemeindeKennzahlen.isAntragAbgeschlossen()) {
+			return;
 		}
+
+		throwViolation(gemeindeKennzahlen);
 	}
 
 	private boolean isAllowedAdminOrSachbearbeiter(Sozialdienst sozialdienst) {
