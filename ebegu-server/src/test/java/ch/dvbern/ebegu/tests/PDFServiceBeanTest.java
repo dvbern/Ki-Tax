@@ -63,7 +63,6 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.parser.PdfTextExtractor;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.needle4j.annotation.InjectIntoMany;
@@ -183,7 +182,6 @@ public class PDFServiceBeanTest {
 		assertTextInPdf(pdfTextExtractor, 1, "Jugendamt", "Zustelladresse ist nicht Jugendamt");
 	}
 
-	@Ignore // Aktuell haben wir nur eine Adresse auf der Gemeinde, die immer "Jugendamt" ist. Spaeter kommt dann auch eine Schulamt-Adresse dazu
 	@Test
 	public void testGenerateFreigabequittungSchulamt() throws Exception {
 
@@ -213,7 +211,6 @@ public class PDFServiceBeanTest {
 
 	}
 
-	@Ignore // Aktuell haben wir nur eine Adresse auf der Gemeinde, die immer "Jugendamt" ist. Spaeter kommt dann auch eine Schulamt-Adresse dazu
 	@Test
 	public void testPrintErsteMahnungSinglePageSchulamt() throws Exception {
 
@@ -293,7 +290,6 @@ public class PDFServiceBeanTest {
 		pdfRreader.close();
 	}
 
-	@Ignore // Aktuell haben wir nur eine Adresse auf der Gemeinde, die immer "Jugendamt" ist. Spaeter kommt dann auch eine Schulamt-Adresse dazu
 	@Test
 	public void testPrintZweiteMahnungSinglePageSchulamt() throws Exception {
 
