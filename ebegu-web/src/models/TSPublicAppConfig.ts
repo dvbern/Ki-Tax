@@ -22,6 +22,9 @@ export class TSPublicAppConfig {
     public dummyMode: boolean;
     public sentryEnvName: string;
     public backgroundColor: string = '#FFFFFF';
+    public primaryColor: string;
+    public primaryColorDark: string;
+    public primaryColorLight: string;
     public zahlungentestmode: boolean;
     public personenSucheDisabled: boolean;
     public kitaxHost: string;

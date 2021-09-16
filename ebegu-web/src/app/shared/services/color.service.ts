@@ -33,16 +33,16 @@ export class ColorService {
         document.documentElement.style.setProperty(cssVariable, color);
     }
 
+    private static changeColors(config: TSPublicAppConfig): void {
+        ColorService.changeColor(config.primaryColor, '--primary-color');
+        ColorService.changeColor(config.primaryColorDark, '--primary-color-dark');
+        ColorService.changeColor(config.primaryColorLight, '--primary-color-light');
+    }
+
     public registerColorChangeForMandant(): void {
         this.applicationPropertyRS.getPublicPropertiesCached()
             .then(config => {
-                this.changeColors(config);
+                ColorService.changeColors(config);
             });
-    }
-
-    private changeColors(config: TSPublicAppConfig): void {
-        ColorService.changeColor('#00466f', '--primary-color');
-        ColorService.changeColor('#00466f', '--primary-color-dark');
-        ColorService.changeColor('#00466f', '--primary-color-light');
     }
 }

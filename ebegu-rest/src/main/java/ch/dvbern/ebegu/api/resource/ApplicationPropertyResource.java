@@ -266,6 +266,15 @@ public class ApplicationPropertyResource {
 		ApplicationProperty lastenausgleichTagesschulenAutoZweitpruefungFr  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR)
 				.orElseThrow(() -> notFound);
+		ApplicationProperty primaryColor  =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR)
+				.orElseThrow(() -> notFound);
+		ApplicationProperty primaryColorDark  =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR_DARK)
+				.orElseThrow(() -> notFound);
+		ApplicationProperty primaryColorLight  =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR_LIGHT)
+				.orElseThrow(() -> notFound);
 
 		String nodeName = "";
 		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDeConverted;
@@ -302,7 +311,10 @@ public class ApplicationPropertyResource {
 			lastenausgleichTagesschulenAnteilZweitpruefungDeConverted,
 			lastenausgleichTagesschulenAnteilZweitpruefungFrConverted,
 			lastenausgleichTagesschulenAutoZweitpruefungDeConverted,
-			lastenausgleichTagesschulenAutoZweitpruefungFrConverted
+			lastenausgleichTagesschulenAutoZweitpruefungFrConverted,
+			primaryColor.getValue(),
+			primaryColorDark.getValue(),
+			primaryColorLight.getValue()
 		);
 		return Response.ok(pubAppConf).build();
 	}
