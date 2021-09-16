@@ -127,7 +127,11 @@ export class GemeindeAntraegeComponent implements OnInit {
         });
         this.loadAntragList();
         this.loadGemeinden();
-        this.gesuchsperiodenService.getAllActiveGesuchsperioden().then(result => this.gesuchsperioden = result);
+        this.gesuchsperiodenService.getAllActiveGesuchsperioden().then(result => {
+            this.gesuchsperioden = result;
+            // init filtered GS for Ferienbetreuungen
+            this.updateGesuchsperioden();
+        });
         this.initAntragTypes();
         this.checkDeletePossible$();
     }
