@@ -79,6 +79,11 @@ public class KantonExcelConverter implements ExcelConverter {
 
 		ExcelMerger.mergeData(sheet, mergeFields, excelMergerDTO);
 
+		if (kantonSelbstbehalt == null) {
+			sheet.getRow(5).setZeroHeight(true);
+			sheet.setColumnHidden(11, true);
+		}
+
 		return sheet;
 	}
 
