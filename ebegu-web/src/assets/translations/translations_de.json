@@ -1692,6 +1692,7 @@
     "UPLOAD_FILETYPES_WHITELIST": "Dateitypen-Whitelist",
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH": "Notverordnung default Einreichefrist öffentlich",
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT": "Notverordnung default Einreichefrist privat",
+    "KANTON_NOTVERORDNUNG_PHASE_2_AKTIV": "Notverordnung Phase 2 aktiv",
     "SEARCH_FOR_NAME": "Suche nach Name",
     "SEARCH_FOR_VALUE": "Suche Nach Text",
     "CHANGE_DEUTSCH": "auf Deutsch wechseln",

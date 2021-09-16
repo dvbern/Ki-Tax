@@ -1692,6 +1692,7 @@
     "UPLOAD_FILETYPES_WHITELIST": "Types de fichier-liste blanche",
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH": "Délais de soumission publique par défault selon l'ordonnance cantonale de nécessité",
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT": "Délais de soumission privé par défault selon l'ordonnance cantonale de nécessité",
+    "KANTON_NOTVERORDNUNG_PHASE_2_AKTIV": "Notverordnung Phase 2 aktiv",
     "SEARCH_FOR_NAME": "Recherche par nom",
     "SEARCH_FOR_VALUE": "Recherche par texte",
     "CHANGE_DEUTSCH": "auf Deutsch wechseln",
