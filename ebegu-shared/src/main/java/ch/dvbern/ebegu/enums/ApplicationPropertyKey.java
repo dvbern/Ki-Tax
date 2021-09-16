@@ -123,4 +123,19 @@ public enum ApplicationPropertyKey {
 	 */
 	LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR,
 
+	/**
+	 * Legt die Primary Color fest
+	 */
+	PRIMARY_COLOR,
+
+	/**
+	 * Legt die dunkle Primary Color fest
+	 */
+	PRIMARY_COLOR_DARK,
+
+	/**
+	 * Legt die helle Primary Color fest
+	 */
+	PRIMARY_COLOR_LIGHT,
+
 }
