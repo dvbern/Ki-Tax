@@ -3,7 +3,6 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {TSBetreuungMonitoring} from '../../../models/TSBetreuungMonitoring';
-import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {BetreuungMonitoringRS} from '../../service/betreuungMonitoringRS.rest';
 
 @Component({

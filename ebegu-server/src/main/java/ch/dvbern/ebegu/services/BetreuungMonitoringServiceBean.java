@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.BetreuungMonitoring;
 import ch.dvbern.ebegu.entities.BetreuungMonitoring_;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.services.util.SearchUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang3.StringUtils;
 
@@ -57,22 +58,23 @@ public class BetreuungMonitoringServiceBean extends AbstractBaseService implemen
 		final CriteriaQuery<BetreuungMonitoring> query = cb.createQuery(BetreuungMonitoring.class);
 		Root<BetreuungMonitoring> root = query.from(BetreuungMonitoring.class);
 		List<Predicate> predicates = new ArrayList<>();
-		if(StringUtils.isEmpty(refNummer)) {
+		if(!StringUtils.isEmpty(refNummer)) {
 			Predicate refNummerPredicate = cb.equal(root.get(BetreuungMonitoring_.refNummer), refNummer);
 			predicates.add(refNummerPredicate);
 		}
-		if(StringUtils.isEmpty(benutzer)) {
-			Predicate benutzendePredicate = cb.like(root.get(BetreuungMonitoring_.benutzer), benutzer);
+		if(!StringUtils.isEmpty(benutzer)) {
+			Predicate benutzendePredicate = cb.like(root.get(BetreuungMonitoring_.benutzer),
+				SearchUtil.withWildcards(benutzer));
 			predicates.add(benutzendePredicate);
 		}
-		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 		if (predicates.size() > 0) {
+			query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 			return persistence.getEntityManager().createQuery(query).getResultList();
 		}
-		else {
-			return persistence.getEntityManager().createQuery(query).setMaxResults(200).getResultList();
-		}
+
+		return persistence.getEntityManager().createQuery(query).setMaxResults(200).getResultList();
+
 	}
 
 	@Override

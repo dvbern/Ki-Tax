@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -45,9 +45,14 @@ export class BetreuungMonitoringRS {
         refNummer: string,
         benutzer: string,
     ): Observable<TSBetreuungMonitoring[]> {
-        return this.$http.get<any[]>(`${this.serviceURL}/${EbeguUtil.isNotNullOrUndefined(refNummer) ?
-            refNummer : ''}/${EbeguUtil.isNotNullOrUndefined(benutzer) ? benutzer : ''}`)
-            .pipe(map(response => {
+        let params = new HttpParams();
+        params = params.append('refNummer', EbeguUtil.isNotNullOrUndefined(refNummer) ? refNummer : '');
+        params = params.append('benutzer', EbeguUtil.isNotNullOrUndefined(benutzer) ? benutzer : '');
+
+        return this.$http.get<any[]>(`${this.serviceURL}`,
+            {
+                params,
+            }).pipe(map(response => {
                 return this.ebeguRestUtil.parseTSBetreuungMonitoringList(response);
             }));
     }

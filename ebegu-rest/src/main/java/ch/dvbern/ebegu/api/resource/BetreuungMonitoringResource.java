@@ -26,12 +26,11 @@ import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
@@ -53,13 +52,12 @@ public class BetreuungMonitoringResource {
 
 	@Nonnull
 	@GET
-	@Path("/{refnummer}/{benutzer}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(SUPER_ADMIN)
 	public List<JaxBetreuungMonitoring> getAllBetreuungMonitoringInfosBeiCriteria(
-		@Nullable @PathParam("refnummer") String referenzNummer,
-		@Nullable @PathParam("benutzer") String benutzer
+		@QueryParam("refNummer") @Nullable String referenzNummer,
+		@QueryParam("benutzer") @Nullable String benutzer
 		) {
 		return betreuungMonitoringService.getAllBetreuungMonitoringBeiCriteria(referenzNummer, benutzer).stream()
 			.map(betreuungMonitoring -> converter.betreuungMonitoringToJax(betreuungMonitoring))
