@@ -13,16 +13,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IController, IComponentOptions, IAugmentedJQuery} from 'angular';
+import {IAugmentedJQuery, IComponentOptions, IController} from 'angular';
 import {ApplicationPropertyRS} from './core/rest-services/applicationPropertyRS.rest';
+import {ColorService} from './shared/services/color.service';
 
 export class AppAngularjsComponent implements IController {
 
-    public static $inject: string[] = ['$element', 'ApplicationPropertyRS'];
+    public static $inject: string[] = ['$element', 'ApplicationPropertyRS', 'ColorService'];
 
     public constructor(
         private readonly $element: IAugmentedJQuery,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly colorService: ColorService,
     ) {
     }
 
@@ -34,6 +36,7 @@ export class AppAngularjsComponent implements IController {
                 this.$element.find('.environment')
                     .css('display', response.devmode ? 'inline' : 'none');
             });
+        this.colorService.registerColorChangeForMandant();
     }
 }
 
