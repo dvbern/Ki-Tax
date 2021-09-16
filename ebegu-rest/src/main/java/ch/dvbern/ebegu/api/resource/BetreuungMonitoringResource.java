@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -52,29 +53,17 @@ public class BetreuungMonitoringResource {
 	@Inject
 	private JaxBConverter converter;
 
-	@ApiOperation(value = "Find and return a list of all betreuung monitoring entries. "
-		, responseContainer = "List", response = JaxInstitution.class)
 	@Nonnull
 	@GET
-	@Path("/last")
+	@Path("/{refnummer}/{benutzer}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(SUPER_ADMIN)
-	public List<JaxBetreuungMonitoring> getAllBetreuungMonitoringInfos() { return betreuungMonitoringService.getAllBetreuungMonitoringInfos().stream()
-			.map(betreuungMonitoring -> converter.betreuungMonitoringToJax(betreuungMonitoring))
-			.collect(Collectors.toList());
-	}
-
-	@Nonnull
-	@GET
-	@Path("/{refnummer}")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed(SUPER_ADMIN)
-	public List<JaxBetreuungMonitoring> getAllBetreuungMonitoringInfosBeiReferenzNummer(
-		@Nonnull @NotNull @PathParam("refnummer") String referenzNummer
+	public List<JaxBetreuungMonitoring> getAllBetreuungMonitoringInfosBeiCriteria(
+		@Nullable @PathParam("refnummer") String referenzNummer,
+		@Nullable @PathParam("benutzer") String benutzer
 		) {
-		return betreuungMonitoringService.getAllBetreuungMonitoringFuerRefNummer(referenzNummer).stream()
+		return betreuungMonitoringService.getAllBetreuungMonitoringBeiCriteria(referenzNummer, benutzer).stream()
 			.map(betreuungMonitoring -> converter.betreuungMonitoringToJax(betreuungMonitoring))
 			.collect(Collectors.toList());
 	}

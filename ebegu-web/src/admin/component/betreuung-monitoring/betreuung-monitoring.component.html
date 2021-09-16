@@ -28,12 +28,20 @@
             <input class="filter"
                    matInput
                    type="text"
-                   (keyup)="doFilter($event.target.value)"
+                   (keyup)="doFilterRefnummer($event.target.value)"
                    (blur)="validateRefNummber($event.target.value)"
                    placeholder="{{'REFNUMMER_EINGEBEN' | translate}}">
             <mat-error *ngIf="refNummerTooShort"
                        translate>ERROR_REFERENZNUMMER_NICHT_VOLLSTAENDIG
             </mat-error>
+        </div>
+
+        <div class="filter margin-bottom-20">
+            <input class="filter"
+                   matInput
+                   type="text"
+                   (keyup)="doFilterBenutzende($event.target.value)"
+                   placeholder="{{'BENUTZENDE_EINGEBEN' | translate}}">
         </div>
 
         <!--Tabelle zum anzeigen der berechtigten Entitaet -->

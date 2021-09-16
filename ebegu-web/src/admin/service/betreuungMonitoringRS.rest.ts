@@ -40,14 +40,8 @@ export class BetreuungMonitoringRS {
         return 'BetreuungMonitoringRS';
     }
 
-    public getBetreuungMonitoringList(): Observable<TSBetreuungMonitoring[]> {
-        return this.$http.get<any[]>(`${this.serviceURL}/last`).pipe(map(response => {
-            return this.ebeguRestUtil.parseTSBetreuungMonitoringList(response);
-        }));
-    }
-
-    public getBetreuungMonitoringBeiRefNummer(refNummer: string): Observable<TSBetreuungMonitoring[]> {
-        return this.$http.get<any[]>(`${this.serviceURL}/${encodeURIComponent(refNummer)}`)
+    public getBetreuungMonitoringBeiRefNummer(refNummer: string, benutzer: string): Observable<TSBetreuungMonitoring[]> {
+        return this.$http.get<any[]>(`${this.serviceURL}/${encodeURIComponent(refNummer)}/${encodeURIComponent(benutzer)}`)
             .pipe(map(response => {
                 return this.ebeguRestUtil.parseTSBetreuungMonitoringList(response);
             }));

@@ -18,6 +18,8 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
 
     public dataSource: MatTableDataSource<TSBetreuungMonitoring>;
     public refNummerTooShort: boolean = false;
+    public refNumerValue: string = undefined;
+    public benutzerValue: string = undefined;
 
     @ViewChild(MatSort, {static: true}) public sort: MatSort;
     @ViewChild(MatPaginator, {static: true}) public paginator: MatPaginator;
@@ -31,22 +33,12 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
     }
 
     public ngOnInit(): void {
-        this.initData();
+        this.passFilterToServer();
         this.sortTable();
     }
 
     public ngAfterViewInit(): void {
         this.dataSource.sort = this.sort;
-    }
-
-    private initData(): void {
-        this.dataSource = new MatTableDataSource<TSBetreuungMonitoring>([]);
-        this.betreuungMonitoringRS.getBetreuungMonitoringList().subscribe((result: TSBetreuungMonitoring[]) => {
-                this.assignResultToDataSource(result);
-                this.changeDetectorRef.markForCheck();
-            },
-            () => {
-            });
     }
 
     private assignResultToDataSource(result: TSBetreuungMonitoring[]): void {
@@ -58,16 +50,22 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
         return !this.dataSource || this.dataSource.data.length === 0;
     }
 
-    public doFilter(value: string): void {
-        if (EbeguUtil.isEmptyStringNullOrUndefined(value)) {
-            this.initData();
-            return;
-        }
+    public doFilterRefnummer(value: string): void {
         if (value.length < this.MIN_REF_NUMMER_SIZE) {
             return;
         }
+        this.refNumerValue = value;
+        this.passFilterToServer();
+    }
+
+    public doFilterBenutzende(value: string): void {
+        this.benutzerValue = value;
+        this.passFilterToServer();
+    }
+
+    private passFilterToServer(): void {
         this.dataSource = new MatTableDataSource<TSBetreuungMonitoring>([]);
-        this.betreuungMonitoringRS.getBetreuungMonitoringBeiRefNummer(value)
+        this.betreuungMonitoringRS.getBetreuungMonitoringBeiRefNummer(this.refNumerValue, this.benutzerValue)
             .subscribe((result: TSBetreuungMonitoring[]) => {
                     this.assignResultToDataSource(result);
                     this.changeDetectorRef.markForCheck();
