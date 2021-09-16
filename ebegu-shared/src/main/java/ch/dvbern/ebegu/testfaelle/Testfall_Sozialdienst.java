@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.testfaelle;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
@@ -42,11 +41,7 @@ import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
-import ch.dvbern.ebegu.pdfgenerator.MandantPdfGenerator;
 import ch.dvbern.ebegu.util.MathUtil;
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * http://localhost:8080/ebegu/api/v1/testfaelle/testfall/1

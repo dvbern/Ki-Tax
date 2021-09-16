@@ -91,7 +91,8 @@
                     <!-- E-Mail -->
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="required" translate for="e_mail_id">EMAIL</label>
+                            <label *ngIf="isBetreuungsgutschein()" class="required" translate for="e_mail_id">EMAIL_BG</label>
+                            <label *ngIf="!isBetreuungsgutschein()" class="required" translate for="e_mail_id">EMAIL</label>
                             <input id="e_mail_id" type="email" name="e_mail_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.mail"
                                    email
@@ -220,9 +221,26 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row" *ngIf="stammdaten.gueltigkeit.gueltigBis">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label translate class="required" for="grundSchliessung_id">INSTITUTION_GRUND_SCHLIESSUNG</label>
+                                    <textarea name="grundSchliessung_name"
+                                              class="form-control " rows="3"
+                                              #grundSchliessung="ngModel"
+                                              id="grundSchliessung_id"
+                                              [(ngModel)]="stammdaten.grundSchliessung"
+                                              maxlength="4000"
+                                              required>
+                                    </textarea>
+                                    <dv-error-messages [errorObject]="grundSchliessung.errors"
+                                                       inputId="grundSchliessung_id"></dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
                             <!-- Mail senden bei offenen Pendenzen -->
-                            <div class="col-sm-6">
+                            <div class="col-sm-12">
                                 <h3 translate>INSTITUTION_BENACHRICHTIGUNGEN</h3>
                                 <div class="form-group">
                                     <mat-checkbox id="sendMailWennOffenePendenzen_id"
@@ -230,6 +248,28 @@
                                                   [(ngModel)]="stammdaten.sendMailWennOffenePendenzen">
                                         {{'INSTITUTION_BENACHRICHTIGUNG_PENDENZEN'|translate}}
                                     </mat-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="stammdaten.sendMailWennOffenePendenzen">
+                            <!-- E-Mail -->
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label translate for="erinnerung_mail_id">
+                                        {{'INSTITUTION_ERINNERUNG_MAIL'|translate}}
+                                        <dv-tooltip id="erinnerungmail-tooltip"
+                                                    [text]="'INSTITUTION_ERINNERUNG_MAIL_INFO'|translate"></dv-tooltip>
+                                    </label>
+                                    <input id="erinnerung_mail_id"
+                                           type="email"
+                                           name="erinnerung_mail_id"
+                                           #name="ngModel"
+                                           [(ngModel)]="stammdaten.erinnerungMail"
+                                           email
+                                           [maxlength]="255"
+                                           class="form-control">
+                                    <dv-error-messages [errorObject]="form.controls.erinnerung_mail_id?.errors"
+                                                       inputId="erinnerung_mail_id"></dv-error-messages>
                                 </div>
                             </div>
                         </div>
@@ -336,11 +376,13 @@
                                 <h3 *ngIf="isFerieninsel()" translate>
                                     FERIENINSEL_ANMELDUNG_START_END</h3>
                                 <p>{{getGueltigkeitTodisplay()}}</p>
+                                <p>{{stammdaten.grundSchliessung}}</p>
                             </div>
                         </div>
 
                         <div class="col-sm-6">
-                            <div class="form-group" *ngIf="externalClients && getSortedAssignedClients().length && !isFerieninsel()">
+                            <div class="form-group"
+                                 *ngIf="externalClients && getSortedAssignedClients().length && !isFerieninsel()">
                                 <h3 translate>PERMITTED_EXTERNAL_CLIENTS</h3>
                                 <div *ngFor="let assignedClient of getSortedAssignedClients(); let i = index">
                                     <div class="row">
@@ -351,6 +393,18 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- Benachrichtugnseinstellungen -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <h3 translate>INSTITUTION_BENACHRICHTIGUNGEN</h3>
+                                <p *ngIf="stammdaten.sendMailWennOffenePendenzen"
+                                   translate>INSTITUTION_BENACHRICHTIGUNG_PENDENZEN</p>
+                                <p *ngIf="stammdaten.erinnerungMail">
+                                    {{'INSTITUTION_ERINNERUNG_MAIL' | translate}}:&nbsp;<a href="mailto:{{stammdaten.erinnerungMail}}">{{stammdaten.erinnerungMail}}</a></p>
                             </div>
                         </div>
                     </div>

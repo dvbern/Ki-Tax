@@ -47,6 +47,7 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxLastenausgleichTagesschulenStatusHistory;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxBetreuungsstundenPrognose;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
@@ -407,6 +408,34 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	}
 
 	@ApiOperation(
+		value = "Setzt ein LastenausgleichTagesschuleAngabenGemeinde von GEPRUEFT auf IN_PRUEFUNG_KANTON",
+		response = Void.class)
+	@PUT
+	@Path("/zurueck-in-pruefung")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Nonnull
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer zurueckInPruefungKanton(
+		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainerJax,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(latsGemeindeContainerJax.getId());
+		Objects.requireNonNull(latsGemeindeContainerJax.getGemeinde().getId());
+
+		authorizer.checkWriteAuthorizationLATSGemeindeAntrag(latsGemeindeContainerJax.getId());
+
+		final LastenausgleichTagesschuleAngabenGemeindeContainer converted =
+			getConvertedLastenausgleichTagesschuleAngabenGemeindeContainer(latsGemeindeContainerJax);
+
+		final LastenausgleichTagesschuleAngabenGemeindeContainer wiederEroeffnet =
+			angabenGemeindeService.lastenausgleichTagesschuleGemeindeZurueckInPruefungKanton(converted);
+
+		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(wiederEroeffnet);
+	}
+
+	@ApiOperation(
 		value = "Gibt den Statushistory für die übergebene latsContainerId zurueck",
 		response = JaxLastenausgleichTagesschulenStatusHistory.class)
 	@Nullable
@@ -496,6 +525,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response dokumentErstellen(
+		@Nonnull JaxBetreuungsstundenPrognose betreuungsstundenPrognose,
 		@Nonnull @NotNull @PathParam("containerJaxId") JaxId containerJaxId,
 		@Nonnull @PathParam("sprache") Sprache sprache,
 		@Context UriInfo uriInfo,
@@ -505,7 +535,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		Objects.requireNonNull(containerJaxId.getId());
 
 		byte[] document;
-		document = latsDokumentService.createDocx(containerJaxId.getId(), sprache);
+		document = latsDokumentService.createDocx(containerJaxId.getId(), sprache, betreuungsstundenPrognose.getBetreuungsstundenPrognose());
 
 		if (document.length > 0) {
 			try {

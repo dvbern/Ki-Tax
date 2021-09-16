@@ -20,6 +20,34 @@
     <div *ngIf="editMode; else viewModeTemplate">
         <fieldset ngModelGroup="dv-edit-gemeinde-bg">
             <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group mt-2">
+                        <mat-checkbox id="gutscheinSelberAusgestellt_id" name="gutscheinSelberAusgestellt_id"
+                                      [(ngModel)]="stammdaten.gutscheinSelberAusgestellt">
+                            {{'GUTSCHEIN_SELBER_AUSGESTELLT'|translate}}
+                        </mat-checkbox>
+                    </div>
+                    <div *ngIf="!stammdaten.gutscheinSelberAusgestellt" class="form-group mt-2">
+                        <label class="md-no-float required" translate for="gemeindeAusgabestelle_id">GUTSCHEINAUSGABESTELLE</label>
+                        <mat-select [(ngModel)]="stammdaten.gemeindeAusgabestelle"
+                                    id="gemeindeAusgabestelle_id"
+                                    name="gemeindeAusgabestelle_id"
+                                    class="form-control"
+                                    #gemeindeAusgabestelle="ngModel"
+                                    [compareWith]="compareGemeinde"
+                                    [required]="true">
+                            <mat-option *ngFor="let ausgabestelle of gemeindeList$ | async"
+                                        [value]="ausgabestelle">
+                                {{ausgabestelle.name}}
+                            </mat-option>
+                        </mat-select>
+                        <dv-error-messages [errorObject]="gemeindeAusgabestelle.errors"
+                                           inputId="gemeindeAusgabestelle_id">
+                        </dv-error-messages>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <!--                bankverbindung für auszahlungen-->
                 <div class="col-sm-6">
                     <h3 translate for="korrespondenzsprache_id">BANKVERBINDUNG</h3>
@@ -86,7 +114,7 @@
                                             <input id="standardDokTitle_id"
                                                    type="text"
                                                    name="standardDokTitle_id"
-												   #standardDokTitle="ngModel"
+                                                   #standardDokTitle="ngModel"
                                                    [(ngModel)]="stammdaten.standardDokTitle"
                                                    [maxlength]="255"
                                                    class="form-control">
@@ -104,7 +132,7 @@
                                                for="standardDokUnterschriftTitel_id">STANDARD_DOK_UNTERSCHRIFT1_TITEL</label>
                                         <input id="standardDokUnterschriftTitel_id" type="text"
                                                name="standardDokUnterschriftTitel_id"
-											   #standardDokUnterschriftTitel="ngModel"
+                                               #standardDokUnterschriftTitel="ngModel"
                                                [(ngModel)]="stammdaten.standardDokUnterschriftTitel"
                                                [maxlength]="255" class="form-control">
                                         <dv-error-messages [errorObject]="standardDokUnterschriftTitel.errors"
@@ -119,7 +147,7 @@
                                         <input id="standardDokUnterschriftName_id"
                                                type="text"
                                                name="standardDokUnterschriftName_id"
-											   #standardDokUnterschriftName="ngModel"
+                                               #standardDokUnterschriftName="ngModel"
                                                [(ngModel)]="stammdaten.standardDokUnterschriftName"
                                                [maxlength]="255"
                                                class="form-control">
@@ -137,7 +165,7 @@
                                             STANDARD_DOK_UNTERSCHRIFT2_TITEL</label>
                                         <input id="standardDokUnterschriftTitel2_id" type="text"
                                                name="standardDokUnterschriftTitel2_id"
-											   #standardDokUnterschriftTitel2="ngModel"
+                                               #standardDokUnterschriftTitel2="ngModel"
                                                [(ngModel)]="stammdaten.standardDokUnterschriftTitel2"
                                                [maxlength]="255" class="form-control">
                                         <dv-error-messages [errorObject]="standardDokUnterschriftTitel2.errors"
@@ -152,7 +180,7 @@
                                         <input id="standardDokUnterschriftName2_id"
                                                type="text"
                                                name="standardDokUnterschriftName2_id"
-											   #standardDokUnterschriftName2="ngModel"
+                                               #standardDokUnterschriftName2="ngModel"
                                                [(ngModel)]="stammdaten.standardDokUnterschriftName2"
                                                [maxlength]="255"
                                                class="form-control">
@@ -168,14 +196,15 @@
                     <div class="form-group" *ngIf="stammdaten.gemeinde.angebotTS">
                         <div class="form-group checkbox-with-tooltip">
                             <div>
-                            <mat-checkbox id="verantwortlicherTSInformieren_id" name="verantwortlicherTSInformieren_id"
-                                          [(ngModel)]="stammdaten.tsVerantwortlicherNachVerfuegungBenachrichtigen">
-                                {{'TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN'|translate}}
-                            </mat-checkbox>
+                                <mat-checkbox id="verantwortlicherTSInformieren_id"
+                                              name="verantwortlicherTSInformieren_id"
+                                              [(ngModel)]="stammdaten.tsVerantwortlicherNachVerfuegungBenachrichtigen">
+                                    {{'TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN'|translate}}
+                                </mat-checkbox>
                             </div>
                             <div class="tooltip-margin">
-                            <dv-tooltip id="verantwortlicherTSInformieren_tooltip"
-                                        [text]="'TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_HELP'|translate"></dv-tooltip>
+                                <dv-tooltip id="verantwortlicherTSInformieren_tooltip"
+                                            [text]="'TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_HELP'|translate"></dv-tooltip>
                             </div>
                         </div>
                     </div>
@@ -184,14 +213,15 @@
                     <div class="form-group">
                         <div class="form-group checkbox-with-tooltip">
                             <div>
-                            <mat-checkbox id="emailBeiGesuchsperiodeOeffnung" name="emailBeiGesuchsperiodeOeffnung"
-                                          [(ngModel)]="stammdaten.emailBeiGesuchsperiodeOeffnung">
-                                {{'EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG'|translate}}
-                            </mat-checkbox>
+                                <mat-checkbox id="emailBeiGesuchsperiodeOeffnung"
+                                              name="emailBeiGesuchsperiodeOeffnung"
+                                              [(ngModel)]="stammdaten.emailBeiGesuchsperiodeOeffnung">
+                                    {{'EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG'|translate}}
+                                </mat-checkbox>
                             </div>
                             <div class="tooltip-margin">
-                            <dv-tooltip id="emailBeiGesuchsperiodeOeffnung_tooltip"
-                                        [text]="'EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG_HELP'|translate"></dv-tooltip>
+                                <dv-tooltip id="emailBeiGesuchsperiodeOeffnung_tooltip"
+                                            [text]="'EMAIL_BEI_GESUCHSPERIODE_OEFFNUNG_HELP'|translate"></dv-tooltip>
                             </div>
                         </div>
                     </div>
@@ -211,7 +241,7 @@
                                     id="verantwortliche_bg_id"
                                     name="verantwortliche_bg_id"
                                     class="form-control"
-									#nameVerantwortlicheBG='ngModel'
+                                    #nameVerantwortlicheBG='ngModel'
                                     [compareWith]="compareBenutzer">
                             <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
                                 {{vbg.vorname}} {{vbg.nachname}}
@@ -239,7 +269,7 @@
                                             <input id="anschrift_bg_id"
                                                    type="text"
                                                    name="anschrift_bg_id"
-												   #nameAnschriftBG="ngModel"
+                                                   #nameAnschriftBG="ngModel"
                                                    [(ngModel)]="stammdaten.bgAdresse.organisation"
                                                    [maxlength]="255"
                                                    class="form-control"
@@ -258,7 +288,7 @@
                                                translate
                                                for="strasse_bg_id">ADRESSE_STRASSE</label>
                                         <input id="strasse_bg_id" type="text" name="strasse_bg_id"
-											   #nameStrasseBG="ngModel"
+                                               #nameStrasseBG="ngModel"
                                                [(ngModel)]="stammdaten.bgAdresse.strasse"
                                                [maxlength]="255" class="form-control" required>
                                         <dv-error-messages [errorObject]="nameStrasseBG.errors"
@@ -272,7 +302,7 @@
                                         <input id="hausnummer_bg_id"
                                                type="text"
                                                name="hausnummer_bg_id"
-											   #nameHausnummerBG="ngModel"
+                                               #nameHausnummerBG="ngModel"
                                                [(ngModel)]="stammdaten.bgAdresse.hausnummer"
                                                [maxlength]="255"
                                                class="form-control">
@@ -313,7 +343,7 @@
                                             <dv-tooltip [text]="'ANGABEN_VON_STAMMDATEN'|translate"></dv-tooltip>
                                         </label>
                                         <input id="email_bg_id" type="text" name="email_bg_id"
-											   #nameEmailBG="ngModel"
+                                               #nameEmailBG="ngModel"
                                                [(ngModel)]="stammdaten.bgEmail"
                                                [pattern]="CONSTANTS.PATTERN_EMAIL"
                                                class="form-control">
@@ -330,7 +360,7 @@
                                             <dv-tooltip [text]="'ANGABEN_VON_STAMMDATEN'|translate"></dv-tooltip>
                                         </label>
                                         <input id="telefonnummer_bg_id" type="text" name="telefonnummer_bg_id"
-											   #nameTelefonnummerBG="ngModel"
+                                               #nameTelefonnummerBG="ngModel"
                                                [(ngModel)]="stammdaten.bgTelefon"
                                                [pattern]="CONSTANTS.PATTERN_PHONE"
                                                class="form-control">
@@ -361,7 +391,9 @@
                                 <div class="col-sm-12">
                                     <div class="form-group" *ngIf="stammdaten.korrespondenzspracheDe">
 
-                                        <label class="required" translate for="rechtsmittelbelehrung_deutsch_textarea">RECHTSMITTELBELEHRUNG_TEXT_DE</label>
+                                        <label class="required"
+                                               translate
+                                               for="rechtsmittelbelehrung_deutsch_textarea">RECHTSMITTELBELEHRUNG_TEXT_DE</label>
 
                                         <textarea md-no-autogrow
                                                   class="form-control"
@@ -369,7 +401,7 @@
                                                   required
                                                   maxlength="4000"
                                                   id="rechtsmittelbelehrung_deutsch_textarea"
-												  #nameRechtmittelDE="ngModel"
+                                                  #nameRechtmittelDE="ngModel"
                                                   name="rechtsmittelbelehrung_deutsch_textarea"
                                                   [(ngModel)]="stammdaten.rechtsmittelbelehrung.textDeutsch">
                                                 </textarea>
@@ -381,7 +413,9 @@
                                          id="rechtsmittelbelehrung-franzoesisch"
                                          *ngIf="stammdaten.korrespondenzspracheFr">
 
-                                        <label class="required" translate for="rechtsmittelbelehrung_franzoesisch_textarea">RECHTSMITTELBELEHRUNG_TEXT_FR</label>
+                                        <label class="required"
+                                               translate
+                                               for="rechtsmittelbelehrung_franzoesisch_textarea">RECHTSMITTELBELEHRUNG_TEXT_FR</label>
 
                                         <textarea md-no-autogrow
                                                   class="form-control"
@@ -389,7 +423,7 @@
                                                   required
                                                   maxlength="4000"
                                                   id="rechtsmittelbelehrung_franzoesisch_textarea"
-												  #nameRechtmittelFR="ngModel"
+                                                  #nameRechtmittelFR="ngModel"
                                                   name="rechtsmittelbelehrung_franzoesisch_textarea"
                                                   [(ngModel)]="stammdaten.rechtsmittelbelehrung.textFranzoesisch">
                                                 </textarea>
@@ -398,7 +432,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group checkbox-with-tooltip" *ngIf="stammdaten.standardRechtsmittelbelehrung">
+                            <div class="form-group checkbox-with-tooltip"
+                                 *ngIf="stammdaten.standardRechtsmittelbelehrung">
                                 <mat-checkbox id="keineBeschwerdeAdresse_id" name="keineBeschwerdeAdresse_id"
                                               [(ngModel)]="keineBeschwerdeAdresse"
                                               (ngModelChange)="keineBeschwerdeAdresseChanged($event)">
@@ -416,7 +451,7 @@
                                                 <input id="anschrift_ba_id"
                                                        type="text"
                                                        name="anschrift_ba_id"
-													   #nameAnschriftBA="ngModel"
+                                                       #nameAnschriftBA="ngModel"
                                                        [(ngModel)]="stammdaten.beschwerdeAdresse.organisation"
                                                        [maxlength]="255"
                                                        class="form-control"
@@ -435,9 +470,14 @@
                                             <label class="required"
                                                    translate
                                                    for="strasse_ba_id">ADRESSE_STRASSE</label>
-                                            <input id="strasse_ba_id" type="text" name="strasse_ba_id" #nameStrasseBA="ngModel"
+                                            <input id="strasse_ba_id"
+                                                   type="text"
+                                                   name="strasse_ba_id"
+                                                   #nameStrasseBA="ngModel"
                                                    [(ngModel)]="stammdaten.beschwerdeAdresse.strasse"
-                                                   [maxlength]="255" class="form-control" required>
+                                                   [maxlength]="255"
+                                                   class="form-control"
+                                                   required>
                                             <dv-error-messages [errorObject]="nameStrasseBA.errors"
                                                                inputId="strasse_ba_id"></dv-error-messages>
                                         </div>
@@ -449,7 +489,7 @@
                                             <input id="hausnummer_ba_id"
                                                    type="text"
                                                    name="hausnummer_ba_id"
-												   #nameHausnummerBA="ngModel"
+                                                   #nameHausnummerBA="ngModel"
                                                    [(ngModel)]="stammdaten.beschwerdeAdresse.hausnummer"
                                                    [maxlength]="255"
                                                    class="form-control">
@@ -550,7 +590,7 @@
                                                            name="ewp_zuschlag_id_{{i}}"
                                                            class="form-control"
                                                            type="number"
-														   #ewp_zuschlag='ngModel'
+                                                           #ewp_zuschlag='ngModel'
                                                            required
                                                            customMinMax
                                                            [minValue]="0"
@@ -1035,6 +1075,11 @@
 
     <ng-template #viewModeTemplate>
         <fieldset>
+            <div class="row" *ngIf="!stammdaten.gutscheinSelberAusgestellt">
+                <div class="col-sm-6 mt-2">
+                    <p>{{'GUTSCHEINAUSGABESTELLE' | translate}}: {{stammdaten.gemeindeAusgabestelle.name}}</p>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-sm-6">
                     <!-- BANKVERBINDUNG -->
@@ -1140,7 +1185,8 @@
                         </ng-template>
                     </div>
                     <!-- Beschwerdeadresse -->
-                    <div *ngIf="stammdaten.standardRechtsmittelbelehrung; else displayRechtsmittelbelehrung" class="mt-5">
+                    <div *ngIf="stammdaten.standardRechtsmittelbelehrung; else displayRechtsmittelbelehrung"
+                         class="mt-5">
                         <div *ngIf="keineBeschwerdeAdresse; else displayBeschwerdeAdresse">
                             <div class="form-group">
                                 <h3 translate>BESCHWERDE_ADRESSE</h3>
@@ -1194,7 +1240,8 @@
                                         <div *ngIf="!isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-12">
                                             <div class="form-group">
                                                 <!-- BG bis Schulstufe -->
-                                                <label>{{'BEGU_KITAS_BIS_UND_MIT'|translate}}&nbsp;<strong>{{getKonfigBeguBisUndMitSchulstufeString(konfigurationsListe[i])}}</strong></label>
+                                                <label>{{'BEGU_KITAS_BIS_UND_MIT'|translate}}&nbsp;<strong>{{getKonfigBeguBisUndMitSchulstufeString(
+                                                    konfigurationsListe[i])}}</strong></label>
                                                 <!-- Kontingentierung -->
                                                 <p *ngIf="!konfigurationsListe[i].konfigKontingentierung"
                                                    class="line-through">{{getKonfigKontingentierungString()}}</p>
@@ -1295,18 +1342,25 @@
                                                     <tbody>
                                                     <tr>
                                                         <td>{{'MAHLZEITENVERGUENSTIGUNG_NULL_EINKOMMEN' | translate}}
-                                                            - {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen.toLocaleString('de-CH') }}</td>
-                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungMahlzeit.toLocaleString('de-CH') }}</td>
+                                                            - {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen.toLocaleString(
+                                                                'de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungMahlzeit.toLocaleString(
+                                                            'de-CH') }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>{{(konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen + 1).toLocaleString('de-CH') }}
+                                                        <td>{{(konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen
+                                                            + 1).toLocaleString('de-CH') }}
                                                             -
-                                                            {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen.toLocaleString('de-CH') }}</td>
-                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungMahlzeit.toLocaleString('de-CH') }}</td>
+                                                            {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen.toLocaleString(
+                                                                'de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungMahlzeit.toLocaleString(
+                                                            'de-CH') }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>{{'AB' | translate}} {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen.toLocaleString('de-CH') }}</td>
-                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungMahlzeit.toLocaleString('de-CH') }}</td>
+                                                        <td>{{'AB' | translate}} {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen.toLocaleString(
+                                                            'de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungMahlzeit.toLocaleString(
+                                                            'de-CH') }}</td>
                                                     </tr>
                                                     </tbody>
                                                 </table>

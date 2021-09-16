@@ -55,7 +55,8 @@ export class GemeindeAntragService {
             predicate?: string,
             reverse?: boolean
         },
-        paginationDTO: PaginationDTO): Observable<TSPaginationResultDTO<TSGemeindeAntrag>> {
+        paginationDTO: PaginationDTO,
+    ): Observable<TSPaginationResultDTO<TSGemeindeAntrag>> {
 
         let params = new HttpParams();
         if (filter.gemeinde) {
@@ -90,20 +91,37 @@ export class GemeindeAntragService {
                 dto.resultList = this.ebeguRestUtil.parseGemeindeAntragList(result.resultList);
                 dto.totalResultSize = result.totalCount;
                 return dto;
-            })
+            }),
         );
     }
 
-    public getTypesForRole(): TSGemeindeAntragTyp[] {
+    public getFilterableTypesForRole(): TSGemeindeAntragTyp[] {
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())
+            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles())) {
+            return [
+                TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN, TSGemeindeAntragTyp.FERIENBETREUUNG,
+                TSGemeindeAntragTyp.GEMEINDE_KENNZAHLEN,
+            ];
+        }
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getFerienbetreuungGemeindeRolesOnly())) {
+            return [TSGemeindeAntragTyp.FERIENBETREUUNG];
+        }
+        return [TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN];
+    }
+
+    public getCreatableTypesForRole(): TSGemeindeAntragTyp[] {
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
-            return [TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN, TSGemeindeAntragTyp.FERIENBETREUUNG];
+            return [
+                TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN, TSGemeindeAntragTyp.FERIENBETREUUNG,
+                TSGemeindeAntragTyp.GEMEINDE_KENNZAHLEN,
+            ];
         }
         return [TSGemeindeAntragTyp.FERIENBETREUUNG];
     }
 
     public createAllAntrage(
-        toCreate: { periode: string, antragTyp: string, gemeinde?: TSGemeinde }
-        ): Observable<TSGemeindeAntrag[]> {
+        toCreate: { periode: string, antragTyp: string, gemeinde?: TSGemeinde },
+    ): Observable<TSGemeindeAntrag[]> {
         return this.http.post<TSGemeindeAntrag[]>(
             `${this.API_BASE_URL}/createAllAntraege/${toCreate.antragTyp}/gesuchsperiode/${toCreate.periode}`,
             toCreate)
@@ -111,15 +129,15 @@ export class GemeindeAntragService {
     }
 
     public deleteAntrage(
-        toDelete: { periode: string, antragTyp: string, gemeinde?: TSGemeinde }
-        ): Observable<void> {
+        toDelete: { periode: string, antragTyp: string, gemeinde?: TSGemeinde },
+    ): Observable<void> {
         return this.http.delete<void>(
             `${this.API_BASE_URL}/deleteAntraege/${toDelete.antragTyp}/gesuchsperiode/${toDelete.periode}`);
     }
 
     public createAntrag(
-        toCreate: { periode: string, antragTyp: string, gemeinde: string }
-        ): Observable<TSGemeindeAntrag[]> {
+        toCreate: { periode: string, antragTyp: string, gemeinde: string },
+    ): Observable<TSGemeindeAntrag[]> {
         return this.http.post<TSGemeindeAntrag[]>(
             `${this.API_BASE_URL}/create/${toCreate.antragTyp}/gesuchsperiode/${toCreate.periode}/gemeinde/${toCreate.gemeinde}`,
             toCreate)
@@ -136,6 +154,9 @@ export class GemeindeAntragService {
         }
         if (wizardTypStr === 'FERIENBETREUUNG') {
             return TSWizardStepXTyp.FERIENBETREUUNG;
+        }
+        if (wizardTypStr === 'GEMEINDE_KENNZAHLEN') {
+            return TSWizardStepXTyp.GEMEINDE_KENNZAHLEN;
         }
         LOG.error('wrong wizardTypStr provided');
         return undefined;

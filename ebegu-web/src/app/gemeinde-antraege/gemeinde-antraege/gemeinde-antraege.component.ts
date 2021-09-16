@@ -26,6 +26,7 @@ import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
+import * as moment from 'moment';
 import {BehaviorSubject, combineLatest, from, NEVER, Observable, of} from 'rxjs';
 import {catchError, concatMap, filter, map, mergeMap, tap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -79,6 +80,7 @@ export class GemeindeAntraegeComponent implements OnInit {
 
     public antragList$: Observable<DVAntragListItem[]>;
     public gesuchsperioden: TSGesuchsperiode[];
+    public gesuchsperiodenFiltered: TSGesuchsperiode[];
     public formGroup: FormGroup;
     public totalItems = 0;
     public gemeinden: TSGemeinde[];
@@ -98,6 +100,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     });
     public triedSending: boolean = false;
     public types: TSGemeindeAntragTyp[];
+    public creatableTypes: TSGemeindeAntragTyp[];
     public deletePossible$: Observable<boolean>;
 
     public constructor(
@@ -124,7 +127,11 @@ export class GemeindeAntraegeComponent implements OnInit {
         });
         this.loadAntragList();
         this.loadGemeinden();
-        this.gesuchsperiodenService.getAllActiveGesuchsperioden().then(result => this.gesuchsperioden = result);
+        this.gesuchsperiodenService.getAllActiveGesuchsperioden().then(result => {
+            this.gesuchsperioden = result;
+            // init filtered GS for Ferienbetreuungen
+            this.updateGesuchsperioden();
+        });
         this.initAntragTypes();
         this.checkDeletePossible$();
     }
@@ -243,8 +250,9 @@ export class GemeindeAntraegeComponent implements OnInit {
         combineLatest([principal$, properties$])
             .subscribe(data => {
                 this.types = this.getFilterAntragTypes(data[1]);
-                if (this.types.length === 1) {
-                    this.formGroup.get('antragTyp').setValue(this.types[0]);
+                this.creatableTypes = this.getCreatableAntragTypes(data[1]);
+                if (this.creatableTypes.length === 1) {
+                    this.formGroup.get('antragTyp').setValue(this.creatableTypes[0]);
                 }
             }, error => {
                 LOG.error(error);
@@ -253,14 +261,61 @@ export class GemeindeAntraegeComponent implements OnInit {
     }
 
     private getFilterAntragTypes(config: TSPublicAppConfig): TSGemeindeAntragTyp[] {
-        this.types = this.gemeindeAntragService.getTypesForRole();
+        let types = this.gemeindeAntragService.getFilterableTypesForRole();
+        types = this.filterActiveAntragTypes(config, types);
+        return types;
+    }
+
+    private filterActiveAntragTypes(config: TSPublicAppConfig, types: TSGemeindeAntragTyp[]): TSGemeindeAntragTyp[] {
+        let filteredTypes = types;
         if (!config.ferienbetreuungAktiv) {
-            this.types = this.types.filter(d => d !== TSGemeindeAntragTyp.FERIENBETREUUNG);
+            filteredTypes = filteredTypes.filter(d => d !== TSGemeindeAntragTyp.FERIENBETREUUNG);
         }
         if (!config.lastenausgleichTagesschulenAktiv) {
-            this.types = this.types.filter(d => d !== TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN);
+            filteredTypes = types.filter(d => d !== TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN);
         }
-        return this.types;
+        if (!config.gemeindeKennzahlenAktiv) {
+            filteredTypes = types.filter(d => d !== TSGemeindeAntragTyp.GEMEINDE_KENNZAHLEN);
+        }
+        return filteredTypes;
+    }
+
+    private getCreatableAntragTypes(config: TSPublicAppConfig): TSGemeindeAntragTyp[] {
+        let types = this.gemeindeAntragService.getCreatableTypesForRole();
+        types = this.filterActiveAntragTypes(config, types);
+        return types;
+    }
+
+    public getGesuchsperiodenOptions(): TSGesuchsperiode[] {
+        if (this.ferienBetreuungSelected()) {
+            return this.gesuchsperiodenFiltered;
+        }
+        return this.gesuchsperioden;
+    }
+
+    private updateGesuchsperioden(): void {
+        const startDatePeriode2020 = moment('01.08.2020', 'DD-MM-YYYY');
+
+        if (!this.gesuchsperiodenFiltered) {
+            this.gesuchsperiodenFiltered =
+                this.gesuchsperioden.filter(gesuchsperiode => !gesuchsperiode.isBefore(startDatePeriode2020));
+        }
+
+        if (this.isSelectedGesuchsperiodeBefore(startDatePeriode2020)) {
+            this.formGroup.get('periode').setValue(null);
+        }
+    }
+
+    private isSelectedGesuchsperiodeBefore(date: moment.Moment): boolean {
+        const selectedGesuchsperiodeId = this.formGroup?.get('periode').value;
+
+        if (!selectedGesuchsperiodeId) {
+            return false;
+        }
+
+        const selectedGesuchsperiode =
+            this.gesuchsperioden.find(gesuchsperiode => gesuchsperiode.id === selectedGesuchsperiodeId);
+        return selectedGesuchsperiode?.isBefore(date);
     }
 
     public createAntrag(): void {
@@ -315,10 +370,18 @@ export class GemeindeAntraegeComponent implements OnInit {
         return this.formGroup?.get('antragTyp').value === TSGemeindeAntragTyp.FERIENBETREUUNG;
     }
 
+    public isMandant(): Observable<boolean> {
+        return this.authService.principal$
+            .pipe(
+                map(principal => principal && principal.hasOneOfRoles(TSRoleUtil.getMandantRoles())),
+            );
+    }
+
     public onAntragTypChange(): void {
         const gemeindeControl = this.formGroup.get('gemeinde');
         if (this.ferienBetreuungSelected()) {
             gemeindeControl.setValidators([Validators.required]);
+            this.updateGesuchsperioden();
         } else {
             gemeindeControl.clearValidators();
         }
@@ -329,7 +392,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     public canCreateAntrag(): Observable<boolean> {
         return this.authService.principal$.pipe(
             filter(principal => !!principal),
-            map(() => this.authService.isOneOfRoles(TSRoleUtil.getFerienbetreuungRoles()))
+            map(() => this.authService.isOneOfRoles(TSRoleUtil.getFerienbetreuungRoles())),
         );
     }
 

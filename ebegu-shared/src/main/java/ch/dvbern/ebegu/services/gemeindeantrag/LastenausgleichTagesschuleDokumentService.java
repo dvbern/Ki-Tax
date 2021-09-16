@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.enums.Sprache;
@@ -24,6 +26,6 @@ import ch.dvbern.ebegu.enums.Sprache;
 public interface LastenausgleichTagesschuleDokumentService {
 
 	@Nonnull
-	byte[] createDocx(@Nonnull String containerId, @Nonnull Sprache sprache);
+	byte[] createDocx(@Nonnull String containerId, @Nonnull Sprache sprache, @Nonnull BigDecimal betreuungsstundenPrognose);
 
 }

@@ -274,7 +274,7 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void generateExcelReportKanton() throws Exception {
+	public void generateExcelReportKantonOhneSelbstbehalt() throws Exception {
 		Collection<Gesuch> allGesuche = gesuchService.getAllGesuche();
 		for (Gesuch gesuch : allGesuche) {
 			if (gesuch.getStatus().isAnyStatusOfVerfuegt()) {
@@ -282,10 +282,25 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 			}
 		}
 		UploadFileInfo uploadFileInfo = reportService
-			.generateExcelReportKanton(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, Constants.DEFAULT_LOCALE);
+			.generateExcelReportKanton(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, null, Constants.DEFAULT_LOCALE);
 
 		assertNotNull(uploadFileInfo.getBytes());
-		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportKanton.xlsx");
+		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportKantonOhneSelbstbehalt.xlsx");
+	}
+
+	@Test
+	public void generateExcelReportKantonMitSelbstBehalt() throws Exception {
+		Collection<Gesuch> allGesuche = gesuchService.getAllGesuche();
+		for (Gesuch gesuch : allGesuche) {
+			if (gesuch.getStatus().isAnyStatusOfVerfuegt()) {
+				System.out.println("verfuegtes Gesuch: " + gesuch.getId());
+			}
+		}
+		UploadFileInfo uploadFileInfo = reportService
+			.generateExcelReportKanton(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, new BigDecimal(1000), Constants.DEFAULT_LOCALE);
+
+		assertNotNull(uploadFileInfo.getBytes());
+		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportKantonMitSelbstbehalt.xlsx");
 	}
 
 	@Test

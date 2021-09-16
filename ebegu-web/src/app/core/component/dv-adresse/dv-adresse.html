@@ -200,9 +200,7 @@
                 <dv-input-container class="form-group">
                         <!--suppress XmlInvalidId -->
                         <label class="md-no-float" for="{{vm.prefix}}-gueltigAb" id="umzug-label">
-                            <span data-translate ng-if="!vm.isUmzug()">ADRESSE_GUELTIGAB</span>
-                            <span data-translate ng-if="vm.isUmzug()">ADRESSE_UMZUG_GUELTIGAB</span>
-                            <dv-tooltip input-id="umzug-label" text="'ADRESSE_UMZUG_GUELTIGAB_INFO' | translate" ng-if="vm.isUmzug()"></dv-tooltip>
+                            <span data-translate>ADRESSE_GUELTIGAB</span>
                         </label>
                         <dv-datepicker input-id="{{vm.prefix}}-gueltigAb" input-name="gueltigAb" name="gueltigAb"
                                        ng-model="vm.getModel().adresseJA.gueltigkeit.gueltigAb"

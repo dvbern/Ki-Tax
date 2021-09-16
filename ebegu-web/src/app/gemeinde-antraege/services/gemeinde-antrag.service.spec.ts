@@ -54,13 +54,17 @@ describe('GemeindeAntragService', () => {
 
     it('should return only Ferienbetreuung', () => {
         authServiceSpy.isOneOfRoles.and.returnValue(false);
-        expect(service.getTypesForRole()).toEqual([TSGemeindeAntragTyp.FERIENBETREUUNG]);
+        expect(service.getFilterableTypesForRole()).toEqual([TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN]);
     });
 
-    it('should return Ferienbetreuung and Lastenausgleich Tagesschule', () => {
+    it('should return Ferienbetreuung, GemeindeKennzahlen and Lastenausgleich Tagesschule', () => {
         authServiceSpy.isOneOfRoles.and.returnValue(true);
-        expect(service.getTypesForRole()).toEqual(
-            [TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN, TSGemeindeAntragTyp.FERIENBETREUUNG]
+        expect(service.getFilterableTypesForRole()).toEqual(
+            [
+                TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN,
+                TSGemeindeAntragTyp.FERIENBETREUUNG,
+                TSGemeindeAntragTyp.GEMEINDE_KENNZAHLEN,
+            ],
         );
     });
 });

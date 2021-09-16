@@ -109,4 +109,8 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
     public isInZweitPruefung(): boolean {
         return this.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG;
     }
+
+    public isGeprueft(): boolean {
+        return this.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT;
+    }
 }

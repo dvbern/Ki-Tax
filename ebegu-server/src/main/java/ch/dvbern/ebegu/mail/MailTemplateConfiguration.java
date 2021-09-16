@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
 import ch.dvbern.ebegu.enums.Sprache;
@@ -730,5 +731,11 @@ public class MailTemplateConfiguration {
 			gesuchsteller,
 			paramsWithEmpfaenger(empfaengerMail),
 			sprache);
+	}
+
+	public String getInfoGemeindeLastenausgleichTagesschuleZurueckAnGemeinde(LastenausgleichTagesschuleAngabenGemeindeContainer container, List<Sprache> sprachen, @Nonnull String empfaengerMail) {
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		paramMap.put("id", container.getId());
+		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGemeindeLastenausgleichZurueckAnGemeinde, sprachen), paramMap);
 	}
 }

@@ -127,6 +127,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public korrekteKostenBestaetigung: boolean = false;
     public isBestaetigenClicked: boolean = false;
     public searchQuery: string = '';
+    public allowedRoles: ReadonlyArray<TSRole>;
+    public isKesbPlatzierung: boolean;
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
@@ -268,7 +270,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         tsBetreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA = new TSErweiterteBetreuung();
         tsBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
 
-        tsBetreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA.keineKesbPlatzierung = false;
         tsBetreuung.kindId = this.gesuchModelManager.getKindToWorkWith().id;
         tsBetreuung.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
 
@@ -295,6 +296,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             || this.gesuchModelManager.getFachstellenErweiterteBetreuungList().length <= 0) {
             this.gesuchModelManager.updateFachstellenErweiterteBetreuungList();
         }
+        if (this.getErweiterteBetreuungJA()
+            && EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA().keineKesbPlatzierung)) {
+            this.isKesbPlatzierung = !this.getErweiterteBetreuungJA().keineKesbPlatzierung;
+        }
+        this.allowedRoles = this.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles();
     }
 
     /**
@@ -1404,6 +1410,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public showWarningStammdaten(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
-        && !this.isStammdatenAusgefuellt();
+            && !this.isStammdatenAusgefuellt();
+    }
+
+    public changeKeineKesbPlatzierung(): void {
+        this.getErweiterteBetreuungJA().keineKesbPlatzierung = !this.isKesbPlatzierung;
     }
 }

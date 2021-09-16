@@ -15,16 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    Input,
-    OnInit,
-    ViewChild,
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
 import {AbstractAdminViewController} from '../../../admin/abstractAdminView';
@@ -100,7 +93,7 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
     }
 
     public openTraegerschaft(id: string): void {
-        if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getSuperAdminRoles())) {
+        if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getMandantRoles())) {
             this.$state.go('traegerschaft.edit', {traegerschaftId: id});
         }
     }

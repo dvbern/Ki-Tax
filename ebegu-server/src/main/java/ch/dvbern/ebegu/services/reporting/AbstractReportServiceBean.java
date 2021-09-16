@@ -102,6 +102,7 @@ public abstract class AbstractReportServiceBean extends AbstractBaseService {
 			workbook.write(baos);
 			baos.flush();
 			bytes = baos.toByteArray();
+			workbook.close();
 
 		} catch (IOException | RuntimeException e) {
 			throw new IllegalStateException("Error creating workbook", e);

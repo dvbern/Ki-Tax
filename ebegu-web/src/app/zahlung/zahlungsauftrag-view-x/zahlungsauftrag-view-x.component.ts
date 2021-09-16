@@ -350,6 +350,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
         this.gemeinde = null;
         this.form.form.markAsPristine();
         this.form.form.markAsUntouched();
+        this.form.resetForm();
     }
 
     public getCalculatedStatus(zahlungsauftrag: TSZahlungsauftrag): any {

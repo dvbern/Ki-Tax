@@ -196,12 +196,30 @@ export class LastenausgleichTSService {
         );
     }
 
-    public latsDocxErstellen(antrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer, sprache: TSSprache):
-        Observable<any> {
+    public latsDocxErstellen(
+        antrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
+        sprache: TSSprache,
+        betreuungsstundenPrognose: number
+    ): Observable<any> {
         return this.http.post(
             `${this.API_BASE_URL}/docx-erstellen/${encodeURIComponent(antrag.id)}/${sprache}`,
-            {},
+            {betreuungsstundenPrognose},
             {responseType: 'blob'}
+        );
+    }
+
+    public zurueckInPruefung(
+        container: TSLastenausgleichTagesschuleAngabenGemeindeContainer
+    ): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
+        return this.http.put(
+            `${this.API_BASE_URL}/zurueck-in-pruefung`,
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
+        ).pipe(
+            map(restContainer => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
+                new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),
+                restContainer),
+            ),
+            tap(parsedContainer => this.updateLATSAngabenGemeindeContainerStore(parsedContainer.id)),
         );
     }
 }

@@ -22,6 +22,7 @@ import {SharedModule} from '../shared/shared.module';
 import {FerienbetreuungModule} from './ferienbetreuung/ferienbetreuung.module';
 import {GemeindeAntraegeRoutingModule} from './gemeinde-antraege-routing/gemeinde-antraege-routing.module';
 import {GemeindeAntraegeComponent} from './gemeinde-antraege/gemeinde-antraege.component';
+import {GemeindeKennzahlenModule} from './gemeinde-kennzahlen/gemeinde-kennzahlen.module';
 import {LastenausgleichTSModule} from './lastenausgleich-ts/lastenausgleich-ts.module';
 import {VerlaufComponent} from './lastenausgleich-ts/verlauf/verlauf.component';
 import {UnsavedChangesService} from './services/unsaved-changes.service';
@@ -35,6 +36,7 @@ import {UnsavedChangesService} from './services/unsaved-changes.service';
         CommonModule,
         LastenausgleichTSModule,
         FerienbetreuungModule,
+        GemeindeKennzahlenModule,
         GemeindeAntraegeRoutingModule,
         SharedModule,
         FormsModule,
