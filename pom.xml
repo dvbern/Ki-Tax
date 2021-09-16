@@ -32,8 +32,6 @@
 
     <properties>
 
-        <dvb.git.serverId>git.dvbern.ch</dvb.git.serverId>
-
         <!-- Wird ggf. im Profil "development-mode' ueberschrieben -->
         <skip-code-validation>false</skip-code-validation>
         <surefire.excludedGroups>ch.dvbern.ebegu.test.IntegrationTest</surefire.excludedGroups>
