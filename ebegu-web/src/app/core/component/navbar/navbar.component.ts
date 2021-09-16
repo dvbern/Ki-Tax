@@ -95,12 +95,9 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                                 [
                                     TSRole.ADMIN_INSTITUTION,
                                     TSRole.SACHBEARBEITER_INSTITUTION,
+                                    TSRole.ADMIN_TRAEGERSCHAFT,
+                                    TSRole.SACHBEARBEITER_TRAEGERSCHAFT
                                 ]) && !isTSUser)) ||
-                        // TODO: shouldn't this be in permission?
-                        this.authServiceRS.isOneOfRoles([
-                            TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
-                            TSRole.ADMIN_TRAEGERSCHAFT,
-                        ]) ||
                         this.authServiceRS.isOneOfRoles(PERMISSIONS.FERIENBETREUUNG),
                     );
                 },
