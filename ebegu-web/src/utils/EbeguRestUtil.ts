@@ -4017,6 +4017,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.primaryColor = data.primaryColor;
         publicAppConfigTS.primaryColorDark = data.primaryColorDark;
         publicAppConfigTS.primaryColorLight = data.primaryColorLight;
+        publicAppConfigTS.logoFileName = data.logoFileName;
         publicAppConfigTS.zahlungentestmode = data.zahlungentestmode;
         publicAppConfigTS.personenSucheDisabled = data.personenSucheDisabled;
         publicAppConfigTS.kitaxHost = data.kitaxHost;

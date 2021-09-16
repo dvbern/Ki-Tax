@@ -1688,6 +1688,7 @@
     "PRIMARY_COLOR": "Farbe Primary",
     "PRIMARY_COLOR_DARK": "Farbe Primary Dark",
     "PRIMARY_COLOR_LIGHT": "Farbe Primary Light",
+    "LOGO_FILE_NAME": "Logo File Name",
     "DUMMY_LOGIN_ENABLED": "Dummylogin activé",
     "EVALUATOR_DEBUG_ENABLED": "Evaluator-Debug activé",
     "STADT_BERN_ASIV_CONFIGURED": "La configuration de la ville de Berne pour les règles OPIS est définie, les périodes seront calculées après le passage à OPIS",

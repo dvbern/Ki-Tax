@@ -35,6 +35,7 @@ public class JaxPublicAppConfig {
 	private String primaryColor;
 	private String primaryColorDark;
 	private String primaryColorLight;
+	private String logoFileName;
 
 
 	public JaxPublicAppConfig(
@@ -59,7 +60,8 @@ public class JaxPublicAppConfig {
 		BigDecimal lastenausgleichTagesschulenAutoZweitpruefungFr,
 		String primaryColor,
 		String primaryColorDark,
-		String primaryColorLight
+		String primaryColorLight,
+		String logoFileName
 	) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
@@ -83,6 +85,7 @@ public class JaxPublicAppConfig {
 		this.primaryColor = primaryColor;
 		this.primaryColorDark = primaryColorDark;
 		this.primaryColorLight = primaryColorLight;
+		this.logoFileName = logoFileName;
 	}
 
 	public String getCurrentNode() {
@@ -259,5 +262,13 @@ public class JaxPublicAppConfig {
 
 	public void setPrimaryColorLight(String primaryColorLight) {
 		this.primaryColorLight = primaryColorLight;
+	}
+
+	public String getLogoFileName() {
+		return logoFileName;
+	}
+
+	public void setLogoFileName(String logoFileName) {
+		this.logoFileName = logoFileName;
 	}
 }

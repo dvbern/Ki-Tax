@@ -1688,6 +1688,7 @@
     "PRIMARY_COLOR": "Farbe Primary",
     "PRIMARY_COLOR_DARK": "Farbe Primary Dark",
     "PRIMARY_COLOR_LIGHT": "Farbe Primary Light",
+    "LOGO_FILE_NAME": "Logo File Name",
     "DUMMY_LOGIN_ENABLED": "Dummylogin aktiviert",
     "EVALUATOR_DEBUG_ENABLED": "Evaluator-Debug aktiviert",
     "STADT_BERN_ASIV_CONFIGURED": "Die Konfiguration der Stadt Bern fuer die ASIV Regeln ist definiert, die Zeiträume nach dem Wechsel zu ASIV werden berechnet",

@@ -275,6 +275,9 @@ public class ApplicationPropertyResource {
 		ApplicationProperty primaryColorLight  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR_LIGHT)
 				.orElseThrow(() -> notFound);
+		ApplicationProperty logoFileName  =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LOGO_FILE_NAME)
+				.orElseThrow(() -> notFound);
 
 		String nodeName = "";
 		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDeConverted;
@@ -314,7 +317,8 @@ public class ApplicationPropertyResource {
 			lastenausgleichTagesschulenAutoZweitpruefungFrConverted,
 			primaryColor.getValue(),
 			primaryColorDark.getValue(),
-			primaryColorLight.getValue()
+			primaryColorLight.getValue(),
+			logoFileName.getValue()
 		);
 		return Response.ok(pubAppConf).build();
 	}
