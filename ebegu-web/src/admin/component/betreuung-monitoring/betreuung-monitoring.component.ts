@@ -18,13 +18,15 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
 
     public dataSource: MatTableDataSource<TSBetreuungMonitoring>;
     public refNummerTooShort: boolean = false;
-    public refNumerValue: string = undefined;
-    public benutzerValue: string = undefined;
+    public refNumerValue: string;
+    public benutzerValue: string;
 
     @ViewChild(MatSort, {static: true}) public sort: MatSort;
     @ViewChild(MatPaginator, {static: true}) public paginator: MatPaginator;
 
     private readonly MIN_REF_NUMMER_SIZE = 17;
+    private keyupTimeout: NodeJS.Timeout;
+    private readonly timeoutMS = 700;
 
     public constructor(
         private readonly betreuungMonitoringRS: BetreuungMonitoringRS,
@@ -52,15 +54,23 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
 
     public doFilterRefnummer(value: string): void {
         if (value.length < this.MIN_REF_NUMMER_SIZE) {
+            this.refNumerValue = null;
             return;
         }
         this.refNumerValue = value;
-        this.passFilterToServer();
+        this.applyFilter();
     }
 
     public doFilterBenutzende(value: string): void {
         this.benutzerValue = value;
-        this.passFilterToServer();
+        this.applyFilter();
+    }
+
+    private applyFilter(): void {
+        clearTimeout(this.keyupTimeout);
+        this.keyupTimeout = setTimeout(() => {
+            this.passFilterToServer();
+        }, this.timeoutMS);
     }
 
     private passFilterToServer(): void {

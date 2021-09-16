@@ -36,9 +36,7 @@ import javax.ws.rs.core.MediaType;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungMonitoring;
-import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.services.BetreuungMonitoringService;
-import io.swagger.annotations.ApiOperation;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 

@@ -22,6 +22,7 @@ import {map} from 'rxjs/operators';
 import {TSBetreuungMonitoring} from '../../models/TSBetreuungMonitoring';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
+import {EbeguUtil} from '../../utils/EbeguUtil';
 
 @Injectable({
     providedIn: 'root',
@@ -40,8 +41,12 @@ export class BetreuungMonitoringRS {
         return 'BetreuungMonitoringRS';
     }
 
-    public getBetreuungMonitoringBeiRefNummer(refNummer: string, benutzer: string): Observable<TSBetreuungMonitoring[]> {
-        return this.$http.get<any[]>(`${this.serviceURL}/${encodeURIComponent(refNummer)}/${encodeURIComponent(benutzer)}`)
+    public getBetreuungMonitoringBeiRefNummer(
+        refNummer: string,
+        benutzer: string,
+    ): Observable<TSBetreuungMonitoring[]> {
+        return this.$http.get<any[]>(`${this.serviceURL}/${EbeguUtil.isNotNullOrUndefined(refNummer) ?
+            refNummer : ''}/${EbeguUtil.isNotNullOrUndefined(benutzer) ? benutzer : ''}`)
             .pipe(map(response => {
                 return this.ebeguRestUtil.parseTSBetreuungMonitoringList(response);
             }));
