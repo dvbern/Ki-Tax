@@ -1077,7 +1077,7 @@ public final class TestDataUtil {
 		gesuchsperiode.setMandant(getMandantKantonBern(persistence));
 		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(yearFrom, Month.AUGUST, 1), LocalDate.of(yearTo,
 			Month.JULY, 31)));
-		return gesuchsperiode;
+		return persistence.persist(gesuchsperiode);
 	}
 
 	@Nonnull
