@@ -42,4 +42,7 @@ public interface ExternalClientService {
 
 	@Nonnull
 	Collection<InstitutionExternalClient> getInstitutionExternalClientForInstitution(@Nonnull Institution institution);
+
+	@Nonnull
+	Collection<ExternalClient> getAll();
 }

@@ -1402,6 +1402,15 @@ export class EbeguRestUtil {
         return tsInstitutionExternalClients;
     }
 
+    public parseExternalClientList(data: Array<any>): TSExternalClient[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseExternalClient(item))
+            : [this.parseExternalClient(data)];
+    }
+
     public parseExternalClient(data: any): TSExternalClient {
         const tsExternalClient = new TSExternalClient();
         this.parseAbstractEntity(tsExternalClient, data);

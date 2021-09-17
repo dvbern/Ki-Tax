@@ -35,7 +35,9 @@ import javax.ws.rs.core.MediaType;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungMonitoring;
+import ch.dvbern.ebegu.api.dtos.JaxExternalClient;
 import ch.dvbern.ebegu.services.BetreuungMonitoringService;
+import ch.dvbern.ebegu.services.ExternalClientService;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
@@ -48,6 +50,9 @@ public class BetreuungMonitoringResource {
 	private BetreuungMonitoringService betreuungMonitoringService;
 
 	@Inject
+	private ExternalClientService externalClientService;
+
+	@Inject
 	private JaxBConverter converter;
 
 	@Nonnull
@@ -58,9 +63,21 @@ public class BetreuungMonitoringResource {
 	public List<JaxBetreuungMonitoring> getAllBetreuungMonitoringInfosBeiCriteria(
 		@QueryParam("refNummer") @Nullable String referenzNummer,
 		@QueryParam("benutzer") @Nullable String benutzer
-		) {
+	) {
 		return betreuungMonitoringService.getAllBetreuungMonitoringBeiCriteria(referenzNummer, benutzer).stream()
 			.map(betreuungMonitoring -> converter.betreuungMonitoringToJax(betreuungMonitoring))
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	@GET
+	@Path("/allExternalClient")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed(SUPER_ADMIN)
+	public List<JaxExternalClient> getAllExternalClient() {
+		return externalClientService.getAll().stream()
+			.map(externalClient -> converter.externalClientToJAX(externalClient))
 			.collect(Collectors.toList());
 	}
 }

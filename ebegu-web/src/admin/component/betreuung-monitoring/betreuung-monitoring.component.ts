@@ -3,6 +3,8 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {TSBetreuungMonitoring} from '../../../models/TSBetreuungMonitoring';
+import {TSExternalClient} from '../../../models/TSExternalClient';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {BetreuungMonitoringRS} from '../../service/betreuungMonitoringRS.rest';
 
 @Component({
@@ -19,6 +21,7 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
     public refNummerTooShort: boolean = false;
     public refNumerValue: string;
     public benutzerValue: string;
+    public externalClientNames: string;
 
     @ViewChild(MatSort, {static: true}) public sort: MatSort;
     @ViewChild(MatPaginator, {static: true}) public paginator: MatPaginator;
@@ -35,6 +38,7 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
 
     public ngOnInit(): void {
         this.passFilterToServer();
+        this.initExternalClientList();
         this.sortTable();
     }
 
@@ -74,7 +78,7 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
 
     private passFilterToServer(): void {
         this.dataSource = new MatTableDataSource<TSBetreuungMonitoring>([]);
-        this.betreuungMonitoringRS.getBetreuungMonitoringBeiRefNummer(this.refNumerValue, this.benutzerValue)
+        this.betreuungMonitoringRS.getBetreuungMonitoring(this.refNumerValue, this.benutzerValue)
             .subscribe((result: TSBetreuungMonitoring[]) => {
                     this.assignResultToDataSource(result);
                     this.changeDetectorRef.markForCheck();
@@ -97,5 +101,18 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
 
     public validateRefNummber(refNummer: string): void {
         this.refNummerTooShort = refNummer.length < this.MIN_REF_NUMMER_SIZE && refNummer.length !== 0;
+    }
+
+    private initExternalClientList(): void {
+        this.betreuungMonitoringRS.getAllExternalClient()
+            .subscribe((result: TSExternalClient[]) => {
+                    result.forEach(externalClient => EbeguUtil.isNotNullOrUndefined(this.externalClientNames) ?
+                        this.externalClientNames =
+                            `${this.externalClientNames},${externalClient.clientName}` :
+                        this.externalClientNames = externalClient.clientName);
+                    this.changeDetectorRef.markForCheck();
+                },
+                () => {
+                });
     }
 }

@@ -20,6 +20,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TSBetreuungMonitoring} from '../../models/TSBetreuungMonitoring';
+import {TSExternalClient} from '../../models/TSExternalClient';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {EbeguUtil} from '../../utils/EbeguUtil';
@@ -41,7 +42,7 @@ export class BetreuungMonitoringRS {
         return 'BetreuungMonitoringRS';
     }
 
-    public getBetreuungMonitoringBeiRefNummer(
+    public getBetreuungMonitoring(
         refNummer: string,
         benutzer: string,
     ): Observable<TSBetreuungMonitoring[]> {
@@ -53,7 +54,13 @@ export class BetreuungMonitoringRS {
             {
                 params,
             }).pipe(map(response => {
-                return this.ebeguRestUtil.parseTSBetreuungMonitoringList(response);
-            }));
+            return this.ebeguRestUtil.parseTSBetreuungMonitoringList(response);
+        }));
+    }
+
+    public getAllExternalClient(): Observable<TSExternalClient[]> {
+        return this.$http.get<any[]>(`${this.serviceURL}/allExternalClient`).pipe(map(response => {
+            return this.ebeguRestUtil.parseExternalClientList(response);
+        }));
     }
 }
