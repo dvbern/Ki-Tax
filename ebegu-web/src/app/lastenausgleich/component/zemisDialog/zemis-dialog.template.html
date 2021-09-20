@@ -29,10 +29,11 @@
                 <dv-error-messages [errorObject]="form?.form.get('download-year')?.errors"
                                    class="error"></dv-error-messages>
             </dv-input-container-x>
-            <div class="form-group margin-top-20 margin-bottom-20" *ngIf="upload">
+            <div class="form-group-upload margin-top-20 margin-bottom-20" *ngIf="upload">
                 <label for="file"></label>
                 <input type="file"
                        id="file"
+                       class="no-outline-on-mouse-focus"
                        tabindex="0"
                        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                        (change)="handleFileInput($event)">

@@ -209,6 +209,7 @@ public class ReportResourceAsync {
 	public Response getKantonReportExcel(
 		@QueryParam("auswertungVon") @Nonnull String auswertungVon,
 		@QueryParam("auswertungBis") @Nonnull String auswertungBis,
+		@QueryParam("kantonSelbstbehalt") @Nullable BigDecimal kantonSelbstbehalt,
 		@Context HttpServletRequest request,
 		@Context UriInfo uriInfo)
 		throws EbeguRuntimeException {
@@ -235,6 +236,7 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_KANTON,
 			dateAuswertungVon,
 			dateAuswertungBis,
+			kantonSelbstbehalt,
 			null,
 			LocaleThreadLocal.get()
 		);

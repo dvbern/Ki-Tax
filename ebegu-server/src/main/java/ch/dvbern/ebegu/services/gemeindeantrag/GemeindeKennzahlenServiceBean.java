@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.services.gemeindeantrag;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -51,6 +52,7 @@ import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
@@ -208,6 +210,9 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 		}
 
 		if (status != null) {
+			if (!EnumUtil.isOneOf(status, GemeindeKennzahlenStatus.values())) {
+				return new ArrayList<>();
+			}
 			predicates.add(createStatusPredicate(cb, root, status));
 		}
 

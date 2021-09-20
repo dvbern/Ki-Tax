@@ -4,6 +4,23 @@ pipeline {
 	agent any
 	triggers {
 		pollSCM('H 22 * * *')
+        gitlab(
+            branchFilterType: 'All',
+            triggerOnPush: true,
+            triggerOnMergeRequest: false,
+            triggerOpenMergeRequestOnPush: "never",
+            triggerOnNoteRequest: true,
+            noteRegex: "Jenkins please retry a build",
+            skipWorkInProgressMergeRequest: true,
+            ciSkip: false,
+            setBuildDescription: true,
+            addNoteOnMergeRequest: true,
+            addCiMessage: true,
+            addVoteOnMergeRequest: true,
+            acceptMergeRequestOnSuccess: false,
+            includeBranchesSpec: "*",
+            excludeBranchesSpec: "",
+        )
 	}
 	options {
 		// Only keep the most recent build

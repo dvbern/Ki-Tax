@@ -49,6 +49,7 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "belegungTagesschule")
 	@SortNatural
+	@Nonnull
 	private Set<BelegungTagesschuleModul> belegungTagesschuleModule = new TreeSet<>();
 
 	@NotNull
@@ -89,11 +90,12 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 		return true;
 	}
 
+	@Nonnull
 	public Set<BelegungTagesschuleModul> getBelegungTagesschuleModule() {
 		return belegungTagesschuleModule;
 	}
 
-	public void setBelegungTagesschuleModule(Set<BelegungTagesschuleModul> belegungTagesschuleModule) {
+	public void setBelegungTagesschuleModule(@Nonnull Set<BelegungTagesschuleModul> belegungTagesschuleModule) {
 		this.belegungTagesschuleModule = belegungTagesschuleModule;
 	}
 

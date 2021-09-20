@@ -26,6 +26,7 @@ import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
+import * as moment from 'moment';
 import {BehaviorSubject, combineLatest, from, NEVER, Observable, of} from 'rxjs';
 import {catchError, concatMap, filter, map, mergeMap, tap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -79,6 +80,7 @@ export class GemeindeAntraegeComponent implements OnInit {
 
     public antragList$: Observable<DVAntragListItem[]>;
     public gesuchsperioden: TSGesuchsperiode[];
+    public gesuchsperiodenFiltered: TSGesuchsperiode[];
     public formGroup: FormGroup;
     public totalItems = 0;
     public gemeinden: TSGemeinde[];
@@ -125,7 +127,11 @@ export class GemeindeAntraegeComponent implements OnInit {
         });
         this.loadAntragList();
         this.loadGemeinden();
-        this.gesuchsperiodenService.getAllActiveGesuchsperioden().then(result => this.gesuchsperioden = result);
+        this.gesuchsperiodenService.getAllActiveGesuchsperioden().then(result => {
+            this.gesuchsperioden = result;
+            // init filtered GS for Ferienbetreuungen
+            this.updateGesuchsperioden();
+        });
         this.initAntragTypes();
         this.checkDeletePossible$();
     }
@@ -280,6 +286,38 @@ export class GemeindeAntraegeComponent implements OnInit {
         return types;
     }
 
+    public getGesuchsperiodenOptions(): TSGesuchsperiode[] {
+        if (this.ferienBetreuungSelected()) {
+            return this.gesuchsperiodenFiltered;
+        }
+        return this.gesuchsperioden;
+    }
+
+    private updateGesuchsperioden(): void {
+        const startDatePeriode2020 = moment('01.08.2020', 'DD-MM-YYYY');
+
+        if (!this.gesuchsperiodenFiltered) {
+            this.gesuchsperiodenFiltered =
+                this.gesuchsperioden.filter(gesuchsperiode => !gesuchsperiode.isBefore(startDatePeriode2020));
+        }
+
+        if (this.isSelectedGesuchsperiodeBefore(startDatePeriode2020)) {
+            this.formGroup.get('periode').setValue(null);
+        }
+    }
+
+    private isSelectedGesuchsperiodeBefore(date: moment.Moment): boolean {
+        const selectedGesuchsperiodeId = this.formGroup?.get('periode').value;
+
+        if (!selectedGesuchsperiodeId) {
+            return false;
+        }
+
+        const selectedGesuchsperiode =
+            this.gesuchsperioden.find(gesuchsperiode => gesuchsperiode.id === selectedGesuchsperiodeId);
+        return selectedGesuchsperiode?.isBefore(date);
+    }
+
     public createAntrag(): void {
         if (!this.formGroup.valid) {
             this.triedSending = true;
@@ -343,6 +381,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         const gemeindeControl = this.formGroup.get('gemeinde');
         if (this.ferienBetreuungSelected()) {
             gemeindeControl.setValidators([Validators.required]);
+            this.updateGesuchsperioden();
         } else {
             gemeindeControl.clearValidators();
         }

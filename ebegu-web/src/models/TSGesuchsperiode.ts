@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {Moment} from 'moment';
 import {TSGesuchsperiodeStatus} from './enums/TSGesuchsperiodeStatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import {TSDateRange} from './types/TSDateRange';
@@ -65,5 +66,9 @@ export class TSGesuchsperiode extends TSAbstractDateRangedEntity {
 
     public getBasisJahrPlus2(): number {
         return this.getBasisJahr() + 2;
+    }
+
+    public isBefore(moment: Moment): boolean {
+        return this.gueltigkeit.gueltigBis.isBefore(moment);
     }
 }

@@ -20,6 +20,7 @@ import {FormGroup} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
+import {Moment} from 'moment';
 import {BehaviorSubject} from 'rxjs';
 import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 import {TSFerienbetreuungAbstractAngaben} from '../../../models/gemeindeantrag/TSFerienbetreuungAbstractAngaben';
@@ -60,6 +61,11 @@ export abstract class AbstractFerienbetreuungFormular {
     protected abstract setupForm(angabe: TSFerienbetreuungAbstractAngaben): void;
 
     protected abstract setBasicValidation(): void;
+
+    public addOneMonthToMoment(moment: Moment): string {
+        const momentClone = moment?.clone();
+        return momentClone?.add(1, 'M').format('DD.MM.YYYY');
+    }
 
     protected removeAllValidators(): void {
         for (const key in this.form.controls) {

@@ -30,7 +30,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.BetreuungMonitoring;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -80,74 +79,68 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 		@Nonnull LocalDateTime eventTime,
 		@Nonnull EventType eventType,
 		@Nonnull String key,
-		@Nonnull String dto, @Nonnull String clientName) {
-		Processing processing = attemptProcessing(eventTime, key, clientName);
+		@Nonnull String dto,
+		@Nonnull String clientName) {
+
+		EventMonitor eventMonitor = new EventMonitor(betreuungMonitoringService, eventTime, key, clientName);
+		Processing processing = attemptProcessing(eventMonitor);
 
 		if (!processing.isProcessingSuccess()) {
 			String message = processing.getMessage();
 			LOG.warn("Stornierung Event für Betreuung mit RefNr: {} nicht verarbeitet: {}", key, message);
-			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(key,
-				clientName,
-				"Stornierung Event wurde nicht verarbeitet: " + message,
-				LocalDateTime.now()));
+			eventMonitor.record("Stornierung Event wurde nicht verarbeitet: " + message);
 		}
 	}
 
 	@Nonnull
-	protected Processing attemptProcessing(
-		@Nonnull LocalDateTime eventTime,
-		@Nonnull String refNummer,
-		@Nonnull String clientName) {
+	protected Processing attemptProcessing(@Nonnull EventMonitor eventMonitor) {
 
-		return betreuungService.findBetreuungByBGNummer(refNummer, false)
-			.map(betreuung -> processEventForStornierung(eventTime, refNummer, clientName, betreuung))
+		return betreuungService.findBetreuungByBGNummer(eventMonitor.getRefnr(), false)
+			.map(betreuung -> processEventForStornierung(eventMonitor, betreuung))
 			.orElseGet(() -> Processing.failure("Betreuung nicht gefunden."));
 	}
 
-	private Processing processEventForStornierung(
-		LocalDateTime eventTime,
-		String refNummer,
-		String clientName,
-		Betreuung betreuung) {
+	@Nonnull
+	private Processing processEventForStornierung(@Nonnull EventMonitor eventMonitor, @Nonnull Betreuung betreuung) {
+
 		if (betreuung.extractGesuchsperiode().getStatus() != GesuchsperiodeStatus.AKTIV) {
 			return Processing.failure("Die Gesuchsperiode ist nicht aktiv.");
 		}
 
-		if (betreuung.getTimestampMutiert() != null && betreuung.getTimestampMutiert().isAfter(eventTime)) {
+		if (eventMonitor.isTooLate(betreuung.getTimestampMutiert())) {
 			return Processing.failure("Die Betreuung wurde verändert, nachdem das BetreuungEvent generiert wurde.");
 		}
 
-		return betreuungEventHelper.getExternalClient(clientName, betreuung)
-			.map(externalClient -> processEventForExternalClient(betreuung, externalClient.getGueltigkeit(),
-				refNummer, clientName))
-			.orElseGet(() -> betreuungEventHelper.clientNotFoundFailure(clientName, betreuung));
+		return betreuungEventHelper.getExternalClient(eventMonitor.getClientName(), betreuung)
+			.map(client -> processEventForExternalClient(eventMonitor, betreuung, client.getGueltigkeit()))
+			.orElseGet(() -> betreuungEventHelper.clientNotFoundFailure(eventMonitor.getClientName(), betreuung));
 	}
 
+	@Nonnull
 	private Processing processEventForExternalClient(
-		Betreuung betreuung,
-		DateRange clientGueltigkeit,
-		String refNummer,
-		String clientName) {
+		@Nonnull EventMonitor eventMonitor,
+		@Nonnull Betreuung betreuung,
+		@Nonnull DateRange clientGueltigkeit) {
+
 		DateRange gesuchsperiode = betreuung.extractGesuchsperiode().getGueltigkeit();
 		Optional<DateRange> overlap = gesuchsperiode.getOverlap(clientGueltigkeit);
 		if (overlap.isEmpty()) {
-			return Processing.failure("Der Client hat innerhalb der Periode keinen Berechtigung.");
+			return Processing.failure("Der Client hat innerhalb der Periode keine Berechtigung.");
 		}
 
 		//Betreuung in Status Warten, entweder stornieren oder abweisen:
 		if (betreuung.getBetreuungsstatus() == Betreuungsstatus.WARTEN) {
-			return handleStatusAenderung(betreuung, refNummer, clientName);
+			return handleStatusAenderung(eventMonitor, betreuung);
 		}
 
 		if (isMutationsMitteilungStatus(betreuung.getBetreuungsstatus())) {
+			String refnr = eventMonitor.getRefnr();
 			//Betreuung schon Bestaetigt => MutationMitteilung mit Storniereung erfassen
-			Betreuungsmitteilung betreuungsmitteilung = createBetreuungsStornierenMitteilung(betreuung, refNummer);
+			Betreuungsmitteilung betreuungsmitteilung = createBetreuungsStornierenMitteilung(betreuung, refnr);
 			mitteilungService.replaceBetreungsmitteilungen(betreuungsmitteilung);
-			LOG.info("Mutationsmeldung  zum Stornieren der Betreuung erstellt mit RefNr: {}", refNummer);
-			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(refNummer,
-				clientName,
-				"Mutationsmeldung zum Stornieren der Betreuung erstellt",
-				LocalDateTime.now()));
+			LOG.info("Mutationsmeldung zum Stornieren der Betreuung erstellt mit RefNr: {}", refnr);
+			eventMonitor.record("Mutationsmeldung zum Stornieren der Betreuung erstellt");
+
 			return Processing.success();
 		}
 		return Processing.failure(
@@ -155,30 +148,28 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 	}
 
 	@Nonnull
-	private Processing handleStatusAenderung(Betreuung betreuung, String refNummer, String clientName) {
+	private Processing handleStatusAenderung(@Nonnull EventMonitor eventMonitor, @Nonnull Betreuung betreuung) {
 		// Mutation => stornieren, sonst abweisen
 		if (betreuung.getVorgaengerId() != null) {
 			betreuung.setDatumBestaetigung(LocalDate.now());
-			betreuung.getBetreuungspensumContainers().stream().forEach(
-				betreuungspensumContainer -> {
+			betreuung.getBetreuungspensumContainers().forEach(betreuungspensumContainer -> {
 					betreuungspensumContainer.getBetreuungspensumJA().setPensum(BigDecimal.ZERO);
 					betreuungspensumContainer.getBetreuungspensumJA().setNichtEingetreten(true);
 				}
 			);
 			betreuung.setBetreuungsstatus(Betreuungsstatus.STORNIERT);
-			betreuungService.saveBetreuung(betreuung, false, clientName);
-			LOG.info("Betreuung mit RefNr: {} wurde automatisch storniert", refNummer);
-			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(refNummer,
-				clientName,
-				"Betreuung wurde automatisch storniert",
-				LocalDateTime.now()));
+			//noinspection ResultOfMethodCallIgnored
+			betreuungService.saveBetreuung(betreuung, false, eventMonitor.getClientName());
+			LOG.info("Betreuung mit RefNr: {} wurde automatisch storniert", eventMonitor.getRefnr());
+			eventMonitor.record("Betreuung wurde automatisch storniert");
 		} else {
 			// TODO: um einen Platz zu abweisen braucht man einen Grund geben
 			// betreuung.setGrundAblehnung(??????);
 			//this.betreuungService.betreuungPlatzAbweisen(betreuung);
 			//LOG.info("Betreuung mit RefNr: {} automatisch abgewiesen", refNummer);
-			LOG.info("Die Betreuung befindet sich in einen Status wo es sollte abgewiesen sein. Dieser Use-case ist noch "
-				+ "nicht gedeckt.");
+			LOG.info(
+				"Die Betreuung befindet sich in einen Status wo es sollte abgewiesen sein. Dieser Use-case ist noch "
+					+ "nicht gedeckt.");
 			return Processing.failure(
 				"Die Betreuung befindet sich in einen Status wo es sollte abgewiesen sein. Dieser Use-case ist noch "
 					+ "nicht gedeckt.");
@@ -188,7 +179,8 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 
 	@Nonnull
 	private Betreuungsmitteilung createBetreuungsStornierenMitteilung(
-		@Nonnull Betreuung betreuung, String refNummer) {
+		@Nonnull Betreuung betreuung,
+		@Nonnull String refNummer) {
 
 		Gesuch gesuch = betreuung.extractGesuch();
 		Locale locale = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale();
