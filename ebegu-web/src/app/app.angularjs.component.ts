@@ -24,7 +24,6 @@ export class AppAngularjsComponent implements IController {
     public constructor(
         private readonly $element: IAugmentedJQuery,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
-        private readonly colorService: ColorService,
     ) {
     }
 
@@ -35,8 +34,14 @@ export class AppAngularjsComponent implements IController {
                     .css('background-color', response.backgroundColor);
                 this.$element.find('.environment')
                     .css('display', response.devmode ? 'inline' : 'none');
+                this.$element.find('.logo-bern')
+                    .css('background-image', this.getBackgroundImage(response.logoFileName));
+                ColorService.changeColors(response);
             });
-        this.colorService.registerColorChangeForMandant();
+    }
+
+    public getBackgroundImage(filename: string): string {
+        return `url("assets/images/${filename}")`;
     }
 }
 

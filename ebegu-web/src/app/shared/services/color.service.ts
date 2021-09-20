@@ -17,32 +17,22 @@
 
 import {Injectable} from '@angular/core';
 import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
-import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ColorService {
 
-    public constructor(
-        private applicationPropertyRS: ApplicationPropertyRS,
-    ) {
+    public constructor() {
     }
 
     private static changeColor(color: string, cssVariable: string): void {
         document.documentElement.style.setProperty(cssVariable, color);
     }
 
-    private static changeColors(config: TSPublicAppConfig): void {
+    public static changeColors(config: TSPublicAppConfig): void {
         ColorService.changeColor(config.primaryColor, '--primary-color');
         ColorService.changeColor(config.primaryColorDark, '--primary-color-dark');
         ColorService.changeColor(config.primaryColorLight, '--primary-color-light');
-    }
-
-    public registerColorChangeForMandant(): void {
-        this.applicationPropertyRS.getPublicPropertiesCached()
-            .then(config => {
-                ColorService.changeColors(config);
-            });
     }
 }
