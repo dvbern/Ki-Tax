@@ -25,3 +25,6 @@ VALUES (UNHEX(REPLACE('be7d2239-16b3-11ec-a125-f4390979fa3e', '-','')), '2021-09
 
 INSERT INTO application_property (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, name, value)
 VALUES (UNHEX(REPLACE('6019fed2-16f4-11ec-a125-f4390979fa3e', '-','')), '2021-09-16 12:00:00', '2021-09-16 12:00:00', 'flyway', 'flyway', 0, null, 'LOGO_FILE_NAME', 'logo-kibon-bern.svg');
+
+INSERT INTO application_property (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, name, value)
+VALUES (UNHEX(REPLACE('141844df-1a0a-11ec-bb3b-f4390979fa3e', '-','')), '2021-09-16 12:00:00', '2021-09-16 12:00:00', 'flyway', 'flyway', 0, null, 'LOGO_WHITE_FILE_NAME', 'logo-kibon-white-bern.svg');

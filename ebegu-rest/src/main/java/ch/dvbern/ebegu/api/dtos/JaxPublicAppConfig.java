@@ -36,6 +36,7 @@ public class JaxPublicAppConfig {
 	private String primaryColorDark;
 	private String primaryColorLight;
 	private String logoFileName;
+	private String logoFileNameWhite;
 
 
 	public JaxPublicAppConfig(
@@ -61,7 +62,8 @@ public class JaxPublicAppConfig {
 		String primaryColor,
 		String primaryColorDark,
 		String primaryColorLight,
-		String logoFileName
+		String logoFileName,
+		String logoFileNameWhite
 	) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
@@ -86,6 +88,7 @@ public class JaxPublicAppConfig {
 		this.primaryColorDark = primaryColorDark;
 		this.primaryColorLight = primaryColorLight;
 		this.logoFileName = logoFileName;
+		this.logoFileNameWhite = logoFileNameWhite;
 	}
 
 	public String getCurrentNode() {
@@ -270,5 +273,13 @@ public class JaxPublicAppConfig {
 
 	public void setLogoFileName(String logoFileName) {
 		this.logoFileName = logoFileName;
+	}
+
+	public String getLogoFileNameWhite() {
+		return logoFileNameWhite;
+	}
+
+	public void setLogoFileNameWhite(String logoFileNameWhite) {
+		this.logoFileNameWhite = logoFileNameWhite;
 	}
 }

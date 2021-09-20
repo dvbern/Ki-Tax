@@ -26,6 +26,7 @@ export class TSPublicAppConfig {
     public primaryColorDark: string;
     public primaryColorLight: string;
     public logoFileName: string;
+    public logoFileNameWhite: string;
     public zahlungentestmode: boolean;
     public personenSucheDisabled: boolean;
     public kitaxHost: string;

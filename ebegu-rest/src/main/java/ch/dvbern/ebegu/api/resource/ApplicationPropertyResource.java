@@ -278,6 +278,9 @@ public class ApplicationPropertyResource {
 		ApplicationProperty logoFileName  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LOGO_FILE_NAME)
 				.orElseThrow(() -> notFound);
+		ApplicationProperty logoFileNameWhite  =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LOGO_WHITE_FILE_NAME)
+				.orElseThrow(() -> notFound);
 
 		String nodeName = "";
 		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDeConverted;
@@ -318,7 +321,8 @@ public class ApplicationPropertyResource {
 			primaryColor.getValue(),
 			primaryColorDark.getValue(),
 			primaryColorLight.getValue(),
-			logoFileName.getValue()
+			logoFileName.getValue(),
+			logoFileNameWhite.getValue()
 		);
 		return Response.ok(pubAppConf).build();
 	}

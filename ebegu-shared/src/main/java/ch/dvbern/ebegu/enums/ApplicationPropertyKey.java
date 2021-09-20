@@ -143,4 +143,9 @@ public enum ApplicationPropertyKey {
 	 */
 	LOGO_FILE_NAME,
 
+	/**
+	 * Filename des weissen Logos, welches in /assets/images/ ordner abgelegt ist
+	 */
+	LOGO_WHITE_FILE_NAME,
+
 }
