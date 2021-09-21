@@ -269,6 +269,18 @@ public class KantonExcelConverter implements ExcelConverter {
 		excelMerger.addValue(
 			MergeFieldKanton.monatsendeTitle,
 			ServerMessageUtil.getMessage("Reports_monatsendeTitle", locale));
+		mergeFields.add(MergeFieldKanton.tageMonatTitle.getMergeField());
+		excelMerger.addValue(
+			MergeFieldKanton.tageMonatTitle,
+			ServerMessageUtil.getMessage("Reports_tageMonatTitle", locale));
+		mergeFields.add(MergeFieldKanton.tageIntervallTitle.getMergeField());
+		excelMerger.addValue(
+			MergeFieldKanton.tageIntervallTitle,
+			ServerMessageUtil.getMessage("Reports_tageIntervallTitle", locale));
+		mergeFields.add(MergeFieldKanton.anteilMonatKantonTitle.getMergeField());
+		excelMerger.addValue(
+			MergeFieldKanton.anteilMonatKantonTitle,
+			ServerMessageUtil.getMessage("Reports_anteilMonatKantonTitle", locale));
 		mergeFields.add(MergeFieldKanton.platzbelegungTageTitle.getMergeField());
 		excelMerger.addValue(
 			MergeFieldKanton.platzbelegungTageTitle,
