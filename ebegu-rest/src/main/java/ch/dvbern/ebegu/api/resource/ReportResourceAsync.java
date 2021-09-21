@@ -800,7 +800,7 @@ public class ReportResourceAsync {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public Response getMahlzeitenverguenstigungReportExcel(
+	public Response getGemeindenReportExcel(
 		@Context HttpServletRequest request,
 		@Context UriInfo uriInfo)
 		throws EbeguRuntimeException {

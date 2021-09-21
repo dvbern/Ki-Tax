@@ -120,19 +120,10 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 
 	@Nonnull
 	@Override
-	public Optional<GemeindeKennzahlen> findAbgeschlosseneGemeindeKennzahlen(
-			@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+	public List<GemeindeKennzahlen> findAllAbgeschlosseneGemeindeKennzahlen() {
 		final List<GemeindeKennzahlen> gemeindeKennzahlen =
-				this.getGemeindeKennzahlen(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), "ABGESCHLOSSEN", null);
-		if (gemeindeKennzahlen.isEmpty()) {
-			return Optional.empty();
-		}
-		Preconditions.checkState(
-				gemeindeKennzahlen.size() == 1,
-				"Multiple GemeindeKennzahlen for Gemeinde {} and GS {}",
-				gemeinde.getName(),
-				gesuchsperiode.getGesuchsperiodeString());
-		return gemeindeKennzahlen.stream().findFirst();
+			this.getGemeindeKennzahlen(null, null, "ABGESCHLOSSEN", null);
+		return gemeindeKennzahlen;
 	}
 
 	@Nonnull
@@ -260,19 +251,6 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 			timestampMutiertPredicate = cb.disjunction();
 		}
 		return timestampMutiertPredicate;
-	}
-
-	@Override
-	public void deleteGemeindeKennzahlen(
-			@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
-		getGemeindeKennzahlen(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null)
-				.forEach(gemeindeKennzahlen -> {
-					persistence.remove(gemeindeKennzahlen);
-					LOG.warn(
-							"Removed GemeindeKennzahlen for Gemeinde {} in GS {}",
-							gemeinde.getName(),
-							gesuchsperiode.getGesuchsperiodeString());
-				});
 	}
 
 	@Override

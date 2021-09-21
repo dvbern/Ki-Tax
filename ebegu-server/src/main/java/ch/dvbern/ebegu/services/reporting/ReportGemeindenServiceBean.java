@@ -19,8 +19,10 @@ package ch.dvbern.ebegu.services.reporting;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -31,6 +33,8 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.reporting.gemeinden.GemeindenDataRow;
@@ -82,7 +86,7 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 	@Nonnull
 	@Override
 	public UploadFileInfo generateExcelReportGemeinden(
-			@Nonnull Locale locale) throws ExcelMergeException {
+		@Nonnull Locale locale) throws ExcelMergeException {
 		ReportVorlage vorlage = ReportVorlage.VORLAGE_REPORT_GEMEINDEN;
 		InputStream is = ReportServiceBean.class.getResourceAsStream(vorlage.getTemplatePath());
 		requireNonNull(is, VORLAGE + vorlage.getTemplatePath() + NICHT_GEFUNDEN);
@@ -96,7 +100,7 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 		List<GemeindenDataRow> reportData = getReportDataGemeinden(aktiveGemeinden, locale);
 
 		ExcelMergerDTO excelMergerDTO = gemeindenExcelConverter.toExcelMergerDTO(reportData,
-				requireNonNull(principal.getMandant()), locale);
+			requireNonNull(principal.getMandant()), locale);
 		mergeData(sheet, excelMergerDTO, vorlage.getMergeFields());
 		mergeData(secondSheet, excelMergerDTO, vorlage.getMergeFields());
 		gemeindenExcelConverter.applyAutoSize(sheet);
@@ -105,72 +109,88 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 		byte[] bytes = createWorkbook(workbook);
 
 		return fileSaverService.save(
-				bytes,
-				"Gemeinden.xlsx",
-				Constants.TEMP_REPORT_FOLDERNAME,
-				getContentTypeForExport());
+			bytes,
+			"Gemeinden.xlsx",
+			Constants.TEMP_REPORT_FOLDERNAME,
+			getContentTypeForExport());
 	}
 
 	private List<GemeindenDataRow> getReportDataGemeinden(
-			@Nonnull Collection<Gemeinde> gemeinden,
-			@Nonnull Locale locale) {
+		@Nonnull Collection<Gemeinde> gemeinden,
+		@Nonnull Locale locale) {
+		Collection<Gesuchsperiode> allActiveGesuchsperioden = gesuchsperiodeService.getAllActiveGesuchsperioden();
+
+		Map<String, GemeindeKennzahlen> gemeindeAntragGesuchsperiodeCache = new HashMap<>();
+		List<GemeindeKennzahlen> gemeindeAntrags = gemeindeKennzahlenService.findAllAbgeschlosseneGemeindeKennzahlen();
+		gemeindeAntrags.forEach(
+			gemeindeAntrag -> gemeindeAntragGesuchsperiodeCache.put(
+				gemeindeAntrag.getGesuchsperiode().getId() + gemeindeAntrag.getGemeinde().getId(),
+				gemeindeAntrag)
+		);
+
 		return gemeinden.stream()
-				.map(gemeinde -> {
-					GemeindenDataRow dataRow = new GemeindenDataRow();
+			.map(gemeinde -> {
+				GemeindenDataRow dataRow = new GemeindenDataRow();
 
-					dataRow.setNameGemeinde(gemeinde.getName());
-					dataRow.setBfsNummer(gemeinde.getBfsNummer());
-					dataRow.setAngebotBG(gemeinde.isAngebotBG());
-					dataRow.setAngebotTS(gemeinde.isAngebotTS());
-					dataRow.setStartdatumBG(gemeinde.getBetreuungsgutscheineStartdatum());
+				dataRow.setNameGemeinde(gemeinde.getName());
+				dataRow.setBfsNummer(gemeinde.getBfsNummer());
+				dataRow.setAngebotBG(gemeinde.isAngebotBG());
+				dataRow.setAngebotTS(gemeinde.isAngebotTS());
+				dataRow.setStartdatumBG(gemeinde.getBetreuungsgutscheineStartdatum());
 
-					gemeindeService.getGemeindeStammdatenByGemeindeId(gemeinde.getId())
-							.ifPresent(gemeindeStammdaten -> {
-								dataRow.setKorrespondenzspracheGemeinde(
-										ServerMessageUtil.getMessage("Reports_" + gemeindeStammdaten.getKorrespondenzsprache(), locale));
-								if (!gemeindeStammdaten.getGutscheinSelberAusgestellt() && gemeindeStammdaten.getGemeindeAusgabestelle() != null) {
-									dataRow.setGutscheinausgabestelle(gemeindeStammdaten.getGemeindeAusgabestelle().getName());
-								}
-							});
+				gemeindeService.getGemeindeStammdatenByGemeindeId(gemeinde.getId())
+					.ifPresent(gemeindeStammdaten -> {
+						dataRow.setKorrespondenzspracheGemeinde(
+							ServerMessageUtil.getMessage(
+								"Reports_" + gemeindeStammdaten.getKorrespondenzsprache(),
+								locale));
+						if (!gemeindeStammdaten.getGutscheinSelberAusgestellt()
+							&& gemeindeStammdaten.getGemeindeAusgabestelle() != null) {
+							dataRow.setGutscheinausgabestelle(gemeindeStammdaten.getGemeindeAusgabestelle().getName());
+						}
+					});
 
-					gesuchsperiodeService.getAllActiveGesuchsperioden()
-							.forEach(gesuchsperiode -> {
-								GemeindenDatenDataRow gemeindenDatenDataRow = new GemeindenDatenDataRow();
+				allActiveGesuchsperioden.forEach(gesuchsperiode -> {
+					GemeindenDatenDataRow gemeindenDatenDataRow = new GemeindenDatenDataRow();
 
-								gemeindenDatenDataRow.setGesuchsperiode(gesuchsperiode.getGesuchsperiodeString());
+					gemeindenDatenDataRow.setGesuchsperiode(gesuchsperiode.getGesuchsperiodeString());
 
-								Einstellung kontingenierungEnabled =
-										einstellungService.findEinstellung(EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
-												gemeinde,
-												gesuchsperiode);
-								gemeindenDatenDataRow.setKontingentierung(kontingenierungEnabled.getValueAsBoolean());
+					Einstellung kontingenierungEnabled =
+						einstellungService.findEinstellung(
+							EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
+							gemeinde,
+							gesuchsperiode);
+					gemeindenDatenDataRow.setKontingentierung(kontingenierungEnabled.getValueAsBoolean());
 
-								Einstellung gmeindeBGBisUndMit =
-										einstellungService.findEinstellung(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE,
-												gemeinde,
-												gesuchsperiode);
-								gemeindenDatenDataRow.setLimitierungKita(
-										ServerMessageUtil.getMessage("EinschulungTyp_" + gmeindeBGBisUndMit.getValue(), locale));
+					Einstellung gmeindeBGBisUndMit =
+						einstellungService.findEinstellung(
+							EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE,
+							gemeinde,
+							gesuchsperiode);
+					gemeindenDatenDataRow.setLimitierungKita(
+						ServerMessageUtil.getMessage("EinschulungTyp_" + gmeindeBGBisUndMit.getValue(), locale));
 
-								Einstellung erwerbspensumZuschlag =
-										einstellungService.findEinstellung(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG,
-												gemeinde,
-												gesuchsperiode);
-								gemeindenDatenDataRow.setErwerbspensumZuschlag(erwerbspensumZuschlag.getValueAsBigDecimal());
+					Einstellung erwerbspensumZuschlag =
+						einstellungService.findEinstellung(
+							EinstellungKey.ERWERBSPENSUM_ZUSCHLAG,
+							gemeinde,
+							gesuchsperiode);
+					gemeindenDatenDataRow.setErwerbspensumZuschlag(erwerbspensumZuschlag.getValueAsBigDecimal());
 
-								gemeindeKennzahlenService.findAbgeschlosseneGemeindeKennzahlen(gemeinde, gesuchsperiode).ifPresent(gemeindeKennzahlen -> {
-									gemeindenDatenDataRow.setNachfrageErfuellt(gemeindeKennzahlen.getNachfrageErfuellt());
-									gemeindenDatenDataRow.setNachfrageAnzahl(gemeindeKennzahlen.getNachfrageAnzahl());
-									gemeindenDatenDataRow.setNachfrageDauer(gemeindeKennzahlen.getNachfrageDauer());
-									gemeindenDatenDataRow.setKostenlenkungAndere(gemeindeKennzahlen.getKostenlenkungAndere());
-									gemeindenDatenDataRow.setWelcheKostenlenkungsmassnahmen(gemeindeKennzahlen.getWelcheKostenlenkungsmassnahmen());
-								});
+					GemeindeKennzahlen gemeindeKennzahlen = gemeindeAntragGesuchsperiodeCache.get(gesuchsperiode.getId() + gemeinde.getId());
+						if(gemeindeKennzahlen != null) {
+							gemeindenDatenDataRow.setNachfrageErfuellt(gemeindeKennzahlen.getNachfrageErfuellt());
+							gemeindenDatenDataRow.setNachfrageAnzahl(gemeindeKennzahlen.getNachfrageAnzahl());
+							gemeindenDatenDataRow.setNachfrageDauer(gemeindeKennzahlen.getNachfrageDauer());
+							gemeindenDatenDataRow.setKostenlenkungAndere(gemeindeKennzahlen.getKostenlenkungAndere());
+							gemeindenDatenDataRow.setWelcheKostenlenkungsmassnahmen(gemeindeKennzahlen.getWelcheKostenlenkungsmassnahmen());
+						}
 
-								dataRow.getGemeindenDaten().add(gemeindenDatenDataRow);
-							});
+					dataRow.getGemeindenDaten().add(gemeindenDatenDataRow);
+				});
 
-					return dataRow;
-				})
-				.collect(Collectors.toList());
+				return dataRow;
+			})
+			.collect(Collectors.toList());
 	}
 }
