@@ -31,7 +31,6 @@ import {PENDENZEN_STEUERAMT_JS_MODULE} from './pendenzen/steueramt/pendenzenSteu
 import {POSTEINGANG_JS_MODULE} from './posteingang/posteingang.module';
 import {QUICKSEARCH_JS_MODULE} from './quicksearch/quicksearch.module';
 import {SEARCH_JS_MODULE} from './searchResult/search.module';
-import {STATISTIK_JS_MODULE} from './statistik/statistik.module';
 
 export const APP_JS_MODULE = angular.module('ebeguWeb', [
         'ui.router',
@@ -48,7 +47,6 @@ export const APP_JS_MODULE = angular.module('ebeguWeb', [
         MITTEILUNGEN_JS_MODULE.name,
         POSTEINGANG_JS_MODULE.name,
         SEARCH_JS_MODULE.name,
-        STATISTIK_JS_MODULE.name,
         ALLE_VERFUEGUNGEN_JS_MODULE.name,
         QUICKSEARCH_JS_MODULE.name,
     ])

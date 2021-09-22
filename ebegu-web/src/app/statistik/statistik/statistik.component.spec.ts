@@ -15,19 +15,28 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {StatistikRoutingModule} from './statistik-routing/statistik-routing.module';
-import {StatistikComponent} from './statistik/statistik.component';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-@NgModule({
-    declarations: [
-        StatistikComponent
-    ],
-    imports: [
-        CommonModule,
-        StatistikRoutingModule
-    ]
-})
-export class StatistikModule {
-}
+import {StatistikComponent} from './statistik.component';
+
+describe('StatistikComponent', () => {
+    let component: StatistikComponent;
+    let fixture: ComponentFixture<StatistikComponent>;
+
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [StatistikComponent]
+        })
+            .compileComponents();
+    });
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(StatistikComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+});

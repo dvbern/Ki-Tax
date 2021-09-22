@@ -35,6 +35,7 @@ import {PendenzenXModule} from './pendenzen/pendenzen-x.module';
 import {NgPosteingangModule} from './posteingang/ng-posteingang.module';
 import {SharedModule} from './shared/shared.module';
 import {SozialdienstModule} from './sozialdienst/sozialdienst.module';
+import {StatistikModule} from './statistik/statistik.module';
 import {TraegerschaftModule} from './traegerschaft/traegerschaft.module';
 import {VerlaufModule} from './verlauf/verlauf.module';
 import {WelcomeModule} from './welcome/welcome.module';
@@ -71,7 +72,8 @@ import {ZahlungXModule} from './zahlung/zahlung-x.module';
         PendenzenXModule,
         ZahlungXModule,
         PendenzenXModule,
-        VerlaufModule
+        VerlaufModule,
+        StatistikModule
     ]
 })
 

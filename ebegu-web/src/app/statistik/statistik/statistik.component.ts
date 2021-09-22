@@ -15,19 +15,20 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {StatistikRoutingModule} from './statistik-routing/statistik-routing.module';
-import {StatistikComponent} from './statistik/statistik.component';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 
-@NgModule({
-    declarations: [
-        StatistikComponent
-    ],
-    imports: [
-        CommonModule,
-        StatistikRoutingModule
-    ]
+@Component({
+    selector: 'dv-statistik',
+    templateUrl: './statistik.component.html',
+    styleUrls: ['./statistik.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StatistikModule {
+export class StatistikComponent implements OnInit {
+
+    public constructor() {
+    }
+
+    public ngOnInit(): void {
+    }
+
 }
