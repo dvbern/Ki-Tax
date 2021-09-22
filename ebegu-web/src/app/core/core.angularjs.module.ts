@@ -150,7 +150,6 @@ import {ListResourceRS} from './service/listResourceRS.rest';
 import {MandantRS} from './service/mandantRS.rest';
 import {MitteilungRS} from './service/mitteilungRS.rest';
 import {NotrechtRS} from './service/notrechtRS.rest';
-import {ReportAsyncRS} from './service/reportAsyncRS.rest';
 import {ReportRS} from './service/reportRS.rest';
 import {SearchIndexRS} from './service/searchIndexRS.rest';
 import {SozialdienstRS} from './service/SozialdienstRS.rest';
@@ -316,7 +315,6 @@ export const CORE_JS_MODULE = angular
     .directive('dvSearchList', downgradeComponent({component: DvSearchListComponent}))
     .service('MahnungRS', MahnungRS)
     .service('ReportRS', ReportRS)
-    .service('ReportAsyncRS', ReportAsyncRS)
     .service('EwkRS', EwkRS)
     .service('DatabaseMigrationRS', DatabaseMigrationRS)
     .service('SupportRS', SupportRS)
