@@ -1476,6 +1476,7 @@
     "ReportType_tagesschuleRechnungsstellung": "Tagesschule Rechnungsstellung",
     "ReportType_notrecht": "Notrecht",
     "ReportType_mahlzeitenverguenstigung": "Mahlzeitenverguenstigung",
+    "ReportType_gemeinden": "Gemeinden",
     "BatchJobStatus_REQUESTED": "Statistik angefordert",
     "BatchJobStatus_RUNNING": "Statistik wird erstellt",
     "BatchJobStatus_FINISHED": "Bereit zum Download",
@@ -2593,5 +2594,7 @@
     "GEMEINDE_KENNZAHLEN_WELCHE_KOSTENLENKUNGSMASSNAHMEN": "Welche weiteren Kostenlenkungsmassnahmen wurden getroffen?",
     "GEMEINDE_KENNZAHLEN_AKTIV": "Gemeinde Kennzahlen aktiviert",
     "BENUTZENDE_EINGEBEN": "Benutzende eingeben",
+    "GEMEINDEN_STATISTIK": "Gemeinden",
+    "STATISTIK_GEMEINDEN_HINT": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

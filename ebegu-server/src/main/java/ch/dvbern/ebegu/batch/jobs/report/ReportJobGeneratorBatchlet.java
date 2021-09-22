@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.reporting.ReportNotrechtService;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.ReportTagesschuleService;
 import ch.dvbern.ebegu.reporting.ReportVerrechnungKibonService;
+import ch.dvbern.ebegu.reporting.zahlungauftrag.ReportGemeindenService;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -81,6 +82,9 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 
 	@Inject
 	private ReportMahlzeitenService reportMahlzeitenService;
+
+	@Inject
+	private ReportGemeindenService reportGemeindenService;
 
 	@Inject
 	private JobContext jobCtx;
@@ -204,6 +208,9 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 				}
 				return this.reportMahlzeitenService.generateExcelReportMahlzeiten(dateFrom, dateTo, locale, gemeindeId);
 			}
+		case VORLAGE_REPORT_GEMEINDEN: {
+			return this.reportGemeindenService.generateExcelReportGemeinden(locale);
+		}
 		}
 		throw new IllegalArgumentException("No Report generated: Unknown ReportType: " + workJobType);
 	}

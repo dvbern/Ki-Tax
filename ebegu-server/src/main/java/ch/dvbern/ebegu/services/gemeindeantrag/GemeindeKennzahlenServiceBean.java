@@ -110,13 +110,20 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	}
 
 	@Nonnull
-	@Override
 	public Optional<GemeindeKennzahlen> findGemeindeKennzahlen(@Nonnull String id) {
 		Objects.requireNonNull(id, ID_MUSS_GESETZT_SEIN);
 
 		GemeindeKennzahlen gemeindeKennzahlen = persistence.find(GemeindeKennzahlen.class, id);
 
 		return Optional.ofNullable(gemeindeKennzahlen);
+	}
+
+	@Nonnull
+	@Override
+	public List<GemeindeKennzahlen> findAllAbgeschlosseneGemeindeKennzahlen() {
+		final List<GemeindeKennzahlen> gemeindeKennzahlen =
+			this.getGemeindeKennzahlen(null, null, "ABGESCHLOSSEN", null);
+		return gemeindeKennzahlen;
 	}
 
 	@Nonnull
@@ -244,19 +251,6 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 			timestampMutiertPredicate = cb.disjunction();
 		}
 		return timestampMutiertPredicate;
-	}
-
-	@Override
-	public void deleteGemeindeKennzahlen(
-			@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
-		getGemeindeKennzahlen(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null)
-				.forEach(gemeindeKennzahlen -> {
-					persistence.remove(gemeindeKennzahlen);
-					LOG.warn(
-							"Removed GemeindeKennzahlen for Gemeinde {} in GS {}",
-							gemeinde.getName(),
-							gesuchsperiode.getGesuchsperiodeString());
-				});
 	}
 
 	@Override
