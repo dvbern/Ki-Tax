@@ -131,7 +131,6 @@ import {NewAntragListComponent} from './new-antrag-list/new-antrag-list.componen
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {AdresseRS} from './service/adresseRS.rest';
 import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
-import {BatchJobRS} from './service/batchRS.rest';
 import {BenutzerRSX} from './service/benutzerRSX.rest';
 import {BetreuungRS} from './service/betreuungRS.rest';
 import {BroadcastService} from './service/broadcast.service';
@@ -223,7 +222,6 @@ export const CORE_JS_MODULE = angular
     .service('ErwerbspensumRS', ErwerbspensumRS)
     .service('KindRS', KindRS)
     .service('DvDialog', DvDialog)
-    .service('BatchJobRS', BatchJobRS)
     .service('BetreuungRS', BetreuungRS)
     .service('GesuchsperiodeRS', GesuchsperiodeRS)
     .service('VerfuegungRS', VerfuegungRS)

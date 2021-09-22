@@ -13,37 +13,42 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, IPromise} from 'angular';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {TSWorkJob} from '../../../models/TSWorkJob';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {CONSTANTS} from '../constants/CONSTANTS';
 
 /**
  * liest information ueber batch jobs aus
  */
+@Injectable({
+    providedIn: 'root',
+})
 export class BatchJobRS {
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
 
-    public serviceURL: string;
+    public serviceURL = `${CONSTANTS.REST_API}admin/batch`;
+    private ebeguRestUtil = new EbeguRestUtil();
 
     public constructor(
-        public http: IHttpService,
-        REST_API: string,
-        private readonly ebeguRestUtil: EbeguRestUtil,
+        public http: HttpClient,
     ) {
-        this.serviceURL = `${REST_API}admin/batch`;
     }
 
-    public getAllJobs(): IPromise<TSWorkJob[]> {
+    public getAllJobs(): Observable<TSWorkJob[]> {
         return this.getInfo(`${this.serviceURL}/jobs`);
     }
 
-    public getBatchJobsOfUser(): IPromise<TSWorkJob[]> {
+    public getBatchJobsOfUser(): Observable<TSWorkJob[]> {
         return this.getInfo(`${this.serviceURL}/userjobs/notokenrefresh`);
     }
 
-    private getInfo(url: string): IPromise<Array<TSWorkJob> | never> {
-        return this.http.get(url).then((response: any) => {
-            return this.ebeguRestUtil.parseWorkJobList(response.data);
-        });
+    private getInfo(url: string): Observable<Array<TSWorkJob> | never> {
+        return this.http.get(url)
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseWorkJobList(response.data);
+            }));
     }
 }
