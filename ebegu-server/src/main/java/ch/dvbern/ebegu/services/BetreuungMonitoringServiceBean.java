@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -70,7 +71,12 @@ public class BetreuungMonitoringServiceBean extends AbstractBaseService implemen
 		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 		if (predicates.size() > 0) {
 			query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
-			return persistence.getEntityManager().createQuery(query).getResultList();
+			TypedQuery<BetreuungMonitoring> typedQuery = persistence.getEntityManager().createQuery(query);
+			// we only want no restriction if the referenznummer is given, it can be a lot of result by benutzer
+			if (!StringUtils.isEmpty(benutzer)) {
+				typedQuery.setMaxResults(200);
+			}
+			return typedQuery.getResultList();
 		}
 
 		return persistence.getEntityManager().createQuery(query).setMaxResults(200).getResultList();
