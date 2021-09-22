@@ -31,7 +31,7 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.enums.UserRoleName;
-import ch.dvbern.ebegu.inbox.handler.PlatzablehnenEventHandler;
+import ch.dvbern.ebegu.inbox.handler.AnmeldungAblehnenEventHandler;
 import ch.dvbern.ebegu.kafka.MessageProcessor;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -51,9 +51,9 @@ import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZE
 @Startup
 @Singleton
 @RunAs(UserRoleName.SUPER_ADMIN)
-public class PlatzablehnenEventKafkaConsumer {
+public class AnmeldungAblehnenEventKafkaConsumer {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PlatzablehnenEventKafkaConsumer.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AnmeldungAblehnenEventKafkaConsumer.class);
 
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
@@ -62,11 +62,11 @@ public class PlatzablehnenEventKafkaConsumer {
 	private MessageProcessor processor;
 
 	@Inject
-	private PlatzablehnenEventHandler eventHandler;
+	private AnmeldungAblehnenEventHandler eventHandler;
 
 	private Consumer<String, String> consumer = null;
 
-	private void startKafkaPlatzablehnenConsumer() {
+	private void startKafkaAnmeldungAblehnenConsumer() {
 		if (ebeguConfiguration.getKafkaURL().isEmpty()
 			|| !ebeguConfiguration.isAnmeldungTagesschuleApiEnabled()
 			|| !ebeguConfiguration.isKafkaConsumerEnabled()) {
@@ -76,7 +76,7 @@ public class PlatzablehnenEventKafkaConsumer {
 		Properties props = new Properties();
 		props.setProperty(BOOTSTRAP_SERVERS_CONFIG, ebeguConfiguration.getKafkaURL().get());
 		String groupId = ebeguConfiguration.getKafkaConsumerGroupId();
-		props.setProperty(GROUP_ID_CONFIG, "kibon-platzablehnen-" + groupId);
+		props.setProperty(GROUP_ID_CONFIG, "kibon-anmeldungablehnen-" + groupId);
 		props.setProperty(AUTO_OFFSET_RESET_CONFIG, "earliest");
 		props.setProperty(ENABLE_AUTO_COMMIT_CONFIG, "false");
 		props.setProperty(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
@@ -88,10 +88,10 @@ public class PlatzablehnenEventKafkaConsumer {
 	}
 
 	@Schedule(info = "consume kafka events", second = "*/18", minute = "*", hour = "*", persistent = false)
-	public void runPlatzablehnenConsumer() {
+	public void runAnmeldungAblehnenConsumer() {
 		try {
 			if (consumer == null) {
-				startKafkaPlatzablehnenConsumer();
+				startKafkaAnmeldungAblehnenConsumer();
 				return;
 			}
 
