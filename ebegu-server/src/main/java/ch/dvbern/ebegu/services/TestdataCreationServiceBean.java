@@ -478,6 +478,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 
 	private void saveInstitutionIfNecessary(@Nullable Institution institution) {
 		if (institution != null) {
+			saveMandantIfNecessary(institution.getMandant());
 			saveTraegerschaftIfNecessary(institution.getTraegerschaft());
 			Institution found = persistence.find(Institution.class, institution.getId());
 			if (found == null) {
@@ -488,9 +489,19 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 
 	private void saveTraegerschaftIfNecessary(@Nullable Traegerschaft traegerschaft) {
 		if (traegerschaft != null) {
+			saveMandantIfNecessary(traegerschaft.getMandant());
 			Traegerschaft found = persistence.find(Traegerschaft.class, traegerschaft.getId());
 			if (found == null) {
 				persistence.persist(traegerschaft);
+			}
+		}
+	}
+
+	private void saveMandantIfNecessary(@Nullable Mandant mandant) {
+		if (mandant != null) {
+			Mandant found = persistence.find(Mandant.class, mandant.getId());
+			if (found == null) {
+				persistence.persist(mandant);
 			}
 		}
 	}
