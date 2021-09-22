@@ -3,6 +3,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {TSBetreuungMonitoring} from '../../../models/TSBetreuungMonitoring';
+import {TSExternalClient} from '../../../models/TSExternalClient';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {BetreuungMonitoringRS} from '../../service/betreuungMonitoringRS.rest';
 
@@ -18,11 +19,16 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
 
     public dataSource: MatTableDataSource<TSBetreuungMonitoring>;
     public refNummerTooShort: boolean = false;
+    public refNumerValue: string;
+    public benutzerValue: string;
+    public externalClientNames: string;
 
     @ViewChild(MatSort, {static: true}) public sort: MatSort;
     @ViewChild(MatPaginator, {static: true}) public paginator: MatPaginator;
 
     private readonly MIN_REF_NUMMER_SIZE = 17;
+    private keyupTimeout: NodeJS.Timeout;
+    private readonly timeoutMS = 700;
 
     public constructor(
         private readonly betreuungMonitoringRS: BetreuungMonitoringRS,
@@ -31,22 +37,13 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
     }
 
     public ngOnInit(): void {
-        this.initData();
+        this.passFilterToServer();
+        this.initExternalClientList();
         this.sortTable();
     }
 
     public ngAfterViewInit(): void {
         this.dataSource.sort = this.sort;
-    }
-
-    private initData(): void {
-        this.dataSource = new MatTableDataSource<TSBetreuungMonitoring>([]);
-        this.betreuungMonitoringRS.getBetreuungMonitoringList().subscribe((result: TSBetreuungMonitoring[]) => {
-                this.assignResultToDataSource(result);
-                this.changeDetectorRef.markForCheck();
-            },
-            () => {
-            });
     }
 
     private assignResultToDataSource(result: TSBetreuungMonitoring[]): void {
@@ -58,16 +55,30 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
         return !this.dataSource || this.dataSource.data.length === 0;
     }
 
-    public doFilter(value: string): void {
-        if (EbeguUtil.isEmptyStringNullOrUndefined(value)) {
-            this.initData();
-            return;
-        }
+    public doFilterRefnummer(value: string): void {
         if (value.length < this.MIN_REF_NUMMER_SIZE) {
+            this.refNumerValue = null;
             return;
         }
+        this.refNumerValue = value;
+        this.applyFilter();
+    }
+
+    public doFilterBenutzende(value: string): void {
+        this.benutzerValue = value;
+        this.applyFilter();
+    }
+
+    private applyFilter(): void {
+        clearTimeout(this.keyupTimeout);
+        this.keyupTimeout = setTimeout(() => {
+            this.passFilterToServer();
+        }, this.timeoutMS);
+    }
+
+    private passFilterToServer(): void {
         this.dataSource = new MatTableDataSource<TSBetreuungMonitoring>([]);
-        this.betreuungMonitoringRS.getBetreuungMonitoringBeiRefNummer(value)
+        this.betreuungMonitoringRS.getBetreuungMonitoring(this.refNumerValue, this.benutzerValue)
             .subscribe((result: TSBetreuungMonitoring[]) => {
                     this.assignResultToDataSource(result);
                     this.changeDetectorRef.markForCheck();
@@ -90,5 +101,18 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
 
     public validateRefNummber(refNummer: string): void {
         this.refNummerTooShort = refNummer.length < this.MIN_REF_NUMMER_SIZE && refNummer.length !== 0;
+    }
+
+    private initExternalClientList(): void {
+        this.betreuungMonitoringRS.getAllExternalClient()
+            .subscribe((result: TSExternalClient[]) => {
+                    result.forEach(externalClient => EbeguUtil.isNotNullOrUndefined(this.externalClientNames) ?
+                        this.externalClientNames =
+                            `${this.externalClientNames},${externalClient.clientName}` :
+                        this.externalClientNames = externalClient.clientName);
+                    this.changeDetectorRef.markForCheck();
+                },
+                () => {
+                });
     }
 }

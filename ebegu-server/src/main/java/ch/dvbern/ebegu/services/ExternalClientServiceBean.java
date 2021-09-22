@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -83,14 +84,7 @@ public class ExternalClientServiceBean extends AbstractBaseService implements Ex
 			types.add(ExternalClientInstitutionType.EXCHANGE_SERVICE_INSTITUTION_TS);
 		}
 
-		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
-		final CriteriaQuery<ExternalClient> query = builder.createQuery(ExternalClient.class);
-		final Root<ExternalClient> root = query.from(ExternalClient.class);
-		Predicate typePredicate = root.get(ExternalClient_.institutionType).in(types);
-		query.where(typePredicate);
-
-		return persistence.getEntityManager().createQuery(query)
-			.getResultList();
+		return getAllForTypes(types);
 	}
 
 	@Nonnull
@@ -105,5 +99,25 @@ public class ExternalClientServiceBean extends AbstractBaseService implements Ex
 	public Collection<InstitutionExternalClient> getInstitutionExternalClientForInstitution(@Nonnull Institution institution) {
 		return criteriaQueryHelper.getEntitiesByAttribute(
 			InstitutionExternalClient.class, institution, InstitutionExternalClient_.institution);
+	}
+
+	@Nonnull
+	@Override
+	public Collection<ExternalClient> getAll() {
+		Set<ExternalClientInstitutionType> types = new HashSet<>();
+		types.addAll(Arrays.asList(ExternalClientInstitutionType.values()));
+		return getAllForTypes(types);
+	}
+
+	@Nonnull
+	private Collection<ExternalClient> getAllForTypes(Set<ExternalClientInstitutionType> types) {
+		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
+		final CriteriaQuery<ExternalClient> query = builder.createQuery(ExternalClient.class);
+		final Root<ExternalClient> root = query.from(ExternalClient.class);
+		Predicate typePredicate = root.get(ExternalClient_.institutionType).in(types);
+		query.where(typePredicate);
+
+		return persistence.getEntityManager().createQuery(query)
+			.getResultList();
 	}
 }

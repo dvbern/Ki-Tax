@@ -21,23 +21,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungMonitoring;
-import ch.dvbern.ebegu.api.dtos.JaxInstitution;
+import ch.dvbern.ebegu.api.dtos.JaxExternalClient;
 import ch.dvbern.ebegu.services.BetreuungMonitoringService;
-import io.swagger.annotations.ApiOperation;
+import ch.dvbern.ebegu.services.ExternalClientService;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
@@ -50,32 +50,34 @@ public class BetreuungMonitoringResource {
 	private BetreuungMonitoringService betreuungMonitoringService;
 
 	@Inject
+	private ExternalClientService externalClientService;
+
+	@Inject
 	private JaxBConverter converter;
 
-	@ApiOperation(value = "Find and return a list of all betreuung monitoring entries. "
-		, responseContainer = "List", response = JaxInstitution.class)
 	@Nonnull
 	@GET
-	@Path("/last")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(SUPER_ADMIN)
-	public List<JaxBetreuungMonitoring> getAllBetreuungMonitoringInfos() { return betreuungMonitoringService.getAllBetreuungMonitoringInfos().stream()
+	public List<JaxBetreuungMonitoring> getAllBetreuungMonitoringInfosBeiCriteria(
+		@QueryParam("refNummer") @Nullable String referenzNummer,
+		@QueryParam("benutzer") @Nullable String benutzer
+	) {
+		return betreuungMonitoringService.getAllBetreuungMonitoringBeiCriteria(referenzNummer, benutzer).stream()
 			.map(betreuungMonitoring -> converter.betreuungMonitoringToJax(betreuungMonitoring))
 			.collect(Collectors.toList());
 	}
 
 	@Nonnull
 	@GET
-	@Path("/{refnummer}")
+	@Path("/allExternalClient")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(SUPER_ADMIN)
-	public List<JaxBetreuungMonitoring> getAllBetreuungMonitoringInfosBeiReferenzNummer(
-		@Nonnull @NotNull @PathParam("refnummer") String referenzNummer
-		) {
-		return betreuungMonitoringService.getAllBetreuungMonitoringFuerRefNummer(referenzNummer).stream()
-			.map(betreuungMonitoring -> converter.betreuungMonitoringToJax(betreuungMonitoring))
+	public List<JaxExternalClient> getAllExternalClient() {
+		return externalClientService.getAll().stream()
+			.map(externalClient -> converter.externalClientToJAX(externalClient))
 			.collect(Collectors.toList());
 	}
 }

@@ -17,21 +17,28 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.BetreuungMonitoring;
 import ch.dvbern.ebegu.entities.BetreuungMonitoring_;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.services.util.SearchUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Service fuer BetreuungMonitoring
@@ -41,26 +48,38 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 public class BetreuungMonitoringServiceBean extends AbstractBaseService implements BetreuungMonitoringService {
 
 	@Inject
-	private CriteriaQueryHelper criteriaQueryHelper;
-
-	@Inject
 	private Persistence persistence;
 
-	@Nonnull
 	@Override
-	public Collection<BetreuungMonitoring> getAllBetreuungMonitoringInfos() {
+	@Nonnull
+	public Collection<BetreuungMonitoring> getAllBetreuungMonitoringBeiCriteria(
+		@Nullable String refNummer,
+		@Nullable String benutzer){
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<BetreuungMonitoring> query = cb.createQuery(BetreuungMonitoring.class);
 		Root<BetreuungMonitoring> root = query.from(BetreuungMonitoring.class);
+		List<Predicate> predicates = new ArrayList<>();
+		if(!StringUtils.isEmpty(refNummer)) {
+			Predicate refNummerPredicate = cb.equal(root.get(BetreuungMonitoring_.refNummer), refNummer);
+			predicates.add(refNummerPredicate);
+		}
+		if(!StringUtils.isEmpty(benutzer)) {
+			Predicate benutzendePredicate = cb.like(root.get(BetreuungMonitoring_.benutzer),
+				SearchUtil.withWildcards(benutzer));
+			predicates.add(benutzendePredicate);
+		}
 		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
-		return persistence.getEntityManager().createQuery(query).setMaxResults(200).getResultList();
-	}
+		if (predicates.size() > 0) {
+			query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+			TypedQuery<BetreuungMonitoring> typedQuery = persistence.getEntityManager().createQuery(query);
+			// we only want no restriction if the referenznummer is given, it can be a lot of result by benutzer
+			if (!StringUtils.isEmpty(benutzer)) {
+				typedQuery.setMaxResults(200);
+			}
+			return typedQuery.getResultList();
+		}
 
-	@Override
-	@Nonnull
-	public Collection<BetreuungMonitoring> getAllBetreuungMonitoringFuerRefNummer(@Nonnull String refNummer){
-		return criteriaQueryHelper.getEntitiesByAttribute(BetreuungMonitoring.class, refNummer,
-			BetreuungMonitoring_.refNummer);
+		return persistence.getEntityManager().createQuery(query).setMaxResults(200).getResultList();
 	}
 
 	@Override
