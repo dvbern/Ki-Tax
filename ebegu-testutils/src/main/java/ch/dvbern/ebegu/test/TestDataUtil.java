@@ -791,7 +791,7 @@ public final class TestDataUtil {
 		}
 	}
 
-	private static void saveMandantIfNecessary(@Nonnull Persistence persistence, @Nullable Mandant mandant) {
+	public static void saveMandantIfNecessary(@Nonnull Persistence persistence, @Nullable Mandant mandant) {
 		if (mandant != null) {
 			Mandant found = persistence.find(Mandant.class, mandant.getId());
 			if (found == null) {
@@ -2397,5 +2397,10 @@ public final class TestDataUtil {
 		sozialdienstStammdaten.setWebseite("");
 		persistence.persist(sozialdienstStammdaten);
 		return fallService.saveFall(fall);
+	}
+
+	public static void persistFachstelle(@Nonnull Persistence persistence, @Nonnull Fachstelle fachstelle) {
+		saveMandantIfNecessary(persistence, fachstelle.getMandant());
+		persistence.persist(fachstelle);
 	}
 }
