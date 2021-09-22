@@ -27,5 +27,5 @@ import {PosteingangRoutingModule} from './posteingang.route';
         PosteingangRoutingModule,
     ],
 })
-export class NgPosteingangModule {
+export class PosteingangModule {
 }
