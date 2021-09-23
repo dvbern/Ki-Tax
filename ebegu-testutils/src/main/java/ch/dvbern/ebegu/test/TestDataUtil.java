@@ -1100,6 +1100,7 @@ public final class TestDataUtil {
 
 	public static Gesuchsperiode createCustomGesuchsperiode(int firstYear, int secondYear) {
 		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
+		gesuchsperiode.setMandant(TestDataUtil.createDefaultMandant());
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
 		gesuchsperiode.setGueltigkeit(new DateRange(
 			LocalDate.of(firstYear, Month.AUGUST, 1),
@@ -1609,6 +1610,7 @@ public final class TestDataUtil {
 
 	public static Gesuch createAndPersistGesuch(Persistence persistence, Gemeinde gemeinde) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
+		saveMandantIfNecessary(persistence, gesuch.getGesuchsperiode().getMandant());
 		Benutzer benutzer = createAndPersistBenutzer(persistence, gemeinde);
 		gesuch.getDossier().setGemeinde(gemeinde);
 		gesuch.getDossier().setVerantwortlicherBG(benutzer);
@@ -1624,6 +1626,7 @@ public final class TestDataUtil {
 
 	public static Gesuch createAndPersistGesuch(Persistence persistence) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
+		saveMandantIfNecessary(persistence, gesuch.getGesuchsperiode().getMandant());
 		Benutzer benutzer = createAndPersistBenutzer(persistence);
 		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
 		gesuch.getDossier().setVerantwortlicherBG(benutzer);
@@ -1864,10 +1867,10 @@ public final class TestDataUtil {
 	}
 
 	public static Benutzer createAndPersistTraegerschaftBenutzer(Persistence persistence) {
-		final Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft();
-		persistence.persist(traegerschaft);
 		final Mandant mandant = TestDataUtil.createDefaultMandant();
 		persistence.persist(mandant);
+		final Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft(mandant);
+		persistence.persist(traegerschaft);
 		final Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(
 			UserRole.SACHBEARBEITER_TRAEGERSCHAFT,
 			UUID.randomUUID().toString(),
@@ -2144,8 +2147,8 @@ public final class TestDataUtil {
 		Objects.requireNonNull(betreuung.getKind().getKindGS());
 		Objects.requireNonNull(betreuung.getKind().getKindGS().getPensumFachstelle());
 		Objects.requireNonNull(betreuung.getKind().getKindJA().getPensumFachstelle());
-		persistence.persist(betreuung.getKind().getKindGS().getPensumFachstelle().getFachstelle());
-		persistence.persist(betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle());
+		TestDataUtil.persistFachstelle(persistence, betreuung.getKind().getKindGS().getPensumFachstelle().getFachstelle());
+		TestDataUtil.persistFachstelle(persistence, betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle());
 
 		KindContainer kindContainer = betreuung.getKind();
 		kindContainer.getBetreuungen().add(betreuung);

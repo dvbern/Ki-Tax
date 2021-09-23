@@ -363,6 +363,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	protected Gesuchsperiode createGesuchsperiode() {
 		Gesuchsperiode customGesuchsperiode = TestDataUtil.createCustomGesuchsperiode(BASISJAHR_PLUS_1, BASISJAHR_PLUS_2);
 		customGesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
+		TestDataUtil.saveMandantIfNecessary(persistence, customGesuchsperiode.getMandant());
 		gesuchsperiodeService.saveGesuchsperiode(customGesuchsperiode);
 		return customGesuchsperiode;
 	}

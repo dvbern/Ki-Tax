@@ -56,6 +56,7 @@ public class FachstelleServiceTest extends AbstractEbeguLoginTest {
 	public void createFachstelle() {
 		assertNotNull(fachstelleService);
 		Fachstelle fachstelle = TestDataUtil.createDefaultFachstelle();
+		TestDataUtil.saveMandantIfNecessary(persistence, fachstelle.getMandant());
 		fachstelleService.saveFachstelle(fachstelle);
 
 		Collection<Fachstelle> allFachstellen = fachstelleService.getAllFachstellen();

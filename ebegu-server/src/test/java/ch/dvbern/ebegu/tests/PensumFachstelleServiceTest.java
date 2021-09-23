@@ -25,7 +25,6 @@ import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
@@ -82,7 +81,7 @@ public class PensumFachstelleServiceTest extends AbstractEbeguLoginTest {
 
 	private PensumFachstelle insertInstitutionStammdaten() {
 		PensumFachstelle pensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();
-		persistence.persist(pensumFachstelle.getFachstelle());
+		TestDataUtil.persistFachstelle(persistence, pensumFachstelle.getFachstelle());
 		return persistence.merge(pensumFachstelle);
 	}
 
