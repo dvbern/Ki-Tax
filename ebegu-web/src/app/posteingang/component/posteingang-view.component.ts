@@ -87,7 +87,13 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         'mitteilungStatus-filter',
     ];
 
+    private readonly hiddenColumnsUDInstituion: string[] = [
+        'empfaenger',
+        'empfaengerVerantwortung',
+        ];
+
     // Liste die im Gui angezeigt wird
+    public displayedColumns: string[];
     public displayedCollection: MatTableDataSource<TSMitteilung>;
     public pagination: TSPagination = new TSPagination();
     public page: number = 0;
@@ -107,7 +113,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     public filterPredicate: DVPosteingangFilter = {};
 
     // StateStore Properties
-    public initialFilter: DVPosteingangFilter;
+    public initialFilter: DVPosteingangFilter = {};
     public readonly stateStoreId: string = 'posteingangId';
     private sortId: string;
     private filterId: string;
@@ -133,6 +139,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         this.updateGemeindenList();
         this.initStateStores();
         this.initFilter();
+        this.initDisplayedColumns();
         this.initEmpfaengerFilter();
     }
 
@@ -340,5 +347,20 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
             this.matSort.direction = stored.reverse ? 'asc' : 'desc';
             (this.matSort.sortables.get(stored.predicate) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
         }
+    }
+
+    private initDisplayedColumns(): void {
+        if (!this.isSozialdienstOrInstitution()) {
+            this.displayedColumns = this.allColumns;
+            return;
+        }
+        this.displayedColumns = this.allColumns.filter(column => !this.hiddenColumnsUDInstituion.includes(column));
+        this.filterColumns = this.displayedColumns.map(column => `${column}-filter`);
+    }
+
+    public resetFilter(): void {
+        this.filterPredicate = this.initialFilter;
+        this.applyFilter();
+        this.initEmpfaengerFilter();
     }
 }

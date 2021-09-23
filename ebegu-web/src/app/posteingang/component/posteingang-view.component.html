@@ -16,7 +16,11 @@
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-8 col-md-offset-1">
-                <h3>{{'POSTEINGANG' | translate}}</h3>
+                <div id="titlePosteingang">
+                    <h3 class="ng-scope">{{'POSTEINGANG' | translate}}
+                        <i class="fa fa-undo" (click)="resetFilter()"></i>
+                    </h3>
+                </div>
             </div>
             <div *ngIf="!isSozialdienstOrInstitution()"
                  class="col-md-2 text-right closed-mitteilungen dv-table-resultCombo">
@@ -239,11 +243,11 @@
                         </mat-header-cell>
                     </ng-container>
 
-                    <mat-header-row *matHeaderRowDef="allColumns"
+                    <mat-header-row *matHeaderRowDef="displayedColumns"
                                     class="dv-table-mat-header-row"></mat-header-row>
                     <mat-header-row class="dv-table-mat-header-row"
                                     *matHeaderRowDef="filterColumns"></mat-header-row>
-                    <mat-row *matRowDef="let element; columns: allColumns;"
+                    <mat-row *matRowDef="let element; columns: displayedColumns;"
                              (click)="gotoMitteilung(element)"
                              [class]="{'mitteilung-neu': ('NEU' === element.mitteilungStatus.toString()),'mitteilung-alt': ('NEU' !== element.mitteilungStatus.toString())}"></mat-row>
                 </mat-table>
