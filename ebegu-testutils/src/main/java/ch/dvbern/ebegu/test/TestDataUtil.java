@@ -1549,6 +1549,7 @@ public final class TestDataUtil {
 		persistence.persist(gesuch.getFall());
 		persistence.persist(gesuch.getDossier());
 		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer());
+		TestDataUtil.saveMandantIfNecessary(persistence, gesuch.getGesuchsperiode().getMandant());
 		persistence.persist(gesuch.getGesuchsperiode());
 
 		Set<KindContainer> kindContainers = new TreeSet<>();

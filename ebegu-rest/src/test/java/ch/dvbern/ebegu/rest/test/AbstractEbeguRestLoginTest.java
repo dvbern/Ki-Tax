@@ -58,7 +58,8 @@ public abstract class AbstractEbeguRestLoginTest extends AbstractEbeguRestTest {
 
 	@Before
 	public void performLogin() {
-		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
+		Mandant mandant = TestDataUtil.createDefaultMandant();
+		TestDataUtil.saveMandantIfNecessary(persistence, mandant);
 		dummyAdmin = TestDataUtil.createDummySuperAdmin(persistence, mandant, SUPERADMIN_NAME, SUPERADMIN_NAME);
 		try {
 			loginContext = JBossLoginContextFactory.createLoginContext(SUPERADMIN_NAME, SUPERADMIN_NAME);

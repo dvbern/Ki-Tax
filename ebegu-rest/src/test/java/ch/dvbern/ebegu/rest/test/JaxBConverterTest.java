@@ -163,7 +163,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 	public void institutionSpeichernDarfMandantUndTraegerschaftNichtUpdaten() {
 		LocaleThreadLocal.set(Constants.DEFAULT_LOCALE);
 		Mandant mandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
-		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft();
+		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft(mandant);
 		String nameTraegerschaft = traegerschaft.getName();
 		traegerschaft = persistence.persist(traegerschaft);
 		assertEquals("TestMandantDBUnit", mandant.getName());
@@ -238,7 +238,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 	@Transactional(TransactionMode.DEFAULT) //to load lazy zeitabschnitte we keep a session
 	public void pensumFachstelleSpeichernDarfFachstelleNichtUpdaten() {
 		Fachstelle fachstelle = TestDataUtil.createDefaultFachstelle();
-		fachstelle = persistence.persist(fachstelle);
+		TestDataUtil.persistFachstelle(persistence, fachstelle);
 		assertEquals(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE, fachstelle.getName());
 
 		final ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(
