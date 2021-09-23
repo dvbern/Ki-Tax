@@ -93,7 +93,7 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 		names = { "SCHULAMT_ANMELDUNG_AUSGELOEST", "SCHULAMT_FALSCHE_INSTITUTION" },
 		mode = Mode.INCLUDE)
 	void isAblehnungErblaubt(@Nonnull Betreuungsstatus status) {
-		assertThat(anmeldungAblehnenEventHandler.isAblehnungErblaubtStatus(status), is(true));
+		assertThat(anmeldungAblehnenEventHandler.isAblehnungErlaubtStatus(status), is(true));
 	}
 
 	@Nested

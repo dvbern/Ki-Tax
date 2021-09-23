@@ -101,7 +101,7 @@ public class AnmeldungAblehnenEventHandler extends BaseEventHandler<String> {
 			return Processing.failure("Der Client hat innerhalb der Periode keine Berechtigung.");
 		}
 
-		if (isAblehnungErblaubtStatus(anmeldungTagesschule.getBetreuungsstatus())) {
+		if (isAblehnungErlaubtStatus(anmeldungTagesschule.getBetreuungsstatus())) {
 			this.betreuungService.anmeldungSchulamtAblehnen(anmeldungTagesschule);
 			LOG.info("Tagesschuleanmeldung mit RefNr: {} wurde automatisch abgelehnt", eventMonitor.getRefnr());
 			eventMonitor.record("Tagesschuleanmeldung wurde automatisch abgelehnt");
@@ -113,7 +113,7 @@ public class AnmeldungAblehnenEventHandler extends BaseEventHandler<String> {
 			+ anmeldungTagesschule.getBetreuungsstatus());
 	}
 
-	protected boolean isAblehnungErblaubtStatus(@Nonnull Betreuungsstatus status) {
+	protected boolean isAblehnungErlaubtStatus(@Nonnull Betreuungsstatus status) {
 		return status == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
 			|| status == Betreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION;
 	}
