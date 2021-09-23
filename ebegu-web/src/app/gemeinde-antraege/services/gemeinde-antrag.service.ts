@@ -97,7 +97,7 @@ export class GemeindeAntragService {
 
     public getFilterableTypesForRole(): TSGemeindeAntragTyp[] {
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())
-            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles())) {
+            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles())) {
             return [
                 TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN, TSGemeindeAntragTyp.FERIENBETREUUNG,
                 TSGemeindeAntragTyp.GEMEINDE_KENNZAHLEN,
