@@ -30,13 +30,14 @@
     }
 
     .mitteilung-neu, .mitteilung-alt {
+        cursor: pointer;
         mat-row:first-child {
             padding-left: 3rem;
         }
     }
 
     .mitteilung-neu {
-        mat-row {
+        mat-cell {
             font-weight: 900;
         }
         mat-row:first-child {
@@ -66,5 +67,16 @@
         display: flex;
         justify-content: center;
         width: 100%;
+    }
+
+    ::ng-deep .mat-checkbox-label {
+        color: #333;
+        .ebeguSemi-bold();
+    }
+
+
+    ::ng-deep .mat-form-field-label {
+        .ebeguBold();
+        color: #333;
     }
 }

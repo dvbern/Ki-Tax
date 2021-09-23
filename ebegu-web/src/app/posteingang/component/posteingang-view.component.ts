@@ -13,7 +13,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+} from '@angular/core';
 import {PageEvent} from '@angular/material/paginator';
 import {MatSort, MatSortHeader, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
@@ -34,6 +42,7 @@ import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresu
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
+import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
 import {DVPosteingangFilter} from '../../shared/interfaces/DVPosteingangFilter';
 import {StateStoreService} from '../../shared/services/state-store.service';
@@ -94,7 +103,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     public includeClosed: boolean = false;
     public gemeindenList: Array<TSGemeinde> = [];
     public paginationItems: number[];
-
+    public initialEmpfaenger: TSBenutzerNoDetails;
     public filterPredicate: DVPosteingangFilter = {};
 
     // StateStore Properties
@@ -115,6 +124,8 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         private readonly transitionService: TransitionService,
         private readonly stateStore: StateStoreService,
         private readonly uiRouterGlobals: UIRouterGlobals,
+        private readonly benutzerRS: BenutzerRSX,
+        private readonly changeDetectorRef: ChangeDetectorRef,
     ) {
     }
 
@@ -122,12 +133,21 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         this.updateGemeindenList();
         this.initStateStores();
         this.initFilter();
+        this.initEmpfaengerFilter();
     }
 
     public ngAfterViewInit(): void {
         this.displayedCollection = new MatTableDataSource<TSMitteilung>([]);
         this.initSort();
         this.passFilterToServer();
+    }
+
+    private initEmpfaengerFilter(): void {
+        this.benutzerRS.getAllBenutzerBgTsOrGemeinde().then(response => {
+            this.initialEmpfaenger =
+                EbeguUtil.findUserByNameInList(this.filterPredicate?.empfaenger, response);
+            this.changeDetectorRef.markForCheck();
+        });
     }
 
     public ngOnDestroy(): void {
