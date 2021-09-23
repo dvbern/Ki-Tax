@@ -1562,8 +1562,10 @@ public final class TestDataUtil {
 
 		Objects.requireNonNull(kind.getKindGS());
 		Objects.requireNonNull(kind.getKindGS().getPensumFachstelle());
+		TestDataUtil.saveMandantIfNecessary(persistence, kind.getKindGS().getPensumFachstelle().getFachstelle().getMandant());
 		persistence.persist(kind.getKindGS().getPensumFachstelle().getFachstelle());
 		Objects.requireNonNull(kind.getKindJA().getPensumFachstelle());
+		TestDataUtil.saveMandantIfNecessary(persistence, kind.getKindJA().getPensumFachstelle().getFachstelle().getMandant());
 		persistence.persist(kind.getKindJA().getPensumFachstelle().getFachstelle());
 		kind.setGesuch(gesuch);
 		kindContainers.add(kind);
