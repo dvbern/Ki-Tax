@@ -167,6 +167,12 @@ public enum ReportVorlage {
 			ReportFileName.GEMEINDEN,
 			Constants.DATA,
 			MergeFieldGemeinden.class
+	),
+	VORLAGE_REPORT_FERIENBETREUUNG(
+		"/reporting/Ferienbetreuung.xlsx",
+		ReportFileName.FERIENBETREUUNG,
+		Constants.DATA,
+		MergeFieldFerienbetreuung.class
 	);
 
 	@Nonnull

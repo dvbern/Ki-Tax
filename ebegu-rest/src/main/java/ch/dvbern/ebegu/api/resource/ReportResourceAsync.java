@@ -827,6 +827,33 @@ public class ReportResourceAsync {
 		return Response.ok(workJob.getId()).build();
 	}
 
+	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Ferienbetreuung'", response = JaxDownloadFile.class)
+	@Nonnull
+	@GET
+	@Path("/excel/ferienbetreuung")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT,SACHBEARBEITER_MANDANT })
+	public Response getFerienbetreuungExcelReport(
+		@Context HttpServletRequest request,
+		@Context UriInfo uriInfo) {
+
+		String ip = downloadResource.getIP(request);
+
+		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
+
+		workJob = workjobService.createNewReporting(
+			workJob,
+			ReportVorlage.VORLAGE_REPORT_FERIENBETREUUNG,
+			null,
+			null,
+			null,
+			LocaleThreadLocal.get()
+		);
+
+		return Response.ok(workJob.getId()).build();
+	}
+
 	/**
 	 * Überprüft, ob für eine bestimmte Gesuchsperiode die Anzahl Module über dem maximalen Wert liegt.
 	 * Dieser maximale Wert ist durch das Exceltemplate gegeben

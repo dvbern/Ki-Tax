@@ -1477,6 +1477,7 @@
     "ReportType_notrecht": "Notrecht",
     "ReportType_mahlzeitenverguenstigung": "Mahlzeitenverguenstigung",
     "ReportType_gemeinden": "Gemeinden",
+    "ReportType_ferienbetreuung": "Ferienbetreuungen",
     "BatchJobStatus_REQUESTED": "Statistik angefordert",
     "BatchJobStatus_RUNNING": "Statistik wird erstellt",
     "BatchJobStatus_FINISHED": "Bereit zum Download",
@@ -2596,5 +2597,6 @@
     "BENUTZENDE_EINGEBEN": "Benutzende eingeben",
     "GEMEINDEN_STATISTIK": "Gemeinden",
     "STATISTIK_GEMEINDEN_HINT": "",
+    "FERIENBETREUUNG_STATISTIK": "Ferienbetreuung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -208,9 +208,12 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 				}
 				return this.reportMahlzeitenService.generateExcelReportMahlzeiten(dateFrom, dateTo, locale, gemeindeId);
 			}
-		case VORLAGE_REPORT_GEMEINDEN: {
-			return this.reportGemeindenService.generateExcelReportGemeinden(locale);
-		}
+			case VORLAGE_REPORT_GEMEINDEN: {
+				return this.reportGemeindenService.generateExcelReportGemeinden(locale);
+			}
+			case VORLAGE_REPORT_FERIENBETREUUNG: {
+				return this.reportService.generateExcelReportFerienbetreuung(locale);
+			}
 		}
 		throw new IllegalArgumentException("No Report generated: Unknown ReportType: " + workJobType);
 	}

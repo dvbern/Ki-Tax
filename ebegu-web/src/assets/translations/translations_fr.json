@@ -1476,6 +1476,7 @@
     "ReportType_tagesschuleRechnungsstellung": "Facturation pour les écoles à jounrée continue",
     "ReportType_notrecht": "Droit d'urgence",
     "ReportType_mahlzeitenverguenstigung": "Réduction de repas",
+    "ReportType_ferienbetreuung": "Ferienbetreuungen",
     "BatchJobStatus_REQUESTED": "Statistique demandée",
     "BatchJobStatus_RUNNING": "Statistique en cours d'élaboration",
     "BatchJobStatus_FINISHED": "Prêt à télécharger",
