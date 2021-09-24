@@ -1478,6 +1478,7 @@
     "ReportType_tagesschuleRechnungsstellung": "Tagesschule Rechnungsstellung",
     "ReportType_notrecht": "Notrecht",
     "ReportType_mahlzeitenverguenstigung": "Mahlzeitenverguenstigung",
+    "ReportType_ferienbetreuung": "Ferienbetreuungen",
     "BatchJobStatus_REQUESTED": "Statistik angefordert",
     "BatchJobStatus_RUNNING": "Statistik wird erstellt",
     "BatchJobStatus_FINISHED": "Bereit zum Download",
