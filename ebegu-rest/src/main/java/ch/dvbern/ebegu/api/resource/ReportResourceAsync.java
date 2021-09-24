@@ -29,6 +29,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.json.Json;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -118,7 +119,7 @@ public class ReportResourceAsync {
 	@GET
 	@Path("/excel/gesuchStichtag")
 	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 		SACHBEARBEITER_TS, ADMIN_TS, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response getGesuchStichtagReportExcel(
@@ -145,7 +146,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Gesuch-Zeitraum'", response = JaxDownloadFile.class)
@@ -193,7 +194,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Kanton'", response = JaxDownloadFile.class)
@@ -241,7 +242,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'MitarbeiterInnen'", response = JaxDownloadFile.class)
@@ -285,7 +286,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Benutzer'", response = JaxDownloadFile.class)
@@ -313,7 +314,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Institutionen'", response = JaxDownloadFile.class)
@@ -340,7 +341,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Zahlungen pro Periode'",
@@ -373,7 +374,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Gesuchsteller-Kinder-Betreuung'",
@@ -420,7 +421,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Kinder'", response = JaxDownloadFile.class)
@@ -466,7 +467,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Gesuchsteller'", response = JaxDownloadFile.class)
@@ -498,7 +499,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Massenversand'", response = JaxDownloadFile.class)
@@ -565,7 +566,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Verrechnung kiBon'", response = JaxDownloadFile.class)
@@ -596,7 +597,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	@ApiOperation(
@@ -628,7 +629,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	@ApiOperation(
@@ -671,7 +672,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	@ApiOperation(
@@ -702,7 +703,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Notrecht'", response = JaxDownloadFile.class)
@@ -731,7 +732,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Mahlzeitenverguenstigung'",
@@ -788,7 +789,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	/**
@@ -817,5 +818,11 @@ public class ReportResourceAsync {
 		String param = StringUtils.substringAfterLast(request.getRequestURI(), URL_PART_EXCEL);
 		workJob.setParams(param);
 		return workJob;
+	}
+
+	@Nonnull
+	private Response createWorkjobResponse(@Nonnull Workjob workjob) {
+		String json = Json.createObjectBuilder().add("workjobId", workjob.getId()).build().toString();
+		return Response.ok(json).build();
 	}
 }
