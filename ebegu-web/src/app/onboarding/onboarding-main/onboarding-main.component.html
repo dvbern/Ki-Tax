@@ -18,7 +18,7 @@
     <div class="col-md-6 mobile-hide">
         <div class="onboarding-container-left">
             <div class="onboarding-title">
-                <div class="kibon-logo-white"></div>
+                <div class="kibon-logo-white" [style.background-image]="getLogoWhiteUrl()"></div>
                 <p translate>ONBOARDING_SUBTITLE</p>
                 <div class="onboarding-information">
                     <div class="information-icons">
@@ -64,7 +64,7 @@
 <div class="onboarding-single-container" *ngIf="!splittedScreen">
     <div class="container">
         <div class="onboarding-title">
-            <div class="kibon-logo-white"></div>
+            <div class="kibon-logo-white" [style.background-image]="getLogoWhiteUrl()"></div>
         </div>
         <div class="row">
             <div class="col-md-12">
