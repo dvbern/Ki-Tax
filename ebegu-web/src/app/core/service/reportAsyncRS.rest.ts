@@ -270,6 +270,18 @@ export class ReportAsyncRS {
             });
     }
 
+    public getGemeindenReportExcel(): IPromise<string> {
+        return this.http.get(`${this.serviceURL}/excel/gemeinden`).then((response: any) => response.data);
+    }
+
+    public getFerienbetreuungReportExcel(): IPromise<string> {
+        return this.http
+            .get(`${this.serviceURL}/excel/ferienbetreuung`, {timeout: this.reportingTimeout})
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
     public getServiceName(): string {
         return 'ReportAsyncRS';
     }

@@ -245,7 +245,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
 
     public fallAktivieren(): void {
         this.form.$dirty = true;
-        if (this.validateForm()) {
+        if (this.validateForm() && this.dokumente && this.dokumente.length > 0) {
             this.gesuchModelManager.getFall().sozialdienstFall.status = TSSozialdienstFallStatus.AKTIV;
             this.save();
         }

@@ -15,23 +15,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+package ch.dvbern.ebegu.reporting.zahlungauftrag;
 
-import java.util.Collection;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.validation.Valid;
 
-import ch.dvbern.ebegu.entities.BetreuungMonitoring;
+import ch.dvbern.ebegu.util.UploadFileInfo;
+import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 
-public interface BetreuungMonitoringService {
-
-	@Nonnull
-	Collection<BetreuungMonitoring> getAllBetreuungMonitoringBeiCriteria(
-		@Nullable String refNummer,
-		@Nullable String benutzer);
+public interface ReportGemeindenService {
 
 	@Nonnull
-	BetreuungMonitoring saveBetreuungMonitoring(@Valid @Nonnull BetreuungMonitoring betreuungMonitoring);
+	UploadFileInfo generateExcelReportGemeinden(
+			@Nonnull Locale locale
+	) throws ExcelMergeException;
 }

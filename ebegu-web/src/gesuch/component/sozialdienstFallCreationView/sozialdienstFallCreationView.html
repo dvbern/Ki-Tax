@@ -305,8 +305,8 @@
                     <!-- Fall aktivieren soll nur sichtbar sein wenn Vollmacht hochgeladen ist-->
                     <span dv-show-element
                           dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrSozialdienstRolle()"
-                          dv-show-expression="vm.isAktivierungMoeglich()">
-                        <dv-loading-button button-click="vm.fallAktivieren()" type="submit">
+                          dv-show-expression="!vm.isSozialdienstFallReadOnly()">
+                        <dv-loading-button button-disabled="!vm.isAktivierungMoeglich()" button-click="vm.fallAktivieren()" type="submit">
                             <span class="uppercase" data-translate="SOZIALDIENSTFALL_AKTIVIEREN"></span>
                         </dv-loading-button>
                     </span>
@@ -321,8 +321,8 @@
                     <!-- Fall zurueck entziehen soll nur Superadmin moeglich sein-->
                     <span dv-show-element
                           dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()"
-                          dv-show-expression="vm.isReaktivierungMoeglich()">
-                        <dv-loading-button button-click="vm.fallAktivieren()" type="submit">
+                          dv-show-expression="vm.isSozialdienstFallEntzogen()">
+                        <dv-loading-button button-disabled="!vm.isReaktivierungMoeglich()" button-click="vm.fallAktivieren()" type="submit">
                             <span class="uppercase" data-translate="SOZIALDIENSTFALL_REAKTIVIEREN"></span>
                         </dv-loading-button>
                     </span>

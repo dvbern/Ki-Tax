@@ -1476,6 +1476,8 @@
     "ReportType_tagesschuleRechnungsstellung": "Tagesschule Rechnungsstellung",
     "ReportType_notrecht": "Notrecht",
     "ReportType_mahlzeitenverguenstigung": "Mahlzeitenverguenstigung",
+    "ReportType_gemeinden": "Gemeinden",
+    "ReportType_ferienbetreuung": "Ferienbetreuungen",
     "BatchJobStatus_REQUESTED": "Statistik angefordert",
     "BatchJobStatus_RUNNING": "Statistik wird erstellt",
     "BatchJobStatus_FINISHED": "Bereit zum Download",
@@ -2598,5 +2600,9 @@
     "GEMEINDE_KENNZAHLEN_KOSTENLENKUNG_ANDERE": "Hat die Gemeinde weitere Kostenlenkungsmassnahmen getroffen?",
     "GEMEINDE_KENNZAHLEN_WELCHE_KOSTENLENKUNGSMASSNAHMEN": "Welche weiteren Kostenlenkungsmassnahmen wurden getroffen?",
     "GEMEINDE_KENNZAHLEN_AKTIV": "Gemeinde Kennzahlen aktiviert",
+    "BENUTZENDE_EINGEBEN": "Benutzende eingeben",
+    "GEMEINDEN_STATISTIK": "Gemeinden",
+    "STATISTIK_GEMEINDEN_HINT": "",
+    "FERIENBETREUUNG_STATISTIK": "Ferienbetreuung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

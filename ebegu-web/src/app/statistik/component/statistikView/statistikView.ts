@@ -318,6 +318,17 @@ export class StatistikViewController implements IController {
                         this.informReportGenerationStarted(batchExecutionId);
                     });
                 return;
+            case TSStatistikParameterType.GEMEINDEN:
+                this.reportAsyncRS.getGemeindenReportExcel().then((batchExecutionId: string) => {
+                    this.informReportGenerationStarted(batchExecutionId);
+                });
+                return;
+            case TSStatistikParameterType.FERIENBETREUUNG:
+                this.reportAsyncRS.getFerienbetreuungReportExcel()
+                    .then((batchExecutionId: string) => {
+                        this.informReportGenerationStarted(batchExecutionId);
+                    });
+                return;
             default:
                 throw new Error(`unknown TSStatistikParameterType: ${type}`);
         }

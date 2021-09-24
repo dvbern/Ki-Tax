@@ -170,12 +170,12 @@ public class KantonExcelConverter implements ExcelConverter {
 		this.createCellWithFormula(targetRow, zahlStyle, 10, "SUM(K10:K" + lastRow + ")");
 		this.createCellWithFormula(targetRow, zahlStyle, 11, "=K"+ totalRow +"*$B$6");
 		this.fillXCellWithStyle(targetRow, basicStyle, 12, 16);
-		this.createCellWithFormula(targetRow, procentStyle, 17, "SUM(P10:P" + lastRow + ")");
-		this.createCellWithFormula(targetRow, zahlStyle, 18, "SUM(H10:Q" + lastRow + ")");
-		this.createCellWithFormula(targetRow, zahlStyle, 19, "SUM(R10:R" + lastRow + ")");
-		this.createCellWithFormula(targetRow, zahlStyle, 20,"SUM(S10:S" + lastRow + ")");
-		this.createCellWithFormula(targetRow, zahlStyle, 21, "SUM(T10:T" + lastRow + ")");
-		this.createCellWithFormula(targetRow, zahlStyle, 22,"SUM(U10:U" + lastRow + ")");
+		this.createCellWithFormula(targetRow, procentStyle, 17, "SUM(R10:R" + lastRow + ")");
+		this.createCellWithFormula(targetRow, zahlStyle, 18, "SUM(S10:S" + lastRow + ")");
+		this.createCellWithFormula(targetRow, zahlStyle, 19, "SUM(T10:T" + lastRow + ")");
+		this.createCellWithFormula(targetRow, zahlStyle, 20,"SUM(U10:U" + lastRow + ")");
+		this.createCellWithFormula(targetRow, zahlStyle, 21, "SUM(V10:V" + lastRow + ")");
+		this.createCellWithFormula(targetRow, zahlStyle, 22,"SUM(W10:W" + lastRow + ")");
 		this.fillXCellWithStyle(targetRow, basicStyle, 23, 24);
 	}
 
@@ -269,6 +269,18 @@ public class KantonExcelConverter implements ExcelConverter {
 		excelMerger.addValue(
 			MergeFieldKanton.monatsendeTitle,
 			ServerMessageUtil.getMessage("Reports_monatsendeTitle", locale));
+		mergeFields.add(MergeFieldKanton.tageMonatTitle.getMergeField());
+		excelMerger.addValue(
+			MergeFieldKanton.tageMonatTitle,
+			ServerMessageUtil.getMessage("Reports_tageMonatTitle", locale));
+		mergeFields.add(MergeFieldKanton.tageIntervallTitle.getMergeField());
+		excelMerger.addValue(
+			MergeFieldKanton.tageIntervallTitle,
+			ServerMessageUtil.getMessage("Reports_tageIntervallTitle", locale));
+		mergeFields.add(MergeFieldKanton.anteilMonatKantonTitle.getMergeField());
+		excelMerger.addValue(
+			MergeFieldKanton.anteilMonatKantonTitle,
+			ServerMessageUtil.getMessage("Reports_anteilMonatKantonTitle", locale));
 		mergeFields.add(MergeFieldKanton.platzbelegungTageTitle.getMergeField());
 		excelMerger.addValue(
 			MergeFieldKanton.platzbelegungTageTitle,

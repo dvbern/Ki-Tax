@@ -149,4 +149,7 @@ public interface ReportService {
 	@Nonnull
 	UploadFileInfo generateExcelReportInstitutionen(@Nonnull Locale locale) throws ExcelMergeException;
 
+	@Nonnull
+	UploadFileInfo generateExcelReportFerienbetreuung(@Nonnull Locale locale) throws ExcelMergeException;
+
 }

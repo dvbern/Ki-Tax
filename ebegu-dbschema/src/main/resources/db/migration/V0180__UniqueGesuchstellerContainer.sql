@@ -15,23 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+alter table gesuch
+	add constraint UK_gesuch_gesuchsteller1_id unique (gesuchsteller1_id);
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.validation.Valid;
-
-import ch.dvbern.ebegu.entities.BetreuungMonitoring;
-
-public interface BetreuungMonitoringService {
-
-	@Nonnull
-	Collection<BetreuungMonitoring> getAllBetreuungMonitoringBeiCriteria(
-		@Nullable String refNummer,
-		@Nullable String benutzer);
-
-	@Nonnull
-	BetreuungMonitoring saveBetreuungMonitoring(@Valid @Nonnull BetreuungMonitoring betreuungMonitoring);
-}
+alter table gesuch
+	add constraint UK_gesuch_gesuchsteller2_id unique (gesuchsteller2_id);

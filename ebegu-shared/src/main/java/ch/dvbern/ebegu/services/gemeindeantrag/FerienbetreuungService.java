@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +36,9 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
  * Service fuer die Ferienbetreuungen
  */
 public interface FerienbetreuungService {
+
+	@Nonnull
+	Collection<FerienbetreuungAngabenContainer> getAllFerienbetreuungAntraege();
 
 	@Nonnull
 	List<FerienbetreuungAngabenContainer> getFerienbetreuungAntraege(
