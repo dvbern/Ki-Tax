@@ -15,8 +15,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
+import {SharedModule} from '../shared/shared.module';
 import {StatistikRoutingModule} from './statistik-routing/statistik-routing.module';
 import {StatistikComponent} from './statistik/statistik.component';
 
@@ -24,9 +25,14 @@ import {StatistikComponent} from './statistik/statistik.component';
     declarations: [
         StatistikComponent
     ],
+    // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
+    // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
+    // See https://stackoverflow.com/a/51214263
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
     imports: [
         CommonModule,
-        StatistikRoutingModule
+        StatistikRoutingModule,
+        SharedModule
     ]
 })
 export class StatistikModule {

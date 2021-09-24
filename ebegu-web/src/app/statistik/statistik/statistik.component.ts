@@ -15,8 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
@@ -52,7 +51,7 @@ const LOG = LogFactory.createLog('StatistikComponent');
     styleUrls: ['./statistik.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StatistikComponent implements OnInit {
+export class StatistikComponent implements OnInit, OnDestroy {
 
     public readonly TSStatistikParameterType = TSStatistikParameterType;
     public readonly TSRole = TSRole;
@@ -95,16 +94,6 @@ export class StatistikComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-    }
-
-    public $onDestroy(): void {
-        if (this.polling) {
-            clearInterval(this.polling);
-            LOG.debug('canceled job polling');
-        }
-    }
-
-    public $onInit(): void {
         this.statistikParameter = new TSStatistikParameter();
         this.gesuchsperiodeRS.getAllGesuchsperioden().then((response: any) => {
             this.gesuchsperioden = response;
@@ -125,6 +114,13 @@ export class StatistikComponent implements OnInit {
         this.initBatchJobPolling();
     }
 
+    public ngOnDestroy(): void {
+        if (this.polling) {
+            clearInterval(this.polling);
+            LOG.debug('canceled job polling');
+        }
+    }
+
     private initBatchJobPolling(): void {
         // check all 8 seconds for the state
         const delay = 12000;
@@ -138,7 +134,7 @@ export class StatistikComponent implements OnInit {
     }
 
     // tslint:disable-next-line:cognitive-complexity
-    public generateStatistik(form: NgForm, type?: TSStatistikParameterType): void {
+    public generateStatistik(form: HTMLFormElement, type?: string): void {
         if (!form.valid) {
             return;
         }
@@ -432,4 +428,18 @@ export class StatistikComponent implements OnInit {
         });
     }
 
+    public showGesucheNachStichtag(): boolean {
+        return this.authServiceRS.isOneOfRoles([
+            TSRole.SACHBEARBEITER_BG,
+            TSRole.ADMIN_BG,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SUPER_ADMIN,
+            TSRole.REVISOR,
+            TSRole.ADMIN_TS,
+            TSRole.SACHBEARBEITER_TS,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT
+        ]);
+    }
 }
