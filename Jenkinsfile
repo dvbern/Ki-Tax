@@ -22,7 +22,7 @@ pipeline {
                     spotbugsPublisher(disabled: true),
                     artifactsPublisher(disabled: true)
               ]) {
-                 sh './mvnw -B -U -T 1C -P dvbern.oss -P test-wildfly-managed -P ci clean test'
+                 sh './mvnw -B -U -T 1C -P dvbern.oss -P ci clean test'
               }
            }
         }
@@ -39,7 +39,7 @@ pipeline {
                     spotbugsPublisher(disabled: true),
                     artifactsPublisher(disabled: true)
               ]) {
-                 sh './mvnw -B -U -T 1C -P dvbern.oss -P test-wildfly-managed -P ci -P frontend clean test'
+                 sh './mvnw -B -U -T 1C -P dvbern.oss -P ci -P frontend clean test'
               }
            }
         }
