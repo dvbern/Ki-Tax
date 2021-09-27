@@ -64,6 +64,8 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 	@Nullable
 	private String rechnungsadresseNachname;
 	@Nullable
+	private String rechnungsadresseOrganisation;
+	@Nullable
 	private String rechnungsadresseStrasse;
 	@Nullable
 	private String rechnungsadresseHausnummer;
@@ -282,6 +284,15 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 		this.ekvAnnuliert = ekvAnnuliert;
 	}
 
+	@Nullable
+	public String getRechnungsadresseOrganisation() {
+		return rechnungsadresseOrganisation;
+	}
+
+	public void setRechnungsadresseOrganisation(@Nullable String rechnungsadresseOrganisation) {
+		this.rechnungsadresseOrganisation = rechnungsadresseOrganisation;
+	}
+
 	@Nonnull
 	public static Collection<TagesschuleRechnungsstellungDataRow> createRows(
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
@@ -324,6 +335,7 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 				}
 				final GesuchstellerAdresse adresse = gsContainer.extractEffectiveRechnungsAdresse(LocalDate.now());
 				if (adresse != null) {
+					dataRow.rechnungsadresseOrganisation = adresse.getOrganisation();
 					dataRow.rechnungsadresseStrasse = adresse.getStrasse();
 					dataRow.rechnungsadresseHausnummer = adresse.getHausnummer();
 					dataRow.rechnungsadressePlz = adresse.getPlz();
