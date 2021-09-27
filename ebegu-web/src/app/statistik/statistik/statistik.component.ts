@@ -453,4 +453,35 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public showAllJobsVisible(): boolean {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
+
+    public showGesucheNachZeitraum(): boolean {
+        return this.authServiceRS.isOneOfRoles([
+            TSRole.SACHBEARBEITER_BG,
+            TSRole.ADMIN_BG,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.ADMIN_BG,
+            TSRole.SUPER_ADMIN,
+            TSRole.REVISOR,
+            TSRole.ADMIN_TS,
+            TSRole.SACHBEARBEITER_TS,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT
+        ]);
+    }
+
+    public showZahlungenNachPeriode(): boolean {
+        return this.authServiceRS.isOneOfRoles(
+            [
+                TSRole.SACHBEARBEITER_BG,
+                TSRole.ADMIN_BG,
+                TSRole.SUPER_ADMIN,
+                TSRole.REVISOR,
+                TSRole.ADMIN_MANDANT,
+                TSRole.SACHBEARBEITER_MANDANT,
+                TSRole.ADMIN_GEMEINDE,
+                TSRole.SACHBEARBEITER_GEMEINDE
+            ]
+        );
+    }
 }

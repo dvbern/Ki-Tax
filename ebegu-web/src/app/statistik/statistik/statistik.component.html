@@ -39,7 +39,6 @@
                                         <dv-input-container class="form-group">
                                             <dv-date-picker-x label="STICHTAG"
                                                               [(date)]="statistikParameter.stichtag"
-                                                              [submitted]="gesuch_stichtag.submitted"
                                                               [required]="true"
                                             ></dv-date-picker-x>
                                         </dv-input-container>
@@ -75,64 +74,48 @@
                     </dv-accordion-tab>
                 </div>
 
-                <!--<div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_BG', 'ADMIN_BG', 'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE', 'ADMIN_BG', 'SUPER_ADMIN',
-                     'REVISOR', 'ADMIN_TS', 'SACHBEARBEITER_TS', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
+                <div *ngIf="showGesucheNachZeitraum()">
                     <dv-accordion-tab tabid="gesuch_zeitraum">
                         <tab-title>
-                            <span class="uppercase" data-translate="GESUCHE_NACH_ZEITRAUM"></span>
-                            <dv-tooltip input-id="gesuch_zeitraum_info"
-                                        ng-click="$event.stopPropagation()"
-                                        text="'STATISTIKEN_GESUCHE_NACH_ZEITRAUM_HINT' | translate">
+                            <span class="uppercase" translate>GESUCHE_NACH_ZEITRAUM</span>
+                            <dv-tooltip inputId="gesuch_zeitraum_info"
+                                        (click)="$event.stopPropagation()"
+                                        [text]="'STATISTIKEN_GESUCHE_NACH_ZEITRAUM_HINT' | translate">
                             </dv-tooltip>
                         </tab-title>
                         <tab-body>
-                            <form name="gesuch_zeitraum"
-                                  ng-submit="vm.generateStatistik(gesuch_zeitraum, vm.TSStatistikParameterType.GESUCH_ZEITRAUM)"
+                            <form name="gesuch_zeitraum" #gesuchZeitraumForm='ngForm'
+                                  (ngSubmit)="generateStatistik(gesuchZeitraumForm, TSStatistikParameterType.GESUCH_ZEITRAUM)"
+                                  [ngClass]="{'ng-submitted': gesuchZeitraumForm.submitted}"
                                   novalidate>
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <dv-input-container class="form-group">
-                                            <label class="md-no-float" for="von_gesuch" data-translate="VON"></label>
-                                            <dv-datepicker name="von_gesuch" id="von_gesuch"
-                                                           ng-model="vm.statistikParameter.von" ng-required="true"
-                                                           class="input-element">
-                                            </dv-datepicker>
-                                            <dv-error-messages for="gesuch_zeitraum.von_gesuch.$error"
-                                                               class="error"></dv-error-messages>
-                                        </dv-input-container>
+                                        <dv-date-picker-x label="VON" [(date)]="statistikParameter.von" [required]="true"></dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
-                                        <dv-input-container class="form-group">
-                                            <label class="md-no-float" for="bis_gesuch" data-translate="BIS"></label>
-                                            <dv-datepicker name="bis_gesuch" id="bis_gesuch"
-                                                           ng-model="vm.statistikParameter.bis" ng-required="true"
-                                                           class="input-element">
-                                            </dv-datepicker>
-                                            <dv-error-messages for="gesuch_zeitraum.bis_gesuch.$error"
-                                                               class="error"></dv-error-messages>
-                                        </dv-input-container>
+                                        <dv-date-picker-x label="BIS" [(date)]="statistikParameter.bis" [required]="true"></dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
                                         <div class="form-group">
                                             <label class="md-no-float" for="periode_gesuch_zeitraum"
-                                                   data-translate="GESUCHSPERIODEN"></label>
+                                                   translate>GESUCHSPERIODEN</label>
                                             <div class="dv-select-style">
                                                 <select name="periode_gesuch_zeitraum" id="periode_gesuch_zeitraum"
-                                                        ng-model="vm.statistikParameter.gesuchsperiode"
-                                                        ng-options="gesuchsperiode.id as gesuchsperiode.gesuchsperiodeString for gesuchsperiode in vm.gesuchsperioden | orderBy: 'name'"
+                                                        [(ngModel)]="statistikParameter.gesuchsperiode"
+                                                        #gesuchZeitraumGP='ngModel'
                                                         class="form-control">
-                                                    <option value="">{{'KEINE' | translate}}</option>
+                                                    <option [value]="undefined">{{'KEINE' | translate}}</option>
+                                                    <option *ngFor="let gesuchsperiode of gesuchsperioden" [value]="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
                                                 </select>
-                                                <dv-error-messages for="gesuch_zeitraum.periode_gesuch_zeitraum.$error"
+                                                <dv-error-messages [errorObject]="gesuchZeitraumGP.errors"
                                                                    class="error"></dv-error-messages>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-xs-3 statistik-button">
-                                        <dv-loading-button type="submit"
+                                        <dv-loading-button [type]="'submit'"
                                                            style="margin-left:auto;margin-right:auto;width:13rem;">
-                                            <span class="uppercase" data-translate="GENERIEREN"></span>
+                                            <span class="uppercase" translate>GENERIEREN</span>
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -141,42 +124,44 @@
                     </dv-accordion-tab>
                 </div>
 
-                <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SUPER_ADMIN','REVISOR', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT',
-                     'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE']">
+                <div *ngIf="showZahlungenNachPeriode()">
                     <dv-accordion-tab tabid="zahlungen_periode">
                         <tab-title>
-                            <span class="uppercase" data-translate="ZAHLUNGEN_NACH_PERIODE"></span>
-                            <dv-tooltip input-id="zahlungen_periode_info"
-                                        ng-click="$event.stopPropagation()"
-                                        text="'STATISTIKEN_ZAHLUNGEN_HINT' | translate">
+                            <span class="uppercase" translate>ZAHLUNGEN_NACH_PERIODE</span>
+                            <dv-tooltip inputId="zahlungen_periode_info"
+                                        (click)="$event.stopPropagation()"
+                                        [text]="'STATISTIKEN_ZAHLUNGEN_HINT' | translate">
                             </dv-tooltip>
                         </tab-title>
                         <tab-body>
                             <form name="zahlungen_periode"
-                                  ng-submit="vm.generateStatistik(zahlungen_periode, vm.TSStatistikParameterType.ZAHLUNGEN_PERIODE)"
+                                  #zahlungenPeriode='ngForm'
+                                  [ngClass]="{'ng-submitted': zahlungenPeriode.submitted}"
+                                  (ngSubmit)="generateStatistik(zahlungenPeriode, TSStatistikParameterType.ZAHLUNGEN_PERIODE)"
                                   novalidate>
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <div class="form-group">
-                                            <label class="md-no-float" for="periode_zahlungen_periode"
-                                                   data-translate="GESUCHSPERIODEN"></label>
+                                            <label class="md-no-float required" for="zahlungen_periode_gp"
+                                                   translate>GESUCHSPERIODEN</label>
                                             <div class="dv-select-style">
-                                                <select name="periode_zahlungen_periode" id="periode_zahlungen_periode"
-                                                        ng-model="vm.statistikParameter.gesuchsperiode"
-                                                        ng-options="gesuchsperiode.id as gesuchsperiode.gesuchsperiodeString for gesuchsperiode in vm.gesuchsperioden | orderBy: 'name'"
-                                                        class="form-control" ng-required="true">
+                                                <select name="periode_gesuch_zeitraum" id="zahlungen_periode_gp"
+                                                        [(ngModel)]="statistikParameter.gesuchsperiode"
+                                                        #gesuchZeitraumGP='ngModel'
+                                                        required
+                                                        class="form-control">
+                                                    <option [value]="undefined">{{'KEINE' | translate}}</option>
+                                                    <option *ngFor="let gesuchsperiode of gesuchsperioden" [value]="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
                                                 </select>
-                                                <dv-error-messages
-                                                    for="zahlungen_periode.periode_zahlungen_periode.$error"
-                                                    class="error"></dv-error-messages>
+                                                <dv-error-messages [errorObject]="gesuchZeitraumGP.errors"
+                                                                   class="error"></dv-error-messages>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-xs-3 statistik-button">
-                                        <dv-loading-button type="submit"
+                                        <dv-loading-button [type]="'submit'"
                                                            style="margin-left:auto;margin-right:auto;width:13rem;">
-                                            <span class="uppercase" data-translate="GENERIEREN"></span>
+                                            <span class="uppercase" translate>GENERIEREN</span>
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -185,7 +170,7 @@
                     </dv-accordion-tab>
                 </div>
 
-                <div dv-show-element
+                <!--<div dv-show-element
                      dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SUPER_ADMIN','REVISOR', 'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE',
                      'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT', 'ADMIN_INSTITUTION', 'SACHBEARBEITER_INSTITUTION', 'ADMIN_TRAEGERSCHAFT',
                      'SACHBEARBEITER_TRAEGERSCHAFT']">
