@@ -72,6 +72,7 @@ import {TooltipDirective} from './directive/TooltipDirective';
 import {FullHeightContainerComponent} from './full-height-container/full-height-container.component';
 import {FullHeightInnerPaddingContainerComponent} from './full-height-inner-padding-container/full-height-inner-padding-container.component';
 import {MaterialModule} from './material.module';
+import {EbeguDateTimePipe} from './pipe/ebegu-date-time.pipe';
 import {EbeguDatePipe} from './pipe/ebegu-date.pipe';
 import {NextPeriodeStrPipe} from './pipe/next-periode-str.pipe';
 import {PreviousPeriodeStrPipe} from './pipe/previous-periode-str.pipe';
@@ -152,6 +153,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DVInputContainerXComponent,
         DvBisherXComponent,
         DvNgSozialdienstDialogComponent,
+        EbeguDateTimePipe,
     ],
     exports: [
         CommonModule,
@@ -206,6 +208,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgSozialdienstDialogComponent,
         NextPeriodeStrPipe,
         PreviousPeriodeStrPipe,
+        EbeguDateTimePipe
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)
