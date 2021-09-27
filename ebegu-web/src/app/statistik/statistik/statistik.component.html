@@ -29,8 +29,11 @@
                             </dv-tooltip>
                         </tab-title>
                         <tab-body>
-                            <form #gesuch_stichtag
-                                  (submit)="generateStatistik(gesuch_stichtag, TSStatistikParameterType.GESUCH_STICHTAG)" novalidate>
+                            <form #gesuch_stichtag='ngForm'
+                                  [ngClass]="{'ng-submitted': gesuch_stichtag.submitted}"
+                                  role="form"
+                                  (ngSubmit)="generateStatistik(gesuch_stichtag, TSStatistikParameterType.GESUCH_STICHTAG)"
+                                  novalidate>
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
@@ -69,7 +72,7 @@
                                         </div>
                                     </div>
                                     <div class="col-xs-3 col-xs-offset-3 statistik-button">
-                                        <dv-loading-button type="submit"
+                                        <dv-loading-button [type]="'submit'"
                                                            style="margin-left:auto;margin-right:auto;width:13rem;">
                                             <span class="uppercase" translate>GENERIEREN</span>
                                         </dv-loading-button>
@@ -988,71 +991,93 @@
     </div>
 
     <!-- BatchJobs -->
-<!--    <div class="row margin-top-40">-->
+    <div class="row margin-top-40">
 
-<!--        <div class="col-md-10 col-md-offset-1">-->
-<!--            <h2>-->
-<!--                <span translate>LAST_REPORTS</span>-->
-<!--                {{titleValue}}-->
-<!--            </h2>-->
+        <div class="col-md-10 col-md-offset-1">
+            <h2>
+                <span translate>LAST_REPORTS</span>
+            </h2>
 
-<!--            <table st-table="displayedCollection" st-safe-src="vm.userjobs"-->
-<!--                   class="table table-hover ebegu-table" id="{{vm.tableId}}" title="{{vm.tableTitle}}">-->
-<!--                <thead>-->
-<!--                <tr>-->
-<!--                    <th data-translate="TYP"></th>-->
-<!--                    <th data-translate="ERSTELLT"></th>-->
-<!--                    <th data-translate="GESTARTET"></th>-->
-<!--                    <th data-translate="BEENDET"></th>-->
-<!--                    <th data-translate="STATUS"></th>-->
+            <div class="dv-table dv-simple-table table-striped" *ngIf="userjobs">
 
-<!--                    <th></th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr ng-repeat="row in displayedCollection" st-select-row="row" st-select-mode="single"-->
-<!--                    ng-click="vm.rowClicked(row)" role="row" tabindex="-1">-->
-<!--                    <td>-->
-<!--                        <span ng-if="row.params" ng-bind="'ReportType_'+row.params | translate"-->
-<!--                              title="{{row.requestURI}}"></span>-->
-<!--                    </td>-->
-<!--                    <td ng-bind="row.timestampErstellt | amDateFormat : 'DD.MM.YYYY HH:mm'"></td>-->
-<!--                    <td><span ng-if="row.execution.startTime"-->
-<!--                              ng-bind="row.execution.startTime | amDateFormat : 'DD.MM.YYYY HH:mm'"></span></td>-->
-<!--                    <td><span ng-if="row.execution.endTime"-->
-<!--                              ng-bind="row.execution.endTime | amDateFormat : 'DD.MM.YYYY HH:mm'"></span></td>-->
-<!--                    <td ng-bind="'BatchJobStatus_' + row.batchJobStatus | translate"></td>-->
-<!--                    <td class="dateientable-td symbol">-->
-<!--                                <span ng-if="row.execution && row.execution.batchStatus === 'COMPLETED'"-->
-<!--                                      class="fa fa-download"-->
-<!--                                      title="{{'DOKUMENT_DOWNLOAD' | translate}}"-->
-<!--                                      aria-label="{{'DOKUMENT_DOWNLOAD' | translate}}"-->
-<!--                                      style="color: black"></span>-->
-<!--                    </td>-->
+                <mat-table [dataSource]="userjobs">
 
-<!--                <tr ng-if="vm.userjobs.length === 0">-->
-<!--                    <td colspan="6" class="empty-table" data-translate="KEIN_EINTRAG">...</td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
+                    <ng-container matColumnDef="typ">
+                        <th mat-header-cell *matHeaderCellDef class="ellipsis">
+                            <span translate>TYP</span>
+                        </th>
+                        <td mat-cell [title]="element.requestURI" *matCellDef="let element" class="ellipsis">
+                            {{'ReportType_'+element.params | translate}}
+                        </td>
+                    </ng-container>
 
-<!--        </div>-->
-<!--    </div>-->
+                    <ng-container matColumnDef="erstellt">
+                        <th mat-header-cell *matHeaderCellDef class="ellipsis">
+                            <span translate>ERSTELLT</span>
+                        </th>
+                        <td mat-cell *matCellDef="let element" class="ellipsis">
+                            {{element.timestampErstellt | ebeguDateTime}}
+                        </td>
+                    </ng-container>
 
-<!--    <div class="col-md-10 col-md-offset-1 margin-top-40">-->
-<!--        <div dv-display-element-->
-<!--             dv-display-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()">-->
+                    <ng-container matColumnDef="gestartet">
+                        <th mat-header-cell *matHeaderCellDef class="ellipsis">
+                            <span translate>GESTARTET</span>
+                        </th>
+                        <td mat-cell *matCellDef="let element" class="ellipsis">
+                            {{element.execution.createTime | ebeguDateTime}}
+                        </td>
+                    </ng-container>
 
-<!--            <dv-loading-button button-class="" button-click="vm.showAllJobs()" type="button">-->
-<!--                <span class="fa fa-refresh"></span>-->
-<!--                <span data-translate="SHOW_JOBS"></span>-->
-<!--            </dv-loading-button>-->
-<!--            <div ng-if="vm.allJobs">-->
-<!--                <p>Batch Jobs from Wildfly Batch Module</p>-->
-<!--                <pre>{{vm.allJobs |json}}</pre>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
+                    <ng-container matColumnDef="beendet">
+                        <th mat-header-cell *matHeaderCellDef class="ellipsis">
+                            <span translate>BEENDET</span>
+                        </th>
+                        <td mat-cell *matCellDef="let element" class="ellipsis">
+                            {{element.execution.endTime | ebeguDateTime}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef class="ellipsis">
+                            <span translate>STATUS</span>
+                        </th>
+                        <td mat-cell *matCellDef="let element" class="ellipsis">
+                            {{'BatchJobStatus_' + element.batchJobStatus | translate}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="icon">
+                        <th mat-header-cell *matHeaderCellDef class="ellipsis">
+                            <span></span>
+                        </th>
+                        <td mat-cell *matCellDef="let element" class="ellipsis">
+                            <span [title]="'DOKUMENT_DOWNLOAD' | translate" class="fa fa-download"></span>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="columndefs"></tr>
+                    <tr mat-row *matRowDef="let row; columns: columndefs;" (click)="downloadStatistik(row)"></tr>
+
+                </mat-table>
+
+
+        </div>
+    </div>
+
+    <div class="col-md-10 col-md-offset-1 margin-top-40">
+        <div *ngIf="showAllJobsVisible()">
+
+            <dv-loading-button (buttonClick)="showAllJobs()" type="button">
+                <span class="fa fa-refresh"></span>&nbsp;
+                <span translate>SHOW_JOBS</span>
+            </dv-loading-button>
+            <div *ngIf="allJobs" class="margin-top-20">
+                <p>Batch Jobs from Wildfly Batch Module</p>
+                <pre>{{allJobs | json}}</pre>
+            </div>
+        </div>
+    </div>
 
 </div>
 

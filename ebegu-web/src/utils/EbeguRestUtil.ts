@@ -3376,12 +3376,12 @@ export class EbeguRestUtil {
         }
 
         testBatchJobInfo.batchStatus = batchJobInfoFromServer.batchStatus;
-        testBatchJobInfo.createTime = batchJobInfoFromServer.createTime;
-        testBatchJobInfo.endTime = batchJobInfoFromServer.endTime;
+        testBatchJobInfo.createTime = DateUtil.localDateTimeToMoment(batchJobInfoFromServer.createTime);
+        testBatchJobInfo.endTime = DateUtil.localDateTimeToMoment(batchJobInfoFromServer.endTime);
         testBatchJobInfo.executionId = batchJobInfoFromServer.executionId;
         testBatchJobInfo.jobName = batchJobInfoFromServer.jobName;
-        testBatchJobInfo.lastUpdatedTime = batchJobInfoFromServer.lastUpdatedTime;
-        testBatchJobInfo.startTime = batchJobInfoFromServer.startTime;
+        testBatchJobInfo.lastUpdatedTime = DateUtil.localDateTimeToMoment(batchJobInfoFromServer.lastUpdatedTime);
+        testBatchJobInfo.startTime = DateUtil.localDateTimeToMoment(batchJobInfoFromServer.startTime);
 
         return testBatchJobInfo;
     }

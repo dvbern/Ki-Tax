@@ -48,7 +48,7 @@ export class BatchJobRS {
     private getInfo(url: string): Observable<Array<TSWorkJob> | never> {
         return this.http.get(url)
             .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseWorkJobList(response.data);
+                return this.ebeguRestUtil.parseWorkJobList(response);
             }));
     }
 }

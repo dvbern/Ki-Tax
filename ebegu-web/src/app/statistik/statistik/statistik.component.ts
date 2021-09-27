@@ -15,8 +15,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
 import {Observable} from 'rxjs';
@@ -64,7 +66,8 @@ export class StatistikComponent implements OnInit, OnDestroy {
     // Statistiken sind nur moeglich ab Beginn der fruehesten Periode bis Ende der letzten Periode
     public maxDate: moment.Moment;
     public minDate: moment.Moment;
-    public userjobs: Array<TSWorkJob>;
+    public userjobs: MatTableDataSource<TSWorkJob>;
+    public columndefs: string[] = ['typ', 'erstellt', 'gestartet', 'beendet', 'status', 'icon'];
     public allJobs: Array<TSBatchJobInformation>;
     public years: string[];
     public institutionStammdatenList: TSInstitutionStammdaten[];
@@ -84,6 +87,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
         private readonly dialog: MatDialog,
         private readonly authServiceRS: AuthServiceRS,
         private readonly gemeindeRS: GemeindeRS,
+        private readonly cd: ChangeDetectorRef
     ) {
     }
 
@@ -102,6 +106,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 this.minDate = DateUtil.localDateToMoment('2017-01-01');
             }
             this.calculateYears();
+            this.cd.markForCheck();
         });
 
         this.institutionStammdatenRS.getAllTagesschulenForCurrentBenutzer()
@@ -129,12 +134,13 @@ export class StatistikComponent implements OnInit, OnDestroy {
 
     private refreshUserJobs(): void {
         this.batchJobRS.getBatchJobsOfUser().subscribe((response: TSWorkJob[]) => {
-            this.userjobs = response;
+            this.userjobs = new MatTableDataSource(response);
+            this.cd.markForCheck();
         });
     }
 
     // tslint:disable-next-line:cognitive-complexity
-    public generateStatistik(form: HTMLFormElement, type?: string): void {
+    public generateStatistik(form: NgForm, type?: string): void {
         if (!form.valid) {
             return;
         }
@@ -148,8 +154,8 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     this.statistikParameter.gesuchsperiode ?
                         this.statistikParameter.gesuchsperiode.toString() :
                         null)
-                    .subscribe((batchExecutionId: string) => {
-                        this.informReportGenerationStarted(batchExecutionId);
+                    .subscribe((res: {workjobId: string}) => {
+                        this.informReportGenerationStarted(res);
                     });
                 return;
             case TSStatistikParameterType.GESUCH_ZEITRAUM:
@@ -158,8 +164,8 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     this.statistikParameter.gesuchsperiode ?
                         this.statistikParameter.gesuchsperiode.toString() :
                         null)
-                    .subscribe((batchExecutionId: string) => {
-                        this.informReportGenerationStarted(batchExecutionId);
+                    .subscribe((res: {workjobId: string}) => {
+                        this.informReportGenerationStarted(res);
                     });
                 return;
             case TSStatistikParameterType.KINDER:
@@ -169,35 +175,35 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     this.statistikParameter.gesuchsperiode ?
                         this.statistikParameter.gesuchsperiode.toString() :
                         null)
-                    .subscribe((batchExecutionId: string) => {
-                        this.informReportGenerationStarted(batchExecutionId);
+                    .subscribe((res: {workjobId: string}) => {
+                        this.informReportGenerationStarted(res);
                     });
                 break;
             case TSStatistikParameterType.GESUCHSTELLER:
                 this.reportAsyncRS.getGesuchstellerReportExcel(stichtag)
-                    .subscribe((batchExecutionId: string) => {
-                        this.informReportGenerationStarted(batchExecutionId);
+                    .subscribe((res: {workjobId: string}) => {
+                        this.informReportGenerationStarted(res);
                     });
                 return;
             case TSStatistikParameterType.KANTON:
                 this.reportAsyncRS.getKantonReportExcel(this.statistikParameter.von.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.kantonSelbstbehalt)
-                    .subscribe((batchExecutionId: string) => {
-                        this.informReportGenerationStarted(batchExecutionId);
+                    .subscribe((res: {workjobId: string}) => {
+                        this.informReportGenerationStarted(res);
                     });
                 break;
             case TSStatistikParameterType.MITARBEITERINNEN:
                 this.reportAsyncRS.getMitarbeiterinnenReportExcel(this.statistikParameter.von.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT))
-                    .subscribe((batchExecutionId: string) => {
-                        this.informReportGenerationStarted(batchExecutionId);
+                    .subscribe((res: {workjobId: string}) => {
+                        this.informReportGenerationStarted(res);
                     });
                 return;
             case TSStatistikParameterType.BENUTZER:
                 this.reportAsyncRS.getBenutzerReportExcel()
-                    .subscribe((batchExecutionId: string) => {
-                        this.informReportGenerationStarted(batchExecutionId);
+                    .subscribe((res: {workjobId: string}) => {
+                        this.informReportGenerationStarted(res);
                     });
                 break;
             case TSStatistikParameterType.GESUCHSTELLER_KINDER_BETREUUNG:
@@ -207,8 +213,8 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     this.statistikParameter.gesuchsperiode ?
                         this.statistikParameter.gesuchsperiode.toString() :
                         null)
-                    .subscribe((batchExecutionId: string) => {
-                        this.informReportGenerationStarted(batchExecutionId);
+                    .subscribe((res: {workjobId: string}) => {
+                        this.informReportGenerationStarted(res);
                     }, () => {
                         LOG.error('An error occurred downloading the document, closing download window.');
                     });
@@ -217,8 +223,8 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 if (this.statistikParameter.gesuchsperiode) {
                     this.reportAsyncRS.getZahlungPeriodeReportExcel(
                         this.statistikParameter.gesuchsperiode)
-                        .subscribe((batchExecutionId: string) => {
-                            LOG.debug('executionID: ' + batchExecutionId);
+                        .subscribe((res: {workjobId: string}) => {
+                            this.informReportGenerationStarted(res);
                             const startmsg = this.translate.instant('STARTED_GENERATION');
                             this.errorService.addMesageAsInfo(startmsg);
                         });
@@ -240,42 +246,42 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 return;
             case TSStatistikParameterType.INSTITUTIONEN:
                 this.reportAsyncRS.getInstitutionenReportExcel()
-                    .subscribe((batchExecutionId: string) => {
-                        this.informReportGenerationStarted(batchExecutionId);
+                    .subscribe((res: {workjobId: string}) => {
+                        this.informReportGenerationStarted(res);
                     });
                 return;
             case TSStatistikParameterType.VERRECHNUNG_KIBON:
                 this.reportAsyncRS.getVerrechnungKibonReportExcel(
                     this.statistikParameter.doSave, this.statistikParameter.betragProKind)
-                    .subscribe((batchExecutionId: string) => {
-                        this.informReportGenerationStarted(batchExecutionId);
+                    .subscribe((res: {workjobId: string}) => {
+                        this.informReportGenerationStarted(res);
                     });
                 break;
             case TSStatistikParameterType.LASTENAUSGLEICH_KIBON:
                 this.reportAsyncRS.getLastenausgleichKibonReportExcel(this.statistikParameter.jahr)
-                    .subscribe((batchExecutionId: string) => {
-                        this.informReportGenerationStarted(batchExecutionId);
+                    .subscribe((res: {workjobId: string}) => {
+                        this.informReportGenerationStarted(res);
                     });
                 break;
             case TSStatistikParameterType.TAGESSCHULE_ANMELDUNGEN:
                 this.reportAsyncRS.getTagesschuleAnmeldungenReportExcel(
                     this.statistikParameter.tagesschuleAnmeldungen.id,
                     this.statistikParameter.gesuchsperiode)
-                    .subscribe((batchExecutionId: string) => {
-                        this.informReportGenerationStarted(batchExecutionId);
+                    .subscribe((res: {workjobId: string}) => {
+                        this.informReportGenerationStarted(res);
                     });
                 break;
             case TSStatistikParameterType.TAGESSCHULE_RECHNUNGSSTELLUNG:
                 this.reportAsyncRS.getTagesschuleRechnungsstellungReportExcel()
-                    .subscribe((batchExecutionId: string) => {
-                        this.informReportGenerationStarted(batchExecutionId);
+                    .subscribe((res: {workjobId: string}) => {
+                        this.informReportGenerationStarted(res);
                     });
                 break;
             case TSStatistikParameterType.NOTRECHT:
                 this.reportAsyncRS.getNotrechtReportExcel(
                     this.statistikParameter.doSave)
-                    .subscribe((batchExecutionId: string) => {
-                        this.informReportGenerationStarted(batchExecutionId);
+                    .subscribe((res: {workjobId: string}) => {
+                        this.informReportGenerationStarted(res);
                     });
                 break;
             case TSStatistikParameterType.MAHLZEITENVERGUENSTIGUNG:
@@ -283,8 +289,8 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     this.statistikParameter.von.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.gemeindeMahlzeitenverguenstigungen)
-                    .subscribe((batchExecutionId: string) => {
-                        this.informReportGenerationStarted(batchExecutionId);
+                    .subscribe((res: {workjobId: string}) => {
+                        this.informReportGenerationStarted(res);
                     });
                 return;
             default:
@@ -312,21 +318,21 @@ export class StatistikComponent implements OnInit, OnDestroy {
             this.statistikParameter.tsGesuche,
             this.statistikParameter.ohneFolgegesuche,
             this.statistikParameter.text)
-            .subscribe((batchExecutionId: string) => {
-                this.informReportGenerationStarted(batchExecutionId);
+            .subscribe((res: {workjobId: string}) => {
+                this.informReportGenerationStarted(res);
             }, () => {
                 LOG.error('An error occurred downloading the document, closing download window.');
             });
     }
 
-    private informReportGenerationStarted(batchExecutionId: string): void {
-        LOG.debug('executionID: ' + batchExecutionId);
+    private informReportGenerationStarted(res: {workjobId: string}): void {
+        LOG.debug('executionID: ' + res.workjobId);
         const startmsg = this.translate.instant('STARTED_GENERATION');
         this.errorService.addMesageAsInfo(startmsg);
         this.refreshUserJobs();
     }
 
-    public rowClicked(row: TSWorkJob): void {
+    public downloadStatistik(row: TSWorkJob): void {
         if (EbeguUtil.isNullOrUndefined(row) || EbeguUtil.isNullOrUndefined(row.execution)) {
             return;
         }
@@ -351,6 +357,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 return value.execution || undefined;
             }));
             this.allJobs = res;
+            this.cd.markForCheck();
         });
     }
 
@@ -441,5 +448,9 @@ export class StatistikComponent implements OnInit, OnDestroy {
             TSRole.ADMIN_MANDANT,
             TSRole.SACHBEARBEITER_MANDANT
         ]);
+    }
+
+    public showAllJobsVisible(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 }

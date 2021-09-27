@@ -15,3 +15,21 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+.dv-table {
+    width: 100%;
+
+    mat-table {
+        border-collapse: collapse;
+        display: table;
+        table-layout: fixed;
+        width: 100%;
+
+        tr {
+            cursor: pointer;
+        };
+    }
+
+    th.mat-header-cell:first-of-type, td.mat-cell:first-of-type {
+        padding-left: 1rem;
+    }
+}
