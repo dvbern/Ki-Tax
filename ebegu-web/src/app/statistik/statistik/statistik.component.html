@@ -37,20 +37,11 @@
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
-                                            <label class="md-no-float required" for="stichtagPicker"
-                                                   translate>STICHTAG</label>
-                                            <input class="dv-mat-datepicker" type="text"
-                                                   name="stichtagPicker" id="stichtagPicker"
-                                                   #stichtagForm='ngModel'
-                                                   [(ngModel)]="statistikParameter.stichtag"
-                                                   [matDatepicker]="stichtagPicker"
-                                                   placeholder="{{'DATE_PLACEHOLDER' | translate}}"
-                                                   required>
-                                            <mat-datepicker-toggle matSuffix
-                                                                   [for]="stichtagPicker"></mat-datepicker-toggle>
-                                            <mat-datepicker #stichtagPicker></mat-datepicker>
-                                            <dv-error-messages [errorObject]="stichtagForm.errors"
-                                                               class="error"></dv-error-messages>
+                                            <dv-date-picker-x label="STICHTAG"
+                                                              [(date)]="statistikParameter.stichtag"
+                                                              [submitted]="gesuch_stichtag.submitted"
+                                                              [required]="true"
+                                            ></dv-date-picker-x>
                                         </dv-input-container>
                                     </div>
                                     <div class="col-xs-3">
@@ -62,8 +53,9 @@
                                                         [(ngModel)]="statistikParameter.gesuchsperiode"
                                                         #periodeGesuchStichtagForm='ngModel'
                                                         ng-options="gesuchsperiode.id as gesuchsperiode.gesuchsperiodeString for gesuchsperiode in vm.gesuchsperioden | orderBy: 'name'"
-                                                        class="form-control">
-                                                    <option value="">{{'KEINE' | translate}}</option>
+                                                        class="form-control"
+                                                        required>
+                                                    <option [value]="undefined">{{'KEINE' | translate}}</option>
                                                     <option *ngFor="let gesuchsperiode of gesuchsperioden" [value]="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
                                                 </select>
                                                 <dv-error-messages [errorObject]="periodeGesuchStichtagForm.errors"
