@@ -43,7 +43,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class Einstellung extends AbstractEntity {
+public class Einstellung extends AbstractEntity implements HasMandant {
 
 	private static final long serialVersionUID = 8704632842261673111L;
 
@@ -79,6 +79,11 @@ public class Einstellung extends AbstractEntity {
 		this.key = key;
 		this.value = value;
 		this.gesuchsperiode = gesuchsperiode;
+	}
+
+	public Einstellung(@Nonnull EinstellungKey key, @Nonnull String value, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Mandant mandant) {
+		this(key, value, gesuchsperiode);
+		this.mandant = mandant;
 	}
 
 	public Einstellung(@Nonnull EinstellungKey key, @Nonnull String value, @Nonnull Gesuchsperiode gesuchsperiode,

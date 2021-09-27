@@ -43,7 +43,6 @@ import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.lucene.analysis.Analyzer;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
@@ -182,7 +181,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		Gesuchsperiode periode = TestDataUtil.createCustomGesuchsperiode(TestDataUtil.PERIODE_JAHR_1, TestDataUtil.PERIODE_JAHR_2);
 
-		Gesuchsperiode nextPeriode = TestDataUtil.createCustomGesuchsperiode(TestDataUtil.PERIODE_JAHR_1 + 1, TestDataUtil.PERIODE_JAHR_2 + 1);
+		Gesuchsperiode nextPeriode = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence,TestDataUtil.PERIODE_JAHR_1 + 1, TestDataUtil.PERIODE_JAHR_2 + 1);
 		nextPeriode = persistence.merge(nextPeriode);
 		gesuch.setGesuchsperiode(nextPeriode);
 		gesuch = persistence.merge(gesuch);
@@ -283,19 +282,18 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		Dossier dossier = TestDataUtil.createAndPersistDossierAndFall(persistence);
 		Dossier dossier1 = TestDataUtil.createAndPersistDossierAndFall(persistence);
 		Dossier dossier2 = TestDataUtil.createAndPersistDossierAndFall(persistence);
-		final Gesuchsperiode gesuchsperiode1516 = TestDataUtil.createCustomGesuchsperiode(2015, 2016);
-		final Gesuchsperiode periodeToUpdate = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode1516);
+		final Gesuchsperiode gesuchsperiode1516 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2015, 2016);
 
-		Gesuch gesuchVerfuegt = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.VERFUEGT);
+		Gesuch gesuchVerfuegt = TestDataUtil.createGesuch(dossier, gesuchsperiode1516, AntragStatus.VERFUEGT);
 		persistence.persist(gesuchVerfuegt);
 
-		Gesuch gesuchSTV = TestDataUtil.createMutation(dossier, periodeToUpdate, AntragStatus.PRUEFUNG_STV, 1);
+		Gesuch gesuchSTV = TestDataUtil.createMutation(dossier, gesuchsperiode1516, AntragStatus.PRUEFUNG_STV, 1);
 		persistence.persist(gesuchSTV);
 
-		Gesuch gesuchGeprueftSTV = TestDataUtil.createGesuch(dossier1, periodeToUpdate, AntragStatus.GEPRUEFT_STV);
+		Gesuch gesuchGeprueftSTV = TestDataUtil.createGesuch(dossier1, gesuchsperiode1516, AntragStatus.GEPRUEFT_STV);
 		persistence.persist(gesuchGeprueftSTV);
 
-		Gesuch gesuchBearbeitungSTV = TestDataUtil.createGesuch(dossier2, periodeToUpdate, AntragStatus.IN_BEARBEITUNG_STV);
+		Gesuch gesuchBearbeitungSTV = TestDataUtil.createGesuch(dossier2, gesuchsperiode1516, AntragStatus.IN_BEARBEITUNG_STV);
 		persistence.persist(gesuchBearbeitungSTV);
 
 		AntragTableFilterDTO filterDTO = TestDataUtil.createAntragTableFilterDTO();

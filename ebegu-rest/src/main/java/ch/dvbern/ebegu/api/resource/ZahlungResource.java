@@ -336,7 +336,13 @@ public class ZahlungResource {
 		}
 
 		final Zahlungsauftrag zahlungsauftrag = zahlungService
-			.zahlungsauftragErstellen(zahlungslaufTyp, gemeindeId, faelligkeitsdatum, beschrieb, datumGeneriert);
+				.zahlungsauftragErstellen(
+						zahlungslaufTyp,
+						gemeindeId,
+						faelligkeitsdatum,
+						beschrieb,
+						datumGeneriert,
+						requireNonNull(principalBean.getMandant()));
 
 		zahlungService.zahlungenKontrollieren(zahlungslaufTyp, gemeindeId);
 

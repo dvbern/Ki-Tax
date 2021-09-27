@@ -16,6 +16,11 @@
 package ch.dvbern.ebegu.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.envers.Audited;
 
@@ -24,9 +29,14 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class Vorlage extends FileMetadata {
+public class Vorlage extends FileMetadata implements HasMandant {
 
 	private static final long serialVersionUID = -895840426585785097L;
+
+	@NotNull
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_vorlage_mandant_id"))
+	private Mandant mandant;
 
 	public Vorlage() {
 	}
@@ -47,5 +57,16 @@ public class Vorlage extends FileMetadata {
 			", dokumentPfad='" + getFilepfad() + '\'' +
 			", dokumentSize='" + getFilesize() + '\'' +
 			'}';
+	}
+
+	@NotNull
+	@Override
+	public Mandant getMandant() {
+		return mandant;
+	}
+
+	@Override
+	public void setMandant(Mandant mandant) {
+		this.mandant = mandant;
 	}
 }

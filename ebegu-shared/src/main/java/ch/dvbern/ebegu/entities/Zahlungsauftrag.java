@@ -34,6 +34,7 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -49,7 +50,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class Zahlungsauftrag extends AbstractDateRangedEntity {
+public class Zahlungsauftrag extends AbstractDateRangedEntity implements HasMandant {
 
 	private static final long serialVersionUID = 5758088668232796741L;
 
@@ -96,6 +97,12 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity {
 
 	@Nonnull
 	private Boolean hasNegativeZahlungen = false;
+
+	@NotNull
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_zahlungsauftrag_mandant_id"))
+	private Mandant mandant;
+
 
 
 	@Nonnull
@@ -210,5 +217,16 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity {
 			Objects.equals(getBeschrieb(), otherZahlungsauftrag.getBeschrieb()) &&
 			MathUtil.isSame(getBetragTotalAuftrag(), otherZahlungsauftrag.getBetragTotalAuftrag()) &&
 			Objects.equals(getGemeinde(), otherZahlungsauftrag.getGemeinde());
+	}
+
+	@NotNull
+	@Override
+	public Mandant getMandant() {
+		return mandant;
+	}
+
+	@Override
+	public void setMandant(Mandant mandant) {
+		this.mandant = mandant;
 	}
 }

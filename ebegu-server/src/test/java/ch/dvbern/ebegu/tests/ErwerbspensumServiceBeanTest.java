@@ -189,6 +189,7 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 			gesuchsperiode);
 		final KindContainer kind = gesuch.getKindContainers().iterator().next();
 		final PensumFachstelle pensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();
+		TestDataUtil.saveMandantIfNecessary(persistence, pensumFachstelle.getFachstelle().getMandant());
 		kind.getKindJA().setPensumFachstelle(pensumFachstelle);
 		persistence.persist(pensumFachstelle.getFachstelle());
 		persistence.persist(pensumFachstelle);
