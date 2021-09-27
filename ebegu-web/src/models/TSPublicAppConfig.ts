@@ -22,6 +22,11 @@ export class TSPublicAppConfig {
     public dummyMode: boolean;
     public sentryEnvName: string;
     public backgroundColor: string = '#FFFFFF';
+    public primaryColor: string;
+    public primaryColorDark: string;
+    public primaryColorLight: string;
+    public logoFileName: string;
+    public logoFileNameWhite: string;
     public zahlungentestmode: boolean;
     public personenSucheDisabled: boolean;
     public kitaxHost: string;
@@ -30,4 +35,5 @@ export class TSPublicAppConfig {
     public notverordnungDefaultEinreichefristPrivat: string;
     public ferienbetreuungAktiv: boolean;
     public lastenausgleichTagesschulenAktiv: boolean;
+    public gemeindeKennzahlenAktiv: any;
 }

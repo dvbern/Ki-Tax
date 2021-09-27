@@ -236,6 +236,15 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 		zahlungsauftrag.setGueltigkeit(new DateRange(zeitabschnittVon, zeitabschnittBis));
 
+		if (!zahlungsauftrag.getGueltigkeit().isValid()) {
+			throw new EbeguRuntimeException(
+					"zahlungsauftragErstellen",
+					ErrorCodeEnum.ERROR_ZAHLUNGSAUFTRAG_GENERIERT_BEFORE_LAST_ZAHLUNGSAUFTRAG_GENERIERT,
+					datumGeneriert.toLocalDate(),
+					zeitabschnittVon
+			);
+		}
+
 		Map<String, Zahlung> zahlungProInstitution = new HashMap<>();
 		ZahlungslaufHelper zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlungslaufTyp);
 

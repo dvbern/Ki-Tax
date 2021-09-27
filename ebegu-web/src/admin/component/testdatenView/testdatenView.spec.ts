@@ -56,6 +56,7 @@ describe('testdatenView', () => {
             devmode: false,
             dummyMode: false,
             ferienbetreuungAktiv: false,
+            gemeindeKennzahlenAktiv: false,
             kitaxEndpoint: '',
             kitaxHost: '',
             lastenausgleichTagesschulenAktiv: false,
@@ -64,7 +65,12 @@ describe('testdatenView', () => {
             personenSucheDisabled: false,
             sentryEnvName: '',
             whitelist: '',
-            zahlungentestmode: false
+            zahlungentestmode: false,
+            logoFileName: 'test.svg',
+            logoFileNameWhite: 'test.svg',
+            primaryColor: 'blue',
+            primaryColorDark: 'black',
+            primaryColorLight: 'white'
         });
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
         gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);

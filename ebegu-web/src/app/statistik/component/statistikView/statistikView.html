@@ -335,7 +335,20 @@
                                                                class="error"></dv-error-messages>
                                         </dv-input-container>
                                     </div>
-                                    <div class="col-xs-3 col-xs-offset-3 statistik-button">
+                                    <div class="col-xs-3 ">
+                                        <dv-input-container class="form-group">
+                                            <label class="md-no-float"
+                                                   for="kantonSelbstbehalt"
+                                                   data-translate="LASTENAUSGLEICH_SELBSTBEHALT"></label>
+                                            <input aria-describedby="kantonSelbstbehalt-error"
+                                                   id="kantonSelbstbehalt" type="number" name="kantonSelbstbehalt"
+                                                   ng-model="vm.statistikParameter.kantonSelbstbehalt"
+                                                   class="input-element">
+                                            <dv-error-messages for="kanton.kantonSelbstbehalt.$error"
+                                                               class="error"></dv-error-messages>
+                                        </dv-input-container>
+                                    </div>
+                                    <div class="col-xs-3 statistik-button">
                                         <dv-loading-button type="submit">
                                             <span class="uppercase" data-translate="GENERIEREN"></span>
                                         </dv-loading-button>
@@ -890,6 +903,28 @@
                             </form>
                         </tab-body>
                     </dv-accordion-tab>
+                    <dv-accordion-tab tabid="gemeinden">
+                        <tab-title>
+                            <span class="uppercase" data-translate="GEMEINDEN_STATISTIK"></span>
+                            <dv-tooltip input-id="notrecht_info"
+                                        ng-click="$event.stopPropagation()"
+                                        text="'STATISTIK_GEMEINDEN_HINT' | translate">
+                            </dv-tooltip>
+                        </tab-title>
+                        <tab-body>
+                            <form name="gemeinden"
+                                  ng-submit="vm.generateStatistik(gemeinden, vm.TSStatistikParameterType.GEMEINDEN)"
+                                  novalidate>
+                                <div class="row">
+                                    <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
+                                        <dv-loading-button type="submit">
+                                            <span class="uppercase" data-translate="GENERIEREN"></span>
+                                        </dv-loading-button>
+                                    </div>
+                                </div>
+                            </form>
+                        </tab-body>
+                    </dv-accordion-tab>
                 </div>
                 <div ng-if="vm.showMahlzeitenverguenstigungStatistik()">
                     <div dv-show-element
@@ -963,6 +998,27 @@
                             </tab-body>
                         </dv-accordion-tab>
                     </div>
+                </div>
+                <div dv-show-element
+                     dv-show-allowed-roles="['SUPER_ADMIN', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
+                    <dv-accordion-tab tabid="ferienbetreuung">
+                        <tab-title>
+                            <span class="uppercase" data-translate="FERIENBETREUUNG_STATISTIK"></span>
+                        </tab-title>
+                        <tab-body>
+                            <form name="ferienbetreuung"
+                                  ng-submit="vm.generateStatistik(ferienbetreuung, vm.TSStatistikParameterType.FERIENBETREUUNG)"
+                                  novalidate>
+                                <div class="row">
+                                    <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
+                                        <dv-loading-button type="submit">
+                                            <span class="uppercase" data-translate="GENERIEREN"></span>
+                                        </dv-loading-button>
+                                    </div>
+                                </div>
+                            </form>
+                        </tab-body>
+                    </dv-accordion-tab>
                 </div>
             </dv-accordion>
         </div>

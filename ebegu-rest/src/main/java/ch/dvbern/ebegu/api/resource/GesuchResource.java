@@ -455,6 +455,7 @@ public class GesuchResource {
 		final String antragId = converter.toEntityId(antragJaxId);
 
 		Gesuch gesuch = gesuchService.antragFreigeben(antragId, usernameJA, usernameSCH);
+
 		return Response.ok(converter.gesuchToJAX(gesuch)).build();
 	}
 

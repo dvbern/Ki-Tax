@@ -18,6 +18,7 @@
 import {NgModule} from '@angular/core';
 import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {Transition} from '@uirouter/core';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {FreigabeComponent} from '../antrag/freigabe/freigabe.component';
 import {GemeindeAngabenComponent} from '../antrag/gemeinde-angaben/gemeinde-angaben.component';
 import {LastenausgleichTsBerechnungComponent} from '../antrag/lastenausgleich-ts-berechnung/lastenausgleich-ts-berechnung.component';
@@ -33,6 +34,9 @@ const states: NgHybridStateDeclaration[] = [
         name: 'LASTENAUSGLEICH_TAGESSCHULEN',
         url: '/lastenausgleich-ts/:id',
         component: LastenausgleichTSComponent,
+        data: {
+            roles: TSRoleUtil.getLastenausgleichTagesschuleRoles()
+        },
         resolve: [
             {
                 token: 'lastenausgleichId',

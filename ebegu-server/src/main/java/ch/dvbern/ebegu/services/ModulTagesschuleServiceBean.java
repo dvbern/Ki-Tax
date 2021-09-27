@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
+import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -58,6 +59,14 @@ public class ModulTagesschuleServiceBean extends AbstractBaseService implements 
 	public Optional<ModulTagesschule> findModul(@Nonnull String modulTagesschuleId) {
 		Objects.requireNonNull(modulTagesschuleId, "id muss gesetzt sein");
 		ModulTagesschule modul = persistence.find(ModulTagesschule.class, modulTagesschuleId);
+		return Optional.ofNullable(modul);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<ModulTagesschuleGroup> findModulTagesschuleGroup(@Nonnull String modulTagesschuleGroupId) {
+		Objects.requireNonNull(modulTagesschuleGroupId, "id muss gesetzt sein");
+		ModulTagesschuleGroup modul = persistence.find(ModulTagesschuleGroup.class, modulTagesschuleGroupId);
 		return Optional.ofNullable(modul);
 	}
 

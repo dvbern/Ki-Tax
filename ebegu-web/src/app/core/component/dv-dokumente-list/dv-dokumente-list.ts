@@ -188,6 +188,8 @@ export class DVDokumenteListController implements IController {
 
         switch (roleLoggedIn) {
             case TSRole.GESUCHSTELLER:
+            case TSRole.ADMIN_SOZIALDIENST:
+            case TSRole.SACHBEARBEITER_SOZIALDIENST:
                 return !readonly;
             case TSRole.SACHBEARBEITER_BG:
             case TSRole.SACHBEARBEITER_GEMEINDE:

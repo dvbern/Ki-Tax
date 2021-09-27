@@ -53,7 +53,7 @@ public class LastenausgleichStep implements WizardStep<TagesschuleWizard> {
 			wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer();
 		UserRole role = wizard.getRole();
 
-		boolean enabled = container.getStatus().atLeastGeprueft() && role.isSuperadmin();
+		boolean enabled = container.getStatus().atLeastGeprueft() && (role.isSuperadmin() || role.isRoleMandant());
 		return !enabled;
 	}
 

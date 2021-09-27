@@ -62,7 +62,7 @@ public class BetreuungStornierenEventKafkaConsumer {
 	private BetreuungStornierenEventHandler eventHandler;
 
 	@Inject
-	MessageProcessor processor;
+	private MessageProcessor processor;
 
 	private Consumer<String, String> consumer = null;
 
@@ -75,7 +75,7 @@ public class BetreuungStornierenEventKafkaConsumer {
 		}
 		Properties props = new Properties();
 		props.setProperty(BOOTSTRAP_SERVERS_CONFIG, ebeguConfiguration.getKafkaURL().get());
-		String groupId = ebeguConfiguration.getKafkaPlatzbestaetigungGroupId();
+		String groupId = ebeguConfiguration.getKafkaConsumerGroupId();
 		props.setProperty(GROUP_ID_CONFIG, "kibon-betreuungstornieren-" + groupId);
 		props.setProperty(AUTO_OFFSET_RESET_CONFIG, "earliest");
 		props.setProperty(ENABLE_AUTO_COMMIT_CONFIG, "false");

@@ -14,7 +14,7 @@
   -->
 
 <!--angular limitations do not allow us to use mat-form-field here, it must be in the projected content-->
-<div class="dv-input-container" [ngClass]="{'disabled': disabled, 'vertical-align': verticalAlign}">
+<div class="dv-input-container" [ngClass]="{'disabled': disabled, 'vertical-align': verticalAlign, 'no-margin': noMargin}">
     <ng-content></ng-content>
 </div>
 

@@ -98,6 +98,10 @@ public enum ApplicationPropertyKey {
 	 * Wenn TRUE ist Lastenausgleich Tagesschulen aktiviert
 	 */
 	LASTENAUSGLEICH_TAGESSCHULEN_AKTIV,
+	/**
+	 * Wenn TRUE ist Gemeinde Kennzahlen aktiviert
+	 */
+	GEMEINDE_KENNZAHLEN_AKTIV,
 
 	/**
 	 * Setzt fest, was für ein Anteil der LATS Anträge der deutschsprachigen Gemeinden zur Zweitprüfung ausgewählt wird
@@ -118,5 +122,30 @@ public enum ApplicationPropertyKey {
 	 * Setzt fest, ab welcher Anzahl Betreuungsstunden der LATS Antrag der deutschsprachigen Gemeinden zur Zweitprüfung ausgewählt wird
 	 */
 	LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR,
+
+	/**
+	 * Legt die Primary Color fest
+	 */
+	PRIMARY_COLOR,
+
+	/**
+	 * Legt die dunkle Primary Color fest
+	 */
+	PRIMARY_COLOR_DARK,
+
+	/**
+	 * Legt die helle Primary Color fest
+	 */
+	PRIMARY_COLOR_LIGHT,
+
+	/**
+	 * Filename des Logos, welches in /assets/images/ ordner abgelegt ist
+	 */
+	LOGO_FILE_NAME,
+
+	/**
+	 * Filename des weissen Logos, welches in /assets/images/ ordner abgelegt ist
+	 */
+	LOGO_WHITE_FILE_NAME,
 
 }

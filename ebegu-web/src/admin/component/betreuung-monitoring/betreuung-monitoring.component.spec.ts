@@ -13,7 +13,7 @@ describe('BetreuungMonitoringComponent', () => {
     let fixture: ComponentFixture<BetreuungMonitoringComponent>;
 
     const betreuungMonitoringRSSpy = jasmine.createSpyObj<BetreuungMonitoringRS>(BetreuungMonitoringRS.name,
-        ['getBetreuungMonitoringList']);
+        ['getBetreuungMonitoring', 'getAllExternalClient']);
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -29,7 +29,8 @@ describe('BetreuungMonitoringComponent', () => {
             ],
         })
             .compileComponents();
-        betreuungMonitoringRSSpy.getBetreuungMonitoringList.and.returnValue(of([]));
+        betreuungMonitoringRSSpy.getBetreuungMonitoring.and.returnValue(of([]));
+        betreuungMonitoringRSSpy.getAllExternalClient.and.returnValue(of([]));
     });
 
     beforeEach(() => {

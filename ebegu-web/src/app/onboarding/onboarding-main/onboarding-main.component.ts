@@ -17,6 +17,7 @@
 
 import {Component} from '@angular/core';
 import {LogFactory} from '../../core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
 const LOG = LogFactory.createLog('OnboardingMainComponent');
@@ -32,9 +33,11 @@ export class OnboardingMainComponent {
     public description3: string = 'ONBOARDING_MAIN_DESC3';
     public description4: string = 'ONBOARDING_MAIN_DESC4';
     public splittedScreen: boolean = true;
+    private logoFileNameWhite: string;
 
     public constructor(
         private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
         this.onboardingPlaceholderService.description1$.subscribe(updatedDescription1 => {
             this.description1 = updatedDescription1;
@@ -51,5 +54,12 @@ export class OnboardingMainComponent {
         this.onboardingPlaceholderService.splittedScreen$.subscribe(updatedSplittedScreen => {
             this.splittedScreen = updatedSplittedScreen;
         }, err => LOG.error(err));
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.logoFileNameWhite = res.logoFileNameWhite;
+        });
+    }
+
+    public getLogoWhiteUrl(): string {
+        return `url(\'../../../assets/images/${this.logoFileNameWhite}\')`;
     }
 }

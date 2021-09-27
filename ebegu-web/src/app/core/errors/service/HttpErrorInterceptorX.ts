@@ -89,39 +89,48 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
         let errors: Array<TSExceptionReport>;
         // Alle daten loggen um das Debuggen zu vereinfachen
         // noinspection IfStatementWithTooManyBranchesJS
-        if (this.isDataViolationResponse(response.error)) {
-            errors = this.convertViolationReport(response.error);
+        try {
+            if (this.isDataViolationResponse(response.error)) {
+                errors = this.convertViolationReport(response.error);
 
-        } else if (this.isDataEbeguExceptionReport(response.error)) {
-            errors = this.convertEbeguExceptionReport(response.error);
+            } else if (this.isDataEbeguExceptionReport(response.error)) {
+                errors = this.convertEbeguExceptionReport(response.error);
 
-        } else if (this.isBlob(response.error)) {
-            errors = [];
-            const errorObject = JSON.parse(await response.error.text());
-            errors.push(TSExceptionReport.createFromExceptionReport(errorObject));
-        } else if (this.isFileUploadException(response.error)) {
-            errors = [];
-            errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
-                TSErrorLevel.SEVERE,
-                'ERROR_FILE_TOO_LARGE',
-                response.message));
-        } else if (this.isOptimisticLockException(response)) {
-            errors = [];
-            errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
-                TSErrorLevel.SEVERE,
-                'ERROR_DATA_CHANGED',
-                response.message));
-        } else {
-            LOG.error(`ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`);
-            LOG.error('ResponseData:' + JSON.stringify(response.message));
-            // the error objects is neither a ViolationReport nor a ExceptionReport. Create a generic error msg
-            errors = [];
-            errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
+            } else if (this.isBlob(response.error)) {
+                errors = [];
+                const errorObject = JSON.parse(await response.error.text());
+                errors.push(TSExceptionReport.createFromExceptionReport(errorObject));
+            } else if (this.isFileUploadException(response.error)) {
+                errors = [];
+                errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
+                    TSErrorLevel.SEVERE,
+                    'ERROR_FILE_TOO_LARGE',
+                    response.message));
+            } else if (this.isOptimisticLockException(response)) {
+                errors = [];
+                errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
+                    TSErrorLevel.SEVERE,
+                    'ERROR_DATA_CHANGED',
+                    response.message));
+            } else {
+                LOG.error(`ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`);
+                LOG.error('ResponseData:' + JSON.stringify(response.message));
+                // the error objects is neither a ViolationReport nor a ExceptionReport. Create a generic error msg
+                errors = [];
+                errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
+                    TSErrorLevel.SEVERE,
+                    'ERROR_UNEXPECTED',
+                    response.message));
+            }
+            return errors;
+        } catch (e) {
+            LOG.error('Could not handle error');
+            LOG.error(response);
+            return [new TSExceptionReport(TSErrorType.INTERNAL,
                 TSErrorLevel.SEVERE,
                 'ERROR_UNEXPECTED',
-                response.message));
+                response.message)];
         }
-        return errors;
     }
 
     private convertViolationReport(data: any): Array<TSExceptionReport> {

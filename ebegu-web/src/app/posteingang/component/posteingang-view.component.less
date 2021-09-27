@@ -1,0 +1,82 @@
+/*
+ * Ki-Tax: System for the management of external childcare subsidies
+ * Copyright (C) 2017 City of Bern Switzerland
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+@import (reference) '../../../style/variables.less';
+@import (reference) '../../../style/mixins.less';
+
+.dv-table {
+    padding-top: 3rem;
+
+    &-resultcount {
+        display: inline-block;
+        margin: 0 0 0 auto;
+    }
+    &-resultCombo {
+        align-items: center;
+        display: flex;
+        padding-bottom: 1rem;
+        padding-top: 2rem;
+    }
+
+    .mitteilung-neu, .mitteilung-alt {
+        cursor: pointer;
+        mat-row:first-child {
+            padding-left: 3rem;
+        }
+    }
+
+    .mitteilung-neu {
+        mat-cell {
+            font-weight: 900;
+        }
+        mat-row:first-child {
+            &:before {
+                color: @primary;
+                content: '\f111';
+                display: inline-block;
+                font-family: FontAwesome, sans-serif;
+                font-size: 1.2rem;
+                height: 100%;
+                left: 1rem;
+                line-height: 6rem;
+                position: absolute;
+                text-align: center;
+                top: 0;
+                vertical-align: middle;
+            }
+        }
+    }
+
+    .closed-mitteilungen md-checkbox {
+        margin-right: 0;
+    }
+
+    .bottom-pagination {
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    ::ng-deep .mat-checkbox-label {
+        .ebeguSemi-bold();
+        color: #333;
+    }
+
+
+    ::ng-deep .mat-form-field-label {
+        .ebeguBold();
+        color: #333;
+    }
+}

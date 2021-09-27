@@ -71,6 +71,7 @@ import {DvLanguageSelectorComponentConfig} from '../i18n/components/dv-language-
 import {HttpI18nInterceptor} from '../i18n/httpInterceptor/http-i18n-Interceptor';
 import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {PosteingangService} from '../posteingang/service/posteingang.service';
+import {ColorService} from '../shared/services/color.service';
 import {DvAccordionComponentConfig} from './component/dv-accordion/dv-accordion';
 import {DvAccordionTabComponentConfig} from './component/dv-accordion/dv-accordion-tab/dv-accordion-tab';
 import {AdresseComponentConfig} from './component/dv-adresse/dv-adresse';
@@ -146,7 +147,6 @@ import {HttpResponseInterceptor} from './service/HttpResponseInterceptor';
 import {InstitutionRS} from './service/institutionRS.rest';
 import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
 import {KindRS} from './service/kindRS.rest';
-import {LastenausgleichRS} from './service/lastenausgleichRS.rest';
 import {ListResourceRS} from './service/listResourceRS.rest';
 import {MandantRS} from './service/mandantRS.rest';
 import {MitteilungRS} from './service/mitteilungRS.rest';
@@ -235,7 +235,6 @@ export const CORE_JS_MODULE = angular
     .service('WizardStepRS', WizardStepRS)
     .service('AntragStatusHistoryRS', AntragStatusHistoryRS)
     .service('MitteilungRS', MitteilungRS)
-    .service('LastenausgleichRS', LastenausgleichRS)
     .service('GlobalCacheService', GlobalCacheService)
     .service('ExportRS', ExportRS)
     .service('DossierRS', DossierRS)
@@ -254,6 +253,7 @@ export const CORE_JS_MODULE = angular
     .factory('BroadcastService', downgradeInjectable(BroadcastService) as any)
     .factory('BenutzerRS', downgradeInjectable(BenutzerRSX) as any)
     .factory('ErrorServiceX', downgradeInjectable(ErrorServiceX) as any)
+    .factory('ColorService', downgradeInjectable(ColorService) as any)
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())
