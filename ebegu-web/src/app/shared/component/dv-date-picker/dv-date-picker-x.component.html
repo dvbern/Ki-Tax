@@ -28,6 +28,6 @@
     <mat-datepicker-toggle matSuffix
                            [for]="datePicker"></mat-datepicker-toggle>
     <mat-datepicker #datePicker></mat-datepicker>
-    <dv-error-messages [errorObject]="submitted && dateRef.errors"
+    <dv-error-messages [errorObject]="dateRef.errors"
                        class="error"></dv-error-messages>
 </dv-input-container>

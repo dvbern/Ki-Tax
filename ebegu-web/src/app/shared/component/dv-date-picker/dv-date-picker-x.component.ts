@@ -21,7 +21,8 @@ import * as moment from 'moment';
 @Component({
     selector: 'dv-date-picker-x',
     templateUrl: './dv-date-picker-x.component.html',
-    changeDetection: ChangeDetectionStrategy.Default
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrls: ['dv-date-picker-x.component.less']
 })
 export class DvDatePickerXComponent implements OnInit {
 
@@ -33,10 +34,6 @@ export class DvDatePickerXComponent implements OnInit {
 
     @Output()
     public readonly dateChange: EventEmitter<moment.Moment> = new EventEmitter<moment.Moment>();
-
-    // if form is already submitted. Is used to handle errors correctly
-    @Input()
-    public readonly submitted: boolean;
 
     @Input()
     public readonly required: boolean;
