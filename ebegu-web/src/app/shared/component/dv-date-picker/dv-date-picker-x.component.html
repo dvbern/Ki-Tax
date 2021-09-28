@@ -15,13 +15,16 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<dv-input-container class="form-group">
+<dv-input-container class="form-group" [ngClass]="{'touched': touched}">
     <label class="md-no-float" [ngClass]="{'required': required}" [for]="'date-' + randId">{{label | translate}}</label>
     <input class="dv-mat-datepicker" type="text"
            [name]="'date-' + randId + '-name'" [id]="'date-' + randId"
            #dateRef='ngModel'
            [(ngModel)]="date"
            (ngModelChange)="emit()"
+           (blur)="touched = true"
+           [min]="minDate"
+           [max]="maxDate"
            [matDatepicker]="datePicker"
            placeholder="{{'DATE_PLACEHOLDER' | translate}}"
            [required]="required">

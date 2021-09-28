@@ -28,11 +28,20 @@ import * as moment from 'moment';
 })
 export class DvDatePickerXComponent implements OnInit {
 
+    // store if picker is touched to set css class for validation
+    public touched = false;
+
     @Input()
     public label: string;
 
     @Input()
     public date: moment.Moment;
+
+    @Input()
+    public minDate: moment.Moment;
+
+    @Input()
+    public maxDate: moment.Moment;
 
     @Output()
     public readonly dateChange: EventEmitter<moment.Moment> = new EventEmitter<moment.Moment>();
