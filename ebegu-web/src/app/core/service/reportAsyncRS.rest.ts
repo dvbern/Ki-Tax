@@ -39,12 +39,16 @@ export class ReportAsyncRS {
     private static createParamsFromObject(paramsObj: object): HttpParams {
         let params = new HttpParams();
         for (const [key, value] of Object.entries(paramsObj)) {
+            if (!value) {
+                continue;
+            }
             params = params.append(key, value as string);
         }
         return params;
     }
 
-    public getGesuchStichtagReportExcel(dateTimeStichtag: string, gesuchPeriodeID: string): Observable<{workjobId: string}> {
+    public getGesuchStichtagReportExcel(dateTimeStichtag: string, gesuchPeriodeID: string):
+        Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             dateTimeStichtag,
             gesuchPeriodeID,

@@ -73,8 +73,8 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public institutionStammdatenList: TSInstitutionStammdaten[];
     private showMahlzeitenStatistik: boolean = false;
     public gemeindenMahlzeitenverguenstigungen: TSGemeinde[];
-    private flagShowErrorNoGesuchSelected: boolean = false;
-    private showKantonStatistik: boolean = false;
+    public flagShowErrorNoGesuchSelected: boolean = false;
+    public showKantonStatistik: boolean = false;
 
     public constructor(
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
@@ -152,7 +152,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
             case TSStatistikParameterType.GESUCH_STICHTAG:
                 this.reportAsyncRS.getGesuchStichtagReportExcel(stichtag,
                     this.statistikParameter.gesuchsperiode ?
-                        this.statistikParameter.gesuchsperiode.toString() :
+                        this.statistikParameter.gesuchsperiode :
                         null)
                     .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
@@ -162,7 +162,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 this.reportAsyncRS.getGesuchZeitraumReportExcel(this.statistikParameter.von.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.gesuchsperiode ?
-                        this.statistikParameter.gesuchsperiode.toString() :
+                        this.statistikParameter.gesuchsperiode :
                         null)
                     .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
@@ -173,7 +173,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     this.statistikParameter.von.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.gesuchsperiode ?
-                        this.statistikParameter.gesuchsperiode.toString() :
+                        this.statistikParameter.gesuchsperiode :
                         null)
                     .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
@@ -211,7 +211,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     this.statistikParameter.von.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.gesuchsperiode ?
-                        this.statistikParameter.gesuchsperiode.toString() :
+                        this.statistikParameter.gesuchsperiode :
                         null)
                     .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
@@ -302,7 +302,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: this.translate.instant('MASSENVERSAND_ERSTELLEN_CONFIRM_TITLE'),
-            deleteText: this.translate.instant('MASSENVERSAND_ERSTELLEN_CONFIRM_INFO'),
+            text: this.translate.instant('MASSENVERSAND_ERSTELLEN_CONFIRM_INFO'),
         };
         return this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed();
     }
@@ -312,7 +312,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
         this.reportAsyncRS.getMassenversandReportExcel(
             this.statistikParameter.von ? this.statistikParameter.von.format(this.DATE_PARAM_FORMAT) : null,
             this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT),
-            this.statistikParameter.gesuchsperiode.toString(),
+            this.statistikParameter.gesuchsperiode,
             this.statistikParameter.bgGesuche,
             this.statistikParameter.mischGesuche,
             this.statistikParameter.tsGesuche,
@@ -388,7 +388,16 @@ export class StatistikComponent implements OnInit, OnDestroy {
     }
 
     public showMahlzeitenverguenstigungStatistik(): boolean {
-        return this.gemeindenMahlzeitenverguenstigungen && this.gemeindenMahlzeitenverguenstigungen.length > 0;
+        return this.gemeindenMahlzeitenverguenstigungen && this.gemeindenMahlzeitenverguenstigungen.length > 0
+            && this.authServiceRS.isOneOfRoles([
+                TSRole.SACHBEARBEITER_BG,
+                TSRole.ADMIN_BG,
+                TSRole.ADMIN_GEMEINDE,
+                TSRole.SACHBEARBEITER_GEMEINDE,
+                TSRole.SUPER_ADMIN,
+                TSRole.ADMIN_TS,
+                TSRole.SACHBEARBEITER_TS
+            ]);
     }
 
     private updateShowMahlzeitenStatistik(): void {
@@ -483,5 +492,140 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 TSRole.SACHBEARBEITER_GEMEINDE
             ]
         );
+    }
+
+    public showStatistikForRoles(roles: TSRole[]): boolean {
+        return this.authServiceRS.isOneOfRoles(roles);
+    }
+
+    public showKinderStatistik(): boolean {
+        return this.authServiceRS.isOneOfRoles([
+            TSRole.SACHBEARBEITER_BG,
+            TSRole.ADMIN_BG,
+            TSRole.SUPER_ADMIN,
+            TSRole.REVISOR,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT,
+            TSRole.ADMIN_INSTITUTION,
+            TSRole.SACHBEARBEITER_INSTITUTION,
+            TSRole.ADMIN_TRAEGERSCHAFT,
+            TSRole.SACHBEARBEITER_TRAEGERSCHAFT
+        ]);
+    }
+
+    public showGesuchstellerStatistik(): boolean {
+        return this.authServiceRS.isOneOfRoles([
+            TSRole.SACHBEARBEITER_BG,
+            TSRole.ADMIN_BG,
+            TSRole.SUPER_ADMIN,
+            TSRole.REVISOR,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT
+        ]);
+    }
+
+    public showMitarbeiterStatistik(): boolean {
+        return this.authServiceRS.isOneOfRoles([
+            TSRole.SACHBEARBEITER_BG,
+            TSRole.ADMIN_BG,
+            TSRole.SUPER_ADMIN,
+            TSRole.REVISOR,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE
+        ]);
+    }
+
+    public showBenutzerStatistik(): boolean {
+        return this.authServiceRS.isOneOfRoles([
+                TSRole.ADMIN_BG,
+                TSRole.ADMIN_TS,
+                TSRole.ADMIN_GEMEINDE,
+                TSRole.SUPER_ADMIN,
+                TSRole.REVISOR,
+                TSRole.ADMIN_TRAEGERSCHAFT,
+                TSRole.ADMIN_INSTITUTION,
+                TSRole.ADMIN_MANDANT,
+                TSRole.SACHBEARBEITER_MANDANT
+        ]);
+    }
+
+    public showGesuchstellerKinderBetreuungStatistik(): boolean {
+        return this.authServiceRS.isOneOfRoles([
+            TSRole.SACHBEARBEITER_BG,
+            TSRole.ADMIN_BG,
+            TSRole.SUPER_ADMIN,
+            TSRole.REVISOR,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE
+        ]);
+    }
+
+    public showStatistikMassenversand(): boolean {
+        return this.authServiceRS.isOneOfRoles([
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_BG,
+            TSRole.ADMIN_TS,
+            TSRole.ADMIN_GEMEINDE
+        ]);
+    }
+
+    public showInstitutionenStatistik(): boolean {
+        return this.authServiceRS.isOneOfRoles([
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.ADMIN_BG,
+            TSRole.SACHBEARBEITER_BG,
+            TSRole.ADMIN_TS,
+            TSRole.SACHBEARBEITER_TS
+        ]);
+    }
+
+    public isSuperadmin(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    public showTagesschuleAnmeldungenStatistik(): boolean {
+        return this.authServiceRS.isOneOfRoles([
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.ADMIN_TS,
+            TSRole.SACHBEARBEITER_TS,
+            TSRole.ADMIN_INSTITUTION,
+            TSRole.SACHBEARBEITER_INSTITUTION,
+            TSRole.ADMIN_TRAEGERSCHAFT,
+            TSRole.SACHBEARBEITER_TRAEGERSCHAFT
+        ]);
+    }
+
+    public showRechnungsstellungStatistik(): boolean {
+        return this.authServiceRS.isOneOfRoles([
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.ADMIN_TS,
+            TSRole.SACHBEARBEITER_TS
+        ]);
+    }
+
+    public showNotrechtStatistik(): boolean {
+        return this.authServiceRS.isOneOfRoles([
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT
+        ]);
     }
 }
