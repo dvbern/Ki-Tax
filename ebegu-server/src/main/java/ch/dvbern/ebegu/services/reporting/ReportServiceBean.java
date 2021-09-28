@@ -2349,6 +2349,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	private List<FerienbetreuungDataRow> getReportDataFerienbetreuung() {
 		return ferienbetreuungService.getAllFerienbetreuungAntraege().stream()
+			.filter(FerienbetreuungAngabenContainer::isAtLeastInPruefungKanton)
 			.map(this::convertFerienbetreungToDataRow)
 			.collect(Collectors.toList());
 	}
