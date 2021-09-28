@@ -754,6 +754,34 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return hasBetreuungsKitaTagesfamillie || hasBetreuungsTagesschule || hasBetreuungsFerienInselt;
 	}
 
+	@Transient
+	public boolean hasBetreuungOfTraegerschaft(@Nullable final Traegerschaft traegerschaft) {
+		if (traegerschaft == null) {
+			return false;
+		}
+		boolean hasBetreuungsKitaTagesfamillie = kindContainers.stream()
+			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
+			.anyMatch(betreuung -> betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft() != null ?
+				betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft().equals(traegerschaft) :
+				false);
+
+		boolean hasBetreuungsTagesschule = kindContainers.stream()
+			.flatMap(kindContainer -> kindContainer.getAnmeldungenTagesschule().stream())
+			.anyMatch(anmeldungTagesschule -> anmeldungTagesschule.getInstitutionStammdaten()
+				.getInstitution().getTraegerschaft() != null ? anmeldungTagesschule.getInstitutionStammdaten()
+				.getInstitution().getTraegerschaft()
+				.equals(traegerschaft) : false);
+
+		boolean hasBetreuungsFerienInselt = kindContainers.stream()
+			.flatMap(kindContainer -> kindContainer.getAnmeldungenFerieninsel().stream())
+			.anyMatch(anmeldungFerieninsel -> anmeldungFerieninsel.getInstitutionStammdaten()
+				.getInstitution().getTraegerschaft() != null ? anmeldungFerieninsel.getInstitutionStammdaten()
+				.getInstitution().getTraegerschaft()
+				.equals(traegerschaft) : false);
+
+		return hasBetreuungsKitaTagesfamillie || hasBetreuungsTagesschule || hasBetreuungsFerienInselt;
+	}
+
 	/**
 	 * @return false wenn es ein kind gibt dass eine nicht schulamt betreuung hat,
 	 * wenn es kein kind oder betr gibt wird false zurueckgegeben
@@ -1185,21 +1213,21 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		AtomicBoolean hasSCHAngebote = new AtomicBoolean(false);
 		AtomicBoolean hasBGAngebote = new AtomicBoolean(false);
 		kindContainers.stream()
-				.filter(kindContainer -> !(kindContainer.getBetreuungen().isEmpty()
-						&& kindContainer.getAnmeldungenTagesschule().isEmpty()))
-				.flatMap(kindContainer -> {
-					Set<AbstractPlatz> plaetze = new HashSet<>();
-					plaetze.addAll(kindContainer.getAllPlaetze());
-					return plaetze.stream();
-				})
-				.collect(Collectors.toList())
-				.forEach(platz -> {
-					if (platz.isAngebotSchulamt()) {
-						hasSCHAngebote.set(true);
-					} else {
-						hasBGAngebote.set(true);
-					}
-				});
+			.filter(kindContainer -> !(kindContainer.getBetreuungen().isEmpty()
+				&& kindContainer.getAnmeldungenTagesschule().isEmpty()))
+			.flatMap(kindContainer -> {
+				Set<AbstractPlatz> plaetze = new HashSet<>();
+				plaetze.addAll(kindContainer.getAllPlaetze());
+				return plaetze.stream();
+			})
+			.collect(Collectors.toList())
+			.forEach(platz -> {
+				if (platz.isAngebotSchulamt()) {
+					hasSCHAngebote.set(true);
+				} else {
+					hasBGAngebote.set(true);
+				}
+			});
 		if (hasSCHAngebote.get() && hasBGAngebote.get()) {
 			return GesuchTypFromAngebotTyp.MISCH_GESUCH;
 		}

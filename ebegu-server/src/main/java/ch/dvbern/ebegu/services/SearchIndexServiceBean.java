@@ -74,11 +74,6 @@ public class SearchIndexServiceBean implements SearchIndexService {
 	public void rebuildSearchIndex() {
 		FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(persistence.getEntityManager());
 		fullTextEntityManager.createIndexer().start();
-//		try {
-//			fullTextEntityManager.createIndexer().startAndWait();
-//		} catch (InterruptedException e) {
-//			throw new EbeguRuntimeException("rebuildSearchIndex", "Index konnte nicht erstellt werden", e, e.getMessage());
-//		}
 	}
 
 	@Nonnull
