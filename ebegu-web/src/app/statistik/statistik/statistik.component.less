@@ -15,21 +15,109 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-.dv-table {
-    width: 100%;
+@import (reference) '../../../style/variables.less';
+@import (reference) '../../../style/mixins.less';
 
-    mat-table {
-        border-collapse: collapse;
-        display: table;
-        table-layout: fixed;
+.statistik-view {
+    padding-top: 5rem;
+
+    .dv-table {
         width: 100%;
 
-        tr {
-            cursor: pointer;
-        };
+        mat-table {
+            border-collapse: collapse;
+            display: table;
+            table-layout: fixed;
+            width: 100%;
+
+            tr {
+                cursor: pointer;
+            };
+        }
+
+        th.mat-header-cell:first-of-type, td.mat-cell:first-of-type {
+            padding-left: 1rem;
+        }
+    }
+    .statistik-button {
+        margin-top: 3rem;
+        & > * {
+            margin-left: auto;
+            margin-right: auto;
+            width: 13rem;
+        }
+    }
+    .statistik-no-fields {
+        margin-bottom: 4rem;
+    }
+    ::ng-deep dv-accordion {
+        overflow: hidden;
+        dv-accordion-tab {
+            .dv-accordion-tab-title {
+                .ebeguBold();
+                background: @contrast-lightest;
+                border-bottom: 1px solid @contrast;
+                color: @primary;
+                display: block;
+                font-size: 1.6rem;
+                height: 5rem;
+                letter-spacing: 0.15rem;
+                line-height: 5rem;
+                margin: 0;
+                opacity: 1;
+                padding: 0 2rem 0;
+                position: relative;
+                -webkit-touch-callout: none; /* iOS Safari */
+                transition: all 0.5s ease;
+                -webkit-user-select: none; /* Safari*/
+                -khtml-user-select: none; /* Konqueror */
+                -moz-user-select: none; /* Firefox */
+                -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none;
+                width: 100%;
+                z-index: 1;
+                &:focus {
+                    outline: none;
+                }
+                &.tab-open {
+                    background: @primary;
+                    border-bottom: 1px solid @primary;
+                    color: @contrast-lightest;
+                }
+            }
+            .dv-accordion-tab-content {
+                background: @contrast-light;
+                display: block;
+                height: auto;
+                max-height: 40rem;
+                opacity: 1;
+                overflow: hidden;
+                padding: 0 2rem 0;
+                width: 100%;
+                & > tab-body > * {
+                    margin: 2rem 0 0;
+                }
+                &.ng-hide-add {
+                    max-height: 40rem;
+                    transition: all 1s ease;
+                }
+                &.ng-hide-add.ng-hide-add-active {
+                    max-height: 0;
+                }
+                &.ng-hide-remove {
+                    max-height: 0;
+                    transition: all 1s ease;
+                }
+                &.ng-hide-remove.ng-hide-remove-active {
+                    max-height: 40rem;
+                }
+            }
+        }
     }
 
-    th.mat-header-cell:first-of-type, td.mat-cell:first-of-type {
-        padding-left: 1rem;
+    #massenversand-no-selection-err {
+        margin-bottom: 2rem;
+        margin-top: -2rem;
     }
 }
+
