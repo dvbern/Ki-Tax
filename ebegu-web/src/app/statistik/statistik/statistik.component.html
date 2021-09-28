@@ -651,7 +651,7 @@
                     </dv-accordion-tab>
                 </div>
 
-                <div ng-if="institutionStammdatenList.length">
+                <div>
                     <div *ngIf="showTagesschuleAnmeldungenStatistik()">
                         <dv-accordion-tab tabid="tagesschuleAnmeldungen">
                             <tab-title>
@@ -677,7 +677,7 @@
                                                             #tagesschulen='ngModel'
                                                             required
                                                             class="form-control">
-                                                        <option *ngFor="let institutionStammdaten of institutionStammdatenList" [ngValue]="institutionStammdaten">{{institutionStammdaten.institution.name}}</option>
+                                                        <option *ngFor="let institutionStammdaten of tagesschulenStammdatenList" [ngValue]="institutionStammdaten">{{institutionStammdaten.institution.name}}</option>
                                                     </select>
                                                     <dv-error-messages [errorObject]="tagesschulen.errors"
                                                                        class="error"></dv-error-messages>
@@ -782,7 +782,7 @@
                         </tab-body>
                     </dv-accordion-tab>
                 </div>
-                <div ng-if="showMahlzeitenverguenstigungStatistik()">
+                <div *ngIf="showMahlzeitenverguenstigungStatistik()">
                     <div>
                         <dv-accordion-tab tabid="mahlzeitenverguenstigung">
                             <tab-title>

@@ -70,8 +70,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public columndefs: string[] = ['typ', 'erstellt', 'gestartet', 'beendet', 'status', 'icon'];
     public allJobs: Array<TSBatchJobInformation>;
     public years: string[];
-    public institutionStammdatenList: TSInstitutionStammdaten[];
-    private showMahlzeitenStatistik: boolean = false;
+    public tagesschulenStammdatenList: TSInstitutionStammdaten[];
     public gemeindenMahlzeitenverguenstigungen: TSGemeinde[];
     public flagShowErrorNoGesuchSelected: boolean = false;
     public showKantonStatistik: boolean = false;
@@ -110,8 +109,9 @@ export class StatistikComponent implements OnInit, OnDestroy {
         });
 
         this.institutionStammdatenRS.getAllTagesschulenForCurrentBenutzer()
-            .then((institutionStammdatenList: TSInstitutionStammdaten[]) => {
-                this.institutionStammdatenList = StatistikComponent.sortInstitutions(institutionStammdatenList);
+            .then((tagesschulenStammdatenList: TSInstitutionStammdaten[]) => {
+                this.tagesschulenStammdatenList = StatistikComponent.sortInstitutions(tagesschulenStammdatenList);
+                this.cd.markForCheck();
             });
         this.updateShowMahlzeitenStatistik();
         this.updateShowKantonStatistik();
@@ -401,7 +401,6 @@ export class StatistikComponent implements OnInit, OnDestroy {
     }
 
     private updateShowMahlzeitenStatistik(): void {
-        this.showMahlzeitenStatistik = false;
         // Grundsaetzliche nur fuer Superadmin und Gemeinde-Mitarbeiter
         if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
             return;
@@ -413,6 +412,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 this.statistikParameter.gemeindeMahlzeitenverguenstigungen = value[0];
             }
             this.gemeindenMahlzeitenverguenstigungen = value;
+            this.cd.markForCheck();
         });
     }
 
@@ -431,6 +431,10 @@ export class StatistikComponent implements OnInit, OnDestroy {
     }
 
     public updateShowKantonStatistik(): void {
+        this.showKantonStatistik = false;
+        if (this.authServiceRS.isOneOfRoles([TSRole.ADMIN_TS, TSRole.SACHBEARBEITER_TS])) {
+            return;
+        }
         if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
             this.showKantonStatistik = true;
             return;
@@ -441,6 +445,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     this.showKantonStatistik = true;
                 }
             });
+            this.cd.markForCheck();
         });
     }
 
@@ -594,7 +599,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
     }
 
     public showTagesschuleAnmeldungenStatistik(): boolean {
-        return this.authServiceRS.isOneOfRoles([
+        return this.tagesschulenStammdatenList?.length && this.authServiceRS.isOneOfRoles([
             TSRole.SUPER_ADMIN,
             TSRole.ADMIN_MANDANT,
             TSRole.SACHBEARBEITER_MANDANT,

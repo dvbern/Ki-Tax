@@ -32,10 +32,7 @@ const states: NgHybridStateDeclaration[] = [
     {
         name: 'statistik.view',
         url: '/statistik',
-        component: StatistikComponent,
-        data: {
-            roles: TSRoleUtil.getAllRolesForSozialdienst(),
-        },
+        component: StatistikComponent
     }
 ];
 
