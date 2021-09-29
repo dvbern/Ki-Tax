@@ -148,7 +148,6 @@ export class StatistikComponent implements OnInit, OnDestroy {
         if (!form.valid) {
             return;
         }
-        LOG.debug('Validated Form: ' + form.name.toString());
         const stichtag = this.statistikParameter.stichtag ?
             this.statistikParameter.stichtag.format(this.DATE_PARAM_FORMAT) :
             undefined;
@@ -296,6 +295,16 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
+                return;
+            case TSStatistikParameterType.GEMEINDEN:
+                this.reportAsyncRS.getGemeindenReportExcel().subscribe((res: { workjobId: string }) => {
+                    this.informReportGenerationStarted(res);
+                }, StatistikComponent.handleError);
+                return;
+            case TSStatistikParameterType.FERIENBETREUUNG:
+                this.reportAsyncRS.getFerienbetreuungReportExcel().subscribe((res: { workjobId: string }) => {
+                    this.informReportGenerationStarted(res);
+                }, StatistikComponent.handleError);
                 return;
             default:
                 throw new Error(`unknown TSStatistikParameterType: ${type}`);
@@ -632,10 +641,14 @@ export class StatistikComponent implements OnInit, OnDestroy {
     }
 
     public showNotrechtStatistik(): boolean {
-        return this.authServiceRS.isOneOfRoles([
-            TSRole.SUPER_ADMIN,
-            TSRole.ADMIN_MANDANT,
-            TSRole.SACHBEARBEITER_MANDANT
-        ]);
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+    }
+
+    public showMandantStatistik(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+    }
+
+    public showFerienbetreuungStatistik(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 }

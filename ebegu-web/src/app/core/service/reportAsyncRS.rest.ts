@@ -225,22 +225,18 @@ export class ReportAsyncRS {
             auswertungBis,
             gemeindeId: gemeinde.id,
         });
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/mahlzeitenverguenstigung`, {params: reportParams});
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/mahlzeitenverguenstigung`,
+            {params: reportParams}
+        );
     }
 
-    public getGemeindenReportExcel(): IPromise<string> {
-        return this.http.get(`${this.serviceURL}/excel/gemeinden`).then((response: any) => response.data);
+    public getGemeindenReportExcel(): Observable<{workjobId: string}> {
+        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/gemeinden`);
     }
 
-    public getFerienbetreuungReportExcel(): IPromise<string> {
+    public getFerienbetreuungReportExcel(): Observable<{workjobId: string}> {
         return this.http
-            .get(`${this.serviceURL}/excel/ferienbetreuung`, {timeout: this.reportingTimeout})
-            .then((response: any) => {
-                return response.data;
-            });
-    }
-
-    public getServiceName(): string {
-        return 'ReportAsyncRS';
+            .get<{workjobId: string}>(`${this.serviceURL}/excel/ferienbetreuung`);
     }
 }

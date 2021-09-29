@@ -896,6 +896,48 @@
                         </dv-accordion-tab>
                     </div>
                 </div>
+                <dv-accordion-tab tabid="gemeinden" *ngIf="showMandantStatistik()">
+                    <tab-title>
+                        <span class="uppercase" translate>GEMEINDEN_STATISTIK</span>
+                        <dv-tooltip inputId="notrecht_info"
+                                    (click)="$event.stopPropagation()"
+                                    [text]="'STATISTIK_GEMEINDEN_HINT' | translate">
+                        </dv-tooltip>
+                    </tab-title>
+                    <tab-body>
+                        <form name="gemeinden"
+                              #gemeindenRef='ngForm'
+                              (ngSubmit)="generateStatistik(gemeindenRef, TSStatistikParameterType.GEMEINDEN)">
+                            <div class="row">
+                                <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
+                                    <dv-loading-button type="submit">
+                                        <span class="uppercase" translate>GENERIEREN</span>
+                                    </dv-loading-button>
+                                </div>
+                            </div>
+                        </form>
+                    </tab-body>
+                </dv-accordion-tab>
+                <div *ngIf="showFerienbetreuungStatistik()">
+                    <dv-accordion-tab tabid="ferienbetreuung">
+                        <tab-title>
+                            <span class="uppercase" translate>FERIENBETREUUNG_STATISTIK</span>
+                        </tab-title>
+                        <tab-body>
+                            <form name="ferienbetreuung"
+                                  #ferienbetreuungRef='ngForm'
+                                  (ngSubmit)="generateStatistik(ferienbetreuungRef, TSStatistikParameterType.FERIENBETREUUNG)">
+                                <div class="row">
+                                    <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
+                                        <dv-loading-button type="submit">
+                                            <span class="uppercase" translate>GENERIEREN</span>
+                                        </dv-loading-button>
+                                    </div>
+                                </div>
+                            </form>
+                        </tab-body>
+                    </dv-accordion-tab>
+                </div>
             </dv-accordion>
         </div>
     </div>

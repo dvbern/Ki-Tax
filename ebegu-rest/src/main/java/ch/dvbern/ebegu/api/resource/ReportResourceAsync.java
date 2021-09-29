@@ -825,7 +825,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Ferienbetreuung'", response = JaxDownloadFile.class)
@@ -852,7 +852,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	/**
