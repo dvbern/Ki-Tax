@@ -16,27 +16,45 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormsModule, NgForm, ReactiveFormsModule} from '@angular/forms';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
+import {WindowRef} from '../../../core/service/windowRef.service';
+import {MaterialModule} from '../../material.module';
+import {SharedModule} from '../../shared.module';
 
 import {DvDatePickerXComponent} from './dv-date-picker-x.component';
 
 describe('EbeguDatePickerComponent', () => {
-  let component: DvDatePickerXComponent;
-  let fixture: ComponentFixture<DvDatePickerXComponent>;
+    let component: DvDatePickerXComponent;
+    let fixture: ComponentFixture<DvDatePickerXComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ DvDatePickerXComponent ]
-    })
-    .compileComponents();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [DvDatePickerXComponent],
+            imports: [
+                SharedModule,
+                FormsModule,
+                ReactiveFormsModule,
+                NoopAnimationsModule,
+                MaterialModule,
+            ],
+            providers: [
+                WindowRef,
+                {provide: NgForm, useValue: new NgForm([], [])},
+            ],
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DvDatePickerXComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(DvDatePickerXComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

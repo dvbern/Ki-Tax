@@ -16,8 +16,33 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {TranslateService} from '@ngx-translate/core';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {ErrorService} from '../../core/errors/service/ErrorService';
+import {BatchJobRS} from '../../core/service/batchRS.rest';
+import {DownloadRS} from '../../core/service/downloadRS.rest';
+import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
+import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
+import {ReportAsyncRS} from '../../core/service/reportAsyncRS.rest';
 
 import {StatistikComponent} from './statistik.component';
+
+const gesuchsperiodeRSSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
+    ['getAllGesuchsperioden']);
+const institutionStammdatenRSSpy = jasmine.createSpyObj<InstitutionStammdatenRS>(InstitutionStammdatenRS.name,
+    ['getAllTagesschulenForCurrentBenutzer']);
+const reportAsyncSpy = jasmine.createSpyObj<ReportAsyncRS>(ReportAsyncRS.name,
+    []);
+const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name,
+    ['prepareDownloadWindow', 'startDownload']);
+const batchJobRSSpy = jasmine.createSpyObj<BatchJobRS>(BatchJobRS.name,
+    ['getBatchJobsOfUser']);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
+const translateSpy = jasmine.createSpyObj<TranslateService>(TranslateService.name, ['instant']);
+const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+    ['isOneOfRoles']);
+const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenWithMahlzeitenverguenstigungForBenutzer']);
 
 describe('StatistikComponent', () => {
     let component: StatistikComponent;
@@ -25,7 +50,18 @@ describe('StatistikComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [StatistikComponent]
+            declarations: [StatistikComponent],
+            providers: [
+                {provide: GesuchsperiodeRS, useValue: gesuchsperiodeRSSpy},
+                {provide: InstitutionStammdatenRS, useValue: institutionStammdatenRSSpy},
+                {provide: ReportAsyncRS, useValue: reportAsyncSpy},
+                {provide: DownloadRS, useValue: downloadRSSpy},
+                {provide: BatchJobRS, useValue: batchJobRSSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: TranslateService, useValue: translateSpy},
+                {provide: AuthServiceRS, useValue: authServiceRSSpy},
+                {provide: GemeindeRS, useValue: gemeindeRSSpy},
+            ]
         })
             .compileComponents();
     });
