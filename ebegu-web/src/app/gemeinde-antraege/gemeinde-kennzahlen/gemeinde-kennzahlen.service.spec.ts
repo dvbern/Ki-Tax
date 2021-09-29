@@ -16,6 +16,7 @@
  */
 
 import {TestBed} from '@angular/core/testing';
+import {WindowRef} from '../../core/service/windowRef.service';
 import {SharedModule} from '../../shared/shared.module';
 
 import {GemeindeKennzahlenService} from './gemeinde-kennzahlen.service';
@@ -25,7 +26,10 @@ describe('GemeindeKennzahlenService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [SharedModule]
+            imports: [SharedModule],
+            providers: [
+                WindowRef
+            ]
         });
         service = TestBed.inject(GemeindeKennzahlenService);
     });

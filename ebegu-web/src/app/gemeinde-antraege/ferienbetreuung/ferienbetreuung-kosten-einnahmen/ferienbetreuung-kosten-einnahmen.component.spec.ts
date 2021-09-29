@@ -18,6 +18,7 @@
 import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -25,6 +26,7 @@ import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedCompo
 import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenKostenEinnahmen} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
+import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {WindowRef} from '../../../core/service/windowRef.service';
 import {SharedModule} from '../../../shared/shared.module';
@@ -64,7 +66,8 @@ describe('FerienbetreuungKostenEinnahmenComponent', () => {
                 FormsModule,
                 ReactiveFormsModule,
                 SharedModule,
-                HttpClientModule
+                HttpClientModule,
+                BrowserAnimationsModule
             ],
             providers: [
                 WindowRef,
@@ -80,6 +83,7 @@ describe('FerienbetreuungKostenEinnahmenComponent', () => {
 
     beforeEach(() => {
         ferienbetreuungServiceSpy.getFerienbetreuungContainer.and.returnValue(of(container));
+        authServiceSpy.principal$ = of(new TSBenutzer());
         fixture = TestBed.createComponent(FerienbetreuungKostenEinnahmenComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

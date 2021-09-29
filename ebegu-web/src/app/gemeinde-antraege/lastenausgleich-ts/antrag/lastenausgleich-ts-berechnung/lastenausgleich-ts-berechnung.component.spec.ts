@@ -19,6 +19,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {DownloadRS} from '../../../../core/service/downloadRS.rest';
@@ -32,7 +33,7 @@ const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name, ['openDo
 const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
     ['principal$', 'isOneOfRoles']);
 const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(LastenausgleichTSService.name,
-    ['getLATSAngabenGemeindeContainer', 'latsDocxErstellen']);
+    ['getLATSAngabenGemeindeContainer', 'latsDocxErstellen', 'getErwarteteBetreuungsstunden']);
 
 describe('LastenausgleichTsBerechnungComponent', () => {
     let component: LastenausgleichTsBerechnungComponent;
@@ -51,6 +52,8 @@ describe('LastenausgleichTsBerechnungComponent', () => {
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
 
+        lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer
+            .and.returnValue(of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer()));
         lastenausgleichTSServiceSpy.latsDocxErstellen.and.returnValue(of(null));
         authServiceSpy.principal$ = of(new TSBenutzer());
     }));

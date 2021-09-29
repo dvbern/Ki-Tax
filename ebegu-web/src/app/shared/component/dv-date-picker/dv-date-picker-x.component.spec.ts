@@ -25,7 +25,7 @@ import {SharedModule} from '../../shared.module';
 
 import {DvDatePickerXComponent} from './dv-date-picker-x.component';
 
-describe('EbeguDatePickerComponent', () => {
+describe('DvDatePickerXComponent', () => {
     let component: DvDatePickerXComponent;
     let fixture: ComponentFixture<DvDatePickerXComponent>;
 
