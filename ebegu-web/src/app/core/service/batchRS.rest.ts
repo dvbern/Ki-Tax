@@ -29,8 +29,8 @@ import {CONSTANTS} from '../constants/CONSTANTS';
 })
 export class BatchJobRS {
 
-    public serviceURL = `${CONSTANTS.REST_API}admin/batch`;
-    private ebeguRestUtil = new EbeguRestUtil();
+    public readonly serviceURL = `${CONSTANTS.REST_API}admin/batch`;
+    private readonly ebeguRestUtil = new EbeguRestUtil();
 
     public constructor(
         public http: HttpClient,

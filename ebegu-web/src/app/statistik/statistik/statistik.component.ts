@@ -96,6 +96,10 @@ export class StatistikComponent implements OnInit, OnDestroy {
         });
     }
 
+    private static handleError(err: Error): void {
+        LOG.error(err);
+    }
+
     public ngOnInit(): void {
         this.statistikParameter = new TSStatistikParameter();
         this.gesuchsperiodeRS.getAllGesuchsperioden().then((response: any) => {
@@ -136,7 +140,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
         this.batchJobRS.getBatchJobsOfUser().subscribe((response: TSWorkJob[]) => {
             this.userjobs = new MatTableDataSource(response);
             this.cd.markForCheck();
-        });
+        }, StatistikComponent.handleError);
     }
 
     // tslint:disable-next-line:cognitive-complexity
@@ -144,7 +148,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
         if (!form.valid) {
             return;
         }
-        LOG.debug('Validated Form: ' + form.name);
+        LOG.debug('Validated Form: ' + form.name.toString());
         const stichtag = this.statistikParameter.stichtag ?
             this.statistikParameter.stichtag.format(this.DATE_PARAM_FORMAT) :
             undefined;
@@ -156,7 +160,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                         null)
                     .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
-                    });
+                    }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.GESUCH_ZEITRAUM:
                 this.reportAsyncRS.getGesuchZeitraumReportExcel(this.statistikParameter.von.format(this.DATE_PARAM_FORMAT),
@@ -166,7 +170,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                         null)
                     .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
-                    });
+                    }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.KINDER:
                 this.reportAsyncRS.getKinderReportExcel(
@@ -177,13 +181,13 @@ export class StatistikComponent implements OnInit, OnDestroy {
                         null)
                     .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
-                    });
+                    }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.GESUCHSTELLER:
                 this.reportAsyncRS.getGesuchstellerReportExcel(stichtag)
                     .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
-                    });
+                    }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.KANTON:
                 this.reportAsyncRS.getKantonReportExcel(this.statistikParameter.von.format(this.DATE_PARAM_FORMAT),
@@ -191,20 +195,20 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     this.statistikParameter.kantonSelbstbehalt)
                     .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
-                    });
+                    }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.MITARBEITERINNEN:
                 this.reportAsyncRS.getMitarbeiterinnenReportExcel(this.statistikParameter.von.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT))
                     .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
-                    });
+                    }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.BENUTZER:
                 this.reportAsyncRS.getBenutzerReportExcel()
                     .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
-                    });
+                    }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.GESUCHSTELLER_KINDER_BETREUUNG:
                 this.reportAsyncRS.getGesuchstellerKinderBetreuungReportExcel(
@@ -227,7 +231,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                             this.informReportGenerationStarted(res);
                             const startmsg = this.translate.instant('STARTED_GENERATION');
                             this.errorService.addMesageAsInfo(startmsg);
-                        });
+                        }, StatistikComponent.handleError);
                 } else {
                     LOG.warn('gesuchsperiode muss gewählt sein');
                 }
@@ -248,20 +252,20 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 this.reportAsyncRS.getInstitutionenReportExcel()
                     .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
-                    });
+                    }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.VERRECHNUNG_KIBON:
                 this.reportAsyncRS.getVerrechnungKibonReportExcel(
                     this.statistikParameter.doSave, this.statistikParameter.betragProKind)
                     .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
-                    });
+                    }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.LASTENAUSGLEICH_KIBON:
                 this.reportAsyncRS.getLastenausgleichKibonReportExcel(this.statistikParameter.jahr)
                     .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
-                    });
+                    }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.TAGESSCHULE_ANMELDUNGEN:
                 this.reportAsyncRS.getTagesschuleAnmeldungenReportExcel(
@@ -269,20 +273,20 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     this.statistikParameter.gesuchsperiode)
                     .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
-                    });
+                    }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.TAGESSCHULE_RECHNUNGSSTELLUNG:
                 this.reportAsyncRS.getTagesschuleRechnungsstellungReportExcel()
                     .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
-                    });
+                    }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.NOTRECHT:
                 this.reportAsyncRS.getNotrechtReportExcel(
                     this.statistikParameter.doSave)
                     .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
-                    });
+                    }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.MAHLZEITENVERGUENSTIGUNG:
                 this.reportAsyncRS.getMahlzeitenverguenstigungReportExcel(
@@ -291,7 +295,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     this.statistikParameter.gemeindeMahlzeitenverguenstigungen)
                     .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
-                    });
+                    }, StatistikComponent.handleError);
                 return;
             default:
                 throw new Error(`unknown TSStatistikParameterType: ${type}`);
@@ -358,7 +362,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
             }));
             this.allJobs = res;
             this.cd.markForCheck();
-        });
+        }, StatistikComponent.handleError);
     }
 
     /**
@@ -558,6 +562,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
         ]);
     }
 
+    // tslint:disable-next-line:no-identical-functions
     public showGesuchstellerKinderBetreuungStatistik(): boolean {
         return this.authServiceRS.isOneOfRoles([
             TSRole.SACHBEARBEITER_BG,

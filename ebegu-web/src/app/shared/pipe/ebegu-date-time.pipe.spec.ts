@@ -30,7 +30,7 @@ describe('EbeguDateTimePipe', () => {
     });
     it('should return an empty string if no date is given', () => {
         const pipe = new EbeguDateTimePipe();
-        const date: null = null;
+        const date: moment.Moment = null;
         expect(pipe.transform(date)).toBe('');
     });
 });

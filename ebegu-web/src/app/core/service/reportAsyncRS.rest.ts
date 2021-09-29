@@ -125,7 +125,10 @@ export class ReportAsyncRS {
             auswertungBis,
             gesuchPeriodeID,
         });
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/gesuchstellerkinderbetreuung`, {params: reportParams});
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/gesuchstellerkinderbetreuung`,
+            {params: reportParams
+            });
     }
 
     public getBenutzerReportExcel(): Observable<{workjobId: string}> {
@@ -189,12 +192,16 @@ export class ReportAsyncRS {
             .get<{workjobId: string}>(`${this.serviceURL}/excel/lastenausgleich`, {params: reportParams});
     }
 
-    public getTagesschuleAnmeldungenReportExcel(stammdatenId: string, gesuchsperiodeId: string): Observable<{workjobId: string}> {
+    public getTagesschuleAnmeldungenReportExcel(stammdatenId: string, gesuchsperiodeId: string):
+        Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             stammdatenId,
             gesuchsperiodeId,
         });
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/tagesschuleAnmeldungen`, {params: reportParams});
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/tagesschuleAnmeldungen`,
+            {params: reportParams
+            });
     }
 
     public getTagesschuleRechnungsstellungReportExcel(): Observable<{workjobId: string}> {
