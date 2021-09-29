@@ -37,6 +37,8 @@
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
                                             <dv-date-picker-x label="STICHTAG"
+                                                              [minDate]="minDate"
+                                                              [maxDate]="maxDate"
                                                               [(date)]="statistikParameter.stichtag"
                                                               [required]="true"
                                             ></dv-date-picker-x>
@@ -87,10 +89,10 @@
                                   [ngClass]="{'ng-submitted': gesuchZeitraumForm.submitted}">
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="VON" [(date)]="statistikParameter.von" [required]="true"></dv-date-picker-x>
+                                        <dv-date-picker-x label="VON" [minDate]="minDate" [maxDate]="maxDate" [(date)]="statistikParameter.von" [required]="true"></dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="BIS" [(date)]="statistikParameter.bis" [required]="true"></dv-date-picker-x>
+                                        <dv-date-picker-x label="BIS" [minDate]="statistikParameter.von || minDate" [maxDate]="maxDate" [(date)]="statistikParameter.bis" [required]="true"></dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
                                         <div class="form-group">
@@ -182,10 +184,20 @@
                                   (ngSubmit)="generateStatistik(kinderRef, TSStatistikParameterType.KINDER)">
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="VON" [(date)]="statistikParameter.von" [required]="true"></dv-date-picker-x>
+                                        <dv-date-picker-x label="VON"
+                                                          [minDate]="minDate"
+                                                          [maxDate]="maxDate"
+                                                          [(date)]="statistikParameter.von"
+                                                          [required]="true"
+                                        ></dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="BIS" [(date)]="statistikParameter.bis" [required]="true"></dv-date-picker-x>
+                                        <dv-date-picker-x label="BIS"
+                                                          [minDate]="statistikParameter.von || minDate"
+                                                          [maxDate]="maxDate"
+                                                          [(date)]="statistikParameter.bis"
+                                                          [required]="true">
+                                        </dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
                                         <div class="form-group">
@@ -232,7 +244,12 @@
                                   (ngSubmit)="generateStatistik(gesuchstellerRef, TSStatistikParameterType.GESUCHSTELLER)">
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="STICHTAG" [(date)]="statistikParameter.stichtag" [required]="true"></dv-date-picker-x>
+                                        <dv-date-picker-x label="STICHTAG"
+                                                          [minDate]="minDate"
+                                                          [maxDate]="maxDate"
+                                                          [(date)]="statistikParameter.stichtag"
+                                                          [required]="true">
+                                        </dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3 col-xs-offset-6 statistik-button">
                                         <dv-loading-button type="submit">
@@ -261,10 +278,20 @@
                                   (ngSubmit)="generateStatistik(kantonRef, TSStatistikParameterType.KANTON)">
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="VON" [(date)]="statistikParameter.von" [required]="true"></dv-date-picker-x>
+                                        <dv-date-picker-x label="VON"
+                                                          [minDate]="minDate"
+                                                          [maxDate]="maxDate"
+                                                          [(date)]="statistikParameter.von"
+                                                          [required]="true">
+                                        </dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="BIS" [(date)]="statistikParameter.bis" [required]="true"></dv-date-picker-x>
+                                        <dv-date-picker-x label="BIS"
+                                                          [minDate]="statistikParameter.von || minDate"
+                                                          [maxDate]="maxDate"
+                                                          [(date)]="statistikParameter.bis"
+                                                          [required]="true">
+                                        </dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3 ">
                                         <dv-input-container class="form-group">
@@ -307,10 +334,19 @@
                                   (ngSubmit)="generateStatistik(mitarbeiterinnenRef, TSStatistikParameterType.MITARBEITERINNEN)">
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="VON" [(date)]="statistikParameter.von" [required]="true"></dv-date-picker-x>
+                                        <dv-date-picker-x label="VON"
+                                                          [minDate]="minDate"
+                                                          [maxDate]="maxDate"
+                                                          [(date)]="statistikParameter.von"
+                                                          [required]="true">
+                                        </dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="BIS" [(date)]="statistikParameter.bis" [required]="true"></dv-date-picker-x>
+                                        <dv-date-picker-x label="BIS"
+                                                          [minDate]="statistikParameter.von || minDate"
+                                                          [maxDate]="maxDate"
+                                                          [(date)]="statistikParameter.bis" [required]="true">
+                                        </dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3 col-xs-offset-3 statistik-button">
                                         <dv-loading-button type="submit">
@@ -365,10 +401,20 @@
                                   (ngSubmit)="generateStatistik(betreuungRef, TSStatistikParameterType.GESUCHSTELLER_KINDER_BETREUUNG)">
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="VON" [(date)]="statistikParameter.von" [required]="true"></dv-date-picker-x>
+                                        <dv-date-picker-x label="VON"
+                                                          [minDate]="minDate"
+                                                          [maxDate]="maxDate"
+                                                          [(date)]="statistikParameter.von"
+                                                          [required]="true">
+                                        </dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="BIS" [(date)]="statistikParameter.bis" [required]="true"></dv-date-picker-x>
+                                        <dv-date-picker-x label="BIS"
+                                                          [minDate]="statistikParameter.von || minDate"
+                                                          [maxDate]="maxDate"
+                                                          [(date)]="statistikParameter.bis"
+                                                          [required]="true">
+                                        </dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
                                         <div class="form-group">
@@ -417,10 +463,20 @@
                                 <!-- Datum von/bis, Gesuchsperiode -->
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="VON" [(date)]="statistikParameter.von" [required]="true"></dv-date-picker-x>
+                                        <dv-date-picker-x label="VON"
+                                                          [minDate]="minDate"
+                                                          [maxDate]="maxDate"
+                                                          [(date)]="statistikParameter.von"
+                                                          [required]="true">
+                                        </dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="BIS" [(date)]="statistikParameter.bis" [required]="true"></dv-date-picker-x>
+                                        <dv-date-picker-x label="BIS"
+                                                          [minDate]="statistikParameter.von || minDate"
+                                                          [maxDate]="maxDate"
+                                                          [(date)]="statistikParameter.bis"
+                                                          [required]="true">
+                                        </dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
                                         <div class="form-group">
@@ -795,10 +851,20 @@
                                       (ngSubmit)="generateStatistik(mahlzeitenverguenstigungRef, TSStatistikParameterType.MAHLZEITENVERGUENSTIGUNG)">
                                     <div class="row">
                                         <div class="col-xs-3">
-                                            <dv-date-picker-x label="VON" [(date)]="statistikParameter.von" [required]="true"></dv-date-picker-x>
+                                            <dv-date-picker-x label="VON"
+                                                              [minDate]="minDate"
+                                                              [maxDate]="maxDate"
+                                                              [(date)]="statistikParameter.von"
+                                                              [required]="true">
+                                            </dv-date-picker-x>
                                         </div>
                                         <div class="col-xs-3">
-                                            <dv-date-picker-x label="BIS" [(date)]="statistikParameter.bis" [required]="true"></dv-date-picker-x>
+                                            <dv-date-picker-x label="BIS"
+                                                              [minDate]="statistikParameter.von || minDate"
+                                                              [maxDate]="maxDate"
+                                                              [(date)]="statistikParameter.bis"
+                                                              [required]="true">
+                                            </dv-date-picker-x>
                                         </div>
                                         <div class="col-xs-3" ng-if="gemeindenMahlzeitenverguenstigungen.length > 1">
                                             <div class="form-group">
