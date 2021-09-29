@@ -56,11 +56,13 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
     }
 
     public doFilterRefnummer(value: string): void {
+        this.refNumerValue = value;
         if (value.length < this.MIN_REF_NUMMER_SIZE) {
             this.refNumerValue = null;
-            return;
+            if (!EbeguUtil.isEmptyStringNullOrUndefined(value)) {
+                return;
+            }
         }
-        this.refNumerValue = value;
         this.applyFilter();
     }
 

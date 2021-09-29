@@ -63,6 +63,7 @@ public class TagesschuleRechnungsstellungExcelConverter implements ExcelConverte
 
 			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.rechnungsadresseVorname, dataRow.getRechnungsadresseVorname());
 			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.rechnungsadresseNachname, dataRow.getRechnungsadresseNachname());
+			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.rechnungsadresseOrganisation, dataRow.getRechnungsadresseOrganisation());
 			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.rechnungsadresseStrasse, dataRow.getRechnungsadresseStrasse());
 			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.rechnungsadresseHausnummer, dataRow.getRechnungsadresseHausnummer());
 			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.rechnungsadressePlz, dataRow.getRechnungsadressePlz());
@@ -96,6 +97,7 @@ public class TagesschuleRechnungsstellungExcelConverter implements ExcelConverte
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.rechungsadresseTitle, ServerMessageUtil.getMessage("Reports_rechungsadresseTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.rechnungsadresseVornameTitle, ServerMessageUtil.getMessage("Reports_rechnungsadresseVornameTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.rechnungsadresseNachnameTitle, ServerMessageUtil.getMessage("Reports_rechnungsadresseNachnameTitle", locale));
+		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.rechnungsadresseOrganisationTitle, ServerMessageUtil.getMessage("Reports_rechnungsadresseOrganisationTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.rechnungsadresseStrasseTitle, ServerMessageUtil.getMessage("Reports_rechnungsadresseStrasseTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.rechnungsadresseHausnummerTitle, ServerMessageUtil.getMessage("Reports_rechnungsadresseHausnummerTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.rechnungsadressePlzTitle, ServerMessageUtil.getMessage("Reports_rechnungsadressePlzTitle", locale));

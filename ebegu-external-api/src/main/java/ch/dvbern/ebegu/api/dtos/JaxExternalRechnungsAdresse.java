@@ -50,9 +50,13 @@ public class JaxExternalRechnungsAdresse implements Serializable {
 	@Nonnull
 	private String land;
 
+	@Nullable
+	private String organisation;
+
 
 	public JaxExternalRechnungsAdresse(@Nonnull String vorname, @Nonnull String nachname, @Nonnull String strasse,
-		@Nullable String hausnummer, @Nullable String zusatzzeile, @Nonnull String plz, @Nonnull String ort, @Nonnull String land) {
+		@Nullable String hausnummer, @Nullable String zusatzzeile, @Nonnull String plz, @Nonnull String ort, @Nonnull String land,
+		@Nullable String organisation) {
 		this.vorname = vorname;
 		this.nachname = nachname;
 		this.strasse = strasse;
@@ -61,6 +65,7 @@ public class JaxExternalRechnungsAdresse implements Serializable {
 		this.plz = plz;
 		this.ort = ort;
 		this.land = land;
+		this.organisation = organisation;
 	}
 
 	@Nonnull
@@ -135,4 +140,12 @@ public class JaxExternalRechnungsAdresse implements Serializable {
 		this.land = land;
 	}
 
+	@Nullable
+	public String getOrganisation() {
+		return organisation;
+	}
+
+	public void setOrganisation(@Nullable String organisation) {
+		this.organisation = organisation;
+	}
 }

@@ -58,7 +58,8 @@ public abstract class AbstractEbeguRestLoginTest extends AbstractEbeguRestTest {
 
 	@Before
 	public void performLogin() {
-		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
+		Mandant mandant = TestDataUtil.createDefaultMandant();
+		TestDataUtil.saveMandantIfNecessary(persistence, mandant);
 		dummyAdmin = TestDataUtil.createDummySuperAdmin(persistence, mandant, SUPERADMIN_NAME, SUPERADMIN_NAME);
 		try {
 			loginContext = JBossLoginContextFactory.createLoginContext(SUPERADMIN_NAME, SUPERADMIN_NAME);
@@ -68,8 +69,8 @@ public abstract class AbstractEbeguRestLoginTest extends AbstractEbeguRestTest {
 		}
 		// Fuer die Tests soll Bern/Paris bereits nach ASIV funktionieren, wir setzen die Daten in die Vergangeheit
 		LocalDate stadtBernStartDatumAsiv = LocalDate.of(2000, Month.JANUARY, 1);
-		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.STADT_BERN_ASIV_START_DATUM, Constants.DATE_FORMATTER.format(stadtBernStartDatumAsiv));
-		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.STADT_BERN_ASIV_CONFIGURED, "true");
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.STADT_BERN_ASIV_START_DATUM, Constants.DATE_FORMATTER.format(stadtBernStartDatumAsiv), mandant);
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.STADT_BERN_ASIV_CONFIGURED, "true", mandant);
 	}
 
 	@After

@@ -36,6 +36,8 @@ public abstract class AbstractTestdataCreationTest extends AbstractEbeguLoginTes
 
 	protected Gesuchsperiode gesuchsperiode;
 
+	protected Mandant mandant;
+
 	@Before
 	public void init() {
 		// Tests initialisieren
@@ -45,7 +47,7 @@ public abstract class AbstractTestdataCreationTest extends AbstractEbeguLoginTes
 		final InstitutionStammdaten tagesfamilien = TestDataUtil.createInstitutionStammdatenTagesfamilien();
 		final InstitutionStammdaten tagesschule = TestDataUtil.createInstitutionStammdatenTagesschuleBern(gesuchsperiode);
 		final InstitutionStammdaten ferieninsel = TestDataUtil.createInstitutionStammdatenFerieninselGuarda();
-		Mandant mandant = TestDataUtil.createDefaultMandant();
+		mandant = TestDataUtil.createDefaultMandant();
 		TestdataSetupConfig setupConfig = new TestdataSetupConfig(
 			mandant,
 			kitaBruennen,

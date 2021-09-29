@@ -22,6 +22,7 @@ import {TSBetreuungsnummerParts} from '../models/dto/TSBetreuungsnummerParts';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import {TSAbstractEntity} from '../models/TSAbstractEntity';
 import {TSAdresse} from '../models/TSAdresse';
+import {TSBenutzerNoDetails} from '../models/TSBenutzerNoDetails';
 import {TSBetreuung} from '../models/TSBetreuung';
 import {TSDossier} from '../models/TSDossier';
 import {TSFall} from '../models/TSFall';
@@ -366,6 +367,16 @@ export class EbeguUtil {
     }
 
     /**
+     * Hilfmethode fuer dvNewUserSelect
+     */
+    public static findUserByNameInList(name: string, list: TSBenutzerNoDetails[]): TSBenutzerNoDetails | null {
+        if (!name || !list) {
+            return null;
+        }
+        return list.find(user => user.getFullName() === name);
+    }
+
+    /**
      * Returns the first day of the given Period in the format DD.MM.YYYY
      */
     public getFirstDayGesuchsperiodeAsString(gesuchsperiode: TSGesuchsperiode): string {
@@ -494,4 +505,5 @@ export class EbeguUtil {
         }
         return text;
     }
+
 }

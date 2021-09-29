@@ -203,6 +203,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvMonthPickerComponent,
         EbeguDatePipe,
         NewAntragListComponent,
+        NewUserSelectDirective,
         DvLoadingButtonXDirective,
         EbeguDatePipe,
         DvSimpleTableComponent,

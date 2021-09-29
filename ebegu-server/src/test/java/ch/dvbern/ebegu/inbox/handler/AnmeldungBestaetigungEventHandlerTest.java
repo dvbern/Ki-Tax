@@ -134,7 +134,7 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(tagesschuleBestaetigungEventDTO.getRefnr()))
 				.andReturn(Optional.empty());
 
-			testIgnored(tagesschuleBestaetigungEventDTO, "AnmeldungTagessschule nicht gefunden.");
+			testIgnored(tagesschuleBestaetigungEventDTO, "AnmeldungTagesschule nicht gefunden.");
 		}
 
 		@ParameterizedTest

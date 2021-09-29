@@ -478,7 +478,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 
 	private void saveInstitutionIfNecessary(@Nullable Institution institution) {
 		if (institution != null) {
-			saveTraegerschaftIfNecessary(institution.getTraegerschaft());
+			saveTraegerschaftIfNecessary(institution.getTraegerschaft(), institution.getMandant());
 			Institution found = persistence.find(Institution.class, institution.getId());
 			if (found == null) {
 				persistence.persist(institution);
@@ -486,8 +486,9 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		}
 	}
 
-	private void saveTraegerschaftIfNecessary(@Nullable Traegerschaft traegerschaft) {
+	private void saveTraegerschaftIfNecessary(@Nullable Traegerschaft traegerschaft, Mandant mandant) {
 		if (traegerschaft != null) {
+			traegerschaft.setMandant(mandant);
 			Traegerschaft found = persistence.find(Traegerschaft.class, traegerschaft.getId());
 			if (found == null) {
 				persistence.persist(traegerschaft);

@@ -226,7 +226,8 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	@Override
 	public void initializePhase2() {
 		//set Application Properties zu true
-		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.KANTON_NOTVERORDNUNG_PHASE_2_AKTIV, "true");
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.KANTON_NOTVERORDNUNG_PHASE_2_AKTIV, "true",
+				Objects.requireNonNull(principalBean.getMandant()));
 		//get alle Ruckforderungsformular, check status and changed if needed
 		ArrayList<RueckforderungStatus> statusGeprueftStufe1 = new ArrayList<>();
 		statusGeprueftStufe1.add(RueckforderungStatus.GEPRUEFT_STUFE_1);

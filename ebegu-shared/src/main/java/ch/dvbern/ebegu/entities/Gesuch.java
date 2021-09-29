@@ -87,7 +87,9 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 	uniqueConstraints = { @UniqueConstraint(columnNames = { "dossier_id", "gesuchsperiode_id", "gueltig" },
 		name = "UK_gueltiges_gesuch"),
 		@UniqueConstraint(columnNames = { "laufnummer", "dossier_id", "gesuchsperiode_id" },
-			name = "UK_gesuch_laufnummer_dossier_gesuchsperiode")
+			name = "UK_gesuch_laufnummer_dossier_gesuchsperiode"),
+		@UniqueConstraint(columnNames = "gesuchsteller1_id", name = "UK_gesuch_gesuchsteller1_id"),
+		@UniqueConstraint(columnNames = "gesuchsteller2_id", name = "UK_gesuch_gesuchsteller2_id")
 	},
 	indexes = @Index(name = "IX_gesuch_timestamp_erstellt", columnList = "timestampErstellt")
 )

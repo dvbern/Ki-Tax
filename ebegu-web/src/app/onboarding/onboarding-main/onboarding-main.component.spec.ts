@@ -15,9 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {UIRouterModule} from '@uirouter/angular';
+import {of} from 'rxjs';
+import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 
@@ -29,6 +32,8 @@ describe('OnboardingMainComponent', () => {
 
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const applicationRSSpy = jasmine
+        .createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getPublicPropertiesCached']);
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
@@ -40,12 +45,15 @@ describe('OnboardingMainComponent', () => {
             declarations: [OnboardingMainComponent],
             providers: [
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: ApplicationPropertyRS, useValue: applicationRSSpy},
             ],
         })
             .compileComponents();
     }));
 
     beforeEach(() => {
+        const properties = new TSPublicAppConfig();
+        applicationRSSpy.getPublicPropertiesCached.and.returnValue(of(properties).toPromise());
         fixture = TestBed.createComponent(OnboardingMainComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

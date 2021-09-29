@@ -149,7 +149,7 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 	 * If no rechnungsAdresse is set, null is returned
 	 */
 	@Nullable
-	public GesuchstellerAdresseContainer extractRechnungsAdresse() {
+	private GesuchstellerAdresseContainer extractRechnungsAdresse() {
 		for (GesuchstellerAdresseContainer adresse : getAdressen()) {
 			if (adresse.extractIsRechnungsAdresse()) {
 				return adresse;

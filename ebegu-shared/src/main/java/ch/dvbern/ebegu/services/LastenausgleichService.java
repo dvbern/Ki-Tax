@@ -27,6 +27,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.entities.LastenausgleichGrundlagen;
+import ch.dvbern.ebegu.entities.Mandant;
 
 /**
  * Service fuer den Lastenausgleich
@@ -55,7 +56,10 @@ public interface LastenausgleichService {
 	 * Es werden auch rueckwirkende Korrekturen vorgenommen und zwar fuer die letzten 10 Jahre
 	 */
 	@Nonnull
-	Lastenausgleich createLastenausgleich(int jahr, @Nonnull BigDecimal selbstbehaltPro100ProzentPlatz);
+	Lastenausgleich createLastenausgleich(
+			int jahr,
+			@Nonnull BigDecimal selbstbehaltPro100ProzentPlatz,
+			Mandant mandant);
 
 	/**
 	 * Sucht den Lastenausgleich des uebergebenen Jahres, falls vorhanden

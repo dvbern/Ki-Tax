@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.ApplicationProperty;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 
 /**
@@ -41,7 +42,8 @@ public interface ApplicationPropertyService {
 	 * @return ApplicationProperty mit key und value
 	 */
 	@Nonnull
-	ApplicationProperty saveOrUpdateApplicationProperty(@Nonnull ApplicationPropertyKey key, @Nonnull String value);
+	ApplicationProperty saveOrUpdateApplicationProperty(@Nonnull ApplicationPropertyKey key, @Nonnull String value, @Nonnull
+			Mandant mandant);
 
 	/**
 	 * @param key name des Property

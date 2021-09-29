@@ -4023,6 +4023,11 @@ export class EbeguRestUtil {
         publicAppConfigTS.dummyMode = data.dummyMode;
         publicAppConfigTS.sentryEnvName = data.sentryEnvName;
         publicAppConfigTS.backgroundColor = data.backgroundColor;
+        publicAppConfigTS.primaryColor = data.primaryColor;
+        publicAppConfigTS.primaryColorDark = data.primaryColorDark;
+        publicAppConfigTS.primaryColorLight = data.primaryColorLight;
+        publicAppConfigTS.logoFileName = data.logoFileName;
+        publicAppConfigTS.logoFileNameWhite = data.logoFileNameWhite;
         publicAppConfigTS.zahlungentestmode = data.zahlungentestmode;
         publicAppConfigTS.personenSucheDisabled = data.personenSucheDisabled;
         publicAppConfigTS.kitaxHost = data.kitaxHost;

@@ -20,13 +20,12 @@ package ch.dvbern.ebegu.services.gemeindeantrag;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,6 +59,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.util.Constants;
@@ -89,6 +89,15 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 	@Inject
 	private EbeguConfiguration configuration;
+
+	@Inject
+	private CriteriaQueryHelper criteriaQueryHelper;
+
+	@Nonnull
+	@Override
+	public Collection<FerienbetreuungAngabenContainer> getAllFerienbetreuungAntraege() {
+		return criteriaQueryHelper.getAll(FerienbetreuungAngabenContainer.class);
+	}
 
 	@Nonnull
 	@Override

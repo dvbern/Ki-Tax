@@ -1,6 +1,6 @@
 /*
  * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2018 City of Bern Switzerland
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -13,13 +13,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {CORE_JS_MODULE} from '../core/core.angularjs.module';
-import {PosteingangViewComponentConfig} from './component/posteingangView';
-import {posteingangFilter} from './filter/posteingangFilter';
-import {posteingangRun} from './posteingang.route';
+import {NgModule} from '@angular/core';
+import {SharedModule} from '../shared/shared.module';
+import {PosteingangViewComponent} from './component/posteingang-view.component';
+import {PosteingangRoutingModule} from './posteingang.route';
 
-export const POSTEINGANG_JS_MODULE =
-    angular.module('ebeguWeb.posteingang', [CORE_JS_MODULE.name])
-        .run(posteingangRun)
-        .filter('posteingangFilter', posteingangFilter)
-        .component('posteingangView', new PosteingangViewComponentConfig());
+@NgModule({
+    declarations: [
+        PosteingangViewComponent
+    ],
+    imports: [
+        SharedModule,
+        PosteingangRoutingModule,
+    ],
+})
+export class PosteingangModule {
+}

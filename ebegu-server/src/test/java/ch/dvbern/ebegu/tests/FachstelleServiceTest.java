@@ -28,7 +28,6 @@ import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Test;
@@ -44,7 +43,6 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(Arquillian.class)
 @Category(IntegrationTest.class)
-@UsingDataSet("datasets/empty.xml")
 @Transactional(TransactionMode.DISABLED)
 public class FachstelleServiceTest extends AbstractEbeguLoginTest {
 
@@ -58,6 +56,7 @@ public class FachstelleServiceTest extends AbstractEbeguLoginTest {
 	public void createFachstelle() {
 		assertNotNull(fachstelleService);
 		Fachstelle fachstelle = TestDataUtil.createDefaultFachstelle();
+		TestDataUtil.saveMandantIfNecessary(persistence, fachstelle.getMandant());
 		fachstelleService.saveFachstelle(fachstelle);
 
 		Collection<Fachstelle> allFachstellen = fachstelleService.getAllFachstellen();
@@ -97,6 +96,7 @@ public class FachstelleServiceTest extends AbstractEbeguLoginTest {
 	@Nonnull
 	private Fachstelle insertNewEntity() {
 		Fachstelle fachstelle = TestDataUtil.createDefaultFachstelle();
+		TestDataUtil.saveMandantIfNecessary(persistence, fachstelle.getMandant());
 		persistence.persist(fachstelle);
 		return fachstelle;
 	}

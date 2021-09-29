@@ -207,6 +207,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Assert.assertNotNull(gesuchService);
 		Gemeinde bern = TestDataUtil.getGemeindeParis(persistence);
 		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService, gesuchsperiode);
+		final Mandant mandant = TestDataUtil.getMandantKantonBern(persistence);
 
 		Collection<InstitutionStammdaten> stammdaten = criteriaQueryHelper.getAll(InstitutionStammdaten.class);
 		Gesuch gesuch2 = testfaelleService.createAndSaveGesuch(new Testfall02_FeutzYvonne(gesuch.getGesuchsperiode(), stammdaten, true, bern), true, null);
@@ -220,7 +221,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 			bern.getId(),
 			LocalDate.now(),
 			"Testauftrag",
-			gesuch2.getGesuchsperiode().getGueltigkeit().getGueltigAb().plusMonths(1).atTime(0, 0, 0));
+			gesuch2.getGesuchsperiode().getGueltigkeit().getGueltigAb().plusMonths(1).atTime(0, 0, 0), mandant);
 
 		//check all objects exist
 		Assert.assertEquals(2, readGesucheAsAdmin().size());
@@ -315,6 +316,9 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		// Voraussetzung: Ich habe einen Antrag, er muss nicht verfuegt sein
 		Gesuch erstgesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		Gesuchsperiode gpFolgegesuch = new Gesuchsperiode();
+		Mandant mandant = TestDataUtil.createDefaultMandant();
+		TestDataUtil.saveMandantIfNecessary(persistence, mandant);
+		gpFolgegesuch.setMandant(mandant);
 		gpFolgegesuch.getGueltigkeit().setGueltigAb(erstgesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb().plusYears(1));
 		gpFolgegesuch.getGueltigkeit().setGueltigBis(erstgesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis().plusYears(1));
 		gpFolgegesuch = persistence.persist(gpFolgegesuch);
@@ -528,14 +532,13 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public void testGetAllGesucheForDossierAndPeriod() {
 		Dossier dossier = TestDataUtil.createAndPersistDossierAndFall(persistence);
 
-		final Gesuchsperiode gesuchsperiode1516 = TestDataUtil.createCustomGesuchsperiode(2015, 2016);
-		final Gesuchsperiode periodeToUpdate = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode1516);
+		final Gesuchsperiode gesuchsperiode1516 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2015, 2016);
 
-		final Gesuchsperiode otherPeriod = gesuchsperiodeService.saveGesuchsperiode(TestDataUtil.createCustomGesuchsperiode(2014, 2015));
+		final Gesuchsperiode otherPeriod = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence,2014, 2015);
 
-		Gesuch gesuch1516_1 = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.VERFUEGT);
+		Gesuch gesuch1516_1 = TestDataUtil.createGesuch(dossier, gesuchsperiode1516, AntragStatus.VERFUEGT);
 		persistence.persist(gesuch1516_1);
-		Gesuch gesuch1516_2 = TestDataUtil.createMutation(dossier, periodeToUpdate, AntragStatus.IN_BEARBEITUNG_JA, 1);
+		Gesuch gesuch1516_2 = TestDataUtil.createMutation(dossier, gesuchsperiode1516, AntragStatus.IN_BEARBEITUNG_JA, 1);
 		persistence.persist(gesuch1516_2);
 		Gesuch gesuch1415_1 = TestDataUtil.createGesuch(dossier, otherPeriod, AntragStatus.IN_BEARBEITUNG_JA);
 		persistence.persist(gesuch1415_1);
@@ -551,14 +554,13 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public void testSetBeschwerdeHaengigForPeriode() {
 		Dossier dossier = TestDataUtil.createAndPersistDossierAndFall(persistence);
 
-		final Gesuchsperiode gesuchsperiode1516 = TestDataUtil.createCustomGesuchsperiode(2015, 2016);
-		final Gesuchsperiode periodeToUpdate = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode1516);
+		final Gesuchsperiode gesuchsperiode1516 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence,2015, 2016);
 
-		final Gesuchsperiode otherPeriod = gesuchsperiodeService.saveGesuchsperiode(TestDataUtil.createCustomGesuchsperiode(2014, 2015));
+		final Gesuchsperiode otherPeriod = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2014, 2015);
 
-		Gesuch gesuch1516_1 = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.VERFUEGT);
+		Gesuch gesuch1516_1 = TestDataUtil.createGesuch(dossier, gesuchsperiode1516, AntragStatus.VERFUEGT);
 		persistence.persist(gesuch1516_1);
-		Gesuch gesuch1516_2 = TestDataUtil.createMutation(dossier, periodeToUpdate, AntragStatus.VERFUEGT, 1);
+		Gesuch gesuch1516_2 = TestDataUtil.createMutation(dossier, gesuchsperiode1516, AntragStatus.VERFUEGT, 1);
 		persistence.persist(gesuch1516_2);
 		Gesuch gesuch1415_1 = TestDataUtil.createGesuch(dossier, otherPeriod, AntragStatus.VERFUEGT);
 		persistence.persist(gesuch1415_1);
@@ -572,7 +574,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		allGesuchIDsForFall.forEach(gesuchID -> {
 			final Optional<Gesuch> foundGesuch = gesuchService.findGesuch(gesuchID);
 			Assert.assertTrue(foundGesuch.isPresent());
-			if (foundGesuch.get().getGesuchsperiode().isSame(periodeToUpdate)) {
+			if (foundGesuch.get().getGesuchsperiode().isSame(gesuchsperiode1516)) {
 				if (foundGesuch.get().equals(gesuch1516_1)) {
 					Assert.assertEquals(AntragStatus.BESCHWERDE_HAENGIG, foundGesuch.get().getStatus());
 				} else {
@@ -590,14 +592,13 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public void testRemoveBeschwerdeHaengigForPeriode() {
 		Dossier dossier = TestDataUtil.createAndPersistDossierAndFall(persistence);
 
-		final Gesuchsperiode gesuchsperiode1516 = TestDataUtil.createCustomGesuchsperiode(2015, 2016);
-		final Gesuchsperiode periodeToUpdate = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode1516);
+		final Gesuchsperiode gesuchsperiode1516 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2015, 2016);
 
-		final Gesuchsperiode otherPeriod = gesuchsperiodeService.saveGesuchsperiode(TestDataUtil.createCustomGesuchsperiode(2014, 2015));
+		final Gesuchsperiode otherPeriod = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2014, 2015);
 
-		Gesuch gesuch1516_1 = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.VERFUEGT);
+		Gesuch gesuch1516_1 = TestDataUtil.createGesuch(dossier, gesuchsperiode1516, AntragStatus.VERFUEGT);
 		persistence.persist(gesuch1516_1);
-		Gesuch gesuch1516_2 = TestDataUtil.createMutation(dossier, periodeToUpdate, AntragStatus.VERFUEGT, 1);
+		Gesuch gesuch1516_2 = TestDataUtil.createMutation(dossier, gesuchsperiode1516, AntragStatus.VERFUEGT, 1);
 		persistence.persist(gesuch1516_2);
 		Gesuch gesuch1415_1 = TestDataUtil.createGesuch(dossier, otherPeriod, AntragStatus.VERFUEGT);
 		persistence.persist(gesuch1415_1);
@@ -877,8 +878,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 			LocalDate.of(1980, Month.MARCH, 25), gesuchsperiode);
 		TestDataUtil.gesuchVerfuegen(gesuchFeutz, gesuchService);
 
-		final Gesuchsperiode otherGesuchsperiode = TestDataUtil.createGesuchsperiode1617();
-		persistence.persist(otherGesuchsperiode);
+		final Gesuchsperiode otherGesuchsperiode = TestDataUtil.createGesuchsperiode1617AndPersist(persistence);
 
 		final List<Gesuch> gesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
 			Constants.START_OF_TIME,
@@ -974,22 +974,21 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Gesuch gesuch = TestDataUtil.createAndPersistASIV12(institutionService, persistence,
 						LocalDate.of(1980, Month.MARCH, 25), AntragStatus.GEPRUEFT, gesuchsperiode);
 
-		final Gesuchsperiode gesuchsperiode1819 = TestDataUtil.createCustomGesuchsperiode(2018, 2019);
-		final Gesuchsperiode savedGesuchsperiode1819 = persistence.persist(gesuchsperiode1819);
+		final Gesuchsperiode gesuchsperiode1819 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2018, 2019);
 
-		testfaelleService.antragErneuern(gesuch, savedGesuchsperiode1819, null);
+		testfaelleService.antragErneuern(gesuch, gesuchsperiode1819, null);
 		Assert.assertTrue(gesuchService.getAllGesuchForAmtAfterGP(gesuchsperiode).size() == 1);
-		Assert.assertTrue(gesuchService.getAllGesuchForAmtAfterGP(savedGesuchsperiode1819).isEmpty());
+		Assert.assertTrue(gesuchService.getAllGesuchForAmtAfterGP(gesuchsperiode1819).isEmpty());
 	}
 
 
 	// HELP METHODS
 
 	private void insertApplicationProperties() {
-		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_FREIGABE, "" + ANZAHL_TAGE_BIS_WARNUNG_FREIGABE);
-		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG, "" + ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG);
-		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE, "" + ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE);
-		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG, "" + ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG);
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_FREIGABE, "" + ANZAHL_TAGE_BIS_WARNUNG_FREIGABE, mandant);
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG, "" + ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG, mandant);
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE, "" + ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE, mandant);
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG, "" + ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG, mandant);
 	}
 
 	private Gesuch createGesuchInBearbeitungGS(LocalDateTime timestampErstellt) {

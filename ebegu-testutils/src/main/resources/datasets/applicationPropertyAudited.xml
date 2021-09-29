@@ -16,15 +16,24 @@
 
 <!--suppress ALL -->
 <dataset>
+	<mandant id="43NuuG7vQO+eUparSNjyIA=="
+			 timestamp_erstellt="2016-04-25 16:22:22.0"
+			 timestamp_mutiert="2016-04-25 16:22:26.0"
+			 user_erstellt="anonym"
+			 user_mutiert="anonym"
+			 version="0"
+			 name="TestMandantDBUnit"
+			 angebotts="false"
+			 angebotfi="false"/>
 	<application_property id="ZyGYNw4STZeyRWSbkNnSpQ==" timestamp_erstellt="2016-03-04 16:14:28.134"
 						  timestamp_mutiert="2016-03-04 16:14:28.134" user_erstellt="me" user_mutiert="me"
-						  version="2" name="EVALUATOR_DEBUG_ENABLED" value="entry2"/>
+						  version="2" name="EVALUATOR_DEBUG_ENABLED" value="entry2" mandant_id="43NuuG7vQO+eUparSNjyIA=="/>
 	<application_property_AUD id="ZyGYNw4STZeyRWSbkNnSpQ==" timestamp_erstellt="2016-03-04 16:14:28.134"
 							  timestamp_mutiert="2016-03-04 16:14:28.134" user_erstellt="me" user_mutiert="me"
-							  rev="1" revtype="0" name="EVALUATOR_DEBUG_ENABLED" value="entry1"/>
+							  rev="1" revtype="0" name="EVALUATOR_DEBUG_ENABLED" value="entry1" mandant_id="43NuuG7vQO+eUparSNjyIA=="/>
 	<application_property_AUD id="ZyGYNw4STZeyRWSbkNnSpQ==" timestamp_erstellt="2016-03-04 16:14:28.134"
 							  timestamp_mutiert="2016-03-04 16:14:28.134" user_erstellt="me" user_mutiert="me"
-							  rev="2" revtype="1" name="EVALUATOR_DEBUG_ENABLED" value="entry2"/>
+							  rev="2" revtype="1" name="EVALUATOR_DEBUG_ENABLED" value="entry2" mandant_id="43NuuG7vQO+eUparSNjyIA=="/>
 	<revinfo rev="1" revtstmp="1457104468194"/>
 	<revinfo rev="2" revtstmp="1457104468194"/>
 </dataset>

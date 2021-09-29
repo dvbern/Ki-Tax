@@ -98,7 +98,8 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 				gemeinde.getId(),
 				LocalDate.now().plusDays(3),
 				"Zahlung Normal August",
-				datumGeneriertErsterZahlungsauftrag);
+				datumGeneriertErsterZahlungsauftrag,
+				mandant);
 		lastZahlungsauftrag = zahlungService.zahlungsauftragAusloesen(lastZahlungsauftrag.getId());
 
 		erstgesuch = gesuchService.findGesuch(erstgesuch.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("findGesuch",
@@ -183,7 +184,8 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 			gemeinde.getId(),
 			LocalDate.now().plusDays(3),
 			"Zahlung Repetition August",
-			lastZahlungsauftrag.getDatumGeneriert().plusDays(1));
+			lastZahlungsauftrag.getDatumGeneriert().plusDays(1),
+			mandant);
 
 		Assert.assertNotNull(mutation);
 		List<VerfuegungZeitabschnitt> alleZeitabschnitte = getAllZeitabschnitteOrderedByGesuchAndDatum();
@@ -211,7 +213,8 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 			gemeinde.getId(),
 			LocalDate.now().plusDays(3),
 			"Zahlung Normal September",
-			lastZahlungsauftrag.getDatumGeneriert().plusMonths(1));
+			lastZahlungsauftrag.getDatumGeneriert().plusMonths(1),
+			mandant);
 
 		Assert.assertNotNull(mutation);
 		List<VerfuegungZeitabschnitt> alleZeitabschnitte = getAllZeitabschnitteOrderedByGesuchAndDatum();

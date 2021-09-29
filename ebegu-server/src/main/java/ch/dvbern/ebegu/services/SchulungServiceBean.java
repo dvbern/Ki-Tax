@@ -368,9 +368,11 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	@SuppressWarnings("SameParameterValue")
 	@Nonnull
 	private Traegerschaft createTraegerschaft(@Nonnull String id, @Nonnull String name) {
+		Mandant mandant = mandantService.getFirst();
 		Traegerschaft traegerschaft = new Traegerschaft();
 		traegerschaft.setId(id);
 		traegerschaft.setName(name);
+		traegerschaft.setMandant(mandant);
 		return traegerschaftService.saveTraegerschaft(traegerschaft);
 	}
 

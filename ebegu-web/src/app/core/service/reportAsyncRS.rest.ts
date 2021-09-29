@@ -227,4 +227,20 @@ export class ReportAsyncRS {
         });
         return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/mahlzeitenverguenstigung`, {params: reportParams});
     }
+
+    public getGemeindenReportExcel(): IPromise<string> {
+        return this.http.get(`${this.serviceURL}/excel/gemeinden`).then((response: any) => response.data);
+    }
+
+    public getFerienbetreuungReportExcel(): IPromise<string> {
+        return this.http
+            .get(`${this.serviceURL}/excel/ferienbetreuung`, {timeout: this.reportingTimeout})
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
+    public getServiceName(): string {
+        return 'ReportAsyncRS';
+    }
 }

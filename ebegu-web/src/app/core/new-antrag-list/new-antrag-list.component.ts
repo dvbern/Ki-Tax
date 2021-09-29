@@ -640,33 +640,26 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         return bezeichnung;
     }
 
-    public findUserByNameInList(name: string, list: TSBenutzerNoDetails[]): TSBenutzerNoDetails | null {
-        if (!name || !list) {
-            return null;
-        }
-        return list.find(user => user.getFullName() === name);
-    }
-
     // must be called after filterPredicate is initialized
     private initBenutzerLists(): void {
         if (this.isPendenzGemeindeRolle()) {
             this.benutzerRS.getAllBenutzerBgTsOrGemeinde().then(response => {
                 this.userListBgTsOrGemeinde = response;
                 this.initialGemeindeUser =
-                    this.findUserByNameInList(this.filterPredicate?.verantwortlicherGemeinde, response);
+                    EbeguUtil.findUserByNameInList(this.filterPredicate?.verantwortlicherGemeinde, response);
                 this.changeDetectorRef.markForCheck();
             });
         } else {
             this.benutzerRS.getAllBenutzerBgOrGemeinde().then(response => {
                 this.userListBgOrGemeinde = response;
                 this.initialBgGemeindeUser =
-                    this.findUserByNameInList(this.filterPredicate?.verantwortlicherBG, response);
+                    EbeguUtil.findUserByNameInList(this.filterPredicate?.verantwortlicherBG, response);
                 this.changeDetectorRef.markForCheck();
             });
             this.benutzerRS.getAllBenutzerTsOrGemeinde().then(response => {
                 this.userListTsOrGemeinde = response;
                 this.initialTsGemeindeUser =
-                    this.findUserByNameInList(this.filterPredicate?.verantwortlicherTS, response);
+                    EbeguUtil.findUserByNameInList(this.filterPredicate?.verantwortlicherTS, response);
                 this.changeDetectorRef.markForCheck();
             });
         }

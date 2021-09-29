@@ -110,7 +110,8 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 		return mandant;
 	}
 
-	public void setMandant(@NotNull Mandant mandant) {
+	@Override
+	public void setMandant(Mandant mandant) {
 		this.mandant = mandant;
 	}
 
