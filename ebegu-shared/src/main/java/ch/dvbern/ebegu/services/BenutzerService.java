@@ -107,6 +107,8 @@ public interface BenutzerService {
 
 	void checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(@Nonnull Benutzer benutzer);
 
+	String findFallIdIfBenutzerIsGesuchstellerWithoutFreigegebenemGesuch(@Nonnull Benutzer benutzer);
+
 	@Nonnull
 	Optional<Benutzer> findBenutzer(@Nonnull String username);
 
