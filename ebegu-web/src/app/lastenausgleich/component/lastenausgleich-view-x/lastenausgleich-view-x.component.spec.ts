@@ -32,7 +32,7 @@ const translateSpy = jasmine.createSpyObj<TranslateService>(TranslateService.nam
 const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name,
     ['prepareDownloadWindow', 'startDownload']);
 const uploadRSSpy = jasmine.createSpyObj<UploadRS>(UploadRS.name, ['uploadZemisExcel']);
-const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles', 'isRole']);
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
 const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDevMode']);
 const matDialogSpy = jasmine.createSpyObj<MatDialog>(MatDialog.name, ['open']);

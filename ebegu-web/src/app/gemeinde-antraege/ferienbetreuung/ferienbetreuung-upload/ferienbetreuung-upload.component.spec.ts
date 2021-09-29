@@ -82,6 +82,9 @@ describe('FerienbetreuungUploadComponent', () => {
         fixture = TestBed.createComponent(FerienbetreuungUploadComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
+        ferienbetreuungServiceSpy.getFerienbetreuungContainer
+            .and.returnValue(of(new TSFerienbetreuungAngabenContainer()));
+        ferienbetreuungDokumentServiceSpy.getAllDokumente.and.returnValue(of([]));
     });
 
     it('should create', () => {

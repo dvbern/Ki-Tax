@@ -16,8 +16,10 @@
  */
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {DownloadRS} from '../../../../core/service/downloadRS.rest';
 import {SharedModule} from '../../../../shared/shared.module';
@@ -48,6 +50,9 @@ describe('LastenausgleichTsBerechnungComponent', () => {
             ],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
+
+        lastenausgleichTSServiceSpy.latsDocxErstellen.and.returnValue(of(null));
+        authServiceSpy.principal$ = of(new TSBenutzer());
     }));
 
     beforeEach(() => {

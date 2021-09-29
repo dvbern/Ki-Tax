@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {HttpClientModule} from '@angular/common/http';
-import {ChangeDetectionStrategy, Directive, EventEmitter, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, CUSTOM_ELEMENTS_SCHEMA, Directive, EventEmitter, Input, Output} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ControlContainer, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
@@ -105,6 +105,7 @@ describe('GemeindeAntraegeComponent', () => {
                 BrowserAnimationsModule,
             ],
             declarations: [GemeindeAntraegeComponent, MockDvLoadingButtonXDirective],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
                 WindowRef,
                 {provide: GesuchsperiodeRS, useValue: gesuchPeriodeSpy},

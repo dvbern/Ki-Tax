@@ -18,6 +18,7 @@
 import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -26,6 +27,7 @@ import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedCompo
 import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenStammdaten} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenStammdaten';
+import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {SharedModule} from '../../../shared/shared.module';
 import {UnsavedChangesService} from '../../services/unsaved-changes.service';
@@ -40,8 +42,8 @@ const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(
 );
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
     ['addMesageAsError', 'addMesageAsInfo']);
-const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(ErrorService.name,
-    ['getPrincipal']);
+const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+    ['getPrincipal', 'principal$']);
 
 const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
     ['params']);
@@ -65,6 +67,7 @@ describe('FerienbetreuungStammdatenGemeindeComponent', () => {
                 ReactiveFormsModule,
                 SharedModule,
                 HttpClientModule,
+                BrowserAnimationsModule
             ],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
@@ -81,6 +84,7 @@ describe('FerienbetreuungStammdatenGemeindeComponent', () => {
     beforeEach(() => {
         gemeindeRSSpy.getAllBfsGemeinden.and.returnValue(of([]).toPromise());
         ferienbetreuungServiceSpy.getFerienbetreuungContainer.and.returnValue(of(container));
+        authServiceRSSpy.principal$ = of(new TSBenutzer());
         fixture = TestBed.createComponent(FerienbetreuungStammdatenGemeindeComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
