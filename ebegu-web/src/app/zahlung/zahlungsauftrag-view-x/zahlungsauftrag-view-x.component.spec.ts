@@ -1,3 +1,4 @@
+import {CurrencyPipe} from '@angular/common';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, TransitionService, UIRouterGlobals} from '@uirouter/core';
@@ -31,6 +32,7 @@ describe('ZahlungsauftragViewXComponent', () => {
     const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
     const transitionSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name, ['onStart']);
     const errorServiceSpy = jasmine.createSpyObj(ErrorService.name, ['clearAll']);
+    const currencySpy = jasmine.createSpyObj(CurrencyPipe.name, ['transform']);
 
     uiRouterGlobalsSpy.params = {} as any;
     authServiceSpy.principal$ = of(new TSBenutzer());
@@ -52,6 +54,7 @@ describe('ZahlungsauftragViewXComponent', () => {
                 {provide: ReportRS, useValue: reportRSSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
+                {provide: CurrencyPipe, useValue: currencySpy},
                 {provide: StateStoreService, useValue: stateStoreSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
                 {provide: TransitionService, useValue: transitionSpy},

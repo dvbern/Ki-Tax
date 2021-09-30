@@ -1,5 +1,5 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {TranslateService} from '@ngx-translate/core';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService} from '@uirouter/angular';
 import {of} from 'rxjs';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
@@ -10,7 +10,6 @@ import {LastenausgleichTSService} from '../services/lastenausgleich-ts.service';
 import {VerlaufComponent} from './verlauf.component';
 
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
-const translateServiceSpy = jasmine.createSpyObj<TranslateService>(ErrorService.name, ['instant']);
 const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(LastenausgleichTSService.name,
     ['getVerlauf']);
 const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
@@ -23,10 +22,12 @@ describe('VerlaufComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [VerlaufComponent],
-            imports: [SharedModule],
+            imports: [
+                SharedModule,
+                BrowserAnimationsModule
+            ],
             providers: [
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: TranslateService, useValue: translateServiceSpy},
                 {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
             ]
