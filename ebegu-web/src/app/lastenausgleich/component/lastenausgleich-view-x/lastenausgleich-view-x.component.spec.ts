@@ -25,6 +25,7 @@ import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {UploadRS} from '../../../core/service/uploadRS.rest';
+import {LastenausgleichRS} from '../../services/lastenausgleichRS.rest';
 
 import {LastenausgleichViewXComponent} from './lastenausgleich-view-x.component';
 
@@ -36,6 +37,8 @@ const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, [
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
 const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDevMode']);
 const matDialogSpy = jasmine.createSpyObj<MatDialog>(MatDialog.name, ['open']);
+const lastenausgleichSpy = jasmine.createSpyObj<LastenausgleichRS>(LastenausgleichRS.name,
+    ['getAllLastenausgleiche']);
 
 describe('LastenausgleichViewXComponent', () => {
     let component: LastenausgleichViewXComponent;
@@ -52,6 +55,7 @@ describe('LastenausgleichViewXComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
                 {provide: MatDialog, useValue: matDialogSpy},
+                {provide: LastenausgleichRS, useValue: lastenausgleichSpy}
             ],
             imports: [
                 HttpClientModule
@@ -60,6 +64,7 @@ describe('LastenausgleichViewXComponent', () => {
             .compileComponents();
 
         applicationPropertyRSSpy.isDevMode.and.returnValue(of(true).toPromise());
+        lastenausgleichSpy.getAllLastenausgleiche.and.returnValue(of([]));
     });
 
     beforeEach(() => {

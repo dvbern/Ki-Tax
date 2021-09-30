@@ -1,4 +1,3 @@
-import {CurrencyPipe} from '@angular/common';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, TransitionService, UIRouterGlobals} from '@uirouter/core';
@@ -22,10 +21,9 @@ describe('ZahlungviewXComponent', () => {
     const zahlungRSSpy = jasmine.createSpyObj(ZahlungRS.name, ['getAllZahlungsauftraege']);
     const stateServiceSpy = jasmine.createSpyObj(StateService.name, ['go']);
     const downloadResSpy = jasmine.createSpyObj(DownloadRS.name, ['getAccessTokenDokument']);
-    const reportRSSpy = jasmine.createSpyObj(ReportRS.name, ['']);
+    const reportRSSpy = jasmine.createSpyObj(ReportRS.name, ['getZahlungReportExcel']);
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$', 'isOneOfRoles']);
     const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
-    const currencySpy = jasmine.createSpyObj(CurrencyPipe.name, ['']);
     const transitionSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name, ['onStart']);
     const errorServiceSpy = jasmine.createSpyObj(ErrorService.name, ['clearAll']);
     const stateStoreSpy = jasmine.createSpyObj<StateStoreService>(StateStoreService.name, ['get', 'has']);
@@ -43,7 +41,6 @@ describe('ZahlungviewXComponent', () => {
                 {provide: ReportRS, useValue: reportRSSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
-                {provide: CurrencyPipe, useValue: currencySpy},
                 {provide: TransitionService, useValue: transitionSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: StateStoreService, useValue: stateStoreSpy},

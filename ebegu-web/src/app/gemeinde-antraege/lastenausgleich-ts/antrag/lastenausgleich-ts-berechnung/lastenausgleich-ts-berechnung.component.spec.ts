@@ -55,6 +55,7 @@ describe('LastenausgleichTsBerechnungComponent', () => {
         lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer
             .and.returnValue(of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer()));
         lastenausgleichTSServiceSpy.latsDocxErstellen.and.returnValue(of(null));
+        lastenausgleichTSServiceSpy.getErwarteteBetreuungsstunden.and.returnValue(of(0));
         authServiceSpy.principal$ = of(new TSBenutzer());
     }));
 

@@ -20,8 +20,10 @@ import {StateService} from '@uirouter/angular';
 import {UIRouterGlobals} from '@uirouter/core';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {GesuchRS} from '../../gesuch/service/gesuchRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../hybridTools/mockUpgradedComponent';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {AntragStatusHistoryRS} from '../core/service/antragStatusHistoryRS.rest';
+import {SharedModule} from '../shared/shared.module';
 
 import {VerlaufComponent} from './verlauf.component';
 
@@ -45,6 +47,7 @@ describe('VerlaufComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [VerlaufComponent],
+            imports: [SharedModule],
             providers: [
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: GesuchRS, useValue: gesuchRSSpy},
@@ -54,6 +57,7 @@ describe('VerlaufComponent', () => {
                 {provide: EbeguUtil, useValue: ebeguUtilSpy},
             ]
         })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 

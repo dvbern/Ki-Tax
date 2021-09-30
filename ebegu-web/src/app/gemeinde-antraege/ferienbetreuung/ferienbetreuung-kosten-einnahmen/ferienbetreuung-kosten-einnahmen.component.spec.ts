@@ -32,6 +32,7 @@ import {WindowRef} from '../../../core/service/windowRef.service';
 import {SharedModule} from '../../../shared/shared.module';
 import {UnsavedChangesService} from '../../services/unsaved-changes.service';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
+import {FerienbetreuungBerechnungComponent} from './ferienbetreuung-berechnung/ferienbetreuung-berechnung.component';
 
 import {FerienbetreuungKostenEinnahmenComponent} from './ferienbetreuung-kosten-einnahmen.component';
 
@@ -61,7 +62,10 @@ describe('FerienbetreuungKostenEinnahmenComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [FerienbetreuungKostenEinnahmenComponent],
+            declarations: [
+                FerienbetreuungKostenEinnahmenComponent,
+                FerienbetreuungBerechnungComponent
+            ],
             imports: [
                 FormsModule,
                 ReactiveFormsModule,

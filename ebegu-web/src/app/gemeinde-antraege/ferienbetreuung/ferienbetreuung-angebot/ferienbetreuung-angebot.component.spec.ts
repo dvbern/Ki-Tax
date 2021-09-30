@@ -89,6 +89,7 @@ describe('FerienbetreuungAngebotComponent', () => {
     beforeEach(() => {
         gemeindeRSSpy.getAllBfsGemeinden.and.returnValue(of([]).toPromise());
         ferienbetreuungServiceSpy.getFerienbetreuungContainer.and.returnValue(of(container));
+        authServiceSpy.principal$ = of(new TSBenutzer());
         fixture = TestBed.createComponent(FerienbetreuungAngebotComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
