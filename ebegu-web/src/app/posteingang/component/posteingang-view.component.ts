@@ -152,6 +152,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     private initEmpfaengerFilter(): void {
         this.benutzerRS.getAllBenutzerBgTsOrGemeinde().then(response => {
             this.filterPredicate.empfaenger = this.authServiceRS.getPrincipal().getFullName();
+            this.applyFilter();
             this.initialEmpfaenger =
                 EbeguUtil.findUserByNameInList(this.filterPredicate?.empfaenger, response);
             this.changeDetectorRef.markForCheck();
