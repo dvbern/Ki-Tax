@@ -23,7 +23,7 @@ import {KiBonMandant, MandantService} from '../../../app/shared/services/mandant
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {OnBeforePriorities} from './onBeforePriorities';
 
-const LOG = LogFactory.createLog('authenticationHookRunBlockX');
+const LOG = LogFactory.createLog('mandantHook');
 
 mandantCheck.$inject = ['$transitions', 'MandantService', '$state'];
 

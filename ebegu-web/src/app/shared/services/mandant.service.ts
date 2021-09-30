@@ -33,7 +33,7 @@ export class MandantService {
         return this._multimandantActive$.asObservable();
     }
 
-    public parseHostname(): KiBonMandant {
+    private parseHostname(): KiBonMandant {
         const hostParts = window.location.hostname.split('.');
         for (const part of hostParts) {
             const potentialMandant = this.findMandant(part);

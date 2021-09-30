@@ -21,7 +21,7 @@ import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {KiBonMandant, MandantService} from '../../../app/shared/services/mandant.service';
 import {OnBeforePriorities} from './onBeforePriorities';
 
-const LOG = LogFactory.createLog('authenticationHookRunBlockX');
+const LOG = LogFactory.createLog('mandantXHook');
 
 /**
  * This file contains a Transition Hook which protects a
