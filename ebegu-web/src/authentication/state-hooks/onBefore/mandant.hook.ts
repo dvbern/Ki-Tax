@@ -18,6 +18,7 @@
 import {HookResult, StateService, Transition, TransitionService} from '@uirouter/core';
 import {combineLatest} from 'rxjs';
 import {map, take} from 'rxjs/operators';
+import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {KiBonMandant, MandantService} from '../../../app/shared/services/mandant.service';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -73,7 +74,7 @@ function redirectToMandantSelection(
                 if (mandant === KiBonMandant.NONE) {
 
                     const path = transition.router.stateService.href(transition.to(), transition.params());
-                    const localStorageMandant = localStorage.getItem('mandant');
+                    const localStorageMandant = localStorage.getItem(CONSTANTS.MANDANT_LOCAL_STORAGE_KEY);
                     if (EbeguUtil.isNotNullOrUndefined(localStorageMandant)) {
                         mandantService.selectMandant(localStorageMandant, path);
                         return false;

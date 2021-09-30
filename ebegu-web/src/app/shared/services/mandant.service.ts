@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, ReplaySubject} from 'rxjs';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
 
@@ -13,7 +14,6 @@ export enum KiBonMandant {
     providedIn: 'root',
 })
 export class MandantService {
-    private readonly LOCAL_STORE_KEY = 'mandant';
 
     private readonly _mandant$: BehaviorSubject<KiBonMandant> =
         new BehaviorSubject<KiBonMandant>(this.parseHostname());
@@ -62,7 +62,7 @@ export class MandantService {
     public selectMandant(mandant: string, url: string): void {
         const parsedMandant = this.findMandant(mandant);
 
-        this.windowRef.nativeLocalStorage.setItem(this.LOCAL_STORE_KEY, parsedMandant);
+        this.windowRef.nativeLocalStorage.setItem(CONSTANTS.MANDANT_LOCAL_STORAGE_KEY, parsedMandant);
 
         const host = this.removeMandantFromCompleteHost();
 
