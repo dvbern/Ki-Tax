@@ -332,11 +332,11 @@ describe('betreuungView', () => {
                     initGesuch(TSAntragTyp.MUTATION, TSAntragStatus.IN_BEARBEITUNG_JA, false);
                     expect(betreuungView.isMutationsmeldungAllowed()).toBe(false);
                 });
-            it('should be false if the Mutation is gesperrtWegenBeschwerde although the Betreuung has a vorgaengerId',
+            it('should be true if the Mutation is gesperrtWegenBeschwerde although the Betreuung has a vorgaengerId',
                 () => {
                     betreuungView.model.vorgaengerId = vorgaengerId;
                     initGesuch(TSAntragTyp.MUTATION, TSAntragStatus.IN_BEARBEITUNG_JA, true);
-                    expect(betreuungView.isMutationsmeldungAllowed()).toBe(false);
+                    expect(betreuungView.isMutationsmeldungAllowed()).toBe(true);
                 });
             it('should be true if the Gesuch is a Mutation and is in Status VERFUEGEN but the betreuung is in Status VERFUEGT and has a vorgaengerId',
                 () => {
