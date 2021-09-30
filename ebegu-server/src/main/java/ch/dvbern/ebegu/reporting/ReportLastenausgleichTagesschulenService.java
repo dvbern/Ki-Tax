@@ -15,19 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.reporting.zahlungauftrag;
-
-import java.util.Locale;
+package ch.dvbern.ebegu.reporting;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 
-public interface ReportGemeindenService {
+public interface ReportLastenausgleichTagesschulenService {
 
 	@Nonnull
-	UploadFileInfo generateExcelReportGemeinden(
-			@Nonnull Locale locale
-	) throws ExcelMergeException;
+	UploadFileInfo generateExcelReportLastenausgleichTagesschulen() throws ExcelMergeException;
 }

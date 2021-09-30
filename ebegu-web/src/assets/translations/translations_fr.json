@@ -1477,6 +1477,7 @@
     "ReportType_notrecht": "Droit d'urgence",
     "ReportType_mahlzeitenverguenstigung": "Réduction de repas",
     "ReportType_ferienbetreuung": "Ferienbetreuungen",
+    "ReportType_lastenausgleichTagesschulen": "Lastenausgleichtagesschulen",
     "BatchJobStatus_REQUESTED": "Statistique demandée",
     "BatchJobStatus_RUNNING": "Statistique en cours d'élaboration",
     "BatchJobStatus_FINISHED": "Prêt à télécharger",
@@ -2600,5 +2601,6 @@
     "GEMEINDE_KENNZAHLEN_WELCHE_KOSTENLENKUNGSMASSNAHMEN": "Welche weiteren Kostenlenkungsmassnahmen wurden getroffen?",
     "GEMEINDE_KENNZAHLEN_AKTIV": "Gemeinde Kennzahlen aktiviert",
     "BENUTZENDE_EINGEBEN": "Entrer l'utilisateur/-trice",
+    "LASTENAUSGLEICH_TAGESSCHULEN_STATISTIK": "Lastenausgleich Tagesschulen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

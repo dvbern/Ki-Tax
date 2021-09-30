@@ -1478,6 +1478,7 @@
     "ReportType_mahlzeitenverguenstigung": "Mahlzeitenverguenstigung",
     "ReportType_gemeinden": "Gemeinden",
     "ReportType_ferienbetreuung": "Ferienbetreuungen",
+    "ReportType_lastenausgleichTagesschulen": "Lastenausgleichtagesschulen",
     "BatchJobStatus_REQUESTED": "Statistik angefordert",
     "BatchJobStatus_RUNNING": "Statistik wird erstellt",
     "BatchJobStatus_FINISHED": "Bereit zum Download",
@@ -2604,5 +2605,6 @@
     "GEMEINDEN_STATISTIK": "Gemeinden",
     "STATISTIK_GEMEINDEN_HINT": "",
     "FERIENBETREUUNG_STATISTIK": "Ferienbetreuung",
+    "LASTENAUSGLEICH_TAGESSCHULEN_STATISTIK": "Lastenausgleich Tagesschulen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

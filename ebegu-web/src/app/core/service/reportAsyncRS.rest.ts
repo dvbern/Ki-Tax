@@ -282,6 +282,11 @@ export class ReportAsyncRS {
             });
     }
 
+    public getLastenausgleichTagesschulenReportExcel(): IPromise<string> {
+        return this.http.get(`${this.serviceURL}/excel/lastenausgleichTagesschulen`)
+            .then((response: any) => response.data);
+    }
+
     public getServiceName(): string {
         return 'ReportAsyncRS';
     }

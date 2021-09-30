@@ -173,6 +173,12 @@ public enum ReportVorlage {
 		ReportFileName.FERIENBETREUUNG,
 		Constants.DATA,
 		MergeFieldFerienbetreuung.class
+	),
+	VORLAGE_REPORT_LASTENAUSGLEICH_TAGESSCHULEN(
+		"/reporting/LastenausgleichTagesschulen.xlsx",
+		ReportFileName.LASTENAUSGLEICH_TAGESSCHULEN,
+		"Gemeinden",
+		MergeFieldLastenausgleichTS.class
 	);
 
 	@Nonnull

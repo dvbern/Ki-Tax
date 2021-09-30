@@ -329,6 +329,12 @@ export class StatistikViewController implements IController {
                         this.informReportGenerationStarted(batchExecutionId);
                     });
                 return;
+            case TSStatistikParameterType.LASTENAUSGLEICH_TAGESSCHULEN:
+                this.reportAsyncRS.getLastenausgleichTagesschulenReportExcel()
+                    .then((batchExecutionId: string) => {
+                        this.informReportGenerationStarted(batchExecutionId);
+                    });
+                return;
             default:
                 throw new Error(`unknown TSStatistikParameterType: ${type}`);
         }
