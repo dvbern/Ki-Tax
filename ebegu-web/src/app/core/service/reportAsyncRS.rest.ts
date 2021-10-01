@@ -240,8 +240,7 @@ export class ReportAsyncRS {
             .get<{workjobId: string}>(`${this.serviceURL}/excel/ferienbetreuung`);
     }
 
-    public getLastenausgleichTagesschulenReportExcel(): IPromise<string> {
-        return this.http.get(`${this.serviceURL}/excel/lastenausgleichTagesschulen`)
-            .then((response: any) => response.data);
+    public getLastenausgleichTagesschulenReportExcel(): Observable<{workjobId: string}> {
+        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/lastenausgleichTagesschulen`);
     }
 }

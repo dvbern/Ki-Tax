@@ -879,7 +879,7 @@ public class ReportResourceAsync {
 			LocaleThreadLocal.get()
 		);
 
-		return Response.ok(workJob.getId()).build();
+		return createWorkjobResponse(workJob);
 	}
 
 	/**

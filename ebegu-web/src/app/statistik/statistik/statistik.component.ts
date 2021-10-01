@@ -306,6 +306,12 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     this.informReportGenerationStarted(res);
                 }, StatistikComponent.handleError);
                 return;
+            case TSStatistikParameterType.LASTENAUSGLEICH_TAGESSCHULEN:
+                this.reportAsyncRS.getLastenausgleichTagesschulenReportExcel()
+                    .subscribe((res: { workjobId: string }) => {
+                    this.informReportGenerationStarted(res);
+                }, StatistikComponent.handleError);
+                return;
             default:
                 throw new Error(`unknown TSStatistikParameterType: ${type}`);
         }
@@ -649,6 +655,10 @@ export class StatistikComponent implements OnInit, OnDestroy {
     }
 
     public showFerienbetreuungStatistik(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+    }
+
+    public showLastenausgleichTagesschulenStatistik(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 }

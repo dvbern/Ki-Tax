@@ -938,6 +938,27 @@
                         </tab-body>
                     </dv-accordion-tab>
                 </div>
+                <div *ngIf="showLastenausgleichTagesschulenStatistik()">
+                    <dv-accordion-tab tabid="lastenausgleichTagesschulen">
+                        <tab-title>
+                            <span class="uppercase" translate>LASTENAUSGLEICH_TAGESSCHULEN_STATISTIK</span>
+                        </tab-title>
+                        <tab-body>
+                            <form name="lastenausgleichTagesschulen"
+                                  #lastenausgleichTagesschulenRef='ngForm'
+                                  (ngSubmit)="generateStatistik(lastenausgleichTagesschulenRef, TSStatistikParameterType.LASTENAUSGLEICH_TAGESSCHULEN)"
+                                  novalidate>
+                                <div class="row">
+                                    <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
+                                        <dv-loading-button type="submit">
+                                            <span class="uppercase" translate>GENERIEREN</span>
+                                        </dv-loading-button>
+                                    </div>
+                                </div>
+                            </form>
+                        </tab-body>
+                    </dv-accordion-tab>
+                </div>
             </dv-accordion>
         </div>
     </div>
