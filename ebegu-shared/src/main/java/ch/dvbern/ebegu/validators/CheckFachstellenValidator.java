@@ -17,25 +17,35 @@
 
 package ch.dvbern.ebegu.validators;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.services.EinstellungService;
 
 /**
  *  Fachstellen dürfen nur im Vorschulalter gesetzt werden: Eine soziale oder sprachliche Indikation
  *  nach Artikel 34d Absatz 1 Buchstabe f ASIV liegt vor bei einem Kind, das noch nicht in die Volksschule
  *  eingetreten ist. Dies wird mit diesem Validator überprüft.
  */
-public class CheckFachstellenNurVorschulalterValidator implements ConstraintValidator<CheckFachstellenNurVorschulalter, KindContainer> {
+public class CheckFachstellenValidator implements ConstraintValidator<CheckFachstellen, KindContainer> {
 
-	public CheckFachstellenNurVorschulalterValidator() {
+	@Inject
+	private EinstellungService einstellungService;
+
+	public CheckFachstellenValidator() {
 	}
 
 	@Override
-	public void initialize(CheckFachstellenNurVorschulalter constraintAnnotation) {
+	public void initialize(CheckFachstellen constraintAnnotation) {
 		// nop
 	}
 
@@ -48,6 +58,28 @@ public class CheckFachstellenNurVorschulalterValidator implements ConstraintVali
 			// Kein PensumFachstelle
 			return true;
 		}
-		return kindContainer.getKindJA().getEinschulungTyp() == EinschulungTyp.VORSCHULALTER;
+		var gemeinde = kindContainer.getGesuch().extractGemeinde();
+		var gesuchsperiode = kindContainer.getGesuch().getGesuchsperiode();
+		Einstellung schulstufeEinstellung = this.einstellungService
+			.findEinstellung(EinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, gemeinde, gesuchsperiode);
+		var maxEinschulungTyp= convertEinstellungToEinschulungTyp(schulstufeEinstellung);
+		Objects.requireNonNull(kindContainer.getKindJA().getEinschulungTyp());
+		return maxEinschulungTyp.ordinal() >= kindContainer.getKindJA().getEinschulungTyp().ordinal();
+	}
+
+	@Nonnull
+	private EinschulungTyp convertEinstellungToEinschulungTyp(Einstellung einstellung) {
+		EinschulungTyp einschulungTyp = null;
+		for (EinschulungTyp typ : EinschulungTyp.values()) {
+			if (typ.name().equals(einstellung.getValue())) {
+				einschulungTyp = typ;
+			}
+		}
+		if (einschulungTyp == null) {
+			throw new EbeguRuntimeException("convertEinstellungToEinschulungTyp", "einschulungtyp "
+				+ einstellung.getValue()
+				+ "nicht gefunden");
+		}
+		return einschulungTyp;
 	}
 }
