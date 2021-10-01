@@ -77,7 +77,7 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 
 		List<LastenausgleichGemeindenDataRow> reportData = getReportDataLastenausgleichTagesschulen();
 
-		ExcelMergerDTO excelMergerDTO=  lastenausgleichTagesschulenExcelConverter.toExcelMergerDTO(reportData);
+		ExcelMergerDTO excelMergerDTO = lastenausgleichTagesschulenExcelConverter.toExcelMergerDTO(reportData);
 		mergeData(sheet, excelMergerDTO, vorlage.getMergeFields());
 		mergeData(secondSheet, excelMergerDTO, vorlage.getMergeFields());
 		lastenausgleichTagesschulenExcelConverter.applyAutoSize(sheet);
@@ -106,8 +106,9 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 					dataRow.setNameGemeinde(lastenausgleichTagesschuleAngabenGemeindeContainer.getGemeinde().getName());
 					dataRow.setBfsNummer(lastenausgleichTagesschuleAngabenGemeindeContainer.getGemeinde()
 						.getBfsNummer());
-					String gemeindeFallNummer = String.valueOf(lastenausgleichTagesschuleAngabenGemeindeContainer.getGesuchsperiode()
-						.getBasisJahrPlus1()).substring(2) + "." + dataRow.getBfsNummer();
+					String gemeindeFallNummer =
+						String.valueOf(lastenausgleichTagesschuleAngabenGemeindeContainer.getGesuchsperiode()
+							.getBasisJahrPlus1()).substring(2) + "." + dataRow.getBfsNummer();
 
 					dataRow.setGemeindeFallNummer(gemeindeFallNummer);
 					dataRow.setPeriode(lastenausgleichTagesschuleAngabenGemeindeContainer.getGesuchsperiode()
@@ -118,16 +119,24 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 					LastenausgleichTagesschuleAngabenGemeinde lastenausgleichTagesschuleAngabenGemeindeKorrektur =
 						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur();
 
-					mapLastenausgleichTagesschuleAngabenGemeindeKorrekturToDataRow(lastenausgleichTagesschuleAngabenGemeindeKorrektur, dataRow);
+					mapLastenausgleichTagesschuleAngabenGemeindeKorrekturToDataRow(
+						lastenausgleichTagesschuleAngabenGemeindeKorrektur,
+						dataRow);
 
 					lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenInstitutionContainers().forEach(
 						lastenausgleichTagesschuleAngabenInstitutionContainer -> {
-							LastenausgleichTagesschulenDataRow lastenausgleichTagesschulenDataRow = new LastenausgleichTagesschulenDataRow();
+							LastenausgleichTagesschulenDataRow lastenausgleichTagesschulenDataRow =
+								new LastenausgleichTagesschulenDataRow();
 							lastenausgleichTagesschulenDataRow.setGemeindeFallnummerTS(gemeindeFallNummer);
-							lastenausgleichTagesschulenDataRow.setTagesschuleName(lastenausgleichTagesschuleAngabenInstitutionContainer.getInstitution().getName());
-							lastenausgleichTagesschulenDataRow.setTagesschuleID(lastenausgleichTagesschuleAngabenInstitutionContainer.getInstitution().getId());
-							LastenausgleichTagesschuleAngabenInstitution angabenTagesschuleKorrektur = lastenausgleichTagesschuleAngabenInstitutionContainer.getAngabenKorrektur();
-							mapLastenausgleichTagesschuleAngabenInstitutionKorrekturToDataRow(angabenTagesschuleKorrektur, lastenausgleichTagesschulenDataRow);
+							lastenausgleichTagesschulenDataRow.setTagesschuleName(
+								lastenausgleichTagesschuleAngabenInstitutionContainer.getInstitution().getName());
+							lastenausgleichTagesschulenDataRow.setTagesschuleID(
+								lastenausgleichTagesschuleAngabenInstitutionContainer.getInstitution().getId());
+							LastenausgleichTagesschuleAngabenInstitution angabenTagesschuleKorrektur =
+								lastenausgleichTagesschuleAngabenInstitutionContainer.getAngabenKorrektur();
+							mapLastenausgleichTagesschuleAngabenInstitutionKorrekturToDataRow(
+								angabenTagesschuleKorrektur,
+								lastenausgleichTagesschulenDataRow);
 							dataRow.getLastenausgleichTagesschulenDaten().add(lastenausgleichTagesschulenDataRow);
 						}
 					);
@@ -137,9 +146,13 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 			).collect(Collectors.toList());
 	}
 
-	private void mapLastenausgleichTagesschuleAngabenInstitutionKorrekturToDataRow(@Nullable
-		LastenausgleichTagesschuleAngabenInstitution angabenTagesschuleKorrektur, LastenausgleichTagesschulenDataRow dataRow) {
-		if(angabenTagesschuleKorrektur == null) return;
+	private void mapLastenausgleichTagesschuleAngabenInstitutionKorrekturToDataRow(
+		@Nullable
+			LastenausgleichTagesschuleAngabenInstitution angabenTagesschuleKorrektur,
+		LastenausgleichTagesschulenDataRow dataRow) {
+		if (angabenTagesschuleKorrektur == null) {
+			return;
+		}
 		dataRow.setLehrbetrieb(angabenTagesschuleKorrektur.getLehrbetrieb());
 		dataRow.setKinderTotal(angabenTagesschuleKorrektur.getAnzahlEingeschriebeneKinder());
 		dataRow.setKinderKindergarten(angabenTagesschuleKorrektur.getAnzahlEingeschriebeneKinderKindergarten());
@@ -159,8 +172,12 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 		dataRow.setBemerkungenTagesschule(angabenTagesschuleKorrektur.getBemerkungen());
 	}
 
-	private void mapLastenausgleichTagesschuleAngabenGemeindeKorrekturToDataRow(@Nullable LastenausgleichTagesschuleAngabenGemeinde angabenGemeindeKorrektur, LastenausgleichGemeindenDataRow dataRow){
-		if(angabenGemeindeKorrektur == null) return;
+	private void mapLastenausgleichTagesschuleAngabenGemeindeKorrekturToDataRow(
+		@Nullable LastenausgleichTagesschuleAngabenGemeinde angabenGemeindeKorrektur,
+		LastenausgleichGemeindenDataRow dataRow) {
+		if (angabenGemeindeKorrektur == null) {
+			return;
+		}
 		dataRow.setBedarfAbgeklaert(angabenGemeindeKorrektur.getBedarfBeiElternAbgeklaert());
 		dataRow.setFerienbetreuung(angabenGemeindeKorrektur.getAngebotFuerFerienbetreuungVorhanden());
 		dataRow.setZugangAlle(angabenGemeindeKorrektur.getAngebotVerfuegbarFuerAlleSchulstufen());
