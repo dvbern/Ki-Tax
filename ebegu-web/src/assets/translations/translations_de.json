@@ -1478,6 +1478,7 @@
     "ReportType_mahlzeitenverguenstigung": "Mahlzeitenverguenstigung",
     "ReportType_gemeinden": "Gemeinden",
     "ReportType_ferienbetreuung": "Ferienbetreuungen",
+    "ReportType_lastenausgleichTagesschulen": "Lastenausgleich Tagesschulen",
     "BatchJobStatus_REQUESTED": "Statistik angefordert",
     "BatchJobStatus_RUNNING": "Statistik wird erstellt",
     "BatchJobStatus_FINISHED": "Bereit zum Download",
@@ -2607,5 +2608,6 @@
     "FKJV_EINGEWOEHNUNG": "FKJV: Eingewöhnung aktiviert",
     "FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM": "FKJV: Maximale Differenz zwischen erforderlichem und effektivem Beschäftigungspensum für ausserordentlicher Anspruch (in %)",
     "FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE": "FKJV: Soziale Integration bis und mit Schulstufe",
+    "LASTENAUSGLEICH_TAGESSCHULEN_STATISTIK": "Lastenausgleich Tagesschulen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

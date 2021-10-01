@@ -971,7 +971,8 @@
                                         </div>
                                         <div class="col-xs-3" ng-if="vm.gemeindenMahlzeitenverguenstigungen.length > 1">
                                             <div class="form-group">
-                                                <label class="md-no-float required" for="gemeinden_mahlzeitenverguenstigung"
+                                                <label class="md-no-float required"
+                                                       for="gemeinden_mahlzeitenverguenstigung"
                                                        data-translate="GEMEINDE"></label>
                                                 <div class="dv-select-style">
                                                     <select name="gemeinden_mahlzeitenverguenstigung"
@@ -1008,6 +1009,27 @@
                         <tab-body>
                             <form name="ferienbetreuung"
                                   ng-submit="vm.generateStatistik(ferienbetreuung, vm.TSStatistikParameterType.FERIENBETREUUNG)"
+                                  novalidate>
+                                <div class="row">
+                                    <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
+                                        <dv-loading-button type="submit">
+                                            <span class="uppercase" data-translate="GENERIEREN"></span>
+                                        </dv-loading-button>
+                                    </div>
+                                </div>
+                            </form>
+                        </tab-body>
+                    </dv-accordion-tab>
+                </div>
+                <div dv-show-element
+                     dv-show-allowed-roles="['SUPER_ADMIN', 'ADMIN_MANDANT', 'ADMIN_GEMEINDE']">
+                    <dv-accordion-tab tabid="lastenausgleichTagesschulen">
+                        <tab-title>
+                            <span class="uppercase" data-translate="LASTENAUSGLEICH_TAGESSCHULEN_STATISTIK"></span>
+                        </tab-title>
+                        <tab-body>
+                            <form name="lastenausgleichTagesschulen"
+                                  ng-submit="vm.generateStatistik(lastenausgleichTagesschulen, vm.TSStatistikParameterType.LASTENAUSGLEICH_TAGESSCHULEN)"
                                   novalidate>
                                 <div class="row">
                                     <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
