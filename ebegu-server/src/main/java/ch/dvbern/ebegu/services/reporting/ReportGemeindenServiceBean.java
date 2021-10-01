@@ -40,7 +40,7 @@ import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.reporting.gemeinden.GemeindenDataRow;
 import ch.dvbern.ebegu.reporting.gemeinden.GemeindenDatenDataRow;
 import ch.dvbern.ebegu.reporting.gemeinden.GemeindenExcelConverter;
-import ch.dvbern.ebegu.reporting.zahlungauftrag.ReportGemeindenService;
+import ch.dvbern.ebegu.reporting.ReportGemeindenService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GemeindeService;

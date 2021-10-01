@@ -170,8 +170,20 @@ public enum EinstellungKey {
 	//LATS
 	LATS_LOHNNORMKOSTEN,
 	LATS_LOHNNORMKOSTEN_LESS_THAN_50,
-	LATS_STICHTAG;
+	LATS_STICHTAG,
 
+	// "FKJV: Eingewöhnung aktiviert".
+	// Siehe KIBON-2078. Definiert, ob das Kind einen zusätzlichen Anspruch auf Eingewöhnung hat
+	FKJV_EINGEWOEHNUNG,
+
+	// "FKJV: Maximale Differenz zwischen erforderlichem und effektivem Beschäftigungspensum für ausserordentlicher Anspruch"
+	// Siehe KIBON-2080. Definiert die maximale Differenz zwischen erforderlichem und effektiven Beschäftigunspensum für den ausserordentlichen Anspruch.
+	// in Prozent.
+	FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM,
+
+	// "FKJV: Soziale Integration bis und mit Schulstufe"
+	// Siehe KIBON-2081. Definiert bis zu welcher Schulstufe die soziale Integration ausbezahlt wird.
+	FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE;
 
 	private EinstellungTyp typ;
 

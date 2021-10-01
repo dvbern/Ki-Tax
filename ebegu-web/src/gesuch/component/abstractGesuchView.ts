@@ -182,14 +182,14 @@ export class AbstractGesuchViewController<T> implements IController {
                 )
                 || (
                     !this.isMutation()
-                    && isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status)
+                    && (isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status)
+                    || this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde)
                     && betreuung.betreuungsstatus === TSBetreuungsstatus.VERFUEGT
                 )
             )
             && betreuung.betreuungsstatus !== TSBetreuungsstatus.WARTEN
             && this.gesuchModelManager.getGesuch().gesuchsperiode.status === TSGesuchsperiodeStatus.AKTIV
-            && isNewestGesuch
-            && !this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde;
+            && isNewestGesuch;
     }
 
     public getBasisjahr(): number | undefined {

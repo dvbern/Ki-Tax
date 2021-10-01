@@ -359,7 +359,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			} else {
 				Fall existingFall = fallOpt.get();
 				List<String> gesuchIdList = gesuchService.getAllGesuchIDsForFall(existingFall.getId());
-				boolean hasGesuchFreigegeben = false;
 				if (gesuchIdList.isEmpty()) {
 					//return error code keinen Gesusch, user can be deleted without warning
 					throw new BenutzerExistException(
@@ -369,16 +368,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_NO_GESUCH,
 						existingFall.getId());
 				}
-				for (String id : gesuchIdList) {
-					Gesuch gs = gesuchService.findGesuch(id, false)
-						.orElseThrow(() -> new EbeguRuntimeException(
-							"checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch", "Gesuch nicht gefunden"));
-					if (gs.getStatus() != AntragStatus.IN_BEARBEITUNG_GS) {
-						hasGesuchFreigegeben = true;
-						break;
-					}
-				}
-				if (hasGesuchFreigegeben) {
+				if (checkIfGesuchFreigegeben(gesuchIdList)) {
 					throw new BenutzerExistException(
 						KibonLogLevel.NONE,
 						benutzer.getUsername(),
@@ -395,6 +385,44 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				}
 			}
 		}
+	}
+
+	@Override
+	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+	public String findFallIdIfBenutzerIsGesuchstellerWithoutFreigegebenemGesuch(@Nonnull Benutzer benutzer) {
+		// falls gesuchsteller, und darf einladen
+		if (!benutzer.isNew() && benutzer.getCurrentBerechtigung().getRole() == GESUCHSTELLER) {
+			//check if Gesuch exist
+			Optional<Fall> fallOpt = fallService.findFallByBesitzer(benutzer);
+			if (!fallOpt.isPresent()) {
+				return null;
+			} else {
+				Fall existingFall = fallOpt.get();
+				List<String> gesuchIdList = gesuchService.getAllGesuchIDsForFall(existingFall.getId());
+				if (!gesuchIdList.isEmpty() && checkIfGesuchFreigegeben(gesuchIdList)) {
+					throw new BenutzerExistException(
+						KibonLogLevel.NONE,
+						benutzer.getUsername(),
+						benutzer.getFullName(),
+						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_FREGEGEBENE_GESUCH,
+						existingFall.getId());
+				}
+				return existingFall.getId();
+			}
+		}
+		return null;
+	}
+
+	private boolean checkIfGesuchFreigegeben(List<String> gesuchIdList){
+		for (String id : gesuchIdList) {
+			Gesuch gs = gesuchService.findGesuch(id, false)
+				.orElseThrow(() -> new EbeguRuntimeException(
+					"checkIfGesuchFreigegeben", "Gesuch nicht gefunden"));
+			if (gs.getStatus() != AntragStatus.IN_BEARBEITUNG_GS) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")

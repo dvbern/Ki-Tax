@@ -398,26 +398,18 @@ public class BenutzerResource {
 
 		authorizer.checkWriteAuthorization(benutzer);
 
-		try {
-			benutzerService.checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(benutzer);
+
+		String fallId = benutzerService.findFallIdIfBenutzerIsGesuchstellerWithoutFreigegebenemGesuch(benutzer);
 			// Keine Exception: Es ist kein Gesuchsteller: Wir können immer löschen
-			return saveBenutzerBerechtigungenForced(benutzer, benutzerJax);
-		} catch (BenutzerExistException b) {
-			// Es ist ein Gesuchsteller: Wir löschen, solange er keine freigegebenen/verfuegten Gesuche hat
-			if (b.getErrorCodeEnum() != ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_FREGEGEBENE_GESUCH) {
-				// Der Fall und das Dossier muessen geloescht werden
-				if (b.getExistingFallId() != null) {
-					superAdminService.removeFallIfExists(b.getExistingFallId());
-				}
-				return saveBenutzerBerechtigungenForced(benutzer, benutzerJax);
-			}
-			throw b;
-		}
+		return saveBenutzerBerechtigungenForced(benutzer, benutzerJax, fallId);
 	}
 
 	@Nonnull
-	private JaxBenutzer saveBenutzerBerechtigungenForced(@Nonnull Benutzer benutzerFromDB, @Nonnull JaxBenutzer benutzerJax) {
+	private JaxBenutzer saveBenutzerBerechtigungenForced(@Nonnull Benutzer benutzerFromDB, @Nonnull JaxBenutzer benutzerJax, @Nullable String fallId) {
 		boolean currentBerechtigungChanged = hasCurrentBerechtigungChanged(benutzerJax, benutzerFromDB);
+		if (fallId != null) {
+			superAdminService.removeFallIfExists(fallId);
+		}
 
 		Benutzer mergedBenutzer = benutzerService.saveBenutzerBerechtigungen(
 			converter.jaxBenutzerToBenutzer(benutzerJax, benutzerFromDB),
