@@ -2604,5 +2604,8 @@
     "GEMEINDEN_STATISTIK": "Gemeinden",
     "STATISTIK_GEMEINDEN_HINT": "",
     "FERIENBETREUUNG_STATISTIK": "Ferienbetreuung",
+    "FKJV_EINGEWOEHNUNG": "FKJV: Eingewöhnung aktiviert",
+    "FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM": "FKJV: Maximale Differenz zwischen erforderlichem und effektivem Beschäftigungspensum für ausserordentlicher Anspruch (in %)",
+    "FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE": "FKJV: Soziale Integration bis und mit Schulstufe",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
