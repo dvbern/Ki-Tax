@@ -399,54 +399,49 @@
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
-                    <label class="required" translate for="auslastungInstitutionen_id">INSTITUTION_AUSLASTUNG_INSTITUTIONEN</label>
+                    <label translate for="auslastungInstitutionen_id">INSTITUTION_AUSLASTUNG_INSTITUTIONEN</label>
                     <input id="auslastungInstitutionen_id" type="number" name="auslastungInstitutionen_id"
                            #auslastungInstitutionen="ngModel"
                            [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.auslastungInstitutionen"
                            class="form-control"
                            customMinMax [minValue]="0"
-                           [pattern]="CONSTANTS.PATTERN_TWO_DECIMALS"
-                           required>
+                           [pattern]="CONSTANTS.PATTERN_TWO_DECIMALS">
                     <dv-error-messages [errorObject]="auslastungInstitutionen.errors"
                                        inputId="auslastungInstitutionen_id"></dv-error-messages>
                 </div>
                 <div class="form-group">
-                    <label class="required"
-                           translate
+                    <label translate
                            for="summePensumWarteliste_id">INSTITUTION_SUMME_PENSUM_WARTELISTE</label>
                     <input id="summePensumWarteliste_id" type="number" name="summePensumWarteliste_id"
                            #summePensumWarteliste="ngModel"
                            [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.summePensumWarteliste"
                            class="form-control"
                            customMinMax [minValue]="0"
-                           [pattern]="CONSTANTS.PATTERN_TWO_DECIMALS"
-                           required>
+                           [pattern]="CONSTANTS.PATTERN_TWO_DECIMALS">
                     <dv-error-messages [errorObject]="summePensumWarteliste.errors"
                                        inputId="summePensumWarteliste_id"></dv-error-messages>
                 </div>
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
-                    <label class="required" translate for="anzahlKinderWarteliste_id">INSTITUTION_ANZAHL_KINDER_WARTELISTE</label>
+                    <label translate for="anzahlKinderWarteliste_id">INSTITUTION_ANZAHL_KINDER_WARTELISTE</label>
                     <input id="anzahlKinderWarteliste_id" type="number" name="anzahlKinderWarteliste_id"
                            #anzahlKinderWarteliste="ngModel"
                            [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlKinderWarteliste"
                            class="form-control"
                            customMinMax [minValue]="0"
-                           [pattern]="CONSTANTS.PATTERN_BETRAG"
-                           required>
+                           [pattern]="CONSTANTS.PATTERN_BETRAG">
                     <dv-error-messages [errorObject]="anzahlKinderWarteliste.errors"
                                        inputId="anzahlKinderWarteliste_id"></dv-error-messages>
                 </div>
                 <div class="form-group">
-                    <label class="required" translate for="dauerWarteliste_id">INSTITUTION_DAUER_WARTELISTE</label>
+                    <label translate for="dauerWarteliste_id">INSTITUTION_DAUER_WARTELISTE</label>
                     <input id="dauerWarteliste_id" type="number" name="dauerWarteliste_id"
                            #dauerWarteliste="ngModel"
                            [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.dauerWarteliste"
                            class="form-control"
                            customMinMax [minValue]="0"
-                           [pattern]="CONSTANTS.PATTERN_TWO_DECIMALS"
-                           required>
+                           [pattern]="CONSTANTS.PATTERN_TWO_DECIMALS">
                     <dv-error-messages [errorObject]="dauerWarteliste.errors"
                                        inputId="dauerWarteliste_id"></dv-error-messages>
                 </div>
@@ -466,7 +461,8 @@
                 <p>{{getOeffnungsTageAbkuerzungListe()}}</p>
                 <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.offenVon}} -
                     {{stammdaten.institutionStammdatenBetreuungsgutscheine.offenBis}}</p>
-                <p>{{'INSTITUTION_OEFFNUNGSTAGE_PRO_JAHR' | translate}}
+                <p *ngIf="stammdaten?.institutionStammdatenBetreuungsgutscheine?.oeffnungstageProJahr">
+                    {{'INSTITUTION_OEFFNUNGSTAGE_PRO_JAHR' | translate}}
                     : {{stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungstageProJahr}}</p>
                 <h3 translate>AUSSERORDENTLICHE_OEFFNUNGSZEITEN</h3>
                 <p *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.fruehEroeffnung">{{'INSTITUTION_FRUEH_EROEFFNUNG'|translate}}</p>
@@ -562,13 +558,17 @@
                    translate>INSTITUTION_SUBVENTIONIERTE_PLAETZE</p>
             </div>
             <div class="form-group">
-                <p>{{'INSTITUTION_AUSLASTUNG_INSTITUTIONEN' | translate}}
+                <p *ngIf="stammdaten?.institutionStammdatenBetreuungsgutscheine?.auslastungInstitutionen">
+                    {{'INSTITUTION_AUSLASTUNG_INSTITUTIONEN' | translate}}
                     : {{stammdaten.institutionStammdatenBetreuungsgutscheine.auslastungInstitutionen}}</p>
-                <p>{{'INSTITUTION_ANZAHL_KINDER_WARTELISTE' | translate}}
+                <p *ngIf="stammdaten?.institutionStammdatenBetreuungsgutscheine?.anzahlKinderWarteliste">
+                    {{'INSTITUTION_ANZAHL_KINDER_WARTELISTE' | translate}}
                     : {{stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlKinderWarteliste}}</p>
-                <p>{{'INSTITUTION_SUMME_PENSUM_WARTELISTE' | translate}}
+                <p *ngIf="stammdaten?.institutionStammdatenBetreuungsgutscheine?.summePensumWarteliste">
+                    {{'INSTITUTION_SUMME_PENSUM_WARTELISTE' | translate}}
                     : {{stammdaten.institutionStammdatenBetreuungsgutscheine.summePensumWarteliste}}</p>
-                <p>{{'INSTITUTION_DAUER_WARTELISTE' | translate}}
+                <p *ngIf="stammdaten?.institutionStammdatenBetreuungsgutscheine?.dauerWarteliste">
+                    {{'INSTITUTION_DAUER_WARTELISTE' | translate}}
                     : {{stammdaten.institutionStammdatenBetreuungsgutscheine.dauerWarteliste}}</p>
             </div>
         </div>
