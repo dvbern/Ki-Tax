@@ -461,7 +461,8 @@
                 <p>{{getOeffnungsTageAbkuerzungListe()}}</p>
                 <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.offenVon}} -
                     {{stammdaten.institutionStammdatenBetreuungsgutscheine.offenBis}}</p>
-                <p>{{'INSTITUTION_OEFFNUNGSTAGE_PRO_JAHR' | translate}}
+                <p *ngIf="stammdaten?.institutionStammdatenBetreuungsgutscheine?.oeffnungstageProJahr">
+                    {{'INSTITUTION_OEFFNUNGSTAGE_PRO_JAHR' | translate}}
                     : {{stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungstageProJahr}}</p>
                 <h3 translate>AUSSERORDENTLICHE_OEFFNUNGSZEITEN</h3>
                 <p *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.fruehEroeffnung">{{'INSTITUTION_FRUEH_EROEFFNUNG'|translate}}</p>
