@@ -16,10 +16,10 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -58,13 +58,5 @@ public interface GesuchstellerService {
 	 */
 	void removeGesuchsteller(@Nonnull GesuchstellerContainer gesuchsteller);
 
-	/**
-	 * Sucht nach einem Gesuch an dem ein Gesuchsteller mit der uebergebenen ID angehaengt ist und gibt es zurueck
-	 * Achtung hier wird keine authorisierung geprueft nicht direkt nach aussen zugaenglich machen
-	 *
-	 * @param gesuchstellerContainerID die Gesuchsteller ID deren Parentgesuch gefunden werden soll
-	 * @return Das Gesuch an dem der Gesuchsteller angehaengt ist
-	 */
-	@Nullable
-	Gesuch findGesuchOfGesuchsteller(@Nonnull String gesuchstellerContainerID);
+	List<Gesuch> findGesuchOfGesuchstellende(@Nonnull List<String> gesuchstellerContainerIDs);
 }
