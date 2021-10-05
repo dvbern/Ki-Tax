@@ -215,16 +215,15 @@ public class SearchIndexResource {
 			.map(SearchResultEntryDTO::getGesuchID).collect(Collectors.toList());
 		List<Gesuch> readableGesuche = gesuchService.findReadableGesuche(gesuchIds);
 
-		//fuer die suchrestultate die im GesuchstellerIndex gematched haben muessen wir das Gesuch noch ermitteln (N-SQL Abfragen)
-		List<Gesuch> gesucheFromGesuchstellermatch = search.getResultEntities().stream()
+		//fuer die suchrestultate die im GesuchstellerIndex gematched haben muessen wir das Gesuch noch ermitteln
+		List<String> gesuchstellercontainerIds = search.getResultEntities().stream()
 			.filter(searchResultEntryDTO -> searchResultEntryDTO.getEntity() == SearchEntityType.GESUCHSTELLER_CONTAINER)
-			.map((searchResultEntryDTO) -> {
-				Gesuch foundGesuch = gesuchstellerServiceBean.findGesuchOfGesuchsteller(searchResultEntryDTO.getResultId());
-				searchResultEntryDTO.setGesuchID(foundGesuch != null ? foundGesuch.getId() : null);
-				return foundGesuch;
-			})
-			.filter(gesuch -> this.authorizer.isReadAuthorized(gesuch))
-			.collect(Collectors.toList());
+			.map(SearchResultEntryDTO::getResultId).collect(Collectors.toList());
+
+		List<Gesuch> gesucheFromGesuchstellermatch = gesuchstellerServiceBean.findGesuchOfGesuchstellende(gesuchstellercontainerIds).stream().filter(
+			gesuch -> this.authorizer.isReadAuthorized(gesuch)
+		).collect(Collectors.toList());
+
 
 		List<Gesuch> allGesuche = new ArrayList<>(readableGesuche);
 		allGesuche.addAll(gesucheFromGesuchstellermatch);
