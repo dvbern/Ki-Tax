@@ -129,6 +129,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public searchQuery: string = '';
     public allowedRoles: ReadonlyArray<TSRole>;
     public isKesbPlatzierung: boolean;
+    private eingewoehnungAktiviert: boolean = false;
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
@@ -250,6 +251,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             response.filter(r => r.key === TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD)
                 .forEach(value => {
                     this.zuschlagBehinderungProStd = Number(value.value);
+                });
+            response.filter(r => r.key === TSEinstellungKey.FKJV_EINGEWOEHNUNG)
+                .forEach(value => {
+                    this.eingewoehnungAktiviert = value.getValueAsBoolean();
                 });
         });
     }
@@ -1145,6 +1150,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      */
     public displayModuleTagesschule(): boolean {
         return this.isTagesschule() && this.checkIfGemeindeOrBetreuungHasTSAnmeldung();
+    }
+
+    public showEingewoehnung(): boolean {
+        return this.eingewoehnungAktiviert;
     }
 
     private checkIfGemeindeOrBetreuungHasTSAnmeldung(): boolean {

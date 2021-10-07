@@ -24,6 +24,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Familiensituation;
@@ -74,6 +75,7 @@ public abstract class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAb
 	protected List<VerfuegungZeitabschnitt> getErwerbspensumAbschnittForGesuchsteller(
 		@Nonnull Gesuch gesuch,
 		@Nonnull GesuchstellerContainer gesuchsteller,
+		@Nonnull AbstractPlatz platz,
 		boolean gs2
 	) {
 		List<VerfuegungZeitabschnitt> ewpAbschnitte = new ArrayList<>();
@@ -96,16 +98,23 @@ public abstract class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAb
 	}
 
 	/**
-	 * Setzt den ErwerbspensumZuschlag auf dem gewuenschten Input-Objekt: Entweder auf Asiv *und* Gemeinde oder nur Gemeinde.
+	 * Setzt den ErwerbspensumZuschlag auf dem gewuenschten Input-Objekt: Entweder auf Asiv *und* Gemeinde oder nur
+	 * Gemeinde.
 	 */
-	protected abstract void setErwerbspensumZuschlag(@Nonnull VerfuegungZeitabschnitt zeitabschnitt,  int zuschlagErwerbspensum);
+	protected abstract void setErwerbspensumZuschlag(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		int zuschlagErwerbspensum);
 
 	/**
-	 * Konvertiert ein Erwerbspensum in einen Zeitabschnitt von entsprechender dauer und erwerbspensumGS1 (falls gs2=false)
+	 * Konvertiert ein Erwerbspensum in einen Zeitabschnitt von entsprechender dauer und erwerbspensumGS1 (falls
+	 * gs2=false)
 	 * oder erwerpspensuGS2 (falls gs2=true)
 	 */
 	@Nullable
-	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull Gesuch gesuch, @Nonnull Erwerbspensum erwerbspensum, boolean gs2) {
+	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(
+		@Nonnull Gesuch gesuch,
+		@Nonnull Erwerbspensum erwerbspensum,
+		boolean gs2) {
 		if (getValidTaetigkeiten().contains(erwerbspensum.getTaetigkeit())) {
 			final DateRange gueltigkeit = new DateRange(erwerbspensum.getGueltigkeit());
 
