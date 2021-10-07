@@ -29,6 +29,7 @@ public class LatsDocxDTO {
 	@Nullable private String gemeindeNr;
 	@Nullable private String gemeindePLZ;
 	@Nullable private String gemeindeOrt;
+	@Nullable private String fallNummer;
 	@Nullable private String dateToday;
 	@Nullable private String gemeindeName;
 	@Nullable private BigDecimal betreuungsstunden;
@@ -264,5 +265,14 @@ public class LatsDocxDTO {
 
 	public void setTextPaedagogischOderNicht(@Nullable String textPaedagogischOderNicht) {
 		this.textPaedagogischOderNicht = textPaedagogischOderNicht;
+	}
+
+	@Nullable
+	public String getFallNummer() {
+		return fallNummer;
+	}
+
+	public void setFallNummer(@Nullable String fallNummer) {
+		this.fallNummer = fallNummer;
 	}
 }
