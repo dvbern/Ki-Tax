@@ -168,6 +168,8 @@ public class BGCalculationInput {
 	// um zu wissen, ob die Pensen heruntergerechnet werden müssen
 	private boolean pensenBereitsGekuerzt = false;
 
+	private int minimalErforderlichesPensum;
+
 	private PensumUnits pensumUnit = PensumUnits.PERCENTAGE;
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
@@ -225,6 +227,7 @@ public class BGCalculationInput {
 		this.ruleValidity = toCopy.ruleValidity;
 		this.pensumUnit = toCopy.pensumUnit;
 		this.pensenBereitsGekuerzt = toCopy.pensenBereitsGekuerzt;
+		this.minimalErforderlichesPensum = toCopy.minimalErforderlichesPensum;
 	}
 
 	@Nonnull
@@ -802,6 +805,8 @@ public class BGCalculationInput {
 			}
 			this.setFamGroesse(other.getFamGroesse());
 		}
+
+		this.minimalErforderlichesPensum = other.minimalErforderlichesPensum;
 	}
 
 	public boolean isSame(BGCalculationInput other) {
@@ -927,5 +932,13 @@ public class BGCalculationInput {
 
 	public void setSameVerfuegteMahlzeitenVerguenstigung(boolean sameVerfuegteMahlzeitenVerguenstigung) {
 		this.sameVerfuegteMahlzeitenVerguenstigung = sameVerfuegteMahlzeitenVerguenstigung;
+	}
+
+	public int getMinimalErforderlichesPensum() {
+		return minimalErforderlichesPensum;
+	}
+
+	public void setMinimalErforderlichesPensum(int minimalErforderlichesPensum) {
+		this.minimalErforderlichesPensum = minimalErforderlichesPensum;
 	}
 }
