@@ -46,6 +46,7 @@ import ch.dvbern.ebegu.api.AuthConstants;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxAuthAccessElementCookieData;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
+import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.authentication.AuthAccessElement;
 import ch.dvbern.ebegu.authentication.AuthLoginElement;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
@@ -59,6 +60,7 @@ import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jboss.resteasy.annotations.Body;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -313,5 +315,19 @@ public class AuthResource {
 		} catch (UnsupportedEncodingException | JsonProcessingException e) {
 			throw new IllegalStateException("UTF-8 encoding must be available", e);
 		}
+	}
+
+	@POST
+	@Path("/set-mandant")
+	@PermitAll
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response setMandant(@Nonnull final JaxMandant mandant) {
+		// Readable Cookie storing the mandant
+		NewCookie mandantCookie = new NewCookie(AuthConstants.COOKIE_MANDANT,
+				mandant.getName(),
+				AuthConstants.COOKIE_PATH, configuration.getHostdomain(), "mandant",
+				60 * 60 * 24 * 365 * 2, isCookieSecure(), false);
+
+		return Response.noContent().cookie(mandantCookie).build();
 	}
 }
