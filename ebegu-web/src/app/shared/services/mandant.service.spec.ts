@@ -1,6 +1,7 @@
 import {TestBed} from '@angular/core/testing';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
+import {WindowRef} from '../../core/service/windowRef.service';
 import {SharedModule} from '../shared.module';
 
 import {MandantService} from './mandant.service';
@@ -10,6 +11,32 @@ describe('MandantService', () => {
     const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
         ['isDevMode', 'getPublicPropertiesCached']);
     applicationPropertyRSSpy.getPublicPropertiesCached.and.resolveTo({} as any);
+    const mockWindow = {
+        location: {
+            hostname: '',
+        },
+        localStorage: {
+            key(): string | null {
+                return undefined;
+            },
+            removeItem(): void {
+            },
+            setItem(): void {
+            },
+            clear(): void {
+            },
+            getItem: (): string => '',
+            length: 0,
+        },
+        navigator: {
+        }
+    };
+    const windowRefSpy = jasmine.createSpyObj<WindowRef>(WindowRef.name,
+        [], {
+            get nativeWindow(): any {
+                return mockWindow;
+            },
+        });
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -18,10 +45,12 @@ describe('MandantService', () => {
                 {
                     provide: ApplicationPropertyRS,
                     useValue: applicationPropertyRSSpy,
-                }
+                },
             ],
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES);
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .overrideProvider(WindowRef, {useValue: windowRefSpy});
         service = TestBed.inject(MandantService);
+
     });
 
     it('should be created', () => {
