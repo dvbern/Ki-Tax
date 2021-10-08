@@ -17,7 +17,7 @@
 
 import {CommonModule} from '@angular/common';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
-import {NgModule} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatMenuModule} from '@angular/material/menu';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
@@ -56,6 +56,7 @@ import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {KiBonGuidedTourComponent} from '../kibonTour/component/KiBonGuidedTourComponent';
 import {BenutzerRolleComponent} from './component/benutzer-rolle/benutzer-rolle.component';
 import {BerechtigungComponent} from './component/berechtigung/berechtigung.component';
+import {DvDatePickerXComponent} from './component/dv-date-picker/dv-date-picker-x.component';
 import {DvMonthPickerComponent} from './component/dv-month-picker/dv-month-picker.component';
 import {DvSimpleTableComponent} from './component/dv-simple-table/dv-simple-table.component';
 import {ExternalClientAssignmentComponent} from './component/external-client-assignment/external-client-assignment.component';
@@ -72,6 +73,7 @@ import {TooltipDirective} from './directive/TooltipDirective';
 import {FullHeightContainerComponent} from './full-height-container/full-height-container.component';
 import {FullHeightInnerPaddingContainerComponent} from './full-height-inner-padding-container/full-height-inner-padding-container.component';
 import {MaterialModule} from './material.module';
+import {EbeguDateTimePipe} from './pipe/ebegu-date-time.pipe';
 import {EbeguDatePipe} from './pipe/ebegu-date.pipe';
 import {NextPeriodeStrPipe} from './pipe/next-periode-str.pipe';
 import {PreviousPeriodeStrPipe} from './pipe/previous-periode-str.pipe';
@@ -152,7 +154,13 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DVInputContainerXComponent,
         DvBisherXComponent,
         DvNgSozialdienstDialogComponent,
+        EbeguDateTimePipe,
+        DvDatePickerXComponent
     ],
+    // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
+    // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
+    // See https://stackoverflow.com/a/51214263
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
     exports: [
         CommonModule,
         HttpClientModule,
@@ -207,6 +215,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgSozialdienstDialogComponent,
         NextPeriodeStrPipe,
         PreviousPeriodeStrPipe,
+        EbeguDateTimePipe,
+        DvDatePickerXComponent
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

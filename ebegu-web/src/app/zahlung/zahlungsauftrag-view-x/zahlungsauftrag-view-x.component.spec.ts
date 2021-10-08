@@ -25,14 +25,14 @@ describe('ZahlungsauftragViewXComponent', () => {
     const stateServiceSpy = jasmine.createSpyObj(StateService.name, ['go']);
     const downloadResSpy = jasmine.createSpyObj(DownloadRS.name, ['getAccessTokenDokument']);
     const appPropSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getAllowedMimetypes', 'isZahlungenTestMode']);
-    const reportRSSpy = jasmine.createSpyObj(ReportRS.name, ['']);
+    const reportRSSpy = jasmine.createSpyObj(ReportRS.name, ['getZahlungsauftragReportExcel']);
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$', 'isOneOfRoles']);
     const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$', 'getGemeindenWithMahlzeitenverguenstigungForBenutzer']);
     const stateStoreSpy = jasmine.createSpyObj<StateStoreService>(StateStoreService.name, ['get', 'has']);
     const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
-    const currencySpy = jasmine.createSpyObj(CurrencyPipe.name, ['']);
     const transitionSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name, ['onStart']);
     const errorServiceSpy = jasmine.createSpyObj(ErrorService.name, ['clearAll']);
+    const currencySpy = jasmine.createSpyObj(CurrencyPipe.name, ['transform']);
 
     uiRouterGlobalsSpy.params = {} as any;
     authServiceSpy.principal$ = of(new TSBenutzer());
@@ -54,9 +54,9 @@ describe('ZahlungsauftragViewXComponent', () => {
                 {provide: ReportRS, useValue: reportRSSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
+                {provide: CurrencyPipe, useValue: currencySpy},
                 {provide: StateStoreService, useValue: stateStoreSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
-                {provide: CurrencyPipe, useValue: currencySpy},
                 {provide: TransitionService, useValue: transitionSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
             ],

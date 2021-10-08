@@ -132,7 +132,6 @@ import {NewAntragListComponent} from './new-antrag-list/new-antrag-list.componen
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {AdresseRS} from './service/adresseRS.rest';
 import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
-import {BatchJobRS} from './service/batchRS.rest';
 import {BenutzerRSX} from './service/benutzerRSX.rest';
 import {BetreuungRS} from './service/betreuungRS.rest';
 import {BroadcastService} from './service/broadcast.service';
@@ -151,7 +150,6 @@ import {ListResourceRS} from './service/listResourceRS.rest';
 import {MandantRS} from './service/mandantRS.rest';
 import {MitteilungRS} from './service/mitteilungRS.rest';
 import {NotrechtRS} from './service/notrechtRS.rest';
-import {ReportAsyncRS} from './service/reportAsyncRS.rest';
 import {ReportRS} from './service/reportRS.rest';
 import {SearchIndexRS} from './service/searchIndexRS.rest';
 import {SozialdienstRS} from './service/SozialdienstRS.rest';
@@ -225,7 +223,6 @@ export const CORE_JS_MODULE = angular
     .service('ErwerbspensumRS', ErwerbspensumRS)
     .service('KindRS', KindRS)
     .service('DvDialog', DvDialog)
-    .service('BatchJobRS', BatchJobRS)
     .service('BetreuungRS', BetreuungRS)
     .service('GesuchsperiodeRS', GesuchsperiodeRS)
     .service('VerfuegungRS', VerfuegungRS)
@@ -318,7 +315,6 @@ export const CORE_JS_MODULE = angular
     .directive('dvSearchList', downgradeComponent({component: DvSearchListComponent}))
     .service('MahnungRS', MahnungRS)
     .service('ReportRS', ReportRS)
-    .service('ReportAsyncRS', ReportAsyncRS)
     .service('EwkRS', EwkRS)
     .service('DatabaseMigrationRS', DatabaseMigrationRS)
     .service('SupportRS', SupportRS)

@@ -28,6 +28,7 @@ import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {TSEinstellung} from '../../../../../models/TSEinstellung';
 import {TSGemeinde} from '../../../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../../../models/TSGesuchsperiode';
@@ -100,6 +101,7 @@ describe('GemeindeAngabenComponent', () => {
         lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
             of(container),
         );
+        authServiceSpy.principal$ = of(new TSBenutzer());
         einstellungServiceSpy.findEinstellung.and.returnValue(
             of(new TSEinstellung()).toPromise(),
         );

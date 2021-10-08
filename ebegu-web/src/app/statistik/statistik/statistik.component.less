@@ -1,22 +1,44 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-@import (reference) '../../../../style/variables.less';
-@import (reference) '../../../../style/mixins.less';
+
+@import (reference) '../../../style/variables.less';
+@import (reference) '../../../style/mixins.less';
 
 .statistik-view {
     padding-top: 5rem;
+
+    .dv-table {
+        width: 100%;
+
+        mat-table {
+            border-collapse: collapse;
+            display: table;
+            table-layout: fixed;
+            width: 100%;
+
+            tr {
+                cursor: pointer;
+            };
+        }
+
+        th.mat-header-cell:first-of-type, td.mat-cell:first-of-type {
+            padding-left: 1rem;
+        }
+    }
     .statistik-button {
         margin-top: 3rem;
         & > * {
@@ -28,7 +50,7 @@
     .statistik-no-fields {
         margin-bottom: 4rem;
     }
-    dv-accordion {
+    ::ng-deep dv-accordion {
         overflow: hidden;
         dv-accordion-tab {
             .dv-accordion-tab-title {
@@ -93,14 +115,9 @@
         }
     }
 
-    md-checkbox.input-element {
-        clear: both;
-        float: left;
-        padding-bottom: 5px;
-    }
-
     #massenversand-no-selection-err {
         margin-bottom: 2rem;
         margin-top: -2rem;
     }
 }
+
