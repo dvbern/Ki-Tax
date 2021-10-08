@@ -333,4 +333,6 @@ public interface EbeguConfiguration {
 	String getKafkaPlatzbestaetigungGroupId();
 
 	String getMassenmutationEmpfaengerMail();
+
+	Boolean getMultimandantEnabled();
 }

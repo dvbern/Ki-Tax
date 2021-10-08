@@ -236,6 +236,7 @@ public class ApplicationPropertyResource {
 		boolean personenSucheDisabled = ebeguConfiguration.isPersonenSucheDisabled();
 		String kitaxHost = ebeguConfiguration.getKitaxHost();
 		String kitaxendpoint = ebeguConfiguration.getKitaxEndpoint();
+		boolean multimandantEnabled = ebeguConfiguration.getMultimandantEnabled();
 
 		EbeguEntityNotFoundException notFound = new EbeguEntityNotFoundException("getPublicProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 
@@ -265,9 +266,6 @@ public class ApplicationPropertyResource {
 				.orElseThrow(() -> notFound);
 		ApplicationProperty lastenausgleichTagesschulenAutoZweitpruefungFr  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR)
-				.orElseThrow(() -> notFound);
-		ApplicationProperty multimandantAktiv  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.MULTIMANDANT_AKTIV)
 				.orElseThrow(() -> notFound);
 
 		String nodeName = "";
@@ -306,7 +304,7 @@ public class ApplicationPropertyResource {
 			lastenausgleichTagesschulenAnteilZweitpruefungFrConverted,
 			lastenausgleichTagesschulenAutoZweitpruefungDeConverted,
 			lastenausgleichTagesschulenAutoZweitpruefungFrConverted,
-			multimandantAktiv.getValue().equals("true")
+			multimandantEnabled
 		);
 		return Response.ok(pubAppConf).build();
 	}
