@@ -20,7 +20,7 @@
         <div class="col-md-10 col-md-offset-1">
             <dv-accordion [allowMultipleSections]="false">
                 <div *ngIf="showGesucheNachStichtag()">
-                    <dv-accordion-tab tabid="gesuch_stichtag">
+                    <dv-accordion-tab [tabid]="'gesuch_stichtag'">
                         <tab-title>
                             <span class="uppercase" translate>GESUCHE_NACH_STICHTAG</span>
                             <dv-tooltip inputId="gesuch_stichtag_info"
@@ -75,7 +75,7 @@
                 </div>
 
                 <div *ngIf="showGesucheNachZeitraum()">
-                    <dv-accordion-tab tabid="gesuch_zeitraum">
+                    <dv-accordion-tab [tabid]="'gesuch_zeitraum'">
                         <tab-title>
                             <span class="uppercase" translate>GESUCHE_NACH_ZEITRAUM</span>
                             <dv-tooltip inputId="gesuch_zeitraum_info"
@@ -124,7 +124,7 @@
                 </div>
 
                 <div *ngIf="showZahlungenNachPeriode()">
-                    <dv-accordion-tab tabid="zahlungen_periode">
+                    <dv-accordion-tab [tabid]="'zahlungen_periode'">
                         <tab-title>
                             <span class="uppercase" translate>ZAHLUNGEN_NACH_PERIODE</span>
                             <dv-tooltip inputId="zahlungen_periode_info"
@@ -169,7 +169,7 @@
                 </div>
 
                 <div *ngIf="showKinderStatistik()">
-                    <dv-accordion-tab tabid="kinder">
+                    <dv-accordion-tab [tabid]="'kinder'">
                         <tab-title>
                             <span class="uppercase" translate>STATISTIK_KINDER</span>
                             <dv-tooltip inputId="kinder_info"
@@ -229,7 +229,7 @@
                 </div>
 
                 <div *ngIf="showGesuchstellerStatistik()">
-                    <dv-accordion-tab tabid="gesuchsteller">
+                    <dv-accordion-tab [tabid]="'gesuchsteller'">
                         <tab-title>
                             <span class="uppercase" translate>GESUCHSTELLER</span>
                             <dv-tooltip inputId="gesuchsteller_info"
@@ -263,7 +263,7 @@
                 </div>
 
                 <div *ngIf="showKantonStatistik">
-                    <dv-accordion-tab tabid="kanton">
+                    <dv-accordion-tab [tabid]="'kanton'">
                         <tab-title>
                             <span class="uppercase" translate>KANTON</span>
                             <dv-tooltip inputId="kanton_info"
@@ -319,7 +319,7 @@
                 </div>
 
                 <div *ngIf="showMitarbeiterStatistik()">
-                    <dv-accordion-tab tabid="mitarbeiterinnen">
+                    <dv-accordion-tab [tabid]="'mitarbeiterinnen'">
                         <tab-title>
                             <span class="uppercase" translate>MITARBEITERINNEN</span>
                             <dv-tooltip inputId="mitarbeiterinnen_info"
@@ -360,7 +360,7 @@
                 </div>
 
                 <div *ngIf="showBenutzerStatistik()">
-                    <dv-accordion-tab tabid="benutzer">
+                    <dv-accordion-tab [tabid]="'benutzer'">
                         <tab-title>
                             <span class="uppercase" translate>BENUTZER_STATISTIK</span>
                             <dv-tooltip inputId="benutzer_info"
@@ -386,7 +386,7 @@
                 </div>
 
                 <div *ngIf="showGesuchstellerKinderBetreuungStatistik()">
-                    <dv-accordion-tab tabid="betreuung">
+                    <dv-accordion-tab [tabid]="'betreuung'">
                         <tab-title>
                             <span class="uppercase" translate>GESUCHSTELLER_KINDER_BETREUUNG</span>
                             <dv-tooltip inputId="betreuung_info"
@@ -443,10 +443,9 @@
                         </tab-body>
                     </dv-accordion-tab>
                 </div>
-
-<!--                Kontaktdaten für Serienbriefe-->
+                <!-- Kontaktdaten für Serienbriefe-->
                 <div *ngIf="showStatistikMassenversand()">
-                    <dv-accordion-tab tabid="massenversand">
+                    <dv-accordion-tab [tabid]="'massenversand'">
                         <tab-title>
                             <span class="uppercase" translate>MASSENVERSAND</span>
                             <dv-tooltip inputId="massenversand_info"
@@ -569,7 +568,7 @@
                                                    [maxLength]="250"
                                                    #massenversandText='ngModel'
                                                    class="form-control">
-                                            <dv-error-messages [errorObject]="massenversandText.error"
+                                            <dv-error-messages [errorObject]="massenversandText.errors"
                                                                class="error"></dv-error-messages>
                                         </dv-input-container>
                                     </div>
@@ -580,7 +579,7 @@
                 </div>
 
                 <div *ngIf="showInstitutionenStatistik()">
-                    <dv-accordion-tab tabid="institutionen">
+                    <dv-accordion-tab [tabid]="'institutionen'">
                         <tab-title>
                             <span class="uppercase" translate>INSTITUTIONEN_STATISTIK</span>
                             <dv-tooltip inputId="institutionen_info"
@@ -606,7 +605,7 @@
                 </div>
 
                 <div *ngIf="isSuperadmin()">
-                    <dv-accordion-tab tabid="verrechnung">
+                    <dv-accordion-tab [tabid]="'verrechnung'">
                         <tab-title>
                             <span class="uppercase" translate>VERRECHNUNG_KIBON_STATISTIK</span>
                             <dv-tooltip inputId="verrechnung_info"
@@ -664,7 +663,7 @@
                 </div>
 
                 <div *ngIf="isSuperadmin()">
-                    <dv-accordion-tab tabid="lastenausgleich">
+                    <dv-accordion-tab [tabid]="'lastenausgleich'">
                         <tab-title>
                             <span class="uppercase" translate>LASTENAUSGLEICH_KIBON_STATISTIK</span>
                             <dv-tooltip inputId="lastenausgleich_info"
@@ -709,7 +708,7 @@
 
                 <div>
                     <div *ngIf="showTagesschuleAnmeldungenStatistik()">
-                        <dv-accordion-tab tabid="tagesschuleAnmeldungen">
+                        <dv-accordion-tab [tabid]="'tagesschuleAnmeldungen'">
                             <tab-title>
                                 <span class="uppercase" translate>TAGESSCHULE_ANMELDUNGEN_STATISTIK</span>
                                 <dv-tooltip inputId="lastenausgleich_info"
@@ -771,7 +770,7 @@
                 </div>
 
                 <div *ngIf="showRechnungsstellungStatistik()">
-                    <dv-accordion-tab tabid="tagesschuleRechnungsstellung">
+                    <dv-accordion-tab [tabid]="'tagesschuleRechnungsstellung'">
                         <tab-title>
                             <span class="uppercase" translate>TAGESSCHULE_RECHNUNGSSTELLUNG_STATISTIK</span>
                             <dv-tooltip inputId="tagesschuleRechnungsstellung_info"
@@ -797,7 +796,7 @@
                 </div>
 
                 <div *ngIf="showNotrechtStatistik()">
-                    <dv-accordion-tab tabid="notrecht">
+                    <dv-accordion-tab [tabid]="'notrecht'">
                         <tab-title>
                             <span class="uppercase" translate>NOTRECHT_STATISTIK</span>
                             <dv-tooltip inputId="notrecht_info"
@@ -840,7 +839,7 @@
                 </div>
                 <div *ngIf="showMahlzeitenverguenstigungStatistik()">
                     <div>
-                        <dv-accordion-tab tabid="mahlzeitenverguenstigung">
+                        <dv-accordion-tab [tabid]="'mahlzeitenverguenstigung'">
                             <tab-title>
                                 <span class="uppercase" translate>MAHLZEITENVERGUENSTIGUNG</span>
                             </tab-title>
@@ -896,7 +895,7 @@
                         </dv-accordion-tab>
                     </div>
                 </div>
-                <dv-accordion-tab tabid="gemeinden" *ngIf="showMandantStatistik()">
+                <dv-accordion-tab [tabid]="'gemeinden'" *ngIf="showMandantStatistik()">
                     <tab-title>
                         <span class="uppercase" translate>GEMEINDEN_STATISTIK</span>
                         <dv-tooltip inputId="notrecht_info"
@@ -919,7 +918,7 @@
                     </tab-body>
                 </dv-accordion-tab>
                 <div *ngIf="showFerienbetreuungStatistik()">
-                    <dv-accordion-tab tabid="ferienbetreuung">
+                    <dv-accordion-tab [tabid]="'ferienbetreuung'">
                         <tab-title>
                             <span class="uppercase" translate>FERIENBETREUUNG_STATISTIK</span>
                         </tab-title>
@@ -939,7 +938,7 @@
                     </dv-accordion-tab>
                 </div>
                 <div *ngIf="showLastenausgleichTagesschulenStatistik()">
-                    <dv-accordion-tab tabid="lastenausgleichTagesschulen">
+                    <dv-accordion-tab [tabid]="'lastenausgleichTagesschulen'">
                         <tab-title>
                             <span class="uppercase" translate>LASTENAUSGLEICH_TAGESSCHULEN_STATISTIK</span>
                         </tab-title>
