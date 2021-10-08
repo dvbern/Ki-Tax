@@ -22,18 +22,19 @@ import {StatistikRoutingModule} from './statistik-routing/statistik-routing.modu
 import {StatistikComponent} from './statistik/statistik.component';
 
 @NgModule({
-    declarations: [
-        StatistikComponent
+    imports: [
+        SharedModule,
+        CommonModule,
+        StatistikRoutingModule,
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
     // See https://stackoverflow.com/a/51214263
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [
-        CommonModule,
-        StatistikRoutingModule,
-        SharedModule
-    ]
+    declarations: [
+        StatistikComponent
+    ],
+    providers: [],
 })
 export class StatistikModule {
 }
