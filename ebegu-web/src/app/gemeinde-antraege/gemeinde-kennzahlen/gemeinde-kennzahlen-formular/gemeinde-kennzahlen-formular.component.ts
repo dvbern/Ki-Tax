@@ -16,6 +16,7 @@
  */
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, NgForm} from '@angular/forms';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {combineLatest, Observable, ReplaySubject, Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
@@ -24,6 +25,7 @@ import {TSRole} from '../../../../models/enums/TSRole';
 import {TSGemeindeKennzahlen} from '../../../../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {DvNgConfirmDialogComponent} from '../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {CONSTANTS} from '../../../core/constants/CONSTANTS';
 import {ErrorServiceX} from '../../../core/errors/service/ErrorServiceX';
 import {LogFactory} from '../../../core/logging/LogFactory';
@@ -56,6 +58,7 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
         private readonly fb: FormBuilder,
         private readonly errorService: ErrorServiceX,
         private readonly translate: TranslateService,
+        private readonly dialog: MatDialog,
     ) {
     }
 
@@ -125,12 +128,18 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
         this.errorService.addMesageAsInfo(this.translate.instant('SAVED'));
     }
 
-    public abschliessen(antrag: TSGemeindeKennzahlen): void {
+    public async abschliessen(antrag: TSGemeindeKennzahlen): Promise<void> {
         this.abschlussValidationTriggered = true;
 
-        setTimeout(() => {
-            if (!this.form.valid) {
+        setTimeout(async () => {
+            if (!this.form.valid || !await this.confirmDialog('FRAGE_FORMULAR_ABSCHLIESSEN')) {
                 return;
+            }
+
+            if (!antrag.gemeindeKontingentiert) {
+                antrag.nachfrageDauer = null;
+                antrag.nachfrageErfuellt = null;
+                antrag.nachfrageAnzahl = null;
             }
 
             this.gemeindeKennzahlenService.gemeindeKennzahlenAbschliessen(antrag)
@@ -146,8 +155,22 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
             .concat(TSRole.SUPER_ADMIN));
     }
 
-    public zurueckAnGemeinde(antrag: TSGemeindeKennzahlen): void {
+    public async zurueckAnGemeinde(antrag: TSGemeindeKennzahlen): Promise<void> {
+        if (!await this.confirmDialog('ZURUECK_AN_GEMEINDE_DIREKT')) {
+            return;
+        }
         this.gemeindeKennzahlenService.gemeindeKennzahlenZurueckAnGemeinde(antrag).subscribe(() => {
+            this.abschlussValidationTriggered = false;
         }, error => LOG.error(error));
+    }
+
+    private confirmDialog(frageKey: string): Promise<boolean> {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            frage: this.translate.instant(frageKey),
+        };
+        return this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
+            .afterClosed()
+            .toPromise();
     }
 }
