@@ -17,9 +17,11 @@
 
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSGemeinde} from '../../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 
 /**
  * Component fuer den GemeindeDialog. In einem Select muss der Benutzer die Gemeinde auswaehlen.
@@ -39,11 +41,14 @@ export class DvNgGemeindeDialogComponent {
     public selectedGesuchsperiode: TSGesuchsperiode;
     public gesuchsperiodeList: TSGesuchsperiode[];
 
+    public isUserSozialdienst: boolean;
+
     public constructor(
+        private readonly authServiceRS: AuthServiceRS,
         private readonly dialogRef: MatDialogRef<DvNgGemeindeDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any,
     ) {
-
+        this.isUserSozialdienst = authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
         this.gemeindeList = data.gemeindeList;
         this.sortGemeinden();
         this.gesuchsperiodeList = data.gesuchsperiodeList;

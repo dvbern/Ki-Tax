@@ -1530,6 +1530,7 @@
     "FRANZOESISCH": "Français",
     "DEUTSCH_ODER_FRANZOESISCH": "allemand ou français",
     "GEMEINDE_AUSWAEHLEN": "Sélectionner une commune",
+    "GEMEINDE_AUSWAEHLEN_SOZIALDIENST": "<ul> <li>BG-Antrag: Wohnsitzgemeinde</li> <li>TS-Anmeldung: Gemeinde der Tagesschule</li></ul>",
     "INSTITUTION_AUSWAEHLEN": "Sélectionner une institution",
     "GESUCHSPERIODE_AUSWAEHLEN": "Sélectionner une période",
     "AUSWAEHLEN": "Sélectionner",
