@@ -52,7 +52,7 @@ public abstract class EingewoehnungAbschnittRule extends AbstractEinwoehnungAbsc
 	protected EingewoehnungAbschnittRule(
 		@Nonnull RuleValidity ruleValidity,
 		@Nonnull DateRange validityPeriod,
-		@Nonnull Locale locale,  @Nonnull Integer maximalpensumFreiwilligenarbeit) {
+		@Nonnull Locale locale, @Nonnull Integer maximalpensumFreiwilligenarbeit) {
 		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_DATA, ruleValidity, validityPeriod, locale);
 		this.maximalpensumFreiwilligenarbeit = maximalpensumFreiwilligenarbeit;
 	}
@@ -97,43 +97,41 @@ public abstract class EingewoehnungAbschnittRule extends AbstractEinwoehnungAbsc
 			final DateRange gueltigkeit = new DateRange(erwerbspensum.getGueltigkeit());
 			if (!platz.isAngebotSchulamt()) {
 				Betreuung betreuung = (Betreuung) platz;
-				if (betreuung.isEingewoehnung()) {
-					if (gesuch.getGesuchsperiode()
-						.getGueltigkeit()
-						.getGueltigAb()
-						.isBefore(gueltigkeit.getGueltigAb())) {
-						if (gueltigkeit.getGueltigAb()
-							.minusMonths(1)
-							.isAfter(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb())) {
-							gueltigkeit.setGueltigAb(gueltigkeit.getGueltigAb().minusMonths(1));
-						} else {
-							gueltigkeit.setGueltigAb(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
-						}
-						gueltigkeit.setGueltigBis(erwerbspensum.getGueltigkeit().getGueltigAb().minusDays(1));
-
-						// Wir merken uns hier den eingegebenen Wert, auch wenn dieser (mit Zuschlag) über 100% liegt
-						Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
-						Familiensituation familiensituation = gesuch.extractFamiliensituation();
-						if (gs2
-							&& gesuch.isMutation()
-							&& familiensituationErstgesuch != null
-							&& familiensituation != null) {
-
-							getGueltigkeitFromFamiliensituation(
-								gueltigkeit,
-								familiensituationErstgesuch,
-								familiensituation);
-
-							return createZeitabschnittEingewoehnung(gueltigkeit, erwerbspensum, false);
-						}
-						if (gs2 && !gesuch.isMutation()) {
-							return createZeitabschnittEingewoehnung(gueltigkeit, erwerbspensum, false);
-						}
-						if (!gs2) {
-							return createZeitabschnittEingewoehnung(gueltigkeit, erwerbspensum, true);
-						}
-						return null;
+				if (betreuung.isEingewoehnung() && gesuch.getGesuchsperiode()
+					.getGueltigkeit()
+					.getGueltigAb()
+					.isBefore(gueltigkeit.getGueltigAb())) {
+					if (gueltigkeit.getGueltigAb()
+						.minusMonths(1)
+						.isAfter(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb())) {
+						gueltigkeit.setGueltigAb(gueltigkeit.getGueltigAb().minusMonths(1));
+					} else {
+						gueltigkeit.setGueltigAb(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
 					}
+					gueltigkeit.setGueltigBis(erwerbspensum.getGueltigkeit().getGueltigAb().minusDays(1));
+
+					// Wir merken uns hier den eingegebenen Wert, auch wenn dieser (mit Zuschlag) über 100% liegt
+					Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
+					Familiensituation familiensituation = gesuch.extractFamiliensituation();
+					if (gs2
+						&& gesuch.isMutation()
+						&& familiensituationErstgesuch != null
+						&& familiensituation != null) {
+
+						getGueltigkeitFromFamiliensituation(
+							gueltigkeit,
+							familiensituationErstgesuch,
+							familiensituation);
+
+						return createZeitabschnittEingewoehnung(gueltigkeit, erwerbspensum, false);
+					}
+					if (gs2 && !gesuch.isMutation()) {
+						return createZeitabschnittEingewoehnung(gueltigkeit, erwerbspensum, false);
+					}
+					if (!gs2) {
+						return createZeitabschnittEingewoehnung(gueltigkeit, erwerbspensum, true);
+					}
+					return null;
 				}
 			}
 		}
@@ -144,7 +142,6 @@ public abstract class EingewoehnungAbschnittRule extends AbstractEinwoehnungAbsc
 	 * Dort muss man die Freiwilligenarbeit berucksichtigen nur wenn es einen Zuschlag bei der Gemeinde gibt
 	 * Es gilt fuer ASIV und Gemeinde, bei ASIV wenn der startpensum ist einen Freiwilligenarbeit
 	 * wird dann nix gemacht und der Gemeinde Rules wird der Einwoehnung berucksichtigen
-	 * @return
 	 */
 	@Nonnull
 	protected List<Taetigkeit> getValidTaetigkeiten() {
@@ -152,7 +149,7 @@ public abstract class EingewoehnungAbschnittRule extends AbstractEinwoehnungAbsc
 		if (maximalpensumFreiwilligenarbeit > 0) {
 			taetigkeiten.add(Taetigkeit.FREIWILLIGENARBEIT);
 		}
-		return  taetigkeiten;
+		return taetigkeiten;
 	}
 
 	@Nullable
@@ -189,15 +186,14 @@ public abstract class EingewoehnungAbschnittRule extends AbstractEinwoehnungAbsc
 		return zeitabschnitt;
 	}
 
-
 	private LocalDate findSmallerStartPensumDate(Set<ErwerbspensumContainer> ewpContainers) {
 		LocalDate startPensum = null;
 		for (ErwerbspensumContainer ewpContainer : ewpContainers) {
 			Erwerbspensum erwerbspensum = ewpContainer.getErwerbspensumJA();
-			if (erwerbspensum != null && getValidTaetigkeiten().contains(erwerbspensum.getTaetigkeit())) {
-				if (startPensum == null || startPensum.isAfter(erwerbspensum.getGueltigkeit().getGueltigAb())) {
-					startPensum = erwerbspensum.getGueltigkeit().getGueltigAb();
-				}
+			if ((erwerbspensum != null && getValidTaetigkeiten().contains(erwerbspensum.getTaetigkeit())) &&
+				(startPensum == null || startPensum.isAfter(erwerbspensum.getGueltigkeit().getGueltigAb()))
+			) {
+				startPensum = erwerbspensum.getGueltigkeit().getGueltigAb();
 			}
 		}
 		return startPensum;
