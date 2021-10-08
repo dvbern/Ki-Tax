@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AuthorisierterBenutzer;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
@@ -221,11 +222,10 @@ public class AuthResource {
 			NewCookie principalCookie = new NewCookie(AuthConstants.COOKIE_PRINCIPAL, encodeAuthAccessElement(element),
 				AuthConstants.COOKIE_PATH, domain, "principal",
 				AuthConstants.COOKIE_TIMEOUT_SECONDS, cookieSecure, false);
-			// This is temporary code. We set a cookie with the only, current mandant BE now so that we have the mandant
-			// set for as many current active users as possible when multimandant goes live.
-			// TODO: MANDANT-GO-LIVE: Replace this with the correct mandant of the Benutzer
-			NewCookie mandantCokie = new NewCookie(AuthConstants.COOKIE_MANDANT, "BE",
-				AuthConstants.COOKIE_PATH, domain, "mandant",
+			// Readable Cookie storing the mandant
+			NewCookie mandantCokie = new NewCookie(AuthConstants.COOKIE_MANDANT,
+					benutzer.getMandant() != null ? benutzer.getMandant().getName() : null,
+					AuthConstants.COOKIE_PATH, domain, "mandant",
 					60 * 60 * 24 * 365 * 2, cookieSecure, false);
 
 			return Response.noContent()
