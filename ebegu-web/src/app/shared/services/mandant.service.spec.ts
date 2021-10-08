@@ -15,6 +15,7 @@ describe('MandantService', () => {
     const mockWindow = {
         location: {
             hostname: '',
+            host: '',
         },
         localStorage: {
             key(): string | null {
@@ -144,6 +145,72 @@ describe('MandantService', () => {
             it('should parse kibon url with lu. sudomain to LU', () => {
                 mockWindow.location.hostname = 'lu.kibon.ch';
                 expect(service.parseHostname()).toEqual(KiBonMandant.LU);
+            });
+        });
+    });
+
+    describe ('removeMandantFromCompleteHost tests', () => {
+        describe('local-kibon tests', () => {
+            it('should strip nothing from local-kibon.dvbern.ch:4200', () => {
+                // tslint:disable-next-line:no-duplicate-string
+                mockWindow.location.host = 'local-kibon.dvbern.ch:4200';
+                expect(service.removeMandantFromCompleteHost()).toEqual('local-kibon.dvbern.ch:4200');
+            });
+            it('should strip be from be.local-kibon.dvbern.ch:4200', () => {
+                mockWindow.location.host = 'be.local-kibon.dvbern.ch:4200';
+                expect(service.removeMandantFromCompleteHost()).toEqual('local-kibon.dvbern.ch:4200');
+            });
+            it('should strip lu from lu.local-kibon.dvbern.ch:4200', () => {
+                mockWindow.location.host = 'lu.local-kibon.dvbern.ch:4200';
+                expect(service.removeMandantFromCompleteHost()).toEqual('local-kibon.dvbern.ch:4200');
+            });
+        });
+        // tslint:disable-next-line:no-identical-functions
+        describe('dev-kibon tests', () => {
+            it('should strip nothing from dev-kibon.dvbern.ch:', () => {
+                // tslint:disable-next-line:no-duplicate-string
+                mockWindow.location.host = 'dev-kibon.dvbern.ch:';
+                expect(service.removeMandantFromCompleteHost()).toEqual('dev-kibon.dvbern.ch:');
+            });
+            it('should strip be from be.dev-kibon.dvbern.ch:', () => {
+                mockWindow.location.host = 'be.dev-kibon.dvbern.ch:';
+                expect(service.removeMandantFromCompleteHost()).toEqual('dev-kibon.dvbern.ch:');
+            });
+            it('should strip lu from lu.dev-kibon.dvbern.ch:', () => {
+                mockWindow.location.host = 'lu.dev-kibon.dvbern.ch:';
+                expect(service.removeMandantFromCompleteHost()).toEqual('dev-kibon.dvbern.ch:');
+            });
+        });
+        // tslint:disable-next-line:no-identical-functions
+        describe('uat-kibon tests', () => {
+            it('should strip nothing from uat-kibon.dvbern.ch:', () => {
+                // tslint:disable-next-line:no-duplicate-string
+                mockWindow.location.host = 'uat-kibon.dvbern.ch:';
+                expect(service.removeMandantFromCompleteHost()).toEqual('uat-kibon.dvbern.ch:');
+            });
+            it('should strip be from be.uat-kibon.dvbern.ch:', () => {
+                mockWindow.location.host = 'be.uat-kibon.dvbern.ch:';
+                expect(service.removeMandantFromCompleteHost()).toEqual('uat-kibon.dvbern.ch:');
+            });
+            it('should strip lu from lu.uat-kibon.dvbern.ch:', () => {
+                mockWindow.location.host = 'lu.uat-kibon.dvbern.ch:';
+                expect(service.removeMandantFromCompleteHost()).toEqual('uat-kibon.dvbern.ch:');
+            });
+        });
+        // tslint:disable-next-line:no-identical-functions
+        describe('kibon tests', () => {
+            it('should strip nothing from kibon.ch:', () => {
+                // tslint:disable-next-line:no-duplicate-string
+                mockWindow.location.host = 'kibon.ch:';
+                expect(service.removeMandantFromCompleteHost()).toEqual('kibon.ch:');
+            });
+            it('should strip be from be.kibon.ch:', () => {
+                mockWindow.location.host = 'be.kibon.ch:';
+                expect(service.removeMandantFromCompleteHost()).toEqual('kibon.ch:');
+            });
+            it('should strip lu from lu.kibon.ch:', () => {
+                mockWindow.location.host = 'lu.kibon.ch:';
+                expect(service.removeMandantFromCompleteHost()).toEqual('kibon.ch:');
             });
         });
     });

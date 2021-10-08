@@ -67,7 +67,7 @@ export class MandantService {
         }
     }
 
-    private removeMandantFromCompleteHost(): string {
+    public removeMandantFromCompleteHost(): string {
         const completeHost = this.windowRef.nativeWindow.location.host;
         const mandantCandidates = Object.values(KiBonMandant).filter(el => el.length > 0);
 
