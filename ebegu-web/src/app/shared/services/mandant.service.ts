@@ -11,6 +11,10 @@ import {KiBonMandant} from '../../core/constants/MANDANTS';
 })
 export class MandantService {
 
+    public get mandant$(): Observable<KiBonMandant> {
+        return this._mandant$.asObservable();
+    }
+
     private readonly _mandant$: ReplaySubject<KiBonMandant> = new ReplaySubject<KiBonMandant>(1);
 
     private readonly _multimandantActive$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
@@ -24,25 +28,10 @@ export class MandantService {
         this.applicationPropertyService.getPublicPropertiesCached().then(properties => {
             this._multimandantActive$.next(properties.mulitmandantAktiv);
         });
-        this._mandant$.next(this.findMandant(this.cookieService.get('mandant')));
+        this._mandant$.next(MandantService.findMandant(this.cookieService.get('mandant')));
     }
 
-    public isMultimandantActive$(): Observable<boolean> {
-        return this._multimandantActive$.asObservable();
-    }
-
-    public parseHostname(): KiBonMandant {
-        const hostParts = this.windowRef.nativeWindow.location.hostname.split('.');
-        for (const part of hostParts) {
-            const potentialMandant = this.findMandant(part);
-            if (potentialMandant !== KiBonMandant.NONE) {
-                return potentialMandant;
-            }
-        }
-        return KiBonMandant.NONE;
-    }
-
-    private findMandant(hostname: string): KiBonMandant {
+    private static findMandant(hostname: string): KiBonMandant {
         switch (hostname.toLocaleLowerCase()) {
             case 'be':
                 return KiBonMandant.BE;
@@ -53,12 +42,23 @@ export class MandantService {
         }
     }
 
-    public get mandant$(): Observable<KiBonMandant> {
-        return this._mandant$.asObservable();
+    public isMultimandantActive$(): Observable<boolean> {
+        return this._multimandantActive$.asObservable();
+    }
+
+    public parseHostnameForMandant(): KiBonMandant {
+        const hostParts = this.windowRef.nativeWindow.location.hostname.split('.');
+        for (const part of hostParts) {
+            const potentialMandant = MandantService.findMandant(part);
+            if (potentialMandant !== KiBonMandant.NONE) {
+                return potentialMandant;
+            }
+        }
+        return KiBonMandant.NONE;
     }
 
     public selectMandant(mandant: string, url: string): void {
-        const parsedMandant = this.findMandant(mandant);
+        const parsedMandant = MandantService.findMandant(mandant);
 
         this.authService.setMandant(parsedMandant).then(() => {
 

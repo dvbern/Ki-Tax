@@ -72,12 +72,17 @@ function redirectToMandantSelection(
                 LOG.debug('checking mandant', mandant);
                 const path = transition.router.stateService.href(transition.to(), transition.params());
 
+                const mandantFromHostname = mandantService.parseHostnameForMandant();
                 if (mandant === KiBonMandant.NONE) {
-                    console.log('redirecting to mandant selection');
-                    return $state.target('mandant', {path});
+                    if (mandantFromHostname === KiBonMandant.NONE) {
+                        console.log('redirecting to mandant selection');
+                        return $state.target('mandant', {path});
+                    }
+                    mandantService.selectMandant(mandantFromHostname, path);
+                    return true;
                 }
 
-                if (mandant !== mandantService.parseHostname()) {
+                if (mandant !== mandantFromHostname) {
                     mandantService.redirectToMandantSubdomain(mandant, path);
                     return false;
                 }
