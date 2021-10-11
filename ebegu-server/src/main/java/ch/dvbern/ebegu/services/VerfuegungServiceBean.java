@@ -43,6 +43,7 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
@@ -73,6 +74,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.outbox.anmeldung.AnmeldungTagesschuleEventConverter;
 import ch.dvbern.ebegu.outbox.verfuegung.VerfuegungEventConverter;
 import ch.dvbern.ebegu.outbox.verfuegung.VerfuegungVerfuegtEvent;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -141,6 +143,12 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Inject
 	private VerfuegungEventConverter verfuegungEventConverter;
+
+	@Inject
+	private AnmeldungTagesschuleEventConverter anmeldungTagesschuleEventConverter;
+
+	@Inject
+	private EbeguConfiguration ebeguConfiguration;
 
 	@Nonnull
 	@Override
@@ -231,6 +239,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		// Rekursiv alle Vorgänger ebenfalls auf UEBERNOMMEN setzen
 		setVorgaengerAnmeldungTagesschuleAufUebernommen(persistedAnmeldung);
+
+		// export Tarife zu der Exchange Service
+		fireAnmeldungTagesschuleUbernommenEvent(persistedAnmeldung);
 
 		return persistedAnmeldung;
 	}
@@ -874,5 +885,11 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			.findFirst()
 			.orElseThrow(() -> new EbeguEntityNotFoundException("calculateAndExtractVerfuegung", platzId));
 		return verfuegungToPersist;
+	}
+
+	private void fireAnmeldungTagesschuleUbernommenEvent(@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
+		if (ebeguConfiguration.isAnmeldungTagesschuleApiEnabled()) {
+			event.fire(anmeldungTagesschuleEventConverter.of(anmeldungTagesschule));
+		}
 	}
 }
