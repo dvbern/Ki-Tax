@@ -20,7 +20,8 @@ import {combineLatest} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
-import {KiBonMandant, MandantService} from '../../../app/shared/services/mandant.service';
+import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
+import {MandantService} from '../../../app/shared/services/mandant.service';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {OnBeforePriorities} from './onBeforePriorities';
 

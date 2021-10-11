@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -14,5 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-INSERT INTO application_property (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, name, value)
-VALUES (UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')), '2020-03-20 00:00:00', '2020-03-20 00:00:00', 'flyway', 'flyway', 0, null, 'MULTIMANDANT_AKTIV', 'false');
+
+export enum KiBonMandant {
+    BE = 'be',
+    LU = 'lu',
+    NONE = ''
+}

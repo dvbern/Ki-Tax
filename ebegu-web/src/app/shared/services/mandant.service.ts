@@ -3,12 +3,7 @@ import {BehaviorSubject, Observable, ReplaySubject} from 'rxjs';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
-
-export enum KiBonMandant {
-    BE = 'be',
-    LU = 'lu',
-    NONE = ''
-}
+import {KiBonMandant} from '../../core/constants/MANDANTS';
 
 @Injectable({
     providedIn: 'root',
@@ -34,7 +29,7 @@ export class MandantService {
     }
 
     private parseHostname(): KiBonMandant {
-        const hostParts = window.location.hostname.split('.');
+        const hostParts = this.windowRef.nativeWindow.location.hostname.split('.');
         for (const part of hostParts) {
             const potentialMandant = this.findMandant(part);
             if (potentialMandant !== KiBonMandant.NONE) {
@@ -67,16 +62,16 @@ export class MandantService {
         const host = this.removeMandantFromCompleteHost();
 
         if (parsedMandant !== KiBonMandant.NONE) {
-            window.open(`${window.location.protocol}//${parsedMandant}.${host}/${url}`,
+            this.windowRef.nativeWindow.open(`${this.windowRef.nativeWindow.location.protocol}//${parsedMandant}.${host}/${url}`,
                 '_self');
         }
     }
 
-    private removeMandantFromCompleteHost(): string {
-        const completeHost = window.location.host;
+    public removeMandantFromCompleteHost(): string {
+        const completeHost = this.windowRef.nativeWindow.location.host;
         const mandantCandidates = Object.values(KiBonMandant).filter(el => el.length > 0);
 
-        let shortenedHost = window.location.host;
+        let shortenedHost = this.windowRef.nativeWindow.location.host;
         const firstDotIdx = shortenedHost.indexOf('.');
 
         mandantCandidates.forEach(mandantCandidate => {

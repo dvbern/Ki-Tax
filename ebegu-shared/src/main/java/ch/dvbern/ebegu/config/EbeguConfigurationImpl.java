@@ -105,6 +105,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 
 	private static final String MASSENMUTATION_EMPFAENGER_MAIL = "ebegu.massenmutation.empfaenger.mail";
 
+	private static final String MULTIMANDANT_ENABLED = "ebegu.multimandant.enabled";
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
@@ -435,5 +436,10 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public String getKafkaPlatzbestaetigungGroupId() {
 		return getString(KIBON_KAFKA_PLATZBESTAETIGUNG_GROUP_ID, "dev");
+	}
+
+	@Override
+	public Boolean getMultimandantEnabled() {
+		return getBoolean(MULTIMANDANT_ENABLED, false);
 	}
 }
