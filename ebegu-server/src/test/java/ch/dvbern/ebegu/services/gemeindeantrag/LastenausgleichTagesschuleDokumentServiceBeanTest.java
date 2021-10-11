@@ -25,11 +25,13 @@ import ch.dvbern.ebegu.docxmerger.lats.LatsDocxDTO;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.mocks.PrincipalBeanMock;
 import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.types.DateRange;
 import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
@@ -97,8 +99,12 @@ public class LastenausgleichTagesschuleDokumentServiceBeanTest extends EasyMockS
 		korrektur.setLastenausgleichsberechtigerBetrag(new BigDecimal("10000"));
 		korrektur.setErsteRateAusbezahlt(new BigDecimal("3000"));
 
+		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
+		gesuchsperiode.setGueltigkeit(new DateRange());
+
 		container.setAngabenKorrektur(korrektur);
 		container.setGemeinde(gemeinde);
+		container.setGesuchsperiode(gesuchsperiode);
 
 		return container;
 	}
@@ -107,6 +113,11 @@ public class LastenausgleichTagesschuleDokumentServiceBeanTest extends EasyMockS
 		GemeindeStammdaten stammdaten = new GemeindeStammdaten();
 		Adresse adresse = new Adresse();
 		stammdaten.setAdresse(adresse);
+
+		Gemeinde gemeinde = new Gemeinde();
+		gemeinde.setBfsNummer(99999L);
+		stammdaten.setGemeinde(gemeinde);
+
 		return stammdaten;
 	}
 }
