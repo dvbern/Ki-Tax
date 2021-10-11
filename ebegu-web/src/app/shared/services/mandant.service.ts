@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable, ReplaySubject} from 'rxjs';
+import {CookieService} from 'ngx-cookie-service';
+import {Observable, ReplaySubject} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
@@ -10,8 +11,7 @@ import {KiBonMandant} from '../../core/constants/MANDANTS';
 })
 export class MandantService {
 
-    private readonly _mandant$: BehaviorSubject<KiBonMandant> =
-        new BehaviorSubject<KiBonMandant>(this.findMandant(this.getCookie('mandant')));
+    private readonly _mandant$: ReplaySubject<KiBonMandant> = new ReplaySubject<KiBonMandant>(1);
 
     private readonly _multimandantActive$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
@@ -19,10 +19,12 @@ export class MandantService {
         private readonly windowRef: WindowRef,
         private readonly applicationPropertyService: ApplicationPropertyRS,
         private readonly authService: AuthServiceRS,
+        private readonly cookieService: CookieService
     ) {
         this.applicationPropertyService.getPublicPropertiesCached().then(properties => {
             this._multimandantActive$.next(properties.mulitmandantAktiv);
         });
+        this._mandant$.next(this.findMandant(this.cookieService.get('mandant')));
     }
 
     public isMultimandantActive$(): Observable<boolean> {
@@ -87,20 +89,5 @@ export class MandantService {
         });
 
         return shortenedHost;
-    }
-
-    private getCookie(name: string): string {
-        const ca: Array<string> = document.cookie.split(';');
-        const caLen: number = ca.length;
-        const cookieName = `${name}=`;
-        let c: string;
-
-        for (let i = 0; i < caLen; i += 1) {
-            c = ca[i].replace(/^\s+/g, '');
-            if (c.indexOf(cookieName) === 0) {
-                return c.substring(cookieName.length, c.length);
-            }
-        }
-        return '';
     }
 }

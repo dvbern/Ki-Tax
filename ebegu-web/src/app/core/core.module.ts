@@ -20,6 +20,7 @@ import {ErrorHandler, LOCALE_ID, ModuleWithProviders, NgModule, Optional, SkipSe
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import {TranslateModule, TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {CookieService} from 'ngx-cookie-service';
 import {PaginatorI18n} from '../i18n/PaginatorI18n';
 import {MandantService} from '../shared/services/mandant.service';
 import {DEFAULT_LOCALE} from './constants/CONSTANTS';
@@ -57,7 +58,8 @@ export function paginatorI18nFactory(translateService: TranslateService): Pagina
         WindowRef,
         VersionService,
         BroadcastService,
-        MandantService
+        MandantService,
+        CookieService
     ],
     declarations: [
         // Insert app wide single use components (NavComponent, SpinnerComponent). Try not to declare anything here.
