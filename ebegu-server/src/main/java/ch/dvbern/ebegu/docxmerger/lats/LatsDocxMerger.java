@@ -25,10 +25,10 @@ import ch.dvbern.ebegu.docxmerger.DocxDocument;
 import ch.dvbern.ebegu.docxmerger.DocxMerger;
 import ch.dvbern.ebegu.docxmerger.mergefield.BigDecimalMergeField;
 import ch.dvbern.ebegu.docxmerger.mergefield.StringMergeField;
+import ch.dvbern.ebegu.util.Constants;
 
 public class LatsDocxMerger extends DocxMerger<LatsDocxDTO> {
 
-	private static final String THOUSENDS_SEPARATOR_FORMAT = "#,##0.00";
 	private static final String NO_DECIMAL_FORMAT = "#,##0";
 
 	public LatsDocxMerger(DocxDocument docxDocument) {
@@ -45,23 +45,22 @@ public class LatsDocxMerger extends DocxMerger<LatsDocxDTO> {
 		this.mergeFields.add(new StringMergeField("gemeindeNr", dto.getGemeindeNr()));
 		this.mergeFields.add(new StringMergeField("gemeindePLZ", dto.getGemeindePLZ()));
 		this.mergeFields.add(new StringMergeField("gemeindeOrt", dto.getGemeindeOrt()));
-		this.mergeFields.add(new StringMergeField("dateToday", dto.getDateToday()));
 		this.mergeFields.add(new StringMergeField("gemeindeName", dto.getGemeindeName()));
 		this.mergeFields.add(new StringMergeField("fallNummer", dto.getFallNummer()));
 		this.mergeFields.add(new BigDecimalMergeField("betreuungsstunden", dto.getBetreuungsstunden(), NO_DECIMAL_FORMAT));
-		this.mergeFields.add(new BigDecimalMergeField("betreuungsstundenProg", dto.getBetreuungsstundenProg(), THOUSENDS_SEPARATOR_FORMAT));
+		this.mergeFields.add(new BigDecimalMergeField("betreuungsstundenProg", dto.getBetreuungsstundenProg(), Constants.CURRENCY_PATTERN));
 		this.mergeFields.add(new StringMergeField("normlohnkosten", dto.getNormlohnkosten()));
 		this.mergeFields.add(new StringMergeField("normlohnkostenProg", dto.getNormlohnkostenProg()));
-		this.mergeFields.add(new BigDecimalMergeField("normlohnkostenTotal", dto.getNormlohnkostenTotal(), THOUSENDS_SEPARATOR_FORMAT));
-		this.mergeFields.add(new BigDecimalMergeField("normlohnkostenTotalProg", dto.getNormlohnkostenTotalProg(), THOUSENDS_SEPARATOR_FORMAT));
-		this.mergeFields.add(new BigDecimalMergeField("elterngebuehren", dto.getElterngebuehren(), THOUSENDS_SEPARATOR_FORMAT));
-		this.mergeFields.add(new BigDecimalMergeField("elterngebuehrenProg", dto.getElterngebuehrenProg(), THOUSENDS_SEPARATOR_FORMAT));
-		this.mergeFields.add(new BigDecimalMergeField("lastenausgleichsberechtigterBetrag", dto.getLastenausgleichsberechtigterBetrag(), THOUSENDS_SEPARATOR_FORMAT));
-		this.mergeFields.add(new BigDecimalMergeField("lastenausgleichsberechtigterBetragProg", dto.getLastenausgleichsberechtigterBetragProg(), THOUSENDS_SEPARATOR_FORMAT));
-		this.mergeFields.add(new BigDecimalMergeField("ersteRate", dto.getErsteRate(), THOUSENDS_SEPARATOR_FORMAT));
-		this.mergeFields.add(new BigDecimalMergeField("ersteRateProg", dto.getErsteRateProg(), THOUSENDS_SEPARATOR_FORMAT));
-		this.mergeFields.add(new BigDecimalMergeField("zweiteRate", dto.getZweiteRate(), THOUSENDS_SEPARATOR_FORMAT));
-		this.mergeFields.add(new BigDecimalMergeField("auszahlungTotal", dto.getAuszahlungTotal(), THOUSENDS_SEPARATOR_FORMAT));
+		this.mergeFields.add(new BigDecimalMergeField("normlohnkostenTotal", dto.getNormlohnkostenTotal(), Constants.CURRENCY_PATTERN));
+		this.mergeFields.add(new BigDecimalMergeField("normlohnkostenTotalProg", dto.getNormlohnkostenTotalProg(), Constants.CURRENCY_PATTERN));
+		this.mergeFields.add(new BigDecimalMergeField("elterngebuehren", dto.getElterngebuehren(), Constants.CURRENCY_PATTERN));
+		this.mergeFields.add(new BigDecimalMergeField("elterngebuehrenProg", dto.getElterngebuehrenProg(), Constants.CURRENCY_PATTERN));
+		this.mergeFields.add(new BigDecimalMergeField("lastenausgleichsberechtigterBetrag", dto.getLastenausgleichsberechtigterBetrag(), Constants.CURRENCY_PATTERN));
+		this.mergeFields.add(new BigDecimalMergeField("lastenausgleichsberechtigterBetragProg", dto.getLastenausgleichsberechtigterBetragProg(), Constants.CURRENCY_PATTERN));
+		this.mergeFields.add(new BigDecimalMergeField("ersteRate", dto.getErsteRate(), Constants.CURRENCY_PATTERN));
+		this.mergeFields.add(new BigDecimalMergeField("ersteRateProg", dto.getErsteRateProg(), Constants.CURRENCY_PATTERN));
+		this.mergeFields.add(new BigDecimalMergeField("zweiteRate", dto.getZweiteRate(), Constants.CURRENCY_PATTERN));
+		this.mergeFields.add(new BigDecimalMergeField("auszahlungTotal", dto.getAuszahlungTotal(), Constants.CURRENCY_PATTERN));
 		this.mergeFields.add(new StringMergeField("textPaedagogischOderNicht", dto.getTextPaedagogischOderNicht()));
 	}
 }

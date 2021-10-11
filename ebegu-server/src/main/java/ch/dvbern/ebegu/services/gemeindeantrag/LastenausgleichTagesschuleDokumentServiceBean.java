@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +45,6 @@ import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
-import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 
@@ -127,7 +125,6 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 		dto.setGemeindeNr(stammdaten.getAdresse().getHausnummer());
 		dto.setGemeindePLZ(stammdaten.getAdresse().getPlz());
 		dto.setGemeindeOrt(stammdaten.getAdresse().getOrt());
-		dto.setDateToday(Constants.DATE_FORMATTER.format(LocalDate.now()));
 		dto.setGemeindeName(container.getGemeinde().getName());
 		dto.setFallNummer(buildFallNummer(container, stammdaten));
 

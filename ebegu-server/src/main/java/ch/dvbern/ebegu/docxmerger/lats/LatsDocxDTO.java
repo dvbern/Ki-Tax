@@ -30,7 +30,6 @@ public class LatsDocxDTO {
 	@Nullable private String gemeindePLZ;
 	@Nullable private String gemeindeOrt;
 	@Nullable private String fallNummer;
-	@Nullable private String dateToday;
 	@Nullable private String gemeindeName;
 	@Nullable private BigDecimal betreuungsstunden;
 	@Nullable private BigDecimal betreuungsstundenProg;
@@ -112,15 +111,6 @@ public class LatsDocxDTO {
 
 	public void setGemeindeOrt(@Nullable String gemeindeOrt) {
 		this.gemeindeOrt = gemeindeOrt;
-	}
-
-	@Nullable
-	public String getDateToday() {
-		return dateToday;
-	}
-
-	public void setDateToday(@Nullable String dateToday) {
-		this.dateToday = dateToday;
 	}
 
 	@Nullable
