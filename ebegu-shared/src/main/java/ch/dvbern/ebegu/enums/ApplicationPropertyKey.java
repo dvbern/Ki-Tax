@@ -148,4 +148,9 @@ public enum ApplicationPropertyKey {
 	 */
 	LOGO_WHITE_FILE_NAME,
 
+	/**
+	 * Bestimmt, ob Multimandant für diese kiBon Instanz aktiviert sein soll
+	 */
+	MULTIMANDANT_AKTIV,
+
 }

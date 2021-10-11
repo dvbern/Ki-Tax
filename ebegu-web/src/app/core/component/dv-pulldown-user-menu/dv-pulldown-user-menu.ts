@@ -23,6 +23,7 @@ import {TSRole} from '../../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
+import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
 import {NotrechtRS} from '../../service/notrechtRS.rest';
 
 export class DvPulldownUserMenuComponentConfig implements IComponentOptions {
@@ -37,12 +38,13 @@ const LOG = LogFactory.createLog('DvPulldownUserMenuController');
 
 export class DvPulldownUserMenuController implements IController {
 
-    public static $inject: ReadonlyArray<string> = ['$state', 'AuthServiceRS', 'NotrechtRS'];
+    public static $inject: ReadonlyArray<string> = ['$state', 'AuthServiceRS', 'NotrechtRS', 'ApplicationPropertyRS'];
 
     private readonly unsubscribe$ = new Subject<void>();
     public readonly TSRoleUtil = TSRoleUtil;
     public principal?: TSBenutzer = undefined;
     public notrechtVisible: boolean;
+    public mandantSwitchVisible: boolean;
 
     public readonly VERSION = VERSION;
     public readonly BUILDTSTAMP = BUILDTSTAMP;
@@ -50,7 +52,8 @@ export class DvPulldownUserMenuController implements IController {
     public constructor(
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly notrechtRS: NotrechtRS
+        private readonly notrechtRS: NotrechtRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
@@ -62,6 +65,7 @@ export class DvPulldownUserMenuController implements IController {
                 err => LOG.error(err)
             );
         this.setNotrechtVisible();
+        this.setMandantSwitchVisible();
     }
 
     private setNotrechtVisible(): void {
@@ -90,5 +94,13 @@ export class DvPulldownUserMenuController implements IController {
 
     public isSuperAdmin(): boolean {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    private setMandantSwitchVisible(): void {
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then(properties => properties.mulitmandantAktiv)
+            .then(multimandantAktiv => {
+                this.mandantSwitchVisible = multimandantAktiv;
+            });
     }
 }

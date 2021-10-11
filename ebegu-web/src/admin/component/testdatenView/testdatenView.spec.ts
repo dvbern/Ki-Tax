@@ -70,7 +70,8 @@ describe('testdatenView', () => {
             logoFileNameWhite: 'test.svg',
             primaryColor: 'blue',
             primaryColorDark: 'black',
-            primaryColorLight: 'white'
+            primaryColorLight: 'white',
+            mulitmandantAktiv: false
         });
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
         gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);

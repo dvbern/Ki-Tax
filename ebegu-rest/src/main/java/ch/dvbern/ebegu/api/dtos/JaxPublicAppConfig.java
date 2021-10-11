@@ -37,34 +37,34 @@ public class JaxPublicAppConfig {
 	private String primaryColorLight;
 	private String logoFileName;
 	private String logoFileNameWhite;
-
+	private boolean multimandantAktiviert;
 
 	public JaxPublicAppConfig(
-		String currentNode,
-		boolean devmode,
-		String whitelist,
-		boolean dummyMode,
-		String sentryEnvName,
-		String backgroundColor,
-		boolean zahlungentestmode,
-		boolean personenSucheDisabled,
-		String kitaxHost,
-		String kitaxEndpoint,
-		String notverordnungDefaultEinreichefristOeffentlich,
-		String notverordnungDefaultEinreichefristPrivat,
-		boolean ferienbetreuungAktiv,
-		boolean lastenausgleichTagesschulenAktiv,
-		boolean gemeindeKennzahlenAktiv,
-		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDe,
-		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungFr,
-		BigDecimal lastenausgleichTagesschulenAutoZweitpruefungDe,
-		BigDecimal lastenausgleichTagesschulenAutoZweitpruefungFr,
-		String primaryColor,
-		String primaryColorDark,
-		String primaryColorLight,
-		String logoFileName,
-		String logoFileNameWhite
-	) {
+			String currentNode,
+			boolean devmode,
+			String whitelist,
+			boolean dummyMode,
+			String sentryEnvName,
+			String backgroundColor,
+			boolean zahlungentestmode,
+			boolean personenSucheDisabled,
+			String kitaxHost,
+			String kitaxEndpoint,
+			String notverordnungDefaultEinreichefristOeffentlich,
+			String notverordnungDefaultEinreichefristPrivat,
+			boolean ferienbetreuungAktiv,
+			boolean lastenausgleichTagesschulenAktiv,
+			boolean gemeindeKennzahlenAktiv,
+			BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDe,
+			BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungFr,
+			BigDecimal lastenausgleichTagesschulenAutoZweitpruefungDe,
+			BigDecimal lastenausgleichTagesschulenAutoZweitpruefungFr,
+			String primaryColor,
+			String primaryColorDark,
+			String primaryColorLight,
+			String logoFileName,
+			String logoFileNameWhite,
+			boolean multimandantAktiviert) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
 		this.whitelist = whitelist;
@@ -89,6 +89,7 @@ public class JaxPublicAppConfig {
 		this.primaryColorLight = primaryColorLight;
 		this.logoFileName = logoFileName;
 		this.logoFileNameWhite = logoFileNameWhite;
+		this.multimandantAktiviert = multimandantAktiviert;
 	}
 
 	public String getCurrentNode() {
@@ -281,5 +282,13 @@ public class JaxPublicAppConfig {
 
 	public void setLogoFileNameWhite(String logoFileNameWhite) {
 		this.logoFileNameWhite = logoFileNameWhite;
+	}
+
+	public boolean isMultimandantAktiviert() {
+		return multimandantAktiviert;
+	}
+
+	public void setMultimandantAktiviert(boolean multimandantAktiviert) {
+		this.multimandantAktiviert = multimandantAktiviert;
 	}
 }

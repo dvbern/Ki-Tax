@@ -46,8 +46,10 @@ import ch.dvbern.ebegu.api.AuthConstants;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxAuthAccessElementCookieData;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
+import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.authentication.AuthAccessElement;
 import ch.dvbern.ebegu.authentication.AuthLoginElement;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AuthorisierterBenutzer;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -90,6 +92,9 @@ public class AuthResource {
 
 	@Inject
 	private LoginProviderInfoRestService loginProviderInfoRestService;
+
+	@Inject
+	private PrincipalBean principal;
 
 	@Path("/portalAccountPage")
 	@Consumes(MediaType.WILDCARD)
@@ -160,7 +165,9 @@ public class AuthResource {
 	@Path("/login")
 	@PermitAll
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response login(@Nonnull JaxBenutzer loginElement) {
+	public Response login(
+			@Nonnull JaxBenutzer loginElement,
+			@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN) Cookie authTokenCookie) {
 		if (configuration.isDummyLoginEnabled()) {
 
 			// zuerst im Container einloggen, sonst schlaegt in den Entities die Mandanten-Validierung fehl
@@ -201,20 +208,32 @@ public class AuthResource {
 			JaxAuthAccessElementCookieData element = convertToJaxAuthAccessElement(access);
 			boolean cookieSecure = isCookieSecure();
 
+			String domain = configuration.getHostdomain();
+
 			// Cookie to store auth_token, HTTP-Only Cookie --> Protection from XSS
 			NewCookie authCookie = new NewCookie(AuthConstants.COOKIE_AUTH_TOKEN, access.getAuthToken(),
-				AuthConstants.COOKIE_PATH, AuthConstants.COOKIE_DOMAIN, "authentication",
+				AuthConstants.COOKIE_PATH, domain, "authentication",
 				AuthConstants.COOKIE_TIMEOUT_SECONDS, cookieSecure, true);
 			// Readable Cookie for XSRF Protection (the Cookie can only be read from our Domain)
 			NewCookie xsrfCookie = new NewCookie(AuthConstants.COOKIE_XSRF_TOKEN, access.getXsrfToken(),
-				AuthConstants.COOKIE_PATH, AuthConstants.COOKIE_DOMAIN, "XSRF",
+				AuthConstants.COOKIE_PATH, domain, "XSRF",
 				AuthConstants.COOKIE_TIMEOUT_SECONDS, cookieSecure, false);
 			// Readable Cookie storing user data
 			NewCookie principalCookie = new NewCookie(AuthConstants.COOKIE_PRINCIPAL, encodeAuthAccessElement(element),
-				AuthConstants.COOKIE_PATH, AuthConstants.COOKIE_DOMAIN, "principal",
+				AuthConstants.COOKIE_PATH, domain, "principal",
 				AuthConstants.COOKIE_TIMEOUT_SECONDS, cookieSecure, false);
+			// Readable Cookie storing the mandant
+			NewCookie mandantCokie = new NewCookie(AuthConstants.COOKIE_MANDANT,
+					benutzer.getMandant() != null ? benutzer.getMandant().getName() : null,
+					AuthConstants.COOKIE_PATH, domain, "mandant",
+					60 * 60 * 24 * 365 * 2, cookieSecure, false);
 
-			return Response.noContent().cookie(authCookie, xsrfCookie, principalCookie).build();
+			return Response.noContent()
+					.cookie(authCookie,
+							xsrfCookie,
+							principalCookie,
+							mandantCokie)
+					.build();
 		}
 
 		LOG.warn("Dummy Login is disabled, returning 410");
@@ -254,9 +273,10 @@ public class AuthResource {
 	@Path("/logout")
 	@PermitAll
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response logout(@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN) Cookie authTokenCookie) {
+	public Response logout(
+			@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN) Cookie authTokenCookie) {
 		try {
-			if (authTokenCookie != null) {
+			if (authTokenCookie != null ) {
 				String authToken = Objects.requireNonNull(authTokenCookie.getValue());
 				if (!authService.logoutAndDelete(authToken)) {
 					LOG.debug("Could not remove authToken in database");
@@ -264,6 +284,7 @@ public class AuthResource {
 			}
 			// Always Respond with expired cookies
 			boolean cookieSecure = isCookieSecure();
+
 			NewCookie authCookie = expireCookie(AuthConstants.COOKIE_AUTH_TOKEN, cookieSecure, true);
 			NewCookie xsrfCookie = expireCookie(AuthConstants.COOKIE_XSRF_TOKEN, cookieSecure, false);
 			NewCookie principalCookie = expireCookie(AuthConstants.COOKIE_PRINCIPAL, cookieSecure, false);
@@ -276,7 +297,7 @@ public class AuthResource {
 
 	@Nonnull
 	private NewCookie expireCookie(@Nonnull String name, boolean secure, boolean httpOnly) {
-		return new NewCookie(name, "", AuthConstants.COOKIE_PATH, AuthConstants.COOKIE_DOMAIN, "", 0, secure, httpOnly);
+		return new NewCookie(name, "", AuthConstants.COOKIE_PATH, configuration.getHostdomain(), "", 0, secure, httpOnly);
 	}
 
 	/**
@@ -292,5 +313,20 @@ public class AuthResource {
 		} catch (UnsupportedEncodingException | JsonProcessingException e) {
 			throw new IllegalStateException("UTF-8 encoding must be available", e);
 		}
+	}
+
+	@Nullable
+	@POST
+	@PermitAll
+	@Path("/set-mandant")
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response setMandant(@Nonnull final JaxMandant mandant) {
+		// Readable Cookie storing the mandant
+		NewCookie mandantCookie = new NewCookie(AuthConstants.COOKIE_MANDANT,
+				mandant.getName(),
+				AuthConstants.COOKIE_PATH, configuration.getHostdomain(), "mandant",
+				60 * 60 * 24 * 365 * 2, isCookieSecure(), false);
+
+		return Response.noContent().cookie(mandantCookie).build();
 	}
 }
