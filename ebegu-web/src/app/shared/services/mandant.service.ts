@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, ReplaySubject} from 'rxjs';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
 import {KiBonMandant} from '../../core/constants/MANDANTS';
@@ -8,16 +9,16 @@ import {KiBonMandant} from '../../core/constants/MANDANTS';
     providedIn: 'root',
 })
 export class MandantService {
-    private readonly LOCAL_STORE_KEY = 'mandant';
 
     private readonly _mandant$: BehaviorSubject<KiBonMandant> =
-        new BehaviorSubject<KiBonMandant>(this.parseHostname());
+        new BehaviorSubject<KiBonMandant>(this.findMandant(this.getCookie('mandant')));
 
     private readonly _multimandantActive$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
     public constructor(
         private readonly windowRef: WindowRef,
         private readonly applicationPropertyService: ApplicationPropertyRS,
+        private readonly authService: AuthServiceRS,
     ) {
         this.applicationPropertyService.getPublicPropertiesCached().then(properties => {
             this._multimandantActive$.next(properties.mulitmandantAktiv);
@@ -57,14 +58,18 @@ export class MandantService {
     public selectMandant(mandant: string, url: string): void {
         const parsedMandant = this.findMandant(mandant);
 
-        this.windowRef.nativeLocalStorage.setItem(this.LOCAL_STORE_KEY, parsedMandant);
+        this.authService.setMandant(parsedMandant).then(() => {
 
+            if (parsedMandant !== KiBonMandant.NONE) {
+                this.redirectToMandantSubdomain(parsedMandant, url);
+            }
+        });
+    }
+
+    public redirectToMandantSubdomain(mandant: KiBonMandant, url: string): void {
         const host = this.removeMandantFromCompleteHost();
-
-        if (parsedMandant !== KiBonMandant.NONE) {
-            this.windowRef.nativeWindow.open(`${this.windowRef.nativeWindow.location.protocol}//${parsedMandant}.${host}/${url}`,
-                '_self');
-        }
+        this.windowRef.nativeWindow.open(`${this.windowRef.nativeWindow.location.protocol}//${mandant}.${host}/${url}`,
+            '_self');
     }
 
     public removeMandantFromCompleteHost(): string {
@@ -82,5 +87,20 @@ export class MandantService {
         });
 
         return shortenedHost;
+    }
+
+    private getCookie(name: string): string {
+        const ca: Array<string> = document.cookie.split(';');
+        const caLen: number = ca.length;
+        const cookieName = `${name}=`;
+        let c: string;
+
+        for (let i = 0; i < caLen; i += 1) {
+            c = ca[i].replace(/^\s+/g, '');
+            if (c.indexOf(cookieName) === 0) {
+                return c.substring(cookieName.length, c.length);
+            }
+        }
+        return '';
     }
 }

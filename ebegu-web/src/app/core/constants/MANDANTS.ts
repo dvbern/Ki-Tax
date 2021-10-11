@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// TODO: This should correspond with the names of the mandant in the db
 export enum KiBonMandant {
     BE = 'be',
     LU = 'lu',
