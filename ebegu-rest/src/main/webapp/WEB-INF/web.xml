@@ -45,6 +45,7 @@
 			<url-pattern>/api/v1/swagger.json</url-pattern>
 			<url-pattern>/api/v1/login</url-pattern>
 			<url-pattern>/api/v1/auth/login</url-pattern>
+			<url-pattern>/api/v1/auth/set-mandant</url-pattern>
 			<url-pattern>/api/v1/auth/connectorPing</url-pattern>
 			<url-pattern>/api/v1/connector/heartbeat</url-pattern>
 			<url-pattern>/api/v1/schulamt/heartbeat</url-pattern>

@@ -54,13 +54,11 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AuthorisierterBenutzer;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.jboss.resteasy.annotations.Body;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -317,9 +315,10 @@ public class AuthResource {
 		}
 	}
 
+	@Nullable
 	@POST
-	@Path("/set-mandant")
 	@PermitAll
+	@Path("/set-mandant")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response setMandant(@Nonnull final JaxMandant mandant) {
 		// Readable Cookie storing the mandant
