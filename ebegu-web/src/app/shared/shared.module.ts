@@ -21,7 +21,6 @@ import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatMenuModule} from '@angular/material/menu';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {UIRouterModule} from '@uirouter/angular';
 import {GuidedTourModule} from 'ngx-guided-tour';
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog/dv-ng-help-dialog.component';
@@ -52,6 +51,7 @@ import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-
 import {DvSearchListComponent} from '../core/dv-search-list/dv-search-list.component';
 import {NewAntragListComponent} from '../core/new-antrag-list/new-antrag-list.component';
 import {NewUserSelectDirective} from '../core/new-antrag-list/new-user-select.directive';
+import {MultiMandantHttpLoader} from '../i18n/MultiMandantHttpLoader';
 import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {KiBonGuidedTourComponent} from '../kibonTour/component/KiBonGuidedTourComponent';
 import {BenutzerRolleComponent} from './component/benutzer-rolle/benutzer-rolle.component';
@@ -79,8 +79,8 @@ import {NextPeriodeStrPipe} from './pipe/next-periode-str.pipe';
 import {PreviousPeriodeStrPipe} from './pipe/previous-periode-str.pipe';
 import {UiViewComponent} from './ui-view/ui-view.component';
 
-export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
-    return new TranslateHttpLoader(http, './assets/translations/translations_', `.json?t=${Date.now()}`);
+export function createTranslateLoader(http: HttpClient): TranslateLoader {
+    return new MultiMandantHttpLoader(http);
 }
 
 @NgModule({
