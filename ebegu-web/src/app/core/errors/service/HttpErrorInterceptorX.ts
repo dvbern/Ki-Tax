@@ -39,10 +39,15 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
             request?.url?.includes('emaillogin/gui/registration/createmaillogin');
     }
 
+    private static isTranslationsNotFoundError(err: HttpErrorResponse, req: HttpRequest<any>): boolean {
+        return err.status === HTTP_ERROR_CODES.NOT_FOUND && req?.url?.includes('translations');
+    }
+
     public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(req).pipe(
             catchError(async (err: HttpErrorResponse) => {
-                if (!(err instanceof HttpErrorResponse)) {
+                if (!(err instanceof HttpErrorResponse) ||
+                    HttpErrorInterceptorX.isTranslationsNotFoundError(err, req)) {
                     throw err;
                 }
 
@@ -52,7 +57,7 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
                     throw err;
                 }
 
-                if (err.status !== HTTP_ERROR_CODES.UNAUTHORIZED ) {
+                if (err.status !== HTTP_ERROR_CODES.UNAUTHORIZED) {
                     // here we could analyze the http status of the response. But instead we check if the  response has
                     // the format of a known response such as errortypes such as violationReport or ExceptionReport and
                     // transform it as such. If the response matches know expected format we create an unexpected
