@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {TSEinschulungTyp} from '../../enums/TSEinschulungTyp';
 import {TSAbstractEntity} from '../../TSAbstractEntity';
 import {TSGemeinde} from '../../TSGemeinde';
 import {TSGesuchsperiode} from '../../TSGesuchsperiode';
@@ -31,13 +32,13 @@ export class TSGemeindeKennzahlen extends TSAbstractEntity {
 
     private _nachfrageDauer: number;
 
-    private _limitierungTfo: string;
+    private _limitierungTfo: TSEinschulungTyp;
 
-    public set limitierungTfo(value: string) {
+    public set limitierungTfo(value: TSEinschulungTyp) {
         this._limitierungTfo = value;
     }
 
-    public get limitierungTfo(): string {
+    public get limitierungTfo(): TSEinschulungTyp {
         return this._limitierungTfo;
     }
 

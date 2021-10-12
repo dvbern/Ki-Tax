@@ -21,6 +21,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {combineLatest, Observable, ReplaySubject, Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../../models/enums/TSEinschulungTyp';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSGemeindeKennzahlen} from '../../../../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
@@ -172,5 +173,9 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
         return this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
             .afterClosed()
             .toPromise();
+    }
+
+    public getEinschulungTypes(): TSEinschulungTyp[] {
+        return getTSEinschulungTypValues();
     }
 }

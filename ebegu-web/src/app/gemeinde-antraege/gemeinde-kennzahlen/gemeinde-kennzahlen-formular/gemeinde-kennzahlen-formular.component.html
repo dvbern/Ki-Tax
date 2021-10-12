@@ -133,19 +133,8 @@
 								[(ngModel)]="antragAndPrincipal[0].limitierungTfo"
 								id="limitierungTfo_id"
 								[disabled]="isFormDisabledFor(antragAndPrincipal)">
-						<mat-option [value]="'VORSCHULE'"
-									translate>{{"INSTITUTION_ALTERSKATEGORIE_VORSCHULE" | translate}}</mat-option>
-						<mat-option [value]="'KINDERGARTEN1'" translate>{{"KINDERGARTEN1" | translate}}</mat-option>
-						<mat-option [value]="'KINDERGARTEN2'" translate>{{"KINDERGARTEN2" | translate}}</mat-option>
-						<mat-option [value]="'KLASSE1'">{{"KLASSE1" | translate}}</mat-option>
-						<mat-option [value]="'KLASSE2'">{{"KLASSE2" | translate}}</mat-option>
-						<mat-option [value]="'KLASSE3'">{{"KLASSE3" | translate}}</mat-option>
-						<mat-option [value]="'KLASSE4'">{{"KLASSE4" | translate}}</mat-option>
-						<mat-option [value]="'KLASSE5'">{{"KLASSE5" | translate}}</mat-option>
-						<mat-option [value]="'KLASSE6'">{{"KLASSE6" | translate}}</mat-option>
-						<mat-option [value]="'KLASSE7'">{{"KLASSE7" | translate}}</mat-option>
-						<mat-option [value]="'KLASSE8'">{{"KLASSE8" | translate}}</mat-option>
-						<mat-option [value]="'KLASSE9'">{{"KLASSE9" | translate}}</mat-option>
+						<mat-option *ngFor="let item of getEinschulungTypes()" [value]="item"
+									translate>{{item | translate}}</mat-option>
 					</mat-select>
 				</mat-form-field>
 			</dv-input-container-x>
