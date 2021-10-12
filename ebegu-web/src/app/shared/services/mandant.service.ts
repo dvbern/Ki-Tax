@@ -4,8 +4,11 @@ import {CookieService} from 'ngx-cookie-service';
 import {Observable, ReplaySubject} from 'rxjs';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
-import {WindowRef} from '../../core/service/windowRef.service';
 import {KiBonMandant} from '../../core/constants/MANDANTS';
+import {LogFactory} from '../../core/logging/LogFactory';
+import {WindowRef} from '../../core/service/windowRef.service';
+
+const LOG = LogFactory.createLog('MandantService');
 
 @Injectable({
     providedIn: 'root',
@@ -20,10 +23,10 @@ export class MandantService {
 
     private readonly _multimandantActive$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
-    private restUtil = new EbeguRestUtil();
+    private readonly restUtil = new EbeguRestUtil();
 
     // Workaround, we somehow get a cyclic dependency when we try to inject this directly
-    private http: HttpClient;
+    private readonly http: HttpClient;
 
     public constructor(
         private readonly windowRef: WindowRef,
@@ -32,18 +35,22 @@ export class MandantService {
         // private readonly authService: AuthServiceRS,
         private readonly cookieService: CookieService,
     ) {
+        this._mandant$.next(MandantService.findMandant(this.cookieService.get('mandant')));
         // y tho?
         this.http = new HttpClient(httpBackend);
         this.http.get(`${CONSTANTS.REST_API}application-properties/public/all`).subscribe(res => {
             const props = this.restUtil.parsePublicAppConfig(res);
             this._multimandantActive$.next(props.mulitmandantAktiv);
-        });
+            // overwrite cookie if not active
+            if (!props.mulitmandantAktiv) {
+                this._mandant$.next(KiBonMandant.NONE);
+            }
+        }, err => LOG.error(err));
         // TODO: reenable once ApplicationPropertyRS is migrated
         // tslint:disable-next-line:no-commented-code
         // this.applicationPropertyService.getPublicPropertiesCached().then(properties => {
         //     this._multimandantActive$.next(properties.mulitmandantAktiv);
         // });
-        this._mandant$.next(MandantService.findMandant(this.cookieService.get('mandant')));
     }
 
     private static findMandant(hostname: string): KiBonMandant {
@@ -81,7 +88,7 @@ export class MandantService {
             if (parsedMandant !== KiBonMandant.NONE) {
                 this.redirectToMandantSubdomain(parsedMandant, url);
             }
-        });
+        }, error => LOG.error(error));
     }
 
     public redirectToMandantSubdomain(mandant: KiBonMandant, url: string): void {

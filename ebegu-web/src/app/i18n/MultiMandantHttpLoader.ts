@@ -17,8 +17,9 @@
 
 import {HttpClient} from '@angular/common/http';
 import {TranslateLoader} from '@ngx-translate/core';
-import {forkJoin, Observable, of} from 'rxjs';
+import {forkJoin, iif, Observable, of} from 'rxjs';
 import {catchError, map, mergeMap} from 'rxjs/operators';
+import {KiBonMandant} from '../core/constants/MANDANTS';
 import {MandantService} from '../shared/services/mandant.service';
 
 interface Resource {
@@ -39,28 +40,38 @@ export class MultiMandantHttpLoader implements TranslateLoader {
 
     public constructor(
         private readonly http: HttpClient,
-        private readonly mandantService: MandantService
+        private readonly mandantService: MandantService,
     ) {
     }
 
     public getTranslation(lang: string): Observable<any> {
         return this.mandantService.mandant$.pipe(
-            mergeMap(mandant => forkJoin([
-                    this.http.get(`${this.DEFAULT_RESOURCE.prefix}${lang}${this.DEFAULT_RESOURCE.suffix}`),
-                    this.http.get(`${this.MANDANT_RESOURCE.prefix}${mandant}_${lang}${this.MANDANT_RESOURCE.suffix}`)
-                        .pipe(catchError(err => {
-                            console.error(err);
-                            return of({});
-                        })),
-                ],
-            ).pipe(
-                map(loadedResources => {
-                    return loadedResources.reduce((defaultResource, resource) => {
-                        return {...defaultResource, ...resource};
-                    });
-                }),
-            )),
+            mergeMap(mandant => iif(() => mandant !== KiBonMandant.NONE,
+                this.createMultimandantRequests(lang, mandant),
+                this.createBaseTranslationRequest(lang)),
+            ),
         );
     }
 
+    private createMultimandantRequests(lang: string, mandant: KiBonMandant): Observable<any> {
+        return forkJoin([
+                this.createBaseTranslationRequest(lang),
+                this.http.get(`${this.MANDANT_RESOURCE.prefix}${mandant}_${lang}${this.MANDANT_RESOURCE.suffix}`)
+                    .pipe(catchError(err => {
+                        console.error(err);
+                        return of({});
+                    })),
+            ],
+        ).pipe(
+            map(loadedResources => {
+                return loadedResources.reduce((defaultResource, resource) => {
+                    return {...defaultResource, ...resource};
+                });
+            }),
+        );
+    }
+
+    private createBaseTranslationRequest(lang: string): Observable<any> {
+        return this.http.get(`${this.DEFAULT_RESOURCE.prefix}${lang}${this.DEFAULT_RESOURCE.suffix}`);
+    }
 }
