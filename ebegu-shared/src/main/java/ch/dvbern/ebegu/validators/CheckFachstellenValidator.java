@@ -49,6 +49,10 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 	public CheckFachstellenValidator() {
 	}
 
+	public CheckFachstellenValidator(@Nonnull EinstellungService einstellungService) {
+		this.einstellungService = einstellungService;
+	}
+
 	@Override
 	public void initialize(CheckFachstellen constraintAnnotation) {
 		// nop
