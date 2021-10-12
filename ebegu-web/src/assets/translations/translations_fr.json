@@ -2579,5 +2579,6 @@
     "GEMEINDE_KENNZAHLEN_WELCHE_KOSTENLENKUNGSMASSNAHMEN": "Welche weiteren Kostenlenkungsmassnahmen wurden getroffen?",
     "GEMEINDE_KENNZAHLEN_AKTIV": "Gemeinde Kennzahlen aktiviert",
     "MULTIMANDANT_AKTIV": "Multimandant aktiviert",
+    "MANDANT_SWITCH": "Mandanten wechseln",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

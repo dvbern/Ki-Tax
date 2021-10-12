@@ -49,7 +49,6 @@ import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.authentication.AuthAccessElement;
 import ch.dvbern.ebegu.authentication.AuthLoginElement;
-import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AuthorisierterBenutzer;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -92,9 +91,6 @@ public class AuthResource {
 
 	@Inject
 	private LoginProviderInfoRestService loginProviderInfoRestService;
-
-	@Inject
-	private PrincipalBean principal;
 
 	@Path("/portalAccountPage")
 	@Consumes(MediaType.WILDCARD)
