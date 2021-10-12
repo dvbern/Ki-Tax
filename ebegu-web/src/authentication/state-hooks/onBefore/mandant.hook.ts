@@ -18,7 +18,6 @@
 import {HookResult, StateService, Transition, TransitionService} from '@uirouter/core';
 import {combineLatest} from 'rxjs';
 import {map, take} from 'rxjs/operators';
-import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {MandantService} from '../../../app/shared/services/mandant.service';
@@ -27,6 +26,8 @@ import {OnBeforePriorities} from './onBeforePriorities';
 const LOG = LogFactory.createLog('mandantHook');
 
 mandantCheck.$inject = ['$transitions', 'MandantService', '$state'];
+
+let alreadyAlerted = false;
 
 /**
  * This file contains a Transition Hook which protects a
@@ -67,6 +68,10 @@ function redirectToMandantSelection(
             map(([mandant, isMultimandanActive]) => {
 
                 if (!isMultimandanActive) {
+                    if (!alreadyAlerted && mandant !== KiBonMandant.NONE) {
+                        alert('Multimandant ist nicht aktiviert');
+                        alreadyAlerted = true;
+                    }
                     return true;
                 }
 
