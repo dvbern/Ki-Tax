@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.validators;
@@ -22,10 +22,15 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
@@ -45,6 +50,12 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 
 	@Inject
 	private EinstellungService einstellungService;
+
+	// We need to pass to EinstellungService a new EntityManager to avoid errors like ConcurrentModificatinoException. So we create it here
+	// and pass it to the methods of EinstellungService we need to call.
+	//http://stackoverflow.com/questions/18267269/correct-way-to-do-an-entitymanager-query-during-hibernate-validation
+	@PersistenceUnit(unitName = "ebeguPersistenceUnit")
+	private EntityManagerFactory entityManagerFactory;
 
 	public CheckFachstellenValidator() {
 	}
@@ -76,8 +87,7 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 	private boolean validateSozialeIndikation(@Nonnull KindContainer kindContainer, @Nonnull ConstraintValidatorContext context) {
 		var gemeinde = kindContainer.getGesuch().extractGemeinde();
 		var gesuchsperiode = kindContainer.getGesuch().getGesuchsperiode();
-		Einstellung schulstufeEinstellung = this.einstellungService
-			.findEinstellung(EinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, gemeinde, gesuchsperiode);
+		Einstellung schulstufeEinstellung = findSchulstufeEinstellung(gemeinde, gesuchsperiode);
 		var maxEinschulungTyp= convertEinstellungToEinschulungTyp(schulstufeEinstellung);
 		Objects.requireNonNull(kindContainer.getKindJA().getEinschulungTyp());
 		if (maxEinschulungTyp.ordinal() >= kindContainer.getKindJA().getEinschulungTyp().ordinal()) {
@@ -85,6 +95,27 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 		}
 		createConstraintViolation("invalid_fachstellen_sozial", maxEinschulungTyp, context);
 		return false;
+	}
+
+	private Einstellung findSchulstufeEinstellung(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+		var em = createEntityManager();
+		Einstellung schulstufeEinstellung = this.einstellungService
+			.findEinstellung(EinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, gemeinde, gesuchsperiode, em);
+		closeEntityManager(em);
+		return schulstufeEinstellung;
+	}
+
+	private EntityManager createEntityManager() {
+		if (entityManagerFactory != null) {
+			return entityManagerFactory.createEntityManager(); // creates a new EntityManager
+		}
+		return null;
+	}
+
+	private void closeEntityManager(EntityManager em) {
+		if (em != null) {
+			em.close();
+		}
 	}
 
 	private boolean validateSprachlicheIndikation(@Nonnull KindContainer kindContainer, @Nonnull ConstraintValidatorContext context) {

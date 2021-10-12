@@ -109,7 +109,8 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 		expect(einstellungServiceMock.findEinstellung(
 			EinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE,
 			kindContainer.getGesuch().extractGemeinde(),
-			kindContainer.getGesuch().getGesuchsperiode()
+			kindContainer.getGesuch().getGesuchsperiode(),
+			null
 		))
 			.andReturn(new Einstellung(
 				EinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE,
