@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.validators.CheckFachstellenValidator;
@@ -55,14 +56,14 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 
 	@Test
 	public void checkKindWithoutFachstelleIsValid() {
-		var kindContainer = createKindContainer(false, EinschulungTyp.KINDERGARTEN2);
+		var kindContainer = createKindContainer(false, EinschulungTyp.KINDERGARTEN2, IntegrationTyp.SOZIALE_INTEGRATION);
 		var isValid = validator.isValid(kindContainer, null);
 		Assertions.assertTrue(isValid);
 	}
 
 	@Test
 	public void checkMaxFachstelleEinstellungOk() {
-		var kindContainer = createKindContainer(true, EinschulungTyp.KINDERGARTEN2);
+		var kindContainer = createKindContainer(true, EinschulungTyp.KINDERGARTEN2, IntegrationTyp.SOZIALE_INTEGRATION);
 		createEinstellungMock(kindContainer, "KINDERGARTEN2");
 		replayAll();
 		var isValid = validator.isValid(kindContainer, null);
@@ -71,7 +72,7 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 
 	@Test
 	public void checkMaxFachstelleEinstellungNotOk() {
-		var kindContainer = createKindContainer(true, EinschulungTyp.KINDERGARTEN2);
+		var kindContainer = createKindContainer(true, EinschulungTyp.KINDERGARTEN2, IntegrationTyp.SOZIALE_INTEGRATION);
 		createEinstellungMock(kindContainer, "KINDERGARTEN1");
 		replayAll();
 		var isValid = validator.isValid(kindContainer, null);
@@ -80,12 +81,26 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 
 	@Test()
 	public void checkWrongEinstellung() {
-		var kindContainer = createKindContainer(true, EinschulungTyp.KINDERGARTEN2);
+		var kindContainer = createKindContainer(true, EinschulungTyp.KINDERGARTEN2, IntegrationTyp.SOZIALE_INTEGRATION);
 		createEinstellungMock(kindContainer, "wrong");
 		replayAll();
 		Assertions.assertThrows(EbeguRuntimeException.class, () -> {
 			validator.isValid(kindContainer, null);
 		});
+	}
+
+	@Test()
+	public void sprachlicheIntegrationVorschulalterValid() {
+		var kindContainer = createKindContainer(true, EinschulungTyp.VORSCHULALTER, IntegrationTyp.SPRACHLICHE_INTEGRATION);
+		var isValid = validator.isValid(kindContainer, null);
+		Assertions.assertTrue(isValid);
+	}
+
+	@Test()
+	public void sprachlicheIntegrationVorschulalterNotValid() {
+		var kindContainer = createKindContainer(true, EinschulungTyp.KINDERGARTEN1, IntegrationTyp.SPRACHLICHE_INTEGRATION);
+		var isValid = validator.isValid(kindContainer, null);
+		Assertions.assertFalse(isValid);
 	}
 
 	private void createEinstellungMock(KindContainer kindContainer, String stufe) {
@@ -101,7 +116,11 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 			));
 	}
 
-	private KindContainer createKindContainer(boolean hasFachstelle, @Nonnull EinschulungTyp einschulungTyp) {
+	private KindContainer createKindContainer(
+		boolean hasFachstelle,
+		@Nonnull EinschulungTyp einschulungTyp,
+		@Nonnull IntegrationTyp integrationTyp
+	) {
 		var fachstelle = hasFachstelle ? new Fachstelle() : null;
 		var pensumFachstelle = new PensumFachstelle();
 		var kind = new Kind();
@@ -112,6 +131,7 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 		var dossier = new Dossier();
 
 		pensumFachstelle.setFachstelle(fachstelle);
+		pensumFachstelle.setIntegrationTyp(integrationTyp);
 		kind.setPensumFachstelle(pensumFachstelle);
 		kind.setEinschulungTyp(einschulungTyp);
 		kindContainer.setKindJA(kind);

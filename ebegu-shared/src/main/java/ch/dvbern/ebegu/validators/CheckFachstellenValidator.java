@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.validators;
 
+import java.text.MessageFormat;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -28,8 +29,12 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.ebegu.util.ValidationMessageUtil;
 
 /**
  *  Fachstellen dürfen nur im Vorschulalter gesetzt werden: Eine soziale oder sprachliche Indikation
@@ -58,13 +63,32 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 			// Kein PensumFachstelle
 			return true;
 		}
+		if (kindContainer.getKindJA().getPensumFachstelle().getIntegrationTyp() == IntegrationTyp.SOZIALE_INTEGRATION) {
+			return validateSozialeIndikation(kindContainer, context);
+		}
+		return validateSprachlicheIndikation(kindContainer, context);
+	}
+
+	private boolean validateSozialeIndikation(@Nonnull KindContainer kindContainer, @Nonnull ConstraintValidatorContext context) {
 		var gemeinde = kindContainer.getGesuch().extractGemeinde();
 		var gesuchsperiode = kindContainer.getGesuch().getGesuchsperiode();
 		Einstellung schulstufeEinstellung = this.einstellungService
 			.findEinstellung(EinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, gemeinde, gesuchsperiode);
 		var maxEinschulungTyp= convertEinstellungToEinschulungTyp(schulstufeEinstellung);
 		Objects.requireNonNull(kindContainer.getKindJA().getEinschulungTyp());
-		return maxEinschulungTyp.ordinal() >= kindContainer.getKindJA().getEinschulungTyp().ordinal();
+		if (maxEinschulungTyp.ordinal() >= kindContainer.getKindJA().getEinschulungTyp().ordinal()) {
+			return true;
+		}
+		createConstraintViolation("invalid_fachstellen_sozial", maxEinschulungTyp, context);
+		return false;
+	}
+
+	private boolean validateSprachlicheIndikation(@Nonnull KindContainer kindContainer, @Nonnull ConstraintValidatorContext context) {
+		if (kindContainer.getKindJA().getEinschulungTyp() == EinschulungTyp.VORSCHULALTER) {
+			return true;
+		}
+		createConstraintViolation("invalid_fachstellen_sprachlich", EinschulungTyp.VORSCHULALTER, context);
+		return false;
 	}
 
 	@Nonnull
@@ -81,5 +105,22 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 				+ "nicht gefunden");
 		}
 		return einschulungTyp;
+	}
+
+	private void createConstraintViolation(
+		@Nonnull String translationKey,
+		@Nonnull EinschulungTyp einschulungTyp,
+		@Nonnull ConstraintValidatorContext context
+	) {
+		if (context != null) {
+			String message = ValidationMessageUtil.getMessage(translationKey);
+			String einschulungTypTranslated = ServerMessageUtil.translateEnumValue(einschulungTyp, LocaleThreadLocal.get());
+			message = MessageFormat.format(message, einschulungTypTranslated);
+
+			context.disableDefaultConstraintViolation();
+			context.buildConstraintViolationWithTemplate(message)
+				.addPropertyNode("pensumFachstelle.pensum")
+				.addConstraintViolation();
+		}
 	}
 }
