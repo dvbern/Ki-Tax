@@ -53,8 +53,7 @@ public enum MergeFieldGemeinden implements MergeFieldProvider {
 	nachfrageErfuelltTitle(new SimpleMergeField<>("nachfrageErfuelltTitle", STRING_CONVERTER)),
 	nachfrageAnzahlTitle(new SimpleMergeField<>("nachfrageAnzahlTitle", STRING_CONVERTER)),
 	nachfrageDauerTitle(new SimpleMergeField<>("nachfrageDauerTitle", STRING_CONVERTER)),
-	kostenlenkungAndereTitle(new SimpleMergeField<>("kostenlenkungAndereTitle", STRING_CONVERTER)),
-	welcheKostenlenkungsmassnahmenTitle(new SimpleMergeField<>("welcheKostenlenkungsmassnahmenTitle", STRING_CONVERTER)),
+	limitierungtfoTitle(new SimpleMergeField<>("limitierungTfoTitle", STRING_CONVERTER)),
 	erwerbspensumZuschlagTitle(new SimpleMergeField<>("erwerbspensumZuschlagTitle", STRING_CONVERTER)),
 
 	bfsNummer(new SimpleMergeField<>("bfsNummer", LONG_CONVERTER)),
@@ -71,8 +70,7 @@ public enum MergeFieldGemeinden implements MergeFieldProvider {
 	nachfrageErfuellt(new SimpleMergeField<>("nachfrageErfuellt", BOOLEAN_X_CONVERTER)),
 	nachfrageAnzahl(new SimpleMergeField<>("nachfrageAnzahl", BIGDECIMAL_CONVERTER)),
 	nachfrageDauer(new SimpleMergeField<>("nachfrageDauer", BIGDECIMAL_CONVERTER)),
-	kostenlenkungAndere(new SimpleMergeField<>("kostenlenkungAndere", BOOLEAN_X_CONVERTER)),
-	welcheKostenlenkungsmassnahmen(new SimpleMergeField<>("welcheKostenlenkungsmassnahmen", STRING_CONVERTER)),
+	limitierungTfo(new SimpleMergeField<>("limitierungTfo", STRING_CONVERTER)),
 	erwerbspensumZuschlag(new SimpleMergeField<>("erwerbspensumZuschlag", BIGDECIMAL_CONVERTER));
 
 	@Nonnull

@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {TSEinschulungTyp} from '../../enums/TSEinschulungTyp';
 import {TSAbstractEntity} from '../../TSAbstractEntity';
 import {TSGemeinde} from '../../TSGemeinde';
 import {TSGesuchsperiode} from '../../TSGesuchsperiode';
@@ -23,30 +24,22 @@ import {TSGemeindeKennzahlenStatus} from './TSGemeindeKennzahlenStatus';
 export class TSGemeindeKennzahlen extends TSAbstractEntity {
     private _gemeinde: TSGemeinde;
     private _gesuchsperiode: TSGesuchsperiode;
-
     private _status: TSGemeindeKennzahlenStatus;
-    private _nachfrageErfuellt: boolean;
 
+    private _nachfrageErfuellt: boolean;
+    private _gemeindeKontingentiert: boolean;
     private _nachfrageAnzahl: number;
 
     private _nachfrageDauer: number;
-    private _kostenlenkungAndere: boolean;
-    private _welcheKostenlenkungsmassnahmen: string;
 
-    public set welcheKostenlenkungsmassnahmen(value: string) {
-        this._welcheKostenlenkungsmassnahmen = value;
+    private _limitierungTfo: TSEinschulungTyp;
+
+    public set limitierungTfo(value: TSEinschulungTyp) {
+        this._limitierungTfo = value;
     }
 
-    public get welcheKostenlenkungsmassnahmen(): string {
-        return this._welcheKostenlenkungsmassnahmen;
-    }
-
-    public get kostenlenkungAndere(): boolean {
-        return this._kostenlenkungAndere;
-    }
-
-    public set kostenlenkungAndere(value: boolean) {
-        this._kostenlenkungAndere = value;
+    public get limitierungTfo(): TSEinschulungTyp {
+        return this._limitierungTfo;
     }
 
     public get nachfrageDauer(): number {
@@ -71,6 +64,14 @@ export class TSGemeindeKennzahlen extends TSAbstractEntity {
 
     public set nachfrageErfuellt(value: boolean) {
         this._nachfrageErfuellt = value;
+    }
+
+    public get gemeindeKontingentiert(): boolean {
+        return this._gemeindeKontingentiert;
+    }
+
+    public set gemeindeKontingentiert(value: boolean) {
+        this._gemeindeKontingentiert = value;
     }
 
     public get status(): TSGemeindeKennzahlenStatus {
