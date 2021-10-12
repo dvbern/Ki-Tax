@@ -14,6 +14,7 @@
  */
 
 import * as angular from 'angular';
+import {CookieService} from 'ngx-cookie-service';
 import {Observable, of} from 'rxjs';
 import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../app/core/service/benutzerRSX.rest';
@@ -22,6 +23,7 @@ import {WindowRef} from '../app/core/service/windowRef.service';
 import {I18nServiceRSRest} from '../app/i18n/services/i18nServiceRS.rest';
 import {MandantService} from '../app/shared/services/mandant.service';
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
+import {AuthServiceRS} from '../authentication/service/AuthServiceRS.rest';
 import {InternePendenzenRS} from '../gesuch/component/internePendenzenView/internePendenzenRS.rest';
 import {GesuchGenerator} from '../gesuch/service/gesuchGenerator';
 import {TSAuthEvent} from '../models/enums/TSAuthEvent';
@@ -87,6 +89,12 @@ class I18nServiceMock extends I18nServiceRSRest {
     }
 }
 
+class CookieServiceMock extends CookieService {
+    public get(): string {
+        return '';
+    }
+}
+
 export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('I18nServiceRSRest', I18nServiceMock);
     $provide.service('AuthLifeCycleService', AuthLifeCycleServiceMock);
@@ -95,8 +103,10 @@ export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('BenutzerRS', BenutzerRSX);
     $provide.service('VersionService', VersionService);
     $provide.service('MandantService', MandantService);
+    $provide.service('cookieService', CookieServiceMock);
     $provide.service('windowRef', WindowRef);
     $provide.service('applicationPropertyService', ApplicationPropertyRS);
+    $provide.service('authService', AuthServiceRS);
     $provide.value('LOCALE_ID', 'de-CH');
     $provide.value('platformId', 'de-CH');
 }

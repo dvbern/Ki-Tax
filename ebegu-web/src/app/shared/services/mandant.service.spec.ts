@@ -1,4 +1,5 @@
 import {TestBed} from '@angular/core/testing';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {KiBonMandant} from '../../core/constants/MANDANTS';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
@@ -13,6 +14,7 @@ describe('MandantService', () => {
     const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
         ['isDevMode', 'getPublicPropertiesCached']);
     applicationPropertyRSSpy.getPublicPropertiesCached.and.resolveTo({} as any);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$', 'isOneOfRoles']);
     const mockWindow = {
         location: {
             hostname: '',
@@ -49,6 +51,10 @@ describe('MandantService', () => {
                     provide: ApplicationPropertyRS,
                     useValue: applicationPropertyRSSpy,
                 },
+                {
+                    provide: AuthServiceRS,
+                    useValue: authServiceSpy
+                }
             ],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .overrideProvider(WindowRef, {useValue: windowRefSpy});
