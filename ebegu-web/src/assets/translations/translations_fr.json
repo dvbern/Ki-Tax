@@ -539,7 +539,7 @@
     "INSTITUTION_OEFFNUNGSTAGE_PRO_JAHR": "Jours d'ouverture par année",
     "INSTITUTION_AUSLASTUNG_INSTITUTIONEN": "Utilisation des institutions au 01.01. en %",
     "INSTITUTION_ANZAHL_KINDER_WARTELISTE": "Nombre d'enfants sur la liste d'attente au 01.01.",
-    "INSTITUTION_SUMME_PENSUM_WARTELISTE": "Somme des pensions sur la liste d'attente",
+    "INSTITUTION_SUMME_PENSUM_WARTELISTE": "Zu welchem Pensum stehen die Kinder per 01.01. gesamthaft auf der Warteliste",
     "INSTITUTION_DAUER_WARTELISTE": "Durée sur la liste d'attente au 01.01.",
     "INSTITUTION_FRUEH_EROEFFNUNG": "Ouverture avant 06:30",
     "INSTITUTION_SPAET_EROEFFNUNG": "Ouverture après 18:30",

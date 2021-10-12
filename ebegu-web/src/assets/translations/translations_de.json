@@ -539,7 +539,7 @@
     "INSTITUTION_OEFFNUNGSTAGE_PRO_JAHR": "Öffnungstage pro Jahr",
     "INSTITUTION_AUSLASTUNG_INSTITUTIONEN": "Auslastung der Institutionen per 01.01 in %",
     "INSTITUTION_ANZAHL_KINDER_WARTELISTE": "Anzahl Kinder auf der Warteliste per 01.01",
-    "INSTITUTION_SUMME_PENSUM_WARTELISTE": "Summe Pensum auf Warteliste",
+    "INSTITUTION_SUMME_PENSUM_WARTELISTE": "Zu welchem Pensum stehen die Kinder per 01.01. gesamthaft auf der Warteliste?",
     "INSTITUTION_DAUER_WARTELISTE": "Dauer auf Warteliste in Monaten per 01.01",
     "INSTITUTION_FRUEH_EROEFFNUNG": "Öffnung vor 06:30",
     "INSTITUTION_SPAET_EROEFFNUNG": "Öffnung nach 18:30",
