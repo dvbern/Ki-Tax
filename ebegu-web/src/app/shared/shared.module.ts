@@ -77,10 +77,11 @@ import {EbeguDateTimePipe} from './pipe/ebegu-date-time.pipe';
 import {EbeguDatePipe} from './pipe/ebegu-date.pipe';
 import {NextPeriodeStrPipe} from './pipe/next-periode-str.pipe';
 import {PreviousPeriodeStrPipe} from './pipe/previous-periode-str.pipe';
+import {MandantService} from './services/mandant.service';
 import {UiViewComponent} from './ui-view/ui-view.component';
 
-export function createTranslateLoader(http: HttpClient): TranslateLoader {
-    return new MultiMandantHttpLoader(http);
+export function createTranslateLoader(http: HttpClient, mandantService: MandantService): TranslateLoader {
+    return new MultiMandantHttpLoader(http, mandantService);
 }
 
 @NgModule({
@@ -96,7 +97,7 @@ export function createTranslateLoader(http: HttpClient): TranslateLoader {
             loader: {
                 provide: TranslateLoader,
                 useFactory: (createTranslateLoader),
-                deps: [HttpClient],
+                deps: [HttpClient, MandantService],
             },
         }),
         GuidedTourModule.forRoot(),

@@ -1,8 +1,9 @@
+import {HttpBackend, HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {CookieService} from 'ngx-cookie-service';
 import {Observable, ReplaySubject} from 'rxjs';
-import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {WindowRef} from '../../core/service/windowRef.service';
 import {KiBonMandant} from '../../core/constants/MANDANTS';
 
@@ -19,15 +20,29 @@ export class MandantService {
 
     private readonly _multimandantActive$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
+    private restUtil = new EbeguRestUtil();
+
+    // Workaround, we somehow get a cyclic dependency when we try to inject this directly
+    private http: HttpClient;
+
     public constructor(
         private readonly windowRef: WindowRef,
-        private readonly applicationPropertyService: ApplicationPropertyRS,
-        private readonly authService: AuthServiceRS,
-        private readonly cookieService: CookieService
+        private readonly httpBackend: HttpBackend,
+        // private readonly applicationPropertyService: ApplicationPropertyRS,
+        // private readonly authService: AuthServiceRS,
+        private readonly cookieService: CookieService,
     ) {
-        this.applicationPropertyService.getPublicPropertiesCached().then(properties => {
-            this._multimandantActive$.next(properties.mulitmandantAktiv);
+        // y tho?
+        this.http = new HttpClient(httpBackend);
+        this.http.get(`${CONSTANTS.REST_API}application-properties/public/all`).subscribe(res => {
+            const props = this.restUtil.parsePublicAppConfig(res);
+            this._multimandantActive$.next(props.mulitmandantAktiv);
         });
+        // TODO: reenable once ApplicationPropertyRS is migrated
+        // tslint:disable-next-line:no-commented-code
+        // this.applicationPropertyService.getPublicPropertiesCached().then(properties => {
+        //     this._multimandantActive$.next(properties.mulitmandantAktiv);
+        // });
         this._mandant$.next(MandantService.findMandant(this.cookieService.get('mandant')));
     }
 
@@ -60,7 +75,8 @@ export class MandantService {
     public selectMandant(mandant: string, url: string): void {
         const parsedMandant = MandantService.findMandant(mandant);
 
-        this.authService.setMandant(parsedMandant).then(() => {
+        // TODO: Restore AuthService once migrated
+        this.http.post(CONSTANTS.REST_API + 'auth/set-mandant', {name: parsedMandant}).subscribe(() => {
 
             if (parsedMandant !== KiBonMandant.NONE) {
                 this.redirectToMandantSubdomain(parsedMandant, url);

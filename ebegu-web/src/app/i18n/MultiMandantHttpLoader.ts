@@ -19,7 +19,7 @@ import {HttpClient} from '@angular/common/http';
 import {TranslateLoader} from '@ngx-translate/core';
 import {forkJoin, Observable, of} from 'rxjs';
 import {catchError, map, mergeMap} from 'rxjs/operators';
-import {TSMandant} from '../../models/TSMandant';
+import {MandantService} from '../shared/services/mandant.service';
 
 interface Resource {
     prefix: string;
@@ -39,15 +39,15 @@ export class MultiMandantHttpLoader implements TranslateLoader {
 
     public constructor(
         private readonly http: HttpClient,
+        private readonly mandantService: MandantService
     ) {
     }
 
     public getTranslation(lang: string): Observable<any> {
-        // TODO: replace with mandant service
-        return of(new TSMandant('be')).pipe(
+        return this.mandantService.mandant$.pipe(
             mergeMap(mandant => forkJoin([
                     this.http.get(`${this.DEFAULT_RESOURCE.prefix}${lang}${this.DEFAULT_RESOURCE.suffix}`),
-                    this.http.get(`${this.MANDANT_RESOURCE.prefix}${mandant.name}_${lang}${this.MANDANT_RESOURCE.suffix}`)
+                    this.http.get(`${this.MANDANT_RESOURCE.prefix}${mandant}_${lang}${this.MANDANT_RESOURCE.suffix}`)
                         .pipe(catchError(err => {
                             console.error(err);
                             return of({});
