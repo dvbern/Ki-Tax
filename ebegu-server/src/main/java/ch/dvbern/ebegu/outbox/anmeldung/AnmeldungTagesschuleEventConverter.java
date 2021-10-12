@@ -131,7 +131,6 @@ public class AnmeldungTagesschuleEventConverter {
 			.setVon(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb())
 			.setBis(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis())
 			.setBetreuungsKostenProStunde(tsCalculationResult.getGebuehrProStunde())
-			// TODO Abklaeren wieso minuten pro woche und nicht stunden wie im kibon
 			.setBetreuungsMinutenProWoche(tsCalculationResult.getBetreuungszeitProWoche())
 			.setTotalKostenProWoche(tsCalculationResult.getTotalKostenProWoche())
 			.setVerpflegungsKostenProWoche(tsCalculationResult.getVerpflegungskosten())
