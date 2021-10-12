@@ -2,9 +2,9 @@ import {Injectable} from '@angular/core';
 import {CookieService} from 'ngx-cookie-service';
 import {Observable, ReplaySubject} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {KiBonMandant} from '../../core/constants/MANDANTS';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
-import {KiBonMandant} from '../../core/constants/MANDANTS';
 
 @Injectable({
     providedIn: 'root',
@@ -23,7 +23,7 @@ export class MandantService {
         private readonly windowRef: WindowRef,
         private readonly applicationPropertyService: ApplicationPropertyRS,
         private readonly authService: AuthServiceRS,
-        private readonly cookieService: CookieService
+        private readonly cookieService: CookieService,
     ) {
         this.applicationPropertyService.getPublicPropertiesCached().then(properties => {
             this._multimandantActive$.next(properties.mulitmandantAktiv);
@@ -37,6 +37,8 @@ export class MandantService {
                 return KiBonMandant.BE;
             case 'lu':
                 return KiBonMandant.LU;
+            case 'so':
+                return KiBonMandant.SO;
             default:
                 return KiBonMandant.NONE;
         }
