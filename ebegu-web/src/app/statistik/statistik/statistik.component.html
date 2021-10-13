@@ -1025,12 +1025,12 @@
                             <span></span>
                         </th>
                         <td mat-cell *matCellDef="let element" class="ellipsis">
-                            <span [title]="'DOKUMENT_DOWNLOAD' | translate" class="fa fa-download"></span>
+                            <span *ngIf="element.batchJobStatus === 'FINISHED'" [title]="'DOKUMENT_DOWNLOAD' | translate" class="fa fa-download"></span>
                         </td>
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="columndefs"></tr>
-                    <tr mat-row *matRowDef="let row; columns: columndefs;" (click)="downloadStatistik(row)"></tr>
+                    <tr mat-row [ngClass]="{'ready': row.batchJobStatus === 'FINISHED'}" *matRowDef="let row; columns: columndefs;" (click)="downloadStatistik(row)"></tr>
 
                 </mat-table>
 
