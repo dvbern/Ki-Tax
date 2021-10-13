@@ -67,8 +67,9 @@ function redirectToMandantSelection(
         .pipe(
             map(([mandant, isMultimandanActive]) => {
 
+                const mandantFromHostname = mandantService.parseHostnameForMandant();
                 if (!isMultimandanActive) {
-                    if (!alreadyAlerted && mandant !== KiBonMandant.NONE) {
+                    if (!alreadyAlerted && mandantFromHostname !== KiBonMandant.NONE) {
                         alert('Multimandant ist nicht aktiviert');
                         alreadyAlerted = true;
                     }
@@ -78,19 +79,16 @@ function redirectToMandantSelection(
                 LOG.debug('checking mandant', mandant);
                 const path = transition.router.stateService.href(transition.to(), transition.params());
 
-                const mandantFromHostname = mandantService.parseHostnameForMandant();
-                if (mandant === KiBonMandant.NONE) {
-                    if (mandantFromHostname === KiBonMandant.NONE) {
+                if (mandantFromHostname === KiBonMandant.NONE) {
+                    if (mandant === KiBonMandant.NONE) {
                         console.log('redirecting to mandant selection');
                         return $state.target('mandant', {path});
                     }
-                    mandantService.selectMandant(mandantFromHostname, path);
-                    return true;
-                }
-
-                if (mandant !== mandantFromHostname) {
                     mandantService.redirectToMandantSubdomain(mandant, path);
                     return false;
+                }
+                if (mandant !== mandantFromHostname) {
+                    mandantService.setMandantCookie(mandantFromHostname);
                 }
 
                 // continue the original transition

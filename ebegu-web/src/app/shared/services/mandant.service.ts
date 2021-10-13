@@ -62,12 +62,16 @@ export class MandantService {
     public selectMandant(mandant: string, url: string): void {
         const parsedMandant = MandantService.findMandant(mandant);
 
-        this.authService.setMandant(parsedMandant).then(() => {
+        this.setMandantCookie(parsedMandant).then(() => {
 
             if (parsedMandant !== KiBonMandant.NONE) {
                 this.redirectToMandantSubdomain(parsedMandant, url);
             }
         });
+    }
+
+    public setMandantCookie(mandant: KiBonMandant): Promise<any> {
+        return this.authService.setMandant(mandant) as Promise<any>;
     }
 
     public redirectToMandantSubdomain(mandant: KiBonMandant, url: string): void {
