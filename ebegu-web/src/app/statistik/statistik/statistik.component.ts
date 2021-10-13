@@ -114,7 +114,9 @@ export class StatistikComponent implements OnInit, OnDestroy {
 
         this.institutionStammdatenRS.getAllTagesschulenForCurrentBenutzer()
             .then((tagesschulenStammdatenList: TSInstitutionStammdaten[]) => {
-                this.tagesschulenStammdatenList = StatistikComponent.sortInstitutions(tagesschulenStammdatenList);
+                this.tagesschulenStammdatenList = tagesschulenStammdatenList
+                    .filter(t => t.institutionStammdatenTagesschule?.einstellungenTagesschule);
+                this.tagesschulenStammdatenList = StatistikComponent.sortInstitutions(this.tagesschulenStammdatenList);
                 this.cd.markForCheck();
             });
         this.updateShowMahlzeitenStatistik();
