@@ -45,16 +45,16 @@ public class JaxGemeindeKennzahlen extends JaxAbstractDTO {
 	private Boolean nachfrageErfuellt;
 
 	@Nullable
+	private Boolean gemeindeKontingentiert;
+
+	@Nullable
 	private BigInteger nachfrageAnzahl;
 
 	@Nullable
 	private BigDecimal nachfrageDauer;
 
 	@Nullable
-	private Boolean kostenlenkungAndere;
-
-	@Nullable
-	private String welcheKostenlenkungsmassnahmen;
+	private String limitierungTfo;
 
 	@Nonnull
 	public JaxGemeinde getGemeinde() {
@@ -102,21 +102,12 @@ public class JaxGemeindeKennzahlen extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public Boolean getKostenlenkungAndere() {
-		return kostenlenkungAndere;
+	public String getLimitierungTfo() {
+		return limitierungTfo;
 	}
 
-	public void setKostenlenkungAndere(@Nullable Boolean kostenlenkungAndere) {
-		this.kostenlenkungAndere = kostenlenkungAndere;
-	}
-
-	@Nullable
-	public String getWelcheKostenlenkungsmassnahmen() {
-		return welcheKostenlenkungsmassnahmen;
-	}
-
-	public void setWelcheKostenlenkungsmassnahmen(@Nullable String welcheKostenlenkungsmassnahmen) {
-		this.welcheKostenlenkungsmassnahmen = welcheKostenlenkungsmassnahmen;
+	public void setLimitierungTfo(@Nullable String limitierungTfo) {
+		this.limitierungTfo = limitierungTfo;
 	}
 
 	@Nonnull
@@ -127,4 +118,14 @@ public class JaxGemeindeKennzahlen extends JaxAbstractDTO {
 	public void setStatus(@Nonnull GemeindeKennzahlenStatus status) {
 		this.status = status;
 	}
+
+	@Nullable
+	public Boolean getGemeindeKontingentiert() {
+		return gemeindeKontingentiert;
+	}
+
+	public void setGemeindeKontingentiert(@Nullable Boolean gemeindeKontingentiert) {
+		this.gemeindeKontingentiert = gemeindeKontingentiert;
+	}
+
 }

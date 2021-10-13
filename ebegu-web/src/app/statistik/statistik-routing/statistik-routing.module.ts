@@ -1,40 +1,48 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
-import {TSRoleUtil} from '../../utils/TSRoleUtil';
+import {NgModule} from '@angular/core';
+import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {StatistikComponent} from '../statistik/statistik.component';
 
-statistikRun.$inject = ['RouterHelper'];
-
-export function statistikRun(routerHelper: RouterHelper): void {
-    routerHelper.configureStates(ng1States);
-}
-
-const ng1States: Ng1StateDeclaration[] = [
+const states: NgHybridStateDeclaration[] = [
     {
         parent: 'app',
-        abstract: true,
         name: 'statistik',
+        abstract: true,
         data: {
             roles: TSRoleUtil.getAllRolesForStatistik(),
         },
     },
     {
         name: 'statistik.view',
-        template: '<statistik-view flex="auto" class="overflow-scroll">',
         url: '/statistik',
-    },
+        component: StatistikComponent
+    }
 ];
+
+@NgModule({
+    imports: [
+        UIRouterUpgradeModule.forChild({states}),
+    ],
+    exports: [
+        UIRouterUpgradeModule,
+    ],
+})
+export class StatistikRoutingModule {
+}

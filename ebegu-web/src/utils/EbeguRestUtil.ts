@@ -3376,12 +3376,12 @@ export class EbeguRestUtil {
         }
 
         testBatchJobInfo.batchStatus = batchJobInfoFromServer.batchStatus;
-        testBatchJobInfo.createTime = batchJobInfoFromServer.createTime;
-        testBatchJobInfo.endTime = batchJobInfoFromServer.endTime;
+        testBatchJobInfo.createTime = DateUtil.localDateTimeToMoment(batchJobInfoFromServer.createTime);
+        testBatchJobInfo.endTime = DateUtil.localDateTimeToMoment(batchJobInfoFromServer.endTime);
         testBatchJobInfo.executionId = batchJobInfoFromServer.executionId;
         testBatchJobInfo.jobName = batchJobInfoFromServer.jobName;
-        testBatchJobInfo.lastUpdatedTime = batchJobInfoFromServer.lastUpdatedTime;
-        testBatchJobInfo.startTime = batchJobInfoFromServer.startTime;
+        testBatchJobInfo.lastUpdatedTime = DateUtil.localDateTimeToMoment(batchJobInfoFromServer.lastUpdatedTime);
+        testBatchJobInfo.startTime = DateUtil.localDateTimeToMoment(batchJobInfoFromServer.startTime);
 
         return testBatchJobInfo;
     }
@@ -5430,10 +5430,10 @@ export class EbeguRestUtil {
         gemeindeKennzahlenRest.gesuchsperiode = this.gesuchsperiodeToRestObject({}, gemeindeKennzahlen.gesuchsperiode);
 
         gemeindeKennzahlenRest.nachfrageErfuellt = gemeindeKennzahlen.nachfrageErfuellt;
+        gemeindeKennzahlenRest.gemeindeKontingentiert = gemeindeKennzahlen.gemeindeKontingentiert;
         gemeindeKennzahlenRest.nachfrageAnzahl = gemeindeKennzahlen.nachfrageAnzahl;
         gemeindeKennzahlenRest.nachfrageDauer = gemeindeKennzahlen.nachfrageDauer;
-        gemeindeKennzahlenRest.kostenlenkungAndere = gemeindeKennzahlen.kostenlenkungAndere;
-        gemeindeKennzahlenRest.welcheKostenlenkungsmassnahmen = gemeindeKennzahlen.welcheKostenlenkungsmassnahmen;
+        gemeindeKennzahlenRest.limitierungTfo = gemeindeKennzahlen.limitierungTfo;
 
         return gemeindeKennzahlenRest;
     }
@@ -5453,10 +5453,10 @@ export class EbeguRestUtil {
         gemeindeKennzahlen.status = gemeindeKennzahlenFromServer.status;
 
         gemeindeKennzahlen.nachfrageErfuellt = gemeindeKennzahlenFromServer.nachfrageErfuellt;
+        gemeindeKennzahlen.gemeindeKontingentiert = gemeindeKennzahlenFromServer.gemeindeKontingentiert;
         gemeindeKennzahlen.nachfrageAnzahl = gemeindeKennzahlenFromServer.nachfrageAnzahl;
         gemeindeKennzahlen.nachfrageDauer = gemeindeKennzahlenFromServer.nachfrageDauer;
-        gemeindeKennzahlen.kostenlenkungAndere = gemeindeKennzahlenFromServer.kostenlenkungAndere;
-        gemeindeKennzahlen.welcheKostenlenkungsmassnahmen = gemeindeKennzahlenFromServer.welcheKostenlenkungsmassnahmen;
+        gemeindeKennzahlen.limitierungTfo = gemeindeKennzahlenFromServer.limitierungTfo;
 
         return gemeindeKennzahlen;
     }

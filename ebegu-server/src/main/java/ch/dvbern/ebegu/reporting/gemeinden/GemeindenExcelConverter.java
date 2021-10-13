@@ -73,8 +73,7 @@ public class GemeindenExcelConverter implements ExcelConverter {
 				gemeindeDatenRegisterGroup.addValue(MergeFieldGemeinden.nachfrageErfuellt, gemeindenDatenDataRow.getNachfrageErfuellt());
 				gemeindeDatenRegisterGroup.addValue(MergeFieldGemeinden.nachfrageAnzahl, gemeindenDatenDataRow.getNachfrageAnzahl());
 				gemeindeDatenRegisterGroup.addValue(MergeFieldGemeinden.nachfrageDauer, gemeindenDatenDataRow.getNachfrageDauer());
-				gemeindeDatenRegisterGroup.addValue(MergeFieldGemeinden.kostenlenkungAndere, gemeindenDatenDataRow.getKostenlenkungAndere());
-				gemeindeDatenRegisterGroup.addValue(MergeFieldGemeinden.welcheKostenlenkungsmassnahmen, gemeindenDatenDataRow.getWelcheKostenlenkungsmassnahmen());
+				gemeindeDatenRegisterGroup.addValue(MergeFieldGemeinden.limitierungTfo, gemeindenDatenDataRow.getLimitierungTfo());
 			});
 		});
 
@@ -105,7 +104,6 @@ public class GemeindenExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldGemeinden.nachfrageErfuelltTitle, ServerMessageUtil.getMessage("Reports_nachfrageErfuelltTitle", locale));
 		excelMerger.addValue(MergeFieldGemeinden.nachfrageAnzahlTitle, ServerMessageUtil.getMessage("Reports_nachfrageAnzahlTitle", locale));
 		excelMerger.addValue(MergeFieldGemeinden.nachfrageDauerTitle, ServerMessageUtil.getMessage("Reports_nachfrageDauerTitle", locale));
-		excelMerger.addValue(MergeFieldGemeinden.kostenlenkungAndereTitle, ServerMessageUtil.getMessage("Reports_kostenlenkungAndereTitle", locale));
-		excelMerger.addValue(MergeFieldGemeinden.welcheKostenlenkungsmassnahmenTitle, ServerMessageUtil.getMessage("Reports_wecheKostenlenkungsmassnahmenTitle", locale));
+		excelMerger.addValue(MergeFieldGemeinden.limitierungtfoTitle, ServerMessageUtil.getMessage("Reports_limitierungTfoTitle", locale));
 	}
 }

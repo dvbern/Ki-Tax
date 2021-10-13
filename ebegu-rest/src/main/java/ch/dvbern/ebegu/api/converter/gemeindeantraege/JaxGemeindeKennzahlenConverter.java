@@ -53,10 +53,10 @@ public class JaxGemeindeKennzahlenConverter extends AbstractConverter {
 		//don't set status from client
 
 		gemeindeKennzahlen.setNachfrageErfuellt(jaxGemeindeKennzahlen.getNachfrageErfuellt());
+		gemeindeKennzahlen.setGemeindeKontingentiert(jaxGemeindeKennzahlen.getGemeindeKontingentiert());
 		gemeindeKennzahlen.setNachfrageAnzahl(jaxGemeindeKennzahlen.getNachfrageAnzahl());
 		gemeindeKennzahlen.setNachfrageDauer(jaxGemeindeKennzahlen.getNachfrageDauer());
-		gemeindeKennzahlen.setKostenlenkungAndere(jaxGemeindeKennzahlen.getKostenlenkungAndere());
-		gemeindeKennzahlen.setWelcheKostenlenkungsmassnahmen(jaxGemeindeKennzahlen.getWelcheKostenlenkungsmassnahmen());
+		gemeindeKennzahlen.setLimitierungTfo(jaxGemeindeKennzahlen.getLimitierungTfo());
 
 		return gemeindeKennzahlen;
 	}
@@ -74,10 +74,10 @@ public class JaxGemeindeKennzahlenConverter extends AbstractConverter {
 		jaxGemeindeKennzahlen.setStatus(gemeindeKennzahlen.getStatus());
 
 		jaxGemeindeKennzahlen.setNachfrageErfuellt(gemeindeKennzahlen.getNachfrageErfuellt());
+		jaxGemeindeKennzahlen.setGemeindeKontingentiert(gemeindeKennzahlen.getGemeindeKontingentiert());
 		jaxGemeindeKennzahlen.setNachfrageAnzahl(gemeindeKennzahlen.getNachfrageAnzahl());
 		jaxGemeindeKennzahlen.setNachfrageDauer(gemeindeKennzahlen.getNachfrageDauer());
-		jaxGemeindeKennzahlen.setKostenlenkungAndere(gemeindeKennzahlen.getKostenlenkungAndere());
-		jaxGemeindeKennzahlen.setWelcheKostenlenkungsmassnahmen(gemeindeKennzahlen.getWelcheKostenlenkungsmassnahmen());
+		jaxGemeindeKennzahlen.setLimitierungTfo(gemeindeKennzahlen.getLimitierungTfo());
 
 		return jaxGemeindeKennzahlen;
 	}

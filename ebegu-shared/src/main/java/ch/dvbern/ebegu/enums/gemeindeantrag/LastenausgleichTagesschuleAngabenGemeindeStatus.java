@@ -29,4 +29,8 @@ public enum LastenausgleichTagesschuleAngabenGemeindeStatus {
 	public boolean atLeastGeprueft() {
 		return this.equals(GEPRUEFT) || this.equals(VERFUEGT);
 	}
+
+	public boolean atLeastInPruefungKanton() {
+		return !this.equals(NEU) && !this.equals(IN_BEARBEITUNG_GEMEINDE);
+	}
 }

@@ -20,7 +20,6 @@ package ch.dvbern.ebegu.services.gemeindeantrag;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -143,18 +142,13 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	}
 
 	private void checkRequiredFieldsNotNull(GemeindeKennzahlen gemeindeKennzahlen) {
-		Preconditions.checkState(
-				gemeindeKennzahlen.getNachfrageErfuellt() != null,
-				"nachfrageErfuellt must not be null");
-		Preconditions.checkState(gemeindeKennzahlen.getNachfrageAnzahl() != null, "nachfrageAnzahl must not be null");
-		Preconditions.checkState(gemeindeKennzahlen.getNachfrageDauer() != null, "nachfrageDauer must not be null");
-		Preconditions.checkState(
-				gemeindeKennzahlen.getKostenlenkungAndere() != null,
-				"kostenlenkungAndere must not be null");
-		if (gemeindeKennzahlen.getKostenlenkungAndere()) {
+		Preconditions.checkState(gemeindeKennzahlen.getGemeindeKontingentiert() != null, "gemeindeKontingentiert must not be null");
+		if (gemeindeKennzahlen.getGemeindeKontingentiert()) {
 			Preconditions.checkState(
-					gemeindeKennzahlen.getWelcheKostenlenkungsmassnahmen() != null,
-					"welcheKostenlenkungsmassnahmen must not be null if kostenlenkungAndere is true");
+					gemeindeKennzahlen.getNachfrageErfuellt() != null,
+					"nachfrageErfuellt must not be null");
+			Preconditions.checkState(gemeindeKennzahlen.getNachfrageAnzahl() != null, "nachfrageAnzahl must not be null");
+			Preconditions.checkState(gemeindeKennzahlen.getNachfrageDauer() != null, "nachfrageDauer must not be null");
 		}
 	}
 

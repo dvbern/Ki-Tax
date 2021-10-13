@@ -18,6 +18,7 @@
 import {NgModule} from '@angular/core';
 import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {Transition} from '@uirouter/core';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {GemeindeKennzahlenFormularComponent} from '../gemeinde-kennzahlen-formular/gemeinde-kennzahlen-formular.component';
 import {GemeindeKennzahlenUiComponent} from '../gemeinde-kennzahlen-ui/gemeinde-kennzahlen-ui.component';
 
@@ -35,6 +36,9 @@ const states: NgHybridStateDeclaration[] = [
                     (trans.params().id),
             },
         ],
+        data: {
+            roles: TSRoleUtil.getGemeindeKennzahlenRoles()
+        }
     },
     {
         name: 'GEMEINDE_KENNZAHLEN.FORMULAR',

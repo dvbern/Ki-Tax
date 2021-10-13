@@ -22,6 +22,7 @@ import javax.validation.Validation;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.tests.services.EinstellungDummyServiceBean;
 import ch.dvbern.ebegu.validators.CheckBetreuungspensumValidator;
+import ch.dvbern.ebegu.validators.CheckFachstellenValidator;
 import ch.dvbern.ebegu.validators.CheckPensumFachstelleValidator;
 
 /**
@@ -48,6 +49,12 @@ public class ValidationTestConstraintValidatorFactory implements ConstraintValid
 			EinstellungService dummyEinstellungenService = new EinstellungDummyServiceBean();
 			//noinspection unchecked,ConstantConditions Der DummyService laesst null zu, in den Tests ist es immer null
 			return (T) new CheckPensumFachstelleValidator(dummyEinstellungenService, null);
+		}
+		if (key.equals(CheckFachstellenValidator.class)) {
+			//Mock Service for Parameters
+			EinstellungService dummyEinstellungenService = new EinstellungDummyServiceBean();
+			//noinspection unchecked,ConstantConditions Der DummyService laesst null zu, in den Tests ist es immer null
+			return (T) new CheckFachstellenValidator(dummyEinstellungenService);
 		}
 		ConstraintValidatorFactory delegate = Validation.byDefaultProvider().configure().getDefaultConstraintValidatorFactory();
 		return delegate.getInstance(key);

@@ -8,26 +8,28 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.reporting.zahlungauftrag;
+import {Pipe, PipeTransform} from '@angular/core';
+import * as moment from 'moment';
+import {isMoment} from 'moment';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
-import java.util.Locale;
+@Pipe({
+    name: 'ebeguDateTime'
+})
+export class EbeguDateTimePipe implements PipeTransform {
 
-import javax.annotation.Nonnull;
+    public transform(date: moment.Moment): unknown {
+        if (!isMoment(date)) {
+            return '';
+        }
+        return date.format(CONSTANTS.DATE_TIME_FORMAT);
+    }
 
-import ch.dvbern.ebegu.util.UploadFileInfo;
-import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
-
-public interface ReportGemeindenService {
-
-	@Nonnull
-	UploadFileInfo generateExcelReportGemeinden(
-			@Nonnull Locale locale
-	) throws ExcelMergeException;
 }

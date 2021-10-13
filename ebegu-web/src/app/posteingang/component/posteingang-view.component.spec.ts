@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
@@ -28,8 +29,8 @@ import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSDossier} from '../../../models/TSDossier';
 import {TSFall} from '../../../models/TSFall';
-import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
 import {TSMitteilung} from '../../../models/TSMitteilung';
+import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
 import {MaterialModule} from '../../shared/material.module';
@@ -66,6 +67,7 @@ describe('PosteingangViewComponent', () => {
                 {provide: UIRouterGlobals, useValue: uiRouterGlobals},
                 {provide: BenutzerRSX, useValue: benutzerSpy},
             ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
         gemeindeRSSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
         benutzerSpy.getAllBenutzerBgTsOrGemeinde.and.returnValue(Promise.resolve([]));

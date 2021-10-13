@@ -1460,6 +1460,12 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 							.getInstitution()
 							.getTraegerschaft());
 				}
+				if ((mitteilung.getInstitution() != null && mitteilung.getInstitution().getTraegerschaft() == null) ||
+					(mitteilung.getBetreuung() != null
+						&& mitteilung.getBetreuung().getInstitutionStammdaten().getInstitution().getTraegerschaft()
+						== null)) {
+					return false;
+				}
 				throw new EbeguRuntimeException(
 					"isMitteilungReadableForInstitution",
 					"Mitteilung for TRAEGERSCHAFT should have institution, traegerschaft or betreuung");
