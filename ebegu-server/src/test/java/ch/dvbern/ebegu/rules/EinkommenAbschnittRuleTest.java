@@ -45,7 +45,7 @@ public class EinkommenAbschnittRuleTest {
 	private final EinkommenAbschnittRule einkommenAbschnittRule =
 		new EinkommenAbschnittRule(Constants.DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
 	private final EinkommenCalcRule einkommenCalcRule =
-		new EinkommenCalcRule(Constants.DEFAULT_GUELTIGKEIT, MAX_EINKOMMEN, Constants.DEFAULT_LOCALE);
+		new EinkommenCalcRule(Constants.DEFAULT_GUELTIGKEIT, MAX_EINKOMMEN, false, Constants.DEFAULT_LOCALE);
 
 	@Test
 	public void testKeineEinkommensverschlechterung() {

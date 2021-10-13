@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.KitaxUtil;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_BEI_ANSPRUCH;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT;
@@ -307,10 +308,12 @@ public class BetreuungsgutscheinConfigurator {
 
 		// - Einkommen / Einkommensverschlechterung / Maximales Einkommen
 		Einstellung paramMassgebendesEinkommenMax = einstellungMap.get(MAX_MASSGEBENDES_EINKOMMEN);
+		Einstellung paramPauschalBeiAnspruch = einstellungMap.get(FKJV_PAUSCHALE_BEI_ANSPRUCH);
 		Objects.requireNonNull(paramMassgebendesEinkommenMax, "Parameter MAX_MASSGEBENDES_EINKOMMEN muss gesetzt sein");
 		EinkommenCalcRule maxEinkommenCalcRule = new EinkommenCalcRule(
 			defaultGueltigkeit,
 			paramMassgebendesEinkommenMax.getValueAsBigDecimal(),
+			paramPauschalBeiAnspruch.getValueAsBoolean(),
 			locale);
 		addToRuleSetIfRelevantForGemeinde(maxEinkommenCalcRule, einstellungMap);
 
