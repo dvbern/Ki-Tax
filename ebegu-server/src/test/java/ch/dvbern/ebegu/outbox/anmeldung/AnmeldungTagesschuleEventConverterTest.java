@@ -55,6 +55,7 @@ import static java.util.Objects.requireNonNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 public class AnmeldungTagesschuleEventConverterTest {
 
@@ -95,6 +96,7 @@ public class AnmeldungTagesschuleEventConverterTest {
 			.where(TagesschuleAnmeldungEventDTO::getVersion, is(gesuch.getLaufnummer()))
 			.where(TagesschuleAnmeldungEventDTO::getFreigegebenAm, is(gesuch.getFreigabeDatum()))
 			.where(TagesschuleAnmeldungEventDTO::getGesuchsteller, matchesAntragstellendePerson(gesuch))
+			.where(TagesschuleAnmeldungEventDTO::getGesuchsteller2, is(nullValue()))
 			.where(TagesschuleAnmeldungEventDTO::getKind, matchesKind(anmeldungTagesschule.getKind().getKindJA()))
 			.where(TagesschuleAnmeldungEventDTO::getPeriodeVon, is(gesuchsperiode.getGueltigAb()))
 			.where(TagesschuleAnmeldungEventDTO::getPeriodeBis, is(gesuchsperiode.getGueltigBis()))
