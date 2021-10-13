@@ -2616,5 +2616,6 @@
     "FJKV_ANSPRUCH_MONATSWEISE": "FKJV: Anspruchsberechnung monatsweise",
     "SCHNITTSTELLE_STEUERN_AKTIV":  "Schnittstelle zu den Steuersystemen aktiv",
     "LASTENAUSGLEICH_TAGESSCHULEN_STATISTIK": "Lastenausgleich Tagesschulen",
+    "IE_DEPRECATION_WARNING": "Achtung: Internet Explorer ist veraltet und wird zukünftig nicht mehr unterstützt. Bitte verwenden Sie einen modernen Browser wie Microsoft Edge, Firefox, Chrome oder Safari",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
