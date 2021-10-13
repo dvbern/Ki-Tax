@@ -220,6 +220,10 @@ public class SearchIndexResource {
 			.filter(searchResultEntryDTO -> searchResultEntryDTO.getEntity() == SearchEntityType.GESUCHSTELLER_CONTAINER)
 			.map(SearchResultEntryDTO::getResultId).collect(Collectors.toList());
 
+		if (gesuchstellercontainerIds.isEmpty()) {
+			return readableGesuche;
+		}
+
 		List<Gesuch> gesucheFromGesuchstellermatch = gesuchstellerServiceBean.findGesuchOfGesuchstellende(gesuchstellercontainerIds).stream().filter(
 			gesuch -> this.authorizer.isReadAuthorized(gesuch)
 		).collect(Collectors.toList());
