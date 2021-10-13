@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AdresseTyp;
@@ -50,6 +51,7 @@ import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungEventDT
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungStatus;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungTarifeDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TarifDTO;
+import ch.dvbern.kibon.exchange.commons.tagesschulen.TarifZeitabschnittDTO;
 import ch.dvbern.kibon.exchange.commons.types.AdresseDTO;
 import ch.dvbern.kibon.exchange.commons.types.Geschlecht;
 import ch.dvbern.kibon.exchange.commons.types.GesuchstellerDTO;
@@ -58,13 +60,14 @@ import ch.dvbern.kibon.exchange.commons.types.KindDTO;
 import ch.dvbern.kibon.exchange.commons.types.Wochentag;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import com.spotify.hamcrest.pojo.IsPojo;
+import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.comparesEqualTo;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
@@ -247,34 +250,43 @@ public class AnmeldungTagesschuleEventConverterTest {
 		return verfuegung;
 	}
 
-	private IsPojo<TagesschuleAnmeldungTarifeDTO> matchesZeitabschnitt(
-		@Nonnull
-			Verfuegung verfuegung) {
-		VerfuegungZeitabschnitt verfuegungZeitabschnitt = verfuegung.getZeitabschnitte().get(0);
+	@Nonnull
+	private IsPojo<TagesschuleAnmeldungTarifeDTO> matchesZeitabschnitt(@Nonnull Verfuegung verfuegung) {
 		return pojo(TagesschuleAnmeldungTarifeDTO.class)
+			.where(TagesschuleAnmeldungTarifeDTO::getTarifeDefinitivAkzeptiert, is(true))
 			.where(
-				TagesschuleAnmeldungTarifeDTO::getTarifePaedagogisch,
-				contains(matchesZeitabschnitt(verfuegungZeitabschnitt,
-					requireNonNull(verfuegungZeitabschnitt.getTsCalculationResultMitPaedagogischerBetreuung()))))
-			.where(
-				TagesschuleAnmeldungTarifeDTO::getTarifeNichtPaedagogisch,
-				contains(matchesZeitabschnitt(verfuegungZeitabschnitt,
-					requireNonNull(verfuegungZeitabschnitt.getTsCalculationResultOhnePaedagogischerBetreuung()))));
+				TagesschuleAnmeldungTarifeDTO::getTarifZeitabschnitte,
+				contains(verfuegung.getZeitabschnitte().stream().map(this::matchesZeitabschnitt).toArray())
+			);
 	}
 
-	private IsPojo<TarifDTO> matchesZeitabschnitt(
-		VerfuegungZeitabschnitt zeitabschnitt,
-		TSCalculationResult tsCalculationResult) {
-		assert zeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultMitPaedagogischerBetreuung() != null;
+	@Nonnull
+	private IsPojo<TarifZeitabschnittDTO> matchesZeitabschnitt(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+		BigDecimal massgebendesEinkommen = zeitabschnitt.getMassgebendesEinkommen();
+		TSCalculationResult paedagogisch = zeitabschnitt.getTsCalculationResultMitPaedagogischerBetreuung();
+		TSCalculationResult nichtPaedagogisch = zeitabschnitt.getTsCalculationResultOhnePaedagogischerBetreuung();
+
+		return pojo(TarifZeitabschnittDTO.class)
+			.where(TarifZeitabschnittDTO::getVon, is(zeitabschnitt.getGueltigkeit().getGueltigAb()))
+			.where(TarifZeitabschnittDTO::getBis, is(zeitabschnitt.getGueltigkeit().getGueltigBis()))
+			.where(TarifZeitabschnittDTO::getMassgebendesEinkommen, comparesEqualTo(massgebendesEinkommen))
+			.where(TarifZeitabschnittDTO::getTarifPaedagogisch, matchesTarife(paedagogisch))
+			.where(TarifZeitabschnittDTO::getTarifNichtPaedagogisch, matchesTarife(nichtPaedagogisch));
+	}
+
+	@Nonnull
+	private Matcher<TarifDTO> matchesTarife(@Nullable TSCalculationResult result) {
+		if (result == null) {
+			return nullValue(TarifDTO.class);
+		}
+
+		BigDecimal verpflegungskostenVerguenstigt = result.getVerpflegungskostenVerguenstigt();
+
 		return pojo(TarifDTO.class)
-			.where(TarifDTO::getVon, is(zeitabschnitt.getGueltigkeit().getGueltigAb()))
-			.where(TarifDTO::getBis, is(zeitabschnitt.getGueltigkeit().getGueltigBis()))
-			.where(TarifDTO::getBetreuungsKostenProStunde, comparesEqualTo(tsCalculationResult.getGebuehrProStunde()))
-			.where(TarifDTO::getBetreuungsMinutenProWoche, is(tsCalculationResult.getBetreuungszeitProWoche()))
-			.where(TarifDTO::getTotalKostenProWoche, comparesEqualTo(tsCalculationResult.getTotalKostenProWoche()))
-			.where(TarifDTO::getVerpflegungsKostenProWoche,
-				comparesEqualTo(tsCalculationResult.getVerpflegungskosten()))
-			.where(TarifDTO::getVerpflegungsKostenVerguenstigung,
-				comparesEqualTo(tsCalculationResult.getVerpflegungskostenVerguenstigt()));
+			.where(TarifDTO::getBetreuungsKostenProStunde, comparesEqualTo(result.getGebuehrProStunde()))
+			.where(TarifDTO::getBetreuungsMinutenProWoche, is(result.getBetreuungszeitProWoche()))
+			.where(TarifDTO::getTotalKostenProWoche, comparesEqualTo(result.getTotalKostenProWoche()))
+			.where(TarifDTO::getVerpflegungsKostenProWoche, comparesEqualTo(result.getVerpflegungskosten()))
+			.where(TarifDTO::getVerpflegungsKostenVerguenstigung, comparesEqualTo(verpflegungskostenVerguenstigt));
 	}
 }

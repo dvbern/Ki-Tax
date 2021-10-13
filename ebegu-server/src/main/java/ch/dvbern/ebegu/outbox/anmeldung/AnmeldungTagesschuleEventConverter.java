@@ -17,7 +17,7 @@
 
 package ch.dvbern.ebegu.outbox.anmeldung;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +35,6 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.TSCalculationResult;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.AbholungTagesschule;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulAuswahlDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungDetailsDTO;
@@ -43,6 +42,7 @@ import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungEventDT
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungStatus;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungTarifeDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TarifDTO;
+import ch.dvbern.kibon.exchange.commons.tagesschulen.TarifZeitabschnittDTO;
 import ch.dvbern.kibon.exchange.commons.types.AdresseDTO;
 import ch.dvbern.kibon.exchange.commons.types.Geschlecht;
 import ch.dvbern.kibon.exchange.commons.types.GesuchstellerDTO;
@@ -68,6 +68,7 @@ public class AnmeldungTagesschuleEventConverter {
 	private TagesschuleAnmeldungEventDTO toTagesschuleAnmeldungEventDTO(@Nonnull AnmeldungTagesschule anmeldung) {
 		Gesuch gesuch = anmeldung.extractGesuch();
 
+		//noinspection ConstantConditions
 		return TagesschuleAnmeldungEventDTO.newBuilder()
 			.setInstitutionId(anmeldung.getInstitutionStammdaten().getInstitution().getId())
 			.setVersion(gesuch.getLaufnummer())
@@ -96,40 +97,35 @@ public class AnmeldungTagesschuleEventConverter {
 		@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
 		if (anmeldungTagesschule.getBetreuungsstatus().isSchulamtAnmeldungUebernommen()) {
 			return TagesschuleAnmeldungTarifeDTO.newBuilder()
-				.setTarifeNichtPaedagogisch(verfuegungZeitabschnittToTarifDTOs(anmeldungTagesschule, false))
-				.setTarifePaedagogisch(verfuegungZeitabschnittToTarifDTOs(anmeldungTagesschule, true))
+				.setTarifeDefinitivAkzeptiert(true)
+				.setTarifZeitabschnitte(toTarifZeitabschnittDTO(anmeldungTagesschule))
 				.build();
 		}
 		return null;
 	}
 
 	@Nonnull
-	private List<TarifDTO> verfuegungZeitabschnittToTarifDTOs(
-		@Nonnull AnmeldungTagesschule anmeldungTagesschule,
-		boolean isPaedagogisch) {
-		List<TarifDTO> tarifDTOList = new ArrayList<>();
-		if (anmeldungTagesschule.getVerfuegung() != null) {
-			anmeldungTagesschule.getVerfuegung().getZeitabschnitte().forEach(
-				zeitabschnitt -> {
-					TSCalculationResult tsCalculationResult = isPaedagogisch ?
-						zeitabschnitt.getTsCalculationResultMitPaedagogischerBetreuung() :
-						zeitabschnitt.getTsCalculationResultOhnePaedagogischerBetreuung();
-					if (tsCalculationResult != null) {
-						tarifDTOList.add(verfuegungZeitabschnittToTarifDTO(zeitabschnitt, tsCalculationResult));
-					}
-				}
-			);
+	private List<TarifZeitabschnittDTO> toTarifZeitabschnittDTO(@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
+		if (anmeldungTagesschule.getVerfuegung() == null) {
+			return Collections.emptyList();
 		}
-		return tarifDTOList;
+
+		//noinspection ConstantConditions
+		return anmeldungTagesschule.getVerfuegung().getZeitabschnitte().stream()
+			.map(z -> TarifZeitabschnittDTO.newBuilder()
+				.setVon(z.getGueltigkeit().getGueltigAb())
+				.setBis(z.getGueltigkeit().getGueltigBis())
+				.setMassgebendesEinkommen(z.getMassgebendesEinkommen())
+				.setTarifPaedagogisch(toTarifDTO(z.getTsCalculationResultMitPaedagogischerBetreuung()))
+				.setTarifNichtPaedagogisch(toTarifDTO(z.getTsCalculationResultOhnePaedagogischerBetreuung()))
+				.build())
+			.collect(Collectors.toList());
 	}
 
-	@Nonnull
-	private TarifDTO verfuegungZeitabschnittToTarifDTO(
-		VerfuegungZeitabschnitt verfuegungZeitabschnitt,
-		TSCalculationResult tsCalculationResult) {
+	@Nullable
+	private TarifDTO toTarifDTO(@Nullable TSCalculationResult tsCalculationResult) {
+		//noinspection ConstantConditions
 		return TarifDTO.newBuilder()
-			.setVon(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb())
-			.setBis(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis())
 			.setBetreuungsKostenProStunde(tsCalculationResult.getGebuehrProStunde())
 			.setBetreuungsMinutenProWoche(tsCalculationResult.getBetreuungszeitProWoche())
 			.setTotalKostenProWoche(tsCalculationResult.getTotalKostenProWoche())
