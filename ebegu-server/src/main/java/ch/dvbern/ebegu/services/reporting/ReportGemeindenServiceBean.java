@@ -81,7 +81,8 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 
 	@Inject
 	private PrincipalBean principal;
-	private static final String GEMEINDE_PERIODEN_SHEET_NAME = "Register 2";
+	private static final String GEMEINDE_PERIODEN_SHEET_NAME = "Angaben pro Periode";
+	private static final String GEMEINDE_SHEET_NAME = "Angaben pro Gemeinde";
 
 	@Nonnull
 	@Override
@@ -92,7 +93,7 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 		requireNonNull(is, VORLAGE + vorlage.getTemplatePath() + NICHT_GEFUNDEN);
 
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(vorlage.getDataSheetName());
+		Sheet sheet = workbook.getSheet(GEMEINDE_SHEET_NAME);
 		Sheet secondSheet = workbook.getSheet(GEMEINDE_PERIODEN_SHEET_NAME);
 
 		final Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden();
@@ -155,13 +156,6 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 
 					gemeindenDatenDataRow.setGesuchsperiode(gesuchsperiode.getGesuchsperiodeString());
 
-					Einstellung kontingenierungEnabled =
-						einstellungService.findEinstellung(
-							EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
-							gemeinde,
-							gesuchsperiode);
-					gemeindenDatenDataRow.setKontingentierung(kontingenierungEnabled.getValueAsBoolean());
-
 					Einstellung gmeindeBGBisUndMit =
 						einstellungService.findEinstellung(
 							EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE,
@@ -179,11 +173,13 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 
 					GemeindeKennzahlen gemeindeKennzahlen = gemeindeAntragGesuchsperiodeCache.get(gesuchsperiode.getId() + gemeinde.getId());
 						if(gemeindeKennzahlen != null) {
+							gemeindenDatenDataRow.setKontingentierung(gemeindeKennzahlen.getGemeindeKontingentiert());
 							gemeindenDatenDataRow.setNachfrageErfuellt(gemeindeKennzahlen.getNachfrageErfuellt());
 							gemeindenDatenDataRow.setNachfrageAnzahl(gemeindeKennzahlen.getNachfrageAnzahl());
 							gemeindenDatenDataRow.setNachfrageDauer(gemeindeKennzahlen.getNachfrageDauer());
-							gemeindenDatenDataRow.setKostenlenkungAndere(gemeindeKennzahlen.getKostenlenkungAndere());
-							gemeindenDatenDataRow.setWelcheKostenlenkungsmassnahmen(gemeindeKennzahlen.getWelcheKostenlenkungsmassnahmen());
+							gemeindenDatenDataRow.setLimitierungTfo(
+									ServerMessageUtil.getMessage("EinschulungTyp_" + gemeindeKennzahlen.getLimitierungTfo(), locale)
+							);
 						}
 
 					dataRow.getGemeindenDaten().add(gemeindenDatenDataRow);

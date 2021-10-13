@@ -31,113 +31,111 @@
 
 			<dv-input-container-x [noMargin]="true">
 				<label required
-					   [ngClass]="{'label-error': nachfrageErfuellt.errors}"
-					   for="nachfrageErfuellt-radio-group">
-					{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_ERFUELLT' | translate}}
+					   [ngClass]="{'label-error': gemeindeKontingentiert.errors}"
+					   for="gemeindeKontingentiert-radio-group">
+					{{'GEMEINDE_KENNZAHLEN_GEMEINDE_KONTINGENTIERT' | translate}}
 				</label>
 				<dv-radio-container-x>
 					<mat-radio-group
-							aria-labelledby="nachfrageErfuellt-radio-group"
-							id="nachfrageErfuellt-radio-group"
+							aria-labelledby="gemeindeKontingentiert-radio-group"
+							id="gemeindeKontingentiert-radio-group"
 							class=""
-							name="nachfrageErfuellt"
-                            #nachfrageErfuellt="ngModel"
+							name="gemeindeKontingentiert"
+                            #gemeindeKontingentiert="ngModel"
 							horizontal
 							[disabled]="isFormDisabledFor(antragAndPrincipal)"
 							[required]="abschlussValidationTriggered"
-							[(ngModel)]="antragAndPrincipal[0].nachfrageErfuellt">
+							[(ngModel)]="antragAndPrincipal[0].gemeindeKontingentiert">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
 						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
 					</mat-radio-group>
-					<dv-error-messages [errorObject]="nachfrageErfuellt.errors"></dv-error-messages>
+					<dv-error-messages [errorObject]="gemeindeKontingentiert.errors"></dv-error-messages>
 				</dv-radio-container-x>
 			</dv-input-container-x>
 
-			<dv-input-container-x [noMargin]="true">
-				<label required
-					   [ngClass]="{'label-error': nachfrageAnzahl.errors}"
-					   for="nachfrageAnzahl_id">
-					{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_ANZAHL' | translate }}
-				</label>
-				<mat-form-field floatLabel="always">
-					<input matInput
-						   name="nachfrageAnzahl"
-                           #nachfrageAnzahl="ngModel"
-						   id="nachfrageAnzahl_id"
-						   [required]="abschlussValidationTriggered"
-						   type="number"
-						   pattern="{{CONSTANTS.PATTERN_ANY_INT}}"
-						   [disabled]="isFormDisabledFor(antragAndPrincipal)"
-						   [(ngModel)]="antragAndPrincipal[0].nachfrageAnzahl"
-						   class="form-control dv-input"/>
-					<dv-error-messages [errorObject]="nachfrageAnzahl.errors"></dv-error-messages>
-				</mat-form-field>
-			</dv-input-container-x>
+			<div *ngIf="gemeindeKontingentiert.value === true">
+
+				<dv-input-container-x [noMargin]="true">
+					<label required
+						   [ngClass]="{'label-error': nachfrageErfuellt.errors}"
+						   for="nachfrageErfuellt-radio-group">
+						{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_ERFUELLT' | translate}}
+					</label>
+					<dv-radio-container-x>
+						<mat-radio-group
+								aria-labelledby="nachfrageErfuellt-radio-group"
+								id="nachfrageErfuellt-radio-group"
+								class=""
+								name="nachfrageErfuellt"
+                                #nachfrageErfuellt="ngModel"
+								horizontal
+								[disabled]="isFormDisabledFor(antragAndPrincipal)"
+								[required]="abschlussValidationTriggered"
+								[(ngModel)]="antragAndPrincipal[0].nachfrageErfuellt">
+							<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+							<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+						</mat-radio-group>
+						<dv-error-messages [errorObject]="nachfrageErfuellt.errors"></dv-error-messages>
+					</dv-radio-container-x>
+				</dv-input-container-x>
+
+				<dv-input-container-x [noMargin]="true">
+					<label required
+						   [ngClass]="{'label-error': nachfrageAnzahl.errors}"
+						   for="nachfrageAnzahl_id">
+						{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_ANZAHL' | translate }}
+					</label>
+					<mat-form-field floatLabel="always">
+						<input matInput
+							   name="nachfrageAnzahl"
+                               #nachfrageAnzahl="ngModel"
+							   id="nachfrageAnzahl_id"
+							   [required]="abschlussValidationTriggered"
+							   type="number"
+							   pattern="{{CONSTANTS.PATTERN_ANY_INT}}"
+							   [disabled]="isFormDisabledFor(antragAndPrincipal)"
+							   [(ngModel)]="antragAndPrincipal[0].nachfrageAnzahl"
+							   class="form-control dv-input"/>
+						<dv-error-messages [errorObject]="nachfrageAnzahl.errors"></dv-error-messages>
+					</mat-form-field>
+				</dv-input-container-x>
+
+				<dv-input-container-x [noMargin]="true">
+					<label required
+						   [ngClass]="{'label-error': nachfrageDauer.errors}"
+						   for="nachfrageDauer_id">
+						{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_DAUER' | translate }}
+					</label>
+					<mat-form-field floatLabel="always">
+						<input matInput
+							   id="nachfrageDauer_id"
+							   name="nachfrageDauer"
+                               #nachfrageDauer="ngModel"
+							   [required]="abschlussValidationTriggered"
+							   type="number"
+							   pattern="{{CONSTANTS.PATTERN_ONE_DECIMALS}}"
+							   [disabled]="isFormDisabledFor(antragAndPrincipal)"
+							   [(ngModel)]="antragAndPrincipal[0].nachfrageDauer"
+							   class="form-control dv-input"/>
+						<dv-error-messages [errorObject]="nachfrageDauer.errors"></dv-error-messages>
+					</mat-form-field>
+				</dv-input-container-x>
+			</div>
 
 			<dv-input-container-x [noMargin]="true">
 				<label required
-					   [ngClass]="{'label-error': nachfrageDauer.errors}"
-					   for="nachfrageDauer_id">
-					{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_DAUER' | translate }}
-				</label>
-				<mat-form-field floatLabel="always">
-					<input matInput
-						   id="nachfrageDauer_id"
-						   name="nachfrageDauer"
-                           #nachfrageDauer="ngModel"
-						   [required]="abschlussValidationTriggered"
-						   type="number"
-						   pattern="{{CONSTANTS.PATTERN_TWO_DECIMALS}}"
-						   [disabled]="isFormDisabledFor(antragAndPrincipal)"
-						   [(ngModel)]="antragAndPrincipal[0].nachfrageDauer"
-						   class="form-control dv-input"/>
-					<dv-error-messages [errorObject]="nachfrageDauer.errors"></dv-error-messages>
-				</mat-form-field>
-			</dv-input-container-x>
-
-			<dv-input-container-x [noMargin]="true">
-				<label required
-					   [ngClass]="{'label-error': kostenlenkungAndere.errors}"
-					   for="kostenlenkungAndere-radio-group">
-					{{'GEMEINDE_KENNZAHLEN_KOSTENLENKUNG_ANDERE' | translate}}
-				</label>
-				<dv-radio-container-x>
-					<mat-radio-group
-							aria-labelledby="kostenlenkungAndere-radio-group"
-							id="kostenlenkungAndere-radio-group"
-							class=""
-							name="kostenlenkungAndere"
-							#kostenlenkungAndere="ngModel"
-							horizontal
-							[disabled]="isFormDisabledFor(antragAndPrincipal)"
-							[required]="abschlussValidationTriggered"
-							[(ngModel)]="antragAndPrincipal[0].kostenlenkungAndere">
-						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-					</mat-radio-group>
-					<dv-error-messages [errorObject]="kostenlenkungAndere.errors"></dv-error-messages>
-				</dv-radio-container-x>
-			</dv-input-container-x>
-
-			<dv-input-container-x *ngIf="kostenlenkungAndere.value === true" [noMargin]="true">
-				<label required
-					   for="welcheKostenlenkungsmassnahmen_id"
-					   [ngClass]="{'label-error': welcheKostenlenkungsmassnahmen.errors}">
-					{{'GEMEINDE_KENNZAHLEN_WELCHE_KOSTENLENKUNGSMASSNAHMEN' | translate }}
+					   for="limitierungTfo_id">
+					{{'GEMEINDE_KENNZAHLEN_LIMITIERUNG_TFO' | translate }}
 				</label>
 				<mat-form-field floatLabel="always">
 					<mat-select class="form-control"
-								[required]="abschlussValidationTriggered"
-								name="welcheKostenlenkungsmassnahmen"
-								[(ngModel)]="antragAndPrincipal[0].welcheKostenlenkungsmassnahmen"
-                                #welcheKostenlenkungsmassnahmen="ngModel"
-								id="welcheKostenlenkungsmassnahmen_id"
+								name="limitierungTfo"
+								[(ngModel)]="antragAndPrincipal[0].limitierungTfo"
+								id="limitierungTfo_id"
 								[disabled]="isFormDisabledFor(antragAndPrincipal)">
-						<mat-option [value]="'1'">PLACEHOLDER 1</mat-option>
-						<mat-option [value]="'2'">PLACEHOLDER 2</mat-option>
-						<mat-option [value]="'3'">PLACEHOLDER 3</mat-option>
+						<mat-option *ngFor="let item of getEinschulungTypes()" [value]="item"
+									translate>{{item | translate}}</mat-option>
 					</mat-select>
-					<dv-error-messages [errorObject]="welcheKostenlenkungsmassnahmen.errors"></dv-error-messages>
 				</mat-form-field>
 			</dv-input-container-x>
 		</div>

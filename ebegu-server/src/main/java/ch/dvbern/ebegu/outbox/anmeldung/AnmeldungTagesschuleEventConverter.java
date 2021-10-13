@@ -79,7 +79,10 @@ public class AnmeldungTagesschuleEventConverter {
 			.setPeriodeVon(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb())
 			.setPeriodeBis(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis())
 			.setKind(toKindDTO(anmeldung.getKind().getKindJA()))
-			.setAntragstellendePerson(toGesuchstellerDTO(requireNonNull(gesuch.getGesuchsteller1())))
+			.setGesuchsteller(toGesuchstellerDTO(requireNonNull(gesuch.getGesuchsteller1())))
+			.setGesuchsteller2(gesuch.getGesuchsteller2() != null ?
+				toGesuchstellerDTO(gesuch.getGesuchsteller2()) :
+				null)
 			.setAnmeldungsDetails(toTagesschuleAnmeldungDetailsDTO(anmeldung))
 			.setStatus(TagesschuleAnmeldungStatus.valueOf(anmeldung.getBetreuungsstatus().name()))
 			// TODO muss noch richtig ausgefüllt weren. Abhängig von Betreuungsstatus
