@@ -633,8 +633,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
             TSRole.SACHBEARBEITER_INSTITUTION,
             TSRole.ADMIN_TRAEGERSCHAFT,
             TSRole.SACHBEARBEITER_TRAEGERSCHAFT
-        ])
-            && this.tagesschulenStammdatenList.length > 0;
+        ]);
     }
 
     public showRechnungsstellungStatistik(): boolean {
