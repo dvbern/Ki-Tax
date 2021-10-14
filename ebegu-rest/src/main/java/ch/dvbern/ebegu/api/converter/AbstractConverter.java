@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDateRangedDTO;
@@ -36,6 +37,7 @@ import ch.dvbern.ebegu.api.dtos.JaxFile;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractIntegerPensum;
@@ -49,6 +51,7 @@ import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.HasMandant;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -58,6 +61,9 @@ import static java.util.Objects.requireNonNull;
 
 @RequestScoped
 public class AbstractConverter {
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@Nonnull
 	public String toResourceId(@Nonnull final AbstractEntity entity) {
@@ -89,6 +95,11 @@ public class AbstractConverter {
 		jaxDTOToConvertTo.setTimestampMutiert(abstEntity.getTimestampMutiert());
 		jaxDTOToConvertTo.setId(checkNotNull(abstEntity.getId()));
 		jaxDTOToConvertTo.setVersion(abstEntity.getVersion());
+	}
+
+	protected <T extends HasMandant> void convertMandantFieldsToEntity(
+			@Nonnull final T abstEntityToConvertTo) {
+		abstEntityToConvertTo.setMandant(getPrincipalBean().getMandant());
 	}
 
 	@Nonnull
@@ -355,6 +366,7 @@ public class AbstractConverter {
 		requireNonNull(jaxGemeinde.getTagesschulanmeldungenStartdatum());
 		requireNonNull(jaxGemeinde.getFerieninselanmeldungenStartdatum());
 		convertAbstractFieldsToEntity(jaxGemeinde, gemeinde);
+		convertMandantFieldsToEntity(gemeinde);
 		gemeinde.setName(jaxGemeinde.getName());
 		gemeinde.setStatus(jaxGemeinde.getStatus());
 		gemeinde.setGemeindeNummer(jaxGemeinde.getGemeindeNummer());
@@ -412,8 +424,13 @@ public class AbstractConverter {
 		@Nonnull Gesuchsperiode gesuchsperiode) {
 
 		convertAbstractDateRangedFieldsToEntity(jaxGesuchsperiode, gesuchsperiode);
+		convertMandantFieldsToEntity(gesuchsperiode);
 		gesuchsperiode.setStatus(jaxGesuchsperiode.getStatus());
 
 		return gesuchsperiode;
+	}
+
+	protected PrincipalBean getPrincipalBean() {
+		return principalBean;
 	}
 }

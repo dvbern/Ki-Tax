@@ -77,7 +77,7 @@ public class KindResourceTest extends AbstractEbeguRestLoginTest {
 
 	@Test
 	public void createKindTest() {
-		final Gesuchsperiode gesuchsperiode1718 = persistence.merge(TestDataUtil.createGesuchsperiode1718());
+		final Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch(converter.gesuchsperiodeToJAX(gesuchsperiode1718), null);
 
 		TestDataUtil.prepareParameters(gesuchsperiode1718, persistence);

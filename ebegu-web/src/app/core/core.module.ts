@@ -16,23 +16,24 @@
  */
 
 import {registerLocaleData} from '@angular/common';
+// tslint:disable-next-line:match-default-export-name
+import deCH from '@angular/common/locales/de-CH';
 import {ErrorHandler, LOCALE_ID, ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
-import { MatPaginatorIntl } from '@angular/material/paginator';
+import {MatPaginatorIntl} from '@angular/material/paginator';
 import {TranslateModule, TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {CookieService} from 'ngx-cookie-service';
 import {PaginatorI18n} from '../i18n/PaginatorI18n';
 import {MandantService} from '../shared/services/mandant.service';
+import {ColorService} from '../shared/services/color.service';
 import {DEFAULT_LOCALE} from './constants/CONSTANTS';
 import {HTTP_INTERCEPTOR_PROVIDERS} from './http-interceptors/interceptors';
 import {UPGRADED_HTTP_INTERCEPTOR_PROVIDERS} from './httpInterceptorProviders';
+import {configureRaven, RavenErrorHandler} from './sentry/sentryConfigurator';
 import {BroadcastService} from './service/broadcast.service';
 import {VersionService} from './service/version/version.service';
 import {WindowRef} from './service/windowRef.service';
-import {configureRaven, RavenErrorHandler} from './sentry/sentryConfigurator';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
-// tslint:disable-next-line:match-default-export-name
-import deCH from '@angular/common/locales/de-CH';
 // sentry
 configureRaven();
 
@@ -59,7 +60,8 @@ export function paginatorI18nFactory(translateService: TranslateService): Pagina
         VersionService,
         BroadcastService,
         MandantService,
-        CookieService
+        CookieService,
+        ColorService,
     ],
     declarations: [
         // Insert app wide single use components (NavComponent, SpinnerComponent). Try not to declare anything here.

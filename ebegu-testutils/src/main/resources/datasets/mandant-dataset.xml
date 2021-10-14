@@ -34,7 +34,8 @@
 					version="0"
 					gueltig_ab="2014-08-01"
 					gueltig_bis="2015-07-31"
-					status="AKTIV"/>
+					status="AKTIV"
+					mandant_id="43NuuG7vQO+eUparSNjyIA=="/>
 	<einstellung id="BsHl1UjATy2vJSUbFd6Kqg=="
 				 timestamp_erstellt="2016-06-03 10:16:38.0"
 				 timestamp_mutiert="2016-06-03 10:20:59.0"
@@ -43,7 +44,8 @@
 				 version="0"
 				 gesuchsperiode_id="BiH7XaGHWpGrr4qBPE0qqg=="
 				 einstellung_key="PARAM_PENSUM_TAGESELTERN_MIN"
-				 value="20"/>
+				 value="20"
+				 mandant_id="43NuuG7vQO+eUparSNjyIA=="/>
 	<gemeinde id="TEUyY/mSSK+GtdwEzX6LuA=="
 			  timestamp_erstellt="2016-04-25 16:22:22.0"
 			  timestamp_mutiert="2016-04-25 16:22:26.0"

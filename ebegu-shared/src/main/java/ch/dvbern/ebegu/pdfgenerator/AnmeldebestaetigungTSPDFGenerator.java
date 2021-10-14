@@ -323,8 +323,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		table.addCell(createCell(Element.ALIGN_CENTER, translate(DONNERSTAG), Color.LIGHT_GRAY));
 		table.addCell(createCell(Element.ALIGN_CENTER, translate(FREITAG), Color.LIGHT_GRAY));
 
-		if (anmeldungTagesschule.getBelegungTagesschule() != null
-			&& anmeldungTagesschule.getBelegungTagesschule().getBelegungTagesschuleModule() != null) {
+		if (anmeldungTagesschule.getBelegungTagesschule() != null) {
 			Map<String, List<BelegungTagesschuleModul>> tagesschuleModuleMap = new HashMap();
 
 			anmeldungTagesschule.getBelegungTagesschule()

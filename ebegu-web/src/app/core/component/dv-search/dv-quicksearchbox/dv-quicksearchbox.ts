@@ -47,7 +47,7 @@ export class DvQuicksearchboxController {
     ];
 
     public noCache: boolean = true;
-    public delay: number = 250;
+    public delay: number = 700;
 
     public selectedItem: TSSearchResultEntry;
     public searchQuery: string;

@@ -66,6 +66,11 @@ describe('testdatenView', () => {
             sentryEnvName: '',
             whitelist: '',
             zahlungentestmode: false,
+            logoFileName: 'test.svg',
+            logoFileNameWhite: 'test.svg',
+            primaryColor: 'blue',
+            primaryColorDark: 'black',
+            primaryColorLight: 'white',
             mulitmandantAktiv: false
         });
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);

@@ -32,30 +32,41 @@ public class JaxPublicAppConfig {
 	private BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungFr;
 	private BigDecimal lastenausgleichTagesschulenAutoZweitpruefungDe;
 	private BigDecimal lastenausgleichTagesschulenAutoZweitpruefungFr;
+	private String primaryColor;
+	private String primaryColorDark;
+	private String primaryColorLight;
+	private String logoFileName;
+	private String logoFileNameWhite;
 	private boolean multimandantAktiviert;
 
 
 	public JaxPublicAppConfig(
-			String currentNode,
-			boolean devmode,
-			String whitelist,
-			boolean dummyMode,
-			String sentryEnvName,
-			String backgroundColor,
-			boolean zahlungentestmode,
-			boolean personenSucheDisabled,
-			String kitaxHost,
-			String kitaxEndpoint,
-			String notverordnungDefaultEinreichefristOeffentlich,
-			String notverordnungDefaultEinreichefristPrivat,
-			boolean ferienbetreuungAktiv,
-			boolean lastenausgleichTagesschulenAktiv,
-			boolean gemeindeKennzahlenAktiv,
-			BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDe,
-			BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungFr,
-			BigDecimal lastenausgleichTagesschulenAutoZweitpruefungDe,
-			BigDecimal lastenausgleichTagesschulenAutoZweitpruefungFr,
-			boolean multimandantAktiviert) {
+		String currentNode,
+		boolean devmode,
+		String whitelist,
+		boolean dummyMode,
+		String sentryEnvName,
+		String backgroundColor,
+		boolean zahlungentestmode,
+		boolean personenSucheDisabled,
+		String kitaxHost,
+		String kitaxEndpoint,
+		String notverordnungDefaultEinreichefristOeffentlich,
+		String notverordnungDefaultEinreichefristPrivat,
+		boolean ferienbetreuungAktiv,
+		boolean lastenausgleichTagesschulenAktiv,
+		boolean gemeindeKennzahlenAktiv,
+		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDe,
+		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungFr,
+		BigDecimal lastenausgleichTagesschulenAutoZweitpruefungDe,
+		BigDecimal lastenausgleichTagesschulenAutoZweitpruefungFr,
+		String primaryColor,
+		String primaryColorDark,
+		String primaryColorLight,
+		String logoFileName,
+		String logoFileNameWhite,
+		boolean multimandantAktiviert
+	) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
 		this.whitelist = whitelist;
@@ -75,6 +86,11 @@ public class JaxPublicAppConfig {
 		this.lastenausgleichTagesschulenAnteilZweitpruefungFr = lastenausgleichTagesschulenAnteilZweitpruefungFr;
 		this.lastenausgleichTagesschulenAutoZweitpruefungDe = lastenausgleichTagesschulenAutoZweitpruefungDe;
 		this.lastenausgleichTagesschulenAutoZweitpruefungFr = lastenausgleichTagesschulenAutoZweitpruefungFr;
+		this.primaryColor = primaryColor;
+		this.primaryColorDark = primaryColorDark;
+		this.primaryColorLight = primaryColorLight;
+		this.logoFileName = logoFileName;
+		this.logoFileNameWhite = logoFileNameWhite;
 		this.multimandantAktiviert = multimandantAktiviert;
 	}
 
@@ -236,5 +252,45 @@ public class JaxPublicAppConfig {
 
 	public void setMultimandantAktiviert(boolean multimandantAktiviert) {
 		this.multimandantAktiviert = multimandantAktiviert;
+	}
+
+	public String getPrimaryColor() {
+		return primaryColor;
+	}
+
+	public void setPrimaryColor(String primaryColor) {
+		this.primaryColor = primaryColor;
+	}
+
+	public String getPrimaryColorDark() {
+		return primaryColorDark;
+	}
+
+	public void setPrimaryColorDark(String primaryColorDark) {
+		this.primaryColorDark = primaryColorDark;
+	}
+
+	public String getPrimaryColorLight() {
+		return primaryColorLight;
+	}
+
+	public void setPrimaryColorLight(String primaryColorLight) {
+		this.primaryColorLight = primaryColorLight;
+	}
+
+	public String getLogoFileName() {
+		return logoFileName;
+	}
+
+	public void setLogoFileName(String logoFileName) {
+		this.logoFileName = logoFileName;
+	}
+
+	public String getLogoFileNameWhite() {
+		return logoFileNameWhite;
+	}
+
+	public void setLogoFileNameWhite(String logoFileNameWhite) {
+		this.logoFileNameWhite = logoFileNameWhite;
 	}
 }

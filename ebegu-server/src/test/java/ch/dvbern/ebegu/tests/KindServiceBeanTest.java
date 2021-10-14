@@ -176,8 +176,8 @@ public class KindServiceBeanTest extends AbstractEbeguLoginTest {
 		assertNotNull(kindContainer.getKindGS());
 		assertNotNull(kindContainer.getKindGS().getPensumFachstelle());
 		assertNotNull(kindContainer.getKindJA().getPensumFachstelle());
-		persistence.persist(kindContainer.getKindGS().getPensumFachstelle().getFachstelle());
-		persistence.persist(kindContainer.getKindJA().getPensumFachstelle().getFachstelle());
+		TestDataUtil.persistFachstelle(persistence, kindContainer.getKindGS().getPensumFachstelle().getFachstelle());
+		TestDataUtil.persistFachstelle(persistence, kindContainer.getKindJA().getPensumFachstelle().getFachstelle());
 		persistence.persist(kindContainer.getKindGS());
 		persistence.persist(kindContainer.getKindJA());
 

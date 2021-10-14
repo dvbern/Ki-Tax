@@ -62,7 +62,8 @@ import org.apache.commons.collections.CollectionUtils;
 public class ScolarisConverter {
 
 	@Nonnull
-	public JaxExternalAnmeldungTagesschule anmeldungTagesschuleToScolaris(@Nonnull AnmeldungTagesschule betreuung) throws ScolarisException {
+	public JaxExternalAnmeldungTagesschule anmeldungTagesschuleToScolaris(@Nonnull AnmeldungTagesschule betreuung)
+		throws ScolarisException {
 		Objects.requireNonNull(betreuung.getBelegungTagesschule());
 
 		List<JaxExternalModul> anmeldungen = new ArrayList<>();
@@ -82,7 +83,8 @@ public class ScolarisConverter {
 	}
 
 	@Nonnull
-	public JaxExternalAnmeldungFerieninsel anmeldungFerieninselToScolaris(@Nonnull AnmeldungFerieninsel betreuung) throws ScolarisException {
+	public JaxExternalAnmeldungFerieninsel anmeldungFerieninselToScolaris(@Nonnull AnmeldungFerieninsel betreuung)
+		throws ScolarisException {
 		Objects.requireNonNull(betreuung.getBelegungFerieninsel());
 
 		List<LocalDate> datumList = new ArrayList<>();
@@ -90,7 +92,8 @@ public class ScolarisConverter {
 			.getTage()
 			.forEach(belegungFerieninselTag -> datumList.add(belegungFerieninselTag.getTag()));
 
-		JaxExternalFerienName jaxExternalFerienName = feriennameToScolaris(betreuung.getBelegungFerieninsel().getFerienname());
+		JaxExternalFerienName jaxExternalFerienName =
+			feriennameToScolaris(betreuung.getBelegungFerieninsel().getFerienname());
 		JaxExternalFerieninsel ferieninsel =
 			new JaxExternalFerieninsel(jaxExternalFerienName, datumList);
 
@@ -129,7 +132,8 @@ public class ScolarisConverter {
 				fallNummer, stichtag, neustesGesuch, JaxExternalTarifart.VOLLZAHLER));
 
 		}
-		// SozialhilfeBezüger Nein + Vergünstigung gewünscht ja  oder Kita-Betreuung vorhanden -> Detailrechnung (mit finSit!)
+		// SozialhilfeBezüger Nein + Vergünstigung gewünscht ja  oder Kita-Betreuung vorhanden -> Detailrechnung (mit
+		// finSit!)
 		// Find and return Finanzdaten on Verfügungszeitabschnitt from Stichtag
 		List<VerfuegungZeitabschnitt> zeitabschnitten = famGroessenVerfuegung.getZeitabschnitte();
 		// get finanzielleSituation only for stichtag
@@ -154,7 +158,8 @@ public class ScolarisConverter {
 	}
 
 	@Nonnull
-	JaxExternalBetreuungsangebotTyp betreuungsangebotTypToScolaris(@Nonnull BetreuungsangebotTyp typ) throws ScolarisException {
+	JaxExternalBetreuungsangebotTyp betreuungsangebotTypToScolaris(@Nonnull BetreuungsangebotTyp typ)
+		throws ScolarisException {
 		// In Scolaris werden nur TAGESSCHULE und FERIENINSEL behandelt
 		if (BetreuungsangebotTyp.TAGESSCHULE == typ) {
 			return JaxExternalBetreuungsangebotTyp.TAGESSCHULE;
@@ -190,7 +195,8 @@ public class ScolarisConverter {
 	}
 
 	@Nonnull
-	JaxExternalModulName modulnameToScolaris(@Nonnull ModulTagesschuleName modulTagesschuleName) throws ScolarisException {
+	JaxExternalModulName modulnameToScolaris(@Nonnull ModulTagesschuleName modulTagesschuleName)
+		throws ScolarisException {
 		if (ModulTagesschuleName.DYNAMISCH == modulTagesschuleName) {
 			throw new ScolarisException("Could not convert ModulTagesschuleName " + modulTagesschuleName);
 		}
@@ -199,7 +205,8 @@ public class ScolarisConverter {
 
 	@Nonnull
 	JaxExternalModul modulToScolaris(@Nonnull BelegungTagesschuleModul tagesschuleModul) throws ScolarisException {
-		ModulTagesschuleName modulTagesschuleName = tagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().getModulTagesschuleName();
+		ModulTagesschuleName modulTagesschuleName =
+			tagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().getModulTagesschuleName();
 		JaxExternalModulName jaxModulname = modulnameToScolaris(modulTagesschuleName);
 		return new JaxExternalModul(
 			tagesschuleModul.getModulTagesschule().getWochentag(),
@@ -230,8 +237,7 @@ public class ScolarisConverter {
 		long fallNummer,
 		@Nonnull LocalDate stichtag,
 		@Nonnull Gesuch neustesGesuch,
-		@Nonnull JaxExternalTarifart tarifart)
-	{
+		@Nonnull JaxExternalTarifart tarifart) {
 		return new JaxExternalFinanzielleSituation(
 			fallNummer,
 			stichtag,
@@ -258,6 +264,7 @@ public class ScolarisConverter {
 			rechnungsAdresse.getZusatzzeile(),
 			rechnungsAdresse.getPlz(),
 			rechnungsAdresse.getOrt(),
-			rechnungsAdresse.getLand().name());
+			rechnungsAdresse.getLand().name(),
+			rechnungsAdresse.getOrganisation());
 	}
 }

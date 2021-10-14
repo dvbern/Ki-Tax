@@ -16,5 +16,5 @@
   -->
 
 <div class="eingabe-basisjahr inline-hint" *ngIf="isVisible()">
-    <span>{{'EINGABE_BASISJAHR' | translate:{'basisjahr': basisjahr, 'wertBasisjahr': wertBasisjahr.toLocaleString('de-CH')} }}</span>
+    <span>{{'EINGABE_BASISJAHR' | translate:{'basisjahr': basisjahr, 'wertBasisjahr': wertBasisjahr?.toLocaleString('de-CH')} }}</span>
 </div>

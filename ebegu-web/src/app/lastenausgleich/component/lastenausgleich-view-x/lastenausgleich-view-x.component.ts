@@ -90,8 +90,10 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
             'lastenausgleichGeneneriert',
             'totalAlleGemeinden',
             'lastenausgleichExcel',
-            'lastenausgleichCsv',
         ];
+        if (this.showCSVDownload()) {
+            this.columndefs.push('lastenausgleichCsv');
+        }
         this.isRemoveAllowed()
             .subscribe(res => {
             if (res) {
@@ -246,6 +248,10 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
 
     public showLastenausgleich(): boolean {
         return this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getAllRolesForLastenausgleich());
+    }
+
+    public showCSVDownload(): boolean {
+        return this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getMandantRoles());
     }
 
     public showActions(): boolean {

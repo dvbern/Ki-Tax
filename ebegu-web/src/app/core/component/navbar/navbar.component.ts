@@ -89,16 +89,16 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
             .subscribe((isTSUser: boolean) => {
                     this.changeDetectorRef.markForCheck();
                     this.gemeindeAntragVisible.next(
-                        this.authServiceRS.isOneOfRoles(PERMISSIONS.LASTENAUSGLEICH_TAGESSCHULE) ||
-                        this.authServiceRS.isOneOfRoles([
-                            TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
-                            TSRole.ADMIN_TRAEGERSCHAFT,
-                        ]) ||
-                        this.authServiceRS.isOneOfRoles(PERMISSIONS.FERIENBETREUUNG) ||
-                        (this.authServiceRS.isOneOfRoles([
-                            TSRole.ADMIN_INSTITUTION,
-                            TSRole.SACHBEARBEITER_INSTITUTION,
-                        ]) && isTSUser),
+                        // Has LATS permission and is not a Insti-user without Tagesschule
+                        (this.authServiceRS.isOneOfRoles(PERMISSIONS.LASTENAUSGLEICH_TAGESSCHULE) &&
+                            !(this.authServiceRS.isOneOfRoles(
+                                [
+                                    TSRole.ADMIN_INSTITUTION,
+                                    TSRole.SACHBEARBEITER_INSTITUTION,
+                                    TSRole.ADMIN_TRAEGERSCHAFT,
+                                    TSRole.SACHBEARBEITER_TRAEGERSCHAFT
+                                ]) && !isTSUser)) ||
+                        this.authServiceRS.isOneOfRoles(PERMISSIONS.FERIENBETREUUNG),
                     );
                 },
                 err => LOG.error(err),

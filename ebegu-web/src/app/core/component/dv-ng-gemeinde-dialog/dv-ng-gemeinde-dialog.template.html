@@ -16,9 +16,10 @@
   -->
 
 <mat-dialog-content class="dv-dialog-content">
-    <p [textContent]="'GEMEINDE_AUSWAEHLEN' | translate" class="dv-dialog-text" id="dv-dialog-text"></p>
+    <p [textContent]="'GEMEINDE_AUSWAEHLEN' | translate" class="dv-dialog-compact-text" id="dv-dialog-gemeinde"></p>
+    <span *ngIf="isUserSozialdienst" [innerHTML]="'GEMEINDE_AUSWAEHLEN_INFO' | translate" id="dv-dialog-gemeinde-info"></span>
 
-    <div class="dv-select-style dv-dialog-select">
+    <div class="dv-select-style dv-dialog-select margin-top-20">
         <select aria-describedby="betreuungsangebot-error" aria-labelledby="dv-dialog-text" name="gemeinde"
                 id="gemeinde"
                 [(ngModel)]="selectedGemeinde"

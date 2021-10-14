@@ -20,21 +20,17 @@ package ch.dvbern.ebegu.services;
 import java.util.Collection;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.validation.Valid;
 
 import ch.dvbern.ebegu.entities.BetreuungMonitoring;
 
 public interface BetreuungMonitoringService {
 
-	/**
-	 *
-	 * @return
-	 */
 	@Nonnull
-	Collection<BetreuungMonitoring> getAllBetreuungMonitoringInfos();
-
-	@Nonnull
-	Collection<BetreuungMonitoring> getAllBetreuungMonitoringFuerRefNummer(@Nonnull String refNummer);
+	Collection<BetreuungMonitoring> getAllBetreuungMonitoringBeiCriteria(
+		@Nullable String refNummer,
+		@Nullable String benutzer);
 
 	@Nonnull
 	BetreuungMonitoring saveBetreuungMonitoring(@Valid @Nonnull BetreuungMonitoring betreuungMonitoring);

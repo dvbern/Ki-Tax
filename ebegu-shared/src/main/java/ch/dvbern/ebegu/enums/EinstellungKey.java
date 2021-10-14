@@ -170,8 +170,39 @@ public enum EinstellungKey {
 	//LATS
 	LATS_LOHNNORMKOSTEN,
 	LATS_LOHNNORMKOSTEN_LESS_THAN_50,
-	LATS_STICHTAG;
+	LATS_STICHTAG,
 
+	// "FKJV: Eingewöhnung aktiviert".
+	// Siehe KIBON-2078. Definiert, ob das Kind einen zusätzlichen Anspruch auf Eingewöhnung hat
+	FKJV_EINGEWOEHNUNG,
+
+	// "FKJV: Maximale Differenz zwischen erforderlichem und effektivem Beschäftigungspensum für ausserordentlicher Anspruch"
+	// Siehe KIBON-2080. Definiert die maximale Differenz zwischen erforderlichem und effektiven Beschäftigunspensum für den ausserordentlichen Anspruch.
+	// in Prozent.
+	FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM,
+
+	// "FKJV: Soziale Integration bis und mit Schulstufe"
+	// Siehe KIBON-2081. Definiert bis zu welcher Schulstufe die soziale Integration ausbezahlt wird.
+	FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE,
+
+	// "FKJV: Pauschale nur möglich, wenn Anspruch auf Gutschein"
+	// Siehe KIBON-2093. Falls true wird die Pauschale nur ausbezahlt, wenn auch ein Anspruch auf einen Gutschein besteht
+	FKJV_PAUSCHALE_BEI_ANSPRUCH,
+
+	// "FKJV: Pauschale auch rückwirkend ausbezahlen, sofern Anspruch vorhanden"
+	// Siehe KIBON-2093. Falls true wird die Pauschale bei einer Mutation innerhalb der Gesuchperiode rückwirkend ausbezahlt
+	FKJV_PAUSCHALE_RUECKWIRKEND,
+
+	// "EKV nur bei Einkommen unter 80'000"
+	// Siehe KIBON-2094. Falls eine Zahl definiert ist, dann besteht ein Anspruch auf eine Einkommensverschlechterung nur bis zu diesem Betrag
+	FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF,
+
+	// "FKJV: Anspruchsberechnung monatsweise"
+	// Siehe KIBON-2095. Falls true wird der Anspruch nur monatsweise berechnet
+	FJKV_ANSPRUCH_MONATSWEISE,
+
+	// Definiert ob die Schnittstelle zu den Steuersystemen aktiv ist
+	SCHNITTSTELLE_STEUERN_AKTIV;
 
 	private EinstellungTyp typ;
 

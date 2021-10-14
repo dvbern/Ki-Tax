@@ -161,6 +161,24 @@ public enum ReportVorlage {
 		ReportFileName.MAHLZEITENVERGUENSTIGUNG,
 		Constants.DATA,
 		MergeFieldMahlzeitenverguenstigung.class
+	),
+	VORLAGE_REPORT_GEMEINDEN(
+			"/reporting/Gemeinden.xlsx",
+			ReportFileName.GEMEINDEN,
+			Constants.DATA,
+			MergeFieldGemeinden.class
+	),
+	VORLAGE_REPORT_FERIENBETREUUNG(
+		"/reporting/Ferienbetreuung.xlsx",
+		ReportFileName.FERIENBETREUUNG,
+		Constants.DATA,
+		MergeFieldFerienbetreuung.class
+	),
+	VORLAGE_REPORT_LASTENAUSGLEICH_TAGESSCHULEN(
+		"/reporting/LastenausgleichTagesschulen.xlsx",
+		ReportFileName.LASTENAUSGLEICH_TAGESSCHULEN,
+		"Gemeinden",
+		MergeFieldLastenausgleichTS.class
 	);
 
 	@Nonnull

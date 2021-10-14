@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {of} from 'rxjs';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
@@ -41,7 +42,8 @@ describe('GemeindeKennzahlenUiComponent', () => {
                     provide: GemeindeKennzahlenService,
                     useValue: gemeindeKennzahlenServiceSpy
                 }
-            ]
+            ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });

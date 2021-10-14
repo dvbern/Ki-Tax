@@ -27,7 +27,11 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -46,7 +50,7 @@ import static ch.dvbern.ebegu.util.Constants.TEN_MB;
  */
 @Audited
 @Entity
-public class Gesuchsperiode extends AbstractDateRangedEntity {
+public class Gesuchsperiode extends AbstractDateRangedEntity implements HasMandant {
 
 	private static final long serialVersionUID = -9132257370971574570L;
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
@@ -55,6 +59,11 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private GesuchsperiodeStatus status = GesuchsperiodeStatus.ENTWURF;
+
+	@NotNull
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gesuchsperiode_mandant_id"))
+	private Mandant mandant;
 
 	// Wir merken uns, wann die Periode aktiv geschalten wurde, damit z.B. die Mails nicht 2 mal verschickt werden
 	@Column(nullable = true)
@@ -319,4 +328,14 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 		return "(" + ServerMessageUtil.translateEnumValue(status, locale) + ')';
 	}
 
+	@NotNull
+	@Override
+	public Mandant getMandant() {
+		return mandant;
+	}
+
+	@Override
+	public void setMandant(Mandant mandant) {
+		this.mandant = mandant;
+	}
 }

@@ -35,6 +35,7 @@ public final class WorkJobConstants {
 	public static final String LANGUAGE = "language";
 	public static final String STAMMDATEN_ID_PARAM = "stammdatenId";
 	public static final String GEMEINDE_ID_PARAM = "gemeindeId";
+	public static final String KANTON_SELBSTBEHALT ="kantonSelbstbehalt";
 
 	private WorkJobConstants() {
 	}

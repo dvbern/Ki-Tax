@@ -22,6 +22,8 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 import javax.ejb.Schedule;
@@ -42,6 +44,7 @@ import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeader;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -50,8 +53,8 @@ import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.kibon.exchange.commons.util.EventUtil.MESSAGE_HEADER_EVENT_ID;
 import static ch.dvbern.kibon.exchange.commons.util.EventUtil.MESSAGE_HEADER_EVENT_TYPE;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
+import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
+import static java.util.Objects.requireNonNull;
 import static org.apache.kafka.clients.producer.ProducerConfig.ACKS_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
@@ -74,7 +77,7 @@ public class OutboxEventKafkaProducer {
 	 */
 	@Schedule(info = "publish outbox events", minute = "*", hour = "*", persistent = true)
 	public void publishEvents() {
-		if (!ebeguConfiguration.getKafkaURL().isPresent()) {
+		if (ebeguConfiguration.getKafkaURL().isEmpty()) {
 			LOG.debug("Kafka URL not set, not publishing events.");
 			return;
 		}
@@ -106,22 +109,41 @@ public class OutboxEventKafkaProducer {
 			props.setProperty(SCHEMA_REGISTRY_URL_CONFIG, ebeguConfiguration.getSchemaRegistryURL());
 
 			Producer<String, GenericRecord> producer = new KafkaProducer<>(props);
+			Consumer<OutboxEvent> outboxEventConsumer = sendBlocking(producer);
 
-			events.stream()
-				.map(this::toProducerRecord)
-				.forEach(producer::send);
+			events.forEach(outboxEventConsumer);
 
 			producer.close();
-
-			events.forEach(event -> LOG.info("Event of type: {} with the aggregate id: {} was successfully exported",event.getAggregateType(), event.getAggregateId()));
-
-			events.forEach(entityManager::remove);
 
 		} catch (RuntimeException e) {
 			// When a timer fails, it's called again sometime later. If that timer fails as well, the schedule is
 			// cancelled: https://stackoverflow.com/a/10598938
 			LOG.error("Kafka export failed", e);
 		}
+	}
+
+	@Nonnull
+	private Consumer<OutboxEvent> sendBlocking(@Nonnull Producer<String, GenericRecord> producer) {
+		return event -> {
+			try {
+				ProducerRecord<String, GenericRecord> record = toProducerRecord(event);
+				// blocking execution, because onCompletion we are removing OutboxEvent from the database.
+				// -> this method must be kept alive to still have an open transaction to remove OutboxEvent.
+				RecordMetadata metadata = producer.send(record).get();
+				LOG.info(
+					"Event of type: {} with the aggregate id: {} was successfully exported. Offset: {}",
+					event.getAggregateType(),
+					event.getAggregateId(),
+					metadata.offset());
+				entityManager.remove(event);
+			} catch (InterruptedException | ExecutionException e) {
+				LOG.error(
+					"Kafka export failed. Event of type: {} with the aggregate id: {} not sent:",
+					event.getAggregateType(),
+					event.getAggregateId(),
+					e.getCause());
+			}
+		};
 	}
 
 	/**
@@ -156,7 +178,7 @@ public class OutboxEventKafkaProducer {
 			new RecordHeader(MESSAGE_HEADER_EVENT_TYPE, eventType.getBytes(StandardCharsets.UTF_8))
 		);
 
-		long timestamp = checkNotNull(outboxEvent.getTimestampErstellt())
+		long timestamp = requireNonNull(outboxEvent.getTimestampErstellt())
 			.atZone(ZoneId.systemDefault())
 			.toInstant()
 			.toEpochMilli();

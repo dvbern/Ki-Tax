@@ -13,12 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IController, IComponentOptions, IAugmentedJQuery} from 'angular';
+import {IAugmentedJQuery, IComponentOptions, IController} from 'angular';
 import {ApplicationPropertyRS} from './core/rest-services/applicationPropertyRS.rest';
+import {ColorService} from './shared/services/color.service';
 
 export class AppAngularjsComponent implements IController {
 
-    public static $inject: string[] = ['$element', 'ApplicationPropertyRS'];
+    public static $inject: string[] = ['$element', 'ApplicationPropertyRS', 'ColorService'];
 
     public constructor(
         private readonly $element: IAugmentedJQuery,
@@ -33,7 +34,14 @@ export class AppAngularjsComponent implements IController {
                     .css('background-color', response.backgroundColor);
                 this.$element.find('.environment')
                     .css('display', response.devmode ? 'inline' : 'none');
+                this.$element.find('.logo-bern')
+                    .css('background-image', this.getBackgroundImage(response.logoFileName));
+                ColorService.changeColors(response);
             });
+    }
+
+    public getBackgroundImage(filename: string): string {
+        return `url("assets/images/${filename}")`;
     }
 }
 

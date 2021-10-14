@@ -128,4 +128,29 @@ public enum ApplicationPropertyKey {
 	 */
 	MULTIMANDANT_AKTIV,
 
+	/**
+	 * Legt die Primary Color fest
+	 */
+	PRIMARY_COLOR,
+
+	/**
+	 * Legt die dunkle Primary Color fest
+	 */
+	PRIMARY_COLOR_DARK,
+
+	/**
+	 * Legt die helle Primary Color fest
+	 */
+	PRIMARY_COLOR_LIGHT,
+
+	/**
+	 * Filename des Logos, welches in /assets/images/ ordner abgelegt ist
+	 */
+	LOGO_FILE_NAME,
+
+	/**
+	 * Filename des weissen Logos, welches in /assets/images/ ordner abgelegt ist
+	 */
+	LOGO_WHITE_FILE_NAME,
+
 }

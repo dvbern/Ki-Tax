@@ -36,7 +36,7 @@ import ch.dvbern.ebegu.util.Constants;
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
 @Entity
-public class BfsGemeinde  implements Serializable {
+public class BfsGemeinde  implements Serializable, HasMandant {
 
 	private static final long serialVersionUID = -6976259296646006855L;
 

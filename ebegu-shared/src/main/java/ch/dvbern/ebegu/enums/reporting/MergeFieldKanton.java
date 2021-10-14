@@ -32,6 +32,7 @@ public enum MergeFieldKanton implements MergeFieldProvider {
 	kantonTitle(new SimpleMergeField<>("kantonTitle", STRING_CONVERTER)),
 	vonTitle(new SimpleMergeField<>("vonTitle", STRING_CONVERTER)),
 	bisTitle(new SimpleMergeField<>("bisTitle", STRING_CONVERTER)),
+	kantonSelbstbehaltTitle(new SimpleMergeField<>("kantonSelbstbehaltTitle", STRING_CONVERTER)),
 	gemeindeTitle(new SimpleMergeField<>("gemeindeTitle", STRING_CONVERTER)),
 	fallIdTitle(new SimpleMergeField<>("fallIdTitle", STRING_CONVERTER)),
 	nachnameTitle(new SimpleMergeField<>("nachnameTitle", STRING_CONVERTER)),
@@ -44,6 +45,9 @@ public enum MergeFieldKanton implements MergeFieldProvider {
 	bgPensumTotalTitle(new SimpleMergeField<>("bgPensumTotalTitle", STRING_CONVERTER)),
 	monatsanfangTitle(new SimpleMergeField<>("monatsanfangTitle", STRING_CONVERTER)),
 	monatsendeTitle(new SimpleMergeField<>("monatsendeTitle", STRING_CONVERTER)),
+	tageMonatTitle(new SimpleMergeField<>("tageMonatTitle", STRING_CONVERTER)),
+	tageIntervallTitle(new SimpleMergeField<>("tageIntervallTitle", STRING_CONVERTER)),
+	anteilMonatKantonTitle(new SimpleMergeField<>("anteilMonatKantonTitle", STRING_CONVERTER)),
 	platzbelegungTageTitle(new SimpleMergeField<>("platzbelegungTageTitle", STRING_CONVERTER)),
 	kostenCHFTitle(new SimpleMergeField<>("kostenCHFTitle", STRING_CONVERTER)),
 	vollkostenTitle(new SimpleMergeField<>("vollkostenTitle", STRING_CONVERTER)),
@@ -54,9 +58,12 @@ public enum MergeFieldKanton implements MergeFieldProvider {
 	babyFaktorTitle(new SimpleMergeField<>("babyFaktorTitle", STRING_CONVERTER)),
 	institutionTitle(new SimpleMergeField<>("institutionTitle", STRING_CONVERTER)),
 	totalTitle(new SimpleMergeField<>("totalTitle", STRING_CONVERTER)),
+	selbstbehaltTitle(new SimpleMergeField<>("selbstbehaltTitle", STRING_CONVERTER)),
+	anteilKalenderjahrTitle(new SimpleMergeField<>("anteilKalenderjahrTitle", STRING_CONVERTER)),
 
 	auswertungVon(new SimpleMergeField<>("auswertungVon", DATE_CONVERTER)),
 	auswertungBis(new SimpleMergeField<>("auswertungBis", DATE_CONVERTER)),
+	kantonSelbstbehalt(new SimpleMergeField<>("kantonSelbstbehalt", BIGDECIMAL_CONVERTER)),
 
 	repeatRow(new RepeatRowMergeField("repeatRow")),
 

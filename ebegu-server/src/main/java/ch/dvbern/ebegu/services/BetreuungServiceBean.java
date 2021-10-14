@@ -58,6 +58,7 @@ import ch.dvbern.ebegu.entities.AbwesenheitContainer_;
 import ch.dvbern.ebegu.entities.Abwesenheit_;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungMonitoring;
@@ -96,6 +97,7 @@ import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.outbox.anmeldung.AnmeldungTagesschuleEventConverter;
 import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageAddedEvent;
 import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageEventConverter;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -103,6 +105,7 @@ import ch.dvbern.ebegu.services.util.FilterFunctions;
 import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -153,6 +156,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private EbeguConfiguration ebeguConfiguration;
 	@Inject
 	private BetreuungMonitoringService betreuungMonitoringService;
+	@Inject
+	private AnmeldungTagesschuleEventConverter anmeldungTagesschuleEventConverter;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
 
@@ -260,6 +265,11 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				persistence.merge(b);
 			});
 
+		//Export Tagesschule Anmeldung oder moegliche Aenderungen an der exchange-service
+		if(isAnmeldungInStatusToFireEvent(mergedBetreuung) && !mergedBetreuung.isKeineDetailinformationen()) {
+			fireAnmeldungTagesschuleAddedEvent(mergedBetreuung);
+		}
+
 		// we need to manually add this new AnmeldungTagesschule to the Kind
 		final Set<AnmeldungTagesschule> betreuungen = mergedBetreuung.getKind().getAnmeldungenTagesschule();
 		betreuungen.add(mergedBetreuung);
@@ -272,9 +282,25 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		boolean isAnmeldungSchulamtAusgeloest =
 			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST == mergedBetreuung.getBetreuungsstatus();
+
 		updateVerantwortliche(mergedGesuch, mergedBetreuung, isAnmeldungSchulamtAusgeloest, isNew);
 
 		return mergedBetreuung;
+	}
+
+	@Override
+	public void fireAnmeldungTagesschuleAddedEvent(@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
+		if (ebeguConfiguration.isAnmeldungTagesschuleApiEnabled()) {
+			event.fire(anmeldungTagesschuleEventConverter.of(anmeldungTagesschule));
+			//TODO: add event published or not this is the question???
+		}
+	}
+
+	private boolean isAnmeldungInStatusToFireEvent(AnmeldungTagesschule betreuung) {
+		return EnumUtil.isOneOf(betreuung.getBetreuungsstatus(),
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST,
+			Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT,
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
 	}
 
 	@Nonnull
@@ -1245,5 +1271,52 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 					ErrorCodeEnum.ERROR_KORREKTURMODUS_FI_ONLY);
 			}
 		}
+	}
+
+	@Override
+	@Nonnull
+	public Optional<AnmeldungTagesschule> findAnmeldungenTagesschuleByBGNummer(@Nonnull String bgNummer) {
+		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
+		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
+			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365));
+		Gesuchsperiode gesuchsperiode;
+		if (gesuchsperiodeOptional.isPresent()) {
+			gesuchsperiode = gesuchsperiodeOptional.get();
+		} else {
+			return Optional.empty();
+		}
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<AnmeldungTagesschule> query = cb.createQuery(AnmeldungTagesschule.class);
+
+		Root<AnmeldungTagesschule> root = query.from(AnmeldungTagesschule.class);
+		final Join<AnmeldungTagesschule, KindContainer> kindjoin = root.join(AnmeldungTagesschule_.kind, JoinType.LEFT);
+		final Join<KindContainer, Gesuch> kindContainerGesuchJoin = kindjoin.join(
+			KindContainer_.gesuch,
+			JoinType.LEFT);
+		final Join<Gesuch, Dossier> dossierJoin = kindContainerGesuchJoin.join(Gesuch_.dossier, JoinType.LEFT);
+		final Join<Dossier, Fall> gesuchFallJoin = dossierJoin.join(Dossier_.fall);
+
+		final int betreuungNummer = BetreuungUtil.getBetreuungNummerFromBGNummer(bgNummer);
+		final int kindNummer = BetreuungUtil.getKindNummerFromBGNummer(bgNummer);
+		final long fallnummer = BetreuungUtil.getFallnummerFromBGNummer(bgNummer);
+
+		Predicate predBetreuungNummer = cb.equal(root.get(AnmeldungTagesschule_.betreuungNummer), betreuungNummer);
+		Predicate predKindNummer = cb.equal(kindjoin.get(KindContainer_.kindNummer), kindNummer);
+		Predicate predFallNummer = cb.equal(gesuchFallJoin.get(Fall_.fallNummer), fallnummer);
+		Predicate predGesuchsperiode = cb.equal(kindContainerGesuchJoin.get(Gesuch_.gesuchsperiode), gesuchsperiode);
+
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(predFallNummer);
+		predicates.add(predGesuchsperiode);
+		predicates.add(predKindNummer);
+		predicates.add(predBetreuungNummer);
+
+		Predicate predGueltig = cb.equal(root.get(AnmeldungTagesschule_.gueltig), Boolean.TRUE);
+		predicates.add(predGueltig);
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+
+		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
 	}
 }

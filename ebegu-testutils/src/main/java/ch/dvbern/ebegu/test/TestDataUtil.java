@@ -114,6 +114,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
+import ch.dvbern.ebegu.enums.AbholungTagesschule;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
@@ -173,6 +174,13 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FJKV_ANSPRUCH_MONATSWEISE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_BEI_ANSPRUCH;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED;
@@ -230,6 +238,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSO
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_KITA_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS;
@@ -515,6 +524,7 @@ public final class TestDataUtil {
 		fachstelle.setName(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE);
 		fachstelle.setFachstelleAnspruch(true);
 		fachstelle.setFachstelleErweiterteBetreuung(false);
+		fachstelle.setMandant(createDefaultMandant());
 		return fachstelle;
 	}
 
@@ -541,6 +551,14 @@ public final class TestDataUtil {
 	public static Traegerschaft createDefaultTraegerschaft() {
 		Traegerschaft traegerschaft = new Traegerschaft();
 		traegerschaft.setName("Traegerschaft" + UUID.randomUUID().toString());
+		traegerschaft.setMandant(createDefaultMandant());
+		return traegerschaft;
+	}
+
+	public static Traegerschaft createDefaultTraegerschaft(Mandant mandant) {
+		Traegerschaft traegerschaft = new Traegerschaft();
+		traegerschaft.setName("Traegerschaft" + UUID.randomUUID().toString());
+		traegerschaft.setMandant(mandant);
 		return traegerschaft;
 	}
 
@@ -548,7 +566,7 @@ public final class TestDataUtil {
 		Institution institution = new Institution();
 		institution.setName("Institution1");
 		institution.setMandant(createDefaultMandant());
-		institution.setTraegerschaft(createDefaultTraegerschaft());
+		institution.setTraegerschaft(createDefaultTraegerschaft(institution.getMandant()));
 		return institution;
 	}
 
@@ -774,6 +792,7 @@ public final class TestDataUtil {
 
 	private static void saveTraegerschaftIfNecessary(@Nonnull Persistence persistence, @Nullable Traegerschaft traegerschaft) {
 		if (traegerschaft != null) {
+			saveMandantIfNecessary(persistence, traegerschaft.getMandant());
 			Traegerschaft found = persistence.find(Traegerschaft.class, traegerschaft.getId());
 			if (found == null) {
 				persistEntity(persistence, traegerschaft);
@@ -781,7 +800,7 @@ public final class TestDataUtil {
 		}
 	}
 
-	private static void saveMandantIfNecessary(@Nonnull Persistence persistence, @Nullable Mandant mandant) {
+	public static void saveMandantIfNecessary(@Nonnull Persistence persistence, @Nullable Mandant mandant) {
 		if (mandant != null) {
 			Mandant found = persistence.find(Mandant.class, mandant.getId());
 			if (found == null) {
@@ -964,7 +983,7 @@ public final class TestDataUtil {
 		belegungTagesschule.setEintrittsdatum(LocalDate.now());
 		if (withModulBelegung) {
 			belegungTagesschule.setBelegungTagesschuleModule(new TreeSet<>());
-
+			belegungTagesschule.setAbholungTagesschule(AbholungTagesschule.ALLEINE_NACH_HAUSE);
 			Set<ModulTagesschule> modulTagesschuleSet = createDefaultModuleTagesschuleSet(true,
 				LocalTime.of(12,0), LocalTime.of(14,0), "Mittag", "Midi");
 			modulTagesschuleSet.forEach(
@@ -1038,24 +1057,51 @@ public final class TestDataUtil {
 		return createGesuchsperiodeXXYY(2017, 2018);
 	}
 
+	public static Gesuchsperiode createGesuchsperiode1718(Mandant mandant) {
+		return createGesuchsperiodeXXYY(2017, 2018, mandant);
+	}
+
 	public static Gesuchsperiode createAndPersistGesuchsperiode1718(Persistence persistence) {
-		Gesuchsperiode gesuchsperiodeXXYY = createGesuchsperiodeXXYY(2017, 2018);
-		return persistence.persist(gesuchsperiodeXXYY);
+		return createGesuchsperiodeXXYYAndPersist(2017, 2018, persistence);
 	}
 
 	public static Gesuchsperiode createAndPersistCustomGesuchsperiode(Persistence persistence, int yearFrom, int yearTo) {
-		Gesuchsperiode gesuchsperiodeXXYY = createGesuchsperiodeXXYY(yearFrom, yearTo);
-		return persistence.persist(gesuchsperiodeXXYY);
+		return createGesuchsperiodeXXYYAndPersist(yearFrom, yearTo, persistence);
 	}
 
 	public static Gesuchsperiode createGesuchsperiode1617() {
 		return createGesuchsperiodeXXYY(2016, 2017);
 	}
 
+	public static Gesuchsperiode createGesuchsperiode1617AndPersist(Persistence persistence) {
+		return createGesuchsperiodeXXYYAndPersist(2016, 2017, persistence);
+	}
+
+	@Nonnull
+	public static Gesuchsperiode createGesuchsperiodeXXYYAndPersist(int yearFrom, int yearTo, Persistence persistence) {
+		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
+		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
+		gesuchsperiode.setMandant(getMandantKantonBern(persistence));
+		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(yearFrom, Month.AUGUST, 1), LocalDate.of(yearTo,
+			Month.JULY, 31)));
+		return persistence.persist(gesuchsperiode);
+	}
+
 	@Nonnull
 	public static Gesuchsperiode createGesuchsperiodeXXYY(int yearFrom, int yearTo) {
 		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
+		gesuchsperiode.setMandant(createDefaultMandant());
+		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(yearFrom, Month.AUGUST, 1), LocalDate.of(yearTo,
+			Month.JULY, 31)));
+		return gesuchsperiode;
+	}
+
+	@Nonnull
+	public static Gesuchsperiode createGesuchsperiodeXXYY(int yearFrom, int yearTo, Mandant mandant) {
+		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
+		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
+		gesuchsperiode.setMandant(mandant);
 		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(yearFrom, Month.AUGUST, 1), LocalDate.of(yearTo,
 			Month.JULY, 31)));
 		return gesuchsperiode;
@@ -1063,6 +1109,7 @@ public final class TestDataUtil {
 
 	public static Gesuchsperiode createCustomGesuchsperiode(int firstYear, int secondYear) {
 		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
+		gesuchsperiode.setMandant(TestDataUtil.createDefaultMandant());
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
 		gesuchsperiode.setGueltigkeit(new DateRange(
 			LocalDate.of(firstYear, Month.AUGUST, 1),
@@ -1511,6 +1558,7 @@ public final class TestDataUtil {
 		persistence.persist(gesuch.getFall());
 		persistence.persist(gesuch.getDossier());
 		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer());
+		TestDataUtil.saveMandantIfNecessary(persistence, gesuch.getGesuchsperiode().getMandant());
 		persistence.persist(gesuch.getGesuchsperiode());
 
 		Set<KindContainer> kindContainers = new TreeSet<>();
@@ -1523,8 +1571,10 @@ public final class TestDataUtil {
 
 		Objects.requireNonNull(kind.getKindGS());
 		Objects.requireNonNull(kind.getKindGS().getPensumFachstelle());
+		TestDataUtil.saveMandantIfNecessary(persistence, kind.getKindGS().getPensumFachstelle().getFachstelle().getMandant());
 		persistence.persist(kind.getKindGS().getPensumFachstelle().getFachstelle());
 		Objects.requireNonNull(kind.getKindJA().getPensumFachstelle());
+		TestDataUtil.saveMandantIfNecessary(persistence, kind.getKindJA().getPensumFachstelle().getFachstelle().getMandant());
 		persistence.persist(kind.getKindJA().getPensumFachstelle().getFachstelle());
 		kind.setGesuch(gesuch);
 		kindContainers.add(kind);
@@ -1572,6 +1622,7 @@ public final class TestDataUtil {
 
 	public static Gesuch createAndPersistGesuch(Persistence persistence, Gemeinde gemeinde) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
+		saveMandantIfNecessary(persistence, gesuch.getGesuchsperiode().getMandant());
 		Benutzer benutzer = createAndPersistBenutzer(persistence, gemeinde);
 		gesuch.getDossier().setGemeinde(gemeinde);
 		gesuch.getDossier().setVerantwortlicherBG(benutzer);
@@ -1587,9 +1638,11 @@ public final class TestDataUtil {
 
 	public static Gesuch createAndPersistGesuch(Persistence persistence) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
+		saveMandantIfNecessary(persistence, gesuch.getGesuchsperiode().getMandant());
 		Benutzer benutzer = createAndPersistBenutzer(persistence);
 		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
 		gesuch.getDossier().setVerantwortlicherBG(benutzer);
+		gesuch.getGesuchsperiode().setMandant(getMandantKantonBern(persistence));
 		persistence.persist(gesuch.getFall());
 
 		persistence.persist(gesuch.getDossier());
@@ -1603,6 +1656,7 @@ public final class TestDataUtil {
 	public static Gesuch createAndPersistGesuch(Persistence persistence, AntragStatus status) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch(status);
 		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
+		gesuch.getGesuchsperiode().setMandant(getMandantKantonBern(persistence));
 		persistence.persist(gesuch.getFall());
 		persistence.persist(gesuch.getDossier());
 		persistence.persist(gesuch.getGesuchsperiode());
@@ -1725,6 +1779,14 @@ public final class TestDataUtil {
 		saveEinstellung(LATS_LOHNNORMKOSTEN_LESS_THAN_50, "5.2",	gesuchsperiode, persistence);
 		String stichtag = gesuchsperiode.getGueltigkeit().getGueltigAb().getYear() + "-09-15";
 		saveEinstellung(LATS_STICHTAG, stichtag, gesuchsperiode, persistence);
+		saveEinstellung(FKJV_EINGEWOEHNUNG, "false", gesuchsperiode, persistence);
+		saveEinstellung(FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM, "100", gesuchsperiode, persistence);
+		saveEinstellung(FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, "VORSCHULALTER", gesuchsperiode, persistence);
+		saveEinstellung(FKJV_PAUSCHALE_BEI_ANSPRUCH, "false", gesuchsperiode, persistence);
+		saveEinstellung(FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF, "null", gesuchsperiode, persistence);
+		saveEinstellung(FKJV_PAUSCHALE_RUECKWIRKEND, "false", gesuchsperiode, persistence);
+		saveEinstellung(FJKV_ANSPRUCH_MONATSWEISE, "false", gesuchsperiode, persistence);
+		saveEinstellung(SCHNITTSTELLE_STEUERN_AKTIV, "false", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(
@@ -1825,10 +1887,10 @@ public final class TestDataUtil {
 	}
 
 	public static Benutzer createAndPersistTraegerschaftBenutzer(Persistence persistence) {
-		final Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft();
-		persistence.persist(traegerschaft);
 		final Mandant mandant = TestDataUtil.createDefaultMandant();
 		persistence.persist(mandant);
+		final Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft(mandant);
+		persistence.persist(traegerschaft);
 		final Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(
 			UserRole.SACHBEARBEITER_TRAEGERSCHAFT,
 			UUID.randomUUID().toString(),
@@ -2048,6 +2110,8 @@ public final class TestDataUtil {
 		Objects.requireNonNull(betreuung.getKind().getKindGS());
 		Objects.requireNonNull(betreuung.getKind().getKindGS().getPensumFachstelle());
 		Objects.requireNonNull(betreuung.getKind().getKindJA().getPensumFachstelle());
+		saveMandantIfNecessary(persistence, betreuung.getKind().getKindGS().getPensumFachstelle().getFachstelle().getMandant());
+		saveMandantIfNecessary(persistence, betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle().getMandant());
 		persistence.persist(betreuung.getKind().getKindGS().getPensumFachstelle().getFachstelle());
 		persistence.persist(betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle());
 
@@ -2103,8 +2167,8 @@ public final class TestDataUtil {
 		Objects.requireNonNull(betreuung.getKind().getKindGS());
 		Objects.requireNonNull(betreuung.getKind().getKindGS().getPensumFachstelle());
 		Objects.requireNonNull(betreuung.getKind().getKindJA().getPensumFachstelle());
-		persistence.persist(betreuung.getKind().getKindGS().getPensumFachstelle().getFachstelle());
-		persistence.persist(betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle());
+		TestDataUtil.persistFachstelle(persistence, betreuung.getKind().getKindGS().getPensumFachstelle().getFachstelle());
+		TestDataUtil.persistFachstelle(persistence, betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle());
 
 		KindContainer kindContainer = betreuung.getKind();
 		kindContainer.getBetreuungen().add(betreuung);
@@ -2356,5 +2420,10 @@ public final class TestDataUtil {
 		sozialdienstStammdaten.setWebseite("");
 		persistence.persist(sozialdienstStammdaten);
 		return fallService.saveFall(fall);
+	}
+
+	public static void persistFachstelle(@Nonnull Persistence persistence, @Nonnull Fachstelle fachstelle) {
+		saveMandantIfNecessary(persistence, fachstelle.getMandant());
+		persistence.persist(fachstelle);
 	}
 }

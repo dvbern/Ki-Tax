@@ -1402,6 +1402,15 @@ export class EbeguRestUtil {
         return tsInstitutionExternalClients;
     }
 
+    public parseExternalClientList(data: Array<any>): TSExternalClient[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseExternalClient(item))
+            : [this.parseExternalClient(data)];
+    }
+
     public parseExternalClient(data: any): TSExternalClient {
         const tsExternalClient = new TSExternalClient();
         this.parseAbstractEntity(tsExternalClient, data);
@@ -3367,12 +3376,12 @@ export class EbeguRestUtil {
         }
 
         testBatchJobInfo.batchStatus = batchJobInfoFromServer.batchStatus;
-        testBatchJobInfo.createTime = batchJobInfoFromServer.createTime;
-        testBatchJobInfo.endTime = batchJobInfoFromServer.endTime;
+        testBatchJobInfo.createTime = DateUtil.localDateTimeToMoment(batchJobInfoFromServer.createTime);
+        testBatchJobInfo.endTime = DateUtil.localDateTimeToMoment(batchJobInfoFromServer.endTime);
         testBatchJobInfo.executionId = batchJobInfoFromServer.executionId;
         testBatchJobInfo.jobName = batchJobInfoFromServer.jobName;
-        testBatchJobInfo.lastUpdatedTime = batchJobInfoFromServer.lastUpdatedTime;
-        testBatchJobInfo.startTime = batchJobInfoFromServer.startTime;
+        testBatchJobInfo.lastUpdatedTime = DateUtil.localDateTimeToMoment(batchJobInfoFromServer.lastUpdatedTime);
+        testBatchJobInfo.startTime = DateUtil.localDateTimeToMoment(batchJobInfoFromServer.startTime);
 
         return testBatchJobInfo;
     }
@@ -4014,6 +4023,11 @@ export class EbeguRestUtil {
         publicAppConfigTS.dummyMode = data.dummyMode;
         publicAppConfigTS.sentryEnvName = data.sentryEnvName;
         publicAppConfigTS.backgroundColor = data.backgroundColor;
+        publicAppConfigTS.primaryColor = data.primaryColor;
+        publicAppConfigTS.primaryColorDark = data.primaryColorDark;
+        publicAppConfigTS.primaryColorLight = data.primaryColorLight;
+        publicAppConfigTS.logoFileName = data.logoFileName;
+        publicAppConfigTS.logoFileNameWhite = data.logoFileNameWhite;
         publicAppConfigTS.zahlungentestmode = data.zahlungentestmode;
         publicAppConfigTS.personenSucheDisabled = data.personenSucheDisabled;
         publicAppConfigTS.kitaxHost = data.kitaxHost;
@@ -5417,10 +5431,10 @@ export class EbeguRestUtil {
         gemeindeKennzahlenRest.gesuchsperiode = this.gesuchsperiodeToRestObject({}, gemeindeKennzahlen.gesuchsperiode);
 
         gemeindeKennzahlenRest.nachfrageErfuellt = gemeindeKennzahlen.nachfrageErfuellt;
+        gemeindeKennzahlenRest.gemeindeKontingentiert = gemeindeKennzahlen.gemeindeKontingentiert;
         gemeindeKennzahlenRest.nachfrageAnzahl = gemeindeKennzahlen.nachfrageAnzahl;
         gemeindeKennzahlenRest.nachfrageDauer = gemeindeKennzahlen.nachfrageDauer;
-        gemeindeKennzahlenRest.kostenlenkungAndere = gemeindeKennzahlen.kostenlenkungAndere;
-        gemeindeKennzahlenRest.welcheKostenlenkungsmassnahmen = gemeindeKennzahlen.welcheKostenlenkungsmassnahmen;
+        gemeindeKennzahlenRest.limitierungTfo = gemeindeKennzahlen.limitierungTfo;
 
         return gemeindeKennzahlenRest;
     }
@@ -5440,10 +5454,10 @@ export class EbeguRestUtil {
         gemeindeKennzahlen.status = gemeindeKennzahlenFromServer.status;
 
         gemeindeKennzahlen.nachfrageErfuellt = gemeindeKennzahlenFromServer.nachfrageErfuellt;
+        gemeindeKennzahlen.gemeindeKontingentiert = gemeindeKennzahlenFromServer.gemeindeKontingentiert;
         gemeindeKennzahlen.nachfrageAnzahl = gemeindeKennzahlenFromServer.nachfrageAnzahl;
         gemeindeKennzahlen.nachfrageDauer = gemeindeKennzahlenFromServer.nachfrageDauer;
-        gemeindeKennzahlen.kostenlenkungAndere = gemeindeKennzahlenFromServer.kostenlenkungAndere;
-        gemeindeKennzahlen.welcheKostenlenkungsmassnahmen = gemeindeKennzahlenFromServer.welcheKostenlenkungsmassnahmen;
+        gemeindeKennzahlen.limitierungTfo = gemeindeKennzahlenFromServer.limitierungTfo;
 
         return gemeindeKennzahlen;
     }

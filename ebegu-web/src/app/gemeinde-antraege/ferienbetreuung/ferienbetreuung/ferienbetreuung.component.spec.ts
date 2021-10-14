@@ -23,6 +23,7 @@ const wizardStepXRSSpy = jasmine.createSpyObj<WizardStepXRS>(WizardStepXRS.name,
     ['updateSteps']);
 
 import {HttpClientModule} from '@angular/common/http';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -50,7 +51,8 @@ describe('FerienbetreuungComponent', () => {
             imports: [
                 HttpClientModule,
                 SharedModule
-            ]
+            ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         })
             .compileComponents();
     });

@@ -171,7 +171,7 @@ public abstract class AbstractEbeguTest {
 	 * Helper für init. Speichert Gesuchsperiode in DB
 	 */
 	protected Gesuchsperiode createGesuchsperiode() {
-		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
 		return gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode);
 	}
@@ -189,7 +189,6 @@ public abstract class AbstractEbeguTest {
 		final InstitutionStammdaten institutionStammdatenFerieninselGuarda = TestDataUtil.createInstitutionStammdatenFerieninselGuarda();
 
 		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft();
-		traegerschaftService.saveTraegerschaft(traegerschaft);
 		institutionStammdatenKitaAaregg.getInstitution().setTraegerschaft(traegerschaft);
 		institutionStammdatenKitaBruennen.getInstitution().setTraegerschaft(traegerschaft);
 		institutionStammdatenTagesfamilien.getInstitution().setTraegerschaft(traegerschaft);
@@ -203,6 +202,9 @@ public abstract class AbstractEbeguTest {
 		institutionStammdatenTagesfamilien.getInstitution().setMandant(mandant);
 		institutionStammdatenTagesschuleBern.getInstitution().setMandant(mandant);
 		institutionStammdatenFerieninselGuarda.getInstitution().setMandant(mandant);
+		traegerschaft.setMandant(mandant);
+
+		traegerschaftService.saveTraegerschaft(traegerschaft);
 
 		institutionService.createInstitution(institutionStammdatenKitaAaregg.getInstitution());
 		institutionStammdatenService.saveInstitutionStammdaten(institutionStammdatenKitaAaregg);

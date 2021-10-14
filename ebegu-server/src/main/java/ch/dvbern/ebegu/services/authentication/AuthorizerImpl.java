@@ -933,17 +933,14 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			Objects.requireNonNull(
 				institution,
 				"Institution des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
-			return gesuch.hasBetreuungOfInstitution(institution); //@reviewer: oder besser ueber service ?
+			return gesuch.hasBetreuungOfInstitution(institution);
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT)) {
 			Traegerschaft traegerschaft = principalBean.getBenutzer().getTraegerschaft();
 			Objects.requireNonNull(
 				traegerschaft,
 				"Traegerschaft des des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
-			Collection<Institution> institutions =
-				institutionService.getAllInstitutionenFromTraegerschaft(traegerschaft.getId());
-			return institutions.stream()
-				.anyMatch(gesuch::hasBetreuungOfInstitution);  // irgend eine der betreuungen des gesuchs matched
+			return gesuch.hasBetreuungOfTraegerschaft(traegerschaft);
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST)) {
 			SozialdienstFall sozialdienstFall = gesuch.getDossier().getFall().getSozialdienstFall();
@@ -2046,12 +2043,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return;
 		}
 
-		if (gemeindeKennzahlen.getStatus() == GemeindeKennzahlenStatus.IN_BEARBEITUNG_GEMEINDE &&
-			!principalBean.isCallerInAnyOfRole(getBgAndGemeindeRoles())) {
-			throwViolation(gemeindeKennzahlen);
+		if (principalBean.isCallerInAnyOfRole(getBgAndGemeindeRoles()) &&
+				principalBean.getBenutzer().extractGemeindenForUser().contains(gemeindeKennzahlen.getGemeinde())) {
+			return;
 		}
 
-		if (!principalBean.isCallerInAnyOfRole(UserRole.getMandantBgGemeindeRoles())) {
+		if (!principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles())) {
 			throwViolation(gemeindeKennzahlen);
 		}
 	}
@@ -2059,7 +2056,19 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	@Override
 	public void checkWriteAuthorization(
 			@Nonnull GemeindeKennzahlen gemeindeKennzahlen) {
-		checkReadAuthorization(gemeindeKennzahlen);
+		if(principalBean.isCallerInRole(SUPER_ADMIN)) {
+			return;
+		}
+		// Save and Abschliessen
+		if (principalBean.isCallerInAnyOfRole(getBgAndGemeindeRoles()) && !gemeindeKennzahlen.isAntragAbgeschlossen()) {
+			return;
+		}
+		// Zurück an Gemeinde
+		if (principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles()) && gemeindeKennzahlen.isAntragAbgeschlossen()) {
+			return;
+		}
+
+		throwViolation(gemeindeKennzahlen);
 	}
 
 	private boolean isAllowedAdminOrSachbearbeiter(Sozialdienst sozialdienst) {

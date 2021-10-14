@@ -15,13 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TSBetreuungMonitoring} from '../../models/TSBetreuungMonitoring';
+import {TSExternalClient} from '../../models/TSExternalClient';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
+import {EbeguUtil} from '../../utils/EbeguUtil';
 
 @Injectable({
     providedIn: 'root',
@@ -40,16 +42,25 @@ export class BetreuungMonitoringRS {
         return 'BetreuungMonitoringRS';
     }
 
-    public getBetreuungMonitoringList(): Observable<TSBetreuungMonitoring[]> {
-        return this.$http.get<any[]>(`${this.serviceURL}/last`).pipe(map(response => {
+    public getBetreuungMonitoring(
+        refNummer: string,
+        benutzer: string,
+    ): Observable<TSBetreuungMonitoring[]> {
+        let params = new HttpParams();
+        params = params.append('refNummer', EbeguUtil.isNotNullOrUndefined(refNummer) ? refNummer : '');
+        params = params.append('benutzer', EbeguUtil.isNotNullOrUndefined(benutzer) ? benutzer : '');
+
+        return this.$http.get<any[]>(`${this.serviceURL}`,
+            {
+                params,
+            }).pipe(map(response => {
             return this.ebeguRestUtil.parseTSBetreuungMonitoringList(response);
         }));
     }
 
-    public getBetreuungMonitoringBeiRefNummer(refNummer: string): Observable<TSBetreuungMonitoring[]> {
-        return this.$http.get<any[]>(`${this.serviceURL}/${encodeURIComponent(refNummer)}`)
-            .pipe(map(response => {
-                return this.ebeguRestUtil.parseTSBetreuungMonitoringList(response);
-            }));
+    public getAllExternalClient(): Observable<TSExternalClient[]> {
+        return this.$http.get<any[]>(`${this.serviceURL}/allExternalClient`).pipe(map(response => {
+            return this.ebeguRestUtil.parseExternalClientList(response);
+        }));
     }
 }

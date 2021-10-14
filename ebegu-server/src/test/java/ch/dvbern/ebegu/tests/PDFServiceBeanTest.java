@@ -63,7 +63,6 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.parser.PdfTextExtractor;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.needle4j.annotation.InjectIntoMany;
@@ -183,19 +182,6 @@ public class PDFServiceBeanTest {
 		assertTextInPdf(pdfTextExtractor, 1, "Jugendamt", "Zustelladresse ist nicht Jugendamt");
 	}
 
-	@Ignore // Aktuell haben wir nur eine Adresse auf der Gemeinde, die immer "Jugendamt" ist. Spaeter kommt dann auch eine Schulamt-Adresse dazu
-	@Test
-	public void testGenerateFreigabequittungSchulamt() throws Exception {
-
-		byte[] bytes = pdfService.generateFreigabequittung(gesuch_Schulamt, writeProtectPDF, Constants.DEFAULT_LOCALE);
-		assertNotNull(bytes);
-		unitTestTempfolder.writeToTempDir(bytes, "Freigabequittung_Schulamt(" + gesuch_Schulamt.getJahrFallAndGemeindenummer() + ").pdf");
-
-		PdfReader pdfRreader = new PdfReader(bytes);
-		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
-		assertTextInPdf(pdfTextExtractor, 1, "Schulamt", "Zustelladresse ist nicht Schulamt");
-	}
-
 	@Test
 	public void testPrintNichteintreten() throws Exception {
 
@@ -211,27 +197,6 @@ public class PDFServiceBeanTest {
 			throw new Exception(String.format("%s", "testPrintNichteintreten()"));
 		}
 
-	}
-
-	@Ignore // Aktuell haben wir nur eine Adresse auf der Gemeinde, die immer "Jugendamt" ist. Spaeter kommt dann auch eine Schulamt-Adresse dazu
-	@Test
-	public void testPrintErsteMahnungSinglePageSchulamt() throws Exception {
-
-		Mahnung mahnung = TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch_Schulamt, LocalDate.now().plusWeeks(2), 3);
-
-		byte[] bytes = pdfService.generateMahnung(mahnung, Optional.empty(), writeProtectPDF, Constants.DEFAULT_LOCALE);
-
-		assertNotNull(bytes);
-
-		unitTestTempfolder.writeToTempDir(bytes, "1_Mahnung_Single_Page_Schulamt.pdf");
-
-		PdfReader pdfRreader = new PdfReader(bytes);
-		assertEquals("PDF should be one page long.", 1, pdfRreader.getNumberOfPages());
-
-		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
-		assertTextInPdf(pdfTextExtractor, 1, "Schulamt", "Absenderadresse ist nicht Schulamt");
-
-		pdfRreader.close();
 	}
 
 	@Test
@@ -290,28 +255,6 @@ public class PDFServiceBeanTest {
 		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
 		assertTextInPdf(pdfTextExtractor, 1, "Jugendamt", "Absenderadresse ist nicht Jugendamt");
 		assertTextInPdf(pdfTextExtractor, 2, "Test Dokument 23", "Second page should begin with this text");
-		pdfRreader.close();
-	}
-
-	@Ignore // Aktuell haben wir nur eine Adresse auf der Gemeinde, die immer "Jugendamt" ist. Spaeter kommt dann auch eine Schulamt-Adresse dazu
-	@Test
-	public void testPrintZweiteMahnungSinglePageSchulamt() throws Exception {
-
-		Mahnung ersteMahnung = TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch_Schulamt, LocalDate.now().plusWeeks(2),
-			3);
-		Mahnung zweiteMahnung = TestDataUtil.createMahnung(MahnungTyp.ZWEITE_MAHNUNG, gesuch_Schulamt, LocalDate.now().plusWeeks(2), 3);
-		zweiteMahnung.setVorgaengerId(ersteMahnung.getId());
-
-		byte[] bytes = pdfService.generateMahnung(zweiteMahnung, Optional.of(ersteMahnung), writeProtectPDF, Constants.DEFAULT_LOCALE);
-		assertNotNull(bytes);
-
-		unitTestTempfolder.writeToTempDir(bytes, "2_Mahnung_Single_Page_Schulamt.pdf");
-
-		PdfReader pdfRreader = new PdfReader(bytes);
-		assertEquals(1, pdfRreader.getNumberOfPages());
-
-		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
-		assertTextInPdf(pdfTextExtractor, 1, "Schulamt", "Absenderadresse ist nicht Schulamt");
 		pdfRreader.close();
 	}
 

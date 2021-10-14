@@ -105,7 +105,9 @@ export const PERMISSIONS: { [k in Permission]: ReadonlyArray<TSRole> } = {
         TSRole.ADMIN_BG,
         TSRole.SACHBEARBEITER_BG,
         TSRole.ADMIN_FERIENBETREUUNG,
-        TSRole.SACHBEARBEITER_FERIENBETREUUNG
+        TSRole.SACHBEARBEITER_FERIENBETREUUNG,
+        TSRole.ADMIN_TS,
+        TSRole.SACHBEARBEITER_TS
     ],
     [Permission.LASTENAUSGLEICH_TAGESSCHULE]: [
         TSRole.SUPER_ADMIN,
@@ -114,6 +116,10 @@ export const PERMISSIONS: { [k in Permission]: ReadonlyArray<TSRole> } = {
         TSRole.ADMIN_GEMEINDE,
         TSRole.SACHBEARBEITER_GEMEINDE,
         TSRole.ADMIN_TS,
-        TSRole.SACHBEARBEITER_TS
+        TSRole.SACHBEARBEITER_TS,
+        TSRole.ADMIN_INSTITUTION,
+        TSRole.SACHBEARBEITER_INSTITUTION,
+        TSRole.ADMIN_TRAEGERSCHAFT,
+        TSRole.SACHBEARBEITER_TRAEGERSCHAFT
     ]
 };

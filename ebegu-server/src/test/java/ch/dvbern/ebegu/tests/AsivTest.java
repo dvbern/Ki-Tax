@@ -106,9 +106,9 @@ public class AsivTest extends AbstractEbeguLoginTest {
 
 	@Before
 	public void init() {
-		gesuchsperiode = createGesuchsperiode();
 		final Mandant mandant = insertInstitutionen();
 		createBenutzer(mandant);
+		gesuchsperiode = createGesuchsperiode(mandant);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 		gemeinde = TestDataUtil.getGemeindeParis(persistence);
 	}
@@ -286,9 +286,8 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	/**
 	 * Helper für init. Speichert Gesuchsperiode in DB
 	 */
-	@Override
-	protected Gesuchsperiode createGesuchsperiode() {
-		gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
+	protected Gesuchsperiode createGesuchsperiode(Mandant mandant) {
+		gesuchsperiode = TestDataUtil.createGesuchsperiode1718(mandant);
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
 		gesuchsperiode = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode);
 		return gesuchsperiode;
@@ -299,13 +298,14 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	 */
 	@Override
 	protected Mandant insertInstitutionen() {
+		Mandant mandant = TestDataUtil.createDefaultMandant();
+		persistence.persist(mandant);
+
 		final InstitutionStammdaten institutionStammdatenKitaBruennen = TestDataUtil.createInstitutionStammdatenKitaBruennen();
-		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft();
+		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft(mandant);
 		traegerschaftService.saveTraegerschaft(traegerschaft);
 		institutionStammdatenKitaBruennen.getInstitution().setTraegerschaft(traegerschaft);
 
-		Mandant mandant = TestDataUtil.createDefaultMandant();
-		persistence.persist(mandant);
 		institutionStammdatenKitaBruennen.getInstitution().setMandant(mandant);
 
 		institutionService.createInstitution(institutionStammdatenKitaBruennen.getInstitution());

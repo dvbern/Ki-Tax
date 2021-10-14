@@ -144,7 +144,6 @@ import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAnga
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitution;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.api.util.RestUtil;
-import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
@@ -319,8 +318,6 @@ import static java.util.Objects.requireNonNull;
 @SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity", "PMD.CollapsibleIfStatements" })
 public class JaxBConverter extends AbstractConverter {
 
-	@Inject
-	private PrincipalBean principalBean;
 
 	public static final String DROPPED_DUPLICATE_CONTAINER = "dropped duplicate container ";
 	public static final String DROPPED_DUPLICATE_ABWEICHUNG = "dropped duplicate abweichung ";
@@ -454,6 +451,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(jaxAP);
 
 		convertAbstractVorgaengerFieldsToEntity(jaxAP, applicationProperty);
+		convertMandantFieldsToEntity(applicationProperty);
 		applicationProperty.setName(Enum.valueOf(ApplicationPropertyKey.class, jaxAP.getName()));
 		applicationProperty.setValue(jaxAP.getValue());
 
@@ -479,6 +477,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(einstellung);
 		requireNonNull(jaxEinstellung);
 		convertAbstractFieldsToEntity(jaxEinstellung, einstellung);
+		convertMandantFieldsToEntity(einstellung);
 		einstellung.setKey(jaxEinstellung.getKey());
 		einstellung.setValue(jaxEinstellung.getValue());
 		if (jaxEinstellung.getGemeindeId() != null) {
@@ -931,6 +930,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(fall);
 		requireNonNull(fallJAXP);
 		convertAbstractVorgaengerFieldsToEntity(fallJAXP, fall);
+		convertMandantFieldsToEntity(fall);
 		//Fall nummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt, dasselbe fuer NextKindNumber
 		if (fallJAXP.getBesitzer() != null) {
 			Optional<Benutzer> besitzer = benutzerService.findBenutzer(fallJAXP.getBesitzer().getUsername());
@@ -1407,6 +1407,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(traegerschaft);
 		requireNonNull(traegerschaftJAXP);
 		convertAbstractVorgaengerFieldsToEntity(traegerschaftJAXP, traegerschaft);
+		convertMandantFieldsToEntity(traegerschaft);
 		traegerschaft.setName(traegerschaftJAXP.getName());
 		traegerschaft.setActive(traegerschaftJAXP.getActive());
 		traegerschaft.setEmail(traegerschaftJAXP.getEmail());
@@ -1418,6 +1419,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(fachstelleJAXP);
 		requireNonNull(fachstelle);
 		convertAbstractVorgaengerFieldsToEntity(fachstelleJAXP, fachstelle);
+		convertMandantFieldsToEntity(fachstelle);
 		fachstelle.setName(fachstelleJAXP.getName());
 		fachstelle.setFachstelleAnspruch(fachstelleJAXP.isFachstelleAnspruch());
 		fachstelle.setFachstelleErweiterteBetreuung(fachstelleJAXP.isFachstelleErweiterteBetreuung());
@@ -1502,7 +1504,7 @@ public class JaxBConverter extends AbstractConverter {
 	 * @return TRUE when the Traegerschaft of the institution was updated
 	 */
 	private boolean updateTraegerschaft(@Nonnull JaxInstitutionUpdate update, @Nonnull Institution institution) {
-		if (!principalBean.isCallerInRole(UserRole.SUPER_ADMIN)) {
+		if (!getPrincipalBean().isCallerInRole(UserRole.SUPER_ADMIN)) {
 			// only SUPER_ADMIN may change Traegerschaft
 			return false;
 		}
@@ -1540,6 +1542,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(institutionJAXP);
 		Institution institution = new Institution();
 		convertAbstractVorgaengerFieldsToEntity(institutionJAXP, institution);
+		convertMandantFieldsToEntity(institution);
 		institution.setName(institutionJAXP.getName());
 		institution.setStatus(institutionJAXP.getStatus());
 		institution.setStammdatenCheckRequired(institutionJAXP.isStammdatenCheckRequired());
@@ -4246,6 +4249,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(vorlage);
 		requireNonNull(jaxVorlage);
 		convertAbstractVorgaengerFieldsToEntity(jaxVorlage, vorlage);
+		convertMandantFieldsToEntity(vorlage);
 		convertFileToEnity(jaxVorlage, vorlage);
 		return vorlage;
 	}

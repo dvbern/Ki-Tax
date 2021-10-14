@@ -124,14 +124,14 @@ public interface BetreuungService {
 	Optional<Betreuung> findBetreuung(@Nonnull String key, boolean doAuthCheck);
 
 	/**
-	 * @param bgNummer BGNummer der Betreuung
-	 * @return Betreuung mit der angegebenen ID (z.B. 18.000116.1.2) oder null falls nicht vorhanden
+	 * @param bgNummer BGNummer der Anmeldung
+	 * @return Anmeldung mit der angegebenen ID (z.B. 18.000116.1.2) oder null falls nicht vorhanden
 	 */
 	List<AbstractAnmeldung> findAnmeldungenByBGNummer(@Nonnull String bgNummer);
 
 	/**
-	 * @param bgNummer BGNummer der Betreuung
-	 * @return Betreuung mit der angegebenen ID (z.B. 18.000116.1.2) die AKTUELLE oder NULL ist.
+	 * @param bgNummer BGNummer der Anmeldung
+	 * @return Anmeldung mit der angegebenen ID (z.B. 18.000116.1.2) die AKTUELLE oder NULL ist.
 	 */
 	List<AbstractAnmeldung> findNewestAnmeldungByBGNummer(@Nonnull String bgNummer);
 
@@ -225,4 +225,9 @@ public interface BetreuungService {
 
 	@Nonnull
 	AbstractAnmeldung anmeldungSchulamtStornieren(@Valid @Nonnull AbstractAnmeldung anmeldung);
+
+	void fireAnmeldungTagesschuleAddedEvent(@Nonnull AnmeldungTagesschule anmeldungTagesschule);
+
+	@Nonnull
+	Optional<AnmeldungTagesschule> findAnmeldungenTagesschuleByBGNummer(@Nonnull String bgNummer);
 }

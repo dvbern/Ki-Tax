@@ -214,6 +214,12 @@ public interface EbeguConfiguration {
 	boolean isBetreuungAnfrageApiEnabled();
 
 	/**
+	 * @return TRUE, falls neue Betreuungen an den Exchange Service exportiert werden sollen.
+	 */
+	boolean isAnmeldungTagesschuleApiEnabled();
+
+
+	/**
 	 * @return TRUE, falls Daten Kafka gelesen werden dürfen.
 	 */
 	boolean isKafkaConsumerEnabled();
@@ -330,7 +336,7 @@ public interface EbeguConfiguration {
 
 	String getNotverordnungEmpfaengerMail();
 
-	String getKafkaPlatzbestaetigungGroupId();
+	String getKafkaConsumerGroupId();
 
 	String getMassenmutationEmpfaengerMail();
 
