@@ -84,6 +84,34 @@
                         </div>
                     </div>
 
+                    <!-- Zugriff auf Steuerdaten -->
+                    <div class="row">
+                        <div class="col-xs-12 dv-input-container-question"
+                             ng-if="vm.showZugriffAufSteuerdaten()">
+                            <div class="form-group">
+                            <span class="ebegu-h1 required">
+                                <span data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF"></span>
+                               <dv-tooltip text="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_HELP' | translate"></dv-tooltip>
+                            </span>
+                                <dv-radio-container name="steuerdatenzugriff"
+                                                    class="input-element radio"
+                                                    ng-model="vm.getModel().finanzielleSituationJA.steuerdatenZurgiff"
+                                                    ng-required="true"
+                                                    dv-enable-element
+                                                    true-option-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_JA' | translate}}"
+                                                    false-option-label="{{'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_NEIN' | translate}}"
+                                                    dv-enable-allowed-roles="vm.allowedRoles"
+                                                    dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
+                                                    aria-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF' |translate}}"
+                                                    aria-described-by="steuerdatenzugriff-error">
+                                </dv-radio-container>
+                                <dv-error-messages input-id="steuerdatenzugriff"
+                                                   for="vm.form.steuerdatenzugriff.$error"
+                                                   class="error"></dv-error-messages>
+                            </div>
+                        </div>
+                    </div>
+
                     <div ng-if="vm.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt === false"
                          class="well well-status-warten minus-margin">
                         <p class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING"></p>

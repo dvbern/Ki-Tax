@@ -19,6 +19,7 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
     private _steuerveranlagungErhalten: boolean = false;
     private _steuererklaerungAusgefuellt: boolean = false;
+    private _steuerdatenZurgiff: boolean;
     private _geschaeftsgewinnBasisjahrMinus2: number;
     private _geschaeftsgewinnBasisjahrMinus1: number;
 
@@ -40,6 +41,14 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
     public set steuererklaerungAusgefuellt(value: boolean) {
         this._steuererklaerungAusgefuellt = value;
+    }
+
+    public set steuerdatenZurgiff(value: boolean) {
+        this._steuerdatenZurgiff = value;
+    }
+
+    public get steuerdatenZurgiff(): boolean {
+        return this._steuerdatenZurgiff;
     }
 
     public get geschaeftsgewinnBasisjahrMinus2(): number {

@@ -37,6 +37,9 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	private Boolean steuererklaerungAusgefuellt;
 
 	@Nullable
+	private Boolean steuerdatenZurgiff;
+
+	@Nullable
 	private BigDecimal geschaeftsgewinnBasisjahrMinus2;
 
 	@Nullable
@@ -75,5 +78,14 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	public void setGeschaeftsgewinnBasisjahrMinus1(@Nullable final BigDecimal geschaeftsgewinnBasisjahrMinus1) {
 		this.geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
+	}
+
+	@Nullable
+	public Boolean getSteuerdatenZurgiff() {
+		return steuerdatenZurgiff;
+	}
+
+	public void setSteuerdatenZurgiff(@Nullable Boolean steuerdatenZurgiff) {
+		this.steuerdatenZurgiff = steuerdatenZurgiff;
 	}
 }
