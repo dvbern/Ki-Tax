@@ -98,7 +98,7 @@ public class AnmeldungTagesschuleEventConverter {
 		@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
 		if (anmeldungTagesschule.getBetreuungsstatus().isSchulamtAnmeldungUebernommen()) {
 			return TagesschuleAnmeldungTarifeDTO.newBuilder()
-				.setTarifeDefinitivAkzeptiert(true)
+				.setTarifeDefinitivAkzeptiert(anmeldungTagesschule.getVerfuegung() != null)
 				.setTarifZeitabschnitte(toTarifZeitabschnittDTO(anmeldungTagesschule))
 				.build();
 		}
