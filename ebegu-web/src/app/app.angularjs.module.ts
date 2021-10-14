@@ -28,10 +28,8 @@ import {MITTEILUNGEN_JS_MODULE} from './mitteilungen/mitteilungen.module';
 import {PENDENZEN_BETREUUNGEN_JS_MODULE} from './pendenzen/betreuungen/pendenzenBetreuungen.module';
 import {PENDENZEN_JS_MODULE} from './pendenzen/default/pendenzen.module';
 import {PENDENZEN_STEUERAMT_JS_MODULE} from './pendenzen/steueramt/pendenzenSteueramt.module';
-import {POSTEINGANG_JS_MODULE} from './posteingang/posteingang.module';
 import {QUICKSEARCH_JS_MODULE} from './quicksearch/quicksearch.module';
 import {SEARCH_JS_MODULE} from './searchResult/search.module';
-import {STATISTIK_JS_MODULE} from './statistik/statistik.module';
 
 export const APP_JS_MODULE = angular.module('ebeguWeb', [
         'ui.router',
@@ -46,9 +44,7 @@ export const APP_JS_MODULE = angular.module('ebeguWeb', [
         FAELLE_JS_MODULE.name,
         GESUCHSTELLER_DASHBOARD_JS_MODULE.name,
         MITTEILUNGEN_JS_MODULE.name,
-        POSTEINGANG_JS_MODULE.name,
         SEARCH_JS_MODULE.name,
-        STATISTIK_JS_MODULE.name,
         ALLE_VERFUEGUNGEN_JS_MODULE.name,
         QUICKSEARCH_JS_MODULE.name,
     ])

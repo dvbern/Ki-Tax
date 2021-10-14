@@ -32,9 +32,10 @@ import {LastenausgleichModule} from './lastenausgleich/lastenausgleich.module';
 import {NotrechtModule} from './notrecht/notrecht.module';
 import {OnboardingModule} from './onboarding/onboarding.module';
 import {PendenzenXModule} from './pendenzen/pendenzen-x.module';
-import {NgPosteingangModule} from './posteingang/ng-posteingang.module';
+import {PosteingangModule} from './posteingang/posteingang.module';
 import {SharedModule} from './shared/shared.module';
 import {SozialdienstModule} from './sozialdienst/sozialdienst.module';
+import {StatistikModule} from './statistik/statistik.module';
 import {TraegerschaftModule} from './traegerschaft/traegerschaft.module';
 import {VerlaufModule} from './verlauf/verlauf.module';
 import {WelcomeModule} from './welcome/welcome.module';
@@ -59,7 +60,7 @@ import {ZahlungXModule} from './zahlung/zahlung-x.module';
         NgAdminModule,
         NgAuthenticationModule,
         NgGesuchModule,
-        NgPosteingangModule,
+        PosteingangModule,
         OnboardingModule,
         TraegerschaftModule,
         WelcomeModule,
@@ -71,7 +72,8 @@ import {ZahlungXModule} from './zahlung/zahlung-x.module';
         PendenzenXModule,
         ZahlungXModule,
         PendenzenXModule,
-        VerlaufModule
+        VerlaufModule,
+        StatistikModule
     ]
 })
 

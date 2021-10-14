@@ -103,7 +103,8 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 		persistence.persist(instStammdaten);
 
 		if (createFachstelle) {
-			Fachstelle fachstelle = persistence.persist(TestDataUtil.createDefaultFachstelle());
+			Fachstelle fachstelle = TestDataUtil.createDefaultFachstelle();
+			TestDataUtil.persistFachstelle(persistence, fachstelle);
 
 			PensumFachstelle pensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();
 			pensumFachstelle.setFachstelle(fachstelle);

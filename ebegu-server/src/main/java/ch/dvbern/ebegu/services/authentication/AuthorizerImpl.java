@@ -933,17 +933,14 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			Objects.requireNonNull(
 				institution,
 				"Institution des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
-			return gesuch.hasBetreuungOfInstitution(institution); //@reviewer: oder besser ueber service ?
+			return gesuch.hasBetreuungOfInstitution(institution);
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT)) {
 			Traegerschaft traegerschaft = principalBean.getBenutzer().getTraegerschaft();
 			Objects.requireNonNull(
 				traegerschaft,
 				"Traegerschaft des des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
-			Collection<Institution> institutions =
-				institutionService.getAllInstitutionenFromTraegerschaft(traegerschaft.getId());
-			return institutions.stream()
-				.anyMatch(gesuch::hasBetreuungOfInstitution);  // irgend eine der betreuungen des gesuchs matched
+			return gesuch.hasBetreuungOfTraegerschaft(traegerschaft);
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST)) {
 			SozialdienstFall sozialdienstFall = gesuch.getDossier().getFall().getSozialdienstFall();

@@ -308,12 +308,13 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		if (!ctx.isGueltigkeitCoveringPeriode()) {
 			ctx.requireHumanConfirmation();
 			LOG.info(
-				"PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat Zeitabschnitte die ausserhalb der "
-					+ "Schnittstellen- oder Gesuchsperiode-Gültigkeit liegen",
+				"Eine manuelle Bestätigung ist nötig für die PlatzbestaetigungEvent fuer Betreuung mit RefNr: {}, weil"
+					+ " die Drittanwendung nicht für die gesamte Gesuchsperiode berechtigt ist"
+				,
 				ctx.getDto().getRefnr());
 			ctx.setHumanConfirmationMessage(
-				"PlatzbestaetigungEvent hat Zeitabschnitte die ausserhalb der Schnittstellen- oder "
-					+ "Gesuchsperiode-Gültigkeit liegen");
+				"Eine manuelle Bestätigung ist nötig, weil"
+					+ " die Drittanwendung nicht für die gesamte Gesuchsperiode berechtigt ist");
 		}
 
 		setErweitereBeduerfnisseBestaetigt(ctx);

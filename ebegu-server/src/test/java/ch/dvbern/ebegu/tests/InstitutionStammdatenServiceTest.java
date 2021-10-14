@@ -21,7 +21,6 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
@@ -56,7 +55,7 @@ public class InstitutionStammdatenServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void createPersonInstitutionStammdatenTest() {
 		Assert.assertNotNull(institutionStammdatenService);
-		createGesuchsperiode1718();
+		createAndPersistGesuchsperiode1718();
 		InstitutionStammdaten insertedInstitutionStammdaten = insertInstitutionStammdaten();
 
 		Collection<InstitutionStammdaten> allInstitutionStammdaten = institutionStammdatenService.getAllInstitutionStammdaten();
@@ -69,7 +68,7 @@ public class InstitutionStammdatenServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void updateInstitutionStammdatenTest() {
 		Assert.assertNotNull(institutionStammdatenService);
-		createGesuchsperiode1718();
+		createAndPersistGesuchsperiode1718();
 		InstitutionStammdaten insertedInstitutionStammdaten = insertInstitutionStammdaten();
 
 		Optional<InstitutionStammdaten> institutionStammdatenOptional = institutionStammdatenService.findInstitutionStammdaten(insertedInstitutionStammdaten.getId());
@@ -87,7 +86,7 @@ public class InstitutionStammdatenServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void getAllInstitutionStammdatenByInstitution() {
 		Assert.assertNotNull(institutionStammdatenService);
-		createGesuchsperiode1718();
+		createAndPersistGesuchsperiode1718();
 		InstitutionStammdaten insertedInstitutionStammdaten = insertInstitutionStammdaten();
 		String id = insertedInstitutionStammdaten.getInstitution().getId();
 		InstitutionStammdaten stammdatenByInstitution = institutionStammdatenService.fetchInstitutionStammdatenByInstitution(id, true);
@@ -97,7 +96,7 @@ public class InstitutionStammdatenServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void updateBGInsitutionenGemeinden() {
 		Assert.assertNotNull(institutionStammdatenService);
-		createGesuchsperiode1718();
+		createAndPersistGesuchsperiode1718();
 		InstitutionStammdaten insertedInstitutionStammdaten = insertInstitutionStammdaten();
 		String id = insertedInstitutionStammdaten.getInstitution().getId();
 		institutionStammdatenService.updateGemeindeForBGInstitutionen();
@@ -114,10 +113,7 @@ public class InstitutionStammdatenServiceTest extends AbstractEbeguLoginTest {
 		InstitutionStammdaten institutionStammdaten = TestDataUtil.createDefaultInstitutionStammdaten();
 		Assert.assertNotNull(getDummySuperadmin().getMandant());
 		institutionStammdaten.getInstitution().setMandant(getDummySuperadmin().getMandant());
-		persistence.persist(institutionStammdaten.getInstitution().getTraegerschaft());
-		persistence.persist(institutionStammdaten.getInstitution());
-		persistence.persist(institutionStammdaten.getAdresse());
-		return institutionStammdatenService.saveInstitutionStammdaten(institutionStammdaten);
+		return TestDataUtil.saveInstitutionStammdatenIfNecessary(persistence, institutionStammdaten);
 	}
 
 	private InstitutionStammdaten addInstitutionsstammdaten(Institution institution, LocalDate start, LocalDate end) {
@@ -128,9 +124,8 @@ public class InstitutionStammdatenServiceTest extends AbstractEbeguLoginTest {
 		return institutionStammdatenService.saveInstitutionStammdaten(institutionStammdaten);
 	}
 
-	private Gesuchsperiode createGesuchsperiode1718() {
-		final Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
-		return persistence.persist(gesuchsperiode1718);
+	private void createAndPersistGesuchsperiode1718() {
+		TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 	}
 
 }

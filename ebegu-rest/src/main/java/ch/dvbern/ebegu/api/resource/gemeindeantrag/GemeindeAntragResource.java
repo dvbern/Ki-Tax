@@ -178,7 +178,7 @@ public class GemeindeAntragResource {
 	@POST
 	@Path("/create/{gemeindeAntragTyp}/gesuchsperiode/{gesuchsperiodeId}/gemeinde/{gemeindeId}")
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_FERIENBETREUUNG,	SACHBEARBEITER_FERIENBETREUUNG })
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG, SACHBEARBEITER_FERIENBETREUUNG })
 	public JaxGemeindeAntrag createGemeindeAntrag(
 		@Nonnull @Valid @PathParam("gemeindeAntragTyp") GemeindeAntragTyp gemeindeAntragTyp,
 		@Nonnull @Valid @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,

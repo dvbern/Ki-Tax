@@ -39,12 +39,14 @@ import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichSelbstbehaltService;
+import ch.dvbern.ebegu.reporting.ReportLastenausgleichTagesschulenService;
 import ch.dvbern.ebegu.reporting.ReportMahlzeitenService;
 import ch.dvbern.ebegu.reporting.ReportMassenversandService;
 import ch.dvbern.ebegu.reporting.ReportNotrechtService;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.ReportTagesschuleService;
 import ch.dvbern.ebegu.reporting.ReportVerrechnungKibonService;
+import ch.dvbern.ebegu.reporting.ReportGemeindenService;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -81,6 +83,12 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 
 	@Inject
 	private ReportMahlzeitenService reportMahlzeitenService;
+
+	@Inject
+	private ReportGemeindenService reportGemeindenService;
+
+	@Inject
+	private ReportLastenausgleichTagesschulenService reportLastenausgleichTagesschulenService;
 
 	@Inject
 	private JobContext jobCtx;
@@ -203,6 +211,15 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 					throw new EbeguRuntimeException("generateReport", "gemeindeId not defined");
 				}
 				return this.reportMahlzeitenService.generateExcelReportMahlzeiten(dateFrom, dateTo, locale, gemeindeId);
+			}
+			case VORLAGE_REPORT_GEMEINDEN: {
+				return this.reportGemeindenService.generateExcelReportGemeinden(locale);
+			}
+			case VORLAGE_REPORT_FERIENBETREUUNG: {
+				return this.reportService.generateExcelReportFerienbetreuung(locale);
+			}
+			case VORLAGE_REPORT_LASTENAUSGLEICH_TAGESSCHULEN: {
+				return this.reportLastenausgleichTagesschulenService.generateExcelReportLastenausgleichTagesschulen();
 			}
 		}
 		throw new IllegalArgumentException("No Report generated: Unknown ReportType: " + workJobType);

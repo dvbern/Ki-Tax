@@ -251,7 +251,7 @@
                     </div>
 
                     <dv-adresse adresse="vm.getModel().rechnungsAdresse" ng-if="vm.showRechnungsadr"
-                                prefix="rechnung" show-if-bisher-none="false"></dv-adresse>
+                                prefix="rechnung" organisation="true" show-if-bisher-none="false"></dv-adresse>
                 </fieldset>
                 <fieldset dv-enable-element
                           dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"

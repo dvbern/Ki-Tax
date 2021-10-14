@@ -101,6 +101,13 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
 import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenAngebot;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungBerechnungen;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -116,6 +123,8 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.benutzer.BenutzerDataRow;
 import ch.dvbern.ebegu.reporting.benutzer.BenutzerExcelConverter;
+import ch.dvbern.ebegu.reporting.ferienbetreuung.FerienbetreuungDataRow;
+import ch.dvbern.ebegu.reporting.ferienbetreuung.FerienbetreuungExcelConverter;
 import ch.dvbern.ebegu.reporting.gesuchstellerKinderBetreuung.GesuchstellerKinderBetreuungDataRow;
 import ch.dvbern.ebegu.reporting.gesuchstellerKinderBetreuung.GesuchstellerKinderBetreuungExcelConverter;
 import ch.dvbern.ebegu.reporting.gesuchstichtag.GesuchStichtagDataRow;
@@ -142,6 +151,7 @@ import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.services.ZahlungService;
+import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
@@ -216,6 +226,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private GesuchstellerKinderBetreuungExcelConverter gesuchstellerKinderBetreuungExcelConverter;
 
 	@Inject
+	private FerienbetreuungExcelConverter ferienbetreuungExcelConverter;
+
+	@Inject
 	private PrincipalBean principalBean;
 
 	@Inject
@@ -247,6 +260,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@Inject
 	private EinstellungService einstellungService;
+
+	@Inject
+	private FerienbetreuungService ferienbetreuungService;
 
 	@SuppressWarnings("Duplicates")
 	@Nonnull
@@ -2301,6 +2317,190 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		return row;
 	}
+
+	@Override
+	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@Nonnull
+	public UploadFileInfo generateExcelReportFerienbetreuung(@Nonnull Locale locale) throws ExcelMergeException {
+		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_FERIENBETREUUNG;
+
+		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+		requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
+
+		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
+		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
+
+		List<FerienbetreuungDataRow> reportData = getReportDataFerienbetreuung();
+
+		ExcelMergerDTO excelMergerDTO = ferienbetreuungExcelConverter.toExcelMergerDTO(reportData);
+
+		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
+		ferienbetreuungExcelConverter.applyAutoSize(sheet);
+
+		byte[] bytes = createWorkbook(workbook);
+
+		return fileSaverService.save(
+			bytes,
+			getFileName(reportVorlage, locale),
+			Constants.TEMP_REPORT_FOLDERNAME,
+			getContentTypeForExport());
+	}
+
+	private List<FerienbetreuungDataRow> getReportDataFerienbetreuung() {
+		return ferienbetreuungService.getAllFerienbetreuungAntraege().stream()
+			.filter(FerienbetreuungAngabenContainer::isAtLeastInPruefungKanton)
+			.map(this::convertFerienbetreungToDataRow)
+			.collect(Collectors.toList());
+	}
+
+	private FerienbetreuungDataRow convertFerienbetreungToDataRow(FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer) {
+		FerienbetreuungDataRow ferienbetreuungDataRow = new FerienbetreuungDataRow();
+		FerienbetreuungAngaben ferienbetreuungAngaben = ferienbetreuungAngabenContainer.getAngabenKorrektur() != null ?
+			ferienbetreuungAngabenContainer.getAngabenKorrektur() : ferienbetreuungAngabenContainer.getAngabenDeklaration();
+
+		ferienbetreuungDataRow.setGemeinde(ferienbetreuungAngabenContainer.getGemeinde().getName());
+		ferienbetreuungDataRow.setBfsNummerGemeinde(ferienbetreuungAngabenContainer.getGemeinde().getBfsNummer());
+		ferienbetreuungDataRow.setPeriode(ferienbetreuungAngabenContainer.getGesuchsperiode().getGesuchsperiodeString());
+		ferienbetreuungDataRow.setStatus(ferienbetreuungAngabenContainer.getStatus());
+		ferienbetreuungDataRow.setKommentar(ferienbetreuungAngabenContainer.getInternerKommentar());
+
+		setStammdatenValues(ferienbetreuungDataRow, ferienbetreuungAngaben.getFerienbetreuungAngabenStammdaten());
+		setAngebotsValues(ferienbetreuungDataRow, ferienbetreuungAngaben.getFerienbetreuungAngabenAngebot());
+		setNutzungsValues(ferienbetreuungDataRow, ferienbetreuungAngaben.getFerienbetreuungAngabenNutzung());
+		setKostenEinnahmenValues(ferienbetreuungDataRow, ferienbetreuungAngaben.getFerienbetreuungAngabenKostenEinnahmen());
+		setBerechnungenValues(ferienbetreuungDataRow, ferienbetreuungAngaben.getFerienbetreuungBerechnungen());
+
+		return ferienbetreuungDataRow;
+	}
+
+	private void setStammdatenValues(
+		FerienbetreuungDataRow row,
+		FerienbetreuungAngabenStammdaten stammdaten) {
+
+		row.setTraegerschaft(stammdaten.getTraegerschaft());
+
+		String weitereGemeinden = String.join(", ", stammdaten.getAmAngebotBeteiligteGemeinden());
+		row.setWeitereGemeinden(weitereGemeinden);
+
+		row.setSeitWannFerienbetreuungen(stammdaten.getSeitWannFerienbetreuungen());
+
+		if(stammdaten.getStammdatenAdresse() != null) {
+			row.setGemeindeAnschrift(stammdaten.getStammdatenAdresse().getOrganisation());
+			row.setGemeindeStrasse(stammdaten.getStammdatenAdresse().getStrasse());
+			row.setGeimeindeHausnummer(stammdaten.getStammdatenAdresse().getHausnummer());
+			row.setGemeindeZusatz(stammdaten.getStammdatenAdresse().getZusatzzeile());
+			row.setGemeindePlz(stammdaten.getStammdatenAdresse().getPlz());
+			row.setGemeindeOrt(stammdaten.getStammdatenAdresse().getOrt());
+		}
+
+		row.setStammdatenKontaktpersonVorname(stammdaten.getStammdatenKontaktpersonVorname());
+		row.setStammdatenKontaktpersonName(stammdaten.getStammdatenKontaktpersonNachname());
+		row.setStammdatenKontaktpersonFunktion(stammdaten.getStammdatenKontaktpersonFunktion());
+		row.setStammdatenKontaktpersonTelefon(stammdaten.getStammdatenKontaktpersonTelefon());
+		row.setStammdatenKontaktpersonEmail(stammdaten.getStammdatenKontaktpersonEmail());
+
+		if(stammdaten.getAuszahlungsdaten() != null) {
+			row.setKontoinhaber(stammdaten.getAuszahlungsdaten().getKontoinhaber());
+			row.setIban(stammdaten.getAuszahlungsdaten().getIban().getIban());
+			row.setKontoVermerk(stammdaten.getVermerkAuszahlung());
+
+			if(stammdaten.getAuszahlungsdaten().getAdresseKontoinhaber() != null)  {
+				row.setKontoStrasse(stammdaten.getAuszahlungsdaten().getAdresseKontoinhaber().getStrasse());
+				row.setKontoHausnummer(stammdaten.getAuszahlungsdaten().getAdresseKontoinhaber().getHausnummer());
+				row.setKontoZusatz(stammdaten.getAuszahlungsdaten().getAdresseKontoinhaber().getZusatzzeile());
+				row.setKontoPlz(stammdaten.getAuszahlungsdaten().getAdresseKontoinhaber().getPlz());
+				row.setKontoOrt(stammdaten.getAuszahlungsdaten().getAdresseKontoinhaber().getOrt());
+			}
+		}
+	}
+
+	private void setAngebotsValues(
+		FerienbetreuungDataRow row,
+		FerienbetreuungAngabenAngebot angebot) {
+		row.setAngebot(angebot.getAngebot());
+		row.setAngebotKontaktpersonVorname(angebot.getAngebotKontaktpersonVorname());
+		row.setAngebotKontaktpersonNachname(angebot.getAngebotKontaktpersonNachname());
+
+		if(angebot.getAngebotAdresse() != null) {
+			row.setAngebotKontaktpersonStrasse(angebot.getAngebotAdresse().getStrasse());
+			row.setAngebotKontaktpersonHausnummer(angebot.getAngebotAdresse().getHausnummer());
+			row.setAngebotKontaktpersonZusatz(angebot.getAngebotAdresse().getZusatzzeile());
+			row.setAngebotKontaktpersonPlz(angebot.getAngebotAdresse().getPlz());
+			row.setAngebotKontaktpersonOrt(angebot.getAngebotAdresse().getOrt());
+		}
+
+		row.setAnzahlFerienwochenHerbstferien(angebot.getAnzahlFerienwochenHerbstferien());
+		row.setAnzahlFerienwochenWinterferien(angebot.getAnzahlFerienwochenWinterferien());
+		row.setAnzahlFerienwochenSportferien(angebot.getAnzahlFerienwochenSportferien());
+		row.setAnzahlFerienwochenFruehlingsferien(angebot.getAnzahlFerienwochenFruehlingsferien());
+		row.setAnzahlFerienwochenSommerferien(angebot.getAnzahlFerienwochenSommerferien());
+		row.setBemerkungAnzahlFerienwochen(angebot.getBemerkungenAnzahlFerienwochen());
+		row.setAnzahlStundenProBetreuungstag(angebot.getAnzahlStundenProBetreuungstag());
+		row.setBetreuungErfolgtTagsueber(angebot.getBetreuungErfolgtTagsueber());
+		row.setBemerkungOeffnungszeiten(angebot.getBemerkungenOeffnungszeiten());
+		row.setAnzahlTageGesamt(angebot.getAnzahlTage());
+		row.setFinanziellBeteiligteGemeinden(String.join(", ", angebot.getFinanziellBeteiligteGemeinden()));
+		row.setGemeindeFuehrtAngebotSelber(angebot.getGemeindeFuehrtAngebotSelber());
+		row.setGemeindeFuehrtAngebotInKooperation(angebot.getGemeindeFuehrtAngebotInKooperation());
+		row.setGemeindeBeauftragtExterneAnbieter(angebot.getGemeindeBeauftragtExterneAnbieter());
+		row.setAngebotVereineUndPrivateIntegriert(angebot.getAngebotVereineUndPrivateIntegriert());
+		row.setBemerkungenKooperation(angebot.getBemerkungenKooperation());
+		row.setLeitungDurchPersonMitAusbildung(angebot.getLeitungDurchPersonMitAusbildung());
+		row.setBetreuungDurchPersonenMitErfahrung(angebot.getBetreuungDurchPersonenMitErfahrung());
+		row.setAnzahlKinderAngemessen(angebot.getAnzahlKinderAngemessen());
+		row.setBetreuungsschluessel(angebot.getBetreuungsschluessel());
+		row.setBemerkungenPersonal(angebot.getBemerkungenPersonal());
+		row.setFixerTarifKinderDerGemeinde(angebot.getFixerTarifKinderDerGemeinde());
+		row.setBemerkungenTarifsystem(angebot.getBemerkungenTarifsystem());
+		row.setEinkommensabhaengigerTarifKinderDerGemeinde(angebot.getEinkommensabhaengigerTarifKinderDerGemeinde());
+		row.setTagesschuleTarifGiltFuerFerienbetreuung(angebot.getTagesschuleTarifGiltFuerFerienbetreuung());
+		row.setFerienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet(angebot.getFerienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet());
+		row.setKinderAusAnderenGemeindenZahlenAnderenTarif(angebot.getKinderAusAnderenGemeindenZahlenAnderenTarif());
+		row.setBemerkungenTarifsystem(row.getBemerkungenTarifsystem());
+	}
+
+	private void setNutzungsValues(
+		FerienbetreuungDataRow row,
+		FerienbetreuungAngabenNutzung nutzung) {
+		row.setAnzahlBetreuungstageKinderBern(nutzung.getAnzahlBetreuungstageKinderBern());
+		row.setBetreuungstageKinderDieserGemeinde(nutzung.getBetreuungstageKinderDieserGemeinde());
+		row.setBetreuungstageKinderDieserGemeindeSonderschueler(nutzung.getBetreuungstageKinderDieserGemeindeSonderschueler());
+		row.setDavonBetreuungstageKinderAndererGemeinden(nutzung.getDavonBetreuungstageKinderAndererGemeinden());
+		row.setDavonBetreuungstageKinderAndererGemeindenSonderschueler(nutzung.getDavonBetreuungstageKinderAndererGemeindenSonderschueler());
+		row.setAnzahlBetreuteKinder(nutzung.getAnzahlBetreuteKinder());
+		row.setAnzahlBetreuteKinderSonderschueler(nutzung.getAnzahlBetreuteKinderSonderschueler());
+		row.setAnzahlBetreuteKinder1Zyklus(nutzung.getAnzahlBetreuteKinder1Zyklus());
+		row.setAnzahlBetreuteKinder2Zyklus(nutzung.getAnzahlBetreuteKinder2Zyklus());
+		row.setAnzahlBetreuteKinder3Zyklus(nutzung.getAnzahlBetreuteKinder3Zyklus());
+	}
+
+	private void setKostenEinnahmenValues(
+		FerienbetreuungDataRow row,
+		FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen) {
+		row.setPersonalkosten(kostenEinnahmen.getPersonalkosten());
+		row.setPersonalkostenLeitungAdmin(kostenEinnahmen.getPersonalkostenLeitungAdmin());
+		row.setSachkosten(kostenEinnahmen.getSachkosten());
+		row.setVerpflegungskosten(kostenEinnahmen.getVerpflegungskosten());
+		row.setWeitereKosten(kostenEinnahmen.getWeitereKosten());
+		row.setBemerkungenKosten(kostenEinnahmen.getBemerkungenKosten());
+		row.setElterngebuehren(kostenEinnahmen.getElterngebuehren());
+		row.setWeitereEinnahmen(kostenEinnahmen.getWeitereEinnahmen());
+	}
+
+	private void setBerechnungenValues(
+		FerienbetreuungDataRow row,
+		FerienbetreuungBerechnungen berechnungen) {
+
+		if(berechnungen == null) {
+			return;
+		}
+
+		row.setTotalKantonsbeitrag(berechnungen.getTotalKantonsbeitrag());
+		row.setBeitragKinderAnbietendenGemeinde(berechnungen.getBeitragKinderAnbietendenGemeinde());
+		row.setBeteiligungAnbietendenGemeinde(berechnungen.getBeteiligungAnbietendenGemeinde());
+	}
+
 
 	private int onlySchulamt() {
 		String[] schulamtRoles = { SACHBEARBEITER_TS, ADMIN_TS };

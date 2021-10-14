@@ -18,7 +18,7 @@
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -45,7 +45,6 @@ import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
-import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 
@@ -126,19 +125,26 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 		dto.setGemeindeNr(stammdaten.getAdresse().getHausnummer());
 		dto.setGemeindePLZ(stammdaten.getAdresse().getPlz());
 		dto.setGemeindeOrt(stammdaten.getAdresse().getOrt());
-		dto.setDateToday(Constants.DATE_FORMATTER.format(LocalDate.now()));
 		dto.setGemeindeName(container.getGemeinde().getName());
+		dto.setFallNummer(buildFallNummer(container, stammdaten));
 
 		dto.setBetreuungsstunden(angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden());
 		setNormlohnkosten(dto, angabenGemeinde, container, sprache);
 		dto.setNormlohnkostenTotal(angabenGemeinde.getNormlohnkostenBetreuungBerechnet());
 		dto.setElterngebuehren(angabenGemeinde.getEinnahmenElterngebuehren());
-		dto.setLastenausgleichsberechtigterBetrag(angabenGemeinde.getLastenausgleichsberechtigerBetrag());
+		dto.setLastenausgleichsberechtigterBetrag(MathUtil.positiveNonNullAndRound(angabenGemeinde.getLastenausgleichsberechtigerBetrag()));
 
 		calculateAndSetPrognoseValues(dto, angabenGemeinde, betreuungsstundenPrognose);
 		calculateAndSetZahlungen(dto, angabenGemeinde);
 
 		return dto;
+	}
+
+	private String buildFallNummer(
+		LastenausgleichTagesschuleAngabenGemeindeContainer container,
+		GemeindeStammdaten stammdaten) {
+		String year = container.getGesuchsperiode().getGueltigkeit().getGueltigAb().format(DateTimeFormatter.ofPattern("yy"));
+		return year + '.' + stammdaten.getGemeinde().getBfsNummer();
 	}
 
 	private void setNormlohnkosten(
@@ -216,7 +222,7 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 
 		// zweite rate following schuljahr is 50% of lastenausgleichberechtigter Betrag
 		BigDecimal ersteRateProg = MathUtil.EXACT.multiply(dto.getLastenausgleichsberechtigterBetragProg(), new BigDecimal("0.5"));
-		dto.setErsteRateProg(ersteRateProg);
+		dto.setErsteRateProg(MathUtil.positiveNonNullAndRound(ersteRateProg));
 	}
 
 	private void calculateAndSetZahlungen(@Nonnull LatsDocxDTO dto, LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde) {
@@ -224,7 +230,7 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 
 		Objects.requireNonNull(dto.getLastenausgleichsberechtigterBetrag());
 		BigDecimal zweiteRate = dto.getLastenausgleichsberechtigterBetrag().subtract(dto.getErsteRate());
-		dto.setZweiteRate(zweiteRate);
+		dto.setZweiteRate(MathUtil.positiveNonNullAndRound(zweiteRate));
 
 		Objects.requireNonNull(dto.getErsteRateProg());
 		BigDecimal totalAuszahlung = dto.getErsteRateProg().add(dto.getZweiteRate());

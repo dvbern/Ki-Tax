@@ -90,7 +90,7 @@ public class SchulungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void resetSchulungsdaten() {
-		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.saveGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.saveGesuchsperiode(TestDataUtil.createAndPersistGesuchsperiode1718(persistence));
 		createAndSaveInstitutionStammdatenForTestfaelle();
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 

@@ -20,7 +20,6 @@ package ch.dvbern.ebegu.services.gemeindeantrag;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -110,13 +109,20 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	}
 
 	@Nonnull
-	@Override
 	public Optional<GemeindeKennzahlen> findGemeindeKennzahlen(@Nonnull String id) {
 		Objects.requireNonNull(id, ID_MUSS_GESETZT_SEIN);
 
 		GemeindeKennzahlen gemeindeKennzahlen = persistence.find(GemeindeKennzahlen.class, id);
 
 		return Optional.ofNullable(gemeindeKennzahlen);
+	}
+
+	@Nonnull
+	@Override
+	public List<GemeindeKennzahlen> findAllAbgeschlosseneGemeindeKennzahlen() {
+		final List<GemeindeKennzahlen> gemeindeKennzahlen =
+			this.getGemeindeKennzahlen(null, null, "ABGESCHLOSSEN", null);
+		return gemeindeKennzahlen;
 	}
 
 	@Nonnull
@@ -136,18 +142,13 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	}
 
 	private void checkRequiredFieldsNotNull(GemeindeKennzahlen gemeindeKennzahlen) {
-		Preconditions.checkState(
-				gemeindeKennzahlen.getNachfrageErfuellt() != null,
-				"nachfrageErfuellt must not be null");
-		Preconditions.checkState(gemeindeKennzahlen.getNachfrageAnzahl() != null, "nachfrageAnzahl must not be null");
-		Preconditions.checkState(gemeindeKennzahlen.getNachfrageDauer() != null, "nachfrageDauer must not be null");
-		Preconditions.checkState(
-				gemeindeKennzahlen.getKostenlenkungAndere() != null,
-				"kostenlenkungAndere must not be null");
-		if (gemeindeKennzahlen.getKostenlenkungAndere()) {
+		Preconditions.checkState(gemeindeKennzahlen.getGemeindeKontingentiert() != null, "gemeindeKontingentiert must not be null");
+		if (gemeindeKennzahlen.getGemeindeKontingentiert()) {
 			Preconditions.checkState(
-					gemeindeKennzahlen.getWelcheKostenlenkungsmassnahmen() != null,
-					"welcheKostenlenkungsmassnahmen must not be null if kostenlenkungAndere is true");
+					gemeindeKennzahlen.getNachfrageErfuellt() != null,
+					"nachfrageErfuellt must not be null");
+			Preconditions.checkState(gemeindeKennzahlen.getNachfrageAnzahl() != null, "nachfrageAnzahl must not be null");
+			Preconditions.checkState(gemeindeKennzahlen.getNachfrageDauer() != null, "nachfrageDauer must not be null");
 		}
 	}
 
@@ -244,19 +245,6 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 			timestampMutiertPredicate = cb.disjunction();
 		}
 		return timestampMutiertPredicate;
-	}
-
-	@Override
-	public void deleteGemeindeKennzahlen(
-			@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
-		getGemeindeKennzahlen(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null)
-				.forEach(gemeindeKennzahlen -> {
-					persistence.remove(gemeindeKennzahlen);
-					LOG.warn(
-							"Removed GemeindeKennzahlen for Gemeinde {} in GS {}",
-							gemeinde.getName(),
-							gesuchsperiode.getGesuchsperiodeString());
-				});
 	}
 
 	@Override

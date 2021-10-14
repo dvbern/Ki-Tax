@@ -44,6 +44,7 @@ import ch.dvbern.ebegu.entities.LastenausgleichDetail_;
 import ch.dvbern.ebegu.entities.LastenausgleichGrundlagen;
 import ch.dvbern.ebegu.entities.LastenausgleichGrundlagen_;
 import ch.dvbern.ebegu.entities.Lastenausgleich_;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -118,9 +119,13 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		}).collect(Collectors.toSet());
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	@Override
 	@Nonnull
-	public Lastenausgleich createLastenausgleich(int jahr, @Nonnull BigDecimal selbstbehaltPro100ProzentPlatz) {
+	public Lastenausgleich createLastenausgleich(
+			int jahr,
+			@Nonnull BigDecimal selbstbehaltPro100ProzentPlatz,
+			Mandant mandant) {
 		// Ueberpruefen, dass es nicht schon einen Lastenausgleich oder LastenausgleichGrundlagen gibt fuer dieses Jahr
 		assertUnique(jahr);
 
@@ -144,6 +149,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 
 		Lastenausgleich lastenausgleich = new Lastenausgleich();
 		lastenausgleich.setJahr(jahr);
+		lastenausgleich.setMandant(mandant);
 
 		// Die regulare Abrechnung
 		Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden();

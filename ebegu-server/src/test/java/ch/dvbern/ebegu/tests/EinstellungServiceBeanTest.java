@@ -43,7 +43,6 @@ import static ch.dvbern.ebegu.test.TestDataUtil.SEQUENCE;
 
 @RunWith(Arquillian.class)
 @Category(IntegrationTest.class)
-@UsingDataSet("datasets/empty.xml")
 @Transactional(TransactionMode.DISABLED)
 public class EinstellungServiceBeanTest extends AbstractEbeguLoginTest {
 
@@ -65,14 +64,18 @@ public class EinstellungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Before
 	public void setUp() {
-		gesuchsperiode1617 = TestDataUtil.createGesuchsperiode1617();
-		gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
-		persistence.merge(gesuchsperiode1617);
-		persistence.merge(gesuchsperiode1718);
-
 		kantonBern = TestDataUtil.createDefaultMandant();
 		kantonBern.setName("Kanton Bern");
 		kantonBern = persistence.merge(kantonBern);
+
+		gesuchsperiode1617 = TestDataUtil.createGesuchsperiode1617();
+		gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
+
+		gesuchsperiode1617.setMandant(kantonBern);
+		gesuchsperiode1718.setMandant(kantonBern);
+
+		persistence.merge(gesuchsperiode1617);
+		persistence.merge(gesuchsperiode1718);
 
 		kantonLuzern = TestDataUtil.createDefaultMandant();
 		kantonLuzern.setName("Kanton Luzern");

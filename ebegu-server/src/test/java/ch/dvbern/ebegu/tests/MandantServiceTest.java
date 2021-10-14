@@ -25,7 +25,6 @@ import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
@@ -38,7 +37,6 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 @Category(IntegrationTest.class)
-@UsingDataSet("datasets/empty.xml")
 @Transactional(TransactionMode.DISABLED)
 public class MandantServiceTest extends AbstractEbeguLoginTest {
 
@@ -63,6 +61,6 @@ public class MandantServiceTest extends AbstractEbeguLoginTest {
 		persistence.persist(mandant);
 		Mandant loadedMandant = mandantService.getFirst();
 		Assert.assertNotNull(loadedMandant);
-		Assert.assertEquals("Mandant1", loadedMandant.getName());
+		Assert.assertEquals("TestMandantDBUnit", loadedMandant.getName());
 	}
 }

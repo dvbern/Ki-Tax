@@ -752,4 +752,10 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_FERIENBETREUUNG,
         ];
     }
+
+    public static getGemeindeKennzahlenRoles(): ReadonlyArray<TSRole> {
+        return this.getSuperAdminRoles()
+            .concat(this.getMandantOnlyRoles())
+            .concat(this.getGemeindeOrBGRoles());
+    }
 }

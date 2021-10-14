@@ -28,7 +28,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -45,7 +49,7 @@ import org.hibernate.envers.Audited;
 @Audited
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "jahr", name = "UK_Lastenausgleich_jahr"))
-public class Lastenausgleich extends AbstractEntity {
+public class Lastenausgleich extends AbstractEntity implements HasMandant {
 
 	private static final long serialVersionUID = -5083436194821575595L;
 
@@ -63,6 +67,10 @@ public class Lastenausgleich extends AbstractEntity {
 	@OrderBy("jahr DESC")
 	private List<LastenausgleichDetail> lastenausgleichDetails = new ArrayList<>();
 
+	@NotNull
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_lastenausgleich_mandant_id"))
+	private Mandant mandant;
 
 	public Lastenausgleich() {
 	}
@@ -123,5 +131,16 @@ public class Lastenausgleich extends AbstractEntity {
 		sb.append(", totalAlleGemeinden=").append(totalAlleGemeinden);
 		sb.append('}');
 		return sb.toString();
+	}
+
+	@Override
+	@NotNull
+	public Mandant getMandant() {
+		return mandant;
+	}
+
+	@Override
+	public void setMandant(Mandant mandant) {
+		this.mandant = mandant;
 	}
 }

@@ -13,6 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// variables and default values for them
+// they are set in ColorService by JavaScript
+:root {
+    --primary-color: @red;
+    --primary-color-dark: @dred;
+    --primary-color-light: @lred;
+}
+
 @base-font-size: 10px;
 //Breakpoints
 @bp-xs: 600px;
@@ -79,9 +87,9 @@
 @llgrey: #E5E5E5;
 //Theming
 //Primary
-@primary-light: @lred;
-@primary: @red;
-@primary-dark: @dred;
+@primary-light: var(--primary-color-light);
+@primary: var(--primary-color);
+@primary-dark: var(--primary-color-dark);
 //Secondary
 @secondary-light: @lblue;
 @secondary: @blue;
