@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
+import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.TSCalculationResult;
@@ -136,11 +137,12 @@ public class AnmeldungTagesschuleEventConverter {
 
 	@Nonnull
 	private GesuchstellerDTO toGesuchstellerDTO(@Nonnull GesuchstellerContainer gesuchstellerContainer) {
-		Adresse adresse = gesuchstellerContainer.getAdressen().stream()
+		AdresseDTO adresse = gesuchstellerContainer.getAdressen().stream()
 			.filter(a -> a.extractAdresseTyp() == AdresseTyp.WOHNADRESSE)
 			.findFirst()
-			.orElseThrow()
-			.getGesuchstellerAdresseJA();
+			.map(GesuchstellerAdresseContainer::getGesuchstellerAdresseJA)
+			.map(this::toAdresseDTO)
+			.orElse(null);
 		Gesuchsteller gesuchsteller = gesuchstellerContainer.getGesuchstellerJA();
 
 		//noinspection ConstantConditions
@@ -149,7 +151,7 @@ public class AnmeldungTagesschuleEventConverter {
 			.setNachname(gesuchsteller.getNachname())
 			.setEmail(gesuchsteller.getMail())
 			.setGeburtsdatum(gesuchsteller.getGeburtsdatum())
-			.setAdresse(toAdresseDTO(adresse))
+			.setAdresse(adresse)
 			.setGeschlecht(Geschlecht.valueOf(gesuchsteller.getGeschlecht().name()))
 			.setMobile(gesuchsteller.getMobile())
 			.setTelefon(gesuchsteller.getTelefon())
