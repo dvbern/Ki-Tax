@@ -125,7 +125,10 @@ public class AnmeldungTagesschuleEventConverter {
 
 	@Nullable
 	private TarifDTO toTarifDTO(@Nullable TSCalculationResult tsCalculationResult) {
-		//noinspection ConstantConditions
+		if (tsCalculationResult == null) {
+			return null;
+		}
+
 		return TarifDTO.newBuilder()
 			.setBetreuungsKostenProStunde(tsCalculationResult.getGebuehrProStunde())
 			.setBetreuungsMinutenProWoche(tsCalculationResult.getBetreuungszeitProWoche())
