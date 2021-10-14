@@ -151,6 +151,9 @@ public class AnmeldungTagesschuleEventConverter {
 			.setGeburtsdatum(gesuchsteller.getGeburtsdatum())
 			.setAdresse(toAdresseDTO(adresse))
 			.setGeschlecht(Geschlecht.valueOf(gesuchsteller.getGeschlecht().name()))
+			.setMobile(gesuchsteller.getMobile())
+			.setTelefon(gesuchsteller.getTelefon())
+			.setTelefonAusland(gesuchsteller.getTelefonAusland())
 			.build();
 	}
 
