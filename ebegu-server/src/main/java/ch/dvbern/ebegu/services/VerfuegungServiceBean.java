@@ -74,7 +74,6 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
-import ch.dvbern.ebegu.outbox.anmeldung.AnmeldungTagesschuleEventConverter;
 import ch.dvbern.ebegu.outbox.verfuegung.VerfuegungEventConverter;
 import ch.dvbern.ebegu.outbox.verfuegung.VerfuegungVerfuegtEvent;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -143,12 +142,6 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Inject
 	private VerfuegungEventConverter verfuegungEventConverter;
-
-	@Inject
-	private AnmeldungTagesschuleEventConverter anmeldungTagesschuleEventConverter;
-
-	@Inject
-	private EbeguConfiguration ebeguConfiguration;
 
 	@Nonnull
 	@Override
