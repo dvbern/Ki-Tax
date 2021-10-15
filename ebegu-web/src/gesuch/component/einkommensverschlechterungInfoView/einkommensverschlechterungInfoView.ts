@@ -101,6 +101,8 @@ export class EinkommensverschlechterungInfoViewController
         this.model = angular.copy(this.initialEinkVersInfo);
         this.initViewModel();
         this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
+        this.ekvContainerRS.getMinimalesMassgebendesEinkommenForGesuch(this.gesuchModelManager.getGesuch())
+            .then(res => console.log(res));
     }
 
     private initViewModel(): void {

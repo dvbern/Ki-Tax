@@ -317,13 +317,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				// Der UseCase ist, dass zuerst ein zweites Angebot vorhanden war, dieses aber durch das JA gelöscht wurde.
 				authorizer.checkReadAuthorizationFinSit(gesuch);
 			}
-			finanzielleSituationService.calculateFinanzDaten(gesuch);
-
-			// Die Betreuungen mit ihren Vorgängern initialisieren, damit der MutationsMerger funktioniert!
-			verfuegungService.initializeVorgaengerVerfuegungen(gesuch);
-
-			final BetreuungsgutscheinEvaluator evaluator = initEvaluator(gesuch, sprache.getLocale());
-			final Verfuegung famGroessenVerfuegung = evaluator.evaluateFamiliensituation(gesuch, sprache.getLocale());
+			final Verfuegung famGroessenVerfuegung = calculateFamGroessenVerfuegung(gesuch, sprache);
 			boolean writeProtectPDF = forceCreation;
 			byte[] data = pdfService.generateFinanzielleSituation(gesuch,
 				famGroessenVerfuegung,
@@ -336,6 +330,17 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 		}
 		return persistedDokument;
+	}
+
+	@Nonnull
+	public Verfuegung calculateFamGroessenVerfuegung(@Nonnull Gesuch gesuch, @Nonnull Sprache sprache) {
+		finanzielleSituationService.calculateFinanzDaten(gesuch);
+
+		// Die Betreuungen mit ihren Vorgängern initialisieren, damit der MutationsMerger funktioniert!
+		verfuegungService.initializeVorgaengerVerfuegungen(gesuch);
+
+		final BetreuungsgutscheinEvaluator evaluator = initEvaluator(gesuch, sprache.getLocale());
+		return evaluator.evaluateFamiliensituation(gesuch, sprache.getLocale());
 	}
 
 	@Nonnull

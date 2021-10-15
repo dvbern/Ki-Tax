@@ -30,9 +30,11 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Pain001Dokument;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
+import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WriteProtectedDokument;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.MergeDocException;
 
 /**
@@ -60,6 +62,9 @@ public interface GeneratedDokumentService {
 	@Nonnull
 	WriteProtectedDokument getFinSitDokumentAccessTokenGeneratedDokument(@Nonnull Gesuch gesuch, @Nonnull Boolean forceCreation)
 		throws MimeTypeParseException, MergeDocException;
+
+	@Nonnull
+	Verfuegung calculateFamGroessenVerfuegung(@Nonnull Gesuch gesuch, @Nonnull Sprache sprache);
 
 	@Nonnull
 	WriteProtectedDokument getBegleitschreibenDokument(@Nonnull Gesuch gesuch, @Nonnull Boolean forceCreation)
