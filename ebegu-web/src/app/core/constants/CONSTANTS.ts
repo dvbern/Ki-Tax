@@ -41,6 +41,7 @@ export const CONSTANTS = {
     DATE_TIME_FORMAT: 'DD.MM.YYYY HH:mm',
     EARLIEST_DATE_OF_TS_ANMELDUNG: '2020-08-01',
     BERN_BFS_NUMMER: 351,
+    MANDANT_LOCAL_STORAGE_KEY: 'mandant'
 };
 // 100% = 20 days => 1% = 0.2 days
 export const MULTIPLIER_KITA = 0.2;

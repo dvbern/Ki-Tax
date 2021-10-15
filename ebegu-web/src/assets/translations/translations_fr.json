@@ -2602,6 +2602,8 @@
     "GEMEINDE_KENNZAHLEN_NACHFRAGE_DAUER": "Für Gemeinden die Kontingentieren: Dauer in Monaten, wie lange Kinder durchschnittlich auf Warteliste sind",
     "GEMEINDE_KENNZAHLEN_LIMITIERUNG_TFO": "Bis zu welchem Alter gibt Ihre Gemeinde Gutscheine für die Betreuung in Tagesfamilien aus?",
     "GEMEINDE_KENNZAHLEN_AKTIV": "Gemeinde Kennzahlen aktiviert",
+    "MULTIMANDANT_AKTIV": "Multimandant aktiviert",
+    "MANDANT_SWITCH": "Mandanten wechseln",
     "BENUTZENDE_EINGEBEN": "Entrer l'utilisateur/-trice",
     "FKJV_EINGEWOEHNUNG": "FKJV: Eingewöhnung aktiviert",
     "FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM": "FKJV: Maximale Differenz zwischen erforderlichem und effektivem Beschäftigungspensum für ausserordentlicher Anspruch (in %)",

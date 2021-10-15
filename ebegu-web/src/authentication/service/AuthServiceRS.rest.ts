@@ -20,6 +20,7 @@ import {Observable, ReplaySubject} from 'rxjs';
 import {Permission} from '../../app/authorisation/Permission';
 import {PERMISSIONS} from '../../app/authorisation/Permissions';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
+import {KiBonMandant} from '../../app/core/constants/MANDANTS';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import {BenutzerRSX} from '../../app/core/service/benutzerRSX.rest';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
@@ -106,7 +107,7 @@ export class AuthServiceRS {
     public initWithCookie(): IPromise<TSBenutzer> {
         LOG.debug('initWithCookie');
 
-        const authIdbase64 = this.$cookies.get('authId');
+        const authIdbase64 = this.$cookies.get('authIdSuperuser') || this.$cookies.get('authId');
         if (!authIdbase64) {
             LOG.info('no login cookie available');
             this.clearPrincipal();
@@ -318,5 +319,9 @@ export class AuthServiceRS {
             return this.getPrincipal().mandant.angebotFI;
         }
         return false;
+    }
+
+    public setMandant(mandant: KiBonMandant): IPromise<any> {
+        return this.$http.post(CONSTANTS.REST_API + 'auth/set-mandant', {name: mandant});
     }
 }
