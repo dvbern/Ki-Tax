@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -252,12 +253,13 @@ public class AnmeldungTagesschuleEventConverterTest {
 
 	@Nonnull
 	private IsPojo<TagesschuleAnmeldungTarifeDTO> matchesZeitabschnitt(@Nonnull Verfuegung verfuegung) {
+		List<Matcher<? super TarifZeitabschnittDTO>> tarifZeitabschnitte = verfuegung.getZeitabschnitte().stream()
+			.map(this::matchesZeitabschnitt)
+			.collect(Collectors.toList());
+
 		return pojo(TagesschuleAnmeldungTarifeDTO.class)
 			.where(TagesschuleAnmeldungTarifeDTO::getTarifeDefinitivAkzeptiert, is(true))
-			.where(
-				TagesschuleAnmeldungTarifeDTO::getTarifZeitabschnitte,
-				contains(verfuegung.getZeitabschnitte().stream().map(this::matchesZeitabschnitt).toArray())
-			);
+			.where(TagesschuleAnmeldungTarifeDTO::getTarifZeitabschnitte, contains(tarifZeitabschnitte));
 	}
 
 	@Nonnull
