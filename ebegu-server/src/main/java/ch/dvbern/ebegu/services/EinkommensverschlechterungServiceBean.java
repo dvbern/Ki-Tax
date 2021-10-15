@@ -67,7 +67,7 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 	private Authorizer authorizer;
 
 	@Inject
-	private GeneratedDokumentService generatedDokumentService;
+	private VerfuegungService verfuegungService;
 
 	@Override
 	@Nonnull
@@ -141,7 +141,7 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 	@Override
 	public BigDecimal getMinimalesMassgebendesEinkommenForGesuch(@Nonnull Gesuch gesuch) {
 		authorizer.checkReadAuthorizationFinSit(gesuch);
-		final Verfuegung famGroessenVerfuegung = generatedDokumentService.calculateFamGroessenVerfuegung(gesuch, Sprache.DEUTSCH);
+		final Verfuegung famGroessenVerfuegung = verfuegungService.calculateFamGroessenVerfuegung(gesuch, Sprache.DEUTSCH);
 		return famGroessenVerfuegung.getZeitabschnitte().stream()
 			.map(VerfuegungZeitabschnitt::getMassgebendesEinkommen)
 			.min(Comparator.naturalOrder())
