@@ -323,14 +323,13 @@ public class ApplicationPropertyResource {
 			lastenausgleichTagesschulenAnteilZweitpruefungFrConverted,
 			lastenausgleichTagesschulenAutoZweitpruefungDeConverted,
 			lastenausgleichTagesschulenAutoZweitpruefungFrConverted,
-			multimandantEnabled,
-			lastenausgleichTagesschulenAutoZweitpruefungFrConverted,
 			primaryColor.getValue(),
 			primaryColorDark.getValue(),
 			primaryColorLight.getValue(),
 			logoFileName.getValue(),
-			logoFileNameWhite.getValue()
-		);
+			logoFileNameWhite.getValue(),
+			multimandantEnabled
+			);
 		return Response.ok(pubAppConf).build();
 	}
 }
