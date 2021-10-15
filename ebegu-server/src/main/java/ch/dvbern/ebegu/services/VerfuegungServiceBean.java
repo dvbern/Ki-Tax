@@ -240,9 +240,6 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		// Rekursiv alle Vorgänger ebenfalls auf UEBERNOMMEN setzen
 		setVorgaengerAnmeldungTagesschuleAufUebernommen(persistedAnmeldung);
 
-		// export Tarife zu der Exchange Service
-		fireAnmeldungTagesschuleUbernommenEvent(persistedAnmeldung);
-
 		return persistedAnmeldung;
 	}
 
@@ -885,11 +882,5 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			.findFirst()
 			.orElseThrow(() -> new EbeguEntityNotFoundException("calculateAndExtractVerfuegung", platzId));
 		return verfuegungToPersist;
-	}
-
-	private void fireAnmeldungTagesschuleUbernommenEvent(@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
-		if (ebeguConfiguration.isAnmeldungTagesschuleApiEnabled()) {
-			event.fire(anmeldungTagesschuleEventConverter.of(anmeldungTagesschule));
-		}
 	}
 }
