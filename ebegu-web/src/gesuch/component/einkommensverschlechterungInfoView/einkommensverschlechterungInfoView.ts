@@ -14,10 +14,14 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
+import {from, Observable} from 'rxjs';
+import {filter, map} from 'rxjs/operators';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {isAtLeastFreigegeben} from '../../../models/enums/TSAntragStatus';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
@@ -65,6 +69,7 @@ export class EinkommensverschlechterungInfoViewController
         'EinkommensverschlechterungContainerRS',
         '$timeout',
         '$translate',
+        'EinstellungRS'
     ];
 
     public initialEinkVersInfo: TSEinkommensverschlechterungInfoContainer;
@@ -74,6 +79,8 @@ export class EinkommensverschlechterungInfoViewController
         jahr2periode: this.getBasisjahrPlus2(),
         basisjahr: this.getBasisjahr(),
     };
+    public maxAllowedEinkommenForEKV: number;
+    public currentMinEinkommenEKV: number;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -89,6 +96,7 @@ export class EinkommensverschlechterungInfoViewController
         private readonly ekvContainerRS: EinkommensverschlechterungContainerRS,
         $timeout: ITimeoutService,
         private readonly $translate: ITranslateService,
+        private readonly einstellungRS: EinstellungRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -101,8 +109,7 @@ export class EinkommensverschlechterungInfoViewController
         this.model = angular.copy(this.initialEinkVersInfo);
         this.initViewModel();
         this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
-        this.ekvContainerRS.getMinimalesMassgebendesEinkommenForGesuch(this.gesuchModelManager.getGesuch())
-            .then(res => console.log(res));
+        this.initEKVMinEinkommen();
     }
 
     private initViewModel(): void {
@@ -358,6 +365,35 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     public warningEinkommenTooHighVisible(): boolean {
-        return true;
+        return !!this.maxAllowedEinkommenForEKV
+            && !!this.currentMinEinkommenEKV
+            && this.maxAllowedEinkommenForEKV < this.currentMinEinkommenEKV;
+    }
+
+    private initEKVMinEinkommen(): void {
+        const obs1: Observable<TSEinstellungKey> = from(this.einstellungRS.findEinstellung(
+            TSEinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF,
+            this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id
+        ))
+            .pipe(map(einstellung => parseInt(einstellung.value, 10)))
+            .pipe(filter(res => !isNaN(res)));
+
+        const obs2 = from(this.ekvContainerRS
+            .getMinimalesMassgebendesEinkommenForGesuch(this.gesuchModelManager.getGesuch()));
+
+        obs1.subscribe(res => {
+            this.maxAllowedEinkommenForEKV = res;
+            obs2.subscribe(res2 => {
+                this.currentMinEinkommenEKV = res2;
+            });
+        });
+    }
+
+    public getMaxEinkommenTranslateValues(): any {
+        return {
+            maxEinkommenEKV: this.maxAllowedEinkommenForEKV.toLocaleString('de-ch'),
+            massgebendesEinkommen: this.currentMinEinkommenEKV.toLocaleString('de-ch')
+        };
     }
 }
