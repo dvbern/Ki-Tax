@@ -64,6 +64,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
 import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.enums.WizardStepName;
@@ -141,6 +142,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Inject
 	private VerfuegungEventConverter verfuegungEventConverter;
+
+	@Inject
+	private EinstellungService einstellungService;
 
 	@Nonnull
 	@Override
@@ -556,7 +560,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
 			true);
-		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
+		Boolean pauschaleRueckwirkendAuszahlen = einstellungService.findEinstellung(EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND, gemeinde, gesuchsperiode).getValueAsBoolean();
+		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput, pauschaleRueckwirkendAuszahlen);
 		BGRechnerParameterDTO calculatorParameters = loadCalculatorParameters(gemeinde, gesuchsperiode);
 
 		// Finde und setze die letzte Verfuegung für die Betreuung für den Merger und Vergleicher.

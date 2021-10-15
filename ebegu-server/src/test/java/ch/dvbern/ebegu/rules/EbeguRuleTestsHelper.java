@@ -141,7 +141,7 @@ public final class EbeguRuleTestsHelper {
 	}
 
 	private static final boolean isDebug = false;
-	private static BetreuungsgutscheinExecutor executor = new BetreuungsgutscheinExecutor(isDebug);
+	private static BetreuungsgutscheinExecutor executor = new BetreuungsgutscheinExecutor(isDebug, false);
 
 	private EbeguRuleTestsHelper() {
 	}

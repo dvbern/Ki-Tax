@@ -58,19 +58,22 @@ public class BetreuungsgutscheinEvaluator {
 
 	private boolean isDebug = true;
 
+	private boolean pauschaleRueckwirkendAuszahlen;
+
 	private final List<Rule> rules;
 
 	private final BetreuungsgutscheinExecutor executor;
 
-	public BetreuungsgutscheinEvaluator(List<Rule> rules) {
+	public BetreuungsgutscheinEvaluator(List<Rule> rules, Boolean pauschaleRueckwirkendAuszahlen) {
 		this.rules = rules;
-		executor = new BetreuungsgutscheinExecutor(true);
+		executor = new BetreuungsgutscheinExecutor(true, pauschaleRueckwirkendAuszahlen);
 	}
 
-	public BetreuungsgutscheinEvaluator(List<Rule> rules, boolean enableDebugOutput) {
+	public BetreuungsgutscheinEvaluator(List<Rule> rules, boolean enableDebugOutput, Boolean pauschaleRueckwirkendAuszahlen) {
 		this.rules = rules;
 		this.isDebug = enableDebugOutput;
-		executor = new BetreuungsgutscheinExecutor(isDebug);
+		this.pauschaleRueckwirkendAuszahlen = pauschaleRueckwirkendAuszahlen;
+		executor = new BetreuungsgutscheinExecutor(isDebug, pauschaleRueckwirkendAuszahlen);
 	}
 
 	/**
@@ -103,7 +106,7 @@ public class BetreuungsgutscheinEvaluator {
 			zeitabschnitte = executor.executeRules(rulesToRun, firstBetreuungOfGesuch, zeitabschnitte, true);
 
 			MonatsRule monatsRule = new MonatsRule(isDebug);
-			MutationsMerger mutationsMerger = new MutationsMerger(locale, isDebug);
+			MutationsMerger mutationsMerger = new MutationsMerger(locale, isDebug, pauschaleRueckwirkendAuszahlen);
 			AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(true, isDebug);
 
 			zeitabschnitte = monatsRule.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);

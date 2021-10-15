@@ -45,7 +45,7 @@ import static ch.dvbern.ebegu.util.Constants.EinstellungenDefaultWerteAsiv.ZUSCH
 public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 
 	private BetreuungsgutscheinConfigurator ruleConfigurator = new BetreuungsgutscheinConfigurator();
-	private BetreuungsgutscheinExecutor executor = new BetreuungsgutscheinExecutor(true);
+	private BetreuungsgutscheinExecutor executor = new BetreuungsgutscheinExecutor(true, false);
 	private Map<EinstellungKey, Einstellung> einstellungenGemaessAsiv = EbeguRuleTestsHelper.getAllEinstellungen(gesuchsperiodeOfEvaluator);
 	private KitaxUebergangsloesungParameter kitaxParams = TestDataUtil.geKitaxUebergangsloesungParameter();
 

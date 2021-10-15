@@ -261,7 +261,8 @@ public class EinkommenCalcRuleTest {
 		assertEquals(3, abschnitt.getBemerkungenList().uniqueSize());
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.EINKOMMEN_KEINE_VERGUENSTIGUNG_GEWUENSCHT_MSG));
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
-		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG));
+		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG));
+		assertFalse(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG));
 		assertFalse(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 

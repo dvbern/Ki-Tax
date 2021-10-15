@@ -45,8 +45,11 @@ public class BetreuungsgutscheinExecutor {
 
 	private boolean isDebug = true;
 
-	public BetreuungsgutscheinExecutor(boolean isDebug) {
+	private Boolean pauschaleRueckwirkendAuszahlen;
+
+	public BetreuungsgutscheinExecutor(boolean isDebug, Boolean pauschaleRueckwirkendAuszahlen) {
 		this.isDebug = isDebug;
+		this.pauschaleRueckwirkendAuszahlen = pauschaleRueckwirkendAuszahlen;
 	}
 
 	public List<VerfuegungZeitabschnitt> executeRules(
@@ -90,7 +93,7 @@ public class BetreuungsgutscheinExecutor {
 		AnspruchFristRule anspruchFristRule = new AnspruchFristRule(isDebug);
 		AbschlussNormalizer abschlussNormalizerOhneMonate = new AbschlussNormalizer(false, isDebug);
 		MonatsRule monatsRule = new MonatsRule(isDebug);
-		MutationsMerger mutationsMerger = new MutationsMerger(locale, isDebug);
+		MutationsMerger mutationsMerger = new MutationsMerger(locale, isDebug, pauschaleRueckwirkendAuszahlen);
 		AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(!platz.getBetreuungsangebotTyp().isTagesschule(), isDebug);
 
 		// Innerhalb eines Monats darf der Anspruch nie sinken

@@ -142,6 +142,9 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 					// Bei Tagesschule muss der Anspruch immer 100 bleiben, siehe BetreuungsangebotTypCalcRule
 					inputData.setAnspruchZeroAndSaveRestanspruch();
 				}
+				if (hasErweiterteBetreuung) {
+					inputData.addBemerkung(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG, getLocale());
+				}
 			}
 			// Bemerkungen setzen, je nach Grund des Max-Einkommens
 			if (keineFinSitErfasst) {
