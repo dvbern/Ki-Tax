@@ -51,6 +51,7 @@ export function mandantCheck(
 
 // Function that returns a redirect for the current transition to the login state
 // if the user is not currently authenticated (according to the AuthService)
+// tslint:disable-next-line:cognitive-complexity
 function redirectToMandantSelection(
     transition: Transition,
 ): HookResult {
