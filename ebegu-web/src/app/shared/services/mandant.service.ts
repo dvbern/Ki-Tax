@@ -31,12 +31,10 @@ export class MandantService {
     public constructor(
         private readonly windowRef: WindowRef,
         private readonly httpBackend: HttpBackend,
-        // private readonly applicationPropertyService: ApplicationPropertyRS,
-        // private readonly authService: AuthServiceRS,
         private readonly cookieService: CookieService,
     ) {
         this._mandant$.next(MandantService.findMandant(this.cookieService.get('mandant')));
-        // y tho?
+        // Workaround, we somehow get a cyclic dependency when we try to inject this directly
         this.http = new HttpClient(httpBackend);
         this.http.get(`${CONSTANTS.REST_API}application-properties/public/all`).subscribe(res => {
             const props = this.restUtil.parsePublicAppConfig(res);
@@ -94,6 +92,7 @@ export class MandantService {
     }
 
     public setMandantCookie(mandant: KiBonMandant): Promise<any> {
+        // TODO: Restore AuthService once migrated
         return  this.http.post(CONSTANTS.REST_API + 'auth/set-mandant', {name: mandant}).toPromise() as Promise<any>;
     }
 

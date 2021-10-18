@@ -20,6 +20,7 @@ import {TranslateLoader} from '@ngx-translate/core';
 import {forkJoin, iif, Observable, of} from 'rxjs';
 import {catchError, map, mergeMap} from 'rxjs/operators';
 import {KiBonMandant} from '../core/constants/MANDANTS';
+import {LogFactory} from '../core/logging/LogFactory';
 import {MandantService} from '../shared/services/mandant.service';
 
 interface Resource {
@@ -27,13 +28,11 @@ interface Resource {
     suffix: string;
 }
 
+const LOG = LogFactory.createLog('MultiMandantHttpLoader');
+
 export class MultiMandantHttpLoader implements TranslateLoader {
 
-    private readonly DEFAULT_RESOURCE: Resource = {
-        prefix: './assets/translations/translations_',
-        suffix: `.json?t=${Date.now()}`,
-    };
-    private readonly MANDANT_RESOURCE: Resource = {
+    private readonly RESOURCE: Resource = {
         prefix: './assets/translations/translations_',
         suffix: `.json?t=${Date.now()}`,
     };
@@ -56,9 +55,9 @@ export class MultiMandantHttpLoader implements TranslateLoader {
     private createMultimandantRequests(lang: string, mandant: KiBonMandant): Observable<any> {
         return forkJoin([
                 this.createBaseTranslationRequest(lang),
-                this.http.get(`${this.MANDANT_RESOURCE.prefix}${mandant}_${lang}${this.MANDANT_RESOURCE.suffix}`)
+                this.http.get(`${this.RESOURCE.prefix}${mandant}_${lang}${this.RESOURCE.suffix}`)
                     .pipe(catchError(err => {
-                        console.error(err);
+                        LOG.error(err);
                         return of({});
                     })),
             ],
@@ -72,6 +71,6 @@ export class MultiMandantHttpLoader implements TranslateLoader {
     }
 
     private createBaseTranslationRequest(lang: string): Observable<any> {
-        return this.http.get(`${this.DEFAULT_RESOURCE.prefix}${lang}${this.DEFAULT_RESOURCE.suffix}`);
+        return this.http.get(`${this.RESOURCE.prefix}${lang}${this.RESOURCE.suffix}`);
     }
 }
