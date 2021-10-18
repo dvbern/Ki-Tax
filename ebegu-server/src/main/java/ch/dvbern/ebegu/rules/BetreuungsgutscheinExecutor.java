@@ -87,12 +87,14 @@ public class BetreuungsgutscheinExecutor {
 		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte,
 		@Nonnull Locale locale
 	) {
+		EingewoehnungFristRule eingewoehnungFristRule = new EingewoehnungFristRule(locale, isDebug);
 		AnspruchFristRule anspruchFristRule = new AnspruchFristRule(isDebug);
 		AbschlussNormalizer abschlussNormalizerOhneMonate = new AbschlussNormalizer(false, isDebug);
 		MonatsRule monatsRule = new MonatsRule(isDebug);
 		MutationsMerger mutationsMerger = new MutationsMerger(locale, isDebug);
 		AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(!platz.getBetreuungsangebotTyp().isTagesschule(), isDebug);
-
+		// Bei Eingewoehnung ist der Anspruch von einer Monat verlaengt
+		zeitabschnitte = eingewoehnungFristRule.executeIfApplicable(platz, zeitabschnitte);
 		// Innerhalb eines Monats darf der Anspruch nie sinken
 		zeitabschnitte = anspruchFristRule.executeIfApplicable(platz, zeitabschnitte);
 		// Falls jetzt noch Abschnitte "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen

@@ -29,13 +29,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertNotNull;
 
-public class EingewoehnungAbschnittRuleTest {
+public class EingewoehnungFristRuleTest {
 
 	@Test
 	/**
 	 * Normalenfall, keine Eingewoehnung
 	 */
-	public void testEingewoehnungAbschnittRule1GesuchstellerOhne() {
+	public void testEingewoehnungFristRule1GesuchstellerOhne() {
 		Betreuung betreuung = createGesuch(false, false);
 		Gesuch gesuch = betreuung.extractGesuch();
 
@@ -57,7 +57,7 @@ public class EingewoehnungAbschnittRuleTest {
 	/**
 	 * Normalenfall, Eingewoehnung, 1 Erwerbspensum Begin Anfang September
 	 */
-	public void testEingewoehnungAbschnittRule1Gesuchsteller() {
+	public void testEingewoehnungFristRule1Gesuchsteller() {
 		Betreuung betreuung = createGesuch(false, true);
 		Gesuch gesuch = betreuung.extractGesuch();
 
@@ -79,7 +79,7 @@ public class EingewoehnungAbschnittRuleTest {
 	/**
 	 *  Eingewoehnung, 2 Erwerbspensum, beides Begin Anfang September, beides verlaengert
 	 */
-	public void testEingewoehnungAbschnittRule1GesuchstellerManyErwerbspensenGleicheStartdatum() {
+	public void testEingewoehnungFristRule1GesuchstellerManyErwerbspensenGleicheStartdatum() {
 		Betreuung betreuung = createGesuch(false, true);
 		Gesuch gesuch = betreuung.extractGesuch();
 
@@ -102,9 +102,9 @@ public class EingewoehnungAbschnittRuleTest {
 
 	@Test
 	/**
-	 *  Eingewoehnung, 2 Erwerbspensum, eine Begin Anfang September, eine spaeter, nur die erste velaengert
+	 *  Eingewoehnung, 2 Erwerbspensum, eine Begin Anfang September, eine spaeter, nur die erste velaengert als genuegen
 	 */
-	public void testEingewoehnungAbschnittRule1GesuchstellerManyErwerbspensenNichtGleicheStartdatum() {
+	public void testEingewoehnungFristRule1GesuchstellerManyErwerbspensenNichtGleicheStartdatum() {
 		Betreuung betreuung = createGesuch(false, true);
 		Gesuch gesuch = betreuung.extractGesuch();
 
@@ -128,9 +128,8 @@ public class EingewoehnungAbschnittRuleTest {
 	/**
 	 *  Eingewoehnung, 2 Erwerbspensum, Freiwilligarbeit Begin Anfang September, eine andere Taetigkeit spaeter
 	 *  Es gibt keinen Zusaetzliche Anspruch bei die Gemeinde, so ASIV ignoriert die FreiwilligeArbeit Taetigkeit
-	 *  Und verlaengert die 2 Erwerbspensum
 	 */
-	public void testEingewoehnungAbschnittRule1GesuchstellerFreiwilligeArbeitOhneGemeindeZuschlag() {
+	public void testEingewoehnungFristRule1GesuchstellerFreiwilligeArbeitOhneGemeindeZuschlag() {
 		Betreuung betreuung = createGesuch(false, true);
 		Gesuch gesuch = betreuung.extractGesuch();
 
@@ -160,7 +159,7 @@ public class EingewoehnungAbschnittRuleTest {
 	 *  Es gibt einen Zusaetzliche Anspruch bei die Gemeinde von 20, so die FreiwilligeArbeit Taetigkeit
 	 *  ist verlaengert
 	 */
-	public void testEingewoehnungAbschnittRule1GesuchstellerFreiwilligeArbeitMitGemeindeZuschlag() {
+	public void testEingewoehnungFristRule1GesuchstellerFreiwilligeArbeitMitGemeindeZuschlag() {
 		Betreuung betreuung = createGesuch(false, true);
 		Gesuch gesuch = betreuung.extractGesuch();
 
@@ -189,9 +188,9 @@ public class EingewoehnungAbschnittRuleTest {
 
 	@Test
 	/**
-	 *  Eingewoehnung, 2 Gesuchstellende, beide Erwerspensen mit gleiche Startdatum, so beide sind verlaengert
+	 *  Eingewoehnung, 2 Gesuchstellende, beide Erwerspensen mit gleiche Startdatum
 	 */
-	public void testEingewoehnungAbschnittRule2GesuchstellerGleicheStart() {
+	public void testEingewoehnungFristRule2GesuchstellerGleicheStart() {
 		Betreuung betreuung = createGesuch(true, true);
 		Gesuch gesuch = betreuung.extractGesuch();
 
@@ -214,9 +213,9 @@ public class EingewoehnungAbschnittRuleTest {
 
 	@Test
 	/**
-	 *  Eingewoehnung, 2 Gesuchstellende, eine Erwerspensen faengt bevor als die andere, so nur diese ist verlaengert
+	 *  Eingewoehnung, 2 Gesuchstellende
 	 */
-	public void testEingewoehnungAbschnittRule2Gesuchsteller1StartBevor() {
+	public void testEingewoehnungFristRule2Gesuchsteller1StartBevor() {
 		Betreuung betreuung = createGesuch(true, true);
 		Gesuch gesuch = betreuung.extractGesuch();
 
@@ -235,6 +234,11 @@ public class EingewoehnungAbschnittRuleTest {
 		Assert.assertEquals(
 			TestDataUtil.START_PERIODE.plusMonths(1).minusDays(1),
 			result.get(0).getGueltigkeit().getGueltigBis());
+		Assert.assertEquals(60, result.get(1).getAnspruchberechtigtesPensum());
+		Assert.assertEquals(TestDataUtil.START_PERIODE.plusMonths(1), result.get(1).getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(
+			TestDataUtil.START_PERIODE.plusMonths(2).minusDays(1),
+			result.get(1).getGueltigkeit().getGueltigBis());
 	}
 
 	private Betreuung createGesuch(final boolean gs2, final boolean eingewoehnung) {

@@ -151,13 +151,6 @@ public class BetreuungsgutscheinConfigurator {
 			addToRuleSetIfRelevantForGemeinde(erwerbspensumGmdeAbschnittRule, einstellungMap);
 		}
 
-		// - Eingewoehnung Abschnitt Rule
-		EingewoehnungASIVAbschnittRule eingewoehnungAbschnittRule = new EingewoehnungASIVAbschnittRule(defaultGueltigkeit, locale, param_MaxAbzugFreiwilligenarbeit.getValueAsInteger());
-		addToRuleSetIfRelevantForGemeinde(eingewoehnungAbschnittRule, einstellungMap);
-
-		EingewoehnungGemeindeAbschnittRule eingewoehnungGmdeAbschnittRule = new EingewoehnungGemeindeAbschnittRule(defaultGueltigkeit, locale, param_MaxAbzugFreiwilligenarbeit.getValueAsInteger());
-		addToRuleSetIfRelevantForGemeinde(eingewoehnungGmdeAbschnittRule, einstellungMap);
-
 		// - Unbezahlter Urlaub
 		UnbezahlterUrlaubAbschnittRule unbezahlterUrlaubAbschnittRule = new UnbezahlterUrlaubAbschnittRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(unbezahlterUrlaubAbschnittRule, einstellungMap);
