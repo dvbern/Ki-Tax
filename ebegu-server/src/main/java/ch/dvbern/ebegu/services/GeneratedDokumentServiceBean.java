@@ -134,13 +134,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	private MahnungService mahnungService;
 
 	@Inject
-	private ApplicationPropertyService applicationPropertyService;
-
-	@Inject
 	private GemeindeService gemeindeService;
-
-	@Inject
-	private RulesService rulesService;
 
 	@Inject
 	private Authorizer authorizer;
