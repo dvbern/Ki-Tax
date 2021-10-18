@@ -1,5 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {UIRouterGlobals} from '@uirouter/core';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {SharedModule} from '../../shared/shared.module';
@@ -13,6 +14,7 @@ describe('DummyMandantSelectionComponent', () => {
         ['isDevMode', 'getPublicPropertiesCached']);
     const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
         ['params']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$', 'isOneOfRoles']);
 
     applicationPropertyRSSpy.getPublicPropertiesCached.and.resolveTo({} as any);
 
@@ -29,6 +31,10 @@ describe('DummyMandantSelectionComponent', () => {
                     provide: UIRouterGlobals,
                     useValue: uiRouterGlobalsSpy,
                 },
+                {
+                    provide: AuthServiceRS,
+                    useValue: authServiceSpy
+                }
             ],
 
         })

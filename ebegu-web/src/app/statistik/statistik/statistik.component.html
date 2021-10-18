@@ -739,7 +739,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xs-3">
+                                        <div class="col-xs-3" *ngIf="statistikParameter.tagesschuleAnmeldungen">
                                             <div class="form-group">
                                                 <label class="md-no-float required" for="tagesschuleAnmeldungen_gp"
                                                        translate>GESUCHSPERIODEN</label>
@@ -750,7 +750,8 @@
                                                             required
                                                             class="form-control">
                                                         <option [ngValue]="undefined">{{'KEINE' | translate}}</option>
-                                                        <option *ngFor="let gesuchsperiode of gesuchsperioden" [value]="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
+                                                        <option *ngFor="let gesuchsperiode of getGesuchsperiodenForTagesschule(statistikParameter.tagesschuleAnmeldungen)"
+                                                                [value]="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
                                                     </select>
                                                     <dv-error-messages [errorObject]="gesuchZeitraumGP.errors"
                                                                        class="error"></dv-error-messages>
@@ -1024,12 +1025,12 @@
                             <span></span>
                         </th>
                         <td mat-cell *matCellDef="let element" class="ellipsis">
-                            <span [title]="'DOKUMENT_DOWNLOAD' | translate" class="fa fa-download"></span>
+                            <span *ngIf="element.batchJobStatus === 'FINISHED'" [title]="'DOKUMENT_DOWNLOAD' | translate" class="fa fa-download"></span>
                         </td>
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="columndefs"></tr>
-                    <tr mat-row *matRowDef="let row; columns: columndefs;" (click)="downloadStatistik(row)"></tr>
+                    <tr mat-row [ngClass]="{'ready': row.batchJobStatus === 'FINISHED'}" *matRowDef="let row; columns: columndefs;" (click)="downloadStatistik(row)"></tr>
 
                 </mat-table>
 

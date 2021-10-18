@@ -19,6 +19,8 @@ package ch.dvbern.ebegu.docxmerger.mergefield;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,14 +28,19 @@ import javax.annotation.Nullable;
 public class BigDecimalMergeField extends AbstractMergeField<BigDecimal> {
 
 	private final int scale;
+	private final DecimalFormat formater;
 
-	public BigDecimalMergeField(@Nonnull String name, @Nullable BigDecimal value) {
-		this(name, value, 2);
+	public BigDecimalMergeField(@Nonnull String name, @Nullable BigDecimal value, @Nonnull String format) {
+		this(name, value , 2, format);
 	}
 
-	public BigDecimalMergeField(@Nonnull String name, @Nullable BigDecimal value, @Nonnull Integer precision) {
+	public BigDecimalMergeField(@Nonnull String name, @Nullable BigDecimal value,  @Nonnull Integer precision, @Nonnull String format) {
 		super(name, value);
 		this.scale = precision;
+
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+		symbols.setGroupingSeparator('\'');
+		this.formater = new DecimalFormat(format, symbols);
 	}
 
 	@Override
@@ -42,6 +49,6 @@ public class BigDecimalMergeField extends AbstractMergeField<BigDecimal> {
 		if (getValue() == null) {
 			return "";
 		}
-		return this.getValue().setScale(this.scale, RoundingMode.HALF_UP).toString();
+		return formater.format(this.getValue().setScale(this.scale, RoundingMode.HALF_UP));
 	}
 }

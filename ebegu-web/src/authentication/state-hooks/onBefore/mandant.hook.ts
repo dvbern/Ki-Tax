@@ -23,9 +23,11 @@ import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {OnBeforePriorities} from './onBeforePriorities';
 
-const LOG = LogFactory.createLog('authenticationHookRunBlockX');
+const LOG = LogFactory.createLog('mandantHook');
 
 mandantCheck.$inject = ['$transitions', 'MandantService', '$state'];
+
+let alreadyAlerted = false;
 
 /**
  * This file contains a Transition Hook which protects a
@@ -63,26 +65,28 @@ function redirectToMandantSelection(
         .pipe(
             map(([mandant, isMultimandanActive]) => {
 
+                const mandantFromHostname = mandantService.parseHostnameForMandant();
                 if (!isMultimandanActive) {
+                    if (!alreadyAlerted && mandantFromHostname !== KiBonMandant.NONE) {
+                        alert('Multimandant ist nicht aktiviert');
+                        alreadyAlerted = true;
+                    }
                     return true;
                 }
 
                 LOG.debug('checking mandant', mandant);
                 const path = transition.router.stateService.href(transition.to(), transition.params());
 
-                const mandantFromHostname = mandantService.parseHostnameForMandant();
-                if (mandant === KiBonMandant.NONE) {
-                    if (mandantFromHostname === KiBonMandant.NONE) {
+                if (mandantFromHostname === KiBonMandant.NONE) {
+                    if (mandant === KiBonMandant.NONE) {
                         console.log('redirecting to mandant selection');
                         return $state.target('mandant', {path});
                     }
-                    mandantService.selectMandant(mandantFromHostname, path);
-                    return true;
-                }
-
-                if (mandant !== mandantFromHostname) {
                     mandantService.redirectToMandantSubdomain(mandant, path);
                     return false;
+                }
+                if (mandant !== mandantFromHostname) {
+                    mandantService.setMandantCookie(mandantFromHostname);
                 }
 
                 // continue the original transition

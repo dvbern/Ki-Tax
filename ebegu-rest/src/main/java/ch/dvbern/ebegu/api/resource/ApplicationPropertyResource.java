@@ -329,7 +329,7 @@ public class ApplicationPropertyResource {
 			logoFileName.getValue(),
 			logoFileNameWhite.getValue(),
 			multimandantEnabled
-		);
+			);
 		return Response.ok(pubAppConf).build();
 	}
 }

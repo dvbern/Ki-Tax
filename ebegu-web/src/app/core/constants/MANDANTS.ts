@@ -19,5 +19,6 @@
 export enum KiBonMandant {
     BE = 'be',
     LU = 'lu',
+    SO = 'so',
     NONE = ''
 }

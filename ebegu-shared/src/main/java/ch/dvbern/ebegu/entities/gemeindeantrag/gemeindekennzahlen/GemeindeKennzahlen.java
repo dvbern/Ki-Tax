@@ -65,6 +65,10 @@ public class GemeindeKennzahlen extends AbstractEntity implements GemeindeAntrag
 
 	@Nullable
 	@Column
+	private Boolean gemeindeKontingentiert;
+
+	@Nullable
+	@Column
 	private BigInteger nachfrageAnzahl;
 
 	@Nullable
@@ -73,11 +77,7 @@ public class GemeindeKennzahlen extends AbstractEntity implements GemeindeAntrag
 
 	@Nullable
 	@Column
-	private Boolean kostenlenkungAndere;
-
-	@Nullable
-	@Column
-	private String welcheKostenlenkungsmassnahmen;
+	private String limitierungTfo;
 	
 
 	@Override
@@ -159,20 +159,20 @@ public class GemeindeKennzahlen extends AbstractEntity implements GemeindeAntrag
 	}
 
 	@Nullable
-	public Boolean getKostenlenkungAndere() {
-		return kostenlenkungAndere;
+	public String getLimitierungTfo() {
+		return limitierungTfo;
 	}
 
-	public void setKostenlenkungAndere(@Nullable Boolean kostenlenkungAndere) {
-		this.kostenlenkungAndere = kostenlenkungAndere;
+	public void setLimitierungTfo(@Nullable String welcheKostenlenkungsmassnahmen) {
+		this.limitierungTfo = welcheKostenlenkungsmassnahmen;
 	}
 
 	@Nullable
-	public String getWelcheKostenlenkungsmassnahmen() {
-		return welcheKostenlenkungsmassnahmen;
+	public Boolean getGemeindeKontingentiert() {
+		return gemeindeKontingentiert;
 	}
 
-	public void setWelcheKostenlenkungsmassnahmen(@Nullable String welcheKostenlenkungsmassnahmen) {
-		this.welcheKostenlenkungsmassnahmen = welcheKostenlenkungsmassnahmen;
+	public void setGemeindeKontingentiert(@Nullable Boolean gemeindeKontingentiert) {
+		this.gemeindeKontingentiert = gemeindeKontingentiert;
 	}
 }

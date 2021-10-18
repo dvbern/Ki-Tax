@@ -49,7 +49,6 @@ import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.authentication.AuthAccessElement;
 import ch.dvbern.ebegu.authentication.AuthLoginElement;
-import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AuthorisierterBenutzer;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -92,9 +91,6 @@ public class AuthResource {
 
 	@Inject
 	private LoginProviderInfoRestService loginProviderInfoRestService;
-
-	@Inject
-	private PrincipalBean principal;
 
 	@Path("/portalAccountPage")
 	@Consumes(MediaType.WILDCARD)
@@ -222,17 +218,11 @@ public class AuthResource {
 			NewCookie principalCookie = new NewCookie(AuthConstants.COOKIE_PRINCIPAL, encodeAuthAccessElement(element),
 				AuthConstants.COOKIE_PATH, domain, "principal",
 				AuthConstants.COOKIE_TIMEOUT_SECONDS, cookieSecure, false);
-			// Readable Cookie storing the mandant
-			NewCookie mandantCokie = new NewCookie(AuthConstants.COOKIE_MANDANT,
-					benutzer.getMandant() != null ? benutzer.getMandant().getName() : null,
-					AuthConstants.COOKIE_PATH, domain, "mandant",
-					60 * 60 * 24 * 365 * 2, cookieSecure, false);
 
 			return Response.noContent()
 					.cookie(authCookie,
 							xsrfCookie,
-							principalCookie,
-							mandantCokie)
+							principalCookie)
 					.build();
 		}
 

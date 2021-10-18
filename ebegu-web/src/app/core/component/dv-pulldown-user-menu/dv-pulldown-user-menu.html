@@ -116,11 +116,13 @@
 
             <md-menu-divider></md-menu-divider>
 
-            <md-menu-item ng-if="vm.mandantSwitchVisible">
-                <md-button ui-sref-active="active" ui-sref="mandant" aria-label="{{'MANDANT_SWITCH' | translate}}">
-                    <a href="#" ng-click="$event.preventDefault();" data-translate="MANDANT_SWITCH" aria-hidden></a>
-                </md-button>
-            </md-menu-item>
+            <div ng-if="vm.mandantSwitchVisible">
+                <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()">
+                    <md-button ui-sref-active="active" ui-sref="mandant" aria-label="{{'MANDANT_SWITCH' | translate}}">
+                        <a href="#" ng-click="$event.preventDefault();" data-translate="MANDANT_SWITCH" aria-hidden></a>
+                    </md-button>
+                </md-menu-item>
+            </div>
 
             <md-menu-divider></md-menu-divider>
 

@@ -41,8 +41,8 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.validators.CheckFachstellen;
 import ch.dvbern.ebegu.validators.CheckFachstellenFromDate;
-import ch.dvbern.ebegu.validators.CheckFachstellenNurVorschulalter;
 import ch.dvbern.ebegu.validators.CheckPensumFachstelle;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.annotations.SortNatural;
@@ -57,7 +57,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
  */
 @CheckPensumFachstelle
 @CheckFachstellenFromDate
-@CheckFachstellenNurVorschulalter
+@CheckFachstellen
 @Audited
 @Entity
 @Table(

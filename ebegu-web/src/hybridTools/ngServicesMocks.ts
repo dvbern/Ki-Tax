@@ -24,6 +24,7 @@ import {WindowRef} from '../app/core/service/windowRef.service';
 import {I18nServiceRSRest} from '../app/i18n/services/i18nServiceRS.rest';
 import {MandantService} from '../app/shared/services/mandant.service';
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
+import {AuthServiceRS} from '../authentication/service/AuthServiceRS.rest';
 import {InternePendenzenRS} from '../gesuch/component/internePendenzenView/internePendenzenRS.rest';
 import {GesuchGenerator} from '../gesuch/service/gesuchGenerator';
 import {TSAuthEvent} from '../models/enums/TSAuthEvent';
@@ -113,6 +114,7 @@ export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('httpBackend', HttpBackendMock);
     $provide.service('cookieService', CookieServiceMock);
     $provide.service('applicationPropertyService', ApplicationPropertyRS);
+    $provide.service('authService', AuthServiceRS);
     $provide.value('LOCALE_ID', 'de-CH');
     $provide.value('platformId', 'de-CH');
 }

@@ -2,11 +2,11 @@ import {HttpBackend, HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {CookieService} from 'ngx-cookie-service';
 import {Observable, ReplaySubject} from 'rxjs';
+import {KiBonMandant} from '../../core/constants/MANDANTS';
+import {WindowRef} from '../../core/service/windowRef.service';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
-import {KiBonMandant} from '../../core/constants/MANDANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
-import {WindowRef} from '../../core/service/windowRef.service';
 
 const LOG = LogFactory.createLog('MandantService');
 
@@ -59,6 +59,8 @@ export class MandantService {
                 return KiBonMandant.BE;
             case 'lu':
                 return KiBonMandant.LU;
+            case 'so':
+                return KiBonMandant.SO;
             default:
                 return KiBonMandant.NONE;
         }
@@ -89,6 +91,10 @@ export class MandantService {
                 this.redirectToMandantSubdomain(parsedMandant, url);
             }
         }, error => LOG.error(error));
+    }
+
+    public setMandantCookie(mandant: KiBonMandant): Promise<any> {
+        return  this.http.post(CONSTANTS.REST_API + 'auth/set-mandant', {name: mandant}).toPromise() as Promise<any>;
     }
 
     public redirectToMandantSubdomain(mandant: KiBonMandant, url: string): void {

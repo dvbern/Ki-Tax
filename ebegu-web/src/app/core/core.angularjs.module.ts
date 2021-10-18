@@ -71,8 +71,9 @@ import {DvLanguageSelectorComponentConfig} from '../i18n/components/dv-language-
 import {HttpI18nInterceptor} from '../i18n/httpInterceptor/http-i18n-Interceptor';
 import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {PosteingangService} from '../posteingang/service/posteingang.service';
-import {ColorService} from '../shared/services/color.service';
 import {MandantService} from '../shared/services/mandant.service';
+import {IeDeprecationWarningComponent} from '../shared/component/ie-deprecation-warning/ie-deprecation-warning.component';
+import {ColorService} from '../shared/services/color.service';
 import {DvAccordionComponentConfig} from './component/dv-accordion/dv-accordion';
 import {DvAccordionTabComponentConfig} from './component/dv-accordion/dv-accordion-tab/dv-accordion-tab';
 import {AdresseComponentConfig} from './component/dv-adresse/dv-adresse';
@@ -251,8 +252,8 @@ export const CORE_JS_MODULE = angular
     .factory('BroadcastService', downgradeInjectable(BroadcastService) as any)
     .factory('BenutzerRS', downgradeInjectable(BenutzerRSX) as any)
     .factory('ErrorServiceX', downgradeInjectable(ErrorServiceX) as any)
-    .factory('ColorService', downgradeInjectable(ColorService) as any)
     .factory('MandantService', downgradeInjectable(MandantService) as any)
+    .factory('ColorService', downgradeInjectable(ColorService) as any)
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())
@@ -315,6 +316,7 @@ export const CORE_JS_MODULE = angular
     .directive('dvNavbar', downgradeComponent({component: NavbarComponent}))
     .directive('dvBenutzer', downgradeComponent({component: BenutzerComponent}))
     .directive('dvSearchList', downgradeComponent({component: DvSearchListComponent}))
+    .directive('dvIeDeprecationWarning', downgradeComponent({component: IeDeprecationWarningComponent}))
     .service('MahnungRS', MahnungRS)
     .service('ReportRS', ReportRS)
     .service('EwkRS', EwkRS)
