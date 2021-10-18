@@ -73,6 +73,9 @@ function redirectToMandantSelection(
                         alert('Multimandant ist nicht aktiviert');
                         alreadyAlerted = true;
                     }
+                    if (mandant !== KiBonMandant.BE) {
+                        mandantService.setMandantCookie(KiBonMandant.BE);
+                    }
                     return true;
                 }
 
