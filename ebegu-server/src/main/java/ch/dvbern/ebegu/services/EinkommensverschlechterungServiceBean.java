@@ -141,6 +141,8 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 	@Override
 	public BigDecimal getMinimalesMassgebendesEinkommenForGesuch(@Nonnull Gesuch gesuch) {
 		authorizer.checkReadAuthorizationFinSit(gesuch);
+		// we disable EKV for calculation, since we want to simulate calculation as it would be without EKV
+		gesuch.setEinkommensverschlechterungInfoContainer(null);
 		final Verfuegung famGroessenVerfuegung = verfuegungService.calculateFamGroessenVerfuegung(gesuch, Sprache.DEUTSCH);
 		return famGroessenVerfuegung.getZeitabschnitte().stream()
 			.map(VerfuegungZeitabschnitt::getMassgebendesEinkommen)
