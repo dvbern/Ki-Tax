@@ -70,6 +70,7 @@ import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
@@ -158,6 +159,8 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	@Inject
 	private BetreuungService betreuungService;
 
+	@Inject
+	private EinstellungService einstellungService;
 
 	@Override
 	@Nonnull
@@ -667,7 +670,10 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
 			true);
-		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
+		Boolean pauschaleRueckwirkendAuszahlen =
+			einstellungService.findEinstellung(EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND, gesuch.extractGemeinde(), gesuch.getGesuchsperiode()).getValueAsBoolean();
+
+		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput, pauschaleRueckwirkendAuszahlen);
 		loadCalculatorParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
 		return bgEvaluator;
 	}

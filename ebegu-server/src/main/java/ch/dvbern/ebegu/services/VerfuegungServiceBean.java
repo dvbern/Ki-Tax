@@ -587,7 +587,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
 			true);
-		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
+		Boolean pauschaleRueckwirkendAuszahlen =
+			einstellungService.findEinstellung(EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND, gesuch.extractGemeinde(), gesuch.getGesuchsperiode()).getValueAsBoolean();
+
+		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput, pauschaleRueckwirkendAuszahlen);
 
 		initializeVorgaengerVerfuegungen(gesuch);
 
