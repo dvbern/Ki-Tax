@@ -75,11 +75,7 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 					&& vorgaenger.getRelevantBgCalculationInput().getAnspruchspensumProzent() <= 0
 					&& !found) {
 					// wir verlaengern der Anspruch aber die Input muessen von vorgaenger kopiert werden
-					eingewoehnung = new VerfuegungZeitabschnitt(vorgaenger);
-					eingewoehnung.setAnspruchspensumProzentForAsivAndGemeinde(zeitabschnitt.getRelevantBgCalculationInput().getAnspruchspensumProzent());
-					eingewoehnung.setErwerbspensumGS1ForAsivAndGemeinde(zeitabschnitt.getRelevantBgCalculationInput().getErwerbspensumGS1());
-					eingewoehnung.setErwerbspensumGS2ForAsivAndGemeinde(zeitabschnitt.getRelevantBgCalculationInput().getErwerbspensumGS2());
-					eingewoehnung.setGueltigkeit(new DateRange(zeitabschnitt.getGueltigkeit()));
+					eingewoehnung = createEingewoehnungAbschnitt(vorgaenger, zeitabschnitt, zeitabschnitt.getGueltigkeit());
 					if (gesuch.getGesuchsperiode()
 						.getGueltigkeit()
 						.getGueltigAb()
@@ -92,10 +88,6 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 							eingewoehnung.getGueltigkeit().setGueltigAb(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
 						}
 						eingewoehnung.getGueltigkeit().setGueltigBis(zeitabschnitt.getGueltigkeit().getGueltigAb().minusDays(1));
-						eingewoehnung.getRelevantBgCalculationInput().addBemerkung(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG, locale);
-						if(eingewoehnung.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH)){
-							eingewoehnung.getBemerkungenList().removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
-						}
 						vorgaenger.getGueltigkeit().setGueltigBis(eingewoehnung.getGueltigkeit().getGueltigAb().minusDays(1));
 						if (vorgaenger.getGueltigkeit()
 							.getGueltigAb()
@@ -113,15 +105,7 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 									result.add(zeitabschnittResult);
 								}
 								else {
-									VerfuegungZeitabschnitt zusaetzlicheEingewoehnung = new VerfuegungZeitabschnitt(zeitabschnittResult);
-									zusaetzlicheEingewoehnung.setAnspruchspensumProzentForAsivAndGemeinde(eingewoehnung.getRelevantBgCalculationInput().getAnspruchspensumProzent());
-									zusaetzlicheEingewoehnung.setErwerbspensumGS1ForAsivAndGemeinde(eingewoehnung.getRelevantBgCalculationInput().getErwerbspensumGS1());
-									zusaetzlicheEingewoehnung.setErwerbspensumGS2ForAsivAndGemeinde(eingewoehnung.getRelevantBgCalculationInput().getErwerbspensumGS2());
-									zusaetzlicheEingewoehnung.setGueltigkeit(new DateRange(zeitabschnittResult.getGueltigkeit()));
-									zusaetzlicheEingewoehnung.getRelevantBgCalculationInput().addBemerkung(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG, locale);
-									if(zusaetzlicheEingewoehnung.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH)){
-										zusaetzlicheEingewoehnung.getBemerkungenList().removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
-									}
+									VerfuegungZeitabschnitt zusaetzlicheEingewoehnung = createEingewoehnungAbschnitt(zeitabschnittResult, eingewoehnung, zeitabschnittResult.getGueltigkeit());
 									//Gueltigab ist bevor den Eingewoehnung setzen gueltigBis ab zu gueltigAb
 									if (zeitabschnittResult.getGueltigkeit().getGueltigAb().isBefore(gueltigAb)){
 										zeitabschnittResult.getGueltigkeit().setGueltigBis(gueltigAb.minusDays(1));
@@ -148,6 +132,19 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 		result.add(vorgaenger);
 
 		return result;
+	}
+
+	private VerfuegungZeitabschnitt createEingewoehnungAbschnitt(@Nonnull VerfuegungZeitabschnitt baseAbschnitt, @Nonnull VerfuegungZeitabschnitt abschnittMitAnspruch, @Nonnull DateRange gueltigkeit) {
+		VerfuegungZeitabschnitt eingewoehnung = new VerfuegungZeitabschnitt(baseAbschnitt);
+		eingewoehnung.setAnspruchspensumProzentForAsivAndGemeinde(abschnittMitAnspruch.getRelevantBgCalculationInput().getAnspruchspensumProzent());
+		eingewoehnung.setErwerbspensumGS1ForAsivAndGemeinde(abschnittMitAnspruch.getRelevantBgCalculationInput().getErwerbspensumGS1());
+		eingewoehnung.setErwerbspensumGS2ForAsivAndGemeinde(abschnittMitAnspruch.getRelevantBgCalculationInput().getErwerbspensumGS2());
+		eingewoehnung.setGueltigkeit(new DateRange(gueltigkeit));
+		eingewoehnung.getRelevantBgCalculationInput().addBemerkung(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG, locale);
+		if(eingewoehnung.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH)){
+			eingewoehnung.getBemerkungenList().removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
+		}
+		return  eingewoehnung;
 	}
 
 	@Override
