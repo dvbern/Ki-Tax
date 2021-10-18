@@ -2608,7 +2608,7 @@
     "FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE": "FKJV: Soziale Integration bis und mit Schulstufe",
     "FKJV_PAUSCHALE_BEI_ANSPRUCH": "FKJV: Pauschale nur möglich, wenn Anspruch auf Gutschein",
     "FKJV_PAUSCHALE_RUECKWIRKEND": "FKJV: Pauschale auch rückwirkend ausbezahlen, sofern Anspruch vorhanden",
-    "FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF":  "EKV nur bei Einkommen unter X CHF",
+    "FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF":  "FJKV: EKV nur bei Einkommen unter X CHF",
     "FJKV_ANSPRUCH_MONATSWEISE": "FKJV: Anspruchsberechnung monatsweise",
     "SCHNITTSTELLE_STEUERN_AKTIV":  "Schnittstelle zu den Steuersystemen aktiv",
     "LASTENAUSGLEICH_TAGESSCHULEN_STATISTIK": "Lastenausgleich Tagesschulen",

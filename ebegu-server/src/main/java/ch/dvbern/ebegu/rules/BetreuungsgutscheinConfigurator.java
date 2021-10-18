@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.math.BigDecimal;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,6 +38,7 @@ import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.KitaxUtil;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT;
@@ -106,7 +108,8 @@ public class BetreuungsgutscheinConfigurator {
 			GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT,
 			GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_MAHLZEIT,
 			GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_MAHLZEIT,
-			GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_MAHLZEIT);
+			GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_MAHLZEIT,
+			FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF);
 	}
 
 	private void useRulesOfGemeinde(@Nonnull Gemeinde gemeinde, @Nullable KitaxUebergangsloesungParameter kitaxParameterDTO, @Nonnull Map<EinstellungKey, Einstellung> einstellungen) {
@@ -307,10 +310,18 @@ public class BetreuungsgutscheinConfigurator {
 
 		// - Einkommen / Einkommensverschlechterung / Maximales Einkommen
 		Einstellung paramMassgebendesEinkommenMax = einstellungMap.get(MAX_MASSGEBENDES_EINKOMMEN);
+		Einstellung paramMaxEinkommenEKVEinstellung = einstellungMap.get(EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF);
+		BigDecimal paramMaxEinkommenEKV = null;
+		try {
+			paramMaxEinkommenEKV = paramMaxEinkommenEKVEinstellung.getValueAsBigDecimal();
+		} catch (NumberFormatException e) {
+			// if NumberFormatException, param is not set in configuration and rule is not active
+		}
 		Objects.requireNonNull(paramMassgebendesEinkommenMax, "Parameter MAX_MASSGEBENDES_EINKOMMEN muss gesetzt sein");
 		EinkommenCalcRule maxEinkommenCalcRule = new EinkommenCalcRule(
 			defaultGueltigkeit,
 			paramMassgebendesEinkommenMax.getValueAsBigDecimal(),
+			paramMaxEinkommenEKV,
 			locale);
 		addToRuleSetIfRelevantForGemeinde(maxEinkommenCalcRule, einstellungMap);
 
