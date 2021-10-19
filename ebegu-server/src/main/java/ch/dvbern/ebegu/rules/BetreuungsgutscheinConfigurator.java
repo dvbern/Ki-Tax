@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.KitaxUtil;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT;
@@ -106,7 +107,8 @@ public class BetreuungsgutscheinConfigurator {
 			GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT,
 			GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_MAHLZEIT,
 			GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_MAHLZEIT,
-			GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_MAHLZEIT);
+			GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_MAHLZEIT,
+			FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM);
 	}
 
 	private void useRulesOfGemeinde(@Nonnull Gemeinde gemeinde, @Nullable KitaxUebergangsloesungParameter kitaxParameterDTO, @Nonnull Map<EinstellungKey, Einstellung> einstellungen) {
@@ -293,7 +295,10 @@ public class BetreuungsgutscheinConfigurator {
 		addToRuleSetIfRelevantForGemeinde(fachstelleCalcRule, einstellungMap);
 
 		// - Ausserordentlicher Anspruch: Muss am Schluss gemacht werden, da er alle anderen Regeln überschreiben kann
-		AusserordentlicherAnspruchCalcRule ausserordntl = new AusserordentlicherAnspruchCalcRule(defaultGueltigkeit, locale);
+		Einstellung maxDifferenzBeschaeftigungspensum = einstellungMap.get(FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM);
+		Objects.requireNonNull(maxDifferenzBeschaeftigungspensum, "Parameter FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM muss gesetzt sein");
+
+		AusserordentlicherAnspruchCalcRule ausserordntl = new AusserordentlicherAnspruchCalcRule(defaultGueltigkeit, maxDifferenzBeschaeftigungspensum.getValueAsInteger(), locale);
 		addToRuleSetIfRelevantForGemeinde(ausserordntl, einstellungMap);
 	}
 
