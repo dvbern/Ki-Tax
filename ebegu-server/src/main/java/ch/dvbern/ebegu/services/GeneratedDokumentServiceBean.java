@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -50,6 +51,7 @@ import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.FileMetadata_;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
@@ -670,10 +672,10 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
 			true);
-		Boolean pauschaleRueckwirkendAuszahlen =
-			einstellungService.findEinstellung(EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND, gesuch.extractGemeinde(), gesuch.getGesuchsperiode()).getValueAsBoolean();
 
-		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput, pauschaleRueckwirkendAuszahlen);
+		Map<EinstellungKey, Einstellung> einstellungMap = einstellungService.loadRuleParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), BetreuungsgutscheinEvaluator.getRequiredParametersForAbschlussRules());
+
+		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput, einstellungMap);
 		loadCalculatorParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
 		return bgEvaluator;
 	}

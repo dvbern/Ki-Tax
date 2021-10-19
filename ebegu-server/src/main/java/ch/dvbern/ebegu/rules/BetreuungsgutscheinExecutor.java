@@ -17,12 +17,15 @@ package ch.dvbern.ebegu.rules;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerFactory;
@@ -45,11 +48,11 @@ public class BetreuungsgutscheinExecutor {
 
 	private boolean isDebug = true;
 
-	private Boolean pauschaleRueckwirkendAuszahlen;
+	private Map<EinstellungKey, Einstellung> kibonAbschlussRulesParameters;
 
-	public BetreuungsgutscheinExecutor(boolean isDebug, Boolean pauschaleRueckwirkendAuszahlen) {
+	public BetreuungsgutscheinExecutor(boolean isDebug, Map<EinstellungKey, Einstellung> kibonAbschlussRulesParameters) {
 		this.isDebug = isDebug;
-		this.pauschaleRueckwirkendAuszahlen = pauschaleRueckwirkendAuszahlen;
+		this.kibonAbschlussRulesParameters = kibonAbschlussRulesParameters;
 	}
 
 	public List<VerfuegungZeitabschnitt> executeRules(
@@ -93,6 +96,7 @@ public class BetreuungsgutscheinExecutor {
 		AnspruchFristRule anspruchFristRule = new AnspruchFristRule(isDebug);
 		AbschlussNormalizer abschlussNormalizerOhneMonate = new AbschlussNormalizer(false, isDebug);
 		MonatsRule monatsRule = new MonatsRule(isDebug);
+		Boolean pauschaleRueckwirkendAuszahlen = kibonAbschlussRulesParameters.get(EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND).getValueAsBoolean();
 		MutationsMerger mutationsMerger = new MutationsMerger(locale, isDebug, pauschaleRueckwirkendAuszahlen);
 		AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(!platz.getBetreuungsangebotTyp().isTagesschule(), isDebug);
 
