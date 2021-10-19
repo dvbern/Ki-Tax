@@ -43,10 +43,7 @@ public class GemeindenDatenDataRow {
 	private BigDecimal nachfrageDauer;
 
 	@Nullable
-	private Boolean kostenlenkungAndere;
-
-	@Nullable
-	private String welcheKostenlenkungsmassnahmen;
+	private String limitierungTfo;
 
 	@Nullable
 	private BigDecimal erwerbspensumZuschlag;
@@ -114,21 +111,12 @@ public class GemeindenDatenDataRow {
 	}
 
 	@Nullable
-	public Boolean getKostenlenkungAndere() {
-		return kostenlenkungAndere;
+	public String getLimitierungTfo() {
+		return limitierungTfo;
 	}
 
-	public void setKostenlenkungAndere(@Nullable Boolean kostenlenkungAndere) {
-		this.kostenlenkungAndere = kostenlenkungAndere;
-	}
-
-	@Nullable
-	public String getWelcheKostenlenkungsmassnahmen() {
-		return welcheKostenlenkungsmassnahmen;
-	}
-
-	public void setWelcheKostenlenkungsmassnahmen(@Nullable String welcheKostenlenkungsmassnahmen) {
-		this.welcheKostenlenkungsmassnahmen = welcheKostenlenkungsmassnahmen;
+	public void setLimitierungTfo(@Nullable String limitierungTfo) {
+		this.limitierungTfo = limitierungTfo;
 	}
 
 	@Nullable

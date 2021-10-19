@@ -1804,6 +1804,7 @@ export class EbeguRestUtil {
         restFinanzielleSituation.steuerveranlagungErhalten = finanzielleSituation.steuerveranlagungErhalten;
         restFinanzielleSituation.steuererklaerungAusgefuellt =
             finanzielleSituation.steuererklaerungAusgefuellt || false;
+        restFinanzielleSituation.steuerdatenZugriff = finanzielleSituation.steuerdatenZugriff;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus2 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus2;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus1 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus1;
         return restFinanzielleSituation;
@@ -1857,6 +1858,8 @@ export class EbeguRestUtil {
                 finanzielleSituationFromServer.steuerveranlagungErhalten;
             finanzielleSituationTS.steuererklaerungAusgefuellt =
                 finanzielleSituationFromServer.steuererklaerungAusgefuellt;
+            finanzielleSituationTS.steuerdatenZugriff =
+                finanzielleSituationFromServer.steuerdatenZugriff;
             finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus2 =
                 finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus2;
             finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus1 =
@@ -4038,6 +4041,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.lastenausgleichTagesschulenAktiv = data.lastenausgleichTagesschulenAktiv;
         publicAppConfigTS.gemeindeKennzahlenAktiv = data.gemeindeKennzahlenAktiv;
         publicAppConfigTS.ferienbetreuungAktiv = data.ferienbetreuungAktiv;
+        publicAppConfigTS.mulitmandantAktiv = data.multimandantAktiviert;
         return publicAppConfigTS;
 
     }
@@ -5430,10 +5434,10 @@ export class EbeguRestUtil {
         gemeindeKennzahlenRest.gesuchsperiode = this.gesuchsperiodeToRestObject({}, gemeindeKennzahlen.gesuchsperiode);
 
         gemeindeKennzahlenRest.nachfrageErfuellt = gemeindeKennzahlen.nachfrageErfuellt;
+        gemeindeKennzahlenRest.gemeindeKontingentiert = gemeindeKennzahlen.gemeindeKontingentiert;
         gemeindeKennzahlenRest.nachfrageAnzahl = gemeindeKennzahlen.nachfrageAnzahl;
         gemeindeKennzahlenRest.nachfrageDauer = gemeindeKennzahlen.nachfrageDauer;
-        gemeindeKennzahlenRest.kostenlenkungAndere = gemeindeKennzahlen.kostenlenkungAndere;
-        gemeindeKennzahlenRest.welcheKostenlenkungsmassnahmen = gemeindeKennzahlen.welcheKostenlenkungsmassnahmen;
+        gemeindeKennzahlenRest.limitierungTfo = gemeindeKennzahlen.limitierungTfo;
 
         return gemeindeKennzahlenRest;
     }
@@ -5453,10 +5457,10 @@ export class EbeguRestUtil {
         gemeindeKennzahlen.status = gemeindeKennzahlenFromServer.status;
 
         gemeindeKennzahlen.nachfrageErfuellt = gemeindeKennzahlenFromServer.nachfrageErfuellt;
+        gemeindeKennzahlen.gemeindeKontingentiert = gemeindeKennzahlenFromServer.gemeindeKontingentiert;
         gemeindeKennzahlen.nachfrageAnzahl = gemeindeKennzahlenFromServer.nachfrageAnzahl;
         gemeindeKennzahlen.nachfrageDauer = gemeindeKennzahlenFromServer.nachfrageDauer;
-        gemeindeKennzahlen.kostenlenkungAndere = gemeindeKennzahlenFromServer.kostenlenkungAndere;
-        gemeindeKennzahlen.welcheKostenlenkungsmassnahmen = gemeindeKennzahlenFromServer.welcheKostenlenkungsmassnahmen;
+        gemeindeKennzahlen.limitierungTfo = gemeindeKennzahlenFromServer.limitierungTfo;
 
         return gemeindeKennzahlen;
     }

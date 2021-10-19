@@ -139,18 +139,18 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         this.updateGemeindenList();
         this.initStateStores();
         this.initFilter();
+        this.initSort();
         this.initDisplayedColumns();
-        this.initEmpfaengerFilter();
+        this.initEmpfaenger().then(() => this.passFilterToServer());
     }
 
     public ngAfterViewInit(): void {
         this.displayedCollection = new MatTableDataSource<TSMitteilung>([]);
-        this.initSort();
-        this.passFilterToServer();
+        this.initMatSort();
     }
 
-    private initEmpfaengerFilter(): void {
-        this.benutzerRS.getAllBenutzerBgTsOrGemeinde().then(response => {
+    private initEmpfaenger(): Promise<void> {
+        return this.benutzerRS.getAllBenutzerBgTsOrGemeinde().then(response => {
             this.filterPredicate.empfaenger = this.authServiceRS.getPrincipal().getFullName();
             this.initialEmpfaenger =
                 EbeguUtil.findUserByNameInList(this.filterPredicate?.empfaenger, response);
@@ -228,6 +228,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         this.totalItem = result.totalResultSize ? result.totalResultSize : 0;
         this.totalResultCount = this.totalItem.toString();
         this.updatePagination();
+        this.changeDetectorRef.markForCheck();
     }
 
     public isSuperAdmin(): boolean {
@@ -344,10 +345,13 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
             const stored = this.stateStore.get(this.sortId) as { predicate?: string, reverse?: boolean };
             this.sort.predicate = stored.predicate;
             this.sort.reverse = stored.reverse;
-            this.matSort.active = stored.predicate;
-            this.matSort.direction = stored.reverse ? 'asc' : 'desc';
-            (this.matSort.sortables.get(stored.predicate) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
         }
+    }
+
+    private initMatSort(): void {
+            this.matSort.active = this.sort.predicate;
+            this.matSort.direction = this.sort.reverse ? 'asc' : 'desc';
+            (this.matSort.sortables.get(this.sort.predicate) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
     }
 
     private initDisplayedColumns(): void {
@@ -362,6 +366,6 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     public resetFilter(): void {
         this.filterPredicate = this.initialFilter;
         this.applyFilter();
-        this.initEmpfaengerFilter();
+        this.initEmpfaenger();
     }
 }

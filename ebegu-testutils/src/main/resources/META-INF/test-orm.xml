@@ -74,7 +74,7 @@ FROM kind_container
                       INNER JOIN gesuchsperiode ON gesuchsperiode.id = gesuch.gesuchsperiode_id
                     WHERE :stichTagDate >= timestamp_von
                           AND (:stichTagDate <= timestamp_bis OR timestamp_bis IS NULL)
-                          AND antrag_status_history.status IN ('IN_BEARBEITUNG_GS', 'FREIGABEQUITTUNG')
+                          AND antrag_status_history.status IN ('IN_BEARBEITUNG_GS', 'IN_BEARBEITUNG_SOZIALDIENST', 'FREIGABEQUITTUNG')
                   ) NichtFreigegebeneGesuch ON NichtFreigegebeneGesuch.gesuch_id = gesuch.id
 
   LEFT OUTER JOIN (

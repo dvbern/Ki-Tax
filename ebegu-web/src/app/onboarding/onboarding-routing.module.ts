@@ -24,6 +24,7 @@ import {getRoleBasedTargetState} from '../../utils/AuthenticationUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {MandantRS} from '../core/service/mandantRS.rest';
 import {UiViewComponent} from '../shared/ui-view/ui-view.component';
+import {DummyMandantSelectionComponent} from './dummy-mandant-selection/dummy-mandant-selection.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
 import {OnboardingGsAbschliessenComponent} from './onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
 import {OnboardingInfoGemeindeComponent} from './onboarding-info-gemeinde/onboarding-info-gemeinde.component';
@@ -59,6 +60,15 @@ export const STATES: NgHybridStateDeclaration[] = [
             roles: TSRoleUtil.getAllRoles(),
         },
         onEnter: redirectToLandingPage,
+    },
+    {
+        parent: 'app',
+        name: 'mandant',
+        url: '/mandant?path',
+        data: {
+            roles: TSRoleUtil.getAllRoles(),
+        },
+        component: DummyMandantSelectionComponent,
     },
     {
         name: 'onboarding.anmeldung',

@@ -183,7 +183,26 @@ public enum EinstellungKey {
 
 	// "FKJV: Soziale Integration bis und mit Schulstufe"
 	// Siehe KIBON-2081. Definiert bis zu welcher Schulstufe die soziale Integration ausbezahlt wird.
-	FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE;
+	FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE,
+
+	// "FKJV: Pauschale nur möglich, wenn Anspruch auf Gutschein"
+	// Siehe KIBON-2093. Falls true wird die Pauschale nur ausbezahlt, wenn auch ein Anspruch auf einen Gutschein besteht
+	FKJV_PAUSCHALE_BEI_ANSPRUCH,
+
+	// "FKJV: Pauschale auch rückwirkend ausbezahlen, sofern Anspruch vorhanden"
+	// Siehe KIBON-2093. Falls true wird die Pauschale bei einer Mutation innerhalb der Gesuchperiode rückwirkend ausbezahlt
+	FKJV_PAUSCHALE_RUECKWIRKEND,
+
+	// "EKV nur bei Einkommen unter 80'000"
+	// Siehe KIBON-2094. Falls eine Zahl definiert ist, dann besteht ein Anspruch auf eine Einkommensverschlechterung nur bis zu diesem Betrag
+	FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF,
+
+	// "FKJV: Anspruchsberechnung monatsweise"
+	// Siehe KIBON-2095. Falls true wird der Anspruch nur monatsweise berechnet
+	FJKV_ANSPRUCH_MONATSWEISE,
+
+	// Definiert ob die Schnittstelle zu den Steuersystemen aktiv ist
+	SCHNITTSTELLE_STEUERN_AKTIV;
 
 	private EinstellungTyp typ;
 

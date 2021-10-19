@@ -124,6 +124,11 @@ public enum ApplicationPropertyKey {
 	LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR,
 
 	/**
+	 * Bestimmt, ob Multimandant für diese kiBon Instanz aktiviert sein soll
+	 */
+	MULTIMANDANT_AKTIV,
+
+	/**
 	 * Legt die Primary Color fest
 	 */
 	PRIMARY_COLOR,
