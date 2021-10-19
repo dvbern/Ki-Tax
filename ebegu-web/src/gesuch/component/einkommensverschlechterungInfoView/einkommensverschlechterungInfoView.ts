@@ -19,6 +19,7 @@ import {filter, map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {isAtLeastFreigegeben} from '../../../models/enums/TSAntragStatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
@@ -44,6 +45,7 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const LOG = LogFactory.createLog('EinkommensverschlechterungInfoViewComponentConfig');
 
 export class EinkommensverschlechterungInfoViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -371,7 +373,7 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     private initEKVMinEinkommen(): void {
-        const obs1: Observable<TSEinstellungKey> = from(this.einstellungRS.findEinstellung(
+        const obs1$: Observable<TSEinstellungKey> = from(this.einstellungRS.findEinstellung(
             TSEinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF,
             this.gesuchModelManager.getGemeinde().id,
             this.gesuchModelManager.getGesuchsperiode().id
@@ -379,15 +381,15 @@ export class EinkommensverschlechterungInfoViewController
             .pipe(map(einstellung => parseInt(einstellung.value, 10)))
             .pipe(filter(res => !isNaN(res)));
 
-        const obs2 = from(this.ekvContainerRS
+        const obs2$ = from(this.ekvContainerRS
             .getMinimalesMassgebendesEinkommenForGesuch(this.gesuchModelManager.getGesuch()));
 
-        obs1.subscribe(res => {
+        obs1$.subscribe(res => {
             this.maxAllowedEinkommenForEKV = res;
-            obs2.subscribe(res2 => {
+            obs2$.subscribe(res2 => {
                 this.currentMinEinkommenEKV = res2;
-            });
-        });
+            }, err => LOG.error(err));
+        }, err => LOG.error(err));
     }
 
     public getMaxEinkommenTranslateValues(): any {
