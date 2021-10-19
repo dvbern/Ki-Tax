@@ -45,7 +45,7 @@ public class EinkommenAbschnittRuleTest {
 	private static final BigDecimal MAX_EINKOMMEN_EKV = null;
 	private final EinkommenAbschnittRule einkommenAbschnittRule =
 		new EinkommenAbschnittRule(Constants.DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
-	private final EinkommenCalcRule einkommenCalcRule =
+	private EinkommenCalcRule einkommenCalcRule =
 		new EinkommenCalcRule(Constants.DEFAULT_GUELTIGKEIT, MAX_EINKOMMEN, MAX_EINKOMMEN_EKV, Constants.DEFAULT_LOCALE);
 
 	@Test
@@ -138,6 +138,35 @@ public class EinkommenAbschnittRuleTest {
 		assertEkvResultate(zeitabschnitte, jahr1, jahr2);
 	}
 
+	@Test
+	public void testEKVForHighEinkommen_shouldBeIgnored() {
+		initCustomEinkommenCalcRule(new BigDecimal("80000"));
+
+		BigDecimal EINKOMMEN_TIEF = new BigDecimal("60000");
+		BigDecimal EINKOMMEN_HOCH = new BigDecimal("100000");
+		List<VerfuegungZeitabschnitt> zeitabschnitte = createTestdataEinkommensverschlechterung(EINKOMMEN_HOCH, EINKOMMEN_TIEF, EINKOMMEN_TIEF);
+		final String EXPECTED_MESSAGE = "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde abgelehnt. Die Anwendung der Einkommensverschlechterung ist nur bei einem Einkommen von weniger als 80’000 CHF möglich.";
+
+		// Es kann maximal 2 Abschnitte geben, da die EKVs immer für das ganze Jahr gelten
+		ExpectedResult jahr1 = new ExpectedResult(EINKOMMEN_HOCH, 2016, EXPECTED_MESSAGE);
+		ExpectedResult jahr2 = new ExpectedResult(EINKOMMEN_HOCH, 2016, EXPECTED_MESSAGE);
+		assertEkvResultate(zeitabschnitte, jahr1, jahr2);
+	}
+
+	@Test
+	public void testEKVForSmallEinkommen_shouldNotBeIgnored() {
+		initCustomEinkommenCalcRule(new BigDecimal("80000"));
+
+		BigDecimal EINKOMMEN_MITTEL = new BigDecimal("80000");
+		BigDecimal EINKOMMEN_TIEF = new BigDecimal("60000");
+		List<VerfuegungZeitabschnitt> zeitabschnitte = createTestdataEinkommensverschlechterung(EINKOMMEN_MITTEL, EINKOMMEN_TIEF, EINKOMMEN_TIEF);
+
+		// Es kann maximal 2 Abschnitte geben, da die EKVs immer für das ganze Jahr gelten
+		ExpectedResult jahr1 = new ExpectedResult(EINKOMMEN_TIEF, 2017, "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde gutgeheissen. Das massgebende Einkommen des Jahres 2017 ohne Abzug des Pauschalbetrags gemäss Familiengrösse ist um mehr als 20 Prozent tiefer als das massgebende Einkommen des aktuellen Bemessungszeitraums (Jahr 2016) ohne Abzug des Pauschalbetrags gemäss Familiengrösse (Art. 34m Abs. 2 ASIV).");
+		ExpectedResult jahr2 = new ExpectedResult(EINKOMMEN_TIEF, 2018, "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde gutgeheissen. Das massgebende Einkommen des Jahres 2018 ohne Abzug des Pauschalbetrags gemäss Familiengrösse ist um mehr als 20 Prozent tiefer als das massgebende Einkommen des aktuellen Bemessungszeitraums (Jahr 2016) ohne Abzug des Pauschalbetrags gemäss Familiengrösse (Art. 34m Abs. 2 ASIV).");
+		assertEkvResultate(zeitabschnitte, jahr1, jahr2);
+	}
+
 	private void assertEkvResultate(List<VerfuegungZeitabschnitt> zeitabschnitte, ExpectedResult... expectedResults) {
 		Assert.assertEquals(expectedResults.length, zeitabschnitte.size());
 		int i = 0;
@@ -180,5 +209,9 @@ public class EinkommenAbschnittRuleTest {
 		Assert.assertNotNull(zeitabschnitte);
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitabschnitte);
 		return zeitabschnitte;
+	}
+
+	private void initCustomEinkommenCalcRule(@Nullable BigDecimal maxEinkommenEkv) {
+		this.einkommenCalcRule = new EinkommenCalcRule(Constants.DEFAULT_GUELTIGKEIT, MAX_EINKOMMEN, maxEinkommenEkv, Constants.DEFAULT_LOCALE);
 	}
 }

@@ -266,8 +266,12 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		if (this.maxEinkommenEKV == null) {
 			return false;
 		}
+		// abzug is null if familienAbzugAbschnittRule not active. In this case, there is no familienabzug
+		var abzug = (inputData.getAbzugFamGroesse() == null)
+			? BigDecimal.ZERO
+			: inputData.getAbzugFamGroesse();
 		return finanzDatenDTO.getMassgebendesEinkBjVorAbzFamGr()
-			.subtract(inputData.getAbzugFamGroesse())
+			.subtract(abzug)
 			.compareTo(this.maxEinkommenEKV) > 0;
 	}
 
