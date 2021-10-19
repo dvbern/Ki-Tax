@@ -227,7 +227,7 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 		// Fuer jeden Key muss die spezifischste Einstellung gesucht werden
 		Arrays.stream(EinstellungKey.values()).forEach(einstellungKey -> {
 			// Nach Mandant oder System
-			Optional<Einstellung> einstellungByMandant = findEinstellungByMandantOrSystem(einstellungKey, benutzer.getMandant(), gesuchsperiode, entityManager);
+			Optional<Einstellung> einstellungByMandant = findEinstellungByMandantOrSystem(einstellungKey, gesuchsperiode.getMandant(), gesuchsperiode, entityManager);
 			einstellungByMandant.ifPresent(result::add);
 		});
 		return result;

@@ -736,15 +736,19 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 				if (spracheTyp == KorrespondenzSpracheTyp.FR) {
 					betreuungsstundenForAutoZweitpruefung =
 						applicationPropertyService.findApplicationPropertyAsBigDecimal(
-							ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR);
+							ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR,
+								container.getGemeinde().getMandant());
 					anteilGemeindenForZweitpruefung = applicationPropertyService.findApplicationPropertyAsBigDecimal(
-						ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_FR);
+						ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_FR,
+							container.getGemeinde().getMandant());
 				} else {
 					betreuungsstundenForAutoZweitpruefung =
 						applicationPropertyService.findApplicationPropertyAsBigDecimal(
-							ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE);
+							ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE,
+								container.getGemeinde().getMandant());
 					anteilGemeindenForZweitpruefung = applicationPropertyService.findApplicationPropertyAsBigDecimal(
-						ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE);
+						ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE,
+							container.getGemeinde().getMandant());
 				}
 
 				BigDecimal randomNumber = new BigDecimal(Math.random(), MathContext.DECIMAL64);

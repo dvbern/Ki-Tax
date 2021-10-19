@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AuthorisierterBenutzer;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
@@ -163,8 +164,9 @@ public class AuthResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response login(
 			@Nonnull JaxBenutzer loginElement,
+			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie,
 			@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN) Cookie authTokenCookie) {
-		if (configuration.isDummyLoginEnabled()) {
+		if (configuration.isDummyLoginEnabled(converter.mandantToEntity(loginElement.getMandant(), new Mandant()))) {
 
 			// zuerst im Container einloggen, sonst schlaegt in den Entities die Mandanten-Validierung fehl
 			if (!usernameRoleChecker.checkLogin(loginElement.getUsername(), loginElement.getPassword())) {

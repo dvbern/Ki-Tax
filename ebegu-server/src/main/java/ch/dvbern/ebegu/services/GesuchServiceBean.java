@@ -1557,9 +1557,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	public int warnGesuchNichtFreigegeben() {
 
 		Integer anzahlTageBisWarnungFreigabe =
-			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_FREIGABE);
+			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_FREIGABE, principalBean.getMandant());
 		Integer anzahlTageBisLoeschungNachWarnungFreigabe =
-			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE);
+			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE, principalBean.getMandant());
 		if (anzahlTageBisWarnungFreigabe == null || anzahlTageBisLoeschungNachWarnungFreigabe == null) {
 			throw new EbeguRuntimeException(
 				"warnGesuchNichtFreigegeben",
@@ -1609,9 +1609,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	public int warnFreigabequittungFehlt() {
 
 		Integer anzahlTageBisWarnungQuittung =
-			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG);
+			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG, principalBean.getMandant());
 		Integer anzahlTageBisLoeschungNachWarnungFreigabe =
-			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG);
+			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG, principalBean.getMandant());
 		if (anzahlTageBisWarnungQuittung == null) {
 			throw new EbeguRuntimeException(
 				"warnFreigabequittungFehlt",
@@ -1693,9 +1693,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	public List<Gesuch> getGesucheOhneFreigabeOderQuittung() {
 		Integer anzahlTageBisLoeschungNachWarnungFreigabe =
-			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE);
+			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE, principalBean.getMandant());
 		Integer anzahlTageBisLoeschungNachWarnungQuittung =
-			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG);
+			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG, principalBean.getMandant());
 		if (anzahlTageBisLoeschungNachWarnungFreigabe == null || anzahlTageBisLoeschungNachWarnungQuittung == null) {
 			throw new EbeguRuntimeException(
 				"warnGesuchNichtFreigegeben",

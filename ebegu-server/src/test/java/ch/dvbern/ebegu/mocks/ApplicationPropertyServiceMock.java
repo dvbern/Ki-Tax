@@ -19,13 +19,14 @@ package ch.dvbern.ebegu.mocks;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.services.ApplicationPropertyServiceBean;
 
 public class ApplicationPropertyServiceMock extends ApplicationPropertyServiceBean {
 
 	@Nonnull
 	@Override
-	public Boolean isStadtBernAsivConfigured() {
+	public Boolean isStadtBernAsivConfigured(@Nonnull Mandant mandant) {
 		return false;
 	}
 }

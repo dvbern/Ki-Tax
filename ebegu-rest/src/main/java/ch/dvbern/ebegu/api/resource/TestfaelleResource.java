@@ -41,6 +41,7 @@ import javax.ws.rs.core.Response;
 
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeAntraegeFBTestdatenDTO;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeAntraegeLATSTestdatenDTO;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
@@ -78,6 +79,9 @@ public class TestfaelleResource {
 
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
+
+	@Inject
+	private PrincipalBean principal;
 
 	@ApiOperation(value = "Erstellt einen Testfall aus mehreren vordefinierten Testfaellen. Folgende Einstellungen " +
 		"sind moeglich: Gesuchsperiode, Gemeinde, Status der Betreuungen, Gesuch verfuegen", response = String.class)
@@ -298,7 +302,7 @@ public class TestfaelleResource {
 
 	private void assertTestfaelleAccessAllowed() {
 		// Testfaelle duerfen nur erstellt werden, wenn das Flag gesetzt ist und das Dummy Login eingeschaltet ist
-		if (!ebeguConfiguration.isDummyLoginEnabled()) {
+		if (!ebeguConfiguration.isDummyLoginEnabled(principal.getMandant())) {
 			throw new EbeguRuntimeException(
 				"assertTestfaelleAccessAllowed",
 				ErrorCodeEnum.ERROR_TESTFAELLE_DISABLED,

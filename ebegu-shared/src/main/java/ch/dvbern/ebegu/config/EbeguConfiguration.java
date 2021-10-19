@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 
 /**
@@ -84,7 +85,7 @@ public interface EbeguConfiguration {
 	 * @return true oder false
 	 * @see "dummy-users.properties" and AuthResource#login
 	 */
-	boolean isDummyLoginEnabled();
+	boolean isDummyLoginEnabled(@Nonnull Mandant mandant);
 
 	/**
 	 * @return true wenn sich die Applikation im Testmodus fuer Zahlungen befindet, false sonst

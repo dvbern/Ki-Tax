@@ -5056,6 +5056,7 @@ public class JaxBConverter extends AbstractConverter {
 		// Konfiguration: Wir laden die Gesuchsperioden, die vor dem Ende der Gemeinde-Gültigkeit liegen
 		List<Gesuchsperiode> gueltigeGesuchsperiodenForGemeinde = gesuchsperiodeService.getAllGesuchsperioden()
 			.stream()
+			.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant().equals(stammdaten.getGemeinde().getMandant()))
 			.filter(gesuchsperiode -> stammdaten.getGemeinde()
 				.getGueltigBis()
 				.isAfter(gesuchsperiode.getGueltigkeit().getGueltigAb()))

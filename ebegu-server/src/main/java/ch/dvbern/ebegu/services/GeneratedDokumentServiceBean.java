@@ -661,12 +661,12 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	@Nonnull
 	private BetreuungsgutscheinEvaluator initEvaluator(@Nonnull Gesuch gesuch, @Nonnull Locale locale) {
-		KitaxUebergangsloesungParameter kitaxParameter = loadKitaxUebergangsloesungParameter();
+		KitaxUebergangsloesungParameter kitaxParameter = loadKitaxUebergangsloesungParameter(gesuch.extractGemeinde().getMandant());
 		List<Rule> rules =
 			rulesService.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), kitaxParameter, locale);
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
-			true);
+			gesuch.extractGemeinde().getMandant(), true);
 		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
 		loadCalculatorParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
 		return bgEvaluator;

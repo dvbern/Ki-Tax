@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.services;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -50,78 +51,78 @@ public interface ApplicationPropertyService {
 	 * @return Property mit demg egebenen key oder null falls nicht vorhanden
 	 */
 	@Nonnull
-	Optional<ApplicationProperty> readApplicationProperty(@Nonnull ApplicationPropertyKey key);
+	Optional<ApplicationProperty> readApplicationProperty(@Nonnull ApplicationPropertyKey key, @Nonnull Mandant mandant);
 
 	/**
 	 * List die Liste der zugelassenen Mimetypes
 	 */
 	@Nonnull
-	Collection<String> readMimeTypeWhitelist();
+	Collection<String> readMimeTypeWhitelist(@Nonnull Mandant mandant);
 
 	/**
 	 * Versucht den uebergebenen String in einene  key umzuwandeln und gibt dann das ensprechende property zurueck.
 	 * Wenn der String keinem key enspricht exception
 	 */
-	Optional<ApplicationProperty> readApplicationProperty(String keyParam);
+	Optional<ApplicationProperty> readApplicationProperty(String keyParam, @Nonnull Mandant mandant);
 
 	/**
 	 * @return Liste aller ApplicationProperties aus der DB
 	 */
 	@Nonnull
-	Collection<ApplicationProperty> getAllApplicationProperties();
+	List<ApplicationProperty> getAllApplicationProperties(@Nonnull Mandant mandant);
 
 	/**
 	 * removs an Application Property From the Databse
 	 */
-	void removeApplicationProperty(@Nonnull ApplicationPropertyKey testKey);
+	void removeApplicationProperty(@Nonnull ApplicationPropertyKey testKey, @Nonnull Mandant mandant);
 
 	/**
 	 * Sucht das Property mit dem uebergebenen Key und gibt dessen Wert als String zurueck.
 	 */
 	@Nullable
-	String findApplicationPropertyAsString(@Nonnull ApplicationPropertyKey name);
+	String findApplicationPropertyAsString(@Nonnull ApplicationPropertyKey name, @Nonnull Mandant mandant);
 
 	/**
 	 * Sucht das Property mit dem uebergebenen Key und gibt dessen Wert als BigDecimal zurueck.
 	 */
 	@Nullable
-	BigDecimal findApplicationPropertyAsBigDecimal(@Nonnull ApplicationPropertyKey name);
+	BigDecimal findApplicationPropertyAsBigDecimal(@Nonnull ApplicationPropertyKey name, @Nonnull Mandant mandant);
 
 	/**
 	 * Sucht das Property mit dem uebergebenen Key und gibt dessen Wert als Integer zurueck.
 	 */
 	@Nullable
-	Integer findApplicationPropertyAsInteger(@Nonnull ApplicationPropertyKey name);
+	Integer findApplicationPropertyAsInteger(@Nonnull ApplicationPropertyKey name, @Nonnull Mandant mandant);
 
 	/**
 	 * Sucht das Property mit dem uebergebenen Key und gibt dessen Wert als Boolean zurueck.
 	 */
 	@Nullable
-	Boolean findApplicationPropertyAsBoolean(@Nonnull ApplicationPropertyKey name);
+	Boolean findApplicationPropertyAsBoolean(@Nonnull ApplicationPropertyKey name, @Nonnull Mandant mandant);
 
 	/**
 	 * Sucht das Property mit dem uebergebenen Key und gibt dessen Wert als Boolean zurueck.
 	 * Falls das Property nicht gefunden wird, wird defaultValue zurueckgegeben.
 	 */
 	@Nonnull
-	Boolean findApplicationPropertyAsBoolean(@Nonnull ApplicationPropertyKey name, boolean defaultValue);
+	Boolean findApplicationPropertyAsBoolean(@Nonnull ApplicationPropertyKey name, @Nonnull Mandant mandant, boolean defaultValue);
 
 	/**
 	 * Ab diesem Datum gelten fuer die Stadt Bern die ASIV Regeln
 	 */
 	@Nonnull
-	LocalDate getStadtBernAsivStartDatum();
+	LocalDate getStadtBernAsivStartDatum(@Nonnull Mandant mandant);
 
 	/**
 	 * Wenn TRUE koennen die Zeitraeume ab ASIV_START_DATUM verfuegt werden
 	 */
 	@Nonnull
-	Boolean isStadtBernAsivConfigured();
+	Boolean isStadtBernAsivConfigured(@Nonnull Mandant mandant);
 
 	/**
 	 * Wenn TRUE ist die zweite Phase von der Notverordnung aktiv
 	 */
 	@Nonnull
-	Boolean isKantonNotverordnungPhase2Aktiviert();
+	Boolean isKantonNotverordnungPhase2Aktiviert(@Nonnull Mandant mandant);
 
 }

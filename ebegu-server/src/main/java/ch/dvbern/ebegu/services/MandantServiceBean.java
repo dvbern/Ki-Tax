@@ -25,6 +25,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.Mandant_;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -60,5 +61,15 @@ public class MandantServiceBean extends AbstractBaseService implements MandantSe
 		}
 		String message = "Wir erwarten, dass mindestens ein Mandant bereits in der DB existiert";
 		throw new EbeguRuntimeException("getFirst", message, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<Mandant> findMandantByName(@Nonnull String name) {
+		return criteriaQueryHelper.getEntityByUniqueAttribute(
+				Mandant.class,
+				name,
+				Mandant_.name
+		);
 	}
 }

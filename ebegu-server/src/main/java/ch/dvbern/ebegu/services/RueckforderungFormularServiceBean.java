@@ -382,7 +382,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 				// Falls unterdessen die Phase zwei bereits aktiviert wurde, wollen wir mit "geprueft" der Phase zwei direkt in die Bearbeitung
 				// Institution Phase 2 wechseln, da wir sonst auf "geprueft" blockiert bleiben
-				if (applicationPropertyService.isKantonNotverordnungPhase2Aktiviert()
+				if (applicationPropertyService.isKantonNotverordnungPhase2Aktiviert(principalBean.getMandant())
 					&& principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
 					// Direkt zum naechsten Status wechseln. In der Audit-Tabelle wird nur der neue Status sein
 					// Finde ich aber okay, da es auch nur 1 Benutzeraktion war, die von Status IN_PRUEFUNG_KANTON_STUFE_1
@@ -396,7 +396,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 			break;
 		}
 		case GEPRUEFT_STUFE_1: {
-			if (applicationPropertyService.isKantonNotverordnungPhase2Aktiviert()
+			if (applicationPropertyService.isKantonNotverordnungPhase2Aktiviert(principalBean.getMandant())
 					&& principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
 				rueckforderungFormular.setStatus(RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2);
 				rueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());

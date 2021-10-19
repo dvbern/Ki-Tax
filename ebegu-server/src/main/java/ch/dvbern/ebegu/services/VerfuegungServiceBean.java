@@ -550,12 +550,12 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
 		Gemeinde gemeinde = gesuch.extractGemeinde();
 		Gesuchsperiode gesuchsperiode = gesuch.getGesuchsperiode();
-		KitaxUebergangsloesungParameter kitaxParameter = loadKitaxUebergangsloesungParameter();
+		KitaxUebergangsloesungParameter kitaxParameter = loadKitaxUebergangsloesungParameter(gemeinde.getMandant());
 		List<Rule> rules = rulesService.getRulesForGesuchsperiode(gemeinde, gesuchsperiode, kitaxParameter, sprache.getLocale());
 
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
-			true);
+			gemeinde.getMandant(), true);
 		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
 		BGRechnerParameterDTO calculatorParameters = loadCalculatorParameters(gemeinde, gesuchsperiode);
 
@@ -575,13 +575,13 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		this.finanzielleSituationService.calculateFinanzDaten(gesuch);
 
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
-		KitaxUebergangsloesungParameter kitaxParameter = loadKitaxUebergangsloesungParameter();
+		KitaxUebergangsloesungParameter kitaxParameter = loadKitaxUebergangsloesungParameter(gesuch.extractGemeinde().getMandant());
 
 		final List<Rule> rules = rulesService
 			.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), kitaxParameter, sprache.getLocale());
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
-			true);
+			gesuch.extractGemeinde().getMandant(), true);
 		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
 
 		initializeVorgaengerVerfuegungen(gesuch);
