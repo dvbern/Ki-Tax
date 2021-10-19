@@ -24,7 +24,7 @@ public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 	private Map<EinstellungKey, Einstellung> einstellungenGemaessAsiv = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(gesuchsperiodeOfEvaluator);
 	private KitaxUebergangsloesungParameter kitaxParams = TestDataUtil.geKitaxUebergangsloesungParameter();
 
-	private static final int ANZAHL_RULES_ASIV = 31;
+	private static final int ANZAHL_RULES_ASIV = 30;
 
 	@Before
 	public void setUp() {
@@ -64,7 +64,7 @@ public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 		einstellungenGemeinde.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT).setValue("15");
 		// Zusaetzliche Regel erwartet, da Wert abweicht
 		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(gemeindeOfEvaluator, einstellungenGemeinde, kitaxParams, GERMAN);
-		Assert.assertEquals(ANZAHL_RULES_ASIV + 2, rules.size());
+		Assert.assertEquals(ANZAHL_RULES_ASIV + 1, rules.size());
 		assertContainsRule(rules, ErwerbspensumGemeindeAbschnittRule.class, 1);
 		assertContainsRule(rules, ErwerbspensumGemeindeCalcRule.class, 0);
 	}
@@ -103,7 +103,7 @@ public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 		einstellungenGemeinde.get(EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT).setValue("80");
 		// 2 zusaetzliche Regeln erwartet
 		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(gemeindeOfEvaluator, einstellungenGemeinde, kitaxParams, GERMAN);
-		Assert.assertEquals(ANZAHL_RULES_ASIV + 3, rules.size());
+		Assert.assertEquals(ANZAHL_RULES_ASIV + 2, rules.size());
 		assertContainsRule(rules, ErwerbspensumGemeindeAbschnittRule.class, 1);
 		assertContainsRule(rules, ErwerbspensumGemeindeCalcRule.class, 1);
 	}
