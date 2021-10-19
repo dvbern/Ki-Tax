@@ -39,15 +39,10 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
             request?.url?.includes('emaillogin/gui/registration/createmaillogin');
     }
 
-    private static isTranslationsNotFoundError(err: HttpErrorResponse, req: HttpRequest<any>): boolean {
-        return err.status === HTTP_ERROR_CODES.NOT_FOUND && req?.url?.includes('translations');
-    }
-
     public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(req).pipe(
             catchError(async (err: HttpErrorResponse) => {
-                if (!(err instanceof HttpErrorResponse) ||
-                    HttpErrorInterceptorX.isTranslationsNotFoundError(err, req)) {
+                if (!(err instanceof HttpErrorResponse)) {
                     throw err;
                 }
 
