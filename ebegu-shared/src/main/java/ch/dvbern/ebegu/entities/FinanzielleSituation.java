@@ -82,8 +82,8 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		return steuerdatenZugriff;
 	}
 
-	public void setSteuerdatenZugriff(@Nullable Boolean steuerdatenZurgiff) {
-		this.steuerdatenZugriff = steuerdatenZurgiff;
+	public void setSteuerdatenZugriff(@Nullable Boolean steuerdatenZugriff) {
+		this.steuerdatenZugriff = steuerdatenZugriff;
 	}
 
 	@Nullable

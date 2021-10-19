@@ -1804,7 +1804,7 @@ export class EbeguRestUtil {
         restFinanzielleSituation.steuerveranlagungErhalten = finanzielleSituation.steuerveranlagungErhalten;
         restFinanzielleSituation.steuererklaerungAusgefuellt =
             finanzielleSituation.steuererklaerungAusgefuellt || false;
-        restFinanzielleSituation.steuerdatenZurgiff = finanzielleSituation.steuerdatenZurgiff;
+        restFinanzielleSituation.steuerdatenZugriff = finanzielleSituation.steuerdatenZugriff;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus2 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus2;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus1 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus1;
         return restFinanzielleSituation;
@@ -1858,8 +1858,8 @@ export class EbeguRestUtil {
                 finanzielleSituationFromServer.steuerveranlagungErhalten;
             finanzielleSituationTS.steuererklaerungAusgefuellt =
                 finanzielleSituationFromServer.steuererklaerungAusgefuellt;
-            finanzielleSituationTS.steuerdatenZurgiff =
-                finanzielleSituationFromServer.steuerdatenZurgiff;
+            finanzielleSituationTS.steuerdatenZugriff =
+                finanzielleSituationFromServer.steuerdatenZugriff;
             finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus2 =
                 finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus2;
             finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus1 =
