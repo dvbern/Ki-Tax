@@ -45,7 +45,8 @@ export class MultiMandantHttpLoader implements TranslateLoader {
 
     public getTranslation(lang: string): Observable<any> {
         return this.mandantService.mandant$.pipe(
-            mergeMap(mandant => iif(() => mandant !== KiBonMandant.NONE,
+            mergeMap(mandant => iif(() =>
+                mandant !== KiBonMandant.NONE && mandant !== KiBonMandant.BE,
                 this.createMultimandantRequests(lang, mandant),
                 this.createBaseTranslationRequest(lang)),
             ),
