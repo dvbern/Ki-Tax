@@ -47,6 +47,10 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	@Nullable
 	@Column(nullable = true)
+	private Boolean steuerdatenZugriff;
+
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal geschaeftsgewinnBasisjahrMinus2;
 
 	@Nullable
@@ -71,6 +75,15 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	public void setSteuererklaerungAusgefuellt(final Boolean steuererklaerungAusgefuellt) {
 		this.steuererklaerungAusgefuellt = steuererklaerungAusgefuellt;
+	}
+
+	@Nullable
+	public Boolean getSteuerdatenZugriff() {
+		return steuerdatenZugriff;
+	}
+
+	public void setSteuerdatenZugriff(@Nullable Boolean steuerdatenZugriff) {
+		this.steuerdatenZugriff = steuerdatenZugriff;
 	}
 
 	@Nullable
@@ -101,6 +114,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setSteuererklaerungAusgefuellt(this.getSteuererklaerungAusgefuellt());
 			target.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
 			target.setGeschaeftsgewinnBasisjahrMinus2(this.getGeschaeftsgewinnBasisjahrMinus2());
+			target.setSteuerdatenZugriff(this.getSteuerdatenZugriff());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -127,6 +141,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		final FinanzielleSituation otherFinSit = (FinanzielleSituation) other;
 		return Objects.equals(getSteuerveranlagungErhalten(), otherFinSit.getSteuerveranlagungErhalten()) &&
 			Objects.equals(getSteuererklaerungAusgefuellt(), otherFinSit.getSteuererklaerungAusgefuellt()) &&
+			Objects.equals(getSteuerdatenZugriff(), otherFinSit.getSteuerdatenZugriff()) &&
 			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus1(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus1()) &&
 			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus2(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus2());
 	}

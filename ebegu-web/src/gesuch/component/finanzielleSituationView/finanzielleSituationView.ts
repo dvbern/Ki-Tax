@@ -14,8 +14,10 @@
  */
 
 import {IComponentOptions} from 'angular';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {TSFinanzielleSituationResultateDTO} from '../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
@@ -52,12 +54,13 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         '$scope',
         '$translate',
         '$timeout',
-        'DvDialog',
+        'EinstellungRS'
     ];
 
     public showSelbstaendig: boolean;
     public showSelbstaendigGS: boolean;
     public allowedRoles: ReadonlyArray<TSRole>;
+    private steuerSchnittstelleAktiv: boolean;
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -69,6 +72,7 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         $scope: IScope,
         private readonly $translate: ITranslateService,
         $timeout: ITimeoutService,
+        private readonly settings: EinstellungRS,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -97,6 +101,13 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         this.showSelbstaendig = this.model.getFiSiConToWorkWith().finanzielleSituationJA.isSelbstaendig();
         this.showSelbstaendigGS = this.model.getFiSiConToWorkWith().finanzielleSituationGS
             ? this.model.getFiSiConToWorkWith().finanzielleSituationGS.isSelbstaendig() : false;
+
+        this.settings.findEinstellung(TSEinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV,
+            this.gesuchModelManager.getGemeinde()?.id,
+            this.gesuchModelManager.getGesuchsperiode()?.id)
+            .then(setting => {
+                this.steuerSchnittstelleAktiv = (setting.value === 'true');
+            });
     }
 
     public showSelbstaendigClicked(): void {
@@ -122,6 +133,15 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
 
     public showSteuererklaerung(): boolean {
         return !this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuerveranlagungErhalten;
+    }
+
+    public showZugriffAufSteuerdaten(): boolean {
+        if (!this.steuerSchnittstelleAktiv) {
+            return false;
+        }
+
+        return this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuerveranlagungErhalten ||
+            this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuererklaerungAusgefuellt;
     }
 
     // hier neu init
