@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -137,9 +138,9 @@ public class ApplicationPropertyResource {
 	@Path("/public/background")
 	@PermitAll
 	public JaxApplicationProperties getBackgroundColor(@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
-		//TODO: replace with actual value from cookie
-		Mandant mandant = mandantService.findMandantByName("Kanton Bern").get();
-		ApplicationProperty prop = getBackgroundColorProperty(mandant);
+		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
+		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
+		ApplicationProperty prop = getBackgroundColorProperty(mandant.get());
 		return converter.applicationPropertyToJAX(prop);
 	}
 
@@ -161,8 +162,10 @@ public class ApplicationPropertyResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(SUPER_ADMIN)
-	public List<JaxApplicationProperties> getAllApplicationProperties() {
-		return applicationPropertyService.getAllApplicationProperties(principalBean.getMandant()).stream()
+	public List<JaxApplicationProperties> getAllApplicationProperties(@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
+		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getFirst());
+		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
+		return applicationPropertyService.getAllApplicationProperties(mandant.get()).stream()
 			.sorted(Comparator.comparing(o -> o.getName().name()))
 			.map(ap -> converter.applicationPropertyToJAX(ap))
 			.collect(Collectors.toList());
@@ -179,12 +182,16 @@ public class ApplicationPropertyResource {
 		@Nonnull @NotNull @PathParam("key") String key,
 		@Nonnull @NotNull String value,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
+		@Context HttpServletResponse response,
+		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
+
+		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
+		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
 
 		ApplicationProperty modifiedProperty =
 			this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(
 				ApplicationPropertyKey.class,
-				key), value, Objects.requireNonNull(principalBean.getMandant()));
+				key), value, mandant.get());
 
 		URI uri = uriInfo.getBaseUriBuilder()
 			.path(ApplicationPropertyResource.class)
@@ -205,12 +212,15 @@ public class ApplicationPropertyResource {
 		@Nonnull @PathParam("key") String key,
 		@Nonnull @NotNull String value,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
+		@Context HttpServletResponse response,
+		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+		) {
+		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
+		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
 		ApplicationProperty modifiedProperty =
 			this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(
 				ApplicationPropertyKey.class,
-				key), value, Objects.requireNonNull(principalBean.getMandant()));
+				key), value, mandant.get());
 
 		return converter.applicationPropertyToJAX(modifiedProperty);
 	}
@@ -249,13 +259,13 @@ public class ApplicationPropertyResource {
 	@PermitAll
 	public Response getPublicProperties(@Context HttpServletResponse response, @CookieParam(AuthConstants.COOKIE_MANDANT)
 			Cookie mandantCookie) {
-		//TODO: use mandant from cookie
-		Mandant mandant = mandantService.findMandantByName("Kanton Luzern").get();
+		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
+		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
 		boolean devmode = ebeguConfiguration.getIsDevmode();
-		final String whitelist = readWhitelistAsString(mandant);
-		boolean dummyMode = ebeguConfiguration.isDummyLoginEnabled(mandant);
-		String sentryEnvName = getSentryEnvName(mandant).getValue();
-		String background = getBackgroundColorProperty(mandant).getValue();
+		final String whitelist = readWhitelistAsString(mandant.get());
+		boolean dummyMode = ebeguConfiguration.isDummyLoginEnabled(mandant.get());
+		String sentryEnvName = getSentryEnvName(mandant.get()).getValue();
+		String background = getBackgroundColorProperty(mandant.get()).getValue();
 		boolean zahlungentestmode = ebeguConfiguration.getIsZahlungenTestMode();
 		boolean personenSucheDisabled = ebeguConfiguration.isPersonenSucheDisabled();
 		String kitaxHost = ebeguConfiguration.getKitaxHost();
@@ -266,58 +276,59 @@ public class ApplicationPropertyResource {
 
 		ApplicationProperty einreichefristOeffentlich  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH,
-							mandant)
+							mandant.get())
 			.orElseThrow(() -> notFound);
 		ApplicationProperty einreichefristPrivat  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT,
-							mandant)
+							mandant.get())
 			.orElseThrow(() -> notFound);
 		ApplicationProperty ferienbetreuungAktiv  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.FERIENBETREUUNG_AKTIV,
-							mandant)
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty lastenausgleichTagesschulenAktiv  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AKTIV,
-							mandant)
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty gemeindeKennzahlenAktiv  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.GEMEINDE_KENNZAHLEN_AKTIV,
-							mandant)
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty lastenausgleichTagesschulenAnteilZweitpruefungDe  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE,
-							mandant)
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty lastenausgleichTagesschulenAnteilZweitpruefungFr  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_FR,
-							mandant)
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty lastenausgleichTagesschulenAutoZweitpruefungDe  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE,
-							mandant)
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty lastenausgleichTagesschulenAutoZweitpruefungFr  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR,
-							mandant)
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty primaryColor  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR,
-							mandant)
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty primaryColorDark  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR_DARK,
-							mandant)
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty primaryColorLight  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR_LIGHT, mandant)
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR_LIGHT,
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty logoFileName  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LOGO_FILE_NAME,
-							mandant)
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty logoFileNameWhite  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LOGO_WHITE_FILE_NAME,
-							mandant)
+							mandant.get())
 				.orElseThrow(() -> notFound);
 
 		String nodeName = "";
