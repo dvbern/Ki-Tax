@@ -72,6 +72,7 @@ import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleRechnungsstellungExcelCo
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -112,6 +113,9 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
+
+	@Inject
+	private MandantService mandantService;
 
 	@Override
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
@@ -332,7 +336,7 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		@Nonnull LocalDate stichtag) {
 
 		// Wir suchen alle vergangenen Monate im Sinne von "in der aktuellen Gesuchsperiode vergangen"
-		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.getGesuchsperiodeAm(stichtag)
+		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.getGesuchsperiodeAm(stichtag, mandantService.getDefaultMandant())
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"getReportDataTagesschuleRechnungsstellung",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,

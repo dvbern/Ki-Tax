@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -106,6 +107,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@Inject
 	private GesuchsperiodeEmailService gesuchsperiodeEmailService;
 
+	@Inject
+	private MandantService mandantService;
+
 	@Nonnull
 	@Override
 	public Gesuchsperiode saveGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
@@ -134,7 +138,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		if (gesuchsperiode.isNew()) {
 			gesuchsperiode = saveGesuchsperiode(gesuchsperiode);
 			LocalDate stichtagInVorperiode = gesuchsperiode.getGueltigkeit().getGueltigAb().minusDays(1);
-			Optional<Gesuchsperiode> lastGesuchsperiodeOptional = getGesuchsperiodeAm(stichtagInVorperiode);
+			Optional<Gesuchsperiode> lastGesuchsperiodeOptional = getGesuchsperiodeAm(stichtagInVorperiode, mandantService.getDefaultMandant());
 			if (lastGesuchsperiodeOptional.isPresent()) {
 				Gesuchsperiode lastGesuchsperiode = lastGesuchsperiodeOptional.get();
 				// we only copy the einstellung when there is a lastGesuchsperiode. In some cases, among others in
@@ -185,7 +189,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		if (GesuchsperiodeStatus.AKTIV == gesuchsperiode.getStatus()
 			&& gesuchsperiode.getDatumAktiviert() == null) {
 			Optional<Gesuchsperiode> lastGesuchsperiodeOptional =
-				getGesuchsperiodeAm(gesuchsperiode.getGueltigkeit().getGueltigAb().minusDays(1));
+				getGesuchsperiodeAm(gesuchsperiode.getGueltigkeit().getGueltigAb().minusDays(1), mandantService.getDefaultMandant());
 			if (lastGesuchsperiodeOptional.isPresent()) {
 				gesuchsperiodeEmailService.getAndSaveGesuchsperiodeEmailCandidates(
 					lastGesuchsperiodeOptional.get(),
@@ -413,7 +417,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	@Override
 	@Nonnull
-	public Optional<Gesuchsperiode> getGesuchsperiodeAm(@Nonnull LocalDate stichtag) {
+	public Optional<Gesuchsperiode> getGesuchsperiodeAm(@Nonnull LocalDate stichtag, @Nonnull Mandant mandant) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuchsperiode> query = cb.createQuery(Gesuchsperiode.class);
 		Root<Gesuchsperiode> root = query.from(Gesuchsperiode.class);
@@ -423,8 +427,10 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		Predicate predicateEnd = cb.greaterThanOrEqualTo(
 			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
 			stichtag);
+		Predicate mandantPredicate =
+				cb.equal(root.get(Gesuchsperiode_.mandant), mandant);
 
-		query.where(predicateStart, predicateEnd);
+		query.where(predicateStart, predicateEnd, mandantPredicate);
 		Gesuchsperiode criteriaSingleResult = persistence.getCriteriaSingleResult(query);
 		return Optional.ofNullable(criteriaSingleResult);
 	}
