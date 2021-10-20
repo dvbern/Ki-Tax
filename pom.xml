@@ -478,7 +478,7 @@
             <dependency>
                 <groupId>ch.dvbern.kibon</groupId>
                 <artifactId>kibon-exchange-api-commons</artifactId>
-                <version>3.0.1-SNAPSHOT</version>
+                <version>5.0.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.kafka</groupId>
