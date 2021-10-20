@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -41,11 +43,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import ch.dvbern.ebegu.api.AuthConstants;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDateRangedDTO;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
@@ -53,12 +57,14 @@ import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.services.MandantService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -88,6 +94,9 @@ public class GesuchsperiodeResource {
 
 	@Inject
 	private GemeindeService gemeindeService;
+
+	@Inject
+	private MandantService mandantService;
 
 	@SuppressWarnings("CdiInjectionPointsInspection")
 	@Inject
@@ -172,12 +181,19 @@ public class GesuchsperiodeResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
-	public List<JaxGesuchsperiode> getAllGesuchsperioden() {
+	public List<JaxGesuchsperiode> getAllGesuchsperioden(
+			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+	) {
+		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
+		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
 		return gesuchsperiodeService.getAllGesuchsperioden().stream()
-			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
-			.filter(periode -> periode.getGueltigAb() != null)
-			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
-			.collect(Collectors.toList());
+				//TODO MANDANTEN: move to getAllGesuchsperioden
+				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant()
+						.equals(mandant.get()))
+				.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
+				.filter(periode -> periode.getGueltigAb() != null)
+				.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
+				.collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Gibt alle in der Datenbank vorhandenen Gesuchsperioden zurueck, welche im Status AKTIV "
@@ -189,10 +205,17 @@ public class GesuchsperiodeResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
-	public List<JaxGesuchsperiode> getAllActiveGesuchsperioden() {
+	public List<JaxGesuchsperiode> getAllActiveGesuchsperioden(
+			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+	) {
+		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
+		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
 		return gesuchsperiodeService.getAllActiveGesuchsperioden().stream()
-			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
-			.collect(Collectors.toList());
+				//TODO MANDANTEN: move to getAllActiveGesuchsperioden
+				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant()
+						.equals(mandant.get()))
+				.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
+				.collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Gibt alle in der Datenbank vorhandenen Gesuchsperioden zurueck, welche im Status AKTIV " +
@@ -203,8 +226,14 @@ public class GesuchsperiodeResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
-	public List<JaxGesuchsperiode> getAllAktivUndInaktivGesuchsperioden() {
+	public List<JaxGesuchsperiode> getAllAktivUndInaktivGesuchsperioden(
+			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+			) {
+		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
+		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
+		//TODO MANDANTEN: move to getAllaktivUndInaktivGesuchsperioden
 		return gesuchsperiodeService.getAllAktivUndInaktivGesuchsperioden().stream()
+				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant().equals(mandant.get()))
 			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
 			.filter(periode -> periode.getGueltigAb() != null)
 			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
@@ -222,13 +251,19 @@ public class GesuchsperiodeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
 	public List<JaxGesuchsperiode> getAllAktivInaktivNichtVerwendeteGesuchsperioden(
-		@Nonnull @PathParam("dossierId") String dossierId) {
-
+		@Nonnull @PathParam("dossierId") String dossierId,
+			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+	) {
+		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
+		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
+		//TODO MANDANTEN: move to getAllAktivInaktivNichtVerwendeteGesuchsperioden
 		return gesuchsperiodeService.getAllAktivInaktivNichtVerwendeteGesuchsperioden(dossierId).stream()
-			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
-			.filter(periode -> periode.getGueltigAb() != null)
-			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
-			.collect(Collectors.toList());
+				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant()
+						.equals(mandant.get()))
+				.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
+				.filter(periode -> periode.getGueltigAb() != null)
+				.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
+				.collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Gibt alle Gesuchsperioden zurück, welche AKTIV oder INAKTIV sind und nach dem " +
@@ -242,13 +277,21 @@ public class GesuchsperiodeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
 	public List<JaxGesuchsperiode> getAllPeriodenForGemeinde(
-		@Nonnull @PathParam("gemeindeId") String gemeindeId,
-		@Nullable @QueryParam("dossierId") String dossierId) {
+			@Nonnull @PathParam("gemeindeId") String gemeindeId,
+			@Nullable @QueryParam("dossierId") String dossierId,
+			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
+		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
+		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
 
 		Collection<Gesuchsperiode> perioden = dossierId == null
-			? gesuchsperiodeService.getAllAktivUndInaktivGesuchsperioden()
-			: gesuchsperiodeService.getAllAktivInaktivNichtVerwendeteGesuchsperioden(dossierId);
+				? gesuchsperiodeService.getAllAktivUndInaktivGesuchsperioden()
+				: gesuchsperiodeService.getAllAktivInaktivNichtVerwendeteGesuchsperioden(dossierId);
 
+		//TODO MANDANTEN: move to methods
+		perioden = perioden.stream()
+				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant()
+						.equals(mandant.get()))
+				.collect(Collectors.toList());
 		return extractValidGesuchsperiodenForGemeinde(gemeindeId, perioden);
 	}
 
@@ -263,12 +306,21 @@ public class GesuchsperiodeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
 	public List<JaxGesuchsperiode> getAllAktivePeriodenForGemeinde(
-		@Nonnull @PathParam("gemeindeId") String gemeindeId,
-		@Nullable @QueryParam("dossierId") String dossierId) {
+			@Nonnull @PathParam("gemeindeId") String gemeindeId,
+			@Nullable @QueryParam("dossierId") String dossierId,
+			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
+		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
+		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
 
 		Collection<Gesuchsperiode> perioden = dossierId == null
-			? gesuchsperiodeService.getAllActiveGesuchsperioden()
-			: gesuchsperiodeService.getAllAktiveNichtVerwendeteGesuchsperioden(dossierId);
+				? gesuchsperiodeService.getAllActiveGesuchsperioden()
+				: gesuchsperiodeService.getAllAktiveNichtVerwendeteGesuchsperioden(dossierId);
+
+		//TODO MANDANTEN: move to methods
+		perioden = perioden.stream()
+				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant()
+						.equals(mandant.get()))
+				.collect(Collectors.toList());
 
 		return extractValidGesuchsperiodenForGemeinde(gemeindeId, perioden);
 	}
