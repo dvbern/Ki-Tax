@@ -24,7 +24,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Familiensituation;
@@ -75,7 +74,6 @@ public abstract class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAb
 	protected List<VerfuegungZeitabschnitt> getErwerbspensumAbschnittForGesuchsteller(
 		@Nonnull Gesuch gesuch,
 		@Nonnull GesuchstellerContainer gesuchsteller,
-		@Nonnull AbstractPlatz platz,
 		boolean gs2
 	) {
 		List<VerfuegungZeitabschnitt> ewpAbschnitte = new ArrayList<>();

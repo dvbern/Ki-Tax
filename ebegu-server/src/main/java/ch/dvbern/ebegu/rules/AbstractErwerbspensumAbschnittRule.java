@@ -53,11 +53,11 @@ public abstract class AbstractErwerbspensumAbschnittRule extends AbstractAbschni
 		Gesuch gesuch = platz.extractGesuch();
 		if (gesuch.getGesuchsteller1() != null) {
 			erwerbspensumAbschnitte.addAll(getErwerbspensumAbschnittForGesuchsteller(gesuch,
-				gesuch.getGesuchsteller1(), platz, false));
+				gesuch.getGesuchsteller1(),false));
 		}
 		if (gesuch.getGesuchsteller2() != null) {
 			erwerbspensumAbschnitte.addAll(getErwerbspensumAbschnittForGesuchsteller(gesuch,
-				gesuch.getGesuchsteller2(), platz, true));
+				gesuch.getGesuchsteller2(), true));
 		}
 		return erwerbspensumAbschnitte;
 	}
@@ -65,7 +65,6 @@ public abstract class AbstractErwerbspensumAbschnittRule extends AbstractAbschni
 	protected abstract List<VerfuegungZeitabschnitt> getErwerbspensumAbschnittForGesuchsteller(
 		@Nonnull Gesuch gesuch,
 		@Nonnull GesuchstellerContainer gesuchsteller,
-		@Nonnull AbstractPlatz platz,
 		boolean gs2
 	);
 
