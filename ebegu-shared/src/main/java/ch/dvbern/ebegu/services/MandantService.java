@@ -41,4 +41,7 @@ public interface MandantService {
 
 	@Nonnull
 	Optional<Mandant> findMandantByName(@Nonnull String name);
+
+	@Nonnull
+	Mandant getDefaultMandant();
 }

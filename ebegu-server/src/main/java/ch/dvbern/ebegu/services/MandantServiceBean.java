@@ -72,4 +72,10 @@ public class MandantServiceBean extends AbstractBaseService implements MandantSe
 				Mandant_.name
 		);
 	}
+
+	@Nonnull
+	@Override
+	public Mandant getDefaultMandant() {
+		return findMandantByName("Kanton Bern").get();
+	}
 }
