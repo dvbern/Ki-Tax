@@ -15,10 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// TODO: This should correspond with the names of the mandant in the db
+// Corresponds with URL
 export enum KiBonMandant {
     BE = 'be',
     LU = 'lu',
     SO = 'so',
+    NONE = ''
+}
+
+// Corresponds with name in DB
+export enum KiBonMandantFull {
+    BE = 'Kanton Bern',
+    LU = 'Kanton Luzern',
+    SO = 'Kanton Solothurn',
     NONE = ''
 }

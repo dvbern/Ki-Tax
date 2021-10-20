@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {CookieService} from 'ngx-cookie-service';
 import {Observable, ReplaySubject} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {KiBonMandant} from '../../core/constants/MANDANTS';
+import {KiBonMandant, KiBonMandantFull} from '../../core/constants/MANDANTS';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
 
@@ -28,10 +28,10 @@ export class MandantService {
         this.applicationPropertyService.getPublicPropertiesCached().then(properties => {
             this._multimandantActive$.next(properties.mulitmandantAktiv);
         });
-        this._mandant$.next(MandantService.findMandant(this.cookieService.get('mandant')));
+        this._mandant$.next(MandantService.cookieToMandant(this.cookieService.get('mandant')));
     }
 
-    private static findMandant(hostname: string): KiBonMandant {
+    private static hostnameToMandant(hostname: string): KiBonMandant {
         switch (hostname.toLocaleLowerCase()) {
             case 'be':
                 return KiBonMandant.BE;
@@ -44,6 +44,32 @@ export class MandantService {
         }
     }
 
+    private static shortMandantToFull(short: KiBonMandant): KiBonMandantFull {
+        switch (short) {
+            case KiBonMandant.BE:
+                return KiBonMandantFull.BE;
+            case KiBonMandant.LU:
+                return KiBonMandantFull.LU;
+            case KiBonMandant.SO:
+                return KiBonMandantFull.SO;
+            default:
+                return KiBonMandantFull.NONE;
+        }
+    }
+
+    private static cookieToMandant(cookieMandant: string): KiBonMandant {
+        switch (cookieMandant) {
+            case KiBonMandantFull.BE:
+                return KiBonMandant.BE;
+            case KiBonMandantFull.SO:
+                return KiBonMandant.SO;
+            case KiBonMandantFull.LU:
+                return KiBonMandant.LU;
+            default:
+                return KiBonMandant.NONE;
+        }
+    }
+
     public isMultimandantActive$(): Observable<boolean> {
         return this._multimandantActive$.asObservable();
     }
@@ -51,7 +77,7 @@ export class MandantService {
     public parseHostnameForMandant(): KiBonMandant {
         const hostParts = this.windowRef.nativeWindow.location.hostname.split('.');
         for (const part of hostParts) {
-            const potentialMandant = MandantService.findMandant(part);
+            const potentialMandant = MandantService.hostnameToMandant(part);
             if (potentialMandant !== KiBonMandant.NONE) {
                 return potentialMandant;
             }
@@ -60,7 +86,7 @@ export class MandantService {
     }
 
     public selectMandant(mandant: string, url: string): void {
-        const parsedMandant = MandantService.findMandant(mandant);
+        const parsedMandant = MandantService.hostnameToMandant(mandant);
 
         this.setMandantCookie(parsedMandant).then(() => {
 
@@ -71,7 +97,7 @@ export class MandantService {
     }
 
     public setMandantCookie(mandant: KiBonMandant): Promise<any> {
-        return this.authService.setMandant(mandant) as Promise<any>;
+        return this.authService.setMandant(MandantService.shortMandantToFull(mandant)) as Promise<any>;
     }
 
     public redirectToMandantSubdomain(mandant: KiBonMandant, url: string): void {
