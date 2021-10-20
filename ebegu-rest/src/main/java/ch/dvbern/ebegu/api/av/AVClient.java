@@ -21,6 +21,8 @@ package ch.dvbern.ebegu.api.av;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 import javax.ejb.Stateless;
@@ -36,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import xyz.capybara.clamav.ClamavClient;
 import xyz.capybara.clamav.ClamavException;
 import xyz.capybara.clamav.commands.scan.result.ScanResult;
+import xyz.capybara.clamav.commands.scan.result.ScanResult.VirusFound;
 
 @Stateless
 public class AVClient {
@@ -69,7 +72,7 @@ public class AVClient {
 			ScanResult result = client.scan(is);
 
 			if (result instanceof ScanResult.VirusFound) {
-				LOG.error("Malicious file detected at: {}", fileMetadata.getFilepfad());
+				logFoundViruses((VirusFound) result, fileMetadata);
 				throw new EbeguMailiciousContentException("scan", ErrorCodeEnum.ERROR_MALICIOUS_CONTENT, fileMetadata.getFilepfad());
 			}
 		} catch (FileNotFoundException e) {
@@ -91,5 +94,22 @@ public class AVClient {
 			client = null;
 			return false;
 		}
+	}
+
+	private void logFoundViruses(VirusFound result, FileMetadata fileMetadata) {
+		StringBuilder log = new StringBuilder("Malicious file detected at: " + fileMetadata.getFilepfad());
+		for (Entry<String, Collection<String>> virus : result.getFoundViruses().entrySet()) {
+			int count = 0;
+			for (String info : virus.getValue()) {
+				count++;
+				log
+					.append("\n")
+					.append("Virus ")
+					.append(count)
+					.append(" signature: ")
+					.append(info);
+			}
+		}
+		LOG.error(log.toString());
 	}
 }
