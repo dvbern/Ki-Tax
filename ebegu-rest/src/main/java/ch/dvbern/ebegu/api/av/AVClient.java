@@ -103,8 +103,7 @@ public class AVClient {
 			for (String info : virus.getValue()) {
 				count++;
 				log
-					.append("\n")
-					.append("Virus ")
+					.append("\nVirus ")
 					.append(count)
 					.append(" signature: ")
 					.append(info);
