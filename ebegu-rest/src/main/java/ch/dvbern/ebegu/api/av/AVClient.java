@@ -97,7 +97,8 @@ public class AVClient {
 	}
 
 	private void logFoundViruses(VirusFound result, FileMetadata fileMetadata) {
-		StringBuilder log = new StringBuilder("Malicious file detected at: " + fileMetadata.getFilepfad());
+		StringBuilder log = new StringBuilder("Malicious file detected at: ");
+		log.append(fileMetadata.getFilepfad());
 		for (Entry<String, Collection<String>> virus : result.getFoundViruses().entrySet()) {
 			int count = 0;
 			for (String info : virus.getValue()) {
