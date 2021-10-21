@@ -21,6 +21,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mandant;
@@ -43,6 +44,7 @@ import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.runner.RunWith;
 
 /**
@@ -94,19 +96,21 @@ public class SchulungServiceBeanTest extends AbstractEbeguLoginTest {
 		createAndSaveInstitutionStammdatenForTestfaelle();
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 
-		assertEmpty();
-		TestDataUtil.getGemeindeParis(persistence);
+		Gemeinde paris = TestDataUtil.getGemeindeParis(persistence);
+		assert paris.getMandant() != null;
+		Mandant mandant = paris.getMandant();
+		assertEmpty(mandant);
 		schulungService.createSchulungsdaten();
 
 		Assert.assertEquals(95, adresseService.getAllAdressen().size());
 		Assert.assertEquals(6, institutionStammdatenService.getAllInstitutionStammdaten().size());
-		Assert.assertEquals(6, institutionService.getAllInstitutionen().size());
+		Assert.assertEquals(6, institutionService.getAllInstitutionen(mandant).size());
 		Assert.assertEquals(1, traegerschaftService.getAllTraegerschaften().size());
 		Assert.assertEquals(anzahlUserSchonVorhanden + anzahlGesuchsteller + anzahlInstitutionsBenutzer,
 			criteriaQueryHelper.getAll(Benutzer.class).size());
 
 		schulungService.deleteSchulungsdaten();
-		assertEmpty();
+		assertEmpty(mandant);
 	}
 
 	@Test
@@ -116,9 +120,9 @@ public class SchulungServiceBeanTest extends AbstractEbeguLoginTest {
 		schulungService.deleteSchulungsdaten();
 	}
 
-	private void assertEmpty() {
+	private void assertEmpty(Mandant testMandant) {
 		Assert.assertEquals(3, institutionStammdatenService.getAllInstitutionStammdaten().size());
-		Assert.assertEquals(3, institutionService.getAllInstitutionen().size());
+		Assert.assertEquals(3, institutionService.getAllInstitutionen(testMandant).size());
 		Assert.assertTrue(traegerschaftService.getAllTraegerschaften().isEmpty());
 		Assert.assertEquals(anzahlUserSchonVorhanden, criteriaQueryHelper.getAll(Benutzer.class).size());
 	}

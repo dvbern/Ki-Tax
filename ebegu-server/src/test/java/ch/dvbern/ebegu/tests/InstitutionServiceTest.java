@@ -91,9 +91,10 @@ public class InstitutionServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void getAllInstitutionenTest() {
 		Assert.assertNotNull(institutionService);
-		insertInstitution();
+		InstitutionStammdaten stammdaten = insertInstitution();
 
-		Collection<Institution> allInstitutionen = institutionService.getAllInstitutionen();
+		assert stammdaten.getInstitution().getMandant() != null;
+		Collection<Institution> allInstitutionen = institutionService.getAllInstitutionen(stammdaten.getInstitution().getMandant());
 		assertFalse(allInstitutionen.isEmpty());
 
 	}

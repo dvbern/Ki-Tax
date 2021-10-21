@@ -1411,7 +1411,8 @@ public final class TestDataUtil {
 		@Nonnull InstitutionService instService, @Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum,
 		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
 
-		instService.getAllInstitutionen();
+		assert gesuchsperiode.getMandant() != null;
+		instService.getAllInstitutionen(gesuchsperiode.getMandant());
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
@@ -1480,7 +1481,8 @@ public final class TestDataUtil {
 		AntragStatus status,
 		@Nonnull Gesuchsperiode gesuchsperiode
 	) {
-		instService.getAllInstitutionen();
+		assert gesuchsperiode.getMandant() != null;
+		instService.getAllInstitutionen(gesuchsperiode.getMandant());
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());

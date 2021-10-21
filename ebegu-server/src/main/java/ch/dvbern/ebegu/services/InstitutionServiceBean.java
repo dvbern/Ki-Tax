@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -152,7 +153,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Override
 	@Nonnull
-	public Collection<Institution> getAllInstitutionen() {
+	public Collection<Institution> getAllInstitutionen(@Nonnull Mandant mandant) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
@@ -161,6 +162,9 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		List<Predicate> predicates = new ArrayList<>();
 
 		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
+
+		Predicate mandantMatches = cb.equal(root.get(InstitutionStammdaten_.institution).get(Institution_.mandant), mandant);
+		predicates.add(mandantMatches);
 
 		boolean roleGemeindeabhaengig = principalBean.getBenutzer().getRole().isRoleGemeindeabhaengig();
 		if (roleGemeindeabhaengig) {
@@ -253,7 +257,8 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			if (benutzer.getRole().isRoleGemeindeabhaengig()) {
 				return getAllInstitutionenForGemeindeBenutzer(canEdit, restrictedForSCH);
 			}
-			return getAllInstitutionen();
+			assert benutzer.getMandant() != null;
+			return getAllInstitutionen(benutzer.getMandant());
 		}
 		return Collections.emptyList();
 	}
