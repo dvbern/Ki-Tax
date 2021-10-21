@@ -41,7 +41,7 @@ SELECT UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')), '2018-01
 	'2016-01-01', '2020-08-01', '2020-08-01', true, false, false, '9999-12-31' from gemeinde;
 
 INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde,
-					 hausnummer, land, organisation, ort, plz, strasse, zusatzzeile) VALUES (UNHEX(REPLACE('4a7d4ba5-4af0-11e9-9a3a-afd41a03c0bb', '-', '')),
+					 hausnummer, land, organisation, ort, plz, strasse, zusatzzeile) VALUES (UNHEX(REPLACE('2476287e-3264-11ec-a17e-b89a2ae4a038', '-', '')),
 																							 '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway',
 																							 'flyway', 0, null, '2018-01-01', '9999-01-01', 'Luzern', '1',
 																							 'CH', 'Gemeinde', 'Luzern', '3072', 'Schiessplatzweg', null);
@@ -52,13 +52,42 @@ INSERT IGNORE INTO gemeinde_stammdaten (id, timestamp_erstellt, timestamp_mutier
 										logo_content, bic, iban, kontoinhaber, standard_rechtsmittelbelehrung,
 										benachrichtigung_bg_email_auto, benachrichtigung_ts_email_auto,
 										standard_dok_signature, ts_verantwortlicher_nach_verfuegung_benachrichtigen)
-VALUES (UNHEX(REPLACE('4a7dc6e5-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway', 'flyway', 0,
+VALUES (UNHEX(REPLACE('fd91477c-3263-11ec-a17e-b89a2ae4a038', '-', '')), '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway', 'flyway', 0,
         UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')),
-        UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')), UNHEX(REPLACE('4a7d4ba5-4af0-11e9-9a3a-afd41a03c0bb', '-', '')),
+        UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')), UNHEX(REPLACE('2476287e-3264-11ec-a17e-b89a2ae4a038', '-', '')),
         'luzern@mailbucket.dvbern.ch', '+41 31 930 14 14', 'https://www.luzern.ch', null, 'DE', null, 'BIC', 'CH93 0077 2011 6238 5295 7',
         'Luzern Kontoinhaber', true, true, true, true, false);
 
-UPDATE sequence SET current_value = (select max(gemeinde_nummer) from gemeinde) WHERE sequence_type = 'GEMEINDE_NUMMER';
+INSERT IGNORE INTO sequence(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, sequence_type, current_value, mandant_id)
+VALUES (
+	UNHEX(REPLACE('9f413fb6-3262-11ec-a17e-b89a2ae4a038', '-', '')), # id
+	'2018-01-01 00:00:00', # timestamp_erstellt
+	'2018-01-01 00:00:00', # timestamp_mutiert
+	'flyway', # user_erstellt
+	'flyway', # user_mutiert
+	0, # version
+	'FALL_NUMMER', # sequence_type
+	100, # current_value
+	UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')));
+
+INSERT IGNORE INTO sequence(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, sequence_type, current_value, mandant_id)
+VALUES (
+	UNHEX(REPLACE('aafc8af6-3262-11ec-a17e-b89a2ae4a038', '-', '')), # id
+	'2018-01-01 00:00:00', # timestamp_erstellt
+	'2018-01-01 00:00:00', # timestamp_mutiert
+	'flyway', # user_erstellt
+	'flyway', # user_mutiert
+	0, # version
+	'GEMEINDE_NUMMER', # sequence_type
+	1, # current_value
+	UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')));
+
+UPDATE sequence
+SET current_value = (SELECT max(gemeinde_nummer)
+					 FROM gemeinde
+					 WHERE gemeinde.mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')))
+WHERE sequence_type = 'GEMEINDE_NUMMER' AND
+		mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
 
 # Test-Institutionen erstellen
 INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active)
@@ -148,7 +177,7 @@ INSERT IGNORE INTO institution_stammdaten (id, timestamp_erstellt, timestamp_mut
 										   adresse_id, institution_id, institution_stammdaten_tagesschule_id,
 										   institution_stammdaten_ferieninsel_id,
 										   institution_stammdaten_betreuungsgutscheine_id, mail, telefon, webseite)
-VALUES (UNHEX(REPLACE('945e3eef-8f43-43d2-a684-4aa61089684b', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00',
+VALUES (UNHEX(REPLACE('97882a4e-3261-11ec-a17e-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00',
 		'flyway', 'flyway', 0, NULL, '2019-08-01', '9999-12-31', 'KITA',
 		UNHEX(REPLACE('bda4670c-30a3-11ec-a86f-b89a2ae4a038', '-', '')),
 		UNHEX(REPLACE('7c436811-30a3-11ec-a86f-b89a2ae4a038', '-', '')), NULL, NULL,
@@ -160,7 +189,7 @@ INSERT IGNORE INTO institution_stammdaten (id, timestamp_erstellt, timestamp_mut
 										   adresse_id, institution_id, institution_stammdaten_tagesschule_id,
 										   institution_stammdaten_ferieninsel_id,
 										   institution_stammdaten_betreuungsgutscheine_id, mail, telefon, webseite)
-VALUES (UNHEX(REPLACE('9a0eb656-b6b7-4613-8f55-4e0e4720455e', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00',
+VALUES (UNHEX(REPLACE('6d6afdb2-3261-11ec-a17e-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00',
 		'flyway', 'flyway', 0, NULL, '2019-08-01', '9999-12-31', 'KITA',
 		UNHEX(REPLACE('c41ab591-30a3-11ec-a86f-b89a2ae4a038', '-', '')),
 		UNHEX(REPLACE('f5ceae4a-30a5-11ec-a86f-b89a2ae4a038', '-', '')), NULL, NULL,
@@ -199,7 +228,7 @@ INSERT IGNORE INTO institution_stammdaten (id, timestamp_erstellt, timestamp_mut
 										   adresse_id, institution_id, institution_stammdaten_tagesschule_id,
 										   institution_stammdaten_ferieninsel_id,
 										   institution_stammdaten_betreuungsgutscheine_id, mail, telefon, webseite)
-VALUES (UNHEX(REPLACE('199ac4a1-448f-4d4c-b3a6-5aee21f89613', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00',
+VALUES (UNHEX(REPLACE('b8e3acdc-3261-11ec-a17e-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00',
 		'flyway', 'flyway', 0, NULL, '1000-01-01', '9999-12-31', 'TAGESSCHULE',
 		UNHEX(REPLACE('4cb593c7-30a6-11ec-a86f-b89a2ae4a038', '-', '')),
 		UNHEX(REPLACE('3db43c9b-30a6-11ec-a86f-b89a2ae4a038', '-', '')), NULL, NULL, NULL,
