@@ -61,7 +61,7 @@ export const LOCALLOGIN_DATA = {
             id: '7049ec48-30ab-11ec-a86f-b89a2ae4a038',
             name: 'LuzernerSozialdienst',
         },
-        gemeinde_paris: 'ea02b313-e7c3-4b26-9ef7-e413f4046db2',
+        gemeinde_paris: '6fd6183c-30a2-11ec-a86f-b89a2ae4a038',
     },
 };
 

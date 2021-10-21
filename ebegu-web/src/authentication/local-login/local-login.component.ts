@@ -219,7 +219,7 @@ export class LocalLoginComponent {
         this.traegerschaftStadtBern = LocalLoginComponent.getTraegerschaftStadtBern(datum.traegerschaft);
         this.institution =
             LocalLoginComponent.getInstitution(datum.institution, this.traegerschaftStadtBern, this.mandant);
-        this.tagesschule = LocalLoginComponent.getTagesschule(datum.traegerschaft, this.mandant);
+        this.tagesschule = LocalLoginComponent.getTagesschule(datum.tagesschule, this.mandant);
         this.sozialdienst = LocalLoginComponent.getSozialdienst(datum.sozialdienst);
     }
 
