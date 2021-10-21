@@ -11,10 +11,6 @@ import {WindowRef} from '../../core/service/windowRef.service';
 })
 export class MandantService {
 
-    public get mandant$(): Observable<KiBonMandant> {
-        return this._mandant$.asObservable();
-    }
-
     private readonly _mandant$: ReplaySubject<KiBonMandant> = new ReplaySubject<KiBonMandant>(1);
 
     private readonly _multimandantActive$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
@@ -28,7 +24,9 @@ export class MandantService {
         this.applicationPropertyService.getPublicPropertiesCached().then(properties => {
             this._multimandantActive$.next(properties.mulitmandantAktiv);
         });
-        this._mandant$.next(MandantService.cookieToMandant(this.cookieService.get('mandant')));
+
+        // TODO: find proper en/decoding for cookie
+        this._mandant$.next(MandantService.cookieToMandant(this.cookieService.get('mandant').replace('+', ' ')));
     }
 
     private static hostnameToMandant(hostname: string): KiBonMandant {
@@ -68,6 +66,10 @@ export class MandantService {
             default:
                 return KiBonMandant.NONE;
         }
+    }
+
+    public get mandant$(): Observable<KiBonMandant> {
+        return this._mandant$.asObservable();
     }
 
     public isMultimandantActive$(): Observable<boolean> {

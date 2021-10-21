@@ -18,6 +18,8 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -244,7 +246,7 @@ public class GemeindeResource {
 			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
 	) {
 		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
+		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
 		return gemeindeService.getAktiveGemeinden().stream()
 				//TODO MANDANTEN: do this in getAktiveGemeinden
 			.filter(gemeinde -> gemeinde.getMandant() != null && gemeinde.getMandant().equals(mandant.get()))

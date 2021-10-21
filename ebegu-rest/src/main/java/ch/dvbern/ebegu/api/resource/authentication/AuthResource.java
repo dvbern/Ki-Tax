@@ -164,7 +164,6 @@ public class AuthResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response login(
 			@Nonnull JaxBenutzer loginElement,
-			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie,
 			@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN) Cookie authTokenCookie) {
 		if (configuration.isDummyLoginEnabled(converter.mandantToEntity(loginElement.getMandant(), new Mandant()))) {
 
@@ -206,7 +205,7 @@ public class AuthResource {
 			JaxAuthAccessElementCookieData element = convertToJaxAuthAccessElement(access);
 			boolean cookieSecure = isCookieSecure();
 
-			String domain = configuration.getHostdomain();
+			String domain = null;
 
 			// Cookie to store auth_token, HTTP-Only Cookie --> Protection from XSS
 			NewCookie authCookie = new NewCookie(AuthConstants.COOKIE_AUTH_TOKEN, access.getAuthToken(),
@@ -315,7 +314,7 @@ public class AuthResource {
 	public Response setMandant(@Nonnull final JaxMandant mandant) {
 		// Readable Cookie storing the mandant
 		NewCookie mandantCookie = new NewCookie(AuthConstants.COOKIE_MANDANT,
-				mandant.getName(),
+				URLEncoder.encode(mandant.getName(), StandardCharsets.UTF_8),
 				AuthConstants.COOKIE_PATH, configuration.getHostdomain(), "mandant",
 				60 * 60 * 24 * 365 * 2, isCookieSecure(), false);
 

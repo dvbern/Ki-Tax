@@ -18,7 +18,9 @@ package ch.dvbern.ebegu.api.resource;
 import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -139,7 +141,7 @@ public class ApplicationPropertyResource {
 	@PermitAll
 	public JaxApplicationProperties getBackgroundColor(@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
 		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
+		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
 		ApplicationProperty prop = getBackgroundColorProperty(mandant.get());
 		return converter.applicationPropertyToJAX(prop);
 	}
@@ -164,7 +166,7 @@ public class ApplicationPropertyResource {
 	@RolesAllowed(SUPER_ADMIN)
 	public List<JaxApplicationProperties> getAllApplicationProperties(@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
 		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getFirst());
-		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
+		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
 		return applicationPropertyService.getAllApplicationProperties(mandant.get()).stream()
 			.sorted(Comparator.comparing(o -> o.getName().name()))
 			.map(ap -> converter.applicationPropertyToJAX(ap))
@@ -186,7 +188,7 @@ public class ApplicationPropertyResource {
 		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
 
 		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
+		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
 
 		ApplicationProperty modifiedProperty =
 			this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(
@@ -216,7 +218,7 @@ public class ApplicationPropertyResource {
 		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
 		) {
 		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
+		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
 		ApplicationProperty modifiedProperty =
 			this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(
 				ApplicationPropertyKey.class,
@@ -260,7 +262,7 @@ public class ApplicationPropertyResource {
 	public Response getPublicProperties(@Context HttpServletResponse response, @CookieParam(AuthConstants.COOKIE_MANDANT)
 			Cookie mandantCookie) {
 		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
+		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
 		boolean devmode = ebeguConfiguration.getIsDevmode();
 		final String whitelist = readWhitelistAsString(mandant.get());
 		boolean dummyMode = ebeguConfiguration.isDummyLoginEnabled(mandant.get());

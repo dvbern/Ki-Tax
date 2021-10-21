@@ -16,6 +16,8 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -185,7 +187,7 @@ public class GesuchsperiodeResource {
 			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
 	) {
 		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
+		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
 		return gesuchsperiodeService.getAllGesuchsperioden().stream()
 				//TODO MANDANTEN: move to getAllGesuchsperioden
 				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant()
@@ -209,7 +211,7 @@ public class GesuchsperiodeResource {
 			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
 	) {
 		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
+		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
 		return gesuchsperiodeService.getAllActiveGesuchsperioden().stream()
 				//TODO MANDANTEN: move to getAllActiveGesuchsperioden
 				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant()
@@ -230,7 +232,7 @@ public class GesuchsperiodeResource {
 			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
 			) {
 		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
+		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
 		//TODO MANDANTEN: move to getAllaktivUndInaktivGesuchsperioden
 		return gesuchsperiodeService.getAllAktivUndInaktivGesuchsperioden().stream()
 				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant().equals(mandant.get()))
@@ -255,7 +257,7 @@ public class GesuchsperiodeResource {
 			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
 	) {
 		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
+		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
 		//TODO MANDANTEN: move to getAllAktivInaktivNichtVerwendeteGesuchsperioden
 		return gesuchsperiodeService.getAllAktivInaktivNichtVerwendeteGesuchsperioden(dossierId).stream()
 				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant()
@@ -281,7 +283,7 @@ public class GesuchsperiodeResource {
 			@Nullable @QueryParam("dossierId") String dossierId,
 			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
 		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
+		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
 
 		Collection<Gesuchsperiode> perioden = dossierId == null
 				? gesuchsperiodeService.getAllAktivUndInaktivGesuchsperioden()
@@ -310,7 +312,7 @@ public class GesuchsperiodeResource {
 			@Nullable @QueryParam("dossierId") String dossierId,
 			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
 		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(mandantCookie.getValue()).ifPresent(mandant::set);
+		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
 
 		Collection<Gesuchsperiode> perioden = dossierId == null
 				? gesuchsperiodeService.getAllActiveGesuchsperioden()
