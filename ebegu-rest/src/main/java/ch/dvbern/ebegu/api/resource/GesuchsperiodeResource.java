@@ -345,6 +345,11 @@ public class GesuchsperiodeResource {
 					return RestUtil.buildDownloadResponse(true, "vorlageVerfuegungLats" + sprache + ".docx",
 						"application/octet-stream", content);
 				}
+				else if (dokumentTyp == DokumentTyp.VORLAGE_VERFUEGUNG_FERIENBETREUUNG){
+					//noinspection StringConcatenationMissingWhitespace
+					return RestUtil.buildDownloadResponse(true, "vorlageVerfuegungFerienbetreuung" + sprache + ".docx",
+						"application/octet-stream", content);
+				}
 			} catch (IOException e) {
 				return Response.status(Status.NOT_FOUND)
 					.entity("Gesuchsperiode Dokument: " + dokumentTyp.toString() + " kann nicht gelesen werden")
