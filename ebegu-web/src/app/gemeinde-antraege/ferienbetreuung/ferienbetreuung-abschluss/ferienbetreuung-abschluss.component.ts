@@ -204,6 +204,23 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
         }, () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED')));
     }
 
+    public async zurueckAnKanton(): Promise<void> {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            frage: this.translate.instant('FERIENBETREUUNG_ZURUECK_AN_KANTON_FRAGE'),
+        };
+
+        if (!await (this.dialog.open(DvNgConfirmDialogComponent, dialogConfig))
+            .afterClosed()
+            .toPromise()) {
+            return;
+        }
+
+        this.ferienbetreuungsService.zurueckAnKanton(this.container).subscribe(() => {
+            this.wizardRS.updateSteps(this.WIZARD_TYPE, this.container.id);
+        }, () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED')));
+    }
+
     public abgeschlossen(): boolean {
         return this.container?.isAbgeschlossen();
     }

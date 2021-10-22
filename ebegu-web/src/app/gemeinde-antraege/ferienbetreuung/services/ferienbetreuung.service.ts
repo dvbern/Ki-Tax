@@ -295,4 +295,16 @@ export class FerienbetreuungService {
             tap(() => this.updateFerienbetreuungContainerStore(container.id)),
         );
     }
+
+    public zurueckAnKanton(container: TSFerienbetreuungAngabenContainer):
+        Observable<TSFerienbetreuungAngabenContainer> {
+        return this.http.put(
+            `${this.API_BASE_URL}/zurueck-an-kanton/${encodeURIComponent(container.id)}`,
+            {},
+        ).pipe(
+            map(restAngaben => this.ebeguRestUtil.parseFerienbetreuungContainer(new TSFerienbetreuungAngabenContainer(),
+                restAngaben)),
+            tap(() => this.updateFerienbetreuungContainerStore(container.id)),
+        );
+    }
 }

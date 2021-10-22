@@ -577,6 +577,21 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			container.setStatus(FerienbetreuungAngabenStatus.ABGESCHLOSSEN);
 			return persistence.merge(container);
 	}
+
+	@Nonnull
+	public FerienbetreuungAngabenContainer zurueckAnKanton(@Nonnull FerienbetreuungAngabenContainer container) {
+			Preconditions.checkArgument(
+				container.getStatus() == FerienbetreuungAngabenStatus.GEPRUEFT,
+				"FerienbetreuungAngabenContainer must be in state GEPRUEFT"
+			);
+			Preconditions.checkArgument(
+				container.getAngabenKorrektur() != null,
+				"FerienbetreuungAngabenContainer must not be null"
+			);
+
+			container.setStatus(FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON);
+			return persistence.merge(container);
+	}
 }
 
 

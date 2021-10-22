@@ -2524,6 +2524,7 @@
     "FERIENBETREUUNG_DOKUMENT_ERSTELLEN_DE": "Ferienbetreuung Verfügung in Deutsch erstellen und herunterladen",
     "FERIENBETREUUNG_DOKUMENT_ERSTELLEN_FR": "Ferienbetreuung Verfügung in Französisch erstellen und herunterladen",
     "FERIENBETREUUNG_ABSCHLIESSEN_FRAGE": "Wollen Sie diesen Antrag wirklich abschliessen? Dies kann nicht rückgängig gemacht werden",
+    "FERIENBETREUUNG_ZURUECK_AN_KANTON_FRAGE": "Wollen Sie diesen Antrag wirklich zurück in die Prüfung durch den Kanton geben?",
     "ANTRAG_ERSTELLT": "Der Antrag wurde erstellt",
     "ERROR_FB_SONDERSCHUELER": "Anzahl Betreuungstage für Sonderschüeler dürfen nicht höher sein, als die Anzahl der Betreuungstage der Gemeinde",
     "ERROR_FB_BETREUUNGSTAGE": "\"Betreuungstage von Kindern der anbietenden Gemeinde\" plus \"Betreuungstage von Kindern aus anderen Gemeinden\" muss gleich \"Anzahl Betreuungstage Kanton Bern\" sein",

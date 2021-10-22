@@ -2523,6 +2523,7 @@
     "FERIENBETREUUNG_DOKUMENT_ERSTELLEN_DE": "Ferienbetreuung Verfügung in Deutsch erstellen und herunterladen",
     "FERIENBETREUUNG_DOKUMENT_ERSTELLEN_FR": "Ferienbetreuung Verfügung in Französisch erstellen und herunterladen",
     "FERIENBETREUUNG_ABSCHLIESSEN_FRAGE": "Wollen Sie diesen Antrag wirklich abschliessen? Dies kann nicht rückgängig gemacht werden",
+    "FERIENBETREUUNG_ZURUECK_AN_KANTON_FRAGE": "Wollen Sie diesen Antrag wirklich zurück in die Prüfung durch den Kanton geben?",
     "ANTRAG_ERSTELLT": "La demande a été créée",
     "ERROR_FB_SONDERSCHUELER": "le nombre de jour de garde pour les écoliers spéciaux ne doit pas être plus élevé que le nombre de jour de garde de la commune",
     "ERROR_FB_BETREUUNGSTAGE": "\"Le nombre de jour de garde d'enfant provenant de la commune proposée\" plus \"le nombre de jour de garde d'enfant provenant d'autres communes\" doit être égal au \"nombre de jour de garde du canton de Bern\"",

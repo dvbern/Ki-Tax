@@ -24,7 +24,7 @@
     <span translate>FERIENBETREUUNG_DOKUMENT_ERSTELLEN_DE</span>
 </button>
 <br/>
-<button type="button" class="dv-btn btn-link link-underline"
+<button type="button" class="dv-btn btn-link link-underline margin-bottom-20"
         *ngIf="verfuegungErstellenVisible()"
         (click)="createVerfuegungDocumentFr()">
     <i *ngIf="!downloadingFrFile" class="fa fa-file-text-o"></i>
@@ -58,7 +58,7 @@
         *ngIf="verfuegungErstellenVisible()"
         type="button"
         class="secondary"
-        (buttonClick)="zurueckAnGemeinde()">
+        (buttonClick)="zurueckAnKanton()">
         <span translate>ZURUECK_IN_PRUEFUNG_TITLE</span>
     </dv-loading-button>
     <dv-loading-button
@@ -68,12 +68,12 @@
         <span translate>ABSCHLIESSEN</span>
     </dv-loading-button>
 </div>
-<p *ngIf="(abschliessenVisible() | async) && alreadyFreigegeben()"
+<p class="margin-bottom-20" *ngIf="(abschliessenVisible() | async) && alreadyFreigegeben()"
    [innerHTML]="'FERIENBETREUUNG_FREIGEGEBEN_AN_KANTON' | translate">
 </p>
-<p *ngIf="(geprueftVisible() | async) && alreadyGeprueft() && !verfuegungErstellenVisible() && !abgeschlossen()"
+<p class="margin-bottom-20" *ngIf="(geprueftVisible() | async) && alreadyGeprueft() && !verfuegungErstellenVisible() && !abgeschlossen()"
    [innerHTML]="'FERIENBETREUUNG_GEPRUEFT' | translate">
 </p>
-<p *ngIf="abgeschlossen()"
+<p class="margin-bottom-20" *ngIf="abgeschlossen()"
    [innerHTML]="'FERIENBETREUUNG_ABGESCHLOSSEN' | translate">
 </p>
