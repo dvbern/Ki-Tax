@@ -71,6 +71,9 @@
 <p *ngIf="(abschliessenVisible() | async) && alreadyFreigegeben()"
    [innerHTML]="'FERIENBETREUUNG_FREIGEGEBEN_AN_KANTON' | translate">
 </p>
-<p *ngIf="(geprueftVisible() | async) && alreadyGeprueft() && !verfuegungErstellenVisible()"
+<p *ngIf="(geprueftVisible() | async) && alreadyGeprueft() && !verfuegungErstellenVisible() && !abgeschlossen()"
    [innerHTML]="'FERIENBETREUUNG_GEPRUEFT' | translate">
+</p>
+<p *ngIf="abgeschlossen()"
+   [innerHTML]="'FERIENBETREUUNG_ABGESCHLOSSEN' | translate">
 </p>

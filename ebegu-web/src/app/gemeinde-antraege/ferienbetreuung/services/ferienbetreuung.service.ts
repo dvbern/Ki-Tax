@@ -283,4 +283,16 @@ export class FerienbetreuungService {
         );
 
     }
+
+    public abschliessen(container: TSFerienbetreuungAngabenContainer):
+        Observable<TSFerienbetreuungAngabenContainer> {
+        return this.http.put(
+            `${this.API_BASE_URL}/abschliessen/${encodeURIComponent(container.id)}`,
+            {},
+        ).pipe(
+            map(restAngaben => this.ebeguRestUtil.parseFerienbetreuungContainer(new TSFerienbetreuungAngabenContainer(),
+                restAngaben)),
+            tap(() => this.updateFerienbetreuungContainerStore(container.id)),
+        );
+    }
 }

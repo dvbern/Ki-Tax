@@ -205,6 +205,11 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 			status == FerienbetreuungAngabenStatus.ABGELEHNT;
 	}
 
+	public boolean isAbgeschlossen() {
+		return status == FerienbetreuungAngabenStatus.ABGELEHNT ||
+			status == FerienbetreuungAngabenStatus.VERFUEGT;
+	}
+
 	public void copyForFreigabe() {
 		// Nur moeglich, wenn noch nicht freigegeben und ueberhaupt Daten zum kopieren vorhanden
 		if (status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE) {

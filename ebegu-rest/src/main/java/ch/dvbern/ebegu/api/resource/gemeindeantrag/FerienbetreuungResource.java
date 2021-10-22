@@ -164,10 +164,10 @@ public class FerienbetreuungResource {
 					"ferienBetreuungAbschliessen",
 					containerId.getId()));
 
-		authorizer.checkWriteAuthorization(container);
+		authorizer.checkReadAuthorization(container);
 
 		FerienbetreuungAngabenContainer persisted =
-			ferienbetreuungService.ferienbetreuungAngabenAbschliessen(container);
+			ferienbetreuungService.antragAbschliessen(container);
 		return converter.ferienbetreuungAngabenContainerToJax(persisted);
 	}
 
@@ -240,6 +240,35 @@ public class FerienbetreuungResource {
 
 		FerienbetreuungAngabenContainer persisted =
 			ferienbetreuungService.ferienbetreuungAngabenZurueckAnGemeinde(container);
+		return converter.ferienbetreuungAngabenContainerToJax(persisted);
+	}
+
+	@ApiOperation(
+		value = "Schliesse den Antrag ab",
+		response = JaxFerienbetreuungAngabenContainer.class)
+	@PUT
+	@Path("/abschliessen/{containerId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, SACHBEARBEITER_MANDANT, ADMIN_MANDANT })
+	public JaxFerienbetreuungAngabenContainer abschliessen(
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response,
+		@Nonnull @NotNull @PathParam("containerId") JaxId containerId
+	) {
+		Objects.requireNonNull(containerId);
+		Objects.requireNonNull(containerId.getId());
+
+		FerienbetreuungAngabenContainer container =
+			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"abschliessen",
+					containerId.getId()));
+
+		authorizer.checkReadAuthorization(container);
+
+		FerienbetreuungAngabenContainer persisted =
+			ferienbetreuungService.antragAbschliessen(container);
 		return converter.ferienbetreuungAngabenContainerToJax(persisted);
 	}
 

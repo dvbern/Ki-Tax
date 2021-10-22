@@ -158,7 +158,8 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
 
     public verfuegungErstellenVisible(): boolean {
         return this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles())
-        && this.alreadyGeprueft();
+        && this.alreadyGeprueft()
+        && !this.container?.isAbgeschlossen();
     }
 
     public async zurueckAnGemeinde(): Promise<void> {
@@ -186,7 +187,24 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
         this.downloadingFrFile = true;
     }
 
-    public abschliessen(): void {
+    public async abschliessen(): Promise<void> {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            frage: this.translate.instant('FERIENBETREUUNG_ABSCHLIESSEN_FRAGE'),
+        };
 
+        if (!await (this.dialog.open(DvNgConfirmDialogComponent, dialogConfig))
+            .afterClosed()
+            .toPromise()) {
+            return;
+        }
+
+        this.ferienbetreuungsService.abschliessen(this.container).subscribe(() => {
+            this.wizardRS.updateSteps(this.WIZARD_TYPE, this.container.id);
+        }, () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED')));
+    }
+
+    public abgeschlossen(): boolean {
+        return this.container?.isAbgeschlossen();
     }
 }
