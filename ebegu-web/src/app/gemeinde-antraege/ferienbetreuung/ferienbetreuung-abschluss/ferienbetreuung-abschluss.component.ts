@@ -45,6 +45,8 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
 
     private readonly WIZARD_TYPE = TSWizardStepXTyp.FERIENBETREUUNG;
     private readonly unsubscribe: Subject<boolean> = new Subject<boolean>();
+    public downloadingDeFile: boolean = false;
+    public downloadingFrFile: boolean = false;
 
     public constructor(
         private readonly ferienbetreuungsService: FerienbetreuungService,
@@ -154,6 +156,11 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
             this.container?.angabenKorrektur?.kostenEinnahmen?.isAbgeschlossen();
     }
 
+    public verfuegungErstellenVisible(): boolean {
+        return this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles())
+        && this.alreadyGeprueft();
+    }
+
     public async zurueckAnGemeinde(): Promise<void> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
@@ -169,5 +176,17 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
         this.ferienbetreuungsService.zurueckAnGemeinde(this.container).subscribe(
             () => this.stateService.go('gemeindeantrage.view'),
             () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED')));
+    }
+
+    public createVerfuegungDocumentDe(): void {
+        this.downloadingDeFile = true;
+    }
+
+    public createVerfuegungDocumentFr(): void {
+        this.downloadingFrFile = true;
+    }
+
+    public abschliessen(): void {
+
     }
 }
