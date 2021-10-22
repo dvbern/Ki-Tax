@@ -1959,7 +1959,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			break;
 		}
 		case GEPRUEFT:
-		case VERFUEGT:
+		case ABGESCHLOSSEN:
 		case ABGELEHNT:
 			throwViolation(container);
 			return;
@@ -1981,7 +1981,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		case IN_BEARBEITUNG_GEMEINDE:
 		case IN_PRUEFUNG_KANTON:
 		case GEPRUEFT:
-		case VERFUEGT:
+		case ABGESCHLOSSEN:
 		case ABGELEHNT: {
 			if (principalBean.isCallerInAnyOfRole(getMandantSuperadminRoles())) {
 				return;

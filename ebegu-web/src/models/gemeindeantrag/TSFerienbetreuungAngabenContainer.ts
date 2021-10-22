@@ -83,7 +83,7 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
         return [
             FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON,
             FerienbetreuungAngabenStatus.GEPRUEFT,
-            FerienbetreuungAngabenStatus.VERFUEGT,
+            FerienbetreuungAngabenStatus.ABGESCHLOSSEN,
             FerienbetreuungAngabenStatus.ABGELEHNT
         ].includes(this.status);
     }
@@ -99,14 +99,14 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
     public isGeprueft(): boolean {
         return [
             FerienbetreuungAngabenStatus.GEPRUEFT,
-            FerienbetreuungAngabenStatus.VERFUEGT,
+            FerienbetreuungAngabenStatus.ABGESCHLOSSEN,
             FerienbetreuungAngabenStatus.ABGELEHNT
         ].includes(this.status);
     }
 
     public isAbgeschlossen(): boolean {
         return [
-            FerienbetreuungAngabenStatus.VERFUEGT,
+            FerienbetreuungAngabenStatus.ABGESCHLOSSEN,
             FerienbetreuungAngabenStatus.ABGELEHNT
         ].includes(this.status);
     }

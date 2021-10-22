@@ -128,7 +128,7 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 
 	@Override
 	public boolean isAntragAbgeschlossen() {
-		return status == FerienbetreuungAngabenStatus.VERFUEGT
+		return status == FerienbetreuungAngabenStatus.ABGESCHLOSSEN
 			|| status == FerienbetreuungAngabenStatus.ABGELEHNT;
 	}
 
@@ -171,7 +171,7 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 	public boolean isAtLeastInPruefungKanton() {
 		return status == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON ||
 			status == FerienbetreuungAngabenStatus.GEPRUEFT ||
-			status == FerienbetreuungAngabenStatus.VERFUEGT ||
+			status == FerienbetreuungAngabenStatus.ABGESCHLOSSEN ||
 			status == FerienbetreuungAngabenStatus.ABGELEHNT;
 	}
 
@@ -201,13 +201,13 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 
 	public boolean isGeprueft() {
 		return status == FerienbetreuungAngabenStatus.GEPRUEFT ||
-			status == FerienbetreuungAngabenStatus.VERFUEGT ||
+			status == FerienbetreuungAngabenStatus.ABGESCHLOSSEN ||
 			status == FerienbetreuungAngabenStatus.ABGELEHNT;
 	}
 
 	public boolean isAbgeschlossen() {
 		return status == FerienbetreuungAngabenStatus.ABGELEHNT ||
-			status == FerienbetreuungAngabenStatus.VERFUEGT;
+			status == FerienbetreuungAngabenStatus.ABGESCHLOSSEN;
 	}
 
 	public void copyForFreigabe() {

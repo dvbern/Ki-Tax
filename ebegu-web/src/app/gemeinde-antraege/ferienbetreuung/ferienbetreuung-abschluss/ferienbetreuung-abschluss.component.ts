@@ -146,7 +146,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
     public alreadyGeprueft(): boolean {
         return this.container?.status === FerienbetreuungAngabenStatus.GEPRUEFT ||
             this.container?.status === FerienbetreuungAngabenStatus.ABGELEHNT ||
-            this.container?.status === FerienbetreuungAngabenStatus.VERFUEGT;
+            this.container?.status === FerienbetreuungAngabenStatus.ABGESCHLOSSEN;
     }
 
     public readyForGeprueft(): boolean {
