@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -31,6 +32,7 @@ import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Fachstelle;
@@ -38,6 +40,7 @@ import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -45,6 +48,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Test;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_BEI_ANSPRUCH;
 import static ch.dvbern.ebegu.util.Constants.EinstellungenDefaultWerteAsiv.EINSTELLUNG_MAX_EINKOMMEN;
 import static ch.dvbern.ebegu.util.Constants.EinstellungenDefaultWerteAsiv.MAX_EINKOMMEN;
 import static org.junit.Assert.assertEquals;
@@ -236,6 +240,29 @@ public class EinkommenCalcRuleTest {
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG));
 		assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
+	}
+
+	@Test
+	public void testKeinePauschaleFuerErweiterteBeduernisseWennEinkommenZuHoch() {
+		Betreuung betreuung = prepareBetreuungKita(
+			EINKOMMEN_HOCH, false, true, true, FinSitStatus.AKZEPTIERT);
+		Map<EinstellungKey, Einstellung> einstellungenMap = EbeguRuleTestsHelper.getAllEinstellungen(betreuung.extractGesuchsperiode());
+		einstellungenMap.get(FKJV_PAUSCHALE_BEI_ANSPRUCH).setValue("true");
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungenMap);
+
+		assertNotNull(result);
+		assertEquals(1, result.size());
+		final VerfuegungZeitabschnitt abschnitt = result.get(0);
+		assertEquals(0, (new BigDecimal(EINSTELLUNG_MAX_EINKOMMEN)).compareTo(result.get(0).getMassgebendesEinkommen()));
+		assertEquals("Anspruch wird trotz Pauschale bes. Bed. auf 0 gesetzt", 0, abschnitt.getAnspruchberechtigtesPensum());
+		assertTrue("erweiterteBetreuung: BezahltVollkosten gesetzt", abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
+		assertFalse(abschnitt.getBemerkungenList().isEmpty());
+		assertEquals(4, abschnitt.getBemerkungenList().uniqueSize());
+		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.EINKOMMEN_KEINE_VERGUENSTIGUNG_GEWUENSCHT_MSG));
+		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG));
+		assertFalse(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	@Test

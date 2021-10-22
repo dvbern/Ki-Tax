@@ -46,14 +46,17 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 public class EinkommenCalcRule extends AbstractCalcRule {
 
 	private final BigDecimal maximalesEinkommen;
+	private final Boolean pauschalBeiAnspruch;
 
 	public EinkommenCalcRule(
 		DateRange validityPeriod,
 		BigDecimal maximalesEinkommen,
+		Boolean pauschalBeiAnspruch,
 		@Nonnull Locale locale
 	) {
 		super(RuleKey.EINKOMMEN, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 		this.maximalesEinkommen = maximalesEinkommen;
+		this.pauschalBeiAnspruch = pauschalBeiAnspruch;
 	}
 
 	@Override
@@ -130,7 +133,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 			//maximales einkommen wurde ueberschritten
 			inputData.setKategorieMaxEinkommen(true);
 			inputData.setKeinAnspruchAufgrundEinkommen(true);
-			if (!hasErweiterteBetreuung) {
+			if (!hasErweiterteBetreuung || pauschalBeiAnspruch) {
 				// Darf nur gesetzt werden, wenn KEINE erweiterten Beduerfnisse, da sonst der Zuschlag nicht ausbezahlt wird!
 				inputData.setBezahltVollkosten(true);
 				if (platz.getBetreuungsangebotTyp().isJugendamt()) {
@@ -138,6 +141,9 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 					// Wenn das Kind erweiterte Beduerfnisse hat, bleibt der Anspruch bestehen
 					// Bei Tagesschule muss der Anspruch immer 100 bleiben, siehe BetreuungsangebotTypCalcRule
 					inputData.setAnspruchZeroAndSaveRestanspruch();
+				}
+				if (hasErweiterteBetreuung) {
+					inputData.addBemerkung(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG, getLocale());
 				}
 			}
 			// Bemerkungen setzen, je nach Grund des Max-Einkommens

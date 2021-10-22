@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -123,4 +124,6 @@ public interface EinstellungService {
 	 */
 	@Nonnull
 	List<Einstellung> findEinstellungen(@Nonnull EinstellungKey key, @Nullable Gesuchsperiode gesuchsperiode);
+
+	Map<EinstellungKey, Einstellung> loadRuleParameters(Gemeinde gemeinde, Gesuchsperiode gesuchsperiode, Set<EinstellungKey> keysToLoad);
 }
