@@ -18,8 +18,8 @@
 <button type="button" class="dv-btn btn-link link-underline"
         *ngIf="verfuegungErstellenVisible()"
         (click)="createVerfuegungDocumentDe()">
-    <i *ngIf="!downloadingDeFile" class="fa fa-file-text-o"></i>
-    <i *ngIf="downloadingDeFile" class="fa fa-circle-o-notch fa-spin fa-fw"></i>
+    <i *ngIf="!(downloadingDeFile | async)" class="fa fa-file-text-o"></i>
+    <i *ngIf="downloadingDeFile | async" class="fa fa-circle-o-notch fa-spin fa-fw"></i>
     &nbsp;
     <span translate>FERIENBETREUUNG_DOKUMENT_ERSTELLEN_DE</span>
 </button>
@@ -27,8 +27,8 @@
 <button type="button" class="dv-btn btn-link link-underline margin-bottom-20"
         *ngIf="verfuegungErstellenVisible()"
         (click)="createVerfuegungDocumentFr()">
-    <i *ngIf="!downloadingFrFile" class="fa fa-file-text-o"></i>
-    <i *ngIf="downloadingFrFile" class="fa fa-circle-o-notch fa-spin fa-fw"></i>
+    <i *ngIf="!(downloadingFrFile | async)" class="fa fa-file-text-o"></i>
+    <i *ngIf="downloadingFrFile | async" class="fa fa-circle-o-notch fa-spin fa-fw"></i>
     &nbsp;
     <span translate>FERIENBETREUUNG_DOKUMENT_ERSTELLEN_FR</span>
 </button>

@@ -58,7 +58,7 @@ public class DocxDocument {
 			throw new EbeguRuntimeException(
 				"replacePlaceholder",
 				"placeholder not found in text: " + placeholder,
-				ErrorCodeEnum.ERROR_LATS_VERFUEGUNG_PLACEHOLDER_NOT_FOUND,
+				ErrorCodeEnum.ERROR_VERFUEGUNG_PLACEHOLDER_NOT_FOUND,
 				placeholder
 			);
 		}

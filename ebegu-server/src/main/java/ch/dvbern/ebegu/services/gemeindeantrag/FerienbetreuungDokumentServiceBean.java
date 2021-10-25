@@ -32,9 +32,17 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.docxmerger.DocxDocument;
+import ch.dvbern.ebegu.docxmerger.ferienbetreuung.FerienbetreuungDocxDTO;
+import ch.dvbern.ebegu.docxmerger.ferienbetreuung.FerienbetreuungDocxMerger;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument_;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -54,6 +62,9 @@ public class FerienbetreuungDokumentServiceBean extends AbstractBaseService
 
 	@Inject
 	private Authorizer authorizer;
+
+	@Inject
+	private FerienbetreuungService ferienbetreuungService;
 
 	@Nonnull
 	@Override
@@ -98,6 +109,42 @@ public class FerienbetreuungDokumentServiceBean extends AbstractBaseService
 		q.setParameter(containerIdParam, ferienbetreuungContainerId);
 
 		return q.getResultList();
+	}
+
+	@Override
+	@Nonnull
+	public byte[] createDocx(@Nonnull String containerId, @Nonnull Sprache sprache) {
+		FerienbetreuungAngabenContainer container =
+			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId)
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"createDocx",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					containerId)
+				);
+
+		authorizer.checkReadAuthorization(container);
+
+		final byte[] template = container.getGesuchsperiode().getVorlageVerfuegungFerienbetreuungWithSprache(sprache);
+		if (template.length == 0) {
+			throw new EbeguRuntimeException(
+				"createDocx",
+				"Ferienbetreuung Template not found für Gesuchsperiode " + container.getGesuchsperiode().getGesuchsperiodeString() + " und Sprache " + sprache,
+				ErrorCodeEnum.ERROR_FERIENBETREUUNG_VERFUEGUNG_TEMPLATE_NOT_FOUND,
+				container.getGesuchsperiode().getGesuchsperiodeString(),
+				sprache
+			);
+		}
+
+		DocxDocument document = new DocxDocument(template);
+		FerienbetreuungDocxMerger merger = new FerienbetreuungDocxMerger(document);
+		merger.addMergeFields(toFerienbetreuungDocxDTO(container, sprache));
+		merger.merge();
+		return document.getDocument();
+	}
+
+	@Nonnull
+	private FerienbetreuungDocxDTO toFerienbetreuungDocxDTO(@Nonnull FerienbetreuungAngabenContainer container, @Nonnull Sprache sprache) {
+		return null;
 	}
 }
 
