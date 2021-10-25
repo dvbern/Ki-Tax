@@ -56,7 +56,7 @@ pipeline {
               }
            }
         }
-        stage("Backend & Frontend with Arquillian") {
+        stage("Backend tests with Arquillian") {
            when {branch 'feature/*_tests'}
            steps {
               withMaven(jdk: 'OpenJDK_11.0.4', options: [
