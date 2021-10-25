@@ -14,7 +14,7 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
-import {from, Observable} from 'rxjs';
+import {forkJoin, from} from 'rxjs';
 import {filter, map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
@@ -373,23 +373,22 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     private initEKVMinEinkommen(): void {
-        const obs1$: Observable<TSEinstellungKey> = from(this.einstellungRS.findEinstellung(
+        const einkommensVerschlechterungBis$ = from(this.einstellungRS.findEinstellung(
             TSEinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF,
             this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id
+            this.gesuchModelManager.getGesuchsperiode().id,
         ))
             .pipe(map(einstellung => parseInt(einstellung.value, 10)))
             .pipe(filter(res => !isNaN(res)));
 
-        const obs2$ = from(this.ekvContainerRS
+        const minMassgebendendesEinkommen$ = from(this.ekvContainerRS
             .getMinimalesMassgebendesEinkommenForGesuch(this.gesuchModelManager.getGesuch()));
 
-        obs1$.subscribe(res => {
-            this.maxAllowedEinkommenForEKV = res;
-            obs2$.subscribe(res2 => {
-                this.currentMinEinkommenEKV = res2;
-            }, err => LOG.error(err));
-        }, err => LOG.error(err));
+        forkJoin([einkommensVerschlechterungBis$, minMassgebendendesEinkommen$])
+            .subscribe(([einkommensverschlechterungBis, minMassgebendenEinkommen]) => {
+                this.maxAllowedEinkommenForEKV = einkommensverschlechterungBis;
+                this.currentMinEinkommenEKV = minMassgebendenEinkommen;
+            }, error => LOG.error(error));
     }
 
     public getMaxEinkommenTranslateValues(): any {
