@@ -218,8 +218,6 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	@Override
 	@Nonnull
 	public Collection<Einstellung> getAllEinstellungenByMandant(@Nonnull Gesuchsperiode gesuchsperiode) {
-		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() ->
-			new EbeguRuntimeException("getAllEinstellungenByMandantAsMap", "Benutzer nicht eingeloggt"));
 
 		final EntityManager entityManager = persistence.getEntityManager();
 		Collection<Einstellung> result = new ArrayList<>();
