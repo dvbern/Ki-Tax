@@ -39,7 +39,7 @@ pipeline {
                     spotbugsPublisher(disabled: true),
                     artifactsPublisher(disabled: true)
               ]) {
-                 sh './mvnw -B -U -T 1C -P dvbern.oss -P test-wildfly-managed -P ci -P frontend clean test'
+                 sh './mvnw -B -U -T 1C -P dvbern.oss -P ci -P frontend clean test'
               }
            }
         }
@@ -53,6 +53,19 @@ pipeline {
                     artifactsPublisher(disabled: true)
               ]) {
                  sh './mvnw -B -U -T 1C -P dvbern.oss -P test-wildfly-managed -P ci -P frontend clean install'
+              }
+           }
+        }
+        stage("Backend & Frontend with Arquillian") {
+           when {branch 'feature-test/*'}
+           steps {
+              withMaven(jdk: 'OpenJDK_11.0.4', options: [
+                    junitPublisher(healthScaleFactor: 1.0),
+                    findbugsPublisher(disabled: true),
+                    spotbugsPublisher(disabled: true),
+                    artifactsPublisher(disabled: true)
+              ]) {
+                 sh './mvnw -B -U -T 1C -P dvbern.oss -P test-wildfly-managed -P ci clean install'
               }
            }
         }
