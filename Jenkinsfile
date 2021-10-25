@@ -57,7 +57,7 @@ pipeline {
            }
         }
         stage("Backend & Frontend with Arquillian") {
-           when {branch 'feature-test/*'}
+           when {branch 'feature/*_tests'}
            steps {
               withMaven(jdk: 'OpenJDK_11.0.4', options: [
                     junitPublisher(healthScaleFactor: 1.0),
