@@ -69,8 +69,6 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
-	@Inject
-	private BenutzerService benutzerService;
 
 
 	@Override
