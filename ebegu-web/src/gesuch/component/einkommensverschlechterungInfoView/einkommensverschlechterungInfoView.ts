@@ -367,8 +367,8 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     public warningEinkommenTooHighVisible(): boolean {
-        return !!this.maxAllowedEinkommenForEKV
-            && !!this.currentMinEinkommenEKV
+        return EbeguUtil.isNotNullOrUndefined(this.maxAllowedEinkommenForEKV)
+            && EbeguUtil.isNotNullOrUndefined(this.currentMinEinkommenEKV)
             && this.maxAllowedEinkommenForEKV < this.currentMinEinkommenEKV;
     }
 
