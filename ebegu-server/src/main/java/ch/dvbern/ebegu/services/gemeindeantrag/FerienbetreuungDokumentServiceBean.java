@@ -32,10 +32,14 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.docxmerger.DocxDocument;
 import ch.dvbern.ebegu.docxmerger.ferienbetreuung.FerienbetreuungDocxDTO;
 import ch.dvbern.ebegu.docxmerger.ferienbetreuung.FerienbetreuungDocxMerger;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument_;
@@ -45,6 +49,8 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
+import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 /**
@@ -65,6 +71,15 @@ public class FerienbetreuungDokumentServiceBean extends AbstractBaseService
 
 	@Inject
 	private FerienbetreuungService ferienbetreuungService;
+
+	@Inject
+	private PrincipalBean principalBean;
+
+	@Inject
+	private GemeindeService gemeindeService;
+
+	@Inject
+	private EinstellungService einstellungService;
 
 	@Nonnull
 	@Override
@@ -144,7 +159,56 @@ public class FerienbetreuungDokumentServiceBean extends AbstractBaseService
 
 	@Nonnull
 	private FerienbetreuungDocxDTO toFerienbetreuungDocxDTO(@Nonnull FerienbetreuungAngabenContainer container, @Nonnull Sprache sprache) {
-		return null;
+		Objects.requireNonNull(container.getAngabenKorrektur());
+		FerienbetreuungAngaben angabenKorrektur = container.getAngabenKorrektur();
+
+		FerienbetreuungDocxDTO dto = new FerienbetreuungDocxDTO();
+		dto.setUserName(this.principalBean.getBenutzer().getFullName());
+		dto.setUserEmail(this.principalBean.getBenutzer().getEmail());
+
+		GemeindeStammdaten stammdaten = this.gemeindeService.getGemeindeStammdatenByGemeindeId(container.getGemeinde().getId()).orElseThrow(() ->
+			new EbeguEntityNotFoundException("toFerienbetreuungDocxDTO", container.getGemeinde().getId())
+		);
+
+		dto.setGemeindeAnschrift(stammdaten.getAdresse().getOrganisation());
+		dto.setGemeindeStrasse(stammdaten.getAdresse().getStrasse());
+		dto.setGemeindeNr(stammdaten.getAdresse().getHausnummer());
+		dto.setGemeindePLZ(stammdaten.getAdresse().getPlz());
+		dto.setGemeindeOrt(stammdaten.getAdresse().getOrt());
+		dto.setFallNummer(buildFallNummer(container, stammdaten));
+		dto.setPeriode(container.getGesuchsperiode().getGesuchsperiodeString());
+		dto.setAngebot(angabenKorrektur.getFerienbetreuungAngabenAngebot().getAngebot());
+		var traegerschaft = angabenKorrektur.getFerienbetreuungAngabenStammdaten().getTraegerschaft() != null
+			? angabenKorrektur.getFerienbetreuungAngabenStammdaten().getTraegerschaft()
+			: container.getGemeinde().getName();
+		dto.setTraegerschaft(traegerschaft);
+
+		dto.setTageSonderschueler(angabenKorrektur.getFerienbetreuungAngabenNutzung().getAnzahlTageSonderschueler());
+		dto.setTageOhneSonderschuelertage(angabenKorrektur.getFerienbetreuungAngabenNutzung().getAnzahlTageOhneSonderschueler());
+
+//		dto.setChfSonderschueler();
+//		dto.setChfOhneSonderschueler();
+		dto.setTotalTage(angabenKorrektur.getFerienbetreuungAngabenNutzung().getAnzahlBetreuungstageKinderBern());
+//		dto.setTotalChf();
+		Objects.requireNonNull(angabenKorrektur.getFerienbetreuungAngabenStammdaten().getAuszahlungsdaten());
+		dto.setIban(angabenKorrektur.getFerienbetreuungAngabenStammdaten().getAuszahlungsdaten().getIban().getIban());
+
+		dto.setFolgePeriode(buildFolgeperiodeString(container.getGesuchsperiode()));
+		return dto;
+	}
+
+	@Nonnull
+	private String buildFolgeperiodeString(@Nonnull Gesuchsperiode gesuchsperiode) {
+		var dateFrom = gesuchsperiode.getGueltigkeit().getGueltigAb().plusYears(1);
+		var dateBis = gesuchsperiode.getGueltigkeit().getGueltigBis().plusYears(1);
+		var periode = new Gesuchsperiode();
+		periode.getGueltigkeit().setGueltigAb(dateFrom);
+		periode.getGueltigkeit().setGueltigBis(dateBis);
+		return periode.getGesuchsperiodeString();
+	}
+
+	private String buildFallNummer(FerienbetreuungAngabenContainer container, GemeindeStammdaten stammdaten) {
+		return "abcd";
 	}
 }
 

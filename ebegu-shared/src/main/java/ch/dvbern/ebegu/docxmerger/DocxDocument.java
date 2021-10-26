@@ -153,6 +153,9 @@ public class DocxDocument {
 				break;
 			}
 			String runText = runs.get(j).getText(0);
+			if (runText == null) {
+				continue;
+			}
 			int placeholderPartInThisRun = Math.min(restOfPlaceholderSize, runText.length());
 			runText = runText.substring(placeholderPartInThisRun);
 			restOfPlaceholderSize -= placeholderPartInThisRun;

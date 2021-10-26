@@ -23,11 +23,11 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.docxmerger.DocxDocument;
 import ch.dvbern.ebegu.docxmerger.DocxMerger;
+import ch.dvbern.ebegu.docxmerger.mergefield.BigDecimalMergeField;
 import ch.dvbern.ebegu.docxmerger.mergefield.StringMergeField;
+import ch.dvbern.ebegu.util.Constants;
 
 public class FerienbetreuungDocxMerger extends DocxMerger<FerienbetreuungDocxDTO> {
-
-	private static final String NO_DECIMAL_FORMAT = "#,##0";
 
 	public FerienbetreuungDocxMerger(DocxDocument docxDocument) {
 		super(docxDocument);
@@ -43,7 +43,41 @@ public class FerienbetreuungDocxMerger extends DocxMerger<FerienbetreuungDocxDTO
 		this.mergeFields.add(new StringMergeField("gemeindeNr", dto.getGemeindeNr()));
 		this.mergeFields.add(new StringMergeField("gemeindePLZ", dto.getGemeindePLZ()));
 		this.mergeFields.add(new StringMergeField("gemeindeOrt", dto.getGemeindeOrt()));
-		this.mergeFields.add(new StringMergeField("gemeindeName", dto.getGemeindeName()));
 		this.mergeFields.add(new StringMergeField("fallNummer", dto.getFallNummer()));
+		this.mergeFields.add(new StringMergeField("periode", dto.getPeriode()));
+		this.mergeFields.add(new StringMergeField("angebot", dto.getAngebot()));
+		this.mergeFields.add(new StringMergeField("traegerschaft", dto.getTraegerschaft()));
+		this.mergeFields.add(new BigDecimalMergeField(
+			"tageSonderschueler",
+			dto.getTageSonderschueler(),
+			Constants.NO_DECIMAL_PATTERN
+		));
+		this.mergeFields.add(new BigDecimalMergeField(
+			"chfSonderschueler",
+			dto.getChfSonderschueler(),
+			Constants.CURRENCY_PATTERN
+		));
+		this.mergeFields.add(new BigDecimalMergeField(
+			"tageOhneSonderschueler",
+			dto.getTageOhneSonderschueler(),
+			Constants.NO_DECIMAL_PATTERN
+		));
+		this.mergeFields.add(new BigDecimalMergeField(
+			"chfOhneSonderschueler",
+			dto.getChfOhneSonderschueler(),
+			Constants.CURRENCY_PATTERN
+		));
+		this.mergeFields.add(new BigDecimalMergeField(
+			"totalTage",
+			dto.getTotalTage(),
+			Constants.NO_DECIMAL_PATTERN
+		));
+		this.mergeFields.add(new BigDecimalMergeField(
+			"totalChf",
+			dto.getTotalChf(),
+			Constants.CURRENCY_PATTERN
+		));
+		this.mergeFields.add(new StringMergeField("iban", dto.getIban()));
+		this.mergeFields.add(new StringMergeField("folgePeriode", dto.getFolgePeriode()));
 	}
 }

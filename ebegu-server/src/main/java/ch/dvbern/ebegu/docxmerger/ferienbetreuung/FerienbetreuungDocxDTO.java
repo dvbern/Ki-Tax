@@ -30,22 +30,18 @@ public class FerienbetreuungDocxDTO {
 	@Nullable private String gemeindePLZ;
 	@Nullable private String gemeindeOrt;
 	@Nullable private String fallNummer;
-	@Nullable private String gemeindeName;
-	@Nullable private BigDecimal betreuungsstunden;
-	@Nullable private BigDecimal betreuungsstundenProg;
-	@Nullable private String normlohnkosten;
-	@Nullable private String normlohnkostenProg;
-	@Nullable private BigDecimal normlohnkostenTotal;
-	@Nullable private BigDecimal normlohnkostenTotalProg;
-	@Nullable private BigDecimal elterngebuehren;
-	@Nullable private BigDecimal elterngebuehrenProg;
-	@Nullable private BigDecimal lastenausgleichsberechtigterBetrag;
-	@Nullable private BigDecimal lastenausgleichsberechtigterBetragProg;
-	@Nullable private BigDecimal ersteRate;
-	@Nullable private BigDecimal ersteRateProg;
-	@Nullable private BigDecimal zweiteRate;
-	@Nullable private BigDecimal auszahlungTotal;
-	@Nullable private String textPaedagogischOderNicht;
+	@Nullable private String periode;
+	@Nullable private String angebot;
+	@Nullable private String traegerschaft;
+	@Nullable private BigDecimal tageSonderschueler;
+	@Nullable private BigDecimal chfSonderschueler;
+	@Nullable private BigDecimal tageOhneSonderschueler;
+	@Nullable private BigDecimal chfOhneSonderschueler;
+	@Nullable private BigDecimal totalTage;
+	@Nullable private BigDecimal totalChf;
+	@Nullable private String iban;
+	@Nullable private String folgePeriode;
+
 
 	public FerienbetreuungDocxDTO() {
 	}
@@ -114,155 +110,110 @@ public class FerienbetreuungDocxDTO {
 	}
 
 	@Nullable
-	public String getGemeindeName() {
-		return gemeindeName;
-	}
-
-	public void setGemeindeName(@Nullable String gemeindeName) {
-		this.gemeindeName = gemeindeName;
-	}
-
-	@Nullable
-	public BigDecimal getBetreuungsstunden() {
-		return betreuungsstunden;
-	}
-
-	public void setBetreuungsstunden(@Nullable BigDecimal betreuungsstunden) {
-		this.betreuungsstunden = betreuungsstunden;
-	}
-
-	@Nullable
-	public BigDecimal getBetreuungsstundenProg() {
-		return betreuungsstundenProg;
-	}
-
-	public void setBetreuungsstundenProg(@Nullable BigDecimal betreuungsstundenProg) {
-		this.betreuungsstundenProg = betreuungsstundenProg;
-	}
-
-	@Nullable
-	public String getNormlohnkosten() {
-		return normlohnkosten;
-	}
-
-	public void setNormlohnkosten(@Nullable String normlohnkosten) {
-		this.normlohnkosten = normlohnkosten;
-	}
-
-	@Nullable
-	public String getNormlohnkostenProg() {
-		return normlohnkostenProg;
-	}
-
-	public void setNormlohnkostenProg(@Nullable String normlohnkostenProg) {
-		this.normlohnkostenProg = normlohnkostenProg;
-	}
-
-	@Nullable
-	public BigDecimal getNormlohnkostenTotal() {
-		return normlohnkostenTotal;
-	}
-
-	public void setNormlohnkostenTotal(@Nullable BigDecimal normlohnkostenTotal) {
-		this.normlohnkostenTotal = normlohnkostenTotal;
-	}
-
-	@Nullable
-	public BigDecimal getNormlohnkostenTotalProg() {
-		return normlohnkostenTotalProg;
-	}
-
-	public void setNormlohnkostenTotalProg(@Nullable BigDecimal normlohnkostenTotalProg) {
-		this.normlohnkostenTotalProg = normlohnkostenTotalProg;
-	}
-
-	@Nullable
-	public BigDecimal getElterngebuehren() {
-		return elterngebuehren;
-	}
-
-	public void setElterngebuehren(@Nullable BigDecimal elterngebuehren) {
-		this.elterngebuehren = elterngebuehren;
-	}
-
-	@Nullable
-	public BigDecimal getElterngebuehrenProg() {
-		return elterngebuehrenProg;
-	}
-
-	public void setElterngebuehrenProg(@Nullable BigDecimal elterngebuehrenProg) {
-		this.elterngebuehrenProg = elterngebuehrenProg;
-	}
-
-	@Nullable
-	public BigDecimal getLastenausgleichsberechtigterBetrag() {
-		return lastenausgleichsberechtigterBetrag;
-	}
-
-	public void setLastenausgleichsberechtigterBetrag(@Nullable BigDecimal lastenausgleichsberechtigterBetrag) {
-		this.lastenausgleichsberechtigterBetrag = lastenausgleichsberechtigterBetrag;
-	}
-
-	@Nullable
-	public BigDecimal getLastenausgleichsberechtigterBetragProg() {
-		return lastenausgleichsberechtigterBetragProg;
-	}
-
-	public void setLastenausgleichsberechtigterBetragProg(@Nullable BigDecimal lastenausgleichsberechtigterBetragProg) {
-		this.lastenausgleichsberechtigterBetragProg = lastenausgleichsberechtigterBetragProg;
-	}
-
-	@Nullable
-	public BigDecimal getErsteRate() {
-		return ersteRate;
-	}
-
-	public void setErsteRate(@Nullable BigDecimal ersteRate) {
-		this.ersteRate = ersteRate;
-	}
-
-	@Nullable
-	public BigDecimal getErsteRateProg() {
-		return ersteRateProg;
-	}
-
-	public void setErsteRateProg(@Nullable BigDecimal ersteRateProg) {
-		this.ersteRateProg = ersteRateProg;
-	}
-
-	@Nullable
-	public BigDecimal getZweiteRate() {
-		return zweiteRate;
-	}
-
-	public void setZweiteRate(@Nullable BigDecimal zweiteRate) {
-		this.zweiteRate = zweiteRate;
-	}
-
-	@Nullable
-	public BigDecimal getAuszahlungTotal() {
-		return auszahlungTotal;
-	}
-
-	public void setAuszahlungTotal(@Nullable BigDecimal auszahlungTotal) {
-		this.auszahlungTotal = auszahlungTotal;
-	}
-
-	@Nullable
-	public String getTextPaedagogischOderNicht() {
-		return textPaedagogischOderNicht;
-	}
-
-	public void setTextPaedagogischOderNicht(@Nullable String textPaedagogischOderNicht) {
-		this.textPaedagogischOderNicht = textPaedagogischOderNicht;
-	}
-
-	@Nullable
 	public String getFallNummer() {
 		return fallNummer;
 	}
 
 	public void setFallNummer(@Nullable String fallNummer) {
 		this.fallNummer = fallNummer;
+	}
+
+	@Nullable
+	public String getPeriode() {
+		return periode;
+	}
+
+	public void setPeriode(@Nullable String periode) {
+		this.periode = periode;
+	}
+
+	@Nullable
+	public String getAngebot() {
+		return angebot;
+	}
+
+	public void setAngebot(@Nullable String angebot) {
+		this.angebot = angebot;
+	}
+
+	@Nullable
+	public String getTraegerschaft() {
+		return traegerschaft;
+	}
+
+	public void setTraegerschaft(@Nullable String traegerschaft) {
+		this.traegerschaft = traegerschaft;
+	}
+
+	@Nullable
+	public BigDecimal getTageSonderschueler() {
+		return tageSonderschueler;
+	}
+
+	public void setTageSonderschueler(@Nullable BigDecimal tageSonderschueler) {
+		this.tageSonderschueler = tageSonderschueler;
+	}
+
+	@Nullable
+	public BigDecimal getChfSonderschueler() {
+		return chfSonderschueler;
+	}
+
+	public void setChfSonderschueler(@Nullable BigDecimal chfSonderschueler) {
+		this.chfSonderschueler = chfSonderschueler;
+	}
+
+	@Nullable
+	public BigDecimal getTageOhneSonderschueler() {
+		return tageOhneSonderschueler;
+	}
+
+	public void setTageOhneSonderschuelertage(@Nullable BigDecimal tageOhneSonderschueler) {
+		this.tageOhneSonderschueler = tageOhneSonderschueler;
+	}
+
+	@Nullable
+	public BigDecimal getChfOhneSonderschueler() {
+		return chfOhneSonderschueler;
+	}
+
+	public void setChfOhneSonderschueler(@Nullable BigDecimal chfOhneSonderschueler) {
+		this.chfOhneSonderschueler = chfOhneSonderschueler;
+	}
+
+	@Nullable
+	public BigDecimal getTotalTage() {
+		return totalTage;
+	}
+
+	public void setTotalTage(@Nullable BigDecimal totalTage) {
+		this.totalTage = totalTage;
+	}
+
+	@Nullable
+	public BigDecimal getTotalChf() {
+		return totalChf;
+	}
+
+	public void setTotalChf(@Nullable BigDecimal totalChf) {
+		this.totalChf = totalChf;
+	}
+
+	@Nullable
+	public String getIban() {
+		return iban;
+	}
+
+	public void setIban(@Nullable String iban) {
+		this.iban = iban;
+	}
+
+	@Nullable
+	public String getFolgePeriode() {
+		return folgePeriode;
+	}
+
+	public void setFolgePeriode(@Nullable String folgePeriode) {
+		this.folgePeriode = folgePeriode;
 	}
 }

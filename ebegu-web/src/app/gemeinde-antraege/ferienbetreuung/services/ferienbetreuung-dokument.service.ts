@@ -38,6 +38,7 @@ export class FerienbetreuungDokumentService {
     ): Observable<any> {
         return this.http.post(
             `${this.API_BASE_URL}/docx-erstellen/${encodeURIComponent(antrag.id)}/${sprache}`,
+            {},
             {responseType: 'blob'}
         );
     }
