@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
@@ -47,16 +48,19 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 
 	private final BigDecimal maximalesEinkommen;
 	private final Boolean pauschalBeiAnspruch;
+	@Nullable private final BigDecimal maxEinkommenEKV;
 
 	public EinkommenCalcRule(
 		DateRange validityPeriod,
 		BigDecimal maximalesEinkommen,
+		@Nullable BigDecimal maxEinkommenEKV,
 		Boolean pauschalBeiAnspruch,
 		@Nonnull Locale locale
 	) {
 		super(RuleKey.EINKOMMEN, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 		this.maximalesEinkommen = maximalesEinkommen;
 		this.pauschalBeiAnspruch = pauschalBeiAnspruch;
+		this.maxEinkommenEKV = maxEinkommenEKV;
 	}
 
 	@Override
@@ -184,13 +188,17 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 
 		if (isEkv1) {
 			if (finanzDatenDTO.isEkv1AcceptedAndNotAnnuliert()) {
-				inputData.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjP1VorAbzFamGr());
-				inputData.setEinkommensjahr(basisjahrPlus1);
-				inputData.addBemerkung(
-					MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG,
-					locale,
-					String.valueOf(basisjahrPlus1),
-					String.valueOf(basisjahr));
+				if (checkMassgebendesEinkommenNachAbzugTooHighForEKV(inputData, finanzDatenDTO)) {
+					ignoreEKVAndSetMessage(finanzDatenDTO, inputData, locale, basisjahr);
+				} else {
+					inputData.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjP1VorAbzFamGr());
+					inputData.setEinkommensjahr(basisjahrPlus1);
+					inputData.addBemerkung(
+						MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG,
+						locale,
+						String.valueOf(basisjahrPlus1),
+						String.valueOf(basisjahr));
+				}
 			} else {
 				inputData.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjVorAbzFamGr());
 				inputData.setEinkommensjahr(basisjahr);
@@ -211,21 +219,22 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 
 		} else if (isEkv2) {
 			if (finanzDatenDTO.isEkv2AcceptedAndNotAnnuliert()) {
-				inputData.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjP2VorAbzFamGr());
-				inputData.setEinkommensjahr(basisjahrPlus2);
-				inputData.addBemerkung(
-					MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG,
-					locale,
-					String.valueOf(basisjahrPlus2),
-					String.valueOf(basisjahr));
+				if (checkMassgebendesEinkommenNachAbzugTooHighForEKV(inputData, finanzDatenDTO)) {
+					ignoreEKVAndSetMessage(finanzDatenDTO, inputData, locale, basisjahr);
+				} else {
+					inputData.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjP2VorAbzFamGr());
+					inputData.setEinkommensjahr(basisjahrPlus2);
+					inputData.addBemerkung(
+						MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG,
+						locale,
+						String.valueOf(basisjahrPlus2),
+						String.valueOf(basisjahr));
+				}
 			} else {
 				inputData.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjVorAbzFamGr());
 				inputData.setEinkommensjahr(basisjahr);
 				if (finanzDatenDTO.isEkv2Annulliert()) {
-					inputData.addBemerkung(
-						MsgKey.EINKOMMENSVERSCHLECHTERUNG_ANNULLIERT_MSG,
-						locale,
-						String.valueOf(basisjahrPlus2));
+					ignoreEKVAndSetMessage(finanzDatenDTO, inputData, locale, basisjahr);
 				} else {
 					inputData.addBemerkung(
 						MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG,
@@ -238,6 +247,38 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 			inputData.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjVorAbzFamGr());
 			inputData.setEinkommensjahr(basisjahr);
 		}
+	}
+
+	private void ignoreEKVAndSetMessage(
+		@Nonnull FinanzDatenDTO finanzDatenDTO,
+		@Nonnull BGCalculationInput inputData,
+		@Nonnull Locale locale,
+		int basisjahr
+	) {
+		inputData.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjVorAbzFamGr());
+		inputData.setEinkommensjahr(basisjahr);
+		inputData.addBemerkung(
+			MsgKey.EINKOMMEN_TOO_HIGH_FOR_EKV,
+			locale,
+			NumberFormat.getInstance().format(this.maxEinkommenEKV)
+		);
+	}
+
+	private boolean checkMassgebendesEinkommenNachAbzugTooHighForEKV(
+		@Nonnull BGCalculationInput inputData,
+		@Nonnull FinanzDatenDTO finanzDatenDTO
+	) {
+		// rule not active
+		if (this.maxEinkommenEKV == null) {
+			return false;
+		}
+		// abzug is null if familienAbzugAbschnittRule not active. In this case, there is no familienabzug
+		var abzug = (inputData.getAbzugFamGroesse() == null)
+			? BigDecimal.ZERO
+			: inputData.getAbzugFamGroesse();
+		return finanzDatenDTO.getMassgebendesEinkBjVorAbzFamGr()
+			.subtract(abzug)
+			.compareTo(this.maxEinkommenEKV) > 0;
 	}
 
 	@Override

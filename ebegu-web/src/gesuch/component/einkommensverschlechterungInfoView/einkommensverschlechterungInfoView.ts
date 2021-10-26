@@ -14,16 +14,22 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
+import {from, Observable} from 'rxjs';
+import {filter, map, mergeMap} from 'rxjs/operators';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {isAtLeastFreigegeben} from '../../../models/enums/TSAntragStatus';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSEinkommensverschlechterungContainer} from '../../../models/TSEinkommensverschlechterungContainer';
 import {TSEinkommensverschlechterungInfo} from '../../../models/TSEinkommensverschlechterungInfo';
 import {TSEinkommensverschlechterungInfoContainer} from '../../../models/TSEinkommensverschlechterungInfoContainer';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -40,6 +46,7 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const LOG = LogFactory.createLog('EinkommensverschlechterungInfoViewComponentConfig');
 
 export class EinkommensverschlechterungInfoViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -65,6 +72,7 @@ export class EinkommensverschlechterungInfoViewController
         'EinkommensverschlechterungContainerRS',
         '$timeout',
         '$translate',
+        'EinstellungRS',
     ];
 
     public initialEinkVersInfo: TSEinkommensverschlechterungInfoContainer;
@@ -74,6 +82,8 @@ export class EinkommensverschlechterungInfoViewController
         jahr2periode: this.getBasisjahrPlus2(),
         basisjahr: this.getBasisjahr(),
     };
+    public maxAllowedEinkommenForEKV: number;
+    public currentMinEinkommenEKV: number;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -89,6 +99,7 @@ export class EinkommensverschlechterungInfoViewController
         private readonly ekvContainerRS: EinkommensverschlechterungContainerRS,
         $timeout: ITimeoutService,
         private readonly $translate: ITranslateService,
+        private readonly einstellungRS: EinstellungRS,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -101,6 +112,11 @@ export class EinkommensverschlechterungInfoViewController
         this.model = angular.copy(this.initialEinkVersInfo);
         this.initViewModel();
         this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
+        this.initEKVMinEinkommen();
+    }
+
+    private static isEkvBisEinstellungActivated(ekvBisEinstellung: TSEinstellung): boolean {
+        return ekvBisEinstellung.value !== 'null';
     }
 
     private initViewModel(): void {
@@ -166,7 +182,7 @@ export class EinkommensverschlechterungInfoViewController
         if (this.isConfirmationOnlyOnePeriodeRequired()) {
             const descriptionText: any = this.$translate.instant(
                 'EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG',
-                this.basisJahrUndPeriode
+                this.basisJahrUndPeriode,
             );
             return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                 title: 'EINKVERS_ONE_PERIODE_WARNING',
@@ -341,17 +357,61 @@ export class EinkommensverschlechterungInfoViewController
 
     public showAblehnungBasisJahrPlus1(): boolean {
         return (!this.isAmt() && this.showEkvi() && this.showJahrPlus1()
-            && this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus1Annulliert && this.isGesuchFreigegeben())
+                && this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus1Annulliert && this.isGesuchFreigegeben())
             || (this.isAmt() && this.showEkvi() && this.showJahrPlus1());
     }
 
     public showAblehnungBasisJahrPlus2(): boolean {
         return (!this.isAmt() && this.showEkvi() && this.showJahrPlus2()
-            && this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus2Annulliert && this.isGesuchFreigegeben())
+                && this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus2Annulliert && this.isGesuchFreigegeben())
             || (this.isAmt() && this.showEkvi() && this.showJahrPlus2());
     }
 
     public isFinanzielleSituationRequired(): boolean {
         return this.gesuchModelManager.isFinanzielleSituationEnabled() && this.gesuchModelManager.isFinanzielleSituationRequired();
+    }
+
+    public warningEinkommenTooHighVisible(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.maxAllowedEinkommenForEKV)
+            && EbeguUtil.isNotNullOrUndefined(this.currentMinEinkommenEKV)
+            && this.maxAllowedEinkommenForEKV < this.currentMinEinkommenEKV;
+    }
+
+    private initEKVMinEinkommen(): void {
+        this.getEinkommensverschlechterungBis$()
+            .pipe(
+                mergeMap(einkommensverschlechterungBis => this.getMinMassgebendesEinkommen$().pipe(
+                    map(
+                        minMassgebendenEinkommen => [einkommensverschlechterungBis, minMassgebendenEinkommen])),
+                ),
+            ).subscribe(([einkommensverschlechterungBis, minMassgebendenEinkommen]) => {
+            this.maxAllowedEinkommenForEKV = einkommensverschlechterungBis;
+            this.currentMinEinkommenEKV = minMassgebendenEinkommen;
+        }, error => LOG.error(error));
+
+    }
+
+    private getMinMassgebendesEinkommen$(): Observable<number> {
+        return from(this.ekvContainerRS
+            .getMinimalesMassgebendesEinkommenForGesuch(this.gesuchModelManager.getGesuch()));
+    }
+
+    private getEinkommensverschlechterungBis$(): Observable<number> {
+        return from(this.einstellungRS.findEinstellung(
+            TSEinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF,
+            this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id,
+        )).pipe(
+            filter(ekvBisEinstellung => EinkommensverschlechterungInfoViewController.isEkvBisEinstellungActivated(
+                ekvBisEinstellung)),
+            map(ekvBisEinstellung => parseInt(ekvBisEinstellung.value, 10)),
+        );
+    }
+
+    public getMaxEinkommenTranslateValues(): any {
+        return {
+            maxEinkommenEKV: this.maxAllowedEinkommenForEKV.toLocaleString('de-ch'),
+            massgebendesEinkommen: this.currentMinEinkommenEKV.toLocaleString('de-ch'),
+        };
     }
 }

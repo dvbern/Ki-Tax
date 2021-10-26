@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -51,7 +50,6 @@ import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.FileMetadata_;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
@@ -70,9 +68,7 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WriteProtectedDokument;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
@@ -84,12 +80,9 @@ import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
-import ch.dvbern.ebegu.rules.Rule;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DokumenteUtil;
 import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
@@ -141,13 +134,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	private MahnungService mahnungService;
 
 	@Inject
-	private ApplicationPropertyService applicationPropertyService;
-
-	@Inject
 	private GemeindeService gemeindeService;
-
-	@Inject
-	private RulesService rulesService;
 
 	@Inject
 	private Authorizer authorizer;
@@ -322,13 +309,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				// Der UseCase ist, dass zuerst ein zweites Angebot vorhanden war, dieses aber durch das JA gelöscht wurde.
 				authorizer.checkReadAuthorizationFinSit(gesuch);
 			}
-			finanzielleSituationService.calculateFinanzDaten(gesuch);
-
-			// Die Betreuungen mit ihren Vorgängern initialisieren, damit der MutationsMerger funktioniert!
-			verfuegungService.initializeVorgaengerVerfuegungen(gesuch);
-
-			final BetreuungsgutscheinEvaluator evaluator = initEvaluator(gesuch, sprache.getLocale());
-			final Verfuegung famGroessenVerfuegung = evaluator.evaluateFamiliensituation(gesuch, sprache.getLocale());
+			final Verfuegung famGroessenVerfuegung = verfuegungService.calculateFamGroessenVerfuegung(gesuch, sprache);
 			boolean writeProtectPDF = forceCreation;
 			byte[] data = pdfService.generateFinanzielleSituation(gesuch,
 				famGroessenVerfuegung,
@@ -662,22 +643,6 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			return optionalDokument.get();
 		}
 		return null;
-	}
-
-	@Nonnull
-	private BetreuungsgutscheinEvaluator initEvaluator(@Nonnull Gesuch gesuch, @Nonnull Locale locale) {
-		KitaxUebergangsloesungParameter kitaxParameter = loadKitaxUebergangsloesungParameter();
-		List<Rule> rules =
-			rulesService.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), kitaxParameter, locale);
-		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
-			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
-			true);
-
-		Map<EinstellungKey, Einstellung> einstellungMap = einstellungService.loadRuleParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), BetreuungsgutscheinEvaluator.getRequiredParametersForAbschlussRules());
-
-		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput, einstellungMap);
-		loadCalculatorParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
-		return bgEvaluator;
 	}
 
 	@Nonnull

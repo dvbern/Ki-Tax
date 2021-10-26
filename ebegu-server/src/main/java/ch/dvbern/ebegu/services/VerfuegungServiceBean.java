@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -883,5 +884,30 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			.findFirst()
 			.orElseThrow(() -> new EbeguEntityNotFoundException("calculateAndExtractVerfuegung", platzId));
 		return verfuegungToPersist;
+	}
+
+	@Nonnull
+	public Verfuegung calculateFamGroessenVerfuegung(@Nonnull Gesuch gesuch, @Nonnull Sprache sprache) {
+		finanzielleSituationService.calculateFinanzDaten(gesuch);
+
+		// Die Betreuungen mit ihren Vorgängern initialisieren, damit der MutationsMerger funktioniert!
+		initializeVorgaengerVerfuegungen(gesuch);
+
+		final BetreuungsgutscheinEvaluator evaluator = initEvaluatorForFamGroessenVerfuegung(gesuch, sprache.getLocale());
+		return evaluator.evaluateFamiliensituation(gesuch, sprache.getLocale());
+	}
+
+	@Nonnull
+	private BetreuungsgutscheinEvaluator initEvaluatorForFamGroessenVerfuegung(@Nonnull Gesuch gesuch, @Nonnull Locale locale) {
+		KitaxUebergangsloesungParameter kitaxParameter = loadKitaxUebergangsloesungParameter();
+		List<Rule> rules =
+			rulesService.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), kitaxParameter, locale);
+		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
+			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
+			true);
+		Map<EinstellungKey, Einstellung> einstellungMap = einstellungService.loadRuleParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), BetreuungsgutscheinEvaluator.getRequiredParametersForAbschlussRules());
+		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput, einstellungMap);
+		loadCalculatorParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
+		return bgEvaluator;
 	}
 }
