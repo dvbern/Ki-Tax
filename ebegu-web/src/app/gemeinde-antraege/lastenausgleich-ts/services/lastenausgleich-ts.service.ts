@@ -222,4 +222,11 @@ export class LastenausgleichTSService {
             tap(parsedContainer => this.updateLATSAngabenGemeindeContainerStore(parsedContainer.id)),
         );
     }
+
+    public saveLATSAngabenGemeindePrognose(containerId: string, prognose: number): void {
+        this.http.put(
+            `${this.API_BASE_URL}/savePrognose/${encodeURIComponent(containerId)}`,
+            prognose
+        ).subscribe(() => this.updateLATSAngabenGemeindeContainerStore(containerId));
+    }
 }

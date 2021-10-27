@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -143,4 +144,6 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 	LastenausgleichTagesschuleAngabenGemeindeContainer findContainerOfPreviousPeriode(@Nonnull String currentAntragId);
 
 	@Nullable Number calculateErwarteteBetreuungsstunden(String containerId);
+
+	void savePrognose(@Nonnull String containerId, @Nonnull BigDecimal prognose);
 }

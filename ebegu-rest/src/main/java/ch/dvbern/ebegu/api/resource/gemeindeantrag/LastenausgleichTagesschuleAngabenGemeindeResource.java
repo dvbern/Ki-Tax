@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.api.resource.gemeindeantrag;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -348,6 +349,25 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		Objects.requireNonNull(kommentar);
 
 		angabenGemeindeService.saveKommentar(containerId.getId(), kommentar);
+	}
+
+	@ApiOperation(
+		value = "Speichert die Betreuungsstunden Prognose eines LastenausgleichTagesschuleAngabenGemeindeContainer in der Datenbank",
+		response = Void.class)
+	@PUT
+	@Path("/savePrognose/{containerId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public void saveLATSPrognose(
+		@Nonnull BigDecimal prognose,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response,
+		@Nonnull @NotNull @PathParam("containerId") JaxId containerId
+	) {
+		Objects.requireNonNull(containerId);
+		Objects.requireNonNull(prognose);
+
+		angabenGemeindeService.savePrognose(containerId.getId(), prognose);
 	}
 
 	@ApiOperation(
