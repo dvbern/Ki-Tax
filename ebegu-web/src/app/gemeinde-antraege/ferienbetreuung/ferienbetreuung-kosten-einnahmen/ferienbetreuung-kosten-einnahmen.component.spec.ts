@@ -21,6 +21,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
 import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
@@ -52,6 +53,9 @@ const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
 const unsavedChangesServiceSpy = jasmine.createSpyObj<UnsavedChangesService>(UnsavedChangesService.name,
     ['registerForm']);
 
+const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name,
+    ['getPauschalbetraegeFerienbetreuung']);
+
 describe('FerienbetreuungKostenEinnahmenComponent', () => {
     let component: FerienbetreuungKostenEinnahmenComponent;
     let fixture: ComponentFixture<FerienbetreuungKostenEinnahmenComponent>;
@@ -79,7 +83,8 @@ describe('FerienbetreuungKostenEinnahmenComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
-                {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy}
+                {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy},
+                {provide: EinstellungRS, useValue: einstellungRSSpy},
             ]
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

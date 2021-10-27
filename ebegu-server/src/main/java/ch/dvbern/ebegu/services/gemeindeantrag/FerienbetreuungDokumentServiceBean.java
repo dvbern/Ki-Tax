@@ -153,13 +153,13 @@ public class FerienbetreuungDokumentServiceBean extends AbstractBaseService
 
 		DocxDocument document = new DocxDocument(template);
 		FerienbetreuungDocxMerger merger = new FerienbetreuungDocxMerger(document);
-		merger.addMergeFields(toFerienbetreuungDocxDTO(container, sprache));
+		merger.addMergeFields(toFerienbetreuungDocxDTO(container));
 		merger.merge();
 		return document.getDocument();
 	}
 
 	@Nonnull
-	private FerienbetreuungDocxDTO toFerienbetreuungDocxDTO(@Nonnull FerienbetreuungAngabenContainer container, @Nonnull Sprache sprache) {
+	private FerienbetreuungDocxDTO toFerienbetreuungDocxDTO(@Nonnull FerienbetreuungAngabenContainer container) {
 		Objects.requireNonNull(container.getAngabenKorrektur());
 		FerienbetreuungAngaben angabenKorrektur = container.getAngabenKorrektur();
 

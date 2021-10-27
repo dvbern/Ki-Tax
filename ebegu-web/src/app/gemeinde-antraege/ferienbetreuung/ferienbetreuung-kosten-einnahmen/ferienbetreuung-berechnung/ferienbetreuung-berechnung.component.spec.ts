@@ -18,11 +18,15 @@
 import {HttpClientModule} from '@angular/common/http';
 /* tslint:disable:no-magic-numbers */
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
 import {SharedModule} from '../../../../shared/shared.module';
 import {TSFerienbetreuungBerechnung} from '../TSFerienbetreuungBerechnung';
 
 import {FerienbetreuungBerechnungComponent} from './ferienbetreuung-berechnung.component';
+
+const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name,
+    ['getPauschalbetraegeFerienbetreuung']);
 
 describe('FerienbetreuungBerechnungComponent', () => {
     let component: FerienbetreuungBerechnungComponent;
@@ -32,6 +36,9 @@ describe('FerienbetreuungBerechnungComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
+            providers: [
+                {provide: EinstellungRS, useValue: einstellungRSSpy},
+            ],
             declarations: [FerienbetreuungBerechnungComponent],
             imports: [
                 HttpClientModule,
