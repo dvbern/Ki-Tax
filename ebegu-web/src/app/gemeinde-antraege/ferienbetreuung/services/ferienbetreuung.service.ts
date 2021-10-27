@@ -16,8 +16,9 @@
  */
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable, ReplaySubject} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {Observable, of, ReplaySubject} from 'rxjs';
+import {map, mergeMap, tap} from 'rxjs/operators';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {TSFerienbetreuungAngabenAngebot} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenKostenEinnahmen} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
@@ -40,7 +41,10 @@ export class FerienbetreuungService {
     private ferienbetreuungAngabenContainerStore =
         new ReplaySubject<TSFerienbetreuungAngabenContainer>(1);
 
-    public constructor(private readonly http: HttpClient) {
+    public constructor(
+        private readonly http: HttpClient,
+        private readonly einstellungRS: EinstellungRS
+    ) {
     }
 
     public updateFerienbetreuungContainerStore(id: string): void {
@@ -240,19 +244,27 @@ export class FerienbetreuungService {
 
     public ferienbetreuungAngabenGeprueft(
         container: TSFerienbetreuungAngabenContainer,
-    ): Observable<TSFerienbetreuungAngabenContainer> {
-        container.calculateBerechnungen();
+    ): Observable<any> {
+
+        return this.einstellungRS.getPauschalbetraegeFerienbetreuung(container)
+            .pipe(
+                mergeMap(([pauschale, pauschaleSonderschueler]) => {
+                    container.calculateBerechnungen(pauschale, pauschaleSonderschueler);
+                    return of(container);
+                }),
+                mergeMap(containerUpdated => {
+                    return this.setContainerToGeprueft(containerUpdated);
+                }),
+                tap(() => this.updateFerienbetreuungContainerStore(container.id))
+            );
+
+    }
+
+    private setContainerToGeprueft(container: TSFerienbetreuungAngabenContainer): Observable<any> {
         return this.http.put(
             `${this.API_BASE_URL}/geprueft/${encodeURIComponent(container.id)}`,
             this.ebeguRestUtil.ferienbetreuungContainerToRestObject({}, container),
-        ).pipe(
-            map(
-                restAngaben => this.ebeguRestUtil.parseFerienbetreuungContainer(new TSFerienbetreuungAngabenContainer(),
-                    restAngaben),
-            ),
-            tap(() => this.updateFerienbetreuungContainerStore(container.id)),
         );
-
     }
 
     public ferienbetreuungAngabenFreigeben(

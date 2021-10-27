@@ -27,6 +27,8 @@ import {FerienbetreuungBerechnungComponent} from './ferienbetreuung-berechnung.c
 describe('FerienbetreuungBerechnungComponent', () => {
     let component: FerienbetreuungBerechnungComponent;
     let fixture: ComponentFixture<FerienbetreuungBerechnungComponent>;
+    const pauschale = 30;
+    const pauschaleSonderschueler = 60;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({

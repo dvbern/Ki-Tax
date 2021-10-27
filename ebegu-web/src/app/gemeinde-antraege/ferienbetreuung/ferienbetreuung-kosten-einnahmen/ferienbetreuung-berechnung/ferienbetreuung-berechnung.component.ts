@@ -25,10 +25,9 @@ import {
     SimpleChanges,
 } from '@angular/core';
 import {FormGroup} from '@angular/forms';
-import {combineLatest, forkJoin, Observable, Subscription} from 'rxjs';
-import {map, mergeMap, startWith, tap} from 'rxjs/operators';
+import {combineLatest, Subscription} from 'rxjs';
+import {mergeMap, startWith, tap} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
-import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
 import {TSFerienbetreuungAngabenContainer} from '../../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {LogFactory} from '../../../../core/logging/LogFactory';
 import {FerienbetreuungService} from '../../services/ferienbetreuung.service';
@@ -67,7 +66,7 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy {
                 tap(container => {
                     this.container = container;
                 }),
-                mergeMap(() => this.getPauschalbetraege())
+                mergeMap(() => this.einstellungRS.getPauschalbetraegeFerienbetreuung(this.container))
             ).subscribe(([pauschale, pauschaleSonderschueler]) => {
                 this.berechnung = new TSFerienbetreuungBerechnung(pauschale, pauschaleSonderschueler);
                 this.setUpValuesFromContainer();
@@ -75,28 +74,6 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy {
             }, error => {
                 LOG.error(error);
             });
-    }
-
-    private getPauschalbetraege(): Observable<[number, number]> {
-        const findPauschale$ = this.einstellungRS.findEinstellung(
-            TSEinstellungKey.FERIENBETREUUNG_CHF_PAUSCHALBETRAG,
-            this.container.gemeinde.id,
-            this.container.gesuchsperiode.id
-        );
-        const findPauschaleSonderschueler$ = this.einstellungRS.findEinstellung(
-            TSEinstellungKey.FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER,
-            this.container.gemeinde.id,
-            this.container.gesuchsperiode.id
-        );
-        return forkJoin([
-            findPauschale$,
-            findPauschaleSonderschueler$
-        ]).pipe(map(([e1, e2]) => {
-            return [
-                parseFloat(e1.value),
-                parseFloat(e2.value)
-            ];
-        }));
     }
 
     public ngOnChanges(changes: SimpleChanges): void {

@@ -111,7 +111,7 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
         ].includes(this.status);
     }
 
-    public calculateBerechnungen(): void {
+    public calculateBerechnungen(pauschale: number, pauschaleSonderschueler: number): void {
         if (this.angabenKorrektur === null) {
             throw new Error('Angaben Korrektur must not be null to complete the calculations');
         }
