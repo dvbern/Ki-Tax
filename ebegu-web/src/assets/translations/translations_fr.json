@@ -2625,6 +2625,8 @@
     "FKJV_PAUSCHALE_RUECKWIRKEND": "FKJV: Pauschale auch rückwirkend ausbezahlen, sofern Anspruch vorhanden",
     "FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF":  "EKV nur bei Einkommen unter X CHF",
     "FJKV_ANSPRUCH_MONATSWEISE": "FKJV: Anspruchsberechnung monatsweise",
+    "FERIENBETREUUNG_CHF_PAUSCHALBETRAG": "Ferienbetreuung Pauschalbetrag pro Tag",
+    "FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER": "Ferienbetreuung Pauschalbetrag pro Tag für Sonderschüler",
     "SCHNITTSTELLE_STEUERN_AKTIV":  "Schnittstelle zu den Steuersystemen aktiv",
     "LASTENAUSGLEICH_TAGESSCHULEN_STATISTIK": "Lastenausgleich Tagesschulen",
     "IE_DEPRECATION_WARNING": "Achtung: Internet Explorer ist veraltet und wird zukünftig nicht mehr unterstützt. Bitte verwenden Sie einen modernen Browser wie Microsoft Edge, Firefox, Chrome oder Safari",

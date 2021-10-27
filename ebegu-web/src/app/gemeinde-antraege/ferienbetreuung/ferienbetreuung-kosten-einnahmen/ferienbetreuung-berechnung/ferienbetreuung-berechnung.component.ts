@@ -25,8 +25,10 @@ import {
     SimpleChanges,
 } from '@angular/core';
 import {FormGroup} from '@angular/forms';
-import {combineLatest, Subscription} from 'rxjs';
-import {startWith} from 'rxjs/operators';
+import {combineLatest, forkJoin, Observable, Subscription} from 'rxjs';
+import {map, mergeMap, startWith, tap} from 'rxjs/operators';
+import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
+import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
 import {TSFerienbetreuungAngabenContainer} from '../../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {LogFactory} from '../../../../core/logging/LogFactory';
 import {FerienbetreuungService} from '../../services/ferienbetreuung.service';
@@ -54,20 +56,47 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy {
 
     public constructor(
         private readonly ferienbetreuungService: FerienbetreuungService,
+        private readonly einstellungRS: EinstellungRS,
         private readonly cd: ChangeDetectorRef,
     ) {
     }
 
     public ngOnInit(): void {
-        this.berechnung = new TSFerienbetreuungBerechnung();
         this.subscription = this.ferienbetreuungService.getFerienbetreuungContainer()
-            .subscribe(container => {
-                this.container = container;
+            .pipe(
+                tap(container => {
+                    this.container = container;
+                }),
+                mergeMap(() => this.getPauschalbetraege())
+            ).subscribe(([pauschale, pauschaleSonderschueler]) => {
+                this.berechnung = new TSFerienbetreuungBerechnung(pauschale, pauschaleSonderschueler);
                 this.setUpValuesFromContainer();
+                this.setUpValuesFromForm();
             }, error => {
                 LOG.error(error);
             });
-        this.setUpValuesFromForm();
+    }
+
+    private getPauschalbetraege(): Observable<[number, number]> {
+        const findPauschale$ = this.einstellungRS.findEinstellung(
+            TSEinstellungKey.FERIENBETREUUNG_CHF_PAUSCHALBETRAG,
+            this.container.gemeinde.id,
+            this.container.gesuchsperiode.id
+        );
+        const findPauschaleSonderschueler$ = this.einstellungRS.findEinstellung(
+            TSEinstellungKey.FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER,
+            this.container.gemeinde.id,
+            this.container.gesuchsperiode.id
+        );
+        return forkJoin([
+            findPauschale$,
+            findPauschaleSonderschueler$
+        ]).pipe(map(([e1, e2]) => {
+            return [
+                parseFloat(e1.value),
+                parseFloat(e2.value)
+            ];
+        }));
     }
 
     public ngOnChanges(changes: SimpleChanges): void {

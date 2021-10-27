@@ -51,7 +51,7 @@ describe('FerienbetreuungBerechnungComponent', () => {
     });
 
     it('should calculate 1440 CHF, 960 CHF and \"true\"', () => {
-        const berechnung = new TSFerienbetreuungBerechnung();
+        const berechnung = new TSFerienbetreuungBerechnung(pauschale, pauschaleSonderschueler);
         berechnung.personalkosten = 2400;
         berechnung.sachkosten = 500;
         berechnung.verpflegungskosten = 500;
@@ -72,7 +72,7 @@ describe('FerienbetreuungBerechnungComponent', () => {
 
     it('should return 0, throw no error and beteiligungZuTief should be "false" '
         + 'if no values are given', () => {
-        const berechnung = new TSFerienbetreuungBerechnung();
+        const berechnung = new TSFerienbetreuungBerechnung(pauschale, pauschaleSonderschueler);
         berechnung.calculate();
         expect(berechnung.totalKantonsbeitrag).toEqual(0);
         expect(berechnung.beitragFuerKinderDerAnbietendenGemeinde).toEqual(0);

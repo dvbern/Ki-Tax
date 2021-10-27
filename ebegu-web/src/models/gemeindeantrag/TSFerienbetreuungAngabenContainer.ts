@@ -115,7 +115,7 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
         if (this.angabenKorrektur === null) {
             throw new Error('Angaben Korrektur must not be null to complete the calculations');
         }
-        const berechnungen = new TSFerienbetreuungBerechnung();
+        const berechnungen = new TSFerienbetreuungBerechnung(pauschale, pauschaleSonderschueler);
         if (!this.angabenKorrektur.kostenEinnahmen.isAbgeschlossen()) {
             throw new Error('Kosten Einnahmen müssen abgeschlossen sein um die Berchnungen durchzuführen');
         }
