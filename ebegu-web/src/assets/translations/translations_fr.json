@@ -2620,5 +2620,6 @@
     "LASTENAUSGLEICH_TAGESSCHULEN_STATISTIK": "Lastenausgleich Tagesschulen",
     "IE_DEPRECATION_WARNING": "Achtung: Internet Explorer ist veraltet und wird zukünftig nicht mehr unterstützt. Bitte verwenden Sie einen modernen Browser wie Microsoft Edge, Firefox, Chrome oder Safari",
     "EINKOMMENSVERSCHLECHTERUNG_EINKOMMEN_TOO_HIGH": "Achtung: Ein Antrag auf Anwendung einer Einkommensverschlechterung ist nur bis zu einem massgebenden Einkommen von {{maxEinkommenEKV}} CHF möglich. Ihr minimales, massgebendes Einkommen für diesen Antrag beträgt in dieser Gesuchsperiode {{massgebendesEinkommen}} CHF.",
+    "LATS_ABGESCHLOSSEN": "Dieser Antrag wurde abgeschlossen.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

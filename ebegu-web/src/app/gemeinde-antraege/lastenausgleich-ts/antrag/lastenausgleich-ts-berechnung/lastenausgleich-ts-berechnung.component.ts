@@ -142,4 +142,8 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
         this.latsService.saveLATSAngabenGemeindePrognose(this.latsContainer.id,
             this.latsContainer.betreuungsstundenPrognose);
     }
+
+    public antragAbschliessen(): void {
+        this.latsService.latsGemeindeAntragAbschliessen(this.latsContainer);
+    }
 }

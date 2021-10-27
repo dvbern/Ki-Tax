@@ -850,6 +850,21 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		currentAntrag.setBetreuungsstundenPrognose(prognose);
 		persistence.merge(currentAntrag);
 	}
+
+	@Nonnull
+	@Override
+	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeAbschliessen(
+			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
+		authorizer.checkWriteAuthorization(container);
+
+		Preconditions.checkState(
+				container.getBetreuungsstundenPrognose() != null,
+				"LATS Antrag kann ohne Prognose Betreuungsstunden nicht abgeschlossen werden"
+		);
+
+		container.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.ABGESCHLOSSEN);
+		return persistence.merge(container);
+	}
 }
 
 

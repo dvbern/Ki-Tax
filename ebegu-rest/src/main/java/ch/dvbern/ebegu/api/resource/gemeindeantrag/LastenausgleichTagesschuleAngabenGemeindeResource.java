@@ -223,12 +223,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		response = JaxLastenausgleichTagesschuleAngabenGemeindeContainer.class)
 	@Nonnull
 	@PUT
-	@Path("/abschliessen")
+	@Path("/gemeinde/abschliessen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
 		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS })
-	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeAbschliessen(
+	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeFormularAbschliessen(
 		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainerJax,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response
@@ -274,6 +274,36 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 		final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
 				angabenGemeindeService.lastenausgleichTagesschuleGemeindeEinreichen(converted);
+		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
+
+	}
+
+	@SuppressWarnings("PMD.PreserveStackTrace")
+	@ApiOperation(
+		value = "Schliesst den Lastenausgleich Tagesschule ab",
+		response = JaxLastenausgleichTagesschuleAngabenGemeindeContainer.class)
+	@Nonnull
+	@PUT
+	@Path("/abschliessen")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS })
+	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeAbschliessen(
+		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainerJax,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(latsGemeindeContainerJax.getId());
+		Objects.requireNonNull(latsGemeindeContainerJax.getGemeinde().getId());
+
+		authorizer.checkWriteAuthorizationLATSGemeindeAntrag(latsGemeindeContainerJax.getId());
+
+		final LastenausgleichTagesschuleAngabenGemeindeContainer converted =
+			getConvertedLastenausgleichTagesschuleAngabenGemeindeContainer(latsGemeindeContainerJax);
+
+		final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
+				angabenGemeindeService.lastenausgleichTagesschuleGemeindeAbschliessen(converted);
 		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
 
 	}
