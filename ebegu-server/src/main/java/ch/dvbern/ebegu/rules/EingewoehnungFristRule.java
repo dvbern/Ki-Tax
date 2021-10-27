@@ -40,10 +40,12 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 public class EingewoehnungFristRule extends AbstractAbschlussRule {
 
 	private Locale locale;
+	private Boolean eingewoehnungAktiviert;
 
-	protected EingewoehnungFristRule(@Nonnull Locale locale, boolean isDebug) {
+	protected EingewoehnungFristRule(@Nonnull Locale locale, boolean isDebug, Boolean eingewoehnungAktiviert) {
 		super(isDebug);
 		this.locale = locale;
+		this.eingewoehnungAktiviert = eingewoehnungAktiviert;
 	}
 
 	@Nonnull
@@ -53,7 +55,7 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		if (!platz.isAngebotSchulamt()) {
 			Betreuung betreuung = (Betreuung) platz;
-			if (betreuung.isEingewoehnung()) {
+			if (betreuung.isEingewoehnung() && eingewoehnungAktiviert) {
 				return verlaengtAbschnitte(zeitabschnitte, betreuung.extractGesuch());
 			}
 		}
