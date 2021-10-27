@@ -134,4 +134,8 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
                 this.cd.markForCheck();
             }, err => LOG.error(err));
     }
+
+    public savePrognose(): void {
+
+    }
 }

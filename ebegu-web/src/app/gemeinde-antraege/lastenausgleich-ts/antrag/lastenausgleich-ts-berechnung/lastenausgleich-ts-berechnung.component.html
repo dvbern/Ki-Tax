@@ -28,6 +28,11 @@
                id="betreuungsstundenPrognoseId"
                [(ngModel)]="betreuungsstundenPrognose">
     </div>
+    <dv-loading-button
+            type="button"
+            (buttonClick)="savePrognose()">
+        <span translate>SAVE</span>
+    </dv-loading-button>
     <p>{{'LATS_BERECHNUNG_AUS_KIBON' | translate }}: {{betreuungsstundenPrognoseFromKiBon}}</p>
 </form>
 
