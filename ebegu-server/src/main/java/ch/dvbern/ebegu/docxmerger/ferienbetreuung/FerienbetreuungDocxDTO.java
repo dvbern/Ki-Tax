@@ -40,7 +40,8 @@ public class FerienbetreuungDocxDTO {
 	@Nullable private BigDecimal totalTage;
 	@Nullable private BigDecimal totalChf;
 	@Nullable private String iban;
-	@Nullable private String folgePeriode;
+	@Nullable private BigDecimal pauschale;
+	@Nullable private BigDecimal pauschaleSonderschueler;
 
 
 	public FerienbetreuungDocxDTO() {
@@ -208,12 +209,25 @@ public class FerienbetreuungDocxDTO {
 		this.iban = iban;
 	}
 
-	@Nullable
-	public String getFolgePeriode() {
-		return folgePeriode;
+	public void setTageOhneSonderschueler(@Nullable BigDecimal tageOhneSonderschueler) {
+		this.tageOhneSonderschueler = tageOhneSonderschueler;
 	}
 
-	public void setFolgePeriode(@Nullable String folgePeriode) {
-		this.folgePeriode = folgePeriode;
+	@Nullable
+	public BigDecimal getPauschale() {
+		return pauschale;
+	}
+
+	public void setPauschale(@Nullable BigDecimal pauschale) {
+		this.pauschale = pauschale;
+	}
+
+	@Nullable
+	public BigDecimal getPauschaleSonderschueler() {
+		return pauschaleSonderschueler;
+	}
+
+	public void setPauschaleSonderschueler(@Nullable BigDecimal pauschaleSonderschueler) {
+		this.pauschaleSonderschueler = pauschaleSonderschueler;
 	}
 }

@@ -48,6 +48,11 @@ public class FerienbetreuungDocxMerger extends DocxMerger<FerienbetreuungDocxDTO
 		this.mergeFields.add(new StringMergeField("angebot", dto.getAngebot()));
 		this.mergeFields.add(new StringMergeField("traegerschaft", dto.getTraegerschaft()));
 		this.mergeFields.add(new BigDecimalMergeField(
+			"tage",
+			dto.getTotalTage(),
+			Constants.NO_DECIMAL_PATTERN
+		));
+		this.mergeFields.add(new BigDecimalMergeField(
 			"tageSonderschueler",
 			dto.getTageSonderschueler(),
 			Constants.NO_DECIMAL_PATTERN
@@ -78,6 +83,15 @@ public class FerienbetreuungDocxMerger extends DocxMerger<FerienbetreuungDocxDTO
 			Constants.CURRENCY_PATTERN
 		));
 		this.mergeFields.add(new StringMergeField("iban", dto.getIban()));
-		this.mergeFields.add(new StringMergeField("folgePeriode", dto.getFolgePeriode()));
+		this.mergeFields.add(new BigDecimalMergeField(
+			"pauschale",
+			dto.getPauschale(),
+			Constants.CURRENCY_PATTERN)
+		);
+		this.mergeFields.add(new BigDecimalMergeField(
+			"pauschaleSonderschueler",
+			dto.getPauschaleSonderschueler(),
+			Constants.CURRENCY_PATTERN)
+		);
 	}
 }

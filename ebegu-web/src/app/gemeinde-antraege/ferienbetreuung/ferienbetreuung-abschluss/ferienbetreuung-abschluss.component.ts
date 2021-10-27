@@ -216,7 +216,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
         ).subscribe(
             response => {
                 this.createDownloadFile(response, TSSprache.FRANZOESISCH);
-                this.downloadingDeFile.next(false);
+                this.downloadingFrFile.next(false);
             },
             async err => {
                 LOG.error(err);
