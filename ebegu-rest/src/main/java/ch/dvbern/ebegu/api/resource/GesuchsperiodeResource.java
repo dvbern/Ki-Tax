@@ -83,6 +83,8 @@ import static java.util.Objects.requireNonNull;
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class GesuchsperiodeResource {
 
+	public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
+
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
 
@@ -333,22 +335,22 @@ public class GesuchsperiodeResource {
 				if(dokumentTyp == DokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG) {
 					//noinspection StringConcatenationMissingWhitespace
 					return RestUtil.buildDownloadResponse(true, "erlaeuterung" + sprache + ".pdf",
-						"application/octet-stream", content);
+						APPLICATION_OCTET_STREAM, content);
 				}
 				else if (dokumentTyp == DokumentTyp.VORLAGE_MERKBLATT_TS){
 					//noinspection StringConcatenationMissingWhitespace
 					return RestUtil.buildDownloadResponse(true, "vorlageMerkblattTS" + sprache + ".docx",
-						"application/octet-stream", content);
+						APPLICATION_OCTET_STREAM, content);
 				}
 				else if (dokumentTyp == DokumentTyp.VORLAGE_VERFUEGUNG_LATS){
 					//noinspection StringConcatenationMissingWhitespace
 					return RestUtil.buildDownloadResponse(true, "vorlageVerfuegungLats" + sprache + ".docx",
-						"application/octet-stream", content);
+						APPLICATION_OCTET_STREAM, content);
 				}
 				else if (dokumentTyp == DokumentTyp.VORLAGE_VERFUEGUNG_FERIENBETREUUNG){
 					//noinspection StringConcatenationMissingWhitespace
 					return RestUtil.buildDownloadResponse(true, "vorlageVerfuegungFerienbetreuung" + sprache + ".docx",
-						"application/octet-stream", content);
+						APPLICATION_OCTET_STREAM, content);
 				}
 			} catch (IOException e) {
 				return Response.status(Status.NOT_FOUND)
