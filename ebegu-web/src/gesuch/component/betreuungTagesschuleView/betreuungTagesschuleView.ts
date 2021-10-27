@@ -108,7 +108,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public form: IFormController;
     public betreuung: TSBetreuung;
     public showErrorMessageNoModule: boolean;
-    public minEintrittsdatum: moment.Moment;
     public showNochNichtFreigegeben: boolean = false;
     public showMutiert: boolean = false;
     public aktuellGueltig: boolean = true;
@@ -435,11 +434,10 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     private getMinErsterSchultag(): moment.Moment {
         if (this.getBetreuungModel() && this.getBetreuungModel().belegungTagesschule) {
-            this.getBetreuungModel().belegungTagesschule.eintrittsdatum = moment.max(
+            return moment.max(
                 this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag,
                 TSMandant.earliestDateOfTSAnmeldung,
             );
-            return this.getBetreuungModel().belegungTagesschule.eintrittsdatum;
         }
         return undefined;
     }
