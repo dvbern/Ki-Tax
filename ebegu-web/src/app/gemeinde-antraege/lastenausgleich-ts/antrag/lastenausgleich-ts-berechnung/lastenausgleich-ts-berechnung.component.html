@@ -41,6 +41,7 @@
 
 <button type="button" class="dv-btn btn-link link-underline"
         *ngIf="canViewDokumentErstellenButton | async"
+        [disabled]="!hasSavedBetreuungsstundenPrognose"
         (click)="createLatsDocumentDe()">
     <i *ngIf="!(downloadingDeFile | async)" class="fa fa-file-text-o"></i>
     <i *ngIf="downloadingDeFile | async" class="fa fa-circle-o-notch fa-spin fa-fw"></i>
@@ -50,6 +51,7 @@
 <br/>
 <button type="button" class="dv-btn btn-link link-underline"
         *ngIf="canViewDokumentErstellenButton | async"
+        [disabled]="!hasSavedBetreuungsstundenPrognose"
         (click)="createLatsDocumentFr()">
     <i *ngIf="!(downloadingFrFile | async)" class="fa fa-file-text-o"></i>
     <i *ngIf="downloadingFrFile | async" class="fa fa-circle-o-notch fa-spin fa-fw"></i>

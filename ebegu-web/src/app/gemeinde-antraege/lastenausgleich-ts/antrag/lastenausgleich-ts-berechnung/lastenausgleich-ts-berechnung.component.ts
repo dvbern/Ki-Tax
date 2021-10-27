@@ -22,6 +22,7 @@ import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS
 import {TSSprache} from '../../../../../models/enums/TSSprache';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../../core/logging/LogFactory';
@@ -49,6 +50,7 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
     private principal: TSBenutzer | null;
     public betreuungsstundenPrognose: number;
     public betreuungsstundenPrognoseFromKiBon: number;
+    public hasSavedBetreuungsstundenPrognose: boolean;
 
     public constructor(
         private readonly translate: TranslateService,
@@ -69,6 +71,8 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
             this.principal = values[1];
             this.canViewDokumentErstellenButton.next(this.principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()));
             this.initErwarteteBetreuungsstundenFromKiBon();
+            this.hasSavedBetreuungsstundenPrognose =
+                EbeguUtil.isNotNullOrUndefined(this.latsContainer.betreuungsstundenPrognose);
         }, () => this.errorService.addMesageAsInfo(this.translate.instant('DATA_RETRIEVAL_ERROR')));
     }
 
