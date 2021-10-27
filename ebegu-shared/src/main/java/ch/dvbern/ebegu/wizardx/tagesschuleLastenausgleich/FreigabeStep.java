@@ -50,6 +50,9 @@ public class FreigabeStep implements WizardStep<TagesschuleWizard> {
 	public WizardStateEnum getStatus(@Nonnull TagesschuleWizard wizard) {
 		// IF ALL DATA Filled RETURN OK
 		// IF NOT KO
+		if (wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAntragAbgeschlossen()) {
+			return WizardStateEnum.OK;
+		}
 		if (wizard.getRole().isRoleGemeindeabhaengig()) {
 			return wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAtLeastInBearbeitungKanton() ?
 				WizardStateEnum.OK :

@@ -236,7 +236,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	@Override
 	public boolean isAntragAbgeschlossen() {
-		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.VERFUEGT;
+		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.ABGESCHLOSSEN
+				|| status == LastenausgleichTagesschuleAngabenGemeindeStatus.VERFUEGT;
 	}
 
 	public boolean isReadyForFreigabe() {
