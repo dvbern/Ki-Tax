@@ -5808,6 +5808,7 @@ public class JaxBConverter extends AbstractConverter {
 		final Set<JaxLastenausgleichTagesschuleAngabenInstitutionContainer> institutionContainerList =
 			lastenausgleichTagesschuleAngabenInstitutionContainerListToJax(gemeindeContainer.getAngabenInstitutionContainers());
 		jaxGemeindeContainer.setAngabenInstitutionContainers(institutionContainerList);
+		jaxGemeindeContainer.setBetreuungsstundenPrognose(gemeindeContainer.getBetreuungsstundenPrognose());
 
 		return jaxGemeindeContainer;
 	}
@@ -5856,6 +5857,8 @@ public class JaxBConverter extends AbstractConverter {
 				jaxContainer,
 				false))
 			.forEach(gemeindeContainer::addLastenausgleichTagesschuleAngabenInstitutionContainer);
+
+		// We don't set the betreuungsstundenPrognose and internerKommentar here, we have dedicated calls
 
 		return gemeindeContainer;
 	}

@@ -103,6 +103,10 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "angabenGemeinde")
 	private Set<LastenausgleichTagesschuleAngabenInstitutionContainer> angabenInstitutionContainers = new HashSet<>();
 
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal betreuungsstundenPrognose;
+
 	@Nonnull
 	public LastenausgleichTagesschuleAngabenGemeindeStatus getStatus() {
 		return status;
@@ -381,5 +385,14 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	public boolean isInZweitpruefung() {
 		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG;
+	}
+
+	@Nullable
+	public BigDecimal getBetreuungsstundenPrognose() {
+		return betreuungsstundenPrognose;
+	}
+
+	public void setBetreuungsstundenPrognose(@Nullable BigDecimal betreuungsstundenPrognose) {
+		this.betreuungsstundenPrognose = betreuungsstundenPrognose;
 	}
 }
