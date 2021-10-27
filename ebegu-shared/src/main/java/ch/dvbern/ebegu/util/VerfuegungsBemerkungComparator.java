@@ -20,17 +20,17 @@ package ch.dvbern.ebegu.util;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
+import ch.dvbern.ebegu.dto.VerfuegungsBemerkungDTO;
 
 /**
  * Comparator, Verfuegungsbemerkungen sortiert
  */
-public class VerfuegungsBemerkungComparator implements Comparator<VerfuegungsBemerkung>, Serializable {
+public class VerfuegungsBemerkungComparator implements Comparator<VerfuegungsBemerkungDTO>, Serializable {
 
 	private static final long serialVersionUID = -309383917391346314L;
 
 	@Override
-	public int compare(VerfuegungsBemerkung bemerkung1, VerfuegungsBemerkung bemerkung2) {
+	public int compare(VerfuegungsBemerkungDTO bemerkung1, VerfuegungsBemerkungDTO bemerkung2) {
 		int ord1 = bemerkung1.getMsgKey().ordinal();
 		int ord2 = bemerkung2.getMsgKey().ordinal();
 		return Integer.compare(ord1, ord2);

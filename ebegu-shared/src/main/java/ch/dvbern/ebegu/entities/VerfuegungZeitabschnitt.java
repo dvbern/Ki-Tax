@@ -28,6 +28,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -143,6 +144,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
 	private @Size(max = Constants.DB_TEXTAREA_LENGTH) String bemerkungen = "";
+
+	@Column(nullable = true)
+	@Nullable
+	@OneToMany(mappedBy = "verfuegungZeitabschnitt", fetch = FetchType.LAZY)
+	private List<VerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungList;
 
 	public VerfuegungZeitabschnitt() {
 	}
@@ -808,5 +814,15 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public void setSameVerfuegteMahlzeitenVerguenstigungForAsivAndGemeinde(boolean same) {
 		this.bgCalculationInputAsiv.setSameVerfuegteMahlzeitenVerguenstigung(same);
 		this.bgCalculationInputGemeinde.setSameVerfuegteMahlzeitenVerguenstigung(same);
+	}
+
+	@Nullable
+	public List<VerfuegungZeitabschnittBemerkung> getVerfuegungZeitabschnittBemerkungList() {
+		return verfuegungZeitabschnittBemerkungList;
+	}
+
+	public void setVerfuegungZeitabschnittBemerkungList(
+		@Nullable List<VerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungList) {
+		this.verfuegungZeitabschnittBemerkungList = verfuegungZeitabschnittBemerkungList;
 	}
 }
