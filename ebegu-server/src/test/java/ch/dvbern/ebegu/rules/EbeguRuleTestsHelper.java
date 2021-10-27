@@ -162,16 +162,24 @@ public final class EbeguRuleTestsHelper {
 		return result;
 	}
 
-	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung, @Nonnull Map<EinstellungKey, Einstellung> einstellungenGemeinde) {
+
+	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung, @Nonnull Map<EinstellungKey, Einstellung> einstellungenRules, @Nonnull Map<EinstellungKey, Einstellung> einstellungenAbschlussRules) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
 		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
-		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungenGemeinde);
+		BetreuungsgutscheinExecutor executorWithSpecificAbschlussRules = new BetreuungsgutscheinExecutor(isDebug, einstellungenAbschlussRules);
+		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungenRules, executorWithSpecificAbschlussRules);
+	}
+
+	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung, @Nonnull Map<EinstellungKey, Einstellung> einstellungenRules) {
+		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
+		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungenRules, executor);
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
 		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
-		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungenGemaessAsiv);
+		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungenGemaessAsiv, executor);
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculateInklAllgemeineRegeln(Betreuung betreuung) {
@@ -190,17 +198,17 @@ public final class EbeguRuleTestsHelper {
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : initialenRestanspruchAbschnitte) {
 			verfuegungZeitabschnitt.setAnspruchspensumRestForAsivAndGemeinde(existingRestanspruch);
 		}
-		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungenGemaessAsiv);
+		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungenGemaessAsiv, executor);
 	}
 
 	@Nonnull
-	private static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung, List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte, @Nonnull Map<EinstellungKey, Einstellung> einstellungenGemeinde) {
-		return calculateAllRules(betreuung, einstellungenGemeinde, initialenRestanspruchAbschnitte, false);
+	private static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung, List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte, @Nonnull Map<EinstellungKey, Einstellung> einstellungenGemeinde, @Nonnull BetreuungsgutscheinExecutor executorToUse) {
+		return calculateAllRules(betreuung, einstellungenGemeinde, initialenRestanspruchAbschnitte, executorToUse, false);
 	}
 
 	@Nonnull
 	private static List<VerfuegungZeitabschnitt> calculateInklAllgemeineRegeln(Betreuung betreuung, List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte) {
-		return calculateAllRules(betreuung, einstellungenGemaessAsiv, initialenRestanspruchAbschnitte, true);
+		return calculateAllRules(betreuung, einstellungenGemaessAsiv, initialenRestanspruchAbschnitte, executor, true);
 	}
 
 	@Nonnull
@@ -208,15 +216,16 @@ public final class EbeguRuleTestsHelper {
 		@Nonnull AbstractPlatz platz,
 		@Nonnull Map<EinstellungKey, Einstellung> einstellungenGemeinde,
 		@Nonnull List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte,
+		@Nonnull BetreuungsgutscheinExecutor executorToUse,
 		boolean doMonatsstueckelungen
 	) {
 		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(
 			platz.extractGemeinde(), einstellungenGemeinde, kitaxParams, Locale.GERMAN);
 
-		List<VerfuegungZeitabschnitt> result = executor.executeRules(rules, platz, initialenRestanspruchAbschnitte);
+		List<VerfuegungZeitabschnitt> result = executorToUse.executeRules(rules, platz, initialenRestanspruchAbschnitte);
 		// Die Abschluss-Rules ebenfalls ausführen
-		result = executor.executeAbschlussRules(platz, result, Locale.GERMAN);
-		executor.calculateRechner(bgRechnerParameterDTO, kitaxParams, Locale.GERMAN, Collections.emptyList(), platz, result);
+		result = executorToUse.executeAbschlussRules(platz, result, Locale.GERMAN);
+		executorToUse.calculateRechner(bgRechnerParameterDTO, kitaxParams, Locale.GERMAN, Collections.emptyList(), platz, result);
 
 		if (!doMonatsstueckelungen) {
 			AbschlussNormalizer abschlussNormalizer = new AbschlussNormalizer(false, isDebug);
@@ -224,7 +233,7 @@ public final class EbeguRuleTestsHelper {
 		}
 
 		BemerkungsMerger.prepareGeneratedBemerkungen(result);
-		executor.executeRestanspruchInitializer(platz, result);
+		executorToUse.executeRestanspruchInitializer(platz, result);
 		return result;
 	}
 

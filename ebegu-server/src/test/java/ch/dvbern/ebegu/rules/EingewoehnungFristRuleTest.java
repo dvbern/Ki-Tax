@@ -18,15 +18,21 @@
 package ch.dvbern.ebegu.rules;
 
 import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
 import static org.junit.Assert.assertNotNull;
 
 public class EingewoehnungFristRuleTest {
@@ -43,7 +49,7 @@ public class EingewoehnungFristRuleTest {
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
 			.createErwerbspensum(TestDataUtil.START_PERIODE.plusMonths(1), TestDataUtil.ENDE_PERIODE, 100));
 
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = calculateMitEingewoehnung(betreuung);
 
 		Assert.assertEquals(2, result.size());
 		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
@@ -65,7 +71,7 @@ public class EingewoehnungFristRuleTest {
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
 			.createErwerbspensum(TestDataUtil.START_PERIODE.plusMonths(1), TestDataUtil.ENDE_PERIODE, 100));
 
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = calculateMitEingewoehnung(betreuung);
 
 		Assert.assertEquals(2, result.size());
 		Assert.assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
@@ -89,7 +95,7 @@ public class EingewoehnungFristRuleTest {
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
 			.createErwerbspensum(TestDataUtil.START_PERIODE.plusMonths(1), TestDataUtil.ENDE_PERIODE, 10));
 
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = calculateMitEingewoehnung(betreuung);
 		// beide Erwerbspensum fangen gleich an, Sie muessen beide verleangert werden und summiert 50 + 10 +
 		// Zuschlag 20
 		Assert.assertEquals(2, result.size());
@@ -114,7 +120,7 @@ public class EingewoehnungFristRuleTest {
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
 			.createErwerbspensum(TestDataUtil.START_PERIODE.plusMonths(2), TestDataUtil.ENDE_PERIODE, 10));
 
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result =calculateMitEingewoehnung(betreuung);
 		// nur die erste ist verlaengert: 50  + Zuschlag 20
 		Assert.assertEquals(3, result.size());
 		Assert.assertEquals(70, result.get(0).getAnspruchberechtigtesPensum());
@@ -143,7 +149,7 @@ public class EingewoehnungFristRuleTest {
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
 			.createErwerbspensum(TestDataUtil.START_PERIODE.plusMonths(2), TestDataUtil.ENDE_PERIODE, 40));
 
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = calculateMitEingewoehnung(betreuung);
 		// die Erwerbspensum 2 ist von einer Monat verlaengert anstatt die erste
 		Assert.assertEquals(3, result.size());
 		Assert.assertEquals(60, result.get(1).getAnspruchberechtigtesPensum());
@@ -172,10 +178,11 @@ public class EingewoehnungFristRuleTest {
 				Taetigkeit.FREIWILLIGENARBEIT));
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
 			.createErwerbspensum(TestDataUtil.START_PERIODE.plusMonths(2), TestDataUtil.ENDE_PERIODE, 40));
-
+		Map<EinstellungKey, Einstellung> einstellungenMap = EbeguRuleTestsHelper.getAllEinstellungen(betreuung.extractGesuchsperiode());
+		einstellungenMap.get(FKJV_EINGEWOEHNUNG).setValue("true");
 		List<VerfuegungZeitabschnitt> result =
 			EbeguRuleTestsHelper.calculate(betreuung, EbeguRuleTestsHelper.getEinstellungenRulesParis(
-				gesuch.getGesuchsperiode()));
+				gesuch.getGesuchsperiode()), einstellungenMap);
 		// Freiwilligenarbeit hat 20 Porcent zuschlag, das heisst das die erste Erwerbspensum ist dieses Mal erweitert
 		// von einen Monat
 		Assert.assertEquals(3, result.size());
@@ -201,7 +208,7 @@ public class EingewoehnungFristRuleTest {
 		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil
 			.createErwerbspensum(TestDataUtil.START_PERIODE.plusMonths(1), TestDataUtil.ENDE_PERIODE, 40));
 
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = calculateMitEingewoehnung(betreuung);
 		//2 Gesuchstellende, 140% => 40% brechtigt + 20 zuschlag
 		Assert.assertEquals(2, result.size());
 		Assert.assertEquals(60, result.get(0).getAnspruchberechtigtesPensum());
@@ -226,7 +233,7 @@ public class EingewoehnungFristRuleTest {
 		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil
 			.createErwerbspensum(TestDataUtil.START_PERIODE.plusMonths(2), TestDataUtil.ENDE_PERIODE, 40));
 
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = calculateMitEingewoehnung(betreuung);
 		//Nur 1 Gesuchsteller Erwerbspensum mit 100 ist verlaengert, minimum 120 nicht erreicht, 0 Anspruch
 		Assert.assertEquals(3, result.size());
 		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
@@ -247,5 +254,11 @@ public class EingewoehnungFristRuleTest {
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, gs2);
 		return betreuung;
+	}
+
+	private List<VerfuegungZeitabschnitt> calculateMitEingewoehnung(@Nonnull Betreuung betreuung) {
+		Map<EinstellungKey, Einstellung> einstellungenMap = EbeguRuleTestsHelper.getAllEinstellungen(betreuung.extractGesuchsperiode());
+		einstellungenMap.get(FKJV_EINGEWOEHNUNG).setValue("true");
+		return EbeguRuleTestsHelper.calculate(betreuung, EbeguRuleTestsHelper.getAllEinstellungen(betreuung.extractGesuchsperiode()), einstellungenMap);
 	}
 }
