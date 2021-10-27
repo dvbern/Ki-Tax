@@ -148,8 +148,6 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	@Inject
 	private BetreuungService betreuungService;
 
-	@Inject
-	private EinstellungService einstellungService;
 
 	@Override
 	@Nonnull
