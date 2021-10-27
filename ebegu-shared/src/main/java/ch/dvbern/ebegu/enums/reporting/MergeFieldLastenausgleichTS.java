@@ -53,7 +53,6 @@ public enum MergeFieldLastenausgleichTS implements MergeFieldProvider {
 	betreuungsstundenFaktor15(new SimpleMergeField<>("betreuungsstundenFaktor15", BIGDECIMAL_CONVERTER)),
 	betreuungsstundenPaed(new SimpleMergeField<>("betreuungsstundenPaed", BIGDECIMAL_CONVERTER)),
 	betreuungsstundenNichtPaed(new SimpleMergeField<>("betreuungsstundenNichtPaed", BIGDECIMAL_CONVERTER)),
-	normlohnkostenNichtpaed(new SimpleMergeField<>("normlohnkostenNichtpaed", BIGDECIMAL_CONVERTER)),
 	elterngebuehrenBetreuung(new SimpleMergeField<>("elterngebuehrenBetreuung", BIGDECIMAL_CONVERTER)),
 	schliessungCovid(new SimpleMergeField<>("schliessungCovid", BOOLEAN_X_CONVERTER)),
 	elterngebuehrenCovid(new SimpleMergeField<>("elterngebuehrenCovid", BIGDECIMAL_CONVERTER)),
@@ -71,6 +70,7 @@ public enum MergeFieldLastenausgleichTS implements MergeFieldProvider {
 	betreuungPaedagogisch(new SimpleMergeField<>("betreuungPaedagogisch", BOOLEAN_X_CONVERTER)),
 	ausbildungBelegt(new SimpleMergeField<>("ausbildungBelegt", BOOLEAN_X_CONVERTER)),
 	bemerkungenGemeinde(new SimpleMergeField<>("bemerkungenGemeinde", STRING_CONVERTER)),
+	betreuungsstundenPrognose(new SimpleMergeField<>("betreuungsstundenPrognose", BIGDECIMAL_CONVERTER)),
 	betreuungsstundenPrognoseKibon(new SimpleMergeField<>("betreuungsstundenPrognoseKibon", STRING_CONVERTER)),
 
 	// Tagesschulen
