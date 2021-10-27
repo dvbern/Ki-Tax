@@ -48,7 +48,6 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
 
     public latsContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
     private principal: TSBenutzer | null;
-    public betreuungsstundenPrognose: number;
     public betreuungsstundenPrognoseFromKiBon: number;
     public hasSavedBetreuungsstundenPrognose: boolean;
 
@@ -81,7 +80,7 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
         this.latsService.latsDocxErstellen(
             this.latsContainer,
             TSSprache.DEUTSCH,
-            this.betreuungsstundenPrognose || this.betreuungsstundenPrognoseFromKiBon,
+            this.latsContainer.betreuungsstundenPrognose,
         ).subscribe(
             response => {
                 this.createDownloadFile(response, TSSprache.DEUTSCH);
@@ -100,7 +99,7 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
         this.latsService.latsDocxErstellen(
             this.latsContainer,
             TSSprache.FRANZOESISCH,
-            this.betreuungsstundenPrognose || this.betreuungsstundenPrognoseFromKiBon,
+            this.latsContainer.betreuungsstundenPrognose,
         ).subscribe(
             response => {
                 this.createDownloadFile(response, TSSprache.FRANZOESISCH);
