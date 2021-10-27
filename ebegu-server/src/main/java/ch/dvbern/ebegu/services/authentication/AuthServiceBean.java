@@ -260,4 +260,26 @@ public class AuthServiceBean implements AuthService {
 		return tq.getResultList();
 
 	}
+
+	public Optional<Benutzer> findByTokenValue(String value) {
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<AuthorisierterBenutzer> query = criteriaBuilder.createQuery(AuthorisierterBenutzer.class);
+		Root<AuthorisierterBenutzer> root = query.from(AuthorisierterBenutzer.class);
+		Predicate authTokenPredicate = criteriaBuilder.equal(root.get(AuthorisierterBenutzer_.authToken), value);
+		query.where(authTokenPredicate);
+
+		try {
+			TypedQuery<AuthorisierterBenutzer> tq = entityManager.createQuery(query);
+
+			AuthorisierterBenutzer authUser = tq.getSingleResult();
+
+			return Optional.of(authUser.getBenutzer());
+
+		} catch (NoResultException ignored) {
+			LOG.debug("Could not load Authorisierterbenutzer for token '{}'", value);
+			return Optional.empty();
+		}
+
+
+	}
 }

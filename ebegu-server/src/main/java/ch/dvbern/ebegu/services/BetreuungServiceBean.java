@@ -105,6 +105,7 @@ import ch.dvbern.ebegu.services.util.FilterFunctions;
 import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -264,13 +265,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				persistence.merge(b);
 			});
 
-		boolean isAnmeldungSchulamtAusgeloest =
-			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST == mergedBetreuung.getBetreuungsstatus();
-
 		//Export Tagesschule Anmeldung oder moegliche Aenderungen an der exchange-service
-		if(isAnmeldungSchulamtAusgeloest || mergedBetreuung.getBetreuungsstatus()
-			== Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT || mergedBetreuung.getBetreuungsstatus()
-			== Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN) {
+		if(isAnmeldungInStatusToFireEvent(mergedBetreuung) && !mergedBetreuung.isKeineDetailinformationen()) {
 			fireAnmeldungTagesschuleAddedEvent(mergedBetreuung);
 		}
 
@@ -284,6 +280,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Gesuch mergedGesuch = gesuchService.updateBetreuungenStatus(mergedBetreuung.extractGesuch());
 
+		boolean isAnmeldungSchulamtAusgeloest =
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST == mergedBetreuung.getBetreuungsstatus();
+
 		updateVerantwortliche(mergedGesuch, mergedBetreuung, isAnmeldungSchulamtAusgeloest, isNew);
 
 		return mergedBetreuung;
@@ -295,6 +294,13 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			event.fire(anmeldungTagesschuleEventConverter.of(anmeldungTagesschule));
 			//TODO: add event published or not this is the question???
 		}
+	}
+
+	private boolean isAnmeldungInStatusToFireEvent(AnmeldungTagesschule betreuung) {
+		return EnumUtil.isOneOf(betreuung.getBetreuungsstatus(),
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST,
+			Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT,
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
 	}
 
 	@Nonnull

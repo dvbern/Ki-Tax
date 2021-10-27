@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.authentication.AuthAccessElement;
 import ch.dvbern.ebegu.authentication.AuthLoginElement;
 import ch.dvbern.ebegu.entities.AuthorisierterBenutzer;
+import ch.dvbern.ebegu.entities.Benutzer;
 
 /**
  * Service fuer die Authentifizierung eines Benutzers
@@ -75,4 +76,6 @@ public interface AuthService {
 	 */
 	@Nonnull
 	Collection<String> findActiveSince(int secondsSinceLastActivity);
+
+	Optional<Benutzer> findByTokenValue(String value);
 }

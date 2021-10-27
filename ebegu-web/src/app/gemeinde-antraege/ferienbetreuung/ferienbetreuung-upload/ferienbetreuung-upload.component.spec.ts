@@ -55,9 +55,6 @@ describe('FerienbetreuungUploadComponent', () => {
     let component: FerienbetreuungUploadComponent;
     let fixture: ComponentFixture<FerienbetreuungUploadComponent>;
 
-    ferienbetreuungServiceSpy.getFerienbetreuungContainer.and.returnValue(of(container));
-    applicationPropertyRSSpy.getAllowedMimetypes.and.returnValue(Promise.resolve(''));
-
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [FerienbetreuungUploadComponent],
@@ -79,6 +76,10 @@ describe('FerienbetreuungUploadComponent', () => {
     });
 
     beforeEach(() => {
+        ferienbetreuungServiceSpy.getFerienbetreuungContainer
+            .and.returnValue(of(new TSFerienbetreuungAngabenContainer()));
+        ferienbetreuungDokumentServiceSpy.getAllDokumente.and.returnValue(of([]));
+        applicationPropertyRSSpy.getAllowedMimetypes.and.returnValue(Promise.resolve(''));
         fixture = TestBed.createComponent(FerienbetreuungUploadComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

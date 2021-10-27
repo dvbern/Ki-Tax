@@ -421,13 +421,12 @@
             <button *ngIf="isStammdatenEditable()" [type]="'submit'" class="dv-btn next-button">
                 {{submitButtonLabel()}}
             </button>
-<!--            TODO: enable again-->
-<!--            <button *ngIf="isCheckRequiredEnabled()"-->
-<!--                    class="dv-btn next-button"-->
-<!--                    type="button"-->
-<!--                    (click)="deactivateStammdatenCheckRequired()">-->
-<!--                {{'INSTITUTION_CHECK_REQUIRED_BUTTON' | translate}}-->
-<!--            </button>-->
+            <button *ngIf="isCheckRequiredEnabled()"
+                    class="dv-btn next-button"
+                    type="button"
+                    (click)="deactivateStammdatenCheckRequired()">
+                {{'INSTITUTION_CHECK_REQUIRED_BUTTON' | translate}}
+            </button>
             <button type="button" class="dv-btn cancel-button"
                     *ngIf="!isRegistering()"
                     (click)="cancel()"

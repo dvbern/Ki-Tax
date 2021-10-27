@@ -25,6 +25,7 @@ import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {WindowRef} from '../../../../core/service/windowRef.service';
 import {MaterialModule} from '../../../../shared/material.module';
@@ -81,6 +82,7 @@ describe('TagesschulenAngabenComponent', () => {
         lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
             of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer()),
         );
+        authServiceSpy.principal$ = of(new TSBenutzer());
         einstellungRSSpy.findEinstellung.and.returnValue(
             of(null).toPromise()
         );
