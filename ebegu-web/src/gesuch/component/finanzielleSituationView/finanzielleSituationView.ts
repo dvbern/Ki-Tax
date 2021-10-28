@@ -18,10 +18,10 @@ import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {TSFinanzielleSituationResultateDTO} from '../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSFinanzielleSituationSubStepName} from '../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import {TSWizardSubStepName} from '../../../models/enums/TSWizardSubStepName';
 import {TSFinanzielleSituationContainer} from '../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../models/TSFinanzModel';
 import {IStammdatenStateParams} from '../../gesuch.route';
@@ -215,10 +215,10 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         return this.$translate.instant('JA_KORREKTUR_SELBSTAENDIG', params);
     }
 
-    public subStepName(): TSWizardSubStepName {
+    public subStepName(): TSFinanzielleSituationSubStepName {
         return this.gesuchModelManager.gesuchstellerNumber === 2 ?
-            TSWizardSubStepName.FINANZIELLE_SITUATON_GS2 :
-            TSWizardSubStepName.FINANZIELLE_SITUATON_GS1;
+            TSFinanzielleSituationSubStepName.BERN_GS2 :
+            TSFinanzielleSituationSubStepName.BERN_GS1;
     }
 
     public steuererklaerungClicked(): void {

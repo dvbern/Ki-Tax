@@ -22,10 +22,10 @@ import {FinanzielleSituationSubStepManagerLuzern} from '../../../../gesuch/servi
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
+import {TSFinanzielleSituationSubStepName} from '../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSFinanzielleSituationTyp} from '../../../../models/enums/TSFinanzielleSituationTyp';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
-import {TSWizardSubStepName} from '../../../../models/enums/TSWizardSubStepName';
 import {ErrorService} from '../../errors/service/ErrorService';
 import {LogFactory} from '../../logging/LogFactory';
 import ITranslateService = angular.translate.ITranslateService;
@@ -95,7 +95,7 @@ export class NavigatorController implements IController {
     public dvNextDisabled: () => any;
     public dvSavingPossible: boolean;
     public dvSubStep: number;
-    public dvSubStepName: TSWizardSubStepName;
+    public dvSubStepName: TSFinanzielleSituationSubStepName;
     public dvTranslateNext: string;
     public dvTranslatePrevious: string;
     public containerClass: string;
@@ -398,23 +398,23 @@ export class NavigatorController implements IController {
     }
 
     private navigateToSubStepFinanzielleSituation(
-        navigateToSubStep: TSWizardSubStepName,
+        navigateToSubStep: TSFinanzielleSituationSubStepName,
         navigateToStepIfNoSubstep: TSWizardStepName,
     ): TransitionPromise {
         switch (navigateToSubStep) {
-            case TSWizardSubStepName.KEIN_WEITERER_SUBSTEP:
+            case TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP:
                 return this.navigateToStep(navigateToStepIfNoSubstep);
-            case TSWizardSubStepName.FINANZIELLE_SITUATION_START:
+            case TSFinanzielleSituationSubStepName.START:
                 return this.navigateToStep(TSWizardStepName.FINANZIELLE_SITUATION);
-            case TSWizardSubStepName.FINANZIELLE_SITUATON_GS1:
+            case TSFinanzielleSituationSubStepName.BERN_GS1:
                 return this.navigateToStepFinanzielleSituation('1');
-            case TSWizardSubStepName.FINANZIELLE_SITUATON_GS2:
+            case TSFinanzielleSituationSubStepName.BERN_GS2:
                 return this.navigateToStepFinanzielleSituation('2');
-            case TSWizardSubStepName.FINANZIELLE_SITUATION_RESULTATE:
+            case TSFinanzielleSituationSubStepName.BERN_RESULTATE:
                 return this.navigateToFinanziellSituationResultate();
-            case TSWizardSubStepName.FINANZIELLE_SITUATION_SOZIALHILFE:
+            case TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE:
                 return this.navigateToSozialhilfeZeitraeume();
-            case TSWizardSubStepName.FINANZIELLE_SITUATION_SOZIALHILFE_DETAIL:
+            case TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE_DETAIL:
                 return this.navigateToSozialhilfeZeitraeume();
             default:
                 throw new Error(`not implemented for Substep ${navigateToSubStep}`);

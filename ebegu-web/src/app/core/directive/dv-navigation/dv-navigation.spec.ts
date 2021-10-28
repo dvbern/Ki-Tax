@@ -22,8 +22,8 @@ import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
+import {TSFinanzielleSituationSubStepName} from '../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
-import {TSWizardSubStepName} from '../../../../models/enums/TSWizardSubStepName';
 import {TSDossier} from '../../../../models/TSDossier';
 import {TSEinkommensverschlechterungInfo} from '../../../../models/TSEinkommensverschlechterungInfo';
 import {TSFall} from '../../../../models/TSFall';
@@ -250,7 +250,7 @@ describe('dvNavigation', () => {
                 spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue(1);
                 spyOn(gesuchModelManager, 'isGesuchsteller2Required').and.returnValue(true);
                 navController.dvSubStep = 2;
-                navController.dvSubStepName = TSWizardSubStepName.FINANZIELLE_SITUATON_GS1;
+                navController.dvSubStepName = TSFinanzielleSituationSubStepName.BERN_GS1;
                 gesuchModelManager.setGesuch(mockGesuch());
                 callNextStep();
                 expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
@@ -265,7 +265,7 @@ describe('dvNavigation', () => {
                 spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue(1);
                 spyOn(gesuchModelManager, 'isGesuchsteller2Required').and.returnValue(false);
                 navController.dvSubStep = 2;
-                navController.dvSubStepName = TSWizardSubStepName.FINANZIELLE_SITUATON_GS1;
+                navController.dvSubStepName = TSFinanzielleSituationSubStepName.BERN_GS1;
                 gesuchModelManager.setGesuch(mockGesuch());
                 callNextStep();
                 expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituationResultate', {gesuchId: '123'});
@@ -274,7 +274,7 @@ describe('dvNavigation', () => {
             $httpBackend.when('GET', '/ebegu/api/v1/antragStatusHistory/123').respond({});
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FINANZIELLE_SITUATION);
             navController.dvSubStep = 1;
-            navController.dvSubStepName = TSWizardSubStepName.FINANZIELLE_SITUATION_START;
+            navController.dvSubStepName = TSFinanzielleSituationSubStepName.START;
             gesuchModelManager.setGesuch(mockGesuch());
             callNextStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
@@ -464,7 +464,7 @@ describe('dvNavigation', () => {
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FINANZIELLE_SITUATION);
             spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue(2);
             navController.dvSubStep = 2;
-            navController.dvSubStepName = TSWizardSubStepName.FINANZIELLE_SITUATON_GS2;
+            navController.dvSubStepName = TSFinanzielleSituationSubStepName.BERN_GS2;
             spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(new TSGesuchsperiode());
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
@@ -477,7 +477,7 @@ describe('dvNavigation', () => {
             spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue(1);
             spyOn(gesuchModelManager, 'isGesuchsteller2Required').and.returnValue(true);
             navController.dvSubStep = 2;
-            navController.dvSubStepName = TSWizardSubStepName.FINANZIELLE_SITUATON_GS1;
+            navController.dvSubStepName = TSFinanzielleSituationSubStepName.BERN_GS1;
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituationStart', {gesuchId: ''});
         });
@@ -487,7 +487,7 @@ describe('dvNavigation', () => {
             spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue(1);
             spyOn(gesuchModelManager, 'isGesuchsteller2Required').and.returnValue(false);
             navController.dvSubStep = 1;
-            navController.dvSubStepName = TSWizardSubStepName.FINANZIELLE_SITUATION_START;
+            navController.dvSubStepName = TSFinanzielleSituationSubStepName.START;
             mockGesuch();
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.kinder', {gesuchId: '123'});
@@ -496,7 +496,7 @@ describe('dvNavigation', () => {
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FINANZIELLE_SITUATION);
             spyOn(wizardStepManager, 'getPreviousStep').and.returnValue(TSWizardStepName.ERWERBSPENSUM);
             navController.dvSubStep = 1;
-            navController.dvSubStepName = TSWizardSubStepName.FINANZIELLE_SITUATION_START;
+            navController.dvSubStepName = TSFinanzielleSituationSubStepName.START;
             mockGesuch();
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.erwerbsPensen', {gesuchId: '123'});
@@ -505,7 +505,7 @@ describe('dvNavigation', () => {
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FINANZIELLE_SITUATION);
             spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue(1);
             navController.dvSubStep = 3;
-            navController.dvSubStepName = TSWizardSubStepName.FINANZIELLE_SITUATION_RESULTATE;
+            navController.dvSubStepName = TSFinanzielleSituationSubStepName.BERN_RESULTATE;
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
                 gesuchstellerNumber: '1',
@@ -516,7 +516,7 @@ describe('dvNavigation', () => {
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FINANZIELLE_SITUATION);
             spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue(2);
             navController.dvSubStep = 3;
-            navController.dvSubStepName = TSWizardSubStepName.FINANZIELLE_SITUATION_RESULTATE;
+            navController.dvSubStepName = TSFinanzielleSituationSubStepName.BERN_RESULTATE;
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
                 gesuchstellerNumber: '2',

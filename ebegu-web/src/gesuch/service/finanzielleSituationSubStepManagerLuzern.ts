@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSWizardSubStepName} from '../../models/enums/TSWizardSubStepName';
+import {TSFinanzielleSituationSubStepName} from '../../models/enums/TSFinanzielleSituationSubStepName';
 import {FinanzielleSituationSubStepManager} from './finanzielleSituationSubStepManager';
 import {GesuchModelManager} from './gesuchModelManager';
 
@@ -26,21 +26,21 @@ export class FinanzielleSituationSubStepManagerLuzern extends FinanzielleSituati
     }
 
     public getNextSubStepFinanzielleSituation(
-        currentSubStep: TSWizardSubStepName,
-    ): TSWizardSubStepName {
-        if (TSWizardSubStepName.FINANZIELLE_SITUATION_START === currentSubStep) {
+        currentSubStep: TSFinanzielleSituationSubStepName,
+    ): TSFinanzielleSituationSubStepName {
+        if (TSFinanzielleSituationSubStepName.START === currentSubStep) {
 
         }
-        return TSWizardSubStepName.KEIN_WEITERER_SUBSTEP;
+        return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
     }
 
     public getPreviousSubStepFinanzielleSituation(
-        currentSubStep: TSWizardSubStepName,
-    ): TSWizardSubStepName {
-        if (TSWizardSubStepName.FINANZIELLE_SITUATION_START === currentSubStep) {
-            return TSWizardSubStepName.KEIN_WEITERER_SUBSTEP;
+        currentSubStep: TSFinanzielleSituationSubStepName,
+    ): TSFinanzielleSituationSubStepName {
+        if (TSFinanzielleSituationSubStepName.START === currentSubStep) {
+            return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
         }
-        return TSWizardSubStepName.KEIN_WEITERER_SUBSTEP;
+        return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
     }
 }
 

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSWizardSubStepName} from '../../models/enums/TSWizardSubStepName';
+import {TSFinanzielleSituationSubStepName} from '../../models/enums/TSFinanzielleSituationSubStepName';
 import {GesuchModelManager} from './gesuchModelManager';
 
 export abstract class FinanzielleSituationSubStepManager {
@@ -26,10 +26,10 @@ export abstract class FinanzielleSituationSubStepManager {
     }
 
     public abstract getNextSubStepFinanzielleSituation(
-        currentSubStep: TSWizardSubStepName,
-    ): TSWizardSubStepName;
+        currentSubStep: TSFinanzielleSituationSubStepName,
+    ): TSFinanzielleSituationSubStepName;
 
     public abstract getPreviousSubStepFinanzielleSituation(
-        currentSubStep: TSWizardSubStepName,
-    ): TSWizardSubStepName;
+        currentSubStep: TSFinanzielleSituationSubStepName,
+    ): TSFinanzielleSituationSubStepName;
 }
