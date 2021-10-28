@@ -21,7 +21,5 @@ export enum TSLastenausgleichTagesschuleAngabenGemeindeStatus {
     IN_PRUEFUNG_KANTON = 'IN_PRUEFUNG_KANTON',
     ZWEITPRUEFUNG = 'ZWEITPRUEFUNG',
     GEPRUEFT = 'GEPRUEFT',
-    // TODO: properly refactor this
-    ABGESCHLOSSEN = 'ABGSCHLOSSEN',
-    VERFUEGT = 'VERFUEGT', // Ausbezahlt
+    ABGESCHLOSSEN = 'ABGESCHLOSSEN', // Ausbezahlt
 }

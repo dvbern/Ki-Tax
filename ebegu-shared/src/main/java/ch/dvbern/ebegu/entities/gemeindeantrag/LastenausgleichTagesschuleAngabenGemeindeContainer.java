@@ -236,7 +236,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	@Override
 	public boolean isAntragAbgeschlossen() {
-		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.VERFUEGT;
+		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.ABGESCHLOSSEN;
 	}
 
 	public boolean isReadyForFreigabe() {
@@ -352,7 +352,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	public boolean isAtLeastInBearbeitungKanton() {
 		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON ||
 			status == LastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT ||
-			status == LastenausgleichTagesschuleAngabenGemeindeStatus.VERFUEGT ||
+			status == LastenausgleichTagesschuleAngabenGemeindeStatus.ABGESCHLOSSEN ||
 			status == LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG;
 	}
 

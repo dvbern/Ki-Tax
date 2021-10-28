@@ -67,7 +67,6 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
-import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlenStatus;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -1679,7 +1678,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			checkReadAuthorization(latsGemeindeContainer);
 			return;
 		case ABGESCHLOSSEN:
-		case VERFUEGT:
 			throwViolation(latsGemeindeContainer);
 		}
 	}

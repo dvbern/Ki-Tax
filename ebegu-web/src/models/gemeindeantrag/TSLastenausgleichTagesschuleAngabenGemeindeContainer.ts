@@ -95,7 +95,7 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
     public isAtLeastGeprueft(): boolean {
         return [
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT,
-            TSLastenausgleichTagesschuleAngabenGemeindeStatus.VERFUEGT,
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.ABGESCHLOSSEN,
         ].includes(this.status);
     }
 
@@ -120,5 +120,9 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
 
     public set betreuungsstundenPrognose(value: number) {
         this._betreuungsstundenPrognose = value;
+    }
+
+    public isAbgeschlossen(): boolean {
+        return this.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.ABGESCHLOSSEN;
     }
 }
