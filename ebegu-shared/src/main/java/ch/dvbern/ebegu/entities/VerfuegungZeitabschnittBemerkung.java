@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.entities;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -50,6 +51,16 @@ public class VerfuegungZeitabschnittBemerkung extends AbstractDateRangedEntity {
 	@NotNull
 	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	private String bemerkung = "";
+
+	public VerfuegungZeitabschnittBemerkung() {
+	}
+
+	public VerfuegungZeitabschnittBemerkung(@Nonnull String bemerkung, VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+		this.bemerkung = bemerkung;
+		this.verfuegungZeitabschnitt = verfuegungZeitabschnitt;
+		//Im Moment entspricht die Gültigkeit der Bemerkung immer der Gültigkeit des Zeitabschnittes. Dies wird später (KIBON-2095) geändert
+		this.setGueltigkeit(verfuegungZeitabschnitt.getGueltigkeit());
+	}
 
 	@SuppressWarnings({ "OverlyComplexBooleanExpression", "OverlyComplexMethod" })
 	@Override

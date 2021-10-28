@@ -31,13 +31,11 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rules.RuleValidity;
-import ch.dvbern.ebegu.util.VerfuegungsBemerkungComparator;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * DTO für eine Verfügungsbemerkung
  */
-public class VerfuegungsBemerkungList {
+public class VerfuegungsBemerkungDTOList {
 
 
 	/**
@@ -48,7 +46,7 @@ public class VerfuegungsBemerkungList {
 	@Nonnull
 	private final Set<VerfuegungsBemerkungDTO> bemerkungenList = new HashSet<>();
 
-	public boolean isSame(@Nullable VerfuegungsBemerkungList other) {
+	public boolean isSame(@Nullable VerfuegungsBemerkungDTOList other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
@@ -79,7 +77,7 @@ public class VerfuegungsBemerkungList {
 		return this.bemerkungenList.stream().anyMatch(bemerkung -> bemerkung.getMsgKey() == msgKey);
 	}
 
-	public void addAllBemerkungen(@Nonnull VerfuegungsBemerkungList additionalBemerkungen) {
+	public void addAllBemerkungen(@Nonnull VerfuegungsBemerkungDTOList additionalBemerkungen) {
 		for (VerfuegungsBemerkungDTO additionalBemerkung : additionalBemerkungen.bemerkungenList) {
 			addBemerkung(additionalBemerkung);
 		}
@@ -115,18 +113,18 @@ public class VerfuegungsBemerkungList {
 	/**
 	 * Fügt otherBemerkungen zur Liste hinzu
 	 */
-	public void mergeBemerkungenMap(@Nonnull VerfuegungsBemerkungList otherList) {
+	public void mergeBemerkungenMap(@Nonnull VerfuegungsBemerkungDTOList otherList) {
 		for (VerfuegungsBemerkungDTO otherBemerkung : otherList.bemerkungenList) {
 			this.addBemerkung(otherBemerkung);
 		}
 	}
 
 	/**
-	 * Erstellt einen String mit allen Bemerkungen. Bemerkungen, die sich gegenseitig ausschliessen (z.B.
+	 * Erstellt eine Liste mit allen erforderlichen Bemerkungen. Bemerkungen, die sich gegenseitig ausschliessen (z.B.
 	 * Anspruch FACHSTELLE ueberschreibt Anspruch ERWERBSPENSUM) werden entfernt.
 	 */
 	@Nonnull
-	public String bemerkungenToString() {
+	public List<VerfuegungsBemerkungDTO> getRequiredBemerkungen() {
 		// Wir muessen bei gleichem MsgKey dejenigen aus ASIV loeschen
 		Map<MsgKey, VerfuegungsBemerkungDTO> messagesMap = toUniqueMap();
 		// Ab jetzt muessen wir die Herkunft (ASIV oder Gemeinde) nicht mehr beachten.
@@ -147,20 +145,7 @@ public class VerfuegungsBemerkungList {
 			messagesMap.remove(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG);
 		}
 
-		List<VerfuegungsBemerkungDTO> sortedAndUnique = new ArrayList<>(messagesMap.values());
-
-		// Die Bemerkungen so sortieren, wie sie auf der Verfuegung stehen sollen
-		sortedAndUnique.sort(new VerfuegungsBemerkungComparator());
-
-		StringBuilder sb = new StringBuilder();
-		for (VerfuegungsBemerkungDTO verfuegungsBemerkungDTO : sortedAndUnique) {
-			sb.append(verfuegungsBemerkungDTO.getTranslated());
-			sb.append('\n');
-		}
-		// Den letzten NewLine entfernen
-		String bemerkungen = sb.toString();
-		bemerkungen = StringUtils.removeEnd(bemerkungen, "\n");
-		return bemerkungen;
+		return new ArrayList<>(messagesMap.values());
 	}
 
 	private Map<MsgKey, VerfuegungsBemerkungDTO> toUniqueMap() {

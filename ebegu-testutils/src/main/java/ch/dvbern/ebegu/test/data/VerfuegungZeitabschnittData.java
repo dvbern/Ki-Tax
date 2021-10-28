@@ -57,7 +57,7 @@ public class VerfuegungZeitabschnittData {
 		this.abzugFamGroesse = verfuegungZeitabschnitt.getAbzugFamGroesse();
 		this.elternbeitrag = verfuegungZeitabschnitt.getElternbeitrag();
 		this.anspruchberechtigtesPensum = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
-		this.bemerkungen = verfuegungZeitabschnitt.getBemerkungen();
+		this.bemerkungen = verfuegungZeitabschnitt.getVerfuegungenZeitabschnittBemerkungenAsString();
 		this.betreuungspensumProzent = verfuegungZeitabschnitt.getBetreuungspensumProzent();
 		this.famGroesse = verfuegungZeitabschnitt.getFamGroesse();
 		this.vollkosten = verfuegungZeitabschnitt.getVollkosten();

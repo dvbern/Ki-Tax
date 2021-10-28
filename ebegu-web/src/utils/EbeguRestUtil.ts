@@ -156,6 +156,7 @@ import {TSTsCalculationResult} from '../models/TSTsCalculationResult';
 import {TSUnbezahlterUrlaub} from '../models/TSUnbezahlterUrlaub';
 import {TSVerfuegung} from '../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../models/TSVerfuegungZeitabschnitt';
+import {TSVerfuegungZeitabschnittBemerkung} from '../models/TSVerfuegungZeitabschnittBemerkung';
 import {TSVorlage} from '../models/TSVorlage';
 import {TSWizardStep} from '../models/TSWizardStep';
 import {TSWizardStepX} from '../models/TSWizardStepX';
@@ -3049,7 +3050,6 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.anspruchsberechtigteAnzahlZeiteinheiten =
                 zeitabschnittFromServer.anspruchsberechtigteAnzahlZeiteinheiten;
             verfuegungZeitabschnittTS.anspruchspensumRest = zeitabschnittFromServer.anspruchspensumRest;
-            verfuegungZeitabschnittTS.bemerkungen = zeitabschnittFromServer.bemerkungen;
             verfuegungZeitabschnittTS.betreuungspensumProzent = zeitabschnittFromServer.betreuungspensumProzent;
             verfuegungZeitabschnittTS.betreuungspensumZeiteinheit = zeitabschnittFromServer.betreuungspensumZeiteinheit;
             verfuegungZeitabschnittTS.bgPensum = zeitabschnittFromServer.bgPensum;
@@ -3092,7 +3092,25 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.tsCalculationResultOhnePaedagogischerBetreuung =
                 this.parseTsCalculationResult(zeitabschnittFromServer.tsCalculationResultOhnePaedagogischerBetreuung);
             verfuegungZeitabschnittTS.verguenstigungMahlzeitTotal = zeitabschnittFromServer.verguenstigungMahlzeitTotal;
+
+            if (zeitabschnittFromServer.bemerkungen) {
+                verfuegungZeitabschnittTS.bemerkungen.forEach(bemerkung => {
+                    verfuegungZeitabschnittTS.bemerkungen.push(
+                        this.parseVerguegungZeitabschnittBemerkung(bemerkung));
+                });
+
+            }
             return verfuegungZeitabschnittTS;
+        }
+        return undefined;
+    }
+
+    private parseVerguegungZeitabschnittBemerkung(zeitabschnittBemerkungFromServer: any): TSVerfuegungZeitabschnittBemerkung {
+        if (zeitabschnittBemerkungFromServer) {
+            const result = new TSVerfuegungZeitabschnittBemerkung();
+            this.parseDateRangeEntity(zeitabschnittBemerkungFromServer, result);
+            result.bemerkung = zeitabschnittBemerkungFromServer.bemerkung;
+            return result;
         }
         return undefined;
     }

@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.platform.commons.util.StringUtils;
 
 /**
  * Tests fuer EinkommenAbschnittRule
@@ -175,7 +176,12 @@ public class EinkommenAbschnittRuleTest {
 			ExpectedResult expectedResult = expectedResults[i++];
 			Assert.assertTrue(MathUtil.isSame(expectedResult.massgebendesEinkommen, verfuegungZeitabschnitt.getRelevantBgCalculationInput().getMassgebendesEinkommen()));
 			Assert.assertEquals(expectedResult.einkommensjahr, verfuegungZeitabschnitt.getRelevantBgCalculationInput().getEinkommensjahr());
-			Assert.assertEquals(expectedResult.bemerkung, verfuegungZeitabschnitt.getBemerkungen());
+			if(StringUtils.isBlank(expectedResult.bemerkung)) {
+				Assert.assertTrue(verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().isEmpty());
+			} else {
+				Assert.assertEquals(1, verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().size());
+				Assert.assertEquals(expectedResult.bemerkung, verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().get(0).getBemerkung());
+			}
 		}
 	}
 

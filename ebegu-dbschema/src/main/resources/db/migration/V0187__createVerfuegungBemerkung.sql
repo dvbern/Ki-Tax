@@ -38,7 +38,6 @@ CREATE TABLE verfuegung_zeitabschnitt_bemerkung_aud (
 	timestamp_mutiert                DATETIME,
 	user_erstellt                    VARCHAR(255),
 	user_mutiert                     VARCHAR(255),
-	version            				 BIGINT NOT NULL,
 	vorgaenger_id                    VARCHAR(36),
 	bemerkung  						 VARCHAR(4000),
 	gueltig_ab                       DATE,

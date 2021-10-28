@@ -47,7 +47,7 @@ public class GutscheineStartdatumCalcRuleTest {
 		assertEquals(0, zeitabschnitt.getAnspruchberechtigtesPensum());
 		assertEquals(
 			"Für diesen Zeitraum stellt die Gemeinde London noch keine Betreuungsgutscheine aus.",
-			zeitabschnitt.getBemerkungen());
+			zeitabschnitt.getVerfuegungZeitabschnittBemerkungList().get(0).getBemerkung());
 	}
 
 	@Test
@@ -61,8 +61,8 @@ public class GutscheineStartdatumCalcRuleTest {
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitabschnitt);
 
 		assertEquals(100, zeitabschnitt.getRelevantBgCalculationInput().getAnspruchspensumProzent());
-		assertNotNull(zeitabschnitt.getBemerkungen());
-		assertTrue(zeitabschnitt.getBemerkungen().isEmpty());
+		assertNotNull(zeitabschnitt.getVerfuegungZeitabschnittBemerkungList());
+		assertTrue(zeitabschnitt.getVerfuegungZeitabschnittBemerkungList().isEmpty());
 	}
 
 	@Nonnull

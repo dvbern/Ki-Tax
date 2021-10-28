@@ -241,7 +241,7 @@ public class DoppelkitaMitManuellemAnspruchNullTest extends AbstractBGRechnerTes
 					for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : verfuegung.getZeitabschnitte()) {
 						if (verfuegungZeitabschnitt.getGueltigkeit().contains(stichtag)) {
 							assertZeitabschnitt(verfuegungZeitabschnitt, expectedBetreuungspensum, expectedAnspruchspensum, expectedBgPEnsum, expectedRestFromPreviousBetreuung);
-							Assert.assertEquals(msgRestanspruchExpected, verfuegungZeitabschnitt.getBemerkungenList().containsMsgKey(MsgKey.RESTANSPRUCH_MSG));
+							Assert.assertEquals(msgRestanspruchExpected, verfuegungZeitabschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.RESTANSPRUCH_MSG));
 						}
 					}
 				}

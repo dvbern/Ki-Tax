@@ -43,7 +43,7 @@ public class VerfuegungsBemerkungDTO {
 	@Nonnull
 	private Locale sprache;
 
-	public VerfuegungsBemerkung(@Nonnull RuleValidity ruleValidity, @Nonnull MsgKey msgKey, @Nonnull Locale sprache, @Nullable Object... args) {
+	public VerfuegungsBemerkungDTO(@Nonnull RuleValidity ruleValidity, @Nonnull MsgKey msgKey, @Nonnull Locale sprache, @Nullable Object... args) {
 		this.ruleValidity = ruleValidity;
 		this.msgKey = msgKey;
 		this.sprache = sprache;

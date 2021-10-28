@@ -16,20 +16,20 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
-import ch.dvbern.ebegu.util.Constants;
 
 /**
  * DTO fuer Verfuegung Zeitabschnitte. Gehoert immer zu einer Verfuegung welche weiderum zu einen Betreuung gehoert
@@ -108,9 +108,8 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	private BigDecimal massgebendesEinkommenVorAbzugFamgr = BigDecimal.ZERO;
 
-	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
-	private String bemerkungen;
+	private List<JaxVerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungList = new ArrayList<>();
 
 	@NotNull @Nonnull
 	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = VerfuegungsZeitabschnittZahlungsstatus.NEU;
@@ -324,15 +323,6 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		this.massgebendesEinkommenVorAbzugFamgr = massgebendesEinkommenVorAbzugFamgr;
 	}
 
-	@Nullable
-	public String getBemerkungen() {
-		return bemerkungen;
-	}
-
-	public void setBemerkungen(@Nullable String bemerkungen) {
-		this.bemerkungen = bemerkungen;
-	}
-
 	@Nonnull
 	public VerfuegungsZeitabschnittZahlungsstatus getZahlungsstatus() {
 		return zahlungsstatus;
@@ -431,5 +421,15 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	public void setSameVerfuegteMahlzeitenVerguenstigung(boolean sameVerfuegteMahlzeitenVerguenstigung) {
 		this.sameVerfuegteMahlzeitenVerguenstigung = sameVerfuegteMahlzeitenVerguenstigung;
+	}
+
+	@Nullable
+	public List<JaxVerfuegungZeitabschnittBemerkung> getVerfuegungZeitabschnittBemerkungList() {
+		return verfuegungZeitabschnittBemerkungList;
+	}
+
+	public void setVerfuegungZeitabschnittBemerkungList(
+		@Nullable List<JaxVerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungList) {
+		this.verfuegungZeitabschnittBemerkungList = verfuegungZeitabschnittBemerkungList;
 	}
 }

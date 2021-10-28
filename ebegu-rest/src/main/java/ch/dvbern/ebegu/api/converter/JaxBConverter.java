@@ -134,6 +134,7 @@ import ch.dvbern.ebegu.api.dtos.JaxTsCalculationResult;
 import ch.dvbern.ebegu.api.dtos.JaxUnbezahlterUrlaub;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.api.dtos.JaxVerfuegungZeitabschnittBemerkung;
 import ch.dvbern.ebegu.api.dtos.JaxVorlage;
 import ch.dvbern.ebegu.api.dtos.JaxWizardStep;
 import ch.dvbern.ebegu.api.dtos.JaxZahlung;
@@ -232,6 +233,7 @@ import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnittBemerkung;
 import ch.dvbern.ebegu.entities.Vorlage;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.Zahlung;
@@ -3632,7 +3634,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setMinimalerElternbeitragGekuerzt(zeitabschnitt.getMinimalerElternbeitragGekuerzt());
 		jaxZeitabschn.setElternbeitrag(zeitabschnitt.getElternbeitrag());
 		jaxZeitabschn.setMassgebendesEinkommenVorAbzugFamgr(zeitabschnitt.getMassgebendesEinkommenVorAbzFamgr());
-		jaxZeitabschn.setBemerkungen(zeitabschnitt.getBemerkungen());
+		jaxZeitabschn.setVerfuegungZeitabschnittBemerkungList(verfuegungZeitabschnittBemerkungenToJax(zeitabschnitt.getVerfuegungZeitabschnittBemerkungList()));
 		jaxZeitabschn.setFamGroesse(zeitabschnitt.getFamGroesse());
 		jaxZeitabschn.setEinkommensjahr(zeitabschnitt.getEinkommensjahr());
 		jaxZeitabschn.setVerfuegteAnzahlZeiteinheiten(zeitabschnitt.getVerfuegteAnzahlZeiteinheiten());
@@ -3664,6 +3666,26 @@ public class JaxBConverter extends AbstractConverter {
 	public VerfuegungZeitabschnitt verfuegungZeitabschnittToEntity(
 		@Nullable JaxVerfuegungZeitabschnitt jaxVerfuegungZeitabschnitt) {
 		throw new EbeguFingerWegException("verfuegungZeitabschnittToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
+	}
+
+	@Nonnull
+	private List<JaxVerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungenToJax(@Nonnull List<VerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungen) {
+		return verfuegungZeitabschnittBemerkungen.stream()
+			.map(this::verfuegungZeitabschnittBemerkungToJax)
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	private JaxVerfuegungZeitabschnittBemerkung verfuegungZeitabschnittBemerkungToJax(@Nonnull VerfuegungZeitabschnittBemerkung verfuegungZeitabschnittBemerkung) {
+		JaxVerfuegungZeitabschnittBemerkung result = new JaxVerfuegungZeitabschnittBemerkung();
+		convertAbstractDateRangedFieldsToJAX(verfuegungZeitabschnittBemerkung, result);
+		result.setBemerkung(verfuegungZeitabschnittBemerkung.getBemerkung());
+		return result;
+	}
+
+	public VerfuegungZeitabschnittBemerkung verfuegungZeitabschnittToEntity(
+		@Nullable JaxVerfuegungZeitabschnittBemerkung jaxVerfuegungZeitabschnittBemerkung) {
+		throw new EbeguFingerWegException("VerfuegungZeitabschnittBemerkung", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
 	}
 
 	@Nullable
