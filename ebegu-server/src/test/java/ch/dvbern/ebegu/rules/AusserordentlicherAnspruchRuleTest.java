@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static ch.dvbern.ebegu.util.Constants.EinstellungenDefaultWerteAsiv.MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
 import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
 
 /**
@@ -76,10 +77,52 @@ public class AusserordentlicherAnspruchRuleTest {
 		Assert.assertEquals(1, result.size());
 		VerfuegungZeitabschnitt zeitabschnitt = result.get(0);
 		Assert.assertEquals(Integer.valueOf(60), zeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS1());
-		Assert.assertEquals(30, zeitabschnitt.getBgCalculationInputAsiv().getAusserordentlicherAnspruch());
+		Assert.assertEquals(0, zeitabschnitt.getBgCalculationInputAsiv().getAusserordentlicherAnspruch());
 		Assert.assertEquals(MathUtil.DEFAULT.from(80), zeitabschnitt.getBetreuungspensumProzent());
 		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, zeitabschnitt.getAnspruchberechtigtesPensum());
 		Assert.assertEquals(MathUtil.DEFAULT.from(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), zeitabschnitt.getBgPensum());
+	}
+
+	@Test
+	public void effektivesPensumGleichMinErforderlichesPensum() {
+		Betreuung betreuung = createBetreuung(60, MIN_ERWERBSPENSUM_NICHT_EINGESCHULT , 30);
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+
+		Assert.assertNotNull(result);
+		Assert.assertEquals(1, result.size());
+		VerfuegungZeitabschnitt zeitabschnitt = result.get(0);
+		Assert.assertEquals(Integer.valueOf(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT), zeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS1());
+		Assert.assertEquals(30, zeitabschnitt.getBgCalculationInputAsiv().getAusserordentlicherAnspruch());
+		Assert.assertEquals(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, zeitabschnitt.getAnspruchberechtigtesPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), zeitabschnitt.getBgPensum());
+	}
+
+	@Test
+	public void effektivesPensumKleinerMinErforderlichesPensum() {
+		Betreuung betreuung = createBetreuung(60, 5, 30);
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+
+		Assert.assertNotNull(result);
+		Assert.assertEquals(1, result.size());
+		VerfuegungZeitabschnitt zeitabschnitt = result.get(0);
+		Assert.assertEquals(Integer.valueOf(5), zeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS1());
+		Assert.assertEquals(0, zeitabschnitt.getBgCalculationInputAsiv().getAusserordentlicherAnspruch());
+		Assert.assertEquals(0 , zeitabschnitt.getAnspruchberechtigtesPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(0 ), zeitabschnitt.getBgPensum());
+	}
+
+	@Test
+	public void effektivesPensumGroesserMinErforderlichesPensum() {
+		Betreuung betreuung = createBetreuung(60, 10, 30);
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+
+		Assert.assertNotNull(result);
+		Assert.assertEquals(1, result.size());
+		VerfuegungZeitabschnitt zeitabschnitt = result.get(0);
+		Assert.assertEquals(Integer.valueOf(10), zeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS1());
+		Assert.assertEquals(30, zeitabschnitt.getBgCalculationInputAsiv().getAusserordentlicherAnspruch());
+		Assert.assertEquals(30 , zeitabschnitt.getAnspruchberechtigtesPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(30 ), zeitabschnitt.getBgPensum());
 	}
 
 	private Betreuung createBetreuung(int betreuungspensum, int erwerbspensum, int ausserordentlicherAnspruch) {

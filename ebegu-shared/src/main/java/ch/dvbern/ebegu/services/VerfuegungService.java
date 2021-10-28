@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 
 /**
@@ -160,4 +161,10 @@ public interface VerfuegungService {
 	 */
 	@Nonnull
 	List<VerfuegungZeitabschnitt> findZeitabschnitteByYear(int year, @Nonnull Gemeinde gemeinde);
+
+	/**
+	 * Calculates familiengrösse and massgebendes einkommen nach abzug familiengrösse for given gesuch
+	 */
+	@Nonnull
+	Verfuegung calculateFamGroessenVerfuegung(@Nonnull Gesuch gesuch, @Nonnull Sprache sprache);
 }

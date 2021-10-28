@@ -75,6 +75,10 @@
     "FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_JA": "Ja, Einkommen deklarieren",
     "FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN": "Nein",
     "FINANZIELLE_SITUATION_STEK_GEMEINSAM": "Haben Sie eine gemeinsame Steuererklärung {{basisjahr}} mit {{namegs2}} erhalten?",
+    "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF": "Darf kiBon auf die zur Berechnung des Betreuungsgutscheins respektive des Tagesschultarifs notwendigen Steuerdaten der kantonalen Steuerverwalung zugreifen",
+    "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_JA": "Ja, ich erlaube den Zugriff",
+    "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_NEIN": "Nein, ich möchte die finanziellen Verhältnisse manuell erfassen und stelle der zu prüfenden Stelle sämtliche benötigen Belege, wie die Veranlagung oder die Steuererklärung zur Verfügung",
+    "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_HELP": "<ul> <li>Es werden nur jene Steuerdaten abgefragt, die zur Berechnung des Gutscheins respektive des Tagesschul-Tarifs notwendig sind (inkl. genaue Aufzählung)</li> <li> Die Gemeinde hat auch sonst die Möglichkeit, die Steuerdaten vom Steuerbüro einzuholen</li><li>Diese Daten können später nach der Veranlagung automatisch verifiziert werden.</li><li>Bei einer allfälligen Einkommensverschlechterung können die Daten auch zu den aktuellen Jahren abgefragt werden.</li></ul>",
     "FINANZIELLE_SITUATION_STEUERVERANLAGUNG": "Haben Sie Ihre Steuerveranlagung {{basisjahr}} erhalten?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG": "Haben Sie die Steuererklärung für das Jahr {{basisjahr}} ausgefüllt?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN": "Nein, noch nicht ausgefüllt oder quellenbesteuert",
@@ -2614,10 +2618,11 @@
     "FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE": "FKJV: Soziale Integration bis und mit Schulstufe",
     "FKJV_PAUSCHALE_BEI_ANSPRUCH": "FKJV: Pauschale nur möglich, wenn Anspruch auf Gutschein",
     "FKJV_PAUSCHALE_RUECKWIRKEND": "FKJV: Pauschale auch rückwirkend ausbezahlen, sofern Anspruch vorhanden",
-    "FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF":  "EKV nur bei Einkommen unter X CHF",
+    "FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF":  "FJKV: EKV nur bei Einkommen unter X CHF",
     "FJKV_ANSPRUCH_MONATSWEISE": "FKJV: Anspruchsberechnung monatsweise",
     "SCHNITTSTELLE_STEUERN_AKTIV":  "Schnittstelle zu den Steuersystemen aktiv",
     "LASTENAUSGLEICH_TAGESSCHULEN_STATISTIK": "Lastenausgleich Tagesschulen",
     "IE_DEPRECATION_WARNING": "Achtung: Internet Explorer ist veraltet und wird zukünftig nicht mehr unterstützt. Bitte verwenden Sie einen modernen Browser wie Microsoft Edge, Firefox, Chrome oder Safari",
+    "EINKOMMENSVERSCHLECHTERUNG_EINKOMMEN_TOO_HIGH": "Achtung: Ein Antrag auf Anwendung einer Einkommensverschlechterung ist nur bis zu einem massgebenden Einkommen von {{maxEinkommenEKV}} CHF möglich. Ihr minimales, massgebendes Einkommen für diesen Antrag beträgt in dieser Gesuchsperiode {{massgebendesEinkommen}} CHF.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

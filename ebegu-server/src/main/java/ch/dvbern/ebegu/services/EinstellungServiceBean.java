@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -300,5 +301,14 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 			.sorted(Comparator.comparing(Einstellung::getKey))
 			.collect(Collectors.toCollection(ArrayList::new));
 		return sorted;
+	}
+
+	public Map<EinstellungKey, Einstellung> loadRuleParameters(Gemeinde gemeinde, Gesuchsperiode gesuchsperiode, Set<EinstellungKey> keysToLoad) {
+		Map<EinstellungKey, Einstellung> ebeguRuleParameters = new HashMap<>();
+		keysToLoad.forEach(currentParamKey -> {
+			Einstellung einstellung = findEinstellung(currentParamKey, gemeinde, gesuchsperiode);
+			ebeguRuleParameters.put(einstellung.getKey(), einstellung);
+		});
+		return ebeguRuleParameters;
 	}
 }

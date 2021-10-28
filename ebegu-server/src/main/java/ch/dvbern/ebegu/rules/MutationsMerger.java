@@ -67,10 +67,12 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 	private static final Logger LOG = LoggerFactory.getLogger(MutationsMerger.class.getSimpleName());
 
 	private Locale locale;
+	private Boolean pauschaleRueckwirkendAuszahlen;
 
-	public MutationsMerger(@Nonnull Locale locale, boolean isDebug) {
+	public MutationsMerger(@Nonnull Locale locale, boolean isDebug, Boolean pauschaleRueckwirkendAuszahlen) {
 		super(isDebug);
 		this.locale = locale;
+		this.pauschaleRueckwirkendAuszahlen = pauschaleRueckwirkendAuszahlen;
 	}
 
 	@Override
@@ -142,6 +144,7 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 		if (inputData.isBesondereBeduerfnisseBestaetigt()
 			&& !resultVorangehenderAbschnitt.isBesondereBeduerfnisseBestaetigt()
 			&& !inputData.getParent().getGueltigkeit().getGueltigAb().isAfter(mutationsEingansdatum)
+			&& !pauschaleRueckwirkendAuszahlen
 		) {
 			inputData.setBesondereBeduerfnisseBestaetigt(false);
 			inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);

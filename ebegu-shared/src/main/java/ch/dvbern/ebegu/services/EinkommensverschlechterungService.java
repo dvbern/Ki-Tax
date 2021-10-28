@@ -89,4 +89,9 @@ public interface EinkommensverschlechterungService {
 	 * @param yearPlus 1 or 2. any other value won't do anything and will return false
 	 */
 	boolean removeAllEKVOfGesuch(@Nonnull Gesuch gesuch, int yearPlus);
+
+	/**
+	 * Returns minimal Einkommen nach Familienabzug for current gesuch or mutation
+	 */
+	@Nonnull BigDecimal getMinimalesMassgebendesEinkommenForGesuch(@Nonnull Gesuch gesuch);
 }

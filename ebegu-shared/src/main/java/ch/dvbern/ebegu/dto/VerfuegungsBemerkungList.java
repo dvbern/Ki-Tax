@@ -143,6 +143,9 @@ public class VerfuegungsBemerkungList {
 		if (messagesMap.containsKey(MsgKey.FACHSTELLE_MSG)) {
 			messagesMap.remove(MsgKey.ERWERBSPENSUM_ANSPRUCH);
 		}
+		if(messagesMap.containsKey(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG)) {
+			messagesMap.remove(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG);
+		}
 
 		List<VerfuegungsBemerkung> sortedAndUnique = new ArrayList<>(messagesMap.values());
 

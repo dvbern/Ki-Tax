@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.services;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -32,7 +33,10 @@ import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -58,6 +62,12 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 
 	@Inject
 	private WizardStepService wizardStepService;
+
+	@Inject
+	private Authorizer authorizer;
+
+	@Inject
+	private VerfuegungService verfuegungService;
 
 	@Override
 	@Nonnull
@@ -125,6 +135,19 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 		removeAllEKVForGSAndYear(gesuch.getGesuchsteller1(), yearPlus);
 		removeAllEKVForGSAndYear(gesuch.getGesuchsteller2(), yearPlus);
 		return true;
+	}
+
+	@Nonnull
+	@Override
+	public BigDecimal getMinimalesMassgebendesEinkommenForGesuch(@Nonnull Gesuch gesuch) {
+		authorizer.checkReadAuthorizationFinSit(gesuch);
+		// we disable EKV for calculation, since we want to simulate calculation as it would be without EKV
+		gesuch.setEinkommensverschlechterungInfoContainer(null);
+		final Verfuegung famGroessenVerfuegung = verfuegungService.calculateFamGroessenVerfuegung(gesuch, Sprache.DEUTSCH);
+		return famGroessenVerfuegung.getZeitabschnitte().stream()
+			.map(VerfuegungZeitabschnitt::getMassgebendesEinkommen)
+			.min(Comparator.naturalOrder())
+			.orElse(BigDecimal.ZERO);
 	}
 
 	private void removeAllEKVForGSAndYear(GesuchstellerContainer gesuchsteller, int yearPlus) {
