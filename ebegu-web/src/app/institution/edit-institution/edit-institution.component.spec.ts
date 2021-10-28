@@ -81,9 +81,9 @@ describe('EditInstitutionComponent', () => {
 
         describe('start date to past', () => {
             it('should be false if start date is set to past and end date is set to past', () => {
-                const current = new TSDateRange(aug2, sep27);
-                const change = new TSDateRange(aug1, sep28);
-                expect(EditInstitutionComponent.hasGueltigkeitDecreased(current, change)).toBeFalse();
+                const current = new TSDateRange(aug2, sep28);
+                const change = new TSDateRange(aug1, sep27);
+                expect(EditInstitutionComponent.hasGueltigkeitDecreased(current, change)).toBeTrue();
             });
 
             it('should be false if start date is set to past and end date stays same', () => {
