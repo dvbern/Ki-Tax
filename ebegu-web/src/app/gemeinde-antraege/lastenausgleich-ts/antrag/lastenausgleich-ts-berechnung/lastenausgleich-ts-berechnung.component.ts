@@ -72,6 +72,7 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
             this.initErwarteteBetreuungsstundenFromKiBon();
             this.hasSavedBetreuungsstundenPrognose =
                 EbeguUtil.isNotNullOrUndefined(this.latsContainer.betreuungsstundenPrognose);
+            this.cd.markForCheck();
         }, () => this.errorService.addMesageAsInfo(this.translate.instant('DATA_RETRIEVAL_ERROR')));
     }
 
@@ -145,5 +146,10 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
 
     public antragAbschliessen(): void {
         this.latsService.latsGemeindeAntragAbschliessen(this.latsContainer);
+    }
+
+    public isAbschliessenVisible(): boolean {
+        return this.hasSavedBetreuungsstundenPrognose
+            && this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 }

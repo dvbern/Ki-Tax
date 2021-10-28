@@ -287,8 +287,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	@Path("/abschliessen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
-		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeAbschliessen(
 		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainerJax,
 		@Context UriInfo uriInfo,

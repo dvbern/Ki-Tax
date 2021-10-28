@@ -15,57 +15,61 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<h2 class="margin-bottom-50" translate>LATS_VERFUEGUNG</h2>
+<p translate *ngIf="latsContainer?.isAbgeschlossen()">LATS_ABGESCHLOSSEN</p>
 
-<form role="form" #form=ngForm name="form" *ngIf="latsContainer">
-    <div class="form-group">
-        <label class="md-no-float" for="betreuungsstundenPrognoseId">
-            {{'LATS_CONTROLLING_BETREUUNGSSTUNDEN_SCHULJAHR' | translate}} {{latsContainer?.gesuchsperiode | nextPeriodeStr}}
-        </label>
-        <input type="number"
-               step="0.1"
-               [disabled]="latsContainer.isAbgeschlossen()"
-               name="betreuungsstundenPrognoseName"
-               required="true"
-               id="betreuungsstundenPrognoseId"
-               #betreuungsstundenPrognoseName
-               [(ngModel)]="latsContainer.betreuungsstundenPrognose">
-    </div>
-    <dv-loading-button
+<ng-container *ngIf="latsContainer && !latsContainer.isAbgeschlossen()">
+
+    <h2 class="margin-bottom-50" translate>LATS_VERFUEGUNG</h2>
+
+    <form role="form" #form=ngForm name="form">
+        <div class="form-group">
+            <label class="md-no-float" for="betreuungsstundenPrognoseId">
+                {{'LATS_CONTROLLING_BETREUUNGSSTUNDEN_SCHULJAHR' | translate}} {{latsContainer?.gesuchsperiode | nextPeriodeStr}}
+            </label>
+            <input type="number"
+                   step="0.1"
+                   [disabled]="latsContainer.isAbgeschlossen()"
+                   name="betreuungsstundenPrognoseName"
+                   required="true"
+                   id="betreuungsstundenPrognoseId"
+                   #betreuungsstundenPrognoseName
+                   [(ngModel)]="latsContainer.betreuungsstundenPrognose">
+        </div>
+        <dv-loading-button
             type="button"
             [buttonDisabled]="!betreuungsstundenPrognoseName.checkValidity() || latsContainer.isAbgeschlossen()"
             (buttonClick)="saveContainerWithPrognose()">
-        <span translate>SAVE</span>
-    </dv-loading-button>
-    <p>{{'LATS_BERECHNUNG_AUS_KIBON' | translate }}: {{betreuungsstundenPrognoseFromKiBon}}</p>
-</form>
+            <span translate>SAVE</span>
+        </dv-loading-button>
+        <p>{{'LATS_BERECHNUNG_AUS_KIBON' | translate }}: {{betreuungsstundenPrognoseFromKiBon}}</p>
+    </form>
 
-<button type="button" class="dv-btn btn-link link-underline"
-        *ngIf="canViewDokumentErstellenButton | async"
-        [disabled]="!hasSavedBetreuungsstundenPrognose"
-        (click)="createLatsDocumentDe()">
-    <i *ngIf="!(downloadingDeFile | async)" class="fa fa-file-text-o"></i>
-    <i *ngIf="downloadingDeFile | async" class="fa fa-circle-o-notch fa-spin fa-fw"></i>
-    &nbsp;
-    <span translate>LATS_DOKUMENT_ERSTELLEN_DE</span>
-</button>
-<br/>
-<button type="button" class="dv-btn btn-link link-underline"
-        *ngIf="canViewDokumentErstellenButton | async"
-        [disabled]="!hasSavedBetreuungsstundenPrognose"
-        (click)="createLatsDocumentFr()">
-    <i *ngIf="!(downloadingFrFile | async)" class="fa fa-file-text-o"></i>
-    <i *ngIf="downloadingFrFile | async" class="fa fa-circle-o-notch fa-spin fa-fw"></i>
-    &nbsp;
-    <span translate>LATS_DOKUMENT_ERSTELLEN_FR</span>
-</button>
+    <button type="button" class="dv-btn btn-link link-underline"
+            *ngIf="canViewDokumentErstellenButton | async"
+            [disabled]="!hasSavedBetreuungsstundenPrognose"
+            (click)="createLatsDocumentDe()">
+        <i *ngIf="!(downloadingDeFile | async)" class="fa fa-file-text-o"></i>
+        <i *ngIf="downloadingDeFile | async" class="fa fa-circle-o-notch fa-spin fa-fw"></i>
+        &nbsp;
+        <span translate>LATS_DOKUMENT_ERSTELLEN_DE</span>
+    </button>
+    <br/>
+    <button type="button" class="dv-btn btn-link link-underline"
+            *ngIf="canViewDokumentErstellenButton | async"
+            [disabled]="!hasSavedBetreuungsstundenPrognose"
+            (click)="createLatsDocumentFr()">
+        <i *ngIf="!(downloadingFrFile | async)" class="fa fa-file-text-o"></i>
+        <i *ngIf="downloadingFrFile | async" class="fa fa-circle-o-notch fa-spin fa-fw"></i>
+        &nbsp;
+        <span translate>LATS_DOKUMENT_ERSTELLEN_FR</span>
+    </button>
 
-<div class="actions">
-    <dv-loading-button
+    <div class="actions">
+        <dv-loading-button
             type="button"
-            *ngIf="hasSavedBetreuungsstundenPrognose"
-            [buttonDisabled]="latsContainer.isAbgeschlossen()"
+            *ngIf="isAbschliessenVisible()"
             (buttonClick)="antragAbschliessen()">
-        <span translate>ABSCHLIESSEN</span>
-    </dv-loading-button>
-</div>
+            <span translate>ABSCHLIESSEN</span>
+        </dv-loading-button>
+    </div>
+</ng-container>
