@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -1328,21 +1328,14 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	public Set<BetreuungsmitteilungPensum> capBetreuungspensenToGueltigkeit(
 			@Nonnull Set<BetreuungsmitteilungPensum> pensen,
 			@Nonnull DateRange gueltigkeit) {
-		Set<BetreuungsmitteilungPensum> pensenToRemove = new HashSet<>();
 
-		pensen.forEach(betreuungsmitteilungPensum -> {
+		for (Iterator<BetreuungsmitteilungPensum> i = pensen.iterator(); i.hasNext();) {
+			BetreuungsmitteilungPensum betreuungsmitteilungPensum = i.next();
+
 			capBetreuungsmitteilungStart(betreuungsmitteilungPensum, gueltigkeit);
 			capBetreuungsmitteilungEnd(betreuungsmitteilungPensum, gueltigkeit);
-
-			if (!betreuungsmitteilungPensum.getGueltigkeit().isValid()) {
-				pensenToRemove.add(betreuungsmitteilungPensum);
-			}
-		});
-
-		pensenToRemove.forEach(betreuungsmitteilungPensum -> {
-			persistence.remove(betreuungsmitteilungPensum);
-			pensen.remove(betreuungsmitteilungPensum);
-		});
+			removeInvalidBetreuungsmitteilungPensumFromSet(i, betreuungsmitteilungPensum);
+		}
 
 		return pensen;
 	}
@@ -1364,6 +1357,15 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			betreuungsmitteilungPensum.setGueltigkeit(new DateRange(
 					gueltigkeit.getGueltigAb(),
 					betreuungsmitteilungPensum.getGueltigkeit().getGueltigBis()));
+		}
+	}
+
+	private void removeInvalidBetreuungsmitteilungPensumFromSet(
+			Iterator<BetreuungsmitteilungPensum> i,
+			BetreuungsmitteilungPensum betreuungsmitteilungPensum) {
+		if (!betreuungsmitteilungPensum.getGueltigkeit().isValid()) {
+			persistence.remove(betreuungsmitteilungPensum);
+			i.remove();
 		}
 	}
 }
