@@ -136,7 +136,7 @@ export class LastenausgleichTSService {
     // tslint:disable-next-line:max-line-length
     public latsAngabenGemeindeFormularAbschliessen(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
         return this.http.put(
-            `${this.API_BASE_URL}/abschliessen`,
+            `${this.API_BASE_URL}/gemeinde/abschliessen`,
             this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
         )
             .pipe(tap(result => this.next(result)),
@@ -204,7 +204,7 @@ export class LastenausgleichTSService {
         return this.http.post(
             `${this.API_BASE_URL}/docx-erstellen/${encodeURIComponent(antrag.id)}/${sprache}`,
             {betreuungsstundenPrognose},
-            {responseType: 'blob'}
+            {responseType: 'blob'},
         );
     }
 
@@ -221,5 +221,19 @@ export class LastenausgleichTSService {
             ),
             tap(parsedContainer => this.updateLATSAngabenGemeindeContainerStore(parsedContainer.id)),
         );
+    }
+
+    public saveLATSAngabenGemeindePrognose(containerId: string, prognose: number): void {
+        this.http.put(
+            `${this.API_BASE_URL}/savePrognose/${encodeURIComponent(containerId)}`,
+            prognose,
+        ).subscribe(() => this.updateLATSAngabenGemeindeContainerStore(containerId), error => LOG.error(error));
+    }
+
+    public latsGemeindeAntragAbschliessen(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
+        this.http.put(
+            `${this.API_BASE_URL}/abschliessen`,
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
+        ).subscribe(result => this.next(result), error => LOG.error(error));
     }
 }

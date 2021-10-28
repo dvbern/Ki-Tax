@@ -1667,9 +1667,19 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Override
 	public void checkWriteAuthorization(
-		@Nullable LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer) {
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer) {
 		// Gleiche Berechtigung wie Lesen? Spaeter noch den Status beruecksichtigen!
-		checkReadAuthorization(latsGemeindeContainer);
+		switch (latsGemeindeContainer.getStatus()) {
+		case NEU:
+		case IN_BEARBEITUNG_GEMEINDE:
+		case IN_PRUEFUNG_KANTON:
+		case ZWEITPRUEFUNG:
+		case GEPRUEFT:
+			checkReadAuthorization(latsGemeindeContainer);
+			return;
+		case ABGESCHLOSSEN:
+			throwViolation(latsGemeindeContainer);
+		}
 	}
 
 	@Override

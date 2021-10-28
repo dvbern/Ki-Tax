@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,38 +8,15 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-@import 'src/style/variables';
+ALTER TABLE lastenausgleich_tagesschule_angaben_gemeinde_container
+    ADD COLUMN IF NOT EXISTS `betreuungsstunden_prognose` DECIMAL(19,2) DEFAULT NULL;
 
-#betreuungsstundenPrognoseId {
-    max-width: 30rem;
-}
-
-form {
-    align-items: center;
-    display: flex;
-
-    > * {
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-    }
-
-    p {
-        margin-left: 1.2rem;
-    }
-}
-
-.btn-link[disabled] {
-    color: @contrast-dark;
-}
-
-.actions {
-    margin-top: 4rem;
-}
-
+ALTER TABLE lastenausgleich_tagesschule_angaben_gemeinde_container_aud
+    ADD COLUMN IF NOT EXISTS `betreuungsstunden_prognose` DECIMAL(19,2) DEFAULT NULL;

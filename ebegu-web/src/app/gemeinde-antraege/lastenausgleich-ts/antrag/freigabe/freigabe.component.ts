@@ -52,6 +52,7 @@ export class FreigabeComponent implements OnInit {
     public canSeeZurueckGemeindeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public canSeeZurueckInPruefungButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public canSeeFreigegebenText: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public canSeeAbgeschlossenText: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     public constructor(
         private readonly translate: TranslateService,
@@ -69,6 +70,9 @@ export class FreigabeComponent implements OnInit {
             this.authService.principal$,
         ]).subscribe(([container, principal]) => {
             this.container = container;
+            if (container.isAbgeschlossen()) {
+                this.canSeeAbgeschlossenText.next(true);
+            }
             if (principal.hasRole(TSRole.SUPER_ADMIN) && container.isInBearbeitungGemeinde()) {
                 this.canSeeFreigabeButton.next(true);
                 this.canSeeGeprueftButton.next(false);

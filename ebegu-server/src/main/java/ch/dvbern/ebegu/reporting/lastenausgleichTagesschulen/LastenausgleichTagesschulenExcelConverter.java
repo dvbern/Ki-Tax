@@ -62,7 +62,6 @@ public class LastenausgleichTagesschulenExcelConverter implements ExcelConverter
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.betreuungsstundenFaktor15, lastenausgleichGemeindenDataRow.getBetreuungsstundenFaktor15());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.betreuungsstundenPaed, lastenausgleichGemeindenDataRow.getBetreuungsstundenPaed());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.betreuungsstundenNichtPaed, lastenausgleichGemeindenDataRow.getBetreuungsstundenNichtPaed());
-			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.normlohnkostenNichtpaed, lastenausgleichGemeindenDataRow.getNormlohnkostenNichtpaed());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.elterngebuehrenBetreuung, lastenausgleichGemeindenDataRow.getElterngebuehrenBetreuung());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.schliessungCovid, lastenausgleichGemeindenDataRow.getSchliessungCovid());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.elterngebuehrenCovid, lastenausgleichGemeindenDataRow.getElterngebuehrenCovid());
@@ -80,6 +79,7 @@ public class LastenausgleichTagesschulenExcelConverter implements ExcelConverter
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.betreuungPaedagogisch, lastenausgleichGemeindenDataRow.getBetreuungPaedagogisch());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.ausbildungBelegt, lastenausgleichGemeindenDataRow.getAusbildungBelegt());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.bemerkungenGemeinde, lastenausgleichGemeindenDataRow.getBemerkungenGemeinde());
+			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.betreuungsstundenPrognose, lastenausgleichGemeindenDataRow.getBetreuungsstundenPrognose());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.betreuungsstundenPrognoseKibon, lastenausgleichGemeindenDataRow.getBetreuungsstundenPrognoseKibon());
 
 			lastenausgleichGemeindenDataRow.getLastenausgleichTagesschulenDaten().forEach(lastenausgleichTagesschulenDataRow -> {
