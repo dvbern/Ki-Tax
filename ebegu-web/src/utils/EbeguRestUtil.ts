@@ -5470,6 +5470,6 @@ export class EbeguRestUtil {
         if (Object.values(TSFinanzielleSituationTyp).includes(typ)) {
             return typ as TSFinanzielleSituationTyp;
         }
-        throw new Error(`FinanzielleSituationTyp ${typ} not defined`)
+        throw new Error(`FinanzielleSituationTyp ${typ} not defined`);
     }
 }
