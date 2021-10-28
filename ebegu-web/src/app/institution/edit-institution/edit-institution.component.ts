@@ -96,6 +96,8 @@ export class EditInstitutionComponent implements OnInit {
     public ebeguUtil = EbeguUtil;
     public allPossibleClients: TSExternalClient[];
 
+    private preEditGueltigkeit: TSDateRange;
+
     public constructor(
         private readonly $transition$: Transition,
         private readonly $state: StateService,
@@ -118,6 +120,12 @@ export class EditInstitutionComponent implements OnInit {
         stammdaten.gueltigkeit.gueltigAb = moment();
 
         return stammdaten;
+    }
+
+    private static hasGueltigkeitDecreased(preEditGueltigkeit: TSDateRange, gueltigkeit: TSDateRange): boolean {
+        return EbeguUtil.isNullOrUndefined(preEditGueltigkeit.gueltigBis) && gueltigkeit.gueltigBis !== null ||
+            gueltigkeit.gueltigBis?.isBefore(preEditGueltigkeit.gueltigBis) ||
+            gueltigkeit.gueltigAb?.isAfter(preEditGueltigkeit.gueltigAb);
     }
 
     public ngOnInit(): void {
@@ -175,6 +183,7 @@ export class EditInstitutionComponent implements OnInit {
     ): IPromise<TSInstitutionStammdaten> {
 
         if (optionalStammdaten) {
+            this.preEditGueltigkeit = new TSDateRange(optionalStammdaten.gueltigkeit.gueltigAb, optionalStammdaten.gueltigkeit.gueltigBis);
             return Promise.resolve(optionalStammdaten);
         }
 
@@ -296,10 +305,21 @@ export class EditInstitutionComponent implements OnInit {
         this.updateInstitution(updateModel);
     }
 
-    private updateInstitution(updateModel: TSInstitutionUpdate): void {
+    // tslint:disable-next-line:cognitive-complexity
+    private async updateInstitution(updateModel: TSInstitutionUpdate): Promise<void> {
         if (this.stammdaten.institutionStammdatenBetreuungsgutscheine) {
             this.stammdaten.institutionStammdatenBetreuungsgutscheine.iban =
                 this.stammdaten.institutionStammdatenBetreuungsgutscheine?.iban?.toLocaleUpperCase();
+        }
+        if (EditInstitutionComponent.hasGueltigkeitDecreased(this.preEditGueltigkeit, this.stammdaten.gueltigkeit)) {
+            const dialogConfig = new MatDialogConfig();
+            dialogConfig.data = {
+                frage: this.translate.instant('INSTITUTION_GUELTIGKEIT_DECREASED_WARNUNG')
+            };
+            if (await this.dialog.open(DvNgConfirmDialogComponent, dialogConfig).afterClosed()
+                .toPromise() !== true) {
+                return;
+            }
         }
         if (!this.isSameInstitutionClient(this.externalClients.assignedClients,
             this.initiallyAssignedClients, false) && this.externalClients.assignedClients.length > 0) {
@@ -396,6 +416,7 @@ export class EditInstitutionComponent implements OnInit {
         if (this.navigateToWelcomesite()) {
             return;
         }
+        this.preEditGueltigkeit = new TSDateRange(stammdaten.gueltigkeit.gueltigAb, stammdaten.gueltigkeit.gueltigBis);
         // if we don't navigate away we refresh all data
         this.fetchExternalClients(stammdaten.institution.id);
         this.initModel(stammdaten);
