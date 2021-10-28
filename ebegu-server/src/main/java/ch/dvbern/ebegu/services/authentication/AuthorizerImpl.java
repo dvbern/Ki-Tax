@@ -67,7 +67,6 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
-import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlenStatus;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -1960,7 +1959,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			break;
 		}
 		case GEPRUEFT:
-		case VERFUEGT:
+		case ABGESCHLOSSEN:
 		case ABGELEHNT:
 			throwViolation(container);
 			return;
@@ -1981,7 +1980,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		switch (container.getStatus()) {
 		case IN_BEARBEITUNG_GEMEINDE:
 		case IN_PRUEFUNG_KANTON:
-		case GEPRUEFT: {
+		case GEPRUEFT:
+		case ABGESCHLOSSEN:
+		case ABGELEHNT: {
 			if (principalBean.isCallerInAnyOfRole(getMandantSuperadminRoles())) {
 				return;
 			}
@@ -1994,10 +1995,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			throwViolation(container);
 			break;
 		}
-		case VERFUEGT:
-		case ABGELEHNT:
-			throwViolation(container);
-			return;
 		default:
 			throwViolation(container);
 		}

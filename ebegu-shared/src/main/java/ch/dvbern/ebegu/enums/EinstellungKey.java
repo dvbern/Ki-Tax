@@ -202,7 +202,13 @@ public enum EinstellungKey {
 	FJKV_ANSPRUCH_MONATSWEISE,
 
 	// Definiert ob die Schnittstelle zu den Steuersystemen aktiv ist
-	SCHNITTSTELLE_STEUERN_AKTIV;
+	SCHNITTSTELLE_STEUERN_AKTIV,
+
+	// Ferienbetreuung Kosten pro Tag
+	FERIENBETREUUNG_CHF_PAUSCHALBETRAG,
+
+	// Ferienbetreuung Kosten pro Tag für Sonderschüler
+	FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER;
 
 	private EinstellungTyp typ;
 

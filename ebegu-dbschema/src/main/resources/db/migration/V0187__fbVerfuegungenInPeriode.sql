@@ -8,17 +8,14 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum FerienbetreuungAngabenStatus {
-    IN_BEARBEITUNG_GEMEINDE = 'IN_BEARBEITUNG_GEMEINDE',
-    IN_PRUEFUNG_KANTON = 'IN_PRUEFUNG_KANTON',
-    GEPRUEFT = 'GEPRUEFT',
-    ABGESCHLOSSEN = 'ABGESCHLOSSEN',
-    ABGELEHNT = 'ABGELEHNT'
-}
+alter table gesuchsperiode add vorlage_verfuegung_ferienbetreuung_de longblob;
+alter table gesuchsperiode add vorlage_verfuegung_ferienbetreuung_fr longblob;
+alter table gesuchsperiode_aud add vorlage_verfuegung_ferienbetreuung_de longblob;
+alter table gesuchsperiode_aud add vorlage_verfuegung_ferienbetreuung_fr longblob;

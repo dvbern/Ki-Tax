@@ -15,6 +15,23 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
+<button type="button" class="dv-btn btn-link link-underline"
+        *ngIf="verfuegungErstellenVisible()"
+        (click)="createVerfuegungDocumentDe()">
+    <i *ngIf="!(downloadingDeFile | async)" class="fa fa-file-text-o"></i>
+    <i *ngIf="downloadingDeFile | async" class="fa fa-circle-o-notch fa-spin fa-fw"></i>
+    &nbsp;
+    <span translate>FERIENBETREUUNG_DOKUMENT_ERSTELLEN_DE</span>
+</button>
+<br/>
+<button type="button" class="dv-btn btn-link link-underline margin-bottom-20"
+        *ngIf="verfuegungErstellenVisible()"
+        (click)="createVerfuegungDocumentFr()">
+    <i *ngIf="!(downloadingFrFile | async)" class="fa fa-file-text-o"></i>
+    <i *ngIf="downloadingFrFile | async" class="fa fa-circle-o-notch fa-spin fa-fw"></i>
+    &nbsp;
+    <span translate>FERIENBETREUUNG_DOKUMENT_ERSTELLEN_FR</span>
+</button>
 
 
 <div class="actions">
@@ -37,10 +54,26 @@
         (buttonClick)="geprueft()">
         <span translate>LATS_GEPRUEFT_KANTON</span>
     </dv-loading-button>
+    <dv-loading-button
+        *ngIf="verfuegungErstellenVisible()"
+        type="button"
+        class="secondary"
+        (buttonClick)="zurueckAnKanton()">
+        <span translate>ZURUECK_IN_PRUEFUNG_TITLE</span>
+    </dv-loading-button>
+    <dv-loading-button
+        *ngIf="verfuegungErstellenVisible()"
+        type="button"
+        (buttonClick)="abschliessen()">
+        <span translate>ABSCHLIESSEN</span>
+    </dv-loading-button>
 </div>
-<p *ngIf="(abschliessenVisible() | async) && alreadyFreigegeben()"
+<p class="margin-bottom-20" *ngIf="(abschliessenVisible() | async) && alreadyFreigegeben()"
    [innerHTML]="'FERIENBETREUUNG_FREIGEGEBEN_AN_KANTON' | translate">
 </p>
-<p *ngIf="(geprueftVisible() | async) && alreadyGeprueft()"
+<p class="margin-bottom-20" *ngIf="(geprueftVisible() | async) && alreadyGeprueft() && !verfuegungErstellenVisible() && !abgeschlossen()"
    [innerHTML]="'FERIENBETREUUNG_GEPRUEFT' | translate">
+</p>
+<p class="margin-bottom-20" *ngIf="abgeschlossen()"
+   [innerHTML]="'FERIENBETREUUNG_ABGESCHLOSSEN' | translate">
 </p>

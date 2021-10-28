@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -32,11 +33,25 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.docxmerger.DocxDocument;
+import ch.dvbern.ebegu.docxmerger.ferienbetreuung.FerienbetreuungDocxDTO;
+import ch.dvbern.ebegu.docxmerger.ferienbetreuung.FerienbetreuungDocxMerger;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument_;
+import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
+import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 /**
@@ -54,6 +69,18 @@ public class FerienbetreuungDokumentServiceBean extends AbstractBaseService
 
 	@Inject
 	private Authorizer authorizer;
+
+	@Inject
+	private FerienbetreuungService ferienbetreuungService;
+
+	@Inject
+	private PrincipalBean principalBean;
+
+	@Inject
+	private GemeindeService gemeindeService;
+
+	@Inject
+	private EinstellungService einstellungService;
 
 	@Nonnull
 	@Override
@@ -98,6 +125,99 @@ public class FerienbetreuungDokumentServiceBean extends AbstractBaseService
 		q.setParameter(containerIdParam, ferienbetreuungContainerId);
 
 		return q.getResultList();
+	}
+
+	@Override
+	@Nonnull
+	public byte[] createDocx(@Nonnull String containerId, @Nonnull Sprache sprache) {
+		FerienbetreuungAngabenContainer container =
+			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId)
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"createDocx",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					containerId)
+				);
+
+		authorizer.checkReadAuthorization(container);
+
+		final byte[] template = container.getGesuchsperiode().getVorlageVerfuegungFerienbetreuungWithSprache(sprache);
+		if (template.length == 0) {
+			throw new EbeguRuntimeException(
+				"createDocx",
+				"Ferienbetreuung Template not found für Gesuchsperiode " + container.getGesuchsperiode().getGesuchsperiodeString() + " und Sprache " + sprache,
+				ErrorCodeEnum.ERROR_FERIENBETREUUNG_VERFUEGUNG_TEMPLATE_NOT_FOUND,
+				container.getGesuchsperiode().getGesuchsperiodeString(),
+				sprache
+			);
+		}
+
+		DocxDocument document = new DocxDocument(template);
+		FerienbetreuungDocxMerger merger = new FerienbetreuungDocxMerger(document);
+		merger.addMergeFields(toFerienbetreuungDocxDTO(container));
+		merger.merge();
+		return document.getDocument();
+	}
+
+	@Nonnull
+	private FerienbetreuungDocxDTO toFerienbetreuungDocxDTO(@Nonnull FerienbetreuungAngabenContainer container) {
+		Objects.requireNonNull(container.getAngabenKorrektur());
+		FerienbetreuungAngaben angabenKorrektur = container.getAngabenKorrektur();
+
+		FerienbetreuungDocxDTO dto = new FerienbetreuungDocxDTO();
+		dto.setUserName(this.principalBean.getBenutzer().getFullName());
+		dto.setUserEmail(this.principalBean.getBenutzer().getEmail());
+
+		GemeindeStammdaten stammdaten = this.gemeindeService.getGemeindeStammdatenByGemeindeId(container.getGemeinde().getId()).orElseThrow(() ->
+			new EbeguEntityNotFoundException("toFerienbetreuungDocxDTO", container.getGemeinde().getId())
+		);
+
+		dto.setGemeindeAnschrift(stammdaten.getAdresse().getOrganisation());
+		dto.setGemeindeStrasse(stammdaten.getAdresse().getStrasse());
+		dto.setGemeindeNr(stammdaten.getAdresse().getHausnummer());
+		dto.setGemeindePLZ(stammdaten.getAdresse().getPlz());
+		dto.setGemeindeOrt(stammdaten.getAdresse().getOrt());
+		dto.setFallNummer(buildFallNummer(container, stammdaten));
+		dto.setPeriode(container.getGesuchsperiode().getGesuchsperiodeString());
+		dto.setAngebot(angabenKorrektur.getFerienbetreuungAngabenAngebot().getAngebot());
+		var traegerschaft = angabenKorrektur.getFerienbetreuungAngabenStammdaten().getTraegerschaft() != null
+			? angabenKorrektur.getFerienbetreuungAngabenStammdaten().getTraegerschaft()
+			: container.getGemeinde().getName();
+		dto.setTraegerschaft(traegerschaft);
+
+		dto.setTotalTage(angabenKorrektur.getFerienbetreuungAngabenNutzung().getAnzahlBetreuungstageKinderBern());
+		dto.setTageSonderschueler(angabenKorrektur.getFerienbetreuungAngabenNutzung().getAnzahlTageSonderschueler());
+		dto.setTageOhneSonderschuelertage(angabenKorrektur.getFerienbetreuungAngabenNutzung().getAnzahlTageOhneSonderschueler());
+
+		var pauschale = einstellungService.findEinstellung(
+			EinstellungKey.FERIENBETREUUNG_CHF_PAUSCHALBETRAG,
+			container.getGemeinde(),
+			container.getGesuchsperiode()
+		).getValueAsBigDecimal();
+
+		var pauschaleSonderschueler = einstellungService.findEinstellung(
+			EinstellungKey.FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER,
+			container.getGemeinde(),
+			container.getGesuchsperiode()
+		).getValueAsBigDecimal();
+
+		dto.setPauschale(pauschale);
+		dto.setPauschaleSonderschueler(pauschaleSonderschueler);
+		dto.setChfOhneSonderschueler(pauschale.multiply(dto.getTageOhneSonderschueler()));
+		dto.setChfSonderschueler(pauschaleSonderschueler.multiply(dto.getTageSonderschueler()));
+
+		dto.setTotalTage(angabenKorrektur.getFerienbetreuungAngabenNutzung().getAnzahlBetreuungstageKinderBern());
+		Objects.requireNonNull(dto.getChfSonderschueler());
+		dto.setTotalChf(dto.getChfSonderschueler().add(dto.getChfOhneSonderschueler()));
+
+		Objects.requireNonNull(angabenKorrektur.getFerienbetreuungAngabenStammdaten().getAuszahlungsdaten());
+		dto.setIban(angabenKorrektur.getFerienbetreuungAngabenStammdaten().getAuszahlungsdaten().getIban().getIban());
+
+		return dto;
+	}
+
+	private String buildFallNummer(FerienbetreuungAngabenContainer container, GemeindeStammdaten stammdaten) {
+		String year = container.getGesuchsperiode().getGueltigkeit().getGueltigAb().format(DateTimeFormatter.ofPattern("yy"));
+		return year + '.' + stammdaten.getGemeinde().getBfsNummer();
 	}
 }
 

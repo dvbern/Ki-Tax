@@ -18,6 +18,7 @@
 import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {TranslateService} from '@ngx-translate/core';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {FerienbetreuungKommantarComponent} from './ferienbetreuung-kommantar.component';
@@ -31,6 +32,9 @@ const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
 const translateServiceSpy = jasmine.createSpyObj<TranslateService>(TranslateService.name,
     ['instant']);
 
+const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name,
+    ['getPauschalbetraegeFerienbetreuung']);
+
 describe('FerienbetreuungKommantarComponent', () => {
     let component: FerienbetreuungKommantarComponent;
     let fixture: ComponentFixture<FerienbetreuungKommantarComponent>;
@@ -42,6 +46,7 @@ describe('FerienbetreuungKommantarComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: TranslateService, useValue: translateServiceSpy},
+                {provide: EinstellungRS, useValue: einstellungRSSpy},
             ],
             imports: [
                 HttpClientModule
