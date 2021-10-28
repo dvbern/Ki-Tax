@@ -20,6 +20,7 @@ import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../models/enums/TSBetreuungsstatus';
 import {TSFachstelleName} from '../models/enums/TSFachstelleName';
+import {TSFinanzielleSituationTyp} from '../models/enums/TSFinanzielleSituationTyp';
 import {TSGeschlecht} from '../models/enums/TSGeschlecht';
 import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
@@ -539,6 +540,20 @@ describe('EbeguRestUtil', () => {
                 expect(verfuegungTS.vollkosten).toEqual(restVerfuegungZeitabschnitt.vollkosten);
                 expect(verfuegungTS.bemerkungen).toEqual(restVerfuegungZeitabschnitt.bemerkungen);
                 expect(verfuegungTS.zahlungsstatus).toEqual(restVerfuegungZeitabschnitt.zahlungsstatus);
+            });
+        });
+        describe('parseFinanzielleSituationTyp', () => {
+            it('should be a valid typ', () => {
+                const bernAsiv = ebeguRestUtil.parseFinanzielleSituationTyp('BERN_ASIV');
+                const luzern = ebeguRestUtil.parseFinanzielleSituationTyp('LUZERN');
+                expect(bernAsiv).toEqual(TSFinanzielleSituationTyp.BERN_ASIV);
+                expect(luzern).toEqual(TSFinanzielleSituationTyp.LUZERN);
+            });
+            it('should throw an error', () => {
+                expect(() => ebeguRestUtil.parseFinanzielleSituationTyp('asdfasdf'))
+                    .toThrowError('FinanzielleSituationTyp asdfasdf not defined');
+                expect(() => ebeguRestUtil.parseFinanzielleSituationTyp(undefined))
+                    .toThrowError('FinanzielleSituationTyp undefined not defined');
             });
         });
     });

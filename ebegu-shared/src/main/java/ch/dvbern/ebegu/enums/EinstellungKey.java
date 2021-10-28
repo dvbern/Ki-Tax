@@ -202,7 +202,21 @@ public enum EinstellungKey {
 	FJKV_ANSPRUCH_MONATSWEISE,
 
 	// Definiert ob die Schnittstelle zu den Steuersystemen aktiv ist
-	SCHNITTSTELLE_STEUERN_AKTIV;
+	SCHNITTSTELLE_STEUERN_AKTIV,
+
+	// Neue Frage bei Kinderabzug für FJKV
+	// Siehe KIBON-2115
+	FJKV_KINDERABZUG_NEU,
+
+	// Neue Familiensituation für FJKV
+	// Siehe KIBON-2116
+	FJKV_FAMILIENSITUATION_NEU,
+
+	// Definiert die Minimallänge für das Konkubinat, damit zwei Antragstellende berücksichtigt werden
+	MINIMALDAUER_KONKUBINAT,
+
+	// Legt den Typen der finanziellen Verhältnisse fest. Z.B. BERN_ASIV oder LUZERN
+	FINANZIELLE_SITUATION_TYP;
 
 	private EinstellungTyp typ;
 

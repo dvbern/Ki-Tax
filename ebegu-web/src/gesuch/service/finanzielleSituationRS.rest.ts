@@ -14,10 +14,14 @@
  */
 
 import {IHttpService} from 'angular';
+import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {TSFinanzielleSituationResultateDTO} from '../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSEinstellungKey} from '../../models/enums/TSEinstellungKey';
+import {TSFinanzielleSituationTyp} from '../../models/enums/TSFinanzielleSituationTyp';
 import {TSFinanzielleSituationContainer} from '../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../models/TSFinanzModel';
 import {TSGesuch} from '../../models/TSGesuch';
+import {TSGesuchsperiode} from '../../models/TSGesuchsperiode';
 import {TSGesuchstellerContainer} from '../../models/TSGesuchstellerContainer';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {WizardStepManager} from './wizardStepManager';
@@ -35,6 +39,7 @@ export class FinanzielleSituationRS {
         public ebeguRestUtil: EbeguRestUtil,
         public $log: ILogService,
         private readonly wizardStepManager: WizardStepManager,
+        private readonly einstellungRS: EinstellungRS
     ) {
         this.serviceURL = `${REST_API}finanzielleSituation`;
     }
@@ -99,6 +104,13 @@ export class FinanzielleSituationRS {
                 this.$log.debug('PARSING finanzielle Situation  REST object ', httpresponse.data);
                 return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
                     httpresponse.data);
+            });
+    }
+
+    public getFinanzielleSituationTyp(gesuchsperiode: TSGesuchsperiode): IPromise<TSFinanzielleSituationTyp> {
+        return this.einstellungRS.findEinstellung(TSEinstellungKey.FINANZIELLE_SITUATION_TYP, null, gesuchsperiode.id)
+            .then((httpresponse: any) => {
+                return this.ebeguRestUtil.parseFinanzielleSituationTyp(httpresponse.data);
             });
     }
 }
