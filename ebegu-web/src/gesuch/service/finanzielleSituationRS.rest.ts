@@ -30,7 +30,7 @@ import IPromise = angular.IPromise;
 
 export class FinanzielleSituationRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager', 'EinstellungRS'];
     public serviceURL: string;
 
     public constructor(
