@@ -198,21 +198,21 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
         this.createVerfuegungDocument(this.downloadingFrFile, TSSprache.FRANZOESISCH);
     }
 
-    public createVerfuegungDocument(downloadingFile: BehaviorSubject<boolean>, language: TSSprache): void {
-        downloadingFile.next(true);
+    public createVerfuegungDocument(downloadingFile$: BehaviorSubject<boolean>, language: TSSprache): void {
+        downloadingFile$.next(true);
         this.ferienbetreuungDokumentService.generateVerfuegung(
             this.container,
             language,
         ).subscribe(
             response => {
                 this.createDownloadFile(response, language);
-                downloadingFile.next(false);
+                downloadingFile$.next(false);
             },
             async err => {
                 LOG.error(err);
                 this.errorService.addMesageAsError(err?.translatedMessage || this.translate.instant(
                     'ERROR_UNEXPECTED'));
-                downloadingFile.next(false);
+                downloadingFile$.next(false);
             });
     }
 
