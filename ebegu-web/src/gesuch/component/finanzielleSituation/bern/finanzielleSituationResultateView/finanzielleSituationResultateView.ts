@@ -14,16 +14,16 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
-import {ErrorService} from '../../../app/core/errors/service/ErrorService';
-import {TSFinanzielleSituationResultateDTO} from '../../../models/dto/TSFinanzielleSituationResultateDTO';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import {TSFinanzielleSituationContainer} from '../../../models/TSFinanzielleSituationContainer';
-import {TSFinanzModel} from '../../../models/TSFinanzModel';
-import {BerechnungsManager} from '../../service/berechnungsManager';
-import {GesuchModelManager} from '../../service/gesuchModelManager';
-import {WizardStepManager} from '../../service/wizardStepManager';
-import {AbstractGesuchViewController} from '../abstractGesuchView';
+import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
+import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
+import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {BerechnungsManager} from '../../../../service/berechnungsManager';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {WizardStepManager} from '../../../../service/wizardStepManager';
+import {AbstractGesuchViewController} from '../../../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 

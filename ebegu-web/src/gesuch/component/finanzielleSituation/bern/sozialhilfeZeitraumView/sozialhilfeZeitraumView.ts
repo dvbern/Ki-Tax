@@ -16,20 +16,20 @@
  */
 
 import {IComponentOptions, IPromise, IQService, IScope, ITimeoutService} from 'angular';
-import {ErrorService} from '../../../app/core/errors/service/ErrorService';
-import {SozialhilfeZeitraumRS} from '../../../app/core/service/sozialhilfeZeitraumRS.rest';
-import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import {TSFamiliensituationContainer} from '../../../models/TSFamiliensituationContainer';
-import {TSSozialhilfeZeitraum} from '../../../models/TSSozialhilfeZeitraum';
-import {TSSozialhilfeZeitraumContainer} from '../../../models/TSSozialhilfeZeitraumContainer';
-import {EbeguUtil} from '../../../utils/EbeguUtil';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {ISozialhilfeZeitraumStateParams} from '../../gesuch.route';
-import {BerechnungsManager} from '../../service/berechnungsManager';
-import {GesuchModelManager} from '../../service/gesuchModelManager';
-import {WizardStepManager} from '../../service/wizardStepManager';
-import {AbstractGesuchViewController} from '../abstractGesuchView';
+import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
+import {SozialhilfeZeitraumRS} from '../../../../../app/core/service/sozialhilfeZeitraumRS.rest';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
+import {TSFamiliensituationContainer} from '../../../../../models/TSFamiliensituationContainer';
+import {TSSozialhilfeZeitraum} from '../../../../../models/TSSozialhilfeZeitraum';
+import {TSSozialhilfeZeitraumContainer} from '../../../../../models/TSSozialhilfeZeitraumContainer';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
+import {ISozialhilfeZeitraumStateParams} from '../../../../gesuch.route';
+import {BerechnungsManager} from '../../../../service/berechnungsManager';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {WizardStepManager} from '../../../../service/wizardStepManager';
+import {AbstractGesuchViewController} from '../../../abstractGesuchView';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class SozialhilfeZeitraumViewComponentConfig implements IComponentOptions {

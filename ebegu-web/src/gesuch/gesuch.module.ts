@@ -42,9 +42,11 @@ import {ErwerbspensumViewComponentConfig} from './component/erwerbspensumView/er
 import {FallCreationViewComponentConfig} from './component/fallCreationView/fallCreationView';
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 import {FamiliensituationViewComponentConfig} from './component/familiensituationView/familiensituationView';
-import {FinanzielleSituationResultateViewComponentConfig} from './component/finanzielleSituationResultateView/finanzielleSituationResultateView';
-import {FinanzielleSituationStartViewComponentConfig} from './component/finanzielleSituationStartView/finanzielleSituationStartView';
-import {FinanzielleSituationViewComponentConfig} from './component/finanzielleSituationView/finanzielleSituationView';
+import {FinanzielleSituationResultateViewComponentConfig} from './component/finanzielleSituation/bern/finanzielleSituationResultateView/finanzielleSituationResultateView';
+import {FinanzielleSituationViewComponentConfig} from './component/finanzielleSituation/bern/finanzielleSituationView/finanzielleSituationView';
+import {SozialhilfeZeitraumListViewComponentConfig} from './component/finanzielleSituation/bern/sozialhilfeZeitraumListView/sozialhilfeZeitraumListView';
+import {SozialhilfeZeitraumViewComponentConfig} from './component/finanzielleSituation/bern/sozialhilfeZeitraumView/sozialhilfeZeitraumView';
+import {FinanzielleSituationStartViewComponentConfig} from './component/finanzielleSituation/finanzielleSituationStartView/finanzielleSituationStartView';
 import {FreigabeViewComponentConfig} from './component/freigabeView/freigabeView';
 import {InternePendenzDialogComponent} from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
@@ -52,8 +54,6 @@ import {KinderListViewComponentConfig} from './component/kinderListView/kinderLi
 import {KindViewComponentConfig} from './component/kindView/kindView';
 import {KommentarViewComponentConfig} from './component/kommentarView/kommentarView';
 import {SozialdienstFallCreationViewComponentConfig} from './component/sozialdienstFallCreationView/sozialdienstFallCreationView';
-import {SozialhilfeZeitraumListViewComponentConfig} from './component/sozialhilfeZeitraumListView/sozialhilfeZeitraumListView';
-import {SozialhilfeZeitraumViewComponentConfig} from './component/sozialhilfeZeitraumView/sozialhilfeZeitraumView';
 import {StammdatenViewComponentConfig} from './component/stammdatenView/stammdatenView';
 import {UmzugViewComponentConfig} from './component/umzugView/umzugView';
 import {VerfuegenListViewComponentConfig} from './component/verfuegenListView/verfuegenListView';

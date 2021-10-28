@@ -14,15 +14,15 @@
  */
 
 import {waitForAsync} from '@angular/core/testing';
-import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import {TSCreationAction} from '../../../models/enums/TSCreationAction';
-import {TSEingangsart} from '../../../models/enums/TSEingangsart';
-import {TSFamiliensituation} from '../../../models/TSFamiliensituation';
-import {TSFamiliensituationContainer} from '../../../models/TSFamiliensituationContainer';
-import {TSGesuchsteller} from '../../../models/TSGesuchsteller';
-import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
-import {GESUCH_JS_MODULE} from '../../gesuch.module';
-import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {ngServicesMock} from '../../../../../hybridTools/ngServicesMocks';
+import {TSCreationAction} from '../../../../../models/enums/TSCreationAction';
+import {TSEingangsart} from '../../../../../models/enums/TSEingangsart';
+import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
+import {TSFamiliensituationContainer} from '../../../../../models/TSFamiliensituationContainer';
+import {TSGesuchsteller} from '../../../../../models/TSGesuchsteller';
+import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
+import {GESUCH_JS_MODULE} from '../../../../gesuch.module';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 describe('finanzielleSituationView', () => {
 

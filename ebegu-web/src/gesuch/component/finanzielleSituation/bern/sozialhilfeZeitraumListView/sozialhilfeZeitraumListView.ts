@@ -17,20 +17,20 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IScope, ITimeoutService} from 'angular';
-import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import {ErrorService} from '../../../app/core/errors/service/ErrorService';
-import {SozialhilfeZeitraumRS} from '../../../app/core/service/sozialhilfeZeitraumRS.rest';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import {TSSozialhilfeZeitraumContainer} from '../../../models/TSSozialhilfeZeitraumContainer';
-import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import {BerechnungsManager} from '../../service/berechnungsManager';
-import {GesuchModelManager} from '../../service/gesuchModelManager';
-import {WizardStepManager} from '../../service/wizardStepManager';
-import {AbstractGesuchViewController} from '../abstractGesuchView';
+import {IDVFocusableController} from '../../../../../app/core/component/IDVFocusableController';
+import {DvDialog} from '../../../../../app/core/directive/dv-dialog/dv-dialog';
+import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
+import {SozialhilfeZeitraumRS} from '../../../../../app/core/service/sozialhilfeZeitraumRS.rest';
+import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
+import {TSSozialhilfeZeitraumContainer} from '../../../../../models/TSSozialhilfeZeitraumContainer';
+import {RemoveDialogController} from '../../../../dialog/RemoveDialogController';
+import {BerechnungsManager} from '../../../../service/berechnungsManager';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {WizardStepManager} from '../../../../service/wizardStepManager';
+import {AbstractGesuchViewController} from '../../../abstractGesuchView';
 
-const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const removeDialogTemplate = require('../../../../dialog/removeDialogTemplate.html');
 
 export class SozialhilfeZeitraumListViewComponentConfig implements IComponentOptions {
     public transclude = false;
