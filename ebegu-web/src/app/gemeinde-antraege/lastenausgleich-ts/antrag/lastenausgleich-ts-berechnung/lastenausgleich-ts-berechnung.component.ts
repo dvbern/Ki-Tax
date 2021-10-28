@@ -150,6 +150,7 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
 
     public isAbschliessenVisible(): boolean {
         return this.hasSavedBetreuungsstundenPrognose
-            && this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles());
+            && this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles())
+            && !this.latsContainer?.isAbgeschlossen();
     }
 }

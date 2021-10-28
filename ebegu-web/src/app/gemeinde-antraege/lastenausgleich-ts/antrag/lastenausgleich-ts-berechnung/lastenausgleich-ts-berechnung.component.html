@@ -15,9 +15,7 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<p translate *ngIf="latsContainer?.isAbgeschlossen()">LATS_ABGESCHLOSSEN</p>
-
-<ng-container *ngIf="latsContainer && !latsContainer.isAbgeschlossen()">
+<ng-container *ngIf="latsContainer">
 
     <h2 class="margin-bottom-50" translate>LATS_VERFUEGUNG</h2>
 
@@ -72,4 +70,5 @@
             <span translate>ABSCHLIESSEN</span>
         </dv-loading-button>
     </div>
+    <p translate *ngIf="latsContainer?.isAbgeschlossen()">LATS_ABGESCHLOSSEN</p>
 </ng-container>
