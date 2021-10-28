@@ -15,15 +15,22 @@
 
 import {StateService, TransitionPromise} from '@uirouter/core';
 import {IController, IDirective, IDirectiveFactory, IQService, ITimeoutService} from 'angular';
+import {FinanzielleSituationRS} from '../../../../gesuch/service/finanzielleSituationRS.rest';
+import {FinanzielleSituationSubStepManager} from '../../../../gesuch/service/finanzielleSituationSubStepManager';
+import {FinanzielleSituationSubStepManagerBernAsiv} from '../../../../gesuch/service/finanzielleSituationSubStepManagerBernAsiv';
+import {FinanzielleSituationSubStepManagerLuzern} from '../../../../gesuch/service/finanzielleSituationSubStepManagerLuzern';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
-import {WizardSubStepManager} from '../../../../gesuch/service/wizardSubStepManager';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
+import {TSFinanzielleSituationTyp} from '../../../../models/enums/TSFinanzielleSituationTyp';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
 import {TSWizardSubStepName} from '../../../../models/enums/TSWizardSubStepName';
 import {ErrorService} from '../../errors/service/ErrorService';
+import {LogFactory} from '../../logging/LogFactory';
 import ITranslateService = angular.translate.ITranslateService;
+
+const LOG = LogFactory.createLog('DVNavigation');
 
 /**
  * Diese Direktive wird benutzt, um die Navigation Buttons darzustellen. Folgende Parameter koennen benutzt werden,
@@ -72,7 +79,7 @@ export class NavigatorController implements IController {
 
     public static $inject: string[] = [
         'WizardStepManager',
-        'WizardSubStepManager',
+        'FinanzielleSituationRS',
         '$state',
         'GesuchModelManager',
         '$translate',
@@ -93,9 +100,11 @@ export class NavigatorController implements IController {
     public dvTranslatePrevious: string;
     public containerClass: string;
 
+    private wizardSubStepManager: FinanzielleSituationSubStepManager;
+
     public constructor(
         private readonly wizardStepManager: WizardStepManager,
-        private readonly wizardSubStepManager: WizardSubStepManager,
+        private readonly finanzielleSituationRS: FinanzielleSituationRS,
         private readonly state: StateService,
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly $translate: ITranslateService,
@@ -112,6 +121,23 @@ export class NavigatorController implements IController {
         if (!this.containerClass) {
             this.containerClass = 'dv-navigation-flex';
         }
+        this.initSubStepManager();
+    }
+
+    private initSubStepManager(): void {
+        this.finanzielleSituationRS.getFinanzielleSituationTyp(this.gesuchModelManager.getGesuchsperiode(), this.gesuchModelManager.getGemeinde())
+            .subscribe(typ => {
+                switch (typ) {
+                    case TSFinanzielleSituationTyp.BERN_ASIV:
+                        this.wizardSubStepManager = new FinanzielleSituationSubStepManagerBernAsiv(this.gesuchModelManager);
+                        break;
+                    case TSFinanzielleSituationTyp.LUZERN:
+                        this.wizardSubStepManager = new FinanzielleSituationSubStepManagerLuzern(this.gesuchModelManager);
+                        break;
+                    default:
+                        throw new Error('unexpected TSFinanzielleSituationTyp ' + typ);
+                }
+            }, err => LOG.error(err));
     }
 
     public doesCancelExist(): boolean {

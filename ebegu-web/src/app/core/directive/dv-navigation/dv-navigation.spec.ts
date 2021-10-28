@@ -16,9 +16,9 @@
 import {StateService} from '@uirouter/core';
 import {IHttpBackendService, IQService, IScope, ITimeoutService} from 'angular';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {FinanzielleSituationSubStepManager} from '../../../../gesuch/service/finanzielleSituationSubStepManager';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
-import {WizardSubStepManager} from '../../../../gesuch/service/wizardSubStepManager';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
@@ -40,7 +40,7 @@ describe('dvNavigation', () => {
 
     let navController: NavigatorController;
     let wizardStepManager: WizardStepManager;
-    let wizardSubStepManager: WizardSubStepManager;
+    let wizardSubStepManager: FinanzielleSituationSubStepManager;
     let $state: StateService;
     let $q: IQService;
     let $rootScope: IScope;

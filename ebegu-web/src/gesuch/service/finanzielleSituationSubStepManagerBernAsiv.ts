@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,23 +8,21 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {TSWizardSubStepName} from '../../models/enums/TSWizardSubStepName';
+import {FinanzielleSituationSubStepManager} from './finanzielleSituationSubStepManager';
 import {GesuchModelManager} from './gesuchModelManager';
 
-export class WizardSubStepManager {
+export class FinanzielleSituationSubStepManagerBernAsiv extends FinanzielleSituationSubStepManager {
 
-    public static $inject = ['GesuchModelManager'];
-
-    public constructor(
-        private readonly gesuchModelManager: GesuchModelManager,
-    ) {
+    public constructor(gesuchModelManager: GesuchModelManager) {
+        super(gesuchModelManager);
     }
 
     public getNextSubStepFinanzielleSituation(
@@ -92,3 +90,4 @@ export class WizardSubStepManager {
         return TSWizardSubStepName.KEIN_WEITERER_SUBSTEP;
     }
 }
+
