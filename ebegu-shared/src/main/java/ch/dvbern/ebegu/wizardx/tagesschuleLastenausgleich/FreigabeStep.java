@@ -29,8 +29,7 @@ public class FreigabeStep implements WizardStep<TagesschuleWizard> {
 
 	@Override
 	public void next(@Nonnull TagesschuleWizard tagesschuleWizard) {
-		if (tagesschuleWizard.getRole().isRoleGemeindeOrTS()
-			|| tagesschuleWizard.getRole().isRoleMandant()
+		if (tagesschuleWizard.getRole().isRoleMandant()
 			|| tagesschuleWizard.getRole().isSuperadmin()) {
 			tagesschuleWizard.setStep(new LastenausgleichStep());
 		}
