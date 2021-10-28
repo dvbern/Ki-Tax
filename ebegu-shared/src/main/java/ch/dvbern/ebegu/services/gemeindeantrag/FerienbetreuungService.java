@@ -112,7 +112,7 @@ public interface FerienbetreuungService {
 		@Nonnull FerienbetreuungAngabenStammdaten stammdaten);
 
 	@Nonnull
-	FerienbetreuungAngabenContainer ferienbetreuungAngabenAbschliessen(
+	FerienbetreuungAngabenContainer ferienbetreuungAngabenFreigeben(
 		@Nonnull FerienbetreuungAngabenContainer container);
 
 	@Nonnull

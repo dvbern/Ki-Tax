@@ -191,38 +191,28 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
     }
 
     public createVerfuegungDocumentDe(): void {
-        this.downloadingDeFile.next(true);
-        this.ferienbetreuungDokumentService.generateVerfuegung(
-            this.container,
-            TSSprache.DEUTSCH,
-        ).subscribe(
-            response => {
-                this.createDownloadFile(response, TSSprache.DEUTSCH);
-                this.downloadingDeFile.next(false);
-            },
-            async err => {
-                LOG.error(err);
-                this.errorService.addMesageAsError(err?.translatedMessage || this.translate.instant(
-                    'ERROR_UNEXPECTED'));
-                this.downloadingDeFile.next(false);
-            });
+        this.createVerfuegungDocument(this.downloadingDeFile, TSSprache.DEUTSCH);
     }
 
     public createVerfuegungDocumentFr(): void {
-        this.downloadingFrFile.next(true);
+        this.createVerfuegungDocument(this.downloadingFrFile, TSSprache.FRANZOESISCH);
+    }
+
+    public createVerfuegungDocument(downloadingFile: BehaviorSubject<boolean>, language: TSSprache): void {
+        downloadingFile.next(true);
         this.ferienbetreuungDokumentService.generateVerfuegung(
             this.container,
-            TSSprache.FRANZOESISCH,
+            language,
         ).subscribe(
             response => {
-                this.createDownloadFile(response, TSSprache.FRANZOESISCH);
-                this.downloadingFrFile.next(false);
+                this.createDownloadFile(response, language);
+                downloadingFile.next(false);
             },
             async err => {
                 LOG.error(err);
                 this.errorService.addMesageAsError(err?.translatedMessage || this.translate.instant(
                     'ERROR_UNEXPECTED'));
-                this.downloadingFrFile.next(false);
+                downloadingFile.next(false);
             });
     }
 

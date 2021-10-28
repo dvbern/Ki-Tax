@@ -271,7 +271,7 @@ export class FerienbetreuungService {
         container: TSFerienbetreuungAngabenContainer,
     ): Observable<TSFerienbetreuungAngabenContainer> {
         return this.http.put(
-            `${this.API_BASE_URL}/abschliessen/${encodeURIComponent(container.id)}`,
+            `${this.API_BASE_URL}/freigeben/${encodeURIComponent(container.id)}`,
             {},
         ).pipe(
             map(

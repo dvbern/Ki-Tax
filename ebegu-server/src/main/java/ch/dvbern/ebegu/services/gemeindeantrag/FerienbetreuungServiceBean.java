@@ -452,7 +452,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 	@Nonnull
 	@Override
-	public FerienbetreuungAngabenContainer ferienbetreuungAngabenAbschliessen(
+	public FerienbetreuungAngabenContainer ferienbetreuungAngabenFreigeben(
 		@Nonnull FerienbetreuungAngabenContainer container) {
 		Preconditions.checkArgument(
 			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE,

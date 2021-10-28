@@ -152,8 +152,7 @@ public class FerienbetreuungDokumentResource {
 		Objects.requireNonNull(containerJaxId);
 		Objects.requireNonNull(containerJaxId.getId());
 
-		byte[] document;
-		document = ferienbetreuungDokumentService.createDocx(containerJaxId.getId(), sprache);
+		byte[] document = ferienbetreuungDokumentService.createDocx(containerJaxId.getId(), sprache);
 
 		if (document.length > 0) {
 			try {
