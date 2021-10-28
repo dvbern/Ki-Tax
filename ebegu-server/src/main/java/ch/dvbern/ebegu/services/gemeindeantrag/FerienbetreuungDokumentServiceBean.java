@@ -203,7 +203,7 @@ public class FerienbetreuungDokumentServiceBean extends AbstractBaseService
 		dto.setPauschale(pauschale);
 		dto.setPauschaleSonderschueler(pauschaleSonderschueler);
 		dto.setChfOhneSonderschueler(pauschale.multiply(dto.getTageOhneSonderschueler()));
-		dto.setChfSonderschueler(pauschale.multiply(dto.getTageSonderschueler()));
+		dto.setChfSonderschueler(pauschaleSonderschueler.multiply(dto.getTageSonderschueler()));
 
 		dto.setTotalTage(angabenKorrektur.getFerienbetreuungAngabenNutzung().getAnzahlBetreuungstageKinderBern());
 		Objects.requireNonNull(dto.getChfSonderschueler());
