@@ -128,7 +128,7 @@ export class NavigatorController implements IController {
         this.finanzielleSituationRS.getFinanzielleSituationTyp(this.gesuchModelManager.getGesuchsperiode(), this.gesuchModelManager.getGemeinde())
             .subscribe(typ => {
                 switch (typ) {
-                    case TSFinanzielleSituationTyp.BERN_ASIV:
+                    case TSFinanzielleSituationTyp.BERN:
                         this.wizardSubStepManager = new FinanzielleSituationSubStepManagerBernAsiv(this.gesuchModelManager);
                         break;
                     case TSFinanzielleSituationTyp.LUZERN:
@@ -405,7 +405,7 @@ export class NavigatorController implements IController {
         switch (navigateToSubStep) {
             case TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP:
                 return this.navigateToStep(navigateToStepIfNoSubstep);
-            case TSFinanzielleSituationSubStepName.START:
+            case TSFinanzielleSituationSubStepName.BERN_START:
                 return this.navigateToStep(TSWizardStepName.FINANZIELLE_SITUATION);
             case TSFinanzielleSituationSubStepName.BERN_GS1:
                 return this.navigateToStepFinanzielleSituation('1');

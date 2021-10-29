@@ -544,9 +544,9 @@ describe('EbeguRestUtil', () => {
         });
         describe('parseFinanzielleSituationTyp', () => {
             it('should be a valid typ', () => {
-                const bernAsiv = ebeguRestUtil.parseFinanzielleSituationTyp('BERN_ASIV');
+                const bernAsiv = ebeguRestUtil.parseFinanzielleSituationTyp('BERN');
                 const luzern = ebeguRestUtil.parseFinanzielleSituationTyp('LUZERN');
-                expect(bernAsiv).toEqual(TSFinanzielleSituationTyp.BERN_ASIV);
+                expect(bernAsiv).toEqual(TSFinanzielleSituationTyp.BERN);
                 expect(luzern).toEqual(TSFinanzielleSituationTyp.LUZERN);
             });
             it('should throw an error', () => {
