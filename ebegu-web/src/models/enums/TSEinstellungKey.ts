@@ -154,7 +154,7 @@ export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
         TSEinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50,
         TSEinstellungKey.LATS_STICHTAG,
         TSEinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV,
-        TSEinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF
+        TSEinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF,
         TSEinstellungKey.FERIENBETREUUNG_CHF_PAUSCHALBETRAG,
         TSEinstellungKey.FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER
     ];
