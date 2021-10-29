@@ -1246,6 +1246,7 @@ export class EbeguRestUtil {
             gesuchTS.gueltig = gesuchFromServer.gueltig;
             gesuchTS.dokumenteHochgeladen = gesuchFromServer.dokumenteHochgeladen;
             gesuchTS.finSitStatus = gesuchFromServer.finSitStatus;
+            gesuchTS.finSitTyp = gesuchFromServer.finSitTyp;
             return gesuchTS;
         }
         return undefined;
