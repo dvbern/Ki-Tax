@@ -61,6 +61,7 @@ import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.outbox.institution.InstitutionEventConverter;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.PredicateHelper;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static java.util.Objects.requireNonNull;
@@ -434,5 +435,14 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);
 		typedQuery.setParameter(GEMEINDEN, gemeinde);
 		return typedQuery.getResultList();
+	}
+
+	@Override
+	public boolean isGueltigkeitDecrease(
+			@Nonnull DateRange current, @Nonnull DateRange change) {
+		if (change.getGueltigAb().isAfter(current.getGueltigAb())) {
+			return true;
+		}
+		return change.getGueltigBis().isBefore(current.getGueltigBis());
 	}
 }
