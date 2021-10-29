@@ -89,6 +89,8 @@ public class BGCalculationInput {
 
 	private int anspruchspensumRest;
 
+	private int rueckwirkendReduziertesPensumRest;
+
 	// Achtung, dieses Flag wird erst ab 1. des Folgemonats gesetzt, weil die Finanzielle Situation ab dann gilt. Für
 	// Erwerbspensen zählt der GS2 ab sofort!
 	private boolean hasSecondGesuchstellerForFinanzielleSituation;
@@ -228,6 +230,7 @@ public class BGCalculationInput {
 		this.pensumUnit = toCopy.pensumUnit;
 		this.pensenBereitsGekuerzt = toCopy.pensenBereitsGekuerzt;
 		this.minimalErforderlichesPensum = toCopy.minimalErforderlichesPensum;
+		this.rueckwirkendReduziertesPensumRest = toCopy.rueckwirkendReduziertesPensumRest;
 	}
 
 	@Nonnull
@@ -940,5 +943,13 @@ public class BGCalculationInput {
 
 	public void setMinimalErforderlichesPensum(int minimalErforderlichesPensum) {
 		this.minimalErforderlichesPensum = minimalErforderlichesPensum;
+	}
+
+	public int getRueckwirkendReduziertesPensumRest() {
+		return rueckwirkendReduziertesPensumRest;
+	}
+
+	public void setRueckwirkendReduziertesPensumRest(int rueckwirkendReduziertesPensumRest) {
+		this.rueckwirkendReduziertesPensumRest = rueckwirkendReduziertesPensumRest;
 	}
 }
