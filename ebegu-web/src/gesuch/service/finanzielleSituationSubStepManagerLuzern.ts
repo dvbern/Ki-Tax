@@ -28,8 +28,8 @@ export class FinanzielleSituationSubStepManagerLuzern extends FinanzielleSituati
     public getNextSubStepFinanzielleSituation(
         currentSubStep: TSFinanzielleSituationSubStepName,
     ): TSFinanzielleSituationSubStepName {
-        if (TSFinanzielleSituationSubStepName.START === currentSubStep) {
-
+        if (TSFinanzielleSituationSubStepName.LUZERN_START === currentSubStep) {
+            return TSFinanzielleSituationSubStepName.LUZERN_SELBSTDEKLARATION;
         }
         return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
     }
@@ -37,7 +37,7 @@ export class FinanzielleSituationSubStepManagerLuzern extends FinanzielleSituati
     public getPreviousSubStepFinanzielleSituation(
         currentSubStep: TSFinanzielleSituationSubStepName,
     ): TSFinanzielleSituationSubStepName {
-        if (TSFinanzielleSituationSubStepName.START === currentSubStep) {
+        if (TSFinanzielleSituationSubStepName.LUZERN_START === currentSubStep) {
             return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
         }
         return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;

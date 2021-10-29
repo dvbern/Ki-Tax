@@ -20,6 +20,7 @@ import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {isAnyStatusOfVerfuegtOrKeinKontingent} from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
+import {TSFinanzielleSituationTyp} from '../../models/enums/TSFinanzielleSituationTyp';
 import {TSRole} from '../../models/enums/TSRole';
 import {getTSWizardStepNameValues, TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
@@ -183,6 +184,7 @@ export class WizardStepManager {
         this.allowedSteps.push(TSWizardStepName.ABWESENHEIT);
         this.allowedSteps.push(TSWizardStepName.ERWERBSPENSUM);
         this.allowedSteps.push(TSWizardStepName.FINANZIELLE_SITUATION);
+        this.allowedSteps.push(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
         this.allowedSteps.push(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
         this.allowedSteps.push(TSWizardStepName.DOKUMENTE);
         this.allowedSteps.push(TSWizardStepName.FREIGABE);
@@ -523,6 +525,21 @@ export class WizardStepManager {
             this.hideStep(TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN);
         } else {
             this.unhideStep(TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN);
+        }
+        this.hideFinSitSteps(gesuch);
+    }
+
+    private hideFinSitSteps(gesuch: TSGesuch): void {
+        this.hideStep(TSWizardStepName.FINANZIELLE_SITUATION);
+        this.hideStep(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
+
+        // show just one step if gesuch.finSitTyp is empty (on gesuch creation)
+        if (gesuch.finSitTyp === TSFinanzielleSituationTyp.BERN || !gesuch.finSitTyp) {
+            this.unhideStep(TSWizardStepName.FINANZIELLE_SITUATION);
+        } else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.LUZERN) {
+            this.unhideStep(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
+        } else {
+            throw new Error('wrong FinSitTyp' + gesuch.finSitTyp);
         }
     }
 }

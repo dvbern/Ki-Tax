@@ -57,11 +57,13 @@ import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
@@ -222,7 +224,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				true)));
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
 				gesuch,
-				WizardStepName.FINANZIELLE_SITUATION,
+				getFinanzielleSituationWizardStepName(gesuch),
 				WizardStepStatus.OK,
 				true)));
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
@@ -299,7 +301,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				false)));
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
 				gesuch,
-				WizardStepName.FINANZIELLE_SITUATION,
+				getFinanzielleSituationWizardStepName(gesuch),
 				WizardStepStatus.UNBESUCHT,
 				false)));
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
@@ -324,6 +326,16 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				false)));
 		}
 		return wizardStepList;
+	}
+
+	private WizardStepName getFinanzielleSituationWizardStepName(Gesuch gesuch) {
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.BERN) {
+			return WizardStepName.FINANZIELLE_SITUATION;
+		}
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN) {
+			return WizardStepName.FINANZIELLE_SITUATION_LUZERN;
+		}
+		throw new EbeguRuntimeException("getFinanzielleSituationWizardStepName", "wrong finSitTyp " + gesuch.getFinSitTyp());
 	}
 
 	/**
