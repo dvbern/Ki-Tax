@@ -294,7 +294,8 @@ export class NavigatorController implements IController {
 
             return undefined;
         }
-        if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()) {
+        if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()
+            || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()) {
             const nextSubStep = this.wizardSubStepManager.getNextSubStepFinanzielleSituation(this.dvSubStepName);
             const nextMainStep = this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch());
             return this.navigateToSubStepFinanzielleSituation(
@@ -416,6 +417,16 @@ export class NavigatorController implements IController {
                 return this.navigateToSozialhilfeZeitraeume();
             case TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE_DETAIL:
                 return this.navigateToSozialhilfeZeitraeume();
+            case TSFinanzielleSituationSubStepName.LUZERN_START:
+                return this.navigateToLuzernStart();
+            case TSFinanzielleSituationSubStepName.LUZERN_SELBSTDEKLARATION:
+                return this.navigateToLuzernSelbstdeklaration();
+            case TSFinanzielleSituationSubStepName.LUZERN_VERANLAGT:
+                return this.navigateToLuzernVeranlagt();
+            case TSFinanzielleSituationSubStepName.LUZERN_GS2_SELBSTDEKLARATION:
+                return this.navigateToLuzernSelbstdeklarationGS2();
+            case TSFinanzielleSituationSubStepName.LUZERN_GS2_VERANLAGT:
+                return this.navigateToLuzernVeranlagtGS2();
             default:
                 throw new Error(`not implemented for Substep ${navigateToSubStep}`);
         }
@@ -510,6 +521,26 @@ export class NavigatorController implements IController {
             gesuchstellerNumber: gsNumber ? gsNumber : '1',
             gesuchId: this.getGesuchId(),
         });
+    }
+
+    private navigateToLuzernStart(): any {
+        console.log(`luzern start`);
+    }
+
+    private navigateToLuzernSelbstdeklaration(): any {
+        console.log(`luzern selbstdeklaration: GS 1`);
+    }
+
+    private navigateToLuzernVeranlagt(): any {
+        console.log(`luzern veranlagt: GS 1`);
+    }
+
+    private navigateToLuzernSelbstdeklarationGS2(): any {
+        console.log(`luzern selbstdeklaration: GS 2`);
+    }
+
+    private navigateToLuzernVeranlagtGS2(): any {
+        console.log(`luzern veranlagt: GS 2`);
     }
 
     private getGesuchId(): string {

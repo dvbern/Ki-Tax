@@ -28,7 +28,7 @@ export class FinanzielleSituationSubStepManagerBernAsiv extends FinanzielleSitua
     public getNextSubStepFinanzielleSituation(
         currentSubStep: TSFinanzielleSituationSubStepName,
     ): TSFinanzielleSituationSubStepName {
-        if (TSFinanzielleSituationSubStepName.START === currentSubStep) {
+        if (TSFinanzielleSituationSubStepName.BERN_START === currentSubStep) {
             // (1) Sozialhilfe, sonst keine Details
             if (this.gesuchModelManager.isSozialhilfeBezuegerZeitraeumeRequired()) {
                 return TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE;
@@ -66,11 +66,11 @@ export class FinanzielleSituationSubStepManagerBernAsiv extends FinanzielleSitua
     public getPreviousSubStepFinanzielleSituation(
         currentSubStep: TSFinanzielleSituationSubStepName,
     ): TSFinanzielleSituationSubStepName {
-        if (TSFinanzielleSituationSubStepName.START === currentSubStep) {
+        if (TSFinanzielleSituationSubStepName.BERN_START === currentSubStep) {
             return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
         }
         if (TSFinanzielleSituationSubStepName.BERN_GS1 === currentSubStep) {
-            return TSFinanzielleSituationSubStepName.START;
+            return TSFinanzielleSituationSubStepName.BERN_START;
         }
         if (TSFinanzielleSituationSubStepName.BERN_GS2 === currentSubStep) {
             return TSFinanzielleSituationSubStepName.BERN_GS1;
@@ -82,7 +82,7 @@ export class FinanzielleSituationSubStepManagerBernAsiv extends FinanzielleSitua
             return TSFinanzielleSituationSubStepName.BERN_GS1;
         }
         if (TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE === currentSubStep) {
-            return TSFinanzielleSituationSubStepName.START;
+            return TSFinanzielleSituationSubStepName.BERN_START;
         }
         if (TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE_DETAIL === currentSubStep) {
             return TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE;
