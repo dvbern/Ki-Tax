@@ -18,16 +18,17 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'dv-angaben-gesuchsteller2',
-  templateUrl: './angaben-gesuchsteller2.component.html',
-  styleUrls: ['./angaben-gesuchsteller2.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-angaben-gesuchsteller2',
+    templateUrl: '../finanzielle-situation-luzern.component.html',
+    styleUrls: ['../finanzielle-situation-luzern.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AngabenGesuchsteller2Component implements OnInit {
 
-  constructor() { }
+    constructor() {
+    }
 
-  ngOnInit(): void {
-  }
+    ngOnInit(): void {
+    }
 
 }

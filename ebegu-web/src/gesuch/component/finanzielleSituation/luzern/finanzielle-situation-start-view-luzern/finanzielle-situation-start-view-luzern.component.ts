@@ -21,8 +21,8 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 // noinspection AngularMissingOrInvalidDeclarationInModule
 @Component({
     selector: 'dv-finanzielle-situation-start-view-luzern',
-    templateUrl: './finanzielle-situation-start-view-luzern.component.html',
-    styleUrls: ['./finanzielle-situation-start-view-luzern.component.less'],
+    templateUrl: '../finanzielle-situation-luzern.component.html',
+    styleUrls: ['../finanzielle-situation-luzern.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FinanzielleSituationStartViewLuzernComponent implements OnInit {
