@@ -433,7 +433,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     private getMinErsterSchultag(): moment.Moment {
-        if (this.getBetreuungModel() && this.getBetreuungModel().belegungTagesschule) {
+        if (this.getBetreuungModel()) {
             return moment.max(
                 this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag,
                 TSMandant.earliestDateOfTSAnmeldung,
@@ -496,7 +496,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     private isThereAnyAnmeldungSaveModel(): boolean {
-        const moduleTagessule = this.getBetreuungModel().belegungTagesschule.belegungTagesschuleModule;
+        const moduleTagessule = this.getBetreuungModel().belegungTagesschule?.belegungTagesschuleModule;
         if (EbeguUtil.isNotNullOrUndefined(moduleTagessule)) {
             return moduleTagessule
                 .filter(modul => modul.modulTagesschule.angemeldet).length > 0;
