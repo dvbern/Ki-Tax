@@ -196,23 +196,21 @@ export class GesuchModelManager {
             this.wizardStepManager.setHiddenSteps(this.gesuch);
             // Es soll nur einmalig geprueft werden, ob das aktuelle Gesuch das neueste dieses Falls fuer die
             // gewuenschte Periode ist.
-            if (this.gesuch.id) {
-                this.gesuchRS.isNeuestesGesuch(this.gesuch.id).then((resp: boolean) => {
-                    this.neustesGesuch = resp;
-                });
-            }
+            this.checkIfGesuchIsNeustes().then(response =>
+                this.neustesGesuch = response
+            );
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeBgTSMandantRoles())) {
                 this.subscription = this.internePendenzenRS.getPendenzCountUpdated$(this.getGesuch())
-                .subscribe(() => {
-                    this.internePendenzenRS.countInternePendenzenForGesuch(this.getGesuch())
-                    .subscribe(numberInternePendenzen => this.numberInternePendenzen = numberInternePendenzen,
-                        error => this.log.error(error));
-                    this.internePendenzenRS.findInternePendenzenForGesuch(this.getGesuch()).subscribe(pendenzen => {
-                        this.hasAbgelaufenePendenz =
-                            pendenzen.reduce((has, current) =>
-                                current.termin.isBefore(moment()) && !current.erledigt || has, false);
+                    .subscribe(() => {
+                        this.internePendenzenRS.countInternePendenzenForGesuch(this.getGesuch())
+                            .subscribe(numberInternePendenzen => this.numberInternePendenzen = numberInternePendenzen,
+                                error => this.log.error(error));
+                        this.internePendenzenRS.findInternePendenzenForGesuch(this.getGesuch()).subscribe(pendenzen => {
+                            this.hasAbgelaufenePendenz =
+                                pendenzen.reduce((has, current) =>
+                                    current.termin.isBefore(moment()) && !current.erledigt || has, false);
+                        }, error => this.log.error(error));
                     }, error => this.log.error(error));
-                }, error => this.log.error(error));
             }
         }
         // Liste zuruecksetzen, da u.U. im Folgegesuch andere Stammdaten gelten!
@@ -221,6 +219,13 @@ export class GesuchModelManager {
 
         this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
         return gesuch;
+    }
+
+    public checkIfGesuchIsNeustes(): IPromise<boolean> {
+        if (this.gesuch.id) {
+            return this.gesuchRS.isNeuestesGesuch(this.gesuch.id);
+        }
+        return undefined;
     }
 
     /**
@@ -1498,7 +1503,8 @@ export class GesuchModelManager {
         if (this.authServiceRS.isOneOfRoles([TSRole.GESUCHSTELLER].concat(TSRoleUtil.getSozialdienstRolle()))) {
             // readonly fuer gs wenn gesuch freigegeben oder weiter
             const gesuchReadonly = !this.getGesuch() || isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status);
-            // if getFall() is undefined, getFall()?.isSozialdienstfall() would return undefined. We have to use literal-compare here
+            // if getFall() is undefined, getFall()?.isSozialdienstfall() would return undefined. We have to use
+            // literal-compare here
             // tslint:disable-next-line: no-boolean-literal-compare
             const sozialdienstFallEntzogen = this.getFall()?.isSozialdienstFall() === true
                 && this.getFall()?.sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN;

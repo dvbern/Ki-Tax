@@ -1394,13 +1394,20 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public anmeldungSchulamtFalscheAngaben(): void {
-        this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
-            title: 'TS_ANMELDUNG_ERNEUT_OEFFNEN',
-            deleteText: '',
-            cancelText: 'LABEL_ABBRECHEN',
-            confirmText: 'LABEL_SPEICHERN',
-        }).then(() => {
-            this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+        // Wir muessen sicher sein dass es keine offene und noch nicht freigegebene Mutation fuer dieser Gesuch gibt
+        this.gesuchModelManager.checkIfGesuchIsNeustes().then(response => {
+            if (!response) {
+                this.errorService.addMesageAsError(this.$translate.instant('ERROR_DATA_CHANGED'));
+                return;
+            }
+            this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
+                title: 'TS_ANMELDUNG_ERNEUT_OEFFNEN',
+                deleteText: '',
+                cancelText: 'LABEL_ABBRECHEN',
+                confirmText: 'LABEL_SPEICHERN',
+            }).then(() => {
+                this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+            });
         });
     }
 

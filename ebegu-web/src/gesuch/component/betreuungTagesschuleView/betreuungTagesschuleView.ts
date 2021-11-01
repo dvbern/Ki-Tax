@@ -118,6 +118,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public agbVorhanden: boolean;
     private _showWarningModuleZugewiesen: boolean = false;
     public isScolaris: boolean = false;
+    public isLastGesuch: boolean = false;
 
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
 
@@ -223,6 +224,9 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
                 this.showNochNichtFreigegeben = true;
             }
             this.aktuellGueltig = false;
+        }
+        if (this.gesuchModelManager.isNeuestesGesuch()) {
+            this.isLastGesuch = true;
         }
     }
 

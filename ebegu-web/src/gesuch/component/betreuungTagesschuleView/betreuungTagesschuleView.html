@@ -271,7 +271,7 @@
         </div>
         <span dv-show-element
               dv-show-allowed-roles="vm.TSRoleUtil.getSchulamtRoles()"
-              dv-show-expression="vm.showFalscheAngabenTagesschule() && vm.aktuellGueltig">
+              dv-show-expression="vm.showFalscheAngabenTagesschule() && vm.aktuellGueltig && vm.isLastGesuch">
                <!--falsche Angaben Tagesschule-->
             <div class="row">
                 <div class="col-md-12">
@@ -283,7 +283,7 @@
         <!--Angabe korrigieren-->
         <div class="row" dv-show-element
              dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()"
-             dv-show-expression="vm.showAngabenKorrigieren()">
+             dv-show-expression="vm.showAngabenKorrigieren() && vm.isLastGesuch">
             <div class="col-md-12">
                 <a href="" ng-click="vm.tsPlatzAnfordern()"
                    data-translate="ANGABEN_KORRIGIEREN"></a>
