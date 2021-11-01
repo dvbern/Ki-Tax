@@ -15,21 +15,22 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Inject, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
 
-// noinspection AngularMissingOrInvalidDeclarationInModule
 @Component({
     selector: 'dv-finanzielle-situation-start-view-luzern',
     templateUrl: '../finanzielle-situation-luzern.component.html',
     styleUrls: ['../finanzielle-situation-luzern.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FinanzielleSituationStartViewLuzernComponent implements OnInit {
+export class FinanzielleSituationStartViewLuzernComponent extends AbstractGesuchViewX implements OnInit {
 
     public constructor(
-        @Inject('gesuchModelManager') public gesuchModelManager: GesuchModelManager
+        protected gesuchModelManager: GesuchModelManager,
     ) {
+        super(gesuchModelManager);
     }
 
     public ngOnInit(): void {

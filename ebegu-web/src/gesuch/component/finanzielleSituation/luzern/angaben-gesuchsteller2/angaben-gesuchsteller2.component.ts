@@ -16,6 +16,8 @@
  */
 
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
 
 @Component({
     selector: 'dv-angaben-gesuchsteller2',
@@ -23,12 +25,14 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
     styleUrls: ['../finanzielle-situation-luzern.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AngabenGesuchsteller2Component implements OnInit {
+export class AngabenGesuchsteller2Component extends AbstractGesuchViewX implements OnInit {
 
-    constructor() {
+    public constructor(
+        protected gesuchModelManager: GesuchModelManager,
+    ) {
+        super(gesuchModelManager);
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
     }
-
 }
