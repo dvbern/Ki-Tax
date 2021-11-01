@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {HttpBackend} from '@angular/common/http';
 import * as angular from 'angular';
 import {CookieService} from 'ngx-cookie-service';
 import {Observable, of} from 'rxjs';
@@ -95,6 +96,12 @@ class CookieServiceMock extends CookieService {
     }
 }
 
+class HttpBackendMock extends HttpBackend {
+    public handle(): Observable<any> {
+        return of({});
+    }
+}
+
 export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('I18nServiceRSRest', I18nServiceMock);
     $provide.service('AuthLifeCycleService', AuthLifeCycleServiceMock);
@@ -103,8 +110,9 @@ export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('BenutzerRS', BenutzerRSX);
     $provide.service('VersionService', VersionService);
     $provide.service('MandantService', MandantService);
-    $provide.service('cookieService', CookieServiceMock);
     $provide.service('windowRef', WindowRef);
+    $provide.service('httpBackend', HttpBackendMock);
+    $provide.service('cookieService', CookieServiceMock);
     $provide.service('applicationPropertyService', ApplicationPropertyRS);
     $provide.service('authService', AuthServiceRS);
     $provide.value('LOCALE_ID', 'de-CH');

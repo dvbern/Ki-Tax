@@ -60,9 +60,7 @@ function redirectToMandantSelection(
     const $state: StateService = transition.injector().get('$state');
 
     return combineLatest([
-        mandantService.mandant$.pipe(
-            take(1),
-        ),
+        mandantService.mandant$,
         mandantService.isMultimandantActive$(),
     ])
         .pipe(
