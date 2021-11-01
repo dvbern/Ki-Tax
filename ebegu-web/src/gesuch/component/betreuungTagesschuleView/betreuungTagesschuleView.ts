@@ -108,7 +108,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public form: IFormController;
     public betreuung: TSBetreuung;
     public showErrorMessageNoModule: boolean;
-    public minEintrittsdatum: moment.Moment;
     public showNochNichtFreigegeben: boolean = false;
     public showMutiert: boolean = false;
     public aktuellGueltig: boolean = true;
@@ -438,12 +437,11 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     private getMinErsterSchultag(): moment.Moment {
-        if (this.getBetreuungModel() && this.getBetreuungModel().belegungTagesschule) {
-            this.getBetreuungModel().belegungTagesschule.eintrittsdatum = moment.max(
+        if (this.getBetreuungModel()) {
+            return moment.max(
                 this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag,
                 TSMandant.earliestDateOfTSAnmeldung,
             );
-            return this.getBetreuungModel().belegungTagesschule.eintrittsdatum;
         }
         return undefined;
     }
@@ -502,7 +500,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     private isThereAnyAnmeldungSaveModel(): boolean {
-        const moduleTagessule = this.getBetreuungModel().belegungTagesschule.belegungTagesschuleModule;
+        const moduleTagessule = this.getBetreuungModel().belegungTagesschule?.belegungTagesschuleModule;
         if (EbeguUtil.isNotNullOrUndefined(moduleTagessule)) {
             return moduleTagessule
                 .filter(modul => modul.modulTagesschule.angemeldet).length > 0;

@@ -93,13 +93,16 @@ public class BetreuungsgutscheinExecutor {
 		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte,
 		@Nonnull Locale locale
 	) {
+		Boolean eingewoehnungAktiviert = kibonAbschlussRulesParameters.get(EinstellungKey.FKJV_EINGEWOEHNUNG).getValueAsBoolean();
+		EingewoehnungFristRule eingewoehnungFristRule = new EingewoehnungFristRule(locale, isDebug, eingewoehnungAktiviert);
 		AnspruchFristRule anspruchFristRule = new AnspruchFristRule(isDebug);
 		AbschlussNormalizer abschlussNormalizerOhneMonate = new AbschlussNormalizer(false, isDebug);
 		MonatsRule monatsRule = new MonatsRule(isDebug);
 		Boolean pauschaleRueckwirkendAuszahlen = kibonAbschlussRulesParameters.get(EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND).getValueAsBoolean();
 		MutationsMerger mutationsMerger = new MutationsMerger(locale, isDebug, pauschaleRueckwirkendAuszahlen);
 		AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(!platz.getBetreuungsangebotTyp().isTagesschule(), isDebug);
-
+		// Bei Eingewoehnung ist der Anspruch von einer Monat verlaengt
+		zeitabschnitte = eingewoehnungFristRule.executeIfApplicable(platz, zeitabschnitte);
 		// Innerhalb eines Monats darf der Anspruch nie sinken
 		zeitabschnitte = anspruchFristRule.executeIfApplicable(platz, zeitabschnitte);
 		// Falls jetzt noch Abschnitte "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
