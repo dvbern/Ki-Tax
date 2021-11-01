@@ -2,6 +2,8 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {TSSprache} from '../../../../models/enums/TSSprache';
+import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungDokument} from '../../../../models/gemeindeantrag/TSFerienbetreuungDokument';
 import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../../core/constants/CONSTANTS';
@@ -28,5 +30,16 @@ export class FerienbetreuungDokumentService {
 
     public deleteDokument(dokumentId: string): Observable<void> {
         return this.http.delete<void>(`${this.API_BASE_URL}/${encodeURIComponent(dokumentId)}`);
+    }
+
+    public generateVerfuegung(
+        antrag: TSFerienbetreuungAngabenContainer,
+        sprache: TSSprache,
+    ): Observable<any> {
+        return this.http.post(
+            `${this.API_BASE_URL}/docx-erstellen/${encodeURIComponent(antrag.id)}/${sprache}`,
+            {},
+            {responseType: 'blob'}
+        );
     }
 }

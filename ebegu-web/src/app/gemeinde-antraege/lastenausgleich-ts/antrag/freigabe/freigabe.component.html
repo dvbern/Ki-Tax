@@ -18,6 +18,9 @@
 <p *ngIf="canSeeFreigegebenText | async"
    [innerHTML]="'LATS_FREIGEGEBEN_AN_KANTON' | translate">
 </p>
+<p *ngIf="canSeeAbgeschlossenText | async"
+   [innerHTML]="'LATS_ABGESCHLOSSEN' | translate">
+</p>
 
 <div class="actions">
     <dv-loading-button

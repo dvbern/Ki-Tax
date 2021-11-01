@@ -32,7 +32,7 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
     public angabenDeklaration: TSLastenausgleichTagesschuleAngabenGemeinde;
     public angabenKorrektur: TSLastenausgleichTagesschuleAngabenGemeinde;
     public angabenInstitutionContainers: Array<TSLastenausgleichTagesschuleAngabenInstitutionContainer>;
-
+    private _betreuungsstundenPrognose: number;
     /**
      * Based on AngabenGemeindeStatus, we work with AngabenDeklaration or AngabenKorrektur
      */
@@ -95,7 +95,7 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
     public isAtLeastGeprueft(): boolean {
         return [
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT,
-            TSLastenausgleichTagesschuleAngabenGemeindeStatus.VERFUEGT,
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.ABGESCHLOSSEN,
         ].includes(this.status);
     }
 
@@ -112,5 +112,17 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
 
     public isGeprueft(): boolean {
         return this.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT;
+    }
+
+    public get betreuungsstundenPrognose(): number {
+        return this._betreuungsstundenPrognose;
+    }
+
+    public set betreuungsstundenPrognose(value: number) {
+        this._betreuungsstundenPrognose = value;
+    }
+
+    public isAbgeschlossen(): boolean {
+        return this.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.ABGESCHLOSSEN;
     }
 }

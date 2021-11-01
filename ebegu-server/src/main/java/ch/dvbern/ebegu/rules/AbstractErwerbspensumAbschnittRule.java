@@ -53,7 +53,7 @@ public abstract class AbstractErwerbspensumAbschnittRule extends AbstractAbschni
 		Gesuch gesuch = platz.extractGesuch();
 		if (gesuch.getGesuchsteller1() != null) {
 			erwerbspensumAbschnitte.addAll(getErwerbspensumAbschnittForGesuchsteller(gesuch,
-				gesuch.getGesuchsteller1(), false));
+				gesuch.getGesuchsteller1(),false));
 		}
 		if (gesuch.getGesuchsteller2() != null) {
 			erwerbspensumAbschnitte.addAll(getErwerbspensumAbschnittForGesuchsteller(gesuch,

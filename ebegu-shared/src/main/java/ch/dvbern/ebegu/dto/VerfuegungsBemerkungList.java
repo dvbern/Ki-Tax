@@ -143,6 +143,10 @@ public class VerfuegungsBemerkungList {
 		if (messagesMap.containsKey(MsgKey.FACHSTELLE_MSG)) {
 			messagesMap.remove(MsgKey.ERWERBSPENSUM_ANSPRUCH);
 		}
+		// Es kann sein das, trotz eine eingewoehnung, die minimal Erwerbspenum nicht erreicht ist
+		if(messagesMap.containsKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH)){
+			messagesMap.remove(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG);
+		}
 		if(messagesMap.containsKey(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG)) {
 			messagesMap.remove(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG);
 		}
