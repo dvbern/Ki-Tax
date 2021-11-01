@@ -89,7 +89,7 @@ export function appRun(
                     Raven.setEnvironment('unspecified');
                 }
             });
-    });
+    }, error => LOG.error(error));
 
     function onNotAuthenticated(): void {
         authServiceRS.clearPrincipal();
