@@ -57,7 +57,6 @@ import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
@@ -107,6 +106,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	private GesuchService gesuchService;
 	@Inject
 	private GemeindeService gemeindeService;
+	@Inject
+	private WizardStepService wizardStepService;
 
 	@Override
 	@Nonnull
@@ -224,7 +225,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				true)));
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
 				gesuch,
-				getFinanzielleSituationWizardStepName(gesuch),
+				this.getFinSitWizardStepNameForGesuch(gesuch),
 				WizardStepStatus.OK,
 				true)));
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
@@ -301,7 +302,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				false)));
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
 				gesuch,
-				getFinanzielleSituationWizardStepName(gesuch),
+				this.getFinSitWizardStepNameForGesuch(gesuch),
 				WizardStepStatus.UNBESUCHT,
 				false)));
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
@@ -326,16 +327,6 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				false)));
 		}
 		return wizardStepList;
-	}
-
-	private WizardStepName getFinanzielleSituationWizardStepName(Gesuch gesuch) {
-		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.BERN) {
-			return WizardStepName.FINANZIELLE_SITUATION;
-		}
-		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN) {
-			return WizardStepName.FINANZIELLE_SITUATION_LUZERN;
-		}
-		throw new EbeguRuntimeException("getFinanzielleSituationWizardStepName", "wrong finSitTyp " + gesuch.getFinSitTyp());
 	}
 
 	/**
@@ -1041,6 +1032,18 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		if (WizardStepStatus.OK != freigabeStep.getWizardStepStatus()) {
 			freigabeStep.setWizardStepStatus(WizardStepStatus.OK);
 			saveWizardStep(freigabeStep);
+		}
+	}
+
+	@Nonnull
+	public WizardStepName getFinSitWizardStepNameForGesuch(@Nonnull Gesuch gesuch) {
+		switch (gesuch.getFinSitTyp()) {
+		case BERN:
+			return WizardStepName.FINANZIELLE_SITUATION;
+		case LUZERN:
+			return WizardStepName.FINANZIELLE_SITUATION_LUZERN;
+		default:
+			throw new EbeguRuntimeException("getFinSitWizardStepNameForGesuch", "no WizardStepName found for typ " + gesuch.getFinSitTyp());
 		}
 	}
 }

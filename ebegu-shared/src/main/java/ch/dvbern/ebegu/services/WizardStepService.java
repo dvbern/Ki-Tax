@@ -115,4 +115,7 @@ public interface WizardStepService {
 	 * Gesuchsteller seinen Antrag nach der Freigabe nochmals zurueckzieht.
 	 */
 	void unsetWizardStepFreigabe(@NotNull String gesuchId);
+
+	@Nonnull
+	WizardStepName getFinSitWizardStepNameForGesuch(@Nonnull Gesuch gesuch);
 }
