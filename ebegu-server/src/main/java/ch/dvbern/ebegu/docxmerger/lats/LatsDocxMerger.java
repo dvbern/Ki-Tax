@@ -29,8 +29,6 @@ import ch.dvbern.ebegu.util.Constants;
 
 public class LatsDocxMerger extends DocxMerger<LatsDocxDTO> {
 
-	private static final String NO_DECIMAL_FORMAT = "#,##0";
-
 	public LatsDocxMerger(DocxDocument docxDocument) {
 		super(docxDocument);
 	}
@@ -47,7 +45,7 @@ public class LatsDocxMerger extends DocxMerger<LatsDocxDTO> {
 		this.mergeFields.add(new StringMergeField("gemeindeOrt", dto.getGemeindeOrt()));
 		this.mergeFields.add(new StringMergeField("gemeindeName", dto.getGemeindeName()));
 		this.mergeFields.add(new StringMergeField("fallNummer", dto.getFallNummer()));
-		this.mergeFields.add(new BigDecimalMergeField("betreuungsstunden", dto.getBetreuungsstunden(), NO_DECIMAL_FORMAT));
+		this.mergeFields.add(new BigDecimalMergeField("betreuungsstunden", dto.getBetreuungsstunden(), Constants.NO_DECIMAL_PATTERN));
 		this.mergeFields.add(new BigDecimalMergeField("betreuungsstundenProg", dto.getBetreuungsstundenProg(), Constants.CURRENCY_PATTERN));
 		this.mergeFields.add(new StringMergeField("normlohnkosten", dto.getNormlohnkosten()));
 		this.mergeFields.add(new StringMergeField("normlohnkostenProg", dto.getNormlohnkostenProg()));

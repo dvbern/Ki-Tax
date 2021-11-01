@@ -124,11 +124,6 @@ public enum ApplicationPropertyKey {
 	LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR,
 
 	/**
-	 * Bestimmt, ob Multimandant für diese kiBon Instanz aktiviert sein soll
-	 */
-	MULTIMANDANT_AKTIV,
-
-	/**
 	 * Legt die Primary Color fest
 	 */
 	PRIMARY_COLOR,
@@ -152,5 +147,10 @@ public enum ApplicationPropertyKey {
 	 * Filename des weissen Logos, welches in /assets/images/ ordner abgelegt ist
 	 */
 	LOGO_WHITE_FILE_NAME,
+
+	/**
+	 * Bestimmt, ob Multimandant für diese kiBon Instanz aktiviert sein soll
+	 */
+	MULTIMANDANT_AKTIV,
 
 }

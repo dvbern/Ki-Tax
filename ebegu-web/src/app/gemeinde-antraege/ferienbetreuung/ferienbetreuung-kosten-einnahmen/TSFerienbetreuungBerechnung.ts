@@ -19,8 +19,8 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
 
 export class TSFerienbetreuungBerechnung {
 
-    public readonly CHF_BETREUUNGSTAG = 30;
-    public readonly CHF_BETREUUNGSTAG_SONDERSCHUELER = 60;
+    private readonly _pauschaleBetreuungstag: number;
+    private readonly _pauschaleBetreuungstagSonderschueler: number;
 
     // INPUTS
     private _personalkosten: number;
@@ -51,7 +51,10 @@ export class TSFerienbetreuungBerechnung {
     private _beteiligungDurchAnbietendeGemeinde: number;
     private _beteiligungZuTief = false;
 
-    public constructor() {}
+    public constructor(pauschale: number, pauschaleSonderschueler: number) {
+        this._pauschaleBetreuungstag = pauschale;
+        this._pauschaleBetreuungstagSonderschueler = pauschaleSonderschueler;
+    }
 
     public calculate(): void {
         this.calculateTotalKosten();
@@ -105,10 +108,10 @@ export class TSFerienbetreuungBerechnung {
 
     private calculateTotalKantonsbeitrag(): void {
         this._totalKantonsbeitrag =
-            this._betreuungstageKinderDieserGemeindeMinusSonderschueler * this.CHF_BETREUUNGSTAG
-        + this._betreuungstageKinderDieserGemeindeSonderschueler * this.CHF_BETREUUNGSTAG_SONDERSCHUELER
-        + this._betreuungstageKinderAndererGemeindeMinusSonderschueler * this.CHF_BETREUUNGSTAG
-        + this._betreuungstageKinderAndererGemeindenSonderschueler * this.CHF_BETREUUNGSTAG_SONDERSCHUELER;
+            this._betreuungstageKinderDieserGemeindeMinusSonderschueler * this._pauschaleBetreuungstag
+        + this._betreuungstageKinderDieserGemeindeSonderschueler * this._pauschaleBetreuungstagSonderschueler
+        + this._betreuungstageKinderAndererGemeindeMinusSonderschueler * this._pauschaleBetreuungstag
+        + this._betreuungstageKinderAndererGemeindenSonderschueler * this._pauschaleBetreuungstagSonderschueler;
         this._totalKantonsbeitrag = EbeguUtil.roundToFiveRappen(this._totalKantonsbeitrag);
     }
 
@@ -124,8 +127,8 @@ export class TSFerienbetreuungBerechnung {
 
     private calculateBeteiligungen(): void {
         this._beitragFuerKinderDerAnbietendenGemeinde =
-            this._betreuungstageKinderDieserGemeindeMinusSonderschueler * this.CHF_BETREUUNGSTAG
-            + this._betreuungstageKinderDieserGemeindeSonderschueler * this.CHF_BETREUUNGSTAG_SONDERSCHUELER;
+            this._betreuungstageKinderDieserGemeindeMinusSonderschueler * this._pauschaleBetreuungstag
+            + this._betreuungstageKinderDieserGemeindeSonderschueler * this._pauschaleBetreuungstagSonderschueler;
         this._beitragFuerKinderDerAnbietendenGemeinde =
             EbeguUtil.roundToFiveRappen(this._beitragFuerKinderDerAnbietendenGemeinde);
 

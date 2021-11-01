@@ -15,17 +15,31 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@import 'src/style/variables';
+
 #betreuungsstundenPrognoseId {
     max-width: 30rem;
 }
 
 form {
-    align-items: flex-end;
+    align-items: center;
     display: flex;
 
-    p {
-        margin-bottom: 3rem;
-        margin-left: 1rem;
+    > * {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
     }
+
+    p {
+        margin-left: 1.2rem;
+    }
+}
+
+.btn-link[disabled] {
+    color: @contrast-dark;
+}
+
+.actions {
+    margin-top: 4rem;
 }
 

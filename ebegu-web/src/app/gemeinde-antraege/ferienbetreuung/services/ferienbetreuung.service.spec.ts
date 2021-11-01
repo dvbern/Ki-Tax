@@ -16,15 +16,22 @@
  */
 import {HttpClientModule} from '@angular/common/http';
 import {TestBed} from '@angular/core/testing';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 
 import {FerienbetreuungService} from './ferienbetreuung.service';
 
-describe('GemeindeAngaben', () => {
+const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name,
+    ['getPauschalbetraegeFerienbetreuung']);
+
+describe('FerienbetreuungService', () => {
   let service: FerienbetreuungService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-        imports: [HttpClientModule]
+        imports: [HttpClientModule],
+        providers: [
+            {provide: EinstellungRS, useValue: einstellungRSSpy}
+        ]
     });
     service = TestBed.inject(FerienbetreuungService);
   });

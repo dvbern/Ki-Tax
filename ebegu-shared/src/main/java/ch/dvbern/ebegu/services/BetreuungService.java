@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.services;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,7 +30,9 @@ import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.types.DateRange;
 
 /**
  * Service zum Verwalten von Betreuungen
@@ -230,4 +233,7 @@ public interface BetreuungService {
 
 	@Nonnull
 	Optional<AnmeldungTagesschule> findAnmeldungenTagesschuleByBGNummer(@Nonnull String bgNummer);
+
+	@Nonnull
+	Set<BetreuungsmitteilungPensum> capBetreuungspensenToGueltigkeit(@Nonnull Set<BetreuungsmitteilungPensum> pensen, @Nonnull DateRange gueltigkeit);
 }
