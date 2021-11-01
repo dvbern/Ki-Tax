@@ -130,6 +130,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public allowedRoles: ReadonlyArray<TSRole>;
     public isKesbPlatzierung: boolean;
     private eingewoehnungAktiviert: boolean = false;
+    protected minEintrittsdatum: moment.Moment;
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
@@ -373,16 +374,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public setErsterSchultag(): void {
-        // Default Eintrittsdatum ist erster Schultag, wenn noch in Zukunft
-        const ersterSchultag = this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag;
         // tslint:disable-next-line:early-exit
-        if (ersterSchultag && !this.getBetreuungModel().keineDetailinformationen
+        if (this.minEintrittsdatum && !this.getBetreuungModel().keineDetailinformationen
         ) {
             if (!this.getBetreuungModel().belegungTagesschule) {
                 this.getBetreuungModel().belegungTagesschule = new TSBelegungTagesschule();
             }
             if (this.getBetreuungModel().belegungTagesschule.eintrittsdatum === undefined) {
-                this.getBetreuungModel().belegungTagesschule.eintrittsdatum = ersterSchultag;
+                this.getBetreuungModel().belegungTagesschule.eintrittsdatum = this.minEintrittsdatum;
             }
         }
     }
