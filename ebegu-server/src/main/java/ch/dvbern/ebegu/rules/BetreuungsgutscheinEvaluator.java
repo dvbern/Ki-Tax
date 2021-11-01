@@ -52,6 +52,7 @@ import ch.dvbern.ebegu.util.VerfuegungUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
 /**
  * This is the Evaluator that runs all the rules and calculations for a given Antrag to determine the
@@ -236,7 +237,9 @@ public class BetreuungsgutscheinEvaluator {
 
 	public static Set<EinstellungKey> getRequiredParametersForAbschlussRules() {
 		return EnumSet.of(
-			FKJV_PAUSCHALE_RUECKWIRKEND);
+			FKJV_PAUSCHALE_RUECKWIRKEND,
+			FKJV_EINGEWOEHNUNG
+		);
 	}
 
 	/**
