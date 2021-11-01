@@ -16,9 +16,12 @@
  */
 
 import {IHttpResponse, IHttpService, IPromise} from 'angular';
+import {forkJoin, Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {GlobalCacheService} from '../../gesuch/service/globalCacheService';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import {TSEinstellungKey} from '../../models/enums/TSEinstellungKey';
+import {TSFerienbetreuungAngabenContainer} from '../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSEinstellung} from '../../models/TSEinstellung';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
@@ -69,5 +72,28 @@ export class EinstellungRS {
             .then((response: any) => {
                 return this.ebeguRestUtil.parseEinstellungList(response.data);
             });
+    }
+
+    public getPauschalbetraegeFerienbetreuung(container: TSFerienbetreuungAngabenContainer):
+        Observable<[number, number]> {
+        const findPauschale$ = this.findEinstellung(
+            TSEinstellungKey.FERIENBETREUUNG_CHF_PAUSCHALBETRAG,
+            container.gemeinde.id,
+            container.gesuchsperiode.id
+        );
+        const findPauschaleSonderschueler$ = this.findEinstellung(
+            TSEinstellungKey.FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER,
+            container.gemeinde.id,
+            container.gesuchsperiode.id
+        );
+        return forkJoin([
+            findPauschale$,
+            findPauschaleSonderschueler$
+        ]).pipe(map(([e1, e2]) => {
+            return [
+                parseFloat(e1.value),
+                parseFloat(e2.value)
+            ];
+        }));
     }
 }
