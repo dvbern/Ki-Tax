@@ -23,6 +23,7 @@ import {TSGesuch} from '../models/TSGesuch';
 import {TSKindDublette} from '../models/TSKindDublette';
 import {TSMahnung} from '../models/TSMahnung';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
+import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {GesuchRouteController} from './gesuch';
 import {BerechnungsManager} from './service/berechnungsManager';
 import {GesuchModelManager} from './service/gesuchModelManager';
@@ -492,6 +493,28 @@ export class EbeguFinanzielleSituationResultateState implements Ng1StateDeclarat
     };
 }
 
+export class EbeguFinanzielleSituationStartLuzernState implements Ng1StateDeclaration {
+    public name = 'gesuch.finanzielleSituationStartLuzern';
+    public url = '/finanzielleSituationStart/lu/:gesuchId';
+
+    public views: any = {
+        gesuchViewPort: {
+            component: FinanzielleSituationStartViewLuzernComponent
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuchModelManager: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+
 export class EbeguVerfuegenListState implements Ng1StateDeclaration {
     public name = 'gesuch.verfuegen';
     public url = '/verfuegen/:gesuchId';
@@ -760,6 +783,7 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguFinanzielleSituationStartState(),
     new EbeguFinanzielleSituationState(),
     new EbeguFinanzielleSituationResultateState(),
+    new EbeguFinanzielleSituationStartLuzernState(),
     new EbeguKindState(),
     new EbeguErwerbspensenListState(),
     new EbeguErwerbspensumState(),

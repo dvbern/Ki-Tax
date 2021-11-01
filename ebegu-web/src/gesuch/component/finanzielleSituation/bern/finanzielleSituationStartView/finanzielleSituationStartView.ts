@@ -14,30 +14,30 @@
  */
 
 import {IComponentOptions} from 'angular';
-import {DvDialog} from '../../../../app/core/directive/dv-dialog/dv-dialog';
-import {ErrorService} from '../../../../app/core/errors/service/ErrorService';
-import {ListResourceRS} from '../../../../app/core/service/listResourceRS.rest';
-import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
-import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
-import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
-import {TSAdresse} from '../../../../models/TSAdresse';
-import {TSFinanzielleSituation} from '../../../../models/TSFinanzielleSituation';
-import {TSFinanzModel} from '../../../../models/TSFinanzModel';
-import {TSGesuch} from '../../../../models/TSGesuch';
-import {TSLand} from '../../../../models/types/TSLand';
-import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
-import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import {RemoveDialogController} from '../../../dialog/RemoveDialogController';
-import {BerechnungsManager} from '../../../service/berechnungsManager';
-import {GesuchModelManager} from '../../../service/gesuchModelManager';
-import {WizardStepManager} from '../../../service/wizardStepManager';
-import {AbstractGesuchViewController} from '../../abstractGesuchView';
+import {DvDialog} from '../../../../../app/core/directive/dv-dialog/dv-dialog';
+import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
+import {ListResourceRS} from '../../../../../app/core/service/listResourceRS.rest';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
+import {TSAdresse} from '../../../../../models/TSAdresse';
+import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
+import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {TSGesuch} from '../../../../../models/TSGesuch';
+import {TSLand} from '../../../../../models/types/TSLand';
+import {EbeguRestUtil} from '../../../../../utils/EbeguRestUtil';
+import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
+import {RemoveDialogController} from '../../../../dialog/RemoveDialogController';
+import {BerechnungsManager} from '../../../../service/berechnungsManager';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {WizardStepManager} from '../../../../service/wizardStepManager';
+import {AbstractGesuchViewController} from '../../../abstractGesuchView';
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-const removeDialogTemplate = require('../../../dialog/removeDialogTemplate.html');
+const removeDialogTemplate = require('../../../../dialog/removeDialogTemplate.html');
 
 export class FinanzielleSituationStartViewComponentConfig implements IComponentOptions {
     public transclude = false;
