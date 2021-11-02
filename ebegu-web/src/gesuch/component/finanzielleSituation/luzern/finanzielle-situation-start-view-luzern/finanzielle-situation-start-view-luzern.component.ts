@@ -19,6 +19,7 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FormBuilder} from '@angular/forms';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
+import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
 
 @Component({
     selector: 'dv-finanzielle-situation-start-view-luzern',
@@ -28,18 +29,21 @@ import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
 })
 export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSitLuzernView implements OnInit {
 
+    private zweiAntragstellerForGesuch: boolean;
+
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
-        fb: FormBuilder
+        fb: FormBuilder,
     ) {
         super(gesuchModelManager, fb);
     }
 
     public ngOnInit(): void {
+        this.zweiAntragstellerForGesuch = FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller(this.gesuchModelManager);
     }
 
     public isGemeinsam(): boolean {
-        return true;
+        return !this.zweiAntragstellerForGesuch;
     }
 
 }

@@ -41,5 +41,4 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView imp
     public isGemeinsam(): boolean {
         return false;
     }
-
 }

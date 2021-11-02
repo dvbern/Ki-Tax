@@ -16,11 +16,19 @@
  */
 
 import {Injectable} from '@angular/core';
+import {TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
+import {GesuchModelManager} from '../../../service/gesuchModelManager';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class FinanzielleSituationLuzernService {
 
-  constructor() { }
+    public constructor() {
+    }
+
+    public static finSitNeedsTwoAntragsteller(gesuchModelManager: GesuchModelManager): boolean {
+        // TODO: get this from server or improve
+        return gesuchModelManager.getFamiliensituation().familienstatus === TSFamilienstatus.KONKUBINAT;
+    }
 }

@@ -33,18 +33,35 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX {
 
     private setupForm(): void {
         this.form = this.fb.group({
-            quellenbesteuert: false,
-            gemeinsameStekVorjahr: false,
-            veranlagt: false
+            quellenbesteuert: null,
+            gemeinsameStekVorjahr: null,
+            alleinigeStekVorjahr: null,
+            veranlagt: null
         });
     }
 
     public showSelbstdeklaration(): boolean {
-        return true;
+        return this.form.controls.quellenbesteuert.value === true
+            || this.form.controls.gemeinsameStekVorjahr.value === false
+            || this.form.controls.alleinigeStekVorjahr.value === false
+            || this.form.controls.veranlagt.value === false;
     }
 
     public showVeranlagung(): boolean {
-        return true;
+        return this.form.controls.veranlagt.value === true;
+    }
+
+    public gemeinsameStekVisible(): boolean {
+        return this.isGemeinsam() && this.form.controls.quellenbesteuert.value === false;
+    }
+
+    public alleinigeStekVisible(): boolean {
+        return !this.isGemeinsam() && this.form.controls.quellenbesteuert.value === false;
+    }
+
+    public veranlagtVisible(): boolean {
+        return this.form.controls.gemeinsameStekVorjahr.value === true
+        || this.form.controls.alleinigeStekVorjahr.value === true;
     }
 
     public abstract isGemeinsam(): boolean;
