@@ -16,6 +16,7 @@
  */
 
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {AbstractGesuchViewX} from '../../abstractGesuchViewX';
 
@@ -70,10 +71,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX {
         if (this.form.controls.quellenbesteuert.value === true) {
             return previousYear;
         }
-        if (this.form.controls.veranlagt.value === true) {
-            return currentYear;
-        }
-        if (this.form.controls.veranlagt.value === false) {
+        if (EbeguUtil.isNotNullOrUndefined(this.form.controls.veranlagt.value)) {
             return previousYear;
         }
         if (this.form.controls.gemeinsameStekVorjahr.value === false
