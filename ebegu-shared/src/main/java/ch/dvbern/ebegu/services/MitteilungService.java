@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.types.DateRange;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -212,4 +213,6 @@ public interface MitteilungService {
 	void createMutationsmeldungAbweichungen(@Nonnull Betreuungsmitteilung mitteilung, @Nonnull Betreuung betreuung);
 
 	boolean hasInstitutionOffeneMitteilungen(Institution institution);
+
+	void adaptOffeneMutationsmitteilungenToInstiGueltigkeitChange(@Nonnull Institution institution, @Nonnull DateRange gueltigkeit);
 }

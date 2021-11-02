@@ -216,7 +216,13 @@ public enum EinstellungKey {
 	MINIMALDAUER_KONKUBINAT,
 
 	// Legt den Typen der finanziellen Verhältnisse fest. Z.B. BERN_ASIV oder LUZERN
-	FINANZIELLE_SITUATION_TYP;
+	FINANZIELLE_SITUATION_TYP,
+
+	// Ferienbetreuung Kosten pro Tag
+	FERIENBETREUUNG_CHF_PAUSCHALBETRAG,
+
+	// Ferienbetreuung Kosten pro Tag für Sonderschüler
+	FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER;
 
 	private EinstellungTyp typ;
 

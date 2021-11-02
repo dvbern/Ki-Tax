@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.reporting.ferienbetreuung;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import ch.dvbern.ebegu.enums.KinderAusAnderenGemeindenZahlenAnderenTarifAnswer;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
@@ -28,6 +29,7 @@ public class FerienbetreuungDataRow {
 
 	private String periode = null;
 	private FerienbetreuungAngabenStatus status = null;
+	private @Nullable LocalDateTime timestampMutiert = null;
 
 	private @Nullable String traegerschaft = null;
 	private String weitereGemeinden = null;
@@ -150,6 +152,15 @@ public class FerienbetreuungDataRow {
 
 	public void setStatus(FerienbetreuungAngabenStatus status) {
 		this.status = status;
+	}
+
+	@Nullable
+	public LocalDateTime getTimestampMutiert() {
+		return timestampMutiert;
+	}
+
+	public void setTimestampMutiert(@Nullable LocalDateTime timestampMutiert) {
+		this.timestampMutiert = timestampMutiert;
 	}
 
 	public @Nullable String getTraegerschaft() {

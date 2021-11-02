@@ -115,6 +115,7 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 						.getGesuchsperiodeString());
 					dataRow.setStatus(lastenausgleichTagesschuleAngabenGemeindeContainer.getStatusString());
 					dataRow.setAlleAnmeldungenKibon(lastenausgleichTagesschuleAngabenGemeindeContainer.getAlleAngabenInKibonErfasst());
+					dataRow.setBetreuungsstundenPrognose(lastenausgleichTagesschuleAngabenGemeindeContainer.getBetreuungsstundenPrognose());
 					//wir nehmen die korrektur als in pruefung kanton mindestens
 					LastenausgleichTagesschuleAngabenGemeinde lastenausgleichTagesschuleAngabenGemeindeKorrektur =
 						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur();
@@ -186,7 +187,6 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 		dataRow.setBetreuungsstundenFaktor15(angabenGemeindeKorrektur.getGeleisteteBetreuungsstundenBesondereBeduerfnisse());
 		dataRow.setBetreuungsstundenPaed(angabenGemeindeKorrektur.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete());
 		dataRow.setBetreuungsstundenNichtPaed(angabenGemeindeKorrektur.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
-		dataRow.setNormlohnkostenNichtpaed(angabenGemeindeKorrektur.getNormlohnkostenBetreuungBerechnet());
 
 		dataRow.setElterngebuehrenBetreuung(angabenGemeindeKorrektur.getEinnahmenElterngebuehren());
 		dataRow.setSchliessungCovid(angabenGemeindeKorrektur.getTagesschuleTeilweiseGeschlossen());

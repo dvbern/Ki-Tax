@@ -19,18 +19,24 @@ import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@an
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
-import {combineLatest, Observable, Subject} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
 import {filter, first, map, mergeMap, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {FerienbetreuungAngabenStatus} from '../../../../models/enums/FerienbetreuungAngabenStatus';
 import {TSRole} from '../../../../models/enums/TSRole';
+import {TSSprache} from '../../../../models/enums/TSSprache';
 import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {LogFactory} from '../../../core/logging/LogFactory';
+import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
+import {FerienbetreuungDokumentService} from '../services/ferienbetreuung-dokument.service';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
+
+const LOG = LogFactory.createLog('FerienbetreuungAbschlussComponent');
 
 @Component({
     selector: 'dv-ferienbetreuung-abschluss',
@@ -41,10 +47,15 @@ import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 })
 export class FerienbetreuungAbschlussComponent implements OnInit {
 
+    private static readonly FILENAME_DE = 'Verfügung Ferienbetreuung kiBon';
+    private static readonly FILENAME_FR = 'Modèle Décisions EJC kibon';
+
     public container: TSFerienbetreuungAngabenContainer;
 
     private readonly WIZARD_TYPE = TSWizardStepXTyp.FERIENBETREUUNG;
     private readonly unsubscribe: Subject<boolean> = new Subject<boolean>();
+    public downloadingDeFile: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    public downloadingFrFile: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
     public constructor(
         private readonly ferienbetreuungsService: FerienbetreuungService,
@@ -54,6 +65,8 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
         private readonly wizardRS: WizardStepXRS,
         private readonly authService: AuthServiceRS,
         private readonly stateService: StateService,
+        private readonly ferienbetreuungDokumentService: FerienbetreuungDokumentService,
+        private readonly downloadRS: DownloadRS,
     ) {
     }
 
@@ -144,7 +157,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
     public alreadyGeprueft(): boolean {
         return this.container?.status === FerienbetreuungAngabenStatus.GEPRUEFT ||
             this.container?.status === FerienbetreuungAngabenStatus.ABGELEHNT ||
-            this.container?.status === FerienbetreuungAngabenStatus.VERFUEGT;
+            this.container?.status === FerienbetreuungAngabenStatus.ABGESCHLOSSEN;
     }
 
     public readyForGeprueft(): boolean {
@@ -152,6 +165,12 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
             this.container?.angabenKorrektur?.nutzung?.isAbgeschlossen() &&
             this.container?.angabenKorrektur?.stammdaten?.isAbgeschlossen() &&
             this.container?.angabenKorrektur?.kostenEinnahmen?.isAbgeschlossen();
+    }
+
+    public verfuegungErstellenVisible(): boolean {
+        return this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles())
+        && this.alreadyGeprueft()
+        && !this.container?.isAbgeschlossen();
     }
 
     public async zurueckAnGemeinde(): Promise<void> {
@@ -169,5 +188,85 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
         this.ferienbetreuungsService.zurueckAnGemeinde(this.container).subscribe(
             () => this.stateService.go('gemeindeantrage.view'),
             () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED')));
+    }
+
+    public createVerfuegungDocumentDe(): void {
+        this.createVerfuegungDocument(this.downloadingDeFile, TSSprache.DEUTSCH);
+    }
+
+    public createVerfuegungDocumentFr(): void {
+        this.createVerfuegungDocument(this.downloadingFrFile, TSSprache.FRANZOESISCH);
+    }
+
+    public createVerfuegungDocument(downloadingFile$: BehaviorSubject<boolean>, language: TSSprache): void {
+        downloadingFile$.next(true);
+        this.ferienbetreuungDokumentService.generateVerfuegung(
+            this.container,
+            language,
+        ).subscribe(
+            response => {
+                this.createDownloadFile(response, language);
+                downloadingFile$.next(false);
+            },
+            async err => {
+                LOG.error(err);
+                this.errorService.addMesageAsError(err?.translatedMessage || this.translate.instant(
+                    'ERROR_UNEXPECTED'));
+                downloadingFile$.next(false);
+            });
+    }
+
+    private createDownloadFile(response: BlobPart, sprache: TSSprache): void {
+        const file = new Blob([response],
+            {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+        const filename = this.getFilename(sprache);
+        this.downloadRS.openDownload(file, filename);
+    }
+
+    private getFilename(sprache: TSSprache): string {
+        let filename;
+        (sprache === TSSprache.DEUTSCH)
+            ? filename = FerienbetreuungAbschlussComponent.FILENAME_DE
+            : filename = FerienbetreuungAbschlussComponent.FILENAME_FR;
+
+        return `${filename} ${this.container.gesuchsperiode.gesuchsperiodeString} ${this.container.gemeinde.name}.docx`;
+    }
+
+    public async abschliessen(): Promise<void> {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            frage: this.translate.instant('FERIENBETREUUNG_ABSCHLIESSEN_FRAGE'),
+        };
+
+        if (!await (this.dialog.open(DvNgConfirmDialogComponent, dialogConfig))
+            .afterClosed()
+            .toPromise()) {
+            return;
+        }
+
+        this.ferienbetreuungsService.abschliessen(this.container).subscribe(() => {
+            this.wizardRS.updateSteps(this.WIZARD_TYPE, this.container.id);
+        }, () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED')));
+    }
+
+    public async zurueckAnKanton(): Promise<void> {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            frage: this.translate.instant('FERIENBETREUUNG_ZURUECK_AN_KANTON_FRAGE'),
+        };
+
+        if (!await (this.dialog.open(DvNgConfirmDialogComponent, dialogConfig))
+            .afterClosed()
+            .toPromise()) {
+            return;
+        }
+
+        this.ferienbetreuungsService.zurueckAnKanton(this.container).subscribe(() => {
+            this.wizardRS.updateSteps(this.WIZARD_TYPE, this.container.id);
+        }, () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED')));
+    }
+
+    public abgeschlossen(): boolean {
+        return this.container?.isAbgeschlossen();
     }
 }

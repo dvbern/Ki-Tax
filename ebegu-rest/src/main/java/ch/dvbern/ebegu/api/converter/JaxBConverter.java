@@ -2943,6 +2943,8 @@ public class JaxBConverter extends AbstractConverter {
 		betreuung.setBetreuungMutiert(betreuungJAXP.getBetreuungMutiert());
 		betreuung.setAbwesenheitMutiert(betreuungJAXP.getAbwesenheitMutiert());
 
+		betreuung.setEingewoehnung(betreuungJAXP.isEingewoehnung());
+
 		//ACHTUNG: Verfuegung wird hier nicht synchronisiert aus sicherheitsgruenden
 		return betreuung;
 	}
@@ -3440,6 +3442,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		jaxBetreuung.setBetreuungMutiert(betreuungFromServer.getBetreuungMutiert());
 		jaxBetreuung.setAbwesenheitMutiert(betreuungFromServer.getAbwesenheitMutiert());
+		jaxBetreuung.setEingewoehnung(betreuungFromServer.isEingewoehnung());
 		return jaxBetreuung;
 	}
 
@@ -5809,6 +5812,7 @@ public class JaxBConverter extends AbstractConverter {
 		final Set<JaxLastenausgleichTagesschuleAngabenInstitutionContainer> institutionContainerList =
 			lastenausgleichTagesschuleAngabenInstitutionContainerListToJax(gemeindeContainer.getAngabenInstitutionContainers());
 		jaxGemeindeContainer.setAngabenInstitutionContainers(institutionContainerList);
+		jaxGemeindeContainer.setBetreuungsstundenPrognose(gemeindeContainer.getBetreuungsstundenPrognose());
 
 		return jaxGemeindeContainer;
 	}
@@ -5857,6 +5861,8 @@ public class JaxBConverter extends AbstractConverter {
 				jaxContainer,
 				false))
 			.forEach(gemeindeContainer::addLastenausgleichTagesschuleAngabenInstitutionContainer);
+
+		// We don't set the betreuungsstundenPrognose and internerKommentar here, we have dedicated calls
 
 		return gemeindeContainer;
 	}

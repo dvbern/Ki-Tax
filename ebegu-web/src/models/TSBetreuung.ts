@@ -56,6 +56,7 @@ export class TSBetreuung extends TSAbstractMutableEntity {
     private _bgNummer: string;
     private _keineDetailinformationen: boolean = false;
     private _anmeldungTagesschuleZeitabschnitts: Array<TSAnmeldungTagesschuleZeitabschnitt> = [];
+    private _eingewoehnung: boolean = false;
 
     public constructor() {
         super();
@@ -320,5 +321,13 @@ export class TSBetreuung extends TSAbstractMutableEntity {
 
     public set anmeldungTagesschuleZeitabschnitts(value: Array<TSAnmeldungTagesschuleZeitabschnitt>) {
         this._anmeldungTagesschuleZeitabschnitts = value;
+    }
+
+    public get eingewoehnung(): boolean {
+        return this._eingewoehnung;
+    }
+
+    public set eingewoehnung(value: boolean) {
+        this._eingewoehnung = value;
     }
 }

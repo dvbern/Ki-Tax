@@ -39,8 +39,14 @@ public class AbschlussStep implements WizardStep<FerienbetreuungWizard> {
 
 	@Override
 	public WizardStateEnum getStatus(@Nonnull FerienbetreuungWizard wizard) {
-		if (wizard.getFerienbetreuungAngabenContainer().isGeprueft()) {
+		if (wizard.getFerienbetreuungAngabenContainer().isAbgeschlossen()) {
 			return WizardStateEnum.OK;
+		}
+		if (wizard.getFerienbetreuungAngabenContainer().isGeprueft()) {
+			if (wizard.getRole().isRoleGemeindeabhaengig()) {
+				return WizardStateEnum.OK;
+			}
+			return WizardStateEnum.IN_BEARBEITUNG;
 		}
 		if (wizard.getFerienbetreuungAngabenContainer().isInPruefungKanton()) {
 			if (wizard.getRole().isRoleGemeindeabhaengig()) {

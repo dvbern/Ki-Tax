@@ -68,9 +68,6 @@ public class LastenausgleichGemeindenDataRow {
 	private BigDecimal betreuungsstundenNichtPaed;
 
 	@Nullable
-	private BigDecimal normlohnkostenNichtpaed;
-
-	@Nullable
 	private BigDecimal elterngebuehrenBetreuung;
 
 	@Nullable
@@ -123,6 +120,9 @@ public class LastenausgleichGemeindenDataRow {
 
 	@Nullable
 	private String betreuungsstundenPrognoseKibon;
+
+	@Nullable
+	private BigDecimal betreuungsstundenPrognose;
 
 	private Set<LastenausgleichTagesschulenDataRow> lastenausgleichTagesschulenDaten = new HashSet<>();
 
@@ -250,15 +250,6 @@ public class LastenausgleichGemeindenDataRow {
 
 	public void setBetreuungsstundenNichtPaed(@Nullable BigDecimal betreuungsstundenNichtPaed) {
 		this.betreuungsstundenNichtPaed = betreuungsstundenNichtPaed;
-	}
-
-	@Nullable
-	public BigDecimal getNormlohnkostenNichtpaed() {
-		return normlohnkostenNichtpaed;
-	}
-
-	public void setNormlohnkostenNichtpaed(@Nullable BigDecimal normlohnkostenNichtpaed) {
-		this.normlohnkostenNichtpaed = normlohnkostenNichtpaed;
 	}
 
 	@Nullable
@@ -429,5 +420,14 @@ public class LastenausgleichGemeindenDataRow {
 
 	public void setLastenausgleichTagesschulenDaten(Set<LastenausgleichTagesschulenDataRow> lastenausgleichTagesschulenDaten) {
 		this.lastenausgleichTagesschulenDaten = lastenausgleichTagesschulenDaten;
+	}
+
+	@Nullable
+	public BigDecimal getBetreuungsstundenPrognose() {
+		return betreuungsstundenPrognose;
+	}
+
+	public void setBetreuungsstundenPrognose(@Nullable BigDecimal betreuungsstundenPrognose) {
+		this.betreuungsstundenPrognose = betreuungsstundenPrognose;
 	}
 }

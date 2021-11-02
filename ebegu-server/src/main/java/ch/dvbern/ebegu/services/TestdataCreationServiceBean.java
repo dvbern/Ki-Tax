@@ -150,6 +150,8 @@ import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGR
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FERIENBETREUUNG_CHF_PAUSCHALBETRAG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER;
 
 /**
  * Service fuer erstellen und mutieren von Testfällen
@@ -595,6 +597,8 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(FKJV_PAUSCHALE_RUECKWIRKEND, "false", gesuchsperiode);
 		saveEinstellung(FJKV_ANSPRUCH_MONATSWEISE, "false", gesuchsperiode);
 		saveEinstellung(SCHNITTSTELLE_STEUERN_AKTIV, "false", gesuchsperiode);
+		saveEinstellung(FERIENBETREUUNG_CHF_PAUSCHALBETRAG, "30",gesuchsperiode);
+		saveEinstellung(FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER, "60",gesuchsperiode);
 	}
 
 	public void saveEinstellung(EinstellungKey key, String value, Gesuchsperiode gesuchsperiode) {
