@@ -15,19 +15,30 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'dv-veranlagung',
-  templateUrl: './veranlagung.component.html',
-  styleUrls: ['./veranlagung.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-veranlagung',
+    templateUrl: './veranlagung.component.html',
+    styleUrls: ['./veranlagung.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VeranlagungComponent implements OnInit {
 
-  constructor() { }
+    @Input()
+    public isGemeinsam: boolean;
 
-  ngOnInit(): void {
-  }
+    @Input()
+    public antragstellerNummer: number; // antragsteller 1 or 2
+
+    @Input()
+    public year: number;
+
+    public constructor(
+    ) {
+    }
+
+    public ngOnInit(): void {
+    }
 
 }

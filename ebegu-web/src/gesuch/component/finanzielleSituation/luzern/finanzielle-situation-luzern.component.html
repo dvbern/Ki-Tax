@@ -116,8 +116,16 @@
 
             </form>
 
-            <dv-selbstdeklaration *ngIf="showSelbstdeklaration()"></dv-selbstdeklaration>
-            <dv-veranlagung *ngIf="showVeranlagung()"></dv-veranlagung>
+            <dv-selbstdeklaration *ngIf="showSelbstdeklaration()"
+                                  [antragstellerNummer]="getAntragstellerNummer()"
+                                  [isGemeinsam]="isGemeinsam()"
+                                  [year]="getYearForDeklaration()"
+            ></dv-selbstdeklaration>
+            <dv-veranlagung *ngIf="showVeranlagung()"
+                            [antragstellerNummer]="getAntragstellerNummer()"
+                            [isGemeinsam]="isGemeinsam()"
+                            [year]="getYearForDeklaration()"
+            ></dv-veranlagung>
         </div>
     </div>
 

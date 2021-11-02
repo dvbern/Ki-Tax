@@ -64,5 +64,26 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX {
         || this.form.controls.alleinigeStekVorjahr.value === true;
     }
 
+    public getYearForDeklaration(): number {
+        const currentYear = this.getBasisjahrPlus1();
+        const previousYear = this.getBasisjahr();
+        if (this.form.controls.quellenbesteuert.value === true) {
+            return previousYear;
+        }
+        if (this.form.controls.veranlagt.value === true) {
+            return currentYear;
+        }
+        if (this.form.controls.veranlagt.value === false) {
+            return previousYear;
+        }
+        if (this.form.controls.gemeinsameStekVorjahr.value === false
+            || this.form.controls.alleinigeStekVorjahr.value === false) {
+            return currentYear;
+        }
+        throw new Error('Dieser Fall ist nicht abgedeckt: ' + JSON.stringify(this.form.value));
+    }
+
     public abstract isGemeinsam(): boolean;
+
+    public abstract getAntragstellerNummer(): number;
 }

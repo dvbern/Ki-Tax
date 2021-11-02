@@ -15,4 +15,5 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<p>selbstdeklaration works!</p>
+<p *ngIf="isGemeinsam">Selbstdeklaration gemeinsam für Jahr {{year}}</p>
+<p *ngIf="!isGemeinsam">Selbstdeklaration alleine für Antragsteller {{antragstellerNummer}} für Jahr {{year}}</p>

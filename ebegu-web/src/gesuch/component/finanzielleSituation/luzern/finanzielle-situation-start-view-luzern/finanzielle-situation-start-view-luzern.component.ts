@@ -29,8 +29,6 @@ import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern
 })
 export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSitLuzernView implements OnInit {
 
-    private zweiAntragstellerForGesuch: boolean;
-
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
         fb: FormBuilder,
@@ -39,11 +37,16 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
     }
 
     public ngOnInit(): void {
-        this.zweiAntragstellerForGesuch = FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller(this.gesuchModelManager);
     }
 
     public isGemeinsam(): boolean {
-        return !this.zweiAntragstellerForGesuch;
+        // if we don't need two antragsteller for gesuch, this is the component for both antragsteller together
+        return FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller(this.gesuchModelManager) === false;
+    }
+
+    public getAntragstellerNummer(): number {
+        // this is always antragsteller 1. if we have two antragsteller, we have angaben-gesuchsteller-2 component
+        return 1;
     }
 
 }

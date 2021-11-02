@@ -15,19 +15,30 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'dv-selbstdeklaration',
-  templateUrl: './selbstdeklaration.component.html',
-  styleUrls: ['./selbstdeklaration.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-selbstdeklaration',
+    templateUrl: './selbstdeklaration.component.html',
+    styleUrls: ['./selbstdeklaration.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SelbstdeklarationComponent implements OnInit {
 
-  constructor() { }
+    @Input()
+    public antragstellerNummer: number; // antragsteller 1 or 2
 
-  ngOnInit(): void {
-  }
+    @Input()
+    public isGemeinsam: boolean;
+
+    @Input()
+    public year: number;
+
+    public constructor(
+    ) {
+    }
+
+    public ngOnInit(): void {
+    }
 
 }

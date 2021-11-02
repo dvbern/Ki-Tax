@@ -15,4 +15,6 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<p>veranlagung works!</p>
+<p *ngIf="isGemeinsam">Veranlagung gemeinsam für Jahr {{year}}</p>
+<p *ngIf="!isGemeinsam">Veranlagung alleine für Antragsteller {{antragstellerNummer}} für Jahr {{year}}</p>
+
