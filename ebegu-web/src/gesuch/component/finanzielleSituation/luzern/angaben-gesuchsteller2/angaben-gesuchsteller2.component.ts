@@ -16,8 +16,9 @@
  */
 
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {FormBuilder} from '@angular/forms';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
-import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
+import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
 
 @Component({
     selector: 'dv-angaben-gesuchsteller2',
@@ -25,14 +26,20 @@ import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
     styleUrls: ['../finanzielle-situation-luzern.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AngabenGesuchsteller2Component extends AbstractGesuchViewX implements OnInit {
+export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView implements OnInit {
 
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
+        fb: FormBuilder
     ) {
-        super(gesuchModelManager);
+        super(gesuchModelManager, fb);
     }
 
     public ngOnInit(): void {
     }
+
+    public isGemeinsam(): boolean {
+        return false;
+    }
+
 }

@@ -20,9 +20,89 @@
     <div class="row view-title">
         <div class="col-md-12">
             <h2>
-                <span translate [translateParams]="{gesuchsteller: '', basisjahr: getBasisjahr()}">FINANZIELLE_SITUATION</span>
+                <span translate [translateParams]="{gesuchsteller: '', basisjahr: ''}">FINANZIELLE_SITUATION</span>
             </h2>
             <hr class="header"/>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <form *ngIf="form" [formGroup]="form" role="form" class="">
+
+                <div class="row" *ngIf="onlyFerieninselBetreuungen">
+                    <div class="col-md-12">
+                        <p>
+                            <span data-translate="FIN_SIT_NOT_REQUIRED">
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="!onlyFerieninselBetreuungen">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                        <span class="ebegu-h1 required">
+                            <span translate="QUELLENBESTEUERT"></span>
+                        </span>
+
+                            <dv-radio-container-x name="gemeinsameSteuererklaerung" translate>
+                                <mat-radio-group
+                                    formControlName="quellenbesteuert"
+                                    aria-labelledby="alle-angaben-radio-group"
+                                    class=""
+                                    name="alleAngaben">
+                                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                                </mat-radio-group>
+                            </dv-radio-container-x>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                        <span class="ebegu-h1 required">
+                            <span translate>GEMEINSAME_STEK</span>
+                        </span>
+
+                            <dv-radio-container-x name="gemeinsameSteuererklaerung" translate>
+                                <mat-radio-group
+                                    aria-labelledby="alle-angaben-radio-group"
+                                    formControlName="gemeinsameStekVorjahr"
+                                    class=""
+                                    name="alleAngaben">
+                                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                                </mat-radio-group>
+                            </dv-radio-container-x>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                        <span class="ebegu-h1 required">
+                            <span translate="VERANLAGT"></span>
+                        </span>
+
+                            <dv-radio-container-x name="gemeinsameSteuererklaerung" translate>
+                                <mat-radio-group
+                                    aria-labelledby="alle-angaben-radio-group"
+                                    class=""
+                                    formControlName="veranlagt"
+                                    name="alleAngaben">
+                                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                                </mat-radio-group>
+                            </dv-radio-container-x>
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+
+            <dv-selbstdeklaration *ngIf="showSelbstdeklaration()"></dv-selbstdeklaration>
+            <dv-veranlagung *ngIf="showVeranlagung()"></dv-veranlagung>
+        </div>
+    </div>
+
 </div>

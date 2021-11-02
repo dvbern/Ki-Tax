@@ -14,6 +14,7 @@
  */
 
 import {NgModule} from '@angular/core';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {SharedModule} from '../app/shared/shared.module';
 import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
@@ -31,6 +32,8 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
 
 @NgModule({
     imports: [
+        FormsModule,
+        ReactiveFormsModule,
         UpgradeModule,
         SharedModule,
         FallToolbarModule

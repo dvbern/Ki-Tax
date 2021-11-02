@@ -15,13 +15,17 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {TSGesuch} from '../../models/TSGesuch';
 import {GesuchModelManager} from '../service/gesuchModelManager';
 
 export class AbstractGesuchViewX {
 
+    public onlyFerieninselBetreuungen = false;
+
     public constructor(
         protected gesuchModelManager: GesuchModelManager
     ) {
+        this.onlyFerieninselBetreuungen = this.gesuchModelManager.areThereOnlyFerieninsel();
     }
 
     public getBasisjahr(): number | undefined {
@@ -59,5 +63,21 @@ export class AbstractGesuchViewX {
             return this.gesuchModelManager.getBasisjahrPlus(nbr);
         }
         return undefined;
+    }
+
+    protected getGesuch(): TSGesuch {
+        return this.gesuchModelManager.getGesuch();
+    }
+
+    public extractFullNameGS1(): string {
+        return this.getGesuch() && this.getGesuch().gesuchsteller1
+            ? this.getGesuch().gesuchsteller1.extractFullName()
+            : '';
+    }
+
+    public extractFullNameGS2(): string {
+        return this.getGesuch() && this.getGesuch().gesuchsteller2
+            ? this.getGesuch().gesuchsteller2.extractFullName()
+            : '';
     }
 }

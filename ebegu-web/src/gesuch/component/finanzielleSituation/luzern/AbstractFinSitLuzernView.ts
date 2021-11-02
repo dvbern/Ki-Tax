@@ -15,31 +15,37 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {FormBuilder} from '@angular/forms';
-import {GesuchModelManager} from '../../../../service/gesuchModelManager';
-import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {GesuchModelManager} from '../../../service/gesuchModelManager';
+import {AbstractGesuchViewX} from '../../abstractGesuchViewX';
 
-@Component({
-    selector: 'dv-finanzielle-situation-start-view-luzern',
-    templateUrl: '../finanzielle-situation-luzern.component.html',
-    styleUrls: ['../finanzielle-situation-luzern.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSitLuzernView implements OnInit {
+export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX {
+
+    public form: FormGroup;
 
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
-        fb: FormBuilder
+        private readonly fb: FormBuilder,
     ) {
-        super(gesuchModelManager, fb);
+        super(gesuchModelManager);
+        this.setupForm();
     }
 
-    public ngOnInit(): void {
+    private setupForm(): void {
+        this.form = this.fb.group({
+            quellenbesteuert: false,
+            gemeinsameStekVorjahr: false,
+            veranlagt: false
+        });
     }
 
-    public isGemeinsam(): boolean {
+    public showSelbstdeklaration(): boolean {
         return true;
     }
 
+    public showVeranlagung(): boolean {
+        return true;
+    }
+
+    public abstract isGemeinsam(): boolean;
 }
