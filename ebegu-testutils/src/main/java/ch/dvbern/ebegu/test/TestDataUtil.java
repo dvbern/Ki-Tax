@@ -245,6 +245,8 @@ import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGR
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FERIENBETREUUNG_CHF_PAUSCHALBETRAG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER;
 
 /**
  * comments homa
@@ -875,9 +877,13 @@ public final class TestDataUtil {
 	}
 
 	public static ErwerbspensumContainer createErwerbspensum(LocalDate von, LocalDate bis, int pensum) {
+		return createErwerbspensum(von, bis, pensum, Taetigkeit.ANGESTELLT);
+	}
+
+	public static ErwerbspensumContainer createErwerbspensum(LocalDate von, LocalDate bis, int pensum, @Nonnull Taetigkeit taetigkeit) {
 		ErwerbspensumContainer erwerbspensumContainer = new ErwerbspensumContainer();
 		Erwerbspensum erwerbspensum = new Erwerbspensum();
-		erwerbspensum.setTaetigkeit(Taetigkeit.ANGESTELLT);
+		erwerbspensum.setTaetigkeit(taetigkeit);
 		erwerbspensum.setPensum(pensum);
 		erwerbspensum.setGueltigkeit(new DateRange(von, bis));
 		erwerbspensumContainer.setErwerbspensumJA(erwerbspensum);
@@ -1787,6 +1793,8 @@ public final class TestDataUtil {
 		saveEinstellung(FKJV_PAUSCHALE_RUECKWIRKEND, "false", gesuchsperiode, persistence);
 		saveEinstellung(FJKV_ANSPRUCH_MONATSWEISE, "false", gesuchsperiode, persistence);
 		saveEinstellung(SCHNITTSTELLE_STEUERN_AKTIV, "false", gesuchsperiode, persistence);
+		saveEinstellung(FERIENBETREUUNG_CHF_PAUSCHALBETRAG, "30",gesuchsperiode, persistence);
+		saveEinstellung(FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER, "60",gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(

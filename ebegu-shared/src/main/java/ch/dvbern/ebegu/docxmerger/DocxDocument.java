@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -54,7 +55,12 @@ public class DocxDocument {
 		boolean replacedInParagraphs = replaceInParagraphs(placeholder, replacement);
 		boolean replacedInTables = replaceInTables(placeholder, replacement);
 		if (!(replacedInParagraphs || replacedInTables)) {
-			throw new EbeguRuntimeException("replacePlaceholder", "placeholder not found in text: " + placeholder);
+			throw new EbeguRuntimeException(
+				"replacePlaceholder",
+				"placeholder not found in text: " + placeholder,
+				ErrorCodeEnum.ERROR_VERFUEGUNG_PLACEHOLDER_NOT_FOUND,
+				placeholder
+			);
 		}
 	}
 
@@ -147,6 +153,9 @@ public class DocxDocument {
 				break;
 			}
 			String runText = runs.get(j).getText(0);
+			if (runText == null) {
+				continue;
+			}
 			int placeholderPartInThisRun = Math.min(restOfPlaceholderSize, runText.length());
 			runText = runText.substring(placeholderPartInThisRun);
 			restOfPlaceholderSize -= placeholderPartInThisRun;

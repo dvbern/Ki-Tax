@@ -1804,6 +1804,7 @@ export class EbeguRestUtil {
         restFinanzielleSituation.steuerveranlagungErhalten = finanzielleSituation.steuerveranlagungErhalten;
         restFinanzielleSituation.steuererklaerungAusgefuellt =
             finanzielleSituation.steuererklaerungAusgefuellt || false;
+        restFinanzielleSituation.steuerdatenZugriff = finanzielleSituation.steuerdatenZugriff;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus2 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus2;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus1 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus1;
         return restFinanzielleSituation;
@@ -1857,6 +1858,8 @@ export class EbeguRestUtil {
                 finanzielleSituationFromServer.steuerveranlagungErhalten;
             finanzielleSituationTS.steuererklaerungAusgefuellt =
                 finanzielleSituationFromServer.steuererklaerungAusgefuellt;
+            finanzielleSituationTS.steuerdatenZugriff =
+                finanzielleSituationFromServer.steuerdatenZugriff;
             finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus2 =
                 finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus2;
             finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus1 =
@@ -2185,6 +2188,7 @@ export class EbeguRestUtil {
         restBetreuung.belegungFerieninsel = this.belegungFerieninselToRestObject({}, betreuung.belegungFerieninsel);
         restBetreuung.anmeldungMutationZustand = betreuung.anmeldungMutationZustand;
         restBetreuung.keineDetailinformationen = betreuung.keineDetailinformationen;
+        restBetreuung.eingewoehnung = betreuung.eingewoehnung;
         return restBetreuung;
     }
 
@@ -2358,6 +2362,7 @@ export class EbeguRestUtil {
                 this.parseBetreuungspensumAbweichungen(betreuungFromServer.betreuungspensumAbweichungen);
             betreuungTS.anmeldungTagesschuleZeitabschnitts =
                 this.parseAnmeldungTagesschuleZeitabschnitts(betreuungFromServer.anmeldungTagesschuleZeitabschnitts);
+            betreuungTS.eingewoehnung = betreuungFromServer.eingewoehnung;
             return betreuungTS;
         }
         return undefined;
@@ -4038,6 +4043,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.lastenausgleichTagesschulenAktiv = data.lastenausgleichTagesschulenAktiv;
         publicAppConfigTS.gemeindeKennzahlenAktiv = data.gemeindeKennzahlenAktiv;
         publicAppConfigTS.ferienbetreuungAktiv = data.ferienbetreuungAktiv;
+        publicAppConfigTS.mulitmandantAktiv = data.multimandantAktiviert;
         return publicAppConfigTS;
 
     }
@@ -4456,6 +4462,7 @@ export class EbeguRestUtil {
                     new TSLastenausgleichTagesschuleAngabenGemeinde(), gemeindeContainerFromServer.angabenKorrektur);
             gemeindeContainerTS.angabenInstitutionContainers =
                 this.parseLastenausgleichTagesschuleAngabenInstitutionContainerList(gemeindeContainerFromServer.angabenInstitutionContainers);
+            gemeindeContainerTS.betreuungsstundenPrognose = gemeindeContainerFromServer.betreuungsstundenPrognose;
             return gemeindeContainerTS;
         }
         return undefined;

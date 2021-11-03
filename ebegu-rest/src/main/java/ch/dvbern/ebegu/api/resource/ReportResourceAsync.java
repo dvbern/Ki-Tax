@@ -861,7 +861,7 @@ public class ReportResourceAsync {
 	@Path("/excel/lastenausgleichTagesschulen")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response getLastenausgleichTagesschulenExcelReport(
 		@Context HttpServletRequest request,
 		@Context UriInfo uriInfo) {

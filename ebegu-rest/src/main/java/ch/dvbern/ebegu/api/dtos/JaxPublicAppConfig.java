@@ -37,6 +37,7 @@ public class JaxPublicAppConfig {
 	private String primaryColorLight;
 	private String logoFileName;
 	private String logoFileNameWhite;
+	private boolean multimandantAktiviert;
 
 
 	public JaxPublicAppConfig(
@@ -63,7 +64,8 @@ public class JaxPublicAppConfig {
 		String primaryColorDark,
 		String primaryColorLight,
 		String logoFileName,
-		String logoFileNameWhite
+		String logoFileNameWhite,
+		boolean multimandantAktiviert
 	) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
@@ -89,6 +91,7 @@ public class JaxPublicAppConfig {
 		this.primaryColorLight = primaryColorLight;
 		this.logoFileName = logoFileName;
 		this.logoFileNameWhite = logoFileNameWhite;
+		this.multimandantAktiviert = multimandantAktiviert;
 	}
 
 	public String getCurrentNode() {
@@ -241,6 +244,14 @@ public class JaxPublicAppConfig {
 
 	public void setGemeindeKennzahlenAktiv(boolean gemeindeKennzahlenAktiv) {
 		this.gemeindeKennzahlenAktiv = gemeindeKennzahlenAktiv;
+	}
+
+	public boolean isMultimandantAktiviert() {
+		return multimandantAktiviert;
+	}
+
+	public void setMultimandantAktiviert(boolean multimandantAktiviert) {
+		this.multimandantAktiviert = multimandantAktiviert;
 	}
 
 	public String getPrimaryColor() {

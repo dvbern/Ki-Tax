@@ -71,6 +71,7 @@ import {DvLanguageSelectorComponentConfig} from '../i18n/components/dv-language-
 import {HttpI18nInterceptor} from '../i18n/httpInterceptor/http-i18n-Interceptor';
 import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {PosteingangService} from '../posteingang/service/posteingang.service';
+import {MandantService} from '../shared/services/mandant.service';
 import {IeDeprecationWarningComponent} from '../shared/component/ie-deprecation-warning/ie-deprecation-warning.component';
 import {ColorService} from '../shared/services/color.service';
 import {DvAccordionComponentConfig} from './component/dv-accordion/dv-accordion';
@@ -251,6 +252,7 @@ export const CORE_JS_MODULE = angular
     .factory('BroadcastService', downgradeInjectable(BroadcastService) as any)
     .factory('BenutzerRS', downgradeInjectable(BenutzerRSX) as any)
     .factory('ErrorServiceX', downgradeInjectable(ErrorServiceX) as any)
+    .factory('MandantService', downgradeInjectable(MandantService) as any)
     .factory('ColorService', downgradeInjectable(ColorService) as any)
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvDatepicker', DVDatepicker.factory())

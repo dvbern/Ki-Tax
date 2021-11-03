@@ -9,11 +9,11 @@
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
   ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   ~ GNU Affero General Public License for more details.
-  ~ You should have received a copy of the GNU Affero General Public License
+   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="finanzielle-situation gesuch-modul">
+<div class="einkommensverschlechterung-info gesuch-modul">
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
     <div class="row view-title">
         <div class="col-md-12">
@@ -21,6 +21,16 @@
                 <span data-translate="EINKOMMENSVERSCHLECHTERUNG"></span>
             </h2>
             <hr class="header"/>
+        </div>
+    </div>
+    <div class="row" ng-if="vm.warningEinkommenTooHighVisible()">
+        <div class="col-xs-12">
+            <div class="well well-status-warten minus-margin">
+                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                <span data-translate="EINKOMMENSVERSCHLECHTERUNG_EINKOMMEN_TOO_HIGH"
+                      data-translate-values="{{ vm.getMaxEinkommenTranslateValues() }}">
+                </span>
+            </div>
         </div>
     </div>
     <div class="row">

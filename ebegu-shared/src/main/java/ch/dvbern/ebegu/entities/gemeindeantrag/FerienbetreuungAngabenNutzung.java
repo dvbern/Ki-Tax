@@ -227,4 +227,23 @@ public class FerienbetreuungAngabenNutzung extends AbstractEntity {
 		return status == FerienbetreuungFormularStatus.ABGESCHLOSSEN;
 	}
 
+	@Nullable
+	public BigDecimal getAnzahlTageSonderschueler() {
+		if (this.getDavonBetreuungstageKinderAndererGemeindenSonderschueler() == null
+			|| this.getBetreuungstageKinderDieserGemeindeSonderschueler() == null) {
+			return null;
+		}
+		return this.getBetreuungstageKinderDieserGemeindeSonderschueler()
+			.add(this.getDavonBetreuungstageKinderAndererGemeindenSonderschueler());
+	}
+
+	public BigDecimal getAnzahlTageOhneSonderschueler() {
+		if (this.betreuungstageKinderDieserGemeinde == null
+		|| this.davonBetreuungstageKinderAndererGemeinden == null) {
+			return null;
+		}
+		return this.betreuungstageKinderDieserGemeinde.add(this.davonBetreuungstageKinderAndererGemeinden)
+			.subtract(getAnzahlTageSonderschueler());
+	}
+
 }

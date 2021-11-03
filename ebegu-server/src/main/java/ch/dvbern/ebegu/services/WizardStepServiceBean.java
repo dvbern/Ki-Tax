@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractMutableEntity;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
@@ -479,8 +480,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		for (WizardStep wizardStep : wizardSteps) {
 			if (WizardStepName.VERFUEGEN == wizardStep.getWizardStepName()
 				&& WizardStepStatus.OK != wizardStep.getWizardStepStatus()) {
-				List<AbstractPlatz> allPlaetze = wizardStep.getGesuch().extractAllPlaetze();
-				if (allPlaetze
+				List<Betreuung> alleBetreuungen = wizardStep.getGesuch().extractAllBetreuungen();
+				if (alleBetreuungen
 					.stream()
 					.allMatch(betreuung -> betreuung.getBetreuungsstatus().isGeschlossen())) {
 					gesuchVerfuegen(wizardStep);

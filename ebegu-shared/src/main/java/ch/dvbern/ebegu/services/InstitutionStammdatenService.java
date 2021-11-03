@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.types.DateRange;
 
 /**
  * Service zum Verwalten von InstitutionStammdaten
@@ -117,4 +118,6 @@ public interface InstitutionStammdatenService {
 
 	@Nonnull
 	Collection<InstitutionStammdaten> getAllTagesschulenForGemeinde(@Nonnull Gemeinde gemeinde);
+
+	boolean isGueltigkeitDecrease(@Nonnull DateRange current, @Nonnull DateRange change);
 }

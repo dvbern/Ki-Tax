@@ -33,7 +33,7 @@ export class OnboardingMainComponent {
     public description3: string = 'ONBOARDING_MAIN_DESC3';
     public description4: string = 'ONBOARDING_MAIN_DESC4';
     public splittedScreen: boolean = true;
-    private logoFileNameWhite: string;
+    public logoFileNameWhite: string;
 
     public constructor(
         private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
@@ -60,6 +60,6 @@ export class OnboardingMainComponent {
     }
 
     public getLogoWhiteUrl(): string {
-        return `url(\'../../../assets/images/${this.logoFileNameWhite}\')`;
+        return `url(\'assets/images/${this.logoFileNameWhite}\')`;
     }
 }

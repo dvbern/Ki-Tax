@@ -47,6 +47,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String EBEGU_MAIL_SMTP_HOST = "ebegu.mail.smtp.host";
 	private static final String EBEGU_MAIL_SMTP_PORT = "ebegu.mail.smtp.port";
 	private static final String EBEGU_HOSTNAME = "ebegu.hostname";
+	private static final String EBEGU_HOSTDOMAIN = "ebegu.hostdomain";
 	private static final String EBEGU_DUMMY_LOGIN_ENABLED = "ebegu.dummy.login.enabled";
 	private static final String EBEGU_ZAHLUNGEN_TEST_MODE = "ebegu.zahlungen.test.mode";
 	private static final String EBEGU_PERSONENSUCHE_DISABLED = "ebegu.personensuche.disabled";
@@ -105,6 +106,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 
 	private static final String MASSENMUTATION_EMPFAENGER_MAIL = "ebegu.massenmutation.empfaenger.mail";
 
+	private static final String MULTIMANDANT_ENABLED = "ebegu.multimandant.enabled";
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
@@ -152,6 +154,11 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public String getHostname() {
 		return getString(EBEGU_HOSTNAME, null);
+	}
+
+	@Override
+	public String getHostdomain() {
+		return getString(EBEGU_HOSTDOMAIN, null);
 	}
 
 	@Override
@@ -435,5 +442,10 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public String getKafkaConsumerGroupId() {
 		return getString(KIBON_KAFKA_CONSUMER_GROUP_ID, "dev");
+	}
+
+	@Override
+	public Boolean getMultimandantEnabled() {
+		return getBoolean(MULTIMANDANT_ENABLED, false);
 	}
 }

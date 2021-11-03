@@ -105,4 +105,9 @@ export class EinkommensverschlechterungContainerRS {
 
         return this.ebeguRestUtil.parseFinanzielleSituationResultate(result, httpresponse.data);
     }
+
+    public getMinimalesMassgebendesEinkommenForGesuch(gesuch: TSGesuch): IPromise<number> {
+        return this.$http.get<any>(`${this.serviceURL}/minimalesMassgebendesEinkommen/${gesuch.id}`, null)
+            .then(httpresponse => parseFloat(httpresponse.data.minEinkommen));
+    }
 }

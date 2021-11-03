@@ -26,7 +26,8 @@ import {
 } from '@angular/core';
 import {FormGroup} from '@angular/forms';
 import {combineLatest, Subscription} from 'rxjs';
-import {startWith} from 'rxjs/operators';
+import {mergeMap, startWith, tap} from 'rxjs/operators';
+import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {TSFerienbetreuungAngabenContainer} from '../../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {LogFactory} from '../../../../core/logging/LogFactory';
 import {FerienbetreuungService} from '../../services/ferienbetreuung.service';
@@ -54,20 +55,25 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy {
 
     public constructor(
         private readonly ferienbetreuungService: FerienbetreuungService,
+        private readonly einstellungRS: EinstellungRS,
         private readonly cd: ChangeDetectorRef,
     ) {
     }
 
     public ngOnInit(): void {
-        this.berechnung = new TSFerienbetreuungBerechnung();
         this.subscription = this.ferienbetreuungService.getFerienbetreuungContainer()
-            .subscribe(container => {
-                this.container = container;
+            .pipe(
+                tap(container => {
+                    this.container = container;
+                }),
+                mergeMap(() => this.einstellungRS.getPauschalbetraegeFerienbetreuung(this.container))
+            ).subscribe(([pauschale, pauschaleSonderschueler]) => {
+                this.berechnung = new TSFerienbetreuungBerechnung(pauschale, pauschaleSonderschueler);
                 this.setUpValuesFromContainer();
+                this.setUpValuesFromForm();
             }, error => {
                 LOG.error(error);
             });
-        this.setUpValuesFromForm();
     }
 
     public ngOnChanges(changes: SimpleChanges): void {

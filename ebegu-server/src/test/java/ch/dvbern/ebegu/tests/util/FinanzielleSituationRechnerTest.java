@@ -246,6 +246,30 @@ public class FinanzielleSituationRechnerTest {
 	}
 
 	@Test
+	public void testGesuchWithoutEKVContainer_shouldIgnoreEKV() {
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
+		Gesuch gesuch = betreuung.extractGesuch();
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
+		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);
+		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), EINKOMMEN_EKV_ANGENOMMEN, true);
+
+		gesuch.setEinkommensverschlechterungInfoContainer(null);
+		Assert.assertNull(gesuch.getEinkommensverschlechterungInfoContainer());
+
+		TestDataUtil.calculateFinanzDaten(gesuch);
+
+		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjVorAbzFamGr());
+
+		Assert.assertEquals(BigDecimal.ZERO, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP1VorAbzFamGr());
+		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv1Erfasst());
+		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv1Accepted());
+
+		Assert.assertEquals(BigDecimal.ZERO, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());
+		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv2Erfasst());
+		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv2Accepted());
+	}
+
+	@Test
 	public void getCalculatedProzentualeDifferenzRounded() {
 		Assert.assertEquals(MathUtil.GANZZAHL.from(-19),
 			FinanzielleSituationRechner.getCalculatedProzentualeDifferenzRounded(BigDecimal.valueOf(181760), BigDecimal.valueOf(146874)));
