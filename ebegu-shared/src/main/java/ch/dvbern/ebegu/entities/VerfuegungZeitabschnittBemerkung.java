@@ -99,11 +99,12 @@ public class VerfuegungZeitabschnittBemerkung extends AbstractDateRangedEntity {
 		this.verfuegungZeitabschnitt = verfuegungZeitabschnitt;
 	}
 
+	@Nonnull
 	public String getBemerkung() {
 		return bemerkung;
 	}
 
-	public void setBemerkung(String bemerkungen) {
+	public void setBemerkung(@Nonnull String bemerkungen) {
 		this.bemerkung = bemerkungen;
 	}
 }

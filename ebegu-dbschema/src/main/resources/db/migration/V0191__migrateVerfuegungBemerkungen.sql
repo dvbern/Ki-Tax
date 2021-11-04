@@ -21,7 +21,7 @@ DROP PROCEDURE IF EXISTS MIGRATE_NOT_MIGRATED_VERFUEGUNGS_BEMERKUNG;
 
 DELIMITER ;;
 
-CREATE PROCEDURE INSERT_BEMERKUNG(IN bemerkungInput VARCHAR(4000), IN zeitabschnittID VARCHAR(36))
+CREATE PROCEDURE INSERT_BEMERKUNG(IN bemerkungInput VARCHAR(4000), IN zeitabschnittID BINARY(16))
 	BEGIN
 		set @gueltigAb = (select gueltig_ab FROM verfuegung_zeitabschnitt where id = zeitabschnittID);
 		set @gueltigBis = (select gueltig_bis FROM verfuegung_zeitabschnitt WHERE id = zeitabschnittID);
@@ -32,7 +32,7 @@ CREATE PROCEDURE INSERT_BEMERKUNG(IN bemerkungInput VARCHAR(4000), IN zeitabschn
 				'flyway',1,@gueltigAb, @gueltigBis, bemerkungInput, zeitabschnittID);
 	END ;;
 
-CREATE PROCEDURE PROCESS_BEMERKUNGEN(IN zeitabschnittID VARCHAR(36))
+CREATE PROCEDURE PROCESS_BEMERKUNGEN(IN zeitabschnittID BINARY(16))
 	BEGIN
 		set @bemerkungen = (select bemerkungen from verfuegung_zeitabschnitt where id = zeitabschnittID);
 
@@ -47,7 +47,7 @@ CREATE PROCEDURE PROCESS_BEMERKUNGEN(IN zeitabschnittID VARCHAR(36))
 		END WHILE;
 	END ;;
 
-CREATE PROCEDURE GET_NOT_MIGRATED_VERFUEGUNG_ZEITABSCHNITT_ID(IN limitOffset INT, OUT zeitAbschnittID VARCHAR(36))
+CREATE PROCEDURE GET_NOT_MIGRATED_VERFUEGUNG_ZEITABSCHNITT_ID(IN limitOffset INT, OUT zeitAbschnittID BINARY(16))
 	BEGIN
 		PREPARE stmt FROM 'select vz.id from verfuegung_zeitabschnitt_bemerkung vzb
 									   right join verfuegung_zeitabschnitt vz on vz.id = vzb.verfuegung_zeitabschnitt_id

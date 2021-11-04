@@ -143,9 +143,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	private final VerfuegungsBemerkungDTOList bemerkungenDTOList = new VerfuegungsBemerkungDTOList();
 
 	@Column(nullable = true)
-	@Nullable
+	@Nonnull
 	@OneToMany(mappedBy = "verfuegungZeitabschnitt", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<VerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungList = Collections.emptyList();;
+	private List<VerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungList = Collections.emptyList();
 
 	public VerfuegungZeitabschnitt() {
 	}
@@ -242,7 +242,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	}
 
 	public void setVerfuegungZeitabschnittBemerkungList(
-		@Nullable List<VerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungList) {
+		@Nonnull List<VerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungList) {
 		this.verfuegungZeitabschnittBemerkungList = verfuegungZeitabschnittBemerkungList;
 	}
 
@@ -659,7 +659,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			+ " Regelwerk: " + regelwerk + '\t'
 			+ " Status: " + zahlungsstatus + '\t'
 			+ " Status Mahlzeitenverguenstigung: " + zahlungsstatusMahlzeitenverguenstigung + '\t'
-			+ " Bemerkungen: " + verfuegungZeitabschnittBemerkungList; //TODO
+			+ " Bemerkungen: " + getVerfuegungenZeitabschnittBemerkungenAsString();
 		return sb;
 	}
 
