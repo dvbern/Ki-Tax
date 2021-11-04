@@ -14,20 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
-DROP PROCEDURE IF EXISTS ROWLOOP;
 DROP PROCEDURE IF EXISTS PROCESS_BEMERKUNGEN;
 DROP PROCEDURE IF EXISTS INSERT_BEMERKUNG;
-DROP PROCEDURE IF EXISTS GET_VERFUEGUNG_ZEITABSCHNITT_ID;
-DELIMITER ;;
+DROP PROCEDURE IF EXISTS GET_NOT_MIGRATED_VERFUEGUNG_ZEITABSCHNITT_ID;
+DROP PROCEDURE IF EXISTS MIGRATE_NOT_MIGRATED_VERFUEGUNGS_BEMERKUNG;
 
-CREATE PROCEDURE GET_VERFUEGUNG_ZEITABSCHNITT_ID(IN limitOffset INT, OUT zeitAbschnittID VARCHAR(36))
-	BEGIN
-		PREPARE stmt FROM 'select id from verfuegung_zeitabschnitt limit ?, 1 INTO @result';
-		EXECUTE stmt USING limitOffset;
-		DEALLOCATE PREPARE stmt;
-		set zeitAbschnittID = @result;
-	END ;;
+DELIMITER ;;
 
 CREATE PROCEDURE INSERT_BEMERKUNG(IN bemerkungInput VARCHAR(4000), IN zeitabschnittID VARCHAR(36))
 	BEGIN
@@ -40,43 +32,43 @@ CREATE PROCEDURE INSERT_BEMERKUNG(IN bemerkungInput VARCHAR(4000), IN zeitabschn
 				'flyway',1,@gueltigAb, @gueltigBis, bemerkungInput, zeitabschnittID);
 	END ;;
 
-CREATE PROCEDURE PROCESS_BEMERKUNGEN(IN zeitabschnittID VARCHAR(36), OUT anzahlBemerkungen INT)
+CREATE PROCEDURE PROCESS_BEMERKUNGEN(IN zeitabschnittID VARCHAR(36))
 	BEGIN
 		set @bemerkungen = (select bemerkungen from verfuegung_zeitabschnitt where id = zeitabschnittID);
 
 		/*Anzahl \n +1 = Anzahl der Bemerkungen*/
-		set anzahlBemerkungen = (select (CHAR_LENGTH(@bemerkungen)-CHAR_LENGTH(REPLACE(@bemerkungen, '\n', '')))+1);
-		set @anzahlBemerkungenToProcess = anzahlBemerkungen;
+		set @anzahlBemerkungenToProcess = (select (CHAR_LENGTH(@bemerkungen)-CHAR_LENGTH(REPLACE(@bemerkungen, '\n', '')))+1);
 
 		WHILE @anzahlBemerkungenToProcess>0 DO
 			set @count = @anzahlBemerkungenToProcess*(-1);
 			set @bemerkung = SUBSTRING_INDEX(@bemerkungen, '\n', @count);
-
 			CALL INSERT_BEMERKUNG(@bemerkung, zeitabschnittID);
 			set @anzahlBemerkungenToProcess = @anzahlBemerkungenToProcess-1;
 		END WHILE;
 	END ;;
 
-CREATE PROCEDURE ROWLOOP(OUT anzahlBemerkungenTotal INT)
+CREATE PROCEDURE GET_NOT_MIGRATED_VERFUEGUNG_ZEITABSCHNITT_ID(IN limitOffset INT, OUT zeitAbschnittID VARCHAR(36))
 	BEGIN
-		set anzahlBemerkungenTotal = 0;
-		set @anzahlZeitabschitte = (select count(*) from verfuegung_zeitabschnitt);
-		set @iter = 0;
-
-		WHILE @iter<@anzahlZeitabschitte DO
-			CALL GET_VERFUEGUNG_ZEITABSCHNITT_ID(@iter, @zeitAbschnittId);
-			CALL PROCESS_BEMERKUNGEN(@zeitAbschnittId, @anzahlBemerkungenProcessed);
-			set anzahlBemerkungenTotal = @anzahlBemerkungenProcessed+anzahlBemerkungenTotal;
-			SET @iter = @iter+1;
-		END WHILE;
+		PREPARE stmt FROM 'select vz.id from verfuegung_zeitabschnitt_bemerkung vzb
+									   right join verfuegung_zeitabschnitt vz on vz.id = vzb.verfuegung_zeitabschnitt_id
+									   where vzb.verfuegung_zeitabschnitt_id is null limit ?, 1 INTO @result';
+		EXECUTE stmt USING limitOffset;
+		DEALLOCATE PREPARE stmt;
+		set zeitAbschnittID = @result;
 	END ;;
 
-CALL ROWLOOP(@result);
-select @result
+CREATE PROCEDURE MIGRATE_NOT_MIGRATED_VERFUEGUNGS_BEMERKUNG()
+	BEGIN
+		set @anzahlZeitabschitteNotMigrated = (select Count(*) from verfuegung_zeitabschnitt_bemerkung vzb
+			right join verfuegung_zeitabschnitt vz on vz.id = vzb.verfuegung_zeitabschnitt_id
+			where vzb.verfuegung_zeitabschnitt_id is null);
+		set @iter = 0;
 
-SELECT COUNT(*) FROM verfuegung_zeitabschnitt_bemerkung;
+		WHILE @iter<@anzahlZeitabschitteNotMigrated DO
+			CALL GET_NOT_MIGRATED_VERFUEGUNG_ZEITABSCHNITT_ID(@iter, @zeitAbschnittId);
+			CALL PROCESS_BEMERKUNGEN(@zeitAbschnittId);
+			SET @iter = @iter+1;
+		END WHILE;
+	END;;
 
-DROP PROCEDURE IF EXISTS ROWLOOP;
-DROP PROCEDURE IF EXISTS PROCESS_BEMERKUNGEN;
-DROP PROCEDURE IF EXISTS INSERT_BEMERKUNG;
-DROP PROCEDURE IF EXISTS GET_VERFUEGUNG_ZEITABSCHNITT_ID;
+CALL MIGRATE_NOT_MIGRATED_VERFUEGUNGS_BEMERKUNG();

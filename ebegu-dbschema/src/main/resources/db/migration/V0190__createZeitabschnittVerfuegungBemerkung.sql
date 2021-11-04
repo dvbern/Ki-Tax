@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-create table verfuegung_zeitabschnitt_bemerkung(
+create table if not EXISTS verfuegung_zeitabschnitt_bemerkung(
 	id                              BINARY(16) NOT NULL,
 	timestamp_erstellt 				DATETIME,
 	timestamp_mutiert  				DATETIME,
@@ -30,7 +30,7 @@ create table verfuegung_zeitabschnitt_bemerkung(
 	PRIMARY KEY (id)
 );
 
-CREATE TABLE verfuegung_zeitabschnitt_bemerkung_aud (
+CREATE table if not EXISTS verfuegung_zeitabschnitt_bemerkung_aud (
 	id                               BINARY(16) NOT NULL,
 	rev                              INTEGER     NOT NULL,
 	revtype                          TINYINT,
@@ -48,10 +48,10 @@ CREATE TABLE verfuegung_zeitabschnitt_bemerkung_aud (
 
 ALTER TABLE verfuegung_zeitabschnitt_bemerkung
 ADD CONSTRAINT FK_verfuegung_zeitabschnitt_bemerkung_zeitabschnitt_id
-	FOREIGN KEY (verfuegung_zeitabschnitt_id)
+	FOREIGN KEY IF NOT EXISTS (verfuegung_zeitabschnitt_id)
 		REFERENCES verfuegung_zeitabschnitt (id);
 
 ALTER TABLE verfuegung_zeitabschnitt_bemerkung_aud
 ADD CONSTRAINT FK_verfuegung_zeitabschnitt_bemerkung_aud_revinfo
-	FOREIGN KEY (rev)
+	FOREIGN KEY IF NOT EXISTS (rev)
 		REFERENCES revinfo(rev);
