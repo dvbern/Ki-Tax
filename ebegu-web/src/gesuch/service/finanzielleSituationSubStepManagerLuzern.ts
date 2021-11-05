@@ -16,6 +16,7 @@
  */
 
 import {TSFinanzielleSituationSubStepName} from '../../models/enums/TSFinanzielleSituationSubStepName';
+import {FinanzielleSituationLuzernService} from '../component/finanzielleSituation/luzern/finanzielle-situation-luzern.service';
 import {FinanzielleSituationSubStepManager} from './finanzielleSituationSubStepManager';
 import {GesuchModelManager} from './gesuchModelManager';
 
@@ -29,7 +30,10 @@ export class FinanzielleSituationSubStepManagerLuzern extends FinanzielleSituati
         currentSubStep: TSFinanzielleSituationSubStepName,
     ): TSFinanzielleSituationSubStepName {
         if (TSFinanzielleSituationSubStepName.LUZERN_START === currentSubStep) {
-            return TSFinanzielleSituationSubStepName.LUZERN_GS2;
+            if (FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller(this.gesuchModelManager)) {
+                return TSFinanzielleSituationSubStepName.LUZERN_GS2;
+            }
+            return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
         }
         if (TSFinanzielleSituationSubStepName.LUZERN_GS2 === currentSubStep) {
             return TSFinanzielleSituationSubStepName.LUZERN_RESULTATE;

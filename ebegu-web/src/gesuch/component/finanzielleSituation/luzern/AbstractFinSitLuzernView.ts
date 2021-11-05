@@ -68,7 +68,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX {
         || this.form.controls.alleinigeStekVorjahr.value === true;
     }
 
-    public getYearForDeklaration(): number {
+    public getYearForDeklaration(): number | string {
         const currentYear = this.getBasisjahrPlus1();
         const previousYear = this.getBasisjahr();
         if (this.form.controls.quellenbesteuert.value === true) {
@@ -81,7 +81,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX {
             || this.form.controls.alleinigeStekVorjahr.value === false) {
             return currentYear;
         }
-        throw new Error('Dieser Fall ist nicht abgedeckt: ' + JSON.stringify(this.form.value));
+        return '';
     }
 
     public abstract isGemeinsam(): boolean;
@@ -102,4 +102,22 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX {
 
     // must return a promise to make dv-navigation work
     public abstract save(): Promise<any>;
+
+    public getAntragstellerNameForCurrentStep(): string {
+        if (this.isGemeinsam()) {
+            return '';
+        }
+        if (this.getAntragstellerNummer() === 1) {
+            return this.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName();
+        }
+        if (this.getAntragstellerNummer() === 2) {
+            try {
+                return this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName();
+            } catch (error) {
+                // Gesuchsteller has not yet filled in Form for Antragsteller 2
+                return '';
+            }
+        }
+        return '';
+    }
 }
