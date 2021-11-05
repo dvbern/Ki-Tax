@@ -16,18 +16,52 @@
  */
 
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {NgForm} from '@angular/forms';
+import {of} from 'rxjs';
+import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
+import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {WizardStepManager} from '../../../../service/wizardStepManager';
+import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
 
 @Component({
-  selector: 'dv-resultate',
-  templateUrl: './resultate.component.html',
-  styleUrls: ['./resultate.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-resultate',
+    templateUrl: './resultate.component.html',
+    styleUrls: ['./resultate.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ResultateComponent implements OnInit {
+export class ResultateComponent extends AbstractGesuchViewX implements OnInit {
 
-  constructor() { }
+    public form: NgForm;
 
-  ngOnInit(): void {
-  }
+    public constructor(
+        protected gesuchModelManager: GesuchModelManager,
+        protected wizardStepManager: WizardStepManager,
+    ) {
+        super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
+    }
 
+    public ngOnInit(): void {
+    }
+
+    public getSubStepIndex(): number {
+        return 3;
+    }
+
+    public getSubStepName(): TSFinanzielleSituationSubStepName {
+        return TSFinanzielleSituationSubStepName.LUZERN_RESULTATE;
+    }
+
+    public save(): Promise<any> {
+        console.log('saving resultate');
+        return of().toPromise();
+    }
+
+    public hasPrevious(): boolean {
+        return true;
+    }
+
+    public hasNext(): boolean {
+        return true;
+    }
 }

@@ -15,4 +15,24 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<p>resultate works!</p>
+<div class="gesuch-modul">
+    <h1 class="access-for-all-title" translate>AFA_GESUCHSFORMULAR</h1>
+    <div class="row view-title">
+        <div class="col-md-12">
+            <h2>
+                <span translate>FINANZIELLE_SITUATION_RESULTATE_LUZERN</span>
+            </h2>
+            <hr class="header"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            Finanzielle Situation Resultate works
+        </div>
+
+        <dv-navigation [dvSave]="save" [dvPrevious]="hasPrevious" [dvNext]="hasNext"
+                       [dvSubStep]="getSubStepIndex()" [dvSubStepName]="getSubStepName()"></dv-navigation>
+    </div>
+
+</div>
+
