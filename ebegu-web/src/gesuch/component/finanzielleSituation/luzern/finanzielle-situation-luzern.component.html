@@ -127,6 +127,9 @@
                             [year]="getYearForDeklaration()"
             ></dv-veranlagung>
         </div>
+
+        <dv-navigation [dvSave]="save" [dvPrevious]="hasPrevious" [dvNext]="hasNext"
+                       [dvSubStep]="getSubStepIndex()" [dvSubStepName]="getSubStepName()"></dv-navigation>
     </div>
 
 </div>

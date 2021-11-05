@@ -84,4 +84,16 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX {
     public abstract isGemeinsam(): boolean;
 
     public abstract getAntragstellerNummer(): number;
+
+    public hasPrevious(): boolean {
+        return true;
+    }
+
+    public hasNext(): boolean {
+        return true;
+    }
+
+    public abstract getSubStepIndex(): number;
+
+    public abstract getSubStepName(): string;
 }

@@ -258,7 +258,7 @@ export const CORE_JS_MODULE = angular
     .directive('dvTimepicker', DVTimepicker.factory())
     .directive('dvValueinput', DVValueinput.factory())
     .directive('dvVerantwortlicherselect', DvVerantwortlicherselect.factory())
-    .directive('dvNavigation', DVNavigation.factory())
+    .component('dvNavigation', new DVNavigation())
     .directive('dvLoading', DVLoading.factory())
     .directive('dvStPersistAntraege', DVSTPersistAntraege.factory())
     .directive('dvStPersistPendenzen', DVSTPersistPendenzen.factory())

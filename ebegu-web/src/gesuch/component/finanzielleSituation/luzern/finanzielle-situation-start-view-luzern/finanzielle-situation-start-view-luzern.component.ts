@@ -17,6 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FormBuilder} from '@angular/forms';
+import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
 import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
@@ -47,6 +48,22 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
     public getAntragstellerNummer(): number {
         // this is always antragsteller 1. if we have two antragsteller, we have angaben-gesuchsteller-2 component
         return 1;
+    }
+
+    public save(): void {
+        console.log('save that');
+    }
+
+    public getTrue(): any {
+        return true;
+    }
+
+    public getSubStepIndex(): number {
+        return 1;
+    }
+
+    public getSubStepName(): TSFinanzielleSituationSubStepName {
+        return TSFinanzielleSituationSubStepName.LUZERN_GS2;
     }
 
 }

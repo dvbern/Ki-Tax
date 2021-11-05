@@ -14,7 +14,7 @@
  */
 
 import {StateService, TransitionPromise} from '@uirouter/core';
-import {IController, IDirective, IDirectiveFactory, IQService, ITimeoutService} from 'angular';
+import {IComponentController, IController, IQService, ITimeoutService} from 'angular';
 import {FinanzielleSituationRS} from '../../../../gesuch/service/finanzielleSituationRS.rest';
 import {FinanzielleSituationSubStepManager} from '../../../../gesuch/service/finanzielleSituationSubStepManager';
 import {FinanzielleSituationSubStepManagerBernAsiv} from '../../../../gesuch/service/finanzielleSituationSubStepManagerBernAsiv';
@@ -47,12 +47,12 @@ const LOG = LogFactory.createLog('DVNavigation');
  * -- dvCancel: function        Die callback Methode, um alles zurueckzusetzen (nicht gleichzeitig mit dvPrevious
  * benutzen)
  */
-export class DVNavigation implements IDirective {
+export class DVNavigation implements IComponentController {
     public restrict = 'E';
     public scope = {};
     public controller = NavigatorController;
     public controllerAs = 'vm';
-    public bindToController = {
+    public bindings = {
         dvPrevious: '&?',
         dvNext: '&?',
         dvCancel: '&?',
@@ -66,13 +66,6 @@ export class DVNavigation implements IDirective {
         containerClass: '<',
     };
     public template = require('./dv-navigation.html');
-
-    public static factory(): IDirectiveFactory {
-        const directive = () => new DVNavigation();
-        // @ts-ignore
-        directive.$inject = [];
-        return directive;
-    }
 }
 
 export class NavigatorController implements IController {
