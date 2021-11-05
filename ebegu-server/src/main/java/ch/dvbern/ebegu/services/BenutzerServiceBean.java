@@ -759,6 +759,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			foundUser.setNachname(benutzer.getNachname());
 			foundUser.setVorname(benutzer.getVorname());
 			foundUser.setEmail(benutzer.getEmail());
+			foundUser.setZpvNummer(benutzer.getZpvNummer());
 
 			// Wir setzen den konfigurierten User als SUPER_ADMIN
 			setSuperAdminRole(foundUser);

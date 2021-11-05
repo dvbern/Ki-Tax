@@ -66,7 +66,8 @@ import static java.util.Objects.requireNonNull;
 @Table(
 	uniqueConstraints = {
 		@UniqueConstraint(columnNames = "username", name = "UK_username"),
-		@UniqueConstraint(columnNames = "externalUUID", name = "UK_externalUUID")
+		@UniqueConstraint(columnNames = "externalUUID", name = "UK_externalUUID"),
+		@UniqueConstraint(columnNames = "zpvNummer", name = "UK_zpv_nummer")
 	},
 	indexes = {
 		@Index(columnList = "username", name = "IX_benutzer_username"),
@@ -134,6 +135,10 @@ public class Benutzer extends AbstractMutableEntity implements HasMandant {
 	@Nullable
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	private String bemerkungen;
+
+	@Nullable
+	@Column
+	private String zpvNummer = null;
 
 
 	public String getUsername() {
@@ -287,6 +292,15 @@ public class Benutzer extends AbstractMutableEntity implements HasMandant {
 
 	public void setSozialdienst(@Nullable Sozialdienst sozialdienst) {
 		getCurrentBerechtigung().setSozialdienst(sozialdienst);
+	}
+
+	@Nullable
+	public String getZpvNummer() {
+		return zpvNummer;
+	}
+
+	public void setZpvNummer(@Nullable String zpvNummer) {
+		this.zpvNummer = zpvNummer;
 	}
 
 	@Nonnull
