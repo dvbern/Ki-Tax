@@ -45,7 +45,7 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
 
     public isGemeinsam(): boolean {
         // if we don't need two antragsteller for gesuch, this is the component for both antragsteller together
-        return FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller(this.gesuchModelManager) === false;
+        return !FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller(this.gesuchModelManager);
     }
 
     public getAntragstellerNummer(): number {

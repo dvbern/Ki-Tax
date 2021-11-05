@@ -90,4 +90,3 @@ export class FinanzielleSituationSubStepManagerBernAsiv extends FinanzielleSitua
         return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
     }
 }
-

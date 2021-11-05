@@ -539,7 +539,7 @@ export class WizardStepManager {
         } else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.LUZERN) {
             this.unhideStep(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
         } else {
-            throw new Error('wrong FinSitTyp' + gesuch.finSitTyp);
+            throw new Error(`wrong FinSitTyp ${gesuch.finSitTyp}`);
         }
     }
 }

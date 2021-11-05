@@ -56,4 +56,3 @@ export class FinanzielleSituationSubStepManagerLuzern extends FinanzielleSituati
         return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
     }
 }
-

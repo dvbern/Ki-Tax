@@ -51,7 +51,7 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView imp
     }
 
     public save(): Promise<any> {
-        console.log('save angaben 2')
+        console.log('save angaben 2');
         return of().toPromise();
     }
 

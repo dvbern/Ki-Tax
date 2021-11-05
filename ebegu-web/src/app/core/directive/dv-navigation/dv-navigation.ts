@@ -128,7 +128,7 @@ export class NavigatorController implements IController {
                         this.wizardSubStepManager = new FinanzielleSituationSubStepManagerLuzern(this.gesuchModelManager);
                         break;
                     default:
-                        throw new Error('unexpected TSFinanzielleSituationTyp ' + typ);
+                        throw new Error(`unexpected TSFinanzielleSituationTyp ${typ}`);
                 }
             }, err => LOG.error(err));
     }
