@@ -3095,13 +3095,11 @@ export class EbeguRestUtil {
                 this.parseTsCalculationResult(zeitabschnittFromServer.tsCalculationResultOhnePaedagogischerBetreuung);
             verfuegungZeitabschnittTS.verguenstigungMahlzeitTotal = zeitabschnittFromServer.verguenstigungMahlzeitTotal;
 
-            if (zeitabschnittFromServer.bemerkungen) {
-                verfuegungZeitabschnittTS.bemerkungen.forEach(bemerkung => {
-                    verfuegungZeitabschnittTS.bemerkungen.push(
-                        this.parseVerguegungZeitabschnittBemerkung(bemerkung));
-                });
+            zeitabschnittFromServer.verfuegungZeitabschnittBemerkungList.forEach((bemerkung: any) => {
+                verfuegungZeitabschnittTS.bemerkungen.push(
+                    this.parseVerguegungZeitabschnittBemerkung(bemerkung));
+            });
 
-            }
             return verfuegungZeitabschnittTS;
         }
         return undefined;
