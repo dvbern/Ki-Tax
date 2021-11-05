@@ -16,8 +16,10 @@
  */
 
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
+import {WizardStepManager} from '../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../abstractGesuchViewX';
 
 export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX {
@@ -26,9 +28,10 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX {
 
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
-        private readonly fb: FormBuilder,
+        protected wizardStepManager: WizardStepManager,
+        private readonly fb: FormBuilder
     ) {
-        super(gesuchModelManager);
+        super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
         this.setupForm();
     }
 
@@ -96,4 +99,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX {
     public abstract getSubStepIndex(): number;
 
     public abstract getSubStepName(): string;
+
+    // must return a promise to make dv-navigation work
+    public abstract save(): Promise<any>;
 }

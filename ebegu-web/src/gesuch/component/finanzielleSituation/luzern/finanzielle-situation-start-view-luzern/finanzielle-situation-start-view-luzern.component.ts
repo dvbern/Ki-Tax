@@ -17,8 +17,10 @@
 
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FormBuilder} from '@angular/forms';
+import {of} from 'rxjs';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
 import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
 
@@ -32,9 +34,10 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
 
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
+        protected wizardStepManager: WizardStepManager,
         fb: FormBuilder,
     ) {
-        super(gesuchModelManager, fb);
+        super(gesuchModelManager, wizardStepManager, fb);
     }
 
     public ngOnInit(): void {
@@ -50,8 +53,9 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
         return 1;
     }
 
-    public save(): void {
-        console.log('save that');
+    public save(): Promise<any> {
+        console.log('saving start view');
+        return of('saved').toPromise();
     }
 
     public getTrue(): any {
@@ -63,7 +67,7 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
     }
 
     public getSubStepName(): TSFinanzielleSituationSubStepName {
-        return TSFinanzielleSituationSubStepName.LUZERN_GS2;
+        return TSFinanzielleSituationSubStepName.LUZERN_START;
     }
 
 }

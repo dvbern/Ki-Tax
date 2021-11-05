@@ -360,7 +360,8 @@ export class NavigatorController implements IController {
             return this.navigateToStep(TSWizardStepName.ERWERBSPENSUM);
         }
 
-        if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()) {
+        if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()
+        || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()) {
             const previousSubStep = this.wizardSubStepManager.getPreviousSubStepFinanzielleSituation(this.dvSubStepName);
             const previousMainStep = this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch());
 
@@ -515,23 +516,23 @@ export class NavigatorController implements IController {
     }
 
     private navigateToLuzernStart(): any {
-        console.log(`luzern start`);
+        return this.state.go('gesuch.finanzielleSituationStartLuzern', {
+            gesuchId: this.getGesuchId(),
+        });
     }
 
+    // tslint:disable-next-line:no-identical-functions
     private navigateToLuzernGS2(): any {
-        console.log(`luzern selbstdeklaration: GS 1`);
+        return this.state.go('gesuch.finanzielleSituationGS2Luzern', {
+            gesuchId: this.getGesuchId(),
+        });
     }
 
+    // tslint:disable-next-line:no-identical-functions
     private navigateToLuzernResultate(): any {
-        console.log(`luzern veranlagt: GS 1`);
-    }
-
-    private navigateToLuzernSelbstdeklarationGS2(): any {
-        console.log(`luzern selbstdeklaration: GS 2`);
-    }
-
-    private navigateToLuzernVeranlagtGS2(): any {
-        console.log(`luzern veranlagt: GS 2`);
+        return this.state.go('gesuch.finanzielleSituationResultateLuzern', {
+            gesuchId: this.getGesuchId(),
+        });
     }
 
     private getGesuchId(): string {

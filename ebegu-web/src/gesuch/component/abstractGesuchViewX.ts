@@ -15,17 +15,28 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {AfterViewInit} from '@angular/core';
+import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSGesuch} from '../../models/TSGesuch';
 import {GesuchModelManager} from '../service/gesuchModelManager';
+import {WizardStepManager} from '../service/wizardStepManager';
 
-export class AbstractGesuchViewX {
+export class AbstractGesuchViewX implements AfterViewInit {
 
     public onlyFerieninselBetreuungen = false;
 
     public constructor(
-        protected gesuchModelManager: GesuchModelManager
+        protected gesuchModelManager: GesuchModelManager,
+        protected wizardStepManager: WizardStepManager,
+        protected stepName: TSWizardStepName
     ) {
+        this.wizardStepManager.setCurrentStep(stepName);
         this.onlyFerieninselBetreuungen = this.gesuchModelManager.areThereOnlyFerieninsel();
+    }
+
+    // reset transitionInProgress after new form is loaded
+    public ngAfterViewInit(): void {
+        this.wizardStepManager.isTransitionInProgress = false;
     }
 
     public getBasisjahr(): number | undefined {

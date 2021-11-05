@@ -31,6 +31,9 @@ export class FinanzielleSituationSubStepManagerLuzern extends FinanzielleSituati
         if (TSFinanzielleSituationSubStepName.LUZERN_START === currentSubStep) {
             return TSFinanzielleSituationSubStepName.LUZERN_GS2;
         }
+        if (TSFinanzielleSituationSubStepName.LUZERN_GS2 === currentSubStep) {
+            return TSFinanzielleSituationSubStepName.LUZERN_RESULTATE;
+        }
         return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
     }
 
@@ -39,6 +42,12 @@ export class FinanzielleSituationSubStepManagerLuzern extends FinanzielleSituati
     ): TSFinanzielleSituationSubStepName {
         if (TSFinanzielleSituationSubStepName.LUZERN_START === currentSubStep) {
             return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
+        }
+        if (TSFinanzielleSituationSubStepName.LUZERN_GS2 === currentSubStep) {
+            return TSFinanzielleSituationSubStepName.LUZERN_START;
+        }
+        if (TSFinanzielleSituationSubStepName.LUZERN_RESULTATE === currentSubStep) {
+            return TSFinanzielleSituationSubStepName.LUZERN_GS2;
         }
         return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
     }
