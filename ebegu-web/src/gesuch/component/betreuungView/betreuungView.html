@@ -387,6 +387,19 @@
                         </div>
                     </div>
 
+                    <!--Eingewoehnung Periode-->
+                    <div class="row" ng-if="vm.showEingewoehnung() && !vm.isSchulamt()">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <div class="checkbox">
+                                <md-checkbox ng-model="vm.getBetreuungModel().eingewoehnung"
+                                             name="eingewoehnung"
+                                             aria-label="{{'EINGEWOEHNUNG'| translate}}">
+                                    <span data-translate="EINGEWOEHNUNG"></span>
+                                </md-checkbox>
+                            </div>
+                        </div>
+                    </div>
+
                     <!--Betreuung in Gemeinde-->
                     <div class="row"
                          dv-show-element

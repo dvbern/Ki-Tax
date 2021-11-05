@@ -142,8 +142,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Transient
 	private final VerfuegungsBemerkungDTOList bemerkungenDTOList = new VerfuegungsBemerkungDTOList();
 
-	@Column(nullable = true)
-	@Nonnull
+
 	@OneToMany(mappedBy = "verfuegungZeitabschnitt", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<VerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungList = Collections.emptyList();
 
@@ -158,8 +157,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.setGueltigkeit(new DateRange(toCopy.getGueltigkeit()));
 		this.regelwerk = toCopy.regelwerk;
 		this.hasGemeindeSpezifischeBerechnung = toCopy.hasGemeindeSpezifischeBerechnung;
-		this.bgCalculationInputAsiv = new BGCalculationInput(toCopy.bgCalculationInputAsiv);
-		this.bgCalculationInputGemeinde = new BGCalculationInput(toCopy.bgCalculationInputGemeinde);
+		this.bgCalculationInputAsiv = new BGCalculationInput(this, toCopy.bgCalculationInputAsiv);
+		this.bgCalculationInputGemeinde = new BGCalculationInput(this, toCopy.bgCalculationInputGemeinde);
 		this.bgCalculationResultAsiv = new BGCalculationResult(toCopy.getBgCalculationResultAsiv());
 		if (this.hasGemeindeSpezifischeBerechnung && toCopy.getBgCalculationResultGemeinde() != null) {
 			this.bgCalculationResultGemeinde = new BGCalculationResult(toCopy.getBgCalculationResultGemeinde());

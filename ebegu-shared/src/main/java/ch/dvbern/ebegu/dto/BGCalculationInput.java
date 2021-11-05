@@ -179,8 +179,8 @@ public class BGCalculationInput {
 		this.ruleValidity = ruleValidity;
 	}
 
-	public BGCalculationInput(@Nonnull BGCalculationInput toCopy) {
-		this.parent = toCopy.parent;
+	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull BGCalculationInput toCopy) {
+		this.parent = parent;
 		this.erwerbspensumGS1 = toCopy.erwerbspensumGS1;
 		this.erwerbspensumGS2 = toCopy.erwerbspensumGS2;
 		this.erwerbspensumZuschlag = toCopy.erwerbspensumZuschlag;
