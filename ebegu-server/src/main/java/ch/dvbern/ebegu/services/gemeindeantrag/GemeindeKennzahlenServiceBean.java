@@ -125,6 +125,24 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 		return gemeindeKennzahlen;
 	}
 
+	@Override
+	public void deleteGemeindeKennzahlenIfExistsAndIsNotAbgeschlossen(
+			@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Gemeinde gemeinde) {
+		this.getGemeindeKennzahlen(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null)
+				.forEach(this::deleteGemeindeKennzahlenIfNotAbgeschlossen);
+	}
+
+	private void deleteGemeindeKennzahlenIfNotAbgeschlossen(GemeindeKennzahlen gemeindeKennzahlen) {
+		if (gemeindeKennzahlen.isAntragAbgeschlossen()) {
+			return;
+		}
+		persistence.remove(gemeindeKennzahlen);
+		LOG.warn(
+				"Removed GemeindeKennzahlen for Gemeinde {} in GS {}",
+				gemeindeKennzahlen.getGemeinde().getName(),
+				gemeindeKennzahlen.getGesuchsperiode().getGesuchsperiodeString());
+	}
+
 	@Nonnull
 	@Override
 	public GemeindeKennzahlen saveGemeindeKennzahlen(
@@ -248,15 +266,9 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	}
 
 	@Override
-	public void deleteGemeindeKennzahlen(@Nonnull Gesuchsperiode gesuchsperiode) {
+	public void deleteGemeindeKennzahlenForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		getGemeindeKennzahlen(null, gesuchsperiode.getGesuchsperiodeString(), null, null)
-				.forEach(gemeindeKennzahlen -> {
-					persistence.remove(gemeindeKennzahlen);
-					LOG.warn(
-							"Removed GemeindeKennzahlen for Gemeinde {} in GS {}",
-							gemeindeKennzahlen.getGemeinde().getName(),
-							gesuchsperiode.getGesuchsperiodeString());
-				});
+				.forEach(this::deleteGemeindeKennzahlenIfNotAbgeschlossen);
 	}
 }
 

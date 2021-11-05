@@ -62,6 +62,7 @@ import ch.dvbern.ebegu.services.gemeindeantrag.GemeindeAntragService;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.jetbrains.annotations.NotNull;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_FERIENBETREUUNG;
@@ -129,12 +130,7 @@ public class GemeindeAntragResource {
 		Objects.requireNonNull(gesuchsperiodeJaxId.getId());
 		Objects.requireNonNull(gemeindeAntragTyp);
 
-		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJaxId);
-		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId).
-				orElseThrow(() -> new EbeguEntityNotFoundException(
-						"createAllGemeindeAntraege",
-						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-						gesuchsperiodeId));
+		Gesuchsperiode gesuchsperiode = getGesuchsperiodeFromJaxId(gesuchsperiodeJaxId);
 
 		final List<GemeindeAntrag> gemeindeAntragList =
 				gemeindeAntragService.createAllGemeindeAntraege(gesuchsperiode, gemeindeAntragTyp);
@@ -163,14 +159,50 @@ public class GemeindeAntragResource {
 		Objects.requireNonNull(gesuchsperiodeJaxId.getId());
 		Objects.requireNonNull(gemeindeAntragTyp);
 
-		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJaxId);
-		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId).
-			orElseThrow(() -> new EbeguEntityNotFoundException(
-				"deleteGemeindeAntraege",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				gesuchsperiodeId));
+		Gesuchsperiode gesuchsperiode = getGesuchsperiodeFromJaxId(gesuchsperiodeJaxId);
 
 		gemeindeAntragService.deleteGemeindeAntraege(gesuchsperiode, gemeindeAntragTyp);
+	}
+
+	@ApiOperation(
+		"Löscht den Antrag der Id")
+	@DELETE
+	@Path("/deleteAntrag/{gemeindeAntragTyp}/gesuchsperiode/{gesuchsperiodeId}/gemeinde/{gemeindeId}")
+	@RolesAllowed({ SUPER_ADMIN })
+	public void deleteGemeindeAntrag(
+			@Nonnull @Valid @PathParam("gemeindeAntragTyp") GemeindeAntragTyp gemeindeAntragTyp,
+			@Nonnull @Valid @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,
+			@Nonnull @Valid @PathParam("gemeindeId") JaxId gemeindeId,
+			@Context HttpServletRequest request,
+			@Context UriInfo uriInfo
+	) {
+		Objects.requireNonNull(gesuchsperiodeJaxId.getId());
+		Objects.requireNonNull(gemeindeAntragTyp);
+		Objects.requireNonNull(gemeindeId);
+
+		Gesuchsperiode gesuchsperiode = getGesuchsperiodeFromJaxId(gesuchsperiodeJaxId);
+		Gemeinde gemeinde = getGemeindeFromJaxId(gemeindeId);
+
+		gemeindeAntragService.deleteGemeindeAntragIfExists(gesuchsperiode, gemeindeAntragTyp, gemeinde);
+	}
+
+	private Gesuchsperiode getGesuchsperiodeFromJaxId(
+			 @Nonnull JaxId gesuchsperiodeJaxId) {
+		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJaxId);
+		return gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId).
+				orElseThrow(() -> new EbeguEntityNotFoundException(
+						"getGesuchsperiodeFromJaxId",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+						gesuchsperiodeId));
+	}
+
+	private Gemeinde getGemeindeFromJaxId(@NotNull JaxId gemeindeJaxId) {
+		String gemeindeId = converter.toEntityId(gemeindeJaxId);
+		return gemeindeService.findGemeinde(gemeindeId)
+						.orElseThrow(() -> new EbeguEntityNotFoundException(
+								"deleteGemeidneAntrag",
+								ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+								gemeindeId));
 	}
 
 	@ApiOperation(
@@ -190,19 +222,9 @@ public class GemeindeAntragResource {
 		Objects.requireNonNull(gemeindeAntragTyp);
 		Objects.requireNonNull(gemeindeJaxId.getId());
 
-		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJaxId);
-		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId).
-			orElseThrow(() -> new EbeguEntityNotFoundException(
-				"createGemeindeAntrag",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				gesuchsperiodeId));
+		Gesuchsperiode gesuchsperiode = getGesuchsperiodeFromJaxId(gesuchsperiodeJaxId);
 
-		String gemeindeId = converter.toEntityId(gemeindeJaxId);
-		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).
-			orElseThrow(() -> new EbeguEntityNotFoundException(
-				"createGemeindeAntrag",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				gemeindeId));
+		Gemeinde gemeinde = getGemeindeFromJaxId(gemeindeJaxId);
 
 		final GemeindeAntrag gemeindeAntrag =
 				gemeindeAntragService.createGemeindeAntrag(gemeinde, gesuchsperiode, gemeindeAntragTyp);

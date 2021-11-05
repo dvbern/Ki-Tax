@@ -556,11 +556,33 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 		}
 
 		this.getFerienbetreuungAntraege(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null)
+			.forEach(this::removeFerienbetreuungAngabenContainer);
+	}
+
+	@Override
+	public void deleteFerienbetreuungAntragIfExistsAndIsNotAbgeschlossen(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
+
+		if (!principal.isCallerInRole(UserRole.SUPER_ADMIN)) {
+			throw new EbeguRuntimeException(
+				"deleteFerienbetreuungAntragIfExistsAndIsNotAbgeschlossen",
+				"deleteFerienbetreuungAntragIfExistsAndIsNotAbgeschlossen ist nur als SuperAdmin möglich");
+		}
+
+		this.getFerienbetreuungAntraege(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null)
 			.forEach(antrag -> {
-				this.ferienbetreuungDokumentService.findDokumente(antrag.getId())
-					.forEach(dokument -> persistence.remove(dokument));
-				persistence.remove(antrag);
+				if (antrag.isAntragAbgeschlossen()) {
+					return;
+				}
+				removeFerienbetreuungAngabenContainer(antrag);
 			});
+	}
+
+	private void removeFerienbetreuungAngabenContainer(FerienbetreuungAngabenContainer antrag) {
+		this.ferienbetreuungDokumentService.findDokumente(antrag.getId())
+				.forEach(dokument -> persistence.remove(dokument));
+		persistence.remove(antrag);
 	}
 
 	@Nonnull
