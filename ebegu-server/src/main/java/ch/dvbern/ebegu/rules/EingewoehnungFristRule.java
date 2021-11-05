@@ -143,8 +143,8 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 		eingewoehnung.setErwerbspensumGS2ForAsivAndGemeinde(abschnittMitAnspruch.getRelevantBgCalculationInput().getErwerbspensumGS2());
 		eingewoehnung.setGueltigkeit(new DateRange(gueltigkeit));
 		eingewoehnung.getRelevantBgCalculationInput().addBemerkung(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG, locale);
-		if(eingewoehnung.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH)){
-			eingewoehnung.getBemerkungenList().removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
+		if(eingewoehnung.getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH)){
+			eingewoehnung.getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
 		}
 		return  eingewoehnung;
 	}
