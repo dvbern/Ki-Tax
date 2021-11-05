@@ -160,6 +160,9 @@ public class Betreuung extends AbstractPlatz {
 	@Column(nullable = false)
 	private @NotNull boolean eventPublished = true;
 
+	@Column(nullable = false)
+	private @NotNull boolean eingewoehnung = false;
+
 	public Betreuung() {
 	}
 
@@ -545,5 +548,13 @@ public class Betreuung extends AbstractPlatz {
 
 	public void setEventPublished(boolean eventPublished) {
 		this.eventPublished = eventPublished;
+	}
+
+	public boolean isEingewoehnung() {
+		return eingewoehnung;
+	}
+
+	public void setEingewoehnung(boolean eingewoehnung) {
+		this.eingewoehnung = eingewoehnung;
 	}
 }
