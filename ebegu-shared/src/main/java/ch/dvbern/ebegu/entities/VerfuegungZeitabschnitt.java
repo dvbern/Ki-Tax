@@ -142,8 +142,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Transient
 	private final VerfuegungsBemerkungDTOList bemerkungenDTOList = new VerfuegungsBemerkungDTOList();
 
-	@Column(nullable = true)
-	@Nonnull
+
 	@OneToMany(mappedBy = "verfuegungZeitabschnitt", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<VerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungList = Collections.emptyList();
 
