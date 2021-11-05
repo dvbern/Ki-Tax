@@ -18,6 +18,7 @@ import { MatDialog } from '@angular/material/dialog';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {DailyBatchRS} from '../../service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
 import {BatchjobTriggerViewComponent} from './batchjobTriggerView';
@@ -47,6 +48,7 @@ describe('batchjobTriggerView', () => {
             ],
             declarations: [BatchjobTriggerViewComponent],
         })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     }));
 

@@ -25,11 +25,13 @@ import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SearchRS} from '../../../gesuch/service/searchRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {MaterialModule} from '../../shared/material.module';
 import {StateStoreService} from '../../shared/services/state-store.service';
+import {SharedModule} from '../../shared/shared.module';
 import {ErrorService} from '../errors/service/ErrorService';
 import {BenutzerRSX} from '../service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
@@ -108,7 +110,8 @@ describe('NewAntragListComponent', () => {
                 {provide: StateStoreService, useValue: stateStoreServiceSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobals},
             ],
-        }).compileComponents();
+        })
+            .compileComponents();
 
         insitutionSpy.getInstitutionenReadableForCurrentBenutzer.and.returnValue(Promise.resolve([]));
         gesuchPeriodeSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve([]));

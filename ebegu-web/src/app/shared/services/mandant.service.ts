@@ -1,4 +1,4 @@
-import {HttpBackend, HttpClient} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {CookieService} from 'ngx-cookie-service';
 import {Observable, ReplaySubject} from 'rxjs';
@@ -25,16 +25,12 @@ export class MandantService {
 
     private readonly restUtil = new EbeguRestUtil();
 
-    // Workaround, we somehow get a cyclic dependency when we try to inject this directly
-    private readonly http: HttpClient;
-
     public constructor(
         private readonly windowRef: WindowRef,
-        private readonly httpBackend: HttpBackend,
+        private readonly http: HttpClient,
         private readonly cookieService: CookieService,
     ) {
         // Workaround, we somehow get a cyclic dependency when we try to inject this directly
-        this.http = new HttpClient(httpBackend);
         // TODO: reenable once ApplicationPropertyRS is migrated
         // tslint:disable-next-line:no-commented-code
         // this.applicationPropertyService.getPublicPropertiesCached().then(properties => {

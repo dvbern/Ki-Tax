@@ -20,11 +20,13 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/angular';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {WizardStepXRS} from '../../../../core/service/wizardStepXRS.rest';
 import {MaterialModule} from '../../../../shared/material.module';
+import {SharedModule} from '../../../../shared/shared.module';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 import {FreigabeComponent} from './freigabe.component';
@@ -63,6 +65,7 @@ describe('FreigabeComponent', () => {
                 {provide: WizardStepXRS, useValue: wizardStepXRSSpy}
             ],
         })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     }));
 

@@ -19,6 +19,7 @@ import {APP_BASE_HREF} from '@angular/common';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {Transition, UIRouterModule} from '@uirouter/angular';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
@@ -70,6 +71,7 @@ describe('BenutzerComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
             ],
         })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
 
         insitutionSpy.getAllInstitutionen.and.returnValue(Promise.resolve([]));

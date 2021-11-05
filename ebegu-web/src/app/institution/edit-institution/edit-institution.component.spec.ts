@@ -4,6 +4,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
@@ -55,7 +56,9 @@ describe('EditInstitutionComponent', () => {
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
             declarations: [EditInstitutionComponent],
-        }).compileComponents();
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
 
         traegerschaftServiceSpy.getAllActiveTraegerschaften.and.resolveTo([]);
         insitutionServiceSpy.getInstitutionenReadableForCurrentBenutzer.and.resolveTo([]);
