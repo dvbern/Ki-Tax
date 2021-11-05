@@ -412,14 +412,10 @@ export class NavigatorController implements IController {
                 return this.navigateToSozialhilfeZeitraeume();
             case TSFinanzielleSituationSubStepName.LUZERN_START:
                 return this.navigateToLuzernStart();
-            case TSFinanzielleSituationSubStepName.LUZERN_SELBSTDEKLARATION:
-                return this.navigateToLuzernSelbstdeklaration();
-            case TSFinanzielleSituationSubStepName.LUZERN_VERANLAGT:
-                return this.navigateToLuzernVeranlagt();
-            case TSFinanzielleSituationSubStepName.LUZERN_GS2_SELBSTDEKLARATION:
-                return this.navigateToLuzernSelbstdeklarationGS2();
-            case TSFinanzielleSituationSubStepName.LUZERN_GS2_VERANLAGT:
-                return this.navigateToLuzernVeranlagtGS2();
+            case TSFinanzielleSituationSubStepName.LUZERN_GS2:
+                return this.navigateToLuzernGS2();
+            case TSFinanzielleSituationSubStepName.LUZERN_RESULTATE:
+                return this.navigateToLuzernResultate();
             default:
                 throw new Error(`not implemented for Substep ${navigateToSubStep}`);
         }
@@ -522,11 +518,11 @@ export class NavigatorController implements IController {
         console.log(`luzern start`);
     }
 
-    private navigateToLuzernSelbstdeklaration(): any {
+    private navigateToLuzernGS2(): any {
         console.log(`luzern selbstdeklaration: GS 1`);
     }
 
-    private navigateToLuzernVeranlagt(): any {
+    private navigateToLuzernResultate(): any {
         console.log(`luzern veranlagt: GS 1`);
     }
 
