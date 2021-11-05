@@ -16,6 +16,7 @@
  */
 import * as moment from 'moment';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 
 export interface DVAntragListItem {
     fallNummer?: number;
@@ -26,7 +27,8 @@ export interface DVAntragListItem {
     familienName?: string;
     kinder?: string[];
     antragTyp?: string;
-    periode?: string;
+    periode?: TSGesuchsperiode;
+    periodenString?: string;
     aenderungsdatum?: moment.Moment;
     internePendenz?: boolean;
     dokumenteHochgeladen?: boolean;
@@ -35,6 +37,7 @@ export interface DVAntragListItem {
     verantwortlicheTS?: string;
     verantwortlicheBG?: string;
     isSozialdienst?: boolean;
+    antragAbgeschlossen?: boolean;
 
     hasBesitzer?(): boolean;
 }

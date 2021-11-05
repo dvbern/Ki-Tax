@@ -101,7 +101,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     public triedSending: boolean = false;
     public types: TSGemeindeAntragTyp[];
     public creatableTypes: TSGemeindeAntragTyp[];
-    public deletePossible$: Observable<boolean>;
+    public latsDeletePossible$: Observable<boolean>;
 
     public constructor(
         private readonly gemeindeAntragService: GemeindeAntragService,
@@ -133,7 +133,7 @@ export class GemeindeAntraegeComponent implements OnInit {
             this.updateGesuchsperioden();
         });
         this.initAntragTypes();
-        this.checkDeletePossible$();
+        this.checkDeleteAllPossible$();
     }
 
     private loadAntragList(): void {
@@ -157,9 +157,11 @@ export class GemeindeAntraegeComponent implements OnInit {
                         antragId: antrag.id,
                         gemeinde: antrag.gemeinde.name,
                         status: antrag.statusString,
-                        periode: antrag.gesuchsperiode.gesuchsperiodeString,
+                        periodenString: antrag.gesuchsperiode.gesuchsperiodeString,
+                        periode: antrag.gesuchsperiode,
                         antragTyp: antrag.gemeindeAntragTyp,
-                        aenderungsdatum: antrag.timestampMutiert
+                        aenderungsdatum: antrag.timestampMutiert,
+                        antragAbgeschlossen: antrag.antragAbgeschlossen
                     };
                 });
             }),
@@ -200,7 +202,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         });
     }
 
-    public deleteAntraege(): void {
+    public deleteAllLatsAntraege(): void {
         if (!this.formGroup.valid) {
             this.triedSending = true;
             return;
@@ -210,7 +212,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                 if (!answer) {
                     return NEVER;
                 }
-                return this.gemeindeAntragService.deleteAntrage(this.formGroup.value);
+                return this.gemeindeAntragService.deleteAllLatsAntrage(this.formGroup.value.gesuchsperiode);
             })
         ).subscribe(() => {
                 this.loadAntragList();
@@ -224,6 +226,29 @@ export class GemeindeAntraegeComponent implements OnInit {
             });
     }
 
+    public deleteGemeindeAntrag(antrag: DVAntragListItem): void {
+        this.openRemoveDialog$().pipe(
+            concatMap(answer => {
+                if (!answer) {
+                    return NEVER;
+                }
+                const gemeinde = this.gemeinden.find(g => g.name === antrag.gemeinde);
+                return this.gemeindeAntragService.deleteGemeindeAntrag(antrag.periode,
+                    gemeinde.id,
+                    antrag.antragTyp);
+            })
+        ).subscribe(() => {
+            this.loadAntragList();
+            this.cd.markForCheck();
+            // tslint:disable-next-line:no-identical-functions
+        }, err => {
+            const msg = this.translate.instant('DELETE_ANTRAEGE_ERROR');
+            this.errorService.clearAll();
+            this.errorService.addMesageAsError(msg);
+            LOG.error(err);
+        });
+    }
+
     private openRemoveDialog$(): Observable<boolean> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
@@ -233,9 +258,9 @@ export class GemeindeAntraegeComponent implements OnInit {
         return this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed();
     }
 
-    private checkDeletePossible$(): void {
+    private checkDeleteAllPossible$(): void {
         const promise = this.applicationPropertyRS.isDevMode();
-        this.deletePossible$ = from(promise)
+        this.latsDeletePossible$ = from(promise)
             .pipe(map(isDevmode => {
                 return this.authService.isRole(TSRole.SUPER_ADMIN) && isDevmode;
             }));
