@@ -27,6 +27,7 @@ import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {WindowRef} from '../../../core/service/windowRef.service';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
@@ -54,6 +55,7 @@ describe('FerienbetreuungComponent', () => {
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 
