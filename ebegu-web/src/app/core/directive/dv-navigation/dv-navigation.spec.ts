@@ -301,7 +301,6 @@ describe('dvNavigation', () => {
                 spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.ERWERBSPENSUM);
                 spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue(1);
                 spyOn(gesuchModelManager, 'isGesuchsteller2Required').and.returnValue(true);
-                spyOn(gesuchModelManager, 'isGesuchsteller2Required').and.returnValue(true);
                 spyOn(wizardStepManager, 'getNextStep').and.returnValue(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
                 navController.dvSubStep = 1;
                 navController.dvSubStepName = TSFinanzielleSituationSubStepName.LUZERN_START;
