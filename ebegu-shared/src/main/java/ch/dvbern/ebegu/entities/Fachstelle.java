@@ -23,19 +23,18 @@ import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.FachstelleName;
+import ch.dvbern.ebegu.types.DateRange;
 import org.hibernate.envers.Audited;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Entitaet zum Speichern von Fachstellen in der Datenbank.
  */
 @Audited
 @Entity
-public class Fachstelle extends AbstractMutableEntity implements HasMandant {
+public class Fachstelle extends AbstractDateRangedEntity implements HasMandant {
 
 	private static final long serialVersionUID = -7687613920281069860L;
 
