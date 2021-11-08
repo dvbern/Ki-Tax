@@ -108,7 +108,8 @@ describe('NewAntragListComponent', () => {
                 {provide: StateStoreService, useValue: stateStoreServiceSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobals},
             ],
-        }).compileComponents();
+        })
+            .compileComponents();
 
         insitutionSpy.getInstitutionenReadableForCurrentBenutzer.and.returnValue(Promise.resolve([]));
         gesuchPeriodeSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve([]));
