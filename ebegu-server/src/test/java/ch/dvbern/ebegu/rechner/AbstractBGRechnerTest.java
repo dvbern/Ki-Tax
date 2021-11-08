@@ -761,4 +761,19 @@ public abstract class AbstractBGRechnerTest {
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1), 50000, BASISJAHR_PLUS_2, 0, 50000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1), 50000, BASISJAHR_PLUS_2, 0, 50000, 2);
 	}
+
+	public static void checkTestfall_ASIV_11_MZV(Gesuch gesuch) {
+		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
+
+		Assert.assertNotNull(result);
+		Assert.assertEquals(12, result.size());
+		// wegen die Mutation die gilt ab September und die Mahlzeitkosten ab August veraendert sollte trotzdem noch keine MZV in ersten Abschnitt sein
+		assertEquals(result.get(0).getBgCalculationResultAsiv().getVerguenstigungMahlzeitenTotal(), BigDecimal.valueOf(0));
+		// aber ab September sollte wie normal die MVZ gegeben werden
+		for(int i = 1; i < 12; i++){
+			assertEquals(result.get(i).getBgCalculationResultAsiv().getVerguenstigungMahlzeitenTotal(), BigDecimal.valueOf(60));
+		}
+	}
 }

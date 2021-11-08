@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_07;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_08;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_09;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_10;
+import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_11_MZV;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
@@ -281,6 +282,42 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		mutation.setGesuchsperiode(gesuchsperiode);
 		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
 		AbstractBGRechnerTest.checkTestfall_ASIV_10(mutationCalculated);
+	}
+
+	@Test
+	public void testfall_ASIV_11_MZV() {
+		// Erstgesuch erstellen
+		Testfall_ASIV_11_MZV
+			testfall = new Testfall_ASIV_11_MZV(gesuchsperiode, institutionStammdatenList, true, gemeinde);
+		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
+		TestDataUtil.calculateFinanzDaten(gesuch);
+		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
+
+		// Mutation
+		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.AUGUST, 1));
+		mutation = testfall.createMutation(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation);
+		mutation.setGesuchsperiode(gesuchsperiode);
+		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
+		AbstractBGRechnerTest.checkTestfall_ASIV_11_MZV(mutationCalculated);
+	}
+
+	@Test
+	public void testfall_ASIV_11_MZV_NICHT_EINTRETEN() {
+		// Erstgesuch erstellen
+		Testfall_ASIV_11_MZV
+			testfall = new Testfall_ASIV_11_MZV(gesuchsperiode, institutionStammdatenList, true, gemeinde);
+		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
+		TestDataUtil.calculateFinanzDaten(gesuch);
+		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
+
+		// Mutation
+		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.AUGUST, 1));
+		mutation = testfall.createMutation(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation);
+		mutation.setGesuchsperiode(gesuchsperiode);
+		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
+		AbstractBGRechnerTest.checkTestfall_ASIV_11_MZV(mutationCalculated);
 	}
 
 	/**
