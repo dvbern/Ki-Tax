@@ -109,4 +109,15 @@ public class Fachstelle extends AbstractDateRangedEntity implements HasMandant {
 	public void setMandant(Mandant mandant) {
 		this.mandant = mandant;
 	}
+
+	public boolean isGueltigForGesuchsperiode(@NotNull Gesuchsperiode gesuchsperiode) {
+		DateRange gueltigkeit = getGueltigkeit();
+
+		return gueltigkeitContainsGesuchsperiode(gesuchsperiode, gueltigkeit);
+	}
+
+	private boolean gueltigkeitContainsGesuchsperiode(Gesuchsperiode gesuchsperiode, DateRange gueltigkeit) {
+		return gueltigkeit.contains(gesuchsperiode.getGueltigkeit().getGueltigAb()) &&
+				gueltigkeit.contains(gesuchsperiode.getGueltigkeit().getGueltigBis());
+	}
 }

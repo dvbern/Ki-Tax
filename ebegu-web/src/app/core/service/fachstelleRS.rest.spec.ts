@@ -17,6 +17,7 @@ import {IHttpBackendService, IHttpService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSFachstelleName} from '../../../models/enums/TSFachstelleName';
 import {TSFachstelle} from '../../../models/TSFachstelle';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
@@ -67,7 +68,7 @@ describe('fachstelleRS', () => {
                 spyOn($http, 'get').and.callThrough();
                 spyOn(ebeguRestUtil, 'parseFachstellen').and.callThrough();
 
-                fachstelleRS.getAnspruchFachstellen();
+                fachstelleRS.getAnspruchFachstellen(new TSGesuchsperiode());
                 $httpBackend.flush();
                 // tslint:disable-next-line:no-unbound-method
                 expect($http.get).toHaveBeenCalledWith(fachstelleRS.serviceURL + '/anspruch');
