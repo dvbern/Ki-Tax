@@ -95,7 +95,7 @@
                              (buttonClick)="createAllAntraege()">
                             <span class="uppercase" translate>LATS_ANTRAEGE_ERSTELLEN</span>
                         </div>
-                        <button *ngIf="deletePossible$ | async"
+                        <button *ngIf="latsDeletePossible$ | async"
                                 type="button"
                                 class="dv-btn cancel-button margin-left-5"
                                 (click)="deleteAllLatsAntraege()">

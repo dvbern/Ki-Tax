@@ -212,7 +212,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                 if (!answer) {
                     return NEVER;
                 }
-                return this.gemeindeAntragService.deleteAllLatsAntrage(this.formGroup.value.gesuchsperiode);
+                return this.gemeindeAntragService.deleteAllLatsAntrage(this.formGroup.value.periode);
             })
         ).subscribe(() => {
                 this.loadAntragList();
