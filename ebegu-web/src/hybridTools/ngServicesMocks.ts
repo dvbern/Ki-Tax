@@ -13,18 +13,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {HttpBackend, HttpClient} from '@angular/common/http';
 import * as angular from 'angular';
 import {CookieService} from 'ngx-cookie-service';
 import {Observable, of} from 'rxjs';
-import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../app/core/service/benutzerRSX.rest';
 import {VersionService} from '../app/core/service/version/version.service';
 import {WindowRef} from '../app/core/service/windowRef.service';
 import {I18nServiceRSRest} from '../app/i18n/services/i18nServiceRS.rest';
 import {MandantService} from '../app/shared/services/mandant.service';
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
-import {AuthServiceRS} from '../authentication/service/AuthServiceRS.rest';
 import {InternePendenzenRS} from '../gesuch/component/internePendenzenView/internePendenzenRS.rest';
 import {GesuchGenerator} from '../gesuch/service/gesuchGenerator';
 import {TSAuthEvent} from '../models/enums/TSAuthEvent';

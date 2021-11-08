@@ -2,11 +2,9 @@ import {HttpClientModule} from '@angular/common/http';
 import {TestBed} from '@angular/core/testing';
 import {CookieService} from 'ngx-cookie-service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {KiBonMandant} from '../../core/constants/MANDANTS';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
-import {SharedModule} from '../shared.module';
 
 import {MandantService} from './mandant.service';
 
