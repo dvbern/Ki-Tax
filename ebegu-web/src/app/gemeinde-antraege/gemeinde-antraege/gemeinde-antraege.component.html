@@ -130,7 +130,7 @@
                         [filterStateList]="getStateFilter()"
                         [filterTypeList]="types"
                         [stateStoreId]="'gemeindeantraege'"
-                        [showRemoveButton]="true"
+                        [showRemoveButton]="isMandant() | async"
                         (removeClicked)="deleteGemeindeAntrag($event)"
                         [totalItems]="totalItems"></dv-new-antrag-list>
 </div>

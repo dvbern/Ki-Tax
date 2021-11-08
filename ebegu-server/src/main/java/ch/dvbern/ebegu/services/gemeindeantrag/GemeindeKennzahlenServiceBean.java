@@ -126,7 +126,7 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	}
 
 	@Override
-	public void deleteGemeindeKennzahlenIfExistsAndIsNotAbgeschlossen(
+	public void deleteAntragIfExistsAndIsNotAbgeschlossen(
 			@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Gemeinde gemeinde) {
 		this.getGemeindeKennzahlen(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null)
 				.forEach(this::deleteGemeindeKennzahlenIfNotAbgeschlossen);

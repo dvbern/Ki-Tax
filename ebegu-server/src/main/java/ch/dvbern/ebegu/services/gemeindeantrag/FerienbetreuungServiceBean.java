@@ -551,8 +551,8 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 		if (!principal.isCallerInRole(UserRole.SUPER_ADMIN)) {
 			throw new EbeguRuntimeException(
-				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer",
-				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer ist nur als SuperAdmin möglich");
+				"deleteFerienbetreuungAntragIfExists",
+				"deleteFerienbetreuungAntragIfExists ist nur als SuperAdmin möglich");
 		}
 
 		this.getFerienbetreuungAntraege(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null)
@@ -560,14 +560,14 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	}
 
 	@Override
-	public void deleteFerienbetreuungAntragIfExistsAndIsNotAbgeschlossen(
+	public void deleteAntragIfExistsAndIsNotAbgeschlossen(
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull Gesuchsperiode gesuchsperiode) {
 
-		if (!principal.isCallerInRole(UserRole.SUPER_ADMIN)) {
+		if (!principal.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
 			throw new EbeguRuntimeException(
-				"deleteFerienbetreuungAntragIfExistsAndIsNotAbgeschlossen",
-				"deleteFerienbetreuungAntragIfExistsAndIsNotAbgeschlossen ist nur als SuperAdmin möglich");
+				"deleteAntragIfExistsAndIsNotAbgeschlossen",
+				"deleteAntragIfExistsAndIsNotAbgeschlossen ist nur als Mandant und SuperAdmin möglich");
 		}
 
 		this.getFerienbetreuungAntraege(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null)

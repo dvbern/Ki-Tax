@@ -60,7 +60,15 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 	 * und entfernt ihn
 	 */
 	@Nonnull
-	void deleteLastenausgleichTagesschuleAngabenGemeindeContainer(
+	void deleteAntragIfExists(
+		@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
+
+	/**
+	 * Sucht den LastenausgleichTagesschuleAngabenGemeindeContainer mit der uebergebenen gemeinde und gesuchsperiode
+	 * und entfernt ihn
+	 */
+	@Nonnull
+	void deleteAntragIfExistsAndIsNotAbgeschlossen(
 		@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
@@ -128,7 +136,7 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 	LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeWiederOeffnen(
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer fallContainer);
 
-	void deleteLastenausgleicheTagesschule(@Nonnull Gesuchsperiode gesuchsperiode);
+	void deleteLastenausgleicheTagesschuleForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode);
 
 	@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeZurueckAnGemeinde(
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container);

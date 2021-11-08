@@ -192,7 +192,7 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull GemeindeAntragTyp gemeindeAntragTyp) {
 		if (gemeindeAntragTyp == LASTENAUSGLEICH_TAGESSCHULEN) {
-			lastenausgleichTagesschuleAngabenGemeindeService.deleteLastenausgleicheTagesschule(gesuchsperiode);
+			lastenausgleichTagesschuleAngabenGemeindeService.deleteLastenausgleicheTagesschuleForGesuchsperiode(gesuchsperiode);
 			return;
 		}
 		if (gemeindeAntragTyp == GEMEINDE_KENNZAHLEN) {
@@ -210,15 +210,17 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 			@Nonnull GemeindeAntragTyp gemeindeAntragTyp,
 			@Nonnull Gemeinde gemeinde) {
 		if (gemeindeAntragTyp == LASTENAUSGLEICH_TAGESSCHULEN) {
-			lastenausgleichTagesschuleAngabenGemeindeService.deleteLastenausgleichTagesschuleAngabenGemeindeContainer(gemeinde, gesuchsperiode);
+			lastenausgleichTagesschuleAngabenGemeindeService.deleteAntragIfExistsAndIsNotAbgeschlossen(
+					gemeinde,
+					gesuchsperiode);
 			return;
 		}
 		if (gemeindeAntragTyp == GEMEINDE_KENNZAHLEN) {
-			gemeindeKennzahlenService.deleteGemeindeKennzahlenIfExistsAndIsNotAbgeschlossen(gesuchsperiode, gemeinde);
+			gemeindeKennzahlenService.deleteAntragIfExistsAndIsNotAbgeschlossen(gesuchsperiode, gemeinde);
 			return;
 		}
 		if (gemeindeAntragTyp == FERIENBETREUUNG) {
-			ferienbetreuungService.deleteFerienbetreuungAntragIfExistsAndIsNotAbgeschlossen(gemeinde, gesuchsperiode);
+			ferienbetreuungService.deleteAntragIfExistsAndIsNotAbgeschlossen(gemeinde, gesuchsperiode);
 			return;
 		}
 

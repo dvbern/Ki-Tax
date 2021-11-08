@@ -165,10 +165,10 @@ public class GemeindeAntragResource {
 	}
 
 	@ApiOperation(
-		"Löscht den Antrag der Id")
+		"Löscht den Antrag vom Typ zu gegebener Periode und Gemeinde falls dieser existiert")
 	@DELETE
 	@Path("/deleteAntrag/{gemeindeAntragTyp}/gesuchsperiode/{gesuchsperiodeId}/gemeinde/{gemeindeId}")
-	@RolesAllowed({ SUPER_ADMIN })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void deleteGemeindeAntrag(
 			@Nonnull @Valid @PathParam("gemeindeAntragTyp") GemeindeAntragTyp gemeindeAntragTyp,
 			@Nonnull @Valid @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,
