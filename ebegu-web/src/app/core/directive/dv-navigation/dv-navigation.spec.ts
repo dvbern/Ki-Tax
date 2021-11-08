@@ -16,8 +16,10 @@
 import {StateService} from '@uirouter/core';
 import {IHttpBackendService, IQService, IScope, ITimeoutService} from 'angular';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {FinanzielleSituationLuzernService} from '../../../../gesuch/component/finanzielleSituation/luzern/finanzielle-situation-luzern.service';
 import {FinanzielleSituationRS} from '../../../../gesuch/service/finanzielleSituationRS.rest';
 import {FinanzielleSituationSubStepManagerBernAsiv} from '../../../../gesuch/service/finanzielleSituationSubStepManagerBernAsiv';
+import {FinanzielleSituationSubStepManagerLuzern} from '../../../../gesuch/service/finanzielleSituationSubStepManagerLuzern';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
@@ -37,7 +39,7 @@ import {CORE_JS_MODULE} from '../../core.angularjs.module';
 import {NavigatorController} from './dv-navigation';
 
 // tslint:disable:no-duplicate-string no-big-function max-line-length no-identical-functions
-describe('dvNavigation', () => {
+fdescribe('dvNavigation', () => {
 
     let navController: NavigatorController;
     let wizardStepManager: WizardStepManager;
@@ -292,6 +294,79 @@ describe('dvNavigation', () => {
             callNextStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.einkommensverschlechterungInfo', {gesuchId: '123'});
         });
+        it('moves to gesuch.finanzielleSituationStartLuzern when coming from ERWERBSPENSUM and FinSitType is LUZERN',
+            () => {
+                $httpBackend.when('GET', '/ebegu/api/v1/antragStatusHistory/123').respond({});
+                navController.setSubstepManager(new FinanzielleSituationSubStepManagerLuzern(gesuchModelManager));
+                spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.ERWERBSPENSUM);
+                spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue(1);
+                spyOn(gesuchModelManager, 'isGesuchsteller2Required').and.returnValue(true);
+                spyOn(gesuchModelManager, 'isGesuchsteller2Required').and.returnValue(true);
+                spyOn(wizardStepManager, 'getNextStep').and.returnValue(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
+                navController.dvSubStep = 1;
+                navController.dvSubStepName = TSFinanzielleSituationSubStepName.LUZERN_START;
+                gesuchModelManager.setGesuch(mockGesuch());
+                callNextStep();
+                expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituationStartLuzern', {
+                    gesuchId: '123',
+                });
+            });
+        it('moves to gesuch.finanzielleSituationGS2Luzern when coming from FINANZIELLE_SITUATION_LUZERN Substep 1 and FinSit needs two Antragsteller',
+            () => {
+                $httpBackend.when('GET', '/ebegu/api/v1/antragStatusHistory/123').respond({});
+                navController.setSubstepManager(new FinanzielleSituationSubStepManagerLuzern(gesuchModelManager));
+                spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
+                spyOn(FinanzielleSituationLuzernService, 'finSitNeedsTwoAntragsteller').and.returnValue(true);
+                navController.dvSubStep = 1;
+                navController.dvSubStepName = TSFinanzielleSituationSubStepName.LUZERN_START;
+                gesuchModelManager.setGesuch(mockGesuch());
+                callNextStep();
+                expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituationGS2Luzern', {
+                    gesuchId: '123',
+                });
+            });
+        it('moves to gesuch.einkommensverschlechterung when coming from FINANZIELLE_SITUATION_LUZERN Substep 1 and FinSit doesnt need two Antragsteller',
+            () => {
+                $httpBackend.when('GET', '/ebegu/api/v1/antragStatusHistory/123').respond({});
+                navController.setSubstepManager(new FinanzielleSituationSubStepManagerLuzern(gesuchModelManager));
+                spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
+                spyOn(FinanzielleSituationLuzernService, 'finSitNeedsTwoAntragsteller').and.returnValue(false);
+                spyOn(wizardStepManager, 'getNextStep').and.returnValue(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+                navController.dvSubStep = 1;
+                navController.dvSubStepName = TSFinanzielleSituationSubStepName.LUZERN_START;
+                gesuchModelManager.setGesuch(mockGesuch());
+                callNextStep();
+                expect($state.go).toHaveBeenCalledWith('gesuch.einkommensverschlechterungInfo', {
+                    gesuchId: '123',
+                });
+            });
+        it('moves to gesuch.finanzielleSituationResultateLuzern when coming from FINANZIELLE_SITUATION_LUZERN Substep 2',
+            () => {
+                $httpBackend.when('GET', '/ebegu/api/v1/antragStatusHistory/123').respond({});
+                navController.setSubstepManager(new FinanzielleSituationSubStepManagerLuzern(gesuchModelManager));
+                spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
+                navController.dvSubStep = 2;
+                navController.dvSubStepName = TSFinanzielleSituationSubStepName.LUZERN_GS2;
+                gesuchModelManager.setGesuch(mockGesuch());
+                callNextStep();
+                expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituationResultateLuzern', {
+                    gesuchId: '123',
+                });
+            });
+        it('moves to gesuch.einkommensverschlechterung when coming from FINANZIELLE_SITUATION_LUZERN Substep 3',
+            () => {
+                $httpBackend.when('GET', '/ebegu/api/v1/antragStatusHistory/123').respond({});
+                navController.setSubstepManager(new FinanzielleSituationSubStepManagerLuzern(gesuchModelManager));
+                spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
+                spyOn(wizardStepManager, 'getNextStep').and.returnValue(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+                navController.dvSubStep = 3;
+                navController.dvSubStepName = TSFinanzielleSituationSubStepName.LUZERN_RESULTATE;
+                gesuchModelManager.setGesuch(mockGesuch());
+                callNextStep();
+                expect($state.go).toHaveBeenCalledWith('gesuch.einkommensverschlechterungInfo', {
+                    gesuchId: '123',
+                });
+            });
         it('moves to gesuch.einkommensverschlechterung when coming from EINKOMMENSVERSCHLECHTERUNG substep 1 with EV and 2GS required',
             () => {
                 const gesuch = mockGesuch();

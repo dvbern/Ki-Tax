@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -128,6 +129,26 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 				Assert.assertEquals(WizardStepStatus.UNBESUCHT, wizardStep.getWizardStepStatus());
 			}
 		});
+	}
+
+	@Test
+	public void createWizardStepListForLuzernTest() {
+		final Gesuch myGesuch = TestDataUtil.createAndPersistGesuch(persistence);
+		myGesuch.setFinSitTyp(FinanzielleSituationTyp.LUZERN);
+		final List<WizardStep> wizardStepList = wizardStepService.createWizardStepList(myGesuch);
+		Assert.assertNotNull(wizardStepList);
+		Assert.assertEquals(13, wizardStepList.size());
+
+		var finSitLuzernFound = false;
+		for (var wizardStep : wizardStepList) {
+			Assert.assertNotEquals(WizardStepName.FINANZIELLE_SITUATION, wizardStep.getWizardStepName());
+			if (wizardStep.getWizardStepName() == WizardStepName.FINANZIELLE_SITUATION_LUZERN) {
+				finSitLuzernFound = true;
+				Assert.assertTrue(wizardStep.getVerfuegbar());
+				Assert.assertEquals(WizardStepStatus.OK, wizardStep.getWizardStepStatus());
+			}
+		}
+		Assert.assertTrue(finSitLuzernFound);
 	}
 
 	@Test
