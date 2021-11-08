@@ -1,10 +1,10 @@
+import {HttpClientModule} from '@angular/common/http';
 import {TestBed} from '@angular/core/testing';
+import {CookieService} from 'ngx-cookie-service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {KiBonMandant} from '../../core/constants/MANDANTS';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
-import {SharedModule} from '../shared.module';
 
 import {MandantService} from './mandant.service';
 
@@ -45,7 +45,7 @@ describe('MandantService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [SharedModule],
+            imports: [HttpClientModule],
             providers: [
                 {
                     provide: ApplicationPropertyRS,
@@ -54,9 +54,10 @@ describe('MandantService', () => {
                 {
                     provide: AuthServiceRS,
                     useValue: authServiceSpy
-                }
+                },
+                CookieService
             ],
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+        })
             .overrideProvider(WindowRef, {useValue: windowRefSpy});
         service = TestBed.inject(MandantService);
 
