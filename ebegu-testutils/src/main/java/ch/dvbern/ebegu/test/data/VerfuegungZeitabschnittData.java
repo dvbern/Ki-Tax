@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnittBemerkung;
 import org.apache.commons.lang.StringUtils;
@@ -49,7 +51,7 @@ public class VerfuegungZeitabschnittData {
 
 	private BigDecimal famGroesse = null;
 
-	private List<String> bemerkungen = Collections.emptyList();
+	private List<String> bemerkungenList = Collections.emptyList();
 
 	public VerfuegungZeitabschnittData() {
 
@@ -63,7 +65,7 @@ public class VerfuegungZeitabschnittData {
 		this.abzugFamGroesse = verfuegungZeitabschnitt.getAbzugFamGroesse();
 		this.elternbeitrag = verfuegungZeitabschnitt.getElternbeitrag();
 		this.anspruchberechtigtesPensum = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
-		this.bemerkungen = verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().stream()
+		this.bemerkungenList = verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().stream()
 			.map(VerfuegungZeitabschnittBemerkung::getBemerkung)
 			.collect(Collectors.toList());
 		this.betreuungspensumProzent = verfuegungZeitabschnitt.getBetreuungspensumProzent();
@@ -119,13 +121,18 @@ public class VerfuegungZeitabschnittData {
 		this.famGroesse = famGroesse;
 	}
 
-	public List<String> getBemerkungen() {
-		return bemerkungen;
+	public List<String> getBemerkungenList() {
+		return bemerkungenList;
 	}
 
+	public void setBemerkungenList(List<String> bemerkungenList) {
+		this.bemerkungenList = bemerkungenList;
+	}
+
+	@XmlElement(name="bemerkungen")
 	public void setBemerkungen(String bemerkungen) {
 		if(StringUtils.isNotEmpty(bemerkungen)) {
-			this.bemerkungen = Arrays.asList(bemerkungen.split("\n"));
+			this.bemerkungenList = Arrays.asList(bemerkungen.split("\n"));
 		}
 	}
 

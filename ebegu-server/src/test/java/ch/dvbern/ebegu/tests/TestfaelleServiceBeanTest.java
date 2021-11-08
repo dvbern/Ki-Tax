@@ -272,10 +272,10 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(fehlerString + "Abzug der Familiengroesse", expected.getAbzugFamGroesse(), calculated.getAbzugFamGroesse());
 		Assert.assertEquals(fehlerString + "Elternbeitrag", expected.getElternbeitrag(), calculated.getElternbeitrag());
 		Assert.assertEquals(fehlerString + "Anspruchberechtigtes Pensum", expected.getAnspruchberechtigtesPensum(), calculated.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(fehlerString + "Anzahl Bemerkungen", expected.getBemerkungen().size(), calculated.getBemerkungen().size());
+		Assert.assertEquals(fehlerString + "Anzahl Bemerkungen", expected.getBemerkungenList().size(), calculated.getBemerkungenList().size());
 
-		for(String bemerkung : expected.getBemerkungen()) {
-			Assert.assertTrue(fehlerString + "Erwartete Bemerkung nicht vorhanden", calculated.getBemerkungen().contains(bemerkung));
+		for(String bemerkung : expected.getBemerkungenList()) {
+			Assert.assertTrue(fehlerString + "Erwartete Bemerkung nicht vorhanden", calculated.getBemerkungenList().contains(bemerkung));
 		}
 
 		Assert.assertEquals(fehlerString + "BetreuungspensumProzent",
