@@ -3098,7 +3098,7 @@ export class EbeguRestUtil {
             if (zeitabschnittFromServer.verfuegungZeitabschnittBemerkungList) {
                 zeitabschnittFromServer.verfuegungZeitabschnittBemerkungList.forEach((bemerkung: any) => {
                     verfuegungZeitabschnittTS.bemerkungen.push(
-                        this.parseVerguegungZeitabschnittBemerkung(bemerkung));
+                        this.parseVerfuegungZeitabschnittBemerkung(bemerkung));
                 });
             }
 
@@ -3107,7 +3107,7 @@ export class EbeguRestUtil {
         return undefined;
     }
 
-    private parseVerguegungZeitabschnittBemerkung(zeitabschnittBemerkungFromServer: any): TSVerfuegungZeitabschnittBemerkung {
+    private parseVerfuegungZeitabschnittBemerkung(zeitabschnittBemerkungFromServer: any): TSVerfuegungZeitabschnittBemerkung {
         if (zeitabschnittBemerkungFromServer) {
             const result = new TSVerfuegungZeitabschnittBemerkung();
             this.parseDateRangeEntity(zeitabschnittBemerkungFromServer, result);

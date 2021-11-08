@@ -28,7 +28,7 @@ import ch.dvbern.ebegu.util.Constants;
 /**
  * DTO fuer Verfuegung Zeitabschnitt Bemerkungen. Gehoert immer zu einem VerfügungZeitabschnitt
  */
-@XmlRootElement(name = "verfuegngZeitabschnittBemerkung")
+@XmlRootElement(name = "verfuegungZeitabschnittBemerkung")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxVerfuegungZeitabschnittBemerkung extends JaxAbstractDateRangedDTO {
 

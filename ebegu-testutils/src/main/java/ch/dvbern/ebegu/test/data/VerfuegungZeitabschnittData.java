@@ -17,8 +17,14 @@ package ch.dvbern.ebegu.test.data;
 
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnittBemerkung;
+import org.apache.commons.lang.StringUtils;
 
 import static java.math.BigDecimal.ZERO;
 
@@ -43,7 +49,7 @@ public class VerfuegungZeitabschnittData {
 
 	private BigDecimal famGroesse = null;
 
-	private String bemerkungen = "";
+	private List<String> bemerkungen = Collections.emptyList();
 
 	public VerfuegungZeitabschnittData() {
 
@@ -57,7 +63,9 @@ public class VerfuegungZeitabschnittData {
 		this.abzugFamGroesse = verfuegungZeitabschnitt.getAbzugFamGroesse();
 		this.elternbeitrag = verfuegungZeitabschnitt.getElternbeitrag();
 		this.anspruchberechtigtesPensum = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
-		this.bemerkungen = verfuegungZeitabschnitt.getVerfuegungenZeitabschnittBemerkungenAsString();
+		this.bemerkungen = verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().stream()
+			.map(VerfuegungZeitabschnittBemerkung::getBemerkung)
+			.collect(Collectors.toList());
 		this.betreuungspensumProzent = verfuegungZeitabschnitt.getBetreuungspensumProzent();
 		this.famGroesse = verfuegungZeitabschnitt.getFamGroesse();
 		this.vollkosten = verfuegungZeitabschnitt.getVollkosten();
@@ -111,12 +119,14 @@ public class VerfuegungZeitabschnittData {
 		this.famGroesse = famGroesse;
 	}
 
-	public String getBemerkungen() {
+	public List<String> getBemerkungen() {
 		return bemerkungen;
 	}
 
 	public void setBemerkungen(String bemerkungen) {
-		this.bemerkungen = bemerkungen;
+		if(StringUtils.isNotEmpty(bemerkungen)) {
+			this.bemerkungen = Arrays.asList(bemerkungen.split("\n"));
+		}
 	}
 
 	public String getGueltigAb() {
