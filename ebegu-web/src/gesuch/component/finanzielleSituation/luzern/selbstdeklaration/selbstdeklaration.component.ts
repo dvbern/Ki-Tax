@@ -32,7 +32,7 @@ export class SelbstdeklarationComponent implements OnInit {
     public isGemeinsam: boolean;
 
     @Input()
-    public year: number;
+    public year: number | string;
 
     public constructor(
     ) {

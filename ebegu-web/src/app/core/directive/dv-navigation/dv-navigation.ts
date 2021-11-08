@@ -720,4 +720,8 @@ export class NavigatorController implements IController {
         }) as any;
     }
 
+    public setSubstepManager(manager: FinanzielleSituationSubStepManager): void {
+        this.wizardSubStepManager = manager;
+    }
+
 }

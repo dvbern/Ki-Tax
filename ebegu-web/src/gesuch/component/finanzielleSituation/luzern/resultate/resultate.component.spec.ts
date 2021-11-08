@@ -16,27 +16,40 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {WizardStepManager} from '../../../../service/wizardStepManager';
 
 import {ResultateComponent} from './resultate.component';
 
+const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
+    GesuchModelManager.name, ['areThereOnlyFerieninsel', 'getBasisjahr', 'getBasisjahrPlus']);
+const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
+    WizardStepManager.name, ['getCurrentStep', 'setCurrentStep']);
+
 describe('ResultateComponent', () => {
-  let component: ResultateComponent;
-  let fixture: ComponentFixture<ResultateComponent>;
+    let component: ResultateComponent;
+    let fixture: ComponentFixture<ResultateComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ ResultateComponent ]
-    })
-    .compileComponents();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [
+                ResultateComponent,
+            ],
+            providers: [
+                {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
+                {provide: WizardStepManager, useValue: wizardStepMangerSpy}
+            ]
+        })
+            .compileComponents();
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ResultateComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(ResultateComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

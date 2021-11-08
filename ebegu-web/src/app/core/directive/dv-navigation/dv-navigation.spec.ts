@@ -17,6 +17,7 @@ import {StateService} from '@uirouter/core';
 import {IHttpBackendService, IQService, IScope, ITimeoutService} from 'angular';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {FinanzielleSituationRS} from '../../../../gesuch/service/finanzielleSituationRS.rest';
+import {FinanzielleSituationSubStepManagerBernAsiv} from '../../../../gesuch/service/finanzielleSituationSubStepManagerBernAsiv';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
@@ -70,6 +71,7 @@ describe('dvNavigation', () => {
         navController.dvSave = () => {
             return $q.when({});
         };
+        navController.setSubstepManager(new FinanzielleSituationSubStepManagerBernAsiv(gesuchModelManager));
         isStatusVerfuegen = true;
         spyOn(gesuchModelManager, 'isGesuchReadonly').and.callFake(() => {
             return isStatusVerfuegen;

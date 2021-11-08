@@ -16,27 +16,47 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {SharedModule} from '../../../../../app/shared/shared.module';
+import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {WizardStepManager} from '../../../../service/wizardStepManager';
 
 import {AngabenGesuchsteller2Component} from './angaben-gesuchsteller2.component';
 
+const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
+    GesuchModelManager.name, ['areThereOnlyFerieninsel', 'getBasisjahr', 'getBasisjahrPlus']);
+const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
+    WizardStepManager.name, ['getCurrentStep', 'setCurrentStep']);
+
 describe('AngabenGesuchsteller2Component', () => {
-  let component: AngabenGesuchsteller2Component;
-  let fixture: ComponentFixture<AngabenGesuchsteller2Component>;
+    let component: AngabenGesuchsteller2Component;
+    let fixture: ComponentFixture<AngabenGesuchsteller2Component>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ AngabenGesuchsteller2Component ]
-    })
-    .compileComponents();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [AngabenGesuchsteller2Component],
+            providers: [
+                {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
+                {provide: WizardStepManager, useValue: wizardStepMangerSpy}
+            ],
+            imports: [
+                FormsModule,
+                ReactiveFormsModule,
+                SharedModule
+            ]
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AngabenGesuchsteller2Component);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(AngabenGesuchsteller2Component);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

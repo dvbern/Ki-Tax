@@ -32,7 +32,7 @@ export class VeranlagungComponent implements OnInit {
     public antragstellerNummer: number; // antragsteller 1 or 2
 
     @Input()
-    public year: number;
+    public year: number | string;
 
     public constructor(
     ) {

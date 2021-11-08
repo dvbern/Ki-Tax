@@ -28,14 +28,14 @@ export class FinanzielleSituationLuzernService {
     }
 
     public static finSitNeedsTwoAntragsteller(gesuchModelManager: GesuchModelManager): boolean {
-        // TODO: get this from server or improve
+        // TODO finsit Luzern: get this from server or improve
         const familiensituation = gesuchModelManager.getFamiliensituation().familienstatus;
         return familiensituation === TSFamilienstatus.KONKUBINAT
         || (familiensituation === TSFamilienstatus.KONKUBINAT_KEIN_KIND && this.startKonkubinatSmallerThan2Years());
     }
 
     private static startKonkubinatSmallerThan2Years(): boolean {
-        // migrate once Konkubinat time is in configuration
+        // TODO finsit Luzern: migrate once Konkubinat time is in configuration
         return true;
     }
 }

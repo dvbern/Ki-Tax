@@ -19,13 +19,19 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SharedModule} from '../../../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {TSGesuch} from '../../../../../models/TSGesuch';
+import {TSGesuchsteller} from '../../../../../models/TSGesuchsteller';
+import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
 
 import {FinanzielleSituationStartViewLuzernComponent} from './finanzielle-situation-start-view-luzern.component';
 
 const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
-    GesuchModelManager.name, ['areThereOnlyFerieninsel', 'getBasisjahr', 'getBasisjahrPlus']);
+    GesuchModelManager.name, ['areThereOnlyFerieninsel', 'getBasisjahr', 'getBasisjahrPlus', 'getGesuch']);
+const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
+    WizardStepManager.name, ['getCurrentStep', 'setCurrentStep']);
 
 FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
 
@@ -38,9 +44,12 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [FinanzielleSituationStartViewLuzernComponent],
+            declarations: [
+                FinanzielleSituationStartViewLuzernComponent,
+            ],
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
+                {provide: WizardStepManager, useValue: wizardStepMangerSpy}
             ],
             imports: [
                 FormsModule,
@@ -58,6 +67,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
         fixture.detectChanges();
         gesuchModelManagerSpy.getBasisjahr.and.returnValue(basisjahr);
         gesuchModelManagerSpy.getBasisjahrPlus.and.returnValue(basisjahrPlus1);
+        gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
     });
 
     it('should create', () => {
@@ -168,12 +178,10 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
         expect(component.getAntragstellerNummer()).toBe(antragstellerNummer);
     });
 
-    it('should throw error', () => {
+    it('should return empty antragsteller name', () => {
         FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
         setFormValues(component.form, false, true, true, null);
-
-        expect(() => component.getYearForDeklaration())
-            .toThrow(new Error('Dieser Fall ist nicht abgedeckt: ' + JSON.stringify(component.form.value)));
+        expect(component.getYearForDeklaration()).toBe('');
     });
 
     function setFormValues(
@@ -187,5 +195,14 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
         form.controls.gemeinsameStekVorjahr.setValue(gemeinsameStekVorjahr);
         form.controls.alleinigeStekVorjahr.setValue(alleinigeStekVorjahr);
         form.controls.veranlagt.setValue(veranlagt);
+    }
+
+    function createGesuch(): TSGesuch {
+        const gesuch = new TSGesuch();
+        gesuch.gesuchsteller1 = new TSGesuchstellerContainer();
+        gesuch.gesuchsteller1.gesuchstellerJA = new TSGesuchsteller();
+        gesuch.gesuchsteller2 = new TSGesuchstellerContainer();
+        gesuch.gesuchsteller2.gesuchstellerJA = new TSGesuchsteller();
+        return gesuch;
     }
 });
