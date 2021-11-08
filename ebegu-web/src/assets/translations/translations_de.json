@@ -1466,7 +1466,7 @@
     "SHOW_JOBS": "Zeige Alle Batchjobs",
     "ReportType_gesuchstellerkinderbetreuung": "Antragstellende-Kinder-Betreuung",
     "ReportType_mitarbeiterinnen": "Mitarbeitende",
-    "ReportType_kanton": "Kanton",
+    "ReportType_kanton": "Verfügte Betreuungsgutscheine nach Zeitraum (lastenausgleichsberechtigt)",
     "ReportType_gesuchsteller": "Antragstellende",
     "ReportType_kinder": "Kinder",
     "ReportType_gesuchZeitraum": "Verfügte Anträge und Mutationen nach Zeitraum",
