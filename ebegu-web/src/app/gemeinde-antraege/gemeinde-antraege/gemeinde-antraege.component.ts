@@ -238,6 +238,8 @@ export class GemeindeAntraegeComponent implements OnInit {
                     antrag.antragTyp);
             })
         ).subscribe(() => {
+            this.errorService.addMesageAsInfo(this.translate.instant('GEMEINDE_ANTRAG_GELOESCHT',
+                {typ: antrag.antragTyp, periode: antrag.periodenString, gemeinde: antrag.gemeinde}));
             this.loadAntragList();
             this.cd.markForCheck();
             // tslint:disable-next-line:no-identical-functions

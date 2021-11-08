@@ -2637,5 +2637,6 @@
     "EINKOMMENSVERSCHLECHTERUNG_EINKOMMEN_TOO_HIGH": "Achtung: Ein Antrag auf Anwendung einer Einkommensverschlechterung ist nur bis zu einem massgebenden Einkommen von {{maxEinkommenEKV}} CHF möglich. Ihr minimales, massgebendes Einkommen für diesen Antrag beträgt in dieser Gesuchsperiode {{massgebendesEinkommen}} CHF.",
     "LATS_ABGESCHLOSSEN": "Dieser Antrag wurde abgeschlossen.",
     "INSTITUTION_GUELTIGKEIT_DECREASED_WARNUNG": "Achtung: Sie haben die Gültigkeit dieser Institution verändert. Offene Mutationsmeldungen zu Betreuungen dieser Institution werden angepasst. Sind Sie sicher, dass Sie diese Änderung speichern möchten?",
+    "GEMEINDE_ANTRAG_GELOESCHT": "Der Antrag {{typ}} für die Gemeinde {{gemeinde}} in der Gesuchsperiode {{periode}} wurde gelöscht",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
