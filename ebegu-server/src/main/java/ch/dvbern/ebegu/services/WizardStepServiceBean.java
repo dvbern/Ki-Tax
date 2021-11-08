@@ -106,8 +106,6 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	private GesuchService gesuchService;
 	@Inject
 	private GemeindeService gemeindeService;
-	@Inject
-	private WizardStepService wizardStepService;
 
 	@Override
 	@Nonnull

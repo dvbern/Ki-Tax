@@ -271,7 +271,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		try {
 			gesuchToCreate.setFinSitTyp(FinanzielleSituationTyp.valueOf(finSitTyp));
 		} catch (IllegalArgumentException e) {
-			throw new EbeguRuntimeException("setFinSitTyp", "wrong finSitTyp: " + finSitTyp);
+			throw new EbeguRuntimeException("setFinSitTyp", "wrong finSitTyp: " + finSitTyp, e);
 		}
 	}
 
