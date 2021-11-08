@@ -39,8 +39,11 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public class Testfall_ASIV_11_MZV extends AbstractASIVTestfall {
 
-	public Testfall_ASIV_11_MZV(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt, Gemeinde gemeinde) {
+	private boolean initWithMZV;
+
+	public Testfall_ASIV_11_MZV(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt, Gemeinde gemeinde, boolean initWithMZV) {
 		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
+		this.initWithMZV = initWithMZV;
 	}
 
 	@Override
@@ -65,17 +68,17 @@ public class Testfall_ASIV_11_MZV extends AbstractASIVTestfall {
 		kind.setGesuch(erstgesuch);
 		erstgesuch.getKindContainers().add(kind);
 		// Kita Brünnen
-		Betreuung betreuungKitaBruennen = createBetreuung(ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA, true);
+		Betreuung betreuungKitaBruennen = createBetreuung(ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA, betreuungenBestaetigt);
 		betreuungKitaBruennen.setKind(kind);
 		kind.getBetreuungen().add(betreuungKitaBruennen);
 		BetreuungspensumContainer betreuungspensumKitaBruennen = createBetreuungspensum(
 			BigDecimal.valueOf(100),
 			LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.AUGUST, 1),
 			LocalDate.of(gesuchsperiode.getBasisJahrPlus2(), Month.JULY, 31),
-			BigDecimal.ZERO,
-			BigDecimal.ZERO,
-			BigDecimal.ZERO,
-			BigDecimal.ZERO
+			initWithMZV ? BigDecimal.TEN : BigDecimal.ZERO,
+			initWithMZV ? BigDecimal.TEN : BigDecimal.ZERO,
+			initWithMZV ? BigDecimal.TEN : BigDecimal.ZERO,
+			initWithMZV ? BigDecimal.ONE : BigDecimal.ZERO
 		);
 		betreuungspensumKitaBruennen.setBetreuung(betreuungKitaBruennen);
 		betreuungKitaBruennen.getBetreuungspensumContainers().add(betreuungspensumKitaBruennen);
