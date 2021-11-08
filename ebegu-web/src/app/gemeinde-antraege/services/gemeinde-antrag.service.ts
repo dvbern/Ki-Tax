@@ -28,7 +28,6 @@ import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
-import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
