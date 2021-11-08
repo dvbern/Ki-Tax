@@ -1098,7 +1098,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			normlohnkosten,
 			normlohnkostenLessThen50
 		).getContainer());
-		latsService.deleteLastenausgleichTagesschuleAngabenGemeindeContainer(gemeinde, gesuchsperiode);
+		latsService.deleteAntragIfExists(gemeinde, gesuchsperiode);
 		LastenausgleichTagesschuleAngabenGemeindeContainer savedAntrag = latsService.saveLastenausgleichTagesschuleGemeinde(testantrag);
 		historyService.saveLastenausgleichTagesschuleStatusChange(savedAntrag);
 		return savedAntrag;

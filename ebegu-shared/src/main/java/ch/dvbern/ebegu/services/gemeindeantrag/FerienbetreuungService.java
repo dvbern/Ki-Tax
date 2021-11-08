@@ -124,7 +124,7 @@ public interface FerienbetreuungService {
 
 	void deleteFerienbetreuungAntragIfExists(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
 
-	void deleteFerienbetreuungAntragIfExistsAndIsNotAbgeschlossen(
+	void deleteAntragIfExistsAndIsNotAbgeschlossen(
 			@Nonnull Gemeinde gemeinde,
 			@Nonnull Gesuchsperiode gesuchsperiode);
 
