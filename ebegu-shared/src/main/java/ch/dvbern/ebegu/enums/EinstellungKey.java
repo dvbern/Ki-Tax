@@ -204,6 +204,12 @@ public enum EinstellungKey {
 	// Definiert ob die Schnittstelle zu den Steuersystemen aktiv ist
 	SCHNITTSTELLE_STEUERN_AKTIV,
 
+	// Ferienbetreuung Kosten pro Tag
+	FERIENBETREUUNG_CHF_PAUSCHALBETRAG,
+
+	// Ferienbetreuung Kosten pro Tag für Sonderschüler
+	FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER,
+
 	// Neue Frage bei Kinderabzug für FJKV
 	// Siehe KIBON-2115
 	FJKV_KINDERABZUG_NEU,
@@ -216,13 +222,7 @@ public enum EinstellungKey {
 	MINIMALDAUER_KONKUBINAT,
 
 	// Legt den Typen der finanziellen Verhältnisse fest. Z.B. BERN_ASIV oder LUZERN
-	FINANZIELLE_SITUATION_TYP,
-
-	// Ferienbetreuung Kosten pro Tag
-	FERIENBETREUUNG_CHF_PAUSCHALBETRAG,
-
-	// Ferienbetreuung Kosten pro Tag für Sonderschüler
-	FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER;
+	FINANZIELLE_SITUATION_TYP;
 
 	private EinstellungTyp typ;
 
