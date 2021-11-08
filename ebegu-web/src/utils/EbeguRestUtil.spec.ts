@@ -521,7 +521,7 @@ describe('EbeguRestUtil', () => {
 
                 const bemerkung: any = {};
                 bemerkung.bemerkung = 'bemerkung1';
-                restVerfuegungZeitabschnitt.bemerkung = [bemerkung];
+                restVerfuegungZeitabschnitt.verfuegungZeitabschnittBemerkungList = [bemerkung];
 
                 const verfuegungTS = ebeguRestUtil.parseVerfuegungZeitabschnitt(new TSVerfuegungZeitabschnitt(),
                     restVerfuegungZeitabschnitt);
@@ -540,7 +540,7 @@ describe('EbeguRestUtil', () => {
                 expect(verfuegungTS.massgebendesEinkommenVorAbzugFamgr)
                     .toEqual(restVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr);
                 expect(verfuegungTS.vollkosten).toEqual(restVerfuegungZeitabschnitt.vollkosten);
-                expect(verfuegungTS.bemerkungen[0].bemerkung).toEqual(restVerfuegungZeitabschnitt.bemerkungen[0].bemerkung);
+                expect(verfuegungTS.bemerkungen[0].bemerkung).toEqual(restVerfuegungZeitabschnitt.verfuegungZeitabschnittBemerkungList[0].bemerkung);
                 expect(verfuegungTS.zahlungsstatus).toEqual(restVerfuegungZeitabschnitt.zahlungsstatus);
             });
         });
