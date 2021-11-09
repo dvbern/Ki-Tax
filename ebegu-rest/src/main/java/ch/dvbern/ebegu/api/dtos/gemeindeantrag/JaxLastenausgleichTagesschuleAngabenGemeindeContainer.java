@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -57,6 +58,8 @@ public class JaxLastenausgleichTagesschuleAngabenGemeindeContainer extends JaxAb
 	@NotNull @Nonnull
 	private Set<JaxLastenausgleichTagesschuleAngabenInstitutionContainer> angabenInstitutionContainers = new HashSet<>();
 
+	@Nullable
+	private BigDecimal betreuungsstundenPrognose;
 
 	@Nonnull
 	public LastenausgleichTagesschuleAngabenGemeindeStatus getStatus() {
@@ -128,5 +131,14 @@ public class JaxLastenausgleichTagesschuleAngabenGemeindeContainer extends JaxAb
 
 	public void setAngabenInstitutionContainers(@Nonnull Set<JaxLastenausgleichTagesschuleAngabenInstitutionContainer> angabenInstitutionContainers) {
 		this.angabenInstitutionContainers = angabenInstitutionContainers;
+	}
+
+	@Nullable
+	public BigDecimal getBetreuungsstundenPrognose() {
+		return betreuungsstundenPrognose;
+	}
+
+	public void setBetreuungsstundenPrognose(@Nullable BigDecimal betreuungsstundenPrognose) {
+		this.betreuungsstundenPrognose = betreuungsstundenPrognose;
 	}
 }

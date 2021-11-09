@@ -265,7 +265,7 @@ public interface Authorizer {
 
 	void checkReadAuthorization(@Nullable LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer);
 
-	void checkWriteAuthorization(@Nullable LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer);
+	void checkWriteAuthorization(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainer);
 
 	void checkReadAuthorization(@Nullable LastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainer);
 

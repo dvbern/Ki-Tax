@@ -112,6 +112,9 @@ public class InstitutionResourceTest {
 			EasyMock.anyObject()))
 			.andReturn(false);
 
+		EasyMock.expect(institutionStammdatenService.isGueltigkeitDecrease(EasyMock.anyObject(), EasyMock.anyObject()))
+			.andReturn(false);
+
 		InstitutionStammdaten updatedStammdaten = new InstitutionStammdaten();
 		EasyMock.expect(institutionStammdatenService.saveInstitutionStammdaten(EasyMock.anyObject()))
 			.andReturn(updatedStammdaten);

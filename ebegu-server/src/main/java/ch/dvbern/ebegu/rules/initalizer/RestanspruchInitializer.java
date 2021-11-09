@@ -76,16 +76,19 @@ public final class RestanspruchInitializer extends AbstractAbschlussRule {
 		List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte = new ArrayList<>();
 
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
-			VerfuegungZeitabschnitt restanspruchsAbschnitt = new VerfuegungZeitabschnitt(zeitabschnitt.getGueltigkeit());
+			VerfuegungZeitabschnitt restanspruchsAbschnitt =
+					new VerfuegungZeitabschnitt(zeitabschnitt.getGueltigkeit());
 			restanspruchsAbschnitt.setHasGemeindeSpezifischeBerechnung(zeitabschnitt.isHasGemeindeSpezifischeBerechnung());
 			restanspruchUebernehmenVerfuegt(
-				zeitabschnitt.getBgCalculationResultAsiv(),
-				restanspruchsAbschnitt.getBgCalculationInputAsiv());
+					zeitabschnitt.getBgCalculationInputAsiv(),
+					zeitabschnitt.getBgCalculationResultAsiv(),
+					restanspruchsAbschnitt.getBgCalculationInputAsiv());
 			if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung()) {
 				Objects.requireNonNull(zeitabschnitt.getBgCalculationResultGemeinde());
 				restanspruchUebernehmenVerfuegt(
-					zeitabschnitt.getBgCalculationResultGemeinde(),
-					restanspruchsAbschnitt.getBgCalculationInputGemeinde());
+						zeitabschnitt.getBgCalculationInputGemeinde(),
+						zeitabschnitt.getBgCalculationResultGemeinde(),
+						restanspruchsAbschnitt.getBgCalculationInputGemeinde());
 			} else {
 				restanspruchsAbschnitt.getBgCalculationInputGemeinde().setAnspruchspensumRest(-1);
 			}
@@ -95,8 +98,9 @@ public final class RestanspruchInitializer extends AbstractAbschlussRule {
 	}
 
 	private void restanspruchUebernehmenVerfuegt(
-		@Nonnull BGCalculationResult sourceZeitabschnitt,
-		@Nonnull BGCalculationInput targetZeitabschnitt
+			@Nonnull BGCalculationInput sourceZeitabschnittInput,
+			@Nonnull BGCalculationResult sourceZeitabschnitt,
+			@Nonnull BGCalculationInput targetZeitabschnitt
 	) {
 		int anspruchberechtigtesPensum = sourceZeitabschnitt.getAnspruchspensumProzent();
 		BigDecimal betreuungspensum = sourceZeitabschnitt.getBetreuungspensumProzent();
@@ -112,8 +116,8 @@ public final class RestanspruchInitializer extends AbstractAbschlussRule {
 				targetZeitabschnitt.setAnspruchspensumRest(-1);
 			}
 			//wenn nicht der ganze anspruch gebraucht wird gibt es einen rest, ansonsten ist rest 0
-			else if (betreuungspensum.compareTo(BigDecimal.valueOf(anspruchberechtigtesPensum)) < 0) {
-				targetZeitabschnitt.setAnspruchspensumRest(anspruchberechtigtesPensum - betreuungspensum.intValue());
+			else if (betreuungspensum.compareTo(BigDecimal.valueOf(anspruchberechtigtesPensum).add(BigDecimal.valueOf(sourceZeitabschnittInput.getRueckwirkendReduziertesPensumRest()))) < 0) {
+				targetZeitabschnitt.setAnspruchspensumRest(Math.max(anspruchberechtigtesPensum - betreuungspensum.intValue(),0) + sourceZeitabschnittInput.getRueckwirkendReduziertesPensumRest());
 			} else {
 				targetZeitabschnitt.setAnspruchspensumRest(0);
 			}

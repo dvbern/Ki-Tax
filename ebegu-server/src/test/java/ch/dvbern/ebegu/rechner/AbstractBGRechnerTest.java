@@ -104,7 +104,7 @@ public abstract class AbstractBGRechnerTest {
 
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
 		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen, TestDataUtil.geKitaxUebergangsloesungParameter(), Constants.DEFAULT_LOCALE);
-		return new BetreuungsgutscheinEvaluator(rules);
+		return new BetreuungsgutscheinEvaluator(rules, einstellungen);
 	}
 
 	public static void assertZeitabschnitt(

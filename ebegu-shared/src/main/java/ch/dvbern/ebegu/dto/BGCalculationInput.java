@@ -89,6 +89,8 @@ public class BGCalculationInput {
 
 	private int anspruchspensumRest;
 
+	private int rueckwirkendReduziertesPensumRest;
+
 	// Achtung, dieses Flag wird erst ab 1. des Folgemonats gesetzt, weil die Finanzielle Situation ab dann gilt. Für
 	// Erwerbspensen zählt der GS2 ab sofort!
 	private boolean hasSecondGesuchstellerForFinanzielleSituation;
@@ -168,6 +170,8 @@ public class BGCalculationInput {
 	// um zu wissen, ob die Pensen heruntergerechnet werden müssen
 	private boolean pensenBereitsGekuerzt = false;
 
+	private int minimalErforderlichesPensum;
+
 	private PensumUnits pensumUnit = PensumUnits.PERCENTAGE;
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
@@ -175,8 +179,8 @@ public class BGCalculationInput {
 		this.ruleValidity = ruleValidity;
 	}
 
-	public BGCalculationInput(@Nonnull BGCalculationInput toCopy) {
-		this.parent = toCopy.parent;
+	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull BGCalculationInput toCopy) {
+		this.parent = parent;
 		this.erwerbspensumGS1 = toCopy.erwerbspensumGS1;
 		this.erwerbspensumGS2 = toCopy.erwerbspensumGS2;
 		this.erwerbspensumZuschlag = toCopy.erwerbspensumZuschlag;
@@ -225,6 +229,8 @@ public class BGCalculationInput {
 		this.ruleValidity = toCopy.ruleValidity;
 		this.pensumUnit = toCopy.pensumUnit;
 		this.pensenBereitsGekuerzt = toCopy.pensenBereitsGekuerzt;
+		this.minimalErforderlichesPensum = toCopy.minimalErforderlichesPensum;
+		this.rueckwirkendReduziertesPensumRest = toCopy.rueckwirkendReduziertesPensumRest;
 	}
 
 	@Nonnull
@@ -802,6 +808,8 @@ public class BGCalculationInput {
 			}
 			this.setFamGroesse(other.getFamGroesse());
 		}
+
+		this.minimalErforderlichesPensum = other.minimalErforderlichesPensum;
 	}
 
 	public boolean isSame(BGCalculationInput other) {
@@ -927,5 +935,21 @@ public class BGCalculationInput {
 
 	public void setSameVerfuegteMahlzeitenVerguenstigung(boolean sameVerfuegteMahlzeitenVerguenstigung) {
 		this.sameVerfuegteMahlzeitenVerguenstigung = sameVerfuegteMahlzeitenVerguenstigung;
+	}
+
+	public int getMinimalErforderlichesPensum() {
+		return minimalErforderlichesPensum;
+	}
+
+	public void setMinimalErforderlichesPensum(int minimalErforderlichesPensum) {
+		this.minimalErforderlichesPensum = minimalErforderlichesPensum;
+	}
+
+	public int getRueckwirkendReduziertesPensumRest() {
+		return rueckwirkendReduziertesPensumRest;
+	}
+
+	public void setRueckwirkendReduziertesPensumRest(int rueckwirkendReduziertesPensumRest) {
+		this.rueckwirkendReduziertesPensumRest = rueckwirkendReduziertesPensumRest;
 	}
 }

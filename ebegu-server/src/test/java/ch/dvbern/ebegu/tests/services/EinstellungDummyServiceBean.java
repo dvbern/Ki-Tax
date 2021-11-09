@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -177,5 +178,16 @@ public class EinstellungDummyServiceBean extends AbstractBaseService implements 
 			.stream()
 			.filter(einstellung -> einstellung.getKey() == key)
 			.collect(Collectors.toList());
+	}
+
+	@Override
+	public Map<EinstellungKey, Einstellung> loadRuleParameters(
+		Gemeinde gemeinde,
+		Gesuchsperiode gesuchsperiode, Set<EinstellungKey> keysToLoad) {
+		Map<EinstellungKey, Einstellung> result = new HashMap<>();
+		Collection<Einstellung> paramsForGesuchsperiode = getAllEinstellungenBySystem(gesuchsperiode);
+		paramsForGesuchsperiode.stream().forEach(ebeguParameter -> result.put(ebeguParameter.getKey(),
+			ebeguParameter));
+		return result;
 	}
 }

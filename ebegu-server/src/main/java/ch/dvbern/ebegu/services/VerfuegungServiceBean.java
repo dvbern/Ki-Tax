@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -43,6 +44,7 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
@@ -52,6 +54,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -64,6 +67,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
 import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.enums.WizardStepName;
@@ -141,6 +145,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Inject
 	private VerfuegungEventConverter verfuegungEventConverter;
+
+	@Inject
+	private EinstellungService einstellungService;
 
 	@Nonnull
 	@Override
@@ -556,7 +563,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
 			gemeinde.getMandant(), true);
-		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
+		Map<EinstellungKey, Einstellung> einstellungMap = einstellungService.loadRuleParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), BetreuungsgutscheinEvaluator.getRequiredParametersForAbschlussRules());
+		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput, einstellungMap);
 		BGRechnerParameterDTO calculatorParameters = loadCalculatorParameters(gemeinde, gesuchsperiode);
 
 		// Finde und setze die letzte Verfuegung für die Betreuung für den Merger und Vergleicher.
@@ -582,7 +590,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
 			gesuch.extractGemeinde().getMandant(), true);
-		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
+		Map<EinstellungKey, Einstellung> einstellungMap = einstellungService.loadRuleParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), BetreuungsgutscheinEvaluator.getRequiredParametersForAbschlussRules());
+
+		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput, einstellungMap);
 
 		initializeVorgaengerVerfuegungen(gesuch);
 
@@ -874,5 +884,31 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			.findFirst()
 			.orElseThrow(() -> new EbeguEntityNotFoundException("calculateAndExtractVerfuegung", platzId));
 		return verfuegungToPersist;
+	}
+
+	@Nonnull
+	public Verfuegung calculateFamGroessenVerfuegung(@Nonnull Gesuch gesuch, @Nonnull Sprache sprache) {
+		finanzielleSituationService.calculateFinanzDaten(gesuch);
+
+		// Die Betreuungen mit ihren Vorgängern initialisieren, damit der MutationsMerger funktioniert!
+		initializeVorgaengerVerfuegungen(gesuch);
+
+		final BetreuungsgutscheinEvaluator evaluator = initEvaluatorForFamGroessenVerfuegung(gesuch, sprache.getLocale());
+		return evaluator.evaluateFamiliensituation(gesuch, sprache.getLocale());
+	}
+
+	@Nonnull
+	private BetreuungsgutscheinEvaluator initEvaluatorForFamGroessenVerfuegung(@Nonnull Gesuch gesuch, @Nonnull Locale locale) {
+		KitaxUebergangsloesungParameter kitaxParameter = loadKitaxUebergangsloesungParameter(Objects.requireNonNull(
+				gesuch.getFall().getMandant()));
+		List<Rule> rules =
+			rulesService.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), kitaxParameter, locale);
+		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
+			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
+			gesuch.getFall().getMandant(),true);
+		Map<EinstellungKey, Einstellung> einstellungMap = einstellungService.loadRuleParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), BetreuungsgutscheinEvaluator.getRequiredParametersForAbschlussRules());
+		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput, einstellungMap);
+		loadCalculatorParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
+		return bgEvaluator;
 	}
 }

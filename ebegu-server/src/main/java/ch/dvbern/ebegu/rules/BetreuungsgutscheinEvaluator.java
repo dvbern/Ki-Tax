@@ -17,16 +17,19 @@ package ch.dvbern.ebegu.rules;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -34,6 +37,7 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
@@ -48,6 +52,8 @@ import ch.dvbern.ebegu.util.VerfuegungUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
 /**
  * This is the Evaluator that runs all the rules and calculations for a given Antrag to determine the
  * Betreuungsgutschein
@@ -58,19 +64,23 @@ public class BetreuungsgutscheinEvaluator {
 
 	private boolean isDebug = true;
 
+	private Map<EinstellungKey, Einstellung> kibonAbschlussRulesParameters;
+
 	private final List<Rule> rules;
 
 	private final BetreuungsgutscheinExecutor executor;
 
-	public BetreuungsgutscheinEvaluator(List<Rule> rules) {
+	public BetreuungsgutscheinEvaluator(List<Rule> rules, Map<EinstellungKey, Einstellung> kibonAbschlussRulesParameters) {
 		this.rules = rules;
-		executor = new BetreuungsgutscheinExecutor(true);
+		this.kibonAbschlussRulesParameters = kibonAbschlussRulesParameters;
+		executor = new BetreuungsgutscheinExecutor(true, this.kibonAbschlussRulesParameters);
 	}
 
-	public BetreuungsgutscheinEvaluator(List<Rule> rules, boolean enableDebugOutput) {
+	public BetreuungsgutscheinEvaluator(List<Rule> rules, boolean enableDebugOutput, Map<EinstellungKey, Einstellung> kibonAbschlussRulesParameters) {
 		this.rules = rules;
 		this.isDebug = enableDebugOutput;
-		executor = new BetreuungsgutscheinExecutor(isDebug);
+		this.kibonAbschlussRulesParameters = kibonAbschlussRulesParameters;
+		executor = new BetreuungsgutscheinExecutor(isDebug, this.kibonAbschlussRulesParameters);
 	}
 
 	/**
@@ -103,7 +113,8 @@ public class BetreuungsgutscheinEvaluator {
 			zeitabschnitte = executor.executeRules(rulesToRun, firstBetreuungOfGesuch, zeitabschnitte, true);
 
 			MonatsRule monatsRule = new MonatsRule(isDebug);
-			MutationsMerger mutationsMerger = new MutationsMerger(locale, isDebug);
+			Boolean pauschaleRueckwirkendAuszahlen = kibonAbschlussRulesParameters.get(EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND).getValueAsBoolean();
+			MutationsMerger mutationsMerger = new MutationsMerger(locale, isDebug, pauschaleRueckwirkendAuszahlen);
 			AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(true, isDebug);
 
 			zeitabschnitte = monatsRule.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
@@ -224,6 +235,13 @@ public class BetreuungsgutscheinEvaluator {
 		}
 	}
 
+	public static Set<EinstellungKey> getRequiredParametersForAbschlussRules() {
+		return EnumSet.of(
+			FKJV_PAUSCHALE_RUECKWIRKEND,
+			FKJV_EINGEWOEHNUNG
+		);
+	}
+
 	/**
 	 * replaces the calcuation results in {@code zeitabschnitte} with the values of an earlier Verfuegung, in case
 	 * there is a matching VerfuegungZeitabschnitt, with a calculation result withing the rounding tolerance.
@@ -327,4 +345,6 @@ public class BetreuungsgutscheinEvaluator {
 		}
 		return rechnerRules;
 	}
+
+
 }

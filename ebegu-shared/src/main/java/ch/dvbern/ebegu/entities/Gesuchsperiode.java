@@ -31,7 +31,6 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -105,6 +104,18 @@ public class Gesuchsperiode extends AbstractDateRangedEntity implements HasManda
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
 	private byte[] vorlageVerfuegungLatsFr;
+
+	@Nullable
+	@Column(nullable = true, length = TEN_MB) // 10 megabytes
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	private byte[] vorlageVerfuegungFerienbetreuungDe;
+
+	@Nullable
+	@Column(nullable = true, length = TEN_MB) // 10 megabytes
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	private byte[] vorlageVerfuegungFerienbetreuungFr;
 
 
 	@Nonnull
@@ -266,6 +277,39 @@ public class Gesuchsperiode extends AbstractDateRangedEntity implements HasManda
 		}
 	}
 
+
+	@Nonnull
+	public byte[] getVorlageVerfuegungFerienbetreuungDe() {
+		if (vorlageVerfuegungFerienbetreuungDe == null) {
+			return EMPTY_BYTE_ARRAY;
+		}
+		return Arrays.copyOf(vorlageVerfuegungFerienbetreuungDe, vorlageVerfuegungFerienbetreuungDe.length);
+	}
+
+	public void setVorlageVerfuegungFerienbetreuungDe(@Nullable byte[] vorlageVerfuegungFerienbetreuungDe) {
+		if (vorlageVerfuegungFerienbetreuungDe == null) {
+			this.vorlageVerfuegungFerienbetreuungDe = null;
+		} else {
+			this.vorlageVerfuegungFerienbetreuungDe = Arrays.copyOf(vorlageVerfuegungFerienbetreuungDe, vorlageVerfuegungFerienbetreuungDe.length);
+		}
+	}
+
+	@Nonnull
+	public byte[] getVorlageVerfuegungFerienbetreuungFr() {
+		if (vorlageVerfuegungFerienbetreuungFr == null) {
+			return EMPTY_BYTE_ARRAY;
+		}
+		return Arrays.copyOf(vorlageVerfuegungFerienbetreuungFr, vorlageVerfuegungFerienbetreuungFr.length);
+	}
+
+	public void setVorlageVerfuegungFerienbetreuungFr(@Nullable byte[] vorlageVerfuegungFerienbetreuungFr) {
+		if (vorlageVerfuegungFerienbetreuungFr == null) {
+			this.vorlageVerfuegungFerienbetreuungFr = null;
+		} else {
+			this.vorlageVerfuegungFerienbetreuungFr = Arrays.copyOf(vorlageVerfuegungFerienbetreuungFr, vorlageVerfuegungFerienbetreuungFr.length);
+		}
+	}
+
 	/**
 	 * Returns the correct VerfuegungErlaeuterung for the given language
 	 */
@@ -280,6 +324,23 @@ public class Gesuchsperiode extends AbstractDateRangedEntity implements HasManda
 			return this.getVorlageVerfuegungLatsFr();
 		default:
 			throw new EbeguRuntimeException("getVorlageVerfuegungLatsWithSprache", "Sprache not defined", sprache);
+		}
+	}
+
+	/**
+	 * Returns the correct VorlageVerfuegungFerienbetreuung for the given language
+	 */
+	@Nonnull
+	public byte[] getVorlageVerfuegungFerienbetreuungWithSprache(
+		@Nonnull Sprache sprache
+	) {
+		switch (sprache) {
+		case DEUTSCH:
+			return this.getVorlageVerfuegungFerienbetreuungDe();
+		case FRANZOESISCH:
+			return this.getVorlageVerfuegungFerienbetreuungFr();
+		default:
+			throw new EbeguRuntimeException("getVorlageVerfuegungFerienbetreuungWithSprache", "Sprache not defined", sprache);
 		}
 	}
 

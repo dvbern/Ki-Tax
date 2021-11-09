@@ -26,6 +26,7 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_X_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATETIME_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.LONG_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
@@ -39,6 +40,7 @@ public enum MergeFieldFerienbetreuung implements MergeFieldProvider {
 
 	periode(new SimpleMergeField<>("periode", STRING_CONVERTER)),
 	status(new SimpleMergeField<>("status", STRING_CONVERTER)),
+	timestampMutiert(new SimpleMergeField<>("timestampMutiert", DATETIME_CONVERTER)),
 	traegerschaft(new SimpleMergeField<>("traegerschaft", STRING_CONVERTER)),
 	weitereGemeinden(new SimpleMergeField<>("weitereGemeinden", STRING_CONVERTER)),
 	seitWannFerienbetreuungen(new SimpleMergeField<>("seitWannFerienbetreuungen", DATE_CONVERTER)),

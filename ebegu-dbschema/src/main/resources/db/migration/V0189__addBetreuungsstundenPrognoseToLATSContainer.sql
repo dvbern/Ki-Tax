@@ -15,5 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-ALTER TABLE application_property DROP CONSTRAINT UK_application_property_name;
-ALTER TABLE application_property ADD CONSTRAINT UK_application_property_name_mandant UNIQUE(name,mandant_id);
+ALTER TABLE lastenausgleich_tagesschule_angaben_gemeinde_container
+    ADD COLUMN IF NOT EXISTS `betreuungsstunden_prognose` DECIMAL(19,2) DEFAULT NULL;
+
+ALTER TABLE lastenausgleich_tagesschule_angaben_gemeinde_container_aud
+    ADD COLUMN IF NOT EXISTS `betreuungsstunden_prognose` DECIMAL(19,2) DEFAULT NULL;

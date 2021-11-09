@@ -15,10 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Directive, EventEmitter, Input, Output} from '@angular/core';
+import {Directive, EventEmitter, Injectable, Input, Output} from '@angular/core';
+import {Observable, of} from 'rxjs';
+import {KiBonMandant} from '../app/core/constants/MANDANTS';
 import {WindowRef} from '../app/core/service/windowRef.service';
 import {LoadingButtonDirective} from '../app/shared/directive/loading-button.directive';
 import {TooltipDirective} from '../app/shared/directive/TooltipDirective';
+import {MandantService} from '../app/shared/services/mandant.service';
 
 /**
  * This mock should be used when testing an angular component that uses LoadingButtonDirective
@@ -41,7 +44,7 @@ export class MockDvLoadingButton {
 }
 
 @Directive({
-    selector: 'dv-tooltip'
+    selector: 'dv-tooltip',
 })
 export class MockTooltipDirective {
 
@@ -50,14 +53,33 @@ export class MockTooltipDirective {
 
 }
 
+@Injectable()
+class MockMandantService {
+
+    public async initMandantCookie(): Promise<void> {
+        return Promise.resolve();
+    }
+
+    public get mandant$(): Observable<KiBonMandant> {
+        return of(KiBonMandant.BE);
+    }
+}
+
 export const SHARED_MODULE_OVERRIDES = {
     remove: {
         declarations: [LoadingButtonDirective, TooltipDirective],
         exports: [LoadingButtonDirective, TooltipDirective],
+        providers: [MandantService],
     },
     add: {
         declarations: [MockDvLoadingButton, MockTooltipDirective],
         exports: [MockDvLoadingButton, MockTooltipDirective],
-        providers: [WindowRef]
+        providers: [
+            WindowRef,
+            {
+                provide: MandantService,
+                useClass: MockMandantService,
+            },
+        ],
     },
 };

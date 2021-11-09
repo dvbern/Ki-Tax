@@ -172,8 +172,8 @@
 
             <th><h2 class="local-login-h2">Gemeinde:</h2></th>
             <th><h2 class="local-login-h2">Paris</h2></th>
-            <th><h2 class="local-login-h2">London</h2></th>
-            <th><h2 class="local-login-h2">Paris & London</h2></th>
+            <th><h2 class="local-login-h2" *ngIf="hasGemeindeLondon">London</h2></th>
+            <th><h2 class="local-login-h2" *ngIf="hasGemeindeLondon">Paris & London</h2></th>
 
             <!-- Admin BG -->
             <tr>
@@ -188,12 +188,14 @@
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + administratorBGLondon?.vorname + ' ' +
                          administratorBGLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(administratorBGLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + administratorBGParisLondon?.vorname + ' ' +
                          administratorBGParisLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(administratorBGParisLondon)"></div>
                 </td>
             </tr>
@@ -210,12 +212,14 @@
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + sachbearbeiterBGLondon?.vorname + ' ' +
                          sachbearbeiterBGLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(sachbearbeiterBGLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + sachbearbeiterBGParisLondon?.vorname + ' ' +
                          sachbearbeiterBGParisLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(sachbearbeiterBGParisLondon)"></div>
                 </td>
             </tr>
@@ -232,12 +236,14 @@
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + administratorTSLondon?.vorname + ' ' +
                          administratorTSLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(administratorTSLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + administratorTSParisLondon?.vorname + ' ' +
                          administratorTSParisLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(administratorTSParisLondon)"></div>
                 </td>
             </tr>
@@ -254,12 +260,14 @@
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + sachbearbeiterTSLondon?.vorname + ' ' +
                          sachbearbeiterTSLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(sachbearbeiterTSLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + sachbearbeiterTSParisLondon?.vorname + ' ' +
                          sachbearbeiterTSParisLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(sachbearbeiterTSParisLondon)"></div>
                 </td>
             </tr>
@@ -276,12 +284,14 @@
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + administratorGemeindeLondon?.vorname + ' ' +
                          administratorGemeindeLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(administratorGemeindeLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + administratorGemeindeParisLondon?.vorname + ' ' +
                          administratorGemeindeParisLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(administratorGemeindeParisLondon)"></div>
                 </td>
             </tr>
@@ -298,12 +308,14 @@
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + sachbearbeiterGemeindeLondon?.vorname + ' ' +
                          sachbearbeiterGemeindeLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(sachbearbeiterGemeindeLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + sachbearbeiterGemeindeParisLondon?.vorname + ' ' +
                          sachbearbeiterGemeindeParisLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(sachbearbeiterGemeindeParisLondon)"></div>
                 </td>
             </tr>
@@ -320,12 +332,14 @@
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + sachbearbeiterinFerienbetreuungGemeindeLondon?.vorname + ' ' +
                          sachbearbeiterinFerienbetreuungGemeindeLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(sachbearbeiterinFerienbetreuungGemeindeLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + sachbearbeiterinFerienbetreuungGemeindeParisundLondon?.vorname + ' ' +
                          sachbearbeiterinFerienbetreuungGemeindeParisundLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(sachbearbeiterinFerienbetreuungGemeindeParisundLondon)"></div>
                 </td>
             </tr>
@@ -343,12 +357,14 @@
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + adminFerienbetreuungGemeindeLondon?.vorname + ' ' +
                          adminFerienbetreuungGemeindeLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(adminFerienbetreuungGemeindeLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + adminFerienbetreuungGemeindeParisundLondon?.vorname + ' ' +
                          adminFerienbetreuungGemeindeParisundLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(adminFerienbetreuungGemeindeParisundLondon)"></div>
                 </td>
             </tr>
@@ -365,12 +381,14 @@
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + steueramtLondon?.vorname + ' ' +
                          steueramtLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(steueramtLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + steueramtParisLondon?.vorname + ' ' +
                          steueramtParisLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(steueramtParisLondon)"></div>
                 </td>
             </tr>
@@ -385,12 +403,14 @@
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + revisorLondon?.vorname + ' ' +
                          revisorLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(revisorLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + revisorParisLondon?.vorname + ' ' +
                          revisorParisLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(revisorParisLondon)"></div>
                 </td>
             </tr>
@@ -404,12 +424,14 @@
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + juristLondon?.vorname + ' ' + juristLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(juristLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + juristParisLondon?.vorname + ' ' +
                          juristParisLondon?.nachname"
+                         *ngIf="hasGemeindeLondon"
                          (click)="logIn(juristParisLondon)"></div>
                 </td>
             </tr>

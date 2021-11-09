@@ -46,7 +46,7 @@ public class MutationsMergerFinSitAbgelehntTest {
 
 	private static final boolean IS_DEBUG = false;
 	private final MonatsRule monatsRule = new MonatsRule(IS_DEBUG);
-	private final MutationsMerger mutationsMerger = new MutationsMerger(Locale.GERMAN, IS_DEBUG);
+	private final MutationsMerger mutationsMerger = new MutationsMerger(Locale.GERMAN, IS_DEBUG, false);
 
 	private static final BigDecimal EINKOMMEN_HOEHER = MathUtil.DEFAULT.fromNullSafe(120000);
 	private static final BigDecimal EINKOMMEN_TIEFER = MathUtil.DEFAULT.fromNullSafe(80000);

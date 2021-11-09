@@ -132,7 +132,7 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 		setNormlohnkosten(dto, angabenGemeinde, container, sprache);
 		dto.setNormlohnkostenTotal(angabenGemeinde.getNormlohnkostenBetreuungBerechnet());
 		dto.setElterngebuehren(angabenGemeinde.getEinnahmenElterngebuehren());
-		dto.setLastenausgleichsberechtigterBetrag(MathUtil.positiveNonNullAndRound(angabenGemeinde.getLastenausgleichsberechtigerBetrag()));
+		dto.setLastenausgleichsberechtigterBetrag(angabenGemeinde.getLastenausgleichsberechtigerBetrag());
 
 		calculateAndSetPrognoseValues(dto, angabenGemeinde, betreuungsstundenPrognose);
 		calculateAndSetZahlungen(dto, angabenGemeinde);
@@ -222,7 +222,7 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 
 		// zweite rate following schuljahr is 50% of lastenausgleichberechtigter Betrag
 		BigDecimal ersteRateProg = MathUtil.EXACT.multiply(dto.getLastenausgleichsberechtigterBetragProg(), new BigDecimal("0.5"));
-		dto.setErsteRateProg(MathUtil.positiveNonNullAndRound(ersteRateProg));
+		dto.setErsteRateProg(ersteRateProg);
 	}
 
 	private void calculateAndSetZahlungen(@Nonnull LatsDocxDTO dto, LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde) {
@@ -230,7 +230,7 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 
 		Objects.requireNonNull(dto.getLastenausgleichsberechtigterBetrag());
 		BigDecimal zweiteRate = dto.getLastenausgleichsberechtigterBetrag().subtract(dto.getErsteRate());
-		dto.setZweiteRate(MathUtil.positiveNonNullAndRound(zweiteRate));
+		dto.setZweiteRate(zweiteRate);
 
 		Objects.requireNonNull(dto.getErsteRateProg());
 		BigDecimal totalAuszahlung = dto.getErsteRateProg().add(dto.getZweiteRate());

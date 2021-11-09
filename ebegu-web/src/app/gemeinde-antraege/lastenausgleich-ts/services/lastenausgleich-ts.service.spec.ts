@@ -21,7 +21,7 @@ import {ErrorService} from '../../../core/errors/service/ErrorService';
 
 import {LastenausgleichTSService} from './lastenausgleich-ts.service';
 
-describe('GemeindeAngaben', () => {
+describe('LastenausgleichTSService', () => {
     let service: LastenausgleichTSService;
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
     const translateSpy = jasmine.createSpyObj<TranslateService>(TranslateService.name, ['instant']);

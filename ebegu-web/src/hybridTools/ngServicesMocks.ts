@@ -16,14 +16,12 @@
 import * as angular from 'angular';
 import {CookieService} from 'ngx-cookie-service';
 import {Observable, of} from 'rxjs';
-import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../app/core/service/benutzerRSX.rest';
 import {VersionService} from '../app/core/service/version/version.service';
 import {WindowRef} from '../app/core/service/windowRef.service';
 import {I18nServiceRSRest} from '../app/i18n/services/i18nServiceRS.rest';
 import {MandantService} from '../app/shared/services/mandant.service';
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
-import {AuthServiceRS} from '../authentication/service/AuthServiceRS.rest';
 import {InternePendenzenRS} from '../gesuch/component/internePendenzenView/internePendenzenRS.rest';
 import {GesuchGenerator} from '../gesuch/service/gesuchGenerator';
 import {TSAuthEvent} from '../models/enums/TSAuthEvent';
@@ -95,6 +93,10 @@ class CookieServiceMock extends CookieService {
     }
 }
 
+class MandantServiceMock extends MandantService {
+
+}
+
 export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('I18nServiceRSRest', I18nServiceMock);
     $provide.service('AuthLifeCycleService', AuthLifeCycleServiceMock);
@@ -102,11 +104,9 @@ export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('InternePendenzenRS', InternePendenzenRS);
     $provide.service('BenutzerRS', BenutzerRSX);
     $provide.service('VersionService', VersionService);
-    $provide.service('MandantService', MandantService);
-    $provide.service('cookieService', CookieServiceMock);
+    $provide.service('MandantService', MandantServiceMock);
     $provide.service('windowRef', WindowRef);
-    $provide.service('applicationPropertyService', ApplicationPropertyRS);
-    $provide.service('authService', AuthServiceRS);
+    $provide.service('cookieService', CookieServiceMock);
     $provide.value('LOCALE_ID', 'de-CH');
     $provide.value('platformId', 'de-CH');
 }

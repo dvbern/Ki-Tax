@@ -17,6 +17,8 @@ import {waitForAsync} from '@angular/core/testing';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
+import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 
@@ -40,7 +42,11 @@ describe('einkommensverschlechterungInfoView', () => {
     }));
 
     beforeEach(waitForAsync(() => {
-        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
+        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined)
+            .then(() => {
+                gesuchModelManager.getGesuch().dossier.gemeinde = new TSGemeinde();
+                gesuchModelManager.getGesuch().gesuchsperiode = new TSGesuchsperiode();
+            });
     }));
 
     it('should be defined', () => {

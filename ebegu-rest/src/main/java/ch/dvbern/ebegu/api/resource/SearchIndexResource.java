@@ -103,7 +103,9 @@ public class SearchIndexResource {
 	@Path("/parameterized/query/{searchString}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response searchQuery(@Nonnull @PathParam("searchString") String searchStringParam, List<SearchFilter> filters) {
+	public Response searchQuery(
+		@Nonnull @PathParam("searchString") String searchStringParam,
+		List<SearchFilter> filters) {
 		QuickSearchResultDTO searchResult = searchIndexService.search(searchStringParam, filters);
 		return Response.ok(searchResult).build();
 	}
@@ -114,15 +116,19 @@ public class SearchIndexResource {
 	 * In case there are no results left after filtering  objects that are not visible for the current user
 	 * the search is performed again with no max result limit.
 	 */
-	@ApiOperation(value = "Perform a search for the searchString in all indizes returning only a small number of results",
+	@ApiOperation(value = "Perform a search for the searchString in all indizes returning only a small number of "
+		+ "results",
 		response = SearchResult.class)
 	@GET
 	@Path("/quicksearch/{searchString}")
-	public Response quicksearch(@Context HttpServletRequest request, @Nonnull @PathParam("searchString") String searchStringParam) {
+	public Response quicksearch(
+		@Context HttpServletRequest request,
+		@Nonnull @PathParam("searchString") String searchStringParam) {
 		Validate.notEmpty(searchStringParam);
 		QuickSearchResultDTO search = searchIndexService.quicksearch(searchStringParam, true);
 		QuickSearchResultDTO quickSearchResultDTO = convertQuicksearchResultToDTO(search);
-		//if no result is returened but we know that there are result we assume that the loaded results were not visible
+		//if no result is returened but we know that there are result we assume that the loaded results were not
+		// visible
 		//for the current user. In that case  try the unlimited search so the user gets his visible result
 		if (quickSearchResultDTO.getResultEntities().isEmpty() && quickSearchResultDTO.getNumberOfResults() > 0) {
 			QuickSearchResultDTO unlimitedSearch = searchIndexService.quicksearch(searchStringParam, false);
@@ -141,7 +147,9 @@ public class SearchIndexResource {
 		response = SearchResult.class)
 	@GET
 	@Path("/globalsearch/{searchString}")
-	public Response globalsearch(@Context HttpServletRequest request, @Nonnull @PathParam("searchString") String searchStringParam) {
+	public Response globalsearch(
+		@Context HttpServletRequest request,
+		@Nonnull @PathParam("searchString") String searchStringParam) {
 		Validate.notEmpty(searchStringParam);
 		QuickSearchResultDTO search = searchIndexService.quicksearch(searchStringParam, false);
 		QuickSearchResultDTO quickSearchResultDTO = convertQuicksearchResultToDTO(search);
@@ -150,33 +158,40 @@ public class SearchIndexResource {
 	}
 
 	/**
-	 * Helper that reduces and normalizes the result from the Lucene search index. Duplcate Gesuche that matched in different indizes
-	 * are removed as well as Gesuche that are invisible for the current user. For every Fall only the newest Gesuch that was in the
+	 * Helper that reduces and normalizes the result from the Lucene search index. Duplcate Gesuche that matched in
+	 * different indizes
+	 * are removed as well as Gesuche that are invisible for the current user. For every Fall only the newest Gesuch
+	 * that was in the
 	 * original QuckSearchResultDTO will be rturned
 	 */
 	private QuickSearchResultDTO convertQuicksearchResultToDTO(QuickSearchResultDTO quickSearch) {
 		List<Gesuch> allowedGesuche = filterUnreadableGesuche(quickSearch); //nur erlaubte Gesuche
-		final QuickSearchResultDTO faelleWithMitteilungResults = getFaelleWithMitteilungResults(quickSearch); // muss gemacht werden bevor wir unerlaubte rausfiltern
-		Map<String, Gesuch> gesucheToShow = EbeguUtil.groupByFallAndSelectNewestAntrag(allowedGesuche); //nur neustes gesuch
-		QuickSearchResultDTO filteredQuickSearch = mergeAllowedGesucheWithQuickSearchResult(quickSearch, gesucheToShow);//search result anpassen so dass nur noch sichtbare Antrage drin sind und Antragdtos gesetzt sind
+		final QuickSearchResultDTO faelleWithMitteilungResults =
+			getFaelleWithMitteilungResults(quickSearch); // muss gemacht werden bevor wir unerlaubte rausfiltern
+		Map<String, Gesuch> gesucheToShow =	EbeguUtil.groupByFallAndSelectNewestAntrag(allowedGesuche); //nur neustes gesuch
+		//search result anpassen so dass nur noch sichtbare Antrage drin sind und Antragdtos gesetzt sind
+		QuickSearchResultDTO filteredQuickSearch = mergeAllowedGesucheWithQuickSearchResult(
+			quickSearch, gesucheToShow);
 
 		// Add all results from the list that are not yet freigegeben but have mitteilungen
 
 		final QuickSearchResultDTO quickSearchResultDTO = QuickSearchResultDTO.reduceToSingleEntyPerAntrag
-			(filteredQuickSearch); // Gesuche die in mehreren Indizes gefunden wurden auslassen so dass jedes gesuch nur 1 mal drin ist
+			(filteredQuickSearch); // Gesuche die in mehreren Indizes gefunden wurden auslassen so dass jedes gesuch
+		// nur 1 mal drin ist
 
 		faelleWithMitteilungResults.getResultEntities()
 			.forEach(searchResultEntryDTO -> {
 				String dossierId = searchResultEntryDTO.getDossierId();
 				if (searchResultEntryDTO.getEntity() == SearchEntityType.DOSSIER && dossierId != null) {
 					Dossier dossier = dossierService.findDossier(dossierId).orElseThrow(()
-						-> new EbeguEntityNotFoundException("convertQuicksearchResultToDTO", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
+						-> new EbeguEntityNotFoundException(
+						"convertQuicksearchResultToDTO",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+						dossierId));
 					quickSearchResultDTO.addSubResultDossier(searchResultEntryDTO, dossier);
 				}
 			});
-
 		return quickSearchResultDTO;
-
 	}
 
 	/**
@@ -197,9 +212,10 @@ public class SearchIndexResource {
 				) {
 					Dossier dossier = dossierService.findDossier(searchResult.getDossierId(), false)
 						.orElseThrow(() -> new EbeguEntityNotFoundException("hasDossierAnyMitteilung",
-						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, searchResult.getDossierId()));
+							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, searchResult.getDossierId()));
 
-					if (authorizer.isReadAuthorizedDossier(dossier) && dossierService.hasDossierAnyMitteilung(dossier)) {
+					if (authorizer.isReadAuthorizedDossier(dossier)
+						&& dossierService.hasDossierAnyMitteilung(dossier)) {
 						result.addResult(searchResult);
 					}
 				}
@@ -211,23 +227,37 @@ public class SearchIndexResource {
 	private List<Gesuch> filterUnreadableGesuche(QuickSearchResultDTO search) {
 		//fuer suchresultate ungleich GesuchstellerContainer kennen wir die id des gesuchs schon
 		List<String> gesuchIds = search.getResultEntities().stream()
-			.filter(searchResultEntryDTO -> searchResultEntryDTO.getEntity() != SearchEntityType.GESUCHSTELLER_CONTAINER)
+			.filter(searchResultEntryDTO -> searchResultEntryDTO.getEntity()
+				!= SearchEntityType.GESUCHSTELLER_CONTAINER)
 			.map(SearchResultEntryDTO::getGesuchID).collect(Collectors.toList());
 		List<Gesuch> readableGesuche = gesuchService.findReadableGesuche(gesuchIds);
 
 		//fuer die suchrestultate die im GesuchstellerIndex gematched haben muessen wir das Gesuch noch ermitteln
 		List<String> gesuchstellercontainerIds = search.getResultEntities().stream()
-			.filter(searchResultEntryDTO -> searchResultEntryDTO.getEntity() == SearchEntityType.GESUCHSTELLER_CONTAINER)
+			.filter(searchResultEntryDTO -> searchResultEntryDTO.getEntity()
+				== SearchEntityType.GESUCHSTELLER_CONTAINER)
 			.map(SearchResultEntryDTO::getResultId).collect(Collectors.toList());
 
 		if (gesuchstellercontainerIds.isEmpty()) {
 			return readableGesuche;
 		}
 
-		List<Gesuch> gesucheFromGesuchstellermatch = gesuchstellerServiceBean.findGesuchOfGesuchstellende(gesuchstellercontainerIds).stream().filter(
-			gesuch -> this.authorizer.isReadAuthorized(gesuch)
-		).collect(Collectors.toList());
+		List<Gesuch> gesucheFromGesuchstellermatch =
+			gesuchstellerServiceBean.findGesuchOfGesuchstellende(gesuchstellercontainerIds).stream().filter(
+				gesuch -> this.authorizer.isReadAuthorized(gesuch)
+			).collect(Collectors.toList());
 
+		gesucheFromGesuchstellermatch.stream().forEach(
+			gesuch -> {
+				search.getResultEntities().stream().filter(
+					searchResultEntryDTO -> searchResultEntryDTO.getEntity() == SearchEntityType.GESUCHSTELLER_CONTAINER
+						&& ((gesuch.getGesuchsteller1() != null && searchResultEntryDTO.getResultId()
+						.equals(gesuch.getGesuchsteller1().getId())) ||
+						(gesuch.getGesuchsteller2() != null && searchResultEntryDTO.getResultId()
+							.equals(gesuch.getGesuchsteller2().getId())))
+				).forEach(searchResultEntryDTO -> searchResultEntryDTO.setGesuchID(gesuch.getId()));
+			}
+		);
 
 		List<Gesuch> allGesuche = new ArrayList<>(readableGesuche);
 		allGesuche.addAll(gesucheFromGesuchstellermatch);
@@ -238,11 +268,15 @@ public class SearchIndexResource {
 	 * macht einen Quervergleich zwischen den beiden Collections und behaelt nur die Resultate in
 	 * QuickSearchResultDTO die wir in der Gesuchmap finden. Setzt zudem das AntragDTO inds Result
 	 */
-	private QuickSearchResultDTO mergeAllowedGesucheWithQuickSearchResult(QuickSearchResultDTO quickSearch, Map<String, Gesuch> gesucheToShow) {
+	private QuickSearchResultDTO mergeAllowedGesucheWithQuickSearchResult(
+		QuickSearchResultDTO quickSearch,
+		Map<String, Gesuch> gesucheToShow) {
 		boolean isInstOrTraegerschaft = isCurrentUserInstitutionOrTraegerschaft();
-		Collection<Institution> allowedInst = isInstOrTraegerschaft ? institutionService.getInstitutionenReadableForCurrentBenutzer(false) : null;
+		Collection<Institution> allowedInst =
+			isInstOrTraegerschaft ? institutionService.getInstitutionenReadableForCurrentBenutzer(false) : null;
 
-		for (Iterator<SearchResultEntryDTO> iterator = quickSearch.getResultEntities().iterator(); iterator.hasNext(); ) {
+		for (Iterator<SearchResultEntryDTO> iterator = quickSearch.getResultEntities().iterator();
+			 iterator.hasNext(); ) {
 			SearchResultEntryDTO searchEnry = iterator.next();
 			Gesuch gesuch = gesucheToShow.get(searchEnry.getGesuchID());
 			if (gesuch == null) {
@@ -257,7 +291,8 @@ public class SearchIndexResource {
 					jaxAntragDTO = this.converter.gesuchToAntragDTO(gesuch, userRole);
 				}
 				searchEnry.setAntragDTO(jaxAntragDTO);
-				String fullNameGS1 = gesuch.getGesuchsteller1() != null ? gesuch.getGesuchsteller1().extractFullName() : "";
+				String fullNameGS1 =
+					gesuch.getGesuchsteller1() != null ? gesuch.getGesuchsteller1().extractFullName() : "";
 				if (searchEnry.getAntragDTO() != null) {
 					searchEnry.getAntragDTO().setFamilienName(fullNameGS1);
 				}

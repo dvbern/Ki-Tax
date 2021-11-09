@@ -17,21 +17,31 @@
 
 package ch.dvbern.ebegu.outbox.anmeldung;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AdresseTyp;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.TSCalculationResult;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
@@ -40,6 +50,9 @@ import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulAuswahlDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungDetailsDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungEventDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungStatus;
+import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungTarifeDTO;
+import ch.dvbern.kibon.exchange.commons.tagesschulen.TarifDTO;
+import ch.dvbern.kibon.exchange.commons.tagesschulen.TarifZeitabschnittDTO;
 import ch.dvbern.kibon.exchange.commons.types.AdresseDTO;
 import ch.dvbern.kibon.exchange.commons.types.Geschlecht;
 import ch.dvbern.kibon.exchange.commons.types.GesuchstellerDTO;
@@ -48,40 +61,49 @@ import ch.dvbern.kibon.exchange.commons.types.KindDTO;
 import ch.dvbern.kibon.exchange.commons.types.Wochentag;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import com.spotify.hamcrest.pojo.IsPojo;
+import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 public class AnmeldungTagesschuleEventConverterTest {
 
 	private final AnmeldungTagesschuleEventConverter converter = new AnmeldungTagesschuleEventConverter();
 
 	@Test
+	public void testAnmeldungTagesschuleMitTarifEvent() {
+		AnmeldungTagesschule anmeldungTagesschule = createAnmeldungTagesschule();
+		anmeldungTagesschule.setVerfuegung(generateDummyVerfuegung(anmeldungTagesschule.extractGesuch()));
+		anmeldungTagesschule.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+		AnmeldungTagesschuleEvent anmeldungTagesschuleEvent = converter.of(anmeldungTagesschule);
+
+		TagesschuleAnmeldungEventDTO specificRecord =
+			assertEventAndConvertBackFromAvro(anmeldungTagesschuleEvent, anmeldungTagesschule.getBGNummer());
+
+		assert anmeldungTagesschule.getVerfuegung() != null;
+		assertThat(specificRecord, is(pojo(TagesschuleAnmeldungEventDTO.class)
+			.where(
+				TagesschuleAnmeldungEventDTO::getTarife,
+				matchesZeitabschnitt(anmeldungTagesschule.getVerfuegung())
+			)));
+	}
+
+	@Test
 	public void testAnmeldungTagesschuleAddedEvent() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
-		Gesuch gesuch = betreuung.extractGesuch();
-		gesuch.setFreigabeDatum(LocalDate.now());
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
-		requireNonNull(gesuch.getGesuchsteller1()).setGesuchstellerJA(TestDataUtil.createDefaultGesuchsteller());
-		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
-		AnmeldungTagesschule anmeldungTagesschule =
-			TestDataUtil.createAnmeldungTagesschuleWithModules(betreuung.getKind(), betreuung.extractGesuchsperiode());
+
+		AnmeldungTagesschule anmeldungTagesschule = createAnmeldungTagesschule();
 		AnmeldungTagesschuleEvent anmeldungTagesschuleAddedEvent = converter.of(anmeldungTagesschule);
 
-		assertThat(anmeldungTagesschuleAddedEvent, is(pojo(ExportedEvent.class)
-			.where(ExportedEvent::getAggregateId, is(anmeldungTagesschule.getBGNummer()))
-			.where(ExportedEvent::getAggregateType, is("Anmeldung"))
-			.where(ExportedEvent::getType, is("AnmeldungTagesschule")))
-		);
+		TagesschuleAnmeldungEventDTO specificRecord =
+			assertEventAndConvertBackFromAvro(anmeldungTagesschuleAddedEvent, anmeldungTagesschule.getBGNummer());
 
-		//noinspection deprecation
-		TagesschuleAnmeldungEventDTO specificRecord = AvroConverter.fromAvroBinary(
-			anmeldungTagesschuleAddedEvent.getSchema(),
-			anmeldungTagesschuleAddedEvent.getPayload());
+		Gesuch gesuch = anmeldungTagesschule.extractGesuch();
 
 		DateRange gesuchsperiode = gesuch.getGesuchsperiode().getGueltigkeit();
 
@@ -94,13 +116,42 @@ public class AnmeldungTagesschuleEventConverterTest {
 				is(TagesschuleAnmeldungStatus.SCHULAMT_ANMELDUNG_AUSGELOEST))
 			.where(TagesschuleAnmeldungEventDTO::getVersion, is(gesuch.getLaufnummer()))
 			.where(TagesschuleAnmeldungEventDTO::getFreigegebenAm, is(gesuch.getFreigabeDatum()))
-			.where(TagesschuleAnmeldungEventDTO::getAntragstellendePerson, matchesAntragstellendePerson(gesuch))
+			.where(TagesschuleAnmeldungEventDTO::getGesuchsteller, matchesAntragstellendePerson(gesuch))
+			.where(TagesschuleAnmeldungEventDTO::getGesuchsteller2, is(nullValue()))
 			.where(TagesschuleAnmeldungEventDTO::getKind, matchesKind(anmeldungTagesschule.getKind().getKindJA()))
 			.where(TagesschuleAnmeldungEventDTO::getPeriodeVon, is(gesuchsperiode.getGueltigAb()))
 			.where(TagesschuleAnmeldungEventDTO::getPeriodeBis, is(gesuchsperiode.getGueltigBis()))
 			.where(TagesschuleAnmeldungEventDTO::getAnmeldungsDetails, matchesAnmeldungDetails(anmeldungTagesschule))
 		));
 
+	}
+
+	private TagesschuleAnmeldungEventDTO assertEventAndConvertBackFromAvro(
+		AnmeldungTagesschuleEvent anmeldungTagesschuleEvent,
+		String bgNummer) {
+		assertThat(anmeldungTagesschuleEvent, is(pojo(ExportedEvent.class)
+			.where(ExportedEvent::getAggregateId, is(bgNummer))
+			.where(ExportedEvent::getAggregateType, is("Anmeldung"))
+			.where(ExportedEvent::getType, is("AnmeldungTagesschule")))
+		);
+
+		//noinspection deprecation
+		return AvroConverter.fromAvroBinary(
+			anmeldungTagesschuleEvent.getSchema(),
+			anmeldungTagesschuleEvent.getPayload());
+	}
+
+	@Nonnull
+	private AnmeldungTagesschule createAnmeldungTagesschule() {
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
+		Gesuch gesuch = betreuung.extractGesuch();
+		gesuch.setFreigabeDatum(LocalDate.now());
+		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
+		requireNonNull(gesuch.getGesuchsteller1()).setGesuchstellerJA(TestDataUtil.createDefaultGesuchsteller());
+		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
+		return TestDataUtil.createAnmeldungTagesschuleWithModules(
+			betreuung.getKind(),
+			betreuung.extractGesuchsperiode());
 	}
 
 	@Nonnull
@@ -118,10 +169,10 @@ public class AnmeldungTagesschuleEventConverterTest {
 				is(belegung.isAbweichungZweitesSemester()))
 			.where(TagesschuleAnmeldungDetailsDTO::getAbholung, is(AbholungTagesschule.ALLEINE_NACH_HAUSE))
 			.where(TagesschuleAnmeldungDetailsDTO::getModule, contains(
-					matchesModulAuswahlDTO(iterator.next()),
-					matchesModulAuswahlDTO(iterator.next()),
-					matchesModulAuswahlDTO(iterator.next()),
-					matchesModulAuswahlDTO(iterator.next())
+				matchesModulAuswahlDTO(iterator.next()),
+				matchesModulAuswahlDTO(iterator.next()),
+				matchesModulAuswahlDTO(iterator.next()),
+				matchesModulAuswahlDTO(iterator.next())
 				)
 			);
 	}
@@ -172,5 +223,72 @@ public class AnmeldungTagesschuleEventConverterTest {
 			.where(KindDTO::getGeburtsdatum, is(kindJA.getGeburtsdatum()))
 			.where(KindDTO::getGeschlecht, is(Geschlecht.WEIBLICH))
 			;
+	}
+
+	private Verfuegung generateDummyVerfuegung(Gesuch gesuch) {
+		Verfuegung verfuegung = new Verfuegung();
+		VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
+		verfuegungZeitabschnitt.setGueltigkeit(new DateRange(
+			gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(),
+			gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()));
+
+		TSCalculationResult tsCalculationResult = new TSCalculationResult();
+		tsCalculationResult.setBetreuungszeitProWoche(3);
+		tsCalculationResult.setGebuehrProStunde(BigDecimal.ONE);
+		tsCalculationResult.setVerpflegungskosten(BigDecimal.TEN);
+		tsCalculationResult.setVerpflegungskostenVerguenstigt(BigDecimal.ONE);
+		tsCalculationResult.setTotalKostenProWoche(BigDecimal.TEN);
+
+		BGCalculationResult bgCalculationResult = new BGCalculationResult();
+		bgCalculationResult.setTsCalculationResultMitPaedagogischerBetreuung(tsCalculationResult);
+		bgCalculationResult.setTsCalculationResultOhnePaedagogischerBetreuung(tsCalculationResult);
+
+		verfuegungZeitabschnitt.setBgCalculationResultAsiv(bgCalculationResult);
+		verfuegungZeitabschnitt.setBgCalculationResultGemeinde(bgCalculationResult);
+		List<VerfuegungZeitabschnitt> verfuegungZeitabschnitts = new ArrayList<>();
+		verfuegungZeitabschnitts.add(verfuegungZeitabschnitt);
+		verfuegung.setZeitabschnitte(verfuegungZeitabschnitts);
+		return verfuegung;
+	}
+
+	@Nonnull
+	private IsPojo<TagesschuleAnmeldungTarifeDTO> matchesZeitabschnitt(@Nonnull Verfuegung verfuegung) {
+		List<Matcher<? super TarifZeitabschnittDTO>> tarifZeitabschnitte = verfuegung.getZeitabschnitte().stream()
+			.map(this::matchesZeitabschnitt)
+			.collect(Collectors.toList());
+
+		return pojo(TagesschuleAnmeldungTarifeDTO.class)
+			.where(TagesschuleAnmeldungTarifeDTO::getTarifeDefinitivAkzeptiert, is(true))
+			.where(TagesschuleAnmeldungTarifeDTO::getTarifZeitabschnitte, contains(tarifZeitabschnitte));
+	}
+
+	@Nonnull
+	private IsPojo<TarifZeitabschnittDTO> matchesZeitabschnitt(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+		BigDecimal massgebendesEinkommen = zeitabschnitt.getMassgebendesEinkommen();
+		TSCalculationResult paedagogisch = zeitabschnitt.getTsCalculationResultMitPaedagogischerBetreuung();
+		TSCalculationResult nichtPaedagogisch = zeitabschnitt.getTsCalculationResultOhnePaedagogischerBetreuung();
+
+		return pojo(TarifZeitabschnittDTO.class)
+			.where(TarifZeitabschnittDTO::getVon, is(zeitabschnitt.getGueltigkeit().getGueltigAb()))
+			.where(TarifZeitabschnittDTO::getBis, is(zeitabschnitt.getGueltigkeit().getGueltigBis()))
+			.where(TarifZeitabschnittDTO::getMassgebendesEinkommen, comparesEqualTo(massgebendesEinkommen))
+			.where(TarifZeitabschnittDTO::getTarifPaedagogisch, matchesTarife(paedagogisch))
+			.where(TarifZeitabschnittDTO::getTarifNichtPaedagogisch, matchesTarife(nichtPaedagogisch));
+	}
+
+	@Nonnull
+	private Matcher<TarifDTO> matchesTarife(@Nullable TSCalculationResult result) {
+		if (result == null) {
+			return nullValue(TarifDTO.class);
+		}
+
+		BigDecimal verpflegungskostenVerguenstigt = result.getVerpflegungskostenVerguenstigt();
+
+		return pojo(TarifDTO.class)
+			.where(TarifDTO::getBetreuungsKostenProStunde, comparesEqualTo(result.getGebuehrProStunde()))
+			.where(TarifDTO::getBetreuungsMinutenProWoche, is(result.getBetreuungszeitProWoche()))
+			.where(TarifDTO::getTotalKostenProWoche, comparesEqualTo(result.getTotalKostenProWoche()))
+			.where(TarifDTO::getVerpflegungsKostenProWoche, comparesEqualTo(result.getVerpflegungskosten()))
+			.where(TarifDTO::getVerpflegungsKostenVerguenstigung, comparesEqualTo(verpflegungskostenVerguenstigt));
 	}
 }

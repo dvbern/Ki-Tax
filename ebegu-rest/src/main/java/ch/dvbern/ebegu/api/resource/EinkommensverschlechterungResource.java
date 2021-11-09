@@ -29,6 +29,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -77,6 +79,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static java.util.Objects.requireNonNull;
 
 /**
  * REST Resource fuer EinkommensverschlechterungContainer
@@ -293,5 +296,28 @@ public class EinkommensverschlechterungResource {
 		BigDecimal einkommenBetragJahrPlus1 = MathUtil.EXACT.from(sJahr2);
 		String resultRoundedAsString = einkVerschlService.calculateProzentualeDifferenz(einkommenBetragJahr, einkommenBetragJahrPlus1);
 		return Response.ok(resultRoundedAsString).build();
+	}
+
+	@ApiOperation(value = "Gibt das minimale massgebende Einkommen nach Abzug der Familiengrösse für dieses "
+		+ "Gesuch zurück", response = String.class)
+	@Nonnull
+	@GET
+	@Path("/minimalesMassgebendesEinkommen/{gesuchId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // read access to gesuch is crucial
+	public Response getMinimalesMassgebendesEinkommenForGesuch(
+		@Nonnull @Valid @PathParam("gesuchId") JaxId jaxGesuchId,
+		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException {
+
+		requireNonNull(jaxGesuchId.getId());
+
+		final Gesuch gesuch = gesuchService.findGesuch(converter.toEntityId(jaxGesuchId))
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getFinSitDokumentAccessTokenGeneratedDokument",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId nicht gefunden " + jaxGesuchId.getId()));
+
+		BigDecimal minEinkommen = einkVerschlService.getMinimalesMassgebendesEinkommenForGesuch(gesuch);
+		String json = Json.createObjectBuilder().add("minEinkommen", minEinkommen.toString()).build().toString();
+		return Response.ok(json).build();
 	}
 }
