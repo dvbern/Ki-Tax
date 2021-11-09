@@ -53,7 +53,7 @@ export class MandantService {
 
     public async initMandantCookie(): Promise<void> {
         const mandantFromCookie = MandantService.findMandant(this.cookieService.get('mandant'));
-        const mandantFromUrl =  this.parseHostnameForMandant();
+        const mandantFromUrl = this.parseHostnameForMandant();
 
         if (mandantFromCookie !== mandantFromUrl && mandantFromUrl !== KiBonMandant.NONE) {
             await this.setMandantCookie(mandantFromUrl);
@@ -80,14 +80,12 @@ export class MandantService {
     }
 
     public parseHostnameForMandant(): KiBonMandant {
-        const hostParts = this.windowRef.nativeWindow.location.hostname.split('.');
-        for (const part of hostParts) {
-            const potentialMandant = MandantService.findMandant(part);
-            if (potentialMandant !== KiBonMandant.NONE) {
-                return potentialMandant;
-            }
+        const regex = /(be|so|lu)(?=.(dvbern|kibon))/g;
+        const matches = regex.exec(this.windowRef.nativeWindow.location.hostname);
+        if (matches === null) {
+            return KiBonMandant.NONE;
         }
-        return KiBonMandant.NONE;
+        return MandantService.findMandant(matches[0]);
     }
 
     public selectMandant(mandant: string, url: string): void {
@@ -104,29 +102,39 @@ export class MandantService {
 
     public setMandantCookie(mandant: KiBonMandant): Promise<any> {
         // TODO: Restore AuthService once migrated
-        return  this.http.post(CONSTANTS.REST_API + 'auth/set-mandant', {name: mandant}).toPromise() as Promise<any>;
+        return this.http.post(CONSTANTS.REST_API + 'auth/set-mandant', {name: mandant}).toPromise() as Promise<any>;
     }
 
     public redirectToMandantSubdomain(mandant: KiBonMandant, url: string): void {
         const host = this.removeMandantFromCompleteHost();
-        this.windowRef.nativeWindow.open(`${this.windowRef.nativeWindow.location.protocol}//${mandant}.${host}/${url}`,
+        const environment = this.getEnvironmentFromCompleteHost();
+        const environmentWithMandant = environment.length > 0 ? `${environment}-${mandant}` : mandant;
+        this.windowRef.nativeWindow.open(`${this.windowRef.nativeWindow.location.protocol}//${environmentWithMandant}.${host}/${url}`,
             '_self');
     }
 
     public removeMandantFromCompleteHost(): string {
-        const completeHost = this.windowRef.nativeWindow.location.host;
         const mandantCandidates = Object.values(KiBonMandant).filter(el => el.length > 0);
+        const shortenedHost = this.windowRef.nativeWindow.location.host.split('.');
 
-        let shortenedHost = this.windowRef.nativeWindow.location.host;
-        const firstDotIdx = shortenedHost.indexOf('.');
+        if (!shortenedHost[2].includes('kibon')) {
+            return shortenedHost.slice(1, shortenedHost.length).join('.');
+        }
 
-        mandantCandidates.forEach(mandantCandidate => {
-            const idx = completeHost.substring(0, firstDotIdx).indexOf(mandantCandidate);
-            if (idx >= 0) {
-                shortenedHost = shortenedHost.substring(idx + mandantCandidate.length + 1);
+        for (const mandantCandidate of mandantCandidates) {
+            if (shortenedHost[0].includes(mandantCandidate)) {
+                return shortenedHost.slice(1, shortenedHost.length).join('.');
             }
-        });
+        }
+        return shortenedHost.join('.');
+    }
 
-        return shortenedHost;
+    private getEnvironmentFromCompleteHost(): string {
+        const environmentRegex = /([a-z]*-(kibon))?(?=(-[a-z]{2})?\.(dvbern|kibon))/;
+        const matches = this.windowRef.nativeWindow.location.host.match(environmentRegex);
+        if (matches === null) {
+            return '';
+        }
+        return matches[0];
     }
 }
