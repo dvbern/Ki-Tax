@@ -17,3 +17,6 @@
 
 ALTER TABLE application_property DROP CONSTRAINT UK_application_property_name;
 ALTER TABLE application_property ADD CONSTRAINT UK_application_property_name_mandant UNIQUE(name,mandant_id);
+
+ALTER TABLE fall DROP CONSTRAINT UK_fall_nummer;
+ALTER TABLE fall ADD CONSTRAINT UK_fall_nummer_mandant_id UNIQUE (fall_nummer, mandant_id);
