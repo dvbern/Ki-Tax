@@ -14,6 +14,8 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
+import {SharedModule} from '../../../shared/shared.module';
 import {DVInputContainerXComponent} from './dv-input-container-x.component';
 
 describe('DvInputContainerX', () => {
@@ -24,6 +26,7 @@ describe('DvInputContainerX', () => {
         await TestBed.configureTestingModule({
             declarations: [ DVInputContainerXComponent ]
         })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 

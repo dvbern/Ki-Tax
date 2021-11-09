@@ -16,6 +16,8 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
+import {SharedModule} from '../../../shared/shared.module';
 
 import {FerienbetreuungFreigabeComponent} from './ferienbetreuung-freigabe.component';
 
@@ -27,7 +29,8 @@ describe('FerienbetreuungFreigabeComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ FerienbetreuungFreigabeComponent ]
     })
-    .compileComponents();
+        .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+        .compileComponents();
   });
 
   beforeEach(() => {
