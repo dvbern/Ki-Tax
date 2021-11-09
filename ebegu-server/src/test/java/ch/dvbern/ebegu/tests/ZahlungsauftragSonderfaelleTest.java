@@ -239,7 +239,7 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 	private void assertZahlungsstatus(List<VerfuegungZeitabschnitt> alleZeitabschnitte, int startIndex,
 		VerfuegungsZeitabschnittZahlungsstatus statusFirstMonth, VerfuegungsZeitabschnittZahlungsstatus statusRestOfMonths) {
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : alleZeitabschnitte) {
-			LOG.warn(verfuegungZeitabschnitt.toString());
+			LOG.warn(verfuegungZeitabschnitt.toStringWithoutBemerkung());
 		}
 		Assert.assertSame(statusFirstMonth, alleZeitabschnitte.get(startIndex).getZahlungsstatus());
 		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+1).getZahlungsstatus());

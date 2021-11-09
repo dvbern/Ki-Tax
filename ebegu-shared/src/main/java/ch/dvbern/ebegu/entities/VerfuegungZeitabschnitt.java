@@ -649,6 +649,12 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	@Override
 	public String toString() {
+		String sb = '\t' + this.toStringWithoutBemerkung()
+			+ " Bemerkungen: " + getVerfuegungenZeitabschnittBemerkungenAsString();
+		return sb;
+	}
+
+	public String toStringWithoutBemerkung() {
 		String sb = '[' + Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigAb()) + " - "
 			+ Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigBis()) + "] "
 			+ " bgCalculationInputAsiv: " + bgCalculationInputAsiv + '\t'
@@ -657,8 +663,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			+ " bgCalculationResultGemeinde: " + bgCalculationResultGemeinde + '\t'
 			+ " Regelwerk: " + regelwerk + '\t'
 			+ " Status: " + zahlungsstatus + '\t'
-			+ " Status Mahlzeitenverguenstigung: " + zahlungsstatusMahlzeitenverguenstigung + '\t'
-			+ " Bemerkungen: " + getVerfuegungenZeitabschnittBemerkungenAsString();
+			+ " Status Mahlzeitenverguenstigung: " + zahlungsstatusMahlzeitenverguenstigung;
 		return sb;
 	}
 
