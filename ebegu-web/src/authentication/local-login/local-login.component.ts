@@ -17,6 +17,7 @@ import {Component, Input} from '@angular/core';
 import {StateService, TargetState} from '@uirouter/core';
 import {LOCALLOGIN_DATA, LocalloginDatum} from '../../app/core/constants/LOCALLOGIN_DATA';
 import {KiBonMandant} from '../../app/core/constants/MANDANTS';
+import {LogFactory} from '../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import {MandantService} from '../../app/shared/services/mandant.service';
 import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
@@ -30,6 +31,8 @@ import {TSTraegerschaft} from '../../models/TSTraegerschaft';
 import {returnToOriginalState} from '../../utils/AuthenticationUtil';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {AuthServiceRS} from '../service/AuthServiceRS.rest';
+
+const LOG = LogFactory.createLog('LocalLoginComponent');
 
 // tslint:disable:no-duplicate-string no-identical-functions
 @Component({
@@ -137,7 +140,7 @@ export class LocalLoginComponent {
 
                 this.initUsers(this.hasGemeindeLondon);
             });
-        });
+        }, error => LOG.error(error));
 
         this.applicationPropertyRS.isDevMode().then(response => {
             this.devMode = response;
