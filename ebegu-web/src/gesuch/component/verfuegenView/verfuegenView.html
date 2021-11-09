@@ -375,10 +375,13 @@
                                 <th data-translate="BETREUUNG_BIS"></th>
                                 <th data-translate="EFFEKTIVE_BETREUUNG" ng-if="vm.showPercent"></th>
                                 <th data-translate="EFFEKTIVE_BETREUUNG_IN_H" ng-if="vm.showHours"></th>
+                                <th data-translate="EFFEKTIVE_BETREUUNG_IN_D" ng-if="vm.showDays"></th>
                                 <th data-translate="ANSPRUCH" ng-if="vm.showPercent"></th>
                                 <th data-translate="ANSPRUCH_IN_H" ng-if="vm.showHours"></th>
+                                <th data-translate="ANSPRUCH_IN_D" ng-if="vm.showDays"></th>
                                 <th data-translate="VERGUENSTIGT" ng-if="vm.showPercent"></th>
                                 <th data-translate="VERGUENSTIGT_IN_H" ng-if="vm.showHours"></th>
+                                <th data-translate="VERGUENSTIGT_IN_D" ng-if="vm.showDays"></th>
                                 <th data-translate="VOLLKOSTEN"></th>
                                 <th data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN"></th>
                                 <th class="result"
@@ -401,6 +404,9 @@
                                 <td ng-if="vm.showHours"><span
                                     ng-bind="verfuegungZeitabschnitt.betreuungspensumZeiteinheit"></span>
                                 </td>
+                                <td ng-if="vm.showDays"><span
+                                    ng-bind="verfuegungZeitabschnitt.betreuungspensumZeiteinheit"></span>
+                                </td>
                                 <!-- Anspruchberechtigtes Pensum -->
                                 <td ng-if="vm.showPercent"><span
                                     ng-bind="verfuegungZeitabschnitt.anspruchberechtigtesPensum"></span>%
@@ -408,11 +414,17 @@
                                 <td ng-if="vm.showHours"><span
                                     ng-bind="verfuegungZeitabschnitt.anspruchsberechtigteAnzahlZeiteinheiten"></span>
                                 </td>
+                                <td ng-if="vm.showDays"><span
+                                    ng-bind="verfuegungZeitabschnitt.anspruchsberechtigteAnzahlZeiteinheiten"></span>
+                                </td>
                                 <!-- Vergünstigtes Pensum -->
                                 <td ng-if="vm.showPercent"><span
                                     ng-bind="verfuegungZeitabschnitt.bgPensum"></span>%
                                 </td>
                                 <td ng-if="vm.showHours"><span
+                                    ng-bind="verfuegungZeitabschnitt.verfuegteAnzahlZeiteinheiten"></span>
+                                </td>
+                                <td ng-if="vm.showDays"><span
                                     ng-bind="verfuegungZeitabschnitt.verfuegteAnzahlZeiteinheiten"></span>
                                 </td>
                                 <!-- Kosten -->
