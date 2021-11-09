@@ -83,6 +83,8 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
@@ -109,6 +111,7 @@ import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.SearchUtil;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MitteilungUtil;
@@ -922,6 +925,53 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		final List<Mitteilung> result = persistence.getCriteriaResults(query);
 		return !result.isEmpty();
+	}
+
+	@Override
+	public void adaptOffeneMutationsmitteilungenToInstiGueltigkeitChange(
+			@Nonnull Institution institution, @Nonnull DateRange gueltigkeit) {
+		Collection<Betreuungsmitteilung> offeneMutationsmitteilungenForInstitution =
+				findAllBetreuungsMitteilungenForInstitution(institution);
+
+		offeneMutationsmitteilungenForInstitution.forEach(mitteilung -> {
+			mitteilung.setBetreuungspensen(betreuungService.capBetreuungspensenToGueltigkeit(
+					mitteilung.getBetreuungspensen(),
+					gueltigkeit));
+
+			updateMessage(mitteilung);
+
+			persistence.merge(mitteilung);
+		});
+	}
+
+	private void updateMessage(Betreuungsmitteilung mitteilung) {
+		assert mitteilung.getBetreuung() != null;
+		final Locale locale = LocaleThreadLocal.get();
+
+		final boolean mvzEnabled = einstellungService.findEinstellung(
+						EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
+						mitteilung.getBetreuung().extractGemeinde(),
+						mitteilung.getBetreuung().extractGesuchsperiode())
+				.getValueAsBoolean();
+
+		mitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldung(
+				mitteilung.getBetreuungspensen(),
+				mvzEnabled,
+				locale));
+	}
+
+	private Collection<Betreuungsmitteilung> findAllBetreuungsMitteilungenForInstitution(Institution institution) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Betreuungsmitteilung> query = cb.createQuery(Betreuungsmitteilung.class);
+		Root<Betreuungsmitteilung> root = query.from(Betreuungsmitteilung.class);
+
+		Join<Betreuungsmitteilung, Betreuung> betreuungJoin = root.join(Mitteilung_.betreuung);
+		Join<Betreuung, InstitutionStammdaten> stammdatenJoin = betreuungJoin.join(AbstractPlatz_.institutionStammdaten);
+
+		Predicate predicateInstitution = cb.equal(stammdatenJoin.get(InstitutionStammdaten_.institution), institution);
+
+		query.where(predicateInstitution);
+		return persistence.getCriteriaResults(query);
 	}
 
 	@Nonnull

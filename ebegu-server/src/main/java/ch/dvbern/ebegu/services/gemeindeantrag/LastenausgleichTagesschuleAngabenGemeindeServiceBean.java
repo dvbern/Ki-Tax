@@ -22,7 +22,6 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +41,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
@@ -184,7 +182,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	public Optional<LastenausgleichTagesschuleAngabenGemeindeContainer> findLastenausgleichTagesschuleAngabenGemeindeContainer(
 		@Nonnull String id
 	) {
-		Objects.requireNonNull(id, "id muss gesetzt sein");
+		Objects.requireNonNull(id, "containerId muss gesetzt sein");
 
 		LastenausgleichTagesschuleAngabenGemeindeContainer container =
 			persistence.find(LastenausgleichTagesschuleAngabenGemeindeContainer.class, id);
@@ -840,6 +838,36 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			erwarteteBetreuungsstunden = erwarteteBetreuungsstunden.add(result);
 		};
 		return erwarteteBetreuungsstunden;
+	}
+
+	@Override
+	public void savePrognose(@Nonnull String containerId, @Nonnull BigDecimal prognose) {
+		LastenausgleichTagesschuleAngabenGemeindeContainer currentAntrag =
+				findLastenausgleichTagesschuleAngabenGemeindeContainer(containerId)
+						.orElseThrow(() -> new EbeguEntityNotFoundException(
+								"savePrognose",
+								ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+								containerId)
+						);
+		authorizer.checkWriteAuthorization(currentAntrag);
+
+		currentAntrag.setBetreuungsstundenPrognose(prognose);
+		persistence.merge(currentAntrag);
+	}
+
+	@Nonnull
+	@Override
+	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeAbschliessen(
+			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
+		authorizer.checkWriteAuthorization(container);
+
+		Preconditions.checkState(
+				container.getBetreuungsstundenPrognose() != null,
+				"LATS Antrag kann ohne Prognose Betreuungsstunden nicht abgeschlossen werden"
+		);
+
+		container.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.ABGESCHLOSSEN);
+		return persistence.merge(container);
 	}
 }
 

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -64,6 +65,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungMonitoring;
 import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
+import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
@@ -102,6 +104,7 @@ import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageAddedEvent;
 import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageEventConverter;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.FilterFunctions;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -120,7 +123,7 @@ import org.slf4j.LoggerFactory;
 @Local(BetreuungService.class)
 public class BetreuungServiceBean extends AbstractBaseService implements BetreuungService {
 
-	public static final String BETREUUNG_DARF_NICHT_NULL_SEIN = "betreuung darf nicht null sein";
+	public static final String BETREUUNG_DARF_NICHT_NULL_SEIN = "pensen darf nicht null sein";
 	public static final String ID_MUSS_GESETZT_SEIN = "id muss gesetzt sein";
 	public static final Institution[] INSTITUTIONS = new Institution[0];
 
@@ -1320,5 +1323,51 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
 		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
+	}
+
+	@Nonnull
+	@Override
+	public Set<BetreuungsmitteilungPensum> capBetreuungspensenToGueltigkeit(
+			@Nonnull Set<BetreuungsmitteilungPensum> pensen,
+			@Nonnull DateRange gueltigkeit) {
+
+		for (Iterator<BetreuungsmitteilungPensum> i = pensen.iterator(); i.hasNext();) {
+			BetreuungsmitteilungPensum betreuungsmitteilungPensum = i.next();
+
+			capBetreuungsmitteilungStart(betreuungsmitteilungPensum, gueltigkeit);
+			capBetreuungsmitteilungEnd(betreuungsmitteilungPensum, gueltigkeit);
+			removeInvalidBetreuungsmitteilungPensumFromSet(i, betreuungsmitteilungPensum);
+		}
+
+		return pensen;
+	}
+
+	private void capBetreuungsmitteilungEnd(
+			@Nonnull BetreuungsmitteilungPensum betreuungsmitteilungPensum,
+			@Nonnull DateRange gueltigkeit) {
+		if (betreuungsmitteilungPensum.getGueltigkeit().endsAfter(gueltigkeit)) {
+			betreuungsmitteilungPensum.setGueltigkeit(new DateRange(
+					betreuungsmitteilungPensum.getGueltigkeit().getGueltigAb(),
+					gueltigkeit.getGueltigBis()));
+		}
+	}
+
+	private void capBetreuungsmitteilungStart(
+			@Nonnull BetreuungsmitteilungPensum betreuungsmitteilungPensum,
+			@Nonnull DateRange gueltigkeit) {
+		if (betreuungsmitteilungPensum.getGueltigkeit().startsBefore(gueltigkeit)) {
+			betreuungsmitteilungPensum.setGueltigkeit(new DateRange(
+					gueltigkeit.getGueltigAb(),
+					betreuungsmitteilungPensum.getGueltigkeit().getGueltigBis()));
+		}
+	}
+
+	private void removeInvalidBetreuungsmitteilungPensumFromSet(
+			Iterator<BetreuungsmitteilungPensum> i,
+			BetreuungsmitteilungPensum betreuungsmitteilungPensum) {
+		if (!betreuungsmitteilungPensum.getGueltigkeit().isValid()) {
+			persistence.remove(betreuungsmitteilungPensum);
+			i.remove();
+		}
 	}
 }

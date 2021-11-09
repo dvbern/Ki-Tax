@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.api.resource.gemeindeantrag;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,21 +32,26 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.converter.JaxFerienbetreuungConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungFormular;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungDokument;
+import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungDokumentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -80,6 +86,8 @@ public class FerienbetreuungDokumentResource {
 
 	@Inject
 	private FerienbetreuungDokumentService ferienbetreuungDokumentService;
+
+
 
 
 	@ApiOperation(value = "Gibt alle Ferienbetreuungdokumente für den FerienbetreuungContainer zurück",
@@ -123,6 +131,41 @@ public class FerienbetreuungDokumentResource {
 		ferienbetreuungDokumentService.removeDokument(ferienbetreuungDokument);
 
 		return Response.ok().build();
+	}
+
+
+
+	@ApiOperation(
+		value = "Erstellt eine Docx Verfügung zum Ferienbetreuung für den übergebenen Gemeindeantrag",
+		response = Response.class)
+	@POST
+	@Path("/docx-erstellen/{containerJaxId}/{sprache}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Response dokumentErstellen(
+		@Nonnull @NotNull @PathParam("containerJaxId") JaxId containerJaxId,
+		@Nonnull @PathParam("sprache") Sprache sprache,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(containerJaxId);
+		Objects.requireNonNull(containerJaxId.getId());
+
+		byte[] document = ferienbetreuungDokumentService.createDocx(containerJaxId.getId(), sprache);
+
+		if (document.length > 0) {
+			try {
+				return RestUtil.buildDownloadResponse(true, ".docx",
+					"application/octet-stream", document);
+
+			} catch (IOException e) {
+				throw new EbeguRuntimeException("dokumentErstellen", "error occured while building response", e);
+			}
+		}
+
+		throw new EbeguRuntimeException("dokumentErstellen", "Ferienbetreuung Template has no content");
+
 	}
 
 }

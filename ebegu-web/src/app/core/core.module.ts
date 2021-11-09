@@ -18,7 +18,15 @@
 import {registerLocaleData} from '@angular/common';
 // tslint:disable-next-line:match-default-export-name
 import deCH from '@angular/common/locales/de-CH';
-import {ErrorHandler, LOCALE_ID, ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
+import {
+    APP_INITIALIZER,
+    ErrorHandler,
+    LOCALE_ID,
+    ModuleWithProviders,
+    NgModule,
+    Optional,
+    SkipSelf,
+} from '@angular/core';
 import {MatPaginatorIntl} from '@angular/material/paginator';
 import {TranslateModule, TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
@@ -43,6 +51,10 @@ export function paginatorI18nFactory(translateService: TranslateService): Pagina
     return new PaginatorI18n(translateService);
 }
 
+export function initMandantCookie(mandantService: MandantService): () => Promise<any> {
+    return () => mandantService.initMandantCookie();
+}
+
 @NgModule({
     imports: [
         // only those modules required by the providers/components of the core module
@@ -52,6 +64,12 @@ export function paginatorI18nFactory(translateService: TranslateService): Pagina
     ],
     providers: [
         // Insert global singleton services here that have no configuration (ExceptionService, LoggerService etc.)
+        {
+            provide: APP_INITIALIZER,
+            useFactory: initMandantCookie,
+            deps: [MandantService],
+            multi: true,
+        },
         ...UPGRADED_PROVIDERS,
         ...UPGRADED_HTTP_INTERCEPTOR_PROVIDERS,
         HTTP_INTERCEPTOR_PROVIDERS,
@@ -66,7 +84,7 @@ export function paginatorI18nFactory(translateService: TranslateService): Pagina
     declarations: [
         // Insert app wide single use components (NavComponent, SpinnerComponent). Try not to declare anything here.
         // This module should be used only to provide services
-    ]
+    ],
 })
 export class CoreModule {
 

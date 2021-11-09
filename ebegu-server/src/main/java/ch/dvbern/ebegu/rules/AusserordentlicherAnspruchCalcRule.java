@@ -35,12 +35,20 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 /**
  * Regel für den ausserordentlichen Anspruch. Sie beachtet:
  * Ausserordentliches Pensum übersteuert den Anspruch, der aus anderen Reglen berechnet wurde, AUSSER dieser wäre
- * höher. Diese Regel kann also den Anspruch nur hinaufsetzen, nie hinunter.
+ * höher. Die maximale Differenz zwischen dem effektiven Anspruch und dem ausserodentlichen Anspruch, darf nicht mehr als der
+ * konfigurierte Wert sein.
+ * Diese Regel kann also den Anspruch nur hinaufsetzen, nie hinunter.
  */
 public class AusserordentlicherAnspruchCalcRule extends AbstractCalcRule {
 
-	public AusserordentlicherAnspruchCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+	private final int maxDifferenzBeschaeftigungspensum;
+
+	public AusserordentlicherAnspruchCalcRule(
+		@Nonnull DateRange validityPeriod,
+		int maxDifferenzBeschaeftigungspensum,
+		@Nonnull Locale locale) {
 		super(RuleKey.AUSSERORDENTLICHER_ANSPRUCH, RuleType.GRUNDREGEL_CALC, RuleValidity.ASIV, validityPeriod, locale);
+		this.maxDifferenzBeschaeftigungspensum = maxDifferenzBeschaeftigungspensum;
 	}
 
 	@Override
@@ -54,6 +62,12 @@ public class AusserordentlicherAnspruchCalcRule extends AbstractCalcRule {
 		@Nonnull BGCalculationInput inputData) {
 		int ausserordentlicherAnspruch = inputData.getAusserordentlicherAnspruch();
 		int pensumAnspruch = inputData.getAnspruchspensumProzent();
+
+		if(isMaxDifferenzPensenUeberschritten(inputData.getMinimalErforderlichesPensum(), getEffektivesErwerbspensum(inputData))) {
+			inputData.setAusserordentlicherAnspruch(0);
+			return;
+		}
+
 		// Es wird der grössere der beiden Werte genommen!
 		if (ausserordentlicherAnspruch > pensumAnspruch) {
 			inputData.setAnspruchspensumProzent(ausserordentlicherAnspruch);
@@ -61,5 +75,22 @@ public class AusserordentlicherAnspruchCalcRule extends AbstractCalcRule {
 				MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG,
 				getLocale());
 		}
+	}
+
+	private int getEffektivesErwerbspensum(BGCalculationInput inputData) {
+		int erwerbspensumOffset = inputData.getErwerbspensumGS2() == null ? 0 : 100;
+		return calculateErwerbspensum(inputData.getErwerbspensumGS1()) + calculateErwerbspensum(inputData.getErwerbspensumGS2()) - erwerbspensumOffset;
+	}
+
+	private int calculateErwerbspensum(Integer erwerbspensum) {
+		if(erwerbspensum == null) {
+			return 0;
+		}
+
+		return erwerbspensum > 100 ? 100 : erwerbspensum;
+	}
+
+	private boolean isMaxDifferenzPensenUeberschritten(int erforderlichesPensum, int effektivesPensum) {
+		return Math.abs(effektivesPensum-erforderlichesPensum) > this.maxDifferenzBeschaeftigungspensum;
 	}
 }

@@ -19,6 +19,7 @@ import {APP_BASE_HREF} from '@angular/common';
 import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
 import {I18nServiceRSRest} from '../../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared.module';
 
@@ -47,6 +48,7 @@ describe('BenutzerRolleComponent', () => {
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
         })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     }));
 

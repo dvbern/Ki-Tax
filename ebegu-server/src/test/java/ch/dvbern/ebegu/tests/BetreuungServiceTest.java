@@ -16,8 +16,11 @@
 package ch.dvbern.ebegu.tests;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.security.auth.login.LoginException;
@@ -27,6 +30,7 @@ import ch.dvbern.ebegu.entities.BelegungFerieninsel;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
+import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -46,7 +50,9 @@ import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
@@ -450,6 +456,55 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(ebc1);
 		Assert.assertNotNull(ebc2);
 		Assert.assertEquals(ebc1, ebc2);
+	}
+
+	@Test
+	public void mapBetreuungspensenToSmallerGueltigkeit() {
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now(), null, gesuchsperiode);
+		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
+
+		Betreuung persistedBetreuung = betreuungService.saveBetreuung(betreuung, false, null);
+
+		Assert.assertNotNull(persistedBetreuung);
+		Assert.assertNotNull(persistedBetreuung.getBetreuungspensumContainers());
+
+		final Betreuungsmitteilung oldMitteilung = TestDataUtil.createBetreuungmitteilung(betreuung.extractGesuch()
+						.getDossier(), empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+				sender, MitteilungTeilnehmerTyp.INSTITUTION);
+		oldMitteilung.setBetreuung(betreuung);
+
+		BetreuungsmitteilungPensum pensum1 = new BetreuungsmitteilungPensum();
+		pensum1.setBetreuungsmitteilung(oldMitteilung);
+		pensum1.setGueltigkeit(new DateRange(LocalDate.of(2017, 8, 1), LocalDate.of(2017, 8, 31)));
+		pensum1.setPensum(MathUtil.DEFAULT.from(30));
+
+		BetreuungsmitteilungPensum pensum2 = new BetreuungsmitteilungPensum();
+		pensum2.setBetreuungsmitteilung(oldMitteilung);
+		pensum2.setGueltigkeit(new DateRange(LocalDate.of(2017, 9, 1), LocalDate.of(2017, 9, 30)));
+		pensum2.setPensum(MathUtil.DEFAULT.from(30));
+
+		BetreuungsmitteilungPensum pensum3 = new BetreuungsmitteilungPensum();
+		pensum3.setBetreuungsmitteilung(oldMitteilung);
+		pensum3.setGueltigkeit(new DateRange(LocalDate.of(2017, 10, 1), LocalDate.of(2017, 10, 31)));
+		pensum1.setPensum(MathUtil.DEFAULT.from(30));
+
+		BetreuungsmitteilungPensum pensum4 = new BetreuungsmitteilungPensum();
+		pensum4.setBetreuungsmitteilung(oldMitteilung);
+		pensum4.setGueltigkeit(new DateRange(LocalDate.of(2017, 11, 1), LocalDate.of(2017, 11, 30)));
+		pensum4.setPensum(MathUtil.DEFAULT.from(30));
+
+		oldMitteilung.setBetreuungspensen(new HashSet<>());
+		oldMitteilung.getBetreuungspensen().add(pensum1);
+		oldMitteilung.getBetreuungspensen().add(pensum2);
+		oldMitteilung.getBetreuungspensen().add(pensum3);
+		oldMitteilung.getBetreuungspensen().add(pensum4);
+
+		DateRange gueltigkeit = new DateRange(LocalDate.of(2017, 8, 1), LocalDate.of(2017, 10, 20));
+		Set<BetreuungsmitteilungPensum> cappedPensne = betreuungService.capBetreuungspensenToGueltigkeit(oldMitteilung.getBetreuungspensen(), gueltigkeit);
+
+		Assert.assertEquals(cappedPensne.size(), 3);
+		Assert.assertEquals(cappedPensne.stream().filter(pensum -> pensum.getGueltigkeit().getGueltigAb().getMonth().equals(
+				Month.OCTOBER)).findFirst().get().getGueltigkeit().getGueltigBis().getDayOfMonth(), 20);
 	}
 
 	private void prepareInstitutionsstammdaten(Betreuung betreuung, LocalDate kitaFrom, LocalDate kitaUntil) {

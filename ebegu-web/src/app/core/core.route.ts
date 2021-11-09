@@ -17,14 +17,15 @@ import {StateService} from '@uirouter/core';
 import * as angular from 'angular';
 import * as moment from 'moment';
 import * as Raven from 'raven-js';
+import {take} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {environment} from '../../environments/environment';
 import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
-import {GesuchModelManager} from '../../gesuch/service/gesuchModelManager';
 import {GlobalCacheService} from '../../gesuch/service/globalCacheService';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
+import {MandantService} from '../shared/services/mandant.service';
 import {LogFactory} from './logging/LogFactory';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from './service/gesuchsperiodeRS.rest';
@@ -47,7 +48,6 @@ appRun.$inject = [
     'AuthServiceRS',
     '$state',
     '$location',
-    'GesuchModelManager',
     'GesuchsperiodeRS',
     'GlobalCacheService',
     'GemeindeRS',
@@ -65,24 +65,28 @@ export function appRun(
     authServiceRS: AuthServiceRS,
     $state: StateService,
     $location: ILocationService,
-    gesuchModelManager: GesuchModelManager,
     gesuchsperiodeRS: GesuchsperiodeRS,
     globalCacheService: GlobalCacheService,
     gemeindeRS: GemeindeRS,
     LOCALE_ID: string,
 ): void {
     const applicationPropertyRS = $injector.get<ApplicationPropertyRS>('ApplicationPropertyRS');
-    applicationPropertyRS.getPublicPropertiesCached()
-        .then(response => {
-            if (environment.test) {
-                return;
-            }
-            if (response.sentryEnvName) {
-                Raven.setEnvironment(response.sentryEnvName);
-            } else {
-                Raven.setEnvironment('unspecified');
-            }
-        });
+    const mandantService = $injector.get<MandantService>('MandantService');
+    mandantService.mandant$.pipe(
+        take(1),
+    ).subscribe(() => {
+        applicationPropertyRS.getPublicPropertiesCached()
+            .then(response => {
+                if (environment.test) {
+                    return;
+                }
+                if (response.sentryEnvName) {
+                    Raven.setEnvironment(response.sentryEnvName);
+                } else {
+                    Raven.setEnvironment('unspecified');
+                }
+            });
+    }, error => LOG.error(error));
 
     function onNotAuthenticated(): void {
         authServiceRS.clearPrincipal();
@@ -113,9 +117,6 @@ export function appRun(
         gesuchsperiodeRS.updateActiveGesuchsperiodenList();
         gemeindeRS.getAllGemeinden();
         gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
-        gesuchModelManager.updateFachstellenAnspruchList();
-        gesuchModelManager.updateFachstellenErweiterteBetreuungList();
-
     }
 
     moment.locale(LOCALE_ID);

@@ -452,7 +452,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 	@Nonnull
 	@Override
-	public FerienbetreuungAngabenContainer ferienbetreuungAngabenAbschliessen(
+	public FerienbetreuungAngabenContainer ferienbetreuungAngabenFreigeben(
 		@Nonnull FerienbetreuungAngabenContainer container) {
 		Preconditions.checkArgument(
 			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE,
@@ -561,6 +561,36 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 					.forEach(dokument -> persistence.remove(dokument));
 				persistence.remove(antrag);
 			});
+	}
+
+	@Nonnull
+	public FerienbetreuungAngabenContainer antragAbschliessen(@Nonnull FerienbetreuungAngabenContainer container) {
+			Preconditions.checkArgument(
+				container.getStatus() == FerienbetreuungAngabenStatus.GEPRUEFT,
+				"FerienbetreuungAngabenContainer must be in state GEPRUEFT"
+			);
+			Preconditions.checkArgument(
+				container.getAngabenKorrektur() != null,
+				"FerienbetreuungAngabenContainer must not be null"
+			);
+
+			container.setStatus(FerienbetreuungAngabenStatus.ABGESCHLOSSEN);
+			return persistence.merge(container);
+	}
+
+	@Nonnull
+	public FerienbetreuungAngabenContainer zurueckAnKanton(@Nonnull FerienbetreuungAngabenContainer container) {
+			Preconditions.checkArgument(
+				container.getStatus() == FerienbetreuungAngabenStatus.GEPRUEFT,
+				"FerienbetreuungAngabenContainer must be in state GEPRUEFT"
+			);
+			Preconditions.checkArgument(
+				container.getAngabenKorrektur() != null,
+				"FerienbetreuungAngabenContainer must not be null"
+			);
+
+			container.setStatus(FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON);
+			return persistence.merge(container);
 	}
 }
 

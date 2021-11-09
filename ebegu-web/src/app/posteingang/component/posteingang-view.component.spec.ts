@@ -52,6 +52,7 @@ describe('PosteingangViewComponent', () => {
     const uiRouterGlobals = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
         ['$current']);
     const benutzerSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, ['getAllBenutzerBgTsOrGemeinde']);
+    authRSSpy.principal$ = of(new TSBenutzer());
 
     beforeEach(() => {
         TestBed.configureTestingModule({

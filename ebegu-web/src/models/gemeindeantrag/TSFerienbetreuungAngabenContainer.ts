@@ -83,7 +83,7 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
         return [
             FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON,
             FerienbetreuungAngabenStatus.GEPRUEFT,
-            FerienbetreuungAngabenStatus.VERFUEGT,
+            FerienbetreuungAngabenStatus.ABGESCHLOSSEN,
             FerienbetreuungAngabenStatus.ABGELEHNT
         ].includes(this.status);
     }
@@ -99,16 +99,23 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
     public isGeprueft(): boolean {
         return [
             FerienbetreuungAngabenStatus.GEPRUEFT,
-            FerienbetreuungAngabenStatus.VERFUEGT,
+            FerienbetreuungAngabenStatus.ABGESCHLOSSEN,
             FerienbetreuungAngabenStatus.ABGELEHNT
         ].includes(this.status);
     }
 
-    public calculateBerechnungen(): void {
+    public isAbgeschlossen(): boolean {
+        return [
+            FerienbetreuungAngabenStatus.ABGESCHLOSSEN,
+            FerienbetreuungAngabenStatus.ABGELEHNT
+        ].includes(this.status);
+    }
+
+    public calculateBerechnungen(pauschale: number, pauschaleSonderschueler: number): void {
         if (this.angabenKorrektur === null) {
             throw new Error('Angaben Korrektur must not be null to complete the calculations');
         }
-        const berechnungen = new TSFerienbetreuungBerechnung();
+        const berechnungen = new TSFerienbetreuungBerechnung(pauschale, pauschaleSonderschueler);
         if (!this.angabenKorrektur.kostenEinnahmen.isAbgeschlossen()) {
             throw new Error('Kosten Einnahmen müssen abgeschlossen sein um die Berchnungen durchzuführen');
         }

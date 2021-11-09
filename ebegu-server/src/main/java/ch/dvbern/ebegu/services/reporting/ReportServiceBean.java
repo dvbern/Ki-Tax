@@ -2363,6 +2363,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		ferienbetreuungDataRow.setBfsNummerGemeinde(ferienbetreuungAngabenContainer.getGemeinde().getBfsNummer());
 		ferienbetreuungDataRow.setPeriode(ferienbetreuungAngabenContainer.getGesuchsperiode().getGesuchsperiodeString());
 		ferienbetreuungDataRow.setStatus(ferienbetreuungAngabenContainer.getStatus());
+		ferienbetreuungDataRow.setTimestampMutiert(ferienbetreuungAngabenContainer.getTimestampMutiert());
 		ferienbetreuungDataRow.setKommentar(ferienbetreuungAngabenContainer.getInternerKommentar());
 
 		setStammdatenValues(ferienbetreuungDataRow, ferienbetreuungAngaben.getFerienbetreuungAngabenStammdaten());

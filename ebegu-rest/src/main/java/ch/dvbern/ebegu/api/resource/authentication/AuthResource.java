@@ -163,8 +163,7 @@ public class AuthResource {
 	@PermitAll
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response login(
-			@Nonnull JaxBenutzer loginElement,
-			@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN) Cookie authTokenCookie) {
+			@Nonnull JaxBenutzer loginElement) {
 		if (configuration.isDummyLoginEnabled(converter.mandantToEntity(loginElement.getMandant(), new Mandant()))) {
 
 			// zuerst im Container einloggen, sonst schlaegt in den Entities die Mandanten-Validierung fehl

@@ -20,6 +20,7 @@ import {StateService} from '@uirouter/core';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
@@ -53,7 +54,9 @@ describe('GemeindeListComponent', () => {
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
             declarations: [GemeindeListComponent],
-        }).compileComponents();
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
 
         gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(
             [TestDataUtil.createGemeindeParis(), TestDataUtil.createGemeindeLondon()]));

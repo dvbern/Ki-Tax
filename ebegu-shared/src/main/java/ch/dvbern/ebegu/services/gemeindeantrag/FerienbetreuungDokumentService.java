@@ -23,6 +23,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
+import ch.dvbern.ebegu.enums.Sprache;
 
 /**
  * Service fuer die Dokumente Ferienbetreuungen
@@ -36,4 +37,6 @@ public interface FerienbetreuungDokumentService {
 	void removeDokument(@Nonnull FerienbetreuungDokument dokument);
 
 	@Nonnull List<FerienbetreuungDokument> findDokumente(@Nonnull String ferienbetreuungContainerId);
+
+	byte[] createDocx(@Nonnull String containerId, @Nonnull Sprache sprache);
 }

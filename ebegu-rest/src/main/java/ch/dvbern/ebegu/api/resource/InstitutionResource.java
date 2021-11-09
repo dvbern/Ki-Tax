@@ -93,6 +93,7 @@ import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.MandantService;
+import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import com.google.common.base.Preconditions;
@@ -147,6 +148,9 @@ public class InstitutionResource {
 
 	@Inject
 	private MandantService mandantService;
+
+	@Inject
+	private MitteilungService mitteilungService;
 
 	@ApiOperation(value = "Creates a new Institution in the database.", response = JaxInstitution.class)
 	@Nullable
@@ -310,6 +314,8 @@ public class InstitutionResource {
 			.flatMap(id -> institutionStammdatenService.findInstitutionStammdaten(id))
 			.orElseGet(() -> new InstitutionStammdaten(institution));
 
+		DateRange oldGueltigkeit = new DateRange(stammdaten.getGueltigkeit());
+
 		converter.institutionStammdatenToEntity(update.getStammdaten(), stammdaten);
 
 		Preconditions.checkArgument(
@@ -339,6 +345,10 @@ public class InstitutionResource {
 
 		InstitutionStammdaten persistedInstData =
 			institutionStammdatenService.saveInstitutionStammdaten(stammdaten);
+
+		if (institutionStammdatenService.isGueltigkeitDecrease(oldGueltigkeit, stammdaten.getGueltigkeit())) {
+			mitteilungService.adaptOffeneMutationsmitteilungenToInstiGueltigkeitChange(stammdaten.getInstitution(), stammdaten.getGueltigkeit());
+		}
 
 		institutionStammdatenService.fireStammdatenChangedEvent(persistedInstData);
 

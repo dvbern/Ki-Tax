@@ -22,6 +22,7 @@ import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS
 import {TSSprache} from '../../../../../models/enums/TSSprache';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../../core/logging/LogFactory';
@@ -47,8 +48,8 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
 
     public latsContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
     private principal: TSBenutzer | null;
-    public betreuungsstundenPrognose: number;
     public betreuungsstundenPrognoseFromKiBon: number;
+    public hasSavedBetreuungsstundenPrognose: boolean;
 
     public constructor(
         private readonly translate: TranslateService,
@@ -69,6 +70,9 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
             this.principal = values[1];
             this.canViewDokumentErstellenButton.next(this.principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()));
             this.initErwarteteBetreuungsstundenFromKiBon();
+            this.hasSavedBetreuungsstundenPrognose =
+                EbeguUtil.isNotNullOrUndefined(this.latsContainer.betreuungsstundenPrognose);
+            this.cd.markForCheck();
         }, () => this.errorService.addMesageAsInfo(this.translate.instant('DATA_RETRIEVAL_ERROR')));
     }
 
@@ -77,7 +81,7 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
         this.latsService.latsDocxErstellen(
             this.latsContainer,
             TSSprache.DEUTSCH,
-            this.betreuungsstundenPrognose || this.betreuungsstundenPrognoseFromKiBon,
+            this.latsContainer.betreuungsstundenPrognose,
         ).subscribe(
             response => {
                 this.createDownloadFile(response, TSSprache.DEUTSCH);
@@ -96,7 +100,7 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
         this.latsService.latsDocxErstellen(
             this.latsContainer,
             TSSprache.FRANZOESISCH,
-            this.betreuungsstundenPrognose || this.betreuungsstundenPrognoseFromKiBon,
+            this.latsContainer.betreuungsstundenPrognose,
         ).subscribe(
             response => {
                 this.createDownloadFile(response, TSSprache.FRANZOESISCH);
@@ -133,5 +137,20 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
                 this.betreuungsstundenPrognoseFromKiBon = res;
                 this.cd.markForCheck();
             }, err => LOG.error(err));
+    }
+
+    public saveContainerWithPrognose(): void {
+        this.latsService.saveLATSAngabenGemeindePrognose(this.latsContainer.id,
+            this.latsContainer.betreuungsstundenPrognose);
+    }
+
+    public antragAbschliessen(): void {
+        this.latsService.latsGemeindeAntragAbschliessen(this.latsContainer);
+    }
+
+    public isAbschliessenVisible(): boolean {
+        return this.hasSavedBetreuungsstundenPrognose
+            && this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles())
+            && !this.latsContainer?.isAbgeschlossen();
     }
 }

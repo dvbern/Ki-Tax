@@ -19,6 +19,7 @@ import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService} from '@uirouter/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
@@ -32,8 +33,10 @@ describe('InstitutionListComponent', () => {
 
     beforeEach(waitForAsync(() => {
         const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
-            ['getInstitutionenEditableForCurrentBenutzer',
-            'getInstitutionenListDTOEditableForCurrentBenutzer']);
+            [
+                'getInstitutionenEditableForCurrentBenutzer',
+                'getInstitutionenListDTOEditableForCurrentBenutzer',
+            ]);
         const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
         const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
@@ -54,7 +57,9 @@ describe('InstitutionListComponent', () => {
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
             declarations: [InstitutionListComponent],
-        }).compileComponents();
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
 
         insitutionServiceSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(Promise.resolve([]));
         insitutionServiceSpy.getInstitutionenListDTOEditableForCurrentBenutzer.and.returnValue(Promise.resolve([]));

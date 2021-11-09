@@ -21,7 +21,6 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.UserRole;
-import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
@@ -30,8 +29,7 @@ public class FreigabeStep implements WizardStep<TagesschuleWizard> {
 
 	@Override
 	public void next(@Nonnull TagesschuleWizard tagesschuleWizard) {
-		if (tagesschuleWizard.getRole().isRoleGemeindeOrTS()
-			|| tagesschuleWizard.getRole().isRoleMandant()
+		if (tagesschuleWizard.getRole().isRoleMandant()
 			|| tagesschuleWizard.getRole().isSuperadmin()) {
 			tagesschuleWizard.setStep(new LastenausgleichStep());
 		}
@@ -50,6 +48,9 @@ public class FreigabeStep implements WizardStep<TagesschuleWizard> {
 	public WizardStateEnum getStatus(@Nonnull TagesschuleWizard wizard) {
 		// IF ALL DATA Filled RETURN OK
 		// IF NOT KO
+		if (wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAntragAbgeschlossen()) {
+			return WizardStateEnum.OK;
+		}
 		if (wizard.getRole().isRoleGemeindeabhaengig()) {
 			return wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAtLeastInBearbeitungKanton() ?
 				WizardStateEnum.OK :

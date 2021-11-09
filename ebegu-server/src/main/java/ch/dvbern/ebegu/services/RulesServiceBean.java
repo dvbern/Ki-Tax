@@ -57,16 +57,7 @@ public class RulesServiceBean extends AbstractBaseService implements RulesServic
 	) {
 		BetreuungsgutscheinConfigurator ruleConfigurator = new BetreuungsgutscheinConfigurator();
 		Set<EinstellungKey> keysToLoad = ruleConfigurator.getRequiredParametersForGemeinde();
-		Map<EinstellungKey, Einstellung> einstellungen = loadRuleParameters(gemeinde, gesuchsperiode, keysToLoad);
+		Map<EinstellungKey, Einstellung> einstellungen = einstellungService.loadRuleParameters(gemeinde, gesuchsperiode, keysToLoad);
 		return ruleConfigurator.configureRulesForMandant(gemeinde, einstellungen, kitaxParameterDTO, locale);
-	}
-
-	private Map<EinstellungKey, Einstellung> loadRuleParameters(Gemeinde gemeinde, Gesuchsperiode gesuchsperiode, Set<EinstellungKey> keysToLoad) {
-		Map<EinstellungKey, Einstellung> ebeguRuleParameters = new HashMap<>();
-		keysToLoad.forEach(currentParamKey -> {
-			Einstellung einstellung = einstellungService.findEinstellung(currentParamKey, gemeinde, gesuchsperiode);
-			ebeguRuleParameters.put(einstellung.getKey(), einstellung);
-		});
-		return ebeguRuleParameters;
 	}
 }

@@ -112,7 +112,7 @@ public interface FerienbetreuungService {
 		@Nonnull FerienbetreuungAngabenStammdaten stammdaten);
 
 	@Nonnull
-	FerienbetreuungAngabenContainer ferienbetreuungAngabenAbschliessen(
+	FerienbetreuungAngabenContainer ferienbetreuungAngabenFreigeben(
 		@Nonnull FerienbetreuungAngabenContainer container);
 
 	@Nonnull
@@ -123,4 +123,8 @@ public interface FerienbetreuungService {
 		@Nonnull FerienbetreuungAngabenContainer container);
 
 	void deleteFerienbetreuungAntragIfExists(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
+
+	@Nonnull FerienbetreuungAngabenContainer antragAbschliessen(@Nonnull FerienbetreuungAngabenContainer container);
+
+	@Nonnull FerienbetreuungAngabenContainer zurueckAnKanton(@Nonnull FerienbetreuungAngabenContainer container);
 }

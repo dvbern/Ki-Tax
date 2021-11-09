@@ -121,6 +121,8 @@ public class JaxBetreuung extends JaxAbstractDTO {
 	@NotNull
 	private List<JaxAnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts = new ArrayList<>();
 
+	private boolean eingewoehnung = false;
+
 	// transient (Not stored on server, just an information for client)
 	private String bgNummer;
 
@@ -356,5 +358,13 @@ public class JaxBetreuung extends JaxAbstractDTO {
 
 	public void setAnmeldungTagesschuleZeitabschnitts(List<JaxAnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts) {
 		this.anmeldungTagesschuleZeitabschnitts = anmeldungTagesschuleZeitabschnitts;
+	}
+
+	public boolean isEingewoehnung() {
+		return eingewoehnung;
+	}
+
+	public void setEingewoehnung(boolean eingewoehnung) {
+		this.eingewoehnung = eingewoehnung;
 	}
 }
