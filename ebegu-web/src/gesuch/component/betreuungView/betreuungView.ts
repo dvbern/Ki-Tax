@@ -69,6 +69,7 @@ const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 const okHtmlDialogTempl = require('../../dialog/okHtmlDialogTemplate.html');
 
 export class BetreuungViewComponentConfig implements IComponentOptions {
+export class BetreuungViewComponentConfig implements IComponentOptions {
     public transclude = false;
     public template = require('./betreuungView.html');
     public controller = BetreuungViewController;
@@ -951,10 +952,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public isFerieninsel(): boolean {
         return this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.FERIENINSEL);
-    }
-
-    public isTageseltern(): boolean {
-        return this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.TAGESFAMILIEN);
     }
 
     public isSchulamt(): boolean {
