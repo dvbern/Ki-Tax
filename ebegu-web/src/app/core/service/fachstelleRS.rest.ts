@@ -15,6 +15,7 @@
 
 import {IHttpService, ILogService, IPromise} from 'angular';
 import {TSFachstelle} from '../../../models/TSFachstelle';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class FachstelleRS {
@@ -31,14 +32,14 @@ export class FachstelleRS {
         this.serviceURL = `${REST_API}fachstellen`;
     }
 
-    public getAnspruchFachstellen(): IPromise<TSFachstelle[]> {
-        return this.http.get(`${this.serviceURL}/anspruch`).then(
+    public getAnspruchFachstellen(gesuchsperiode: TSGesuchsperiode): IPromise<TSFachstelle[]> {
+        return this.http.get(`${this.serviceURL}/anspruch?gesuchsperiodeId=${gesuchsperiode.id}`).then(
             (response: any) => this.ebeguRestUtil.parseFachstellen(response.data),
         );
     }
 
-    public getErweiterteBetreuungFachstellen(): IPromise<TSFachstelle[]> {
-        return this.http.get(`${this.serviceURL}/erweiterteBetreuung`).then(
+    public getErweiterteBetreuungFachstellen(gesuchsperiode: TSGesuchsperiode): IPromise<TSFachstelle[]> {
+        return this.http.get(`${this.serviceURL}/erweiterteBetreuung?gesuchsperiodeId=${gesuchsperiode.id}`).then(
             (response: any) => this.ebeguRestUtil.parseFachstellen(response.data),
         );
     }
