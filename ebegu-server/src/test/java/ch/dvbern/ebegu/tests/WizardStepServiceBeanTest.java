@@ -144,8 +144,8 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 			Assert.assertNotEquals(WizardStepName.FINANZIELLE_SITUATION, wizardStep.getWizardStepName());
 			if (wizardStep.getWizardStepName() == WizardStepName.FINANZIELLE_SITUATION_LUZERN) {
 				finSitLuzernFound = true;
-				Assert.assertTrue(wizardStep.getVerfuegbar());
-				Assert.assertEquals(WizardStepStatus.OK, wizardStep.getWizardStepStatus());
+				Assert.assertFalse(wizardStep.getVerfuegbar());
+				Assert.assertEquals(WizardStepStatus.UNBESUCHT, wizardStep.getWizardStepStatus());
 			}
 		}
 		Assert.assertTrue(finSitLuzernFound);
