@@ -260,7 +260,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		inputData.addBemerkung(
 			MsgKey.EINKOMMEN_TOO_HIGH_FOR_EKV,
 			locale,
-			NumberFormat.getInstance().format(this.maxEinkommenEKV)
+			NumberFormat.getInstance(locale).format(this.maxEinkommenEKV)
 		);
 	}
 
