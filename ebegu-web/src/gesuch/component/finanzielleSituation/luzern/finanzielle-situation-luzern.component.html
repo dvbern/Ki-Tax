@@ -49,6 +49,7 @@
                                 <mat-radio-group
                                     formControlName="quellenbesteuert"
                                     class=""
+                                    (change)="quellenBesteuertChange($event)"
                                     name="quellenbesteuert">
                                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -67,6 +68,7 @@
                                 <mat-radio-group
                                     formControlName="gemeinsameStekVorjahr"
                                     class=""
+                                    (change)="gemeinsameStekVorjahrChange($event)"
                                     name="gemeinsameStekVorjahr">
                                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -85,6 +87,7 @@
                                 <mat-radio-group
                                     formControlName="alleinigeStekVorjahr"
                                     class=""
+                                    (change)="alleinigeStekVorjahrChange($event)"
                                     name="alleinigeStekVorjahr">
                                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                                     <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>

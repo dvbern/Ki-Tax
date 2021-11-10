@@ -16,6 +16,7 @@
  */
 
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {MatRadioChange} from '@angular/material/radio';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
@@ -29,7 +30,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX {
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
-        private readonly fb: FormBuilder
+        private readonly fb: FormBuilder,
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
         this.setupForm();
@@ -55,6 +56,17 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX {
         return this.form.controls.veranlagt.value === true;
     }
 
+    public quellenBesteuertChange(newQuellenBesteuert: MatRadioChange): void {
+        if (newQuellenBesteuert.value === false) {
+            return;
+        }
+        this.form.patchValue({
+            gemeinsameStekVorjahr: null,
+            alleinigeStekVorjahr: null,
+            veranlagt: null,
+        });
+    }
+
     public gemeinsameStekVisible(): boolean {
         return this.isGemeinsam() && this.form.controls.quellenbesteuert.value === false;
     }
@@ -65,7 +77,19 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX {
 
     public veranlagtVisible(): boolean {
         return this.form.controls.gemeinsameStekVorjahr.value === true
-        || this.form.controls.alleinigeStekVorjahr.value === true;
+            || this.form.controls.alleinigeStekVorjahr.value === true;
+    }
+
+    public gemeinsameStekVorjahrChange(newGemeinsameStekVorjahr: MatRadioChange): void {
+        if (newGemeinsameStekVorjahr.value === false && this.form.get('alleinigeStekVorjahr').value !== true) {
+            this.form.get('veranlagt').patchValue(null);
+        }
+    }
+
+    public alleinigeStekVorjahrChange(newAlleinigeStekVorjahr: MatRadioChange): void {
+        if (newAlleinigeStekVorjahr.value === false && this.form.get('gemeinsameStekVorjahr').value !== true) {
+            this.form.get('veranlagt').patchValue(null);
+        }
     }
 
     public getYearForDeklaration(): number | string {
