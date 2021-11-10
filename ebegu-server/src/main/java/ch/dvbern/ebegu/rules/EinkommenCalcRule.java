@@ -234,7 +234,10 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				inputData.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjVorAbzFamGr());
 				inputData.setEinkommensjahr(basisjahr);
 				if (finanzDatenDTO.isEkv2Annulliert()) {
-					ignoreEKVAndSetMessage(finanzDatenDTO, inputData, locale, basisjahr);
+					inputData.addBemerkung(
+							MsgKey.EINKOMMENSVERSCHLECHTERUNG_ANNULLIERT_MSG,
+							locale,
+							String.valueOf(basisjahrPlus2));
 				} else {
 					inputData.addBemerkung(
 						MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG,
