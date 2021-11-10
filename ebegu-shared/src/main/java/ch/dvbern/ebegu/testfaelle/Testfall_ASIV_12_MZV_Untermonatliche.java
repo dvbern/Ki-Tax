@@ -37,18 +37,10 @@ import ch.dvbern.ebegu.util.MathUtil;
 /**
  * Wechsel von 2 auf 1. Mit nachheriger EKV, nach der Trennung (GS2 nicht mehr relevant)
  */
-public class Testfall_ASIV_11_MZV extends AbstractASIVTestfall {
+public class Testfall_ASIV_12_MZV_Untermonatliche extends AbstractASIVTestfall {
 
-	private boolean initWithMZV;
-
-	public Testfall_ASIV_11_MZV(
-		Gesuchsperiode gesuchsperiode,
-		Collection<InstitutionStammdaten> institutionStammdatenList,
-		boolean betreuungenBestaetigt,
-		Gemeinde gemeinde,
-		boolean initWithMZV) {
+	public Testfall_ASIV_12_MZV_Untermonatliche(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt, Gemeinde gemeinde) {
 		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
-		this.initWithMZV = initWithMZV;
 	}
 
 	@Override
@@ -69,29 +61,34 @@ public class Testfall_ASIV_11_MZV extends AbstractASIVTestfall {
 		ErwerbspensumContainer erwerbspensumGS2 = createErwerbspensum(100);
 		gesuchsteller2.addErwerbspensumContainer(erwerbspensumGS2);
 		// Kinder
-		KindContainer kind = createKind(Geschlecht.MAENNLICH,
-			"ASIV",
-			"Kind",
-			LocalDate.of(2014, Month.APRIL, 13),
-			Kinderabzug.GANZER_ABZUG,
-			true);
+		KindContainer kind = createKind(Geschlecht.MAENNLICH, "ASIV", "Kind", LocalDate.of(2014, Month.APRIL, 13), Kinderabzug.GANZER_ABZUG, true);
 		kind.setGesuch(erstgesuch);
 		erstgesuch.getKindContainers().add(kind);
 		// Kita Brünnen
-		Betreuung betreuungKitaBruennen =
-			createBetreuung(ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA, betreuungenBestaetigt);
+		Betreuung betreuungKitaBruennen = createBetreuung(ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA, betreuungenBestaetigt);
 		betreuungKitaBruennen.setKind(kind);
 		kind.getBetreuungen().add(betreuungKitaBruennen);
+		BetreuungspensumContainer betreuungspensumKitaBruennenUntermonatlich = createBetreuungspensum(
+			BigDecimal.valueOf(100),
+			LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.AUGUST, 30),
+			LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.AUGUST, 31),
+			BigDecimal.TEN,
+			BigDecimal.TEN,
+			BigDecimal.TEN,
+			BigDecimal.ONE
+		);
 		BetreuungspensumContainer betreuungspensumKitaBruennen = createBetreuungspensum(
 			BigDecimal.valueOf(100),
-			LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.AUGUST, 1),
+			LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.SEPTEMBER, 1),
 			LocalDate.of(gesuchsperiode.getBasisJahrPlus2(), Month.JULY, 31),
-			initWithMZV ? BigDecimal.TEN : BigDecimal.ZERO,
-			initWithMZV ? BigDecimal.TEN : BigDecimal.ZERO,
-			initWithMZV ? BigDecimal.TEN : BigDecimal.ZERO,
-			initWithMZV ? BigDecimal.ONE : BigDecimal.ZERO
+			BigDecimal.TEN,
+			BigDecimal.TEN,
+			BigDecimal.TEN,
+			BigDecimal.ONE
 		);
+		betreuungspensumKitaBruennenUntermonatlich.setBetreuung(betreuungKitaBruennen);
 		betreuungspensumKitaBruennen.setBetreuung(betreuungKitaBruennen);
+		betreuungKitaBruennen.getBetreuungspensumContainers().add(betreuungspensumKitaBruennenUntermonatlich);
 		betreuungKitaBruennen.getBetreuungspensumContainers().add(betreuungspensumKitaBruennen);
 		// Finanzielle Situation
 		FinanzielleSituationContainer finanzielleSituationContainer = createFinanzielleSituationContainer();
@@ -111,17 +108,6 @@ public class Testfall_ASIV_11_MZV extends AbstractASIVTestfall {
 
 	@Override
 	public Gesuch createMutation(Gesuch erstgesuch) {
-		// add MZV wenn noetig
-		if (!initWithMZV) {
-			KindContainer kind = erstgesuch.getKindContainers().iterator().next();
-			Betreuung betreuungKitaBruennen = kind.getBetreuungen().iterator().next();
-			BetreuungspensumContainer betreuungspensumKitaBruennen =
-				betreuungKitaBruennen.getBetreuungspensumContainers().iterator().next();
-			betreuungspensumKitaBruennen.getBetreuungspensumJA().setTarifProHauptmahlzeit(BigDecimal.TEN);
-			betreuungspensumKitaBruennen.getBetreuungspensumJA().setTarifProNebenmahlzeit(BigDecimal.TEN);
-			betreuungspensumKitaBruennen.getBetreuungspensumJA().setMonatlicheHauptmahlzeiten(BigDecimal.TEN);
-			betreuungspensumKitaBruennen.getBetreuungspensumJA().setMonatlicheNebenmahlzeiten(BigDecimal.ONE);
-		}
 		return erstgesuch;
 	}
 
