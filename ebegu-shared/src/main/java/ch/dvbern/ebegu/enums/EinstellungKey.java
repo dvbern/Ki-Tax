@@ -208,7 +208,21 @@ public enum EinstellungKey {
 	FERIENBETREUUNG_CHF_PAUSCHALBETRAG,
 
 	// Ferienbetreuung Kosten pro Tag für Sonderschüler
-	FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER;
+	FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER,
+
+	// Neue Frage bei Kinderabzug für FJKV
+	// Siehe KIBON-2115
+	FJKV_KINDERABZUG_NEU,
+
+	// Neue Familiensituation für FJKV
+	// Siehe KIBON-2116
+	FJKV_FAMILIENSITUATION_NEU,
+
+	// Definiert die Minimallänge für das Konkubinat, damit zwei Antragstellende berücksichtigt werden
+	MINIMALDAUER_KONKUBINAT,
+
+	// Legt den Typen der finanziellen Verhältnisse fest. Z.B. BERN_ASIV oder LUZERN
+	FINANZIELLE_SITUATION_TYP;
 
 	private EinstellungTyp typ;
 

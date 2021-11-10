@@ -761,8 +761,9 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	}
 
 	private void saveFinanzielleSituation(@Nonnull Gesuch gesuch, @Nonnull List<WizardStep> wizardStepsFromGesuch) {
+		var finSitStepName = wizardStepService.getFinSitWizardStepNameForGesuch(gesuch);
 		if (gesuch.getGesuchsteller1() != null && gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null) {
-			setWizardStepInStatus(wizardStepsFromGesuch, WizardStepName.FINANZIELLE_SITUATION, WizardStepStatus.IN_BEARBEITUNG);
+			setWizardStepInStatus(wizardStepsFromGesuch, finSitStepName, WizardStepStatus.IN_BEARBEITUNG);
 			finanzielleSituationService.saveFinanzielleSituation(
 				gesuch.getGesuchsteller1().getFinanzielleSituationContainer(),
 				gesuch.getId());
@@ -772,8 +773,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 				gesuch.getGesuchsteller2().getFinanzielleSituationContainer(),
 				gesuch.getId());
 		}
-		setWizardStepInStatus(wizardStepsFromGesuch, WizardStepName.FINANZIELLE_SITUATION, WizardStepStatus.OK);
-		setWizardStepVerfuegbar(wizardStepsFromGesuch, WizardStepName.FINANZIELLE_SITUATION);
+		setWizardStepInStatus(wizardStepsFromGesuch, finSitStepName, WizardStepStatus.OK);
+		setWizardStepVerfuegbar(wizardStepsFromGesuch, finSitStepName);
 	}
 
 	private void saveErwerbspensen(@Nonnull Gesuch gesuch, @Nonnull List<WizardStep> wizardStepsFromGesuch) {

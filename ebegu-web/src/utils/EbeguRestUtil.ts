@@ -23,6 +23,7 @@ import {TSSearchResultEntry} from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
+import {TSFinanzielleSituationTyp} from '../models/enums/TSFinanzielleSituationTyp';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
 import {TSGemeindeKennzahlen} from '../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {TSAnzahlEingeschriebeneKinder} from '../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
@@ -1245,6 +1246,7 @@ export class EbeguRestUtil {
             gesuchTS.gueltig = gesuchFromServer.gueltig;
             gesuchTS.dokumenteHochgeladen = gesuchFromServer.dokumenteHochgeladen;
             gesuchTS.finSitStatus = gesuchFromServer.finSitStatus;
+            gesuchTS.finSitTyp = gesuchFromServer.finSitTyp;
             return gesuchTS;
         }
         return undefined;
@@ -5466,5 +5468,12 @@ export class EbeguRestUtil {
         gemeindeKennzahlen.limitierungTfo = gemeindeKennzahlenFromServer.limitierungTfo;
 
         return gemeindeKennzahlen;
+    }
+
+    public parseFinanzielleSituationTyp(typ: any): TSFinanzielleSituationTyp {
+        if (Object.values(TSFinanzielleSituationTyp).includes(typ)) {
+            return typ as TSFinanzielleSituationTyp;
+        }
+        throw new Error(`FinanzielleSituationTyp ${typ} not defined`);
     }
 }

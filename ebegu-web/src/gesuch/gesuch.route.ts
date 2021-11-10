@@ -23,6 +23,9 @@ import {TSGesuch} from '../models/TSGesuch';
 import {TSKindDublette} from '../models/TSKindDublette';
 import {TSMahnung} from '../models/TSMahnung';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
+import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
+import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
+import {ResultateComponent} from './component/finanzielleSituation/luzern/resultate/resultate.component';
 import {GesuchRouteController} from './gesuch';
 import {BerechnungsManager} from './service/berechnungsManager';
 import {GesuchModelManager} from './service/gesuchModelManager';
@@ -492,6 +495,72 @@ export class EbeguFinanzielleSituationResultateState implements Ng1StateDeclarat
     };
 }
 
+export class EbeguFinanzielleSituationStartLuzernState implements Ng1StateDeclaration {
+    public name = 'gesuch.finanzielleSituationStartLuzern';
+    public url = '/lu/finanzielleSituationStart/:gesuchId';
+
+    public views: any = {
+        gesuchViewPort: {
+            component: FinanzielleSituationStartViewLuzernComponent
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuchModelManager: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+
+export class EbeguFinanzielleSituationGS2LuzernState implements Ng1StateDeclaration {
+    public name = 'gesuch.finanzielleSituationGS2Luzern';
+    public url = '/lu/finanzielleSituation/2/:gesuchId';
+
+    public views: any = {
+        gesuchViewPort: {
+            component: AngabenGesuchsteller2Component
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuchModelManager: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+
+export class EbeguFinanzielleSituationResultateLuzernState implements Ng1StateDeclaration {
+    public name = 'gesuch.finanzielleSituationResultateLuzern';
+    public url = '/lu/finanzielleSituationResultate/:gesuchId';
+
+    public views: any = {
+        gesuchViewPort: {
+            component: ResultateComponent
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuchModelManager: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+
 export class EbeguVerfuegenListState implements Ng1StateDeclaration {
     public name = 'gesuch.verfuegen';
     public url = '/verfuegen/:gesuchId';
@@ -760,6 +829,9 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguFinanzielleSituationStartState(),
     new EbeguFinanzielleSituationState(),
     new EbeguFinanzielleSituationResultateState(),
+    new EbeguFinanzielleSituationStartLuzernState(),
+    new EbeguFinanzielleSituationGS2LuzernState(),
+    new EbeguFinanzielleSituationResultateLuzernState(),
     new EbeguKindState(),
     new EbeguErwerbspensenListState(),
     new EbeguErwerbspensumState(),

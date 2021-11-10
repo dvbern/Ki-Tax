@@ -46,6 +46,7 @@ import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-postei
 import {DvRadioContainerXComponent} from '../core/component/dv-radio-container/dv-radio-container-x.component';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
 import {DvLoadingButtonXDirective} from '../core/directive/dv-loading-button/dv-loading-button-x.directive';
+import {DvNavigationX} from '../core/directive/dv-navigation/dv-navigation-x';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {DvSearchListComponent} from '../core/dv-search-list/dv-search-list.component';
@@ -158,7 +159,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgSozialdienstDialogComponent,
         EbeguDateTimePipe,
         DvDatePickerXComponent,
-        IeDeprecationWarningComponent
+        IeDeprecationWarningComponent,
+        DvNavigationX
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
@@ -219,7 +221,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         NextPeriodeStrPipe,
         PreviousPeriodeStrPipe,
         EbeguDateTimePipe,
-        DvDatePickerXComponent
+        DvDatePickerXComponent,
+        DvNavigationX
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

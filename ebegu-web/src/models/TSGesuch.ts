@@ -17,12 +17,14 @@ import * as moment from 'moment';
 import {TSAntragStatus} from './enums/TSAntragStatus';
 import {TSAntragTyp} from './enums/TSAntragTyp';
 import {
-    getSchulamtBetreuungsangebotTypValues, isJugendamt,
+    getSchulamtBetreuungsangebotTypValues,
+    isJugendamt,
     isOfAnyBetreuungsangebotTyp,
     TSBetreuungsangebotTyp,
 } from './enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from './enums/TSBetreuungsstatus';
 import {TSEingangsart} from './enums/TSEingangsart';
+import {TSFinanzielleSituationTyp} from './enums/TSFinanzielleSituationTyp';
 import {TSFinSitStatus} from './enums/TSFinSitStatus';
 import {TSGesuchBetreuungenStatus} from './enums/TSGesuchBetreuungenStatus';
 import {TSAbstractAntragEntity} from './TSAbstractAntragEntity';
@@ -47,6 +49,7 @@ export class TSGesuch extends TSAbstractAntragEntity {
     private _geprueftSTV: boolean = false;
     private _verfuegungEingeschrieben: boolean = false;
     private _finSitStatus: TSFinSitStatus;
+    private _finSitTyp: TSFinanzielleSituationTyp;
     private _gesperrtWegenBeschwerde: boolean = false;
     private _datumGewarntNichtFreigegeben: moment.Moment;
     private _datumGewarntFehlendeQuittung: moment.Moment;
@@ -230,6 +233,14 @@ export class TSGesuch extends TSAbstractAntragEntity {
 
     public set finSitStatus(value: TSFinSitStatus) {
         this._finSitStatus = value;
+    }
+
+    public get finSitTyp(): TSFinanzielleSituationTyp {
+        return this._finSitTyp;
+    }
+
+    public set finSitTyp(value: TSFinanzielleSituationTyp) {
+        this._finSitTyp = value;
     }
 
     /**
