@@ -198,6 +198,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		benutzer.setEmail(jaxExternalBenutzer.getEmail());
 		benutzer.setNachname(jaxExternalBenutzer.getNachname());
 		benutzer.setVorname(jaxExternalBenutzer.getVorname());
+		benutzer.setZpvNummer(jaxExternalBenutzer.getZpvNummer());
 	}
 
 	@Nonnull
