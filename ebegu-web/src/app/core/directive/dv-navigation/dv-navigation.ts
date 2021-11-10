@@ -93,7 +93,7 @@ export class NavigatorController implements IController {
     public dvTranslatePrevious: string;
     public containerClass: string;
 
-    private wizardSubStepManager: FinanzielleSituationSubStepManager;
+    private finSitWizardSubStepManager: FinanzielleSituationSubStepManager;
 
     public constructor(
         private readonly wizardStepManager: WizardStepManager,
@@ -114,23 +114,22 @@ export class NavigatorController implements IController {
         if (!this.containerClass) {
             this.containerClass = 'dv-navigation-flex';
         }
-        this.initSubStepManager();
+        this.initFinSitSubStepManager(this.gesuchModelManager.getGesuch().finSitTyp);
     }
 
-    private initSubStepManager(): void {
-        this.finanzielleSituationRS.getFinanzielleSituationTyp(this.gesuchModelManager.getGesuchsperiode(), this.gesuchModelManager.getGemeinde())
-            .subscribe(typ => {
-                switch (typ) {
-                    case TSFinanzielleSituationTyp.BERN:
-                        this.wizardSubStepManager = new FinanzielleSituationSubStepManagerBernAsiv(this.gesuchModelManager);
-                        break;
-                    case TSFinanzielleSituationTyp.LUZERN:
-                        this.wizardSubStepManager = new FinanzielleSituationSubStepManagerLuzern(this.gesuchModelManager);
-                        break;
-                    default:
-                        throw new Error(`unexpected TSFinanzielleSituationTyp ${typ}`);
-                }
-            }, err => LOG.error(err));
+    private initFinSitSubStepManager(finSitTyp: TSFinanzielleSituationTyp): void {
+        switch (finSitTyp) {
+            case TSFinanzielleSituationTyp.BERN:
+                this.finSitWizardSubStepManager =
+                    new FinanzielleSituationSubStepManagerBernAsiv(this.gesuchModelManager);
+                break;
+            case TSFinanzielleSituationTyp.LUZERN:
+                this.finSitWizardSubStepManager =
+                    new FinanzielleSituationSubStepManagerLuzern(this.gesuchModelManager);
+                break;
+            default:
+                throw new Error(`unexpected TSFinanzielleSituationTyp ${finSitTyp}`);
+        }
     }
 
     public doesCancelExist(): boolean {
@@ -289,7 +288,7 @@ export class NavigatorController implements IController {
         }
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()
             || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()) {
-            const nextSubStep = this.wizardSubStepManager.getNextSubStepFinanzielleSituation(this.dvSubStepName);
+            const nextSubStep = this.finSitWizardSubStepManager.getNextSubStepFinanzielleSituation(this.dvSubStepName);
             const nextMainStep = this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch());
             return this.navigateToSubStepFinanzielleSituation(
                 nextSubStep,
@@ -362,7 +361,7 @@ export class NavigatorController implements IController {
 
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()
         || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()) {
-            const previousSubStep = this.wizardSubStepManager.getPreviousSubStepFinanzielleSituation(this.dvSubStepName);
+            const previousSubStep = this.finSitWizardSubStepManager.getPreviousSubStepFinanzielleSituation(this.dvSubStepName);
             const previousMainStep = this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch());
 
             return this.navigateToSubStepFinanzielleSituation(previousSubStep, previousMainStep);
@@ -721,7 +720,7 @@ export class NavigatorController implements IController {
     }
 
     public setSubstepManager(manager: FinanzielleSituationSubStepManager): void {
-        this.wizardSubStepManager = manager;
+        this.finSitWizardSubStepManager = manager;
     }
 
 }
