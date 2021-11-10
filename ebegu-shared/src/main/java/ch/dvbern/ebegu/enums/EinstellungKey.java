@@ -208,7 +208,16 @@ public enum EinstellungKey {
 	FERIENBETREUUNG_CHF_PAUSCHALBETRAG,
 
 	// Ferienbetreuung Kosten pro Tag für Sonderschüler
-	FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER;
+	FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER,
+
+	// Kitaplus Zuschlag aktiviert (Luzern)
+	KITAPLUS_ZUSCHLAG_AKTIVIERT,
+
+	// Können BG Konfigurationen in den Gemeinde Einstellungen überschrieben werden (Solothurn)
+	GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN,
+
+	// (Solothurn)
+	ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
 
 	private EinstellungTyp typ;
 
