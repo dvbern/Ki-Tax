@@ -117,6 +117,8 @@ export class LocalLoginComponent {
     private sozialdienst: TSSozialdienst;
     public hasGemeindeLondon: boolean;
 
+    public localLoginDatum: LocalloginDatum;
+
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
@@ -126,16 +128,16 @@ export class LocalLoginComponent {
     ) {
         this.mandantService.mandant$.subscribe(mandant => {
             this.shortMandant = mandant;
-            const datum = LocalLoginComponent.getLocalloginDatum(mandant);
-            this.hasGemeindeLondon = EbeguUtil.isNotNullOrUndefined(datum.gemeinde_london);
-            this.createLocalloginInstances(datum);
+            this.localLoginDatum = LocalLoginComponent.getLocalloginDatum(mandant);
+            this.hasGemeindeLondon = EbeguUtil.isNotNullOrUndefined(this.localLoginDatum.gemeinde_london);
+            this.createLocalloginInstances(this.localLoginDatum);
 
             this.gemeindeRS.getAktiveGemeinden().then(aktiveGemeinden => {
                 this.gemeindeParis = aktiveGemeinden
-                    .find(gemeinde => gemeinde.id === datum.gemeinde_paris);
+                    .find(gemeinde => gemeinde.id === this.localLoginDatum.gemeinde_paris.id);
                 if (this.hasGemeindeLondon) {
                     this.gemeindeLondon = aktiveGemeinden
-                        .find(gemeinde => gemeinde.id === datum.gemeinde_london);
+                        .find(gemeinde => gemeinde.id === this.localLoginDatum.gemeinde_london.id);
                 }
 
                 this.initUsers(this.hasGemeindeLondon);
