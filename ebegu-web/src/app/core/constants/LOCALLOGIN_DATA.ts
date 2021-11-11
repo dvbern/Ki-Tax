@@ -37,8 +37,14 @@ export const LOCALLOGIN_DATA = {
             id: 'f44a68f2-dda2-4bf2-936a-68e20264b620',
             name: 'BernerSozialdienst',
         },
-        gemeinde_paris: 'ea02b313-e7c3-4b26-9ef7-e413f4046db2',
-        gemeinde_london: '80a8e496-b73c-4a4a-a163-a0b2caf76487'
+        gemeinde_paris: {
+            id: 'ea02b313-e7c3-4b26-9ef7-e413f4046db2',
+            name: 'Paris',
+        },
+        gemeinde_london: {
+            id: '80a8e496-b73c-4a4a-a163-a0b2caf76487',
+            name: 'London',
+        },
     },
     LU: {
         mandant: {
@@ -61,7 +67,10 @@ export const LOCALLOGIN_DATA = {
             id: '7049ec48-30ab-11ec-a86f-b89a2ae4a038',
             name: 'LuzernerSozialdienst',
         },
-        gemeinde_paris: '6fd6183c-30a2-11ec-a86f-b89a2ae4a038',
+        gemeinde_paris: {
+            id: '6fd6183c-30a2-11ec-a86f-b89a2ae4a038',
+            name: 'Luzern',
+        },
     },
 };
 
@@ -86,6 +95,12 @@ export interface LocalloginDatum {
         id: string,
         name: string
     };
-    gemeinde_paris: string;
-    gemeinde_london?: string;
+    gemeinde_paris: {
+        id: string,
+        name: string
+    };
+    gemeinde_london?: {
+        id: string,
+        name: string
+    };
 }

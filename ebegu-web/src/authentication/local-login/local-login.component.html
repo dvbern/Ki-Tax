@@ -40,7 +40,7 @@
             </tr>
             <!-- Mandant Kanton Bern -->
             <tr>
-                <td>Administrator/in Kanton Bern</td>
+                <td>Administrator/in {{localLoginDatum?.mandant.name}}</td>
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
@@ -49,7 +49,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Sachbearbeiter/in Kanton Bern</td>
+                <td>Sachbearbeiter/in {{localLoginDatum?.mandant.name}}</td>
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
@@ -77,7 +77,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Administrator/in Tagesschule: Tagesschule Paris</td>
+                <td>Administrator/in Tagesschule: {{localLoginDatum?.tagesschule.name}}</td>
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
@@ -86,7 +86,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Sachbearbeiter/in Tagesschule: Tagesschule Paris</td>
+                <td>Sachbearbeiter/in Tagesschule: {{localLoginDatum?.tagesschule.name}}</td>
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
@@ -95,7 +95,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Administrator/in Tägerschaft: Stadt Bern</td>
+                <td>Administrator/in Tägerschaft: {{localLoginDatum?.traegerschaft.name}}</td>
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
@@ -104,7 +104,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Sachbearbeiter/in Tägerschaft: Stadt Bern</td>
+                <td>Sachbearbeiter/in Tägerschaft: {{localLoginDatum?.traegerschaft.name}}</td>
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
@@ -114,7 +114,7 @@
             </tr>
             <!-- Sozialdienst -->
             <tr>
-                <td>Administrator Unterstützungsdienst: BernerSozialdienst</td>
+                <td>Administrator Unterstützungsdienst: {{localLoginDatum?.sozialdienst.name}}</td>
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
@@ -123,7 +123,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Sachbearbeiter Unterstützungsdienst: BernerSozialdienst</td>
+                <td>Sachbearbeiter Unterstützungsdienst: {{localLoginDatum?.sozialdienst.name}}</td>
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
@@ -171,9 +171,9 @@
             </tr>
 
             <th><h2 class="local-login-h2">Gemeinde:</h2></th>
-            <th><h2 class="local-login-h2">Paris</h2></th>
-            <th><h2 class="local-login-h2" *ngIf="hasGemeindeLondon">London</h2></th>
-            <th><h2 class="local-login-h2" *ngIf="hasGemeindeLondon">Paris & London</h2></th>
+            <th><h2 class="local-login-h2">{{localLoginDatum?.gemeinde_paris.name}}</h2></th>
+            <th><h2 class="local-login-h2" *ngIf="hasGemeindeLondon">{{localLoginDatum?.gemeinde_london?.name}}</h2></th>
+            <th><h2 class="local-login-h2" *ngIf="hasGemeindeLondon">{{localLoginDatum?.gemeinde_paris.name}} & {{localLoginDatum?.gemeinde_london.name}}</h2></th>
 
             <!-- Admin BG -->
             <tr>
