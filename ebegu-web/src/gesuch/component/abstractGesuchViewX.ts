@@ -15,12 +15,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {AfterViewInit} from '@angular/core';
+import {AfterViewInit, Directive} from '@angular/core';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSGesuch} from '../../models/TSGesuch';
 import {GesuchModelManager} from '../service/gesuchModelManager';
 import {WizardStepManager} from '../service/wizardStepManager';
 
+@Directive()
 export class AbstractGesuchViewX implements AfterViewInit {
 
     public onlyFerieninselBetreuungen = false;
