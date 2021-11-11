@@ -23,13 +23,13 @@ import {TestFaelleRS} from '../../admin/service/testFaelleRS.rest';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {DossierRS} from '../../gesuch/service/dossierRS.rest';
 import {FallRS} from '../../gesuch/service/fallRS.rest';
+import {FinanzielleSituationSubStepManager} from '../../gesuch/service/finanzielleSituationSubStepManager';
 import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../gesuch/service/gesuchModelManager';
 import {GesuchRS} from '../../gesuch/service/gesuchRS.rest';
 import {SearchRS} from '../../gesuch/service/searchRS.rest';
 import {SupportRS} from '../../gesuch/service/supportRS.rest';
 import {WizardStepManager} from '../../gesuch/service/wizardStepManager';
-import {WizardSubStepManager} from '../../gesuch/service/wizardSubStepManager';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {ErrorService} from './errors/service/ErrorService';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
@@ -214,12 +214,12 @@ export const wizardStepManagerProvider = {
 };
 
 // WizardSubStepManager
-export function wizardSubStepManagerServiceFactory(i: IInjectorService): WizardSubStepManager {
+export function wizardSubStepManagerServiceFactory(i: IInjectorService): FinanzielleSituationSubStepManager {
     return i.get('WizardSubStepManager');
 }
 
 export const wizardSubStepManagerProvider = {
-    provide: WizardSubStepManager,
+    provide: FinanzielleSituationSubStepManager,
     useFactory: wizardSubStepManagerServiceFactory,
     deps: ['$injector'],
 };

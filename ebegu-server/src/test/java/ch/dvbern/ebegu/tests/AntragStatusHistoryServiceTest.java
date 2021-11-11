@@ -161,6 +161,7 @@ public class AntragStatusHistoryServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testFindAllAntragStatusHistoryByGPFall_Mutation() {
 		gesuch = TestDataUtil.createAndPersistGesuch(persistence, AntragStatus.VERFUEGEN);
+		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
 		gesuch.setStatus(AntragStatus.VERFUEGT);
 		gesuch.setGueltig(true);
 		gesuch.setTimestampVerfuegt(LocalDateTime.now());

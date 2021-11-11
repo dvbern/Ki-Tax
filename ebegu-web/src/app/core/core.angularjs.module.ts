@@ -63,7 +63,6 @@ import {SearchRS} from '../../gesuch/service/searchRS.rest';
 import {SupportRS} from '../../gesuch/service/supportRS.rest';
 import {WizardStepManager} from '../../gesuch/service/wizardStepManager';
 import {WizardStepRS} from '../../gesuch/service/WizardStepRS.rest';
-import {WizardSubStepManager} from '../../gesuch/service/wizardSubStepManager';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {BenutzerComponent} from '../benutzer/benutzer/benutzer.component';
@@ -71,9 +70,9 @@ import {DvLanguageSelectorComponentConfig} from '../i18n/components/dv-language-
 import {HttpI18nInterceptor} from '../i18n/httpInterceptor/http-i18n-Interceptor';
 import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {PosteingangService} from '../posteingang/service/posteingang.service';
-import {MandantService} from '../shared/services/mandant.service';
 import {IeDeprecationWarningComponent} from '../shared/component/ie-deprecation-warning/ie-deprecation-warning.component';
 import {ColorService} from '../shared/services/color.service';
+import {MandantService} from '../shared/services/mandant.service';
 import {DvAccordionComponentConfig} from './component/dv-accordion/dv-accordion';
 import {DvAccordionTabComponentConfig} from './component/dv-accordion/dv-accordion-tab/dv-accordion-tab';
 import {AdresseComponentConfig} from './component/dv-adresse/dv-adresse';
@@ -259,7 +258,7 @@ export const CORE_JS_MODULE = angular
     .directive('dvTimepicker', DVTimepicker.factory())
     .directive('dvValueinput', DVValueinput.factory())
     .directive('dvVerantwortlicherselect', DvVerantwortlicherselect.factory())
-    .directive('dvNavigation', DVNavigation.factory())
+    .component('dvNavigation', new DVNavigation())
     .directive('dvLoading', DVLoading.factory())
     .directive('dvStPersistAntraege', DVSTPersistAntraege.factory())
     .directive('dvStPersistPendenzen', DVSTPersistPendenzen.factory())
@@ -276,7 +275,6 @@ export const CORE_JS_MODULE = angular
     .service('HttpVersionInterceptor', HttpVersionInterceptor)
     .service('HttpI18nInterceptor', HttpI18nInterceptor)
     .service('WizardStepManager', WizardStepManager)
-    .service('WizardSubStepManager', WizardSubStepManager)
     .service('SearchIndexRS', SearchIndexRS)
     .service('DVsTPersistService', DVsTPersistService)
     .factory('WizardStepXRS', downgradeInjectable(WizardStepXRS) as any)

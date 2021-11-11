@@ -14,18 +14,26 @@
  */
 
 import {NgModule} from '@angular/core';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {SharedModule} from '../app/shared/shared.module';
 import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
 import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
+import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
+import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
+import {ResultateComponent} from './component/finanzielleSituation/luzern/resultate/resultate.component';
+import {SelbstdeklarationComponent} from './component/finanzielleSituation/luzern/selbstdeklaration/selbstdeklaration.component';
+import {VeranlagungComponent} from './component/finanzielleSituation/luzern/veranlagung/veranlagung.component';
 import {InternePendenzDialogComponent} from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
 import {InternePendenzenTableComponent} from './component/internePendenzenView/interne-pendenzen-table/interne-pendenzen-table.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
 
 @NgModule({
     imports: [
+        FormsModule,
+        ReactiveFormsModule,
         UpgradeModule,
         SharedModule,
         FallToolbarModule
@@ -36,7 +44,12 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
         DvEingabeBasisjahrComponent,
         InternePendenzenComponent,
         InternePendenzDialogComponent,
-        InternePendenzenTableComponent
+        InternePendenzenTableComponent,
+        FinanzielleSituationStartViewLuzernComponent,
+        AngabenGesuchsteller2Component,
+        ResultateComponent,
+        SelbstdeklarationComponent,
+        VeranlagungComponent
     ],
     exports: [
         DvSwitchComponent,

@@ -62,6 +62,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
@@ -222,7 +223,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				true)));
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
 				gesuch,
-				WizardStepName.FINANZIELLE_SITUATION,
+				this.getFinSitWizardStepNameForGesuch(gesuch),
 				WizardStepStatus.OK,
 				true)));
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
@@ -299,7 +300,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				false)));
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
 				gesuch,
-				WizardStepName.FINANZIELLE_SITUATION,
+				this.getFinSitWizardStepNameForGesuch(gesuch),
 				WizardStepStatus.UNBESUCHT,
 				false)));
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
@@ -1029,6 +1030,18 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		if (WizardStepStatus.OK != freigabeStep.getWizardStepStatus()) {
 			freigabeStep.setWizardStepStatus(WizardStepStatus.OK);
 			saveWizardStep(freigabeStep);
+		}
+	}
+
+	@Nonnull
+	public WizardStepName getFinSitWizardStepNameForGesuch(@Nonnull Gesuch gesuch) {
+		switch (gesuch.getFinSitTyp()) {
+		case BERN:
+			return WizardStepName.FINANZIELLE_SITUATION;
+		case LUZERN:
+			return WizardStepName.FINANZIELLE_SITUATION_LUZERN;
+		default:
+			throw new EbeguRuntimeException("getFinSitWizardStepNameForGesuch", "no WizardStepName found for typ " + gesuch.getFinSitTyp());
 		}
 	}
 }

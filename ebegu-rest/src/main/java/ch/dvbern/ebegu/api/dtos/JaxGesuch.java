@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -31,6 +32,7 @@ import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.FinSitStatus;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
 import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
@@ -108,6 +110,9 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	@Nullable
 	private FinSitStatus finSitStatus;
+
+	@Nonnull
+	private FinanzielleSituationTyp finSitTyp;
 
 	private boolean gesperrtWegenBeschwerde;
 
@@ -372,6 +377,15 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	public void setFinSitStatus(@Nullable FinSitStatus finSitStatus) {
 		this.finSitStatus = finSitStatus;
+	}
+
+	@Nonnull
+	public FinanzielleSituationTyp getFinSitTyp() {
+		return finSitTyp;
+	}
+
+	public void setFinSitTyp(@Nonnull FinanzielleSituationTyp finSitTyp) {
+		this.finSitTyp = finSitTyp;
 	}
 }
 
