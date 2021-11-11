@@ -130,6 +130,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public allowedRoles: ReadonlyArray<TSRole>;
     public isKesbPlatzierung: boolean;
     private eingewoehnungAktiviert: boolean = false;
+    private kitaPlusZuschlagAktiviert: boolean = false;
     protected minEintrittsdatum: moment.Moment;
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
@@ -256,6 +257,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             response.filter(r => r.key === TSEinstellungKey.FKJV_EINGEWOEHNUNG)
                 .forEach(value => {
                     this.eingewoehnungAktiviert = value.getValueAsBoolean();
+                });
+            response.filter(r => r.key === TSEinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT)
+                .forEach(value => {
+                    this.kitaPlusZuschlagAktiviert = value.getValueAsBoolean();
                 });
         });
     }
@@ -974,6 +979,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles())
             || (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA
                 && this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse);
+    }
+
+    public showKitaPlusZuschlag(): boolean {
+        return this.kitaPlusZuschlagAktiviert;
     }
 
     public showFalscheAngaben(): boolean {

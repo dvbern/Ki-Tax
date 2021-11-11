@@ -490,6 +490,7 @@
     "KEINE_KESB_PLATZIERUNG": "Erfolgt die Betreuung aufgrund einer Platzierung durch die Kindes- und Erwachsenenschutzbehörde (KESB)?",
     "KEINE_KESB_PLATZIERUNG_POPUP_TEXT": "Bei einer Platzierung durch die Kindes- und Erwachsenenschutzbehörde (KESB) wird kein Gutschein ausgestellt. Die Betreuungskosten werden von der KESB übernommen.",
     "BESCHREIBUNG_KEINE_KESB_PLATZIERUNG_POPUP_TEXT": "Möchten Sie die Betreuung trotzdem speichern?",
+    "BESONDERE_BEDUERFNISSE_KITA_PLUS_ZUSCHLAG": "Hat Ihr Kind besondere Bedürfnisse und profitiert vom KITAplus-Zuschlag?",
     "BETREUUNG_IN_GEMEINDE": "Die Betreuung des Kindes erfolgt in der Gemeinde {{gemeinde}}",
     "BESTAETIGUNG_BETREUUNG_IN_GEMEINDE_POPUP_TEXT": "Ohne Bestätigung, dass die Betreuung in der gutscheinausstellenden Gemeinde erfolgt, entfällt der zusätzliche Gutschein durch die Gemeinde.",
     "KORREKTE_KOSTEN_BESTAETIGUNG_1": "Hiermit bestätige ich,",
