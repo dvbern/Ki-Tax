@@ -27,7 +27,7 @@ export const LOCALLOGIN_DATA = {
         },
         institution: {
             id: '1b6f476f-e0f5-4380-9ef6-836d688853a3',
-            name: 'Kita Brünnen',
+            name: 'Kita Brï¿½nnen',
         },
         tagesschule: {
             id: 'f44a68f2-dda2-4bf2-936a-68e20264b610',
@@ -37,11 +37,11 @@ export const LOCALLOGIN_DATA = {
             id: 'f44a68f2-dda2-4bf2-936a-68e20264b620',
             name: 'BernerSozialdienst',
         },
-        gemeinde_paris: {
+        default_gemeinde: {
             id: 'ea02b313-e7c3-4b26-9ef7-e413f4046db2',
             name: 'Paris',
         },
-        gemeinde_london: {
+        second_gemeinde: {
             id: '80a8e496-b73c-4a4a-a163-a0b2caf76487',
             name: 'London',
         },
@@ -57,7 +57,7 @@ export const LOCALLOGIN_DATA = {
         },
         institution: {
             id: 'f5ceae4a-30a5-11ec-a86f-b89a2ae4a038',
-            name: 'Kita Brünnen LU',
+            name: 'Kita Brï¿½nnen LU',
         },
         tagesschule: {
             id: '3db43c9b-30a6-11ec-a86f-b89a2ae4a038',
@@ -67,7 +67,7 @@ export const LOCALLOGIN_DATA = {
             id: '7049ec48-30ab-11ec-a86f-b89a2ae4a038',
             name: 'LuzernerSozialdienst',
         },
-        gemeinde_paris: {
+        default_gemeinde: {
             id: '6fd6183c-30a2-11ec-a86f-b89a2ae4a038',
             name: 'Luzern',
         },
@@ -95,11 +95,11 @@ export interface LocalloginDatum {
         id: string,
         name: string
     };
-    gemeinde_paris: {
+    default_gemeinde: {
         id: string,
         name: string
     };
-    gemeinde_london?: {
+    second_gemeinde?: {
         id: string,
         name: string
     };
