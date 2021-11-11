@@ -27,10 +27,7 @@ import {TSFinanzielleSituationTyp} from '../../../../models/enums/TSFinanzielleS
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
 import {ErrorService} from '../../errors/service/ErrorService';
-import {LogFactory} from '../../logging/LogFactory';
 import ITranslateService = angular.translate.ITranslateService;
-
-const LOG = LogFactory.createLog('DVNavigation');
 
 /**
  * Diese Direktive wird benutzt, um die Navigation Buttons darzustellen. Folgende Parameter koennen benutzt werden,
