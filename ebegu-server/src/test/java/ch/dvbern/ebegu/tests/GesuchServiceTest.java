@@ -322,6 +322,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		gpFolgegesuch.getGueltigkeit().setGueltigAb(erstgesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb().plusYears(1));
 		gpFolgegesuch.getGueltigkeit().setGueltigBis(erstgesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis().plusYears(1));
 		gpFolgegesuch = persistence.persist(gpFolgegesuch);
+		TestDataUtil.prepareParameters(gpFolgegesuch, persistence);
 
 		Gesuch erneuerung = Gesuch.createErneuerung(erstgesuch.getDossier(), gpFolgegesuch, LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch erneuerungPersisted = gesuchService.createGesuch(erneuerung);
@@ -511,6 +512,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public void testJAAntragMutierenWhenOnlineMutationExists() {
 		loginAsGesuchsteller("gesuchst");
 		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, AntragStatus.VERFUEGT);
+		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
 		loginAsSachbearbeiterJA();
 		gesuch.setGueltig(true);
 		gesuch.setTimestampVerfuegt(LocalDateTime.now());
@@ -990,6 +992,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 						LocalDate.of(1980, Month.MARCH, 25), AntragStatus.GEPRUEFT, gesuchsperiode);
 
 		final Gesuchsperiode gesuchsperiode1819 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2018, 2019);
+		TestDataUtil.prepareParameters(gesuchsperiode1819, persistence);
 
 		testfaelleService.antragErneuern(gesuch, gesuchsperiode1819, null);
 		Assert.assertTrue(gesuchService.getAllGesuchForAmtAfterGP(gesuchsperiode).size() == 1);

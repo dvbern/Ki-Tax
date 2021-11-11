@@ -1347,6 +1347,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGesuch.setGueltig(persistedGesuch.isGueltig());
 		jaxGesuch.setDokumenteHochgeladen(persistedGesuch.getDokumenteHochgeladen());
 		jaxGesuch.setFinSitStatus(persistedGesuch.getFinSitStatus());
+		jaxGesuch.setFinSitTyp(persistedGesuch.getFinSitTyp());
 		return jaxGesuch;
 	}
 
