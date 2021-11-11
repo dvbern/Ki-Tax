@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -182,6 +183,12 @@ public class AuthResource {
 			Optional<Benutzer> optBenutzer = benutzerService.findAndLockBenutzer(loginElement.getUsername());
 			if (optBenutzer.isPresent()) {
 				benutzer = optBenutzer.get();
+				if (!loginElement.getMandant().getId().equals(benutzer.getMandant().getId())) {
+					throw new EbeguRuntimeException(
+						"login",
+						"Mandant of loginelement (" + loginElement.getMandant().getName() + ") is not equal to mandant of user ("+ benutzer.getMandant().getName() +")"
+					);
+				}
 				// Damit wird kein neues Element erstellt, sondern das bestehende "verändert". Führt sonst zu einem
 				// Löschen und Wiedereinfügen in der History-Tabelle
 				loginElement.getBerechtigungen().iterator().next().setId(benutzer.getCurrentBerechtigung().getId());
