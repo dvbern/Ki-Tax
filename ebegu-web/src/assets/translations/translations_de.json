@@ -2645,5 +2645,8 @@
     "EINKOMMENSVERSCHLECHTERUNG_EINKOMMEN_TOO_HIGH": "Achtung: Ein Antrag auf Anwendung einer Einkommensverschlechterung ist nur bis zu einem massgebenden Einkommen von {{maxEinkommenEKV}} CHF möglich. Ihr minimales, massgebendes Einkommen für diesen Antrag beträgt in dieser Gesuchsperiode {{massgebendesEinkommen}} CHF.",
     "LATS_ABGESCHLOSSEN": "Dieser Antrag wurde abgeschlossen.",
     "INSTITUTION_GUELTIGKEIT_DECREASED_WARNUNG": "Achtung: Sie haben die Gültigkeit dieser Institution verändert. Offene Mutationsmeldungen zu Betreuungen dieser Institution werden angepasst. Sind Sie sicher, dass Sie diese Änderung speichern möchten?",
+    "KITAPLUS_ZUSCHLAG_AKTIVIERT": "KITAplus Zuschlag aktiviert (Luzern)",
+    "GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN": "Gemeindespezifische Konfigurationen für BG (Solothurn)",
+    "ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM": "Anspruch unabhängig vom Beschäftigungspensum (Solothurn)",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

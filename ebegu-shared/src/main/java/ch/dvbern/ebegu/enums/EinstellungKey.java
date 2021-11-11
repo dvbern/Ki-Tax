@@ -222,7 +222,16 @@ public enum EinstellungKey {
 	MINIMALDAUER_KONKUBINAT,
 
 	// Legt den Typen der finanziellen Verhältnisse fest. Z.B. BERN_ASIV oder LUZERN
-	FINANZIELLE_SITUATION_TYP;
+	FINANZIELLE_SITUATION_TYP,
+
+	// Kitaplus Zuschlag aktiviert (Luzern)
+	KITAPLUS_ZUSCHLAG_AKTIVIERT,
+
+	// Können BG Konfigurationen in den Gemeinde Einstellungen überschrieben werden (Solothurn)
+	GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN,
+
+	// (Solothurn)
+	ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
 
 	private EinstellungTyp typ;
 
