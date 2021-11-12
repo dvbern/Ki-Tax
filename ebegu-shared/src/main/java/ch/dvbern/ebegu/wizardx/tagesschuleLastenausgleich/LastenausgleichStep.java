@@ -39,7 +39,9 @@ public class LastenausgleichStep implements WizardStep<TagesschuleWizard> {
 
 	@Override
 	public WizardStateEnum getStatus(@Nonnull TagesschuleWizard wizard) {
-		return WizardStateEnum.IN_BEARBEITUNG;
+		return wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isAntragAbgeschlossen() ?
+			WizardStateEnum.OK :
+			WizardStateEnum.IN_BEARBEITUNG;
 	}
 
 	@Override

@@ -204,6 +204,12 @@ public enum EinstellungKey {
 	// Definiert ob die Schnittstelle zu den Steuersystemen aktiv ist
 	SCHNITTSTELLE_STEUERN_AKTIV,
 
+	// Ferienbetreuung Kosten pro Tag
+	FERIENBETREUUNG_CHF_PAUSCHALBETRAG,
+
+	// Ferienbetreuung Kosten pro Tag für Sonderschüler
+	FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER,
+
 	// Neue Frage bei Kinderabzug für FJKV
 	// Siehe KIBON-2115
 	FJKV_KINDERABZUG_NEU,

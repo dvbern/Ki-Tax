@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.api.resource.gemeindeantrag;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -222,12 +223,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		response = JaxLastenausgleichTagesschuleAngabenGemeindeContainer.class)
 	@Nonnull
 	@PUT
-	@Path("/abschliessen")
+	@Path("/gemeinde/abschliessen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
 		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS })
-	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeAbschliessen(
+	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeFormularAbschliessen(
 		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainerJax,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response
@@ -273,6 +274,35 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 		final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
 				angabenGemeindeService.lastenausgleichTagesschuleGemeindeEinreichen(converted);
+		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
+
+	}
+
+	@SuppressWarnings("PMD.PreserveStackTrace")
+	@ApiOperation(
+		value = "Schliesst den Lastenausgleich Tagesschule ab",
+		response = JaxLastenausgleichTagesschuleAngabenGemeindeContainer.class)
+	@Nonnull
+	@PUT
+	@Path("/abschliessen")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeAbschliessen(
+		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainerJax,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(latsGemeindeContainerJax.getId());
+		Objects.requireNonNull(latsGemeindeContainerJax.getGemeinde().getId());
+
+		authorizer.checkWriteAuthorizationLATSGemeindeAntrag(latsGemeindeContainerJax.getId());
+
+		final LastenausgleichTagesschuleAngabenGemeindeContainer converted =
+			getConvertedLastenausgleichTagesschuleAngabenGemeindeContainer(latsGemeindeContainerJax);
+
+		final LastenausgleichTagesschuleAngabenGemeindeContainer saved =
+				angabenGemeindeService.lastenausgleichTagesschuleGemeindeAbschliessen(converted);
 		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(saved);
 
 	}
@@ -348,6 +378,25 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		Objects.requireNonNull(kommentar);
 
 		angabenGemeindeService.saveKommentar(containerId.getId(), kommentar);
+	}
+
+	@ApiOperation(
+		value = "Speichert die Betreuungsstunden Prognose eines LastenausgleichTagesschuleAngabenGemeindeContainer in der Datenbank",
+		response = Void.class)
+	@PUT
+	@Path("/savePrognose/{containerId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public void saveLATSPrognose(
+		@Nonnull BigDecimal prognose,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response,
+		@Nonnull @NotNull @PathParam("containerId") JaxId containerId
+	) {
+		Objects.requireNonNull(containerId);
+		Objects.requireNonNull(prognose);
+
+		angabenGemeindeService.savePrognose(containerId.getId(), prognose);
 	}
 
 	@ApiOperation(

@@ -81,6 +81,11 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     public isVorlageVerfuegungLatsDE: boolean = false;
     public isVorlageVerfuegungLatsFR: boolean = false;
 
+    public isVorlageVerfuegungFerienbetreuungDE: boolean = false;
+    public isVorlageVerfuegungFerienbetreuungFR: boolean = false;
+
+    private readonly OFFICE_DOC_TYPE = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+
     public constructor(
         private readonly einstellungenRS: EinstellungRS,
         private readonly dvDialog: DvDialog,
@@ -251,6 +256,9 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
                     } case TSDokumentTyp.VORLAGE_VERFUEGUNG_LATS: {
                         this.setVorlageVerfuegungLatsBoolean(true, sprache);
                         break;
+                    } case TSDokumentTyp.VORLAGE_VERFUEGUNG_FERIENBETREUUNG: {
+                        this.setVorlageVerfuegungFerienbetreuungBoolean(true, sprache);
+                        break;
                     } default: {
                         throw new Error(GesuchsperiodeViewController.DOKUMENT_TYP_NOT_DEFINED);
                     }
@@ -271,6 +279,9 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
                     } case TSDokumentTyp.VORLAGE_VERFUEGUNG_LATS: {
                         this.setVorlageVerfuegungLatsBoolean(false, sprache);
                         break;
+                    }  case TSDokumentTyp.VORLAGE_VERFUEGUNG_FERIENBETREUUNG: {
+                        this.setVorlageVerfuegungFerienbetreuungBoolean(false, sprache);
+                        break;
                     } default: {
                         throw new Error(GesuchsperiodeViewController.DOKUMENT_TYP_NOT_DEFINED);
                     }
@@ -290,13 +301,18 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
                         break;
                     } case TSDokumentTyp.VORLAGE_MERKBLATT_TS: {
                         file = new Blob([response],
-                            {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+                            {type: this.OFFICE_DOC_TYPE});
                         filename = this.$translate.instant('VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME');
                         break;
                     } case TSDokumentTyp.VORLAGE_VERFUEGUNG_LATS: {
                         file = new Blob([response],
-                            {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+                            {type: this.OFFICE_DOC_TYPE});
                         filename = this.$translate.instant('VORLAGE_VERFUEGUNG_LATS_DATEI_NAME');
+                        break;
+                    }  case TSDokumentTyp.VORLAGE_VERFUEGUNG_FERIENBETREUUNG: {
+                        file = new Blob([response],
+                            {type: this.OFFICE_DOC_TYPE});
+                        filename = this.$translate.instant('VORLAGE_VERFUEGUNG_FERIENBETREUUNG_DATEI_NAME');
                         break;
                     } default: {
                         throw new Error(GesuchsperiodeViewController.DOKUMENT_TYP_NOT_DEFINED);
@@ -350,6 +366,16 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             result => {
                 this.isVorlageVerfuegungLatsFR = !!result;
             });
+        this.gesuchsperiodeRS.existDokument(
+            gesuchsperiode.id, TSSprache.DEUTSCH, TSDokumentTyp.VORLAGE_VERFUEGUNG_FERIENBETREUUNG).then(
+            result => {
+                this.isVorlageVerfuegungFerienbetreuungDE = !!result;
+            });
+        this.gesuchsperiodeRS.existDokument(
+            gesuchsperiode.id, TSSprache.FRANZOESISCH, TSDokumentTyp.VORLAGE_VERFUEGUNG_FERIENBETREUUNG).then(
+            result => {
+                this.isVorlageVerfuegungFerienbetreuungFR = !!result;
+            });
     }
 
     private setVorlageMerkblattTSBoolean(value: boolean, sprache: TSSprache): void {
@@ -372,6 +398,19 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
                 break;
             case TSSprache.DEUTSCH:
                 this.isVorlageVerfuegungLatsDE = value;
+                break;
+            default:
+                return;
+        }
+    }
+
+    private setVorlageVerfuegungFerienbetreuungBoolean(value: boolean, sprache: TSSprache): void {
+        switch (sprache) {
+            case TSSprache.FRANZOESISCH:
+                this.isVorlageVerfuegungFerienbetreuungFR = value;
+                break;
+            case TSSprache.DEUTSCH:
+                this.isVorlageVerfuegungFerienbetreuungDE = value;
                 break;
             default:
                 return;

@@ -58,7 +58,7 @@ public class DocxDocument {
 			throw new EbeguRuntimeException(
 				"replacePlaceholder",
 				"placeholder not found in text: " + placeholder,
-				ErrorCodeEnum.ERROR_LATS_VERFUEGUNG_PLACEHOLDER_NOT_FOUND,
+				ErrorCodeEnum.ERROR_VERFUEGUNG_PLACEHOLDER_NOT_FOUND,
 				placeholder
 			);
 		}
@@ -153,6 +153,9 @@ public class DocxDocument {
 				break;
 			}
 			String runText = runs.get(j).getText(0);
+			if (runText == null) {
+				continue;
+			}
 			int placeholderPartInThisRun = Math.min(restOfPlaceholderSize, runText.length());
 			runText = runText.substring(placeholderPartInThisRun);
 			restOfPlaceholderSize -= placeholderPartInThisRun;
