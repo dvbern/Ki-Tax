@@ -772,7 +772,8 @@ public abstract class AbstractBGRechnerTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
 		for(int i = 0; i < 12; i++){
-			assertEquals(result.get(i).getBgCalculationResultAsiv().getVerguenstigungMahlzeitenTotal(), BigDecimal.valueOf(60));
+			Assert.assertNotNull(result.get(i).getBgCalculationResultGemeinde());
+			assertEquals(result.get(i).getBgCalculationResultGemeinde().getVerguenstigungMahlzeitenTotal(), BigDecimal.valueOf(60));
 		}
 	}
 
