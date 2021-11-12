@@ -39,10 +39,10 @@ import ch.dvbern.ebegu.util.KitaxUtil;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_BEI_ANSPRUCH;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
-import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT;
@@ -261,7 +261,18 @@ public class BetreuungsgutscheinConfigurator {
 			minEWP_nichtEingeschultAsiv.getValueAsInteger(),
 			minEWP_eingeschultAsiv.getValueAsInteger(),
 			locale);
-		addToRuleSetIfRelevantForGemeinde(erwerbspensumAsivCalcRule, einstellungMap);
+//		addToRuleSetIfRelevantForGemeinde(erwerbspensumAsivCalcRule, einstellungMap);
+
+		var erwerbspensumNotRelevantForAnspruchCalcRule = new ErwerbspensumNotRelevantForAnspruchCalcRule(
+			RuleKey.ERWERBSPENSUM,
+			RuleType.GRUNDREGEL_CALC,
+			RuleValidity.ASIV,
+			defaultGueltigkeit,
+			locale
+		);
+		addToRuleSetIfRelevantForGemeinde(erwerbspensumNotRelevantForAnspruchCalcRule, einstellungMap);
+
+
 
 		// - Erwerbspensum Gemeinde
 		Einstellung minEWP_nichtEingeschultGmde = einstellungMap.get(GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
