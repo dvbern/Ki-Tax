@@ -200,7 +200,9 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(),
             this.gesuchModelManager.getGesuchsperiode(),
             false);
-
+        if (this.gesuchModelManager.isNeuestesGesuch()) {
+            this.isLastGesuch = true;
+        }
         if (this.betreuung.institutionStammdaten) {
             this.loadEinstellungPropertiesForTagesschule();
         }
@@ -223,9 +225,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
                 this.showNochNichtFreigegeben = true;
             }
             this.aktuellGueltig = false;
-        }
-        if (this.gesuchModelManager.isNeuestesGesuch()) {
-            this.isLastGesuch = true;
         }
     }
 
