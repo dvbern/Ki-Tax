@@ -74,7 +74,7 @@ public class TagesschuleRechner extends AbstractRechner {
 				verpflegungskostenVerguenstigt,
 				bgResult.getTsCalculationResultOhnePaedagogischerBetreuung().getVerpflegungskostenVerguenstigt());
 		}
-		input.setVerguenstigungMahlzeitenTotal(verpflegungskostenVerguenstigt);
+		bgResult.setVerguenstigungMahlzeitenTotal(verpflegungskostenVerguenstigt);
 
 		return bgResult;
 	}

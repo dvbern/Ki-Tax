@@ -571,9 +571,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setTarifNebenmahlzeit(tarifNebenmahlzeit);
 	}
 
-	public void setVerguenstigungMahlzeitenTotalForAsivAndGemeinde(BigDecimal verguenstigungMahlzeitenTotal) {
-		this.getBgCalculationInputAsiv().setVerguenstigungMahlzeitenTotal(verguenstigungMahlzeitenTotal);
-		this.getBgCalculationInputGemeinde().setVerguenstigungMahlzeitenTotal(verguenstigungMahlzeitenTotal);
+	public void setVerguenstigungMahlzeitenBeantragtForAsivAndGemeinde(boolean verguenstigungMahlzeitenBeantragt) {
+		this.getBgCalculationInputAsiv().setVerguenstigungMahlzeitenBeantragt(verguenstigungMahlzeitenBeantragt);
+		this.getBgCalculationInputGemeinde().setVerguenstigungMahlzeitenBeantragt(verguenstigungMahlzeitenBeantragt);
 	}
 
 	public void setPensumUnitForAsivAndGemeinde(PensumUnits unit) {
@@ -797,7 +797,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		result.setZuSpaetEingereicht(input.isZuSpaetEingereicht());
 		result.setMinimalesEwpUnterschritten(input.isMinimalesEwpUnterschritten());
 		result.setFamGroesse(input.getFamGroesseNonNull());
-		result.setVerguenstigungMahlzeitenTotal(input.getVerguenstigungMahlzeitenTotal());
 	}
 
 	public boolean isSameMZV(VerfuegungZeitabschnitt other) {

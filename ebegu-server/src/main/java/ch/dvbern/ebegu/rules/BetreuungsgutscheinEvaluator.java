@@ -41,6 +41,8 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
+import ch.dvbern.ebegu.rechner.rules.MahlzeitenverguenstigungBGRechnerRule;
+import ch.dvbern.ebegu.rechner.rules.MahlzeitenverguenstigungTSRechnerRule;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherBabyGutscheinRechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherGutscheinGemeindeRechnerRule;
@@ -342,6 +344,10 @@ public class BetreuungsgutscheinEvaluator {
 		}
 		if (bgRechnerParameterDTO.getGemeindeParameter().getGemeindeZusaetzlicherBabyGutscheinEnabled()) {
 			rechnerRules.add(new ZusaetzlicherBabyGutscheinRechnerRule(locale));
+		}
+		if (bgRechnerParameterDTO.getMahlzeitenverguenstigungParameter().isEnabled()) {
+			rechnerRules.add(new MahlzeitenverguenstigungBGRechnerRule(locale));
+			rechnerRules.add(new MahlzeitenverguenstigungTSRechnerRule(locale));
 		}
 		return rechnerRules;
 	}

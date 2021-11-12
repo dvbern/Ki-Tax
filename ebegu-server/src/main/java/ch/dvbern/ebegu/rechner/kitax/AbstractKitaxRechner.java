@@ -36,6 +36,9 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.Regelwerk;
 import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
+import ch.dvbern.ebegu.rechner.RechnerRuleParameterDTO;
+import ch.dvbern.ebegu.rechner.rules.MahlzeitenverguenstigungBGRechnerRule;
+import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
 
@@ -45,6 +48,8 @@ import static ch.dvbern.ebegu.util.MathUtil.EXACT;
  * Superklasse für BG-Rechner
  */
 public abstract class AbstractKitaxRechner extends AbstractRechner {
+
+	private final RechnerRuleParameterDTO rechnerParameter = new RechnerRuleParameterDTO();
 
 	protected KitaxUebergangsloesungParameter kitaxParameter;
 
@@ -134,6 +139,34 @@ public abstract class AbstractKitaxRechner extends AbstractRechner {
 		BigDecimal zwischenresultat1 = MathUtil.EXACT.divide(kostenProStundeMaxMinusMin, massgebendesEinkommenMaxMinusMin);
 		BigDecimal zwischenresultat2 = MathUtil.EXACT.multiply(zwischenresultat1, massgebendesEinkommenMinusMin);
 		return MathUtil.EXACT.add(zwischenresultat2, parameterDTO.getKostenProStundeMinimal());
+	}
+
+	protected void prepareRechnerParameterForGemeinde(
+		@Nonnull BGCalculationInput inputGemeinde,
+		@Nonnull BGRechnerParameterDTO parameterDTO
+	) {
+		MahlzeitenverguenstigungBGRechnerRule rechnerRule = new MahlzeitenverguenstigungBGRechnerRule(locale);
+			// Diese Pruefung erfolgt eigentlich schon aussen... die Rules die reinkommen sind schon konfiguriert fuer Gemeinde
+			if (rechnerRule.isConfigueredForGemeinde(parameterDTO)) {
+				if (rechnerRule.isRelevantForVerfuegung(inputGemeinde, parameterDTO)) {
+					rechnerRule.prepareParameter(inputGemeinde, parameterDTO, rechnerParameter);
+				}
+			}
+	}
+
+	/**
+	 * Die Mahlzeitenverguenstigungen mit dem Anteil Monat verrechnen. Die Verguenstigung wurde aufgrund der *monatlichen*
+	 * Mahlzeiten berechnet und ist darum bei untermonatlichen Pensen zu hoch.
+	 * Beispiel: Betreuung ueber einen halben Monat:
+	 * berechneteVerguenstigung = eingegebeneVerguenstigung * 0.5
+	 */
+	protected void handleAnteileMahlzeitenverguenstigung(
+		@Nonnull BGCalculationResult result, @Nonnull BigDecimal anteilMonat
+	) {
+		// Falls der Zeitabschnitt untermonatlich ist, muessen sowohl die Anzahl Mahlzeiten wie auch die Kosten
+		// derselben mit dem Anteil des Monats korrigiert werden
+		final BigDecimal mahlzeitenTotal = rechnerParameter.getVerguenstigungMahlzeitenTotal();
+		result.setVerguenstigungMahlzeitenTotal(MathUtil.DEFAULT.multiply(mahlzeitenTotal, anteilMonat));
 	}
 
 	/**
