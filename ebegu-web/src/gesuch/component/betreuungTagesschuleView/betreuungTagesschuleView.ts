@@ -210,6 +210,21 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             this.minEintrittsdatum = this.getMinErsterSchultag();
             this.setErsterSchultag();
         }
+        this.initMutation();
+    }
+
+    public getTagesschuleAnmeldungNotYetReadyText(): string {
+        if (this.gesuchModelManager.gemeindeKonfiguration.isTagesschulAnmeldungBeforePeriode()) {
+            const terminValue = DateUtil.momentToLocalDateFormat(
+                this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleAktivierungsdatum, 'DD.MM.YYYY');
+            return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_AB_INFO', {
+                termin: terminValue,
+            });
+        }
+        return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_INFO');
+    }
+
+    private initMutation(): void {
         if (!this.getBetreuungModel().anmeldungMutationZustand) {
             return;
         }
@@ -226,17 +241,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             }
             this.aktuellGueltig = false;
         }
-    }
-
-    public getTagesschuleAnmeldungNotYetReadyText(): string {
-        if (this.gesuchModelManager.gemeindeKonfiguration.isTagesschulAnmeldungBeforePeriode()) {
-            const terminValue = DateUtil.momentToLocalDateFormat(
-                this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleAktivierungsdatum, 'DD.MM.YYYY');
-            return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_AB_INFO', {
-                termin: terminValue,
-            });
-        }
-        return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_INFO');
     }
 
     private loadEinstellungPropertiesForTagesschule(): void {
