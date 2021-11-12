@@ -146,12 +146,10 @@ public abstract class AbstractKitaxRechner extends AbstractRechner {
 		@Nonnull BGRechnerParameterDTO parameterDTO
 	) {
 		MahlzeitenverguenstigungBGRechnerRule rechnerRule = new MahlzeitenverguenstigungBGRechnerRule(locale);
-			// Diese Pruefung erfolgt eigentlich schon aussen... die Rules die reinkommen sind schon konfiguriert fuer Gemeinde
-			if (rechnerRule.isConfigueredForGemeinde(parameterDTO)) {
-				if (rechnerRule.isRelevantForVerfuegung(inputGemeinde, parameterDTO)) {
-					rechnerRule.prepareParameter(inputGemeinde, parameterDTO, rechnerParameter);
-				}
-			}
+		// Diese Pruefung erfolgt eigentlich schon aussen... die Rules die reinkommen sind schon konfiguriert fuer Gemeinde
+		if (rechnerRule.isConfigueredForGemeinde(parameterDTO) && rechnerRule.isRelevantForVerfuegung(inputGemeinde, parameterDTO)) {
+			rechnerRule.prepareParameter(inputGemeinde, parameterDTO, rechnerParameter);
+		}
 	}
 
 	/**
