@@ -122,7 +122,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		gemeinde = TestDataUtil.getGemeindeParis(persistence);
 	}
 
-	//@Test
+	@Test
 	public void testfall_ASIV_01() {
 		// Erstgesuch erstellen
 		Testfall_ASIV_01 testfall = new Testfall_ASIV_01(gesuchsperiode, institutionStammdatenList, true, gemeinde);
@@ -139,7 +139,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		AbstractBGRechnerTest.checkTestfall_ASIV_01(mutationCalculated);
 	}
 
-	//@Test
+	@Test
 	public void testfall_ASIV_02() {
 		// Erstgesuch erstellen
 		Testfall_ASIV_02 testfall = new Testfall_ASIV_02(gesuchsperiode, institutionStammdatenList, true, gemeinde);
@@ -156,7 +156,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		AbstractBGRechnerTest.checkTestfall_ASIV_02(mutationCalculated);
 	}
 
-	//@Test
+	@Test
 	public void testfall_ASIV_03() {
 		// Erstgesuch erstellen
 		Testfall_ASIV_03 testfall = new Testfall_ASIV_03(gesuchsperiode, institutionStammdatenList, true, gemeinde);
@@ -173,7 +173,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		AbstractBGRechnerTest.checkTestfall_ASIV_03(mutationCalculated);
 	}
 
-	//@Test
+	@Test
 	public void testfall_ASIV_04() {
 		// Erstgesuch erstellen
 		Testfall_ASIV_04 testfall = new Testfall_ASIV_04(gesuchsperiode, institutionStammdatenList, true, gemeinde);
@@ -190,7 +190,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		AbstractBGRechnerTest.checkTestfall_ASIV_04(mutationCalculated);
 	}
 
-	//@Test
+	@Test
 	public void testfall_ASIV_05() {
 		// Erstgesuch erstellen
 		Testfall_ASIV_05 testfall = new Testfall_ASIV_05(gesuchsperiode, institutionStammdatenList, true, gemeinde);
@@ -207,7 +207,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		AbstractBGRechnerTest.checkTestfall_ASIV_05(mutationCalculated);
 	}
 
-	//@Test
+	@Test
 	public void testfall_ASIV_06() {
 		// Erstgesuch erstellen
 		Testfall_ASIV_06 testfall = new Testfall_ASIV_06(gesuchsperiode, institutionStammdatenList, true, gemeinde);
@@ -224,7 +224,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		AbstractBGRechnerTest.checkTestfall_ASIV_06(mutationCalculated);
 	}
 
-	//@Test
+	@Test
 	public void testfall_ASIV_07() {
 		// Erstgesuch erstellen
 		Testfall_ASIV_07 testfall = new Testfall_ASIV_07(gesuchsperiode, institutionStammdatenList, true, gemeinde);
@@ -241,7 +241,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		AbstractBGRechnerTest.checkTestfall_ASIV_07(mutationCalculated);
 	}
 
-	//@Test
+	@Test
 	public void testfall_ASIV_08() {
 		// Erstgesuch erstellen
 		Testfall_ASIV_08 testfall = new Testfall_ASIV_08(gesuchsperiode, institutionStammdatenList, true, gemeinde);
@@ -258,7 +258,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		AbstractBGRechnerTest.checkTestfall_ASIV_08(mutationCalculated);
 	}
 
-	//@Test
+	@Test
 	public void testfall_ASIV_09() {
 		// Erstgesuch erstellen
 		Testfall_ASIV_09 testfall = new Testfall_ASIV_09(gesuchsperiode, institutionStammdatenList, true, gemeinde);
@@ -275,7 +275,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		AbstractBGRechnerTest.checkTestfall_ASIV_09(mutationCalculated);
 	}
 
-	//@Test
+	@Test
 	public void testfall_ASIV_10() {
 		// Erstgesuch erstellen
 		Testfall_ASIV_10 testfall = new Testfall_ASIV_10(gesuchsperiode, institutionStammdatenList, true, gemeinde);
@@ -292,7 +292,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		AbstractBGRechnerTest.checkTestfall_ASIV_10(mutationCalculated);
 	}
 
-	//@Test
+	@Test
 	public void testfall_ASIV_11_MZV() {
 		// Erstgesuch erstellen, ohne MVZ
 		Testfall_ASIV_11_MZV
