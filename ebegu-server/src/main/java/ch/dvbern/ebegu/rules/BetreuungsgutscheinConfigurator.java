@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.KitaxUtil;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF;
@@ -117,7 +118,8 @@ public class BetreuungsgutscheinConfigurator {
 			FKJV_PAUSCHALE_BEI_ANSPRUCH,
 			FKJV_PAUSCHALE_RUECKWIRKEND,
 			FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF,
-			FKJV_EINGEWOEHNUNG);
+			FKJV_EINGEWOEHNUNG,
+			ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
 	}
 
 	private void useRulesOfGemeinde(@Nonnull Gemeinde gemeinde, @Nullable KitaxUebergangsloesungParameter kitaxParameterDTO, @Nonnull Map<EinstellungKey, Einstellung> einstellungen) {
@@ -251,28 +253,9 @@ public class BetreuungsgutscheinConfigurator {
 		StorniertCalcRule storniertCalcRule = new StorniertCalcRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(storniertCalcRule, einstellungMap);
 
-		// - Erwerbspensum ASIV
-		Einstellung minEWP_nichtEingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
-		Einstellung minEWP_eingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_EINGESCHULT);
-		Objects.requireNonNull(minEWP_nichtEingeschultAsiv, "Parameter MIN_ERWERBSPENSUM_NICHT_EINGESCHULT muss gesetzt sein");
-		Objects.requireNonNull(minEWP_eingeschultAsiv, "Parameter MIN_ERWERBSPENSUM_EINGESCHULT muss gesetzt sein");
-		ErwerbspensumAsivCalcRule erwerbspensumAsivCalcRule = new ErwerbspensumAsivCalcRule(
-			defaultGueltigkeit,
-			minEWP_nichtEingeschultAsiv.getValueAsInteger(),
-			minEWP_eingeschultAsiv.getValueAsInteger(),
-			locale);
-//		addToRuleSetIfRelevantForGemeinde(erwerbspensumAsivCalcRule, einstellungMap);
-
-		var erwerbspensumNotRelevantForAnspruchCalcRule = new ErwerbspensumNotRelevantForAnspruchCalcRule(
-			RuleKey.ERWERBSPENSUM,
-			RuleType.GRUNDREGEL_CALC,
-			RuleValidity.ASIV,
-			defaultGueltigkeit,
-			locale
-		);
-		addToRuleSetIfRelevantForGemeinde(erwerbspensumNotRelevantForAnspruchCalcRule, einstellungMap);
-
-
+		// - Erwerbspensum Kanton
+		Rule rule = configureErwerbspensumKantonRule(einstellungMap);
+		addToRuleSetIfRelevantForGemeinde(rule, einstellungMap);
 
 		// - Erwerbspensum Gemeinde
 		Einstellung minEWP_nichtEingeschultGmde = einstellungMap.get(GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
@@ -405,5 +388,30 @@ public class BetreuungsgutscheinConfigurator {
 		if (rule.isRelevantForGemeinde(einstellungMap)) {
 			rules.add(rule);
 		}
+	}
+
+	private Rule configureErwerbspensumKantonRule(Map<EinstellungKey, Einstellung> einstellungMap) {
+		var anspruchUnabhaengigVonBeschaeftigungspensum = einstellungMap.get(ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
+		Rule rule;
+		if (anspruchUnabhaengigVonBeschaeftigungspensum.getValueAsBoolean()) {
+			rule = new ErwerbspensumNotRelevantForAnspruchCalcRule(
+				RuleKey.ERWERBSPENSUM,
+				RuleType.GRUNDREGEL_CALC,
+				RuleValidity.ASIV,
+				defaultGueltigkeit,
+				locale
+			);
+		} else {
+			Einstellung minEWP_nichtEingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
+			Einstellung minEWP_eingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_EINGESCHULT);
+			Objects.requireNonNull(minEWP_nichtEingeschultAsiv, "Parameter MIN_ERWERBSPENSUM_NICHT_EINGESCHULT muss gesetzt sein");
+			Objects.requireNonNull(minEWP_eingeschultAsiv, "Parameter MIN_ERWERBSPENSUM_EINGESCHULT muss gesetzt sein");
+			rule = new ErwerbspensumAsivCalcRule(
+				defaultGueltigkeit,
+				minEWP_nichtEingeschultAsiv.getValueAsInteger(),
+				minEWP_eingeschultAsiv.getValueAsInteger(),
+				locale);
+		}
+		return rule;
 	}
 }
