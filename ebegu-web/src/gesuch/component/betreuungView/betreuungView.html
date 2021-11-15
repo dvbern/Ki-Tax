@@ -387,6 +387,32 @@
                         </div>
                     </div>
 
+                    <!--kitaPlus Zuschlag für besondere Beduerfnisse-->
+                    <div class="row" ng-if="vm.showKitaPlusZuschlag()">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <div class="form-group">
+                                <span class="ebegu-h1 required">
+                                    <span data-translate="BESONDERE_BEDUERFNISSE_KITA_PLUS_ZUSCHLAG"></span>
+                                </span>
+
+                                <dv-radio-container name="kitaPlusZuschlag" class="input-element"
+                                                    ng-model="vm.getErweiterteBetreuungJA().kitaPlusZuschlag"
+                                                    aria-label="{{'BESONDERE_BEDUERFNISSE_KITA_PLUS_ZUSCHLAG'|translate}}"
+                                                    aria-described-by="kitaPlusZuschlag-error"
+                                                    ng-required="true"
+                                                    dv-enable-element
+                                                    dv-enable-allowed-roles="vm.allowedRoles">
+                                </dv-radio-container>
+                                <dv-error-messages input-id="kitaPlusZuschlag"
+                                                   for="vm.form.kitaPlusZuschlag.$error"
+                                                   class="error"></dv-error-messages>
+                                <dv-bisher gs="vm.getErweiterteBetreuungGS().kitaPlusZuschlag"
+                                           ja="vm.getErweiterteBetreuungJA().kitaPlusZuschlag"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getErweiterteBetreuungGS())"></dv-bisher>
+                            </div>
+                        </div>
+                    </div>
+
                     <!--Eingewoehnung Periode-->
                     <div class="row" ng-if="vm.showEingewoehnung() && !vm.isSchulamt()">
                         <div class="col-xs-12 dv-input-container-question">

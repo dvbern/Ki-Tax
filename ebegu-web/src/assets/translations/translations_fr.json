@@ -490,6 +490,7 @@
     "KEINE_KESB_PLATZIERUNG": "Est-ce que la prise en charge a été ordonnée par une APEA?",
     "KEINE_KESB_PLATZIERUNG_POPUP_TEXT": "En cas de placement ordonné par l'APEA, aucun bon de garde n'est émis.  L'APEA assume les frais de prise en charge.",
     "BESCHREIBUNG_KEINE_KESB_PLATZIERUNG_POPUP_TEXT": "Voulez-vous quand même enregistrer la prise en charge ? ",
+    "BESONDERE_BEDUERFNISSE_KITA_PLUS_ZUSCHLAG": "Hat Ihr Kind besondere Bedürfnisse und profitiert vom KITAplus-Zuschlag?",
     "BETREUUNG_IN_GEMEINDE": "La prise en charge de votre enfant a lieu dans la commune {{gemeinde}}",
     "BESTAETIGUNG_BETREUUNG_IN_GEMEINDE_POPUP_TEXT": "Il n'y a pas de bon supplémentaire sans confirmation que la prise en charge a lieu dans la commune établie pour l'attribution du bon.",
     "KORREKTE_KOSTEN_BESTAETIGUNG_1": "Par la présente, je confirme",
