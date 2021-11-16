@@ -46,11 +46,13 @@ import ch.dvbern.ebegu.authentication.AuthLoginElement;
 import ch.dvbern.ebegu.entities.AuthorisierterBenutzer;
 import ch.dvbern.ebegu.entities.AuthorisierterBenutzer_;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.util.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.infinispan.Cache;
@@ -73,6 +75,9 @@ public class AuthServiceBean implements AuthService {
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
+	@Inject
+	private MandantService mandantService;
+
 	@Resource(lookup = "java:jboss/infinispan/cache/ebeguCache/ebeguAuthorizationCache")
 	private Cache<?, ?> cache;
 
@@ -86,7 +91,9 @@ public class AuthServiceBean implements AuthService {
 
 	@Nonnull
 	@Override
-	public Optional<AuthAccessElement> login(@Nonnull AuthLoginElement loginElement) {
+	public Optional<AuthAccessElement> login(
+			@Nonnull AuthLoginElement loginElement,
+			@Nonnull Mandant mandant) {
 		Objects.requireNonNull(loginElement);
 
 		if (StringUtils.isEmpty(loginElement.getUsername()) || StringUtils.isEmpty(loginElement.getPlainTextPassword())) {
@@ -103,11 +110,11 @@ public class AuthServiceBean implements AuthService {
 		authorisierterBenutzer.setBenutzer(benutzer.get());
 
 		authorisierterBenutzer.setAuthToken(UUID.randomUUID().toString());  //auth token generieren
-		authorisierterBenutzer.setUsername(loginElement.getUsername());
+		authorisierterBenutzer.setUsername("benutzer.get().getId()");
 		authorisierterBenutzer.setRole(loginElement.getRole()); // hier kommt rolle aus property file
 		entityManager.persist(authorisierterBenutzer);
 		return Optional.of(new AuthAccessElement(
-			authorisierterBenutzer.getUsername(),
+			benutzer.get().getId(),
 			authorisierterBenutzer.getAuthToken(),
 			UUID.randomUUID().toString(), // XSRF-Token (no need to persist)
 			loginElement.getNachname(),
@@ -151,8 +158,8 @@ public class AuthServiceBean implements AuthService {
 	@Nonnull
 	public AuthAccessElement createLoginFromIAM(AuthorisierterBenutzer authorisierterBenutzer) {
 		try {
-			Benutzer benutzerFromDB = benutzerService.findBenutzer(authorisierterBenutzer.getUsername())
-				.orElseThrow(() -> {
+			Benutzer benutzerFromDB = benutzerService.findBenutzer(authorisierterBenutzer.getUsername(),
+							mandantService.getDefaultMandant()).orElseThrow(() -> {
 					LOG.error("Could not find Benutzer during login from IAM. Benutzer should have been created"
 						+ "(e.g. via REST call) prior to creating the AuthorisierterBenutzer entry.");
 					return new EbeguEntityNotFoundException("createLoginFromIam", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, authorisierterBenutzer.getUsername());
@@ -166,7 +173,7 @@ public class AuthServiceBean implements AuthService {
 		}
 		Benutzer existingUser = authorisierterBenutzer.getBenutzer();
 		return new AuthAccessElement(
-			authorisierterBenutzer.getUsername(),
+			authorisierterBenutzer.getId(),
 			authorisierterBenutzer.getAuthToken(),
 			UUID.randomUUID().toString(), // XSRF-Token (no need to persist)
 			existingUser.getNachname(),

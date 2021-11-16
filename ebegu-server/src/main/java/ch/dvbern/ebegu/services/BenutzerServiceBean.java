@@ -737,13 +737,13 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Nonnull
 	@Override
 	public Optional<Benutzer> getCurrentBenutzer() {
-		String username = null;
+		String benutzerId = null;
 		if (principalBean != null) {
 			final Principal principal = principalBean.getPrincipal();
-			username = principal.getName();
+			benutzerId = principal.getName();
 		}
-		if (StringUtils.isNotEmpty(username)) {
-			return findBenutzer(username);
+		if (StringUtils.isNotEmpty(benutzerId)) {
+			return findBenutzerById(benutzerId);
 		}
 		return Optional.empty();
 	}
