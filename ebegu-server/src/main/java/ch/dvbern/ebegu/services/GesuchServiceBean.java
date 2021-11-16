@@ -1553,8 +1553,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public int warnGesucheNichtFreigegeben() {
+	public int findGesucheNichtFreigegebenAndWarn() {
 
 		Integer anzahlTageBisWarnungFreigabe =
 			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_FREIGABE);
@@ -1599,9 +1598,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void warnGesuchNichtFreigegeben(Integer anzahlTageBisLoeschungNachWarnungFreigabe, Gesuch gesuch) {
 		try {
-			mailService.sendWarnungGesuchNichtFreigegeben(gesuch, anzahlTageBisLoeschungNachWarnungFreigabe);
 			gesuch.setDatumGewarntNichtFreigegeben(LocalDate.now());
 			updateGesuch(gesuch, false, null);
+			mailService.sendWarnungGesuchNichtFreigegeben(gesuch, anzahlTageBisLoeschungNachWarnungFreigabe);
 		} catch (Exception e) {
 			logExceptionAccordingToEnvironment(
 				e,
@@ -1611,8 +1610,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public int warnFreigabequittungenFehlen() {
+	public int findGesucheWithoutFreigabequittungenAndWarn() {
 
 		Integer anzahlTageBisWarnungQuittung =
 			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG);
@@ -1656,9 +1654,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void sendWarnungFreigabequittung(Integer anzahlTageBisLoeschungNachWarnungFreigabe, Gesuch gesuch) {
 		try {
-			mailService.sendWarnungFreigabequittungFehlt(gesuch, anzahlTageBisLoeschungNachWarnungFreigabe);
 			gesuch.setDatumGewarntFehlendeQuittung(LocalDate.now());
-			updateGesuch(gesuch, false, null);
+			gesuch = updateGesuch(gesuch, false, null);
+			mailService.sendWarnungFreigabequittungFehlt(gesuch, anzahlTageBisLoeschungNachWarnungFreigabe);
 		} catch (Exception e) {
 			logExceptionAccordingToEnvironment(
 				e,
