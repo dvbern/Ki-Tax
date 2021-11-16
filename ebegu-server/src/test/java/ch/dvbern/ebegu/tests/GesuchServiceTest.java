@@ -631,7 +631,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Gesuch gesuch3 = createGesuchFreigabequittung(LocalDate.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG).plusDays(1));
 		TestDataUtil.createGemeindeStammdaten(gesuch1.extractGemeinde(), persistence);
 
-		Assert.assertEquals(2, gesuchService.warnFreigabequittungFehlt());
+		Assert.assertEquals(2, gesuchService.warnFreigabequittungenFehlen());
 		final Optional<Gesuch> resultGesuch1 = gesuchService.findGesuch(gesuch1.getId());
 		Assert.assertTrue(resultGesuch1.isPresent());
 		Assert.assertNotNull(resultGesuch1.get().getDatumGewarntFehlendeQuittung());
@@ -651,7 +651,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Gesuch gesuch3 = createGesuchInBearbeitungGS(LocalDateTime.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_FREIGABE).plusDays(1));
 		TestDataUtil.createGemeindeStammdaten(gesuch1.extractGemeinde(), persistence);
 
-		Assert.assertEquals(2, gesuchService.warnGesuchNichtFreigegeben());
+		Assert.assertEquals(2, gesuchService.warnGesucheNichtFreigegeben());
 		final Optional<Gesuch> resultGesuch1 = gesuchService.findGesuch(gesuch1.getId());
 		Assert.assertTrue(resultGesuch1.isPresent());
 		Assert.assertNotNull(resultGesuch1.get().getDatumGewarntNichtFreigegeben());
