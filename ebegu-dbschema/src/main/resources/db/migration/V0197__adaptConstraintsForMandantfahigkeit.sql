@@ -20,3 +20,9 @@ ALTER TABLE application_property ADD CONSTRAINT UK_application_property_name_man
 
 ALTER TABLE fall DROP CONSTRAINT UK_fall_nummer;
 ALTER TABLE fall ADD CONSTRAINT UK_fall_nummer_mandant_id UNIQUE (fall_nummer, mandant_id);
+
+ALTER TABLE benutzer DROP CONSTRAINT IF EXISTS UK_username;
+ALTER TABLE benutzer ADD CONSTRAINT UK_username_mandant UNIQUE(username, mandant_id);
+
+DROP INDEX IF EXISTS IX_benutzer_username ON benutzer;
+CREATE INDEX IF NOT EXISTS IX_benutzer_username_mandant ON benutzer(username, mandant_id);
