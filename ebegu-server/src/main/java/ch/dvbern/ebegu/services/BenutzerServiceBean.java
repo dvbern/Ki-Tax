@@ -78,6 +78,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Traegerschaft_;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
@@ -269,10 +270,10 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	public Benutzer einladen(@Nonnull Einladung einladung) {
+	public Benutzer einladen(@Nonnull Einladung einladung, @Nonnull Mandant mandant) {
 		requireNonNull(einladung);
 
-		checkEinladung(einladung);
+		checkEinladung(einladung, mandant);
 
 		Benutzer persistedBenutzer = saveBenutzer(einladung.getEingeladener());
 
@@ -312,14 +313,14 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	 * According to the type of Einladung it checks that the given benutzer meets the conditions required.
 	 */
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	private void checkEinladung(@Nonnull Einladung einladung) {
+	private void checkEinladung(@Nonnull Einladung einladung, @Nonnull Mandant mandant) {
 		Benutzer benutzer = einladung.getEingeladener();
 		checkSuperuserRoleZuteilung(einladung.getEingeladener());
 		EinladungTyp einladungTyp = einladung.getEinladungTyp();
 		checkArgument(Objects.equals(benutzer.getMandant(), principalBean.getMandant()));
 
 		if (einladungTyp == EinladungTyp.MITARBEITER && (!benutzer.isNew()
-			|| findBenutzer(benutzer.getUsername()).isPresent())) {
+			|| findBenutzer(benutzer.getUsername(), mandant).isPresent())) {
 			// when inviting a new Mitarbeiter the user cannot exist.
 			// For any other invitation the user may exist already
 			throw new EntityExistsException(
@@ -437,9 +438,23 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	public Optional<Benutzer> findBenutzer(@Nonnull String username) {
+	public Optional<Benutzer> findBenutzer(@Nonnull String username, @Nonnull Mandant mandant) {
 		requireNonNull(username, "username muss gesetzt sein");
-		return criteriaQueryHelper.getEntityByUniqueAttribute(Benutzer.class, username, Benutzer_.username);
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
+		Root<Benutzer> root = query.from(Benutzer.class);
+		Predicate usernamePredicate = cb.equal(root.get(Benutzer_.username), username);
+		Predicate mandantPredicate = cb.equal(root.get(Benutzer_.mandant), mandant);
+
+		query.where(usernamePredicate, mandantPredicate);
+
+		try {
+			return Optional.of(persistence.getEntityManager()
+					.createQuery(query)
+					.getSingleResult());
+		} catch (NoResultException nre) {
+			return Optional.empty();
+		}
 	}
 
 	@Nonnull
@@ -676,9 +691,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	@Override
-	public void removeBenutzer(@Nonnull String username) {
+	public void removeBenutzer(@Nonnull String username, @Nonnull Mandant mandant) {
 		requireNonNull(username);
-		Benutzer benutzer = findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException(
+		Benutzer benutzer = findBenutzer(username, mandant).orElseThrow(() -> new EbeguEntityNotFoundException(
 			"removeBenutzer",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			username));
@@ -686,20 +701,20 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		try {
 			checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(benutzer);
 			// Keine Exception: Es ist kein Gesuchsteller: Wir können immer löschen
-			removeBenutzerForced(benutzer.getUsername());
+			removeBenutzerForced(benutzer.getUsername(), mandant);
 		} catch (BenutzerExistException b) {
 			// Es ist ein Gesuchsteller: Wir löschen, solange er keine freigegebenen/verfuegten Gesuche hat
 			if (b.getErrorCodeEnum() != ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_FREGEGEBENE_GESUCH) {
-				removeBenutzerForced(benutzer.getUsername());
+				removeBenutzerForced(benutzer.getUsername(), mandant);
 			} else {
 				throw b;
 			}
 		}
 	}
 
-	private void removeBenutzerForced(@Nonnull String username) {
+	private void removeBenutzerForced(@Nonnull String username, @Nonnull Mandant mandant) {
 		requireNonNull(username);
-		Benutzer benutzer = findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException(
+		Benutzer benutzer = findBenutzer(username, mandant).orElseThrow(() -> new EbeguEntityNotFoundException(
 			"removeBenutzer",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			username));
@@ -768,7 +783,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		}
 
 		// Benutzer nicht ueber ExternalUUID gefunden. Es koennte aber sein, dass wir den Benutzer resettet wurde
-		final Optional<Benutzer> benutzerByUsernameOptional = findBenutzer(benutzer.getUsername());
+		final Optional<Benutzer> benutzerByUsernameOptional = findBenutzer(benutzer.getUsername(),
+				requireNonNull(benutzer.getMandant()));
 		if (benutzerByUsernameOptional.isPresent()) {
 			// Wir kennen den Benutzer schon: Es werden nur die readonly-Attribute neu von IAM uebernommen
 			Benutzer foundUser = benutzerByUsernameOptional.get();
@@ -837,8 +853,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	public Benutzer sperren(@Nonnull String username) {
-		Benutzer benutzerFromDB = findBenutzer(username)
+	public Benutzer sperren(@Nonnull String username, @Nonnull Mandant mandant) {
+		Benutzer benutzerFromDB = findBenutzer(username, mandant)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"sperren",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
@@ -864,8 +880,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	public Benutzer reaktivieren(@Nonnull String username) {
-		Benutzer benutzerFromDB = findBenutzer(username)
+	public Benutzer reaktivieren(@Nonnull String username, @Nonnull Mandant mandant) {
+		Benutzer benutzerFromDB = findBenutzer(username, mandant)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"reaktivieren",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,

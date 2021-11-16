@@ -409,7 +409,8 @@ public class NotrechtResource {
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					formularId.getId()));
 
-		Benutzer benutzer = benutzerService.findBenutzer(username)
+		Benutzer benutzer = benutzerService.findBenutzer(username, rueckforderungFormular.getInstitutionStammdaten().getInstitution()
+						.getMandant())
 			.orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicher",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				username));

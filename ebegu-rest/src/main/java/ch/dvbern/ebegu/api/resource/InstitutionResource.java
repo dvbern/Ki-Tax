@@ -199,7 +199,8 @@ public class InstitutionResource {
 				})
 				.orElseGet(() -> benutzerService.createAdminInstitutionByEmail(adminMail, persistedInstitution));
 
-			benutzerService.einladen(Einladung.forInstitution(benutzer, persistedInstitution));
+			benutzerService.einladen(Einladung.forInstitution(benutzer, persistedInstitution),
+					requireNonNull(persistedInstitution.getMandant()));
 		}
 
 		URI uri = uriInfo.getBaseUriBuilder()

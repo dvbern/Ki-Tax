@@ -107,7 +107,7 @@ public class AbstractEntityListener {
 			fall.setFallNummer(nextFallNr);
 			fall.setMandant(mandant);
 			if (getPrincipalBean().isCallerInRole(UserRole.GESUCHSTELLER)) {
-				Optional<Benutzer> benutzer = getBenutzerService().findBenutzer(getPrincipalName());
+				Optional<Benutzer> benutzer = getBenutzerService().findBenutzer(getPrincipalName(), mandant);
 				fall.setBesitzer(benutzer.orElseThrow(() -> new EbeguRuntimeException("findBenutzer", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, getPrincipalName())));
 
 			}

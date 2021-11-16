@@ -94,7 +94,7 @@ public class AuthServiceBean implements AuthService {
 		}
 
 		//Benutzer muss in jedem Fall bekannt sein (wird bei erfolgreichem container login angelegt)
-		Optional<Benutzer> benutzer = benutzerService.findBenutzer(loginElement.getUsername());
+		Optional<Benutzer> benutzer = benutzerService.findBenutzer(loginElement.getUsername(), mandant);
 		if (!benutzer.isPresent()) {
 			return Optional.empty();
 		}

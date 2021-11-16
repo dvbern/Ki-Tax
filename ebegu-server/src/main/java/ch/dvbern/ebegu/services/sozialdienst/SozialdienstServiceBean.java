@@ -106,7 +106,8 @@ public class SozialdienstServiceBean extends AbstractBaseService implements Sozi
 			})
 			.orElseGet(() -> benutzerService.createAdminSozialdienstByEmail(adminMail, persistedSozialdienst));
 
-		benutzerService.einladen(Einladung.forSozialdienst(benutzer, persistedSozialdienst));
+		benutzerService.einladen(Einladung.forSozialdienst(benutzer, persistedSozialdienst),
+				persistedSozialdienst.getMandant());
 
 		return persistedSozialdienst;
 	}

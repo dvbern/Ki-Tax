@@ -54,7 +54,7 @@ public class AuthAccessElement implements Serializable {
 		@JsonProperty("vorname") @Nonnull String vorname,
 		@JsonProperty("email") @Nonnull String email,
 		@JsonProperty("role") @Nonnull UserRole role) {
-		this.authId = Objects.requireNonNull(authId); // currently equals username
+		this.authId = Objects.requireNonNull(authId); // currently equals id
 		this.authToken = Objects.requireNonNull(authToken);
 		this.xsrfToken = Objects.requireNonNull(xsrfToken);
 		this.nachname = Objects.requireNonNull(nachname);

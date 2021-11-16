@@ -1073,10 +1073,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Benutzer verantwortlicherTS = null;
 
 		if (usernameBG != null) {
-			verantwortlicherBG = benutzerService.findBenutzer(usernameBG).orElse(null);
+			verantwortlicherBG = benutzerService.findBenutzer(usernameBG, gesuch.extractGemeinde().getMandant()).orElse(null);
 		}
 		if (usernameTS != null) {
-			verantwortlicherTS = benutzerService.findBenutzer(usernameTS).orElse(null);
+			verantwortlicherTS = benutzerService.findBenutzer(usernameTS, gesuch.extractGemeinde().getMandant()).orElse(null);
 		}
 
 		return setVerantwortliche(verantwortlicherBG, verantwortlicherTS, gesuch, false, false);

@@ -165,7 +165,8 @@ public class AuthResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response login(
 			@Nonnull JaxBenutzer loginElement) {
-		if (configuration.isDummyLoginEnabled(converter.mandantToEntity(loginElement.getMandant(), new Mandant()))) {
+		Mandant mandant = converter.mandantToEntity(loginElement.getMandant(), new Mandant());
+		if (configuration.isDummyLoginEnabled(mandant)) {
 
 			// zuerst im Container einloggen, sonst schlaegt in den Entities die Mandanten-Validierung fehl
 			if (!usernameRoleChecker.checkLogin(loginElement.getUsername(), loginElement.getPassword())) {
@@ -203,7 +204,7 @@ public class AuthResource {
 			// Dies ist aber gewünschtes Verhalten: Wenn wir uns mit dem Admin-Link einloggen, wollen wir immer Admin sein.
 			benutzerService.saveBenutzer(converter.jaxBenutzerToBenutzer(loginElement, benutzer));
 
-			Optional<AuthAccessElement> accessElement = authService.login(login);
+			Optional<AuthAccessElement> accessElement = authService.login(login, mandant);
 			if (!accessElement.isPresent()) {
 				return Response.status(Response.Status.UNAUTHORIZED).build();
 			}

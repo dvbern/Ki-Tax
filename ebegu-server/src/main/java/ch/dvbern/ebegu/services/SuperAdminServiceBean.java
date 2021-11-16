@@ -141,7 +141,7 @@ public class SuperAdminServiceBean implements SuperAdminService {
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void removeFallAndBenutzer(@Nonnull String benutzernameToRemove, @Nonnull Benutzer eingeloggterBenutzer){
-		Benutzer benutzer = benutzerService.findBenutzer(benutzernameToRemove).orElseThrow(() -> new EbeguEntityNotFoundException(
+		Benutzer benutzer = benutzerService.findBenutzer(benutzernameToRemove, eingeloggterBenutzer.getMandant()).orElseThrow(() -> new EbeguEntityNotFoundException(
 			"removeBenutzer",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			benutzernameToRemove));
@@ -169,7 +169,8 @@ public class SuperAdminServiceBean implements SuperAdminService {
 
 		Optional<Fall> fallOpt = fallService.findFallByBesitzer(benutzerToRemove);
 		fallOpt.ifPresent(this::removeFall);
-		benutzerService.removeBenutzer(benutzerToRemove.getUsername());
+		benutzerService.removeBenutzer(benutzerToRemove.getUsername(),
+				Objects.requireNonNull(benutzerToRemove.getMandant()));
 	}
 
 	@Override

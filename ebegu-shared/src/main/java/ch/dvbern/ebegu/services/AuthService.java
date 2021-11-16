@@ -24,6 +24,7 @@ import ch.dvbern.ebegu.authentication.AuthAccessElement;
 import ch.dvbern.ebegu.authentication.AuthLoginElement;
 import ch.dvbern.ebegu.entities.AuthorisierterBenutzer;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Mandant;
 
 /**
  * Service fuer die Authentifizierung eines Benutzers
@@ -34,10 +35,11 @@ public interface AuthService {
 	 * Verifiziert die User Credentials, Wenn erfolgreich wird das login als authorisierter_benutzer persisstiert
 	 *
 	 * @param loginElement beinhaltet die User Credentials
+	 * @param mandant
 	 * @return Authentication Response, falls das Login erfolgriech war, sonst NULL
 	 */
 	@Nonnull
-	Optional<AuthAccessElement> login(@Nonnull AuthLoginElement loginElement);
+	Optional<AuthAccessElement> login(@Nonnull AuthLoginElement loginElement, @Nonnull Mandant mandant);
 
 	/**
 	 * @param authToken Authentifizierungs Token Identifikation

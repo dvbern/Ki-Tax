@@ -29,10 +29,12 @@ import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.UserRole;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Service fuer die Verwaltung von Benutzern
@@ -97,7 +99,7 @@ public interface BenutzerService {
 	 * Saves the given Benutzer and sends him an Einladungsemail
 	 */
 	@Nonnull
-	Benutzer einladen(@Nonnull Einladung einladung);
+	Benutzer einladen(@Nonnull Einladung einladung, @Nonnull Mandant mandant);
 
 	/**
 	 * Sendet einem eingeladenen Benutzer erneut das Einladungsmail
@@ -110,7 +112,7 @@ public interface BenutzerService {
 	String findFallIdIfBenutzerIsGesuchstellerWithoutFreigegebenemGesuch(@Nonnull Benutzer benutzer);
 
 	@Nonnull
-	Optional<Benutzer> findBenutzer(@Nonnull String username);
+	Optional<Benutzer> findBenutzer(@Nonnull String username, @Nullable Mandant mandant);
 
 	@Nonnull
 	Optional<Benutzer> findAndLockBenutzer(@Nonnull String username);
@@ -231,7 +233,7 @@ public interface BenutzerService {
 	 *
 	 * @param username die Benutzer als DTO
 	 */
-	void removeBenutzer(@Nonnull String username);
+	void removeBenutzer(@Nonnull String username, @Nonnull Mandant mandant);
 
 	/**
 	 * Gibt den aktuell eingeloggten Benutzer zurueck
@@ -249,13 +251,13 @@ public interface BenutzerService {
 	 * AuthentifizierteBenutzer gelöscht.
 	 */
 	@Nonnull
-	Benutzer sperren(@Nonnull String username);
+	Benutzer sperren(@Nonnull String username, @Nonnull Mandant mandant);
 
 	/**
 	 * Reaktiviert den uebergebenen Benutzer wieder.
 	 */
 	@Nonnull
-	Benutzer reaktivieren(@Nonnull String username);
+	Benutzer reaktivieren(@Nonnull String username, @Nonnull Mandant mandant);
 
 	/**
 	 * Sucht Benutzer, welche den übergebenen Filterkriterien entsprechen

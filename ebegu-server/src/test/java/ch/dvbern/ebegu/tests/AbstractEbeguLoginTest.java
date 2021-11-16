@@ -214,7 +214,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 	}
 
 	private Benutzer createOrFindBenutzer(UserRole role, String userName, @Nullable Traegerschaft traegerschaft, @Nullable Institution institution, @Nullable Mandant mandant) {
-		Optional<Benutzer> benutzer = benutzerService.findBenutzer(userName);
+		Optional<Benutzer> benutzer = benutzerService.findBenutzer(userName, mandant);
 		return benutzer.orElseGet(() -> {
 			assert mandant != null;
 			return TestDataUtil.createBenutzerWithDefaultGemeinde(role, userName, traegerschaft, institution, mandant, persistence, null, null);

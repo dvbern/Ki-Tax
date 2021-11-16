@@ -77,7 +77,7 @@ public class MandantResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxMandant getFirst() {
 
-		Mandant mandant = mandantService.getFirst();
+		Mandant mandant = mandantService.getDefaultMandant();
 		return converter.mandantToJAX(mandant);
 	}
 

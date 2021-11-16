@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
@@ -70,7 +71,8 @@ public interface TestfaelleService {
 
 	@Nonnull
 	StringBuilder createAndSaveAsOnlineGesuch(@Nonnull String fallid, boolean betreuungenBestaetigt,
-		boolean verfuegen, @Nonnull String username, @Nullable String gesuchsPeriodeId, @Nonnull String gemeindeId);
+		boolean verfuegen, @Nonnull String username, @Nullable String gesuchsPeriodeId, @Nonnull String gemeindeId, @Nonnull
+			Mandant mandant);
 
 	@Nonnull
 	Gesuch createAndSaveTestfaelle(@Nonnull String fallid, boolean betreuungenBestaetigt, boolean verfuegen,  @Nonnull String gemeindeId,
@@ -94,7 +96,7 @@ public interface TestfaelleService {
 	 *
 	 * @param username Username des Besitzers der Gesuche die entferntw erden sollen
 	 */
-	void removeGesucheOfGS(@Nonnull String username);
+	void removeGesucheOfGS(@Nonnull String username, @Nonnull Mandant mandant);
 
 	/**
 	 * Gibt die Institutionsstammdaten zurück, welche in den gelieferten Testfällen verwendet werden,

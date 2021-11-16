@@ -933,7 +933,8 @@ public class JaxBConverter extends AbstractConverter {
 		convertMandantFieldsToEntity(fall);
 		//Fall nummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt, dasselbe fuer NextKindNumber
 		if (fallJAXP.getBesitzer() != null) {
-			Optional<Benutzer> besitzer = benutzerService.findBenutzer(fallJAXP.getBesitzer().getUsername());
+			Optional<Benutzer> besitzer = benutzerService.findBenutzer(fallJAXP.getBesitzer().getUsername(),
+					fall.getMandant());
 			if (besitzer.isPresent()) {
 				fall.setBesitzer(besitzer.get()); // because the user doesn't come from the client but from the server
 			} else {
@@ -1003,7 +1004,8 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		if (dossierJAX.getVerantwortlicherBG() != null) {
 			Optional<Benutzer> verantwortlicher =
-				benutzerService.findBenutzer(dossierJAX.getVerantwortlicherBG().getUsername());
+				benutzerService.findBenutzer(dossierJAX.getVerantwortlicherBG().getUsername(), dossier.getFall()
+						.getMandant());
 			if (verantwortlicher.isPresent()) {
 				// because the user doesn't come from the client but from the server
 				dossier.setVerantwortlicherBG(verantwortlicher.get());
@@ -1018,7 +1020,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		if (dossierJAX.getVerantwortlicherTS() != null) {
 			Optional<Benutzer> verantwortlicherTS =
-				benutzerService.findBenutzer(dossierJAX.getVerantwortlicherTS().getUsername());
+				benutzerService.findBenutzer(dossierJAX.getVerantwortlicherTS().getUsername(), dossier.getFall().getMandant());
 			if (verantwortlicherTS.isPresent()) {
 				// because the user doesn't come from the client but from the server
 				dossier.setVerantwortlicherTS(verantwortlicherTS.get());
@@ -4110,7 +4112,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertFileToJax(dokument, jaxDokument);
 		jaxDokument.setTimestampUpload(dokument.getTimestampUpload());
 		if (StringUtils.isNotEmpty(dokument.getUserErstellt())) {
-			benutzerService.findBenutzer(dokument.getUserErstellt())
+			benutzerService.findBenutzer(dokument.getUserErstellt(), getPrincipalBean().getMandant())
 				.map(this::benutzerToJaxBenutzer)
 				.ifPresent(jaxDokument::setUserUploaded);
 		}
@@ -4524,7 +4526,8 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToEntity(mitteilungJAXP, mitteilung);
 
 		if (mitteilungJAXP.getEmpfaenger() != null) {
-			Benutzer empfaenger = benutzerService.findBenutzer(mitteilungJAXP.getEmpfaenger().getUsername())
+			Benutzer empfaenger = benutzerService.findBenutzer(mitteilungJAXP.getEmpfaenger().getUsername(),
+							mitteilung.getDossier().getFall().getMandant())
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
 					"mitteilungToEntity - findBenutzer",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
@@ -4564,7 +4567,7 @@ public class JaxBConverter extends AbstractConverter {
 		mitteilung.setMitteilungStatus(mitteilungJAXP.getMitteilungStatus());
 
 		if (mitteilungJAXP.getSender() != null) {
-			Benutzer sender = benutzerService.findBenutzer(mitteilungJAXP.getSender().getUsername())
+			Benutzer sender = benutzerService.findBenutzer(mitteilungJAXP.getSender().getUsername(), mitteilung.getDossier().getFall().getMandant())
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
 					"mitteilungToEntity",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
@@ -4917,16 +4920,18 @@ public class JaxBConverter extends AbstractConverter {
 
 		convertAbstractFieldsToEntity(jaxStammdaten, stammdaten);
 
+		Mandant mandant = stammdaten.getGemeinde().getMandant();
+
 		if (jaxStammdaten.getDefaultBenutzerBG() != null) {
-			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerBG().getUsername())
+			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerBG().getUsername(), mandant)
 				.ifPresent(stammdaten::setDefaultBenutzerBG);
 		}
 		if (jaxStammdaten.getDefaultBenutzerTS() != null) {
-			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerTS().getUsername())
+			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerTS().getUsername(), mandant)
 				.ifPresent(stammdaten::setDefaultBenutzerTS);
 		}
 		if (jaxStammdaten.getDefaultBenutzer() != null) {
-			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzer().getUsername())
+			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzer().getUsername(), mandant)
 				.ifPresent(stammdaten::setDefaultBenutzer);
 		}
 

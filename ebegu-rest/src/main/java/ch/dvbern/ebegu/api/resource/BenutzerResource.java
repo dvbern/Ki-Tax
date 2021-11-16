@@ -15,9 +15,12 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -31,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -39,28 +43,32 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import ch.dvbern.ebegu.api.AuthConstants;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzerNoDetails;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzerSearchresultDTO;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigungHistory;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.errors.BenutzerExistException;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.services.SuperAdminService;
 import ch.dvbern.ebegu.util.MonitoringUtil;
 import io.swagger.annotations.Api;
@@ -113,6 +121,12 @@ public class BenutzerResource {
 	@Inject
 	private Authorizer authorizer;
 
+	@Inject
+	private MandantService mandantService;
+
+	@Inject
+	private PrincipalBean principalBean;
+
 	@ApiOperation("Erstellt einen Benutzer mit Status EINGELADEN und sendet ihm eine E-Mail")
 	@POST
 	@Path("/einladen")
@@ -130,7 +144,8 @@ public class BenutzerResource {
 	public JaxBenutzer einladen(@NotNull @Valid JaxBenutzer benutzerParam) {
 		Benutzer benutzer = converter.jaxBenutzerToBenutzer(benutzerParam, new Benutzer());
 
-		return converter.benutzerToJaxBenutzer(benutzerService.einladen(Einladung.forMitarbeiter(benutzer)));
+		return converter.benutzerToJaxBenutzer(benutzerService.einladen(Einladung.forMitarbeiter(benutzer),
+				requireNonNull(principalBean.getMandant())));
 	}
 
 	@ApiOperation("Sendet einem Benutzer im Status EINGELADEN erneut den Einladungslink")
@@ -333,9 +348,12 @@ public class BenutzerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll
 	public JaxBenutzer findBenutzer(
-		@Nonnull @NotNull @PathParam("username") String username) {
-
-		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(username);
+		@Nonnull @NotNull @PathParam("username") String username,
+		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+		) {
+		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
+		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
+		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzerById(username);
 		benutzerOptional.ifPresent(benutzer -> authorizer.checkReadAuthorization(benutzer));
 
 		return benutzerOptional.map(converter::benutzerToJaxBenutzer)
@@ -355,7 +373,8 @@ public class BenutzerResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Benutzer benutzer = benutzerService.sperren(benutzerJax.getUsername());
+		Benutzer benutzer = benutzerService.sperren(benutzerJax.getUsername(),
+				requireNonNull(principalBean.getMandant()));
 		return converter.benutzerToJaxBenutzer(benutzer);
 	}
 
@@ -372,7 +391,8 @@ public class BenutzerResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Benutzer benutzer = benutzerService.reaktivieren(benutzerJax.getUsername());
+		Benutzer benutzer = benutzerService.reaktivieren(benutzerJax.getUsername(),
+				requireNonNull(principalBean.getMandant()));
 		return converter.benutzerToJaxBenutzer(benutzer);
 	}
 
@@ -390,7 +410,7 @@ public class BenutzerResource {
 		@Context HttpServletResponse response) {
 
 		String username = benutzerJax.getUsername();
-		Benutzer benutzer = benutzerService.findBenutzer(username)
+		Benutzer benutzer = benutzerService.findBenutzer(username, principalBean.getMandant())
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"saveBenutzerBerechtigungen",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
@@ -443,7 +463,7 @@ public class BenutzerResource {
 	public List<JaxBerechtigungHistory> getBerechtigungHistoriesForBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username) {
 
-		Benutzer benutzer = benutzerService.findBenutzer(username)
+		Benutzer benutzer = benutzerService.findBenutzer(username, principalBean.getMandant())
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"getBerechtigungHistoriesForBenutzer",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
@@ -491,7 +511,7 @@ public class BenutzerResource {
 	public Response deleteExternalUuidForBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username
 	) {
-		Benutzer benutzer = benutzerService.findBenutzer(username)
+		Benutzer benutzer = benutzerService.findBenutzer(username, principalBean.getMandant())
 			.orElseThrow(() -> new EbeguEntityNotFoundException("deleteExternalUuidForBenutzer",	ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 		benutzerService.deleteExternalUUIDInNewTransaction(benutzer.getId());
 		return Response.ok().build();

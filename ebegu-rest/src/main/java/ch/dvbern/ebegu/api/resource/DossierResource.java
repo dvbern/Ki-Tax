@@ -48,12 +48,10 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxId;
-import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
@@ -241,7 +239,7 @@ public class DossierResource {
 			this.dossierService.setVerantwortlicherBG(dossier.getId(), null);
 
 		} else {
-			Benutzer benutzer = benutzerService.findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherBG",
+			Benutzer benutzer = benutzerService.findBenutzer(username, dossier.getFall().getMandant()).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherBG",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, username));
 
 			this.dossierService.setVerantwortlicherBG(dossier.getId(), benutzer);
@@ -272,7 +270,7 @@ public class DossierResource {
 			this.dossierService.setVerantwortlicherTS(dossier.getId(), null);
 
 		} else {
-			final Benutzer benutzer = benutzerService.findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherTS",
+			final Benutzer benutzer = benutzerService.findBenutzer(username, dossier.getFall().getMandant()).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherTS",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, username));
 
 			this.dossierService.setVerantwortlicherTS(dossier.getId(), benutzer);

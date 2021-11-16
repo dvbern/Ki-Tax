@@ -83,7 +83,8 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 			return b;
 		}).orElseGet(() -> benutzerService.createAdminTraegerschaftByEmail(adminEmail, persistedTraegerschaft));
 
-		benutzerService.einladen(Einladung.forTraegerschaft(benutzer, persistedTraegerschaft));
+		benutzerService.einladen(Einladung.forTraegerschaft(benutzer, persistedTraegerschaft),
+				requireNonNull(persistedTraegerschaft.getMandant()));
 
 		return traegerschaft;
 	}
