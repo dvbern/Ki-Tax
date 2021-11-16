@@ -86,6 +86,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public minValueAllowed: number = 0;
     public maxValueAllowed: number = 100;
     public kontingentierungEnabled: boolean;
+    public anspruchUnabhaengingVomBeschaeftigungspensum: boolean;
 
     public constructor(
         $stateParams: IKindStateParams,
@@ -130,6 +131,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.initFachstelle();
         this.initAusserordentlicherAnspruch();
         this.getEinstellungKontingentierung();
+        this.loadEinstellungAnspruchUnabhaengig();
     }
 
     public $postLink(): void {
@@ -201,6 +203,15 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
                 TSEinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION,
             );
         }
+    }
+
+    private loadEinstellungAnspruchUnabhaengig(): void {
+        this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
+            .then(einstellungen => {
+                const einstellung = einstellungen
+                    .find(e => e.key === TSEinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
+                this.anspruchUnabhaengingVomBeschaeftigungspensum = einstellung.getValueAsBoolean();
+            });
     }
 
     private initAusserordentlicherAnspruch(): void {
@@ -326,6 +337,11 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             return this.getModel().pensumAusserordentlicherAnspruch;
         }
         return undefined;
+    }
+
+    // diese Fragen sind nur relevant, wenn der Anpruch abhängig vom Beschäftigungspensum ist.
+    public showExtendedKindQuestions(): boolean {
+        return this.anspruchUnabhaengingVomBeschaeftigungspensum === false;
     }
 
     public showAusAsylwesen(): boolean {
