@@ -622,6 +622,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	}
 
 	@Test
+	@Transactional(TransactionMode.DEFAULT)
 	public void testWarnungFehlendeQuittung() {
 		insertApplicationProperties();
 		Gesuch gesuch1 = createGesuchFreigabequittung(LocalDate.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG).minusDays(1));
@@ -642,6 +643,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	}
 
 	@Test
+	@Transactional(TransactionMode.DEFAULT)
 	public void testWarnungNichtFreigegeben() {
 		insertApplicationProperties();
 		Gesuch gesuch1 = createGesuchInBearbeitungGS(LocalDateTime.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_FREIGABE).minusDays(1));
