@@ -293,14 +293,24 @@ public interface GesuchService {
 	 * Erstellung nicht freigegeben haben.
 	 * Gibt die Anzahl Warnungen zurueck.
 	 */
-	int warnGesuchNichtFreigegeben();
+	int warnGesucheNichtFreigegeben();
+
+	/**
+	 * Schickt eine E-Mail an den Gesuchsteller des Gesuchs
+	 */
+	void warnGesuchNichtFreigegeben(Integer anzahlTageBisLoeschungNachWarnungFreigabe, Gesuch gesuch);
 
 	/**
 	 * Schickt eine E-Mail an alle Gesuchsteller, die die Freigabequittung innerhalb einer konfigurierbaren Frist nach
 	 * Freigabe des Gesuchs nicht geschickt haben.
 	 * Gibt die Anzahl Warnungen zurueck.
 	 */
-	int warnFreigabequittungFehlt();
+	int warnFreigabequittungenFehlen();
+
+	/**
+	 * Schickt eine E-Mail an den Gesuchsteller und setzt das DatumGewarntFehlendeQuittung
+	 */
+	void sendWarnungFreigabequittung(Integer anzahlTageBisLoeschungNachWarnungFreigabe, Gesuch gesuch);
 
 	/**
 	 * Löscht alle Gesuche, die nach einer konfigurierbaren Frist nach Erstellung nicht freigegeben bzw. nach Freigabe
