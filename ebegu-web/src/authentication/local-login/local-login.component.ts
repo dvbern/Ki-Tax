@@ -241,7 +241,7 @@ export class LocalLoginComponent {
     private createGeneralUsers(): void {
         this.superadmin = new TSBenutzer('E-BEGU',
             'Superuser',
-            `superuser.${this.shortMandant}@mailbucket.dvbern.ch`,
+            `ebegu`,
             'password10',
             `superuser.${this.shortMandant}@mailbucket.dvbern.ch`,
             this.mandant,
