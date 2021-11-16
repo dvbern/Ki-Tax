@@ -293,7 +293,7 @@ public interface GesuchService {
 	 * Erstellung nicht freigegeben haben.
 	 * Gibt die Anzahl Warnungen zurueck.
 	 */
-	int warnGesucheNichtFreigegeben();
+	int findGesucheNichtFreigegebenAndWarn();
 
 	/**
 	 * Schickt eine E-Mail an den Gesuchsteller des Gesuchs
@@ -305,7 +305,7 @@ public interface GesuchService {
 	 * Freigabe des Gesuchs nicht geschickt haben.
 	 * Gibt die Anzahl Warnungen zurueck.
 	 */
-	int warnFreigabequittungenFehlen();
+	int findGesucheWithoutFreigabequittungenAndWarn();
 
 	/**
 	 * Schickt eine E-Mail an den Gesuchsteller und setzt das DatumGewarntFehlendeQuittung

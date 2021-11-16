@@ -143,7 +143,7 @@ public class DailyBatchBean implements DailyBatch {
 	public void runBatchWarnungGesuchNichtFreigegeben() {
 		try {
 			LOGGER.info("Starting Job WarnungGesuchNichtFreigegeben...");
-			final int anzahl = gesuchService.warnGesucheNichtFreigegeben();
+			final int anzahl = gesuchService.findGesucheNichtFreigegebenAndWarn();
 			LOGGER.info("Es wurden {} Gesuche gefunden, die noch nicht freigegeben wurden", anzahl);
 			LOGGER.info("... Job WarnungGesuchNichtFreigegeben finished");
 		} catch (RuntimeException e) {
@@ -156,7 +156,7 @@ public class DailyBatchBean implements DailyBatch {
 	public void runBatchWarnungFreigabequittungFehlt() {
 		try {
 			LOGGER.info("Starting Job WarnungFreigabequittungFehlt...");
-			final int anzahl = gesuchService.warnFreigabequittungenFehlen();
+			final int anzahl = gesuchService.findGesucheWithoutFreigabequittungenAndWarn();
 			LOGGER.info("Es wurden {} Gesuche gefunden, bei denen die Freigabequittung fehlt", anzahl);
 			LOGGER.info("... Job WarnungFreigabequittungFehlt finished");
 		} catch (RuntimeException e) {
