@@ -347,13 +347,32 @@ public class BenutzerResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll
-	public JaxBenutzer findBenutzer(
+	public JaxBenutzer findBenutzerByUsername(
 		@Nonnull @NotNull @PathParam("username") String username,
 		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
 		) {
 		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
 		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
-		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzerById(username);
+		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(username, mandant.get());
+		benutzerOptional.ifPresent(benutzer -> authorizer.checkReadAuthorization(benutzer));
+
+		return benutzerOptional.map(converter::benutzerToJaxBenutzer)
+			.orElse(null);
+	}
+
+	@ApiOperation(value = "Sucht den Benutzer mit dem uebergebenen Username in der Datenbank.",
+		response = JaxBenutzer.class)
+	@Nullable
+	@GET
+	@Path("/id/{id}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public JaxBenutzer findBenutzerById(
+		@Nonnull @NotNull @PathParam("id") String id,
+		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+		) {
+		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzerById(id);
 		benutzerOptional.ifPresent(benutzer -> authorizer.checkReadAuthorization(benutzer));
 
 		return benutzerOptional.map(converter::benutzerToJaxBenutzer)
