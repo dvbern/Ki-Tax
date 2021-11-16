@@ -130,7 +130,6 @@ import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.kafka.server.authorizer.Authorizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
