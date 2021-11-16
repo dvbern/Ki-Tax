@@ -36,4 +36,8 @@ export class TSBenutzerNoDetails {
     public getFullName(): string {
         return `${this.vorname ? this.vorname : ''} ${this.nachname ? this.nachname : ''}`;
     }
+
+    public getFullNameInverted(): string {
+        return `${this.nachname ? this.nachname : ''} ${this.vorname ? this.vorname : ''}`;
+    }
 }

@@ -23,7 +23,7 @@
                 ng-change="vm.valueChanged()"
 
                 class="form-control"
-                ng-options="user.getFullName() for user in vm.userList | orderBy: 'nachname' track by user.getFullName()"
+                ng-options="user.getFullNameInverted() for user in vm.userList | orderBy: 'nachname' track by user.getFullName()"
                 ng-model="vm.selectedUser">
             <option value="" ng-if="vm.showSelectionAll">{{"ALLE" | translate}}</option>
         </select>
@@ -33,7 +33,7 @@
                 ng-change="vm.valueChanged()"
 
                 class="form-control"
-                ng-options="user.getFullName() for user in vm.userList | orderBy: 'nachname' track by user.getFullName()"
+                ng-options="user.getFullNameInverted() for user in vm.userList | orderBy: 'nachname' track by user.getFullName()"
                 ng-model="vm.selectedUser">
             <option value="" ng-if="vm.showSelectionAll">{{"ALLE" | translate}}</option>
         </select>
