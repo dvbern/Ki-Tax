@@ -115,7 +115,7 @@ public interface BenutzerService {
 	Optional<Benutzer> findBenutzer(@Nonnull String username, @Nullable Mandant mandant);
 
 	@Nonnull
-	Optional<Benutzer> findAndLockBenutzer(@Nonnull String username);
+	Optional<Benutzer> findAndLockBenutzer(@Nonnull String username, @Nonnull Mandant mandant);
 
 	@Nonnull
 	Optional<Benutzer> findBenutzerById(@Nonnull String id);

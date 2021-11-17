@@ -459,15 +459,17 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	public Optional<Benutzer> findAndLockBenutzer(@Nonnull String username) {
+	public Optional<Benutzer> findAndLockBenutzer(@Nonnull String username, @Nonnull Mandant mandant) {
 		requireNonNull(username, "username muss gesetzt sein");
+		requireNonNull(mandant, "mandant muss gesetzt sein");
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
 		Root<Benutzer> root = query.from(Benutzer.class);
 		Predicate predicateUsername = cb.equal(root.get(Benutzer_.username), username);
+		Predicate mandantPredicate = cb.equal(root.get(Benutzer_.mandant), mandant);
 
-		query.where(predicateUsername);
+		query.where(predicateUsername, mandantPredicate);
 		query.distinct(true);
 
 		try {

@@ -181,7 +181,7 @@ public class AuthResource {
 
 			// Der Benutzer wird gesucht. Wenn er noch nicht existiert wird er erstellt und wenn ja dann aktualisiert
 			Benutzer benutzer = null;
-			Optional<Benutzer> optBenutzer = benutzerService.findAndLockBenutzer(loginElement.getUsername());
+			Optional<Benutzer> optBenutzer = benutzerService.findAndLockBenutzer(loginElement.getUsername(), mandant);
 			if (optBenutzer.isPresent()) {
 				benutzer = optBenutzer.get();
 				if (!loginElement.getMandant().getId().equals(benutzer.getMandant().getId())) {
