@@ -509,12 +509,12 @@ export class GemeindeAngabenComponent implements OnInit {
                 ),
         ]).subscribe(values => {
                 this.angabenForm.get('lastenausgleichsberechtigerBetrag').setValue(
-                    // round to 0.2
-                    (values[0] - values[1]).toFixed(2),
+                    // round to next Franken
+                    Math.ceil(values[0] - values[1]).toFixed(2),
                 );
                 this.angabenForm.get('lastenausgleichsberechtigerBetragRO').setValue(
-                    // round to 0.2
-                    (values[0] - values[1]).toFixed(2),
+                    // round to next Franken
+                    Math.ceil(values[0] - values[1]).toFixed(2),
                 );
             },
             () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')),
