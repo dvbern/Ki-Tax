@@ -369,6 +369,20 @@ public enum MathUtil {
 	}
 
 	/**
+	 * Rundet einen BigDecimal auf 2 Nachkommastellen auf die nächsthöheren 5 Rappen.
+	 */
+	@Nonnull
+	public static BigDecimal ceilToFrankenRappen(@Nullable BigDecimal amount) {
+		if (amount == null) {
+			return BigDecimal.ZERO;
+		}
+		var twenty = new BigDecimal("20");
+		BigDecimal mulitplied = amount.multiply(twenty);
+		BigDecimal rounded = mulitplied.setScale(0, RoundingMode.CEILING);
+		return ZWEI_NACHKOMMASTELLE.divide(rounded, twenty);
+	}
+
+	/**
 	 * Rundet einen BigDecimal auf dem höeren Franken.
 	 */
 	@Nonnull
