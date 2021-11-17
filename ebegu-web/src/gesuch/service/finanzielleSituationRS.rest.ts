@@ -14,10 +14,18 @@
  */
 
 import {IHttpService} from 'angular';
+import {from, Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {TSFinanzielleSituationResultateDTO} from '../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSEinstellungKey} from '../../models/enums/TSEinstellungKey';
+import {TSFinanzielleSituationTyp} from '../../models/enums/TSFinanzielleSituationTyp';
+import {TSEinstellung} from '../../models/TSEinstellung';
 import {TSFinanzielleSituationContainer} from '../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../models/TSFinanzModel';
+import {TSGemeinde} from '../../models/TSGemeinde';
 import {TSGesuch} from '../../models/TSGesuch';
+import {TSGesuchsperiode} from '../../models/TSGesuchsperiode';
 import {TSGesuchstellerContainer} from '../../models/TSGesuchstellerContainer';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {WizardStepManager} from './wizardStepManager';
@@ -26,7 +34,7 @@ import IPromise = angular.IPromise;
 
 export class FinanzielleSituationRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager', 'EinstellungRS'];
     public serviceURL: string;
 
     public constructor(
@@ -35,6 +43,7 @@ export class FinanzielleSituationRS {
         public ebeguRestUtil: EbeguRestUtil,
         public $log: ILogService,
         private readonly wizardStepManager: WizardStepManager,
+        private readonly einstellungRS: EinstellungRS
     ) {
         this.serviceURL = `${REST_API}finanzielleSituation`;
     }
@@ -100,5 +109,16 @@ export class FinanzielleSituationRS {
                 return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
                     httpresponse.data);
             });
+    }
+
+    public getFinanzielleSituationTyp(gesuchsperiode: TSGesuchsperiode, gemeinde: TSGemeinde): Observable<TSFinanzielleSituationTyp> {
+        return from(this.einstellungRS.findEinstellung(
+            TSEinstellungKey.FINANZIELLE_SITUATION_TYP,
+            gemeinde.id,
+            gesuchsperiode.id
+        ))
+            .pipe(
+                map((einstellung: TSEinstellung) => this.ebeguRestUtil.parseFinanzielleSituationTyp(einstellung.value))
+            );
     }
 }

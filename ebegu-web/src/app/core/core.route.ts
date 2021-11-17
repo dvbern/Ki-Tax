@@ -22,7 +22,6 @@ import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.s
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {environment} from '../../environments/environment';
 import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
-import {GesuchModelManager} from '../../gesuch/service/gesuchModelManager';
 import {GlobalCacheService} from '../../gesuch/service/globalCacheService';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
@@ -49,7 +48,6 @@ appRun.$inject = [
     'AuthServiceRS',
     '$state',
     '$location',
-    'GesuchModelManager',
     'GesuchsperiodeRS',
     'GlobalCacheService',
     'GemeindeRS',
@@ -67,7 +65,6 @@ export function appRun(
     authServiceRS: AuthServiceRS,
     $state: StateService,
     $location: ILocationService,
-    gesuchModelManager: GesuchModelManager,
     gesuchsperiodeRS: GesuchsperiodeRS,
     globalCacheService: GlobalCacheService,
     gemeindeRS: GemeindeRS,
@@ -120,9 +117,6 @@ export function appRun(
         gesuchsperiodeRS.updateActiveGesuchsperiodenList();
         gemeindeRS.getAllGemeinden();
         gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
-        gesuchModelManager.updateFachstellenAnspruchList();
-        gesuchModelManager.updateFachstellenErweiterteBetreuungList();
-
     }
 
     moment.locale(LOCALE_ID);

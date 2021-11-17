@@ -108,6 +108,7 @@ import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
@@ -245,6 +246,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			gesuchToPersist.setRegelnGueltigAb(regelnGueltigAb);
 		}
 
+		setFinSitTyp(gesuchToCreate);
+
 		authorizer.checkReadAuthorization(gesuchToPersist);
 
 		// Vor dem Speichern noch pruefen, dass noch kein Gesuch dieses Typs fuer das Dossier und die Periode existiert
@@ -257,6 +260,19 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		antragStatusHistoryService.saveStatusChange(persistedGesuch, null);
 		LOG.info(logInfo.toString());
 		return persistedGesuch;
+	}
+
+	private void setFinSitTyp(Gesuch gesuchToCreate) {
+		var finSitTyp = einstellungService.findEinstellung(
+			EinstellungKey.FINANZIELLE_SITUATION_TYP,
+			gesuchToCreate.extractGemeinde(),
+			gesuchToCreate.getGesuchsperiode()
+		).getValue();
+		try {
+			gesuchToCreate.setFinSitTyp(FinanzielleSituationTyp.valueOf(finSitTyp));
+		} catch (IllegalArgumentException e) {
+			throw new EbeguRuntimeException("setFinSitTyp", "wrong finSitTyp: " + finSitTyp, e);
+		}
 	}
 
 	private void stripGesuchOfInvalidData(@Nonnull Gesuch gesuch) {
@@ -1553,8 +1569,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public int warnGesuchNichtFreigegeben() {
+	public int findGesucheNichtFreigegebenAndWarn() {
 
 		Integer anzahlTageBisWarnungFreigabe =
 			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_FREIGABE);
@@ -1584,29 +1599,34 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		query.where(predicateStatus, predicateDatum, predicateNochNichtGewarnt);
 		query.select(root);
+		query.distinct(true);
 		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 		List<Gesuch> gesucheNichtAbgeschlossenSeit = persistence.getCriteriaResults(query);
 
 		int anzahl = gesucheNichtAbgeschlossenSeit.size();
 		for (Gesuch gesuch : gesucheNichtAbgeschlossenSeit) {
-			try {
-				mailService.sendWarnungGesuchNichtFreigegeben(gesuch, anzahlTageBisLoeschungNachWarnungFreigabe);
-				gesuch.setDatumGewarntNichtFreigegeben(LocalDate.now());
-				updateGesuch(gesuch, false, null);
-			} catch (MailException e) {
-				logExceptionAccordingToEnvironment(
-					e,
-					"Mail WarnungGesuchNichtFreigegeben konnte nicht verschickt werden fuer Gesuch",
-					gesuch.getId());
-				anzahl--;
-			}
+			self.warnGesuchNichtFreigegeben(anzahlTageBisLoeschungNachWarnungFreigabe, gesuch);
 		}
 		return anzahl;
 	}
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public int warnFreigabequittungFehlt() {
+	public void warnGesuchNichtFreigegeben(Integer anzahlTageBisLoeschungNachWarnungFreigabe, Gesuch gesuch) {
+		try {
+			gesuch.setDatumGewarntNichtFreigegeben(LocalDate.now());
+			updateGesuch(gesuch, false, null);
+			mailService.sendWarnungGesuchNichtFreigegeben(gesuch, anzahlTageBisLoeschungNachWarnungFreigabe);
+		} catch (Exception e) {
+			logExceptionAccordingToEnvironment(
+				e,
+				"Mail WarnungGesuchNichtFreigegeben konnte nicht verschickt werden fuer Gesuch",
+				gesuch.getId());
+		}
+	}
+
+	@Override
+	public int findGesucheWithoutFreigabequittungenAndWarn() {
 
 		Integer anzahlTageBisWarnungQuittung =
 			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG);
@@ -1636,24 +1656,29 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		query.where(predicateStatus, predicateDatum, predicateNochNichtGewarnt);
 		query.select(root);
+		query.distinct(true);
 		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 		List<Gesuch> gesucheNichtAbgeschlossenSeit = persistence.getCriteriaResults(query);
 
 		int anzahl = gesucheNichtAbgeschlossenSeit.size();
 		for (Gesuch gesuch : gesucheNichtAbgeschlossenSeit) {
-			try {
-				mailService.sendWarnungFreigabequittungFehlt(gesuch, anzahlTageBisLoeschungNachWarnungFreigabe);
-				gesuch.setDatumGewarntFehlendeQuittung(LocalDate.now());
-				updateGesuch(gesuch, false, null);
-			} catch (MailException e) {
-				logExceptionAccordingToEnvironment(
-					e,
-					"Mail WarnungFreigabequittungFehlt konnte nicht verschickt werden fuer Gesuch",
-					gesuch.getId());
-				anzahl--;
-			}
+			self.sendWarnungFreigabequittung(anzahlTageBisLoeschungNachWarnungFreigabe, gesuch);
 		}
 		return anzahl;
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void sendWarnungFreigabequittung(Integer anzahlTageBisLoeschungNachWarnungFreigabe, Gesuch gesuch) {
+		try {
+			gesuch.setDatumGewarntFehlendeQuittung(LocalDate.now());
+			gesuch = updateGesuch(gesuch, false, null);
+			mailService.sendWarnungFreigabequittungFehlt(gesuch, anzahlTageBisLoeschungNachWarnungFreigabe);
+		} catch (Exception e) {
+			logExceptionAccordingToEnvironment(
+				e,
+				"Mail WarnungFreigabequittungFehlt konnte nicht verschickt werden fuer Gesuch",
+				gesuch.getId());
+		}
 	}
 
 	@Override

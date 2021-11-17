@@ -1,0 +1,138 @@
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="gesuch-modul">
+    <h1 class="access-for-all-title" translate>AFA_GESUCHSFORMULAR</h1>
+    <div class="row view-title">
+        <div class="col-md-12">
+            <h2>
+                <span translate [translateParams]="{gesuchsteller: getAntragstellerNameForCurrentStep(), basisjahr: getYearForDeklaration()}">FINANZIELLE_SITUATION</span>
+            </h2>
+            <hr class="header"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <form *ngIf="form" [formGroup]="form" role="form" class="">
+
+                <div class="row" *ngIf="onlyFerieninselBetreuungen">
+                    <div class="col-md-12">
+                        <p>
+                            <span data-translate="FIN_SIT_NOT_REQUIRED">
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="!onlyFerieninselBetreuungen">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                        <span class="ebegu-h1 required">
+                            <span translate="QUELLENBESTEUERT"></span>
+                        </span>
+
+                            <dv-radio-container-x name="quellenbesteuertContainer" translate>
+                                <mat-radio-group
+                                    formControlName="quellenbesteuert"
+                                    class=""
+                                    (change)="quellenBesteuertChange($event)"
+                                    name="quellenbesteuert">
+                                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                                </mat-radio-group>
+                            </dv-radio-container-x>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12" *ngIf="gemeinsameStekVisible()">
+                        <div class="form-group">
+                        <span class="ebegu-h1 required">
+                            <span translate>GEMEINSAME_STEK</span>
+                        </span>
+
+                            <dv-radio-container-x name="gemeinsameStekVorjahrContainer" translate>
+                                <mat-radio-group
+                                    formControlName="gemeinsameStekVorjahr"
+                                    class=""
+                                    (change)="gemeinsameStekVorjahrChange($event)"
+                                    name="gemeinsameStekVorjahr">
+                                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                                </mat-radio-group>
+                            </dv-radio-container-x>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12" *ngIf="alleinigeStekVisible()">
+                        <div class="form-group">
+                        <span class="ebegu-h1 required">
+                            <span translate>ALLEINIGE_STEK</span>
+                        </span>
+
+                            <dv-radio-container-x name="alleinigeStekVorjahrContainer" translate>
+                                <mat-radio-group
+                                    formControlName="alleinigeStekVorjahr"
+                                    class=""
+                                    (change)="alleinigeStekVorjahrChange($event)"
+                                    name="alleinigeStekVorjahr">
+                                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                                </mat-radio-group>
+                            </dv-radio-container-x>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12" *ngIf="veranlagtVisible()">
+                        <div class="form-group">
+                        <span class="ebegu-h1 required">
+                            <span translate="VERANLAGT"></span>
+                        </span>
+
+                            <dv-radio-container-x name="veranlagtContainer" translate>
+                                <mat-radio-group
+                                    aria-labelledby="alle-angaben-radio-group"
+                                    class=""
+                                    formControlName="veranlagt"
+                                    name="veranlagt">
+                                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                                </mat-radio-group>
+                            </dv-radio-container-x>
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+
+            <dv-selbstdeklaration *ngIf="showSelbstdeklaration()"
+                                  [antragstellerNummer]="getAntragstellerNummer()"
+                                  [isGemeinsam]="isGemeinsam()"
+                                  [year]="getYearForDeklaration()"
+            ></dv-selbstdeklaration>
+            <dv-veranlagung *ngIf="showVeranlagung()"
+                            [antragstellerNummer]="getAntragstellerNummer()"
+                            [isGemeinsam]="isGemeinsam()"
+                            [year]="getYearForDeklaration()"
+            ></dv-veranlagung>
+        </div>
+
+        <dv-navigation [dvSave]="save" [dvPrevious]="hasPrevious" [dvNext]="hasNext"
+                       [dvSubStep]="getSubStepIndex()" [dvSubStepName]="getSubStepName()"></dv-navigation>
+    </div>
+
+</div>
