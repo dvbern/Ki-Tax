@@ -3686,7 +3686,7 @@ public class JaxBConverter extends AbstractConverter {
 		return result;
 	}
 
-	public VerfuegungZeitabschnittBemerkung verfuegungZeitabschnittToEntity(
+	public VerfuegungZeitabschnittBemerkung verfuegungZeitabschnittBemerkungToEntity(
 		@Nullable JaxVerfuegungZeitabschnittBemerkung jaxVerfuegungZeitabschnittBemerkung) {
 		throw new EbeguFingerWegException("VerfuegungZeitabschnittBemerkung", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
 	}
