@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -14,25 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 
-package ch.dvbern.ebegu.util;
-
-import java.io.Serializable;
-import java.util.Comparator;
-
-import ch.dvbern.ebegu.dto.VerfuegungsBemerkungDTO;
-
-/**
- * Comparator, Verfuegungsbemerkungen sortiert
- */
-public class VerfuegungsBemerkungComparator implements Comparator<VerfuegungsBemerkungDTO>, Serializable {
-
-	private static final long serialVersionUID = -309383917391346314L;
-
-	@Override
-	public int compare(VerfuegungsBemerkungDTO bemerkung1, VerfuegungsBemerkungDTO bemerkung2) {
-		int ord1 = bemerkung1.getMsgKey().ordinal();
-		int ord2 = bemerkung2.getMsgKey().ordinal();
-		return Integer.compare(ord1, ord2);
-	}
+export class TSVerfuegungZeitabschnittBemerkung extends TSAbstractDateRangedEntity {
+    public bemerkung: string;
 }

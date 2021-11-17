@@ -29,7 +29,7 @@ import ch.dvbern.ebegu.util.ServerMessageUtil;
 /**
  * DTO für eine Verfügungsbemerkung
  */
-public class VerfuegungsBemerkung {
+public class VerfuegungsBemerkungDTO {
 
 	@Nonnull
 	private RuleValidity ruleValidity;
@@ -43,7 +43,7 @@ public class VerfuegungsBemerkung {
 	@Nonnull
 	private Locale sprache;
 
-	public VerfuegungsBemerkung(@Nonnull RuleValidity ruleValidity, @Nonnull MsgKey msgKey, @Nonnull Locale sprache, @Nullable Object... args) {
+	public VerfuegungsBemerkungDTO(@Nonnull RuleValidity ruleValidity, @Nonnull MsgKey msgKey, @Nonnull Locale sprache, @Nullable Object... args) {
 		this.ruleValidity = ruleValidity;
 		this.msgKey = msgKey;
 		this.sprache = sprache;
@@ -90,10 +90,10 @@ public class VerfuegungsBemerkung {
 		if (this == o) {
 			return true;
 		}
-		if (!(o instanceof VerfuegungsBemerkung)) {
+		if (!(o instanceof VerfuegungsBemerkungDTO)) {
 			return false;
 		}
-		VerfuegungsBemerkung that = (VerfuegungsBemerkung) o;
+		VerfuegungsBemerkungDTO that = (VerfuegungsBemerkungDTO) o;
 		return msgKey == that.msgKey &&
 			Arrays.equals(args, that.args) &&
 			Objects.equals(sprache, that.sprache) &&
@@ -109,7 +109,7 @@ public class VerfuegungsBemerkung {
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder("VerfuegungsBemerkung{");
+		final StringBuilder sb = new StringBuilder("VerfuegungsBemerkungDTO{");
 		sb.append("msgKey=").append(msgKey);
 		sb.append(", ruleValidity=").append(ruleValidity);
 		sb.append(", args=").append(Arrays.toString(args));
