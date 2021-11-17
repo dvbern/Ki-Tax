@@ -80,13 +80,17 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FERIENBETREUUNG_CHF_PAUSCHALBETRAG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FINANZIELLE_SITUATION_TYP;
-import static ch.dvbern.ebegu.enums.EinstellungKey.FJKV_FAMILIENSITUATION_NEU;
-import static ch.dvbern.ebegu.enums.EinstellungKey.FJKV_KINDERABZUG_NEU;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_ANSPRUCH_MONATSWEISE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_FAMILIENSITUATION_NEU;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_KINDERABZUG_NEU;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_BEI_ANSPRUCH;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
@@ -151,14 +155,10 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG;
-import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
-import static ch.dvbern.ebegu.enums.EinstellungKey.FJKV_ANSPRUCH_MONATSWEISE;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS;
-import static ch.dvbern.ebegu.enums.EinstellungKey.FERIENBETREUUNG_CHF_PAUSCHALBETRAG;
-import static ch.dvbern.ebegu.enums.EinstellungKey.FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER;
 
 /**
  * Service fuer erstellen und mutieren von Testfällen
@@ -602,12 +602,12 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(FKJV_PAUSCHALE_BEI_ANSPRUCH, "false", gesuchsperiode);
 		saveEinstellung(FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF, "null", gesuchsperiode);
 		saveEinstellung(FKJV_PAUSCHALE_RUECKWIRKEND, "false", gesuchsperiode);
-		saveEinstellung(FJKV_ANSPRUCH_MONATSWEISE, "false", gesuchsperiode);
+		saveEinstellung(FKJV_ANSPRUCH_MONATSWEISE, "false", gesuchsperiode);
 		saveEinstellung(SCHNITTSTELLE_STEUERN_AKTIV, "false", gesuchsperiode);
 		saveEinstellung(FERIENBETREUUNG_CHF_PAUSCHALBETRAG, "30",gesuchsperiode);
 		saveEinstellung(FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER, "60",gesuchsperiode);
-		saveEinstellung(FJKV_KINDERABZUG_NEU, "false", gesuchsperiode);
-		saveEinstellung(FJKV_FAMILIENSITUATION_NEU, "false", gesuchsperiode);
+		saveEinstellung(FKJV_KINDERABZUG_NEU, "false", gesuchsperiode);
+		saveEinstellung(FKJV_FAMILIENSITUATION_NEU, "false", gesuchsperiode);
 		saveEinstellung(MINIMALDAUER_KONKUBINAT, "5", gesuchsperiode);
 		saveEinstellung(FINANZIELLE_SITUATION_TYP, "BERN", gesuchsperiode);
 		saveEinstellung(KITAPLUS_ZUSCHLAG_AKTIVIERT, "false", gesuchsperiode);
