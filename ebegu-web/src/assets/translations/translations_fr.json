@@ -2645,5 +2645,6 @@
     "KITAPLUS_ZUSCHLAG_AKTIVIERT": "KITAplus Zuschlag aktiviert (Luzern)",
     "GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN": "Gemeindespezifische Konfigurationen für BG (Solothurn)",
     "ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM": "Anspruch unabhängig vom Beschäftigungspensum (Solothurn)",
+    "GEMEINDE_ANTRAG_GELOESCHT": "Der Antrag {{typ}} für die Gemeinde {{gemeinde}} in der Gesuchsperiode {{periode}} wurde gelöscht",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

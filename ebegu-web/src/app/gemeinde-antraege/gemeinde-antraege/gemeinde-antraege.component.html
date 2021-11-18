@@ -95,10 +95,10 @@
                              (buttonClick)="createAllAntraege()">
                             <span class="uppercase" translate>LATS_ANTRAEGE_ERSTELLEN</span>
                         </div>
-                        <button *ngIf="deletePossible$ | async"
+                        <button *ngIf="latsDeletePossible$ | async"
                                 type="button"
                                 class="dv-btn cancel-button margin-left-5"
-                                (click)="deleteAntraege()">
+                                (click)="deleteAllLatsAntraege()">
                             <span class="uppercase" translate>LATS_ANTRAEGE_LOESCHEN</span>
                         </button>
                     </div>
@@ -130,5 +130,7 @@
                         [filterStateList]="getStateFilter()"
                         [filterTypeList]="types"
                         [stateStoreId]="'gemeindeantraege'"
+                        [showRemoveButton]="isMandant() | async"
+                        (removeClicked)="deleteGemeindeAntrag($event)"
                         [totalItems]="totalItems"></dv-new-antrag-list>
 </div>

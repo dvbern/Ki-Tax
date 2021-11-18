@@ -551,16 +551,46 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 		if (!principal.isCallerInRole(UserRole.SUPER_ADMIN)) {
 			throw new EbeguRuntimeException(
-				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer",
-				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer ist nur als SuperAdmin möglich");
+				"deleteFerienbetreuungAntragIfExists",
+				"deleteFerienbetreuungAntragIfExists ist nur als SuperAdmin möglich");
 		}
 
 		this.getFerienbetreuungAntraege(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null)
-			.forEach(antrag -> {
-				this.ferienbetreuungDokumentService.findDokumente(antrag.getId())
-					.forEach(dokument -> persistence.remove(dokument));
-				persistence.remove(antrag);
+			.forEach(this::removeFerienbetreuungAngabenContainer);
+	}
+
+	@Override
+	public void deleteAntragIfExistsAndIsNotAbgeschlossen(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
+
+		if (!principal.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
+			throw new EbeguRuntimeException(
+				"deleteAntragIfExistsAndIsNotAbgeschlossen",
+				"deleteAntragIfExistsAndIsNotAbgeschlossen ist nur als Mandant und SuperAdmin möglich");
+		}
+
+		var antragList = this.getFerienbetreuungAntraege(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null);
+		if (antragList.size() > 1) {
+			throw new EbeguRuntimeException(
+				"deleteAntragIfExistsAndIsNotAbgeschlossen",
+				"more than one Ferienbetreuung antrag found for gemeinde "
+					+ gemeinde.getName() + " and gesuchsperiode "
+					+ gesuchsperiode.getGesuchsperiodeString()
+			);
+		}
+		antragList.forEach(antrag -> {
+				if (antrag.isAntragAbgeschlossen()) {
+					return;
+				}
+				removeFerienbetreuungAngabenContainer(antrag);
 			});
+	}
+
+	private void removeFerienbetreuungAngabenContainer(FerienbetreuungAngabenContainer antrag) {
+		this.ferienbetreuungDokumentService.findDokumente(antrag.getId())
+				.forEach(dokument -> persistence.remove(dokument));
+		persistence.remove(antrag);
 	}
 
 	@Nonnull

@@ -25,6 +25,7 @@ import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag'
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -128,11 +129,22 @@ export class GemeindeAntragService {
             .pipe(map(jaxAntrag => this.ebeguRestUtil.parseGemeindeAntragList(jaxAntrag)));
     }
 
-    public deleteAntrage(
-        toDelete: { periode: string, antragTyp: string, gemeinde?: TSGemeinde },
+    public deleteAllAntrage(
+        gesuchsperiode: string,
+        antragTyp: TSGemeindeAntragTyp
     ): Observable<void> {
         return this.http.delete<void>(
-            `${this.API_BASE_URL}/deleteAntraege/${toDelete.antragTyp}/gesuchsperiode/${toDelete.periode}`);
+            `${this.API_BASE_URL}/deleteAntraege/${antragTyp}/gesuchsperiode/${gesuchsperiode}`);
+    }
+
+    public deleteGemeindeAntrag(
+        gesuchsperiode: TSGesuchsperiode,
+        gemeindeName: string,
+        antragTyp: string,
+    ): Observable<void> {
+        return this.http.delete<void>(
+            `${this.API_BASE_URL}/deleteAntrag/${antragTyp}/gesuchsperiode/${encodeURIComponent(gesuchsperiode.id)}/gemeinde/${gemeindeName}`,
+        );
     }
 
     public createAntrag(

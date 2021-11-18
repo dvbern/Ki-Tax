@@ -68,4 +68,6 @@ public interface GemeindeAntragService {
 	Optional<? extends GemeindeAntrag> findGemeindeAntrag(@Nonnull GemeindeAntragTyp typ, @Nonnull String gemeindeAntragId);
 
 	void deleteGemeindeAntraege(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull GemeindeAntragTyp gemeindeAntragTyp);
+
+	void deleteGemeindeAntragIfExists(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull GemeindeAntragTyp gemeindeAntragTyp, @Nonnull Gemeinde gemeinde);
 }
