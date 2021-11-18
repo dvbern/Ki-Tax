@@ -315,13 +315,21 @@ export class GesuchModelManager {
     }
 
     public updateFachstellenAnspruchList(): void {
-        this.fachstelleRS.getAnspruchFachstellen().then((response: TSFachstelle[]) => {
+        if (!this.getGesuchsperiode()) {
+            this.fachstellenAnspruchList = [];
+            return;
+        }
+        this.fachstelleRS.getAnspruchFachstellen(this.getGesuchsperiode()).then((response: TSFachstelle[]) => {
             this.fachstellenAnspruchList = response;
         });
     }
 
     public updateFachstellenErweiterteBetreuungList(): void {
-        this.fachstelleRS.getErweiterteBetreuungFachstellen().then((response: TSFachstelle[]) => {
+        if (!this.getGesuchsperiode()) {
+            this.fachstellenErweiterteBetreuungList = [];
+            return;
+        }
+        this.fachstelleRS.getErweiterteBetreuungFachstellen(this.getGesuchsperiode()).then((response: TSFachstelle[]) => {
             this.fachstellenErweiterteBetreuungList = response;
         });
     }

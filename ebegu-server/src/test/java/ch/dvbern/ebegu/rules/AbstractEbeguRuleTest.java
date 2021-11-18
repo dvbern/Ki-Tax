@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnittBemerkung;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
@@ -377,16 +378,16 @@ public class AbstractEbeguRuleTest {
 			.where(VerfuegungZeitabschnitt::getBgPensum, comparesEqualTo(BigDecimal.valueOf(expectedBgPensum)))
 		);
 
-		final String bemerkungen = zeitabschnitt.getBemerkungen();
+		final List<VerfuegungZeitabschnittBemerkung> bemerkungen = zeitabschnitt.getVerfuegungZeitabschnittBemerkungList();
 		if (expectedBemerkungIfAny != null) {
-			Assert.assertFalse(zeitabschnitt.getBemerkungenList().isEmpty());
-			Assert.assertTrue(zeitabschnitt.getBemerkungenList().containsMsgKey(expectedBemerkungIfAny));
+			Assert.assertFalse(zeitabschnitt.getBemerkungenDTOList().isEmpty());
+			Assert.assertTrue(zeitabschnitt.getBemerkungenDTOList().containsMsgKey(expectedBemerkungIfAny));
 		} else {
 			assertNotNull(bemerkungen);
-			Assert.assertFalse(zeitabschnitt.getBemerkungenList().isEmpty());
-			Assert.assertEquals(2, zeitabschnitt.getBemerkungenList().uniqueSize());
-			Assert.assertTrue(zeitabschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
-			Assert.assertTrue(zeitabschnitt.getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
+			Assert.assertFalse(zeitabschnitt.getBemerkungenDTOList().isEmpty());
+			Assert.assertEquals(2, zeitabschnitt.getBemerkungenDTOList().uniqueSize());
+			Assert.assertTrue(zeitabschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+			Assert.assertTrue(zeitabschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 		}
 	}
 }

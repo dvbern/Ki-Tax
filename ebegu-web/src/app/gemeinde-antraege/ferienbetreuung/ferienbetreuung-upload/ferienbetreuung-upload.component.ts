@@ -96,7 +96,6 @@ export class FerienbetreuungUploadComponent implements OnInit, OnDestroy {
                 win.close();
             });
     }
-
     public onDelete(dokument: TSFerienbetreuungDokument): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {

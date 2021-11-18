@@ -20,6 +20,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {TranslateModule} from '@ngx-translate/core';
 import {UIRouterModule} from '@uirouter/angular';
 import {of} from 'rxjs';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {WindowRef} from '../../core/service/windowRef.service';
 import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
 import {SharedModule} from '../../shared/shared.module';
@@ -49,6 +50,7 @@ describe('WizardSideNavComponent', () => {
                 SharedModule,
             ],
         })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     }));
 

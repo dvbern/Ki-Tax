@@ -20,7 +20,9 @@ import {StateService} from '@uirouter/core';
 import {of} from 'rxjs';
 import {DvNgShowElementDirective} from '../../../app/core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
+import {SharedModule} from '../../../app/shared/shared.module';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSDossier} from '../../../models/TSDossier';
@@ -94,7 +96,8 @@ describe('fallToolbar', () => {
                 FallToolbarComponent,
                 DvNgShowElementDirective,
             ],
-        });
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES);
     }));
 
     describe('functions', () => {

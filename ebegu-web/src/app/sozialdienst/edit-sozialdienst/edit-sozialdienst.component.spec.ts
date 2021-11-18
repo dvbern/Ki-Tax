@@ -18,6 +18,7 @@ import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
 import {MaterialModule} from '../../shared/material.module';
@@ -54,6 +55,7 @@ describe('EditSozialdienstComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy}
             ],
         })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
         transitionSpy.params.and.returnValue({});
     }));

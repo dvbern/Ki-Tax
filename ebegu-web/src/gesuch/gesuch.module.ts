@@ -42,9 +42,16 @@ import {ErwerbspensumViewComponentConfig} from './component/erwerbspensumView/er
 import {FallCreationViewComponentConfig} from './component/fallCreationView/fallCreationView';
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 import {FamiliensituationViewComponentConfig} from './component/familiensituationView/familiensituationView';
-import {FinanzielleSituationResultateViewComponentConfig} from './component/finanzielleSituationResultateView/finanzielleSituationResultateView';
-import {FinanzielleSituationStartViewComponentConfig} from './component/finanzielleSituationStartView/finanzielleSituationStartView';
-import {FinanzielleSituationViewComponentConfig} from './component/finanzielleSituationView/finanzielleSituationView';
+import {FinanzielleSituationResultateViewComponentConfig} from './component/finanzielleSituation/bern/finanzielleSituationResultateView/finanzielleSituationResultateView';
+import {FinanzielleSituationStartViewComponentConfig} from './component/finanzielleSituation/bern/finanzielleSituationStartView/finanzielleSituationStartView';
+import {FinanzielleSituationViewComponentConfig} from './component/finanzielleSituation/bern/finanzielleSituationView/finanzielleSituationView';
+import {SozialhilfeZeitraumListViewComponentConfig} from './component/finanzielleSituation/bern/sozialhilfeZeitraumListView/sozialhilfeZeitraumListView';
+import {SozialhilfeZeitraumViewComponentConfig} from './component/finanzielleSituation/bern/sozialhilfeZeitraumView/sozialhilfeZeitraumView';
+import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
+import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
+import {ResultateComponent} from './component/finanzielleSituation/luzern/resultate/resultate.component';
+import {SelbstdeklarationComponent} from './component/finanzielleSituation/luzern/selbstdeklaration/selbstdeklaration.component';
+import {VeranlagungComponent} from './component/finanzielleSituation/luzern/veranlagung/veranlagung.component';
 import {FreigabeViewComponentConfig} from './component/freigabeView/freigabeView';
 import {InternePendenzDialogComponent} from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
@@ -52,8 +59,6 @@ import {KinderListViewComponentConfig} from './component/kinderListView/kinderLi
 import {KindViewComponentConfig} from './component/kindView/kindView';
 import {KommentarViewComponentConfig} from './component/kommentarView/kommentarView';
 import {SozialdienstFallCreationViewComponentConfig} from './component/sozialdienstFallCreationView/sozialdienstFallCreationView';
-import {SozialhilfeZeitraumListViewComponentConfig} from './component/sozialhilfeZeitraumListView/sozialhilfeZeitraumListView';
-import {SozialhilfeZeitraumViewComponentConfig} from './component/sozialhilfeZeitraumView/sozialhilfeZeitraumView';
 import {StammdatenViewComponentConfig} from './component/stammdatenView/stammdatenView';
 import {UmzugViewComponentConfig} from './component/umzugView/umzugView';
 import {VerfuegenListViewComponentConfig} from './component/verfuegenListView/verfuegenListView';
@@ -71,6 +76,11 @@ export const GESUCH_JS_MODULE =
         .component('finanzielleSituationStartView', new FinanzielleSituationStartViewComponentConfig())
         .component('finanzielleSituationResultateView', new FinanzielleSituationResultateViewComponentConfig())
         .component('dvFinanzielleSituationRequire', new DvFinanzielleSituationRequire())
+        .component('finanzielleSituationStartLuzern', downgradeComponent({component: FinanzielleSituationStartViewLuzernComponent}))
+        .component('finanzielleSituationAngabenGS2Luzern', downgradeComponent({component: AngabenGesuchsteller2Component}))
+        .component('finanzielleSituationResultateLuzern', downgradeComponent({component: ResultateComponent}))
+        .component('finanzielleSituationSelbstdeklarationLuzern', downgradeComponent({component: SelbstdeklarationComponent}))
+        .component('finanzielleSituationVeranlagungLuzern', downgradeComponent({component: VeranlagungComponent}))
         .component('kindView', new KindViewComponentConfig())
         .component('betreuungListView', new BetreuungListViewComponentConfig())
         .component('betreuungView', new BetreuungViewComponentConfig())

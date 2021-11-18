@@ -71,7 +71,7 @@ export class KommentarViewController implements IController {
         '$state',
         '$mdSidenav',
         '$q',
-        'applicationPropertyRS',
+        'ApplicationPropertyRS',
     ];
 
     public form: IFormController;

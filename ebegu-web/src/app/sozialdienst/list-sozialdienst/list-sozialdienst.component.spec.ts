@@ -19,6 +19,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService} from '@uirouter/core';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
 import {MaterialModule} from '../../shared/material.module';
@@ -50,6 +51,7 @@ describe('ListSozialdienstComponent', () => {
                 {provide: SozialdienstRS, useValue: sozialdienstRSSpy},
             ],
         })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
         sozialdienstRSSpy.getSozialdienstList.and.returnValue(of([]));
     });

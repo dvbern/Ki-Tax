@@ -16,6 +16,7 @@
 import {TSPensumUnits} from './enums/TSPensumUnits';
 import {TSVerfuegungZeitabschnittZahlungsstatus} from './enums/TSVerfuegungZeitabschnittZahlungsstatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
+import {TSVerfuegungZeitabschnittBemerkung} from './TSVerfuegungZeitabschnittBemerkung';
 import {TSTsCalculationResult} from './TSTsCalculationResult';
 
 export class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
@@ -23,7 +24,7 @@ export class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
     public anspruchberechtigtesPensum: number;
     public anspruchsberechtigteAnzahlZeiteinheiten: number;
     public anspruchspensumRest: number;
-    public bemerkungen: string;
+    public bemerkungen: Array<TSVerfuegungZeitabschnittBemerkung> = [];
     public betreuungspensumProzent: number;
     public betreuungspensumZeiteinheit: number;
     public bgPensum: number;

@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
 import {WindowRef} from '../../../core/service/windowRef.service';
 import {SharedModule} from '../../shared.module';
 
@@ -19,6 +20,7 @@ describe('DvMonthPickerComponent', () => {
             {provide: NgForm, useValue: new NgForm([], [])},
         ]
     })
+        .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
     .compileComponents();
   }));
 

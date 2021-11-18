@@ -20,7 +20,9 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {TranslateService} from '@ngx-translate/core';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {SharedModule} from '../../../shared/shared.module';
 import {FerienbetreuungKommantarComponent} from './ferienbetreuung-kommantar.component';
 
 const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
@@ -52,6 +54,7 @@ describe('FerienbetreuungKommantarComponent', () => {
                 HttpClientModule
             ]
         })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 

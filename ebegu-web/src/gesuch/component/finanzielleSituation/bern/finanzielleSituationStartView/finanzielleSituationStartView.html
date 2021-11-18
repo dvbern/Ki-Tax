@@ -1,0 +1,314 @@
+<!--
+  ~ Ki-Tax: System for the management of external childcare subsidies
+  ~ Copyright (C) 2017 City of Bern Switzerland
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<div class="finanzielle-situation gesuch-modul static-position">
+    <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
+    <div class="row view-title">
+        <div class="col-md-12">
+            <h2>
+            <span data-translate="FINANZIELLE_SITUATION"
+                  translate-values="{basisjahr: vm.getBasisjahr()}"></span>
+            </h2>
+            <hr class="header"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <form role="form" name="vm.form" class="" unsaved-warning-form novalidate>
+
+                <div class="row" ng-if="vm.areThereOnlyFerieninsel">
+                    <div class="col-md-12">
+                        <p>
+                            <span data-translate="FIN_SIT_NOT_REQUIRED">
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <div ng-if="!vm.areThereOnlyFerieninsel">
+                    <dv-finanzielle-situation-require sozialhilfe-bezueger="vm.model.sozialhilfeBezueger"
+                                                      verguenstigung-gewuenscht="vm.model.verguenstigungGewuenscht"
+                                                      finanzielle-situation-required="vm.finanzielleSituationRequired"
+                                                      form="vm.form">
+                    </dv-finanzielle-situation-require>
+
+                    <div ng-if="vm.isFinanziellesituationRequired() && vm.is2GSRequired()">
+                        <!-- Gemeinsame Steuererklaerung -->
+                        <div class="row">
+                            <div class="col-xs-12 dv-input-container-question">
+                                <div class="form-group">
+                            <span class="ebegu-h1 required">
+                                <span data-translate="FINANZIELLE_SITUATION_STEK_GEMEINSAM"
+                                      translate-values="{basisjahr: vm.getBasisjahr(), namegs2: vm.extractFullNameGS2()}"></span>
+                            </span>
+                                    <dv-radio-container name="gemeinsameSteuererklaerung"
+                                                        class="input-element"
+                                                        ng-model="vm.model.gemeinsameSteuererklaerung"
+                                                        ng-required="true"
+                                                        class="radio"
+                                                        ng-change="vm.gemeinsameStekClicked()"
+                                                        dv-enable-element
+                                                        dv-enable-allowed-roles="vm.allowedRoles"
+                                                        dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
+                                                        aria-label="{{ 'FINANZIELLE_SITUATION_STEK_GEMEINSAM' |translate}}"
+                                                        aria-described-by="gemeinsameSteuererklaerung-error">
+                                    </dv-radio-container>
+                                    <dv-error-messages input-id="gemeinsameSteuererklaerung"
+                                                       for="vm.form.gemeinsameSteuererklaerung.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Steuerveranlagung -->
+                        <div class="row">
+                            <div class="col-xs-12 dv-input-container-question" ng-if="vm.showSteuerveranlagung()">
+                                <div class="form-group">
+                                    <span class="ebegu-h1 required">
+                                        <span data-translate="FINANZIELLE_SITUATION_STEUERVERANLAGUNG"
+                                              translate-values="{basisjahr: vm.getBasisjahr()}"></span>
+                                    </span>
+                                    <dv-radio-container name="steuerveranlagung"
+                                                        class="input-element radio"
+                                                        ng-model="vm.getFinanzielleSituationGS1().steuerveranlagungErhalten"
+                                                        ng-required="true"
+                                                        ng-change="vm.steuerveranlagungClicked()"
+                                                        dv-enable-element
+                                                        dv-enable-allowed-roles="vm.allowedRoles"
+                                                        dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
+                                                        aria-label="{{ 'FINANZIELLE_SITUATION_STEUERVERANLAGUNG' |translate}}"
+                                                        aria-described-by="steuerveranlagung-error">
+                                    </dv-radio-container>
+                                    <dv-error-messages input-id="steuerveranlagung"
+                                                       for="vm.form.steuerveranlagung.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Steuererklärung -->
+                        <div class="row">
+                            <div class="col-xs-12 dv-input-container-question"
+                                 ng-if="vm.showSteuerveranlagung() && vm.showSteuererklaerung()">
+                                <div class="form-group">
+                            <span class="ebegu-h1 required">
+                                <span data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG"
+                                      translate-values="{basisjahr: {{vm.getBasisjahr()}}}"></span>
+                            </span>
+                                    <dv-radio-container name="steuererklaerung"
+                                                        class="input-element radio"
+                                                        ng-model="vm.getFinanzielleSituationGS1().steuererklaerungAusgefuellt"
+                                                        ng-required="true"
+                                                        ng-change="vm.steuererklaerungClicked()"
+                                                        dv-enable-element
+                                                        false-option-label="{{'FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN' | translate}}"
+                                                        dv-enable-allowed-roles="vm.allowedRoles"
+                                                        dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
+                                                        aria-label="{{ 'FINANZIELLE_SITUATION_STEUERERKLAERUNG' |translate}}"
+                                                        aria-described-by="steuererklaerung-error">
+                                    </dv-radio-container>
+                                    <dv-error-messages input-id="steuererklaerung"
+                                                       for="vm.form.steuererklaerung.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div ng-if="vm.getFinanzielleSituationGS1().steuererklaerungAusgefuellt === false"
+                             class="well well-status-warten minus-margin">
+                            <p class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <fieldset dv-enable-element
+                          dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                          dv-enable-expression="vm.areZahlungsdatenEditable()">
+
+                    <!-- Keine Mahlzeitenverguenstigung gewuenscht -->
+                    <div class="row margin-bottom-20 margin-top-20" ng-if="vm.isMahlzeitenverguenstigungEnabled()">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <div class="checkbox">
+                                <md-checkbox ng-model="vm.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt"
+                                             name="keineMahlzeitenverguenstigungBeantragt"
+                                             aria-label="{{'MAHLZEITENVERGUENSTIGUNG_NICHT_BEANTRAGT'|translate}}"
+                                             ng-disabled="vm.isGesuchReadonly()">
+                                    <span data-translate="MAHLZEITENVERGUENSTIGUNG_NICHT_BEANTRAGT"></span>
+                                </md-checkbox>
+                                <dv-bisher gs="vm.model.zahlungsinformationenGS.keineMahlzeitenverguenstigungBeantragt"
+                                           ja="vm.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt"></dv-bisher>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div ng-if="vm.isZahlungsdatenRequired()" >
+                        <!--IBAN-->
+                        <div class="row">
+                            <div class="col-sm-12 dv-input-container-medium">
+                                <dv-input-container class="form-group">
+                                    <label class="md-no-float"for="iban">
+                                        <span data-translate="IBAN" ></span>
+                                        <dv-tooltip input-id="iban" text="'IBAN_NUMMER_HINT'"></dv-tooltip>
+                                    </label>
+                                    <input id="iban" type="text" name="iban"
+                                           ng-model="vm.model.zahlungsinformationen.iban"
+                                           dv-max-length class="form-control" required>
+                                    <dv-bisher gs="vm.model.zahlungsinformationenGS.iban"
+                                               ja="vm.model.zahlungsinformationen.iban"></dv-bisher>
+                                    <dv-error-messages for="vm.form.iban.$error" class="error"
+                                                       input-id="iban">></dv-error-messages>
+                                </dv-input-container>
+                            </div>
+                        </div>
+                        <!-- Kontoinhaber -->
+                        <div class="row">
+                            <div class="col-sm-12 dv-input-container-medium">
+                                <dv-input-container class="form-group">
+                                    <label class="md-no-float"
+                                           data-translate="MAHLZEITENVERGUENSTIGUNG_KONTOINHABER"
+                                           for="kontoinhaber"></label>
+                                    <input id="kontoinhaber" type="text" name="kontoinhaber"
+                                           ng-model="vm.model.zahlungsinformationen.kontoinhaber" required
+                                           dv-max-length class="form-control">
+                                    <dv-bisher gs="vm.model.zahlungsinformationenGS.kontoinhaber"
+                                               ja="vm.model.zahlungsinformationen.kontoinhaber"></dv-bisher>
+                                    <dv-error-messages for="vm.form.kontoinhaber.$error" class="error"
+                                                       input-id="kontoinhaber"></dv-error-messages>
+                                </dv-input-container>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 dv-input-container-medium">
+                                <div class=" checkbox">
+                                    <md-checkbox ng-model="vm.model.zahlungsinformationen.abweichendeZahlungsadresse"
+                                                 ng-change="vm.changeAbweichendeZahlungsadresse()"
+                                                 name="abweichendeZahlungsadresse" id="abweichendeZahlungsadresse"
+                                                 aria-label="{{'MAHLZEITENVERGUENSTIGUNG_ABWEICHENDE_ZAHLUNGSADRESSE'|translate}}">
+                                        <span data-translate="MAHLZEITENVERGUENSTIGUNG_ABWEICHENDE_ZAHLUNGSADRESSE"></span>
+                                    </md-checkbox>
+                                    <dv-bisher gs="vm.model.zahlungsinformationenGS.abweichendeZahlungsadresse"
+                                               ja="vm.model.zahlungsinformationen.abweichendeZahlungsadresse"></dv-bisher>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-if="vm.model.zahlungsinformationen.abweichendeZahlungsadresse">
+                            <div class="dv-adresse row">
+                                <!--Strasse-->
+                                <div class="col-sm-12 dv-input-container-small">
+                                    <dv-input-container class="form-group">
+                                        <label class="md-no-float" data-translate="ADRESSE_STRASSE" for="adresseStrasse"></label>
+                                        <input id="adresseStrasse" type="text" name="adresseStrasse"
+                                               ng-model="vm.model.zahlungsinformationen.zahlungsadresse.strasse"
+                                               dv-max-length class="form-control" required>
+                                        <dv-bisher gs="vm.model.zahlungsinformationenGS.zahlungsadresse.strasse"
+                                                   ja="vm.model.zahlungsinformationen.zahlungsadresse.strasse"></dv-bisher>
+                                        <dv-error-messages for="adresseForm.adresseStrasse.$error"
+                                                           class="error"></dv-error-messages>
+                                    </dv-input-container>
+                                </div>
+                                <div class="col-sm-12 dv-input-container-small">
+                                    <dv-input-container class="form-group secondColumn">
+                                        <label class="md-no-float" data-translate="ADRESSE_HAUSNUMMER"
+                                               for="adresseHausnummer"></label>
+                                        <input id="adresseHausnummer" type="text"
+                                               name="adresseHausnummer"
+                                               ng-model="vm.model.zahlungsinformationen.zahlungsadresse.hausnummer"
+                                               dv-max-length class="form-control">
+                                        <dv-bisher gs="vm.model.zahlungsinformationenGS.zahlungsadresse.hausnummer"
+                                                   ja="vm.model.zahlungsinformationen.zahlungsadresse.hausnummer"></dv-bisher>
+                                        <dv-error-messages for="adresseForm.adresseHausnummer.$error"
+                                                           class="error"></dv-error-messages>
+                                    </dv-input-container>
+                                </div>
+                            </div>
+                            <!-- Adresse Zusatz-->
+                            <div class="row">
+                                <div class="col-sm-12 dv-input-container-small">
+                                    <dv-input-container class="form-group">
+                                        <label class="md-no-float" data-translate="ADRESSE_ZUSATZZEILE"
+                                               for="adresseZusatzzeile"></label>
+                                        <input id="adresseZusatzzeile" type="text"
+                                               name="adresseZusatzzeile"
+                                               ng-model="vm.model.zahlungsinformationen.zahlungsadresse.zusatzzeile"
+                                               dv-max-length class="form-control">
+                                        <dv-bisher gs="vm.model.zahlungsinformationenGS.zahlungsadresse.zusatzzeile"
+                                                   ja="vm.model.zahlungsinformationen.zahlungsadresse.zusatzzeile"></dv-bisher>
+                                        <dv-error-messages for="adresseForm.adresseZusatzzeile.$error"
+                                                           class="error"></dv-error-messages>
+                                    </dv-input-container>
+                                </div>
+                            </div>
+                            <!-- PLZ ORT-->
+                            <div class="row">
+                                <div class="col-sm-12 dv-input-container-small">
+                                    <dv-input-container class="form-group">
+                                        <label class="md-no-float" data-translate="ADRESSE_PLZ"
+                                               for="adressePlz">
+                                        </label>
+                                        <input id="adressePlz" type="text" name="adressePlz"
+                                               ng-model="vm.model.zahlungsinformationen.zahlungsadresse.plz"
+                                               dv-max-length class="form-control" required>
+                                        <dv-bisher gs="vm.model.zahlungsinformationenGS.zahlungsadresse.plz"
+                                                   ja="vm.model.zahlungsinformationen.zahlungsadresse.plz"></dv-bisher>
+                                        <dv-error-messages for="adresseForm.adressePlz.$error"
+                                                           class="error"></dv-error-messages>
+                                    </dv-input-container>
+                                </div>
+                                <div class="col-sm-12 dv-input-container-small">
+                                    <dv-input-container class="form-group secondColumn">
+                                        <label class="md-no-float" data-translate="ADRESSE_ORT" for="adresseOrt"></label>
+                                        <input id="adresseOrt" type="text" name="adresseOrt"
+                                               ng-model="vm.model.zahlungsinformationen.zahlungsadresse.ort"
+                                               dv-max-length class="form-control" required>
+                                        <dv-bisher gs="vm.model.zahlungsinformationenGS.zahlungsadresse.ort"
+                                                   ja="vm.model.zahlungsinformationen.zahlungsadresse.ort"></dv-bisher>
+                                        <dv-error-messages for="adresseForm.adresseOrt.$error" class="error"></dv-error-messages>
+                                    </dv-input-container>
+                                </div>
+                            </div>
+
+                            <!-- Land-->
+                            <div class="row">
+                                <div class="col-sm-12 dv-input-container-small">
+                                    <div class="form-group">
+                                        <label class="md-no-float" data-translate="ADRESSE_LAND"
+                                               for="adresseLand">
+                                        </label>
+                                        <div class="dv-select-style">
+                                            <select name="adresseLand" id="adresseLand"
+                                                    ng-model="vm.model.zahlungsinformationen.zahlungsadresse.land"
+                                                    ng-options="land.code as land.translationKey | translate for land in vm.laenderList | orderBy: 'name'"
+                                                    class="form-control"
+                                                    required>
+                                            </select>
+                                            <dv-bisher gs="vm.model.zahlungsinformationenGS.zahlungsadresse.land"
+                                                       ja="vm.model.zahlungsinformationen.zahlungsadresse.land"></dv-bisher>
+                                            <dv-error-messages for="adresseForm.adresseLand.$error"
+                                                               class="error"></dv-error-messages>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!--Buttons-->
+                <dv-navigation dv-previous="true" dv-next="true" dv-saving-possible="vm.areZahlungsdatenEditable()"
+                               dv-save="vm.preSave()"
+                               dv-sub-step="1" dv-sub-step-name="BERN_START">
+                </dv-navigation>
+            </form>
+        </div>
+    </div>
+</div>

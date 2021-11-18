@@ -27,16 +27,17 @@ import java.util.Map.Entry;
 import java.util.SortedSet;
 import java.util.StringJoiner;
 import java.util.TreeSet;
-import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.dto.VerfuegungsBemerkungDTO;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnittBemerkung;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Gueltigkeit;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SortedSetMultimap;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * This class is supposed to find the longest timeperiods for which bemerkungen in {@link VerfuegungZeitabschnitt}en exists.
@@ -54,8 +55,6 @@ import org.apache.commons.lang3.StringUtils;
  * C: 1,3
  */
 public final class BemerkungsMerger {
-
-	private static final Pattern NEW_LINE = Pattern.compile("\\n");
 
 	private BemerkungsMerger() {
 	}
@@ -97,8 +96,11 @@ public final class BemerkungsMerger {
 	}
 
 	public static void prepareGeneratedBemerkungen(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		String bemerkungen = verfuegungZeitabschnitt.getBemerkungenList().bemerkungenToString();
-		verfuegungZeitabschnitt.setBemerkungen(bemerkungen);
+		List<VerfuegungsBemerkungDTO> bemerkungen = verfuegungZeitabschnitt.getBemerkungenDTOList().getRequiredBemerkungen();
+		List<VerfuegungZeitabschnittBemerkung> zeitabschnittBemerkungList = bemerkungen.stream()
+				.map(bemerkung -> new VerfuegungZeitabschnittBemerkung(bemerkung.getTranslated(),verfuegungZeitabschnitt))
+				.collect(Collectors.toList());
+		verfuegungZeitabschnitt.setVerfuegungZeitabschnittBemerkungList(zeitabschnittBemerkungList);
 	}
 
 	/**
@@ -156,17 +158,9 @@ public final class BemerkungsMerger {
 
 	private static SortedSetMultimap<String, Gueltigkeit> createMultimap(List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		SortedSetMultimap<String, Gueltigkeit> multimap = Multimaps.newSortedSetMultimap(new HashMap<>(), () -> new TreeSet<>(Gueltigkeit.GUELTIG_AB_COMPARATOR));
-		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
-			if (StringUtils.isNotEmpty(verfuegungZeitabschnitt.getBemerkungen())) {
-				//hier bemerkungen des zeitabschnitt vorher noch splitten anhand /n
-
-				String[] split = NEW_LINE.split(verfuegungZeitabschnitt.getBemerkungen());
-				for (String currBemerkung : split) {
-					multimap.put(currBemerkung, verfuegungZeitabschnitt);
-
-				}
-			}
-		}
+		zeitabschnitte.stream()
+			.flatMap(zeitabschnitt -> zeitabschnitt.getVerfuegungZeitabschnittBemerkungList().stream())
+			.forEach(bemerkung -> multimap.put(bemerkung.getBemerkung(), bemerkung));
 		return multimap;
 	}
 }

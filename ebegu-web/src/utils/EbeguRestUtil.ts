@@ -23,6 +23,7 @@ import {TSSearchResultEntry} from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
+import {TSFinanzielleSituationTyp} from '../models/enums/TSFinanzielleSituationTyp';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
 import {TSGemeindeKennzahlen} from '../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {TSAnzahlEingeschriebeneKinder} from '../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
@@ -156,6 +157,7 @@ import {TSTsCalculationResult} from '../models/TSTsCalculationResult';
 import {TSUnbezahlterUrlaub} from '../models/TSUnbezahlterUrlaub';
 import {TSVerfuegung} from '../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../models/TSVerfuegungZeitabschnitt';
+import {TSVerfuegungZeitabschnittBemerkung} from '../models/TSVerfuegungZeitabschnittBemerkung';
 import {TSVorlage} from '../models/TSVorlage';
 import {TSWizardStep} from '../models/TSWizardStep';
 import {TSWizardStepX} from '../models/TSWizardStepX';
@@ -1245,6 +1247,7 @@ export class EbeguRestUtil {
             gesuchTS.gueltig = gesuchFromServer.gueltig;
             gesuchTS.dokumenteHochgeladen = gesuchFromServer.dokumenteHochgeladen;
             gesuchTS.finSitStatus = gesuchFromServer.finSitStatus;
+            gesuchTS.finSitTyp = gesuchFromServer.finSitTyp;
             return gesuchTS;
         }
         return undefined;
@@ -2551,6 +2554,7 @@ export class EbeguRestUtil {
             erweiterteBetreuung.erweiterteBeduerfnisseBestaetigt;
         restErweiterteBetreuung.betreuungInGemeinde = erweiterteBetreuung.betreuungInGemeinde;
         restErweiterteBetreuung.keineKesbPlatzierung = erweiterteBetreuung.keineKesbPlatzierung;
+        restErweiterteBetreuung.kitaPlusZuschlag = erweiterteBetreuung.kitaPlusZuschlag;
         if (erweiterteBetreuung.fachstelle) {
             restErweiterteBetreuung.fachstelle = this.fachstelleToRestObject({}, erweiterteBetreuung.fachstelle);
         }
@@ -2567,6 +2571,7 @@ export class EbeguRestUtil {
             erweiterteBetreuungTS.erweiterteBeduerfnisseBestaetigt =
                 erweiterteBetreuungFromServer.erweiterteBeduerfnisseBestaetigt;
             erweiterteBetreuungTS.keineKesbPlatzierung = erweiterteBetreuungFromServer.keineKesbPlatzierung;
+            erweiterteBetreuungTS.kitaPlusZuschlag = erweiterteBetreuungFromServer.kitaPlusZuschlag;
             erweiterteBetreuungTS.betreuungInGemeinde = erweiterteBetreuungFromServer.betreuungInGemeinde;
             if (erweiterteBetreuungFromServer.fachstelle) {
                 erweiterteBetreuungTS.fachstelle =
@@ -3051,7 +3056,6 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.anspruchsberechtigteAnzahlZeiteinheiten =
                 zeitabschnittFromServer.anspruchsberechtigteAnzahlZeiteinheiten;
             verfuegungZeitabschnittTS.anspruchspensumRest = zeitabschnittFromServer.anspruchspensumRest;
-            verfuegungZeitabschnittTS.bemerkungen = zeitabschnittFromServer.bemerkungen;
             verfuegungZeitabschnittTS.betreuungspensumProzent = zeitabschnittFromServer.betreuungspensumProzent;
             verfuegungZeitabschnittTS.betreuungspensumZeiteinheit = zeitabschnittFromServer.betreuungspensumZeiteinheit;
             verfuegungZeitabschnittTS.bgPensum = zeitabschnittFromServer.bgPensum;
@@ -3094,7 +3098,25 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.tsCalculationResultOhnePaedagogischerBetreuung =
                 this.parseTsCalculationResult(zeitabschnittFromServer.tsCalculationResultOhnePaedagogischerBetreuung);
             verfuegungZeitabschnittTS.verguenstigungMahlzeitTotal = zeitabschnittFromServer.verguenstigungMahlzeitTotal;
+
+            if (zeitabschnittFromServer.verfuegungZeitabschnittBemerkungList) {
+                zeitabschnittFromServer.verfuegungZeitabschnittBemerkungList.forEach((bemerkung: any) => {
+                    verfuegungZeitabschnittTS.bemerkungen.push(
+                        this.parseVerfuegungZeitabschnittBemerkung(bemerkung));
+                });
+            }
+
             return verfuegungZeitabschnittTS;
+        }
+        return undefined;
+    }
+
+    private parseVerfuegungZeitabschnittBemerkung(zeitabschnittBemerkungFromServer: any): TSVerfuegungZeitabschnittBemerkung {
+        if (zeitabschnittBemerkungFromServer) {
+            const result = new TSVerfuegungZeitabschnittBemerkung();
+            this.parseDateRangeEntity(zeitabschnittBemerkungFromServer, result);
+            result.bemerkung = zeitabschnittBemerkungFromServer.bemerkung;
+            return result;
         }
         return undefined;
     }
@@ -5466,5 +5488,12 @@ export class EbeguRestUtil {
         gemeindeKennzahlen.limitierungTfo = gemeindeKennzahlenFromServer.limitierungTfo;
 
         return gemeindeKennzahlen;
+    }
+
+    public parseFinanzielleSituationTyp(typ: any): TSFinanzielleSituationTyp {
+        if (Object.values(TSFinanzielleSituationTyp).includes(typ)) {
+            return typ as TSFinanzielleSituationTyp;
+        }
+        throw new Error(`FinanzielleSituationTyp ${typ} not defined`);
     }
 }

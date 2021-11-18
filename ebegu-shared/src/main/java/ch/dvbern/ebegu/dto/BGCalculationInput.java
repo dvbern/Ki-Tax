@@ -899,8 +899,8 @@ public class BGCalculationInput {
 	}
 
 	public void addBemerkung(@Nonnull MsgKey msgKey, @Nonnull Locale locale, @Nullable Object... args) {
-		VerfuegungsBemerkung bemerkung = new VerfuegungsBemerkung(ruleValidity, msgKey, locale, args);
-		this.getParent().getBemerkungenList().addBemerkung(bemerkung);
+		VerfuegungsBemerkungDTO bemerkung = new VerfuegungsBemerkungDTO(ruleValidity, msgKey, locale, args);
+		this.getParent().getBemerkungenDTOList().addBemerkung(bemerkung);
 	}
 
 	public PensumUnits getPensumUnit() {

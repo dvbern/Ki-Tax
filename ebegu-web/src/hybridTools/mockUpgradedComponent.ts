@@ -15,10 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Directive, EventEmitter, Input, Output} from '@angular/core';
+import {Directive, EventEmitter, Injectable, Input, Output} from '@angular/core';
+import {Observable, of} from 'rxjs';
+import {KiBonMandant} from '../app/core/constants/MANDANTS';
+import {DvNavigationX} from '../app/core/directive/dv-navigation/dv-navigation-x';
 import {WindowRef} from '../app/core/service/windowRef.service';
 import {LoadingButtonDirective} from '../app/shared/directive/loading-button.directive';
 import {TooltipDirective} from '../app/shared/directive/TooltipDirective';
+import {MandantService} from '../app/shared/services/mandant.service';
 
 /**
  * This mock should be used when testing an angular component that uses LoadingButtonDirective
@@ -41,7 +45,7 @@ export class MockDvLoadingButton {
 }
 
 @Directive({
-    selector: 'dv-tooltip'
+    selector: 'dv-tooltip',
 })
 export class MockTooltipDirective {
 
@@ -50,14 +54,50 @@ export class MockTooltipDirective {
 
 }
 
+@Directive({
+    selector: 'dv-navigation'
+})
+export class MockDVNavigationDirective {
+    @Input() public dvPrevious: () => any;
+    @Input() public dvNext: () => any;
+    @Input() public dvSave: () => any;
+    @Input() public dvCancel: () => any;
+    @Input() public dvNextDisabled: () => any;
+    @Input() public dvSubStep: number;
+    @Input() public dvSubStepName: string;
+    @Input() public dvSavingPossible: boolean;
+    @Input() public dvTranslateNext: string;
+    @Input() public dvTranslatePrevious: string;
+    @Input() public containerClass: string;
+}
+
+@Injectable()
+class MockMandantService {
+
+    public async initMandantCookie(): Promise<void> {
+        return Promise.resolve();
+    }
+
+    public get mandant$(): Observable<KiBonMandant> {
+        return of(KiBonMandant.BE);
+    }
+}
+
 export const SHARED_MODULE_OVERRIDES = {
     remove: {
-        declarations: [LoadingButtonDirective, TooltipDirective],
-        exports: [LoadingButtonDirective, TooltipDirective],
+        declarations: [LoadingButtonDirective, TooltipDirective, DvNavigationX],
+        exports: [LoadingButtonDirective, TooltipDirective, DvNavigationX],
+        providers: [MandantService],
     },
     add: {
-        declarations: [MockDvLoadingButton, MockTooltipDirective],
-        exports: [MockDvLoadingButton, MockTooltipDirective],
-        providers: [WindowRef]
+        declarations: [MockDvLoadingButton, MockTooltipDirective, MockDVNavigationDirective],
+        exports: [MockDvLoadingButton, MockTooltipDirective, MockDVNavigationDirective],
+        providers: [
+            WindowRef,
+            {
+                provide: MandantService,
+                useClass: MockMandantService,
+            },
+        ],
     },
 };

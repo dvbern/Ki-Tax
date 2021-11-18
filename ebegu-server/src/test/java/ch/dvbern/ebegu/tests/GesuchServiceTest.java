@@ -322,6 +322,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		gpFolgegesuch.getGueltigkeit().setGueltigAb(erstgesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb().plusYears(1));
 		gpFolgegesuch.getGueltigkeit().setGueltigBis(erstgesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis().plusYears(1));
 		gpFolgegesuch = persistence.persist(gpFolgegesuch);
+		TestDataUtil.prepareParameters(gpFolgegesuch, persistence);
 
 		Gesuch erneuerung = Gesuch.createErneuerung(erstgesuch.getDossier(), gpFolgegesuch, LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch erneuerungPersisted = gesuchService.createGesuch(erneuerung);
@@ -511,6 +512,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public void testJAAntragMutierenWhenOnlineMutationExists() {
 		loginAsGesuchsteller("gesuchst");
 		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, AntragStatus.VERFUEGT);
+		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
 		loginAsSachbearbeiterJA();
 		gesuch.setGueltig(true);
 		gesuch.setTimestampVerfuegt(LocalDateTime.now());
@@ -622,6 +624,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	}
 
 	@Test
+	@Transactional(TransactionMode.DEFAULT)
 	public void testWarnungFehlendeQuittung() {
 		insertApplicationProperties();
 		Gesuch gesuch1 = createGesuchFreigabequittung(LocalDate.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG).minusDays(1));
@@ -629,7 +632,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Gesuch gesuch3 = createGesuchFreigabequittung(LocalDate.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG).plusDays(1));
 		TestDataUtil.createGemeindeStammdaten(gesuch1.extractGemeinde(), persistence);
 
-		Assert.assertEquals(2, gesuchService.warnFreigabequittungFehlt());
+		Assert.assertEquals(2, gesuchService.findGesucheWithoutFreigabequittungenAndWarn());
 		final Optional<Gesuch> resultGesuch1 = gesuchService.findGesuch(gesuch1.getId());
 		Assert.assertTrue(resultGesuch1.isPresent());
 		Assert.assertNotNull(resultGesuch1.get().getDatumGewarntFehlendeQuittung());
@@ -642,6 +645,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	}
 
 	@Test
+	@Transactional(TransactionMode.DEFAULT)
 	public void testWarnungNichtFreigegeben() {
 		insertApplicationProperties();
 		Gesuch gesuch1 = createGesuchInBearbeitungGS(LocalDateTime.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_FREIGABE).minusDays(1));
@@ -649,7 +653,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Gesuch gesuch3 = createGesuchInBearbeitungGS(LocalDateTime.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_FREIGABE).plusDays(1));
 		TestDataUtil.createGemeindeStammdaten(gesuch1.extractGemeinde(), persistence);
 
-		Assert.assertEquals(2, gesuchService.warnGesuchNichtFreigegeben());
+		Assert.assertEquals(2, gesuchService.findGesucheNichtFreigegebenAndWarn());
 		final Optional<Gesuch> resultGesuch1 = gesuchService.findGesuch(gesuch1.getId());
 		Assert.assertTrue(resultGesuch1.isPresent());
 		Assert.assertNotNull(resultGesuch1.get().getDatumGewarntNichtFreigegeben());
@@ -975,6 +979,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 						LocalDate.of(1980, Month.MARCH, 25), AntragStatus.GEPRUEFT, gesuchsperiode);
 
 		final Gesuchsperiode gesuchsperiode1819 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2018, 2019);
+		TestDataUtil.prepareParameters(gesuchsperiode1819, persistence);
 
 		testfaelleService.antragErneuern(gesuch, gesuchsperiode1819, null);
 		Assert.assertTrue(gesuchService.getAllGesuchForAmtAfterGP(gesuchsperiode).size() == 1);

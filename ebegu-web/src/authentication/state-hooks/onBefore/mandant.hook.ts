@@ -89,9 +89,6 @@ function redirectToMandantSelection(
                     mandantService.redirectToMandantSubdomain(mandant, path);
                     return false;
                 }
-                if (mandant !== mandantFromHostname) {
-                    mandantService.setMandantCookie(mandantFromHostname);
-                }
 
                 // continue the original transition
                 return true;

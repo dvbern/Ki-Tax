@@ -17,6 +17,7 @@ import {IHttpBackendService, IHttpService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSFachstelleName} from '../../../models/enums/TSFachstelleName';
 import {TSFachstelle} from '../../../models/TSFachstelle';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
@@ -63,14 +64,18 @@ describe('fachstelleRS', () => {
         describe('getAnspruchFachstellen', () => {
             it('should return all Anspruch Fachstellen', () => {
                 const fachstellenRestArray = [mockFachstelleRest, mockFachstelleRest];
-                $httpBackend.expectGET(fachstelleRS.serviceURL + '/anspruch').respond(fachstellenRestArray);
+                const gesuchsperiodeId = '0621fb5d-a187-5a91-abaf-8a813c4d263a';
+                $httpBackend.expectGET(`${fachstelleRS.serviceURL}/anspruch?gesuchsperiodeId=${gesuchsperiodeId}`)
+                    .respond(fachstellenRestArray);
                 spyOn($http, 'get').and.callThrough();
                 spyOn(ebeguRestUtil, 'parseFachstellen').and.callThrough();
+                const gesuchsperiode = new TSGesuchsperiode();
+                gesuchsperiode.id = gesuchsperiodeId;
 
-                fachstelleRS.getAnspruchFachstellen();
+                fachstelleRS.getAnspruchFachstellen(gesuchsperiode);
                 $httpBackend.flush();
                 // tslint:disable-next-line:no-unbound-method
-                expect($http.get).toHaveBeenCalledWith(fachstelleRS.serviceURL + '/anspruch');
+                expect($http.get).toHaveBeenCalledWith(`${fachstelleRS.serviceURL}/anspruch?gesuchsperiodeId=${gesuchsperiodeId}`);
                 // tslint:disable-next-line:no-unbound-method
                 expect(ebeguRestUtil.parseFachstellen).toHaveBeenCalledWith(fachstellenRestArray);
             });

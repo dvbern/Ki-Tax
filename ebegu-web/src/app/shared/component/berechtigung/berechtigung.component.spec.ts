@@ -21,6 +21,7 @@ import {By} from '@angular/platform-browser';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSBerechtigung} from '../../../../models/TSBerechtigung';
 import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
@@ -72,6 +73,7 @@ describe('BerechtigungComponent', () => {
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
         })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     }));
 

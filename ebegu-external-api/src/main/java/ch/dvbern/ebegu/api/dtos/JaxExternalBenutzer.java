@@ -42,6 +42,8 @@ public class JaxExternalBenutzer implements Serializable {
 
 	private String commonName = null;
 
+	private String zpvNummer = null;
+
 	@Nullable
 	private String telephoneNumber = null;
 	private String mobile = null;
@@ -234,6 +236,14 @@ public class JaxExternalBenutzer implements Serializable {
 
 	public void setInvitationPending(boolean invitationPending) {
 		this.invitationPending = invitationPending;
+	}
+
+	public String getZpvNummer() {
+		return zpvNummer;
+	}
+
+	public void setZpvNummer(String zpvNummer) {
+		this.zpvNummer = zpvNummer;
 	}
 
 	@Override
