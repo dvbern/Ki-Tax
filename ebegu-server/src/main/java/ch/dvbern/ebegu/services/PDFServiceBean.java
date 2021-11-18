@@ -48,6 +48,7 @@ import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationRechnerFactoryService;
 import ch.dvbern.ebegu.pdfgenerator.AnmeldebestaetigungTSPDFGenerator;
 import ch.dvbern.ebegu.pdfgenerator.BegleitschreibenPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.ErsteMahnungPdfGenerator;
@@ -100,6 +101,9 @@ public class PDFServiceBean implements PDFService {
 
 	@Inject
 	private Authorizer authorizer;
+
+	@Inject
+	private FinanzielleSituationRechnerFactoryService finanzielleSituationRechnerFactoryService;
 
 	@Nonnull
 	@Override
@@ -210,8 +214,9 @@ public class PDFServiceBean implements PDFService {
 				dossierService.getErstesEinreichungsdatum(gesuch.getDossier(), gesuch.getGesuchsperiode());
 
 			GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
+
 			FinanzielleSituationPdfGenerator pdfGenerator = new FinanzielleSituationPdfGenerator(
-				gesuch, famGroessenVerfuegung, stammdaten, erstesEinreichungsdatum);
+				gesuch, famGroessenVerfuegung, stammdaten, erstesEinreichungsdatum, finanzielleSituationRechnerFactoryService.getRechner(gesuch));
 			return generateDokument(pdfGenerator, !writeProtected, locale);
 		}
 		return BYTES;

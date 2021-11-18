@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -118,13 +119,13 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		// Erstgesuch erstellen
 		Testfall_ASIV_01 testfall = new Testfall_ASIV_01(gesuchsperiode, institutionStammdatenList, true, gemeinde);
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
 		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
 		mutation = testfall.createMutation(mutation);
-		TestDataUtil.calculateFinanzDaten(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation, new FinanzielleSituationBernRechner());
 		mutation.setGesuchsperiode(gesuchsperiode);
 		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
 		AbstractBGRechnerTest.checkTestfall_ASIV_01(mutationCalculated);
@@ -135,13 +136,13 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		// Erstgesuch erstellen
 		Testfall_ASIV_02 testfall = new Testfall_ASIV_02(gesuchsperiode, institutionStammdatenList, true, gemeinde);
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
 		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
 		mutation = testfall.createMutation(mutation);
-		TestDataUtil.calculateFinanzDaten(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation, new FinanzielleSituationBernRechner());
 		mutation.setGesuchsperiode(gesuchsperiode);
 		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
 		AbstractBGRechnerTest.checkTestfall_ASIV_02(mutationCalculated);
@@ -152,13 +153,13 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		// Erstgesuch erstellen
 		Testfall_ASIV_03 testfall = new Testfall_ASIV_03(gesuchsperiode, institutionStammdatenList, true, gemeinde);
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
 		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
 		mutation = testfall.createMutation(mutation);
-		TestDataUtil.calculateFinanzDaten(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation, new FinanzielleSituationBernRechner());
 		mutation.setGesuchsperiode(gesuchsperiode);
 		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
 		AbstractBGRechnerTest.checkTestfall_ASIV_03(mutationCalculated);
@@ -169,13 +170,13 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		// Erstgesuch erstellen
 		Testfall_ASIV_04 testfall = new Testfall_ASIV_04(gesuchsperiode, institutionStammdatenList, true, gemeinde);
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
 		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
 		mutation = testfall.createMutation(mutation);
-		TestDataUtil.calculateFinanzDaten(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation, new FinanzielleSituationBernRechner());
 		mutation.setGesuchsperiode(gesuchsperiode);
 		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
 		AbstractBGRechnerTest.checkTestfall_ASIV_04(mutationCalculated);
@@ -186,13 +187,13 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		// Erstgesuch erstellen
 		Testfall_ASIV_05 testfall = new Testfall_ASIV_05(gesuchsperiode, institutionStammdatenList, true, gemeinde);
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
 		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
 		mutation = testfall.createMutation(mutation);
-		TestDataUtil.calculateFinanzDaten(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation, new FinanzielleSituationBernRechner());
 		mutation.setGesuchsperiode(gesuchsperiode);
 		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
 		AbstractBGRechnerTest.checkTestfall_ASIV_05(mutationCalculated);
@@ -203,13 +204,13 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		// Erstgesuch erstellen
 		Testfall_ASIV_06 testfall = new Testfall_ASIV_06(gesuchsperiode, institutionStammdatenList, true, gemeinde);
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
 		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
 		mutation = testfall.createMutation(mutation);
-		TestDataUtil.calculateFinanzDaten(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation, new FinanzielleSituationBernRechner());
 		mutation.setGesuchsperiode(gesuchsperiode);
 		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
 		AbstractBGRechnerTest.checkTestfall_ASIV_06(mutationCalculated);
@@ -220,13 +221,13 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		// Erstgesuch erstellen
 		Testfall_ASIV_07 testfall = new Testfall_ASIV_07(gesuchsperiode, institutionStammdatenList, true, gemeinde);
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
 		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
 		mutation = testfall.createMutation(mutation);
-		TestDataUtil.calculateFinanzDaten(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation, new FinanzielleSituationBernRechner());
 		mutation.setGesuchsperiode(gesuchsperiode);
 		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
 		AbstractBGRechnerTest.checkTestfall_ASIV_07(mutationCalculated);
@@ -237,13 +238,13 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		// Erstgesuch erstellen
 		Testfall_ASIV_08 testfall = new Testfall_ASIV_08(gesuchsperiode, institutionStammdatenList, true, gemeinde);
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
 		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
 		mutation = testfall.createMutation(mutation);
-		TestDataUtil.calculateFinanzDaten(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation, new FinanzielleSituationBernRechner());
 		mutation.setGesuchsperiode(gesuchsperiode);
 		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
 		AbstractBGRechnerTest.checkTestfall_ASIV_08(mutationCalculated);
@@ -254,13 +255,13 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		// Erstgesuch erstellen
 		Testfall_ASIV_09 testfall = new Testfall_ASIV_09(gesuchsperiode, institutionStammdatenList, true, gemeinde);
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
 		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
 		mutation = testfall.createMutation(mutation);
-		TestDataUtil.calculateFinanzDaten(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation, new FinanzielleSituationBernRechner());
 		mutation.setGesuchsperiode(gesuchsperiode);
 		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
 		AbstractBGRechnerTest.checkTestfall_ASIV_09(mutationCalculated);
@@ -271,13 +272,13 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		// Erstgesuch erstellen
 		Testfall_ASIV_10 testfall = new Testfall_ASIV_10(gesuchsperiode, institutionStammdatenList, true, gemeinde);
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
 		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
 		mutation = testfall.createMutation(mutation);
-		TestDataUtil.calculateFinanzDaten(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation, new FinanzielleSituationBernRechner());
 		mutation.setGesuchsperiode(gesuchsperiode);
 		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
 		AbstractBGRechnerTest.checkTestfall_ASIV_10(mutationCalculated);

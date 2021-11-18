@@ -1,19 +1,21 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.util;
+package ch.dvbern.ebegu.finanzielleSituationRechner;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -21,7 +23,6 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.enterprise.context.Dependent;
 
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
@@ -31,20 +32,12 @@ import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.util.MathUtil;
 
 /**
- * Ein Rechner mit den ganzen Operationen fuer Finanziellesituation
- * Created by imanol on 22.06.16.
+ * Abstract Class basiert auf dem Berner Finanzielle Situation Berechnung
  */
-@Dependent
-public class FinanzielleSituationRechner {
-
-	/**
-	 * Konstruktor, welcher einen Rechner erstellt, der die Paramter aus der DB liest
-	 */
-	public FinanzielleSituationRechner() {
-
-	}
+public abstract class AbstractFinanzielleSituationRechner {
 
 	@Nonnull
 	public FinanzielleSituationResultateDTO calculateResultateFinanzielleSituation(
@@ -151,88 +144,9 @@ public class FinanzielleSituationRechner {
 	 *
 	 * @param gesuch das Gesuch dessen finazDatenDTO gesetzt werden soll
 	 */
-	public void calculateFinanzDaten(@Nonnull Gesuch gesuch, BigDecimal minimumEKV) {
-		FinanzDatenDTO finanzDatenDTOAlleine = new FinanzDatenDTO();
-		FinanzDatenDTO finanzDatenDTOZuZweit = new FinanzDatenDTO();
+	public abstract void calculateFinanzDaten(@Nonnull Gesuch gesuch, BigDecimal minimumEKV);
 
-		// Finanzielle Situation berechnen
-		FinanzielleSituationResultateDTO finanzielleSituationResultateDTOAlleine =
-			calculateResultateFinanzielleSituation(gesuch, false);
-		FinanzielleSituationResultateDTO finanzielleSituationResultateDTOZuZweit =
-			calculateResultateFinanzielleSituation(gesuch, true);
-
-		finanzDatenDTOAlleine.setMassgebendesEinkBjVorAbzFamGr(finanzielleSituationResultateDTOAlleine.getMassgebendesEinkVorAbzFamGr());
-		finanzDatenDTOZuZweit.setMassgebendesEinkBjVorAbzFamGr(finanzielleSituationResultateDTOZuZweit.getMassgebendesEinkVorAbzFamGr());
-
-		//Berechnung wird nur ausgefuehrt wenn Daten vorhanden, wenn es keine gibt machen wir nichts
-		EinkommensverschlechterungInfo ekvInfo = gesuch.extractEinkommensverschlechterungInfo();
-		if (ekvInfo != null && ekvInfo.getEinkommensverschlechterung()) {
-			FinanzielleSituationResultateDTO resultateEKV1Alleine =
-				calculateResultateEinkommensverschlechterung(gesuch, 1, false);
-			FinanzielleSituationResultateDTO resultateEKV1ZuZweit =
-				calculateResultateEinkommensverschlechterung(gesuch, 1, true);
-			BigDecimal massgebendesEinkommenBasisjahrAlleine =
-				finanzielleSituationResultateDTOAlleine.getMassgebendesEinkVorAbzFamGr();
-			BigDecimal massgebendesEinkommenBasisjahrZuZweit =
-				finanzielleSituationResultateDTOZuZweit.getMassgebendesEinkVorAbzFamGr();
-
-			if (ekvInfo.getEkvFuerBasisJahrPlus1() != null && ekvInfo.getEkvFuerBasisJahrPlus1()) {
-				finanzDatenDTOAlleine.setEkv1Erfasst(true);
-				finanzDatenDTOZuZweit.setEkv1Erfasst(true);
-				if (ekvInfo.getEkvBasisJahrPlus1Annulliert()) {
-					finanzDatenDTOAlleine.setEkv1Annulliert(Boolean.TRUE);
-					finanzDatenDTOZuZweit.setEkv1Annulliert(Boolean.TRUE);
-				}
-				// In der EKV 1 vergleichen wir immer mit dem Basisjahr
-				handleEKV1(finanzDatenDTOAlleine, resultateEKV1Alleine.getMassgebendesEinkVorAbzFamGr(),
-					massgebendesEinkommenBasisjahrAlleine, minimumEKV);
-				handleEKV1(finanzDatenDTOZuZweit, resultateEKV1ZuZweit.getMassgebendesEinkVorAbzFamGr(),
-					massgebendesEinkommenBasisjahrZuZweit, minimumEKV);
-			}
-
-			BigDecimal massgebendesEinkommenVorjahrAlleine;
-			if (finanzDatenDTOAlleine.isEkv1AcceptedAndNotAnnuliert()) {
-				massgebendesEinkommenVorjahrAlleine = resultateEKV1Alleine.getMassgebendesEinkVorAbzFamGr();
-			} else {
-				massgebendesEinkommenVorjahrAlleine = massgebendesEinkommenBasisjahrAlleine;
-			}
-			BigDecimal massgebendesEinkommenVorjahrZuZweit;
-			if (finanzDatenDTOZuZweit.isEkv1AcceptedAndNotAnnuliert()) {
-				massgebendesEinkommenVorjahrZuZweit = resultateEKV1ZuZweit.getMassgebendesEinkVorAbzFamGr();
-			} else {
-				massgebendesEinkommenVorjahrZuZweit = massgebendesEinkommenBasisjahrZuZweit;
-			}
-
-			if (ekvInfo.getEkvFuerBasisJahrPlus2() != null && ekvInfo.getEkvFuerBasisJahrPlus2()) {
-				finanzDatenDTOAlleine.setEkv2Erfasst(true);
-				finanzDatenDTOZuZweit.setEkv2Erfasst(true);
-				if (ekvInfo.getEkvBasisJahrPlus2Annulliert()) {
-					finanzDatenDTOAlleine.setEkv2Annulliert(Boolean.TRUE);
-					finanzDatenDTOZuZweit.setEkv2Annulliert(Boolean.TRUE);
-				}
-				FinanzielleSituationResultateDTO resultateEKV2Alleine =
-					calculateResultateEinkommensverschlechterung(gesuch, 2, false);
-				FinanzielleSituationResultateDTO resultateEKV2ZuZweit =
-					calculateResultateEinkommensverschlechterung(gesuch, 2, true);
-				// In der EKV 2 vergleichen wir immer mit dem Basisjahr
-				handleEKV2(finanzDatenDTOAlleine,
-					resultateEKV2Alleine.getMassgebendesEinkVorAbzFamGr(),
-					massgebendesEinkommenBasisjahrAlleine,
-					minimumEKV);
-				handleEKV2(finanzDatenDTOZuZweit,
-					resultateEKV2ZuZweit.getMassgebendesEinkVorAbzFamGr(),
-					massgebendesEinkommenBasisjahrZuZweit,
-					minimumEKV);
-			} else {
-				finanzDatenDTOAlleine.setMassgebendesEinkBjP2VorAbzFamGr(massgebendesEinkommenVorjahrAlleine);
-				finanzDatenDTOZuZweit.setMassgebendesEinkBjP2VorAbzFamGr(massgebendesEinkommenVorjahrZuZweit);
-			}
-		}
-		gesuch.setFinanzDatenDTO_alleine(finanzDatenDTOAlleine);
-		gesuch.setFinanzDatenDTO_zuZweit(finanzDatenDTOZuZweit);
-	}
-
-	private void handleEKV1(
+	protected void handleEKV1(
 		@Nonnull FinanzDatenDTO finanzDatenDTO,
 		BigDecimal massgebendesEinkommenEKV1,
 		BigDecimal massgebendesEinkommenBasisjahr,
@@ -249,7 +163,7 @@ public class FinanzielleSituationRechner {
 		}
 	}
 
-	private void handleEKV2(
+	protected void handleEKV2(
 		@Nonnull FinanzDatenDTO finanzDatenDTO,
 		BigDecimal massgebendesEinkommenEKV2,
 		BigDecimal massgebendesEinkommenBasisjahr,
@@ -291,7 +205,7 @@ public class FinanzielleSituationRechner {
 
 	@Nonnull
 	public static BigDecimal getCalculatedProzentualeDifferenzRounded(@Nullable BigDecimal einkommenJahr, @Nullable BigDecimal einkommenJahrPlus1) {
-		BigDecimal resultExact = FinanzielleSituationRechner.calculateProzentualeDifferenz(einkommenJahr, einkommenJahrPlus1);
+		BigDecimal resultExact = AbstractFinanzielleSituationRechner.calculateProzentualeDifferenz(einkommenJahr, einkommenJahrPlus1);
 		double doubleValue = resultExact.doubleValue();
 		double resultFloor = Math.ceil(doubleValue);
 		return MathUtil.GANZZAHL.from(resultFloor);

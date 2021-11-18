@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.dto.personensuche.EWKPerson;
 import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.services.PersonenSucheService;
 import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -54,7 +55,7 @@ public class PersonenSucheServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void suchePersonByGesuch() throws Exception {
-		Gesuch gesuch = TestDataUtil.createTestgesuchDagmar();
+		Gesuch gesuch = TestDataUtil.createTestgesuchDagmar(new FinanzielleSituationBernRechner());
 		gesuch.getDossier().getGemeinde().setBfsNummer(351L);
 		Assert.assertNotNull(		"bfs nummer muss gesetzt sein fuer suche", gesuch.getDossier().getGemeinde().getBfsNummer());
 

@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.rules.util.MahlzeitenverguenstigungParameter;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
@@ -41,7 +42,7 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 	private final BigDecimal einkommenStufe2 = MathUtil.DEFAULT.from(60000);
 
 	private MahlzeitenverguenstigungBGCalcRule rule = null;
-	private final AbstractPlatz platz = TestDataUtil.createTestgesuchDagmar().extractAllBetreuungen().get(0);
+	private final AbstractPlatz platz = TestDataUtil.createTestgesuchDagmar(new FinanzielleSituationBernRechner()).extractAllBetreuungen().get(0);
 
 	@Before
 	public void setUp() {
