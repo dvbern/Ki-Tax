@@ -770,6 +770,10 @@ public class JaxBConverter extends AbstractConverter {
 		familiensituation.setStartKonkubinat(familiensituationJAXP.getStartKonkubinat());
 		familiensituation.setSozialhilfeBezueger(familiensituationJAXP.getSozialhilfeBezueger());
 		familiensituation.setVerguenstigungGewuenscht(familiensituationJAXP.getVerguenstigungGewuenscht());
+		familiensituation.setQuellenbesteuert(familiensituationJAXP.getQuellenbesteuert());
+		familiensituation.setGemeinsameStekVorjahr(familiensituationJAXP.getGemeinsameStekVorjahr());
+		familiensituation.setAlleinigeStekVorjahr(familiensituationJAXP.getAlleinigeStekVorjahr());
+		familiensituation.setVeranlagt(familiensituationJAXP.getVeranlagt());
 
 		return familiensituation;
 	}
@@ -793,6 +797,10 @@ public class JaxBConverter extends AbstractConverter {
 				jaxFamiliensituation.setZahlungsadresse(adresseToJAX(persistedAuszahlungsdaten.getAdresseKontoinhaber()));
 			}
 		}
+		jaxFamiliensituation.setQuellenbesteuert(persistedFamiliensituation.getQuellenbesteuert());
+		jaxFamiliensituation.setGemeinsameStekVorjahr(persistedFamiliensituation.getGemeinsameStekVorjahr());
+		jaxFamiliensituation.setAlleinigeStekVorjahr(persistedFamiliensituation.getAlleinigeStekVorjahr());
+		jaxFamiliensituation.setVeranlagt(persistedFamiliensituation.getVeranlagt());
 		return jaxFamiliensituation;
 	}
 

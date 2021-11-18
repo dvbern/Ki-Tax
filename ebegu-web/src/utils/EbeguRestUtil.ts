@@ -602,6 +602,10 @@ export class EbeguRestUtil {
             restFamiliensituation.abweichendeZahlungsadresse = familiensituation.abweichendeZahlungsadresse;
             restFamiliensituation.zahlungsadresse =
                 this.adresseToRestObject({}, familiensituation.zahlungsadresse);
+            restFamiliensituation.quellenbesteuert = familiensituation.quellenbesteuert;
+            restFamiliensituation.gemeinsameStekVorjahr = familiensituation.gemeinsameStekVorjahr;
+            restFamiliensituation.alleinigeStekVorjahr = familiensituation.alleinigeStekVorjahr;
+            restFamiliensituation.veranlagt = familiensituation.veranlagt;
             return restFamiliensituation;
         }
 
@@ -671,6 +675,10 @@ export class EbeguRestUtil {
             familiensituation.abweichendeZahlungsadresse = familiensituationFromServer.abweichendeZahlungsadresse;
             familiensituation.zahlungsadresse =
                 this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresse);
+            familiensituation.quellenbesteuert = familiensituationFromServer.quellenbesteuert;
+            familiensituation.gemeinsameStekVorjahr = familiensituationFromServer.gemeinsameStekVorjahr;
+            familiensituation.alleinigeStekVorjahr = familiensituationFromServer.alleinigeStekVorjahr;
+            familiensituation.veranlagt = familiensituationFromServer.veranlagt;
             return familiensituation;
         }
         return undefined;
@@ -3274,6 +3282,10 @@ export class EbeguRestUtil {
                         finSitModel.einkommensverschlechterungInfoContainer);
             }
             restFinSitModel.gemeinsameSteuererklaerung = finSitModel.gemeinsameSteuererklaerung;
+            restFinSitModel.quellenbesteuert = finSitModel.quellenbesteuert;
+            restFinSitModel.gemeinsameStekVorjahr = finSitModel.gemeinsameStekVorjahr;
+            restFinSitModel.alleinigeStekVorjahr = finSitModel.alleinigeStekVorjahr;
+            restFinSitModel.veranlagt = finSitModel.veranlagt;
             return restFinSitModel;
         }
         return undefined;

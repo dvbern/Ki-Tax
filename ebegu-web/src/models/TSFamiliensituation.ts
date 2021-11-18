@@ -31,6 +31,10 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _kontoinhaber: string;
     private _abweichendeZahlungsadresse: boolean;
     private _zahlungsadresse: TSAdresse;
+    private _quellenbesteuert: boolean;
+    private _gemeinsameStekVorjahr: boolean;
+    private _alleinigeStekVorjahr: boolean;
+    private _veranlagt: boolean;
 
     public constructor() {
         super();
@@ -122,6 +126,37 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     public set zahlungsadresse(value: TSAdresse) {
         this._zahlungsadresse = value;
+    }
+
+    public get alleinigeStekVorjahr(): boolean {
+        return this._alleinigeStekVorjahr;
+    }
+
+    public set alleinigeStekVorjahr(value: boolean) {
+        this._alleinigeStekVorjahr = value;
+    }
+
+    public get veranlagt(): boolean {
+        return this._veranlagt;
+    }
+
+    public set veranlagt(value: boolean) {
+        this._veranlagt = value;
+    }
+    public get quellenbesteuert(): boolean {
+        return this._quellenbesteuert;
+    }
+
+    public set quellenbesteuert(value: boolean) {
+        this._quellenbesteuert = value;
+    }
+
+    public get gemeinsameStekVorjahr(): boolean {
+        return this._gemeinsameStekVorjahr;
+    }
+
+    public set gemeinsameStekVorjahr(value: boolean) {
+        this._gemeinsameStekVorjahr = value;
     }
 
     public hasSecondGesuchsteller(referenzdatum: moment.Moment): boolean {
