@@ -39,7 +39,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationRechnerFactoryServiceBean;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationRechnerFactoryService;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
@@ -67,7 +67,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	private GesuchService gesuchService;
 
 	@Inject
-	private FinanzielleSituationRechnerFactoryServiceBean finanzielleSituationRechnerFactoryServiceBean;
+	private FinanzielleSituationRechnerFactoryService finanzielleSituationRechnerFactoryService;
 
 
 	@Nonnull
@@ -246,13 +246,13 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	public FinanzielleSituationResultateDTO calculateResultate(@Nonnull Gesuch gesuch) {
 		// Die Berechnung der FinSit Resultate beruht auf einem "Pseudo-Gesuch", dieses hat
 		// keinen Status und kann/muss nicht geprueft werden!
-		return finanzielleSituationRechnerFactoryServiceBean.getRechner(gesuch).calculateResultateFinanzielleSituation(gesuch, true);
+		return finanzielleSituationRechnerFactoryService.getRechner(gesuch).calculateResultateFinanzielleSituation(gesuch, true);
 	}
 
 	@Override
 	public void calculateFinanzDaten(@Nonnull Gesuch gesuch) {
 		final BigDecimal minimumEKV = calculateGrenzwertEKV(gesuch);
-		finanzielleSituationRechnerFactoryServiceBean.getRechner(gesuch).calculateFinanzDaten(gesuch, minimumEKV);
+		finanzielleSituationRechnerFactoryService.getRechner(gesuch).calculateFinanzDaten(gesuch, minimumEKV);
 	}
 
 	/*@Nonnull

@@ -20,29 +20,23 @@ package ch.dvbern.ebegu.finanzielleSituationRechner;
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
-import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.services.AbstractBaseService;
 
+/**
+ * Am Anfang habe ich dieser Factory als Service nachgedacht um andere Service wie die Einstellung zu verwenden
+ * Als er FinanzielleSituationTyp ist nicht mehr dort gebraucht, koennte man auch dort eine normale Factory verwenden
+ * Wir lassen es trotzdem so falls wir irgenwas mehr benoetigen wird dann schon alles vorhanden sein
+ */
 @Stateless
 @Local(FinanzielleSituationRechnerFactoryService.class)
-public final class FinanzielleSituationRechnerFactoryServiceBean implements FinanzielleSituationRechnerFactoryService{
-
-	@Inject
-	private EinstellungService einstellungService;
+public final class FinanzielleSituationRechnerFactoryServiceBean extends AbstractBaseService implements FinanzielleSituationRechnerFactoryService{
 
 	@Nonnull
 	public AbstractFinanzielleSituationRechner getRechner(@Nonnull Gesuch gesuch) {
-		String finSitTyp = einstellungService.findEinstellung(
-			EinstellungKey.FINANZIELLE_SITUATION_TYP,
-			gesuch.extractGemeinde(),
-			gesuch.getGesuchsperiode()
-		).getValue();
-		FinanzielleSituationTyp typ = FinanzielleSituationTyp.valueOf(finSitTyp);
-		if (typ.equals(FinanzielleSituationTyp.LUZERN)) {
+		if (gesuch.getFinSitTyp().equals(FinanzielleSituationTyp.LUZERN)) {
 			return new FinanzielleSituationLuzernRechner();
 		}
 		// per default ist der Berner Rechner genommen
