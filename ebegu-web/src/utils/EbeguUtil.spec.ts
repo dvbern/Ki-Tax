@@ -167,6 +167,16 @@ describe('EbeguUtil', () => {
                 .toBe(false);
         });
     });
+    describe('ceilToFiveRappen', () => {
+        it('should calculate correctly', () => {
+            expect(EbeguUtil.ceilToFiveRappen(0)).toBe(0);
+            expect(EbeguUtil.ceilToFiveRappen(0.02)).toBe(0.05);
+            expect(EbeguUtil.ceilToFiveRappen(0.03)).toBe(0.05);
+            expect(EbeguUtil.ceilToFiveRappen(0.05)).toBe(0.05);
+            expect(EbeguUtil.ceilToFiveRappen(0.051)).toBe(0.1);
+            expect(EbeguUtil.ceilToFiveRappen(100.051)).toBe(100.1);
+        });
+    });
     describe('ZemisNummerToStandardZemisNummer', () => {
         it('Formate sollten in Standard Format konvertiert werden können', () => {
             // tslint:disable-next-line:no-duplicate-string

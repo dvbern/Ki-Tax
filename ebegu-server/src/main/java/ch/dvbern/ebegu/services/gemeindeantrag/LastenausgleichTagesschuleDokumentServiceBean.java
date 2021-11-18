@@ -205,7 +205,8 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 			);
 
 		Objects.requireNonNull(normlohnkostenCalculated);
-		dto.setNormlohnkostenTotalProg(normlohnkostenCalculated.multiply(betreuungsstundenPrognose));
+		BigDecimal normlohnkostenProg = normlohnkostenCalculated.multiply(betreuungsstundenPrognose);
+		dto.setNormlohnkostenTotalProg(MathUtil.ceilToFrankenRappen(normlohnkostenProg));
 
 		BigDecimal proportion = MathUtil.EXACT.divide(
 			betreuungsstundenPrognose,
@@ -214,7 +215,8 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 
 		Objects.requireNonNull(angabenGemeinde.getEinnahmenElterngebuehren());
 		// use proportional bigger elternbeitrag in following year
-		dto.setElterngebuehrenProg(angabenGemeinde.getEinnahmenElterngebuehren().multiply(proportion));
+		var elterngebuehren = angabenGemeinde.getEinnahmenElterngebuehren().multiply(proportion);
+		dto.setElterngebuehrenProg(MathUtil.ceilToFrankenRappen(elterngebuehren));
 
 		Objects.requireNonNull(dto.getNormlohnkostenTotalProg());
 		BigDecimal lastenausgleichBetragProg = dto.getNormlohnkostenTotalProg().subtract(dto.getElterngebuehrenProg());
