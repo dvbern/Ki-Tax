@@ -570,8 +570,16 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 				"deleteAntragIfExistsAndIsNotAbgeschlossen ist nur als Mandant und SuperAdmin möglich");
 		}
 
-		this.getFerienbetreuungAntraege(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null)
-			.forEach(antrag -> {
+		var antragList = this.getFerienbetreuungAntraege(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null);
+		if (antragList.size() > 1) {
+			throw new EbeguRuntimeException(
+				"deleteAntragIfExistsAndIsNotAbgeschlossen",
+				"more than one Ferienbetreuung antrag found for gemeinde "
+					+ gemeinde.getName() + " and gesuchsperiode "
+					+ gesuchsperiode.getGesuchsperiodeString()
+			);
+		}
+		antragList.forEach(antrag -> {
 				if (antrag.isAntragAbgeschlossen()) {
 					return;
 				}

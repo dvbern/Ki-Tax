@@ -129,11 +129,12 @@ export class GemeindeAntragService {
             .pipe(map(jaxAntrag => this.ebeguRestUtil.parseGemeindeAntragList(jaxAntrag)));
     }
 
-    public deleteAllLatsAntrage(
+    public deleteAllAntrage(
         gesuchsperiode: string,
+        antragTyp: TSGemeindeAntragTyp
     ): Observable<void> {
         return this.http.delete<void>(
-            `${this.API_BASE_URL}/deleteAntraege/LASTENAUSGLEICH_TAGESSCHULEN/gesuchsperiode/${gesuchsperiode}`);
+            `${this.API_BASE_URL}/deleteAntraege/${antragTyp}/gesuchsperiode/${gesuchsperiode}`);
     }
 
     public deleteGemeindeAntrag(

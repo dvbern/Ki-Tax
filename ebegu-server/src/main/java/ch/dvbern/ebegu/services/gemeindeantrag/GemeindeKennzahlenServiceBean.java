@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennza
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlenStatus;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen_;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.util.PredicateHelper;
@@ -128,8 +129,23 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	@Override
 	public void deleteAntragIfExistsAndIsNotAbgeschlossen(
 			@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Gemeinde gemeinde) {
-		this.getGemeindeKennzahlen(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null)
-				.forEach(this::deleteGemeindeKennzahlenIfNotAbgeschlossen);
+
+		if (!principal.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
+			throw new EbeguRuntimeException(
+				"deleteAntragIfExistsAndIsNotAbgeschlossen",
+				"deleteAntragIfExistsAndIsNotAbgeschlossen ist nur als Mandant und SuperAdmin möglich");
+		}
+
+		var antragList = this.getGemeindeKennzahlen(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null);
+		if (antragList.size() > 1) {
+			throw new EbeguRuntimeException(
+				"deleteAntragIfExistsAndIsNotAbgeschlossen",
+				"more than one GemeindeKennzahlen antrag found for gemeinde "
+					+ gemeinde.getName() + " and gesuchsperiode "
+					+ gesuchsperiode.getGesuchsperiodeString()
+			);
+		}
+		antragList.forEach(this::deleteGemeindeKennzahlenIfNotAbgeschlossen);
 	}
 
 	private void deleteGemeindeKennzahlenIfNotAbgeschlossen(GemeindeKennzahlen gemeindeKennzahlen) {

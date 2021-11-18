@@ -75,8 +75,8 @@ import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
-import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.services.MailService;
+import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
@@ -248,7 +248,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		if (!principal.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
 			throw new EbeguRuntimeException(
 				"deleteAntragIfExistsAndIsNotAbgeschlossen",
-					"deleteAntragIfExistsAndIsNotAbgeschlossen ist nur als SuperAdmin möglich");
+					"deleteAntragIfExistsAndIsNotAbgeschlossen ist nur als SuperAdmin und Mandant möglich");
 		}
 
 		findLastenausgleichTagesschuleAngabenGemeindeContainer(

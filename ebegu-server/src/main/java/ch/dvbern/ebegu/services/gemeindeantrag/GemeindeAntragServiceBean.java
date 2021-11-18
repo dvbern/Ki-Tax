@@ -180,7 +180,7 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 			return lastenausgleichTagesschuleAngabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(
 				gemeindeAntragId);
 		}
-		if (typ == GemeindeAntragTyp.FERIENBETREUUNG) {
+		if (typ == FERIENBETREUUNG) {
 			return ferienbetreuungService.findFerienbetreuungAngabenContainer(gemeindeAntragId);
 		}
 
