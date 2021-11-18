@@ -218,11 +218,11 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 
 		Objects.requireNonNull(dto.getNormlohnkostenTotalProg());
 		BigDecimal lastenausgleichBetragProg = dto.getNormlohnkostenTotalProg().subtract(dto.getElterngebuehrenProg());
-		dto.setLastenausgleichsberechtigterBetragProg(lastenausgleichBetragProg);
+		dto.setLastenausgleichsberechtigterBetragProg(MathUtil.roundUpToFranken(lastenausgleichBetragProg));
 
 		// zweite rate following schuljahr is 50% of lastenausgleichberechtigter Betrag
 		BigDecimal ersteRateProg = MathUtil.EXACT.multiply(dto.getLastenausgleichsberechtigterBetragProg(), new BigDecimal("0.5"));
-		dto.setErsteRateProg(ersteRateProg);
+		dto.setErsteRateProg(MathUtil.roundUpToFranken(ersteRateProg));
 	}
 
 	private void calculateAndSetZahlungen(@Nonnull LatsDocxDTO dto, LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde) {
