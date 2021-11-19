@@ -170,12 +170,6 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				inputData.setFamGroesse(resultVorangehenderAbschnitt.getFamGroesse());
 				inputData.setAbzugFamGroesse(resultVorangehenderAbschnitt.getAbzugFamGroesse());
 
-				// use strict comparison for MVZ since we have a possible clash with betreuung changes
-				if(massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) < 0) {
-					// use input vorgaenger since anteil monat is already included in result vorgaenger and will be calculated later in Rechner for this abschnitt
-					inputData.setPensenBereitsGekuerzt(true);
-					inputData.setVerguenstigungMahlzeitenTotal(getValueOrZero(resultVorangehenderAbschnitt.getVerguenstigungMahlzeitenTotal()));
-				}
 				if (resultVorangehenderAbschnitt.getTsCalculationResultMitPaedagogischerBetreuung() != null) {
 					inputData.getTsInputMitBetreuung().setVerpflegungskostenVerguenstigt(
 						getValueOrZero(
@@ -246,13 +240,6 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				inputData.setAnspruchspensumProzent(anspruchAufVorgaengerVerfuegung);
 				inputData.setRueckwirkendReduziertesPensumRest(anspruchberechtigtesPensum - inputData.getAnspruchspensumProzent());
 				inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
-				// use input vorgaenger since anteil monat is already included in result vorgaenger and will be calculated later in Rechner for this abschnitt
-				inputData.setPensenBereitsGekuerzt(true);
-				// wenn sich Anspruch erst auf Folgemonat erhöht, soll auch die Mahlzeitenvergünstigung erst auf Folgemonat angepasst werden.
-				inputData.setVerguenstigungMahlzeitenTotal(resultVorangehenderAbschnitt != null
-					&& resultVorangehenderAbschnitt.getVerguenstigungMahlzeitenTotal() != null ?
-					resultVorangehenderAbschnitt.getVerguenstigungMahlzeitenTotal() :
-					BigDecimal.ZERO);
 			}
 		} else if (anspruchberechtigtesPensum < anspruchAufVorgaengerVerfuegung) {
 			// Anspruch wird kleiner

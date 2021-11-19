@@ -31,7 +31,6 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.rules.util.MahlzeitenverguenstigungParameter;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
@@ -367,23 +366,6 @@ public class BetreuungsgutscheinConfigurator {
 		//RESTANSPRUCH REDUKTION limitiert Anspruch auf  minimum(anspruchRest, anspruchPensum)
 		RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(restanspruchLimitCalcRule, einstellungMap);
-
-		// Mahlzeitenverguenstigung
-		MahlzeitenverguenstigungParameter mahlzeitenParams = new MahlzeitenverguenstigungParameter(
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED).getValueAsBoolean(),
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED).getValueAsBoolean(),
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN).getValueAsBigDecimal(),
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN).getValueAsBigDecimal(),
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT).getValueAsBigDecimal(),
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_MAHLZEIT).getValueAsBigDecimal(),
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_MAHLZEIT).getValueAsBigDecimal(),
-			einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_MAHLZEIT).getValueAsBigDecimal()
-		);
-		MahlzeitenverguenstigungBGCalcRule mahlzeitenBGCalcRule = new MahlzeitenverguenstigungBGCalcRule(defaultGueltigkeit, locale, mahlzeitenParams);
-		addToRuleSetIfRelevantForGemeinde(mahlzeitenBGCalcRule, einstellungMap);
-
-		MahlzeitenverguenstigungTSCalcRule mahlzeitenTSCalcRule = new MahlzeitenverguenstigungTSCalcRule(defaultGueltigkeit, locale, mahlzeitenParams);
-		addToRuleSetIfRelevantForGemeinde(mahlzeitenTSCalcRule, einstellungMap);
 
 		// Verfuegungsbemerkung
 		VerfuegungsBemerkungCalcRule bemerkungCalcRule = new VerfuegungsBemerkungCalcRule(defaultGueltigkeit, locale);
