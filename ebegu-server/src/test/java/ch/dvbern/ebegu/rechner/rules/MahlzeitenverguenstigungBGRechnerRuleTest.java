@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.rules;
+package ch.dvbern.ebegu.rechner.rules;
 
 import java.math.BigDecimal;
 import java.util.Locale;
@@ -26,21 +26,22 @@ import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
+import ch.dvbern.ebegu.rechner.RechnerRuleParameterDTO;
 import ch.dvbern.ebegu.rules.util.MahlzeitenverguenstigungParameter;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MahlzeitenverguenstigungBGCalcRuleTest {
+public class MahlzeitenverguenstigungBGRechnerRuleTest {
 
 	private final BigDecimal einkommenStufe1 = MathUtil.DEFAULT.from(10000);
 	private final BigDecimal einkommenStufe2 = MathUtil.DEFAULT.from(60000);
 
-	private MahlzeitenverguenstigungBGCalcRule rule = null;
+	private MahlzeitenverguenstigungBGRechnerRule rule = null;
+	private MahlzeitenverguenstigungParameter parameter;
 	private final AbstractPlatz platz = TestDataUtil.createTestgesuchDagmar().extractAllBetreuungen().get(0);
 
 	@Before
@@ -48,7 +49,7 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 		final Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
 		Assert.assertNotNull(familiensituation);
 		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(false);
-		MahlzeitenverguenstigungParameter parameter = new MahlzeitenverguenstigungParameter(
+		this.parameter = new MahlzeitenverguenstigungParameter(
 			true,
 			false,
 			BigDecimal.valueOf(51000),
@@ -59,15 +60,7 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 			BigDecimal.valueOf(2)
 		);
 		rule =
-			new MahlzeitenverguenstigungBGCalcRule(Constants.DEFAULT_GUELTIGKEIT, Locale.GERMAN, parameter);
-	}
-
-	@Test
-	public void getAnwendbareAngebote() {
-		Assert.assertTrue(rule.getAnwendbareAngebote().contains(BetreuungsangebotTyp.KITA));
-		Assert.assertTrue(rule.getAnwendbareAngebote().contains(BetreuungsangebotTyp.TAGESFAMILIEN));
-		Assert.assertFalse(rule.getAnwendbareAngebote().contains(BetreuungsangebotTyp.TAGESSCHULE));
-		Assert.assertFalse(rule.getAnwendbareAngebote().contains(BetreuungsangebotTyp.FERIENINSEL));
+			new MahlzeitenverguenstigungBGRechnerRule(Locale.GERMAN);
 	}
 
 	@Test
@@ -154,7 +147,6 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 			60
 		);
 
-
 	}
 
 	@Test
@@ -182,8 +174,11 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 	}
 
 	private void assertResults(@Nonnull BGCalculationInput inputData, int expectedVerguenstigungMahlzeitenTotal) {
-		rule.executeRule(platz, inputData);
-		final BigDecimal verguenstigungMahlzeitenTotal = inputData.getVerguenstigungMahlzeitenTotal();
+		BGRechnerParameterDTO bgRechnerParameterDTO = new BGRechnerParameterDTO();
+		bgRechnerParameterDTO.setMahlzeitenverguenstigungParameter(this.parameter);
+		RechnerRuleParameterDTO rechnerRuleParameterDTO = new RechnerRuleParameterDTO();
+		rule.prepareParameter(inputData, bgRechnerParameterDTO, rechnerRuleParameterDTO);
+		final BigDecimal verguenstigungMahlzeitenTotal = rechnerRuleParameterDTO.getVerguenstigungMahlzeitenTotal();
 		Assert.assertNotNull(verguenstigungMahlzeitenTotal);
 		Assert.assertEquals(expectedVerguenstigungMahlzeitenTotal, verguenstigungMahlzeitenTotal.intValue());
 	}
@@ -196,7 +191,13 @@ public class MahlzeitenverguenstigungBGCalcRuleTest {
 		int kostenProHauptmahlzeit,
 		int kostenProNebenmahlzeit
 	) {
-		return createInputData(einkommen, anzahlHauptmahlzeiten, anzahlNebenmahlzeiten, kostenProHauptmahlzeit, kostenProNebenmahlzeit, 100);
+		return createInputData(
+			einkommen,
+			anzahlHauptmahlzeiten,
+			anzahlNebenmahlzeiten,
+			kostenProHauptmahlzeit,
+			kostenProNebenmahlzeit,
+			100);
 	}
 
 	@Nonnull
