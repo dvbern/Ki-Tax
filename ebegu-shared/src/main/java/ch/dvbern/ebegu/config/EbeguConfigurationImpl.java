@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
@@ -162,11 +163,11 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	}
 
 	@Override
-	public boolean isDummyLoginEnabled() {
+	public boolean isDummyLoginEnabled(@Nonnull Mandant mandant) {
 		// Um das Dummy Login einzuschalten, muss sowohl das DB Property wie auch das System Property gesetzt sein. Damit
 		// ist eine zusätzliche Sicherheit eingebaut, dass nicht aus Versehen z.B. mit einem Produktionsdump das Dummy Login
 		// automatisch ausgeschaltet ist.
-		Boolean flagFromDB = applicationPropertyService.findApplicationPropertyAsBoolean(ApplicationPropertyKey.DUMMY_LOGIN_ENABLED, false);
+		Boolean flagFromDB = applicationPropertyService.findApplicationPropertyAsBoolean(ApplicationPropertyKey.DUMMY_LOGIN_ENABLED, mandant,false);
 		Boolean flagFromServerConfig = getBoolean(EBEGU_DUMMY_LOGIN_ENABLED, false);
 		return flagFromDB && flagFromServerConfig;
 	}

@@ -322,6 +322,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		gpFolgegesuch.getGueltigkeit().setGueltigAb(erstgesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb().plusYears(1));
 		gpFolgegesuch.getGueltigkeit().setGueltigBis(erstgesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis().plusYears(1));
 		gpFolgegesuch = persistence.persist(gpFolgegesuch);
+		TestDataUtil.prepareParameters(gpFolgegesuch, persistence);
 
 		Gesuch erneuerung = Gesuch.createErneuerung(erstgesuch.getDossier(), gpFolgegesuch, LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch erneuerungPersisted = gesuchService.createGesuch(erneuerung);
@@ -353,7 +354,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testAntragEinreichenAndFreigeben() {
 		LocalDate now = LocalDate.now();
-		loginAsGesuchsteller("gesuchst");
+		loginAsGesuchsteller1();
 		final Gesuch gesuch = TestDataUtil.persistNewCompleteGesuchInStatus(AntragStatus.IN_BEARBEITUNG_GS, persistence,
 			gesuchService, gesuchsperiode);
 
@@ -375,7 +376,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testExceptionOnInvalidFreigabe() {
 		LocalDate now = LocalDate.now();
-		loginAsGesuchsteller("gesuchst");
+		loginAsGesuchsteller1();
 		final Gesuch gesuch = TestDataUtil.persistNewCompleteGesuchInStatus(AntragStatus.IN_BEARBEITUNG_GS, persistence,
 			gesuchService, gesuchsperiode);
 		final Gesuch eingereichtesGesuch = gesuchService.antragFreigabequittungErstellen(gesuch, AntragStatus.FREIGABEQUITTUNG);
@@ -390,7 +391,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		gesuch.getFall().setBesitzer(null);
 		persistence.merge(gesuch.getFall());
 
-		Benutzer gesuchsteller = loginAsGesuchsteller("gesuchst");
+		Benutzer gesuchsteller = loginAsGesuchsteller1();
 		try {
 			gesuchService.antragFreigeben(eingereichtesGesuch.getId(), null, null);
 			Assert.fail("No Besitzer is present. must fail for Role Gesuchsteller");
@@ -413,7 +414,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testAntragEinreichenAndFreigebenNurSchulamt() {
 		LocalDate now = LocalDate.now();
-		loginAsGesuchsteller("gesuchst");
+		loginAsGesuchsteller1();
 
 		Gesuch schulamtGesuch = persistNewNurSchulamtGesuchEntity(AntragStatus.IN_BEARBEITUNG_GS);
 
@@ -479,7 +480,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testStatusuebergangToInBearbeitungJAIFFreigegeben() {
 		//bei Freigegeben soll ein lesen eines ja benutzers dazu fuehren dass das gesuch in bearbeitung ja wechselt
-		loginAsGesuchsteller("gesuchst");
+		loginAsGesuchsteller1();
 		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 		Gesuch gesuch = TestDataUtil.persistNewCompleteGesuchInStatus(AntragStatus.FREIGABEQUITTUNG, persistence,
@@ -509,13 +510,14 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void testJAAntragMutierenWhenOnlineMutationExists() {
-		loginAsGesuchsteller("gesuchst");
+		loginAsGesuchsteller1();
 		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, AntragStatus.VERFUEGT);
+		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
 		loginAsSachbearbeiterJA();
 		gesuch.setGueltig(true);
 		gesuch.setTimestampVerfuegt(LocalDateTime.now());
 		gesuch = gesuchService.updateGesuch(gesuch, true, null);
-		loginAsGesuchsteller("gesuchst");
+		loginAsGesuchsteller1();
 
 		Gesuch mutation = testfaelleService.antragMutieren(gesuch, LocalDate.now());
 		Assert.assertNotNull(mutation);
@@ -623,7 +625,12 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void testWarnungFehlendeQuittung() {
-		insertApplicationProperties();
+		try {
+			loginAsSuperadmin();
+		} catch (LoginException e) {
+
+		}
+		insertApplicationProperties(getDummySuperadmin().getMandant());
 		Gesuch gesuch1 = createGesuchFreigabequittung(LocalDate.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG).minusDays(1));
 		Gesuch gesuch2 = createGesuchFreigabequittung(LocalDate.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG));
 		Gesuch gesuch3 = createGesuchFreigabequittung(LocalDate.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG).plusDays(1));
@@ -643,7 +650,12 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void testWarnungNichtFreigegeben() {
-		insertApplicationProperties();
+		try {
+			loginAsSuperadmin();
+		} catch (LoginException e) {
+
+		}
+		insertApplicationProperties(getDummySuperadmin().getMandant());
 		Gesuch gesuch1 = createGesuchInBearbeitungGS(LocalDateTime.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_FREIGABE).minusDays(1));
 		Gesuch gesuch2 = createGesuchInBearbeitungGS(LocalDateTime.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_FREIGABE));
 		Gesuch gesuch3 = createGesuchInBearbeitungGS(LocalDateTime.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_FREIGABE).plusDays(1));
@@ -663,7 +675,12 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void testDeleteGesucheOhneFreigabeOderQuittung() {
-		insertApplicationProperties();
+		try {
+			loginAsSuperadmin();
+		} catch (LoginException e) {
+
+		}
+		insertApplicationProperties(getDummySuperadmin().getMandant());
 		Gesuch gesuch1 = createGesuchInBearbeitungGS(LocalDateTime.now().minusMonths(4).minusDays(1));
 		Gesuch gesuch2 = createGesuchInBearbeitungGS(LocalDateTime.now().minusMonths(4));
 		Gesuch gesuch3 = createGesuchInBearbeitungGS(LocalDateTime.now().minusMonths(4).plusDays(1));
@@ -692,7 +709,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void testRemoveOnlineMutation() {
-		final Benutzer userGS = loginAsGesuchsteller("gesuchst");
+		final Benutzer userGS = loginAsGesuchsteller1();
 		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Benutzer sachbearbeiterJA = loginAsSachbearbeiterJA();
 		gesuch.setGueltig(true);
@@ -706,7 +723,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		final String mutationID = mutation.getId();
 
 		Institution institutionToSet = gesuch.extractAllBetreuungen().get(0).getInstitutionStammdaten().getInstitution();
-		final Benutzer saInst = loginAsSachbearbeiterInst("sainst", institutionToSet);
+		final Benutzer saInst = loginAsSachbearbeiterInst(institutionToSet);
 
 		Betreuungsmitteilung mitteilung = TestDataUtil.createBetreuungmitteilung(mutation.getDossier(),
 			userGS, MitteilungTeilnehmerTyp.JUGENDAMT, saInst, MitteilungTeilnehmerTyp.INSTITUTION);
@@ -975,6 +992,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 						LocalDate.of(1980, Month.MARCH, 25), AntragStatus.GEPRUEFT, gesuchsperiode);
 
 		final Gesuchsperiode gesuchsperiode1819 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2018, 2019);
+		TestDataUtil.prepareParameters(gesuchsperiode1819, persistence);
 
 		testfaelleService.antragErneuern(gesuch, gesuchsperiode1819, null);
 		Assert.assertTrue(gesuchService.getAllGesuchForAmtAfterGP(gesuchsperiode).size() == 1);
@@ -984,11 +1002,11 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	// HELP METHODS
 
-	private void insertApplicationProperties() {
-		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_FREIGABE, "" + ANZAHL_TAGE_BIS_WARNUNG_FREIGABE, mandant);
-		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG, "" + ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG, mandant);
-		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE, "" + ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE, mandant);
-		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG, "" + ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG, mandant);
+	private void insertApplicationProperties(Mandant propertyMandant) {
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_FREIGABE, "" + ANZAHL_TAGE_BIS_WARNUNG_FREIGABE, propertyMandant);
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG, "" + ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG, propertyMandant);
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE, "" + ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE, propertyMandant);
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG, "" + ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG, propertyMandant);
 	}
 
 	private Gesuch createGesuchInBearbeitungGS(LocalDateTime timestampErstellt) {
@@ -1084,7 +1102,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 		LoginContext loginContext = null;
 		try {
-			loginContext = JBossLoginContextFactory.createLoginContext("admin", "admin");
+			loginContext = JBossLoginContextFactory.createLoginContext("425ff48a-485c-11ec-a0cc-b89a2ae4a038", "admin");
 			loginContext.login();
 
 			foundGesuche = Subject.doAs(loginContext.getSubject(), (PrivilegedAction<Collection<Gesuch>>) () -> {

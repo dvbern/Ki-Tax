@@ -18,12 +18,15 @@ package ch.dvbern.ebegu.api.resource;
 import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -36,6 +39,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -44,21 +48,25 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import ch.dvbern.ebegu.api.AuthConstants;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxApplicationProperties;
 import ch.dvbern.ebegu.api.dtos.JaxPublicAppConfig;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.ApplicationProperty;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
+import ch.dvbern.ebegu.services.MandantService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -92,11 +100,14 @@ public class ApplicationPropertyResource {
 	@Inject
 	private PrincipalBean principalBean;
 
+	@Inject
+	private MandantService mandantService;
+
 	private static final Logger LOG = LoggerFactory.getLogger(ApplicationPropertyResource.class.getSimpleName());
 
 	@Nonnull
-	private String readWhitelistAsString() {
-		final Collection<String> whitelist = this.applicationPropertyService.readMimeTypeWhitelist();
+	private String readWhitelistAsString(@Nonnull Mandant mandant) {
+		final Collection<String> whitelist = this.applicationPropertyService.readMimeTypeWhitelist(mandant);
 		MimeTypes allTypes = MimeTypes.getDefaultMimeTypes();
 		final List<String> extensions = whitelist.stream().map(mimetype -> {
 			try {
@@ -110,9 +121,9 @@ public class ApplicationPropertyResource {
 	}
 
 	@Nonnull
-	private JaxApplicationProperties getSentryEnvName() {
+	private JaxApplicationProperties getSentryEnvName(Mandant mandant) {
 		Optional<ApplicationProperty> propertyFromDB = this.applicationPropertyService
-			.readApplicationProperty(ApplicationPropertyKey.SENTRY_ENV);
+			.readApplicationProperty(ApplicationPropertyKey.SENTRY_ENV, mandant);
 
 		ApplicationProperty prop = propertyFromDB.orElseGet(() -> {
 			String sentryEnv = ebeguConfiguration.getSentryEnv();
@@ -128,12 +139,21 @@ public class ApplicationPropertyResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/public/background")
 	@PermitAll
-	public JaxApplicationProperties getBackgroundColor() {
+	public JaxApplicationProperties getBackgroundColor(@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
+		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
+		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
+		ApplicationProperty prop = getBackgroundColorProperty(mandant.get());
+		return converter.applicationPropertyToJAX(prop);
+	}
+
+	@Nonnull
+	private ApplicationProperty getBackgroundColorProperty(Mandant mandant) {
 		Optional<ApplicationProperty> propertyFromDB =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.BACKGROUND_COLOR);
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.BACKGROUND_COLOR,
+					mandant);
 		ApplicationProperty prop =
 			propertyFromDB.orElse(new ApplicationProperty(ApplicationPropertyKey.BACKGROUND_COLOR, "#FFFFFF"));
-		return converter.applicationPropertyToJAX(prop);
+		return prop;
 	}
 
 	@ApiOperation(value = "Returns all application properties",
@@ -144,8 +164,10 @@ public class ApplicationPropertyResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(SUPER_ADMIN)
-	public List<JaxApplicationProperties> getAllApplicationProperties() {
-		return applicationPropertyService.getAllApplicationProperties().stream()
+	public List<JaxApplicationProperties> getAllApplicationProperties(@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
+		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getFirst());
+		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
+		return applicationPropertyService.getAllApplicationProperties(mandant.get()).stream()
 			.sorted(Comparator.comparing(o -> o.getName().name()))
 			.map(ap -> converter.applicationPropertyToJAX(ap))
 			.collect(Collectors.toList());
@@ -162,12 +184,16 @@ public class ApplicationPropertyResource {
 		@Nonnull @NotNull @PathParam("key") String key,
 		@Nonnull @NotNull String value,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
+		@Context HttpServletResponse response,
+		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
+
+		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
+		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
 
 		ApplicationProperty modifiedProperty =
 			this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(
 				ApplicationPropertyKey.class,
-				key), value, Objects.requireNonNull(principalBean.getMandant()));
+				key), value, mandant.get());
 
 		URI uri = uriInfo.getBaseUriBuilder()
 			.path(ApplicationPropertyResource.class)
@@ -188,12 +214,15 @@ public class ApplicationPropertyResource {
 		@Nonnull @PathParam("key") String key,
 		@Nonnull @NotNull String value,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
+		@Context HttpServletResponse response,
+		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+		) {
+		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
+		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
 		ApplicationProperty modifiedProperty =
 			this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(
 				ApplicationPropertyKey.class,
-				key), value, Objects.requireNonNull(principalBean.getMandant()));
+				key), value, mandant.get());
 
 		return converter.applicationPropertyToJAX(modifiedProperty);
 	}
@@ -206,7 +235,8 @@ public class ApplicationPropertyResource {
 	@Consumes(MediaType.WILDCARD)
 	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public Response remove(@Nonnull @PathParam("key") String keyParam, @Context HttpServletResponse response) {
-		applicationPropertyService.removeApplicationProperty(Enum.valueOf(ApplicationPropertyKey.class, keyParam));
+		applicationPropertyService.removeApplicationProperty(Enum.valueOf(ApplicationPropertyKey.class, keyParam),
+				principalBean.getMandant());
 		return Response.ok().build();
 	}
 
@@ -229,13 +259,17 @@ public class ApplicationPropertyResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/public/all")
 	@PermitAll
-	public Response getPublicProperties(@Context HttpServletResponse response) {
-
+	public Response getPublicProperties(@Context HttpServletResponse response, @CookieParam(AuthConstants.COOKIE_MANDANT)
+			Cookie mandantCookie) {
+		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
+		if (mandantCookie != null) {
+			mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
+		}
 		boolean devmode = ebeguConfiguration.getIsDevmode();
-		final String whitelist = readWhitelistAsString();
-		boolean dummyMode = ebeguConfiguration.isDummyLoginEnabled();
-		String sentryEnvName = getSentryEnvName().getValue();
-		String background = getBackgroundColor().getValue();
+		final String whitelist = readWhitelistAsString(mandant.get());
+		boolean dummyMode = ebeguConfiguration.isDummyLoginEnabled(mandant.get());
+		String sentryEnvName = getSentryEnvName(mandant.get()).getValue();
+		String background = getBackgroundColorProperty(mandant.get()).getValue();
 		boolean zahlungentestmode = ebeguConfiguration.getIsZahlungenTestMode();
 		boolean personenSucheDisabled = ebeguConfiguration.isPersonenSucheDisabled();
 		String kitaxHost = ebeguConfiguration.getKitaxHost();
@@ -245,46 +279,60 @@ public class ApplicationPropertyResource {
 		EbeguEntityNotFoundException notFound = new EbeguEntityNotFoundException("getPublicProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 
 		ApplicationProperty einreichefristOeffentlich  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH)
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH,
+							mandant.get())
 			.orElseThrow(() -> notFound);
 		ApplicationProperty einreichefristPrivat  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT)
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT,
+							mandant.get())
 			.orElseThrow(() -> notFound);
 		ApplicationProperty ferienbetreuungAktiv  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.FERIENBETREUUNG_AKTIV)
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.FERIENBETREUUNG_AKTIV,
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty lastenausgleichTagesschulenAktiv  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AKTIV)
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AKTIV,
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty gemeindeKennzahlenAktiv  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.GEMEINDE_KENNZAHLEN_AKTIV)
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.GEMEINDE_KENNZAHLEN_AKTIV,
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty lastenausgleichTagesschulenAnteilZweitpruefungDe  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE)
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE,
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty lastenausgleichTagesschulenAnteilZweitpruefungFr  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_FR)
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_FR,
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty lastenausgleichTagesschulenAutoZweitpruefungDe  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE)
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE,
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty lastenausgleichTagesschulenAutoZweitpruefungFr  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR)
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR,
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty primaryColor  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR)
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR,
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty primaryColorDark  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR_DARK)
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR_DARK,
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty primaryColorLight  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR_LIGHT)
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR_LIGHT,
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty logoFileName  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LOGO_FILE_NAME)
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LOGO_FILE_NAME,
+							mandant.get())
 				.orElseThrow(() -> notFound);
 		ApplicationProperty logoFileNameWhite  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LOGO_WHITE_FILE_NAME)
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LOGO_WHITE_FILE_NAME,
+							mandant.get())
 				.orElseThrow(() -> notFound);
 
 		String nodeName = "";

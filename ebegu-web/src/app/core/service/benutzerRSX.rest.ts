@@ -127,6 +127,10 @@ export class BenutzerRSX {
         return this.getSingleBenutzer(`${this.serviceURL}/username/${encodeURIComponent(username)}`);
     }
 
+    public findBenutzerById(username: string): Promise<TSBenutzer> {
+        return this.getSingleBenutzer(`${this.serviceURL}/id/${encodeURIComponent(username)}`);
+    }
+
     public inactivateBenutzer(user: TSBenutzer): Promise<TSBenutzer> {
         const userRest = this.ebeguRestUtil.userToRestObject({}, user);
         return this.$http.put(`${this.serviceURL}/inactivate/`, userRest).pipe(map((response: any) => {

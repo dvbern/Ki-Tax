@@ -1810,7 +1810,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	private boolean hasPrincipalName(@Nonnull Benutzer benutzer) {
-		return principalBean.getPrincipal().getName().equalsIgnoreCase(benutzer.getUsername());
+		return principalBean.getPrincipal().getName().equalsIgnoreCase(benutzer.getId());
 	}
 
 	private boolean isTraegerschaftsBenutzerAuthorizedForInstitution(

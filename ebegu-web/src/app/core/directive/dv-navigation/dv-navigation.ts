@@ -14,16 +14,23 @@
  */
 
 import {StateService, TransitionPromise} from '@uirouter/core';
-import {IController, IDirective, IDirectiveFactory, IQService, ITimeoutService} from 'angular';
+import {IComponentController, IController, IQService, ITimeoutService} from 'angular';
+import {FinanzielleSituationRS} from '../../../../gesuch/service/finanzielleSituationRS.rest';
+import {FinanzielleSituationSubStepManager} from '../../../../gesuch/service/finanzielleSituationSubStepManager';
+import {FinanzielleSituationSubStepManagerBernAsiv} from '../../../../gesuch/service/finanzielleSituationSubStepManagerBernAsiv';
+import {FinanzielleSituationSubStepManagerLuzern} from '../../../../gesuch/service/finanzielleSituationSubStepManagerLuzern';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
-import {WizardSubStepManager} from '../../../../gesuch/service/wizardSubStepManager';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
+import {TSFinanzielleSituationSubStepName} from '../../../../models/enums/TSFinanzielleSituationSubStepName';
+import {TSFinanzielleSituationTyp} from '../../../../models/enums/TSFinanzielleSituationTyp';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
-import {TSWizardSubStepName} from '../../../../models/enums/TSWizardSubStepName';
 import {ErrorService} from '../../errors/service/ErrorService';
+import {LogFactory} from '../../logging/LogFactory';
 import ITranslateService = angular.translate.ITranslateService;
+
+const LOG = LogFactory.createLog('DVNavigation');
 
 /**
  * Diese Direktive wird benutzt, um die Navigation Buttons darzustellen. Folgende Parameter koennen benutzt werden,
@@ -40,12 +47,12 @@ import ITranslateService = angular.translate.ITranslateService;
  * -- dvCancel: function        Die callback Methode, um alles zurueckzusetzen (nicht gleichzeitig mit dvPrevious
  * benutzen)
  */
-export class DVNavigation implements IDirective {
+export class DVNavigation implements IComponentController {
     public restrict = 'E';
     public scope = {};
     public controller = NavigatorController;
     public controllerAs = 'vm';
-    public bindToController = {
+    public bindings = {
         dvPrevious: '&?',
         dvNext: '&?',
         dvCancel: '&?',
@@ -59,20 +66,13 @@ export class DVNavigation implements IDirective {
         containerClass: '<',
     };
     public template = require('./dv-navigation.html');
-
-    public static factory(): IDirectiveFactory {
-        const directive = () => new DVNavigation();
-        // @ts-ignore
-        directive.$inject = [];
-        return directive;
-    }
 }
 
 export class NavigatorController implements IController {
 
     public static $inject: string[] = [
         'WizardStepManager',
-        'WizardSubStepManager',
+        'FinanzielleSituationRS',
         '$state',
         'GesuchModelManager',
         '$translate',
@@ -88,14 +88,16 @@ export class NavigatorController implements IController {
     public dvNextDisabled: () => any;
     public dvSavingPossible: boolean;
     public dvSubStep: number;
-    public dvSubStepName: TSWizardSubStepName;
+    public dvSubStepName: TSFinanzielleSituationSubStepName;
     public dvTranslateNext: string;
     public dvTranslatePrevious: string;
     public containerClass: string;
 
+    private finSitWizardSubStepManager: FinanzielleSituationSubStepManager;
+
     public constructor(
         private readonly wizardStepManager: WizardStepManager,
-        private readonly wizardSubStepManager: WizardSubStepManager,
+        private readonly finanzielleSituationRS: FinanzielleSituationRS,
         private readonly state: StateService,
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly $translate: ITranslateService,
@@ -111,6 +113,22 @@ export class NavigatorController implements IController {
         this.dvSavingPossible = this.dvSavingPossible || false;
         if (!this.containerClass) {
             this.containerClass = 'dv-navigation-flex';
+        }
+        this.initFinSitSubStepManager(this.gesuchModelManager.getGesuch().finSitTyp);
+    }
+
+    private initFinSitSubStepManager(finSitTyp: TSFinanzielleSituationTyp): void {
+        switch (finSitTyp) {
+            case TSFinanzielleSituationTyp.BERN:
+                this.finSitWizardSubStepManager =
+                    new FinanzielleSituationSubStepManagerBernAsiv(this.gesuchModelManager);
+                break;
+            case TSFinanzielleSituationTyp.LUZERN:
+                this.finSitWizardSubStepManager =
+                    new FinanzielleSituationSubStepManagerLuzern(this.gesuchModelManager);
+                break;
+            default:
+                throw new Error(`unexpected TSFinanzielleSituationTyp ${finSitTyp}`);
         }
     }
 
@@ -268,8 +286,9 @@ export class NavigatorController implements IController {
 
             return undefined;
         }
-        if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()) {
-            const nextSubStep = this.wizardSubStepManager.getNextSubStepFinanzielleSituation(this.dvSubStepName);
+        if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()
+            || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()) {
+            const nextSubStep = this.finSitWizardSubStepManager.getNextSubStepFinanzielleSituation(this.dvSubStepName);
             const nextMainStep = this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch());
             return this.navigateToSubStepFinanzielleSituation(
                 nextSubStep,
@@ -340,8 +359,9 @@ export class NavigatorController implements IController {
             return this.navigateToStep(TSWizardStepName.ERWERBSPENSUM);
         }
 
-        if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()) {
-            const previousSubStep = this.wizardSubStepManager.getPreviousSubStepFinanzielleSituation(this.dvSubStepName);
+        if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()
+        || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()) {
+            const previousSubStep = this.finSitWizardSubStepManager.getPreviousSubStepFinanzielleSituation(this.dvSubStepName);
             const previousMainStep = this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch());
 
             return this.navigateToSubStepFinanzielleSituation(previousSubStep, previousMainStep);
@@ -372,24 +392,30 @@ export class NavigatorController implements IController {
     }
 
     private navigateToSubStepFinanzielleSituation(
-        navigateToSubStep: TSWizardSubStepName,
+        navigateToSubStep: TSFinanzielleSituationSubStepName,
         navigateToStepIfNoSubstep: TSWizardStepName,
     ): TransitionPromise {
         switch (navigateToSubStep) {
-            case TSWizardSubStepName.KEIN_WEITERER_SUBSTEP:
+            case TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP:
                 return this.navigateToStep(navigateToStepIfNoSubstep);
-            case TSWizardSubStepName.FINANZIELLE_SITUATION_START:
+            case TSFinanzielleSituationSubStepName.BERN_START:
                 return this.navigateToStep(TSWizardStepName.FINANZIELLE_SITUATION);
-            case TSWizardSubStepName.FINANZIELLE_SITUATON_GS1:
+            case TSFinanzielleSituationSubStepName.BERN_GS1:
                 return this.navigateToStepFinanzielleSituation('1');
-            case TSWizardSubStepName.FINANZIELLE_SITUATON_GS2:
+            case TSFinanzielleSituationSubStepName.BERN_GS2:
                 return this.navigateToStepFinanzielleSituation('2');
-            case TSWizardSubStepName.FINANZIELLE_SITUATION_RESULTATE:
+            case TSFinanzielleSituationSubStepName.BERN_RESULTATE:
                 return this.navigateToFinanziellSituationResultate();
-            case TSWizardSubStepName.FINANZIELLE_SITUATION_SOZIALHILFE:
+            case TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE:
                 return this.navigateToSozialhilfeZeitraeume();
-            case TSWizardSubStepName.FINANZIELLE_SITUATION_SOZIALHILFE_DETAIL:
+            case TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE_DETAIL:
                 return this.navigateToSozialhilfeZeitraeume();
+            case TSFinanzielleSituationSubStepName.LUZERN_START:
+                return this.navigateToLuzernStart();
+            case TSFinanzielleSituationSubStepName.LUZERN_GS2:
+                return this.navigateToLuzernGS2();
+            case TSFinanzielleSituationSubStepName.LUZERN_RESULTATE:
+                return this.navigateToLuzernResultate();
             default:
                 throw new Error(`not implemented for Substep ${navigateToSubStep}`);
         }
@@ -423,6 +449,8 @@ export class NavigatorController implements IController {
                 return this.state.go('gesuch.erwerbsPensen', gesuchIdParam);
             case TSWizardStepName.FINANZIELLE_SITUATION:
                 return this.state.go('gesuch.finanzielleSituationStart', gesuchIdParam);
+            case TSWizardStepName.FINANZIELLE_SITUATION_LUZERN:
+                return this.state.go('gesuch.finanzielleSituationStartLuzern', gesuchIdParam);
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG:
                 return this.state.go('gesuch.einkommensverschlechterungInfo', gesuchIdParam);
             case TSWizardStepName.DOKUMENTE:
@@ -482,6 +510,26 @@ export class NavigatorController implements IController {
     private navigateToStepFinanzielleSituation(gsNumber: string): TransitionPromise {
         return this.state.go('gesuch.finanzielleSituation', {
             gesuchstellerNumber: gsNumber ? gsNumber : '1',
+            gesuchId: this.getGesuchId(),
+        });
+    }
+
+    private navigateToLuzernStart(): any {
+        return this.state.go('gesuch.finanzielleSituationStartLuzern', {
+            gesuchId: this.getGesuchId(),
+        });
+    }
+
+    // tslint:disable-next-line:no-identical-functions
+    private navigateToLuzernGS2(): any {
+        return this.state.go('gesuch.finanzielleSituationGS2Luzern', {
+            gesuchId: this.getGesuchId(),
+        });
+    }
+
+    // tslint:disable-next-line:no-identical-functions
+    private navigateToLuzernResultate(): any {
+        return this.state.go('gesuch.finanzielleSituationResultateLuzern', {
             gesuchId: this.getGesuchId(),
         });
     }
@@ -669,6 +717,10 @@ export class NavigatorController implements IController {
         return this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK).then(() => {
             return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
         }) as any;
+    }
+
+    public setSubstepManager(manager: FinanzielleSituationSubStepManager): void {
+        this.finSitWizardSubStepManager = manager;
     }
 
 }
