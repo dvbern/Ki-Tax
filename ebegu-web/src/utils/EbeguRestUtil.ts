@@ -602,10 +602,6 @@ export class EbeguRestUtil {
             restFamiliensituation.abweichendeZahlungsadresse = familiensituation.abweichendeZahlungsadresse;
             restFamiliensituation.zahlungsadresse =
                 this.adresseToRestObject({}, familiensituation.zahlungsadresse);
-            restFamiliensituation.quellenbesteuert = familiensituation.quellenbesteuert;
-            restFamiliensituation.gemeinsameStekVorjahr = familiensituation.gemeinsameStekVorjahr;
-            restFamiliensituation.alleinigeStekVorjahr = familiensituation.alleinigeStekVorjahr;
-            restFamiliensituation.veranlagt = familiensituation.veranlagt;
             return restFamiliensituation;
         }
 
@@ -675,10 +671,6 @@ export class EbeguRestUtil {
             familiensituation.abweichendeZahlungsadresse = familiensituationFromServer.abweichendeZahlungsadresse;
             familiensituation.zahlungsadresse =
                 this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresse);
-            familiensituation.quellenbesteuert = familiensituationFromServer.quellenbesteuert;
-            familiensituation.gemeinsameStekVorjahr = familiensituationFromServer.gemeinsameStekVorjahr;
-            familiensituation.alleinigeStekVorjahr = familiensituationFromServer.alleinigeStekVorjahr;
-            familiensituation.veranlagt = familiensituationFromServer.veranlagt;
             return familiensituation;
         }
         return undefined;
@@ -1222,6 +1214,7 @@ export class EbeguRestUtil {
         restGesuch.gueltig = gesuch.gueltig;
         restGesuch.dokumenteHochgeladen = gesuch.dokumenteHochgeladen;
         restGesuch.finSitStatus = gesuch.finSitStatus;
+        restGesuch.finSitTyp = gesuch.finSitTyp;
         return restGesuch;
     }
 
@@ -1818,6 +1811,11 @@ export class EbeguRestUtil {
         restFinanzielleSituation.steuerdatenZugriff = finanzielleSituation.steuerdatenZugriff;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus2 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus2;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus1 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus1;
+        restFinanzielleSituation.quellenbesteuert = finanzielleSituation.quellenbesteuert;
+        restFinanzielleSituation.gemeinsameStekVorjahr = finanzielleSituation.gemeinsameStekVorjahr;
+        restFinanzielleSituation.alleinigeStekVorjahr = finanzielleSituation.alleinigeStekVorjahr;
+        restFinanzielleSituation.veranlagt = finanzielleSituation.veranlagt;
+
         return restFinanzielleSituation;
     }
 
@@ -1875,6 +1873,11 @@ export class EbeguRestUtil {
                 finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus2;
             finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus1 =
                 finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus1;
+            finanzielleSituationTS.quellenbesteuert = finanzielleSituationFromServer.quellenbesteuert;
+            finanzielleSituationTS.gemeinsameStekVorjahr = finanzielleSituationFromServer.gemeinsameStekVorjahr;
+            finanzielleSituationTS.alleinigeStekVorjahr = finanzielleSituationFromServer.alleinigeStekVorjahr;
+            finanzielleSituationTS.veranlagt = finanzielleSituationFromServer.veranlagt;
+
             return finanzielleSituationTS;
         }
         return undefined;
@@ -3282,10 +3285,6 @@ export class EbeguRestUtil {
                         finSitModel.einkommensverschlechterungInfoContainer);
             }
             restFinSitModel.gemeinsameSteuererklaerung = finSitModel.gemeinsameSteuererklaerung;
-            restFinSitModel.quellenbesteuert = finSitModel.quellenbesteuert;
-            restFinSitModel.gemeinsameStekVorjahr = finSitModel.gemeinsameStekVorjahr;
-            restFinSitModel.alleinigeStekVorjahr = finSitModel.alleinigeStekVorjahr;
-            restFinSitModel.veranlagt = finSitModel.veranlagt;
             return restFinSitModel;
         }
         return undefined;

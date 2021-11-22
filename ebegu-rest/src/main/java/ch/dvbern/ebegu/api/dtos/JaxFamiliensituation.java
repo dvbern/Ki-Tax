@@ -73,18 +73,6 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	@Nullable
 	private JaxAdresse zahlungsadresse;
 
-	@Nullable
-	private Boolean quellenbesteuert;
-
-	@Nullable
-	private Boolean gemeinsameStekVorjahr;
-
-	@Nullable
-	private Boolean alleinigeStekVorjahr;
-
-	@Nullable
-	private Boolean veranlagt;
-
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
 	}
@@ -193,41 +181,5 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setZahlungsadresse(@Nullable JaxAdresse zahlungsadresse) {
 		this.zahlungsadresse = zahlungsadresse;
-	}
-
-	@Nullable
-	public Boolean getQuellenbesteuert() {
-		return quellenbesteuert;
-	}
-
-	public void setQuellenbesteuert(@Nullable Boolean quellenbesteuert) {
-		this.quellenbesteuert = quellenbesteuert;
-	}
-
-	@Nullable
-	public Boolean getGemeinsameStekVorjahr() {
-		return gemeinsameStekVorjahr;
-	}
-
-	public void setGemeinsameStekVorjahr(@Nullable Boolean gemeinsameStekVorjahr) {
-		this.gemeinsameStekVorjahr = gemeinsameStekVorjahr;
-	}
-
-	@Nullable
-	public Boolean getAlleinigeStekVorjahr() {
-		return alleinigeStekVorjahr;
-	}
-
-	public void setAlleinigeStekVorjahr(@Nullable Boolean alleinigeStekVorjahr) {
-		this.alleinigeStekVorjahr = alleinigeStekVorjahr;
-	}
-
-	@Nullable
-	public Boolean getVeranlagt() {
-		return veranlagt;
-	}
-
-	public void setVeranlagt(@Nullable Boolean veranlagt) {
-		this.veranlagt = veranlagt;
 	}
 }

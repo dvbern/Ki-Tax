@@ -16,8 +16,6 @@
  */
 
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {FormBuilder} from '@angular/forms';
-import {of} from 'rxjs';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
@@ -34,9 +32,8 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView imp
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
-        fb: FormBuilder
     ) {
-        super(gesuchModelManager, wizardStepManager, fb);
+        super(gesuchModelManager, wizardStepManager);
     }
 
     public ngOnInit(): void {
@@ -48,11 +45,6 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView imp
 
     public getAntragstellerNummer(): number {
         return 2;
-    }
-
-    public save(): Promise<any> {
-        console.log('save angaben 2');
-        return of().toPromise();
     }
 
     public getTrue(): any {

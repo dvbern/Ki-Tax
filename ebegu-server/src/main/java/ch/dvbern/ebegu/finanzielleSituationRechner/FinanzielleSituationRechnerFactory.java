@@ -25,21 +25,15 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 
-/**
- * Am Anfang habe ich dieser Factory als Service nachgedacht um andere Service wie die Einstellung zu verwenden
- * Als er FinanzielleSituationTyp ist nicht mehr dort gebraucht, koennte man auch dort eine normale Factory verwenden
- * Wir lassen es trotzdem so falls wir irgenwas mehr benoetigen wird dann schon alles vorhanden sein
- */
-@Stateless
-@Local(FinanzielleSituationRechnerFactoryService.class)
-public final class FinanzielleSituationRechnerFactoryServiceBean extends AbstractBaseService implements FinanzielleSituationRechnerFactoryService{
+public final class FinanzielleSituationRechnerFactory {
 
 	@Nonnull
-	public AbstractFinanzielleSituationRechner getRechner(@Nonnull Gesuch gesuch) {
+	public static AbstractFinanzielleSituationRechner getRechner(@Nonnull Gesuch gesuch) {
 		if (gesuch.getFinSitTyp().equals(FinanzielleSituationTyp.LUZERN)) {
 			return new FinanzielleSituationLuzernRechner();
 		}
 		// per default ist der Berner Rechner genommen
 		return new FinanzielleSituationBernRechner();
 	}
+
 }

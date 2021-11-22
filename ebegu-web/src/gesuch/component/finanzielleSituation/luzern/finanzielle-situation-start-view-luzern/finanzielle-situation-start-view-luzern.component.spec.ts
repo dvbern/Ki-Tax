@@ -16,7 +16,6 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SharedModule} from '../../../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
 import {TSGesuch} from '../../../../../models/TSGesuch';
@@ -49,13 +48,11 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
             ],
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
-                {provide: WizardStepManager, useValue: wizardStepMangerSpy}
+                {provide: WizardStepManager, useValue: wizardStepMangerSpy},
             ],
             imports: [
-                FormsModule,
-                ReactiveFormsModule,
-                SharedModule
-            ]
+                SharedModule,
+            ],
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
@@ -76,7 +73,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
 
     it('should test "Gemeinsame Veranlagung letztes Jahr"', () => {
         FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
-        setFormValues(component.form, false, true, null, true);
+        setFormValues(false, true, null, true);
 
         expect(component.showSelbstdeklaration()).toBeFalse();
         expect(component.showVeranlagung()).toBeTrue();
@@ -89,7 +86,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
 
     it('should test "Alleinige Veranlagung letztes Jahr"', () => {
         FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => true;
-        setFormValues(component.form, false, null, true, true);
+        setFormValues(false, null, true, true);
 
         expect(component.showSelbstdeklaration()).toBeFalse();
         expect(component.showVeranlagung()).toBeTrue();
@@ -102,7 +99,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
 
     it('should test "Gemeinsame Selbstdeklaration aktuelles Jahr"', () => {
         FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
-        setFormValues(component.form, false, false, null, null);
+        setFormValues(false, false, null, null);
 
         expect(component.showSelbstdeklaration()).toBeTrue();
         expect(component.showVeranlagung()).toBeFalse();
@@ -115,7 +112,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
 
     it('should test "Alleinige Selbstdeklaration aktuelles Jahr"', () => {
         FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => true;
-        setFormValues(component.form, false, null, false, null);
+        setFormValues(false, null, false, null);
 
         expect(component.showSelbstdeklaration()).toBeTrue();
         expect(component.showVeranlagung()).toBeFalse();
@@ -128,7 +125,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
 
     it('should test "Gemeinsame Selbstdeklaration letztes Jahr (quellenbesteuert)"', () => {
         FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
-        setFormValues(component.form, true, null, null, null);
+        setFormValues(true, null, null, null);
 
         expect(component.showSelbstdeklaration()).toBeTrue();
         expect(component.showVeranlagung()).toBeFalse();
@@ -141,7 +138,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
 
     it('should test "Alleinige Selbstdeklaration letztes Jahr (quellenbesteuert)"', () => {
         FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => true;
-        setFormValues(component.form, true, null, null, null);
+        setFormValues(true, null, null, null);
 
         expect(component.showSelbstdeklaration()).toBeTrue();
         expect(component.showVeranlagung()).toBeFalse();
@@ -154,7 +151,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
 
     it('should test "Gemeinsame Selbstdeklaration letztes Jahr (nicht veranlagt)"', () => {
         FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
-        setFormValues(component.form, false, true, null, false);
+        setFormValues(false, true, null, false);
 
         expect(component.showSelbstdeklaration()).toBeTrue();
         expect(component.showVeranlagung()).toBeFalse();
@@ -167,7 +164,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
 
     it('should test "Alleinige Selbstdeklaration letztes Jahr (nicht veranlagt)"', () => {
         FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => true;
-        setFormValues(component.form, false, null, true, false);
+        setFormValues(false, null, true, false);
 
         expect(component.showSelbstdeklaration()).toBeTrue();
         expect(component.showVeranlagung()).toBeFalse();
@@ -180,21 +177,20 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
 
     it('should return empty antragsteller name', () => {
         FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
-        setFormValues(component.form, false, true, true, null);
+        setFormValues(false, true, true, null);
         expect(component.getYearForDeklaration()).toBe('');
     });
 
     function setFormValues(
-        form: FormGroup,
         quellenbesteuert: boolean,
         gemeinsameStekVorjahr: boolean,
         alleinigeStekVorjahr: boolean,
-        veranlagt: boolean
+        veranlagt: boolean,
     ): void {
-        form.controls.quellenbesteuert.setValue(quellenbesteuert);
-        form.controls.gemeinsameStekVorjahr.setValue(gemeinsameStekVorjahr);
-        form.controls.alleinigeStekVorjahr.setValue(alleinigeStekVorjahr);
-        form.controls.veranlagt.setValue(veranlagt);
+        component.getModel().finanzielleSituationJA.quellenbesteuert = quellenbesteuert;
+        component.getModel().finanzielleSituationJA.gemeinsameStekVorjahr = gemeinsameStekVorjahr;
+        component.getModel().finanzielleSituationJA.alleinigeStekVorjahr = alleinigeStekVorjahr;
+        component.getModel().finanzielleSituationJA.veranlagt = veranlagt;
     }
 
     function createGesuch(): TSGesuch {

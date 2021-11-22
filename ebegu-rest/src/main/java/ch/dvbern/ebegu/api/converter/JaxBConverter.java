@@ -770,10 +770,6 @@ public class JaxBConverter extends AbstractConverter {
 		familiensituation.setStartKonkubinat(familiensituationJAXP.getStartKonkubinat());
 		familiensituation.setSozialhilfeBezueger(familiensituationJAXP.getSozialhilfeBezueger());
 		familiensituation.setVerguenstigungGewuenscht(familiensituationJAXP.getVerguenstigungGewuenscht());
-		familiensituation.setQuellenbesteuert(familiensituationJAXP.getQuellenbesteuert());
-		familiensituation.setGemeinsameStekVorjahr(familiensituationJAXP.getGemeinsameStekVorjahr());
-		familiensituation.setAlleinigeStekVorjahr(familiensituationJAXP.getAlleinigeStekVorjahr());
-		familiensituation.setVeranlagt(familiensituationJAXP.getVeranlagt());
 
 		return familiensituation;
 	}
@@ -797,10 +793,6 @@ public class JaxBConverter extends AbstractConverter {
 				jaxFamiliensituation.setZahlungsadresse(adresseToJAX(persistedAuszahlungsdaten.getAdresseKontoinhaber()));
 			}
 		}
-		jaxFamiliensituation.setQuellenbesteuert(persistedFamiliensituation.getQuellenbesteuert());
-		jaxFamiliensituation.setGemeinsameStekVorjahr(persistedFamiliensituation.getGemeinsameStekVorjahr());
-		jaxFamiliensituation.setAlleinigeStekVorjahr(persistedFamiliensituation.getAlleinigeStekVorjahr());
-		jaxFamiliensituation.setVeranlagt(persistedFamiliensituation.getVeranlagt());
 		return jaxFamiliensituation;
 	}
 
@@ -2650,6 +2642,11 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus2());
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus1());
 
+		finanzielleSituation.setQuellenbesteuert(finanzielleSituationJAXP.getQuellenbesteuert());
+		finanzielleSituation.setGemeinsameStekVorjahr(finanzielleSituationJAXP.getGemeinsameStekVorjahr());
+		finanzielleSituation.setAlleinigeStekVorjahr(finanzielleSituationJAXP.getAlleinigeStekVorjahr());
+		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
+
 		return finanzielleSituation;
 	}
 
@@ -2668,6 +2665,11 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setSteuerdatenZugriff(persistedFinanzielleSituation.getSteuerdatenZugriff());
 		jaxFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(persistedFinanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2());
 		jaxFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(persistedFinanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1());
+
+		jaxFinanzielleSituation.setQuellenbesteuert(persistedFinanzielleSituation.getQuellenbesteuert());
+		jaxFinanzielleSituation.setGemeinsameStekVorjahr(persistedFinanzielleSituation.getGemeinsameStekVorjahr());
+		jaxFinanzielleSituation.setAlleinigeStekVorjahr(persistedFinanzielleSituation.getAlleinigeStekVorjahr());
+		jaxFinanzielleSituation.setVeranlagt(persistedFinanzielleSituation.getVeranlagt());
 
 		return jaxFinanzielleSituation;
 	}

@@ -88,22 +88,6 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Column(nullable = false)
 	private boolean abweichendeZahlungsadresse;
 
-	@Nullable
-	@Column(nullable = true)
-	private Boolean quellenbesteuert;
-
-	@Nullable
-	@Column(nullable = true)
-	private Boolean gemeinsameStekVorjahr;
-
-	@Nullable
-	@Column(nullable = true)
-	private Boolean alleinigeStekVorjahr;
-
-	@Nullable
-	@Column(nullable = true)
-	private Boolean veranlagt;
-
 	public Familiensituation() {
 	}
 
@@ -195,42 +179,6 @@ public class Familiensituation extends AbstractMutableEntity {
 
 	public void setAbweichendeZahlungsadresse(boolean abweichendeZahlungsadresse) {
 		this.abweichendeZahlungsadresse = abweichendeZahlungsadresse;
-	}
-
-	@Nullable
-	public Boolean getQuellenbesteuert() {
-		return quellenbesteuert;
-	}
-
-	public void setQuellenbesteuert(@Nullable Boolean quellenbesteuert) {
-		this.quellenbesteuert = quellenbesteuert;
-	}
-
-	@Nullable
-	public Boolean getGemeinsameStekVorjahr() {
-		return gemeinsameStekVorjahr;
-	}
-
-	public void setGemeinsameStekVorjahr(@Nullable Boolean gemeinsameStekVorjahr) {
-		this.gemeinsameStekVorjahr = gemeinsameStekVorjahr;
-	}
-
-	@Nullable
-	public Boolean getAlleinigeStekVorjahr() {
-		return alleinigeStekVorjahr;
-	}
-
-	public void setAlleinigeStekVorjahr(@Nullable Boolean alleinigeStekVorjahr) {
-		this.alleinigeStekVorjahr = alleinigeStekVorjahr;
-	}
-
-	@Nullable
-	public Boolean getVeranlagt() {
-		return veranlagt;
-	}
-
-	public void setVeranlagt(@Nullable Boolean veranlagt) {
-		this.veranlagt = veranlagt;
 	}
 
 	@Transient

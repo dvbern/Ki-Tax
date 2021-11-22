@@ -67,6 +67,21 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	@Column(nullable = true)
 	private BigDecimal geleisteteAlimente;
 
+	@Column(nullable = true)
+	private BigDecimal steuerbaresEinkommen;
+
+	@Column(nullable = true)
+	private BigDecimal steuerbaresVermoegen;
+
+	@Column(nullable = true)
+	private BigDecimal abzuegeLiegenschaft;
+
+	@Column(nullable = true)
+	private BigDecimal geschaeftsverlust;
+
+	@Column(nullable = true)
+	private BigDecimal einkaeufeVorsorge;
+
 	@Nullable
 	@Transient
 	private BigDecimal durchschnittlicherGeschaeftsgewinn;
@@ -152,6 +167,46 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 		this.durchschnittlicherGeschaeftsgewinn = durchschnittlicherGeschaeftsgewinn;
 	}
 
+	public BigDecimal getSteuerbaresEinkommen() {
+		return steuerbaresEinkommen;
+	}
+
+	public void setSteuerbaresEinkommen(BigDecimal steuerbaresEinkommen) {
+		this.steuerbaresEinkommen = steuerbaresEinkommen;
+	}
+
+	public BigDecimal getSteuerbaresVermoegen() {
+		return steuerbaresVermoegen;
+	}
+
+	public void setSteuerbaresVermoegen(BigDecimal steuerbaresVermoegen) {
+		this.steuerbaresVermoegen = steuerbaresVermoegen;
+	}
+
+	public BigDecimal getAbzuegeLiegenschaft() {
+		return abzuegeLiegenschaft;
+	}
+
+	public void setAbzuegeLiegenschaft(BigDecimal abzuegeLiegenschaft) {
+		this.abzuegeLiegenschaft = abzuegeLiegenschaft;
+	}
+
+	public BigDecimal getGeschaeftsverlust() {
+		return geschaeftsverlust;
+	}
+
+	public void setGeschaeftsverlust(BigDecimal geschaeftsverlust) {
+		this.geschaeftsverlust = geschaeftsverlust;
+	}
+
+	public BigDecimal getEinkaeufeVorsorge() {
+		return einkaeufeVorsorge;
+	}
+
+	public void setEinkaeufeVorsorge(BigDecimal einkaeufeVorsorge) {
+		this.einkaeufeVorsorge = einkaeufeVorsorge;
+	}
+
 	@Nonnull
 	public AbstractFinanzielleSituation copyAbstractFinanzielleSituation(
 		@Nonnull AbstractFinanzielleSituation target,
@@ -168,6 +223,11 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			target.setSchulden(this.getSchulden());
 			target.setGeschaeftsgewinnBasisjahr(this.getGeschaeftsgewinnBasisjahr());
 			target.setGeleisteteAlimente(this.getGeleisteteAlimente());
+			target.setSteuerbaresEinkommen(this.getSteuerbaresEinkommen());
+			target.setSteuerbaresVermoegen(this.getSteuerbaresVermoegen());
+			target.setAbzuegeLiegenschaft(this.getAbzuegeLiegenschaft());
+			target.setGeschaeftsverlust(this.getGeschaeftsverlust());
+			target.setEinkaeufeVorsorge(this.getEinkaeufeVorsorge());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -196,7 +256,12 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			MathUtil.isSame(getBruttovermoegen(), otherFinSituation.getBruttovermoegen()) &&
 			MathUtil.isSame(getSchulden(), otherFinSituation.getSchulden()) &&
 			MathUtil.isSame(getGeschaeftsgewinnBasisjahr(), otherFinSituation.getGeschaeftsgewinnBasisjahr()) &&
-			MathUtil.isSame(getGeleisteteAlimente(), otherFinSituation.getGeleisteteAlimente());
+			MathUtil.isSame(getGeleisteteAlimente(), otherFinSituation.getGeleisteteAlimente()) &&
+			MathUtil.isSame(getSteuerbaresEinkommen(), otherFinSituation.getSteuerbaresEinkommen()) &&
+			MathUtil.isSame(getSteuerbaresVermoegen(), otherFinSituation.getSteuerbaresVermoegen()) &&
+			MathUtil.isSame(getAbzuegeLiegenschaft(), otherFinSituation.getAbzuegeLiegenschaft()) &&
+			MathUtil.isSame(getGeschaeftsverlust(), otherFinSituation.getGeschaeftsverlust()) &&
+			MathUtil.isSame(getEinkaeufeVorsorge(), otherFinSituation.getEinkaeufeVorsorge());
 	}
 
 	@Nonnull

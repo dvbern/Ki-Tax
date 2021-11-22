@@ -15,94 +15,95 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {FormBuilder, FormGroup} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
+import {IPromise} from 'angular';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
+import {TSFinanzielleSituationContainer} from '../../../../models/TSFinanzielleSituationContainer';
+import {TSFinanzModel} from '../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../abstractGesuchViewX';
 
-export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX {
+export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFinanzModel> {
 
-    public form: FormGroup;
+    public readonly: boolean = false;
 
-    public constructor(
+    protected constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
-        private readonly fb: FormBuilder,
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
+        this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
+            this.gesuchModelManager.isGesuchsteller2Required(),
+            null);
+        this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.setupForm();
     }
 
     private setupForm(): void {
-        this.form = this.fb.group({
-            quellenbesteuert: null,
-            gemeinsameStekVorjahr: null,
-            alleinigeStekVorjahr: null,
-            veranlagt: null
-        });
+        this.getModel().finanzielleSituationJA.quellenbesteuert = undefined;
+        this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr = undefined;
+        this.getModel().finanzielleSituationJA.alleinigeStekVorjahr = undefined;
+        this.getModel().finanzielleSituationJA.veranlagt = undefined;
     }
 
     public showSelbstdeklaration(): boolean {
-        return this.form.controls.quellenbesteuert.value === true
-            || this.form.controls.gemeinsameStekVorjahr.value === false
-            || this.form.controls.alleinigeStekVorjahr.value === false
-            || this.form.controls.veranlagt.value === false;
+        return this.getModel().finanzielleSituationJA.quellenbesteuert === true
+            || this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr === false
+            || this.getModel().finanzielleSituationJA.alleinigeStekVorjahr === false
+            || this.getModel().finanzielleSituationJA.veranlagt === false;
     }
 
     public showVeranlagung(): boolean {
-        return this.form.controls.veranlagt.value === true;
+        return this.getModel().finanzielleSituationJA.veranlagt === true;
     }
 
     public quellenBesteuertChange(newQuellenBesteuert: MatRadioChange): void {
         if (newQuellenBesteuert.value === false) {
             return;
         }
-        this.form.patchValue({
-            gemeinsameStekVorjahr: null,
-            alleinigeStekVorjahr: null,
-            veranlagt: null,
-        });
+        this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr = undefined;
+        this.getModel().finanzielleSituationJA.alleinigeStekVorjahr = undefined;
+        this.getModel().finanzielleSituationJA.veranlagt = undefined;
     }
 
     public gemeinsameStekVisible(): boolean {
-        return this.isGemeinsam() && this.form.controls.quellenbesteuert.value === false;
+        return this.isGemeinsam() && this.getModel().finanzielleSituationJA.quellenbesteuert === false;
     }
 
     public alleinigeStekVisible(): boolean {
-        return !this.isGemeinsam() && this.form.controls.quellenbesteuert.value === false;
+        return !this.isGemeinsam() && this.getModel().finanzielleSituationJA.quellenbesteuert === false;
     }
 
     public veranlagtVisible(): boolean {
-        return this.form.controls.gemeinsameStekVorjahr.value === true
-            || this.form.controls.alleinigeStekVorjahr.value === true;
+        return this.model.gemeinsameSteuererklaerung === true
+            || this.getModel().finanzielleSituationJA.alleinigeStekVorjahr === true;
     }
 
-    public gemeinsameStekVorjahrChange(newGemeinsameStekVorjahr: MatRadioChange): void {
-        if (newGemeinsameStekVorjahr.value === false && this.form.get('alleinigeStekVorjahr').value !== true) {
-            this.form.get('veranlagt').patchValue(null);
+    public gemeinsameStekChange(newGemeinsameStek: MatRadioChange): void {
+        if (newGemeinsameStek.value === false && this.getModel().finanzielleSituationJA.alleinigeStekVorjahr !== true) {
+            this.getModel().finanzielleSituationJA.veranlagt = undefined;
         }
     }
 
     public alleinigeStekVorjahrChange(newAlleinigeStekVorjahr: MatRadioChange): void {
-        if (newAlleinigeStekVorjahr.value === false && this.form.get('gemeinsameStekVorjahr').value !== true) {
-            this.form.get('veranlagt').patchValue(null);
+        if (newAlleinigeStekVorjahr.value === false && this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr !== true) {
+            this.getModel().finanzielleSituationJA.veranlagt = undefined;
         }
     }
 
     public getYearForDeklaration(): number | string {
         const currentYear = this.getBasisjahrPlus1();
         const previousYear = this.getBasisjahr();
-        if (this.form.controls.quellenbesteuert.value === true) {
+        if (this.getModel().finanzielleSituationJA.quellenbesteuert === true) {
             return previousYear;
         }
-        if (EbeguUtil.isNotNullOrUndefined(this.form.controls.veranlagt.value)) {
+        if (EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.veranlagt)) {
             return previousYear;
         }
-        if (this.form.controls.gemeinsameStekVorjahr.value === false
-            || this.form.controls.alleinigeStekVorjahr.value === false) {
+        if (this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr === false
+            || this.getModel().finanzielleSituationJA.alleinigeStekVorjahr === false) {
             return currentYear;
         }
         return '';
@@ -124,9 +125,6 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX {
 
     public abstract getSubStepName(): string;
 
-    // must return a promise to make dv-navigation work
-    public abstract save(): Promise<any>;
-
     public getAntragstellerNameForCurrentStep(): string {
         if (this.isGemeinsam()) {
             return '';
@@ -143,5 +141,19 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX {
             }
         }
         return '';
+    }
+
+    public getModel(): TSFinanzielleSituationContainer {
+        return this.model.getFiSiConToWorkWith();
+    }
+
+    protected save(): IPromise<TSFinanzielleSituationContainer> {
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        return this.gesuchModelManager.saveFinanzielleSituation()
+            .then((finanzielleSituationContainer: TSFinanzielleSituationContainer) => {
+                return finanzielleSituationContainer;
+            }).catch(error => {
+                throw(error);
+            });
     }
 }

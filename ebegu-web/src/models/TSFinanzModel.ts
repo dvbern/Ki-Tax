@@ -29,10 +29,6 @@ export class TSFinanzModel {
     private _gemeinsameSteuererklaerung: boolean;
     private _sozialhilfeBezueger: boolean;
     private _verguenstigungGewuenscht: boolean;
-    private _quellenbesteuert: boolean;
-    private _gemeinsameStekVorjahr: boolean;
-    private _alleinigeStekVorjahr: boolean;
-    private _veranlagt: boolean;
     private _finanzielleSituationContainerGS1: TSFinanzielleSituationContainer;
     private _finanzielleSituationContainerGS2: TSFinanzielleSituationContainer;
     private _einkommensverschlechterungContainerGS1: TSEinkommensverschlechterungContainer;
@@ -107,38 +103,6 @@ export class TSFinanzModel {
         this._zahlungsinformationen = value;
     }
 
-    public get quellenbesteuert(): boolean {
-        return this._quellenbesteuert;
-    }
-
-    public set quellenbesteuert(value: boolean) {
-        this._quellenbesteuert = value;
-    }
-
-    public get gemeinsameStekVorjahr(): boolean {
-        return this._gemeinsameStekVorjahr;
-    }
-
-    public set gemeinsameStekVorjahr(value: boolean) {
-        this._gemeinsameStekVorjahr = value;
-    }
-
-    public get alleinigeStekVorjahr(): boolean {
-        return this._alleinigeStekVorjahr;
-    }
-
-    public set alleinigeStekVorjahr(value: boolean) {
-        this._alleinigeStekVorjahr = value;
-    }
-
-    public get veranlagt(): boolean {
-        return this._veranlagt;
-    }
-
-    public set veranlagt(value: boolean) {
-        this._veranlagt = value;
-    }
-
     public copyFinSitDataFromGesuch(gesuch: TSGesuch): void {
         if (!gesuch) {
             return;
@@ -173,7 +137,6 @@ export class TSFinanzModel {
             this.zahlungsinformationenGS.keineMahlzeitenverguenstigungBeantragt =
                 gesuch.extractFamiliensituationGS().keineMahlzeitenverguenstigungBeantragt;
         }
-        this.quellenbesteuert =   this.getCopiedValueOrFalse(gesuch.extractFamiliensituation().quellenbesteuert);
 
         this.initFinSit();
     }

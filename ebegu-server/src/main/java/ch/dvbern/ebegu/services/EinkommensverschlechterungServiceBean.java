@@ -40,7 +40,7 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
-import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationRechnerFactoryService;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationRechnerFactory;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -66,9 +66,6 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 
 	@Inject
 	private VerfuegungService verfuegungService;
-
-	@Inject
-	private FinanzielleSituationRechnerFactoryService finanzielleSituationRechnerFactoryService;
 
 	@Override
 	@Nonnull
@@ -118,7 +115,7 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 	@Nonnull
 	public FinanzielleSituationResultateDTO calculateResultate(@Nonnull Gesuch gesuch, int basisJahrPlus) {
 
-		return finanzielleSituationRechnerFactoryService.getRechner(gesuch).calculateResultateEinkommensverschlechterung(gesuch, basisJahrPlus, true);
+		return FinanzielleSituationRechnerFactory.getRechner(gesuch).calculateResultateEinkommensverschlechterung(gesuch, basisJahrPlus, true);
 	}
 
 	@Override

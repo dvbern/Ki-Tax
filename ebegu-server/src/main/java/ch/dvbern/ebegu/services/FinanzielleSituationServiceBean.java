@@ -39,7 +39,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationRechnerFactoryService;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationRechnerFactory;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
@@ -66,16 +66,12 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	@Inject
 	private GesuchService gesuchService;
 
-	@Inject
-	private FinanzielleSituationRechnerFactoryService finanzielleSituationRechnerFactoryService;
-
-
 	@Nonnull
 	@Override
 	public Gesuch saveFinanzielleSituationStart(
 		@Nonnull FinanzielleSituationContainer finanzielleSituation,
 		@Nonnull Boolean sozialhilfebezueger,
-		@Nonnull Boolean gemeinsameSteuererklaerung,
+		@Nullable Boolean gemeinsameSteuererklaerung,
 		@Nonnull Boolean verguenstigungGewuenscht,
 		boolean keineMahlzeitenverguenstigungGewuenscht,
 		@Nullable String iban,
@@ -123,7 +119,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 
 	private Gesuch saveFinanzielleSituationFelderAufGesuch(
 		@Nonnull Boolean sozialhilfebezueger,
-		@Nonnull Boolean gemeinsameSteuererklaerung,
+		@Nullable Boolean gemeinsameSteuererklaerung,
 		@Nonnull Boolean verguenstigungGewuenscht,
 		boolean keineMahlzeitenverguenstigungGewuenscht,
 		@Nullable String iban,
@@ -246,13 +242,13 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	public FinanzielleSituationResultateDTO calculateResultate(@Nonnull Gesuch gesuch) {
 		// Die Berechnung der FinSit Resultate beruht auf einem "Pseudo-Gesuch", dieses hat
 		// keinen Status und kann/muss nicht geprueft werden!
-		return finanzielleSituationRechnerFactoryService.getRechner(gesuch).calculateResultateFinanzielleSituation(gesuch, true);
+		return FinanzielleSituationRechnerFactory.getRechner(gesuch).calculateResultateFinanzielleSituation(gesuch, true);
 	}
 
 	@Override
 	public void calculateFinanzDaten(@Nonnull Gesuch gesuch) {
 		final BigDecimal minimumEKV = calculateGrenzwertEKV(gesuch);
-		finanzielleSituationRechnerFactoryService.getRechner(gesuch).calculateFinanzDaten(gesuch, minimumEKV);
+		FinanzielleSituationRechnerFactory.getRechner(gesuch).calculateFinanzDaten(gesuch, minimumEKV);
 	}
 
 	/*@Nonnull

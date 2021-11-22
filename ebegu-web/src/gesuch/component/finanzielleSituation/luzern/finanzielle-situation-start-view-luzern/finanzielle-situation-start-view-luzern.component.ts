@@ -15,10 +15,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {FormBuilder} from '@angular/forms';
-import {of} from 'rxjs';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
+import {IPromise} from 'angular';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
+import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
@@ -28,16 +30,17 @@ import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern
     selector: 'dv-finanzielle-situation-start-view-luzern',
     templateUrl: '../finanzielle-situation-luzern.component.html',
     styleUrls: ['../finanzielle-situation-luzern.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSitLuzernView implements OnInit {
+
+    @ViewChild(NgForm) private readonly form: NgForm;
 
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
-        fb: FormBuilder,
     ) {
-        super(gesuchModelManager, wizardStepManager, fb);
+        super(gesuchModelManager, wizardStepManager);
     }
 
     public ngOnInit(): void {
@@ -45,17 +48,12 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
 
     public isGemeinsam(): boolean {
         // if we don't need two antragsteller for gesuch, this is the component for both antragsteller together
-        return !FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller(this.gesuchModelManager);
+        return FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller(this.gesuchModelManager);
     }
 
     public getAntragstellerNummer(): number {
         // this is always antragsteller 1. if we have two antragsteller, we have angaben-gesuchsteller-2 component
         return 1;
-    }
-
-    public save(): Promise<any> {
-        console.log('saving start view');
-        return of('saved').toPromise();
     }
 
     public getTrue(): any {
@@ -70,4 +68,18 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
         return TSFinanzielleSituationSubStepName.LUZERN_START;
     }
 
+    public isGesuchValid(): boolean {
+        if (!this.form.valid) {
+            EbeguUtil.selectFirstInvalid();
+        }
+
+        return this.form.valid;
+    }
+
+    public prepareSave(): IPromise<TSFinanzielleSituationContainer> {
+        if (!this.isGesuchValid()) {
+            return undefined;
+        }
+        return this.save();
+    }
 }
