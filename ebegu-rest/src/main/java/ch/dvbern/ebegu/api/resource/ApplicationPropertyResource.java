@@ -262,7 +262,9 @@ public class ApplicationPropertyResource {
 	public Response getPublicProperties(@Context HttpServletResponse response, @CookieParam(AuthConstants.COOKIE_MANDANT)
 			Cookie mandantCookie) {
 		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
+		if (mandantCookie != null) {
+			mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
+		}
 		boolean devmode = ebeguConfiguration.getIsDevmode();
 		final String whitelist = readWhitelistAsString(mandant.get());
 		boolean dummyMode = ebeguConfiguration.isDummyLoginEnabled(mandant.get());

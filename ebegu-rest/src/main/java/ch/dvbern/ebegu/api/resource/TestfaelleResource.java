@@ -129,7 +129,8 @@ public class TestfaelleResource {
 			verfuegen,
 			username,
 			gesuchsperiodeId,
-			gemeindeId);
+			gemeindeId,
+			Objects.requireNonNull(principal.getMandant()));
 		return Response.ok(responseString.toString()).build();
 	}
 
@@ -142,7 +143,7 @@ public class TestfaelleResource {
 		@PathParam("username") String username) {
 
 		assertTestfaelleAccessAllowed();
-		testfaelleService.removeGesucheOfGS(username);
+		testfaelleService.removeGesucheOfGS(username, Objects.requireNonNull(principal.getMandant()));
 		return Response.ok().build();
 	}
 

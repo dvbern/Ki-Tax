@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService} from '@uirouter/core';
 import {of} from 'rxjs';
@@ -23,6 +23,7 @@ import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {ErrorService} from '../../core/errors/service/ErrorService';
+import {WindowRef} from '../../core/service/windowRef.service';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 import {GemeindeListComponent} from './gemeinde-list.component';
@@ -47,6 +48,7 @@ describe('GemeindeListComponent', () => {
                 NoopAnimationsModule,
             ],
             providers: [
+                WindowRef,
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},

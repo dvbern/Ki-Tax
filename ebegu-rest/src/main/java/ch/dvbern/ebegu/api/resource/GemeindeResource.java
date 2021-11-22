@@ -175,7 +175,8 @@ public class GemeindeResource {
 		//This line is weird I think its already done in the create methods
 		benutzer.getCurrentBerechtigung().getGemeindeList().add(persistedGemeinde);
 
-		benutzerService.einladen(Einladung.forGemeinde(benutzer, persistedGemeinde));
+		benutzerService.einladen(Einladung.forGemeinde(benutzer, persistedGemeinde),
+				requireNonNull(persistedGemeinde.getMandant()));
 
 		// if Ferieninsel is active, we need to initialize the Ferien
 		if (persistedGemeinde.isAngebotFI()) {

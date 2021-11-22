@@ -108,6 +108,7 @@ import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
@@ -245,6 +246,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			gesuchToPersist.setRegelnGueltigAb(regelnGueltigAb);
 		}
 
+		setFinSitTyp(gesuchToCreate);
+
 		authorizer.checkReadAuthorization(gesuchToPersist);
 
 		// Vor dem Speichern noch pruefen, dass noch kein Gesuch dieses Typs fuer das Dossier und die Periode existiert
@@ -257,6 +260,19 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		antragStatusHistoryService.saveStatusChange(persistedGesuch, null);
 		LOG.info(logInfo.toString());
 		return persistedGesuch;
+	}
+
+	private void setFinSitTyp(Gesuch gesuchToCreate) {
+		var finSitTyp = einstellungService.findEinstellung(
+			EinstellungKey.FINANZIELLE_SITUATION_TYP,
+			gesuchToCreate.extractGemeinde(),
+			gesuchToCreate.getGesuchsperiode()
+		).getValue();
+		try {
+			gesuchToCreate.setFinSitTyp(FinanzielleSituationTyp.valueOf(finSitTyp));
+		} catch (IllegalArgumentException e) {
+			throw new EbeguRuntimeException("setFinSitTyp", "wrong finSitTyp: " + finSitTyp, e);
+		}
 	}
 
 	private void stripGesuchOfInvalidData(@Nonnull Gesuch gesuch) {
@@ -1057,10 +1073,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Benutzer verantwortlicherTS = null;
 
 		if (usernameBG != null) {
-			verantwortlicherBG = benutzerService.findBenutzer(usernameBG).orElse(null);
+			verantwortlicherBG = benutzerService.findBenutzer(usernameBG, gesuch.extractGemeinde().getMandant()).orElse(null);
 		}
 		if (usernameTS != null) {
-			verantwortlicherTS = benutzerService.findBenutzer(usernameTS).orElse(null);
+			verantwortlicherTS = benutzerService.findBenutzer(usernameTS, gesuch.extractGemeinde().getMandant()).orElse(null);
 		}
 
 		return setVerantwortliche(verantwortlicherBG, verantwortlicherTS, gesuch, false, false);

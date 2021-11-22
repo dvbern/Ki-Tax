@@ -257,7 +257,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			if (benutzer.getRole().isRoleGemeindeabhaengig()) {
 				return getAllInstitutionenForGemeindeBenutzer(canEdit, restrictedForSCH);
 			}
-			assert benutzer.getMandant() != null;
+			Objects.requireNonNull(benutzer.getMandant());
 			return getAllInstitutionen(benutzer.getMandant());
 		}
 		return Collections.emptyList();

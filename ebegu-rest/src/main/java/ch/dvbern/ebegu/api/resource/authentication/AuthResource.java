@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -164,7 +165,8 @@ public class AuthResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response login(
 			@Nonnull JaxBenutzer loginElement) {
-		if (configuration.isDummyLoginEnabled(converter.mandantToEntity(loginElement.getMandant(), new Mandant()))) {
+		Mandant mandant = converter.mandantToEntity(loginElement.getMandant(), new Mandant());
+		if (configuration.isDummyLoginEnabled(mandant)) {
 
 			// zuerst im Container einloggen, sonst schlaegt in den Entities die Mandanten-Validierung fehl
 			if (!usernameRoleChecker.checkLogin(loginElement.getUsername(), loginElement.getPassword())) {
@@ -179,9 +181,15 @@ public class AuthResource {
 
 			// Der Benutzer wird gesucht. Wenn er noch nicht existiert wird er erstellt und wenn ja dann aktualisiert
 			Benutzer benutzer = null;
-			Optional<Benutzer> optBenutzer = benutzerService.findAndLockBenutzer(loginElement.getUsername());
+			Optional<Benutzer> optBenutzer = benutzerService.findAndLockBenutzer(loginElement.getUsername(), mandant);
 			if (optBenutzer.isPresent()) {
 				benutzer = optBenutzer.get();
+				if (!loginElement.getMandant().getId().equals(benutzer.getMandant().getId())) {
+					throw new EbeguRuntimeException(
+						"login",
+						"Mandant of loginelement (" + loginElement.getMandant().getName() + ") is not equal to mandant of user ("+ benutzer.getMandant().getName() +")"
+					);
+				}
 				// Damit wird kein neues Element erstellt, sondern das bestehende "verändert". Führt sonst zu einem
 				// Löschen und Wiedereinfügen in der History-Tabelle
 				loginElement.getBerechtigungen().iterator().next().setId(benutzer.getCurrentBerechtigung().getId());
@@ -196,7 +204,7 @@ public class AuthResource {
 			// Dies ist aber gewünschtes Verhalten: Wenn wir uns mit dem Admin-Link einloggen, wollen wir immer Admin sein.
 			benutzerService.saveBenutzer(converter.jaxBenutzerToBenutzer(loginElement, benutzer));
 
-			Optional<AuthAccessElement> accessElement = authService.login(login);
+			Optional<AuthAccessElement> accessElement = authService.login(login, mandant);
 			if (!accessElement.isPresent()) {
 				return Response.status(Response.Status.UNAUTHORIZED).build();
 			}

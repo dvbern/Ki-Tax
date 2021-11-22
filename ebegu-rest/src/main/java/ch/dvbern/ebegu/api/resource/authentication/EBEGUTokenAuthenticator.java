@@ -171,7 +171,7 @@ public class EBEGUTokenAuthenticator implements TokenAuthenticator {
 	@SuppressFBWarnings("NM_CONFUSING")
 	@Override
 	public String getUserName() {
-		return user == null ? null : user.getUsername();
+		return user == null ? null : user.getBenutzer().getId();
 	}
 
 	@Override

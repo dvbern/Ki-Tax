@@ -953,10 +953,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.FERIENINSEL);
     }
 
-    public isTageseltern(): boolean {
-        return this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.TAGESFAMILIEN);
-    }
-
     public isSchulamt(): boolean {
         return this.isTagesschule() || this.isFerieninsel();
     }

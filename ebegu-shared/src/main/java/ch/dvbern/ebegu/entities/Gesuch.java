@@ -56,11 +56,11 @@ import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.FinSitStatus;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
 import ch.dvbern.ebegu.enums.GesuchTypFromAngebotTyp;
 import ch.dvbern.ebegu.util.Constants;
@@ -227,6 +227,11 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Column(nullable = true)
 	@Nullable
 	private FinSitStatus finSitStatus;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	@Nonnull
+	private FinanzielleSituationTyp finSitTyp = FinanzielleSituationTyp.BERN;
 
 	@Column(nullable = false)
 	private boolean gesperrtWegenBeschwerde = false;
@@ -579,6 +584,15 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	public void setFinSitStatus(@Nullable FinSitStatus finSitStatus) {
 		this.finSitStatus = finSitStatus;
+	}
+
+	@Nonnull
+	public FinanzielleSituationTyp getFinSitTyp() {
+		return finSitTyp;
+	}
+
+	public void setFinSitTyp(@Nonnull FinanzielleSituationTyp finSitTyp) {
+		this.finSitTyp = finSitTyp;
 	}
 
 	@Nonnull

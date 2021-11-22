@@ -196,7 +196,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now(), null, gesuchsperiode);
 		final Betreuung betreuungUnderTest = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 
-		loginAsSachbearbeiterInst("sainst", betreuungUnderTest.getInstitutionStammdaten().getInstitution());
+		loginAsSachbearbeiterInst(betreuungUnderTest.getInstitutionStammdaten().getInstitution());
 
 		//create a first mitteilung
 		final Betreuungsmitteilung betmitteilung = TestDataUtil.createBetreuungmitteilung(gesuch.getDossier(), empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,

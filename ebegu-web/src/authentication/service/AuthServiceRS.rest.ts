@@ -188,7 +188,7 @@ export class AuthServiceRS {
     }
 
     private reloadUser(username: string): IPromise<TSBenutzer> {
-        return this.benutzerRS.findBenutzer(username).then(user => {
+        return this.benutzerRS.findBenutzerById(username).then(user => {
             this.principal = user;
             this.principalSubject$.next(user);
             this.setPrincipalInRavenUserContext();
