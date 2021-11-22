@@ -98,7 +98,7 @@ public final class BemerkungsMerger {
 	public static void prepareGeneratedBemerkungen(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		List<VerfuegungsBemerkungDTO> bemerkungen = verfuegungZeitabschnitt.getBemerkungenDTOList().getRequiredBemerkungen();
 		List<VerfuegungZeitabschnittBemerkung> zeitabschnittBemerkungList = bemerkungen.stream()
-				.map(bemerkung -> new VerfuegungZeitabschnittBemerkung(bemerkung.getTranslated(),verfuegungZeitabschnitt))
+				.map(bemerkung -> new VerfuegungZeitabschnittBemerkung(bemerkung ,verfuegungZeitabschnitt))
 				.collect(Collectors.toList());
 		verfuegungZeitabschnitt.setVerfuegungZeitabschnittBemerkungList(zeitabschnittBemerkungList);
 	}

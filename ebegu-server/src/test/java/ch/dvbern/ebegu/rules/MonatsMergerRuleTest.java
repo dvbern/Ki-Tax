@@ -30,7 +30,9 @@ import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.types.DateRange;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -202,6 +204,61 @@ public class MonatsMergerRuleTest {
 				zeitabschnitt.getGueltigkeit().getGueltigBis().getMonth());
 		}
 	}
+
+	@Test
+	public void testBemerkungenGueltigkeitAfterMonthMerge() {
+		ErwerbspensumContainer ewp1 = TestDataUtil.createErwerbspensum(OCTOBER_12,
+			TestDataUtil.ENDE_PERIODE, 60);
+		ErwerbspensumContainer ewp2 = TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
+			70);
+		Assert.assertNotNull(ewp2.getErwerbspensumJA());
+		TestDataUtil.addUnbezahlterUrlaubToErwerbspensum(ewp2.getErwerbspensumJA(), JANUAR_26, JANUAR_26.plusMonths(4));
+
+		final Betreuung betreuung = createBetreuungWithErwerpspensen(ewp1, ewp2);
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+		Assert.assertNotNull(result);
+
+		result = EbeguRuleTestsHelper.runSingleAbschlussRule(new MonatsRule(false), betreuung, result);
+		result = EbeguRuleTestsHelper.runSingleAbschlussRule(new MonatsMergerRule(false, true), betreuung, result);
+		assertZeitabschnitteFullMonth(result);
+
+		//Nicht gemergede Monate, sollen bei allen den Bemerkungen Gueltigkeit = null haben (das heisst die Bemerkungen sind so lange gültig wie der Zeitabschnitt zu dem sie gehören)
+		assertBemerkungenGueltigkeitNull(getVerfuegungZeitabschnittGueltigInMonth(result, Month.AUGUST));
+		assertBemerkungenGueltigkeitNull(getVerfuegungZeitabschnittGueltigInMonth(result, Month.SEPTEMBER));
+		assertBemerkungenGueltigkeitNull(getVerfuegungZeitabschnittGueltigInMonth(result, Month.NOVEMBER));
+		assertBemerkungenGueltigkeitNull(getVerfuegungZeitabschnittGueltigInMonth(result, Month.DECEMBER));
+		assertBemerkungenGueltigkeitNull(getVerfuegungZeitabschnittGueltigInMonth(result, Month.JANUARY));
+		assertBemerkungenGueltigkeitNull(getVerfuegungZeitabschnittGueltigInMonth(result, Month.FEBRUARY));
+		assertBemerkungenGueltigkeitNull(getVerfuegungZeitabschnittGueltigInMonth(result, Month.MARCH));
+		assertBemerkungenGueltigkeitNull(getVerfuegungZeitabschnittGueltigInMonth(result, Month.JUNE));
+		assertBemerkungenGueltigkeitNull(getVerfuegungZeitabschnittGueltigInMonth(result, Month.JULY));
+
+
+		VerfuegungZeitabschnitt zaOktober = getVerfuegungZeitabschnittGueltigInMonth(result, Month.OCTOBER);
+		VerfuegungZeitabschnitt zaApril = getVerfuegungZeitabschnittGueltigInMonth(result, Month.APRIL);
+		VerfuegungZeitabschnitt zaMay = getVerfuegungZeitabschnittGueltigInMonth(result, Month.MAY);
+		//Bei allen gemergeten Monaten Bemerkungen 'VERFUEGUNG_MIT_ANSPRUCH' sollen dieselbe Gültigkeit haben wie der Zeitabschnitt
+		assertBemerkungWithGueltigkeit(zaOktober, MsgKey.VERFUEGUNG_MIT_ANSPRUCH, zaOktober.getGueltigkeit());
+		assertBemerkungWithGueltigkeit(zaApril, MsgKey.VERFUEGUNG_MIT_ANSPRUCH, zaApril.getGueltigkeit());
+		assertBemerkungWithGueltigkeit(zaMay, MsgKey.VERFUEGUNG_MIT_ANSPRUCH, zaMay.getGueltigkeit());
+
+		//Alle anderen Bemerkungen haben die Gültigkeit des ungestrecken Zeitabschnitt
+		assertBemerkungWithGueltigkeit(zaMay, MsgKey.UNBEZAHLTER_URLAUB_MSG, new DateRange(zaMay.getGueltigkeit().getGueltigAb(), JANUAR_26.plusMonths(4)));
+		assertBemerkungWithGueltigkeit(zaApril, MsgKey.UNBEZAHLTER_URLAUB_MSG, new DateRange(JANUAR_26.plusMonths(3), zaApril.getGueltigkeit().getGueltigBis()));
+
+	}
+
+	private void assertBemerkungWithGueltigkeit(VerfuegungZeitabschnitt zeitabschnitt, MsgKey msgKey, DateRange gueltigkeit) {
+		zeitabschnitt.getBemerkungenDTOList().getBemerkungenStream()
+			.filter(bemerkung -> bemerkung.getMsgKey() == msgKey)
+			.forEach(bemerkung -> Assert.assertEquals(bemerkung.getGueltigkeit(), gueltigkeit));
+	}
+
+	private void assertBemerkungenGueltigkeitNull(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+		verfuegungZeitabschnitt.getBemerkungenDTOList().getBemerkungenStream()
+			.forEach(bemerkung -> Assert.assertNull(bemerkung.getGueltigkeit()));
+	}
+
 
 	private List<VerfuegungZeitabschnitt> createGesuchAndCalculateZeitabschnitt(boolean anspruchMonatsweise, final boolean gs2, ErwerbspensumContainer... erwerbspensumContainers) {
 		final Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(gs2);

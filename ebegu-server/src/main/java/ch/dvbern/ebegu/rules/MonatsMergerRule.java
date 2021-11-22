@@ -29,6 +29,8 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
@@ -123,7 +125,7 @@ public class MonatsMergerRule extends AbstractAbschlussRule {
 		VerfuegungZeitabschnitt zeitabschnittFullMonth = createZeitabschnittGueltigFullMonth(zeitabschnittBeforeStretching);
 
 		handleCalculationOfInputValues(zeitabschnittFullMonth, zeitabschnittBeforeStretching);
-
+		handleGueltigkeitOfBemerkungen(zeitabschnittFullMonth, zeitabschnittBeforeStretching.getGueltigkeit());
 		return zeitabschnittFullMonth;
 	}
 
@@ -140,5 +142,34 @@ public class MonatsMergerRule extends AbstractAbschlussRule {
 		zeitabschnittFullMonth.setGueltigkeit(zeitabschnitt.getGueltigkeit().withFullMonths());
 		return zeitabschnittFullMonth;
 	}
+
+	private void handleGueltigkeitOfBemerkungen(
+		VerfuegungZeitabschnitt zeitabschnittFullMonth,
+		DateRange gueltigkeitBeforeStrechting) {
+
+		//Alle Bemerkungen sollen nur solange gültig sein, wie der Zeitabschnitt vor dem Strecken
+		setGueltigkeitBeforeStrechtingToAllBemerkungen(zeitabschnittFullMonth, gueltigkeitBeforeStrechting);
+
+		//Ausser die Bemerkgung Verfuegung_mit_anspruch, die soll so lange gültig sein wie der gestreckte Zeitabschnitt
+		setGueltigkeitOfZeitabschnittToBemerkung(zeitabschnittFullMonth, MsgKey.VERFUEGUNG_MIT_ANSPRUCH);
+	}
+
+	private void setGueltigkeitOfZeitabschnittToBemerkung(
+		VerfuegungZeitabschnitt zeitabschnittFullMonth,
+		MsgKey msgKey) {
+		zeitabschnittFullMonth.getBemerkungenDTOList().getBemerkungenStream()
+			.filter(bemerkung -> bemerkung.getMsgKey() == msgKey)
+			.forEach(verfuegungsBemerkungDTO -> verfuegungsBemerkungDTO.setGueltigkeit(zeitabschnittFullMonth.getGueltigkeit()));
+	}
+
+	private void setGueltigkeitBeforeStrechtingToAllBemerkungen(
+		VerfuegungZeitabschnitt zeitabschnittFullMonth,
+		DateRange gueltigkeitBeforeStrechting) {
+
+		zeitabschnittFullMonth.getBemerkungenDTOList()
+			.getBemerkungenStream()
+			.forEach(bemerkung -> bemerkung.setGueltigkeit(gueltigkeitBeforeStrechting));
+	}
+
 
 }

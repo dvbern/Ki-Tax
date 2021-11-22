@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -87,6 +88,12 @@ public class VerfuegungsBemerkungDTOList {
 		bemerkungenList.add(bemerkung);
 	}
 
+	@Nonnull
+	public Stream<VerfuegungsBemerkungDTO> getBemerkungenStream() {
+		return this.bemerkungenList.stream();
+	}
+
+
 	@Nullable
 	public VerfuegungsBemerkungDTO findFirstBemerkungByMsgKey(@Nonnull MsgKey msgKey) {
 		return this.bemerkungenList
@@ -114,9 +121,8 @@ public class VerfuegungsBemerkungDTOList {
 	 * Fügt otherBemerkungen zur Liste hinzu
 	 */
 	public void mergeBemerkungenMap(@Nonnull VerfuegungsBemerkungDTOList otherList) {
-		for (VerfuegungsBemerkungDTO otherBemerkung : otherList.bemerkungenList) {
-			this.addBemerkung(otherBemerkung);
-		}
+		otherList.bemerkungenList
+			.forEach(bemerkung -> this.bemerkungenList.add(bemerkung.clone()));
 	}
 
 	/**

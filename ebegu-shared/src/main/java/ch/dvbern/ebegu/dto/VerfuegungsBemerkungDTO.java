@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rules.RuleValidity;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 
 /**
@@ -42,6 +43,9 @@ public class VerfuegungsBemerkungDTO {
 
 	@Nonnull
 	private Locale sprache;
+
+	@Nullable
+	private DateRange gueltigkeit;
 
 	public VerfuegungsBemerkungDTO(@Nonnull RuleValidity ruleValidity, @Nonnull MsgKey msgKey, @Nonnull Locale sprache, @Nullable Object... args) {
 		this.ruleValidity = ruleValidity;
@@ -77,12 +81,33 @@ public class VerfuegungsBemerkungDTO {
 		this.ruleValidity = ruleValidity;
 	}
 
+	@Nullable
+	public DateRange getGueltigkeit() {
+		return gueltigkeit;
+	}
+
+	public void setGueltigkeit(@Nullable DateRange gueltigkeit) {
+		this.gueltigkeit = gueltigkeit;
+	}
+
 	public String getTranslated() {
 		if (args != null) {
 			return ServerMessageUtil.translateEnumValue(msgKey, sprache, args);
 		} else {
 			return ServerMessageUtil.translateEnumValue(msgKey, sprache);
 		}
+	}
+
+	@Override
+	public VerfuegungsBemerkungDTO clone() {
+		VerfuegungsBemerkungDTO clone = new VerfuegungsBemerkungDTO(
+			this.ruleValidity,
+			this.msgKey,
+			this.sprache,
+			this.args);
+
+		clone.setGueltigkeit(this.gueltigkeit);
+		return clone;
 	}
 
 	@Override
@@ -102,7 +127,7 @@ public class VerfuegungsBemerkungDTO {
 
 	@Override
 	public int hashCode() {
-		int result = Objects.hash(ruleValidity, msgKey, sprache);
+		int result = Objects.hash(ruleValidity, msgKey, sprache, gueltigkeit);
 		result = 31 * result + Arrays.hashCode(args);
 		return result;
 	}
@@ -113,6 +138,7 @@ public class VerfuegungsBemerkungDTO {
 		sb.append("msgKey=").append(msgKey);
 		sb.append(", ruleValidity=").append(ruleValidity);
 		sb.append(", args=").append(Arrays.toString(args));
+		sb.append(", gueltigkeit=").append(gueltigkeit);
 		sb.append('}');
 		return sb.toString();
 	}
