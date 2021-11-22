@@ -112,7 +112,7 @@ public class BetreuungsgutscheinExecutor {
 		zeitabschnitte = abschlussNormalizerOhneMonate.executeIfApplicable(platz, zeitabschnitte);
 		// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
 		zeitabschnitte = monatsRule.executeIfApplicable(platz, zeitabschnitte);
-		// Der Anspruch soll nur noch monatsweise berechnet werden
+		// Danach den Anspruch nur noch monatsweise berechnet werden
 		zeitabschnitte = monatsMergerRule.executeIfApplicable(platz, zeitabschnitte);
 		// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
 		zeitabschnitte = mutationsMerger.executeIfApplicable(platz, zeitabschnitte);

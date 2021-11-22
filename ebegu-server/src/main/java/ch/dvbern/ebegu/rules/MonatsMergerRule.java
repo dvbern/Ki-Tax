@@ -17,7 +17,12 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.time.Month;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -30,6 +35,9 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
+/**
+ * Sonderregel die nach der MonatsRule ausgeführt wird. Die Regel sorgt dafür, dass es für jeden Monat genau einen Zeitabschnitt gibt.
+ */
 public class MonatsMergerRule extends AbstractAbschlussRule {
 
 	private final boolean anspruchsBerchtigungMontasweise;
@@ -61,7 +69,76 @@ public class MonatsMergerRule extends AbstractAbschlussRule {
 		@Nonnull AbstractPlatz platz,
 		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 
-		return zeitabschnitte;
+		Map<Month, List<VerfuegungZeitabschnitt>> monthVerfuegungZeitabschnittMap = mapZeitabschnitteByMonth(zeitabschnitte);
+		return getZeitabschnitteFullMonth(monthVerfuegungZeitabschnittMap);
+	}
+
+
+	private Map<Month, List<VerfuegungZeitabschnitt>> mapZeitabschnitteByMonth(List<VerfuegungZeitabschnitt> zeitabschnitte) {
+		return zeitabschnitte.stream()
+			.collect(Collectors.groupingBy(zeitabschnitt -> zeitabschnitt.getGueltigkeit().getGueltigAb().getMonth(),
+				Collectors.toCollection(ArrayList::new)));
+	}
+
+	private List<VerfuegungZeitabschnitt> getZeitabschnitteFullMonth(Map<Month, List<VerfuegungZeitabschnitt>> monthVerfuegungZeitabschnittMap) {
+		return Arrays.stream(Month.values())
+			.map(month -> getZeitabschnittFullMonth(monthVerfuegungZeitabschnittMap.get(month)))
+			.sorted()
+			.collect(Collectors.toList());
+	}
+
+	private VerfuegungZeitabschnitt getZeitabschnittFullMonth(List<VerfuegungZeitabschnitt> monthlyZeitabschnitte) {
+		if(monthlyZeitabschnitte.size() == 1) {
+			return monthlyZeitabschnitte.get(0);
+		}
+
+		//Die Zeitabschnitte sollen auf den ganzen Monat erweitert werden. Danach haben alle Zeitabschnitte eine Gültigkeit
+		//vom ersten bis zum letzten Tag es Monats, die Calculation Input Werte werden dabei Prozentual zu den anzahl Tagen ausgerechnet
+		List<VerfuegungZeitabschnitt> strechedZeitabschnitte = strechZeitabschnitteToFullMonth(monthlyZeitabschnitte);
+		return mergeZeitabschnitte(strechedZeitabschnitte);
+	}
+
+	private VerfuegungZeitabschnitt mergeZeitabschnitte(List<VerfuegungZeitabschnitt> zeitabschnitte) {
+		VerfuegungZeitabschnitt zeitabschnittMerged = null;
+
+		for(VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
+			if(zeitabschnittMerged == null) {
+				zeitabschnittMerged = zeitabschnitt;
+				continue;
+			}
+
+			zeitabschnittMerged.add(zeitabschnitt);
+		}
+
+		return zeitabschnittMerged;
+	}
+
+	private List<VerfuegungZeitabschnitt> strechZeitabschnitteToFullMonth(List<VerfuegungZeitabschnitt> zeitabschnitteList) {
+		return zeitabschnitteList.stream()
+			.map(this::strechZeitabschnittToFullMonth)
+			.collect(Collectors.toList());
+	}
+
+	private VerfuegungZeitabschnitt strechZeitabschnittToFullMonth(VerfuegungZeitabschnitt zeitabschnittBeforeStretching) {
+		VerfuegungZeitabschnitt zeitabschnittFullMonth = createZeitabschnittGueltigFullMonth(zeitabschnittBeforeStretching);
+
+		handleCalculationOfInputValues(zeitabschnittFullMonth, zeitabschnittBeforeStretching);
+
+		return zeitabschnittFullMonth;
+	}
+
+	private void handleCalculationOfInputValues(VerfuegungZeitabschnitt zeitabschnittSteched, VerfuegungZeitabschnitt zeitabschnittBeforeStretching) {
+		final int lengthOfMonth = zeitabschnittBeforeStretching.getGueltigkeit().getGueltigAb().lengthOfMonth();
+		final long numberOfDaysBeforeStreching = zeitabschnittBeforeStretching.getGueltigkeit().getDays();
+
+		double percentageOfDays = 100.0 / lengthOfMonth * numberOfDaysBeforeStreching;
+		zeitabschnittSteched.calculateInputValuesProportionaly(percentageOfDays);
+	}
+
+	private VerfuegungZeitabschnitt createZeitabschnittGueltigFullMonth(VerfuegungZeitabschnitt zeitabschnitt) {
+		VerfuegungZeitabschnitt zeitabschnittFullMonth = new VerfuegungZeitabschnitt(zeitabschnitt);
+		zeitabschnittFullMonth.setGueltigkeit(zeitabschnitt.getGueltigkeit().withFullMonths());
+		return zeitabschnittFullMonth;
 	}
 
 }
