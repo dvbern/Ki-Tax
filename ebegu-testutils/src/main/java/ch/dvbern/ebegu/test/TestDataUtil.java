@@ -1876,6 +1876,23 @@ public final class TestDataUtil {
 		return benutzer;
 	}
 
+	public static Benutzer createBenutzerWithDefaultGemeinde(
+		UserRole role, String userName,
+		@Nullable Traegerschaft traegerschaft,
+		@Nullable Institution institution,
+		@Nonnull Mandant mandant,
+		@Nonnull Persistence persistence,
+		@Nullable String name,
+		@Nullable String vorname,
+		@Nonnull String userId) {
+		Benutzer benutzer = createBenutzer(role, userName, traegerschaft, institution, mandant, name, vorname);
+		benutzer.setId(userId);
+		if (role.isRoleGemeindeabhaengig()) {
+			benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(getGemeindeParis(persistence));
+		}
+		return persistence.persist(benutzer);
+	}
+
 	public static Benutzer createBenutzer(
 		UserRole role,
 		String userName,
@@ -1952,6 +1969,24 @@ public final class TestDataUtil {
 		persistence.merge(benutzer);
 		return benutzer;
 	}
+
+	public static Benutzer createDummySuperAdmin(Persistence persistence, Mandant mandant, String name, String vorname, String id) {
+		//machmal brauchen wir einen dummy admin in der DB
+		Benutzer potentiallyExisting = persistence.find(Benutzer.class, id);
+		if (potentiallyExisting != null) {
+			return potentiallyExisting;
+		}
+		if (mandant == null) {
+			mandant = TestDataUtil.createDefaultMandant();
+			persistence.persist(mandant);
+		}
+		final Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SUPER_ADMIN, "superadmin",
+				null, null, mandant, persistence, name, vorname, id);
+		persistence.merge(benutzer);
+		return benutzer;
+	}
+
+
 
 	public static AntragTableFilterDTO createAntragTableFilterDTO() {
 		AntragTableFilterDTO filterDTO = new AntragTableFilterDTO();
