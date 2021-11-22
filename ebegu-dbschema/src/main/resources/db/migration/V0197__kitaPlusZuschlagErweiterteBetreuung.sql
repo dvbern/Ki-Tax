@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 ALTER TABLE erweiterte_betreuung
-ADD COLUMN kita_plus_zuschlag BIT NOT NULL DEFAULT FALSE;
+ADD COLUMN kita_plus_zuschlag BIT;
 
 ALTER TABLE erweiterte_betreuung_aud
 ADD COLUMN kita_plus_zuschlag BIT;
