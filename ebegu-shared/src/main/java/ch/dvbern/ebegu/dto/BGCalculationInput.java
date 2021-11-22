@@ -812,6 +812,66 @@ public class BGCalculationInput {
 		this.minimalErforderlichesPensum = other.minimalErforderlichesPensum;
 	}
 
+	public void calculateInputValuesProportionaly(double percentage) {
+		if (!isPercentCaluclable(percentage)) {
+			throw new IllegalArgumentException(
+				"Prozentualle Input Berechnung kann nicht durchgeführt werden mit einem Prozentuallen Wert von "
+					+ percentage);
+		}
+
+		this.erwerbspensumGS1 = calculatePercentage(this.erwerbspensumGS1, percentage);
+		this.erwerbspensumGS2 = calculatePercentage(this.erwerbspensumGS2, percentage);
+		this.betreuungspensumProzent = calculatePercentage(this.betreuungspensumProzent, percentage);
+		this.anspruchspensumProzent = calculatePercentageInt(this.anspruchspensumProzent, percentage);
+		this.anspruchspensumRest = calculatePercentageInt(this.anspruchspensumRest, percentage);
+		this.fachstellenpensum = calculatePercentageInt(this.fachstellenpensum, percentage);
+		this.ausserordentlicherAnspruch = calculatePercentageInt(this.ausserordentlicherAnspruch, percentage);
+		this.monatlicheBetreuungskosten = calculatePercentage(this.monatlicheBetreuungskosten, percentage);
+		this.verguenstigungMahlzeitenTotal = calculatePercentage(this.verguenstigungMahlzeitenTotal, percentage);
+		this.tarifHauptmahlzeit = calculatePercentage(this.tarifHauptmahlzeit, percentage);
+		this.tarifNebenmahlzeit = calculatePercentage(this.tarifNebenmahlzeit, percentage);
+		this.massgebendesEinkommenVorAbzugFamgr = calculatePercentage(this.massgebendesEinkommenVorAbzugFamgr, percentage);
+		this.anzahlHauptmahlzeiten = calculatePercentage(this.anzahlHauptmahlzeiten, percentage);
+		this.anzahlNebenmahlzeiten = calculatePercentage(this.anzahlNebenmahlzeiten, percentage);
+		this.tsInputMitBetreuung.calculatePercentage(percentage);
+		this.tsInputOhneBetreuung.calculatePercentage(percentage);
+	}
+
+	private boolean isPercentCaluclable(double percent) {
+		return percent > 0 && percent < 100;
+	}
+
+	@Nullable
+	private Integer calculatePercentage(@Nullable Integer value, double percent) {
+		if(value == null) {
+			return value;
+		}
+
+		return calculatePercentageInt(value, percent);
+	}
+
+	private int calculatePercentageInt(int value, double percent) {
+		return Math.toIntExact(Math.round(actualCalculatePercentage(value*1.0, percent)));
+	}
+
+	@Nullable
+	private BigDecimal calculatePercentage(@Nullable BigDecimal value, double percent) {
+		if(value == null) {
+			return null;
+		}
+
+		return BigDecimal.valueOf(Math.round(actualCalculatePercentage(value.doubleValue(), percent)));
+	}
+
+	private double actualCalculatePercentage(double value, double percent) {
+		if(value == 0) {
+			return 0;
+		}
+
+		return value / 100 * percent;
+	}
+
+
 	public boolean isSame(BGCalculationInput other) {
 		return
 			isSameErwerbspensum(erwerbspensumGS1, other.erwerbspensumGS1) &&

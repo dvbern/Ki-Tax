@@ -594,6 +594,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	}
 
+	public void calculateInputValuesProportionaly(double percentag) {
+		this.getBgCalculationInputAsiv().calculateInputValuesProportionaly(percentag);
+		this.getBgCalculationInputGemeinde().calculateInputValuesProportionaly(percentag);
+	}
+
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
 
 	@Nonnull
