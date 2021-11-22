@@ -2638,6 +2638,6 @@
     "LATS_ABGESCHLOSSEN": "Dieser Antrag wurde abgeschlossen.",
     "INSTITUTION_GUELTIGKEIT_DECREASED_WARNUNG": "Achtung: Sie haben die Gültigkeit dieser Institution verändert. Offene Mutationsmeldungen zu Betreuungen dieser Institution werden angepasst. Sind Sie sicher, dass Sie diese Änderung speichern möchten?",
     "TS_MUTATION_EXISTIERT": "Es gibt bereits eine Mutation zu diesem Antrag",
-    "TS_MUTATION_EXISTIERT_BODY": "Die Tagesschulanmeldung muss bei der neusten Mutation bearbeitet werden. Falls diese noch in Bearbeitung der Antragstellenden sind muss sie zuerst freigegeben oder gelöscht werden.",
+    "TS_MUTATION_EXISTIERT_BODY": "Die Tagesschulanmeldung muss bei der neusten Mutation bearbeitet werden. Falls diese noch in Bearbeitung der Antragstellenden ist, muss sie zuerst freigegeben oder gelöscht werden.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
