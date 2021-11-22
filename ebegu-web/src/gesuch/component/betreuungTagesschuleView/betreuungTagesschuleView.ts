@@ -44,6 +44,7 @@ import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
+import {OkDialogLongTextController} from '../../dialog/OkDialogLongTextController';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
@@ -59,7 +60,8 @@ import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
-const dialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const okHtmlDialogTempl = require('../../../gesuch/dialog/okDialogLongTextTemplate.html');
 
 export class BetreuungTagesschuleViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -117,7 +119,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public agbVorhanden: boolean;
     private _showWarningModuleZugewiesen: boolean = false;
     public isScolaris: boolean = false;
-    public isLastGesuch: boolean = false;
 
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
 
@@ -224,9 +225,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             }
             this.aktuellGueltig = false;
         }
-        if (this.gesuchModelManager.isNeuestesGesuch()) {
-            this.isLastGesuch = true;
-        }
     }
 
     public getTagesschuleAnmeldungNotYetReadyText(): string {
@@ -313,7 +311,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
                 this.getBetreuungModel().belegungTagesschule = undefined;
             }
             if (this.direktAnmeldenSchulamt()) {
-                return this.dvDialog.showRemoveDialog(dialogTemplate, this.form, RemoveDialogController, {
+                return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                     title: 'CONFIRM_SAVE_TAGESSCHULE',
                     deleteText: 'BESCHREIBUNG_SAVE_TAGESSCHULE',
                     parentController: undefined,
@@ -418,7 +416,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             return;
         }
         const deleteText = (this.isScolaris) ? 'CONFIRM_STORNIEREN_TAGESSCHULE_WARNING_SCOLARIS' : '';
-        this.dvDialog.showRemoveDialog(dialogTemplate, this.form, RemoveDialogController, {
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             title: 'CONFIRM_STORNIEREN_TAGESSCHULE',
             deleteText,
             parentController: undefined,
@@ -524,6 +522,13 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public tsPlatzAnfordern(): void {
+        if (!this.gesuchModelManager.isNeuestesGesuch()) {
+            this.dvDialog.showDialog(okHtmlDialogTempl, OkDialogLongTextController, {
+                title: this.$translate.instant('TS_MUTATION_EXISTIERT'),
+                body: this.$translate.instant('TS_MUTATION_EXISTIERT_BODY'),
+            });
+            return;
+        }
         if (this.form.$valid) {
             this.preSave();
             this.anmeldungSchulamtFalscheAngaben();
