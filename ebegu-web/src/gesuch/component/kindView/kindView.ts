@@ -341,7 +341,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     // diese Fragen sind nur relevant, wenn der Anpruch abhängig vom Beschäftigungspensum ist.
     public showExtendedKindQuestions(): boolean {
-        return this.anspruchUnabhaengingVomBeschaeftigungspensum === false;
+        return !this.anspruchUnabhaengingVomBeschaeftigungspensum;
     }
 
     public showAusAsylwesen(): boolean {
