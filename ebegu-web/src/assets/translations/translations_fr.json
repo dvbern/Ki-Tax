@@ -2646,5 +2646,7 @@
     "GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN": "Gemeindespezifische Konfigurationen für BG (Solothurn)",
     "ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM": "Anspruch unabhängig vom Beschäftigungspensum (Solothurn)",
     "GEMEINDE_ANTRAG_GELOESCHT": "Der Antrag {{typ}} für die Gemeinde {{gemeinde}} in der Gesuchsperiode {{periode}} wurde gelöscht",
+    "TS_MUTATION_EXISTIERT": "Es gibt bereits eine Mutation zu diesem Antrag",
+    "TS_MUTATION_EXISTIERT_BODY": "Die Tagesschulanmeldung muss bei der neusten Mutation bearbeitet werden. Falls diese noch in Bearbeitung der Antragstellenden ist, muss sie zuerst freigegeben oder gelöscht werden.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
