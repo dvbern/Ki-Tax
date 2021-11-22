@@ -392,26 +392,25 @@ public class BetreuungsgutscheinConfigurator {
 
 	private Rule configureErwerbspensumKantonRule(Map<EinstellungKey, Einstellung> einstellungMap) {
 		var anspruchUnabhaengigVonBeschaeftigungspensum = einstellungMap.get(ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
-		Rule rule;
+
 		if (anspruchUnabhaengigVonBeschaeftigungspensum.getValueAsBoolean()) {
-			rule = new ErwerbspensumNotRelevantForAnspruchCalcRule(
+			return new ErwerbspensumNotRelevantForAnspruchCalcRule(
 				RuleKey.ERWERBSPENSUM,
 				RuleType.GRUNDREGEL_CALC,
 				RuleValidity.ASIV,
 				defaultGueltigkeit,
 				locale
 			);
-		} else {
-			Einstellung minEWP_nichtEingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
-			Einstellung minEWP_eingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_EINGESCHULT);
-			Objects.requireNonNull(minEWP_nichtEingeschultAsiv, "Parameter MIN_ERWERBSPENSUM_NICHT_EINGESCHULT muss gesetzt sein");
-			Objects.requireNonNull(minEWP_eingeschultAsiv, "Parameter MIN_ERWERBSPENSUM_EINGESCHULT muss gesetzt sein");
-			rule = new ErwerbspensumAsivCalcRule(
-				defaultGueltigkeit,
-				minEWP_nichtEingeschultAsiv.getValueAsInteger(),
-				minEWP_eingeschultAsiv.getValueAsInteger(),
-				locale);
 		}
-		return rule;
+
+		Einstellung minEWP_nichtEingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
+		Einstellung minEWP_eingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_EINGESCHULT);
+		Objects.requireNonNull(minEWP_nichtEingeschultAsiv, "Parameter MIN_ERWERBSPENSUM_NICHT_EINGESCHULT muss gesetzt sein");
+		Objects.requireNonNull(minEWP_eingeschultAsiv, "Parameter MIN_ERWERBSPENSUM_EINGESCHULT muss gesetzt sein");
+		return new ErwerbspensumAsivCalcRule(
+			defaultGueltigkeit,
+			minEWP_nichtEingeschultAsiv.getValueAsInteger(),
+			minEWP_eingeschultAsiv.getValueAsInteger(),
+			locale);
 	}
 }
