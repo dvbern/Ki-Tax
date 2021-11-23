@@ -26,7 +26,14 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.rules.util.MahlzeitenverguenstigungParameter;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_MAHLZEIT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_MAHLZEIT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_MAHLZEIT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
@@ -77,7 +84,7 @@ public final class BGRechnerParameterDTO {
 	private BigDecimal maxTarifTagesschuleOhnePaedagogischerBetreuung;
 	private BigDecimal minTarifTagesschule;
 
-	private Boolean mahlzeitenverguenstigungEnabled;
+	private MahlzeitenverguenstigungParameter mahlzeitenverguenstigungParameter = new MahlzeitenverguenstigungParameter();
 
 	private BGRechnerParameterGemeindeDTO gemeindeParameter = new BGRechnerParameterGemeindeDTO();
 
@@ -101,7 +108,16 @@ public final class BGRechnerParameterDTO {
 		this.setMaxTarifTagesschuleMitPaedagogischerBetreuung(asBigDecimal(paramMap, MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG, gesuchsperiode, gemeinde));
 		this.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(asBigDecimal(paramMap, MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG, gesuchsperiode, gemeinde));
 		this.setMinTarifTagesschule(asBigDecimal(paramMap, MIN_TARIF, gesuchsperiode, gemeinde));
-		this.setMahlzeitenverguenstigungEnabled(asBoolean(paramMap, EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED, gesuchsperiode, gemeinde));
+		mahlzeitenverguenstigungParameter = new MahlzeitenverguenstigungParameter(
+			asBoolean(paramMap, EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED, gesuchsperiode, gemeinde),
+			asBoolean(paramMap, EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED, gesuchsperiode, gemeinde),
+			asBigDecimal(paramMap, GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN, gesuchsperiode, gemeinde),
+			asBigDecimal(paramMap, GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN, gesuchsperiode, gemeinde),
+			asBigDecimal(paramMap, GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT, gesuchsperiode, gemeinde),
+			asBigDecimal(paramMap, GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_MAHLZEIT, gesuchsperiode, gemeinde),
+			asBigDecimal(paramMap, GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_MAHLZEIT, gesuchsperiode, gemeinde),
+			asBigDecimal(paramMap, GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_MAHLZEIT, gesuchsperiode, gemeinde)
+		);
 		this.setGemeindeParameter(new BGRechnerParameterGemeindeDTO(paramMap, gesuchsperiode, gemeinde));
 	}
 
@@ -284,11 +300,15 @@ public final class BGRechnerParameterDTO {
 	}
 
 	public Boolean getMahlzeitenverguenstigungEnabled() {
-		return mahlzeitenverguenstigungEnabled;
+		return mahlzeitenverguenstigungParameter.isEnabled();
 	}
 
-	public void setMahlzeitenverguenstigungEnabled(Boolean mahlzeitenverguenstigungEnabled) {
-		this.mahlzeitenverguenstigungEnabled = mahlzeitenverguenstigungEnabled;
+	public MahlzeitenverguenstigungParameter getMahlzeitenverguenstigungParameter() {
+		return mahlzeitenverguenstigungParameter;
+	}
+
+	public void setMahlzeitenverguenstigungParameter(MahlzeitenverguenstigungParameter mahlzeitenverguenstigungParameter) {
+		this.mahlzeitenverguenstigungParameter = mahlzeitenverguenstigungParameter;
 	}
 
 	public BGRechnerParameterGemeindeDTO getGemeindeParameter() {

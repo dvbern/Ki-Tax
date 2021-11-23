@@ -61,7 +61,7 @@ Content-Type: text/html;charset=utf-8
     <#if configuration.isDevmode>
 		<p>
 			<b>Hierbei handelt es sich um eine Nachricht von einem Testsystem. Dieses Testsystem wird für Schulungen
-				verwendet. Über dieses System abgehandelte Gesuche verfügen über keine Zahlungsberechtigung!</b><br><br>
+				verwendet. Über dieses System abgehandelte Anträge verfügen über keine Zahlungsberechtigung!</b><br><br>
 		</p>
     </#if>
 </div>

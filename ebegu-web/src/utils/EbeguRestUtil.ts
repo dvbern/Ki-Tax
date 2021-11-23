@@ -157,6 +157,7 @@ import {TSTsCalculationResult} from '../models/TSTsCalculationResult';
 import {TSUnbezahlterUrlaub} from '../models/TSUnbezahlterUrlaub';
 import {TSVerfuegung} from '../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../models/TSVerfuegungZeitabschnitt';
+import {TSVerfuegungZeitabschnittBemerkung} from '../models/TSVerfuegungZeitabschnittBemerkung';
 import {TSVorlage} from '../models/TSVorlage';
 import {TSWizardStep} from '../models/TSWizardStep';
 import {TSWizardStepX} from '../models/TSWizardStepX';
@@ -2553,6 +2554,7 @@ export class EbeguRestUtil {
             erweiterteBetreuung.erweiterteBeduerfnisseBestaetigt;
         restErweiterteBetreuung.betreuungInGemeinde = erweiterteBetreuung.betreuungInGemeinde;
         restErweiterteBetreuung.keineKesbPlatzierung = erweiterteBetreuung.keineKesbPlatzierung;
+        restErweiterteBetreuung.kitaPlusZuschlag = erweiterteBetreuung.kitaPlusZuschlag;
         if (erweiterteBetreuung.fachstelle) {
             restErweiterteBetreuung.fachstelle = this.fachstelleToRestObject({}, erweiterteBetreuung.fachstelle);
         }
@@ -2569,6 +2571,7 @@ export class EbeguRestUtil {
             erweiterteBetreuungTS.erweiterteBeduerfnisseBestaetigt =
                 erweiterteBetreuungFromServer.erweiterteBeduerfnisseBestaetigt;
             erweiterteBetreuungTS.keineKesbPlatzierung = erweiterteBetreuungFromServer.keineKesbPlatzierung;
+            erweiterteBetreuungTS.kitaPlusZuschlag = erweiterteBetreuungFromServer.kitaPlusZuschlag;
             erweiterteBetreuungTS.betreuungInGemeinde = erweiterteBetreuungFromServer.betreuungInGemeinde;
             if (erweiterteBetreuungFromServer.fachstelle) {
                 erweiterteBetreuungTS.fachstelle =
@@ -3053,7 +3056,6 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.anspruchsberechtigteAnzahlZeiteinheiten =
                 zeitabschnittFromServer.anspruchsberechtigteAnzahlZeiteinheiten;
             verfuegungZeitabschnittTS.anspruchspensumRest = zeitabschnittFromServer.anspruchspensumRest;
-            verfuegungZeitabschnittTS.bemerkungen = zeitabschnittFromServer.bemerkungen;
             verfuegungZeitabschnittTS.betreuungspensumProzent = zeitabschnittFromServer.betreuungspensumProzent;
             verfuegungZeitabschnittTS.betreuungspensumZeiteinheit = zeitabschnittFromServer.betreuungspensumZeiteinheit;
             verfuegungZeitabschnittTS.bgPensum = zeitabschnittFromServer.bgPensum;
@@ -3096,7 +3098,25 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.tsCalculationResultOhnePaedagogischerBetreuung =
                 this.parseTsCalculationResult(zeitabschnittFromServer.tsCalculationResultOhnePaedagogischerBetreuung);
             verfuegungZeitabschnittTS.verguenstigungMahlzeitTotal = zeitabschnittFromServer.verguenstigungMahlzeitTotal;
+
+            if (zeitabschnittFromServer.verfuegungZeitabschnittBemerkungList) {
+                zeitabschnittFromServer.verfuegungZeitabschnittBemerkungList.forEach((bemerkung: any) => {
+                    verfuegungZeitabschnittTS.bemerkungen.push(
+                        this.parseVerfuegungZeitabschnittBemerkung(bemerkung));
+                });
+            }
+
             return verfuegungZeitabschnittTS;
+        }
+        return undefined;
+    }
+
+    private parseVerfuegungZeitabschnittBemerkung(zeitabschnittBemerkungFromServer: any): TSVerfuegungZeitabschnittBemerkung {
+        if (zeitabschnittBemerkungFromServer) {
+            const result = new TSVerfuegungZeitabschnittBemerkung();
+            this.parseDateRangeEntity(zeitabschnittBemerkungFromServer, result);
+            result.bemerkung = zeitabschnittBemerkungFromServer.bemerkung;
+            return result;
         }
         return undefined;
     }

@@ -44,6 +44,7 @@ import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
+import {OkDialogLongTextController} from '../../dialog/OkDialogLongTextController';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
@@ -59,7 +60,8 @@ import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
-const dialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const okHtmlDialogTempl = require('../../../gesuch/dialog/okDialogLongTextTemplate.html');
 
 export class BetreuungTagesschuleViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -199,7 +201,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(),
             this.gesuchModelManager.getGesuchsperiode(),
             false);
-
         if (this.betreuung.institutionStammdaten) {
             this.loadEinstellungPropertiesForTagesschule();
         }
@@ -207,6 +208,21 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             this.minEintrittsdatum = this.getMinErsterSchultag();
             this.setErsterSchultag();
         }
+        this.initMutation();
+    }
+
+    public getTagesschuleAnmeldungNotYetReadyText(): string {
+        if (this.gesuchModelManager.gemeindeKonfiguration.isTagesschulAnmeldungBeforePeriode()) {
+            const terminValue = DateUtil.momentToLocalDateFormat(
+                this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleAktivierungsdatum, 'DD.MM.YYYY');
+            return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_AB_INFO', {
+                termin: terminValue,
+            });
+        }
+        return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_INFO');
+    }
+
+    private initMutation(): void {
         if (!this.getBetreuungModel().anmeldungMutationZustand) {
             return;
         }
@@ -223,17 +239,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             }
             this.aktuellGueltig = false;
         }
-    }
-
-    public getTagesschuleAnmeldungNotYetReadyText(): string {
-        if (this.gesuchModelManager.gemeindeKonfiguration.isTagesschulAnmeldungBeforePeriode()) {
-            const terminValue = DateUtil.momentToLocalDateFormat(
-                this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleAktivierungsdatum, 'DD.MM.YYYY');
-            return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_AB_INFO', {
-                termin: terminValue,
-            });
-        }
-        return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_INFO');
     }
 
     private loadEinstellungPropertiesForTagesschule(): void {
@@ -309,7 +314,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
                 this.getBetreuungModel().belegungTagesschule = undefined;
             }
             if (this.direktAnmeldenSchulamt()) {
-                return this.dvDialog.showRemoveDialog(dialogTemplate, this.form, RemoveDialogController, {
+                return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                     title: 'CONFIRM_SAVE_TAGESSCHULE',
                     deleteText: 'BESCHREIBUNG_SAVE_TAGESSCHULE',
                     parentController: undefined,
@@ -414,7 +419,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             return;
         }
         const deleteText = (this.isScolaris) ? 'CONFIRM_STORNIEREN_TAGESSCHULE_WARNING_SCOLARIS' : '';
-        this.dvDialog.showRemoveDialog(dialogTemplate, this.form, RemoveDialogController, {
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             title: 'CONFIRM_STORNIEREN_TAGESSCHULE',
             deleteText,
             parentController: undefined,
@@ -520,6 +525,13 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public tsPlatzAnfordern(): void {
+        if (!this.gesuchModelManager.isNeuestesGesuch()) {
+            this.dvDialog.showDialog(okHtmlDialogTempl, OkDialogLongTextController, {
+                title: this.$translate.instant('TS_MUTATION_EXISTIERT'),
+                body: this.$translate.instant('TS_MUTATION_EXISTIERT_BODY'),
+            });
+            return;
+        }
         if (this.form.$valid) {
             this.preSave();
             this.anmeldungSchulamtFalscheAngaben();

@@ -28,6 +28,7 @@ import {FormGroup} from '@angular/forms';
 import {combineLatest, Subscription} from 'rxjs';
 import {mergeMap, startWith, tap} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
+import {TSFerienbetreuungAngaben} from '../../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
 import {TSFerienbetreuungAngabenContainer} from '../../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {LogFactory} from '../../../../core/logging/LogFactory';
 import {FerienbetreuungService} from '../../services/ferienbetreuung.service';
@@ -90,9 +91,7 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy {
         if (!this.form) {
             return;
         }
-        const angaben = this.container?.isAtLeastInPruefungKanton() ?
-            this.container?.angabenKorrektur :
-            this.container?.angabenDeklaration;
+        const angaben = this.getAngabenForStatus();
         combineLatest([
             this.form.get('personalkosten').valueChanges.pipe(
                 startWith(angaben?.kostenEinnahmen.personalkosten),
@@ -126,8 +125,14 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy {
         });
     }
 
+    private getAngabenForStatus(): TSFerienbetreuungAngaben {
+        return this.container?.isAtLeastInPruefungKanton() ?
+            this.container?.angabenKorrektur :
+            this.container?.angabenDeklaration;
+    }
+
     private setUpValuesFromContainer(): void {
-        const angaben = this.container?.angabenDeklaration;
+        const angaben = this.getAngabenForStatus();
         this.berechnung.anzahlBetreuungstageKinderBern = angaben?.nutzung?.anzahlBetreuungstageKinderBern;
         this.berechnung.betreuungstageKinderDieserGemeinde = angaben?.nutzung?.betreuungstageKinderDieserGemeinde;
         this.berechnung.betreuungstageKinderDieserGemeindeSonderschueler =

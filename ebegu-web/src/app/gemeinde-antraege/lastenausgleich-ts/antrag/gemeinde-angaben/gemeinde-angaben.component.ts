@@ -35,6 +35,7 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {TSEinstellung} from '../../../../../models/TSEinstellung';
 import {TSExceptionReport} from '../../../../../models/TSExceptionReport';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgOkDialogComponent} from '../../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
@@ -509,12 +510,12 @@ export class GemeindeAngabenComponent implements OnInit {
                 ),
         ]).subscribe(values => {
                 this.angabenForm.get('lastenausgleichsberechtigerBetrag').setValue(
-                    // round to 0.2
-                    (values[0] - values[1]).toFixed(2),
+                    // round to next Franken
+                    Math.ceil(values[0] - values[1]).toFixed(2),
                 );
                 this.angabenForm.get('lastenausgleichsberechtigerBetragRO').setValue(
-                    // round to 0.2
-                    (values[0] - values[1]).toFixed(2),
+                    // round to next Franken
+                    Math.ceil(values[0] - values[1]).toFixed(2),
                 );
             },
             () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')),
@@ -574,8 +575,10 @@ export class GemeindeAngabenComponent implements OnInit {
                     .pipe(startWith(0)),
             ],
         ).subscribe(value => {
+                const normlohnkostenExact = parseFloat(value[0] || 0) + parseFloat(value[1] || 0);
+                const normlohnkostenRounded = EbeguUtil.ceilToFiveRappen(normlohnkostenExact);
                 this.angabenForm.get('normlohnkostenBetreuungBerechnet')
-                    .setValue((parseFloat(value[0] || 0) + parseFloat(value[1] || 0)).toFixed(2));
+                    .setValue(normlohnkostenRounded.toFixed(2));
             },
             () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')),
         );

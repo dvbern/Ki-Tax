@@ -245,6 +245,11 @@ export class EbeguUtil {
         return Number((Math.ceil(betrag * 20 - 0.5) / 20).toFixed(2));
     }
 
+    public static ceilToFiveRappen(betrag: number): number {
+        const fraction = 20;
+        return Math.ceil(betrag * fraction) / fraction;
+    }
+
     private static getYear(gueltigkeit: TSDateRange): string {
         return gueltigkeit.gueltigAb.year().toString().substring(2);
     }
