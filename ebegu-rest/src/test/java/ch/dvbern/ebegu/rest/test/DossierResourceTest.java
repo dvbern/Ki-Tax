@@ -69,7 +69,7 @@ public class DossierResourceTest extends AbstractEbeguRestLoginTest {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence,
 			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		changeStatusToWarten(gesuch.getKindContainers().iterator().next());
-		Benutzer sachbearbeiter = TestDataUtil.createAndPersistJABenutzer(persistence);
+		Benutzer sachbearbeiter = TestDataUtil.createAndPersistJABenutzer(persistence, gesuchsperiode.getMandant());
 
 		JaxDossier foundDossier = dossierResource.findDossier(converter.toJaxId(gesuch.getDossier()));
 

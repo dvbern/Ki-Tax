@@ -1429,6 +1429,9 @@ public final class TestDataUtil {
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
+		institutionStammdatenList.forEach(institutionStammdaten -> {
+			institutionStammdaten.getInstitution().setMandant(gesuchsperiode.getMandant());
+		});
 		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList);
 
 		return persistAllEntities(persistence, eingangsdatum, testfall, status);
@@ -1917,9 +1920,7 @@ public final class TestDataUtil {
 		return benutzer;
 	}
 
-	public static Benutzer createAndPersistJABenutzer(Persistence persistence) {
-		final Mandant mandant = TestDataUtil.createDefaultMandant();
-		persistence.persist(mandant);
+	public static Benutzer createAndPersistJABenutzer(Persistence persistence, Mandant mandant) {
 		final Benutzer benutzer =
 			TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_BG, UUID.randomUUID().toString(),
 				null, null, mandant, persistence, null, null);

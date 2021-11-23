@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.test.TestUserIds;
 import ch.dvbern.ebegu.test.util.JBossLoginContextFactory;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
@@ -91,7 +92,7 @@ public class GesuchResourceTest extends AbstractEbeguRestLoginTest {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence,
 			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		changeStatusToWarten(gesuch.getKindContainers().iterator().next());
-		persistUser(UserRole.SACHBEARBEITER_INSTITUTION, "sainst",
+		persistUser(UserRole.SACHBEARBEITER_INSTITUTION, "sainst", TestUserIds.INSTITUTION_SACHBEARBEITER,
 			gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next().getInstitutionStammdaten().getInstitution(),
 			null);
 		final JaxGesuch gesuchForInstitution = gesuchResource.findGesuchForInstitution(converter.toJaxId(gesuch));
@@ -122,7 +123,7 @@ public class GesuchResourceTest extends AbstractEbeguRestLoginTest {
 			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		changeStatusToWarten(gesuch.getKindContainers().iterator().next());
 
-		persistUser(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, "satraeg", null,
+		persistUser(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, "satraeg", TestUserIds.TRAEGERSCHAFT_SACHBEARBEITER,null,
 			gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next()
 				.getInstitutionStammdaten().getInstitution().getTraegerschaft());
 
@@ -150,7 +151,7 @@ public class GesuchResourceTest extends AbstractEbeguRestLoginTest {
 
 	@Test
 	public void testFindGesuchForOtherRole() {
-		persistUser(UserRole.GESUCHSTELLER, "gesuchst", null, null);
+		persistUser(UserRole.GESUCHSTELLER, "gesuchst", TestUserIds.GESUCHSTELLER_1, null, null);
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence,
 			null, null, gesuchsperiode);
 		loginAsSuperadmin();
@@ -290,12 +291,11 @@ public class GesuchResourceTest extends AbstractEbeguRestLoginTest {
 
 	// HELP METHODS
 
-	private Benutzer persistUser(final UserRole role, final String username, @Nullable final Institution institution, @Nullable final Traegerschaft traegerschaft) {
+	private Benutzer persistUser(final UserRole role, final String username, final String userId, @Nullable final Institution institution, @Nullable final Traegerschaft traegerschaft) {
 		Mandant mandant = persistence.find(Mandant.class, "e3736eb8-6eef-40ef-9e52-96ab48d8f220");
-		Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(role, username, traegerschaft, institution, mandant, persistence, null, null);
-		persistence.persist(benutzer);
+		Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(role, username, traegerschaft, institution, mandant, persistence, null, null, userId);
 		try {
-			JBossLoginContextFactory.createLoginContext(username, username).login();
+			JBossLoginContextFactory.createLoginContext(userId, username).login();
 		} catch (LoginException e) {
 			String message = "could not log in as user " + username;
 			throw new RuntimeException(message, e);
