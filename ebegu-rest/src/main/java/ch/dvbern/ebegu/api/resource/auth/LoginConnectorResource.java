@@ -298,7 +298,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	@Override
 	public String getMandant() {
 		checkLocalAccessOnly();
-		final Mandant first = mandantService.getDefaultMandant();
+		final Mandant first = mandantService.getMandantBern();
 		return first.getId();
 	}
 

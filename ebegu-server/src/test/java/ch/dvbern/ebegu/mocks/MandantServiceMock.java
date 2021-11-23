@@ -37,7 +37,7 @@ public class MandantServiceMock extends MandantServiceBean {
 
 	@Nonnull
 	@Override
-	public Mandant getDefaultMandant() {
+	public Mandant getMandantBern() {
 		return MANDANT;
 	}
 }

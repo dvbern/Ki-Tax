@@ -138,7 +138,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		if (gesuchsperiode.isNew()) {
 			gesuchsperiode = saveGesuchsperiode(gesuchsperiode);
 			LocalDate stichtagInVorperiode = gesuchsperiode.getGueltigkeit().getGueltigAb().minusDays(1);
-			Optional<Gesuchsperiode> lastGesuchsperiodeOptional = getGesuchsperiodeAm(stichtagInVorperiode, mandantService.getDefaultMandant());
+			Optional<Gesuchsperiode> lastGesuchsperiodeOptional = getGesuchsperiodeAm(stichtagInVorperiode, mandantService.getMandantBern());
 			if (lastGesuchsperiodeOptional.isPresent()) {
 				Gesuchsperiode lastGesuchsperiode = lastGesuchsperiodeOptional.get();
 				// we only copy the einstellung when there is a lastGesuchsperiode. In some cases, among others in
@@ -192,7 +192,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		if (GesuchsperiodeStatus.AKTIV == gesuchsperiode.getStatus()
 			&& gesuchsperiode.getDatumAktiviert() == null) {
 			Optional<Gesuchsperiode> lastGesuchsperiodeOptional =
-				getGesuchsperiodeAm(gesuchsperiode.getGueltigkeit().getGueltigAb().minusDays(1), mandantService.getDefaultMandant());
+				getGesuchsperiodeAm(gesuchsperiode.getGueltigkeit().getGueltigAb().minusDays(1), mandantService.getMandantBern());
 			if (lastGesuchsperiodeOptional.isPresent()) {
 				gesuchsperiodeEmailService.getAndSaveGesuchsperiodeEmailCandidates(
 					lastGesuchsperiodeOptional.get(),

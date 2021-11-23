@@ -462,7 +462,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 					+ " gefunden werden");
 		}
 		LocalDate stichtag = Date.valueOf(einstellungList.get(0).getValue()).toLocalDate();
-		Gesuchsperiode gesuchsperiodeAmStichtag = gesuchsperiodeService.getGesuchsperiodeAm(stichtag, mandantService.getDefaultMandant())
+		Gesuchsperiode gesuchsperiodeAmStichtag = gesuchsperiodeService.getGesuchsperiodeAm(stichtag, mandantService.getMandantBern())
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode",
 				"Keine Gesuchsperiode für Stichtag " + stichtag.toString() + " gefunden"

@@ -42,5 +42,5 @@ public interface MandantService {
 	Mandant findMandantByCookie(@Nullable Cookie mandantCookie);
 
 	@Nonnull
-	Mandant getDefaultMandant();
+	Mandant getMandantBern();
 }

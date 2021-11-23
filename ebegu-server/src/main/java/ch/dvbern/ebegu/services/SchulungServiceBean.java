@@ -218,8 +218,8 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 			assertInstitutionNotUsedInNormalenGesuchen(KITA_HECHT_ID, institutionStammdaten);
 		}
 
-		removeBenutzer(BENUTZER_FISCH_USERNAME, mandantService.getDefaultMandant());
-		removeBenutzer(BENUTZER_FORELLE_USERNAME, mandantService.getDefaultMandant());
+		removeBenutzer(BENUTZER_FISCH_USERNAME, mandantService.getMandantBern());
+		removeBenutzer(BENUTZER_FORELLE_USERNAME, mandantService.getMandantBern());
 
 		if (institutionService.findInstitution(INSTITUTION_FORELLE_ID, true).isPresent()) {
 			institutionService.removeInstitution(INSTITUTION_FORELLE_ID);
@@ -313,7 +313,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	}
 
 	private Gemeinde createGemeindeTutorial() {
-		Mandant mandant = mandantService.getDefaultMandant();
+		Mandant mandant = mandantService.getMandantBern();
 		Gemeinde gemeinde = new Gemeinde();
 		gemeinde.setId(GEMEINDE_TUTORIAL_ID);
 		gemeinde.setBfsNummer(1L);
@@ -368,7 +368,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	@SuppressWarnings("SameParameterValue")
 	@Nonnull
 	private Traegerschaft createTraegerschaft(@Nonnull String id, @Nonnull String name) {
-		Mandant mandant = mandantService.getDefaultMandant();
+		Mandant mandant = mandantService.getMandantBern();
 		Traegerschaft traegerschaft = new Traegerschaft();
 		traegerschaft.setId(id);
 		traegerschaft.setName(name);
@@ -383,7 +383,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		@Nullable Traegerschaft traegerschaft
 	) {
 
-		Mandant mandant = mandantService.getDefaultMandant();
+		Mandant mandant = mandantService.getMandantBern();
 		Institution institution = new Institution();
 		institution.setId(id);
 		institution.setName(name);
@@ -434,7 +434,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	}
 
 	private void createGesuchsteller(@Nonnull String name, @Nonnull String username) {
-		Mandant mandant = mandantService.getDefaultMandant();
+		Mandant mandant = mandantService.getMandantBern();
 		Benutzer benutzer = new Benutzer();
 		benutzer.setVorname(GESUCHSTELLER_VORNAME);
 		benutzer.setNachname(name);
@@ -458,7 +458,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		@Nonnull String username
 	) {
 
-		Mandant mandant = mandantService.getDefaultMandant();
+		Mandant mandant = mandantService.getMandantBern();
 		Benutzer benutzer = new Benutzer();
 		benutzer.setVorname(vorname);
 		benutzer.setNachname(name);
@@ -491,8 +491,8 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	}
 
 	private void removeGesucheFallAndBenutzer(int position) {
-		testfaelleService.removeGesucheOfGS(getUsername(position), mandantService.getDefaultMandant());
-		removeBenutzer(getUsername(position), mandantService.getDefaultMandant());
+		testfaelleService.removeGesucheOfGS(getUsername(position), mandantService.getMandantBern());
+		removeBenutzer(getUsername(position), mandantService.getMandantBern());
 	}
 
 	private void createFaelleForSuche(@Nonnull List<InstitutionStammdaten> institutionenForSchulung, @Nonnull Gemeinde gemeinde) {

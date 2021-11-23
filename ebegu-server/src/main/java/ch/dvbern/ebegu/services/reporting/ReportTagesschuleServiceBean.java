@@ -336,7 +336,7 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		@Nonnull LocalDate stichtag) {
 
 		// Wir suchen alle vergangenen Monate im Sinne von "in der aktuellen Gesuchsperiode vergangen"
-		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.getGesuchsperiodeAm(stichtag, mandantService.getDefaultMandant())
+		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.getGesuchsperiodeAm(stichtag, mandantService.getMandantBern())
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"getReportDataTagesschuleRechnungsstellung",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,

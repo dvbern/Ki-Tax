@@ -127,7 +127,7 @@ public class SchulungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	private List<InstitutionStammdaten> createAndSaveInstitutionStammdatenForTestfaelle() {
-		Mandant mandant = mandantService.getDefaultMandant();
+		Mandant mandant = mandantService.getMandantBern();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());

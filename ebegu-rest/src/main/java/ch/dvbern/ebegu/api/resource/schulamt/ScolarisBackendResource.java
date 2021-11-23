@@ -281,7 +281,7 @@ public class ScolarisBackendResource {
 			int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(referenznummer);
 			Gesuchsperiode gesuchsperiodeFromBGNummer =
 				gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.of(yearFromBGNummer, Month.AUGUST, 1),
-								mandantService.getDefaultMandant())
+								mandantService.getMandantBern())
 					.orElseThrow(() -> new EbeguEntityNotFoundException(
 						"getFinanzielleSituation",
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,

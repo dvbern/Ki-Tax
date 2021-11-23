@@ -81,7 +81,7 @@ public class MandantServiceBean extends AbstractBaseService implements MandantSe
 
 	@Nonnull
 	@Override
-	public Mandant getDefaultMandant() {
+	public Mandant getMandantBern() {
 		return findMandantByName("Kanton Bern").orElseThrow(()
 			-> new EbeguRuntimeException("getDefaultMandant", "Kanton Bern Mandant not found"));
 	}
