@@ -30,7 +30,6 @@ import {LogFactory} from './logging/LogFactory';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from './service/gesuchsperiodeRS.rest';
 import {ListResourceRS} from './service/listResourceRS.rest';
-import {MandantRS} from './service/mandantRS.rest';
 import IInjectorService = angular.auto.IInjectorService;
 import ILocationService = angular.ILocationService;
 import ITimeoutService = angular.ITimeoutService;
@@ -40,7 +39,6 @@ const LOG = LogFactory.createLog('appRun');
 appRun.$inject = [
     'angularMomentConfig',
     'ListResourceRS',
-    'MandantRS',
     '$injector',
     'AuthLifeCycleService',
     'hotkeys',
@@ -57,7 +55,6 @@ appRun.$inject = [
 export function appRun(
     angularMomentConfig: any,
     listResourceRS: ListResourceRS,
-    mandantRS: MandantRS,
     $injector: IInjectorService,
     authLifeCycleService: AuthLifeCycleService,
     hotkeys: any,

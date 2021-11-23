@@ -37,4 +37,5 @@ export class TSPublicAppConfig {
     public lastenausgleichTagesschulenAktiv: boolean;
     public gemeindeKennzahlenAktiv: any;
     public mulitmandantAktiv: any;
+    public angebotTSActivated: boolean;
 }
