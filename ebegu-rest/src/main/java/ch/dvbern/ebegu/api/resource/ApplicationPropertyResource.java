@@ -268,6 +268,7 @@ public class ApplicationPropertyResource {
 		String kitaxHost = ebeguConfiguration.getKitaxHost();
 		String kitaxendpoint = ebeguConfiguration.getKitaxEndpoint();
 		boolean multimandantEnabled = ebeguConfiguration.getMultimandantEnabled();
+		boolean angebotTSEnabled = mandant.isAngebotTS();
 
 		EbeguEntityNotFoundException notFound = new EbeguEntityNotFoundException("getPublicProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 
@@ -369,7 +370,8 @@ public class ApplicationPropertyResource {
 			primaryColorLight.getValue(),
 			logoFileName.getValue(),
 			logoFileNameWhite.getValue(),
-			multimandantEnabled
+			multimandantEnabled,
+			angebotTSEnabled
 			);
 		return Response.ok(pubAppConf).build();
 	}

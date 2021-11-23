@@ -365,7 +365,6 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     institutionStammdatenRSProvider,
     einstellungRSProvider,
     supportRSProvider,
-    mandantRSProvider,
     uploadRSProvider,
     notrechtRSProvider,
     searchRSProvider,

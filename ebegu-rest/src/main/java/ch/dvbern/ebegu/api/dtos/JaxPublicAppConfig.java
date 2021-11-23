@@ -38,6 +38,7 @@ public class JaxPublicAppConfig {
 	private String logoFileName;
 	private String logoFileNameWhite;
 	private boolean multimandantAktiviert;
+	private boolean angebotTSActivated;
 
 
 	public JaxPublicAppConfig(
@@ -65,7 +66,8 @@ public class JaxPublicAppConfig {
 		String primaryColorLight,
 		String logoFileName,
 		String logoFileNameWhite,
-		boolean multimandantAktiviert
+		boolean multimandantAktiviert,
+		boolean angebotTSActivated
 	) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
@@ -92,6 +94,7 @@ public class JaxPublicAppConfig {
 		this.logoFileName = logoFileName;
 		this.logoFileNameWhite = logoFileNameWhite;
 		this.multimandantAktiviert = multimandantAktiviert;
+		this.angebotTSActivated = angebotTSActivated;
 	}
 
 	public String getCurrentNode() {
@@ -292,5 +295,13 @@ public class JaxPublicAppConfig {
 
 	public void setLogoFileNameWhite(String logoFileNameWhite) {
 		this.logoFileNameWhite = logoFileNameWhite;
+	}
+
+	public boolean isAngebotTSActivated() {
+		return angebotTSActivated;
+	}
+
+	public void setAngebotTSActivated(boolean angebotTSActivated) {
+		this.angebotTSActivated = angebotTSActivated;
 	}
 }

@@ -4066,6 +4066,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.gemeindeKennzahlenAktiv = data.gemeindeKennzahlenAktiv;
         publicAppConfigTS.ferienbetreuungAktiv = data.ferienbetreuungAktiv;
         publicAppConfigTS.mulitmandantAktiv = data.multimandantAktiviert;
+        publicAppConfigTS.angebotTSActivated = data.angebotTSActivated;
         return publicAppConfigTS;
 
     }
