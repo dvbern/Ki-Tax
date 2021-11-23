@@ -33,7 +33,6 @@ import ch.dvbern.ebegu.api.dtos.JaxBenutzerResponseWrapper;
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthAccessElement;
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthorisierterBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxExternalBenutzer;
-import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.api.resource.MandantResource;
 import ch.dvbern.ebegu.api.util.version.VersionInfoBean;
 import ch.dvbern.ebegu.authentication.AuthAccessElement;
@@ -299,12 +298,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	@Override
 	public String getMandant() {
 		checkLocalAccessOnly();
-		final JaxMandant first = mandantResource.getFirst();
-		if (first.getId() == null) {
-			String message = "error while loading mandant";
-			throw new EbeguEntityNotFoundException("getFirst", message, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
-		}
-
+		final Mandant first = mandantService.getDefaultMandant();
 		return first.getId();
 	}
 

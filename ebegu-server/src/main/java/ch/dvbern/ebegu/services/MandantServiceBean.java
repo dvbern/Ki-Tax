@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.services;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -59,17 +58,6 @@ public class MandantServiceBean extends AbstractBaseService implements MandantSe
 
 	@Nonnull
 	@Override
-	public Mandant getFirst() {
-		Collection<Mandant> mandants = criteriaQueryHelper.getAll(Mandant.class);
-		if (mandants != null && !mandants.isEmpty()) {
-			return mandants.iterator().next();
-		}
-		String message = "Wir erwarten, dass mindestens ein Mandant bereits in der DB existiert";
-		throw new EbeguRuntimeException("getFirst", message, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
-	}
-
-	@Nonnull
-	@Override
 	public Optional<Mandant> findMandantByName(@Nonnull String name) {
 		return criteriaQueryHelper.getEntityByUniqueAttribute(
 				Mandant.class,
@@ -94,6 +82,7 @@ public class MandantServiceBean extends AbstractBaseService implements MandantSe
 	@Nonnull
 	@Override
 	public Mandant getDefaultMandant() {
-		return findMandantByName("Kanton Bern").get();
+		return findMandantByName("Kanton Bern").orElseThrow(()
+			-> new EbeguRuntimeException("getDefaultMandant", "Kanton Bern Mandant not found"));
 	}
 }

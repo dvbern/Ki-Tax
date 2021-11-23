@@ -313,7 +313,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	}
 
 	private Gemeinde createGemeindeTutorial() {
-		Mandant mandant = mandantService.getFirst();
+		Mandant mandant = mandantService.getDefaultMandant();
 		Gemeinde gemeinde = new Gemeinde();
 		gemeinde.setId(GEMEINDE_TUTORIAL_ID);
 		gemeinde.setBfsNummer(1L);
@@ -368,7 +368,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	@SuppressWarnings("SameParameterValue")
 	@Nonnull
 	private Traegerschaft createTraegerschaft(@Nonnull String id, @Nonnull String name) {
-		Mandant mandant = mandantService.getFirst();
+		Mandant mandant = mandantService.getDefaultMandant();
 		Traegerschaft traegerschaft = new Traegerschaft();
 		traegerschaft.setId(id);
 		traegerschaft.setName(name);
@@ -383,7 +383,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		@Nullable Traegerschaft traegerschaft
 	) {
 
-		Mandant mandant = mandantService.getFirst();
+		Mandant mandant = mandantService.getDefaultMandant();
 		Institution institution = new Institution();
 		institution.setId(id);
 		institution.setName(name);
@@ -434,7 +434,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	}
 
 	private void createGesuchsteller(@Nonnull String name, @Nonnull String username) {
-		Mandant mandant = mandantService.getFirst();
+		Mandant mandant = mandantService.getDefaultMandant();
 		Benutzer benutzer = new Benutzer();
 		benutzer.setVorname(GESUCHSTELLER_VORNAME);
 		benutzer.setNachname(name);
@@ -458,7 +458,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		@Nonnull String username
 	) {
 
-		Mandant mandant = mandantService.getFirst();
+		Mandant mandant = mandantService.getDefaultMandant();
 		Benutzer benutzer = new Benutzer();
 		benutzer.setVorname(vorname);
 		benutzer.setNachname(name);

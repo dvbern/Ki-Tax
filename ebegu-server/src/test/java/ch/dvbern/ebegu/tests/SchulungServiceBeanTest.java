@@ -44,7 +44,6 @@ import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.runner.RunWith;
 
 /**
@@ -128,7 +127,7 @@ public class SchulungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	private List<InstitutionStammdaten> createAndSaveInstitutionStammdatenForTestfaelle() {
-		Mandant mandant = mandantService.getFirst();
+		Mandant mandant = mandantService.getDefaultMandant();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());

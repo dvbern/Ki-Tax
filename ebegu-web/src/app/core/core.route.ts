@@ -109,7 +109,6 @@ export function appRun(
     function onLoginSuccess(): void {
         if (!environment.test) {
             listResourceRS.getLaenderList();  // initial aufruefen damit cache populiert wird
-            mandantRS.getFirst();
         }
         // muss immer geleert werden
         globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN_GEMEINDE).removeAll();

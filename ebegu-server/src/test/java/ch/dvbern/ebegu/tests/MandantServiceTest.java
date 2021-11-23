@@ -59,7 +59,7 @@ public class MandantServiceTest extends AbstractEbeguLoginTest {
 	public void firstMandantTest() {
 		Mandant mandant = TestDataUtil.createDefaultMandant();
 		persistence.persist(mandant);
-		Mandant loadedMandant = mandantService.getFirst();
+		Mandant loadedMandant = mandantService.getDefaultMandant();
 		Assert.assertNotNull(loadedMandant);
 		Assert.assertEquals("Kanton Bern", loadedMandant.getName());
 	}

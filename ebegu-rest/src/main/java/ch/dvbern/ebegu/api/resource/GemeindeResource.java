@@ -564,7 +564,7 @@ public class GemeindeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<JaxBfsGemeinde> getUnregisteredBfsGemeinden() {
-		Mandant bern = mandantService.getFirst(); //TODO (later) Change to real mandant!
+		Mandant bern = mandantService.getDefaultMandant(); //TODO (later) Change to real mandant!
 		return gemeindeService.getUnregisteredBfsGemeinden(bern).stream()
 			.map(gemeinde -> converter.gemeindeBfsToJax(gemeinde))
 			.collect(Collectors.toList());

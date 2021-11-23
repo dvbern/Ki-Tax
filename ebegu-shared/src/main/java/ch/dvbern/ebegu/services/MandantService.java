@@ -35,12 +35,6 @@ public interface MandantService {
 	@Nonnull
 	Optional<Mandant> findMandant(@Nonnull final String id);
 
-	/**
-	 * Gibt den ersten (und aktuell einzigen) Mandanten aus der DB zurueck
-	 */
-	@Nonnull
-	Mandant getFirst();
-
 	@Nonnull
 	Optional<Mandant> findMandantByName(@Nonnull String name);
 
