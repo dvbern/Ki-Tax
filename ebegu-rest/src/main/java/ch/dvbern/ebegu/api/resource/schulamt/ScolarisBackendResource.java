@@ -279,6 +279,7 @@ public class ScolarisBackendResource {
 
 			// Parse Gesuchsperiode
 			int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(referenznummer);
+			// TODO: Mandantenfähigkeit: Wie läuft die Authentifizierung hier? Kann man den Mandanten über den Principal abfragen?
 			Gesuchsperiode gesuchsperiodeFromBGNummer =
 				gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.of(yearFromBGNummer, Month.AUGUST, 1),
 								mandantService.getMandantBern())

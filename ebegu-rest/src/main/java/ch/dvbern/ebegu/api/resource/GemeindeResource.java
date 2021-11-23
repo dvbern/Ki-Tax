@@ -68,6 +68,7 @@ import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
 import ch.dvbern.ebegu.api.resource.util.TransferFile;
 import ch.dvbern.ebegu.api.util.RestUtil;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -148,6 +149,9 @@ public class GemeindeResource {
 
 	@Inject
 	private FerieninselStammdatenService ferieninselStammdatenService;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@ApiOperation(value = "Erstellt eine neue Gemeinde in der Datenbank", response = JaxGemeinde.class)
 	@Nullable
@@ -564,8 +568,9 @@ public class GemeindeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<JaxBfsGemeinde> getUnregisteredBfsGemeinden() {
-		Mandant bern = mandantService.getDefaultMandant(); //TODO (later) Change to real mandant!
-		return gemeindeService.getUnregisteredBfsGemeinden(bern).stream()
+		Mandant mandant = principalBean.getMandant();
+		Objects.requireNonNull(mandant);
+		return gemeindeService.getUnregisteredBfsGemeinden(mandant).stream()
 			.map(gemeinde -> converter.gemeindeBfsToJax(gemeinde))
 			.collect(Collectors.toList());
 	}

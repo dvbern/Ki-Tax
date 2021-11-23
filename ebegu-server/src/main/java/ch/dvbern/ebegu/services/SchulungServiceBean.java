@@ -93,6 +93,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//TODO: Mandantenfähigkeit. Müssen wir die Schulungsdaten anpassen?
+
 /**
  * Service fuer erstellen und mutieren von Schulungsdaten
  */

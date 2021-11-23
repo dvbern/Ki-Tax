@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.services;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -138,7 +139,8 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		if (gesuchsperiode.isNew()) {
 			gesuchsperiode = saveGesuchsperiode(gesuchsperiode);
 			LocalDate stichtagInVorperiode = gesuchsperiode.getGueltigkeit().getGueltigAb().minusDays(1);
-			Optional<Gesuchsperiode> lastGesuchsperiodeOptional = getGesuchsperiodeAm(stichtagInVorperiode, mandantService.getMandantBern());
+			Objects.requireNonNull(gesuchsperiode.getMandant());
+			Optional<Gesuchsperiode> lastGesuchsperiodeOptional = getGesuchsperiodeAm(stichtagInVorperiode, gesuchsperiode.getMandant());
 			if (lastGesuchsperiodeOptional.isPresent()) {
 				Gesuchsperiode lastGesuchsperiode = lastGesuchsperiodeOptional.get();
 				// we only copy the einstellung when there is a lastGesuchsperiode. In some cases, among others in
@@ -191,8 +193,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		// Nur, wenn die Gesuchsperiode noch nie auf aktiv geschaltet war.
 		if (GesuchsperiodeStatus.AKTIV == gesuchsperiode.getStatus()
 			&& gesuchsperiode.getDatumAktiviert() == null) {
+			Objects.requireNonNull(gesuchsperiode.getMandant());
 			Optional<Gesuchsperiode> lastGesuchsperiodeOptional =
-				getGesuchsperiodeAm(gesuchsperiode.getGueltigkeit().getGueltigAb().minusDays(1), mandantService.getMandantBern());
+				getGesuchsperiodeAm(gesuchsperiode.getGueltigkeit().getGueltigAb().minusDays(1), gesuchsperiode.getMandant());
 			if (lastGesuchsperiodeOptional.isPresent()) {
 				gesuchsperiodeEmailService.getAndSaveGesuchsperiodeEmailCandidates(
 					lastGesuchsperiodeOptional.get(),

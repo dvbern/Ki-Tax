@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,7 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
@@ -116,6 +118,9 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 
 	@Inject
 	private MandantService mandantService;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@Override
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
@@ -336,7 +341,9 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		@Nonnull LocalDate stichtag) {
 
 		// Wir suchen alle vergangenen Monate im Sinne von "in der aktuellen Gesuchsperiode vergangen"
-		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.getGesuchsperiodeAm(stichtag, mandantService.getMandantBern())
+		var mandant = principalBean.getMandant();
+		Objects.requireNonNull(mandant);
+		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.getGesuchsperiodeAm(stichtag, mandant)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"getReportDataTagesschuleRechnungsstellung",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
