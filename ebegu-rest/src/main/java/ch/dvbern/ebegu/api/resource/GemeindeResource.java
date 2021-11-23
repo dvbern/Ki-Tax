@@ -18,8 +18,6 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,7 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -246,11 +243,11 @@ public class GemeindeResource {
 	public List<JaxGemeinde> getAktiveGemeinden(
 			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
 	) {
-		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
+		var mandant = mandantService.findMandantByCookie(mandantCookie);
+
 		return gemeindeService.getAktiveGemeinden().stream()
 				//TODO MANDANTEN: do this in getAktiveGemeinden
-			.filter(gemeinde -> gemeinde.getMandant() != null && gemeinde.getMandant().equals(mandant.get()))
+			.filter(gemeinde -> gemeinde.getMandant() != null && gemeinde.getMandant().equals(mandant))
 			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
 			.collect(Collectors.toList());
 	}

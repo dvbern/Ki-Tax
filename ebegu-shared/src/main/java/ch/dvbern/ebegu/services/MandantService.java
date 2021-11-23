@@ -18,6 +18,8 @@ package ch.dvbern.ebegu.services;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.ws.rs.core.Cookie;
 
 import ch.dvbern.ebegu.entities.Mandant;
 
@@ -41,6 +43,9 @@ public interface MandantService {
 
 	@Nonnull
 	Optional<Mandant> findMandantByName(@Nonnull String name);
+
+	@Nonnull
+	Mandant findMandantByCookie(@Nullable Cookie mandantCookie);
 
 	@Nonnull
 	Mandant getDefaultMandant();

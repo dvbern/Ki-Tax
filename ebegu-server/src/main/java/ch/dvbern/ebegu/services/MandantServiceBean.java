@@ -15,18 +15,23 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.core.Cookie;
 
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mandant_;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -71,6 +76,19 @@ public class MandantServiceBean extends AbstractBaseService implements MandantSe
 				name,
 				Mandant_.name
 		);
+	}
+
+	@Nonnull
+	@Override
+	public Mandant findMandantByCookie(@Nullable Cookie mandantCookie) {
+		if (mandantCookie == null) {
+			throw new EbeguRuntimeException("findMandantByCookie", ErrorCodeEnum.ERROR_MANDANT_COOKIE_IS_NULL);
+		}
+		var cookieDecoded = URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8);
+		return findMandantByName(cookieDecoded)
+			.orElseThrow(() -> {
+				throw new EbeguEntityNotFoundException("findMandantByCookie", cookieDecoded);
+			});
 	}
 
 	@Nonnull
