@@ -18,15 +18,12 @@ package ch.dvbern.ebegu.api.resource;
 import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.URI;
-import java.net.URLDecoder;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -164,8 +161,8 @@ public class ApplicationPropertyResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(SUPER_ADMIN)
 	public List<JaxApplicationProperties> getAllApplicationProperties(@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
-		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getFirst());
-		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
+		var mandant = mandantService.findMandantByCookie(mandantCookie);
+
 		return applicationPropertyService.getAllApplicationProperties(mandant).stream()
 			.sorted(Comparator.comparing(o -> o.getName().name()))
 			.map(ap -> converter.applicationPropertyToJAX(ap))
