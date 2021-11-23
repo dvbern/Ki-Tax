@@ -57,7 +57,7 @@ public class EmptyKitaxRechner extends AbstractRechner {
 		result.setAnspruchZeroAndSaveRestanspruch();
 		result.setVerguenstigungMahlzeitenTotal(BigDecimal.ZERO);
 		// Wir loeschen alle Bemerkungen, die den Zeitraum nach dem Stichtag betreffen
-		input.getParent().getBemerkungenList().clear();
+		input.getParent().getBemerkungenDTOList().clear();
 		// Bemerkung
 		input.addBemerkung(bemerkung, locale);
 		return result;

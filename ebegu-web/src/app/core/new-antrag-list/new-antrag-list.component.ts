@@ -192,6 +192,12 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     @Input()
     public readonly stateStoreId: string;
 
+    @Input()
+    public readonly showRemoveButton: boolean;
+
+    @Output()
+    public readonly removeClicked = new EventEmitter<DVAntragListItem>();
+
     public gesuchsperiodenList: Array<string> = [];
     private allInstitutionen: TSInstitution[];
     public institutionenList$: BehaviorSubject<TSInstitution[]> = new BehaviorSubject<TSInstitution[]>([]);
@@ -297,7 +303,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
-        if (changes.hiddenColumns) {
+        if (changes.hiddenColumns || changes.showRemoveButton) {
             this.updateColumns();
         }
 
@@ -335,6 +341,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
 
     private updateColumns(): void {
         this.displayedColumns = this.allColumns.filter(column => !this.hiddenColumns.includes(column));
+        if (this.showRemoveButton) {
+            this.displayedColumns.push('remove');
+        }
         this.filterColumns = this.displayedColumns.map(column => `${column}-filter`);
     }
 
@@ -404,7 +413,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             },
             sort: this.sort,
         };
-        const dataToLoad$ = this.data$ ?
+        const dataToLoad$: Observable<DVAntragListItem[]> = this.data$ ?
             this.data$ :
             from(this.searchRS.searchAntraege(body)).pipe(map((result: TSAntragSearchresultDTO) => {
                 return result.antragDTOs.map(antragDto => {
@@ -418,7 +427,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
                         kinder: antragDto.kinder,
                         laufNummer: antragDto.laufnummer,
                         antragTyp: antragDto.antragTyp,
-                        periode: antragDto.gesuchsperiodeString,
+                        periodenString: antragDto.gesuchsperiodeString,
                         aenderungsdatum: antragDto.aenderungsdatum,
                         internePendenz: antragDto.internePendenz,
                         internePendenzAbgelaufen: antragDto.internePendenzAbgelaufen,

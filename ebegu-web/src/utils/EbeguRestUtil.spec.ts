@@ -518,8 +518,11 @@ describe('EbeguRestUtil', () => {
                 restVerfuegungZeitabschnitt.fachstellenpensum = 10;
                 restVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr = 11;
                 restVerfuegungZeitabschnitt.vollkosten = 12;
-                restVerfuegungZeitabschnitt.bemerkungen = 'bemerkung1';
                 restVerfuegungZeitabschnitt.zahlungsstatus = TSVerfuegungZeitabschnittZahlungsstatus.NEU;
+
+                const bemerkung: any = {};
+                bemerkung.bemerkung = 'bemerkung1';
+                restVerfuegungZeitabschnitt.verfuegungZeitabschnittBemerkungList = [bemerkung];
 
                 const verfuegungTS = ebeguRestUtil.parseVerfuegungZeitabschnitt(new TSVerfuegungZeitabschnitt(),
                     restVerfuegungZeitabschnitt);
@@ -538,7 +541,7 @@ describe('EbeguRestUtil', () => {
                 expect(verfuegungTS.massgebendesEinkommenVorAbzugFamgr)
                     .toEqual(restVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr);
                 expect(verfuegungTS.vollkosten).toEqual(restVerfuegungZeitabschnitt.vollkosten);
-                expect(verfuegungTS.bemerkungen).toEqual(restVerfuegungZeitabschnitt.bemerkungen);
+                expect(verfuegungTS.bemerkungen[0].bemerkung).toEqual(restVerfuegungZeitabschnitt.verfuegungZeitabschnittBemerkungList[0].bemerkung);
                 expect(verfuegungTS.zahlungsstatus).toEqual(restVerfuegungZeitabschnitt.zahlungsstatus);
             });
         });

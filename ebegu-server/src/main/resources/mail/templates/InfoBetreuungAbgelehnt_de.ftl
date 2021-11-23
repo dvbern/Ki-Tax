@@ -27,7 +27,7 @@ ${templateConfiguration.mailCss}
 		Die Platzbestätigung für ${betreuung.kind.kindJA.fullName} / ${betreuung.institutionStammdaten.institution.name} wurde abgelehnt.
 		Sie können
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/betreuungen/${betreuung.extractGesuch().id}">hier</a>
-		den Grund der Ablehnung einsehen und Ihr Gesuch bearbeiten.
+		den Grund der Ablehnung einsehen und Ihr Antrag bearbeiten.
 	</p>
 	<p>
 		Freundliche Grüsse <br/>
@@ -35,7 +35,7 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		<#if configuration.isDevmode>
-		<b>Hierbei handelt es sich um eine Nachricht von einem Testsystem. Dieses Testsystem wird für Schulungen verwendet. Über dieses System abgehandelte Gesuche verfügen über keine Zahlungsberechtigung!</b><br><br>
+		<b>Hierbei handelt es sich um eine Nachricht von einem Testsystem. Dieses Testsystem wird für Schulungen verwendet. Über dieses System abgehandelte Anträge verfügen über keine Zahlungsberechtigung!</b><br><br>
 		</#if>
 		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
 	</p>

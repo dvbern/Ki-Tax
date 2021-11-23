@@ -234,6 +234,20 @@ public abstract class AbstractTestfall {
 		return gesuch;
 	}
 
+	protected Gesuch createVerheiratetMitMVZ() {
+		// Familiensituation
+		Familiensituation familiensituation = new Familiensituation();
+		familiensituation.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
+		familiensituation.setGemeinsameSteuererklaerung(Boolean.TRUE);
+		FamiliensituationContainer familiensituationContainer = new FamiliensituationContainer();
+		familiensituationContainer.setFamiliensituationJA(familiensituation);
+		setFinSitFieldsOfFamiliensituation(familiensituation);
+		// re- set keineMahlzeitverguenstigungBeantragt
+		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(false);
+		gesuch.setFamiliensituationContainer(familiensituationContainer);
+		return gesuch;
+	}
+
 	protected GesuchstellerContainer createGesuchstellerContainer() {
 		return createGesuchstellerContainer(getNachname(), getVorname());
 	}
@@ -439,6 +453,29 @@ public abstract class AbstractTestfall {
 		betreuungspensum.setGueltigkeit(new DateRange(datumVon, datumBis));
 		betreuungspensum.setPensum(pensum);
 		betreuungspensum.setMonatlicheBetreuungskosten(MathUtil.DEFAULT.from(2000));
+
+		return betreuungspensumContainer;
+	}
+
+	protected BetreuungspensumContainer createBetreuungspensum(
+		BigDecimal pensum,
+		LocalDate datumVon,
+		LocalDate datumBis,
+		BigDecimal monatlicheHauptMahlzeit,
+		BigDecimal monatlicheNebenMahlzeit,
+		BigDecimal tarifProHauptMahlzeit,
+		BigDecimal tarifProNebenMahlzeit) {
+
+		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
+		Betreuungspensum betreuungspensum = new Betreuungspensum();
+		betreuungspensumContainer.setBetreuungspensumJA(betreuungspensum);
+		betreuungspensum.setGueltigkeit(new DateRange(datumVon, datumBis));
+		betreuungspensum.setPensum(pensum);
+		betreuungspensum.setMonatlicheBetreuungskosten(MathUtil.DEFAULT.from(2000));
+		betreuungspensum.setMonatlicheHauptmahlzeiten(monatlicheHauptMahlzeit);
+		betreuungspensum.setMonatlicheNebenmahlzeiten(monatlicheNebenMahlzeit);
+		betreuungspensum.setTarifProHauptmahlzeit(tarifProHauptMahlzeit);
+		betreuungspensum.setTarifProNebenmahlzeit(tarifProNebenMahlzeit);
 
 		return betreuungspensumContainer;
 	}

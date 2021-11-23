@@ -115,7 +115,7 @@ export class PendenzenListViewComponent {
                         kinder: antragDto.kinder,
                         laufNummer: antragDto.laufnummer,
                         antragTyp: antragDto.antragTyp,
-                        periode: antragDto.gesuchsperiodeString,
+                        periodenString: antragDto.gesuchsperiodeString,
                         aenderungsdatum: antragDto.aenderungsdatum,
                         internePendenz: antragDto.internePendenz,
                         internePendenzAbgelaufen: antragDto.internePendenzAbgelaufen,

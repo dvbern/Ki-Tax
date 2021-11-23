@@ -17,13 +17,13 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSFachstelle} from './TSFachstelle';
 
 export class TSErweiterteBetreuung extends TSAbstractMutableEntity {
-
     private _erweiterteBeduerfnisse: boolean;
+
     private _fachstelle: TSFachstelle;
     private _erweiterteBeduerfnisseBestaetigt: boolean = false;
     private _keineKesbPlatzierung: boolean;
     private _betreuungInGemeinde: boolean = false;
-
+    private _kitaPlusZuschlag: boolean;
     public constructor() {
         super();
     }
@@ -66,5 +66,13 @@ export class TSErweiterteBetreuung extends TSAbstractMutableEntity {
 
     public set keineKesbPlatzierung(value: boolean) {
         this._keineKesbPlatzierung = value;
+    }
+
+    public get kitaPlusZuschlag(): boolean {
+        return this._kitaPlusZuschlag;
+    }
+
+    public set kitaPlusZuschlag(value: boolean) {
+        this._kitaPlusZuschlag = value;
     }
 }

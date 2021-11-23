@@ -46,10 +46,10 @@ public class BetreuungsangebotTypCalcRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertFalse(result.get(0).getBemerkungenList().isEmpty());
-		Assert.assertEquals(2, result.get(0).getBemerkungenList().uniqueSize());
-		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
-		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
+		Assert.assertFalse(result.get(0).getBemerkungenDTOList().isEmpty());
+		Assert.assertEquals(2, result.get(0).getBemerkungenDTOList().uniqueSize());
+		Assert.assertTrue(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertTrue(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	@Test
@@ -59,10 +59,10 @@ public class BetreuungsangebotTypCalcRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertFalse(result.get(0).getBemerkungenList().isEmpty());
-		Assert.assertEquals(2, result.get(0).getBemerkungenList().uniqueSize());
-		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
-		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
+		Assert.assertFalse(result.get(0).getBemerkungenDTOList().isEmpty());
+		Assert.assertEquals(2, result.get(0).getBemerkungenDTOList().uniqueSize());
+		Assert.assertTrue(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertTrue(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	@Test
@@ -72,9 +72,9 @@ public class BetreuungsangebotTypCalcRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertFalse(result.get(0).getBemerkungenList().isEmpty());
-		Assert.assertEquals(1, result.get(0).getBemerkungenList().uniqueSize());
-		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.BETREUUNGSANGEBOT_MSG));
+		Assert.assertFalse(result.get(0).getBemerkungenDTOList().isEmpty());
+		Assert.assertEquals(1, result.get(0).getBemerkungenDTOList().uniqueSize());
+		Assert.assertTrue(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.BETREUUNGSANGEBOT_MSG));
 	}
 
 	private AbstractPlatz prepareData(BetreuungsangebotTyp betreuungsangebotTyp) {
