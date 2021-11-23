@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.rest.test;
 
+import java.util.Objects;
+
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
@@ -84,13 +86,12 @@ public class KindResourceTest extends AbstractEbeguRestLoginTest {
 
 		final Gemeinde gemeindeParis = TestDataUtil.getGemeindeParis(persistence);
 		JaxGemeinde persistedGemeinde = converter.gemeindeToJAX(gemeindeParis);
-		Mandant persistedMandant = persistence.persist(converter.mandantToEntity(TestJaxDataUtil.createTestMandant(), new Mandant()));
 		jaxGesuch.getDossier().getVerantwortlicherBG().getGemeindeIds().add(persistedGemeinde.getId());
 		Benutzer benutzer = TestDataUtil.createDefaultBenutzer();
 		benutzer.setUsername(jaxGesuch.getDossier().getVerantwortlicherBG().getUsername());
 		benutzer.setVorname(jaxGesuch.getDossier().getVerantwortlicherBG().getVorname());
 		benutzer.setNachname(jaxGesuch.getDossier().getVerantwortlicherBG().getNachname());
-		benutzer.setMandant(persistedMandant);
+		benutzer.setMandant(Objects.requireNonNull(gesuchsperiode1718.getMandant()));
 		benutzer.getCurrentBerechtigung().setRole(UserRole.ADMIN_BG);
 		benutzer.getCurrentBerechtigung().getGemeindeList().add(gemeindeParis);
 		benutzerService.saveBenutzer(benutzer);
