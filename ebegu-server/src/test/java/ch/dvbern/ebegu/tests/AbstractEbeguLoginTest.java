@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
+import ch.dvbern.ebegu.test.TestUserIds;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Mandant;
@@ -53,6 +54,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEbeguLoginTest.class);
 	public static final String SUPERADMIN_NAME = "superadmin";
+	public static final String SUPERADMIN_ID = "a2f9f847-47af-11ec-a0cc-b89a2ae4a038";
 	private LoginContext loginContext;
 
 	@Inject
@@ -69,7 +71,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 	@Before
 	public void performLogin() {
 		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		dummyAdmin = TestDataUtil.createDummySuperAdmin(persistence, mandant, SUPERADMIN_NAME, SUPERADMIN_NAME);
+		dummyAdmin = TestDataUtil.createDummySuperAdmin(persistence, mandant, SUPERADMIN_NAME, "superadmin", SUPERADMIN_ID);
 		try {
 			loginAsSuperadmin();
 		} catch (LoginException ex) {
@@ -82,7 +84,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 	}
 
 	protected void loginAsSuperadmin() throws LoginException {
-		loginContext = JBossLoginContextFactory.createLoginContext(SUPERADMIN_NAME, SUPERADMIN_NAME);
+		loginContext = JBossLoginContextFactory.createLoginContext(SUPERADMIN_ID, "superadmin");
 		loginContext.login();
 	}
 
@@ -101,98 +103,119 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 		return dummyAdmin;
 	}
 
-	protected Benutzer loginAsGesuchsteller(String username) {
+	protected Benutzer loginAsGesuchsteller1() {
+		return this.loginAsGesuchsteller("gesuchst", TestUserIds.GESUCHSTELLER_1);
+	}
+
+	protected Benutzer loginAsGesuchsteller2() {
+		return this.loginAsGesuchsteller("gesuchst2", TestUserIds.GESUCHSTELLER_2);
+	}
+
+	private Benutzer loginAsGesuchsteller(String username, String userId) {
+		assert username.equals("gesuchst") || username.equals("gesuchst2");
 		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		Benutzer user = createOrFindBenutzer(UserRole.GESUCHSTELLER, username, null, null, mandant);
-		user = persistence.merge(user);
+		Benutzer user = createOrFindBenutzer(UserRole.GESUCHSTELLER, username, null, null, mandant, userId);
 		try {
-			createLoginContext(username, username).login();
+			createLoginContext(userId, username).login();
 		} catch (LoginException e) {
 			LOG.error("could not login as gesuchsteller {} for tests", username);
 		}
-		return user;
+		return persistence.merge(user);
 		//theoretisch sollten wir wohl zuerst ausloggen bevor wir wieder einloggen aber es scheint auch so zu gehen
 	}
 
 	protected Benutzer loginAsSchulamt() {
 		try {
-			createLoginContext("schulamt", "schulamt").login();
+			createLoginContext(TestUserIds.SCHULAMT_SACHBEARBEITERIN, "schulamt").login();
 		} catch (LoginException e) {
 			LOG.error("could not login as sachbearbeiter schulamt for tests");
 		}
 
 		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		Benutzer schulamt = createOrFindBenutzer(UserRole.SACHBEARBEITER_TS, "schulamt", null, null, mandant);
+		Benutzer schulamt = createOrFindBenutzer(UserRole.SACHBEARBEITER_TS, "schulamt", null, null, mandant, TestUserIds.SCHULAMT_SACHBEARBEITERIN);
 		return persistence.merge(schulamt);
 	}
 
 	protected Benutzer loginAsAdminSchulamt() {
 		try {
-			createLoginContext("schulamtadmin", "schulamtadmin").login();
+			createLoginContext(TestUserIds.SCHULAMT_ADMIN, "schulamtadmin").login();
 		} catch (LoginException e) {
 			LOG.error("could not login as admin schulamt for tests");
 		}
 
 		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		Benutzer schulamt = createOrFindBenutzer(UserRole.ADMIN_TS, "schulamtadmin", null, null, mandant);
+		Benutzer schulamt = createOrFindBenutzer(UserRole.ADMIN_TS, "schulamtadmin", null, null, mandant, TestUserIds.SCHULAMT_ADMIN);
 		return persistence.merge(schulamt);
 	}
 
 	protected void loginAsSteueramt() {
 		try {
-			createLoginContext("steueramt", "steueramt").login();
+			createLoginContext(TestUserIds.STEUERAMT, "steueramt").login();
 		} catch (LoginException e) {
 			LOG.error("could not login as steueramt for tests");
 		}
 
 		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		Benutzer steueramt = createOrFindBenutzer(UserRole.STEUERAMT, "steueramt", null, null, mandant);
+		Benutzer steueramt = createOrFindBenutzer(UserRole.STEUERAMT, "steueramt", null, null, mandant, TestUserIds.STEUERAMT);
 		persistence.merge(steueramt);
 	}
 
 	protected Benutzer loginAsSachbearbeiterJA() {
 		try {
-			createLoginContext("saja", "saja").login();
+			createLoginContext(TestUserIds.BG_SACHBEARBEITERIN, "saja").login();
 		} catch (LoginException e) {
 			LOG.error("could not login as sachbearbeiter jugendamt saja for tests");
 		}
 
 		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		Benutzer saja = createOrFindBenutzer(UserRole.SACHBEARBEITER_BG, "saja", null, null, mandant);
+		Benutzer saja = createOrFindBenutzer(UserRole.SACHBEARBEITER_BG, "saja", null, null, mandant, TestUserIds.BG_SACHBEARBEITERIN);
 		persistence.merge(saja);
 		return saja;
 	}
 
 	protected Benutzer loginAsJurist() {
 		try {
-			createLoginContext("jurist", "jurist").login();
+			createLoginContext(TestUserIds.JURISTIN, "jurist").login();
 		} catch (LoginException e) {
 			LOG.error("could not login as jurist for tests");
 		}
 
 		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		Benutzer jurist = createOrFindBenutzer(UserRole.JURIST, "jurist", null, null, mandant);
+		Benutzer jurist = createOrFindBenutzer(UserRole.JURIST, "jurist", null, null, mandant, TestUserIds.JURISTIN);
 		persistence.merge(jurist);
 		return jurist;
 	}
 
 	protected void loginAsAdmin() {
 		try {
-			createLoginContext("admin", "admin").login();
+			createLoginContext(TestUserIds.BG_ADMIN, "admin").login();
 		} catch (LoginException e) {
 			LOG.error("could not login as sachbearbeiter jugendamt admin for tests");
 		}
 
 		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		Benutzer admin = createOrFindBenutzer(UserRole.ADMIN_BG, "admin", null, null, mandant);
+		Benutzer admin = createOrFindBenutzer(UserRole.ADMIN_BG, "admin", null, null, mandant, TestUserIds.BG_ADMIN);
 		persistence.merge(admin);
 	}
+	
+	protected Benutzer loginAsSachbearbeiterInst(Institution institutionToSet) {
+		return this.loginAsSachbearbeiterInst("sainst", institutionToSet, TestUserIds.INSTITUTION_SACHBEARBEITER);
+	}
+	
+	protected Benutzer loginAsSachbearbeiterInst2(Institution institutionToSet) {
+		return this.loginAsSachbearbeiterInst("sainst2", institutionToSet, TestUserIds.INSTITUTION_SACHBEARBEITER2);
+	}
 
-	protected Benutzer loginAsSachbearbeiterInst(String username, Institution institutionToSet) {
-		Benutzer user = createOrFindBenutzer(UserRole.SACHBEARBEITER_INSTITUTION, username, null, institutionToSet, institutionToSet.getMandant());
+	private Benutzer loginAsSachbearbeiterInst(String username, Institution institutionToSet, String id) {
+		Benutzer user = createOrFindBenutzer(UserRole.SACHBEARBEITER_INSTITUTION,
+				username,
+				null,
+				institutionToSet,
+				institutionToSet.getMandant(),
+				id);
 		user = persistence.merge(user);
 		try {
-			createLoginContext(username, username).login();
+			createLoginContext(id, username).login();
 		} catch (LoginException e) {
 			LOG.error("could not login as sachbearbeiter jugendamt {} for tests", username);
 		}
@@ -200,24 +223,33 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 		//theoretisch sollten wir wohl zuerst ausloggen bevor wir wieder einloggen aber es scheint auch so zu gehen
 	}
 
-	protected Benutzer loginAsSachbearbeiterTraegerschaft(String username, Traegerschaft traegerschaft) {
+	protected Benutzer loginAsSachbearbeiterTraegerschaft(Traegerschaft traegerschaft) {
 		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		Benutzer user = createOrFindBenutzer(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, username, traegerschaft, null, mandant);
+		Benutzer user = createOrFindBenutzer(UserRole.SACHBEARBEITER_TRAEGERSCHAFT,
+				"satraeg", traegerschaft, null, mandant,
+				TestUserIds.TRAEGERSCHAFT_SACHBEARBEITER);
 		user = persistence.merge(user);
 		try {
-			createLoginContext(username, username).login();
+			createLoginContext(TestUserIds.TRAEGERSCHAFT_SACHBEARBEITER, "satraeg").login();
 		} catch (LoginException e) {
-			LOG.error("could not login as sachbearbeiter jugendamt {} for tests", username);
+			LOG.error("could not login as sachbearbeiter jugendamt {} for tests", "satraeg");
 		}
 		return user;
 		//theoretisch sollten wir wohl zuerst ausloggen bevor wir wieder einloggen aber es scheint auch so zu gehen
 	}
 
-	private Benutzer createOrFindBenutzer(UserRole role, String userName, @Nullable Traegerschaft traegerschaft, @Nullable Institution institution, @Nullable Mandant mandant) {
-		Optional<Benutzer> benutzer = benutzerService.findBenutzer(userName);
+	private Benutzer createOrFindBenutzer(
+			UserRole role,
+			String userName,
+			@Nullable Traegerschaft traegerschaft,
+			@Nullable Institution institution,
+			@Nullable Mandant mandant,
+			String userId) {
+		Optional<Benutzer> benutzer = benutzerService.findBenutzerById(userId);
 		return benutzer.orElseGet(() -> {
 			assert mandant != null;
-			return TestDataUtil.createBenutzerWithDefaultGemeinde(role, userName, traegerschaft, institution, mandant, persistence, null, null);
+			Benutzer toReturn = TestDataUtil.createBenutzerWithDefaultGemeinde(role, userName, traegerschaft, institution, mandant, persistence, null, null, userId);
+			return toReturn;
 		});
 	}
 }

@@ -36,7 +36,7 @@ public class NoEinstellungFoundException extends EbeguRuntimeException {
 	private static final long serialVersionUID = 7990451269130155438L;
 
 	public NoEinstellungFoundException(@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
-		super(null, ErrorCodeEnum.ERROR_EINSTELLUNG_NOT_FOUND, "Einstellung nicht gefunden", key.name(), gemeinde.getId());
+	super(null, ErrorCodeEnum.ERROR_EINSTELLUNG_NOT_FOUND, key.name(), gemeinde.getId());
 		this.key = key;
 		this.gemeinde = gemeinde;
 		this.gesuchsperiode = gesuchsperiode;

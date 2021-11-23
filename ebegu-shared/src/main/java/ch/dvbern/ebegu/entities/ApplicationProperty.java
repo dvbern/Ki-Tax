@@ -43,7 +43,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 @Audited
 @Entity
 @Table(
-	uniqueConstraints = @UniqueConstraint(columnNames = "name", name = "UK_application_property_name")
+	uniqueConstraints = @UniqueConstraint(columnNames = {"name", "mandant_id"}, name = "UK_application_property_name")
 )
 public class ApplicationProperty extends AbstractMutableEntity implements HasMandant {
 

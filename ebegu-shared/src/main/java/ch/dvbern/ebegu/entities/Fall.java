@@ -50,7 +50,7 @@ import org.hibernate.search.bridge.builtin.LongBridge;
 @Entity
 @Table(
 	uniqueConstraints = {
-		@UniqueConstraint(columnNames = "fallNummer", name = "UK_fall_nummer"),
+		@UniqueConstraint(columnNames = {"fallNummer", "mandant_id"}, name = "UK_fall_nummer_mandant_id"),
 		@UniqueConstraint(columnNames = "besitzer_id", name = "UK_fall_besitzer"),
 		@UniqueConstraint(columnNames = "sozialdienst_fall_id", name = "UK_fall_sozialdienst_fall_id")
 	},

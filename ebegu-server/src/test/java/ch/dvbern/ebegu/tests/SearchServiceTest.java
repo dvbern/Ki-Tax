@@ -221,7 +221,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		Long firstResultCount = searchService.countAllAntraege(filterDTO);
 		Assert.assertEquals(Long.valueOf(2), firstResultCount);
 
-		loginAsGesuchsteller("gesuchst");
+		loginAsGesuchsteller1();
 		List<Gesuch> secondResult = searchService.searchAllAntraege(filterDTO);
 		Long secondResultCount = searchService.countAllAntraege(filterDTO);
 		Assert.assertEquals(Long.valueOf(0), secondResultCount);
@@ -245,7 +245,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		//		Benutzer user = TestDataUtil.createDummySuperAdmin(persistence);
 		//kita Weissenstein
 		Institution institutionToSet = gesuch.extractAllBetreuungen().iterator().next().getInstitutionStammdaten().getInstitution();
-		loginAsSachbearbeiterInst("sainst", institutionToSet);
+		loginAsSachbearbeiterInst(institutionToSet);
 		List<Gesuch> secondResult = searchService.searchAllAntraege(filterDTO);
 		Long secondResultCount = searchService.countAllAntraege(filterDTO);
 		Assert.assertEquals(Long.valueOf(2), secondResultCount);
@@ -268,7 +268,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 
 		//aendere user zu einer anderen institution  -> darf nichts mehr finden
 		Institution otherInst = TestDataUtil.createAndPersistDefaultInstitution(persistence);
-		loginAsSachbearbeiterInst("sainst2", otherInst);
+		loginAsSachbearbeiterInst2(otherInst);
 
 		List<Gesuch> fourthResult = searchService.searchAllAntraege(filterDTO);
 		Long fourthResultCount = searchService.countAllAntraege(filterDTO);

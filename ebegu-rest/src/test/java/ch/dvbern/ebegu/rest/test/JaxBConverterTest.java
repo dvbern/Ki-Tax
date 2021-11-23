@@ -133,7 +133,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		final InstitutionStammdaten kitaAaregg = TestDataUtil.createInstitutionStammdatenKitaWeissenstein();
 		final InstitutionStammdaten kitaBruennen = TestDataUtil.createInstitutionStammdatenKitaBruennen();
 		final InstitutionStammdaten tagesfamilien = TestDataUtil.createInstitutionStammdatenTagesfamilien();
-		Mandant mandant = TestDataUtil.createDefaultMandant();
+		Mandant mandant = TestDataUtil.getMandantKantonBern(persistence);
 		TestdataSetupConfig setupConfig =
 			new TestdataSetupConfig(mandant, kitaBruennen, kitaAaregg, tagesfamilien, gesuchsperiode);
 		testdataCreationService.setupTestdata(setupConfig);
@@ -166,7 +166,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft(mandant);
 		String nameTraegerschaft = traegerschaft.getName();
 		traegerschaft = persistence.persist(traegerschaft);
-		assertEquals("TestMandantDBUnit", mandant.getName());
+		assertEquals("Kanton Bern", mandant.getName());
 		assertEquals(nameTraegerschaft, traegerschaft.getName());
 
 		Institution institution = TestDataUtil.createDefaultInstitution();
@@ -180,7 +180,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 
 		Mandant loadedMandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
 		final Traegerschaft loadedTraegerschaft = persistence.find(Traegerschaft.class, traegerschaft.getId());
-		assertEquals("TestMandantDBUnit", loadedMandant.getName());
+		assertEquals("Kanton Bern", loadedMandant.getName());
 		assertEquals(nameTraegerschaft, loadedTraegerschaft.getName());
 	}
 

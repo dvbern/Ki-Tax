@@ -161,6 +161,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private BetreuungMonitoringService betreuungMonitoringService;
 	@Inject
 	private AnmeldungTagesschuleEventConverter anmeldungTagesschuleEventConverter;
+	@Inject
+	private MandantService mandantService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
 
@@ -662,7 +664,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
 		// der letzte Tag im Jahr, von der BetreuungsId sollte immer zur richtigen Gesuchsperiode zählen.
 		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
-			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365));
+			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365), mandantService.getDefaultMandant());
 		Gesuchsperiode gesuchsperiode;
 		if (gesuchsperiodeOptional.isPresent()) {
 			gesuchsperiode = gesuchsperiodeOptional.get();
@@ -716,7 +718,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
 		// der letzte Tag im Jahr, von der BetreuungsId sollte immer zur richtigen Gesuchsperiode zählen.
 		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
-			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365));
+			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365), mandantService.getDefaultMandant());
 		if (gesuchsperiodeOptional.isEmpty()) {
 			return Optional.empty();
 		}
@@ -1281,7 +1283,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	public Optional<AnmeldungTagesschule> findAnmeldungenTagesschuleByBGNummer(@Nonnull String bgNummer) {
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
 		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
-			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365));
+			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365), mandantService.getDefaultMandant());
 		Gesuchsperiode gesuchsperiode;
 		if (gesuchsperiodeOptional.isPresent()) {
 			gesuchsperiode = gesuchsperiodeOptional.get();

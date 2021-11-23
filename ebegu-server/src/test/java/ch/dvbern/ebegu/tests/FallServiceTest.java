@@ -128,7 +128,7 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testCreateFallForGSTwoTimes() {
-		loginAsGesuchsteller("gesuchst");
+		loginAsGesuchsteller1();
 
 		final Optional<Fall> fall = fallService.createFallForCurrentGesuchstellerAsBesitzer();
 		Assert.assertTrue(fall.isPresent());
@@ -142,14 +142,14 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testCreateFallForTwoDifferentGS() {
-		loginAsGesuchsteller("gesuchst");
+		loginAsGesuchsteller1();
 		final Optional<Fall> fall = fallService.createFallForCurrentGesuchstellerAsBesitzer();
 		Assert.assertTrue(fall.isPresent());
 		Fall persistedFall = fall.get();
 		Assert.assertNotNull(persistedFall.getBesitzer());
 		Assert.assertEquals("gesuchst", persistedFall.getBesitzer().getUsername());
 
-		loginAsGesuchsteller("gesuchst2");
+		loginAsGesuchsteller2();
 		final Optional<Fall> fall2 = fallService.createFallForCurrentGesuchstellerAsBesitzer();
 		Assert.assertTrue(fall2.isPresent()); // if a fall already exists for this GS it is not created again
 		Fall persistedFall2 = fall2.get();
@@ -159,7 +159,7 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testGetEmailAddressForFallFromFall() {
-		loginAsGesuchsteller("gesuchst");
+		loginAsGesuchsteller1();
 		final Optional<Fall> fallOpt = fallService.createFallForCurrentGesuchstellerAsBesitzer();
 		Assert.assertTrue(fallOpt.isPresent());
 		Fall fall = fallOpt.get();
@@ -174,7 +174,7 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testGetEmailAddressForFallFromGS() {
-		loginAsGesuchsteller("gesuchst");
+		loginAsGesuchsteller1();
 		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		TestDataUtil.prepareParameters(gesuchsperiode1718, persistence);
 		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, null, null, gesuchsperiode1718);
@@ -192,7 +192,7 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testGetEmailAddressForFallFromSozialdienstFall() {
-		loginAsGesuchsteller("gesuchst");
+		loginAsGesuchsteller1();
 		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		TestDataUtil.prepareParameters(gesuchsperiode1718, persistence);
 		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, null, null, gesuchsperiode1718);

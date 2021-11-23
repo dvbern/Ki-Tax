@@ -851,7 +851,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 
-		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(userName);
+		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(userName, mitteilung.getDossier().getFall().getMandant());
 
 		if (benutzerOptional.isPresent()) {
 			// Den VerantwortlichenJA als Empfänger setzen

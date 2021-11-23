@@ -65,12 +65,12 @@ import static java.util.Objects.requireNonNull;
 @EntityListeners(BenutzerChangedEntityListener.class)
 @Table(
 	uniqueConstraints = {
-		@UniqueConstraint(columnNames = "username", name = "UK_username"),
+		@UniqueConstraint(columnNames = {"username", "mandant_id"}, name = "UK_username_mandant"),
 		@UniqueConstraint(columnNames = "externalUUID", name = "UK_externalUUID"),
 		@UniqueConstraint(columnNames = "zpvNummer", name = "UK_zpv_nummer")
 	},
 	indexes = {
-		@Index(columnList = "username", name = "IX_benutzer_username"),
+		@Index(columnList = "username, mandant_id", name = "IX_benutzer_username_mandant"),
 		@Index(columnList = "externalUUID", name = "IX_benutzer_externalUUID")
 	}
 )

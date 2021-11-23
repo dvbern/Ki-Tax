@@ -557,12 +557,12 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
 		Gemeinde gemeinde = gesuch.extractGemeinde();
 		Gesuchsperiode gesuchsperiode = gesuch.getGesuchsperiode();
-		KitaxUebergangsloesungParameter kitaxParameter = loadKitaxUebergangsloesungParameter();
+		KitaxUebergangsloesungParameter kitaxParameter = loadKitaxUebergangsloesungParameter(gemeinde.getMandant());
 		List<Rule> rules = rulesService.getRulesForGesuchsperiode(gemeinde, gesuchsperiode, kitaxParameter, sprache.getLocale());
 
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
-			true);
+			gemeinde.getMandant(), true);
 		Map<EinstellungKey, Einstellung> einstellungMap = einstellungService.loadRuleParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), BetreuungsgutscheinEvaluator.getRequiredParametersForAbschlussRules());
 		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput, einstellungMap);
 		BGRechnerParameterDTO calculatorParameters = loadCalculatorParameters(gemeinde, gesuchsperiode);
@@ -583,13 +583,13 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		this.finanzielleSituationService.calculateFinanzDaten(gesuch);
 
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
-		KitaxUebergangsloesungParameter kitaxParameter = loadKitaxUebergangsloesungParameter();
+		KitaxUebergangsloesungParameter kitaxParameter = loadKitaxUebergangsloesungParameter(gesuch.extractGemeinde().getMandant());
 
 		final List<Rule> rules = rulesService
 			.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), kitaxParameter, sprache.getLocale());
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
-			true);
+			gesuch.extractGemeinde().getMandant(), true);
 		Map<EinstellungKey, Einstellung> einstellungMap = einstellungService.loadRuleParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), BetreuungsgutscheinEvaluator.getRequiredParametersForAbschlussRules());
 
 		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput, einstellungMap);
@@ -899,12 +899,13 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Nonnull
 	private BetreuungsgutscheinEvaluator initEvaluatorForFamGroessenVerfuegung(@Nonnull Gesuch gesuch, @Nonnull Locale locale) {
-		KitaxUebergangsloesungParameter kitaxParameter = loadKitaxUebergangsloesungParameter();
+		KitaxUebergangsloesungParameter kitaxParameter = loadKitaxUebergangsloesungParameter(Objects.requireNonNull(
+				gesuch.getFall().getMandant()));
 		List<Rule> rules =
 			rulesService.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), kitaxParameter, locale);
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
-			true);
+			gesuch.getFall().getMandant(),true);
 		Map<EinstellungKey, Einstellung> einstellungMap = einstellungService.loadRuleParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), BetreuungsgutscheinEvaluator.getRequiredParametersForAbschlussRules());
 		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput, einstellungMap);
 		loadCalculatorParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());

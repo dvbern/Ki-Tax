@@ -81,7 +81,7 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 		@Nonnull final Mandant mandant) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(value);
-		Optional<ApplicationProperty> property = readApplicationProperty(key);
+		Optional<ApplicationProperty> property = readApplicationProperty(key, mandant);
 		if (property.isPresent()) {
 			property.get().setValue(value);
 			final ApplicationProperty mergedProperty = persistence.merge(property.get());
@@ -112,20 +112,23 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Nonnull
 	@Override
-	public Optional<ApplicationProperty> readApplicationProperty(@Nonnull final ApplicationPropertyKey key) {
-		return criteriaQueryHelper.getEntityByUniqueAttribute(
-			ApplicationProperty.class,
-			key,
-			ApplicationProperty_.name);
+	public Optional<ApplicationProperty> readApplicationProperty(@Nonnull final ApplicationPropertyKey key, @Nonnull final Mandant mandant) {
+		return criteriaQueryHelper.getEntitiesByAttribute(
+						ApplicationProperty.class,
+						key,
+						ApplicationProperty_.name).stream()
+				.filter(applicationProperty -> applicationProperty.getMandant() != null
+						&& applicationProperty.getMandant().equals(mandant))
+				.findFirst();
 	}
 
 	@Nonnull
 	@Override
-	public Collection<String> readMimeTypeWhitelist() {
+	public Collection<String> readMimeTypeWhitelist(@Nonnull final Mandant mandant) {
 		//note this is a candidate for caching
 		Set<String> allowedTypes = Collections.emptySet();
 		final Optional<ApplicationProperty> whitelistVal =
-			this.readApplicationProperty(ApplicationPropertyKey.UPLOAD_FILETYPES_WHITELIST);
+			this.readApplicationProperty(ApplicationPropertyKey.UPLOAD_FILETYPES_WHITELIST, mandant);
 		if (whitelistVal.isPresent() && StringUtils.isNotEmpty(whitelistVal.get().getValue())) {
 			final String[] values = whitelistVal.get().getValue().split(",");
 			allowedTypes = Arrays.stream(values)
@@ -138,10 +141,10 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	}
 
 	@Override
-	public Optional<ApplicationProperty> readApplicationProperty(String keyParam) {
+	public Optional<ApplicationProperty> readApplicationProperty(String keyParam, @Nonnull Mandant mandant) {
 		try {
 			ApplicationPropertyKey keyToSearch = Enum.valueOf(ApplicationPropertyKey.class, keyParam);
-			return readApplicationProperty(keyToSearch);
+			return readApplicationProperty(keyToSearch, mandant);
 		} catch (IllegalArgumentException e) {
 			LOG.warn("Property not found {}", keyParam, e);
 			return Optional.empty();
@@ -150,15 +153,18 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Nonnull
 	@Override
-	public List<ApplicationProperty> getAllApplicationProperties() {
-		return new ArrayList<>(criteriaQueryHelper.getAll(ApplicationProperty.class));
+	public List<ApplicationProperty> getAllApplicationProperties(@Nonnull Mandant mandant) {
+		return criteriaQueryHelper.getAll(ApplicationProperty.class)
+				.stream()
+				.filter(applicationProperty -> applicationProperty.getMandant() != null
+						&& applicationProperty.getMandant().equals(mandant)).collect(Collectors.toList());
 	}
 
 	@Override
-	public void removeApplicationProperty(@Nonnull ApplicationPropertyKey key) {
+	public void removeApplicationProperty(@Nonnull ApplicationPropertyKey key, @Nonnull Mandant mandant) {
 		Objects.requireNonNull(key);
 		ApplicationProperty toRemove =
-			readApplicationProperty(key).orElseThrow(() -> new EbeguEntityNotFoundException(
+			readApplicationProperty(key, mandant).orElseThrow(() -> new EbeguEntityNotFoundException(
 				"removeApplicationProperty",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, key));
 		persistence.remove(toRemove);
@@ -166,18 +172,17 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Override
 	@Nullable
-	public String findApplicationPropertyAsString(@Nonnull ApplicationPropertyKey name) {
+	public String findApplicationPropertyAsString(@Nonnull ApplicationPropertyKey name, @Nonnull Mandant mandant) {
 		Objects.requireNonNull(name, NAME_MISSING_MSG);
-		Optional<ApplicationProperty> property =
-			criteriaQueryHelper.getEntityByUniqueAttribute(ApplicationProperty.class, name, ApplicationProperty_.name);
+		Optional<ApplicationProperty> property = readApplicationProperty(name, mandant);
 		return property.map(ApplicationProperty::getValue).orElse(null);
 	}
 
 	@Override
 	@Nullable
-	public BigDecimal findApplicationPropertyAsBigDecimal(@Nonnull ApplicationPropertyKey name) {
+	public BigDecimal findApplicationPropertyAsBigDecimal(@Nonnull ApplicationPropertyKey name, @Nonnull Mandant mandant) {
 		Objects.requireNonNull(name, NAME_MISSING_MSG);
-		String valueAsString = findApplicationPropertyAsString(name);
+		String valueAsString = findApplicationPropertyAsString(name, mandant);
 		if (valueAsString != null) {
 			return new BigDecimal(valueAsString);
 		}
@@ -186,9 +191,9 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Override
 	@Nullable
-	public Integer findApplicationPropertyAsInteger(@Nonnull ApplicationPropertyKey name) {
+	public Integer findApplicationPropertyAsInteger(@Nonnull ApplicationPropertyKey name, @Nonnull Mandant mandant) {
 		Objects.requireNonNull(name, NAME_MISSING_MSG);
-		String valueAsString = findApplicationPropertyAsString(name);
+		String valueAsString = findApplicationPropertyAsString(name, mandant);
 		if (valueAsString != null) {
 			return Integer.valueOf(valueAsString);
 		}
@@ -197,9 +202,9 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Override
 	@Nullable
-	public Boolean findApplicationPropertyAsBoolean(@Nonnull ApplicationPropertyKey name) {
+	public Boolean findApplicationPropertyAsBoolean(@Nonnull ApplicationPropertyKey name, @Nonnull Mandant mandant) {
 		Objects.requireNonNull(name, NAME_MISSING_MSG);
-		String valueAsString = findApplicationPropertyAsString(name);
+		String valueAsString = findApplicationPropertyAsString(name, mandant);
 		if (valueAsString != null) {
 			return Boolean.valueOf(valueAsString);
 		}
@@ -208,8 +213,8 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Override
 	@Nonnull
-	public Boolean findApplicationPropertyAsBoolean(@Nonnull ApplicationPropertyKey name, boolean defaultValue) {
-		Boolean property = findApplicationPropertyAsBoolean(name);
+	public Boolean findApplicationPropertyAsBoolean(@Nonnull ApplicationPropertyKey name, @Nonnull Mandant mandant, boolean defaultValue) {
+		Boolean property = findApplicationPropertyAsBoolean(name, mandant);
 		if (property == null) {
 			return defaultValue;
 		}
@@ -218,8 +223,8 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Override
 	@Nonnull
-	public LocalDate getStadtBernAsivStartDatum() {
-		String valueAsString = findApplicationPropertyAsString(ApplicationPropertyKey.STADT_BERN_ASIV_START_DATUM);
+	public LocalDate getStadtBernAsivStartDatum(@Nonnull Mandant mandant) {
+		String valueAsString = findApplicationPropertyAsString(ApplicationPropertyKey.STADT_BERN_ASIV_START_DATUM, mandant);
 		if (valueAsString != null) {
 			return LocalDate.parse(valueAsString, Constants.DATE_FORMATTER);
 		}
@@ -229,13 +234,13 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Override
 	@Nonnull
-	public Boolean isStadtBernAsivConfigured() {
-		return findApplicationPropertyAsBoolean(ApplicationPropertyKey.STADT_BERN_ASIV_CONFIGURED, false);
+	public Boolean isStadtBernAsivConfigured(@Nonnull Mandant mandant) {
+		return findApplicationPropertyAsBoolean(ApplicationPropertyKey.STADT_BERN_ASIV_CONFIGURED, mandant, false);
 	}
 
 	@Override
 	@Nonnull
-	public Boolean isKantonNotverordnungPhase2Aktiviert() {
-		return findApplicationPropertyAsBoolean(ApplicationPropertyKey.KANTON_NOTVERORDNUNG_PHASE_2_AKTIV, false);
+	public Boolean isKantonNotverordnungPhase2Aktiviert(@Nonnull Mandant mandant) {
+		return findApplicationPropertyAsBoolean(ApplicationPropertyKey.KANTON_NOTVERORDNUNG_PHASE_2_AKTIV, mandant, false);
 	}
 }

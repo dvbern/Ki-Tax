@@ -218,8 +218,8 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 			assertInstitutionNotUsedInNormalenGesuchen(KITA_HECHT_ID, institutionStammdaten);
 		}
 
-		removeBenutzer(BENUTZER_FISCH_USERNAME);
-		removeBenutzer(BENUTZER_FORELLE_USERNAME);
+		removeBenutzer(BENUTZER_FISCH_USERNAME, mandantService.getDefaultMandant());
+		removeBenutzer(BENUTZER_FORELLE_USERNAME, mandantService.getDefaultMandant());
 
 		if (institutionService.findInstitution(INSTITUTION_FORELLE_ID, true).isPresent()) {
 			institutionService.removeInstitution(INSTITUTION_FORELLE_ID);
@@ -491,8 +491,8 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	}
 
 	private void removeGesucheFallAndBenutzer(int position) {
-		testfaelleService.removeGesucheOfGS(getUsername(position));
-		removeBenutzer(getUsername(position));
+		testfaelleService.removeGesucheOfGS(getUsername(position), mandantService.getDefaultMandant());
+		removeBenutzer(getUsername(position), mandantService.getDefaultMandant());
 	}
 
 	private void createFaelleForSuche(@Nonnull List<InstitutionStammdaten> institutionenForSchulung, @Nonnull Gemeinde gemeinde) {
@@ -624,9 +624,9 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		return savedGesuch;
 	}
 
-	private void removeBenutzer(@Nonnull String username) {
-		if (benutzerService.findBenutzer(username).isPresent()) {
-			benutzerService.removeBenutzer(username);
+	private void removeBenutzer(@Nonnull String username, @Nonnull Mandant mandant) {
+		if (benutzerService.findBenutzer(username, mandant).isPresent()) {
+			benutzerService.removeBenutzer(username, mandant);
 		}
 	}
 

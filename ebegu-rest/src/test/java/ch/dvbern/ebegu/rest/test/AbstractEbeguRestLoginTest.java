@@ -46,6 +46,7 @@ public abstract class AbstractEbeguRestLoginTest extends AbstractEbeguRestTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEbeguRestLoginTest.class);
 	public static final String SUPERADMIN_NAME = "superadmin";
+	public static String SUPERADMIN_ID = "a2f9f847-47af-11ec-a0cc-b89a2ae4a038";
 	public LoginContext loginContext;
 
 	@Inject
@@ -58,11 +59,11 @@ public abstract class AbstractEbeguRestLoginTest extends AbstractEbeguRestTest {
 
 	@Before
 	public void performLogin() {
-		Mandant mandant = TestDataUtil.createDefaultMandant();
+		Mandant mandant = TestDataUtil.getMandantKantonBern(persistence);
 		TestDataUtil.saveMandantIfNecessary(persistence, mandant);
-		dummyAdmin = TestDataUtil.createDummySuperAdmin(persistence, mandant, SUPERADMIN_NAME, SUPERADMIN_NAME);
+		dummyAdmin = TestDataUtil.createDummySuperAdmin(persistence, mandant, SUPERADMIN_NAME, SUPERADMIN_NAME, SUPERADMIN_ID);
 		try {
-			loginContext = JBossLoginContextFactory.createLoginContext(SUPERADMIN_NAME, SUPERADMIN_NAME);
+			loginContext = JBossLoginContextFactory.createLoginContext(SUPERADMIN_ID, SUPERADMIN_NAME);
 			loginContext.login();
 		} catch (LoginException ex) {
 			LOG.error("Konnte dummy login nicht vornehmen fuer ArquillianTests ", ex);
@@ -86,7 +87,7 @@ public abstract class AbstractEbeguRestLoginTest extends AbstractEbeguRestTest {
 
 	protected Benutzer loginAsSuperadmin() {
 		try {
-			createLoginContext(SUPERADMIN_NAME, SUPERADMIN_NAME).login();
+			createLoginContext(SUPERADMIN_ID, SUPERADMIN_NAME).login();
 		} catch (LoginException e) {
 			LOG.error("could not login as sachbearbeiter jugendamt saja for tests");
 		}
@@ -94,15 +95,16 @@ public abstract class AbstractEbeguRestLoginTest extends AbstractEbeguRestTest {
 	}
 
 	protected Benutzer loginAsSachbearbeiterJA() {
+		String sajaId = "d69ff6ba-4846-11ec-a0cc-b89a2ae4a038";
+		Mandant mandant = persistence.find(Mandant.class, "e3736eb8-6eef-40ef-9e52-96ab48d8f220");
+		Benutzer saja = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_BG, "saja", null, null, mandant, persistence, null, null);
+		saja.setId(sajaId);
+		persistence.persist(saja);
 		try {
-			createLoginContext("saja", "saja").login();
+			createLoginContext(sajaId, "saja").login();
 		} catch (LoginException e) {
 			LOG.error("could not login as sachbearbeiter jugendamt saja for tests");
 		}
-
-		Mandant mandant = persistence.find(Mandant.class, "e3736eb8-6eef-40ef-9e52-96ab48d8f220");
-		Benutzer saja = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_BG, "saja", null, null, mandant, persistence, null, null);
-		persistence.persist(saja);
 		return saja;
 	}
 
