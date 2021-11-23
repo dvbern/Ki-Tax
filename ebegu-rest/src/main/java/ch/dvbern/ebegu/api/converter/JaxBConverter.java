@@ -2606,6 +2606,12 @@ public class JaxBConverter extends AbstractConverter {
 		abstractFinanzielleSituation.setGeschaeftsgewinnBasisjahr(abstractFinanzielleSituationJAXP.getGeschaeftsgewinnBasisjahr());
 		abstractFinanzielleSituation.setGeleisteteAlimente(abstractFinanzielleSituationJAXP.getGeleisteteAlimente());
 
+		abstractFinanzielleSituation.setSteuerbaresEinkommen(abstractFinanzielleSituationJAXP.getSteuerbaresEinkommen());
+		abstractFinanzielleSituation.setSteuerbaresVermoegen(abstractFinanzielleSituationJAXP.getSteuerbaresVermoegen());
+		abstractFinanzielleSituation.setEinkaeufeVorsorge(abstractFinanzielleSituationJAXP.getEinkaeufeVorsorge());
+		abstractFinanzielleSituation.setGeschaeftsverlust(abstractFinanzielleSituationJAXP.getGeschaeftsverlust());
+		abstractFinanzielleSituation.setAbzuegeLiegenschaft(abstractFinanzielleSituationJAXP.getAbzuegeLiegenschaft());
+
 		return abstractFinanzielleSituation;
 	}
 
@@ -2626,6 +2632,12 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbstractFinanzielleSituation.setSchulden(persistedAbstractFinanzielleSituation.getSchulden());
 		jaxAbstractFinanzielleSituation.setGeschaeftsgewinnBasisjahr(persistedAbstractFinanzielleSituation.getGeschaeftsgewinnBasisjahr());
 		jaxAbstractFinanzielleSituation.setGeleisteteAlimente(persistedAbstractFinanzielleSituation.getGeleisteteAlimente());
+
+		jaxAbstractFinanzielleSituation.setSteuerbaresEinkommen(persistedAbstractFinanzielleSituation.getSteuerbaresEinkommen());
+		jaxAbstractFinanzielleSituation.setSteuerbaresVermoegen(persistedAbstractFinanzielleSituation.getSteuerbaresVermoegen());
+		jaxAbstractFinanzielleSituation.setEinkaeufeVorsorge(persistedAbstractFinanzielleSituation.getEinkaeufeVorsorge());
+		jaxAbstractFinanzielleSituation.setGeschaeftsverlust(persistedAbstractFinanzielleSituation.getGeschaeftsverlust());
+		jaxAbstractFinanzielleSituation.setAbzuegeLiegenschaft(persistedAbstractFinanzielleSituation.getAbzuegeLiegenschaft());
 	}
 
 	private FinanzielleSituation finanzielleSituationToEntity(

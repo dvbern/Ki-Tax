@@ -16,6 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 
 @Component({
     selector: 'dv-veranlagung',
@@ -33,6 +34,11 @@ export class VeranlagungComponent implements OnInit {
 
     @Input()
     public year: number | string;
+
+    @Input() public model: TSFinanzielleSituationContainer;
+
+    @Input()
+    public readOnly: boolean;
 
     public constructor(
     ) {

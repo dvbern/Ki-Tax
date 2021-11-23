@@ -42,6 +42,9 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     }
 
     private setupForm(): void {
+        if (!this.getModel().finanzielleSituationJA.isNew()) {
+            return;
+        }
         this.getModel().finanzielleSituationJA.quellenbesteuert = undefined;
         this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr = undefined;
         this.getModel().finanzielleSituationJA.alleinigeStekVorjahr = undefined;

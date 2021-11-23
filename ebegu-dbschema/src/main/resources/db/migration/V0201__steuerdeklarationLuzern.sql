@@ -20,18 +20,31 @@ alter table finanzielle_situation add gemeinsame_stek_vorjahr BIT;
 alter table finanzielle_situation add alleinige_stek_vorjahr BIT;
 alter table finanzielle_situation add veranlagt BIT;
 
-alter table finanzielle_situation add steuerbaresEinkommen DECIMAL(19, 2);
-alter table finanzielle_situation add steuerbaresVermoegen DECIMAL(19, 2);
-alter table finanzielle_situation add abzuegeLiegenschaft DECIMAL(19, 2);
+alter table finanzielle_situation add steuerbares_einkommen DECIMAL(19, 2);
+alter table finanzielle_situation add steuerbares_vermoegen DECIMAL(19, 2);
+alter table finanzielle_situation add abzuege_liegenschaft DECIMAL(19, 2);
 alter table finanzielle_situation add geschaeftsverlust DECIMAL(19, 2);
-alter table finanzielle_situation add einkaeufeVorsorge DECIMAL(19, 2);
+alter table finanzielle_situation add einkaeufe_vorsorge DECIMAL(19, 2);
 
 alter table finanzielle_situation_aud add quellenbesteuert BIT;
 alter table finanzielle_situation_aud add gemeinsame_stek_vorjahr BIT;
 alter table finanzielle_situation_aud add alleinige_stek_vorjahr BIT;
 alter table finanzielle_situation_aud add veranlagt BIT;
-alter table finanzielle_situation_aud add steuerbaresEinkommen DECIMAL(19, 2);
-alter table finanzielle_situation_aud add steuerbaresVermoegen DECIMAL(19, 2);
-alter table finanzielle_situation_aud add abzuegeLiegenschaft DECIMAL(19, 2);
+
+alter table finanzielle_situation_aud add steuerbares_einkommen DECIMAL(19, 2);
+alter table finanzielle_situation_aud add steuerbares_vermoegen DECIMAL(19, 2);
+alter table finanzielle_situation_aud add abzuege_liegenschaft DECIMAL(19, 2);
 alter table finanzielle_situation_aud add geschaeftsverlust DECIMAL(19, 2);
-alter table finanzielle_situation_aud add einkaeufeVorsorge DECIMAL(19, 2);
+alter table finanzielle_situation_aud add einkaeufe_vorsorge DECIMAL(19, 2);
+
+alter table einkommensverschlechterung add steuerbares_einkommen DECIMAL(19, 2);
+alter table einkommensverschlechterung add steuerbares_vermoegen DECIMAL(19, 2);
+alter table einkommensverschlechterung add abzuege_liegenschaft DECIMAL(19, 2);
+alter table einkommensverschlechterung add geschaeftsverlust DECIMAL(19, 2);
+alter table einkommensverschlechterung add einkaeufe_vorsorge DECIMAL(19, 2);
+
+alter table einkommensverschlechterung_aud add steuerbares_einkommen DECIMAL(19, 2);
+alter table einkommensverschlechterung_aud add steuerbares_vermoegen DECIMAL(19, 2);
+alter table einkommensverschlechterung_aud add abzuege_liegenschaft DECIMAL(19, 2);
+alter table einkommensverschlechterung_aud add geschaeftsverlust DECIMAL(19, 2);
+alter table einkommensverschlechterung_aud add einkaeufe_vorsorge DECIMAL(19, 2);

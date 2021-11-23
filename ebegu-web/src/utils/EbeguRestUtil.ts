@@ -1833,6 +1833,12 @@ export class EbeguRestUtil {
         restAbstractFinanzielleSituation.geschaeftsgewinnBasisjahr =
             abstractFinanzielleSituation.geschaeftsgewinnBasisjahr;
         restAbstractFinanzielleSituation.geleisteteAlimente = abstractFinanzielleSituation.geleisteteAlimente;
+        restAbstractFinanzielleSituation.steuerbaresEinkommen = abstractFinanzielleSituation.steuerbaresEinkommen;
+        restAbstractFinanzielleSituation.steuerbaresVermoegen = abstractFinanzielleSituation.steuerbaresVermoegen;
+        restAbstractFinanzielleSituation.geschaeftsverlust = abstractFinanzielleSituation.geschaeftsverlust;
+        restAbstractFinanzielleSituation.abzuegeLiegenschaft = abstractFinanzielleSituation.abzuegeLiegenschaft;
+        restAbstractFinanzielleSituation.einkaeufeVorsorge = abstractFinanzielleSituation.einkaeufeVorsorge;
+
         return restAbstractFinanzielleSituation;
     }
 
@@ -1852,6 +1858,11 @@ export class EbeguRestUtil {
                 abstractFinanzielleSituationFromServer.geschaeftsgewinnBasisjahr;
             abstractFinanzielleSituationTS.geleisteteAlimente =
                 abstractFinanzielleSituationFromServer.geleisteteAlimente;
+            abstractFinanzielleSituationTS.steuerbaresEinkommen = abstractFinanzielleSituationFromServer.steuerbaresEinkommen;
+            abstractFinanzielleSituationTS.steuerbaresVermoegen = abstractFinanzielleSituationFromServer.steuerbaresVermoegen;
+            abstractFinanzielleSituationTS.geschaeftsverlust = abstractFinanzielleSituationFromServer.geschaeftsverlust;
+            abstractFinanzielleSituationTS.abzuegeLiegenschaft = abstractFinanzielleSituationFromServer.abzuegeLiegenschaft;
+            abstractFinanzielleSituationTS.einkaeufeVorsorge = abstractFinanzielleSituationFromServer.einkaeufeVorsorge;
             return abstractFinanzielleSituationTS;
         }
         return undefined;
