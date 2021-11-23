@@ -318,6 +318,7 @@ WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchP
 	<entity class="ch.dvbern.ebegu.entities.DokumentGrund"/>
 	<entity class="ch.dvbern.ebegu.entities.Verfuegung"/>
 	<entity class="ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt"/>
+	<entity class="ch.dvbern.ebegu.entities.VerfuegungZeitabschnittBemerkung"/>
 	<entity class="ch.dvbern.ebegu.entities.DownloadFile"/>
 	<entity class="ch.dvbern.ebegu.entities.WizardStep"/>
 	<entity class="ch.dvbern.ebegu.entities.AntragStatusHistory"/>

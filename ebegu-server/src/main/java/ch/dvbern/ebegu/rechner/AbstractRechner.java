@@ -69,24 +69,4 @@ public abstract class AbstractRechner {
 	protected abstract BGCalculationResult calculateAsiv(
 		@Nonnull BGCalculationInput input,
 		@Nonnull BGRechnerParameterDTO parameterDTO);
-
-	/**
-	 * Die Mahlzeitenverguenstigungen mit dem Anteil Monat verrechnen. Die Verguenstigung wurde aufgrund der *monatlichen*
-	 * Mahlzeiten berechnet und ist darum bei untermonatlichen Pensen zu hoch.
-	 * Beispiel: Betreuung ueber einen halben Monat:
-	 * berechneteVerguenstigung = eingegebeneVerguenstigung * 0.5
-	 */
-	protected void handleAnteileMahlzeitenverguenstigung(
-		@Nonnull BGCalculationResult result, @Nonnull BigDecimal anteilMonat, boolean isEinkommensVerminderung
-	) {
-		// Falls es eine Einkommensverminderung ist, wird die MZV beim MutationsMerger vom Vorgänger übernommen.
-		// Diese ist bereits heruntergerechnet, wir sind fertig
-		if(isEinkommensVerminderung) {
-			return;
-		}
-		// Falls der Zeitabschnitt untermonatlich ist, muessen sowohl die Anzahl Mahlzeiten wie auch die Kosten
-		// derselben mit dem Anteil des Monats korrigiert werden
-		final BigDecimal mahlzeitenTotal = result.getVerguenstigungMahlzeitenTotal();
-		result.setVerguenstigungMahlzeitenTotal(MathUtil.DEFAULT.multiply(mahlzeitenTotal, anteilMonat));
-	}
 }

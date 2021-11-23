@@ -40,7 +40,9 @@ import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import org.apache.commons.lang.NotImplementedException;
 
+import static ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp.FERIENBETREUUNG;
 import static ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp.GEMEINDE_KENNZAHLEN;
+import static ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN;
 
 /**
  * Service fuer Gemeindeantraege
@@ -174,11 +176,11 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 	public Optional<? extends GemeindeAntrag> findGemeindeAntrag(
 		@Nonnull GemeindeAntragTyp typ,
 		@Nonnull String gemeindeAntragId) {
-		if (typ == GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN) {
+		if (typ == LASTENAUSGLEICH_TAGESSCHULEN) {
 			return lastenausgleichTagesschuleAngabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(
 				gemeindeAntragId);
 		}
-		if (typ == GemeindeAntragTyp.FERIENBETREUUNG) {
+		if (typ == FERIENBETREUUNG) {
 			return ferienbetreuungService.findFerienbetreuungAngabenContainer(gemeindeAntragId);
 		}
 
@@ -189,17 +191,40 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 	public void deleteGemeindeAntraege(
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull GemeindeAntragTyp gemeindeAntragTyp) {
-		if (gemeindeAntragTyp == GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN) {
-			lastenausgleichTagesschuleAngabenGemeindeService.deleteLastenausgleicheTagesschule(gesuchsperiode);
+		if (gemeindeAntragTyp == LASTENAUSGLEICH_TAGESSCHULEN) {
+			lastenausgleichTagesschuleAngabenGemeindeService.deleteLastenausgleicheTagesschuleForGesuchsperiode(gesuchsperiode);
 			return;
 		}
 		if (gemeindeAntragTyp == GEMEINDE_KENNZAHLEN) {
-			gemeindeKennzahlenService.deleteGemeindeKennzahlen(gesuchsperiode);
+			gemeindeKennzahlenService.deleteGemeindeKennzahlenForGesuchsperiode(gesuchsperiode);
 			return;
 		}
 		throw new NotImplementedException("DeleteGemeindeAntraege für typ "
 			+ gemeindeAntragTyp
 			+ " nicht implementiert");
+	}
+
+	@Override
+	public void deleteGemeindeAntragIfExists(
+			@Nonnull Gesuchsperiode gesuchsperiode,
+			@Nonnull GemeindeAntragTyp gemeindeAntragTyp,
+			@Nonnull Gemeinde gemeinde) {
+		if (gemeindeAntragTyp == LASTENAUSGLEICH_TAGESSCHULEN) {
+			lastenausgleichTagesschuleAngabenGemeindeService.deleteAntragIfExistsAndIsNotAbgeschlossen(
+					gemeinde,
+					gesuchsperiode);
+			return;
+		}
+		if (gemeindeAntragTyp == GEMEINDE_KENNZAHLEN) {
+			gemeindeKennzahlenService.deleteAntragIfExistsAndIsNotAbgeschlossen(gesuchsperiode, gemeinde);
+			return;
+		}
+		if (gemeindeAntragTyp == FERIENBETREUUNG) {
+			ferienbetreuungService.deleteAntragIfExistsAndIsNotAbgeschlossen(gemeinde, gesuchsperiode);
+			return;
+		}
+
+		throw new NotImplementedException("DeleteGemeindeAntrag für typ " + gemeindeAntragTyp + " nicht iplementiert");
 	}
 }
 

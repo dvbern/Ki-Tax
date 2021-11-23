@@ -81,9 +81,9 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 			abschnitt.getBgCalculationResultGemeinde());
 
 		Assert.assertEquals(40, abschnitt.getBgCalculationInputAsiv().getBgPensumProzent().intValue());
-		Assert.assertEquals(2, abschnitt.getBemerkungenList().uniqueSize());
-		Assert.assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
-		Assert.assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
+		Assert.assertEquals(2, abschnitt.getBemerkungenDTOList().uniqueSize());
+		Assert.assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	/**
@@ -108,9 +108,9 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 			abschnitt.getBgCalculationResultGemeinde());
 
 		Assert.assertEquals(40, abschnitt.getBgCalculationInputAsiv().getBgPensumProzent().intValue());
-		Assert.assertEquals(2, abschnitt.getBemerkungenList().uniqueSize());
-		Assert.assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
-		Assert.assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
+		Assert.assertEquals(2, abschnitt.getBemerkungenDTOList().uniqueSize());
+		Assert.assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	/**
@@ -135,10 +135,10 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 
 		Assert.assertEquals(40, abschnitt.getBgCalculationInputAsiv().getBgPensumProzent().intValue());
 		Assert.assertEquals(55, abschnitt.getBgCalculationInputGemeinde().getBgPensumProzent().intValue());
-		Assert.assertEquals(3, abschnitt.getBemerkungenList().uniqueSize());
-		Assert.assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
-		Assert.assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_FREIWILLIGENARBEIT));
-		Assert.assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
+		Assert.assertEquals(3, abschnitt.getBemerkungenDTOList().uniqueSize());
+		Assert.assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_FREIWILLIGENARBEIT));
+		Assert.assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	/**
@@ -168,9 +168,9 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 			40, abschnitt.getBgCalculationInputAsiv().getBgPensumProzent().intValue());
 		Assert.assertEquals("Die Werte sind sowohl nach ASIV wie nach Gmde erreicht",
 			40, abschnitt.getBgCalculationInputGemeinde().getBgPensumProzent().intValue());
-		Assert.assertEquals(2, abschnitt.getBemerkungenList().uniqueSize());
-		Assert.assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
-		Assert.assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
+		Assert.assertEquals(2, abschnitt.getBemerkungenDTOList().uniqueSize());
+		Assert.assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	/**
@@ -198,9 +198,9 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 
 		Assert.assertEquals("BG-Pensum gemaess ASIV 0", 0, abschnitt.getBgCalculationInputAsiv().getBgPensumProzent().intValue());
 		Assert.assertEquals("BG-Pensum gemaess Gemeinde 30", 30, abschnitt.getBgCalculationInputGemeinde().getBgPensumProzent().intValue());
-		Assert.assertEquals(2, abschnitt.getBemerkungenList().uniqueSize());
-		Assert.assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
-		Assert.assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
+		Assert.assertEquals(2, abschnitt.getBemerkungenDTOList().uniqueSize());
+		Assert.assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	/**
@@ -227,9 +227,9 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 			abschnitt.getBgCalculationResultGemeinde());
 
 		Assert.assertEquals("BG-Pensum gemaess ASIV 0", 30, abschnitt.getBgCalculationInputAsiv().getBgPensumProzent().intValue());
-		Assert.assertEquals(2, abschnitt.getBemerkungenList().uniqueSize());
-		Assert.assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
-		Assert.assertTrue(abschnitt.getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
+		Assert.assertEquals(2, abschnitt.getBemerkungenDTOList().uniqueSize());
+		Assert.assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	private VerfuegungZeitabschnitt calculate(Map<EinstellungKey, Einstellung> einstellungenGemeinde, AbstractPlatz platz) {
