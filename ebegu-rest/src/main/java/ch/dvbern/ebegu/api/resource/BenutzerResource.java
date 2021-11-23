@@ -360,7 +360,7 @@ public class BenutzerResource {
 			.orElse(null);
 	}
 
-	@ApiOperation(value = "Sucht den Benutzer mit dem uebergebenen Username in der Datenbank.",
+	@ApiOperation(value = "Sucht den Benutzer anhand der ID in der Datenbank.",
 		response = JaxBenutzer.class)
 	@Nullable
 	@GET
