@@ -47,6 +47,7 @@ import {TSInstitutionExternalClientAssignment} from '../../../models/TSInstituti
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSInstitutionUpdate} from '../../../models/TSInstitutionUpdate';
 import {TSMandant} from '../../../models/TSMandant';
+import {TSModulTagesschuleClientId} from '../../../models/TSModulTagesschuleGroup';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import {DateUtil} from '../../../utils/DateUtil';
@@ -544,11 +545,21 @@ export class EditInstitutionComponent implements OnInit {
                     this.assignedClientGueltigkeitCache.set(client.id, newInstitutionClient.gueltigkeit);
                 }
                 this.externalClients.assignedClients.push(newInstitutionClient);
+                this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(einstellung => {
+                    einstellung.modulTagesschuleGroups.forEach(group => group.clientModuleIds.push(
+                        new TSModulTagesschuleClientId(client, group.id)));
+                });
             }
         } else {
             const idx = this.externalClients.assignedClients.findIndex(c => c.externalClient.id === client.id);
             if (idx >= 0) {
                 this.externalClients.assignedClients.splice(idx, 1);
+                this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(einstellung => {
+                    einstellung.modulTagesschuleGroups.forEach(group => {
+                        const clientIdIdx = group.clientModuleIds.findIndex(c => c.client.id === client.id);
+                        group.clientModuleIds.splice(clientIdIdx, 1);
+                    });
+                });
             }
         }
         // update references to trigger change detection of children
