@@ -110,7 +110,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
-	// TODO: Mandantenfähigkeit: Check that gemeinde stays unique
 	public Gemeinde createGemeinde(@Nonnull Gemeinde gemeinde) {
 		Optional<Gemeinde> gemeindeOpt =
 			criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, gemeinde.getName(), Gemeinde_.name);
