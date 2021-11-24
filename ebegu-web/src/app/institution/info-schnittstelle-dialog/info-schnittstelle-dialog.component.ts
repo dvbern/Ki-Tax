@@ -18,8 +18,9 @@
 import {Clipboard} from '@angular/cdk/clipboard';
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {TSExternalClient} from '../../../models/TSExternalClient';
 import {TSInstitution} from '../../../models/TSInstitution';
-import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
+import {TSModulTagesschuleClientId, TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 
 @Component({
     selector: 'modul-tagesschule-dialog',
@@ -31,6 +32,7 @@ export class InfoSchnittstelleDialogComponent {
     public modulTagesschuleGroup: TSModulTagesschuleGroup;
     public institution: TSInstitution;
     public copied: any = {};
+    public editMode: boolean;
 
     private readonly resetCopiedAfterMS = 1000;
 
@@ -41,6 +43,7 @@ export class InfoSchnittstelleDialogComponent {
     ) {
         this.modulTagesschuleGroup = data.modulTagesschuleGroup;
         this.institution = data.institution;
+        this.editMode = data.editMode;
     }
 
     public ngOnInit(): void {
@@ -54,5 +57,9 @@ export class InfoSchnittstelleDialogComponent {
 
     public close(): void {
         this.dialogRef.close();
+    }
+
+    public findModulTSClientId(client: TSExternalClient): TSModulTagesschuleClientId {
+        return this.modulTagesschuleGroup.clientModuleIds.find(cleintModulId => cleintModulId.client.id === client.id);
     }
 }

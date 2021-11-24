@@ -2648,5 +2648,6 @@
     "GEMEINDE_ANTRAG_GELOESCHT": "Der Antrag {{typ}} für die Gemeinde {{gemeinde}} in der Gesuchsperiode {{periode}} wurde gelöscht",
     "TS_MUTATION_EXISTIERT": "Es gibt bereits eine Mutation zu diesem Antrag",
     "TS_MUTATION_EXISTIERT_BODY": "Die Tagesschulanmeldung muss bei der neusten Mutation bearbeitet werden. Falls diese noch in Bearbeitung der Antragstellenden ist, muss sie zuerst freigegeben oder gelöscht werden.",
+    "FREMD_IDS": "Fremd-IDs",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

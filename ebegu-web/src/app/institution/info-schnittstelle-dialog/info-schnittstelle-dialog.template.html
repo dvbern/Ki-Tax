@@ -37,21 +37,34 @@
                     <td>{{modulTagesschuleGroup.bezeichnung.textDeutsch}} / {{modulTagesschuleGroup.bezeichnung.textFranzoesisch}}</td>
                     <td></td>
                 </tr>
-                <tr>
-                    <td>{{'MODUL_ID' | translate}}</td>
-                    <td>{{modulTagesschuleGroup.id}}</td>
-                    <td (click)="copyToClipboard(modulTagesschuleGroup.id,'modul')">
-                        <i *ngIf="!copied['modul']" class="fa fa-clipboard fa-lg" [title]="'COPY_TO_CLIPBOARD' | translate"></i>
-                        <i *ngIf="copied['modul']" class="fa fa-check fa-lg" [title]="'COPIED' | translate"></i>
-                    </td>
-                </tr>
             </table>
+            <h3 translate>FREMD_IDS</h3>
+            <div class="flex-row" *ngFor="let clientModulId of modulTagesschuleGroup.clientModuleIds">
+                <div class="flex-vertical-center bold-text">
+                    <span>{{clientModulId.client.clientName}}</span>
+                </div>
+                <form role="form" #form="ngForm" *ngIf="editMode">
+                    <input id="modulIdDe" type="text" name="modulIdDe"
+                           #modulIdDe="ngModel"
+                           [(ngModel)]="clientModulId.identifier"
+                           [disabled]="!editMode"
+                           class="form-control"
+                           required>
+                </form>
+                <div class="flex-vertical-center bold-text" *ngIf="!editMode">
+                    <span>{{clientModulId.identifier}}</span>
+                </div>
+                <div (click)="copyToClipboard(clientModulId.identifier,'modul')" class="flex-vertical-center">
+                    <i *ngIf="!copied['modul']" class="fa fa-clipboard fa-lg" [title]="'COPY_TO_CLIPBOARD' | translate"></i>
+                    <i *ngIf="copied['modul']" class="fa fa-check fa-lg" [title]="'COPIED' | translate"></i>
+                </div>
+            </div>
         </div>
 
     </mat-dialog-content>
 
     <mat-dialog-actions>
         <div class="dv-dialog-actions">
-            <button type="button" class="dv-btn cancel-button" (click)="close()" [textContent]="'ZURUECK_ONLY' | translate"></button>
+            <button type="button" class="dv-btn cancel-button" (click)="close()" [textContent]="'SCHLIESSEN' | translate"></button>
         </div>
     </mat-dialog-actions>
