@@ -240,7 +240,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	@Override
 	public void createSchulungsdaten() {
 		// TODO wir sollten fuer die Schulung auch eine Gemeinde auswaehlen (sollte bei der Umsetzung von Schulung geaendert werden)
-		Gemeinde gemeinde = gemeindeService.getAktiveGemeinden().stream().findFirst()
+		Gemeinde gemeinde = gemeindeService.getAktiveGemeinden(mandantService.getMandantBern()).stream().findFirst()
 			.orElseThrow(() -> new EbeguEntityNotFoundException("createSchulungsdaten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 		Traegerschaft traegerschaftFisch = createTraegerschaft(TRAEGERSCHAFT_FISCH_ID, "Fisch");
 

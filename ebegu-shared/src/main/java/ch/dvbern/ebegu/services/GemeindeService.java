@@ -65,10 +65,16 @@ public interface GemeindeService {
 	Collection<Gemeinde> getAllGemeinden();
 
 	/**
-	 * Gibt alle Gemeinden im Status "AKTIV" zurueck.
+	 * Gibt alle Gemeinden im Status "AKTIV" für den Mandanten des Principal zurück
 	 */
 	@Nonnull
 	Collection<Gemeinde> getAktiveGemeinden();
+
+	/**
+	 * Gibt alle Gemeinden im Status "AKTIV" für den übergebenen Mandanten zurück
+	 */
+	@Nonnull
+	Collection<Gemeinde> getAktiveGemeinden(@Nonnull Mandant mandant);
 
 
 	/**
@@ -76,7 +82,7 @@ public interface GemeindeService {
 	 *
 	 */
 	@Nonnull
-	Collection<Gemeinde> getAktiveGemeindenGueltigAm(@Nonnull LocalDate date);
+	Collection<Gemeinde> getAktiveGemeindenGueltigAm(@Nonnull LocalDate date, @Nonnull Mandant mandant);
 
 	/**
 	 * Gibt die GemeindeStammdaten anhand ihrer Id zurück

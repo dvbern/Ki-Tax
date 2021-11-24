@@ -249,9 +249,7 @@ public class GemeindeResource {
 	) {
 		var mandant = mandantService.findMandantByCookie(mandantCookie);
 
-		return gemeindeService.getAktiveGemeinden().stream()
-				//TODO MANDANTEN: do this in getAktiveGemeinden
-			.filter(gemeinde -> gemeinde.getMandant() != null && gemeinde.getMandant().equals(mandant))
+		return gemeindeService.getAktiveGemeinden(mandant).stream()
 			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
 			.collect(Collectors.toList());
 	}
@@ -266,8 +264,11 @@ public class GemeindeResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
-	public List<JaxGemeinde> getAktiveGueltigeGemeinden() {
-		return gemeindeService.getAktiveGemeindenGueltigAm(LocalDate.now()).stream()
+	public List<JaxGemeinde> getAktiveGueltigeGemeinden(
+		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+	) {
+		Mandant mandant = mandantService.findMandantByCookie(mandantCookie);
+		return gemeindeService.getAktiveGemeindenGueltigAm(LocalDate.now(), mandant).stream()
 			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
 			.collect(Collectors.toList());
 	}
@@ -704,8 +705,11 @@ public class GemeindeResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Fuer Registrierungsprozess
-	public List<JaxGemeinde> getAktiveUndSchulverbundGemeinden() {
-		List<JaxGemeinde> aktiveGemeinde = gemeindeService.getAktiveGemeindenGueltigAm(LocalDate.now()).stream()
+	public List<JaxGemeinde> getAktiveUndSchulverbundGemeinden(
+		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+	) {
+		Mandant mandant = mandantService.findMandantByCookie(mandantCookie);
+		List<JaxGemeinde> aktiveGemeinde = gemeindeService.getAktiveGemeindenGueltigAm(LocalDate.now(), mandant).stream()
 			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
 			.collect(Collectors.toList());
 		List<JaxGemeinde> aktiveUndSchulverbundGemeinden = new ArrayList<>(aktiveGemeinde);
