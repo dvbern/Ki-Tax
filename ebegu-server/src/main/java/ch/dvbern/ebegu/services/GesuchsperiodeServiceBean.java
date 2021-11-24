@@ -108,9 +108,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@Inject
 	private GesuchsperiodeEmailService gesuchsperiodeEmailService;
 
-	@Inject
-	private MandantService mandantService;
-
 	@Nonnull
 	@Override
 	public Gesuchsperiode saveGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
@@ -248,6 +245,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@Nullable
 	@Override
 	public Collection<Gesuchsperiode> findThisAndFutureGesuchsperioden(@Nonnull String key) {
+		if (principalBean.getMandant() == null) {
+			throw new EbeguRuntimeException("getGesuchsperiodenImStatus", "Mandant not defined");
+		}
 		List<Gesuchsperiode> gesuchsperioden = null;
 		Optional<Gesuchsperiode> gesuchsperiode = findGesuchsperiode(key);
 		if (gesuchsperiode.isPresent()) {
@@ -257,7 +257,8 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			Root<Gesuchsperiode> root = query.from(Gesuchsperiode.class);
 			Path<DateRange> dateRangePath = root.get(AbstractDateRangedEntity_.gueltigkeit);
 			Predicate predicateVon = cb.greaterThanOrEqualTo(dateRangePath.get(DateRange_.gueltigAb), datumVon);
-			query.where(predicateVon);
+			Predicate predicateMandant = cb.equal(root.get(Gesuchsperiode_.mandant), principalBean.getMandant());
+			query.where(predicateVon, predicateMandant);
 			query.orderBy(cb.desc(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb)));
 			gesuchsperioden = persistence.getCriteriaResults(query);
 		}
@@ -425,10 +426,15 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	}
 
 	private Collection<Gesuchsperiode> getGesuchsperiodenImStatus(GesuchsperiodeStatus... status) {
+		if (principalBean.getMandant() == null) {
+			throw new EbeguRuntimeException("getGesuchsperiodenImStatus", "Mandant not defined");
+		}
 		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuchsperiode> query = builder.createQuery(Gesuchsperiode.class);
 		final Root<Gesuchsperiode> root = query.from(Gesuchsperiode.class);
 		query.where(root.get(Gesuchsperiode_.status).in(status));
+		Predicate predicateMandant = builder.equal(root.get(Gesuchsperiode_.mandant), principalBean.getMandant());
+		query.where(predicateMandant);
 		query.orderBy(builder.desc(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb)));
 		return persistence.getCriteriaResults(query);
 	}
@@ -458,6 +464,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	public Collection<Gesuchsperiode> getGesuchsperiodenBetween(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis) {
+		if (principalBean.getMandant() == null) {
+			throw new EbeguRuntimeException("getGesuchsperiodenBetween", "Mandant not defined");
+		}
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuchsperiode> query = cb.createQuery(Gesuchsperiode.class);
@@ -468,17 +477,23 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		Predicate predicateEnd = cb.greaterThanOrEqualTo(
 			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
 			datumVon);
+		Predicate predicateMandant = cb.equal(root.get(Gesuchsperiode_.mandant), principalBean.getMandant());
 
-		query.where(predicateStart, predicateEnd);
+		query.where(predicateStart, predicateEnd, predicateMandant);
 		return persistence.getCriteriaResults(query);
 	}
 
 	@Nonnull
 	@Override
 	public Optional<Gesuchsperiode> findNewestGesuchsperiode() {
+		if (principalBean.getMandant() == null) {
+			throw new EbeguRuntimeException("findNewestGesuchsperiode", "Mandant not defined");
+		}
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuchsperiode> query = cb.createQuery(Gesuchsperiode.class);
 		Root<Gesuchsperiode> root = query.from(Gesuchsperiode.class);
+		Predicate predicateMandant = cb.equal(root.get(Gesuchsperiode_.mandant), principalBean.getMandant());
+		query.where(predicateMandant);
 		query.orderBy(cb.desc(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis)));
 		final List<Gesuchsperiode> results = persistence.getCriteriaResults(query, 1);
 		if (results.isEmpty()) {

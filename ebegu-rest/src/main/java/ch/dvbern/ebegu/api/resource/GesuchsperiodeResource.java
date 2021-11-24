@@ -205,12 +205,7 @@ public class GesuchsperiodeResource {
 	public List<JaxGesuchsperiode> getAllActiveGesuchsperioden(
 			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
 	) {
-		var mandant = mandantService.findMandantByCookie(mandantCookie);
-
 		return gesuchsperiodeService.getAllActiveGesuchsperioden().stream()
-				//TODO MANDANTEN: move to getAllActiveGesuchsperioden
-				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant()
-						.equals(mandant))
 				.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
 				.collect(Collectors.toList());
 	}
@@ -223,14 +218,8 @@ public class GesuchsperiodeResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
-	public List<JaxGesuchsperiode> getAllAktivUndInaktivGesuchsperioden(
-			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
-			) {
-		var mandant = mandantService.findMandantByCookie(mandantCookie);
-
-		//TODO MANDANTEN: move to getAllaktivUndInaktivGesuchsperioden
+	public List<JaxGesuchsperiode> getAllAktivUndInaktivGesuchsperioden() {
 		return gesuchsperiodeService.getAllAktivUndInaktivGesuchsperioden().stream()
-				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant().equals(mandant))
 			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
 			.filter(periode -> periode.getGueltigAb() != null)
 			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
@@ -248,15 +237,9 @@ public class GesuchsperiodeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
 	public List<JaxGesuchsperiode> getAllAktivInaktivNichtVerwendeteGesuchsperioden(
-		@Nonnull @PathParam("dossierId") String dossierId,
-			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+		@Nonnull @PathParam("dossierId") String dossierId
 	) {
-		var mandant = mandantService.findMandantByCookie(mandantCookie);
-
-		//TODO MANDANTEN: move to getAllAktivInaktivNichtVerwendeteGesuchsperioden
 		return gesuchsperiodeService.getAllAktivInaktivNichtVerwendeteGesuchsperioden(dossierId).stream()
-				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant()
-						.equals(mandant))
 				.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
 				.filter(periode -> periode.getGueltigAb() != null)
 				.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
@@ -283,11 +266,6 @@ public class GesuchsperiodeResource {
 				? gesuchsperiodeService.getAllAktivUndInaktivGesuchsperioden()
 				: gesuchsperiodeService.getAllAktivInaktivNichtVerwendeteGesuchsperioden(dossierId);
 
-		//TODO MANDANTEN: move to methods
-		perioden = perioden.stream()
-				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant()
-						.equals(mandant))
-				.collect(Collectors.toList());
 		return extractValidGesuchsperiodenForGemeinde(gemeindeId, perioden);
 	}
 
@@ -310,12 +288,6 @@ public class GesuchsperiodeResource {
 		Collection<Gesuchsperiode> perioden = dossierId == null
 				? gesuchsperiodeService.getAllActiveGesuchsperioden()
 				: gesuchsperiodeService.getAllAktiveNichtVerwendeteGesuchsperioden(dossierId);
-
-		//TODO MANDANTEN: move to methods
-		perioden = perioden.stream()
-				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant()
-						.equals(mandant))
-				.collect(Collectors.toList());
 
 		return extractValidGesuchsperiodenForGemeinde(gemeindeId, perioden);
 	}
