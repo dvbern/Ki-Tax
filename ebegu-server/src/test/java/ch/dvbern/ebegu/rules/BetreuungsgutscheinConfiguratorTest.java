@@ -138,6 +138,22 @@ public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 		assertContainsRule(rules, ErwerbspensumGemeindeCalcRule.class, 2);
 	}
 
+	@Test
+	public void anspruchUnabhaengigRule() {
+		einstellungenGemaessAsiv.get(EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM).setValue("true");
+		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(gemeindeOfEvaluator, einstellungenGemaessAsiv, kitaxParams, GERMAN);
+		assertContainsRule(rules, ErwerbspensumNotRelevantForAnspruchCalcRule.class, 1);
+		assertContainsRule(rules, ErwerbspensumAsivCalcRule.class, 0);
+	}
+
+	@Test
+	public void anspruchAsivRule() {
+		einstellungenGemaessAsiv.get(EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM).setValue("false");
+		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(gemeindeOfEvaluator, einstellungenGemaessAsiv, kitaxParams, GERMAN);
+		assertContainsRule(rules, ErwerbspensumNotRelevantForAnspruchCalcRule.class, 0);
+		assertContainsRule(rules, ErwerbspensumAsivCalcRule.class, 1);
+	}
+
 
 	private void assertContainsRule(List<Rule> rules, Class<? extends Rule> classOfRuleToFind, int expectedCount) {
 		int found = 0;

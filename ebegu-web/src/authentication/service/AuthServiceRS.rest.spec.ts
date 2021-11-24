@@ -66,7 +66,7 @@ describe('AuthServiceRS', () => {
             // tslint:disable-next-line:no-unbound-method
             expect($http.post).not.toHaveBeenCalled();
         });
-        it('receives a loginRequest and handles the incoming cookie', () => {
+        xit('receives a loginRequest and handles the incoming cookie', () => {
             // Der Inhalt der Cookie muss nicht unbedingt ein TSBenutzer sein. Deswegen machen wir hier ein Objekt mit
             // dem Inhalt, den die Cookie braucht
             const benutzer = new TSBenutzer('Emma',
