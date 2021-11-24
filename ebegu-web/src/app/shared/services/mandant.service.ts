@@ -77,17 +77,25 @@ export class MandantService {
         }
     }
 
+    private static decodeMandantCookie(encodedMandant: string): string {
+        return encodedMandant.replace('+', ' ');
+    }
+
     public async initMandantCookie(): Promise<void> {
-        const mandantFromCookie = MandantService.cookieToMandant(this.cookieService.get('mandant'));
+        const mandantFromCookie = MandantService.cookieToMandant(this.getDecodeMandantCookie());
         const mandantFromUrl = this.parseHostnameForMandant();
 
         if (mandantFromCookie !== mandantFromUrl && mandantFromUrl !== KiBonMandant.NONE) {
             await this.setMandantCookie(mandantFromUrl);
             this._mandant$.next(mandantFromUrl);
         } else {
-            this._mandant$.next(MandantService.cookieToMandant(mandantFromCookie));
+            this._mandant$.next(mandantFromCookie);
         }
         this.initMultimandantActivated();
+    }
+
+    private getDecodeMandantCookie(): string {
+        return MandantService.decodeMandantCookie(this.cookieService.get('mandant'));
     }
 
     private initMultimandantActivated(): void {
