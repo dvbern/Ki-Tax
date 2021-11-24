@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -65,6 +66,8 @@ public class JaxModulTagesschuleGroup extends JaxAbstractDTO {
 	private int reihenfolge;
 
 	private Set<JaxModulTagesschule> module = new LinkedHashSet<>();
+
+	private Set<JaxModulTagesschuleExternalClient> modulExternalClients = new HashSet<>();
 
 
 	@Nonnull
@@ -151,5 +154,13 @@ public class JaxModulTagesschuleGroup extends JaxAbstractDTO {
 
 	public void setModule(Set<JaxModulTagesschule> module) {
 		this.module = module;
+	}
+
+	public Set<JaxModulTagesschuleExternalClient> getModulExternalClients() {
+		return modulExternalClients;
+	}
+
+	public void setModulExternalClients(Set<JaxModulTagesschuleExternalClient> modulExternalClients) {
+		this.modulExternalClients = modulExternalClients;
 	}
 }
