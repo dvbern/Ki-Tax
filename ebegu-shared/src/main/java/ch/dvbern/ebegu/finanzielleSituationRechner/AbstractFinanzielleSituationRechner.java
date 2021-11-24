@@ -73,7 +73,7 @@ public abstract class AbstractFinanzielleSituationRechner {
 	 * Nimmt das uebergebene FinanzielleSituationResultateDTO und mit den Daten vom Gesuch, berechnet alle im
 	 * FinanzielleSituationResultateDTO benoetigten Daten und setzt sie direkt im dto.
 	 */
-	private void setFinanzielleSituationParameters(
+	public void setFinanzielleSituationParameters(
 		@Nonnull Gesuch gesuch,
 		final FinanzielleSituationResultateDTO finSitResultDTO,
 		boolean hasSecondGesuchsteller) {
@@ -249,14 +249,14 @@ public abstract class AbstractFinanzielleSituationRechner {
 		finSitResultDTO.setEinkommenBeiderGesuchsteller(calcEinkommen(
 			finanzielleSituationGS1, geschaeftsgewinnDurchschnitt1,
 			finanzielleSituationGS2, geschaeftsgewinnDurchschnitt2));
-		finSitResultDTO.setNettovermoegenFuenfProzent(calcVermoegen5Prozent(
+		finSitResultDTO.setNettovermoegenXProzent(calcVermoegen5Prozent(
 			finanzielleSituationGS1,
 			finanzielleSituationGS2));
 		finSitResultDTO.setAbzuegeBeiderGesuchsteller(calcAbzuege(finanzielleSituationGS1, finanzielleSituationGS2));
 
 		finSitResultDTO.setAnrechenbaresEinkommen(add(
 			finSitResultDTO.getEinkommenBeiderGesuchsteller(),
-			finSitResultDTO.getNettovermoegenFuenfProzent()));
+			finSitResultDTO.getNettovermoegenXProzent()));
 		finSitResultDTO.setMassgebendesEinkVorAbzFamGr(
 			MathUtil.positiveNonNullAndRound(
 				subtract(
@@ -427,14 +427,14 @@ public abstract class AbstractFinanzielleSituationRechner {
 	}
 
 	@Deprecated // Use MathUtil instead
-	private static BigDecimal subtract(@Nullable BigDecimal value1, @Nullable BigDecimal value2) {
+	protected static BigDecimal subtract(@Nullable BigDecimal value1, @Nullable BigDecimal value2) {
 		value1 = value1 != null ? value1 : BigDecimal.ZERO;
 		value2 = value2 != null ? value2 : BigDecimal.ZERO;
 		return value1.subtract(value2);
 	}
 
 	@Deprecated // Use MathUtil instead
-	private static BigDecimal percent(@Nullable BigDecimal value, int percent) {
+	protected static BigDecimal percent(@Nullable BigDecimal value, int percent) {
 		BigDecimal total = value != null ? value : BigDecimal.ZERO;
 		total = total.multiply(new BigDecimal(String.valueOf(percent)));
 		total = total.divide(new BigDecimal("100"), RoundingMode.HALF_UP);
@@ -499,7 +499,7 @@ public abstract class AbstractFinanzielleSituationRechner {
 	}
 
 	@Nullable
-	private FinanzielleSituation getFinanzielleSituationGS(@Nullable GesuchstellerContainer gesuchsteller) {
+	protected FinanzielleSituation getFinanzielleSituationGS(@Nullable GesuchstellerContainer gesuchsteller) {
 		if (gesuchsteller != null && gesuchsteller.getFinanzielleSituationContainer() != null) {
 			return gesuchsteller.getFinanzielleSituationContainer().getFinanzielleSituationJA();
 		}

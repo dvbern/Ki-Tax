@@ -52,14 +52,14 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     }
 
     public showSelbstdeklaration(): boolean {
-        return this.getModel().finanzielleSituationJA.quellenbesteuert === true
-            || this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr === false
-            || this.getModel().finanzielleSituationJA.alleinigeStekVorjahr === false
-            || this.getModel().finanzielleSituationJA.veranlagt === false;
+        return this.getModel().finanzielleSituationJA.quellenbesteuert
+            || this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr
+            || this.getModel().finanzielleSituationJA.alleinigeStekVorjahr
+            || this.getModel().finanzielleSituationJA.veranlagt;
     }
 
     public showVeranlagung(): boolean {
-        return this.getModel().finanzielleSituationJA.veranlagt === true;
+        return this.getModel().finanzielleSituationJA.veranlagt;
     }
 
     public quellenBesteuertChange(newQuellenBesteuert: MatRadioChange): void {
@@ -72,26 +72,26 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     }
 
     public gemeinsameStekVisible(): boolean {
-        return this.isGemeinsam() && this.getModel().finanzielleSituationJA.quellenbesteuert === false;
+        return this.isGemeinsam() && this.getModel().finanzielleSituationJA.quellenbesteuert;
     }
 
     public alleinigeStekVisible(): boolean {
-        return !this.isGemeinsam() && this.getModel().finanzielleSituationJA.quellenbesteuert === false;
+        return !this.isGemeinsam() && this.getModel().finanzielleSituationJA.quellenbesteuert;
     }
 
     public veranlagtVisible(): boolean {
-        return this.model.gemeinsameSteuererklaerung === true
-            || this.getModel().finanzielleSituationJA.alleinigeStekVorjahr === true;
+        return this.model.gemeinsameSteuererklaerung
+            || this.getModel().finanzielleSituationJA.alleinigeStekVorjahr;
     }
 
     public gemeinsameStekChange(newGemeinsameStek: MatRadioChange): void {
-        if (newGemeinsameStek.value === false && this.getModel().finanzielleSituationJA.alleinigeStekVorjahr !== true) {
+        if (newGemeinsameStek.value === false && !this.getModel().finanzielleSituationJA.alleinigeStekVorjahr) {
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
         }
     }
 
     public alleinigeStekVorjahrChange(newAlleinigeStekVorjahr: MatRadioChange): void {
-        if (newAlleinigeStekVorjahr.value === false && this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr !== true) {
+        if (newAlleinigeStekVorjahr.value === false && this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr) {
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
         }
     }
@@ -99,14 +99,14 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     public getYearForDeklaration(): number | string {
         const currentYear = this.getBasisjahrPlus1();
         const previousYear = this.getBasisjahr();
-        if (this.getModel().finanzielleSituationJA.quellenbesteuert === true) {
+        if (this.getModel().finanzielleSituationJA.quellenbesteuert) {
             return previousYear;
         }
         if (EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.veranlagt)) {
             return previousYear;
         }
-        if (this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr === false
-            || this.getModel().finanzielleSituationJA.alleinigeStekVorjahr === false) {
+        if (this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr
+            || this.getModel().finanzielleSituationJA.alleinigeStekVorjahr) {
             return currentYear;
         }
         return '';

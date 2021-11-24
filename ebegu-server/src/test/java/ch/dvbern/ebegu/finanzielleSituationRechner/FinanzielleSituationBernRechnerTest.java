@@ -30,7 +30,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Tests fuer FinanzielleSituationRechner
+ * Tests fuer FinanzielleSituationBernRechner
  */
 public class FinanzielleSituationBernRechnerTest {
 
@@ -46,7 +46,6 @@ public class FinanzielleSituationBernRechnerTest {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		LocalDate bis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
-		TestDataUtil.calculateFinanzDaten(gesuch, finSitRechner);
 
 		//positiv value
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
@@ -67,7 +66,6 @@ public class FinanzielleSituationBernRechnerTest {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		LocalDate bis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
-		TestDataUtil.calculateFinanzDaten(gesuch, finSitRechner);
 
 		//negativ value
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
