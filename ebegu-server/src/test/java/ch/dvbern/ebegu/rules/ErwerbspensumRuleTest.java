@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnittBemerkung;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.Taetigkeit;
@@ -430,6 +431,29 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertFalse(verfuegungZeitabschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertNotNull(verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList());
 		assertFalse(verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().isEmpty());
+	}
+
+	@Test
+	public void testAnspruchspensumUnabhaengigVonErwerbspensum() {
+		Betreuung betreuung = createGesuch(false);
+		Gesuch gesuch = betreuung.extractGesuch();
+
+		assertNotNull(gesuch.getGesuchsteller1());
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 15));
+
+		var einstellungen = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(gesuch.getGesuchsperiode());
+		einstellungen.get(EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM).setValue("true");
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculateWithCustomEinstellungen(betreuung, einstellungen);
+		assertNotNull(result);
+		assertEquals(1, result.size());
+		for (var verfuegungZeitabschnitt : result) {
+			assertNotNull(verfuegungZeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS1());
+			assertEquals(15, verfuegungZeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS1().intValue());
+			assertEquals(100, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
+			assertNotNull(verfuegungZeitabschnitt.getBemerkungen());
+			assertFalse(verfuegungZeitabschnitt.getBemerkungen().isEmpty());
+		}
 	}
 
 	@Test

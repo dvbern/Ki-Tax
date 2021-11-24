@@ -22,14 +22,20 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.services.EinstellungService;
 
 @Stateless
 public class DokumentenverzeichnisEvaluator {
+
+	@Inject
+	private EinstellungService einstellungService;
 
 	private final AbstractDokumente familiensituationDokumente = new FamiliensituationDokumente();
 	private final AbstractDokumente kindAnlagen = new KindDokumente();
@@ -51,13 +57,25 @@ public class DokumentenverzeichnisEvaluator {
 		if (gesuch != null) {
 			familiensituationDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 			kindAnlagen.getAllDokumente(gesuch, anlageVerzeichnis, locale);
-			erwerbspensumDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
+			if (isErwerbpensumDokumenteRequired(gesuch)) {
+				erwerbspensumDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
+			}
 			finanzielleSituationDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 			einkommensverschlechterungDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 			betreuungDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 		}
 
 		return anlageVerzeichnis;
+	}
+
+	private boolean isErwerbpensumDokumenteRequired(Gesuch gesuch) {
+		var anspruchUnabhaengig = einstellungService
+			.findEinstellung(
+				EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,
+				gesuch.extractGemeinde(),
+				gesuch.getGesuchsperiode()
+			).getValueAsBoolean();
+		return !anspruchUnabhaengig;
 	}
 
 	public void addSonstige(Set<DokumentGrund> dokumentGrunds) {
