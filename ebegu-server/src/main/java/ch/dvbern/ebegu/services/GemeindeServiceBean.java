@@ -151,7 +151,15 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Nonnull
 	@Override
 	public Collection<Gemeinde> getAllGemeinden() {
-		return criteriaQueryHelper.getAllOrdered(Gemeinde.class, Gemeinde_.name);
+		if (principalBean.getMandant() == null) {
+			throw new EbeguRuntimeException("getAllGemeinden", "Mandant not defined");
+		}
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gemeinde> query = cb.createQuery(Gemeinde.class);
+		Root<Gemeinde> root = query.from(Gemeinde.class);
+		var mandantPredicate = cb.equal(root.get(Gemeinde_.mandant), principalBean.getMandant());
+		query.where(mandantPredicate);
+		return persistence.getCriteriaResults(query);
 	}
 
 	private long getNextGemeindeNummer() {
@@ -341,12 +349,16 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Nonnull
 	@Override
 	public Collection<BfsGemeinde> getAllBfsGemeinden() {
+		if (principalBean.getMandant() == null) {
+			throw new EbeguRuntimeException("getAllBfsGemeinden", "Mandant not defined");
+		}
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<BfsGemeinde> query = cb.createQuery(BfsGemeinde.class);
 		Root<BfsGemeinde> root = query.from(BfsGemeinde.class);
+		var mandantPredicate = cb.equal(root.get(BfsGemeinde_.mandant), principalBean.getMandant());
+		query.where(mandantPredicate);
 		CriteriaQuery<BfsGemeinde> all = query.select(root);
-		List<BfsGemeinde> allBfsGemeinden = persistence.getCriteriaResults(all);
-		return allBfsGemeinden;
+		return persistence.getCriteriaResults(all);
 	}
 
 	@Override
