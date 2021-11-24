@@ -224,9 +224,21 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@Nonnull
 	@Override
 	public Collection<Gesuchsperiode> getAllGesuchsperioden() {
+		Mandant mandant = principalBean.getMandant();
+		if (mandant == null) {
+			throw new EbeguRuntimeException("getAllGesuchsperioden", "Mandant not defined");
+		}
+		return getAllGesuchsperioden(mandant);
+	}
+
+	@Nonnull
+	@Override
+	public Collection<Gesuchsperiode> getAllGesuchsperioden(@Nonnull Mandant mandant) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuchsperiode> query = cb.createQuery(Gesuchsperiode.class);
 		Root<Gesuchsperiode> root = query.from(Gesuchsperiode.class);
+		Predicate mandantPredicate = cb.equal(root.get(Gesuchsperiode_.mandant), mandant);
+		query.where(mandantPredicate);
 		query.select(root);
 		query.orderBy(cb.desc(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb)));
 		return persistence.getCriteriaResults(query);

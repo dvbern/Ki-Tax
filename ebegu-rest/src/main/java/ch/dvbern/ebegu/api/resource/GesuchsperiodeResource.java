@@ -186,10 +186,7 @@ public class GesuchsperiodeResource {
 	) {
 		var mandant = mandantService.findMandantByCookie(mandantCookie);
 
-		return gesuchsperiodeService.getAllGesuchsperioden().stream()
-				//TODO MANDANTEN: move to getAllGesuchsperioden
-				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant()
-						.equals(mandant))
+		return gesuchsperiodeService.getAllGesuchsperioden(mandant).stream()
 				.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
 				.filter(periode -> periode.getGueltigAb() != null)
 				.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
