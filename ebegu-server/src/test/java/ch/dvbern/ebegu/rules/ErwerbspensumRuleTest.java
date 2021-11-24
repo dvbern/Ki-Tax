@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
@@ -27,8 +28,10 @@ import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnittBemerkung;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.Taetigkeit;
@@ -55,7 +58,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
-		final String bemerkungen = result.get(0).getBemerkungen();
+		final List<VerfuegungZeitabschnittBemerkung> bemerkungen = result.get(0).getVerfuegungZeitabschnittBemerkungList();
 		assertNotNull(bemerkungen);
 		assertFalse(bemerkungen.isEmpty());
 	}
@@ -77,10 +80,10 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertEquals(1, result.size());
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);
 		assertEquals(40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
-		assertNotNull(verfuegungZeitabschnitt.getBemerkungenList());
-		assertEquals(2, verfuegungZeitabschnitt.getBemerkungenList().uniqueSize());
-		assertTrue(verfuegungZeitabschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
-		assertTrue(verfuegungZeitabschnitt.getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
+		assertNotNull(verfuegungZeitabschnitt.getBemerkungenDTOList());
+		assertEquals(2, verfuegungZeitabschnitt.getBemerkungenDTOList().uniqueSize());
+		assertTrue(verfuegungZeitabschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertTrue(verfuegungZeitabschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	@Test
@@ -101,7 +104,10 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
-		assertEquals("Betreuungsangebot Schulamt", result.get(0).getBemerkungen());
+		List<VerfuegungZeitabschnittBemerkung> bemekungen = result.get(0).getVerfuegungZeitabschnittBemerkungList();
+		assertNotNull(bemekungen);
+		assertEquals(1, bemekungen.size());
+		assertEquals("Betreuungsangebot Schulamt", bemekungen.get(0).getBemerkung());
 	}
 
 	@Test
@@ -118,10 +124,10 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertEquals(1, result.size());
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);
 		assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
-		assertNotNull(verfuegungZeitabschnitt.getBemerkungenList());
-		assertEquals(2, verfuegungZeitabschnitt.getBemerkungenList().uniqueSize());
-		assertTrue(verfuegungZeitabschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
-		assertTrue(verfuegungZeitabschnitt.getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
+		assertNotNull(verfuegungZeitabschnitt.getBemerkungenDTOList());
+		assertEquals(2, verfuegungZeitabschnitt.getBemerkungenDTOList().uniqueSize());
+		assertTrue(verfuegungZeitabschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertTrue(verfuegungZeitabschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	@Test
@@ -137,7 +143,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
-		final String bemerkungen = result.get(0).getBemerkungen();
+		final List<VerfuegungZeitabschnittBemerkung> bemerkungen = result.get(0).getVerfuegungZeitabschnittBemerkungList();
 		assertNotNull(bemerkungen);
 		assertFalse(bemerkungen.isEmpty());
 	}
@@ -155,7 +161,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
-		final String bemerkungen = result.get(0).getBemerkungen();
+		final List<VerfuegungZeitabschnittBemerkung> bemerkungen = result.get(0).getVerfuegungZeitabschnittBemerkungList();
 		assertNotNull(bemerkungen);
 		assertFalse(bemerkungen.isEmpty());
 	}
@@ -176,9 +182,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
-		final String bemerkungen = result.get(0).getBemerkungen();
-		assertNotNull(bemerkungen);
-		assertTrue(bemerkungen.contains("Das totale Beschäftigungspensum pro Antragsteller/in kann 100% nicht übertreffen."));
+		assertBemerkungenContains(result.get(0).getVerfuegungZeitabschnittBemerkungList(), "Das totale Beschäftigungspensum pro Antragsteller/in kann 100% nicht übertreffen.");
 	}
 
 	@Test
@@ -405,9 +409,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
-		final String bemerkungen = result.get(0).getBemerkungen();
-		assertNotNull(bemerkungen);
-		assertTrue(bemerkungen.contains("Das totale Beschäftigungspensum pro Antragsteller/in kann 100% nicht übertreffen."));
+		assertBemerkungenContains(result.get(0).getVerfuegungZeitabschnittBemerkungList(), "Das totale Beschäftigungspensum pro Antragsteller/in kann 100% nicht übertreffen.");
 	}
 
 	@Test
@@ -427,8 +429,31 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertEquals(15, verfuegungZeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS1().intValue());
 		assertEquals(0, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
 		assertFalse(verfuegungZeitabschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
-		assertNotNull(verfuegungZeitabschnitt.getBemerkungen());
-		assertFalse(verfuegungZeitabschnitt.getBemerkungen().isEmpty());
+		assertNotNull(verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList());
+		assertFalse(verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().isEmpty());
+	}
+
+	@Test
+	public void testAnspruchspensumUnabhaengigVonErwerbspensum() {
+		Betreuung betreuung = createGesuch(false);
+		Gesuch gesuch = betreuung.extractGesuch();
+
+		assertNotNull(gesuch.getGesuchsteller1());
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 15));
+
+		var einstellungen = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(gesuch.getGesuchsperiode());
+		einstellungen.get(EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM).setValue("true");
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculateWithCustomEinstellungen(betreuung, einstellungen);
+		assertNotNull(result);
+		assertEquals(1, result.size());
+		for (var verfuegungZeitabschnitt : result) {
+			assertNotNull(verfuegungZeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS1());
+			assertEquals(15, verfuegungZeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS1().intValue());
+			assertEquals(100, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
+			assertNotNull(verfuegungZeitabschnitt.getBemerkungen());
+			assertFalse(verfuegungZeitabschnitt.getBemerkungen().isEmpty());
+		}
 	}
 
 	@Test
@@ -499,6 +524,16 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		TestDataUtil.createDefaultAdressenForGS(gesuch, gs2);
 
 		return betreuung;
+	}
+
+	private void assertBemerkungenContains(List<VerfuegungZeitabschnittBemerkung> bemerkungenList, String bemerkung) {
+		assertNotNull(bemerkungenList);
+		assertNotNull(bemerkung);
+		assertFalse(bemerkungenList.isEmpty());
+		final List<String> bemerkungenStringList = bemerkungenList.stream()
+			.map(VerfuegungZeitabschnittBemerkung::getBemerkung)
+			.collect(Collectors.toList());
+		assertTrue(bemerkungenStringList.contains(bemerkung));
 	}
 
 }

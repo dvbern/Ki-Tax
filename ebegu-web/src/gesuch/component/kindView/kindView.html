@@ -273,305 +273,317 @@
                         </div>
                     </div>
 
-                    <!--Show Fachstelle?-->
-                    <div class="row">
-                        <div class="col-xs-12 dv-input-container-question">
-                            <div class="checkbox checkbox-with-margin" ng-show="vm.getModel().familienErgaenzendeBetreuung">
-                                <md-checkbox ng-model="vm.showFachstelle" name="showFachstelle" id="showFachstelle"
-                                             aria-label="{{'INVOLVIERTE_FACHSTELLE'|translate}}"
-                                             ng-disabled="vm.isGesuchReadonly()"
-                                             ng-change="vm.showFachstelleClicked()">
-                                    <span data-translate="INVOLVIERTE_FACHSTELLE"></span>
-                                </md-checkbox>
-                                <dv-tooltip input-id="showFachstelle"
-                                            text="'INVOLVIERTE_FACHSTELLE_HELP' | translate"></dv-tooltip>
-                                <dv-bisher gs="vm.showFachstelleGS"
-                                           ja="vm.showFachstelle"
-                                           specific-bisher-text="vm.getTextFachstelleKorrekturJA()"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
-                                <dv-error-messages for="vm.form.showFachstelle.$error"
-                                                   class="error"></dv-error-messages>
-                            </div>
-                        </div>
-                    </div>
-                    <!--fachstelle-->
-                    <div ng-if="vm.isFachstelleRequired()">
-                        <!--integration-->
+                    <ng-container ng-if="vm.showExtendedKindQuestions()">
+
+                        <!--Show Fachstelle?-->
                         <div class="row">
-                            <div class="col-xs-12 dv-input-container-small">
-                                <div class="form-group">
-                                    <label class="md-no-float required" id="integration" data-translate="INTEGRATION"></label>
-                                    <dv-radio-container name="integration" class="input-element"
-                                                        ng-required="vm.isFachstelleRequired()"
-                                                        items="vm.integrationTypes"
-                                                        ng-model="vm.getPensumFachstelle().integrationTyp"
-                                                        ng-change="vm.loadEinstellungenForIntegration()"
-                                                        dv-enable-element
-                                                        dv-enable-allowed-roles="vm.allowedRoles"
-                                                        dv-enable-expression="!vm.isGesuchReadonly()"
-                                                        aria-label="{{ 'INTEGRATION' | translate }}"
-                                                        aria-described-by="integration-error">
-                                    </dv-radio-container>
-                                    <dv-bisher gs="vm.getContainer().kindGS.pensumFachstelle.integrationTyp"
-                                               ja="vm.getContainer().kindJA.pensumFachstelle.integrationTyp"
-                                               show-if-bisher-none="false"
-                                               block-existed="vm.showFachstelleGS === true"></dv-bisher>
-                                    <dv-error-messages input-id="integration"
-                                                       for="vm.form.integration.$error"
-                                                       class="error"></dv-error-messages>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!--fachstelle-->
-                        <div class="row">
-                            <div class="col-sm-12 dv-input-container-medium form-group">
-                                <label class="md-no-float required">
-                                    <span data-translate="FACHSTELLE" for="fachstelle"></span>
-                                    <dv-tooltip input-id="fachstelle" text="'FACHSTELLE_HELP' | translate"></dv-tooltip>
-                                </label>
-                                <div class="dv-select-style">
-                                    <select aria-describedby="fachstelle-error"
-                                            name="fachstelle"
-                                            id="fachstelle"
-                                            ng-model="vm.fachstelleId"
-                                            class="form-control"
-                                            ng-options="fachstelle.id as fachstelle.name | translate for fachstelle in vm.getFachstellenList() | orderBy: 'name'"
-                                            ng-required="vm.isFachstelleRequired()"
-                                            ng-change="vm.setSelectedFachsstelle()">
-                                    </select>
-
-                                    <dv-bisher gs="vm.getContainer().kindGS.pensumFachstelle.fachstelle.name"
-                                               ja="vm.getContainer().kindJA.pensumFachstelle.fachstelle.name"
-                                               show-if-bisher-none="false"
-                                               block-existed="vm.showFachstelleGS === true"></dv-bisher>
-                                    <dv-error-messages input-id="fachstelle" for="vm.form.fachstelle.$error"
-                                                       class="error"></dv-error-messages>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!--betreuungspensumFachstelle-->
-                        <div class="row">
-                            <div class="col-sm-12 dv-input-container-small">
-                                <dv-input-container class="form-group">
-                                    <label class="md-no-float" data-translate="BETREUUNGSPENSUM_FACHSTELLE"
-                                           for="betreuungspensumFachstelle"></label>
-                                    <input aria-describedby="betreuungspensumFachstelle-error"
-                                           id="betreuungspensumFachstelle"
-                                           type="number"
-                                           name="betreuungspensumFachstelle"
-                                           ng-model="vm.getPensumFachstelle().pensum"
-                                           min="{{vm.minValueAllowed}}"
-                                           max="{{vm.maxValueAllowed}}"
-                                           dv-max-length
-                                           class="form-control"
-                                           ng-pattern="vm.CONSTANTS.PATTERN_PERCENTAGE"
-                                           ng-required="vm.isFachstelleRequired()"
-                                           ng-disabled="vm.isOnlyOneValueAllowed()"
-                                           ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}">
-                                    <dv-bisher gs="vm.getContainer().kindGS.pensumFachstelle.pensum"
-                                               ja="vm.getContainer().kindJA.pensumFachstelle.pensum"
-                                               show-if-bisher-none="false"
-                                               block-existed="vm.showFachstelleGS === true"></dv-bisher>
-                                    <dv-error-messages input-id="betreuungspensumFachstelle"
-                                                       for="vm.form.betreuungspensumFachstelle.$error"
-                                                       min-value="vm.minValueAllowed"
-                                                       max-value="vm.maxValueAllowed"
-                                                       class="error"></dv-error-messages>
-                                </dv-input-container>
-                            </div>
-                        </div>
-
-                        <!-- gueltig ab / gueltig bis -->
-                        <div class="row">
-                            <div class="col-sm-12 dv-input-container-small">
-                                <dv-input-container class="form-group">
-                                    <label class="md-no-float" data-translate="VON" for="datumAb">
-                                    </label>
-                                    <dv-datepicker input-id="datumAb" name="datumAb"
-                                                   class="input-element"
-                                                   ng-model="vm.getPensumFachstelle().gueltigkeit.gueltigAb"
-                                                   ng-required="vm.isFachstelleRequired()"
-                                                   ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}">
-                                    </dv-datepicker>
-                                    <dv-bisher gs="vm.getContainer().kindGS.pensumFachstelle.gueltigkeit.gueltigAb"
-                                               ja="vm.getContainer().kindJA.pensumFachstelle.gueltigkeit.gueltigAb"
-                                               show-if-bisher-none="false"
-                                               block-existed="vm.showFachstelleGS === true"></dv-bisher>
-                                    <dv-error-messages input-id="datumAb" for="vm.form.datumAb.$error"
-                                                       class="error"></dv-error-messages>
-                                </dv-input-container>
-                            </div>
-
-                            <div class="col-sm-12 dv-input-container-small">
-                                <dv-input-container class="form-group">
-                                    <label class="md-no-float" data-translate="BIS" for="datumBis">
-                                    </label>
-                                    <dv-datepicker input-id="datumBis" name="datumBis"
-                                                   class="input-element"
-                                                   ng-model="vm.getPensumFachstelle().gueltigkeit.gueltigBis"
-                                                   ng-required="false"
-                                                   ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}">
-                                    </dv-datepicker>
-                                    <dv-bisher gs="vm.getContainer().kindGS.pensumFachstelle.gueltigkeit.gueltigBis"
-                                               ja="vm.getContainer().kindJA.pensumFachstelle.gueltigkeit.gueltigBis"
-                                               show-if-bisher-none="false"
-                                               block-existed="vm.showFachstelleGS === true"></dv-bisher>
-                                    <dv-error-messages input-id="datumBis" for="vm.form.datumBis.$error"
-                                                       class="error"></dv-error-messages>
-                                </dv-input-container>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--Asylwesen?-->
-                    <div class="row" ng-if="vm.showAusAsylwesen()">
-                        <div class="col-xs-12 dv-input-container-question">
-                            <div class="checkbox checkbox-with-margin">
-                                <md-checkbox ng-model="vm.getModel().ausAsylwesen" name="showAsylwesen" id="showAsylwesen"
-                                             aria-label="{{'KIND_AUS_ASYLWESEN'|translate}}"
-                                             ng-change="vm.deleteZemisNummer(vm.getModel())"
-                                             ng-disabled="vm.isGesuchReadonly()">
-                                    <span data-translate="KIND_AUS_ASYLWESEN"></span>
-                                </md-checkbox>
-                                <dv-tooltip input-id="showAsylwesen"
-                                            text="'KIND_AUS_ASYLWESEN_HELP' | translate"></dv-tooltip>
-                                <dv-error-messages for="vm.form.showAsylwesen.$error"
-                                                   class="error"></dv-error-messages>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ZEMIS Nummer -->
-                    <div ng-if="vm.showZemisNummer()">
-                        <div class="row" id="zemis-nummer">
-                            <div class="col-sm-4 col-xs-12 dv-input-container-small">
-                                <dv-input-container class="form-group">
-                                    <label class="md-no-float" data-translate="ZEMIS_NUMMER"
-                                           for="zemisNummer"></label>
-                                    <input aria-describedby="zemisNummer-error"
-                                           id="zemisNummer" type="text"
-                                           name="zemisNummer"
-                                           ng-model="vm.getModel().zemisNummer"
-                                           max="10" dv-max-length class="form-control"
-                                           ng-pattern="vm.CONSTANTS.PATTERN_ZEMIS_NUMMER"
-                                           ng-required="vm.getModel().ausAsylwesen"
-                                           ng-attr-placeholder="{{'ZEMIS_NUMMER_PLACEHOLDER' | translate}}">
-                                    <dv-error-messages input-id="zemisNummer"
-                                                       for="vm.form.zemisNummer.$error"
-                                                       class="error"></dv-error-messages>
-                                </dv-input-container>
-                            </div>
-                            <div class="col-sm-8 col-xs-12 dv-input-container-question" ng-if="vm.showKeinSelbstbehaltDurchGemeinde()">
-                                <div class="checkbox checkbox-with-margin">
-                                    <md-checkbox ng-model="vm.getContainer().keinSelbstbehaltDurchGemeinde"
-                                                 name="keinSelbstbehaltDurchGemeinde" id="keinSelbstbehaltDurchGemeinde"
-                                                 aria-label="{{'KEIN_SELBSTBEHALT_DURCH_GEMEINDE'|translate}}"
-                                                 ng-disabled="true">
-                                        <span data-translate="KEIN_SELBSTBEHALT_DURCH_GEMEINDE"></span>
+                            <div class="col-xs-12 dv-input-container-question">
+                                <div class="checkbox checkbox-with-margin"
+                                     ng-show="vm.getModel().familienErgaenzendeBetreuung">
+                                    <md-checkbox ng-model="vm.showFachstelle" name="showFachstelle" id="showFachstelle"
+                                                 aria-label="{{'INVOLVIERTE_FACHSTELLE'|translate}}"
+                                                 ng-disabled="vm.isGesuchReadonly()"
+                                                 ng-change="vm.showFachstelleClicked()">
+                                        <span data-translate="INVOLVIERTE_FACHSTELLE"></span>
                                     </md-checkbox>
+                                    <dv-tooltip input-id="showFachstelle"
+                                                text="'INVOLVIERTE_FACHSTELLE_HELP' | translate"></dv-tooltip>
+                                    <dv-bisher gs="vm.showFachstelleGS"
+                                               ja="vm.showFachstelle"
+                                               specific-bisher-text="vm.getTextFachstelleKorrekturJA()"
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
+                                    <dv-error-messages for="vm.form.showFachstelle.$error"
+                                                       class="error"></dv-error-messages>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Ausserordentlicher Anpruch? -->
-                    <div class="row">
-                        <div class="col-xs-12 dv-input-container-question">
-                            <div class="checkbox checkbox-with-margin" ng-show="vm.showAusserordentlicherAnspruchCheckbox()">
-                                <md-checkbox ng-model="vm.showAusserordentlicherAnspruch"
-                                             name="showAusserordentlicherAnspruch" id="showAusserordentlicherAnspruch"
-                                             aria-label="{{'AUSSERORDENTLICHER_ANSPRUCH'|translate}}"
-                                             ng-disabled="vm.isGesuchReadonly() || !vm.isAusserordentlicherAnspruchEnabled()"
-                                             ng-change="vm.showAusserordentlicherAnspruchClicked()">
-                                    <span data-translate="AUSSERORDENTLICHER_ANSPRUCH"></span>
-                                </md-checkbox>
-                                <dv-tooltip input-id="showAusserordentlicherAnspruch"
-                                            text="'AUSSERORDENTLICHER_ANSPRUCH_HINT' | translate"></dv-tooltip>
-                                <dv-error-messages for="vm.form.showAusserordentlicherAnspruch.$error"
-                                                   class="error"></dv-error-messages>
+                        <!--fachstelle-->
+                        <div ng-if="vm.isFachstelleRequired()">
+                            <!--integration-->
+                            <div class="row">
+                                <div class="col-xs-12 dv-input-container-small">
+                                    <div class="form-group">
+                                        <label class="md-no-float required" id="integration"
+                                               data-translate="INTEGRATION"></label>
+                                        <dv-radio-container name="integration" class="input-element"
+                                                            ng-required="vm.isFachstelleRequired()"
+                                                            items="vm.integrationTypes"
+                                                            ng-model="vm.getPensumFachstelle().integrationTyp"
+                                                            ng-change="vm.loadEinstellungenForIntegration()"
+                                                            dv-enable-element
+                                                            dv-enable-allowed-roles="vm.allowedRoles"
+                                                            dv-enable-expression="!vm.isGesuchReadonly()"
+                                                            aria-label="{{ 'INTEGRATION' | translate }}"
+                                                            aria-described-by="integration-error">
+                                        </dv-radio-container>
+                                        <dv-bisher gs="vm.getContainer().kindGS.pensumFachstelle.integrationTyp"
+                                                   ja="vm.getContainer().kindJA.pensumFachstelle.integrationTyp"
+                                                   show-if-bisher-none="false"
+                                                   block-existed="vm.showFachstelleGS === true"></dv-bisher>
+                                        <dv-error-messages input-id="integration"
+                                                           for="vm.form.integration.$error"
+                                                           class="error"></dv-error-messages>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div ng-if="vm.isAusserordentlicherAnspruchRequired()">
-                        <div class="row">
-                            <div class="col-sm-12 dv-input-container-medium form-group">
-                                <dv-input-container class="form-group">
-                                    <label class="md-no-float" for="begruendung"
-                                           data-translate="AUSSERORDENTLICHER_ANSPRUCH_BEGRUENDUNG"></label>
-                                    <textarea md-no-autogrow class="form-control" rows="6" maxlength="4000"
-                                              ng-maxlength="3000"
-                                              ng-minlength="5"
-                                              id="begruendung" name="begruendung"
-                                              ng-model="vm.getPensumAusserordentlicherAnspruch().begruendung"
-                                              ng-required="vm.isAusserordentlicherAnspruchRequired()"
-                                              ng-disabled="!vm.isAusserordentlicherAnspruchEnabled()">
-								</textarea>
-                                    <dv-error-messages input-id="begruendung" for="vm.form.begruendung.$error"
-                                                       class="error"></dv-error-messages>
-                                </dv-input-container>
-
-                            </div>
-                        </div>
-
-                        <!-- Anspruchspensum -->
-                        <div class="row">
-                            <div class="col-sm-12 dv-input-container-small">
-                                <dv-input-container class="form-group">
-                                    <label class="md-no-float" data-translate="AUSSERORDENTLICHER_ANSPRUCH_BETREUUNGSPENSUM"
-                                           for="betreuungspensumAusserordentlicherAnspruch"></label>
-                                    <input aria-describedby="betreuungspensumAusserordentlicherAnspruch-error"
-                                           id="betreuungspensumAusserordentlicherAnspruch" type="number"
-                                           name="betreuungspensumAusserordentlicherAnspruch"
-                                           ng-model="vm.getPensumAusserordentlicherAnspruch().pensum"
-                                           max="100" dv-max-length class="form-control"
-                                           ng-pattern="vm.CONSTANTS.PATTERN_PERCENTAGE"
-                                           ng-required="vm.isAusserordentlicherAnspruchRequired()"
-                                           ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}"
-                                           ng-disabled="!vm.isAusserordentlicherAnspruchEnabled()">
-                                    <dv-error-messages input-id="betreuungspensumAusserordentlicherAnspruch"
-                                                       for="vm.form.betreuungspensumAusserordentlicherAnspruch.$error"
-                                                       class="error"></dv-error-messages>
-                                </dv-input-container>
-                            </div>
-                        </div>
-
-                        <!-- gueltig ab / gueltig bis -->
-                        <div class="row">
-                            <div class="col-sm-12 dv-input-container-small">
-                                <dv-input-container class="form-group">
-                                    <label class="md-no-float" data-translate="VON" for="aussAnspruchDatumAb"></label>
-                                    <dv-datepicker input-id="aussAnspruchDatumAb" name="aussAnspruchDatumAb"
-                                                   class="input-element"
-                                                   ng-model="vm.getPensumAusserordentlicherAnspruch().gueltigkeit.gueltigAb"
-                                                   ng-required="vm.isAusserordentlicherAnspruchRequired()"
-                                                   ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}"
-                                                   ng-disabled="!vm.isAusserordentlicherAnspruchEnabled()">
-                                    </dv-datepicker>
-                                    <dv-error-messages input-id="aussAnspruchDatumAb" class="error"
-                                                       for="vm.form.aussAnspruchDatumAb.$error"></dv-error-messages>
-                                </dv-input-container>
-                            </div>
-                            <div class="col-sm-12 dv-input-container-small">
-                                <dv-input-container class="form-group">
-                                    <label class="md-no-float" data-translate="BIS" for="aussAnspruchDatumBis">
+                            <!--fachstelle-->
+                            <div class="row">
+                                <div class="col-sm-12 dv-input-container-medium form-group">
+                                    <label class="md-no-float required">
+                                        <span data-translate="FACHSTELLE" for="fachstelle"></span>
+                                        <dv-tooltip input-id="fachstelle"
+                                                    text="'FACHSTELLE_HELP' | translate"></dv-tooltip>
                                     </label>
-                                    <dv-datepicker input-id="aussAnspruchDatumBis" name="aussAnspruchDatumBis"
-                                                   class="input-element"
-                                                   ng-model="vm.getPensumAusserordentlicherAnspruch().gueltigkeit.gueltigBis"
-                                                   ng-required="false"
-                                                   ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}"
-                                                   ng-disabled="!vm.isAusserordentlicherAnspruchEnabled()">
-                                    </dv-datepicker>
-                                    <dv-error-messages input-id="aussAnspruchDatumBis" class="error"
-                                                       for="vm.form.aussAnspruchDatumBis.$error"></dv-error-messages>
-                                </dv-input-container>
+                                    <div class="dv-select-style">
+                                        <select aria-describedby="fachstelle-error"
+                                                name="fachstelle"
+                                                id="fachstelle"
+                                                ng-model="vm.fachstelleId"
+                                                class="form-control"
+                                                ng-options="fachstelle.id as fachstelle.name | translate for fachstelle in vm.getFachstellenList() | orderBy: 'name'"
+                                                ng-required="vm.isFachstelleRequired()"
+                                                ng-change="vm.setSelectedFachsstelle()">
+                                        </select>
+
+                                        <dv-bisher gs="vm.getContainer().kindGS.pensumFachstelle.fachstelle.name"
+                                                   ja="vm.getContainer().kindJA.pensumFachstelle.fachstelle.name"
+                                                   show-if-bisher-none="false"
+                                                   block-existed="vm.showFachstelleGS === true"></dv-bisher>
+                                        <dv-error-messages input-id="fachstelle" for="vm.form.fachstelle.$error"
+                                                           class="error"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--betreuungspensumFachstelle-->
+                            <div class="row">
+                                <div class="col-sm-12 dv-input-container-small">
+                                    <dv-input-container class="form-group">
+                                        <label class="md-no-float" data-translate="BETREUUNGSPENSUM_FACHSTELLE"
+                                               for="betreuungspensumFachstelle"></label>
+                                        <input aria-describedby="betreuungspensumFachstelle-error"
+                                               id="betreuungspensumFachstelle"
+                                               type="number"
+                                               name="betreuungspensumFachstelle"
+                                               ng-model="vm.getPensumFachstelle().pensum"
+                                               min="{{vm.minValueAllowed}}"
+                                               max="{{vm.maxValueAllowed}}"
+                                               dv-max-length
+                                               class="form-control"
+                                               ng-pattern="vm.CONSTANTS.PATTERN_PERCENTAGE"
+                                               ng-required="vm.isFachstelleRequired()"
+                                               ng-disabled="vm.isOnlyOneValueAllowed()"
+                                               ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}">
+                                        <dv-bisher gs="vm.getContainer().kindGS.pensumFachstelle.pensum"
+                                                   ja="vm.getContainer().kindJA.pensumFachstelle.pensum"
+                                                   show-if-bisher-none="false"
+                                                   block-existed="vm.showFachstelleGS === true"></dv-bisher>
+                                        <dv-error-messages input-id="betreuungspensumFachstelle"
+                                                           for="vm.form.betreuungspensumFachstelle.$error"
+                                                           min-value="vm.minValueAllowed"
+                                                           max-value="vm.maxValueAllowed"
+                                                           class="error"></dv-error-messages>
+                                    </dv-input-container>
+                                </div>
+                            </div>
+
+                            <!-- gueltig ab / gueltig bis -->
+                            <div class="row">
+                                <div class="col-sm-12 dv-input-container-small">
+                                    <dv-input-container class="form-group">
+                                        <label class="md-no-float" data-translate="VON" for="datumAb">
+                                        </label>
+                                        <dv-datepicker input-id="datumAb" name="datumAb"
+                                                       class="input-element"
+                                                       ng-model="vm.getPensumFachstelle().gueltigkeit.gueltigAb"
+                                                       ng-required="vm.isFachstelleRequired()"
+                                                       ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}">
+                                        </dv-datepicker>
+                                        <dv-bisher gs="vm.getContainer().kindGS.pensumFachstelle.gueltigkeit.gueltigAb"
+                                                   ja="vm.getContainer().kindJA.pensumFachstelle.gueltigkeit.gueltigAb"
+                                                   show-if-bisher-none="false"
+                                                   block-existed="vm.showFachstelleGS === true"></dv-bisher>
+                                        <dv-error-messages input-id="datumAb" for="vm.form.datumAb.$error"
+                                                           class="error"></dv-error-messages>
+                                    </dv-input-container>
+                                </div>
+
+                                <div class="col-sm-12 dv-input-container-small">
+                                    <dv-input-container class="form-group">
+                                        <label class="md-no-float" data-translate="BIS" for="datumBis">
+                                        </label>
+                                        <dv-datepicker input-id="datumBis" name="datumBis"
+                                                       class="input-element"
+                                                       ng-model="vm.getPensumFachstelle().gueltigkeit.gueltigBis"
+                                                       ng-required="false"
+                                                       ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}">
+                                        </dv-datepicker>
+                                        <dv-bisher gs="vm.getContainer().kindGS.pensumFachstelle.gueltigkeit.gueltigBis"
+                                                   ja="vm.getContainer().kindJA.pensumFachstelle.gueltigkeit.gueltigBis"
+                                                   show-if-bisher-none="false"
+                                                   block-existed="vm.showFachstelleGS === true"></dv-bisher>
+                                        <dv-error-messages input-id="datumBis" for="vm.form.datumBis.$error"
+                                                           class="error"></dv-error-messages>
+                                    </dv-input-container>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
+                        <!--Asylwesen?-->
+                        <div class="row" ng-if="vm.showAusAsylwesen()">
+                            <div class="col-xs-12 dv-input-container-question">
+                                <div class="checkbox checkbox-with-margin">
+                                    <md-checkbox ng-model="vm.getModel().ausAsylwesen" name="showAsylwesen"
+                                                 id="showAsylwesen"
+                                                 aria-label="{{'KIND_AUS_ASYLWESEN'|translate}}"
+                                                 ng-change="vm.deleteZemisNummer(vm.getModel())"
+                                                 ng-disabled="vm.isGesuchReadonly()">
+                                        <span data-translate="KIND_AUS_ASYLWESEN"></span>
+                                    </md-checkbox>
+                                    <dv-tooltip input-id="showAsylwesen"
+                                                text="'KIND_AUS_ASYLWESEN_HELP' | translate"></dv-tooltip>
+                                    <dv-error-messages for="vm.form.showAsylwesen.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ZEMIS Nummer -->
+                        <div ng-if="vm.showZemisNummer()">
+                            <div class="row" id="zemis-nummer">
+                                <div class="col-sm-4 col-xs-12 dv-input-container-small">
+                                    <dv-input-container class="form-group">
+                                        <label class="md-no-float" data-translate="ZEMIS_NUMMER"
+                                               for="zemisNummer"></label>
+                                        <input aria-describedby="zemisNummer-error"
+                                               id="zemisNummer" type="text"
+                                               name="zemisNummer"
+                                               ng-model="vm.getModel().zemisNummer"
+                                               max="10" dv-max-length class="form-control"
+                                               ng-pattern="vm.CONSTANTS.PATTERN_ZEMIS_NUMMER"
+                                               ng-required="vm.getModel().ausAsylwesen"
+                                               ng-attr-placeholder="{{'ZEMIS_NUMMER_PLACEHOLDER' | translate}}">
+                                        <dv-error-messages input-id="zemisNummer"
+                                                           for="vm.form.zemisNummer.$error"
+                                                           class="error"></dv-error-messages>
+                                    </dv-input-container>
+                                </div>
+                                <div class="col-sm-8 col-xs-12 dv-input-container-question"
+                                     ng-if="vm.showKeinSelbstbehaltDurchGemeinde()">
+                                    <div class="checkbox checkbox-with-margin">
+                                        <md-checkbox ng-model="vm.getContainer().keinSelbstbehaltDurchGemeinde"
+                                                     name="keinSelbstbehaltDurchGemeinde"
+                                                     id="keinSelbstbehaltDurchGemeinde"
+                                                     aria-label="{{'KEIN_SELBSTBEHALT_DURCH_GEMEINDE'|translate}}"
+                                                     ng-disabled="true">
+                                            <span data-translate="KEIN_SELBSTBEHALT_DURCH_GEMEINDE"></span>
+                                        </md-checkbox>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ausserordentlicher Anpruch? -->
+                        <div class="row">
+                            <div class="col-xs-12 dv-input-container-question">
+                                <div class="checkbox checkbox-with-margin"
+                                     ng-show="vm.showAusserordentlicherAnspruchCheckbox()">
+                                    <md-checkbox ng-model="vm.showAusserordentlicherAnspruch"
+                                                 name="showAusserordentlicherAnspruch"
+                                                 id="showAusserordentlicherAnspruch"
+                                                 aria-label="{{'AUSSERORDENTLICHER_ANSPRUCH'|translate}}"
+                                                 ng-disabled="vm.isGesuchReadonly() || !vm.isAusserordentlicherAnspruchEnabled()"
+                                                 ng-change="vm.showAusserordentlicherAnspruchClicked()">
+                                        <span data-translate="AUSSERORDENTLICHER_ANSPRUCH"></span>
+                                    </md-checkbox>
+                                    <dv-tooltip input-id="showAusserordentlicherAnspruch"
+                                                text="'AUSSERORDENTLICHER_ANSPRUCH_HINT' | translate"></dv-tooltip>
+                                    <dv-error-messages for="vm.form.showAusserordentlicherAnspruch.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div ng-if="vm.isAusserordentlicherAnspruchRequired()">
+                            <div class="row">
+                                <div class="col-sm-12 dv-input-container-medium form-group">
+                                    <dv-input-container class="form-group">
+                                        <label class="md-no-float" for="begruendung"
+                                               data-translate="AUSSERORDENTLICHER_ANSPRUCH_BEGRUENDUNG"></label>
+                                        <textarea md-no-autogrow class="form-control" rows="6" maxlength="4000"
+                                                  ng-maxlength="3000"
+                                                  ng-minlength="5"
+                                                  id="begruendung" name="begruendung"
+                                                  ng-model="vm.getPensumAusserordentlicherAnspruch().begruendung"
+                                                  ng-required="vm.isAusserordentlicherAnspruchRequired()"
+                                                  ng-disabled="!vm.isAusserordentlicherAnspruchEnabled()">
+                                    </textarea>
+                                        <dv-error-messages input-id="begruendung" for="vm.form.begruendung.$error"
+                                                           class="error"></dv-error-messages>
+                                    </dv-input-container>
+
+                                </div>
+                            </div>
+
+                            <!-- Anspruchspensum -->
+                            <div class="row">
+                                <div class="col-sm-12 dv-input-container-small">
+                                    <dv-input-container class="form-group">
+                                        <label class="md-no-float"
+                                               data-translate="AUSSERORDENTLICHER_ANSPRUCH_BETREUUNGSPENSUM"
+                                               for="betreuungspensumAusserordentlicherAnspruch"></label>
+                                        <input aria-describedby="betreuungspensumAusserordentlicherAnspruch-error"
+                                               id="betreuungspensumAusserordentlicherAnspruch" type="number"
+                                               name="betreuungspensumAusserordentlicherAnspruch"
+                                               ng-model="vm.getPensumAusserordentlicherAnspruch().pensum"
+                                               max="100" dv-max-length class="form-control"
+                                               ng-pattern="vm.CONSTANTS.PATTERN_PERCENTAGE"
+                                               ng-required="vm.isAusserordentlicherAnspruchRequired()"
+                                               ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}"
+                                               ng-disabled="!vm.isAusserordentlicherAnspruchEnabled()">
+                                        <dv-error-messages input-id="betreuungspensumAusserordentlicherAnspruch"
+                                                           for="vm.form.betreuungspensumAusserordentlicherAnspruch.$error"
+                                                           class="error"></dv-error-messages>
+                                    </dv-input-container>
+                                </div>
+                            </div>
+
+                            <!-- gueltig ab / gueltig bis -->
+                            <div class="row">
+                                <div class="col-sm-12 dv-input-container-small">
+                                    <dv-input-container class="form-group">
+                                        <label class="md-no-float" data-translate="VON"
+                                               for="aussAnspruchDatumAb"></label>
+                                        <dv-datepicker input-id="aussAnspruchDatumAb" name="aussAnspruchDatumAb"
+                                                       class="input-element"
+                                                       ng-model="vm.getPensumAusserordentlicherAnspruch().gueltigkeit.gueltigAb"
+                                                       ng-required="vm.isAusserordentlicherAnspruchRequired()"
+                                                       ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}"
+                                                       ng-disabled="!vm.isAusserordentlicherAnspruchEnabled()">
+                                        </dv-datepicker>
+                                        <dv-error-messages input-id="aussAnspruchDatumAb" class="error"
+                                                           for="vm.form.aussAnspruchDatumAb.$error"></dv-error-messages>
+                                    </dv-input-container>
+                                </div>
+                                <div class="col-sm-12 dv-input-container-small">
+                                    <dv-input-container class="form-group">
+                                        <label class="md-no-float" data-translate="BIS" for="aussAnspruchDatumBis">
+                                        </label>
+                                        <dv-datepicker input-id="aussAnspruchDatumBis" name="aussAnspruchDatumBis"
+                                                       class="input-element"
+                                                       ng-model="vm.getPensumAusserordentlicherAnspruch().gueltigkeit.gueltigBis"
+                                                       ng-required="false"
+                                                       ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}"
+                                                       ng-disabled="!vm.isAusserordentlicherAnspruchEnabled()">
+                                        </dv-datepicker>
+                                        <dv-error-messages input-id="aussAnspruchDatumBis" class="error"
+                                                           for="vm.form.aussAnspruchDatumBis.$error"></dv-error-messages>
+                                    </dv-input-container>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
                 </fieldset>
 
 

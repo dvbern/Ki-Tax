@@ -26,6 +26,7 @@ import javax.security.auth.login.LoginException;
 
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.test.IntegrationTest;
+import ch.dvbern.ebegu.test.TestUserIds;
 import ch.dvbern.ebegu.test.util.JBossLoginContextFactory;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.ISessionContextService;
@@ -50,11 +51,11 @@ public class ArquillianCallerInRoleDemoLoginTest extends AbstractEbeguLoginTest 
 
 	@Test
 	public void testLoginPrincipal() throws LoginException {
-		LoginContext loginContext = JBossLoginContextFactory.createLoginContext("saja", "saja");
+		LoginContext loginContext = JBossLoginContextFactory.createLoginContext(TestUserIds.BG_SACHBEARBEITERIN, "saja");
 		loginContext.login();
 		Principal callerPrincipal = sessionContextService.getCallerPrincipal();
 		Assert.assertNotNull(callerPrincipal);
-		Assert.assertNotNull("saja", callerPrincipal.getName());
+		Assert.assertNotNull(TestUserIds.BG_SACHBEARBEITERIN, callerPrincipal.getName());
 		Assert.assertTrue(sessionContextService.isCallerInRole(UserRoleName.SACHBEARBEITER_BG));
 		loginContext.logout();
 		Principal anonPrincipal = sessionContextService.getCallerPrincipal();
@@ -64,7 +65,7 @@ public class ArquillianCallerInRoleDemoLoginTest extends AbstractEbeguLoginTest 
 
 	@Test
 	public void testDiscoverRoles() throws LoginException {
-		LoginContext loginContext = JBossLoginContextFactory.createLoginContext("admin", "admin");
+		LoginContext loginContext = JBossLoginContextFactory.createLoginContext(TestUserIds.BG_ADMIN, "admin");
 		loginContext.login();
 		try {
 			Set<String> foundRoles = Subject.doAs(loginContext.getSubject(), (PrivilegedAction<Set<String>>) () -> {

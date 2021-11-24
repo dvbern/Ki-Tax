@@ -121,7 +121,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 		if (anspruch < minimum) {
 			anspruch = 0;
 			// Falls schon eine Bemerkung mit einem eventuell anderen Minimum erstellt wurde, dieses zuerst entfernen
-			inputData.getParent().getBemerkungenList().removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
+			inputData.getParent().getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
 			// Fuer die Bemerkung muss das Minimum fuer 2 GS 100 + x betragen!
 			inputData.addBemerkung(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, locale, minimum + erwerbspensumOffset);
 			inputData.setMinimalesEwpUnterschritten(true);
@@ -135,7 +135,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 			// Falls durch eine vorherige Erwerbspensum-Regel bereits auf KEIN-ANSPRUCH gesetzt war, muss sowohl
 			// das Flag wie auch die Bemerkung zurueckgesetzt werden (umgekehrt kann es nicht vorkommen)
 			inputData.setMinimalesEwpUnterschritten(false);
-			inputData.getParent().getBemerkungenList().removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
+			inputData.getParent().getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
 		}
 		if (anspruch > 100) { // das Ergebniss darf nie mehr als 100 sein
 			anspruch = 100;
