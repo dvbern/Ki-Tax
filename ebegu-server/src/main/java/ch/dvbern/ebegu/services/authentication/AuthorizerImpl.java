@@ -359,23 +359,21 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	private void checkMandantMatches(@Nullable HasMandant mandantEntity) {
+		if (mandantEntity == null) {
+			throw new EbeguRuntimeException("checkMandantMatches", "mandantEntity not defined");
+		}
 		if (!isMandantMatching(mandantEntity)) {
-			throwMandantViolation(mandantEntity); // super admin darf auch wenn er keinen mandant hat
+			throwMandantViolation(mandantEntity);
 		}
 	}
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	private boolean isMandantMatching(@Nullable HasMandant mandantEntity) {
 		if (mandantEntity == null || mandantEntity.getMandant() == null) {
-			return true;
+			return false;
 		}
 		Mandant mandant = mandantEntity.getMandant();
-		if (!principalBean.isCallerInRole(SUPER_ADMIN)) {
-			if (!mandant.equals(principalBean.getMandant())) {
-				return false;
-			}
-		}
-		return true;
+		return mandant.equals(principalBean.getMandant());
 	}
 
 	@Override
