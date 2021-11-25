@@ -634,11 +634,16 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 		setSortOrder(query, zahlungenSearchParamsDTO, root, joinGemeinde, cb);
 
-		return persistence.getEntityManager()
+		var zahlungen = persistence.getEntityManager()
 			.createQuery(query)
 			.setFirstResult(zahlungenSearchParamsDTO.getPage() * zahlungenSearchParamsDTO.getPageSize())
 			.setMaxResults(zahlungenSearchParamsDTO.getPageSize())
 			.getResultList();
+
+		for (var z : zahlungen) {
+			authorizer.checkReadAuthorizationZahlungsauftrag(z);
+		}
+		return zahlungen;
 	}
 
 	@Nonnull

@@ -118,6 +118,9 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	@Inject
 	private PrincipalBean principalBean;
 
+	@Inject
+	private Authorizer authorizer;
+
 	@Override
 	public List<Gesuch> searchPendenzen(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
 		return searchAntraege(antragTableFilterDto, true);
@@ -561,6 +564,9 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			} else {
 				pagedResult = findGesuche(gesuchIds);
 			}
+
+			pagedResult.forEach(authorizer::checkReadAuthorization);
+
 			result = new ImmutablePair<>(null, pagedResult);
 			break;
 		case COUNT:
