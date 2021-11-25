@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,14 +36,42 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Fetch;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
-import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
+import ch.dvbern.ebegu.entities.AbstractPlatz_;
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Benutzer_;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Betreuung_;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Fall_;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gemeinde_;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuch_;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Gesuchsteller;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer_;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
+import ch.dvbern.ebegu.entities.Institution_;
+import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall_;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -85,6 +114,9 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 
 	@Inject
 	private InternePendenzService internePendenzService;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@Override
 	public List<Gesuch> searchPendenzen(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
@@ -198,6 +230,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			predicates.add(inClauseStatus);
 		}
 
+		setMandantFilterForCurrentUser(cb, joinFall, predicates, user);
 		setGemeindeFilterForCurrentUser(user, joinGemeinde, predicates);
 
 		// Predicates derived from PredicateDTO (Filter coming from client)
@@ -536,6 +569,17 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			break;
 		}
 		return result;
+	}
+
+	private void setMandantFilterForCurrentUser(
+		CriteriaBuilder cb,
+		Join<Dossier, Fall> joinFall,
+		List<Predicate> predicates,
+		Benutzer user
+	) {
+		Objects.requireNonNull(user.getMandant());
+		Predicate mandantPredicate = cb.equal(joinFall.get(Fall_.mandant), principalBean.getMandant());
+		predicates.add(mandantPredicate);
 	}
 
 	private Set<AntragStatus> getAntragStatuses(boolean searchForPendenzen, UserRole role) {
