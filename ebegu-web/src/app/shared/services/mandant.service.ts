@@ -141,30 +141,24 @@ export class MandantService {
     }
 
     public redirectToMandantSubdomain(mandant: KiBonMandant, url: string): void {
-        const host = this.removeMandantFromCompleteHost();
+        const host = this.removeMandantEnvironmentFromCompleteHost();
         const environment = this.getEnvironmentFromCompleteHost();
         const environmentWithMandant = environment.length > 0 ? `${environment}-${mandant}` : mandant;
         this.windowRef.nativeWindow.open(`${this.windowRef.nativeWindow.location.protocol}//${environmentWithMandant}.${host}/${url}`,
             '_self');
     }
 
-    public removeMandantFromCompleteHost(): string {
-        const mandantCandidates = Object.values(KiBonMandant).filter(el => el.length > 0);
-        const shortenedHost = this.windowRef.nativeWindow.location.host.split('.');
+    public removeMandantEnvironmentFromCompleteHost(): string {
+        const splitHost = this.windowRef.nativeWindow.location.host.split('.');
 
-        if (!shortenedHost[2].includes('kibon')) {
-            return shortenedHost.slice(1, shortenedHost.length).join('.');
+        if (splitHost[0] === 'kibon') {
+            return splitHost.join('.');
         }
 
-        for (const mandantCandidate of mandantCandidates) {
-            if (shortenedHost[0].includes(mandantCandidate)) {
-                return shortenedHost.slice(1, shortenedHost.length).join('.');
-            }
-        }
-        return shortenedHost.join('.');
+        return splitHost.slice(1, splitHost.length).join('.');
     }
 
-    private getEnvironmentFromCompleteHost(): string {
+    public getEnvironmentFromCompleteHost(): string {
         const environmentRegex = /([a-z]*-(kibon))?(?=(-[a-z]{2})?\.(dvbern|kibon))/;
         const matches = this.windowRef.nativeWindow.location.host.match(environmentRegex);
         if (matches === null) {
