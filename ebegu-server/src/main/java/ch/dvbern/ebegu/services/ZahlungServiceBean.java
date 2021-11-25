@@ -46,6 +46,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.ws.rs.BadRequestException;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.ZahlungenSearchParamsDTO;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
@@ -152,6 +153,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 	@Inject
 	private GemeindeService gemeindeService;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 
 	@Override
@@ -668,6 +672,10 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			"createPredicatesForZahlungen", "Non logged in user should never reach this"));
 
 		List<Predicate> predicates = new ArrayList<>();
+
+		Objects.requireNonNull(principalBean.getMandant());
+		Predicate mandantPredicate = cb.equal(root.get(Zahlungsauftrag_.mandant), principalBean.getMandant());
+		predicates.add(mandantPredicate);
 
 		// general
 		if (zahlungenSearchParamsDTO.getGemeinde() != null) {
