@@ -20,7 +20,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -92,8 +91,6 @@ import static java.util.Objects.requireNonNull;
 @Local(ReportTagesschuleService.class)
 public class ReportTagesschuleServiceBean extends AbstractReportServiceBean implements ReportTagesschuleService {
 
-	private static final String ANMELDUNGEN_TAGESSCHULE_SIZE_EXCEPTION = "Ein Kind kann nur eine Anmeldung für eine "
-		+ "bestimmte Tagesschule haben";
 	private static final String NO_STAMMDATEN_FOUND = "Keine Stammdaten gefunden";
 
 	@Inject
@@ -182,6 +179,7 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		final CriteriaQuery<KindContainer> query = builder.createQuery(KindContainer.class);
 
 		Root<KindContainer> root = query.from(KindContainer.class);
+		query.distinct(true);
 		Join<KindContainer, AnmeldungTagesschule> joinAnmeldungTagesschule =
 			root.join(KindContainer_.anmeldungenTagesschule);
 
@@ -208,33 +206,33 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 	@Nonnull
 	private List<TagesschuleAnmeldungenDataRow> convertToTagesschuleDataRows(
 		@Nonnull List<KindContainer> kindContainerList, String stammdatenID) {
-		ReportTagesschuleServiceBean self = this;
-		return kindContainerList.stream()
-			.map(kindContainer -> self.kindContainerToTagesschuleDataRow(kindContainer, stammdatenID))
-			.collect(Collectors.toList());
+		var kindRows = new ArrayList<TagesschuleAnmeldungenDataRow>();
+		for (var container : kindContainerList) {
+			kindRows.addAll(kindContainerToTagesschuleDataRowList(container, stammdatenID));
+		}
+		return kindRows;
 	}
 
 	@Nonnull
-	private TagesschuleAnmeldungenDataRow kindContainerToTagesschuleDataRow(
+	private List<TagesschuleAnmeldungenDataRow> kindContainerToTagesschuleDataRowList(
 		@Nonnull KindContainer kindContainer,
 		String stammdatenID) {
 
-		Iterator<AnmeldungTagesschule> anmeldungTagesschuleIterator =
-			kindContainer.getAnmeldungenTagesschule()
+		return kindContainer.getAnmeldungenTagesschule()
 					.stream()
 					.filter(anmeldungTagesschule -> anmeldungTagesschule.getInstitutionStammdaten()
 							.getId()
 							.equals(stammdatenID) &&
 							anmeldungTagesschule.getBetreuungsstatus() != Betreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT)
-					.iterator();
-		AnmeldungTagesschule anmeldungTagesschule = anmeldungTagesschuleIterator.next();
+				.map(anmeldungTagesschule -> anmeldungToTagesschuleDataRow(anmeldungTagesschule, kindContainer))
+			.collect(Collectors.toList());
+	}
 
-		// es darf hier nur einge Anmeldung geben. Ist bereits nach Gesuchsperiode gefiltert.
-		if (anmeldungTagesschule == null || anmeldungTagesschuleIterator.hasNext()) {
-			throw new EbeguRuntimeException(
-				"kindContainerToTagesschuleDataRow",
-				ANMELDUNGEN_TAGESSCHULE_SIZE_EXCEPTION);
-		}
+	@Nonnull
+	private TagesschuleAnmeldungenDataRow anmeldungToTagesschuleDataRow(
+		@Nonnull AnmeldungTagesschule anmeldungTagesschule,
+		@Nonnull KindContainer kindContainer
+	) {
 
 		TagesschuleAnmeldungenDataRow tdr = new TagesschuleAnmeldungenDataRow();
 		tdr.setVornameKind(kindContainer.getKindJA().getVorname());
