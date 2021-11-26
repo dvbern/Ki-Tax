@@ -23,7 +23,6 @@ import {SharedModule} from '../../../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
 import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
-import {TSGesuch} from '../../../../../models/TSGesuch';
 import {VeranlagungComponent} from './veranlagung.component';
 
 describe('VeranlagungComponent', () => {
