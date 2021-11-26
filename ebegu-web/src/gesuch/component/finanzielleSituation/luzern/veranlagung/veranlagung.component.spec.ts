@@ -21,6 +21,9 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {MaterialModule} from '../../../../../app/shared/material.module';
 import {SharedModule} from '../../../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
+import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {TSGesuch} from '../../../../../models/TSGesuch';
 import {VeranlagungComponent} from './veranlagung.component';
 
 describe('VeranlagungComponent', () => {
@@ -37,7 +40,7 @@ describe('VeranlagungComponent', () => {
             ],
             providers: [
                 {provide: NgForm, useValue: new NgForm([], [])},
-            ]
+            ],
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
@@ -46,10 +49,17 @@ describe('VeranlagungComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(VeranlagungComponent);
         component = fixture.componentInstance;
+        component.model = createFinSitContainer();
         fixture.detectChanges();
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    function createFinSitContainer(): TSFinanzielleSituationContainer {
+        const finanzielleSituationContainer = new TSFinanzielleSituationContainer();
+        finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
+        return finanzielleSituationContainer;
+    }
 });

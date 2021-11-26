@@ -17,8 +17,11 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {StateService} from '@uirouter/angular';
+import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {SharedModule} from '../../../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {TSFinanzielleSituationTyp} from '../../../../../models/enums/TSFinanzielleSituationTyp';
 import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
 import {TSFamiliensituationContainer} from '../../../../../models/TSFamiliensituationContainer';
 import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
@@ -32,12 +35,23 @@ import {WizardStepManager} from '../../../../service/wizardStepManager';
 
 import {AngabenGesuchsteller2Component} from './angaben-gesuchsteller2.component';
 
-const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
-    GesuchModelManager.name,
-    ['areThereOnlyFerieninsel', 'getBasisjahr', 'getBasisjahrPlus', 'getGesuch', 'isGesuchsteller2Required']);
+const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
+    [
+        'areThereOnlyFerieninsel',
+        'getBasisjahr',
+        'getBasisjahrPlus',
+        'getGesuch',
+        'isGesuchsteller2Required',
+        'isGesuchReadonly',
+    ]);
 const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
-    WizardStepManager.name, ['getCurrentStep', 'setCurrentStep']);
-const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name, []);
+    WizardStepManager.name,
+    ['getCurrentStep', 'setCurrentStep', 'isNextStepBesucht', 'isNextStepEnabled', 'getCurrentStepName']);
+const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name,
+    ['saveFinanzielleSituationStart']);
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
+    ['go']);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
 
 describe('AngabenGesuchsteller2Component', () => {
     let component: AngabenGesuchsteller2Component;
@@ -50,6 +64,8 @@ describe('AngabenGesuchsteller2Component', () => {
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 {provide: WizardStepManager, useValue: wizardStepMangerSpy},
                 {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
+                {provide: StateService, useValue: stateServiceSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
             ],
             imports: [
                 FormsModule,
@@ -75,6 +91,7 @@ describe('AngabenGesuchsteller2Component', () => {
 
     function createGesuch(): TSGesuch {
         const gesuch = new TSGesuch();
+        gesuch.finSitTyp = TSFinanzielleSituationTyp.LUZERN;
         gesuch.gesuchsteller1 = new TSGesuchstellerContainer();
         gesuch.gesuchsteller1.gesuchstellerJA = new TSGesuchsteller();
         gesuch.gesuchsteller2 = new TSGesuchstellerContainer();
