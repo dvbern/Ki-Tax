@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.rules;
 
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -78,8 +77,7 @@ public class MonatsMergerRule extends AbstractAbschlussRule {
 
 	private Map<Month, List<VerfuegungZeitabschnitt>> mapZeitabschnitteByMonth(List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		return zeitabschnitte.stream()
-			.collect(Collectors.groupingBy(zeitabschnitt -> zeitabschnitt.getGueltigkeit().getGueltigAb().getMonth(),
-				Collectors.toCollection(ArrayList::new)));
+			.collect(Collectors.groupingBy(zeitabschnitt -> zeitabschnitt.getGueltigkeit().getGueltigAb().getMonth()));
 	}
 
 	private List<VerfuegungZeitabschnitt> getZeitabschnitteFullMonth(Map<Month, List<VerfuegungZeitabschnitt>> monthVerfuegungZeitabschnittMap) {

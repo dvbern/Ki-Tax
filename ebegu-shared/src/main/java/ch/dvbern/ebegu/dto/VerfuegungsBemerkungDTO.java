@@ -54,6 +54,14 @@ public class VerfuegungsBemerkungDTO {
 		this.args = args;
 	}
 
+	public VerfuegungsBemerkungDTO(@Nonnull VerfuegungsBemerkungDTO verfuegungsBemerkungDTO) {
+		this.ruleValidity = verfuegungsBemerkungDTO.ruleValidity;
+		this.msgKey = verfuegungsBemerkungDTO.msgKey;
+		this.sprache = verfuegungsBemerkungDTO.sprache;
+		this.args = verfuegungsBemerkungDTO.args;
+		this.gueltigkeit = verfuegungsBemerkungDTO.gueltigkeit;
+	}
+
 	@Nonnull
 	public MsgKey getMsgKey() {
 		return msgKey;
@@ -96,18 +104,6 @@ public class VerfuegungsBemerkungDTO {
 		} else {
 			return ServerMessageUtil.translateEnumValue(msgKey, sprache);
 		}
-	}
-
-	@Override
-	public VerfuegungsBemerkungDTO clone() {
-		VerfuegungsBemerkungDTO clone = new VerfuegungsBemerkungDTO(
-			this.ruleValidity,
-			this.msgKey,
-			this.sprache,
-			this.args);
-
-		clone.setGueltigkeit(this.gueltigkeit);
-		return clone;
 	}
 
 	@Override

@@ -122,7 +122,7 @@ public class VerfuegungsBemerkungDTOList {
 	 */
 	public void mergeBemerkungenMap(@Nonnull VerfuegungsBemerkungDTOList otherList) {
 		otherList.bemerkungenList
-			.forEach(bemerkung -> this.bemerkungenList.add(bemerkung.clone()));
+			.forEach(bemerkung -> this.bemerkungenList.add(new VerfuegungsBemerkungDTO(bemerkung)));
 	}
 
 	/**
