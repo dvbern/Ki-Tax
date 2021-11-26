@@ -390,6 +390,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 		Set<Predicate> predicates = new HashSet<>();
 
+		Predicate mandantPredicate = cb.equal(
+			root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde)
+				.get(Gemeinde_.mandant), principal.getMandant()
+		);
+		predicates.add(mandantPredicate);
+
 		if (!principal.isCallerInAnyOfRole(
 			UserRole.SUPER_ADMIN,
 			UserRole.ADMIN_MANDANT,

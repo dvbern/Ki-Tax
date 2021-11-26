@@ -127,7 +127,7 @@ public interface GemeindeService {
 	Optional<Gemeinde> findRegistredGemeindeVerbundIfExist(@Nonnull Long gemeindeBfsNummer);
 
 	@Nonnull
-	Collection<BfsGemeinde> getAllBfsGemeinden();
+	Collection<BfsGemeinde> getAllBfsGemeinden(@Nonnull Mandant mandant);
 
 	@Nonnull
 	List<BfsGemeinde> findGemeindeVonVerbund(@Nonnull Long verbundBfsNummer);

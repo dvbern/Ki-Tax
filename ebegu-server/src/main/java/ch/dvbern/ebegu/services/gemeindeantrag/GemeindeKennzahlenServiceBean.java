@@ -209,6 +209,12 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 		CriteriaQuery<GemeindeKennzahlen> query = cb.createQuery(GemeindeKennzahlen.class);
 		Root<GemeindeKennzahlen> root = query.from(GemeindeKennzahlen.class);
 
+		Predicate mandantPredicate = cb.equal(
+			root.get(GemeindeKennzahlen_.gemeinde)
+				.get(Gemeinde_.mandant), principal.getMandant()
+		);
+		predicates.add(mandantPredicate);
+
 		if (!principal.isCallerInAnyOfRole(
 				UserRole.SUPER_ADMIN,
 				UserRole.ADMIN_MANDANT,

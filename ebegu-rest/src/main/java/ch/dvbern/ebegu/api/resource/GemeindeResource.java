@@ -584,8 +584,11 @@ public class GemeindeResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
-	public List<JaxBfsGemeinde> getAllBfsGemeinden() {
-		return gemeindeService.getAllBfsGemeinden().stream()
+	public List<JaxBfsGemeinde> getAllBfsGemeinden(
+		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+	) {
+		Mandant mandant = mandantService.findMandantByCookie(mandantCookie);
+		return gemeindeService.getAllBfsGemeinden(mandant).stream()
 			.map(gemeinde -> converter.gemeindeBfsToJax(gemeinde))
 			.collect(Collectors.toList());
 	}
