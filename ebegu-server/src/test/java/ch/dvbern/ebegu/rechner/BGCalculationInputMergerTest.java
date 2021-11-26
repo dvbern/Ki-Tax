@@ -93,12 +93,12 @@ public class BGCalculationInputMergerTest {
 		bgCalculationInput1.calculateInputValuesProportionaly(8.235);
 		bgCalculationInput2.calculateInputValuesProportionaly(42.12);
 
-		Assert.assertEquals(BigDecimal.valueOf(5), bgCalculationInput1.getBetreuungspensumProzent());
-		Assert.assertEquals(BigDecimal.valueOf(32), bgCalculationInput2.getBetreuungspensumProzent());
+		Assert.assertEquals(BigDecimal.valueOf(4.6116), bgCalculationInput1.getBetreuungspensumProzent());
+		Assert.assertEquals(BigDecimal.valueOf(32.4324), bgCalculationInput2.getBetreuungspensumProzent());
 
 		//Merge
 		bgCalculationInput1.add(bgCalculationInput2);
-		Assert.assertEquals(BigDecimal.valueOf(37), bgCalculationInput1.getBetreuungspensumProzent());
+		Assert.assertEquals(BigDecimal.valueOf(37.0440), BigDecimal.valueOf(bgCalculationInput1.getBetreuungspensumProzent().doubleValue()));
 	}
 
 	@Test
@@ -173,12 +173,12 @@ public class BGCalculationInputMergerTest {
 		bgCalculationInput1.calculateInputValuesProportionaly(7.135);
 		bgCalculationInput2.calculateInputValuesProportionaly(90.2);
 
-		Assert.assertEquals(BigDecimal.valueOf(4), bgCalculationInput1.getMonatlicheBetreuungskosten());
-		Assert.assertEquals(BigDecimal.valueOf(30), bgCalculationInput2.getMonatlicheBetreuungskosten());
+		Assert.assertEquals(BigDecimal.valueOf(4.4237), bgCalculationInput1.getMonatlicheBetreuungskosten());
+		Assert.assertEquals(BigDecimal.valueOf(29.766000000000002), bgCalculationInput2.getMonatlicheBetreuungskosten());
 
 		//Merge
 		bgCalculationInput1.add(bgCalculationInput2);
-		Assert.assertEquals(BigDecimal.valueOf(34), bgCalculationInput1.getMonatlicheBetreuungskosten());
+		Assert.assertEquals(new BigDecimal("34.189700000000002"), bgCalculationInput1.getMonatlicheBetreuungskosten());
 	}
 
 	@Test
@@ -189,12 +189,12 @@ public class BGCalculationInputMergerTest {
 		bgCalculationInput1.calculateInputValuesProportionaly(48.52);
 		bgCalculationInput2.calculateInputValuesProportionaly(62.75);
 
-		Assert.assertEquals(BigDecimal.valueOf(8), bgCalculationInput1.getVerguenstigungMahlzeitenTotal());
-		Assert.assertEquals(BigDecimal.valueOf(15), bgCalculationInput2.getVerguenstigungMahlzeitenTotal());
+		Assert.assertEquals(BigDecimal.valueOf(7.7632), bgCalculationInput1.getVerguenstigungMahlzeitenTotal());
+		Assert.assertEquals(BigDecimal.valueOf(15.059999999999999), bgCalculationInput2.getVerguenstigungMahlzeitenTotal());
 
 		//Merge
 		bgCalculationInput1.add(bgCalculationInput2);
-		Assert.assertEquals(BigDecimal.valueOf(23), bgCalculationInput1.getVerguenstigungMahlzeitenTotal());
+		Assert.assertEquals( new BigDecimal("22.823199999999999"), bgCalculationInput1.getVerguenstigungMahlzeitenTotal());
 	}
 
 	@Test
@@ -205,12 +205,12 @@ public class BGCalculationInputMergerTest {
 		bgCalculationInput1.calculateInputValuesProportionaly(54.87);
 		bgCalculationInput2.calculateInputValuesProportionaly(32.12);
 
-		Assert.assertEquals(BigDecimal.valueOf(6), bgCalculationInput1.getTarifHauptmahlzeit());
-		Assert.assertEquals(BigDecimal.valueOf(3), bgCalculationInput2.getTarifHauptmahlzeit());
+		Assert.assertEquals(BigDecimal.valueOf(6.035699999999999), bgCalculationInput1.getTarifHauptmahlzeit());
+		Assert.assertEquals(BigDecimal.valueOf(2.8907999999999996), bgCalculationInput2.getTarifHauptmahlzeit());
 
 		//Merge
 		bgCalculationInput1.add(bgCalculationInput2);
-		Assert.assertEquals(BigDecimal.valueOf(9), bgCalculationInput1.getTarifHauptmahlzeit());
+		Assert.assertEquals(new BigDecimal("8.9264999999999986"), bgCalculationInput1.getTarifHauptmahlzeit());
 	}
 
 	@Test
@@ -221,12 +221,12 @@ public class BGCalculationInputMergerTest {
 		bgCalculationInput1.calculateInputValuesProportionaly(72.45);
 		bgCalculationInput2.calculateInputValuesProportionaly(33.66);
 
-		Assert.assertEquals(BigDecimal.valueOf(3), bgCalculationInput1.getTarifNebenmahlzeit());
-		Assert.assertEquals(BigDecimal.valueOf(2), bgCalculationInput2.getTarifNebenmahlzeit());
+		Assert.assertEquals(BigDecimal.valueOf(2.898), bgCalculationInput1.getTarifNebenmahlzeit());
+		Assert.assertEquals(BigDecimal.valueOf(2.0195999999999996),bgCalculationInput2.getTarifNebenmahlzeit());
 
 		//Merge
 		bgCalculationInput1.add(bgCalculationInput2);
-		Assert.assertEquals(BigDecimal.valueOf(5), bgCalculationInput1.getTarifNebenmahlzeit());
+		Assert.assertEquals(new BigDecimal("4.9175999999999996"), bgCalculationInput1.getTarifNebenmahlzeit());
 	}
 
 	@Test
@@ -237,12 +237,12 @@ public class BGCalculationInputMergerTest {
 		bgCalculationInput1.calculateInputValuesProportionaly(41.53);
 		bgCalculationInput2.calculateInputValuesProportionaly(36.42);
 
-		Assert.assertEquals(BigDecimal.valueOf(5919), bgCalculationInput1.getMassgebendesEinkommenVorAbzugFamgr());
-		Assert.assertEquals(BigDecimal.valueOf(3362), bgCalculationInput2.getMassgebendesEinkommenVorAbzugFamgr());
+		Assert.assertEquals(BigDecimal.valueOf(5919.2709), bgCalculationInput1.getMassgebendesEinkommenVorAbzugFamgr());
+		Assert.assertEquals(BigDecimal.valueOf(3361.9302000000002), bgCalculationInput2.getMassgebendesEinkommenVorAbzugFamgr());
 
 		//Merge
 		bgCalculationInput1.add(bgCalculationInput2);
-		Assert.assertEquals(BigDecimal.valueOf(9281), bgCalculationInput1.getMassgebendesEinkommenVorAbzugFamgr());
+		Assert.assertEquals(new BigDecimal("9281.2011000000002"), bgCalculationInput1.getMassgebendesEinkommenVorAbzugFamgr());
 	}
 
 
@@ -254,12 +254,12 @@ public class BGCalculationInputMergerTest {
 		bgCalculationInput1.calculateInputValuesProportionaly(13);
 		bgCalculationInput2.calculateInputValuesProportionaly(62.1);
 
-		Assert.assertEquals(BigDecimal.valueOf(3), bgCalculationInput1.getAnzahlHauptmahlzeiten());
-		Assert.assertEquals(BigDecimal.valueOf(27), bgCalculationInput2.getAnzahlHauptmahlzeiten());
+		Assert.assertEquals(BigDecimal.valueOf(2.6), bgCalculationInput1.getAnzahlHauptmahlzeiten());
+		Assert.assertEquals(BigDecimal.valueOf(26.703), bgCalculationInput2.getAnzahlHauptmahlzeiten());
 
 		//Merge
 		bgCalculationInput1.add(bgCalculationInput2);
-		Assert.assertEquals(BigDecimal.valueOf(30), bgCalculationInput1.getAnzahlHauptmahlzeiten());
+		Assert.assertEquals(BigDecimal.valueOf(29.303), bgCalculationInput1.getAnzahlHauptmahlzeiten());
 	}
 
 	@Test
@@ -270,12 +270,12 @@ public class BGCalculationInputMergerTest {
 		bgCalculationInput1.calculateInputValuesProportionaly(52.78);
 		bgCalculationInput2.calculateInputValuesProportionaly(46);
 
-		Assert.assertEquals(BigDecimal.valueOf(49), bgCalculationInput1.getAnzahlNebenmahlzeiten());
-		Assert.assertEquals(BigDecimal.valueOf(21), bgCalculationInput2.getAnzahlNebenmahlzeiten());
+		Assert.assertEquals(BigDecimal.valueOf(49.08540000000001), bgCalculationInput1.getAnzahlNebenmahlzeiten());
+		Assert.assertEquals(BigDecimal.valueOf(20.7), bgCalculationInput2.getAnzahlNebenmahlzeiten());
 
 		//Merge
 		bgCalculationInput1.add(bgCalculationInput2);
-		Assert.assertEquals(BigDecimal.valueOf(70), bgCalculationInput1.getAnzahlNebenmahlzeiten());
+		Assert.assertEquals(BigDecimal.valueOf(69.78540000000001), bgCalculationInput1.getAnzahlNebenmahlzeiten());
 	}
 
 	@Test
