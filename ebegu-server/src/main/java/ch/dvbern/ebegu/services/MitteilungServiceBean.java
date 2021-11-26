@@ -1025,6 +1025,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		// Richtiger Empfangs-Typ. Persoenlicher Empfaenger wird nicht beachtet sondern auf Client mit Filter geloest
 		predicates.add(getPredicateEmpfaengerMitteilungTyp(cb, root));
 
+		// Mandant
+		Predicate mandantPredicate = cb.equal(
+			root.get(Mitteilung_.dossier)
+				.get(Dossier_.fall)
+				.get(Fall_.MANDANT), principalBean.getMandant()
+		);
+		predicates.add(mandantPredicate);
+
 		filterGemeinde(user, joinGemeinde, predicates);
 
 		Join<Mitteilung, Benutzer> joinEmpfaenger = null;
@@ -1207,6 +1215,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			} else {
 				pagedResult = findMitteilungen(mitteilungIds);
 			}
+			pagedResult.forEach(m -> authorizer.checkReadAuthorizationMitteilung(m));
 			result = new ImmutablePair<>(null, pagedResult);
 			break;
 		case COUNT:
