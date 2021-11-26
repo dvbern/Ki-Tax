@@ -860,7 +860,7 @@ public class BGCalculationInput {
 			return null;
 		}
 
-		return BigDecimal.valueOf(Math.round(actualCalculatePercentage(value.doubleValue(), percent)));
+		return BigDecimal.valueOf(actualCalculatePercentage(value.doubleValue(), percent));
 	}
 
 	private double actualCalculatePercentage(double value, double percent) {
