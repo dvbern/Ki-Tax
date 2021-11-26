@@ -27,9 +27,8 @@
         </div>
     </div>
     <div class="row">
-        <form role="form" (ngSubmit)="prepareSave()"
+        <form role="form"
               #form="ngForm"
-              [ngClass]="{'ng-submitted': form.submitted}"
               novalidate>
             <div class="col-md-12">
                 <div class="row" *ngIf="onlyFerieninselBetreuungen">
@@ -40,7 +39,6 @@
                         </p>
                     </div>
                 </div>
-
                 <div class="row" *ngIf="!onlyFerieninselBetreuungen">
                     <div class="col-xs-12">
                         <div class="form-group">
@@ -153,8 +151,8 @@
             ></dv-veranlagung>
 
 
-            <dv-navigation [dvSave]="" [dvPrevious]="hasPrevious" [dvNext]="hasNext"
-                           [dvSubStep]="getSubStepIndex()" [dvSubStepName]="getSubStepName()"></dv-navigation>
+            <dv-navigation-x (dvSave)="prepareSave($event.onResult)" [dvPrevious]="hasPrevious" [dvNext]="hasNext"
+                           [dvSubStep]="getSubStepIndex()" [dvSubStepName]="getSubStepName()"></dv-navigation-x>
         </form>
     </div>
 </div>

@@ -18,9 +18,14 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {SharedModule} from '../../../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
+import {TSFamiliensituationContainer} from '../../../../../models/TSFamiliensituationContainer';
+import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
+import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSGesuch} from '../../../../../models/TSGesuch';
 import {TSGesuchsteller} from '../../../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
+import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
@@ -28,9 +33,11 @@ import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern
 import {FinanzielleSituationStartViewLuzernComponent} from './finanzielle-situation-start-view-luzern.component';
 
 const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
-    GesuchModelManager.name, ['areThereOnlyFerieninsel', 'getBasisjahr', 'getBasisjahrPlus', 'getGesuch']);
+    GesuchModelManager.name,
+    ['areThereOnlyFerieninsel', 'getBasisjahr', 'getBasisjahrPlus', 'getGesuch', 'isGesuchsteller2Required']);
 const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
     WizardStepManager.name, ['getCurrentStep', 'setCurrentStep']);
+const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name, []);
 
 FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
 
@@ -49,6 +56,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 {provide: WizardStepManager, useValue: wizardStepMangerSpy},
+                {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
             ],
             imports: [
                 SharedModule,
@@ -59,12 +67,13 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
     });
 
     beforeEach(() => {
+        gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
+        gesuchModelManagerSpy.isGesuchsteller2Required.and.returnValue(false);
         fixture = TestBed.createComponent(FinanzielleSituationStartViewLuzernComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
         gesuchModelManagerSpy.getBasisjahr.and.returnValue(basisjahr);
         gesuchModelManagerSpy.getBasisjahrPlus.and.returnValue(basisjahrPlus1);
-        gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
     });
 
     it('should create', () => {
@@ -199,6 +208,12 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
         gesuch.gesuchsteller1.gesuchstellerJA = new TSGesuchsteller();
         gesuch.gesuchsteller2 = new TSGesuchstellerContainer();
         gesuch.gesuchsteller2.gesuchstellerJA = new TSGesuchsteller();
+        gesuch.gesuchsteller1.finanzielleSituationContainer = new TSFinanzielleSituationContainer();
+        gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
+        gesuch.gesuchsteller2.finanzielleSituationContainer = new TSFinanzielleSituationContainer();
+        gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
+        gesuch.familiensituationContainer = new TSFamiliensituationContainer();
+        gesuch.familiensituationContainer.familiensituationJA = new TSFamiliensituation();
         return gesuch;
     }
 });

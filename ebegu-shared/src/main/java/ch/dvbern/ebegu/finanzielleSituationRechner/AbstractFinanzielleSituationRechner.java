@@ -419,21 +419,18 @@ public abstract class AbstractFinanzielleSituationRechner {
 			calcTotalAbzuege(gs1, gs2));
 	}
 
-	@Deprecated // Use MathUtil instead
 	protected static BigDecimal add(@Nullable BigDecimal value1, @Nullable BigDecimal value2) {
 		value1 = value1 != null ? value1 : BigDecimal.ZERO;
 		value2 = value2 != null ? value2 : BigDecimal.ZERO;
 		return value1.add(value2);
 	}
 
-	@Deprecated // Use MathUtil instead
 	protected static BigDecimal subtract(@Nullable BigDecimal value1, @Nullable BigDecimal value2) {
 		value1 = value1 != null ? value1 : BigDecimal.ZERO;
 		value2 = value2 != null ? value2 : BigDecimal.ZERO;
 		return value1.subtract(value2);
 	}
 
-	@Deprecated // Use MathUtil instead
 	protected static BigDecimal percent(@Nullable BigDecimal value, int percent) {
 		BigDecimal total = value != null ? value : BigDecimal.ZERO;
 		total = total.multiply(new BigDecimal(String.valueOf(percent)));

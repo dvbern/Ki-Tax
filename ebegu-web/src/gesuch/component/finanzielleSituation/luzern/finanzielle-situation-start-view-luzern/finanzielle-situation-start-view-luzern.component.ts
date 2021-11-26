@@ -20,7 +20,6 @@ import {NgForm} from '@angular/forms';
 import {IPromise} from 'angular';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
-import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
@@ -40,7 +39,7 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
     ) {
-        super(gesuchModelManager, wizardStepManager);
+        super(gesuchModelManager, wizardStepManager, 1);
     }
 
     public ngOnInit(): void {
@@ -48,7 +47,7 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
 
     public isGemeinsam(): boolean {
         // if we don't need two antragsteller for gesuch, this is the component for both antragsteller together
-        return FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller(this.gesuchModelManager);
+        return !FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller(this.gesuchModelManager);
     }
 
     public getAntragstellerNummer(): number {
@@ -68,18 +67,11 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
         return TSFinanzielleSituationSubStepName.LUZERN_START;
     }
 
-    public isGesuchValid(): boolean {
-        if (!this.form.valid) {
-            EbeguUtil.selectFirstInvalid();
-        }
-
-        return this.form.valid;
-    }
-
-    public prepareSave(): IPromise<TSFinanzielleSituationContainer> {
-        if (!this.isGesuchValid()) {
+    public prepareSave(onResult: Function): IPromise<TSFinanzielleSituationContainer> {
+        if (!this.isGesuchValid(this.form)) {
+            onResult(undefined);
             return undefined;
         }
-        return this.save();
+        return this.save(onResult);
     }
 }

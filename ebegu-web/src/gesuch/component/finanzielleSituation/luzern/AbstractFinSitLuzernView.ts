@@ -15,6 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {NgForm} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
 import {IPromise} from 'angular';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
@@ -32,11 +33,12 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     protected constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
+        protected gesuchstellerNumber: number
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
             this.gesuchModelManager.isGesuchsteller2Required(),
-            null);
+            gesuchstellerNumber);
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.setupForm();
     }
@@ -52,14 +54,14 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     }
 
     public showSelbstdeklaration(): boolean {
-        return this.getModel().finanzielleSituationJA.quellenbesteuert
-            || this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr
-            || this.getModel().finanzielleSituationJA.alleinigeStekVorjahr
-            || this.getModel().finanzielleSituationJA.veranlagt;
+        return EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.quellenbesteuert)
+            || EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr)
+            || EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)
+            || EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.veranlagt);
     }
 
     public showVeranlagung(): boolean {
-        return this.getModel().finanzielleSituationJA.veranlagt;
+        return EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.veranlagt);
     }
 
     public quellenBesteuertChange(newQuellenBesteuert: MatRadioChange): void {
@@ -72,26 +74,26 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     }
 
     public gemeinsameStekVisible(): boolean {
-        return this.isGemeinsam() && this.getModel().finanzielleSituationJA.quellenbesteuert;
+        return this.isGemeinsam() && EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.quellenbesteuert);
     }
 
     public alleinigeStekVisible(): boolean {
-        return !this.isGemeinsam() && this.getModel().finanzielleSituationJA.quellenbesteuert;
+        return !this.isGemeinsam() && EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.quellenbesteuert);
     }
 
     public veranlagtVisible(): boolean {
-        return this.model.gemeinsameSteuererklaerung
-            || this.getModel().finanzielleSituationJA.alleinigeStekVorjahr;
+        return EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr)
+            || EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr);
     }
 
     public gemeinsameStekChange(newGemeinsameStek: MatRadioChange): void {
-        if (newGemeinsameStek.value === false && !this.getModel().finanzielleSituationJA.alleinigeStekVorjahr) {
+        if (newGemeinsameStek.value === false && EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)) {
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
         }
     }
 
     public alleinigeStekVorjahrChange(newAlleinigeStekVorjahr: MatRadioChange): void {
-        if (newAlleinigeStekVorjahr.value === false && this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr) {
+        if (newAlleinigeStekVorjahr.value === false && EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr)) {
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
         }
     }
@@ -105,8 +107,8 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         if (EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.veranlagt)) {
             return previousYear;
         }
-        if (this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr
-            || this.getModel().finanzielleSituationJA.alleinigeStekVorjahr) {
+        if (EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr)
+            || EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)) {
             return currentYear;
         }
         return '';
@@ -127,6 +129,8 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     public abstract getSubStepIndex(): number;
 
     public abstract getSubStepName(): string;
+
+    public abstract prepareSave(onResult: Function): IPromise<TSFinanzielleSituationContainer>;
 
     public getAntragstellerNameForCurrentStep(): string {
         if (this.isGemeinsam()) {
@@ -150,10 +154,26 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         return this.model.getFiSiConToWorkWith();
     }
 
-    protected save(): IPromise<TSFinanzielleSituationContainer> {
+    public isGesuchValid(form: NgForm): boolean {
+        if (!form.valid) {
+            if (this.veranlagtVisible()) {
+                form.controls.steuerbaresEinkommen.markAsTouched({onlySelf: true});
+                form.controls.steuerbaresVermoegen.markAsTouched({onlySelf: true});
+                form.controls.abzuegeLiegenschaft.markAsTouched({onlySelf: true});
+                form.controls.geschaeftsverlust.markAsTouched({onlySelf: true});
+                form.controls.einkaeufeVorsorge.markAsTouched({onlySelf: true});
+            }
+            EbeguUtil.selectFirstInvalid();
+        }
+
+        return form.valid;
+    }
+
+    protected save(onResult: Function): IPromise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         return this.gesuchModelManager.saveFinanzielleSituation()
             .then((finanzielleSituationContainer: TSFinanzielleSituationContainer) => {
+                onResult(finanzielleSituationContainer);
                 return finanzielleSituationContainer;
             }).catch(error => {
                 throw(error);

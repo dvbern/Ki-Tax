@@ -47,7 +47,7 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		finanzDatenDTOAlleine.setMassgebendesEinkBjVorAbzFamGr(finanzielleSituationResultateDTOAlleine.getMassgebendesEinkVorAbzFamGr());
 		finanzDatenDTOZuZweit.setMassgebendesEinkBjVorAbzFamGr(finanzielleSituationResultateDTOZuZweit.getMassgebendesEinkVorAbzFamGr());
 
-		// Einkommensverschlechterung spaeter berücksichtigen hier
+		// TODO Einkommensverschlechterung spaeter berücksichtigen hier
 
 		gesuch.setFinanzDatenDTO_alleine(finanzDatenDTOAlleine);
 		gesuch.setFinanzDatenDTO_zuZweit(finanzDatenDTOZuZweit);

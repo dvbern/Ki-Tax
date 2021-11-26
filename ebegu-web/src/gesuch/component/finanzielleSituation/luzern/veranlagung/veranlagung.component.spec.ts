@@ -16,27 +16,40 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
+import {NgForm} from '@angular/forms';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {MaterialModule} from '../../../../../app/shared/material.module';
+import {SharedModule} from '../../../../../app/shared/shared.module';
+import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
 import {VeranlagungComponent} from './veranlagung.component';
 
 describe('VeranlagungComponent', () => {
-  let component: VeranlagungComponent;
-  let fixture: ComponentFixture<VeranlagungComponent>;
+    let component: VeranlagungComponent;
+    let fixture: ComponentFixture<VeranlagungComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ VeranlagungComponent ]
-    })
-    .compileComponents();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [VeranlagungComponent],
+            imports: [
+                SharedModule,
+                NoopAnimationsModule,
+                MaterialModule,
+            ],
+            providers: [
+                {provide: NgForm, useValue: new NgForm([], [])},
+            ]
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(VeranlagungComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(VeranlagungComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });
