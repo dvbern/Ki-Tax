@@ -371,6 +371,10 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	private boolean isMandantMatching(@Nullable HasMandant mandantEntity) {
+		// we allow reading anyway if user is coming from Superadmin Service
+		if (principalBean.isCallerInRole(SUPER_ADMIN) && principalBean.getPrincipal().getName().equals(ANONYMOUS_USER_USERNAME)) {
+			return true;
+		}
 		if (mandantEntity == null || mandantEntity.getMandant() == null) {
 			return false;
 		}
