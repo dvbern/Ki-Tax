@@ -45,6 +45,9 @@ public class JaxModulTagesschuleGroup extends JaxAbstractDTO {
 	@NotNull @Nonnull
 	private String identifier;
 
+	@Nullable
+	private String fremdId;
+
 	@NotNull @Nonnull
 	private JaxTextRessource bezeichnung = new JaxTextRessource();
 
@@ -66,9 +69,6 @@ public class JaxModulTagesschuleGroup extends JaxAbstractDTO {
 	private int reihenfolge;
 
 	private Set<JaxModulTagesschule> module = new LinkedHashSet<>();
-
-	private Set<JaxModulTagesschuleExternalClient> modulExternalClients = new HashSet<>();
-
 
 	@Nonnull
 	public ModulTagesschuleName getModulTagesschuleName() {
@@ -156,11 +156,12 @@ public class JaxModulTagesschuleGroup extends JaxAbstractDTO {
 		this.module = module;
 	}
 
-	public Set<JaxModulTagesschuleExternalClient> getModulExternalClients() {
-		return modulExternalClients;
+	@Nullable
+	public String getFremdId() {
+		return fremdId;
 	}
 
-	public void setModulExternalClients(Set<JaxModulTagesschuleExternalClient> modulExternalClients) {
-		this.modulExternalClients = modulExternalClients;
+	public void setFremdId(@Nullable String fremdId) {
+		this.fremdId = fremdId;
 	}
 }

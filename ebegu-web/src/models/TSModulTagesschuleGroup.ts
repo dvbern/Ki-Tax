@@ -21,43 +21,8 @@ import {MAP_SORTED_BY_DAY_OF_WEEK, TSDayOfWeek} from './enums/TSDayOfWeek';
 import {TSModulTagesschuleIntervall} from './enums/TSModulTagesschuleIntervall';
 import {TSModulTagesschuleName} from './enums/TSModulTagesschuleName';
 import {TSAbstractEntity} from './TSAbstractEntity';
-import {TSExternalClient} from './TSExternalClient';
 import {TSModulTagesschule} from './TSModulTagesschule';
 import {TSTextRessource} from './TSTextRessource';
-
-export class TSModulTagesschuleClientId extends TSAbstractEntity {
-    private _client: TSExternalClient;
-    private _identifier: string;
-
-    public constructor(client: TSExternalClient, identifier: string) {
-        super();
-        this.client = client;
-        this.identifier = identifier;
-    }
-
-    public set identifier(value: string) {
-        this._identifier = value;
-    }
-
-    public get identifier(): string {
-        return this._identifier;
-    }
-
-    public get client(): TSExternalClient {
-        return this._client;
-    }
-
-    public set client(value: TSExternalClient) {
-        this._client = value;
-    }
-
-    public copy(): TSModulTagesschuleClientId {
-        const copy = new TSModulTagesschuleClientId(this.client, this.identifier);
-        copy.identifier = this.identifier;
-
-        return copy;
-    }
-}
 
 export class TSModulTagesschuleGroup extends TSAbstractEntity {
 
@@ -71,7 +36,7 @@ export class TSModulTagesschuleGroup extends TSAbstractEntity {
     public wirdPaedagogischBetreut: boolean;
     public reihenfolge: number;
     public module: Array<TSModulTagesschule>;
-    public clientModuleIds: TSModulTagesschuleClientId[];
+    public fremdId: string;
 
     // Zum einfacheren Handling: Pro Tag ein fixes Modul erstellen
     // Dies wird nicht zum Server synchronisiert
@@ -92,7 +57,6 @@ export class TSModulTagesschuleGroup extends TSAbstractEntity {
         this.zeitVon = zeitVon;
         this.zeitBis = zeitBis;
         this.identifier = EbeguUtil.generateRandomName(CONSTANTS.ID_LENGTH);
-        this.clientModuleIds = [];
     }
 
     public getZeitraumString(): string {
@@ -209,7 +173,7 @@ export class TSModulTagesschuleGroup extends TSAbstractEntity {
         copy.intervall = this.intervall;
         copy.reihenfolge = this.reihenfolge;
         copy.wirdPaedagogischBetreut = this.wirdPaedagogischBetreut;
-        copy.clientModuleIds = this.clientModuleIds.map(clientModuleId => clientModuleId.copy());
+        copy.fremdId = this.fremdId;
         copy.module = this.module.map(m => TSModulTagesschule.create(m.wochentag));
         return copy;
     }

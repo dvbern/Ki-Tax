@@ -20,7 +20,7 @@ import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TSExternalClient} from '../../../models/TSExternalClient';
 import {TSInstitution} from '../../../models/TSInstitution';
-import {TSModulTagesschuleClientId, TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
+import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 
 @Component({
     selector: 'modul-tagesschule-dialog',
@@ -59,7 +59,4 @@ export class InfoSchnittstelleDialogComponent {
         this.dialogRef.close();
     }
 
-    public findModulTSClientId(client: TSExternalClient): TSModulTagesschuleClientId {
-        return this.modulTagesschuleGroup.clientModuleIds.find(cleintModulId => cleintModulId.client.id === client.id);
-    }
 }

@@ -19,7 +19,6 @@ package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -75,6 +74,10 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 	@Column(nullable = false)
 	private String identifier;
 
+	@Nullable
+	@Column(nullable = true)
+	private String fremdId;
+
 	@NotNull @Nonnull
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_bezeichnung_id"))
@@ -109,9 +112,6 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 		FetchType.LAZY)
 	@OrderBy("wochentag")
 	private Set<ModulTagesschule> module = new TreeSet<>();
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "modulTagesschuleGroup", fetch = FetchType.LAZY)
-	private Set<ModulTagesschuleExternalClient> modulExternalClients = new HashSet<>();
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
@@ -279,22 +279,15 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 				newModul.setModulTagesschuleGroup(copy);
 			});
 		}
-		if (CollectionUtils.isNotEmpty(this.getModulExternalClients())) {
-			copy.setModulExternalClientIdentifiers(new HashSet<>());
-			this.getModulExternalClients().forEach(modul -> {
-				ModulTagesschuleExternalClient newModul = modul.copy();
-				copy.getModulExternalClients().add(newModul);
-				newModul.setModulTagesschuleGroup(copy);
-			});
-		}
 		return copy;
 	}
 
-	public Set<ModulTagesschuleExternalClient> getModulExternalClients() {
-		return modulExternalClients;
+	@Nullable
+	public String getFremdId() {
+		return fremdId;
 	}
 
-	public void setModulExternalClientIdentifiers(Set<ModulTagesschuleExternalClient> modulExternalClients) {
-		this.modulExternalClients = modulExternalClients;
+	public void setFremdId(@Nullable String fremdId) {
+		this.fremdId = fremdId;
 	}
 }

@@ -39,7 +39,6 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.KontaktAngaben;
-import ch.dvbern.ebegu.entities.ModulTagesschuleExternalClient;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.ModulTagesschuleIntervall;
@@ -54,7 +53,6 @@ import ch.dvbern.kibon.exchange.commons.institution.InstitutionEventDTO.Builder;
 import ch.dvbern.kibon.exchange.commons.institution.InstitutionStatus;
 import ch.dvbern.kibon.exchange.commons.institution.KontaktAngabenDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulDTO;
-import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleModulExternalClientDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleModuleDTO;
 import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
 import ch.dvbern.kibon.exchange.commons.types.Intervall;
@@ -308,7 +306,6 @@ public class InstitutionEventConverter {
 			.setErlaubteIntervalle(toErlaubteIntervalle(modulGroup.getIntervall()))
 			.setWirdPaedagogischBetreut(modulGroup.isWirdPaedagogischBetreut())
 			.setVerpflegungsKosten(EbeguUtil.coalesce(modulGroup.getVerpflegungskosten(), BigDecimal.ZERO))
-			.setTagesschuleModulExternalClients(toTagesschulModulExternalClientsDTO(modulGroup.getModulExternalClients()))
 			.build();
 	}
 
@@ -322,18 +319,5 @@ public class InstitutionEventConverter {
 		default:
 			throw new NotImplementedException("Missing converions of " + intervall + " to ModulIntervalle");
 		}
-	}
-
-	private List<TagesschuleModulExternalClientDTO> toTagesschulModulExternalClientsDTO(Set<ModulTagesschuleExternalClient> modulExternalClients) {
-		return modulExternalClients.stream()
-				.map(this::toModulExternalClient)
-				.collect(Collectors.toList());
-	}
-
-	private TagesschuleModulExternalClientDTO toModulExternalClient(ModulTagesschuleExternalClient modulTagesschuleExternalClient) {
-		return TagesschuleModulExternalClientDTO.newBuilder()
-				.setClientName(modulTagesschuleExternalClient.getExternalClient().getClientName())
-				.setIdentifier(modulTagesschuleExternalClient.getIdentifier())
-				.build();
 	}
 }

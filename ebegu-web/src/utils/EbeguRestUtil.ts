@@ -140,7 +140,7 @@ import {TSMahnung} from '../models/TSMahnung';
 import {TSMandant} from '../models/TSMandant';
 import {TSMitteilung} from '../models/TSMitteilung';
 import {TSModulTagesschule} from '../models/TSModulTagesschule';
-import {TSModulTagesschuleClientId, TSModulTagesschuleGroup} from '../models/TSModulTagesschuleGroup';
+import {TSModulTagesschuleGroup} from '../models/TSModulTagesschuleGroup';
 import {TSPendenzBetreuung} from '../models/TSPendenzBetreuung';
 import {TSPensumAusserordentlicherAnspruch} from '../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../models/TSPensumFachstelle';
@@ -3724,6 +3724,7 @@ export class EbeguRestUtil {
             this.parseAbstractEntity(modulTagesschuleGroupTS, modulGroupFromServer);
             modulTagesschuleGroupTS.modulTagesschuleName = modulGroupFromServer.modulTagesschuleName;
             modulTagesschuleGroupTS.identifier = modulGroupFromServer.identifier;
+            modulTagesschuleGroupTS.fremdId = modulGroupFromServer.fremdId;
             if (modulGroupFromServer.bezeichnung) {
                 modulTagesschuleGroupTS.bezeichnung = this.parseTextRessource(
                     new TSTextRessource(), modulGroupFromServer.bezeichnung);
@@ -3738,34 +3739,9 @@ export class EbeguRestUtil {
             modulTagesschuleGroupTS.module =
                 this.parseModuleTagesschuleArray(modulGroupFromServer.module);
 
-            modulTagesschuleGroupTS.clientModuleIds =
-                this.parseModulTagesschuleExternalClients(modulGroupFromServer.modulExternalClients);
-
             return modulTagesschuleGroupTS;
         }
         return undefined;
-    }
-
-    private parseModulTagesschuleExternalClients(
-        data: any,
-    ): TSModulTagesschuleClientId[] {
-        if (!data)  {
-            return [];
-        }
-        return Array.isArray(data)
-            ? data.map(item => this.parseModulTageschuleExternalClient(new TSModulTagesschuleClientId(null,
-                null), item))
-            : [];
-    }
-
-    private parseModulTageschuleExternalClient(
-        tsModulTagesschuleClientId: TSModulTagesschuleClientId,
-        fromServer: any,
-    ): TSModulTagesschuleClientId {
-        tsModulTagesschuleClientId.client = this.parseExternalClient(fromServer.externalClient);
-        tsModulTagesschuleClientId.identifier = fromServer.identifier;
-
-        return tsModulTagesschuleClientId;
     }
 
     private moduleTagesschuleGroupsArrayToRestObject(data: Array<TSModulTagesschuleGroup>): any[] {
@@ -3783,6 +3759,7 @@ export class EbeguRestUtil {
             this.abstractEntityToRestObject(restModulGroup, modulTagesschuleGroupTS);
             restModulGroup.modulTagesschuleName = modulTagesschuleGroupTS.modulTagesschuleName;
             restModulGroup.identifier = modulTagesschuleGroupTS.identifier;
+            restModulGroup.fremdId = modulTagesschuleGroupTS.fremdId;
             if (modulTagesschuleGroupTS.bezeichnung) {
                 restModulGroup.bezeichnung = this.textRessourceToRestObject({}, modulTagesschuleGroupTS.bezeichnung);
             }
@@ -3793,8 +3770,6 @@ export class EbeguRestUtil {
             restModulGroup.wirdPaedagogischBetreut = modulTagesschuleGroupTS.wirdPaedagogischBetreut;
             restModulGroup.reihenfolge = modulTagesschuleGroupTS.reihenfolge;
             restModulGroup.module = this.moduleTagesschuleArrayToRestObject(modulTagesschuleGroupTS.module);
-            restModulGroup.modulExternalClients =
-                this.modulTagesschuleExternalClientsToRestObject(modulTagesschuleGroupTS.clientModuleIds);
             return restModulGroup;
         }
         return undefined;
@@ -3816,25 +3791,6 @@ export class EbeguRestUtil {
             return restModul;
         }
         return undefined;
-    }
-
-    private modulTagesschuleExternalClientsToRestObject(data: TSModulTagesschuleClientId[]): any[] {
-        if (!data) {
-            return [];
-        }
-        return Array.isArray(data)
-            ? data.map(item => this.modulTagesschuleExternalClientToRestIbject({}, item))
-            : [];
-    }
-
-    private modulTagesschuleExternalClientToRestIbject(
-        restModulTagesschuleExternalClient: any,
-        item: TSModulTagesschuleClientId,
-    ): any {
-        restModulTagesschuleExternalClient.externalClient = this.externalClientToRestObject({}, item.client);
-        restModulTagesschuleExternalClient.identifier = item.identifier;
-
-        return restModulTagesschuleExternalClient;
     }
 
     private parseBelegungTagesschule(

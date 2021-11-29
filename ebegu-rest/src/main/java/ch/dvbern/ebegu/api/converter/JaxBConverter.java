@@ -120,7 +120,6 @@ import ch.dvbern.ebegu.api.dtos.JaxMahnung;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
-import ch.dvbern.ebegu.api.dtos.JaxModulTagesschuleExternalClient;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschuleGroup;
 import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
@@ -220,7 +219,6 @@ import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
-import ch.dvbern.ebegu.entities.ModulTagesschuleExternalClient;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
@@ -2133,6 +2131,7 @@ public class JaxBConverter extends AbstractConverter {
 		modulTagesschuleGroup.setEinstellungenTagesschule(einstellungenTagesschule);
 		modulTagesschuleGroup.setModulTagesschuleName(jaxModulTagesschuleGroup.getModulTagesschuleName());
 		modulTagesschuleGroup.setIdentifier(jaxModulTagesschuleGroup.getIdentifier());
+		modulTagesschuleGroup.setFremdId(jaxModulTagesschuleGroup.getFremdId());
 		modulTagesschuleGroup.setBezeichnung(textRessourceToEntity(
 			jaxModulTagesschuleGroup.getBezeichnung(), modulTagesschuleGroup.getBezeichnung()));
 		modulTagesschuleGroup.setZeitVon(hoursAndMinutesToDate(jaxModulTagesschuleGroup.getZeitVon()));
@@ -2154,17 +2153,6 @@ public class JaxBConverter extends AbstractConverter {
 		if (convertedModules != null) {
 			modulTagesschuleGroup.getModule().clear();
 			modulTagesschuleGroup.getModule().addAll(convertedModules);
-		}
-
-		Set<ModulTagesschuleExternalClient> convertedModuleExternalClients = moduleTagesschuleExternalClientSetToEntity(
-				jaxModulTagesschuleGroup.getModulExternalClients(),
-				modulTagesschuleGroup.getModulExternalClients(),
-				modulTagesschuleGroup
-		);
-
-		modulTagesschuleGroup.getModulExternalClients().clear();
-		for (ModulTagesschuleExternalClient modulTagesschuleExternalClient : convertedModuleExternalClients) {
-			modulTagesschuleGroup.getModulExternalClients().add(modulTagesschuleExternalClient);
 		}
 
 		return modulTagesschuleGroup;
@@ -2198,45 +2186,7 @@ public class JaxBConverter extends AbstractConverter {
 		return null;
 	}
 
-	private Set<ModulTagesschuleExternalClient> moduleTagesschuleExternalClientSetToEntity(
-			Set<JaxModulTagesschuleExternalClient> modulExternalClients,
-			Set<ModulTagesschuleExternalClient> existing,
-			ModulTagesschuleGroup modulTagesschuleGroup) {
-		if (modulExternalClients == null) {
-			return Collections.emptySet();
-		}
-		final Set<ModulTagesschuleExternalClient> transformed = new HashSet<>();
-		for (final JaxModulTagesschuleExternalClient jaxModulTagesschuleExternalClient: modulExternalClients) {
-			final ModulTagesschuleExternalClient modulExternalClientToMergeWith = existing.stream()
-					.filter(existingModul -> existingModul.getId().equalsIgnoreCase(jaxModulTagesschuleExternalClient.getId()))
-					.reduce(StreamsUtil.toOnlyElement())
-					.orElse(new ModulTagesschuleExternalClient());
-			final ModulTagesschuleExternalClient modulTagesschuleExternalClientToAdd =
-					moduleTagesschuleExternalClientToEntity(jaxModulTagesschuleExternalClient, modulExternalClientToMergeWith, modulTagesschuleGroup);
-			transformed.add(modulTagesschuleExternalClientToAdd);
-		}
-		return transformed;
-	}
 
-	private ModulTagesschuleExternalClient moduleTagesschuleExternalClientToEntity(
-			JaxModulTagesschuleExternalClient jaxModulTagesschuleExternalClient,
-			ModulTagesschuleExternalClient modulExternalClientToMergeWith,
-			ModulTagesschuleGroup modulTagesschuleGroup) {
-		convertAbstractFieldsToEntity(jaxModulTagesschuleExternalClient, modulExternalClientToMergeWith);
-		modulExternalClientToMergeWith.setIdentifier(jaxModulTagesschuleExternalClient.getIdentifier());
-		String externalClientId = jaxModulTagesschuleExternalClient.getExternalClient().getId();
-		requireNonNull(externalClientId, "externalClientId must not be null");
-
-		ExternalClient client = externalClientService.findExternalClient(externalClientId)
-				.orElseThrow(() -> new EbeguEntityNotFoundException("moduleTagesschuleExternalClientToEntity",
-						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-						jaxModulTagesschuleExternalClient.getExternalClient().getId()));
-		modulExternalClientToMergeWith.setExternalClient(client);
-
-		modulExternalClientToMergeWith.setModulTagesschuleGroup(modulTagesschuleGroup);
-
-		return modulExternalClientToMergeWith;
-	}
 
 	@Nullable
 	private Set<ModulTagesschule> moduleTagesschuleListToEntity(
@@ -3617,6 +3567,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractFieldsToJAX(modulTagesschuleGroup, jaxModulTagesschuleGroup);
 		jaxModulTagesschuleGroup.setModulTagesschuleName(modulTagesschuleGroup.getModulTagesschuleName());
 		jaxModulTagesschuleGroup.setIdentifier(modulTagesschuleGroup.getIdentifier());
+		jaxModulTagesschuleGroup.setFremdId(modulTagesschuleGroup.getFremdId());
 		jaxModulTagesschuleGroup.setBezeichnung(textRessourceToJAX(modulTagesschuleGroup.getBezeichnung()));
 		jaxModulTagesschuleGroup.setZeitVon(dateToHoursAndMinutes(modulTagesschuleGroup.getZeitVon()));
 		jaxModulTagesschuleGroup.setZeitBis(dateToHoursAndMinutes(modulTagesschuleGroup.getZeitBis()));
@@ -3625,23 +3576,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxModulTagesschuleGroup.setWirdPaedagogischBetreut(modulTagesschuleGroup.isWirdPaedagogischBetreut());
 		jaxModulTagesschuleGroup.setReihenfolge(modulTagesschuleGroup.getReihenfolge());
 		jaxModulTagesschuleGroup.setModule(moduleTagesschuleListToJax(modulTagesschuleGroup.getModule()));
-		jaxModulTagesschuleGroup.setModulExternalClients(moduleTagesschuleExternalClientSetToJax(modulTagesschuleGroup.getModulExternalClients()));
 		return jaxModulTagesschuleGroup;
-	}
-
-	private Set<JaxModulTagesschuleExternalClient> moduleTagesschuleExternalClientSetToJax(Set<ModulTagesschuleExternalClient> modulExternalClients) {
-		if (modulExternalClients == null) {
-			return Collections.emptySet();
-		}
-		return modulExternalClients.stream()
-				.map(this::moduleTagesschuleExternalClientToJax).collect(Collectors.toSet());
-	}
-
-	private JaxModulTagesschuleExternalClient moduleTagesschuleExternalClientToJax(ModulTagesschuleExternalClient modulExternalClient) {
-		final JaxModulTagesschuleExternalClient jaxModulTagesschuleExternalClient = new JaxModulTagesschuleExternalClient();
-		jaxModulTagesschuleExternalClient.setExternalClient(externalClientToJAX(modulExternalClient.getExternalClient()));
-		jaxModulTagesschuleExternalClient.setIdentifier(modulExternalClient.getIdentifier());
-		return jaxModulTagesschuleExternalClient;
 	}
 
 	/**
