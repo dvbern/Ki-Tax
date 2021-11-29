@@ -66,7 +66,7 @@ describe('AuthServiceRS', () => {
             // tslint:disable-next-line:no-unbound-method
             expect($http.post).not.toHaveBeenCalled();
         });
-        xit('receives a loginRequest and handles the incoming cookie', () => {
+        it('receives a loginRequest and handles the incoming cookie', () => {
             // Der Inhalt der Cookie muss nicht unbedingt ein TSBenutzer sein. Deswegen machen wir hier ein Objekt mit
             // dem Inhalt, den die Cookie braucht
             const benutzer = new TSBenutzer('Emma',
@@ -86,7 +86,8 @@ describe('AuthServiceRS', () => {
             };
             const encodedUser = btoa(JSON.stringify(cookieContent).split('_').join(''));
             spyOn($cookies, 'get').and.returnValue(encodedUser);
-            spyOn(benutzerRS, 'findBenutzer').and.returnValue($q.when(benutzer)  as Promise<TSBenutzer>);
+            $httpBackend.when('GET', '/ebegu/api/v1/auth/authenticated-user').respond(benutzer);
+            spyOn(benutzerRS, 'findBenutzerById').and.returnValue($q.when(benutzer) as Promise<TSBenutzer>);
 
             let cookieUser: TSBenutzer;
             // if we can decode the cookie the client application assumes the user is logged in for ui purposes

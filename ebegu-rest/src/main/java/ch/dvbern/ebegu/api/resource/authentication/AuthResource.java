@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.authentication.AuthAccessElement;
 import ch.dvbern.ebegu.authentication.AuthLoginElement;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AuthorisierterBenutzer;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -76,6 +77,9 @@ public class AuthResource {
 
 	@Inject // @EJB
 	private AuthService authService;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@Context
 	private HttpServletRequest request;
@@ -324,5 +328,14 @@ public class AuthResource {
 				60 * 60 * 24 * 365 * 2, isCookieSecure(), false);
 
 		return Response.noContent().cookie(mandantCookie).build();
+	}
+
+	@Nullable
+	@GET
+	@PermitAll
+	@Path("/authenticated-user")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxBenutzer getAuthenticatedUser() {
+		return converter.benutzerToJaxBenutzer(principalBean.getBenutzer());
 	}
 }

@@ -173,7 +173,7 @@ public class AuthServiceBean implements AuthService {
 		}
 		Benutzer existingUser = authorisierterBenutzer.getBenutzer();
 		return new AuthAccessElement(
-			authorisierterBenutzer.getId(),
+			authorisierterBenutzer.getBenutzer().getId(),
 			authorisierterBenutzer.getAuthToken(),
 			UUID.randomUUID().toString(), // XSRF-Token (no need to persist)
 			existingUser.getNachname(),

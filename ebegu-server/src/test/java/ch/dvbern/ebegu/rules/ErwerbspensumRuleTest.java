@@ -451,8 +451,8 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 			assertNotNull(verfuegungZeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS1());
 			assertEquals(15, verfuegungZeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS1().intValue());
 			assertEquals(100, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
-			assertNotNull(verfuegungZeitabschnitt.getBemerkungen());
-			assertFalse(verfuegungZeitabschnitt.getBemerkungen().isEmpty());
+			assertNotNull(verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList());
+			assertFalse(verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().isEmpty());
 		}
 	}
 

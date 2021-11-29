@@ -31,9 +31,9 @@ import {clearErrorsHookRunBlock} from './state-hooks/onSuccess/clearErrors.hook'
 
 export const AUTHENTICATION_JS_MODULE =
     angular.module('dvbAngular.authentication', ['ngCookies'])
+        .run(mandantCheck)
         .run(authenticationHookRunBlock)
         .run(authorisationHookRunBlock)
-        .run(mandantCheck)
         .run(dummyLoginHookRunBlock)
         .run(errorAfterLoginHookRunBlock)
         .run(erorGSRegistrationIncompleteHookRunBlock)

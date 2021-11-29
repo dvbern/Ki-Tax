@@ -114,10 +114,10 @@ export class AuthServiceRS {
             return this.$q.reject(TSAuthEvent.NOT_AUTHENTICATED);
         }
 
+        // tslint:disable-next-line:no-try-promise
         try {
-            const authData = angular.fromJson(atob(decodeURIComponent(authIdbase64)));
             // we take the complete user from Server and store it in principal
-            return this.reloadUser(authData.authId);
+            return this.reloadUser();
         } catch (e) {
             LOG.error('cookie decoding failed', e);
             this.clearPrincipal();
@@ -184,11 +184,11 @@ export class AuthServiceRS {
     }
 
     public reloadCurrentUser(): IPromise<TSBenutzer> {
-        return this.reloadUser(this.getPrincipal().username);
+        return this.reloadUser();
     }
 
-    private reloadUser(username: string): IPromise<TSBenutzer> {
-        return this.benutzerRS.findBenutzerById(username).then(user => {
+    private reloadUser(): IPromise<TSBenutzer> {
+        return this.loadPrincipal().then(user => {
             this.principal = user;
             this.principalSubject$.next(user);
             this.setPrincipalInRavenUserContext();
@@ -197,6 +197,12 @@ export class AuthServiceRS {
 
             return user;
         });
+    }
+
+    private loadPrincipal(): IPromise<TSBenutzer> {
+        return this.$http.get(CONSTANTS.REST_API + 'auth/authenticated-user')
+            .then(response => response.data)
+            .then(restBenutzer => this.ebeguRestUtil.parseUser(new TSBenutzer(), restBenutzer));
     }
 
     private setPrincipalInRavenUserContext(): void {
