@@ -15,11 +15,11 @@
 
 import * as moment from 'moment';
 import {TSFamilienstatus} from './enums/TSFamilienstatus';
+import {TSGesuchstellerKardinalitaet} from './enums/TSGesuchstellerKardinalitaet';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSAdresse} from './TSAdresse';
 
 export class TSFamiliensituation extends TSAbstractMutableEntity {
-
     private _familienstatus: TSFamilienstatus;
     private _gemeinsameSteuererklaerung: boolean;
     private _aenderungPer: moment.Moment;
@@ -31,6 +31,7 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _kontoinhaber: string;
     private _abweichendeZahlungsadresse: boolean;
     private _zahlungsadresse: TSAdresse;
+    private _gesuchstellerKardinalitaet: TSGesuchstellerKardinalitaet;
 
     public constructor() {
         super();
@@ -122,6 +123,14 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     public set zahlungsadresse(value: TSAdresse) {
         this._zahlungsadresse = value;
+    }
+
+    public get gesuchstellerKardinalitaet(): TSGesuchstellerKardinalitaet {
+        return this._gesuchstellerKardinalitaet;
+    }
+
+    public set gesuchstellerKardinalitaet(value: TSGesuchstellerKardinalitaet) {
+        this._gesuchstellerKardinalitaet = value;
     }
 
     public hasSecondGesuchsteller(referenzdatum: moment.Moment): boolean {

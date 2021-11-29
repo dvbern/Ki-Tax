@@ -110,6 +110,33 @@
                         </div>
                     </div>
 
+                    <!--gesuchstellerKardinalitaet-->
+                    <div class="row" ng-if="vm.showGesuchstellerKardinalitaet()">
+                        <div class="col-xs-12 dv-input-container-question" >
+                            <div class="form-group">
+                                <span class="ebegu-h1 required">
+                                    <span data-translate="FAMILIENSITUATION_FRAGE_2"></span>
+                                    <dv-tooltip input-id="gesuchstellerKardinalitaet"
+                                                text="'FAMILIENSITUATION_HELP' | translate"></dv-tooltip>
+                                </span>
+                                <dv-radio-container name="gesuchstellerKardinalitaet"
+                                                    ng-model="vm.getFamiliensituation().gesuchstellerKardinalitaet"
+                                                    ng-required="true"
+                                                    class="input-element sp" items="vm.gesuchstellerKardinalitaetValues"
+                                                    dv-enable-element
+                                                    dv-enable-allowed-roles="vm.allowedRoles"
+                                                    dv-enable-expression="vm.isFamiliensituationEnabled()"
+                                                    aria-label="{{ 'FAMILIENSITUATION_FRAGE_2' |translate}}"
+                                                    aria-described-by="gesuchstellerKardinalitaet-error"></dv-radio-container>
+                                <dv-error-messages input-id="gesuchstellerKardinalitaet"
+                                                   for="vm.form.gesuchstellerKardinalitaet.$error"
+                                                   class="error"></dv-error-messages>
+                                <dv-bisher gs="vm.getFamiliensituationGS().gesuchstellerKardinalitaet"
+                                           ja="vm.getFamiliensituation().gesuchstellerKardinalitaet"></dv-bisher>
+                            </div>
+                        </div>
+                    </div>
+
                 </fieldset>
                 <div class="row">
                     <div class="col-md-12">

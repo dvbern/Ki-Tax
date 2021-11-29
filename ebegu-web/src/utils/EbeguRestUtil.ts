@@ -602,6 +602,7 @@ export class EbeguRestUtil {
             restFamiliensituation.abweichendeZahlungsadresse = familiensituation.abweichendeZahlungsadresse;
             restFamiliensituation.zahlungsadresse =
                 this.adresseToRestObject({}, familiensituation.zahlungsadresse);
+            restFamiliensituation.gesuchstellerKardinalitaet = familiensituation.gesuchstellerKardinalitaet;
             return restFamiliensituation;
         }
 
@@ -671,6 +672,7 @@ export class EbeguRestUtil {
             familiensituation.abweichendeZahlungsadresse = familiensituationFromServer.abweichendeZahlungsadresse;
             familiensituation.zahlungsadresse =
                 this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresse);
+            familiensituation.gesuchstellerKardinalitaet = familiensituationFromServer.gesuchstellerKardinalitaet;
             return familiensituation;
         }
         return undefined;

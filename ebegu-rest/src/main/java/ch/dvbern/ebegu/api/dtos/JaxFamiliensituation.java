@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
 /**
@@ -72,6 +73,9 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	@Nullable
 	private JaxAdresse zahlungsadresse;
+
+	@Nullable
+	private EnumGesuchstellerKardinalitaet gesuchstellerKardinalitaet;
 
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
@@ -181,5 +185,14 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setZahlungsadresse(@Nullable JaxAdresse zahlungsadresse) {
 		this.zahlungsadresse = zahlungsadresse;
+	}
+
+	@Nullable
+	public EnumGesuchstellerKardinalitaet getGesuchstellerKardinalitaet() {
+		return gesuchstellerKardinalitaet;
+	}
+
+	public void setGesuchstellerKardinalitaet(@Nullable EnumGesuchstellerKardinalitaet gesuchstellerKardinalitaet) {
+		this.gesuchstellerKardinalitaet = gesuchstellerKardinalitaet;
 	}
 }

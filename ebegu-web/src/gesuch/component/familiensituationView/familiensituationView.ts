@@ -23,6 +23,10 @@ import {
     getTSFamilienstatusValues,
     TSFamilienstatus,
 } from '../../../models/enums/TSFamilienstatus';
+import {
+    getTSGesuchstellerKardinalitaetValues,
+    TSGesuchstellerKardinalitaet,
+} from '../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
@@ -71,6 +75,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
     public initialFamiliensituation: TSFamiliensituation;
     public savedClicked: boolean = false;
     public situationFKJV = false;
+    public gesuchstellerKardinalitaetValues: Array<TSGesuchstellerKardinalitaet>;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -95,7 +100,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         this.gesuchModelManager.initFamiliensituation();
         this.model = angular.copy(this.getGesuch().familiensituationContainer);
         this.initialFamiliensituation = angular.copy(this.gesuchModelManager.getFamiliensituation());
-
+        this.gesuchstellerKardinalitaetValues = getTSGesuchstellerKardinalitaetValues();
         this.initViewModel();
 
     }
@@ -284,5 +289,13 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
 
     public getFamiliensituationValues(): Array<TSFamilienstatus> {
         return this.familienstatusValues;
+    }
+
+    public showGesuchstellerKardinalitaet(): boolean {
+        if (this.getFamiliensituation() && this.situationFKJV) {
+            return this.getFamiliensituation().familienstatus === TSFamilienstatus.ALLEINERZIEHEND
+                || this.getFamiliensituation().familienstatus === TSFamilienstatus.PFLEGEFAMILIE;
+        }
+        return false;
     }
 }
