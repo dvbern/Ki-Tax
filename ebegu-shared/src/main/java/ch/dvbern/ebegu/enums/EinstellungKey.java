@@ -230,7 +230,7 @@ public enum EinstellungKey {
 
 	// Können BG Konfigurationen in den Gemeinde Einstellungen überschrieben werden (Solothurn)
 	// siehe KIBON-2133
-	GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN,
+	GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN(EinstellungTyp.GEMEINDE),
 
 	// (Solothurn)
 	// Siehe KIBON-2134

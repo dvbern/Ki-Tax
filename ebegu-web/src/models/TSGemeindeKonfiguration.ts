@@ -65,6 +65,7 @@ export class TSGemeindeKonfiguration {
     public editMode: boolean; // only on client
     public konfigurationen: TSEinstellung[];
     public ferieninselStammdaten: TSFerieninselStammdaten[];
+    public konfigGemeindespezifischFuerBGEnabled: boolean;
 
     /**
      * Wir muessen TS Anmeldungen nehmen ab das TagesschuleAktivierungsdatum
@@ -233,6 +234,10 @@ export class TSGemeindeKonfiguration {
                 }
                 case TSEinstellungKey.GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED: {
                     this.konfigSchnittstelleKitaxEnabled = (property.value === 'true');
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN: {
+                    this.konfigGemeindespezifischFuerBGEnabled = (property.value === 'true');
                     break;
                 }
                 default: {

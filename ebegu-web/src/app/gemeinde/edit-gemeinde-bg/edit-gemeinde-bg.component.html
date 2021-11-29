@@ -531,6 +531,7 @@
                 <div class="col-sm-12">
                     <dv-accordion class="konfigurationList" allow-multiple-sections="true">
                         <ng-container *ngFor="let konf of konfigurationsListe; let i = index">
+
                             <dv-accordion-tab [tabid]="i"
                                               *ngIf="konfigurationsListe[i].gesuchsperiode.gueltigkeit.gueltigBis.isAfter(beguStartDatum)">
 
@@ -1058,6 +1059,10 @@
                                                                 MAHLZEITENVERGUENSTIGUNG_AUCH_FUER_SOZIALHILFEEMPFAENGER
                                                             </span>
                                                             </mat-checkbox>
+                                                        </div>
+
+                                                        <!-- Gemeindespezifische Konfurationen für BG -->
+                                                        <div *ngIf="konfigurationsListe[i].konfigGemeindespezifischFuerBGEnabled">
                                                         </div>
                                                     </div>
                                                 </div>
