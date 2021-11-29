@@ -42,6 +42,7 @@ public class Testantrag_FerienbetreuungAngabenAngebot {
 		this.angebot.setAnzahlFerienwochenSommerferien(new BigDecimal(5));
 		this.angebot.setAnzahlFerienwochenHerbstferien(new BigDecimal(3));
 		this.angebot.setAnzahlFerienwochenWinterferien(new BigDecimal(2));
+		this.angebot.setAnzahlFerienwochenSportferien(new BigDecimal(1));
 		this.angebot.setAnzahlTage(new BigDecimal(2));
 
 		this.angebot.setLeitungDurchPersonMitAusbildung(true);
