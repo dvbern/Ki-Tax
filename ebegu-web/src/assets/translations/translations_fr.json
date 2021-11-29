@@ -864,7 +864,7 @@
     "GEMEINDE_NOCH_KEINE": "Aucune commune",
     "TRAEGERSCHAFT_HINZUFUEGEN": "Ajouter un organisme responsable",
     "GESUCHSPERIODE_HINZUFUEGEN": "Ajouter une période couverte par la demande",
-    "DOK_HINT_DOKUMENTE": "Veuillez transmettre à la commune les documents manquants en ligne ou par courrier postal.",
+    "DOK_HINT_DOKUMENTE": "Veuillez télécharger les justificatifs requis ci-dessous. Vous pouvez également ajouter des documents ultérieurement ou les envoyer par la poste.",
     "DOK_FINANZIELLE_SITUATION": "Calcul de la situation financière pour {{basisjahr}}",
     "DOK_KINDER": "Enfants",
     "DOK_FAMILIENSITUATION": "Situation familiale",
