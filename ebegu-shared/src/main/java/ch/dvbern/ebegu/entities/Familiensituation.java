@@ -37,6 +37,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
 
@@ -87,6 +88,11 @@ public class Familiensituation extends AbstractMutableEntity {
 
 	@Column(nullable = false)
 	private boolean abweichendeZahlungsadresse;
+
+	@Enumerated(value = EnumType.STRING)
+	@Nullable
+	@Column(nullable = true)
+	private EnumGesuchstellerKardinalitaet gesuchstellerKardinalitaet;
 
 
 	public Familiensituation() {
@@ -182,6 +188,15 @@ public class Familiensituation extends AbstractMutableEntity {
 		this.abweichendeZahlungsadresse = abweichendeZahlungsadresse;
 	}
 
+	@Nullable
+	public EnumGesuchstellerKardinalitaet getGesuchstellerKardinalitaet() {
+		return gesuchstellerKardinalitaet;
+	}
+
+	public void setGesuchstellerKardinalitaet(@Nullable EnumGesuchstellerKardinalitaet gesuchstellerKardinalitaet) {
+		this.gesuchstellerKardinalitaet = gesuchstellerKardinalitaet;
+	}
+
 	@Transient
 	public boolean hasSecondGesuchsteller(LocalDate referenzdatum) {
 		if (this.familienstatus != null) {
@@ -209,6 +224,7 @@ public class Familiensituation extends AbstractMutableEntity {
 		super.copyAbstractEntity(target, copyType);
 		target.setFamilienstatus(this.getFamilienstatus());
 		target.setStartKonkubinat(this.getStartKonkubinat());
+		target.setGesuchstellerKardinalitaet(this.getGesuchstellerKardinalitaet());
 		switch (copyType) {
 		case MUTATION:
 			target.setAenderungPer(this.getAenderungPer());
@@ -256,6 +272,7 @@ public class Familiensituation extends AbstractMutableEntity {
 			EbeguUtil.isSameOrNullBoolean(getGemeinsameSteuererklaerung(), otherFamiliensituation.getGemeinsameSteuererklaerung()) &&
 			Objects.equals(getSozialhilfeBezueger(), otherFamiliensituation.getSozialhilfeBezueger()) &&
 			Objects.equals(getVerguenstigungGewuenscht(), otherFamiliensituation.getVerguenstigungGewuenscht()) &&
-			Objects.equals(getStartKonkubinat(), otherFamiliensituation.getStartKonkubinat());
+			Objects.equals(getStartKonkubinat(), otherFamiliensituation.getStartKonkubinat()) &&
+			Objects.equals(getGesuchstellerKardinalitaet(), otherFamiliensituation.getGesuchstellerKardinalitaet());
 	}
 }
