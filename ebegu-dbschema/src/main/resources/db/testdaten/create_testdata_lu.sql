@@ -1,6 +1,3 @@
-INSERT IGNORE INTO mandant
-VALUES (UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')), '2018-01-01 00:00:00', '2018-01-01 00:00:00', 'flyway', 'flyway', 0, NULL, 'Kanton Luzern', true, true);
-
 INSERT IGNORE INTO gesuchsperiode (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 							vorgaenger_id, gueltig_ab, gueltig_bis, status,
 							datum_aktiviert, mandant_id)
