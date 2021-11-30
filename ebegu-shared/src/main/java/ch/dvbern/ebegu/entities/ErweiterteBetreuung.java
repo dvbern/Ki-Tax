@@ -40,9 +40,9 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 	@Column(nullable = false)
 	private Boolean keineKesbPlatzierung = false;
 
-	@NotNull
-	@Column(nullable = false)
-	private Boolean kitaPlusZuschlag = false;
+	@Nullable
+	@Column(nullable = true)
+	private Boolean kitaPlusZuschlag;
 
 	@Nullable
 	public Boolean getBetreuungInGemeinde() {
@@ -88,12 +88,12 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 		this.keineKesbPlatzierung = keineKesbPlatzierung;
 	}
 
-	@Nonnull
+	@Nullable
 	public Boolean getKitaPlusZuschlag() {
 		return kitaPlusZuschlag;
 	}
 
-	public void setKitaPlusZuschlag(@Nonnull Boolean kitaPlusZuschlag) {
+	public void setKitaPlusZuschlag(@Nullable Boolean kitaPlusZuschlag) {
 		this.kitaPlusZuschlag = kitaPlusZuschlag;
 	}
 

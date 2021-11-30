@@ -66,7 +66,7 @@ public class PrincipalBean {
 
 	@Nonnull
 	public Benutzer getBenutzer() {
-		if (benutzer == null || !benutzer.getUsername().equals(principal.getName())) {
+		if (benutzer == null || !benutzer.getId().equals(principal.getName())) {
 			loadNormalUser();
 		}
 		return benutzer;
