@@ -256,7 +256,15 @@ public class ApplicationPropertyResource {
 	@PermitAll
 	public Response getPublicProperties(@Context HttpServletResponse response, @CookieParam(AuthConstants.COOKIE_MANDANT)
 			Cookie mandantCookie) {
-		var mandant = mandantService.findMandantByCookie(mandantCookie);
+
+		// getPublicProperties muss auch erlaubt sein, wenn kein Mandant gesetzt ist. Wir brauchen dies auf der Verteiler-
+		// seite der Mandanten, um herauszufinden, ob die Mandantenfähigkeit überhaupt aktiv ist
+		Mandant mandant;
+		if (mandantCookie == null) {
+			mandant = mandantService.getMandantBern();
+		} else {
+			mandant = mandantService.findMandantByCookie(mandantCookie);
+		}
 
 		boolean devmode = ebeguConfiguration.getIsDevmode();
 		final String whitelist = readWhitelistAsString(mandant);
