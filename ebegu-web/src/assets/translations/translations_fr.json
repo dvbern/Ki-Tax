@@ -1878,6 +1878,8 @@
     "KEINE_GEMEINDE_KONFIGURATION": "Aucune de vos communes n'a activé l'offre correspondante.",
     "INSTITUTION_ERSTELLEN": "Nouvelle institution",
     "ALTERNATIVE_ADRESSE": "Adresse de contact alternative",
+    "ALTERNATIVES_KONTAKTFELD": "Alternatives Kontaktfeld",
+    "ANGABEN_KONTAKTFELD": "Kontaktangaben",
     "NO_ALTERNATIVE_ADRESSE": "Aucune adresse de contact alternative",
     "ALT_STANDARD_VERANTWORTLICHE": "Responsable standard alternatif",
     "INSTITUTION_STATUS_KONFIGURATION": "Configuration",
