@@ -231,7 +231,7 @@ VALUES (UNHEX(REPLACE('b8e3acdc-3261-11ec-a17e-b89a2ae4a038', '-', '')), '2016-0
 		UNHEX(REPLACE('3db43c9b-30a6-11ec-a86f-b89a2ae4a038', '-', '')), NULL, NULL, NULL,
 		'tagesschule-lu@mailbucket.dvbern.ch', NULL, NULL);
 
-update gemeinde set angebotts = true, angebotfi = true where bfs_nummer = 99997;
+update gemeinde set angebotts = false, angebotfi = false where bfs_nummer = 99997;
 
 -- Zusatzgutschein-Konfigurationen überschreiben am Beispiel Paris
 
