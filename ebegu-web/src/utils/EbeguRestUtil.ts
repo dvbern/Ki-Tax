@@ -603,6 +603,8 @@ export class EbeguRestUtil {
             restFamiliensituation.zahlungsadresse =
                 this.adresseToRestObject({}, familiensituation.zahlungsadresse);
             restFamiliensituation.gesuchstellerKardinalitaet = familiensituation.gesuchstellerKardinalitaet;
+            restFamiliensituation.fkjvFamSit = familiensituation.fkjvFamSit;
+            restFamiliensituation.minDauerKonkubinat = familiensituation.minDauerKonkubinat;
             return restFamiliensituation;
         }
 
@@ -673,6 +675,8 @@ export class EbeguRestUtil {
             familiensituation.zahlungsadresse =
                 this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresse);
             familiensituation.gesuchstellerKardinalitaet = familiensituationFromServer.gesuchstellerKardinalitaet;
+            familiensituation.fkjvFamSit = familiensituationFromServer.fkjvFamSit;
+            familiensituation.minDauerKonkubinat = familiensituationFromServer.minDauerKonkubinat;
             return familiensituation;
         }
         return undefined;

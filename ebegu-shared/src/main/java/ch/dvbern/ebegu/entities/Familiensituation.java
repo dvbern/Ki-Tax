@@ -94,6 +94,14 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Column(nullable = true)
 	private EnumGesuchstellerKardinalitaet gesuchstellerKardinalitaet;
 
+	@Nonnull
+	@Column(nullable = false)
+	private boolean fkjvFamSit = false;
+
+	@Nonnull
+	@Column(nullable = false)
+	private Integer minDauerKonkubinat = 5;
+
 
 	public Familiensituation() {
 	}
@@ -197,12 +205,31 @@ public class Familiensituation extends AbstractMutableEntity {
 		this.gesuchstellerKardinalitaet = gesuchstellerKardinalitaet;
 	}
 
+	public boolean isFkjvFamSit() {
+		return fkjvFamSit;
+	}
+
+	public void setFkjvFamSit(boolean fkjvFamSit) {
+		this.fkjvFamSit = fkjvFamSit;
+	}
+
+	@Nonnull
+	public Integer getMinDauerKonkubinat() {
+		return minDauerKonkubinat;
+	}
+
+	public void setMinDauerKonkubinat(@Nonnull Integer minDauerKonkubinat) {
+		this.minDauerKonkubinat = minDauerKonkubinat;
+	}
+
 	@Transient
 	public boolean hasSecondGesuchsteller(LocalDate referenzdatum) {
 		if (this.familienstatus != null) {
 			switch (this.familienstatus) {
 			case ALLEINERZIEHEND:
-				return false;
+				if(!this.isFkjvFamSit())	return false;
+			case PFLEGEFAMILIE:
+				return this.gesuchstellerKardinalitaet != null && this.gesuchstellerKardinalitaet.equals(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
 			case VERHEIRATET:
 			case KONKUBINAT:
 				return true;
@@ -212,7 +239,7 @@ public class Familiensituation extends AbstractMutableEntity {
 				// this five years (as it is with all other rules) we need to substract one month too.
 				return this.startKonkubinat == null ||
 					!this.startKonkubinat.isAfter(referenzdatum
-						.minus(5, ChronoUnit.YEARS)
+						.minus(this.getMinDauerKonkubinat(), ChronoUnit.YEARS)
 						.minus(1, ChronoUnit.MONTHS));
 			}
 		}
@@ -225,6 +252,8 @@ public class Familiensituation extends AbstractMutableEntity {
 		target.setFamilienstatus(this.getFamilienstatus());
 		target.setStartKonkubinat(this.getStartKonkubinat());
 		target.setGesuchstellerKardinalitaet(this.getGesuchstellerKardinalitaet());
+		target.setFkjvFamSit(this.fkjvFamSit);
+		target.setMinDauerKonkubinat(this.minDauerKonkubinat);
 		switch (copyType) {
 		case MUTATION:
 			target.setAenderungPer(this.getAenderungPer());

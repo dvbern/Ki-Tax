@@ -114,6 +114,11 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
                     this.situationFKJV = value.getValueAsBoolean();
                     this.familienstatusValues =
                         this.situationFKJV ? getTSFamilienstatusFKJVValues() : getTSFamilienstatusValues();
+                    this.getFamiliensituation().fkjvFamSit = this.situationFKJV;
+                });
+            response.filter(r => r.key === TSEinstellungKey.MINIMALDAUER_KONKUBINAT)
+                .forEach(value => {
+                    this.getFamiliensituation().minDauerKonkubinat = Number(value.value);
                 });
         });
     }

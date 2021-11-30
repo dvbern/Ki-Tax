@@ -17,3 +17,9 @@
 
 alter table familiensituation add column  gesuchsteller_kardinalitaet VARCHAR(20);
 alter table familiensituation_aud add column  gesuchsteller_kardinalitaet VARCHAR(20);
+
+alter table familiensituation add column fkjv_fam_sit BIT NOT NULL default false;
+alter table familiensituation add column min_dauer_konkubinat INTEGER  NOT NULL default 5;
+
+alter table familiensituation_aud add column fkjv_fam_sit BIT;
+alter table familiensituation_aud add column min_dauer_konkubinat INTEGER;

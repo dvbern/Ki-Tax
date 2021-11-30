@@ -77,6 +77,12 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	@Nullable
 	private EnumGesuchstellerKardinalitaet gesuchstellerKardinalitaet;
 
+	@Nonnull
+	private boolean fkjvFamSit;
+
+	@Nonnull
+	private Integer minDauerKonkubinat;
+
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
 	}
@@ -194,5 +200,21 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setGesuchstellerKardinalitaet(@Nullable EnumGesuchstellerKardinalitaet gesuchstellerKardinalitaet) {
 		this.gesuchstellerKardinalitaet = gesuchstellerKardinalitaet;
+	}
+
+	public boolean isFkjvFamSit() {
+		return fkjvFamSit;
+	}
+
+	public void setFkjvFamSit(boolean fkjvFamSit) {
+		this.fkjvFamSit = fkjvFamSit;
+	}
+
+	public Integer getMinDauerKonkubinat() {
+		return minDauerKonkubinat;
+	}
+
+	public void setMinDauerKonkubinat(Integer minDauerKonkubinat) {
+		this.minDauerKonkubinat = minDauerKonkubinat;
 	}
 }

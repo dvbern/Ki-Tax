@@ -32,6 +32,8 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _abweichendeZahlungsadresse: boolean;
     private _zahlungsadresse: TSAdresse;
     private _gesuchstellerKardinalitaet: TSGesuchstellerKardinalitaet;
+    private _fkjvFamSit: boolean;
+    private _minDauerKonkubinat: number;
 
     public constructor() {
         super();
@@ -136,14 +138,18 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     public hasSecondGesuchsteller(referenzdatum: moment.Moment): boolean {
         switch (this.familienstatus) {
             case TSFamilienstatus.ALLEINERZIEHEND:
-                return false;
+            case TSFamilienstatus.PFLEGEFAMILIE:
+                if (!this.fkjvFamSit) {
+                    return false;
+                }
+                return this.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ALLEINE;
             case TSFamilienstatus.VERHEIRATET:
             case TSFamilienstatus.KONKUBINAT:
                 return true;
             case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
                 const ref = moment(referenzdatum); // must copy otherwise source is also subtracted
                 const fiveBack = ref
-                    .subtract(5, 'years')  // 5 years for konkubinat
+                    .subtract(this.minDauerKonkubinat, 'years')  // 5 years for konkubinat
                     .subtract(1, 'month'); // 1 month for rule
                 return !this.startKonkubinat || !this.startKonkubinat.isAfter(fiveBack);
             default:
@@ -164,4 +170,19 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         this.startKonkubinat = other.startKonkubinat;
     }
 
+    public get fkjvFamSit(): boolean {
+        return this._fkjvFamSit;
+    }
+
+    public set fkjvFamSit(value: boolean) {
+        this._fkjvFamSit = value;
+    }
+
+    public get minDauerKonkubinat(): number {
+        return this._minDauerKonkubinat;
+    }
+
+    public set minDauerKonkubinat(value: number) {
+        this._minDauerKonkubinat = value;
+    }
 }
