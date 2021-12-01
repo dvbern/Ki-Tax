@@ -15,12 +15,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+    ViewChild,
+} from '@angular/core';
 import {ControlContainer, NgForm, NgModelGroup} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateDeclaration, Transition} from '@uirouter/core';
 import {Moment} from 'moment';
 import {Observable} from 'rxjs';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSEinschulungTypGemeindeValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
@@ -28,12 +38,14 @@ import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
-import {LogFactory} from '../../core/logging/LogFactory';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
+import {LogFactory} from '../../core/logging/LogFactory';
 
 const LOG = LogFactory.createLog('EditGemeindeComponentBG');
 
@@ -65,11 +77,14 @@ export class EditGemeindeComponentBG implements OnInit {
     public gemeindeStatus: TSGemeindeStatus;
     public einschulungTypGemeindeValues: Array<TSEinschulungTyp>;
     private navigationDest: StateDeclaration;
+    private gesuchsperiodeIdsGemeindespezifischeKonfigForBGMap: Map<string, boolean>;
 
     public constructor(
         private readonly $transition$: Transition,
         private readonly translate: TranslateService,
         private readonly authServiceRs: AuthServiceRS,
+        private readonly einstellungRS: EinstellungRS,
+        private readonly cd: ChangeDetectorRef
     ) {
 
     }
@@ -87,6 +102,18 @@ export class EditGemeindeComponentBG implements OnInit {
 
         this.navigationDest = this.$transition$.to();
         this.einschulungTypGemeindeValues = getTSEinschulungTypGemeindeValues();
+        this.initGesuchsperiodeIdsGemeindespezifischeKonfigForBGMap();
+    }
+
+    private initGesuchsperiodeIdsGemeindespezifischeKonfigForBGMap(): void {
+        this.gesuchsperiodeIdsGemeindespezifischeKonfigForBGMap = new Map();
+        this.einstellungRS.findEinstellungByKey(TSEinstellungKey.GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN)
+            .then((response: TSEinstellung[]) => {
+               response.forEach(config =>
+                   this.gesuchsperiodeIdsGemeindespezifischeKonfigForBGMap
+                       .set(config.gesuchsperiodeId, config.getValueAsBoolean()));
+               this.cd.markForCheck();
+            });
     }
 
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
@@ -385,5 +412,9 @@ export class EditGemeindeComponentBG implements OnInit {
 
     public keineBeschwerdeAdresseChanged(newVal: boolean): void {
         this.keineBeschwerdeAdresseChange.emit(newVal);
+    }
+
+    public showGemeindespezifischeKonfigForBG(gesuchsperiode: TSGesuchsperiode): boolean {
+      return this.gesuchsperiodeIdsGemeindespezifischeKonfigForBGMap.get(gesuchsperiode.id);
     }
 }

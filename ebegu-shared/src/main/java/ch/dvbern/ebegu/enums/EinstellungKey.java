@@ -89,30 +89,30 @@ public enum EinstellungKey {
 	// *** Einstellungen fuer die Gutscheinberechnung
 
 	// Maximale Vergünstigung für Vorschulkinder unter 12 Monaten
-	MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG,
+	MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG(EinstellungTyp.GEMEINDE),
 	// Maximale Vergünstigung für Vorschulkinder ab 12 Monaten
-	MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG,
+	MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG(EinstellungTyp.GEMEINDE),
 	// Maximale Vergünstigung bei Eintritt des Kindergartens
-	MAX_VERGUENSTIGUNG_SCHULE_PRO_TG,
+	MAX_VERGUENSTIGUNG_SCHULE_PRO_TG(EinstellungTyp.GEMEINDE),
 
 	// Maximale Vergünstigung für Vorschulkinder unter 12 Monaten
-	MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD,
+	MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD(EinstellungTyp.GEMEINDE),
 	// Maximale Vergünstigung für Vorschulkinder ab 12 Monaten
-	MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD,
+	MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD(EinstellungTyp.GEMEINDE),
 	// Maximale Vergünstigung bei Eintritt des Kindergartens
-	MAX_VERGUENSTIGUNG_SCHULE_PRO_STD,
+	MAX_VERGUENSTIGUNG_SCHULE_PRO_STD(EinstellungTyp.GEMEINDE),
 
 	// Minimal Massgebendes Einkommen
-	MIN_MASSGEBENDES_EINKOMMEN,
+	MIN_MASSGEBENDES_EINKOMMEN(EinstellungTyp.GEMEINDE),
 	// Maximal Massgebendes Einkommen
-	MAX_MASSGEBENDES_EINKOMMEN,
+	MAX_MASSGEBENDES_EINKOMMEN(EinstellungTyp.GEMEINDE),
 
 	OEFFNUNGSTAGE_KITA,
 	OEFFNUNGSTAGE_TFO,
 	OEFFNUNGSSTUNDEN_TFO,
 
-	ZUSCHLAG_BEHINDERUNG_PRO_TG,
-	ZUSCHLAG_BEHINDERUNG_PRO_STD,
+	ZUSCHLAG_BEHINDERUNG_PRO_TG(EinstellungTyp.GEMEINDE),
+	ZUSCHLAG_BEHINDERUNG_PRO_STD(EinstellungTyp.GEMEINDE),
 
 	MIN_VERGUENSTIGUNG_PRO_TG,
 	MIN_VERGUENSTIGUNG_PRO_STD,
@@ -230,7 +230,7 @@ public enum EinstellungKey {
 
 	// Können BG Konfigurationen in den Gemeinde Einstellungen überschrieben werden (Solothurn)
 	// siehe KIBON-2133
-	GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN(EinstellungTyp.GEMEINDE),
+	GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN,
 
 	// (Solothurn)
 	// Siehe KIBON-2134

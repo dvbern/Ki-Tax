@@ -59,6 +59,13 @@ export class EinstellungRS {
             });
     }
 
+    public findEinstellungByKey(key: TSEinstellungKey): IPromise<TSEinstellung[]> {
+        return this.http.get(`${this.serviceURL}/key/${key}`)
+            .then((param: IHttpResponse<TSEinstellung>) => {
+                return this.ebeguRestUtil.parseEinstellungList(param.data);
+            });
+    }
+
     public getAllEinstellungenBySystem(gesuchsperiodeId: string): IPromise<TSEinstellung[]> {
         return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`)
             .then((response: any) => {
