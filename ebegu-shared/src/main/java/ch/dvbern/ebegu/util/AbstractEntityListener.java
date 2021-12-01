@@ -136,7 +136,7 @@ public class AbstractEntityListener {
 	@Nonnull
 	private String getUserMandantString() {
 		try {
-			return EbeguUtil.getUserMandantString(getPrincipalBean(), getBenutzerService());
+			return EbeguUtil.getUserMandantString(getPrincipalBean());
 		} catch (ContextNotActiveException e) {
 			LOGGER.error("No context when persisting entity.");
 			throw e;

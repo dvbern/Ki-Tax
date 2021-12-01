@@ -195,11 +195,12 @@ public class Benutzer extends AbstractMutableEntity implements HasMandant {
 		this.berechtigungen = berechtigungen;
 	}
 
+	@Nonnull
 	public Mandant getMandant() {
 		return mandant;
 	}
 
-	public void setMandant(Mandant mandant) {
+	public void setMandant(@Nonnull Mandant mandant) {
 		this.mandant = mandant;
 	}
 
