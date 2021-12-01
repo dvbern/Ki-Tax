@@ -1069,11 +1069,17 @@
                                                         <ng-container *ngFor="let config of konfigurationsListe[i].gemeindespezifischeBGKonfigurationen; let j = index">
                                                             <div class="form-group">
                                                                 <label for="konfig_{{config.key}}"
+                                                                       class="required"
                                                                        translate>{{config.key}}</label>
-                                                                <input id="konfig_{{config.key}}" type="text"
+                                                                <input id="konfig_{{config.key}}"
+                                                                       type="text"
+                                                                       required
                                                                        name="konfig_{{config.value}}"
+                                                                       #gemeindespezifische_bg_konfig='ngModel'
                                                                        [(ngModel)]="konfigurationsListe[i].gemeindespezifischeBGKonfigurationen[j].value"
                                                                        class="form-control">
+                                                                <dv-error-messages [errorObject]="gemeindespezifische_bg_konfig.errors"
+                                                                                   inputId="konfig_{{config.key}}"></dv-error-messages>
                                                             </div>
                                                         </ng-container>
                                                     </div>
