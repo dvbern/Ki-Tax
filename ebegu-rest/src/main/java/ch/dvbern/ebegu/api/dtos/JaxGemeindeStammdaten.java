@@ -117,6 +117,10 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private Boolean gutscheinSelberAusgestellt;
 	@Nullable
 	private JaxGemeinde gemeindeAusgabestelle;
+	@Nonnull
+	private Boolean hasAltGemeindeKontakt;
+	@Nullable
+	private String altGemeindeKontaktText;
 
 	// ---------- Konfiguration ----------
 	@NotNull
@@ -484,5 +488,23 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setGemeindeAusgabestelle(@Nullable JaxGemeinde gemeindeAusgabestelle) {
 		this.gemeindeAusgabestelle = gemeindeAusgabestelle;
+	}
+
+	@Nullable
+	public String getAltGemeindeKontaktText() {
+		return altGemeindeKontaktText;
+	}
+
+	public void setAltGemeindeKontaktText(@Nullable String altGemeindeKontaktText) {
+		this.altGemeindeKontaktText = altGemeindeKontaktText;
+	}
+
+	@Nonnull
+	public Boolean getHasAltGemeindeKontakt() {
+		return hasAltGemeindeKontakt;
+	}
+
+	public void setHasAltGemeindeKontakt(@Nonnull Boolean hasAltGemeindeKontakt) {
+		this.hasAltGemeindeKontakt = hasAltGemeindeKontakt;
 	}
 }
