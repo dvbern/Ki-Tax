@@ -938,9 +938,12 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					mitteilung.getBetreuungspensen(),
 					gueltigkeit));
 
-			updateMessage(mitteilung);
-
-			persistence.merge(mitteilung);
+			if (mitteilung.getBetreuungspensen().isEmpty()) {
+				persistence.remove(mitteilung);
+			} else {
+				updateMessage(mitteilung);
+				persistence.merge(mitteilung);
+			}
 		});
 	}
 
