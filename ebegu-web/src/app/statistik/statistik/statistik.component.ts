@@ -39,6 +39,7 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {BatchJobRS} from '../../core/service/batchRS.rest';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
@@ -74,6 +75,9 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public gemeindenMahlzeitenverguenstigungen: TSGemeinde[];
     public flagShowErrorNoGesuchSelected: boolean = false;
     public showKantonStatistik: boolean = false;
+    public ferienbetreuungActive: boolean = false;
+    public lastenausgleichActive: boolean = false;
+    public lastenausgleichTagesschulenActive: boolean = false;
 
     public constructor(
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
@@ -86,7 +90,8 @@ export class StatistikComponent implements OnInit, OnDestroy {
         private readonly dialog: MatDialog,
         private readonly authServiceRS: AuthServiceRS,
         private readonly gemeindeRS: GemeindeRS,
-        private readonly cd: ChangeDetectorRef
+        private readonly cd: ChangeDetectorRef,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
@@ -123,6 +128,12 @@ export class StatistikComponent implements OnInit, OnDestroy {
         this.updateShowKantonStatistik();
         this.refreshUserJobs();
         this.initBatchJobPolling();
+
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.ferienbetreuungActive = res.ferienbetreuungAktiv;
+            this.lastenausgleichActive = res.lastenausgleichAktiv;
+            this.lastenausgleichTagesschulenActive = res.lastenausgleichTagesschulenAktiv;
+        })
     }
 
     public ngOnDestroy(): void {
@@ -657,10 +668,10 @@ export class StatistikComponent implements OnInit, OnDestroy {
     }
 
     public showFerienbetreuungStatistik(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles()) && this.ferienbetreuungActive;
     }
 
     public showLastenausgleichTagesschulenStatistik(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles()) && this.lastenausgleichTagesschulenActive;
     }
 }
