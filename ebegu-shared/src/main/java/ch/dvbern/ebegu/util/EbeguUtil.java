@@ -533,16 +533,12 @@ public final class EbeguUtil {
 		return defaultValue;
 	}
 
-	public static String getUserMandantString(PrincipalBean principalBean, BenutzerService benutzerService) {
+	public static String getUserMandantString(PrincipalBean principalBean) {
 		String benutzerId = principalBean.getPrincipal().getName();
 		if (Objects.equals(benutzerId, Constants.ANONYMOUS_USER_USERNAME) ||
 				Objects.equals(benutzerId, Constants.LOGINCONNECTOR_USER_USERNAME)) {
 			return benutzerId;
 		}
-		var opt = benutzerService.findBenutzerById(benutzerId);
-		if (opt.isEmpty()) {
-			throw new EbeguEntityNotFoundException("getUsername", benutzerId);
-		}
-		return opt.get().getUsername() + ", " + requireNonNull(opt.get().getMandant()).getName();
+		return principalBean.getBenutzer().getFullName() + ":" + principalBean.getBenutzer().getMandant().getName();
 	}
 }

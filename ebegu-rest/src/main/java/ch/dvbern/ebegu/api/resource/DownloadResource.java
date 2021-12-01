@@ -45,7 +45,6 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.av.AVClient;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.converter.JaxFerienbetreuungConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxMahnung;
@@ -66,7 +65,6 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.services.Authorizer;
-import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DokumentService;
 import ch.dvbern.ebegu.services.DownloadFileService;
@@ -157,9 +155,6 @@ public class DownloadResource {
 	private PrincipalBean principalBean;
 
 	@Inject
-	private BenutzerService benutzerService;
-
-	@Inject
 	private Authorizer authorizer;
 
 	@Inject
@@ -198,7 +193,7 @@ public class DownloadResource {
 
 		if (!downloadFile.getIp().equals(ip)
 			|| principalBean.getPrincipal() == null
-			|| !EbeguUtil.getUserMandantString(principalBean, benutzerService).equals(downloadFile.getUserErstellt())) {
+			|| !EbeguUtil.getUserMandantString(principalBean).equals(downloadFile.getUserErstellt())) {
 			// Wir loggen noch ein bisschen, bis wir sicher sind, dass das Problem geloest ist
 			StringBuilder sb = new StringBuilder();
 			sb.append("Keine Berechtigung fuer Download");
@@ -208,7 +203,7 @@ public class DownloadResource {
 			}
 			if (principalBean.getPrincipal() == null) {
 				sb.append("; principalBean.getPrincipal() is null");
-			} else if (!EbeguUtil.getUserMandantString(principalBean, benutzerService).equals(downloadFile.getUserErstellt())) {
+			} else if (!EbeguUtil.getUserMandantString(principalBean).equals(downloadFile.getUserErstellt())) {
 				sb.append("; principalBean.getPrincipal().getName()").append(principalBean.getPrincipal().getName());
 				sb.append("; downloadFile.getUserErstellt()").append(downloadFile.getUserErstellt());
 			}
