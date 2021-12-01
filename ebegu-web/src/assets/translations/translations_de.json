@@ -864,7 +864,7 @@
     "GEMEINDE_NOCH_KEINE": "Noch keine Gemeinden",
     "TRAEGERSCHAFT_HINZUFUEGEN": "Trägerschaft hinzufügen",
     "GESUCHSPERIODE_HINZUFUEGEN": "Periode hinzufügen",
-    "DOK_HINT_DOKUMENTE": "Bitte reichen Sie der Gemeinde die ausstehenden Dokumente online oder per Post nach.",
+    "DOK_HINT_DOKUMENTE": "Bitte laden Sie die notwendigen Belege hoch. Sie können auch später Belege hinzufügen oder per Post nachreichen.",
     "DOK_FINANZIELLE_SITUATION": "Berechnung der finanziellen Verhältnisse für {{basisjahr}}",
     "DOK_KINDER": "Kinder",
     "DOK_FAMILIENSITUATION": "Familiensituation",

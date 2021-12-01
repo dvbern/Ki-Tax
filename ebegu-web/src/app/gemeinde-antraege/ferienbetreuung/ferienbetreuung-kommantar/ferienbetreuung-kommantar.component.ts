@@ -79,9 +79,10 @@ export class FerienbetreuungKommantarComponent implements OnInit, OnDestroy {
     }
 
     private initForm(): void {
-        this.kommentarControl = new FormControl(
-            this.ferienbetreuungContainer?.internerKommentar,
-        );
+        this.kommentarControl = new FormControl({
+                value: this.ferienbetreuungContainer?.internerKommentar,
+                disabled: this.ferienbetreuungContainer?.isAbgeschlossen()
+        });
         this.form = new FormGroup({
             kommentar: this.kommentarControl
         });
