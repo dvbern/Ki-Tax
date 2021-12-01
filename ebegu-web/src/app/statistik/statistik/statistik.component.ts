@@ -78,6 +78,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public ferienbetreuungActive: boolean = false;
     public lastenausgleichActive: boolean = false;
     public lastenausgleichTagesschulenActive: boolean = false;
+    public tagesschulenActive = false;
 
     public constructor(
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
@@ -133,7 +134,13 @@ export class StatistikComponent implements OnInit, OnDestroy {
             this.ferienbetreuungActive = res.ferienbetreuungAktiv;
             this.lastenausgleichActive = res.lastenausgleichAktiv;
             this.lastenausgleichTagesschulenActive = res.lastenausgleichTagesschulenAktiv;
-        })
+        });
+
+        this.authServiceRS.principal$.subscribe(benutzer => {
+            this.tagesschulenActive = benutzer.mandant.angebotTS;
+        } , err => {
+            LOG.error(err);
+        });
     }
 
     public ngOnDestroy(): void {
@@ -644,7 +651,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
             TSRole.SACHBEARBEITER_INSTITUTION,
             TSRole.ADMIN_TRAEGERSCHAFT,
             TSRole.SACHBEARBEITER_TRAEGERSCHAFT
-        ]);
+        ]) && this.tagesschulenActive;
     }
 
     public showRechnungsstellungStatistik(): boolean {
@@ -656,7 +663,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
             TSRole.SACHBEARBEITER_GEMEINDE,
             TSRole.ADMIN_TS,
             TSRole.SACHBEARBEITER_TS
-        ]);
+        ]) && this.tagesschulenActive;
     }
 
     public showNotrechtStatistik(): boolean {
