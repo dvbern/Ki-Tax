@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,18 +15,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// Corresponds with URL
-export enum KiBonMandant {
-    BE = 'be',
-    LU = 'lu',
-    SO = 'so',
-    NONE = ''
-}
+package ch.dvbern.ebegu.mocks;
 
-// Corresponds with name in DB
-export enum KiBonMandantFull {
-    BE = 'Kanton Bern',
-    LU = 'Kanton Luzern',
-    SO = 'Kanton Solothurn',
-    NONE = ''
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
+
+public class DokumenteverzeichnisEvaluatorMock extends DokumentenverzeichnisEvaluator {
+
+	@Nonnull
+	@Override
+	public Set<DokumentGrund> calculate(
+		@Nullable Gesuch gesuch,
+		@Nonnull Locale locale
+	) {
+		return new HashSet<>();
+	}
 }

@@ -70,9 +70,6 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
-	@Inject
-	private BenutzerService benutzerService;
-
 
 	@Override
 	@Nonnull
@@ -219,8 +216,6 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	@Override
 	@Nonnull
 	public Collection<Einstellung> getAllEinstellungenByMandant(@Nonnull Gesuchsperiode gesuchsperiode) {
-		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() ->
-			new EbeguRuntimeException("getAllEinstellungenByMandantAsMap", "Benutzer nicht eingeloggt"));
 
 		final EntityManager entityManager = persistence.getEntityManager();
 		Collection<Einstellung> result = new ArrayList<>();
@@ -228,7 +223,7 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 		// Fuer jeden Key muss die spezifischste Einstellung gesucht werden
 		Arrays.stream(EinstellungKey.values()).forEach(einstellungKey -> {
 			// Nach Mandant oder System
-			Optional<Einstellung> einstellungByMandant = findEinstellungByMandantOrSystem(einstellungKey, benutzer.getMandant(), gesuchsperiode, entityManager);
+			Optional<Einstellung> einstellungByMandant = findEinstellungByMandantOrSystem(einstellungKey, gesuchsperiode.getMandant(), gesuchsperiode, entityManager);
 			einstellungByMandant.ifPresent(result::add);
 		});
 		return result;

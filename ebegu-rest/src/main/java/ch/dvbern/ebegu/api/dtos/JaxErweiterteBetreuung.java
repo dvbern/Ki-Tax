@@ -42,7 +42,7 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 	@Nullable
 	private Boolean betreuungInGemeinde;
 
-	@Nonnull
+	@Nullable
 	private Boolean kitaPlusZuschlag;
 
 	@Nullable
@@ -88,12 +88,12 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 		this.keineKesbPlatzierung = keineKesbPlatzierung;
 	}
 
-	@Nonnull
+	@Nullable
 	public Boolean getKitaPlusZuschlag() {
 		return kitaPlusZuschlag;
 	}
 
-	public void setKitaPlusZuschlag(@Nonnull Boolean kitaPlusZuschlag) {
+	public void setKitaPlusZuschlag(@Nullable Boolean kitaPlusZuschlag) {
 		this.kitaPlusZuschlag = kitaPlusZuschlag;
 	}
 }

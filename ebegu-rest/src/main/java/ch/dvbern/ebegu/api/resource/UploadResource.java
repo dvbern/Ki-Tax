@@ -63,6 +63,7 @@ import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienstFallDokument;
 import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
 import ch.dvbern.ebegu.api.resource.util.TransferFile;
 import ch.dvbern.ebegu.api.util.RestUtil;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -183,6 +184,9 @@ public class UploadResource {
 
 	@Inject
 	private FallService fallService;
+
+	@Inject
+	private PrincipalBean principal;
 
 	private static final String PART_FILE = "file";
 	private static final String PART_DOKUMENT_GRUND = "dokumentGrund";
@@ -712,7 +716,7 @@ public class UploadResource {
 				LOG.warn("Content type from Header did not match content type returned from probing. "
 					+ "\n\t header:   {} \n\t probing:  {}", mimeType, contentType);
 			}
-			if (!applicationPropertyService.readMimeTypeWhitelist().contains(contentType)) {
+			if (!applicationPropertyService.readMimeTypeWhitelist(principal.getMandant()).contains(contentType)) {
 				fileSaverService.remove(fileInfo.getPath());
 				String message = "Blocked upload of filetype that is not in whitelist: " + contentType;
 				throw new EbeguRuntimeException(

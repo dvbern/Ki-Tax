@@ -57,6 +57,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
@@ -332,9 +333,9 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	@Override
 	@Nonnull
 	public StringBuilder createAndSaveAsOnlineGesuch(@Nonnull String fallid, boolean betreuungenBestaetigt, boolean verfuegen, @Nonnull String username,
-			@Nullable String gesuchsPeriodeId, @Nonnull String gemeindeId) {
-		removeGesucheOfGS(username);
-		Benutzer benutzer = benutzerService.findBenutzer(username).orElse(benutzerService.getCurrentBenutzer().orElse(null));
+			@Nullable String gesuchsPeriodeId, @Nonnull String gemeindeId, @Nonnull Mandant mandant) {
+		removeGesucheOfGS(username, mandant);
+		Benutzer benutzer = benutzerService.findBenutzer(username, mandant).orElse(benutzerService.getCurrentBenutzer().orElse(null));
 		return this.createAndSaveTestfaelle(fallid, 1, betreuungenBestaetigt, verfuegen, benutzer, gesuchsPeriodeId, gemeindeId);
 	}
 
@@ -418,8 +419,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	}
 
 	@Override
-	public void removeGesucheOfGS(@Nonnull String username) {
-		Benutzer benutzer = benutzerService.findBenutzer(username).orElse(null);
+	public void removeGesucheOfGS(@Nonnull String username, @Nonnull Mandant mandant) {
+		Benutzer benutzer = benutzerService.findBenutzer(username, mandant).orElse(null);
 		Optional<Fall> existingFall = fallService.findFallByBesitzer(benutzer);
 		existingFall.ifPresent(fall -> fallService.removeFall(fall, GesuchDeletionCause.USER));
 	}

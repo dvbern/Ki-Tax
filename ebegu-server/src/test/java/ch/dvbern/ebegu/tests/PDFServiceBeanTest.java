@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.MahnungTyp;
 import ch.dvbern.ebegu.mocks.ApplicationPropertyServiceMock;
 import ch.dvbern.ebegu.mocks.DokumentGrundServiceMock;
+import ch.dvbern.ebegu.mocks.DokumenteverzeichnisEvaluatorMock;
 import ch.dvbern.ebegu.mocks.DossierServiceBeanMock;
 import ch.dvbern.ebegu.mocks.EbeguVorlageServiceMock;
 import ch.dvbern.ebegu.mocks.EinstellungServiceMock;
@@ -102,7 +103,7 @@ public class PDFServiceBeanTest {
 	EinstellungService einstellungService = new EinstellungServiceMock();
 
 	@InjectIntoMany
-	DokumentenverzeichnisEvaluator dokumentenverzeichnisEvaluator = new DokumentenverzeichnisEvaluator();
+	DokumentenverzeichnisEvaluator dokumentenverzeichnisEvaluator = new DokumenteverzeichnisEvaluatorMock();
 
 	@InjectIntoMany
 	ApplicationPropertyService applicationPropertyService = new ApplicationPropertyServiceMock();

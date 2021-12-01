@@ -25,6 +25,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 
 /**
@@ -66,7 +67,7 @@ public interface InstitutionService {
 	 * @return Alle Institutionen in der DB
 	 */
 	@Nonnull
-	Collection<Institution> getAllInstitutionen();
+	Collection<Institution> getAllInstitutionen(@Nonnull Mandant mandant);
 
 	/**
 	 * @return Alle Institutionen in der DB ohne Berechtigungspruefung, nur fuer Batchjob.

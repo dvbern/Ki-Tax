@@ -38,4 +38,10 @@ public interface MandantService {
 	 */
 	@Nonnull
 	Mandant getFirst();
+
+	@Nonnull
+	Optional<Mandant> findMandantByName(@Nonnull String name);
+
+	@Nonnull
+	Mandant getDefaultMandant();
 }

@@ -18,7 +18,9 @@ package ch.dvbern.ebegu.rest.test;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.ws.rs.core.Cookie;
 
+import ch.dvbern.ebegu.api.AuthConstants;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.resource.GesuchsperiodeResource;
@@ -98,15 +100,16 @@ public class GesuchsperiodeResourceTest extends AbstractEbeguRestLoginTest {
 		saveGesuchsperiodeInStatusInaktiv(TestJaxDataUtil.createTestJaxGesuchsperiode());
 		saveGesuchsperiodeInStatusGesperrt(TestJaxDataUtil.createTestJaxGesuchsperiode());
 
-		List<JaxGesuchsperiode> listAll = gesuchsperiodeResource.getAllGesuchsperioden();
+		Cookie cookie = new Cookie(AuthConstants.COOKIE_MANDANT, "Kanton Bern");
+		List<JaxGesuchsperiode> listAll = gesuchsperiodeResource.getAllGesuchsperioden(cookie);
 		Assert.assertNotNull(listAll);
 		Assert.assertEquals(5, listAll.size()); //also the one from mandant-dataset
 
-		List<JaxGesuchsperiode> listActive = gesuchsperiodeResource.getAllActiveGesuchsperioden();
+		List<JaxGesuchsperiode> listActive = gesuchsperiodeResource.getAllActiveGesuchsperioden(cookie);
 		Assert.assertNotNull(listActive);
 		Assert.assertEquals(2, listActive.size()); //also the one from mandant-dataset
 
-		List<JaxGesuchsperiode> listActiveAndInaktiv = gesuchsperiodeResource.getAllAktivUndInaktivGesuchsperioden();
+		List<JaxGesuchsperiode> listActiveAndInaktiv = gesuchsperiodeResource.getAllAktivUndInaktivGesuchsperioden(cookie);
 		Assert.assertNotNull(listActiveAndInaktiv);
 		Assert.assertEquals(3, listActiveAndInaktiv.size()); //also the one from mandant-dataset
 	}

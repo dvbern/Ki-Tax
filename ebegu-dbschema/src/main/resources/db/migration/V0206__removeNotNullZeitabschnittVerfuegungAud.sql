@@ -15,18 +15,4 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// Corresponds with URL
-export enum KiBonMandant {
-    BE = 'be',
-    LU = 'lu',
-    SO = 'so',
-    NONE = ''
-}
-
-// Corresponds with name in DB
-export enum KiBonMandantFull {
-    BE = 'Kanton Bern',
-    LU = 'Kanton Luzern',
-    SO = 'Kanton Solothurn',
-    NONE = ''
-}
+ALTER TABLE verfuegung_zeitabschnitt_bemerkung_aud MODIFY verfuegung_zeitabschnitt_id BINARY(16);

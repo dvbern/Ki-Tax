@@ -1424,10 +1424,14 @@ public final class TestDataUtil {
 		@Nonnull InstitutionService instService, @Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum,
 		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
 
-		instService.getAllInstitutionen();
+		Objects.requireNonNull(gesuchsperiode.getMandant());
+		instService.getAllInstitutionen(gesuchsperiode.getMandant());
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
+		institutionStammdatenList.forEach(institutionStammdaten -> {
+			institutionStammdaten.getInstitution().setMandant(gesuchsperiode.getMandant());
+		});
 		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList);
 
 		return persistAllEntities(persistence, eingangsdatum, testfall, status);
@@ -1493,7 +1497,8 @@ public final class TestDataUtil {
 		AntragStatus status,
 		@Nonnull Gesuchsperiode gesuchsperiode
 	) {
-		instService.getAllInstitutionen();
+		Objects.requireNonNull(gesuchsperiode.getMandant());
+		instService.getAllInstitutionen(gesuchsperiode.getMandant());
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
@@ -1874,6 +1879,23 @@ public final class TestDataUtil {
 		return benutzer;
 	}
 
+	public static Benutzer createBenutzerWithDefaultGemeinde(
+		UserRole role, String userName,
+		@Nullable Traegerschaft traegerschaft,
+		@Nullable Institution institution,
+		@Nonnull Mandant mandant,
+		@Nonnull Persistence persistence,
+		@Nullable String name,
+		@Nullable String vorname,
+		@Nonnull String userId) {
+		Benutzer benutzer = createBenutzer(role, userName, traegerschaft, institution, mandant, name, vorname);
+		benutzer.setId(userId);
+		if (role.isRoleGemeindeabhaengig()) {
+			benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(getGemeindeParis(persistence));
+		}
+		return persistence.persist(benutzer);
+	}
+
 	public static Benutzer createBenutzer(
 		UserRole role,
 		String userName,
@@ -1898,9 +1920,7 @@ public final class TestDataUtil {
 		return benutzer;
 	}
 
-	public static Benutzer createAndPersistJABenutzer(Persistence persistence) {
-		final Mandant mandant = TestDataUtil.createDefaultMandant();
-		persistence.persist(mandant);
+	public static Benutzer createAndPersistJABenutzer(Persistence persistence, Mandant mandant) {
 		final Benutzer benutzer =
 			TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_BG, UUID.randomUUID().toString(),
 				null, null, mandant, persistence, null, null);
@@ -1950,6 +1970,24 @@ public final class TestDataUtil {
 		persistence.merge(benutzer);
 		return benutzer;
 	}
+
+	public static Benutzer createDummySuperAdmin(Persistence persistence, Mandant mandant, String name, String vorname, String id) {
+		//machmal brauchen wir einen dummy admin in der DB
+		Benutzer potentiallyExisting = persistence.find(Benutzer.class, id);
+		if (potentiallyExisting != null) {
+			return potentiallyExisting;
+		}
+		if (mandant == null) {
+			mandant = TestDataUtil.createDefaultMandant();
+			persistence.persist(mandant);
+		}
+		final Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SUPER_ADMIN, "superadmin",
+				null, null, mandant, persistence, name, vorname, id);
+		persistence.merge(benutzer);
+		return benutzer;
+	}
+
+
 
 	public static AntragTableFilterDTO createAntragTableFilterDTO() {
 		AntragTableFilterDTO filterDTO = new AntragTableFilterDTO();

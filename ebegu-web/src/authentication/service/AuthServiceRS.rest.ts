@@ -20,7 +20,7 @@ import {Observable, ReplaySubject} from 'rxjs';
 import {Permission} from '../../app/authorisation/Permission';
 import {PERMISSIONS} from '../../app/authorisation/Permissions';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
-import {KiBonMandant} from '../../app/core/constants/MANDANTS';
+import {KiBonMandantFull} from '../../app/core/constants/MANDANTS';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import {BenutzerRSX} from '../../app/core/service/benutzerRSX.rest';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
@@ -114,10 +114,10 @@ export class AuthServiceRS {
             return this.$q.reject(TSAuthEvent.NOT_AUTHENTICATED);
         }
 
+        // tslint:disable-next-line:no-try-promise
         try {
-            const authData = angular.fromJson(atob(decodeURIComponent(authIdbase64)));
             // we take the complete user from Server and store it in principal
-            return this.reloadUser(authData.authId);
+            return this.reloadUser();
         } catch (e) {
             LOG.error('cookie decoding failed', e);
             this.clearPrincipal();
@@ -184,11 +184,11 @@ export class AuthServiceRS {
     }
 
     public reloadCurrentUser(): IPromise<TSBenutzer> {
-        return this.reloadUser(this.getPrincipal().username);
+        return this.reloadUser();
     }
 
-    private reloadUser(username: string): IPromise<TSBenutzer> {
-        return this.benutzerRS.findBenutzer(username).then(user => {
+    private reloadUser(): IPromise<TSBenutzer> {
+        return this.loadPrincipal().then(user => {
             this.principal = user;
             this.principalSubject$.next(user);
             this.setPrincipalInRavenUserContext();
@@ -197,6 +197,12 @@ export class AuthServiceRS {
 
             return user;
         });
+    }
+
+    private loadPrincipal(): IPromise<TSBenutzer> {
+        return this.$http.get(CONSTANTS.REST_API + 'auth/authenticated-user')
+            .then(response => response.data)
+            .then(restBenutzer => this.ebeguRestUtil.parseUser(new TSBenutzer(), restBenutzer));
     }
 
     private setPrincipalInRavenUserContext(): void {
@@ -321,7 +327,7 @@ export class AuthServiceRS {
         return false;
     }
 
-    public setMandant(mandant: KiBonMandant): IPromise<any> {
+    public setMandant(mandant: KiBonMandantFull): IPromise<any> {
         return this.$http.post(CONSTANTS.REST_API + 'auth/set-mandant', {name: mandant});
     }
 }
