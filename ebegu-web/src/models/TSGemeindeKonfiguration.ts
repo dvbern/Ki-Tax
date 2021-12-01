@@ -65,7 +65,7 @@ export class TSGemeindeKonfiguration {
     public editMode: boolean; // only on client
     public konfigurationen: TSEinstellung[];
     public ferieninselStammdaten: TSFerieninselStammdaten[];
-    public gemeindespezifischeBGKonfigurationen: TSEinstellung[];
+    public gemeindespezifischeBGKonfigurationen: TSEinstellung[] = [];
 
     /**
      * Wir muessen TS Anmeldungen nehmen ab das TagesschuleAktivierungsdatum
@@ -112,7 +112,6 @@ export class TSGemeindeKonfiguration {
     }
 
     public initProperties(): void {
-        this.gemeindespezifischeBGKonfigurationen = [];
         this.konfigBeguBisUndMitSchulstufe = TSEinschulungTyp.KINDERGARTEN2;
         this.konfigKontingentierung = false;
         this.konfigTagesschuleAktivierungsdatum = this.gesuchsperiode.gueltigkeit.gueltigAb;
@@ -235,19 +234,6 @@ export class TSGemeindeKonfiguration {
                 }
                 case TSEinstellungKey.GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED: {
                     this.konfigSchnittstelleKitaxEnabled = (property.value === 'true');
-                    break;
-                }
-                case TSEinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG:
-                case TSEinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG:
-                case TSEinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_TG:
-                case TSEinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD:
-                case TSEinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD:
-                case TSEinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_STD:
-                case TSEinstellungKey.MIN_MASSGEBENDES_EINKOMMEN:
-                case TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG:
-                case TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD:
-                case TSEinstellungKey.MAX_MASSGEBENDES_EINKOMMEN: {
-                    this.gemeindespezifischeBGKonfigurationen.push(property);
                     break;
                 }
                 default: {

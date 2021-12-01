@@ -33,7 +33,7 @@ import {Observable} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSEinschulungTypGemeindeValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
-import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {getGemeindspezifischeBGConfigKeys, TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -109,11 +109,34 @@ export class EditGemeindeComponentBG implements OnInit {
         this.gesuchsperiodeIdsGemeindespezifischeKonfigForBGMap = new Map();
         this.einstellungRS.findEinstellungByKey(TSEinstellungKey.GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN)
             .then((response: TSEinstellung[]) => {
-               response.forEach(config =>
+               response.forEach(config => {
                    this.gesuchsperiodeIdsGemeindespezifischeKonfigForBGMap
-                       .set(config.gesuchsperiodeId, config.getValueAsBoolean()));
+                       .set(config.gesuchsperiodeId, config.getValueAsBoolean());
+                   if (config.getValueAsBoolean()) {
+                       this.loadGemeindespezifischeBgKonfigurationen(config.gesuchsperiodeId);
+                   }
+               });
                this.cd.markForCheck();
             });
+    }
+
+    private loadGemeindespezifischeBgKonfigurationen(gesuchsperiodeId: string): void {
+        const gemeindeKonfig = this.konfigurationsListe
+            .find(config => config.gesuchsperiode.id === gesuchsperiodeId);
+
+        if (!gemeindeKonfig) {
+            return;
+        }
+
+        getGemeindspezifischeBGConfigKeys().forEach(einstellungenKey => {
+            this.einstellungRS.findEinstellung(einstellungenKey, this.gemeindeId, gesuchsperiodeId)
+                .then(einstellung => {
+                    einstellung.gemeindeId = this.gemeindeId;
+                    gemeindeKonfig.gemeindespezifischeBGKonfigurationen.push(einstellung);
+                    gemeindeKonfig.konfigurationen.push(einstellung);
+                    this.cd.markForCheck();
+                });
+        });
     }
 
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {

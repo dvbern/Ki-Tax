@@ -166,3 +166,18 @@ export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
         TSEinstellungKey.GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN
     ];
 }
+
+export function getGemeindspezifischeBGConfigKeys(): Array<TSEinstellungKey> {
+    return [
+        TSEinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG,
+        TSEinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG,
+        TSEinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_TG,
+        TSEinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD,
+        TSEinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD,
+        TSEinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_STD,
+        TSEinstellungKey.MIN_MASSGEBENDES_EINKOMMEN,
+        TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG,
+        TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD,
+        TSEinstellungKey.MAX_MASSGEBENDES_EINKOMMEN
+    ];
+}
