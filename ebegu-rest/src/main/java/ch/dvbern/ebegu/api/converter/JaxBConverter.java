@@ -3947,9 +3947,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxLoginElement.setVorname(benutzer.getVorname());
 		jaxLoginElement.setNachname(benutzer.getNachname());
 		jaxLoginElement.setEmail(benutzer.getEmail());
-		if (benutzer.getMandant() != null) {
-			jaxLoginElement.setMandant(mandantToJAX(benutzer.getMandant()));
-		}
+		jaxLoginElement.setMandant(mandantToJAX(benutzer.getMandant()));
 		jaxLoginElement.setUsername(benutzer.getUsername());
 		jaxLoginElement.setExternalUUID(benutzer.getExternalUUID());
 		jaxLoginElement.setStatus(benutzer.getStatus());
