@@ -17,3 +17,26 @@
 
 INSERT IGNORE INTO mandant
 VALUES (UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')), '2021-11-30 00:00:00', '2021-11-30 00:00:00', 'flyway', 'flyway', 0, NULL, 'Kanton Luzern', false, false);
+
+# APPLICATION PROPERTIES
+INSERT IGNORE INTO application_property (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert,
+										 version, vorgaenger_id, name, value, mandant_id)
+SELECT UNHEX(REPLACE(UUID(), '-', '')), timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+    NULL, name, value, UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
+FROM application_property
+WHERE NOT EXISTS(SELECT name
+                 FROM application_property a_p
+                 WHERE mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')) AND
+                         a_p.name = application_property.name);
+
+UPDATE application_property SET value = 'true' WHERE name = 'DUMMY_LOGIN_ENABLED' AND mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
+UPDATE application_property SET value = 'yellow' WHERE name = 'BACKGROUND_COLOR' AND mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
+UPDATE application_property SET value = '#0072bd' WHERE name = 'PRIMARY_COLOR' AND mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
+UPDATE application_property SET value = '#00466f' WHERE name = 'PRIMARY_COLOR_DARK' AND mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
+UPDATE application_property SET value = '#C6C6C6' WHERE name = 'PRIMARY_COLOR_LIGHT' AND mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
+UPDATE application_property SET value = 'logo-kibon-luzern.svg' WHERE name = 'LOGO_FILE_NAME' AND mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
+UPDATE application_property SET value = 'logo-kibon-white-luzern.svg' WHERE name = 'LOGO_WHITE_FILE_NAME' AND mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
+
+# BFS Gemeinde
+INSERT INTO bfs_gemeinde (id, mandant_id, kanton, bfs_nummer, name, gueltig_ab)
+VALUES ('9d2e02eb-5292-11ec-adf5-f4390979fa3e', UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')), 'LU', 1061, 'Luzern', '2013-01-01');
