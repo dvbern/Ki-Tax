@@ -24,6 +24,7 @@ import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
+import ch.dvbern.ebegu.types.DateRange;
 
 /**
  * Service zum Verwalten von Modulen
@@ -74,4 +75,12 @@ public interface ModulTagesschuleService {
 	void copyModuleTagesschuleToNewGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiodeToCreate,
 		@Nonnull Gesuchsperiode lastGesuchsperiode);
+
+	/**
+	 * Laedt ModulTagessschuleGroup mit der fremdId aus der DB
+	 *
+	 * @param fremdId fremdId der Group
+	 * @return Modul mit der gegebenen fremdId
+	 */
+	Optional<ModulTagesschuleGroup> findModulTagesschuleGroupByFremdId(String fremdId);
 }

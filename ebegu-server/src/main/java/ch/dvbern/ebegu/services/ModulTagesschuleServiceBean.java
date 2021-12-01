@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.EinstellungenTagesschule_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
+import ch.dvbern.ebegu.entities.ModulTagesschuleGroup_;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -97,5 +98,11 @@ public class ModulTagesschuleServiceBean extends AbstractBaseService implements 
 			EinstellungenTagesschule newEinstellung = lastEinstellung.copyForGesuchsperiode(gesuchsperiodeToCreate);
 			persistence.merge(newEinstellung);
 		});
+	}
+
+	@Override
+	public Optional<ModulTagesschuleGroup> findModulTagesschuleGroupByFremdId(String fremdId) {
+		return criteriaQueryHelper.getEntityByUniqueAttribute(ModulTagesschuleGroup.class, fremdId,
+				ModulTagesschuleGroup_.fremdId);
 	}
 }
