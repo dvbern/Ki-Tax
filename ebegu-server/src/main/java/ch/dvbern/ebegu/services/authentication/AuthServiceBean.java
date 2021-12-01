@@ -52,7 +52,6 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
-import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.util.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.infinispan.Cache;
@@ -74,9 +73,6 @@ public class AuthServiceBean implements AuthService {
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
-
-	@Inject
-	private MandantService mandantService;
 
 	@Resource(lookup = "java:jboss/infinispan/cache/ebeguCache/ebeguAuthorizationCache")
 	private Cache<?, ?> cache;

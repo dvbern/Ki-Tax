@@ -73,7 +73,6 @@ import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleRechnungsstellungExcelCo
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
-import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -112,9 +111,6 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
-
-	@Inject
-	private MandantService mandantService;
 
 	@Inject
 	private PrincipalBean principalBean;

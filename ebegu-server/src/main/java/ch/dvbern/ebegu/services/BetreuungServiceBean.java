@@ -161,8 +161,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private BetreuungMonitoringService betreuungMonitoringService;
 	@Inject
 	private AnmeldungTagesschuleEventConverter anmeldungTagesschuleEventConverter;
-	@Inject
-	private MandantService mandantService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
 

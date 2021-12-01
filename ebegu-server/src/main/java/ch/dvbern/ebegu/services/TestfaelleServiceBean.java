@@ -565,6 +565,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	 */
 	@Override
 	@Nonnull
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public Gesuch createAndSaveGesuch(
 		@Nonnull AbstractTestfall fromTestfall,
 		boolean verfuegen,

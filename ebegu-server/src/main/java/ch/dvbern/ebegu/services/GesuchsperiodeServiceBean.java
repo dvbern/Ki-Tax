@@ -74,6 +74,7 @@ import static java.util.Objects.requireNonNull;
 public class GesuchsperiodeServiceBean extends AbstractBaseService implements GesuchsperiodeService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GesuchsperiodeServiceBean.class.getSimpleName());
+	public static final String MANDANT_NOT_DEFINED = "Mandant not defined";
 
 	@Inject
 	private Persistence persistence;
@@ -223,7 +224,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	public Collection<Gesuchsperiode> getAllGesuchsperioden() {
 		Mandant mandant = principalBean.getMandant();
 		if (mandant == null) {
-			throw new EbeguRuntimeException("getAllGesuchsperioden", "Mandant not defined");
+			throw new EbeguRuntimeException("getAllGesuchsperioden", MANDANT_NOT_DEFINED);
 		}
 		return getAllGesuchsperioden(mandant);
 	}
@@ -246,7 +247,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@Override
 	public Collection<Gesuchsperiode> findThisAndFutureGesuchsperioden(@Nonnull String key) {
 		if (principalBean.getMandant() == null) {
-			throw new EbeguRuntimeException("getGesuchsperiodenImStatus", "Mandant not defined");
+			throw new EbeguRuntimeException("getGesuchsperiodenImStatus", MANDANT_NOT_DEFINED);
 		}
 		List<Gesuchsperiode> gesuchsperioden = null;
 		Optional<Gesuchsperiode> gesuchsperiode = findGesuchsperiode(key);
@@ -427,7 +428,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	private Collection<Gesuchsperiode> getGesuchsperiodenImStatus(GesuchsperiodeStatus... status) {
 		if (principalBean.getMandant() == null) {
-			throw new EbeguRuntimeException("getGesuchsperiodenImStatus", "Mandant not defined");
+			throw new EbeguRuntimeException("getGesuchsperiodenImStatus", MANDANT_NOT_DEFINED);
 		}
 		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuchsperiode> query = builder.createQuery(Gesuchsperiode.class);
@@ -465,7 +466,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis) {
 		if (principalBean.getMandant() == null) {
-			throw new EbeguRuntimeException("getGesuchsperiodenBetween", "Mandant not defined");
+			throw new EbeguRuntimeException("getGesuchsperiodenBetween", MANDANT_NOT_DEFINED);
 		}
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -487,7 +488,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@Override
 	public Optional<Gesuchsperiode> findNewestGesuchsperiode() {
 		if (principalBean.getMandant() == null) {
-			throw new EbeguRuntimeException("findNewestGesuchsperiode", "Mandant not defined");
+			throw new EbeguRuntimeException("findNewestGesuchsperiode", MANDANT_NOT_DEFINED);
 		}
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuchsperiode> query = cb.createQuery(Gesuchsperiode.class);
