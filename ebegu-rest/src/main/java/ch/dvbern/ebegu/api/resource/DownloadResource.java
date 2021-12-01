@@ -45,7 +45,6 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.av.AVClient;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.converter.JaxFerienbetreuungConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxMahnung;
@@ -66,7 +65,6 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.services.Authorizer;
-import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DokumentService;
 import ch.dvbern.ebegu.services.DownloadFileService;
@@ -155,9 +153,6 @@ public class DownloadResource {
 
 	@Inject
 	private PrincipalBean principalBean;
-
-	@Inject
-	private BenutzerService benutzerService;
 
 	@Inject
 	private Authorizer authorizer;
