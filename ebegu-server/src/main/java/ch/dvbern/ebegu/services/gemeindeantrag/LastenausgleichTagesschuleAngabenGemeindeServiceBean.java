@@ -353,14 +353,24 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root =
 			query.from(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
 
+		var predicates = new ArrayList<Predicate>();
+
+		Objects.requireNonNull(principal.getMandant());
+		Predicate mandantPredicate = cb.equal(
+			root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde)
+				.get(Gemeinde_.mandant),
+			principal.getMandant());
+		predicates.add(mandantPredicate);
+
 		if (!principal.isCallerInAnyOfRole(
 			UserRole.SUPER_ADMIN,
 			UserRole.ADMIN_MANDANT,
 			UserRole.SACHBEARBEITER_MANDANT)) {
 			Predicate gemeindeIn =
 				root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde).in(gemeinden);
-			query.where(gemeindeIn);
+			predicates.add(gemeindeIn);
 		}
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
 		return persistence.getCriteriaResults(query);
 	}

@@ -100,7 +100,18 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	@Nonnull
 	@Override
 	public Collection<FerienbetreuungAngabenContainer> getAllFerienbetreuungAntraege() {
-		return criteriaQueryHelper.getAll(FerienbetreuungAngabenContainer.class);
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery<FerienbetreuungAngabenContainer> query = cb.createQuery(FerienbetreuungAngabenContainer.class);
+		Root<FerienbetreuungAngabenContainer> root = query.from(FerienbetreuungAngabenContainer.class);
+
+		Objects.requireNonNull(principal.getMandant());
+		Predicate mandantPredicate = cb.equal(
+			root.get(FerienbetreuungAngabenContainer_.gemeinde).get(Gemeinde_.mandant),
+			principal.getMandant()
+			);
+		query.where(mandantPredicate);
+
+		return persistence.getCriteriaResults(query);
 	}
 
 	@Nonnull

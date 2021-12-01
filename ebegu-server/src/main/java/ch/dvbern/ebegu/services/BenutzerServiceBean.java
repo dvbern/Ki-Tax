@@ -113,15 +113,15 @@ import static ch.dvbern.ebegu.enums.UserRole.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRole.getBgAndGemeindeRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getTsAndGemeindeRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getTsBgAndGemeindeRoles;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.setAntragstellerFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterForCurrentFerienbetreuungUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setInstitutionFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setMandantFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setRoleFilterForCurrentUser;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.setSozialdienstFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setSuperAdminFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setTraegerschaftFilterForCurrentUser;
-import static ch.dvbern.ebegu.services.util.FilterFunctions.setSozialdienstFilterForCurrentUser;
-import static ch.dvbern.ebegu.services.util.FilterFunctions.setAntragstellerFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -1027,6 +1027,10 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		// getCurrentBerechtigung() mache. somit werden sie geladen. das könnte aber ein allgemeines problem sein
 		user.getCurrentBerechtigung();
 		Set<Gemeinde> userGemeinden = user.extractGemeindenForUser();
+
+		Objects.requireNonNull(principalBean.getMandant());
+		Predicate mandantPredicate = cb.equal(root.get(Benutzer_.mandant), principalBean.getMandant());
+		predicates.add(mandantPredicate);
 
 		if (addInstitutionUsers) {
 			if (userGemeinden.isEmpty()) {
