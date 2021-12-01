@@ -74,7 +74,6 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 	private final VersionInfoBean versionInfoBean;
 
-	private final MandantResource mandantResource;
 	private final MandantService mandantService;
 	private final LocalhostChecker localhostChecker;
 	private final EbeguConfiguration configuration;
@@ -92,7 +91,6 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		EbeguConfiguration configuration,
 		BenutzerService benutzerService,
 		AuthService authService,
-		MandantResource mandantResource,
 		MandantService mandantService
 	) {
 
@@ -101,7 +99,6 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		this.localhostChecker = localhostChecker;
 		this.benutzerService = benutzerService;
 		this.authService = authService;
-		this.mandantResource = mandantResource;
 		this.mandantService = mandantService;
 	}
 

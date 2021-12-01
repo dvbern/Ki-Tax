@@ -260,7 +260,6 @@ public class GesuchsperiodeResource {
 			@Nonnull @PathParam("gemeindeId") String gemeindeId,
 			@Nullable @QueryParam("dossierId") String dossierId,
 			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
-		var mandant = mandantService.findMandantByCookie(mandantCookie);
 
 		Collection<Gesuchsperiode> perioden = dossierId == null
 				? gesuchsperiodeService.getAllAktivUndInaktivGesuchsperioden()
@@ -283,7 +282,6 @@ public class GesuchsperiodeResource {
 			@Nonnull @PathParam("gemeindeId") String gemeindeId,
 			@Nullable @QueryParam("dossierId") String dossierId,
 			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
-		var mandant = mandantService.findMandantByCookie(mandantCookie);
 
 		Collection<Gesuchsperiode> perioden = dossierId == null
 				? gesuchsperiodeService.getAllActiveGesuchsperioden()

@@ -370,10 +370,10 @@ public class ApplicationPropertyResource {
 			kitaxendpoint,
 			einreichefristOeffentlich.getValue(),
 			einreichefristPrivat.getValue(),
-			lastenausgleichAktiv.getValue().equals("true"),
-			ferienbetreuungAktiv.getValue().equals("true"),
-			lastenausgleichTagesschulenAktiv.getValue().equals("true"),
-			gemeindeKennzahlenAktiv.getValue().equals("true"),
+			stringToBool(lastenausgleichAktiv.getValue()),
+			stringToBool(ferienbetreuungAktiv.getValue()),
+			stringToBool(lastenausgleichTagesschulenAktiv.getValue()),
+			stringToBool(gemeindeKennzahlenAktiv.getValue()),
 			lastenausgleichTagesschulenAnteilZweitpruefungDeConverted,
 			lastenausgleichTagesschulenAnteilZweitpruefungFrConverted,
 			lastenausgleichTagesschulenAutoZweitpruefungDeConverted,
@@ -387,5 +387,9 @@ public class ApplicationPropertyResource {
 			angebotTSEnabled
 			);
 		return Response.ok(pubAppConf).build();
+	}
+
+	private boolean stringToBool(@Nonnull String str) {
+		return str.equals("true");
 	}
 }
