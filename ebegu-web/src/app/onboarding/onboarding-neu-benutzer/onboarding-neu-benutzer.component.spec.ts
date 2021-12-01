@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {UIRouterModule} from '@uirouter/angular';
 import {of} from 'rxjs';
@@ -32,13 +32,14 @@ describe('OnboardingNeuBenutzerComponent', () => {
 
     const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveUndVonSchulverbundGemeinden']);
     const applicationPropertyRSSpy =
-        jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDummyMode']);
+        jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDummyMode', 'getPublicPropertiesCached']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(waitForAsync(() => {
         gemeindeRSSpy.getAktiveUndVonSchulverbundGemeinden.and.returnValue(of([]).toPromise());
         applicationPropertyRSSpy.isDummyMode.and.returnValue(of(true).toPromise());
+        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(of({} as any).toPromise());
 
         TestBed.configureTestingModule({
             imports: [
