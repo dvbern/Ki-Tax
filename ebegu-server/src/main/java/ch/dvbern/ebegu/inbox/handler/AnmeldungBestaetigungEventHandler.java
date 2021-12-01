@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.inbox.handler;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -160,6 +161,13 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 			return Processing.failure("Anmeldung hat einen Datenproblem, keine BelegungTagesschule");
 		}
 
+		for (var modul : dto.getModule()) {
+			if (Objects.isNull(modul.getModulId()) && Objects.isNull(modul.getFremdId())) {
+				return Processing.failure(
+						"Anmeldung kann nicht behandelt werden: Ein Modul hat weder fremdId noch modulId");
+			}
+		}
+
 		if (dto.getModule().isEmpty()) {
 			return Processing.failure("TagesschuleBestaetigungEventDTO hat keine Module");
 		}
@@ -227,10 +235,20 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 		@Nonnull TagesschuleBestaetigungEventDTO dto,
 		@Nonnull BelegungTagesschule belegung) {
 
-		Map<String, ModulTagesschuleGroup> moduleById = dto.getModule().stream()
+		Stream<ModulTagesschuleGroup> moduleByFremdId = dto.getModule().stream()
+			.map(ModulAuswahlDTO::getFremdId)
+			.filter(Objects::nonNull)
+			.distinct()
+			.flatMap(id -> modulTagesschuleService.findModulTagesschuleGroupByFremdId(id).stream());
+
+		Stream<ModulTagesschuleGroup> moduleByModulId = dto.getModule().stream()
+			.filter(modulAuswahlDTO -> Objects.isNull(modulAuswahlDTO.getFremdId()))
 			.map(ModulAuswahlDTO::getModulId)
 			.distinct()
-			.flatMap(id -> modulTagesschuleService.findModulTagesschuleGroup(id).stream())
+			.flatMap(id -> modulTagesschuleService.findModulTagesschuleGroup(id).stream());
+
+		Map<String, ModulTagesschuleGroup> moduleById =
+				Stream.concat(moduleByFremdId, moduleByModulId)
 			.collect(Collectors.toMap(AbstractEntity::getId, m -> m));
 
 		Set<BelegungTagesschuleModul> existingModule = Sets.newHashSet(belegung.getBelegungTagesschuleModule());
