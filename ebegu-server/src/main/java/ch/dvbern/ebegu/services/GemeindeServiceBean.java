@@ -290,8 +290,10 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		boolean tagesschuleEnabled = mandant.isAngebotTS();
 		if (!tagesschuleEnabled) {
 			List<Long> verbundsBfsNummern = getVerbundsBfsNummern(mandant);
-			Predicate predicateNoVerbund = root.get(BfsGemeinde_.bfsNummer).in(verbundsBfsNummern).not();
-			predicates.add(predicateNoVerbund);
+			if (verbundsBfsNummern.size() > 0) {
+				Predicate predicateNoVerbund = root.get(BfsGemeinde_.bfsNummer).in(verbundsBfsNummern).not();
+				predicates.add(predicateNoVerbund);
+			}
 		}
 
 		Predicate predicateMandant = cb.equal(root.get(BfsGemeinde_.mandant), mandant);

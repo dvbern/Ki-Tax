@@ -292,6 +292,10 @@ public class ApplicationPropertyResource {
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.FERIENBETREUUNG_AKTIV,
 							mandant)
 				.orElseThrow(() -> notFound);
+		ApplicationProperty lastenausgleichAktiv =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_AKTIV,
+				mandant)
+				.orElseThrow(() -> notFound);
 		ApplicationProperty lastenausgleichTagesschulenAktiv  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AKTIV,
 							mandant)
@@ -366,6 +370,7 @@ public class ApplicationPropertyResource {
 			kitaxendpoint,
 			einreichefristOeffentlich.getValue(),
 			einreichefristPrivat.getValue(),
+			lastenausgleichAktiv.getValue().equals("true"),
 			ferienbetreuungAktiv.getValue().equals("true"),
 			lastenausgleichTagesschulenAktiv.getValue().equals("true"),
 			gemeindeKennzahlenAktiv.getValue().equals("true"),

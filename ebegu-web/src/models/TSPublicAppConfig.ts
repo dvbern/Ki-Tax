@@ -34,6 +34,7 @@ export class TSPublicAppConfig {
     public notverordnungDefaultEinreichefristOeffentlich: string;
     public notverordnungDefaultEinreichefristPrivat: string;
     public ferienbetreuungAktiv: boolean;
+    public lastenausgleichAktiv: boolean;
     public lastenausgleichTagesschulenAktiv: boolean;
     public gemeindeKennzahlenAktiv: any;
     public mulitmandantAktiv: any;
