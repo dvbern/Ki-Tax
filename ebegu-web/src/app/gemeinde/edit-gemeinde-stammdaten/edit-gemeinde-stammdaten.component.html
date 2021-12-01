@@ -190,7 +190,8 @@
                                       name="altBGAdresse_id"
                                       [(ngModel)]="stammdaten.hasAltGemeindeKontakt"
                                       (ngModelChange)="altGemeindeKontaktHasChange($event)">
-                            {{'ALTERNATIVES_KONTAKTFELD'|translate}}
+                            {{'ALTERNATIVES_KONTAKTFELD'|translate}}&nbsp;
+                            <dv-tooltip inputId='altBGAdresse_id' [text]="'ALTERNATIVES_KONTAKTFELD_INFO' | translate"></dv-tooltip>
                         </mat-checkbox>
                     </div>
                     <div *ngIf="stammdaten.hasAltGemeindeKontakt">
