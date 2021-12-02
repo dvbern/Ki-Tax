@@ -30,7 +30,6 @@ import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
@@ -64,9 +63,7 @@ public class EinstellungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Before
 	public void setUp() {
-		kantonBern = TestDataUtil.createDefaultMandant();
-		kantonBern.setName("Kanton Bern");
-		kantonBern = persistence.merge(kantonBern);
+		kantonBern = TestDataUtil.getMandantKantonBern(persistence);
 
 		gesuchsperiode1617 = TestDataUtil.createGesuchsperiode1617();
 		gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
@@ -77,9 +74,7 @@ public class EinstellungServiceBeanTest extends AbstractEbeguLoginTest {
 		persistence.merge(gesuchsperiode1617);
 		persistence.merge(gesuchsperiode1718);
 
-		kantonLuzern = TestDataUtil.createDefaultMandant();
-		kantonLuzern.setName("Kanton Luzern");
-		kantonLuzern = persistence.merge(kantonLuzern);
+		kantonLuzern = TestDataUtil.getMandantKantonLuzern(persistence);
 
 		gemeindeParis = TestDataUtil.createGemeindeParis();
 		gemeindeParis.setMandant(kantonBern);

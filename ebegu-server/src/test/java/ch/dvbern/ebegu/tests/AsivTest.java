@@ -390,8 +390,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	 */
 	@Override
 	protected Mandant insertInstitutionen() {
-		Mandant mandant = TestDataUtil.createDefaultMandant();
-		persistence.persist(mandant);
+		Mandant mandant = TestDataUtil.getMandantKantonBern(persistence);
 
 		final InstitutionStammdaten institutionStammdatenKitaBruennen =
 			TestDataUtil.createInstitutionStammdatenKitaBruennen();

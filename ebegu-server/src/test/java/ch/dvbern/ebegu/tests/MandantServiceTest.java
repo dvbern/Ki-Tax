@@ -56,7 +56,7 @@ public class MandantServiceTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void firstMandantTest() {
+	public void getMandantBernTest() {
 		Mandant mandant = TestDataUtil.createDefaultMandant();
 		persistence.persist(mandant);
 		Mandant loadedMandant = mandantService.getMandantBern();

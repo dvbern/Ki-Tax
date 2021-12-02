@@ -316,8 +316,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		// Voraussetzung: Ich habe einen Antrag, er muss nicht verfuegt sein
 		Gesuch erstgesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		Gesuchsperiode gpFolgegesuch = new Gesuchsperiode();
-		Mandant mandant = TestDataUtil.createDefaultMandant();
-		TestDataUtil.saveMandantIfNecessary(persistence, mandant);
+		Mandant mandant = TestDataUtil.getMandantKantonBern(persistence);
 		gpFolgegesuch.setMandant(mandant);
 		gpFolgegesuch.getGueltigkeit().setGueltigAb(erstgesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb().plusYears(1));
 		gpFolgegesuch.getGueltigkeit().setGueltigBis(erstgesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis().plusYears(1));
