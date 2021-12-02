@@ -682,12 +682,15 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		Join<Benutzer, Berechtigung> joinBerechtigungen = root.join(Benutzer_.berechtigungen);
 		query.select(root);
 
+		Objects.requireNonNull(principalBean.getMandant());
+		Predicate predicateMandant = cb.equal(root.get(Benutzer_.mandant), principalBean.getMandant());
+
 		Predicate predicateActive = cb.between(
 			cb.literal(LocalDate.now()),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
 		Predicate predicateRole = joinBerechtigungen.get(Berechtigung_.role).in(GESUCHSTELLER);
-		query.where(predicateActive, predicateRole);
+		query.where(predicateActive, predicateRole, predicateMandant);
 		query.orderBy(cb.asc(root.get(Benutzer_.vorname)), cb.asc(root.get(Benutzer_.nachname)));
 		return persistence.getCriteriaResults(query);
 	}
