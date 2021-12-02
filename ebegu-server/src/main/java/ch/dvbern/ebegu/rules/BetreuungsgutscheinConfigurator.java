@@ -179,7 +179,7 @@ public class BetreuungsgutscheinConfigurator {
 		Einstellung param_pauschalabzug_pro_person_familiengroesse_6 = einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6);
 		Objects.requireNonNull(param_pauschalabzug_pro_person_familiengroesse_6, "Parameter PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6 muss gesetzt sein");
 		Einstellung param_minimaldauer_konkubinat = einstellungMap.get(MINIMALDAUER_KONKUBINAT);
-		Objects.requireNonNull(param_minimaldauer_konkubinat, "Parameter PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6 muss gesetzt sein");
+		Objects.requireNonNull(param_minimaldauer_konkubinat, "Parameter MINIMALDAUER_KONKUBINAT muss gesetzt sein");
 
 		FamilienabzugAbschnittRule familienabzugAbschnittRule = new FamilienabzugAbschnittRule(defaultGueltigkeit,
 			param_pauschalabzug_pro_person_familiengroesse_3.getValueAsBigDecimal(),
