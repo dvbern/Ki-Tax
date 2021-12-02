@@ -24,7 +24,6 @@ import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
-import ch.dvbern.ebegu.types.DateRange;
 
 /**
  * Service zum Verwalten von Modulen
