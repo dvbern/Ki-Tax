@@ -286,7 +286,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.setParameter("gesuchPeriodeID", gesuchPeriodeID);
 		query.setParameter("onlySchulamt", onlySchulamt());
 		Objects.requireNonNull(principalBean.getMandant());
-		query.setParameter("mandant", principalBean.getMandant().getId());
+		query.setParameter("mandant", principalBean.getMandant().getId().replace("-", ""));
 		final List<String> berechtigteGemeinden = getListOfBerechtigteGemeinden();
 		// we need to remove the extra - as in the query they are not working and we cannot use a REPLACE function on
 		// a list in a native query
@@ -387,7 +387,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.setParameter("gesuchPeriodeID", gesuchPeriodeID);
 		query.setParameter("onlySchulamt", onlySchulamt());
 		Objects.requireNonNull(principalBean.getMandant());
-		query.setParameter("mandant", principalBean.getMandant().getId());
+		query.setParameter("mandant", principalBean.getMandant().getId().replace("-", ""));
 		final List<String> berechtigteGemeinden = getListOfBerechtigteGemeinden();
 		// we need to remove the extra - as in the query they are not working and we cannot use a REPLACE function on
 		// a list in a native query
