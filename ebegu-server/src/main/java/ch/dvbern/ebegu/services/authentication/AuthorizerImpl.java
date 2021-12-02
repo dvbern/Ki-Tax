@@ -372,7 +372,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	private boolean isMandantMatching(@Nullable HasMandant mandantEntity) {
 		// we allow reading anyway if user is coming from Superadmin Service
-		if (principalBean.isCallerInRole(SUPER_ADMIN) && principalBean.getPrincipal().getName().equals(ANONYMOUS_USER_USERNAME)) {
+		if (principalBean.isAnonymousSuperadmin()) {
 			return true;
 		}
 		if (mandantEntity == null || mandantEntity.getMandant() == null) {
@@ -531,6 +531,11 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	public void checkReadAuthorization(@Nonnull Benutzer benutzer) {
 
 		checkMandantMatches(benutzer);
+
+		// through superadmin service
+		if (principalBean.isAnonymousSuperadmin()) {
+			return;
+		}
 		// Jeder Benutzer darf sich selber lesen
 		if (principalBean.getBenutzer().getUsername().equals(benutzer.getUsername())) {
 			return;
@@ -1465,6 +1470,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (traegerschaft == null) {
 			return;
 		}
+		checkMandantMatches(traegerschaft);
 		if (!isReadAuthorization(traegerschaft)) {
 			throwViolation(traegerschaft);
 		}
@@ -1475,6 +1481,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (traegerschaft == null) {
 			return;
 		}
+		checkMandantMatches(traegerschaft);
 		if (!isWriteAuthorization(traegerschaft)) {
 			throwViolation(traegerschaft);
 		}

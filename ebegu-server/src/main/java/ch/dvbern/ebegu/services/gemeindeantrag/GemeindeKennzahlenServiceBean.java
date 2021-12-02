@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlenStatus;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen_;
@@ -202,6 +203,11 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 			@Nullable String status,
 			@Nullable String timestampMutiert) {
 
+		Mandant mandant = principal.getMandant();
+		if (mandant == null) {
+			throw new EbeguRuntimeException("getGemeindeKennzahlen", "mandant not found for principal " + principal.getPrincipal().getName());
+		}
+
 		Set<Gemeinde> gemeinden = principal.getBenutzer().extractGemeindenForUser();
 
 		Set<Predicate> predicates = new HashSet<>();
@@ -211,7 +217,7 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 
 		Predicate mandantPredicate = cb.equal(
 			root.get(GemeindeKennzahlen_.gemeinde)
-				.get(Gemeinde_.mandant), principal.getMandant()
+				.get(Gemeinde_.mandant), mandant
 		);
 		predicates.add(mandantPredicate);
 

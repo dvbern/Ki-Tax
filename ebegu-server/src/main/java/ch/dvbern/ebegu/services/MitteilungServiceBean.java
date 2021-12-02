@@ -88,6 +88,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.Mitteilung_;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
@@ -1003,6 +1004,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		@Nonnull SearchMode mode
 	) {
 
+		Mandant mandant = principalBean.getMandant();
+		if (mandant == null) {
+			throw new EbeguRuntimeException("searchMitteilungen", "mandant not found for principal " + principalBean.getPrincipal().getName());
+		}
+
 		Benutzer user = benutzerService.getCurrentBenutzer()
 			.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
 
@@ -1033,7 +1039,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Predicate mandantPredicate = cb.equal(
 			root.get(Mitteilung_.dossier)
 				.get(Dossier_.fall)
-				.get(Fall_.MANDANT), principalBean.getMandant()
+				.get(Fall_.MANDANT), mandant
 		);
 		predicates.add(mandantPredicate);
 

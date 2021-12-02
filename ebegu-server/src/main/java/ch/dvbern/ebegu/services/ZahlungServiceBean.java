@@ -807,10 +807,15 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Predicate predicateAuftragTyp = cb.equal(root.get(Zahlungsauftrag_.zahlungslaufTyp), ZahlungslaufTyp.GEMEINDE_INSTITUTION);
 		predicatesToUse.add(predicateAuftragTyp);
 
+		Mandant mandant = principalBean.getMandant();
+		if (mandant == null) {
+			throw new EbeguRuntimeException("getZahlungsauftraegeInPeriode", "mandant not found for principal " + principalBean.getPrincipal().getName());
+		}
+
 		// Mandant
 		Predicate mandantPredicate = cb.equal(
 			root.get(Zahlungsauftrag_.mandant),
-			principalBean.getMandant()
+			mandant
 		);
 		predicatesToUse.add(mandantPredicate);
 
