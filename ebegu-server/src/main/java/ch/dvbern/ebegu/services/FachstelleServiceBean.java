@@ -30,8 +30,10 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Fachstelle_;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 /**
@@ -64,10 +66,14 @@ public class FachstelleServiceBean extends AbstractBaseService implements Fachst
 	@Nonnull
 	@Override
 	public Collection<Fachstelle> getAllFachstellen() {
+		Mandant mandant = principalBean.getMandant();
+		if (mandant == null) {
+			throw new EbeguRuntimeException("getAllFachstellen", "mandant not found for principal " + principalBean.getPrincipal().getName());
+		}
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		CriteriaQuery<Fachstelle> query = cb.createQuery(Fachstelle.class);
 		Root<Fachstelle> root = query.from(Fachstelle.class);
-		query.where(cb.equal(root.get(Fachstelle_.mandant), principalBean.getMandant()));
+		query.where(cb.equal(root.get(Fachstelle_.mandant), mandant));
 		return persistence.getCriteriaResults(query);
 	}
 
