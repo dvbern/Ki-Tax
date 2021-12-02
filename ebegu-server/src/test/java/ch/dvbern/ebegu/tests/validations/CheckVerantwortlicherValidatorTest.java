@@ -23,8 +23,8 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.UserRole;
-import ch.dvbern.ebegu.tests.util.ValidationTestHelper;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.tests.util.ValidationTestHelper;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherBGValidationGroup;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherTSValidationGroup;
 import ch.dvbern.ebegu.validators.CheckVerantwortlicherBG;
@@ -43,7 +43,7 @@ public class CheckVerantwortlicherValidatorTest {
 
 	@Before
 	public void setUp() {
-		Mandant mandant = TestDataUtil.createDefaultMandant();
+		Mandant mandant = TestDataUtil.getMandantKantonBern();
 		// see https://docs.jboss.org/hibernate/validator/5.2/reference/en-US/html/chapter-bootstrapping.html#_constraintvalidatorfactory
 		Configuration<?> config = Validation.byDefaultProvider().configure();
 		//wir verwenden dummy service daher geben wir hier null als em mit

@@ -27,7 +27,7 @@ import ch.dvbern.ebegu.test.TestDataUtil;
 
 public class MandantServiceMock extends MandantServiceBean {
 
-	private static final Mandant MANDANT = TestDataUtil.createDefaultMandant();
+	private static final Mandant MANDANT = TestDataUtil.getMandantKantonBern();
 
 	@Nonnull
 	@Override

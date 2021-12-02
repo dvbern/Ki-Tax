@@ -419,16 +419,29 @@ public final class TestDataUtil {
 		return mandant;
 	}
 
+	public static Mandant getMandantKantonBern() {
+		Mandant mandant = new Mandant();
+		mandant.setId(AbstractTestfall.ID_MANDANT_KANTON_BERN);
+		mandant.setName("Kanton Bern");
+		return mandant;
+	}
+
 	@Nonnull
 	public static Mandant getMandantKantonBernAndPersist(@Nonnull Persistence persistence) {
 		Mandant mandant = persistence.find(Mandant.class, AbstractTestfall.ID_MANDANT_KANTON_BERN);
 		if (mandant == null) {
-			mandant = new Mandant();
-			mandant.setId(AbstractTestfall.ID_MANDANT_KANTON_BERN);
-			mandant.setName("Kanton Bern");
+			mandant = getMandantKantonBern();
 			return persistence.persist(mandant);
 		}
 		return mandant;
+	}
+
+	public static Mandant persistMandantIfNecessary(@Nonnull Mandant mandant, @Nonnull Persistence persistence) {
+		Mandant mandantFromDB = persistence.find(Mandant.class, mandant.getId());
+		if (mandantFromDB == null) {
+			return persistence.persist(mandant);
+		}
+		return mandantFromDB;
 	}
 
 	@Nonnull
@@ -477,7 +490,8 @@ public final class TestDataUtil {
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_PARIS_ID);
 		if (gemeinde == null) {
 			gemeinde = createGemeindeParis();
-			persistence.persist(gemeinde.getMandant());
+			Objects.requireNonNull(gemeinde.getMandant());
+			TestDataUtil.persistMandantIfNecessary(gemeinde.getMandant(), persistence);
 			gemeinde = persistence.persist(gemeinde);
 		}
 		GemeindeStammdaten stammdaten = persistence.find(GemeindeStammdaten.class, GEMEINDE_PARIS_ID);
@@ -493,7 +507,8 @@ public final class TestDataUtil {
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_LONDON_ID);
 		if (gemeinde == null) {
 			gemeinde = createGemeindeLondon();
-			persistence.persist(gemeinde.getMandant());
+			Objects.requireNonNull(gemeinde.getMandant());
+			TestDataUtil.persistMandantIfNecessary(gemeinde.getMandant(), persistence);
 			gemeinde = persistence.persist(gemeinde);
 		}
 		GemeindeStammdaten stammdaten = persistence.find(GemeindeStammdaten.class, GEMEINDE_LONDON_ID);
@@ -513,7 +528,7 @@ public final class TestDataUtil {
 		gemeinde.setStatus(GemeindeStatus.AKTIV);
 		gemeinde.setGemeindeNummer(1);
 		gemeinde.setBfsNummer(99998L);
-		gemeinde.setMandant(createDefaultMandant());
+		gemeinde.setMandant(getMandantKantonBern());
 		gemeinde.setAngebotBG(true);
 		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
 		gemeinde.setTagesschulanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
@@ -531,7 +546,7 @@ public final class TestDataUtil {
 		gemeinde.setStatus(GemeindeStatus.AKTIV);
 		gemeinde.setGemeindeNummer(2);
 		gemeinde.setBfsNummer(99999L);
-		gemeinde.setMandant(createDefaultMandant());
+		gemeinde.setMandant(getMandantKantonBern());
 		gemeinde.setAngebotBG(true);
 		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
 		gemeinde.setTagesschulanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
@@ -546,7 +561,7 @@ public final class TestDataUtil {
 		fachstelle.setName(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE);
 		fachstelle.setFachstelleAnspruch(true);
 		fachstelle.setFachstelleErweiterteBetreuung(false);
-		fachstelle.setMandant(createDefaultMandant());
+		fachstelle.setMandant(getMandantKantonBern());
 		return fachstelle;
 	}
 
@@ -573,7 +588,7 @@ public final class TestDataUtil {
 	public static Traegerschaft createDefaultTraegerschaft() {
 		Traegerschaft traegerschaft = new Traegerschaft();
 		traegerschaft.setName("Traegerschaft" + UUID.randomUUID().toString());
-		traegerschaft.setMandant(createDefaultMandant());
+		traegerschaft.setMandant(getMandantKantonBern());
 		return traegerschaft;
 	}
 
@@ -587,7 +602,7 @@ public final class TestDataUtil {
 	public static Institution createDefaultInstitution() {
 		Institution institution = new Institution();
 		institution.setName("Institution1");
-		institution.setMandant(createDefaultMandant());
+		institution.setMandant(getMandantKantonBern());
 		institution.setTraegerschaft(createDefaultTraegerschaft(institution.getMandant()));
 		return institution;
 	}
@@ -764,7 +779,7 @@ public final class TestDataUtil {
 		final InstitutionStammdaten institutionStammdatenTagesfamilien = createInstitutionStammdatenTagesfamilien();
 		final InstitutionStammdaten institutionStammdatenTagesschuleBruennen = createInstitutionStammdatenTagesschuleBern(gesuchsperiode);
 		final InstitutionStammdaten institutionStammdatenFerieninselBruennen = createInstitutionStammdatenFerieninselGuarda();
-		final Mandant mandant = createDefaultMandant();
+		final Mandant mandant = getMandantKantonBern();
 
 		institutionStammdatenKitaAaregg.getInstitution().setMandant(mandant);
 		institutionStammdatenKitaBruennen.getInstitution().setMandant(mandant);
@@ -1117,7 +1132,7 @@ public final class TestDataUtil {
 	public static Gesuchsperiode createGesuchsperiodeXXYY(int yearFrom, int yearTo) {
 		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
-		gesuchsperiode.setMandant(createDefaultMandant());
+		gesuchsperiode.setMandant(getMandantKantonBern());
 		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(yearFrom, Month.AUGUST, 1), LocalDate.of(yearTo,
 			Month.JULY, 31)));
 		return gesuchsperiode;
@@ -1135,7 +1150,7 @@ public final class TestDataUtil {
 
 	public static Gesuchsperiode createCustomGesuchsperiode(int firstYear, int secondYear) {
 		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
-		gesuchsperiode.setMandant(TestDataUtil.createDefaultMandant());
+		gesuchsperiode.setMandant(TestDataUtil.getMandantKantonBern());
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
 		gesuchsperiode.setGueltigkeit(new DateRange(
 			LocalDate.of(firstYear, Month.AUGUST, 1),
@@ -1201,7 +1216,7 @@ public final class TestDataUtil {
 		user.setNachname("Iglesias");
 		user.setVorname("Julio");
 		user.setEmail("julio.iglesias@example.com");
-		user.setMandant(createDefaultMandant());
+		user.setMandant(getMandantKantonBern());
 		Berechtigung berechtigung = new Berechtigung();
 		berechtigung.setRole(UserRole.ADMIN_BG);
 		berechtigung.setBenutzer(user);
@@ -1565,7 +1580,7 @@ public final class TestDataUtil {
 	private static Benutzer createAndPersistBenutzer(Persistence persistence, Gemeinde persistedGemeinde) {
 		Benutzer verantwortlicher = TestDataUtil.createDefaultBenutzer();
 		verantwortlicher.getBerechtigungen().iterator().next().getGemeindeList().add(persistedGemeinde);
-		persistence.persist(verantwortlicher.getMandant());
+		TestDataUtil.persistMandantIfNecessary(verantwortlicher.getMandant(), persistence);
 		persistence.persist(verantwortlicher);
 		return verantwortlicher;
 	}
@@ -1573,7 +1588,7 @@ public final class TestDataUtil {
 	@Nonnull
 	private static Benutzer createAndPersistBenutzer(Persistence persistence) {
 		Benutzer verantwortlicher = TestDataUtil.createDefaultBenutzer();
-		persistence.persist(verantwortlicher.getMandant());
+		TestDataUtil.persistMandantIfNecessary(verantwortlicher.getMandant(), persistence);
 		verantwortlicher.getBerechtigungen().iterator().next().getGemeindeList().add(getGemeindeParis(persistence));
 		persistence.persist(verantwortlicher);
 		return verantwortlicher;
@@ -1942,8 +1957,7 @@ public final class TestDataUtil {
 	}
 
 	public static Benutzer createAndPersistTraegerschaftBenutzer(Persistence persistence) {
-		final Mandant mandant = TestDataUtil.createDefaultMandant();
-		persistence.persist(mandant);
+		final Mandant mandant = TestDataUtil.getMandantKantonBernAndPersist(persistence);
 		final Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft(mandant);
 		persistence.persist(traegerschaft);
 		final Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(
@@ -1975,8 +1989,7 @@ public final class TestDataUtil {
 	) {
 		//machmal brauchen wir einen dummy admin in der DB
 		if (mandant == null) {
-			mandant = TestDataUtil.createDefaultMandant();
-			persistence.persist(mandant);
+			mandant = TestDataUtil.getMandantKantonBernAndPersist(persistence);
 		}
 		final Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SUPER_ADMIN, "superadmin",
 			null, null, mandant, persistence, name, vorname);
@@ -1991,8 +2004,7 @@ public final class TestDataUtil {
 			return potentiallyExisting;
 		}
 		if (mandant == null) {
-			mandant = TestDataUtil.createDefaultMandant();
-			persistence.persist(mandant);
+			mandant = TestDataUtil.getMandantKantonBernAndPersist(persistence);
 		}
 		final Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SUPER_ADMIN, "superadmin",
 				null, null, mandant, persistence, name, vorname, id);
