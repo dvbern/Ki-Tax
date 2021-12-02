@@ -243,6 +243,7 @@ public final class MahlzeitenverguenstigungBGRechnerRule implements RechnerRule 
 		}
 
 		if (!inputGemeinde.getVerguenstigungMahlzeitenBeantragt()) {
+			inputGemeinde.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_NEIN, locale);
 			return false;
 		}
 

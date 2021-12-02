@@ -107,7 +107,7 @@ public final class MahlzeitenverguenstigungTSRechnerRule implements RechnerRule 
 			parameterDTO.getMahlzeitenverguenstigungParameter().getVerguenstigungProMahlzeitWithParam(inputGemeinde.getMassgebendesEinkommen(), inputGemeinde.isSozialhilfeempfaenger());
 
 		// Wenn die Vergünstigung pro Hauptmahlzeit grösser 0 ist
-		if (verguenstigungGemaessEinkommen.compareTo(BigDecimal.ZERO) > 0) {
+		if (verguenstigungGemaessEinkommen.compareTo(BigDecimal.ZERO) > 0 && inputGemeinde.getVerguenstigungMahlzeitenBeantragt()) {
 
 			BigDecimal verguenstigungMitBetreuung = getVerguenstigung(
 				verguenstigungGemaessEinkommen,
