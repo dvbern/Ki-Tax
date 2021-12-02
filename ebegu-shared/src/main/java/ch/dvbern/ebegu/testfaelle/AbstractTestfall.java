@@ -485,6 +485,7 @@ public abstract class AbstractTestfall {
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
 		finanzielleSituation.setSteuerveranlagungErhalten(true);
 		finanzielleSituation.setSteuererklaerungAusgefuellt(true);
+		finanzielleSituation.setSteuerdatenZugriff(true);
 
 		setFinSitDefaultValues(finanzielleSituation);
 

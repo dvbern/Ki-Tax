@@ -45,7 +45,6 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.av.AVClient;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.converter.JaxFerienbetreuungConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxMahnung;
@@ -79,6 +78,7 @@ import ch.dvbern.ebegu.services.SozialdienstFallDokumentService;
 import ch.dvbern.ebegu.services.VorlageService;
 import ch.dvbern.ebegu.services.ZahlungService;
 import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungDokumentService;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.annotations.Api;
@@ -193,7 +193,7 @@ public class DownloadResource {
 
 		if (!downloadFile.getIp().equals(ip)
 			|| principalBean.getPrincipal() == null
-			|| !principalBean.getPrincipal().getName().equals(downloadFile.getUserErstellt())) {
+			|| !EbeguUtil.getUserMandantString(principalBean).equals(downloadFile.getUserErstellt())) {
 			// Wir loggen noch ein bisschen, bis wir sicher sind, dass das Problem geloest ist
 			StringBuilder sb = new StringBuilder();
 			sb.append("Keine Berechtigung fuer Download");
@@ -203,7 +203,7 @@ public class DownloadResource {
 			}
 			if (principalBean.getPrincipal() == null) {
 				sb.append("; principalBean.getPrincipal() is null");
-			} else if (!principalBean.getPrincipal().getName().equals(downloadFile.getUserErstellt())) {
+			} else if (!EbeguUtil.getUserMandantString(principalBean).equals(downloadFile.getUserErstellt())) {
 				sb.append("; principalBean.getPrincipal().getName()").append(principalBean.getPrincipal().getName());
 				sb.append("; downloadFile.getUserErstellt()").append(downloadFile.getUserErstellt());
 			}

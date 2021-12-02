@@ -125,83 +125,80 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 	}
 
 	protected Benutzer loginAsSchulamt() {
+		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
+		Benutzer schulamt = createOrFindBenutzer(UserRole.SACHBEARBEITER_TS, "schulamt", null, null, mandant, TestUserIds.SCHULAMT_SACHBEARBEITERIN);
+		persistence.merge(schulamt);
 		try {
 			createLoginContext(TestUserIds.SCHULAMT_SACHBEARBEITERIN, "schulamt").login();
 		} catch (LoginException e) {
 			LOG.error("could not login as sachbearbeiter schulamt for tests");
 		}
-
-		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		Benutzer schulamt = createOrFindBenutzer(UserRole.SACHBEARBEITER_TS, "schulamt", null, null, mandant, TestUserIds.SCHULAMT_SACHBEARBEITERIN);
-		return persistence.merge(schulamt);
+		return schulamt;
 	}
 
 	protected Benutzer loginAsAdminSchulamt() {
+		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
+		Benutzer schulamt = createOrFindBenutzer(UserRole.ADMIN_TS, "schulamtadmin", null, null, mandant, TestUserIds.SCHULAMT_ADMIN);
+		persistence.merge(schulamt);
 		try {
 			createLoginContext(TestUserIds.SCHULAMT_ADMIN, "schulamtadmin").login();
 		} catch (LoginException e) {
 			LOG.error("could not login as admin schulamt for tests");
 		}
-
-		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		Benutzer schulamt = createOrFindBenutzer(UserRole.ADMIN_TS, "schulamtadmin", null, null, mandant, TestUserIds.SCHULAMT_ADMIN);
-		return persistence.merge(schulamt);
+		return schulamt;
 	}
 
 	protected void loginAsSteueramt() {
+		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
+		Benutzer steueramt = createOrFindBenutzer(UserRole.STEUERAMT, "steueramt", null, null, mandant, TestUserIds.STEUERAMT);
+		persistence.merge(steueramt);
 		try {
 			createLoginContext(TestUserIds.STEUERAMT, "steueramt").login();
 		} catch (LoginException e) {
 			LOG.error("could not login as steueramt for tests");
 		}
-
-		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		Benutzer steueramt = createOrFindBenutzer(UserRole.STEUERAMT, "steueramt", null, null, mandant, TestUserIds.STEUERAMT);
-		persistence.merge(steueramt);
 	}
 
 	protected Benutzer loginAsSachbearbeiterJA() {
+		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
+		Benutzer saja = createOrFindBenutzer(UserRole.SACHBEARBEITER_BG, "saja", null, null, mandant, TestUserIds.BG_SACHBEARBEITERIN);
+		persistence.merge(saja);
 		try {
 			createLoginContext(TestUserIds.BG_SACHBEARBEITERIN, "saja").login();
 		} catch (LoginException e) {
 			LOG.error("could not login as sachbearbeiter jugendamt saja for tests");
 		}
-
-		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		Benutzer saja = createOrFindBenutzer(UserRole.SACHBEARBEITER_BG, "saja", null, null, mandant, TestUserIds.BG_SACHBEARBEITERIN);
-		persistence.merge(saja);
 		return saja;
 	}
 
 	protected Benutzer loginAsJurist() {
+		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
+		Benutzer jurist = createOrFindBenutzer(UserRole.JURIST, "jurist", null, null, mandant, TestUserIds.JURISTIN);
+		persistence.merge(jurist);
 		try {
 			createLoginContext(TestUserIds.JURISTIN, "jurist").login();
 		} catch (LoginException e) {
 			LOG.error("could not login as jurist for tests");
 		}
-
-		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		Benutzer jurist = createOrFindBenutzer(UserRole.JURIST, "jurist", null, null, mandant, TestUserIds.JURISTIN);
-		persistence.merge(jurist);
 		return jurist;
 	}
 
 	protected void loginAsAdmin() {
+		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
+		Benutzer admin = createOrFindBenutzer(UserRole.ADMIN_BG, "admin", null, null, mandant, TestUserIds.BG_ADMIN);
+		persistence.merge(admin);
+
 		try {
 			createLoginContext(TestUserIds.BG_ADMIN, "admin").login();
 		} catch (LoginException e) {
 			LOG.error("could not login as sachbearbeiter jugendamt admin for tests");
 		}
-
-		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		Benutzer admin = createOrFindBenutzer(UserRole.ADMIN_BG, "admin", null, null, mandant, TestUserIds.BG_ADMIN);
-		persistence.merge(admin);
 	}
-	
+
 	protected Benutzer loginAsSachbearbeiterInst(Institution institutionToSet) {
 		return this.loginAsSachbearbeiterInst("sainst", institutionToSet, TestUserIds.INSTITUTION_SACHBEARBEITER);
 	}
-	
+
 	protected Benutzer loginAsSachbearbeiterInst2(Institution institutionToSet) {
 		return this.loginAsSachbearbeiterInst("sainst2", institutionToSet, TestUserIds.INSTITUTION_SACHBEARBEITER2);
 	}
