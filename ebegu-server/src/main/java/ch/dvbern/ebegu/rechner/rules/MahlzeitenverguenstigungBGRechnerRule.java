@@ -45,8 +45,10 @@ public final class MahlzeitenverguenstigungBGRechnerRule implements RechnerRule 
 		this.locale = locale;
 	}
 
-	private void addBemerkung(@Nonnull BGCalculationInput inputData) {
-		inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG, locale);
+	private void addBemerkung(
+			@Nonnull BGCalculationInput inputData,
+			BGRechnerParameterDTO parameterDTO) {
+		inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG, locale, parameterDTO.getMahlzeitenverguenstigungParameter().getMinimalerElternbeitragMahlzeit());
 	}
 
 	private boolean validateInput(@Nonnull BGCalculationInput inputData) {
@@ -283,7 +285,7 @@ public final class MahlzeitenverguenstigungBGRechnerRule implements RechnerRule 
 		);
 
 		if (verguenstigung.compareTo(BigDecimal.ZERO) > 0) {
-			addBemerkung(inputGemeinde);
+			addBemerkung(inputGemeinde, parameterDTO);
 		}
 
 		rechnerParameter.setVerguenstigungMahlzeitenTotal(verguenstigung);

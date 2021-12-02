@@ -122,11 +122,11 @@ public final class MahlzeitenverguenstigungTSRechnerRule implements RechnerRule 
 
 			if (verguenstigungMitBetreuung.compareTo(BigDecimal.ZERO) > 0 ) {
 				inputGemeinde.setTsVerpflegungskostenVerguenstigtMitBetreuung(verguenstigungMitBetreuung);
-				inputGemeinde.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS, locale);
+				inputGemeinde.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS, locale, parameterDTO.getMahlzeitenverguenstigungParameter().getMinimalerElternbeitragMahlzeit());
 			}
 			if (verguenstigungOhneBetreuung.compareTo(BigDecimal.ZERO) > 0 ) {
 				inputGemeinde.setTsVerpflegungskostenVerguenstigtOhneBetreuung(verguenstigungOhneBetreuung);
-				inputGemeinde.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS, locale);
+				inputGemeinde.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS, locale, parameterDTO.getMahlzeitenverguenstigungParameter().getMinimalerElternbeitragMahlzeit());
 			}
 		} else {
 			// Bemerkung, wenn keine Verguenstigung aufgrund Einkommen
