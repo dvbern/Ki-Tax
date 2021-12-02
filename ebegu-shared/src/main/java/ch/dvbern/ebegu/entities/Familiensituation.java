@@ -46,7 +46,8 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "auszahlungsdaten_id", name = "UK_familiensituation_auszahlungsdaten_id"))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "auszahlungsdaten_id",
+	name = "UK_familiensituation_auszahlungsdaten_id"))
 public class Familiensituation extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -6534582356181164632L;
@@ -60,7 +61,8 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Column(nullable = true)
 	private Boolean gemeinsameSteuererklaerung;
 
-	// Diese beiden Felder werden nicht immer eingegeben, deswegen Boolean und nicht boolean, damit sie auch null sein duerfen
+	// Diese beiden Felder werden nicht immer eingegeben, deswegen Boolean und nicht boolean, damit sie auch null sein
+	// duerfen
 	@Nullable
 	@Column(nullable = true)
 	private Boolean sozialhilfeBezueger;
@@ -101,7 +103,6 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Nonnull
 	@Column(nullable = false)
 	private Integer minDauerKonkubinat = 5;
-
 
 	public Familiensituation() {
 	}
@@ -227,9 +228,12 @@ public class Familiensituation extends AbstractMutableEntity {
 		if (this.familienstatus != null) {
 			switch (this.familienstatus) {
 			case ALLEINERZIEHEND:
-				if(!this.isFkjvFamSit())	return false;
+				if (!this.isFkjvFamSit()) {
+					return false;
+				}
 			case PFLEGEFAMILIE:
-				return this.gesuchstellerKardinalitaet != null && this.gesuchstellerKardinalitaet.equals(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
+				return this.gesuchstellerKardinalitaet != null && this.gesuchstellerKardinalitaet.equals(
+					EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
 			case VERHEIRATET:
 			case KONKUBINAT:
 				return true;
@@ -247,7 +251,9 @@ public class Familiensituation extends AbstractMutableEntity {
 	}
 
 	@Nonnull
-	public Familiensituation copyFamiliensituation(@Nonnull Familiensituation target, @Nonnull AntragCopyType copyType) {
+	public Familiensituation copyFamiliensituation(
+		@Nonnull Familiensituation target,
+		@Nonnull AntragCopyType copyType) {
 		super.copyAbstractEntity(target, copyType);
 		target.setFamilienstatus(this.getFamilienstatus());
 		target.setStartKonkubinat(this.getStartKonkubinat());
@@ -262,7 +268,8 @@ public class Familiensituation extends AbstractMutableEntity {
 			target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
 			target.setKeineMahlzeitenverguenstigungBeantragt(this.isKeineMahlzeitenverguenstigungBeantragt());
 			if (this.getAuszahlungsdaten() != null) {
-				target.setAuszahlungsdaten(this.getAuszahlungsdaten().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
+				target.setAuszahlungsdaten(this.getAuszahlungsdaten()
+					.copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
 			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
 			break;
@@ -272,7 +279,8 @@ public class Familiensituation extends AbstractMutableEntity {
 			target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
 			target.setKeineMahlzeitenverguenstigungBeantragt(this.isKeineMahlzeitenverguenstigungBeantragt());
 			if (this.getAuszahlungsdaten() != null) {
-				target.setAuszahlungsdaten(this.getAuszahlungsdaten().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
+				target.setAuszahlungsdaten(this.getAuszahlungsdaten()
+					.copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
 			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
 			break;
@@ -298,7 +306,9 @@ public class Familiensituation extends AbstractMutableEntity {
 		final Familiensituation otherFamiliensituation = (Familiensituation) other;
 		return Objects.equals(getAenderungPer(), otherFamiliensituation.getAenderungPer()) &&
 			getFamilienstatus() == otherFamiliensituation.getFamilienstatus() &&
-			EbeguUtil.isSameOrNullBoolean(getGemeinsameSteuererklaerung(), otherFamiliensituation.getGemeinsameSteuererklaerung()) &&
+			EbeguUtil.isSameOrNullBoolean(
+				getGemeinsameSteuererklaerung(),
+				otherFamiliensituation.getGemeinsameSteuererklaerung()) &&
 			Objects.equals(getSozialhilfeBezueger(), otherFamiliensituation.getSozialhilfeBezueger()) &&
 			Objects.equals(getVerguenstigungGewuenscht(), otherFamiliensituation.getVerguenstigungGewuenscht()) &&
 			Objects.equals(getStartKonkubinat(), otherFamiliensituation.getStartKonkubinat()) &&

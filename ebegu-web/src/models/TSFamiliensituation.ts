@@ -142,7 +142,7 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
                 if (!this.fkjvFamSit) {
                     return false;
                 }
-                return this.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ALLEINE;
+                return this.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
             case TSFamilienstatus.VERHEIRATET:
             case TSFamilienstatus.KONKUBINAT:
                 return true;

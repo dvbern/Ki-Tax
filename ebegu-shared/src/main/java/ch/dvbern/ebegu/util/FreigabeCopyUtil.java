@@ -134,6 +134,7 @@ public final class FreigabeCopyUtil {
 		familiensituationGS.setAbweichendeZahlungsadresse(familiensituationJA.isAbweichendeZahlungsadresse());
 		familiensituationGS.setFkjvFamSit(familiensituationJA.isFkjvFamSit());
 		familiensituationGS.setMinDauerKonkubinat(familiensituationJA.getMinDauerKonkubinat());
+		familiensituationGS.setGesuchstellerKardinalitaet(familiensituationJA.getGesuchstellerKardinalitaet());
 
 		Auszahlungsdaten auszahlungsdatenJA = familiensituationJA.getAuszahlungsdaten();
 		Auszahlungsdaten auszahlungsdatenGS = null;
