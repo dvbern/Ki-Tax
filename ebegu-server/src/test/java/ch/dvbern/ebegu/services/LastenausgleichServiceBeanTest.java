@@ -70,7 +70,7 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 	private TestfaelleService testfaelleService;
 
 	private String gemeinde;
-	
+
 	private Mandant mandant;
 
 	@Before
@@ -81,7 +81,7 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		TestDataUtil.prepareParameters(gp1819, persistence);
 		insertInstitutionen();
 		gemeinde = TestDataUtil.getGemeindeParis(persistence).getId();
-		mandant = TestDataUtil.getMandantKantonBern(persistence);
+		mandant = TestDataUtil.getMandantKantonBernAndPersist(persistence);
 	}
 
 	@Test

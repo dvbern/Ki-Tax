@@ -59,7 +59,7 @@ public abstract class AbstractEbeguRestLoginTest extends AbstractEbeguRestTest {
 
 	@Before
 	public void performLogin() {
-		Mandant mandant = TestDataUtil.getMandantKantonBern(persistence);
+		Mandant mandant = TestDataUtil.getMandantKantonBernAndPersist(persistence);
 		TestDataUtil.saveMandantIfNecessary(persistence, mandant);
 		dummyAdmin = TestDataUtil.createDummySuperAdmin(persistence, mandant, SUPERADMIN_NAME, SUPERADMIN_NAME, SUPERADMIN_ID);
 		try {

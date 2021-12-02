@@ -63,7 +63,7 @@ public class EinstellungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Before
 	public void setUp() {
-		kantonBern = TestDataUtil.getMandantKantonBern(persistence);
+		kantonBern = TestDataUtil.getMandantKantonBernAndPersist(persistence);
 
 		gesuchsperiode1617 = TestDataUtil.createGesuchsperiode1617();
 		gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
@@ -74,7 +74,7 @@ public class EinstellungServiceBeanTest extends AbstractEbeguLoginTest {
 		persistence.merge(gesuchsperiode1617);
 		persistence.merge(gesuchsperiode1718);
 
-		kantonLuzern = TestDataUtil.getMandantKantonLuzern(persistence);
+		kantonLuzern = TestDataUtil.getMandantKantonLuzernAndPersist(persistence);
 
 		gemeindeParis = TestDataUtil.createGemeindeParis();
 		gemeindeParis.setMandant(kantonBern);

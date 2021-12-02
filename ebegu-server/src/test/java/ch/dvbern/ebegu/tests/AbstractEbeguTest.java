@@ -195,7 +195,7 @@ public abstract class AbstractEbeguTest {
 		institutionStammdatenTagesschuleBern.getInstitution().setTraegerschaft(traegerschaft);
 		institutionStammdatenFerieninselGuarda.getInstitution().setTraegerschaft(traegerschaft);
 
-		Mandant mandant = TestDataUtil.getMandantKantonBern(persistence);
+		Mandant mandant = TestDataUtil.getMandantKantonBernAndPersist(persistence);
 		institutionStammdatenKitaAaregg.getInstitution().setMandant(mandant);
 		institutionStammdatenKitaBruennen.getInstitution().setMandant(mandant);
 		institutionStammdatenTagesfamilien.getInstitution().setMandant(mandant);
