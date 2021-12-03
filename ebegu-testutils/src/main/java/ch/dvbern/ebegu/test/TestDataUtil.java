@@ -402,7 +402,9 @@ public final class TestDataUtil {
 	}
 
 	public static Fall createDefaultFall() {
-		return new Fall();
+		var fall = new Fall();
+		fall.setMandant(getMandantKantonBern());
+		return fall;
 	}
 
 	public static Dossier createDefaultDossier() {
@@ -1541,7 +1543,7 @@ public final class TestDataUtil {
 
 	public static Institution createAndPersistDefaultInstitution(Persistence persistence) {
 		Institution inst = createDefaultInstitution();
-		persistence.merge(inst.getMandant());
+		TestDataUtil.saveMandantIfNecessary(persistence, inst.getMandant());
 		persistence.merge(inst.getTraegerschaft());
 		return persistence.merge(inst);
 	}
