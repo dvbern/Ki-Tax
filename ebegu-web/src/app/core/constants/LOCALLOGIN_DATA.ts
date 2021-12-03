@@ -27,7 +27,7 @@ export const LOCALLOGIN_DATA = {
         },
         institution: {
             id: '1b6f476f-e0f5-4380-9ef6-836d688853a3',
-            name: 'Kita Br�nnen',
+            name: 'Kita Brünnen',
         },
         tagesschule: {
             id: 'f44a68f2-dda2-4bf2-936a-68e20264b610',
@@ -57,7 +57,7 @@ export const LOCALLOGIN_DATA = {
         },
         institution: {
             id: 'f5ceae4a-30a5-11ec-a86f-b89a2ae4a038',
-            name: 'Kita Br�nnen LU',
+            name: 'Kita Brünnen LU',
         },
         tagesschule: {
             id: '3db43c9b-30a6-11ec-a86f-b89a2ae4a038',
@@ -70,6 +70,32 @@ export const LOCALLOGIN_DATA = {
         default_gemeinde: {
             id: '6fd6183c-30a2-11ec-a86f-b89a2ae4a038',
             name: 'Testgemeinde Luzern',
+        },
+    },
+    SO: {
+        mandant: {
+            id: '485d7483-30a2-11ec-a86f-b89a2ae4a038',
+            name: 'Kanton Solothurn',
+        },
+        traegerschaft: {
+            id: '31bf2433-30a3-11ec-a86f-b89a2ae4a038',
+            name: 'Kitas & Tagis Stadt Solothurn',
+        },
+        institution: {
+            id: 'f5ceae4a-30a5-11ec-a86f-b89a2ae4a038',
+            name: 'Kita Brünnen SO',
+        },
+        tagesschule: {
+            id: '3db43c9b-30a6-11ec-a86f-b89a2ae4a038',
+            name: 'Tagesschule Solothurn',
+        },
+        sozialdienst: {
+            id: '7049ec48-30ab-11ec-a86f-b89a2ae4a038',
+            name: 'SolothurnerSozialdienst',
+        },
+        default_gemeinde: {
+            id: '6fd6183c-30a2-11ec-a86f-b89a2ae4a038',
+            name: 'Testgemeinde Solothurn',
         },
     },
 };

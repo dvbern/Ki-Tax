@@ -159,7 +159,7 @@ export class LocalLoginComponent {
                 datum = LOCALLOGIN_DATA.LU;
                 break;
             default:
-                datum = LOCALLOGIN_DATA.BE;
+                datum = LOCALLOGIN_DATA.SO;
                 break;
         }
         return datum;
