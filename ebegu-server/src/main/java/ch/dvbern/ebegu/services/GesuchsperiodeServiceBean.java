@@ -433,9 +433,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuchsperiode> query = builder.createQuery(Gesuchsperiode.class);
 		final Root<Gesuchsperiode> root = query.from(Gesuchsperiode.class);
-		query.where(root.get(Gesuchsperiode_.status).in(status));
+		Predicate predicateStatus = root.get(Gesuchsperiode_.status).in(status);
 		Predicate predicateMandant = builder.equal(root.get(Gesuchsperiode_.mandant), principalBean.getMandant());
-		query.where(predicateMandant);
+		query.where(predicateStatus, predicateMandant);
 		query.orderBy(builder.desc(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb)));
 		return persistence.getCriteriaResults(query);
 	}
