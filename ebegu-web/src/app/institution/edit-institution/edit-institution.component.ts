@@ -123,7 +123,7 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     public static hasGueltigkeitDecreased(preEditGueltigkeit: TSDateRange, gueltigkeit: TSDateRange): boolean {
-        return EbeguUtil.isNullOrUndefined(preEditGueltigkeit.gueltigBis) && gueltigkeit.gueltigBis !== null ||
+        return EbeguUtil.isNullOrUndefined(preEditGueltigkeit.gueltigBis) && EbeguUtil.isNotNullOrUndefined(gueltigkeit.gueltigBis) ||
             gueltigkeit.gueltigBis?.isBefore(preEditGueltigkeit.gueltigBis) ||
             gueltigkeit.gueltigAb?.isAfter(preEditGueltigkeit.gueltigAb);
     }
