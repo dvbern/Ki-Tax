@@ -240,7 +240,7 @@ public class PDFServiceBean implements PDFService {
 			showInfoKontingentierung = einstellungKontingentierung.getValueAsBoolean();
 		}
 
-		boolean stadtBernAsivConfigured = applicationPropertyService.isStadtBernAsivConfigured();
+		boolean stadtBernAsivConfigured = applicationPropertyService.isStadtBernAsivConfigured(betreuung.extractGesuch().extractGemeinde().getMandant());
 
 		Art art = betreuung.hasAnspruch() ? Art.NORMAL : Art.KEIN_ANSPRUCH;
 		VerfuegungPdfGenerator pdfGenerator = new VerfuegungPdfGenerator(

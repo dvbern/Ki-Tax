@@ -22,17 +22,23 @@ import javax.annotation.Nonnull;
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxFachstelle;
 import ch.dvbern.ebegu.entities.Fachstelle;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FachstelleName;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.FachstelleService;
+import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -51,6 +57,9 @@ public class FachstelleResource {
 	@Inject
 	private JaxBConverter converter;
 
+	@Inject
+	GesuchsperiodeService gesuchsperiodeService;
+
 
 	@ApiOperation(value = "Returns Anspruch Fachstellen", responseContainer = "List", response = JaxFachstelle.class)
 	@Nonnull
@@ -58,9 +67,13 @@ public class FachstelleResource {
 	@Path("/anspruch")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxFachstelle> getAnspruchFachstellen(){
+	public List<JaxFachstelle> getAnspruchFachstellen(
+			@NotNull @QueryParam("gesuchsperiodeId") String gesuchsperiodeId
+	){
+		Gesuchsperiode gesuchsperiode = findGesuchsperiodeFromIdOrThrow(gesuchsperiodeId);
 		return fachstelleService.getAllFachstellen().stream()
 			.filter(Fachstelle::isFachstelleAnspruch)
+			.filter(fachstelle -> fachstelle.isGueltigForGesuchsperiode(gesuchsperiode))
 			.filter(fachstelle -> fachstelle.getName() != FachstelleName.KINDES_ERWACHSENEN_SCHUTZBEHOERDE)
 			.map(ap -> converter.fachstelleToJAX(ap))
 			.collect(Collectors.toList());
@@ -72,11 +85,23 @@ public class FachstelleResource {
 	@Path("/erweiterteBetreuung")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxFachstelle> getErweiterteBetreuungFachstellen(){
+	public List<JaxFachstelle> getErweiterteBetreuungFachstellen(
+			@NotNull @QueryParam("gesuchsperiodeId") String gesuchsperiodeId
+	){
+		Gesuchsperiode gesuchsperiode = findGesuchsperiodeFromIdOrThrow(gesuchsperiodeId);
 		return fachstelleService.getAllFachstellen().stream()
 			.filter(Fachstelle::isFachstelleErweiterteBetreuung)
+			.filter(fachstelle -> fachstelle.isGueltigForGesuchsperiode(gesuchsperiode))
 			.filter(fachstelle -> fachstelle.getName() != FachstelleName.KINDES_ERWACHSENEN_SCHUTZBEHOERDE)
 			.map(ap -> converter.fachstelleToJAX(ap))
 			.collect(Collectors.toList());
+	}
+
+	private Gesuchsperiode findGesuchsperiodeFromIdOrThrow(@NotNull String gesuchsperiodeId) {
+		return gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId).orElseThrow(()
+				-> new EbeguRuntimeException(
+				"getAnspruchFachstellen",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gesuchsperiodeId));
 	}
 }

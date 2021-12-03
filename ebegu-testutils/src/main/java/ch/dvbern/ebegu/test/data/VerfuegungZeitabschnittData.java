@@ -17,8 +17,16 @@ package ch.dvbern.ebegu.test.data;
 
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.xml.bind.annotation.XmlElement;
 
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnittBemerkung;
+import org.apache.commons.lang.StringUtils;
 
 import static java.math.BigDecimal.ZERO;
 
@@ -43,7 +51,7 @@ public class VerfuegungZeitabschnittData {
 
 	private BigDecimal famGroesse = null;
 
-	private String bemerkungen = "";
+	private List<String> bemerkungenList = Collections.emptyList();
 
 	public VerfuegungZeitabschnittData() {
 
@@ -57,7 +65,9 @@ public class VerfuegungZeitabschnittData {
 		this.abzugFamGroesse = verfuegungZeitabschnitt.getAbzugFamGroesse();
 		this.elternbeitrag = verfuegungZeitabschnitt.getElternbeitrag();
 		this.anspruchberechtigtesPensum = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
-		this.bemerkungen = verfuegungZeitabschnitt.getBemerkungen();
+		this.bemerkungenList = verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().stream()
+			.map(VerfuegungZeitabschnittBemerkung::getBemerkung)
+			.collect(Collectors.toList());
 		this.betreuungspensumProzent = verfuegungZeitabschnitt.getBetreuungspensumProzent();
 		this.famGroesse = verfuegungZeitabschnitt.getFamGroesse();
 		this.vollkosten = verfuegungZeitabschnitt.getVollkosten();
@@ -111,12 +121,19 @@ public class VerfuegungZeitabschnittData {
 		this.famGroesse = famGroesse;
 	}
 
-	public String getBemerkungen() {
-		return bemerkungen;
+	public List<String> getBemerkungenList() {
+		return bemerkungenList;
 	}
 
+	public void setBemerkungenList(List<String> bemerkungenList) {
+		this.bemerkungenList = bemerkungenList;
+	}
+
+	@XmlElement(name="bemerkungen")
 	public void setBemerkungen(String bemerkungen) {
-		this.bemerkungen = bemerkungen;
+		if(StringUtils.isNotEmpty(bemerkungen)) {
+			this.bemerkungenList = Arrays.asList(bemerkungen.split("\n"));
+		}
 	}
 
 	public String getGueltigAb() {

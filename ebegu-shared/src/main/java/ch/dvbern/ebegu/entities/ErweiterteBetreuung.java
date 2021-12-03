@@ -41,6 +41,10 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 	private Boolean keineKesbPlatzierung = false;
 
 	@Nullable
+	@Column(nullable = true)
+	private Boolean kitaPlusZuschlag;
+
+	@Nullable
 	public Boolean getBetreuungInGemeinde() {
 		return betreuungInGemeinde;
 	}
@@ -84,6 +88,17 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 		this.keineKesbPlatzierung = keineKesbPlatzierung;
 	}
 
+	@Nullable
+	public Boolean getKitaPlusZuschlag() {
+		return kitaPlusZuschlag;
+	}
+
+	public void setKitaPlusZuschlag(@Nullable Boolean kitaPlusZuschlag) {
+		this.kitaPlusZuschlag = kitaPlusZuschlag;
+	}
+
+
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -113,7 +128,11 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 			getKeineKesbPlatzierung(),
 			otherErwBetr.getKeineKesbPlatzierung());
 
-		return erwBeduerfnisseSame && bestAussBetrAufwand && fachstelleSame && kesbSame;
+		boolean kitaPlusSame = Objects.equals(
+			getKitaPlusZuschlag(),
+			otherErwBetr.getKitaPlusZuschlag());
+
+		return erwBeduerfnisseSame && bestAussBetrAufwand && fachstelleSame && kesbSame && kitaPlusSame;
 	}
 
 	@Nonnull
@@ -129,6 +148,7 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 			target.setFachstelle(this.getFachstelle());
 			target.setKeineKesbPlatzierung(this.getKeineKesbPlatzierung());
 			target.setBetreuungInGemeinde(this.getBetreuungInGemeinde());
+			target.setKitaPlusZuschlag(this.getKitaPlusZuschlag());
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:

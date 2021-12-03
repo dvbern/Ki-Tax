@@ -58,11 +58,11 @@ public class SchulstufeCalcRuleTest {
 		Assert.assertEquals(1, result.size());
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);
 		Assert.assertEquals(100, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
-		Assert.assertNotNull(verfuegungZeitabschnitt.getBemerkungen());
-		Assert.assertFalse(verfuegungZeitabschnitt.getBemerkungenList().isEmpty());
-		Assert.assertEquals(2, result.get(0).getBemerkungenList().uniqueSize());
-		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
-		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
+		Assert.assertNotNull(verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList());
+		Assert.assertFalse(verfuegungZeitabschnitt.getBemerkungenDTOList().isEmpty());
+		Assert.assertEquals(2, result.get(0).getBemerkungenDTOList().uniqueSize());
+		Assert.assertTrue(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertTrue(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
 	private void assertNichtBerechtigt(List<VerfuegungZeitabschnitt> result) {
@@ -70,11 +70,11 @@ public class SchulstufeCalcRuleTest {
 		Assert.assertEquals(1, result.size());
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);
 		Assert.assertEquals(0, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
-		Assert.assertNotNull(verfuegungZeitabschnitt.getBemerkungen());
-		Assert.assertFalse(result.get(0).getBemerkungenList().isEmpty());
-		Assert.assertEquals(2, result.get(0).getBemerkungenList().uniqueSize());
-		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
-		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG));
+		Assert.assertNotNull(verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList());
+		Assert.assertFalse(result.get(0).getBemerkungenDTOList().isEmpty());
+		Assert.assertEquals(2, result.get(0).getBemerkungenDTOList().uniqueSize());
+		Assert.assertTrue(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertTrue(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG));
 	}
 
 	private Betreuung prepareData(final int pensum, final EinschulungTyp schulstufe) {

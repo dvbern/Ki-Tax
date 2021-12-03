@@ -17,9 +17,11 @@ package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,6 +30,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -38,10 +41,9 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
-import ch.dvbern.ebegu.dto.VerfuegungsBemerkungList;
+import ch.dvbern.ebegu.dto.VerfuegungsBemerkungDTOList;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.PensumUnits;
@@ -135,14 +137,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		VerfuegungsZeitabschnittZahlungsstatus.NEU;
 
 	// Die Bemerkungen werden vorerst in eine Map geschrieben, damit einzelne
-	// Bemerkungen spaeter wieder zugreifbar sind. Am Ende des RuleSets werden sie ins persistente Feld
-	// "bemerkungen" geschrieben
+	// Bemerkungen spaeter wieder zugreifbar sind. Am Ende des RuleSets werden sie ins persistente Object
+	// "verfuegungZeitabschnittBemerkungList" geschrieben
 	@Transient
-	private final VerfuegungsBemerkungList bemerkungenList = new VerfuegungsBemerkungList();
+	private final VerfuegungsBemerkungDTOList bemerkungenDTOList = new VerfuegungsBemerkungDTOList();
 
-	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
-	@Nullable
-	private @Size(max = Constants.DB_TEXTAREA_LENGTH) String bemerkungen = "";
+
+	@OneToMany(mappedBy = "verfuegungZeitabschnitt", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<VerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungList = Collections.emptyList();
 
 	public VerfuegungZeitabschnitt() {
 	}
@@ -163,8 +165,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		}
 		//noinspection ConstantConditions: Muss erst beim Speichern gesetzt sein
 		this.verfuegung = null;
-		this.bemerkungenList.mergeBemerkungenMap(toCopy.bemerkungenList);
-		this.bemerkungen = toCopy.bemerkungen;
+		this.bemerkungenDTOList.mergeBemerkungenMap(toCopy.bemerkungenDTOList);
+		this.verfuegungZeitabschnittBemerkungList = toCopy.verfuegungZeitabschnittBemerkungList;
 		this.zahlungsstatus = toCopy.zahlungsstatus;
 		this.zahlungsstatusMahlzeitenverguenstigung = toCopy.zahlungsstatusMahlzeitenverguenstigung;
 	}
@@ -231,6 +233,16 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public String getVorgaengerId() {
 		return null; // Diese Methode darf eingentlich nicht verwendet werden, da ein VerfuegungZeitabschnitt keinen
 		// Vorgaenger hat
+	}
+
+	@Nonnull
+	public List<VerfuegungZeitabschnittBemerkung> getVerfuegungZeitabschnittBemerkungList() {
+		return verfuegungZeitabschnittBemerkungList;
+	}
+
+	public void setVerfuegungZeitabschnittBemerkungList(
+		@Nonnull List<VerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungList) {
+		this.verfuegungZeitabschnittBemerkungList = verfuegungZeitabschnittBemerkungList;
 	}
 
 
@@ -584,15 +596,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
 
-	@Nullable
-	public String getBemerkungen() {
-		return bemerkungen;
-	}
-
-	public void setBemerkungen(@Nullable String bemerkungen) {
-		this.bemerkungen = bemerkungen;
-	}
-
 	@Nonnull
 	public Verfuegung getVerfuegung() {
 		return verfuegung;
@@ -629,8 +632,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.zahlungsposition = zahlungsposition;
 	}
 
-	public VerfuegungsBemerkungList getBemerkungenList() {
-		return bemerkungenList;
+	public VerfuegungsBemerkungDTOList getBemerkungenDTOList() {
+		return bemerkungenDTOList;
 	}
 
 	/**
@@ -641,11 +644,17 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.hasGemeindeSpezifischeBerechnung = (this.hasGemeindeSpezifischeBerechnung || other.hasGemeindeSpezifischeBerechnung);
 		this.bgCalculationInputAsiv.add(other.bgCalculationInputAsiv);
 		this.bgCalculationInputGemeinde.add(other.bgCalculationInputGemeinde);
-		this.bemerkungenList.addAllBemerkungen(other.bemerkungenList);
+		this.bemerkungenDTOList.addAllBemerkungen(other.bemerkungenDTOList);
 	}
 
 	@Override
 	public String toString() {
+		String sb = '\t' + this.toStringWithoutBemerkung()
+			+ " Bemerkungen: " + getVerfuegungenZeitabschnittBemerkungenAsString();
+		return sb;
+	}
+
+	public String toStringWithoutBemerkung() {
 		String sb = '[' + Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigAb()) + " - "
 			+ Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigBis()) + "] "
 			+ " bgCalculationInputAsiv: " + bgCalculationInputAsiv + '\t'
@@ -654,8 +663,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			+ " bgCalculationResultGemeinde: " + bgCalculationResultGemeinde + '\t'
 			+ " Regelwerk: " + regelwerk + '\t'
 			+ " Status: " + zahlungsstatus + '\t'
-			+ " Status Mahlzeitenverguenstigung: " + zahlungsstatusMahlzeitenverguenstigung + '\t'
-			+ " Bemerkungen: " + bemerkungen;
+			+ " Status Mahlzeitenverguenstigung: " + zahlungsstatusMahlzeitenverguenstigung;
 		return sb;
 	}
 
@@ -682,8 +690,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			EbeguUtil.isSame(bgCalculationResultGemeinde, otherVerfuegungZeitabschnitt.bgCalculationResultGemeinde) &&
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
 			zahlungsstatusMahlzeitenverguenstigung == otherVerfuegungZeitabschnitt.zahlungsstatusMahlzeitenverguenstigung &&
-			this.bemerkungenList.isSame(((VerfuegungZeitabschnitt) other).bemerkungenList) &&
-			Objects.equals(bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen);
+			this.bemerkungenDTOList.isSame(((VerfuegungZeitabschnitt) other).bemerkungenDTOList) &&
+			Objects.equals(verfuegungZeitabschnittBemerkungList, otherVerfuegungZeitabschnitt.verfuegungZeitabschnittBemerkungList);
 	}
 
 	public boolean isSameSichtbareDaten(VerfuegungZeitabschnitt that) {
@@ -696,8 +704,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			(!this.isHasGemeindeSpezifischeBerechnung() || this.bgCalculationInputGemeinde.isSameSichtbareDaten(that.bgCalculationInputGemeinde)) &&
 			BGCalculationResult.isSameSichtbareDaten(this.bgCalculationResultAsiv, that.bgCalculationResultAsiv) &&
 			BGCalculationResult.isSameSichtbareDaten(this.bgCalculationResultGemeinde, that.bgCalculationResultGemeinde) &&
-			this.bemerkungenList.isSame(that.bemerkungenList) &&
-			Objects.equals(bemerkungen, that.bemerkungen);
+			this.bemerkungenDTOList.isSame(that.bemerkungenDTOList) &&
+			Objects.equals(verfuegungZeitabschnittBemerkungList, that.verfuegungZeitabschnittBemerkungList);
 	}
 
 	/**
@@ -807,5 +815,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public void setSameVerfuegteMahlzeitenVerguenstigungForAsivAndGemeinde(boolean same) {
 		this.bgCalculationInputAsiv.setSameVerfuegteMahlzeitenVerguenstigung(same);
 		this.bgCalculationInputGemeinde.setSameVerfuegteMahlzeitenVerguenstigung(same);
+	}
+
+	public String getVerfuegungenZeitabschnittBemerkungenAsString() {
+		return this.getVerfuegungZeitabschnittBemerkungList().stream()
+			.map(VerfuegungZeitabschnittBemerkung::getBemerkung)
+			.collect(Collectors.joining("\n"));
 	}
 }

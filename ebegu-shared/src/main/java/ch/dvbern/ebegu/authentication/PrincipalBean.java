@@ -58,15 +58,15 @@ public class PrincipalBean {
 	private Mandant mandant = null;
 
 	private void loadNormalUser() {
-		String name = principal.getName();
-		benutzer = benutzerService.findBenutzer(name)
-			.orElseThrow(() -> new IllegalStateException("Could not find Benutzer with username " + name));
+		String id = principal.getName();
+		benutzer = benutzerService.findBenutzerById(id)
+			.orElseThrow(() -> new IllegalStateException("Could not find Benutzer with username " + id));
 		mandant = benutzer.getMandant();
 	}
 
 	@Nonnull
 	public Benutzer getBenutzer() {
-		if (benutzer == null || !benutzer.getUsername().equals(principal.getName())) {
+		if (benutzer == null || !benutzer.getId().equals(principal.getName())) {
 			loadNormalUser();
 		}
 		return benutzer;
@@ -74,7 +74,7 @@ public class PrincipalBean {
 
 	@Nullable
 	public Mandant getMandant() {
-		if (mandant == null || !getBenutzer().getUsername().equals(principal.getName())) {
+		if (mandant == null || !getBenutzer().getId().equals(principal.getName())) {
 			mandant = getBenutzer().getMandant();
 		}
 		return mandant;

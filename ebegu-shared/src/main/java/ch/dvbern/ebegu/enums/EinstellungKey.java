@@ -199,7 +199,7 @@ public enum EinstellungKey {
 
 	// "FKJV: Anspruchsberechnung monatsweise"
 	// Siehe KIBON-2095. Falls true wird der Anspruch nur monatsweise berechnet
-	FJKV_ANSPRUCH_MONATSWEISE,
+	FKJV_ANSPRUCH_MONATSWEISE,
 
 	// Definiert ob die Schnittstelle zu den Steuersystemen aktiv ist
 	SCHNITTSTELLE_STEUERN_AKTIV,
@@ -208,7 +208,33 @@ public enum EinstellungKey {
 	FERIENBETREUUNG_CHF_PAUSCHALBETRAG,
 
 	// Ferienbetreuung Kosten pro Tag für Sonderschüler
-	FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER;
+	FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER,
+
+	// Neue Frage bei Kinderabzug für FJKV
+	// Siehe KIBON-2115
+	FKJV_KINDERABZUG_NEU,
+
+	// Neue Familiensituation für FJKV
+	// Siehe KIBON-2116
+	FKJV_FAMILIENSITUATION_NEU,
+
+	// Definiert die Minimallänge für das Konkubinat, damit zwei Antragstellende berücksichtigt werden
+	MINIMALDAUER_KONKUBINAT,
+
+	// Legt den Typen der finanziellen Verhältnisse fest. Z.B. BERN_ASIV oder LUZERN
+	FINANZIELLE_SITUATION_TYP,
+
+	// Kitaplus Zuschlag aktiviert (Luzern)
+	// Siehe KIBON-2131
+	KITAPLUS_ZUSCHLAG_AKTIVIERT,
+
+	// Können BG Konfigurationen in den Gemeinde Einstellungen überschrieben werden (Solothurn)
+	// siehe KIBON-2133
+	GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN,
+
+	// (Solothurn)
+	// Siehe KIBON-2134
+	ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
 
 	private EinstellungTyp typ;
 

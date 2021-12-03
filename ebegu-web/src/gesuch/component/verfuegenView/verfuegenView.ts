@@ -94,6 +94,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public isVerfuegenClicked: boolean = false;
     public showPercent: boolean;
     public showHours: boolean;
+    public showDays: boolean;
 
     public showVerfuegung: boolean;
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
@@ -177,6 +178,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
         this.showPercent = this.showPensumInPercent();
         this.showHours = this.showPensumInHours();
+        this.showDays = this.showPensumInDays();
         this.showVerfuegung = this.showVerfuegen();
 
         this.initDevModeParameter();
@@ -609,6 +611,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return this.getBetreuung() ? this.getBetreuung().isAngebotTagesfamilien() : false;
     }
 
+    public isKITAVerfuegung(): boolean {
+        return this.getBetreuung() ? this.getBetreuung().isAngebotKITA() : false;
+    }
+
     public getAbholungTagesschuleValues(): Array<TSAbholungTagesschule> {
         return getTSAbholungTagesschuleValues();
     }
@@ -633,11 +639,15 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public showPensumInHours(): boolean {
-        return this.isTagesfamilienVerfuegung() || this.isSuperuser();
+        return this.isTagesfamilienVerfuegung();
     }
 
     public showPensumInPercent(): boolean {
         return !this.isTagesfamilienVerfuegung() || this.isSuperuser();
+    }
+
+    public showPensumInDays(): boolean {
+        return this.isKITAVerfuegung() && this.isSuperuser();
     }
 
     private getTagesschuleZeitabschnitteMitBetreuung(): Array<TSVerfuegungZeitabschnitt> {

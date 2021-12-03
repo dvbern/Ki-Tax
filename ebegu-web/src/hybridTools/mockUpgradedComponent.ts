@@ -18,6 +18,7 @@
 import {Directive, EventEmitter, Injectable, Input, Output} from '@angular/core';
 import {Observable, of} from 'rxjs';
 import {KiBonMandant} from '../app/core/constants/MANDANTS';
+import {DvNavigationX} from '../app/core/directive/dv-navigation/dv-navigation-x';
 import {WindowRef} from '../app/core/service/windowRef.service';
 import {LoadingButtonDirective} from '../app/shared/directive/loading-button.directive';
 import {TooltipDirective} from '../app/shared/directive/TooltipDirective';
@@ -53,6 +54,23 @@ export class MockTooltipDirective {
 
 }
 
+@Directive({
+    selector: 'dv-navigation'
+})
+export class MockDVNavigationDirective {
+    @Input() public dvPrevious: () => any;
+    @Input() public dvNext: () => any;
+    @Input() public dvSave: () => any;
+    @Input() public dvCancel: () => any;
+    @Input() public dvNextDisabled: () => any;
+    @Input() public dvSubStep: number;
+    @Input() public dvSubStepName: string;
+    @Input() public dvSavingPossible: boolean;
+    @Input() public dvTranslateNext: string;
+    @Input() public dvTranslatePrevious: string;
+    @Input() public containerClass: string;
+}
+
 @Injectable()
 class MockMandantService {
 
@@ -67,13 +85,13 @@ class MockMandantService {
 
 export const SHARED_MODULE_OVERRIDES = {
     remove: {
-        declarations: [LoadingButtonDirective, TooltipDirective],
-        exports: [LoadingButtonDirective, TooltipDirective],
+        declarations: [LoadingButtonDirective, TooltipDirective, DvNavigationX],
+        exports: [LoadingButtonDirective, TooltipDirective, DvNavigationX],
         providers: [MandantService],
     },
     add: {
-        declarations: [MockDvLoadingButton, MockTooltipDirective],
-        exports: [MockDvLoadingButton, MockTooltipDirective],
+        declarations: [MockDvLoadingButton, MockTooltipDirective, MockDVNavigationDirective],
+        exports: [MockDvLoadingButton, MockTooltipDirective, MockDVNavigationDirective],
         providers: [
             WindowRef,
             {

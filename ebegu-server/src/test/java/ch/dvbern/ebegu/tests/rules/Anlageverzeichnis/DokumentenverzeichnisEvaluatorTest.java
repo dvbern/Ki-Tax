@@ -25,9 +25,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Familiensituation;
@@ -43,6 +45,7 @@ import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.FachstelleName;
 import ch.dvbern.ebegu.enums.Kinderabzug;
@@ -50,30 +53,55 @@ import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.ErwerbspensumDokumente;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.KindDokumente;
+import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import org.easymock.EasyMockExtension;
+import org.easymock.EasyMockSupport;
+import org.easymock.Mock;
+import org.easymock.TestSubject;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import static org.easymock.EasyMock.expect;
 
 /**
  * Tests für die Regeln der Benötigten Dokumenten
  */
-public class DokumentenverzeichnisEvaluatorTest {
+@ExtendWith(EasyMockExtension.class)
+public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
+	@TestSubject
 	private final DokumentenverzeichnisEvaluator evaluator = new DokumentenverzeichnisEvaluator();
+
+	@Mock
+	private EinstellungService einstellungServiceMock;
+
 	private final KindDokumente kindDokumente = new KindDokumente();
 	private final ErwerbspensumDokumente erwerbspensumDokumente = new ErwerbspensumDokumente();
 	private Gesuch testgesuch;
 
-	@Before
+	@BeforeEach
 	public void setUpCalculator() {
 		testgesuch = new Gesuch();
 		testgesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		testgesuch.getGesuchsperiode().getGueltigkeit().setGueltigAb(Constants.GESUCHSPERIODE_17_18_AB);
 		testgesuch.getGesuchsperiode().getGueltigkeit().setGueltigBis(Constants.GESUCHSPERIODE_17_18_BIS);
 		testgesuch.setKindContainers(new HashSet<>());
+		testgesuch.setDossier(new Dossier());
+	}
+
+	private void setUpEinstellungMock(@Nonnull Gesuch testgesuch, @Nonnull String anspruchUnabhaengig) {
+		var einstellung = new Einstellung();
+		einstellung.setValue(anspruchUnabhaengig);
+		expect(einstellungServiceMock.findEinstellung(EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM, testgesuch.extractGemeinde(), testgesuch.getGesuchsperiode()))
+			.andReturn(einstellung)
+			.anyTimes();
+		replayAll();
 	}
 
 	private Kind createKind(Gesuch gesuch, String vorname, Kinderabzug ganzerAbzug, FachstelleName fachstellename) {
@@ -174,6 +202,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	@Test
 	public void kindDokumentFachstelleTest() {
+		setUpEinstellungMock(testgesuch, "false");
 
 		clearKinder(testgesuch);
 		final String kindName = "Jan";
@@ -227,6 +256,8 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	@Test
 	public void erwpDokumentNeueintrittAfterTest() {
+		setUpEinstellungMock(testgesuch, "false");
+
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, false);
 
 		// Nachweis EP ist neu immer zwingend
@@ -243,6 +274,8 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	@Test
 	public void erwpDokumentNeueintrittBeforeTest() {
+		setUpEinstellungMock(testgesuch, "false");
+
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, false);
 
 		erwerbspensum.getGueltigkeit().setGueltigAb(LocalDate.of(2000, 7, 1));
@@ -253,6 +286,8 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	@Test
 	public void erwpDokumentSelbstaendigTest() {
+		setUpEinstellungMock(testgesuch, "false");
+
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.SELBSTAENDIG, false);
 
 		Assert.assertTrue(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
@@ -269,6 +304,8 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	@Test
 	public void erwpDokumentAusbildung() {
+		setUpEinstellungMock(testgesuch, "false");
+
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.AUSBILDUNG, false);
 
 		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
@@ -283,6 +320,8 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	@Test
 	public void erwpDokumentRAV() {
+		setUpEinstellungMock(testgesuch, "false");
+
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.RAV, false);
 
 		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
@@ -297,6 +336,8 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	@Test
 	public void erwpDokumentArzt() {
+		setUpEinstellungMock(testgesuch, "false");
+
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, true);
 
 		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
@@ -356,6 +397,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	@Test
 	public void finSiSteuerveranlagungGemeinsam() {
+		setUpEinstellungMock(testgesuch, "false");
 
 		createFinanzielleSituationGS(1, testgesuch, "Sämi", true);
 		createFinanzielleSituationGS(2, testgesuch, "Alex", true);
@@ -371,6 +413,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	@Test
 	public void finSiSteuerveranlagungNichtGemeinsam() {
+		setUpEinstellungMock(testgesuch, "false");
 
 		createFinanzielleSituationGS(1, testgesuch, "Sämi", true);
 		createFinanzielleSituationGS(2, testgesuch, "Alex", true);
@@ -397,6 +440,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	@Test
 	public void finSiNichtGemeinsam() {
+		setUpEinstellungMock(testgesuch, "false");
 
 		createFinanzielleSituationGS(1, testgesuch, "Sämi", false);
 		createFinanzielleSituationGS(2, testgesuch, "Alex", false);
@@ -434,6 +478,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	@Test
 	public void finSiDokumenteTest() {
+		setUpEinstellungMock(testgesuch, "false");
 
 		createFinanzielleSituationGS(1, testgesuch, "Sämi", false);
 		createFamilienSituation(testgesuch, false, false);
@@ -517,6 +562,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(2016, 8, 1), Constants.GESUCHSPERIODE_17_18_AB));
 
 		testgesuch.setGesuchsperiode(gesuchsperiode);
+		setUpEinstellungMock(testgesuch, "false");
 		createFamilienSituation(testgesuch, true, false);
 
 		Assert.assertNotNull(testgesuch.getGesuchsteller1());
@@ -553,12 +599,33 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	@Test
 	public void familiensituationDokumenteTest() {
+		setUpEinstellungMock(testgesuch, "false");
+
 		createFamilienSituation(testgesuch, true, true);
 
 		Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
 
 		assertType(dokumentGrunds, DokumentTyp.UNTERSTUETZUNGSBESTAETIGUNG, null, null,
 			null, null, DokumentGrundTyp.FINANZIELLESITUATION);
+	}
+
+	@Test
+	public void erwerbspensumDokumenteNotRequiredTest() {
+		setUpEinstellungMock(testgesuch, "true");
+
+		createFinanzielleSituationGS(1, testgesuch, "Sämi", true);
+		createFinanzielleSituationGS(2, testgesuch, "Alex", true);
+
+		createFamilienSituation(testgesuch, false, false);
+		var dokumentGruende = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
+		Assertions.assertEquals(2, dokumentGruende.size());
+		boolean found = false;
+		for (var grund: dokumentGruende) {
+			if (grund.getDokumentTyp().equals(DokumentTyp.NACHWEIS_ERWERBSPENSUM)) {
+				found = true;
+			}
+		}
+		Assertions.assertFalse(found);
 	}
 
 	private void createEinkommensverschlechterungInfo() {

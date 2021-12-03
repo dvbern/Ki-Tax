@@ -49,7 +49,12 @@ INSERT IGNORE INTO gemeinde_stammdaten (id, timestamp_erstellt, timestamp_mutier
 	('4a7dc6e5-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), '2018-10-23 00:00:00',
 																													  '2018-10-23 00:00:00', 'flyway', 'flyway', 0, UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('80a8e496-b73c-4a4a-a163-a0b2caf76487', '-', '')), UNHEX(REPLACE('4a7d4ba5-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), 'london@mailbucket.dvbern.ch', '+41 31 930 14 14', 'https://www.ostermundigen.ch', null, 'DE', null, 'BIC', 'CH93 0076 2011 6238 5295 7', 'London Kontoinhaber', true, true, true, true, false);
 
-UPDATE sequence SET current_value = (select max(gemeinde_nummer) from gemeinde) WHERE sequence_type = 'GEMEINDE_NUMMER';
+UPDATE sequence
+SET current_value = (SELECT max(gemeinde_nummer)
+					 FROM gemeinde
+					 WHERE gemeinde.mandant_id = UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', '')))
+WHERE sequence_type = 'GEMEINDE_NUMMER' AND
+		sequence.mandant_id = UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', ''));
 
 # Test-Institutionen erstellen
 INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active) VALUES (UNHEX(REPLACE('f9ddee82-81a1-4cda-b273-fb24e9299308', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, 'Kitas & Tagis Stadt Bern', true);

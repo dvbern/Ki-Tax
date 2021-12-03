@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -30,6 +31,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.platform.commons.util.StringUtils;
 
 /**
  * Tests fuer EinkommenAbschnittRule
@@ -140,12 +142,16 @@ public class EinkommenAbschnittRuleTest {
 
 	@Test
 	public void testEKVForHighEinkommen_shouldBeIgnored() {
-		initCustomEinkommenCalcRule(new BigDecimal("80000"));
+		var ekvLimit = new BigDecimal("80000");
+		initCustomEinkommenCalcRule(ekvLimit);
 
 		BigDecimal EINKOMMEN_TIEF = new BigDecimal("60000");
 		BigDecimal EINKOMMEN_HOCH = new BigDecimal("100000");
 		List<VerfuegungZeitabschnitt> zeitabschnitte = createTestdataEinkommensverschlechterung(EINKOMMEN_HOCH, EINKOMMEN_TIEF, EINKOMMEN_TIEF);
-		final String EXPECTED_MESSAGE = "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde abgelehnt. Die Anwendung der Einkommensverschlechterung ist nur bei einem Einkommen von weniger als 80’000 CHF möglich.";
+		final String EXPECTED_MESSAGE =
+			"Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde abgelehnt. Die Anwendung der Einkommensverschlechterung ist nur bei einem Einkommen von weniger als "
+				+ NumberFormat.getInstance(Constants.DEFAULT_LOCALE).format(ekvLimit)
+				+ " CHF möglich.";
 
 		// Es kann maximal 2 Abschnitte geben, da die EKVs immer für das ganze Jahr gelten
 		ExpectedResult jahr1 = new ExpectedResult(EINKOMMEN_HOCH, 2016, EXPECTED_MESSAGE);
@@ -175,7 +181,12 @@ public class EinkommenAbschnittRuleTest {
 			ExpectedResult expectedResult = expectedResults[i++];
 			Assert.assertTrue(MathUtil.isSame(expectedResult.massgebendesEinkommen, verfuegungZeitabschnitt.getRelevantBgCalculationInput().getMassgebendesEinkommen()));
 			Assert.assertEquals(expectedResult.einkommensjahr, verfuegungZeitabschnitt.getRelevantBgCalculationInput().getEinkommensjahr());
-			Assert.assertEquals(expectedResult.bemerkung, verfuegungZeitabschnitt.getBemerkungen());
+			if(StringUtils.isBlank(expectedResult.bemerkung)) {
+				Assert.assertTrue(verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().isEmpty());
+			} else {
+				Assert.assertEquals(1, verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().size());
+				Assert.assertEquals(expectedResult.bemerkung, verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().get(0).getBemerkung());
+			}
 		}
 	}
 

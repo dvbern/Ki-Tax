@@ -4,7 +4,7 @@
   ~ Copyright (C) 2017 City of Bern Switzerland
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
-  ~ published by the Free Software Foundation, either version 3 of the
+  ~ published by the Free Software Foundation, either version  of the
   ~ License, or (at your option) any later version.
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -318,6 +318,7 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.DokumentGrund"/>
 	<entity class="ch.dvbern.ebegu.entities.Verfuegung"/>
 	<entity class="ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt"/>
+	<entity class="ch.dvbern.ebegu.entities.VerfuegungZeitabschnittBemerkung"/>
 	<entity class="ch.dvbern.ebegu.entities.DownloadFile"/>
 	<entity class="ch.dvbern.ebegu.entities.WizardStep"/>
 	<entity class="ch.dvbern.ebegu.entities.AntragStatusHistory"/>

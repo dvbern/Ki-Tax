@@ -851,7 +851,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 
-		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(userName);
+		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(userName, mitteilung.getDossier().getFall().getMandant());
 
 		if (benutzerOptional.isPresent()) {
 			// Den VerantwortlichenJA als Empfänger setzen
@@ -938,9 +938,12 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					mitteilung.getBetreuungspensen(),
 					gueltigkeit));
 
-			updateMessage(mitteilung);
-
-			persistence.merge(mitteilung);
+			if (mitteilung.getBetreuungspensen().isEmpty()) {
+				persistence.remove(mitteilung);
+			} else {
+				updateMessage(mitteilung);
+				persistence.merge(mitteilung);
+			}
 		});
 	}
 
@@ -969,8 +972,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Join<Betreuung, InstitutionStammdaten> stammdatenJoin = betreuungJoin.join(AbstractPlatz_.institutionStammdaten);
 
 		Predicate predicateInstitution = cb.equal(stammdatenJoin.get(InstitutionStammdaten_.institution), institution);
+		Predicate notApplied = cb.notEqual(root.get(Betreuungsmitteilung_.APPLIED), true);
 
-		query.where(predicateInstitution);
+		query.where(predicateInstitution, notApplied);
 		return persistence.getCriteriaResults(query);
 	}
 

@@ -130,6 +130,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public allowedRoles: ReadonlyArray<TSRole>;
     public isKesbPlatzierung: boolean;
     private eingewoehnungAktiviert: boolean = false;
+    private kitaPlusZuschlagAktiviert: boolean = false;
     protected minEintrittsdatum: moment.Moment;
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
@@ -257,6 +258,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 .forEach(value => {
                     this.eingewoehnungAktiviert = value.getValueAsBoolean();
                 });
+            response.filter(r => r.key === TSEinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT)
+                .forEach(value => {
+                    this.kitaPlusZuschlagAktiviert = value.getValueAsBoolean();
+                });
         });
     }
 
@@ -298,10 +303,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.getErweiterteBetreuungJA() && this.getErweiterteBetreuungJA().fachstelle) {
             this.fachstelleId = this.getErweiterteBetreuungJA().fachstelle.id;
         }
-        if (!this.gesuchModelManager.getFachstellenErweiterteBetreuungList()
-            || this.gesuchModelManager.getFachstellenErweiterteBetreuungList().length <= 0) {
-            this.gesuchModelManager.updateFachstellenErweiterteBetreuungList();
-        }
+        this.gesuchModelManager.updateFachstellenErweiterteBetreuungList();
         if (this.getErweiterteBetreuungJA()
             && EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA().keineKesbPlatzierung)) {
             this.isKesbPlatzierung = !this.getErweiterteBetreuungJA().keineKesbPlatzierung;
@@ -953,10 +955,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.FERIENINSEL);
     }
 
-    public isTageseltern(): boolean {
-        return this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.TAGESFAMILIEN);
-    }
-
     public isSchulamt(): boolean {
         return this.isTagesschule() || this.isFerieninsel();
     }
@@ -978,6 +976,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles())
             || (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA
                 && this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse);
+    }
+
+    public showKitaPlusZuschlag(): boolean {
+        return this.kitaPlusZuschlagAktiviert;
     }
 
     public showFalscheAngaben(): boolean {
@@ -1402,13 +1404,20 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public anmeldungSchulamtFalscheAngaben(): void {
-        this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
-            title: 'TS_ANMELDUNG_ERNEUT_OEFFNEN',
-            deleteText: '',
-            cancelText: 'LABEL_ABBRECHEN',
-            confirmText: 'LABEL_SPEICHERN',
-        }).then(() => {
-            this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+        // Wir muessen sicher sein dass es keine offene und noch nicht freigegebene Mutation fuer dieser Gesuch gibt
+        this.gesuchModelManager.checkIfGesuchIsNeustes().then(response => {
+            if (!response) {
+                this.errorService.addMesageAsError(this.$translate.instant('ERROR_DATA_CHANGED'));
+                return;
+            }
+            this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
+                title: 'TS_ANMELDUNG_ERNEUT_OEFFNEN',
+                deleteText: '',
+                cancelText: 'LABEL_ABBRECHEN',
+                confirmText: 'LABEL_SPEICHERN',
+            }).then(() => {
+                this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+            });
         });
     }
 

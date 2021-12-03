@@ -128,6 +128,10 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
 
     private readEinstellungenByGesuchsperiode(): void {
         this.einstellungenRS.getAllEinstellungenBySystem(this.gesuchsperiode.id).then((response: TSEinstellung[]) => {
+            response.sort((a, b) => {
+                return this.$translate.instant(a.key.toString())
+                    .localeCompare(this.$translate.instant(b.key.toString()));
+            });
             this.einstellungenGesuchsperiode = response;
         });
     }

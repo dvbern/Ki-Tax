@@ -134,6 +134,7 @@ import ch.dvbern.ebegu.api.dtos.JaxTsCalculationResult;
 import ch.dvbern.ebegu.api.dtos.JaxUnbezahlterUrlaub;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.api.dtos.JaxVerfuegungZeitabschnittBemerkung;
 import ch.dvbern.ebegu.api.dtos.JaxVorlage;
 import ch.dvbern.ebegu.api.dtos.JaxWizardStep;
 import ch.dvbern.ebegu.api.dtos.JaxZahlung;
@@ -232,6 +233,7 @@ import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnittBemerkung;
 import ch.dvbern.ebegu.entities.Vorlage;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.Zahlung;
@@ -933,7 +935,8 @@ public class JaxBConverter extends AbstractConverter {
 		convertMandantFieldsToEntity(fall);
 		//Fall nummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt, dasselbe fuer NextKindNumber
 		if (fallJAXP.getBesitzer() != null) {
-			Optional<Benutzer> besitzer = benutzerService.findBenutzer(fallJAXP.getBesitzer().getUsername());
+			Optional<Benutzer> besitzer = benutzerService.findBenutzer(fallJAXP.getBesitzer().getUsername(),
+					fall.getMandant());
 			if (besitzer.isPresent()) {
 				fall.setBesitzer(besitzer.get()); // because the user doesn't come from the client but from the server
 			} else {
@@ -1003,7 +1006,8 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		if (dossierJAX.getVerantwortlicherBG() != null) {
 			Optional<Benutzer> verantwortlicher =
-				benutzerService.findBenutzer(dossierJAX.getVerantwortlicherBG().getUsername());
+				benutzerService.findBenutzer(dossierJAX.getVerantwortlicherBG().getUsername(), dossier.getFall()
+						.getMandant());
 			if (verantwortlicher.isPresent()) {
 				// because the user doesn't come from the client but from the server
 				dossier.setVerantwortlicherBG(verantwortlicher.get());
@@ -1018,7 +1022,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		if (dossierJAX.getVerantwortlicherTS() != null) {
 			Optional<Benutzer> verantwortlicherTS =
-				benutzerService.findBenutzer(dossierJAX.getVerantwortlicherTS().getUsername());
+				benutzerService.findBenutzer(dossierJAX.getVerantwortlicherTS().getUsername(), dossier.getFall().getMandant());
 			if (verantwortlicherTS.isPresent()) {
 				// because the user doesn't come from the client but from the server
 				dossier.setVerantwortlicherTS(verantwortlicherTS.get());
@@ -1347,6 +1351,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGesuch.setGueltig(persistedGesuch.isGueltig());
 		jaxGesuch.setDokumenteHochgeladen(persistedGesuch.getDokumenteHochgeladen());
 		jaxGesuch.setFinSitStatus(persistedGesuch.getFinSitStatus());
+		jaxGesuch.setFinSitTyp(persistedGesuch.getFinSitTyp());
 		return jaxGesuch;
 	}
 
@@ -3001,6 +3006,7 @@ public class JaxBConverter extends AbstractConverter {
 		erweiterteBetreuung.setErweiterteBeduerfnisseBestaetigt(
 			erweiterteBetreuungJAXP.isErweiterteBeduerfnisseBestaetigt());
 		erweiterteBetreuung.setKeineKesbPlatzierung(erweiterteBetreuungJAXP.getKeineKesbPlatzierung());
+		erweiterteBetreuung.setKitaPlusZuschlag(erweiterteBetreuungJAXP.getKitaPlusZuschlag());
 		erweiterteBetreuung.setBetreuungInGemeinde(erweiterteBetreuungJAXP.getBetreuungInGemeinde());
 
 		//falls Erweiterte Beduerfnisse true ist, muss eine Fachstelle gesetzt sein
@@ -3635,7 +3641,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setMinimalerElternbeitragGekuerzt(zeitabschnitt.getMinimalerElternbeitragGekuerzt());
 		jaxZeitabschn.setElternbeitrag(zeitabschnitt.getElternbeitrag());
 		jaxZeitabschn.setMassgebendesEinkommenVorAbzugFamgr(zeitabschnitt.getMassgebendesEinkommenVorAbzFamgr());
-		jaxZeitabschn.setBemerkungen(zeitabschnitt.getBemerkungen());
+		jaxZeitabschn.setVerfuegungZeitabschnittBemerkungList(verfuegungZeitabschnittBemerkungenToJax(zeitabschnitt.getVerfuegungZeitabschnittBemerkungList()));
 		jaxZeitabschn.setFamGroesse(zeitabschnitt.getFamGroesse());
 		jaxZeitabschn.setEinkommensjahr(zeitabschnitt.getEinkommensjahr());
 		jaxZeitabschn.setVerfuegteAnzahlZeiteinheiten(zeitabschnitt.getVerfuegteAnzahlZeiteinheiten());
@@ -3667,6 +3673,26 @@ public class JaxBConverter extends AbstractConverter {
 	public VerfuegungZeitabschnitt verfuegungZeitabschnittToEntity(
 		@Nullable JaxVerfuegungZeitabschnitt jaxVerfuegungZeitabschnitt) {
 		throw new EbeguFingerWegException("verfuegungZeitabschnittToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
+	}
+
+	@Nonnull
+	private List<JaxVerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungenToJax(@Nonnull List<VerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungen) {
+		return verfuegungZeitabschnittBemerkungen.stream()
+			.map(this::verfuegungZeitabschnittBemerkungToJax)
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	private JaxVerfuegungZeitabschnittBemerkung verfuegungZeitabschnittBemerkungToJax(@Nonnull VerfuegungZeitabschnittBemerkung verfuegungZeitabschnittBemerkung) {
+		JaxVerfuegungZeitabschnittBemerkung result = new JaxVerfuegungZeitabschnittBemerkung();
+		convertAbstractDateRangedFieldsToJAX(verfuegungZeitabschnittBemerkung, result);
+		result.setBemerkung(verfuegungZeitabschnittBemerkung.getBemerkung());
+		return result;
+	}
+
+	public VerfuegungZeitabschnittBemerkung verfuegungZeitabschnittBemerkungToEntity(
+		@Nullable JaxVerfuegungZeitabschnittBemerkung jaxVerfuegungZeitabschnittBemerkung) {
+		throw new EbeguFingerWegException("VerfuegungZeitabschnittBemerkung", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
 	}
 
 	@Nullable
@@ -3843,6 +3869,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxErweiterteBetreuung.setErweiterteBeduerfnisseBestaetigt(
 			erweiterteBetreuung.isErweiterteBeduerfnisseBestaetigt());
 		jaxErweiterteBetreuung.setKeineKesbPlatzierung(erweiterteBetreuung.getKeineKesbPlatzierung());
+		jaxErweiterteBetreuung.setKitaPlusZuschlag(erweiterteBetreuung.getKitaPlusZuschlag());
 		jaxErweiterteBetreuung.setBetreuungInGemeinde(erweiterteBetreuung.getBetreuungInGemeinde());
 
 		if (erweiterteBetreuung.getFachstelle() != null) {
@@ -3920,9 +3947,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxLoginElement.setVorname(benutzer.getVorname());
 		jaxLoginElement.setNachname(benutzer.getNachname());
 		jaxLoginElement.setEmail(benutzer.getEmail());
-		if (benutzer.getMandant() != null) {
-			jaxLoginElement.setMandant(mandantToJAX(benutzer.getMandant()));
-		}
+		jaxLoginElement.setMandant(mandantToJAX(benutzer.getMandant()));
 		jaxLoginElement.setUsername(benutzer.getUsername());
 		jaxLoginElement.setExternalUUID(benutzer.getExternalUUID());
 		jaxLoginElement.setStatus(benutzer.getStatus());
@@ -4109,7 +4134,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertFileToJax(dokument, jaxDokument);
 		jaxDokument.setTimestampUpload(dokument.getTimestampUpload());
 		if (StringUtils.isNotEmpty(dokument.getUserErstellt())) {
-			benutzerService.findBenutzer(dokument.getUserErstellt())
+			benutzerService.findBenutzer(dokument.getUserErstellt(), getPrincipalBean().getMandant())
 				.map(this::benutzerToJaxBenutzer)
 				.ifPresent(jaxDokument::setUserUploaded);
 		}
@@ -4523,7 +4548,8 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToEntity(mitteilungJAXP, mitteilung);
 
 		if (mitteilungJAXP.getEmpfaenger() != null) {
-			Benutzer empfaenger = benutzerService.findBenutzer(mitteilungJAXP.getEmpfaenger().getUsername())
+			Benutzer empfaenger = benutzerService.findBenutzer(mitteilungJAXP.getEmpfaenger().getUsername(),
+							mitteilung.getDossier().getFall().getMandant())
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
 					"mitteilungToEntity - findBenutzer",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
@@ -4563,7 +4589,7 @@ public class JaxBConverter extends AbstractConverter {
 		mitteilung.setMitteilungStatus(mitteilungJAXP.getMitteilungStatus());
 
 		if (mitteilungJAXP.getSender() != null) {
-			Benutzer sender = benutzerService.findBenutzer(mitteilungJAXP.getSender().getUsername())
+			Benutzer sender = benutzerService.findBenutzer(mitteilungJAXP.getSender().getUsername(), mitteilung.getDossier().getFall().getMandant())
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
 					"mitteilungToEntity",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
@@ -4916,16 +4942,18 @@ public class JaxBConverter extends AbstractConverter {
 
 		convertAbstractFieldsToEntity(jaxStammdaten, stammdaten);
 
+		Mandant mandant = stammdaten.getGemeinde().getMandant();
+
 		if (jaxStammdaten.getDefaultBenutzerBG() != null) {
-			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerBG().getUsername())
+			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerBG().getUsername(), mandant)
 				.ifPresent(stammdaten::setDefaultBenutzerBG);
 		}
 		if (jaxStammdaten.getDefaultBenutzerTS() != null) {
-			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerTS().getUsername())
+			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerTS().getUsername(), mandant)
 				.ifPresent(stammdaten::setDefaultBenutzerTS);
 		}
 		if (jaxStammdaten.getDefaultBenutzer() != null) {
-			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzer().getUsername())
+			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzer().getUsername(), mandant)
 				.ifPresent(stammdaten::setDefaultBenutzer);
 		}
 
@@ -5059,6 +5087,7 @@ public class JaxBConverter extends AbstractConverter {
 		// Konfiguration: Wir laden die Gesuchsperioden, die vor dem Ende der Gemeinde-Gültigkeit liegen
 		List<Gesuchsperiode> gueltigeGesuchsperiodenForGemeinde = gesuchsperiodeService.getAllGesuchsperioden()
 			.stream()
+			.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant().equals(stammdaten.getGemeinde().getMandant()))
 			.filter(gesuchsperiode -> stammdaten.getGemeinde()
 				.getGueltigBis()
 				.isAfter(gesuchsperiode.getGueltigkeit().getGueltigAb()))

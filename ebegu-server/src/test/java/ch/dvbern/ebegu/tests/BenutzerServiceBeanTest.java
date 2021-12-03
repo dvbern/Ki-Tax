@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.tests;
 
 import java.time.LocalDate;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -134,7 +135,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 
 		// Timer durchlaufen lassen: Es ist immer noch dieselbe Berechtigung aktiv
 		benutzerService.handleAbgelaufeneRollen(LocalDate.now());
-		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(benutzer.getUsername());
+		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(benutzer.getUsername(), benutzer.getMandant());
 		Berechtigung currentBerechtigung = benutzerOptional.get().getCurrentBerechtigung();
 		assertEquals(AB_ERSTE_BERECHTIGUNG, currentBerechtigung.getGueltigkeit().getGueltigAb());
 		assertEquals(Constants.END_OF_TIME, currentBerechtigung.getGueltigkeit().getGueltigBis());
@@ -154,7 +155,8 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 
 		// Timer durchlaufen lassen: Es ist jetzt die neue Berechtigung aktiv
 		benutzerService.handleAbgelaufeneRollen(LocalDate.now());
-		Optional<Benutzer> benutzerOptional2 = benutzerService.findBenutzer(benutzer.getUsername());
+		Optional<Benutzer> benutzerOptional2 = benutzerService.findBenutzer(benutzer.getUsername(),
+				benutzer.getMandant());
 		Berechtigung currentBerechtigung2 = benutzerOptional2.get().getCurrentBerechtigung();
 		assertEquals(AB_ZWEITE_BERECHTIGUNG, currentBerechtigung2.getGueltigkeit().getGueltigAb());
 		assertEquals(Constants.END_OF_TIME, currentBerechtigung2.getGueltigkeit().getGueltigBis());
@@ -219,7 +221,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		Einladung einladung = Einladung.forGemeinde(benutzer, gemeinde);
 
 		try {
-			benutzerService.einladen(einladung);
+			benutzerService.einladen(einladung, Objects.requireNonNull(gemeinde.getMandant()));
 			fail(
 				"It should throw a EbeguRuntimeException because AKTIV is not a valid status. It must be "
 					+ "EINGELADEN");
@@ -241,7 +243,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		Einladung einladung = Einladung.forGemeinde(benutzer, gemeinde);
 
 		try {
-			benutzerService.einladen(einladung);
+			benutzerService.einladen(einladung, Objects.requireNonNull(benutzer.getMandant()));
 			fail("It should throw a ConstraintViolationException because the user must have a Gemeinde");
 		} catch (EJBTransactionRolledbackException e) {
 			// nop

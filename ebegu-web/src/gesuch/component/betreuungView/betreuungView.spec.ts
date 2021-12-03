@@ -98,7 +98,9 @@ describe('betreuungView', () => {
             // constructor der view und geben betreuung zurueck
             return betreuungView ? betreuungView.model : betreuung;
         });
-        spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(TestDataUtil.createGesuchsperiode20162017());
+        const gesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
+        gesuchsperiode.id = '0621fb5d-a187-5a91-abaf-8a813c4d263a';
+        spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchsperiode);
         spyOn(gesuchModelManager, 'getGemeinde').and.returnValue(TestDataUtil.createGemeindeParis());
         gesuchModelManager.gemeindeKonfiguration = TestDataUtil.createGemeindeKonfiguration();
         $rootScope = $injector.get('$rootScope');
