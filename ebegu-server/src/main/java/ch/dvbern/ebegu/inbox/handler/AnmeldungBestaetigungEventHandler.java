@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.inbox.handler;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,6 +36,9 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
+import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.enums.AbholungTagesschule;
@@ -57,6 +61,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.outbox.institution.InstitutionEventConverter.toErlaubteIntervalle;
+import static java.util.Objects.requireNonNull;
 
 @ApplicationScoped
 public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<TagesschuleBestaetigungEventDTO> {
@@ -164,7 +169,7 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 		for (var modul : dto.getModule()) {
 			if (Objects.isNull(modul.getModulId()) && Objects.isNull(modul.getFremdId())) {
 				return Processing.failure(
-						"Anmeldung kann nicht behandelt werden: Ein Modul hat weder fremdId noch modulId");
+					"Anmeldung kann nicht behandelt werden: Ein Modul hat weder fremdId noch modulId");
 			}
 		}
 
@@ -217,7 +222,7 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 			belegung.setBemerkung(dto.getBemerkung());
 		}
 
-		updateModule(eventMonitor, dto, belegung);
+		updateModule(eventMonitor, dto, belegung, anmeldung);
 	}
 
 	@Nonnull
@@ -233,31 +238,36 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 	private void updateModule(
 		@Nonnull EventMonitor eventMonitor,
 		@Nonnull TagesschuleBestaetigungEventDTO dto,
-		@Nonnull BelegungTagesschule belegung) {
+		@Nonnull BelegungTagesschule belegung,
+		@Nonnull AnmeldungTagesschule anmeldung) {
 
-		Stream<ModulTagesschuleGroup> moduleByFremdId = dto.getModule().stream()
+		Gesuchsperiode gesuchsperiode = anmeldung.extractGesuchsperiode();
+		InstitutionStammdatenTagesschule institutionStammdatenTagesschule = requireNonNull(anmeldung.getInstitutionStammdaten()
+			.getInstitutionStammdatenTagesschule());
+		Set<ModulTagesschuleGroup> existingGroups = institutionStammdatenTagesschule
+			.getEinstellungenTagesschule()
+			.stream()
+			.filter(e -> e.getGesuchsperiode().equals(gesuchsperiode))
+			.findAny()
+			.map(EinstellungenTagesschule::getModulTagesschuleGroups)
+			.orElseGet(Collections::emptySet);
+		Map<String, ModulTagesschuleGroup> moduleById = dto.getModule().stream()
+			.map(ModulAuswahlDTO::getModulId)
+			.filter(Objects::nonNull)
+			.distinct()
+			.flatMap(id -> existingGroups.stream().filter(m -> id.equals(m.getId())).findAny().stream())
+			.collect(Collectors.toMap(AbstractEntity::getId, m -> m));
+		Map<String, ModulTagesschuleGroup> moduleByFremdId = dto.getModule().stream()
 			.map(ModulAuswahlDTO::getFremdId)
 			.filter(Objects::nonNull)
 			.distinct()
-			.flatMap(id -> modulTagesschuleService.findModulTagesschuleGroupByFremdId(id).stream());
-
-		Stream<ModulTagesschuleGroup> moduleByModulId = dto.getModule().stream()
-			.filter(modulAuswahlDTO -> Objects.isNull(modulAuswahlDTO.getFremdId()))
-			.map(ModulAuswahlDTO::getModulId)
-			.distinct()
-			.flatMap(id -> modulTagesschuleService.findModulTagesschuleGroup(id).stream());
-
-		Map<String, ModulTagesschuleGroup> moduleById =
-				Stream.concat(moduleByFremdId, moduleByModulId)
-			.collect(Collectors.toMap(AbstractEntity::getId, m -> m));
-
+			.flatMap(id -> existingGroups.stream().filter(m -> id.equals(m.getFremdId())).findAny().stream())
+			.collect(Collectors.toMap(ModulTagesschuleGroup::getFremdId, m -> m));
 		Set<BelegungTagesschuleModul> existingModule = Sets.newHashSet(belegung.getBelegungTagesschuleModule());
 		belegung.getBelegungTagesschuleModule().clear();
-
 		List<BelegungTagesschuleModul> module = dto.getModule().stream()
-			.flatMap(toBelegungTagesschuleModul(eventMonitor, moduleById, existingModule))
+			.flatMap(toBelegungTagesschuleModul(eventMonitor, moduleById, moduleByFremdId, existingModule))
 			.collect(Collectors.toList());
-
 		module.forEach(m -> {
 			m.setBelegungTagesschule(belegung);
 			belegung.getBelegungTagesschuleModule().add(m);
@@ -268,9 +278,10 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 	private Function<ModulAuswahlDTO, Stream<BelegungTagesschuleModul>> toBelegungTagesschuleModul(
 		@Nonnull EventMonitor eventMonitor,
 		@Nonnull Map<String, ModulTagesschuleGroup> moduleById,
+		@Nonnull Map<String, ModulTagesschuleGroup> moduleByFremdId,
 		@Nonnull Set<BelegungTagesschuleModul> existingModule) {
 
-		return modulAuswahlDTO -> findModulTagesschule(eventMonitor, modulAuswahlDTO, moduleById)
+		return modulAuswahlDTO -> findModulTagesschule(eventMonitor, modulAuswahlDTO, moduleById, moduleByFremdId)
 			.map(modulTagesschule -> {
 				BelegungTagesschuleModulIntervall intervall = getIntervall(modulAuswahlDTO);
 
@@ -284,30 +295,40 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 	private Optional<ModulTagesschule> findModulTagesschule(
 		@Nonnull EventMonitor eventMonitor,
 		@Nonnull ModulAuswahlDTO dto,
-		@Nonnull Map<String, ModulTagesschuleGroup> moduleById) {
+		@Nonnull Map<String, ModulTagesschuleGroup> moduleById,
+		@Nonnull Map<String, ModulTagesschuleGroup> moduleByFremdId) {
 
-		String id = dto.getModulId();
-		if (!moduleById.containsKey(id)) {
-			eventMonitor.record("Es wurde eine ungültige ModulTagesschuleGroup ID übergeben: %s", id);
-
-			return Optional.empty();
+		String fremdId = dto.getFremdId();
+		if (fremdId != null && moduleByFremdId.containsKey(fremdId)) {
+			return verifyModulTagesschule(eventMonitor, dto, moduleByFremdId.get(fremdId));
 		}
 
-		ModulTagesschuleGroup group = moduleById.get(id);
+		String id = dto.getModulId();
+		if (id != null && moduleById.containsKey(id)) {
+			return verifyModulTagesschule(eventMonitor, dto, moduleById.get(id));
+		}
 
+		eventMonitor.record("Es wurde eine ungültige ModulTagesschuleGroup ID übergeben: %s", id);
+		return Optional.empty();
+	}
+
+	@Nonnull
+	private Optional<ModulTagesschule> verifyModulTagesschule(
+		@Nonnull EventMonitor eventMonitor,
+		@Nonnull ModulAuswahlDTO dto,
+		@Nonnull ModulTagesschuleGroup group) {
+
+		String id = group.getId();
 		if (!toErlaubteIntervalle(group.getIntervall()).contains(dto.getIntervall())) {
 			eventMonitor.record("ModulTagesschuleGroup %s gestattet das Intervall %s nicht.", id, dto.getIntervall());
-
 			return Optional.empty();
 		}
 
 		Optional<ModulTagesschule> match = group.getModule().stream()
 			.filter(m -> m.getWochentag().name().equals(dto.getWochentag().name()))
 			.findAny();
-
 		if (match.isEmpty()) {
 			eventMonitor.record("ModulTagesschuleGroup %s ist an %s nicht definiert.", id, dto.getWochentag());
-
 			return Optional.empty();
 		}
 

@@ -99,10 +99,4 @@ public class ModulTagesschuleServiceBean extends AbstractBaseService implements 
 			persistence.merge(newEinstellung);
 		});
 	}
-
-	@Override
-	public Optional<ModulTagesschuleGroup> findModulTagesschuleGroupByFremdId(String fremdId) {
-		return criteriaQueryHelper.getEntityByUniqueAttribute(ModulTagesschuleGroup.class, fremdId,
-				ModulTagesschuleGroup_.fremdId);
-	}
 }

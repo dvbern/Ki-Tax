@@ -55,22 +55,28 @@ import org.hibernate.envers.Audited;
 @CheckTimeRange
 @Audited
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "bezeichnung_id", name = "UK_bezeichnung_id"))
+@Table(uniqueConstraints = {
+	@UniqueConstraint(columnNames = "bezeichnung_id", name = "UK_bezeichnung_id"),
+	@UniqueConstraint(columnNames = { "fremd_id", "einstellungen_tagesschule_id" },	name = "UK_fremd_id_gesuschperiode_institution")
+})
 public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<ModulTagesschuleGroup> {
 
 	private static final long serialVersionUID = -8403411439182708718L;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_modul_tagesschule_einstellungen_tagesschule_id"), nullable = false)
 	private EinstellungenTagesschule einstellungenTagesschule;
 
 	@Enumerated(value = EnumType.STRING)
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Column(nullable = false)
 	private ModulTagesschuleName modulTagesschuleName = ModulTagesschuleName.DYNAMISCH;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Column(nullable = false)
 	private String identifier;
 
@@ -78,16 +84,19 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 	@Column(nullable = true)
 	private String fremdId;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_bezeichnung_id"))
 	private TextRessource bezeichnung = new TextRessource();
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Column(nullable = false)
 	private LocalTime zeitVon;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Column(nullable = false)
 	private LocalTime zeitBis;
 
@@ -96,7 +105,8 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 	private BigDecimal verpflegungskosten;
 
 	@Enumerated(value = EnumType.STRING)
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Column(nullable = false)
 	private ModulTagesschuleIntervall intervall = ModulTagesschuleIntervall.WOECHENTLICH;
 
@@ -104,11 +114,12 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 	@Column(nullable = false)
 	private boolean wirdPaedagogischBetreut = false;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Column(nullable = false)
 	private Integer reihenfolge;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,  mappedBy = "modulTagesschuleGroup", fetch =
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "modulTagesschuleGroup", fetch =
 		FetchType.LAZY)
 	@OrderBy("wochentag")
 	private Set<ModulTagesschule> module = new TreeSet<>();

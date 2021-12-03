@@ -48,6 +48,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulAuswahlDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleBestaetigungEventDTO;
+import ch.dvbern.kibon.exchange.commons.types.Intervall;
 import ch.dvbern.kibon.exchange.commons.types.Wochentag;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
@@ -224,6 +225,22 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 			testIgnored(tagesschuleBestaetigungEventDTO, "TagesschuleBestaetigungEventDTO hat keine Module");
 		}
 
+		void ignoreEventWhenKeineIdOderFremdId() {
+
+			ModulAuswahlDTO modulAuswahlDTO = new ModulAuswahlDTO();
+			modulAuswahlDTO.setIntervall(Intervall.WOECHENTLICH);
+			modulAuswahlDTO.setWochentag(Wochentag.MONDAY);
+
+			tagesschuleBestaetigungEventDTO.getModule().add(modulAuswahlDTO);
+
+			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(tagesschuleBestaetigungEventDTO.getRefnr()))
+				.andReturn(Optional.of(anmeldungTagesschule));
+
+			mockClient(Constants.DEFAULT_GUELTIGKEIT);
+
+			testIgnored(tagesschuleBestaetigungEventDTO, "Anmeldung kann nicht behandelt werden: Ein Modul hat weder fremdId noch modulId");
+		}
+
 		private void testIgnored(@Nonnull TagesschuleBestaetigungEventDTO dto, @Nonnull String message) {
 			replayAll();
 
@@ -346,6 +363,59 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 			testSuccess(tagesschuleBestaetigungEventDTO);
 
 			assertThat(belegung.getBelegungTagesschuleModule().size(), is(4));
+		}
+
+		@Test
+		void testModulFremId() {
+			List<ModulAuswahlDTO> modulAuswahlDTOList = modulAuswahlFromBelegung();
+
+			belegung.getBelegungTagesschuleModule().stream().forEach(
+				belegungTagesschuleModul -> {
+					belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().setFremdId(belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().getId());
+				}
+			);
+
+			ModulAuswahlDTO modulAuswahlDTO = modulAuswahlDTOList.get(0);
+			modulAuswahlDTO.setFremdId(modulAuswahlDTO.getModulId());
+			modulAuswahlDTO.setModulId(null);
+			modulAuswahlDTOList.clear();
+			modulAuswahlDTOList.add(modulAuswahlDTO);
+			tagesschuleBestaetigungEventDTO.setModule(modulAuswahlDTOList);
+
+			expect(betreuungService.anmeldungSchulamtModuleAkzeptieren(anmeldungTagesschule))
+				.andReturn(anmeldungTagesschule);
+
+			testSuccess(tagesschuleBestaetigungEventDTO);
+
+			assertThat(belegung.getBelegungTagesschuleModule().size(), is(1));
+		}
+
+		@Test
+		void testModulAuswahlDTOMitIDandFremId() {
+			List<ModulAuswahlDTO> modulAuswahlDTOList = modulAuswahlFromBelegung();
+
+			belegung.getBelegungTagesschuleModule().stream().forEach(
+				belegungTagesschuleModul -> {
+					belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().setFremdId(belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().getId());
+				}
+			);
+
+			expectModulFromBelegung(group -> expect(modulTagesschuleService.findModulTagesschuleGroup(group.getId()))
+				.andReturn(Optional.of(group))
+				.anyTimes());
+
+			ModulAuswahlDTO modulAuswahlDTO = modulAuswahlDTOList.get(0);
+			modulAuswahlDTO.setFremdId(modulAuswahlDTO.getModulId());
+			modulAuswahlDTOList.clear();
+			modulAuswahlDTOList.add(modulAuswahlDTO);
+			tagesschuleBestaetigungEventDTO.setModule(modulAuswahlDTOList);
+
+			expect(betreuungService.anmeldungSchulamtModuleAkzeptieren(anmeldungTagesschule))
+				.andReturn(anmeldungTagesschule);
+
+			testSuccess(tagesschuleBestaetigungEventDTO);
+
+			assertThat(belegung.getBelegungTagesschuleModule().size(), is(1));
 		}
 
 		@Nonnull

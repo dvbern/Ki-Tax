@@ -17,3 +17,5 @@
 
 ALTER TABLE modul_tagesschule_group ADD COLUMN IF NOT EXISTS fremd_id VARCHAR(255);
 ALTER TABLE modul_tagesschule_group_aud ADD COLUMN IF NOT EXISTS fremd_id VARCHAR(255);
+
+ALTER TABLE modul_tagesschule_group	ADD CONSTRAINT UK_fremd_id_gesuschperiode_institution UNIQUE (fremd_id, einstellungen_tagesschule_id);

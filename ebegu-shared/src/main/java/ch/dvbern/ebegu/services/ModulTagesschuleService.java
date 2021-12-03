@@ -74,12 +74,4 @@ public interface ModulTagesschuleService {
 	void copyModuleTagesschuleToNewGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiodeToCreate,
 		@Nonnull Gesuchsperiode lastGesuchsperiode);
-
-	/**
-	 * Laedt ModulTagessschuleGroup mit der fremdId aus der DB
-	 *
-	 * @param fremdId fremdId der Group
-	 * @return Modul mit der gegebenen fremdId
-	 */
-	Optional<ModulTagesschuleGroup> findModulTagesschuleGroupByFremdId(String fremdId);
 }
