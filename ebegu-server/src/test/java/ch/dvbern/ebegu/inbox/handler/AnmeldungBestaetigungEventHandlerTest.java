@@ -18,10 +18,11 @@
 package ch.dvbern.ebegu.inbox.handler;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -254,10 +255,16 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 	class AnmeldungBestaetigungTest {
 
 		private BelegungTagesschule belegung;
+		private Set<ModulTagesschuleGroup> moduleBelegung;
 
 		@BeforeEach
 		void setUp() {
 			belegung = Objects.requireNonNull(anmeldungTagesschule.getBelegungTagesschule());
+
+			moduleBelegung = belegung.getBelegungTagesschuleModule().stream()
+				.map(BelegungTagesschuleModul::getModulTagesschule)
+				.map(ModulTagesschule::getModulTagesschuleGroup)
+				.collect(Collectors.toSet());
 		}
 
 		@Test
@@ -308,7 +315,8 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 		void testModulGroupNichtGefunden() {
 			List<ModulAuswahlDTO> modulAuswahlDTOList = modulAuswahlFromBelegung();
 
-			expectModulFromBelegung(expectMissing);
+			expect(modulTagesschuleService.findModulTagesschuleGroup(anmeldungTagesschule))
+				.andReturn(Collections.emptySet());
 
 			tagesschuleBestaetigungEventDTO.setModule(modulAuswahlDTOList);
 
@@ -326,11 +334,7 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void testModulWeggenommen() {
-			List<ModulAuswahlDTO> modulAuswahlDTOList = modulAuswahlFromBelegung();
-
-			expectModulFromBelegung(group -> expect(modulTagesschuleService.findModulTagesschuleGroup(group.getId()))
-				.andReturn(Optional.of(group))
-				.anyTimes());
+			List<ModulAuswahlDTO> modulAuswahlDTOList = prepareStandardCallAndModulAuswahlList();
 
 			modulAuswahlDTOList.remove(0);
 			tagesschuleBestaetigungEventDTO.setModule(modulAuswahlDTOList);
@@ -367,13 +371,9 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void testModulFremId() {
-			List<ModulAuswahlDTO> modulAuswahlDTOList = modulAuswahlFromBelegung();
+			List<ModulAuswahlDTO> modulAuswahlDTOList = prepareStandardCallAndModulAuswahlList();
 
-			belegung.getBelegungTagesschuleModule().stream().forEach(
-				belegungTagesschuleModul -> {
-					belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().setFremdId(belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().getId());
-				}
-			);
+			moduleBelegung.forEach(group -> group.setFremdId(group.getId()));
 
 			ModulAuswahlDTO modulAuswahlDTO = modulAuswahlDTOList.get(0);
 			modulAuswahlDTO.setFremdId(modulAuswahlDTO.getModulId());
@@ -392,17 +392,9 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void testModulAuswahlDTOMitIDandFremId() {
-			List<ModulAuswahlDTO> modulAuswahlDTOList = modulAuswahlFromBelegung();
+			List<ModulAuswahlDTO> modulAuswahlDTOList = prepareStandardCallAndModulAuswahlList();
 
-			belegung.getBelegungTagesschuleModule().stream().forEach(
-				belegungTagesschuleModul -> {
-					belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().setFremdId(belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().getId());
-				}
-			);
-
-			expectModulFromBelegung(group -> expect(modulTagesschuleService.findModulTagesschuleGroup(group.getId()))
-				.andReturn(Optional.of(group))
-				.anyTimes());
+			moduleBelegung.forEach(group -> group.setFremdId(group.getId()));
 
 			ModulAuswahlDTO modulAuswahlDTO = modulAuswahlDTOList.get(0);
 			modulAuswahlDTO.setFremdId(modulAuswahlDTO.getModulId());
@@ -422,7 +414,8 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 		private List<ModulAuswahlDTO> prepareStandardCallAndModulAuswahlList() {
 			List<ModulAuswahlDTO> modulAuswahlDTOList = modulAuswahlFromBelegung();
 
-			expectModulFromBelegung();
+			expect(modulTagesschuleService.findModulTagesschuleGroup(anmeldungTagesschule))
+				.andReturn(moduleBelegung);
 
 			return modulAuswahlDTOList;
 		}
@@ -434,26 +427,6 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 				.map(AnmeldungTestUtil::createModulAuswahlDTO)
 				.collect(Collectors.toList());
 		}
-
-		private void expectModulFromBelegung() {
-			expectModulFromBelegung(expectFound);
-		}
-
-		private void expectModulFromBelegung(@Nonnull Consumer<ModulTagesschuleGroup> expection) {
-			belegung.getBelegungTagesschuleModule().stream()
-				.map(BelegungTagesschuleModul::getModulTagesschule)
-				.map(ModulTagesschule::getModulTagesschuleGroup)
-				.distinct()
-				.forEach(expection);
-		}
-
-		private final Consumer<ModulTagesschuleGroup> expectFound =
-			group -> expect(modulTagesschuleService.findModulTagesschuleGroup(group.getId()))
-				.andReturn(Optional.of(group));
-
-		private final Consumer<ModulTagesschuleGroup> expectMissing =
-			group -> expect(modulTagesschuleService.findModulTagesschuleGroup(group.getId()))
-				.andReturn(Optional.empty());
 
 		private void testSuccess(@Nonnull TagesschuleBestaetigungEventDTO dto) {
 			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(dto.getRefnr()))
