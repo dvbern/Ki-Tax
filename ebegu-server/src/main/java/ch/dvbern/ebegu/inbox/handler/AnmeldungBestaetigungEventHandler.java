@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.inbox.handler;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -36,9 +35,6 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
-import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.enums.AbholungTagesschule;
@@ -61,7 +57,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.outbox.institution.InstitutionEventConverter.toErlaubteIntervalle;
-import static java.util.Objects.requireNonNull;
 
 @ApplicationScoped
 public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<TagesschuleBestaetigungEventDTO> {
@@ -241,33 +236,29 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 		@Nonnull BelegungTagesschule belegung,
 		@Nonnull AnmeldungTagesschule anmeldung) {
 
-		Gesuchsperiode gesuchsperiode = anmeldung.extractGesuchsperiode();
-		InstitutionStammdatenTagesschule institutionStammdatenTagesschule = requireNonNull(anmeldung.getInstitutionStammdaten()
-			.getInstitutionStammdatenTagesschule());
-		Set<ModulTagesschuleGroup> existingGroups = institutionStammdatenTagesschule
-			.getEinstellungenTagesschule()
-			.stream()
-			.filter(e -> e.getGesuchsperiode().equals(gesuchsperiode))
-			.findAny()
-			.map(EinstellungenTagesschule::getModulTagesschuleGroups)
-			.orElseGet(Collections::emptySet);
+		Set<ModulTagesschuleGroup> available = modulTagesschuleService.findModulTagesschuleGroup(anmeldung);
+
 		Map<String, ModulTagesschuleGroup> moduleById = dto.getModule().stream()
 			.map(ModulAuswahlDTO::getModulId)
 			.filter(Objects::nonNull)
 			.distinct()
-			.flatMap(id -> existingGroups.stream().filter(m -> id.equals(m.getId())).findAny().stream())
+			.flatMap(id -> available.stream().filter(m -> id.equals(m.getId())).findAny().stream())
 			.collect(Collectors.toMap(AbstractEntity::getId, m -> m));
+
 		Map<String, ModulTagesschuleGroup> moduleByFremdId = dto.getModule().stream()
 			.map(ModulAuswahlDTO::getFremdId)
 			.filter(Objects::nonNull)
 			.distinct()
-			.flatMap(id -> existingGroups.stream().filter(m -> id.equals(m.getFremdId())).findAny().stream())
+			.flatMap(id -> available.stream().filter(m -> id.equals(m.getFremdId())).findAny().stream())
 			.collect(Collectors.toMap(ModulTagesschuleGroup::getFremdId, m -> m));
+
 		Set<BelegungTagesschuleModul> existingModule = Sets.newHashSet(belegung.getBelegungTagesschuleModule());
 		belegung.getBelegungTagesschuleModule().clear();
+
 		List<BelegungTagesschuleModul> module = dto.getModule().stream()
 			.flatMap(toBelegungTagesschuleModul(eventMonitor, moduleById, moduleByFremdId, existingModule))
 			.collect(Collectors.toList());
+
 		module.forEach(m -> {
 			m.setBelegungTagesschule(belegung);
 			belegung.getBelegungTagesschuleModule().add(m);
@@ -319,16 +310,20 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 		@Nonnull ModulTagesschuleGroup group) {
 
 		String id = group.getId();
+
 		if (!toErlaubteIntervalle(group.getIntervall()).contains(dto.getIntervall())) {
 			eventMonitor.record("ModulTagesschuleGroup %s gestattet das Intervall %s nicht.", id, dto.getIntervall());
+
 			return Optional.empty();
 		}
 
 		Optional<ModulTagesschule> match = group.getModule().stream()
 			.filter(m -> m.getWochentag().name().equals(dto.getWochentag().name()))
 			.findAny();
+
 		if (match.isEmpty()) {
 			eventMonitor.record("ModulTagesschuleGroup %s ist an %s nicht definiert.", id, dto.getWochentag());
+
 			return Optional.empty();
 		}
 
