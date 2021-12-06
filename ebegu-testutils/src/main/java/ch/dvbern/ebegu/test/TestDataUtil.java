@@ -450,11 +450,18 @@ public final class TestDataUtil {
 	public static Mandant getMandantKantonLuzernAndPersist(@Nonnull Persistence persistence) {
 		Mandant mandant = persistence.find(Mandant.class, AbstractTestfall.ID_MANDANT_KANTON_LUZERN);
 		if (mandant == null) {
-			mandant = new Mandant();
-			mandant.setId(AbstractTestfall.ID_MANDANT_KANTON_LUZERN);
-			mandant.setName("Kanton Luzern");
+			mandant = getMandantLuzern();
 			return persistence.persist(mandant);
 		}
+		return mandant;
+	}
+
+	@Nonnull
+	public static Mandant getMandantLuzern() {
+		Mandant mandant;
+		mandant = new Mandant();
+		mandant.setId(AbstractTestfall.ID_MANDANT_KANTON_LUZERN);
+		mandant.setName("Kanton Luzern");
 		return mandant;
 	}
 
