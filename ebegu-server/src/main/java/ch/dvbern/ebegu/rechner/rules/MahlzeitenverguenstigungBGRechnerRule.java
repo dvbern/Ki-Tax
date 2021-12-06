@@ -18,9 +18,7 @@
 package ch.dvbern.ebegu.rechner.rules;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -243,7 +241,9 @@ public final class MahlzeitenverguenstigungBGRechnerRule implements RechnerRule 
 		}
 
 		if (!inputGemeinde.getVerguenstigungMahlzeitenBeantragt()) {
-			inputGemeinde.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_NEIN, locale);
+			if(inputGemeinde.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) != 0) {
+				inputGemeinde.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_NEIN, locale);
+			}
 			return false;
 		}
 
