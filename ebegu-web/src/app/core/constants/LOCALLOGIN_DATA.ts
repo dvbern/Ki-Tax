@@ -78,23 +78,23 @@ export const LOCALLOGIN_DATA = {
             name: 'Kanton Solothurn',
         },
         traegerschaft: {
-            id: '31bf2433-30a3-11ec-a86f-b89a2ae4a038',
+            id: '5c537fd1-537b-11ec-98e8-f4390979fa3e',
             name: 'Kitas & Tagis Stadt Solothurn',
         },
         institution: {
-            id: 'f5ceae4a-30a5-11ec-a86f-b89a2ae4a038',
+            id: '78051383-537e-11ec-98e8-f4390979fa3e',
             name: 'Kita Brünnen SO',
         },
         tagesschule: {
-            id: '3db43c9b-30a6-11ec-a86f-b89a2ae4a038',
+            id: 'bbf7f306-5392-11ec-98e8-f4390979fa3e',
             name: 'Tagesschule Solothurn',
         },
         sozialdienst: {
-            id: '7049ec48-30ab-11ec-a86f-b89a2ae4a038',
+            id: '1b1b4208-5394-11ec-98e8-f4390979fa3e',
             name: 'SolothurnerSozialdienst',
         },
         default_gemeinde: {
-            id: '6fd6183c-30a2-11ec-a86f-b89a2ae4a038',
+            id: '47c4b3a8-5379-11ec-98e8-f4390979fa3e',
             name: 'Testgemeinde Solothurn',
         },
     },
