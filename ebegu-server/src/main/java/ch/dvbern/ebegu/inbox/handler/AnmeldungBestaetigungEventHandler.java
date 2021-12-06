@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulAuswahlDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleBestaetigungEventDTO;
 import com.google.common.collect.Sets;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -162,7 +163,7 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 		}
 
 		for (var modul : dto.getModule()) {
-			if (Objects.isNull(modul.getModulId()) && Objects.isNull(modul.getFremdId())) {
+			if (StringUtils.isBlank(modul.getModulId()) && StringUtils.isBlank(modul.getFremdId())) {
 				return Processing.failure(
 					"Anmeldung kann nicht behandelt werden: Ein Modul hat weder fremdId noch modulId");
 			}
