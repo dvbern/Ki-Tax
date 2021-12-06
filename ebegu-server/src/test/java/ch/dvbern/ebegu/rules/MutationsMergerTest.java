@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -465,8 +466,8 @@ public class MutationsMergerTest {
 	@Test
 	public void test_Mutation_erstGesuch_zu_spaet_keine_Bemerkung() {
 		// Zu spät eingereichtes Erstgesuch vorbereiten
-		Betreuung erstGesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
-		erstGesuchBetreuung.extractGesuch().setEingangsdatum(TestDataUtil.START_PERIODE.plusDays(15));
+		Betreuung erstGesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, 2021, 2022);
+		erstGesuchBetreuung.extractGesuch().setEingangsdatum(LocalDate.of(2021, Month.AUGUST, 15));
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstGesuchBetreuung);
 
 		Verfuegung verfuegungErstgesuch = new Verfuegung();
@@ -479,19 +480,19 @@ public class MutationsMergerTest {
 		Assert.assertTrue(verfuegungZeitabschnittAugust.isZuSpaetEingereicht());
 		Assert.assertEquals(0, verfuegungZeitabschnittAugust.getAnspruchberechtigtesPensum());
 
-		Betreuung mutation = prepareMutation(TestDataUtil.START_PERIODE.plusMonths(2));
+		Betreuung mutation = prepareMutation(LocalDate.of(2021, Month.OCTOBER, 1), 2020, 2021);
 		mutation.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 
 		List<VerfuegungZeitabschnitt> zeitaschnitteMutation = EbeguRuleTestsHelper.calculate(mutation);
 		VerfuegungZeitabschnitt mutationZeitabschnittAugust = zeitaschnitteMutation.get(0);
 		Assert.assertEquals(0, mutationZeitabschnittAugust.getAnspruchberechtigtesPensum());
-		Assert.assertNotNull(mutationZeitabschnittAugust.getBemerkungen());
-		Assert.assertFalse(mutationZeitabschnittAugust.getBemerkungen()
+		Assert.assertNotNull(mutationZeitabschnittAugust.getVerfuegungenZeitabschnittBemerkungenAsString());
+		Assert.assertFalse(mutationZeitabschnittAugust.getVerfuegungenZeitabschnittBemerkungenAsString()
 			.contains("Ihre Anpassung hat eine Erhöhung des Betreuungsgutscheins zur Folge, die Anpassung erfolgt auf den Folgemonat nach Einreichung aller Belege (Art 34r ASIV)."));
 	}
 
 	private Verfuegung prepareErstGesuchVerfuegung() {
-		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
+		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, 2021, 2022);
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstgesuchBetreuung);
 		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteErstgesuch =
@@ -633,9 +634,41 @@ public class MutationsMergerTest {
 		return betreuung;
 	}
 
+	private Betreuung prepareData(BigDecimal massgebendesEinkommen, AntragTyp antragTyp, int startYear, int endYear) {
+		Betreuung betreuung =
+			EbeguRuleTestsHelper.createBetreuungWithPensum(LocalDate.of(startYear, Month.AUGUST, 1), LocalDate.of(endYear, Month.JULY, 31),
+				BetreuungsangebotTyp.KITA, 100, new BigDecimal(2000));
+		final Gesuch gesuch = betreuung.extractGesuch();
+		gesuch.setTyp(antragTyp);
+		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
+		Set<KindContainer> kindContainers = new LinkedHashSet<>();
+		final KindContainer kindContainer = betreuung.getKind();
+		Set<Betreuung> betreuungen = new TreeSet<>();
+		betreuungen.add(betreuung);
+		kindContainer.setBetreuungen(betreuungen);
+		kindContainers.add(betreuung.getKind());
+		gesuch.setKindContainers(kindContainers);
+
+		TestDataUtil.calculateFinanzDaten(gesuch);
+		gesuch.getFinanzDatenDTO().setMassgebendesEinkBjVorAbzFamGr(massgebendesEinkommen);
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(
+				LocalDate.of(startYear, Month.AUGUST, 1), LocalDate.of(endYear, Month.JULY, 31), 100));
+		return betreuung;
+	}
+
 	@Nonnull
 	private Betreuung prepareMutation(@Nonnull LocalDate eingangsdatumMuation) {
 		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		mutierteBetreuung.extractGesuch().setEingangsdatum(eingangsdatumMuation);
+		mutierteBetreuung.initVorgaengerVerfuegungen(null, null);
+
+		return mutierteBetreuung;
+	}
+
+	@Nonnull
+	private Betreuung prepareMutation(@Nonnull LocalDate eingangsdatumMuation, int startYear, int endYear) {
+		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION, startYear, endYear);
 		mutierteBetreuung.extractGesuch().setEingangsdatum(eingangsdatumMuation);
 		mutierteBetreuung.initVorgaengerVerfuegungen(null, null);
 
