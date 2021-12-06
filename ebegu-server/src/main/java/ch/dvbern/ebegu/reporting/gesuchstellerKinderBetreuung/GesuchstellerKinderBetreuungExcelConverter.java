@@ -172,6 +172,7 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.stvGeprueft, dataRow.getStvGeprueft());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.veranlagt, dataRow.getVeranlagt());
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.mzvBeantragt, dataRow.getMzvBeantragt());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.sozialhilfebezueger, dataRow.isSozialhilfeBezueger());
 
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindName, dataRow.getKindName());
@@ -354,6 +355,9 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.veranlagtTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.veranlagtTitle, ServerMessageUtil.getMessage("Reports_veranlagtTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.mzvBeantragtTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.mzvBeantragtTitle, ServerMessageUtil.getMessage("Reports_mzvBeantragtTitle", locale));
 
 
 
