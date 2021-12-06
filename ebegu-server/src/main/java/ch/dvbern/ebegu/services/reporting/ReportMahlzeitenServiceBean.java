@@ -234,6 +234,7 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 
 		MahlzeitenverguenstigungDataRow row = new MahlzeitenverguenstigungDataRow();
 		addStammdaten(row, zeitabschnitt);
+		row.setFallNummer(gesuch.getFall().getFallNummer());
 
 		// Gesuchsteller 1
 		GesuchstellerContainer gs1Container = gueltigeGesuch.getGesuchsteller1();
