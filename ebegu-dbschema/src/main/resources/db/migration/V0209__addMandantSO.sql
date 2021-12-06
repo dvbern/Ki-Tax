@@ -15,6 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 SET @mandant_id_solothurn = UNHEX(REPLACE('7781a6bb-5374-11ec-98e8-f4390979fa3e', '-', ''));
+SET @mandant_id_bern = UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', ''));
 
 INSERT IGNORE INTO mandant
 VALUES (@mandant_id_solothurn, '2021-11-30 00:00:00', '2021-11-30 00:00:00', 'flyway', 'flyway', 0, NULL, 'Kanton Solothurn', false, false);
@@ -25,7 +26,8 @@ INSERT IGNORE INTO application_property (id, timestamp_erstellt, timestamp_mutie
 SELECT UNHEX(REPLACE(UUID(), '-', '')), timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 	NULL, name, value, @mandant_id_solothurn
 FROM application_property
-WHERE NOT EXISTS(SELECT name
+WHERE mandant_id = @mandant_id_bern AND
+      NOT EXISTS(SELECT name
 				 FROM application_property a_p
 				 WHERE mandant_id = @mandant_id_solothurn AND
 						 a_p.name = application_property.name);
