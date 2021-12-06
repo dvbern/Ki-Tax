@@ -1682,6 +1682,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		} else {
 			row.setVeranlagt(Boolean.FALSE);
 		}
+		if (gueltigeGesuch.getFamiliensituationContainer() != null &&
+				gueltigeGesuch.getFamiliensituationContainer().getFamiliensituationJA() != null) {
+			row.setMzvBeantragt(
+					!gueltigeGesuch.getFamiliensituationContainer().getFamiliensituationJA().isKeineMahlzeitenverguenstigungBeantragt()
+			);
+		} else {
+			row.setMzvBeantragt(Boolean.FALSE);
+		}
 
 		// Kind
 		addKindToGesuchstellerKinderBetreuungDataRow(row, gueltigeBetreuung, locale);
@@ -1855,6 +1863,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Sheet sheet = workbook.getSheet(reportResource.getDataSheetName());
 
 		List<GesuchstellerKinderBetreuungDataRow> reportData = getReportDataGesuchsteller(stichtag, locale);
+
+		if (reportData.stream().noneMatch(row -> row.getMzvBeantragt())) {
+			sheet.setColumnWidth(48, 0);
+		}
 
 		final XSSFSheet xsslSheet =
 			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFieldsStichtag(
