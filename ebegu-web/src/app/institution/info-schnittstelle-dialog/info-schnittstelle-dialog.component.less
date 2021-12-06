@@ -28,3 +28,45 @@
         width: 45px;
     }
 }
+
+.flex-row {
+    padding-bottom: 10px;
+    & > * {
+        padding: 0 6px;
+
+        &:nth-child(1) {
+            flex: 2 2 0;
+        }
+
+        &:nth-child(2) {
+            flex: 3 3 0;
+        }
+
+        &:nth-child(3) {
+            flex: 0 0 45px;
+            text-align: center;
+
+            i.fa-clipboard:hover {
+                color: @color-contrast-hover;
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+.flex-vertical-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+table {
+    margin-bottom: 5px !important;
+}
+
+.bold-text {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 1.4rem;
+    letter-spacing: 0.1rem;
+}

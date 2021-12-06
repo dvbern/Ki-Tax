@@ -3728,6 +3728,7 @@ export class EbeguRestUtil {
             this.parseAbstractEntity(modulTagesschuleGroupTS, modulGroupFromServer);
             modulTagesschuleGroupTS.modulTagesschuleName = modulGroupFromServer.modulTagesschuleName;
             modulTagesschuleGroupTS.identifier = modulGroupFromServer.identifier;
+            modulTagesschuleGroupTS.fremdId = modulGroupFromServer.fremdId;
             if (modulGroupFromServer.bezeichnung) {
                 modulTagesschuleGroupTS.bezeichnung = this.parseTextRessource(
                     new TSTextRessource(), modulGroupFromServer.bezeichnung);
@@ -3762,6 +3763,7 @@ export class EbeguRestUtil {
             this.abstractEntityToRestObject(restModulGroup, modulTagesschuleGroupTS);
             restModulGroup.modulTagesschuleName = modulTagesschuleGroupTS.modulTagesschuleName;
             restModulGroup.identifier = modulTagesschuleGroupTS.identifier;
+            restModulGroup.fremdId = modulTagesschuleGroupTS.fremdId;
             if (modulTagesschuleGroupTS.bezeichnung) {
                 restModulGroup.bezeichnung = this.textRessourceToRestObject({}, modulTagesschuleGroupTS.bezeichnung);
             }
