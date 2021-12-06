@@ -57,7 +57,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Table(uniqueConstraints = {
 	@UniqueConstraint(columnNames = "bezeichnung_id", name = "UK_bezeichnung_id"),
-	@UniqueConstraint(columnNames = { "fremd_id", "einstellungen_tagesschule_id" },	name = "UK_fremd_id_gesuschperiode_institution")
+	@UniqueConstraint(columnNames = {"fremdId", "einstellungen_tagesschule_id"}, name = "UK_fremd_id_gesuschperiode_institution")
 })
 public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<ModulTagesschuleGroup> {
 
