@@ -18,7 +18,6 @@
 import {Clipboard} from '@angular/cdk/clipboard';
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {TSExternalClient} from '../../../models/TSExternalClient';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 
@@ -58,5 +57,4 @@ export class InfoSchnittstelleDialogComponent {
     public close(): void {
         this.dialogRef.close();
     }
-
 }

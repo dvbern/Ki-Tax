@@ -226,8 +226,8 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 			testIgnored(tagesschuleBestaetigungEventDTO, "TagesschuleBestaetigungEventDTO hat keine Module");
 		}
 
+		@Test
 		void ignoreEventWhenKeineIdOderFremdId() {
-
 			ModulAuswahlDTO modulAuswahlDTO = new ModulAuswahlDTO();
 			modulAuswahlDTO.setIntervall(Intervall.WOECHENTLICH);
 			modulAuswahlDTO.setWochentag(Wochentag.MONDAY);
