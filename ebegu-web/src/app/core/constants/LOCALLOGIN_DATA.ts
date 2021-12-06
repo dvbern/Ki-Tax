@@ -74,7 +74,7 @@ export const LOCALLOGIN_DATA = {
     },
     SO: {
         mandant: {
-            id: '485d7483-30a2-11ec-a86f-b89a2ae4a038',
+            id: '7781a6bb-5374-11ec-98e8-f4390979fa3e',
             name: 'Kanton Solothurn',
         },
         traegerschaft: {
