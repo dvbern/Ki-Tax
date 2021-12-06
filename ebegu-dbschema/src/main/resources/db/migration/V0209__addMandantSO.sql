@@ -32,6 +32,8 @@ WHERE mandant_id = @mandant_id_bern AND
 				 WHERE mandant_id = @mandant_id_solothurn AND
 						 a_p.name = application_property.name);
 
+UPDATE application_property SET value = 'false' WHERE name = 'LASTENAUSGLEICH_AKTIV' and mandant_id = @mandant_id_solothurn;
+
 # BFS Gemeinden
 INSERT INTO bfs_gemeinde (id, mandant_id, kanton, bfs_nummer, name, gueltig_ab)
 VALUES
