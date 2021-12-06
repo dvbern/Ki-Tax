@@ -994,6 +994,8 @@ export class EbeguRestUtil {
             restStammdaten.externalClients = stammdaten.externalClients || null;
             restStammdaten.usernameScolaris = stammdaten.usernameScolaris;
             restStammdaten.emailBeiGesuchsperiodeOeffnung = stammdaten.emailBeiGesuchsperiodeOeffnung;
+            restStammdaten.hasAltGemeindeKontakt = stammdaten.hasAltGemeindeKontakt;
+            restStammdaten.altGemeindeKontaktText = stammdaten.altGemeindeKontaktText;
 
             if (stammdaten.rechtsmittelbelehrung) {
                 restStammdaten.rechtsmittelbelehrung =
@@ -1063,6 +1065,8 @@ export class EbeguRestUtil {
             stammdatenTS.usernameScolaris = stammdatenFromServer.usernameScolaris;
             stammdatenTS.emailBeiGesuchsperiodeOeffnung = stammdatenFromServer.emailBeiGesuchsperiodeOeffnung;
             stammdatenTS.gutscheinSelberAusgestellt = stammdatenFromServer.gutscheinSelberAusgestellt;
+            stammdatenTS.hasAltGemeindeKontakt = stammdatenFromServer.hasAltGemeindeKontakt;
+            stammdatenTS.altGemeindeKontaktText = stammdatenFromServer.altGemeindeKontaktText;
             if (stammdatenFromServer.gemeindeAusgabestelle) {
                 stammdatenTS.gemeindeAusgabestelle =
                     this.parseGemeinde(new TSGemeinde(), stammdatenFromServer.gemeindeAusgabestelle);
