@@ -41,9 +41,9 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -62,7 +62,7 @@ public class MassgebendesEinkommenFristenTest {
 
 	private static final LocalDate EINREICHUNG_RECHTZEITIG = TestDataUtil.START_PERIODE.minusMonths(3);
 	private static final LocalDate EINREICHUNG_ZU_SPAET = TestDataUtil.START_PERIODE.plusMonths(1);
-	private static final FinanzielleSituationRechner RECHNER = new FinanzielleSituationRechner();
+	private static final FinanzielleSituationBernRechner RECHNER = new FinanzielleSituationBernRechner();
 
 	/**
 	 * Zusätzliches Kind: Massgebendes Einkommen sinkt wegen höherem Familienabzug

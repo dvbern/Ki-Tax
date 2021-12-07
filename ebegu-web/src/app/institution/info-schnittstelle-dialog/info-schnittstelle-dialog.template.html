@@ -38,9 +38,18 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td>{{'MODUL_ID' | translate}}</td>
-                    <td>{{modulTagesschuleGroup.id}}</td>
-                    <td (click)="copyToClipboard(modulTagesschuleGroup.id,'modul')">
+                    <td>{{'FREMD_ID' | translate}}</td>
+                    <td *ngIf="editMode">
+                        <form role="form" #form="ngForm">
+                            <input id="fremdId" type="text" name="fremdId"
+                                   #fremdId="ngModel"
+                                   [(ngModel)]="modulTagesschuleGroup.fremdId"
+                                   class="form-control"
+                                   required>
+                        </form>
+                    </td>
+                    <td *ngIf="!editMode">{{modulTagesschuleGroup.fremdId}}</td>
+                    <td (click)="copyToClipboard(modulTagesschuleGroup.fremdId,'modul')" >
                         <i *ngIf="!copied['modul']" class="fa fa-clipboard fa-lg" [title]="'COPY_TO_CLIPBOARD' | translate"></i>
                         <i *ngIf="copied['modul']" class="fa fa-check fa-lg" [title]="'COPIED' | translate"></i>
                     </td>
@@ -52,6 +61,6 @@
 
     <mat-dialog-actions>
         <div class="dv-dialog-actions">
-            <button type="button" class="dv-btn cancel-button" (click)="close()" [textContent]="'ZURUECK_ONLY' | translate"></button>
+            <button type="button" class="dv-btn cancel-button" (click)="close()" [textContent]="'SCHLIESSEN' | translate"></button>
         </div>
     </mat-dialog-actions>

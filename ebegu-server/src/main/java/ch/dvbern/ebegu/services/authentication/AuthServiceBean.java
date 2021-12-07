@@ -52,7 +52,6 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
-import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.util.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.infinispan.Cache;
@@ -74,9 +73,6 @@ public class AuthServiceBean implements AuthService {
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
-
-	@Inject
-	private MandantService mandantService;
 
 	@Resource(lookup = "java:jboss/infinispan/cache/ebeguCache/ebeguAuthorizationCache")
 	private Cache<?, ?> cache;
@@ -158,8 +154,9 @@ public class AuthServiceBean implements AuthService {
 	@Nonnull
 	public AuthAccessElement createLoginFromIAM(AuthorisierterBenutzer authorisierterBenutzer) {
 		try {
+			// TODO: Mandantenfähigkeit: Haben wir Benutzer hier schon?
 			Benutzer benutzerFromDB = benutzerService.findBenutzer(authorisierterBenutzer.getUsername(),
-							mandantService.getDefaultMandant()).orElseThrow(() -> {
+							authorisierterBenutzer.getBenutzer().getMandant()).orElseThrow(() -> {
 					LOG.error("Could not find Benutzer during login from IAM. Benutzer should have been created"
 						+ "(e.g. via REST call) prior to creating the AuthorisierterBenutzer entry.");
 					return new EbeguEntityNotFoundException("createLoginFromIam", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, authorisierterBenutzer.getUsername());

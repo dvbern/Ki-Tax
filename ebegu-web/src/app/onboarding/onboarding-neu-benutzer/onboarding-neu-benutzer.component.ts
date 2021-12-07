@@ -22,6 +22,7 @@ import {map} from 'rxjs/operators';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 
 @Component({
     selector: 'dv-onboarding-neu-benutzer',
@@ -46,6 +47,7 @@ export class OnboardingNeuBenutzerComponent {
     public constructor(
         private readonly gemeindeRS: GemeindeRS,
         private readonly stateService: StateService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
         this.gemeinden$ = from(this.gemeindeRS.getAktiveUndVonSchulverbundGemeinden())
             .pipe(map(gemeinden => {
@@ -56,6 +58,9 @@ export class OnboardingNeuBenutzerComponent {
             gemeinde => gemeinde.angebotBG)));
         this.gemeindenTS$ = from(this.gemeinden$).pipe(map(gemeinden => gemeinden.filter(
             gemeinde => gemeinde.angebotTS)));
+        this.applicationPropertyRS.getPublicPropertiesCached().then(properties => {
+            this.isTSAngebotEnabled = properties.angebotTSActivated;
+        });
     }
 
     public onSubmit(form: NgForm): void {

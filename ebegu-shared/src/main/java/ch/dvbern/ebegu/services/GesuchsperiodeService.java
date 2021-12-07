@@ -56,12 +56,20 @@ public interface GesuchsperiodeService {
 	Optional<Gesuchsperiode> findGesuchsperiode(@Nonnull String key);
 
 	/**
-	 * Gibt alle existierenden Gesuchsperioden zurueck.
+	 * Gibt alle existierenden Gesuchsperioden für den Mandanten des Principal zurueck.
 	 *
 	 * @return Liste aller Gesuchsperiodeen aus der DB
 	 */
 	@Nonnull
 	Collection<Gesuchsperiode> getAllGesuchsperioden();
+
+	/**
+	 * Gibt alle existierenden Gesuchsperioden für den übergebenen Mandanten zurueck.
+	 *
+	 * @return Liste aller Gesuchsperiodeen aus der DB
+	 */
+	@Nonnull
+	Collection<Gesuchsperiode> getAllGesuchsperioden(@Nonnull Mandant mandant);
 
 	/**
 	 * @param key PK (id) der Gesuchsperiode

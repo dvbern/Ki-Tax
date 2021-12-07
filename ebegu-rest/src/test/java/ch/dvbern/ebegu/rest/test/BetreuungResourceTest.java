@@ -132,7 +132,7 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 	}
 
 	private void persistStammdaten(InstitutionStammdaten institutionStammdaten) {
-		persistence.persist(institutionStammdaten.getInstitution().getMandant());
+		TestDataUtil.saveMandantIfNecessary(persistence, institutionStammdaten.getInstitution().getMandant());
 		persistence.persist(institutionStammdaten.getInstitution().getTraegerschaft());
 		persistence.persist(institutionStammdaten.getInstitution());
 		persistence.persist(institutionStammdaten);

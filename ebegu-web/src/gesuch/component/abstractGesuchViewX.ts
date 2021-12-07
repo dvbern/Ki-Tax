@@ -22,9 +22,10 @@ import {GesuchModelManager} from '../service/gesuchModelManager';
 import {WizardStepManager} from '../service/wizardStepManager';
 
 @Directive()
-export class AbstractGesuchViewX implements AfterViewInit {
+export class AbstractGesuchViewX<T> implements AfterViewInit {
 
     public onlyFerieninselBetreuungen = false;
+    private _model: T;
 
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
@@ -91,5 +92,13 @@ export class AbstractGesuchViewX implements AfterViewInit {
         return this.getGesuch() && this.getGesuch().gesuchsteller2
             ? this.getGesuch().gesuchsteller2.extractFullName()
             : '';
+    }
+
+    public get model(): T {
+        return this._model;
+    }
+
+    public set model(value: T) {
+        this._model = value;
     }
 }

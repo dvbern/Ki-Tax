@@ -60,6 +60,7 @@ import ch.dvbern.ebegu.enums.SequenceType;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -149,7 +150,15 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Nonnull
 	@Override
 	public Collection<Gemeinde> getAllGemeinden() {
-		return criteriaQueryHelper.getAllOrdered(Gemeinde.class, Gemeinde_.name);
+		if (principalBean.getMandant() == null) {
+			throw new EbeguRuntimeException("getAllGemeinden", "Mandant not defined");
+		}
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gemeinde> query = cb.createQuery(Gemeinde.class);
+		Root<Gemeinde> root = query.from(Gemeinde.class);
+		var mandantPredicate = cb.equal(root.get(Gemeinde_.mandant), principalBean.getMandant());
+		query.where(mandantPredicate);
+		return persistence.getCriteriaResults(query);
 	}
 
 	private long getNextGemeindeNummer() {
@@ -170,6 +179,16 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Nonnull
 	@Override
 	public Collection<Gemeinde> getAktiveGemeinden() {
+		if (principalBean.getMandant() == null) {
+			throw new EbeguRuntimeException("getAktiveGemeinden", "Mandant not defined");
+		}
+		return getAktiveGemeinden(principalBean.getMandant());
+	}
+
+
+	@Nonnull
+	@Override
+	public Collection<Gemeinde> getAktiveGemeinden(@Nonnull Mandant mandant) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gemeinde> query = cb.createQuery(Gemeinde.class);
 		Root<Gemeinde> root = query.from(Gemeinde.class);
@@ -179,23 +198,8 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		Predicate predicateStatusActive = cb.equal(root.get(Gemeinde_.status), GemeindeStatus.AKTIV);
 		predicates.add(predicateStatusActive);
 
-		//		// TODO MANDANTEN when developing kibon for multple mandanten we need to filter the mandanten too.
-		//		 Uncommenting the following code
-		//		// and taking the FIXME into account should be enough
-		//		// Nur Gemeinden meines Mandanten zurueckgeben
-		//		final Principal principal = principalBean.getPrincipal();
-		//		if (!Constants.ANONYMOUS_USER_USERNAME.equals(principal.getName())) {
-		//			// user anonymous can get the list of active Gemeinden, though anonymous user doesn't really exist
-		//			// FIXME MANDANTEN this is actually a problem if we work with different Mandanten because in
-		//			 onBoarding there is no user at all
-		//			// so we cannot get the mandant out of the user. In this case we need to send the mandant when
-		//			calling this method
-		//			Mandant mandant = principalBean.getMandant();
-		//			if (mandant != null) {
-		//				Predicate predicateMandant = cb.equal(root.get(Gemeinde_.mandant), mandant);
-		//				predicates.add(predicateMandant);
-		//			}
-		//		}
+		Predicate predicateMandant = cb.equal(root.get(Gemeinde_.mandant), mandant);
+		predicates.add(predicateMandant);
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		return persistence.getCriteriaResults(query);
@@ -203,8 +207,8 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
-	public Collection<Gemeinde> getAktiveGemeindenGueltigAm(@Nonnull LocalDate date) {
-		return getAktiveGemeinden().stream()
+	public Collection<Gemeinde> getAktiveGemeindenGueltigAm(@Nonnull LocalDate date, @Nonnull Mandant mandant) {
+		return getAktiveGemeinden(mandant).stream()
 			.filter(gemeinde -> gemeinde.getGueltigBis().isAfter(date.minusDays(1)))
 			.collect(Collectors.toList());
 	}
@@ -286,8 +290,10 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		boolean tagesschuleEnabled = mandant.isAngebotTS();
 		if (!tagesschuleEnabled) {
 			List<Long> verbundsBfsNummern = getVerbundsBfsNummern(mandant);
-			Predicate predicateNoVerbund = root.get(BfsGemeinde_.bfsNummer).in(verbundsBfsNummern).not();
-			predicates.add(predicateNoVerbund);
+			if (verbundsBfsNummern.size() > 0) {
+				Predicate predicateNoVerbund = root.get(BfsGemeinde_.bfsNummer).in(verbundsBfsNummern).not();
+				predicates.add(predicateNoVerbund);
+			}
 		}
 
 		Predicate predicateMandant = cb.equal(root.get(BfsGemeinde_.mandant), mandant);
@@ -343,13 +349,14 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
-	public Collection<BfsGemeinde> getAllBfsGemeinden() {
+	public Collection<BfsGemeinde> getAllBfsGemeinden(@Nonnull Mandant mandant) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<BfsGemeinde> query = cb.createQuery(BfsGemeinde.class);
 		Root<BfsGemeinde> root = query.from(BfsGemeinde.class);
+		var mandantPredicate = cb.equal(root.get(BfsGemeinde_.mandant), mandant);
+		query.where(mandantPredicate);
 		CriteriaQuery<BfsGemeinde> all = query.select(root);
-		List<BfsGemeinde> allBfsGemeinden = persistence.getCriteriaResults(all);
-		return allBfsGemeinden;
+		return persistence.getCriteriaResults(all);
 	}
 
 	@Override

@@ -1,11 +1,9 @@
-INSERT IGNORE INTO mandant
-VALUES (UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')), '2018-01-01 00:00:00', '2018-01-01 00:00:00', 'flyway', 'flyway', 0, NULL, 'Kanton Luzern', true, true);
-
+# GESUCHSPERIODE 20/21
 INSERT IGNORE INTO gesuchsperiode (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 							vorgaenger_id, gueltig_ab, gueltig_bis, status,
 							datum_aktiviert, mandant_id)
 VALUES (UNHEX(REPLACE('1670d04a-30a9-11ec-a86f-b89a2ae4a038', '-', '')), '2018-01-01 00:00:00', '2018-01-01 00:00:00',
-		'flyway', 'flyway', 0, NULL, '2019-08-01', '2020-07-31', 'ENTWURF', NULL, UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')));
+		'flyway', 'flyway', 0, NULL, '2020-08-01', '2021-07-31', 'ENTWURF', NULL, UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')));
 
 # Default system einstellungen for lu GS
 INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
@@ -28,6 +26,9 @@ WHERE mandant_id = UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', ''
 				and e1.mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')) AND e1.einstellung_key = einstellung.einstellung_key
 	) AND gemeinde_id IS NULL;
 
+UPDATE application_property SET value = 'true' WHERE name = 'DUMMY_LOGIN_ENABLED' AND mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
+UPDATE application_property SET value = 'yellow' WHERE name = 'BACKGROUND_COLOR' AND mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
+
 # noinspection SqlWithoutWhere
 UPDATE gesuchsperiode SET status = 'AKTIV' WHERE mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
 
@@ -37,7 +38,7 @@ INSERT IGNORE INTO gemeinde (
 	betreuungsgutscheine_startdatum, tagesschulanmeldungen_startdatum, ferieninselanmeldungen_startdatum, angebotbg,
                       angebotts, angebotfi, gueltig_bis)
 SELECT UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')), '2018-01-01 00:00:00', '2018-01-01 00:00:00', 'flyway', 'flyway', 0,
-	   'Luzern', max(gemeinde_nummer)+1, UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')), 'AKTIV', 99997,
+	   'Testgemeinde Luzern', max(gemeinde_nummer)+1, UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')), 'AKTIV', 99997,
 	'2016-01-01', '2020-08-01', '2020-08-01', true, false, false, '9999-12-31' from gemeinde;
 
 INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde,
@@ -90,8 +91,8 @@ WHERE sequence_type = 'GEMEINDE_NUMMER' AND
 		mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
 
 # Test-Institutionen erstellen
-INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active)
-	VALUES (UNHEX(REPLACE('31bf2433-30a3-11ec-a86f-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, 'Kitas & Tagis Stadt Luzern', true);
+INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active, mandant_id)
+	VALUES (UNHEX(REPLACE('31bf2433-30a3-11ec-a86f-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, 'Kitas & Tagis Stadt Luzern', true, UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')));
 
 # Kita und Tagesfamilien
 INSERT IGNORE INTO institution (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, name, mandant_id, traegerschaft_id, status, event_published)
@@ -195,20 +196,6 @@ VALUES (UNHEX(REPLACE('6d6afdb2-3261-11ec-a17e-b89a2ae4a038', '-', '')), '2016-0
 		UNHEX(REPLACE('f5ceae4a-30a5-11ec-a86f-b89a2ae4a038', '-', '')), NULL, NULL,
 		UNHEX(REPLACE('f482ce4b-30a4-11ec-a86f-b89a2ae4a038', '-', '')), 'bruennen-lu@mailbucket.dvbern.ch', NULL, NULL);
 
-# INSERT IGNORE INTO kitax_uebergangsloesung_institution_oeffnungszeiten (id, timestamp_erstellt, timestamp_mutiert,
-# 																		user_erstellt, user_mutiert, version,
-# 																		name_kibon, name_kitax, oeffnungsstunden,
-# 																		oeffnungstage)
-# VALUES (UNHEX(REPLACE('16636977-30a6-11ec-a86f-b89a2ae4a038', '-', '')), '2020-06-01 00:00:00', '2020-06-01 00:00:00',
-# 		'flyway', 'flyway', 0, ' Brünnen', 'Brünnen', 11.50, 240.00);
-# 
-# INSERT IGNORE INTO kitax_uebergangsloesung_institution_oeffnungszeiten (id, timestamp_erstellt, timestamp_mutiert,
-# 																		user_erstellt, user_mutiert, version,
-# 																		name_kibon, name_kitax, oeffnungsstunden,
-# 																		oeffnungstage)
-# VALUES (UNHEX(REPLACE('1b1fa20d-30a6-11ec-a86f-b89a2ae4a038', '-', '')), '2020-06-01 00:00:00', '2020-06-01 00:00:00',
-# 		'flyway', 'flyway', 0, ' Weissenstein', 'Weissenstein', 11.50, 240.00);
-
 # Tagesschule
 INSERT IGNORE INTO institution (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 								vorgaenger_id, name, mandant_id, traegerschaft_id, status, event_published)
@@ -234,353 +221,7 @@ VALUES (UNHEX(REPLACE('b8e3acdc-3261-11ec-a17e-b89a2ae4a038', '-', '')), '2016-0
 		UNHEX(REPLACE('3db43c9b-30a6-11ec-a86f-b89a2ae4a038', '-', '')), NULL, NULL, NULL,
 		'tagesschule-lu@mailbucket.dvbern.ch', NULL, NULL);
 
-update gemeinde set angebotts = true, angebotfi = true where bfs_nummer = 99997;
-
--- Zusatzgutschein-Konfigurationen überschreiben am Beispiel Paris
-
--- GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))  as id,
-			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-			 'flyway'                           as user_erstellt,
-			 'flyway'                           as user_mutiert,
-			 0                                  as version,
-			 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED' as einstellung_key,
-			 'true' 							as value,
-			 UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-			 gp.id                              as gesuchsperiode_id,
-			 UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED') = 0;
-
--- GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-			 'flyway'                           as user_erstellt,
-			 'flyway'                           as user_mutiert,
-			 0                                  as version,
-			 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA' as einstellung_key,
-			 '11.00' 							as value,
-			 UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-			 gp.id                              as gesuchsperiode_id,
-			 UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA') = 0;
-
--- GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-			 'flyway'                           as user_erstellt,
-			 'flyway'                           as user_mutiert,
-			 0                                  as version,
-			 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO' as einstellung_key,
-			 '0.11' 							as value,
-			 UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-			 gp.id                              as gesuchsperiode_id,
-			 UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO') = 0;
-
--- GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-			 'flyway'                           as user_erstellt,
-			 'flyway'                           as user_mutiert,
-			 0                                  as version,
-			 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA' as einstellung_key,
-			 'KINDERGARTEN2' 							as value,
-			 UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-			 gp.id                              as gesuchsperiode_id,
-			 UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA') = 0;
-
--- GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-								einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-		  '2020-01-01 00:00:00'              as timestamp_erstellt,
-		  '2020-01-01 00:00:00'              as timestamp_mutiert,
-		  'flyway'                           as user_erstellt,
-		  'flyway'                           as user_mutiert,
-		  0                                  as version,
-		  'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO' as einstellung_key,
-		  'KINDERGARTEN2'								as value,
-		  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-		  gp.id                              as gesuchsperiode_id,
-		  UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO') = 0;
-
--- GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-			 'flyway'                           as user_erstellt,
-			 'flyway'                           as user_mutiert,
-			 0                                  as version,
-			 'GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED' as einstellung_key,
-			 'true'								as value,
-			 UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-			 gp.id                              as gesuchsperiode_id,
-			 UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED') = 0;
-
--- GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA
-INSERT IGNORE  INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-			 'flyway'                           as user_erstellt,
-			 'flyway'                           as user_mutiert,
-			 0                                  as version,
-			 'GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA' as einstellung_key,
-			 '50.00' 							as value,
-			 UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-			 gp.id                              as gesuchsperiode_id,
-			 UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA') = 0;
-
--- GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-			 'flyway'                           as user_erstellt,
-			 'flyway'                           as user_mutiert,
-			 0                                  as version,
-			 'GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO' as einstellung_key,
-			 '4.54' 							as value,
-			 UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-			 gp.id                              as gesuchsperiode_id,
-			 UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO') = 0;
-
--- GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-			 'flyway'                           as user_erstellt,
-			 'flyway'                           as user_mutiert,
-			 0                                  as version,
-			 'GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED' as einstellung_key,
-			 'true' 								as value,
-			 UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-			 gp.id                              as gesuchsperiode_id,
-			 UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED') = 0;
-
--- GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-			 'flyway'                           as user_erstellt,
-			 'flyway'                           as user_mutiert,
-			 0                                  as version,
-			 'GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT' as einstellung_key,
-			 '20' 								as value,
-			 UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-			 gp.id                              as gesuchsperiode_id,
-			 UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT') = 0;
-
--- GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-			 'flyway'                           as user_erstellt,
-			 'flyway'                           as user_mutiert,
-			 0                                  as version,
-			 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED' as einstellung_key,
-			 'true' 								as value,
-			 UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-			 gp.id                              as gesuchsperiode_id,
-			 UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED') = 0;
-
--- GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-			 'flyway'                           as user_erstellt,
-			 'flyway'                           as user_mutiert,
-			 0                                  as version,
-			 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT' as einstellung_key,
-			 '6' 								as value,
-			 UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-			 gp.id                              as gesuchsperiode_id,
-			 UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT') = 0;
-
--- GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-			 'flyway'                           as user_erstellt,
-			 'flyway'                           as user_mutiert,
-			 0                                  as version,
-			 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN' as einstellung_key,
-			 '51000' 								as value,
-			 UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-			 gp.id                              as gesuchsperiode_id,
-			 UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN') = 0;
-
--- GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_MAHLZEIT
-INSERT IGNORE  INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-			 'flyway'                           as user_erstellt,
-			 'flyway'                           as user_mutiert,
-			 0                                  as version,
-			 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_MAHLZEIT' as einstellung_key,
-			 '3' 								as value,
-			 UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-			 gp.id                              as gesuchsperiode_id,
-			 UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_MAHLZEIT') = 0;
-
--- GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-			 'flyway'                           as user_erstellt,
-			 'flyway'                           as user_mutiert,
-			 0                                  as version,
-			 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN' as einstellung_key,
-			 '70000' 								as value,
-			 UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-			 gp.id                              as gesuchsperiode_id,
-			 UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN') = 0;
-
--- GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_MAHLZEIT
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-			 'flyway'                           as user_erstellt,
-			 'flyway'                           as user_mutiert,
-			 0                                  as version,
-			 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_MAHLZEIT' as einstellung_key,
-			 '0' 								as value,
-			 UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-			 gp.id                              as gesuchsperiode_id,
-			 UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_MAHLZEIT') = 0;
-
-
--- GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-			 'flyway'                           as user_erstellt,
-			 'flyway'                           as user_mutiert,
-			 0                                  as version,
-			 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED' as einstellung_key,
-			 'true' 								as value,
-			 UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-			 gp.id                              as gesuchsperiode_id,
-			 UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED') = 0;
-
--- GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-		  '2020-01-01 00:00:00'              as timestamp_erstellt,
-		  '2020-01-01 00:00:00'              as timestamp_mutiert,
-		  'flyway'                           as user_erstellt,
-		  'flyway'                           as user_mutiert,
-		  0                                  as version,
-		  'GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED' as einstellung_key,
-		  'true' 								as value,
-		  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-		  gp.id                              as gesuchsperiode_id,
-		  UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED') = 0;
-
+update gemeinde set angebotts = false, angebotfi = false where bfs_nummer = 99997;
 
 -- Tagesschule Gemeinde Paris
 INSERT IGNORE INTO institution (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
@@ -738,19 +379,3 @@ VALUES (UNHEX(REPLACE(UUID(), '-', '')), '2021-02-15 09:48:18', '2021-02-15 09:4
 		'flyway', 'flyway', 0, NULL, 'test-lu@mailbucket.dvbern.ch', '078 898 98 98', 'http://test.dvbern.ch',
 		UNHEX(REPLACE('a0b91196-30ab-11ec-a86f-b89a2ae4a038', '-', '')),
 		UNHEX(REPLACE('7049ec48-30ab-11ec-a86f-b89a2ae4a038', '-', '')));
-
-INSERT IGNORE INTO application_property (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert,
-										 version, vorgaenger_id, name, value, mandant_id)
-SELECT UNHEX(REPLACE(UUID(), '-', '')), timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-	NULL, name, value, UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-FROM application_property
-WHERE NOT EXISTS(SELECT name
-				 FROM application_property a_p
-				 WHERE mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')) AND
-					 a_p.name = application_property.name);
-
-UPDATE application_property SET value = 'true' WHERE name = 'DUMMY_LOGIN_ENABLED' AND mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
-UPDATE application_property SET value = 'yellow' WHERE name = 'BACKGROUND_COLOR' AND mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
-UPDATE application_property SET value = '#0072bd' WHERE name = 'PRIMARY_COLOR' AND mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
-UPDATE application_property SET value = '#00466f' WHERE name = 'PRIMARY_COLOR_DARK' AND mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
-UPDATE application_property SET value = '#C6C6C6' WHERE name = 'PRIMARY_COLOR_LIGHT' AND mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
