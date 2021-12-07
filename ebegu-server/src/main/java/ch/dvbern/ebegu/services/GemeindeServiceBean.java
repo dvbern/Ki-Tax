@@ -56,7 +56,6 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
-import ch.dvbern.ebegu.enums.SequenceType;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -83,9 +82,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
-
-	@Inject
-	private SequenceService sequenceService;
 
 	@Inject
 	private Authorizer authorizer;
