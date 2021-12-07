@@ -30,7 +30,7 @@ import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
     styleUrls: ['./resultate.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ResultateComponent extends AbstractGesuchViewX implements OnInit {
+export class ResultateComponent extends AbstractGesuchViewX<any> implements OnInit {
 
     public form: NgForm;
 

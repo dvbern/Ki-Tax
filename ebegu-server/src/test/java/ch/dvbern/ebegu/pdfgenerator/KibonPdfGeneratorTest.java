@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.MahnungTyp;
 import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rechner.TagesschuleRechner;
@@ -88,8 +89,8 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		stammdaten.setLogoContent(gemeindeLogo);
 		stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE_FR);
 		Benutzer defaultBenutzer = TestDataUtil.createDefaultBenutzer();
-		gesuch_alleinstehend = TestDataUtil.createTestgesuchDagmar();
-		gesuch_verheiratet = TestDataUtil.createTestgesuchYvonneFeuz();
+		gesuch_alleinstehend = TestDataUtil.createTestgesuchDagmar(new FinanzielleSituationBernRechner());
+		gesuch_verheiratet = TestDataUtil.createTestgesuchYvonneFeuz(new FinanzielleSituationBernRechner());
 		gesuch_alleinstehend.getDossier().setVerantwortlicherBG(defaultBenutzer);
 		gesuch_verheiratet.getDossier().setVerantwortlicherBG(defaultBenutzer);
 		benoetigteUnterlagen = new ArrayList<>();
@@ -210,7 +211,8 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		InvoiceGeneratorException {
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		final FinanzielleSituationPdfGenerator generator = new FinanzielleSituationPdfGenerator(gesuch, getFamiliensituationsVerfuegung(gesuch), stammdaten,  Constants.START_OF_TIME);
+		final FinanzielleSituationPdfGenerator generator = new FinanzielleSituationPdfGenerator(gesuch, getFamiliensituationsVerfuegung(gesuch), stammdaten,  Constants.START_OF_TIME,
+			new FinanzielleSituationBernRechner());
 		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
 

@@ -27,6 +27,7 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_X_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.LONG_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
 
 public enum MergeFieldMahlzeitenverguenstigung implements MergeFieldProvider {
@@ -50,6 +51,7 @@ public enum MergeFieldMahlzeitenverguenstigung implements MergeFieldProvider {
 	famGroesseTitle(new SimpleMergeField<>("famGroesseTitle", STRING_CONVERTER)),
 	massgebendesEinkommenNachFamAbzugTitle(new SimpleMergeField<>("massgebendesEinkommenNachFamAbzugTitle", STRING_CONVERTER)),
 	bgNummerTitle(new SimpleMergeField<>("bgNummerTitle", STRING_CONVERTER)),
+	fallNummerTitle(new SimpleMergeField<>("fallNummerTitle", STRING_CONVERTER)),
 	betreuungTitle(new SimpleMergeField<>("betreuungTitle", STRING_CONVERTER)),
 	betreuungVonTitle(new SimpleMergeField<>("betreuungVonTitle", STRING_CONVERTER)),
 	betreuungBisTitle(new SimpleMergeField<>("betreuungBisTitle", STRING_CONVERTER)),
@@ -81,6 +83,7 @@ public enum MergeFieldMahlzeitenverguenstigung implements MergeFieldProvider {
 	famGroesse(new SimpleMergeField<>("famGroesse", BIGDECIMAL_CONVERTER)),
 	massgebendesEinkommenNachFamAbzug(new SimpleMergeField<>("massgebendesEinkommenNachFamAbzug", BIGDECIMAL_CONVERTER)),
 	bgNummer(new SimpleMergeField<>("bgNummer", STRING_CONVERTER)),
+	fallNummer(new SimpleMergeField<>("fallNummer", LONG_CONVERTER)),
 	zeitabschnittVon(new SimpleMergeField<>("zeitabschnittVon", DATE_CONVERTER)),
 	zeitabschnittBis(new SimpleMergeField<>("zeitabschnittBis", DATE_CONVERTER)),
 	anzahlHauptmahlzeiten(new SimpleMergeField<>("anzahlHauptmahlzeiten", BIGDECIMAL_CONVERTER)),

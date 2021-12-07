@@ -31,6 +31,7 @@ export class InfoSchnittstelleDialogComponent {
     public modulTagesschuleGroup: TSModulTagesschuleGroup;
     public institution: TSInstitution;
     public copied: any = {};
+    public editMode: boolean;
 
     private readonly resetCopiedAfterMS = 1000;
 
@@ -41,6 +42,7 @@ export class InfoSchnittstelleDialogComponent {
     ) {
         this.modulTagesschuleGroup = data.modulTagesschuleGroup;
         this.institution = data.institution;
+        this.editMode = data.editMode;
     }
 
     public ngOnInit(): void {

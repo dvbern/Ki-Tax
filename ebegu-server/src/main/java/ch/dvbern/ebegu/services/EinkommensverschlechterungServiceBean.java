@@ -39,8 +39,9 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationRechnerFactory;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
@@ -56,9 +57,6 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
-
-	@Inject
-	private FinanzielleSituationRechner finSitRechner;
 
 	@Inject
 	private WizardStepService wizardStepService;
@@ -116,13 +114,14 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 	@Override
 	@Nonnull
 	public FinanzielleSituationResultateDTO calculateResultate(@Nonnull Gesuch gesuch, int basisJahrPlus) {
-		return finSitRechner.calculateResultateEinkommensverschlechterung(gesuch, basisJahrPlus, true);
+
+		return FinanzielleSituationRechnerFactory.getRechner(gesuch).calculateResultateEinkommensverschlechterung(gesuch, basisJahrPlus, true);
 	}
 
 	@Override
 	@Nonnull
 	public String calculateProzentualeDifferenz(@Nullable BigDecimal einkommenJahr, @Nullable BigDecimal einkommenJahrPlus1) {
-		BigDecimal resultGerundet = FinanzielleSituationRechner.getCalculatedProzentualeDifferenzRounded(einkommenJahr, einkommenJahrPlus1);
+		BigDecimal resultGerundet = AbstractFinanzielleSituationRechner.getCalculatedProzentualeDifferenzRounded(einkommenJahr, einkommenJahrPlus1);
 		String sign = MathUtil.isPositive(resultGerundet) ? "+" : "-";
 		return sign + resultGerundet.abs().intValue();
 	}

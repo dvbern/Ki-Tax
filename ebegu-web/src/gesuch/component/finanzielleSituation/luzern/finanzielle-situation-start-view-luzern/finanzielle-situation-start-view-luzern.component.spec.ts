@@ -16,12 +16,19 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {StateService} from '@uirouter/angular';
+import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {SharedModule} from '../../../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {TSFinanzielleSituationTyp} from '../../../../../models/enums/TSFinanzielleSituationTyp';
+import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
+import {TSFamiliensituationContainer} from '../../../../../models/TSFamiliensituationContainer';
+import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
+import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSGesuch} from '../../../../../models/TSGesuch';
 import {TSGesuchsteller} from '../../../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
+import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
@@ -29,9 +36,15 @@ import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern
 import {FinanzielleSituationStartViewLuzernComponent} from './finanzielle-situation-start-view-luzern.component';
 
 const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
-    GesuchModelManager.name, ['areThereOnlyFerieninsel', 'getBasisjahr', 'getBasisjahrPlus', 'getGesuch']);
+    GesuchModelManager.name,
+    ['areThereOnlyFerieninsel', 'getBasisjahr', 'getBasisjahrPlus', 'getGesuch', 'isGesuchsteller2Required', 'isGesuchReadonly']);
 const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
-    WizardStepManager.name, ['getCurrentStep', 'setCurrentStep']);
+    WizardStepManager.name, ['getCurrentStep', 'setCurrentStep', 'isNextStepBesucht', 'isNextStepEnabled',
+        'getCurrentStepName']);
+const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name, ['saveFinanzielleSituationStart']);
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
+    ['go']);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
 
 FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
 
@@ -49,25 +62,27 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
             ],
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
-                {provide: WizardStepManager, useValue: wizardStepMangerSpy}
+                {provide: WizardStepManager, useValue: wizardStepMangerSpy},
+                {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
+                {provide: StateService, useValue: stateServiceSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
             ],
             imports: [
-                FormsModule,
-                ReactiveFormsModule,
-                SharedModule
-            ]
+                SharedModule,
+            ],
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 
     beforeEach(() => {
+        gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
+        gesuchModelManagerSpy.isGesuchsteller2Required.and.returnValue(false);
         fixture = TestBed.createComponent(FinanzielleSituationStartViewLuzernComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
         gesuchModelManagerSpy.getBasisjahr.and.returnValue(basisjahr);
         gesuchModelManagerSpy.getBasisjahrPlus.and.returnValue(basisjahrPlus1);
-        gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
     });
 
     it('should create', () => {
@@ -76,7 +91,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
 
     it('should test "Gemeinsame Veranlagung letztes Jahr"', () => {
         FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
-        setFormValues(component.form, false, true, null, true);
+        setFormValues(false, true, null, true);
 
         expect(component.showSelbstdeklaration()).toBeFalse();
         expect(component.showVeranlagung()).toBeTrue();
@@ -89,7 +104,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
 
     it('should test "Alleinige Veranlagung letztes Jahr"', () => {
         FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => true;
-        setFormValues(component.form, false, null, true, true);
+        setFormValues(false, null, true, true);
 
         expect(component.showSelbstdeklaration()).toBeFalse();
         expect(component.showVeranlagung()).toBeTrue();
@@ -102,7 +117,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
 
     it('should test "Gemeinsame Selbstdeklaration aktuelles Jahr"', () => {
         FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
-        setFormValues(component.form, false, false, null, null);
+        setFormValues(false, false, null, null);
 
         expect(component.showSelbstdeklaration()).toBeTrue();
         expect(component.showVeranlagung()).toBeFalse();
@@ -115,7 +130,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
 
     it('should test "Alleinige Selbstdeklaration aktuelles Jahr"', () => {
         FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => true;
-        setFormValues(component.form, false, null, false, null);
+        setFormValues(false, null, false, null);
 
         expect(component.showSelbstdeklaration()).toBeTrue();
         expect(component.showVeranlagung()).toBeFalse();
@@ -128,7 +143,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
 
     it('should test "Gemeinsame Selbstdeklaration letztes Jahr (quellenbesteuert)"', () => {
         FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
-        setFormValues(component.form, true, null, null, null);
+        setFormValues(true, null, null, null);
 
         expect(component.showSelbstdeklaration()).toBeTrue();
         expect(component.showVeranlagung()).toBeFalse();
@@ -141,7 +156,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
 
     it('should test "Alleinige Selbstdeklaration letztes Jahr (quellenbesteuert)"', () => {
         FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => true;
-        setFormValues(component.form, true, null, null, null);
+        setFormValues(true, null, null, null);
 
         expect(component.showSelbstdeklaration()).toBeTrue();
         expect(component.showVeranlagung()).toBeFalse();
@@ -154,7 +169,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
 
     it('should test "Gemeinsame Selbstdeklaration letztes Jahr (nicht veranlagt)"', () => {
         FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
-        setFormValues(component.form, false, true, null, false);
+        setFormValues(false, true, null, false);
 
         expect(component.showSelbstdeklaration()).toBeTrue();
         expect(component.showVeranlagung()).toBeFalse();
@@ -167,7 +182,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
 
     it('should test "Alleinige Selbstdeklaration letztes Jahr (nicht veranlagt)"', () => {
         FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => true;
-        setFormValues(component.form, false, null, true, false);
+        setFormValues(false, null, true, false);
 
         expect(component.showSelbstdeklaration()).toBeTrue();
         expect(component.showVeranlagung()).toBeFalse();
@@ -180,29 +195,35 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
 
     it('should return empty antragsteller name', () => {
         FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
-        setFormValues(component.form, false, true, true, null);
+        setFormValues(false, true, true, null);
         expect(component.getYearForDeklaration()).toBe('');
     });
 
     function setFormValues(
-        form: FormGroup,
         quellenbesteuert: boolean,
         gemeinsameStekVorjahr: boolean,
         alleinigeStekVorjahr: boolean,
-        veranlagt: boolean
+        veranlagt: boolean,
     ): void {
-        form.controls.quellenbesteuert.setValue(quellenbesteuert);
-        form.controls.gemeinsameStekVorjahr.setValue(gemeinsameStekVorjahr);
-        form.controls.alleinigeStekVorjahr.setValue(alleinigeStekVorjahr);
-        form.controls.veranlagt.setValue(veranlagt);
+        component.getModel().finanzielleSituationJA.quellenbesteuert = quellenbesteuert;
+        component.getModel().finanzielleSituationJA.gemeinsameStekVorjahr = gemeinsameStekVorjahr;
+        component.getModel().finanzielleSituationJA.alleinigeStekVorjahr = alleinigeStekVorjahr;
+        component.getModel().finanzielleSituationJA.veranlagt = veranlagt;
     }
 
     function createGesuch(): TSGesuch {
         const gesuch = new TSGesuch();
+        gesuch.finSitTyp = TSFinanzielleSituationTyp.LUZERN;
         gesuch.gesuchsteller1 = new TSGesuchstellerContainer();
         gesuch.gesuchsteller1.gesuchstellerJA = new TSGesuchsteller();
         gesuch.gesuchsteller2 = new TSGesuchstellerContainer();
         gesuch.gesuchsteller2.gesuchstellerJA = new TSGesuchsteller();
+        gesuch.gesuchsteller1.finanzielleSituationContainer = new TSFinanzielleSituationContainer();
+        gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
+        gesuch.gesuchsteller2.finanzielleSituationContainer = new TSFinanzielleSituationContainer();
+        gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
+        gesuch.familiensituationContainer = new TSFamiliensituationContainer();
+        gesuch.familiensituationContainer.familiensituationJA = new TSFamiliensituation();
         return gesuch;
     }
 });

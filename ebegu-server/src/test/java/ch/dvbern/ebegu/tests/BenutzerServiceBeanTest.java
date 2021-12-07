@@ -76,7 +76,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 	public void oneBerechtigung() {
 		Benutzer benutzer = TestDataUtil.createDefaultBenutzer();
 		benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(TestDataUtil.getGemeindeParis(persistence));
-		persistence.merge(benutzer.getMandant());
+		TestDataUtil.persistMandantIfNecessary(benutzer.getMandant(), persistence);
 		persistence.merge(benutzer);
 
 		Set<Berechtigung> berechtigungen = benutzer.getBerechtigungen();
@@ -90,7 +90,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		Benutzer benutzer = TestDataUtil.createDefaultBenutzer();
 		benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(TestDataUtil.getGemeindeParis(persistence));
 		benutzer.getCurrentBerechtigung().getGueltigkeit().setGueltigAb(AB_ERSTE_BERECHTIGUNG);
-		persistence.merge(benutzer.getMandant());
+		TestDataUtil.persistMandantIfNecessary(benutzer.getMandant(), persistence);
 		benutzer = persistence.merge(benutzer);
 		Set<Berechtigung> berechtigungen = benutzer.getBerechtigungen();
 		assertNotNull(berechtigungen);
@@ -130,7 +130,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		Benutzer benutzer = TestDataUtil.createDefaultBenutzer();
 		benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(TestDataUtil.getGemeindeParis(persistence));
 		benutzer.getCurrentBerechtigung().getGueltigkeit().setGueltigAb(AB_ERSTE_BERECHTIGUNG);
-		persistence.merge(benutzer.getMandant());
+		TestDataUtil.persistMandantIfNecessary(benutzer.getMandant(), persistence);
 		benutzer = persistence.merge(benutzer);
 
 		// Timer durchlaufen lassen: Es ist immer noch dieselbe Berechtigung aktiv
@@ -165,7 +165,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void createAdminTraegerschaftByEmail() {
 		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft();
-		persistence.persist(traegerschaft.getMandant());
+		TestDataUtil.saveMandantIfNecessary(persistence, traegerschaft.getMandant());
 		persistence.persist(traegerschaft);
 		final String adminMail = "traegerschaft@mailbucket.dvbern.ch";
 		final Benutzer adminTraegerschaft = benutzerService.createAdminTraegerschaftByEmail(adminMail, traegerschaft);

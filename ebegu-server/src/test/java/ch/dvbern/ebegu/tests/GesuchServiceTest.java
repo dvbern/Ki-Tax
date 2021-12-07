@@ -811,7 +811,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		//add Anmeldungen
 		AnmeldungTagesschule betreuung =
 			TestDataUtil.createAnmeldungTagesschule(erstgesuch.getKindContainers().iterator().next(), gesuchsperiode);
-		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getMandant());
+		TestDataUtil.saveMandantIfNecessary(persistence, betreuung.getInstitutionStammdaten().getInstitution().getMandant());
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft());
 		betreuungService.saveAnmeldungTagesschule(betreuung);
 

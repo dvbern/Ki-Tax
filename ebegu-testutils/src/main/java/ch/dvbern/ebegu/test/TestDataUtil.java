@@ -149,6 +149,7 @@ import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
+import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GesuchService;
@@ -162,7 +163,6 @@ import ch.dvbern.ebegu.testfaelle.Testfall06_BeckerNora;
 import ch.dvbern.ebegu.testfaelle.Testfall11_SchulamtOnly;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -402,7 +402,9 @@ public final class TestDataUtil {
 	}
 
 	public static Fall createDefaultFall() {
-		return new Fall();
+		var fall = new Fall();
+		fall.setMandant(getMandantKantonBern());
+		return fall;
 	}
 
 	public static Dossier createDefaultDossier() {
@@ -448,11 +450,18 @@ public final class TestDataUtil {
 	public static Mandant getMandantKantonLuzernAndPersist(@Nonnull Persistence persistence) {
 		Mandant mandant = persistence.find(Mandant.class, AbstractTestfall.ID_MANDANT_KANTON_LUZERN);
 		if (mandant == null) {
-			mandant = new Mandant();
-			mandant.setId(AbstractTestfall.ID_MANDANT_KANTON_LUZERN);
-			mandant.setName("Kanton Luzern");
+			mandant = getMandantLuzern();
 			return persistence.persist(mandant);
 		}
+		return mandant;
+	}
+
+	@Nonnull
+	public static Mandant getMandantLuzern() {
+		Mandant mandant;
+		mandant = new Mandant();
+		mandant.setId(AbstractTestfall.ID_MANDANT_KANTON_LUZERN);
+		mandant.setName("Kanton Luzern");
 		return mandant;
 	}
 
@@ -1287,15 +1296,15 @@ public final class TestDataUtil {
 		return anmeldung;
 	}
 
-	public static void calculateFinanzDaten(Gesuch gesuch) {
+	public static void calculateFinanzDaten(Gesuch gesuch,
+		AbstractFinanzielleSituationRechner finanzielleSituationRechner) {
 		if (gesuch.getGesuchsperiode() == null) {
 			gesuch.setGesuchsperiode(createGesuchsperiode1718());
 		}
-		FinanzielleSituationRechner finanzielleSituationRechner = new FinanzielleSituationRechner();
 		finanzielleSituationRechner.calculateFinanzDaten(gesuch, BigDecimal.valueOf(20));
 	}
 
-	public static Gesuch createTestgesuchDagmar() {
+	public static Gesuch createTestgesuchDagmar(AbstractFinanzielleSituationRechner finanzielleSituationRechner) {
 		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
 		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
@@ -1303,7 +1312,7 @@ public final class TestDataUtil {
 			new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(), insttStammdaten);
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, finanzielleSituationRechner);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		return gesuch;
 	}
@@ -1337,7 +1346,7 @@ public final class TestDataUtil {
 		return persistAllEntities(persistence, eingangsdatum, testfall, status);
 	}
 
-	public static Gesuch createTestgesuchYvonneFeuz() {
+	public static Gesuch createTestgesuchYvonneFeuz(AbstractFinanzielleSituationRechner finanzielleSituationRechner) {
 		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
 		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
@@ -1345,19 +1354,19 @@ public final class TestDataUtil {
 			new Testfall02_FeutzYvonne(TestDataUtil.createGesuchsperiode1718(), insttStammdaten);
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, finanzielleSituationRechner);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		return gesuch;
 	}
 
-	public static Gesuch createTestgesuchLauraWalther(@Nonnull Gesuchsperiode gesuchsperiode) {
+	public static Gesuch createTestgesuchLauraWalther(@Nonnull Gesuchsperiode gesuchsperiode, AbstractFinanzielleSituationRechner finanzielleSituationRechner) {
 		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
 		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		Testfall04_WaltherLaura testfall =
 			new Testfall04_WaltherLaura(gesuchsperiode, insttStammdaten);
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, finanzielleSituationRechner);
 		gesuch.setGesuchsperiode(gesuchsperiode);
 		return gesuch;
 	}
@@ -1541,7 +1550,7 @@ public final class TestDataUtil {
 
 	public static Institution createAndPersistDefaultInstitution(Persistence persistence) {
 		Institution inst = createDefaultInstitution();
-		persistence.merge(inst.getMandant());
+		TestDataUtil.saveMandantIfNecessary(persistence, inst.getMandant());
 		persistence.merge(inst.getTraegerschaft());
 		return persistence.merge(inst);
 	}

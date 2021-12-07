@@ -21,6 +21,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import org.junit.Assert;
@@ -33,7 +34,7 @@ public class AntragStatusConverterUtilTest {
 
 	@Test
 	public void convertStatusToDTOGEPRUEFTTest() {
-		Gesuch gesuch = TestDataUtil.createTestgesuchDagmar(); // by default
+		Gesuch gesuch = TestDataUtil.createTestgesuchDagmar(new FinanzielleSituationBernRechner()); // by default
 		AntragStatusDTO antragStatusDTO = AntragStatusConverterUtil.convertStatusToDTO(gesuch, AntragStatus.GEPRUEFT);
 		Assert.assertEquals(AntragStatusDTO.GEPRUEFT, antragStatusDTO);
 	}
@@ -73,7 +74,7 @@ public class AntragStatusConverterUtilTest {
 
 	@Nonnull
 	private Gesuch prepareGesuchAndBetreuungsstatus(GesuchBetreuungenStatus status) {
-		final Gesuch gesuch = TestDataUtil.createTestgesuchDagmar();
+		final Gesuch gesuch = TestDataUtil.createTestgesuchDagmar(new FinanzielleSituationBernRechner());
 		gesuch.setGesuchBetreuungenStatus(status);
 		return gesuch;
 	}

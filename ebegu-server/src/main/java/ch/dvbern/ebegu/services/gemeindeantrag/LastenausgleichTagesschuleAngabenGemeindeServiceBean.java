@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -356,10 +357,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		var predicates = new ArrayList<Predicate>();
 
 		Objects.requireNonNull(principal.getMandant());
-		Predicate mandantPredicate = cb.equal(
-			root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde)
-				.get(Gemeinde_.mandant),
-			principal.getMandant());
+		Predicate mandantPredicate = createMandantPredicate(cb, root);
 		predicates.add(mandantPredicate);
 
 		if (!principal.isCallerInAnyOfRole(
@@ -400,10 +398,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 		Set<Predicate> predicates = new HashSet<>();
 
-		Predicate mandantPredicate = cb.equal(
-			root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde)
-				.get(Gemeinde_.mandant), principal.getMandant()
-		);
+		Predicate mandantPredicate = createMandantPredicate(cb, root);
 		predicates.add(mandantPredicate);
 
 		if (!principal.isCallerInAnyOfRole(
@@ -454,6 +449,19 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		});
 
 		return containerList;
+	}
+
+	private Predicate createMandantPredicate(
+			CriteriaBuilder cb,
+			Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root) {
+		Mandant mandant = principal.getMandant();
+		if (mandant == null) {
+			throw new EbeguRuntimeException("LastenausgleichTagesschuleAngabenGemeindeServiceBean", "mandant not found for principal " + principal.getPrincipal().getName());
+		}
+		return cb.equal(
+				root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde)
+						.get(Gemeinde_.mandant), mandant
+		);
 	}
 
 	private Predicate createStatusPredicate(
