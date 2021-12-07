@@ -106,6 +106,7 @@ public abstract class AbstractEbeguTest {
 
 		WebArchive webArchive = ShrinkWrap.create(WebArchive.class, "test.war")
 			.addPackages(true, "ch/dvbern/ebegu/persistence")
+			.addPackages(true, "ch/dvbern/ebegu/finanzielleSituationRechner")
 			.addPackages(true, "ch/dvbern/ebegu/rechner")
 			.addPackages(true, "ch/dvbern/ebegu/rules")
 			.addPackages(true, "ch/dvbern/ebegu/services")

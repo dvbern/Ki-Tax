@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.MahnungTyp;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.mocks.ApplicationPropertyServiceMock;
 import ch.dvbern.ebegu.mocks.DokumentGrundServiceMock;
 import ch.dvbern.ebegu.mocks.DokumenteverzeichnisEvaluatorMock;
@@ -137,7 +138,7 @@ public class PDFServiceBeanTest {
 		testfall_1GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 
 		gesuch_1GS = testfall_1GS.fillInGesuch();
-		TestDataUtil.calculateFinanzDaten(gesuch_1GS);
+		TestDataUtil.calculateFinanzDaten(gesuch_1GS, new FinanzielleSituationBernRechner());
 		gesuch_1GS.setGesuchsperiode(gesuchsperiode1718);
 
 		gesuch_1GS.addDokumentGrund(new DokumentGrund(DokumentGrundTyp.SONSTIGE_NACHWEISE, DokumentTyp.STEUERERKLAERUNG));
@@ -150,7 +151,7 @@ public class PDFServiceBeanTest {
 		testfall_2GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 
 		gesuch_2GS = testfall_2GS.fillInGesuch();
-		TestDataUtil.calculateFinanzDaten(gesuch_2GS);
+		TestDataUtil.calculateFinanzDaten(gesuch_2GS, new FinanzielleSituationBernRechner());
 		gesuch_2GS.setGesuchsperiode(gesuchsperiode1718);
 
 		gesuch_2GS.addDokumentGrund(new DokumentGrund(DokumentGrundTyp.SONSTIGE_NACHWEISE, DokumentTyp.STEUERERKLAERUNG));
@@ -163,7 +164,7 @@ public class PDFServiceBeanTest {
 		testfall_SchulamtOnly.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 
 		gesuch_Schulamt = testfall_SchulamtOnly.fillInGesuch();
-		TestDataUtil.calculateFinanzDaten(gesuch_Schulamt);
+		TestDataUtil.calculateFinanzDaten(gesuch_Schulamt, new FinanzielleSituationBernRechner());
 		gesuch_Schulamt.setGesuchsperiode(gesuchsperiode1718);
 
 		gesuch_Schulamt.addDokumentGrund(new DokumentGrund(DokumentGrundTyp.SONSTIGE_NACHWEISE, DokumentTyp.STEUERERKLAERUNG));
@@ -335,7 +336,7 @@ public class PDFServiceBeanTest {
 
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), new BigDecimal("80000"), true);
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 
 		final Verfuegung evaluateFamiliensituation = evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE);
 
@@ -362,7 +363,7 @@ public class PDFServiceBeanTest {
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller2(), new BigDecimal("40000"), true);
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), new BigDecimal("50000"), false);
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller2(), new BigDecimal("30000"), false);
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 
 		evaluator.evaluate(gesuch, AbstractBGRechnerTest.getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 		Verfuegung familiensituation = evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE);
@@ -388,7 +389,7 @@ public class PDFServiceBeanTest {
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), new BigDecimal("50000"), false);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Verfuegung verfuegungFamSit = evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE);
 		evaluator.evaluate(gesuch, AbstractBGRechnerTest.getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 

@@ -23,6 +23,7 @@ import {TestFaelleRS} from '../../admin/service/testFaelleRS.rest';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {DossierRS} from '../../gesuch/service/dossierRS.rest';
 import {FallRS} from '../../gesuch/service/fallRS.rest';
+import {FinanzielleSituationRS} from '../../gesuch/service/finanzielleSituationRS.rest';
 import {FinanzielleSituationSubStepManager} from '../../gesuch/service/finanzielleSituationSubStepManager';
 import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../gesuch/service/gesuchModelManager';
@@ -356,6 +357,17 @@ export const ebeguUtilProvider = {
     deps: ['$injector'],
 };
 
+// FinanzielleSituationRS
+export function finanzielleSituationRSServiceFactory(i: IInjectorService): FinanzielleSituationRS {
+    return i.get('FinanzielleSituationRS');
+}
+
+export const finanzielleSituationRSProvider = {
+    provide: FinanzielleSituationRS,
+    useFactory: finanzielleSituationRSServiceFactory,
+    deps: ['$injector'],
+};
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -384,4 +396,5 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     gesuchModelManagerProvider,
     reportRSProvider,
     ebeguUtilProvider,
+    finanzielleSituationRSProvider,
 ];

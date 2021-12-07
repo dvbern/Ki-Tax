@@ -2609,6 +2609,12 @@ public class JaxBConverter extends AbstractConverter {
 		abstractFinanzielleSituation.setGeschaeftsgewinnBasisjahr(abstractFinanzielleSituationJAXP.getGeschaeftsgewinnBasisjahr());
 		abstractFinanzielleSituation.setGeleisteteAlimente(abstractFinanzielleSituationJAXP.getGeleisteteAlimente());
 
+		abstractFinanzielleSituation.setSteuerbaresEinkommen(abstractFinanzielleSituationJAXP.getSteuerbaresEinkommen());
+		abstractFinanzielleSituation.setSteuerbaresVermoegen(abstractFinanzielleSituationJAXP.getSteuerbaresVermoegen());
+		abstractFinanzielleSituation.setEinkaeufeVorsorge(abstractFinanzielleSituationJAXP.getEinkaeufeVorsorge());
+		abstractFinanzielleSituation.setGeschaeftsverlust(abstractFinanzielleSituationJAXP.getGeschaeftsverlust());
+		abstractFinanzielleSituation.setAbzuegeLiegenschaft(abstractFinanzielleSituationJAXP.getAbzuegeLiegenschaft());
+
 		return abstractFinanzielleSituation;
 	}
 
@@ -2629,6 +2635,12 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbstractFinanzielleSituation.setSchulden(persistedAbstractFinanzielleSituation.getSchulden());
 		jaxAbstractFinanzielleSituation.setGeschaeftsgewinnBasisjahr(persistedAbstractFinanzielleSituation.getGeschaeftsgewinnBasisjahr());
 		jaxAbstractFinanzielleSituation.setGeleisteteAlimente(persistedAbstractFinanzielleSituation.getGeleisteteAlimente());
+
+		jaxAbstractFinanzielleSituation.setSteuerbaresEinkommen(persistedAbstractFinanzielleSituation.getSteuerbaresEinkommen());
+		jaxAbstractFinanzielleSituation.setSteuerbaresVermoegen(persistedAbstractFinanzielleSituation.getSteuerbaresVermoegen());
+		jaxAbstractFinanzielleSituation.setEinkaeufeVorsorge(persistedAbstractFinanzielleSituation.getEinkaeufeVorsorge());
+		jaxAbstractFinanzielleSituation.setGeschaeftsverlust(persistedAbstractFinanzielleSituation.getGeschaeftsverlust());
+		jaxAbstractFinanzielleSituation.setAbzuegeLiegenschaft(persistedAbstractFinanzielleSituation.getAbzuegeLiegenschaft());
 	}
 
 	private FinanzielleSituation finanzielleSituationToEntity(
@@ -2644,6 +2656,11 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setSteuerdatenZugriff(finanzielleSituationJAXP.getSteuerdatenZugriff());
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus2());
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus1());
+
+		finanzielleSituation.setQuellenbesteuert(finanzielleSituationJAXP.getQuellenbesteuert());
+		finanzielleSituation.setGemeinsameStekVorjahr(finanzielleSituationJAXP.getGemeinsameStekVorjahr());
+		finanzielleSituation.setAlleinigeStekVorjahr(finanzielleSituationJAXP.getAlleinigeStekVorjahr());
+		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
 
 		return finanzielleSituation;
 	}
@@ -2663,6 +2680,11 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setSteuerdatenZugriff(persistedFinanzielleSituation.getSteuerdatenZugriff());
 		jaxFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(persistedFinanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2());
 		jaxFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(persistedFinanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1());
+
+		jaxFinanzielleSituation.setQuellenbesteuert(persistedFinanzielleSituation.getQuellenbesteuert());
+		jaxFinanzielleSituation.setGemeinsameStekVorjahr(persistedFinanzielleSituation.getGemeinsameStekVorjahr());
+		jaxFinanzielleSituation.setAlleinigeStekVorjahr(persistedFinanzielleSituation.getAlleinigeStekVorjahr());
+		jaxFinanzielleSituation.setVeranlagt(persistedFinanzielleSituation.getVeranlagt());
 
 		return jaxFinanzielleSituation;
 	}

@@ -1218,6 +1218,7 @@ export class EbeguRestUtil {
         restGesuch.gueltig = gesuch.gueltig;
         restGesuch.dokumenteHochgeladen = gesuch.dokumenteHochgeladen;
         restGesuch.finSitStatus = gesuch.finSitStatus;
+        restGesuch.finSitTyp = gesuch.finSitTyp;
         return restGesuch;
     }
 
@@ -1814,6 +1815,11 @@ export class EbeguRestUtil {
         restFinanzielleSituation.steuerdatenZugriff = finanzielleSituation.steuerdatenZugriff;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus2 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus2;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus1 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus1;
+        restFinanzielleSituation.quellenbesteuert = finanzielleSituation.quellenbesteuert;
+        restFinanzielleSituation.gemeinsameStekVorjahr = finanzielleSituation.gemeinsameStekVorjahr;
+        restFinanzielleSituation.alleinigeStekVorjahr = finanzielleSituation.alleinigeStekVorjahr;
+        restFinanzielleSituation.veranlagt = finanzielleSituation.veranlagt;
+
         return restFinanzielleSituation;
     }
 
@@ -1831,6 +1837,12 @@ export class EbeguRestUtil {
         restAbstractFinanzielleSituation.geschaeftsgewinnBasisjahr =
             abstractFinanzielleSituation.geschaeftsgewinnBasisjahr;
         restAbstractFinanzielleSituation.geleisteteAlimente = abstractFinanzielleSituation.geleisteteAlimente;
+        restAbstractFinanzielleSituation.steuerbaresEinkommen = abstractFinanzielleSituation.steuerbaresEinkommen;
+        restAbstractFinanzielleSituation.steuerbaresVermoegen = abstractFinanzielleSituation.steuerbaresVermoegen;
+        restAbstractFinanzielleSituation.geschaeftsverlust = abstractFinanzielleSituation.geschaeftsverlust;
+        restAbstractFinanzielleSituation.abzuegeLiegenschaft = abstractFinanzielleSituation.abzuegeLiegenschaft;
+        restAbstractFinanzielleSituation.einkaeufeVorsorge = abstractFinanzielleSituation.einkaeufeVorsorge;
+
         return restAbstractFinanzielleSituation;
     }
 
@@ -1850,6 +1862,11 @@ export class EbeguRestUtil {
                 abstractFinanzielleSituationFromServer.geschaeftsgewinnBasisjahr;
             abstractFinanzielleSituationTS.geleisteteAlimente =
                 abstractFinanzielleSituationFromServer.geleisteteAlimente;
+            abstractFinanzielleSituationTS.steuerbaresEinkommen = abstractFinanzielleSituationFromServer.steuerbaresEinkommen;
+            abstractFinanzielleSituationTS.steuerbaresVermoegen = abstractFinanzielleSituationFromServer.steuerbaresVermoegen;
+            abstractFinanzielleSituationTS.geschaeftsverlust = abstractFinanzielleSituationFromServer.geschaeftsverlust;
+            abstractFinanzielleSituationTS.abzuegeLiegenschaft = abstractFinanzielleSituationFromServer.abzuegeLiegenschaft;
+            abstractFinanzielleSituationTS.einkaeufeVorsorge = abstractFinanzielleSituationFromServer.einkaeufeVorsorge;
             return abstractFinanzielleSituationTS;
         }
         return undefined;
@@ -1871,6 +1888,11 @@ export class EbeguRestUtil {
                 finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus2;
             finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus1 =
                 finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus1;
+            finanzielleSituationTS.quellenbesteuert = finanzielleSituationFromServer.quellenbesteuert;
+            finanzielleSituationTS.gemeinsameStekVorjahr = finanzielleSituationFromServer.gemeinsameStekVorjahr;
+            finanzielleSituationTS.alleinigeStekVorjahr = finanzielleSituationFromServer.alleinigeStekVorjahr;
+            finanzielleSituationTS.veranlagt = finanzielleSituationFromServer.veranlagt;
+
             return finanzielleSituationTS;
         }
         return undefined;
