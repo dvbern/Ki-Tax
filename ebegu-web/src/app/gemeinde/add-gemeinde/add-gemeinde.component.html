@@ -40,6 +40,7 @@
                                     name="bfsGemeinde"
                                     class="form-control"
                                     id="bfsGemeinde"
+                                    [disabled]="gemeinde.besondereVolksschule"
                                     [required]="true"
                                     (change)="bfsGemeindeSelected()">
                                 <option value=""></option>
@@ -74,6 +75,24 @@
 
                         <div class="form-group">
                             <label class="md-no-float" translate for="begu_start_ID"  *ngIf="tageschuleEnabledForMandant">GEMEINDE_ANGEBOT</label>
+
+
+                            <mat-checkbox id="besondereVolksschule" name="besondereVolksschule"
+                                          [(ngModel)]="gemeinde.besondereVolksschule"
+                                          (ngModelChange)="handleIsBesondereVolksschuleChange($event)">
+                                {{'GEMEINDE_ANGEBOT_BESONDERE_VOLKSSCHULE'|translate}}</mat-checkbox>
+
+                            <div class="form-group" *ngIf="gemeinde.besondereVolksschule">
+                                <label class="md-no-float" translate for="besondere_volksschule_name">NAME</label>
+                                <input type="text"
+                                       name="besondere_volksschule_name"
+                                       id="besondere_volksschule_name"
+                                       [(ngModel)]="gemeinde.name"
+                                       required>
+                                <dv-error-messages input-id="besondere_volksschule_name"
+                                                   [errorObject]="form.controls.besondere_volksschule_name?.errors">
+                                </dv-error-messages>
+                            </div>
 
                             <mat-checkbox id="angebotBG" name="angebotBG"
                                           [(ngModel)]="gemeinde.angebotBG" *ngIf="tageschuleEnabledForMandant">
