@@ -4966,6 +4966,10 @@ public class JaxBConverter extends AbstractConverter {
 
 		convertAbstractFieldsToEntity(jaxStammdaten, stammdaten);
 
+		// Die Gemeinde selbst ändert nicht, nur wieder von der DB lesen
+		gemeindeService.findGemeinde(jaxStammdaten.getGemeinde().getId())
+				.ifPresent(stammdaten::setGemeinde);
+
 		Mandant mandant = stammdaten.getGemeinde().getMandant();
 
 		if (jaxStammdaten.getDefaultBenutzerBG() != null) {
@@ -4981,9 +4985,6 @@ public class JaxBConverter extends AbstractConverter {
 				.ifPresent(stammdaten::setDefaultBenutzer);
 		}
 
-		// Die Gemeinde selbst ändert nicht, nur wieder von der DB lesen
-		gemeindeService.findGemeinde(jaxStammdaten.getGemeinde().getId())
-			.ifPresent(stammdaten::setGemeinde);
 
 		if(jaxStammdaten.getGemeindeAusgabestelle() != null) {
 			Objects.requireNonNull(jaxStammdaten.getGemeindeAusgabestelle().getId());
