@@ -135,6 +135,9 @@ public interface GemeindeService {
 	@Nonnull
 	Optional<BfsGemeinde> findBfsGemeinde(@Nonnull Long bfsNummer);
 
+	@Nonnull
+	Long getNextBesondereVolksschuleBfsNummer();
+
 	/**
 	 * aktiviert oder deaktiviert das BG Angebot
 	 */
