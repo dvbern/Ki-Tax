@@ -61,7 +61,9 @@
         <div class="col-sm-6">
             <div class="form-group">
                 <label class="required long-label" for="abzuege_liegenschaft_id">
-                    {{'FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT' | translate}}</label>
+                    {{'FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT' | translate}}
+                    <dv-tooltip [text]="'FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT_TOOLTIP' | translate"></dv-tooltip>
+                </label>
                 <input id="abzuege_liegenschaft_id" type="number"
                        name="abzuegeLiegenschaft"
                        #abzuegeLiegenschaft="ngModel"
@@ -80,7 +82,9 @@
         <div class="col-sm-6">
             <div class="form-group">
                 <label class="required long-label" for="geschaeftsverlust_id">
-                    {{'FINANZIELLE_SITUATION_GESCHAEFTSVERLUST' | translate}}</label>
+                    {{'FINANZIELLE_SITUATION_GESCHAEFTSVERLUST' | translate}}
+                    <dv-tooltip [text]="'FINANZIELLE_SITUATION_GESCHAEFTSVERLUST_TOOLTIP' | translate"></dv-tooltip>
+                </label>
                 <input id="geschaeftsverlust_id" type="number"
                        name="geschaeftsverlust"
                        #geschaeftsverlust="ngModel"
@@ -99,7 +103,9 @@
         <div class="col-sm-6">
             <div class="form-group">
                 <label class="required long-label" for="einkaeufe_vorsorge_id">
-                    {{'FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE' | translate}}</label>
+                    {{'FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE' | translate}}
+                    <dv-tooltip [text]="'FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE_TOOLTIP' | translate"></dv-tooltip>
+                </label>
                 <input id="einkaeufe_vorsorge_id" type="number"
                        name="einkaeufeVorsorge"
                        #einkaeufeVorsorge="ngModel"
