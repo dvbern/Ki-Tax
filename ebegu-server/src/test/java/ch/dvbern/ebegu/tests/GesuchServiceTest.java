@@ -207,7 +207,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Assert.assertNotNull(gesuchService);
 		Gemeinde bern = TestDataUtil.getGemeindeParis(persistence);
 		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService, gesuchsperiode);
-		final Mandant mandant = TestDataUtil.getMandantKantonBern(persistence);
+		final Mandant mandant = TestDataUtil.getMandantKantonBernAndPersist(persistence);
 
 		Collection<InstitutionStammdaten> stammdaten = criteriaQueryHelper.getAll(InstitutionStammdaten.class);
 		Gesuch gesuch2 = testfaelleService.createAndSaveGesuch(new Testfall02_FeutzYvonne(gesuch.getGesuchsperiode(), stammdaten, true, bern), true, null);
@@ -316,8 +316,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		// Voraussetzung: Ich habe einen Antrag, er muss nicht verfuegt sein
 		Gesuch erstgesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		Gesuchsperiode gpFolgegesuch = new Gesuchsperiode();
-		Mandant mandant = TestDataUtil.createDefaultMandant();
-		TestDataUtil.saveMandantIfNecessary(persistence, mandant);
+		Mandant mandant = TestDataUtil.getMandantKantonBernAndPersist(persistence);
 		gpFolgegesuch.setMandant(mandant);
 		gpFolgegesuch.getGueltigkeit().setGueltigAb(erstgesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb().plusYears(1));
 		gpFolgegesuch.getGueltigkeit().setGueltigBis(erstgesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis().plusYears(1));
@@ -812,7 +811,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		//add Anmeldungen
 		AnmeldungTagesschule betreuung =
 			TestDataUtil.createAnmeldungTagesschule(erstgesuch.getKindContainers().iterator().next(), gesuchsperiode);
-		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getMandant());
+		TestDataUtil.saveMandantIfNecessary(persistence, betreuung.getInstitutionStammdaten().getInstitution().getMandant());
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft());
 		betreuungService.saveAnmeldungTagesschule(betreuung);
 

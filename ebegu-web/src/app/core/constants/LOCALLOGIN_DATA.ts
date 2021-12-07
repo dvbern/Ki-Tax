@@ -69,7 +69,7 @@ export const LOCALLOGIN_DATA = {
         },
         default_gemeinde: {
             id: '6fd6183c-30a2-11ec-a86f-b89a2ae4a038',
-            name: 'Luzern',
+            name: 'Testgemeinde Luzern',
         },
     },
 };

@@ -2498,6 +2498,7 @@
     "GUELTIGKEIT_OUTSIDE_INSTITUTION_GUELTIGKEIT": "Les données entrées pour cette prise en charge se trouve en dehors de la période admise par cette institution ({{gueltigAb}} - {{gueltigBis}})",
     "LASTENAUSGLEICH_TAGESSCHULEN_AKTIV": "Activer la compensation des charges pour les écoles à journée continue",
     "FERIENBETREUUNG_AKTIV": "Activer les structures d’accueil durant les vacances scolaires",
+    "LASTENAUSGLEICH_AKTIV": "Lastenausgleich BG aktiviert",
     "DELETE_ANTRAEGE_ERROR": "Il y a eu une erreure lors de l'effactement de la demande",
     "WIRKLICH_LOESCHEN": "Voulez-vous vraiment effacer ?",
     "FERIENBETREUUNG_BERECHNUNG": "Calcul",

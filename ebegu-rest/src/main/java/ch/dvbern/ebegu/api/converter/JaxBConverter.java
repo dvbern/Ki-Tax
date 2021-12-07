@@ -5113,7 +5113,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStammdaten.setAltGemeindeKontaktText(stammdaten.getAltGemeindeKontaktText());
 
 		// Konfiguration: Wir laden die Gesuchsperioden, die vor dem Ende der Gemeinde-Gültigkeit liegen
-		List<Gesuchsperiode> gueltigeGesuchsperiodenForGemeinde = gesuchsperiodeService.getAllGesuchsperioden()
+		Objects.requireNonNull(stammdaten.getGemeinde().getMandant());
+		List<Gesuchsperiode> gueltigeGesuchsperiodenForGemeinde = gesuchsperiodeService.getAllGesuchsperioden(stammdaten.getGemeinde().getMandant())
 			.stream()
 			.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant().equals(stammdaten.getGemeinde().getMandant()))
 			.filter(gesuchsperiode -> stammdaten.getGemeinde()

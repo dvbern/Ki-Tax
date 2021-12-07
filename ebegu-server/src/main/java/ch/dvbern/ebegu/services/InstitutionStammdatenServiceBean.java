@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -156,6 +157,12 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 			root.join(InstitutionStammdaten_.institution, JoinType.LEFT);
 		List<Predicate> predicates = new ArrayList<>();
 
+		Predicate mandantPredicate = cb.equal(
+			root.get(InstitutionStammdaten_.institution).get(Institution_.mandant),
+			principalBean.getMandant()
+		);
+		predicates.add(mandantPredicate);
+
 		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
 
 		Benutzer currentBenutzer = principalBean.getBenutzer();
@@ -265,6 +272,10 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		// InstStammdaten Ende muss NACH GP Start sein
 		// InstStammdaten Start muss VOR GP Ende sein
 		predicates.addAll(PredicateHelper.getPredicateDateRangedEntityIncludedInRange(cb, root, startParam, endParam));
+
+		Objects.requireNonNull(principalBean.getMandant());
+		Predicate mandantPredicate = cb.equal(root.get(InstitutionStammdaten_.institution).get(Institution_.mandant), principalBean.getMandant());
+		predicates.add(mandantPredicate);
 
 		ParameterExpression<Collection> gemeindeParam = cb.parameter(Collection.class, GEMEINDEN);
 		predicates.add(PredicateHelper.getPredicateBerechtigteInstitutionStammdaten(cb, root, gemeindeParam));

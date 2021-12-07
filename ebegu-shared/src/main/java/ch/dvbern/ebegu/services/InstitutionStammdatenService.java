@@ -50,7 +50,7 @@ public interface InstitutionStammdatenService {
 	Optional<InstitutionStammdaten> findInstitutionStammdaten(String institutionStammdatenID);
 
 	/**
-	 * @return Aller InstitutionStammdaten aus der DB.
+	 * @return Aller InstitutionStammdaten aus der DB für den Mandanten des Principal
 	 */
 	@Nonnull
 	Collection<InstitutionStammdaten> getAllInstitutionStammdaten();

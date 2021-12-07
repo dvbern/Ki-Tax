@@ -118,7 +118,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Before
 	public void init() {
-		mandant = TestDataUtil.getMandantKantonBern(persistence);
+		mandant = TestDataUtil.getMandantKantonBernAndPersist(persistence);
 		gesuchsperiode = createGesuchsperiode();
 		insertInstitutionen();
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
@@ -136,7 +136,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		zahlungService.zahlungsauftragErstellen(ZahlungslaufTyp.GEMEINDE_INSTITUTION, gemeindeId, DATUM_FAELLIG, "Entwurf 1",
 				mandant);
 		// Es darf kein zweiter Auftrag erstellt werden, solange der erste nicht freigegeben ist
-		zahlungService.zahlungsauftragErstellen(ZahlungslaufTyp.GEMEINDE_INSTITUTION, gemeindeId, DATUM_FAELLIG, 
+		zahlungService.zahlungsauftragErstellen(ZahlungslaufTyp.GEMEINDE_INSTITUTION, gemeindeId, DATUM_FAELLIG,
 				"Entwurf 2",
 				mandant);
 	}

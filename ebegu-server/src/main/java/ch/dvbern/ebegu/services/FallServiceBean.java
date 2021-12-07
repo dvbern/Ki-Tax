@@ -49,7 +49,6 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer_;
 import ch.dvbern.ebegu.entities.Gesuchsteller_;
-import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFallDokument;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
@@ -113,6 +112,9 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 			Optional<Benutzer> currentBenutzer = benutzerService.getCurrentBenutzer();
 			currentBenutzer.ifPresent(fall::setBesitzer);
 		}
+		// mandant is set in AbstractEntityListener too. But we must set it before
+		// checking write authorization
+		fall.setMandant(principalBean.getMandant());
 		authorizer.checkWriteAuthorization(fall);
 		return persistence.merge(fall);
 	}

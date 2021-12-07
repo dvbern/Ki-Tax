@@ -55,7 +55,6 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
@@ -100,7 +99,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 
 	@Before
 	public void setUp() {
-		TestDataUtil.getMandantKantonBern(persistence);
+		TestDataUtil.getMandantKantonBernAndPersist(persistence);
 		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 	}
@@ -263,8 +262,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	}
 
 	private void prepareDependentObjects() {
-		mandant = TestDataUtil.createDefaultMandant();
-		persistence.persist(mandant);
+		mandant = TestDataUtil.getMandantKantonBernAndPersist(persistence);
 		empfaengerJA = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_BG, "saja",
 			null, null, mandant, persistence, null, null);
 		persistence.persist(empfaengerJA);

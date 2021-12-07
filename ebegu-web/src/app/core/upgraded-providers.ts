@@ -39,7 +39,6 @@ import {DownloadRS} from './service/downloadRS.rest';
 import {GesuchsperiodeRS} from './service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from './service/institutionRS.rest';
 import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
-import {MandantRS} from './service/mandantRS.rest';
 import {MitteilungRS} from './service/mitteilungRS.rest';
 import {NotrechtRS} from './service/notrechtRS.rest';
 import {ReportRS} from './service/reportRS.rest';
@@ -280,17 +279,6 @@ export const supportRSProvider = {
     deps: ['$injector'],
 };
 
-// MandantRS
-export function mandantRSServiceFactory(i: IInjectorService): MandantRS {
-    return i.get('MandantRS');
-}
-
-export const mandantRSProvider = {
-    provide: MandantRS,
-    useFactory: mandantRSServiceFactory,
-    deps: ['$injector'],
-};
-
 // NotrechtRS
 export function notrechtRSProviderServiceFactory(i: IInjectorService): NotrechtRS {
     return i.get('NotrechtRS');
@@ -389,7 +377,6 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     institutionStammdatenRSProvider,
     einstellungRSProvider,
     supportRSProvider,
-    mandantRSProvider,
     uploadRSProvider,
     notrechtRSProvider,
     searchRSProvider,

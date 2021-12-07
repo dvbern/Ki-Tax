@@ -33,11 +33,11 @@ import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
-import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
-import ch.dvbern.ebegu.tests.util.UnitTestTempFolder;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.util.JBossLoginContextFactory;
 import ch.dvbern.ebegu.test.util.LoginmoduleAndCacheSetupTask;
+import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
+import ch.dvbern.ebegu.tests.util.UnitTestTempFolder;
 import ch.dvbern.lib.cdipersistence.ISessionContextService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.eu.ingwar.tools.arquillian.extension.suite.annotations.ArquillianSuiteDeployment;
@@ -196,8 +196,7 @@ public abstract class AbstractEbeguTest {
 		institutionStammdatenTagesschuleBern.getInstitution().setTraegerschaft(traegerschaft);
 		institutionStammdatenFerieninselGuarda.getInstitution().setTraegerschaft(traegerschaft);
 
-		Mandant mandant = TestDataUtil.createDefaultMandant();
-		persistence.persist(mandant);
+		Mandant mandant = TestDataUtil.getMandantKantonBernAndPersist(persistence);
 		institutionStammdatenKitaAaregg.getInstitution().setMandant(mandant);
 		institutionStammdatenKitaBruennen.getInstitution().setMandant(mandant);
 		institutionStammdatenTagesfamilien.getInstitution().setMandant(mandant);

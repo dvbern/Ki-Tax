@@ -77,9 +77,11 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
+import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -283,6 +285,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.setParameter("stichTagDate", Constants.SQL_DATE_FORMAT.format(date.plusDays(1)));
 		query.setParameter("gesuchPeriodeID", gesuchPeriodeID);
 		query.setParameter("onlySchulamt", onlySchulamt());
+		Objects.requireNonNull(principalBean.getMandant());
+		query.setParameter("mandant", principalBean.getMandant().getId().replace("-", ""));
 		final List<String> berechtigteGemeinden = getListOfBerechtigteGemeinden();
 		// we need to remove the extra - as in the query they are not working and we cannot use a REPLACE function on
 		// a list in a native query
@@ -382,6 +386,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.setParameter("toDate", Constants.SQL_DATE_FORMAT.format(dateBis));
 		query.setParameter("gesuchPeriodeID", gesuchPeriodeID);
 		query.setParameter("onlySchulamt", onlySchulamt());
+		Objects.requireNonNull(principalBean.getMandant());
+		query.setParameter("mandant", principalBean.getMandant().getId().replace("-", ""));
 		final List<String> berechtigteGemeinden = getListOfBerechtigteGemeinden();
 		// we need to remove the extra - as in the query they are not working and we cannot use a REPLACE function on
 		// a list in a native query
@@ -482,6 +488,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
 			datumVon);
 		predicatesToUse.add(predicateEnd);
+		Predicate mandantPredicate = builder.equal(
+			joinGemeinde.get(Gemeinde_.mandant),
+			principalBean.getMandant()
+		);
+		predicatesToUse.add(mandantPredicate);
 
 		Predicate predicateGesuchsperiode = root.get(VerfuegungZeitabschnitt_.verfuegung)
 				.get(Verfuegung_.betreuung)
@@ -680,6 +691,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		);
 		predicates.add(predicateActive);
 
+		Objects.requireNonNull(principalBean.getMandant());
+		Predicate mandantPredicate = builder.equal(dossierJoin.get(Dossier_.fall).get(Fall_.mandant), principalBean.getMandant());
+		predicates.add(mandantPredicate);
+
 		Set<UserRole> requiredRoles = Sets.newHashSet(
 			UserRole.ADMIN_BG,
 			UserRole.SACHBEARBEITER_BG,
@@ -735,6 +750,16 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			// for others than superadmin, Superadmin cannot be listed
 			predicates.add(builder.notEqual(joinBerechtigungen.get(Berechtigung_.role), UserRole.SUPER_ADMIN));
 		}
+		// mandant
+		Objects.requireNonNull(principalBean.getMandant());
+		Predicate mandantPredicate = builder.equal(
+			root.get(AntragStatusHistory_.gesuch)
+				.get(Gesuch_.dossier)
+				.get(Dossier_.fall)
+				.get(Fall_.mandant),
+			principalBean.getMandant());
+		predicates.add(mandantPredicate);
+
 		// Status ist verfuegt
 		predicates.add(root.get(AntragStatusHistory_.status).in(AntragStatus.getAllVerfuegtStates()));
 		// Datum der Verfuegung muss nach (oder gleich) dem Anfang des Abfragezeitraums sein
@@ -1128,6 +1153,13 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		List<Predicate> predicatesToUse = new ArrayList<>();
 
+		// mandant
+		Predicate mandantPredicate = builder.equal(
+			joinGemeinde.get(Gemeinde_.mandant),
+			principalBean.getMandant()
+		);
+		predicatesToUse.add(mandantPredicate);
+
 		// startAbschnitt <= datumBis && endeAbschnitt >= datumVon
 		Path<DateRange> dateRangePath = root.get(AbstractDateRangedEntity_.gueltigkeit);
 		Predicate predicateStart = builder.lessThanOrEqualTo(dateRangePath.get(DateRange_.gueltigAb), datumBis);
@@ -1193,6 +1225,13 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Join<Dossier, Gemeinde> joinGemeinde = joinDossier.join(Dossier_.gemeinde, JoinType.LEFT);
 
 		List<Predicate> predicatesToUse = new ArrayList<>();
+
+		// mandant
+		Predicate mandantPredicate = builder.equal(
+			joinGemeinde.get(Gemeinde_.mandant),
+			principalBean.getMandant()
+		);
+		predicatesToUse.add(mandantPredicate);
 
 		// Stichtag
 		Predicate intervalPredicate = builder.between(

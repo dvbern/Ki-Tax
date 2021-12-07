@@ -32,8 +32,8 @@ import {TranslateModule, TranslatePipe, TranslateService} from '@ngx-translate/c
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {CookieService} from 'ngx-cookie-service';
 import {PaginatorI18n} from '../i18n/PaginatorI18n';
-import {MandantService} from '../shared/services/mandant.service';
 import {ColorService} from '../shared/services/color.service';
+import {MandantService} from '../shared/services/mandant.service';
 import {DEFAULT_LOCALE} from './constants/CONSTANTS';
 import {HTTP_INTERCEPTOR_PROVIDERS} from './http-interceptors/interceptors';
 import {UPGRADED_HTTP_INTERCEPTOR_PROVIDERS} from './httpInterceptorProviders';

@@ -16,8 +16,6 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -25,7 +23,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -77,7 +74,6 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.InstitutionStatus;
@@ -399,9 +395,9 @@ public class InstitutionResource {
 	public List<JaxInstitution> getAllInstitutionen(
 			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
 	) {
-		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
-		return institutionService.getAllInstitutionen(mandant.get()).stream()
+		var mandant = mandantService.findMandantByCookie(mandantCookie);
+
+		return institutionService.getAllInstitutionen(mandant).stream()
 			.map(inst -> converter.institutionToJAX(inst))
 			.collect(Collectors.toList());
 	}

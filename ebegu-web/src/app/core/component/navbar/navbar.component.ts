@@ -59,6 +59,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     private readonly unsubscribe$ = new Subject<void>();
 
     public gemeindeAntraegeActive = false;
+    public lastenausgleichActive = false;
     public gemeindeAntragVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     public constructor(
@@ -117,6 +118,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         this.applicationPropertyRS.getPublicPropertiesCached().then(properties => {
             this.gemeindeAntraegeActive =
                 properties.ferienbetreuungAktiv || properties.lastenausgleichTagesschulenAktiv;
+            this.lastenausgleichActive = properties.lastenausgleichAktiv;
             this.changeDetectorRef.markForCheck();
         });
     }
