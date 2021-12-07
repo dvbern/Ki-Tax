@@ -1610,6 +1610,7 @@
     "FI_START": "Ferieninselanmeldungen akzeptieren ab",
     "GEMEINDE_ANGEBOT": "Angebot",
     "GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE": "Betreuungsgutscheine",
+    "GEMEINDE_ANGEBOT_BESONDERE_VOLKSSCHULE": "Ist besondere Volksschule",
     "GEMEINDE_ANGEBOT_TAGESSCHULE": "Tagesschule",
     "GEMEINDE_ANGEBOT_FERIENINSEL": "Ferieninsel",
     "GEMEINDE_ANGEBOT_EMPTY_SELECTION": "Bitte wählen Sie mindestens ein Angebot aus",
@@ -2654,5 +2655,6 @@
     "TS_MUTATION_EXISTIERT": "Es gibt bereits eine Mutation zu diesem Antrag",
     "TS_MUTATION_EXISTIERT_BODY": "Die Tagesschulanmeldung muss bei der neusten Mutation bearbeitet werden. Falls diese noch in Bearbeitung der Antragstellenden ist, muss sie zuerst freigegeben oder gelöscht werden.",
     "FREMD_ID": "Fremd-ID",
+    "BESONDERE_VOLKSSCHULE": "Besondere Volksschule",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -1609,6 +1609,7 @@
     "FI_START": "Accepter les inscriptions à l'accueil extrascolaire pendant les vacances à partir du",
     "GEMEINDE_ANGEBOT": "Offre",
     "GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE": "Bons de garde",
+    "GEMEINDE_ANGEBOT_BESONDERE_VOLKSSCHULE": "Ist besondere Volksschule",
     "GEMEINDE_ANGEBOT_TAGESSCHULE": "Ecole à journée continue",
     "GEMEINDE_ANGEBOT_FERIENINSEL": "Accueil extrascolaire pendant les vacances",
     "GEMEINDE_ANGEBOT_EMPTY_SELECTION": "Veuillez sélectionner au moins une offre",
@@ -2650,5 +2651,6 @@
     "TS_MUTATION_EXISTIERT": "Il existe déjà une mutation pour cette demande",
     "TS_MUTATION_EXISTIERT_BODY": "L'inscription à l'école à journée continue doit être modifiée dans la dernière demande de changement. Si elle est encore en modification par l'auteur-e de la demande, elle doit alors dabord être libérée ou supprimée.",
     "FREMD_ID": "Fremd-ID",
+    "BESONDERE_VOLKSSCHULE": "Besondere Volksschule",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
