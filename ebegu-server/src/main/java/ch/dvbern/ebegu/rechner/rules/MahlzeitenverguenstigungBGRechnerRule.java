@@ -240,20 +240,19 @@ public final class MahlzeitenverguenstigungBGRechnerRule implements RechnerRule 
 			return false;
 		}
 
+		if (!parameterDTO.getMahlzeitenverguenstigungParameter().isEnabled() ||
+			!validateInput(inputGemeinde)) {
+			return false;
+		}
+
 		if (!inputGemeinde.getVerguenstigungMahlzeitenBeantragt()) {
-			if(inputGemeinde.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) != 0) {
-				inputGemeinde.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_NEIN, locale);
-			}
+			inputGemeinde.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_NEIN, locale);
 			return false;
 		}
 
 		final BigDecimal massgebendesEinkommen = inputGemeinde.getMassgebendesEinkommen();
 		final boolean sozialhilfeempfaenger = inputGemeinde.isSozialhilfeempfaenger();
 
-		if (!parameterDTO.getMahlzeitenverguenstigungParameter().isEnabled() ||
-			!validateInput(inputGemeinde)) {
-			return false;
-		}
 		// Bemerkung, wenn keine Verguenstigung aufgrund Einkommen
 		if (!parameterDTO.getMahlzeitenverguenstigungParameter().hasAnspruch(massgebendesEinkommen, sozialhilfeempfaenger)) {
 			inputGemeinde.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_NEIN, locale);
