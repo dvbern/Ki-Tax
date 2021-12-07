@@ -225,6 +225,11 @@
                     <div class="form-group">
                         <label class="md-no-float margin-top-30" translate for="begu_start_ID">GEMEINDE_ANGEBOT</label>
 
+                        <mat-checkbox id="besondereVolksschule" name="besondereVolksschule"
+
+                                      [(ngModel)]="stammdaten.gemeinde.besondereVolksschule"
+                                      [disabled]="!(isSuperadminOrMandant())">
+                            {{'GEMEINDE_ANGEBOT_BESONDERE_VOLKSSCHULE'|translate}}</mat-checkbox>
                         <mat-checkbox id="angebotBG" name="angebotBG"
                                       [(ngModel)]="stammdaten.gemeinde.angebotBG"
                                       [disabled]="!(isSuperadminOrMandant())"

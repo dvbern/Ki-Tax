@@ -97,7 +97,8 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
                 this.benutzerListe.push(tsBen);
             }
         });
-        this.showMessageKeinAngebotSelected = !stammdaten.gemeinde.angebotBG
+        this.showMessageKeinAngebotSelected = !stammdaten.gemeinde.besondereVolksschule
+            && !stammdaten.gemeinde.angebotBG
             && !stammdaten.gemeinde.angebotTS
             && !stammdaten.gemeinde.angebotFI;
     }
