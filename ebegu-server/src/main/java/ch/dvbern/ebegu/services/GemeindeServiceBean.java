@@ -162,9 +162,13 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	private long getNextGemeindeNummer() {
-		Mandant mandant = requireNonNull(principalBean.getMandant());
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Long> query = cb.createQuery(Long.class);
+		final Root<Gemeinde> root = query.from(Gemeinde.class);
 
-		return sequenceService.createNumberTransactional(SequenceType.GEMEINDE_NUMMER, mandant);
+		query.select(cb.max(root.get(Gemeinde_.gemeindeNummer)));
+
+		return persistence.getCriteriaSingleResult(query) + 1;
 	}
 
 	private void initGemeindeNummerAndMandant(@Nonnull Gemeinde gemeinde) {
