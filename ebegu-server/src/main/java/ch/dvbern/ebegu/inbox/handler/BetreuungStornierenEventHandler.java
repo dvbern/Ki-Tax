@@ -33,12 +33,15 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
@@ -47,6 +50,7 @@ import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import org.slf4j.Logger;
@@ -95,9 +99,19 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 	@Nonnull
 	protected Processing attemptProcessing(@Nonnull EventMonitor eventMonitor) {
 
-		return betreuungService.findBetreuungByBGNummer(eventMonitor.getRefnr(), false)
+		Mandant mandant = getMandantFromBgNummer(eventMonitor.getRefnr());
+
+		return betreuungService.findBetreuungByBGNummer(eventMonitor.getRefnr(), false, mandant)
 			.map(betreuung -> processEventForStornierung(eventMonitor, betreuung))
 			.orElseGet(() -> Processing.failure("Betreuung nicht gefunden."));
+	}
+
+	private Mandant getMandantFromBgNummer(String refnr) {
+		final int gemeindeNummer = BetreuungUtil.getGemeindeFromBGNummer(refnr);
+		Gemeinde gemeinde = gemeindeService.getGemeindeByGemeindeNummer(gemeindeNummer).orElseThrow(() ->
+				new EbeguEntityNotFoundException("getGemeindeByGemeindeNummer", gemeindeNummer));
+
+		return gemeinde.getMandant();
 	}
 
 	@Nonnull

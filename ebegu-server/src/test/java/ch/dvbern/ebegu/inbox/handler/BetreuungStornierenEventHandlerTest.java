@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
@@ -113,11 +114,13 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 	private Gemeinde gemeinde = null;
 	private final String refNummer = "20.007305.002.1.3";
 	private EventMonitor eventMonitor = null;
+	private Mandant mandant;
 
 	@BeforeEach
 	void setUp() {
 		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiodeXXYY(2020, 2021);
 		gemeinde = TestDataUtil.createGemeindeParis();
+		mandant = requireNonNull(gemeinde.getMandant());
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
@@ -142,7 +145,8 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void ignoreEventWhenNoBetreuungFound() {
-			expect(betreuungService.findBetreuungByBGNummer(refNummer, false))
+			expect(gemeindeService.getGemeindeByGemeindeNummer(2)).andReturn(Optional.of(gemeinde));
+			expect(betreuungService.findBetreuungByBGNummer(refNummer, false, mandant))
 				.andReturn(Optional.empty());
 
 			testIgnored("Betreuung nicht gefunden.");
@@ -154,7 +158,8 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 			Betreuung betreuung = betreuungWithSingleContainer();
 			betreuung.extractGesuchsperiode().setStatus(status);
 
-			expect(betreuungService.findBetreuungByBGNummer(refNummer, false))
+			expect(gemeindeService.getGemeindeByGemeindeNummer(2)).andReturn(Optional.of(gemeinde));
+			expect(betreuungService.findBetreuungByBGNummer(refNummer, false, mandant))
 				.andReturn(Optional.of(betreuung));
 
 			testIgnored("Die Gesuchsperiode ist nicht aktiv.");
@@ -167,7 +172,8 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 			LocalDateTime betreuungMutiertTime = EVENT_TIME.plusSeconds(1);
 			betreuung.setTimestampMutiert(betreuungMutiertTime);
 
-			expect(betreuungService.findBetreuungByBGNummer(refNummer, false))
+			expect(gemeindeService.getGemeindeByGemeindeNummer(2)).andReturn(Optional.of(gemeinde));
+			expect(betreuungService.findBetreuungByBGNummer(refNummer, false, mandant))
 				.andReturn(Optional.of(betreuung));
 
 			testIgnored("Die Betreuung wurde verändert, nachdem das BetreuungEvent generiert wurde.");
@@ -177,7 +183,8 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 		void ignoreEventWhenNoExternalClient() {
 			Betreuung betreuung = betreuungWithSingleContainer();
 
-			expect(betreuungService.findBetreuungByBGNummer(refNummer, false))
+			expect(gemeindeService.getGemeindeByGemeindeNummer(2)).andReturn(Optional.of(gemeinde));
+			expect(betreuungService.findBetreuungByBGNummer(refNummer, false, mandant))
 				.andReturn(Optional.of(betreuung));
 			expect(betreuungEventHelper.getExternalClient(CLIENT_NAME, betreuung))
 				.andReturn(Optional.empty());
@@ -201,7 +208,8 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 		void ignoreEventWhenClientGueltigkeitOutsidePeriode() {
 			Betreuung betreuung = betreuungWithSingleContainer();
 
-			expect(betreuungService.findBetreuungByBGNummer(refNummer, false))
+			expect(gemeindeService.getGemeindeByGemeindeNummer(2)).andReturn(Optional.of(gemeinde));
+			expect(betreuungService.findBetreuungByBGNummer(refNummer, false, mandant))
 				.andReturn(Optional.of(betreuung));
 			mockClient(new DateRange(2022));
 
@@ -216,7 +224,8 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 			Betreuung betreuung = betreuungWithSingleContainer();
 			betreuung.setBetreuungsstatus(status);
 
-			expect(betreuungService.findBetreuungByBGNummer(refNummer, false))
+			expect(gemeindeService.getGemeindeByGemeindeNummer(2)).andReturn(Optional.of(gemeinde));
+			expect(betreuungService.findBetreuungByBGNummer(refNummer, false, mandant))
 				.andReturn(Optional.of(betreuung));
 			mockClient(Constants.DEFAULT_GUELTIGKEIT);
 
@@ -262,6 +271,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 			erweiterteBetreuung.setBetreuungInGemeinde(null);
 
 			clientGueltigkeit = Constants.DEFAULT_GUELTIGKEIT;
+			expect(gemeindeService.getGemeindeByGemeindeNummer(2)).andReturn(Optional.of(gemeinde));
 		}
 
 		@Test
@@ -320,7 +330,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 		}
 
 		private void expectDirektStornierung() {
-			expect(betreuungService.findBetreuungByBGNummer(refNummer, false))
+			expect(betreuungService.findBetreuungByBGNummer(refNummer, false, mandant))
 				.andReturn(Optional.of(betreuung));
 
 			mockClient(clientGueltigkeit);
@@ -330,7 +340,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 		}
 
 		private void expectMutationsmeldung() {
-			expect(betreuungService.findBetreuungByBGNummer(refNummer, false))
+			expect(betreuungService.findBetreuungByBGNummer(refNummer, false, mandant))
 				.andReturn(Optional.of(betreuung));
 
 			mockClient(clientGueltigkeit);
