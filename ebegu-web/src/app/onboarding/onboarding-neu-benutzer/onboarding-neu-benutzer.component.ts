@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {StateService} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
@@ -40,6 +40,7 @@ export class OnboardingNeuBenutzerComponent {
     public gemeindenTS$: Observable<TSGemeinde[]>;
     public besondereVolksschulen$: Observable<TSGemeinde[]>;
     public gemeinde?: TSGemeinde;
+    public besondereVolksschuleGemeinde?: TSGemeinde;
     private _gemeindeList: Array<TSGemeinde> = [];
 
     public betreuungsgutscheinBeantragen: boolean;
@@ -49,7 +50,8 @@ export class OnboardingNeuBenutzerComponent {
     public constructor(
         private readonly gemeindeRS: GemeindeRS,
         private readonly stateService: StateService,
-        private readonly applicationPropertyRS: ApplicationPropertyRS
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly cd: ChangeDetectorRef
     ) {
         this.gemeinden$ = from(this.gemeindeRS.getAktiveUndVonSchulverbundGemeinden())
             .pipe(map(gemeinden => {
@@ -59,11 +61,12 @@ export class OnboardingNeuBenutzerComponent {
         this.gemeindenBG$ = from(this.gemeinden$).pipe(map(gemeinden => gemeinden.filter(
             gemeinde => gemeinde.angebotBG)));
         this.gemeindenTS$ = from(this.gemeinden$).pipe(map(gemeinden => gemeinden.filter(
-            gemeinde => gemeinde.angebotTS)));
+            gemeinde => gemeinde.angebotTS && !gemeinde.besondereVolksschule)));
         this.besondereVolksschulen$ = from(this.gemeinden$).pipe(map(gemeinden => gemeinden.filter(
             gemeinde => gemeinde.besondereVolksschule)));
         this.applicationPropertyRS.getPublicPropertiesCached().then(properties => {
             this.isTSAngebotEnabled = properties.angebotTSActivated;
+            this.cd.markForCheck();
         });
     }
 
@@ -72,6 +75,9 @@ export class OnboardingNeuBenutzerComponent {
             return;
         }
         const listIds: string[] = [];
+        if (this.besondereVolksschuleBeantragen) {
+            listIds.push(this.besondereVolksschuleGemeinde.id);
+        }
         this._gemeindeList.forEach(gemeinde => {
             if (listIds.indexOf(gemeinde.key) === -1) {
                 listIds.push(gemeinde.key);
@@ -93,5 +99,14 @@ export class OnboardingNeuBenutzerComponent {
 
     public getTSGemeinden(): Observable<TSGemeinde[]> {
         return this.besondereVolksschuleBeantragen ? this.besondereVolksschulen$ : this.gemeindenTS$;
+    }
+
+    public resetGemeindeListe(): void {
+        this.besondereVolksschuleGemeinde = undefined;
+        this.gemeindeList = [];
+    }
+
+    public resetBgGemeinde(): void {
+        this.gemeinde = undefined;
     }
 }
