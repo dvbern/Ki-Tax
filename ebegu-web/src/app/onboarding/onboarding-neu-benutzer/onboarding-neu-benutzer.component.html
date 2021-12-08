@@ -32,7 +32,7 @@
                 <mat-checkbox id="tsBeantragen_id" name="tsBeantragen_id"
                               [(ngModel)]="tsBeantragen">{{'ONBOARDING_TS_BEANTRAGEN'|translate}}</mat-checkbox>
             </div>
-            <div class="neu-ts-checkbox margin-top-10" *ngIf="isTSAngebotEnabled && tsBeantragen">
+            <div class="neu-besondere-volksschule-checkbox margin-top-10" *ngIf="isTSAngebotEnabled && tsBeantragen">
                 <mat-checkbox id="besondereVolksschuleBeantragen_id" name="besondereVolksschuleBeantragen_id"
                               [(ngModel)]="besondereVolksschuleBeantragen">{{'ONBOARDING_BESONDERE_VOLKSSCHULE_BEANTRAGEN'|translate}}</mat-checkbox>
             </div>
@@ -89,6 +89,11 @@
                                 </option>
                             </select>
                         </div>
+
+                        <dv-error-messages [errorObject]="form.controls.besondereVolksschule?.errors"
+                                           inputId="gemeinde"
+                                           class="input-error">
+                        </dv-error-messages>
                     </div>
                 </div>
                 <div class="onboarding-nb-gemeinde-input-button">
