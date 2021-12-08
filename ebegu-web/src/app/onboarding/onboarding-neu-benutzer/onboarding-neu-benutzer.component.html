@@ -32,9 +32,13 @@
                 <mat-checkbox id="tsBeantragen_id" name="tsBeantragen_id"
                               [(ngModel)]="tsBeantragen">{{'ONBOARDING_TS_BEANTRAGEN'|translate}}</mat-checkbox>
             </div>
+            <div class="neu-ts-checkbox margin-top-10" *ngIf="isTSAngebotEnabled && tsBeantragen">
+                <mat-checkbox id="besondereVolksschuleBeantragen_id" name="besondereVolksschuleBeantragen_id"
+                              [(ngModel)]="besondereVolksschuleBeantragen">{{'ONBOARDING_BESONDERE_VOLKSSCHULE_BEANTRAGEN'|translate}}</mat-checkbox>
+            </div>
             <div class="onboarding-nb-gemeinde-container">
                 <div class="onboarding-nb-gemeinde-input-container">
-                    <div class="onboarding-nb-gemeinde-search" *ngIf="betreuungsgutscheinBeantragen">
+                    <div class="onboarding-nb-gemeinde-search" *ngIf="betreuungsgutscheinBeantragen && !besondereVolksschuleBeantragen">
                         <p translate>ONBOARDING_MEIN_WOHNGEMEINDE</p>
                         <div class="onboarding-nb-gemeinde-search-input">
                             <div class="dv-select-style dv-select-style-onboarding">
@@ -58,7 +62,7 @@
                     </div>
                 </div>
                 <div class="onboarding-nb-gemeinde-input">
-                    <div class="onboarding-nb-gemeinde-search" *ngIf="tsBeantragen">
+                    <div class="onboarding-nb-gemeinde-search" *ngIf="tsBeantragen && !besondereVolksschuleBeantragen">
                         <p translate>ONBOARDING_TS_GEMEINDE</p>
                         <!-- Gemeinde(n) -->
                         <dv-gemeinde-multiselect [selected]="gemeindeList"
@@ -69,8 +73,26 @@
                         </dv-gemeinde-multiselect>
                     </div>
                 </div>
+                <div class="onboarding-nb-gemeinde-input">
+                    <div class="onboarding-nb-gemeinde-search" *ngIf="tsBeantragen && besondereVolksschuleBeantragen">
+                        <p translate>ONBOARDING_TS_GEMEINDE</p>
+                        <!-- Gemeinde(n) -->
+                        <div class="dv-select-style dv-select-style-onboarding">
+                            <select [(ngModel)]="gemeinde"
+                                    name="besondereVolksschule"
+                                    class="form-control"
+                                    id="besondereVolksschule"
+                                    [required]="true">
+                                <option [ngValue]="null" selected="selected"></option>
+                                <option *ngFor="let gemeinde of (besondereVolksschulen$ | async)" [ngValue]="gemeinde">
+                                    {{gemeinde.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <div class="onboarding-nb-gemeinde-input-button">
-                    <div *ngIf="betreuungsgutscheinBeantragen || tsBeantragen">
+                    <div *ngIf="betreuungsgutscheinBeantragen || tsBeantragen || besondereVolksschuleBeantragen">
                         <button [type]="'submit'" class="dv-btn onboarding-big-red-button">
                             <span translate>ONBOARDING_REGISTRIEREN</span>
                         </button>

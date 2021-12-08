@@ -38,11 +38,13 @@ export class OnboardingNeuBenutzerComponent {
     public gemeinden$: Observable<TSGemeinde[]>;
     public gemeindenBG$: Observable<TSGemeinde[]>;
     public gemeindenTS$: Observable<TSGemeinde[]>;
+    public besondereVolksschulen$: Observable<TSGemeinde[]>;
     public gemeinde?: TSGemeinde;
     private _gemeindeList: Array<TSGemeinde> = [];
 
     public betreuungsgutscheinBeantragen: boolean;
     public tsBeantragen: boolean;
+    public besondereVolksschuleBeantragen: boolean;
 
     public constructor(
         private readonly gemeindeRS: GemeindeRS,
@@ -58,6 +60,8 @@ export class OnboardingNeuBenutzerComponent {
             gemeinde => gemeinde.angebotBG)));
         this.gemeindenTS$ = from(this.gemeinden$).pipe(map(gemeinden => gemeinden.filter(
             gemeinde => gemeinde.angebotTS)));
+        this.besondereVolksschulen$ = from(this.gemeinden$).pipe(map(gemeinden => gemeinden.filter(
+            gemeinde => gemeinde.besondereVolksschule)));
         this.applicationPropertyRS.getPublicPropertiesCached().then(properties => {
             this.isTSAngebotEnabled = properties.angebotTSActivated;
         });
@@ -85,5 +89,9 @@ export class OnboardingNeuBenutzerComponent {
 
     public get gemeindeList(): Array<TSGemeinde> {
         return this._gemeindeList;
+    }
+
+    public getTSGemeinden(): Observable<TSGemeinde[]> {
+        return this.besondereVolksschuleBeantragen ? this.besondereVolksschulen$ : this.gemeindenTS$;
     }
 }
