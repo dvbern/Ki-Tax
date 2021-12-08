@@ -82,6 +82,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -716,12 +717,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	public Optional<Betreuung> findBetreuungByBGNummer(@Nonnull String bgNummer, boolean onlyGueltig) {
+	public Optional<Betreuung> findBetreuungByBGNummer(@Nonnull String bgNummer, boolean onlyGueltig, @Nonnull Mandant mandant) {
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
-		var mandant = principalBean.getMandant();
-		if (mandant == null) {
-			throw new EbeguRuntimeException("findBetreuungByBGNummer", "mandant not found for principal " + principalBean.getBenutzer().getEmail());
-		}
 		// der letzte Tag im Jahr, von der BetreuungsId sollte immer zur richtigen Gesuchsperiode zählen.
 		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
 			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365), mandant);
@@ -1288,7 +1285,16 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Nonnull
 	public Optional<AnmeldungTagesschule> findAnmeldungenTagesschuleByBGNummer(@Nonnull String bgNummer) {
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
-		var mandant = principalBean.getMandant();
+		final int gemeindeNummer = BetreuungUtil.getGemeindeFromBGNummer(bgNummer);
+
+		final Gemeinde gemeinde =
+				gemeindeService.getGemeindeByGemeindeNummer(gemeindeNummer)
+						.orElseThrow(() -> new EbeguRuntimeException(
+								"findAnmeldungenTagesschuleByBGNummer",
+								"gemeinde " + gemeindeNummer + " not found"));
+
+		var mandant = gemeinde.getMandant();
+
 		if (mandant == null) {
 			throw new EbeguRuntimeException("findAnmeldungenTagesschuleByBGNummer", "mandant not found for principal " + principalBean.getBenutzer().getEmail());
 		}

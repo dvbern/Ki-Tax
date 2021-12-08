@@ -658,4 +658,16 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicatesToUse));
 		return persistence.getCriteriaResults(query);
 	}
+
+	@Override
+	public Optional<Gemeinde> getGemeindeByGemeindeNummer(int gemeindeNummer) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gemeinde> query = cb.createQuery(Gemeinde.class);
+		Root<Gemeinde> root = query.from(Gemeinde.class);
+
+		Predicate gemeindeNummerPredicate = cb.equal(root.get(Gemeinde_.gemeindeNummer), gemeindeNummer);
+		query.where(gemeindeNummerPredicate);
+
+		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
+	}
 }

@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.types.DateRange;
 
 /**
@@ -145,7 +146,7 @@ public interface BetreuungService {
 	 * Wenn onlyGueltig = false:
 	 * return auch die Betreuung in andere Status (Warten Z.B.)
 	 */
-	Optional<Betreuung> findBetreuungByBGNummer(@Nonnull String bgNummer, boolean onlyGueltig);
+	Optional<Betreuung> findBetreuungByBGNummer(@Nonnull String bgNummer, boolean onlyGueltig, @Nonnull Mandant mandant);
 
 	/**
 	 * @param key PK (id) der Betreuung
