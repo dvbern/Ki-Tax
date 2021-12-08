@@ -158,8 +158,11 @@ export class LocalLoginComponent {
             case'lu':
                 datum = LOCALLOGIN_DATA.LU;
                 break;
-            default:
+            case 'so':
                 datum = LOCALLOGIN_DATA.SO;
+                break;
+            default:
+                datum = LOCALLOGIN_DATA.BE;
                 break;
         }
         return datum;
