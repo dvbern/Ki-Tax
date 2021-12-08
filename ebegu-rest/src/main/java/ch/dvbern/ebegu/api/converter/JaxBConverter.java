@@ -5084,6 +5084,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public JaxGemeindeStammdaten gemeindeStammdatenToJAX(@Nonnull final GemeindeStammdaten stammdaten) {
 		requireNonNull(stammdaten);
 		requireNonNull(stammdaten.getGemeinde());
