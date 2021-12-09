@@ -220,6 +220,7 @@ export class TestDataUtil {
         gemeinde.angebotBG = true;
         gemeinde.angebotTS = false;
         gemeinde.angebotFI = false;
+        gemeinde.besondereVolksschule = false;
         gemeinde.gueltigBis = moment('99991231', 'YYYYMMDD');
         return gemeinde;
     }
