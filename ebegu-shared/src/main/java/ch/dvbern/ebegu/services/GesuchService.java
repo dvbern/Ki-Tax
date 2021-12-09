@@ -294,7 +294,7 @@ public interface GesuchService {
 	 * Erstellung nicht freigegeben haben.
 	 * Gibt die Anzahl Warnungen zurueck.
 	 */
-	int findGesucheNichtFreigegebenAndWarn();
+	int findGesucheNichtFreigegebenAndWarn(@Nonnull Mandant mandant);
 
 	/**
 	 * Schickt eine E-Mail an den Gesuchsteller des Gesuchs
