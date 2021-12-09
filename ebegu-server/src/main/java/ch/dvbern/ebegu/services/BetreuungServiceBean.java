@@ -1283,21 +1283,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	public Optional<AnmeldungTagesschule> findAnmeldungenTagesschuleByBGNummer(@Nonnull String bgNummer) {
+	public Optional<AnmeldungTagesschule> findAnmeldungenTagesschuleByBGNummer(@Nonnull String bgNummer, @Nonnull Mandant mandant) {
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
-		final int gemeindeNummer = BetreuungUtil.getGemeindeFromBGNummer(bgNummer);
 
-		final Gemeinde gemeinde =
-				gemeindeService.getGemeindeByGemeindeNummer(gemeindeNummer)
-						.orElseThrow(() -> new EbeguRuntimeException(
-								"findAnmeldungenTagesschuleByBGNummer",
-								"gemeinde " + gemeindeNummer + " not found"));
-
-		var mandant = gemeinde.getMandant();
-
-		if (mandant == null) {
-			throw new EbeguRuntimeException("findAnmeldungenTagesschuleByBGNummer", "mandant not found for principal " + principalBean.getBenutzer().getEmail());
-		}
 		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
 			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365), mandant);
 		Gesuchsperiode gesuchsperiode;
