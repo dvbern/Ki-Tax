@@ -16,23 +16,29 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Service fuer Modul
@@ -97,5 +103,24 @@ public class ModulTagesschuleServiceBean extends AbstractBaseService implements 
 			EinstellungenTagesschule newEinstellung = lastEinstellung.copyForGesuchsperiode(gesuchsperiodeToCreate);
 			persistence.merge(newEinstellung);
 		});
+	}
+
+	@Nonnull
+	@Override
+	public Set<ModulTagesschuleGroup> findModulTagesschuleGroup(@Nonnull AnmeldungTagesschule anmeldung) {
+		Gesuchsperiode gesuchsperiode = anmeldung.extractGesuchsperiode();
+
+		InstitutionStammdatenTagesschule institutionStammdatenTagesschule =
+			requireNonNull(anmeldung.getInstitutionStammdaten().getInstitutionStammdatenTagesschule());
+
+		Set<ModulTagesschuleGroup> available = institutionStammdatenTagesschule
+			.getEinstellungenTagesschule()
+			.stream()
+			.filter(e -> e.getGesuchsperiode().equals(gesuchsperiode))
+			.findAny()
+			.map(EinstellungenTagesschule::getModulTagesschuleGroups)
+			.orElseGet(Collections::emptySet);
+
+		return available;
 	}
 }

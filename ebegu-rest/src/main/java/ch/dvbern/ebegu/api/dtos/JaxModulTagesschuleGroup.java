@@ -44,6 +44,9 @@ public class JaxModulTagesschuleGroup extends JaxAbstractDTO {
 	@NotNull @Nonnull
 	private String identifier;
 
+	@Nullable
+	private String fremdId;
+
 	@NotNull @Nonnull
 	private JaxTextRessource bezeichnung = new JaxTextRessource();
 
@@ -151,5 +154,14 @@ public class JaxModulTagesschuleGroup extends JaxAbstractDTO {
 
 	public void setModule(Set<JaxModulTagesschule> module) {
 		this.module = module;
+	}
+
+	@Nullable
+	public String getFremdId() {
+		return fremdId;
+	}
+
+	public void setFremdId(@Nullable String fremdId) {
+		this.fremdId = fremdId;
 	}
 }
