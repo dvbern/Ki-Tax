@@ -99,25 +99,6 @@ VALUES (
 	100, # current_value
 	@mandant_id_solothurn);
 
-INSERT IGNORE INTO sequence(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, sequence_type, current_value, mandant_id)
-VALUES (
-	UNHEX(REPLACE('0e285bf4-537b-11ec-98e8-f4390979fa3e', '-', '')), # id
-	'2018-01-01 00:00:00', # timestamp_erstellt
-	'2018-01-01 00:00:00', # timestamp_mutiert
-	'flyway', # user_erstellt
-	'flyway', # user_mutiert
-	0, # version
-	'GEMEINDE_NUMMER', # sequence_type
-	1, # current_value
-	@mandant_id_solothurn);
-
-UPDATE sequence
-SET current_value = (SELECT max(gemeinde_nummer)
-					 FROM gemeinde
-					 WHERE gemeinde.mandant_id = @mandant_id_solothurn)
-WHERE sequence_type = 'GEMEINDE_NUMMER' AND
-		mandant_id = @mandant_id_solothurn;
-
 # Test-Institutionen erstellen
 INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active)
 	VALUES (@traegerschaft_solothurn_id, '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, 'Kitas & Tagis Stadt Solothurn', true);
