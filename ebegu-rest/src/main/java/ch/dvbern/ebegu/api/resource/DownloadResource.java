@@ -193,7 +193,7 @@ public class DownloadResource {
 
 		if (!downloadFile.getIp().equals(ip)
 			|| principalBean.getPrincipal() == null
-			|| !EbeguUtil.getUserMandantString(principalBean).equals(downloadFile.getUserErstellt())) {
+			|| !principalBean.getBenutzer().isSame(downloadFile.getBenutzer())) {
 			// Wir loggen noch ein bisschen, bis wir sicher sind, dass das Problem geloest ist
 			StringBuilder sb = new StringBuilder();
 			sb.append("Keine Berechtigung fuer Download");
@@ -203,7 +203,7 @@ public class DownloadResource {
 			}
 			if (principalBean.getPrincipal() == null) {
 				sb.append("; principalBean.getPrincipal() is null");
-			} else if (!EbeguUtil.getUserMandantString(principalBean).equals(downloadFile.getUserErstellt())) {
+			} else if (!principalBean.getBenutzer().isSame(downloadFile.getBenutzer())) {
 				sb.append("; principalBean.getPrincipal().getName()").append(principalBean.getPrincipal().getName());
 				sb.append("; downloadFile.getUserErstellt()").append(downloadFile.getUserErstellt());
 			}
