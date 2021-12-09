@@ -2133,6 +2133,7 @@ public class JaxBConverter extends AbstractConverter {
 		modulTagesschuleGroup.setEinstellungenTagesschule(einstellungenTagesschule);
 		modulTagesschuleGroup.setModulTagesschuleName(jaxModulTagesschuleGroup.getModulTagesschuleName());
 		modulTagesschuleGroup.setIdentifier(jaxModulTagesschuleGroup.getIdentifier());
+		modulTagesschuleGroup.setFremdId(jaxModulTagesschuleGroup.getFremdId());
 		modulTagesschuleGroup.setBezeichnung(textRessourceToEntity(
 			jaxModulTagesschuleGroup.getBezeichnung(), modulTagesschuleGroup.getBezeichnung()));
 		modulTagesschuleGroup.setZeitVon(hoursAndMinutesToDate(jaxModulTagesschuleGroup.getZeitVon()));
@@ -3566,6 +3567,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractFieldsToJAX(modulTagesschuleGroup, jaxModulTagesschuleGroup);
 		jaxModulTagesschuleGroup.setModulTagesschuleName(modulTagesschuleGroup.getModulTagesschuleName());
 		jaxModulTagesschuleGroup.setIdentifier(modulTagesschuleGroup.getIdentifier());
+		jaxModulTagesschuleGroup.setFremdId(modulTagesschuleGroup.getFremdId());
 		jaxModulTagesschuleGroup.setBezeichnung(textRessourceToJAX(modulTagesschuleGroup.getBezeichnung()));
 		jaxModulTagesschuleGroup.setZeitVon(dateToHoursAndMinutes(modulTagesschuleGroup.getZeitVon()));
 		jaxModulTagesschuleGroup.setZeitBis(dateToHoursAndMinutes(modulTagesschuleGroup.getZeitBis()));
@@ -4941,6 +4943,10 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(jaxStammdaten.getStandardDokSignature());
 
 		convertAbstractFieldsToEntity(jaxStammdaten, stammdaten);
+
+		// Die Gemeinde selbst ändert nicht, nur wieder von der DB lesen
+		gemeindeService.findGemeinde(jaxStammdaten.getGemeinde().getId())
+			.ifPresent(stammdaten::setGemeinde);
 
 		Mandant mandant = stammdaten.getGemeinde().getMandant();
 

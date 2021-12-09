@@ -18,10 +18,11 @@
 package ch.dvbern.ebegu.inbox.handler;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -48,6 +49,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulAuswahlDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleBestaetigungEventDTO;
+import ch.dvbern.kibon.exchange.commons.types.Intervall;
 import ch.dvbern.kibon.exchange.commons.types.Wochentag;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
@@ -224,6 +226,22 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 			testIgnored(tagesschuleBestaetigungEventDTO, "TagesschuleBestaetigungEventDTO hat keine Module");
 		}
 
+		@Test
+		void ignoreEventWhenKeineIdOderFremdId() {
+			ModulAuswahlDTO modulAuswahlDTO = new ModulAuswahlDTO();
+			modulAuswahlDTO.setIntervall(Intervall.WOECHENTLICH);
+			modulAuswahlDTO.setWochentag(Wochentag.MONDAY);
+
+			tagesschuleBestaetigungEventDTO.getModule().add(modulAuswahlDTO);
+
+			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(tagesschuleBestaetigungEventDTO.getRefnr()))
+				.andReturn(Optional.of(anmeldungTagesschule));
+
+			mockClient(Constants.DEFAULT_GUELTIGKEIT);
+
+			testIgnored(tagesschuleBestaetigungEventDTO, "Anmeldung kann nicht behandelt werden: Ein Modul hat weder fremdId noch modulId");
+		}
+
 		private void testIgnored(@Nonnull TagesschuleBestaetigungEventDTO dto, @Nonnull String message) {
 			replayAll();
 
@@ -237,10 +255,16 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 	class AnmeldungBestaetigungTest {
 
 		private BelegungTagesschule belegung;
+		private Set<ModulTagesschuleGroup> moduleBelegung;
 
 		@BeforeEach
 		void setUp() {
 			belegung = Objects.requireNonNull(anmeldungTagesschule.getBelegungTagesschule());
+
+			moduleBelegung = belegung.getBelegungTagesschuleModule().stream()
+				.map(BelegungTagesschuleModul::getModulTagesschule)
+				.map(ModulTagesschule::getModulTagesschuleGroup)
+				.collect(Collectors.toSet());
 		}
 
 		@Test
@@ -291,7 +315,8 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 		void testModulGroupNichtGefunden() {
 			List<ModulAuswahlDTO> modulAuswahlDTOList = modulAuswahlFromBelegung();
 
-			expectModulFromBelegung(expectMissing);
+			expect(modulTagesschuleService.findModulTagesschuleGroup(anmeldungTagesschule))
+				.andReturn(Collections.emptySet());
 
 			tagesschuleBestaetigungEventDTO.setModule(modulAuswahlDTOList);
 
@@ -309,11 +334,7 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void testModulWeggenommen() {
-			List<ModulAuswahlDTO> modulAuswahlDTOList = modulAuswahlFromBelegung();
-
-			expectModulFromBelegung(group -> expect(modulTagesschuleService.findModulTagesschuleGroup(group.getId()))
-				.andReturn(Optional.of(group))
-				.anyTimes());
+			List<ModulAuswahlDTO> modulAuswahlDTOList = prepareStandardCallAndModulAuswahlList();
 
 			modulAuswahlDTOList.remove(0);
 			tagesschuleBestaetigungEventDTO.setModule(modulAuswahlDTOList);
@@ -348,11 +369,53 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 			assertThat(belegung.getBelegungTagesschuleModule().size(), is(4));
 		}
 
+		@Test
+		void testModulFremId() {
+			List<ModulAuswahlDTO> modulAuswahlDTOList = prepareStandardCallAndModulAuswahlList();
+
+			moduleBelegung.forEach(group -> group.setFremdId(group.getId()));
+
+			ModulAuswahlDTO modulAuswahlDTO = modulAuswahlDTOList.get(0);
+			modulAuswahlDTO.setFremdId(modulAuswahlDTO.getModulId());
+			modulAuswahlDTO.setModulId(null);
+			modulAuswahlDTOList.clear();
+			modulAuswahlDTOList.add(modulAuswahlDTO);
+			tagesschuleBestaetigungEventDTO.setModule(modulAuswahlDTOList);
+
+			expect(betreuungService.anmeldungSchulamtModuleAkzeptieren(anmeldungTagesschule))
+				.andReturn(anmeldungTagesschule);
+
+			testSuccess(tagesschuleBestaetigungEventDTO);
+
+			assertThat(belegung.getBelegungTagesschuleModule().size(), is(1));
+		}
+
+		@Test
+		void testModulAuswahlDTOMitIDandFremId() {
+			List<ModulAuswahlDTO> modulAuswahlDTOList = prepareStandardCallAndModulAuswahlList();
+
+			moduleBelegung.forEach(group -> group.setFremdId(group.getId()));
+
+			ModulAuswahlDTO modulAuswahlDTO = modulAuswahlDTOList.get(0);
+			modulAuswahlDTO.setFremdId(modulAuswahlDTO.getModulId());
+			modulAuswahlDTOList.clear();
+			modulAuswahlDTOList.add(modulAuswahlDTO);
+			tagesschuleBestaetigungEventDTO.setModule(modulAuswahlDTOList);
+
+			expect(betreuungService.anmeldungSchulamtModuleAkzeptieren(anmeldungTagesschule))
+				.andReturn(anmeldungTagesschule);
+
+			testSuccess(tagesschuleBestaetigungEventDTO);
+
+			assertThat(belegung.getBelegungTagesschuleModule().size(), is(1));
+		}
+
 		@Nonnull
 		private List<ModulAuswahlDTO> prepareStandardCallAndModulAuswahlList() {
 			List<ModulAuswahlDTO> modulAuswahlDTOList = modulAuswahlFromBelegung();
 
-			expectModulFromBelegung();
+			expect(modulTagesschuleService.findModulTagesschuleGroup(anmeldungTagesschule))
+				.andReturn(moduleBelegung);
 
 			return modulAuswahlDTOList;
 		}
@@ -364,26 +427,6 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 				.map(AnmeldungTestUtil::createModulAuswahlDTO)
 				.collect(Collectors.toList());
 		}
-
-		private void expectModulFromBelegung() {
-			expectModulFromBelegung(expectFound);
-		}
-
-		private void expectModulFromBelegung(@Nonnull Consumer<ModulTagesschuleGroup> expection) {
-			belegung.getBelegungTagesschuleModule().stream()
-				.map(BelegungTagesschuleModul::getModulTagesschule)
-				.map(ModulTagesschule::getModulTagesschuleGroup)
-				.distinct()
-				.forEach(expection);
-		}
-
-		private final Consumer<ModulTagesschuleGroup> expectFound =
-			group -> expect(modulTagesschuleService.findModulTagesschuleGroup(group.getId()))
-				.andReturn(Optional.of(group));
-
-		private final Consumer<ModulTagesschuleGroup> expectMissing =
-			group -> expect(modulTagesschuleService.findModulTagesschuleGroup(group.getId()))
-				.andReturn(Optional.empty());
 
 		private void testSuccess(@Nonnull TagesschuleBestaetigungEventDTO dto) {
 			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(dto.getRefnr()))

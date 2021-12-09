@@ -36,6 +36,7 @@ export class TSModulTagesschuleGroup extends TSAbstractEntity {
     public wirdPaedagogischBetreut: boolean;
     public reihenfolge: number;
     public module: Array<TSModulTagesschule>;
+    public fremdId: string;
 
     // Zum einfacheren Handling: Pro Tag ein fixes Modul erstellen
     // Dies wird nicht zum Server synchronisiert
@@ -172,6 +173,7 @@ export class TSModulTagesschuleGroup extends TSAbstractEntity {
         copy.intervall = this.intervall;
         copy.reihenfolge = this.reihenfolge;
         copy.wirdPaedagogischBetreut = this.wirdPaedagogischBetreut;
+        copy.fremdId = this.fremdId;
         copy.module = this.module.map(m => TSModulTagesschule.create(m.wochentag));
         return copy;
     }
