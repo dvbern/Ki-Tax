@@ -55,7 +55,6 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
@@ -539,6 +538,6 @@ public final class EbeguUtil {
 				Objects.equals(benutzerId, Constants.LOGINCONNECTOR_USER_USERNAME)) {
 			return benutzerId;
 		}
-		return principalBean.getBenutzer().getFullName() + ":" + principalBean.getBenutzer().getMandant().getName();
+		return principalBean.getBenutzer().getUsername() + ":" + principalBean.getBenutzer().getMandant().getName();
 	}
 }
