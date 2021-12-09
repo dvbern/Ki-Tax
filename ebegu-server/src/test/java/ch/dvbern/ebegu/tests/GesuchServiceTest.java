@@ -704,7 +704,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		persistence.merge(gesuch6);
 
 		Assert.assertEquals(6, gesuchService.getAllGesuche().size());
-		Assert.assertEquals(4, gesuchService.deleteGesucheOhneFreigabeOderQuittung());
+		Assert.assertEquals(4, gesuchService.deleteGesucheOhneFreigabeOderQuittung(getDummySuperadmin().getMandant()));
 		Assert.assertEquals(2, gesuchService.getAllGesuche().size());
 	}
 

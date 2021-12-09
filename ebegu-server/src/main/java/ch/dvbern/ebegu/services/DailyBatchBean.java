@@ -175,10 +175,11 @@ public class DailyBatchBean implements DailyBatch {
 	public void runBatchGesucheLoeschen() {
 		try {
 			LOGGER.info("Starting Job GesucheLoeschen...");
-
-			final int anzahl = gesuchService.deleteGesucheOhneFreigabeOderQuittung();
-
-			LOGGER.info("Es wurden {} Gesuche ohne Freigabe oder Quittung gefunden, die geloescht werden muessen", anzahl);
+			mandantService.getAll().forEach(mandant -> {
+				LOGGER.info("Gesuche für Mandant {}", mandant.getName());
+				final int anzahl = gesuchService.deleteGesucheOhneFreigabeOderQuittung(mandant);
+				LOGGER.info("Es wurden {} Gesuche ohne Freigabe oder Quittung gefunden, die geloescht werden muessen", anzahl);
+			});
 			LOGGER.info("... Job GesucheLoeschen finished");
 		} catch (RuntimeException e) {
 			LOGGER.error("Batch-Job GesucheLoeschen konnte nicht durchgefuehrt werden!", e);

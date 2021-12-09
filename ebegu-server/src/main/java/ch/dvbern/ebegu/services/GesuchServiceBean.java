@@ -1683,9 +1683,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@Override
-	public int deleteGesucheOhneFreigabeOderQuittung() {
+	public int deleteGesucheOhneFreigabeOderQuittung(@Nonnull Mandant mandant) {
 
-		List<Gesuch> criteriaResults = getGesucheOhneFreigabeOderQuittung();
+		List<Gesuch> criteriaResults = getGesucheOhneFreigabeOderQuittung(mandant);
 		int anzahl = criteriaResults.size();
 		List<Betreuung> betreuungen = new ArrayList<>();
 		for (Gesuch gesuch : criteriaResults) {
@@ -1717,11 +1717,11 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@Override
-	public List<Gesuch> getGesucheOhneFreigabeOderQuittung() {
+	public List<Gesuch> getGesucheOhneFreigabeOderQuittung(@Nonnull Mandant mandant) {
 		Integer anzahlTageBisLoeschungNachWarnungFreigabe =
-			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE, principalBean.getMandant());
+			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE, mandant);
 		Integer anzahlTageBisLoeschungNachWarnungQuittung =
-			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG, principalBean.getMandant());
+			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG, mandant);
 		if (anzahlTageBisLoeschungNachWarnungFreigabe == null || anzahlTageBisLoeschungNachWarnungQuittung == null) {
 			throw new EbeguRuntimeException(
 				"warnGesuchNichtFreigegeben",

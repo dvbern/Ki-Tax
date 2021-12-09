@@ -318,7 +318,7 @@ public interface GesuchService {
 	 * die Quittung nicht geschickt haben. Schickt dem Gesuchsteller eine E-Mail.
 	 * Gibt die Anzahl Warnungen zurueck.
 	 */
-	int deleteGesucheOhneFreigabeOderQuittung();
+	int deleteGesucheOhneFreigabeOderQuittung(@Nonnull Mandant mandant);
 
 	/**
 	 * Löscht eine Gesuche mit eine neue Transaction
@@ -333,7 +333,7 @@ public interface GesuchService {
 	 * Freigabe
 	 * die Quittung nicht geschickt haben.
 	 */
-	List<Gesuch> getGesucheOhneFreigabeOderQuittung();
+	List<Gesuch> getGesucheOhneFreigabeOderQuittung(@Nonnull Mandant mandant);
 
 	/**
 	 * Prüft, ob alle Anträge dieser Periode im Status VERFUEGT oder NUR_SCHULAMT sind
