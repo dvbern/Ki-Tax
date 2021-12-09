@@ -4963,10 +4963,6 @@ public class JaxBConverter extends AbstractConverter {
 				.ifPresent(stammdaten::setDefaultBenutzer);
 		}
 
-		// Die Gemeinde selbst ändert nicht, nur wieder von der DB lesen
-		gemeindeService.findGemeinde(jaxStammdaten.getGemeinde().getId())
-			.ifPresent(stammdaten::setGemeinde);
-
 		if(jaxStammdaten.getGemeindeAusgabestelle() != null) {
 			Objects.requireNonNull(jaxStammdaten.getGemeindeAusgabestelle().getId());
 			gemeindeService.findGemeinde(jaxStammdaten.getGemeindeAusgabestelle().getId())
