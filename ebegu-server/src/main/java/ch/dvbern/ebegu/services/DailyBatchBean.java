@@ -87,6 +87,9 @@ public class DailyBatchBean implements DailyBatch {
 	@Inject
 	private GesuchsperiodeEmailService gesuchsperiodeEmailService;
 
+	@Inject
+	private MandantService mandantService;
+
 	@Override
 	@Asynchronous
 	public Future<Boolean> runBatchCleanDownloadFiles() {
@@ -156,8 +159,11 @@ public class DailyBatchBean implements DailyBatch {
 	public void runBatchWarnungFreigabequittungFehlt() {
 		try {
 			LOGGER.info("Starting Job WarnungFreigabequittungFehlt...");
-			final int anzahl = gesuchService.findGesucheWithoutFreigabequittungenAndWarn();
-			LOGGER.info("Es wurden {} Gesuche gefunden, bei denen die Freigabequittung fehlt", anzahl);
+			mandantService.getAll().forEach(mandant -> {
+				LOGGER.info("Gesuche für Mandant {}", mandant.getName());
+				final int anzahl = gesuchService.findGesucheWithoutFreigabequittungenAndWarn(mandant);
+				LOGGER.info("Es wurden {} Gesuche für {}, gefunden, bei denen die Freigabequittung fehlt", anzahl, mandant.getName());
+			});
 			LOGGER.info("... Job WarnungFreigabequittungFehlt finished");
 		} catch (RuntimeException e) {
 			LOGGER.error("Batch-Job WarnungFreigabequittungFehlt konnte nicht durchgefuehrt werden!", e);
