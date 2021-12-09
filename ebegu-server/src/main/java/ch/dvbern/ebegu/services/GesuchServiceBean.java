@@ -1570,12 +1570,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@Override
-	public int findGesucheNichtFreigegebenAndWarn() {
+	public int findGesucheNichtFreigegebenAndWarn(@Nonnull Mandant mandant) {
 
 		Integer anzahlTageBisWarnungFreigabe =
-			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_FREIGABE, principalBean.getMandant());
+			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_WARNUNG_FREIGABE, mandant);
 		Integer anzahlTageBisLoeschungNachWarnungFreigabe =
-			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE, principalBean.getMandant());
+			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE, mandant);
 		if (anzahlTageBisWarnungFreigabe == null || anzahlTageBisLoeschungNachWarnungFreigabe == null) {
 			throw new EbeguRuntimeException(
 				"warnGesuchNichtFreigegeben",

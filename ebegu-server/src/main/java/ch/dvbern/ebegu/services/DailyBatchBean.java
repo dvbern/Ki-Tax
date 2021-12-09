@@ -146,8 +146,11 @@ public class DailyBatchBean implements DailyBatch {
 	public void runBatchWarnungGesuchNichtFreigegeben() {
 		try {
 			LOGGER.info("Starting Job WarnungGesuchNichtFreigegeben...");
-			final int anzahl = gesuchService.findGesucheNichtFreigegebenAndWarn();
-			LOGGER.info("Es wurden {} Gesuche gefunden, die noch nicht freigegeben wurden", anzahl);
+			mandantService.getAll().forEach(mandant -> {
+				LOGGER.info("Gesuche für Mandant {}", mandant.getName());
+				final int anzahl = gesuchService.findGesucheNichtFreigegebenAndWarn(mandant);
+				LOGGER.info("Es wurden {} Gesuche gefunden, die noch nicht freigegeben wurden", anzahl);
+			});
 			LOGGER.info("... Job WarnungGesuchNichtFreigegeben finished");
 		} catch (RuntimeException e) {
 			LOGGER.error("Batch-Job WarnungGesuchNichtFreigegeben konnte nicht durchgefuehrt werden!", e);
