@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Massenversand;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.FinSitStatus;
@@ -305,7 +306,7 @@ public interface GesuchService {
 	 * Freigabe des Gesuchs nicht geschickt haben.
 	 * Gibt die Anzahl Warnungen zurueck.
 	 */
-	int findGesucheWithoutFreigabequittungenAndWarn();
+	int findGesucheWithoutFreigabequittungenAndWarn(@Nonnull Mandant mandant);
 
 	/**
 	 * Schickt eine E-Mail an den Gesuchsteller und setzt das DatumGewarntFehlendeQuittung
