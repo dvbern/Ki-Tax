@@ -133,10 +133,17 @@ export class EditGemeindeComponentBG implements OnInit {
                 .then(einstellung => {
                     einstellung.gemeindeId = this.gemeindeId;
                     gemeindeKonfig.gemeindespezifischeBGKonfigurationen.push(einstellung);
+                    gemeindeKonfig.gemeindespezifischeBGKonfigurationen =
+                        gemeindeKonfig.gemeindespezifischeBGKonfigurationen.sort(this.sortGemeindespezifischeConfigs);
                     gemeindeKonfig.konfigurationen.push(einstellung);
                     this.cd.markForCheck();
                 });
         });
+    }
+
+    // sorts by oder of EinstellungKey defined in getGemeindspezifischeBGConfigKeys
+    private sortGemeindespezifischeConfigs(a: TSEinstellung, b: TSEinstellung): number {
+        return getGemeindspezifischeBGConfigKeys().indexOf(a.key) - getGemeindspezifischeBGConfigKeys().indexOf(b.key);
     }
 
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {

@@ -242,9 +242,6 @@ export class TSGemeindeKonfiguration {
             }
         });
 
-        this.gemeindespezifischeBGKonfigurationen.sort((einstellung1, einstellung2) =>
-                einstellung1.key.toString().localeCompare(einstellung2.key.toString()));
-
         this.erwerbspensumZuschlagOverriden = this.erwerbspensumZuschlag !== this.erwerbspensumZuschlagMax;
         this.erwerbspensumMinimumOverriden =
             (this.erwerbspensumMiminumVorschule !== this.erwerbspensumMiminumVorschuleMax) ||
