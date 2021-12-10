@@ -33,7 +33,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     protected constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
-        protected gesuchstellerNumber: number
+        protected gesuchstellerNumber: number,
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
@@ -62,6 +62,10 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
 
     public showVeranlagung(): boolean {
         return EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.veranlagt);
+    }
+
+    public showResultat(): boolean {
+        return !this.gesuchModelManager.isGesuchsteller2Required();
     }
 
     public quellenBesteuertChange(newQuellenBesteuert: MatRadioChange): void {

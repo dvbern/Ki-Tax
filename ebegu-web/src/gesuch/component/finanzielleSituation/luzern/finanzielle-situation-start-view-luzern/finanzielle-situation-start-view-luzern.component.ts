@@ -24,6 +24,7 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
 import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
+import {ResultatComponent} from '../resultat/resultat.component';
 
 @Component({
     selector: 'dv-finanzielle-situation-start-view-luzern',
@@ -34,6 +35,7 @@ import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern
 export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSitLuzernView implements OnInit {
 
     @ViewChild(NgForm) private readonly form: NgForm;
+    @ViewChild(ResultatComponent) private readonly resultatComponent: ResultatComponent;
 
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
@@ -73,5 +75,11 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
             return undefined;
         }
         return this.save(onResult);
+    }
+
+    public notify(): void {
+        if (this.showResultat()) {
+            this.resultatComponent.calculate();
+        }
     }
 }

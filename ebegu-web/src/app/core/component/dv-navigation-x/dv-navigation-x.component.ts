@@ -88,7 +88,7 @@ export class DvNavigationXComponent implements OnInit {
     }
 
     public doesCancelExist(): boolean {
-        return this.dvCancel !== undefined && this.dvCancel !== null;
+        return this.dvCancel.name !== undefined && this.dvCancel.name !== null;
     }
 
     public doesdvTranslateNextExist(): boolean {

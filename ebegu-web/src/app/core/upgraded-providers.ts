@@ -21,6 +21,7 @@ import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest'
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {TestFaelleRS} from '../../admin/service/testFaelleRS.rest';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
+import {BerechnungsManager} from '../../gesuch/service/berechnungsManager';
 import {DossierRS} from '../../gesuch/service/dossierRS.rest';
 import {FallRS} from '../../gesuch/service/fallRS.rest';
 import {FinanzielleSituationRS} from '../../gesuch/service/finanzielleSituationRS.rest';
@@ -356,6 +357,17 @@ export const finanzielleSituationRSProvider = {
     deps: ['$injector'],
 };
 
+// BerechnungsManager
+export function berechnungsManagerFactory(i: IInjectorService): BerechnungsManager {
+    return i.get('BerechnungsManager');
+}
+
+export const berechnungsManagerProvider = {
+    provide: BerechnungsManager,
+    useFactory: berechnungsManagerFactory,
+    deps: ['$injector'],
+};
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -384,4 +396,5 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     reportRSProvider,
     ebeguUtilProvider,
     finanzielleSituationRSProvider,
+    berechnungsManagerProvider,
 ];
