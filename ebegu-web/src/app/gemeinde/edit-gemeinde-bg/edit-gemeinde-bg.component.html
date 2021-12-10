@@ -1065,8 +1065,9 @@
                                         </div>
                                         <div class="row" *ngIf="showGemeindespezifischeKonfigForBG(konfigurationsListe[i].gesuchsperiode) && isKonfigurationEditable(konfigurationsListe[i])">
                                             <div class="col-sm-6">
+                                                <strong>{{'GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN_TITLE' | translate}}:</strong>
                                                 <!-- Gemeindespezifische Konfurationen für BG -->
-                                                <div>
+                                                <div class="margin-top-20">
                                                     <ng-container *ngFor="let config of konfigurationsListe[i].gemeindespezifischeBGKonfigurationen; let j = index">
                                                         <div class="form-group">
                                                             <label for="konfig_{{config.key}}"
@@ -1341,7 +1342,7 @@
 
                                                 <!-- Gemeindespezifische Konfurationen für BG -->
                                                 <div
-                                                    *ngIf="showGemeindespezifischeKonfigForBG(konfigurationsListe[i])"
+                                                    *ngIf="showGemeindespezifischeKonfigForBG(konfigurationsListe[i].gesuchsperiode)"
                                                     class="mt-2">
                                                     <strong>{{'GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN_TITLE' | translate}}:</strong>
                                                     <ng-container *ngFor="let config of konfigurationsListe[i].gemeindespezifischeBGKonfigurationen;">
