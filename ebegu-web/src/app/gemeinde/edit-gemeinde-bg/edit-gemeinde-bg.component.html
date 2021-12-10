@@ -605,7 +605,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- Gemeindeeinstellungen. TODO: für Gemeinde wieder sichtbar machen sobald fertig implementiert-->
+                                        <!-- Gemeindeeinstellungen. -->
                                         <div *ngIf="isSuperAdmin() && isKonfigurationEditable(konfigurationsListe[i])">
                                             <div class="row">
                                                 <div class="col-sm-6">
@@ -1062,27 +1062,27 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <!-- Gemeindespezifische Konfurationen für BG -->
-                                                    <div *ngIf="showGemeindespezifischeKonfigForBG(konfigurationsListe[i].gesuchsperiode)">
-                                                        <ng-container *ngFor="let config of konfigurationsListe[i].gemeindespezifischeBGKonfigurationen; let j = index">
-                                                            <div class="form-group">
-                                                                <label for="konfig_{{config.key}}"
-                                                                       class="required"
-                                                                       translate>{{config.key}}</label>
-                                                                <input id="konfig_{{config.key}}"
-                                                                       type="text"
-                                                                       required
-                                                                       name="konfig_{{config.value}}"
-                                                                       #gemeindespezifische_bg_konfig='ngModel'
-                                                                       [(ngModel)]="konfigurationsListe[i].gemeindespezifischeBGKonfigurationen[j].value"
-                                                                       class="form-control">
-                                                                <dv-error-messages [errorObject]="gemeindespezifische_bg_konfig.errors"
-                                                                                   inputId="konfig_{{config.key}}"></dv-error-messages>
-                                                            </div>
-                                                        </ng-container>
-                                                    </div>
+                                        </div>
+                                        <div class="row" *ngIf="showGemeindespezifischeKonfigForBG(konfigurationsListe[i].gesuchsperiode) && isKonfigurationEditable(konfigurationsListe[i])">
+                                            <div class="col-sm-6">
+                                                <!-- Gemeindespezifische Konfurationen für BG -->
+                                                <div>
+                                                    <ng-container *ngFor="let config of konfigurationsListe[i].gemeindespezifischeBGKonfigurationen; let j = index">
+                                                        <div class="form-group">
+                                                            <label for="konfig_{{config.key}}"
+                                                                   class="required"
+                                                                   translate>{{config.key}}</label>
+                                                            <input id="konfig_{{config.key}}"
+                                                                   type="text"
+                                                                   required
+                                                                   name="konfig_{{config.value}}"
+                                                                   #gemeindespezifische_bg_konfig='ngModel'
+                                                                   [(ngModel)]="konfigurationsListe[i].gemeindespezifischeBGKonfigurationen[j].value"
+                                                                   class="form-control">
+                                                            <dv-error-messages [errorObject]="gemeindespezifische_bg_konfig.errors"
+                                                                               inputId="konfig_{{config.key}}"></dv-error-messages>
+                                                        </div>
+                                                    </ng-container>
                                                 </div>
                                             </div>
                                         </div>
@@ -1341,7 +1341,7 @@
 
                                                 <!-- Gemeindespezifische Konfurationen für BG -->
                                                 <div
-                                                    *ngIf="showGemeindespezifischeKonfigForBG(konfigurationsListe[i].gesuchsperiode)"
+                                                    *ngIf="showGemeindespezifischeKonfigForBG(konfigurationsListe[i])"
                                                     class="mt-2">
                                                     <strong>{{'GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN_TITLE' | translate}}:</strong>
                                                     <ng-container *ngFor="let config of konfigurationsListe[i].gemeindespezifischeBGKonfigurationen;">
