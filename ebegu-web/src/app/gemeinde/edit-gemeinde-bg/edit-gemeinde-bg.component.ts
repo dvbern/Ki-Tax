@@ -133,8 +133,8 @@ export class EditGemeindeComponentBG implements OnInit {
                 .then(einstellung => {
                     einstellung.gemeindeId = this.gemeindeId;
                     gemeindeKonfig.gemeindespezifischeBGKonfigurationen.push(einstellung);
-                    gemeindeKonfig.gemeindespezifischeBGKonfigurationen =
-                        gemeindeKonfig.gemeindespezifischeBGKonfigurationen.sort(this.sortGemeindespezifischeConfigs);
+                    gemeindeKonfig.gemeindespezifischeBGKonfigurationen
+                        .sort((a, b) => this.sortGemeindespezifischeConfigs(a, b));
                     gemeindeKonfig.konfigurationen.push(einstellung);
                     this.cd.markForCheck();
                 });
