@@ -69,7 +69,7 @@ public class GesuchsperiodeEmailServiceBean extends AbstractBaseService implemen
 	public void getAndSaveGesuchsperiodeEmailCandidates(
 		@Nonnull Gesuchsperiode lastGesuchsperiode,
 		@Nonnull Gesuchsperiode nextGesuchsperiode) {
-		Collection<Dossier> allDossiers = dossierService.getAllDossiers(true);
+		Collection<Dossier> allDossiers = dossierService.getAllDossiersForMandant(true);
 		allDossiers.forEach(dossier -> {
 			GesuchsperiodeEmailCandidate candidate = new GesuchsperiodeEmailCandidate(dossier, lastGesuchsperiode, nextGesuchsperiode);
 			persistence.persist(candidate);

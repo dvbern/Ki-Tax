@@ -248,6 +248,15 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@NotNull
 	private Boolean gutscheinSelberAusgestellt = true;
 
+	@Nonnull
+	@Column(nullable = false)
+	@NotNull
+	private Boolean hasAltGemeindeKontakt = false;
+
+	@Nullable
+	@Column(nullable = true)
+	private String altGemeindeKontaktText;
+
 
 	@Nullable
 	@ManyToOne(optional = true)
@@ -736,5 +745,23 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	public void setGemeindeAusgabestelle(@Nullable Gemeinde gemeindeAusgabestelle) {
 		this.gemeindeAusgabestelle = gemeindeAusgabestelle;
+	}
+
+	@Nonnull
+	public Boolean getHasAltGemeindeKontakt() {
+		return hasAltGemeindeKontakt;
+	}
+
+	public void setHasAltGemeindeKontakt(@Nonnull Boolean hasAltGemeindeKontakt) {
+		this.hasAltGemeindeKontakt = hasAltGemeindeKontakt;
+	}
+
+	@Nullable
+	public String getAltGemeindeKontaktText() {
+		return altGemeindeKontaktText;
+	}
+
+	public void setAltGemeindeKontaktText(@Nullable String altGemeindeKontaktText) {
+		this.altGemeindeKontaktText = altGemeindeKontaktText;
 	}
 }

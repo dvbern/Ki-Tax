@@ -303,10 +303,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.getErweiterteBetreuungJA() && this.getErweiterteBetreuungJA().fachstelle) {
             this.fachstelleId = this.getErweiterteBetreuungJA().fachstelle.id;
         }
-        if (!this.gesuchModelManager.getFachstellenErweiterteBetreuungList()
-            || this.gesuchModelManager.getFachstellenErweiterteBetreuungList().length <= 0) {
-            this.gesuchModelManager.updateFachstellenErweiterteBetreuungList();
-        }
+        this.gesuchModelManager.updateFachstellenErweiterteBetreuungList();
         if (this.getErweiterteBetreuungJA()
             && EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA().keineKesbPlatzierung)) {
             this.isKesbPlatzierung = !this.getErweiterteBetreuungJA().keineKesbPlatzierung;

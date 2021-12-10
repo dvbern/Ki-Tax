@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.services.BenutzerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.util.Constants.ANONYMOUS_USER_USERNAME;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 @RequestScoped
@@ -66,7 +67,7 @@ public class PrincipalBean {
 
 	@Nonnull
 	public Benutzer getBenutzer() {
-		if (benutzer == null || !benutzer.getUsername().equals(principal.getName())) {
+		if (benutzer == null || !benutzer.getId().equals(principal.getName())) {
 			loadNormalUser();
 		}
 		return benutzer;
@@ -160,5 +161,9 @@ public class PrincipalBean {
 	public boolean belongsToSozialdienst(Sozialdienst sozialdienst) {
 		final Benutzer currentBenuter = this.getBenutzer();
 		return currentBenuter.getSozialdienst() != null && currentBenuter.getSozialdienst().equals(sozialdienst);
+	}
+
+	public boolean isAnonymousSuperadmin() {
+		return isCallerInRole(UserRole.SUPER_ADMIN) && getPrincipal().getName().equals(ANONYMOUS_USER_USERNAME);
 	}
 }

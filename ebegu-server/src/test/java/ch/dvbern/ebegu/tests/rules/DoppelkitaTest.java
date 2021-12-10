@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.Testfall_DoppelKita_Regel1;
@@ -60,7 +61,7 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
 		Gesuch gesuch = testfall.fillInGesuch();
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		evaluator.evaluate(gesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 
@@ -102,7 +103,7 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
 		Gesuch gesuch = testfall.fillInGesuch();
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		evaluator.evaluate(gesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 
@@ -144,7 +145,7 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
 		Gesuch gesuch = testfall.fillInGesuch();
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		evaluator.evaluate(gesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 

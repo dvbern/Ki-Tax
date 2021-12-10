@@ -113,6 +113,7 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 						resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
 				}
 				handleAnpassungErweiterteBeduerfnisse(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
+				handleEinreichfrist(inputAsiv, mutationsEingansdatum);
 				handleAnpassungAnspruch(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
 
 				BGCalculationInput inputGemeinde = verfuegungZeitabschnitt.getBgCalculationInputGemeinde();
@@ -132,6 +133,13 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 			}
 		}
 		return zeitabschnitte;
+	}
+
+	private void handleEinreichfrist(BGCalculationInput inputAsiv, LocalDate mutationsEingansdatum) {
+		//Wenn das Eingangsdatum der Meldung nach der Gültigkeit des Zeitabschnitts ist, soll das Flag ZuSpaetEingereicht gesetzt werden
+		if(isMeldungZuSpaet(inputAsiv.getParent().getGueltigkeit(), mutationsEingansdatum)) {
+			inputAsiv.setZuSpaetEingereicht(true);
+		}
 	}
 
 	private void handleAnpassungErweiterteBeduerfnisse(
@@ -240,6 +248,11 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				inputData.setAnspruchspensumProzent(anspruchAufVorgaengerVerfuegung);
 				inputData.setRueckwirkendReduziertesPensumRest(anspruchberechtigtesPensum - inputData.getAnspruchspensumProzent());
 				inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
+				//Wenn der Anspruch auf dem Vorgänger 0 ist, weil das Erstgesuch zu spät eingereicht wurde
+				//soll die Bemerkung bezüglich der Erhöhung nicht angezeigt werden, da es sich um keine Erhöhung handelt
+				if(!isAnspruchZeroBecauseVorgaengerZuSpaet(resultVorangehenderAbschnitt)) {
+					inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
+				}
 			}
 		} else if (anspruchberechtigtesPensum < anspruchAufVorgaengerVerfuegung) {
 			// Anspruch wird kleiner
@@ -249,6 +262,15 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				inputData.addBemerkung(MsgKey.REDUCKTION_RUECKWIRKEND_MSG, locale);
 			}
 		}
+	}
+
+	private boolean isAnspruchZeroBecauseVorgaengerZuSpaet(BGCalculationResult resultVorangehenderAbschnitt) {
+		if(resultVorangehenderAbschnitt == null) {
+			return false;
+		}
+
+		boolean anspruchsPensumZero = resultVorangehenderAbschnitt.getAnspruchspensumProzent() == 0;
+		return anspruchsPensumZero && resultVorangehenderAbschnitt.isZuSpaetEingereicht();
 	}
 
 	private boolean isMeldungZuSpaet(@Nonnull DateRange gueltigkeit, @Nonnull LocalDate mutationsEingansdatum) {

@@ -77,8 +77,8 @@ public class AbstractEntityListener {
 		LocalDateTime now = LocalDateTime.now();
 		entity.setTimestampErstellt(now);
 		entity.setTimestampMutiert(now);
-		entity.setUserErstellt(getPrincipalName());
-		entity.setUserMutiert(getPrincipalName());
+		entity.setUserErstellt(getUserMandantString());
+		entity.setUserMutiert(getUserMandantString());
 		if (entity instanceof KindContainer && !((KindContainer) entity).hasVorgaenger()
 			&& ((KindContainer) entity).getKindNummer() <= -1) {
 			// Neue Kind-Nummer: nur setzen, wenn es nicht ein "kopiertes" Kind (Mutation oder Erneuerungsgesuch) ist
@@ -121,11 +121,34 @@ public class AbstractEntityListener {
 		}
 	}
 
+	private String getPrincipalName() {
+		try {
+			return getPrincipalBean().getPrincipal().getName();
+		} catch (ContextNotActiveException e) {
+			LOGGER.error("No context when persisting entity.");
+			throw e;
+		}
+	}
+
+	/**
+	 * Enough information to determine single user
+	 */
+	@Nonnull
+	private String getUserMandantString() {
+		try {
+			return EbeguUtil.getUserMandantString(getPrincipalBean());
+		} catch (ContextNotActiveException e) {
+			LOGGER.error("No context when persisting entity.");
+			throw e;
+		}
+
+	}
+
 	@PreUpdate
 	public void preUpdate(@Nonnull AbstractEntity entity) {
 		if (!entity.isSkipPreUpdate()) {
 			entity.setTimestampMutiert(LocalDateTime.now());
-			entity.setUserMutiert(getPrincipalName());
+			entity.setUserMutiert(getUserMandantString());
 			if (entity instanceof Verfuegung) {
 				throw new IllegalStateException("Verfuegung darf eigentlich nur einmal erstellt werden, wenn die Betreuung verfuegt ist, und nie mehr veraendert");
 
@@ -190,14 +213,5 @@ public class AbstractEntityListener {
 			deletionLogService = CDI.current().select(GesuchDeletionLogService.class).get();
 		}
 		return deletionLogService;
-	}
-
-	private String getPrincipalName() {
-		try {
-			return getPrincipalBean().getPrincipal().getName();
-		} catch (ContextNotActiveException e) {
-			LOGGER.error("No context when persisting entity.");
-			throw e;
-		}
 	}
 }

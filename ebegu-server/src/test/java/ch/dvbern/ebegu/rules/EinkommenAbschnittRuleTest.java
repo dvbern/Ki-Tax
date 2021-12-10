@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
@@ -214,7 +215,7 @@ public class EinkommenAbschnittRuleTest {
 		if (ekv2 != null) {
 			TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), ekv2, false);
 		}
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		List<VerfuegungZeitabschnitt> zeitabschnitte = einkommenAbschnittRule.createVerfuegungsZeitabschnitteIfApplicable(betreuung);
 		zeitabschnitte = einkommenCalcRule.calculate(betreuung, zeitabschnitte);
 		Assert.assertNotNull(zeitabschnitte);

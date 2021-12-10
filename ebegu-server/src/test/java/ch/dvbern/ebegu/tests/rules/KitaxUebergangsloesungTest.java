@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -129,12 +130,13 @@ public class KitaxUebergangsloesungTest extends AbstractBGRechnerTest {
 
 	@Nonnull
 	private Gesuch prepareGesuch() {
-		Gesuch lauraWalther = TestDataUtil.createTestgesuchLauraWalther(TestDataUtil.createCustomGesuchsperiode(2020, 2021));
+		FinanzielleSituationBernRechner finanzielleSituationBernRechner = new FinanzielleSituationBernRechner();
+		Gesuch lauraWalther = TestDataUtil.createTestgesuchLauraWalther(TestDataUtil.createCustomGesuchsperiode(2020, 2021), finanzielleSituationBernRechner);
 		Assert.assertNotNull(lauraWalther.getGesuchsteller1());
 		Assert.assertNotNull(lauraWalther.getGesuchsteller1().getFinanzielleSituationContainer());
 		lauraWalther.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettolohn(BigDecimal.ZERO);
 		lauraWalther.getDossier().setGemeinde(TestDataUtil.createGemeindeParis());
-		TestDataUtil.calculateFinanzDaten(lauraWalther);
+		TestDataUtil.calculateFinanzDaten(lauraWalther, finanzielleSituationBernRechner);
 		return lauraWalther;
 	}
 

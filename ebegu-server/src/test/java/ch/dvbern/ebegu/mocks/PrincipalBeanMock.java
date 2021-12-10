@@ -54,6 +54,6 @@ public class PrincipalBeanMock extends PrincipalBean {
 	@Nullable
 	@Override
 	public Mandant getMandant() {
-		return mandantService.getFirst();
+		return mandantService.getMandantBern();
 	}
 }

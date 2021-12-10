@@ -795,49 +795,49 @@
                         </tab-body>
                     </dv-accordion-tab>
                 </div>
-
-                <div *ngIf="showNotrechtStatistik()">
-                    <dv-accordion-tab [tabid]="'notrecht'">
-                        <tab-title>
-                            <span class="uppercase" translate>NOTRECHT_STATISTIK</span>
-                            <dv-tooltip inputId="notrecht_info"
-                                        (click)="$event.stopPropagation()"
-                                        [text]="'STATISTIK_NOTRECHT_HINT' | translate">
-                            </dv-tooltip>
-                        </tab-title>
-                        <tab-body>
-                            <form name="notrecht"
-                                  #notrechtRef='ngForm'
-                                  [ngClass]="{'ng-submitted': notrechtRef.submitted}"
-                                  (ngSubmit)="generateStatistik(notrechtRef, TSStatistikParameterType.NOTRECHT)">
-                                <div class="row">
-                                    <div class="col-xs-12 form-group md-no-float statistik-no-fields">
-                                        <span translate>NOTRECHT_INFO</span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <dv-input-container class="form-group">
-                                            <mat-checkbox name="doSave"
-                                                         [(ngModel)]="statistikParameter.doSave"
-                                                         [aria-label]="'NOTRECHT_DEFINITIV' | translate"
-                                                         class="input-element">
-                                                <span translate>NOTRECHT_ZAHLUNGEN_AUSLOESEN</span>
-                                            </mat-checkbox>
-                                        </dv-input-container>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
-                                        <dv-loading-button type="submit">
-                                            <span class="uppercase" translate>GENERIEREN</span>
-                                        </dv-loading-button>
-                                    </div>
-                                </div>
-                            </form>
-                        </tab-body>
-                    </dv-accordion-tab>
-                </div>
+<!--TODO: remove completely when corona pandemy ends-->
+<!--                <div *ngIf="showNotrechtStatistik()">-->
+<!--                    <dv-accordion-tab [tabid]="'notrecht'">-->
+<!--                        <tab-title>-->
+<!--                            <span class="uppercase" translate>NOTRECHT_STATISTIK</span>-->
+<!--                            <dv-tooltip inputId="notrecht_info"-->
+<!--                                        (click)="$event.stopPropagation()"-->
+<!--                                        [text]="'STATISTIK_NOTRECHT_HINT' | translate">-->
+<!--                            </dv-tooltip>-->
+<!--                        </tab-title>-->
+<!--                        <tab-body>-->
+<!--                            <form name="notrecht"-->
+<!--                                  #notrechtRef='ngForm'-->
+<!--                                  [ngClass]="{'ng-submitted': notrechtRef.submitted}"-->
+<!--                                  (ngSubmit)="generateStatistik(notrechtRef, TSStatistikParameterType.NOTRECHT)">-->
+<!--                                <div class="row">-->
+<!--                                    <div class="col-xs-12 form-group md-no-float statistik-no-fields">-->
+<!--                                        <span translate>NOTRECHT_INFO</span>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="row">-->
+<!--                                    <div class="col-xs-3">-->
+<!--                                        <dv-input-container class="form-group">-->
+<!--                                            <mat-checkbox name="doSave"-->
+<!--                                                         [(ngModel)]="statistikParameter.doSave"-->
+<!--                                                         [aria-label]="'NOTRECHT_DEFINITIV' | translate"-->
+<!--                                                         class="input-element">-->
+<!--                                                <span translate>NOTRECHT_ZAHLUNGEN_AUSLOESEN</span>-->
+<!--                                            </mat-checkbox>-->
+<!--                                        </dv-input-container>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="row">-->
+<!--                                    <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">-->
+<!--                                        <dv-loading-button type="submit">-->
+<!--                                            <span class="uppercase" translate>GENERIEREN</span>-->
+<!--                                        </dv-loading-button>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </form>-->
+<!--                        </tab-body>-->
+<!--                    </dv-accordion-tab>-->
+<!--                </div>-->
                 <div *ngIf="showMahlzeitenverguenstigungStatistik()">
                     <div>
                         <dv-accordion-tab [tabid]="'mahlzeitenverguenstigung'">

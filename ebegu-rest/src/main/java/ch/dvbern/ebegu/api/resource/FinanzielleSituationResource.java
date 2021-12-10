@@ -57,6 +57,7 @@ import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.FamiliensituationService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
@@ -179,19 +180,9 @@ public class FinanzielleSituationResource {
 
 		String gesuchId = gesuchJAXP.getId();
 		String gesuchstellerId = gesuchsteller1.getId();
-		Boolean sozialhilfeBezueger = familiensituationJA.getSozialhilfeBezueger();
-		Boolean gemeinsameSteuererklaerung = familiensituationJA.getGemeinsameSteuererklaerung();
-		Boolean verguenstigungGewuenscht = familiensituationJA.getVerguenstigungGewuenscht();
+
 
 		requireNonNull(gesuchstellerId);
-		requireNonNull(sozialhilfeBezueger);
-		requireNonNull(gemeinsameSteuererklaerung);
-		if (sozialhilfeBezueger.equals(Boolean.TRUE)) {
-			// Sozialhilfebezueger bekommen immer eine Verguenstigung
-			verguenstigungGewuenscht = Boolean.TRUE;
-		} else {
-			requireNonNull(verguenstigungGewuenscht);
-		}
 
 		GesuchstellerContainer gesuchsteller = gesuchstellerService.findGesuchsteller(gesuchstellerId).orElseThrow(()
 			-> new EbeguEntityNotFoundException(
@@ -229,6 +220,27 @@ public class FinanzielleSituationResource {
 			}
 		}
 
+		Boolean sozialhilfeBezueger = familiensituationJA.getSozialhilfeBezueger();
+		Boolean gemeinsameSteuererklaerung = familiensituationJA.getGemeinsameSteuererklaerung();
+		Boolean verguenstigungGewuenscht = familiensituationJA.getVerguenstigungGewuenscht();
+
+
+		if (gesuchJAXP.getFinSitTyp().equals(FinanzielleSituationTyp.BERN)) {
+			requireNonNull(sozialhilfeBezueger);
+			requireNonNull(gemeinsameSteuererklaerung);
+
+			if (sozialhilfeBezueger.equals(Boolean.TRUE)) {
+				// Sozialhilfebezueger bekommen immer eine Verguenstigung
+				verguenstigungGewuenscht = Boolean.TRUE;
+			} else {
+				requireNonNull(verguenstigungGewuenscht);
+			}
+		}
+		else {
+			sozialhilfeBezueger = false;
+			verguenstigungGewuenscht = Boolean.TRUE;
+		}
+
 		Gesuch persistedGesuch = this.finanzielleSituationService.saveFinanzielleSituationStart(
 			convertedFinSitCont,
 			sozialhilfeBezueger,
@@ -241,6 +253,7 @@ public class FinanzielleSituationResource {
 			familiensituationJA.getZahlungsadresse() == null ? null :
 				converter.adresseToEntity(familiensituationJA.getZahlungsadresse(), storedAdresse),
 			gesuchId);
+
 		return converter.gesuchToJAX(persistedGesuch);
 	}
 

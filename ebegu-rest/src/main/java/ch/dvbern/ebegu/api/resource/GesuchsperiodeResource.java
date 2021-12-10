@@ -16,13 +16,10 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -59,7 +56,6 @@ import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.Sprache;
@@ -188,12 +184,9 @@ public class GesuchsperiodeResource {
 	public List<JaxGesuchsperiode> getAllGesuchsperioden(
 			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
 	) {
-		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
-		return gesuchsperiodeService.getAllGesuchsperioden().stream()
-				//TODO MANDANTEN: move to getAllGesuchsperioden
-				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant()
-						.equals(mandant.get()))
+		var mandant = mandantService.findMandantByCookie(mandantCookie);
+
+		return gesuchsperiodeService.getAllGesuchsperioden(mandant).stream()
 				.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
 				.filter(periode -> periode.getGueltigAb() != null)
 				.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
@@ -212,12 +205,7 @@ public class GesuchsperiodeResource {
 	public List<JaxGesuchsperiode> getAllActiveGesuchsperioden(
 			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
 	) {
-		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
 		return gesuchsperiodeService.getAllActiveGesuchsperioden().stream()
-				//TODO MANDANTEN: move to getAllActiveGesuchsperioden
-				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant()
-						.equals(mandant.get()))
 				.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
 				.collect(Collectors.toList());
 	}
@@ -230,14 +218,8 @@ public class GesuchsperiodeResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
-	public List<JaxGesuchsperiode> getAllAktivUndInaktivGesuchsperioden(
-			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
-			) {
-		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
-		//TODO MANDANTEN: move to getAllaktivUndInaktivGesuchsperioden
+	public List<JaxGesuchsperiode> getAllAktivUndInaktivGesuchsperioden() {
 		return gesuchsperiodeService.getAllAktivUndInaktivGesuchsperioden().stream()
-				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant().equals(mandant.get()))
 			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
 			.filter(periode -> periode.getGueltigAb() != null)
 			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
@@ -255,15 +237,9 @@ public class GesuchsperiodeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
 	public List<JaxGesuchsperiode> getAllAktivInaktivNichtVerwendeteGesuchsperioden(
-		@Nonnull @PathParam("dossierId") String dossierId,
-			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+		@Nonnull @PathParam("dossierId") String dossierId
 	) {
-		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
-		//TODO MANDANTEN: move to getAllAktivInaktivNichtVerwendeteGesuchsperioden
 		return gesuchsperiodeService.getAllAktivInaktivNichtVerwendeteGesuchsperioden(dossierId).stream()
-				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant()
-						.equals(mandant.get()))
 				.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
 				.filter(periode -> periode.getGueltigAb() != null)
 				.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
@@ -284,18 +260,11 @@ public class GesuchsperiodeResource {
 			@Nonnull @PathParam("gemeindeId") String gemeindeId,
 			@Nullable @QueryParam("dossierId") String dossierId,
 			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
-		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
 
 		Collection<Gesuchsperiode> perioden = dossierId == null
 				? gesuchsperiodeService.getAllAktivUndInaktivGesuchsperioden()
 				: gesuchsperiodeService.getAllAktivInaktivNichtVerwendeteGesuchsperioden(dossierId);
 
-		//TODO MANDANTEN: move to methods
-		perioden = perioden.stream()
-				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant()
-						.equals(mandant.get()))
-				.collect(Collectors.toList());
 		return extractValidGesuchsperiodenForGemeinde(gemeindeId, perioden);
 	}
 
@@ -313,18 +282,10 @@ public class GesuchsperiodeResource {
 			@Nonnull @PathParam("gemeindeId") String gemeindeId,
 			@Nullable @QueryParam("dossierId") String dossierId,
 			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
-		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
 
 		Collection<Gesuchsperiode> perioden = dossierId == null
 				? gesuchsperiodeService.getAllActiveGesuchsperioden()
 				: gesuchsperiodeService.getAllAktiveNichtVerwendeteGesuchsperioden(dossierId);
-
-		//TODO MANDANTEN: move to methods
-		perioden = perioden.stream()
-				.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant()
-						.equals(mandant.get()))
-				.collect(Collectors.toList());
 
 		return extractValidGesuchsperiodenForGemeinde(gemeindeId, perioden);
 	}

@@ -88,7 +88,6 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Column(nullable = false)
 	private boolean abweichendeZahlungsadresse;
 
-
 	public Familiensituation() {
 	}
 

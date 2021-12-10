@@ -117,6 +117,7 @@ public class AnmeldungTagesschuleEventConverter {
 				.setVon(z.getGueltigkeit().getGueltigAb())
 				.setBis(z.getGueltigkeit().getGueltigBis())
 				.setMassgebendesEinkommen(z.getMassgebendesEinkommen())
+				.setFamilienGroesse(z.getFamGroesse())
 				.setTarifPaedagogisch(toTarifDTO(z.getTsCalculationResultMitPaedagogischerBetreuung()))
 				.setTarifNichtPaedagogisch(toTarifDTO(z.getTsCalculationResultOhnePaedagogischerBetreuung()))
 				.build())
@@ -219,6 +220,7 @@ public class AnmeldungTagesschuleEventConverter {
 		return ModulAuswahlDTO.newBuilder()
 			.setModulId(belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().getId())
 			.setIntervall(Intervall.valueOf(belegungTagesschuleModul.getIntervall().name()))
+			.setFremdId(belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().getFremdId())
 			.setWochentag(Wochentag.valueOf(belegungTagesschuleModul.getModulTagesschule().getWochentag().name()))
 			.build();
 	}

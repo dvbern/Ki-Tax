@@ -46,6 +46,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.ws.rs.BadRequestException;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.ZahlungenSearchParamsDTO;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
@@ -152,6 +153,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 	@Inject
 	private GemeindeService gemeindeService;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 
 	@Override
@@ -634,11 +638,16 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 		setSortOrder(query, zahlungenSearchParamsDTO, root, joinGemeinde, cb);
 
-		return persistence.getEntityManager()
+		var zahlungen = persistence.getEntityManager()
 			.createQuery(query)
 			.setFirstResult(zahlungenSearchParamsDTO.getPage() * zahlungenSearchParamsDTO.getPageSize())
 			.setMaxResults(zahlungenSearchParamsDTO.getPageSize())
 			.getResultList();
+
+		for (var z : zahlungen) {
+			authorizer.checkReadAuthorizationZahlungsauftrag(z);
+		}
+		return zahlungen;
 	}
 
 	@Nonnull
@@ -663,6 +672,10 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			"createPredicatesForZahlungen", "Non logged in user should never reach this"));
 
 		List<Predicate> predicates = new ArrayList<>();
+
+		Objects.requireNonNull(principalBean.getMandant());
+		Predicate mandantPredicate = cb.equal(root.get(Zahlungsauftrag_.mandant), principalBean.getMandant());
+		predicates.add(mandantPredicate);
 
 		// general
 		if (zahlungenSearchParamsDTO.getGemeinde() != null) {
@@ -793,6 +806,18 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// Dieser Report betrifft nur Institutionszahlungen
 		Predicate predicateAuftragTyp = cb.equal(root.get(Zahlungsauftrag_.zahlungslaufTyp), ZahlungslaufTyp.GEMEINDE_INSTITUTION);
 		predicatesToUse.add(predicateAuftragTyp);
+
+		Mandant mandant = principalBean.getMandant();
+		if (mandant == null) {
+			throw new EbeguRuntimeException("getZahlungsauftraegeInPeriode", "mandant not found for principal " + principalBean.getPrincipal().getName());
+		}
+
+		// Mandant
+		Predicate mandantPredicate = cb.equal(
+			root.get(Zahlungsauftrag_.mandant),
+			mandant
+		);
+		predicatesToUse.add(mandantPredicate);
 
 		// Gemeinde
 		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(

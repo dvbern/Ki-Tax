@@ -351,9 +351,16 @@ export class DossierToolbarController implements IDVFocusableController {
 
     private updateGemeindeStammdaten(): void {
         this.$kontaktLoaded = this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then((gemeindeDaten => {
-            this.kontaktdatenGemeindeAsHtml = this.gemeindeStammdatenToHtml(gemeindeDaten);
+            this.kontaktdatenGemeindeAsHtml = this.getKontaktdatenHtml(gemeindeDaten);
             return true;
         }));
+    }
+
+    private getKontaktdatenHtml(gemeindeDaten: TSGemeindeStammdaten): string {
+        if (gemeindeDaten.hasAltGemeindeKontakt) {
+            return this.sanitizeHtml(gemeindeDaten.altGemeindeKontaktText);
+        }
+        return this.gemeindeStammdatenToHtml(gemeindeDaten);
     }
 
     private resetNavigationParameters(): void {
@@ -805,5 +812,9 @@ export class DossierToolbarController implements IDVFocusableController {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle())
             && this.dossier.fall.isSozialdienstFall()
             && this.dossier.fall.sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN;
+    }
+
+    private sanitizeHtml(altGemeindeKontaktText: string): string {
+        return altGemeindeKontaktText;
     }
 }

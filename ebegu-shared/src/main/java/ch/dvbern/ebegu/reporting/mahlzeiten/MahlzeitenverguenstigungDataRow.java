@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 public class MahlzeitenverguenstigungDataRow {
 
 	@Nullable private String bgNummer;
+	@Nullable private Long fallNummer;
 	@Nullable private BetreuungsangebotTyp betreuungsTyp;
 	@Nullable private String institution;
 	@Nullable private String traegerschaft;
@@ -267,5 +268,14 @@ public class MahlzeitenverguenstigungDataRow {
 
 	public void setBerechneteMahlzeitenverguenstigung(@Nullable BigDecimal berechneteMahlzeitenverguenstigung) {
 		this.berechneteMahlzeitenverguenstigung = berechneteMahlzeitenverguenstigung;
+	}
+
+	@Nullable
+	public Long getFallNummer() {
+		return fallNummer;
+	}
+
+	public void setFallNummer(@Nullable Long fallNummer) {
+		this.fallNummer = fallNummer;
 	}
 }

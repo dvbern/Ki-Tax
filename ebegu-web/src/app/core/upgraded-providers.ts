@@ -23,6 +23,7 @@ import {TestFaelleRS} from '../../admin/service/testFaelleRS.rest';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {DossierRS} from '../../gesuch/service/dossierRS.rest';
 import {FallRS} from '../../gesuch/service/fallRS.rest';
+import {FinanzielleSituationRS} from '../../gesuch/service/finanzielleSituationRS.rest';
 import {FinanzielleSituationSubStepManager} from '../../gesuch/service/finanzielleSituationSubStepManager';
 import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../gesuch/service/gesuchModelManager';
@@ -38,7 +39,6 @@ import {DownloadRS} from './service/downloadRS.rest';
 import {GesuchsperiodeRS} from './service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from './service/institutionRS.rest';
 import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
-import {MandantRS} from './service/mandantRS.rest';
 import {MitteilungRS} from './service/mitteilungRS.rest';
 import {NotrechtRS} from './service/notrechtRS.rest';
 import {ReportRS} from './service/reportRS.rest';
@@ -279,17 +279,6 @@ export const supportRSProvider = {
     deps: ['$injector'],
 };
 
-// MandantRS
-export function mandantRSServiceFactory(i: IInjectorService): MandantRS {
-    return i.get('MandantRS');
-}
-
-export const mandantRSProvider = {
-    provide: MandantRS,
-    useFactory: mandantRSServiceFactory,
-    deps: ['$injector'],
-};
-
 // NotrechtRS
 export function notrechtRSProviderServiceFactory(i: IInjectorService): NotrechtRS {
     return i.get('NotrechtRS');
@@ -356,6 +345,17 @@ export const ebeguUtilProvider = {
     deps: ['$injector'],
 };
 
+// FinanzielleSituationRS
+export function finanzielleSituationRSServiceFactory(i: IInjectorService): FinanzielleSituationRS {
+    return i.get('FinanzielleSituationRS');
+}
+
+export const finanzielleSituationRSProvider = {
+    provide: FinanzielleSituationRS,
+    useFactory: finanzielleSituationRSServiceFactory,
+    deps: ['$injector'],
+};
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -377,11 +377,11 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     institutionStammdatenRSProvider,
     einstellungRSProvider,
     supportRSProvider,
-    mandantRSProvider,
     uploadRSProvider,
     notrechtRSProvider,
     searchRSProvider,
     gesuchModelManagerProvider,
     reportRSProvider,
     ebeguUtilProvider,
+    finanzielleSituationRSProvider,
 ];

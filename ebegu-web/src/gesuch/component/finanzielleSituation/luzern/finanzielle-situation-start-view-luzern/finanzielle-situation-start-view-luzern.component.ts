@@ -15,10 +15,11 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {FormBuilder} from '@angular/forms';
-import {of} from 'rxjs';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
+import {IPromise} from 'angular';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
+import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
@@ -28,16 +29,17 @@ import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern
     selector: 'dv-finanzielle-situation-start-view-luzern',
     templateUrl: '../finanzielle-situation-luzern.component.html',
     styleUrls: ['../finanzielle-situation-luzern.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSitLuzernView implements OnInit {
+
+    @ViewChild(NgForm) private readonly form: NgForm;
 
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
-        fb: FormBuilder,
     ) {
-        super(gesuchModelManager, wizardStepManager, fb);
+        super(gesuchModelManager, wizardStepManager, 1);
     }
 
     public ngOnInit(): void {
@@ -53,11 +55,6 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
         return 1;
     }
 
-    public save(): Promise<any> {
-        console.log('saving start view');
-        return of('saved').toPromise();
-    }
-
     public getTrue(): any {
         return true;
     }
@@ -70,4 +67,11 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
         return TSFinanzielleSituationSubStepName.LUZERN_START;
     }
 
+    public prepareSave(onResult: Function): IPromise<TSFinanzielleSituationContainer> {
+        if (!this.isGesuchValid(this.form)) {
+            onResult(undefined);
+            return undefined;
+        }
+        return this.save(onResult);
+    }
 }
