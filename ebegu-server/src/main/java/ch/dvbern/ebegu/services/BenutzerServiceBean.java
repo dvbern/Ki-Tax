@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
+import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableMandantFilterDTO;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity;
@@ -683,15 +684,14 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	public Collection<Benutzer> getGesuchsteller() {
+	public Collection<Benutzer> getGesuchsteller(@Nonnull Mandant mandant) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
 		Root<Benutzer> root = query.from(Benutzer.class);
 		Join<Benutzer, Berechtigung> joinBerechtigungen = root.join(Benutzer_.berechtigungen);
 		query.select(root);
 
-		Objects.requireNonNull(principalBean.getMandant());
-		Predicate predicateMandant = cb.equal(root.get(Benutzer_.mandant), principalBean.getMandant());
+		Predicate predicateMandant = cb.equal(root.get(Benutzer_.mandant), mandant);
 
 		Predicate predicateActive = cb.between(
 			cb.literal(LocalDate.now()),
