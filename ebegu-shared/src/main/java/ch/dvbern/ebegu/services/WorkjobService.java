@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Workjob;
 import ch.dvbern.ebegu.enums.reporting.BatchJobStatus;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
@@ -58,7 +59,8 @@ public interface WorkjobService {
 		boolean ohneErneuerungsgesuch,
 		@Nullable Gemeinde gemeinde,
 		@Nullable String text,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	);
 
 	@Nonnull
@@ -68,7 +70,8 @@ public interface WorkjobService {
 		@Nullable LocalDate datumVon,
 		@Nullable LocalDate datumBis,
 		@Nullable String gesuchPeriodIdParam,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	);
 
 	@Nonnull
@@ -79,7 +82,8 @@ public interface WorkjobService {
 		@Nullable LocalDate datumBis,
 		@Nullable BigDecimal kantonSelbstbehalt,
 		@Nullable String gesuchPeriodIdParam,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	);
 
 	@Nonnull
@@ -88,7 +92,8 @@ public interface WorkjobService {
 		@Nonnull ReportVorlage vorlage,
 		boolean doSave,
 		@Nonnull BigDecimal betragProKind,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	);
 
 	@Nonnull
@@ -97,7 +102,8 @@ public interface WorkjobService {
 		@Nonnull ReportVorlage vorlage,
 		@Nonnull String stammdatenId,
 		@Nonnull String gesuchsperiodeId,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	);
 
 	@Nonnull

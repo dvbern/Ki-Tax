@@ -351,7 +351,8 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void generateExcelReportBenutzer() {
-		final List<BenutzerDataRow> reportDataBenutzer = reportService.getReportDataBenutzer(Constants.DEFAULT_LOCALE);
+		final List<BenutzerDataRow> reportDataBenutzer = reportService.getReportDataBenutzer(Constants.DEFAULT_LOCALE,
+				getDummySuperadmin().getMandant());
 
 		assertNotNull(reportDataBenutzer);
 		assertEquals(7, reportDataBenutzer.size()); // anonymous is a user too

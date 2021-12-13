@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.reporting.benutzer.BenutzerDataRow;
@@ -141,10 +142,10 @@ public interface ReportService {
 		throws ExcelMergeException, IOException, MergeDocException, URISyntaxException;
 
 	@Nonnull
-	UploadFileInfo generateExcelReportBenutzer(@Nonnull Locale locale) throws ExcelMergeException;
+	UploadFileInfo generateExcelReportBenutzer(@Nonnull Locale locale, @Nonnull Mandant mandant) throws ExcelMergeException;
 
 	@Nonnull
-	List<BenutzerDataRow> getReportDataBenutzer(@Nonnull Locale locale);
+	List<BenutzerDataRow> getReportDataBenutzer(@Nonnull Locale locale, @Nonnull Mandant mandant);
 
 	@Nonnull
 	UploadFileInfo generateExcelReportInstitutionen(@Nonnull Locale locale) throws ExcelMergeException;

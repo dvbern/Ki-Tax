@@ -311,7 +311,8 @@ public class BenutzerResource {
 		@Context HttpServletResponse response) {
 
 		return MonitoringUtil.monitor(GesuchResource.class, "searchBenutzer", () -> {
-			Pair<Long, List<Benutzer>> searchResultPair = benutzerService.searchBenutzer(benutzerSearch, false);
+			Pair<Long, List<Benutzer>> searchResultPair = benutzerService.searchBenutzer(new BenutzerTableMandantFilterDTO(benutzerSearch,
+					requireNonNull(principalBean.getMandant())), false);
 			List<Benutzer> foundBenutzer = searchResultPair.getRight();
 
 			List<JaxBenutzer> benutzerDTOList = foundBenutzer.stream()

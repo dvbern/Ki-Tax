@@ -326,7 +326,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		Benutzer benutzer = einladung.getEingeladener();
 		checkSuperuserRoleZuteilung(einladung.getEingeladener());
 		EinladungTyp einladungTyp = einladung.getEinladungTyp();
-		checkArgument(Objects.equals(benutzer.getMandant(), principalBean.getMandant()));
+		checkArgument(Objects.equals(benutzer.getMandant(), mandant));
 
 		if (einladungTyp == EinladungTyp.MITARBEITER && (!benutzer.isNew()
 			|| findBenutzer(benutzer.getUsername(), mandant).isPresent())) {
@@ -979,7 +979,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Nonnull
 	@Override
 	public Pair<Long, List<Benutzer>> searchBenutzer(
-		@Nonnull BenutzerTableFilterDTO benutzerTableFilterDto,
+		@Nonnull BenutzerTableMandantFilterDTO benutzerTableFilterDto,
 		@Nonnull Boolean forStatistik) {
 		Long countResult = searchBenutzer(benutzerTableFilterDto, SearchMode.COUNT, forStatistik).getLeft();
 
@@ -994,7 +994,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@SuppressWarnings("PMD.NcssMethodCount")
 	private Pair<Long, List<Benutzer>> searchBenutzer(
-		@Nonnull BenutzerTableFilterDTO benutzerTableFilterDTO,
+		@Nonnull BenutzerTableMandantFilterDTO benutzerTableFilterDTO,
 		@Nonnull SearchMode mode,
 		@Nonnull Boolean forStatistik) {
 
@@ -1039,8 +1039,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		user.getCurrentBerechtigung();
 		Set<Gemeinde> userGemeinden = user.extractGemeindenForUser();
 
-		Objects.requireNonNull(principalBean.getMandant());
-		Predicate mandantPredicate = cb.equal(root.get(Benutzer_.mandant), principalBean.getMandant());
+		Predicate mandantPredicate = cb.equal(root.get(Benutzer_.mandant),benutzerTableFilterDTO.getMandant());
 		predicates.add(mandantPredicate);
 
 		if (addInstitutionUsers) {

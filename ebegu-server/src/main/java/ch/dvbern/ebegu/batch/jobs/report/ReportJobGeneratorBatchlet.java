@@ -34,8 +34,11 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.WorkJobConstants;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichSelbstbehaltService;
@@ -47,6 +50,7 @@ import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.ReportTagesschuleService;
 import ch.dvbern.ebegu.reporting.ReportVerrechnungKibonService;
 import ch.dvbern.ebegu.reporting.ReportGemeindenService;
+import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -94,6 +98,9 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 	private JobContext jobCtx;
 
 	@Inject
+	private MandantService mandantService;
+
+	@Inject
 	private JobDataContainer jobDataContainer;
 
 	@Override
@@ -139,6 +146,9 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		@Nonnull Locale locale
 	) throws ExcelMergeException, IOException, MergeDocException, URISyntaxException {
 
+		Mandant mandant = mandantService.findMandant(getParameters().getProperty(WorkJobConstants.REPORT_MANDANT_ID))
+				.orElseThrow(() -> new EbeguEntityNotFoundException("generateReport"));
+
 		switch (workJobType) {
 
 			case VORLAGE_REPORT_GESUCH_STICHTAG_DE:
@@ -160,7 +170,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 				return this.reportService.generateExcelReportMitarbeiterinnen(dateFrom, dateTo, locale);
 			}
 			case VORLAGE_REPORT_BENUTZER: {
-				return this.reportService.generateExcelReportBenutzer(locale);
+				return this.reportService.generateExcelReportBenutzer(locale, mandant);
 			}
 			case VORLAGE_REPORT_ZAHLUNG_AUFTRAG: {
 				Objects.requireNonNull(zahlungsauftragId, "Zahlungsauftrag ID must be passed as param");
