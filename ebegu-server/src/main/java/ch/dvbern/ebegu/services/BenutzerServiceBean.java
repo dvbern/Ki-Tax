@@ -190,9 +190,11 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		@Nonnull String adminMail, @Nonnull UserRole userRole, @Nonnull Gemeinde gemeinde
 	) {
 		requireNonNull(gemeinde);
+		requireNonNull(gemeinde.getMandant());
 		return createBenutzerFromEmail(
 			adminMail,
 			userRole,
+			gemeinde.getMandant(),
 			gemeinde,
 			b -> b.getGemeindeList().add(gemeinde));
 	}
@@ -201,9 +203,11 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Override
 	public Benutzer createAdminInstitutionByEmail(@Nonnull String adminMail, @Nonnull Institution institution) {
 		requireNonNull(institution);
+		requireNonNull(institution.getMandant());
 		return createBenutzerFromEmail(
 			adminMail,
 			UserRole.ADMIN_INSTITUTION,
+			institution.getMandant(),
 			institution,
 			b -> b.setInstitution(institution));
 	}
@@ -212,9 +216,11 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Override
 	public Benutzer createAdminTraegerschaftByEmail(@Nonnull String adminMail, @Nonnull Traegerschaft traegerschaft) {
 		requireNonNull(traegerschaft);
+		requireNonNull(traegerschaft.getMandant());
 		Benutzer admin = createBenutzerFromEmail(
 			adminMail,
 			UserRole.ADMIN_TRAEGERSCHAFT,
+			traegerschaft.getMandant(),
 			traegerschaft,
 			b -> b.setTraegerschaft(traegerschaft));
 
@@ -230,6 +236,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		return createBenutzerFromEmail(
 			adminMail,
 			UserRole.ADMIN_SOZIALDIENST,
+			sozialdienst.getMandant(),
 			sozialdienst,
 			b -> b.setSozialdienst(sozialdienst));
 	}
@@ -238,11 +245,12 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	private <T extends AbstractEntity> Benutzer createBenutzerFromEmail(
 		@Nonnull String adminMail,
 		@Nonnull UserRole role,
+		@Nonnull Mandant mandant,
 		@Nullable T associatedEntity,
 		@Nonnull Consumer<Berechtigung> appender
 	) {
 		requireNonNull(adminMail);
-		requireNonNull(principalBean.getMandant());
+		requireNonNull(mandant);
 
 		checkArgument(role.getRollenAbhaengigkeit().getAssociatedEntityClass()
 			.map(clazz -> clazz.isInstance(associatedEntity))
@@ -255,7 +263,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		benutzer.setVorname(Constants.UNKNOWN);
 		benutzer.setUsername(adminMail);
 		benutzer.setStatus(BenutzerStatus.EINGELADEN);
-		benutzer.setMandant(principalBean.getMandant());
+		benutzer.setMandant(mandant);
 
 		final Berechtigung berechtigung = new Berechtigung();
 		berechtigung.setRole(role);
