@@ -153,21 +153,21 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 
 			case VORLAGE_REPORT_GESUCH_STICHTAG_DE:
 			case VORLAGE_REPORT_GESUCH_STICHTAG_FR: {
-				return this.reportService.generateExcelReportGesuchStichtag(dateFrom, gesuchPeriodeId, locale);
+				return this.reportService.generateExcelReportGesuchStichtag(dateFrom, gesuchPeriodeId, locale, mandant);
 			}
 			case VORLAGE_REPORT_GESUCH_ZEITRAUM_DE:
 			case VORLAGE_REPORT_GESUCH_ZEITRAUM_FR: {
-				return this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, gesuchPeriodeId, locale);
+				return this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, gesuchPeriodeId, locale, mandant);
 			}
 			case VORLAGE_REPORT_KANTON: {
 				BigDecimal kantonSelbstbehalt = null;
 				if(getParameters().getProperty(WorkJobConstants.KANTON_SELBSTBEHALT) != null) {
 					kantonSelbstbehalt = MathUtil.DEFAULT.from(getParameters().getProperty(WorkJobConstants.KANTON_SELBSTBEHALT));
 				}
-				return this.reportService.generateExcelReportKanton(dateFrom, dateTo, kantonSelbstbehalt, locale);
+				return this.reportService.generateExcelReportKanton(dateFrom, dateTo, kantonSelbstbehalt, locale, mandant);
 			}
 			case VORLAGE_REPORT_MITARBEITERINNEN: {
-				return this.reportService.generateExcelReportMitarbeiterinnen(dateFrom, dateTo, locale);
+				return this.reportService.generateExcelReportMitarbeiterinnen(dateFrom, dateTo, locale, mandant);
 			}
 			case VORLAGE_REPORT_BENUTZER: {
 				return this.reportService.generateExcelReportBenutzer(locale, mandant);
@@ -181,13 +181,13 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 				return this.reportService.generateExcelReportZahlungPeriode(gesuchPeriodeId, locale);
 			}
 			case VORLAGE_REPORT_GESUCHSTELLER_KINDER_BETREUUNG: {
-				return this.reportService.generateExcelReportGesuchstellerKinderBetreuung(dateFrom, dateTo, gesuchPeriodeId, locale);
+				return this.reportService.generateExcelReportGesuchstellerKinderBetreuung(dateFrom, dateTo, gesuchPeriodeId, locale, mandant);
 			}
 			case VORLAGE_REPORT_KINDER: {
-				return this.reportService.generateExcelReportKinder(dateFrom, dateTo, gesuchPeriodeId, locale);
+				return this.reportService.generateExcelReportKinder(dateFrom, dateTo, gesuchPeriodeId, locale, mandant);
 			}
 			case VORLAGE_REPORT_GESUCHSTELLER: {
-				return this.reportService.generateExcelReportGesuchsteller(dateFrom, locale);
+				return this.reportService.generateExcelReportGesuchsteller(dateFrom, locale, mandant);
 			}
 			case VORLAGE_REPORT_MASSENVERSAND: {
 				Objects.requireNonNull(gesuchPeriodeId);
