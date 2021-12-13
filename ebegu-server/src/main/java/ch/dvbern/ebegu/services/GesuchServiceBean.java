@@ -202,8 +202,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private MassenversandService massenversandService;
 	@Inject
 	private InternePendenzService internePendenzService;
-	@Inject
-	private MandantService mandantService;
 
 	@Nonnull
 	@Override
