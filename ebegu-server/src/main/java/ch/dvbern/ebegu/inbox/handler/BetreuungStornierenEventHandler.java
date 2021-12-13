@@ -98,20 +98,11 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 
 	@Nonnull
 	protected Processing attemptProcessing(@Nonnull EventMonitor eventMonitor) {
-
-		Mandant mandant = getMandantFromBgNummer(eventMonitor.getRefnr());
+		Mandant mandant = BetreuungUtil.getMandantByGemeindeFromBgNummer(gemeindeService, eventMonitor.getRefnr());
 
 		return betreuungService.findBetreuungByBGNummer(eventMonitor.getRefnr(), false, mandant)
 			.map(betreuung -> processEventForStornierung(eventMonitor, betreuung))
 			.orElseGet(() -> Processing.failure("Betreuung nicht gefunden."));
-	}
-
-	private Mandant getMandantFromBgNummer(String refnr) {
-		final int gemeindeNummer = BetreuungUtil.getGemeindeFromBGNummer(refnr);
-		Gemeinde gemeinde = gemeindeService.getGemeindeByGemeindeNummer(gemeindeNummer).orElseThrow(() ->
-				new EbeguEntityNotFoundException("getGemeindeByGemeindeNummer", gemeindeNummer));
-
-		return gemeinde.getMandant();
 	}
 
 	@Nonnull

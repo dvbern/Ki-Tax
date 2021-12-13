@@ -76,21 +76,11 @@ public class AnmeldungAblehnenEventHandler extends BaseEventHandler<String> {
 	}
 
 	protected Processing attemptProcessing(EventMonitor eventMonitor) {
-		Mandant mandant = getMandantFromBgNummer(eventMonitor.getRefnr());
+		Mandant mandant = BetreuungUtil.getMandantByGemeindeFromBgNummer(gemeindeService, eventMonitor.getRefnr());
 		return betreuungService.findAnmeldungenTagesschuleByBGNummer(eventMonitor.getRefnr(), mandant)
 			.map(anmeldungTagesschule -> processEventForAblehnung(eventMonitor, anmeldungTagesschule))
 			.orElseGet(() -> Processing.failure("AnmeldungTagesschule nicht gefunden."));
 	}
-
-	private Mandant getMandantFromBgNummer(String refnr) {
-		final int gemeindeNummer = BetreuungUtil.getGemeindeFromBGNummer(refnr);
-		Gemeinde gemeinde = gemeindeService.getGemeindeByGemeindeNummer(gemeindeNummer).orElseThrow(() ->
-				new EbeguEntityNotFoundException("getGemeindeByGemeindeNummer", gemeindeNummer));
-
-		return gemeinde.getMandant();
-	}
-
-
 
 	private Processing processEventForAblehnung(EventMonitor eventMonitor, AnmeldungTagesschule anmeldungTagesschule) {
 

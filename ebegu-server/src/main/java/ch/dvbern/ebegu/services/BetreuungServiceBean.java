@@ -661,10 +661,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		final int betreuungNummer = BetreuungUtil.getBetreuungNummerFromBGNummer(bgNummer);
 		final int kindNummer = BetreuungUtil.getKindNummerFromBGNummer(bgNummer);
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
-		var mandant = principalBean.getMandant();
-		if (mandant == null) {
-			throw new EbeguRuntimeException("findAnmeldungenByBGNummer", "mandant not found for principal " + principalBean.getBenutzer().getEmail());
-		}
+		var mandant = BetreuungUtil.getMandantByGemeindeFromBgNummer(gemeindeService, bgNummer);
 		// der letzte Tag im Jahr, von der BetreuungsId sollte immer zur richtigen Gesuchsperiode zählen.
 		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
 			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365), mandant);
