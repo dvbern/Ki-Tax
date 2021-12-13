@@ -25,6 +25,7 @@ import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotT
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSBetreuung} from '../../../models/TSBetreuung';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSErweiterteBetreuung} from '../../../models/TSErweiterteBetreuung';
 import {TSErweiterteBetreuungContainer} from '../../../models/TSErweiterteBetreuungContainer';
 import {TSGesuch} from '../../../models/TSGesuch';
@@ -109,6 +110,7 @@ describe('betreuungView', () => {
         spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
         spyOn(authServiceRS, 'getPrincipal').and.returnValue(TestDataUtil.createSuperadmin());
         spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue($q.resolve([]));
+        spyOn(einstellungRS, 'findEinstellung').and.returnValue($q.resolve(new TSEinstellung()));
         spyOn(institutionStammdatenRS, 'getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde')
             .and.returnValue($q.resolve([]));
         wizardStepManager = $injector.get('WizardStepManager');
