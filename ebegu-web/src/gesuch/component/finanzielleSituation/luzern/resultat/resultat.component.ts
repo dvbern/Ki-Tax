@@ -40,6 +40,12 @@ export class ResultatComponent implements OnInit {
     @Input()
     public year: number | string;
 
+    @Input()
+    public nameGS1: string;
+
+    @Input()
+    public nameGS2: string;
+
     @Input() public model: TSFinanzModel;
 
     public constructor(

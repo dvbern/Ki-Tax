@@ -88,7 +88,11 @@ export class DvNavigationXComponent implements OnInit {
     }
 
     public doesCancelExist(): boolean {
-        return this.dvCancel.name !== undefined && this.dvCancel.name !== null;
+        return this.dvCancel.observers.length > 0;
+    }
+
+    public doesSaveExist(): boolean {
+        return this.dvSave.observers.length > 0;
     }
 
     public doesdvTranslateNextExist(): boolean {
@@ -105,7 +109,7 @@ export class DvNavigationXComponent implements OnInit {
         if (this.gesuchModelManager.isGesuchReadonly()) {
             return this.translate.instant('ZURUECK_ONLY');
         }
-        if (this.dvSave) {
+        if (this.doesSaveExist()) {
             return this.translate.instant('ZURUECK');
         }
         return this.translate.instant('ZURUECK_ONLY');
@@ -121,7 +125,7 @@ export class DvNavigationXComponent implements OnInit {
         if (this.gesuchModelManager.isGesuchReadonly()) {
             return this.translate.instant('WEITER_ONLY');
         }
-        if (this.dvSave) {
+        if (this.doesSaveExist()) {
             return this.translate.instant('WEITER');
         }
         return this.translate.instant('WEITER_ONLY');
@@ -141,7 +145,7 @@ export class DvNavigationXComponent implements OnInit {
         this.wizardStepManager.isTransitionInProgress = true;
 
         // tslint:disable-next-line:early-exit
-        if (this.isSavingEnabled() && this.dvSave) {
+        if (this.isSavingEnabled() && this.doesSaveExist()) {
             this.dvSave.emit({
                 onResult: (result: any) => {
                     if (result) {
@@ -176,7 +180,7 @@ export class DvNavigationXComponent implements OnInit {
 
         this.wizardStepManager.isTransitionInProgress = true;
         // tslint:disable-next-line:early-exit
-        if (this.isSavingEnabled() && this.dvSave) {
+        if (this.isSavingEnabled() && this.doesSaveExist()) {
             this.dvSave.emit({
                 onResult: (result: any) => {
                     if (result) {
@@ -197,7 +201,7 @@ export class DvNavigationXComponent implements OnInit {
      * Diese Methode ist aehnlich wie previousStep() aber wird verwendet, um die Aenderungen NICHT zu speichern
      */
     public cancel(): void {
-        if (this.dvCancel) {
+        if (this.doesCancelExist()) {
             this.dvCancel.emit();
         }
         this.navigateToPreviousStep();

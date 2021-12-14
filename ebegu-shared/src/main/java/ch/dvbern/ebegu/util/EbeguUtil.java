@@ -255,7 +255,7 @@ public final class EbeguUtil {
 			return false;
 		}
 
-		if (wizardStepName == null || wizardStepName == WizardStepName.FINANZIELLE_SITUATION) {
+		if (wizardStepName == null || wizardStepName.isFinSitWizardStepName()) {
 			if (!isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1()
 				.getFinanzielleSituationContainer()
 				.getFinanzielleSituationJA())) {

@@ -15,10 +15,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {IPromise} from 'angular';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
+import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
@@ -32,7 +34,7 @@ import {ResultatComponent} from '../resultat/resultat.component';
     styleUrls: ['../finanzielle-situation-luzern.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSitLuzernView implements OnInit {
+export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSitLuzernView {
 
     @ViewChild(NgForm) private readonly form: NgForm;
     @ViewChild(ResultatComponent) private readonly resultatComponent: ResultatComponent;
@@ -42,9 +44,9 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
         protected wizardStepManager: WizardStepManager,
     ) {
         super(gesuchModelManager, wizardStepManager, 1);
-    }
-
-    public ngOnInit(): void {
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.FINANZIELLE_SITUATION_LUZERN,
+            TSWizardStepStatus.IN_BEARBEITUNG);
     }
 
     public isGemeinsam(): boolean {

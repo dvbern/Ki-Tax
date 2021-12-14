@@ -369,7 +369,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			updateAllStatusForDokumente(wizardSteps);
 		} else if (WizardStepName.VERFUEGEN == stepName) {
 			updateAllStatusForVerfuegen(wizardSteps);
-		} else if (WizardStepName.FINANZIELLE_SITUATION == stepName) {
+		} else if (stepName.isFinSitWizardStepName()) {
 			updateAllStatusForFinSit(wizardSteps, substep);
 		} else {
 			updateStatusSingleStep(wizardSteps, stepName);
@@ -533,13 +533,13 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 
 	/**
 	 * Wenn der Status von Gesuchsteller auf OK gesetzt wird, koennen wir davon ausgehen, dass die benoetigten GS
-	 * eingetragen wurden. Deswegen kann man die steps FINANZIELLE_SITUATION und EINKOMMENSVERSCHLECHTERUNG aktivieren
+	 * eingetragen wurden. Deswegen kann man die steps fuer die FINANZIELLE_SITUATION_X und EINKOMMENSVERSCHLECHTERUNG aktivieren
 	 */
 	private void updateAllStatusForGesuchsteller(List<WizardStep> wizardSteps) {
 		for (WizardStep wizardStep : wizardSteps) {
 			if (WizardStepName.GESUCHSTELLER == wizardStep.getWizardStepName()) {
 				setWizardStepOkOrMutiert(wizardStep);
-			} else if ((WizardStepName.FINANZIELLE_SITUATION == wizardStep.getWizardStepName()
+			} else if ((wizardStep.getWizardStepName().isFinSitWizardStepName()
 				|| WizardStepName.EINKOMMENSVERSCHLECHTERUNG == wizardStep.getWizardStepName()
 				|| WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName())
 				&& !wizardStep.getVerfuegbar()
@@ -569,7 +569,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		for (WizardStep wizardStep : wizardSteps) {
 			if (WizardStepStatus.UNBESUCHT != wizardStep.getWizardStepStatus()) {
 				final Gesuch gesuch = wizardStep.getGesuch();
-				if (WizardStepName.FINANZIELLE_SITUATION == wizardStep.getWizardStepName()) {
+				if (wizardStep.getWizardStepName().isFinSitWizardStepName()) {
 					if (gesuch.isMutation()) {
 						// Problem: Es kann in der Mutation sowohl eine Aenderung (Status MUTIERT) als auch ein Fehler
 						// (Status NOK)
@@ -675,7 +675,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			if (gesuch.getGesuchsteller2() != null) {
 				relatedObjects.addAll(gesuch.getGesuchsteller2().getErwerbspensenContainers());
 			}
-		} else if (WizardStepName.FINANZIELLE_SITUATION == wizardStepName) {
+		} else if (wizardStepName.isFinSitWizardStepName()) {
 			if (gesuch.getGesuchsteller1() != null) {
 				relatedObjects.add(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 				relatedObjects.add(gesuch.extractFamiliensituation());
@@ -790,7 +790,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 					// den Status von ERWERBPENSUM nicht aendern
 					checkStepStatusForErwerbspensum(wizardStep, true);
 
-				} else if (WizardStepName.FINANZIELLE_SITUATION == wizardStep.getWizardStepName()) {
+				} else if (wizardStep.getWizardStepName().isFinSitWizardStepName()) {
 					checkFinSitStatusForBetreuungen(wizardStep);
 
 				} else if (WizardStepName.EINKOMMENSVERSCHLECHTERUNG == wizardStep.getWizardStepName()) {
@@ -850,7 +850,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 						wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 						wizardStep.setVerfuegbar(true);
 
-					} else if (((WizardStepName.FINANZIELLE_SITUATION == wizardStep.getWizardStepName()
+					} else if (((wizardStep.getWizardStepName().isFinSitWizardStepName()
 						|| WizardStepName.EINKOMMENSVERSCHLECHTERUNG == wizardStep.getWizardStepName())
 						&& EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch()))
 						|| (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()
@@ -871,7 +871,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 							wizardStep.setWizardStepStatus(WizardStepStatus.OK);
 						}
 
-					} else if (WizardStepName.FINANZIELLE_SITUATION == wizardStep.getWizardStepName()
+					} else if (wizardStep.getWizardStepName().isFinSitWizardStepName()
 						|| WizardStepName.EINKOMMENSVERSCHLECHTERUNG == wizardStep.getWizardStepName()
 						|| (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()
 						&& !erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch()))) {
@@ -938,13 +938,13 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	}
 
 	/**
-	 * Updates the Status of the Step FINANZIELLE_SITUATION or EINKOMMENSVERSCHLECHTERUNG depending on the kind of the
+	 * Updates the Status of the Steps FINANZIELLE_SITUATION_X or EINKOMMENSVERSCHLECHTERUNG depending on the kind of the
 	 * betreuungen.
 	 * This should be called after removing or adding a Betreuung.
 	 */
 	private void checkFinSitStatusForBetreuungen(@Nonnull WizardStep wizardStep) {
 		if ((wizardStep.getWizardStepName() == WizardStepName.EINKOMMENSVERSCHLECHTERUNG
-			|| wizardStep.getWizardStepName() == WizardStepName.FINANZIELLE_SITUATION) &&
+			|| wizardStep.getWizardStepName().isFinSitWizardStepName()) &&
 			(!EbeguUtil.isFinanzielleSituationIntroducedAndComplete(
 				wizardStep.getGesuch(),	wizardStep.getWizardStepName())
 				&& (EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch())
