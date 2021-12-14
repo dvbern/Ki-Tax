@@ -40,6 +40,7 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.Kinderabzug;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
@@ -144,7 +145,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		dossier.getFall().setFallNummer(2);
 		gesuch.setDossier(dossier);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		gesuch.initFamiliensituationContainer();
 		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		assertNotNull(familiensituation);
@@ -178,7 +179,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		betreuungKind1.getKind().getKindJA().getPensumFachstelle().setGueltigkeit(fachstelleGueltigkeit);
 		betreuungKind1.getKind().getKindJA().getPensumFachstelle().setPensum(80);
 		betreuungKind1.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 
 		initVorgaengerVerfuegungenWithNULL(gesuch);
 

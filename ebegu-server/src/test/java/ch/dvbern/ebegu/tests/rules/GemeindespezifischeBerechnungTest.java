@@ -23,6 +23,7 @@ import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.Taetigkeit;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinConfigurator;
@@ -234,7 +235,7 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 
 	private VerfuegungZeitabschnitt calculate(Map<EinstellungKey, Einstellung> einstellungenGemeinde, AbstractPlatz platz) {
 		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(gemeindeOfEvaluator, einstellungenGemeinde, kitaxParams, GERMAN);
-		TestDataUtil.calculateFinanzDaten(platz.extractGesuch());
+		TestDataUtil.calculateFinanzDaten(platz.extractGesuch(), new FinanzielleSituationBernRechner());
 		List<VerfuegungZeitabschnitt> result = executor.executeRules(rules, platz, initialerRestanspruch);
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());

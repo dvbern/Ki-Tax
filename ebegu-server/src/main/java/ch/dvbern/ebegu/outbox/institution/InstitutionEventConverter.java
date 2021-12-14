@@ -306,6 +306,7 @@ public class InstitutionEventConverter {
 			.setErlaubteIntervalle(toErlaubteIntervalle(modulGroup.getIntervall()))
 			.setWirdPaedagogischBetreut(modulGroup.isWirdPaedagogischBetreut())
 			.setVerpflegungsKosten(EbeguUtil.coalesce(modulGroup.getVerpflegungskosten(), BigDecimal.ZERO))
+			.setFremdId(modulGroup.getFremdId())
 			.build();
 	}
 

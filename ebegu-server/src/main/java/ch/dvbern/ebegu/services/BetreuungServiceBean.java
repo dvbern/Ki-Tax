@@ -161,8 +161,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private BetreuungMonitoringService betreuungMonitoringService;
 	@Inject
 	private AnmeldungTagesschuleEventConverter anmeldungTagesschuleEventConverter;
-	@Inject
-	private MandantService mandantService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
 
@@ -662,9 +660,13 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		final int betreuungNummer = BetreuungUtil.getBetreuungNummerFromBGNummer(bgNummer);
 		final int kindNummer = BetreuungUtil.getKindNummerFromBGNummer(bgNummer);
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
+		var mandant = principalBean.getMandant();
+		if (mandant == null) {
+			throw new EbeguRuntimeException("findAnmeldungenByBGNummer", "mandant not found for principal " + principalBean.getBenutzer().getEmail());
+		}
 		// der letzte Tag im Jahr, von der BetreuungsId sollte immer zur richtigen Gesuchsperiode zählen.
 		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
-			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365), mandantService.getDefaultMandant());
+			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365), mandant);
 		Gesuchsperiode gesuchsperiode;
 		if (gesuchsperiodeOptional.isPresent()) {
 			gesuchsperiode = gesuchsperiodeOptional.get();
@@ -716,9 +718,13 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Nonnull
 	public Optional<Betreuung> findBetreuungByBGNummer(@Nonnull String bgNummer, boolean onlyGueltig) {
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
+		var mandant = principalBean.getMandant();
+		if (mandant == null) {
+			throw new EbeguRuntimeException("findBetreuungByBGNummer", "mandant not found for principal " + principalBean.getBenutzer().getEmail());
+		}
 		// der letzte Tag im Jahr, von der BetreuungsId sollte immer zur richtigen Gesuchsperiode zählen.
 		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
-			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365), mandantService.getDefaultMandant());
+			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365), mandant);
 		if (gesuchsperiodeOptional.isEmpty()) {
 			return Optional.empty();
 		}
@@ -1282,8 +1288,12 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Nonnull
 	public Optional<AnmeldungTagesschule> findAnmeldungenTagesschuleByBGNummer(@Nonnull String bgNummer) {
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
+		var mandant = principalBean.getMandant();
+		if (mandant == null) {
+			throw new EbeguRuntimeException("findAnmeldungenTagesschuleByBGNummer", "mandant not found for principal " + principalBean.getBenutzer().getEmail());
+		}
 		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
-			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365), mandantService.getDefaultMandant());
+			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365), mandant);
 		Gesuchsperiode gesuchsperiode;
 		if (gesuchsperiodeOptional.isPresent()) {
 			gesuchsperiode = gesuchsperiodeOptional.get();

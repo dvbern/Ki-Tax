@@ -1000,6 +1000,8 @@ export class EbeguRestUtil {
             restStammdaten.externalClients = stammdaten.externalClients || null;
             restStammdaten.usernameScolaris = stammdaten.usernameScolaris;
             restStammdaten.emailBeiGesuchsperiodeOeffnung = stammdaten.emailBeiGesuchsperiodeOeffnung;
+            restStammdaten.hasAltGemeindeKontakt = stammdaten.hasAltGemeindeKontakt;
+            restStammdaten.altGemeindeKontaktText = stammdaten.altGemeindeKontaktText;
 
             if (stammdaten.rechtsmittelbelehrung) {
                 restStammdaten.rechtsmittelbelehrung =
@@ -1069,6 +1071,8 @@ export class EbeguRestUtil {
             stammdatenTS.usernameScolaris = stammdatenFromServer.usernameScolaris;
             stammdatenTS.emailBeiGesuchsperiodeOeffnung = stammdatenFromServer.emailBeiGesuchsperiodeOeffnung;
             stammdatenTS.gutscheinSelberAusgestellt = stammdatenFromServer.gutscheinSelberAusgestellt;
+            stammdatenTS.hasAltGemeindeKontakt = stammdatenFromServer.hasAltGemeindeKontakt;
+            stammdatenTS.altGemeindeKontaktText = stammdatenFromServer.altGemeindeKontaktText;
             if (stammdatenFromServer.gemeindeAusgabestelle) {
                 stammdatenTS.gemeindeAusgabestelle =
                     this.parseGemeinde(new TSGemeinde(), stammdatenFromServer.gemeindeAusgabestelle);
@@ -1220,6 +1224,7 @@ export class EbeguRestUtil {
         restGesuch.gueltig = gesuch.gueltig;
         restGesuch.dokumenteHochgeladen = gesuch.dokumenteHochgeladen;
         restGesuch.finSitStatus = gesuch.finSitStatus;
+        restGesuch.finSitTyp = gesuch.finSitTyp;
         return restGesuch;
     }
 
@@ -1816,6 +1821,11 @@ export class EbeguRestUtil {
         restFinanzielleSituation.steuerdatenZugriff = finanzielleSituation.steuerdatenZugriff;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus2 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus2;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus1 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus1;
+        restFinanzielleSituation.quellenbesteuert = finanzielleSituation.quellenbesteuert;
+        restFinanzielleSituation.gemeinsameStekVorjahr = finanzielleSituation.gemeinsameStekVorjahr;
+        restFinanzielleSituation.alleinigeStekVorjahr = finanzielleSituation.alleinigeStekVorjahr;
+        restFinanzielleSituation.veranlagt = finanzielleSituation.veranlagt;
+
         return restFinanzielleSituation;
     }
 
@@ -1833,6 +1843,12 @@ export class EbeguRestUtil {
         restAbstractFinanzielleSituation.geschaeftsgewinnBasisjahr =
             abstractFinanzielleSituation.geschaeftsgewinnBasisjahr;
         restAbstractFinanzielleSituation.geleisteteAlimente = abstractFinanzielleSituation.geleisteteAlimente;
+        restAbstractFinanzielleSituation.steuerbaresEinkommen = abstractFinanzielleSituation.steuerbaresEinkommen;
+        restAbstractFinanzielleSituation.steuerbaresVermoegen = abstractFinanzielleSituation.steuerbaresVermoegen;
+        restAbstractFinanzielleSituation.geschaeftsverlust = abstractFinanzielleSituation.geschaeftsverlust;
+        restAbstractFinanzielleSituation.abzuegeLiegenschaft = abstractFinanzielleSituation.abzuegeLiegenschaft;
+        restAbstractFinanzielleSituation.einkaeufeVorsorge = abstractFinanzielleSituation.einkaeufeVorsorge;
+
         return restAbstractFinanzielleSituation;
     }
 
@@ -1852,6 +1868,11 @@ export class EbeguRestUtil {
                 abstractFinanzielleSituationFromServer.geschaeftsgewinnBasisjahr;
             abstractFinanzielleSituationTS.geleisteteAlimente =
                 abstractFinanzielleSituationFromServer.geleisteteAlimente;
+            abstractFinanzielleSituationTS.steuerbaresEinkommen = abstractFinanzielleSituationFromServer.steuerbaresEinkommen;
+            abstractFinanzielleSituationTS.steuerbaresVermoegen = abstractFinanzielleSituationFromServer.steuerbaresVermoegen;
+            abstractFinanzielleSituationTS.geschaeftsverlust = abstractFinanzielleSituationFromServer.geschaeftsverlust;
+            abstractFinanzielleSituationTS.abzuegeLiegenschaft = abstractFinanzielleSituationFromServer.abzuegeLiegenschaft;
+            abstractFinanzielleSituationTS.einkaeufeVorsorge = abstractFinanzielleSituationFromServer.einkaeufeVorsorge;
             return abstractFinanzielleSituationTS;
         }
         return undefined;
@@ -1873,6 +1894,11 @@ export class EbeguRestUtil {
                 finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus2;
             finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus1 =
                 finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus1;
+            finanzielleSituationTS.quellenbesteuert = finanzielleSituationFromServer.quellenbesteuert;
+            finanzielleSituationTS.gemeinsameStekVorjahr = finanzielleSituationFromServer.gemeinsameStekVorjahr;
+            finanzielleSituationTS.alleinigeStekVorjahr = finanzielleSituationFromServer.alleinigeStekVorjahr;
+            finanzielleSituationTS.veranlagt = finanzielleSituationFromServer.veranlagt;
+
             return finanzielleSituationTS;
         }
         return undefined;
@@ -3730,6 +3756,7 @@ export class EbeguRestUtil {
             this.parseAbstractEntity(modulTagesschuleGroupTS, modulGroupFromServer);
             modulTagesschuleGroupTS.modulTagesschuleName = modulGroupFromServer.modulTagesschuleName;
             modulTagesschuleGroupTS.identifier = modulGroupFromServer.identifier;
+            modulTagesschuleGroupTS.fremdId = modulGroupFromServer.fremdId;
             if (modulGroupFromServer.bezeichnung) {
                 modulTagesschuleGroupTS.bezeichnung = this.parseTextRessource(
                     new TSTextRessource(), modulGroupFromServer.bezeichnung);
@@ -3764,6 +3791,7 @@ export class EbeguRestUtil {
             this.abstractEntityToRestObject(restModulGroup, modulTagesschuleGroupTS);
             restModulGroup.modulTagesschuleName = modulTagesschuleGroupTS.modulTagesschuleName;
             restModulGroup.identifier = modulTagesschuleGroupTS.identifier;
+            restModulGroup.fremdId = modulTagesschuleGroupTS.fremdId;
             if (modulTagesschuleGroupTS.bezeichnung) {
                 restModulGroup.bezeichnung = this.textRessourceToRestObject({}, modulTagesschuleGroupTS.bezeichnung);
             }
@@ -4071,7 +4099,9 @@ export class EbeguRestUtil {
         publicAppConfigTS.lastenausgleichTagesschulenAktiv = data.lastenausgleichTagesschulenAktiv;
         publicAppConfigTS.gemeindeKennzahlenAktiv = data.gemeindeKennzahlenAktiv;
         publicAppConfigTS.ferienbetreuungAktiv = data.ferienbetreuungAktiv;
+        publicAppConfigTS.lastenausgleichAktiv = data.lastenausgleichAktiv;
         publicAppConfigTS.mulitmandantAktiv = data.multimandantAktiviert;
+        publicAppConfigTS.angebotTSActivated = data.angebotTSActivated;
         return publicAppConfigTS;
 
     }

@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -40,6 +41,7 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
@@ -71,7 +73,6 @@ import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleRechnungsstellungExcelCo
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
-import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -112,7 +113,7 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 	private GesuchsperiodeService gesuchsperiodeService;
 
 	@Inject
-	private MandantService mandantService;
+	private PrincipalBean principalBean;
 
 	@Override
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
@@ -334,7 +335,9 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		@Nonnull LocalDate stichtag) {
 
 		// Wir suchen alle vergangenen Monate im Sinne von "in der aktuellen Gesuchsperiode vergangen"
-		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.getGesuchsperiodeAm(stichtag, mandantService.getDefaultMandant())
+		var mandant = principalBean.getMandant();
+		Objects.requireNonNull(mandant);
+		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.getGesuchsperiodeAm(stichtag, mandant)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"getReportDataTagesschuleRechnungsstellung",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,

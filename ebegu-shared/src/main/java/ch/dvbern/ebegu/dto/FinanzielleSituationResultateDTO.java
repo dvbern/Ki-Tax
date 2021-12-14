@@ -32,7 +32,7 @@ public class FinanzielleSituationResultateDTO {
 	private BigDecimal geschaeftsgewinnDurchschnittGesuchsteller2 = BigDecimal.ZERO;
 	@Nullable
 	private BigDecimal einkommenBeiderGesuchsteller = BigDecimal.ZERO;
-	private BigDecimal nettovermoegenFuenfProzent = BigDecimal.ZERO;
+	private BigDecimal nettovermoegenXProzent = BigDecimal.ZERO;
 	private BigDecimal anrechenbaresEinkommen = BigDecimal.ZERO;
 	private BigDecimal abzuegeBeiderGesuchsteller = BigDecimal.ZERO;
 	private BigDecimal massgebendesEinkVorAbzFamGr = BigDecimal.ZERO;
@@ -47,7 +47,7 @@ public class FinanzielleSituationResultateDTO {
 		geschaeftsgewinnDurchschnittGesuchsteller1 = MathUtil.positiveNonNullAndRound(geschaeftsgewinnDurchschnittGesuchsteller1);
 		geschaeftsgewinnDurchschnittGesuchsteller2 = MathUtil.positiveNonNullAndRound(geschaeftsgewinnDurchschnittGesuchsteller2);
 		einkommenBeiderGesuchsteller = MathUtil.positiveNonNullAndRound(einkommenBeiderGesuchsteller);
-		nettovermoegenFuenfProzent = MathUtil.positiveNonNullAndRound(nettovermoegenFuenfProzent);
+		nettovermoegenXProzent = MathUtil.positiveNonNullAndRound(nettovermoegenXProzent);
 		anrechenbaresEinkommen = MathUtil.positiveNonNullAndRound(anrechenbaresEinkommen);
 		abzuegeBeiderGesuchsteller = MathUtil.positiveNonNullAndRound(abzuegeBeiderGesuchsteller);
 		massgebendesEinkVorAbzFamGr = MathUtil.positiveNonNullAndRound(massgebendesEinkVorAbzFamGr);
@@ -80,12 +80,12 @@ public class FinanzielleSituationResultateDTO {
 		this.einkommenBeiderGesuchsteller = einkommenBeiderGesuchsteller;
 	}
 
-	public BigDecimal getNettovermoegenFuenfProzent() {
-		return nettovermoegenFuenfProzent;
+	public BigDecimal getNettovermoegenXProzent() {
+		return nettovermoegenXProzent;
 	}
 
-	public void setNettovermoegenFuenfProzent(BigDecimal nettovermoegenFuenfProzent) {
-		this.nettovermoegenFuenfProzent = nettovermoegenFuenfProzent;
+	public void setNettovermoegenXProzent(BigDecimal nettovermoegenXProzent) {
+		this.nettovermoegenXProzent = nettovermoegenXProzent;
 	}
 
 	public BigDecimal getAnrechenbaresEinkommen() {

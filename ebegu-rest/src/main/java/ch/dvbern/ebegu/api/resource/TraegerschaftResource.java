@@ -188,7 +188,6 @@ public class TraegerschaftResource {
 	public List<JaxTraegerschaft> getAllActiveTraegerschaften() {
 		return traegerschaftService.getAllActiveTraegerschaften().stream()
 			.map(traegerschaft -> converter.traegerschaftToJAX(traegerschaft))
-			.sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()))
 			.collect(Collectors.toList());
 	}
 }

@@ -97,7 +97,7 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 		kind.getKindGS().setPensumFachstelle(null);
 
 		InstitutionStammdaten instStammdaten = TestDataUtil.createDefaultInstitutionStammdaten();
-		persistence.persist(instStammdaten.getInstitution().getMandant());
+		TestDataUtil.saveMandantIfNecessary(persistence, instStammdaten.getInstitution().getMandant());
 		persistence.persist(instStammdaten.getInstitution().getTraegerschaft());
 		persistence.persist(instStammdaten.getInstitution());
 		persistence.persist(instStammdaten);

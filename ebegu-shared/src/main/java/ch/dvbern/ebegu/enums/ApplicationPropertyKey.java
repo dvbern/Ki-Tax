@@ -124,6 +124,11 @@ public enum ApplicationPropertyKey {
 	LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR,
 
 	/**
+	 * True, wenn Lastenausgleich BG aktiv
+	 */
+	LASTENAUSGLEICH_AKTIV,
+
+	/**
 	 * Legt die Primary Color fest
 	 */
 	PRIMARY_COLOR,

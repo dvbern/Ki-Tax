@@ -16,13 +16,11 @@
 import {NgModule} from '@angular/core';
 import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {HookResult, Transition} from '@uirouter/core';
-import {IPromise} from 'angular';
 import {map, take} from 'rxjs/operators';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
 import {getRoleBasedTargetState} from '../../utils/AuthenticationUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import {MandantRS} from '../core/service/mandantRS.rest';
 import {UiViewComponent} from '../shared/ui-view/ui-view.component';
 import {DummyMandantSelectionComponent} from './dummy-mandant-selection/dummy-mandant-selection.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
@@ -32,15 +30,6 @@ import {OnboardingInfoInstitutionComponent} from './onboarding-info-institution/
 import {OnboardingMainComponent} from './onboarding-main/onboarding-main.component';
 import {OnboardingNeuBenutzerComponent} from './onboarding-neu-benutzer/onboarding-neu-benutzer.component';
 import {OnboardingComponent} from './onboarding/onboarding.component';
-
-resolveTSEnabled.$inject = ['MandantRS'];
-
-export function resolveTSEnabled(mandantRS: MandantRS): IPromise<boolean> {
-    const mandantBernId = 'e3736eb8-6eef-40ef-9e52-96ab48d8f220';
-    return mandantRS.findMandant(mandantBernId).then((result: { angebotTS: any; }) => {
-        return result.angebotTS;
-    });
-}
 
 export function nextState(): string {
     return 'onboarding.gesuchsteller.registration';
@@ -105,7 +94,6 @@ export const STATES: NgHybridStateDeclaration[] = [
         url: '/registration-abschliessen',
         component: OnboardingNeuBenutzerComponent,
         resolve: {
-            isTSAngebotEnabled: resolveTSEnabled,
             nextState,
         },
     },
@@ -113,9 +101,6 @@ export const STATES: NgHybridStateDeclaration[] = [
         name: 'onboarding.neubenutzer',
         url: '/neu-benutzer',
         component: OnboardingNeuBenutzerComponent,
-        resolve: {
-            isTSAngebotEnabled: resolveTSEnabled,
-        },
         data: {
             roles: [TSRole.ANONYMOUS],
         },

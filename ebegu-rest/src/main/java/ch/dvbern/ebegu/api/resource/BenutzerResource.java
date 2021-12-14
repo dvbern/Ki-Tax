@@ -15,12 +15,9 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -61,7 +58,6 @@ import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -351,9 +347,9 @@ public class BenutzerResource {
 		@Nonnull @NotNull @PathParam("username") String username,
 		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
 		) {
-		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
-		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(username, mandant.get());
+		var mandant = mandantService.findMandantByCookie(mandantCookie);
+
+		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(username, mandant);
 		benutzerOptional.ifPresent(benutzer -> authorizer.checkReadAuthorization(benutzer));
 
 		return benutzerOptional.map(converter::benutzerToJaxBenutzer)

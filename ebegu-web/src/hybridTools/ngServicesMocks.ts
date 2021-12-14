@@ -16,6 +16,7 @@
 import * as angular from 'angular';
 import {CookieService} from 'ngx-cookie-service';
 import {Observable, of} from 'rxjs';
+import {ErrorServiceX} from '../app/core/errors/service/ErrorServiceX';
 import {BenutzerRSX} from '../app/core/service/benutzerRSX.rest';
 import {VersionService} from '../app/core/service/version/version.service';
 import {WindowRef} from '../app/core/service/windowRef.service';
@@ -29,6 +30,7 @@ import {TSBrowserLanguage} from '../models/enums/TSBrowserLanguage';
 import {TSCreationAction} from '../models/enums/TSCreationAction';
 import {TSEingangsart} from '../models/enums/TSEingangsart';
 import {TSDossier} from '../models/TSDossier';
+import {TSExceptionReport} from '../models/TSExceptionReport';
 import {TSFall} from '../models/TSFall';
 import {TSGesuch} from '../models/TSGesuch';
 
@@ -93,6 +95,12 @@ class CookieServiceMock extends CookieService {
     }
 }
 
+class ErrorServiceXMock extends ErrorServiceX {
+    public getErrors(): ReadonlyArray<TSExceptionReport> {
+        return [];
+    }
+}
+
 class MandantServiceMock extends MandantService {
 
 }
@@ -107,6 +115,7 @@ export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('MandantService', MandantServiceMock);
     $provide.service('windowRef', WindowRef);
     $provide.service('cookieService', CookieServiceMock);
+    $provide.service('ErrorServiceX', ErrorServiceXMock);
     $provide.value('LOCALE_ID', 'de-CH');
     $provide.value('platformId', 'de-CH');
 }

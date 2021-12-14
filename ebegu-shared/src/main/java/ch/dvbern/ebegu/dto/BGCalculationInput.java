@@ -862,7 +862,8 @@ public class BGCalculationInput {
 			this.besondereBeduerfnisseBestaetigt == that.besondereBeduerfnisseBestaetigt &&
 			this.minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
 			this.tsInputMitBetreuung.isSame(that.tsInputMitBetreuung) &&
-			this.tsInputOhneBetreuung.isSame(that.tsInputOhneBetreuung);
+			this.tsInputOhneBetreuung.isSame(that.tsInputOhneBetreuung) &&
+			this.sozialhilfeempfaenger == that.sozialhilfeempfaenger;
 	}
 
 	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {

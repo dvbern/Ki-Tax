@@ -2138,6 +2138,7 @@ public class JaxBConverter extends AbstractConverter {
 		modulTagesschuleGroup.setEinstellungenTagesschule(einstellungenTagesschule);
 		modulTagesschuleGroup.setModulTagesschuleName(jaxModulTagesschuleGroup.getModulTagesschuleName());
 		modulTagesschuleGroup.setIdentifier(jaxModulTagesschuleGroup.getIdentifier());
+		modulTagesschuleGroup.setFremdId(jaxModulTagesschuleGroup.getFremdId());
 		modulTagesschuleGroup.setBezeichnung(textRessourceToEntity(
 			jaxModulTagesschuleGroup.getBezeichnung(), modulTagesschuleGroup.getBezeichnung()));
 		modulTagesschuleGroup.setZeitVon(hoursAndMinutesToDate(jaxModulTagesschuleGroup.getZeitVon()));
@@ -2613,6 +2614,12 @@ public class JaxBConverter extends AbstractConverter {
 		abstractFinanzielleSituation.setGeschaeftsgewinnBasisjahr(abstractFinanzielleSituationJAXP.getGeschaeftsgewinnBasisjahr());
 		abstractFinanzielleSituation.setGeleisteteAlimente(abstractFinanzielleSituationJAXP.getGeleisteteAlimente());
 
+		abstractFinanzielleSituation.setSteuerbaresEinkommen(abstractFinanzielleSituationJAXP.getSteuerbaresEinkommen());
+		abstractFinanzielleSituation.setSteuerbaresVermoegen(abstractFinanzielleSituationJAXP.getSteuerbaresVermoegen());
+		abstractFinanzielleSituation.setEinkaeufeVorsorge(abstractFinanzielleSituationJAXP.getEinkaeufeVorsorge());
+		abstractFinanzielleSituation.setGeschaeftsverlust(abstractFinanzielleSituationJAXP.getGeschaeftsverlust());
+		abstractFinanzielleSituation.setAbzuegeLiegenschaft(abstractFinanzielleSituationJAXP.getAbzuegeLiegenschaft());
+
 		return abstractFinanzielleSituation;
 	}
 
@@ -2633,6 +2640,12 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbstractFinanzielleSituation.setSchulden(persistedAbstractFinanzielleSituation.getSchulden());
 		jaxAbstractFinanzielleSituation.setGeschaeftsgewinnBasisjahr(persistedAbstractFinanzielleSituation.getGeschaeftsgewinnBasisjahr());
 		jaxAbstractFinanzielleSituation.setGeleisteteAlimente(persistedAbstractFinanzielleSituation.getGeleisteteAlimente());
+
+		jaxAbstractFinanzielleSituation.setSteuerbaresEinkommen(persistedAbstractFinanzielleSituation.getSteuerbaresEinkommen());
+		jaxAbstractFinanzielleSituation.setSteuerbaresVermoegen(persistedAbstractFinanzielleSituation.getSteuerbaresVermoegen());
+		jaxAbstractFinanzielleSituation.setEinkaeufeVorsorge(persistedAbstractFinanzielleSituation.getEinkaeufeVorsorge());
+		jaxAbstractFinanzielleSituation.setGeschaeftsverlust(persistedAbstractFinanzielleSituation.getGeschaeftsverlust());
+		jaxAbstractFinanzielleSituation.setAbzuegeLiegenschaft(persistedAbstractFinanzielleSituation.getAbzuegeLiegenschaft());
 	}
 
 	private FinanzielleSituation finanzielleSituationToEntity(
@@ -2648,6 +2661,11 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setSteuerdatenZugriff(finanzielleSituationJAXP.getSteuerdatenZugriff());
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus2());
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus1());
+
+		finanzielleSituation.setQuellenbesteuert(finanzielleSituationJAXP.getQuellenbesteuert());
+		finanzielleSituation.setGemeinsameStekVorjahr(finanzielleSituationJAXP.getGemeinsameStekVorjahr());
+		finanzielleSituation.setAlleinigeStekVorjahr(finanzielleSituationJAXP.getAlleinigeStekVorjahr());
+		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
 
 		return finanzielleSituation;
 	}
@@ -2667,6 +2685,11 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setSteuerdatenZugriff(persistedFinanzielleSituation.getSteuerdatenZugriff());
 		jaxFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(persistedFinanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2());
 		jaxFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(persistedFinanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1());
+
+		jaxFinanzielleSituation.setQuellenbesteuert(persistedFinanzielleSituation.getQuellenbesteuert());
+		jaxFinanzielleSituation.setGemeinsameStekVorjahr(persistedFinanzielleSituation.getGemeinsameStekVorjahr());
+		jaxFinanzielleSituation.setAlleinigeStekVorjahr(persistedFinanzielleSituation.getAlleinigeStekVorjahr());
+		jaxFinanzielleSituation.setVeranlagt(persistedFinanzielleSituation.getVeranlagt());
 
 		return jaxFinanzielleSituation;
 	}
@@ -3571,6 +3594,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractFieldsToJAX(modulTagesschuleGroup, jaxModulTagesschuleGroup);
 		jaxModulTagesschuleGroup.setModulTagesschuleName(modulTagesschuleGroup.getModulTagesschuleName());
 		jaxModulTagesschuleGroup.setIdentifier(modulTagesschuleGroup.getIdentifier());
+		jaxModulTagesschuleGroup.setFremdId(modulTagesschuleGroup.getFremdId());
 		jaxModulTagesschuleGroup.setBezeichnung(textRessourceToJAX(modulTagesschuleGroup.getBezeichnung()));
 		jaxModulTagesschuleGroup.setZeitVon(dateToHoursAndMinutes(modulTagesschuleGroup.getZeitVon()));
 		jaxModulTagesschuleGroup.setZeitBis(dateToHoursAndMinutes(modulTagesschuleGroup.getZeitBis()));
@@ -4947,6 +4971,10 @@ public class JaxBConverter extends AbstractConverter {
 
 		convertAbstractFieldsToEntity(jaxStammdaten, stammdaten);
 
+		// Die Gemeinde selbst ändert nicht, nur wieder von der DB lesen
+		gemeindeService.findGemeinde(jaxStammdaten.getGemeinde().getId())
+				.ifPresent(stammdaten::setGemeinde);
+
 		Mandant mandant = stammdaten.getGemeinde().getMandant();
 
 		if (jaxStammdaten.getDefaultBenutzerBG() != null) {
@@ -4962,9 +4990,6 @@ public class JaxBConverter extends AbstractConverter {
 				.ifPresent(stammdaten::setDefaultBenutzer);
 		}
 
-		// Die Gemeinde selbst ändert nicht, nur wieder von der DB lesen
-		gemeindeService.findGemeinde(jaxStammdaten.getGemeinde().getId())
-			.ifPresent(stammdaten::setGemeinde);
 
 		if(jaxStammdaten.getGemeindeAusgabestelle() != null) {
 			Objects.requireNonNull(jaxStammdaten.getGemeindeAusgabestelle().getId());
@@ -4978,6 +5003,8 @@ public class JaxBConverter extends AbstractConverter {
 		stammdaten.setMail(jaxStammdaten.getMail());
 		stammdaten.setTelefon(jaxStammdaten.getTelefon());
 		stammdaten.setWebseite(jaxStammdaten.getWebseite());
+		stammdaten.setHasAltGemeindeKontakt(jaxStammdaten.getHasAltGemeindeKontakt());
+		stammdaten.setAltGemeindeKontaktText(jaxStammdaten.getAltGemeindeKontaktText());
 
 		if (jaxStammdaten.isKorrespondenzspracheDe() && jaxStammdaten.isKorrespondenzspracheFr()) {
 			stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE_FR);
@@ -5062,6 +5089,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public JaxGemeindeStammdaten gemeindeStammdatenToJAX(@Nonnull final GemeindeStammdaten stammdaten) {
 		requireNonNull(stammdaten);
 		requireNonNull(stammdaten.getGemeinde());
@@ -5088,9 +5116,12 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStammdaten.setTsTelefon(stammdaten.getTsTelefon());
 		jaxStammdaten.setTsEmail(stammdaten.getTsEmail());
 		jaxStammdaten.setEmailBeiGesuchsperiodeOeffnung(stammdaten.getEmailBeiGesuchsperiodeOeffnung());
+		jaxStammdaten.setHasAltGemeindeKontakt(stammdaten.getHasAltGemeindeKontakt());
+		jaxStammdaten.setAltGemeindeKontaktText(stammdaten.getAltGemeindeKontaktText());
 
 		// Konfiguration: Wir laden die Gesuchsperioden, die vor dem Ende der Gemeinde-Gültigkeit liegen
-		List<Gesuchsperiode> gueltigeGesuchsperiodenForGemeinde = gesuchsperiodeService.getAllGesuchsperioden()
+		Objects.requireNonNull(stammdaten.getGemeinde().getMandant());
+		List<Gesuchsperiode> gueltigeGesuchsperiodenForGemeinde = gesuchsperiodeService.getAllGesuchsperioden(stammdaten.getGemeinde().getMandant())
 			.stream()
 			.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant().equals(stammdaten.getGemeinde().getMandant()))
 			.filter(gesuchsperiode -> stammdaten.getGemeinde()

@@ -18,9 +18,7 @@
 package ch.dvbern.ebegu.rechner.rules;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -45,8 +43,10 @@ public final class MahlzeitenverguenstigungBGRechnerRule implements RechnerRule 
 		this.locale = locale;
 	}
 
-	private void addBemerkung(@Nonnull BGCalculationInput inputData) {
-		inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG, locale);
+	private void addBemerkung(
+			@Nonnull BGCalculationInput inputData,
+			BGRechnerParameterDTO parameterDTO) {
+		inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG, locale, parameterDTO.getMahlzeitenverguenstigungParameter().getMinimalerElternbeitragMahlzeit());
 	}
 
 	private boolean validateInput(@Nonnull BGCalculationInput inputData) {
@@ -240,17 +240,19 @@ public final class MahlzeitenverguenstigungBGRechnerRule implements RechnerRule 
 			return false;
 		}
 
+		if (!parameterDTO.getMahlzeitenverguenstigungParameter().isEnabled() ||
+			!validateInput(inputGemeinde)) {
+			return false;
+		}
+
 		if (!inputGemeinde.getVerguenstigungMahlzeitenBeantragt()) {
+			inputGemeinde.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_NEIN, locale);
 			return false;
 		}
 
 		final BigDecimal massgebendesEinkommen = inputGemeinde.getMassgebendesEinkommen();
 		final boolean sozialhilfeempfaenger = inputGemeinde.isSozialhilfeempfaenger();
 
-		if (!parameterDTO.getMahlzeitenverguenstigungParameter().isEnabled() ||
-			!validateInput(inputGemeinde)) {
-			return false;
-		}
 		// Bemerkung, wenn keine Verguenstigung aufgrund Einkommen
 		if (!parameterDTO.getMahlzeitenverguenstigungParameter().hasAnspruch(massgebendesEinkommen, sozialhilfeempfaenger)) {
 			inputGemeinde.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_NEIN, locale);
@@ -283,7 +285,7 @@ public final class MahlzeitenverguenstigungBGRechnerRule implements RechnerRule 
 		);
 
 		if (verguenstigung.compareTo(BigDecimal.ZERO) > 0) {
-			addBemerkung(inputGemeinde);
+			addBemerkung(inputGemeinde, parameterDTO);
 		}
 
 		rechnerParameter.setVerguenstigungMahlzeitenTotal(verguenstigung);

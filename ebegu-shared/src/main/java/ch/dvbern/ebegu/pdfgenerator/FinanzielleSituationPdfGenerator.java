@@ -36,10 +36,10 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -106,12 +106,15 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	private Einkommensverschlechterung ekv2GS1;
 	@Nullable
 	private Einkommensverschlechterung ekv2GS2;
+	@Nonnull
+	private AbstractFinanzielleSituationRechner finanzielleSituationRechner;
 
 	public FinanzielleSituationPdfGenerator(
 		@Nonnull Gesuch gesuch,
 		@Nonnull Verfuegung verfuegungFuerMassgEinkommen,
 		@Nonnull GemeindeStammdaten stammdaten,
-		@Nonnull LocalDate erstesEinreichungsdatum
+		@Nonnull LocalDate erstesEinreichungsdatum,
+		@Nonnull AbstractFinanzielleSituationRechner finanzielleSituationRechner
 	) {
 		super(gesuch, stammdaten);
 		this.verfuegungFuerMassgEinkommen = verfuegungFuerMassgEinkommen;
@@ -123,6 +126,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		boolean hasSecondGsEndeGP = hasSecondGesuchsteller();
 		boolean isMutationWithSecondGs = gesuch.isMutation() && gesuch.getGesuchsteller2() != null;
 		this.hasSecondGesuchsteller = hasSecondGsEndeGP || isMutationWithSecondGs;
+		this.finanzielleSituationRechner = finanzielleSituationRechner;
 	}
 
 	@Nonnull
@@ -225,7 +229,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		if (finanzielleSituation == null) {
 			return null;
 		}
-		BigDecimal durchschnitt = FinanzielleSituationRechner.calcGeschaeftsgewinnDurchschnitt(
+		BigDecimal durchschnitt = finanzielleSituationRechner.calcGeschaeftsgewinnDurchschnitt(
 			finanzielleSituation.getGeschaeftsgewinnBasisjahr(),
 			finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1(),
 			finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2());
@@ -324,7 +328,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		int basisJahrPlus
 	) {
 		EinkommensverschlechterungInfo ekvInfo = gesuch.extractEinkommensverschlechterungInfo();
-		BigDecimal durchschnitt = FinanzielleSituationRechner.calcGeschaeftsgewinnDurchschnitt(finSit, ekv1, ekv2, ekvInfo, basisJahrPlus);
+		BigDecimal durchschnitt = finanzielleSituationRechner.calcGeschaeftsgewinnDurchschnitt(finSit, ekv1, ekv2, ekvInfo, basisJahrPlus);
 		return MathUtil.roundToFrankenRappen(durchschnitt);
 	}
 
@@ -413,7 +417,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		@Nullable AbstractFinanzielleSituation gs2Urspruenglich
 	) {
 		requireNonNull(gesuch.getGesuchsteller1());
-		BigDecimal totalEinkommenBeiderGS = FinanzielleSituationRechner.calcTotalEinkommen(gs1, gs2);
+		BigDecimal totalEinkommenBeiderGS = finanzielleSituationRechner.calcTotalEinkommen(gs1, gs2);
 
 		FinanzielleSituationRow einkommenTitle = new FinanzielleSituationRow(
 			translate(EIKOMMEN_TITLE), gesuch.getGesuchsteller1().extractFullName());
@@ -502,8 +506,8 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		@Nullable AbstractFinanzielleSituation gs2Urspruenglich
 	) {
 		requireNonNull(gesuch.getGesuchsteller1());
-		BigDecimal totalVermoegenBeiderGS = FinanzielleSituationRechner.calcTotalVermoegen(gs1, gs2);
-		BigDecimal vermoegen5Prozent = FinanzielleSituationRechner.calcVermoegen5Prozent(gs1, gs2);
+		BigDecimal totalVermoegenBeiderGS = finanzielleSituationRechner.calcTotalVermoegen(gs1, gs2);
+		BigDecimal vermoegen5Prozent = finanzielleSituationRechner.calcVermoegen5Prozent(gs1, gs2);
 
 		FinanzielleSituationRow vermoegenTitle = new FinanzielleSituationRow(
 			translate(NETTOVERMOEGEN), gesuch.getGesuchsteller1().extractFullName());
@@ -561,7 +565,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		@Nullable AbstractFinanzielleSituation gs2Urspruenglich
 	) {
 		requireNonNull(gesuch.getGesuchsteller1());
-		BigDecimal totalAbzuegeBeiderGS = FinanzielleSituationRechner.calcTotalAbzuege(gs1, gs2);
+		BigDecimal totalAbzuegeBeiderGS = finanzielleSituationRechner.calcTotalAbzuege(gs1, gs2);
 
 		FinanzielleSituationRow abzuegeTitle = new FinanzielleSituationRow(
 			translate(ABZUEGE), gesuch.getGesuchsteller1().extractFullName());
@@ -601,14 +605,14 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	) {
 		requireNonNull(gesuch.getGesuchsteller1());
 		BigDecimal massgebendesEinkommenVorAbzugFamiliengroesse =
-			FinanzielleSituationRechner.calcMassgebendesEinkommenVorAbzugFamiliengroesse(gs1, gs2);
+			finanzielleSituationRechner.calcMassgebendesEinkommenVorAbzugFamiliengroesse(gs1, gs2);
 
 		FinanzielleSituationRow zusammenzugTitle = new FinanzielleSituationRow(
 			translate(ZUSAMMENZUG), "");
 		FinanzielleSituationRow einkommen = new FinanzielleSituationRow(
 			translate(EINKOMMEN_TOTAL), gs1.getZwischentotalEinkommen());
 		FinanzielleSituationRow vermoegen = new FinanzielleSituationRow(
-			translate(NETTOVERMOEGEN_5_PROZENT), FinanzielleSituationRechner.calcVermoegen5Prozent(gs1, gs2));
+			translate(NETTOVERMOEGEN_5_PROZENT), finanzielleSituationRechner.calcVermoegen5Prozent(gs1, gs2));
 		FinanzielleSituationRow abzuege = new FinanzielleSituationRow(
 			translate(ABZUEGE_TOTAL), gs1.getZwischetotalAbzuege());
 		FinanzielleSituationRow total = new FinanzielleSituationRow(

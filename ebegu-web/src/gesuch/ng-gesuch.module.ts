@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {SharedModule} from '../app/shared/shared.module';
@@ -38,6 +38,7 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
         SharedModule,
         FallToolbarModule
     ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
     declarations: [
         DvSwitchComponent,
         BetreuungOverrideWarningComponent,

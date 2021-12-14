@@ -32,6 +32,7 @@ import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
 import {DVInputContainerXComponent} from '../core/component/dv-input-container/dv-input-container-x.component';
 import {DvMitteilungDelegationComponent} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation';
+import {DvNavigationXComponent} from '../core/component/dv-navigation-x/dv-navigation-x.component';
 import {DvNgBackDialogComponent} from '../core/component/dv-ng-back-dialog/dv-ng-back-dialog.component';
 import {DvNgConfirmDialogComponent} from '../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
@@ -46,7 +47,6 @@ import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-postei
 import {DvRadioContainerXComponent} from '../core/component/dv-radio-container/dv-radio-container-x.component';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
 import {DvLoadingButtonXDirective} from '../core/directive/dv-loading-button/dv-loading-button-x.directive';
-import {DvNavigationX} from '../core/directive/dv-navigation/dv-navigation-x';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {DvSearchListComponent} from '../core/dv-search-list/dv-search-list.component';
@@ -160,7 +160,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         EbeguDateTimePipe,
         DvDatePickerXComponent,
         IeDeprecationWarningComponent,
-        DvNavigationX
+        DvNavigationXComponent
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
@@ -222,7 +222,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         PreviousPeriodeStrPipe,
         EbeguDateTimePipe,
         DvDatePickerXComponent,
-        DvNavigationX
+        DvNavigationXComponent
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)
