@@ -71,4 +71,8 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView imp
         }
         return this.save(onResult);
     }
+
+    public notify(): void {
+        // do nothing in angaben-gesuchsteller2
+    }
 }

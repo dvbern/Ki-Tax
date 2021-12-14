@@ -174,6 +174,8 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         return form.valid;
     }
 
+    public abstract notify(): void;
+
     protected save(onResult: Function): IPromise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         return this.gesuchModelManager.saveFinanzielleSituation()
