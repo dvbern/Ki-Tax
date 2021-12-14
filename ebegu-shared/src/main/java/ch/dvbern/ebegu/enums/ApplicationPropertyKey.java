@@ -158,4 +158,9 @@ public enum ApplicationPropertyKey {
 	 */
 	MULTIMANDANT_AKTIV,
 
+	/**
+	 * Falls Auszahlungen an die Eltern gemacht werden ist dieses Flag true
+	 */
+	AUSZAHLUNG_AN_ELTERN
+
 }
