@@ -48,6 +48,8 @@ export class ResultatComponent implements OnInit {
 
     @Input() public model: TSFinanzModel;
 
+    public resultate?: TSFinanzielleSituationResultateDTO;
+
     public constructor(
         protected berechnungsManager: BerechnungsManager,
         protected ref: ChangeDetectorRef,
@@ -59,12 +61,9 @@ export class ResultatComponent implements OnInit {
     }
 
     public calculate(): void {
-        this.berechnungsManager.calculateFinanzielleSituationTemp(this.model).then(() =>
-            this.ref.markForCheck(),
+        this.berechnungsManager.calculateFinanzielleSituationTemp(this.model).then(resultate => {
+            this.resultate = resultate;
+            this.ref.markForCheck(); }
         );
-    }
-
-    public getResultate(): TSFinanzielleSituationResultateDTO {
-        return this.berechnungsManager.finanzielleSituationResultate;
     }
 }
