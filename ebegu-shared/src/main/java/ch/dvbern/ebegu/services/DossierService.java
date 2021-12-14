@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 
 /**
@@ -84,7 +85,7 @@ public interface DossierService {
 	 * @return Liste aller Dossiers aus der DB für den Mandanten des Principal
 	 */
 	@Nonnull
-	Collection<Dossier> getAllDossiersForMandant(boolean doAuthCheck);
+	Collection<Dossier> getAllDossiersForMandant(@Nonnull Mandant mandant, boolean doAuthCheck);
 
 	/**
 	 * Erstellt ein Dossier und einen Fall (beides, falls noch nicht vorhanden) fuer den eingeloggten

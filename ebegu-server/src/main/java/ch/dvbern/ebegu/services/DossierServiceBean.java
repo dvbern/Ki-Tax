@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
@@ -173,13 +174,12 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 
 	@Nonnull
 	@Override
-	public Collection<Dossier> getAllDossiersForMandant(boolean doAuthCheck) {
+	public Collection<Dossier> getAllDossiersForMandant(@Nonnull Mandant mandant, boolean doAuthCheck) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Dossier> query = cb.createQuery(Dossier.class);
 		Root<Dossier> root = query.from(Dossier.class);
 
-		Objects.requireNonNull(principalBean.getMandant());
-		Predicate mandantPredicate = cb.equal(root.get(Dossier_.fall).get(Fall_.mandant), principalBean.getMandant());
+		Predicate mandantPredicate = cb.equal(root.get(Dossier_.fall).get(Fall_.mandant), mandant);
 		query.where(mandantPredicate);
 
 		List<Dossier> dossiers = persistence.getCriteriaResults(query);
