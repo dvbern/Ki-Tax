@@ -344,10 +344,9 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 			expect(betreuungService.anmeldungSchulamtModuleAkzeptieren(anmeldungTagesschule))
 				.andReturn(anmeldungTagesschule);
 
-			Capture<BetreuungMonitoring> capture = expectNewBetreuungMonitoringLog();
-
 			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(tagesschuleBestaetigungEventDTO.getRefnr(), mandant))
 					.andReturn(Optional.of(anmeldungTagesschule));
+
 
 			testSuccess(tagesschuleBestaetigungEventDTO);
 		}

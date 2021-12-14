@@ -76,14 +76,18 @@ import org.easymock.Mock;
 import org.easymock.MockType;
 import org.easymock.TestSubject;
 import org.hamcrest.Matcher;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
+import org.junit.runner.RunWith;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
@@ -102,6 +106,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -152,7 +157,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 	private Mandant mandant;
 
 	@BeforeEach
-	void setUp() {
+	void setUp(final TestInfo info) {
 		gesuchsperiode = TestDataUtil.createGesuchsperiodeXXYY(2020, 2021);
 		gemeinde = TestDataUtil.createGemeindeParis();
 		mandant = requireNonNull(gemeinde.getMandant());
@@ -165,7 +170,10 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		testfall_1GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 		gesuch_1GS = testfall_1GS.fillInGesuch();
 		eventMonitor = new EventMonitor(betreuungMonitoringService, EVENT_TIME, "fake", CLIENT_NAME);
-		expect(gemeindeService.getGemeindeByGemeindeNummer(2)).andReturn(Optional.of(gemeinde));
+
+		if(info.getTags().stream().noneMatch(tag -> tag.equals("skipGemeindeExpect"))) {
+			expect(gemeindeService.getGemeindeByGemeindeNummer(2)).andReturn(Optional.of(gemeinde));
+		}
 	}
 
 	@ParameterizedTest
@@ -198,6 +206,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		 * Should use "Stornieren" API instead
 		 */
 		@Test
+		@Tag("skipGemeindeExpect")
 		void ignoreWhenNoZeitabschnitte() {
 			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
 			dto.setZeitabschnitte(Collections.emptyList());
