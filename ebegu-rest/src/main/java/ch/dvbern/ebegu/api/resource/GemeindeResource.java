@@ -228,9 +228,9 @@ public class GemeindeResource {
 	@Path("/all")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@PermitAll // Oeffentliche Daten
+	@PermitAll // Oeffentliche Daten für eingeloggte User
 	public List<JaxGemeinde> getAllGemeinden() {
-		return gemeindeService.getAllGemeinden().stream()
+		return gemeindeService.getAllGemeinden(requireNonNull(principalBean.getMandant())).stream()
 			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
 			.collect(Collectors.toList());
 	}
@@ -611,7 +611,7 @@ public class GemeindeResource {
 		if (benutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
 			gemeindeList = benutzer.getCurrentBerechtigung().getGemeindeList();
 		} else if (benutzer.getCurrentBerechtigung().getRole() == UserRole.SUPER_ADMIN) {
-			gemeindeList = gemeindeService.getAllGemeinden();
+			gemeindeList = gemeindeService.getAllGemeinden(benutzer.getMandant());
 		}
 		long anzahl = gemeindeList.stream()
 			.filter(inst -> inst.getStatus() == GemeindeStatus.EINGELADEN)
