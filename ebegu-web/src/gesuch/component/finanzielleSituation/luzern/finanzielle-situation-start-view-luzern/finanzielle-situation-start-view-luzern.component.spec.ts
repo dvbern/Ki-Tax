@@ -40,7 +40,7 @@ const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
     ['areThereOnlyFerieninsel', 'getBasisjahr', 'getBasisjahrPlus', 'getGesuch', 'isGesuchsteller2Required', 'isGesuchReadonly']);
 const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
     WizardStepManager.name, ['getCurrentStep', 'setCurrentStep', 'isNextStepBesucht', 'isNextStepEnabled',
-        'getCurrentStepName']);
+        'getCurrentStepName', 'updateCurrentWizardStepStatusSafe']);
 const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name, ['saveFinanzielleSituationStart']);
 const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
     ['go']);

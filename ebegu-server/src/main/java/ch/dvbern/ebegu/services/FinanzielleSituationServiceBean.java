@@ -37,7 +37,6 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
-import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationRechnerFactory;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -111,7 +110,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			gesuchId,
 			null,
 			finanzielleSituationPersisted.getFinanzielleSituationJA(),
-			WizardStepName.FINANZIELLE_SITUATION,
+			wizardStepService.getFinSitWizardStepNameForGesuch(gesuch),
 			1); // it must be substep 1 since it is finanzielleSituationStart
 
 		return gesuch;
@@ -189,14 +188,14 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 
 		// Die eigentliche FinSit speichern
 		FinanzielleSituationContainer finanzielleSituationPersisted = persistence.merge(finanzielleSituation);
-		wizardStepService.updateSteps(gesuchId, null, finanzielleSituationPersisted.getFinanzielleSituationJA(), WizardStepName
-			.FINANZIELLE_SITUATION);
 
 		final Gesuch gesuch = gesuchService.findGesuch(gesuchId).orElseThrow(() -> new EbeguEntityNotFoundException(
 			"saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId));
 
 		// Steuererklaerungs/-veranlagungs-Flags nachfuehren fuer GS2
 		handleGemeinsameSteuererklaerung(gesuch);
+
+		wizardStepService.updateSteps(gesuchId, null, finanzielleSituationPersisted.getFinanzielleSituationJA(), wizardStepService.getFinSitWizardStepNameForGesuch(gesuch));
 
 		return finanzielleSituationPersisted;
 	}
@@ -250,16 +249,6 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		final BigDecimal minimumEKV = calculateGrenzwertEKV(gesuch);
 		FinanzielleSituationRechnerFactory.getRechner(gesuch).calculateFinanzDaten(gesuch, minimumEKV);
 	}
-
-	/*@Nonnull
-	private AbstractFinanzielleSituationRechner getRechner(@Nonnull Gesuch gesuch){
-		String finSitTyp = einstellungService.findEinstellung(
-			EinstellungKey.FINANZIELLE_SITUATION_TYP,
-			gesuch.extractGemeinde(),
-			gesuch.getGesuchsperiode()
-		).getValue();
-		return FinanzielleSituationRechnerFactory.getRechner(FinanzielleSituationTyp.valueOf(finSitTyp));
-	}*/
 
 	/**
 	 * Es wird nach dem Param PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG gesucht, der einen Wert von 0 bis 100 haben muss.

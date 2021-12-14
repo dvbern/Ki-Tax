@@ -37,6 +37,9 @@ public class FinanzielleSituationResultateDTO {
 	private BigDecimal abzuegeBeiderGesuchsteller = BigDecimal.ZERO;
 	private BigDecimal massgebendesEinkVorAbzFamGr = BigDecimal.ZERO;
 
+	private BigDecimal massgebendesEinkVorAbzFamGrGS1 = BigDecimal.ZERO;
+	private BigDecimal massgebendesEinkVorAbzFamGrGS2 = BigDecimal.ZERO;
+
 	public FinanzielleSituationResultateDTO() {
 		initToZero();
 	}
@@ -110,5 +113,21 @@ public class FinanzielleSituationResultateDTO {
 
 	public void setMassgebendesEinkVorAbzFamGr(BigDecimal massgebendesEinkVorAbzFamGr) {
 		this.massgebendesEinkVorAbzFamGr = massgebendesEinkVorAbzFamGr;
+	}
+
+	public BigDecimal getMassgebendesEinkVorAbzFamGrGS1() {
+		return massgebendesEinkVorAbzFamGrGS1;
+	}
+
+	public void setMassgebendesEinkVorAbzFamGrGS1(BigDecimal massgebendesEinkVorAbzFamGrGS1) {
+		this.massgebendesEinkVorAbzFamGrGS1 = massgebendesEinkVorAbzFamGrGS1;
+	}
+
+	public BigDecimal getMassgebendesEinkVorAbzFamGrGS2() {
+		return massgebendesEinkVorAbzFamGrGS2;
+	}
+
+	public void setMassgebendesEinkVorAbzFamGrGS2(BigDecimal massgebendesEinkVorAbzFamGrGS2) {
+		this.massgebendesEinkVorAbzFamGrGS2 = massgebendesEinkVorAbzFamGrGS2;
 	}
 }

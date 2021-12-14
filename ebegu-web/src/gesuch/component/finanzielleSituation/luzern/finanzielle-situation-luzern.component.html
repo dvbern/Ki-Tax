@@ -148,8 +148,13 @@
                             [year]="getYearForDeklaration()"
                             [model]="getModel()"
                             [readOnly]="readonly"
+                            (valueChange)="notify()"
             ></dv-veranlagung>
-
+            <dv-resultat *ngIf="gemeinsameStekVisible()"
+                         [isGemeinsam]="isGemeinsam()"
+                         [year]="getYearForDeklaration()"
+                         [model]="model">
+            </dv-resultat>
 
             <dv-navigation-x (dvSave)="prepareSave($event.onResult)" [dvPrevious]="hasPrevious" [dvNext]="hasNext"
                            [dvSubStep]="getSubStepIndex()" [dvSubStepName]="getSubStepName()"></dv-navigation-x>

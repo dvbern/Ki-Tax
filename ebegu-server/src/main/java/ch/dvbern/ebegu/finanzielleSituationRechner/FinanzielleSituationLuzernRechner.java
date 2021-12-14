@@ -68,6 +68,17 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 			finSitResultDTO,
 			finanzielleSituationGS1,
 			finanzielleSituationGS2);
+		finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS1(getMassgegebenesEinkommenAleine(finanzielleSituationGS1));
+		finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS2(getMassgegebenesEinkommenAleine(finanzielleSituationGS2));
+	}
+
+	private BigDecimal getMassgegebenesEinkommenAleine(@Nullable FinanzielleSituation finanzielleSituation) {
+		BigDecimal einkommenAleine = calcEinkommen(finanzielleSituation, null);
+		BigDecimal nettoVermoegenXProzent = calcVermoegen10Prozent(finanzielleSituation, null);
+		BigDecimal abzuegeAleine = calcAbzuege(finanzielleSituation, null);
+		BigDecimal anrechenbaresEinkommen = add(einkommenAleine, nettoVermoegenXProzent);
+		return MathUtil.positiveNonNullAndRound(
+			subtract(anrechenbaresEinkommen, abzuegeAleine));
 	}
 
 	private void calculateZusammen(

@@ -14,7 +14,6 @@
  */
 
 export class TSFinanzielleSituationResultateDTO {
-
     private _geschaeftsgewinnDurchschnittGesuchsteller1: number;
     private _geschaeftsgewinnDurchschnittGesuchsteller2: number;
     private _einkommenBeiderGesuchsteller: number;
@@ -22,6 +21,8 @@ export class TSFinanzielleSituationResultateDTO {
     private _anrechenbaresEinkommen: number;
     private _abzuegeBeiderGesuchsteller: number;
     private _massgebendesEinkVorAbzFamGr: number;
+    private _massgebendesEinkVorAbzFamGrGS1: number;
+    private _massgebendesEinkVorAbzFamGrGS2: number;
 
     public constructor(
         geschaeftsgewinnDurchschnittGesuchsteller1?: number,
@@ -96,5 +97,19 @@ export class TSFinanzielleSituationResultateDTO {
     public set massgebendesEinkVorAbzFamGr(value: number) {
         this._massgebendesEinkVorAbzFamGr = value;
     }
+    public get massgebendesEinkVorAbzFamGrGS1(): number {
+        return this._massgebendesEinkVorAbzFamGrGS1;
+    }
 
+    public set massgebendesEinkVorAbzFamGrGS1(value: number) {
+        this._massgebendesEinkVorAbzFamGrGS1 = value;
+    }
+
+    public get massgebendesEinkVorAbzFamGrGS2(): number {
+        return this._massgebendesEinkVorAbzFamGrGS2;
+    }
+
+    public set massgebendesEinkVorAbzFamGrGS2(value: number) {
+        this._massgebendesEinkVorAbzFamGrGS2 = value;
+    }
 }

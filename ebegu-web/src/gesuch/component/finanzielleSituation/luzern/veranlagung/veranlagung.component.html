@@ -30,6 +30,7 @@
                        [(ngModel)]="model.finanzielleSituationJA.steuerbaresEinkommen"
                        class="form-control"
                        [disabled]="readOnly"
+                       (blur)="onValueChange()"
                        required>
                 <dv-error-messages
                     [errorObject]="steuerbaresEinkommen.errors"
