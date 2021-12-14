@@ -18,9 +18,11 @@
 import {ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAdresse} from '../../../models/TSAdresse';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
 @Component({
@@ -43,6 +45,7 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnC
 
     public constructor(
         private readonly translate: TranslateService,
+        private readonly authServiceRS: AuthServiceRS
     ) {
     }
 
@@ -109,5 +112,9 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnC
     private initIncompleteOeffnungszeiten(): void {
         const stammdatenBg = this.stammdaten.institutionStammdatenBetreuungsgutscheine;
         this.incompleteOeffnungszeiten = stammdatenBg && (!stammdatenBg.offenVon || !stammdatenBg.offenBis);
+    }
+
+    public showInfomaFields(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 }

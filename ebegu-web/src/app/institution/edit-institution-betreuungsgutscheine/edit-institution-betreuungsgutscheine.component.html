@@ -259,6 +259,30 @@
                             </div>
                         </div>
                     </div>
+                    <div *ngIf="showInfomaFields()" class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="required" translate for="infoma_kred_id">INFOMA_KREDITORENNUMMER</label>
+                                <input id="infoma_kred_id" type="text" name="infoma_kred_name" #infomaKred="ngModel"
+                                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.infomaKreditorennummer"
+                                       [maxlength]="255" class="form-control"
+                                       required>
+                                <dv-error-messages [errorObject]="infomaKred.errors"
+                                                   inputId="infoma_kred_id"></dv-error-messages>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="required" translate for="infoma_kred_id">INFOMA_BANKCODE</label>
+                                <input id="infoma_bankcode_id" type="text" name="infoma_bankcode_name" #infomaBankcode="ngModel"
+                                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.infomaKreditorennummer"
+                                       [maxlength]="255" class="form-control"
+                                       required>
+                                <dv-error-messages [errorObject]="infomaBankcode.errors"
+                                                   inputId="infoma_bankcode_id"></dv-error-messages>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -517,6 +541,10 @@
                 <h3 translate>INSTITUTION_ZAHLUNGSANGABEN</h3>
                 <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.iban}}</p>
                 <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.kontoinhaber}}</p>
+                <ng-container *ngIf="showInfomaFields()">
+                    <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.infomaKreditorennummer}} ({{'INFOMA_KREDITORENNUMMER' | translate}})</p>
+                    <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.infomaBankcode}} ({{'INFOMA_BANKCODE' | translate}})</p>
+                </ng-container>
             </div>
         </div>
         <!-- Abweichende Zahlungsadresse -->

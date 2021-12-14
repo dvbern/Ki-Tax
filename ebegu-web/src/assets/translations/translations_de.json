@@ -2666,5 +2666,7 @@
     "TS_MUTATION_EXISTIERT": "Es gibt bereits eine Mutation zu diesem Antrag",
     "TS_MUTATION_EXISTIERT_BODY": "Die Tagesschulanmeldung muss bei der neusten Mutation bearbeitet werden. Falls diese noch in Bearbeitung der Antragstellenden ist, muss sie zuerst freigegeben oder gelöscht werden.",
     "FREMD_ID": "Fremd-ID",
+    "INFOMA_KREDITORENNUMMER":  "Infoma Kreditorennummer",
+    "INFOMA_BANKCODE": "Infoma Bankcode",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
