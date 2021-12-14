@@ -65,11 +65,7 @@ public class FachstelleServiceBean extends AbstractBaseService implements Fachst
 
 	@Nonnull
 	@Override
-	public Collection<Fachstelle> getAllFachstellen() {
-		Mandant mandant = principalBean.getMandant();
-		if (mandant == null) {
-			throw new EbeguRuntimeException("getAllFachstellen", "mandant not found for principal " + principalBean.getPrincipal().getName());
-		}
+	public Collection<Fachstelle> getAllFachstellen(@Nonnull Mandant mandant) {
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		CriteriaQuery<Fachstelle> query = cb.createQuery(Fachstelle.class);
 		Root<Fachstelle> root = query.from(Fachstelle.class);

@@ -21,6 +21,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Fachstelle;
+import ch.dvbern.ebegu.entities.Mandant;
 
 /**
  * Service zum Verwalten von Fachstellen
@@ -49,7 +50,7 @@ public interface FachstelleService {
 	 * @return Liste aller Fachstellen aus der DB
 	 */
 	@Nonnull
-	Collection<Fachstelle> getAllFachstellen();
+	Collection<Fachstelle> getAllFachstellen(@Nonnull Mandant mandant);
 
 	/**
 	 * entfernt die Fachstelle aus der Database
