@@ -104,6 +104,13 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 
 	private boolean uebernachtungMoeglich;
 
+	@Nullable
+	private String infomaKreditorennummer;
+
+	@Nullable
+	private String infomaBankcode;
+
+
 	@Nonnull
 	private Set<JaxBetreuungsstandort> betreuungsstandorte = new HashSet<>();
 
@@ -339,5 +346,23 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 
 	public void setUebernachtungMoeglich(boolean uebernachtungMoeglich) {
 		this.uebernachtungMoeglich = uebernachtungMoeglich;
+	}
+
+	@Nullable
+	public String getInfomaKreditorennummer() {
+		return infomaKreditorennummer;
+	}
+
+	public void setInfomaKreditorennummer(@Nullable String infomaKreditorennummer) {
+		this.infomaKreditorennummer = infomaKreditorennummer;
+	}
+
+	@Nullable
+	public String getInfomaBankcode() {
+		return infomaBankcode;
+	}
+
+	public void setInfomaBankcode(@Nullable String infomaBankcode) {
+		this.infomaBankcode = infomaBankcode;
 	}
 }

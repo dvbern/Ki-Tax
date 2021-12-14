@@ -1736,6 +1736,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstStammdaten.setSpaetEroeffnung(persistedInstStammdaten.isSpaetEroeffnung());
 		jaxInstStammdaten.setWochenendeEroeffnung(persistedInstStammdaten.isWochenendeEroeffnung());
 		jaxInstStammdaten.setUebernachtungMoeglich(persistedInstStammdaten.isUebernachtungMoeglich());
+		jaxInstStammdaten.setInfomaKreditorennummer(persistedInstStammdaten.getInfomaKreditorennummer());
+		jaxInstStammdaten.setInfomaBankcode(persistedInstStammdaten.getInfomaBankcode());
 
 		return jaxInstStammdaten;
 	}
@@ -1824,6 +1826,8 @@ public class JaxBConverter extends AbstractConverter {
 		institutionStammdaten.setSpaetEroeffnung(institutionStammdatenJAXP.isSpaetEroeffnung());
 		institutionStammdaten.setWochenendeEroeffnung(institutionStammdatenJAXP.isWochenendeEroeffnung());
 		institutionStammdaten.setUebernachtungMoeglich(institutionStammdatenJAXP.isUebernachtungMoeglich());
+		institutionStammdaten.setInfomaKreditorennummer(institutionStammdatenJAXP.getInfomaKreditorennummer());
+		institutionStammdaten.setInfomaBankcode(institutionStammdatenJAXP.getInfomaBankcode());
 
 		return institutionStammdaten;
 	}

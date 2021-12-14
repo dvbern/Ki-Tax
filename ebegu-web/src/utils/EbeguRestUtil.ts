@@ -1553,6 +1553,8 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.spaetEroeffnung = institutionStammdaten.spaetEroeffnung;
             restInstitutionStammdaten.wochenendeEroeffnung = institutionStammdaten.wochenendeEroeffnung;
             restInstitutionStammdaten.uebernachtungMoeglich = institutionStammdaten.uebernachtungMoeglich;
+            restInstitutionStammdaten.infomaKreditorennummer = institutionStammdaten.infomaKreditorennummer;
+            restInstitutionStammdaten.infomaBankcode = institutionStammdaten.infomaBankcode;
 
             return restInstitutionStammdaten;
         }
@@ -1613,6 +1615,8 @@ export class EbeguRestUtil {
             institutionStammdatenTS.spaetEroeffnung = institutionStammdatenFromServer.spaetEroeffnung;
             institutionStammdatenTS.wochenendeEroeffnung = institutionStammdatenFromServer.wochenendeEroeffnung;
             institutionStammdatenTS.uebernachtungMoeglich = institutionStammdatenFromServer.uebernachtungMoeglich;
+            institutionStammdatenTS.infomaKreditorennummer = institutionStammdatenFromServer.infomaKreditorennummer;
+            institutionStammdatenTS.infomaBankcode = institutionStammdatenFromServer.infomaBankcode;
 
             return institutionStammdatenTS;
         }

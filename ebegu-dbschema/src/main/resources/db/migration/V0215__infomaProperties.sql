@@ -27,5 +27,9 @@ VALUES (UNHEX(REPLACE('4d759f85-5cc8-11ec-93ed-f4390979fa3e', '-','')), UNHEX(RE
 INSERT INTO application_property (id, mandant_id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, name, value)
 VALUES (UNHEX(REPLACE('522c58af-5cc8-11ec-93ed-f4390979fa3e', '-','')), UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')),'2021-12-14 12:00:00', '2021-12-14 12:00:00', 'flyway', 'flyway', 0, null, 'AUSZAHLUNG_AN_ELTERN', 'true');
 
+ALTER TABLE institution_stammdaten_betreuungsgutscheine ADD COLUMN infoma_kreditorennummer VARCHAR(255);
+ALTER TABLE institution_stammdaten_betreuungsgutscheine_aud ADD COLUMN infoma_kreditorennummer VARCHAR(255);
 
+ALTER TABLE institution_stammdaten_betreuungsgutscheine ADD COLUMN infoma_bankcode VARCHAR(255);
+ALTER TABLE institution_stammdaten_betreuungsgutscheine_aud ADD COLUMN infoma_bankcode VARCHAR(255);
 
