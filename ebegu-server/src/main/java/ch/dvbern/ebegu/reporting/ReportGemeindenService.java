@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 
@@ -28,6 +29,7 @@ public interface ReportGemeindenService {
 
 	@Nonnull
 	UploadFileInfo generateExcelReportGemeinden(
-			@Nonnull Locale locale
+			@Nonnull Locale locale,
+			@Nonnull Mandant mandant
 	) throws ExcelMergeException;
 }

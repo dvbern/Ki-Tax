@@ -199,7 +199,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			case VORLAGE_REPORT_VERRECHNUNG_KIBON: {
 				boolean doSave = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.DO_SAVE));
 				BigDecimal betragProKind = MathUtil.DEFAULT.from(getParameters().getProperty(WorkJobConstants.BETRAG_PRO_KIND));
-				return this.reportVerrechnungKibonService.generateExcelReportVerrechnungKibon(doSave, betragProKind, locale);
+				return this.reportVerrechnungKibonService.generateExcelReportVerrechnungKibon(doSave, betragProKind, locale, mandant);
 			}
 			case VORLAGE_REPORT_LASTENAUSGLEICH_SELBSTBEHALT: {
 				return this.reportLastenausgleichKibonService.generateExcelReportLastenausgleichKibon(dateFrom, locale);
@@ -223,7 +223,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 				return this.reportMahlzeitenService.generateExcelReportMahlzeiten(dateFrom, dateTo, locale, gemeindeId);
 			}
 			case VORLAGE_REPORT_GEMEINDEN: {
-				return this.reportGemeindenService.generateExcelReportGemeinden(locale);
+				return this.reportGemeindenService.generateExcelReportGemeinden(locale, mandant);
 			}
 			case VORLAGE_REPORT_FERIENBETREUUNG: {
 				return this.reportService.generateExcelReportFerienbetreuung(locale);

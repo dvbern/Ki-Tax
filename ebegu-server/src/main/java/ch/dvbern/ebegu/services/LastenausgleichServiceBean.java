@@ -152,7 +152,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		lastenausgleich.setMandant(mandant);
 
 		// Die regulare Abrechnung
-		Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden();
+		Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden(mandant);
 		int counter = 0;
 		for (Gemeinde gemeinde : aktiveGemeinden) {
 			LastenausgleichDetail detailErhebung =
