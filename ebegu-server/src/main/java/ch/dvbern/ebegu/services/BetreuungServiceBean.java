@@ -640,31 +640,39 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Override
 	@Nonnull
 	public List<AbstractAnmeldung> findAnmeldungenByBGNummer(@Nonnull String bgNummer) {
+		//TODO: refactor with change in KIBON-2169
+		Mandant mandant = getMandantFromBgNummer(bgNummer);
 		List<AbstractAnmeldung> result = new ArrayList<>();
-		result.addAll(findAnmeldungenByBGNummer(AnmeldungTagesschule.class, bgNummer, false));
-		result.addAll(findAnmeldungenByBGNummer(AnmeldungFerieninsel.class, bgNummer, false));
+		result.addAll(findAnmeldungenByBGNummer(AnmeldungTagesschule.class, bgNummer, false, mandant));
+		result.addAll(findAnmeldungenByBGNummer(AnmeldungFerieninsel.class, bgNummer, false, mandant));
 		return result;
 	}
 
+	private Mandant getMandantFromBgNummer(String refnr) {
+		final int gemeindeNummer = BetreuungUtil.getGemeindeFromBGNummer(refnr);
+		Gemeinde gemeinde = gemeindeService.getGemeindeByGemeindeNummer(gemeindeNummer).orElseThrow(() ->
+				new EbeguEntityNotFoundException("getGemeindeByGemeindeNummer", gemeindeNummer));
+
+		return gemeinde.getMandant();
+	}
+
+
 	@Override
 	public List<AbstractAnmeldung> findNewestAnmeldungByBGNummer(@Nonnull String bgNummer) {
+		Mandant mandant = getMandantFromBgNummer(bgNummer);
 		List<AbstractAnmeldung> result = new ArrayList<>();
-		result.addAll(findAnmeldungenByBGNummer(AnmeldungTagesschule.class, bgNummer, true));
-		result.addAll(findAnmeldungenByBGNummer(AnmeldungFerieninsel.class, bgNummer, true));
+		result.addAll(findAnmeldungenByBGNummer(AnmeldungTagesschule.class, bgNummer, true, mandant));
+		result.addAll(findAnmeldungenByBGNummer(AnmeldungFerieninsel.class, bgNummer, true, mandant));
 		return result;
 	}
 
 	@Nonnull
 	private <T extends AbstractAnmeldung> List<T> findAnmeldungenByBGNummer(
-		@Nonnull Class<T> clazz,
-		@Nonnull String bgNummer, boolean getOnlyAktuelle) {
+			@Nonnull Class<T> clazz,
+			@Nonnull String bgNummer, boolean getOnlyAktuelle, @Nonnull Mandant mandant) {
 		final int betreuungNummer = BetreuungUtil.getBetreuungNummerFromBGNummer(bgNummer);
 		final int kindNummer = BetreuungUtil.getKindNummerFromBGNummer(bgNummer);
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
-		var mandant = principalBean.getMandant();
-		if (mandant == null) {
-			throw new EbeguRuntimeException("findAnmeldungenByBGNummer", "mandant not found for principal " + principalBean.getBenutzer().getEmail());
-		}
 		// der letzte Tag im Jahr, von der BetreuungsId sollte immer zur richtigen Gesuchsperiode zählen.
 		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
 			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365), mandant);
