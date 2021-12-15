@@ -1601,7 +1601,7 @@
     "ONBOARDING_MAIL_BODY_END": "Meilleures salutations et merci pour la prise de contact.",
     "ONBOARDING_INFO_INSTITUTION": "Participer à KiBon en tant que garderie ou en tant qu'organisation d’accueil familial de jour.",
     "ONBOARDING_INFO_INSTITUTION_INTRO": "Vous désirez utiliser KiBon en tant que garderie ou en tant qu'organisation d’accueil familial de jour ?  Alors demander votre admission auprès de votre canton. Sinon vous pouvez déjà demander un accès au système test de KiBon.",
-    "ONBOARDING_INSTITUTION_LINK": "https://www.gef.be.ch/gef/fr/index/familie/familie/familienergaenzendebetreuung/betreuungsgutscheine/informationen-fuer-kitas-und-tfo.html",
+    "ONBOARDING_INSTITUTION_LINK": "https://www.gsi.be.ch/fr/start/themen/familie-gesellschaft/kindertagesstaetten-und-tagesfamilien/betreuungsgutscheine.html",
     "ONBOARDING_INSTITUTION_DESC1": "<strong>Le portail permettant aux parents</strong> de déposer des demandes de bons de garde et de s'inscrire aux écoles à journée continue",
     "ONBOARDING_INSTITUTION_DESC2": "<strong>L'application spécialisée pour les communes</strong> afin de gérer les bons de garde et les inscriptions",
     "ONBOARDING_INSTITUTION_DESC3": "<strong>Processus complet et entièrement automatisé</strong> pour toutes les instances (parents, garderie, parents de jour, école à journée continue, commune, canton)",
