@@ -34,31 +34,31 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal einkuftErwerb;
+	private BigDecimal einkunftErwerb;
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal einkuftVersicherung;
+	private BigDecimal einkunftVersicherung;
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal einkuftAusgleichskassen;
+	private BigDecimal einkunftAusgleichskassen;
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal einkuftWertschriften;
+	private BigDecimal einkunftWertschriften;
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal einkuftUnterhaltsbeitragSteuerpflichtige;
+	private BigDecimal einkunftUnterhaltsbeitragSteuerpflichtige;
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal einkuftUnterhaltsbeitragKinder;
+	private BigDecimal einkunftUnterhaltsbeitragKinder;
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal einkuftUeberige;
+	private BigDecimal einkunftUeberige;
 
 	@Nullable
 	@Column(nullable = true)
@@ -133,67 +133,71 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 	private BigDecimal abzugSteuerfreierBetragErwachsene;
 
 	@Nullable
-	public BigDecimal getEinkuftErwerb() {
-		return einkuftErwerb;
+	@Column(nullable = true)
+	private BigDecimal abzugSteuerfreierBetragKinder;
+
+	@Nullable
+	public BigDecimal getEinkunftErwerb() {
+		return einkunftErwerb;
 	}
 
-	public void setEinkuftErwerb(@Nullable BigDecimal einkuftErwerb) {
-		this.einkuftErwerb = einkuftErwerb;
+	public void setEinkunftErwerb(@Nullable BigDecimal einkunftErwerb) {
+		this.einkunftErwerb = einkunftErwerb;
 	}
 
 	@Nullable
-	public BigDecimal getEinkuftVersicherung() {
-		return einkuftVersicherung;
+	public BigDecimal getEinkunftVersicherung() {
+		return einkunftVersicherung;
 	}
 
-	public void setEinkuftVersicherung(@Nullable BigDecimal einkuftVersicherung) {
-		this.einkuftVersicherung = einkuftVersicherung;
-	}
-
-	@Nullable
-	public BigDecimal getEinkuftAusgleichskassen() {
-		return einkuftAusgleichskassen;
-	}
-
-	public void setEinkuftAusgleichskassen(@Nullable BigDecimal einkuftAusgleichskassen) {
-		this.einkuftAusgleichskassen = einkuftAusgleichskassen;
+	public void setEinkunftVersicherung(@Nullable BigDecimal einkunftVersicherung) {
+		this.einkunftVersicherung = einkunftVersicherung;
 	}
 
 	@Nullable
-	public BigDecimal getEinkuftWertschriften() {
-		return einkuftWertschriften;
+	public BigDecimal getEinkunftAusgleichskassen() {
+		return einkunftAusgleichskassen;
 	}
 
-	public void setEinkuftWertschriften(@Nullable BigDecimal einkuftWertschriften) {
-		this.einkuftWertschriften = einkuftWertschriften;
-	}
-
-	@Nullable
-	public BigDecimal getEinkuftUnterhaltsbeitragSteuerpflichtige() {
-		return einkuftUnterhaltsbeitragSteuerpflichtige;
-	}
-
-	public void setEinkuftUnterhaltsbeitragSteuerpflichtige(
-		@Nullable BigDecimal einkuftUnterhaltsbeitragSteuerpflichtige) {
-		this.einkuftUnterhaltsbeitragSteuerpflichtige = einkuftUnterhaltsbeitragSteuerpflichtige;
+	public void setEinkunftAusgleichskassen(@Nullable BigDecimal einkunftAusgleichskassen) {
+		this.einkunftAusgleichskassen = einkunftAusgleichskassen;
 	}
 
 	@Nullable
-	public BigDecimal getEinkuftUnterhaltsbeitragKinder() {
-		return einkuftUnterhaltsbeitragKinder;
+	public BigDecimal getEinkunftWertschriften() {
+		return einkunftWertschriften;
 	}
 
-	public void setEinkuftUnterhaltsbeitragKinder(@Nullable BigDecimal einkuftUnterhaltsbeitragKinder) {
-		this.einkuftUnterhaltsbeitragKinder = einkuftUnterhaltsbeitragKinder;
+	public void setEinkunftWertschriften(@Nullable BigDecimal einkunftWertschriften) {
+		this.einkunftWertschriften = einkunftWertschriften;
 	}
 
 	@Nullable
-	public BigDecimal getEinkuftUeberige() {
-		return einkuftUeberige;
+	public BigDecimal getEinkunftUnterhaltsbeitragSteuerpflichtige() {
+		return einkunftUnterhaltsbeitragSteuerpflichtige;
 	}
 
-	public void setEinkuftUeberige(@Nullable BigDecimal einkuftUeberige) {
-		this.einkuftUeberige = einkuftUeberige;
+	public void setEinkunftUnterhaltsbeitragSteuerpflichtige(
+		@Nullable BigDecimal einkunftUnterhaltsbeitragSteuerpflichtige) {
+		this.einkunftUnterhaltsbeitragSteuerpflichtige = einkunftUnterhaltsbeitragSteuerpflichtige;
+	}
+
+	@Nullable
+	public BigDecimal getEinkunftUnterhaltsbeitragKinder() {
+		return einkunftUnterhaltsbeitragKinder;
+	}
+
+	public void setEinkunftUnterhaltsbeitragKinder(@Nullable BigDecimal einkunftUnterhaltsbeitragKinder) {
+		this.einkunftUnterhaltsbeitragKinder = einkunftUnterhaltsbeitragKinder;
+	}
+
+	@Nullable
+	public BigDecimal getEinkunftUeberige() {
+		return einkunftUeberige;
+	}
+
+	public void setEinkunftUeberige(@Nullable BigDecimal einkunftUeberige) {
+		this.einkunftUeberige = einkunftUeberige;
 	}
 
 	@Nullable
@@ -367,10 +371,6 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 		this.abzugSteuerfreierBetragKinder = abzugSteuerfreierBetragKinder;
 	}
 
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal abzugSteuerfreierBetragKinder;
-
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -386,13 +386,13 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 		}
 
 		final FinanzielleSituationSelbstdeklaration otherSelbstdeklaration = (FinanzielleSituationSelbstdeklaration) other;
-		return MathUtil.isSame(getEinkuftErwerb(), otherSelbstdeklaration.getEinkuftErwerb()) &&
-			MathUtil.isSame(getEinkuftVersicherung(), otherSelbstdeklaration.getEinkuftVersicherung()) &&
-			MathUtil.isSame(getEinkuftAusgleichskassen(), otherSelbstdeklaration.getEinkuftAusgleichskassen()) &&
-			MathUtil.isSame(getEinkuftWertschriften(), otherSelbstdeklaration.getEinkuftWertschriften()) &&
-			MathUtil.isSame(getEinkuftUnterhaltsbeitragSteuerpflichtige(), otherSelbstdeklaration.getEinkuftUnterhaltsbeitragSteuerpflichtige()) &&
-			MathUtil.isSame(getEinkuftUnterhaltsbeitragKinder(), otherSelbstdeklaration.getEinkuftUnterhaltsbeitragKinder()) &&
-			MathUtil.isSame(getEinkuftUeberige(), otherSelbstdeklaration.getEinkuftUeberige()) &&
+		return MathUtil.isSame(getEinkunftErwerb(), otherSelbstdeklaration.getEinkunftErwerb()) &&
+			MathUtil.isSame(getEinkunftVersicherung(), otherSelbstdeklaration.getEinkunftVersicherung()) &&
+			MathUtil.isSame(getEinkunftAusgleichskassen(), otherSelbstdeklaration.getEinkunftAusgleichskassen()) &&
+			MathUtil.isSame(getEinkunftWertschriften(), otherSelbstdeklaration.getEinkunftWertschriften()) &&
+			MathUtil.isSame(getEinkunftUnterhaltsbeitragSteuerpflichtige(), otherSelbstdeklaration.getEinkunftUnterhaltsbeitragSteuerpflichtige()) &&
+			MathUtil.isSame(getEinkunftUnterhaltsbeitragKinder(), otherSelbstdeklaration.getEinkunftUnterhaltsbeitragKinder()) &&
+			MathUtil.isSame(getEinkunftUeberige(), otherSelbstdeklaration.getEinkunftUeberige()) &&
 			MathUtil.isSame(getEinkunftLiegenschaften(), otherSelbstdeklaration.getEinkunftLiegenschaften()) &&
 			MathUtil.isSame(getAbzugBerufsauslagen(), otherSelbstdeklaration.getAbzugBerufsauslagen()) &&
 			MathUtil.isSame(getAbzugSchuldzinsen(), otherSelbstdeklaration.getAbzugSchuldzinsen()) &&
