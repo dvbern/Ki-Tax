@@ -106,6 +106,7 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
         OR IFNULL(Mahnungen.Anzahl, 0) = 1
         OR IFNULL(Beschwerde.Anzahl, 0) = 1
       )
+      AND fall.mandant_id = :mandant
 			]]></query>
 		</named-native-query>
 		<named-native-query name="GesuchZeitraumNativeSQLQuery" result-set-mapping="GesuchZeitraumDataRowMapping">
@@ -290,6 +291,7 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
         OR IFNULL(Verfuegungen.kategorie_kein_pensum, 0) = 1
         OR IFNULL(Verfuegungen.kategorie_nicht_eintreten, 0) = 1
       )
+      AND fall.mandant_id = :mandant
 		]]></query>
 		</named-native-query>
 	</entity>

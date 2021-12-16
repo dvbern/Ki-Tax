@@ -18,8 +18,6 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,7 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -71,6 +68,7 @@ import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
 import ch.dvbern.ebegu.api.resource.util.TransferFile;
 import ch.dvbern.ebegu.api.util.RestUtil;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -151,6 +149,9 @@ public class GemeindeResource {
 
 	@Inject
 	private FerieninselStammdatenService ferieninselStammdatenService;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@ApiOperation(value = "Erstellt eine neue Gemeinde in der Datenbank", response = JaxGemeinde.class)
 	@Nullable
@@ -246,11 +247,9 @@ public class GemeindeResource {
 	public List<JaxGemeinde> getAktiveGemeinden(
 			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
 	) {
-		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
-		return gemeindeService.getAktiveGemeinden().stream()
-				//TODO MANDANTEN: do this in getAktiveGemeinden
-			.filter(gemeinde -> gemeinde.getMandant() != null && gemeinde.getMandant().equals(mandant.get()))
+		var mandant = mandantService.findMandantByCookie(mandantCookie);
+
+		return gemeindeService.getAktiveGemeinden(mandant).stream()
 			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
 			.collect(Collectors.toList());
 	}
@@ -265,8 +264,11 @@ public class GemeindeResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
-	public List<JaxGemeinde> getAktiveGueltigeGemeinden() {
-		return gemeindeService.getAktiveGemeindenGueltigAm(LocalDate.now()).stream()
+	public List<JaxGemeinde> getAktiveGueltigeGemeinden(
+		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+	) {
+		Mandant mandant = mandantService.findMandantByCookie(mandantCookie);
+		return gemeindeService.getAktiveGemeindenGueltigAm(LocalDate.now(), mandant).stream()
 			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
 			.collect(Collectors.toList());
 	}
@@ -567,8 +569,9 @@ public class GemeindeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<JaxBfsGemeinde> getUnregisteredBfsGemeinden() {
-		Mandant bern = mandantService.getFirst(); //TODO (later) Change to real mandant!
-		return gemeindeService.getUnregisteredBfsGemeinden(bern).stream()
+		Mandant mandant = principalBean.getMandant();
+		Objects.requireNonNull(mandant);
+		return gemeindeService.getUnregisteredBfsGemeinden(mandant).stream()
 			.map(gemeinde -> converter.gemeindeBfsToJax(gemeinde))
 			.collect(Collectors.toList());
 	}
@@ -581,8 +584,11 @@ public class GemeindeResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
-	public List<JaxBfsGemeinde> getAllBfsGemeinden() {
-		return gemeindeService.getAllBfsGemeinden().stream()
+	public List<JaxBfsGemeinde> getAllBfsGemeinden(
+		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+	) {
+		Mandant mandant = mandantService.findMandantByCookie(mandantCookie);
+		return gemeindeService.getAllBfsGemeinden(mandant).stream()
 			.map(gemeinde -> converter.gemeindeBfsToJax(gemeinde))
 			.collect(Collectors.toList());
 	}
@@ -702,8 +708,11 @@ public class GemeindeResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Fuer Registrierungsprozess
-	public List<JaxGemeinde> getAktiveUndSchulverbundGemeinden() {
-		List<JaxGemeinde> aktiveGemeinde = gemeindeService.getAktiveGemeindenGueltigAm(LocalDate.now()).stream()
+	public List<JaxGemeinde> getAktiveUndSchulverbundGemeinden(
+		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+	) {
+		Mandant mandant = mandantService.findMandantByCookie(mandantCookie);
+		List<JaxGemeinde> aktiveGemeinde = gemeindeService.getAktiveGemeindenGueltigAm(LocalDate.now(), mandant).stream()
 			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
 			.collect(Collectors.toList());
 		List<JaxGemeinde> aktiveUndSchulverbundGemeinden = new ArrayList<>(aktiveGemeinde);

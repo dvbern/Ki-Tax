@@ -69,7 +69,6 @@ public class JaxModulTagesschuleGroup extends JaxAbstractDTO {
 
 	private Set<JaxModulTagesschule> module = new LinkedHashSet<>();
 
-
 	@Nonnull
 	public ModulTagesschuleName getModulTagesschuleName() {
 		return modulTagesschuleName;

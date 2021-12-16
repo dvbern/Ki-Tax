@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,11 +23,17 @@ import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Fachstelle;
+import ch.dvbern.ebegu.entities.Fachstelle_;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 /**
@@ -41,7 +46,7 @@ public class FachstelleServiceBean extends AbstractBaseService implements Fachst
 	@Inject
 	private Persistence persistence;
 	@Inject
-	private CriteriaQueryHelper criteriaQueryHelper;
+	private PrincipalBean principalBean;
 
 	@Nonnull
 	@Override
@@ -61,7 +66,15 @@ public class FachstelleServiceBean extends AbstractBaseService implements Fachst
 	@Nonnull
 	@Override
 	public Collection<Fachstelle> getAllFachstellen() {
-		return new ArrayList<>(criteriaQueryHelper.getAll(Fachstelle.class));
+		Mandant mandant = principalBean.getMandant();
+		if (mandant == null) {
+			throw new EbeguRuntimeException("getAllFachstellen", "mandant not found for principal " + principalBean.getPrincipal().getName());
+		}
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery<Fachstelle> query = cb.createQuery(Fachstelle.class);
+		Root<Fachstelle> root = query.from(Fachstelle.class);
+		query.where(cb.equal(root.get(Fachstelle_.mandant), mandant));
+		return persistence.getCriteriaResults(query);
 	}
 
 	@Override

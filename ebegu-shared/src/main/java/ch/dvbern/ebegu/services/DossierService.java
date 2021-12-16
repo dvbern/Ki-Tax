@@ -27,7 +27,6 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 
 /**
@@ -82,10 +81,10 @@ public interface DossierService {
 	 * Gibt alle existierenden Dossiers zurueck.
 	 *
 	 * @param doAuthCheck: Definiert, ob die Berechtigungen (Lesen/Schreiben) für alle Dossiers geprüft werden muessen.
-	 * @return Liste aller Dossiers aus der DB
+	 * @return Liste aller Dossiers aus der DB für den Mandanten des Principal
 	 */
 	@Nonnull
-	Collection<Dossier> getAllDossiers(boolean doAuthCheck);
+	Collection<Dossier> getAllDossiersForMandant(boolean doAuthCheck);
 
 	/**
 	 * Erstellt ein Dossier und einen Fall (beides, falls noch nicht vorhanden) fuer den eingeloggten

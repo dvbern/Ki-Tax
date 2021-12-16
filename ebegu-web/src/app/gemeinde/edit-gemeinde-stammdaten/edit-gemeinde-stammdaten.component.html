@@ -181,12 +181,52 @@
                         <dv-error-messages input-id="gemeinde_end_ID"
                                            [errorObject]="gemeindeEndDate.errors">
                         </dv-error-messages>
-
-                        <label class="md-no-float margin-top-30" translate for="begu_start_ID" *ngIf="tageschuleEnabledForMandant">GEMEINDE_ANGEBOT</label>
+                    </div>
+                </div>
+                <!-- Alternatives Kontaktfeld -->
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <mat-checkbox id="altBGAdresse_id"
+                                      name="altBGAdresse_id"
+                                      [(ngModel)]="stammdaten.hasAltGemeindeKontakt"
+                                      (ngModelChange)="altGemeindeKontaktHasChange($event)">
+                            {{'ALTERNATIVES_KONTAKTFELD'|translate}}&nbsp;
+                            <dv-tooltip inputId='altBGAdresse_id' [text]="'ALTERNATIVES_KONTAKTFELD_INFO' | translate"></dv-tooltip>
+                        </mat-checkbox>
+                    </div>
+                    <div *ngIf="stammdaten.hasAltGemeindeKontakt">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="form-group">
+                                    <dv-input-container-x [verticalAlign]="true">
+                                        <label class="required"
+                                               translate for="alternativekontaktdaten_id">ANGABEN_KONTAKTFELD</label>
+                                        <mat-form-field floatLabel="always" class="no-margin-left">
+                                        <textarea matInput
+                                                  id="alternativekontaktdaten_id"
+                                                  name="nameAlternativeKontaktdaten"
+                                                  #nameAlternativeKontaktdaten="ngModel"
+                                                  [(ngModel)]="stammdaten.altGemeindeKontaktText"
+                                                  type="text"
+                                                  class="form-control" required></textarea>
+                                            <dv-error-messages [errorObject]="nameAlternativeKontaktdaten.errors"
+                                                               inputId="alternativekontaktdaten_id"></dv-error-messages>
+                                        </mat-form-field>
+                                    </dv-input-container-x>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Angebote Gemeinde-->
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="md-no-float margin-top-30" translate for="begu_start_ID">GEMEINDE_ANGEBOT</label>
 
                         <mat-checkbox id="angebotBG" name="angebotBG"
                                       [(ngModel)]="stammdaten.gemeinde.angebotBG"
-                                      *ngIf="tageschuleEnabledForMandant"
                                       [disabled]="!(isSuperadminOrMandant())"
                                       (ngModelChange)="angeboteChanged(stammdaten)">
                             {{'GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE'|translate}}</mat-checkbox>
@@ -257,7 +297,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </fieldset>
     </div>

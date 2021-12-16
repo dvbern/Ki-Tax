@@ -33,8 +33,6 @@ import ch.dvbern.ebegu.api.dtos.JaxBenutzerResponseWrapper;
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthAccessElement;
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthorisierterBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxExternalBenutzer;
-import ch.dvbern.ebegu.api.dtos.JaxMandant;
-import ch.dvbern.ebegu.api.resource.MandantResource;
 import ch.dvbern.ebegu.api.util.version.VersionInfoBean;
 import ch.dvbern.ebegu.authentication.AuthAccessElement;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
@@ -75,7 +73,6 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 	private final VersionInfoBean versionInfoBean;
 
-	private final MandantResource mandantResource;
 	private final MandantService mandantService;
 	private final LocalhostChecker localhostChecker;
 	private final EbeguConfiguration configuration;
@@ -93,7 +90,6 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		EbeguConfiguration configuration,
 		BenutzerService benutzerService,
 		AuthService authService,
-		MandantResource mandantResource,
 		MandantService mandantService
 	) {
 
@@ -102,7 +98,6 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		this.localhostChecker = localhostChecker;
 		this.benutzerService = benutzerService;
 		this.authService = authService;
-		this.mandantResource = mandantResource;
 		this.mandantService = mandantService;
 	}
 
@@ -299,12 +294,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	@Override
 	public String getMandant() {
 		checkLocalAccessOnly();
-		final JaxMandant first = mandantResource.getFirst();
-		if (first.getId() == null) {
-			String message = "error while loading mandant";
-			throw new EbeguEntityNotFoundException("getFirst", message, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
-		}
-
+		final Mandant first = mandantService.getMandantBern();
 		return first.getId();
 	}
 
@@ -318,7 +308,8 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		checkLocalAccessOnly();
 
 		AuthorisierterBenutzer authUser = convertExternalLogin(jaxExtAuthUser);
-		AuthAccessElement loginDataForCookie = this.authService.createLoginFromIAM(authUser);
+		AuthAccessElement loginDataForCookie = this.authService.createLoginFromIAM(authUser,
+				mandantService.getMandantBern());
 		return convertToJaxExternalAuthAccessElement(loginDataForCookie);
 	}
 

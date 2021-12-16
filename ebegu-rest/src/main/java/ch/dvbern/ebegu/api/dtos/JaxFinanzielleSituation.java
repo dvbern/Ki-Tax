@@ -37,6 +37,18 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	private Boolean steuererklaerungAusgefuellt;
 
 	@Nullable
+	private Boolean quellenbesteuert;
+
+	@Nullable
+	private Boolean gemeinsameStekVorjahr;
+
+	@Nullable
+	private Boolean alleinigeStekVorjahr;
+
+	@Nullable
+	private Boolean veranlagt;
+
+	@Nullable
 	private Boolean steuerdatenZugriff;
 
 	@Nullable
@@ -87,5 +99,41 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	public void setSteuerdatenZugriff(@Nullable Boolean steuerdatenZugriff) {
 		this.steuerdatenZugriff = steuerdatenZugriff;
+	}
+
+	@Nullable
+	public Boolean getQuellenbesteuert() {
+		return quellenbesteuert;
+	}
+
+	public void setQuellenbesteuert(@Nullable Boolean quellenbesteuert) {
+		this.quellenbesteuert = quellenbesteuert;
+	}
+
+	@Nullable
+	public Boolean getGemeinsameStekVorjahr() {
+		return gemeinsameStekVorjahr;
+	}
+
+	public void setGemeinsameStekVorjahr(@Nullable Boolean gemeinsameStekVorjahr) {
+		this.gemeinsameStekVorjahr = gemeinsameStekVorjahr;
+	}
+
+	@Nullable
+	public Boolean getAlleinigeStekVorjahr() {
+		return alleinigeStekVorjahr;
+	}
+
+	public void setAlleinigeStekVorjahr(@Nullable Boolean alleinigeStekVorjahr) {
+		this.alleinigeStekVorjahr = alleinigeStekVorjahr;
+	}
+
+	@Nullable
+	public Boolean getVeranlagt() {
+		return veranlagt;
+	}
+
+	public void setVeranlagt(@Nullable Boolean veranlagt) {
+		this.veranlagt = veranlagt;
 	}
 }

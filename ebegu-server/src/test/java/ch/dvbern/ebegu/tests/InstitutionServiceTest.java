@@ -105,7 +105,7 @@ public class InstitutionServiceTest extends AbstractEbeguLoginTest {
 		InstitutionStammdaten institutionStammdaten = TestDataUtil.createDefaultInstitutionStammdaten();
 		final Institution institution = institutionStammdaten.getInstitution();
 
-		persistence.persist(institution.getMandant());
+		TestDataUtil.saveMandantIfNecessary(persistence, institution.getMandant());
 		persistence.persist(institution.getTraegerschaft());
 
 		final Institution persistedInstitution = institutionService.createInstitution(institution);

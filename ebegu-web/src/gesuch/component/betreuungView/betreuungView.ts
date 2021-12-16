@@ -246,14 +246,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.einstellungRS.getAllEinstellungenBySystemCached(
             this.gesuchModelManager.getGesuchsperiode().id,
         ).then((response: TSEinstellung[]) => {
-            response.filter(r => r.key === TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG)
-                .forEach(value => {
-                    this.zuschlagBehinderungProTag = Number(value.value);
-                });
-            response.filter(r => r.key === TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD)
-                .forEach(value => {
-                    this.zuschlagBehinderungProStd = Number(value.value);
-                });
             response.filter(r => r.key === TSEinstellungKey.FKJV_EINGEWOEHNUNG)
                 .forEach(value => {
                     this.eingewoehnungAktiviert = value.getValueAsBoolean();
@@ -262,6 +254,22 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 .forEach(value => {
                     this.kitaPlusZuschlagAktiviert = value.getValueAsBoolean();
                 });
+        });
+
+        this.einstellungRS.findEinstellung(
+            TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG,
+            this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id,
+        ).then(res => {
+            this.zuschlagBehinderungProTag = Number(res.value);
+        });
+
+        this.einstellungRS.findEinstellung(
+            TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD,
+            this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id,
+        ).then(res => {
+            this.zuschlagBehinderungProStd = Number(res.value);
         });
     }
 

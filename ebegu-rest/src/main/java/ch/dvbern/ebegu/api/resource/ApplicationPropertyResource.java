@@ -18,15 +18,12 @@ package ch.dvbern.ebegu.api.resource;
 import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.URI;
-import java.net.URLDecoder;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -140,9 +137,16 @@ public class ApplicationPropertyResource {
 	@Path("/public/background")
 	@PermitAll
 	public JaxApplicationProperties getBackgroundColor(@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
-		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
-		ApplicationProperty prop = getBackgroundColorProperty(mandant.get());
+		// getBackgroundColor muss auch erlaubt sein, wenn kein Mandant gesetzt ist. Wir brauchen dies auf der Verteiler-
+		// seite der Mandanten, um herauszufinden, ob die Mandantenfähigkeit überhaupt aktiv ist
+		Mandant mandant;
+		if (mandantCookie == null) {
+			mandant = mandantService.getMandantBern();
+		} else {
+			mandant = mandantService.findMandantByCookie(mandantCookie);
+		}
+
+		ApplicationProperty prop = getBackgroundColorProperty(mandant);
 		return converter.applicationPropertyToJAX(prop);
 	}
 
@@ -165,9 +169,9 @@ public class ApplicationPropertyResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(SUPER_ADMIN)
 	public List<JaxApplicationProperties> getAllApplicationProperties(@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
-		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getFirst());
-		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
-		return applicationPropertyService.getAllApplicationProperties(mandant.get()).stream()
+		var mandant = mandantService.findMandantByCookie(mandantCookie);
+
+		return applicationPropertyService.getAllApplicationProperties(mandant).stream()
 			.sorted(Comparator.comparing(o -> o.getName().name()))
 			.map(ap -> converter.applicationPropertyToJAX(ap))
 			.collect(Collectors.toList());
@@ -187,13 +191,12 @@ public class ApplicationPropertyResource {
 		@Context HttpServletResponse response,
 		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
 
-		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
+		var mandant = mandantService.findMandantByCookie(mandantCookie);
 
 		ApplicationProperty modifiedProperty =
 			this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(
 				ApplicationPropertyKey.class,
-				key), value, mandant.get());
+				key), value, mandant);
 
 		URI uri = uriInfo.getBaseUriBuilder()
 			.path(ApplicationPropertyResource.class)
@@ -217,12 +220,12 @@ public class ApplicationPropertyResource {
 		@Context HttpServletResponse response,
 		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
 		) {
-		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
+		var mandant = mandantService.findMandantByCookie(mandantCookie);
+
 		ApplicationProperty modifiedProperty =
 			this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(
 				ApplicationPropertyKey.class,
-				key), value, mandant.get());
+				key), value, mandant);
 
 		return converter.applicationPropertyToJAX(modifiedProperty);
 	}
@@ -261,78 +264,89 @@ public class ApplicationPropertyResource {
 	@PermitAll
 	public Response getPublicProperties(@Context HttpServletResponse response, @CookieParam(AuthConstants.COOKIE_MANDANT)
 			Cookie mandantCookie) {
-		AtomicReference<Mandant> mandant = new AtomicReference<>(mandantService.getDefaultMandant());
-		if (mandantCookie != null) {
-			mandantService.findMandantByName(URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8)).ifPresent(mandant::set);
+
+		// getPublicProperties muss auch erlaubt sein, wenn kein Mandant gesetzt ist. Wir brauchen dies auf der Verteiler-
+		// seite der Mandanten, um herauszufinden, ob die Mandantenfähigkeit überhaupt aktiv ist
+		Mandant mandant;
+		if (mandantCookie == null) {
+			mandant = mandantService.getMandantBern();
+		} else {
+			mandant = mandantService.findMandantByCookie(mandantCookie);
 		}
+
 		boolean devmode = ebeguConfiguration.getIsDevmode();
-		final String whitelist = readWhitelistAsString(mandant.get());
-		boolean dummyMode = ebeguConfiguration.isDummyLoginEnabled(mandant.get());
-		String sentryEnvName = getSentryEnvName(mandant.get()).getValue();
-		String background = getBackgroundColorProperty(mandant.get()).getValue();
+		final String whitelist = readWhitelistAsString(mandant);
+		boolean dummyMode = ebeguConfiguration.isDummyLoginEnabled(mandant);
+		String sentryEnvName = getSentryEnvName(mandant).getValue();
+		String background = getBackgroundColorProperty(mandant).getValue();
 		boolean zahlungentestmode = ebeguConfiguration.getIsZahlungenTestMode();
 		boolean personenSucheDisabled = ebeguConfiguration.isPersonenSucheDisabled();
 		String kitaxHost = ebeguConfiguration.getKitaxHost();
 		String kitaxendpoint = ebeguConfiguration.getKitaxEndpoint();
 		boolean multimandantEnabled = ebeguConfiguration.getMultimandantEnabled();
+		boolean angebotTSEnabled = mandant.isAngebotTS();
 
 		EbeguEntityNotFoundException notFound = new EbeguEntityNotFoundException("getPublicProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 
 		ApplicationProperty einreichefristOeffentlich  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH,
-							mandant.get())
+							mandant)
 			.orElseThrow(() -> notFound);
 		ApplicationProperty einreichefristPrivat  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT,
-							mandant.get())
+							mandant)
 			.orElseThrow(() -> notFound);
 		ApplicationProperty ferienbetreuungAktiv  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.FERIENBETREUUNG_AKTIV,
-							mandant.get())
+							mandant)
+				.orElseThrow(() -> notFound);
+		ApplicationProperty lastenausgleichAktiv =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_AKTIV,
+				mandant)
 				.orElseThrow(() -> notFound);
 		ApplicationProperty lastenausgleichTagesschulenAktiv  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AKTIV,
-							mandant.get())
+							mandant)
 				.orElseThrow(() -> notFound);
 		ApplicationProperty gemeindeKennzahlenAktiv  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.GEMEINDE_KENNZAHLEN_AKTIV,
-							mandant.get())
+							mandant)
 				.orElseThrow(() -> notFound);
 		ApplicationProperty lastenausgleichTagesschulenAnteilZweitpruefungDe  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE,
-							mandant.get())
+							mandant)
 				.orElseThrow(() -> notFound);
 		ApplicationProperty lastenausgleichTagesschulenAnteilZweitpruefungFr  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_FR,
-							mandant.get())
+							mandant)
 				.orElseThrow(() -> notFound);
 		ApplicationProperty lastenausgleichTagesschulenAutoZweitpruefungDe  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE,
-							mandant.get())
+							mandant)
 				.orElseThrow(() -> notFound);
 		ApplicationProperty lastenausgleichTagesschulenAutoZweitpruefungFr  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR,
-							mandant.get())
+							mandant)
 				.orElseThrow(() -> notFound);
 		ApplicationProperty primaryColor  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR,
-							mandant.get())
+							mandant)
 				.orElseThrow(() -> notFound);
 		ApplicationProperty primaryColorDark  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR_DARK,
-							mandant.get())
+							mandant)
 				.orElseThrow(() -> notFound);
 		ApplicationProperty primaryColorLight  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR_LIGHT,
-							mandant.get())
+							mandant)
 				.orElseThrow(() -> notFound);
 		ApplicationProperty logoFileName  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LOGO_FILE_NAME,
-							mandant.get())
+							mandant)
 				.orElseThrow(() -> notFound);
 		ApplicationProperty logoFileNameWhite  =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LOGO_WHITE_FILE_NAME,
-							mandant.get())
+							mandant)
 				.orElseThrow(() -> notFound);
 
 		String nodeName = "";
@@ -364,9 +378,10 @@ public class ApplicationPropertyResource {
 			kitaxendpoint,
 			einreichefristOeffentlich.getValue(),
 			einreichefristPrivat.getValue(),
-			ferienbetreuungAktiv.getValue().equals("true"),
-			lastenausgleichTagesschulenAktiv.getValue().equals("true"),
-			gemeindeKennzahlenAktiv.getValue().equals("true"),
+			stringToBool(lastenausgleichAktiv.getValue()),
+			stringToBool(ferienbetreuungAktiv.getValue()),
+			stringToBool(lastenausgleichTagesschulenAktiv.getValue()),
+			stringToBool(gemeindeKennzahlenAktiv.getValue()),
 			lastenausgleichTagesschulenAnteilZweitpruefungDeConverted,
 			lastenausgleichTagesschulenAnteilZweitpruefungFrConverted,
 			lastenausgleichTagesschulenAutoZweitpruefungDeConverted,
@@ -376,8 +391,13 @@ public class ApplicationPropertyResource {
 			primaryColorLight.getValue(),
 			logoFileName.getValue(),
 			logoFileNameWhite.getValue(),
-			multimandantEnabled
+			multimandantEnabled,
+			angebotTSEnabled
 			);
 		return Response.ok(pubAppConf).build();
+	}
+
+	private boolean stringToBool(@Nonnull String str) {
+		return str.equals("true");
 	}
 }

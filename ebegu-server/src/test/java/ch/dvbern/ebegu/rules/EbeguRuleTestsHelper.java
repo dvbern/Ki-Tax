@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
@@ -166,32 +167,32 @@ public final class EbeguRuleTestsHelper {
 
 	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung, @Nonnull Map<EinstellungKey, Einstellung> einstellungenRules, @Nonnull Map<EinstellungKey, Einstellung> einstellungenAbschlussRules) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
 		BetreuungsgutscheinExecutor executorWithSpecificAbschlussRules = new BetreuungsgutscheinExecutor(isDebug, einstellungenAbschlussRules);
 		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungenRules, executorWithSpecificAbschlussRules);
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung, @Nonnull Map<EinstellungKey, Einstellung> einstellungenRules) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
 		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungenRules, executor);
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
 		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungenGemaessAsiv, executor);
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculateWithCustomEinstellungen(AbstractPlatz betreuung, Map<EinstellungKey, Einstellung> einstellungMap) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
 		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungMap, executor);
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculateInklAllgemeineRegeln(Betreuung betreuung) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
 		return calculateInklAllgemeineRegeln(betreuung, initialenRestanspruchAbschnitte);
 	}
 
@@ -201,7 +202,7 @@ public final class EbeguRuleTestsHelper {
 	 */
 	public static List<VerfuegungZeitabschnitt> calculateWithRemainingRestanspruch(Betreuung betreuung, int existingRestanspruch) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : initialenRestanspruchAbschnitte) {
 			verfuegungZeitabschnitt.setAnspruchspensumRestForAsivAndGemeinde(existingRestanspruch);
 		}

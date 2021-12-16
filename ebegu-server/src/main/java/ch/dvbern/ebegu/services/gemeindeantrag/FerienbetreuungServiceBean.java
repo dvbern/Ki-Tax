@@ -59,8 +59,8 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.AbstractBaseService;
+import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
@@ -91,12 +91,23 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	private EbeguConfiguration configuration;
 
 	@Inject
-	private CriteriaQueryHelper criteriaQueryHelper;
+	private Authorizer authorizer;
 
 	@Nonnull
 	@Override
 	public Collection<FerienbetreuungAngabenContainer> getAllFerienbetreuungAntraege() {
-		return criteriaQueryHelper.getAll(FerienbetreuungAngabenContainer.class);
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery<FerienbetreuungAngabenContainer> query = cb.createQuery(FerienbetreuungAngabenContainer.class);
+		Root<FerienbetreuungAngabenContainer> root = query.from(FerienbetreuungAngabenContainer.class);
+
+		Objects.requireNonNull(principal.getMandant());
+		Predicate mandantPredicate = cb.equal(
+			root.get(FerienbetreuungAngabenContainer_.gemeinde).get(Gemeinde_.mandant),
+			principal.getMandant()
+			);
+		query.where(mandantPredicate);
+
+		return persistence.getCriteriaResults(query);
 	}
 
 	@Nonnull
@@ -113,6 +124,12 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		CriteriaQuery<FerienbetreuungAngabenContainer> query = cb.createQuery(FerienbetreuungAngabenContainer.class);
 		Root<FerienbetreuungAngabenContainer> root = query.from(FerienbetreuungAngabenContainer.class);
+
+		Predicate mandantPredicate = cb.equal(
+			root.get(FerienbetreuungAngabenContainer_.gemeinde)
+				.get(Gemeinde_.mandant), principal.getMandant()
+		);
+		predicates.add(mandantPredicate);
 
 		if (!principal.isCallerInAnyOfRole(
 			UserRole.SUPER_ADMIN,
@@ -154,7 +171,9 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 		Predicate[] predicateArray = new Predicate[predicates.size()];
 		query.where(predicates.toArray(predicateArray));
 
-		return persistence.getCriteriaResults(query);
+		var containers = persistence.getCriteriaResults(query);
+		containers.forEach(c -> authorizer.checkReadAuthorization(c));
+		return containers;
 	}
 
 	private Predicate createTimestampMutiertPredicate(
@@ -183,6 +202,8 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 		FerienbetreuungAngabenContainer container =
 			persistence.find(FerienbetreuungAngabenContainer.class, containerId);
+
+		authorizer.checkReadAuthorization(container);
 
 		return Optional.ofNullable(container);
 	}

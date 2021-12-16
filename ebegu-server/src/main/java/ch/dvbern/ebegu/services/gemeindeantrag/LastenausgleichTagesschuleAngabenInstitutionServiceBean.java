@@ -74,7 +74,6 @@ import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
-import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.base.Preconditions;
@@ -103,9 +102,6 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 
 	@Inject
 	private EinstellungService einstellungService;
-
-	@Inject
-	private MandantService mandantService;
 
 	@Override
 	public void createLastenausgleichTagesschuleInstitution(
@@ -462,7 +458,9 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 					+ " gefunden werden");
 		}
 		LocalDate stichtag = Date.valueOf(einstellungList.get(0).getValue()).toLocalDate();
-		Gesuchsperiode gesuchsperiodeAmStichtag = gesuchsperiodeService.getGesuchsperiodeAm(stichtag, mandantService.getDefaultMandant())
+		var mandant = gesuchsperiode.getMandant();
+		Objects.requireNonNull(mandant);
+		Gesuchsperiode gesuchsperiodeAmStichtag = gesuchsperiodeService.getGesuchsperiodeAm(stichtag, mandant)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode",
 				"Keine Gesuchsperiode für Stichtag " + stichtag.toString() + " gefunden"

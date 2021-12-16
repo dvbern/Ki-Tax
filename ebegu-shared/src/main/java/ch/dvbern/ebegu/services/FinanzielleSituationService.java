@@ -39,7 +39,7 @@ public interface FinanzielleSituationService {
 	Gesuch saveFinanzielleSituationStart(
 		@Nonnull FinanzielleSituationContainer finanzielleSituation,
 		@Nonnull Boolean sozialhilfebezueger,
-		@Nonnull Boolean gemeinsameSteuererklaerung,
+		@Nullable Boolean gemeinsameSteuererklaerung,
 		Boolean verguenstigungGewuenscht,
 		boolean keineMahlzeitenverguenstigungGewuenscht,
 		@Nullable String iban,

@@ -15,11 +15,11 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {of} from 'rxjs';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
+import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
@@ -30,7 +30,7 @@ import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
     styleUrls: ['./resultate.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ResultateComponent extends AbstractGesuchViewX implements OnInit {
+export class ResultateComponent extends AbstractGesuchViewX<TSFinanzModel> {
 
     public form: NgForm;
 
@@ -39,9 +39,10 @@ export class ResultateComponent extends AbstractGesuchViewX implements OnInit {
         protected wizardStepManager: WizardStepManager,
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
-    }
-
-    public ngOnInit(): void {
+        this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
+            this.gesuchModelManager.isGesuchsteller2Required(),
+            2);
+        this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
     }
 
     public getSubStepIndex(): number {
@@ -50,11 +51,6 @@ export class ResultateComponent extends AbstractGesuchViewX implements OnInit {
 
     public getSubStepName(): TSFinanzielleSituationSubStepName {
         return TSFinanzielleSituationSubStepName.LUZERN_RESULTATE;
-    }
-
-    public save(): Promise<any> {
-        console.log('saving resultate');
-        return of().toPromise();
     }
 
     public hasPrevious(): boolean {

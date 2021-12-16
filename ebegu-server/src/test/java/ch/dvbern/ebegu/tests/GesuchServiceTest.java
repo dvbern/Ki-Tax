@@ -207,7 +207,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Assert.assertNotNull(gesuchService);
 		Gemeinde bern = TestDataUtil.getGemeindeParis(persistence);
 		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService, gesuchsperiode);
-		final Mandant mandant = TestDataUtil.getMandantKantonBern(persistence);
+		final Mandant mandant = TestDataUtil.getMandantKantonBernAndPersist(persistence);
 
 		Collection<InstitutionStammdaten> stammdaten = criteriaQueryHelper.getAll(InstitutionStammdaten.class);
 		Gesuch gesuch2 = testfaelleService.createAndSaveGesuch(new Testfall02_FeutzYvonne(gesuch.getGesuchsperiode(), stammdaten, true, bern), true, null);
@@ -316,8 +316,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		// Voraussetzung: Ich habe einen Antrag, er muss nicht verfuegt sein
 		Gesuch erstgesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		Gesuchsperiode gpFolgegesuch = new Gesuchsperiode();
-		Mandant mandant = TestDataUtil.createDefaultMandant();
-		TestDataUtil.saveMandantIfNecessary(persistence, mandant);
+		Mandant mandant = TestDataUtil.getMandantKantonBernAndPersist(persistence);
 		gpFolgegesuch.setMandant(mandant);
 		gpFolgegesuch.getGueltigkeit().setGueltigAb(erstgesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb().plusYears(1));
 		gpFolgegesuch.getGueltigkeit().setGueltigBis(erstgesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis().plusYears(1));
@@ -637,7 +636,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Gesuch gesuch3 = createGesuchFreigabequittung(LocalDate.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG).plusDays(1));
 		TestDataUtil.createGemeindeStammdaten(gesuch1.extractGemeinde(), persistence);
 
-		Assert.assertEquals(2, gesuchService.findGesucheWithoutFreigabequittungenAndWarn());
+		Assert.assertEquals(2, gesuchService.findGesucheWithoutFreigabequittungenAndWarn(getDummySuperadmin().getMandant()));
 		final Optional<Gesuch> resultGesuch1 = gesuchService.findGesuch(gesuch1.getId());
 		Assert.assertTrue(resultGesuch1.isPresent());
 		Assert.assertNotNull(resultGesuch1.get().getDatumGewarntFehlendeQuittung());
@@ -663,7 +662,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Gesuch gesuch3 = createGesuchInBearbeitungGS(LocalDateTime.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_FREIGABE).plusDays(1));
 		TestDataUtil.createGemeindeStammdaten(gesuch1.extractGemeinde(), persistence);
 
-		Assert.assertEquals(2, gesuchService.findGesucheNichtFreigegebenAndWarn());
+		Assert.assertEquals(2, gesuchService.findGesucheNichtFreigegebenAndWarn(getDummySuperadmin().getMandant()));
 		final Optional<Gesuch> resultGesuch1 = gesuchService.findGesuch(gesuch1.getId());
 		Assert.assertTrue(resultGesuch1.isPresent());
 		Assert.assertNotNull(resultGesuch1.get().getDatumGewarntNichtFreigegeben());
@@ -705,7 +704,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		persistence.merge(gesuch6);
 
 		Assert.assertEquals(6, gesuchService.getAllGesuche().size());
-		Assert.assertEquals(4, gesuchService.deleteGesucheOhneFreigabeOderQuittung());
+		Assert.assertEquals(4, gesuchService.deleteGesucheOhneFreigabeOderQuittung(getDummySuperadmin().getMandant()));
 		Assert.assertEquals(2, gesuchService.getAllGesuche().size());
 	}
 
@@ -812,7 +811,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		//add Anmeldungen
 		AnmeldungTagesschule betreuung =
 			TestDataUtil.createAnmeldungTagesschule(erstgesuch.getKindContainers().iterator().next(), gesuchsperiode);
-		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getMandant());
+		TestDataUtil.saveMandantIfNecessary(persistence, betreuung.getInstitutionStammdaten().getInstitution().getMandant());
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft());
 		betreuungService.saveAnmeldungTagesschule(betreuung);
 

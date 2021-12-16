@@ -37,10 +37,9 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
-import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationRechnerFactory;
 import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
@@ -53,9 +52,6 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 
 	@Inject
 	private Persistence persistence;
-
-	@Inject
-	private FinanzielleSituationRechner finSitRechner;
 
 	@Inject
 	private WizardStepService wizardStepService;
@@ -74,7 +70,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	public Gesuch saveFinanzielleSituationStart(
 		@Nonnull FinanzielleSituationContainer finanzielleSituation,
 		@Nonnull Boolean sozialhilfebezueger,
-		@Nonnull Boolean gemeinsameSteuererklaerung,
+		@Nullable Boolean gemeinsameSteuererklaerung,
 		@Nonnull Boolean verguenstigungGewuenscht,
 		boolean keineMahlzeitenverguenstigungGewuenscht,
 		@Nullable String iban,
@@ -114,7 +110,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			gesuchId,
 			null,
 			finanzielleSituationPersisted.getFinanzielleSituationJA(),
-			WizardStepName.FINANZIELLE_SITUATION,
+			wizardStepService.getFinSitWizardStepNameForGesuch(gesuch),
 			1); // it must be substep 1 since it is finanzielleSituationStart
 
 		return gesuch;
@@ -122,7 +118,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 
 	private Gesuch saveFinanzielleSituationFelderAufGesuch(
 		@Nonnull Boolean sozialhilfebezueger,
-		@Nonnull Boolean gemeinsameSteuererklaerung,
+		@Nullable Boolean gemeinsameSteuererklaerung,
 		@Nonnull Boolean verguenstigungGewuenscht,
 		boolean keineMahlzeitenverguenstigungGewuenscht,
 		@Nullable String iban,
@@ -192,14 +188,14 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 
 		// Die eigentliche FinSit speichern
 		FinanzielleSituationContainer finanzielleSituationPersisted = persistence.merge(finanzielleSituation);
-		wizardStepService.updateSteps(gesuchId, null, finanzielleSituationPersisted.getFinanzielleSituationJA(), WizardStepName
-			.FINANZIELLE_SITUATION);
 
 		final Gesuch gesuch = gesuchService.findGesuch(gesuchId).orElseThrow(() -> new EbeguEntityNotFoundException(
 			"saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId));
 
 		// Steuererklaerungs/-veranlagungs-Flags nachfuehren fuer GS2
 		handleGemeinsameSteuererklaerung(gesuch);
+
+		wizardStepService.updateSteps(gesuchId, null, finanzielleSituationPersisted.getFinanzielleSituationJA(), wizardStepService.getFinSitWizardStepNameForGesuch(gesuch));
 
 		return finanzielleSituationPersisted;
 	}
@@ -245,13 +241,13 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	public FinanzielleSituationResultateDTO calculateResultate(@Nonnull Gesuch gesuch) {
 		// Die Berechnung der FinSit Resultate beruht auf einem "Pseudo-Gesuch", dieses hat
 		// keinen Status und kann/muss nicht geprueft werden!
-		return finSitRechner.calculateResultateFinanzielleSituation(gesuch, true);
+		return FinanzielleSituationRechnerFactory.getRechner(gesuch).calculateResultateFinanzielleSituation(gesuch, true);
 	}
 
 	@Override
 	public void calculateFinanzDaten(@Nonnull Gesuch gesuch) {
 		final BigDecimal minimumEKV = calculateGrenzwertEKV(gesuch);
-		finSitRechner.calculateFinanzDaten(gesuch, minimumEKV);
+		FinanzielleSituationRechnerFactory.getRechner(gesuch).calculateFinanzDaten(gesuch, minimumEKV);
 	}
 
 	/**

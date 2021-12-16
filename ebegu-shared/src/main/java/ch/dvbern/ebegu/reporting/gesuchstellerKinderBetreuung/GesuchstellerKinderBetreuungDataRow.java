@@ -84,6 +84,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private Boolean ekvAnnuliertBasisJahr2;
 	@Nullable private Boolean stvGeprueft;
 	@Nullable private Boolean veranlagt;
+	@Nullable private Boolean mzvBeantragt;
 	@Nullable private Boolean sozialhilfeBezueger;
 
 	@Nullable private String kindName;
@@ -805,5 +806,14 @@ public class GesuchstellerKinderBetreuungDataRow {
 
 	public void setEkvAnnuliertBasisJahr2(@Nullable Boolean ekvAnnuliertBasisJahr2) {
 		this.ekvAnnuliertBasisJahr2 = ekvAnnuliertBasisJahr2;
+	}
+
+	@Nullable
+	public Boolean getMzvBeantragt() {
+		return mzvBeantragt;
+	}
+
+	public void setMzvBeantragt(@Nullable Boolean mzvBeantragt) {
+		this.mzvBeantragt = mzvBeantragt;
 	}
 }

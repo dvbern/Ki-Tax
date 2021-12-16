@@ -93,6 +93,7 @@ import org.apache.commons.lang.StringUtils;
 public abstract class AbstractTestfall {
 
 	public static final String ID_MANDANT_KANTON_BERN = "e3736eb8-6eef-40ef-9e52-96ab48d8f220";
+	public static final String ID_MANDANT_KANTON_LUZERN = "485d7483-30a2-11ec-a86f-b89a2ae4a038";
 
 	public static final String ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA = "945e3eef-8f43-43d2-a684-4aa61089684b";
 	public static final String ID_INSTITUTION_STAMMDATEN_TAGESFAMILIEN = "6b7beb6e-6cf3-49d6-84c0-5818d9215ecd";

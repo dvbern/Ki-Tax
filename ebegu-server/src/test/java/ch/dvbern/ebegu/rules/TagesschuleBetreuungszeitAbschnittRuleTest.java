@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.TSCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.FinSitStatus;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rechner.TagesschuleRechner;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -47,7 +48,7 @@ public class TagesschuleBetreuungszeitAbschnittRuleTest extends AbstractBGRechne
 
 	@Before
 	public void setUp() {
-		gesuch = TestDataUtil.createTestgesuchDagmar();
+		gesuch = TestDataUtil.createTestgesuchDagmar(new FinanzielleSituationBernRechner());
 		KindContainer kindContainer = gesuch.getKindContainers().iterator().next();
 		anmeldungTagesschule = TestDataUtil.createAnmeldungTagesschuleWithModules(kindContainer, gesuch.getGesuchsperiode());//initAnmedlungTagesschule();
 	}
