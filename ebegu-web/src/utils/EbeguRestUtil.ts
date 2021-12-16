@@ -602,6 +602,14 @@ export class EbeguRestUtil {
             restFamiliensituation.abweichendeZahlungsadresseMahlzeiten = familiensituation.abweichendeZahlungsadresseMahlzeiten;
             restFamiliensituation.zahlungsadresseMahlzeiten =
                 this.adresseToRestObject({}, familiensituation.zahlungsadresseMahlzeiten);
+            restFamiliensituation.ibanInfoma = familiensituation.ibanInfoma;
+            restFamiliensituation.kontoinhaberInfoma = familiensituation.kontoinhaberInfoma;
+            restFamiliensituation.abweichendeZahlungsadresseInfoma = familiensituation.abweichendeZahlungsadresseInfoma;
+            restFamiliensituation.zahlungsadresseInfoma =
+                this.adresseToRestObject({}, familiensituation.zahlungsadresseInfoma);
+            restFamiliensituation.infomaKreditorennummer = familiensituation.infomaKreditorennummer;
+            restFamiliensituation.infomaBankcode = familiensituation.infomaBankcode;
+            restFamiliensituation.auszahlungAnEltern = familiensituation.auszahlungAnEltern;
             return restFamiliensituation;
         }
 
@@ -672,6 +680,14 @@ export class EbeguRestUtil {
                 familiensituationFromServer.abweichendeZahlungsadresseMahlzeiten;
             familiensituation.zahlungsadresseMahlzeiten =
                 this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresseMahlzeiten);
+            familiensituation.ibanInfoma = familiensituationFromServer.ibanInfoma;
+            familiensituation.kontoinhaberInfoma = familiensituationFromServer.kontoinhaberInfoma;
+            familiensituation.abweichendeZahlungsadresseInfoma = familiensituationFromServer.abweichendeZahlungsadresseInfoma;
+            familiensituation.zahlungsadresseInfoma =
+                this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresseInfoma);
+            familiensituation.infomaKreditorennummer = familiensituationFromServer.infomaKreditorennummer;
+            familiensituation.infomaBankcode = familiensituationFromServer.infomaBankcode;
+            familiensituation.auszahlungAnEltern = familiensituationFromServer.auszahlungAnEltern;
             return familiensituation;
         }
         return undefined;

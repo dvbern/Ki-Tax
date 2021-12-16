@@ -50,3 +50,27 @@ alter table familiensituation
 
 alter table familiensituation change abweichende_zahlungsadresse abweichende_zahlungsadresse_mahlzeiten BIT NOT NULL DEFAULT FALSE;
 alter table familiensituation_aud change abweichende_zahlungsadresse abweichende_zahlungsadresse_mahlzeiten BIT;
+
+# infoma properties familiensituation
+alter table familiensituation add column auszahlungsdaten_infoma_id binary(16);
+alter table familiensituation_aud add column auszahlungsdaten_infoma_id binary(16);
+
+alter table familiensituation
+	add constraint UK_familiensituation_auszahlungsdaten_infoma_id unique (auszahlungsdaten_infoma_id);
+
+alter table familiensituation
+	add constraint FK_familiensituation_auszahlungsdaten_infoma_id
+		foreign key (auszahlungsdaten_infoma_id)
+			references auszahlungsdaten (id);
+
+alter table familiensituation add column abweichende_zahlungsadresse_infoma BIT NOT NULL DEFAULT FALSE;
+alter table familiensituation_aud add column abweichende_zahlungsadresse_infoma BIT;
+
+ALTER TABLE familiensituation ADD COLUMN infoma_kreditorennummer VARCHAR(255);
+ALTER TABLE familiensituation_aud ADD COLUMN infoma_kreditorennummer VARCHAR(255);
+
+ALTER TABLE familiensituation ADD COLUMN infoma_bankcode VARCHAR(255);
+ALTER TABLE familiensituation_aud ADD COLUMN infoma_bankcode VARCHAR(255);
+
+alter table familiensituation add column auszahlung_an_eltern BIT NOT NULL DEFAULT FALSE;
+alter table familiensituation_aud add column auszahlung_an_eltern BIT;

@@ -32,6 +32,14 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _abweichendeZahlungsadresseMahlzeiten: boolean;
     private _zahlungsadresseMahlzeiten: TSAdresse;
 
+    private _ibanInfoma: string;
+    private _kontoinhaberInfoma: string;
+    private _abweichendeZahlungsadresseInfoma: boolean;
+    private _zahlungsadresseInfoma: TSAdresse;
+    private _infomaKreditorennummer: string;
+    private _infomaBankcode: string;
+    private _auszahlungAnEltern: boolean;
+
     public constructor() {
         super();
     }
@@ -122,6 +130,62 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     public set zahlungsadresseMahlzeiten(value: TSAdresse) {
         this._zahlungsadresseMahlzeiten = value;
+    }
+
+    public get ibanInfoma(): string {
+        return this._ibanInfoma;
+    }
+
+    public set ibanInfoma(value: string) {
+        this._ibanInfoma = value;
+    }
+
+    public get kontoinhaberInfoma(): string {
+        return this._kontoinhaberInfoma;
+    }
+
+    public set kontoinhaberInfoma(value: string) {
+        this._kontoinhaberInfoma = value;
+    }
+
+    public get abweichendeZahlungsadresseInfoma(): boolean {
+        return this._abweichendeZahlungsadresseInfoma;
+    }
+
+    public set abweichendeZahlungsadresseInfoma(value: boolean) {
+        this._abweichendeZahlungsadresseInfoma = value;
+    }
+
+    public get zahlungsadresseInfoma(): TSAdresse {
+        return this._zahlungsadresseInfoma;
+    }
+
+    public set zahlungsadresseInfoma(value: TSAdresse) {
+        this._zahlungsadresseInfoma = value;
+    }
+
+    public get infomaKreditorennummer(): string {
+        return this._infomaKreditorennummer;
+    }
+
+    public set infomaKreditorennummer(value: string) {
+        this._infomaKreditorennummer = value;
+    }
+
+    public get infomaBankcode(): string {
+        return this._infomaBankcode;
+    }
+
+    public set infomaBankcode(value: string) {
+        this._infomaBankcode = value;
+    }
+
+    public get auszahlungAnEltern(): boolean {
+        return this._auszahlungAnEltern;
+    }
+
+    public set auszahlungAnEltern(value: boolean) {
+        this._auszahlungAnEltern = value;
     }
 
     public hasSecondGesuchsteller(referenzdatum: moment.Moment): boolean {

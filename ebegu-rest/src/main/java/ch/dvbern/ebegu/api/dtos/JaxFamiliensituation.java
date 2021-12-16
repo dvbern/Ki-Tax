@@ -73,6 +73,27 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	@Nullable
 	private JaxAdresse zahlungsadresseMahlzeiten;
 
+	@Nullable
+	private String ibanInfoma;
+
+	@Nullable
+	private String kontoinhaberInfoma;
+
+	private boolean abweichendeZahlungsadresseInfoma;
+
+	@Nullable
+	private JaxAdresse zahlungsadresseInfoma;
+
+	@Nullable
+	private String infomaKreditorennummer;
+
+	@Nullable
+	private String infomaBankcode;
+
+	@Nonnull
+	private Boolean auszahlungAnEltern;
+
+
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
 	}
@@ -181,5 +202,67 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setZahlungsadresseMahlzeiten(@Nullable JaxAdresse zahlungsadresse) {
 		this.zahlungsadresseMahlzeiten = zahlungsadresse;
+	}
+
+	@Nullable
+	public String getIbanInfoma() {
+		return ibanInfoma;
+	}
+
+	public void setIbanInfoma(@Nullable String ibanInfoma) {
+		this.ibanInfoma = ibanInfoma;
+	}
+
+	@Nullable
+	public String getKontoinhaberInfoma() {
+		return kontoinhaberInfoma;
+	}
+
+	public void setKontoinhaberInfoma(@Nullable String kontoinhaberInfoma) {
+		this.kontoinhaberInfoma = kontoinhaberInfoma;
+	}
+
+	public boolean isAbweichendeZahlungsadresseInfoma() {
+		return abweichendeZahlungsadresseInfoma;
+	}
+
+	public void setAbweichendeZahlungsadresseInfoma(boolean abweichendeZahlungsadresseInfoma) {
+		this.abweichendeZahlungsadresseInfoma = abweichendeZahlungsadresseInfoma;
+	}
+
+	@Nullable
+	public JaxAdresse getZahlungsadresseInfoma() {
+		return zahlungsadresseInfoma;
+	}
+
+	public void setZahlungsadresseInfoma(@Nullable JaxAdresse zahlungsadresseInfoma) {
+		this.zahlungsadresseInfoma = zahlungsadresseInfoma;
+	}
+
+	@Nullable
+	public String getInfomaKreditorennummer() {
+		return infomaKreditorennummer;
+	}
+
+	public void setInfomaKreditorennummer(@Nullable String infomaKreditorennummer) {
+		this.infomaKreditorennummer = infomaKreditorennummer;
+	}
+
+	@Nullable
+	public String getInfomaBankcode() {
+		return infomaBankcode;
+	}
+
+	public void setInfomaBankcode(@Nullable String infomaBankcode) {
+		this.infomaBankcode = infomaBankcode;
+	}
+
+	@Nonnull
+	public Boolean getAuszahlungAnEltern() {
+		return auszahlungAnEltern;
+	}
+
+	public void setAuszahlungAnEltern(@Nonnull Boolean auszahlungAnEltern) {
+		this.auszahlungAnEltern = auszahlungAnEltern;
 	}
 }

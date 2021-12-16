@@ -34,11 +34,14 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
+
+import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
 /**
  * Entitaet zum Speichern von Familiensituation in der Datenbank.
@@ -87,6 +90,29 @@ public class Familiensituation extends AbstractMutableEntity {
 
 	@Column(nullable = false)
 	private boolean abweichendeZahlungsadresseMahlzeiten;
+
+	@Nullable
+	@Valid
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_familiensituation_auszahlungsdaten_infoma_id"), nullable = true)
+	private Auszahlungsdaten auszahlungsdatenInfoma;
+
+	@Column(nullable = false)
+	private boolean abweichendeZahlungsadresseInfoma = false;
+
+	@Nullable
+	@Column(nullable = true)
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	private String infomaKreditorennummer;
+
+	@Nullable
+	@Column(nullable = true)
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	private String infomaBankcode;
+
+	@Column(nullable = false)
+	private boolean auszahlungAnEltern = false;
+
 
 	public Familiensituation() {
 	}
@@ -179,6 +205,49 @@ public class Familiensituation extends AbstractMutableEntity {
 
 	public void setAbweichendeZahlungsadresseMahlzeiten(boolean abweichendeZahlungsadresse) {
 		this.abweichendeZahlungsadresseMahlzeiten = abweichendeZahlungsadresse;
+	}
+
+	@Nullable
+	public Auszahlungsdaten getAuszahlungsdatenInfoma() {
+		return auszahlungsdatenInfoma;
+	}
+
+	public void setAuszahlungsdatenInfoma(@Nullable Auszahlungsdaten auszahlungsdatenInfoma) {
+		this.auszahlungsdatenInfoma = auszahlungsdatenInfoma;
+	}
+
+	public boolean isAbweichendeZahlungsadresseInfoma() {
+		return abweichendeZahlungsadresseInfoma;
+	}
+
+	public void setAbweichendeZahlungsadresseInfoma(boolean abweichendeZahlungsadresseInfoma) {
+		this.abweichendeZahlungsadresseInfoma = abweichendeZahlungsadresseInfoma;
+	}
+
+	@Nullable
+	public String getInfomaKreditorennummer() {
+		return infomaKreditorennummer;
+	}
+
+	public void setInfomaKreditorennummer(@Nullable String infomaKreditorennummer) {
+		this.infomaKreditorennummer = infomaKreditorennummer;
+	}
+
+	@Nullable
+	public String getInfomaBankcode() {
+		return infomaBankcode;
+	}
+
+	public void setInfomaBankcode(@Nullable String infomaBankcode) {
+		this.infomaBankcode = infomaBankcode;
+	}
+
+	public boolean isAuszahlungAnEltern() {
+		return auszahlungAnEltern;
+	}
+
+	public void setAuszahlungAnEltern(boolean auszahlungAnEltern) {
+		this.auszahlungAnEltern = auszahlungAnEltern;
 	}
 
 	@Transient

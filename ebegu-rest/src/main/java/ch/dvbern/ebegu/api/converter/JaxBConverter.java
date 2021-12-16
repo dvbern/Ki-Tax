@@ -763,6 +763,33 @@ public class JaxBConverter extends AbstractConverter {
 			familiensituation.setAuszahlungsdatenMahlzeiten(null);
 			familiensituation.setAbweichendeZahlungsadresseMahlzeiten(false);
 		}
+
+		if (familiensituationJAXP.getIbanInfoma() != null || familiensituationJAXP.getKontoinhaberInfoma() != null) {
+			Objects.requireNonNull(
+				familiensituationJAXP.getKontoinhaberInfoma(),
+				"IBAN muss erfasst sein");
+			Objects.requireNonNull(
+				familiensituationJAXP.getKontoinhaberInfoma(),
+				"Kontoinhaber muss erfasst sein");
+			if (familiensituation.getAuszahlungsdatenInfoma() == null) {
+				familiensituation.setAuszahlungsdatenInfoma(new Auszahlungsdaten());
+			}
+			familiensituation.getAuszahlungsdatenInfoma().setIban(new IBAN(familiensituationJAXP.getIbanInfoma()));
+			familiensituation.getAuszahlungsdatenInfoma().setKontoinhaber(familiensituationJAXP.getKontoinhaberInfoma());
+			Adresse convertedAdresse = null;
+			if (familiensituationJAXP.getZahlungsadresseInfoma() != null) {
+				Adresse a =
+					Optional.ofNullable(familiensituation.getAuszahlungsdatenInfoma().getAdresseKontoinhaber())
+						.orElseGet(Adresse::new);
+				convertedAdresse = adresseToEntity(familiensituationJAXP.getZahlungsadresseInfoma(), a);
+			}
+			familiensituation.getAuszahlungsdatenInfoma().setAdresseKontoinhaber(convertedAdresse);
+			familiensituation.setAbweichendeZahlungsadresseInfoma(familiensituationJAXP.isAbweichendeZahlungsadresseInfoma());
+			familiensituation.setInfomaBankcode(familiensituationJAXP.getInfomaBankcode());
+			familiensituation.setInfomaKreditorennummer(familiensituationJAXP.getInfomaKreditorennummer());
+			familiensituation.setAuszahlungAnEltern(familiensituationJAXP.getAuszahlungAnEltern());
+		}
+
 		convertAbstractVorgaengerFieldsToEntity(familiensituationJAXP, familiensituation);
 		familiensituation.setFamilienstatus(familiensituationJAXP.getFamilienstatus());
 		familiensituation.setGemeinsameSteuererklaerung(familiensituationJAXP.getGemeinsameSteuererklaerung());
@@ -793,6 +820,18 @@ public class JaxBConverter extends AbstractConverter {
 				jaxFamiliensituation.setZahlungsadresseMahlzeiten(adresseToJAX(persistedAuszahlungsdaten.getAdresseKontoinhaber()));
 			}
 		}
+		final Auszahlungsdaten persistedAuszahlungsdatenInfoma = persistedFamiliensituation.getAuszahlungsdatenInfoma();
+		if (persistedAuszahlungsdatenInfoma != null) {
+			jaxFamiliensituation.setIbanInfoma(persistedAuszahlungsdatenInfoma.getIban().getIban());
+			jaxFamiliensituation.setKontoinhaberInfoma(persistedAuszahlungsdatenInfoma.getKontoinhaber());
+			if (persistedAuszahlungsdatenInfoma.getAdresseKontoinhaber() != null) {
+				jaxFamiliensituation.setZahlungsadresseInfoma(adresseToJAX(persistedAuszahlungsdatenInfoma.getAdresseKontoinhaber()));
+			}
+		}
+		jaxFamiliensituation.setAbweichendeZahlungsadresseInfoma(persistedFamiliensituation.isAbweichendeZahlungsadresseInfoma());
+		jaxFamiliensituation.setInfomaKreditorennummer(persistedFamiliensituation.getInfomaKreditorennummer());
+		jaxFamiliensituation.setInfomaBankcode(persistedFamiliensituation.getInfomaBankcode());
+		jaxFamiliensituation.setAuszahlungAnEltern(persistedFamiliensituation.isAuszahlungAnEltern());
 		return jaxFamiliensituation;
 	}
 
