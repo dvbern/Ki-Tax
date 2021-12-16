@@ -95,6 +95,7 @@ import ch.dvbern.ebegu.api.dtos.JaxFamiliensituationContainer;
 import ch.dvbern.ebegu.api.dtos.JaxFerieninselZeitraum;
 import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituation;
 import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituationContainer;
+import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituationSelbstdeklaration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
@@ -195,6 +196,7 @@ import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.FinanzielleSituationSelbstdeklaration;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
@@ -2661,8 +2663,46 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setGemeinsameStekVorjahr(finanzielleSituationJAXP.getGemeinsameStekVorjahr());
 		finanzielleSituation.setAlleinigeStekVorjahr(finanzielleSituationJAXP.getAlleinigeStekVorjahr());
 		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
-
+		finanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToEntity(finanzielleSituationJAXP.getSelbstdeklaration()));
 		return finanzielleSituation;
+	}
+
+	@Nullable
+	private FinanzielleSituationSelbstdeklaration finanzielleSituationSelbstdeklarationToEntity(
+		@Nullable JaxFinanzielleSituationSelbstdeklaration jaxSelbstdeklaration) {
+
+		if(jaxSelbstdeklaration == null) {
+			return null;
+		}
+
+		FinanzielleSituationSelbstdeklaration selbstdeklaration = new FinanzielleSituationSelbstdeklaration();
+		selbstdeklaration.setEinkunftErwerb(jaxSelbstdeklaration.getEinkunftErwerb());
+		selbstdeklaration.setEinkunftVersicherung(jaxSelbstdeklaration.getEinkunftVersicherung());
+		selbstdeklaration.setEinkunftAusgleichskassen(jaxSelbstdeklaration.getEinkunftAusgleichskassen());
+		selbstdeklaration.setEinkunftWertschriften(jaxSelbstdeklaration.getEinkunftWertschriften());
+		selbstdeklaration.setEinkunftUnterhaltsbeitragSteuerpflichtige(jaxSelbstdeklaration.getEinkunftUnterhaltsbeitragSteuerpflichtige());
+		selbstdeklaration.setEinkunftUnterhaltsbeitragKinder(jaxSelbstdeklaration.getEinkunftUnterhaltsbeitragKinder());
+		selbstdeklaration.setEinkunftUeberige(jaxSelbstdeklaration.getEinkunftUeberige());
+		selbstdeklaration.setEinkunftLiegenschaften(jaxSelbstdeklaration.getEinkunftLiegenschaften());
+		selbstdeklaration.setAbzugBerufsauslagen(jaxSelbstdeklaration.getAbzugBerufsauslagen());
+		selbstdeklaration.setAbzugSchuldzinsen(jaxSelbstdeklaration.getAbzugSchuldzinsen());
+		selbstdeklaration.setAbzugUnterhaltsbeitragEhepartner(jaxSelbstdeklaration.getAbzugUnterhaltsbeitragEhepartner());
+		selbstdeklaration.setAbzugUnterhaltsbeitragKinder(jaxSelbstdeklaration.getAbzugUnterhaltsbeitragKinder());
+		selbstdeklaration.setAbzugRentenleistungen(jaxSelbstdeklaration.getAbzugRentenleistungen());
+		selbstdeklaration.setAbzugSaeule3A(jaxSelbstdeklaration.getAbzugSaeule3A());
+		selbstdeklaration.setAbzugVersicherungspraemien(jaxSelbstdeklaration.getAbzugVersicherungspraemien());
+		selbstdeklaration.setAbzugKrankheitsUnfallKosten(jaxSelbstdeklaration.getAbzugKrankheitsUnfallKosten());
+		selbstdeklaration.setAbzugFreiweiligeZuwendungPartien(jaxSelbstdeklaration.getAbzugFreiweiligeZuwendungPartien());
+		selbstdeklaration.setAbzugKinderVorschule(jaxSelbstdeklaration.getAbzugKinderVorschule());
+		selbstdeklaration.setAbzugKinderSchule(jaxSelbstdeklaration.getAbzugKinderSchule());
+		selbstdeklaration.setAbzugKinderAuswaertigerAufenthalt(jaxSelbstdeklaration.getAbzugKinderAuswaertigerAufenthalt());
+		selbstdeklaration.setAbzugEigenbetreuung(jaxSelbstdeklaration.getAbzugEigenbetreuung());
+		selbstdeklaration.setAbzugFremdbetreuung(jaxSelbstdeklaration.getAbzugFremdbetreuung());
+		selbstdeklaration.setAbzugErwerbsunfaehigePersonen(jaxSelbstdeklaration.getAbzugErwerbsunfaehigePersonen());
+		selbstdeklaration.setVermoegen(jaxSelbstdeklaration.getVermoegen());
+		selbstdeklaration.setAbzugSteuerfreierBetragErwachsene(jaxSelbstdeklaration.getAbzugSteuerfreierBetragErwachsene());
+		selbstdeklaration.setAbzugSteuerfreierBetragKinder(jaxSelbstdeklaration.getAbzugSteuerfreierBetragKinder());
+		return selbstdeklaration;
 	}
 
 	@Nullable
@@ -2685,8 +2725,46 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setGemeinsameStekVorjahr(persistedFinanzielleSituation.getGemeinsameStekVorjahr());
 		jaxFinanzielleSituation.setAlleinigeStekVorjahr(persistedFinanzielleSituation.getAlleinigeStekVorjahr());
 		jaxFinanzielleSituation.setVeranlagt(persistedFinanzielleSituation.getVeranlagt());
+		jaxFinanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToJAX(persistedFinanzielleSituation.getSelbstdeklaration()));
 
 		return jaxFinanzielleSituation;
+	}
+
+	@Nullable
+	private JaxFinanzielleSituationSelbstdeklaration finanzielleSituationSelbstdeklarationToJAX(
+		@Nullable FinanzielleSituationSelbstdeklaration selbstdeklaration) {
+		if(selbstdeklaration == null) {
+			return null;
+		}
+
+		JaxFinanzielleSituationSelbstdeklaration jaxSelbstdeklaration = new JaxFinanzielleSituationSelbstdeklaration();
+		jaxSelbstdeklaration.setEinkunftErwerb(selbstdeklaration.getEinkunftErwerb());
+		jaxSelbstdeklaration.setEinkunftVersicherung(selbstdeklaration.getEinkunftVersicherung());
+		jaxSelbstdeklaration.setEinkunftAusgleichskassen(selbstdeklaration.getEinkunftAusgleichskassen());
+		jaxSelbstdeklaration.setEinkunftWertschriften(selbstdeklaration.getEinkunftWertschriften());
+		jaxSelbstdeklaration.setEinkunftUnterhaltsbeitragSteuerpflichtige(selbstdeklaration.getEinkunftUnterhaltsbeitragSteuerpflichtige());
+		jaxSelbstdeklaration.setEinkunftUnterhaltsbeitragKinder(selbstdeklaration.getEinkunftUnterhaltsbeitragKinder());
+		jaxSelbstdeklaration.setEinkunftUeberige(selbstdeklaration.getEinkunftUeberige());
+		jaxSelbstdeklaration.setEinkunftLiegenschaften(selbstdeklaration.getEinkunftLiegenschaften());
+		jaxSelbstdeklaration.setAbzugBerufsauslagen(selbstdeklaration.getAbzugBerufsauslagen());
+		jaxSelbstdeklaration.setAbzugSchuldzinsen(selbstdeklaration.getAbzugSchuldzinsen());
+		jaxSelbstdeklaration.setAbzugUnterhaltsbeitragEhepartner(selbstdeklaration.getAbzugUnterhaltsbeitragEhepartner());
+		jaxSelbstdeklaration.setAbzugUnterhaltsbeitragKinder(selbstdeklaration.getAbzugUnterhaltsbeitragKinder());
+		jaxSelbstdeklaration.setAbzugRentenleistungen(selbstdeklaration.getAbzugRentenleistungen());
+		jaxSelbstdeklaration.setAbzugSaeule3A(selbstdeklaration.getAbzugSaeule3A());
+		jaxSelbstdeklaration.setAbzugVersicherungspraemien(selbstdeklaration.getAbzugVersicherungspraemien());
+		jaxSelbstdeklaration.setAbzugKrankheitsUnfallKosten(selbstdeklaration.getAbzugKrankheitsUnfallKosten());
+		jaxSelbstdeklaration.setAbzugFreiweiligeZuwendungPartien(selbstdeklaration.getAbzugFreiweiligeZuwendungPartien());
+		jaxSelbstdeklaration.setAbzugKinderVorschule(selbstdeklaration.getAbzugKinderVorschule());
+		jaxSelbstdeklaration.setAbzugKinderSchule(selbstdeklaration.getAbzugKinderSchule());
+		jaxSelbstdeklaration.setAbzugKinderAuswaertigerAufenthalt(selbstdeklaration.getAbzugKinderAuswaertigerAufenthalt());
+		jaxSelbstdeklaration.setAbzugEigenbetreuung(selbstdeklaration.getAbzugEigenbetreuung());
+		jaxSelbstdeklaration.setAbzugFremdbetreuung(selbstdeklaration.getAbzugFremdbetreuung());
+		jaxSelbstdeklaration.setAbzugErwerbsunfaehigePersonen(selbstdeklaration.getAbzugErwerbsunfaehigePersonen());
+		jaxSelbstdeklaration.setVermoegen(selbstdeklaration.getVermoegen());
+		jaxSelbstdeklaration.setAbzugSteuerfreierBetragErwachsene(selbstdeklaration.getAbzugSteuerfreierBetragErwachsene());
+		jaxSelbstdeklaration.setAbzugSteuerfreierBetragKinder(selbstdeklaration.getAbzugSteuerfreierBetragKinder());
+		return jaxSelbstdeklaration;
 	}
 
 	private Einkommensverschlechterung einkommensverschlechterungToEntity(

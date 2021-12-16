@@ -222,6 +222,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			Objects.equals(getAlleinigeStekVorjahr(), otherFinSit.getAlleinigeStekVorjahr()) &&
 			Objects.equals(getGemeinsameStekVorjahr(), otherFinSit.getGemeinsameStekVorjahr()) &&
 			Objects.equals(getQuellenbesteuert(), otherFinSit.getQuellenbesteuert()) &&
-			Objects.equals(getVeranlagt(), otherFinSit.getVeranlagt());
+			Objects.equals(getVeranlagt(), otherFinSit.getVeranlagt()) &&
+			Objects.equals(getSelbstdeklaration(), otherFinSit.getSelbstdeklaration());
 	}
 }
