@@ -163,13 +163,13 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 				auszahlungsdaten.setIban(new IBAN(iban));
 				auszahlungsdaten.setKontoinhaber(kontoinhaber);
 				auszahlungsdaten.setAdresseKontoinhaber(zahlungsadresse);
-				familiensituation.setAuszahlungsdaten(auszahlungsdaten);
+				familiensituation.setAuszahlungsdatenMahlzeiten(auszahlungsdaten);
 			}
 			familiensituation.setAbweichendeZahlungsadresse(abweichendeZahlungsadresse);
 		} else {
 			// Wenn das Einkommen nicht deklariert wird, kann auch keine Mahlzeitenverguenstigung gewaehrt werden
 			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(true);
-			familiensituation.setAuszahlungsdaten(null);
+			familiensituation.setAuszahlungsdatenMahlzeiten(null);
 			familiensituation.setAbweichendeZahlungsadresse(false);
 		}
 

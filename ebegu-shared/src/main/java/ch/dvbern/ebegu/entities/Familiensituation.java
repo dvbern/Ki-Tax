@@ -82,8 +82,8 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_familiensituation_auszahlungsdaten_id"), nullable = true)
-	private Auszahlungsdaten auszahlungsdaten;
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_familiensituation_auszahlungsdaten_mahlzeiten_id"), nullable = true)
+	private Auszahlungsdaten auszahlungsdatenMahlzeiten;
 
 	@Column(nullable = false)
 	private boolean abweichendeZahlungsadresse;
@@ -165,12 +165,12 @@ public class Familiensituation extends AbstractMutableEntity {
 	}
 
 	@Nullable
-	public Auszahlungsdaten getAuszahlungsdaten() {
-		return auszahlungsdaten;
+	public Auszahlungsdaten getAuszahlungsdatenMahlzeiten() {
+		return auszahlungsdatenMahlzeiten;
 	}
 
-	public void setAuszahlungsdaten(@Nullable Auszahlungsdaten auszahlungsdaten) {
-		this.auszahlungsdaten = auszahlungsdaten;
+	public void setAuszahlungsdatenMahlzeiten(@Nullable Auszahlungsdaten auszahlungsdaten) {
+		this.auszahlungsdatenMahlzeiten = auszahlungsdaten;
 	}
 
 	public boolean isAbweichendeZahlungsadresse() {
@@ -215,8 +215,8 @@ public class Familiensituation extends AbstractMutableEntity {
 			target.setGemeinsameSteuererklaerung(this.getGemeinsameSteuererklaerung());
 			target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
 			target.setKeineMahlzeitenverguenstigungBeantragt(this.isKeineMahlzeitenverguenstigungBeantragt());
-			if (this.getAuszahlungsdaten() != null) {
-				target.setAuszahlungsdaten(this.getAuszahlungsdaten().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
+			if (this.getAuszahlungsdatenMahlzeiten() != null) {
+				target.setAuszahlungsdatenMahlzeiten(this.getAuszahlungsdatenMahlzeiten().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
 			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
 			break;
@@ -225,8 +225,8 @@ public class Familiensituation extends AbstractMutableEntity {
 			target.setGemeinsameSteuererklaerung(this.getGemeinsameSteuererklaerung());
 			target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
 			target.setKeineMahlzeitenverguenstigungBeantragt(this.isKeineMahlzeitenverguenstigungBeantragt());
-			if (this.getAuszahlungsdaten() != null) {
-				target.setAuszahlungsdaten(this.getAuszahlungsdaten().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
+			if (this.getAuszahlungsdatenMahlzeiten() != null) {
+				target.setAuszahlungsdatenMahlzeiten(this.getAuszahlungsdatenMahlzeiten().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
 			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
 			break;

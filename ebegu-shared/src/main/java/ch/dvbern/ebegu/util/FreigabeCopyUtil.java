@@ -133,13 +133,13 @@ public final class FreigabeCopyUtil {
 		familiensituationGS.setKeineMahlzeitenverguenstigungBeantragt(familiensituationJA.isKeineMahlzeitenverguenstigungBeantragt());
 		familiensituationGS.setAbweichendeZahlungsadresse(familiensituationJA.isAbweichendeZahlungsadresse());
 
-		Auszahlungsdaten auszahlungsdatenJA = familiensituationJA.getAuszahlungsdaten();
+		Auszahlungsdaten auszahlungsdatenJA = familiensituationJA.getAuszahlungsdatenMahlzeiten();
 		Auszahlungsdaten auszahlungsdatenGS = null;
 		if (auszahlungsdatenJA != null) {
 			auszahlungsdatenGS = new Auszahlungsdaten();
 			copyAuszahlungsdaten(auszahlungsdatenGS, auszahlungsdatenJA);
 		}
-		familiensituationGS.setAuszahlungsdaten(auszahlungsdatenGS);
+		familiensituationGS.setAuszahlungsdatenMahlzeiten(auszahlungsdatenGS);
 	}
 
 	private static void copyAuszahlungsdaten(Auszahlungsdaten auszahlungsdatenGS, Auszahlungsdaten auszahlungsdatenJA) {

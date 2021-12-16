@@ -33,3 +33,17 @@ ALTER TABLE institution_stammdaten_betreuungsgutscheine_aud ADD COLUMN infoma_kr
 ALTER TABLE institution_stammdaten_betreuungsgutscheine ADD COLUMN infoma_bankcode VARCHAR(255);
 ALTER TABLE institution_stammdaten_betreuungsgutscheine_aud ADD COLUMN infoma_bankcode VARCHAR(255);
 
+# rename mahlzeiten auszahlungsdaten
+alter table familiensituation drop constraint UK_familiensituation_auszahlungsdaten_id;
+alter table familiensituation drop constraint FK_familiensituation_auszahlungsdaten_id;
+
+alter table familiensituation change auszahlungsdaten_id auszahlungsdaten_mahlzeiten binary(16);
+alter table familiensituation_aud change auszahlungsdaten_id auszahlungsdaten_mahlzeiten binary(16);
+
+alter table familiensituation
+	add constraint UK_familiensituation_auszahlungsdaten_mahlzeiten_id unique (auszahlungsdaten_mahlzeiten_id);
+
+alter table familiensituation
+	add constraint FK_familiensituation_auszahlungsdaten_mahlzeiten_id
+		foreign key (auszahlungsdaten_mahlzeiten_id)
+			references auszahlungsdaten (id);
