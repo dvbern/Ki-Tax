@@ -57,7 +57,9 @@ public interface AuthService {
 	 * IAM Login
 	 */
 	@Nonnull
-	AuthAccessElement createLoginFromIAM(AuthorisierterBenutzer authorisierterBenutzer);
+	AuthAccessElement createLoginFromIAM(
+			AuthorisierterBenutzer authorisierterBenutzer,
+			Mandant mandant);
 
 	/**
 	 * gets the logged in user based on the login token
