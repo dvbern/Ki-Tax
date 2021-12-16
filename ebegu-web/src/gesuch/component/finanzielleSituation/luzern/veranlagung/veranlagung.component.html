@@ -50,6 +50,7 @@
                        [(ngModel)]="model.finanzielleSituationJA.steuerbaresVermoegen"
                        class="form-control"
                        [disabled]="readOnly"
+                       (blur)="onValueChange()"
                        required>
                 <dv-error-messages
                     [errorObject]="steuerbaresVermoegen.errors"
@@ -71,6 +72,7 @@
                        [(ngModel)]="model.finanzielleSituationJA.abzuegeLiegenschaft"
                        class="form-control"
                        [disabled]="readOnly"
+                       (blur)="onValueChange()"
                        required>
                 <dv-error-messages
                     [errorObject]="abzuegeLiegenschaft.errors"
@@ -92,6 +94,7 @@
                        [(ngModel)]="model.finanzielleSituationJA.geschaeftsverlust"
                        class="form-control"
                        [disabled]="readOnly"
+                       (blur)="onValueChange()"
                        required>
                 <dv-error-messages
                     [errorObject]="geschaeftsverlust.errors"
@@ -113,6 +116,7 @@
                        [(ngModel)]="model.finanzielleSituationJA.einkaeufeVorsorge"
                        class="form-control"
                        [disabled]="readOnly"
+                       (blur)="onValueChange()"
                        required>
                 <dv-error-messages
                     [errorObject]="einkaeufeVorsorge.errors"

@@ -29,14 +29,18 @@ import {TSFinanzielleSituationSubStepName} from '../../../../models/enums/TSFina
 import {TSFinanzielleSituationTyp} from '../../../../models/enums/TSFinanzielleSituationTyp';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {ErrorService} from '../../errors/service/ErrorService';
+import {Log, LogFactory} from '../../logging/LogFactory';
 
 @Component({
     selector: 'dv-navigation-x',
     templateUrl: './dv-navigation-x.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DvNavigationXComponent implements OnInit {
+
+    private readonly log: Log = LogFactory.createLog('DvNavigationXComponent');
 
     @Input() public dvPrevious: boolean;
     @Input() public dvNext: boolean;
@@ -69,22 +73,29 @@ export class DvNavigationXComponent implements OnInit {
         if (!this.containerClass) {
             this.containerClass = 'dv-navigation-flex';
         }
-        this.initFinSitSubStepManager(this.gesuchModelManager.getGesuch().finSitTyp);
+        this.initSubStepManager();
     }
 
-    private initFinSitSubStepManager(finSitTyp: TSFinanzielleSituationTyp): void {
-        switch (finSitTyp) {
-            case TSFinanzielleSituationTyp.BERN:
-                this.finSitWizardSubStepManager =
-                    new FinanzielleSituationSubStepManagerBernAsiv(this.gesuchModelManager);
-                break;
-            case TSFinanzielleSituationTyp.LUZERN:
-                this.finSitWizardSubStepManager =
-                    new FinanzielleSituationSubStepManagerLuzern(this.gesuchModelManager);
-                break;
-            default:
-                throw new Error(`unexpected TSFinanzielleSituationTyp ${finSitTyp}`);
+    private initSubStepManager(): void {
+        if (EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGesuchsperiode())) {
+            return;
         }
+        this.finanzielleSituationRS.getFinanzielleSituationTyp(this.gesuchModelManager.getGesuchsperiode(),
+            this.gesuchModelManager.getGemeinde())
+            .subscribe(typ => {
+                switch (typ) {
+                    case TSFinanzielleSituationTyp.BERN:
+                        this.finSitWizardSubStepManager =
+                            new FinanzielleSituationSubStepManagerBernAsiv(this.gesuchModelManager);
+                        break;
+                    case TSFinanzielleSituationTyp.LUZERN:
+                        this.finSitWizardSubStepManager =
+                            new FinanzielleSituationSubStepManagerLuzern(this.gesuchModelManager);
+                        break;
+                    default:
+                        throw new Error(`unexpected TSFinanzielleSituationTyp ${typ}`);
+                }
+            }, err => this.log.error(err));
     }
 
     public doesCancelExist(): boolean {

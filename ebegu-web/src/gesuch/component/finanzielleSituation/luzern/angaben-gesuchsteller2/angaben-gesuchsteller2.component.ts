@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {IPromise} from 'angular';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
@@ -30,7 +30,7 @@ import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
     styleUrls: ['../finanzielle-situation-luzern.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView implements OnInit {
+export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
 
     @ViewChild(NgForm) private readonly form: NgForm;
 
@@ -39,9 +39,6 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView imp
         protected wizardStepManager: WizardStepManager,
     ) {
         super(gesuchModelManager, wizardStepManager, 2);
-    }
-
-    public ngOnInit(): void {
     }
 
     public isGemeinsam(): boolean {

@@ -37,11 +37,11 @@ import {FinanzielleSituationStartViewLuzernComponent} from './finanzielle-situat
 
 const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
     GesuchModelManager.name,
-    ['areThereOnlyFerieninsel', 'getBasisjahr', 'getBasisjahrPlus', 'getGesuch', 'isGesuchsteller2Required', 'isGesuchReadonly']);
+    ['areThereOnlyFerieninsel', 'getBasisjahr', 'getBasisjahrPlus', 'getGesuch', 'isGesuchsteller2Required', 'isGesuchReadonly', 'getGesuchsperiode', 'getGemeinde']);
 const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
     WizardStepManager.name, ['getCurrentStep', 'setCurrentStep', 'isNextStepBesucht', 'isNextStepEnabled',
         'getCurrentStepName', 'updateCurrentWizardStepStatusSafe']);
-const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name, ['saveFinanzielleSituationStart']);
+const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name, ['saveFinanzielleSituationStart', 'getFinanzielleSituationTyp']);
 const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
     ['go']);
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
