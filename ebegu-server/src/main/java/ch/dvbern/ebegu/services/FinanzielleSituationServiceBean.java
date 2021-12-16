@@ -165,12 +165,12 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 				auszahlungsdaten.setAdresseKontoinhaber(zahlungsadresse);
 				familiensituation.setAuszahlungsdatenMahlzeiten(auszahlungsdaten);
 			}
-			familiensituation.setAbweichendeZahlungsadresse(abweichendeZahlungsadresse);
+			familiensituation.setAbweichendeZahlungsadresseMahlzeiten(abweichendeZahlungsadresse);
 		} else {
 			// Wenn das Einkommen nicht deklariert wird, kann auch keine Mahlzeitenverguenstigung gewaehrt werden
 			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(true);
 			familiensituation.setAuszahlungsdatenMahlzeiten(null);
-			familiensituation.setAbweichendeZahlungsadresse(false);
+			familiensituation.setAbweichendeZahlungsadresseMahlzeiten(false);
 		}
 
 		// Steuererklaerungs/-veranlagungs-Flags nachfuehren fuer GS2

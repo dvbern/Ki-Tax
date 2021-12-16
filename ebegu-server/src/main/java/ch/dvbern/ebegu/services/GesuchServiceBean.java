@@ -322,7 +322,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		}
 		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(false);
 		familiensituation.setAuszahlungsdatenMahlzeiten(null);
-		familiensituation.setAbweichendeZahlungsadresse(false);
+		familiensituation.setAbweichendeZahlungsadresseMahlzeiten(false);
 	}
 
 	@Nonnull

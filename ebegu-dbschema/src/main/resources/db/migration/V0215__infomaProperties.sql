@@ -47,3 +47,6 @@ alter table familiensituation
 	add constraint FK_familiensituation_auszahlungsdaten_mahlzeiten_id
 		foreign key (auszahlungsdaten_mahlzeiten_id)
 			references auszahlungsdaten (id);
+
+alter table familiensituation change abweichende_zahlungsadresse abweichende_zahlungsadresse_mahlzeiten BIT NOT NULL DEFAULT FALSE;
+alter table familiensituation_aud change abweichende_zahlungsadresse abweichende_zahlungsadresse_mahlzeiten BIT;

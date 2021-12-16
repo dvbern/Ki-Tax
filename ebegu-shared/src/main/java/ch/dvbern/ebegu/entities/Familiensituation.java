@@ -86,7 +86,7 @@ public class Familiensituation extends AbstractMutableEntity {
 	private Auszahlungsdaten auszahlungsdatenMahlzeiten;
 
 	@Column(nullable = false)
-	private boolean abweichendeZahlungsadresse;
+	private boolean abweichendeZahlungsadresseMahlzeiten;
 
 	public Familiensituation() {
 	}
@@ -173,12 +173,12 @@ public class Familiensituation extends AbstractMutableEntity {
 		this.auszahlungsdatenMahlzeiten = auszahlungsdaten;
 	}
 
-	public boolean isAbweichendeZahlungsadresse() {
-		return abweichendeZahlungsadresse;
+	public boolean isAbweichendeZahlungsadresseMahlzeiten() {
+		return abweichendeZahlungsadresseMahlzeiten;
 	}
 
-	public void setAbweichendeZahlungsadresse(boolean abweichendeZahlungsadresse) {
-		this.abweichendeZahlungsadresse = abweichendeZahlungsadresse;
+	public void setAbweichendeZahlungsadresseMahlzeiten(boolean abweichendeZahlungsadresse) {
+		this.abweichendeZahlungsadresseMahlzeiten = abweichendeZahlungsadresse;
 	}
 
 	@Transient
@@ -218,7 +218,7 @@ public class Familiensituation extends AbstractMutableEntity {
 			if (this.getAuszahlungsdatenMahlzeiten() != null) {
 				target.setAuszahlungsdatenMahlzeiten(this.getAuszahlungsdatenMahlzeiten().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
-			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
+			target.setAbweichendeZahlungsadresseMahlzeiten(this.isAbweichendeZahlungsadresseMahlzeiten());
 			break;
 		case MUTATION_NEUES_DOSSIER:
 			target.setVerguenstigungGewuenscht(this.getVerguenstigungGewuenscht());
@@ -228,7 +228,7 @@ public class Familiensituation extends AbstractMutableEntity {
 			if (this.getAuszahlungsdatenMahlzeiten() != null) {
 				target.setAuszahlungsdatenMahlzeiten(this.getAuszahlungsdatenMahlzeiten().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
-			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
+			target.setAbweichendeZahlungsadresseMahlzeiten(this.isAbweichendeZahlungsadresseMahlzeiten());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:

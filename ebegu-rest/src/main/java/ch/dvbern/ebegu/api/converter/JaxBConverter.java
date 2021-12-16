@@ -758,10 +758,10 @@ public class JaxBConverter extends AbstractConverter {
 					familiensituation.getAuszahlungsdatenMahlzeiten().setAdresseKontoinhaber(convertedAdresse);
 				}
 			}
-			familiensituation.setAbweichendeZahlungsadresse(familiensituationJAXP.isAbweichendeZahlungsadresseMahlzeiten());
+			familiensituation.setAbweichendeZahlungsadresseMahlzeiten(familiensituationJAXP.isAbweichendeZahlungsadresseMahlzeiten());
 		} else {
 			familiensituation.setAuszahlungsdatenMahlzeiten(null);
-			familiensituation.setAbweichendeZahlungsadresse(false);
+			familiensituation.setAbweichendeZahlungsadresseMahlzeiten(false);
 		}
 		convertAbstractVorgaengerFieldsToEntity(familiensituationJAXP, familiensituation);
 		familiensituation.setFamilienstatus(familiensituationJAXP.getFamilienstatus());
@@ -784,7 +784,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setSozialhilfeBezueger(persistedFamiliensituation.getSozialhilfeBezueger());
 		jaxFamiliensituation.setVerguenstigungGewuenscht(persistedFamiliensituation.getVerguenstigungGewuenscht());
 		jaxFamiliensituation.setKeineMahlzeitenverguenstigungBeantragt(persistedFamiliensituation.isKeineMahlzeitenverguenstigungBeantragt());
-		jaxFamiliensituation.setAbweichendeZahlungsadresseMahlzeiten(persistedFamiliensituation.isAbweichendeZahlungsadresse());
+		jaxFamiliensituation.setAbweichendeZahlungsadresseMahlzeiten(persistedFamiliensituation.isAbweichendeZahlungsadresseMahlzeiten());
 		final Auszahlungsdaten persistedAuszahlungsdaten = persistedFamiliensituation.getAuszahlungsdatenMahlzeiten();
 		if (persistedAuszahlungsdaten != null) {
 			jaxFamiliensituation.setIbanMahlzeiten(persistedAuszahlungsdaten.getIban().getIban());
@@ -5358,7 +5358,7 @@ public class JaxBConverter extends AbstractConverter {
 				famSit.getAuszahlungsdatenMahlzeiten().setIban(new IBAN(properties.getIban()));
 				famSit.getAuszahlungsdatenMahlzeiten().setKontoinhaber(properties.getKontoinhaber());
 
-				famSit.setAbweichendeZahlungsadresse(properties.isAbweichendeZahlungsadresse());
+				famSit.setAbweichendeZahlungsadresseMahlzeiten(properties.isAbweichendeZahlungsadresse());
 				if (properties.isAbweichendeZahlungsadresse() && properties.getZahlungsadresse() != null) {
 					famSit.getAuszahlungsdatenMahlzeiten().setAdresseKontoinhaber(this.adresseToEntity(
 						properties.getZahlungsadresse(),

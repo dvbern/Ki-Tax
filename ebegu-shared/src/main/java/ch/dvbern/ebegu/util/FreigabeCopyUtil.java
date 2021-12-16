@@ -131,7 +131,7 @@ public final class FreigabeCopyUtil {
 		familiensituationGS.setSozialhilfeBezueger(familiensituationJA.getSozialhilfeBezueger());
 		familiensituationGS.setVerguenstigungGewuenscht(familiensituationJA.getVerguenstigungGewuenscht());
 		familiensituationGS.setKeineMahlzeitenverguenstigungBeantragt(familiensituationJA.isKeineMahlzeitenverguenstigungBeantragt());
-		familiensituationGS.setAbweichendeZahlungsadresse(familiensituationJA.isAbweichendeZahlungsadresse());
+		familiensituationGS.setAbweichendeZahlungsadresseMahlzeiten(familiensituationJA.isAbweichendeZahlungsadresseMahlzeiten());
 
 		Auszahlungsdaten auszahlungsdatenJA = familiensituationJA.getAuszahlungsdatenMahlzeiten();
 		Auszahlungsdaten auszahlungsdatenGS = null;
