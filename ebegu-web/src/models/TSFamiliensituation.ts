@@ -27,10 +27,10 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _sozialhilfeBezueger: boolean;
     private _verguenstigungGewuenscht: boolean;
     private _keineMahlzeitenverguenstigungBeantragt: boolean;
-    private _iban: string;
-    private _kontoinhaber: string;
-    private _abweichendeZahlungsadresse: boolean;
-    private _zahlungsadresse: TSAdresse;
+    private _ibanMahlzeiten: string;
+    private _kontoinhaberMahlzeiten: string;
+    private _abweichendeZahlungsadresseMahlzeiten: boolean;
+    private _zahlungsadresseMahlzeiten: TSAdresse;
 
     public constructor() {
         super();
@@ -92,36 +92,36 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         this._keineMahlzeitenverguenstigungBeantragt = value;
     }
 
-    public get iban(): string {
-        return this._iban;
+    public get ibanMahlzeiten(): string {
+        return this._ibanMahlzeiten;
     }
 
-    public set iban(value: string) {
-        this._iban = value;
+    public set ibanMahlzeiten(value: string) {
+        this._ibanMahlzeiten = value;
     }
 
-    public get kontoinhaber(): string {
-        return this._kontoinhaber;
+    public get kontoinhaberMahlzeiten(): string {
+        return this._kontoinhaberMahlzeiten;
     }
 
-    public set kontoinhaber(value: string) {
-        this._kontoinhaber = value;
+    public set kontoinhaberMahlzeiten(value: string) {
+        this._kontoinhaberMahlzeiten = value;
     }
 
-    public get abweichendeZahlungsadresse(): boolean {
-        return this._abweichendeZahlungsadresse;
+    public get abweichendeZahlungsadresseMahlzeiten(): boolean {
+        return this._abweichendeZahlungsadresseMahlzeiten;
     }
 
-    public set abweichendeZahlungsadresse(value: boolean) {
-        this._abweichendeZahlungsadresse = value;
+    public set abweichendeZahlungsadresseMahlzeiten(value: boolean) {
+        this._abweichendeZahlungsadresseMahlzeiten = value;
     }
 
-    public get zahlungsadresse(): TSAdresse {
-        return this._zahlungsadresse;
+    public get zahlungsadresseMahlzeiten(): TSAdresse {
+        return this._zahlungsadresseMahlzeiten;
     }
 
-    public set zahlungsadresse(value: TSAdresse) {
-        this._zahlungsadresse = value;
+    public set zahlungsadresseMahlzeiten(value: TSAdresse) {
+        this._zahlungsadresseMahlzeiten = value;
     }
 
     public hasSecondGesuchsteller(referenzdatum: moment.Moment): boolean {
