@@ -33,15 +33,13 @@ import ch.dvbern.kibon.exchange.commons.types.Wochentag;
 
 public final class AnmeldungTestUtil {
 
-	public static final String REFNR = "20.007305.002.1.3";
-
 	private AnmeldungTestUtil() {
 	}
 
 	@Nonnull
 	public static TagesschuleBestaetigungEventDTO createTagesschuleBestaetigungEventDTO() {
 		TagesschuleBestaetigungEventDTO dto = new TagesschuleBestaetigungEventDTO();
-		dto.setRefnr(REFNR);
+		dto.setRefnr(PlatzbestaetigungTestUtil.REF_NUMMER);
 		dto.setBemerkung("Test");
 		dto.setAbholung(AbholungTagesschule.ALLEINE_NACH_HAUSE);
 		dto.setEintrittsdatum(LocalDate.of(19, 8, 1));
