@@ -18,17 +18,32 @@
 package ch.dvbern.ebegu.services;
 
 import javax.annotation.Nonnull;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import ch.dvbern.ebegu.entities.ReceivedEvent;
 
 public interface ReceivedEventService {
+
 	/**
-	 * @return TRUE, when ReceivedEvent already existed in database, FALSE otherwise
+	 * @return TRUE, when there is a successfully processed ReceivedEvent with same eventId.
 	 */
-	boolean alreadyProcessed(@Nonnull String eventId);
+	boolean isSuccessfullyProcessed(@Nonnull String eventId);
+
+	/**
+	 * @return TRUE, whenthere exists a ReceivedEvent with same EventType, EventKey and more recent EventTimestamp
+	 */
+	boolean isObsolete(@Nonnull ReceivedEvent receivedEvent);
 
 	/**
 	 * Persists a sucessfully processed event
 	 */
-	void processed(@Nonnull ReceivedEvent event);
+	void processingSuccess(@Nonnull ReceivedEvent receivedEvent);
+
+	/**
+	 * Persists a failed event
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	void processingFailure(@Nonnull ReceivedEvent receivedEvent, @Nonnull Throwable e);
+
 }

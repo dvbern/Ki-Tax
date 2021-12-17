@@ -60,7 +60,7 @@ public class MessageProcessor {
 			}
 
 			String eventId = eventIdOpt.get();
-			if (receivedEventService.alreadyProcessed(eventId)) {
+			if (receivedEventService.isSuccessfullyProcessed(eventId)) {
 				LOG.warn("Skipping Kafka message with key = {}, id = {}, event was already processed", key, eventId);
 
 				return;
@@ -84,11 +84,22 @@ public class MessageProcessor {
 
 			T eventDTO = record.value();
 			String eventType = eventTypeOpt.get();
-
-			handler.onEvent(key, eventTime, eventType, eventDTO, clientNameOpt.get());
-
 			ReceivedEvent receivedEvent = new ReceivedEvent(eventId, key, eventType, eventTime, eventDTO.toString());
-			receivedEventService.processed(receivedEvent);
+			if (receivedEventService.isObsolete(receivedEvent)) {
+				LOG.warn("Skipping Kafka message with key = {}, event is obsolete: {}", key, receivedEvent);
+				// TODO persistieren oder nicht?
+
+				return;
+			}
+
+			try {
+				handler.onEvent(key, eventTime, eventType, eventDTO, clientNameOpt.get());
+
+				receivedEventService.processingSuccess(receivedEvent);
+			} catch (Exception e) {
+				receivedEventService.processingFailure(receivedEvent, e);
+				LOG.error("Message processing failure. Persisting ReceivedEvent " + record, e);
+			}
 		} catch (Exception e) {
 			LOG.error("Error in message processing of " + record, e);
 		}
