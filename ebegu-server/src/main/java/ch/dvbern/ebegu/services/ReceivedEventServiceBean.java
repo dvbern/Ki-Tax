@@ -22,8 +22,6 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -42,22 +40,23 @@ public class ReceivedEventServiceBean implements ReceivedEventService {
 	private Persistence persistence;
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public boolean saveReceivedEvent(@Nonnull ReceivedEvent event) {
-		Optional<ReceivedEvent> receivedEventOpt = findByEventId(event.getEventId());
-		if(receivedEventOpt.isPresent()){
-			return false;
-		}
-		persistence.persist(event);
-		return true;
+	public boolean alreadyProcessed(@Nonnull String eventId) {
+		return findByEventId(eventId).isPresent();
 	}
 
-	private Optional<ReceivedEvent> findByEventId(String eventId){
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<ReceivedEvent> query = cb.createQuery(ReceivedEvent.class);
+	@Override
+	public void processed(@Nonnull ReceivedEvent event) {
+		persistence.persist(event);
+	}
+
+	@Nonnull
+	private Optional<ReceivedEvent> findByEventId(@Nonnull String eventId) {
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery<ReceivedEvent> query = cb.createQuery(ReceivedEvent.class);
 		Root<ReceivedEvent> root = query.from(ReceivedEvent.class);
 		Predicate predicateEventId = cb.equal(root.get(ReceivedEvent_.eventId), eventId);
 		query.where(predicateEventId);
+
 		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
 	}
 }

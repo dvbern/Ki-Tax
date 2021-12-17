@@ -20,14 +20,13 @@ package ch.dvbern.ebegu.entities;
 import java.time.LocalDateTime;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.validation.constraints.NotEmpty;
-
-import javax.annotation.Nullable;
 
 import com.google.common.base.Objects;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -74,9 +73,12 @@ public class ReceivedEvent extends AbstractEntity {
 		this.eventDto = null;
 	}
 
-	public ReceivedEvent(@Nonnull @NotEmpty String eventId, @Nonnull @NotEmpty String eventKey,
+	public ReceivedEvent(
+		@Nonnull @NotEmpty String eventId,
+		@Nonnull @NotEmpty String eventKey,
 		@Nonnull @NotEmpty String eventType,
-		@Nonnull LocalDateTime eventTimestamp, @Nonnull String eventDto) {
+		@Nonnull LocalDateTime eventTimestamp,
+		@Nonnull String eventDto) {
 		this.eventId = eventId;
 		this.eventKey = eventKey;
 		this.eventType = eventType;
