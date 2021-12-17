@@ -1947,7 +1947,7 @@ export class EbeguRestUtil {
         selbstdeklarationFromServer: any)
     : TSFinanzielleSituationSelbstdeklaration {
 
-        if (tsSelbstdeklaration) {
+        if (selbstdeklarationFromServer) {
             tsSelbstdeklaration.einkunftErwerb = selbstdeklarationFromServer.einkunftErwerb;
             tsSelbstdeklaration.einkunftVersicherung = selbstdeklarationFromServer.einkunftVersicherung;
             tsSelbstdeklaration.einkunftAusgleichskassen = selbstdeklarationFromServer.einkunftAusgleichskassen;
