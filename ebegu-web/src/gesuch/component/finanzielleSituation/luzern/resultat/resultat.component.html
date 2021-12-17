@@ -1,0 +1,65 @@
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="form-group" *ngIf="!isGemeinsam">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label class="long-label" for="massgebendesEinkVorAbzFamGr_gesuchsteller1_id">
+                    {{'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_VOR_ABZUG_FAM' | translate}} ({{nameGS1}})</label>
+                <input id="massgebendesEinkVorAbzFamGr_gesuchsteller1_id" type="number"
+                       name="massgebendesEinkVorAbzFamGrGS1"
+                       #massgebendesEinkVorAbzFamGrGS1="ngModel"
+                       [ngModel]="resultate?.massgebendesEinkVorAbzFamGrGS1"
+                       class="form-control"
+                       [disabled]="true">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label class="long-label" for="massgebendesEinkVorAbzFamGrGS2_id">
+                    {{'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_VOR_ABZUG_FAM' | translate}} ({{nameGS2}})</label>
+                <input id="massgebendesEinkVorAbzFamGrGS2_id" type="number"
+                       name="massgebendesEinkVorAbzFamGrGS2"
+                       #massgebendesEinkVorAbzFamGrGS2="ngModel"
+                       [ngModel]="resultate?.massgebendesEinkVorAbzFamGrGS2"
+                       class="form-control"
+                       [disabled]="true">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="form-group">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label class="long-label" for="massgebendesEinkVorAbzFamGr_id">
+                    {{'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_VOR_ABZUG_FAM' | translate}}</label>
+                <input id="massgebendesEinkVorAbzFamGr_id" type="number"
+                       name="massgebendesEinkVorAbzFamGr"
+                       #massgebendesEinkVorAbzFamGr="ngModel"
+                       [ngModel]="resultate?.massgebendesEinkVorAbzFamGr"
+                       class="form-control"
+                       [disabled]="true">
+            </div>
+        </div>
+    </div>
+</div>

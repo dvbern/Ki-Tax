@@ -48,6 +48,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -55,6 +56,7 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
@@ -64,6 +66,7 @@ import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.GueltigkeitsUtil;
@@ -148,9 +151,19 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			return Processing.failure("Es wurden keine Zeitabschnitte übergeben.");
 		}
 
-		return betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false)
+		Mandant mandant = getMandantFromBgNummer(dto.getRefnr());
+
+		return betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false, mandant)
 			.map(betreuung -> processEventForBetreuung(eventMonitor, dto, betreuung))
 			.orElseGet(() -> Processing.failure("Betreuung nicht gefunden."));
+	}
+
+	private Mandant getMandantFromBgNummer(String refnr) {
+		final int gemeindeNummer = BetreuungUtil.getGemeindeFromBGNummer(refnr);
+		Gemeinde gemeinde = gemeindeService.getGemeindeByGemeindeNummer(gemeindeNummer).orElseThrow(() ->
+				new EbeguEntityNotFoundException("getGemeindeByGemeindeNummer", gemeindeNummer));
+
+		return gemeinde.getMandant();
 	}
 
 	@Nonnull

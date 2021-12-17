@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 
@@ -42,10 +42,16 @@ export class VeranlagungComponent implements OnInit {
     @Input()
     public readOnly: boolean;
 
+    @Output() public readonly valueChange = new EventEmitter<undefined>();
+
     public constructor() {
     }
 
     public ngOnInit(): void {
+    }
+
+    public onValueChange(): void {
+        this.valueChange.emit();
     }
 
 }

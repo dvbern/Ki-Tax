@@ -29,14 +29,18 @@ import {TSFinanzielleSituationSubStepName} from '../../../../models/enums/TSFina
 import {TSFinanzielleSituationTyp} from '../../../../models/enums/TSFinanzielleSituationTyp';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {ErrorService} from '../../errors/service/ErrorService';
+import {Log, LogFactory} from '../../logging/LogFactory';
 
 @Component({
     selector: 'dv-navigation-x',
     templateUrl: './dv-navigation-x.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DvNavigationXComponent implements OnInit {
+
+    private readonly log: Log = LogFactory.createLog('DvNavigationXComponent');
 
     @Input() public dvPrevious: boolean;
     @Input() public dvNext: boolean;
@@ -69,26 +73,37 @@ export class DvNavigationXComponent implements OnInit {
         if (!this.containerClass) {
             this.containerClass = 'dv-navigation-flex';
         }
-        this.initFinSitSubStepManager(this.gesuchModelManager.getGesuch().finSitTyp);
+        this.initSubStepManager();
     }
 
-    private initFinSitSubStepManager(finSitTyp: TSFinanzielleSituationTyp): void {
-        switch (finSitTyp) {
-            case TSFinanzielleSituationTyp.BERN:
-                this.finSitWizardSubStepManager =
-                    new FinanzielleSituationSubStepManagerBernAsiv(this.gesuchModelManager);
-                break;
-            case TSFinanzielleSituationTyp.LUZERN:
-                this.finSitWizardSubStepManager =
-                    new FinanzielleSituationSubStepManagerLuzern(this.gesuchModelManager);
-                break;
-            default:
-                throw new Error(`unexpected TSFinanzielleSituationTyp ${finSitTyp}`);
+    private initSubStepManager(): void {
+        if (EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGesuchsperiode())) {
+            return;
         }
+        this.finanzielleSituationRS.getFinanzielleSituationTyp(this.gesuchModelManager.getGesuchsperiode(),
+            this.gesuchModelManager.getGemeinde())
+            .subscribe(typ => {
+                switch (typ) {
+                    case TSFinanzielleSituationTyp.BERN:
+                        this.finSitWizardSubStepManager =
+                            new FinanzielleSituationSubStepManagerBernAsiv(this.gesuchModelManager);
+                        break;
+                    case TSFinanzielleSituationTyp.LUZERN:
+                        this.finSitWizardSubStepManager =
+                            new FinanzielleSituationSubStepManagerLuzern(this.gesuchModelManager);
+                        break;
+                    default:
+                        throw new Error(`unexpected TSFinanzielleSituationTyp ${typ}`);
+                }
+            }, err => this.log.error(err));
     }
 
     public doesCancelExist(): boolean {
-        return this.dvCancel !== undefined && this.dvCancel !== null;
+        return this.dvCancel.observers.length > 0;
+    }
+
+    public doesSaveExist(): boolean {
+        return this.dvSave.observers.length > 0;
     }
 
     public doesdvTranslateNextExist(): boolean {
@@ -105,7 +120,7 @@ export class DvNavigationXComponent implements OnInit {
         if (this.gesuchModelManager.isGesuchReadonly()) {
             return this.translate.instant('ZURUECK_ONLY');
         }
-        if (this.dvSave) {
+        if (this.doesSaveExist()) {
             return this.translate.instant('ZURUECK');
         }
         return this.translate.instant('ZURUECK_ONLY');
@@ -121,7 +136,7 @@ export class DvNavigationXComponent implements OnInit {
         if (this.gesuchModelManager.isGesuchReadonly()) {
             return this.translate.instant('WEITER_ONLY');
         }
-        if (this.dvSave) {
+        if (this.doesSaveExist()) {
             return this.translate.instant('WEITER');
         }
         return this.translate.instant('WEITER_ONLY');
@@ -141,7 +156,7 @@ export class DvNavigationXComponent implements OnInit {
         this.wizardStepManager.isTransitionInProgress = true;
 
         // tslint:disable-next-line:early-exit
-        if (this.isSavingEnabled() && this.dvSave) {
+        if (this.isSavingEnabled() && this.doesSaveExist()) {
             this.dvSave.emit({
                 onResult: (result: any) => {
                     if (result) {
@@ -176,7 +191,7 @@ export class DvNavigationXComponent implements OnInit {
 
         this.wizardStepManager.isTransitionInProgress = true;
         // tslint:disable-next-line:early-exit
-        if (this.isSavingEnabled() && this.dvSave) {
+        if (this.isSavingEnabled() && this.doesSaveExist()) {
             this.dvSave.emit({
                 onResult: (result: any) => {
                     if (result) {
@@ -197,7 +212,7 @@ export class DvNavigationXComponent implements OnInit {
      * Diese Methode ist aehnlich wie previousStep() aber wird verwendet, um die Aenderungen NICHT zu speichern
      */
     public cancel(): void {
-        if (this.dvCancel) {
+        if (this.doesCancelExist()) {
             this.dvCancel.emit();
         }
         this.navigateToPreviousStep();

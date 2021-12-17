@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {StateService} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
@@ -33,7 +33,7 @@ import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropert
 export class OnboardingNeuBenutzerComponent {
 
     @Input() public nextState: string = 'onboarding.be-login';
-    @Input() public isTSAngebotEnabled: boolean;
+    public isTSAngebotEnabled: boolean;
 
     public gemeinden$: Observable<TSGemeinde[]>;
     public gemeindenBG$: Observable<TSGemeinde[]>;
@@ -47,7 +47,8 @@ export class OnboardingNeuBenutzerComponent {
     public constructor(
         private readonly gemeindeRS: GemeindeRS,
         private readonly stateService: StateService,
-        private readonly applicationPropertyRS: ApplicationPropertyRS
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly cdr: ChangeDetectorRef,
     ) {
         this.gemeinden$ = from(this.gemeindeRS.getAktiveUndVonSchulverbundGemeinden())
             .pipe(map(gemeinden => {
@@ -60,6 +61,7 @@ export class OnboardingNeuBenutzerComponent {
             gemeinde => gemeinde.angebotTS)));
         this.applicationPropertyRS.getPublicPropertiesCached().then(properties => {
             this.isTSAngebotEnabled = properties.angebotTSActivated;
+            this.cdr.markForCheck();
         });
     }
 

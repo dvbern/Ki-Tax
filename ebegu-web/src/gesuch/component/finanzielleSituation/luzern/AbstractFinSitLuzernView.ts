@@ -19,6 +19,7 @@ import {NgForm} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
 import {IPromise} from 'angular';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
@@ -33,7 +34,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     protected constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
-        protected gesuchstellerNumber: number
+        protected gesuchstellerNumber: number,
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
@@ -62,6 +63,10 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
 
     public showVeranlagung(): boolean {
         return EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.veranlagt);
+    }
+
+    public showResultat(): boolean {
+        return !this.gesuchModelManager.isGesuchsteller2Required();
     }
 
     public quellenBesteuertChange(newQuellenBesteuert: MatRadioChange): void {
@@ -169,14 +174,30 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         return form.valid;
     }
 
+    public abstract notify(): void;
+
     protected save(onResult: Function): IPromise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         return this.gesuchModelManager.saveFinanzielleSituation()
             .then((finanzielleSituationContainer: TSFinanzielleSituationContainer) => {
+                if (this.isGemeinsam() || this.getAntragstellerNummer() === 2) {
+                    this.updateWizardStepStatus();
+                }
                 onResult(finanzielleSituationContainer);
                 return finanzielleSituationContainer;
             }).catch(error => {
                 throw(error);
             });
+    }
+
+    /**
+     * updates the Status of the Step depending on whether the Gesuch is a Mutation or not
+     */
+    private updateWizardStepStatus(): IPromise<void> {
+        return this.gesuchModelManager.getGesuch().isMutation() ?
+            this.wizardStepManager.updateCurrentWizardStepStatusMutiert() :
+            this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                TSWizardStepName.FINANZIELLE_SITUATION_LUZERN,
+                TSWizardStepStatus.OK);
     }
 }

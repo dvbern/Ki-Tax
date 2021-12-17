@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Massenversand;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.FinSitStatus;
@@ -293,7 +294,7 @@ public interface GesuchService {
 	 * Erstellung nicht freigegeben haben.
 	 * Gibt die Anzahl Warnungen zurueck.
 	 */
-	int findGesucheNichtFreigegebenAndWarn();
+	int findGesucheNichtFreigegebenAndWarn(@Nonnull Mandant mandant);
 
 	/**
 	 * Schickt eine E-Mail an den Gesuchsteller des Gesuchs
@@ -305,7 +306,7 @@ public interface GesuchService {
 	 * Freigabe des Gesuchs nicht geschickt haben.
 	 * Gibt die Anzahl Warnungen zurueck.
 	 */
-	int findGesucheWithoutFreigabequittungenAndWarn();
+	int findGesucheWithoutFreigabequittungenAndWarn(@Nonnull Mandant mandant);
 
 	/**
 	 * Schickt eine E-Mail an den Gesuchsteller und setzt das DatumGewarntFehlendeQuittung
@@ -317,7 +318,7 @@ public interface GesuchService {
 	 * die Quittung nicht geschickt haben. Schickt dem Gesuchsteller eine E-Mail.
 	 * Gibt die Anzahl Warnungen zurueck.
 	 */
-	int deleteGesucheOhneFreigabeOderQuittung();
+	int deleteGesucheOhneFreigabeOderQuittung(@Nonnull Mandant mandant);
 
 	/**
 	 * Löscht eine Gesuche mit eine neue Transaction
@@ -332,7 +333,7 @@ public interface GesuchService {
 	 * Freigabe
 	 * die Quittung nicht geschickt haben.
 	 */
-	List<Gesuch> getGesucheOhneFreigabeOderQuittung();
+	List<Gesuch> getGesucheOhneFreigabeOderQuittung(@Nonnull Mandant mandant);
 
 	/**
 	 * Prüft, ob alle Anträge dieser Periode im Status VERFUEGT oder NUR_SCHULAMT sind

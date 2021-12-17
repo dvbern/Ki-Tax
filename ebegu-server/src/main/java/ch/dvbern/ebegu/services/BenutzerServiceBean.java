@@ -744,6 +744,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	public Optional<Benutzer> getCurrentBenutzer() {
 		String benutzerId = null;
 		if (principalBean != null) {
+			if (principalBean.isAnonymousSuperadmin()) {
+				return Optional.empty();
+			}
 			final Principal principal = principalBean.getPrincipal();
 			benutzerId = principal.getName();
 		}
