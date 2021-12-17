@@ -150,6 +150,7 @@
                             [readOnly]="readonly"
             ></dv-veranlagung>
 
+            <dv-infoma-fields *ngIf="showInfomaFields()"></dv-infoma-fields>
 
             <dv-navigation-x (dvSave)="prepareSave($event.onResult)" [dvPrevious]="hasPrevious" [dvNext]="hasNext"
                            [dvSubStep]="getSubStepIndex()" [dvSubStepName]="getSubStepName()"></dv-navigation-x>

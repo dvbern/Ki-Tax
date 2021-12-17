@@ -118,6 +118,10 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
 
     public abstract getAntragstellerNummer(): number;
 
+    public showInfomaFields(): boolean {
+        return this.getAntragstellerNummer() === 1;
+    }
+
     public hasPrevious(): boolean {
         return true;
     }
