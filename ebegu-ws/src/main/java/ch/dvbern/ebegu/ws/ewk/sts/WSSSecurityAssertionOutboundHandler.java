@@ -82,9 +82,6 @@ public class WSSSecurityAssertionOutboundHandler implements SOAPHandler<SOAPMess
 		return true;
 	}
 
-
-
-
 	@Override
 	public Set<QName> getHeaders() {
 		return new TreeSet();

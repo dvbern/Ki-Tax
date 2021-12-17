@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema xmlns:tns="http://sv.fin.be.ch/schemas/base/20070131/ExceptionInfo" 
+		elementFormDefault="qualified"
+		targetNamespace="http://sv.fin.be.ch/schemas/base/20070131/ExceptionInfo" 
+		xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:complexType name="FaultBase">
+		<xs:sequence>
+			<xs:element minOccurs="0" name="ErrorCode" type="xs:string" />
+			<xs:element name="UserMessage" type="xs:string" />
+			<xs:element minOccurs="0" name="TechnicalMessage" type="xs:string" />
+			<xs:element minOccurs="0" name="ErrorTicketId" type="xs:string" />
+			<xs:element minOccurs="0" name="InnerFault" type="tns:FaultBase" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="FaultBase" type="tns:FaultBase" />
+	<xs:complexType name="InfrastructureFault">
+		<xs:complexContent mixed="false">
+			<xs:extension base="tns:FaultBase">
+				<xs:sequence />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="InfrastructureFault" type="tns:InfrastructureFault" />
+	<xs:complexType name="InvalidArgumentsFault">
+		<xs:complexContent mixed="false">
+			<xs:extension base="tns:FaultBase">
+				<xs:sequence>
+					<xs:element name="ArgumentName" type="xs:string" minOccurs="1" maxOccurs="1" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="InvalidArgumentsFault" type="tns:InvalidArgumentsFault" />
+	<xs:complexType name="BusinessFault">
+		<xs:complexContent mixed="false">
+			<xs:extension base="tns:FaultBase">
+				<xs:sequence />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="BusinessFault" type="tns:BusinessFault" />
+	<xs:complexType name="PermissionDeniedFault">
+		<xs:complexContent mixed="false">
+			<xs:extension base="tns:FaultBase">
+				<xs:sequence />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="PermissionDeniedFault" type="tns:PermissionDeniedFault" />
+</xs:schema>

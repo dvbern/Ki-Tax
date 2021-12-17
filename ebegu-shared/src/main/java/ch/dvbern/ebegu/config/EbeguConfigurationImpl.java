@@ -109,6 +109,8 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 
 	private static final String MULTIMANDANT_ENABLED = "ebegu.multimandant.enabled";
 
+	private static final String EBEGU_KIBON_STEUER_ANFRAGE_ENDPOINT = "ebegu.kibonanfrage.endpoint";
+
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
 
@@ -448,5 +450,10 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public Boolean getMultimandantEnabled() {
 		return getBoolean(MULTIMANDANT_ENABLED, false);
+	}
+
+	@Override
+	public String getKibonAnfrageEndpoint() {
+		return getString(EBEGU_KIBON_STEUER_ANFRAGE_ENDPOINT);
 	}
 }

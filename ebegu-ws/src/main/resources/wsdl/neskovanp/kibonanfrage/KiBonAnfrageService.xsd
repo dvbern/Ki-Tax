@@ -1,0 +1,348 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- DV Bern AG (MOAM), 19.11.2021: Initialversion -->
+<!-- DV Bern AG (MOAM), 26.11.2021: GetSteuerdaten und GetSteuerdatenResponse -->
+<xs:schema xmlns:tns="http://sv.fin.be.ch/schemas/NESKOVANP/20211119/KiBonAnfrageService"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           targetNamespace="http://sv.fin.be.ch/schemas/NESKOVANP/20211119/KiBonAnfrageService">
+
+    <!--Request-->
+    <xs:complexType name="GetSteuerdaten">
+        <xs:sequence>
+            <xs:element name="ZPVNr">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        ZPV-Nummer des Antragstellers (obligatorisch). Der Antragsteller darf der Vorstand oder der Partner sein.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:int">
+                        <xs:minExclusive value="0"/>
+                        <xs:maxInclusive value="999999999"/> <!-- 9-stellig -->
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="Geburtsdatum" type="xs:date">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Geburtsdatum des Antragstellers (obligatorisch). Gültige Wertbereiche: 01.01.1900 - aktuelles Tagesdatum.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="KiBonAntragID" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Antrag-ID von von KiBon (obligatorisch). Die Antrag-ID ist eine UUID.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="BeginnGesuchsperiode">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Beginn Gesuchsperiode (obligatorisch). Gültige Wertbereiche: 2019 - 9999.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:int">
+                        <xs:pattern value="[2-9][0-9][0-9][0-9]"/><!-- nur 4-stellig -->
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="CodeVeranlagungsstand">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Code Stand der Veranlagung. Mögliche Werte sind: offen (1) / provisorisch (2) / rechtskräftig (3).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="OFFEN">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Offen (keine Daten) (1)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="PROVISORISCH">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Provisorisch (2)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="RECHTSKRAEFTIG">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Rechtskräftig (3)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!--Response-->
+    <xs:complexType name="GetSteuerdatenResponse">
+        <xs:sequence>
+            <xs:element name="ZPVNrAntragsteller" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        ZPV-Nummer des Antragstellers gemäss Request-Attribut ZPVNr (s. GetSteuerdaten Request)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="GeburtsdatumAntragsteller" type="xs:date">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Geburtsdatum des Antragstellers gemäss Request-Attribut Geburtsdatum (s. GetSteuerdaten Request).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="KiBonAntragID" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Antrag-ID von von KiBon gemäss Request-Attribut KiBonAntragID (s. GetSteuerdaten Request).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="BeginnGesuchsperiode" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Beginn Gesuchsperiode gemäss Request-Attribut BeginnGesuchsperiode (s. GetSteuerdaten Request)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="ZPVNrDossiertraeger" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        ZPV-Nummer des Dossierträgers (dessen Steuerfall ermittelt wurde).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="GeburtsdatumDossiertraeger" type="xs:date">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Geburtsdatum des Dossierträgers (dessen Steuerfall ermittelt wurde).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="ZPVNrPartner" type="xs:int" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        ZPV-Nummer des Partners vom Dossierträger (dessen Steuerfall ermittelt wurde).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="GeburtsdatumPartner" type="xs:date" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Geburtsdatum des Partners vom Dossierträger (dessen Steuerfall ermittelt wurde).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="FallId" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Fall-ID des ermittelten Steuerfalls.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Antwortdatum" type="xs:date">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Datum der Antwort, welches das aktuelle Datum ist.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="SynchroneAntwort" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Ist true, wenn die Aufbereitung der Antwort Online, d.h. aus dem Webservice erfolgt, sonst false
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Veranlagungsstand" type="tns:CodeVeranlagungsstand">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Code Stand der Veranlagung. Mögliche Werte sind: offen (1) / provisorisch (2) / rechtskräftig (3).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="UnterjaehrigerFall" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Ist true, wenn es sich beim zu pruefenden Fall oder den allenfalls einbezogenen Vorperiodenfällen
+                        nicht um einen Fall mit ganzjaehriger Veranlagung vom 01.01. bis 31.12. handelt.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="ErwerbseinkommenUnselbstaendigkeitDossiertraeger" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Einkommen aus unselbständiger Erwerbstätigkeit des Dossiertraegers
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="ErwerbseinkommenUnselbstaendigkeitPartner" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Einkommen aus unselbständiger Erwerbstätigkeit des Partners
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="SteuerpflichtigesErsatzeinkommenDossiertraeger" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Steuerpflichtiges Ersatzeinkommen des Dossiertraegers
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="SteuerpflichtigesErsatzeinkommenPartner" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Steuerpflichtiges Ersatzeinkommen des Partners
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="ErhalteneUnterhaltsbeitraegeDossiertraeger" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Erhaltene Unterhaltsbeiträge des Dossiertraegers
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="ErhalteneUnterhaltsbeitraegePartner" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Erhaltene Unterhaltsbeiträge des Partners
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="AusgewiesenerGeschaeftsertragDossiertraeger" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Ausgewiesener Geschäftsertrag (aktuelles jahr) des Dossiertraegers
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="AusgewiesenerGeschaeftsertragPartner" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Ausgewiesener Geschäftsertrag (aktuelles jahr) des Partners
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="AusgewiesenerGeschaeftsertragVorperiodeDossiertraeger" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Ausgewiesener Geschäftsertrag Vorperiode (Jahr - 1) des Dossiertraegers
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="AusgewiesenerGeschaeftsertragVorperiodePartner" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Ausgewiesener Geschäftsertrag Vorperiode (Jahr - 1) des Partners
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="AusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Ausgewiesener Geschäftsertrag Vorvorperiode (Jahr - 2) des Dossiertraegers
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="AusgewiesenerGeschaeftsertragVorperiode2Partner" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Ausgewiesener Geschäftsertrag Vorvorperiode (Jahr - 2) des Partners
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="WeitereSteuerbareEinkuenfteDossiertraeger" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Weitere steuerbare Einkünfte des Dossiertraegers
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="WeitereSteuerbareEinkuenftePartner" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Weitere steuerbare Einkünfte des Partners
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="BruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Bruttoertraege aus beweglichem Vermoegen ohne Liegenschaften und ohne Erbengemeinschaften
+                        oder Miteigentum
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="BruttoertraegeAusLiegenschaften" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Bruttoertraege aus unbeweglichem Vermoegen (Liegenschaften)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="NettoertraegeAusEGMEDossiertraeger" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Nettoertraege aus Erbengemeinschaften oder Miteigentum des Dossiertraegers
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="NettoertraegeAusEGMEPartner" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Nettoertraege aus Erbengemeinschaften oder Miteigentum des Partners
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="GeleisteteUnterhaltsbeitraege" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Geleistete Unterhaltsbeiträge (= Abzug fuer bezahlte Alimente)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Schuldzinsen" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Schuldzinsen des Dossiertraegers und/oder Partners
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="GewinnungskostenBeweglichesVermoegen" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Kosten fuer Wertschriften und Lotteriegewinn-Einsaetze
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="LiegenschaftsAbzuege" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Gewinnungskosten fuer unbewegliches Vermoegen
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Nettovermoegen" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Bruttovermögen abzgl. Schulden ohne Berücksichtigung von Repartitionsfaktoren
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="GetSteuerdaten" type="tns:GetSteuerdaten"/>
+    <xs:element name="GetSteuerdatenResponse" type="tns:GetSteuerdatenResponse"/>
+</xs:schema>

@@ -1,0 +1,758 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+	Copyright (c) 2004 DV Bern AG, Switzerland
+	
+	Das vorliegende Dokument, einschliesslich aller seiner Teile, ist urheberrechtlich
+	geschützt. Jede Verwertung ist ohne Zustimmung der DV Bern AG unzulässig. Dies gilt
+	insbesondere für Vervielfältigungen, die Einspeicherung und Verarbeitung in
+	elektronischer Form. Wird das Dokument einem Kunden im Rahmen der Projektarbeit zur
+	Ansicht übergeben ist jede weitere Verteilung durch den Kunden an Dritte untersagt.
+-->
+
+<xs:schema
+	targetNamespace="http://sv.fin.be.ch/schemas/A7V/20070710/EvasNpDossier"
+	xmlns:tns="http://sv.fin.be.ch/schemas/A7V/20070710/EvasNpDossier"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:common="http://sv.fin.be.ch/schemas/A7V/20070710/EvasNpCommon"
+	elementFormDefault="qualified"
+	xmlns:xhtml="http://www.w3.org/1999/xhtml"
+	attributeFormDefault="unqualified" version="0.1">
+
+	<xs:import
+		namespace="http://sv.fin.be.ch/schemas/A7V/20070710/EvasNpCommon"
+		schemaLocation="EvasNpCommon.xsd" />
+		
+	<xs:complexType name="FallKey">
+		<xs:annotation>
+			<xs:documentation>Schlüssel eines Falles</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ZpvNummer" type="xs:int">
+				<xs:annotation>
+					<xs:documentation>Die ZPV-Nummer</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FallId" type="xs:int">
+				<xs:annotation>
+					<xs:documentation>
+						Die Fallidentifikation
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="DokumentKey">
+		<xs:annotation>
+			<xs:documentation>
+				Schlüssel eines Dokumentes
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="tns:FallKey">
+				<xs:sequence>
+					<xs:element name="DokumentId" type="xs:int">
+						<xs:annotation>
+							<xs:documentation>
+								Die Dokumentidentifikation
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="DokumentLaufnummer"
+						type="xs:int">
+						<xs:annotation>
+							<xs:documentation>
+								Die Laufnummer eines Dokumentes
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="TicketKey">
+		<xs:annotation>
+			<xs:documentation>
+				Schlüssel eines Dokumenten Definition
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="tns:DokumentKey">
+				<xs:sequence>
+					<xs:element name="DokumentLaufnummerAenderung"
+						type="xs:int">
+						<xs:annotation>
+							<xs:documentation>
+								Die Laufnummer Änderung eines Dokumentes
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ZelleKey">
+			<xs:annotation>
+				<xs:documentation>
+					Schlüssel eines Zelle
+				</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="tns:TicketKey">
+					<xs:sequence>
+						<xs:element name="zelleId"	type="xs:int">
+							<xs:annotation>
+								<xs:documentation>Die ZelleId  eines Zelle</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="zifferId"	type="xs:int">
+							<xs:annotation>
+								<xs:documentation>Die ZifferId eines Zelle</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="laufnummerZelle"	type="xs:int">
+							<xs:annotation>
+								<xs:documentation>Die Laufnummer  eines Zelle</xs:documentation>
+							</xs:annotation>
+						</xs:element>												
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+
+	<xs:complexType name="BegruendungKey">
+		<xs:annotation>
+			<xs:documentation>Schlüssel eines Dokumentes</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="tns:ZelleKey">
+				<xs:sequence>
+					<xs:element name="LaufnummerBegruendung" type="xs:int">
+						<xs:annotation>
+							<xs:documentation>Laufnummer Begruendung</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="DokumentFilter">
+		<xs:annotation>
+			<xs:documentation>
+				Filterkriterien für das Lesen von Dokumenten
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="MeldewesenBarcodeEttiketteDrucken"
+				type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>
+						Falls dieses Element auf TRUE gesetzt wird,
+						werden nur Dokumente zurück gegeben, welche den
+						Zusatz 'MeldewesenBarcodeEttiketteDrucken' =
+						TRUE haben. Falls dieses Attribute auf FALSE
+						gesetzt wird, werden nur Dokumente zurück
+						gegeben, welche den Zusatz
+						'MeldewesenBarcodeEttiketteDrucken' = FALSE
+						haben. Falls dieses Element weggelassen wird, 
+						wird keine Einschränkung auf den Zusatz
+						'MeldewesenBarcodeEttiketteDrucken' gemacht.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DokumentGruppe"
+				type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>
+						Falls dieses Element und das Element DokumentSicht gesetzt sind,
+						werden nur Dokumente zurück gegeben, welche der
+						angegebenen DokumentGruppe und DokumentSicht entsprechen
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DokumentSicht"
+				type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>
+						Falls dieses Element und das Element DokumentGruppe gesetzt sind,
+						werden nur Dokumente zurück gegeben, welche der
+						DokumentSicht und der angegebenen DokumentGruppe entsprechen.
+						Falls dieses Element gesetzt ist und die DokumentGruppe nicht gesetzt ist,
+						werden alle Dokumente zurück gegeben, welche der
+						DokumentSicht entsprechen.  Bekannte Sichten sind: 
+						isndtgrp.cod (IS-NESKO), tmpdtgrp.cod (TaxMe Portal)
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="TicketBasis" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Abstraktes Ticket</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="common:BasisZeitraumEntitaet">
+				<xs:sequence>
+					<xs:element name="Key" type="tns:TicketKey">
+						<xs:annotation>
+							<xs:documentation>
+								Der Schlüssel dieser Entität
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="DokumentVersion" type="xs:int">
+						<xs:annotation>
+							<xs:documentation>
+								Die Version der Dokument Definition.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="Steuerjahr" type="xs:short">
+						<xs:annotation>
+							<xs:documentation>
+								Das Steuerjahr
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="Belegnummer" type="xs:long">
+						<xs:annotation>
+							<xs:documentation>
+								Die Belegnummer
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="Veranlagungsstatus"
+						type="common:Status">
+						<xs:annotation>
+							<xs:documentation>
+								Der Veranlagungsstatus:
+								<xhtml:br />
+								00 = Dokument bereit für Versand
+								<xhtml:br />
+								01 = Dokument versandt
+								<xhtml:br />
+								02 = Dokument eingegangen
+								<xhtml:br />
+								04 = Dokument provisorisch erfasst
+								<xhtml:br />
+								05 = Dokument erfasst
+								<xhtml:br />
+								10 = Vorerfasst
+								<xhtml:br />
+								20 = Automatisch provisorisch veranlagt
+								<xhtml:br />
+								21 = SUV provisorisch veranlagt
+								<xhtml:br />
+								30 = Automatisch definitiv veranlagt
+								<xhtml:br />
+								31 = SUV definitiv veranlagt
+								<xhtml:br />
+								50 = Verfahren hängig
+								<xhtml:br />
+								51 = Provisorisch bearbeitet
+								<xhtml:br />
+								52 = Definitiv bearbeitet
+								<xhtml:br />
+								53 = An Gerichtsinstanz weitergeleitet
+								<xhtml:br />
+								90 = Eröffnet
+								<xhtml:br />
+								91 = Rechtskräftig
+								<xhtml:br />
+								<xhtml:br />
+								Die Bezeichnung kann über die Operation
+								GetCodeWerte ermittelt werden. Der Code
+								Typ für den Code Veranlagungsstatus ist
+								'Veranlagungsstatus'.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="Outputstatus" type="common:Status">
+						<xs:annotation>
+							<xs:documentation>
+								Code Outputstatus:
+								<xhtml:br />
+								01 = Disponiert
+								<xhtml:br />
+								02 = Druck
+								<xhtml:br />
+								03 = Versand
+								<xhtml:br />
+								07 = Disponiert (MW)
+								<xhtml:br />
+								08 = Druck (MW)
+								<xhtml:br />
+								09 = Versand (MW)
+								<xhtml:br />
+								10 = Druck via PPT (SUV)
+								<xhtml:br />
+								<xhtml:br />
+								Die Bezeichnung kann über die Operation
+								GetCodeWerte ermittelt werden. Der Code
+								Typ für den Outputstatus ist
+								'Outputstatus'.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="Eingangsmedium"
+						type="common:StandardCode">
+						<xs:annotation>
+							<xs:documentation>
+								Code Eingangsmedium Termin:
+								<xhtml:br />
+								A = LA: Internet (ELM)
+								<xhtml:br />
+								B = LA: Scanning 2D-Barcode
+								<xhtml:br />
+								C = LA: Scanning OCR
+								<xhtml:br />
+								D = LA: Berichtigung (ELM)
+								<xhtml:br />
+								E = LA: Potentielle Duplikate (ELM)
+								<xhtml:br />
+								1 = Papier
+								<xhtml:br />
+								2 = Internet
+								<xhtml:br />
+								3 = CD: Tax-Me
+								<xhtml:br />
+								4 = CD: PEBE
+								<xhtml:br />
+								5 = CD: Dr. Tax
+								<xhtml:br />
+								6 = CD: Andere
+								<xhtml:br />
+								7 = Aktenhandling
+								<xhtml:br />
+								8 = Nacherfassung
+								<xhtml:br />
+								9 = Datenübernahme NESKO-B
+								<xhtml:br />
+								<xhtml:br />
+								Die Bezeichnung kann über die Operation
+								GetCodeWerte ermittelt werden. Der Code
+								Typ für den Code Eingangsmedium ist
+								'Eingangsmedium'.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="Entscheidart"
+						type="common:StandardCode">
+						<xs:annotation>
+							<xs:documentation>
+								Code Entscheidart:
+								<xhtml:br />
+								00 = Ordentliche Veranlagung
+								<xhtml:br />
+								01 = Einsprache
+								<xhtml:br />
+								02 = Rekurs
+								<xhtml:br />
+								03 = Verwaltungsgerichtsbeschwerde
+								<xhtml:br />
+								04 = Bundesgerichtsbeschwerde
+								<xhtml:br />
+								10 = Nachsteuerverfahren
+								<xhtml:br />
+								11 = Berichtigungsverfahren
+								<xhtml:br />
+								12 = Revisionsverfahren
+								<xhtml:br />
+								13 = Rechtsmittel verspätet
+								<xhtml:br />
+								99 = Keine Entscheidart
+								<xhtml:br />
+								<xhtml:br />
+								Die Bezeichnung kann über die Operation
+								GetCodeWerte ermittelt werden. Der Code
+								Typ für den Code Entscheidart ist
+								'Entscheidart'.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="Steuerart"
+						type="common:StandardCode">
+						<xs:annotation>
+							<xs:documentation>
+								Code Steuerart:
+								<xhtml:br />
+								01 = Periodische Einkommenssteuer Kanton
+								<xhtml:br />
+								02 = Periodische Vermögenssteuer Kanton
+								<xhtml:br />
+								03 = Periodische Einkommenssteuer Bund
+								<xhtml:br />
+								11 = Jahressteuer Kanton
+								<xhtml:br />
+								12 = Jahressteuer Bund
+								<xhtml:br />
+								15 = Verrechnungssteuer Kanton
+								<xhtml:br />
+								21 = Kollektiv-, Kommandit- einfache
+								Gesellschaft
+								<xhtml:br />
+								22 = Baugesellschaft, Konsortium
+								<xhtml:br />
+								25 = Erbengemeinschaft,
+								Miteigentümergemeinschaft
+								<xhtml:br />
+								99 = Keine Steuerart
+								<xhtml:br />
+								<xhtml:br />
+								Die Bezeichnung kann über die Operation
+								GetCodeWerte ermittelt werden. Der Code
+								Typ für den Code Steuerart ist
+								'Steuerart'.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="VerantwortlicherBenutzer"
+						type="common:Benutzer" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Der Verantwortliche Benutzer des Falles
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="Anwendergruppe"
+						type="common:Anwendergruppe">
+						<xs:annotation>
+							<xs:documentation>
+								Die Anwendergruppe
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="Bereich" type="common:Bereich">
+						<xs:annotation>
+							<xs:documentation>
+								Der Bereich
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="Team" type="common:Team">
+						<xs:annotation>
+							<xs:documentation>
+								Das Team
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="Gemeinde" type="common:Gemeinde"
+						minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Die Gemeinde
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="StrukturiertesTicket">
+		<xs:annotation>
+			<xs:documentation>Strukturiertes Ticket</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="tns:TicketBasis">
+				<xs:sequence>
+					<xs:element name="UnstrukturierteTickets"
+						type="tns:UnstrukturiertesTicket" minOccurs="0"
+						maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>
+								Ein Strukturiertes Ticket kann N
+								zugehörige Unstrukturierte Tickets
+								besitzen.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="Bezugsstatus" type="common:Status">
+						<xs:annotation>
+							<xs:documentation>
+								Der Bezugstatus (Inkasso-Status):
+								<xhtml:br />
+								01 = Rechnung erstellt
+								<xhtml:br />
+								<xhtml:br />
+								Die Bezeichnung kann über die Operation
+								GetCodeWerte ermittelt werden. Der Code
+								Typ für den Bezugstatus ist
+								'Bezugsstatus'.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="KundengruppeDetail"
+						type="common:StandardCode">
+						<xs:annotation>
+							<xs:documentation>
+								Code Kundengruppe Detail:
+								<xhtml:br />
+								0 = M-Fall: Beteiligung an einer JP
+								<xhtml:br />
+								1 = L-Fall: NP als Einkommen und
+								Vermögen aus Land-/ Forstwirtschaft
+								<xhtml:br />
+								2 = Uebrige selbständigerwerbende NP's
+								<xhtml:br />
+								5 = NP mit Steuerausscheidung
+								<xhtml:br />
+								6 = Die übrigen unselbständigerwerbenden
+								NP's
+								<xhtml:br />
+								<xhtml:br />
+								Die Bezeichnung kann über die Operation
+								GetCodeWerte ermittelt werden. Der Code
+								Typ für den Code Kundengruppe Detail ist
+								'KundengruppeDetail'.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="KundengruppeAktuell"
+						type="common:StandardCode">
+						<xs:annotation>
+							<xs:documentation>
+								Code Kundengruppe (aktuell):
+								<xhtml:br />
+								02 = C
+								<xhtml:br />
+								04 = B
+								<xhtml:br />
+								06 = A
+								<xhtml:br />
+								12 = D3
+								<xhtml:br />
+								14 = D2
+								<xhtml:br />
+								16 = D1
+								<xhtml:br />
+								<xhtml:br />
+								<xhtml:br />
+								Die Bezeichnung kann über die Operation
+								GetCodeWerte ermittelt werden. Der Code
+								Typ für den Code Kundengruppe ist
+								'Kundengruppe'.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="UnstrukturiertesTicket">
+		<xs:annotation>
+			<xs:documentation>Unstrukturiertes Ticket</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="tns:TicketBasis">
+				<xs:sequence>
+					<xs:element name="Praesentation"
+						type="common:StandardCode">
+						<xs:annotation>
+							<xs:documentation>
+								Code Präsentation:
+								<xhtml:br />
+								'BMP' (BMP Image)
+								<xhtml:br />
+								'DOC' (Word Dokument)
+								<xhtml:br />
+								'DOT' (Word Vorlage)
+								<xhtml:br />
+								'GIF' (GIF Image)
+								<xhtml:br />
+								'JPG' (JPEG Image)
+								<xhtml:br />
+								'PDF' (PDF Dokument)
+								<xhtml:br />
+								'STR' (strukturierte Daten, Ziffern/Zellen)
+								<xhtml:br />
+								'TIF' (TIF Image)
+								<xhtml:br />
+								'XLS' (Excel Dokument)
+								<xhtml:br />
+								'XLT' (Excel Vorlage)
+								<xhtml:br />
+								'MSG' (E-Mail)
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="Imageformat" type="common:StandardCode">
+						<xs:annotation>
+							<xs:documentation>
+								Code Format Image
+								<xhtml:br />
+								''=KEIN_IMAGE
+								<xhtml:br />
+								'1'=A4Hoch
+								<xhtml:br />
+								'2'=A4Quer
+								<xhtml:br />
+								'3'=A5Hoch
+								<xhtml:br />
+								'4'=A5Quer
+								<xhtml:br />
+								'A'=PF9_VERWENDET
+								<xhtml:br />
+								'B'=ALLE_ZELLEN_VERWENDET
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="FallAnsichtBasis">
+		<xs:annotation>
+			<xs:documentation>Der Steuerfall.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="common:BasisAnsichtZeitraumEntitaet">
+				<xs:sequence>
+					<xs:element name="Key" type="tns:FallKey">
+						<xs:annotation>
+							<xs:documentation>
+								Der Schlüssel dieser Entität
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Bezeichnung" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die aufbereitet Bezeichnung der Fall
+								Ansicht
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Rolle"
+						type="common:StandardCode">
+						<xs:annotation>
+							<xs:documentation>
+								Code Rolle Fall:
+								<xhtml:br />
+								00 = Periodische Steuern und
+								Lotteriegewinn
+								<xhtml:br />
+								01 = NP, Jahressteuer
+								<xhtml:br />
+								10 = Kollektivgesellschaft
+								<xhtml:br />
+								11 = Kommanditgesellschaft
+								<xhtml:br />
+								12 = Einfache Gesellschaft
+								<xhtml:br />
+								20 = Baugesellschaft
+								<xhtml:br />
+								21 = Konsortium
+								<xhtml:br />
+								30 = Erbgemeinschaft
+								<xhtml:br />
+								31 = Miteigentümergemeinschaft
+								<xhtml:br />
+								90 = Juristische Person
+								<xhtml:br />
+								99 = Fall-ID ist 0
+								<xhtml:br />
+								<xhtml:br />
+								Die Bezeichnung kann über die Operation
+								GetCodeWerte ermittelt werden. Der Code
+								Typ für den Code Rolle Fall ist
+								'RolleFall'.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="VolleSteuerpflicht"
+						type="common:StandardCode">
+						<xs:annotation>
+							<xs:documentation>
+								Code volle Steuerpflicht:
+								<xhtml:br />
+								Z = Keine Steuerpflicht
+								<xhtml:br />
+								0 = Unbeschränkte Steuerpfl. (Kt BE),
+								ganzes Jahr
+								<xhtml:br />
+								1 = Unbeschränkte Steuerpfl. (Kt BE),
+								unterjährig
+								<xhtml:br />
+								5 = Beschränkte Steuerpfl. (anderer Kt),
+								ganzes Jahr
+								<xhtml:br />
+								6 = Beschränkte Steuerpfl. (anderer Kt),
+								unterjährig
+								<xhtml:br />
+								8 = Beschränkte Steuerpfl. (Ausland),
+								ganzes Jahr
+								<xhtml:br />
+								9 = Beschränkte Steuerpfl. (Ausland),
+								unterjährig
+								<xhtml:br />
+								<xhtml:br />
+								Die Bezeichnung kann über die Operation
+								GetCodeWerte ermittelt werden. Der Code
+								Typ für den Code Volle Steuerpflicht ist
+								'VolleSteuerpflicht'.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="VeranlagungsGemeinde"
+						type="common:Gemeinde" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Die Gemeindenummer der
+								Veranlagungsgemeinde (LEIV
+								Gemeindenummer)
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="VerantwortlicherBenutzer"
+						type="common:Benutzer" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Der Verantwortliche Benutzer (Benutzer
+								ID)
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+    <xs:complexType name="DokumentReferenzType">
+        <xs:annotation>
+            <xs:documentation>Referenz auf ein Dokument (Outsouring oder Ablage).</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="AblageId" type="xs:string"/>
+            <xs:element name="SchriftgutId" type="xs:string"/>
+            <xs:element name="DokumentId" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+</xs:schema>

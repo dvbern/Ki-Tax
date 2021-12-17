@@ -342,4 +342,6 @@ public interface EbeguConfiguration {
 	String getMassenmutationEmpfaengerMail();
 
 	Boolean getMultimandantEnabled();
+
+	String getKibonAnfrageEndpoint();
 }
