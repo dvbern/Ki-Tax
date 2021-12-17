@@ -2676,6 +2676,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		FinanzielleSituationSelbstdeklaration selbstdeklaration = new FinanzielleSituationSelbstdeklaration();
+		convertAbstractVorgaengerFieldsToEntity(jaxSelbstdeklaration, selbstdeklaration);
 		selbstdeklaration.setEinkunftErwerb(jaxSelbstdeklaration.getEinkunftErwerb());
 		selbstdeklaration.setEinkunftVersicherung(jaxSelbstdeklaration.getEinkunftVersicherung());
 		selbstdeklaration.setEinkunftAusgleichskassen(jaxSelbstdeklaration.getEinkunftAusgleichskassen());
@@ -2732,38 +2733,39 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nullable
 	private JaxFinanzielleSituationSelbstdeklaration finanzielleSituationSelbstdeklarationToJAX(
-		@Nullable FinanzielleSituationSelbstdeklaration selbstdeklaration) {
-		if(selbstdeklaration == null) {
+		@Nullable FinanzielleSituationSelbstdeklaration persistedSelbstdeklaration) {
+		if(persistedSelbstdeklaration == null) {
 			return null;
 		}
 
 		JaxFinanzielleSituationSelbstdeklaration jaxSelbstdeklaration = new JaxFinanzielleSituationSelbstdeklaration();
-		jaxSelbstdeklaration.setEinkunftErwerb(selbstdeklaration.getEinkunftErwerb());
-		jaxSelbstdeklaration.setEinkunftVersicherung(selbstdeklaration.getEinkunftVersicherung());
-		jaxSelbstdeklaration.setEinkunftAusgleichskassen(selbstdeklaration.getEinkunftAusgleichskassen());
-		jaxSelbstdeklaration.setEinkunftWertschriften(selbstdeklaration.getEinkunftWertschriften());
-		jaxSelbstdeklaration.setEinkunftUnterhaltsbeitragSteuerpflichtige(selbstdeklaration.getEinkunftUnterhaltsbeitragSteuerpflichtige());
-		jaxSelbstdeklaration.setEinkunftUnterhaltsbeitragKinder(selbstdeklaration.getEinkunftUnterhaltsbeitragKinder());
-		jaxSelbstdeklaration.setEinkunftUeberige(selbstdeklaration.getEinkunftUeberige());
-		jaxSelbstdeklaration.setEinkunftLiegenschaften(selbstdeklaration.getEinkunftLiegenschaften());
-		jaxSelbstdeklaration.setAbzugBerufsauslagen(selbstdeklaration.getAbzugBerufsauslagen());
-		jaxSelbstdeklaration.setAbzugSchuldzinsen(selbstdeklaration.getAbzugSchuldzinsen());
-		jaxSelbstdeklaration.setAbzugUnterhaltsbeitragEhepartner(selbstdeklaration.getAbzugUnterhaltsbeitragEhepartner());
-		jaxSelbstdeklaration.setAbzugUnterhaltsbeitragKinder(selbstdeklaration.getAbzugUnterhaltsbeitragKinder());
-		jaxSelbstdeklaration.setAbzugRentenleistungen(selbstdeklaration.getAbzugRentenleistungen());
-		jaxSelbstdeklaration.setAbzugSaeule3A(selbstdeklaration.getAbzugSaeule3A());
-		jaxSelbstdeklaration.setAbzugVersicherungspraemien(selbstdeklaration.getAbzugVersicherungspraemien());
-		jaxSelbstdeklaration.setAbzugKrankheitsUnfallKosten(selbstdeklaration.getAbzugKrankheitsUnfallKosten());
-		jaxSelbstdeklaration.setAbzugFreiweiligeZuwendungPartien(selbstdeklaration.getAbzugFreiweiligeZuwendungPartien());
-		jaxSelbstdeklaration.setAbzugKinderVorschule(selbstdeklaration.getAbzugKinderVorschule());
-		jaxSelbstdeklaration.setAbzugKinderSchule(selbstdeklaration.getAbzugKinderSchule());
-		jaxSelbstdeklaration.setAbzugKinderAuswaertigerAufenthalt(selbstdeklaration.getAbzugKinderAuswaertigerAufenthalt());
-		jaxSelbstdeklaration.setAbzugEigenbetreuung(selbstdeklaration.getAbzugEigenbetreuung());
-		jaxSelbstdeklaration.setAbzugFremdbetreuung(selbstdeklaration.getAbzugFremdbetreuung());
-		jaxSelbstdeklaration.setAbzugErwerbsunfaehigePersonen(selbstdeklaration.getAbzugErwerbsunfaehigePersonen());
-		jaxSelbstdeklaration.setVermoegen(selbstdeklaration.getVermoegen());
-		jaxSelbstdeklaration.setAbzugSteuerfreierBetragErwachsene(selbstdeklaration.getAbzugSteuerfreierBetragErwachsene());
-		jaxSelbstdeklaration.setAbzugSteuerfreierBetragKinder(selbstdeklaration.getAbzugSteuerfreierBetragKinder());
+		convertAbstractVorgaengerFieldsToJAX(persistedSelbstdeklaration, jaxSelbstdeklaration);
+		jaxSelbstdeklaration.setEinkunftErwerb(persistedSelbstdeklaration.getEinkunftErwerb());
+		jaxSelbstdeklaration.setEinkunftVersicherung(persistedSelbstdeklaration.getEinkunftVersicherung());
+		jaxSelbstdeklaration.setEinkunftAusgleichskassen(persistedSelbstdeklaration.getEinkunftAusgleichskassen());
+		jaxSelbstdeklaration.setEinkunftWertschriften(persistedSelbstdeklaration.getEinkunftWertschriften());
+		jaxSelbstdeklaration.setEinkunftUnterhaltsbeitragSteuerpflichtige(persistedSelbstdeklaration.getEinkunftUnterhaltsbeitragSteuerpflichtige());
+		jaxSelbstdeklaration.setEinkunftUnterhaltsbeitragKinder(persistedSelbstdeklaration.getEinkunftUnterhaltsbeitragKinder());
+		jaxSelbstdeklaration.setEinkunftUeberige(persistedSelbstdeklaration.getEinkunftUeberige());
+		jaxSelbstdeklaration.setEinkunftLiegenschaften(persistedSelbstdeklaration.getEinkunftLiegenschaften());
+		jaxSelbstdeklaration.setAbzugBerufsauslagen(persistedSelbstdeklaration.getAbzugBerufsauslagen());
+		jaxSelbstdeklaration.setAbzugSchuldzinsen(persistedSelbstdeklaration.getAbzugSchuldzinsen());
+		jaxSelbstdeklaration.setAbzugUnterhaltsbeitragEhepartner(persistedSelbstdeklaration.getAbzugUnterhaltsbeitragEhepartner());
+		jaxSelbstdeklaration.setAbzugUnterhaltsbeitragKinder(persistedSelbstdeklaration.getAbzugUnterhaltsbeitragKinder());
+		jaxSelbstdeklaration.setAbzugRentenleistungen(persistedSelbstdeklaration.getAbzugRentenleistungen());
+		jaxSelbstdeklaration.setAbzugSaeule3A(persistedSelbstdeklaration.getAbzugSaeule3A());
+		jaxSelbstdeklaration.setAbzugVersicherungspraemien(persistedSelbstdeklaration.getAbzugVersicherungspraemien());
+		jaxSelbstdeklaration.setAbzugKrankheitsUnfallKosten(persistedSelbstdeklaration.getAbzugKrankheitsUnfallKosten());
+		jaxSelbstdeklaration.setAbzugFreiweiligeZuwendungPartien(persistedSelbstdeklaration.getAbzugFreiweiligeZuwendungPartien());
+		jaxSelbstdeklaration.setAbzugKinderVorschule(persistedSelbstdeklaration.getAbzugKinderVorschule());
+		jaxSelbstdeklaration.setAbzugKinderSchule(persistedSelbstdeklaration.getAbzugKinderSchule());
+		jaxSelbstdeklaration.setAbzugKinderAuswaertigerAufenthalt(persistedSelbstdeklaration.getAbzugKinderAuswaertigerAufenthalt());
+		jaxSelbstdeklaration.setAbzugEigenbetreuung(persistedSelbstdeklaration.getAbzugEigenbetreuung());
+		jaxSelbstdeklaration.setAbzugFremdbetreuung(persistedSelbstdeklaration.getAbzugFremdbetreuung());
+		jaxSelbstdeklaration.setAbzugErwerbsunfaehigePersonen(persistedSelbstdeklaration.getAbzugErwerbsunfaehigePersonen());
+		jaxSelbstdeklaration.setVermoegen(persistedSelbstdeklaration.getVermoegen());
+		jaxSelbstdeklaration.setAbzugSteuerfreierBetragErwachsene(persistedSelbstdeklaration.getAbzugSteuerfreierBetragErwachsene());
+		jaxSelbstdeklaration.setAbzugSteuerfreierBetragKinder(persistedSelbstdeklaration.getAbzugSteuerfreierBetragKinder());
 		return jaxSelbstdeklaration;
 	}
 

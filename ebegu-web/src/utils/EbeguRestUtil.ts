@@ -1854,6 +1854,7 @@ export class EbeguRestUtil {
         selbstdeklaration: TSFinanzielleSituationSelbstdeklaration,
     ): TSFinanzielleSituationSelbstdeklaration {
 
+        this.abstractMutableEntityToRestObject(restSelbstdeklaration, selbstdeklaration);
         restSelbstdeklaration.einkunftErwerb = selbstdeklaration.einkunftErwerb;
         restSelbstdeklaration.einkunftVersicherung = selbstdeklaration.einkunftVersicherung;
         restSelbstdeklaration.einkunftAusgleichskassen = selbstdeklaration.einkunftAusgleichskassen;
@@ -1948,6 +1949,7 @@ export class EbeguRestUtil {
     : TSFinanzielleSituationSelbstdeklaration {
 
         if (selbstdeklarationFromServer) {
+            this.parseAbstractMutableEntity(tsSelbstdeklaration, selbstdeklarationFromServer);
             tsSelbstdeklaration.einkunftErwerb = selbstdeklarationFromServer.einkunftErwerb;
             tsSelbstdeklaration.einkunftVersicherung = selbstdeklarationFromServer.einkunftVersicherung;
             tsSelbstdeklaration.einkunftAusgleichskassen = selbstdeklarationFromServer.einkunftAusgleichskassen;
