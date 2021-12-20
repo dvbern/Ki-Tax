@@ -18,16 +18,18 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDateTime;
+import java.util.StringJoiner;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.Lob;
+import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
-
-import javax.annotation.Nullable;
 
 import com.google.common.base.Objects;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -35,6 +37,13 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import static ch.dvbern.ebegu.util.Constants.TEN_MB;
 
 @Entity
+@Table(indexes = {
+	@Index(columnList = "eventId", name = "IX_received_event_event_id"),
+	@Index(columnList = "eventKey", name = "IX_received_event_event_key"),
+	@Index(columnList = "eventType", name = "IX_received_event_event_type"),
+	@Index(columnList = "eventTimestamp", name = "IX_received_event_event_timestamp"),
+	@Index(columnList = "success", name = "IX_received_event_success")
+})
 public class ReceivedEvent extends AbstractEntity {
 
 	private static final long serialVersionUID = 4998440001747583997L;
@@ -61,6 +70,13 @@ public class ReceivedEvent extends AbstractEntity {
 	@Basic(fetch = FetchType.LAZY)
 	private final String eventDto;
 
+	@Column(nullable = false, updatable = false)
+	private boolean success = false;
+
+	@Nullable
+	@Column(updatable = false)
+	private String error = null;
+
 	/**
 	 * just for JPA
 	 */
@@ -74,9 +90,12 @@ public class ReceivedEvent extends AbstractEntity {
 		this.eventDto = null;
 	}
 
-	public ReceivedEvent(@Nonnull @NotEmpty String eventId, @Nonnull @NotEmpty String eventKey,
+	public ReceivedEvent(
+		@Nonnull @NotEmpty String eventId,
+		@Nonnull @NotEmpty String eventKey,
 		@Nonnull @NotEmpty String eventType,
-		@Nonnull LocalDateTime eventTimestamp, @Nonnull String eventDto) {
+		@Nonnull LocalDateTime eventTimestamp,
+		@Nonnull String eventDto) {
 		this.eventId = eventId;
 		this.eventKey = eventKey;
 		this.eventType = eventType;
@@ -109,7 +128,8 @@ public class ReceivedEvent extends AbstractEntity {
 			Objects.equal(getEventId(), that.getEventId()) &&
 			Objects.equal(getEventType(), that.getEventType()) &&
 			Objects.equal(getEventTimestamp(), that.getEventTimestamp()) &&
-			Objects.equal(getEventKey(), that.getEventKey());
+			Objects.equal(getEventKey(), that.getEventKey()) &&
+			Objects.equal(isSuccess(), that.isSuccess());
 	}
 
 	@Override
@@ -120,7 +140,20 @@ public class ReceivedEvent extends AbstractEntity {
 			getEventType(),
 			getEventTimestamp(),
 			getEventKey(),
-			getEventDto());
+			getEventDto(),
+			isSuccess());
+	}
+
+	@Override
+	@Nonnull
+	public String toString() {
+		return new StringJoiner(", ", ReceivedEvent.class.getSimpleName() + '[', "]")
+			.add("eventId='" + eventId + '\'')
+			.add("eventKey='" + eventKey + '\'')
+			.add("eventType='" + eventType + '\'')
+			.add("eventTimestamp=" + eventTimestamp)
+			.add("success=" + success)
+			.toString();
 	}
 
 	@Nonnull
@@ -146,5 +179,22 @@ public class ReceivedEvent extends AbstractEntity {
 	@Nonnull
 	public String getEventDto() {
 		return eventDto;
+	}
+
+	public boolean isSuccess() {
+		return success;
+	}
+
+	public void setSuccess(boolean success) {
+		this.success = success;
+	}
+
+	@Nullable
+	public String getError() {
+		return error;
+	}
+
+	public void setError(@Nullable String error) {
+		this.error = error;
 	}
 }

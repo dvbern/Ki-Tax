@@ -25,19 +25,15 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
 import ch.dvbern.ebegu.services.BetreuungMonitoringService;
 import ch.dvbern.ebegu.services.BetreuungService;
-import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.BetreuungUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,9 +50,6 @@ public class AnmeldungAblehnenEventHandler extends BaseEventHandler<String> {
 
 	@Inject
 	private BetreuungEventHelper betreuungEventHelper;
-
-	@Inject
-	private GemeindeService gemeindeService;
 
 	@Override
 	protected void processEvent(
@@ -75,24 +68,23 @@ public class AnmeldungAblehnenEventHandler extends BaseEventHandler<String> {
 		}
 	}
 
-	protected Processing attemptProcessing(EventMonitor eventMonitor) {
-		Mandant mandant = getMandantFromBgNummer(eventMonitor.getRefnr());
-		return betreuungService.findAnmeldungenTagesschuleByBGNummer(eventMonitor.getRefnr(), mandant)
+	@Nonnull
+	protected Processing attemptProcessing(@Nonnull EventMonitor eventMonitor) {
+		String refnr = eventMonitor.getRefnr();
+		Optional<Mandant> mandant = betreuungEventHelper.getMandantFromBgNummer(refnr);
+		if (mandant.isEmpty()) {
+			return Processing.failure("Mandant konnte nicht gefunden werden.");
+		}
+
+		return betreuungService.findAnmeldungenTagesschuleByBGNummer(refnr, mandant.get())
 			.map(anmeldungTagesschule -> processEventForAblehnung(eventMonitor, anmeldungTagesschule))
 			.orElseGet(() -> Processing.failure("AnmeldungTagesschule nicht gefunden."));
 	}
 
-	private Mandant getMandantFromBgNummer(String refnr) {
-		final int gemeindeNummer = BetreuungUtil.getGemeindeFromBGNummer(refnr);
-		Gemeinde gemeinde = gemeindeService.getGemeindeByGemeindeNummer(gemeindeNummer).orElseThrow(() ->
-				new EbeguEntityNotFoundException("getGemeindeByGemeindeNummer", gemeindeNummer));
-
-		return gemeinde.getMandant();
-	}
-
-
-
-	private Processing processEventForAblehnung(EventMonitor eventMonitor, AnmeldungTagesschule anmeldungTagesschule) {
+	@Nonnull
+	private Processing processEventForAblehnung(
+		@Nonnull EventMonitor eventMonitor,
+		@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
 
 		if (anmeldungTagesschule.extractGesuchsperiode().getStatus() != GesuchsperiodeStatus.AKTIV) {
 			return Processing.failure("Die Gesuchsperiode ist nicht aktiv.");
@@ -110,10 +102,11 @@ public class AnmeldungAblehnenEventHandler extends BaseEventHandler<String> {
 				anmeldungTagesschule));
 	}
 
+	@Nonnull
 	private Processing processEventForExternalClient(
-		EventMonitor eventMonitor,
-		AnmeldungTagesschule anmeldungTagesschule,
-		DateRange clientGueltigkeit) {
+		@Nonnull EventMonitor eventMonitor,
+		@Nonnull AnmeldungTagesschule anmeldungTagesschule,
+		@Nonnull DateRange clientGueltigkeit) {
 		DateRange gesuchsperiode = anmeldungTagesschule.extractGesuchsperiode().getGueltigkeit();
 		Optional<DateRange> overlap = gesuchsperiode.getOverlap(clientGueltigkeit);
 		if (overlap.isEmpty()) {
@@ -121,7 +114,7 @@ public class AnmeldungAblehnenEventHandler extends BaseEventHandler<String> {
 		}
 
 		if (isAblehnungErlaubtStatus(anmeldungTagesschule.getBetreuungsstatus())) {
-			this.betreuungService.anmeldungSchulamtAblehnen(anmeldungTagesschule);
+			betreuungService.anmeldungSchulamtAblehnen(anmeldungTagesschule);
 			LOG.info("Tagesschuleanmeldung mit RefNr: {} wurde automatisch abgelehnt", eventMonitor.getRefnr());
 			eventMonitor.record("Tagesschuleanmeldung wurde automatisch abgelehnt");
 
@@ -136,5 +129,4 @@ public class AnmeldungAblehnenEventHandler extends BaseEventHandler<String> {
 		return status == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
 			|| status == Betreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION;
 	}
-
 }
