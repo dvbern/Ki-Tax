@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -499,7 +500,8 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 
 	private void createFaelleForSuche(@Nonnull List<InstitutionStammdaten> institutionenForSchulung, @Nonnull Gemeinde gemeinde) {
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.getAllActiveGesuchsperioden().iterator().next();
-		List<InstitutionStammdaten> institutionenForTestfall = testfaelleService.getInstitutionsstammdatenForTestfaelle();
+		List<InstitutionStammdaten> institutionenForTestfall = testfaelleService.getInstitutionsstammdatenForTestfaelle(
+				Objects.requireNonNull(gemeinde.getMandant()));
 
 		createFall(Testfall01_WaeltiDagmar.class, gesuchsperiode, institutionenForTestfall, gemeinde, "01", null, null, institutionenForSchulung, true);
 		createFall(Testfall02_FeutzYvonne.class, gesuchsperiode, institutionenForTestfall, gemeinde, "02", null, null, institutionenForSchulung);
