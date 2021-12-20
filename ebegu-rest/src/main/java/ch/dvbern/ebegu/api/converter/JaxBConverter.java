@@ -2663,19 +2663,18 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setGemeinsameStekVorjahr(finanzielleSituationJAXP.getGemeinsameStekVorjahr());
 		finanzielleSituation.setAlleinigeStekVorjahr(finanzielleSituationJAXP.getAlleinigeStekVorjahr());
 		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
-		finanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToEntity(finanzielleSituationJAXP.getSelbstdeklaration()));
+		if(finanzielleSituationJAXP.getSelbstdeklaration() != null) {
+			FinanzielleSituationSelbstdeklaration selbstdeklarationToMerge =
+				Optional.ofNullable(finanzielleSituation.getSelbstdeklaration()).orElse(new FinanzielleSituationSelbstdeklaration());
+			finanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToEntity(finanzielleSituationJAXP.getSelbstdeklaration(), selbstdeklarationToMerge));
+		}
 		return finanzielleSituation;
 	}
 
-	@Nullable
 	private FinanzielleSituationSelbstdeklaration finanzielleSituationSelbstdeklarationToEntity(
-		@Nullable JaxFinanzielleSituationSelbstdeklaration jaxSelbstdeklaration) {
+		JaxFinanzielleSituationSelbstdeklaration jaxSelbstdeklaration,
+		FinanzielleSituationSelbstdeklaration selbstdeklaration) {
 
-		if(jaxSelbstdeklaration == null) {
-			return null;
-		}
-
-		FinanzielleSituationSelbstdeklaration selbstdeklaration = new FinanzielleSituationSelbstdeklaration();
 		convertAbstractVorgaengerFieldsToEntity(jaxSelbstdeklaration, selbstdeklaration);
 		selbstdeklaration.setEinkunftErwerb(jaxSelbstdeklaration.getEinkunftErwerb());
 		selbstdeklaration.setEinkunftVersicherung(jaxSelbstdeklaration.getEinkunftVersicherung());
