@@ -87,7 +87,6 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_ANSPRUCH_MONATSWEISE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_FAMILIENSITUATION_NEU;
-import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_KINDERABZUG_NEU;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_BEI_ANSPRUCH;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
@@ -606,7 +605,6 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(SCHNITTSTELLE_STEUERN_AKTIV, "false", gesuchsperiode);
 		saveEinstellung(FERIENBETREUUNG_CHF_PAUSCHALBETRAG, "30",gesuchsperiode);
 		saveEinstellung(FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER, "60",gesuchsperiode);
-		saveEinstellung(FKJV_KINDERABZUG_NEU, "false", gesuchsperiode);
 		saveEinstellung(FKJV_FAMILIENSITUATION_NEU, "false", gesuchsperiode);
 		saveEinstellung(MINIMALDAUER_KONKUBINAT, "5", gesuchsperiode);
 		saveEinstellung(FINANZIELLE_SITUATION_TYP, "BERN", gesuchsperiode);

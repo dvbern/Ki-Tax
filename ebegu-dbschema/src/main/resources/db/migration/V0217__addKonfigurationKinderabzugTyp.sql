@@ -29,3 +29,6 @@ INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstell
         FROM gesuchsperiode
     );
 
+/*Konfiguration FJKV_KINDERABZUG_NEU wird nicht mehr gebruacht, FJKV kann in KINDERABZUG_TYP konfigurier werden*/
+delete from einstellung where einstellung_key = 'FKJV_KINDERABZUG_NEU';
+

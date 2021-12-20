@@ -210,10 +210,6 @@ public enum EinstellungKey {
 	// Ferienbetreuung Kosten pro Tag für Sonderschüler
 	FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER,
 
-	// Neue Frage bei Kinderabzug für FJKV
-	// Siehe KIBON-2115
-	FKJV_KINDERABZUG_NEU,
-
 	// Neue Familiensituation für FJKV
 	// Siehe KIBON-2116
 	FKJV_FAMILIENSITUATION_NEU,

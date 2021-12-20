@@ -182,7 +182,6 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_ANSPRUCH_MONATSWEISE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_FAMILIENSITUATION_NEU;
-import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_KINDERABZUG_NEU;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_BEI_ANSPRUCH;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
@@ -1844,7 +1843,6 @@ public final class TestDataUtil {
 		saveEinstellung(SCHNITTSTELLE_STEUERN_AKTIV, "false", gesuchsperiode, persistence);
 		saveEinstellung(FERIENBETREUUNG_CHF_PAUSCHALBETRAG, "30",gesuchsperiode, persistence);
 		saveEinstellung(FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER, "60",gesuchsperiode, persistence);
-		saveEinstellung(FKJV_KINDERABZUG_NEU, "false", gesuchsperiode, persistence);
 		saveEinstellung(FKJV_FAMILIENSITUATION_NEU, "false", gesuchsperiode, persistence);
 		saveEinstellung(MINIMALDAUER_KONKUBINAT, "5", gesuchsperiode, persistence);
 		saveEinstellung(FINANZIELLE_SITUATION_TYP, "BERN", gesuchsperiode, persistence);
