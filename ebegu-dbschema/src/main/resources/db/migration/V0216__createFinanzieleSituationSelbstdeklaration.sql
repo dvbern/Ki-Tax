@@ -88,7 +88,7 @@ CREATE TABLE finanzielle_situation_selbstdeklaration_aud (
 	abzug_steuerfreier_betrag_erwachsene      	DECIMAL(19, 2),
 	abzug_steuerfreier_betrag_kinder      		DECIMAL(19, 2),
 	vermoegen      								DECIMAL(19, 2),
-	PRIMARY KEY (id)
+	primary key (id, rev)
 );
 
 ALTER TABLE finanzielle_situation
