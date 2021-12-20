@@ -87,8 +87,6 @@ public class ReceivedEventServiceBean implements ReceivedEventService {
 		Predicate eventTimestampPred =
 			cb.greaterThanOrEqualTo(root.get(ReceivedEvent_.eventTimestamp), eventTimestampParam);
 
-		// TODO Success auch noch berücksichtigen?
-
 		query.where(eventKeyPred, eventTypePred, eventTimestampPred);
 
 		EntityManager em = persistence.getEntityManager();

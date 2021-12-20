@@ -87,8 +87,6 @@ public class MessageProcessor {
 			ReceivedEvent receivedEvent = new ReceivedEvent(eventId, key, eventType, eventTime, eventDTO.toString());
 			if (receivedEventService.isObsolete(receivedEvent)) {
 				LOG.warn("Skipping Kafka message with key = {}, event is obsolete: {}", key, receivedEvent);
-				// TODO persistieren oder nicht?
-
 				return;
 			}
 
