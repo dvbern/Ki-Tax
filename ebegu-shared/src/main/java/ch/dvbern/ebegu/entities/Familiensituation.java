@@ -48,7 +48,10 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @Audited
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "auszahlungsdaten_id", name = "UK_familiensituation_auszahlungsdaten_id"))
+@Table(uniqueConstraints = {
+	@UniqueConstraint(columnNames = "auszahlungsdaten_mahlzeiten_id", name = "UK_familiensituation_auszahlungsdaten_id"),
+	@UniqueConstraint(columnNames = "auszahlungsdaten_infoma_id", name = "UK_familiensituation_auszahlungsdaten_infoma_id")
+})
 public class Familiensituation extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -6534582356181164632L;
