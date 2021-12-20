@@ -40,6 +40,7 @@ import {DownloadRS} from './service/downloadRS.rest';
 import {GesuchsperiodeRS} from './service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from './service/institutionRS.rest';
 import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
+import {ListResourceRS} from './service/listResourceRS.rest';
 import {MitteilungRS} from './service/mitteilungRS.rest';
 import {NotrechtRS} from './service/notrechtRS.rest';
 import {ReportRS} from './service/reportRS.rest';
@@ -368,6 +369,17 @@ export const berechnungsManagerProvider = {
     deps: ['$injector'],
 };
 
+// BerechnungsManager
+export function listResourceRSFactory(i: IInjectorService): ListResourceRS {
+    return i.get('ListResourceRS');
+}
+
+export const listResourceRSProvider = {
+    provide: ListResourceRS,
+    useFactory: listResourceRSFactory,
+    deps: ['$injector'],
+};
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -397,4 +409,5 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     ebeguUtilProvider,
     finanzielleSituationRSProvider,
     berechnungsManagerProvider,
+    listResourceRSProvider,
 ];

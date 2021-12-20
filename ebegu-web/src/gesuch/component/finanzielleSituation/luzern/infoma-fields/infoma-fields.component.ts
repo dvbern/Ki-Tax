@@ -17,7 +17,11 @@
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
+import {ListResourceRS} from '../../../../../app/core/service/listResourceRS.rest';
+import {TSAdresse} from '../../../../../models/TSAdresse';
 import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
+import {TSLand} from '../../../../../models/types/TSLand';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 @Component({
@@ -30,17 +34,39 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 export class InfomaFieldsComponent implements OnInit {
 
     @Input() public readonly: boolean;
+    public laenderList: TSLand[];
 
     public constructor(
-        private gesuchModelManager: GesuchModelManager
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly listResourceRS: ListResourceRS
     ) {
     }
 
     public ngOnInit(): void {
+        this.listResourceRS.getLaenderList().then((laenderList: TSLand[]) => {
+            this.laenderList = laenderList;
+        });
     }
 
     public getFamiliensituation(): TSFamiliensituation {
         return this.gesuchModelManager.getFamiliensituation();
     }
 
+    public getFamiliensituationGS(): TSFamiliensituation {
+        return this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationGS;
+    }
+
+    public abweichendeZahlungsadresseChanged(): void {
+        if (!this.getFamiliensituation().abweichendeZahlungsadresseInfoma) {
+            this.getFamiliensituation().zahlungsadresseInfoma = null;
+            return;
+        }
+        if (EbeguUtil.isNullOrUndefined(this.getFamiliensituation().zahlungsadresseInfoma)) {
+            this.getFamiliensituation().zahlungsadresseInfoma = new TSAdresse();
+        }
+    }
+
+    public isKorrekturModusOrFreigegeben(): boolean {
+        return this.gesuchModelManager.getGesuch().isKorrekturModusOrFreigegeben();
+    }
 }
