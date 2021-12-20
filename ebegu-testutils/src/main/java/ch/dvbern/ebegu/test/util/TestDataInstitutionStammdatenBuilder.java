@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -47,7 +48,7 @@ public class TestDataInstitutionStammdatenBuilder extends InstitutionStammdatenB
 	@Override
 	public List<InstitutionStammdaten> buildStammdaten() {
 		if (!stammdatenOverwrites.isEmpty()) {
-			return (List<InstitutionStammdaten>) stammdatenOverwrites;
+			return new ArrayList<>(stammdatenOverwrites);
 		}
 		List<InstitutionStammdaten> institutionStammdaten = new ArrayList<>();
 		institutionStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
