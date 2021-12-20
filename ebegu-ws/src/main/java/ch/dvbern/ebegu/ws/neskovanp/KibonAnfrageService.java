@@ -18,8 +18,8 @@
 package ch.dvbern.ebegu.ws.neskovanp;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -27,7 +27,12 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
 
+import ch.be.fin.sv.schemas.base._20070131.exceptioninfo.FaultBase;
+import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.BusinessFault;
+import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.InfrastructureFault;
+import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.InvalidArgumentsFault;
 import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.KiBonAnfragePort;
+import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.PermissionDeniedFault;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.neskovanp.SteuerdatenResponse;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
@@ -54,12 +59,33 @@ public class KibonAnfrageService implements IKibonAnfrageService {
 	@Override
 	public SteuerdatenResponse getSteuerDaten(
 		Integer zpvNummer,
-		Date geburtsdatum,
+		LocalDate geburtsdatum,
 		String kibonAntragId,
-		Integer gesuchsperiodeBeginnJahr) {
-
-		//getServicePort().getSteuerdaten(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr);
-
+		Integer gesuchsperiodeBeginnJahr) throws KiBonAnfrageServiceException {
+		final String methodName = "KibonAnfrageService#getSteuerdaten";
+		try {
+			getServicePort().getSteuerdaten(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr);
+		}
+		catch(BusinessFault businessFault) {
+			String msg = createFaultLogmessage("BusinessFault" ,methodName, businessFault.getMessage(), businessFault.getFaultInfo());
+			LOGGER.error(msg);
+			throw new KiBonAnfrageServiceException(methodName, msg, businessFault);
+		}
+		catch(InfrastructureFault infrastructureFault) {
+			String msg = createFaultLogmessage("InfrastructureFault" ,methodName, infrastructureFault.getMessage(), infrastructureFault.getFaultInfo());
+			LOGGER.error(msg);
+			throw new KiBonAnfrageServiceException(methodName, msg, infrastructureFault);
+		}
+		catch (InvalidArgumentsFault invalidArgumentsFault) {
+			String msg = createFaultLogmessage("InvalidArgumentsFault" ,methodName, invalidArgumentsFault.getMessage(), invalidArgumentsFault.getFaultInfo());
+			LOGGER.error(msg);
+			throw new KiBonAnfrageServiceException(methodName, msg, invalidArgumentsFault);
+		}
+		catch (PermissionDeniedFault permissionDeniedFault) {
+			String msg = createFaultLogmessage("PermissionDeniedFault" ,methodName, permissionDeniedFault.getMessage(), permissionDeniedFault.getFaultInfo());
+			LOGGER.error(msg);
+			throw new KiBonAnfrageServiceException(methodName, msg, permissionDeniedFault);
+		}
 		return null;
 	}
 
@@ -107,5 +133,16 @@ public class KibonAnfrageService implements IKibonAnfrageService {
 			}
 		}
 		LOGGER.info("KibonAnfrageService erfolgreich initialisiert");
+	}
+
+	private String createFaultLogmessage(String exceptionName, String methodName, String message, FaultBase fault) {
+		return String.format("Call to %s failed with %s Fault '%s', user-message '%s', technical-message '%s', error-code: '%s'",
+			methodName,
+			exceptionName,
+			message,
+			fault.getUserMessage(),
+			fault.getTechnicalMessage(),
+			fault.getErrorCode());
+
 	}
 }

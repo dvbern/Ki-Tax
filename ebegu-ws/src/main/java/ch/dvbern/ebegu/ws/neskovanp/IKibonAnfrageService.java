@@ -17,11 +17,13 @@
 
 package ch.dvbern.ebegu.ws.neskovanp;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import ch.dvbern.ebegu.dto.neskovanp.SteuerdatenResponse;
+import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
 
 public interface IKibonAnfrageService {
 
-	SteuerdatenResponse getSteuerDaten(Integer zpvNummer, Date geburtsdatum, String kibonAntragId, Integer gesuchsperiodeBeginnJahr);
+	SteuerdatenResponse getSteuerDaten(Integer zpvNummer, LocalDate geburtsdatum, String kibonAntragId, Integer gesuchsperiodeBeginnJahr) throws
+		KiBonAnfrageServiceException;
 }
