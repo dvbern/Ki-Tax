@@ -234,7 +234,11 @@ public enum EinstellungKey {
 
 	// (Solothurn)
 	// Siehe KIBON-2134
-	ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
+	ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,
+
+	// Kinderabzug Typ (Solothurn und FKJV)
+	// Siehe KIBON-2182
+	KINDERABZUG_TYP;
 
 	private EinstellungTyp typ;
 
