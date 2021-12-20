@@ -20,13 +20,12 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
-import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.dto.FinanzielleSituationStartDTO;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Familiensituation;
@@ -69,14 +68,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	@Override
 	public Gesuch saveFinanzielleSituationStart(
 		@Nonnull FinanzielleSituationContainer finanzielleSituation,
-		@Nonnull Boolean sozialhilfebezueger,
-		@Nullable Boolean gemeinsameSteuererklaerung,
-		@Nonnull Boolean verguenstigungGewuenscht,
-		boolean keineMahlzeitenverguenstigungGewuenscht,
-		@Nullable String iban,
-		@Nullable String kontoinhaber,
-		boolean abweichendeZahlungsadresse,
-		@Nullable Adresse zahlungsadresse,
+		@Nonnull FinanzielleSituationStartDTO finSitStartDTO,
 		@Nonnull String gesuchId
 	) {
 		authorizer.checkWriteAuthorization(finanzielleSituation);
@@ -95,14 +87,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		// Die zwei Felder "sozialhilfebezueger" und "gemeinsameSteuererklaerung" befinden sich nicht auf der FinanziellenSituation, sondern auf der
 		// FamilienSituation -> Das Gesuch muss hier aus der DB geladen werden, damit nichts überschrieben wird!
 		gesuch = saveFinanzielleSituationFelderAufGesuch(
-			sozialhilfebezueger,
-			gemeinsameSteuererklaerung,
-			verguenstigungGewuenscht,
-			keineMahlzeitenverguenstigungGewuenscht,
-			iban,
-			kontoinhaber,
-			abweichendeZahlungsadresse,
-			zahlungsadresse,
+			finSitStartDTO,
 			gesuch
 		);
 
@@ -117,14 +102,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	}
 
 	private Gesuch saveFinanzielleSituationFelderAufGesuch(
-		@Nonnull Boolean sozialhilfebezueger,
-		@Nullable Boolean gemeinsameSteuererklaerung,
-		@Nonnull Boolean verguenstigungGewuenscht,
-		boolean keineMahlzeitenverguenstigungGewuenscht,
-		@Nullable String iban,
-		@Nullable String kontoinhaber,
-		boolean abweichendeZahlungsadresse,
-		@Nullable Adresse zahlungsadresse,
+		@Nonnull FinanzielleSituationStartDTO finSitStartDTO,
 		@Nonnull Gesuch gesuch
 	) {
 		FamiliensituationContainer familiensituationContainer = gesuch.getFamiliensituationContainer();
@@ -135,36 +113,36 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		// Falls vorher keine Vergünstigung gewünscht war, müssen wir den FinSitStatus wieder zurücksetzen, da dieser automatisch auf
 		// AKZEPTIERT gesetzt wurde
 		Boolean verguenstigungGewuenschtVorher = familiensituation.getVerguenstigungGewuenscht();
-		if (!verguenstigungGewuenscht.equals(verguenstigungGewuenschtVorher)
+		if (!finSitStartDTO.getVerguenstigungGewuenscht().equals(verguenstigungGewuenschtVorher)
 			&& EbeguUtil.isNotNullAndFalse(verguenstigungGewuenschtVorher)) {
 			// Es war vorher explizit nicht gewünscht -> wir setzen den Wert zurück
 			gesuch.setFinSitStatus(null);
 		}
 
-		if (EbeguUtil.isNotNullAndFalse(verguenstigungGewuenscht)) {
+		if (EbeguUtil.isNotNullAndFalse(finSitStartDTO.getVerguenstigungGewuenscht())) {
 			// Es ist neu explizit nicht mehr gewünscht -> wir setzen den Wert auf AKZEPTIERT
 			gesuch.setFinSitStatus(FinSitStatus.AKZEPTIERT);
 		}
 
-		familiensituation.setSozialhilfeBezueger(sozialhilfebezueger);
+		familiensituation.setSozialhilfeBezueger(finSitStartDTO.getSozialhilfebezueger());
 		if (familiensituation.getSozialhilfeBezueger() == null || !familiensituation.getSozialhilfeBezueger()) {
 			familiensituationContainer.getSozialhilfeZeitraumContainers().clear();
 		}
-		familiensituation.setGemeinsameSteuererklaerung(gemeinsameSteuererklaerung);
-		familiensituation.setVerguenstigungGewuenscht(verguenstigungGewuenscht);
-		if (verguenstigungGewuenscht.equals(Boolean.TRUE)) {
-			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(keineMahlzeitenverguenstigungGewuenscht);
-			if (!keineMahlzeitenverguenstigungGewuenscht && iban != null && kontoinhaber != null) {
+		familiensituation.setGemeinsameSteuererklaerung(finSitStartDTO.getGemeinsameSteuererklaerung());
+		familiensituation.setVerguenstigungGewuenscht(finSitStartDTO.getVerguenstigungGewuenscht());
+		if (finSitStartDTO.getVerguenstigungGewuenscht().equals(Boolean.TRUE)) {
+			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(finSitStartDTO.isKeineMahlzeitenverguenstigungGewuenscht());
+			if (!finSitStartDTO.isKeineMahlzeitenverguenstigungGewuenscht() && finSitStartDTO.getIban() != null && finSitStartDTO.getKontoinhaber() != null) {
 				//Hier aufpassen, per Default sind die Mahlzeitverguenstigung Gewunscht
 				//aber wenn die Gemeinde keine Mahlzeitverguenstigung anbietet kann der Gesuchsteller oder Gemeinde
 				//gar keinen Iban oder Kontoinhaber eingeben, deswegen waren diese Feldern nullable before!
 				Auszahlungsdaten auszahlungsdaten = new Auszahlungsdaten();
-				auszahlungsdaten.setIban(new IBAN(iban));
-				auszahlungsdaten.setKontoinhaber(kontoinhaber);
-				auszahlungsdaten.setAdresseKontoinhaber(zahlungsadresse);
+				auszahlungsdaten.setIban(new IBAN(finSitStartDTO.getIban()));
+				auszahlungsdaten.setKontoinhaber(finSitStartDTO.getKontoinhaber());
+				auszahlungsdaten.setAdresseKontoinhaber(finSitStartDTO.getZahlungsadresse());
 				familiensituation.setAuszahlungsdatenMahlzeiten(auszahlungsdaten);
 			}
-			familiensituation.setAbweichendeZahlungsadresseMahlzeiten(abweichendeZahlungsadresse);
+			familiensituation.setAbweichendeZahlungsadresseMahlzeiten(finSitStartDTO.isAbweichendeZahlungsadresse());
 		} else {
 			// Wenn das Einkommen nicht deklariert wird, kann auch keine Mahlzeitenverguenstigung gewaehrt werden
 			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(true);
@@ -172,10 +150,32 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			familiensituation.setAbweichendeZahlungsadresseMahlzeiten(false);
 		}
 
+		if (finSitStartDTO.getIbanInfoma() != null && finSitStartDTO.getKontoinhaberInfoma() != null) {
+			setInfomaFields(finSitStartDTO, familiensituation);
+		}
+
 		// Steuererklaerungs/-veranlagungs-Flags nachfuehren fuer GS2
 		handleGemeinsameSteuererklaerung(gesuch);
 
 		return gesuchService.updateGesuch(gesuch, false);
+	}
+
+	private void setInfomaFields(FinanzielleSituationStartDTO finSitStartDTO, Familiensituation familiensituation) {
+		Auszahlungsdaten auszahlungsdatenInfoma =
+			(familiensituation.getAuszahlungsdatenInfoma() != null
+				? familiensituation.getAuszahlungsdatenInfoma()
+				: new Auszahlungsdaten()
+			);
+		auszahlungsdatenInfoma.setIban(new IBAN(finSitStartDTO.getIbanInfoma()));
+		auszahlungsdatenInfoma.setKontoinhaber(finSitStartDTO.getKontoinhaberInfoma());
+		familiensituation.setAbweichendeZahlungsadresseInfoma(finSitStartDTO.isAbweichendeZahlungsadresseInfoma());
+		auszahlungsdatenInfoma.setAdresseKontoinhaber(finSitStartDTO.getZahlungsadresseInfoma());
+		familiensituation.setInfomaKreditorennummer(finSitStartDTO.getInfomaKreditorennummer());
+		familiensituation.setInfomaBankcode(finSitStartDTO.getInfomaBankcode());
+		familiensituation.setAuszahlungAnEltern(
+			finSitStartDTO.getAuszahlungAnEltern() != null && finSitStartDTO.getAuszahlungAnEltern()
+		);
+		familiensituation.setAuszahlungsdatenInfoma(auszahlungsdatenInfoma);
 	}
 
 	@Nonnull

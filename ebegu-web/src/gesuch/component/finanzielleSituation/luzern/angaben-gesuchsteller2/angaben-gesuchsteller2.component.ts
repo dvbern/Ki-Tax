@@ -69,6 +69,18 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
         return this.save(onResult);
     }
 
+    protected save(onResult: Function): angular.IPromise<TSFinanzielleSituationContainer> {
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        return this.gesuchModelManager.saveFinanzielleSituation()
+            .then((finanzielleSituationContainer: TSFinanzielleSituationContainer) => {
+                this.updateWizardStepStatus();
+                onResult(finanzielleSituationContainer);
+                return finanzielleSituationContainer;
+            }).catch(error => {
+                throw(error);
+            });
+    }
+
     public notify(): void {
         // do nothing in angaben-gesuchsteller2
     }

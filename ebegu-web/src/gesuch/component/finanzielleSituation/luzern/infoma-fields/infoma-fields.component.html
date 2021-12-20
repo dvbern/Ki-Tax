@@ -15,4 +15,44 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<p>infoma-fields works!</p>
+<fieldset>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-6">
+<!--                IBAN-->
+                <div class="form-group">
+                    <label class="required long-label" for="iban_id">
+                        {{'IBAN_FUER_AUSZAHLUNG_GUTSCHEINE' | translate}}</label>
+                    <input id="iban_id" type="text"
+                           name="iban"
+                           #iban="ngModel"
+                           [(ngModel)]="getFamiliensituation().ibanInfoma"
+                           class="form-control"
+                           [disabled]="readonly"
+                           required>
+                    <dv-error-messages
+                        [errorObject]="iban.errors"
+                        inputId="iban_id">
+                    </dv-error-messages>
+                </div>
+
+<!--                LAUTEND AUF-->
+                <div class="form-group">
+                    <label class="required long-label" for="kontoinhaber_id">
+                        {{'MAHLZEITENVERGUENSTIGUNG_KONTOINHABER' | translate}}</label>
+                    <input id="kontoinhaber_id" type="text"
+                           name="kontoinhaber"
+                           #kontoinhaber="ngModel"
+                           [(ngModel)]="getFamiliensituation().kontoinhaberInfoma"
+                           class="form-control"
+                           [disabled]="readonly"
+                           required>
+                    <dv-error-messages
+                        [errorObject]="kontoinhaber.errors"
+                        inputId="kontoinhaber_id">
+                    </dv-error-messages>
+                </div>
+            </div>
+        </div>
+    </div>
+</fieldset>

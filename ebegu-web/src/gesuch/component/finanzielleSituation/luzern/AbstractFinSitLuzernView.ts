@@ -180,24 +180,12 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
 
     public abstract notify(): void;
 
-    protected save(onResult: Function): IPromise<TSFinanzielleSituationContainer> {
-        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        return this.gesuchModelManager.saveFinanzielleSituation()
-            .then((finanzielleSituationContainer: TSFinanzielleSituationContainer) => {
-                if (this.isGemeinsam() || this.getAntragstellerNummer() === 2) {
-                    this.updateWizardStepStatus();
-                }
-                onResult(finanzielleSituationContainer);
-                return finanzielleSituationContainer;
-            }).catch(error => {
-                throw(error);
-            });
-    }
+    protected abstract save(onResult: Function): IPromise<TSFinanzielleSituationContainer>;
 
     /**
      * updates the Status of the Step depending on whether the Gesuch is a Mutation or not
      */
-    private updateWizardStepStatus(): IPromise<void> {
+    protected updateWizardStepStatus(): IPromise<void> {
         return this.gesuchModelManager.getGesuch().isMutation() ?
             this.wizardStepManager.updateCurrentWizardStepStatusMutiert() :
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(

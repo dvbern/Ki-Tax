@@ -22,6 +22,7 @@ import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSF
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {TSGesuch} from '../../../../../models/TSGesuch';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
@@ -77,6 +78,20 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
             return undefined;
         }
         return this.save(onResult);
+    }
+
+    protected save(onResult: Function): angular.IPromise<TSFinanzielleSituationContainer> {
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        return this.gesuchModelManager.saveFinanzielleSituationStart()
+            .then((gesuch: TSGesuch) => {
+                if (this.isGemeinsam()) {
+                    this.updateWizardStepStatus();
+                }
+                onResult(gesuch.gesuchsteller1.finanzielleSituationContainer);
+                return gesuch.gesuchsteller1.finanzielleSituationContainer;
+            }).catch(error => {
+                throw(error);
+            });
     }
 
     public notify(): void {

@@ -16,18 +16,20 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
-import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {ControlContainer, NgForm} from '@angular/forms';
+import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 @Component({
     selector: 'dv-infoma-fields',
     templateUrl: './infoma-fields.component.html',
     styleUrls: ['./infoma-fields.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 export class InfomaFieldsComponent implements OnInit {
 
-    @Input() public model: TSFinanzielleSituationContainer;
+    @Input() public readonly: boolean;
 
     public constructor(
         private gesuchModelManager: GesuchModelManager
@@ -35,6 +37,10 @@ export class InfomaFieldsComponent implements OnInit {
     }
 
     public ngOnInit(): void {
+    }
+
+    public getFamiliensituation(): TSFamiliensituation {
+        return this.gesuchModelManager.getFamiliensituation();
     }
 
 }

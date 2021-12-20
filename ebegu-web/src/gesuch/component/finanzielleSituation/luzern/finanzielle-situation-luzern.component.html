@@ -39,6 +39,11 @@
                         </p>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <dv-infoma-fields *ngIf="showInfomaFields()"></dv-infoma-fields>
+                    </div>
+                </div>
                 <div class="row" *ngIf="!onlyFerieninselBetreuungen">
                     <div class="col-xs-12">
                         <div class="form-group">
@@ -156,7 +161,6 @@
                              [year]="getYearForDeklaration()"
                              [model]="model">
                 </dv-resultat>
-                <dv-infoma-fields *ngIf="showInfomaFields()"></dv-infoma-fields>
                 <dv-navigation-x (dvSave)="prepareSave($event.onResult)" [dvPrevious]="hasPrevious" [dvNext]="hasNext"
                                  [dvSubStep]="getSubStepIndex()" [dvSubStepName]="getSubStepName()"></dv-navigation-x>
             </div>

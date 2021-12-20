@@ -50,6 +50,7 @@ import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
+import ch.dvbern.ebegu.dto.FinanzielleSituationStartDTO;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
@@ -204,7 +205,8 @@ public class FinanzielleSituationResource {
 			familiensituationJA.setZahlungsadresseMahlzeiten(null);
 		}
 
-		Adresse storedAdresse = new Adresse();
+		Adresse storedAdresseMahlzeit = new Adresse();
+		Adresse storedAdresseInfoma = new Adresse();
 		if (jaxFamiliensituationContainer.getId() != null) {
 			Optional<FamiliensituationContainer> storedFamSitContOptional =
 				familiensituationService.findFamiliensituation(jaxFamiliensituationContainer.getId());
@@ -214,7 +216,12 @@ public class FinanzielleSituationResource {
 				if (storedFamSit != null
 					&& storedFamSit.getAuszahlungsdatenMahlzeiten() != null
 					&& storedFamSit.getAuszahlungsdatenMahlzeiten().getAdresseKontoinhaber() != null) {
-					storedAdresse = storedFamSit.getAuszahlungsdatenMahlzeiten().getAdresseKontoinhaber();
+					storedAdresseMahlzeit = storedFamSit.getAuszahlungsdatenMahlzeiten().getAdresseKontoinhaber();
+				}
+				if (storedFamSit != null
+					&& storedFamSit.getAuszahlungsdatenInfoma() != null
+					&& storedFamSit.getAuszahlungsdatenInfoma().getAdresseKontoinhaber() != null) {
+					storedAdresseInfoma = storedFamSit.getAuszahlungsdatenInfoma().getAdresseKontoinhaber();
 				}
 			}
 		}
@@ -238,8 +245,7 @@ public class FinanzielleSituationResource {
 			verguenstigungGewuenscht = Boolean.TRUE;
 		}
 
-		Gesuch persistedGesuch = this.finanzielleSituationService.saveFinanzielleSituationStart(
-			convertedFinSitCont,
+		FinanzielleSituationStartDTO finSitStartDTO = new FinanzielleSituationStartDTO(
 			sozialhilfeBezueger,
 			gemeinsameSteuererklaerung,
 			verguenstigungGewuenscht,
@@ -248,8 +254,22 @@ public class FinanzielleSituationResource {
 			familiensituationJA.getKontoinhaberMahlzeiten(),
 			familiensituationJA.isAbweichendeZahlungsadresseMahlzeiten(),
 			familiensituationJA.getZahlungsadresseMahlzeiten() == null ? null :
-				converter.adresseToEntity(familiensituationJA.getZahlungsadresseMahlzeiten(), storedAdresse),
-			gesuchId);
+				converter.adresseToEntity(familiensituationJA.getZahlungsadresseMahlzeiten(), storedAdresseMahlzeit),
+			familiensituationJA.getIbanInfoma(),
+			familiensituationJA.getKontoinhaberInfoma(),
+			familiensituationJA.isAbweichendeZahlungsadresseInfoma(),
+			familiensituationJA.getZahlungsadresseInfoma() == null ? null :
+				converter.adresseToEntity(familiensituationJA.getZahlungsadresseInfoma(), storedAdresseInfoma),
+			familiensituationJA.getInfomaKreditorennummer(),
+			familiensituationJA.getInfomaBankcode(),
+			familiensituationJA.getAuszahlungAnEltern()
+		);
+
+		Gesuch persistedGesuch = this.finanzielleSituationService.saveFinanzielleSituationStart(
+			convertedFinSitCont,
+			finSitStartDTO,
+			gesuchId
+		);
 
 		return converter.gesuchToJAX(persistedGesuch);
 	}
