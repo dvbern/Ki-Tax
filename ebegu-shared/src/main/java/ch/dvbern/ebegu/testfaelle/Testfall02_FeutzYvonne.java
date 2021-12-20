@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.testfaelle;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Collection;
 import java.util.Objects;
 
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -28,7 +27,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
@@ -42,12 +40,18 @@ public class Testfall02_FeutzYvonne extends AbstractTestfall {
 
 	private static final String FAMILIENNAME = "Feutz";
 
-	public Testfall02_FeutzYvonne(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList) {
-		super(gesuchsperiode, institutionStammdatenList, false);
+	public Testfall02_FeutzYvonne(
+			Gesuchsperiode gesuchsperiode,
+			InstitutionStammdatenBuilder institutionStammdatenBuilder) {
+		super(gesuchsperiode, false, institutionStammdatenBuilder);
 	}
 
-	public Testfall02_FeutzYvonne(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt, Gemeinde gemeinde) {
-		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
+	public Testfall02_FeutzYvonne(
+			Gesuchsperiode gesuchsperiode,
+			boolean betreuungenBestaetigt,
+			Gemeinde gemeinde,
+			InstitutionStammdatenBuilder institutionStammdatenBuilder) {
+		super(gesuchsperiode, betreuungenBestaetigt, gemeinde, institutionStammdatenBuilder);
 	}
 
 	@Override
@@ -75,14 +79,14 @@ public class Testfall02_FeutzYvonne extends AbstractTestfall {
 
 		// Betreuungen
 		// Kind 1: Kita Weissenstein
-		Betreuung betreuungKitaWeissenstein = createBetreuung(ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA, betreuungenBestaetigt);
+		Betreuung betreuungKitaWeissenstein = createBetreuung(institutionStammdatenBuilder.getIdInstitutionStammdatenWeissenstein(), betreuungenBestaetigt);
 		betreuungKitaWeissenstein.setKind(kind1);
 		kind1.getBetreuungen().add(betreuungKitaWeissenstein);
 		BetreuungspensumContainer betreuungspensumTagiAaregg = createBetreuungspensum(60, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.AUGUST, 1), LocalDate.of(gesuchsperiode.getBasisJahrPlus2(), Month.JULY, 31));
 		betreuungspensumTagiAaregg.setBetreuung(betreuungKitaWeissenstein);
 		betreuungKitaWeissenstein.getBetreuungspensumContainers().add(betreuungspensumTagiAaregg);
 		// Kind 2: Kita Weissenstein
-		Betreuung betreuungKitaAaregg = createBetreuung(ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA, betreuungenBestaetigt);
+		Betreuung betreuungKitaAaregg = createBetreuung(institutionStammdatenBuilder.getIdInstitutionStammdatenWeissenstein(), betreuungenBestaetigt);
 		betreuungKitaAaregg.setKind(kind2);
 		kind2.getBetreuungen().add(betreuungKitaAaregg);
 		BetreuungspensumContainer betreuungspensumKitaAaregg = createBetreuungspensum(40, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.AUGUST, 1), LocalDate.of(gesuchsperiode.getBasisJahrPlus2(), Month.JULY, 31));
