@@ -66,6 +66,8 @@ import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
@@ -170,6 +172,11 @@ public class MitteilungResource {
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					mitteilungJAXP.getBetreuung()
 				));
+
+		// we need to check if Betreuung was storniert and has an other one for the same institution whos not
+		if(!mitteilungService.isBetreuungGueltigForMutation(betreuung)) {
+			throw new EbeguRuntimeException(KibonLogLevel.WARN, "sendBetreuungsmitteilung", ErrorCodeEnum.ERROR_BETREUUNG_STORNIERT_UND_UNGUELTIG);
+		}
 
 		// we first clear all the Mutationsmeldungen for the current Betreuung
 		mitteilungService.removeOffeneBetreuungsmitteilungenForBetreuung(betreuung);
