@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.enums.AbholungTagesschule;
@@ -106,7 +107,12 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 		@Nonnull EventMonitor eventMonitor,
 		@Nonnull TagesschuleBestaetigungEventDTO dto) {
 
-		return betreuungService.findAnmeldungenTagesschuleByBGNummer(dto.getRefnr())
+		Optional<Mandant> mandant = betreuungEventHelper.getMandantFromBgNummer(dto.getRefnr());
+		if (mandant.isEmpty()) {
+			return Processing.failure("Mandant konnte nicht gefunden werden.");
+		}
+
+		return betreuungService.findAnmeldungenTagesschuleByBGNummer(dto.getRefnr(), mandant.get())
 			.map(anmeldung -> processEventForAnmeldungBestaetigung(eventMonitor, dto, anmeldung))
 			.orElseGet(() -> Processing.failure("AnmeldungTagesschule nicht gefunden."));
 	}

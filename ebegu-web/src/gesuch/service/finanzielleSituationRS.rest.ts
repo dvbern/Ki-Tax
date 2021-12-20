@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {HttpHeaders} from '@angular/common/http';
 import {IHttpService} from 'angular';
 import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -43,7 +44,7 @@ export class FinanzielleSituationRS {
         public ebeguRestUtil: EbeguRestUtil,
         public $log: ILogService,
         private readonly wizardStepManager: WizardStepManager,
-        private readonly einstellungRS: EinstellungRS
+        private readonly einstellungRS: EinstellungRS,
     ) {
         this.serviceURL = `${REST_API}finanzielleSituation`;
     }
@@ -52,11 +53,14 @@ export class FinanzielleSituationRS {
         gesuchId: string,
         gesuchsteller: TSGesuchstellerContainer,
     ): IPromise<TSFinanzielleSituationContainer> {
-        const url = `${this.serviceURL}/finanzielleSituation/${encodeURIComponent(gesuchId)}/${encodeURIComponent(gesuchsteller.id)}`;
-        const finSitContainerToSend = this.ebeguRestUtil.finanzielleSituationContainerToRestObject({}, gesuchsteller.finanzielleSituationContainer);
+        const url = `${this.serviceURL}/finanzielleSituation/${encodeURIComponent(gesuchId)}/${encodeURIComponent(
+            gesuchsteller.id)}`;
+        const finSitContainerToSend = this.ebeguRestUtil.finanzielleSituationContainerToRestObject({},
+            gesuchsteller.finanzielleSituationContainer);
         return this.$http.put(url, finSitContainerToSend).then(response => {
             return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(), response.data);
+                return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
+                    response.data);
             });
         });
     }
@@ -68,7 +72,8 @@ export class FinanzielleSituationRS {
         const url = `${this.serviceURL}/finanzielleSituationStart`;
 
         if (!gesuch.gesuchsteller1.finanzielleSituationContainer) {
-            this.$log.error('This should never happen. If it happens check in sentry the breadcrums to try to reproduce it.'
+            this.$log.error(
+                'This should never happen. If it happens check in sentry the breadcrums to try to reproduce it.'
                 + ' Service will be called anyway and it will throw a NPE');
         }
 
@@ -92,9 +97,9 @@ export class FinanzielleSituationRS {
         let finSitModelToSend = {};
         finSitModelToSend = this.ebeguRestUtil.finanzModelToRestObject(finSitModelToSend, finSitModel);
         return this.$http.post(`${this.serviceURL}/calculateTemp`, finSitModelToSend, {
-            headers: {
+            headers: new HttpHeaders({
                 'Content-Type': 'application/json',
-            },
+            }),
         }).then((httpresponse: any) => {
             this.$log.debug('PARSING finanzielle Situation  REST object ', httpresponse.data);
             return this.ebeguRestUtil.parseFinanzielleSituationResultate(new TSFinanzielleSituationResultateDTO(),
@@ -111,14 +116,17 @@ export class FinanzielleSituationRS {
             });
     }
 
-    public getFinanzielleSituationTyp(gesuchsperiode: TSGesuchsperiode, gemeinde: TSGemeinde): Observable<TSFinanzielleSituationTyp> {
+    public getFinanzielleSituationTyp(
+        gesuchsperiode: TSGesuchsperiode,
+        gemeinde: TSGemeinde,
+    ): Observable<TSFinanzielleSituationTyp> {
         return from(this.einstellungRS.findEinstellung(
             TSEinstellungKey.FINANZIELLE_SITUATION_TYP,
             gemeinde.id,
-            gesuchsperiode.id
+            gesuchsperiode.id,
         ))
             .pipe(
-                map((einstellung: TSEinstellung) => this.ebeguRestUtil.parseFinanzielleSituationTyp(einstellung.value))
+                map((einstellung: TSEinstellung) => this.ebeguRestUtil.parseFinanzielleSituationTyp(einstellung.value)),
             );
     }
 }

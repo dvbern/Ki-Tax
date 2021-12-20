@@ -43,12 +43,14 @@ const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchMod
         'getGesuch',
         'isGesuchsteller2Required',
         'isGesuchReadonly',
+        'getGesuchsperiode',
+        'getGemeinde'
     ]);
 const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
     WizardStepManager.name,
     ['getCurrentStep', 'setCurrentStep', 'isNextStepBesucht', 'isNextStepEnabled', 'getCurrentStepName']);
 const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name,
-    ['saveFinanzielleSituationStart']);
+    ['saveFinanzielleSituationStart', 'getFinanzielleSituationTyp']);
 const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
     ['go']);
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);

@@ -14,6 +14,7 @@
  */
 
 import {EbeguUtil} from '../utils/EbeguUtil';
+import {TSFinanzielleSituationTyp} from './enums/TSFinanzielleSituationTyp';
 import {TSEinkommensverschlechterung} from './TSEinkommensverschlechterung';
 import {TSEinkommensverschlechterungContainer} from './TSEinkommensverschlechterungContainer';
 import {TSEinkommensverschlechterungInfoContainer} from './TSEinkommensverschlechterungInfoContainer';
@@ -25,7 +26,6 @@ import {TSGesuch} from './TSGesuch';
 import {TSZahlungsinformationen} from './TSZahlungsinformationen';
 
 export class TSFinanzModel {
-
     private _gemeinsameSteuererklaerung: boolean;
     private _sozialhilfeBezueger: boolean;
     private _verguenstigungGewuenscht: boolean;
@@ -37,6 +37,8 @@ export class TSFinanzModel {
 
     private _zahlungsinformationenGS: TSZahlungsinformationen;
     private _zahlungsinformationen: TSZahlungsinformationen;
+
+    private _finanzielleSituationTyp: TSFinanzielleSituationTyp;
 
     private readonly basisjahr: number;
     private readonly basisjahrPlus: number;
@@ -103,6 +105,14 @@ export class TSFinanzModel {
         this._zahlungsinformationen = value;
     }
 
+    public get finanzielleSituationTyp(): TSFinanzielleSituationTyp {
+        return this._finanzielleSituationTyp;
+    }
+
+    public set finanzielleSituationTyp(value: TSFinanzielleSituationTyp) {
+        this._finanzielleSituationTyp = value;
+    }
+
     public copyFinSitDataFromGesuch(gesuch: TSGesuch): void {
         if (!gesuch) {
             return;
@@ -137,6 +147,8 @@ export class TSFinanzModel {
             this.zahlungsinformationenGS.keineMahlzeitenverguenstigungBeantragt =
                 gesuch.extractFamiliensituationGS().keineMahlzeitenverguenstigungBeantragt;
         }
+
+        this.finanzielleSituationTyp = gesuch.finSitTyp;
 
         this.initFinSit();
     }

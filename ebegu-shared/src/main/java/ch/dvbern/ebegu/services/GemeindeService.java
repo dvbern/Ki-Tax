@@ -186,4 +186,7 @@ public interface GemeindeService {
 	 */
 	@Nonnull
 	Collection<Gemeinde> getGemeindenWithMahlzeitenverguenstigungForBenutzer();
+
+	Optional<Gemeinde> getGemeindeByGemeindeNummer(int gemeindeNummer);
+
 }

@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -43,4 +44,7 @@ public interface MandantService {
 
 	@Nonnull
 	Mandant getMandantBern();
+
+	@Nonnull
+	Collection<Mandant> getAll();
 }

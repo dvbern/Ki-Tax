@@ -181,7 +181,6 @@ public class FinanzielleSituationResource {
 		String gesuchId = gesuchJAXP.getId();
 		String gesuchstellerId = gesuchsteller1.getId();
 
-
 		requireNonNull(gesuchstellerId);
 
 		GesuchstellerContainer gesuchsteller = gesuchstellerService.findGesuchsteller(gesuchstellerId).orElseThrow(()
@@ -224,7 +223,6 @@ public class FinanzielleSituationResource {
 		Boolean gemeinsameSteuererklaerung = familiensituationJA.getGemeinsameSteuererklaerung();
 		Boolean verguenstigungGewuenscht = familiensituationJA.getVerguenstigungGewuenscht();
 
-
 		if (gesuchJAXP.getFinSitTyp().equals(FinanzielleSituationTyp.BERN)) {
 			requireNonNull(sozialhilfeBezueger);
 			requireNonNull(gemeinsameSteuererklaerung);
@@ -235,8 +233,7 @@ public class FinanzielleSituationResource {
 			} else {
 				requireNonNull(verguenstigungGewuenscht);
 			}
-		}
-		else {
+		} else {
 			sozialhilfeBezueger = false;
 			verguenstigungGewuenscht = Boolean.TRUE;
 		}
@@ -300,6 +297,11 @@ public class FinanzielleSituationResource {
 
 		Gesuch gesuch = new Gesuch();
 		gesuch.initFamiliensituationContainer();
+		if (jaxFinSitModel.getFinanzielleSituationTyp() != null) {
+			gesuch.setFinSitTyp(jaxFinSitModel.getFinanzielleSituationTyp());
+		} else {
+			gesuch.setFinSitTyp(FinanzielleSituationTyp.BERN);
+		}
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		requireNonNull(familiensituation);
 		familiensituation.setGemeinsameSteuererklaerung(jaxFinSitModel.isGemeinsameSteuererklaerung());
