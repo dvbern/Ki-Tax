@@ -154,7 +154,9 @@ import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
+import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
+import ch.dvbern.ebegu.testfaelle.InstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.TestFall12_Mischgesuch;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
@@ -1305,11 +1307,9 @@ public final class TestDataUtil {
 	}
 
 	public static Gesuch createTestgesuchDagmar(AbstractFinanzielleSituationRechner finanzielleSituationRechner) {
-		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
-		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
-		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		Testfall01_WaeltiDagmar testfall =
-			new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(), insttStammdaten);
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
+		InstitutionStammdatenBuilder institutionStammdatenBuilder = TestDataUtil.getInstititutionStammdatenBuilder(gesuchsperiode);
+		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenBuilder);
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch, finanzielleSituationRechner);
@@ -1318,16 +1318,18 @@ public final class TestDataUtil {
 	}
 
 	public static Gesuch createTestfall11_SchulamtOnly(){
-		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
 		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
-		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
-		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenFerieninselGuarda());
+		InstitutionStammdatenBuilder institutionStammdatenBuilder = TestDataUtil.getInstititutionStammdatenBuilder(gesuchsperiode);
 		Testfall11_SchulamtOnly testfall = new Testfall11_SchulamtOnly(gesuchsperiode,
-			insttStammdaten);
+				institutionStammdatenBuilder);
 		testfall.createGesuch(LocalDate.of(2017, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();
 		gesuch.setGesuchsperiode(gesuchsperiode);
 		return gesuch;
+	}
+
+	private static InstitutionStammdatenBuilder getInstititutionStammdatenBuilder(Gesuchsperiode gesuchsperiode) {
+		return new TestDataInstitutionStammdatenBuilder(gesuchsperiode);
 	}
 
 	/**
@@ -1336,26 +1338,22 @@ public final class TestDataUtil {
 	public static Gesuch createAndPersistTestfall11_SchulamtOnly(
 		@Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum,
 		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
-
-		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
-		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
-		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenFerieninselGuarda());
+		InstitutionStammdatenBuilder institutionStammdatenBuilder = TestDataUtil.getInstititutionStammdatenBuilder(gesuchsperiode);
 		Testfall11_SchulamtOnly testfall = new Testfall11_SchulamtOnly(gesuchsperiode,
-			insttStammdaten);
+				institutionStammdatenBuilder);
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		return persistAllEntities(persistence, eingangsdatum, testfall, status);
 	}
 
 	public static Gesuch createTestgesuchYvonneFeuz(AbstractFinanzielleSituationRechner finanzielleSituationRechner) {
-		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
-		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
-		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
+		final Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
+		InstitutionStammdatenBuilder institutionStammdatenBuilder = TestDataUtil.getInstititutionStammdatenBuilder(gesuchsperiode1718);
 		Testfall02_FeutzYvonne testfall =
-			new Testfall02_FeutzYvonne(TestDataUtil.createGesuchsperiode1718(), insttStammdaten);
+			new Testfall02_FeutzYvonne(gesuchsperiode1718, institutionStammdatenBuilder);
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch, finanzielleSituationRechner);
-		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		gesuch.setGesuchsperiode(gesuchsperiode1718);
 		return gesuch;
 	}
 
@@ -1363,7 +1361,7 @@ public final class TestDataUtil {
 		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
 		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		Testfall04_WaltherLaura testfall =
-			new Testfall04_WaltherLaura(gesuchsperiode, insttStammdaten);
+			new Testfall04_WaltherLaura(gesuchsperiode, getInstititutionStammdatenBuilder(gesuchsperiode));
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch, finanzielleSituationRechner);
@@ -1469,7 +1467,7 @@ public final class TestDataUtil {
 		institutionStammdatenList.forEach(institutionStammdaten -> {
 			institutionStammdaten.getInstitution().setMandant(gesuchsperiode.getMandant());
 		});
-		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList);
+		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(gesuchsperiode, new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
 
 		return persistAllEntities(persistence, eingangsdatum, testfall, status);
 	}
@@ -1513,7 +1511,7 @@ public final class TestDataUtil {
 
 		Collection<InstitutionStammdaten> institutionStammdatenList =
 			saveInstitutionsstammdatenForTestfaelle(persistence, gesuchsperiode);
-		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(gesuchsperiode, institutionStammdatenList);
+		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(gesuchsperiode, new TestDataInstitutionStammdatenBuilder(gesuchsperiode, institutionStammdatenList));
 		return persistAllEntities(persistence, eingangsdatum, testfall, null);
 	}
 
@@ -1521,9 +1519,7 @@ public final class TestDataUtil {
 		 Persistence persistence, @Nullable LocalDate eingangsdatum,
 		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
 
-		Collection<InstitutionStammdaten> institutionStammdatenList =
-			saveInstitutionsstammdatenForTestfaelle(persistence, gesuchsperiode);
-		Testfall06_BeckerNora testfall = new Testfall06_BeckerNora(gesuchsperiode, institutionStammdatenList);
+		Testfall06_BeckerNora testfall = new Testfall06_BeckerNora(gesuchsperiode, getInstititutionStammdatenBuilder(gesuchsperiode));
 		return persistAllEntities(persistence, eingangsdatum, testfall, status);
 	}
 
@@ -1540,7 +1536,7 @@ public final class TestDataUtil {
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		TestFall12_Mischgesuch testfall = new TestFall12_Mischgesuch(gesuchsperiode,
-			institutionStammdatenList);
+				new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
 
 		if (status != null) {
 			return persistAllEntities(persistence, eingangsdatum, testfall, status);

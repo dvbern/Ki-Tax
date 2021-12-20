@@ -107,7 +107,8 @@ public class GesuchsperiodeServiceTest extends AbstractEbeguLoginTest {
 		insertNewEntity(true, Constants.GESUCHSPERIODE_17_18);
 		Gesuchsperiode newestGesuchsperiode = insertNewEntity(false, Constants.GESUCHSPERIODE_18_19);
 
-		Optional<Gesuchsperiode> foundGesuchsperiode = gesuchsperiodeService.findNewestGesuchsperiode();
+		assert newestGesuchsperiode.getMandant() != null;
+		Optional<Gesuchsperiode> foundGesuchsperiode = gesuchsperiodeService.findNewestGesuchsperiode(newestGesuchsperiode.getMandant());
 		Assert.assertTrue(foundGesuchsperiode.isPresent());
 		Assert.assertEquals(Constants.GESUCHSPERIODE_18_19_AB, newestGesuchsperiode.getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(Constants.GESUCHSPERIODE_18_19_BIS, newestGesuchsperiode.getGueltigkeit().getGueltigBis());

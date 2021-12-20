@@ -97,7 +97,8 @@ public class TestfaelleResource {
 		@PathParam("verfuegen") boolean verfuegen) {
 
 		assertTestfaelleAccessAllowed();
-		StringBuilder responseString = testfaelleService.createAndSaveTestfaelle(fallid,
+		StringBuilder responseString = testfaelleService.createAndSaveTestfaelle(Objects.requireNonNull(principal.getMandant()),
+			fallid,
 			betreuungenBestaetigt,
 			verfuegen,
 			gesuchsperiodeId,
@@ -264,7 +265,7 @@ public class TestfaelleResource {
 
 		assertTestfaelleAccessAllowed();
 
-		testfaelleService.testAllMails(mailadresse);
+		testfaelleService.testAllMails(mailadresse, Objects.requireNonNull(principal.getMandant()));
 		return Response.ok().build();
 	}
 

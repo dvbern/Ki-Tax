@@ -147,7 +147,8 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		final ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(
 			TestfallName.BECKER_NORA, gesuchsperiode, LocalDate.now(), LocalDateTime.now());
 
-		Gesuch gesuch = testdataCreationService.createErstgesuch(config);
+		assert gesuchsperiode.getMandant() != null;
+		Gesuch gesuch = testdataCreationService.createErstgesuch(config, gesuchsperiode.getMandant());
 		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch(null, null);
 		jaxGesuch.setTyp(AntragTyp.MUTATION);
 		jaxGesuch.setDossier(converter.dossierToJAX(gesuch.getDossier()));
@@ -220,7 +221,8 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		final ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(
 			TestfallName.BECKER_NORA, gesuchsperiode, LocalDate.now(), LocalDateTime.now());
 
-		Gesuch gesuch = testdataCreationService.createErstgesuch(config);
+		assert gesuchsperiode.getMandant() != null;
+		Gesuch gesuch = testdataCreationService.createErstgesuch(config, gesuchsperiode.getMandant());
 		Betreuung betreuung = gesuch.extractAllBetreuungen().get(0);
 		JaxBetreuung jaxBetreuung = converter.betreuungToJAX(betreuung);
 		jaxBetreuung.setInstitutionStammdaten(converter.institutionStammdatenSummaryToJAX(
@@ -244,7 +246,8 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		final ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(
 			TestfallName.BECKER_NORA, gesuchsperiode, LocalDate.now(), LocalDateTime.now());
 
-		Gesuch gesuch = testdataCreationService.createErstgesuch(config);
+		assert gesuchsperiode.getMandant() != null;
+		Gesuch gesuch = testdataCreationService.createErstgesuch(config, gesuchsperiode.getMandant());
 		KindContainer kindContainer = gesuch.getKindContainers().iterator().next();
 		PensumFachstelle pensumFachstelle = new PensumFachstelle();
 		pensumFachstelle.setFachstelle(fachstelle);
