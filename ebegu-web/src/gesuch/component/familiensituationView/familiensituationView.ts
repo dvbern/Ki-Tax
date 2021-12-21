@@ -198,6 +198,9 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         } else if (this.isMutation() && this.getFamiliensituation().aenderungPer && this.isStartKonkubinatVisible()) {
             this.getFamiliensituation().startKonkubinat = this.getFamiliensituation().aenderungPer;
         }
+        if (!this.showGesuchstellerKardinalitaet()) {
+            this.getFamiliensituation().gesuchstellerKardinalitaet = undefined;
+        }
     }
 
     /**
