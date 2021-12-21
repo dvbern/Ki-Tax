@@ -129,7 +129,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			gesuch.setFinSitStatus(FinSitStatus.AKZEPTIERT);
 		}
 
-		familiensituation.setSozialhilfeBezueger(finSitStartDTO.getSozialhilfebezueger());
+		familiensituation.setSozialhilfeBezueger(finSitStartDTO.getSozialhilfeBezueger());
 		if (familiensituation.getSozialhilfeBezueger() == null || !familiensituation.getSozialhilfeBezueger()) {
 			familiensituationContainer.getSozialhilfeZeitraumContainers().clear();
 		}

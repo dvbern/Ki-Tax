@@ -29,7 +29,7 @@ import ch.dvbern.ebegu.entities.Adresse;
 
 public class FinanzielleSituationStartDTO {
 
-	final private @Nonnull Boolean sozialhilfebezueger;
+	final private @Nonnull Boolean sozialhilfeBezueger;
 	final private @Nullable Boolean gemeinsameSteuererklaerung;
 	final private Boolean verguenstigungGewuenscht;
 	final private boolean keineMahlzeitenverguenstigungGewuenscht;
@@ -46,7 +46,7 @@ public class FinanzielleSituationStartDTO {
 	final private @Nullable Boolean auszahlungAnEltern;
 
 	public FinanzielleSituationStartDTO(
-		@Nonnull Boolean sozialhilfebezueger,
+		@Nonnull Boolean sozialhilfeBezueger,
 		@Nullable Boolean gemeinsameSteuererklaerung,
 		Boolean verguenstigungGewuenscht,
 		boolean keineMahlzeitenverguenstigungGewuenscht,
@@ -62,7 +62,7 @@ public class FinanzielleSituationStartDTO {
 		@Nullable String infomaBankcode,
 		@Nullable Boolean auszahlungAnEltern
 	) {
-		this.sozialhilfebezueger = sozialhilfebezueger;
+		this.sozialhilfeBezueger = sozialhilfeBezueger;
 		this.gemeinsameSteuererklaerung = gemeinsameSteuererklaerung;
 		this.verguenstigungGewuenscht = verguenstigungGewuenscht;
 		this.keineMahlzeitenverguenstigungGewuenscht = keineMahlzeitenverguenstigungGewuenscht;
@@ -80,8 +80,8 @@ public class FinanzielleSituationStartDTO {
 	}
 
 	@Nonnull
-	public Boolean getSozialhilfebezueger() {
-		return sozialhilfebezueger;
+	public Boolean getSozialhilfeBezueger() {
+		return sozialhilfeBezueger;
 	}
 
 	@Nullable
