@@ -18,10 +18,12 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {ListResourceRS} from '../../../../../app/core/service/listResourceRS.rest';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSAdresse} from '../../../../../models/TSAdresse';
 import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
 import {TSLand} from '../../../../../models/types/TSLand';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 @Component({
@@ -38,7 +40,8 @@ export class InfomaFieldsComponent implements OnInit {
 
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
-        private readonly listResourceRS: ListResourceRS
+        private readonly listResourceRS: ListResourceRS,
+        private readonly authServiceRS: AuthServiceRS
     ) {
     }
 
@@ -68,5 +71,9 @@ export class InfomaFieldsComponent implements OnInit {
 
     public isKorrekturModusOrFreigegeben(): boolean {
         return this.gesuchModelManager.getGesuch().isKorrekturModusOrFreigegeben();
+    }
+
+    public isGemeindeOrMandant(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles().concat(TSRoleUtil.getMandantRoles()));
     }
 }

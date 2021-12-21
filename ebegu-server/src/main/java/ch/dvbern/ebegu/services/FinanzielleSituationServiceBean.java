@@ -24,6 +24,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationStartDTO;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
@@ -36,6 +37,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationRechnerFactory;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -63,6 +65,9 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 
 	@Inject
 	private GesuchService gesuchService;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@Nonnull
 	@Override
@@ -167,14 +172,18 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 				: new Auszahlungsdaten()
 			);
 		auszahlungsdatenInfoma.setIban(new IBAN(finSitStartDTO.getIbanInfoma()));
+		Objects.requireNonNull(finSitStartDTO.getKontoinhaberInfoma());
 		auszahlungsdatenInfoma.setKontoinhaber(finSitStartDTO.getKontoinhaberInfoma());
 		familiensituation.setAbweichendeZahlungsadresseInfoma(finSitStartDTO.isAbweichendeZahlungsadresseInfoma());
 		auszahlungsdatenInfoma.setAdresseKontoinhaber(finSitStartDTO.getZahlungsadresseInfoma());
-		familiensituation.setInfomaKreditorennummer(finSitStartDTO.getInfomaKreditorennummer());
-		familiensituation.setInfomaBankcode(finSitStartDTO.getInfomaBankcode());
-		familiensituation.setAuszahlungAnEltern(
-			finSitStartDTO.getAuszahlungAnEltern() != null && finSitStartDTO.getAuszahlungAnEltern()
-		);
+		// gesuchsteller is not allowed to set those fields
+		if (!principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
+			familiensituation.setInfomaKreditorennummer(finSitStartDTO.getInfomaKreditorennummer());
+			familiensituation.setInfomaBankcode(finSitStartDTO.getInfomaBankcode());
+			familiensituation.setAuszahlungAnEltern(
+				finSitStartDTO.getAuszahlungAnEltern() != null && finSitStartDTO.getAuszahlungAnEltern()
+			);
+		}
 		familiensituation.setAuszahlungsdatenInfoma(auszahlungsdatenInfoma);
 	}
 
