@@ -36,7 +36,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.FJKV_ANSPRUCH_MONATSWEISE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_ANSPRUCH_MONATSWEISE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -286,7 +286,7 @@ public class MonatsMergerRuleTest {
 
 	private List<VerfuegungZeitabschnitt> calculateZeitabschnitt(boolean anspruchMonatsweise, Betreuung betreuung) {
 		Map<EinstellungKey, Einstellung> einstellungenMap = EbeguRuleTestsHelper.getAllEinstellungen(betreuung.extractGesuchsperiode());
-		einstellungenMap.get(FJKV_ANSPRUCH_MONATSWEISE).setValue(String.valueOf(anspruchMonatsweise));
+		einstellungenMap.get(FKJV_ANSPRUCH_MONATSWEISE).setValue(String.valueOf(anspruchMonatsweise));
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungenMap, true);
 		assertNotNull(result);

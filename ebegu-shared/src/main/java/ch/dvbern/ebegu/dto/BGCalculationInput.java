@@ -814,7 +814,6 @@ public class BGCalculationInput {
 		this.fachstellenpensum = calculatePercentageInt(this.fachstellenpensum, percentage);
 		this.ausserordentlicherAnspruch = calculatePercentageInt(this.ausserordentlicherAnspruch, percentage);
 		this.monatlicheBetreuungskosten = calculatePercentage(this.monatlicheBetreuungskosten, percentage);
-		this.verguenstigungMahlzeitenTotal = calculatePercentage(this.verguenstigungMahlzeitenTotal, percentage);
 		this.tarifHauptmahlzeit = calculatePercentage(this.tarifHauptmahlzeit, percentage);
 		this.tarifNebenmahlzeit = calculatePercentage(this.tarifNebenmahlzeit, percentage);
 		this.massgebendesEinkommenVorAbzugFamgr = calculatePercentage(this.massgebendesEinkommenVorAbzugFamgr, percentage);

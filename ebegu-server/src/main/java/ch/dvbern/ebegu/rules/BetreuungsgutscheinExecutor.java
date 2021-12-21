@@ -99,7 +99,7 @@ public class BetreuungsgutscheinExecutor {
 		AbschlussNormalizer abschlussNormalizerOhneMonate = new AbschlussNormalizer(false, isDebug);
 		MonatsRule monatsRule = new MonatsRule(isDebug);
 
-		Boolean anspruchMonatsweise = kibonAbschlussRulesParameters.get(EinstellungKey.FJKV_ANSPRUCH_MONATSWEISE).getValueAsBoolean();
+		Boolean anspruchMonatsweise = kibonAbschlussRulesParameters.get(EinstellungKey.FKJV_ANSPRUCH_MONATSWEISE).getValueAsBoolean();
 		MonatsMergerRule monatsMergerRule = new MonatsMergerRule(isDebug, anspruchMonatsweise);
 		Boolean pauschaleRueckwirkendAuszahlen = kibonAbschlussRulesParameters.get(EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND).getValueAsBoolean();
 		MutationsMerger mutationsMerger = new MutationsMerger(locale, isDebug, pauschaleRueckwirkendAuszahlen);

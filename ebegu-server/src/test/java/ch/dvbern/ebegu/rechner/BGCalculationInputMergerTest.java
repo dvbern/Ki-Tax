@@ -182,22 +182,6 @@ public class BGCalculationInputMergerTest {
 	}
 
 	@Test
-	public void test_calculateInputMerge_verguenstigungMahlzeitenTotal() {
-		bgCalculationInput1.setVerguenstigungMahlzeitenTotal(BigDecimal.valueOf(16));
-		bgCalculationInput2.setVerguenstigungMahlzeitenTotal(BigDecimal.valueOf(24));
-
-		bgCalculationInput1.calculateInputValuesProportionaly(48.52);
-		bgCalculationInput2.calculateInputValuesProportionaly(62.75);
-
-		Assert.assertEquals(BigDecimal.valueOf(7.7632), bgCalculationInput1.getVerguenstigungMahlzeitenTotal());
-		Assert.assertEquals(BigDecimal.valueOf(15.059999999999999), bgCalculationInput2.getVerguenstigungMahlzeitenTotal());
-
-		//Merge
-		bgCalculationInput1.add(bgCalculationInput2);
-		Assert.assertEquals( new BigDecimal("22.823199999999999"), bgCalculationInput1.getVerguenstigungMahlzeitenTotal());
-	}
-
-	@Test
 	public void test_calcualteInputMerge_tarifHauptmahlzeiten() {
 		bgCalculationInput1.setTarifHauptmahlzeit(BigDecimal.valueOf(11));
 		bgCalculationInput2.setTarifHauptmahlzeit(BigDecimal.valueOf(9));
