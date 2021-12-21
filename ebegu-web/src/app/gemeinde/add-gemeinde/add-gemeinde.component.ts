@@ -40,6 +40,7 @@ import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
     selector: 'dv-add-gemeinde',
     templateUrl: './add-gemeinde.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
+    styleUrls: ['./add-gemeinde.component.less'],
 })
 export class AddGemeindeComponent implements OnInit {
 
@@ -208,8 +209,8 @@ export class AddGemeindeComponent implements OnInit {
     }
 
     private getUserRoleForGemeindeAdmin(): string {
-        const hasBG = this.gemeinde.angebotBG || this.gemeinde.besondereVolksschule;
-        const hasTS = this.gemeinde.angebotTS || this.gemeinde.angebotFI;
+        const hasBG = this.gemeinde.angebotBG;
+        const hasTS = this.gemeinde.angebotTS || this.gemeinde.angebotFI || this.gemeinde.besondereVolksschule;
         if (!hasBG) {
             return 'TSRole_ADMIN_TS';
         }
@@ -236,5 +237,12 @@ export class AddGemeindeComponent implements OnInit {
             this.gemeinde.bfsNummer = bfsnummer;
             this.cd.markForCheck();
         });
+    }
+
+    public handleAngebotTSChange(): void {
+        if (!this.gemeinde.angebotTS) {
+            this.gemeinde.besondereVolksschule = false;
+            this.handleIsBesondereVolksschuleChange(false);
+        }
     }
 }

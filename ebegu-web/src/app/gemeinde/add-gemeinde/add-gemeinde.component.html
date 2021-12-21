@@ -76,29 +76,11 @@
                         <div class="form-group">
                             <label class="md-no-float" translate for="begu_start_ID"  *ngIf="tageschuleEnabledForMandant">GEMEINDE_ANGEBOT</label>
 
-
-                            <mat-checkbox id="besondereVolksschule" name="besondereVolksschule"
-                                          [(ngModel)]="gemeinde.besondereVolksschule"
-                                          (ngModelChange)="handleIsBesondereVolksschuleChange($event)">
-                                {{'GEMEINDE_ANGEBOT_BESONDERE_VOLKSSCHULE'|translate}}</mat-checkbox>
-
-                            <div class="form-group" *ngIf="gemeinde.besondereVolksschule">
-                                <label class="md-no-float" translate for="besondere_volksschule_name">NAME</label>
-                                <input type="text"
-                                       name="besondere_volksschule_name"
-                                       id="besondere_volksschule_name"
-                                       [(ngModel)]="gemeinde.name"
-                                       required>
-                                <dv-error-messages input-id="besondere_volksschule_name"
-                                                   [errorObject]="form.controls.besondere_volksschule_name?.errors">
-                                </dv-error-messages>
-                            </div>
-
                             <mat-checkbox id="angebotBG" name="angebotBG"
                                           [(ngModel)]="gemeinde.angebotBG" *ngIf="tageschuleEnabledForMandant">
                                 {{'GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE'|translate}}</mat-checkbox>
 
-                            <div class="form-group" *ngIf="gemeinde.angebotBG">
+                            <div class="form-group inner-option" *ngIf="gemeinde.angebotBG">
                                 <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
                                 <input class="dv-mat-datepicker" type="text"
                                        name="begu_start" id="begu_start_ID"
@@ -114,30 +96,50 @@
                             </div>
 
                             <mat-checkbox id="angebotTS" name="angebotTS"
+                                          (ngModelChange)="handleAngebotTSChange()"
                                           [(ngModel)]="gemeinde.angebotTS" *ngIf="tageschuleEnabledForMandant">
                                 {{'GEMEINDE_ANGEBOT_TAGESSCHULE'|translate}}</mat-checkbox>
 
-                            <div class="form-group" *ngIf="gemeinde.angebotTS">
-                                <label class="md-no-float" translate for="ts_start_ID">TS_START</label>
-                                <input class="dv-mat-datepicker" type="text"
-                                       name="ts_start" id="ts_start_ID"
-                                       [(ngModel)]="gemeinde.tagesschulanmeldungenStartdatum"
-                                       [matDatepicker]="ts_start"
-                                       [min]="minDateTSFI"
-                                       placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}"
-                                       required>
-                                <mat-datepicker-toggle matSuffix [for]="ts_start"></mat-datepicker-toggle>
-                                <mat-datepicker #ts_start></mat-datepicker>
-                                <dv-error-messages input-id="ts_start_ID"
-                                                   [errorObject]="form.controls.ts_start?.errors">
-                                </dv-error-messages>
+                            <div *ngIf="gemeinde.angebotTS" class="inner-option">
+                                <div class="form-group">
+                                    <label class="md-no-float" translate for="ts_start_ID">TS_START</label>
+                                    <input class="dv-mat-datepicker" type="text"
+                                           name="ts_start" id="ts_start_ID"
+                                           [(ngModel)]="gemeinde.tagesschulanmeldungenStartdatum"
+                                           [matDatepicker]="ts_start"
+                                           [min]="minDateTSFI"
+                                           placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}"
+                                           required>
+                                    <mat-datepicker-toggle matSuffix [for]="ts_start"></mat-datepicker-toggle>
+                                    <mat-datepicker #ts_start></mat-datepicker>
+                                    <dv-error-messages input-id="ts_start_ID"
+                                                       [errorObject]="form.controls.ts_start?.errors">
+                                    </dv-error-messages>
+                                </div>
+
+                                <mat-checkbox id="besondereVolksschule" name="besondereVolksschule"
+                                              [(ngModel)]="gemeinde.besondereVolksschule"
+                                              (ngModelChange)="handleIsBesondereVolksschuleChange($event)">
+                                    {{'GEMEINDE_ANGEBOT_BESONDERE_VOLKSSCHULE'|translate}}</mat-checkbox>
+
+                                <div class="form-group margin-top-10" *ngIf="gemeinde.besondereVolksschule">
+                                    <label class="md-no-float" translate for="besondere_volksschule_name">NAME</label>
+                                    <input type="text"
+                                           name="besondere_volksschule_name"
+                                           id="besondere_volksschule_name"
+                                           [(ngModel)]="gemeinde.name"
+                                           required>
+                                    <dv-error-messages input-id="besondere_volksschule_name"
+                                                       [errorObject]="form.controls.besondere_volksschule_name?.errors">
+                                    </dv-error-messages>
+                                </div>
                             </div>
 
                             <mat-checkbox id="angebotFI" name="angebotFI"
                                           [(ngModel)]="gemeinde.angebotFI" *ngIf="tageschuleEnabledForMandant">
                                 {{'GEMEINDE_ANGEBOT_FERIENINSEL'|translate}}</mat-checkbox>
 
-                            <div class="form-group" *ngIf="gemeinde.angebotFI">
+                            <div class="form-group inner-option" *ngIf="gemeinde.angebotFI">
                                 <label class="md-no-float" translate for="fi_start_ID">FI_START</label>
                                 <input class="dv-mat-datepicker" type="text"
                                        name="fi_start" id="fi_start_ID"

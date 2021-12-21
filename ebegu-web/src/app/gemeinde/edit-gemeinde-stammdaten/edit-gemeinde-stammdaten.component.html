@@ -225,18 +225,13 @@
                     <div class="form-group">
                         <label class="md-no-float margin-top-30" translate for="begu_start_ID">GEMEINDE_ANGEBOT</label>
 
-                        <mat-checkbox id="besondereVolksschule" name="besondereVolksschule"
-
-                                      [(ngModel)]="stammdaten.gemeinde.besondereVolksschule"
-                                      [disabled]="!(isSuperadminOrMandant())">
-                            {{'GEMEINDE_ANGEBOT_BESONDERE_VOLKSSCHULE'|translate}}</mat-checkbox>
                         <mat-checkbox id="angebotBG" name="angebotBG"
                                       [(ngModel)]="stammdaten.gemeinde.angebotBG"
                                       [disabled]="!(isSuperadminOrMandant())"
                                       (ngModelChange)="angeboteChanged(stammdaten)">
                             {{'GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE'|translate}}</mat-checkbox>
 
-                        <div class="form-group" *ngIf="stammdaten.gemeinde.angebotBG">
+                        <div class="form-group inner-option" *ngIf="stammdaten.gemeinde.angebotBG">
                             <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
                             <input class="dv-mat-datepicker" type="text"
                                    name="begu_start" id="begu_start_ID" #bgStartDate="ngModel"
@@ -254,24 +249,32 @@
                         <mat-checkbox id="angebotTS" name="angebotTS"
                                       [disabled]="!(isSuperadminOrMandant())"
                                       [(ngModel)]="stammdaten.gemeinde.angebotTS"
+                                      (ngModelChange)="handleAngebotTSChange(stammdaten.gemeinde)"
                                       *ngIf="tageschuleEnabledForMandant"
                                       (ngModelChange)="angeboteChanged(stammdaten)">
                             {{'GEMEINDE_ANGEBOT_TAGESSCHULE'|translate}}</mat-checkbox>
 
-                        <div class="form-group" *ngIf="stammdaten.gemeinde.angebotTS">
-                            <label class="md-no-float" translate for="begu_start_ID">TS_START</label>
-                            <input class="dv-mat-datepicker" type="text"
-                                   name="ts_start" id="ts_start_ID" #tsStartDate="ngModel"
-                                   [(ngModel)]="stammdaten.gemeinde.tagesschulanmeldungenStartdatum"
-                                   [matDatepicker]="ts_start"
-                                   [min]="minDateTSFI"
-                                   [disabled]="!(isSuperadminOrMandant())"
-                                   placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}">
-                            <mat-datepicker-toggle matSuffix [for]="ts_start"></mat-datepicker-toggle>
-                            <mat-datepicker #ts_start></mat-datepicker>
-                            <dv-error-messages input-id="ts_start_ID"
-                                               [errorObject]="tsStartDate.errors">
-                            </dv-error-messages>
+                        <div class="inner-option" *ngIf="stammdaten.gemeinde.angebotTS">
+                            <div class="form-group">
+                                <label class="md-no-float" translate for="begu_start_ID">TS_START</label>
+                                <input class="dv-mat-datepicker" type="text"
+                                       name="ts_start" id="ts_start_ID" #tsStartDate="ngModel"
+                                       [(ngModel)]="stammdaten.gemeinde.tagesschulanmeldungenStartdatum"
+                                       [matDatepicker]="ts_start"
+                                       [min]="minDateTSFI"
+                                       [disabled]="!(isSuperadminOrMandant())"
+                                       placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}">
+                                <mat-datepicker-toggle matSuffix [for]="ts_start"></mat-datepicker-toggle>
+                                <mat-datepicker #ts_start></mat-datepicker>
+                                <dv-error-messages input-id="ts_start_ID"
+                                                   [errorObject]="tsStartDate.errors">
+                                </dv-error-messages>
+                            </div>
+                            <mat-checkbox id="besondereVolksschule" name="besondereVolksschule"
+                                          class="margin-top-10"
+                                          [(ngModel)]="stammdaten.gemeinde.besondereVolksschule"
+                                          [disabled]="!(isSuperadminOrMandant())">
+                                {{'GEMEINDE_ANGEBOT_BESONDERE_VOLKSSCHULE'|translate}}</mat-checkbox>
                         </div>
 
                         <mat-checkbox id="angebotFI" name="angebotFI"
@@ -281,7 +284,7 @@
                                       (ngModelChange)="angeboteChanged(stammdaten)">
                             {{'GEMEINDE_ANGEBOT_FERIENINSEL'|translate}}</mat-checkbox>
 
-                        <div class="form-group" *ngIf="stammdaten.gemeinde.angebotFI">
+                        <div class="form-group inner-option" *ngIf="stammdaten.gemeinde.angebotFI">
                             <label class="md-no-float" translate for="begu_start_ID">FI_START</label>
                             <input class="dv-mat-datepicker" type="text"
                                    name="fi_start" id="fi_start_ID" #fiStartDate="ngModel"

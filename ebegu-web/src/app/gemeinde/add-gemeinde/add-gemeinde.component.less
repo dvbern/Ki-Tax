@@ -15,43 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-@import (reference) '../../../style/variables.less';
-@import (reference) '../../../style/mixins.less';
-
-::ng-deep .mat-tab-label-active {
-    background-color: @lgrey;
-    opacity: 1 !important;
-}
-::ng-deep .mat-tab-label-content {
-    .ebeguFont-family();
-    color: @black;
-    font-weight: 600;
-}
-
-.mat-tab-group,
-.mat-tab-body{
-    .ebeguFont-family() !important;
-}
-::ng-deep .mat-tab-group.mat-primary .mat-ink-bar,
-::ng-deep .mat-tab-nav-bar.mat-primary .mat-ink-bar {
-    height: 0;
-}
-
-::ng-deep .checkbox-with-tooltip {
-    display: flex;
-    dv-tooltip {
-        align-items: center;
-        display: flex;
-        padding-left: 0.75rem;
-    }
-}
-
-::ng-deep #alternativekontaktdaten_id {
-    min-height: 150px;
-}
-
-::ng-deep div.inner-option {
+div.inner-option {
     margin-left: 4rem;
-    margin-top: 1rem;
+    margin-top: 2rem;
     margin-bottom: 1rem;
 }
