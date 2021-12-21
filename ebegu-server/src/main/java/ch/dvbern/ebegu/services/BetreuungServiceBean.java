@@ -82,6 +82,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -161,8 +162,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private BetreuungMonitoringService betreuungMonitoringService;
 	@Inject
 	private AnmeldungTagesschuleEventConverter anmeldungTagesschuleEventConverter;
-	@Inject
-	private MandantService mandantService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
 
@@ -297,7 +296,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	public void fireAnmeldungTagesschuleAddedEvent(@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
 		if (ebeguConfiguration.isAnmeldungTagesschuleApiEnabled()) {
 			event.fire(anmeldungTagesschuleEventConverter.of(anmeldungTagesschule));
-			//TODO: add event published or not this is the question???
 		}
 	}
 
@@ -641,30 +639,42 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Override
 	@Nonnull
 	public List<AbstractAnmeldung> findAnmeldungenByBGNummer(@Nonnull String bgNummer) {
+		//TODO: refactor with change in KIBON-2169
+		Mandant mandant = getMandantFromBgNummer(bgNummer);
 		List<AbstractAnmeldung> result = new ArrayList<>();
-		result.addAll(findAnmeldungenByBGNummer(AnmeldungTagesschule.class, bgNummer, false));
-		result.addAll(findAnmeldungenByBGNummer(AnmeldungFerieninsel.class, bgNummer, false));
+		result.addAll(findAnmeldungenByBGNummer(AnmeldungTagesschule.class, bgNummer, false, mandant));
+		result.addAll(findAnmeldungenByBGNummer(AnmeldungFerieninsel.class, bgNummer, false, mandant));
 		return result;
 	}
 
+	private Mandant getMandantFromBgNummer(String refnr) {
+		final int gemeindeNummer = BetreuungUtil.getGemeindeFromBGNummer(refnr);
+		Gemeinde gemeinde = gemeindeService.getGemeindeByGemeindeNummer(gemeindeNummer).orElseThrow(() ->
+				new EbeguEntityNotFoundException("getGemeindeByGemeindeNummer", gemeindeNummer));
+
+		return gemeinde.getMandant();
+	}
+
+
 	@Override
 	public List<AbstractAnmeldung> findNewestAnmeldungByBGNummer(@Nonnull String bgNummer) {
+		Mandant mandant = getMandantFromBgNummer(bgNummer);
 		List<AbstractAnmeldung> result = new ArrayList<>();
-		result.addAll(findAnmeldungenByBGNummer(AnmeldungTagesschule.class, bgNummer, true));
-		result.addAll(findAnmeldungenByBGNummer(AnmeldungFerieninsel.class, bgNummer, true));
+		result.addAll(findAnmeldungenByBGNummer(AnmeldungTagesschule.class, bgNummer, true, mandant));
+		result.addAll(findAnmeldungenByBGNummer(AnmeldungFerieninsel.class, bgNummer, true, mandant));
 		return result;
 	}
 
 	@Nonnull
 	private <T extends AbstractAnmeldung> List<T> findAnmeldungenByBGNummer(
-		@Nonnull Class<T> clazz,
-		@Nonnull String bgNummer, boolean getOnlyAktuelle) {
+			@Nonnull Class<T> clazz,
+			@Nonnull String bgNummer, boolean getOnlyAktuelle, @Nonnull Mandant mandant) {
 		final int betreuungNummer = BetreuungUtil.getBetreuungNummerFromBGNummer(bgNummer);
 		final int kindNummer = BetreuungUtil.getKindNummerFromBGNummer(bgNummer);
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
 		// der letzte Tag im Jahr, von der BetreuungsId sollte immer zur richtigen Gesuchsperiode zählen.
 		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
-			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365), mandantService.getDefaultMandant());
+			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365), mandant);
 		Gesuchsperiode gesuchsperiode;
 		if (gesuchsperiodeOptional.isPresent()) {
 			gesuchsperiode = gesuchsperiodeOptional.get();
@@ -714,11 +724,11 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	public Optional<Betreuung> findBetreuungByBGNummer(@Nonnull String bgNummer, boolean onlyGueltig) {
+	public Optional<Betreuung> findBetreuungByBGNummer(@Nonnull String bgNummer, boolean onlyGueltig, @Nonnull Mandant mandant) {
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
 		// der letzte Tag im Jahr, von der BetreuungsId sollte immer zur richtigen Gesuchsperiode zählen.
 		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
-			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365), mandantService.getDefaultMandant());
+			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365), mandant);
 		if (gesuchsperiodeOptional.isEmpty()) {
 			return Optional.empty();
 		}
@@ -1280,10 +1290,11 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	public Optional<AnmeldungTagesschule> findAnmeldungenTagesschuleByBGNummer(@Nonnull String bgNummer) {
+	public Optional<AnmeldungTagesschule> findAnmeldungenTagesschuleByBGNummer(@Nonnull String bgNummer, @Nonnull Mandant mandant) {
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
+
 		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
-			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365), mandantService.getDefaultMandant());
+			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365), mandant);
 		Gesuchsperiode gesuchsperiode;
 		if (gesuchsperiodeOptional.isPresent()) {
 			gesuchsperiode = gesuchsperiodeOptional.get();

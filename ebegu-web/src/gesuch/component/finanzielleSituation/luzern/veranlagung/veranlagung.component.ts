@@ -15,13 +15,16 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ControlContainer, NgForm} from '@angular/forms';
+import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 
 @Component({
     selector: 'dv-veranlagung',
     templateUrl: './veranlagung.component.html',
     styleUrls: ['./veranlagung.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 export class VeranlagungComponent implements OnInit {
 
@@ -34,11 +37,21 @@ export class VeranlagungComponent implements OnInit {
     @Input()
     public year: number | string;
 
-    public constructor(
-    ) {
+    @Input() public model: TSFinanzielleSituationContainer;
+
+    @Input()
+    public readOnly: boolean;
+
+    @Output() public readonly valueChange = new EventEmitter<undefined>();
+
+    public constructor() {
     }
 
     public ngOnInit(): void {
+    }
+
+    public onValueChange(): void {
+        this.valueChange.emit();
     }
 
 }

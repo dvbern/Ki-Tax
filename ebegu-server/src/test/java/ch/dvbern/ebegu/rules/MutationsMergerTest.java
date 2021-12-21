@@ -17,6 +17,8 @@ package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -25,17 +27,15 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
-import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
-import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
@@ -398,8 +398,102 @@ public class MutationsMergerTest {
 		checkAllAfter(zeitabschnitte, eingangsdatumMuation, true);
 	}
 
+	@Test
+	public void test_Mutation_nichtZuSpaet() {
+		//Erstgesuch pünktlich
+		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung();
+		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		//Mutation pünktlich eingereicht
+		mutierteBetreuung.extractGesuch().setEingangsdatum(TestDataUtil.START_PERIODE.minusDays(15));
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
+		//Zeitabschnitt Flag zuSpät = false
+		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
+		Assert.assertEquals(1, zeitabschnitteMutation.size());
+		Assert.assertFalse(zeitabschnitteMutation.get(0).isZuSpaetEingereicht());
+	}
+
+	@Test
+	public void test_Mutation_Flag_zuSpaet_oneMonth() {
+		//Erstgesuch pünklich
+		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung();
+		//Mutation 15 Tage zu spät
+		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		mutierteBetreuung.extractGesuch().setEingangsdatum(TestDataUtil.START_PERIODE.plusDays(15));
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
+
+		List<VerfuegungZeitabschnitt> zeitaschnitteMutation = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
+
+		Assert.assertEquals(2, zeitaschnitteMutation.size());
+
+		VerfuegungZeitabschnitt zeitabschnitt1 = zeitaschnitteMutation.get(0);
+		VerfuegungZeitabschnitt zeitabschnitt2 = zeitaschnitteMutation.get(1);
+
+		//Zeitabschnitt1 Flag zuSpät = true, Gültig ab Start der Periode, Gültig bis Ende des 1. Monats
+		Assert.assertTrue(zeitabschnitt1.isZuSpaetEingereicht());
+		Assert.assertEquals(TestDataUtil.START_PERIODE, zeitabschnitt1.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(TestDataUtil.START_PERIODE.with(TemporalAdjusters.lastDayOfMonth()), zeitabschnitt1.getGueltigkeit().getGueltigBis());
+
+		//Zeitabschnitt2 Flag zuSpät = false, Gültig ab 1. Tag des 2. Monats und gültig bis Ende der Periode
+		Assert.assertFalse(zeitaschnitteMutation.get(1).isZuSpaetEingereicht());
+		Assert.assertEquals(TestDataUtil.START_PERIODE.plusMonths(1), zeitabschnitt2.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(TestDataUtil.ENDE_PERIODE, zeitabschnitt2.getGueltigkeit().getGueltigBis());
+	}
+
+	@Test
+	public void test_Mutation_Flag_zuSpaet_twoMonth() {
+		//Erstgesuch pünklich
+		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung();
+		//Mutation 1 Monat und 15 Tage zu spät
+		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		mutierteBetreuung.extractGesuch().setEingangsdatum(TestDataUtil.START_PERIODE.plusMonths(1).plusDays(15));
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
+
+		List<VerfuegungZeitabschnitt> zeitaschnitteMutation = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
+		Assert.assertEquals(2, zeitaschnitteMutation.size());
+		VerfuegungZeitabschnitt zeitabschnitt1 = zeitaschnitteMutation.get(0);
+		VerfuegungZeitabschnitt zeitabschnitt2 = zeitaschnitteMutation.get(1);
+
+		//Zeitabschnitt1 Flag zuSpät = true, Gültig ab Start der Periode, Gültig bis Ende des 2. Monats
+		Assert.assertTrue(zeitabschnitt1.isZuSpaetEingereicht());
+		Assert.assertEquals(TestDataUtil.START_PERIODE, zeitabschnitt1.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(TestDataUtil.START_PERIODE.plusMonths(1).with(TemporalAdjusters.lastDayOfMonth()), zeitabschnitt1.getGueltigkeit().getGueltigBis());
+
+		//Zeitabschnitt2 Flag zuSpät = false, Gültig ab 1. Tag des 3. Monats und gültig bis Ende der Periode
+		Assert.assertFalse(zeitaschnitteMutation.get(1).isZuSpaetEingereicht());
+		Assert.assertEquals(TestDataUtil.START_PERIODE.plusMonths(2), zeitabschnitt2.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(TestDataUtil.ENDE_PERIODE, zeitabschnitt2.getGueltigkeit().getGueltigBis());
+	}
+
+	@Test
+	public void test_Mutation_erstGesuch_zu_spaet_keine_Bemerkung() {
+		// Zu spät eingereichtes Erstgesuch vorbereiten
+		Betreuung erstGesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, 2021, 2022);
+		erstGesuchBetreuung.extractGesuch().setEingangsdatum(LocalDate.of(2021, Month.AUGUST, 15));
+		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstGesuchBetreuung);
+
+		Verfuegung verfuegungErstgesuch = new Verfuegung();
+		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteErstgesuch =
+			EbeguRuleTestsHelper.runSingleAbschlussRule(monatsRule, erstGesuchBetreuung, zabetrErtgesuch);
+		verfuegungErstgesuch.setZeitabschnitte(verfuegungsZeitabschnitteErstgesuch);
+		erstGesuchBetreuung.setVerfuegung(verfuegungErstgesuch);
+
+		VerfuegungZeitabschnitt verfuegungZeitabschnittAugust = verfuegungErstgesuch.getZeitabschnitte().get(0);
+		Assert.assertTrue(verfuegungZeitabschnittAugust.isZuSpaetEingereicht());
+		Assert.assertEquals(0, verfuegungZeitabschnittAugust.getAnspruchberechtigtesPensum());
+
+		Betreuung mutation = prepareMutation(LocalDate.of(2021, Month.OCTOBER, 1), 2020, 2021);
+		mutation.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
+
+		List<VerfuegungZeitabschnitt> zeitaschnitteMutation = EbeguRuleTestsHelper.calculate(mutation);
+		VerfuegungZeitabschnitt mutationZeitabschnittAugust = zeitaschnitteMutation.get(0);
+		Assert.assertEquals(0, mutationZeitabschnittAugust.getAnspruchberechtigtesPensum());
+		Assert.assertNotNull(mutationZeitabschnittAugust.getVerfuegungenZeitabschnittBemerkungenAsString());
+		Assert.assertFalse(mutationZeitabschnittAugust.getVerfuegungenZeitabschnittBemerkungenAsString()
+			.contains("Ihre Anpassung hat eine Erhöhung des Betreuungsgutscheins zur Folge, die Anpassung erfolgt auf den Folgemonat nach Einreichung aller Belege (Art 34r ASIV)."));
+	}
+
 	private Verfuegung prepareErstGesuchVerfuegung() {
-		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
+		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, 2021, 2022);
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstgesuchBetreuung);
 		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteErstgesuch =
@@ -533,7 +627,7 @@ public class MutationsMergerTest {
 		kindContainers.add(betreuung.getKind());
 		gesuch.setKindContainers(kindContainers);
 
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		gesuch.getFinanzDatenDTO().setMassgebendesEinkBjVorAbzFamGr(massgebendesEinkommen);
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(
@@ -541,9 +635,41 @@ public class MutationsMergerTest {
 		return betreuung;
 	}
 
+	private Betreuung prepareData(BigDecimal massgebendesEinkommen, AntragTyp antragTyp, int startYear, int endYear) {
+		Betreuung betreuung =
+			EbeguRuleTestsHelper.createBetreuungWithPensum(LocalDate.of(startYear, Month.AUGUST, 1), LocalDate.of(endYear, Month.JULY, 31),
+				BetreuungsangebotTyp.KITA, 100, new BigDecimal(2000));
+		final Gesuch gesuch = betreuung.extractGesuch();
+		gesuch.setTyp(antragTyp);
+		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
+		Set<KindContainer> kindContainers = new LinkedHashSet<>();
+		final KindContainer kindContainer = betreuung.getKind();
+		Set<Betreuung> betreuungen = new TreeSet<>();
+		betreuungen.add(betreuung);
+		kindContainer.setBetreuungen(betreuungen);
+		kindContainers.add(betreuung.getKind());
+		gesuch.setKindContainers(kindContainers);
+
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
+		gesuch.getFinanzDatenDTO().setMassgebendesEinkBjVorAbzFamGr(massgebendesEinkommen);
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(
+				LocalDate.of(startYear, Month.AUGUST, 1), LocalDate.of(endYear, Month.JULY, 31), 100));
+		return betreuung;
+	}
+
 	@Nonnull
 	private Betreuung prepareMutation(@Nonnull LocalDate eingangsdatumMuation) {
 		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		mutierteBetreuung.extractGesuch().setEingangsdatum(eingangsdatumMuation);
+		mutierteBetreuung.initVorgaengerVerfuegungen(null, null);
+
+		return mutierteBetreuung;
+	}
+
+	@Nonnull
+	private Betreuung prepareMutation(@Nonnull LocalDate eingangsdatumMuation, int startYear, int endYear) {
+		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION, startYear, endYear);
 		mutierteBetreuung.extractGesuch().setEingangsdatum(eingangsdatumMuation);
 		mutierteBetreuung.initVorgaengerVerfuegungen(null, null);
 

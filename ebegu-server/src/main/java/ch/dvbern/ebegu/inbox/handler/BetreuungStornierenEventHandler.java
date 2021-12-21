@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -94,8 +95,13 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 
 	@Nonnull
 	protected Processing attemptProcessing(@Nonnull EventMonitor eventMonitor) {
+		String refnr = eventMonitor.getRefnr();
+		Optional<Mandant> mandant = betreuungEventHelper.getMandantFromBgNummer(refnr);
+		if (mandant.isEmpty()) {
+			return Processing.failure("Mandant konnte nicht gefunden werden.");
+		}
 
-		return betreuungService.findBetreuungByBGNummer(eventMonitor.getRefnr(), false)
+		return betreuungService.findBetreuungByBGNummer(refnr, false, mandant.get())
 			.map(betreuung -> processEventForStornierung(eventMonitor, betreuung))
 			.orElseGet(() -> Processing.failure("Betreuung nicht gefunden."));
 	}

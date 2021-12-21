@@ -240,7 +240,8 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 			if (!betreuung.isGueltig()) {
 				// Es gibt eine spätere Verfügung, deren Gesuch aber noch nicht (komplett) verfügt ist
 				Optional<Betreuung> gueltigeBetreuungOptional =
-					betreuungService.findBetreuungByBGNummer(betreuung.getBGNummer(), true);
+					betreuungService.findBetreuungByBGNummer(betreuung.getBGNummer(), true,
+							Objects.requireNonNull(betreuung.extractGemeinde().getMandant()));
 				if (gueltigeBetreuungOptional.isPresent()) {
 					betreuung = gueltigeBetreuungOptional.get();
 				} else {

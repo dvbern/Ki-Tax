@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,6 +35,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
@@ -190,6 +192,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private SozialdienstFallDokumentService sozialdienstFallDokumentService;
 	@Inject
 	private EinstellungService einstellungService;
+	@Inject
+	private PrincipalBean principalBean;
 
 
 	@Override
@@ -561,6 +565,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	 */
 	@Override
 	@Nonnull
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public Gesuch createAndSaveGesuch(
 		@Nonnull AbstractTestfall fromTestfall,
 		boolean verfuegen,
@@ -603,6 +608,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		if (besitzer != null) {
 			fall.setBesitzer(besitzer);
 		}
+		Objects.requireNonNull(principalBean.getMandant());
+		fall.setMandant(principalBean.getMandant());
 
 		final Fall persistedFall = fallService.saveFall(fall);
 		fromTestfall.setFall(persistedFall); // dies wird gebraucht, weil fallService.saveFall ein merge macht.

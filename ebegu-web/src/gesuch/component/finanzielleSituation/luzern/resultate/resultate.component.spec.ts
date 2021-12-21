@@ -22,7 +22,8 @@ import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {ResultateComponent} from './resultate.component';
 
 const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
-    GesuchModelManager.name, ['areThereOnlyFerieninsel', 'getBasisjahr', 'getBasisjahrPlus']);
+    GesuchModelManager.name,
+    ['areThereOnlyFerieninsel', 'getBasisjahr', 'getBasisjahrPlus', 'getGesuch', 'isGesuchsteller2Required']);
 const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
     WizardStepManager.name, ['getCurrentStep', 'setCurrentStep']);
 
@@ -37,8 +38,8 @@ describe('ResultateComponent', () => {
             ],
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
-                {provide: WizardStepManager, useValue: wizardStepMangerSpy}
-            ]
+                {provide: WizardStepManager, useValue: wizardStepMangerSpy},
+            ],
         })
             .compileComponents();
     });

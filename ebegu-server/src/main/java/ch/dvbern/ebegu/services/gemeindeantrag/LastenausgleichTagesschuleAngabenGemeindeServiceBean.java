@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -353,14 +354,21 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root =
 			query.from(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
 
+		var predicates = new ArrayList<Predicate>();
+
+		Objects.requireNonNull(principal.getMandant());
+		Predicate mandantPredicate = createMandantPredicate(cb, root);
+		predicates.add(mandantPredicate);
+
 		if (!principal.isCallerInAnyOfRole(
 			UserRole.SUPER_ADMIN,
 			UserRole.ADMIN_MANDANT,
 			UserRole.SACHBEARBEITER_MANDANT)) {
 			Predicate gemeindeIn =
 				root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde).in(gemeinden);
-			query.where(gemeindeIn);
+			predicates.add(gemeindeIn);
 		}
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
 		return persistence.getCriteriaResults(query);
 	}
@@ -389,6 +397,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			query.from(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
 
 		Set<Predicate> predicates = new HashSet<>();
+
+		Predicate mandantPredicate = createMandantPredicate(cb, root);
+		predicates.add(mandantPredicate);
 
 		if (!principal.isCallerInAnyOfRole(
 			UserRole.SUPER_ADMIN,
@@ -438,6 +449,19 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		});
 
 		return containerList;
+	}
+
+	private Predicate createMandantPredicate(
+			CriteriaBuilder cb,
+			Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root) {
+		Mandant mandant = principal.getMandant();
+		if (mandant == null) {
+			throw new EbeguRuntimeException("LastenausgleichTagesschuleAngabenGemeindeServiceBean", "mandant not found for principal " + principal.getPrincipal().getName());
+		}
+		return cb.equal(
+				root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde)
+						.get(Gemeinde_.mandant), mandant
+		);
 	}
 
 	private Predicate createStatusPredicate(

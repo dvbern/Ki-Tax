@@ -81,7 +81,14 @@ export class MandantService {
         return encodedMandant.replace('+', ' ');
     }
 
+    private static isLegacyBeCookie(decodeMandantCookie: string): boolean {
+        return decodeMandantCookie === 'be';
+    }
+
     public async initMandantCookie(): Promise<void> {
+        if (MandantService.isLegacyBeCookie(this.getDecodeMandantCookie())) {
+            await this.setMandantCookie(KiBonMandant.BE);
+        }
         const mandantFromCookie = MandantService.cookieToMandant(this.getDecodeMandantCookie());
         const mandantFromUrl = this.parseHostnameForMandant();
 

@@ -20,6 +20,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
+
 /**
  * DTO fuer die FinanzielleSituation, so verhindern wir, dass das ganze gesuch mitgegeben werden muss wenn wir berechnen wollen
  */
@@ -40,6 +42,8 @@ public class JaxFinanzModel {
 	private JaxEinkommensverschlechterungInfoContainer einkommensverschlechterungInfoContainer;
 
 	private boolean gemeinsameSteuererklaerung;
+
+	private FinanzielleSituationTyp finanzielleSituationTyp;
 
 	public JaxFinanzielleSituationContainer getFinanzielleSituationContainerGS1() {
 		return finanzielleSituationContainerGS1;
@@ -87,6 +91,14 @@ public class JaxFinanzModel {
 
 	public void setEinkommensverschlechterungInfoContainer(JaxEinkommensverschlechterungInfoContainer einkommensverschlechterungInfoContainer) {
 		this.einkommensverschlechterungInfoContainer = einkommensverschlechterungInfoContainer;
+	}
+
+	public FinanzielleSituationTyp getFinanzielleSituationTyp() {
+		return finanzielleSituationTyp;
+	}
+
+	public void setFinanzielleSituationTyp(FinanzielleSituationTyp finanzielleSituationTyp) {
+		this.finanzielleSituationTyp = finanzielleSituationTyp;
 	}
 }
 

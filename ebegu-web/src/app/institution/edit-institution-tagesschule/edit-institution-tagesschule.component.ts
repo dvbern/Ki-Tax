@@ -491,14 +491,15 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
     }
 
     public schnittstelleInfosVisible(): boolean {
-        return this.assignedClients.length > 0;
+        return this.assignedClients?.length > 0;
     }
 
     public showSchnittstelleInfos(group: TSModulTagesschuleGroup): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             modulTagesschuleGroup: group,
-            institution: this.stammdaten.institution
+            institution: this.stammdaten.institution,
+            editMode: this.editMode
         };
         dialogConfig.panelClass = this.panelClass;
         this.dialog.open(InfoSchnittstelleDialogComponent, dialogConfig).afterClosed().subscribe(

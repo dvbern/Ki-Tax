@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
@@ -43,7 +43,9 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     @Input() private readonly gemeindeId: string;
     @Input() public editMode: boolean;
     @Input() public tageschuleEnabledForMandant: boolean;
+    @Input() public altGemeindeKontakt: boolean;
 
+    @Output() public readonly altGemeindeKontaktChange: EventEmitter<boolean> = new EventEmitter();
     public readonly CONSTANTS = CONSTANTS;
 
     public korrespondenzsprache: string;
@@ -117,5 +119,9 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
         const hasAngebot =
             stammdaten.gemeinde.angebotBG || stammdaten.gemeinde.angebotTS || stammdaten.gemeinde.angebotFI;
         this.showMessageKeinAngebotSelected = !hasAngebot;
+    }
+
+    public altGemeindeKontaktHasChange(newVal: boolean): void {
+        this.altGemeindeKontaktChange.emit(newVal);
     }
 }

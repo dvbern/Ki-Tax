@@ -16,7 +16,6 @@
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
-
     private _nettolohn: number;
     private _familienzulage: number;
     private _ersatzeinkommen: number;
@@ -25,6 +24,11 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
     private _schulden: number;
     private _geschaeftsgewinnBasisjahr: number;
     private _geleisteteAlimente: number;
+    private _steuerbaresEinkommen: number;
+    private _steuerbaresVermoegen: number;
+    private _abzuegeLiegenschaft: number;
+    private _geschaeftsverlust: number;
+    private _einkaeufeVorsorge: number;
 
     public constructor() {
         super();
@@ -92,6 +96,45 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
 
     public set geleisteteAlimente(value: number) {
         this._geleisteteAlimente = value;
+    }
+    public get steuerbaresEinkommen(): number {
+        return this._steuerbaresEinkommen;
+    }
+
+    public set steuerbaresEinkommen(value: number) {
+        this._steuerbaresEinkommen = value;
+    }
+
+    public get steuerbaresVermoegen(): number {
+        return this._steuerbaresVermoegen;
+    }
+
+    public set steuerbaresVermoegen(value: number) {
+        this._steuerbaresVermoegen = value;
+    }
+
+    public get abzuegeLiegenschaft(): number {
+        return this._abzuegeLiegenschaft;
+    }
+
+    public set abzuegeLiegenschaft(value: number) {
+        this._abzuegeLiegenschaft = value;
+    }
+
+    public get geschaeftsverlust(): number {
+        return this._geschaeftsverlust;
+    }
+
+    public set geschaeftsverlust(value: number) {
+        this._geschaeftsverlust = value;
+    }
+
+    public get einkaeufeVorsorge(): number {
+        return this._einkaeufeVorsorge;
+    }
+
+    public set einkaeufeVorsorge(value: number) {
+        this._einkaeufeVorsorge = value;
     }
 
 }

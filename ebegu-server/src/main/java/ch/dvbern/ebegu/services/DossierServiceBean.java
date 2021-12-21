@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -38,11 +37,13 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -82,6 +83,9 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 
 	@Inject
 	private GemeindeService gemeindeService;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@Nonnull
 	@Override
@@ -169,8 +173,16 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 
 	@Nonnull
 	@Override
-	public Collection<Dossier> getAllDossiers(boolean doAuthCheck) {
-		List<Dossier> dossiers = new ArrayList<>(criteriaQueryHelper.getAll(Dossier.class));
+	public Collection<Dossier> getAllDossiersForMandant(boolean doAuthCheck) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Dossier> query = cb.createQuery(Dossier.class);
+		Root<Dossier> root = query.from(Dossier.class);
+
+		Objects.requireNonNull(principalBean.getMandant());
+		Predicate mandantPredicate = cb.equal(root.get(Dossier_.fall).get(Fall_.mandant), principalBean.getMandant());
+		query.where(mandantPredicate);
+
+		List<Dossier> dossiers = persistence.getCriteriaResults(query);
 		if (doAuthCheck) {
 			authorizer.checkReadAuthorizationDossiers(dossiers);
 		}

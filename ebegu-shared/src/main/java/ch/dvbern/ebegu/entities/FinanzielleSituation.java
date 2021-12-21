@@ -57,6 +57,22 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@Column(nullable = true)
 	private BigDecimal geschaeftsgewinnBasisjahrMinus1;
 
+	@Nullable
+	@Column(nullable = true)
+	private Boolean quellenbesteuert;
+
+	@Nullable
+	@Column(nullable = true)
+	private Boolean gemeinsameStekVorjahr;
+
+	@Nullable
+	@Column(nullable = true)
+	private Boolean alleinigeStekVorjahr;
+
+	@Nullable
+	@Column(nullable = true)
+	private Boolean veranlagt;
+
 	public FinanzielleSituation() {
 	}
 
@@ -104,6 +120,42 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
 	}
 
+	@Nullable
+	public Boolean getQuellenbesteuert() {
+		return quellenbesteuert;
+	}
+
+	public void setQuellenbesteuert(@Nullable Boolean quellenbesteuert) {
+		this.quellenbesteuert = quellenbesteuert;
+	}
+
+	@Nullable
+	public Boolean getGemeinsameStekVorjahr() {
+		return gemeinsameStekVorjahr;
+	}
+
+	public void setGemeinsameStekVorjahr(@Nullable Boolean gemeinsameStekVorjahr) {
+		this.gemeinsameStekVorjahr = gemeinsameStekVorjahr;
+	}
+
+	@Nullable
+	public Boolean getAlleinigeStekVorjahr() {
+		return alleinigeStekVorjahr;
+	}
+
+	public void setAlleinigeStekVorjahr(@Nullable Boolean alleinigeStekVorjahr) {
+		this.alleinigeStekVorjahr = alleinigeStekVorjahr;
+	}
+
+	@Nullable
+	public Boolean getVeranlagt() {
+		return veranlagt;
+	}
+
+	public void setVeranlagt(@Nullable Boolean veranlagt) {
+		this.veranlagt = veranlagt;
+	}
+
 	@Nonnull
 	public FinanzielleSituation copyFinanzielleSituation(@Nonnull FinanzielleSituation target, @Nonnull AntragCopyType copyType) {
 		switch (copyType) {
@@ -115,6 +167,10 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
 			target.setGeschaeftsgewinnBasisjahrMinus2(this.getGeschaeftsgewinnBasisjahrMinus2());
 			target.setSteuerdatenZugriff(this.getSteuerdatenZugriff());
+			target.setGemeinsameStekVorjahr(this.getGemeinsameStekVorjahr());
+			target.setAlleinigeStekVorjahr(this.getAlleinigeStekVorjahr());
+			target.setQuellenbesteuert(this.quellenbesteuert);
+			target.setVeranlagt(this.getVeranlagt());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -143,6 +199,10 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			Objects.equals(getSteuererklaerungAusgefuellt(), otherFinSit.getSteuererklaerungAusgefuellt()) &&
 			Objects.equals(getSteuerdatenZugriff(), otherFinSit.getSteuerdatenZugriff()) &&
 			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus1(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus1()) &&
-			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus2(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus2());
+			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus2(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus2()) &&
+			Objects.equals(getAlleinigeStekVorjahr(), otherFinSit.getAlleinigeStekVorjahr()) &&
+			Objects.equals(getGemeinsameStekVorjahr(), otherFinSit.getGemeinsameStekVorjahr()) &&
+			Objects.equals(getQuellenbesteuert(), otherFinSit.getQuellenbesteuert()) &&
+			Objects.equals(getVeranlagt(), otherFinSit.getVeranlagt());
 	}
 }
