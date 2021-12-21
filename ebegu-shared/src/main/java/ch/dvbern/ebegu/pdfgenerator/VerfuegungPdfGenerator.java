@@ -159,6 +159,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		};
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public void createContent(
 		@Nonnull final Document document,
 		@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator) throws DocumentException {
