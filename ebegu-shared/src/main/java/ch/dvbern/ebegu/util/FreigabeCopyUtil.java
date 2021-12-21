@@ -140,6 +140,20 @@ public final class FreigabeCopyUtil {
 			copyAuszahlungsdaten(auszahlungsdatenGS, auszahlungsdatenJA);
 		}
 		familiensituationGS.setAuszahlungsdatenMahlzeiten(auszahlungsdatenGS);
+
+		Auszahlungsdaten auszahlungsdatenJAMZV = familiensituationJA.getAuszahlungsdatenInfoma();
+		Auszahlungsdaten auszahlungsdatenGSMZV = null;
+		if (auszahlungsdatenJAMZV != null) {
+			auszahlungsdatenGSMZV = new Auszahlungsdaten();
+			copyAuszahlungsdaten(auszahlungsdatenGSMZV, auszahlungsdatenJAMZV);
+		}
+		familiensituationGS.setAuszahlungsdatenInfoma(auszahlungsdatenGSMZV);
+
+		familiensituationGS.setAbweichendeZahlungsadresseInfoma(familiensituationJA.isAbweichendeZahlungsadresseInfoma());
+		familiensituationGS.setInfomaKreditorennummer(familiensituationJA.getInfomaKreditorennummer());
+		familiensituationGS.setInfomaBankcode(familiensituationJA.getInfomaBankcode());
+		familiensituationGS.setAuszahlungAnEltern(familiensituationJA.isAuszahlungAnEltern());
+
 	}
 
 	private static void copyAuszahlungsdaten(Auszahlungsdaten auszahlungsdatenGS, Auszahlungsdaten auszahlungsdatenJA) {

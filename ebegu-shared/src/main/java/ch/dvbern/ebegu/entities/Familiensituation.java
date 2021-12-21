@@ -291,6 +291,13 @@ public class Familiensituation extends AbstractMutableEntity {
 				target.setAuszahlungsdatenMahlzeiten(this.getAuszahlungsdatenMahlzeiten().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
 			target.setAbweichendeZahlungsadresseMahlzeiten(this.isAbweichendeZahlungsadresseMahlzeiten());
+			if (this.getAuszahlungsdatenInfoma() != null) {
+				target.setAuszahlungsdatenInfoma(this.getAuszahlungsdatenInfoma().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
+			}
+			target.setAbweichendeZahlungsadresseInfoma(this.isAbweichendeZahlungsadresseInfoma());
+			target.setInfomaKreditorennummer(this.getInfomaKreditorennummer());
+			target.setInfomaBankcode(this.getInfomaBankcode());
+			target.setAuszahlungAnEltern(this.isAuszahlungAnEltern());
 			break;
 		case MUTATION_NEUES_DOSSIER:
 			target.setVerguenstigungGewuenscht(this.getVerguenstigungGewuenscht());
@@ -304,6 +311,12 @@ public class Familiensituation extends AbstractMutableEntity {
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
+			if (this.getAuszahlungsdatenInfoma() != null) {
+				target.setAuszahlungsdatenInfoma(this.getAuszahlungsdatenInfoma().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
+			}
+			target.setAbweichendeZahlungsadresseInfoma(this.isAbweichendeZahlungsadresseInfoma());
+			target.setInfomaKreditorennummer(this.getInfomaKreditorennummer());
+			target.setInfomaBankcode(this.getInfomaBankcode());
 			break;
 		}
 		return target;
