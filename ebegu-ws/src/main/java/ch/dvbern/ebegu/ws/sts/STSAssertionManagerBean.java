@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ch.dvbern.ebegu.ws.ewk.sts;
+package ch.dvbern.ebegu.ws.sts;
 
 import java.time.LocalDateTime;
 
@@ -56,30 +56,30 @@ public class STSAssertionManagerBean implements STSAssertionManager {
 
 
 	@Override
-	public SOAPElement getValidSTSAssertionForPersonensuche() throws STSZertifikatServiceException {
+	public SOAPElement getValidSTSAssertionForPersonensuche(WebserviceType webserviceType) throws STSZertifikatServiceException {
 		//check assertion present
 		if (currentAssertionElement == null) {
-			issueSTSSamlAssertion();
+			issueSTSSamlAssertion(webserviceType);
 			// assertion should  be set by WSSSecurityAssertionExtractionHandler
 
 		} else if(!isAssertionPeriodValid()) {
-			renewAssertion();
+			renewAssertion(webserviceType);
 		}
 
 		return currentAssertionElement;
 	}
 
 	@Override
-	public SOAPElement forceRenewalOfCurrentAssertion() throws STSZertifikatServiceException {
-		renewAssertion();
+	public SOAPElement forceRenewalOfCurrentAssertion(WebserviceType webserviceType) throws STSZertifikatServiceException {
+		renewAssertion(webserviceType);
 		return currentAssertionElement;
 	}
 
 	@Override
-	public SOAPElement forceReinitializationOfCurrentAssertion() throws STSZertifikatServiceException {
+	public SOAPElement forceReinitializationOfCurrentAssertion(WebserviceType webserviceType) throws STSZertifikatServiceException {
 		//noinspection ConstantConditions
 		this.currentAssertionElement = null;
-		return getValidSTSAssertionForPersonensuche();
+		return getValidSTSAssertionForPersonensuche(webserviceType);
 
 	}
 
@@ -99,14 +99,14 @@ public class STSAssertionManagerBean implements STSAssertionManager {
 		return now.isAfter(this.notBefore.minusSeconds(GRACE_PERIOD)) && now.isBefore(this.notOnOrAfter);
 	}
 
-	private void issueSTSSamlAssertion() throws STSZertifikatServiceException {
+	private void issueSTSSamlAssertion(WebserviceType webserviceType) throws STSZertifikatServiceException {
 		//this service will call our handleUpdateAssertion method. This is not very nice but allows us to use
 		//the generated service with a response handler to extract the smal1 assertion as is
-		stsWebService.getSamlAssertionForBatchuser();
+		stsWebService.getSamlAssertionForBatchuser(webserviceType);
 
 	}
 
-	private void renewAssertion() throws STSZertifikatServiceException {
+	private void renewAssertion(WebserviceType webserviceType) throws STSZertifikatServiceException {
 		Validate.notNull(currentAssertionElement, "Managed current Assertion must be set if renewAssertion is triggerd");
 		Validate.notNull(renewalToken, "Managed current renewal Token must be set if renewAssertion is triggerd");
 
@@ -117,7 +117,7 @@ public class STSAssertionManagerBean implements STSAssertionManager {
 			handleUpdatedAssertion(stsAssertionExtractionResult);
 		} else {
 			LOGGER.info("Assertion can not be renewd anymore. Trigger a reinitialization");
-			forceReinitializationOfCurrentAssertion(); // should use renewal service
+			forceReinitializationOfCurrentAssertion(webserviceType); // should use renewal service
 		}
 	}
 }

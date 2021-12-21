@@ -50,7 +50,7 @@ import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.errors.PersonenSucheServiceBusinessException;
 import ch.dvbern.ebegu.errors.PersonenSucheServiceException;
 import ch.dvbern.ebegu.services.PersonenSucheAuditLogService;
-import ch.dvbern.ebegu.ws.ewk.sts.WSSSecurityAssertionOutboundHandler;
+import ch.dvbern.ebegu.ws.ewk.sts.WSSSecurityGeresAssertionOutboundHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
@@ -79,7 +79,7 @@ public class GeresWebService implements IGeresWebService {
 	private EbeguConfiguration config;
 
 	@Inject
-	private WSSSecurityAssertionOutboundHandler wssUsernameTokenSecurityHandler;
+	private WSSSecurityGeresAssertionOutboundHandler wssUsernameTokenSecurityHandler;
 
 	@Inject
 	private PersonenSucheAuditLogService personenSucheAuditLogService;

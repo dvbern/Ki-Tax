@@ -37,7 +37,7 @@ import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.SteuerDatenR
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.neskovanp.SteuerdatenResponse;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
-import ch.dvbern.ebegu.ws.ewk.sts.WSSSecurityAssertionOutboundHandler;
+import ch.dvbern.ebegu.ws.neskovanp.sts.WSSSecurityKibonAnfrageAssertionOutboundHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ public class KibonAnfrageService implements IKibonAnfrageService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(KibonAnfrageService.class.getSimpleName());
 
 	@Inject
-	private WSSSecurityAssertionOutboundHandler wssUsernameTokenSecurityHandler;
+	private WSSSecurityKibonAnfrageAssertionOutboundHandler wssUsernameTokenSecurityHandler;
 
 	@Inject
 	private EbeguConfiguration config;

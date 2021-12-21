@@ -344,4 +344,16 @@ public interface EbeguConfiguration {
 	Boolean getMultimandantEnabled();
 
 	String getKibonAnfrageEndpoint();
+
+	String getEbeguKibonAnfrageSTSPrivateKeyAlias();
+
+	String getEbeguKibonAnfrageSTSKeystorePW();
+
+	String getEbeguKibonAnfrageSTSKeystorePath();
+
+	String getEbeguKibonAnfrageSTSPrivateKeyPW();
+
+	String getEbeguKibonAnfrageSTSEndpoint();
+
+	String getEbeguKibonAnfrageSTSWsdl();
 }

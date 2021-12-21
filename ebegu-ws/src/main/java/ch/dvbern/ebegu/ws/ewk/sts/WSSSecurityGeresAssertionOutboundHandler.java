@@ -32,6 +32,8 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
+import ch.dvbern.ebegu.ws.sts.STSAssertionManager;
+import ch.dvbern.ebegu.ws.sts.WebserviceType;
 import ch.dvbern.ebegu.ws.tools.WSUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,9 +41,9 @@ import org.w3c.dom.Node;
 
 @Stateless
 @LocalBean
-public class WSSSecurityAssertionOutboundHandler implements SOAPHandler<SOAPMessageContext> {
+public class WSSSecurityGeresAssertionOutboundHandler implements SOAPHandler<SOAPMessageContext> {
 	private static final String WSSE_NS_URI = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
-	private static final Logger LOGGER = LoggerFactory.getLogger(WSSSecurityAssertionOutboundHandler.class.getSimpleName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(WSSSecurityGeresAssertionOutboundHandler.class.getSimpleName());
 
 	@Inject
 	private STSAssertionManager stsAssertionManager;
@@ -64,7 +66,7 @@ public class WSSSecurityAssertionOutboundHandler implements SOAPHandler<SOAPMess
 
 				SOAPHeader header = envelope.addHeader();
 
-				Node assertionNode = stsAssertionManager.getValidSTSAssertionForPersonensuche();
+				Node assertionNode = stsAssertionManager.getValidSTSAssertionForPersonensuche(WebserviceType.GERES);
 
 				Node importedAssertionNode = securityElem.getOwnerDocument().importNode(assertionNode, true);
 				if(importedAssertionNode.getNodeType() ==  Node.DOCUMENT_NODE){
