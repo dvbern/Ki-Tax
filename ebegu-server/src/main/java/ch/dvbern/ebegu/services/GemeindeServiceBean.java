@@ -56,7 +56,6 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
-import ch.dvbern.ebegu.enums.SequenceType;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -84,9 +83,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
-
-	@Inject
-	private SequenceService sequenceService;
 
 	@Inject
 	private Authorizer authorizer;
@@ -163,9 +159,13 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	private long getNextGemeindeNummer() {
-		Mandant mandant = requireNonNull(principalBean.getMandant());
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Long> query = cb.createQuery(Long.class);
+		final Root<Gemeinde> root = query.from(Gemeinde.class);
 
-		return sequenceService.createNumberTransactional(SequenceType.GEMEINDE_NUMMER, mandant);
+		query.select(cb.max(root.get(Gemeinde_.gemeindeNummer)));
+
+		return persistence.getCriteriaSingleResult(query) + 1;
 	}
 
 	private void initGemeindeNummerAndMandant(@Nonnull Gemeinde gemeinde) {
@@ -680,5 +680,17 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicatesToUse));
 		return persistence.getCriteriaResults(query);
+	}
+
+	@Override
+	public Optional<Gemeinde> getGemeindeByGemeindeNummer(int gemeindeNummer) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gemeinde> query = cb.createQuery(Gemeinde.class);
+		Root<Gemeinde> root = query.from(Gemeinde.class);
+
+		Predicate gemeindeNummerPredicate = cb.equal(root.get(Gemeinde_.gemeindeNummer), gemeindeNummer);
+		query.where(gemeindeNummerPredicate);
+
+		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
 	}
 }

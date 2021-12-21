@@ -20,8 +20,11 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.TokenLifespan;
@@ -31,6 +34,7 @@ import ch.dvbern.ebegu.util.UploadFileInfo;
  * Entitaet zum Speichern von DownloadFile in der Datenbank.
  */
 @Entity
+@EntityListeners(DownloadFileListener.class)
 public class DownloadFile extends FileMetadata {
 
 	private static final long serialVersionUID = 5960979521430438226L;
@@ -45,6 +49,12 @@ public class DownloadFile extends FileMetadata {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, updatable = false)
 	private TokenLifespan  lifespan = TokenLifespan.SHORT;
+
+
+	// Wert darf nicht leer sein, aber kein @NotNull, da Wert erst im @PrePersist gesetzt
+	@ManyToOne(optional = false)
+	@JoinColumn(name="benutzer_id", nullable = false)
+	private Benutzer benutzer;
 
 	public DownloadFile() {
 		this.accessToken = UUID.randomUUID().toString();
@@ -78,5 +88,13 @@ public class DownloadFile extends FileMetadata {
 
 	public void setLifespan(TokenLifespan lifespan) {
 		this.lifespan = lifespan;
+	}
+
+	public Benutzer getBenutzer() {
+		return benutzer;
+	}
+
+	public void setBenutzer(Benutzer benutzer) {
+		this.benutzer = benutzer;
 	}
 }

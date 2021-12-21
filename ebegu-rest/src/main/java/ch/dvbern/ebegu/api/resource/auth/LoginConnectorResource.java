@@ -33,7 +33,6 @@ import ch.dvbern.ebegu.api.dtos.JaxBenutzerResponseWrapper;
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthAccessElement;
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthorisierterBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxExternalBenutzer;
-import ch.dvbern.ebegu.api.resource.MandantResource;
 import ch.dvbern.ebegu.api.util.version.VersionInfoBean;
 import ch.dvbern.ebegu.authentication.AuthAccessElement;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
@@ -309,7 +308,8 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		checkLocalAccessOnly();
 
 		AuthorisierterBenutzer authUser = convertExternalLogin(jaxExtAuthUser);
-		AuthAccessElement loginDataForCookie = this.authService.createLoginFromIAM(authUser);
+		AuthAccessElement loginDataForCookie = this.authService.createLoginFromIAM(authUser,
+				mandantService.getMandantBern());
 		return convertToJaxExternalAuthAccessElement(loginDataForCookie);
 	}
 

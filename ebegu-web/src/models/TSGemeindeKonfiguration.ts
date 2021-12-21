@@ -65,6 +65,7 @@ export class TSGemeindeKonfiguration {
     public editMode: boolean; // only on client
     public konfigurationen: TSEinstellung[];
     public ferieninselStammdaten: TSFerieninselStammdaten[];
+    public gemeindespezifischeBGKonfigurationen: TSEinstellung[] = [];
 
     /**
      * Wir muessen TS Anmeldungen nehmen ab das TagesschuleAktivierungsdatum

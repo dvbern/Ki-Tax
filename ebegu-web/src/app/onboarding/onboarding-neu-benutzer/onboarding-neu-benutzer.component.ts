@@ -33,7 +33,7 @@ import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropert
 export class OnboardingNeuBenutzerComponent {
 
     @Input() public nextState: string = 'onboarding.be-login';
-    @Input() public isTSAngebotEnabled: boolean;
+    public isTSAngebotEnabled: boolean;
 
     public gemeinden$: Observable<TSGemeinde[]>;
     public gemeindenBG$: Observable<TSGemeinde[]>;

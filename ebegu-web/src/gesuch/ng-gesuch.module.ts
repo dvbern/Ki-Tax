@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {SharedModule} from '../app/shared/shared.module';
@@ -23,6 +23,7 @@ import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
 import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
+import {ResultatComponent} from './component/finanzielleSituation/luzern/resultat/resultat.component';
 import {ResultateComponent} from './component/finanzielleSituation/luzern/resultate/resultate.component';
 import {SelbstdeklarationComponent} from './component/finanzielleSituation/luzern/selbstdeklaration/selbstdeklaration.component';
 import {VeranlagungComponent} from './component/finanzielleSituation/luzern/veranlagung/veranlagung.component';
@@ -38,6 +39,7 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
         SharedModule,
         FallToolbarModule
     ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
     declarations: [
         DvSwitchComponent,
         BetreuungOverrideWarningComponent,
@@ -49,7 +51,8 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
         AngabenGesuchsteller2Component,
         ResultateComponent,
         SelbstdeklarationComponent,
-        VeranlagungComponent
+        VeranlagungComponent,
+        ResultatComponent,
     ],
     exports: [
         DvSwitchComponent,

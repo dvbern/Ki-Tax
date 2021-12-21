@@ -139,6 +139,22 @@ public class EinstellungResource {
 		return converter.einstellungToJAX(einstellungService.findEinstellung(einstellungKey, gemeinde, gp));
 	}
 
+	@ApiOperation(value = "Get a specific kiBon parameter by key", response = JaxEinstellung.class)
+	@Nullable
+	@GET
+	@Path("/key/{key}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public List<JaxEinstellung> findEinstellung(@Nonnull @PathParam("key") String key) {
+
+		EinstellungKey einstellungKey = EinstellungKey.valueOf(key);
+		List<Einstellung> einstellungen = einstellungService.findEinstellungen(einstellungKey, null);
+		return einstellungen.stream()
+			.map(einstellung -> converter.einstellungToJAX(einstellung))
+			.collect(Collectors.toList());
+	}
+
 	@ApiOperation(value = "Get all kiBon parameter for a specific Gesuchsperiode. The id of the gesuchsperiode is " +
 		"passed  as a pathParam", responseContainer = "List", response = JaxEinstellung.class)
 	@Nonnull

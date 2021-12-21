@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.services;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -25,6 +26,9 @@ import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.ws.rs.core.Cookie;
 
 import ch.dvbern.ebegu.entities.Mandant;
@@ -84,5 +88,15 @@ public class MandantServiceBean extends AbstractBaseService implements MandantSe
 	public Mandant getMandantBern() {
 		return findMandantByName("Kanton Bern").orElseThrow(()
 			-> new EbeguRuntimeException("getDefaultMandant", "Kanton Bern Mandant not found"));
+	}
+
+	@Nonnull
+	@Override
+	public Collection<Mandant> getAll() {
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery<Mandant> query = cb.createQuery(Mandant.class);
+		Root<Mandant> root = query.from(Mandant.class);
+		query.select(root);
+		return persistence.getCriteriaResults(query);
 	}
 }

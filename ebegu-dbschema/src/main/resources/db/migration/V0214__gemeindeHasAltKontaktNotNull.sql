@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+update gemeinde_stammdaten set gemeinde_stammdaten.has_alt_gemeinde_kontakt = false
+where gemeinde_stammdaten.has_alt_gemeinde_kontakt is not true;
 
-ALTER TABLE modul_tagesschule_group ADD COLUMN IF NOT EXISTS fremd_id VARCHAR(255);
-ALTER TABLE modul_tagesschule_group_aud ADD COLUMN IF NOT EXISTS fremd_id VARCHAR(255);
-
-ALTER TABLE modul_tagesschule_group	ADD CONSTRAINT UK_fremd_id_gesuschperiode_institution UNIQUE (fremd_id, einstellungen_tagesschule_id);
+ALTER TABLE gemeinde_stammdaten
+MODIFY has_alt_gemeinde_kontakt BIT(1) NOT NULL DEFAULT false;

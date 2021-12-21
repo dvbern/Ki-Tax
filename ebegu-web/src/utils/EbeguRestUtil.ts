@@ -1919,6 +1919,10 @@ export class EbeguRestUtil {
                 finanzielleSituationResultateFromServer.abzuegeBeiderGesuchsteller;
             finanzielleSituationResultateDTO.massgebendesEinkVorAbzFamGr =
                 finanzielleSituationResultateFromServer.massgebendesEinkVorAbzFamGr;
+            finanzielleSituationResultateDTO.massgebendesEinkVorAbzFamGrGS1 =
+                finanzielleSituationResultateFromServer.massgebendesEinkVorAbzFamGrGS1;
+            finanzielleSituationResultateDTO.massgebendesEinkVorAbzFamGrGS2 =
+                finanzielleSituationResultateFromServer.massgebendesEinkVorAbzFamGrGS2;
             return finanzielleSituationResultateDTO;
         }
         return undefined;
@@ -3302,6 +3306,7 @@ export class EbeguRestUtil {
                         finSitModel.einkommensverschlechterungInfoContainer);
             }
             restFinSitModel.gemeinsameSteuererklaerung = finSitModel.gemeinsameSteuererklaerung;
+            restFinSitModel.finanzielleSituationTyp = finSitModel.finanzielleSituationTyp;
             return restFinSitModel;
         }
         return undefined;

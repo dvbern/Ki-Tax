@@ -137,7 +137,15 @@ public class ApplicationPropertyResource {
 	@Path("/public/background")
 	@PermitAll
 	public JaxApplicationProperties getBackgroundColor(@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
-		var mandant = mandantService.findMandantByCookie(mandantCookie);
+		// getBackgroundColor muss auch erlaubt sein, wenn kein Mandant gesetzt ist. Wir brauchen dies auf der Verteiler-
+		// seite der Mandanten, um herauszufinden, ob die Mandantenfähigkeit überhaupt aktiv ist
+		Mandant mandant;
+		if (mandantCookie == null) {
+			mandant = mandantService.getMandantBern();
+		} else {
+			mandant = mandantService.findMandantByCookie(mandantCookie);
+		}
+
 		ApplicationProperty prop = getBackgroundColorProperty(mandant);
 		return converter.applicationPropertyToJAX(prop);
 	}
