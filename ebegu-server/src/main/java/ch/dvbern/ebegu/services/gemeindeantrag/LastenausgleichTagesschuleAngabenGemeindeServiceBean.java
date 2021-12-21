@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -75,8 +76,8 @@ import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
-import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.services.MailService;
+import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
@@ -215,20 +216,20 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 	@Nonnull
 	@Override
-	public void deleteLastenausgleichTagesschuleAngabenGemeindeContainer(
+	public void deleteAntragIfExists(
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull Gesuchsperiode gesuchsperiode) {
 
 		if (!configuration.getIsDevmode()) {
 			throw new EbeguRuntimeException(
-				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer",
-				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer ist nur im Devmode möglich");
+				"deleteAntragIfExists",
+				"deleteAntragIfExists ist nur im Devmode möglich");
 		}
 
 		if (!principal.isCallerInRole(UserRole.SUPER_ADMIN)) {
 			throw new EbeguRuntimeException(
-				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer",
-				"deleteLastenausgleichTagesschuleAngabenGemeindeContainer ist nur als SuperAdmin möglich");
+				"deleteAntragIfExists",
+				"deleteAntragIfExists ist nur als SuperAdmin möglich");
 		}
 
 		findLastenausgleichTagesschuleAngabenGemeindeContainer(
@@ -236,6 +237,28 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			gesuchsperiode).ifPresent(container -> {
 			deleteHistoryForContainer(container);
 			persistence.remove(container);
+		});
+	}
+
+	@Nonnull
+	@Override
+	public void deleteAntragIfExistsAndIsNotAbgeschlossen(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
+
+		if (!principal.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
+			throw new EbeguRuntimeException(
+				"deleteAntragIfExistsAndIsNotAbgeschlossen",
+					"deleteAntragIfExistsAndIsNotAbgeschlossen ist nur als SuperAdmin und Mandant möglich");
+		}
+
+		findLastenausgleichTagesschuleAngabenGemeindeContainer(
+				gemeinde,
+				gesuchsperiode)
+				.filter(antrag -> !antrag.isAntragAbgeschlossen())
+				.ifPresent(container -> {
+					deleteHistoryForContainer(container);
+					persistence.remove(container);
 		});
 	}
 
@@ -331,14 +354,21 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root =
 			query.from(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
 
+		var predicates = new ArrayList<Predicate>();
+
+		Objects.requireNonNull(principal.getMandant());
+		Predicate mandantPredicate = createMandantPredicate(cb, root);
+		predicates.add(mandantPredicate);
+
 		if (!principal.isCallerInAnyOfRole(
 			UserRole.SUPER_ADMIN,
 			UserRole.ADMIN_MANDANT,
 			UserRole.SACHBEARBEITER_MANDANT)) {
 			Predicate gemeindeIn =
 				root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde).in(gemeinden);
-			query.where(gemeindeIn);
+			predicates.add(gemeindeIn);
 		}
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
 		return persistence.getCriteriaResults(query);
 	}
@@ -367,6 +397,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			query.from(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
 
 		Set<Predicate> predicates = new HashSet<>();
+
+		Predicate mandantPredicate = createMandantPredicate(cb, root);
+		predicates.add(mandantPredicate);
 
 		if (!principal.isCallerInAnyOfRole(
 			UserRole.SUPER_ADMIN,
@@ -416,6 +449,19 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		});
 
 		return containerList;
+	}
+
+	private Predicate createMandantPredicate(
+			CriteriaBuilder cb,
+			Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root) {
+		Mandant mandant = principal.getMandant();
+		if (mandant == null) {
+			throw new EbeguRuntimeException("LastenausgleichTagesschuleAngabenGemeindeServiceBean", "mandant not found for principal " + principal.getPrincipal().getName());
+		}
+		return cb.equal(
+				root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde)
+						.get(Gemeinde_.mandant), mandant
+		);
 	}
 
 	private Predicate createStatusPredicate(
@@ -627,7 +673,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	}
 
 	@Override
-	public void deleteLastenausgleicheTagesschule(@Nonnull Gesuchsperiode gesuchsperiode) {
+	public void deleteLastenausgleicheTagesschuleForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		List<LastenausgleichTagesschuleAngabenGemeindeContainer> containerList =
 			getLastenausgleicheTagesschulen(null, gesuchsperiode.getGesuchsperiodeString(), null, null);
 		if (containerList == null) {
@@ -734,15 +780,19 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 				if (spracheTyp == KorrespondenzSpracheTyp.FR) {
 					betreuungsstundenForAutoZweitpruefung =
 						applicationPropertyService.findApplicationPropertyAsBigDecimal(
-							ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR);
+							ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR,
+								container.getGemeinde().getMandant());
 					anteilGemeindenForZweitpruefung = applicationPropertyService.findApplicationPropertyAsBigDecimal(
-						ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_FR);
+						ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_FR,
+							container.getGemeinde().getMandant());
 				} else {
 					betreuungsstundenForAutoZweitpruefung =
 						applicationPropertyService.findApplicationPropertyAsBigDecimal(
-							ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE);
+							ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE,
+								container.getGemeinde().getMandant());
 					anteilGemeindenForZweitpruefung = applicationPropertyService.findApplicationPropertyAsBigDecimal(
-						ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE);
+						ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE,
+							container.getGemeinde().getMandant());
 				}
 
 				BigDecimal randomNumber = new BigDecimal(Math.random(), MathContext.DECIMAL64);

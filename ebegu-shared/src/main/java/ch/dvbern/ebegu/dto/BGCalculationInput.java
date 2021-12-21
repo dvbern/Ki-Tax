@@ -164,11 +164,7 @@ public class BGCalculationInput {
 
 	private BigDecimal tarifNebenmahlzeit = BigDecimal.ZERO;
 
-	private BigDecimal verguenstigungMahlzeitenTotal = BigDecimal.ZERO;
-
-	// Wir müssen beim Rechner für die MZV wissen, ob es sich um eine Einkommensverminderung handelt
-	// um zu wissen, ob die Pensen heruntergerechnet werden müssen
-	private boolean pensenBereitsGekuerzt = false;
+	private boolean verguenstigungMahlzeitenBeantragt = false;
 
 	private int minimalErforderlichesPensum;
 
@@ -201,7 +197,7 @@ public class BGCalculationInput {
 		this.anzahlNebenmahlzeiten = toCopy.anzahlNebenmahlzeiten;
 		this.tarifHauptmahlzeit = toCopy.tarifHauptmahlzeit;
 		this.tarifNebenmahlzeit = toCopy.tarifNebenmahlzeit;
-		this.verguenstigungMahlzeitenTotal = toCopy.verguenstigungMahlzeitenTotal;
+		this.verguenstigungMahlzeitenBeantragt = toCopy.verguenstigungMahlzeitenBeantragt;
 		this.hasSecondGesuchstellerForFinanzielleSituation = toCopy.hasSecondGesuchstellerForFinanzielleSituation;
 		this.ekv1Alleine = toCopy.ekv1Alleine;
 		this.ekv1ZuZweit = toCopy.ekv1ZuZweit;
@@ -228,7 +224,6 @@ public class BGCalculationInput {
 		this.betreuungInGemeinde = toCopy.betreuungInGemeinde;
 		this.ruleValidity = toCopy.ruleValidity;
 		this.pensumUnit = toCopy.pensumUnit;
-		this.pensenBereitsGekuerzt = toCopy.pensenBereitsGekuerzt;
 		this.minimalErforderlichesPensum = toCopy.minimalErforderlichesPensum;
 		this.rueckwirkendReduziertesPensumRest = toCopy.rueckwirkendReduziertesPensumRest;
 	}
@@ -655,12 +650,12 @@ public class BGCalculationInput {
 		this.tarifNebenmahlzeit = tarifNebenmahlzeit;
 	}
 
-	public BigDecimal getVerguenstigungMahlzeitenTotal() {
-		return verguenstigungMahlzeitenTotal;
+	public boolean getVerguenstigungMahlzeitenBeantragt() {
+		return verguenstigungMahlzeitenBeantragt;
 	}
 
-	public void setVerguenstigungMahlzeitenTotal(BigDecimal verguenstigungMahlzeitenTotal) {
-		this.verguenstigungMahlzeitenTotal = verguenstigungMahlzeitenTotal;
+	public void setVerguenstigungMahlzeitenBeantragt(boolean verguenstigungMahlzeitenBeantragt) {
+		this.verguenstigungMahlzeitenBeantragt = verguenstigungMahlzeitenBeantragt;
 	}
 
 	@Override
@@ -747,15 +742,7 @@ public class BGCalculationInput {
 		}
 		this.setTarifNebenmahlzeit(newTarifNebenmahlzeit);
 
-		BigDecimal newVerguenstigungMahlzeit = BigDecimal.ZERO;
-		if (this.getVerguenstigungMahlzeitenTotal() != null) {
-			newVerguenstigungMahlzeit = newVerguenstigungMahlzeit.add(this.getVerguenstigungMahlzeitenTotal());
-		}
-		if (other.getVerguenstigungMahlzeitenTotal() != null) {
-			newVerguenstigungMahlzeit = newVerguenstigungMahlzeit.add(other.getVerguenstigungMahlzeitenTotal());
-		}
-		this.setVerguenstigungMahlzeitenTotal(newVerguenstigungMahlzeit);
-
+		this.setVerguenstigungMahlzeitenBeantragt(this.verguenstigungMahlzeitenBeantragt || other.verguenstigungMahlzeitenBeantragt);
 
 		this.getTaetigkeiten().addAll(other.getTaetigkeiten());
 		this.setWohnsitzNichtInGemeindeGS1(this.isWohnsitzNichtInGemeindeGS1() && other.isWohnsitzNichtInGemeindeGS1());
@@ -895,7 +882,7 @@ public class BGCalculationInput {
 			einschulungTyp == other.einschulungTyp &&
 			betreuungsangebotTyp == other.betreuungsangebotTyp &&
 			MathUtil.isSame(monatlicheBetreuungskosten, other.monatlicheBetreuungskosten) &&
-			MathUtil.isSame(verguenstigungMahlzeitenTotal, other.verguenstigungMahlzeitenTotal) &&
+				verguenstigungMahlzeitenBeantragt == other.verguenstigungMahlzeitenBeantragt &&
 			MathUtil.isSame(tarifHauptmahlzeit, other.tarifHauptmahlzeit) &&
 			MathUtil.isSame(tarifNebenmahlzeit, other.tarifNebenmahlzeit) &&
 			MathUtil.isSame(anzahlHauptmahlzeiten, other.anzahlHauptmahlzeiten) &&
@@ -924,7 +911,7 @@ public class BGCalculationInput {
 			einschulungTyp == that.einschulungTyp &&
 			betreuungsangebotTyp == that.betreuungsangebotTyp &&
 			MathUtil.isSame(monatlicheBetreuungskosten, that.monatlicheBetreuungskosten) &&
-			MathUtil.isSame(verguenstigungMahlzeitenTotal, that.verguenstigungMahlzeitenTotal) &&
+			verguenstigungMahlzeitenBeantragt == that.verguenstigungMahlzeitenBeantragt &&
 			// Zusätzliche Felder aus Result
 			MathUtil.isSame(this.betreuungspensumProzent, that.betreuungspensumProzent) &&
 			this.anspruchspensumProzent == that.anspruchspensumProzent &&
@@ -935,7 +922,8 @@ public class BGCalculationInput {
 			this.besondereBeduerfnisseBestaetigt == that.besondereBeduerfnisseBestaetigt &&
 			this.minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
 			this.tsInputMitBetreuung.isSame(that.tsInputMitBetreuung) &&
-			this.tsInputOhneBetreuung.isSame(that.tsInputOhneBetreuung);
+			this.tsInputOhneBetreuung.isSame(that.tsInputOhneBetreuung) &&
+			this.sozialhilfeempfaenger == that.sozialhilfeempfaenger;
 	}
 
 	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {
@@ -979,14 +967,6 @@ public class BGCalculationInput {
 		int anspruchVorRegel = getAnspruchspensumProzent();
 		setAnspruchspensumProzent(0);
 		setAnspruchspensumRest(anspruchVorRegel);
-	}
-
-	public boolean isPensenBereitsGekuerzt() {
-		return pensenBereitsGekuerzt;
-	}
-
-	public void setPensenBereitsGekuerzt(boolean pensenBereitsGekuerzt) {
-		this.pensenBereitsGekuerzt = pensenBereitsGekuerzt;
 	}
 
 	public boolean isSameVerfuegteMahlzeitenVerguenstigung() {

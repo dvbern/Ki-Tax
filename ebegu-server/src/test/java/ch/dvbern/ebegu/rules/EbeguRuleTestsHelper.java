@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
@@ -48,6 +49,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION;
@@ -166,33 +168,39 @@ public final class EbeguRuleTestsHelper {
 
 	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung, @Nonnull Map<EinstellungKey, Einstellung> einstellungenRules, @Nonnull Map<EinstellungKey, Einstellung> einstellungenAbschlussRules) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
 		BetreuungsgutscheinExecutor executorWithSpecificAbschlussRules = new BetreuungsgutscheinExecutor(isDebug, einstellungenAbschlussRules);
 		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungenRules, executorWithSpecificAbschlussRules);
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung, @Nonnull Map<EinstellungKey, Einstellung> einstellungenAbschlussRules, boolean doMonatsstueckelung) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
 		BetreuungsgutscheinExecutor executorWithSpecificAbschlussRules = new BetreuungsgutscheinExecutor(isDebug, einstellungenAbschlussRules);
 		return calculateAllRules(betreuung, einstellungenGemaessAsiv, initialenRestanspruchAbschnitte, executorWithSpecificAbschlussRules, doMonatsstueckelung);
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung, @Nonnull Map<EinstellungKey, Einstellung> einstellungenRules) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
 		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungenRules, executor);
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
 		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungenGemaessAsiv, executor);
+	}
+
+	public static List<VerfuegungZeitabschnitt> calculateWithCustomEinstellungen(AbstractPlatz betreuung, Map<EinstellungKey, Einstellung> einstellungMap) {
+		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
+		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungMap, executor);
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculateInklAllgemeineRegeln(Betreuung betreuung) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
 		return calculateInklAllgemeineRegeln(betreuung, initialenRestanspruchAbschnitte);
 	}
 
@@ -202,7 +210,7 @@ public final class EbeguRuleTestsHelper {
 	 */
 	public static List<VerfuegungZeitabschnitt> calculateWithRemainingRestanspruch(Betreuung betreuung, int existingRestanspruch) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : initialenRestanspruchAbschnitte) {
 			verfuegungZeitabschnitt.setAnspruchspensumRestForAsivAndGemeinde(existingRestanspruch);
 		}
@@ -274,11 +282,12 @@ public final class EbeguRuleTestsHelper {
 		einstellungenMap.addEinstellung(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN, "70000", gesuchsperiode);
 		einstellungenMap.addEinstellung(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_MAHLZEIT, "0", gesuchsperiode);
 		einstellungenMap.addEinstellung(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_MAHLZEIT, "2", gesuchsperiode);
-		// FJKV
+		// FKJV
 		einstellungenMap.addEinstellung(FKJV_PAUSCHALE_BEI_ANSPRUCH, "false", gesuchsperiode);
 		einstellungenMap.addEinstellung(FKJV_PAUSCHALE_RUECKWIRKEND, "false", gesuchsperiode);
 		einstellungenMap.addEinstellung(FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF, "null", gesuchsperiode);
 		einstellungenMap.addEinstellung(FKJV_EINGEWOEHNUNG, "false", gesuchsperiode);
+		einstellungenMap.addEinstellung(ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,"false", gesuchsperiode);
 		einstellungenMap.addEinstellung(FJKV_ANSPRUCH_MONATSWEISE, "false", gesuchsperiode);
 
 		return einstellungenMap.getEinstellungen();

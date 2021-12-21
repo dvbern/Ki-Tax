@@ -69,6 +69,7 @@ import org.junit.Before;
 import static ch.dvbern.ebegu.testfaelle.AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA;
 import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Superklasse für BG-Rechner-Tests
@@ -196,6 +197,7 @@ public abstract class AbstractBGRechnerTest {
 		dto.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(MathUtil.DEFAULT.from(6.11));
 		dto.setMinTarifTagesschule(MathUtil.DEFAULT.from(0.78));
 		dto.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinEnabled(false);
+		dto.getMahlzeitenverguenstigungParameter().setEnabled(false);
 		return dto;
 	}
 
@@ -224,6 +226,7 @@ public abstract class AbstractBGRechnerTest {
 		parameterDTO.setMinTarifTagesschule(MathUtil.DEFAULT.from(0.78));
 		parameterDTO.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinEnabled(false);
 		parameterDTO.getGemeindeParameter().setGemeindeZusaetzlicherBabyGutscheinEnabled(false);
+		parameterDTO.getMahlzeitenverguenstigungParameter().setEnabled(false);
 		return parameterDTO;
 	}
 
@@ -760,5 +763,54 @@ public abstract class AbstractBGRechnerTest {
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1), 50000, BASISJAHR_PLUS_2, 0, 50000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1), 50000, BASISJAHR_PLUS_2, 0, 50000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1), 50000, BASISJAHR_PLUS_2, 0, 50000, 2);
+	}
+
+	public static void checkTestfall_ASIV_11_MZV(Gesuch gesuch) {
+		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
+		Assert.assertNotNull(result);
+		Assert.assertEquals(12, result.size());
+		for(int i = 0; i < 12; i++){
+			Assert.assertNotNull(result.get(i).getBgCalculationResultGemeinde());
+			assertEquals(result.get(i).getBgCalculationResultGemeinde().getVerguenstigungMahlzeitenTotal(), BigDecimal.valueOf(60));
+		}
+	}
+
+	public static void checkTestfall_ASIV_11_MZV_NICHT_EINTRETEN(Gesuch gesuch) {
+		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
+
+		Assert.assertNotNull(result);
+		Assert.assertEquals(12, result.size());
+		// wegen die Mutation die gilt ab September und die Mahlzeitkosten ab August veraendert sollte trotzdem noch keine MZV in ersten Abschnitt sein
+		Assert.assertNotNull(result.get(0).getBgCalculationResultGemeinde());
+		Assert.assertEquals(result.get(0).getBgCalculationResultGemeinde().getVerguenstigungMahlzeitenTotal(), BigDecimal.valueOf(0));
+		// aber ab September sollte wie normal die MVZ gegeben werden
+		for(int i = 1; i < 12; i++){
+			assertNotNull(result.get(i).getBgCalculationResultGemeinde());
+			Assert.assertEquals(result.get(i).getBgCalculationResultGemeinde().getVerguenstigungMahlzeitenTotal(), BigDecimal.valueOf(60));
+		}
+	}
+
+	public static void checkTestfall_ASIV_12_MZV_Untermonatlich(Gesuch gesuch) {
+		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
+
+		Assert.assertNotNull(result);
+		Assert.assertEquals(13, result.size());
+		// erstes Abschnitt noch keine Betreuung
+		Assert.assertNotNull(result.get(0).getBgCalculationResultGemeinde());
+		Assert.assertEquals(result.get(0).getBgCalculationResultGemeinde().getVerguenstigungMahlzeitenTotal(), BigDecimal.valueOf(0));
+		// wegen die Mutation die gilt ab September soll in der letzten Zeitabschnitt von August noch keine Mahlzeitverguenstigung geben
+		Assert.assertNotNull(result.get(1).getBgCalculationResultGemeinde());
+		Assert.assertEquals(result.get(1).getBgCalculationResultGemeinde().getVerguenstigungMahlzeitenTotal(), BigDecimal.valueOf(0));
+		// aber ab September sollte wie normal die MVZ gegeben werden
+		for(int i = 2; i < 13; i++){
+			Assert.assertNotNull(result.get(i).getBgCalculationResultGemeinde());
+			Assert.assertEquals(result.get(i).getBgCalculationResultGemeinde().getVerguenstigungMahlzeitenTotal(), BigDecimal.valueOf(60));
+		}
 	}
 }

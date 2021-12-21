@@ -208,4 +208,16 @@ public class MathUtilTest {
 		assertEquals(MathUtil.GANZZAHL.from(5.00), MathUtil.roundToFivesUp(MathUtil.DEFAULT.from(5.00)));
 		assertEquals(MathUtil.GANZZAHL.from(10.00), MathUtil.roundToFivesUp(MathUtil.DEFAULT.from(5.01)));
 	}
+
+	@Test
+	public void ceilToFrankenRappen() {
+		assertEquals(new BigDecimal("0.00"), MathUtil.ceilToFrankenRappen(new BigDecimal(0)));
+		assertEquals(new BigDecimal("0.05"), MathUtil.ceilToFrankenRappen(new BigDecimal("0.02")));
+		assertEquals(new BigDecimal("0.05"), MathUtil.ceilToFrankenRappen(new BigDecimal("0.03")));
+		assertEquals(new BigDecimal("0.05"), MathUtil.ceilToFrankenRappen(new BigDecimal("0.05")));
+		assertEquals(new BigDecimal("0.10"), MathUtil.ceilToFrankenRappen(new BigDecimal("0.051")));
+		assertEquals(new BigDecimal("100.10"), MathUtil.ceilToFrankenRappen(new BigDecimal("100.051")));
+	}
+
+
 }

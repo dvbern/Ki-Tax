@@ -22,6 +22,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.Sprache;
@@ -55,12 +56,20 @@ public interface GesuchsperiodeService {
 	Optional<Gesuchsperiode> findGesuchsperiode(@Nonnull String key);
 
 	/**
-	 * Gibt alle existierenden Gesuchsperioden zurueck.
+	 * Gibt alle existierenden Gesuchsperioden für den Mandanten des Principal zurueck.
 	 *
 	 * @return Liste aller Gesuchsperiodeen aus der DB
 	 */
 	@Nonnull
 	Collection<Gesuchsperiode> getAllGesuchsperioden();
+
+	/**
+	 * Gibt alle existierenden Gesuchsperioden für den übergebenen Mandanten zurueck.
+	 *
+	 * @return Liste aller Gesuchsperiodeen aus der DB
+	 */
+	@Nonnull
+	Collection<Gesuchsperiode> getAllGesuchsperioden(@Nonnull Mandant mandant);
 
 	/**
 	 * @param key PK (id) der Gesuchsperiode
@@ -112,7 +121,7 @@ public interface GesuchsperiodeService {
 	 * Gibt die Gesuchsperiode zurueck, welche am uebergebenen Stichtag aktuell war/ist
 	 */
 	@Nonnull
-	Optional<Gesuchsperiode> getGesuchsperiodeAm(@Nonnull LocalDate stichtag);
+	Optional<Gesuchsperiode> getGesuchsperiodeAm(@Nonnull LocalDate stichtag, @Nonnull Mandant mandant);
 
 	/**
 	 * Gibt alle Gesuchsperioden zurueck, welche im angegebenen Zeitraum liegen (nicht zwingend vollständig)

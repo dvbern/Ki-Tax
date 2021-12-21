@@ -221,7 +221,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		Long firstResultCount = searchService.countAllAntraege(filterDTO);
 		Assert.assertEquals(Long.valueOf(2), firstResultCount);
 
-		loginAsGesuchsteller("gesuchst");
+		loginAsGesuchsteller1();
 		List<Gesuch> secondResult = searchService.searchAllAntraege(filterDTO);
 		Long secondResultCount = searchService.countAllAntraege(filterDTO);
 		Assert.assertEquals(Long.valueOf(0), secondResultCount);
@@ -245,7 +245,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		//		Benutzer user = TestDataUtil.createDummySuperAdmin(persistence);
 		//kita Weissenstein
 		Institution institutionToSet = gesuch.extractAllBetreuungen().iterator().next().getInstitutionStammdaten().getInstitution();
-		loginAsSachbearbeiterInst("sainst", institutionToSet);
+		loginAsSachbearbeiterInst(institutionToSet);
 		List<Gesuch> secondResult = searchService.searchAllAntraege(filterDTO);
 		Long secondResultCount = searchService.countAllAntraege(filterDTO);
 		Assert.assertEquals(Long.valueOf(2), secondResultCount);
@@ -257,7 +257,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		Traegerschaft traegerschaft = institutionToSet.getTraegerschaft();
 		Assert.assertNotNull("Unser testaufbau sieht vor, dass die institution zu einer traegerschaft gehoert", traegerschaft);
 		Benutzer verantwortlicherUser = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_TRAEGERSCHAFT,
-			Constants.ANONYMOUS_USER_USERNAME, traegerschaft, null, TestDataUtil.createDefaultMandant(), persistence, null, null);
+			Constants.ANONYMOUS_USER_USERNAME, traegerschaft, null, TestDataUtil.getMandantKantonBernAndPersist(persistence), persistence, null, null);
 		gesDagmar.getDossier().setVerantwortlicherBG(verantwortlicherUser);
 		persistence.merge(gesDagmar);
 		//es muessen immer noch beide gefunden werden da die betreuungen immer noch zu inst des users gehoeren
@@ -268,7 +268,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 
 		//aendere user zu einer anderen institution  -> darf nichts mehr finden
 		Institution otherInst = TestDataUtil.createAndPersistDefaultInstitution(persistence);
-		loginAsSachbearbeiterInst("sainst2", otherInst);
+		loginAsSachbearbeiterInst2(otherInst);
 
 		List<Gesuch> fourthResult = searchService.searchAllAntraege(filterDTO);
 		Long fourthResultCount = searchService.countAllAntraege(filterDTO);
@@ -396,7 +396,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		// mit 2 Verantwortlichen wird zu Mischgesuch
 		Benutzer verantSCH = TestDataUtil.createBenutzerSCH();
 		verantSCH.getBerechtigungen().iterator().next().getGemeindeList().add(TestDataUtil.getGemeindeParis(persistence));
-		persistence.persist(verantSCH.getMandant());
+		TestDataUtil.saveMandantIfNecessary(persistence, verantSCH.getMandant());
 		persistence.persist(verantSCH);
 		dossier.setVerantwortlicherTS(verantSCH);
 		return persistence.merge(dossier);

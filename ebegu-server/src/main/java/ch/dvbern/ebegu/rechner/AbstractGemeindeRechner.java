@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
+import ch.dvbern.ebegu.util.MathUtil;
 
 /**
  * Superklasse für BG-Rechner der Gemeinde: Berechnet sowohl nach ASIV wie auch nach Gemeinde-spezifischen Regeln
@@ -109,5 +110,20 @@ public abstract class AbstractGemeindeRechner extends AbstractAsivRechner {
 		// Zusaetzlicher Baby-Gutschein
 		verguenstigungProZeiteinheit = EXACT.addNullSafe(verguenstigungProZeiteinheit, rechnerParameter.getZusaetzlicherBabyGutscheinBetrag());
 		return verguenstigungProZeiteinheit;
+	}
+
+	/**
+	 * Die Mahlzeitenverguenstigungen mit dem Anteil Monat verrechnen. Die Verguenstigung wurde aufgrund der *monatlichen*
+	 * Mahlzeiten berechnet und ist darum bei untermonatlichen Pensen zu hoch.
+	 * Beispiel: Betreuung ueber einen halben Monat:
+	 * berechneteVerguenstigung = eingegebeneVerguenstigung * 0.5
+	 */
+	protected void handleAnteileMahlzeitenverguenstigung(
+		@Nonnull BGCalculationResult result, @Nonnull BigDecimal anteilMonat
+	) {
+		// Falls der Zeitabschnitt untermonatlich ist, muessen sowohl die Anzahl Mahlzeiten wie auch die Kosten
+		// derselben mit dem Anteil des Monats korrigiert werden
+		final BigDecimal mahlzeitenTotal = rechnerParameter.getVerguenstigungMahlzeitenTotal();
+		result.setVerguenstigungMahlzeitenTotal(MathUtil.DEFAULT.multiply(mahlzeitenTotal, anteilMonat));
 	}
 }

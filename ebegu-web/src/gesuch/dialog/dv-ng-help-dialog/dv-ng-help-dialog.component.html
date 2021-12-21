@@ -15,24 +15,7 @@
 
 <mat-dialog-content role="document" tabindex="-1" id="dialogContent">
 
-    <div>
-        <h2 [textContent]="'FACHLICHE_HILFE_BG' | translate"></h2>
-        <p [textContent]="'MANDANT_DIREKTION_BG' | translate"></p>
-        <p [textContent]="'MANDANT_AMT_BG' | translate"></p>
-        <p><a href="mailto:info.fam@be.ch">info.fam@be.ch</a></p>
-        <p><a href="tel:+41 31 633 78 83">+41 31 633 78 83</a></p>
-    </div>
-
-    <div class="margin-top-40">
-        <h2 [textContent]="'FACHLICHE_HILFE_TS' | translate"></h2>
-        <p [textContent]="'MANDANT_DIREKTION_TS' | translate"></p>
-        <p [textContent]="'MANDANT_ADRESSE_STRASSE_BKD' | translate"></p>
-        <p [textContent]="'MANDANT_ADRESSE_STADT_BKD' | translate"></p>
-        <p><a [href]="'MANDANT_MAIL_BKD_LINK' | translate">{{'MANDANT_MAIL_BKD' | translate}}</a></p>
-        <p><a [href]="'MANDANT_TEL_BKD_LINK' | translate">{{'MANDANT_TEL_BKD' | translate}}</a></p>
-    </div>
-
-    <div class="margin-top-40">
+    <div class="margin-top-10">
         <h2 [textContent]="'TECHNISCHE_HILFE' | translate"></h2>
         <p>DV Bern AG</p>
         <a class="a-link" (click)="openSupportanfrage()">
@@ -41,6 +24,20 @@
         </a>
         <p><a href="tel:+41 31 378 24 33">+41 31 378 24 33</a></p>
         <p><a href="https://get.teamviewer.com/dvbv11" target="_blank" translate>TEAMVIEWER_LINK</a></p>
+    </div>
+
+    <div class="margin-top-40">
+        <h2 [textContent]="'FACHLICHE_HILFE_BG' | translate"></h2>
+        <p [textContent]="'MANDANT_DIREKTION_BG' | translate"></p>
+        <p><a href="mailto:info.fam@be.ch">info.fam@be.ch</a></p>
+        <p><a href="tel:+41 31 633 78 83">+41 31 633 78 83</a></p>
+    </div>
+
+    <div class="margin-top-40">
+        <h2 [textContent]="'FACHLICHE_HILFE_TS' | translate"></h2>
+        <p [textContent]="'MANDANT_DIREKTION_TS' | translate"></p>
+        <p><a [href]="'MANDANT_MAIL_BKD_LINK' | translate">{{'MANDANT_MAIL_BKD' | translate}}</a></p>
+        <p><a [href]="'MANDANT_TEL_BKD_LINK' | translate">{{'MANDANT_TEL_BKD' | translate}}</a></p>
     </div>
 
     <div class="margin-top-40">

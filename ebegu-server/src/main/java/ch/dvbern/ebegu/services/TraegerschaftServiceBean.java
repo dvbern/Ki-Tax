@@ -24,7 +24,12 @@ import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
@@ -32,6 +37,7 @@ import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.BerechtigungHistory_;
 import ch.dvbern.ebegu.entities.Berechtigung_;
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Traegerschaft_;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -64,11 +70,19 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	@Inject
 	private BenutzerService benutzerService;
 
+	@Inject
+	private Authorizer authorizer;
+
+	@Inject
+	private PrincipalBean principalBean;
+
 	@Nonnull
 	@Override
 	public Traegerschaft createTraegerschaft(@Nonnull Traegerschaft traegerschaft, @Nonnull String adminEmail) {
 		requireNonNull(traegerschaft);
 		requireNonNull(adminEmail);
+
+		authorizer.checkWriteAuthorization(traegerschaft);
 
 		Traegerschaft persistedTraegerschaft = persistence.persist(traegerschaft);
 
@@ -83,7 +97,8 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 			return b;
 		}).orElseGet(() -> benutzerService.createAdminTraegerschaftByEmail(adminEmail, persistedTraegerschaft));
 
-		benutzerService.einladen(Einladung.forTraegerschaft(benutzer, persistedTraegerschaft));
+		benutzerService.einladen(Einladung.forTraegerschaft(benutzer, persistedTraegerschaft),
+				requireNonNull(persistedTraegerschaft.getMandant()));
 
 		return traegerschaft;
 	}
@@ -92,6 +107,7 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	@Override
 	public Traegerschaft saveTraegerschaft(@Nonnull Traegerschaft traegerschaft) {
 		requireNonNull(traegerschaft);
+		authorizer.checkWriteAuthorization(traegerschaft);
 		return persistence.merge(traegerschaft);
 	}
 
@@ -106,13 +122,48 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	@Override
 	@Nonnull
 	public Collection<Traegerschaft> getAllActiveTraegerschaften() {
-		return criteriaQueryHelper.getEntitiesByAttribute(Traegerschaft.class, true, Traegerschaft_.active);
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery<Traegerschaft> query = cb.createQuery(Traegerschaft.class);
+		Root<Traegerschaft> root = query.from(Traegerschaft.class);
+
+		Mandant mandant = principalBean.getMandant();
+		if (mandant == null) {
+			throw new EbeguRuntimeException("getAllActiveTraegerschaften", "mandant not found for principal " + principalBean.getPrincipal().getName());
+		}
+
+		Predicate mandantPredicate = cb.equal(root.get(Traegerschaft_.mandant), mandant);
+		Predicate activePredicate = cb.equal(root.get(Traegerschaft_.active), true);
+
+		query.orderBy(cb.asc(root.get(Traegerschaft_.name)));
+		query.where(mandantPredicate, activePredicate);
+
+		Collection<Traegerschaft> traegerschaften = persistence.getCriteriaResults(query);
+		traegerschaften.forEach(traegerschaft -> authorizer.checkReadAuthorization(traegerschaft));
+
+		return traegerschaften;
 	}
 
 	@Override
 	@Nonnull
 	public Collection<Traegerschaft> getAllTraegerschaften() {
-		return new ArrayList<>(criteriaQueryHelper.getAllOrdered(Traegerschaft.class, Traegerschaft_.name));
+
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery<Traegerschaft> query = cb.createQuery(Traegerschaft.class);
+		Root<Traegerschaft> root = query.from(Traegerschaft.class);
+
+		Mandant mandant = principalBean.getMandant();
+		if (mandant == null) {
+			throw new EbeguRuntimeException("getAllTraegerschaften", "mandant not found for principal " + principalBean.getPrincipal().getName());
+		}
+
+		Predicate mandantPredicate = cb.equal(root.get(Traegerschaft_.mandant), mandant);
+		query.orderBy(cb.asc(root.get(Traegerschaft_.name)));
+		query.where(mandantPredicate);
+
+		Collection<Traegerschaft> traegerschaften = persistence.getCriteriaResults(query);
+		traegerschaften.forEach(traegerschaft -> authorizer.checkReadAuthorization(traegerschaft));
+
+		return traegerschaften;
 	}
 
 	@Override
@@ -123,6 +174,7 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 			traegerschaftToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeTraegerschaft",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, traegerschaftId));
 
+		authorizer.checkWriteAuthorization(traegerschaft);
 		checkForLinkedBerechtigungen(traegerschaft);
 
 		// Es müssen auch alle Berechtigungen für diese Traegerschaft gelöscht werden

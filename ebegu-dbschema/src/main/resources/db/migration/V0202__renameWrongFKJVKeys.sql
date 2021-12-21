@@ -8,14 +8,14 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-ALTER TABLE erweiterte_betreuung
-ADD COLUMN kita_plus_zuschlag BIT NOT NULL DEFAULT FALSE;
+UPDATE einstellung SET einstellung_key = 'FKJV_FAMILIENSITUATION_NEU' WHERE einstellung_key = 'FJKV_FAMILIENSITUATION_NEU';
+UPDATE einstellung SET einstellung_key = 'FKJV_KINDERABZUG_NEU' WHERE einstellung_key = 'FJKV_KINDERABZUG_NEU';
+UPDATE einstellung SET einstellung_key = 'FKJV_ANSPRUCH_MONATSWEISE' WHERE einstellung_key = 'FJKV_ANSPRUCH_MONATSWEISE';
 
-ALTER TABLE erweiterte_betreuung_aud
-ADD COLUMN kita_plus_zuschlag BIT;
+

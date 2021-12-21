@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.rest.test;
 
+import java.util.Objects;
+
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
@@ -92,8 +94,8 @@ public class EinkommensverschlechterungInfoResourceTest extends AbstractEbeguRes
 	private JaxGesuch crateJaxGesuch() {
 		Gemeinde persistedGemeinde = TestDataUtil.getGemeindeParis(persistence);
 		Benutzer verantwortlicher = TestDataUtil.createDefaultBenutzer();
+		verantwortlicher.setMandant(Objects.requireNonNull(persistedGemeinde.getMandant()));
 		verantwortlicher.getBerechtigungen().iterator().next().getGemeindeList().add(persistedGemeinde);
-		persistence.persist(verantwortlicher.getMandant());
 		verantwortlicher = persistence.persist(verantwortlicher);
 
 		JaxGesuch testJaxGesuch = TestJaxDataUtil.createTestJaxGesuch(null, null);

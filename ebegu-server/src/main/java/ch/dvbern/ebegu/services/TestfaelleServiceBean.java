@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,6 +35,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
@@ -57,6 +59,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
@@ -189,6 +192,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private SozialdienstFallDokumentService sozialdienstFallDokumentService;
 	@Inject
 	private EinstellungService einstellungService;
+	@Inject
+	private PrincipalBean principalBean;
 
 
 	@Override
@@ -332,9 +337,9 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	@Override
 	@Nonnull
 	public StringBuilder createAndSaveAsOnlineGesuch(@Nonnull String fallid, boolean betreuungenBestaetigt, boolean verfuegen, @Nonnull String username,
-			@Nullable String gesuchsPeriodeId, @Nonnull String gemeindeId) {
-		removeGesucheOfGS(username);
-		Benutzer benutzer = benutzerService.findBenutzer(username).orElse(benutzerService.getCurrentBenutzer().orElse(null));
+			@Nullable String gesuchsPeriodeId, @Nonnull String gemeindeId, @Nonnull Mandant mandant) {
+		removeGesucheOfGS(username, mandant);
+		Benutzer benutzer = benutzerService.findBenutzer(username, mandant).orElse(benutzerService.getCurrentBenutzer().orElse(null));
 		return this.createAndSaveTestfaelle(fallid, 1, betreuungenBestaetigt, verfuegen, benutzer, gesuchsPeriodeId, gemeindeId);
 	}
 
@@ -418,8 +423,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	}
 
 	@Override
-	public void removeGesucheOfGS(@Nonnull String username) {
-		Benutzer benutzer = benutzerService.findBenutzer(username).orElse(null);
+	public void removeGesucheOfGS(@Nonnull String username, @Nonnull Mandant mandant) {
+		Benutzer benutzer = benutzerService.findBenutzer(username, mandant).orElse(null);
 		Optional<Fall> existingFall = fallService.findFallByBesitzer(benutzer);
 		existingFall.ifPresent(fall -> fallService.removeFall(fall, GesuchDeletionCause.USER));
 	}
@@ -560,6 +565,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	 */
 	@Override
 	@Nonnull
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public Gesuch createAndSaveGesuch(
 		@Nonnull AbstractTestfall fromTestfall,
 		boolean verfuegen,
@@ -602,6 +608,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		if (besitzer != null) {
 			fall.setBesitzer(besitzer);
 		}
+		Objects.requireNonNull(principalBean.getMandant());
+		fall.setMandant(principalBean.getMandant());
 
 		final Fall persistedFall = fallService.saveFall(fall);
 		fromTestfall.setFall(persistedFall); // dies wird gebraucht, weil fallService.saveFall ein merge macht.
@@ -1099,7 +1107,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			normlohnkosten,
 			normlohnkostenLessThen50
 		).getContainer());
-		latsService.deleteLastenausgleichTagesschuleAngabenGemeindeContainer(gemeinde, gesuchsperiode);
+		latsService.deleteAntragIfExists(gemeinde, gesuchsperiode);
 		LastenausgleichTagesschuleAngabenGemeindeContainer savedAntrag = latsService.saveLastenausgleichTagesschuleGemeinde(testantrag);
 		historyService.saveLastenausgleichTagesschuleStatusChange(savedAntrag);
 		return savedAntrag;

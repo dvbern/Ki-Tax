@@ -48,6 +48,7 @@ import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationRechnerFactory;
 import ch.dvbern.ebegu.pdfgenerator.AnmeldebestaetigungTSPDFGenerator;
 import ch.dvbern.ebegu.pdfgenerator.BegleitschreibenPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.ErsteMahnungPdfGenerator;
@@ -210,8 +211,9 @@ public class PDFServiceBean implements PDFService {
 				dossierService.getErstesEinreichungsdatum(gesuch.getDossier(), gesuch.getGesuchsperiode());
 
 			GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
+
 			FinanzielleSituationPdfGenerator pdfGenerator = new FinanzielleSituationPdfGenerator(
-				gesuch, famGroessenVerfuegung, stammdaten, erstesEinreichungsdatum);
+				gesuch, famGroessenVerfuegung, stammdaten, erstesEinreichungsdatum, FinanzielleSituationRechnerFactory.getRechner(gesuch));
 			return generateDokument(pdfGenerator, !writeProtected, locale);
 		}
 		return BYTES;
@@ -240,7 +242,7 @@ public class PDFServiceBean implements PDFService {
 			showInfoKontingentierung = einstellungKontingentierung.getValueAsBoolean();
 		}
 
-		boolean stadtBernAsivConfigured = applicationPropertyService.isStadtBernAsivConfigured();
+		boolean stadtBernAsivConfigured = applicationPropertyService.isStadtBernAsivConfigured(betreuung.extractGesuch().extractGemeinde().getMandant());
 
 		Art art = betreuung.hasAnspruch() ? Art.NORMAL : Art.KEIN_ANSPRUCH;
 		VerfuegungPdfGenerator pdfGenerator = new VerfuegungPdfGenerator(

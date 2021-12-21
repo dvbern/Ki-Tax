@@ -78,6 +78,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Traegerschaft_;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
@@ -112,15 +113,15 @@ import static ch.dvbern.ebegu.enums.UserRole.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRole.getBgAndGemeindeRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getTsAndGemeindeRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getTsBgAndGemeindeRoles;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.setAntragstellerFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterForCurrentFerienbetreuungUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setInstitutionFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setMandantFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setRoleFilterForCurrentUser;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.setSozialdienstFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setSuperAdminFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setTraegerschaftFilterForCurrentUser;
-import static ch.dvbern.ebegu.services.util.FilterFunctions.setSozialdienstFilterForCurrentUser;
-import static ch.dvbern.ebegu.services.util.FilterFunctions.setAntragstellerFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -269,10 +270,10 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	public Benutzer einladen(@Nonnull Einladung einladung) {
+	public Benutzer einladen(@Nonnull Einladung einladung, @Nonnull Mandant mandant) {
 		requireNonNull(einladung);
 
-		checkEinladung(einladung);
+		checkEinladung(einladung, mandant);
 
 		Benutzer persistedBenutzer = saveBenutzer(einladung.getEingeladener());
 
@@ -312,14 +313,14 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	 * According to the type of Einladung it checks that the given benutzer meets the conditions required.
 	 */
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	private void checkEinladung(@Nonnull Einladung einladung) {
+	private void checkEinladung(@Nonnull Einladung einladung, @Nonnull Mandant mandant) {
 		Benutzer benutzer = einladung.getEingeladener();
 		checkSuperuserRoleZuteilung(einladung.getEingeladener());
 		EinladungTyp einladungTyp = einladung.getEinladungTyp();
 		checkArgument(Objects.equals(benutzer.getMandant(), principalBean.getMandant()));
 
 		if (einladungTyp == EinladungTyp.MITARBEITER && (!benutzer.isNew()
-			|| findBenutzer(benutzer.getUsername()).isPresent())) {
+			|| findBenutzer(benutzer.getUsername(), mandant).isPresent())) {
 			// when inviting a new Mitarbeiter the user cannot exist.
 			// For any other invitation the user may exist already
 			throw new EntityExistsException(
@@ -437,22 +438,38 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	public Optional<Benutzer> findBenutzer(@Nonnull String username) {
+	public Optional<Benutzer> findBenutzer(@Nonnull String username, @Nonnull Mandant mandant) {
 		requireNonNull(username, "username muss gesetzt sein");
-		return criteriaQueryHelper.getEntityByUniqueAttribute(Benutzer.class, username, Benutzer_.username);
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
+		Root<Benutzer> root = query.from(Benutzer.class);
+		Predicate usernamePredicate = cb.equal(root.get(Benutzer_.username), username);
+		Predicate mandantPredicate = cb.equal(root.get(Benutzer_.mandant), mandant);
+
+		query.where(usernamePredicate, mandantPredicate);
+
+		try {
+			return Optional.of(persistence.getEntityManager()
+					.createQuery(query)
+					.getSingleResult());
+		} catch (NoResultException nre) {
+			return Optional.empty();
+		}
 	}
 
 	@Nonnull
 	@Override
-	public Optional<Benutzer> findAndLockBenutzer(@Nonnull String username) {
+	public Optional<Benutzer> findAndLockBenutzer(@Nonnull String username, @Nonnull Mandant mandant) {
 		requireNonNull(username, "username muss gesetzt sein");
+		requireNonNull(mandant, "mandant muss gesetzt sein");
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
 		Root<Benutzer> root = query.from(Benutzer.class);
 		Predicate predicateUsername = cb.equal(root.get(Benutzer_.username), username);
+		Predicate mandantPredicate = cb.equal(root.get(Benutzer_.mandant), mandant);
 
-		query.where(predicateUsername);
+		query.where(predicateUsername, mandantPredicate);
 		query.distinct(true);
 
 		try {
@@ -665,20 +682,23 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		Join<Benutzer, Berechtigung> joinBerechtigungen = root.join(Benutzer_.berechtigungen);
 		query.select(root);
 
+		Objects.requireNonNull(principalBean.getMandant());
+		Predicate predicateMandant = cb.equal(root.get(Benutzer_.mandant), principalBean.getMandant());
+
 		Predicate predicateActive = cb.between(
 			cb.literal(LocalDate.now()),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
 		Predicate predicateRole = joinBerechtigungen.get(Berechtigung_.role).in(GESUCHSTELLER);
-		query.where(predicateActive, predicateRole);
+		query.where(predicateActive, predicateRole, predicateMandant);
 		query.orderBy(cb.asc(root.get(Benutzer_.vorname)), cb.asc(root.get(Benutzer_.nachname)));
 		return persistence.getCriteriaResults(query);
 	}
 
 	@Override
-	public void removeBenutzer(@Nonnull String username) {
+	public void removeBenutzer(@Nonnull String username, @Nonnull Mandant mandant) {
 		requireNonNull(username);
-		Benutzer benutzer = findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException(
+		Benutzer benutzer = findBenutzer(username, mandant).orElseThrow(() -> new EbeguEntityNotFoundException(
 			"removeBenutzer",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			username));
@@ -686,20 +706,20 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		try {
 			checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(benutzer);
 			// Keine Exception: Es ist kein Gesuchsteller: Wir können immer löschen
-			removeBenutzerForced(benutzer.getUsername());
+			removeBenutzerForced(benutzer.getUsername(), mandant);
 		} catch (BenutzerExistException b) {
 			// Es ist ein Gesuchsteller: Wir löschen, solange er keine freigegebenen/verfuegten Gesuche hat
 			if (b.getErrorCodeEnum() != ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_FREGEGEBENE_GESUCH) {
-				removeBenutzerForced(benutzer.getUsername());
+				removeBenutzerForced(benutzer.getUsername(), mandant);
 			} else {
 				throw b;
 			}
 		}
 	}
 
-	private void removeBenutzerForced(@Nonnull String username) {
+	private void removeBenutzerForced(@Nonnull String username, @Nonnull Mandant mandant) {
 		requireNonNull(username);
-		Benutzer benutzer = findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException(
+		Benutzer benutzer = findBenutzer(username, mandant).orElseThrow(() -> new EbeguEntityNotFoundException(
 			"removeBenutzer",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			username));
@@ -722,13 +742,16 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Nonnull
 	@Override
 	public Optional<Benutzer> getCurrentBenutzer() {
-		String username = null;
+		String benutzerId = null;
 		if (principalBean != null) {
+			if (principalBean.isAnonymousSuperadmin()) {
+				return Optional.empty();
+			}
 			final Principal principal = principalBean.getPrincipal();
-			username = principal.getName();
+			benutzerId = principal.getName();
 		}
-		if (StringUtils.isNotEmpty(username)) {
-			return findBenutzer(username);
+		if (StringUtils.isNotEmpty(benutzerId)) {
+			return findBenutzerById(benutzerId);
 		}
 		return Optional.empty();
 	}
@@ -768,7 +791,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		}
 
 		// Benutzer nicht ueber ExternalUUID gefunden. Es koennte aber sein, dass wir den Benutzer resettet wurde
-		final Optional<Benutzer> benutzerByUsernameOptional = findBenutzer(benutzer.getUsername());
+		final Optional<Benutzer> benutzerByUsernameOptional = findBenutzer(benutzer.getUsername(),
+				requireNonNull(benutzer.getMandant()));
 		if (benutzerByUsernameOptional.isPresent()) {
 			// Wir kennen den Benutzer schon: Es werden nur die readonly-Attribute neu von IAM uebernommen
 			Benutzer foundUser = benutzerByUsernameOptional.get();
@@ -837,8 +861,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	public Benutzer sperren(@Nonnull String username) {
-		Benutzer benutzerFromDB = findBenutzer(username)
+	public Benutzer sperren(@Nonnull String username, @Nonnull Mandant mandant) {
+		Benutzer benutzerFromDB = findBenutzer(username, mandant)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"sperren",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
@@ -864,8 +888,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	public Benutzer reaktivieren(@Nonnull String username) {
-		Benutzer benutzerFromDB = findBenutzer(username)
+	public Benutzer reaktivieren(@Nonnull String username, @Nonnull Mandant mandant) {
+		Benutzer benutzerFromDB = findBenutzer(username, mandant)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"reaktivieren",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
@@ -1009,6 +1033,10 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		// getCurrentBerechtigung() mache. somit werden sie geladen. das könnte aber ein allgemeines problem sein
 		user.getCurrentBerechtigung();
 		Set<Gemeinde> userGemeinden = user.extractGemeindenForUser();
+
+		Objects.requireNonNull(principalBean.getMandant());
+		Predicate mandantPredicate = cb.equal(root.get(Benutzer_.mandant), principalBean.getMandant());
+		predicates.add(mandantPredicate);
 
 		if (addInstitutionUsers) {
 			if (userGemeinden.isEmpty()) {

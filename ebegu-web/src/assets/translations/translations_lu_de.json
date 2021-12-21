@@ -1,4 +1,12 @@
 {
 	"FAELLE_LIST": "Alle Fälle in Luzern",
-    "FINANZIELLE_SITUATION_RESULTATE_LUZERN": "Finanzielle Situation Resultate"
+    "FINANZIELLE_SITUATION_RESULTATE_LUZERN": "Finanzielle Situation Resultate",
+	"FINANZIELLE_SITUATION_STEUERBARES_EINKOMMEN": "Steuerbares Einkommen",
+	"FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN": "Steuerbares Vermögen",
+	"FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT": "Abzüge Liegenschaft",
+	"FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT_TOOLTIP": "Abzüge für den effektiven Liegenschaftsunterhalt selbstgenutzter Wohnliegenschaften, welche den Eigenmietwert übersteigen",
+	"FINANZIELLE_SITUATION_GESCHAEFTSVERLUST": "Verrechenbare Geschäftsverluste",
+	"FINANZIELLE_SITUATION_GESCHAEFTSVERLUST_TOOLTIP": "Verrechenbare Geschäftsverluste aus den Vorjahren gemäss § 38 des Steuergesetzes",
+	"FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE": "Einkäufe/Vorsorge",
+	"FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE_TOOLTIP": "Die Einkäufe in die berufliche Vorsorge und die Arbeitnehmeranteile der Beiträge von Selbstständigerwerbenden an die berufliche Vorsorge im Sinn von § 40 Abs. 1 lit. d des Steuergesetzes 14"
 }

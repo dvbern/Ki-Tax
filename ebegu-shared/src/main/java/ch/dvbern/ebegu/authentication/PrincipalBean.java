@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.services.BenutzerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.util.Constants.ANONYMOUS_USER_USERNAME;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 @RequestScoped
@@ -58,15 +59,15 @@ public class PrincipalBean {
 	private Mandant mandant = null;
 
 	private void loadNormalUser() {
-		String name = principal.getName();
-		benutzer = benutzerService.findBenutzer(name)
-			.orElseThrow(() -> new IllegalStateException("Could not find Benutzer with username " + name));
+		String id = principal.getName();
+		benutzer = benutzerService.findBenutzerById(id)
+			.orElseThrow(() -> new IllegalStateException("Could not find Benutzer with username " + id));
 		mandant = benutzer.getMandant();
 	}
 
 	@Nonnull
 	public Benutzer getBenutzer() {
-		if (benutzer == null || !benutzer.getUsername().equals(principal.getName())) {
+		if (benutzer == null || !benutzer.getId().equals(principal.getName())) {
 			loadNormalUser();
 		}
 		return benutzer;
@@ -74,7 +75,7 @@ public class PrincipalBean {
 
 	@Nullable
 	public Mandant getMandant() {
-		if (mandant == null || !getBenutzer().getUsername().equals(principal.getName())) {
+		if (mandant == null || !getBenutzer().getId().equals(principal.getName())) {
 			mandant = getBenutzer().getMandant();
 		}
 		return mandant;
@@ -160,5 +161,9 @@ public class PrincipalBean {
 	public boolean belongsToSozialdienst(Sozialdienst sozialdienst) {
 		final Benutzer currentBenuter = this.getBenutzer();
 		return currentBenuter.getSozialdienst() != null && currentBenuter.getSozialdienst().equals(sozialdienst);
+	}
+
+	public boolean isAnonymousSuperadmin() {
+		return isCallerInRole(UserRole.SUPER_ADMIN) && getPrincipal().getName().equals(ANONYMOUS_USER_USERNAME);
 	}
 }

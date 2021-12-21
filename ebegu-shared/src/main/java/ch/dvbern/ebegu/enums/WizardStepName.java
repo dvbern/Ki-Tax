@@ -34,4 +34,8 @@ public enum WizardStepName {
 	DOKUMENTE,
 	FREIGABE,
 	VERFUEGEN;
+
+	public boolean isFinSitWizardStepName() {
+		return FINANZIELLE_SITUATION == this || FINANZIELLE_SITUATION_LUZERN == this;
+	}
 }

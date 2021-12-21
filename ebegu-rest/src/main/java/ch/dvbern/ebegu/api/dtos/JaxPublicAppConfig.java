@@ -25,6 +25,7 @@ public class JaxPublicAppConfig {
 	private String kitaxEndpoint;
 	private String notverordnungDefaultEinreichefristOeffentlich;
 	private String notverordnungDefaultEinreichefristPrivat;
+	private boolean lastenausgleichAktiv;
 	private boolean ferienbetreuungAktiv;
 	private boolean lastenausgleichTagesschulenAktiv;
 	private boolean gemeindeKennzahlenAktiv;
@@ -38,6 +39,7 @@ public class JaxPublicAppConfig {
 	private String logoFileName;
 	private String logoFileNameWhite;
 	private boolean multimandantAktiviert;
+	private boolean angebotTSActivated;
 
 
 	public JaxPublicAppConfig(
@@ -53,6 +55,7 @@ public class JaxPublicAppConfig {
 		String kitaxEndpoint,
 		String notverordnungDefaultEinreichefristOeffentlich,
 		String notverordnungDefaultEinreichefristPrivat,
+		boolean lastenausgleichAktiv,
 		boolean ferienbetreuungAktiv,
 		boolean lastenausgleichTagesschulenAktiv,
 		boolean gemeindeKennzahlenAktiv,
@@ -65,7 +68,8 @@ public class JaxPublicAppConfig {
 		String primaryColorLight,
 		String logoFileName,
 		String logoFileNameWhite,
-		boolean multimandantAktiviert
+		boolean multimandantAktiviert,
+		boolean angebotTSActivated
 	) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
@@ -79,6 +83,7 @@ public class JaxPublicAppConfig {
 		this.kitaxEndpoint = kitaxEndpoint;
 		this.notverordnungDefaultEinreichefristOeffentlich = notverordnungDefaultEinreichefristOeffentlich;
 		this.notverordnungDefaultEinreichefristPrivat = notverordnungDefaultEinreichefristPrivat;
+		this.lastenausgleichAktiv = lastenausgleichAktiv;
 		this.ferienbetreuungAktiv = ferienbetreuungAktiv;
 		this.lastenausgleichTagesschulenAktiv = lastenausgleichTagesschulenAktiv;
 		this.gemeindeKennzahlenAktiv = gemeindeKennzahlenAktiv;
@@ -92,6 +97,7 @@ public class JaxPublicAppConfig {
 		this.logoFileName = logoFileName;
 		this.logoFileNameWhite = logoFileNameWhite;
 		this.multimandantAktiviert = multimandantAktiviert;
+		this.angebotTSActivated = angebotTSActivated;
 	}
 
 	public String getCurrentNode() {
@@ -188,6 +194,14 @@ public class JaxPublicAppConfig {
 
 	public void setNotverordnungDefaultEinreichefristPrivat(String notverordnungDefaultEinreichefristPrivat) {
 		this.notverordnungDefaultEinreichefristPrivat = notverordnungDefaultEinreichefristPrivat;
+	}
+
+	public boolean isLastenausgleichAktiv() {
+		return lastenausgleichAktiv;
+	}
+
+	public void setLastenausgleichAktiv(boolean lastenausgleichAktiv) {
+		this.lastenausgleichAktiv = lastenausgleichAktiv;
 	}
 
 	public boolean isFerienbetreuungAktiv() {
@@ -292,5 +306,13 @@ public class JaxPublicAppConfig {
 
 	public void setLogoFileNameWhite(String logoFileNameWhite) {
 		this.logoFileNameWhite = logoFileNameWhite;
+	}
+
+	public boolean isAngebotTSActivated() {
+		return angebotTSActivated;
+	}
+
+	public void setAngebotTSActivated(boolean angebotTSActivated) {
+		this.angebotTSActivated = angebotTSActivated;
 	}
 }

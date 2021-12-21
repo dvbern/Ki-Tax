@@ -15,17 +15,26 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import javax.ws.rs.core.Cookie;
 
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.Mandant_;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -53,12 +62,41 @@ public class MandantServiceBean extends AbstractBaseService implements MandantSe
 
 	@Nonnull
 	@Override
-	public Mandant getFirst() {
-		Collection<Mandant> mandants = criteriaQueryHelper.getAll(Mandant.class);
-		if (mandants != null && !mandants.isEmpty()) {
-			return mandants.iterator().next();
+	public Optional<Mandant> findMandantByName(@Nonnull String name) {
+		return criteriaQueryHelper.getEntityByUniqueAttribute(
+				Mandant.class,
+				name,
+				Mandant_.name
+		);
+	}
+
+	@Nonnull
+	@Override
+	public Mandant findMandantByCookie(@Nullable Cookie mandantCookie) {
+		if (mandantCookie == null) {
+			throw new EbeguRuntimeException("findMandantByCookie", ErrorCodeEnum.ERROR_MANDANT_COOKIE_IS_NULL);
 		}
-		String message = "Wir erwarten, dass mindestens ein Mandant bereits in der DB existiert";
-		throw new EbeguRuntimeException("getFirst", message, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
+		var cookieDecoded = URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8);
+		return findMandantByName(cookieDecoded)
+			.orElseThrow(() -> {
+				throw new EbeguEntityNotFoundException("findMandantByCookie", cookieDecoded);
+			});
+	}
+
+	@Nonnull
+	@Override
+	public Mandant getMandantBern() {
+		return findMandantByName("Kanton Bern").orElseThrow(()
+			-> new EbeguRuntimeException("getDefaultMandant", "Kanton Bern Mandant not found"));
+	}
+
+	@Nonnull
+	@Override
+	public Collection<Mandant> getAll() {
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery<Mandant> query = cb.createQuery(Mandant.class);
+		Root<Mandant> root = query.from(Mandant.class);
+		query.select(root);
+		return persistence.getCriteriaResults(query);
 	}
 }

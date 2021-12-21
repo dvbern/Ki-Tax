@@ -23,12 +23,12 @@ import ch.dvbern.ebegu.mocks.CriteriaQueryHelperMock;
 import ch.dvbern.ebegu.mocks.PersistenceMock;
 import ch.dvbern.ebegu.services.ApplicationPropertyServiceBean;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import org.needle4j.annotation.InjectIntoMany;
-import org.needle4j.annotation.ObjectUnderTest;
-import org.needle4j.junit.NeedleRule;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.needle4j.annotation.InjectIntoMany;
+import org.needle4j.annotation.ObjectUnderTest;
+import org.needle4j.junit.NeedleRule;
 
 @SuppressWarnings("unused")
 public class ApplicationPropertyServiceTest {
@@ -50,36 +50,37 @@ public class ApplicationPropertyServiceTest {
 	@Test
 	public void saveOrUpdateApplicationPropertyTest() {
 		Assert.assertNotNull(applicationPropertyService);
-		Mandant mandant = TestDataUtil.getMandantKantonBern(persistence);
+		Mandant mandant = TestDataUtil.getMandantKantonBernAndPersist(persistence);
 		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, "testValue", mandant);
-		Assert.assertEquals(1, applicationPropertyService.getAllApplicationProperties().size());
-		Optional<ApplicationProperty> propertyOptional = applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED);
+		Assert.assertEquals(1, applicationPropertyService.getAllApplicationProperties(mandant).size());
+		Optional<ApplicationProperty> propertyOptional = applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, mandant);
 		Assert.assertTrue(propertyOptional.isPresent());
 		Assert.assertEquals("testValue", propertyOptional.get().getValue());
 	}
 
 	@Test
 	public void removeApplicationPropertyTest() {
-		insertNewEntity();
-		applicationPropertyService.removeApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED);
-		Assert.assertEquals(0, applicationPropertyService.getAllApplicationProperties().size());
+		final Mandant mandant = TestDataUtil.getMandantKantonBernAndPersist(persistence);
+		insertNewEntity(mandant);
+		applicationPropertyService.removeApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
+				mandant);
+		Assert.assertEquals(0, applicationPropertyService.getAllApplicationProperties(mandant).size());
 	}
 
 	@Test
 	public void updateApplicationPropertyTest() {
-		Mandant mandant = TestDataUtil.getMandantKantonBern(persistence);
-		insertNewEntity();
+		Mandant mandant = TestDataUtil.getMandantKantonBernAndPersist(persistence);
+		insertNewEntity(mandant);
 		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, "changed", mandant);
-		Optional<ApplicationProperty> propertyOptional = applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED);
+		Optional<ApplicationProperty> propertyOptional = applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, mandant);
 		Assert.assertTrue(propertyOptional.isPresent());
 		Assert.assertEquals("changed", propertyOptional.get().getValue());
 	}
 
-	private void insertNewEntity() {
-		Mandant mandant = TestDataUtil.getMandantKantonBern(persistence);
+	private void insertNewEntity(Mandant mandant) {
 		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, "testValue", mandant);
-		Assert.assertEquals(1, applicationPropertyService.getAllApplicationProperties().size());
-		Optional<ApplicationProperty> propertyOptional = applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED);
+		Assert.assertEquals(1, applicationPropertyService.getAllApplicationProperties(mandant).size());
+		Optional<ApplicationProperty> propertyOptional = applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, mandant);
 		Assert.assertNotNull(propertyOptional);
 		Assert.assertTrue(propertyOptional.isPresent());
 		Assert.assertEquals("testValue", propertyOptional.get().getValue());

@@ -93,6 +93,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//TODO: Mandantenfähigkeit. Müssen wir die Schulungsdaten anpassen?
+
 /**
  * Service fuer erstellen und mutieren von Schulungsdaten
  */
@@ -218,8 +220,8 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 			assertInstitutionNotUsedInNormalenGesuchen(KITA_HECHT_ID, institutionStammdaten);
 		}
 
-		removeBenutzer(BENUTZER_FISCH_USERNAME);
-		removeBenutzer(BENUTZER_FORELLE_USERNAME);
+		removeBenutzer(BENUTZER_FISCH_USERNAME, mandantService.getMandantBern());
+		removeBenutzer(BENUTZER_FORELLE_USERNAME, mandantService.getMandantBern());
 
 		if (institutionService.findInstitution(INSTITUTION_FORELLE_ID, true).isPresent()) {
 			institutionService.removeInstitution(INSTITUTION_FORELLE_ID);
@@ -238,7 +240,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	@Override
 	public void createSchulungsdaten() {
 		// TODO wir sollten fuer die Schulung auch eine Gemeinde auswaehlen (sollte bei der Umsetzung von Schulung geaendert werden)
-		Gemeinde gemeinde = gemeindeService.getAktiveGemeinden().stream().findFirst()
+		Gemeinde gemeinde = gemeindeService.getAktiveGemeinden(mandantService.getMandantBern()).stream().findFirst()
 			.orElseThrow(() -> new EbeguEntityNotFoundException("createSchulungsdaten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 		Traegerschaft traegerschaftFisch = createTraegerschaft(TRAEGERSCHAFT_FISCH_ID, "Fisch");
 
@@ -313,7 +315,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	}
 
 	private Gemeinde createGemeindeTutorial() {
-		Mandant mandant = mandantService.getFirst();
+		Mandant mandant = mandantService.getMandantBern();
 		Gemeinde gemeinde = new Gemeinde();
 		gemeinde.setId(GEMEINDE_TUTORIAL_ID);
 		gemeinde.setBfsNummer(1L);
@@ -368,7 +370,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	@SuppressWarnings("SameParameterValue")
 	@Nonnull
 	private Traegerschaft createTraegerschaft(@Nonnull String id, @Nonnull String name) {
-		Mandant mandant = mandantService.getFirst();
+		Mandant mandant = mandantService.getMandantBern();
 		Traegerschaft traegerschaft = new Traegerschaft();
 		traegerschaft.setId(id);
 		traegerschaft.setName(name);
@@ -383,7 +385,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		@Nullable Traegerschaft traegerschaft
 	) {
 
-		Mandant mandant = mandantService.getFirst();
+		Mandant mandant = mandantService.getMandantBern();
 		Institution institution = new Institution();
 		institution.setId(id);
 		institution.setName(name);
@@ -434,7 +436,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	}
 
 	private void createGesuchsteller(@Nonnull String name, @Nonnull String username) {
-		Mandant mandant = mandantService.getFirst();
+		Mandant mandant = mandantService.getMandantBern();
 		Benutzer benutzer = new Benutzer();
 		benutzer.setVorname(GESUCHSTELLER_VORNAME);
 		benutzer.setNachname(name);
@@ -458,7 +460,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		@Nonnull String username
 	) {
 
-		Mandant mandant = mandantService.getFirst();
+		Mandant mandant = mandantService.getMandantBern();
 		Benutzer benutzer = new Benutzer();
 		benutzer.setVorname(vorname);
 		benutzer.setNachname(name);
@@ -491,8 +493,8 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	}
 
 	private void removeGesucheFallAndBenutzer(int position) {
-		testfaelleService.removeGesucheOfGS(getUsername(position));
-		removeBenutzer(getUsername(position));
+		testfaelleService.removeGesucheOfGS(getUsername(position), mandantService.getMandantBern());
+		removeBenutzer(getUsername(position), mandantService.getMandantBern());
 	}
 
 	private void createFaelleForSuche(@Nonnull List<InstitutionStammdaten> institutionenForSchulung, @Nonnull Gemeinde gemeinde) {
@@ -624,9 +626,9 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		return savedGesuch;
 	}
 
-	private void removeBenutzer(@Nonnull String username) {
-		if (benutzerService.findBenutzer(username).isPresent()) {
-			benutzerService.removeBenutzer(username);
+	private void removeBenutzer(@Nonnull String username, @Nonnull Mandant mandant) {
+		if (benutzerService.findBenutzer(username, mandant).isPresent()) {
+			benutzerService.removeBenutzer(username, mandant);
 		}
 	}
 

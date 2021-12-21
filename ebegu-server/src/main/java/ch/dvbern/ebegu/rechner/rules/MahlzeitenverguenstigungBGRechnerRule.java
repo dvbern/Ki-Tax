@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,105 +15,38 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.rules;
+package ch.dvbern.ebegu.rechner.rules;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
-import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.Familiensituation;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.rules.util.MahlzeitenverguenstigungParameter;
-import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
+import ch.dvbern.ebegu.rechner.RechnerRuleParameterDTO;
 import ch.dvbern.ebegu.util.MathUtil;
-import com.google.common.collect.ImmutableList;
-
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
 
 /**
  * Regel die angewendet wird um die Mahlzeitenvergünstigung zu berechnen
  */
-public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
+public final class MahlzeitenverguenstigungBGRechnerRule implements RechnerRule {
 
 	private static final MathUtil MATH = MathUtil.DEFAULT;
 	private static final BigDecimal MAX_TAGE_MAHLZEITENVERGUENSTIGUNG = MATH.fromNullSafe(20);
-	private final MahlzeitenverguenstigungParameter mahlzeitenverguenstigungParams;
+	private final Locale locale;
 
-
-	protected MahlzeitenverguenstigungBGCalcRule(
-		@Nonnull DateRange validityPeriod,
-		@Nonnull Locale locale,
-		@Nonnull MahlzeitenverguenstigungParameter mahlzeitenverguenstigungParams
+	public MahlzeitenverguenstigungBGRechnerRule(
+		@Nonnull Locale locale
 	) {
-
-		super(RuleKey.MAHLZEITENVERGUENSTIGUNG, RuleType.GRUNDREGEL_CALC, RuleValidity.GEMEINDE, validityPeriod, locale);
-		this.mahlzeitenverguenstigungParams = mahlzeitenverguenstigungParams;
+		this.locale = locale;
 	}
 
-	@Override
-	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return ImmutableList.of(KITA, TAGESFAMILIEN);
-	}
-
-	@Override
-	void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
-
-		Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
-
-		boolean verguenstigungBeantrag = familiensituation != null && !familiensituation.isKeineMahlzeitenverguenstigungBeantragt();
-
-		if (!verguenstigungBeantrag) {
-			return;
-		}
-
-		final BigDecimal massgebendesEinkommen = inputData.getMassgebendesEinkommen();
-		final boolean sozialhilfeempfaenger = inputData.isSozialhilfeempfaenger();
-
-		if (!mahlzeitenverguenstigungParams.isEnabled() ||
-			!validateInput(inputData)) {
-			return;
-		}
-		// Bemerkung, wenn keine Verguenstigung aufgrund Einkommen
-		if (!mahlzeitenverguenstigungParams.hasAnspruch(massgebendesEinkommen, sozialhilfeempfaenger)) {
-			inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_NEIN, getLocale());
-			return;
-		}
-
-		BigDecimal verguenstigungMahlzeit =
-			mahlzeitenverguenstigungParams.getVerguenstigungProMahlzeitWithParam(massgebendesEinkommen, sozialhilfeempfaenger);
-		BigDecimal selbstbehaltProTag = mahlzeitenverguenstigungParams.getMinimalerElternbeitragMahlzeit();
-
-
-
-		final BigDecimal verguenstigung = berechneMahlzeitenverguenstigung(
-			inputData.getAnzahlHauptmahlzeiten(),
-			inputData.getAnzahlNebenmahlzeiten(),
-			inputData.getTarifHauptmahlzeit(),
-			inputData.getTarifNebenmahlzeit(),
-			selbstbehaltProTag,
-			verguenstigungMahlzeit,
-			inputData.getBgPensumProzent()
-		);
-
-		if (verguenstigung.compareTo(BigDecimal.ZERO) > 0) {
-			addBemerkung(inputData);
-		}
-
-		inputData.getParent().setVerguenstigungMahlzeitenTotalForAsivAndGemeinde(verguenstigung);
-	}
-
-	private void addBemerkung(@Nonnull BGCalculationInput inputData) {
-		inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG, getLocale());
+	private void addBemerkung(
+			@Nonnull BGCalculationInput inputData,
+			BGRechnerParameterDTO parameterDTO) {
+		inputData.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG, locale, parameterDTO.getMahlzeitenverguenstigungParameter().getMinimalerElternbeitragMahlzeit());
 	}
 
 	private boolean validateInput(@Nonnull BGCalculationInput inputData) {
@@ -121,11 +54,6 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 			inputData.getTarifHauptmahlzeit().compareTo(BigDecimal.ZERO) > 0) ||
 			(inputData.getAnzahlNebenmahlzeiten().compareTo(BigDecimal.ZERO) > 0 &&
 			inputData.getTarifNebenmahlzeit().compareTo(BigDecimal.ZERO) > 0);
-	}
-
-	@Override
-	public boolean isRelevantForGemeinde(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
-		return einstellungMap.get(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED).getValueAsBoolean();
 	}
 
 	@Nonnull
@@ -296,5 +224,75 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 			verguenstigungNebenmahlzeiten = MATH.add(verguenstigungNebenmahlzeiten, minBetragProTag);
 		}
 		return verguenstigungNebenmahlzeiten;
+	}
+
+	@Override
+	public boolean isConfigueredForGemeinde(@Nonnull BGRechnerParameterDTO parameterDTO) {
+		return parameterDTO.getMahlzeitenverguenstigungEnabled();
+	}
+
+	@Override
+	public boolean isRelevantForVerfuegung(
+		@Nonnull BGCalculationInput inputGemeinde,
+		@Nonnull BGRechnerParameterDTO parameterDTO) {
+
+		if(!inputGemeinde.getBetreuungsangebotTyp().isKita() && !inputGemeinde.getBetreuungsangebotTyp().isTagesfamilien()){
+			return false;
+		}
+
+		if (!parameterDTO.getMahlzeitenverguenstigungParameter().isEnabled() ||
+			!validateInput(inputGemeinde)) {
+			return false;
+		}
+
+		if (!inputGemeinde.getVerguenstigungMahlzeitenBeantragt()) {
+			inputGemeinde.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_NEIN, locale);
+			return false;
+		}
+
+		final BigDecimal massgebendesEinkommen = inputGemeinde.getMassgebendesEinkommen();
+		final boolean sozialhilfeempfaenger = inputGemeinde.isSozialhilfeempfaenger();
+
+		// Bemerkung, wenn keine Verguenstigung aufgrund Einkommen
+		if (!parameterDTO.getMahlzeitenverguenstigungParameter().hasAnspruch(massgebendesEinkommen, sozialhilfeempfaenger)) {
+			inputGemeinde.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_NEIN, locale);
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public void prepareParameter(
+		@Nonnull BGCalculationInput inputGemeinde,
+		@Nonnull BGRechnerParameterDTO parameterDTO,
+		@Nonnull RechnerRuleParameterDTO rechnerParameter) {
+
+		final BigDecimal massgebendesEinkommen = inputGemeinde.getMassgebendesEinkommen();
+		final boolean sozialhilfeempfaenger = inputGemeinde.isSozialhilfeempfaenger();
+
+		BigDecimal verguenstigungMahlzeit =
+			parameterDTO.getMahlzeitenverguenstigungParameter().getVerguenstigungProMahlzeitWithParam(massgebendesEinkommen, sozialhilfeempfaenger);
+		BigDecimal selbstbehaltProTag = parameterDTO.getMahlzeitenverguenstigungParameter().getMinimalerElternbeitragMahlzeit();
+
+		final BigDecimal verguenstigung = berechneMahlzeitenverguenstigung(
+			inputGemeinde.getAnzahlHauptmahlzeiten(),
+			inputGemeinde.getAnzahlNebenmahlzeiten(),
+			inputGemeinde.getTarifHauptmahlzeit(),
+			inputGemeinde.getTarifNebenmahlzeit(),
+			selbstbehaltProTag,
+			verguenstigungMahlzeit,
+			inputGemeinde.getBgPensumProzent() //das kennt man noch nicht an dieser Stelle, kann noch in mutationsmerger geandert werden
+		);
+
+		if (verguenstigung.compareTo(BigDecimal.ZERO) > 0) {
+			addBemerkung(inputGemeinde, parameterDTO);
+		}
+
+		rechnerParameter.setVerguenstigungMahlzeitenTotal(verguenstigung);
+	}
+
+	@Override
+	public void resetParameter(@Nonnull RechnerRuleParameterDTO rechnerParameter) {
+		rechnerParameter.setVerguenstigungMahlzeitenTotal(BigDecimal.ZERO);
 	}
 }

@@ -80,7 +80,7 @@
             <ng-container matColumnDef="periode">
                 <mat-header-cell mat-sort-header="gesuchsperiodeString" *matHeaderCellDef><span translate>PERIODE</span>
                 </mat-header-cell>
-                <mat-cell *matCellDef="let element"><span [title]="element.periode">{{element.periode}}</span>
+                <mat-cell *matCellDef="let element"><span [title]="element.periodenString">{{element.periodenString}}</span>
                 </mat-cell>
             </ng-container>
 
@@ -133,6 +133,15 @@
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <span [title]="element.institutionen">{{element.institutionen}}</span></mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="remove">
+                <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                <mat-cell *matCellDef="let element" (click)="$event.stopPropagation()">
+                    <button *ngIf="element.antragAbgeschlossen === false" type="button" class="dv-btn dv-btn-operation" (click)="removeClicked.emit(element)">
+                        <i class="fa fa-lg fa-trash-o"></i>
+                    </button>
+                </mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="verantwortlicheTS">
@@ -343,6 +352,10 @@
                          (onUserChanged)="filterVerantwortlicheGemeinde($event.user)"
                          [sachbearbeiterGemeinde]="true"></div>
                 </mat-header-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="remove-filter">
+                <mat-header-cell *matHeaderCellDef="let column"></mat-header-cell>
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="displayedColumns" class="dv-faelle-mat-header-row"></mat-header-row>

@@ -531,6 +531,7 @@
                 <div class="col-sm-12">
                     <dv-accordion class="konfigurationList" allow-multiple-sections="true">
                         <ng-container *ngFor="let konf of konfigurationsListe; let i = index">
+
                             <dv-accordion-tab [tabid]="i"
                                               *ngIf="konfigurationsListe[i].gesuchsperiode.gueltigkeit.gueltigBis.isAfter(beguStartDatum)">
 
@@ -604,7 +605,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- Gemeindeeinstellungen. TODO: für Gemeinde wieder sichtbar machen sobald fertig implementiert-->
+                                        <!-- Gemeindeeinstellungen. -->
                                         <div *ngIf="isSuperAdmin() && isKonfigurationEditable(konfigurationsListe[i])">
                                             <div class="row">
                                                 <div class="col-sm-6">
@@ -841,46 +842,45 @@
                                                         </dv-error-messages>
                                                     </div>
 
+                                                    <!-- Mahlzeitenverguenstigung -->
+                                                    <div class="form-group">
+                                                        <mat-checkbox id="mahlzeitenverguenstigung_enabled_{{i}}"
+                                                                      name="mahlzeitenverguenstigung_enabled_{{i}}"
+                                                                      [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled"
+                                                                      (change)="changeKonfigMahlzeitenverguenstigungEnabled(konfigurationsListe[i])">
+                                                            <span translate>
+                                                                MAHLZEITENVERGUENSTIGUNG_DURCH_GEMEINDE
+                                                            </span>
+                                                        </mat-checkbox>
+                                                    </div>
+
+                                                    <!-- Minimaler Elternbeitrag Mahlzeiten -->
+                                                    <div class="form-group"
+                                                         *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
+                                                        <label for="minimaler_elternbeitrag_mahlzeiten_{{i}}"
+                                                               class="required" translate>MINIMALER_ELTERNBEITRAG_MAHLZEITEN</label>
+                                                        <input id="minimaler_elternbeitrag_mahlzeiten_{{i}}"
+                                                               name="minimaler_elternbeitrag_mahlzeiten_{{i}}"
+                                                               class="form-control"
+                                                               type="number"
+                                                               #minimaler_elternbeitrag_mahlzeiten='ngModel'
+                                                               required
+                                                               customMinMax
+                                                               [minValue]="0"
+                                                               [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungMinimalerElternbeitragMahlzeit"
+                                                               (change)="changeKonfigMahlzeitenverguenstigungMinmalerElternanteilMahlzeit(konfigurationsListe[i])">
+
+                                                        <dv-error-messages
+                                                            inputId="minimaler_elternbeitrag_mahlzeiten_{{i}}"
+                                                            [errorObject]="minimaler_elternbeitrag_mahlzeiten.errors">
+                                                        </dv-error-messages>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-
-
-                                                        <!-- Mahlzeitenverguenstigung -->
-                                                        <div class="form-group">
-                                                            <mat-checkbox id="mahlzeitenverguenstigung_enabled_{{i}}"
-                                                                          name="mahlzeitenverguenstigung_enabled_{{i}}"
-                                                                          [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled"
-                                                                          (change)="changeKonfigMahlzeitenverguenstigungEnabled(konfigurationsListe[i])">
-                                                            <span translate>
-                                                                MAHLZEITENVERGUENSTIGUNG_DURCH_GEMEINDE
-                                                            </span>
-                                                            </mat-checkbox>
-                                                        </div>
-
-                                                        <!-- Minimaler Elternbeitrag Mahlzeiten -->
-                                                        <div class="form-group"
-                                                             *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
-                                                            <label for="minimaler_elternbeitrag_mahlzeiten_{{i}}"
-                                                                   class="required" translate>MINIMALER_ELTERNBEITRAG_MAHLZEITEN</label>
-                                                            <input id="minimaler_elternbeitrag_mahlzeiten_{{i}}"
-                                                                   name="minimaler_elternbeitrag_mahlzeiten_{{i}}"
-                                                                   class="form-control"
-                                                                   type="number"
-                                                                   #minimaler_elternbeitrag_mahlzeiten='ngModel'
-                                                                   required
-                                                                   customMinMax
-                                                                   [minValue]="0"
-                                                                   [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungMinimalerElternbeitragMahlzeit"
-                                                                   (change)="changeKonfigMahlzeitenverguenstigungMinmalerElternanteilMahlzeit(konfigurationsListe[i])">
-
-                                                            <dv-error-messages
-                                                                inputId="minimaler_elternbeitrag_mahlzeiten_{{i}}"
-                                                                [errorObject]="minimaler_elternbeitrag_mahlzeiten.errors">
-                                                            </dv-error-messages>
-                                                        </div>
                                                         <!--                                            Mahlzeitenverguenstigung pro Einkommensstufe-->
                                                         <div class="table-responsive mt-2"
                                                              *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
@@ -1060,6 +1060,30 @@
                                                             </mat-checkbox>
                                                         </div>
                                                     </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" *ngIf="showGemeindespezifischeKonfigForBG(konfigurationsListe[i].gesuchsperiode) && isKonfigurationEditable(konfigurationsListe[i])">
+                                            <div class="col-sm-6">
+                                                <strong>{{'GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN_TITLE' | translate}}:</strong>
+                                                <!-- Gemeindespezifische Konfurationen für BG -->
+                                                <div class="margin-top-20">
+                                                    <ng-container *ngFor="let config of konfigurationsListe[i].gemeindespezifischeBGKonfigurationen; let j = index">
+                                                        <div class="form-group">
+                                                            <label for="konfig_{{config.key}}"
+                                                                   class="required"
+                                                                   translate>{{config.key}}</label>
+                                                            <input id="konfig_{{config.key}}"
+                                                                   type="text"
+                                                                   required
+                                                                   name="konfig_{{config.value}}"
+                                                                   #gemeindespezifische_bg_konfig='ngModel'
+                                                                   [(ngModel)]="konfigurationsListe[i].gemeindespezifischeBGKonfigurationen[j].value"
+                                                                   class="form-control">
+                                                            <dv-error-messages [errorObject]="gemeindespezifische_bg_konfig.errors"
+                                                                               inputId="konfig_{{config.key}}"></dv-error-messages>
+                                                        </div>
+                                                    </ng-container>
                                                 </div>
                                             </div>
                                         </div>
@@ -1314,6 +1338,19 @@
                                                        [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent}">
                                                         ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAX_READONLY
                                                     </p>
+                                                </div>
+
+                                                <!-- Gemeindespezifische Konfurationen für BG -->
+                                                <div
+                                                    *ngIf="showGemeindespezifischeKonfigForBG(konfigurationsListe[i].gesuchsperiode)"
+                                                    class="mt-2">
+                                                    <strong>{{'GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN_TITLE' | translate}}:</strong>
+                                                    <ng-container *ngFor="let config of konfigurationsListe[i].gemeindespezifischeBGKonfigurationen;">
+                                                        <p translate
+                                                           [translateParams]="{value:  config.value}">
+                                                            {{config.key}}_READONLY
+                                                        </p>
+                                                    </ng-container>
                                                 </div>
                                             </div>
                                         </div>

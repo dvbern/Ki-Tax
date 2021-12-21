@@ -19,6 +19,7 @@ import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {Transition} from '@uirouter/core';
 import {of} from 'rxjs';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -48,6 +49,9 @@ describe('EditGemeindeComponentBG', () => {
     });
     authServiceSpy.principal$ = of(user) as any;
 
+    const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name,
+        ['findEinstellungByKey', 'findEinstellung']);
+
     beforeEach(waitForAsync(() => {
 
         TestBed.configureTestingModule({
@@ -62,6 +66,7 @@ describe('EditGemeindeComponentBG', () => {
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                 {provide: Transition, useValue: transitionSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: EinstellungRS, useValue: einstellungRSSpy}
             ],
             declarations: [
             ],

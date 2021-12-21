@@ -47,6 +47,15 @@ public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 
 	private BigDecimal geleisteteAlimente;
 
+	private BigDecimal steuerbaresEinkommen;
+
+	private BigDecimal steuerbaresVermoegen;
+
+	private BigDecimal abzuegeLiegenschaft;
+
+	private BigDecimal geschaeftsverlust;
+
+	private BigDecimal einkaeufeVorsorge;
 
 	@Nullable
 	public BigDecimal getNettolohn() {
@@ -111,5 +120,45 @@ public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 
 	public void setGeleisteteAlimente(final BigDecimal geleisteteAlimente) {
 		this.geleisteteAlimente = geleisteteAlimente;
+	}
+
+	public BigDecimal getSteuerbaresEinkommen() {
+		return steuerbaresEinkommen;
+	}
+
+	public void setSteuerbaresEinkommen(BigDecimal steuerbaresEinkommen) {
+		this.steuerbaresEinkommen = steuerbaresEinkommen;
+	}
+
+	public BigDecimal getSteuerbaresVermoegen() {
+		return steuerbaresVermoegen;
+	}
+
+	public void setSteuerbaresVermoegen(BigDecimal steuerbaresVermoegen) {
+		this.steuerbaresVermoegen = steuerbaresVermoegen;
+	}
+
+	public BigDecimal getAbzuegeLiegenschaft() {
+		return abzuegeLiegenschaft;
+	}
+
+	public void setAbzuegeLiegenschaft(BigDecimal abzuegeLiegenschaft) {
+		this.abzuegeLiegenschaft = abzuegeLiegenschaft;
+	}
+
+	public BigDecimal getGeschaeftsverlust() {
+		return geschaeftsverlust;
+	}
+
+	public void setGeschaeftsverlust(BigDecimal geschaeftsverlust) {
+		this.geschaeftsverlust = geschaeftsverlust;
+	}
+
+	public BigDecimal getEinkaeufeVorsorge() {
+		return einkaeufeVorsorge;
+	}
+
+	public void setEinkaeufeVorsorge(BigDecimal einkaeufeVorsorge) {
+		this.einkaeufeVorsorge = einkaeufeVorsorge;
 	}
 }

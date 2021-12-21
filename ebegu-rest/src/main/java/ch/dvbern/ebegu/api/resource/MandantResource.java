@@ -68,17 +68,4 @@ public class MandantResource {
 		return optional.map(mandant -> converter.mandantToJAX(mandant)).orElse(null);
 	}
 
-	@ApiOperation(value = "Gibt den ersten Mandanten aus der Datenbank zurueck. Convenience-Methode, da im Moment " +
-		"nur ein Mandant vorhanden ist.", response = JaxMandant.class)
-	@Nonnull
-	@GET
-	@Path("/first")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxMandant getFirst() {
-
-		Mandant mandant = mandantService.getFirst();
-		return converter.mandantToJAX(mandant);
-	}
-
 }

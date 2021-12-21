@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -41,11 +42,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import ch.dvbern.ebegu.api.AuthConstants;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDateRangedDTO;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
@@ -59,6 +62,7 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.services.MandantService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -90,6 +94,9 @@ public class GesuchsperiodeResource {
 
 	@Inject
 	private GemeindeService gemeindeService;
+
+	@Inject
+	private MandantService mandantService;
 
 	@SuppressWarnings("CdiInjectionPointsInspection")
 	@Inject
@@ -174,12 +181,16 @@ public class GesuchsperiodeResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
-	public List<JaxGesuchsperiode> getAllGesuchsperioden() {
-		return gesuchsperiodeService.getAllGesuchsperioden().stream()
-			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
-			.filter(periode -> periode.getGueltigAb() != null)
-			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
-			.collect(Collectors.toList());
+	public List<JaxGesuchsperiode> getAllGesuchsperioden(
+			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+	) {
+		var mandant = mandantService.findMandantByCookie(mandantCookie);
+
+		return gesuchsperiodeService.getAllGesuchsperioden(mandant).stream()
+				.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
+				.filter(periode -> periode.getGueltigAb() != null)
+				.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
+				.collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Gibt alle in der Datenbank vorhandenen Gesuchsperioden zurueck, welche im Status AKTIV "
@@ -191,10 +202,12 @@ public class GesuchsperiodeResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
-	public List<JaxGesuchsperiode> getAllActiveGesuchsperioden() {
+	public List<JaxGesuchsperiode> getAllActiveGesuchsperioden(
+			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+	) {
 		return gesuchsperiodeService.getAllActiveGesuchsperioden().stream()
-			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
-			.collect(Collectors.toList());
+				.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
+				.collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Gibt alle in der Datenbank vorhandenen Gesuchsperioden zurueck, welche im Status AKTIV " +
@@ -224,13 +237,13 @@ public class GesuchsperiodeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
 	public List<JaxGesuchsperiode> getAllAktivInaktivNichtVerwendeteGesuchsperioden(
-		@Nonnull @PathParam("dossierId") String dossierId) {
-
+		@Nonnull @PathParam("dossierId") String dossierId
+	) {
 		return gesuchsperiodeService.getAllAktivInaktivNichtVerwendeteGesuchsperioden(dossierId).stream()
-			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
-			.filter(periode -> periode.getGueltigAb() != null)
-			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
-			.collect(Collectors.toList());
+				.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
+				.filter(periode -> periode.getGueltigAb() != null)
+				.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
+				.collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Gibt alle Gesuchsperioden zurück, welche AKTIV oder INAKTIV sind und nach dem " +
@@ -244,12 +257,13 @@ public class GesuchsperiodeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
 	public List<JaxGesuchsperiode> getAllPeriodenForGemeinde(
-		@Nonnull @PathParam("gemeindeId") String gemeindeId,
-		@Nullable @QueryParam("dossierId") String dossierId) {
+			@Nonnull @PathParam("gemeindeId") String gemeindeId,
+			@Nullable @QueryParam("dossierId") String dossierId,
+			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
 
 		Collection<Gesuchsperiode> perioden = dossierId == null
-			? gesuchsperiodeService.getAllAktivUndInaktivGesuchsperioden()
-			: gesuchsperiodeService.getAllAktivInaktivNichtVerwendeteGesuchsperioden(dossierId);
+				? gesuchsperiodeService.getAllAktivUndInaktivGesuchsperioden()
+				: gesuchsperiodeService.getAllAktivInaktivNichtVerwendeteGesuchsperioden(dossierId);
 
 		return extractValidGesuchsperiodenForGemeinde(gemeindeId, perioden);
 	}
@@ -265,12 +279,13 @@ public class GesuchsperiodeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
 	public List<JaxGesuchsperiode> getAllAktivePeriodenForGemeinde(
-		@Nonnull @PathParam("gemeindeId") String gemeindeId,
-		@Nullable @QueryParam("dossierId") String dossierId) {
+			@Nonnull @PathParam("gemeindeId") String gemeindeId,
+			@Nullable @QueryParam("dossierId") String dossierId,
+			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
 
 		Collection<Gesuchsperiode> perioden = dossierId == null
-			? gesuchsperiodeService.getAllActiveGesuchsperioden()
-			: gesuchsperiodeService.getAllAktiveNichtVerwendeteGesuchsperioden(dossierId);
+				? gesuchsperiodeService.getAllActiveGesuchsperioden()
+				: gesuchsperiodeService.getAllAktiveNichtVerwendeteGesuchsperioden(dossierId);
 
 		return extractValidGesuchsperiodenForGemeinde(gemeindeId, perioden);
 	}

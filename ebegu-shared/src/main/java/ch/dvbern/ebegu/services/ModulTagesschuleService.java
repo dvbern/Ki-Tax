@@ -17,9 +17,11 @@ package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
@@ -66,7 +68,8 @@ public interface ModulTagesschuleService {
 	/**
 	 * Gibt die Tagesschule Einstellungen fuer die uebergebene GP zuruedk
 	 */
-	Collection<EinstellungenTagesschule> findEinstellungenTagesschuleByGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode);
+	Collection<EinstellungenTagesschule> findEinstellungenTagesschuleByGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
 	 * Kopiert alle vorhandenen ModulTagesschule zur neuen Gesuchsperiode
@@ -74,4 +77,7 @@ public interface ModulTagesschuleService {
 	void copyModuleTagesschuleToNewGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiodeToCreate,
 		@Nonnull Gesuchsperiode lastGesuchsperiode);
+
+	@Nonnull
+	Set<ModulTagesschuleGroup> findModulTagesschuleGroup(@Nonnull AnmeldungTagesschule anmeldung);
 }

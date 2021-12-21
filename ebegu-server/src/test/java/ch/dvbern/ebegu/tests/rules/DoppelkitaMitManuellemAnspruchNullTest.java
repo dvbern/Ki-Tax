@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -78,7 +79,7 @@ public class DoppelkitaMitManuellemAnspruchNullTest extends AbstractBGRechnerTes
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
 		gesuch = testfall.fillInGesuch();
-		TestDataUtil.calculateFinanzDaten(gesuch);
+		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		gesuch.setGesuchsperiode(gesuchsperiode1718);
 		gesuch.getDossier().setGemeinde(paris);
 

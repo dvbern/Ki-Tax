@@ -54,6 +54,10 @@ public class MahlzeitenverguenstigungParameter {
 		this.minimalerElternbeitragMahlzeit = minimalerElternbeitragMahlzeit;
 	}
 
+	public MahlzeitenverguenstigungParameter() {
+
+	}
+
 	public boolean hasAnspruch(BigDecimal massgebendesEinkommen, boolean sozialhilfebezueger) {
 		return getVerguenstigungProMahlzeitWithParam(massgebendesEinkommen, sozialhilfebezueger).compareTo(BigDecimal.ZERO) > 0;
 	}

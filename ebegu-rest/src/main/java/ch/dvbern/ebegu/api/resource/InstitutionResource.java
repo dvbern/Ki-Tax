@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -45,10 +46,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import ch.dvbern.ebegu.api.AuthConstants;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxExternalClientAssignment;
 import ch.dvbern.ebegu.api.dtos.JaxId;
@@ -85,6 +88,7 @@ import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -139,6 +143,9 @@ public class InstitutionResource {
 	private JaxBConverter converter;
 
 	@Inject
+	private MandantService mandantService;
+
+	@Inject
 	private MitteilungService mitteilungService;
 
 	@ApiOperation(value = "Creates a new Institution in the database.", response = JaxInstitution.class)
@@ -188,7 +195,8 @@ public class InstitutionResource {
 				})
 				.orElseGet(() -> benutzerService.createAdminInstitutionByEmail(adminMail, persistedInstitution));
 
-			benutzerService.einladen(Einladung.forInstitution(benutzer, persistedInstitution));
+			benutzerService.einladen(Einladung.forInstitution(benutzer, persistedInstitution),
+					requireNonNull(persistedInstitution.getMandant()));
 		}
 
 		URI uri = uriInfo.getBaseUriBuilder()
@@ -384,8 +392,12 @@ public class InstitutionResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
-	public List<JaxInstitution> getAllInstitutionen() {
-		return institutionService.getAllInstitutionen().stream()
+	public List<JaxInstitution> getAllInstitutionen(
+			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+	) {
+		var mandant = mandantService.findMandantByCookie(mandantCookie);
+
+		return institutionService.getAllInstitutionen(mandant).stream()
 			.map(inst -> converter.institutionToJAX(inst))
 			.collect(Collectors.toList());
 	}

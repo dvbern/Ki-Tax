@@ -49,11 +49,14 @@ import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.authentication.AuthAccessElement;
 import ch.dvbern.ebegu.authentication.AuthLoginElement;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AuthorisierterBenutzer;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -74,6 +77,9 @@ public class AuthResource {
 
 	@Inject // @EJB
 	private AuthService authService;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@Context
 	private HttpServletRequest request;
@@ -162,9 +168,9 @@ public class AuthResource {
 	@PermitAll
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response login(
-			@Nonnull JaxBenutzer loginElement,
-			@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN) Cookie authTokenCookie) {
-		if (configuration.isDummyLoginEnabled()) {
+			@Nonnull JaxBenutzer loginElement) {
+		Mandant mandant = converter.mandantToEntity(loginElement.getMandant(), new Mandant());
+		if (configuration.isDummyLoginEnabled(mandant)) {
 
 			// zuerst im Container einloggen, sonst schlaegt in den Entities die Mandanten-Validierung fehl
 			if (!usernameRoleChecker.checkLogin(loginElement.getUsername(), loginElement.getPassword())) {
@@ -179,9 +185,15 @@ public class AuthResource {
 
 			// Der Benutzer wird gesucht. Wenn er noch nicht existiert wird er erstellt und wenn ja dann aktualisiert
 			Benutzer benutzer = null;
-			Optional<Benutzer> optBenutzer = benutzerService.findAndLockBenutzer(loginElement.getUsername());
+			Optional<Benutzer> optBenutzer = benutzerService.findAndLockBenutzer(loginElement.getUsername(), mandant);
 			if (optBenutzer.isPresent()) {
 				benutzer = optBenutzer.get();
+				if (!loginElement.getMandant().getId().equals(benutzer.getMandant().getId())) {
+					throw new EbeguRuntimeException(
+						"login",
+						"Mandant of loginelement (" + loginElement.getMandant().getName() + ") is not equal to mandant of user ("+ benutzer.getMandant().getName() +")"
+					);
+				}
 				// Damit wird kein neues Element erstellt, sondern das bestehende "verändert". Führt sonst zu einem
 				// Löschen und Wiedereinfügen in der History-Tabelle
 				loginElement.getBerechtigungen().iterator().next().setId(benutzer.getCurrentBerechtigung().getId());
@@ -196,7 +208,7 @@ public class AuthResource {
 			// Dies ist aber gewünschtes Verhalten: Wenn wir uns mit dem Admin-Link einloggen, wollen wir immer Admin sein.
 			benutzerService.saveBenutzer(converter.jaxBenutzerToBenutzer(loginElement, benutzer));
 
-			Optional<AuthAccessElement> accessElement = authService.login(login);
+			Optional<AuthAccessElement> accessElement = authService.login(login, mandant);
 			if (!accessElement.isPresent()) {
 				return Response.status(Response.Status.UNAUTHORIZED).build();
 			}
@@ -204,19 +216,17 @@ public class AuthResource {
 			JaxAuthAccessElementCookieData element = convertToJaxAuthAccessElement(access);
 			boolean cookieSecure = isCookieSecure();
 
-			String domain = configuration.getHostdomain();
-
 			// Cookie to store auth_token, HTTP-Only Cookie --> Protection from XSS
 			NewCookie authCookie = new NewCookie(AuthConstants.COOKIE_AUTH_TOKEN, access.getAuthToken(),
-				AuthConstants.COOKIE_PATH, domain, "authentication",
+				AuthConstants.COOKIE_PATH, null, "authentication",
 				AuthConstants.COOKIE_TIMEOUT_SECONDS, cookieSecure, true);
 			// Readable Cookie for XSRF Protection (the Cookie can only be read from our Domain)
 			NewCookie xsrfCookie = new NewCookie(AuthConstants.COOKIE_XSRF_TOKEN, access.getXsrfToken(),
-				AuthConstants.COOKIE_PATH, domain, "XSRF",
+				AuthConstants.COOKIE_PATH, null, "XSRF",
 				AuthConstants.COOKIE_TIMEOUT_SECONDS, cookieSecure, false);
 			// Readable Cookie storing user data
 			NewCookie principalCookie = new NewCookie(AuthConstants.COOKIE_PRINCIPAL, encodeAuthAccessElement(element),
-				AuthConstants.COOKIE_PATH, domain, "principal",
+				AuthConstants.COOKIE_PATH, null, "principal",
 				AuthConstants.COOKIE_TIMEOUT_SECONDS, cookieSecure, false);
 
 			return Response.noContent()
@@ -313,10 +323,19 @@ public class AuthResource {
 	public Response setMandant(@Nonnull final JaxMandant mandant) {
 		// Readable Cookie storing the mandant
 		NewCookie mandantCookie = new NewCookie(AuthConstants.COOKIE_MANDANT,
-				mandant.getName(),
+				URLEncoder.encode(mandant.getName(), StandardCharsets.UTF_8),
 				AuthConstants.COOKIE_PATH, configuration.getHostdomain(), "mandant",
 				60 * 60 * 24 * 365 * 2, isCookieSecure(), false);
 
 		return Response.noContent().cookie(mandantCookie).build();
+	}
+
+	@Nullable
+	@GET
+	@PermitAll
+	@Path("/authenticated-user")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxBenutzer getAuthenticatedUser() {
+		return converter.benutzerToJaxBenutzer(principalBean.getBenutzer());
 	}
 }

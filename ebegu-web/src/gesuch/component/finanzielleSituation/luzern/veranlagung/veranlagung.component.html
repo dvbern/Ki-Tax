@@ -17,4 +17,113 @@
 
 <p *ngIf="isGemeinsam">Veranlagung gemeinsam für Jahr {{year}}</p>
 <p *ngIf="!isGemeinsam">Veranlagung alleine für Antragsteller {{antragstellerNummer}} für Jahr {{year}}</p>
-
+<fieldset>
+<div class="form-group">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label class="required long-label" for="steuerbares_einkommen_id">
+                    {{'FINANZIELLE_SITUATION_STEUERBARES_EINKOMMEN' | translate}}</label>
+                <input id="steuerbares_einkommen_id" type="number"
+                       name="steuerbaresEinkommen"
+                       #steuerbaresEinkommen="ngModel"
+                       [(ngModel)]="model.finanzielleSituationJA.steuerbaresEinkommen"
+                       class="form-control"
+                       [disabled]="readOnly"
+                       (blur)="onValueChange()"
+                       required>
+                <dv-error-messages
+                    [errorObject]="steuerbaresEinkommen.errors"
+                    inputId="steuerbares_einkommen_id">
+                </dv-error-messages>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label class="required long-label" for="steuerbares_vermoegen_id">
+                    {{'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN' | translate}}</label>
+                <input id="steuerbares_vermoegen_id" type="number"
+                       name="steuerbaresVermoegen"
+                       #steuerbaresVermoegen="ngModel"
+                       [(ngModel)]="model.finanzielleSituationJA.steuerbaresVermoegen"
+                       class="form-control"
+                       [disabled]="readOnly"
+                       (blur)="onValueChange()"
+                       required>
+                <dv-error-messages
+                    [errorObject]="steuerbaresVermoegen.errors"
+                    inputId="steuerbares_vermoegen_id">
+                </dv-error-messages>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label class="required long-label" for="abzuege_liegenschaft_id">
+                    {{'FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT' | translate}}
+                    <dv-tooltip [text]="'FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT_TOOLTIP' | translate"></dv-tooltip>
+                </label>
+                <input id="abzuege_liegenschaft_id" type="number"
+                       name="abzuegeLiegenschaft"
+                       #abzuegeLiegenschaft="ngModel"
+                       [(ngModel)]="model.finanzielleSituationJA.abzuegeLiegenschaft"
+                       class="form-control"
+                       [disabled]="readOnly"
+                       (blur)="onValueChange()"
+                       required>
+                <dv-error-messages
+                    [errorObject]="abzuegeLiegenschaft.errors"
+                    inputId="abzuege_liegenschaft_id">
+                </dv-error-messages>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label class="required long-label" for="geschaeftsverlust_id">
+                    {{'FINANZIELLE_SITUATION_GESCHAEFTSVERLUST' | translate}}
+                    <dv-tooltip [text]="'FINANZIELLE_SITUATION_GESCHAEFTSVERLUST_TOOLTIP' | translate"></dv-tooltip>
+                </label>
+                <input id="geschaeftsverlust_id" type="number"
+                       name="geschaeftsverlust"
+                       #geschaeftsverlust="ngModel"
+                       [(ngModel)]="model.finanzielleSituationJA.geschaeftsverlust"
+                       class="form-control"
+                       [disabled]="readOnly"
+                       (blur)="onValueChange()"
+                       required>
+                <dv-error-messages
+                    [errorObject]="geschaeftsverlust.errors"
+                    inputId="geschaeftsverlust_id">
+                </dv-error-messages>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label class="required long-label" for="einkaeufe_vorsorge_id">
+                    {{'FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE' | translate}}
+                    <dv-tooltip [text]="'FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE_TOOLTIP' | translate"></dv-tooltip>
+                </label>
+                <input id="einkaeufe_vorsorge_id" type="number"
+                       name="einkaeufeVorsorge"
+                       #einkaeufeVorsorge="ngModel"
+                       [(ngModel)]="model.finanzielleSituationJA.einkaeufeVorsorge"
+                       class="form-control"
+                       [disabled]="readOnly"
+                       (blur)="onValueChange()"
+                       required>
+                <dv-error-messages
+                    [errorObject]="einkaeufeVorsorge.errors"
+                    inputId="einkaeufe_vorsorge_id">
+                </dv-error-messages>
+            </div>
+        </div>
+    </div>
+</div>
+</fieldset>

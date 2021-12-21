@@ -51,13 +51,15 @@ import static org.hamcrest.Matchers.is;
 
 public final class PlatzbestaetigungTestUtil {
 
+	public static final String REF_NUMMER = "20.007305.002.1.3";
+
 	private PlatzbestaetigungTestUtil() {
 	}
 
 	@Nonnull
 	public static BetreuungEventDTO createBetreuungEventDTO(@Nonnull ZeitabschnittDTO... zeitabschnitte) {
 		BetreuungEventDTO betreuungEventDTO = new BetreuungEventDTO();
-		betreuungEventDTO.setRefnr("20.007305.002.1.3");
+		betreuungEventDTO.setRefnr(REF_NUMMER);
 		betreuungEventDTO.setInstitutionId("1234-5678-9101-1121");
 		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnitte));
 

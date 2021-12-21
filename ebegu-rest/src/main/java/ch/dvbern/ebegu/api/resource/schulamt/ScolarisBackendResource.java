@@ -61,6 +61,7 @@ import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -104,6 +105,9 @@ public class ScolarisBackendResource {
 
 	@Inject
 	private ScolarisConverter converter;
+
+	@Inject
+	private MandantService mandantService;
 
 	@ApiOperation(value = "Gibt die Version von kiBon zurück. Kann als Testmethode verwendet werden, da ohne "
 		+ "Authentifizierung aufrufbar",
@@ -275,8 +279,10 @@ public class ScolarisBackendResource {
 
 			// Parse Gesuchsperiode
 			int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(referenznummer);
+			// TODO: Mandantenfähigkeit: Wie läuft die Authentifizierung hier? Kann man den Mandanten über den Principal abfragen?
 			Gesuchsperiode gesuchsperiodeFromBGNummer =
-				gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.of(yearFromBGNummer, Month.AUGUST, 1))
+				gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.of(yearFromBGNummer, Month.AUGUST, 1),
+								mandantService.getMandantBern())
 					.orElseThrow(() -> new EbeguEntityNotFoundException(
 						"getFinanzielleSituation",
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,

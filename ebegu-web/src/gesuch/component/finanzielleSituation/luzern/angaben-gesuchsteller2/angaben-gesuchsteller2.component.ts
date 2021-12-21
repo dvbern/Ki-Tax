@@ -15,10 +15,11 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {FormBuilder} from '@angular/forms';
-import {of} from 'rxjs';
+import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
+import {IPromise} from 'angular';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
+import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
@@ -27,19 +28,17 @@ import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
     selector: 'dv-angaben-gesuchsteller2',
     templateUrl: '../finanzielle-situation-luzern.component.html',
     styleUrls: ['../finanzielle-situation-luzern.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView implements OnInit {
+export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
+
+    @ViewChild(NgForm) private readonly form: NgForm;
 
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
-        fb: FormBuilder
     ) {
-        super(gesuchModelManager, wizardStepManager, fb);
-    }
-
-    public ngOnInit(): void {
+        super(gesuchModelManager, wizardStepManager, 2);
     }
 
     public isGemeinsam(): boolean {
@@ -48,11 +47,6 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView imp
 
     public getAntragstellerNummer(): number {
         return 2;
-    }
-
-    public save(): Promise<any> {
-        console.log('save angaben 2');
-        return of().toPromise();
     }
 
     public getTrue(): any {
@@ -65,5 +59,17 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView imp
 
     public getSubStepName(): TSFinanzielleSituationSubStepName {
         return TSFinanzielleSituationSubStepName.LUZERN_GS2;
+    }
+
+    public prepareSave(onResult: Function): IPromise<TSFinanzielleSituationContainer> {
+        if (!this.isGesuchValid(this.form)) {
+            onResult(undefined);
+            return undefined;
+        }
+        return this.save(onResult);
+    }
+
+    public notify(): void {
+        // do nothing in angaben-gesuchsteller2
     }
 }

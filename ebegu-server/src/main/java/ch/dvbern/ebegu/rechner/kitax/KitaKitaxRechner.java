@@ -57,6 +57,10 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 	@SuppressWarnings("PMD.NcssMethodCount")
 	protected Optional<BGCalculationResult> calculateGemeinde(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {
 
+		// Fuer Gemeinde die richtigen Werte setzen
+		prepareRechnerParameterForGemeinde(input, parameterDTO);
+
+
 		Objects.requireNonNull(oeffnungszeiten);
 		input.getParent().setRegelwerk(Regelwerk.FEBR);
 
@@ -140,7 +144,7 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 
 		// Die Mahlzeiten werden immer fuer den ganzen Monat eingegeben und fuer das effektive
 		// Betreuungspensum. Wir muessen daher noch auf den Anteil des Monats reduzieren.
-		handleAnteileMahlzeitenverguenstigung(result, anteilMonat, input.isPensenBereitsGekuerzt());
+		handleAnteileMahlzeitenverguenstigung(result, anteilMonat);
 
 		// Bemerkung hinzufuegen
 		input.addBemerkung(MsgKey.FEBR_INFO, locale);

@@ -52,27 +52,29 @@ describe('testdatenView', () => {
             ['isDevMode', 'getPublicPropertiesCached']);
         applicationPropertyRSSpy.isDevMode.and.resolveTo(false);
         applicationPropertyRSSpy.getPublicPropertiesCached.and.resolveTo({
-            backgroundColor: '',
             currentNode: '',
             devmode: false,
-            dummyMode: false,
-            ferienbetreuungAktiv: false,
-            gemeindeKennzahlenAktiv: false,
-            kitaxEndpoint: '',
-            kitaxHost: '',
-            lastenausgleichTagesschulenAktiv: false,
-            notverordnungDefaultEinreichefristOeffentlich: '',
-            notverordnungDefaultEinreichefristPrivat: '',
-            personenSucheDisabled: false,
-            sentryEnvName: '',
             whitelist: '',
-            zahlungentestmode: false,
-            logoFileName: 'test.svg',
-            logoFileNameWhite: 'test.svg',
+            dummyMode: false,
+            sentryEnvName: '',
+            backgroundColor: '#FFFFFF',
             primaryColor: 'blue',
             primaryColorDark: 'black',
             primaryColorLight: 'white',
-            mulitmandantAktiv: false
+            logoFileName: 'test.svg',
+            logoFileNameWhite: 'test-white.svg',
+            zahlungentestmode: false,
+            personenSucheDisabled: true,
+            kitaxHost: '',
+            kitaxEndpoint: '',
+            notverordnungDefaultEinreichefristOeffentlich: '',
+            notverordnungDefaultEinreichefristPrivat: '',
+            ferienbetreuungAktiv: true,
+            lastenausgleichAktiv: true,
+            lastenausgleichTagesschulenAktiv: true,
+            gemeindeKennzahlenAktiv: true,
+            mulitmandantAktiv: false,
+            angebotTSActivated: true
         });
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
         gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);
