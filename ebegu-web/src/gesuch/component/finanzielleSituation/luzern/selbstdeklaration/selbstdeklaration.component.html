@@ -18,7 +18,7 @@
 <h2 *ngIf="isGemeinsam">Selbstdeklaration gemeinsam für Jahr {{year}}</h2>
 <h2 *ngIf="!isGemeinsam">Selbstdeklaration alleine für Antragsteller {{antragstellerNummer}} für Jahr {{year}}</h2>
 
-<strong>Einkünfte im Jahr {{year}}</strong>
+<h3>Einkünfte im Jahr {{year}}</h3>
 <div class="row">
     <div class="col-sm-6">
         <dv-input-label-field
@@ -107,7 +107,8 @@
         </dv-input-label-field>
     </div>
 </div>
-<strong>Abzüge im Jahr {{year}}</strong>
+<mat-divider></mat-divider>
+<h3>Abzüge im Jahr {{year}}</h3>
 <div class="row">
     <div class="col-sm-6">
         <dv-input-label-field
@@ -273,7 +274,8 @@
         </dv-input-label-field>
     </div>
 </div>
-<strong>Vermögen im Jahr {{year}}</strong>
+<mat-divider></mat-divider>
+<h3>Vermögen im Jahr {{year}}</h3>
 <div class="row">
     <div class="col-sm-6">
         <dv-input-label-field
