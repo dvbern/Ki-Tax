@@ -16,27 +16,44 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ListResourceRS} from '../../../../../app/core/service/listResourceRS.rest';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 import {InfomaFieldsComponent} from './infoma-fields.component';
 
+const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
+    ['getGesuch', 'getFamiliensituation']);
+const listResourceRSSpy = jasmine.createSpyObj<ListResourceRS>(ListResourceRS.name,
+    ['getLaenderList']);
+const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+    ['isOneOfRoles']);
+
 describe('InfomaFieldsComponent', () => {
-  let component: InfomaFieldsComponent;
-  let fixture: ComponentFixture<InfomaFieldsComponent>;
+    let component: InfomaFieldsComponent;
+    let fixture: ComponentFixture<InfomaFieldsComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ InfomaFieldsComponent ]
-    })
-    .compileComponents();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [
+                InfomaFieldsComponent
+            ],
+            providers: [
+                {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
+                {provide: ListResourceRS, useValue: listResourceRSSpy},
+                {provide: AuthServiceRS, useValue: authServiceRSSpy},
+            ]
+        })
+            .compileComponents();
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(InfomaFieldsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(InfomaFieldsComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });
