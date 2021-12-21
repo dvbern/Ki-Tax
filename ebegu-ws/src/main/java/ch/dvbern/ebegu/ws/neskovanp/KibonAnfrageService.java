@@ -33,6 +33,7 @@ import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.Infrastructu
 import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.InvalidArgumentsFault;
 import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.KiBonAnfragePort;
 import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.PermissionDeniedFault;
+import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.SteuerDatenResponseType;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.neskovanp.SteuerdatenResponse;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
@@ -63,8 +64,11 @@ public class KibonAnfrageService implements IKibonAnfrageService {
 		String kibonAntragId,
 		Integer gesuchsperiodeBeginnJahr) throws KiBonAnfrageServiceException {
 		final String methodName = "KibonAnfrageService#getSteuerdaten";
+		SteuerDatenResponseType steuerDatenResponseType = null;
 		try {
-			getServicePort().getSteuerdaten(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr);
+			steuerDatenResponseType = getServicePort().getSteuerdaten(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr);
+			SteuerdatenResponse steuerdatenResponse = KibonAnfrageConverter.convertFromKibonAnfrage(steuerDatenResponseType);
+			return steuerdatenResponse;
 		}
 		catch(BusinessFault businessFault) {
 			String msg = createFaultLogmessage("BusinessFault" ,methodName, businessFault.getMessage(), businessFault.getFaultInfo());
@@ -86,7 +90,6 @@ public class KibonAnfrageService implements IKibonAnfrageService {
 			LOGGER.error(msg);
 			throw new KiBonAnfrageServiceException(methodName, msg, permissionDeniedFault);
 		}
-		return null;
 	}
 
 
