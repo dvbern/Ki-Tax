@@ -32,7 +32,6 @@ public class TestdataSetupConfig {
 	private InstitutionStammdaten tagesfamilien;
 	private InstitutionStammdaten tagesschuleBruennen;
 	private InstitutionStammdaten ferieninselBruennen;
-	private InstitutionStammdaten tagesschule;
 
 	private Gesuchsperiode gesuchsperiode;
 
