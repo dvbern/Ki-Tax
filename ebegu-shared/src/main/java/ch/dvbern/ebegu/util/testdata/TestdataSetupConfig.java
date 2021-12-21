@@ -32,6 +32,7 @@ public class TestdataSetupConfig {
 	private InstitutionStammdaten tagesfamilien;
 	private InstitutionStammdaten tagesschuleBruennen;
 	private InstitutionStammdaten ferieninselBruennen;
+	private InstitutionStammdaten tagesschule;
 
 	private Gesuchsperiode gesuchsperiode;
 
@@ -51,7 +52,8 @@ public class TestdataSetupConfig {
 		Mandant mandant,
 		InstitutionStammdaten kitaBruennen,
 		InstitutionStammdaten kitaWeissenstein,
-		InstitutionStammdaten tagesfamilien, Gesuchsperiode gesuchsperiode) {
+		InstitutionStammdaten tagesfamilien,
+		Gesuchsperiode gesuchsperiode) {
 		this.mandant = mandant;
 		this.kitaBruennen = kitaBruennen;
 		this.kitaWeissenstein = kitaWeissenstein;
@@ -74,6 +76,21 @@ public class TestdataSetupConfig {
 		this.tagesfamilien = tagesfamilien;
 		this.tagesschuleBruennen = tagesschuleBruennen;
 		this.ferieninselBruennen = ferieninselBruennen;
+		this.gesuchsperiode = gesuchsperiode;
+	}
+
+	public TestdataSetupConfig(
+			Mandant mandant,
+			InstitutionStammdaten kitaBruennen,
+			InstitutionStammdaten kitaAaregg,
+			InstitutionStammdaten tagesfamilien,
+			InstitutionStammdaten tagesschule,
+			Gesuchsperiode gesuchsperiode) {
+		this.mandant = mandant;
+		this.kitaBruennen = kitaBruennen;
+		this.kitaWeissenstein = kitaAaregg;
+		this.tagesfamilien = tagesfamilien;
+		this.tagesschuleBruennen = tagesschule;
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
