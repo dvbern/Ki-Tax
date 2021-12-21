@@ -318,4 +318,8 @@ public class JaxPublicAppConfig {
 	public void setAngebotTSActivated(boolean angebotTSActivated) {
 		this.angebotTSActivated = angebotTSActivated;
 	}
+
+	public boolean isInfomaZahlungen() {
+		return infomaZahlungen;
+	}
 }

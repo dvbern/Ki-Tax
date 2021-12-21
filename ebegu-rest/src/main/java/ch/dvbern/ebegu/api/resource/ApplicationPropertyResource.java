@@ -262,6 +262,7 @@ public class ApplicationPropertyResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/public/all")
 	@PermitAll
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public Response getPublicProperties(@Context HttpServletResponse response, @CookieParam(AuthConstants.COOKIE_MANDANT)
 			Cookie mandantCookie) {
 
