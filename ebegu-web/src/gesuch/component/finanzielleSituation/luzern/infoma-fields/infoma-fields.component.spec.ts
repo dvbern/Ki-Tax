@@ -16,8 +16,15 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormsModule, NgForm} from '@angular/forms';
+import {of} from 'rxjs';
 import {ListResourceRS} from '../../../../../app/core/service/listResourceRS.rest';
+import {SharedModule} from '../../../../../app/shared/shared.module';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
+import {TSFamiliensituationContainer} from '../../../../../models/TSFamiliensituationContainer';
+import {TSGesuch} from '../../../../../models/TSGesuch';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 import {InfomaFieldsComponent} from './infoma-fields.component';
@@ -35,6 +42,10 @@ describe('InfomaFieldsComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
+            imports: [
+                FormsModule,
+                SharedModule,
+            ],
             declarations: [
                 InfomaFieldsComponent
             ],
@@ -42,12 +53,22 @@ describe('InfomaFieldsComponent', () => {
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 {provide: ListResourceRS, useValue: listResourceRSSpy},
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
+                {provide: NgForm, useValue: new NgForm([], [])},
             ]
         })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 
     beforeEach(() => {
+        listResourceRSSpy.getLaenderList.and.returnValue(of([]).toPromise());
+        const famSit = new TSFamiliensituation();
+        const gesuch = new TSGesuch();
+        gesuch.familiensituationContainer = new TSFamiliensituationContainer();
+        gesuch.familiensituationContainer.familiensituationGS = famSit;
+        gesuchModelManagerSpy.getGesuch.and.returnValue(gesuch);
+        gesuchModelManagerSpy.getFamiliensituation.and.returnValue(famSit);
+
         fixture = TestBed.createComponent(InfomaFieldsComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
