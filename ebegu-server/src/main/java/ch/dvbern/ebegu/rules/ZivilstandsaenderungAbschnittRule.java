@@ -110,7 +110,7 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 
 		} else if (familiensituation.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT_KEIN_KIND
 			&& familiensituation.getStartKonkubinat() != null
-			&& gesuch.getGesuchsperiode().getGueltigkeit().contains(familiensituation.getStartKonkubinat().plusYears(5))
+			&& gesuch.getGesuchsperiode().getGueltigkeit().contains(familiensituation.getStartKonkubinat().plusYears(paramMinDauerKonkubinat))
 		) {
 			final LocalDate startKonkubinatPlusXJahre = RuleUtil
 				.getStichtagForEreignis(familiensituation.getStartKonkubinat().plusYears(paramMinDauerKonkubinat));

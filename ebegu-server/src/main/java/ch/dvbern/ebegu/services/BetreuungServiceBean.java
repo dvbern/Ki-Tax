@@ -296,7 +296,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	public void fireAnmeldungTagesschuleAddedEvent(@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
 		if (ebeguConfiguration.isAnmeldungTagesschuleApiEnabled()) {
 			event.fire(anmeldungTagesschuleEventConverter.of(anmeldungTagesschule));
-			//TODO: add event published or not this is the question???
 		}
 	}
 
