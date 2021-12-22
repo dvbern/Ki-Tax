@@ -31,7 +31,7 @@ import org.junit.Test;
 /**
  * Test fuer TagesschuleTarifRechner
  */
-public class TagesschuleRechnerTest {
+public class TagesschuleBernRechnerTest {
 
 	private final BigDecimal MATA_MIT_PEDAGOGISCHE_BETREUUNG = MathUtil.DEFAULT.fromNullSafe(12.24);
 	private final BigDecimal MATA_OHNE_PEDAGOGISCHE_BETREUUNG = MathUtil.DEFAULT.fromNullSafe(6.11);

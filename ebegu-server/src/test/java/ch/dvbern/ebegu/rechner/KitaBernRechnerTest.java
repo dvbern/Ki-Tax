@@ -43,7 +43,7 @@ import static org.hamcrest.Matchers.is;
 /**
  * Testet den Kita-Rechner
  */
-public class KitaRechnerTest extends AbstractBGRechnerTest {
+public class KitaBernRechnerTest extends AbstractBGRechnerTest {
 
 	private final BGRechnerParameterDTO parameterDTO = getParameter();
 	private final KitaBernRechner kitaRechner = new KitaBernRechner(Collections.emptyList());

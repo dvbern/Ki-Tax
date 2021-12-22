@@ -40,7 +40,7 @@ import static org.hamcrest.Matchers.is;
 /**
  * Testet den Tageseltern-Rechner
  */
-public class TageselternRechnerTest extends AbstractBGRechnerTest {
+public class TageselternBernRechnerTest extends AbstractBGRechnerTest {
 
 	private final BGRechnerParameterDTO parameterDTO = getParameter();
 	private final TageselternBernRechner tageselternRechner = new TageselternBernRechner(Collections.emptyList());
