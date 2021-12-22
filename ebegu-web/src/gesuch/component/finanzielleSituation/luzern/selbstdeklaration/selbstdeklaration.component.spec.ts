@@ -16,6 +16,8 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
+import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 
 import {SelbstdeklarationComponent} from './selbstdeklaration.component';
 
@@ -33,6 +35,8 @@ describe('SelbstdeklarationComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SelbstdeklarationComponent);
     component = fixture.componentInstance;
+    component.model = new TSFinanzielleSituationContainer();
+    component.model.finanzielleSituationJA = new TSFinanzielleSituation();
     fixture.detectChanges();
   });
 
