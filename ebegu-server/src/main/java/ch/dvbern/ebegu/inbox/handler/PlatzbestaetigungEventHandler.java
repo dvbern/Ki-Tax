@@ -377,7 +377,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		Betreuung betreuung = ctx.getBetreuung();
 
 		if(!mitteilungService.isBetreuungGueltigForMutation(betreuung)) {
-			return Processing.failure("Die Betreuung würde storniert und es gibt eine neuste Betreuung für dieser Kind und Institution");
+			return Processing.failure("Die Betreuung wurde storniert und es gibt eine neuere Betreuung für dieses Kind und Institution");
 		}
 
 		Collection<Betreuungsmitteilung> open =
