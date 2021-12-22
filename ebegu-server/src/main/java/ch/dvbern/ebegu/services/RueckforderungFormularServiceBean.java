@@ -52,7 +52,6 @@ import ch.dvbern.ebegu.entities.WriteProtectedDokument;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -183,6 +182,11 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		return mergedRueckforderungFormular;
 	}
 
+	@Override
+	public void remove(RueckforderungFormular rueckforderungFormular) {
+		persistence.remove(rueckforderungFormular);
+	}
+
 	private RueckforderungFormular saveWithoutAuthCheck(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		Objects.requireNonNull(rueckforderungFormular);
 		final RueckforderungFormular mergedRueckforderungFormular = persistence.merge(rueckforderungFormular);
@@ -309,6 +313,20 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 			throw new EbeguRuntimeException(
 				"definitivVerfuegen", "Could not create Zip File for Auftrag", ioe, auftragIdentifier);
 		}
+	}
+
+	@Nonnull
+	@Override
+	public Collection<RueckforderungFormular> getRueckforderungFormulareByInstitutionStammdaten(InstitutionStammdaten institutionStammdaten) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<RueckforderungFormular> query = cb.createQuery(RueckforderungFormular.class);
+		Root<RueckforderungFormular> root = query.from(RueckforderungFormular.class);
+
+		Predicate institutionStammdatenPredicate = cb.equal(root.get(RueckforderungFormular_.institutionStammdaten),
+				institutionStammdaten);
+		query.where(institutionStammdatenPredicate);
+
+		return persistence.getCriteriaResults(query);
 	}
 
 	@Nonnull
