@@ -41,6 +41,7 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../models/ge
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {TSLastenausgleichTagesschulenStatusHistory} from '../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
+import {TSSteuerdatenResponse} from '../models/neskovanp/TSSteuerdatenResponse';
 import {TSSozialdienst} from '../models/sozialdienst/TSSozialdienst';
 import {TSSozialdienstFall} from '../models/sozialdienst/TSSozialdienstFall';
 import {TSSozialdienstFallDokument} from '../models/sozialdienst/TSSozialdienstFallDokument';
@@ -1862,10 +1863,13 @@ export class EbeguRestUtil {
                 abstractFinanzielleSituationFromServer.geschaeftsgewinnBasisjahr;
             abstractFinanzielleSituationTS.geleisteteAlimente =
                 abstractFinanzielleSituationFromServer.geleisteteAlimente;
-            abstractFinanzielleSituationTS.steuerbaresEinkommen = abstractFinanzielleSituationFromServer.steuerbaresEinkommen;
-            abstractFinanzielleSituationTS.steuerbaresVermoegen = abstractFinanzielleSituationFromServer.steuerbaresVermoegen;
+            abstractFinanzielleSituationTS.steuerbaresEinkommen =
+                abstractFinanzielleSituationFromServer.steuerbaresEinkommen;
+            abstractFinanzielleSituationTS.steuerbaresVermoegen =
+                abstractFinanzielleSituationFromServer.steuerbaresVermoegen;
             abstractFinanzielleSituationTS.geschaeftsverlust = abstractFinanzielleSituationFromServer.geschaeftsverlust;
-            abstractFinanzielleSituationTS.abzuegeLiegenschaft = abstractFinanzielleSituationFromServer.abzuegeLiegenschaft;
+            abstractFinanzielleSituationTS.abzuegeLiegenschaft =
+                abstractFinanzielleSituationFromServer.abzuegeLiegenschaft;
             abstractFinanzielleSituationTS.einkaeufeVorsorge = abstractFinanzielleSituationFromServer.einkaeufeVorsorge;
             return abstractFinanzielleSituationTS;
         }
@@ -5530,5 +5534,70 @@ export class EbeguRestUtil {
             return typ as TSFinanzielleSituationTyp;
         }
         throw new Error(`FinanzielleSituationTyp ${typ} not defined`);
+    }
+
+    public parseSteuerdatenResponse(
+        tsSteuerdatenResponse: TSSteuerdatenResponse,
+        steuerdatenResponseFromServer: any,
+    ): TSSteuerdatenResponse {
+        tsSteuerdatenResponse.zpvNrAntragsteller = steuerdatenResponseFromServer.zpvNrAntragsteller;
+        tsSteuerdatenResponse.geburtsdatumAntragsteller =
+            DateUtil.localDateTimeToMoment(steuerdatenResponseFromServer.geburtsdatumAntragsteller);
+        tsSteuerdatenResponse.kiBonAntragID = steuerdatenResponseFromServer.kiBonAntragID;
+        tsSteuerdatenResponse.beginnGesuchsperiode = steuerdatenResponseFromServer.beginnGesuchsperiode;
+        tsSteuerdatenResponse.zpvNrDossiertraeger = steuerdatenResponseFromServer.zpvNrDossiertraeger;
+        tsSteuerdatenResponse.geburtsdatumDossiertraeger =
+            DateUtil.localDateTimeToMoment(steuerdatenResponseFromServer.geburtsdatumDossiertraeger);
+        tsSteuerdatenResponse.zpvNrPartner = steuerdatenResponseFromServer.zpvNrPartner;
+        tsSteuerdatenResponse.geburtsdatumPartner =
+            DateUtil.localDateTimeToMoment(steuerdatenResponseFromServer.geburtsdatumPartner);
+        tsSteuerdatenResponse.fallId = steuerdatenResponseFromServer.fallId;
+        tsSteuerdatenResponse.antwortdatum = DateUtil.localDateTimeToMoment(steuerdatenResponseFromServer.antwortdatum);
+        tsSteuerdatenResponse.synchroneAntwort = steuerdatenResponseFromServer.synchroneAntwort;
+        tsSteuerdatenResponse.veranlagungsstand = steuerdatenResponseFromServer.veranlagungsstand;
+        tsSteuerdatenResponse.unterjaehrigerFall = steuerdatenResponseFromServer.unterjaehrigerFall;
+        tsSteuerdatenResponse.erwerbseinkommenUnselbstaendigkeitDossiertraeger =
+            steuerdatenResponseFromServer.erwerbseinkommenUnselbstaendigkeitDossiertraeger;
+        tsSteuerdatenResponse.erwerbseinkommenUnselbstaendigkeitPartner =
+            steuerdatenResponseFromServer.erwerbseinkommenUnselbstaendigkeitPartner;
+        tsSteuerdatenResponse.steuerpflichtigesErsatzeinkommenDossiertraeger =
+            steuerdatenResponseFromServer.steuerpflichtigesErsatzeinkommenDossiertraeger;
+        tsSteuerdatenResponse.steuerpflichtigesErsatzeinkommenPartner =
+            steuerdatenResponseFromServer.steuerpflichtigesErsatzeinkommenPartner;
+        tsSteuerdatenResponse.erhalteneUnterhaltsbeitraegeDossiertraeger =
+            steuerdatenResponseFromServer.erhalteneUnterhaltsbeitraegeDossiertraeger;
+        tsSteuerdatenResponse.erhalteneUnterhaltsbeitraegePartner =
+            steuerdatenResponseFromServer.erhalteneUnterhaltsbeitraegePartner;
+        tsSteuerdatenResponse.ausgewiesenerGeschaeftsertragDossiertraeger =
+            steuerdatenResponseFromServer.ausgewiesenerGeschaeftsertragDossiertraeger;
+        tsSteuerdatenResponse.ausgewiesenerGeschaeftsertragPartner =
+            steuerdatenResponseFromServer.ausgewiesenerGeschaeftsertragPartner;
+        tsSteuerdatenResponse.ausgewiesenerGeschaeftsertragVorperiodeDossiertraeger =
+            steuerdatenResponseFromServer.ausgewiesenerGeschaeftsertragVorperiodeDossiertraeger;
+        tsSteuerdatenResponse.ausgewiesenerGeschaeftsertragVorperiodePartner =
+            steuerdatenResponseFromServer.ausgewiesenerGeschaeftsertragVorperiodePartner;
+        tsSteuerdatenResponse.ausgewiesenerGeschaeftsertragVorperiode2Dossiertraeger =
+            steuerdatenResponseFromServer.ausgewiesenerGeschaeftsertragVorperiode2Dossiertraeger;
+        tsSteuerdatenResponse.ausgewiesenerGeschaeftsertragVorperiode2Partner =
+            steuerdatenResponseFromServer.ausgewiesenerGeschaeftsertragVorperiode2Partner;
+        tsSteuerdatenResponse.weitereSteuerbareEinkuenfteDossiertraeger =
+            steuerdatenResponseFromServer.weitereSteuerbareEinkuenfteDossiertraeger;
+        tsSteuerdatenResponse.weitereSteuerbareEinkuenftePartner =
+            steuerdatenResponseFromServer.weitereSteuerbareEinkuenftePartner;
+        tsSteuerdatenResponse.bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME =
+            steuerdatenResponseFromServer.bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME;
+        tsSteuerdatenResponse.bruttoertraegeAusLiegenschaften =
+            steuerdatenResponseFromServer.bruttoertraegeAusLiegenschaften;
+        tsSteuerdatenResponse.nettoertraegeAusEGMEDossiertraeger =
+            steuerdatenResponseFromServer.nettoertraegeAusEGMEDossiertraeger;
+        tsSteuerdatenResponse.nettoertraegeAusEGMEPartner = steuerdatenResponseFromServer.nettoertraegeAusEGMEPartner;
+        tsSteuerdatenResponse.geleisteteUnterhaltsbeitraege =
+            steuerdatenResponseFromServer.geleisteteUnterhaltsbeitraege;
+        tsSteuerdatenResponse.schuldzinsen = steuerdatenResponseFromServer.schuldzinsen;
+        tsSteuerdatenResponse.gewinnungskostenBeweglichesVermoegen =
+            steuerdatenResponseFromServer.gewinnungskostenBeweglichesVermoegen;
+        tsSteuerdatenResponse.liegenschaftsAbzuege = steuerdatenResponseFromServer.liegenschaftsAbzuege;
+        tsSteuerdatenResponse.nettovermoegen = steuerdatenResponseFromServer.nettovermoegen;
+        return tsSteuerdatenResponse;
     }
 }

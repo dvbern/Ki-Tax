@@ -20,6 +20,7 @@ import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSFinSitStatus} from '../../models/enums/TSFinSitStatus';
 import {TSGesuchBetreuungenStatus} from '../../models/enums/TSGesuchBetreuungenStatus';
 import {TSMitteilungEvent} from '../../models/enums/TSMitteilungEvent';
+import {TSSteuerdatenResponse} from '../../models/neskovanp/TSSteuerdatenResponse';
 import {TSAntragDTO} from '../../models/TSAntragDTO';
 import {TSGesuch} from '../../models/TSGesuch';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
@@ -273,6 +274,12 @@ export class GesuchRS implements IEntityRS {
     public updateAlwaysEditableProperties(properties: any): IPromise<TSGesuch> {
         return this.$http.put(this.serviceURL + '/updateAlwaysEditableProperties', properties).then(response => {
             return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
+        });
+    }
+
+    public getSteuerdaten(kibonAnfrage: any): IPromise<TSSteuerdatenResponse> {
+        return this.$http.put(this.serviceURL + '/kibonanfrage/getsteuerdaten', kibonAnfrage).then(response => {
+            return this.ebeguRestUtil.parseSteuerdatenResponse(new TSSteuerdatenResponse(), response.data);
         });
     }
 

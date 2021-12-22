@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Objects;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
@@ -42,12 +43,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class KibonAnfrageService implements IKibonAnfrageService {
+@Dependent
+public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 
 	private static final String TARGET_NAME_SPACE = "http://sv.fin.be.ch/schemas/NESKOVANP/20211119/KiBonAnfrageService";
 	private static final String SERVICE_NAME = "KiBonAnfrage";
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(KibonAnfrageService.class.getSimpleName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(KibonAnfrageWebService.class.getSimpleName());
 
 	@Inject
 	private WSSSecurityKibonAnfrageAssertionOutboundHandler wssUsernameTokenSecurityHandler;
@@ -113,7 +115,7 @@ public class KibonAnfrageService implements IKibonAnfrageService {
 			LOGGER.info("KibonAnfrageService Endpoint: {}", endpointURL);
 
 			try {
-				URL url = KibonAnfrageService.class.getResource("/wsdl/neskovanp/kibonanfrage/KiBonAnfrageService.wsdl");
+				URL url = KibonAnfrageWebService.class.getResource("/wsdl/neskovanp/kibonanfrage/KiBonAnfrageService.wsdl");
 				Objects.requireNonNull(url, "WSDL konnte unter der angegebenen URI nicht gefunden werden. Kann Service-Port nicht erstellen");
 				LOGGER.info("KiBonAnfrageService WSDL URL: {}", url);
 
