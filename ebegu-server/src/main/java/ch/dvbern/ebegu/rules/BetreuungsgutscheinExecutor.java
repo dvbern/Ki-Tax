@@ -30,7 +30,7 @@ import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerFactory;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
-import ch.dvbern.ebegu.rechner.kitax.EmptyKitaxRechner;
+import ch.dvbern.ebegu.rechner.kitax.EmptyKitaxBernRechner;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
@@ -125,7 +125,8 @@ public class BetreuungsgutscheinExecutor {
 		@Nonnull AbstractPlatz platz,
 		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte
 	) {
-		AbstractRechner asivRechner = BGRechnerFactory.getRechner(platz.getBetreuungsangebotTyp(), rechnerRulesForGemeinde);
+		AbstractRechner
+			asivRechner = BGRechnerFactory.getRechner(platz.getBetreuungsangebotTyp(), rechnerRulesForGemeinde);
 		final boolean possibleKitaxRechner = KitaxUtil.isGemeindeWithKitaxUebergangsloesung(platz.extractGemeinde())
 			&& platz.getBetreuungsangebotTyp().isJugendamt();
 		// Den richtigen Rechner anwerfen
@@ -145,7 +146,7 @@ public class BetreuungsgutscheinExecutor {
 						rechnerToUse = BGRechnerFactory.getKitaxRechner(platz, kitaxParameter, oeffnungszeiten, locale);
 					} else {
 						// Betreuung findet nicht in Gemeinde statt
-						rechnerToUse = new EmptyKitaxRechner(locale, MsgKey.ZUSATZGUTSCHEIN_NEIN_NICHT_IN_GEMEINDE);
+						rechnerToUse = new EmptyKitaxBernRechner(locale, MsgKey.ZUSATZGUTSCHEIN_NEIN_NICHT_IN_GEMEINDE);
 					}
 				} else if (kitaxParameter.isStadtBernAsivConfiguered()) {
 					// Es ist Bern, und der Abschnitt liegt nach dem Stichtag. Falls ASIV schon konfiguriert ist,
@@ -154,7 +155,7 @@ public class BetreuungsgutscheinExecutor {
 				} else {
 					// Auch in diesem Fall muss zumindest ein leeres Objekt erstellt werden. Evtl. braucht es hier einen
 					// NullRechner? Wegen Bemerkungen?
-					rechnerToUse = new EmptyKitaxRechner(locale, MsgKey.FEBR_INFO_ASIV_NOT_CONFIGUERD);
+					rechnerToUse = new EmptyKitaxBernRechner(locale, MsgKey.FEBR_INFO_ASIV_NOT_CONFIGUERD);
 				}
 			} else {
 				// Alle anderen rechnen normal mit dem Asiv-Rechner

@@ -34,7 +34,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
-import ch.dvbern.ebegu.rechner.AbstractRechner;
+import ch.dvbern.ebegu.rechner.AbstractBernRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerFactory;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
@@ -54,7 +54,7 @@ public class ZusaetzlicherBabyGutscheinBerechnungTest extends AbstractBGRechnerT
 	private static final MathUtil MATH = MathUtil.DEFAULT;
 	private static final Locale GERMAN = Locale.GERMAN;
 
-	private AbstractRechner rechner;
+	private AbstractBernRechner rechner;
 	private BGRechnerParameterDTO rechnerParameterDTO;
 	private VerfuegungZeitabschnitt abschnittToTest;
 
@@ -207,10 +207,10 @@ public class ZusaetzlicherBabyGutscheinBerechnungTest extends AbstractBGRechnerT
 	}
 
 	@Nonnull
-	private AbstractRechner prepareRechner() {
+	private AbstractBernRechner prepareRechner() {
 		List<RechnerRule> rechnerRules = new ArrayList<>();
 		rechnerRules.add(new ZusaetzlicherBabyGutscheinRechnerRule(GERMAN));
-		final AbstractRechner rechner = BGRechnerFactory.getRechner(BetreuungsangebotTyp.KITA, rechnerRules);
+		final AbstractBernRechner rechner = BGRechnerFactory.getRechner(BetreuungsangebotTyp.KITA, rechnerRules);
 		Assert.assertNotNull(rechner);
 		return rechner;
 	}

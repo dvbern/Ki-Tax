@@ -43,7 +43,7 @@ import static org.hamcrest.Matchers.is;
 public class TageselternRechnerTest extends AbstractBGRechnerTest {
 
 	private final BGRechnerParameterDTO parameterDTO = getParameter();
-	private final TageselternRechner tageselternRechner = new TageselternRechner(Collections.emptyList());
+	private final TageselternBernRechner tageselternRechner = new TageselternBernRechner(Collections.emptyList());
 
 	private final LocalDate geburtstagBaby = LocalDate.of(2018, Month.OCTOBER, 15);
 	private final LocalDate geburtstagKind = LocalDate.of(2016, Month.OCTOBER, 15);

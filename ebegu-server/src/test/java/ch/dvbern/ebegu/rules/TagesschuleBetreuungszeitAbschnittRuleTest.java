@@ -31,7 +31,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
-import ch.dvbern.ebegu.rechner.TagesschuleRechner;
+import ch.dvbern.ebegu.rechner.TagesschuleBernRechner;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
@@ -40,7 +40,7 @@ import org.junit.Test;
 
 public class TagesschuleBetreuungszeitAbschnittRuleTest extends AbstractBGRechnerTest {
 
-	private TagesschuleRechner rechner = new TagesschuleRechner();
+	private TagesschuleBernRechner rechner = new TagesschuleBernRechner();
 	private Gesuch gesuch;
 	private AnmeldungTagesschule anmeldungTagesschule;
 

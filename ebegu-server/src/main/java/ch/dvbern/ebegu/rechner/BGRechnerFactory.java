@@ -25,8 +25,8 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.rechner.kitax.KitaKitaxRechner;
-import ch.dvbern.ebegu.rechner.kitax.TageselternKitaxRechner;
+import ch.dvbern.ebegu.rechner.kitax.KitaKitaxBernRechner;
+import ch.dvbern.ebegu.rechner.kitax.TageselternKitaxBernRechner;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 
@@ -41,13 +41,13 @@ public final class BGRechnerFactory {
 	@Nullable
 	public static AbstractRechner getRechner(@Nonnull BetreuungsangebotTyp betreuungsangebotTyp, @Nonnull List<RechnerRule> rechnerRulesForGemeinde) {
 		if (BetreuungsangebotTyp.KITA == betreuungsangebotTyp) {
-			return new KitaRechner(rechnerRulesForGemeinde);
+			return new KitaBernRechner(rechnerRulesForGemeinde);
 		}
 		if (BetreuungsangebotTyp.TAGESFAMILIEN == betreuungsangebotTyp) {
-			return new TageselternRechner(rechnerRulesForGemeinde);
+			return new TageselternBernRechner(rechnerRulesForGemeinde);
 		}
 		if (BetreuungsangebotTyp.TAGESSCHULE == betreuungsangebotTyp) {
-			return new TagesschuleRechner();
+			return new TagesschuleBernRechner();
 		}
 		// Alle anderen Angebotstypen werden nicht berechnet
 		return null;
@@ -63,14 +63,14 @@ public final class BGRechnerFactory {
 		BetreuungsangebotTyp betreuungsangebotTyp = betreuung.getBetreuungsangebotTyp();
 		if (BetreuungsangebotTyp.KITA == betreuungsangebotTyp) {
 			Objects.requireNonNull(oeffnungszeiten);
-			return new KitaKitaxRechner(kitaxParameterDTO, oeffnungszeiten, locale);
+			return new KitaKitaxBernRechner(kitaxParameterDTO, oeffnungszeiten, locale);
 		}
 		if (BetreuungsangebotTyp.TAGESFAMILIEN == betreuungsangebotTyp) {
-			return new TageselternKitaxRechner(kitaxParameterDTO, oeffnungszeiten, locale);
+			return new TageselternKitaxBernRechner(kitaxParameterDTO, oeffnungszeiten, locale);
 		}
 		if (BetreuungsangebotTyp.TAGESSCHULE == betreuungsangebotTyp) {
 			// Tagesschulen werden von Anfang an mit dem ASIV-Rechner berechnet
-			return new TagesschuleRechner();
+			return new TagesschuleBernRechner();
 		}
 		// Alle anderen Angebotstypen werden nicht berechnet
 		return null;
