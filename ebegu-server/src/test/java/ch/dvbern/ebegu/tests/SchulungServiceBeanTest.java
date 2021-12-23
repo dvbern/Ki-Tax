@@ -36,7 +36,6 @@ import ch.dvbern.ebegu.services.SchulungService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
@@ -100,7 +99,7 @@ public class SchulungServiceBeanTest extends AbstractEbeguLoginTest {
 		assert paris.getMandant() != null;
 		Mandant mandant = paris.getMandant();
 		assertEmpty(mandant);
-		schulungService.createSchulungsdaten();
+		schulungService.createSchulungsdaten(mandant);
 		Assert.assertEquals(96, adresseService.getAllAdressen().size());
 		Assert.assertEquals(7, institutionStammdatenService.getAllInstitutionStammdaten().size());
 		Assert.assertEquals(7, institutionService.getAllInstitutionen(mandant).size());
@@ -108,15 +107,15 @@ public class SchulungServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(anzahlUserSchonVorhanden + anzahlGesuchsteller + anzahlInstitutionsBenutzer,
 			criteriaQueryHelper.getAll(Benutzer.class).size());
 
-		schulungService.deleteSchulungsdaten();
+		schulungService.deleteSchulungsdaten(mandant);
 		assertEmpty(mandant);
 	}
 
 	@Test
 	public void deleteSchulungsdaten() {
 		// Es muss auch "geloescht" werden koennen, wenn es schon (oder teilweise) geloescht ist
-		schulungService.deleteSchulungsdaten();
-		schulungService.deleteSchulungsdaten();
+		schulungService.deleteSchulungsdaten(TestDataUtil.getMandantKantonBern());
+		schulungService.deleteSchulungsdaten(TestDataUtil.getMandantKantonBern());
 	}
 
 	private void assertEmpty(Mandant testMandant) {
