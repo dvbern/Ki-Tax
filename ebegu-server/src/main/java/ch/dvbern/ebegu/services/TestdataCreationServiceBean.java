@@ -24,6 +24,7 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.PostConstruct;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -48,6 +49,7 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
 import ch.dvbern.ebegu.testfaelle.InstitutionStammdatenBuilder;
+import ch.dvbern.ebegu.testfaelle.InstitutionStammdatenBuilderVisitor;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.testfaelle.Testfall03_PerreiraMarcia;
@@ -58,7 +60,6 @@ import ch.dvbern.ebegu.testfaelle.Testfall07_MeierMeret;
 import ch.dvbern.ebegu.testfaelle.Testfall08_UmzugAusInAusBern;
 import ch.dvbern.ebegu.testfaelle.Testfall09_Abwesenheit;
 import ch.dvbern.ebegu.testfaelle.Testfall10_UmzugVorGesuchsperiode;
-import ch.dvbern.ebegu.testfaelle.TestfallDependenciesFactory;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_01;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_02;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_03;
@@ -184,6 +185,13 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
+	private InstitutionStammdatenBuilderVisitor testfallDependenciesVisitor;
+
+	@PostConstruct
+	public void createFactory(){
+		testfallDependenciesVisitor = new InstitutionStammdatenBuilderVisitor(institutionStammdatenService);
+	}
+
 	@Override
 	public void setupTestdata(@Nonnull TestdataSetupConfig config) {
 		Mandant mandant = getMandant(config);
@@ -259,7 +267,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 			throw new IllegalStateException("Keine Gesuchsperiode vorhanden");
 		}
 
-		InstitutionStammdatenBuilder institutionStammdatenBuilder = TestfallDependenciesFactory.getInstitutionsStammdatenBuilder(institutionStammdatenService, mandant);
+		InstitutionStammdatenBuilder institutionStammdatenBuilder = testfallDependenciesVisitor.process(mandant);
 
 		if (TestfallName.WAELTI_DAGMAR == fallid) {
 			return new Testfall01_WaeltiDagmar(

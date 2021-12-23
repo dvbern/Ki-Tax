@@ -30,6 +30,7 @@ import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.PostConstruct;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -102,7 +103,7 @@ import ch.dvbern.ebegu.testfaelle.Testfall08_UmzugAusInAusBern;
 import ch.dvbern.ebegu.testfaelle.Testfall09_Abwesenheit;
 import ch.dvbern.ebegu.testfaelle.Testfall10_UmzugVorGesuchsperiode;
 import ch.dvbern.ebegu.testfaelle.Testfall11_SchulamtOnly;
-import ch.dvbern.ebegu.testfaelle.TestfallDependenciesFactory;
+import ch.dvbern.ebegu.testfaelle.InstitutionStammdatenBuilderVisitor;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_01;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_02;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_03;
@@ -196,6 +197,12 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	@Inject
 	private PrincipalBean principalBean;
 
+	private InstitutionStammdatenBuilderVisitor testfallDependenciesVisitor;
+
+	@PostConstruct
+	public void createFactory(){
+		testfallDependenciesVisitor = new InstitutionStammdatenBuilderVisitor(institutionStammdatenService);
+	}
 
 	@Override
 	@Nonnull
@@ -229,7 +236,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("createAndSaveTestfaelle",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 
-		InstitutionStammdatenBuilder institutionStammdatenBuilder = TestfallDependenciesFactory.getInstitutionsStammdatenBuilder(institutionStammdatenService, mandant);
+		InstitutionStammdatenBuilder institutionStammdatenBuilder = testfallDependenciesVisitor.process(mandant);
 
 		StringBuilder responseString = new StringBuilder();
 		for (int i = 0; i < iterationCount; i++) {
@@ -384,7 +391,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("createAndSaveTestfaelle",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 
-		InstitutionStammdatenBuilder institutionStammdatenBuilder = TestfallDependenciesFactory.getInstitutionsStammdatenBuilder(institutionStammdatenService, mandant);
+		InstitutionStammdatenBuilder institutionStammdatenBuilder =  testfallDependenciesVisitor.process(mandant);;
 
 		if (WAELTI_DAGMAR.equals(fallid)) {
 			return createAndSaveGesuch(new Testfall01_WaeltiDagmar(gesuchsperiode, betreuungenBestaetigt, gemeinde, institutionStammdatenBuilder), verfuegen, null);
@@ -578,7 +585,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	@Override
 	@Nonnull
 	public List<InstitutionStammdaten> getInstitutionsstammdatenForTestfaelle(Mandant mandant) {
-		InstitutionStammdatenBuilder stammdatenBuilder = TestfallDependenciesFactory.getInstitutionsStammdatenBuilder(institutionStammdatenService, mandant);
+		InstitutionStammdatenBuilder stammdatenBuilder =  testfallDependenciesVisitor.process(mandant);;
 		return stammdatenBuilder.buildStammdaten();
 	}
 
@@ -984,7 +991,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		Gemeinde gemeinde = gemeindeService.getAktiveGemeinden(mandant).stream().findFirst().orElseThrow(() -> new IllegalArgumentException());
 		GemeindeStammdaten gemeindeStammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeinde.getId()).orElseThrow(() -> new IllegalArgumentException());
 		Benutzer besitzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new IllegalStateException());
-		InstitutionStammdatenBuilder institutionStammdatenBuilder = TestfallDependenciesFactory.getInstitutionsStammdatenBuilder(institutionStammdatenService, mandant);
+		InstitutionStammdatenBuilder institutionStammdatenBuilder = testfallDependenciesVisitor.process(mandant);
 		final Gesuch gesuch = createAndSaveGesuch(new Testfall01_WaeltiDagmar(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder),
 			true, null);
 		requireNonNull(gesuch.getGesuchsteller1());

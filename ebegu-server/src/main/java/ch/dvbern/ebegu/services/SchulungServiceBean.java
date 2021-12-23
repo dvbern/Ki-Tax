@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.PostConstruct;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -75,6 +76,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
 import ch.dvbern.ebegu.testfaelle.InstitutionStammdatenBuilder;
+import ch.dvbern.ebegu.testfaelle.InstitutionStammdatenBuilderVisitor;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.testfaelle.Testfall03_PerreiraMarcia;
@@ -82,7 +84,6 @@ import ch.dvbern.ebegu.testfaelle.Testfall04_WaltherLaura;
 import ch.dvbern.ebegu.testfaelle.Testfall05_LuethiMeret;
 import ch.dvbern.ebegu.testfaelle.Testfall06_BeckerNora;
 import ch.dvbern.ebegu.testfaelle.Testfall07_MeierMeret;
-import ch.dvbern.ebegu.testfaelle.TestfallDependenciesFactory;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.FreigabeCopyUtil;
@@ -96,8 +97,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-//TODO: Mandantenfähigkeit. Müssen wir die Schulungsdaten anpassen?
 
 /**
  * Service fuer erstellen und mutieren von Schulungsdaten
@@ -176,6 +175,13 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 
 	@Inject
 	private Persistence persistence;
+
+	private InstitutionStammdatenBuilderVisitor testfallDependenciesVisitor;
+
+	@PostConstruct
+	public void createFactory(){
+		testfallDependenciesVisitor = new InstitutionStammdatenBuilderVisitor(institutionStammdatenService);
+	}
 
 	@Override
 	public void resetSchulungsdaten(Mandant mandant) {
@@ -489,8 +495,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	private void createFaelleForSuche(@Nonnull List<InstitutionStammdaten> institutionenForSchulung, @Nonnull Gemeinde gemeinde) {
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.getAllActiveGesuchsperioden().iterator().next();
 
-		var institutionStammdatenBuilder = TestfallDependenciesFactory.getInstitutionsStammdatenBuilder(institutionStammdatenService,
-				Objects.requireNonNull(gemeinde.getMandant()));
+		var institutionStammdatenBuilder =  testfallDependenciesVisitor.process(Objects.requireNonNull(gemeinde.getMandant()));
 
 		createFall(Testfall01_WaeltiDagmar.class, gesuchsperiode,
 				gemeinde, "01", null, null, institutionenForSchulung, true, institutionStammdatenBuilder);
