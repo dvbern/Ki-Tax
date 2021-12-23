@@ -76,7 +76,7 @@ public class STSAssertionManagerBeanTest  extends AbstractEbeguLoginTest {
 
 	@Test
 	public void getValidSTSAssertionForPersonensucheTest() throws STSZertifikatServiceException, PersonenSucheServiceException, TransformerException {
-		final SOAPElement validSTSAssertionForPersonensuche = stsAssertionManager.getValidSTSAssertionForPersonensuche(
+		final SOAPElement validSTSAssertionForPersonensuche = stsAssertionManager.getValidSTSAssertionForWebserviceType(
 			WebserviceType.GERES);
 		Assert.assertNotNull(validSTSAssertionForPersonensuche);
 		String s = SAMLAuthenticationUtil.nodeToString(validSTSAssertionForPersonensuche);
@@ -86,7 +86,7 @@ public class STSAssertionManagerBeanTest  extends AbstractEbeguLoginTest {
 
 	@Test
 	public void forceRenewalTest() throws STSZertifikatServiceException, PersonenSucheServiceException {
-		final SOAPElement validSTSAssertionForPersonensuche = stsAssertionManager.getValidSTSAssertionForPersonensuche(WebserviceType.GERES);
+		final SOAPElement validSTSAssertionForPersonensuche = stsAssertionManager.getValidSTSAssertionForWebserviceType(WebserviceType.GERES);
 		Assert.assertNotNull(validSTSAssertionForPersonensuche);
 		SOAPElement renewdAssertion = stsAssertionManager.forceRenewalOfCurrentAssertion(WebserviceType.GERES);
 		Assert.assertNotNull(validSTSAssertionForPersonensuche);
@@ -95,7 +95,7 @@ public class STSAssertionManagerBeanTest  extends AbstractEbeguLoginTest {
 	}
 	@Test
 	public void forceReinitializationOfAssertionTest() throws STSZertifikatServiceException, PersonenSucheServiceException {
-		final SOAPElement validSTSAssertionForPersonensuche = stsAssertionManager.getValidSTSAssertionForPersonensuche(WebserviceType.GERES);
+		final SOAPElement validSTSAssertionForPersonensuche = stsAssertionManager.getValidSTSAssertionForWebserviceType(WebserviceType.GERES);
 		Assert.assertNotNull(validSTSAssertionForPersonensuche);
 		SOAPElement anotherAssertion = stsAssertionManager.forceReinitializationOfCurrentAssertion(WebserviceType.GERES);
 		Assert.assertNotNull(validSTSAssertionForPersonensuche);

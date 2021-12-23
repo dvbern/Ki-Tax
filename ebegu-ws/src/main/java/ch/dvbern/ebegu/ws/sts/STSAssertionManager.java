@@ -32,7 +32,7 @@ public interface STSAssertionManager {
 	/**
 	 * Gibt die noch gültige, falls vorhanden, Assertion zurück oder erneuert diese oder erstellt eine neue
 	 */
-	SOAPElement getValidSTSAssertionForPersonensuche(WebserviceType webserviceType) throws STSZertifikatServiceException;
+	SOAPElement getValidSTSAssertionForWebserviceType(WebserviceType webserviceType) throws STSZertifikatServiceException;
 
 	SOAPElement forceRenewalOfCurrentAssertion(WebserviceType webserviceType) throws STSZertifikatServiceException;
 

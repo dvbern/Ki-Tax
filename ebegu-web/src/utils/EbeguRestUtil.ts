@@ -41,6 +41,7 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../models/ge
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {TSLastenausgleichTagesschulenStatusHistory} from '../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
+import {TSKibonAnfrage} from '../models/neskovanp/TSKibonAnfrage';
 import {TSSteuerdatenResponse} from '../models/neskovanp/TSSteuerdatenResponse';
 import {TSSozialdienst} from '../models/sozialdienst/TSSozialdienst';
 import {TSSozialdienstFall} from '../models/sozialdienst/TSSozialdienstFall';
@@ -5599,5 +5600,13 @@ export class EbeguRestUtil {
         tsSteuerdatenResponse.liegenschaftsAbzuege = steuerdatenResponseFromServer.liegenschaftsAbzuege;
         tsSteuerdatenResponse.nettovermoegen = steuerdatenResponseFromServer.nettovermoegen;
         return tsSteuerdatenResponse;
+    }
+
+    public kibonAnfrageToRestObject(restKibonAnfrage: any, kibonAnfrage: TSKibonAnfrage): any {
+        restKibonAnfrage.antragId = kibonAnfrage.antragId;
+        restKibonAnfrage.geburtsdatum = DateUtil.momentToLocalDate(kibonAnfrage.geburtsdatum);
+        restKibonAnfrage.gesuchsperiodeBeginnJahr = kibonAnfrage.gesuchsperiodeBeginnJahr;
+        restKibonAnfrage.zpvNummer = kibonAnfrage.zpvNummer;
+        return restKibonAnfrage;
     }
 }

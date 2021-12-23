@@ -28,8 +28,10 @@ import {BenutzerRSX} from '../../../app/core/service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {GemeindeAntragService} from '../../../app/gemeinde-antraege/services/gemeinde-antrag.service';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {GesuchRS} from '../../../gesuch/service/gesuchRS.rest';
 import {TSPagination} from '../../../models/dto/TSPagination';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
+import {TSKibonAnfrage} from '../../../models/neskovanp/TSKibonAnfrage';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../models/TSGemeinde';
@@ -67,6 +69,12 @@ export class TestdatenViewComponent implements OnInit {
     public gemeindeAntragTyp: TSGemeindeAntragTyp;
     public gemeindeAntragTypeList: TSGemeindeAntragTyp[];
 
+    // kiBonAnfrage Schnitstelle Test
+    public antragId: string;
+    public zpvNummer: number;
+    public gesuchsperiodeBeginnJahr: number;
+    public geburtsdatum: moment.Moment;
+
     public constructor(
         public readonly testFaelleRS: TestFaelleRS,
         private readonly benutzerRS: BenutzerRSX,
@@ -76,6 +84,7 @@ export class TestdatenViewComponent implements OnInit {
         private readonly gemeindeRS: GemeindeRS,
         private readonly dialog: MatDialog,
         private readonly gemeindeAntragRS: GemeindeAntragService,
+        private readonly gesuchRS: GesuchRS,
     ) {
     }
 
@@ -296,6 +305,13 @@ export class TestdatenViewComponent implements OnInit {
         }, () => this.errorService.addMesageAsError('Anträge konnten nicht erstellt werden'));
     }
 
+    public testKibonAnfrageResponse(): void {
+        this.gesuchRS.getSteuerdaten(new TSKibonAnfrage(this.antragId,
+            this.zpvNummer,
+            this.gesuchsperiodeBeginnJahr,
+            this.geburtsdatum));
+    }
+
     private async overwriteIfGemeindeAntragExists(): Promise<boolean> {
         const antraege = await this.gemeindeAntragRS.getGemeindeAntraege({
                 antragTyp: this.gemeindeAntragTyp,
@@ -303,7 +319,7 @@ export class TestdatenViewComponent implements OnInit {
                 gemeinde: this.gemeindeForGemeindeAntrag.name,
             },
             {},
-            new TSPagination()
+            new TSPagination(),
         ).toPromise();
         return antraege.resultList.length === 0 || this.confirmDialog(
             'Es existiert bereits ein Antrag für die gewählte Gemeinde und Periode. Fortfahren?',

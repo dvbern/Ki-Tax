@@ -278,7 +278,9 @@ export class GesuchRS implements IEntityRS {
     }
 
     public getSteuerdaten(kibonAnfrage: any): IPromise<TSSteuerdatenResponse> {
-        return this.$http.put(this.serviceURL + '/kibonanfrage/getsteuerdaten', kibonAnfrage).then(response => {
+        let sentKibonAnfrage = {};
+        sentKibonAnfrage = this.ebeguRestUtil.kibonAnfrageToRestObject(sentKibonAnfrage, kibonAnfrage);
+        return this.$http.post(this.serviceURL + '/kibonanfrage/getsteuerdaten', sentKibonAnfrage).then(response => {
             return this.ebeguRestUtil.parseSteuerdatenResponse(new TSSteuerdatenResponse(), response.data);
         });
     }

@@ -56,7 +56,7 @@ public class STSAssertionManagerBean implements STSAssertionManager {
 
 
 	@Override
-	public SOAPElement getValidSTSAssertionForPersonensuche(WebserviceType webserviceType) throws STSZertifikatServiceException {
+	public SOAPElement getValidSTSAssertionForWebserviceType(WebserviceType webserviceType) throws STSZertifikatServiceException {
 		//check assertion present
 		if (currentAssertionElement == null) {
 			issueSTSSamlAssertion(webserviceType);
@@ -79,7 +79,7 @@ public class STSAssertionManagerBean implements STSAssertionManager {
 	public SOAPElement forceReinitializationOfCurrentAssertion(WebserviceType webserviceType) throws STSZertifikatServiceException {
 		//noinspection ConstantConditions
 		this.currentAssertionElement = null;
-		return getValidSTSAssertionForPersonensuche(webserviceType);
+		return getValidSTSAssertionForWebserviceType(webserviceType);
 
 	}
 
@@ -113,7 +113,7 @@ public class STSAssertionManagerBean implements STSAssertionManager {
 		if (LocalDateTime.now().isBefore(maxRenewalTime)) {
 
 			final STSAssertionExtractionResult stsAssertionExtractionResult = renewalAssertionWebService.renewAssertion(this.currentAssertionElement,
-				renewalToken);
+				renewalToken, webserviceType);
 			handleUpdatedAssertion(stsAssertionExtractionResult);
 		} else {
 			LOGGER.info("Assertion can not be renewd anymore. Trigger a reinitialization");

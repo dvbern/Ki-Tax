@@ -353,7 +353,11 @@ public interface EbeguConfiguration {
 
 	String getEbeguKibonAnfrageSTSPrivateKeyPW();
 
+	String getEbeguKibonAnfrageSTSBasePath();
+
 	String getEbeguKibonAnfrageSTSEndpoint();
 
 	String getEbeguKibonAnfrageSTSWsdl();
+
+	String getEbeguKibonAnfrageSTSRenewalAssertionEndpoint();
 }

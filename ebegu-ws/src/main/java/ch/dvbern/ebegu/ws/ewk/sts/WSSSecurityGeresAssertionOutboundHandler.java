@@ -66,7 +66,7 @@ public class WSSSecurityGeresAssertionOutboundHandler implements SOAPHandler<SOA
 
 				SOAPHeader header = envelope.addHeader();
 
-				Node assertionNode = stsAssertionManager.getValidSTSAssertionForPersonensuche(WebserviceType.GERES);
+				Node assertionNode = stsAssertionManager.getValidSTSAssertionForWebserviceType(WebserviceType.GERES);
 
 				Node importedAssertionNode = securityElem.getOwnerDocument().importNode(assertionNode, true);
 				if(importedAssertionNode.getNodeType() ==  Node.DOCUMENT_NODE){

@@ -52,4 +52,8 @@ public class STSConfigManager {
 	public String getEbeguSTSWsdl(WebserviceType webserviceType) {
 		return webserviceType.equals(WebserviceType.GERES) ? config.getEbeguPersonensucheSTSWsdl() : config.getEbeguKibonAnfrageSTSWsdl();
 	}
+
+	public String getEbeguSTSRenewalAssertionEndpoint(WebserviceType webserviceType) {
+		return webserviceType.equals(WebserviceType.GERES) ? config.getEbeguPersonensucheSTSRenewalAssertionEndpoint() : config.getEbeguKibonAnfrageSTSRenewalAssertionEndpoint();
+	}
 }

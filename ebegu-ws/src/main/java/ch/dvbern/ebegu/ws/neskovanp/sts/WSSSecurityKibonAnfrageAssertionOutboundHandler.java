@@ -66,7 +66,7 @@ public class WSSSecurityKibonAnfrageAssertionOutboundHandler implements SOAPHand
 
 				SOAPHeader header = envelope.addHeader();
 
-				Node assertionNode = stsAssertionManager.getValidSTSAssertionForPersonensuche(WebserviceType.KIBON_ANFRAGE);
+				Node assertionNode = stsAssertionManager.getValidSTSAssertionForWebserviceType(WebserviceType.KIBON_ANFRAGE);
 
 				Node importedAssertionNode = securityElem.getOwnerDocument().importNode(assertionNode, true);
 				if(importedAssertionNode.getNodeType() ==  Node.DOCUMENT_NODE){

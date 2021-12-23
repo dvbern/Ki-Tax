@@ -49,7 +49,7 @@ public class RenewalAssertionWebService {
 	private EbeguConfiguration config;
 
 
-	public STSAssertionExtractionResult renewAssertion(SOAPElement assertionElement, String renewalToken) throws STSZertifikatServiceException {
+	public STSAssertionExtractionResult renewAssertion(SOAPElement assertionElement, String renewalToken, WebserviceType webserviceType) throws STSZertifikatServiceException {
 		// Assertion muss erneuert werden
 		LOGGER.info("triggering renew of assertion using renewal token");
 		try {

@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 
 	private static final String TARGET_NAME_SPACE = "http://sv.fin.be.ch/schemas/NESKOVANP/20211119/KiBonAnfrageService";
-	private static final String SERVICE_NAME = "KiBonAnfrage";
+	private static final String SERVICE_NAME = "KiBonAnfrageService";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(KibonAnfrageWebService.class.getSimpleName());
 

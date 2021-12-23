@@ -373,6 +373,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 		return getString(EBEGU_PERSONENSUCHE_STS_ENDPOINT, getEbeguPersonensucheSTSBasePath() +  "/zertsts/services/ZertSTSWebservice");
 	}
 
+	//unused ?
 	@Override
 	public String getEbeguPersonensucheSTSRenewalAssertionWsdl() {
 		return getString(EBEGU_PERSONENSUCHE_STS_RENEWAL_ASSERTION_WSDL);
@@ -490,12 +491,22 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	}
 
 	@Override
+	public String getEbeguKibonAnfrageSTSBasePath() {
+		return getString(EBEGU_KIBON_ANFRAGE_STS_BASE_PATH, "https://nesko-replica.sv.fin.be.ch/securityService"); //test
+	}
+
+	@Override
 	public String getEbeguKibonAnfrageSTSEndpoint() {
-		return getString(EBEGU_KIBON_ANFRAGE_STS_ENDPOINT);
+		return getString(EBEGU_KIBON_ANFRAGE_STS_ENDPOINT, getEbeguKibonAnfrageSTSBasePath() +  "/zertsts/services/ZertSTSWebservice");
 	}
 
 	@Override
 	public String getEbeguKibonAnfrageSTSWsdl() {
 		return getString(EBEGU_KIBON_ANFRAGE_STS_WSDL);
+	}
+
+	@Override
+	public String getEbeguKibonAnfrageSTSRenewalAssertionEndpoint() {
+		return getString(EBEGU_KIBON_ANFRAGE_STS_RENEWAL_ASSERTION_ENDPOINT, getEbeguKibonAnfrageSTSBasePath() +  "/samlrenew/services/RenewAssertionWebService");
 	}
 }
