@@ -168,6 +168,8 @@ public class BGCalculationInput {
 
 	private int minimalErforderlichesPensum;
 
+	private boolean isKesbPlatzierung;
+
 	private PensumUnits pensumUnit = PensumUnits.PERCENTAGE;
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
@@ -226,6 +228,7 @@ public class BGCalculationInput {
 		this.pensumUnit = toCopy.pensumUnit;
 		this.minimalErforderlichesPensum = toCopy.minimalErforderlichesPensum;
 		this.rueckwirkendReduziertesPensumRest = toCopy.rueckwirkendReduziertesPensumRest;
+		this.isKesbPlatzierung = toCopy.isKesbPlatzierung;
 	}
 
 	@Nonnull
@@ -780,6 +783,7 @@ public class BGCalculationInput {
 		this.tsInputOhneBetreuung.add(other.tsInputOhneBetreuung);
 		this.sozialhilfeempfaenger = this.sozialhilfeempfaenger || other.sozialhilfeempfaenger;
 		this.betreuungInGemeinde = this.betreuungInGemeinde || other.betreuungInGemeinde;
+		this.isKesbPlatzierung = this.isKesbPlatzierung || other.isKesbPlatzierung;
 
 		// Die Felder betreffend Familienabzug können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
 		if (other.getAbzugFamGroesse() != null) {
@@ -839,7 +843,8 @@ public class BGCalculationInput {
 			besondereBeduerfnisseBestaetigt == other.besondereBeduerfnisseBestaetigt &&
 			this.tsInputMitBetreuung.isSame(other.tsInputMitBetreuung) &&
 			this.tsInputOhneBetreuung.isSame(other.tsInputOhneBetreuung) &&
-			this.sozialhilfeempfaenger == other.sozialhilfeempfaenger;
+			this.sozialhilfeempfaenger == other.sozialhilfeempfaenger &&
+			this.isKesbPlatzierung == other.isKesbPlatzierung;
 	}
 
 	public boolean isSameSichtbareDaten(BGCalculationInput that) {
@@ -931,5 +936,13 @@ public class BGCalculationInput {
 
 	public void setRueckwirkendReduziertesPensumRest(int rueckwirkendReduziertesPensumRest) {
 		this.rueckwirkendReduziertesPensumRest = rueckwirkendReduziertesPensumRest;
+	}
+
+	public boolean isKesbPlatzierung() {
+		return isKesbPlatzierung;
+	}
+
+	public void setKesbPlatzierung(boolean kesbPlatzierung) {
+		isKesbPlatzierung = kesbPlatzierung;
 	}
 }
