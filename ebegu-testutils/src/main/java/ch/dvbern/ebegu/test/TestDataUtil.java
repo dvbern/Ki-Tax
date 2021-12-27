@@ -962,7 +962,17 @@ public final class TestDataUtil {
 		anmeldung.setInstitutionStammdaten(createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
 		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
 		anmeldung.setKind(kind);
-		anmeldung.setBelegungTagesschule(createDefaultBelegungTagesschule(true));
+		anmeldung.setBelegungTagesschule(createDefaultBelegungTagesschule(true, false));
+		kind.getAnmeldungenTagesschule().add(anmeldung);
+		return anmeldung;
+	}
+
+	public static AnmeldungTagesschule createKesbAnmeldungTagesschuleWithModules(KindContainer kind, Gesuchsperiode gesuchsperiode) {
+		AnmeldungTagesschule anmeldung = new AnmeldungTagesschule();
+		anmeldung.setInstitutionStammdaten(createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
+		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+		anmeldung.setKind(kind);
+		anmeldung.setBelegungTagesschule(createDefaultBelegungTagesschule(true, true));
 		kind.getAnmeldungenTagesschule().add(anmeldung);
 		return anmeldung;
 	}
@@ -972,7 +982,7 @@ public final class TestDataUtil {
 		anmeldung.setInstitutionStammdaten(createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
 		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
 		anmeldung.setKind(kind);
-		anmeldung.setBelegungTagesschule(createDefaultBelegungTagesschule(false));
+		anmeldung.setBelegungTagesschule(createDefaultBelegungTagesschule(false, false));
 		return anmeldung;
 	}
 
@@ -1027,10 +1037,13 @@ public final class TestDataUtil {
 		return betreuung;
 	}
 
-	public static BelegungTagesschule createDefaultBelegungTagesschule(boolean withModulBelegung) {
+	public static BelegungTagesschule createDefaultBelegungTagesschule(
+			boolean withModulBelegung,
+			boolean isKesbPlatzierung) {
 		final BelegungTagesschule belegungTagesschule = new BelegungTagesschule();
 		belegungTagesschule.setBemerkung("Dies ist eine Bemerkung!");
 		belegungTagesschule.setEintrittsdatum(LocalDate.now());
+		belegungTagesschule.setKeineKesbPlatzierung(!isKesbPlatzierung);
 		if (withModulBelegung) {
 			belegungTagesschule.setBelegungTagesschuleModule(new TreeSet<>());
 			belegungTagesschule.setAbholungTagesschule(AbholungTagesschule.ALLEINE_NACH_HAUSE);
