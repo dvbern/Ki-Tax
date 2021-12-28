@@ -270,11 +270,6 @@
                                                    [errorObject]="tsStartDate.errors">
                                 </dv-error-messages>
                             </div>
-                            <mat-checkbox id="besondereVolksschule" name="besondereVolksschule"
-                                          class="margin-top-10"
-                                          [(ngModel)]="stammdaten.gemeinde.besondereVolksschule"
-                                          [disabled]="!(isSuperadminOrMandant())">
-                                {{'GEMEINDE_ANGEBOT_BESONDERE_VOLKSSCHULE'|translate}}</mat-checkbox>
                         </div>
 
                         <mat-checkbox id="angebotFI" name="angebotFI"
