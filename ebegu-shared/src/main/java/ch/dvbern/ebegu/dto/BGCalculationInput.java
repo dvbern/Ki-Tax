@@ -142,6 +142,8 @@ public class BGCalculationInput {
 	@Nullable
 	private BigDecimal famGroesse = null;
 
+	private boolean kitaPlusZuschlag = false;
+
 	@Valid
 	@NotNull
 	@Nonnull
@@ -226,6 +228,7 @@ public class BGCalculationInput {
 		this.pensumUnit = toCopy.pensumUnit;
 		this.minimalErforderlichesPensum = toCopy.minimalErforderlichesPensum;
 		this.rueckwirkendReduziertesPensumRest = toCopy.rueckwirkendReduziertesPensumRest;
+		this.kitaPlusZuschlag = toCopy.kitaPlusZuschlag;
 	}
 
 	@Nonnull
@@ -796,6 +799,7 @@ public class BGCalculationInput {
 			this.setFamGroesse(other.getFamGroesse());
 		}
 
+		this.kitaPlusZuschlag = this.kitaPlusZuschlag || other.kitaPlusZuschlag;
 		this.minimalErforderlichesPensum = other.minimalErforderlichesPensum;
 	}
 
@@ -839,7 +843,8 @@ public class BGCalculationInput {
 			besondereBeduerfnisseBestaetigt == other.besondereBeduerfnisseBestaetigt &&
 			this.tsInputMitBetreuung.isSame(other.tsInputMitBetreuung) &&
 			this.tsInputOhneBetreuung.isSame(other.tsInputOhneBetreuung) &&
-			this.sozialhilfeempfaenger == other.sozialhilfeempfaenger;
+			this.sozialhilfeempfaenger == other.sozialhilfeempfaenger &&
+			this.kitaPlusZuschlag == other.kitaPlusZuschlag;
 	}
 
 	public boolean isSameSichtbareDaten(BGCalculationInput that) {
@@ -931,5 +936,13 @@ public class BGCalculationInput {
 
 	public void setRueckwirkendReduziertesPensumRest(int rueckwirkendReduziertesPensumRest) {
 		this.rueckwirkendReduziertesPensumRest = rueckwirkendReduziertesPensumRest;
+	}
+
+	public boolean isKitaPlusZuschlag() {
+		return kitaPlusZuschlag;
+	}
+
+	public void setKitaPlusZuschlag(boolean kitaPlusZuschlag) {
+		this.kitaPlusZuschlag = kitaPlusZuschlag;
 	}
 }

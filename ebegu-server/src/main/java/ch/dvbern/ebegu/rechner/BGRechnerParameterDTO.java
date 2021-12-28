@@ -84,10 +84,15 @@ public final class BGRechnerParameterDTO {
 	private BigDecimal maxTarifTagesschuleOhnePaedagogischerBetreuung;
 	private BigDecimal minTarifTagesschule;
 
+
 	private MahlzeitenverguenstigungParameter mahlzeitenverguenstigungParameter = new MahlzeitenverguenstigungParameter();
 
 	private BGRechnerParameterGemeindeDTO gemeindeParameter = new BGRechnerParameterGemeindeDTO();
 
+	//Luzern Spezifische Parameter
+	private BigDecimal kitaPlusZuschlag = BigDecimal.ZERO;
+	private BigDecimal minBGBaby = BigDecimal.ZERO;
+	private BigDecimal minBGKind = BigDecimal.ZERO;
 
 	public BGRechnerParameterDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
 		this.setMaxVerguenstigungVorschuleBabyProTg(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG, gesuchsperiode, gemeinde));
@@ -317,5 +322,29 @@ public final class BGRechnerParameterDTO {
 
 	public void setGemeindeParameter(BGRechnerParameterGemeindeDTO gemeindeParameter) {
 		this.gemeindeParameter = gemeindeParameter;
+	}
+
+	public BigDecimal getKitaPlusZuschlag() {
+		return kitaPlusZuschlag;
+	}
+
+	public void setKitaPlusZuschlag(BigDecimal kitaPlusZuschlag) {
+		this.kitaPlusZuschlag = kitaPlusZuschlag;
+	}
+
+	public BigDecimal getMinBGKind() {
+		return minBGKind;
+	}
+
+	public void setMinBGKind(BigDecimal minBGKind) {
+		this.minBGKind = minBGKind;
+	}
+
+	public BigDecimal getMinBGBaby() {
+		return minBGBaby;
+	}
+
+	public void setMinBGBaby(BigDecimal minBGBaby) {
+		this.minBGBaby = minBGBaby;
 	}
 }
