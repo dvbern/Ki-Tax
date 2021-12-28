@@ -200,4 +200,16 @@ export class MandantService {
     public getMandantRedirect(): KiBonMandant {
         return MandantService.cookieToMandant(this.getDecodedMandantRedirectCookie());
     }
+
+    public getMandantLoginState(mandant: KiBonMandant): string {
+        switch (mandant) {
+            case KiBonMandant.BE:
+                return 'authentication.login';
+            case KiBonMandant.SO:
+            case KiBonMandant.LU:
+            case KiBonMandant.NONE:
+            default:
+                return 'authentication.locallogin';
+        }
+    }
 }
