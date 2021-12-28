@@ -157,7 +157,8 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		return persistence.getCriteriaResults(query);
 	}
 
-	private long getNextGemeindeNummer() {
+	@Override
+	public long getNextGemeindeNummer() {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Long> query = cb.createQuery(Long.class);
 		final Root<Gemeinde> root = query.from(Gemeinde.class);

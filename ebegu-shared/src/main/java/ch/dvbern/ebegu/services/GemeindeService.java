@@ -65,6 +65,12 @@ public interface GemeindeService {
 	Collection<Gemeinde> getAllGemeinden();
 
 	/**
+	 * Gibt die nächste freie Gemeindenummer zurück
+	 */
+	@Nonnull
+	long getNextGemeindeNummer();
+
+	/**
 	 * Gibt alle Gemeinden im Status "AKTIV" für den Mandanten des Principal zurück
 	 */
 	@Nonnull
