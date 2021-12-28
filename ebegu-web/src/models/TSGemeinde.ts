@@ -35,8 +35,7 @@ export class TSGemeinde extends TSAbstractEntity {
     public gueltigBis: moment.Moment;
 
     public isAtLeastOneAngebotSelected(): boolean {
-        const hasAngebot =
-            this.besondereVolksschule || this.angebotBG || this.angebotTS || this.angebotFI;
+        const hasAngebot = this.angebotBG || this.angebotTS || this.angebotFI;
         return hasAngebot;
     }
 }
