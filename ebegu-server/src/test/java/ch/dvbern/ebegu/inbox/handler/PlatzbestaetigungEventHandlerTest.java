@@ -1308,6 +1308,8 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			expect(betreuungEventHelper.getMutationsmeldungBenutzer()).andReturn(new Benutzer());
 
+			expect(mitteilungService.isBetreuungGueltigForMutation(betreuung)).andReturn(true);
+
 			expect(mitteilungService.findOffeneBetreuungsmitteilungenForBetreuung(betreuung))
 				.andReturn(Arrays.asList(existing));
 

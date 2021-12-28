@@ -31,6 +31,7 @@ import {DvBisherXComponent} from '../core/component/dv-bisher/dv-bisher-x.compon
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
 import {DVInputContainerXComponent} from '../core/component/dv-input-container/dv-input-container-x.component';
+import {DvInputLabelFieldComponent} from '../core/component/dv-input-label-field/dv-input-label-field.component';
 import {DvMitteilungDelegationComponent} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation';
 import {DvNavigationXComponent} from '../core/component/dv-navigation-x/dv-navigation-x.component';
 import {DvNgBackDialogComponent} from '../core/component/dv-ng-back-dialog/dv-ng-back-dialog.component';
@@ -160,7 +161,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         EbeguDateTimePipe,
         DvDatePickerXComponent,
         IeDeprecationWarningComponent,
-        DvNavigationXComponent
+        DvNavigationXComponent,
+        DvInputLabelFieldComponent
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
@@ -222,7 +224,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         PreviousPeriodeStrPipe,
         EbeguDateTimePipe,
         DvDatePickerXComponent,
-        DvNavigationXComponent
+        DvNavigationXComponent,
+        DvInputLabelFieldComponent
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)
