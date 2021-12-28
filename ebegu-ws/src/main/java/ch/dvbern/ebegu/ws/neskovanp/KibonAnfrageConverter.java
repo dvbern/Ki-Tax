@@ -41,28 +41,73 @@ public class KibonAnfrageConverter {
 		steuerdatenResponse.setSynchroneAntwort(steuerdatenResponseType.isSynchroneAntwort());
 		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.valueOf(steuerdatenResponseType.getVeranlagungsstand().value()));
 		steuerdatenResponse.setUnterjaehrigerFall(steuerdatenResponseType.isUnterjaehrigerFall());
-		steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitDossiertraeger(new BigDecimal(steuerdatenResponseType.getErwerbseinkommenUnselbstaendigkeitDossiertraeger()));
-		steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitPartner(new BigDecimal(steuerdatenResponseType.getErwerbseinkommenUnselbstaendigkeitPartner()));
-		steuerdatenResponse.setSteuerpflichtigesErsatzeinkommenDossiertraeger(new BigDecimal(steuerdatenResponseType.getSteuerpflichtigesErsatzeinkommenDossiertraeger()));
-		steuerdatenResponse.setSteuerpflichtigesErsatzeinkommenPartner(new BigDecimal(steuerdatenResponseType.getSteuerpflichtigesErsatzeinkommenPartner()));
-		steuerdatenResponse.setErhalteneUnterhaltsbeitraegeDossiertraeger(new BigDecimal(steuerdatenResponseType.getErhalteneUnterhaltsbeitraegeDossiertraeger()));
-		steuerdatenResponse.setErhalteneUnterhaltsbeitraegePartner(new BigDecimal(steuerdatenResponseType.getErhalteneUnterhaltsbeitraegePartner()));
-		steuerdatenResponse.setAusgewiesenerGeschaeftsertragDossiertraeger(new BigDecimal(steuerdatenResponseType.getAusgewiesenerGeschaeftsertragDossiertraeger()));
-		steuerdatenResponse.setAusgewiesenerGeschaeftsertragPartner(new BigDecimal(steuerdatenResponseType.getAusgewiesenerGeschaeftsertragPartner()));
-		steuerdatenResponse.setAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger(new BigDecimal(steuerdatenResponseType.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger()));
-		steuerdatenResponse.setAusgewiesenerGeschaeftsertragVorperiodePartner(new BigDecimal(steuerdatenResponseType.getAusgewiesenerGeschaeftsertragVorperiodePartner()));
-		steuerdatenResponse.setAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger(new BigDecimal(steuerdatenResponseType.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger()));
-		steuerdatenResponse.setAusgewiesenerGeschaeftsertragVorperiode2Partner(new BigDecimal(steuerdatenResponseType.getAusgewiesenerGeschaeftsertragVorperiode2Partner()));
-		steuerdatenResponse.setWeitereSteuerbareEinkuenfteDossiertraeger(new BigDecimal(steuerdatenResponseType.getWeitereSteuerbareEinkuenfteDossiertraeger()));
-		steuerdatenResponse.setWeitereSteuerbareEinkuenftePartner(new BigDecimal(steuerdatenResponseType.getWeitereSteuerbareEinkuenftePartner()));
-		steuerdatenResponse.setBruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME(new BigDecimal(steuerdatenResponseType.getBruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME()));
-		steuerdatenResponse.setBruttoertraegeAusLiegenschaften(new BigDecimal(steuerdatenResponseType.getBruttoertraegeAusLiegenschaften()));
-		steuerdatenResponse.setNettoertraegeAusEGMEDossiertraeger(new BigDecimal(steuerdatenResponseType.getNettoertraegeAusEGMEDossiertraeger()));
-		steuerdatenResponse.setNettoertraegeAusEGMEPartner(new BigDecimal(steuerdatenResponseType.getNettoertraegeAusEGMEPartner()));
-		steuerdatenResponse.setGeleisteteUnterhaltsbeitraege(new BigDecimal(steuerdatenResponseType.getGeleisteteUnterhaltsbeitraege()));
-		steuerdatenResponse.setGewinnungskostenBeweglichesVermoegen(new BigDecimal(steuerdatenResponseType.getGewinnungskostenBeweglichesVermoegen()));
-		steuerdatenResponse.setLiegenschaftsAbzuege(new BigDecimal(steuerdatenResponseType.getLiegenschaftsAbzuege()));
-		steuerdatenResponse.setNettovermoegen(new BigDecimal(steuerdatenResponseType.getNettovermoegen()));
+		if (steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger() != null) {
+			steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitDossiertraeger(new BigDecimal(steuerdatenResponseType.getErwerbseinkommenUnselbstaendigkeitDossiertraeger()));
+		}
+		if (steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitPartner() != null) {
+			steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitPartner(new BigDecimal(steuerdatenResponseType.getErwerbseinkommenUnselbstaendigkeitPartner()));
+		}
+
+		if (steuerdatenResponseType.getSteuerpflichtigesErsatzeinkommenDossiertraeger() != null) {
+			steuerdatenResponse.setSteuerpflichtigesErsatzeinkommenDossiertraeger(new BigDecimal(steuerdatenResponseType.getSteuerpflichtigesErsatzeinkommenDossiertraeger()));
+		}
+		if (steuerdatenResponseType.getSteuerpflichtigesErsatzeinkommenPartner() != null) {
+			steuerdatenResponse.setSteuerpflichtigesErsatzeinkommenPartner(new BigDecimal(steuerdatenResponseType.getSteuerpflichtigesErsatzeinkommenPartner()));
+		}
+		if (steuerdatenResponseType.getErhalteneUnterhaltsbeitraegeDossiertraeger() != null) {
+			steuerdatenResponse.setErhalteneUnterhaltsbeitraegeDossiertraeger(new BigDecimal(steuerdatenResponseType.getErhalteneUnterhaltsbeitraegeDossiertraeger()));
+		}
+		if (steuerdatenResponseType.getErhalteneUnterhaltsbeitraegePartner() != null) {
+			steuerdatenResponse.setErhalteneUnterhaltsbeitraegePartner(new BigDecimal(steuerdatenResponseType.getErhalteneUnterhaltsbeitraegePartner()));
+		}
+		if (steuerdatenResponseType.getAusgewiesenerGeschaeftsertragDossiertraeger() != null) {
+			steuerdatenResponse.setAusgewiesenerGeschaeftsertragDossiertraeger(new BigDecimal(steuerdatenResponseType.getAusgewiesenerGeschaeftsertragDossiertraeger()));
+		}
+		if (steuerdatenResponseType.getAusgewiesenerGeschaeftsertragPartner() != null) {
+			steuerdatenResponse.setAusgewiesenerGeschaeftsertragPartner(new BigDecimal(steuerdatenResponseType.getAusgewiesenerGeschaeftsertragPartner()));
+		}
+		if (steuerdatenResponseType.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger() != null) {
+			steuerdatenResponse.setAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger(new BigDecimal(steuerdatenResponseType.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger()));
+		}
+		if (steuerdatenResponseType.getAusgewiesenerGeschaeftsertragVorperiodePartner() != null) {
+			steuerdatenResponse.setAusgewiesenerGeschaeftsertragVorperiodePartner(new BigDecimal(steuerdatenResponseType.getAusgewiesenerGeschaeftsertragVorperiodePartner()));
+		}
+		if (steuerdatenResponseType.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger() != null) {
+			steuerdatenResponse.setAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger(new BigDecimal(steuerdatenResponseType.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger()));
+		}
+		if (steuerdatenResponseType.getAusgewiesenerGeschaeftsertragVorperiode2Partner() != null) {
+			steuerdatenResponse.setAusgewiesenerGeschaeftsertragVorperiode2Partner(new BigDecimal(steuerdatenResponseType.getAusgewiesenerGeschaeftsertragVorperiode2Partner()));
+		}
+		if (steuerdatenResponseType.getWeitereSteuerbareEinkuenfteDossiertraeger() != null) {
+			steuerdatenResponse.setWeitereSteuerbareEinkuenfteDossiertraeger(new BigDecimal(steuerdatenResponseType.getWeitereSteuerbareEinkuenfteDossiertraeger()));
+		}
+		if (steuerdatenResponseType.getWeitereSteuerbareEinkuenftePartner() != null) {
+			steuerdatenResponse.setWeitereSteuerbareEinkuenftePartner(new BigDecimal(steuerdatenResponseType.getWeitereSteuerbareEinkuenftePartner()));
+		}
+		if (steuerdatenResponseType.getBruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME() != null) {
+			steuerdatenResponse.setBruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME(new BigDecimal(steuerdatenResponseType.getBruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME()));
+		}
+		if (steuerdatenResponseType.getBruttoertraegeAusLiegenschaften() != null) {
+			steuerdatenResponse.setBruttoertraegeAusLiegenschaften(new BigDecimal(steuerdatenResponseType.getBruttoertraegeAusLiegenschaften()));
+		}
+		if (steuerdatenResponseType.getNettoertraegeAusEGMEDossiertraeger() != null) {
+			steuerdatenResponse.setNettoertraegeAusEGMEDossiertraeger(new BigDecimal(steuerdatenResponseType.getNettoertraegeAusEGMEDossiertraeger()));
+		}
+		if (steuerdatenResponseType.getNettoertraegeAusEGMEPartner() != null) {
+			steuerdatenResponse.setNettoertraegeAusEGMEPartner(new BigDecimal(steuerdatenResponseType.getNettoertraegeAusEGMEPartner()));
+		}
+		if (steuerdatenResponseType.getGeleisteteUnterhaltsbeitraege() != null) {
+			steuerdatenResponse.setGeleisteteUnterhaltsbeitraege(new BigDecimal(steuerdatenResponseType.getGeleisteteUnterhaltsbeitraege()));
+		}
+		if (steuerdatenResponseType.getGewinnungskostenBeweglichesVermoegen() != null) {
+			steuerdatenResponse.setGewinnungskostenBeweglichesVermoegen(new BigDecimal(steuerdatenResponseType.getGewinnungskostenBeweglichesVermoegen()));
+		}
+		if (steuerdatenResponseType.getLiegenschaftsAbzuege() != null) {
+			steuerdatenResponse.setLiegenschaftsAbzuege(new BigDecimal(steuerdatenResponseType.getLiegenschaftsAbzuege()));
+		}
+		if (steuerdatenResponseType.getNettovermoegen() != null) {
+			steuerdatenResponse.setNettovermoegen(new BigDecimal(steuerdatenResponseType.getNettovermoegen()));
+		}
 
 		return steuerdatenResponse;
 	}
