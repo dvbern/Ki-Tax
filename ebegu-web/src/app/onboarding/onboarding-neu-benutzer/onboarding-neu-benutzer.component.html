@@ -32,7 +32,7 @@
                 <mat-checkbox id="tsBeantragen_id" name="tsBeantragen_id" (ngModelChange)="resetGemeindeListe()"
                               [(ngModel)]="tsBeantragen">{{'ONBOARDING_TS_BEANTRAGEN'|translate}}</mat-checkbox>
             </div>
-            <div class="neu-besondere-volksschule-checkbox margin-top-10" *ngIf="isTSAngebotEnabled && tsBeantragen">
+            <div class="neu-besondere-volksschule-checkbox margin-top-10" *ngIf="isTSAngebotEnabled && tsBeantragen && (this.besondereVolksschulen$ | async).length">
                 <mat-checkbox id="besondereVolksschuleBeantragen_id" name="besondereVolksschuleBeantragen_id" (ngModelChange)="resetGemeindeListe()"
                               [(ngModel)]="besondereVolksschuleBeantragen">{{'ONBOARDING_BESONDERE_VOLKSSCHULE_BEANTRAGEN'|translate}}</mat-checkbox>
             </div>
