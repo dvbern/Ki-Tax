@@ -120,6 +120,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCH
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.KESB_PLATZIERUNG_DEAKTIVIEREN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.LATS_LOHNNORMKOSTEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50;
@@ -613,6 +614,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(KITAPLUS_ZUSCHLAG_AKTIVIERT, "false", gesuchsperiode);
 		saveEinstellung(GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN, "false", gesuchsperiode);
 		saveEinstellung(ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM, "false", gesuchsperiode);
+		saveEinstellung(KESB_PLATZIERUNG_DEAKTIVIEREN, "false", gesuchsperiode);
 	}
 
 	public void saveEinstellung(EinstellungKey key, String value, Gesuchsperiode gesuchsperiode) {

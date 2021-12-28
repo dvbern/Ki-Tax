@@ -2712,5 +2712,6 @@
     "TS_MUTATION_EXISTIERT": "Il existe déjà une mutation pour cette demande",
     "TS_MUTATION_EXISTIERT_BODY": "L'inscription à l'école à journée continue doit être modifiée dans la dernière demande de changement. Si elle est encore en modification par l'auteur-e de la demande, elle doit alors dabord être libérée ou supprimée.",
     "FREMD_ID": "Fremd-ID",
+    "KESB_PLATZIERUNG_DEAKTIVIEREN": "KESB-Platzierung deaktivieren",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

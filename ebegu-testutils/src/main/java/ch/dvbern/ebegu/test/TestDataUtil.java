@@ -215,6 +215,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCH
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.KESB_PLATZIERUNG_DEAKTIVIEREN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.LATS_LOHNNORMKOSTEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50;
@@ -1851,6 +1852,7 @@ public final class TestDataUtil {
 		saveEinstellung(KITAPLUS_ZUSCHLAG_AKTIVIERT, "false", gesuchsperiode, persistence);
 		saveEinstellung(GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN, "false", gesuchsperiode, persistence);
 		saveEinstellung(ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM, "false", gesuchsperiode, persistence);
+		saveEinstellung(KESB_PLATZIERUNG_DEAKTIVIEREN, "false", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(
