@@ -58,4 +58,5 @@ public interface FachstelleService {
 	 */
 	void removeFachstelle(@Nonnull String fachstelleId);
 
+	Fachstelle getFachstelle(String id);
 }

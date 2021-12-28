@@ -84,4 +84,9 @@ public class FachstelleServiceBean extends AbstractBaseService implements Fachst
 		persistence.remove(fachstelleToRemove);
 	}
 
+	@Override
+	public Fachstelle getFachstelle(String id) {
+		return persistence.find(Fachstelle.class, id);
+	}
+
 }
