@@ -309,7 +309,12 @@ export class TestdatenViewComponent implements OnInit {
         this.gesuchRS.getSteuerdaten(new TSKibonAnfrage(this.antragId,
             this.zpvNummer,
             this.gesuchsperiodeBeginnJahr,
-            this.geburtsdatum));
+            this.geburtsdatum)).then(result => {
+                console.log(result);
+                this.dialog.open(DvNgOkDialogComponent,
+                    {data: {title: 'Anfrage erfolgreich! Die Antwort wurde in die Konsole geloggt'}});
+            },
+        );
     }
 
     private async overwriteIfGemeindeAntragExists(): Promise<boolean> {
