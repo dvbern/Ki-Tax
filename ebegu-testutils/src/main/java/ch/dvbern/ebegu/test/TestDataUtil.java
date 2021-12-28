@@ -167,6 +167,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -426,6 +427,7 @@ public final class TestDataUtil {
 	public static Mandant getMandantKantonBern() {
 		Mandant mandant = new Mandant();
 		mandant.setId(AbstractTestfall.ID_MANDANT_KANTON_BERN);
+		mandant.setMandantIdentifier(MandantIdentifier.BERN);
 		mandant.setName("Kanton Bern");
 		return mandant;
 	}
