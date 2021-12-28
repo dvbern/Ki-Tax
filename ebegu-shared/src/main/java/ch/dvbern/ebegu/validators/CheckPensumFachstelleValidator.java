@@ -83,7 +83,6 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 
 		if (kindContainer.getKindJA() == null
 			|| kindContainer.getKindJA().getPensumFachstelle() == null
-			|| kindContainer.getKindJA().getPensumFachstelle().getFachstelle() == null
 		) {
 			// Kein PensumFachstelle
 			return true;

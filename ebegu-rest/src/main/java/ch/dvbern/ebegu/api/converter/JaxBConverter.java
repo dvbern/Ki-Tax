@@ -2307,7 +2307,9 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		final JaxPensumFachstelle jaxPensumFachstelle = new JaxPensumFachstelle();
 		convertAbstractPensumFieldsToJAX(persistedPensumFachstelle, jaxPensumFachstelle);
-		jaxPensumFachstelle.setFachstelle(fachstelleToJAX(persistedPensumFachstelle.getFachstelle()));
+		if (persistedPensumFachstelle.getFachstelle() != null) {
+			jaxPensumFachstelle.setFachstelle(fachstelleToJAX(persistedPensumFachstelle.getFachstelle()));
+		}
 		jaxPensumFachstelle.setIntegrationTyp(persistedPensumFachstelle.getIntegrationTyp());
 		return jaxPensumFachstelle;
 	}
@@ -2316,23 +2318,21 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxPensumFachstelle pensumFachstelleJAXP,
 		final PensumFachstelle pensumFachstelle
 	) {
-		requireNonNull(pensumFachstelleJAXP.getFachstelle(), "Fachstelle muss existieren");
-		requireNonNull(
-			pensumFachstelleJAXP.getFachstelle().getId(),
-			"Fachstelle muss bereits gespeichert sein");
 		convertAbstractPensumFieldsToEntity(pensumFachstelleJAXP, pensumFachstelle);
 
-		final Optional<Fachstelle> fachstelleFromDB =
-			fachstelleService.findFachstelle(pensumFachstelleJAXP.getFachstelle().getId());
-		if (fachstelleFromDB.isPresent()) {
-			// Fachstelle darf nicht vom Client ueberschrieben werden
-			pensumFachstelle.setFachstelle(fachstelleFromDB.get());
-		} else {
-			throw new EbeguEntityNotFoundException(
-				"pensumFachstelleToEntity",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				pensumFachstelleJAXP.getFachstelle()
-					.getId());
+		if (pensumFachstelleJAXP.getFachstelle() != null) {
+			final Optional<Fachstelle> fachstelleFromDB =
+					fachstelleService.findFachstelle(pensumFachstelleJAXP.getFachstelle().getId());
+			if (fachstelleFromDB.isPresent()) {
+				// Fachstelle darf nicht vom Client ueberschrieben werden
+				pensumFachstelle.setFachstelle(fachstelleFromDB.get());
+			} else {
+				throw new EbeguEntityNotFoundException(
+						"pensumFachstelleToEntity",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+						pensumFachstelleJAXP.getFachstelle()
+								.getId());
+			}
 		}
 		pensumFachstelle.setIntegrationTyp(pensumFachstelleJAXP.getIntegrationTyp());
 
@@ -3113,22 +3113,20 @@ public class JaxBConverter extends AbstractConverter {
 
 		//falls Erweiterte Beduerfnisse true ist, muss eine Fachstelle gesetzt sein
 		if (Boolean.TRUE.equals(erweiterteBetreuung.getErweiterteBeduerfnisse())) {
-			requireNonNull(erweiterteBetreuungJAXP.getFachstelle(), "Fachstelle muss existieren");
-			requireNonNull(
-				erweiterteBetreuungJAXP.getFachstelle().getId(),
-				"Fachstelle muss bereits gespeichert sein");
 
-			final Optional<Fachstelle> fachstelleFromDB =
-				fachstelleService.findFachstelle(erweiterteBetreuungJAXP.getFachstelle().getId());
+			if (erweiterteBetreuungJAXP.getFachstelle() != null) {
+				final Optional<Fachstelle> fachstelleFromDB =
+						fachstelleService.findFachstelle(erweiterteBetreuungJAXP.getFachstelle().getId());
 
-			if (!fachstelleFromDB.isPresent()) {
-				throw new EbeguEntityNotFoundException(
-					"erweiterteBetreuungToEntity",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					erweiterteBetreuungJAXP.getFachstelle().getId());
+				if (!fachstelleFromDB.isPresent()) {
+					throw new EbeguEntityNotFoundException(
+							"erweiterteBetreuungToEntity",
+							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+							erweiterteBetreuungJAXP.getFachstelle().getId());
+				}
+				// Fachstelle darf nicht vom Client ueberschrieben werden
+				erweiterteBetreuung.setFachstelle(fachstelleFromDB.get());
 			}
-			// Fachstelle darf nicht vom Client ueberschrieben werden
-			erweiterteBetreuung.setFachstelle(fachstelleFromDB.get());
 		}
 
 		return erweiterteBetreuung;

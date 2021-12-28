@@ -62,9 +62,6 @@ public class FachstelleResource {
 	@Inject
 	GesuchsperiodeService gesuchsperiodeService;
 
-	@Inject
-	private PrincipalBean principal;
-
 
 	@ApiOperation(value = "Returns Anspruch Fachstellen", responseContainer = "List", response = JaxFachstelle.class)
 	@Nonnull
@@ -100,32 +97,6 @@ public class FachstelleResource {
 			.filter(fachstelle -> fachstelle.getName() != FachstelleName.KINDES_ERWACHSENEN_SCHUTZBEHOERDE)
 			.map(ap -> converter.fachstelleToJAX(ap))
 			.collect(Collectors.toList());
-	}
-
-	@ApiOperation(value = "Returns single Fachstelle", response = JaxFachstelle.class)
-	@Nonnull
-	@GET
-	@Path("/unknown-fachstelle")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxFachstelle getFachstelle(
-	){
-		// TODO: replace with enum visitor once 2158 is finished and merged
-		String id;
-		switch (principal.getMandant().getName()) {
-		case "Kanton Bern":
-			throw new EbeguEntityNotFoundException("Bern has no unknown fachstelle");
-		case "Kanton Luzern":
-			id = "00000000-0000-0000-0000-000000000001";
-			break;
-		case "Kanton Solothurn":
-			id = "00000000-0000-0000-0000-000000000002'";
-			break;
-		default:
-			throw new EbeguEntityNotFoundException("Unknown Mandant");
-		}
-		Fachstelle fachstelle = fachstelleService.getFachstelle(id);
-		return converter.fachstelleToJAX(fachstelle);
 	}
 
 	private Gesuchsperiode findGesuchsperiodeFromIdOrThrow(@NotNull String gesuchsperiodeId) {

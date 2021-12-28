@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,12 +15,4 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum TSFachstelleName {
-    MUTTER_VATER_BERATUNG_BERN,
-    SOZIALDIENST,
-    KINDES_ERWACHSENEN_SCHUTZBEHOERDE,
-    ERZIEHUNGSBERATUNG,
-    FRUEHERZIEHUNGSDIENST_KANTON_BERN,
-    FRUEHERZIEHUNG_BLINDENSCHULE_ZOLLIKOFEN,
-    DIENST_ZENTRUM_HOEREN_SPRACHE
-}
+ALTER TABLE pensum_fachstelle MODIFY fachstelle_id BINARY(16);

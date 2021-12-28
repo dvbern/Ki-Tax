@@ -135,7 +135,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
-    private unknownFachstelle: TSFachstelle;
 
     public constructor(
         private readonly $state: StateService,
@@ -318,7 +317,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.isKesbPlatzierung = !this.getErweiterteBetreuungJA().keineKesbPlatzierung;
         }
         this.allowedRoles = this.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles();
-        this.gesuchModelManager.getUnknownFachstelle().then(fachstelle => this.unknownFachstelle = fachstelle);
     }
 
     /**
@@ -404,9 +402,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.getBetreuungModel() && this.isSchulamt()) {
             // fuer Tagesschule werden keine Betreuungspensum benoetigt, deswegen löschen wir sie vor dem Speichern
             this.getBetreuungModel().betreuungspensumContainers = [];
-        }
-        if (this.getFachstellenList().length === 0) {
-            this.getErweiterteBetreuungJA().fachstelle = this.unknownFachstelle;
         }
         this.errorService.clearAll();
         this.model.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();

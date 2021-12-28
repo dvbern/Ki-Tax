@@ -231,10 +231,6 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             return this.$q.when(this.model);
         }
 
-        if (this.getFachstellenList()?.length === 0) {
-            this.getModel().pensumFachstelle.fachstelle = this.unknownFachstelle;
-        }
-
         this.getModel().zukunftigeGeburtsdatum = this.isGeburtsdatumInZunkunft();
 
         this.errorService.clearAll();
