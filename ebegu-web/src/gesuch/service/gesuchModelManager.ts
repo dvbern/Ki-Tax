@@ -1737,6 +1737,10 @@ export class GesuchModelManager {
         return false;
     }
 
+    public getUnknownFachstelle(): IPromise<TSFachstelle> {
+        return this.fachstelleRS.getUnknownFachstelle();
+    }
+
     public $onDestroy(): void {
         this.subscription?.unsubscribe();
     }

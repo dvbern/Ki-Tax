@@ -87,6 +87,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public maxValueAllowed: number = 100;
     public kontingentierungEnabled: boolean;
     public anspruchUnabhaengingVomBeschaeftigungspensum: boolean;
+    private unknownFachstelle: TSFachstelle;
 
     public constructor(
         $stateParams: IKindStateParams,
@@ -153,6 +154,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     private initFachstelle(): void {
         this.showFachstelle = !!(this.model.kindJA.pensumFachstelle);
         this.showFachstelleGS = !!(this.model.kindGS && this.model.kindGS.pensumFachstelle);
+        this.gesuchModelManager.getUnknownFachstelle().then(fachstelle => this.unknownFachstelle = fachstelle);
         if (this.getPensumFachstelle() && this.getPensumFachstelle().fachstelle) {
             this.fachstelleId = this.getPensumFachstelle().fachstelle.id;
         }
@@ -227,6 +229,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
             return this.$q.when(this.model);
+        }
+
+        if (this.getFachstellenList()?.length === 0) {
+            this.getModel().pensumFachstelle.fachstelle = this.unknownFachstelle;
         }
 
         this.getModel().zukunftigeGeburtsdatum = this.isGeburtsdatumInZunkunft();
