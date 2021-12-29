@@ -1381,6 +1381,7 @@
     "ZAHLUNG_ERSTELLEN_INFO": "Nachdem Sie die Zahlung erstellt haben, kann diese nicht mehr gelöscht werden",
     "ZAHLUNG_ERSTELLT": "Zahlung erstellt",
     "ZAHLUNG_AUSLOESEN_CONFIRM": "Sind Sie sicher, dass Sie diese Zahlung in kiBon auslösen möchten?",
+    "ZAHLUNG_AUSGELOEST_INFO": "Die Berechnung des Zahlungsauftrags wurde gestartet. Wir bitten um etwas Geduld. Der Zahlungsauftrag erscheint in der Liste, sobald dieser fertig berechnet wurde. Sie können die Seite in der Zwischenzeit auch verlassen.",
     "ZAHLUNG_AUSLOESEN_INFO": "Haben Sie die Zahlung bereits in der Bank hochgeladen und ausgelöst?<br/><b>Achtung</b>: Die Zahlungsdaten (Z.B. IBAN-Nummer) können nach dieser Aktion nicht mehr angepasst werden. Dieser Schritt kann <b>NICHT</b> rückgängig gemacht werden",
     "VERSION_INFO": "Version: Client {{frontendVersion}} / Server: {{backendVersion}}",
     "VERSION_INFO_SINGLE": "Version {{version}}",
