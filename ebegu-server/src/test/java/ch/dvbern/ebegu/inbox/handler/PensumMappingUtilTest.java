@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.services.BetreuungMonitoringService;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -133,7 +134,7 @@ class PensumMappingUtilTest {
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 
 		Testfall01_WaeltiDagmar testfall_1GS =
-			new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList, false);
+			new Testfall01_WaeltiDagmar(gesuchsperiode, false,  new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
 		testfall_1GS.createFall();
 		testfall_1GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 

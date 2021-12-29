@@ -92,46 +92,46 @@ public class SchulungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void resetSchulungsdaten() {
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.saveGesuchsperiode(TestDataUtil.createAndPersistGesuchsperiode1718(persistence));
-		createAndSaveInstitutionStammdatenForTestfaelle();
+		createAndSaveInstitutionStammdatenForTestfaelle(gesuchsperiode);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 
 		Gemeinde paris = TestDataUtil.getGemeindeParis(persistence);
 		assert paris.getMandant() != null;
 		Mandant mandant = paris.getMandant();
 		assertEmpty(mandant);
-		schulungService.createSchulungsdaten();
-
-		Assert.assertEquals(95, adresseService.getAllAdressen().size());
-		Assert.assertEquals(6, institutionStammdatenService.getAllInstitutionStammdaten().size());
-		Assert.assertEquals(6, institutionService.getAllInstitutionen(mandant).size());
+		schulungService.createSchulungsdaten(mandant);
+		Assert.assertEquals(96, adresseService.getAllAdressen().size());
+		Assert.assertEquals(7, institutionStammdatenService.getAllInstitutionStammdaten().size());
+		Assert.assertEquals(7, institutionService.getAllInstitutionen(mandant).size());
 		Assert.assertEquals(1, traegerschaftService.getAllTraegerschaften().size());
 		Assert.assertEquals(anzahlUserSchonVorhanden + anzahlGesuchsteller + anzahlInstitutionsBenutzer,
 			criteriaQueryHelper.getAll(Benutzer.class).size());
 
-		schulungService.deleteSchulungsdaten();
+		schulungService.deleteSchulungsdaten(mandant);
 		assertEmpty(mandant);
 	}
 
 	@Test
 	public void deleteSchulungsdaten() {
 		// Es muss auch "geloescht" werden koennen, wenn es schon (oder teilweise) geloescht ist
-		schulungService.deleteSchulungsdaten();
-		schulungService.deleteSchulungsdaten();
+		schulungService.deleteSchulungsdaten(TestDataUtil.getMandantKantonBern());
+		schulungService.deleteSchulungsdaten(TestDataUtil.getMandantKantonBern());
 	}
 
 	private void assertEmpty(Mandant testMandant) {
-		Assert.assertEquals(3, institutionStammdatenService.getAllInstitutionStammdaten().size());
-		Assert.assertEquals(3, institutionService.getAllInstitutionen(testMandant).size());
+		Assert.assertEquals(4, institutionStammdatenService.getAllInstitutionStammdaten().size());
+		Assert.assertEquals(4, institutionService.getAllInstitutionen(testMandant).size());
 		Assert.assertTrue(traegerschaftService.getAllTraegerschaften().isEmpty());
 		Assert.assertEquals(anzahlUserSchonVorhanden, criteriaQueryHelper.getAll(Benutzer.class).size());
 	}
 
-	private List<InstitutionStammdaten> createAndSaveInstitutionStammdatenForTestfaelle() {
+	private List<InstitutionStammdaten> createAndSaveInstitutionStammdatenForTestfaelle(Gesuchsperiode gesuchsperiode) {
 		Mandant mandant = mandantService.getMandantBern();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
+		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
 		for (InstitutionStammdaten institutionStammdaten : institutionStammdatenList) {
 			institutionStammdaten.getInstitution().setTraegerschaft(null);
 			institutionStammdaten.getInstitution().setMandant(mandant);

@@ -105,6 +105,9 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@Inject
 	private AdresseService adresseService;
 
+	@Inject
+	private RueckforderungFormularService rueckforderungFormularService;
+
 	@SuppressWarnings("PMD.PreserveStackTrace")
 	@Nonnull
 	@Override
@@ -230,6 +233,9 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 			true);
 		if (institutionStammdatenToRemove != null) {
 			authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdatenToRemove);
+			rueckforderungFormularService.getRueckforderungFormulareByInstitutionStammdaten(
+							institutionStammdatenToRemove)
+					.forEach(rueckforderungFormularService::remove);
 			event.fire(institutionEventConverter.deleteEvent(institutionStammdatenToRemove));
 			persistence.remove(institutionStammdatenToRemove);
 		}

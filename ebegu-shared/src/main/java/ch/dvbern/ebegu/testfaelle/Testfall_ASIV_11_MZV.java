@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.testfaelle;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Collection;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -28,7 +27,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
@@ -42,12 +40,11 @@ public class Testfall_ASIV_11_MZV extends AbstractASIVTestfall {
 	private boolean initWithMZV;
 
 	public Testfall_ASIV_11_MZV(
-		Gesuchsperiode gesuchsperiode,
-		Collection<InstitutionStammdaten> institutionStammdatenList,
-		boolean betreuungenBestaetigt,
-		Gemeinde gemeinde,
-		boolean initWithMZV) {
-		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
+			Gesuchsperiode gesuchsperiode,
+			boolean betreuungenBestaetigt,
+			Gemeinde gemeinde,
+			boolean initWithMZV, InstitutionStammdatenBuilder institutionStammdatenBuilder) {
+		super(gesuchsperiode, betreuungenBestaetigt, gemeinde, institutionStammdatenBuilder);
 		this.initWithMZV = initWithMZV;
 	}
 
@@ -79,7 +76,7 @@ public class Testfall_ASIV_11_MZV extends AbstractASIVTestfall {
 		erstgesuch.getKindContainers().add(kind);
 		// Kita Brünnen
 		Betreuung betreuungKitaBruennen =
-			createBetreuung(ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA, betreuungenBestaetigt);
+			createBetreuung(institutionStammdatenBuilder.getIdInstitutionStammdatenBruennen(), betreuungenBestaetigt);
 		betreuungKitaBruennen.setKind(kind);
 		kind.getBetreuungen().add(betreuungKitaBruennen);
 		BetreuungspensumContainer betreuungspensumKitaBruennen = createBetreuungspensum(

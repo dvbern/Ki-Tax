@@ -20,11 +20,11 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.PostConstruct;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -74,6 +75,8 @@ import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
+import ch.dvbern.ebegu.testfaelle.InstitutionStammdatenBuilder;
+import ch.dvbern.ebegu.testfaelle.InstitutionStammdatenBuilderVisitor;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.testfaelle.Testfall03_PerreiraMarcia;
@@ -84,6 +87,8 @@ import ch.dvbern.ebegu.testfaelle.Testfall07_MeierMeret;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.FreigabeCopyUtil;
+import ch.dvbern.ebegu.util.SchulungConstants;
+import ch.dvbern.ebegu.util.mandant.SchulungConstantsVisitor;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -92,8 +97,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-//TODO: Mandantenfähigkeit. Müssen wir die Schulungsdaten anpassen?
 
 /**
  * Service fuer erstellen und mutieren von Schulungsdaten
@@ -109,23 +112,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	private static final Pattern XX = Pattern.compile("XX");
 	private static final String EXAMPLE_COM = "@example.com";
 
-	private static final String GEMEINDE_TUTORIAL_ID = "11111111-1111-4444-4444-111111111111";
-	private static final String GEMEINDE_STAMMDATEN_TUTORIAL_ID = "11111111-1111-4444-4444-111111111112";
-
-	private static final String TRAEGERSCHAFT_FISCH_ID = "11111111-1111-1111-1111-111111111111";
-
-	private static final String INSTITUTION_FORELLE_ID = "22222222-1111-1111-1111-111111111111";
-	private static final String INSTITUTION_HECHT_ID = "22222222-1111-1111-1111-222222222222";
-	private static final String INSTITUTION_LACHS_ID = "22222222-1111-1111-1111-333333333333";
-	private static final String INSTITUTION_TUTORIAL_ID = "22222222-1111-1111-1111-444444444444";
-
-	private static final String KITA_FORELLE_ID = "33333333-1111-1111-1111-111111111111";
-	private static final String TAGESELTERN_FORELLE_ID = "33333333-1111-1111-2222-111111111111";
-	private static final String KITA_HECHT_ID = "33333333-1111-1111-1111-222222222222";
-	private static final String KITA_TUTORIAL_ID = "33333333-1111-1111-1111-444444444444";
-	private static final String KITA_BRUENNEN_STAMMDATEN_ID = "9a0eb656-b6b7-4613-8f55-4e0e4720455e";
-
-	private static final String GESUCH_ID = "44444444-1111-1111-1111-1111111111XX";
+	private final SchulungConstantsVisitor schulungConstantsVisitor = new SchulungConstantsVisitor();
 
 	private static final String BENUTZER_TUTORIAL_GEMEINDE_USERNAME = "tust";
 	private static final String BENUTZER_FISCH_USERNAME = "sch20";
@@ -160,9 +147,6 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	private GesuchService gesuchService;
 
 	@Inject
-	private MandantService mandantService;
-
-	@Inject
 	private TraegerschaftService traegerschaftService;
 
 	@Inject
@@ -192,74 +176,86 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	@Inject
 	private Persistence persistence;
 
+	private InstitutionStammdatenBuilderVisitor testfallDependenciesVisitor;
+
+	@PostConstruct
+	public void createFactory(){
+		testfallDependenciesVisitor = new InstitutionStammdatenBuilderVisitor(institutionStammdatenService);
+	}
+
 	@Override
-	public void resetSchulungsdaten() {
+	public void resetSchulungsdaten(Mandant mandant) {
 		LOG.info("Lösche Schulungsdaten... ");
-		deleteSchulungsdaten();
+		deleteSchulungsdaten(mandant);
 		LOG.info("Erstelle Schulungsdaten...");
-		createSchulungsdaten();
+		createSchulungsdaten(mandant);
 		LOG.info("... beendet");
 	}
 
 	@Override
-	public void deleteSchulungsdaten() {
+	public void deleteSchulungsdaten(Mandant mandant) {
 
-		removeFaelleForSuche();
+		SchulungConstants constants = schulungConstantsVisitor.process(mandant);
+
+		removeFaelleForSuche(constants.getGesuchId());
 
 		for (int i = 0; i < GESUCHSTELLER_LIST.length; i++) {
-			removeGesucheFallAndBenutzer(i + 1);
+			removeGesucheFallAndBenutzer(i + 1, mandant);
 		}
 
 		// Bevor die Testinstitutionen geloescht werden, muss sichergestellt sein, dass diese von keinen "normalen"
 		// Testfaellen verwendet werden -> auf Kita Brünnen umbiegen
-		Optional<InstitutionStammdaten> institutionStammdatenOptional = institutionStammdatenService.findInstitutionStammdaten(KITA_BRUENNEN_STAMMDATEN_ID);
+		Optional<InstitutionStammdaten> institutionStammdatenOptional = institutionStammdatenService.findInstitutionStammdaten(constants.getKitaBruennenStammdatenId());
 		if (institutionStammdatenOptional.isPresent()) {
 			InstitutionStammdaten institutionStammdaten = institutionStammdatenOptional.get();
-			assertInstitutionNotUsedInNormalenGesuchen(KITA_FORELLE_ID, institutionStammdaten);
-			assertInstitutionNotUsedInNormalenGesuchen(TAGESELTERN_FORELLE_ID, institutionStammdaten);
-			assertInstitutionNotUsedInNormalenGesuchen(KITA_HECHT_ID, institutionStammdaten);
+			assertInstitutionNotUsedInNormalenGesuchen(constants.getKitaForelleId(), institutionStammdaten);
+			assertInstitutionNotUsedInNormalenGesuchen(constants.getTageselternForelleId(), institutionStammdaten);
+			assertInstitutionNotUsedInNormalenGesuchen(constants.getKitaHechtId(), institutionStammdaten);
 		}
 
-		removeBenutzer(BENUTZER_FISCH_USERNAME, mandantService.getMandantBern());
-		removeBenutzer(BENUTZER_FORELLE_USERNAME, mandantService.getMandantBern());
+		removeBenutzer(BENUTZER_FISCH_USERNAME,mandant);
+		removeBenutzer(BENUTZER_FORELLE_USERNAME, mandant);
 
-		if (institutionService.findInstitution(INSTITUTION_FORELLE_ID, true).isPresent()) {
-			institutionService.removeInstitution(INSTITUTION_FORELLE_ID);
+		
+		if (institutionService.findInstitution(constants.getInstitutionForelleId(), true).isPresent()) {
+			institutionService.removeInstitution(constants.getInstitutionForelleId());
 		}
-		if (institutionService.findInstitution(INSTITUTION_HECHT_ID, true).isPresent()) {
-			institutionService.removeInstitution(INSTITUTION_HECHT_ID);
+		if (institutionService.findInstitution(constants.getInstitutionHechtId(), true).isPresent()) {
+			institutionService.removeInstitution(constants.getInstitutionHechtId());
 		}
-		if (institutionService.findInstitution(INSTITUTION_LACHS_ID, true).isPresent()) {
-			institutionService.removeInstitution(INSTITUTION_LACHS_ID);
+		if (institutionService.findInstitution(constants.getInstitutionLachsId(), true).isPresent()) {
+			institutionService.removeInstitution(constants.getInstitutionLachsId());
 		}
-		if (traegerschaftService.findTraegerschaft(TRAEGERSCHAFT_FISCH_ID).isPresent()) {
-			traegerschaftService.removeTraegerschaft(TRAEGERSCHAFT_FISCH_ID);
+		if (traegerschaftService.findTraegerschaft(constants.getTraegerschaftFischId()).isPresent()) {
+			traegerschaftService.removeTraegerschaft(constants.getTraegerschaftFischId());
 		}
 	}
 
 	@Override
-	public void createSchulungsdaten() {
+	public void createSchulungsdaten(Mandant mandant) {
+		SchulungConstants constants = schulungConstantsVisitor.process(mandant);
 		// TODO wir sollten fuer die Schulung auch eine Gemeinde auswaehlen (sollte bei der Umsetzung von Schulung geaendert werden)
-		Gemeinde gemeinde = gemeindeService.getAktiveGemeinden(mandantService.getMandantBern()).stream().findFirst()
+		Gemeinde gemeinde = gemeindeService.getAktiveGemeinden(mandant).stream().findFirst()
 			.orElseThrow(() -> new EbeguEntityNotFoundException("createSchulungsdaten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
-		Traegerschaft traegerschaftFisch = createTraegerschaft(TRAEGERSCHAFT_FISCH_ID, "Fisch");
+		Traegerschaft traegerschaftFisch = createTraegerschaft(constants.getTraegerschaftFischId(), "Fisch", mandant);
 
-		Institution institutionForelle = createInstitution(INSTITUTION_FORELLE_ID, "Forelle", traegerschaftFisch);
-		Institution institutionHecht = createInstitution(INSTITUTION_HECHT_ID, "Hecht", traegerschaftFisch);
-		Institution institutionLachs = createInstitution(INSTITUTION_LACHS_ID, "Lachs", traegerschaftFisch);
+		Institution institutionForelle = createInstitution(constants.getInstitutionForelleId(), "Forelle", traegerschaftFisch,
+				mandant);
+		Institution institutionHecht = createInstitution(constants.getInstitutionHechtId(), "Hecht", traegerschaftFisch, mandant);
+		Institution institutionLachs = createInstitution(constants.getInstitutionLachsId(), "Lachs", traegerschaftFisch, mandant);
 
 		InstitutionStammdaten kitaForelle = createInstitutionStammdaten(
-			KITA_FORELLE_ID,
+			constants.getKitaForelleId(),
 			institutionForelle,
 			BetreuungsangebotTyp.KITA,
 			institutionForelle.getName() + EXAMPLE_COM);
 		InstitutionStammdaten tageselternForelle = createInstitutionStammdaten(
-			TAGESELTERN_FORELLE_ID,
+			constants.getTageselternForelleId(),
 			institutionLachs,
 			BetreuungsangebotTyp.TAGESFAMILIEN,
 			institutionLachs.getName() + EXAMPLE_COM);
 		InstitutionStammdaten kitaHecht = createInstitutionStammdaten(
-			KITA_HECHT_ID,
+			constants.getKitaHechtId(),
 			institutionHecht,
 			BetreuungsangebotTyp.KITA,
 			institutionHecht.getName() + EXAMPLE_COM);
@@ -269,25 +265,27 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		institutionenForSchulung.add(tageselternForelle);
 		institutionenForSchulung.add(kitaHecht);
 
-		createBenutzer(BENUTZER_FISCH_NAME, BENUTZER_FISCH_VORNAME, traegerschaftFisch, null, null, BENUTZER_FISCH_USERNAME);
-		createBenutzer(BENUTZER_FORELLE_NAME, BENUTZER_FORELLE_VORNAME, null, institutionForelle, null, BENUTZER_FORELLE_USERNAME);
+		createBenutzer(BENUTZER_FISCH_NAME, BENUTZER_FISCH_VORNAME, traegerschaftFisch, null, null, BENUTZER_FISCH_USERNAME,
+				mandant);
+		createBenutzer(BENUTZER_FORELLE_NAME, BENUTZER_FORELLE_VORNAME, null, institutionForelle, null, BENUTZER_FORELLE_USERNAME,
+				mandant);
 
 		for (int i = 0; i < GESUCHSTELLER_LIST.length; i++) {
-			createGesuchsteller(GESUCHSTELLER_LIST[i], getUsername(i + 1));
+			createGesuchsteller(GESUCHSTELLER_LIST[i], getUsername(i + 1), mandant);
 		}
 		createFaelleForSuche(institutionenForSchulung, gemeinde);
 	}
 
 	@Override
-	public void createTutorialdaten() {
+	public void createTutorialdaten(Mandant mandant) {
 		LOG.info("Erstelle Tutorialdaten...");
-
-		Gemeinde gemeinde = createGemeindeTutorial();
+		SchulungConstants constants = schulungConstantsVisitor.process(mandant);
+		Gemeinde gemeinde = createGemeindeTutorial(mandant);
 		GemeindeStammdaten gemeindeStammdaten = createGemeindeStammdatenTutorial(gemeinde);
-
-		Institution institutionTutorial = createInstitution(INSTITUTION_TUTORIAL_ID, "Kita kiBon", null);
+		
+		Institution institutionTutorial = createInstitution(constants.getInstitutionTutorialId(), "Kita kiBon", null, mandant);
 		createInstitutionStammdaten(
-			KITA_TUTORIAL_ID,
+			constants.getKitaTutorialId(),
 			institutionTutorial,
 			BetreuungsangebotTyp.KITA,
 			"kita.kibon" + EXAMPLE_COM);
@@ -297,8 +295,8 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 			null,
 			null,
 			Stream.of(gemeinde).collect(Collectors.toSet()),
-			BENUTZER_TUTORIAL_GEMEINDE_USERNAME
-		);
+			BENUTZER_TUTORIAL_GEMEINDE_USERNAME,
+				mandant);
 
 		setUserAsDefaultVerantwortlicher(gemeindeStammdaten, gemeindeBenutzer);
 
@@ -314,10 +312,10 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		gemeindeService.saveGemeindeStammdaten(gemeindeStammdaten);
 	}
 
-	private Gemeinde createGemeindeTutorial() {
-		Mandant mandant = mandantService.getMandantBern();
+	private Gemeinde createGemeindeTutorial(Mandant mandant) {
 		Gemeinde gemeinde = new Gemeinde();
-		gemeinde.setId(GEMEINDE_TUTORIAL_ID);
+		SchulungConstants constants = schulungConstantsVisitor.process(mandant);
+		gemeinde.setId(constants.getGemeindeTutorialId());
 		gemeinde.setBfsNummer(1L);
 		gemeinde.setMandant(mandant);
 		gemeinde.setBetreuungsgutscheineStartdatum(Constants.START_OF_TIME);
@@ -333,7 +331,8 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 
 	private GemeindeStammdaten createGemeindeStammdatenTutorial(@Nonnull Gemeinde gemeinde) {
 		GemeindeStammdaten stammdaten = new GemeindeStammdaten();
-		stammdaten.setId(GEMEINDE_STAMMDATEN_TUTORIAL_ID);
+		SchulungConstants constants = schulungConstantsVisitor.process(Objects.requireNonNull(gemeinde.getMandant()));
+		stammdaten.setId(constants.getGemeindeStammdatenTutorialId());
 		stammdaten.setGemeinde(gemeinde);
 		stammdaten.setKontoinhaber("Tutorial");
 		stammdaten.setBic("XXXXCH22");
@@ -369,8 +368,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 
 	@SuppressWarnings("SameParameterValue")
 	@Nonnull
-	private Traegerschaft createTraegerschaft(@Nonnull String id, @Nonnull String name) {
-		Mandant mandant = mandantService.getMandantBern();
+	private Traegerschaft createTraegerschaft(@Nonnull String id, @Nonnull String name, @Nonnull Mandant mandant) {
 		Traegerschaft traegerschaft = new Traegerschaft();
 		traegerschaft.setId(id);
 		traegerschaft.setName(name);
@@ -380,12 +378,11 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 
 	@Nonnull
 	private Institution createInstitution(
-		@Nonnull String id,
-		@Nonnull String name,
-		@Nullable Traegerschaft traegerschaft
-	) {
+			@Nonnull String id,
+			@Nonnull String name,
+			@Nullable Traegerschaft traegerschaft,
+			Mandant mandant) {
 
-		Mandant mandant = mandantService.getMandantBern();
 		Institution institution = new Institution();
 		institution.setId(id);
 		institution.setName(name);
@@ -435,8 +432,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		return adresse;
 	}
 
-	private void createGesuchsteller(@Nonnull String name, @Nonnull String username) {
-		Mandant mandant = mandantService.getMandantBern();
+	private void createGesuchsteller(@Nonnull String name, @Nonnull String username, @Nonnull Mandant mandant) {
 		Benutzer benutzer = new Benutzer();
 		benutzer.setVorname(GESUCHSTELLER_VORNAME);
 		benutzer.setNachname(name);
@@ -452,15 +448,14 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 
 	@Nonnull
 	private Benutzer createBenutzer(
-		@Nonnull String name,
-		@Nonnull String vorname,
-		@Nullable Traegerschaft traegerschaft,
-		@Nullable Institution institution,
-		@Nullable Set<Gemeinde> gemeinden,
-		@Nonnull String username
-	) {
+			@Nonnull String name,
+			@Nonnull String vorname,
+			@Nullable Traegerschaft traegerschaft,
+			@Nullable Institution institution,
+			@Nullable Set<Gemeinde> gemeinden,
+			@Nonnull String username,
+			Mandant mandant) {
 
-		Mandant mandant = mandantService.getMandantBern();
 		Benutzer benutzer = new Benutzer();
 		benutzer.setVorname(vorname);
 		benutzer.setNachname(name);
@@ -492,51 +487,79 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		return "sch" + String.format("%02d", position);
 	}
 
-	private void removeGesucheFallAndBenutzer(int position) {
-		testfaelleService.removeGesucheOfGS(getUsername(position), mandantService.getMandantBern());
-		removeBenutzer(getUsername(position), mandantService.getMandantBern());
+	private void removeGesucheFallAndBenutzer(int position, Mandant mandant) {
+		testfaelleService.removeGesucheOfGS(getUsername(position), mandant);
+		removeBenutzer(getUsername(position), mandant);
 	}
 
 	private void createFaelleForSuche(@Nonnull List<InstitutionStammdaten> institutionenForSchulung, @Nonnull Gemeinde gemeinde) {
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.getAllActiveGesuchsperioden().iterator().next();
-		List<InstitutionStammdaten> institutionenForTestfall = testfaelleService.getInstitutionsstammdatenForTestfaelle();
 
-		createFall(Testfall01_WaeltiDagmar.class, gesuchsperiode, institutionenForTestfall, gemeinde, "01", null, null, institutionenForSchulung, true);
-		createFall(Testfall02_FeutzYvonne.class, gesuchsperiode, institutionenForTestfall, gemeinde, "02", null, null, institutionenForSchulung);
-		createFall(Testfall03_PerreiraMarcia.class, gesuchsperiode, institutionenForTestfall, gemeinde, "03", null, null, institutionenForSchulung);
-		createFall(Testfall04_WaltherLaura.class, gesuchsperiode, institutionenForTestfall, gemeinde, "04", null, null, institutionenForSchulung);
-		createFall(Testfall05_LuethiMeret.class, gesuchsperiode, institutionenForTestfall, gemeinde, "05", null, null, institutionenForSchulung);
-		createFall(Testfall06_BeckerNora.class, gesuchsperiode, institutionenForTestfall, gemeinde, "06", null, null, institutionenForSchulung);
-		createFall(Testfall07_MeierMeret.class, gesuchsperiode, institutionenForTestfall, gemeinde, "07", null, null, institutionenForSchulung);
+		var institutionStammdatenBuilder =  testfallDependenciesVisitor.process(Objects.requireNonNull(gemeinde.getMandant()));
 
-		createFall(Testfall01_WaeltiDagmar.class, gesuchsperiode, institutionenForTestfall, gemeinde, "08", "Gerber", "Milena", institutionenForSchulung);
-		createFall(Testfall02_FeutzYvonne.class, gesuchsperiode, institutionenForTestfall, gemeinde, "09", "Bernasconi", "Claudia", institutionenForSchulung);
-		createFall(Testfall03_PerreiraMarcia.class, gesuchsperiode, institutionenForTestfall, gemeinde, "10", "Odermatt", "Yasmin", institutionenForSchulung);
-		createFall(Testfall04_WaltherLaura.class, gesuchsperiode, institutionenForTestfall, gemeinde, "11", "Hefti", "Sarah", institutionenForSchulung);
-		createFall(Testfall05_LuethiMeret.class, gesuchsperiode, institutionenForTestfall, gemeinde, "12", "Schmid", "Natalie", institutionenForSchulung);
-		createFall(Testfall06_BeckerNora.class, gesuchsperiode, institutionenForTestfall, gemeinde, "13", "Kälin", "Judith", institutionenForSchulung);
-		createFall(Testfall07_MeierMeret.class, gesuchsperiode, institutionenForTestfall, gemeinde, "14", "Werlen", "Franziska", institutionenForSchulung);
+		createFall(Testfall01_WaeltiDagmar.class, gesuchsperiode,
+				gemeinde, "01", null, null, institutionenForSchulung, true, institutionStammdatenBuilder);
+		createFall(Testfall02_FeutzYvonne.class, gesuchsperiode, gemeinde, "02", null, null, institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall03_PerreiraMarcia.class, gesuchsperiode,
+				gemeinde, "03", null, null, institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall04_WaltherLaura.class, gesuchsperiode,
+				gemeinde, "04", null, null, institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall05_LuethiMeret.class, gesuchsperiode, gemeinde, "05", null, null, institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall06_BeckerNora.class, gesuchsperiode, gemeinde, "06", null, null, institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall07_MeierMeret.class, gesuchsperiode, gemeinde, "07", null, null, institutionenForSchulung, institutionStammdatenBuilder);
 
-		createFall(Testfall01_WaeltiDagmar.class, gesuchsperiode, institutionenForTestfall, gemeinde, "15", "Iten", "Joy", institutionenForSchulung);
-		createFall(Testfall02_FeutzYvonne.class, gesuchsperiode, institutionenForTestfall, gemeinde, "16", "Keller", "Birgit", institutionenForSchulung);
-		createFall(Testfall03_PerreiraMarcia.class, gesuchsperiode, institutionenForTestfall, gemeinde, "17", "Hofer", "Melanie", institutionenForSchulung);
-		createFall(Testfall04_WaltherLaura.class, gesuchsperiode, institutionenForTestfall, gemeinde, "18", "Steiner", "Stefanie", institutionenForSchulung);
-		createFall(Testfall05_LuethiMeret.class, gesuchsperiode, institutionenForTestfall, gemeinde, "19", "Widmer", "Ursula", institutionenForSchulung);
-		createFall(Testfall06_BeckerNora.class, gesuchsperiode, institutionenForTestfall, gemeinde, "20", "Graf", "Anna", institutionenForSchulung);
-		createFall(Testfall07_MeierMeret.class, gesuchsperiode, institutionenForTestfall, gemeinde, "21", "Zimmermann", "Katrin", institutionenForSchulung);
+		createFall(Testfall01_WaeltiDagmar.class, gesuchsperiode,
+				gemeinde, "08", "Gerber", "Milena", institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall02_FeutzYvonne.class, gesuchsperiode,
+				gemeinde, "09", "Bernasconi", "Claudia", institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall03_PerreiraMarcia.class, gesuchsperiode,
+				gemeinde, "10", "Odermatt", "Yasmin", institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall04_WaltherLaura.class, gesuchsperiode,
+				gemeinde, "11", "Hefti", "Sarah", institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall05_LuethiMeret.class, gesuchsperiode,
+				gemeinde, "12", "Schmid", "Natalie", institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall06_BeckerNora.class, gesuchsperiode,
+				gemeinde, "13", "Kälin", "Judith", institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall07_MeierMeret.class, gesuchsperiode,
+				gemeinde, "14", "Werlen", "Franziska", institutionenForSchulung, institutionStammdatenBuilder);
 
-		createFall(Testfall02_FeutzYvonne.class, gesuchsperiode, institutionenForTestfall, gemeinde, "22", "Hofstetter", "Anneliese", institutionenForSchulung);
-		createFall(Testfall03_PerreiraMarcia.class, gesuchsperiode, institutionenForTestfall, gemeinde, "23", "Arnold", "Madeleine", institutionenForSchulung);
-		createFall(Testfall04_WaltherLaura.class, gesuchsperiode, institutionenForTestfall, gemeinde, "24", "Schneebeli", "Janine", institutionenForSchulung);
-		createFall(Testfall05_LuethiMeret.class, gesuchsperiode, institutionenForTestfall, gemeinde, "25", "Weber", "Marianne", institutionenForSchulung);
+		createFall(Testfall01_WaeltiDagmar.class, gesuchsperiode,
+				gemeinde, "15", "Iten", "Joy", institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall02_FeutzYvonne.class, gesuchsperiode,
+				gemeinde, "16", "Keller", "Birgit", institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall03_PerreiraMarcia.class, gesuchsperiode,
+				gemeinde, "17", "Hofer", "Melanie", institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall04_WaltherLaura.class, gesuchsperiode,
+				gemeinde, "18", "Steiner", "Stefanie", institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall05_LuethiMeret.class, gesuchsperiode,
+				gemeinde, "19", "Widmer", "Ursula", institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall06_BeckerNora.class, gesuchsperiode,
+				gemeinde, "20", "Graf", "Anna", institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall07_MeierMeret.class, gesuchsperiode,
+				gemeinde, "21", "Zimmermann", "Katrin", institutionenForSchulung, institutionStammdatenBuilder);
+
+		createFall(Testfall02_FeutzYvonne.class, gesuchsperiode,
+				gemeinde, "22", "Hofstetter", "Anneliese", institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall03_PerreiraMarcia.class, gesuchsperiode,
+				gemeinde, "23", "Arnold", "Madeleine", institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall04_WaltherLaura.class, gesuchsperiode,
+				gemeinde, "24", "Schneebeli", "Janine", institutionenForSchulung, institutionStammdatenBuilder);
+		createFall(Testfall05_LuethiMeret.class, gesuchsperiode,
+				gemeinde, "25", "Weber", "Marianne", institutionenForSchulung, institutionStammdatenBuilder);
 	}
 
 	@SuppressFBWarnings("REC_CATCH_EXCEPTION")
-	private void createFall(@Nonnull Class<? extends AbstractTestfall> classTestfall,
-		@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull List<InstitutionStammdaten> institutionenForTestfall, @Nonnull Gemeinde gemeinde,
-		@Nonnull String id, @Nullable String nachname, @Nullable String vorname,
-		@Nonnull List<InstitutionStammdaten> institutionenForSchulung, boolean noRandom) {
+	private void createFall(
+			@Nonnull Class<? extends AbstractTestfall> classTestfall,
+			@Nonnull Gesuchsperiode gesuchsperiode,
+			@Nonnull Gemeinde gemeinde,
+			@Nonnull String id,
+			@Nullable String nachname,
+			@Nullable String vorname,
+			@Nonnull List<InstitutionStammdaten> institutionenForSchulung,
+			boolean noRandom, InstitutionStammdatenBuilder institutionStammdatenBuilder) {
 
+		SchulungConstants constants = schulungConstantsVisitor.process(Objects.requireNonNull(gesuchsperiode.getMandant()));
 		@SuppressWarnings("DuplicateBooleanBranch")  // Damit VERFUEGT nicht zu haeufig...
 			boolean verfuegen = RANDOM.nextBoolean() && RANDOM.nextBoolean();
 		if (noRandom) {
@@ -544,9 +567,9 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		}
 		AbstractTestfall testfall = null;
 		try {
-			testfall = classTestfall.getConstructor(Gesuchsperiode.class, Collection.class, Boolean.TYPE, Gemeinde.class).newInstance(gesuchsperiode,
-				institutionenForTestfall, verfuegen, gemeinde);
-			testfall.setFixId(XX.matcher(GESUCH_ID).replaceAll(id));
+			testfall = classTestfall.getConstructor(Gesuchsperiode.class, Boolean.TYPE, Gemeinde.class, InstitutionStammdatenBuilder.class).newInstance(gesuchsperiode,
+				verfuegen, gemeinde, institutionStammdatenBuilder);
+			testfall.setFixId(XX.matcher(constants.getGesuchId()).replaceAll(id));
 			Gesuch gesuch = createFallForSuche(testfall, nachname, vorname, institutionenForSchulung, verfuegen, noRandom);
 			FreigabeCopyUtil.copyForFreigabe(gesuch);
 			gesuchService.updateGesuch(gesuch, false, null);
@@ -556,12 +579,17 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		}
 	}
 
-	private void createFall(@Nonnull Class<? extends AbstractTestfall> classTestfall,
-		@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull List<InstitutionStammdaten> institutionenForTestfall, @Nonnull Gemeinde gemeinde,
-		@Nonnull String id, @Nullable String nachname, @Nullable String vorname,
-		@Nonnull List<InstitutionStammdaten> institutionenForSchulung) {
+	private void createFall(
+			@Nonnull Class<? extends AbstractTestfall> classTestfall,
+			@Nonnull Gesuchsperiode gesuchsperiode,
+			@Nonnull Gemeinde gemeinde,
+			@Nonnull String id,
+			@Nullable String nachname,
+			@Nullable String vorname,
+			@Nonnull List<InstitutionStammdaten> institutionenForSchulung,
+			InstitutionStammdatenBuilder institutionStammdatenBuilder) {
 
-		createFall(classTestfall, gesuchsperiode, institutionenForTestfall, gemeinde, id, nachname, vorname, institutionenForSchulung, false);
+		createFall(classTestfall, gesuchsperiode, gemeinde, id, nachname, vorname, institutionenForSchulung, false, institutionStammdatenBuilder);
 	}
 
 	@SuppressWarnings("ConstantConditions")
@@ -633,10 +661,10 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	}
 
 	@SuppressWarnings("MagicNumber")
-	private void removeFaelleForSuche() {
+	private void removeFaelleForSuche(String gesuchsId) {
 		int anzahlFaelle = 25;
 		for (int i = 1; i <= anzahlFaelle; i++) {
-			String id = XX.matcher(GESUCH_ID).replaceAll(StringUtils.leftPad(String.valueOf(i), 2, "0"));
+			String id = XX.matcher(gesuchsId).replaceAll(StringUtils.leftPad(String.valueOf(i), 2, "0"));
 			Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(id);
 			if (gesuchOptional.isPresent()) {
 				final Optional<Fall> fall = fallService.findFall(gesuchOptional.get().getFall().getId());

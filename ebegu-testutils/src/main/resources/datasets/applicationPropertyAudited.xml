@@ -23,6 +23,7 @@
 			 user_mutiert="anonym"
 			 version="0"
 			 name="Kanton Bern"
+			 mandant_identifier="BERN"
 			 angebotts="false"
 			 angebotfi="false"/>
 	<application_property id="ZyGYNw4STZeyRWSbkNnSpQ==" timestamp_erstellt="2016-03-04 16:14:28.134"
