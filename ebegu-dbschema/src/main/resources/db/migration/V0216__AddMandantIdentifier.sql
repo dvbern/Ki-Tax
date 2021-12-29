@@ -21,5 +21,5 @@ ADD COLUMN IF NOT EXISTS mandant_identifier VARCHAR(255) NOT NULL DEFAULT 'BERN'
 ALTER TABLE mandant_aud
 ADD COLUMN IF NOT EXISTS mandant_identifier VARCHAR(255);
 
-UPDATE mandant SET mandant_identifier = 'LUZERN' WHERE id = '485d7483-30a2-11ec-a86f-b89a2ae4a038';
-UPDATE mandant SET mandant_identifier = 'SOLOTHURN' WHERE id = '7781a6bb-5374-11ec-98e8-f4390979fa3e';
+UPDATE mandant SET mandant_identifier = 'LUZERN' WHERE UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
+UPDATE mandant SET mandant_identifier = 'SOLOTHURN' WHERE id = UNHEX(REPLACE('7781a6bb-5374-11ec-98e8-f4390979fa3e', '-', ''));
