@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.rechner.kitax.KitaKitaxBernRechner;
 import ch.dvbern.ebegu.rechner.kitax.TageselternKitaxBernRechner;
@@ -39,15 +40,18 @@ public final class BGRechnerFactory {
 	}
 
 	@Nullable
-	public static AbstractRechner getRechner(@Nonnull BetreuungsangebotTyp betreuungsangebotTyp, @Nonnull List<RechnerRule> rechnerRulesForGemeinde) {
+	public static AbstractRechner getRechner(
+		@Nonnull BetreuungsangebotTyp betreuungsangebotTyp,
+		@Nonnull List<RechnerRule> rechnerRulesForGemeinde,
+		@Nonnull Mandant mandant) {
 		if (BetreuungsangebotTyp.KITA == betreuungsangebotTyp) {
-			return new KitaBernRechner(rechnerRulesForGemeinde);
+			return new KitaRechnerVisitor(rechnerRulesForGemeinde).getKitaRechnerForMandant(mandant);
 		}
 		if (BetreuungsangebotTyp.TAGESFAMILIEN == betreuungsangebotTyp) {
-			return new TageselternBernRechner(rechnerRulesForGemeinde);
+			return new TageselternRechnerVisitor(rechnerRulesForGemeinde).getTageselternRechnerForMandant(mandant);
 		}
 		if (BetreuungsangebotTyp.TAGESSCHULE == betreuungsangebotTyp) {
-			return new TagesschuleBernRechner();
+			return new TagesschuleRechnerVisitor().getTagesschuleRechnerForMandant(mandant);
 		}
 		// Alle anderen Angebotstypen werden nicht berechnet
 		return null;

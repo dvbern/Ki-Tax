@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -125,8 +126,11 @@ public class BetreuungsgutscheinExecutor {
 		@Nonnull AbstractPlatz platz,
 		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte
 	) {
+
+		Mandant mandant = platz.getInstitutionStammdaten().getInstitution().getMandant();
+		assert mandant != null;
 		AbstractRechner
-			asivRechner = BGRechnerFactory.getRechner(platz.getBetreuungsangebotTyp(), rechnerRulesForGemeinde);
+			asivRechner = BGRechnerFactory.getRechner(platz.getBetreuungsangebotTyp(), rechnerRulesForGemeinde, mandant);
 		final boolean possibleKitaxRechner = KitaxUtil.isGemeindeWithKitaxUebergangsloesung(platz.extractGemeinde())
 			&& platz.getBetreuungsangebotTyp().isJugendamt();
 		// Den richtigen Rechner anwerfen

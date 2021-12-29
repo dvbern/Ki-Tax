@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
@@ -40,6 +41,7 @@ import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherBabyGutscheinRechnerRule;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
@@ -210,7 +212,8 @@ public class ZusaetzlicherBabyGutscheinBerechnungTest extends AbstractBGRechnerT
 	private AbstractRechner prepareRechner() {
 		List<RechnerRule> rechnerRules = new ArrayList<>();
 		rechnerRules.add(new ZusaetzlicherBabyGutscheinRechnerRule(GERMAN));
-		final AbstractRechner rechner = BGRechnerFactory.getRechner(BetreuungsangebotTyp.KITA, rechnerRules);
+		Mandant mandant = TestDataUtil.getMandantKantonBern();
+		final AbstractRechner rechner =  BGRechnerFactory.getRechner(BetreuungsangebotTyp.KITA, rechnerRules, mandant);
 		Assert.assertNotNull(rechner);
 		return rechner;
 	}
