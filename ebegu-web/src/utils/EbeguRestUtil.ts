@@ -112,6 +112,7 @@ import {TSFerieninselZeitraum} from '../models/TSFerieninselZeitraum';
 import {TSFile} from '../models/TSFile';
 import {TSFinanzielleSituation} from '../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../models/TSFinanzielleSituationContainer';
+import {TSFinanzielleSituationSelbstdeklaration} from '../models/TSFinanzielleSituationSelbstdeklaration';
 import {TSFinanzModel} from '../models/TSFinanzModel';
 import {TSGemeinde} from '../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../models/TSGemeindeKonfiguration';
@@ -1823,7 +1824,9 @@ export class EbeguRestUtil {
         restFinanzielleSituation.gemeinsameStekVorjahr = finanzielleSituation.gemeinsameStekVorjahr;
         restFinanzielleSituation.alleinigeStekVorjahr = finanzielleSituation.alleinigeStekVorjahr;
         restFinanzielleSituation.veranlagt = finanzielleSituation.veranlagt;
-
+        if (finanzielleSituation.selbstdeklaration) {
+            restFinanzielleSituation.selbstdeklaration = this.finanzielleSituationSelbstdeklarationToRestObject({}, finanzielleSituation.selbstdeklaration);
+        }
         return restFinanzielleSituation;
     }
 
@@ -1848,6 +1851,46 @@ export class EbeguRestUtil {
         restAbstractFinanzielleSituation.einkaeufeVorsorge = abstractFinanzielleSituation.einkaeufeVorsorge;
 
         return restAbstractFinanzielleSituation;
+    }
+
+    private finanzielleSituationSelbstdeklarationToRestObject(
+        restSelbstdeklaration: any,
+        selbstdeklaration: TSFinanzielleSituationSelbstdeklaration,
+    ): TSFinanzielleSituationSelbstdeklaration {
+
+        this.abstractMutableEntityToRestObject(restSelbstdeklaration, selbstdeklaration);
+        restSelbstdeklaration.einkunftErwerb = selbstdeklaration.einkunftErwerb;
+        restSelbstdeklaration.einkunftVersicherung = selbstdeklaration.einkunftVersicherung;
+        restSelbstdeklaration.einkunftAusgleichskassen = selbstdeklaration.einkunftAusgleichskassen;
+        restSelbstdeklaration.einkunftWertschriften = selbstdeklaration.einkunftWertschriften;
+        restSelbstdeklaration.einkunftUnterhaltsbeitragSteuerpflichtige = selbstdeklaration.einkunftUnterhaltsbeitragSteuerpflichtige;
+        restSelbstdeklaration.einkunftUnterhaltsbeitragKinder = selbstdeklaration.einkunftUnterhaltsbeitragKinder;
+        restSelbstdeklaration.einkunftUeberige = selbstdeklaration.einkunftUeberige;
+        restSelbstdeklaration.einkunftLiegenschaften = selbstdeklaration.einkunftLiegenschaften;
+        restSelbstdeklaration.abzugBerufsauslagen = selbstdeklaration.abzugBerufsauslagen;
+        restSelbstdeklaration.abzugSchuldzinsen = selbstdeklaration.abzugSchuldzinsen;
+        restSelbstdeklaration.abzugUnterhaltsbeitragEhepartner = selbstdeklaration.abzugUnterhaltsbeitragEhepartner;
+        restSelbstdeklaration.abzugUnterhaltsbeitragKinder = selbstdeklaration.abzugUnterhaltsbeitragKinder;
+        restSelbstdeklaration.abzugRentenleistungen = selbstdeklaration.abzugRentenleistungen;
+        restSelbstdeklaration.abzugSaeule3A = selbstdeklaration.abzugSaeule3A;
+        restSelbstdeklaration.abzugVersicherungspraemien = selbstdeklaration.abzugVersicherungspraemien;
+        restSelbstdeklaration.abzugKrankheitsUnfallKosten = selbstdeklaration.abzugKrankheitsUnfallKosten;
+        restSelbstdeklaration.abzugFreiweiligeZuwendungPartien
+            = selbstdeklaration.abzugFreiweiligeZuwendungPartien;
+        restSelbstdeklaration.abzugKinderVorschule = selbstdeklaration.abzugKinderVorschule;
+        restSelbstdeklaration.abzugKinderSchule = selbstdeklaration.abzugKinderSchule;
+        restSelbstdeklaration.abzugKinderAuswaertigerAufenthalt
+            = selbstdeklaration.abzugKinderAuswaertigerAufenthalt;
+        restSelbstdeklaration.abzugEigenbetreuung = selbstdeklaration.abzugEigenbetreuung;
+        restSelbstdeklaration.abzugFremdbetreuung = selbstdeklaration.abzugFremdbetreuung;
+        restSelbstdeklaration.abzugErwerbsunfaehigePersonen
+            = selbstdeklaration.abzugErwerbsunfaehigePersonen;
+        restSelbstdeklaration.vermoegen = selbstdeklaration.vermoegen;
+        restSelbstdeklaration.abzugSteuerfreierBetragErwachsene
+            = selbstdeklaration.abzugSteuerfreierBetragErwachsene;
+        restSelbstdeklaration.abzugSteuerfreierBetragKinder
+            = selbstdeklaration.abzugSteuerfreierBetragKinder;
+        return restSelbstdeklaration;
     }
 
     public parseAbstractFinanzielleSituation(
@@ -1896,8 +1939,53 @@ export class EbeguRestUtil {
             finanzielleSituationTS.gemeinsameStekVorjahr = finanzielleSituationFromServer.gemeinsameStekVorjahr;
             finanzielleSituationTS.alleinigeStekVorjahr = finanzielleSituationFromServer.alleinigeStekVorjahr;
             finanzielleSituationTS.veranlagt = finanzielleSituationFromServer.veranlagt;
+            finanzielleSituationTS.selbstdeklaration = this.parseFinanzielleSituationSelbstdeklaration(new TSFinanzielleSituationSelbstdeklaration(),
+                finanzielleSituationFromServer.selbstdeklaration);
 
             return finanzielleSituationTS;
+        }
+        return undefined;
+    }
+
+    private parseFinanzielleSituationSelbstdeklaration(
+        tsSelbstdeklaration: TSFinanzielleSituationSelbstdeklaration,
+        selbstdeklarationFromServer: any)
+    : TSFinanzielleSituationSelbstdeklaration {
+
+        if (selbstdeklarationFromServer) {
+            this.parseAbstractMutableEntity(tsSelbstdeklaration, selbstdeklarationFromServer);
+            tsSelbstdeklaration.einkunftErwerb = selbstdeklarationFromServer.einkunftErwerb;
+            tsSelbstdeklaration.einkunftVersicherung = selbstdeklarationFromServer.einkunftVersicherung;
+            tsSelbstdeklaration.einkunftAusgleichskassen = selbstdeklarationFromServer.einkunftAusgleichskassen;
+            tsSelbstdeklaration.einkunftWertschriften = selbstdeklarationFromServer.einkunftWertschriften;
+            tsSelbstdeklaration.einkunftUnterhaltsbeitragSteuerpflichtige = selbstdeklarationFromServer.einkunftUnterhaltsbeitragSteuerpflichtige;
+            tsSelbstdeklaration.einkunftUnterhaltsbeitragKinder = selbstdeklarationFromServer.einkunftUnterhaltsbeitragKinder;
+            tsSelbstdeklaration.einkunftUeberige = selbstdeklarationFromServer.einkunftUeberige;
+            tsSelbstdeklaration.einkunftLiegenschaften = selbstdeklarationFromServer.einkunftLiegenschaften;
+            tsSelbstdeklaration.abzugBerufsauslagen = selbstdeklarationFromServer.abzugBerufsauslagen;
+            tsSelbstdeklaration.abzugSchuldzinsen = selbstdeklarationFromServer.abzugSchuldzinsen;
+            tsSelbstdeklaration.abzugUnterhaltsbeitragEhepartner = selbstdeklarationFromServer.abzugUnterhaltsbeitragEhepartner;
+            tsSelbstdeklaration.abzugUnterhaltsbeitragKinder = selbstdeklarationFromServer.abzugUnterhaltsbeitragKinder;
+            tsSelbstdeklaration.abzugRentenleistungen = selbstdeklarationFromServer.abzugRentenleistungen;
+            tsSelbstdeklaration.abzugSaeule3A = selbstdeklarationFromServer.abzugSaeule3A;
+            tsSelbstdeklaration.abzugVersicherungspraemien = selbstdeklarationFromServer.abzugVersicherungspraemien;
+            tsSelbstdeklaration.abzugKrankheitsUnfallKosten = selbstdeklarationFromServer.abzugKrankheitsUnfallKosten;
+            tsSelbstdeklaration.abzugFreiweiligeZuwendungPartien
+                = selbstdeklarationFromServer.abzugFreiweiligeZuwendungPartien;
+            tsSelbstdeklaration.abzugKinderVorschule = selbstdeklarationFromServer.abzugKinderVorschule;
+            tsSelbstdeklaration.abzugKinderSchule = selbstdeklarationFromServer.abzugKinderSchule;
+            tsSelbstdeklaration.abzugKinderAuswaertigerAufenthalt
+                = selbstdeklarationFromServer.abzugKinderAuswaertigerAufenthalt;
+            tsSelbstdeklaration.abzugEigenbetreuung = selbstdeklarationFromServer.abzugEigenbetreuung;
+            tsSelbstdeklaration.abzugFremdbetreuung = selbstdeklarationFromServer.abzugFremdbetreuung;
+            tsSelbstdeklaration.abzugErwerbsunfaehigePersonen
+                = selbstdeklarationFromServer.abzugErwerbsunfaehigePersonen;
+            tsSelbstdeklaration.vermoegen = selbstdeklarationFromServer.vermoegen;
+            tsSelbstdeklaration.abzugSteuerfreierBetragErwachsene
+                = selbstdeklarationFromServer.abzugSteuerfreierBetragErwachsene;
+            tsSelbstdeklaration.abzugSteuerfreierBetragKinder
+                = selbstdeklarationFromServer.abzugSteuerfreierBetragKinder;
+            return tsSelbstdeklaration;
         }
         return undefined;
     }
@@ -1914,7 +2002,7 @@ export class EbeguRestUtil {
             finanzielleSituationResultateDTO.einkommenBeiderGesuchsteller =
                 finanzielleSituationResultateFromServer.einkommenBeiderGesuchsteller;
             finanzielleSituationResultateDTO.nettovermoegenFuenfProzent =
-                finanzielleSituationResultateFromServer.nettovermoegenFuenfProzent;
+                finanzielleSituationResultateFromServer.nettovermoegenXProzent;
             finanzielleSituationResultateDTO.anrechenbaresEinkommen =
                 finanzielleSituationResultateFromServer.anrechenbaresEinkommen;
             finanzielleSituationResultateDTO.abzuegeBeiderGesuchsteller =
