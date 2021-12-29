@@ -36,12 +36,12 @@ public class TestFall12_Mischgesuch extends AbstractTestfall {
 
 	private static final String FAMILIENNAME = "Schmid";
 
-	public TestFall12_Mischgesuch(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt) {
-		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+	public TestFall12_Mischgesuch(Gesuchsperiode gesuchsperiode, boolean betreuungenBestaetigt, InstitutionStammdatenBuilder institutionStammdatenBuilder) {
+		super(gesuchsperiode, betreuungenBestaetigt, institutionStammdatenBuilder);
 	}
 
-	public TestFall12_Mischgesuch(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList) {
-		super(gesuchsperiode, institutionStammdatenList, false);
+	public TestFall12_Mischgesuch(Gesuchsperiode gesuchsperiode, InstitutionStammdatenBuilder institutionStammdatenBuilder) {
+		super(gesuchsperiode, false, institutionStammdatenBuilder);
 	}
 
 	@Override
@@ -65,11 +65,11 @@ public class TestFall12_Mischgesuch extends AbstractTestfall {
 
 		// Plaetze
 		// Kind 1: Tagesschule Bern
-		AnmeldungTagesschule betreuungTagesschuleBern = createTagesschuleAnmeldung(ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE);
+		AnmeldungTagesschule betreuungTagesschuleBern = createTagesschuleAnmeldung(institutionStammdatenBuilder.getIdInstitutionStammdatenTagesschule());
 		betreuungTagesschuleBern.setKind(kind1);
 		kind1.getAnmeldungenTagesschule().add(betreuungTagesschuleBern);
 		// Kind 2: Ferieninsel Guarda
-		Betreuung betreuungKitaWeissenstein = createBetreuung(ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA,
+		Betreuung betreuungKitaWeissenstein = createBetreuung(institutionStammdatenBuilder.getIdInstitutionStammdatenWeissenstein(),
 			betreuungenBestaetigt);
 		betreuungKitaWeissenstein.setKind(kind2);
 		kind2.getBetreuungen().add(betreuungKitaWeissenstein);

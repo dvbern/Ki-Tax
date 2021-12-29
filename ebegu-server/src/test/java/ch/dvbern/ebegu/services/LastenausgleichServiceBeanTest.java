@@ -285,6 +285,6 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	private Gesuch createGesuch(Gesuchsperiode gesuchsperiode) {
-		return testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true, gemeinde, gesuchsperiode);
+		return testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true, gemeinde, gesuchsperiode, mandant);
 	}
 }

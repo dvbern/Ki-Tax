@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -65,7 +66,7 @@ public class CopyTest {
 		instStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		instStammdaten.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
 		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1617();
-		Testfall01_WaeltiDagmar testfall01_waeltiDagmar = new Testfall01_WaeltiDagmar(gesuchsperiode, instStammdaten);
+		Testfall01_WaeltiDagmar testfall01_waeltiDagmar = new Testfall01_WaeltiDagmar(gesuchsperiode,  new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
 		testfall01_waeltiDagmar.createGesuch(LocalDate.now());
 		testfall01_waeltiDagmar.fillInGesuch();
 		erstgesuch = testfall01_waeltiDagmar.getGesuch();

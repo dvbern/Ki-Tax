@@ -19,6 +19,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.util.testdata.AnmeldungConfig;
 import ch.dvbern.ebegu.util.testdata.ErstgesuchConfig;
 import ch.dvbern.ebegu.util.testdata.MutationConfig;
@@ -31,7 +32,7 @@ public interface TestdataCreationService {
 
 	void setupTestdata(TestdataSetupConfig config);
 
-	Gesuch createErstgesuch(@Nonnull ErstgesuchConfig config);
+	Gesuch createErstgesuch(@Nonnull ErstgesuchConfig config, Mandant mandant);
 
 	Gesuch createMutation(@Nonnull MutationConfig config, @Nonnull Gesuch vorgaengerAntrag);
 

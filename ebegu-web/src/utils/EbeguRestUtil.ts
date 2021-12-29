@@ -1998,7 +1998,7 @@ export class EbeguRestUtil {
             finanzielleSituationResultateDTO.einkommenBeiderGesuchsteller =
                 finanzielleSituationResultateFromServer.einkommenBeiderGesuchsteller;
             finanzielleSituationResultateDTO.nettovermoegenFuenfProzent =
-                finanzielleSituationResultateFromServer.nettovermoegenFuenfProzent;
+                finanzielleSituationResultateFromServer.nettovermoegenXProzent;
             finanzielleSituationResultateDTO.anrechenbaresEinkommen =
                 finanzielleSituationResultateFromServer.anrechenbaresEinkommen;
             finanzielleSituationResultateDTO.abzuegeBeiderGesuchsteller =
