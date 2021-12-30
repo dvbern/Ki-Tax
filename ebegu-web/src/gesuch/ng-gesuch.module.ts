@@ -19,8 +19,10 @@ import {UpgradeModule} from '@angular/upgrade/static';
 import {SharedModule} from '../app/shared/shared.module';
 import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
 import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
+import {DvFinanzielleSituationRequireX} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require-x.component';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
+import {FinanzielleSituationStartSolothurnComponent} from './component/finanzielleSituation/solothurn/finanzielle-situation-start-solothurn/finanzielle-situation-start-solothurn.component';
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
 import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {ResultatComponent} from './component/finanzielleSituation/luzern/resultat/resultat.component';
@@ -48,6 +50,8 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
         InternePendenzDialogComponent,
         InternePendenzenTableComponent,
         FinanzielleSituationStartViewLuzernComponent,
+        FinanzielleSituationStartSolothurnComponent,
+        DvFinanzielleSituationRequireX,
         AngabenGesuchsteller2Component,
         ResultateComponent,
         SelbstdeklarationComponent,
