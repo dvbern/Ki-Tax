@@ -17,5 +17,6 @@
 
 export enum TSFinanzielleSituationTyp {
     BERN = 'BERN',
-    LUZERN = 'LUZERN'
+    LUZERN = 'LUZERN',
+    SOLOTHURN = 'SOLOTHURN'
 }

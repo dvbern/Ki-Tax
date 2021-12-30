@@ -30,6 +30,8 @@ export enum TSFinanzielleSituationSubStepName {
     // luzern
     LUZERN_START = 'LUZERN_START',
     LUZERN_GS2 = 'LUZERN_GS2',
-    LUZERN_RESULTATE = 'LUZERN_RESULTATE'
+    LUZERN_RESULTATE = 'LUZERN_RESULTATE',
+
+    SOLOTHURN_START = 'SOLOTHURN_START',
 
 }
