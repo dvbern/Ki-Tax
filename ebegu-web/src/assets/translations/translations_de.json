@@ -1602,6 +1602,7 @@
     "FRANZOESISCH": "Französisch",
     "DEUTSCH_ODER_FRANZOESISCH": "Deutsch oder Französisch",
     "GEMEINDE_AUSWAEHLEN": "Gemeinde auswählen",
+    "BESONDERE_VOLKSSCHULE_AUSWAEHLEN": "Besondere Volksschule auswählen",
     "GEMEINDE_AUSWAEHLEN_INFO": "<ul> <li>BG-Antrag: Wohnsitzgemeinde</li> <li>TS-Anmeldung: Gemeinde der Tagesschule</li></ul>",
     "INSTITUTION_AUSWAEHLEN": "Institution auswählen",
     "GESUCHSPERIODE_AUSWAEHLEN": "Periode auswählen",
@@ -1609,6 +1610,7 @@
     "KIBON": "kiBon",
     "ONBOARDING_BG_BEANTRAGEN": "Ich möchte einen Betreuungsgutschein beantragen",
     "ONBOARDING_TS_BEANTRAGEN": "Ich möchte mein Kind für die Tagesschule anmelden",
+    "ONBOARDING_BESONDERE_VOLKSSCHULE_BEANTRAGEN": "Mein Kind besucht eine besondere Volksschule",
     "ONBOARDING_GEMEINDE_AUSWAHL": "Betreuungsgutscheine sind in folgenden Gemeinden verfügbar",
     "ONBOARDING_REGISTRIEREN": "Registrieren",
     "ONBOARDING_ANMELDEN": "Anmelden",
@@ -1672,6 +1674,7 @@
     "FI_START": "Ferieninselanmeldungen akzeptieren ab",
     "GEMEINDE_ANGEBOT": "Angebot",
     "GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE": "Betreuungsgutscheine",
+    "GEMEINDE_ANGEBOT_BESONDERE_VOLKSSCHULE": "Ist besondere Volksschule",
     "GEMEINDE_ANGEBOT_TAGESSCHULE": "Tagesschule",
     "GEMEINDE_ANGEBOT_FERIENINSEL": "Ferieninsel",
     "GEMEINDE_ANGEBOT_EMPTY_SELECTION": "Bitte wählen Sie mindestens ein Angebot aus",
@@ -2717,5 +2720,6 @@
     "TS_MUTATION_EXISTIERT": "Es gibt bereits eine Mutation zu diesem Antrag",
     "TS_MUTATION_EXISTIERT_BODY": "Die Tagesschulanmeldung muss bei der neusten Mutation bearbeitet werden. Falls diese noch in Bearbeitung der Antragstellenden ist, muss sie zuerst freigegeben oder gelöscht werden.",
     "FREMD_ID": "Fremd-ID",
+    "BESONDERE_VOLKSSCHULE": "Besondere Volksschule",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

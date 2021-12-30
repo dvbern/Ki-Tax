@@ -1601,6 +1601,7 @@
     "FRANZOESISCH": "Français",
     "DEUTSCH_ODER_FRANZOESISCH": "allemand ou français",
     "GEMEINDE_AUSWAEHLEN": "Sélectionner une commune",
+    "BESONDERE_VOLKSSCHULE_AUSWAEHLEN": "Besondere Volksschule auswählen",
     "GEMEINDE_AUSWAEHLEN_INFO": "<ul> <li>Demande de BG: commune de résidence</li> <li>Inscription EJC: commune de l'école à journée continue</li></ul>",
     "INSTITUTION_AUSWAEHLEN": "Sélectionner une institution",
     "GESUCHSPERIODE_AUSWAEHLEN": "Sélectionner une période",
@@ -1608,6 +1609,7 @@
     "KIBON": "KiBon",
     "ONBOARDING_BG_BEANTRAGEN": "J'aimerais demander un bon de garde",
     "ONBOARDING_TS_BEANTRAGEN": "J'aimerais inscrire mon enfant à une école à journée continue",
+    "ONBOARDING_BESONDERE_VOLKSSCHULE_BEANTRAGEN": "Mein Kind besucht eine besondere Volksschule",
     "ONBOARDING_GEMEINDE_AUSWAHL": "Des bons de garde sont disponibles dans les communes suivantes :",
     "ONBOARDING_REGISTRIEREN": "Enregistrement",
     "ONBOARDING_ANMELDEN": "Connexion",
@@ -1671,6 +1673,7 @@
     "FI_START": "Accepter les inscriptions à l'accueil extrascolaire pendant les vacances à partir du",
     "GEMEINDE_ANGEBOT": "Offre",
     "GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE": "Bons de garde",
+    "GEMEINDE_ANGEBOT_BESONDERE_VOLKSSCHULE": "Ist besondere Volksschule",
     "GEMEINDE_ANGEBOT_TAGESSCHULE": "Ecole à journée continue",
     "GEMEINDE_ANGEBOT_FERIENINSEL": "Accueil extrascolaire pendant les vacances",
     "GEMEINDE_ANGEBOT_EMPTY_SELECTION": "Veuillez sélectionner au moins une offre",
@@ -2712,5 +2715,6 @@
     "TS_MUTATION_EXISTIERT": "Il existe déjà une mutation pour cette demande",
     "TS_MUTATION_EXISTIERT_BODY": "L'inscription à l'école à journée continue doit être modifiée dans la dernière demande de changement. Si elle est encore en modification par l'auteur-e de la demande, elle doit alors dabord être libérée ou supprimée.",
     "FREMD_ID": "Fremd-ID",
+    "BESONDERE_VOLKSSCHULE": "Besondere Volksschule",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
