@@ -89,10 +89,16 @@ public final class BGRechnerParameterDTO {
 
 	private BGRechnerParameterGemeindeDTO gemeindeParameter = new BGRechnerParameterGemeindeDTO();
 
-	//Luzern Spezifische Parameter
+	//Luzern spezifische Parameter
 	private BigDecimal kitaPlusZuschlag = BigDecimal.ZERO;
-	private BigDecimal minBGBaby = BigDecimal.ZERO;
-	private BigDecimal minBGKind = BigDecimal.ZERO;
+	private BigDecimal minBGBabyKita = BigDecimal.ZERO;
+	private BigDecimal minBGKindKita = BigDecimal.ZERO;
+	private BigDecimal minBGBabyTFO = BigDecimal.ZERO;
+	private BigDecimal minBGKindTFO = BigDecimal.ZERO;
+	private BigDecimal vollkostenBabyKita = BigDecimal.ZERO;
+	private BigDecimal vollkostenKindKita = BigDecimal.ZERO;
+	private BigDecimal vollkostenBabyTFO = BigDecimal.ZERO;
+	private BigDecimal vollkostenKindTFO = BigDecimal.ZERO;
 
 	public BGRechnerParameterDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
 		this.setMaxVerguenstigungVorschuleBabyProTg(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG, gesuchsperiode, gemeinde));
@@ -332,19 +338,67 @@ public final class BGRechnerParameterDTO {
 		this.kitaPlusZuschlag = kitaPlusZuschlag;
 	}
 
-	public BigDecimal getMinBGKind() {
-		return minBGKind;
+	public BigDecimal getMinBGKindKita() {
+		return minBGKindKita;
 	}
 
-	public void setMinBGKind(BigDecimal minBGKind) {
-		this.minBGKind = minBGKind;
+	public void setMinBGKindKita(BigDecimal minBGKindKita) {
+		this.minBGKindKita = minBGKindKita;
 	}
 
-	public BigDecimal getMinBGBaby() {
-		return minBGBaby;
+	public BigDecimal getMinBGBabyKita() {
+		return minBGBabyKita;
 	}
 
-	public void setMinBGBaby(BigDecimal minBGBaby) {
-		this.minBGBaby = minBGBaby;
+	public void setMinBGBabyKita(BigDecimal minBGBaby) {
+		this.minBGBabyKita = minBGBaby;
+	}
+
+	public BigDecimal getMinBGBabyTFO() {
+		return minBGBabyTFO;
+	}
+
+	public void setMinBGBabyTFO(BigDecimal minBGBabyTFO) {
+		this.minBGBabyTFO = minBGBabyTFO;
+	}
+
+	public BigDecimal getMinBGKindTFO() {
+		return minBGKindTFO;
+	}
+
+	public void setMinBGKindTFO(BigDecimal minBGKindTFO) {
+		this.minBGKindTFO = minBGKindTFO;
+	}
+
+	public BigDecimal getVollkostenKindTFO() {
+		return vollkostenKindTFO;
+	}
+
+	public void setVollkostenKindTFO(BigDecimal vollkostenKindTFO) {
+		this.vollkostenKindTFO = vollkostenKindTFO;
+	}
+
+	public BigDecimal getVollkostenBabyTFO() {
+		return vollkostenBabyTFO;
+	}
+
+	public void setVollkostenBabyTFO(BigDecimal vollkostenBabyTFO) {
+		this.vollkostenBabyTFO = vollkostenBabyTFO;
+	}
+
+	public BigDecimal getVollkostenKindKita() {
+		return vollkostenKindKita;
+	}
+
+	public void setVollkostenKindKita(BigDecimal vollkostenKindKita) {
+		this.vollkostenKindKita = vollkostenKindKita;
+	}
+
+	public BigDecimal getVollkostenBabyKita() {
+		return vollkostenBabyKita;
+	}
+
+	public void setVollkostenBabyKita(BigDecimal vollkostenBabyKita) {
+		this.vollkostenBabyKita = vollkostenBabyKita;
 	}
 }

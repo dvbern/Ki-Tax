@@ -28,7 +28,6 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 
 	private AbstractKitaLuzernRecher rechner;
 
-
 	@Override
 	public void calculate(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
@@ -139,12 +138,12 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 
 		@Override
 		BigDecimal getVollkostenTarif() {
-			return super.getInputParameter().getMaxVerguenstigungVorschuleBabyProTg();
+			return super.getInputParameter().getVollkostenBabyKita();
 		}
 
 
 		private BigDecimal getMinBetreuungsgutschein() {
-			return super.getInputParameter().getMinBGBaby();
+			return super.getInputParameter().getMinBGBabyKita();
 		}
 
 	}
@@ -159,12 +158,12 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 
 		@Override
 		BigDecimal getVollkostenTarif() {
-			return super.getInputParameter().getMaxVerguenstigungVorschuleKindProTg();
+			return super.getInputParameter().getVollkostenKindKita();
 		}
 
 
 		private BigDecimal getMinBetreuungsgutschein() {
-			return super.getInputParameter().getMinBGKind();
+			return super.getInputParameter().getMinBGKindKita();
 		}
 
 		/**
