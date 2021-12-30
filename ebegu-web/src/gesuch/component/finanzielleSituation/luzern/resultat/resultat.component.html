@@ -49,16 +49,18 @@
 
 <div class="form-group">
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-12 dv-input-container-medium">
             <div class="form-group">
-                <label class="long-label" for="massgebendesEinkVorAbzFamGr_id">
+                <label class="md-no-float" for="massgebendesEinkVorAbzFamGr_id">
                     {{'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_VOR_ABZUG_FAM' | translate}}</label>
-                <input id="massgebendesEinkVorAbzFamGr_id" type="number"
-                       name="massgebendesEinkVorAbzFamGr"
-                       #massgebendesEinkVorAbzFamGr="ngModel"
-                       [ngModel]="resultate?.massgebendesEinkVorAbzFamGr"
-                       class="form-control"
-                       [disabled]="true">
+                <div class="dv-input-container-medium-select">
+                    <input id="massgebendesEinkVorAbzFamGr_id" type="number"
+                           name="massgebendesEinkVorAbzFamGr"
+                           #massgebendesEinkVorAbzFamGr="ngModel"
+                           [ngModel]="resultate?.massgebendesEinkVorAbzFamGr"
+                           class="form-control"
+                           [disabled]="true">
+                </div>
             </div>
         </div>
     </div>
