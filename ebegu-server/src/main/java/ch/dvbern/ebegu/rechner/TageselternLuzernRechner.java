@@ -22,33 +22,60 @@ import java.math.BigDecimal;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.PensumUnits;
 
 public class TageselternLuzernRechner extends AbstractLuzernRechner {
+
+	private static final BigDecimal STUNDEN_PRO_TAG = BigDecimal.valueOf(11);
+	private boolean isBaby = false;
 
 	@Override
 	public void calculate(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
 
+		isBaby = verfuegungZeitabschnitt.getBgCalculationInputAsiv().isBabyTarif();
+		super.calculate(verfuegungZeitabschnitt, parameterDTO);
 	}
 
 	@Override
-	BigDecimal getMinimalTarif() {
-		return null;
+	protected BigDecimal getMinimalTarif() {
+		return inputParameter.getMinVerguenstigungProStd();
 	}
 
 	@Override
-	BigDecimal getVollkostenTarif() {
-		return null;
+	protected BigDecimal getVollkostenTarif() {
+		return isBaby ? inputParameter.getVollkostenTarifBabyTFO() : inputParameter.getVollkostenTarifKindTFO();
 	}
 
 	@Override
-	BigDecimal calculateSelbstbehaltElternProzent() {
-		return null;
+	protected BigDecimal calculateSelbstbehaltElternProzent() {
+		BigDecimal prozentuallerSelbstbehaltGemaessFormel = calculateSelbstbehaltProzentenGemaessFormel();
+
+		if(prozentuallerSelbstbehaltGemaessFormel.compareTo(BigDecimal.valueOf(100)) > 0) {
+			return BigDecimal.valueOf(100);
+		}
+
+		return prozentuallerSelbstbehaltGemaessFormel;
 	}
 
 	@Override
-	BigDecimal calculateBGProTagByEinkommen() {
-		return null;
+	protected BigDecimal calculateBGProTagByEinkommen() {
+		return calculateBetreuungsgutscheinProTagAuftrungEinkommenGemaessFormel();
+	}
+
+	@Override
+	protected BigDecimal getAnzahlZeiteinheitenProMonat() {
+		return EXACT.multiply(STUNDEN_PRO_TAG, WOCHEN_PRO_MONAT);
+	}
+
+	@Override
+	protected PensumUnits getZeiteinheit() {
+		return PensumUnits.HOURS;
+	}
+
+	@Override
+	protected BigDecimal getMinBetreuungsgutschein() {
+		return  isBaby ? inputParameter.getMinBGBabyTFO() : inputParameter.getMinBGKindTFO();
 	}
 }

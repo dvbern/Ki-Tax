@@ -256,7 +256,8 @@ public abstract class AbstractBGRechnerTest {
 		defaultParmeterLuzern.setMinBGBabyTFO(BigDecimal.valueOf(1.3));
 		defaultParmeterLuzern.setMinBGKindTFO(BigDecimal.ONE);
 		defaultParmeterLuzern.setVollkostenTarifBabyTFO(BigDecimal.valueOf(16.3));
-		defaultParmeterLuzern.setVollkostenTarifKindKita(BigDecimal.valueOf(12.3));
+		defaultParmeterLuzern.setVollkostenTarifKindTFO(BigDecimal.valueOf(12.4));
+		defaultParmeterLuzern.setMinVerguenstigungProStd(BigDecimal.valueOf(0.7));
 		return defaultParmeterLuzern;
 	}
 	/**

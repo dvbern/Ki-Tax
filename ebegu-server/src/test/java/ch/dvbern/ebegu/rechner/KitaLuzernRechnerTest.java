@@ -21,7 +21,9 @@ import java.math.BigDecimal;
 
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.MathUtil;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
@@ -182,6 +184,12 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);
 
 		assertCalculationResultResult(zeitabschnitt.getRelevantBgCalculationResult(), testValues);
+	}
+
+	@Override
+	protected void assertCalculationResultResult(BGCalculationResult result, TestValues testValues) {
+		super.assertCalculationResultResult(result, testValues);
+		Assert.assertEquals(PensumUnits.DAYS, result.getZeiteinheit());
 	}
 
 }

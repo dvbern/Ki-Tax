@@ -23,10 +23,11 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.PensumUnits;
 
 public class KitaLuzernRechner extends AbstractLuzernRechner {
 
-	private AbstractKitaLuzernRecher rechner;
+	private boolean isBaby = false;
 
 	@Override
 	public void calculate(
@@ -34,179 +35,100 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
 
 		BGCalculationInput bgCalculationInput = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
-		this.rechner = bgCalculationInput.isBabyTarif() ?
-			new KitaLuzernBabyRechner(bgCalculationInput.getMassgebendesEinkommen(), parameterDTO) :
-			new KitaLuzernKindRechner(bgCalculationInput.getMassgebendesEinkommen(), parameterDTO);
+		this.isBaby = bgCalculationInput.isBabyTarif();
 
 		super.calculate(verfuegungZeitabschnitt, parameterDTO);
 	}
 
 	@Override
-	BigDecimal getMinimalTarif() {
+	protected BigDecimal getMinimalTarif() {
 		return inputParameter.getMinVerguenstigungProTg();
 	}
 
 	@Override
-	BigDecimal getVollkostenTarif() {
-		return rechner.getVollkostenTarif();
+	protected BigDecimal getVollkostenTarif() {
+		return isBaby ? inputParameter.getVollkostenTarifBabyKita() : inputParameter.getVollkostenTarifKindKita();
 	}
 
 	@Override
-	BigDecimal calculateSelbstbehaltElternProzent() {
-		return rechner.calculateSelbstbehaltElternProzent(this.prozentuallerSelbstbehaltGemaessFormel);
+	protected BigDecimal getMinBetreuungsgutschein() {
+		return isBaby ? inputParameter.getMinBGBabyKita() : inputParameter.getMinBGKindKita();
 	}
 
 	@Override
-	BigDecimal calculateBGProTagByEinkommen() {
-		return rechner.calculateBGProTagByEinkommen(this.selbstBehaltElternProzent);
+	protected BigDecimal calculateSelbstbehaltElternProzent() {
+		return isBaby ? calculateSelbstbehaltElternProzentBaby() : calculateSelbstbehaltElternProzentKind();
 	}
 
-	private abstract static class AbstractKitaLuzernRecher {
-
-		private final BGRechnerParameterDTO inputParameter;
-		private final BigDecimal massgebendesEinkommen;
-
-		AbstractKitaLuzernRecher(BigDecimal massgebendesEinkommen, BGRechnerParameterDTO inputParameter) {
-			this.inputParameter = inputParameter;
-			this.massgebendesEinkommen = massgebendesEinkommen;
-		}
-
-		abstract BigDecimal getVollkostenTarif();
-		abstract BigDecimal calculateSelbstbehaltElternProzent(BigDecimal selbstbehaltElternProzent);
-		abstract BigDecimal calculateBGProTagByEinkommen(BigDecimal selbstbehaltElternProzent);
-
-		protected BGRechnerParameterDTO getInputParameter() {
-			return inputParameter;
-		}
-
-		protected BigDecimal getMassgebendesEinkommen() {
-			return massgebendesEinkommen;
-		}
+	@Override
+	protected BigDecimal calculateBGProTagByEinkommen() {
+		return isBaby? calculateBetreuungsgutscheinProTagAuftrungEinkommenGemaessFormel() : calculateBGProTagByEinkommenKind();
 	}
 
-	private static class KitaLuzernBabyRechner extends AbstractKitaLuzernRecher {
+	@Override
+	protected BigDecimal getAnzahlZeiteinheitenProMonat() {
+		return WOCHEN_PRO_MONAT;
+	}
 
-		public KitaLuzernBabyRechner(
-			BigDecimal massgebendesEinkommen,
-			BGRechnerParameterDTO inputParameter) {
-			super(massgebendesEinkommen, inputParameter);
+	@Override
+	protected PensumUnits getZeiteinheit() {
+		return PensumUnits.DAYS;
+	}
+
+	/**
+	 * Berechnet den Selbstbehalt der Eltern
+	 *
+	 * returns selbstbehaltDerEltern (gemässFormel)
+	 * wenn selbstbehaltDerEltern (gemässFormel) <= 100%,
+	 *
+	 * returns 100, wenn selbstbehaltDerEltern (gemässFormel) > 100%:
+	 */
+	private BigDecimal calculateSelbstbehaltElternProzentKind() {
+		BigDecimal prozentuallerSelbstbehaltGemaessFormel = calculateSelbstbehaltProzentenGemaessFormel();
+		if(prozentuallerSelbstbehaltGemaessFormel.compareTo(BigDecimal.valueOf(100)) > 0) {
+			return BigDecimal.valueOf(100);
 		}
 
-		/**
-		 * Berechnet den Selbstbehalt der Eltern
-		 *
-		 * returns prozentuallerSelbstbehaltGemaessFormel, wenn MassgebendesEinkommen <= MaximalMasgebendesEinkommen
-		 * {@see AbstractLuzernRechner#calculateSelbstbehaltProzentenGemaessFormel()}
-		 *
-		 * returns 101, wenn MassgebendesEinkommen > MaximalMasgebendesEinkommen:
-		 */
-		@Override
-		BigDecimal calculateSelbstbehaltElternProzent(BigDecimal selbstbehaltElternProzent) {
-			if(getMassgebendesEinkommen().compareTo(getInputParameter().getMaxMassgebendesEinkommen()) > 0) {
-				return BigDecimal.valueOf(101);
-			}
+		return prozentuallerSelbstbehaltGemaessFormel;
+	}
 
-			return selbstbehaltElternProzent;
+	/**
+	 * Berechnet den Selbstbehalt der Eltern
+	 *
+	 * returns prozentuallerSelbstbehaltGemaessFormel, wenn MassgebendesEinkommen <= MaximalMasgebendesEinkommen
+	 * {@see AbstractLuzernRechner#calculateSelbstbehaltProzentenGemaessFormel()}
+	 *
+	 * returns 101 %, wenn MassgebendesEinkommen > MaximalMasgebendesEinkommen:
+	 */
+    private BigDecimal calculateSelbstbehaltElternProzentBaby() {
+		if(inputMassgebendesEinkommen.compareTo(inputParameter.getMaxMassgebendesEinkommen()) > 0) {
+			return BigDecimal.valueOf(1.01);
 		}
 
-		/**
-		 * Berechnet den Gutschein pro Tag aufgrund des Einkommens nach
-		 *
-		 * returns 0, wenn selbstBehaltElternProzent > 100
-		 *
-		 * returns bgProTag
-		 * wenn bgProTag > minBetreuungsgutschein
-		 * sonst minBetreuungsgutschein
-		 *
-		 * formel bgProTag = vollkostenTarif * (1-selbstBehaltElternProzent)
-		 */
-		@Override
-		BigDecimal calculateBGProTagByEinkommen(BigDecimal selbstbehaltElternProzent) {
-			if(selbstbehaltElternProzent.compareTo(BigDecimal.valueOf(100)) > 0) {
-				return BigDecimal.ZERO;
-			}
+		return calculateSelbstbehaltProzentenGemaessFormel();
+	}
 
-			BigDecimal einsMinusSelbstbehalt = EXACT.subtract(BigDecimal.ONE, selbstbehaltElternProzent);
-			BigDecimal bgProTag = EXACT.multiply(getVollkostenTarif(), einsMinusSelbstbehalt);
+	/**
+	 * Berechnet den Gutschein pro Tag aufgrund des Einkommens nach
+	 *
+	 * returns bgProTag, wenn bgProTag > minBetreuungsgutschein, sonst
+	 * returns minBetreuungsgutschein, wenn massgebendes Einkomen <= maxMassgebendesEinkommen, sonst
+	 * returns 0
+	 *
+	 * formel bgProTag = vollkostenTarif * (1-selbstBehaltElternProzent)
+	 */
+	private BigDecimal calculateBGProTagByEinkommenKind() {
+		BigDecimal einsMinusSelbstbehalt = EXACT.subtract(BigDecimal.ONE, selbstBehaltElternProzent);
+		BigDecimal bgProTag = EXACT.multiply(getVollkostenTarif(), einsMinusSelbstbehalt);
 
-			if(bgProTag.compareTo(getMinBetreuungsgutschein()) > 0) {
-				return bgProTag;
-			}
+		if(bgProTag.compareTo(getMinBetreuungsgutschein()) > 0) {
+			return bgProTag;
+		}
 
+		if(inputMassgebendesEinkommen.compareTo(inputParameter.getMaxMassgebendesEinkommen()) <= 0) {
 			return getMinBetreuungsgutschein();
 		}
 
-		@Override
-		BigDecimal getVollkostenTarif() {
-			return super.getInputParameter().getVollkostenTarifBabyKita();
-		}
-
-
-		private BigDecimal getMinBetreuungsgutschein() {
-			return super.getInputParameter().getMinBGBabyKita();
-		}
-
-	}
-
-	private static class KitaLuzernKindRechner extends  AbstractKitaLuzernRecher {
-
-		public KitaLuzernKindRechner(
-			BigDecimal massgebendesEinkommen,
-			BGRechnerParameterDTO inputParameter) {
-			super(massgebendesEinkommen, inputParameter);
-		}
-
-		@Override
-		BigDecimal getVollkostenTarif() {
-			return super.getInputParameter().getVollkostenTarifKindKita();
-		}
-
-
-		private BigDecimal getMinBetreuungsgutschein() {
-			return super.getInputParameter().getMinBGKindKita();
-		}
-
-		/**
-		 * Berechnet den Selbstbehalt der Eltern
-		 *
-		 * returns selbstbehaltDerEltern (gemässFormel)
-		 * wenn selbstbehaltDerEltern (gemässFormel) <= 100%,
-		 *
-		 * returns 100, wenn selbstbehaltDerEltern (gemässFormel) > 100%:
-		 */
-		@Override
-		BigDecimal calculateSelbstbehaltElternProzent(BigDecimal selbstbehaltElternProzent) {
-			if(selbstbehaltElternProzent.compareTo(BigDecimal.valueOf(100)) > 0) {
-				return BigDecimal.valueOf(100);
-			}
-
-			return selbstbehaltElternProzent;
-		}
-
-
-		/**
-		 * Berechnet den Gutschein pro Tag aufgrund des Einkommens nach
-		 *
-		 * returns bgProTag, wenn bgProTag > minBetreuungsgutschein, sonst
-		 * returns minBetreuungsgutschein, wenn massgebendes Einkomen <= maxMassgebendesEinkommen, sonst
-		 * returns 0
-		 *
-		 * formel bgProTag = vollkostenTarif * (1-selbstBehaltElternProzent)
-		 */
-		@Override
-		BigDecimal calculateBGProTagByEinkommen(BigDecimal selbstbehaltElternProzent) {
-			BigDecimal einsMinusSelbstbehalt = EXACT.subtract(BigDecimal.ONE, selbstbehaltElternProzent);
-			BigDecimal bgProTag = EXACT.multiply(getVollkostenTarif(), einsMinusSelbstbehalt);
-
-			if(bgProTag.compareTo(getMinBetreuungsgutschein()) > 0) {
-				return bgProTag;
-			}
-
-			if(getMassgebendesEinkommen().compareTo(super.getInputParameter().getMaxMassgebendesEinkommen()) <= 0) {
-				return getMinBetreuungsgutschein();
-			}
-
-			return BigDecimal.ZERO;
-		}
+		return BigDecimal.ZERO;
 	}
 }
