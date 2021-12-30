@@ -28,6 +28,7 @@
 	</div>
 	<form #form="ngForm">
 		<dv-finanzielle-situation-require-x [(verguenstigungGewuenscht)]="verguenstigungGewuenscht" [(sozialhilfeBezueger)]="sozialhilfeBezueger" [(finanzielleSituationRequired)]="finanzielleSituationRequired"></dv-finanzielle-situation-require-x>
+		<dv-angaben *ngIf="finanzielleSituationRequired" [model]="getModel()" [isGemeinsam]="isGemeinsam()"></dv-angaben>
 		<dv-navigation-x (dvSave)="prepareSave($event.onResult)" [dvNext]="true" [dvPrevious]="true" [dvSubStep]="getSubStepIndex()" [dvSubStepName]="getSubStepName()"></dv-navigation-x>
 	</form>
 

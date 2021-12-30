@@ -1,0 +1,86 @@
+<fieldset>
+	<div class="form-group">
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="required long-label" for="nettoeinkommen_id">
+						{{'FINANZIELLE_SITUATION_NETTOEINKOMMEN' | translate}}</label>
+					<input id="nettoeinkommen_id" type="number"
+						   name="nettoEinkommen"
+                           #nettoEinkommen="ngModel"
+						   [(ngModel)]="model.finanzielleSituationJA.nettolohn"
+						   class="form-control"
+						   [disabled]="readOnly"
+						   required>
+					<dv-error-messages
+							[errorObject]="nettoEinkommen.errors"
+							inputId="steuerbares_einkommen_id">
+					</dv-error-messages>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="required long-label" for="unterhaltsbeitraege_id">
+						{{'FINANZIELLE_SITUATION_UNTERHALTSBEITRAEGE' | translate}}
+					</label>
+					<!--TODO: create unterhaltsbeitraege -->
+					<input id="unterhaltsbeitraege_id" type="number"
+						   name="unterhaltsbeitraege"
+                           #unterhaltsbeitraege="ngModel"
+						   [(ngModel)]="model.finanzielleSituationJA.abzuegeLiegenschaft"
+						   class="form-control"
+						   [disabled]="readOnly"
+						   required>
+					<dv-error-messages
+							[errorObject]="unterhaltsbeitraege.errors"
+							inputId="unterhaltsbeitraege_id">
+					</dv-error-messages>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="required long-label" for="abzuege_ausbildung_kinder_id">
+						{{'FINANZIELLE_SITUATION_ABZUEGE_AUSBILDUNG_KINDER' | translate}}
+					</label>
+					<!--TODO create abzuegeKinderAusbildun -->
+					<input id="abzuege_ausbildung_kinder_id" type="number"
+						   name="abzuegeKinderAusbildung"
+                           #abzuegeKinderAusbildung="ngModel"
+						   [(ngModel)]="model.finanzielleSituationJA.abzuegeLiegenschaft"
+						   class="form-control"
+						   [disabled]="readOnly"
+						   required>
+					<dv-error-messages
+							[errorObject]="abzuegeKinderAusbildung.errors"
+							inputId="abzuege_ausbildung_kinder_id">
+					</dv-error-messages>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="required long-label" for="steuerbares_vermoegen_id">
+						{{'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN' | translate}}</label>
+					<input id="steuerbares_vermoegen_id" type="number"
+						   name="steuerbaresVermoegen"
+                           #steuerbaresVermoegen="ngModel"
+						   [(ngModel)]="model.finanzielleSituationJA.steuerbaresVermoegen"
+						   class="form-control"
+						   [disabled]="readOnly"
+						   required>
+					<dv-error-messages
+							[errorObject]="steuerbaresVermoegen.errors"
+							inputId="steuerbares_vermoegen_id">
+					</dv-error-messages>
+				</div>
+			</div>
+		</div>
+	</div>
+</fieldset>

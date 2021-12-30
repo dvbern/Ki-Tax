@@ -22,6 +22,7 @@ import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-e
 import {DvFinanzielleSituationRequireX} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require-x.component';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
+import {AngabenComponent} from './component/finanzielleSituation/solothurn/angaben/angaben.component';
 import {FinanzielleSituationStartSolothurnComponent} from './component/finanzielleSituation/solothurn/finanzielle-situation-start-solothurn/finanzielle-situation-start-solothurn.component';
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
 import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
@@ -29,6 +30,7 @@ import {ResultatComponent} from './component/finanzielleSituation/luzern/resulta
 import {ResultateComponent} from './component/finanzielleSituation/luzern/resultate/resultate.component';
 import {SelbstdeklarationComponent} from './component/finanzielleSituation/luzern/selbstdeklaration/selbstdeklaration.component';
 import {VeranlagungComponent} from './component/finanzielleSituation/luzern/veranlagung/veranlagung.component';
+import {VeranlagungSolothurnComponent} from './component/finanzielleSituation/solothurn/veranlagung/veranlagung-solothurn.component';
 import {InternePendenzDialogComponent} from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
 import {InternePendenzenTableComponent} from './component/internePendenzenView/interne-pendenzen-table/interne-pendenzen-table.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
@@ -57,6 +59,8 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
         SelbstdeklarationComponent,
         VeranlagungComponent,
         ResultatComponent,
+        VeranlagungSolothurnComponent,
+        AngabenComponent,
     ],
     exports: [
         DvSwitchComponent,

@@ -7,6 +7,7 @@ import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanziel
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractFinSitsolothurnView} from '../AbstractFinSitsolothurnView';
+import {FinanzielleSituationSolothurnService} from '../finanzielle-situation-solothurn.service';
 
 @Component({
     selector: 'dv-finanzielle-situation-start-solothurn',
@@ -44,7 +45,7 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
     }
 
     public isGemeinsam(): boolean {
-        return false;
+        return FinanzielleSituationSolothurnService.finSitNeedsTwoAntragsteller(this.gesuchModelManager);
     }
 
     public notify(): void {
