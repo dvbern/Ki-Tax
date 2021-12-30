@@ -243,8 +243,8 @@ public abstract class AbstractBGRechnerTest {
 		defaultParameter.setKitaPlusZuschlag(BigDecimal.valueOf(32));
 		defaultParameter.setMinBGBabyKita(BigDecimal.valueOf(12.6));
 		defaultParameter.setMinBGKindKita(BigDecimal.valueOf(10));
-		defaultParameter.setVollkostenBabyKita(BigDecimal.valueOf(160));
-		defaultParameter.setVollkostenKindKita(BigDecimal.valueOf(130));
+		defaultParameter.setVollkostenTarifBabyKita(BigDecimal.valueOf(160));
+		defaultParameter.setVollkostenTarifKindKita(BigDecimal.valueOf(130));
 		return defaultParameter;
 	}
 
@@ -255,8 +255,8 @@ public abstract class AbstractBGRechnerTest {
 		defaultParmeterLuzern.setKitaPlusZuschlag(BigDecimal.ZERO);
 		defaultParmeterLuzern.setMinBGBabyTFO(BigDecimal.valueOf(1.3));
 		defaultParmeterLuzern.setMinBGKindTFO(BigDecimal.ONE);
-		defaultParmeterLuzern.setVollkostenBabyTFO(BigDecimal.valueOf(16.3));
-		defaultParmeterLuzern.setVollkostenKindKita(BigDecimal.valueOf(12.3));
+		defaultParmeterLuzern.setVollkostenTarifBabyTFO(BigDecimal.valueOf(16.3));
+		defaultParmeterLuzern.setVollkostenTarifKindKita(BigDecimal.valueOf(12.3));
 		return defaultParmeterLuzern;
 	}
 	/**

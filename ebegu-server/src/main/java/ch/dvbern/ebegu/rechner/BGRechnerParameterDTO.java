@@ -95,10 +95,10 @@ public final class BGRechnerParameterDTO {
 	private BigDecimal minBGKindKita = BigDecimal.ZERO;
 	private BigDecimal minBGBabyTFO = BigDecimal.ZERO;
 	private BigDecimal minBGKindTFO = BigDecimal.ZERO;
-	private BigDecimal vollkostenBabyKita = BigDecimal.ZERO;
-	private BigDecimal vollkostenKindKita = BigDecimal.ZERO;
-	private BigDecimal vollkostenBabyTFO = BigDecimal.ZERO;
-	private BigDecimal vollkostenKindTFO = BigDecimal.ZERO;
+	private BigDecimal vollkostenTarifBabyKita = BigDecimal.ZERO;
+	private BigDecimal vollkostenTarifKindKita = BigDecimal.ZERO;
+	private BigDecimal vollkostenTarifBabyTFO = BigDecimal.ZERO;
+	private BigDecimal vollkostenTarifKindTFO = BigDecimal.ZERO;
 
 	public BGRechnerParameterDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
 		this.setMaxVerguenstigungVorschuleBabyProTg(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG, gesuchsperiode, gemeinde));
@@ -370,35 +370,35 @@ public final class BGRechnerParameterDTO {
 		this.minBGKindTFO = minBGKindTFO;
 	}
 
-	public BigDecimal getVollkostenKindTFO() {
-		return vollkostenKindTFO;
+	public BigDecimal getVollkostenTarifKindTFO() {
+		return vollkostenTarifKindTFO;
 	}
 
-	public void setVollkostenKindTFO(BigDecimal vollkostenKindTFO) {
-		this.vollkostenKindTFO = vollkostenKindTFO;
+	public void setVollkostenTarifKindTFO(BigDecimal vollkostenTarifKindTFO) {
+		this.vollkostenTarifKindTFO = vollkostenTarifKindTFO;
 	}
 
-	public BigDecimal getVollkostenBabyTFO() {
-		return vollkostenBabyTFO;
+	public BigDecimal getVollkostenTarifBabyTFO() {
+		return vollkostenTarifBabyTFO;
 	}
 
-	public void setVollkostenBabyTFO(BigDecimal vollkostenBabyTFO) {
-		this.vollkostenBabyTFO = vollkostenBabyTFO;
+	public void setVollkostenTarifBabyTFO(BigDecimal vollkostenTarifBabyTFO) {
+		this.vollkostenTarifBabyTFO = vollkostenTarifBabyTFO;
 	}
 
-	public BigDecimal getVollkostenKindKita() {
-		return vollkostenKindKita;
+	public BigDecimal getVollkostenTarifKindKita() {
+		return vollkostenTarifKindKita;
 	}
 
-	public void setVollkostenKindKita(BigDecimal vollkostenKindKita) {
-		this.vollkostenKindKita = vollkostenKindKita;
+	public void setVollkostenTarifKindKita(BigDecimal vollkostenTarifKindKita) {
+		this.vollkostenTarifKindKita = vollkostenTarifKindKita;
 	}
 
-	public BigDecimal getVollkostenBabyKita() {
-		return vollkostenBabyKita;
+	public BigDecimal getVollkostenTarifBabyKita() {
+		return vollkostenTarifBabyKita;
 	}
 
-	public void setVollkostenBabyKita(BigDecimal vollkostenBabyKita) {
-		this.vollkostenBabyKita = vollkostenBabyKita;
+	public void setVollkostenTarifBabyKita(BigDecimal vollkostenTarifBabyKita) {
+		this.vollkostenTarifBabyKita = vollkostenTarifBabyKita;
 	}
 }

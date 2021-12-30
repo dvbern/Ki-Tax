@@ -138,7 +138,7 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 
 		@Override
 		BigDecimal getVollkostenTarif() {
-			return super.getInputParameter().getVollkostenBabyKita();
+			return super.getInputParameter().getVollkostenTarifBabyKita();
 		}
 
 
@@ -158,7 +158,7 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 
 		@Override
 		BigDecimal getVollkostenTarif() {
-			return super.getInputParameter().getVollkostenKindKita();
+			return super.getInputParameter().getVollkostenTarifKindKita();
 		}
 
 
