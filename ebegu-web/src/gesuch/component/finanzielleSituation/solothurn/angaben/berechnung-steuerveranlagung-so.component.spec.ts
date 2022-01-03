@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AngabenComponent } from './angaben.component';
+import { BerechnungSteuerveranlagungSoComponent } from './berechnung-steuerveranlagung-so.component';
 
 describe('AngabenComponent', () => {
-  let component: AngabenComponent;
-  let fixture: ComponentFixture<AngabenComponent>;
+  let component: BerechnungSteuerveranlagungSoComponent;
+  let fixture: ComponentFixture<BerechnungSteuerveranlagungSoComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AngabenComponent ]
+      declarations: [ BerechnungSteuerveranlagungSoComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AngabenComponent);
+    fixture = TestBed.createComponent(BerechnungSteuerveranlagungSoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

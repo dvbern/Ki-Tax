@@ -1,0 +1,21 @@
+<div class="row">
+	<div class="col-sm-6">
+		<div class="form-group">
+			<label class="required long-label" for="bruttolohn_id">
+				{{'FINANZIELLE_SITUATION_BRUTTOLOHN' | translate}}
+			</label>
+			<!--TODO: create bruttolohn -->
+			<input id="bruttolohn_id" type="number"
+				   name="unterhaltsbeitraege"
+                   #unterhaltsbeitraege="ngModel"
+				   [(ngModel)]="model.finanzielleSituationJA.bruttovermoegen"
+				   class="form-control"
+				   [disabled]="gesuchModelManager.isGesuchReadonlyForRole()"
+				   required>
+			<dv-error-messages
+					[errorObject]="unterhaltsbeitraege.errors"
+					inputId="bruttolohn_id">
+			</dv-error-messages>
+		</div>
+	</div>
+</div>

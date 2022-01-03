@@ -28,7 +28,7 @@
                             name="sozialhilfeBezueger"
                             required
                             [(ngModel)]="sozialhilfeBezueger"
-                            (ngModelChange)="sozialhilfeBezuegerChange.emit($event)">
+                            (ngModelChange)="updateSozialhilfeBezueger($event)">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                         <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                     </mat-radio-group>
@@ -49,11 +49,11 @@
             <dv-input-container-x [verticalAlign]="true">
                 <dv-radio-container-x>
                     <mat-radio-group
-                            aria-labelledby="sozialhilfeBezueger_id"
+                            aria-labelledby="verguenstigungGewuenscht_id"
                             name="verguenstigungGewuenscht"
                             required
                             [(ngModel)]="verguenstigungGewuenscht"
-                            (ngModelChange)="updateVerguenstigungGewuenscht()">
+                            (ngModelChange)="updateVerguenstigungGewuenscht($event)">
                         <mat-radio-button [value]="true">{{'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_JA' | translate }}</mat-radio-button>
                         <mat-radio-button [value]="false">{{'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN' | translate }}</mat-radio-button>
                     </mat-radio-group>

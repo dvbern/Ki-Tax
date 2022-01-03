@@ -3,15 +3,14 @@ import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanziel
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 @Component({
-  selector: 'dv-angaben',
-  templateUrl: './angaben.component.html',
-  styleUrls: ['./angaben.component.less'],
+  selector: 'dv-steuerveranlagung-gemeinsam',
+  templateUrl: './steuerveranlagung-gemeinsam.component.html',
+  styleUrls: ['./steuerveranlagung-gemeinsam.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AngabenComponent implements OnInit {
+export class SteuerveranlagungGemeinsamComponent implements OnInit {
 
   @Input() public model: TSFinanzielleSituationContainer;
-  @Input() public isGemeinsam: boolean;
 
   public constructor(
       public gesuchModelManager: GesuchModelManager

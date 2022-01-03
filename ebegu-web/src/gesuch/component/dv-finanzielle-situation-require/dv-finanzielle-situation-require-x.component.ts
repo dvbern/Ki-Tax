@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SimpleChanges} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
@@ -49,6 +49,7 @@ export class DvFinanzielleSituationRequireX implements OnInit {
         public readonly gesuchModelManager: GesuchModelManager,
         private readonly translate: TranslateService,
         private readonly einstellungRS: EinstellungRS,
+        private readonly cd: ChangeDetectorRef
     ) {
     }
 
@@ -74,6 +75,7 @@ export class DvFinanzielleSituationRequireX implements OnInit {
         }
         this.finanzielleSituationRequired = required;
         this.finanzielleSituationRequiredChange.emit(this.finanzielleSituationRequired);
+        this.cd.markForCheck();
     }
 
     /**
@@ -102,8 +104,13 @@ export class DvFinanzielleSituationRequireX implements OnInit {
             {maxEinkommen: this.maxMassgebendesEinkommen});
     }
 
-    public updateVerguenstigungGewuenscht(): void {
-        this.verguenstigungGewuenschtChange.emit(this.verguenstigungGewuenscht);
+    public updateVerguenstigungGewuenscht(value: any): void {
+        this.verguenstigungGewuenschtChange.emit(value);
+        this.setFinanziellesituationRequired();
+    }
+
+    public updateSozialhilfeBezueger(value: any): void {
+        this.sozialhilfeBezuegerChange.emit(value);
         this.setFinanziellesituationRequired();
     }
 }

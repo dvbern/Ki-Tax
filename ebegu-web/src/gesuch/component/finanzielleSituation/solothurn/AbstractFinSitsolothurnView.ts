@@ -200,4 +200,12 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
                 TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN,
                 TSWizardStepStatus.OK);
     }
+
+    public steuerveranlagungErhalten(): boolean {
+        return this.getModel().finanzielleSituationJA.steuerveranlagungErhalten;
+    }
+
+    public steuerveranlagungGemeinsam(): boolean {
+        return this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr;
+    }
 }

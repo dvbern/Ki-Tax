@@ -52,7 +52,7 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
     }
 
     public prepareSave(onResult: Function): Promise<TSFinanzielleSituationContainer> {
-        console.log(this.sozialhilfeBezueger, this.finanzielleSituationRequired, this.verguenstigungGewuenscht);
+        onResult(true);
         return undefined;
     }
 
