@@ -106,17 +106,10 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
     public getYearForDeklaration(): number | string {
         const currentYear = this.getBasisjahrPlus1();
         const previousYear = this.getBasisjahr();
-        if (this.getModel().finanzielleSituationJA.quellenbesteuert) {
+        if (this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr) {
             return previousYear;
         }
-        if (EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.veranlagt)) {
-            return previousYear;
-        }
-        if (EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr)
-            || EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)) {
-            return currentYear;
-        }
-        return '';
+        return currentYear;
     }
 
     public abstract isGemeinsam(): boolean;
@@ -138,7 +131,7 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
     public abstract prepareSave(onResult: Function): IPromise<TSFinanzielleSituationContainer>;
 
     public getAntragstellerNameForCurrentStep(): string {
-        if (this.isGemeinsam()) {
+        if (this.getAntragstellerNummer() === 0) {
             return '';
         }
         if (this.getAntragstellerNummer() === 1) {
@@ -161,44 +154,41 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
 
     public isGesuchValid(form: NgForm): boolean {
         if (!form.valid) {
-            if (this.veranlagtVisible()) {
-                form.controls.steuerbaresEinkommen.markAsTouched({onlySelf: true});
-                form.controls.steuerbaresVermoegen.markAsTouched({onlySelf: true});
-                form.controls.abzuegeLiegenschaft.markAsTouched({onlySelf: true});
-                form.controls.geschaeftsverlust.markAsTouched({onlySelf: true});
-                form.controls.einkaeufeVorsorge.markAsTouched({onlySelf: true});
+            for (const control in form.controls) {
+                if (EbeguUtil.isNotNullOrUndefined(form.controls[control])) {
+                    form.controls[control].markAsTouched({onlySelf: true});
+                }
             }
             EbeguUtil.selectFirstInvalid();
         }
-
         return form.valid;
     }
 
     public abstract notify(): void;
 
-    protected save(onResult: Function): IPromise<TSFinanzielleSituationContainer> {
+    protected save(onResult: Function): Promise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         return this.gesuchModelManager.saveFinanzielleSituation()
-            .then((finanzielleSituationContainer: TSFinanzielleSituationContainer) => {
+            .then(async (finanzielleSituationContainer: TSFinanzielleSituationContainer) => {
                 if (this.isGemeinsam() || this.getAntragstellerNummer() === 2) {
-                    this.updateWizardStepStatus();
+                    await this.updateWizardStepStatus();
                 }
                 onResult(finanzielleSituationContainer);
                 return finanzielleSituationContainer;
             }).catch(error => {
                 throw(error);
-            });
+            }) as Promise<TSFinanzielleSituationContainer>;
     }
 
     /**
      * updates the Status of the Step depending on whether the Gesuch is a Mutation or not
      */
-    private updateWizardStepStatus(): IPromise<void> {
+    private updateWizardStepStatus(): Promise<void> {
         return this.gesuchModelManager.getGesuch().isMutation() ?
-            this.wizardStepManager.updateCurrentWizardStepStatusMutiert() :
+            this.wizardStepManager.updateCurrentWizardStepStatusMutiert() as Promise<void> :
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN,
-                TSWizardStepStatus.OK);
+                TSWizardStepStatus.OK) as Promise<void>;
     }
 
     public steuerveranlagungErhalten(): boolean {
@@ -206,6 +196,10 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
     }
 
     public steuerveranlagungGemeinsam(): boolean {
+        if (this.gesuchstellerNumber === 2) {
+            // this is only saved on the primary GS for Solothurn
+            return this.getGesuch().gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.gemeinsameStekVorjahr;
+        }
         return this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr;
     }
 }

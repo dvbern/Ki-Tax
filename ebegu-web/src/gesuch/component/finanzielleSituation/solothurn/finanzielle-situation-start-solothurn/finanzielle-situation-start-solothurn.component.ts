@@ -1,8 +1,9 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {IPromise} from 'angular';
+import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
+import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
@@ -11,11 +12,14 @@ import {FinanzielleSituationSolothurnService} from '../finanzielle-situation-sol
 
 @Component({
     selector: 'dv-finanzielle-situation-start-solothurn',
-    templateUrl: '../finanzielle-situation-solothurn.component.html',
+    templateUrl: './finanzielle-situation-solothurn.component.html',
     styleUrls: ['./finanzielle-situation-start-solothurn.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSitsolothurnView {
+
+    @ViewChild(NgForm) private readonly form: NgForm;
+
     public sozialhilfeBezueger: boolean;
     public finanzielleSituationRequired: boolean;
     public verguenstigungGewuenscht: boolean;
@@ -33,11 +37,11 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
     }
 
     public getAntragstellerNummer(): number {
-        return 1;
+        return 0;
     }
 
     public getSubStepIndex(): number {
-        return 1;
+        return 0;
     }
 
     public getSubStepName(): string {
@@ -52,8 +56,15 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
     }
 
     public prepareSave(onResult: Function): Promise<TSFinanzielleSituationContainer> {
-        onResult(true);
-        return undefined;
+        if (!this.isGesuchValid(this.form)) {
+            onResult(undefined);
+            return undefined;
+        }
+        return this.save(onResult);
+    }
+
+    public getFamilienSitutation(): TSFamiliensituation {
+        return this.getGesuch().familiensituationContainer.familiensituationJA;
     }
 
 }

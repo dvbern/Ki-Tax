@@ -1,4 +1,5 @@
-import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {Component, ChangeDetectionStrategy, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
 import {TSFinanzielleSituationSubStepName} from '../../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSFinanzielleSituationContainer} from '../../../../../../models/TSFinanzielleSituationContainer';
 import {GesuchModelManager} from '../../../../../service/gesuchModelManager';
@@ -12,22 +13,24 @@ import {AbstractFinSitsolothurnView} from '../../AbstractFinSitsolothurnView';
 })
 export class AngabenGs2Component extends AbstractFinSitsolothurnView {
 
+    @ViewChild(NgForm) private readonly form: NgForm;
+
     public constructor(
         public gesuchModelManager: GesuchModelManager,
         public wizardStepManager: WizardStepManager
     ) {
-        super(gesuchModelManager, wizardStepManager, 1);
+        super(gesuchModelManager, wizardStepManager, 2);
     }
 
     public ngOnInit(): void {
     }
 
     public getAntragstellerNummer(): number {
-        return 0;
+        return 2;
     }
 
     public getSubStepIndex(): number {
-        return 0;
+        return 2;
     }
 
     public getSubStepName(): string {
@@ -38,8 +41,11 @@ export class AngabenGs2Component extends AbstractFinSitsolothurnView {
     }
 
     public prepareSave(onResult: Function): Promise<TSFinanzielleSituationContainer> {
-        onResult(true);
-        return undefined;
+        if (!this.isGesuchValid(this.form)) {
+            onResult(undefined);
+            return undefined;
+        }
+        return this.save(onResult);
     }
 
     public isGemeinsam(): boolean {
