@@ -545,7 +545,7 @@ export class EbeguFinanzielleSituationStartSolothurnState implements Ng1StateDec
 
 export class EbeguFinanzielleSituationGS1SolothurnState implements Ng1StateDeclaration {
     public name = 'gesuch.finanzielleSituationGS1Solothurn';
-    public url = '/so/finanzielleSituation/:gsNummer/:gesuchId';
+    public url = '/so/finanzielleSituation/1/:gesuchId';
 
     public views: any = {
         gesuchViewPort: {
@@ -567,7 +567,7 @@ export class EbeguFinanzielleSituationGS1SolothurnState implements Ng1StateDecla
 
 export class EbeguFinanzielleSituationGS2SolothurnState implements Ng1StateDeclaration {
     public name = 'gesuch.finanzielleSituationGS2Solothurn';
-    public url = '/so/finanzielleSituation/:gsNummer/:gesuchId';
+    public url = '/so/finanzielleSituation/2/:gesuchId';
 
     public views: any = {
         gesuchViewPort: {
