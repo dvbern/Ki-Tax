@@ -410,6 +410,15 @@ export class DvNavigationXComponent implements OnInit {
             case TSFinanzielleSituationSubStepName.LUZERN_RESULTATE:
                 this.navigateToLuzernResultate();
                 return;
+            case TSFinanzielleSituationSubStepName.SOLOTHURN_START:
+                this.navigateToSolothurnStart();
+                return;
+            case TSFinanzielleSituationSubStepName.SOLOTHURN_GS1:
+                this.navigateToSolothurnGS1();
+                return;
+            case TSFinanzielleSituationSubStepName.SOLOTHURN_GS2:
+                this.navigateToSolothurnGS2();
+                return;
             default:
                 throw new Error(`not implemented for Substep ${navigateToSubStep}`);
         }
@@ -542,6 +551,29 @@ export class DvNavigationXComponent implements OnInit {
     private navigateToLuzernResultate(): any {
         return this.$state.go('gesuch.finanzielleSituationResultateLuzern', {
             gesuchId: this.getGesuchId(),
+        });
+    }
+
+    // tslint:disable-next-line:no-identical-functions
+    private navigateToSolothurnStart(): any {
+        return this.$state.go('gesuch.finanzielleSituationStartSolothurn', {
+            gesuchId: this.getGesuchId(),
+        });
+    }
+
+    // tslint:disable-next-line:no-identical-functions
+    private navigateToSolothurnGS1(): any {
+        return this.$state.go('gesuch.finanzielleSituationGS1Solothurn', {
+            gesuchId: this.getGesuchId(),
+            gsNummer: 1
+        });
+    }
+
+    // tslint:disable-next-line:no-identical-functions
+    private navigateToSolothurnGS2(): any {
+        return this.$state.go('gesuch.finanzielleSituationGS2Solothurn', {
+            gesuchId: this.getGesuchId(),
+            gsNummer: 2
         });
     }
 

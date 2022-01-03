@@ -16,7 +16,7 @@
  */
 
 import {TSFinanzielleSituationSubStepName} from '../../models/enums/TSFinanzielleSituationSubStepName';
-import {FinanzielleSituationLuzernService} from '../component/finanzielleSituation/luzern/finanzielle-situation-luzern.service';
+import {FinanzielleSituationSolothurnService} from '../component/finanzielleSituation/solothurn/finanzielle-situation-solothurn.service';
 import {FinanzielleSituationSubStepManager} from './finanzielleSituationSubStepManager';
 import {GesuchModelManager} from './gesuchModelManager';
 
@@ -27,13 +27,27 @@ export class FinanzielleSituationSubStepManagerSolothurn extends FinanzielleSitu
     }
 
     public getNextSubStepFinanzielleSituation(
+        currentSubStep: TSFinanzielleSituationSubStepName,
     ): TSFinanzielleSituationSubStepName {
+        if (currentSubStep === TSFinanzielleSituationSubStepName.SOLOTHURN_START &&
+            FinanzielleSituationSolothurnService.finSitNeedsTwoAntragsteller(this.gesuchModelManager)) {
+            return TSFinanzielleSituationSubStepName.SOLOTHURN_GS1;
+        }
+        if (currentSubStep === TSFinanzielleSituationSubStepName.SOLOTHURN_GS1) {
+            return TSFinanzielleSituationSubStepName.SOLOTHURN_GS2;
+        }
         return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
     }
 
     public getPreviousSubStepFinanzielleSituation(
         currentSubStep: TSFinanzielleSituationSubStepName,
     ): TSFinanzielleSituationSubStepName {
+        if (currentSubStep === TSFinanzielleSituationSubStepName.SOLOTHURN_GS2) {
+            return TSFinanzielleSituationSubStepName.SOLOTHURN_GS1;
+        }
+        if (currentSubStep === TSFinanzielleSituationSubStepName.SOLOTHURN_GS1) {
+            return TSFinanzielleSituationSubStepName.SOLOTHURN_START;
+        }
         return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
     }
 }

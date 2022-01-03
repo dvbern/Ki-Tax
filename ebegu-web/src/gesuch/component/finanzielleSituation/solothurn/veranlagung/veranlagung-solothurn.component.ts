@@ -1,11 +1,13 @@
 import {Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter} from '@angular/core';
+import {ControlContainer, NgForm} from '@angular/forms';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 
 @Component({
   selector: 'dv-veranlagung-solothurn',
   templateUrl: './veranlagung-solothurn.component.html',
   styleUrls: ['./veranlagung-solothurn.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class VeranlagungSolothurnComponent implements OnInit {
 

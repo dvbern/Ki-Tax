@@ -1,0 +1,19 @@
+<div class="gesuch-modul">
+	<h1 class="access-for-all-title" translate>AFA_GESUCHSFORMULAR</h1>
+	<div class="row view-title">
+		<div class="col-md-12">
+			<h2>
+                <span translate
+					  [translateParams]="{gesuchsteller: getAntragstellerNameForCurrentStep(), basisjahr: getYearForDeklaration()}">FINANZIELLE_SITUATION</span>
+			</h2>
+			<hr class="header"/>
+		</div>
+	</div>
+	<form #form="ngForm">
+		<dv-steuerveranlagung-erhalten *ngIf="!steuerveranlagungGemeinsam()" [model]="getModel()"></dv-steuerveranlagung-erhalten>
+		<dv-veranlagung-solothurn *ngIf="steuerveranlagungErhalten()" [model]="getModel()"
+								  [readOnly]="gesuchModelManager.isGesuchReadonlyForRole()"></dv-veranlagung-solothurn>
+		<dv-bruttolohn *ngIf="!steuerveranlagungErhalten()" [model]="getModel()"></dv-bruttolohn>
+		<dv-navigation-x (dvSave)="prepareSave($event.onResult)" [dvNext]="true" [dvPrevious]="true" [dvSubStep]="getSubStepIndex()" [dvSubStepName]="getSubStepName()"></dv-navigation-x>
+	</form>
+</div>
