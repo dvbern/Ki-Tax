@@ -79,6 +79,18 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	private Boolean veranlagt;
 
 	@Nullable
+	@Column(nullable = true)
+	private BigDecimal unterhaltsBeitraege;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal abzuegeKinderAusbildung;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal bruttoLohn;
+
+	@Nullable
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_finanziellesituation_selbstdeklaration_id"), nullable = true)
 	private FinanzielleSituationSelbstdeklaration selbstdeklaration;
@@ -175,6 +187,33 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.selbstdeklaration = selbstdeklaration;
 	}
 
+	@Nullable
+	public BigDecimal getUnterhaltsBeitraege() {
+		return unterhaltsBeitraege;
+	}
+
+	public void setUnterhaltsBeitraege(@Nullable BigDecimal unterhaltsBeitraege) {
+		this.unterhaltsBeitraege = unterhaltsBeitraege;
+	}
+
+	@Nullable
+	public BigDecimal getAbzuegeKinderAusbildung() {
+		return abzuegeKinderAusbildung;
+	}
+
+	public void setAbzuegeKinderAusbildung(@Nullable BigDecimal abzuegeKinderAusbildung) {
+		this.abzuegeKinderAusbildung = abzuegeKinderAusbildung;
+	}
+
+	@Nullable
+	public BigDecimal getBruttoLohn() {
+		return bruttoLohn;
+	}
+
+	public void setBruttoLohn(@Nullable BigDecimal bruttoLohn) {
+		this.bruttoLohn = bruttoLohn;
+	}
+
 	@Nonnull
 	public FinanzielleSituation copyFinanzielleSituation(@Nonnull FinanzielleSituation target, @Nonnull AntragCopyType copyType) {
 		switch (copyType) {
@@ -190,6 +229,9 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setAlleinigeStekVorjahr(this.getAlleinigeStekVorjahr());
 			target.setQuellenbesteuert(this.quellenbesteuert);
 			target.setVeranlagt(this.getVeranlagt());
+			target.setUnterhaltsBeitraege(this.getUnterhaltsBeitraege());
+			target.setAbzuegeKinderAusbildung(this.getAbzuegeKinderAusbildung());
+			target.setBruttoLohn(this.getBruttoLohn());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -223,6 +265,10 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			Objects.equals(getGemeinsameStekVorjahr(), otherFinSit.getGemeinsameStekVorjahr()) &&
 			Objects.equals(getQuellenbesteuert(), otherFinSit.getQuellenbesteuert()) &&
 			Objects.equals(getVeranlagt(), otherFinSit.getVeranlagt()) &&
-			Objects.equals(getSelbstdeklaration(), otherFinSit.getSelbstdeklaration());
+			Objects.equals(getSelbstdeklaration(), otherFinSit.getSelbstdeklaration()) &&
+			MathUtil.isSame(getBruttoLohn(), otherFinSit.getBruttoLohn()) &&
+			MathUtil.isSame(getAbzuegeKinderAusbildung(), otherFinSit.getAbzuegeKinderAusbildung()) &&
+			MathUtil.isSame(getUnterhaltsBeitraege(), otherFinSit.getUnterhaltsBeitraege());
 	}
+
 }

@@ -14,7 +14,7 @@
 						   required>
 					<dv-error-messages
 							[errorObject]="nettoEinkommen.errors"
-							inputId="steuerbares_einkommen_id">
+							inputId="nettoeinkommen_id">
 					</dv-error-messages>
 				</div>
 			</div>
@@ -25,11 +25,10 @@
 					<label class="required long-label" for="unterhaltsbeitraege_id">
 						{{'FINANZIELLE_SITUATION_UNTERHALTSBEITRAEGE' | translate}}
 					</label>
-					<!--TODO: create unterhaltsbeitraege -->
 					<input id="unterhaltsbeitraege_id" type="number"
 						   name="unterhaltsbeitraege"
                            #unterhaltsbeitraege="ngModel"
-						   [(ngModel)]="model.finanzielleSituationJA.abzuegeLiegenschaft"
+						   [(ngModel)]="model.finanzielleSituationJA.unterhaltsBeitraege"
 						   class="form-control"
 						   [disabled]="readOnly"
 						   required>
@@ -46,11 +45,10 @@
 					<label class="required long-label" for="abzuege_ausbildung_kinder_id">
 						{{'FINANZIELLE_SITUATION_ABZUEGE_AUSBILDUNG_KINDER' | translate}}
 					</label>
-					<!--TODO create abzuegeKinderAusbildun -->
 					<input id="abzuege_ausbildung_kinder_id" type="number"
 						   name="abzuegeKinderAusbildung"
                            #abzuegeKinderAusbildung="ngModel"
-						   [(ngModel)]="model.finanzielleSituationJA.abzuegeLiegenschaft"
+						   [(ngModel)]="model.finanzielleSituationJA.abzuegeKinderAusbildung"
 						   class="form-control"
 						   [disabled]="readOnly"
 						   required>

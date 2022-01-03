@@ -4,11 +4,10 @@
 			<label class="required long-label" for="bruttolohn_id">
 				{{'FINANZIELLE_SITUATION_BRUTTOLOHN' | translate}}
 			</label>
-			<!--TODO: create bruttolohn -->
 			<input id="bruttolohn_id" type="number"
 				   name="unterhaltsbeitraege"
                    #unterhaltsbeitraege="ngModel"
-				   [(ngModel)]="model.finanzielleSituationJA.bruttovermoegen"
+				   [(ngModel)]="model.finanzielleSituationJA.bruttoLohn"
 				   class="form-control"
 				   [disabled]="gesuchModelManager.isGesuchReadonlyForRole()"
 				   required>
