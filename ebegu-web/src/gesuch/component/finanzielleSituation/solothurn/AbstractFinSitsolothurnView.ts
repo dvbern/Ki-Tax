@@ -170,7 +170,7 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         return this.gesuchModelManager.saveFinanzielleSituation()
             .then(async (finanzielleSituationContainer: TSFinanzielleSituationContainer) => {
-                if (this.isGemeinsam() || this.getAntragstellerNummer() === 2) {
+                if (!this.isGemeinsam() || this.getAntragstellerNummer() === 2) {
                     await this.updateWizardStepStatus();
                 }
                 onResult(finanzielleSituationContainer);
@@ -183,7 +183,7 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
     /**
      * updates the Status of the Step depending on whether the Gesuch is a Mutation or not
      */
-    private updateWizardStepStatus(): Promise<void> {
+    protected updateWizardStepStatus(): Promise<void> {
         return this.gesuchModelManager.getGesuch().isMutation() ?
             this.wizardStepManager.updateCurrentWizardStepStatusMutiert() as Promise<void> :
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
