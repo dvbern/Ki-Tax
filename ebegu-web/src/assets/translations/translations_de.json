@@ -2721,5 +2721,6 @@
     "TS_MUTATION_EXISTIERT_BODY": "Die Tagesschulanmeldung muss bei der neusten Mutation bearbeitet werden. Falls diese noch in Bearbeitung der Antragstellenden ist, muss sie zuerst freigegeben oder gelöscht werden.",
     "FREMD_ID": "Fremd-ID",
     "BESONDERE_VOLKSSCHULE": "Besondere Volksschule",
+    "KESB_PLATZIERUNG_DEAKTIVIEREN": "KESB-Platzierung deaktivieren",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -73,6 +73,6 @@ public class KindDokumente extends AbstractDokumente<Kind, Object> {
 	@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
 	@Override
 	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Kind kind) {
-		return kind != null && kind.getPensumFachstelle() != null && kind.getPensumFachstelle().getFachstelle() != null;
+		return kind != null && kind.getPensumFachstelle() != null;
 	}
 }
