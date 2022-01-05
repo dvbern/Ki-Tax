@@ -38,6 +38,7 @@ export class DvInputLabelFieldComponent {
     @Input() public model: any;
     @Input() public inputRequired: boolean = false;
     @Input() public inputDisabled: boolean = false;
+    @Input() public dvOnBlur: (event: any) => void;
 
     @Output() public readonly modelChange: EventEmitter<any> = new EventEmitter();
 
