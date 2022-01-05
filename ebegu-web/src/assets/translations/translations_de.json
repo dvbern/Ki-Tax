@@ -118,6 +118,7 @@
     "FINANZIELLE_SITUATION_TOTAL_ABZUEGE": "Total Abzüge",
     "FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN": "Massgebendes Einkommen",
     "FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_VOR_ABZUG_FAM": "Massgebendes Einkommen vor Abzug der Familiengrösse",
+    "FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_VOR_ABZUG_FAM_MIT_GS": "Massgebendes Einkommen vor Abzug der Familiengrösse ({{namegs}})",
     "FINANZIELLE_SITUATION_EINKOMMENSVERSCHLECHTERUNG": "Möchten Sie eine Einkommensverschlechterung geltend machen?",
     "FINANZIELLE_SITUATION_SELBSTDEKLARATION_ERWERB": "Haupt- und Nebenerwerb des / der Steuerpflichtigen",
     "FINANZIELLE_SITUATION_SELBSTDEKLARATION_ERWERB_HELP": "siehe Wegleitung zur Steuererklärung <br><br> entsprechende Positionen: 100,104,110,114,118",

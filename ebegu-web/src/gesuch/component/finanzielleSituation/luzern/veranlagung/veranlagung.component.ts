@@ -50,7 +50,7 @@ export class VeranlagungComponent implements OnInit {
     public ngOnInit(): void {
     }
 
-    public onValueChange(): void {
+    public onValueChangeFunction = (): void => {
         this.valueChange.emit();
     }
 
