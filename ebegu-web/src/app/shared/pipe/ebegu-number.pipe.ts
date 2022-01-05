@@ -47,7 +47,7 @@ export class EbeguNumberPipe implements PipeTransform {
 
         if (input) {
             let sign = '';
-            if (input && input.indexOf('-') === 0) {
+            if (input.indexOf('-') === 0) {
                 // if negative allowed, get sign
                 sign = '-';
                 formattedInput = input.substr(1); // get just the number part
