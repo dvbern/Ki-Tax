@@ -39,6 +39,9 @@ export class SelbstdeklarationComponent implements OnInit {
     @Input()
     public model: TSFinanzielleSituationContainer;
 
+    @Input()
+    public readOnly: boolean = false;
+
     public constructor(
     ) {
     }

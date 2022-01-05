@@ -142,6 +142,7 @@
                                       [antragstellerNummer]="getAntragstellerNummer()"
                                       [isGemeinsam]="isGemeinsam()"
                                       [year]="getYearForDeklaration()"
+                                      [readOnly]="readonly"
                                       [model]="getModel()"
                 ></dv-selbstdeklaration>
                 <dv-veranlagung *ngIf="showVeranlagung()"
