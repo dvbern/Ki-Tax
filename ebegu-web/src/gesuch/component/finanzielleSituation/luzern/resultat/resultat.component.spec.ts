@@ -16,6 +16,7 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {NgForm} from '@angular/forms';
 import {SharedModule} from '../../../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
@@ -34,6 +35,7 @@ describe('ResultatComponent', () => {
             declarations: [ResultatComponent],
             providers: [
                 {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
+                NgForm
             ],
             imports: [
                 SharedModule,
