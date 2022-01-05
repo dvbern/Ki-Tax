@@ -36,8 +36,8 @@ export class DvInputLabelFieldComponent {
     @Input() public tooltipMessageKey: string;
     @Input() public tooltipMessageKeyArgs: {};
     @Input() public model: any;
-    @Input() public inputType: string  = 'text';
     @Input() public inputRequired: boolean = false;
+    @Input() public inputDisabled: boolean = false;
 
     @Output() public readonly modelChange: EventEmitter<any> = new EventEmitter();
 

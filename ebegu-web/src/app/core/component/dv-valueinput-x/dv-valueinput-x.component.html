@@ -20,7 +20,8 @@
        [ngModel]="model | ebeguNumber"
        (input)="valueHasChange($event)"
        (blur)="onBlur($event)"
-       [required]="ngRequired"
+       [required]="required"
+       [disabled]="disabled"
        [pattern]="getInputValidationPattern()"
        class="form-control">
 

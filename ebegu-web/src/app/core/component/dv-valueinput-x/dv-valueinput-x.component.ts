@@ -33,7 +33,8 @@ export class DvValueinputXComponent {
     @Input() public model: any;
     @Input() public float: boolean = false;
     @Input() public allowNegative: boolean = false;
-    @Input() public ngRequired: boolean = false;
+    @Input() public required: boolean = false;
+    @Input() public disabled: boolean = false;
     @Input() public dvOnBlur: (event: any) => void;
 
     @Output() public readonly modelChange: EventEmitter<any> = new EventEmitter();

@@ -27,7 +27,9 @@
         <dv-valueinput-x
             [inputId]="inputId"
             [model]="model"
-            (modelChange)="valueHasChange($event)">
+            (modelChange)="valueHasChange($event)"
+            [required]="inputRequired"
+            [disabled]="inputDisabled">
         </dv-valueinput-x>
     </div>
 
