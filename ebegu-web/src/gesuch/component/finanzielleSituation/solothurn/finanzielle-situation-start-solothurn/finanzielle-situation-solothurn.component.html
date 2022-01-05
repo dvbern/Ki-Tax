@@ -30,7 +30,7 @@
 		<dv-finanzielle-situation-require-x [(verguenstigungGewuenscht)]="model.verguenstigungGewuenscht" [(sozialhilfeBezueger)]="model.sozialhilfeBezueger" [(finanzielleSituationRequired)]="finanzielleSituationRequired"></dv-finanzielle-situation-require-x>
 		<div *ngIf="finanzielleSituationRequired && !isGemeinsam()">
 			<dv-steuerveranlagung-erhalten [model]="getModel()"></dv-steuerveranlagung-erhalten>
-			<dv-veranlagung-solothurn *ngIf="steuerveranlagungErhalten()" [model]="getModel()"></dv-veranlagung-solothurn>
+			<dv-veranlagung-solothurn *ngIf="steuerveranlagungErhalten()" [model]="getModel()" [readOnly]="gesuchModelManager.isGesuchReadonly()"></dv-veranlagung-solothurn>
 			<dv-bruttolohn *ngIf="!steuerveranlagungErhalten()" [model]="getModel()"></dv-bruttolohn>
 		</div>
 		<div *ngIf="finanzielleSituationRequired && isGemeinsam()">

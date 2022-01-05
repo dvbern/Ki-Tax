@@ -15,6 +15,9 @@
 					[errorObject]="unterhaltsbeitraege.errors"
 					inputId="bruttolohn_id">
 			</dv-error-messages>
+			<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.bruttoLohn"
+						 [korrektur]="model.finanzielleSituationJA.bruttoLohn"
+						 [showIfBisherNone]="isNotNullOrUndefined(model.finanzielleSituationGS)"></dv-bisher-x>
 		</div>
 	</div>
 </div>

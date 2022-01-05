@@ -27,6 +27,9 @@
                             aria-labelledby="sozialhilfeBezueger_id"
                             name="sozialhilfeBezueger"
                             required
+                            dvEnableElement
+                            [allowedRoles]="allowedRoles"
+                            [enableExpression]="!isGesuchReadonly() && !isKorrekturModusJugendamt()"
                             [(ngModel)]="sozialhilfeBezueger"
                             (ngModelChange)="updateSozialhilfeBezueger($event)">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
@@ -52,6 +55,8 @@
                             aria-labelledby="verguenstigungGewuenscht_id"
                             name="verguenstigungGewuenscht"
                             required
+                            dvEnableElement
+                            [enableExpression]="!isGesuchReadonly() && !isKorrekturModusJugendamt()"
                             [(ngModel)]="verguenstigungGewuenscht"
                             (ngModelChange)="updateVerguenstigungGewuenscht($event)">
                         <mat-radio-button [value]="true">{{'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_JA' | translate }}</mat-radio-button>

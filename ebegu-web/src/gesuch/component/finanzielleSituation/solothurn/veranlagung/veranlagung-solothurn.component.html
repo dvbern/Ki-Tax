@@ -1,4 +1,4 @@
-<fieldset>
+<fieldset [disabled]="readOnly">
 	<div class="form-group">
 		<div class="row">
 			<div class="col-sm-6">
@@ -10,12 +10,14 @@
                            #nettoEinkommen="ngModel"
 						   [(ngModel)]="model.finanzielleSituationJA.nettolohn"
 						   class="form-control"
-						   [disabled]="readOnly"
 						   required>
 					<dv-error-messages
 							[errorObject]="nettoEinkommen.errors"
 							inputId="nettoeinkommen_id">
 					</dv-error-messages>
+					<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.nettolohn"
+								 [korrektur]="model.finanzielleSituationJA.nettolohn"
+								 [showIfBisherNone]="isNotNullOrUndefined(model.finanzielleSituationGS)"></dv-bisher-x>
 				</div>
 			</div>
 		</div>
@@ -30,12 +32,14 @@
                            #unterhaltsbeitraege="ngModel"
 						   [(ngModel)]="model.finanzielleSituationJA.unterhaltsBeitraege"
 						   class="form-control"
-						   [disabled]="readOnly"
 						   required>
 					<dv-error-messages
 							[errorObject]="unterhaltsbeitraege.errors"
 							inputId="unterhaltsbeitraege_id">
 					</dv-error-messages>
+					<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.unterhaltsBeitraege"
+								 [korrektur]="model.finanzielleSituationJA.unterhaltsBeitraege"
+								 [showIfBisherNone]="isNotNullOrUndefined(model.finanzielleSituationGS)"></dv-bisher-x>
 				</div>
 			</div>
 		</div>
@@ -50,12 +54,14 @@
                            #abzuegeKinderAusbildung="ngModel"
 						   [(ngModel)]="model.finanzielleSituationJA.abzuegeKinderAusbildung"
 						   class="form-control"
-						   [disabled]="readOnly"
 						   required>
 					<dv-error-messages
 							[errorObject]="abzuegeKinderAusbildung.errors"
 							inputId="abzuege_ausbildung_kinder_id">
 					</dv-error-messages>
+					<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.abzuegeKinderAusbildung"
+								 [korrektur]="model.finanzielleSituationJA.abzuegeKinderAusbildung"
+								 [showIfBisherNone]="isNotNullOrUndefined(model.finanzielleSituationGS)"></dv-bisher-x>
 				</div>
 			</div>
 		</div>
@@ -71,12 +77,14 @@
                            #steuerbaresVermoegen="ngModel"
 						   [(ngModel)]="model.finanzielleSituationJA.steuerbaresVermoegen"
 						   class="form-control"
-						   [disabled]="readOnly"
 						   required>
 					<dv-error-messages
 							[errorObject]="steuerbaresVermoegen.errors"
 							inputId="steuerbares_vermoegen_id">
 					</dv-error-messages>
+					<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.steuerbaresVermoegen"
+								 [korrektur]="model.finanzielleSituationJA.steuerbaresVermoegen"
+								 [showIfBisherNone]="isNotNullOrUndefined(model.finanzielleSituationGS)"></dv-bisher-x>
 				</div>
 			</div>
 		</div>

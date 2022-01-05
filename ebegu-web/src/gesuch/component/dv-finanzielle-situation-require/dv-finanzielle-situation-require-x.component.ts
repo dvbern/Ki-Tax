@@ -12,13 +12,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+import {TS} from '@angular/compiler-cli/src/transformers/util';
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
+import {TSRole} from '../../../models/enums/TSRole';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 
 @Component({
@@ -44,6 +47,8 @@ export class DvFinanzielleSituationRequireX implements OnInit {
     public readonly finanzielleSituationRequiredChange = new EventEmitter<boolean>();
     private maxMassgebendesEinkommen: string;
 
+    public allowedRoles: ReadonlyArray<TSRole>;
+
     public constructor(
         public form: NgForm,
         public readonly gesuchModelManager: GesuchModelManager,
@@ -62,6 +67,7 @@ export class DvFinanzielleSituationRequireX implements OnInit {
             .then(response => {
                 this.maxMassgebendesEinkommen = response.value;
             });
+        this.allowedRoles = TSRoleUtil.getAllRolesButTraegerschaftInstitution();
     }
 
     public setFinanziellesituationRequired(): void {

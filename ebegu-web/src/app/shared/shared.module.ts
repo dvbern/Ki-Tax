@@ -70,6 +70,7 @@ import {SavingInfo} from './component/save-input-info/saving-info.component';
 import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdaten-header.component';
 import {AccordionTabDirective} from './directive/accordion-tab.directive';
 import {AccordionDirective} from './directive/accordion.directive';
+import {EnableElementDirective} from './directive/enable-element.directive';
 import {LoadingButtonDirective} from './directive/loading-button.directive';
 import {NumbersMinMaxDirective} from './directive/numbers-min-max.directive';
 import {TooltipDirective} from './directive/TooltipDirective';
@@ -162,7 +163,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvDatePickerXComponent,
         IeDeprecationWarningComponent,
         DvNavigationXComponent,
-        DvInputLabelFieldComponent
+        DvInputLabelFieldComponent,
+        EnableElementDirective,
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
@@ -225,7 +227,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         EbeguDateTimePipe,
         DvDatePickerXComponent,
         DvNavigationXComponent,
-        DvInputLabelFieldComponent
+        DvInputLabelFieldComponent,
+        EnableElementDirective,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

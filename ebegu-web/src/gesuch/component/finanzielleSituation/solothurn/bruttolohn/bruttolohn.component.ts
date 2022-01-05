@@ -1,5 +1,6 @@
 import {Component, OnInit, ChangeDetectionStrategy, Input} from '@angular/core';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 @Component({
@@ -19,4 +20,7 @@ export class BruttolohnComponent implements OnInit {
   public ngOnInit(): void {
   }
 
+  public isNotNullOrUndefined(toCheck: any): boolean {
+    return EbeguUtil.isNotNullOrUndefined(toCheck);
+  }
 }
