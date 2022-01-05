@@ -76,6 +76,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr = undefined;
         this.getModel().finanzielleSituationJA.alleinigeStekVorjahr = undefined;
         this.getModel().finanzielleSituationJA.veranlagt = undefined;
+        this.getModel().finanzielleSituationJA.selbstdeklaration = undefined;
     }
 
     public gemeinsameStekVisible(): boolean {
@@ -95,12 +96,36 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         if (newGemeinsameStek.value === false && EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)) {
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
         }
+        if (newGemeinsameStek.value === true) {
+            this.getModel().finanzielleSituationJA.selbstdeklaration = undefined;
+        }
     }
 
     public alleinigeStekVorjahrChange(newAlleinigeStekVorjahr: MatRadioChange): void {
         if (newAlleinigeStekVorjahr.value === false && EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr)) {
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
         }
+        if (newAlleinigeStekVorjahr.value === true) {
+            this.getModel().finanzielleSituationJA.selbstdeklaration = undefined;
+        }
+    }
+
+    public veranlagtChange(newVeranlagt: MatRadioChange): void {
+        if (newVeranlagt.value === true) {
+            this.getModel().finanzielleSituationJA.selbstdeklaration = undefined;
+        }
+        if (newVeranlagt.value === false) {
+            this.resetVeranlagungValues();
+        }
+    }
+
+    private resetVeranlagungValues(): void {
+        this.getModel().finanzielleSituationJA.steuerbaresEinkommen = undefined;
+        this.getModel().finanzielleSituationJA.steuerbaresVermoegen = undefined;
+        this.getModel().finanzielleSituationJA.abzuegeLiegenschaft = undefined;
+        this.getModel().finanzielleSituationJA.geschaeftsverlust = undefined;
+        this.getModel().finanzielleSituationJA.einkaeufeVorsorge = undefined;
+        this.notify();
     }
 
     public getYearForDeklaration(): number | string {

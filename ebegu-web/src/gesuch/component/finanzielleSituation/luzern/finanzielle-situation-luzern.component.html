@@ -123,6 +123,7 @@
                                     id="veranlagt_id"
                                     #veranlagt="ngModel"
                                     [(ngModel)]="getModel().finanzielleSituationJA.veranlagt"
+                                    (change)="veranlagtChange($event)"
                                     [disabled]="readonly"
                                     required>
                                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
