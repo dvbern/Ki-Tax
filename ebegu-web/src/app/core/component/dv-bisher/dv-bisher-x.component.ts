@@ -148,10 +148,14 @@ export class DvBisherXComponent implements OnInit {
         return val === undefined || val === null || val === '';
     }
 
+    public displayBisher(): boolean {
+        return this.showBisher && this.showIfBisherNone;
+    }
+
     public getBisherLabel(): string {
         if (this.specificBisherLabel) {
             return this.specificBisherLabel;
         }
-        return this.$translate.instant('DV_BISHER_TEXT');
+        return this.$translate.instant('DV_BISHER_LABEL');
     }
 }
