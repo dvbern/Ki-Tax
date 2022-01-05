@@ -15,7 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    Output
+} from '@angular/core';
 
 @Component({
     selector: 'dv-input-label-field',
@@ -35,8 +41,8 @@ export class DvInputLabelFieldComponent {
 
     @Output() public readonly modelChange: EventEmitter<any> = new EventEmitter();
 
-    public valueHasChange(newVal: any): void {
-        this.modelChange.emit(newVal);
+    public valueHasChange(event: any): void {
+        this.modelChange.emit(event);
     }
 
     public getRequiredCssClass(): string {

@@ -32,7 +32,7 @@ export class DvValueinputXComponent {
     @Input() public inputId: string = 'inputFieldId';
     @Input() public model: any;
     @Input() public float: boolean = false;
-    @Input() public allowNegative: boolean = true;
+    @Input() public allowNegative: boolean = false;
     @Input() public ngRequired: boolean = false;
     @Input() public dvOnBlur: (event: any) => void;
 
