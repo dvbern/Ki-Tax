@@ -19,6 +19,7 @@ import {IPromise} from 'angular';
 import * as moment from 'moment';
 import {Observable} from 'rxjs';
 import {DvNgConfirmDialogComponent} from '../../../app/core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {DvNgDisplayObjectDialogComponent} from '../../../app/core/component/dv-ng-display-object-dialog/dv-ng-display-object-dialog.component';
 import {DvNgLinkDialogComponent} from '../../../app/core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
 import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
@@ -70,10 +71,10 @@ export class TestdatenViewComponent implements OnInit {
     public gemeindeAntragTypeList: TSGemeindeAntragTyp[];
 
     // kiBonAnfrage Schnitstelle Test
-    public antragId: string;
-    public zpvNummer: number;
-    public gesuchsperiodeBeginnJahr: number;
-    public geburtsdatum: moment.Moment;
+    public antragId: string = 'f3fcbaaa-9f8e-48ad-ab09-0f2b9b9df342';
+    public zpvNummer: number = 10099208;
+    public gesuchsperiodeBeginnJahr: number = 2020;
+    public geburtsdatum: moment.Moment = moment('1964-12-09', 'YYYY-MM-DD');
 
     public constructor(
         public readonly testFaelleRS: TestFaelleRS,
@@ -311,8 +312,8 @@ export class TestdatenViewComponent implements OnInit {
             this.gesuchsperiodeBeginnJahr,
             this.geburtsdatum)).then(result => {
                 console.log(result);
-                this.dialog.open(DvNgOkDialogComponent,
-                    {data: {title: 'Anfrage erfolgreich! Die Antwort wurde in die Konsole geloggt'}});
+                this.dialog.open(DvNgDisplayObjectDialogComponent,
+                    {data: {object: result}});
             },
         );
     }
