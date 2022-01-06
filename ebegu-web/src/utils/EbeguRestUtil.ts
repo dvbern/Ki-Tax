@@ -598,11 +598,19 @@ export class EbeguRestUtil {
                 familiensituation.verguenstigungGewuenscht;
             restFamiliensituation.keineMahlzeitenverguenstigungBeantragt =
                 familiensituation.keineMahlzeitenverguenstigungBeantragt;
-            restFamiliensituation.iban = familiensituation.iban;
-            restFamiliensituation.kontoinhaber = familiensituation.kontoinhaber;
-            restFamiliensituation.abweichendeZahlungsadresse = familiensituation.abweichendeZahlungsadresse;
-            restFamiliensituation.zahlungsadresse =
-                this.adresseToRestObject({}, familiensituation.zahlungsadresse);
+            restFamiliensituation.ibanMahlzeiten = familiensituation.ibanMahlzeiten;
+            restFamiliensituation.kontoinhaberMahlzeiten = familiensituation.kontoinhaberMahlzeiten;
+            restFamiliensituation.abweichendeZahlungsadresseMahlzeiten = familiensituation.abweichendeZahlungsadresseMahlzeiten;
+            restFamiliensituation.zahlungsadresseMahlzeiten =
+                this.adresseToRestObject({}, familiensituation.zahlungsadresseMahlzeiten);
+            restFamiliensituation.ibanInfoma = familiensituation.ibanInfoma;
+            restFamiliensituation.kontoinhaberInfoma = familiensituation.kontoinhaberInfoma;
+            restFamiliensituation.abweichendeZahlungsadresseInfoma = familiensituation.abweichendeZahlungsadresseInfoma;
+            restFamiliensituation.zahlungsadresseInfoma =
+                this.adresseToRestObject({}, familiensituation.zahlungsadresseInfoma);
+            restFamiliensituation.infomaKreditorennummer = familiensituation.infomaKreditorennummer;
+            restFamiliensituation.infomaBankcode = familiensituation.infomaBankcode;
+            restFamiliensituation.auszahlungAnEltern = familiensituation.auszahlungAnEltern;
             return restFamiliensituation;
         }
 
@@ -667,11 +675,20 @@ export class EbeguRestUtil {
                 familiensituationFromServer.verguenstigungGewuenscht;
             familiensituation.keineMahlzeitenverguenstigungBeantragt =
                 familiensituationFromServer.keineMahlzeitenverguenstigungBeantragt;
-            familiensituation.iban = familiensituationFromServer.iban;
-            familiensituation.kontoinhaber = familiensituationFromServer.kontoinhaber;
-            familiensituation.abweichendeZahlungsadresse = familiensituationFromServer.abweichendeZahlungsadresse;
-            familiensituation.zahlungsadresse =
-                this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresse);
+            familiensituation.ibanMahlzeiten = familiensituationFromServer.ibanMahlzeiten;
+            familiensituation.kontoinhaberMahlzeiten = familiensituationFromServer.kontoinhaberMahlzeiten;
+            familiensituation.abweichendeZahlungsadresseMahlzeiten =
+                familiensituationFromServer.abweichendeZahlungsadresseMahlzeiten;
+            familiensituation.zahlungsadresseMahlzeiten =
+                this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresseMahlzeiten);
+            familiensituation.ibanInfoma = familiensituationFromServer.ibanInfoma;
+            familiensituation.kontoinhaberInfoma = familiensituationFromServer.kontoinhaberInfoma;
+            familiensituation.abweichendeZahlungsadresseInfoma = familiensituationFromServer.abweichendeZahlungsadresseInfoma;
+            familiensituation.zahlungsadresseInfoma =
+                this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresseInfoma);
+            familiensituation.infomaKreditorennummer = familiensituationFromServer.infomaKreditorennummer;
+            familiensituation.infomaBankcode = familiensituationFromServer.infomaBankcode;
+            familiensituation.auszahlungAnEltern = familiensituationFromServer.auszahlungAnEltern;
             return familiensituation;
         }
         return undefined;
@@ -1187,12 +1204,12 @@ export class EbeguRestUtil {
         if (gesuch.familiensituationContainer && gesuch.familiensituationContainer.familiensituationJA) {
             restProperties.keineMahlzeitenverguenstigungBeantragt =
                 gesuch.familiensituationContainer.familiensituationJA.keineMahlzeitenverguenstigungBeantragt;
-            restProperties.iban = gesuch.familiensituationContainer.familiensituationJA.iban;
-            restProperties.kontoinhaber = gesuch.familiensituationContainer.familiensituationJA.kontoinhaber;
+            restProperties.iban = gesuch.familiensituationContainer.familiensituationJA.ibanMahlzeiten;
+            restProperties.kontoinhaber = gesuch.familiensituationContainer.familiensituationJA.kontoinhaberMahlzeiten;
             restProperties.abweichendeZahlungsadresse =
-                gesuch.familiensituationContainer.familiensituationJA.abweichendeZahlungsadresse;
+                gesuch.familiensituationContainer.familiensituationJA.abweichendeZahlungsadresseMahlzeiten;
             restProperties.zahlungsadresse =
-                this.adresseToRestObject({}, gesuch.familiensituationContainer.familiensituationJA.zahlungsadresse);
+                this.adresseToRestObject({}, gesuch.familiensituationContainer.familiensituationJA.zahlungsadresseMahlzeiten);
         }
 
         return restProperties;
@@ -1556,6 +1573,8 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.spaetEroeffnung = institutionStammdaten.spaetEroeffnung;
             restInstitutionStammdaten.wochenendeEroeffnung = institutionStammdaten.wochenendeEroeffnung;
             restInstitutionStammdaten.uebernachtungMoeglich = institutionStammdaten.uebernachtungMoeglich;
+            restInstitutionStammdaten.infomaKreditorennummer = institutionStammdaten.infomaKreditorennummer;
+            restInstitutionStammdaten.infomaBankcode = institutionStammdaten.infomaBankcode;
 
             return restInstitutionStammdaten;
         }
@@ -1616,6 +1635,8 @@ export class EbeguRestUtil {
             institutionStammdatenTS.spaetEroeffnung = institutionStammdatenFromServer.spaetEroeffnung;
             institutionStammdatenTS.wochenendeEroeffnung = institutionStammdatenFromServer.wochenendeEroeffnung;
             institutionStammdatenTS.uebernachtungMoeglich = institutionStammdatenFromServer.uebernachtungMoeglich;
+            institutionStammdatenTS.infomaKreditorennummer = institutionStammdatenFromServer.infomaKreditorennummer;
+            institutionStammdatenTS.infomaBankcode = institutionStammdatenFromServer.infomaBankcode;
 
             return institutionStammdatenTS;
         }
@@ -4191,6 +4212,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.lastenausgleichAktiv = data.lastenausgleichAktiv;
         publicAppConfigTS.mulitmandantAktiv = data.multimandantAktiviert;
         publicAppConfigTS.angebotTSActivated = data.angebotTSActivated;
+        publicAppConfigTS.infomaZahlungen = data.infomaZahlungen;
         return publicAppConfigTS;
 
     }

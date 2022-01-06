@@ -40,6 +40,7 @@ public class JaxPublicAppConfig {
 	private String logoFileNameWhite;
 	private boolean multimandantAktiviert;
 	private boolean angebotTSActivated;
+	private final boolean infomaZahlungen;
 
 
 	public JaxPublicAppConfig(
@@ -69,7 +70,8 @@ public class JaxPublicAppConfig {
 		String logoFileName,
 		String logoFileNameWhite,
 		boolean multimandantAktiviert,
-		boolean angebotTSActivated
+		boolean angebotTSActivated,
+		boolean infomaZahlungen
 	) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
@@ -98,6 +100,7 @@ public class JaxPublicAppConfig {
 		this.logoFileNameWhite = logoFileNameWhite;
 		this.multimandantAktiviert = multimandantAktiviert;
 		this.angebotTSActivated = angebotTSActivated;
+		this.infomaZahlungen = infomaZahlungen;
 	}
 
 	public String getCurrentNode() {
@@ -314,5 +317,9 @@ public class JaxPublicAppConfig {
 
 	public void setAngebotTSActivated(boolean angebotTSActivated) {
 		this.angebotTSActivated = angebotTSActivated;
+	}
+
+	public boolean isInfomaZahlungen() {
+		return infomaZahlungen;
 	}
 }

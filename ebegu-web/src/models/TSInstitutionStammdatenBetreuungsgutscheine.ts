@@ -49,6 +49,8 @@ export class TSInstitutionStammdatenBetreuungsgutscheine extends TSAbstractEntit
     public spaetEroeffnung: boolean = undefined;
     public wochenendeEroeffnung: boolean = undefined;
     public uebernachtungMoeglich: boolean = undefined;
+    public infomaKreditorennummer: string = undefined;
+    public infomaBankcode: string = undefined;
 
     public constructor() {
         super();

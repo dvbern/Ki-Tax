@@ -74,7 +74,8 @@ describe('testdatenView', () => {
             lastenausgleichTagesschulenAktiv: true,
             gemeindeKennzahlenAktiv: true,
             mulitmandantAktiv: false,
-            angebotTSActivated: true
+            angebotTSActivated: true,
+            infomaZahlungen: true
         });
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
         gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);

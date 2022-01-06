@@ -1776,6 +1776,7 @@
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH": "Notverordnung default Einreichefrist öffentlich",
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT": "Notverordnung default Einreichefrist privat",
     "KANTON_NOTVERORDNUNG_PHASE_2_AKTIV": "Notverordnung Phase 2 aktiv",
+    "INFOMA_ZAHLUNGEN": "Infoma Zahlungen (Zahlungssystem Luzern)",
     "SEARCH_FOR_NAME": "Suche nach Name",
     "SEARCH_FOR_VALUE": "Suche Nach Text",
     "CHANGE_DEUTSCH": "auf Deutsch wechseln",
@@ -2722,5 +2723,12 @@
     "FREMD_ID": "Fremd-ID",
     "BESONDERE_VOLKSSCHULE": "Besondere Volksschule",
     "KESB_PLATZIERUNG_DEAKTIVIEREN": "KESB-Platzierung deaktivieren",
+    "INFOMA_KREDITORENNUMMER":  "Infoma Kreditorennummer",
+    "INFOMA_BANKCODE": "Infoma Bankcode",
+    "IBAN_FUER_AUSZAHLUNG_GUTSCHEINE": "IBAN für die Auszahlung der Gutscheine",
+    "INFOMA_ABWEICHENDE_ZAHLUNGSADRESSE": "Abweichende Zahlungsadresse",
+    "ABRECHNUNG_DER_GUTSCHEINE": "Die Auszahlung der Gutscheine erfolgt",
+    "UEBER_ELTERN": "über die Eltern",
+    "UEBER_INSTITUTION": "über die Institution",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
