@@ -42,7 +42,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 @Audited
 @Entity
 @Table(
-	uniqueConstraints =	@UniqueConstraint(columnNames = "name", name = "UK_Traegerschaft_name")
+	uniqueConstraints =	@UniqueConstraint(columnNames = {"name", "mandant_id"}, name = "UK_Traegerschaft_name_mandant")
 )
 public class Traegerschaft extends AbstractMutableEntity implements Displayable, HasMandant {
 

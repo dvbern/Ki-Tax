@@ -215,4 +215,6 @@ public interface MitteilungService {
 	boolean hasInstitutionOffeneMitteilungen(Institution institution);
 
 	void adaptOffeneMutationsmitteilungenToInstiGueltigkeitChange(@Nonnull Institution institution, @Nonnull DateRange gueltigkeit);
+
+	boolean isBetreuungGueltigForMutation(Betreuung betreuung);
 }

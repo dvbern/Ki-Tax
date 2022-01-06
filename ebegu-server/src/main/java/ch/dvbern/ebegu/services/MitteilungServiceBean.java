@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -852,7 +853,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 
-		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(userName, mitteilung.getDossier().getFall().getMandant());
+		Optional<Benutzer> benutzerOptional =
+			benutzerService.findBenutzer(userName, mitteilung.getDossier().getFall().getMandant());
 
 		if (benutzerOptional.isPresent()) {
 			// Den VerantwortlichenJA als Empfänger setzen
@@ -930,14 +932,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Override
 	public void adaptOffeneMutationsmitteilungenToInstiGueltigkeitChange(
-			@Nonnull Institution institution, @Nonnull DateRange gueltigkeit) {
+		@Nonnull Institution institution, @Nonnull DateRange gueltigkeit) {
 		Collection<Betreuungsmitteilung> offeneMutationsmitteilungenForInstitution =
-				findAllBetreuungsMitteilungenForInstitution(institution);
+			findAllBetreuungsMitteilungenForInstitution(institution);
 
 		offeneMutationsmitteilungenForInstitution.forEach(mitteilung -> {
 			mitteilung.setBetreuungspensen(betreuungService.capBetreuungspensenToGueltigkeit(
-					mitteilung.getBetreuungspensen(),
-					gueltigkeit));
+				mitteilung.getBetreuungspensen(),
+				gueltigkeit));
 
 			if (mitteilung.getBetreuungspensen().isEmpty()) {
 				persistence.remove(mitteilung);
@@ -948,20 +950,68 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		});
 	}
 
+	/**
+	 * Betreuung war nicht storniert -> ok
+	 * Betreuung storniert aber keine andere fuer dasselbe Kind und Institution -> ok
+	 * Betreuung storniert und andere mit Pensum -> ko
+	 * Betreuung storniert mit anderen die auch storniert sind ->
+	 * 		if a mutation Mitteilung exist for this kind and Institution -> ko
+	 * 		otherwise => ok
+	 * @param betreuung
+	 * @return
+	 */
+	@Override
+	public boolean isBetreuungGueltigForMutation(Betreuung betreuung) {
+		// Stornieren set all Pensum to 0, if there's a pensum who's not set to 0 it means it's gueltig for Mutation
+		if (!betreuung.getBetreuungspensumContainers().stream().filter(betreuungspensumContainer ->
+			betreuungspensumContainer.getBetreuungspensumJA().getPensum().compareTo(BigDecimal.ZERO) != 0
+		).collect(Collectors.toList()).isEmpty()) {
+			return true;
+		}
+		//Check if there is at least one more Betreuung for the same institution and kind
+		List<Betreuung> sameInstitutionBetreuungList =
+			betreuung.extractGesuch().extractAllBetreuungen().stream().filter(
+				betreuungFromGesuch -> betreuungFromGesuch.getInstitutionStammdaten()
+					.getId()
+					.equals(betreuung.getInstitutionStammdaten().getId())
+					&& !betreuungFromGesuch.getId().equals(betreuung.getId())
+					&& betreuungFromGesuch.getKind().getId().equals(betreuung.getKind().getId())
+
+			).collect(Collectors.toList());
+		if (sameInstitutionBetreuungList.isEmpty()) {
+			return true;
+		}
+		// otherwise we need to check if another one got a Pensum
+		if (sameInstitutionBetreuungList.stream().map(Betreuung::getBetreuungspensumContainers).filter(
+			betreuungspensumContainers -> !betreuungspensumContainers.stream()
+				.filter(betreuungspensumContainer ->
+					betreuungspensumContainer.getBetreuungspensumJA().getPensum().compareTo(BigDecimal.ZERO) != 0)
+				.collect(Collectors.toList())
+				.isEmpty())
+			.collect(Collectors.toList()).isEmpty()
+		) { //if none are found with a pensum set it means they are alle storniert or set to 0, we need to check if there's already a
+			// mutationmitteilung for one of them, if none then we can open a new one
+			return sameInstitutionBetreuungList.stream().filter(
+				betreuungToCheck -> !findOffeneBetreuungsmitteilungenForBetreuung(betreuungToCheck).isEmpty()
+			).collect(Collectors.toList()).isEmpty();
+		}
+		return false;
+	}
+
 	private void updateMessage(Betreuungsmitteilung mitteilung) {
 		assert mitteilung.getBetreuung() != null;
 		final Locale locale = LocaleThreadLocal.get();
 
 		final boolean mvzEnabled = einstellungService.findEinstellung(
-						EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
-						mitteilung.getBetreuung().extractGemeinde(),
-						mitteilung.getBetreuung().extractGesuchsperiode())
-				.getValueAsBoolean();
+			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
+			mitteilung.getBetreuung().extractGemeinde(),
+			mitteilung.getBetreuung().extractGesuchsperiode())
+			.getValueAsBoolean();
 
 		mitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldung(
-				mitteilung.getBetreuungspensen(),
-				mvzEnabled,
-				locale));
+			mitteilung.getBetreuungspensen(),
+			mvzEnabled,
+			locale));
 	}
 
 	private Collection<Betreuungsmitteilung> findAllBetreuungsMitteilungenForInstitution(Institution institution) {
@@ -970,7 +1020,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Root<Betreuungsmitteilung> root = query.from(Betreuungsmitteilung.class);
 
 		Join<Betreuungsmitteilung, Betreuung> betreuungJoin = root.join(Mitteilung_.betreuung);
-		Join<Betreuung, InstitutionStammdaten> stammdatenJoin = betreuungJoin.join(AbstractPlatz_.institutionStammdaten);
+		Join<Betreuung, InstitutionStammdaten> stammdatenJoin =
+			betreuungJoin.join(AbstractPlatz_.institutionStammdaten);
 
 		Predicate predicateInstitution = cb.equal(stammdatenJoin.get(InstitutionStammdaten_.institution), institution);
 		Predicate notApplied = cb.notEqual(root.get(Betreuungsmitteilung_.APPLIED), true);
@@ -1006,7 +1057,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		Mandant mandant = principalBean.getMandant();
 		if (mandant == null) {
-			throw new EbeguRuntimeException("searchMitteilungen", "mandant not found for principal " + principalBean.getPrincipal().getName());
+			throw new EbeguRuntimeException(
+				"searchMitteilungen",
+				"mandant not found for principal " + principalBean.getPrincipal().getName());
 		}
 
 		Benutzer user = benutzerService.getCurrentBenutzer()

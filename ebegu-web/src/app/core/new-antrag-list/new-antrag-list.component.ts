@@ -380,6 +380,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(gemeinden => {
                     this.gemeindenList = gemeinden;
+                    gemeinden.sort((a, b) => a.name.localeCompare(b.name));
                 },
                 err => LOG.error(err),
             );

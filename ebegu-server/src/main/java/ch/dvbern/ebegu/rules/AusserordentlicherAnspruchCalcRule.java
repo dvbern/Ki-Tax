@@ -63,7 +63,7 @@ public class AusserordentlicherAnspruchCalcRule extends AbstractCalcRule {
 		int ausserordentlicherAnspruch = inputData.getAusserordentlicherAnspruch();
 		int pensumAnspruch = inputData.getAnspruchspensumProzent();
 
-		if(isMaxDifferenzPensenUeberschritten(inputData.getMinimalErforderlichesPensum(), getEffektivesErwerbspensum(inputData))) {
+		if(!hasAnspruchAufAusserordnelticherAnspruch(platz, inputData)) {
 			inputData.setAusserordentlicherAnspruch(0);
 			return;
 		}
@@ -75,6 +75,27 @@ public class AusserordentlicherAnspruchCalcRule extends AbstractCalcRule {
 				MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG,
 				getLocale());
 		}
+	}
+
+	private boolean hasAnspruchAufAusserordnelticherAnspruch(AbstractPlatz platz, BGCalculationInput inputData) {
+		return !hasOneGSAndZeroBeschaeftigungsPensum(platz, inputData) &&
+			!isMaxDifferenzPensenUeberschritten(inputData.getMinimalErforderlichesPensum(), getEffektivesErwerbspensum(inputData));
+	}
+
+	private boolean hasOneGSAndZeroBeschaeftigungsPensum(AbstractPlatz platz, BGCalculationInput inputData) {
+		if(hasSecondGesuchsteller(platz)) {
+			return false;
+		}
+
+		return hasZeroBeschaeftitungsPensum(inputData.getErwerbspensumGS1());
+	}
+
+	private boolean hasZeroBeschaeftitungsPensum(Integer erwerbspensumGS1) {
+		return erwerbspensumGS1 == null || erwerbspensumGS1 == 0;
+	}
+
+	private boolean hasSecondGesuchsteller(AbstractPlatz platz) {
+		return platz.extractGesuch().getGesuchsteller2() != null;
 	}
 
 	private int getEffektivesErwerbspensum(BGCalculationInput inputData) {

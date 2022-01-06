@@ -113,6 +113,11 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 	@Nonnull
 	@NotNull
 	@Column(nullable = false)
+	private boolean besondereVolksschule = false;
+
+	@Nonnull
+	@NotNull
+	@Column(nullable = false)
 	private LocalDate gueltigBis = END_OF_TIME;
 
 
@@ -190,6 +195,14 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 
 	public void setAngebotFI(boolean angebotFI) {
 		this.angebotFI = angebotFI;
+	}
+
+	public boolean isBesondereVolksschule() {
+		return besondereVolksschule;
+	}
+
+	public void setBesondereVolksschule(boolean besondereVolksschule) {
+		this.besondereVolksschule = besondereVolksschule;
 	}
 
 	@Nonnull

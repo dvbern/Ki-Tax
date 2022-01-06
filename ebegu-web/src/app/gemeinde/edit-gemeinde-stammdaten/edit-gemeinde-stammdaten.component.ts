@@ -24,6 +24,7 @@ import {takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
@@ -97,7 +98,8 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
                 this.benutzerListe.push(tsBen);
             }
         });
-        this.showMessageKeinAngebotSelected = !stammdaten.gemeinde.angebotBG
+        this.showMessageKeinAngebotSelected = !stammdaten.gemeinde.besondereVolksschule
+            && !stammdaten.gemeinde.angebotBG
             && !stammdaten.gemeinde.angebotTS
             && !stammdaten.gemeinde.angebotFI;
     }
@@ -123,5 +125,11 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
 
     public altGemeindeKontaktHasChange(newVal: boolean): void {
         this.altGemeindeKontaktChange.emit(newVal);
+    }
+
+    public handleAngebotTSChange(gemeinde: TSGemeinde): void {
+        if (!gemeinde.angebotTS) {
+            gemeinde.besondereVolksschule = false;
+        }
     }
 }
