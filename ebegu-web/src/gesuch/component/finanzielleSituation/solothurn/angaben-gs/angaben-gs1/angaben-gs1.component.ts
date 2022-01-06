@@ -51,4 +51,14 @@ export class AngabenGs1Component extends AbstractFinSitsolothurnView {
     public isGemeinsam(): boolean {
         return true;
     }
+
+    public steuerveranlagungErhaltenChange(steuerveranlagungErhalten: boolean): void {
+        if (steuerveranlagungErhalten === true) {
+            this.resetBruttoLohn();
+        }
+        // tslint:disable-next-line:early-exit
+        if (steuerveranlagungErhalten === false) {
+            this.resetVeranlagungSolothurn();
+        }
+    }
 }

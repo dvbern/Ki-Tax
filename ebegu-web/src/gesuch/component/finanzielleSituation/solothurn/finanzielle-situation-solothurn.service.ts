@@ -27,12 +27,17 @@ export class FinanzielleSituationSolothurnService {
     public constructor() {
     }
 
-    public static finSitNeedsTwoAntragsteller(gesuchModelManager: GesuchModelManager): boolean {
+    public static finSitIsGemeinsam(gesuchModelManager: GesuchModelManager): boolean {
         // TODO finsit Luzern: get this from server or improve
         const familiensituation = gesuchModelManager.getFamiliensituation().familienstatus;
         return familiensituation === TSFamilienstatus.VERHEIRATET
             || familiensituation === TSFamilienstatus.KONKUBINAT
             || (familiensituation === TSFamilienstatus.KONKUBINAT_KEIN_KIND && this.startKonkubinatMoreThan5YearsAgo());
+    }
+
+    public static finSitNeedsTwoAntragsteller(gesuchModelManager: GesuchModelManager): boolean {
+        // TODO finsit Luzern: get this from server or improve
+        return this.finSitIsGemeinsam(gesuchModelManager) && gesuchModelManager.getFamiliensituation().verguenstigungGewuenscht;
     }
 
     private static startKonkubinatMoreThan5YearsAgo(): boolean {

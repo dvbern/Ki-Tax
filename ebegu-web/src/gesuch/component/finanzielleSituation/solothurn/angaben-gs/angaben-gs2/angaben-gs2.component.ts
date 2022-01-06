@@ -12,7 +12,6 @@ import {AbstractFinSitsolothurnView} from '../../AbstractFinSitsolothurnView';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AngabenGs2Component extends AbstractFinSitsolothurnView {
-
     @ViewChild(NgForm) private readonly form: NgForm;
 
     public constructor(
@@ -50,5 +49,15 @@ export class AngabenGs2Component extends AbstractFinSitsolothurnView {
 
     public isGemeinsam(): boolean {
         return true;
+    }
+
+    public steuerveranlagungErhaltenChange(steuerveranlagungErhalten: boolean): void {
+        if (steuerveranlagungErhalten === true) {
+            this.resetBruttoLohn();
+        }
+        // tslint:disable-next-line:early-exit
+        if (steuerveranlagungErhalten === false) {
+            this.resetVeranlagungSolothurn();
+        }
     }
 }

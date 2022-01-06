@@ -20,6 +20,7 @@ import {MatRadioChange} from '@angular/material/radio';
 import {IPromise} from 'angular';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
+import {TSFinanzielleSituation} from '../../../../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
@@ -191,15 +192,47 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
                 TSWizardStepStatus.OK) as Promise<void>;
     }
 
-    public steuerveranlagungErhalten(): boolean {
+    public hasSteuerveranlagungErhalten(): boolean {
         return this.getModel().finanzielleSituationJA.steuerveranlagungErhalten;
     }
 
-    public steuerveranlagungGemeinsam(): boolean {
+    public isSteuerveranlagungGemeinsam(): boolean {
         if (this.gesuchstellerNumber === 2) {
             // this is only saved on the primary GS for Solothurn
             return this.getGesuch().gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.gemeinsameStekVorjahr;
         }
         return this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr;
     }
+
+    protected resetVeranlagungSolothurn(): void {
+        this.getFinanzielleSituationJA().abzuegeKinderAusbildung = null;
+        this.getFinanzielleSituationJA().nettolohn = null;
+        this.getFinanzielleSituationJA().unterhaltsBeitraege = null;
+        this.getFinanzielleSituationJA().steuerbaresVermoegen = null;
+    }
+
+    protected resetVeranlagungSolothurnGS2(): void {
+        this.getFinanzielleSituationJAGS2().abzuegeKinderAusbildung = null;
+        this.getFinanzielleSituationJAGS2().nettolohn = null;
+        this.getFinanzielleSituationJAGS2().unterhaltsBeitraege = null;
+        this.getFinanzielleSituationJAGS2().steuerbaresVermoegen = null;
+    }
+
+    protected resetBruttoLohn(): void {
+        this.getFinanzielleSituationJA().bruttoLohn = null;
+    }
+
+    private getFinanzielleSituationJA(): TSFinanzielleSituation {
+        return this.getModel().finanzielleSituationJA;
+    }
+
+    protected resetBruttoLohnGS2(): void {
+        this.getFinanzielleSituationJAGS2().bruttoLohn = null;
+    }
+
+    private getFinanzielleSituationJAGS2(): TSFinanzielleSituation {
+        return this.model.finanzielleSituationContainerGS2.finanzielleSituationJA;
+    }
+
+    public abstract steuerveranlagungErhaltenChange(steuerveranlagungErhalten: boolean): void;
 }

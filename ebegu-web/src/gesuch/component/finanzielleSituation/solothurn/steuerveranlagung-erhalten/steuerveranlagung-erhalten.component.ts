@@ -1,22 +1,29 @@
-import {Component, OnInit, ChangeDetectionStrategy, Input} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter} from '@angular/core';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 @Component({
-  selector: 'dv-steuerveranlagung-erhalten',
-  templateUrl: './steuerveranlagung-erhalten.component.html',
-  styleUrls: ['./steuerveranlagung-erhalten.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-steuerveranlagung-erhalten',
+    templateUrl: './steuerveranlagung-erhalten.component.html',
+    styleUrls: ['./steuerveranlagung-erhalten.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SteuerveranlagungErhaltenComponent implements OnInit {
 
-  @Input() public model: TSFinanzielleSituationContainer;
+    @Input() public model: TSFinanzielleSituationContainer;
 
-  public constructor(
-      public gesuchModelManager: GesuchModelManager
-  ) { }
+    @Output() public readonly steuerveranlagungErhaltenChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  public ngOnInit(): void {
-  }
+    public constructor(
+        public gesuchModelManager: GesuchModelManager,
+    ) {
+    }
 
+    public ngOnInit(): void {
+    }
+
+    public setSteuerveranlagungErhalten(value: any): void {
+        this.model.finanzielleSituationJA.steuerveranlagungErhalten = value;
+        this.steuerveranlagungErhaltenChange.emit(value);
+    }
 }

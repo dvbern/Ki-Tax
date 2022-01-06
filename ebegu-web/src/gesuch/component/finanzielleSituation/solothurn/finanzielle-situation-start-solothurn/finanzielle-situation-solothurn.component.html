@@ -27,17 +27,28 @@
 		</div>
 	</div>
 	<form #form="ngForm" role="form">
-		<dv-finanzielle-situation-require-x [(verguenstigungGewuenscht)]="model.verguenstigungGewuenscht" [(sozialhilfeBezueger)]="model.sozialhilfeBezueger" [(finanzielleSituationRequired)]="finanzielleSituationRequired"></dv-finanzielle-situation-require-x>
+		<dv-finanzielle-situation-require-x [(verguenstigungGewuenscht)]="model.verguenstigungGewuenscht"
+											[(sozialhilfeBezueger)]="model.sozialhilfeBezueger"
+											[finanzielleSituationRequired]="finanzielleSituationRequired"
+											(finanzielleSituationRequiredChange)="finanzielleSituationRequiredChange($event)"></dv-finanzielle-situation-require-x>
 		<div *ngIf="finanzielleSituationRequired && !isGemeinsam()">
-			<dv-steuerveranlagung-erhalten [model]="getModel()"></dv-steuerveranlagung-erhalten>
-			<dv-veranlagung-solothurn *ngIf="steuerveranlagungErhalten()" [model]="getModel()" [readOnly]="gesuchModelManager.isGesuchReadonly()"></dv-veranlagung-solothurn>
-			<dv-bruttolohn *ngIf="!steuerveranlagungErhalten()" [model]="getModel()"></dv-bruttolohn>
+			<dv-steuerveranlagung-erhalten [model]="getModel()" (steuerveranlagungErhaltenChange)="steuerveranlagungErhaltenChange($event)"></dv-steuerveranlagung-erhalten>
+			<dv-veranlagung-solothurn *ngIf="hasSteuerveranlagungErhalten()"
+									  [model]="getModel()"
+									  [readOnly]="gesuchModelManager.isGesuchReadonly()"></dv-veranlagung-solothurn>
+			<dv-bruttolohn *ngIf="!hasSteuerveranlagungErhalten()" [model]="getModel()"></dv-bruttolohn>
 		</div>
 		<div *ngIf="finanzielleSituationRequired && isGemeinsam()">
 			<dv-steuerveranlagung-gemeinsam [model]="getModel()"></dv-steuerveranlagung-gemeinsam>
-			<dv-steuerveranlagung-erhalten *ngIf="steuerveranlagungGemeinsam()" [model]="getModel()"></dv-steuerveranlagung-erhalten>
+			<dv-steuerveranlagung-erhalten *ngIf="isSteuerveranlagungGemeinsam()"
+										   (steuerveranlagungErhaltenChange)="steuerveranlagungErhaltenChange($event)"
+										   [model]="getModel()"></dv-steuerveranlagung-erhalten>
 		</div>
-		<dv-navigation-x (dvSave)="prepareSave($event.onResult)" [dvNext]="true" [dvPrevious]="true" [dvSubStep]="getSubStepIndex()" [dvSubStepName]="getSubStepName()"></dv-navigation-x>
+		<dv-navigation-x (dvSave)="prepareSave($event.onResult)"
+						 [dvNext]="true"
+						 [dvPrevious]="true"
+						 [dvSubStep]="getSubStepIndex()"
+						 [dvSubStepName]="getSubStepName()"></dv-navigation-x>
 	</form>
 
 </div>

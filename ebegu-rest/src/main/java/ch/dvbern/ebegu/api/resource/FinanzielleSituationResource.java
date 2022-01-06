@@ -223,7 +223,7 @@ public class FinanzielleSituationResource {
 		Boolean gemeinsameSteuererklaerung = familiensituationJA.getGemeinsameSteuererklaerung();
 		Boolean verguenstigungGewuenscht = familiensituationJA.getVerguenstigungGewuenscht();
 
-		if (gesuchJAXP.getFinSitTyp().equals(FinanzielleSituationTyp.BERN)) {
+		if (gesuchJAXP.getFinSitTyp().equals(FinanzielleSituationTyp.BERN) || gesuchJAXP.getFinSitTyp().equals(FinanzielleSituationTyp.SOLOTHURN)) {
 			requireNonNull(sozialhilfeBezueger);
 			requireNonNull(gemeinsameSteuererklaerung);
 

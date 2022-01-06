@@ -4,6 +4,7 @@ import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSF
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
+import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
@@ -49,7 +50,7 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
     }
 
     public isGemeinsam(): boolean {
-        return FinanzielleSituationSolothurnService.finSitNeedsTwoAntragsteller(this.gesuchModelManager);
+        return FinanzielleSituationSolothurnService.finSitIsGemeinsam(this.gesuchModelManager);
     }
 
     public notify(): void {
@@ -63,8 +64,47 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
         return this.save(onResult);
     }
 
+    protected save(onResult: Function): Promise<TSFinanzielleSituationContainer> {
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        return this.gesuchModelManager.saveFinanzielleSituationStart()
+            .then(async () => {
+                if (!this.isGemeinsam() || this.getAntragstellerNummer() === 2) {
+                    await this.updateWizardStepStatus();
+                }
+                onResult(this.getModel());
+                return this.getModel();
+            }).catch(error => {
+                throw(error);
+            }) as Promise<TSFinanzielleSituationContainer>;
+    }
+
     public getFamilienSitutation(): TSFamiliensituation {
         return this.getGesuch().familiensituationContainer.familiensituationJA;
+    }
+
+    public finanzielleSituationRequiredChange(finanzielleSituationRequired: boolean): void {
+        this.finanzielleSituationRequired = finanzielleSituationRequired;
+        // tslint:disable-next-line:early-exit
+        if (finanzielleSituationRequired === false) {
+            this.resetVeranlagungSolothurn();
+            this.resetBruttoLohn();
+        }
+    }
+
+    public steuerveranlagungErhaltenChange(steuerveranlagungErhalten: boolean): void {
+        if (steuerveranlagungErhalten === true) {
+            this.resetBruttoLohn();
+            if (this.isGemeinsam()) {
+                this.resetBruttoLohnGS2();
+            }
+        }
+        // tslint:disable-next-line:early-exit
+        if (steuerveranlagungErhalten === false) {
+            this.resetVeranlagungSolothurn();
+            if (this.isGemeinsam()) {
+                this.resetVeranlagungSolothurnGS2();
+            }
+        }
     }
 
 }

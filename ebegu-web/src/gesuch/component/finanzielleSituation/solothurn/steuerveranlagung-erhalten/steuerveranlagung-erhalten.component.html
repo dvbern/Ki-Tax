@@ -10,7 +10,8 @@
 							required
 							dvEnableElement
 							[enableExpression]="!gesuchModelManager.isGesuchReadonly() && !gesuchModelManager.isKorrekturModusJugendamt()"
-							[(ngModel)]="model.finanzielleSituationJA.steuerveranlagungErhalten">
+							[ngModel]="model.finanzielleSituationJA.steuerveranlagungErhalten"
+							(ngModelChange)="setSteuerveranlagungErhalten($event)">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
 						<mat-radio-button [value]="false">{{'LABEL_NICHT_ERHALTEN_ODER_QUELLENBESTEUERT' | translate }}</mat-radio-button>
 					</mat-radio-group>
