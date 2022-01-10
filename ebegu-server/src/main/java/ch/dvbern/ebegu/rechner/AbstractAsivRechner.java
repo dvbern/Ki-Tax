@@ -54,7 +54,7 @@ public abstract class AbstractAsivRechner extends AbstractRechner {
 		LocalDate von = input.getParent().getGueltigkeit().getGueltigAb();
 		LocalDate bis = input.getParent().getGueltigkeit().getGueltigBis();
 		BigDecimal massgebendesEinkommen = input.getMassgebendesEinkommen();
-		BigDecimal vollkostenProMonat = input.getMonatlicheBetreuungskosten();
+		BigDecimal vollkosten = input.getKostenAnteilMonat();
 		BigDecimal betreuungspensum = input.getBetreuungspensumProzent();
 
 		// Inputdaten validieren
@@ -86,14 +86,6 @@ public abstract class AbstractAsivRechner extends AbstractRechner {
 		BigDecimal verguenstigungVorVollkostenUndMinimalbetrag =
 			EXACT.multiplyNullSafe(verfuegteZeiteinheiten, verguenstigungProZeiteinheit);
 
-		BigDecimal anteilVerguenstigesPensumAmBetreuungspensum = BigDecimal.ZERO;
-		if (betreuungspensum.compareTo(BigDecimal.ZERO) > 0) {
-			anteilVerguenstigesPensumAmBetreuungspensum =
-				EXACT.divide(bgPensum, betreuungspensum);
-		}
-		BigDecimal vollkostenFuerVerguenstigtesPensum =
-			EXACT.multiply(vollkostenProMonat, anteilVerguenstigesPensumAmBetreuungspensum);
-		BigDecimal vollkosten = EXACT.multiply(anteilMonat, vollkostenFuerVerguenstigtesPensum);
 		BigDecimal vollkostenMinusMinimaltarif = EXACT.subtract(vollkosten, minBetrag);
 		BigDecimal verguenstigungVorMinimalbetrag = vollkosten.min(verguenstigungVorVollkostenUndMinimalbetrag);
 

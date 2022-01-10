@@ -170,6 +170,8 @@ public class BGCalculationInput {
 
 	private PensumUnits pensumUnit = PensumUnits.PERCENTAGE;
 
+	private BigDecimal kostenAnteilMonat = BigDecimal.ZERO;
+
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
 		this.ruleValidity = ruleValidity;
@@ -226,6 +228,7 @@ public class BGCalculationInput {
 		this.pensumUnit = toCopy.pensumUnit;
 		this.minimalErforderlichesPensum = toCopy.minimalErforderlichesPensum;
 		this.rueckwirkendReduziertesPensumRest = toCopy.rueckwirkendReduziertesPensumRest;
+		this.kostenAnteilMonat = toCopy.kostenAnteilMonat;
 	}
 
 	@Nonnull
@@ -658,6 +661,14 @@ public class BGCalculationInput {
 		this.verguenstigungMahlzeitenBeantragt = verguenstigungMahlzeitenBeantragt;
 	}
 
+	public BigDecimal getKostenAnteilMonat() {
+		return kostenAnteilMonat;
+	}
+
+	public void setKostenAnteilMonat(BigDecimal kostenAnteilMonat) {
+		this.kostenAnteilMonat = kostenAnteilMonat;
+	}
+
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder("BGCalculationInput{");
@@ -767,6 +778,8 @@ public class BGCalculationInput {
 		this.setBabyTarif(this.babyTarif || other.babyTarif);
 		this.einschulungTyp = this.einschulungTyp != null ? this.einschulungTyp : other.einschulungTyp;
 		this.betreuungsangebotTyp = this.betreuungsangebotTyp != null ? this.betreuungsangebotTyp : other.betreuungsangebotTyp;
+
+		this.kostenAnteilMonat = this.kostenAnteilMonat.add(other.kostenAnteilMonat);
 
 		// Zusätzliche Felder aus Result
 		this.betreuungspensumProzent = this.betreuungspensumProzent.add(other.betreuungspensumProzent);
