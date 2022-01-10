@@ -48,13 +48,16 @@ public class RenewalAssertionWebService {
 	@Inject
 	private EbeguConfiguration config;
 
+	@Inject
+	private STSConfigManager stsConfigManager;
+
 
 	public STSAssertionExtractionResult renewAssertion(SOAPElement assertionElement, String renewalToken, WebserviceType webserviceType) throws STSZertifikatServiceException {
 		// Assertion muss erneuert werden
 		LOGGER.info("triggering renew of assertion using renewal token");
 		try {
 			SOAPMessage soapMessage = SAMLAuthenticationUtil.createRenewalSoapMessage(assertionElement, renewalToken);
-			URL url = new URL(config.getEbeguPersonensucheSTSRenewalAssertionEndpoint());
+			URL url = new URL(stsConfigManager.getEbeguSTSRenewalAssertionEndpoint(webserviceType));
 
 			SOAPConnection connection = SOAPConnectionFactory.newInstance().createConnection();
 			SOAPMessage response = connection.call(soapMessage, url.toExternalForm());
