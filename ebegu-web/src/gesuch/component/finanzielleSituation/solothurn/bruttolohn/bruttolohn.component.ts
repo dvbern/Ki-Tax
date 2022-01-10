@@ -1,4 +1,5 @@
 import {Component, OnInit, ChangeDetectionStrategy, Input} from '@angular/core';
+import {ControlContainer, NgForm} from '@angular/forms';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
@@ -7,7 +8,8 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
   selector: 'dv-bruttolohn',
   templateUrl: './bruttolohn.component.html',
   styleUrls: ['./bruttolohn.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class BruttolohnComponent implements OnInit {
 

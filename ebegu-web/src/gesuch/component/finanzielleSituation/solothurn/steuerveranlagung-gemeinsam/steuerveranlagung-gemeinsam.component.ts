@@ -1,4 +1,5 @@
 import {Component, OnInit, ChangeDetectionStrategy, Input} from '@angular/core';
+import {ControlContainer, NgForm} from '@angular/forms';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
@@ -6,7 +7,8 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
   selector: 'dv-steuerveranlagung-gemeinsam',
   templateUrl: './steuerveranlagung-gemeinsam.component.html',
   styleUrls: ['./steuerveranlagung-gemeinsam.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class SteuerveranlagungGemeinsamComponent implements OnInit {
 

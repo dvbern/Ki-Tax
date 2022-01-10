@@ -9,7 +9,7 @@
 			<hr class="header"/>
 		</div>
 	</div>
-	<form #form="ngForm">
+	<form #form="ngForm" role="form">
 		<dv-steuerveranlagung-erhalten *ngIf="!isSteuerveranlagungGemeinsam()" [model]="getModel()" (steuerveranlagungErhaltenChange)="steuerveranlagungErhaltenChange($event)"></dv-steuerveranlagung-erhalten>
 		<dv-veranlagung-solothurn *ngIf="hasSteuerveranlagungErhalten()" [model]="getModel()"
 								  [readOnly]="gesuchModelManager.isGesuchReadonly()"></dv-veranlagung-solothurn>
