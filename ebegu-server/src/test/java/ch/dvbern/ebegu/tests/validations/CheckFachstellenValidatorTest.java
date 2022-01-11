@@ -59,6 +59,8 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 	@Test
 	public void checkKindWithoutFachstelleIsValid() {
 		var kindContainer = createKindContainer(false, EinschulungTyp.KINDERGARTEN2, IntegrationTyp.SOZIALE_INTEGRATION);
+		createEinstellungMock(kindContainer, "KINDERGARTEN2");
+		replayAll();
 		var isValid = validator.isValid(kindContainer, null);
 		Assertions.assertTrue(isValid);
 	}

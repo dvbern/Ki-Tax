@@ -66,7 +66,7 @@ public interface TestfaelleService {
 	String heirat = "1";
 
 	@Nonnull
-	StringBuilder createAndSaveTestfaelle(@Nonnull String fallid, boolean betreuungenBestaetigt,
+	StringBuilder createAndSaveTestfaelle(@Nonnull Mandant mandant, @Nonnull String fallid, boolean betreuungenBestaetigt,
 		boolean verfuegen, @Nullable String gesuchsPeriodeId, @Nonnull String gemeindeId);
 
 	@Nonnull
@@ -75,8 +75,9 @@ public interface TestfaelleService {
 			Mandant mandant);
 
 	@Nonnull
-	Gesuch createAndSaveTestfaelle(@Nonnull String fallid, boolean betreuungenBestaetigt, boolean verfuegen,  @Nonnull String gemeindeId,
-		@Nonnull Gesuchsperiode gesuchsperiode);
+	Gesuch createAndSaveTestfaelle(
+			@Nonnull String fallid, boolean betreuungenBestaetigt, boolean verfuegen, @Nonnull String gemeindeId,
+			@Nonnull Gesuchsperiode gesuchsperiode, Mandant mandant);
 
 	@Nullable
 	Gesuch mutierenHeirat(@Nonnull String dossierId, @Nonnull String gesuchsperiodeId,
@@ -101,16 +102,17 @@ public interface TestfaelleService {
 	/**
 	 * Gibt die Institutionsstammdaten zurück, welche in den gelieferten Testfällen verwendet werden,
 	 * also Brünnen und Weissenstein Kita und Tagi
+	 * @param mandant
 	 */
 	@Nonnull
-	List<InstitutionStammdaten> getInstitutionsstammdatenForTestfaelle();
+	List<InstitutionStammdaten> getInstitutionsstammdatenForTestfaelle(Mandant mandant);
 
 	@Nonnull
 	Gesuch createAndSaveGesuch(@Nonnull AbstractTestfall fromTestfall, boolean verfuegen, @Nullable Benutzer besitzer);
 
 	void gesuchVerfuegenUndSpeichern(boolean verfuegen, @Nonnull Gesuch gesuch, boolean mutation, boolean ignorierenInZahlungslauf);
 
-	void testAllMails(@Nonnull String mailadresse);
+	void testAllMails(@Nonnull String mailadresse, Mandant mandant);
 
 	@Nonnull
 	Gesuch antragErneuern(@Nonnull Gesuch gesuch, @Nonnull Gesuchsperiode gesuchsperiode, @Nullable LocalDate eingangsdatum);

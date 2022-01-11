@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.PDFServiceBean;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.testfaelle.Testfall11_SchulamtOnly;
@@ -133,7 +134,7 @@ public class PDFServiceBeanTest {
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenFerieninselGuarda());
 
 		//setup gesuch with one Gesuchsteller
-		Testfall01_WaeltiDagmar testfall_1GS = new Testfall01_WaeltiDagmar(gesuchsperiode1718, institutionStammdatenList);
+		Testfall01_WaeltiDagmar testfall_1GS = new Testfall01_WaeltiDagmar(gesuchsperiode1718, new TestDataInstitutionStammdatenBuilder(gesuchsperiode1718));
 		testfall_1GS.createFall();
 		testfall_1GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 
@@ -146,7 +147,7 @@ public class PDFServiceBeanTest {
 		gesuch_1GS.addDokumentGrund(new DokumentGrund(DokumentGrundTyp.SONSTIGE_NACHWEISE, DokumentTyp.NACHWEIS_FAMILIENZULAGEN));
 
 		//setup gesuch with two Gesuchstellers
-		Testfall02_FeutzYvonne testfall_2GS = new Testfall02_FeutzYvonne(gesuchsperiode1718, institutionStammdatenList);
+		Testfall02_FeutzYvonne testfall_2GS = new Testfall02_FeutzYvonne(gesuchsperiode1718, new TestDataInstitutionStammdatenBuilder(gesuchsperiode1718));
 		testfall_2GS.createFall();
 		testfall_2GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 
@@ -159,7 +160,8 @@ public class PDFServiceBeanTest {
 		gesuch_2GS.addDokumentGrund(new DokumentGrund(DokumentGrundTyp.SONSTIGE_NACHWEISE, DokumentTyp.NACHWEIS_FAMILIENZULAGEN));
 
 		//setup Schulamt only gesuch
-		Testfall11_SchulamtOnly testfall_SchulamtOnly = new Testfall11_SchulamtOnly(gesuchsperiode1718, institutionStammdatenList);
+		Testfall11_SchulamtOnly testfall_SchulamtOnly = new Testfall11_SchulamtOnly(gesuchsperiode1718,
+				new TestDataInstitutionStammdatenBuilder(gesuchsperiode1718));
 		testfall_SchulamtOnly.createFall();
 		testfall_SchulamtOnly.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 
@@ -329,7 +331,8 @@ public class PDFServiceBeanTest {
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
-		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
+		final Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
+		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(gesuchsperiode1718, new TestDataInstitutionStammdatenBuilder(gesuchsperiode1718) );
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();
@@ -351,7 +354,8 @@ public class PDFServiceBeanTest {
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
-		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
+		final Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
+		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(gesuchsperiode1718, new TestDataInstitutionStammdatenBuilder(gesuchsperiode1718));
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();
@@ -379,7 +383,8 @@ public class PDFServiceBeanTest {
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
-		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
+		final Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
+		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(gesuchsperiode1718, new TestDataInstitutionStammdatenBuilder(gesuchsperiode1718) );
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();

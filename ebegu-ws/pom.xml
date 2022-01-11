@@ -87,6 +87,25 @@
                             </bindingFiles>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>steuranbindung service generation</id>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+
+                        <configuration>
+                            <wsdlDirectory>${basedir}/src/main/resources/wsdl</wsdlDirectory>
+                            <wsdlFiles>
+                                <wsdlFile>neskovanp/kibonanfrage/KiBonAnfrageService.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <verbose>true</verbose>
+
+                            <bindingFiles>
+                                <bindingFile>${basedir}/src/main/resources/wsdl/jaxb-bindings.xjb</bindingFile>
+                            </bindingFiles>
+                        </configuration>
+
+                    </execution>
                 </executions>
                 <configuration>
                     <sei />

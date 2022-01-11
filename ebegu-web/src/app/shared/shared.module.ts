@@ -36,6 +36,7 @@ import {DvMitteilungDelegationComponent} from '../core/component/dv-mitteilung-d
 import {DvNavigationXComponent} from '../core/component/dv-navigation-x/dv-navigation-x.component';
 import {DvNgBackDialogComponent} from '../core/component/dv-ng-back-dialog/dv-ng-back-dialog.component';
 import {DvNgConfirmDialogComponent} from '../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {DvNgDisplayObjectDialogComponent} from '../core/component/dv-ng-display-object-dialog/dv-ng-display-object-dialog.component';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {DvNgGesuchstellerDialogComponent} from '../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
@@ -122,6 +123,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgSupportDialogComponent,
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
+        DvNgDisplayObjectDialogComponent,
         DvNgRemoveDialogComponent,
         DvNgBackDialogComponent,
         DvNgThreeButtonDialogComponent,
@@ -191,6 +193,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgSupportDialogComponent,
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
+        DvNgDisplayObjectDialogComponent,
         DvNgRemoveDialogComponent,
         DvNgBackDialogComponent,
         DvNgThreeButtonDialogComponent,

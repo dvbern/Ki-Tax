@@ -1,0 +1,260 @@
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<fieldset>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-12 dv-input-container-medium">
+<!--                IBAN-->
+                <div class="form-group">
+                    <label class="required long-label" for="iban_id">
+                        {{'IBAN_FUER_AUSZAHLUNG_GUTSCHEINE' | translate}}</label>
+                    <input id="iban_id" type="text"
+                           name="iban"
+                           #iban="ngModel"
+                           [(ngModel)]="getFamiliensituation().ibanInfoma"
+                           class="form-control"
+                           [disabled]="readonly"
+                           required>
+                    <dv-error-messages
+                        [errorObject]="iban.errors"
+                        inputId="iban_id">
+                    </dv-error-messages>
+                    <dv-bisher-x
+                        [showBisher]="isKorrekturModusOrFreigegeben()"
+                        [deklaration]="getFamiliensituationGS()?.ibanInfoma"
+                        [korrektur]="getFamiliensituation().ibanInfoma"></dv-bisher-x>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+<!--        LAUTEND AUF-->
+            <div class="col-sm-12 dv-input-container-medium">
+                <div class="form-group">
+                    <label class="required long-label" for="kontoinhaber_id">
+                        {{'MAHLZEITENVERGUENSTIGUNG_KONTOINHABER' | translate}}</label>
+                    <input id="kontoinhaber_id" type="text"
+                           name="kontoinhaber"
+                           #kontoinhaber="ngModel"
+                           [(ngModel)]="getFamiliensituation().kontoinhaberInfoma"
+                           class="form-control"
+                           [disabled]="readonly"
+                           required>
+                    <dv-error-messages
+                        [errorObject]="kontoinhaber.errors"
+                        inputId="kontoinhaber_id">
+                    </dv-error-messages>
+                    <dv-bisher-x
+                        [showBisher]="isKorrekturModusOrFreigegeben()"[deklaration]="getFamiliensituationGS()?.kontoinhaberInfoma"
+                        [korrektur]="getFamiliensituation().kontoinhaberInfoma"></dv-bisher-x>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 dv-input-container-medium">
+                <div class="checkbox">
+                    <mat-checkbox [(ngModel)]="getFamiliensituation().abweichendeZahlungsadresseInfoma"
+                                  name="abweichendeZahlungsadresse" id="abweichendeZahlungsadresse"
+                                  [aria-label]="'INFOMA_ABWEICHENDE_ZAHLUNGSADRESSE' | translate"
+                                  (change)="abweichendeZahlungsadresseChanged()">
+                        <span translate>INFOMA_ABWEICHENDE_ZAHLUNGSADRESSE</span>
+                    </mat-checkbox>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="getFamiliensituation().abweichendeZahlungsadresseInfoma">
+            <div class="dv-adresse row">
+                <!--Strasse-->
+                <div class="col-sm-12 dv-input-container-small">
+                    <dv-input-container class="form-group">
+                        <label class="md-no-float required" for="adresseStrasse" translate>ADRESSE_STRASSE</label>
+                        <input id="adresseStrasse" type="text" name="adresseStrasse"
+                               [(ngModel)]="getFamiliensituation().zahlungsadresseInfoma.strasse"
+                               dv-max-length class="form-control" required>
+                        <dv-bisher-x
+                            [showBisher]="isKorrekturModusOrFreigegeben()"
+                            [deklaration]="getFamiliensituationGS()?.zahlungsadresseInfoma.strasse"
+                            [korrektur]="getFamiliensituation().zahlungsadresseInfoma.strasse"></dv-bisher-x>
+                        <dv-error-messages for="adresseForm.adresseStrasse.$error"
+                                           class="error"></dv-error-messages>
+                    </dv-input-container>
+                </div>
+                <div class="col-sm-12 dv-input-container-small">
+                    <dv-input-container class="form-group secondColumn">
+                        <label class="md-no-float"
+                               for="adresseHausnummer" translate>ADRESSE_HAUSNUMMER</label>
+                        <input id="adresseHausnummer" type="text"
+                               name="adresseHausnummer"
+                               [(ngModel)]="getFamiliensituation().zahlungsadresseInfoma.hausnummer"
+                               dv-max-length class="form-control">
+                        <dv-bisher-x
+                            [showBisher]="isKorrekturModusOrFreigegeben()"
+                            [deklaration]="getFamiliensituationGS()?.zahlungsadresseInfoma.hausnummer"
+                            [korrektur]="getFamiliensituation().zahlungsadresseInfoma.hausnummer"></dv-bisher-x>
+                        <dv-error-messages for="adresseForm.adresseHausnummer.$error"
+                                           class="error"></dv-error-messages>
+                    </dv-input-container>
+                </div>
+            </div>
+            <!-- Adresse Zusatz-->
+            <div class="row">
+                <div class="col-sm-12 dv-input-container-medium">
+                    <dv-input-container class="form-group">
+                        <label class="md-no-float" data-translate=""
+                               for="adresseZusatzzeile" translate>ADRESSE_ZUSATZZEILE</label>
+                        <input id="adresseZusatzzeile" type="text"
+                               name="adresseZusatzzeile"
+                               [(ngModel)]="getFamiliensituation().zahlungsadresseInfoma.zusatzzeile"
+                               dv-max-length class="form-control">
+                        <dv-bisher-x
+                            [showBisher]="isKorrekturModusOrFreigegeben()"
+                            [deklaration]="getFamiliensituationGS()?.zahlungsadresseInfoma.zusatzzeile"
+                            [korrektur]="getFamiliensituation().zahlungsadresseInfoma.zusatzzeile"></dv-bisher-x>
+                        <dv-error-messages for="adresseForm.adresseZusatzzeile.$error"
+                                           class="error"></dv-error-messages>
+                    </dv-input-container>
+                </div>
+            </div>
+            <!-- PLZ ORT-->
+            <div class="row">
+                <div class="col-sm-12 dv-input-container-small">
+                    <dv-input-container class="form-group">
+                        <label class="md-no-float required" data-translate=""
+                               for="adressePlz" translate>ADRESSE_PLZ
+                        </label>
+                        <input id="adressePlz" type="text" name="adressePlz"
+                               [(ngModel)]="getFamiliensituation().zahlungsadresseInfoma.plz"
+                               dv-max-length class="form-control" required>
+                        <dv-bisher-x
+                            [showBisher]="isKorrekturModusOrFreigegeben()"
+                            [deklaration]="getFamiliensituationGS()?.zahlungsadresseInfoma.plz"
+                            [korrektur]="getFamiliensituation().zahlungsadresseInfoma.plz"></dv-bisher-x>
+                        <dv-error-messages for="adresseForm.adressePlz.$error"
+                                           class="error"></dv-error-messages>
+                    </dv-input-container>
+                </div>
+                <div class="col-sm-12 dv-input-container-small">
+                    <dv-input-container class="form-group secondColumn">
+                        <label class="md-no-float required" data-translate="" for="adresseOrt" translate>ADRESSE_ORT</label>
+                        <input id="adresseOrt" type="text" name="adresseOrt"
+                               [(ngModel)]="getFamiliensituation().zahlungsadresseInfoma.ort"
+                               dv-max-length class="form-control" required>
+                        <dv-bisher-x
+                            [showBisher]="isKorrekturModusOrFreigegeben()"
+                            [deklaration]="getFamiliensituationGS()?.zahlungsadresseInfoma.ort"
+                            [korrektur]="getFamiliensituation().zahlungsadresseInfoma.ort"></dv-bisher-x>
+                        <dv-error-messages for="adresseForm.adresseOrt.$error" class="error"></dv-error-messages>
+                    </dv-input-container>
+                </div>
+            </div>
+
+            <!-- Land-->
+            <div class="row">
+                <div class="col-sm-12 dv-input-container-small">
+                    <div class="form-group">
+                        <label class="md-no-float" translate
+                               for="adresseLand">ADRESSE_LAND
+                        </label>
+                        <div class="dv-select-style">
+                            <select name="adresseLand" id="adresseLand"
+                                    [(ngModel)]="getFamiliensituation().zahlungsadresseInfoma.land"
+                                    class="form-control"
+                                    required>
+                                <option *ngFor="let land of laenderList" [value]="land.code">{{land.translationKey | translate}}</option>
+                            </select>
+                            <dv-bisher-x
+                                [showBisher]="isKorrekturModusOrFreigegeben()"
+                                [deklaration]="getFamiliensituationGS()?.zahlungsadresseInfoma.land"
+                                [korrektur]="getFamiliensituation().zahlungsadresseInfoma.land"></dv-bisher-x>
+                            <dv-error-messages for="adresseForm.adresseLand.$error"
+                                               class="error"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ng-container *ngIf="isGemeindeOrMandant() && isKorrekturModusOrFreigegeben()">
+            <div class="row">
+    <!--            INFOMA KREDITORENNUMMER-->
+                <div class="col-sm-12 dv-input-container-medium">
+                    <div class="form-group">
+                        <label class="required long-label" for="infoma_kred_id">
+                            {{'INFOMA_KREDITORENNUMMER' | translate}}</label>
+                        <input id="infoma_kred_id" type="text"
+                               name="infoma_kred"
+                               #infoma_kred="ngModel"
+                               [(ngModel)]="getFamiliensituation().infomaKreditorennummer"
+                               class="form-control"
+                               [disabled]="readonly"
+                               required>
+                        <dv-error-messages
+                            [errorObject]="infoma_kred.errors"
+                            inputId="infoma_kred_id">
+                        </dv-error-messages>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+    <!--            INFOMA BANKCODE-->
+                <div class="col-sm-12 dv-input-container-medium">
+                    <div class="form-group">
+                        <label class="required long-label" for="infoma_bankcode_id">
+                            {{'INFOMA_BANKCODE' | translate}}</label>
+                        <input id="infoma_bankcode_id" type="text"
+                               name="infoma_bankcode"
+                               #infoma_bankcode="ngModel"
+                               [(ngModel)]="getFamiliensituation().infomaBankcode"
+                               class="form-control"
+                               [disabled]="readonly"
+                               required>
+                        <dv-error-messages
+                            [errorObject]="infoma_bankcode.errors"
+                            inputId="infoma_bankcode_id">
+                        </dv-error-messages>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 dv-input-container-medium">
+                    <div class="form-group">
+                        <dv-radio-container-x>
+                            <label for="abrechnung_gutscheine_id" class="required">
+                                {{'ABRECHNUNG_DER_GUTSCHEINE' | translate}}
+                            </label>
+                            <mat-radio-group
+                                [(ngModel)]="getFamiliensituation().auszahlungAnEltern"
+                                name="abrechnung_gutscheine"
+                                id="abrechnung_gutscheine_id"
+                                #abrechnung_gutscheine="ngModel"
+                                [disabled]="readonly"
+                                required>
+                                <mat-radio-button [value]="true">{{'UEBER_ELTERN' | translate }}</mat-radio-button>
+                                <mat-radio-button [value]="false">{{'UEBER_INSTITUTION' | translate }}</mat-radio-button>
+                            </mat-radio-group>
+                            <dv-error-messages [errorObject]="abrechnung_gutscheine.errors"
+                                               inputId="abrechnung_gutscheine_id">
+                            </dv-error-messages>
+                        </dv-radio-container-x>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</fieldset>

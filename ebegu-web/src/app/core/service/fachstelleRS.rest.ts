@@ -44,6 +44,12 @@ export class FachstelleRS {
         );
     }
 
+    public getUnknownFachstelle(): IPromise<TSFachstelle> {
+        return this.http.get(`${this.serviceURL}/unknown-fachstelle`).then(
+            (response: any) => this.ebeguRestUtil.parseFachstelle(new TSFachstelle(), response.data),
+        );
+    }
+
     public getServiceName(): string {
         return 'FachstelleRS';
     }

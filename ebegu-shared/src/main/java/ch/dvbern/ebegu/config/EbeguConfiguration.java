@@ -342,4 +342,22 @@ public interface EbeguConfiguration {
 	String getMassenmutationEmpfaengerMail();
 
 	Boolean getMultimandantEnabled();
+
+	String getKibonAnfrageEndpoint();
+
+	String getEbeguKibonAnfrageSTSPrivateKeyAlias();
+
+	String getEbeguKibonAnfrageSTSKeystorePW();
+
+	String getEbeguKibonAnfrageSTSKeystorePath();
+
+	String getEbeguKibonAnfrageSTSPrivateKeyPW();
+
+	String getEbeguKibonAnfrageSTSBasePath();
+
+	String getEbeguKibonAnfrageSTSEndpoint();
+
+	String getEbeguKibonAnfrageSTSWsdl();
+
+	String getEbeguKibonAnfrageSTSRenewalAssertionEndpoint();
 }

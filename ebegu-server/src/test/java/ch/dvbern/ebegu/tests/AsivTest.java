@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_01;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_02;
@@ -126,7 +127,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testfall_ASIV_01() {
 		// Erstgesuch erstellen
-		Testfall_ASIV_01 testfall = new Testfall_ASIV_01(gesuchsperiode, institutionStammdatenList, true, gemeinde);
+		Testfall_ASIV_01 testfall = new Testfall_ASIV_01(gesuchsperiode, true, gemeinde,  new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
@@ -143,7 +144,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testfall_ASIV_02() {
 		// Erstgesuch erstellen
-		Testfall_ASIV_02 testfall = new Testfall_ASIV_02(gesuchsperiode, institutionStammdatenList, true, gemeinde);
+		Testfall_ASIV_02 testfall = new Testfall_ASIV_02(gesuchsperiode, true, gemeinde, new TestDataInstitutionStammdatenBuilder(gesuchsperiode) );
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
@@ -160,7 +161,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testfall_ASIV_03() {
 		// Erstgesuch erstellen
-		Testfall_ASIV_03 testfall = new Testfall_ASIV_03(gesuchsperiode, institutionStammdatenList, true, gemeinde);
+		Testfall_ASIV_03 testfall = new Testfall_ASIV_03(gesuchsperiode, true, gemeinde, new TestDataInstitutionStammdatenBuilder(gesuchsperiode) );
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
@@ -177,7 +178,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testfall_ASIV_04() {
 		// Erstgesuch erstellen
-		Testfall_ASIV_04 testfall = new Testfall_ASIV_04(gesuchsperiode, institutionStammdatenList, true, gemeinde);
+		Testfall_ASIV_04 testfall = new Testfall_ASIV_04(gesuchsperiode, true, gemeinde, new TestDataInstitutionStammdatenBuilder(gesuchsperiode) );
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
@@ -194,7 +195,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testfall_ASIV_05() {
 		// Erstgesuch erstellen
-		Testfall_ASIV_05 testfall = new Testfall_ASIV_05(gesuchsperiode, institutionStammdatenList, true, gemeinde);
+		Testfall_ASIV_05 testfall = new Testfall_ASIV_05(gesuchsperiode, true, gemeinde, new TestDataInstitutionStammdatenBuilder(gesuchsperiode) );
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
@@ -211,7 +212,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testfall_ASIV_06() {
 		// Erstgesuch erstellen
-		Testfall_ASIV_06 testfall = new Testfall_ASIV_06(gesuchsperiode, institutionStammdatenList, true, gemeinde);
+		Testfall_ASIV_06 testfall = new Testfall_ASIV_06(gesuchsperiode, true, gemeinde, new TestDataInstitutionStammdatenBuilder(gesuchsperiode) );
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
@@ -228,7 +229,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testfall_ASIV_07() {
 		// Erstgesuch erstellen
-		Testfall_ASIV_07 testfall = new Testfall_ASIV_07(gesuchsperiode, institutionStammdatenList, true, gemeinde);
+		Testfall_ASIV_07 testfall = new Testfall_ASIV_07(gesuchsperiode, true, gemeinde, new TestDataInstitutionStammdatenBuilder(gesuchsperiode) );
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
@@ -245,7 +246,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testfall_ASIV_08() {
 		// Erstgesuch erstellen
-		Testfall_ASIV_08 testfall = new Testfall_ASIV_08(gesuchsperiode, institutionStammdatenList, true, gemeinde);
+		Testfall_ASIV_08 testfall = new Testfall_ASIV_08(gesuchsperiode, true, gemeinde, new TestDataInstitutionStammdatenBuilder(gesuchsperiode) );
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
@@ -262,7 +263,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testfall_ASIV_09() {
 		// Erstgesuch erstellen
-		Testfall_ASIV_09 testfall = new Testfall_ASIV_09(gesuchsperiode, institutionStammdatenList, true, gemeinde);
+		Testfall_ASIV_09 testfall = new Testfall_ASIV_09(gesuchsperiode, true, gemeinde,  new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
@@ -279,7 +280,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testfall_ASIV_10() {
 		// Erstgesuch erstellen
-		Testfall_ASIV_10 testfall = new Testfall_ASIV_10(gesuchsperiode, institutionStammdatenList, true, gemeinde);
+		Testfall_ASIV_10 testfall = new Testfall_ASIV_10(gesuchsperiode, true, gemeinde,  new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
@@ -297,7 +298,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	public void testfall_ASIV_11_MZV() {
 		// Erstgesuch erstellen, ohne MVZ
 		Testfall_ASIV_11_MZV
-			testfall = new Testfall_ASIV_11_MZV(gesuchsperiode, institutionStammdatenList, true, gemeinde, false);
+			testfall = new Testfall_ASIV_11_MZV(gesuchsperiode, true, gemeinde, false, new TestDataInstitutionStammdatenBuilder(gesuchsperiode) );
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
@@ -318,7 +319,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	public void testfall_ASIV_11_MZV_NICHT_EINTRETEN() {
 		// Erstgesuch erstellen
 		Testfall_ASIV_11_MZV
-			testfall = new Testfall_ASIV_11_MZV(gesuchsperiode, institutionStammdatenList, true, gemeinde, true);
+			testfall = new Testfall_ASIV_11_MZV(gesuchsperiode, true, gemeinde, true, new TestDataInstitutionStammdatenBuilder(gesuchsperiode) );
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, false, null);
 
 		// Erst (vielleicht auch in der Test Klass hilfe bewegen aber: geprueft mit finsit akkzeptiert simulieren
@@ -349,7 +350,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	public void testfall_ASIV_12_MZV_NICHT_EINTRETEN_Untermonatliche() {
 		// Erstgesuch erstellen
 		Testfall_ASIV_12_MZV_Untermonatliche
-			testfall = new Testfall_ASIV_12_MZV_Untermonatliche(gesuchsperiode, institutionStammdatenList, true, gemeinde);
+			testfall = new Testfall_ASIV_12_MZV_Untermonatliche(gesuchsperiode, true, gemeinde,  new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, false, null);
 
 		// Erst (vielleicht auch in der Test Klass hilfe bewegen aber: geprueft mit finsit akkzeptiert simulieren

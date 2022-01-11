@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -31,15 +32,17 @@ public class JaxPensumFachstelle extends JaxAbstractIntegerPensumDTO {
 
 	private static final long serialVersionUID = -7997026881634137397L;
 
+	@Nullable
 	private JaxFachstelle fachstelle;
 
 	private IntegrationTyp integrationTyp;
 
+	@Nullable
 	public JaxFachstelle getFachstelle() {
 		return fachstelle;
 	}
 
-	public void setFachstelle(JaxFachstelle fachstelle) {
+	public void setFachstelle(@Nullable JaxFachstelle fachstelle) {
 		this.fachstelle = fachstelle;
 	}
 
