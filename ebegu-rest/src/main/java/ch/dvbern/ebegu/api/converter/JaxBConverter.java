@@ -5148,6 +5148,9 @@ public class JaxBConverter extends AbstractConverter {
 		stammdaten.setStandardDokUnterschriftName2(jaxStammdaten.getStandardDokUnterschriftName2());
 		stammdaten.setTsVerantwortlicherNachVerfuegungBenachrichtigen(jaxStammdaten.getTsVerantwortlicherNachVerfuegungBenachrichtigen());
 
+		stammdaten.setHasZusatzText(jaxStammdaten.getHasZusatzText());
+		stammdaten.setZusatzText(jaxStammdaten.getZusatzText());
+
 		stammdaten.setBgEmail(jaxStammdaten.getBgEmail());
 		stammdaten.setBgTelefon(jaxStammdaten.getBgTelefon());
 		stammdaten.setTsEmail(jaxStammdaten.getTsEmail());
@@ -5232,6 +5235,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStammdaten.setEmailBeiGesuchsperiodeOeffnung(stammdaten.getEmailBeiGesuchsperiodeOeffnung());
 		jaxStammdaten.setHasAltGemeindeKontakt(stammdaten.getHasAltGemeindeKontakt());
 		jaxStammdaten.setAltGemeindeKontaktText(stammdaten.getAltGemeindeKontaktText());
+		jaxStammdaten.setHasZusatzText(stammdaten.getHasZusatzText());
+		jaxStammdaten.setZusatzText(stammdaten.getZusatzText());
+
 		// Konfiguration: Wir laden die Gesuchsperioden, die vor dem Ende der Gemeinde-Gültigkeit liegen
 		Objects.requireNonNull(stammdaten.getGemeinde().getMandant());
 		List<Gesuchsperiode> gueltigeGesuchsperiodenForGemeinde = gesuchsperiodeService.getAllGesuchsperioden(stammdaten.getGemeinde().getMandant())

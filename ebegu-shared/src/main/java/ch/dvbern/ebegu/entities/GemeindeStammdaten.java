@@ -257,6 +257,15 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Column(nullable = true)
 	private String altGemeindeKontaktText;
 
+	@Nonnull
+	@Column(nullable = false)
+	@NotNull
+	private Boolean hasZusatzText = false;
+
+	@Nullable
+	@Column(nullable = true)
+	private String zusatzText;
+
 
 	@Nullable
 	@ManyToOne(optional = true)
@@ -763,5 +772,19 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	public void setAltGemeindeKontaktText(@Nullable String altGemeindeKontaktText) {
 		this.altGemeindeKontaktText = altGemeindeKontaktText;
+	}
+
+	@Nonnull
+	public Boolean getHasZusatzText() { return hasZusatzText; }
+
+	public void setHasZusatzText(@Nonnull Boolean hasZusatzText) {
+		this.hasZusatzText = hasZusatzText;
+	}
+
+	@Nullable
+	public String getZusatzText() { return zusatzText; }
+
+	public void setZusatzText(@Nullable String zusatzText) {
+		this.zusatzText = zusatzText;
 	}
 }
