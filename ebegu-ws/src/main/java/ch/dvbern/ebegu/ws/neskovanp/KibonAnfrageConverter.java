@@ -25,6 +25,7 @@ import ch.dvbern.ebegu.dto.neskovanp.Veranlagungsstand;
 
 public class KibonAnfrageConverter {
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public static SteuerdatenResponse convertFromKibonAnfrage(SteuerDatenResponseType steuerdatenResponseType) {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
 

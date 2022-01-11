@@ -29,7 +29,6 @@ import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.transform.TransformerException;
 
-import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.errors.STSZertifikatServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +43,6 @@ public class RenewalAssertionWebService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RenewalAssertionWebService.class.getSimpleName());
 
 	public static final String METHOD_NAME_RENEW_ASSERTION = "renewAssertion";
-
-	@Inject
-	private EbeguConfiguration config;
 
 	@Inject
 	private STSConfigManager stsConfigManager;
