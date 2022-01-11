@@ -43,9 +43,9 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 	private int inputAnspruchPensum;
 	protected BigDecimal inputMassgebendesEinkommen;
 	private BigDecimal inputZuschlagErhoeterBeterungsbedarf = BigDecimal.ZERO;
-	private boolean inputGeschwisternBonus2Kind = false;
-	private boolean inputGeschwisternBonus3Kind = false;
-	private boolean inputKitaPlusZuschlag = false;
+	private boolean inputIsGeschwisternBonus2Kind = false;
+	private boolean inputIsGeschwisternBonus3Kind = false;
+	private boolean inputIsKitaPlusZuschlag = false;
 
 	private BigDecimal z;
 
@@ -68,7 +68,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		this.inputBetreuungsPensum = input.getBetreuungspensumProzent();
 		this.inputAnspruchPensum = input.getAnspruchspensumProzent();
 		this.inputMassgebendesEinkommen = input.getMassgebendesEinkommen();
-		this.inputKitaPlusZuschlag = input.isKitaPlusZuschlag();
+		this.inputIsKitaPlusZuschlag = input.isKitaPlusZuschlag();
 
 		this.selbstBehaltElternProzent = calculateSelbstbehaltElternProzent();
 		this.geschwisternBonus2Kind = calculateGeschwisternBonus2Kind();
@@ -126,11 +126,11 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 	private BigDecimal calculateGutscheinProTagVorZuschlagUndSelbstbehalt(BigDecimal gutscheinProTagAufgrundEinkommen) {
 		BigDecimal gutscheinProTagVorZuschlagUndSelbstbahalt = gutscheinProTagAufgrundEinkommen.add(BigDecimal.ZERO);
 
-		if(inputGeschwisternBonus2Kind) {
+		if(inputIsGeschwisternBonus2Kind) {
 			gutscheinProTagVorZuschlagUndSelbstbahalt.add(geschwisternBonus2Kind);
 		}
 
-		if(inputGeschwisternBonus3Kind) {
+		if(inputIsGeschwisternBonus3Kind) {
 			gutscheinProTagVorZuschlagUndSelbstbahalt.add(geschwisternBonus3Kind);
 		}
 
@@ -197,7 +197,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 
 	private BigDecimal calculateGutscheinProMonat(BigDecimal gutscheinProMonatVorZuschlag) {
 		BigDecimal zuschlagProTag = inputZuschlagErhoeterBeterungsbedarf;
-		BigDecimal zuschlagKitaPlus = inputKitaPlusZuschlag ? inputParameter.getKitaPlusZuschlag() : BigDecimal.ZERO;
+		BigDecimal zuschlagKitaPlus = inputIsKitaPlusZuschlag ? getKitaPlusZuschlag() : BigDecimal.ZERO;
 
 		BigDecimal totalZuschlagProTag = EXACT.add(zuschlagProTag, zuschlagKitaPlus);
 		BigDecimal totalZuschlagProMonat = EXACT.multiply(effektiveBetreuungZeiteinheitProMonat, totalZuschlagProTag);
@@ -228,9 +228,9 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 	protected abstract BigDecimal getMinimalTarif();
 	protected abstract PensumUnits getZeiteinheit();
 	protected abstract BigDecimal getVollkostenTarif();
+	protected abstract BigDecimal getKitaPlusZuschlag();
 	protected abstract BigDecimal getMinBetreuungsgutschein();
 	protected abstract BigDecimal getAnzahlZeiteinheitenProMonat();
 	protected abstract BigDecimal calculateSelbstbehaltElternProzent();
 	protected abstract BigDecimal calculateBGProTagByEinkommen();
-
 }

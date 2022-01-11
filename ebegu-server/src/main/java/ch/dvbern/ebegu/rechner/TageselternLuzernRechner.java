@@ -27,6 +27,13 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 public class TageselternLuzernRechner extends AbstractLuzernRechner {
 
 	private static final BigDecimal STUNDEN_PRO_TAG = BigDecimal.valueOf(11);
+
+	//Die Tarife werden im Moment als Konstante gespeichert. Dies wird in Zukunft evtl noch konfigurierbar gemacht.
+	private static final BigDecimal VOLLKOSTEN_TARIF_BABY = BigDecimal.valueOf(16.30);
+	private static final BigDecimal VOLLKOSTEN_TARIF_KIND = BigDecimal.valueOf(12.40);
+	private static final BigDecimal MIN_BETREUUNGSGUTSCHEIN_BABY = BigDecimal.valueOf(1.30);
+	private static final BigDecimal MIN_BETREUUNGSGUTSCHEIN_KIND = BigDecimal.ONE;
+
 	private boolean isBaby = false;
 
 	@Override
@@ -45,7 +52,13 @@ public class TageselternLuzernRechner extends AbstractLuzernRechner {
 
 	@Override
 	protected BigDecimal getVollkostenTarif() {
-		return isBaby ? inputParameter.getVollkostenTarifBabyTFO() : inputParameter.getVollkostenTarifKindTFO();
+		return isBaby ? VOLLKOSTEN_TARIF_BABY : VOLLKOSTEN_TARIF_KIND;
+	}
+
+	@Override
+	protected BigDecimal getKitaPlusZuschlag() {
+		//Tageseltern haben keinen KitaPlus Zuschlag
+		return BigDecimal.ZERO;
 	}
 
 	@Override
@@ -76,6 +89,6 @@ public class TageselternLuzernRechner extends AbstractLuzernRechner {
 
 	@Override
 	protected BigDecimal getMinBetreuungsgutschein() {
-		return  isBaby ? inputParameter.getMinBGBabyTFO() : inputParameter.getMinBGKindTFO();
+		return  isBaby ? MIN_BETREUUNGSGUTSCHEIN_BABY : MIN_BETREUUNGSGUTSCHEIN_KIND;
 	}
 }

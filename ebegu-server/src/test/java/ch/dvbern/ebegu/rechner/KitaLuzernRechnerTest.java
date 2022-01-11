@@ -28,7 +28,7 @@ import org.junit.Test;
 
 public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 
-	private final BGRechnerParameterDTO defaultParameterDTO = getKitaParameterLuzern();
+	private final BGRechnerParameterDTO defaultParameterDTO = getRechnerParameterLuzern();
 
 
 	@Test
@@ -172,7 +172,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.betreuungsPensum = MathUtil.DEFAULT.fromNullSafe(80);
 		testValues.anspruchsPensum = 80;
 		testValues.einkommen = MathUtil.DEFAULT
-			.fromNullSafe(getKitaParameterLuzern().getMaxMassgebendesEinkommen())
+			.fromNullSafe(getRechnerParameterLuzern().getMaxMassgebendesEinkommen())
 			.add(BigDecimal.valueOf(1000));
 		testValues.isBaby = true;
 

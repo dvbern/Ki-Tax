@@ -233,33 +233,17 @@ public abstract class AbstractBGRechnerTest {
 	/**
 	 * Stellt alle für die Berechnung benötigten Parameter für Luzern zusammen
 	 */
-	public static BGRechnerParameterDTO getKitaParameterLuzern() {
+	public static BGRechnerParameterDTO getRechnerParameterLuzern() {
 		BGRechnerParameterDTO defaultParameter = getParameter();
 
 		//SET Parameters for LU
 		defaultParameter.setMinVerguenstigungProTg(BigDecimal.valueOf(15));
 		defaultParameter.setMinMassgebendesEinkommen(BigDecimal.valueOf(48000));
 		defaultParameter.setMaxMassgebendesEinkommen(BigDecimal.valueOf(125000));
-		defaultParameter.setKitaPlusZuschlag(BigDecimal.valueOf(32));
-		defaultParameter.setMinBGBabyKita(BigDecimal.valueOf(12.6));
-		defaultParameter.setMinBGKindKita(BigDecimal.valueOf(10));
-		defaultParameter.setVollkostenTarifBabyKita(BigDecimal.valueOf(160));
-		defaultParameter.setVollkostenTarifKindKita(BigDecimal.valueOf(130));
+		defaultParameter.setMinVerguenstigungProStd(BigDecimal.valueOf(0.7));
 		return defaultParameter;
 	}
 
-	public static BGRechnerParameterDTO getTagesschuleParameterLuzern() {
-		BGRechnerParameterDTO defaultParmeterLuzern = getKitaParameterLuzern();
-
-		//TagesschulParameter Überschreiben
-		defaultParmeterLuzern.setKitaPlusZuschlag(BigDecimal.ZERO);
-		defaultParmeterLuzern.setMinBGBabyTFO(BigDecimal.valueOf(1.3));
-		defaultParmeterLuzern.setMinBGKindTFO(BigDecimal.ONE);
-		defaultParmeterLuzern.setVollkostenTarifBabyTFO(BigDecimal.valueOf(16.3));
-		defaultParmeterLuzern.setVollkostenTarifKindTFO(BigDecimal.valueOf(12.4));
-		defaultParmeterLuzern.setMinVerguenstigungProStd(BigDecimal.valueOf(0.7));
-		return defaultParmeterLuzern;
-	}
 	/**
 	 * Erstellt eine Verfügung mit einem einzelnen Zeitabschnitt und den für Kita notwendigen Parametern zusammen
 	 */

@@ -28,7 +28,7 @@ import org.junit.Test;
 
 public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 
-	private final BGRechnerParameterDTO defaultParameterDTO = getTagesschuleParameterLuzern();
+	private final BGRechnerParameterDTO defaultParameterDTO = getRechnerParameterLuzern();
 
 	@Test
 	public void testBaby() {

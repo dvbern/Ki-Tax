@@ -29,6 +29,14 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 
 	private boolean isBaby = false;
 
+	//Die Tarife werden im Moment als Konstante gespeichert. Dies wird in Zukunft evtl noch konfigurierbar gemacht.
+	private static final BigDecimal VOLLKOSTEN_TARIF_BABY = BigDecimal.valueOf(160);
+	private static final BigDecimal VOLLKOSTEN_TARIF_KIND = BigDecimal.valueOf(130);
+	private static final BigDecimal MIN_BETREUUNGSGUTSCHEIN_BABY = BigDecimal.valueOf(12.60);
+	private static final BigDecimal MIN_BETREUUNGSGUTSCHEIN_KIND = BigDecimal.valueOf(10);
+
+	private static final BigDecimal KITA_PLUS_ZUSCHLAG = BigDecimal.valueOf(32);
+
 	@Override
 	public void calculate(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
@@ -47,12 +55,17 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 
 	@Override
 	protected BigDecimal getVollkostenTarif() {
-		return isBaby ? inputParameter.getVollkostenTarifBabyKita() : inputParameter.getVollkostenTarifKindKita();
+		return isBaby ? VOLLKOSTEN_TARIF_BABY: VOLLKOSTEN_TARIF_KIND;
+	}
+
+	@Override
+	protected BigDecimal getKitaPlusZuschlag() {
+		return KITA_PLUS_ZUSCHLAG;
 	}
 
 	@Override
 	protected BigDecimal getMinBetreuungsgutschein() {
-		return isBaby ? inputParameter.getMinBGBabyKita() : inputParameter.getMinBGKindKita();
+		return isBaby ? MIN_BETREUUNGSGUTSCHEIN_BABY : MIN_BETREUUNGSGUTSCHEIN_KIND;
 	}
 
 	@Override
