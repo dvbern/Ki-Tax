@@ -25,6 +25,7 @@ import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {GesuchRS} from '../../../gesuch/service/gesuchRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
@@ -83,6 +84,7 @@ describe('testdatenView', () => {
             .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$']);
         authServiceSpy.principal$ = of(new TSBenutzer());
+        const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, ['getSteuerdaten']);
 
         TestBed.configureTestingModule({
             imports: [
@@ -99,6 +101,7 @@ describe('testdatenView', () => {
                 {provide: MAT_DATE_LOCALE, useValue: 'de-CH'},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: GesuchRS, useValue: gesuchRSSpy},
             ],
             declarations: [TestdatenViewComponent],
         })
