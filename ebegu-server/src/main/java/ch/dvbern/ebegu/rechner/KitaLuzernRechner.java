@@ -80,7 +80,7 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 
 	@Override
 	protected BigDecimal getAnzahlZeiteinheitenProMonat() {
-		return WOCHEN_PRO_MONAT;
+		return EXACT.divide(inputParameter.getOeffnungstageKita(), BigDecimal.valueOf(12));
 	}
 
 	@Override

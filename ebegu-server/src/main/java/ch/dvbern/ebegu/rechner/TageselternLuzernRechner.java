@@ -79,7 +79,8 @@ public class TageselternLuzernRechner extends AbstractLuzernRechner {
 
 	@Override
 	protected BigDecimal getAnzahlZeiteinheitenProMonat() {
-		return EXACT.multiply(STUNDEN_PRO_TAG, WOCHEN_PRO_MONAT);
+		BigDecimal tageProMonat = EXACT.divide(inputParameter.getOeffnungstageTFO(), BigDecimal.valueOf(12));
+		return EXACT.multiply(inputParameter.getOeffnungsstundenTFO(), tageProMonat);
 	}
 
 	@Override

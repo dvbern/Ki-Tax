@@ -241,6 +241,9 @@ public abstract class AbstractBGRechnerTest {
 		defaultParameter.setMinMassgebendesEinkommen(BigDecimal.valueOf(48000));
 		defaultParameter.setMaxMassgebendesEinkommen(BigDecimal.valueOf(125000));
 		defaultParameter.setMinVerguenstigungProStd(BigDecimal.valueOf(0.7));
+		defaultParameter.setOeffnungstageKita(BigDecimal.valueOf(246));
+		defaultParameter.setOeffnungstageTFO(BigDecimal.valueOf(246));
+		defaultParameter.setOeffnungsstundenTFO(BigDecimal.valueOf(11));
 		return defaultParameter;
 	}
 

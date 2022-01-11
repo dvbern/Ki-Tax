@@ -31,9 +31,6 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 
 	protected static final MathUtil EXACT = MathUtil.EXACT;
 
-	private static final BigDecimal MAX_BETREUNGSTAGE_PRO_WOCHE = BigDecimal.valueOf(5);
-	protected static final BigDecimal WOCHEN_PRO_MONAT = BigDecimal.valueOf(4.1);
-
 	protected BGRechnerParameterDTO inputParameter;
 	private BGCalculationInput input;
 
@@ -53,7 +50,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 	private BigDecimal geschwisternBonus2Kind;
 	private BigDecimal geschwisternBonus3Kind;
 	private BigDecimal betreuungsgutscheinPensumProzent;
-	private BigDecimal effektiveBetreuungstageProWoche;
+
 	private BigDecimal effektiveBetreuungZeiteinheitProMonat; //Betreuungtage oder Betreuungsstunden pro Monat
 
 	@Override
@@ -74,7 +71,6 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		this.geschwisternBonus2Kind = calculateGeschwisternBonus2Kind();
 		this.geschwisternBonus3Kind = calculateGeschwisternBonus3Kind();
 		this.betreuungsgutscheinPensumProzent = inputBetreuungsPensum.min(BigDecimal.valueOf(inputAnspruchPensum));
-		this.effektiveBetreuungstageProWoche = calculateEffektiveBetreuungstageProWoche();
 		this.effektiveBetreuungZeiteinheitProMonat = calculateEffektiveBetreuungszeiteinheitenProMonat();
 
 		BigDecimal gutscheinProTagAufgrundEinkommen = calculateBGProTagByEinkommen();
@@ -115,12 +111,8 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		return EXACT.multiplyNullSafe(this.selbstBehaltElternProzent, BigDecimal.valueOf(0.7), getVollkostenTarif());
 	}
 
-	private BigDecimal calculateEffektiveBetreuungstageProWoche() {
-		return EXACT.multiplyNullSafe(MAX_BETREUNGSTAGE_PRO_WOCHE,betreuungsgutscheinPensumProzent,BigDecimal.valueOf(0.01));
-	}
-
 	private BigDecimal calculateEffektiveBetreuungszeiteinheitenProMonat() {
-		return EXACT.multiply(getAnzahlZeiteinheitenProMonat(), effektiveBetreuungstageProWoche);
+		return EXACT.multiply(getAnzahlZeiteinheitenProMonat(), BigDecimal.valueOf(0.01), betreuungsgutscheinPensumProzent);
 	}
 
 	private BigDecimal calculateGutscheinProTagVorZuschlagUndSelbstbehalt(BigDecimal gutscheinProTagAufgrundEinkommen) {
