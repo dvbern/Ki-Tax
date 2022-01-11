@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ch.dvbern.ebegu.ws.ewk.sts;
+package ch.dvbern.ebegu.ws.sts;
 
 import javax.xml.soap.SOAPElement;
 
@@ -32,11 +32,11 @@ public interface STSAssertionManager {
 	/**
 	 * Gibt die noch gültige, falls vorhanden, Assertion zurück oder erneuert diese oder erstellt eine neue
 	 */
-	SOAPElement getValidSTSAssertionForPersonensuche() throws STSZertifikatServiceException;
+	SOAPElement getValidSTSAssertionForWebserviceType(WebserviceType webserviceType) throws STSZertifikatServiceException;
 
-	SOAPElement forceRenewalOfCurrentAssertion() throws STSZertifikatServiceException;
+	SOAPElement forceRenewalOfCurrentAssertion(WebserviceType webserviceType) throws STSZertifikatServiceException;
 
-	SOAPElement forceReinitializationOfCurrentAssertion() throws STSZertifikatServiceException;
+	SOAPElement forceReinitializationOfCurrentAssertion(WebserviceType webserviceType) throws STSZertifikatServiceException;
 
 	/**
 	 * Schreibt die erneuerte oder neue Assertion in den Manager

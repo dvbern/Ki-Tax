@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.ws.ewk.sts;
+package ch.dvbern.ebegu.ws.sts;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -48,13 +48,16 @@ public class RenewalAssertionWebService {
 	@Inject
 	private EbeguConfiguration config;
 
+	@Inject
+	private STSConfigManager stsConfigManager;
 
-	public STSAssertionExtractionResult renewAssertion(SOAPElement assertionElement, String renewalToken) throws STSZertifikatServiceException {
+
+	public STSAssertionExtractionResult renewAssertion(SOAPElement assertionElement, String renewalToken, WebserviceType webserviceType) throws STSZertifikatServiceException {
 		// Assertion muss erneuert werden
 		LOGGER.info("triggering renew of assertion using renewal token");
 		try {
 			SOAPMessage soapMessage = SAMLAuthenticationUtil.createRenewalSoapMessage(assertionElement, renewalToken);
-			URL url = new URL(config.getEbeguPersonensucheSTSRenewalAssertionEndpoint());
+			URL url = new URL(stsConfigManager.getEbeguSTSRenewalAssertionEndpoint(webserviceType));
 
 			SOAPConnection connection = SOAPConnectionFactory.newInstance().createConnection();
 			SOAPMessage response = connection.call(soapMessage, url.toExternalForm());
