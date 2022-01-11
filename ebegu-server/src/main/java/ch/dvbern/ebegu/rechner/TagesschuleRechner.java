@@ -142,6 +142,7 @@ public class TagesschuleRechner extends AbstractRechner {
 
 		// Falls der Gesuchsteller die Finanziellen Daten nicht angeben will, bekommt er den Max Tarif
 		if (input.isBezahltVollkosten()
+			|| input.isZuSpaetEingereicht()
 			|| input.isKeinAnspruchAufgrundEinkommen()
 			|| input.getAnspruchspensumProzent() == 0) {
 			tarifProStunde = maxTarif;
