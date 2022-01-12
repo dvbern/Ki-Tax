@@ -45,6 +45,8 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedElternbeitrag = BigDecimal.valueOf(5.4);
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(94.7);
 		testValues.expectedBetreuungsTage = BigDecimal.valueOf(135.3);
+		testValues.expectedAnspruchsTage =  BigDecimal.valueOf(135.3);
+		testValues.expectedBgTage =  BigDecimal.valueOf(135.3);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
 		AbstractLuzernRechner rechner = new TageselternLuzernRechner();
@@ -69,6 +71,8 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedElternbeitrag = BigDecimal.valueOf(333.8);
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(94.70);
 		testValues.expectedBetreuungsTage = BigDecimal.valueOf(135.3);
+		testValues.expectedAnspruchsTage =  BigDecimal.valueOf(180.4);
+		testValues.expectedBgTage =  BigDecimal.valueOf(135.3);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
 		AbstractLuzernRechner rechner = new TageselternLuzernRechner();
@@ -92,7 +96,9 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedVerguenstigung = BigDecimal.ZERO;
 		testValues.expectedElternbeitrag = BigDecimal.ZERO;
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(31.55);
-		testValues.expectedBetreuungsTage = BigDecimal.valueOf(45.1);
+		testValues.expectedBetreuungsTage = BigDecimal.valueOf(90.2);
+		testValues.expectedAnspruchsTage =  BigDecimal.valueOf(45.1);
+		testValues.expectedBgTage =  BigDecimal.valueOf(45.1);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
 		AbstractLuzernRechner rechner = new TageselternLuzernRechner();
@@ -116,7 +122,9 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedVerguenstigung = BigDecimal.ZERO;
 		testValues.expectedElternbeitrag = BigDecimal.ZERO;
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(31.55);
-		testValues.expectedBetreuungsTage = BigDecimal.valueOf(45.1);
+		testValues.expectedBetreuungsTage = BigDecimal.valueOf(90.2);
+		testValues.expectedAnspruchsTage =  BigDecimal.valueOf(45.1);
+		testValues.expectedBgTage =  BigDecimal.valueOf(45.1);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
 		AbstractLuzernRechner rechner = new TageselternLuzernRechner();

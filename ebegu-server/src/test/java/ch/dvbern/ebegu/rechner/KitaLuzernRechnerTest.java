@@ -46,7 +46,8 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedElternbeitrag = BigDecimal.valueOf(482.25);
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(246);
 		testValues.expectedBetreuungsTage = BigDecimal.valueOf(16.4);
-
+		testValues.expectedAnspruchsTage =  BigDecimal.valueOf(16.4);
+		testValues.expectedBgTage =  BigDecimal.valueOf(16.4);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
 		KitaLuzernRechner rechner = new KitaLuzernRechner();
@@ -69,7 +70,9 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(868.6);
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(1196.6);
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(153.75);
-		testValues.expectedBetreuungsTage = BigDecimal.valueOf(10.25);
+		testValues.expectedBetreuungsTage = BigDecimal.valueOf(12.3);
+		testValues.expectedAnspruchsTage =  BigDecimal.valueOf(10.25);
+		testValues.expectedBgTage =  BigDecimal.valueOf(10.25);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
 		zeitabschnitt.getBgCalculationInputAsiv().setKitaPlusZuschlag(true);
@@ -93,6 +96,8 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(123);
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(184.50);
 		testValues.expectedBetreuungsTage = BigDecimal.valueOf(12.3);
+		testValues.expectedAnspruchsTage =  BigDecimal.valueOf(12.3);
+		testValues.expectedBgTage =  BigDecimal.valueOf(12.3);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
 		KitaLuzernRechner rechner = new KitaLuzernRechner();
@@ -112,6 +117,8 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(184.50);
 		testValues.expectedBetreuungsTage = BigDecimal.valueOf(12.3);
+		testValues.expectedAnspruchsTage =  BigDecimal.valueOf(12.3);
+		testValues.expectedBgTage =  BigDecimal.valueOf(12.3);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
 		KitaLuzernRechner rechner = new KitaLuzernRechner();
@@ -121,7 +128,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 	}
 
 	@Test
-	public void testKind() { //Test Kind1 gemäss Excel
+	public void testKind() {
 		TestValues testValues = new TestValues();
 		testValues.monatlicheBetreuungsKosten = MathUtil.DEFAULT.fromNullSafe(1600);
 		testValues.betreuungsPensum = MathUtil.DEFAULT.fromNullSafe(70);
@@ -133,7 +140,9 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(1414.50);
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(1414.50);
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(184.50);
-		testValues.expectedBetreuungsTage = BigDecimal.valueOf(12.3);
+		testValues.expectedBetreuungsTage = BigDecimal.valueOf(14.35);
+		testValues.expectedAnspruchsTage =  BigDecimal.valueOf(12.3);
+		testValues.expectedBgTage =  BigDecimal.valueOf(12.3);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
 		KitaLuzernRechner rechner = new KitaLuzernRechner();
@@ -155,7 +164,9 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(943);
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(1205.40);
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(123);
-		testValues.expectedBetreuungsTage = BigDecimal.valueOf(8.2);
+		testValues.expectedBetreuungsTage = BigDecimal.valueOf(12.3);
+		testValues.expectedAnspruchsTage =  BigDecimal.valueOf(8.2);
+		testValues.expectedBgTage =  BigDecimal.valueOf(8.2);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
 		zeitabschnitt.getBgCalculationInputAsiv().setKitaPlusZuschlag(true);
@@ -178,6 +189,8 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(246);
 		testValues.expectedBetreuungsTage = BigDecimal.valueOf(16.4);
+		testValues.expectedAnspruchsTage =  BigDecimal.valueOf(16.4);
+		testValues.expectedBgTage =  BigDecimal.valueOf(16.4);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
 		KitaLuzernRechner rechner = new KitaLuzernRechner();
@@ -202,6 +215,8 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedElternbeitrag = BigDecimal.valueOf(0);
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(166.95);
 		testValues.expectedBetreuungsTage = BigDecimal.valueOf(11.13);
+		testValues.expectedAnspruchsTage =  BigDecimal.valueOf(11.13);
+		testValues.expectedBgTage =  BigDecimal.valueOf(11.13);
 
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);

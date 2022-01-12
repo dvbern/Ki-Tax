@@ -74,6 +74,12 @@ public class AbstractLuzernRechnerTest extends AbstractBGRechnerTest {
 			testValues.expectedVerguenstigung.stripTrailingZeros(),
 			result.getVerguenstigung().stripTrailingZeros());
 		Assert.assertEquals(testValues.expectedBetreuungsTage.stripTrailingZeros(), result.getBetreuungspensumZeiteinheit().stripTrailingZeros());
+		Assert.assertEquals(testValues.betreuungsPensum.stripTrailingZeros(), result.getBetreuungspensumProzent().stripTrailingZeros());
+		Assert.assertEquals(testValues.expectedAnspruchsTage.stripTrailingZeros(), result.getAnspruchspensumZeiteinheit().stripTrailingZeros());
+		Assert.assertEquals(testValues.anspruchsPensum, result.getAnspruchspensumProzent());
+		Assert.assertEquals(testValues.expectedBgTage.stripTrailingZeros(), result.getBgPensumZeiteinheit().stripTrailingZeros());
+		BigDecimal bgPensum =  testValues.betreuungsPensum.min(BigDecimal.valueOf(testValues.anspruchsPensum));
+		Assert.assertEquals(bgPensum.stripTrailingZeros(), result.getBgPensumProzent().stripTrailingZeros());
 	}
 
 	protected static class TestValues {
@@ -89,6 +95,8 @@ public class AbstractLuzernRechnerTest extends AbstractBGRechnerTest {
 		protected BigDecimal expectedElternbeitrag = BigDecimal.ZERO;
 		protected BigDecimal expectedMinimalerElternbeitrag = BigDecimal.ZERO;
 		protected BigDecimal expectedBetreuungsTage = BigDecimal.ZERO;
+		protected BigDecimal expectedAnspruchsTage = BigDecimal.ZERO;
+		protected BigDecimal expectedBgTage = BigDecimal.ZERO;
 
 		protected DateRange gueltigkeit = new DateRange(
 			LocalDate.of(2019, Month.AUGUST, 1),
