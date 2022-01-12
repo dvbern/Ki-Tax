@@ -130,6 +130,9 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 			@Nonnull BigDecimal selbstbehaltPro100ProzentPlatz,
 			Mandant mandant) {
 
+		// Ueberpruefen, dass es nicht schon einen Lastenausgleich oder LastenausgleichGrundlagen gibt fuer dieses Jahr
+		assertUnique(jahr);
+
 		LOG.info("Berechnung Lastenausgleich wird gestartet");
 
 		StringBuilder sb = new StringBuilder();
