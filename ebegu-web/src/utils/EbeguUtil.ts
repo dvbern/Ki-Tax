@@ -221,6 +221,17 @@ export class EbeguUtil {
         return !EbeguUtil.isNullOrUndefined(data);
     }
 
+    public static areAllNotNullOrUndefined(
+        ...args: any[]
+    ): boolean {
+        for (const datum in args) {
+            if (EbeguUtil.isNullOrUndefined(datum)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static isNotNullAndTrue(data: boolean): boolean {
         return this.isNotNullOrUndefined(data) && data;
     }
@@ -510,5 +521,4 @@ export class EbeguUtil {
         }
         return text;
     }
-
 }

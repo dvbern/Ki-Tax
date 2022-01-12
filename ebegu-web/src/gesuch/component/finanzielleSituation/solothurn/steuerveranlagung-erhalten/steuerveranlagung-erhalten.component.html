@@ -7,7 +7,9 @@
 					<mat-radio-group
 							aria-labelledby="steuerveranlagungErhalten_id"
 							name="steuerveranlagungErhalten"
+							id="steuerveranlagungErhalten_id"
 							required
+							#steuerveranlagungErhalten="ngModel"
 							dvEnableElement
 							[enableExpression]="!gesuchModelManager.isGesuchReadonly() && !gesuchModelManager.isKorrekturModusJugendamt()"
 							[ngModel]="model.finanzielleSituationJA.steuerveranlagungErhalten"
@@ -16,6 +18,10 @@
 						<mat-radio-button [value]="false">{{'LABEL_NICHT_ERHALTEN_ODER_QUELLENBESTEUERT' | translate }}</mat-radio-button>
 					</mat-radio-group>
 				</dv-radio-container-x>
+				<dv-error-messages
+						[errorObject]="steuerveranlagungErhalten.errors"
+						inputId="steuerveranlagungErhalten_id">
+				</dv-error-messages>
 			</dv-input-container-x>
 		</div>
 	</div>

@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {ChangeDetectorRef} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
 import {IPromise} from 'angular';
@@ -32,7 +33,7 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
 
     public readonly: boolean = false;
 
-    protected constructor(
+    public constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
         protected gesuchstellerNumber: number,
@@ -185,11 +186,40 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
      * updates the Status of the Step depending on whether the Gesuch is a Mutation or not
      */
     protected updateWizardStepStatus(): Promise<void> {
+        const status = this.isFinSitOk() ? TSWizardStepStatus.OK : TSWizardStepStatus.NOK;
         return this.gesuchModelManager.getGesuch().isMutation() ?
             this.wizardStepManager.updateCurrentWizardStepStatusMutiert() as Promise<void> :
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN,
-                TSWizardStepStatus.OK) as Promise<void>;
+                status) as Promise<void>;
+    }
+
+    private isFinSitOk(): boolean {
+        return this.isGemeinsam() ? this.isGs2Ok() : this.isStartOk();
+    }
+
+    private isGs2Ok(): boolean {
+        const gs2 = this.getGesuch().gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA;
+        const isGs2Ok = gs2.steuerveranlagungErhalten ?
+            EbeguUtil.areAllNotNullOrUndefined(gs2.nettolohn,
+                gs2.unterhaltsBeitraege,
+                gs2.abzuegeKinderAusbildung,
+                gs2.steuerbaresVermoegen) :
+            EbeguUtil.isNotNullOrUndefined(gs2.bruttoLohn);
+        return isGs2Ok;
+    }
+
+    private isStartOk(): boolean {
+        const finanzielleSituationJA = this.getModel().finanzielleSituationJA;
+        const isStartOk = finanzielleSituationJA.steuerveranlagungErhalten ?
+            EbeguUtil.areAllNotNullOrUndefined(
+                finanzielleSituationJA.nettolohn,
+                finanzielleSituationJA.unterhaltsBeitraege,
+                finanzielleSituationJA.abzuegeKinderAusbildung,
+                finanzielleSituationJA.steuerbaresVermoegen,
+            ) :
+            EbeguUtil.isNotNullOrUndefined(finanzielleSituationJA.bruttoLohn);
+        return isStartOk;
     }
 
     public hasSteuerveranlagungErhalten(): boolean {

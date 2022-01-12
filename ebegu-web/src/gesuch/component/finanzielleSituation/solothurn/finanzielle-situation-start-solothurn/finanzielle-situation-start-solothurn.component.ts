@@ -4,7 +4,6 @@ import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSF
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
-import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
@@ -27,7 +26,7 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
 
     public constructor(
         public gesuchModelManager: GesuchModelManager,
-        protected wizardStepManager: WizardStepManager,
+        protected wizardStepManager: WizardStepManager
     ) {
         super(gesuchModelManager, wizardStepManager, 1);
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN,
