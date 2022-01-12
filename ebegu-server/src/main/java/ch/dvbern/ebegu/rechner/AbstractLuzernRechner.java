@@ -25,6 +25,7 @@ import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 
 public abstract class AbstractLuzernRechner extends AbstractRechner {
@@ -112,7 +113,10 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 	}
 
 	private BigDecimal calculateEffektiveBetreuungszeiteinheitenProMonat() {
-		return EXACT.multiply(getAnzahlZeiteinheitenProMonat(), BigDecimal.valueOf(0.01), betreuungsgutscheinPensumProzent);
+		BigDecimal anteilMonat = DateUtil.calculateAnteilMonatInklWeekend(
+			this.input.getParent().getGueltigkeit().getGueltigAb(),
+			this.input.getParent().getGueltigkeit().getGueltigBis());
+		return EXACT.multiply(getAnzahlZeiteinheitenProMonat(), BigDecimal.valueOf(0.01), betreuungsgutscheinPensumProzent, anteilMonat);
 	}
 
 	private BigDecimal calculateGutscheinProTagVorZuschlagUndSelbstbehalt(BigDecimal gutscheinProTagAufgrundEinkommen) {

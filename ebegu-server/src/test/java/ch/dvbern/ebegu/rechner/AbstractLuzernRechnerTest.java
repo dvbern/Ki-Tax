@@ -30,7 +30,7 @@ import org.junit.Assert;
 
 public class AbstractLuzernRechnerTest extends AbstractBGRechnerTest {
 
-	protected final DateRange dateRangeFebruary = new DateRange(
+	protected final DateRange dateRangePartFebruary = new DateRange(
 		LocalDate.of(2019, Month.FEBRUARY, 10),
 		LocalDate.of(2019, Month.FEBRUARY, 28));
 
@@ -43,8 +43,8 @@ public class AbstractLuzernRechnerTest extends AbstractBGRechnerTest {
 
 		Verfuegung verfuegung = prepareVerfuegungKita(
 			geburtstag,
-			dateRangeFebruary.getGueltigAb(),
-			dateRangeFebruary.getGueltigBis(),
+			testValues.gueltigkeit.getGueltigAb(),
+			testValues.gueltigkeit.getGueltigBis(),
 			EinschulungTyp.VORSCHULALTER,
 			false,
 			testValues.einkommen,
@@ -89,5 +89,9 @@ public class AbstractLuzernRechnerTest extends AbstractBGRechnerTest {
 		protected BigDecimal expectedElternbeitrag = BigDecimal.ZERO;
 		protected BigDecimal expectedMinimalerElternbeitrag = BigDecimal.ZERO;
 		protected BigDecimal expectedBetreuungsTage = BigDecimal.ZERO;
+
+		protected DateRange gueltigkeit = new DateRange(
+			LocalDate.of(2019, Month.AUGUST, 1),
+			LocalDate.of(2019, Month.AUGUST, 31));;
 	}
 }
