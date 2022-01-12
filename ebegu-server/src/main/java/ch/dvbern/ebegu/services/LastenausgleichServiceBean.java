@@ -424,6 +424,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		detail.setKorrektur(true);
 		detail.setTotalBelegungenOhneSelbstbehalt(detail.getTotalBelegungenOhneSelbstbehalt().negate());
 		detail.setTotalBetragGutscheineOhneSelbstbehalt(detail.getTotalBetragGutscheineOhneSelbstbehalt().negate());
+		detail.setKostenFuerSelbstbehalt(detail.getKostenFuerSelbstbehalt().negate());
 		return detail;
 	}
 
