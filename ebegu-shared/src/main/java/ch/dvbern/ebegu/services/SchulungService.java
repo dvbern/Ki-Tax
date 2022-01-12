@@ -15,18 +15,20 @@
 
 package ch.dvbern.ebegu.services;
 
+import ch.dvbern.ebegu.entities.Mandant;
+
 /**
  * Service fuer erstellen und mutieren von Schulungsdaten
  */
 public interface SchulungService {
 
-	void resetSchulungsdaten();
+	void resetSchulungsdaten(Mandant mandant);
 
-	void deleteSchulungsdaten();
+	void deleteSchulungsdaten(Mandant mandant);
 
-	void createSchulungsdaten();
+	void createSchulungsdaten(Mandant mandant);
 
 	String[] getSchulungBenutzer();
 
-	void createTutorialdaten();
+	void createTutorialdaten(Mandant mandant);
 }

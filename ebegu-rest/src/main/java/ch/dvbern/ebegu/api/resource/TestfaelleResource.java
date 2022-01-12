@@ -97,7 +97,8 @@ public class TestfaelleResource {
 		@PathParam("verfuegen") boolean verfuegen) {
 
 		assertTestfaelleAccessAllowed();
-		StringBuilder responseString = testfaelleService.createAndSaveTestfaelle(fallid,
+		StringBuilder responseString = testfaelleService.createAndSaveTestfaelle(Objects.requireNonNull(principal.getMandant()),
+			fallid,
 			betreuungenBestaetigt,
 			verfuegen,
 			gesuchsperiodeId,
@@ -201,7 +202,7 @@ public class TestfaelleResource {
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Response resetSchulungsdaten() {
 		assertTestfaelleAccessAllowed();
-		schulungService.resetSchulungsdaten();
+		schulungService.resetSchulungsdaten(Objects.requireNonNull(principal.getMandant()));
 		return Response.ok("Schulungsdaten zurückgesetzt").build();
 	}
 
@@ -213,7 +214,7 @@ public class TestfaelleResource {
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Response deleteSchulungsdaten() {
 		assertTestfaelleAccessAllowed();
-		schulungService.deleteSchulungsdaten();
+		schulungService.deleteSchulungsdaten(Objects.requireNonNull(principal.getMandant()));
 		return Response.ok("Schulungsdaten gelöscht").build();
 	}
 
@@ -225,7 +226,7 @@ public class TestfaelleResource {
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Response createSchulungsdaten() {
 		assertTestfaelleAccessAllowed();
-		schulungService.createSchulungsdaten();
+		schulungService.createSchulungsdaten(Objects.requireNonNull(principal.getMandant()));
 		return Response.ok("Schulungsdaten erstellt").build();
 	}
 
@@ -237,7 +238,7 @@ public class TestfaelleResource {
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Response createTutorialdaten() {
 		assertTestfaelleAccessAllowed();
-		schulungService.createTutorialdaten();
+		schulungService.createTutorialdaten(Objects.requireNonNull(principal.getMandant()));
 		return Response.ok("Tutorialdaten erstellt").build();
 	}
 
@@ -264,7 +265,7 @@ public class TestfaelleResource {
 
 		assertTestfaelleAccessAllowed();
 
-		testfaelleService.testAllMails(mailadresse);
+		testfaelleService.testAllMails(mailadresse, Objects.requireNonNull(principal.getMandant()));
 		return Response.ok().build();
 	}
 

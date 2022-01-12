@@ -113,7 +113,13 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 						resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
 				}
 				handleAnpassungErweiterteBeduerfnisse(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
+
 				handleEinreichfrist(inputAsiv, mutationsEingansdatum);
+
+				if (platz.isAngebotSchulamt() && platz.hasVorgaenger() && inputAsiv.isZuSpaetEingereicht()) {
+					inputAsiv.setZuSpaetEingereicht(vorangehenderAbschnitt.isZuSpaetEingereicht());
+				}
+
 				handleAnpassungAnspruch(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
 
 				BGCalculationInput inputGemeinde = verfuegungZeitabschnitt.getBgCalculationInputGemeinde();

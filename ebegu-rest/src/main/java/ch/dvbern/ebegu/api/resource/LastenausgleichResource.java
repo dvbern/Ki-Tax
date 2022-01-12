@@ -148,6 +148,8 @@ public class LastenausgleichResource {
 			lastenausgleichService.createLastenausgleich(jahr, selbstbehaltPro100ProzentPlatz,
 					Objects.requireNonNull(principalBean.getMandant()));
 
+		lastenausgleichService.sendEmailsToGemeinden(lastenausgleich);
+
 		return converter.lastenausgleichToJAX(lastenausgleich);
 	}
 

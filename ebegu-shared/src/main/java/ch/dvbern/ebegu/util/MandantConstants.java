@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,28 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.ws.ewk.sts;
-
-import oasis.names.tc.saml._1_0.assertion.AssertionType;
+package ch.dvbern.ebegu.util;
 
 /**
- * DTO Klasse fuer die Assertion und das Renew Token welches aus dem STS Service zurueckkommt
+ * Interface fuer Konstanten zu den Mandanten.
  */
-public class STSWebServiceResult {
-	private final String renewalToken;
-	private final AssertionType assertion;
+public final class MandantConstants {
 
-	public STSWebServiceResult(AssertionType assertion, String renewalToken) {
-
-		this.assertion = assertion;
-		this.renewalToken = renewalToken;
-	}
-
-	public String getRenewalToken() {
-		return renewalToken;
-	}
-
-	public AssertionType getAssertion() {
-		return assertion;
-	}
+	public static final String MANDANT_BE = "e3736eb8-6eef-40ef-9e52-96ab48d8f220";
+	public static final String MANDANT_LU = "485d7483-30a2-11ec-a86f-b89a2ae4a038";
+	public static final String MANDANT_SO = "7781a6bb-5374-11ec-98e8-f4390979fa3e";
 }

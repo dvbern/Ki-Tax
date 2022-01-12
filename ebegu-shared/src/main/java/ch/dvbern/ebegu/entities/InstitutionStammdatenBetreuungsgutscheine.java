@@ -42,7 +42,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -175,6 +174,17 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	@NotNull
 	@Column(nullable = false)
 	private boolean uebernachtungMoeglich = false;
+
+	@Nullable
+	@Column(nullable = true)
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	private String infomaKreditorennummer;
+
+	@Nullable
+	@Column(nullable = true)
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	private String infomaBankcode;
+
 
 	public InstitutionStammdatenBetreuungsgutscheine() {
 	}
@@ -440,5 +450,23 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 
 	public void setUebernachtungMoeglich(boolean uebernachtungMoeglich) {
 		this.uebernachtungMoeglich = uebernachtungMoeglich;
+	}
+
+	@Nullable
+	public String getInfomaKreditorennummer() {
+		return infomaKreditorennummer;
+	}
+
+	public void setInfomaKreditorennummer(@Nullable String infomaKreditorennummer) {
+		this.infomaKreditorennummer = infomaKreditorennummer;
+	}
+
+	@Nullable
+	public String getInfomaBankcode() {
+		return infomaBankcode;
+	}
+
+	public void setInfomaBankcode(@Nullable String infomaBankcode) {
+		this.infomaBankcode = infomaBankcode;
 	}
 }

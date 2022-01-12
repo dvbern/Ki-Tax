@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+	Copyright (c) 2004 DV Bern AG, Switzerland
+	
+	Das vorliegende Dokument, einschliesslich aller seiner Teile, ist urheberrechtlich
+	geschützt. Jede Verwertung ist ohne Zustimmung der DV Bern AG unzulässig. Dies gilt
+	insbesondere für Vervielfältigungen, die Einspeicherung und Verarbeitung in
+	elektronischer Form. Wird das Dokument einem Kunden im Rahmen der Projektarbeit zur
+	Ansicht übergeben ist jede weitere Verteilung durch den Kunden an Dritte untersagt.
+-->
+
+<xs:schema
+		targetNamespace="http://sv.fin.be.ch/schemas/A7V/20070710/EvasNpCommon"
+		xmlns:tns="http://sv.fin.be.ch/schemas/A7V/20070710/EvasNpCommon"
+		xmlns:exc="http://sv.fin.be.ch/schemas/base/20070131/ExceptionInfo"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		elementFormDefault="qualified"
+		xmlns:xhtml="http://www.w3.org/1999/xhtml"
+		attributeFormDefault="unqualified" version="0.1">
+
+	<xs:import
+			namespace="http://sv.fin.be.ch/schemas/base/20070131/ExceptionInfo"
+			schemaLocation="ExceptionInfo.xsd"/>
+
+	<xs:complexType name="ObjectNotFoundFault">
+		<xs:complexContent mixed="false">
+			<xs:extension base="exc:BusinessFault">
+				<xs:sequence>
+					<xs:element name="Ids" type="xs:string"
+								minOccurs="1" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>
+								Die ID's welche nicht gefunden wurden.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="DuplicateKeyFault">
+		<xs:complexContent mixed="false">
+			<xs:extension base="exc:BusinessFault"></xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="BasisEntitaet" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				Basistyp für die Evas Np Entitäten
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ErstelltUm" type="xs:dateTime">
+				<xs:annotation>
+					<xs:documentation>
+						Zeitpunkt der Erstellung
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ErstelltVon" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>
+						User ID des Erstellers
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="BasisEntitaetLoeschbar" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				Basistyp für die Evas Np Entitäten welche nur logisch
+				gelöscht werden. Das heisst die Entität wird nur als
+				gelöscht markiert.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="tns:BasisEntitaet">
+				<xs:sequence>
+					<xs:element name="GeloeschtUm" type="xs:dateTime"
+								maxOccurs="1" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Zeitpunkt der Löschung
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="GeloeschtVon" type="xs:string"
+								maxOccurs="1" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								User ID des Benutzers, der die Entität
+								gelöscht hat
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="BasisZeitraumEntitaet" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				Basistyp für die Evas Np Entitäten mit einem Zeitraum
+				gültig von - bis.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="tns:BasisEntitaet">
+				<xs:sequence>
+					<xs:element name="GueltigAb" type="xs:date">
+						<xs:annotation>
+							<xs:documentation>
+								Beginn der fachlichen Gültigkeit der
+								Entität
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="GueltigBis" type="xs:date">
+						<xs:annotation>
+							<xs:documentation>
+								Ende der fachlichen Gültigkeit der
+								Entität
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="BasisZeitraumEntitaetLoeschbar"
+					abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				Basistyp für die Evas Np Entitäten mit einem Zeitraum
+				gültig von - bis. Die Entität wird nur logisch gelöscht,
+				das heisst die Entität wird nur als gelöscht markiert.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="tns:BasisZeitraumEntitaet">
+				<xs:sequence>
+					<xs:element name="GeloeschtUm" type="xs:dateTime"
+								maxOccurs="1" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Zeitpunkt der Löschung
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="GeloeschtVon" type="xs:string"
+								maxOccurs="1" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								User ID des Benutzers, der die Entität
+								gelöscht hat
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="Textblock">
+		<xs:annotation>
+			<xs:documentation>
+				Ein Textblock enthält sprachabhänge Texte.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="tns:BasisEntitaetLoeschbar">
+				<xs:sequence>
+					<xs:element name="Id" type="xs:int">
+						<xs:annotation>
+							<xs:documentation>
+								Id für eine Gruppe von Sprache
+								Textblöcken
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Sprache" type="xs:language">
+						<xs:annotation>
+							<xs:documentation>
+								Die Sprache in welchem die Text
+								festgehalten sind.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Bezeichnung" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Bezeichung eines Objektes
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Beschreibung" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Beschreibung eines Objektes
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="Benutzer">
+		<xs:annotation>
+			<xs:documentation>Der Benutzer</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Id" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>
+						Die Identifikation des Benutzer
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>
+						Der Name des Benutzer
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Vorname" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>
+						Der Vorname des Benutzer
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Code">
+		<xs:annotation>
+			<xs:documentation>
+				Der Code. Die Sprachabhängigen Texte Bezeichnung und
+				Beschreibung sind nicht in diesem Objekt enthalten.
+
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="tns:BasisEntitaetLoeschbar">
+				<xs:sequence>
+					<xs:element name="Typ" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der Code-Typ.
+								<!-- siehe ch.dvbern.stvbe.neskovanp.basis.shared.code.CodeTyp	-->
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Id" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Identifikation des Codes
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="TextblockId" type="xs:int">
+						<xs:annotation>
+							<xs:documentation>
+								Die Textblock Identifikation
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="IconName" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der Icon Name
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="CodeWert">
+		<xs:annotation>
+			<xs:documentation>
+				Der Code mit allen Werten sowie den Sprachabhängigen
+				Bezeichnung und Beschreibung.
+				<xhtml:br/>
+				Der CodeWert kennt keine Textblöcke und enthält somit
+				immer nur Texte in einer Sprache.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="tns:BasisEntitaetLoeschbar">
+				<xs:sequence>
+					<xs:element name="Typ" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der Code-Typ.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Id" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Identifikation des Codes
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="TextblockId" type="xs:int">
+						<xs:annotation>
+							<xs:documentation>
+								Die Textblock Identifikation
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Sprache" type="xs:language">
+						<xs:annotation>
+							<xs:documentation>
+								Die Sprache in welchem die Bezeichnung
+								und Beschreibung festgehalten sind.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="IconName" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der Icon Name
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Bezeichnung" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Bezeichung eines Objektes
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Beschreibung" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Beschreibung eines Objektes
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="Team">
+		<xs:annotation>
+			<xs:documentation xml:lang="de">
+				Ein Team (aus der Benutzerverwaltung)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Id" type="xs:int">
+				<xs:annotation>
+					<xs:documentation xml:lang="de">
+						Die ID
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation xml:lang="de">
+						Der Name
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Anwendergruppe">
+		<xs:annotation>
+			<xs:documentation xml:lang="de">
+				Eine Anwendergruppe (aus der Benutzerverwaltung)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Id" type="xs:int">
+				<xs:annotation>
+					<xs:documentation xml:lang="de">
+						Die ID
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation xml:lang="de">
+						Der Name
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Bereich">
+		<xs:annotation>
+			<xs:documentation xml:lang="de">
+				Ein Bereich (aus der Benutzerverwaltung)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Id" type="xs:int">
+				<xs:annotation>
+					<xs:documentation xml:lang="de">
+						Die ID
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation xml:lang="de">
+						Der Name
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Gemeinde">
+		<xs:annotation>
+			<xs:documentation xml:lang="de">
+				Eine Gemeinde
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="GemeindeNr" type="xs:int">
+				<xs:annotation>
+					<xs:documentation xml:lang="de">
+						Die LEIV Gemeindenummer
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation xml:lang="de">
+						Der Name der Gemeinde
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Kanton">
+		<xs:annotation>
+			<xs:documentation>Daten eines Kanton</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="KantonNr" type="xs:int">
+				<xs:annotation>
+					<xs:documentation>
+						Die Kantonnummer
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Kurzzeichen" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>
+						Kurzzeichen des Kanton (die 2 ersten Buchstaben)
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Name des Kanton</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="StandardCode">
+		<xs:annotation>
+			<xs:documentation xml:lang="de">
+				Ein Code mit einer Beschreibung
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CodeTyp" type="xs:string">
+				<xs:annotation>
+					<xs:documentation xml:lang="de">
+						Der CodeTyp
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CodeWert" type="xs:string">
+				<xs:annotation>
+					<xs:documentation xml:lang="de">
+						Der Wert des Codes
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Beschreibung" type="xs:string">
+				<xs:annotation>
+					<xs:documentation xml:lang="de">
+						Die Beschreibung des Codes
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Status">
+		<xs:annotation>
+			<xs:documentation xml:lang="de">
+				Ein Status
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Code" type="xs:string">
+				<xs:annotation>
+					<xs:documentation xml:lang="de">
+						Der Code des Status
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Bezeichnung" type="xs:string">
+				<xs:annotation>
+					<xs:documentation xml:lang="de">
+						Die Bezeichnung zum Status
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GeaendertAm" type="xs:date"
+						minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="de">
+						Datum, an dem der aktuelle Status gesetzt wurde
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="BasisAnsichtEntitaet" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				Basistyp für die Evas Np Auskunft Entitäten
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ErstelltUm" type="xs:dateTime">
+				<xs:annotation>
+					<xs:documentation>
+						Zeitpunkt der Erstellung
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ErstelltVon" type="tns:Benutzer">
+				<xs:annotation>
+					<xs:documentation>
+						Ersteller
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="BasisAnsichtZeitraumEntitaet" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				Basistyp für die Evas Np Entitäten mit einem Zeitraum
+				gültig von - bis.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="tns:BasisAnsichtEntitaet">
+				<xs:sequence>
+					<xs:element name="GueltigAb" type="xs:date">
+						<xs:annotation>
+							<xs:documentation>
+								Beginn der fachlichen Gültigkeit der
+								Entität
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="GueltigBis" type="xs:date">
+						<xs:annotation>
+							<xs:documentation>
+								Ende der fachlichen Gültigkeit der
+								Entität
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+</xs:schema>

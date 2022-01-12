@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.testfaelle;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Collection;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -34,7 +33,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
@@ -52,13 +50,12 @@ public class Testfall_Sozialdienst extends AbstractTestfall {
 	private final Sozialdienst sozialdienst;
 
 	public Testfall_Sozialdienst(
-		Gesuchsperiode gesuchsperiode,
-		Collection<InstitutionStammdaten> institutionStammdatenList,
-		boolean betreuungenBestaetigt,
-		Gemeinde gemeinde,
-		@Nonnull Sozialdienst sozialdienst
-	) {
-		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
+			Gesuchsperiode gesuchsperiode,
+			boolean betreuungenBestaetigt,
+			Gemeinde gemeinde,
+			@Nonnull Sozialdienst sozialdienst,
+			InstitutionStammdatenBuilder institutionStammdatenBuilder) {
+		super(gesuchsperiode, betreuungenBestaetigt, gemeinde, institutionStammdatenBuilder);
 		this.sozialdienst = sozialdienst;
 	}
 
@@ -101,14 +98,14 @@ public class Testfall_Sozialdienst extends AbstractTestfall {
 		gesuch.getKindContainers().add(kind);
 		// Betreuungen
 		// Kita Weissenstein
-		Betreuung betreuungKitaAaregg = createBetreuung(ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA, betreuungenBestaetigt);
+		Betreuung betreuungKitaAaregg = createBetreuung(institutionStammdatenBuilder.getIdInstitutionStammdatenWeissenstein(), betreuungenBestaetigt);
 		betreuungKitaAaregg.setKind(kind);
 		kind.getBetreuungen().add(betreuungKitaAaregg);
 		BetreuungspensumContainer betreuungspensumKitaAaregg = createBetreuungspensum(80, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.AUGUST, 1), LocalDate.of(gesuchsperiode.getBasisJahrPlus2(), Month.JANUARY, 31));
 		betreuungspensumKitaAaregg.setBetreuung(betreuungKitaAaregg);
 		betreuungKitaAaregg.getBetreuungspensumContainers().add(betreuungspensumKitaAaregg);
 		// Kita Brünnen
-		Betreuung betreuungKitaBruennen = createBetreuung(ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA, betreuungenBestaetigt);
+		Betreuung betreuungKitaBruennen = createBetreuung(institutionStammdatenBuilder.getIdInstitutionStammdatenBruennen(), betreuungenBestaetigt);
 		betreuungKitaBruennen.setBetreuungNummer(2);
 		betreuungKitaBruennen.setKind(kind);
 		kind.getBetreuungen().add(betreuungKitaBruennen);

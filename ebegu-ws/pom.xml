@@ -18,7 +18,7 @@
     <parent>
         <artifactId>ebegu</artifactId>
         <groupId>ch.dvbern.ebegu</groupId>
-        <version>2021.18.1</version>
+        <version>2021.19.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -86,6 +86,25 @@
                                 <bindingFile>${basedir}/src/main/resources/wsdl/sts/jaxb-bindings-zonedTime.xjb</bindingFile>
                             </bindingFiles>
                         </configuration>
+                    </execution>
+                    <execution>
+                        <id>steuranbindung service generation</id>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+
+                        <configuration>
+                            <wsdlDirectory>${basedir}/src/main/resources/wsdl</wsdlDirectory>
+                            <wsdlFiles>
+                                <wsdlFile>neskovanp/kibonanfrage/KiBonAnfrageService.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <verbose>true</verbose>
+
+                            <bindingFiles>
+                                <bindingFile>${basedir}/src/main/resources/wsdl/jaxb-bindings.xjb</bindingFile>
+                            </bindingFiles>
+                        </configuration>
+
                     </execution>
                 </executions>
                 <configuration>

@@ -16,6 +16,8 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {TSFinanzielleSituationSelbstdeklaration} from '../../../../../models/TSFinanzielleSituationSelbstdeklaration';
 
 @Component({
     selector: 'dv-selbstdeklaration',
@@ -34,11 +36,17 @@ export class SelbstdeklarationComponent implements OnInit {
     @Input()
     public year: number | string;
 
+    @Input()
+    public model: TSFinanzielleSituationContainer;
+
     public constructor(
     ) {
     }
 
     public ngOnInit(): void {
+        if (!this.model.finanzielleSituationJA.selbstdeklaration) {
+            this.model.finanzielleSituationJA.selbstdeklaration = new TSFinanzielleSituationSelbstdeklaration();
+        }
     }
 
 }
