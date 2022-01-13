@@ -99,6 +99,7 @@ describe('wizardStepManager', () => {
             expect(wizardStepManager.getAllowedSteps()[10]).toBe(TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN);
             expect(wizardStepManager.getAllowedSteps()[11]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
             expect(wizardStepManager.getAllowedSteps()[12]).toBe(TSWizardStepName.DOKUMENTE);
+            // tslint:disable-next-line:no-magic-numbers
             expect(wizardStepManager.getAllowedSteps()[13]).toBe(TSWizardStepName.FREIGABE);
             // tslint:disable-next-line:no-magic-numbers
             expect(wizardStepManager.getAllowedSteps()[14]).toBe(TSWizardStepName.VERFUEGEN);

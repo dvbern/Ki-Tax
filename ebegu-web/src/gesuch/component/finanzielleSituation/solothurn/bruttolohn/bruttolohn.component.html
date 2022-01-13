@@ -1,21 +1,12 @@
-<fieldset>
+<fieldset [disabled]="gesuchModelManager.isGesuchReadonly()">
 	<div class="row">
 		<div class="col-sm-6">
 			<div class="form-group">
-				<label class="required long-label" for="bruttolohn_id">
-					{{'FINANZIELLE_SITUATION_BRUTTOLOHN' | translate}}
-				</label>
-				<input id="bruttolohn_id" type="number"
-					   name="bruttoLohn"
-                       #bruttoLohn="ngModel"
-					   [(ngModel)]="model.finanzielleSituationJA.bruttoLohn"
-					   class="form-control"
-					   [disabled]="gesuchModelManager.isGesuchReadonlyForRole()"
-					   required>
-				<dv-error-messages
-						[errorObject]="bruttoLohn.errors"
-						inputId="bruttolohn_id">
-				</dv-error-messages>
+				<dv-input-label-field
+						[name]="'bruttoLohn'"
+						[(model)]="model.finanzielleSituationJA.bruttoLohn"
+						[labelMessageKey]="'FINANZIELLE_SITUATION_BRUTTOLOHN'"
+						[inputRequired]="true"></dv-input-label-field>
 				<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.bruttoLohn"
 							 [korrektur]="model.finanzielleSituationJA.bruttoLohn"
 							 [showIfBisherNone]="isNotNullOrUndefined(model.finanzielleSituationGS)"></dv-bisher-x>
