@@ -18,6 +18,8 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzielleSituationSelbstdeklaration} from '../../../../../models/TSFinanzielleSituationSelbstdeklaration';
+import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
 
 @Component({
     selector: 'dv-selbstdeklaration',
@@ -39,7 +41,14 @@ export class SelbstdeklarationComponent implements OnInit {
     @Input()
     public model: TSFinanzielleSituationContainer;
 
+    @Input()
+    public readOnly: boolean = false;
+
+    @Input()
+    public finanzModel: TSFinanzModel;
+
     public constructor(
+        private readonly finSitLuService: FinanzielleSituationLuzernService
     ) {
     }
 
@@ -47,6 +56,10 @@ export class SelbstdeklarationComponent implements OnInit {
         if (!this.model.finanzielleSituationJA.selbstdeklaration) {
             this.model.finanzielleSituationJA.selbstdeklaration = new TSFinanzielleSituationSelbstdeklaration();
         }
+    }
+
+    public onValueChangeFunction = (): void => {
+        this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
     }
 
 }

@@ -14,27 +14,20 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
+<input id="{{inputId}}"
+       type="text"
+	   [name]="name"
+       #inputField="ngModel"
+	   [ngModelOptions]="{updateOn: 'blur'}"
+       [ngModel]="model | ebeguNumber"
+       (input)="valueHasChange($event)"
+       (blur)="onBlur($event)"
+       [required]="required"
+       [disabled]="disabled"
+       [pattern]="getInputValidationPattern()"
+       class="form-control">
 
-
-<div class="form-group">
-    <label class="md-no-float {{getRequiredCssClass()}}" >
-        <span >{{labelMessageKey | translate:labelMessageKeyArgs}}</span>
-        <dv-tooltip *ngIf="tooltipMessageKey"
-                    [text]="tooltipMessageKey | translate:tooltipMessageKeyArgs">
-        </dv-tooltip>
-    </label>
-    <div class="dv-input-container-medium-select">
-        <dv-valueinput-x
-            [inputId]="inputId"
-            [model]="model"
-            [name]="name"
-            (modelChange)="valueHasChange($event)"
-            [required]="inputRequired"
-            [disabled]="inputDisabled"
-            [dvOnBlur]="dvOnBlur">
-        </dv-valueinput-x>
-    </div>
-
-</div>
-
-
+<dv-error-messages
+    inputId="{{inputId}}"
+    [errorObject]="inputField.errors">
+</dv-error-messages>

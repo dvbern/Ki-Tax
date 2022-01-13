@@ -21,13 +21,17 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {MaterialModule} from '../../../../../app/shared/material.module';
 import {SharedModule} from '../../../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {VeranlagungComponent} from './veranlagung.component';
 
 describe('VeranlagungComponent', () => {
     let component: VeranlagungComponent;
     let fixture: ComponentFixture<VeranlagungComponent>;
+    const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name, ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
+    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -39,6 +43,7 @@ describe('VeranlagungComponent', () => {
             ],
             providers: [
                 {provide: NgForm, useValue: new NgForm([], [])},
+                {provide: BerechnungsManager, useValue: berechnungsManagerSpy}
             ],
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
