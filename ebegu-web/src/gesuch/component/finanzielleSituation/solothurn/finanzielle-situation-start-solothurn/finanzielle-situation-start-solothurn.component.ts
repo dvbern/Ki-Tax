@@ -5,6 +5,7 @@ import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractFinSitsolothurnView} from '../AbstractFinSitsolothurnView';
@@ -13,7 +14,6 @@ import {FinanzielleSituationSolothurnService} from '../finanzielle-situation-sol
 @Component({
     selector: 'dv-finanzielle-situation-start-solothurn',
     templateUrl: './finanzielle-situation-solothurn.component.html',
-    styleUrls: ['./finanzielle-situation-start-solothurn.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSitsolothurnView {
@@ -84,21 +84,21 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
     public finanzielleSituationRequiredChange(finanzielleSituationRequired: boolean): void {
         this.finanzielleSituationRequired = finanzielleSituationRequired;
         // tslint:disable-next-line:early-exit
-        if (finanzielleSituationRequired === false) {
+        if (EbeguUtil.isNotNullAndFalse(finanzielleSituationRequired)) {
             this.resetVeranlagungSolothurn();
             this.resetBruttoLohn();
         }
     }
 
     public steuerveranlagungErhaltenChange(steuerveranlagungErhalten: boolean): void {
-        if (steuerveranlagungErhalten === true) {
+        if (EbeguUtil.isNotNullAndTrue(steuerveranlagungErhalten)) {
             this.resetBruttoLohn();
             if (this.isGemeinsam()) {
                 this.resetBruttoLohnGS2();
             }
         }
         // tslint:disable-next-line:early-exit
-        if (steuerveranlagungErhalten === false) {
+        if (EbeguUtil.isNotNullAndFalse(steuerveranlagungErhalten)) {
             this.resetVeranlagungSolothurn();
             if (this.isGemeinsam()) {
                 this.resetVeranlagungSolothurnGS2();

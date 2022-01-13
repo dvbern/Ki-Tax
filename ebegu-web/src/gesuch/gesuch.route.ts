@@ -29,7 +29,6 @@ import {FinanzielleSituationStartSolothurnComponent} from './component/finanziel
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
 import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {ResultateComponent} from './component/finanzielleSituation/luzern/resultate/resultate.component';
-import {VeranlagungSolothurnComponent} from './component/finanzielleSituation/solothurn/veranlagung/veranlagung-solothurn.component';
 import {GesuchRouteController} from './gesuch';
 import {BerechnungsManager} from './service/berechnungsManager';
 import {GesuchModelManager} from './service/gesuchModelManager';

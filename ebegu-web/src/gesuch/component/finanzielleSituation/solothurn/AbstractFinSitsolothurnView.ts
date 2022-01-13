@@ -15,7 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectorRef} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
 import {IPromise} from 'angular';

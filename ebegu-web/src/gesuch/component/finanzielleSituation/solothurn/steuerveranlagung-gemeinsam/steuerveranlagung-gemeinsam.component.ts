@@ -6,7 +6,6 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 @Component({
   selector: 'dv-steuerveranlagung-gemeinsam',
   templateUrl: './steuerveranlagung-gemeinsam.component.html',
-  styleUrls: ['./steuerveranlagung-gemeinsam.component.less'],
   changeDetection: ChangeDetectionStrategy.Default,
   viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })

@@ -7,7 +7,6 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 @Component({
   selector: 'dv-bruttolohn',
   templateUrl: './bruttolohn.component.html',
-  styleUrls: ['./bruttolohn.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })

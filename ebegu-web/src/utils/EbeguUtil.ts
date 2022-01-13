@@ -224,7 +224,7 @@ export class EbeguUtil {
     public static areAllNotNullOrUndefined(
         ...args: any[]
     ): boolean {
-        for (const datum in args) {
+        for (const datum of args) {
             if (EbeguUtil.isNullOrUndefined(datum)) {
                 return false;
             }

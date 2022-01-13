@@ -24,7 +24,6 @@ import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
 import {AngabenGs1Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs1/angaben-gs1.component';
 import {AngabenGs2Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs2/angaben-gs2.component';
-import {BerechnungSteuerveranlagungSoComponent} from './component/finanzielleSituation/solothurn/angaben/berechnung-steuerveranlagung-so.component';
 import {BruttolohnComponent} from './component/finanzielleSituation/solothurn/bruttolohn/bruttolohn.component';
 import {FinanzielleSituationStartSolothurnComponent} from './component/finanzielleSituation/solothurn/finanzielle-situation-start-solothurn/finanzielle-situation-start-solothurn.component';
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
@@ -65,7 +64,6 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
         VeranlagungComponent,
         ResultatComponent,
         VeranlagungSolothurnComponent,
-        BerechnungSteuerveranlagungSoComponent,
         SteuerveranlagungErhaltenComponent,
         BruttolohnComponent,
         SteuerveranlagungGemeinsamComponent,

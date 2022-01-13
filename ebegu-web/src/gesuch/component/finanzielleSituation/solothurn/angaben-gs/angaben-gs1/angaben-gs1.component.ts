@@ -2,6 +2,7 @@ import {Component, ChangeDetectionStrategy, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TSFinanzielleSituationSubStepName} from '../../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSFinanzielleSituationContainer} from '../../../../../../models/TSFinanzielleSituationContainer';
+import {EbeguUtil} from '../../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../../service/wizardStepManager';
 import {AbstractFinSitsolothurnView} from '../../AbstractFinSitsolothurnView';
@@ -53,11 +54,11 @@ export class AngabenGs1Component extends AbstractFinSitsolothurnView {
     }
 
     public steuerveranlagungErhaltenChange(steuerveranlagungErhalten: boolean): void {
-        if (steuerveranlagungErhalten === true) {
+        if (EbeguUtil.isNotNullAndTrue(steuerveranlagungErhalten)) {
             this.resetBruttoLohn();
         }
         // tslint:disable-next-line:early-exit
-        if (steuerveranlagungErhalten === false) {
+        if (EbeguUtil.isNotNullAndFalse(steuerveranlagungErhalten)) {
             this.resetVeranlagungSolothurn();
         }
     }

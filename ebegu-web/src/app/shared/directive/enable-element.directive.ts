@@ -20,8 +20,8 @@ export class EnableElementDirective implements OnChanges {
     @Input() public enableExpression: boolean = true;
 
     public constructor(
-        private el: ElementRef,
-        private authService: AuthServiceRS,
+        private readonly el: ElementRef,
+        private readonly authService: AuthServiceRS,
         @Optional() @Self() public ngControl: NgControl,
     ) {
     }
