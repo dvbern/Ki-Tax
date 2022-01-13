@@ -467,8 +467,8 @@ public class MutationsMergerTest {
 	@Test
 	public void test_Mutation_erstGesuch_zu_spaet_keine_Bemerkung() {
 		// Zu spät eingereichtes Erstgesuch vorbereiten
-		Betreuung erstGesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, 2021, 2022);
-		erstGesuchBetreuung.extractGesuch().setEingangsdatum(LocalDate.of(2021, Month.AUGUST, 15));
+		Betreuung erstGesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
+		erstGesuchBetreuung.extractGesuch().setEingangsdatum(TestDataUtil.START_PERIODE.plusDays(15));
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstGesuchBetreuung);
 
 		Verfuegung verfuegungErstgesuch = new Verfuegung();
@@ -481,7 +481,7 @@ public class MutationsMergerTest {
 		Assert.assertTrue(verfuegungZeitabschnittAugust.isZuSpaetEingereicht());
 		Assert.assertEquals(0, verfuegungZeitabschnittAugust.getAnspruchberechtigtesPensum());
 
-		Betreuung mutation = prepareMutation(LocalDate.of(2021, Month.OCTOBER, 1), 2020, 2021);
+		Betreuung mutation = prepareMutation(TestDataUtil.START_PERIODE.plusMonths(2));
 		mutation.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 
 		List<VerfuegungZeitabschnitt> zeitaschnitteMutation = EbeguRuleTestsHelper.calculate(mutation);
@@ -493,7 +493,7 @@ public class MutationsMergerTest {
 	}
 
 	private Verfuegung prepareErstGesuchVerfuegung() {
-		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, 2021, 2022);
+		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstgesuchBetreuung);
 		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteErstgesuch =
@@ -661,15 +661,6 @@ public class MutationsMergerTest {
 	@Nonnull
 	private Betreuung prepareMutation(@Nonnull LocalDate eingangsdatumMuation) {
 		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
-		mutierteBetreuung.extractGesuch().setEingangsdatum(eingangsdatumMuation);
-		mutierteBetreuung.initVorgaengerVerfuegungen(null, null);
-
-		return mutierteBetreuung;
-	}
-
-	@Nonnull
-	private Betreuung prepareMutation(@Nonnull LocalDate eingangsdatumMuation, int startYear, int endYear) {
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION, startYear, endYear);
 		mutierteBetreuung.extractGesuch().setEingangsdatum(eingangsdatumMuation);
 		mutierteBetreuung.initVorgaengerVerfuegungen(null, null);
 
