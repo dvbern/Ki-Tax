@@ -28,10 +28,10 @@ import {GesuchModelManager} from '../../../service/gesuchModelManager';
 })
 export class FinanzielleSituationLuzernService {
 
-    private _massgebendesEinkommenStore: Subject<TSFinanzielleSituationResultateDTO> = new ReplaySubject(1);
+    private readonly _massgebendesEinkommenStore: Subject<TSFinanzielleSituationResultateDTO> = new ReplaySubject(1);
 
     public constructor(
-        private berechnungsManager: BerechnungsManager,
+        private readonly berechnungsManager: BerechnungsManager,
     ) {
     }
 

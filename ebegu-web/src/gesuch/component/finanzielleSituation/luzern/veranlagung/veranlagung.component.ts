@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
@@ -48,7 +48,7 @@ export class VeranlagungComponent implements OnInit {
     public finanzModel: TSFinanzModel;
 
     public constructor(
-        private finSitLuService: FinanzielleSituationLuzernService
+        private readonly finSitLuService: FinanzielleSituationLuzernService
     ) {
     }
 

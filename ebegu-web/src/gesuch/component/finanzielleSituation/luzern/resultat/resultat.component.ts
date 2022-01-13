@@ -22,10 +22,11 @@ import {
     Input,
     OnInit,
 } from '@angular/core';
+import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
-import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
-import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
+
+const LOG = LogFactory.createLog('ResultatComponent');
 
 @Component({
     selector: 'dv-resultat',
@@ -51,7 +52,7 @@ export class ResultatComponent implements OnInit {
 
     public constructor(
         protected ref: ChangeDetectorRef,
-        private finSitLuService: FinanzielleSituationLuzernService
+        private readonly finSitLuService: FinanzielleSituationLuzernService,
     ) {
     }
 
@@ -61,8 +62,9 @@ export class ResultatComponent implements OnInit {
 
     public setupCalculation(): void {
         this.finSitLuService.massgebendesEinkommenStore.subscribe(resultate => {
-            this.resultate = resultate;
-            this.ref.markForCheck(); }
+                this.resultate = resultate;
+                this.ref.markForCheck();
+            }, error => LOG.error(error),
         );
     }
 }

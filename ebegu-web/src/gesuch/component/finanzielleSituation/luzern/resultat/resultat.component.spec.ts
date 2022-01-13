@@ -29,6 +29,7 @@ describe('ResultatComponent', () => {
 
     const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name,
         ['calculateFinanzielleSituationTemp']);
+    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({

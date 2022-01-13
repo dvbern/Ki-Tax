@@ -48,7 +48,7 @@ export class SelbstdeklarationComponent implements OnInit {
     public finanzModel: TSFinanzModel;
 
     public constructor(
-        private finSitLuService: FinanzielleSituationLuzernService
+        private readonly finSitLuService: FinanzielleSituationLuzernService
     ) {
     }
 
@@ -57,7 +57,6 @@ export class SelbstdeklarationComponent implements OnInit {
             this.model.finanzielleSituationJA.selbstdeklaration = new TSFinanzielleSituationSelbstdeklaration();
         }
     }
-
 
     public onValueChangeFunction = (): void => {
         this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
