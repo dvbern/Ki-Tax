@@ -28,6 +28,7 @@ import {BruttolohnComponent} from './component/finanzielleSituation/solothurn/br
 import {FinanzielleSituationStartSolothurnComponent} from './component/finanzielleSituation/solothurn/finanzielle-situation-start-solothurn/finanzielle-situation-start-solothurn.component';
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
 import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
+import {InfomaFieldsComponent} from './component/finanzielleSituation/luzern/infoma-fields/infoma-fields.component';
 import {ResultatComponent} from './component/finanzielleSituation/luzern/resultat/resultat.component';
 import {ResultateComponent} from './component/finanzielleSituation/luzern/resultate/resultate.component';
 import {SelbstdeklarationComponent} from './component/finanzielleSituation/luzern/selbstdeklaration/selbstdeklaration.component';
@@ -61,6 +62,8 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
         AngabenGesuchsteller2Component,
         ResultateComponent,
         SelbstdeklarationComponent,
+        VeranlagungComponent,
+        InfomaFieldsComponent,
         VeranlagungComponent,
         ResultatComponent,
         VeranlagungSolothurnComponent,

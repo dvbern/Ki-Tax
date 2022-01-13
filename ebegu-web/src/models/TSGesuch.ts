@@ -14,7 +14,7 @@
  */
 
 import * as moment from 'moment';
-import {TSAntragStatus} from './enums/TSAntragStatus';
+import {isAtLeastFreigegeben, TSAntragStatus} from './enums/TSAntragStatus';
 import {TSAntragTyp} from './enums/TSAntragTyp';
 import {
     getSchulamtBetreuungsangebotTypValues,
@@ -444,5 +444,10 @@ export class TSGesuch extends TSAbstractAntragEntity {
             }
         }
         return false;
+    }
+
+    public isKorrekturModusOrFreigegeben(): boolean {
+        return isAtLeastFreigegeben(this.status)
+        && (TSEingangsart.ONLINE === this.eingangsart);
     }
 }

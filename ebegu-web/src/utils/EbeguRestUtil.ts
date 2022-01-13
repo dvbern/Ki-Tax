@@ -41,6 +41,8 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../models/ge
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {TSLastenausgleichTagesschulenStatusHistory} from '../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
+import {TSKibonAnfrage} from '../models/neskovanp/TSKibonAnfrage';
+import {TSSteuerdatenResponse} from '../models/neskovanp/TSSteuerdatenResponse';
 import {TSSozialdienst} from '../models/sozialdienst/TSSozialdienst';
 import {TSSozialdienstFall} from '../models/sozialdienst/TSSozialdienstFall';
 import {TSSozialdienstFallDokument} from '../models/sozialdienst/TSSozialdienstFallDokument';
@@ -598,11 +600,19 @@ export class EbeguRestUtil {
                 familiensituation.verguenstigungGewuenscht;
             restFamiliensituation.keineMahlzeitenverguenstigungBeantragt =
                 familiensituation.keineMahlzeitenverguenstigungBeantragt;
-            restFamiliensituation.iban = familiensituation.iban;
-            restFamiliensituation.kontoinhaber = familiensituation.kontoinhaber;
-            restFamiliensituation.abweichendeZahlungsadresse = familiensituation.abweichendeZahlungsadresse;
-            restFamiliensituation.zahlungsadresse =
-                this.adresseToRestObject({}, familiensituation.zahlungsadresse);
+            restFamiliensituation.ibanMahlzeiten = familiensituation.ibanMahlzeiten;
+            restFamiliensituation.kontoinhaberMahlzeiten = familiensituation.kontoinhaberMahlzeiten;
+            restFamiliensituation.abweichendeZahlungsadresseMahlzeiten = familiensituation.abweichendeZahlungsadresseMahlzeiten;
+            restFamiliensituation.zahlungsadresseMahlzeiten =
+                this.adresseToRestObject({}, familiensituation.zahlungsadresseMahlzeiten);
+            restFamiliensituation.ibanInfoma = familiensituation.ibanInfoma;
+            restFamiliensituation.kontoinhaberInfoma = familiensituation.kontoinhaberInfoma;
+            restFamiliensituation.abweichendeZahlungsadresseInfoma = familiensituation.abweichendeZahlungsadresseInfoma;
+            restFamiliensituation.zahlungsadresseInfoma =
+                this.adresseToRestObject({}, familiensituation.zahlungsadresseInfoma);
+            restFamiliensituation.infomaKreditorennummer = familiensituation.infomaKreditorennummer;
+            restFamiliensituation.infomaBankcode = familiensituation.infomaBankcode;
+            restFamiliensituation.auszahlungAnEltern = familiensituation.auszahlungAnEltern;
             return restFamiliensituation;
         }
 
@@ -667,11 +677,20 @@ export class EbeguRestUtil {
                 familiensituationFromServer.verguenstigungGewuenscht;
             familiensituation.keineMahlzeitenverguenstigungBeantragt =
                 familiensituationFromServer.keineMahlzeitenverguenstigungBeantragt;
-            familiensituation.iban = familiensituationFromServer.iban;
-            familiensituation.kontoinhaber = familiensituationFromServer.kontoinhaber;
-            familiensituation.abweichendeZahlungsadresse = familiensituationFromServer.abweichendeZahlungsadresse;
-            familiensituation.zahlungsadresse =
-                this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresse);
+            familiensituation.ibanMahlzeiten = familiensituationFromServer.ibanMahlzeiten;
+            familiensituation.kontoinhaberMahlzeiten = familiensituationFromServer.kontoinhaberMahlzeiten;
+            familiensituation.abweichendeZahlungsadresseMahlzeiten =
+                familiensituationFromServer.abweichendeZahlungsadresseMahlzeiten;
+            familiensituation.zahlungsadresseMahlzeiten =
+                this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresseMahlzeiten);
+            familiensituation.ibanInfoma = familiensituationFromServer.ibanInfoma;
+            familiensituation.kontoinhaberInfoma = familiensituationFromServer.kontoinhaberInfoma;
+            familiensituation.abweichendeZahlungsadresseInfoma = familiensituationFromServer.abweichendeZahlungsadresseInfoma;
+            familiensituation.zahlungsadresseInfoma =
+                this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresseInfoma);
+            familiensituation.infomaKreditorennummer = familiensituationFromServer.infomaKreditorennummer;
+            familiensituation.infomaBankcode = familiensituationFromServer.infomaBankcode;
+            familiensituation.auszahlungAnEltern = familiensituationFromServer.auszahlungAnEltern;
             return familiensituation;
         }
         return undefined;
@@ -892,6 +911,7 @@ export class EbeguRestUtil {
             restGemeinde.angebotBG = gemeinde.angebotBG;
             restGemeinde.angebotTS = gemeinde.angebotTS;
             restGemeinde.angebotFI = gemeinde.angebotFI;
+            restGemeinde.besondereVolksschule = gemeinde.besondereVolksschule;
             return restGemeinde;
         }
         return undefined;
@@ -915,6 +935,7 @@ export class EbeguRestUtil {
             gemeindeTS.angebotBG = gemeindeFromServer.angebotBG;
             gemeindeTS.angebotTS = gemeindeFromServer.angebotTS;
             gemeindeTS.angebotFI = gemeindeFromServer.angebotFI;
+            gemeindeTS.besondereVolksschule = gemeindeFromServer.besondereVolksschule;
             gemeindeTS.key = gemeindeFromServer.key;
             return gemeindeTS;
         }
@@ -997,6 +1018,8 @@ export class EbeguRestUtil {
             restStammdaten.emailBeiGesuchsperiodeOeffnung = stammdaten.emailBeiGesuchsperiodeOeffnung;
             restStammdaten.hasAltGemeindeKontakt = stammdaten.hasAltGemeindeKontakt;
             restStammdaten.altGemeindeKontaktText = stammdaten.altGemeindeKontaktText;
+            restStammdaten.zusatzText = stammdaten.zusatzText;
+            restStammdaten.hasZusatzText = stammdaten.hasZusatzText;
 
             if (stammdaten.rechtsmittelbelehrung) {
                 restStammdaten.rechtsmittelbelehrung =
@@ -1068,6 +1091,8 @@ export class EbeguRestUtil {
             stammdatenTS.gutscheinSelberAusgestellt = stammdatenFromServer.gutscheinSelberAusgestellt;
             stammdatenTS.hasAltGemeindeKontakt = stammdatenFromServer.hasAltGemeindeKontakt;
             stammdatenTS.altGemeindeKontaktText = stammdatenFromServer.altGemeindeKontaktText;
+            stammdatenTS.zusatzText = stammdatenFromServer.zusatzText;
+            stammdatenTS.hasZusatzText = stammdatenFromServer.hasZusatzText;
             if (stammdatenFromServer.gemeindeAusgabestelle) {
                 stammdatenTS.gemeindeAusgabestelle =
                     this.parseGemeinde(new TSGemeinde(), stammdatenFromServer.gemeindeAusgabestelle);
@@ -1185,12 +1210,12 @@ export class EbeguRestUtil {
         if (gesuch.familiensituationContainer && gesuch.familiensituationContainer.familiensituationJA) {
             restProperties.keineMahlzeitenverguenstigungBeantragt =
                 gesuch.familiensituationContainer.familiensituationJA.keineMahlzeitenverguenstigungBeantragt;
-            restProperties.iban = gesuch.familiensituationContainer.familiensituationJA.iban;
-            restProperties.kontoinhaber = gesuch.familiensituationContainer.familiensituationJA.kontoinhaber;
+            restProperties.iban = gesuch.familiensituationContainer.familiensituationJA.ibanMahlzeiten;
+            restProperties.kontoinhaber = gesuch.familiensituationContainer.familiensituationJA.kontoinhaberMahlzeiten;
             restProperties.abweichendeZahlungsadresse =
-                gesuch.familiensituationContainer.familiensituationJA.abweichendeZahlungsadresse;
+                gesuch.familiensituationContainer.familiensituationJA.abweichendeZahlungsadresseMahlzeiten;
             restProperties.zahlungsadresse =
-                this.adresseToRestObject({}, gesuch.familiensituationContainer.familiensituationJA.zahlungsadresse);
+                this.adresseToRestObject({}, gesuch.familiensituationContainer.familiensituationJA.zahlungsadresseMahlzeiten);
         }
 
         return restProperties;
@@ -1554,6 +1579,8 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.spaetEroeffnung = institutionStammdaten.spaetEroeffnung;
             restInstitutionStammdaten.wochenendeEroeffnung = institutionStammdaten.wochenendeEroeffnung;
             restInstitutionStammdaten.uebernachtungMoeglich = institutionStammdaten.uebernachtungMoeglich;
+            restInstitutionStammdaten.infomaKreditorennummer = institutionStammdaten.infomaKreditorennummer;
+            restInstitutionStammdaten.infomaBankcode = institutionStammdaten.infomaBankcode;
 
             return restInstitutionStammdaten;
         }
@@ -1614,6 +1641,8 @@ export class EbeguRestUtil {
             institutionStammdatenTS.spaetEroeffnung = institutionStammdatenFromServer.spaetEroeffnung;
             institutionStammdatenTS.wochenendeEroeffnung = institutionStammdatenFromServer.wochenendeEroeffnung;
             institutionStammdatenTS.uebernachtungMoeglich = institutionStammdatenFromServer.uebernachtungMoeglich;
+            institutionStammdatenTS.infomaKreditorennummer = institutionStammdatenFromServer.infomaKreditorennummer;
+            institutionStammdatenTS.infomaBankcode = institutionStammdatenFromServer.infomaBankcode;
 
             return institutionStammdatenTS;
         }
@@ -1908,10 +1937,13 @@ export class EbeguRestUtil {
                 abstractFinanzielleSituationFromServer.geschaeftsgewinnBasisjahr;
             abstractFinanzielleSituationTS.geleisteteAlimente =
                 abstractFinanzielleSituationFromServer.geleisteteAlimente;
-            abstractFinanzielleSituationTS.steuerbaresEinkommen = abstractFinanzielleSituationFromServer.steuerbaresEinkommen;
-            abstractFinanzielleSituationTS.steuerbaresVermoegen = abstractFinanzielleSituationFromServer.steuerbaresVermoegen;
+            abstractFinanzielleSituationTS.steuerbaresEinkommen =
+                abstractFinanzielleSituationFromServer.steuerbaresEinkommen;
+            abstractFinanzielleSituationTS.steuerbaresVermoegen =
+                abstractFinanzielleSituationFromServer.steuerbaresVermoegen;
             abstractFinanzielleSituationTS.geschaeftsverlust = abstractFinanzielleSituationFromServer.geschaeftsverlust;
-            abstractFinanzielleSituationTS.abzuegeLiegenschaft = abstractFinanzielleSituationFromServer.abzuegeLiegenschaft;
+            abstractFinanzielleSituationTS.abzuegeLiegenschaft =
+                abstractFinanzielleSituationFromServer.abzuegeLiegenschaft;
             abstractFinanzielleSituationTS.einkaeufeVorsorge = abstractFinanzielleSituationFromServer.einkaeufeVorsorge;
             return abstractFinanzielleSituationTS;
         }
@@ -4195,6 +4227,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.lastenausgleichAktiv = data.lastenausgleichAktiv;
         publicAppConfigTS.mulitmandantAktiv = data.multimandantAktiviert;
         publicAppConfigTS.angebotTSActivated = data.angebotTSActivated;
+        publicAppConfigTS.infomaZahlungen = data.infomaZahlungen;
         return publicAppConfigTS;
 
     }
@@ -5624,5 +5657,78 @@ export class EbeguRestUtil {
             return typ as TSFinanzielleSituationTyp;
         }
         throw new Error(`FinanzielleSituationTyp ${typ} not defined`);
+    }
+
+    public parseSteuerdatenResponse(
+        tsSteuerdatenResponse: TSSteuerdatenResponse,
+        steuerdatenResponseFromServer: any,
+    ): TSSteuerdatenResponse {
+        tsSteuerdatenResponse.zpvNrAntragsteller = steuerdatenResponseFromServer.zpvNrAntragsteller;
+        tsSteuerdatenResponse.geburtsdatumAntragsteller =
+            DateUtil.localDateTimeToMoment(steuerdatenResponseFromServer.geburtsdatumAntragsteller);
+        tsSteuerdatenResponse.kiBonAntragID = steuerdatenResponseFromServer.kiBonAntragID;
+        tsSteuerdatenResponse.beginnGesuchsperiode = steuerdatenResponseFromServer.beginnGesuchsperiode;
+        tsSteuerdatenResponse.zpvNrDossiertraeger = steuerdatenResponseFromServer.zpvNrDossiertraeger;
+        tsSteuerdatenResponse.geburtsdatumDossiertraeger =
+            DateUtil.localDateTimeToMoment(steuerdatenResponseFromServer.geburtsdatumDossiertraeger);
+        tsSteuerdatenResponse.zpvNrPartner = steuerdatenResponseFromServer.zpvNrPartner;
+        tsSteuerdatenResponse.geburtsdatumPartner =
+            DateUtil.localDateTimeToMoment(steuerdatenResponseFromServer.geburtsdatumPartner);
+        tsSteuerdatenResponse.fallId = steuerdatenResponseFromServer.fallId;
+        tsSteuerdatenResponse.antwortdatum = DateUtil.localDateTimeToMoment(steuerdatenResponseFromServer.antwortdatum);
+        tsSteuerdatenResponse.synchroneAntwort = steuerdatenResponseFromServer.synchroneAntwort;
+        tsSteuerdatenResponse.veranlagungsstand = steuerdatenResponseFromServer.veranlagungsstand;
+        tsSteuerdatenResponse.unterjaehrigerFall = steuerdatenResponseFromServer.unterjaehrigerFall;
+        tsSteuerdatenResponse.erwerbseinkommenUnselbstaendigkeitDossiertraeger =
+            steuerdatenResponseFromServer.erwerbseinkommenUnselbstaendigkeitDossiertraeger;
+        tsSteuerdatenResponse.erwerbseinkommenUnselbstaendigkeitPartner =
+            steuerdatenResponseFromServer.erwerbseinkommenUnselbstaendigkeitPartner;
+        tsSteuerdatenResponse.steuerpflichtigesErsatzeinkommenDossiertraeger =
+            steuerdatenResponseFromServer.steuerpflichtigesErsatzeinkommenDossiertraeger;
+        tsSteuerdatenResponse.steuerpflichtigesErsatzeinkommenPartner =
+            steuerdatenResponseFromServer.steuerpflichtigesErsatzeinkommenPartner;
+        tsSteuerdatenResponse.erhalteneUnterhaltsbeitraegeDossiertraeger =
+            steuerdatenResponseFromServer.erhalteneUnterhaltsbeitraegeDossiertraeger;
+        tsSteuerdatenResponse.erhalteneUnterhaltsbeitraegePartner =
+            steuerdatenResponseFromServer.erhalteneUnterhaltsbeitraegePartner;
+        tsSteuerdatenResponse.ausgewiesenerGeschaeftsertragDossiertraeger =
+            steuerdatenResponseFromServer.ausgewiesenerGeschaeftsertragDossiertraeger;
+        tsSteuerdatenResponse.ausgewiesenerGeschaeftsertragPartner =
+            steuerdatenResponseFromServer.ausgewiesenerGeschaeftsertragPartner;
+        tsSteuerdatenResponse.ausgewiesenerGeschaeftsertragVorperiodeDossiertraeger =
+            steuerdatenResponseFromServer.ausgewiesenerGeschaeftsertragVorperiodeDossiertraeger;
+        tsSteuerdatenResponse.ausgewiesenerGeschaeftsertragVorperiodePartner =
+            steuerdatenResponseFromServer.ausgewiesenerGeschaeftsertragVorperiodePartner;
+        tsSteuerdatenResponse.ausgewiesenerGeschaeftsertragVorperiode2Dossiertraeger =
+            steuerdatenResponseFromServer.ausgewiesenerGeschaeftsertragVorperiode2Dossiertraeger;
+        tsSteuerdatenResponse.ausgewiesenerGeschaeftsertragVorperiode2Partner =
+            steuerdatenResponseFromServer.ausgewiesenerGeschaeftsertragVorperiode2Partner;
+        tsSteuerdatenResponse.weitereSteuerbareEinkuenfteDossiertraeger =
+            steuerdatenResponseFromServer.weitereSteuerbareEinkuenfteDossiertraeger;
+        tsSteuerdatenResponse.weitereSteuerbareEinkuenftePartner =
+            steuerdatenResponseFromServer.weitereSteuerbareEinkuenftePartner;
+        tsSteuerdatenResponse.bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME =
+            steuerdatenResponseFromServer.bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME;
+        tsSteuerdatenResponse.bruttoertraegeAusLiegenschaften =
+            steuerdatenResponseFromServer.bruttoertraegeAusLiegenschaften;
+        tsSteuerdatenResponse.nettoertraegeAusEGMEDossiertraeger =
+            steuerdatenResponseFromServer.nettoertraegeAusEGMEDossiertraeger;
+        tsSteuerdatenResponse.nettoertraegeAusEGMEPartner = steuerdatenResponseFromServer.nettoertraegeAusEGMEPartner;
+        tsSteuerdatenResponse.geleisteteUnterhaltsbeitraege =
+            steuerdatenResponseFromServer.geleisteteUnterhaltsbeitraege;
+        tsSteuerdatenResponse.schuldzinsen = steuerdatenResponseFromServer.schuldzinsen;
+        tsSteuerdatenResponse.gewinnungskostenBeweglichesVermoegen =
+            steuerdatenResponseFromServer.gewinnungskostenBeweglichesVermoegen;
+        tsSteuerdatenResponse.liegenschaftsAbzuege = steuerdatenResponseFromServer.liegenschaftsAbzuege;
+        tsSteuerdatenResponse.nettovermoegen = steuerdatenResponseFromServer.nettovermoegen;
+        return tsSteuerdatenResponse;
+    }
+
+    public kibonAnfrageToRestObject(restKibonAnfrage: any, kibonAnfrage: TSKibonAnfrage): any {
+        restKibonAnfrage.antragId = kibonAnfrage.antragId;
+        restKibonAnfrage.geburtsdatum = DateUtil.momentToLocalDate(kibonAnfrage.geburtsdatum);
+        restKibonAnfrage.gesuchsperiodeBeginnJahr = kibonAnfrage.gesuchsperiodeBeginnJahr;
+        restKibonAnfrage.zpvNummer = kibonAnfrage.zpvNummer;
+        return restKibonAnfrage;
     }
 }

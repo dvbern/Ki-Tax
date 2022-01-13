@@ -262,6 +262,7 @@ public class ApplicationPropertyResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/public/all")
 	@PermitAll
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public Response getPublicProperties(@Context HttpServletResponse response, @CookieParam(AuthConstants.COOKIE_MANDANT)
 			Cookie mandantCookie) {
 
@@ -348,6 +349,10 @@ public class ApplicationPropertyResource {
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LOGO_WHITE_FILE_NAME,
 							mandant)
 				.orElseThrow(() -> notFound);
+		ApplicationProperty infomaZahlungen  =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.INFOMA_ZAHLUNGEN,
+							mandant)
+				.orElseThrow(() -> notFound);
 
 		String nodeName = "";
 		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDeConverted;
@@ -392,7 +397,8 @@ public class ApplicationPropertyResource {
 			logoFileName.getValue(),
 			logoFileNameWhite.getValue(),
 			multimandantEnabled,
-			angebotTSEnabled
+			angebotTSEnabled,
+			stringToBool(infomaZahlungen.getValue())
 			);
 		return Response.ok(pubAppConf).build();
 	}

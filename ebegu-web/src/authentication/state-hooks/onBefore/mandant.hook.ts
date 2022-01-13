@@ -52,6 +52,7 @@ export function mandantCheck(
 // Function that returns a redirect for the current transition to the login state
 // if the user is not currently authenticated (according to the AuthService)
 // tslint:disable-next-line:cognitive-complexity
+
 function redirectToMandantSelection(
     transition: Transition,
 ): HookResult {
@@ -67,14 +68,9 @@ function redirectToMandantSelection(
             map(([mandant, isMultimandanActive]) => {
 
                 const mandantFromHostname = mandantService.parseHostnameForMandant();
+                const mandantRedirectFromCookie = mandantService.getMandantRedirect();
                 if (!isMultimandanActive) {
-                    if (!alreadyAlerted && mandantFromHostname !== KiBonMandant.NONE) {
-                        alert('Multimandant ist nicht aktiviert');
-                        alreadyAlerted = true;
-                    }
-                    if (mandant !== KiBonMandant.BE) {
-                        mandantService.setMandantCookie(KiBonMandant.BE);
-                    }
+                    setDefaultCookies(mandantFromHostname, mandant, mandantService, mandantRedirectFromCookie);
                     return true;
                 }
 
@@ -82,11 +78,11 @@ function redirectToMandantSelection(
                 const path = transition.router.stateService.href(transition.to(), transition.params());
 
                 if (mandantFromHostname === KiBonMandant.NONE) {
-                    if (mandant === KiBonMandant.NONE) {
+                    if (mandantRedirectFromCookie === KiBonMandant.NONE) {
                         console.log('redirecting to mandant selection');
                         return $state.target('mandant', {path});
                     }
-                    mandantService.redirectToMandantSubdomain(mandant, path);
+                    mandantService.redirectToMandantSubdomain(mandantRedirectFromCookie, path);
                     return false;
                 }
 
@@ -96,4 +92,22 @@ function redirectToMandantSelection(
             take(1),
         )
         .toPromise();
+}
+
+function setDefaultCookies(
+    mandantFromHostname: KiBonMandant,
+    mandant: KiBonMandant,
+    mandantService: MandantService,
+    mandantRedirectFromCookie: KiBonMandant,
+): void {
+    if (!alreadyAlerted && mandantFromHostname !== KiBonMandant.NONE) {
+        alert('Multimandant ist nicht aktiviert');
+        alreadyAlerted = true;
+    }
+    if (mandant !== KiBonMandant.BE) {
+        mandantService.setMandantCookie(KiBonMandant.BE);
+    }
+    if (mandantRedirectFromCookie !== KiBonMandant.BE) {
+        mandantService.setMandantRedirectCookie(KiBonMandant.BE);
+    }
 }

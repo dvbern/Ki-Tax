@@ -20,6 +20,7 @@ import {StateService} from '@uirouter/angular';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {SharedModule} from '../../../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituationTyp} from '../../../../../models/enums/TSFinanzielleSituationTyp';
 import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
 import {TSFamiliensituationContainer} from '../../../../../models/TSFamiliensituationContainer';
@@ -28,6 +29,7 @@ import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanziel
 import {TSGesuch} from '../../../../../models/TSGesuch';
 import {TSGesuchsteller} from '../../../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
+import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
@@ -45,6 +47,8 @@ const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(F
 const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
     ['go']);
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
+const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name, ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
+berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
 
 FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
 
@@ -66,6 +70,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
                 {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: BerechnungsManager, useValue: berechnungsManagerSpy}
             ],
             imports: [
                 SharedModule,

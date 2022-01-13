@@ -25,12 +25,16 @@
 
         <form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
             <div class="neu-bg-checkbox">
-                <mat-checkbox id="betreuungsgutscheinBeantragen_id" name="betreuungsgutscheinBeantragen_id"
+                <mat-checkbox id="betreuungsgutscheinBeantragen_id" name="betreuungsgutscheinBeantragen_id" (ngModelChange)="resetBgGemeinde()"
                               [(ngModel)]="betreuungsgutscheinBeantragen">{{'ONBOARDING_BG_BEANTRAGEN'|translate}}</mat-checkbox>
             </div>
             <div class="neu-ts-checkbox margin-top-10" *ngIf="isTSAngebotEnabled">
-                <mat-checkbox id="tsBeantragen_id" name="tsBeantragen_id"
+                <mat-checkbox id="tsBeantragen_id" name="tsBeantragen_id" (ngModelChange)="resetGemeindeListe()"
                               [(ngModel)]="tsBeantragen">{{'ONBOARDING_TS_BEANTRAGEN'|translate}}</mat-checkbox>
+            </div>
+            <div class="neu-besondere-volksschule-checkbox margin-top-10" *ngIf="isTSAngebotEnabled && tsBeantragen && (this.besondereVolksschulen$ | async).length">
+                <mat-checkbox id="besondereVolksschuleBeantragen_id" name="besondereVolksschuleBeantragen_id" (ngModelChange)="resetGemeindeListe()"
+                              [(ngModel)]="besondereVolksschuleBeantragen">{{'ONBOARDING_BESONDERE_VOLKSSCHULE_BEANTRAGEN'|translate}}</mat-checkbox>
             </div>
             <div class="onboarding-nb-gemeinde-container">
                 <div class="onboarding-nb-gemeinde-input-container">
@@ -58,7 +62,7 @@
                     </div>
                 </div>
                 <div class="onboarding-nb-gemeinde-input">
-                    <div class="onboarding-nb-gemeinde-search" *ngIf="tsBeantragen">
+                    <div class="onboarding-nb-gemeinde-search" *ngIf="tsBeantragen && !besondereVolksschuleBeantragen">
                         <p translate>ONBOARDING_TS_GEMEINDE</p>
                         <!-- Gemeinde(n) -->
                         <dv-gemeinde-multiselect [selected]="gemeindeList"
@@ -69,8 +73,31 @@
                         </dv-gemeinde-multiselect>
                     </div>
                 </div>
+                <div class="onboarding-nb-gemeinde-input">
+                    <div class="onboarding-nb-gemeinde-search" *ngIf="tsBeantragen && besondereVolksschuleBeantragen">
+                        <p translate>BESONDERE_VOLKSSCHULE</p>
+                        <!-- Gemeinde(n) -->
+                        <div class="dv-select-style dv-select-style-onboarding">
+                            <select [(ngModel)]="besondereVolksschuleGemeinde"
+                                    name="besondereVolksschule"
+                                    class="form-control"
+                                    id="besondereVolksschule"
+                                    [required]="true">
+                                <option [ngValue]="null" selected="selected"></option>
+                                <option *ngFor="let gemeinde of (besondereVolksschulen$ | async)" [ngValue]="gemeinde">
+                                    {{gemeinde.name}}
+                                </option>
+                            </select>
+                        </div>
+
+                        <dv-error-messages [errorObject]="form.controls.besondereVolksschule?.errors"
+                                           inputId="gemeinde"
+                                           class="input-error">
+                        </dv-error-messages>
+                    </div>
+                </div>
                 <div class="onboarding-nb-gemeinde-input-button">
-                    <div *ngIf="betreuungsgutscheinBeantragen || tsBeantragen">
+                    <div *ngIf="betreuungsgutscheinBeantragen || tsBeantragen || besondereVolksschuleBeantragen">
                         <button [type]="'submit'" class="dv-btn onboarding-big-red-button">
                             <span translate>ONBOARDING_REGISTRIEREN</span>
                         </button>

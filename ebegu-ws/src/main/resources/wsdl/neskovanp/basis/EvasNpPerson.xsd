@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+	Copyright (c) 2004 DV Bern AG, Switzerland
+	
+	Das vorliegende Dokument, einschliesslich aller seiner Teile, ist urheberrechtlich
+	geschützt. Jede Verwertung ist ohne Zustimmung der DV Bern AG unzulässig. Dies gilt
+	insbesondere für Vervielfältigungen, die Einspeicherung und Verarbeitung in
+	elektronischer Form. Wird das Dokument einem Kunden im Rahmen der Projektarbeit zur
+	Ansicht übergeben ist jede weitere Verteilung durch den Kunden an Dritte untersagt.
+-->
+
+
+<xs:schema
+	targetNamespace="http://sv.fin.be.ch/schemas/A7V/20070710/EvasNpPerson"
+	xmlns:tns="http://sv.fin.be.ch/schemas/A7V/20070710/EvasNpPerson"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:common="http://sv.fin.be.ch/schemas/A7V/20070710/EvasNpCommon"
+	elementFormDefault="qualified"
+	xmlns:xhtml="http://www.w3.org/1999/xhtml"
+	attributeFormDefault="unqualified" version="0.1">
+
+	<xs:import
+		namespace="http://sv.fin.be.ch/schemas/A7V/20070710/EvasNpCommon"
+		schemaLocation="EvasNpCommon.xsd" />
+
+
+	<xs:complexType name="Person" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				Basistyp für die Personen
+			</xs:documentation>
+		</xs:annotation>
+
+		<xs:complexContent>
+			<xs:extension
+				base="common:BasisZeitraumEntitaetLoeschbar">
+
+				<xs:sequence>
+					<xs:element name="Adresse"
+						type="tns:PersonAdresse">
+						<xs:annotation>
+							<xs:documentation>
+								Das zugehörige Adresse der Person
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="ZpvNummer" type="xs:int">
+						<xs:annotation>
+							<xs:documentation>
+								Die ZPV Nummer
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Stammnummer" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Stammnummer (AHV Nummer)
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ZpvNummerRedundant"
+						type="xs:int">
+						<xs:annotation>
+							<xs:documentation>
+								Die Redundante ZPV Nummer
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Personengruppe"
+						type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Id des Codes Personengruppe
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Jahrgang" type="xs:short">
+						<xs:annotation>
+							<xs:documentation>
+								Der Jahrgang
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Korrespondenzsprache"
+						type="xs:language">
+						<xs:annotation>
+							<xs:documentation>
+								Die Korresponcenzsprache
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Fehlerhaft" type="xs:boolean">
+						<xs:annotation>
+							<xs:documentation>
+								Fehlerhaft Ja/Nein
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Status" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Id des Codes Status
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Adresssperre" type="xs:boolean">
+						<xs:annotation>
+							<xs:documentation>
+								Definiert ob die Adresse gesperrt ist
+								Ja/Nein
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Auskunftssperre"
+						type="xs:boolean">
+						<xs:annotation>
+							<xs:documentation>
+								Definiert ob die Auskunft gesperrt ist
+								Ja/Nein
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Dateneigentuemer"
+						type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der Id des Codes Dateneigentuemer
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Institutionstyp" type="xs:short"
+						minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Der Institutionstyp
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Institutionsnummer" type="xs:int"
+						minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Die Institutionsnummer
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="JuristischePerson">
+		<xs:annotation>
+			<xs:documentation>
+				Person entspricht einer Juristische Person
+			</xs:documentation>
+		</xs:annotation>
+
+		<xs:complexContent>
+			<xs:extension base="tns:Person">
+
+				<xs:sequence>
+					<xs:element name="Gruendungsdatum" type="xs:date">
+						<xs:annotation>
+							<xs:documentation>
+								Das Gründungsdatum
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Liqidationsdatum"
+						type="xs:date">
+						<xs:annotation>
+							<xs:documentation>
+								Das Liqidationsdatum
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="Firmenbezeichnung1"
+						type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der Firmenbezeichnung 1
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Firmenbezeichnung2"
+						type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der Firmenbezeichnung 2
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Firmenbezeichnung3"
+						type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der Firmenbezeichnung 3
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Sitz" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der Sitz der Firma
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Rechtsform" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Id des Codes Rechtsform
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Branchencode" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Id des Codes Branchecode
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Typ" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Typ der Firma
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Anrede" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Id des Codes Anredecode
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Nationalitaet" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Nationalität
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="NatuerlichePerson">
+		<xs:annotation>
+			<xs:documentation>
+				Person ist eine Natürliche Person
+			</xs:documentation>
+		</xs:annotation>
+
+		<xs:complexContent>
+			<xs:extension base="tns:Person">
+
+				<xs:sequence>
+					<xs:element name="Geburtsdatum" type="xs:date">
+						<xs:annotation>
+							<xs:documentation>
+								Das Geburtsdatum
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Todesdatum" type="xs:date">
+						<xs:annotation>
+							<xs:documentation>
+								Das Todesdatum
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="Name" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der Name
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="NameVorEhe" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der Name vor der Ehe
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Geburtsname" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der Geburtsname
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="NameFuerAnschrift"
+						type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der name für die Anschrift
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Vorname" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der Vorname
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Rufname" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der Rufname
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="AbkuerzungVorname"
+						type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der abgekürzte Vorname
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Titel" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der Titel (enthält auch den Beruf)
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Geschlecht" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Id des Codes Geschlecht
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Anrede" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Id des Codes Anredecode
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Nationalitaet" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Nationalität
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Zivilstand" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Id des Codes Zivilstand
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Trennung" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Id des Codes Trennung
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Trennungsdatum" type="xs:date">
+						<xs:annotation>
+							<xs:documentation>
+								Das Datum der Trennung
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Konfession" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Id des Codes Konfession
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="PersonAdresse">
+		<xs:annotation>
+			<xs:documentation>Adresse einer Person</xs:documentation>
+		</xs:annotation>
+
+		<xs:complexContent>
+			<xs:extension
+				base="common:BasisZeitraumEntitaetLoeschbar">
+
+				<xs:sequence>
+					<xs:element name="Adresstyp" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Id des Codes Adresstyp
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Laufnummer" type="xs:short"
+						minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Die Laufnummer der Adresse
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Adressnummer" type="xs:int"
+						minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Die Adressnummer
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="AdressIdentifikationGwr"
+						type="xs:int" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Die Adress Identifikation Gwr
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="AdressInfo" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der Id des Codes Adress Info
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="AdressZusatz" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Ein Adress Zusatz Text
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Wohnungsnummer"
+						type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Wohnungsnummer
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Fehlerhaft" type="xs:boolean">
+						<xs:annotation>
+							<xs:documentation>
+								Fehlerhaft Ja/Nein
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Status" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Id des Codes Status
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Dateneigentuemer"
+						type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der Id des Codes Dateneigentuemer
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Institutionstyp" type="xs:short"
+						minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Der Institutionstyp
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Institutionsnummer" type="xs:int"
+						minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Die Institutionsnummer
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="BezugspersonNummer"
+						type="xs:short" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Der Nummer der Bezugsperson
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="BezugspersonText"
+						type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Text der Bezugsperson
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Postfach" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Das Postfach
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Plz" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Postleitzahl
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Ort" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Ortschaft
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="OrtAusland" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Ortschaft im Ausland
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Strasse" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Strasse
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Laendercode" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Der Id des Codes Ländercode
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Hausnummer" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Hausnummer
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="IsoAbkuerzung" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die ISO Abkürzung
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="KurzformDeutsch"
+						type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Kurzform in Deutsch
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="KurzformFranzoesisch"
+						type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Die Kurzform in Französisch
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+</xs:schema>

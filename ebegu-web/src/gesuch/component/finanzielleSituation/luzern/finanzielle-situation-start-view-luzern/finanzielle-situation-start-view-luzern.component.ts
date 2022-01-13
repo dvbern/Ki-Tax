@@ -22,6 +22,7 @@ import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSF
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {TSGesuch} from '../../../../../models/TSGesuch';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
@@ -42,8 +43,9 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
+        protected finSitLuService: FinanzielleSituationLuzernService
     ) {
-        super(gesuchModelManager, wizardStepManager, 1);
+        super(gesuchModelManager, wizardStepManager, 1, finSitLuService);
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.FINANZIELLE_SITUATION_LUZERN,
             TSWizardStepStatus.IN_BEARBEITUNG);
@@ -79,9 +81,17 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
         return this.save(onResult);
     }
 
-    public notify(): void {
-        if (this.showResultat()) {
-            this.resultatComponent.calculate();
-        }
+    protected save(onResult: Function): angular.IPromise<TSFinanzielleSituationContainer> {
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        return this.gesuchModelManager.saveFinanzielleSituationStart()
+            .then((gesuch: TSGesuch) => {
+                if (this.isGemeinsam()) {
+                    this.updateWizardStepStatus();
+                }
+                onResult(gesuch.gesuchsteller1.finanzielleSituationContainer);
+                return gesuch.gesuchsteller1.finanzielleSituationContainer;
+            }).catch(error => {
+                throw(error);
+            });
     }
 }
