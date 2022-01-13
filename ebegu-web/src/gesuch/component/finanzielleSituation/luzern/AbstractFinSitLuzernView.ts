@@ -26,6 +26,7 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../abstractGesuchViewX';
+import {FinanzielleSituationLuzernService} from './finanzielle-situation-luzern.service';
 
 export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFinanzModel> {
 
@@ -35,6 +36,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
         protected gesuchstellerNumber: number,
+        protected finSitLuService: FinanzielleSituationLuzernService = finSitLuService,
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
@@ -125,7 +127,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         this.getModel().finanzielleSituationJA.abzuegeLiegenschaft = undefined;
         this.getModel().finanzielleSituationJA.geschaeftsverlust = undefined;
         this.getModel().finanzielleSituationJA.einkaeufeVorsorge = undefined;
-        this.notify();
+        this.finSitLuService.calculateMassgebendesEinkommen(this.model);
     }
 
     public getYearForDeklaration(): number | string {
@@ -196,8 +198,6 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
 
         return form.valid;
     }
-
-    public abstract notify(): void;
 
     protected save(onResult: Function): IPromise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());

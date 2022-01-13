@@ -42,8 +42,9 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
+        protected finSitLuService: FinanzielleSituationLuzernService
     ) {
-        super(gesuchModelManager, wizardStepManager, 1);
+        super(gesuchModelManager, wizardStepManager, 1, finSitLuService);
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.FINANZIELLE_SITUATION_LUZERN,
             TSWizardStepStatus.IN_BEARBEITUNG);
@@ -77,11 +78,5 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
             return undefined;
         }
         return this.save(onResult);
-    }
-
-    public notify(): void {
-        if (this.showResultat()) {
-            this.resultatComponent.calculate();
-        }
     }
 }

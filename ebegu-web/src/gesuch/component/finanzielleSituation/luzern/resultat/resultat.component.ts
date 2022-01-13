@@ -25,6 +25,7 @@ import {
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
+import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
 
 @Component({
     selector: 'dv-resultat',
@@ -46,22 +47,20 @@ export class ResultatComponent implements OnInit {
     @Input()
     public nameGS2: string;
 
-    @Input() public model: TSFinanzModel;
-
     public resultate?: TSFinanzielleSituationResultateDTO;
 
     public constructor(
-        protected berechnungsManager: BerechnungsManager,
         protected ref: ChangeDetectorRef,
+        private finSitLuService: FinanzielleSituationLuzernService
     ) {
     }
 
     public ngOnInit(): void {
-        this.calculate();
+        this.setupCalculation();
     }
 
-    public calculate(): void {
-        this.berechnungsManager.calculateFinanzielleSituationTemp(this.model).then(resultate => {
+    public setupCalculation(): void {
+        this.finSitLuService.massgebendesEinkommenStore.subscribe(resultate => {
             this.resultate = resultate;
             this.ref.markForCheck(); }
         );

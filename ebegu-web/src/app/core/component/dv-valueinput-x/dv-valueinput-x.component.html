@@ -18,6 +18,7 @@
        type="text"
 	   [name]="name"
        #inputField="ngModel"
+	   [ngModelOptions]="{updateOn: 'blur'}"
        [ngModel]="model | ebeguNumber"
        (input)="valueHasChange($event)"
        (blur)="onBlur($event)"
