@@ -98,7 +98,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 
 		result.roundAllValues();
 		verfuegungZeitabschnitt.setBgCalculationResultAsiv(result);
-
+		verfuegungZeitabschnitt.setBgCalculationResultGemeinde(result);
 	}
 
 	private BigDecimal calculateGeschwisternBonus2Kind() {
