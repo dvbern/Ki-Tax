@@ -26,8 +26,6 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 
 public class TageselternLuzernRechner extends AbstractLuzernRechner {
 
-	private static final BigDecimal STUNDEN_PRO_TAG = BigDecimal.valueOf(11);
-
 	//Die Tarife werden im Moment als Konstante gespeichert. Dies wird in Zukunft evtl noch konfigurierbar gemacht.
 	private static final BigDecimal VOLLKOSTEN_TARIF_BABY = BigDecimal.valueOf(16.30);
 	private static final BigDecimal VOLLKOSTEN_TARIF_KIND = BigDecimal.valueOf(12.40);
@@ -47,7 +45,7 @@ public class TageselternLuzernRechner extends AbstractLuzernRechner {
 
 	@Override
 	protected BigDecimal getMinimalTarif() {
-		return inputParameter.getMinVerguenstigungProStd();
+		return getInputParameter().getMinVerguenstigungProStd();
 	}
 
 	@Override
@@ -79,8 +77,8 @@ public class TageselternLuzernRechner extends AbstractLuzernRechner {
 
 	@Override
 	protected BigDecimal getAnzahlZeiteinheitenProMonat() {
-		BigDecimal tageProMonat = EXACT.divide(inputParameter.getOeffnungstageTFO(), BigDecimal.valueOf(12));
-		return EXACT.multiply(inputParameter.getOeffnungsstundenTFO(), tageProMonat);
+		BigDecimal tageProMonat = EXACT.divide(getInputParameter().getOeffnungstageTFO(), BigDecimal.valueOf(12));
+		return EXACT.multiply(getInputParameter().getOeffnungsstundenTFO(), tageProMonat);
 	}
 
 	@Override

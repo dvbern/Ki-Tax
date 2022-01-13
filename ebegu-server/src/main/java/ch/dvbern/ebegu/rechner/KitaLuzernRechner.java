@@ -50,7 +50,7 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 
 	@Override
 	protected BigDecimal getMinimalTarif() {
-		return inputParameter.getMinVerguenstigungProTg();
+		return getInputParameter().getMinVerguenstigungProTg();
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 
 	@Override
 	protected BigDecimal getAnzahlZeiteinheitenProMonat() {
-		return EXACT.divide(inputParameter.getOeffnungstageKita(), BigDecimal.valueOf(12));
+		return EXACT.divide(getInputParameter().getOeffnungstageKita(), BigDecimal.valueOf(12));
 	}
 
 	@Override
@@ -114,7 +114,7 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 	 * returns 101 %, wenn MassgebendesEinkommen > MaximalMasgebendesEinkommen:
 	 */
     private BigDecimal calculateSelbstbehaltElternProzentBaby() {
-		if(inputMassgebendesEinkommen.compareTo(inputParameter.getMaxMassgebendesEinkommen()) > 0) {
+		if(getInputMassgebendesEinkommen().compareTo(getInputParameter().getMaxMassgebendesEinkommen()) > 0) {
 			return BigDecimal.valueOf(1.01);
 		}
 
@@ -131,14 +131,14 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 	 * formel bgProTag = vollkostenTarif * (1-selbstBehaltElternProzent)
 	 */
 	private BigDecimal calculateBGProTagByEinkommenKind() {
-		BigDecimal einsMinusSelbstbehalt = EXACT.subtract(BigDecimal.ONE, selbstBehaltElternProzent);
+		BigDecimal einsMinusSelbstbehalt = EXACT.subtract(BigDecimal.ONE, getSelbstBehaltElternProzent());
 		BigDecimal bgProTag = EXACT.multiply(getVollkostenTarif(), einsMinusSelbstbehalt);
 
 		if(bgProTag.compareTo(getMinBetreuungsgutschein()) > 0) {
 			return bgProTag;
 		}
 
-		if(inputMassgebendesEinkommen.compareTo(inputParameter.getMaxMassgebendesEinkommen()) <= 0) {
+		if(getInputMassgebendesEinkommen().compareTo(getInputParameter().getMaxMassgebendesEinkommen()) <= 0) {
 			return getMinBetreuungsgutschein();
 		}
 

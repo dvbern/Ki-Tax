@@ -32,12 +32,12 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 
 	protected static final MathUtil EXACT = MathUtil.EXACT;
 
-	protected BGRechnerParameterDTO inputParameter;
+	private BGRechnerParameterDTO inputParameter;
 	private BGCalculationInput input;
 
 
 	private BigDecimal inputVollkosten;
-	protected BigDecimal inputMassgebendesEinkommen;
+	private BigDecimal inputMassgebendesEinkommen;
 	private BigDecimal inputZuschlagErhoeterBeterungsbedarf = BigDecimal.ZERO;
 	private boolean inputIsGeschwisternBonus2Kind = false;
 	private boolean inputIsGeschwisternBonus3Kind = false;
@@ -45,7 +45,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 
 	private BigDecimal z;
 
-	protected BigDecimal selbstBehaltElternProzent;
+	private BigDecimal selbstBehaltElternProzent;
 	private BigDecimal geschwisternBonus2Kind;
 	private BigDecimal geschwisternBonus3Kind;
 
@@ -122,11 +122,11 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		BigDecimal gutscheinProTagVorZuschlagUndSelbstbahalt = gutscheinProTagAufgrundEinkommen.add(BigDecimal.ZERO);
 
 		if(inputIsGeschwisternBonus2Kind) {
-			gutscheinProTagVorZuschlagUndSelbstbahalt.add(geschwisternBonus2Kind);
+			gutscheinProTagVorZuschlagUndSelbstbahalt = gutscheinProTagVorZuschlagUndSelbstbahalt.add(geschwisternBonus2Kind);
 		}
 
 		if(inputIsGeschwisternBonus3Kind) {
-			gutscheinProTagVorZuschlagUndSelbstbahalt.add(geschwisternBonus3Kind);
+			gutscheinProTagVorZuschlagUndSelbstbahalt = gutscheinProTagVorZuschlagUndSelbstbahalt.add(geschwisternBonus3Kind);
 		}
 
 		return gutscheinProTagVorZuschlagUndSelbstbahalt;
@@ -218,6 +218,18 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		BigDecimal diffTarife1 = EXACT.subtract(BigDecimal.ONE, rateTarife);
 
 		return EXACT.divide(diffTarife1, diffEinkommen);
+	}
+
+	protected BGRechnerParameterDTO getInputParameter() {
+		return this.inputParameter;
+	}
+
+	protected BigDecimal getInputMassgebendesEinkommen() {
+		return this.inputMassgebendesEinkommen;
+	}
+
+	protected BigDecimal getSelbstBehaltElternProzent() {
+		return this.selbstBehaltElternProzent;
 	}
 
 	protected abstract BigDecimal getMinimalTarif();
