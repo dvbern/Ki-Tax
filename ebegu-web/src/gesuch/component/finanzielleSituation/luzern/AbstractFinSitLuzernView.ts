@@ -186,12 +186,10 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
 
     public isGesuchValid(form: NgForm): boolean {
         if (!form.valid) {
-            if (this.veranlagtVisible()) {
-                form.controls.steuerbaresEinkommen.markAsTouched({onlySelf: true});
-                form.controls.steuerbaresVermoegen.markAsTouched({onlySelf: true});
-                form.controls.abzuegeLiegenschaft.markAsTouched({onlySelf: true});
-                form.controls.geschaeftsverlust.markAsTouched({onlySelf: true});
-                form.controls.einkaeufeVorsorge.markAsTouched({onlySelf: true});
+            for (const control in form.controls) {
+                if (EbeguUtil.isNotNullOrUndefined(form.controls[control])) {
+                    form.controls[control].markAsTouched({onlySelf: true});
+                }
             }
             EbeguUtil.selectFirstInvalid();
         }
