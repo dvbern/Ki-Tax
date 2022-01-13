@@ -152,6 +152,10 @@ export class DvBisherXComponent implements OnInit {
         if (this.specificBisherLabel) {
             return this.specificBisherLabel;
         }
-        return this.$translate.instant('DV_BISHER_TEXT');
+        let translation = this.$translate.instant('DV_BISHER_LABEL');
+        if (typeof translation === 'string') {
+            translation += ' ';
+        }
+        return translation;
     }
 }

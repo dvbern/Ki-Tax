@@ -113,7 +113,13 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 						resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
 				}
 				handleAnpassungErweiterteBeduerfnisse(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
+
 				handleEinreichfrist(inputAsiv, mutationsEingansdatum);
+
+				if (platz.isAngebotSchulamt() && platz.hasVorgaenger() && inputAsiv.isZuSpaetEingereicht()) {
+					inputAsiv.setZuSpaetEingereicht(vorangehenderAbschnitt.isZuSpaetEingereicht());
+				}
+
 				handleAnpassungAnspruch(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
 
 				BGCalculationInput inputGemeinde = verfuegungZeitabschnitt.getBgCalculationInputGemeinde();
@@ -247,7 +253,6 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				//Meldung nicht Rechtzeitig: Der Anspruch kann sich erst auf den Folgemonat des Eingangsdatum erhöhen
 				inputData.setAnspruchspensumProzent(anspruchAufVorgaengerVerfuegung);
 				inputData.setRueckwirkendReduziertesPensumRest(anspruchberechtigtesPensum - inputData.getAnspruchspensumProzent());
-				inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 				//Wenn der Anspruch auf dem Vorgänger 0 ist, weil das Erstgesuch zu spät eingereicht wurde
 				//soll die Bemerkung bezüglich der Erhöhung nicht angezeigt werden, da es sich um keine Erhöhung handelt
 				if(!isAnspruchZeroBecauseVorgaengerZuSpaet(resultVorangehenderAbschnitt)) {

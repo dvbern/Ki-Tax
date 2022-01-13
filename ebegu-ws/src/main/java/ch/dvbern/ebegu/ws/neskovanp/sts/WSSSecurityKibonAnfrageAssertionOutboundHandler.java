@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.ws.ewk.sts;
+package ch.dvbern.ebegu.ws.neskovanp.sts;
 
 import java.util.Set;
 import java.util.TreeSet;
@@ -32,6 +32,8 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
+import ch.dvbern.ebegu.ws.sts.STSAssertionManager;
+import ch.dvbern.ebegu.ws.sts.WebserviceType;
 import ch.dvbern.ebegu.ws.tools.WSUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,9 +41,9 @@ import org.w3c.dom.Node;
 
 @Stateless
 @LocalBean
-public class WSSSecurityAssertionOutboundHandler implements SOAPHandler<SOAPMessageContext> {
+public class WSSSecurityKibonAnfrageAssertionOutboundHandler implements SOAPHandler<SOAPMessageContext> {
 	private static final String WSSE_NS_URI = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
-	private static final Logger LOGGER = LoggerFactory.getLogger(WSSSecurityAssertionOutboundHandler.class.getSimpleName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(WSSSecurityKibonAnfrageAssertionOutboundHandler.class.getSimpleName());
 
 	@Inject
 	private STSAssertionManager stsAssertionManager;
@@ -64,7 +66,7 @@ public class WSSSecurityAssertionOutboundHandler implements SOAPHandler<SOAPMess
 
 				SOAPHeader header = envelope.addHeader();
 
-				Node assertionNode = stsAssertionManager.getValidSTSAssertionForPersonensuche();
+				Node assertionNode = stsAssertionManager.getValidSTSAssertionForWebserviceType(WebserviceType.KIBON_ANFRAGE);
 
 				Node importedAssertionNode = securityElem.getOwnerDocument().importNode(assertionNode, true);
 				if(importedAssertionNode.getNodeType() ==  Node.DOCUMENT_NODE){
@@ -76,14 +78,11 @@ public class WSSSecurityAssertionOutboundHandler implements SOAPHandler<SOAPMess
 
 				WSUtil.correctAssertionNodes(header.getElementsByTagName("*"));
 			} catch (Exception e) {
-				LOGGER.error("Could not add the Assertion to the SOAP Request. This will probably lead to a Failure when calling the GERES Service", e);
+				LOGGER.error("Could not add the Assertion to the SOAP Request. This will probably lead to a Failure when calling the kiBonAnfrage Service", e);
 			}
 		}
 		return true;
 	}
-
-
-
 
 	@Override
 	public Set<QName> getHeaders() {

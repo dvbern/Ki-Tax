@@ -158,4 +158,9 @@ public enum ApplicationPropertyKey {
 	 */
 	MULTIMANDANT_AKTIV,
 
+	/**
+	 * Falls das Luzerner Zahlungssystem verwendet wird (Auszahlungen an Eltern, Infoma) ist dieses Flag true
+	 */
+	INFOMA_ZAHLUNGEN
+
 }

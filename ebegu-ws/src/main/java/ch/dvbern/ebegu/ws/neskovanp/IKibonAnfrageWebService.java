@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,28 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.ws.ewk.sts;
+package ch.dvbern.ebegu.ws.neskovanp;
 
-import oasis.names.tc.saml._1_0.assertion.AssertionType;
+import java.time.LocalDate;
 
-/**
- * DTO Klasse fuer die Assertion und das Renew Token welches aus dem STS Service zurueckkommt
- */
-public class STSWebServiceResult {
-	private final String renewalToken;
-	private final AssertionType assertion;
+import ch.dvbern.ebegu.dto.neskovanp.SteuerdatenResponse;
+import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
 
-	public STSWebServiceResult(AssertionType assertion, String renewalToken) {
+public interface IKibonAnfrageWebService {
 
-		this.assertion = assertion;
-		this.renewalToken = renewalToken;
-	}
-
-	public String getRenewalToken() {
-		return renewalToken;
-	}
-
-	public AssertionType getAssertion() {
-		return assertion;
-	}
+	SteuerdatenResponse getSteuerDaten(Integer zpvNummer, LocalDate geburtsdatum, String kibonAntragId, Integer gesuchsperiodeBeginnJahr) throws
+		KiBonAnfrageServiceException;
 }

@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -105,11 +106,12 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 	}
 
 	private String getFachstelle(@Nonnull Betreuung betreuung) {
-		if (betreuung.getKind().getKindJA().getPensumFachstelle() == null) {
+		PensumFachstelle pensumFachstelle = betreuung.getKind().getKindJA().getPensumFachstelle();
+		if (pensumFachstelle == null || pensumFachstelle.getFachstelle() == null) {
 			return "";
 		}
 		return ServerMessageUtil.translateEnumValue(
-			betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle().getName(),
+			pensumFachstelle.getFachstelle().getName(),
 			getLocale());
 	}
 }

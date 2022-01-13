@@ -142,8 +142,8 @@ public class TagesschuleBernRechner extends AbstractBernRechner {
 
 		// Falls der Gesuchsteller die Finanziellen Daten nicht angeben will, bekommt er den Max Tarif
 		if (input.isBezahltVollkosten()
-			|| input.isKeinAnspruchAufgrundEinkommen()
 			|| input.isZuSpaetEingereicht()
+			|| input.isKeinAnspruchAufgrundEinkommen()
 			|| input.getAnspruchspensumProzent() == 0) {
 			tarifProStunde = maxTarif;
 		} else {
