@@ -22,11 +22,14 @@ import {
     Input,
     Output
 } from '@angular/core';
+import {ControlContainer, NgForm} from '@angular/forms';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 
 @Component({
     selector: 'dv-input-label-field',
     templateUrl: './dv-input-label-field.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class DvInputLabelFieldComponent {
 
@@ -39,6 +42,7 @@ export class DvInputLabelFieldComponent {
     @Input() public inputRequired: boolean = false;
     @Input() public inputDisabled: boolean = false;
     @Input() public dvOnBlur: (event: any) => void;
+    @Input() public name: string = EbeguUtil.generateRandomName(12);
 
     @Output() public readonly modelChange: EventEmitter<any> = new EventEmitter();
 

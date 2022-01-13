@@ -16,6 +16,7 @@
   -->
 <input id="{{inputId}}"
        type="text"
+	   [name]="name"
        #inputField="ngModel"
        [ngModel]="model | ebeguNumber"
        (input)="valueHasChange($event)"

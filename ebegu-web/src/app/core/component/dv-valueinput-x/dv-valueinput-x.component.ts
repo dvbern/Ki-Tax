@@ -15,12 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {ControlContainer, NgForm} from '@angular/forms';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {EbeguNumberPipe} from '../../../shared/pipe/ebegu-number.pipe';
 
 @Component({
     selector: 'dv-valueinput-x',
     templateUrl: './dv-valueinput-x.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class DvValueinputXComponent {
 
@@ -31,6 +34,7 @@ export class DvValueinputXComponent {
 
     @Input() public inputId: string = 'inputFieldId';
     @Input() public model: any;
+    @Input() public name: string = EbeguUtil.generateRandomName(12);
     @Input() public float: boolean = false;
     @Input() public allowNegative: boolean = false;
     @Input() public required: boolean = false;

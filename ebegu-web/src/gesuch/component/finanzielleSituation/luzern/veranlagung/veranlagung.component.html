@@ -23,6 +23,7 @@
         <div class="col-sm-12 dv-input-container-medium">
             <div class="form-group">
                 <dv-input-label-field
+                    [name]="'steuerbaresEinkommen'"
                     [(model)]="model.finanzielleSituationJA.steuerbaresEinkommen"
                     [labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_EINKOMMEN'"
                     [inputDisabled]="readOnly"
@@ -36,6 +37,7 @@
         <div class="col-sm-12 dv-input-container-medium">
             <div class="form-group">
                 <dv-input-label-field
+                    [name]="'steuerbaresVermoegen'"
                     [(model)]="model.finanzielleSituationJA.steuerbaresVermoegen"
                     [labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN'"
                     [inputDisabled]="readOnly"
@@ -49,6 +51,7 @@
         <div class="col-sm-12 dv-input-container-medium">
             <div class="form-group">
                 <dv-input-label-field
+                    [name]="'abzuegeLiegenschaft'"
                     [(model)]="model.finanzielleSituationJA.abzuegeLiegenschaft"
                     [labelMessageKey]="'FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT'"
                     [tooltipMessageKey]="'FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT_TOOLTIP'"
@@ -63,6 +66,7 @@
         <div class="col-sm-12 dv-input-container-medium">
             <div class="form-group">
                 <dv-input-label-field
+                    [name]="'geschaeftsverlust'"
                     [(model)]="model.finanzielleSituationJA.geschaeftsverlust"
                     [labelMessageKey]="'FINANZIELLE_SITUATION_GESCHAEFTSVERLUST'"
                     [tooltipMessageKey]="'FINANZIELLE_SITUATION_GESCHAEFTSVERLUST_TOOLTIP'"
@@ -77,6 +81,7 @@
         <div class="col-sm-12 dv-input-container-medium">
             <div class="form-group">
                 <dv-input-label-field
+                    [name]="'einkaeufeVorsorge'"
                     [(model)]="model.finanzielleSituationJA.einkaeufeVorsorge"
                     [labelMessageKey]="'FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE'"
                     [tooltipMessageKey]="'FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE_TOOLTIP'"
