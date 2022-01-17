@@ -2705,6 +2705,9 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setQuellenbesteuert(finanzielleSituationJAXP.getQuellenbesteuert());
 		finanzielleSituation.setGemeinsameStekVorjahr(finanzielleSituationJAXP.getGemeinsameStekVorjahr());
 		finanzielleSituation.setAlleinigeStekVorjahr(finanzielleSituationJAXP.getAlleinigeStekVorjahr());
+		finanzielleSituation.setAbzuegeKinderAusbildung(finanzielleSituationJAXP.getAbzuegeKinderAusbildung());
+		finanzielleSituation.setUnterhaltsBeitraege(finanzielleSituationJAXP.getUnterhaltsBeitraege());
+		finanzielleSituation.setBruttoLohn(finanzielleSituationJAXP.getBruttoLohn());
 		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
 		if(finanzielleSituationJAXP.getSelbstdeklaration() != null) {
 			FinanzielleSituationSelbstdeklaration selbstdeklarationToMerge =
@@ -2769,6 +2772,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setAlleinigeStekVorjahr(persistedFinanzielleSituation.getAlleinigeStekVorjahr());
 		jaxFinanzielleSituation.setVeranlagt(persistedFinanzielleSituation.getVeranlagt());
 		jaxFinanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToJAX(persistedFinanzielleSituation.getSelbstdeklaration()));
+		jaxFinanzielleSituation.setAbzuegeKinderAusbildung(persistedFinanzielleSituation.getAbzuegeKinderAusbildung());
+		jaxFinanzielleSituation.setBruttoLohn(persistedFinanzielleSituation.getBruttoLohn());
+		jaxFinanzielleSituation.setUnterhaltsBeitraege(persistedFinanzielleSituation.getUnterhaltsBeitraege());
 
 		return jaxFinanzielleSituation;
 	}

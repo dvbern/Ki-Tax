@@ -152,6 +152,26 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
+	public void createWizardStepListForSolothurnTest() {
+		final Gesuch myGesuch = TestDataUtil.createAndPersistGesuch(persistence);
+		myGesuch.setFinSitTyp(FinanzielleSituationTyp.SOLOTHURN);
+		final List<WizardStep> wizardStepList = wizardStepService.createWizardStepList(myGesuch);
+		Assert.assertNotNull(wizardStepList);
+		Assert.assertEquals(13, wizardStepList.size());
+
+		var finSitSolothurnFound = false;
+		for (var wizardStep : wizardStepList) {
+			Assert.assertNotEquals(WizardStepName.FINANZIELLE_SITUATION, wizardStep.getWizardStepName());
+			if (wizardStep.getWizardStepName() == WizardStepName.FINANZIELLE_SITUATION_SOLOTHURN) {
+				finSitSolothurnFound = true;
+				Assert.assertFalse(wizardStep.getVerfuegbar());
+				Assert.assertEquals(WizardStepStatus.UNBESUCHT, wizardStep.getWizardStepStatus());
+			}
+		}
+		Assert.assertTrue(finSitSolothurnFound);
+	}
+
+	@Test
 	public void updateWizardStepGesuchErstellen() {
 		final List<WizardStep> wizardSteps = wizardStepService.updateSteps(gesuch.getId(), null, null, WizardStepName.GESUCH_ERSTELLEN);
 		Assert.assertEquals(11, wizardSteps.size());

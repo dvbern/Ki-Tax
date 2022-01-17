@@ -72,6 +72,7 @@ import {SavingInfo} from './component/save-input-info/saving-info.component';
 import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdaten-header.component';
 import {AccordionTabDirective} from './directive/accordion-tab.directive';
 import {AccordionDirective} from './directive/accordion.directive';
+import {EnableElementDirective} from './directive/enable-element.directive';
 import {LoadingButtonDirective} from './directive/loading-button.directive';
 import {NumbersMinMaxDirective} from './directive/numbers-min-max.directive';
 import {TooltipDirective} from './directive/TooltipDirective';
@@ -167,6 +168,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         IeDeprecationWarningComponent,
         DvNavigationXComponent,
         DvInputLabelFieldComponent,
+        EnableElementDirective,
+        DvInputLabelFieldComponent,
         EbeguNumberPipe,
         DvValueinputXComponent
     ],
@@ -232,6 +235,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         EbeguDateTimePipe,
         DvDatePickerXComponent,
         DvNavigationXComponent,
+        DvInputLabelFieldComponent,
+        EnableElementDirective,
         DvInputLabelFieldComponent,
         DvValueinputXComponent
     ],
