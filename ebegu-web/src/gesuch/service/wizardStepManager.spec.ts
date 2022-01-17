@@ -84,7 +84,7 @@ describe('wizardStepManager', () => {
             spyOn(authServiceRS, 'getPrincipalRole').and.returnValue(TSRole.SACHBEARBEITER_BG);
             wizardStepManager.getAllowedSteps().splice(0);
             wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_BG);
-            const expectedSteps = 15;
+            const expectedSteps = 16;
             expect(wizardStepManager.getAllowedSteps().length).toBe(expectedSteps);
             expect(wizardStepManager.getAllowedSteps()[0]).toBe(TSWizardStepName.GESUCH_ERSTELLEN);
             expect(wizardStepManager.getAllowedSteps()[1]).toBe(TSWizardStepName.FAMILIENSITUATION);
@@ -96,11 +96,13 @@ describe('wizardStepManager', () => {
             expect(wizardStepManager.getAllowedSteps()[7]).toBe(TSWizardStepName.ERWERBSPENSUM);
             expect(wizardStepManager.getAllowedSteps()[8]).toBe(TSWizardStepName.FINANZIELLE_SITUATION);
             expect(wizardStepManager.getAllowedSteps()[9]).toBe(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
-            expect(wizardStepManager.getAllowedSteps()[10]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
-            expect(wizardStepManager.getAllowedSteps()[11]).toBe(TSWizardStepName.DOKUMENTE);
-            expect(wizardStepManager.getAllowedSteps()[12]).toBe(TSWizardStepName.FREIGABE);
+            expect(wizardStepManager.getAllowedSteps()[10]).toBe(TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN);
+            expect(wizardStepManager.getAllowedSteps()[11]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+            expect(wizardStepManager.getAllowedSteps()[12]).toBe(TSWizardStepName.DOKUMENTE);
             // tslint:disable-next-line:no-magic-numbers
-            expect(wizardStepManager.getAllowedSteps()[13]).toBe(TSWizardStepName.VERFUEGEN);
+            expect(wizardStepManager.getAllowedSteps()[13]).toBe(TSWizardStepName.FREIGABE);
+            // tslint:disable-next-line:no-magic-numbers
+            expect(wizardStepManager.getAllowedSteps()[14]).toBe(TSWizardStepName.VERFUEGEN);
         });
     });
     describe('findStepsFromGesuch', () => {

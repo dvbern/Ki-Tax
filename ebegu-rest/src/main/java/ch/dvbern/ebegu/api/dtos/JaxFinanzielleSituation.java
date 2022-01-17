@@ -60,6 +60,15 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	@Nullable
 	private JaxFinanzielleSituationSelbstdeklaration selbstdeklaration;
 
+	@Nullable
+	private BigDecimal unterhaltsBeitraege;
+
+	@Nullable
+	private BigDecimal abzuegeKinderAusbildung;
+
+	@Nullable
+	private BigDecimal bruttoLohn;
+
 	public Boolean getSteuerveranlagungErhalten() {
 		return steuerveranlagungErhalten;
 	}
@@ -146,5 +155,32 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	public void setSelbstdeklaration(@Nullable JaxFinanzielleSituationSelbstdeklaration selbstdeklaration) {
 		this.selbstdeklaration = selbstdeklaration;
+	}
+
+	@Nullable
+	public BigDecimal getUnterhaltsBeitraege() {
+		return unterhaltsBeitraege;
+	}
+
+	public void setUnterhaltsBeitraege(@Nullable BigDecimal unterhaltsBeitraege) {
+		this.unterhaltsBeitraege = unterhaltsBeitraege;
+	}
+
+	@Nullable
+	public BigDecimal getAbzuegeKinderAusbildung() {
+		return abzuegeKinderAusbildung;
+	}
+
+	public void setAbzuegeKinderAusbildung(@Nullable BigDecimal abzuegeKinderAusbildung) {
+		this.abzuegeKinderAusbildung = abzuegeKinderAusbildung;
+	}
+
+	@Nullable
+	public BigDecimal getBruttoLohn() {
+		return bruttoLohn;
+	}
+
+	public void setBruttoLohn(@Nullable BigDecimal bruttoLohn) {
+		this.bruttoLohn = bruttoLohn;
 	}
 }
