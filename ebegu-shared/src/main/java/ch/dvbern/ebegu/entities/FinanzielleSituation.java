@@ -79,6 +79,30 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	private Boolean veranlagt;
 
 	@Nullable
+	@Column(nullable = true)
+	private BigDecimal bruttoertraegeVermoegen;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal nettoertraegeErbengemeinschaft;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal nettoVermoegen;
+
+	@Nullable
+	@Column(nullable = true)
+	private Boolean einkommenInVereinfachtemVerfahrenAbgerechnet;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal gewinnungskosten;
+
+	@Nullable
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_finanziellesituation_selbstdeklaration_id"), nullable = true)
 	private FinanzielleSituationSelbstdeklaration selbstdeklaration;
@@ -224,5 +248,61 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			Objects.equals(getQuellenbesteuert(), otherFinSit.getQuellenbesteuert()) &&
 			Objects.equals(getVeranlagt(), otherFinSit.getVeranlagt()) &&
 			Objects.equals(getSelbstdeklaration(), otherFinSit.getSelbstdeklaration());
+	}
+
+	@Nullable
+	public BigDecimal getBruttoertraegeVermoegen() {
+		return bruttoertraegeVermoegen;
+	}
+
+	public void setBruttoertraegeVermoegen(@Nullable BigDecimal bruttoertraegeVermoegen) {
+		this.bruttoertraegeVermoegen = bruttoertraegeVermoegen;
+	}
+
+	@Nullable
+	public BigDecimal getNettoertraegeErbengemeinschaft() {
+		return nettoertraegeErbengemeinschaft;
+	}
+
+	public void setNettoertraegeErbengemeinschaft(@Nullable BigDecimal nettoertraegeErbengemeinschaft) {
+		this.nettoertraegeErbengemeinschaft = nettoertraegeErbengemeinschaft;
+	}
+
+	@Nullable
+	public BigDecimal getNettoVermoegen() {
+		return nettoVermoegen;
+	}
+
+	public void setNettoVermoegen(@Nullable BigDecimal nettoVermoegen) {
+		this.nettoVermoegen = nettoVermoegen;
+	}
+
+	@Nullable
+	public Boolean getEinkommenInVereinfachtemVerfahrenAbgerechnet() {
+		return einkommenInVereinfachtemVerfahrenAbgerechnet;
+	}
+
+	public void setEinkommenInVereinfachtemVerfahrenAbgerechnet(
+			@Nullable Boolean einkommenInVereinfachtemVerfahrenAbgerechnet) {
+		this.einkommenInVereinfachtemVerfahrenAbgerechnet = einkommenInVereinfachtemVerfahrenAbgerechnet;
+	}
+
+	@Nullable
+	public BigDecimal getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet() {
+		return amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+	}
+
+	public void setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(
+			@Nullable BigDecimal amountEinkommenInVereinfachtemVerfahrenAbgerechnet) {
+		this.amountEinkommenInVereinfachtemVerfahrenAbgerechnet = amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+	}
+
+	@Nullable
+	public BigDecimal getGewinnungskosten() {
+		return gewinnungskosten;
+	}
+
+	public void setGewinnungskosten(@Nullable BigDecimal gewinnungskosten) {
+		this.gewinnungskosten = gewinnungskosten;
 	}
 }

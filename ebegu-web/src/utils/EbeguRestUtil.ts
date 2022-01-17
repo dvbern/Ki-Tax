@@ -1849,6 +1849,12 @@ export class EbeguRestUtil {
         restFinanzielleSituation.gemeinsameStekVorjahr = finanzielleSituation.gemeinsameStekVorjahr;
         restFinanzielleSituation.alleinigeStekVorjahr = finanzielleSituation.alleinigeStekVorjahr;
         restFinanzielleSituation.veranlagt = finanzielleSituation.veranlagt;
+        restFinanzielleSituation.gewinnungskosten = finanzielleSituation.gewinnungskosten;
+        restFinanzielleSituation.einkommenInVereinfachtemVerfahrenAbgerechnet = finanzielleSituation.einkommenInVereinfachtemVerfahrenAbgerechnet;
+        restFinanzielleSituation.amountEinkommenInVereinfachtemVerfahrenAbgerechnet = finanzielleSituation.amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+        restFinanzielleSituation.nettoVermoegen = finanzielleSituation.nettoVermoegen;
+        restFinanzielleSituation.nettoertraegeErbengemeinschaft = finanzielleSituation.nettoertraegeErbengemeinschaft;
+        finanzielleSituation.bruttoertraegeVermoegen = finanzielleSituation.bruttoertraegeVermoegen;
         if (finanzielleSituation.selbstdeklaration) {
             restFinanzielleSituation.selbstdeklaration = this.finanzielleSituationSelbstdeklarationToRestObject({}, finanzielleSituation.selbstdeklaration);
         }

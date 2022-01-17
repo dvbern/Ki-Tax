@@ -27,6 +27,12 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     private _gemeinsameStekVorjahr: boolean;
     private _alleinigeStekVorjahr: boolean;
     private _veranlagt: boolean;
+    private _bruttoertraegeVermoegen: number;
+    private _nettoertraegeErbengemeinschaft: number;
+    private _nettoVermoegen: number;
+    private _einkommenInVereinfachtemVerfahrenAbgerechnet: boolean;
+    private _amountEinkommenInVereinfachtemVerfahrenAbgerechnet: number;
+    private _gewinnungskosten: number;
     private _selbstdeklaration: TSFinanzielleSituationSelbstdeklaration;
 
     public constructor() {
@@ -110,6 +116,50 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
     public set selbstdeklaration(value: TSFinanzielleSituationSelbstdeklaration) {
         this._selbstdeklaration = value;
+    }
+
+    public get gewinnungskosten(): number {
+        return this._gewinnungskosten;
+    }
+
+    public set gewinnungskosten(value: number) {
+        this._gewinnungskosten = value;
+    }
+
+    public get amountEinkommenInVereinfachtemVerfahrenAbgerechnet(): number {
+        return this._amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+    }
+
+    public set amountEinkommenInVereinfachtemVerfahrenAbgerechnet(value: number) {
+        this._amountEinkommenInVereinfachtemVerfahrenAbgerechnet = value;
+    }
+
+    public get einkommenInVereinfachtemVerfahrenAbgerechnet(): boolean {
+        return this._einkommenInVereinfachtemVerfahrenAbgerechnet;
+    }
+
+    public get nettoVermoegen(): number {
+        return this._nettoVermoegen;
+    }
+
+    public set nettoVermoegen(value: number) {
+        this._nettoVermoegen = value;
+    }
+
+    public get nettoertraegeErbengemeinschaft(): number {
+        return this._nettoertraegeErbengemeinschaft;
+    }
+
+    public set nettoertraegeErbengemeinschaft(value: number) {
+        this._nettoertraegeErbengemeinschaft = value;
+    }
+
+    public get bruttoertraegeVermoegen(): number {
+        return this._bruttoertraegeVermoegen;
+    }
+
+    public set bruttoertraegeVermoegen(value: number) {
+        this._bruttoertraegeVermoegen = value;
     }
 
     public isSelbstaendig(): boolean {

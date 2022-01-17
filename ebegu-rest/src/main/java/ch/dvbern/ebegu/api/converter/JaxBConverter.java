@@ -2702,6 +2702,13 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus2());
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus1());
 
+		finanzielleSituation.setEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
+		finanzielleSituation.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
+		finanzielleSituation.setGewinnungskosten(finanzielleSituationJAXP.getGewinnungskosten());
+		finanzielleSituation.setBruttoertraegeVermoegen(finanzielleSituation.getBruttoertraegeVermoegen());
+		finanzielleSituation.setNettoertraegeErbengemeinschaft(finanzielleSituation.getNettoertraegeErbengemeinschaft());
+		finanzielleSituation.setNettoVermoegen(finanzielleSituationJAXP.getNettoVermoegen());
+
 		finanzielleSituation.setQuellenbesteuert(finanzielleSituationJAXP.getQuellenbesteuert());
 		finanzielleSituation.setGemeinsameStekVorjahr(finanzielleSituationJAXP.getGemeinsameStekVorjahr());
 		finanzielleSituation.setAlleinigeStekVorjahr(finanzielleSituationJAXP.getAlleinigeStekVorjahr());
@@ -2768,6 +2775,12 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setGemeinsameStekVorjahr(persistedFinanzielleSituation.getGemeinsameStekVorjahr());
 		jaxFinanzielleSituation.setAlleinigeStekVorjahr(persistedFinanzielleSituation.getAlleinigeStekVorjahr());
 		jaxFinanzielleSituation.setVeranlagt(persistedFinanzielleSituation.getVeranlagt());
+		jaxFinanzielleSituation.setGewinnungskosten(persistedFinanzielleSituation.getGewinnungskosten());
+		jaxFinanzielleSituation.setNettoertraegeErbengemeinschaft(persistedFinanzielleSituation.getNettoertraegeErbengemeinschaft());
+		jaxFinanzielleSituation.setEinkommenInVereinfachtemVerfahrenAbgerechnet(persistedFinanzielleSituation.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
+		jaxFinanzielleSituation.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(persistedFinanzielleSituation.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
+		jaxFinanzielleSituation.setBruttoertraegeVermoegen(persistedFinanzielleSituation.getBruttoertraegeVermoegen());
+		jaxFinanzielleSituation.setNettoVermoegen(persistedFinanzielleSituation.getNettoVermoegen());
 		jaxFinanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToJAX(persistedFinanzielleSituation.getSelbstdeklaration()));
 
 		return jaxFinanzielleSituation;
