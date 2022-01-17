@@ -19,9 +19,11 @@ package ch.dvbern.ebegu.ws.neskovanp;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Objects;
 
+import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.xml.namespace.QName;
@@ -35,9 +37,15 @@ import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.InvalidArgum
 import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.KiBonAnfragePort;
 import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.PermissionDeniedFault;
 import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.SteuerDatenResponseType;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.dto.neskovanp.SteuerdatenResponse;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.SteuerdatenAnfrageLog;
+import ch.dvbern.ebegu.entities.SteuerdatenRequest;
+import ch.dvbern.ebegu.entities.SteuerdatenResponse;
+import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
+import ch.dvbern.ebegu.services.SteuerdatenAnfrageLogService;
 import ch.dvbern.ebegu.ws.neskovanp.sts.WSSSecurityKibonAnfrageAssertionOutboundHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -59,6 +67,12 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 
 	private KiBonAnfragePort port;
 
+	@Inject
+	private PrincipalBean principalBean;
+
+	@Inject
+	private SteuerdatenAnfrageLogService steuerdatenAnfrageLogService;
+
 	@Override
 	public SteuerdatenResponse getSteuerDaten(
 		Integer zpvNummer,
@@ -66,34 +80,65 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 		String kibonAntragId,
 		Integer gesuchsperiodeBeginnJahr) throws KiBonAnfrageServiceException {
 		final String methodName = "KibonAnfrageService#getSteuerdaten";
-		SteuerDatenResponseType steuerDatenResponseType = null;
+		SteuerdatenResponse steuerdatenResponse = null;
+		Exception exceptionReceived = null;
+		LocalDateTime startDate = LocalDateTime.now();
+
 		try {
-			steuerDatenResponseType = getServicePort().getSteuerdaten(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr);
-			SteuerdatenResponse steuerdatenResponse = KibonAnfrageConverter.convertFromKibonAnfrage(steuerDatenResponseType);
+			SteuerDatenResponseType steuerDatenResponseType = getServicePort().getSteuerdaten(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr);
+			steuerdatenResponse = KibonAnfrageConverter.convertFromKibonAnfrage(steuerDatenResponseType);
 			return steuerdatenResponse;
 		}
 		catch(BusinessFault businessFault) {
 			String msg = createFaultLogmessage("BusinessFault" ,methodName, businessFault.getMessage(), businessFault.getFaultInfo());
 			LOGGER.error(msg);
+			exceptionReceived = businessFault;
 			throw new KiBonAnfrageServiceException(methodName, msg, businessFault);
 		}
 		catch(InfrastructureFault infrastructureFault) {
 			String msg = createFaultLogmessage("InfrastructureFault" ,methodName, infrastructureFault.getMessage(), infrastructureFault.getFaultInfo());
 			LOGGER.error(msg);
+			exceptionReceived = infrastructureFault;
 			throw new KiBonAnfrageServiceException(methodName, msg, infrastructureFault);
 		}
 		catch (InvalidArgumentsFault invalidArgumentsFault) {
 			String msg = createFaultLogmessage("InvalidArgumentsFault" ,methodName, invalidArgumentsFault.getMessage(), invalidArgumentsFault.getFaultInfo());
 			LOGGER.error(msg);
+			exceptionReceived = invalidArgumentsFault;
 			throw new KiBonAnfrageServiceException(methodName, msg, invalidArgumentsFault);
 		}
 		catch (PermissionDeniedFault permissionDeniedFault) {
 			String msg = createFaultLogmessage("PermissionDeniedFault" ,methodName, permissionDeniedFault.getMessage(), permissionDeniedFault.getFaultInfo());
 			LOGGER.error(msg);
+			exceptionReceived = permissionDeniedFault;
 			throw new KiBonAnfrageServiceException(methodName, msg, permissionDeniedFault);
+		}
+		catch (Exception e) {
+			exceptionReceived = e;
+			throw e;
+		}
+		finally {
+			writeAuditLogForKibonAnfrageCall(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr, startDate, steuerdatenResponse, exceptionReceived);
 		}
 	}
 
+	private void writeAuditLogForKibonAnfrageCall(
+		Integer zpvNummer,
+		LocalDate geburtsdatum,
+		String kibonAntragId,
+		Integer gesuchsperiodeBeginnJahr,
+		LocalDateTime startDate,
+		SteuerdatenResponse steuerDatenResponse,
+		@Nullable  Exception exceptionReceived) {
+
+		Benutzer benutzer = principalBean.getBenutzer();
+
+		SteuerdatenRequest request = new SteuerdatenRequest(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr);
+		SteuerdatenAnfrageStatus status = exceptionReceived == null ? SteuerdatenAnfrageStatus.SUCCESS : SteuerdatenAnfrageStatus.FAILED;
+		String faultReceived = exceptionReceived != null ? exceptionReceived.getMessage() : null;
+		SteuerdatenAnfrageLog anfrageLog = new SteuerdatenAnfrageLog(startDate, benutzer, status, faultReceived, request, steuerDatenResponse);
+		steuerdatenAnfrageLogService.saveSteuerdatenAnfrageLog(anfrageLog);
+	}
 
 	private KiBonAnfragePort getServicePort() throws KiBonAnfrageServiceException {
 		if(port == null){
