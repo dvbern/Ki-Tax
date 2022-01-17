@@ -2729,5 +2729,6 @@
     "ABRECHNUNG_DER_GUTSCHEINE": "Die Auszahlung der Gutscheine erfolgt",
     "UEBER_ELTERN": "über die Eltern",
     "UEBER_INSTITUTION": "über die Institution",
+    "ERROR_UNKNOWN_HOST": "Un système tier n'a pas été trouvé, l'URL ne semble pas exister",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

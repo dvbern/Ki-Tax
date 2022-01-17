@@ -1077,16 +1077,25 @@ public class GesuchResource {
 	) throws EbeguException {
 		// Achtung dieser Resource ist nur fuer Tests geeignet, soll niemals Produktiv verwendet werden!!!
 		if(!configuration.getIsDevmode()) {
-			LOG.warn("Tried to trigger Search in KibonAnfrage with a test method in a non-dev environment");
-			return null;
+			String errorMessage = "Dieser Funktion ist nicht erlaubt im Produktive Umgebung";
+			LOG.warn(errorMessage);
+			throw new EbeguRuntimeException(
+				"getSteuerdaten",
+				errorMessage,
+				errorMessage,
+				kibonAnfrage.getAntragId());
 		}
 
-		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(kibonAnfrage.getAntragId());
-
-		if (!gesuchOptional.isPresent()) {
-			LOG.warn("Tried to trigger Search in KibonAnfrage for non-exisiting antragId");
-			return null;
+		if (!configuration.getKibonAnfrageTestUuid().equals(kibonAnfrage.getAntragId().trim())) {
+			String errorMessage = "Der eingegebene UUID stimmt nicht mit der Konfiguration";
+			LOG.warn(errorMessage);
+			throw new EbeguRuntimeException(
+				"getSteuerdaten",
+				errorMessage,
+				errorMessage,
+				kibonAnfrage.getAntragId());
 		}
+
 		return kibonAnfrageService.getSteuerDaten(
 			kibonAnfrage.getZpvNummer(),
 			kibonAnfrage.getGeburtsdatum(),

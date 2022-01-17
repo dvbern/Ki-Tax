@@ -360,4 +360,6 @@ public interface EbeguConfiguration {
 	String getEbeguKibonAnfrageSTSWsdl();
 
 	String getEbeguKibonAnfrageSTSRenewalAssertionEndpoint();
+
+	String getKibonAnfrageTestUuid();
 }
