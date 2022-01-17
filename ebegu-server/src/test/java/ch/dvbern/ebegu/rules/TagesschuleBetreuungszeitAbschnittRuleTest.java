@@ -43,13 +43,14 @@ public class TagesschuleBetreuungszeitAbschnittRuleTest extends AbstractBGRechne
 	private TagesschuleRechner rechner = new TagesschuleRechner();
 	private Gesuch gesuch;
 	private AnmeldungTagesschule anmeldungTagesschule;
+	private KindContainer kindContainer;
 
 	private static final MathUtil MATH = MathUtil.DEFAULT;
 
 	@Before
 	public void setUp() {
 		gesuch = TestDataUtil.createTestgesuchDagmar(new FinanzielleSituationBernRechner());
-		KindContainer kindContainer = gesuch.getKindContainers().iterator().next();
+		kindContainer = gesuch.getKindContainers().iterator().next();
 		anmeldungTagesschule = TestDataUtil.createAnmeldungTagesschuleWithModules(kindContainer, gesuch.getGesuchsperiode());//initAnmedlungTagesschule();
 	}
 
@@ -69,6 +70,16 @@ public class TagesschuleBetreuungszeitAbschnittRuleTest extends AbstractBGRechne
 
 		VerfuegungZeitabschnitt abschnittAnspruch = zeitabschnitte.get(0);
 		assertZeitabschnitt_100000(abschnittAnspruch);
+	}
+
+	@Test
+	public void testEinkommen100000Kesb(){
+		anmeldungTagesschule = TestDataUtil.createKesbAnmeldungTagesschuleWithModules(kindContainer, gesuch.getGesuchsperiode());
+		List<VerfuegungZeitabschnitt> zeitabschnitte = calculate(100000, FinSitStatus.AKZEPTIERT);
+		Assert.assertEquals(1, zeitabschnitte.size());
+
+		VerfuegungZeitabschnitt abschnittAnspruch = zeitabschnitte.get(0);
+		assertZeitabschnitt_100000Kesb(abschnittAnspruch);
 	}
 
 	@Test
@@ -156,6 +167,25 @@ public class TagesschuleBetreuungszeitAbschnittRuleTest extends AbstractBGRechne
 		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(3.38)), resultOhneBetreuung.getGebuehrProStunde());
 		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(10)), resultOhneBetreuung.getVerpflegungskosten());
 		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(13.38)), resultOhneBetreuung.getTotalKostenProWoche());
+	}
+
+	private void assertZeitabschnitt_100000Kesb(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+		TSCalculationResult resultMitBetreuung = zeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultMitPaedagogischerBetreuung();
+		TSCalculationResult resultOhneBetreuung = zeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultOhnePaedagogischerBetreuung();
+		Assert.assertNotNull(resultMitBetreuung);
+		Assert.assertNotNull(resultOhneBetreuung);
+
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(100000)), zeitabschnitt.getMassgebendesEinkommen());
+
+		Assert.assertEquals("04:00", resultMitBetreuung.getBetreuungszeitProWocheFormatted());
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(12.24)), resultMitBetreuung.getGebuehrProStunde());
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(20)), resultMitBetreuung.getVerpflegungskosten());
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(68.96)), resultMitBetreuung.getTotalKostenProWoche());
+
+		Assert.assertEquals("01:00", resultOhneBetreuung.getBetreuungszeitProWocheFormatted());
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(6.11)), resultOhneBetreuung.getGebuehrProStunde());
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(10)), resultOhneBetreuung.getVerpflegungskosten());
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(16.11)), resultOhneBetreuung.getTotalKostenProWoche());
 	}
 
 	private void assertZeitabschnitt_120000(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {

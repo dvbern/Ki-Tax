@@ -3198,6 +3198,7 @@ public class JaxBConverter extends AbstractConverter {
 		belegungTagesschule.setAbholungTagesschule(belegungTagesschuleJAXP.getAbholungTagesschule());
 		belegungTagesschule.setPlanKlasse(belegungTagesschuleJAXP.getPlanKlasse());
 		belegungTagesschule.setAbweichungZweitesSemester(belegungTagesschuleJAXP.isAbweichungZweitesSemester());
+		belegungTagesschule.setKeineKesbPlatzierung(belegungTagesschuleJAXP.isKeineKesbPlatzierung());
 		belegungTagesschule.setBemerkung(belegungTagesschuleJAXP.getBemerkung());
 		return belegungTagesschule;
 	}
@@ -3648,6 +3649,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBelegungTagesschule.setAbholungTagesschule(belegungFromServer.getAbholungTagesschule());
 		jaxBelegungTagesschule.setPlanKlasse(belegungFromServer.getPlanKlasse());
 		jaxBelegungTagesschule.setAbweichungZweitesSemester(belegungFromServer.isAbweichungZweitesSemester());
+		jaxBelegungTagesschule.setKeineKesbPlatzierung(belegungFromServer.isKeineKesbPlatzierung());
 		jaxBelegungTagesschule.setBemerkung(belegungFromServer.getBemerkung());
 
 		return jaxBelegungTagesschule;
