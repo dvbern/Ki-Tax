@@ -120,8 +120,9 @@ public class VerfuegungsBemerkungDTOListTest {
 
 		List<VerfuegungsBemerkungDTO> result = bemerkungList.getRequiredBemerkungen();
 		Assert.assertEquals(2, result.size());
-		Assert.assertEquals(dateRangeLastHalfAugust, result.get(0).getGueltigkeit());
-		Assert.assertEquals(dateRangeFirstHalfAugust, result.get(1).getGueltigkeit());
+
+		Assert.assertEquals(dateRangeFirstHalfAugust, result.get(0).getGueltigkeit());
+		Assert.assertEquals(dateRangeLastHalfAugust, result.get(1).getGueltigkeit());
 	}
 
 	@Test
