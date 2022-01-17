@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -17,29 +17,31 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.time.LocalDate;
+import java.util.Objects;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
-import ch.dvbern.ebegu.entities.SteuerdatenResponse;
-import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
-import ch.dvbern.ebegu.ws.neskovanp.IKibonAnfrageWebService;
+import ch.dvbern.ebegu.entities.SteuerdatenAnfrageLog;
+import ch.dvbern.lib.cdipersistence.Persistence;
 
 @Stateless
-@Local(KibonAnfrageService.class)
-public class KibonAnfrageServiceBean implements KibonAnfrageService {
+@Local(SteuerdatenAnfrageLogService.class)
+public class SteuerdatenAnfrageLogServiceBean extends AbstractBaseService implements SteuerdatenAnfrageLogService {
 
 	@Inject
-	private IKibonAnfrageWebService kibonAnfrageWebService;
+	private Persistence persistence;
 
+	@Nonnull
 	@Override
-	@Nullable
-	public SteuerdatenResponse getSteuerDaten(Integer zpvNummer, LocalDate geburtsdatum, String kibonAntragId, Integer gesuchsperiodeBeginnJahr)
-		throws KiBonAnfrageServiceException {
-		return kibonAnfrageWebService.getSteuerDaten(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr);
+	@Transactional(TxType.REQUIRES_NEW)
+	public SteuerdatenAnfrageLog saveSteuerdatenAnfrageLog(@Nonnull SteuerdatenAnfrageLog steuerdatenAnfrageLog) {
+		Objects.requireNonNull(steuerdatenAnfrageLog, "SteuerdatenAnfrageLog muss gesetzt sein");
+		return persistence.persist(steuerdatenAnfrageLog);
 	}
 
 }
