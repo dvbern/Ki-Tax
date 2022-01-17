@@ -33,6 +33,8 @@ import org.apache.commons.lang3.StringUtils;
 @Entity
 public class SteuerdatenResponse extends AbstractEntity {
 
+	private static final long serialVersionUID = -730016129801497214L;
+
 	@Nullable
 	@Column(nullable = true)
 	private Integer zpvNrAntragsteller;
