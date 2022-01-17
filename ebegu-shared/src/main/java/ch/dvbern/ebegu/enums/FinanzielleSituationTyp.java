@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.enums;
  */
 public enum FinanzielleSituationTyp {
 	BERN,
+	LUZERN,
+	SOLOTHURN,
 	BERN_FKJV,
-	LUZERN
 }

@@ -21,7 +21,7 @@ import java.time.LocalDate;
 
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.dto.neskovanp.SteuerdatenResponse;
+import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
 
 public interface KibonAnfrageService {

@@ -19,6 +19,7 @@ import {FinanzielleSituationRS} from '../../../../gesuch/service/finanzielleSitu
 import {FinanzielleSituationSubStepManager} from '../../../../gesuch/service/finanzielleSituationSubStepManager';
 import {FinanzielleSituationSubStepManagerBernAsiv} from '../../../../gesuch/service/finanzielleSituationSubStepManagerBernAsiv';
 import {FinanzielleSituationSubStepManagerLuzern} from '../../../../gesuch/service/finanzielleSituationSubStepManagerLuzern';
+import {FinanzielleSituationSubStepManagerSolothurn} from '../../../../gesuch/service/finanzielleSituationSubStepManagerSolothurn';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
@@ -133,6 +134,10 @@ export class NavigatorController implements IController {
                     case TSFinanzielleSituationTyp.LUZERN:
                         this.finSitWizardSubStepManager =
                             new FinanzielleSituationSubStepManagerLuzern(this.gesuchModelManager);
+                        break;
+                    case TSFinanzielleSituationTyp.SOLOTHURN:
+                        this.finSitWizardSubStepManager =
+                            new FinanzielleSituationSubStepManagerSolothurn(this.gesuchModelManager);
                         break;
                     default:
                         throw new Error(`unexpected TSFinanzielleSituationTyp ${typ}`);
@@ -295,7 +300,8 @@ export class NavigatorController implements IController {
             return undefined;
         }
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()
-            || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()) {
+            || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()
+            || TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
             const nextSubStep = this.finSitWizardSubStepManager.getNextSubStepFinanzielleSituation(this.dvSubStepName);
             const nextMainStep = this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch());
             return this.navigateToSubStepFinanzielleSituation(
@@ -368,7 +374,8 @@ export class NavigatorController implements IController {
         }
 
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()
-            || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()) {
+            || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()
+            || TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
             const previousSubStep = this.finSitWizardSubStepManager.getPreviousSubStepFinanzielleSituation(this.dvSubStepName);
             const previousMainStep = this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch());
 
@@ -459,6 +466,8 @@ export class NavigatorController implements IController {
                 return this.state.go('gesuch.finanzielleSituationStart', gesuchIdParam);
             case TSWizardStepName.FINANZIELLE_SITUATION_LUZERN:
                 return this.state.go('gesuch.finanzielleSituationStartLuzern', gesuchIdParam);
+            case TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN:
+                return this.state.go('gesuch.finanzielleSituationStartSolothurn', gesuchIdParam);
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG:
                 return this.state.go('gesuch.einkommensverschlechterungInfo', gesuchIdParam);
             case TSWizardStepName.DOKUMENTE:

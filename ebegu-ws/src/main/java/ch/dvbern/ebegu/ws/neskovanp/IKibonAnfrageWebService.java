@@ -19,7 +19,7 @@ package ch.dvbern.ebegu.ws.neskovanp;
 
 import java.time.LocalDate;
 
-import ch.dvbern.ebegu.dto.neskovanp.SteuerdatenResponse;
+import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
 
 public interface IKibonAnfrageWebService {

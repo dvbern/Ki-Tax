@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.api.dtos;
 import java.math.BigDecimal;
 
 import javax.annotation.Nullable;
-import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -60,6 +59,15 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	@Nullable
 	private JaxFinanzielleSituationSelbstdeklaration selbstdeklaration;
+
+	@Nullable
+	private BigDecimal unterhaltsBeitraege;
+
+	@Nullable
+	private BigDecimal abzuegeKinderAusbildung;
+
+	@Nullable
+	private BigDecimal bruttoLohn;
 
 	public Boolean getSteuerveranlagungErhalten() {
 		return steuerveranlagungErhalten;
@@ -149,4 +157,30 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 		this.selbstdeklaration = selbstdeklaration;
 	}
 
+	@Nullable
+	public BigDecimal getUnterhaltsBeitraege() {
+		return unterhaltsBeitraege;
+	}
+
+	public void setUnterhaltsBeitraege(@Nullable BigDecimal unterhaltsBeitraege) {
+		this.unterhaltsBeitraege = unterhaltsBeitraege;
+	}
+
+	@Nullable
+	public BigDecimal getAbzuegeKinderAusbildung() {
+		return abzuegeKinderAusbildung;
+	}
+
+	public void setAbzuegeKinderAusbildung(@Nullable BigDecimal abzuegeKinderAusbildung) {
+		this.abzuegeKinderAusbildung = abzuegeKinderAusbildung;
+	}
+
+	@Nullable
+	public BigDecimal getBruttoLohn() {
+		return bruttoLohn;
+	}
+
+	public void setBruttoLohn(@Nullable BigDecimal bruttoLohn) {
+		this.bruttoLohn = bruttoLohn;
+	}
 }
