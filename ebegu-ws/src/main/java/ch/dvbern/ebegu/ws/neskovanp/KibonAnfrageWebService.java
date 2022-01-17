@@ -37,9 +37,7 @@ import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.InvalidArgum
 import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.KiBonAnfragePort;
 import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.PermissionDeniedFault;
 import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.SteuerDatenResponseType;
-import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.SteuerdatenAnfrageLog;
 import ch.dvbern.ebegu.entities.SteuerdatenRequest;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
@@ -66,9 +64,6 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 	private EbeguConfiguration config;
 
 	private KiBonAnfragePort port;
-
-	@Inject
-	private PrincipalBean principalBean;
 
 	@Inject
 	private SteuerdatenAnfrageLogService steuerdatenAnfrageLogService;
@@ -131,12 +126,10 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 		SteuerdatenResponse steuerDatenResponse,
 		@Nullable  Exception exceptionReceived) {
 
-		Benutzer benutzer = principalBean.getBenutzer();
-
 		SteuerdatenRequest request = new SteuerdatenRequest(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr);
 		SteuerdatenAnfrageStatus status = exceptionReceived == null ? SteuerdatenAnfrageStatus.SUCCESS : SteuerdatenAnfrageStatus.FAILED;
 		String faultReceived = exceptionReceived != null ? exceptionReceived.getMessage() : null;
-		SteuerdatenAnfrageLog anfrageLog = new SteuerdatenAnfrageLog(startDate, benutzer, status, faultReceived, request, steuerDatenResponse);
+		SteuerdatenAnfrageLog anfrageLog = new SteuerdatenAnfrageLog(startDate, status, faultReceived, request, steuerDatenResponse);
 		steuerdatenAnfrageLogService.saveSteuerdatenAnfrageLog(anfrageLog);
 	}
 

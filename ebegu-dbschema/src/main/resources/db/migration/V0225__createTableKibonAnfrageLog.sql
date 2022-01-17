@@ -23,7 +23,6 @@ CREATE TABLE steuerdaten_anfrage_log (
 	user_mutiert varchar(255) not null,
 	timestamp_sent datetime not null,
 	status varchar(255) not null,
-    benutzer_id binary(16) not null,
     request_id binary(16) not null,
     response_id binary(16),
 	fault_received VARCHAR(255),
@@ -89,11 +88,6 @@ create table steuerdaten_request (
 	gesuchsperiode_beginn_jahr bigint not null,
 	PRIMARY KEY (id)
 );
-
-alter table steuerdaten_anfrage_log
-add constraint FK_steuerdaten_anfrage_log_benutzer
-	foreign key (benutzer_id)
-		references benutzer(id);
 
 alter table steuerdaten_anfrage_log
 add constraint FK_steuerdaten_anfrage_log_request

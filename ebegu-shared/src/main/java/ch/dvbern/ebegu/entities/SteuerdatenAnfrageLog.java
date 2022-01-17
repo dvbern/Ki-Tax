@@ -26,10 +26,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
@@ -44,11 +42,6 @@ public class SteuerdatenAnfrageLog extends AbstractEntity {
 	@NotNull
 	@Column(nullable = false)
 	private LocalDateTime timestampSent;
-
-	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_steuerdaten_anfrage_log_benutzer"))
-	private Benutzer benutzer;
 
 	@NotNull
 	@Column(nullable = false)
@@ -74,13 +67,11 @@ public class SteuerdatenAnfrageLog extends AbstractEntity {
 
 	public SteuerdatenAnfrageLog(
 		LocalDateTime timestampSent,
-		Benutzer userSentRequest,
 		SteuerdatenAnfrageStatus status,
 		@Nullable String faultReceived,
 		SteuerdatenRequest request,
 		@Nullable SteuerdatenResponse response) {
 		this.timestampSent = timestampSent;
-		this.benutzer = userSentRequest;
 		this.status = status;
 		this.faultReceived = faultReceived;
 		this.request = request;
@@ -110,15 +101,6 @@ public class SteuerdatenAnfrageLog extends AbstractEntity {
 
 	public void setFaultReceived(@Nullable String faultReceived) {
 		this.faultReceived = faultReceived;
-	}
-
-
-	public Benutzer getBenutzer() {
-		return benutzer;
-	}
-
-	public void setBenutzer(Benutzer userSentRequest) {
-		this.benutzer = userSentRequest;
 	}
 
 	public @Nullable
@@ -155,7 +137,6 @@ public class SteuerdatenAnfrageLog extends AbstractEntity {
 		final SteuerdatenAnfrageLog otherAnfrage = (SteuerdatenAnfrageLog) other;
 		return StringUtils.equals(this.faultReceived, otherAnfrage.faultReceived) &&
 			this.timestampSent.equals(otherAnfrage.timestampSent) &&
-			Objects.equals(this.benutzer, otherAnfrage.benutzer) &&
 			Objects.equals(this.request, otherAnfrage.request) &&
 			Objects.equals(this.response, otherAnfrage.response) &&
 			this.status == otherAnfrage.status;
