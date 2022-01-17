@@ -1849,13 +1849,6 @@ export class EbeguRestUtil {
         restFinanzielleSituation.gemeinsameStekVorjahr = finanzielleSituation.gemeinsameStekVorjahr;
         restFinanzielleSituation.alleinigeStekVorjahr = finanzielleSituation.alleinigeStekVorjahr;
         restFinanzielleSituation.veranlagt = finanzielleSituation.veranlagt;
-        restFinanzielleSituation.gewinnungskosten = finanzielleSituation.gewinnungskosten;
-        restFinanzielleSituation.einkommenInVereinfachtemVerfahrenAbgerechnet = finanzielleSituation.einkommenInVereinfachtemVerfahrenAbgerechnet;
-        restFinanzielleSituation.amountEinkommenInVereinfachtemVerfahrenAbgerechnet = finanzielleSituation.amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
-        restFinanzielleSituation.nettoVermoegen = finanzielleSituation.nettoVermoegen;
-        restFinanzielleSituation.nettoertraegeErbengemeinschaft = finanzielleSituation.nettoertraegeErbengemeinschaft;
-        restFinanzielleSituation.abzugSchuldzinsen = finanzielleSituation.abzugSchuldzinsen;
-        finanzielleSituation.bruttoertraegeVermoegen = finanzielleSituation.bruttoertraegeVermoegen;
         if (finanzielleSituation.selbstdeklaration) {
             restFinanzielleSituation.selbstdeklaration = this.finanzielleSituationSelbstdeklarationToRestObject({}, finanzielleSituation.selbstdeklaration);
         }
@@ -1881,6 +1874,14 @@ export class EbeguRestUtil {
         restAbstractFinanzielleSituation.geschaeftsverlust = abstractFinanzielleSituation.geschaeftsverlust;
         restAbstractFinanzielleSituation.abzuegeLiegenschaft = abstractFinanzielleSituation.abzuegeLiegenschaft;
         restAbstractFinanzielleSituation.einkaeufeVorsorge = abstractFinanzielleSituation.einkaeufeVorsorge;
+
+        restAbstractFinanzielleSituation.gewinnungskosten = abstractFinanzielleSituation.gewinnungskosten;
+        restAbstractFinanzielleSituation.einkommenInVereinfachtemVerfahrenAbgerechnet = abstractFinanzielleSituation.einkommenInVereinfachtemVerfahrenAbgerechnet;
+        restAbstractFinanzielleSituation.amountEinkommenInVereinfachtemVerfahrenAbgerechnet = abstractFinanzielleSituation.amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+        restAbstractFinanzielleSituation.nettoVermoegen = abstractFinanzielleSituation.nettoVermoegen;
+        restAbstractFinanzielleSituation.nettoertraegeErbengemeinschaft = abstractFinanzielleSituation.nettoertraegeErbengemeinschaft;
+        restAbstractFinanzielleSituation.abzugSchuldzinsen = abstractFinanzielleSituation.abzugSchuldzinsen;
+        restAbstractFinanzielleSituation.bruttoertraegeVermoegen = abstractFinanzielleSituation.bruttoertraegeVermoegen;
 
         return restAbstractFinanzielleSituation;
     }
@@ -1948,6 +1949,17 @@ export class EbeguRestUtil {
             abstractFinanzielleSituationTS.abzuegeLiegenschaft =
                 abstractFinanzielleSituationFromServer.abzuegeLiegenschaft;
             abstractFinanzielleSituationTS.einkaeufeVorsorge = abstractFinanzielleSituationFromServer.einkaeufeVorsorge;
+
+            abstractFinanzielleSituationTS.abzugSchuldzinsen = abstractFinanzielleSituationFromServer.abzugSchuldzinsen;
+            abstractFinanzielleSituationTS.nettoertraegeErbengemeinschaft = abstractFinanzielleSituationFromServer.nettoertraegeErbengemeinschaft;
+            abstractFinanzielleSituationTS.nettoVermoegen = abstractFinanzielleSituationFromServer.nettoVermoegen;
+            abstractFinanzielleSituationTS.einkommenInVereinfachtemVerfahrenAbgerechnet =
+                abstractFinanzielleSituationFromServer.einkommenInVereinfachtemVerfahrenAbgerechnet;
+            abstractFinanzielleSituationTS.amountEinkommenInVereinfachtemVerfahrenAbgerechnet =
+                abstractFinanzielleSituationFromServer.amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+            abstractFinanzielleSituationTS.gewinnungskosten = abstractFinanzielleSituationFromServer.gewinnungskosten;
+            abstractFinanzielleSituationTS.bruttoertraegeVermoegen = abstractFinanzielleSituationFromServer.bruttoertraegeVermoegen;
+
             return abstractFinanzielleSituationTS;
         }
         return undefined;
@@ -1969,15 +1981,6 @@ export class EbeguRestUtil {
                 finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus2;
             finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus1 =
                 finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus1;
-            finanzielleSituationTS.abzugSchuldzinsen = finanzielleSituationFromServer.abzugSchuldzinsen;
-            finanzielleSituationTS.nettoertraegeErbengemeinschaft = finanzielleSituationFromServer.nettoertraegeErbengemeinschaft;
-            finanzielleSituationTS.nettoVermoegen = finanzielleSituationFromServer.nettoVermoegen;
-            finanzielleSituationTS.einkommenInVereinfachtemVerfahrenAbgerechnet =
-                finanzielleSituationFromServer.einkommenInVereinfachtemVerfahrenAbgerechnet;
-            finanzielleSituationTS.amountEinkommenInVereinfachtemVerfahrenAbgerechnet =
-                finanzielleSituationFromServer.amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
-            finanzielleSituationTS.gewinnungskosten = finanzielleSituationFromServer.gewinnungskosten;
-            finanzielleSituationTS.bruttoertraegeVermoegen = finanzielleSituationFromServer.bruttoertraegeVermoegen;
             finanzielleSituationTS.quellenbesteuert = finanzielleSituationFromServer.quellenbesteuert;
             finanzielleSituationTS.gemeinsameStekVorjahr = finanzielleSituationFromServer.gemeinsameStekVorjahr;
             finanzielleSituationTS.alleinigeStekVorjahr = finanzielleSituationFromServer.alleinigeStekVorjahr;

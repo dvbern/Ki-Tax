@@ -83,6 +83,34 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	private BigDecimal einkaeufeVorsorge;
 
 	@Nullable
+	@Column(nullable = true)
+	private BigDecimal bruttoertraegeVermoegen;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal nettoertraegeErbengemeinschaft;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal nettoVermoegen;
+
+	@Nullable
+	@Column(nullable = true)
+	private Boolean einkommenInVereinfachtemVerfahrenAbgerechnet;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal gewinnungskosten;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal abzugSchuldzinsen;
+
+	@Nullable
 	@Transient
 	private BigDecimal durchschnittlicherGeschaeftsgewinn;
 
@@ -205,6 +233,71 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 
 	public void setEinkaeufeVorsorge(BigDecimal einkaeufeVorsorge) {
 		this.einkaeufeVorsorge = einkaeufeVorsorge;
+	}
+
+	@Nullable
+	public BigDecimal getBruttoertraegeVermoegen() {
+		return bruttoertraegeVermoegen;
+	}
+
+	public void setBruttoertraegeVermoegen(@Nullable BigDecimal bruttoertraegeVermoegen) {
+		this.bruttoertraegeVermoegen = bruttoertraegeVermoegen;
+	}
+
+	@Nullable
+	public BigDecimal getNettoertraegeErbengemeinschaft() {
+		return nettoertraegeErbengemeinschaft;
+	}
+
+	public void setNettoertraegeErbengemeinschaft(@Nullable BigDecimal nettoertraegeErbengemeinschaft) {
+		this.nettoertraegeErbengemeinschaft = nettoertraegeErbengemeinschaft;
+	}
+
+	@Nullable
+	public BigDecimal getNettoVermoegen() {
+		return nettoVermoegen;
+	}
+
+	public void setNettoVermoegen(@Nullable BigDecimal nettoVermoegen) {
+		this.nettoVermoegen = nettoVermoegen;
+	}
+
+	@Nullable
+	public Boolean getEinkommenInVereinfachtemVerfahrenAbgerechnet() {
+		return einkommenInVereinfachtemVerfahrenAbgerechnet;
+	}
+
+	public void setEinkommenInVereinfachtemVerfahrenAbgerechnet(
+			@Nullable Boolean einkommenInVereinfachtemVerfahrenAbgerechnet) {
+		this.einkommenInVereinfachtemVerfahrenAbgerechnet = einkommenInVereinfachtemVerfahrenAbgerechnet;
+	}
+
+	@Nullable
+	public BigDecimal getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet() {
+		return amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+	}
+
+	public void setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(
+			@Nullable BigDecimal amountEinkommenInVereinfachtemVerfahrenAbgerechnet) {
+		this.amountEinkommenInVereinfachtemVerfahrenAbgerechnet = amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+	}
+
+	@Nullable
+	public BigDecimal getGewinnungskosten() {
+		return gewinnungskosten;
+	}
+
+	public void setGewinnungskosten(@Nullable BigDecimal gewinnungskosten) {
+		this.gewinnungskosten = gewinnungskosten;
+	}
+
+	@Nullable
+	public BigDecimal getAbzugSchuldzinsen() {
+		return abzugSchuldzinsen;
+	}
+
+	public void setAbzugSchuldzinsen(@Nullable BigDecimal abzugSchuldzinsen) {
+		this.abzugSchuldzinsen = abzugSchuldzinsen;
 	}
 
 	@Nonnull

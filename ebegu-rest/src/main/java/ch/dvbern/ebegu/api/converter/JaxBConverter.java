@@ -2654,6 +2654,15 @@ public class JaxBConverter extends AbstractConverter {
 		abstractFinanzielleSituation.setGeschaeftsgewinnBasisjahr(abstractFinanzielleSituationJAXP.getGeschaeftsgewinnBasisjahr());
 		abstractFinanzielleSituation.setGeleisteteAlimente(abstractFinanzielleSituationJAXP.getGeleisteteAlimente());
 
+		abstractFinanzielleSituation.setEinkommenInVereinfachtemVerfahrenAbgerechnet(abstractFinanzielleSituationJAXP.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
+		abstractFinanzielleSituation.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(abstractFinanzielleSituationJAXP.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
+		abstractFinanzielleSituation.setGewinnungskosten(abstractFinanzielleSituationJAXP.getGewinnungskosten());
+		abstractFinanzielleSituation.setBruttoertraegeVermoegen(abstractFinanzielleSituation.getBruttoertraegeVermoegen());
+		abstractFinanzielleSituation.setNettoertraegeErbengemeinschaft(abstractFinanzielleSituation.getNettoertraegeErbengemeinschaft());
+		abstractFinanzielleSituation.setNettoVermoegen(abstractFinanzielleSituationJAXP.getNettoVermoegen());
+		abstractFinanzielleSituation.setAbzugSchuldzinsen(abstractFinanzielleSituationJAXP.getAbzugSchuldzinsen());
+
+
 		abstractFinanzielleSituation.setSteuerbaresEinkommen(abstractFinanzielleSituationJAXP.getSteuerbaresEinkommen());
 		abstractFinanzielleSituation.setSteuerbaresVermoegen(abstractFinanzielleSituationJAXP.getSteuerbaresVermoegen());
 		abstractFinanzielleSituation.setEinkaeufeVorsorge(abstractFinanzielleSituationJAXP.getEinkaeufeVorsorge());
@@ -2702,14 +2711,7 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus2());
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus1());
 
-		finanzielleSituation.setEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
-		finanzielleSituation.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
-		finanzielleSituation.setGewinnungskosten(finanzielleSituationJAXP.getGewinnungskosten());
-		finanzielleSituation.setBruttoertraegeVermoegen(finanzielleSituation.getBruttoertraegeVermoegen());
-		finanzielleSituation.setNettoertraegeErbengemeinschaft(finanzielleSituation.getNettoertraegeErbengemeinschaft());
-		finanzielleSituation.setNettoVermoegen(finanzielleSituationJAXP.getNettoVermoegen());
-		finanzielleSituation.setAbzugSchuldzinsen(finanzielleSituationJAXP.getAbzugSchuldzinsen());
-
+		
 		finanzielleSituation.setQuellenbesteuert(finanzielleSituationJAXP.getQuellenbesteuert());
 		finanzielleSituation.setGemeinsameStekVorjahr(finanzielleSituationJAXP.getGemeinsameStekVorjahr());
 		finanzielleSituation.setAlleinigeStekVorjahr(finanzielleSituationJAXP.getAlleinigeStekVorjahr());

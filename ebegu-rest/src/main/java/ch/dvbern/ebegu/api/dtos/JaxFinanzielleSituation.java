@@ -59,27 +59,6 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	private BigDecimal geschaeftsgewinnBasisjahrMinus1;
 
 	@Nullable
-	private BigDecimal bruttoertraegeVermoegen;
-
-	@Nullable
-	private BigDecimal nettoertraegeErbengemeinschaft;
-
-	@Nullable
-	private BigDecimal nettoVermoegen;
-
-	@Nullable
-	private Boolean einkommenInVereinfachtemVerfahrenAbgerechnet;
-
-	@Nullable
-	private BigDecimal amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
-
-	@Nullable
-	private BigDecimal gewinnungskosten;
-
-	@Nullable
-	private BigDecimal abzugSchuldzinsen;
-
-	@Nullable
 	private JaxFinanzielleSituationSelbstdeklaration selbstdeklaration;
 
 	public Boolean getSteuerveranlagungErhalten() {
@@ -170,68 +149,4 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 		this.selbstdeklaration = selbstdeklaration;
 	}
 
-	@Nullable
-	public BigDecimal getBruttoertraegeVermoegen() {
-		return bruttoertraegeVermoegen;
-	}
-
-	public void setBruttoertraegeVermoegen(@Nullable BigDecimal bruttoertraegeVermoegen) {
-		this.bruttoertraegeVermoegen = bruttoertraegeVermoegen;
-	}
-
-	@Nullable
-	public BigDecimal getNettoertraegeErbengemeinschaft() {
-		return nettoertraegeErbengemeinschaft;
-	}
-
-	public void setNettoertraegeErbengemeinschaft(@Nullable BigDecimal nettoertraegeErbengemeinschaft) {
-		this.nettoertraegeErbengemeinschaft = nettoertraegeErbengemeinschaft;
-	}
-
-	@Nullable
-	public BigDecimal getNettoVermoegen() {
-		return nettoVermoegen;
-	}
-
-	public void setNettoVermoegen(@Nullable BigDecimal nettoVermoegen) {
-		this.nettoVermoegen = nettoVermoegen;
-	}
-
-	@Nullable
-	public Boolean getEinkommenInVereinfachtemVerfahrenAbgerechnet() {
-		return einkommenInVereinfachtemVerfahrenAbgerechnet;
-	}
-
-	public void setEinkommenInVereinfachtemVerfahrenAbgerechnet(
-			@Nullable Boolean einkommenInVereinfachtemVerfahrenAbgerechnet) {
-		this.einkommenInVereinfachtemVerfahrenAbgerechnet = einkommenInVereinfachtemVerfahrenAbgerechnet;
-	}
-
-	@Nullable
-	public BigDecimal getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet() {
-		return amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
-	}
-
-	public void setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(
-			@Nullable BigDecimal amountEinkommenInVereinfachtemVerfahrenAbgerechnet) {
-		this.amountEinkommenInVereinfachtemVerfahrenAbgerechnet = amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
-	}
-
-	@Nullable
-	public BigDecimal getGewinnungskosten() {
-		return gewinnungskosten;
-	}
-
-	public void setGewinnungskosten(@Nullable BigDecimal gewinnungskosten) {
-		this.gewinnungskosten = gewinnungskosten;
-	}
-
-	@Nullable
-	public BigDecimal getAbzugSchuldzinsen() {
-		return abzugSchuldzinsen;
-	}
-
-	public void setAbzugSchuldzinsen(@Nullable BigDecimal abzugSchuldzinsen) {
-		this.abzugSchuldzinsen = abzugSchuldzinsen;
-	}
 }

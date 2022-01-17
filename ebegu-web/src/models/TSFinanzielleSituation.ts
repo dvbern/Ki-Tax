@@ -18,7 +18,6 @@ import {TSFinanzielleSituationSelbstdeklaration} from './TSFinanzielleSituationS
 
 export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
-
     private _steuerveranlagungErhalten: boolean = false;
     private _steuererklaerungAusgefuellt: boolean = false;
     private _steuerdatenZugriff: boolean;
@@ -28,13 +27,6 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     private _gemeinsameStekVorjahr: boolean;
     private _alleinigeStekVorjahr: boolean;
     private _veranlagt: boolean;
-    private _bruttoertraegeVermoegen: number;
-    private _nettoertraegeErbengemeinschaft: number;
-    private _nettoVermoegen: number;
-    private _einkommenInVereinfachtemVerfahrenAbgerechnet: boolean;
-    private _amountEinkommenInVereinfachtemVerfahrenAbgerechnet: number;
-    private _gewinnungskosten: number;
-    private _abzugSchuldzinsen: number;
     private _selbstdeklaration: TSFinanzielleSituationSelbstdeklaration;
 
     public constructor() {
@@ -104,6 +96,7 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     public set veranlagt(value: boolean) {
         this._veranlagt = value;
     }
+
     public get quellenbesteuert(): boolean {
         return this._quellenbesteuert;
     }
@@ -118,62 +111,6 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
     public set selbstdeklaration(value: TSFinanzielleSituationSelbstdeklaration) {
         this._selbstdeklaration = value;
-    }
-
-    public get gewinnungskosten(): number {
-        return this._gewinnungskosten;
-    }
-
-    public set gewinnungskosten(value: number) {
-        this._gewinnungskosten = value;
-    }
-
-    public get amountEinkommenInVereinfachtemVerfahrenAbgerechnet(): number {
-        return this._amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
-    }
-
-    public set amountEinkommenInVereinfachtemVerfahrenAbgerechnet(value: number) {
-        this._amountEinkommenInVereinfachtemVerfahrenAbgerechnet = value;
-    }
-
-    public get einkommenInVereinfachtemVerfahrenAbgerechnet(): boolean {
-        return this._einkommenInVereinfachtemVerfahrenAbgerechnet;
-    }
-
-    public set einkommenInVereinfachtemVerfahrenAbgerechnet(value: boolean) {
-        this._einkommenInVereinfachtemVerfahrenAbgerechnet = value;
-    }
-
-    public get nettoVermoegen(): number {
-        return this._nettoVermoegen;
-    }
-
-    public set nettoVermoegen(value: number) {
-        this._nettoVermoegen = value;
-    }
-
-    public get nettoertraegeErbengemeinschaft(): number {
-        return this._nettoertraegeErbengemeinschaft;
-    }
-
-    public set nettoertraegeErbengemeinschaft(value: number) {
-        this._nettoertraegeErbengemeinschaft = value;
-    }
-
-    public get bruttoertraegeVermoegen(): number {
-        return this._bruttoertraegeVermoegen;
-    }
-
-    public set bruttoertraegeVermoegen(value: number) {
-        this._bruttoertraegeVermoegen = value;
-    }
-
-    public get abzugSchuldzinsen(): number {
-        return this._abzugSchuldzinsen;
-    }
-
-    public set abzugSchuldzinsen(value: number) {
-        this._abzugSchuldzinsen = value;
     }
 
     public isSelbstaendig(): boolean {

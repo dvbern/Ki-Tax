@@ -42,3 +42,27 @@ SET finanzielle_situation.abzug_schuldzinsen = finanzielle_situation_selbstdekla
 WHERE finanzielle_situation.selbstdeklaration_id = finanzielle_situation_selbstdeklaration.id;
 
 ALTER TABLE finanzielle_situation_selbstdeklaration DROP COLUMN IF EXISTS abzug_schuldzinsen;
+
+
+
+ALTER TABLE einkommensverschlechterung ADD COLUMN IF NOT EXISTS bruttoertraege_vermoegen DECIMAL(19,2) NULL;
+ALTER TABLE einkommensverschlechterung_aud ADD COLUMN IF NOT EXISTS bruttoertraege_vermoegen DECIMAL(19,2) NULL;
+
+ALTER TABLE einkommensverschlechterung ADD COLUMN IF NOT EXISTS nettoertraege_erbengemeinschaft DECIMAL(19,2) NULL;
+ALTER TABLE einkommensverschlechterung_aud ADD COLUMN IF NOT EXISTS nettoertraege_erbengemeinschaft DECIMAL(19,2) NULL;
+
+ALTER TABLE einkommensverschlechterung ADD COLUMN IF NOT EXISTS netto_vermoegen DECIMAL(19,2) NULL;
+ALTER TABLE einkommensverschlechterung_aud ADD COLUMN IF NOT EXISTS netto_vermoegen DECIMAL(19,2) NULL;
+
+ALTER TABLE einkommensverschlechterung ADD COLUMN IF NOT EXISTS einkommen_in_vereinfachtem_verfahren_abgerechnet DECIMAL(19,2) NULL;
+ALTER TABLE einkommensverschlechterung_aud ADD COLUMN IF NOT EXISTS einkommen_in_vereinfachtem_verfahren_abgerechnet DECIMAL(19,2) NULL;
+
+
+ALTER TABLE einkommensverschlechterung ADD COLUMN IF NOT EXISTS amount_einkommen_in_vereinfachtem_verfahren_abgerechnet DECIMAL(19,2) NULL;
+ALTER TABLE einkommensverschlechterung_aud ADD COLUMN IF NOT EXISTS amount_einkommen_in_vereinfachtem_verfahren_abgerechnet DECIMAL(19,2) NULL;
+
+ALTER TABLE einkommensverschlechterung ADD COLUMN IF NOT EXISTS gewinnungskosten DECIMAL(19,2) NULL;
+ALTER TABLE einkommensverschlechterung_aud ADD COLUMN IF NOT EXISTS gewinnungskosten DECIMAL(19,2) NULL;
+
+ALTER TABLE einkommensverschlechterung ADD COLUMN IF NOT EXISTS abzug_schuldzinsen DECIMAL(19,2) NULL;
+ALTER TABLE einkommensverschlechterung_aud ADD COLUMN IF NOT EXISTS abzug_schuldzinsen DECIMAL(19,2) NULL;
