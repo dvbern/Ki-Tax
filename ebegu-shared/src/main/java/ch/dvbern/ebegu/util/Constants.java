@@ -103,6 +103,8 @@ public final class Constants {
 	public static final long MAX_LONGER_TEMP_DOWNLOAD_AGE_MINUTES = 1440L; //24 * 60
 	public static final int FALLNUMMER_LENGTH = 6;
 	public static final int GEMEINDENUMMER_LENGTH = 3;
+	public static final long BESONDERE_VOLKSSCHULE_BFS_MIN = 10100L;
+	public static final long BESONDERE_VOLKSSCHULE_BFS_MAX = 10500L;
 	public static final long MAX_LUCENE_QUERY_RUNTIME = 500L;
 
 	public static final int MAX_LUCENE_QUICKSEARCH_RESULTS = 25; // hier gibt es ein Problem, wenn wir fuer keines der Resultate berechtigt sind wird unser resultset leer sein auf client

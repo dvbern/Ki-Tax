@@ -57,5 +57,4 @@ public interface FachstelleService {
 	 * @param fachstelleId die Fachstelle als DTO
 	 */
 	void removeFachstelle(@Nonnull String fachstelleId);
-
 }

@@ -86,7 +86,7 @@ public class TestdataCreationTest extends AbstractTestdataCreationTest {
 	@Test
 	public void createErstgesuchForDefaultPeriode() {
 		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(TestfallName.LUETHI_MERET, LocalDate.now(), LocalDateTime.now());
-		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
+		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config, mandant);
 		Assert.assertNotNull(erstgesuch);
 		Assert.assertNotNull(erstgesuch.getGesuchsperiode());
 		Assert.assertEquals(gesuchsperiode, erstgesuch.getGesuchsperiode());
@@ -97,7 +97,7 @@ public class TestdataCreationTest extends AbstractTestdataCreationTest {
 		Gesuchsperiode nextGesuchsperiode = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, gesuchsperiode.getBasisJahr(), gesuchsperiode.getBasisJahrPlus1());
 		TestDataUtil.prepareParameters(nextGesuchsperiode, persistence);
 		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuch(TestfallName.LUETHI_MERET, nextGesuchsperiode, LocalDate.now());
-		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
+		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config, mandant);
 		Assert.assertNotNull(erstgesuch);
 		Assert.assertNotNull(erstgesuch.getGesuchsperiode());
 		Assert.assertEquals(gesuchsperiode.getBasisJahr(), erstgesuch.getGesuchsperiode().getBasisJahrPlus1());
@@ -106,7 +106,7 @@ public class TestdataCreationTest extends AbstractTestdataCreationTest {
 	@Test
 	public void createEmptyMutation() {
 		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(TestfallName.LUETHI_MERET, LocalDate.now(), LocalDateTime.now());
-		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
+		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config, mandant);
 		Gesuch mutation = testdataCreationService.createMutation(MutationConfig.createEmptyMutationVerfuegt(LocalDate.now(),
 			LocalDateTime.now()), erstgesuch);
 
@@ -121,7 +121,7 @@ public class TestdataCreationTest extends AbstractTestdataCreationTest {
 	@Test
 	public void createMutation() {
 		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(TestfallName.LUETHI_MERET, LocalDate.now(), LocalDateTime.now());
-		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
+		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config, mandant);
 		Gesuch mutation = testdataCreationService.createMutation(MutationConfig.createMutationVerfuegt(LocalDate.now(), LocalDateTime.now(),
 			50, false), erstgesuch);
 
@@ -136,7 +136,7 @@ public class TestdataCreationTest extends AbstractTestdataCreationTest {
 	@Test
 	public void createAnmeldungTagesschule() {
 		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(TestfallName.LUETHI_MERET, LocalDate.now(), LocalDateTime.now());
-		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
+		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config, mandant);
 		int anzahlBetreuungenBefore = erstgesuch.extractAllBetreuungen().size();
 		erstgesuch = testdataCreationService.addAnmeldung(AnmeldungConfig.createAnmeldungTagesschule(), erstgesuch);
 		Assert.assertEquals(anzahlBetreuungenBefore + 1, erstgesuch.extractAllPlaetze().size());

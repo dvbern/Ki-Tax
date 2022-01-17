@@ -88,7 +88,7 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 		// *** Erstgesuch mit EWP 70%, verfuegen und auszahlen
 		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(
 			TestfallName.LUETHI_MERET, gesuchsperiode, eingangsdatum, datumGeneriertErsterZahlungsauftrag.minusDays(1));
-		erstgesuch = testdataCreationService.createErstgesuch(config);
+		erstgesuch = testdataCreationService.createErstgesuch(config, mandant);
 
 		Gemeinde gemeinde = erstgesuch.extractGemeinde();
 

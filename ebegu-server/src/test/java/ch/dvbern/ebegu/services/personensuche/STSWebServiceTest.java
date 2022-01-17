@@ -23,8 +23,9 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import ch.dvbern.ebegu.errors.STSZertifikatServiceException;
 import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.tests.AbstractEbeguLoginTest;
-import ch.dvbern.ebegu.ws.ewk.sts.STSWebService;
-import ch.dvbern.ebegu.ws.ewk.sts.STSWebServiceResult;
+import ch.dvbern.ebegu.ws.sts.STSWebService;
+import ch.dvbern.ebegu.ws.sts.STSWebServiceResult;
+import ch.dvbern.ebegu.ws.sts.WebserviceType;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
@@ -69,7 +70,7 @@ public class STSWebServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void getSamlAssertion() throws STSZertifikatServiceException, DatatypeConfigurationException {
-		final STSWebServiceResult samlAssertionForBatchuser = stsWebService.getSamlAssertionForBatchuser();
+		final STSWebServiceResult samlAssertionForBatchuser = stsWebService.getSamlAssertionForBatchuser(WebserviceType.GERES);
 		Assert.assertNotNull(samlAssertionForBatchuser.getAssertion());
 		Assert.assertNotNull(samlAssertionForBatchuser.getRenewalToken());
 	}

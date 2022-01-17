@@ -159,6 +159,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		};
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public void createContent(
 		@Nonnull final Document document,
 		@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator) throws DocumentException {
@@ -185,6 +186,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 			}
 
 			addBemerkungenIfAvailable(document);
+			addZusatzTextIfAvailable(document);
 			break;
 		case KEIN_ANSPRUCH:
 			createFusszeileKeinAnspruch(generator.getDirectContent());
@@ -199,6 +201,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 				KEIN_ANSPRUCH_CONTENT_2,
 				Constants.DATE_FORMATTER.format(eingangsdatum))));
 			addBemerkungenIfAvailable(document, false);
+			addZusatzTextIfAvailable(document);
 			paragraphWithSupertext = PdfUtil.createParagraph(translate(
 				KEIN_ANSPRUCH_CONTENT_3,
 				kind.getFullName(),
@@ -233,6 +236,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 			document.add(PdfUtil.createBoldParagraph(translate(
 				NICHT_EINTRETEN_CONTENT_8,
 				Constants.DATE_FORMATTER.format(eingangsdatum)), 2));
+			addZusatzTextIfAvailable(document);
 			break;
 		}
 		gruesseElements.add(createParagraphGruss());
@@ -257,7 +261,12 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		addBemerkungenIfAvailable(document, true);
 	}
 
-	@Override
+	private void addZusatzTextIfAvailable(Document document) {
+		if (getGemeindeStammdaten().getHasZusatzText()) {
+			document.add(PdfUtil.createParagraph(Objects.requireNonNull(gemeindeStammdaten.getZusatzText())));
+		}
+	}
+ 	@Override
 	public boolean isVerfuegung() {
 		return true;
 	}

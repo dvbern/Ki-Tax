@@ -1033,6 +1033,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		}
 	}
 
+	@Override
 	@Nonnull
 	public WizardStepName getFinSitWizardStepNameForGesuch(@Nonnull Gesuch gesuch) {
 		switch (gesuch.getFinSitTyp()) {
@@ -1040,6 +1041,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			return WizardStepName.FINANZIELLE_SITUATION;
 		case LUZERN:
 			return WizardStepName.FINANZIELLE_SITUATION_LUZERN;
+		case SOLOTHURN:
+			return WizardStepName.FINANZIELLE_SITUATION_SOLOTHURN;
 		default:
 			throw new EbeguRuntimeException("getFinSitWizardStepNameForGesuch", "no WizardStepName found for typ " + gesuch.getFinSitTyp());
 		}

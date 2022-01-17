@@ -39,4 +39,5 @@ export class TSPublicAppConfig {
     public gemeindeKennzahlenAktiv: any;
     public mulitmandantAktiv: any;
     public angebotTSActivated: boolean;
+    public infomaZahlungen: boolean;
 }

@@ -31,10 +31,12 @@ import {DvBisherXComponent} from '../core/component/dv-bisher/dv-bisher-x.compon
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
 import {DVInputContainerXComponent} from '../core/component/dv-input-container/dv-input-container-x.component';
+import {DvInputLabelFieldComponent} from '../core/component/dv-input-label-field/dv-input-label-field.component';
 import {DvMitteilungDelegationComponent} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation';
 import {DvNavigationXComponent} from '../core/component/dv-navigation-x/dv-navigation-x.component';
 import {DvNgBackDialogComponent} from '../core/component/dv-ng-back-dialog/dv-ng-back-dialog.component';
 import {DvNgConfirmDialogComponent} from '../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {DvNgDisplayObjectDialogComponent} from '../core/component/dv-ng-display-object-dialog/dv-ng-display-object-dialog.component';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {DvNgGesuchstellerDialogComponent} from '../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
@@ -45,6 +47,7 @@ import {DvNgSozialdienstDialogComponent} from '../core/component/dv-ng-sozialdie
 import {DvNgThreeButtonDialogComponent} from '../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
 import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang';
 import {DvRadioContainerXComponent} from '../core/component/dv-radio-container/dv-radio-container-x.component';
+import {DvValueinputXComponent} from '../core/component/dv-valueinput-x/dv-valueinput-x.component';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
 import {DvLoadingButtonXDirective} from '../core/directive/dv-loading-button/dv-loading-button-x.directive';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
@@ -69,6 +72,7 @@ import {SavingInfo} from './component/save-input-info/saving-info.component';
 import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdaten-header.component';
 import {AccordionTabDirective} from './directive/accordion-tab.directive';
 import {AccordionDirective} from './directive/accordion.directive';
+import {EnableElementDirective} from './directive/enable-element.directive';
 import {LoadingButtonDirective} from './directive/loading-button.directive';
 import {NumbersMinMaxDirective} from './directive/numbers-min-max.directive';
 import {TooltipDirective} from './directive/TooltipDirective';
@@ -77,6 +81,7 @@ import {FullHeightInnerPaddingContainerComponent} from './full-height-inner-padd
 import {MaterialModule} from './material.module';
 import {EbeguDateTimePipe} from './pipe/ebegu-date-time.pipe';
 import {EbeguDatePipe} from './pipe/ebegu-date.pipe';
+import {EbeguNumberPipe} from './pipe/ebegu-number.pipe';
 import {NextPeriodeStrPipe} from './pipe/next-periode-str.pipe';
 import {PreviousPeriodeStrPipe} from './pipe/previous-periode-str.pipe';
 import {MandantService} from './services/mandant.service';
@@ -121,6 +126,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgSupportDialogComponent,
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
+        DvNgDisplayObjectDialogComponent,
         DvNgRemoveDialogComponent,
         DvNgBackDialogComponent,
         DvNgThreeButtonDialogComponent,
@@ -160,7 +166,12 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         EbeguDateTimePipe,
         DvDatePickerXComponent,
         IeDeprecationWarningComponent,
-        DvNavigationXComponent
+        DvNavigationXComponent,
+        DvInputLabelFieldComponent,
+        EnableElementDirective,
+        DvInputLabelFieldComponent,
+        EbeguNumberPipe,
+        DvValueinputXComponent
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
@@ -189,6 +200,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgSupportDialogComponent,
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
+        DvNgDisplayObjectDialogComponent,
         DvNgRemoveDialogComponent,
         DvNgBackDialogComponent,
         DvNgThreeButtonDialogComponent,
@@ -222,7 +234,11 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         PreviousPeriodeStrPipe,
         EbeguDateTimePipe,
         DvDatePickerXComponent,
-        DvNavigationXComponent
+        DvNavigationXComponent,
+        DvInputLabelFieldComponent,
+        EnableElementDirective,
+        DvInputLabelFieldComponent,
+        DvValueinputXComponent
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

@@ -131,9 +131,10 @@ public interface GesuchsperiodeService {
 
 	/**
 	 * Gibt die neuste Gesuchsperiode zurueck anhand des Datums gueltigBis.
+	 * @param mandant
 	 */
 	@Nonnull
-	Optional<Gesuchsperiode> findNewestGesuchsperiode();
+	Optional<Gesuchsperiode> findNewestGesuchsperiode(Mandant mandant);
 
 	/**
 	 * Fügt eine Erläuterung zur Verfügung einer Gesuchsperiode abhängig der Sprache an.

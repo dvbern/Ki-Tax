@@ -298,6 +298,7 @@ WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchP
 	<entity class="ch.dvbern.ebegu.entities.Fall"/>
 	<entity class="ch.dvbern.ebegu.entities.FinanzielleSituationContainer"/>
 	<entity class="ch.dvbern.ebegu.entities.FinanzielleSituation"/>
+	<entity class="ch.dvbern.ebegu.entities.FinanzielleSituationSelbstdeklaration"/>
 	<entity class="ch.dvbern.ebegu.entities.Mandant"/>
 	<entity class="ch.dvbern.ebegu.entities.Sequence"/>
 	<entity class="ch.dvbern.ebegu.entities.Traegerschaft"/>
@@ -410,4 +411,7 @@ WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchP
 	<entity class="ch.dvbern.ebegu.entities.InternePendenz"/>
 	<entity class="ch.dvbern.ebegu.entities.BetreuungMonitoring"/>
 	<entity class="ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen"/>
+	<entity class="ch.dvbern.ebegu.entities.SteuerdatenAnfrageLog"/>
+	<entity class="ch.dvbern.ebegu.entities.SteuerdatenResponse"/>
+	<entity class="ch.dvbern.ebegu.entities.SteuerdatenRequest"/>
 </entity-mappings>

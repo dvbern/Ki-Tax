@@ -34,18 +34,24 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
 
+import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+
 /**
  * Entitaet zum Speichern von Familiensituation in der Datenbank.
  */
 @Audited
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "auszahlungsdaten_id", name = "UK_familiensituation_auszahlungsdaten_id"))
+@Table(uniqueConstraints = {
+	@UniqueConstraint(columnNames = "auszahlungsdaten_mahlzeiten_id", name = "UK_familiensituation_auszahlungsdaten_id"),
+	@UniqueConstraint(columnNames = "auszahlungsdaten_infoma_id", name = "UK_familiensituation_auszahlungsdaten_infoma_id")
+})
 public class Familiensituation extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -6534582356181164632L;
@@ -82,11 +88,34 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_familiensituation_auszahlungsdaten_id"), nullable = true)
-	private Auszahlungsdaten auszahlungsdaten;
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_familiensituation_auszahlungsdaten_mahlzeiten_id"), nullable = true)
+	private Auszahlungsdaten auszahlungsdatenMahlzeiten;
 
 	@Column(nullable = false)
-	private boolean abweichendeZahlungsadresse;
+	private boolean abweichendeZahlungsadresseMahlzeiten;
+
+	@Nullable
+	@Valid
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_familiensituation_auszahlungsdaten_infoma_id"), nullable = true)
+	private Auszahlungsdaten auszahlungsdatenInfoma;
+
+	@Column(nullable = false)
+	private boolean abweichendeZahlungsadresseInfoma = false;
+
+	@Nullable
+	@Column(nullable = true)
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	private String infomaKreditorennummer;
+
+	@Nullable
+	@Column(nullable = true)
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	private String infomaBankcode;
+
+	@Column(nullable = false)
+	private boolean auszahlungAnEltern = false;
+
 
 	public Familiensituation() {
 	}
@@ -165,20 +194,63 @@ public class Familiensituation extends AbstractMutableEntity {
 	}
 
 	@Nullable
-	public Auszahlungsdaten getAuszahlungsdaten() {
-		return auszahlungsdaten;
+	public Auszahlungsdaten getAuszahlungsdatenMahlzeiten() {
+		return auszahlungsdatenMahlzeiten;
 	}
 
-	public void setAuszahlungsdaten(@Nullable Auszahlungsdaten auszahlungsdaten) {
-		this.auszahlungsdaten = auszahlungsdaten;
+	public void setAuszahlungsdatenMahlzeiten(@Nullable Auszahlungsdaten auszahlungsdaten) {
+		this.auszahlungsdatenMahlzeiten = auszahlungsdaten;
 	}
 
-	public boolean isAbweichendeZahlungsadresse() {
-		return abweichendeZahlungsadresse;
+	public boolean isAbweichendeZahlungsadresseMahlzeiten() {
+		return abweichendeZahlungsadresseMahlzeiten;
 	}
 
-	public void setAbweichendeZahlungsadresse(boolean abweichendeZahlungsadresse) {
-		this.abweichendeZahlungsadresse = abweichendeZahlungsadresse;
+	public void setAbweichendeZahlungsadresseMahlzeiten(boolean abweichendeZahlungsadresse) {
+		this.abweichendeZahlungsadresseMahlzeiten = abweichendeZahlungsadresse;
+	}
+
+	@Nullable
+	public Auszahlungsdaten getAuszahlungsdatenInfoma() {
+		return auszahlungsdatenInfoma;
+	}
+
+	public void setAuszahlungsdatenInfoma(@Nullable Auszahlungsdaten auszahlungsdatenInfoma) {
+		this.auszahlungsdatenInfoma = auszahlungsdatenInfoma;
+	}
+
+	public boolean isAbweichendeZahlungsadresseInfoma() {
+		return abweichendeZahlungsadresseInfoma;
+	}
+
+	public void setAbweichendeZahlungsadresseInfoma(boolean abweichendeZahlungsadresseInfoma) {
+		this.abweichendeZahlungsadresseInfoma = abweichendeZahlungsadresseInfoma;
+	}
+
+	@Nullable
+	public String getInfomaKreditorennummer() {
+		return infomaKreditorennummer;
+	}
+
+	public void setInfomaKreditorennummer(@Nullable String infomaKreditorennummer) {
+		this.infomaKreditorennummer = infomaKreditorennummer;
+	}
+
+	@Nullable
+	public String getInfomaBankcode() {
+		return infomaBankcode;
+	}
+
+	public void setInfomaBankcode(@Nullable String infomaBankcode) {
+		this.infomaBankcode = infomaBankcode;
+	}
+
+	public boolean isAuszahlungAnEltern() {
+		return auszahlungAnEltern;
+	}
+
+	public void setAuszahlungAnEltern(boolean auszahlungAnEltern) {
+		this.auszahlungAnEltern = auszahlungAnEltern;
 	}
 
 	@Transient
@@ -215,23 +287,36 @@ public class Familiensituation extends AbstractMutableEntity {
 			target.setGemeinsameSteuererklaerung(this.getGemeinsameSteuererklaerung());
 			target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
 			target.setKeineMahlzeitenverguenstigungBeantragt(this.isKeineMahlzeitenverguenstigungBeantragt());
-			if (this.getAuszahlungsdaten() != null) {
-				target.setAuszahlungsdaten(this.getAuszahlungsdaten().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
+			if (this.getAuszahlungsdatenMahlzeiten() != null) {
+				target.setAuszahlungsdatenMahlzeiten(this.getAuszahlungsdatenMahlzeiten().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
-			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
+			target.setAbweichendeZahlungsadresseMahlzeiten(this.isAbweichendeZahlungsadresseMahlzeiten());
+			if (this.getAuszahlungsdatenInfoma() != null) {
+				target.setAuszahlungsdatenInfoma(this.getAuszahlungsdatenInfoma().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
+			}
+			target.setAbweichendeZahlungsadresseInfoma(this.isAbweichendeZahlungsadresseInfoma());
+			target.setInfomaKreditorennummer(this.getInfomaKreditorennummer());
+			target.setInfomaBankcode(this.getInfomaBankcode());
+			target.setAuszahlungAnEltern(this.isAuszahlungAnEltern());
 			break;
 		case MUTATION_NEUES_DOSSIER:
 			target.setVerguenstigungGewuenscht(this.getVerguenstigungGewuenscht());
 			target.setGemeinsameSteuererklaerung(this.getGemeinsameSteuererklaerung());
 			target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
 			target.setKeineMahlzeitenverguenstigungBeantragt(this.isKeineMahlzeitenverguenstigungBeantragt());
-			if (this.getAuszahlungsdaten() != null) {
-				target.setAuszahlungsdaten(this.getAuszahlungsdaten().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
+			if (this.getAuszahlungsdatenMahlzeiten() != null) {
+				target.setAuszahlungsdatenMahlzeiten(this.getAuszahlungsdatenMahlzeiten().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
-			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
+			target.setAbweichendeZahlungsadresseMahlzeiten(this.isAbweichendeZahlungsadresseMahlzeiten());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
+			if (this.getAuszahlungsdatenInfoma() != null) {
+				target.setAuszahlungsdatenInfoma(this.getAuszahlungsdatenInfoma().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
+			}
+			target.setAbweichendeZahlungsadresseInfoma(this.isAbweichendeZahlungsadresseInfoma());
+			target.setInfomaKreditorennummer(this.getInfomaKreditorennummer());
+			target.setInfomaBankcode(this.getInfomaBankcode());
 			break;
 		}
 		return target;

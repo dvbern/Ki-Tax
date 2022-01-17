@@ -52,7 +52,7 @@ export function paginatorI18nFactory(translateService: TranslateService): Pagina
 }
 
 export function initMandantCookie(mandantService: MandantService): () => Promise<any> {
-    return () => mandantService.initMandantCookie();
+    return () => mandantService.initMandantCookies();
 }
 
 @NgModule({

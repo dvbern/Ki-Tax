@@ -23,6 +23,7 @@ import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanziel
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
+import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
 
 @Component({
     selector: 'dv-angaben-gesuchsteller2',
@@ -37,8 +38,9 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
+        protected finSitLuService: FinanzielleSituationLuzernService
     ) {
-        super(gesuchModelManager, wizardStepManager, 2);
+        super(gesuchModelManager, wizardStepManager, 2, finSitLuService);
     }
 
     public isGemeinsam(): boolean {
@@ -69,7 +71,15 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
         return this.save(onResult);
     }
 
-    public notify(): void {
-        // do nothing in angaben-gesuchsteller2
+    protected save(onResult: Function): angular.IPromise<TSFinanzielleSituationContainer> {
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        return this.gesuchModelManager.saveFinanzielleSituation()
+            .then((finanzielleSituationContainer: TSFinanzielleSituationContainer) => {
+                this.updateWizardStepStatus();
+                onResult(finanzielleSituationContainer);
+                return finanzielleSituationContainer;
+            }).catch(error => {
+                throw(error);
+            });
     }
 }

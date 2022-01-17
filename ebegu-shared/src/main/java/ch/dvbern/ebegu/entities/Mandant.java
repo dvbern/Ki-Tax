@@ -20,9 +20,12 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -47,6 +50,10 @@ public class Mandant extends AbstractMutableEntity implements Displayable {
 
 	@Column(nullable = false)
 	private boolean angebotFI = false;
+
+	@Column()
+	@Enumerated(EnumType.STRING)
+	private MandantIdentifier mandantIdentifier;
 
 	public Mandant() {
 	}
@@ -75,6 +82,14 @@ public class Mandant extends AbstractMutableEntity implements Displayable {
 
 	public void setAngebotFI(boolean angebotFI) {
 		this.angebotFI = angebotFI;
+	}
+
+	public MandantIdentifier getMandantIdentifier() {
+		return mandantIdentifier;
+	}
+
+	public void setMandantIdentifier(MandantIdentifier mandantIdentifier) {
+		this.mandantIdentifier = mandantIdentifier;
 	}
 
 	@Override
