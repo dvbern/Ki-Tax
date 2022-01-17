@@ -2734,5 +2734,6 @@
     "ABRECHNUNG_DER_GUTSCHEINE": "Die Auszahlung der Gutscheine erfolgt",
     "UEBER_ELTERN": "über die Eltern",
     "UEBER_INSTITUTION": "über die Institution",
+    "ERROR_UNKNOWN_HOST": "Einen Umsystem koennte nicht erreicht werden, der URL scheint nicht zu existierend",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

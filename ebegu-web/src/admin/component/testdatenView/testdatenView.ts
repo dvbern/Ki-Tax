@@ -71,7 +71,7 @@ export class TestdatenViewComponent implements OnInit {
     public gemeindeAntragTypeList: TSGemeindeAntragTyp[];
 
     // kiBonAnfrage Schnitstelle Test
-    public antragId: string = 'f3fcbaaa-9f8e-48ad-ab09-0f2b9b9df342';
+    public antragId: string = '';
     public zpvNummer: number = 10099208;
     public gesuchsperiodeBeginnJahr: number = 2020;
     public geburtsdatum: moment.Moment = moment('1964-12-09', 'YYYY-MM-DD');
