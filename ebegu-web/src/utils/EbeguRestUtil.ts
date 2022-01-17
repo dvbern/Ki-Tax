@@ -1854,6 +1854,7 @@ export class EbeguRestUtil {
         restFinanzielleSituation.amountEinkommenInVereinfachtemVerfahrenAbgerechnet = finanzielleSituation.amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
         restFinanzielleSituation.nettoVermoegen = finanzielleSituation.nettoVermoegen;
         restFinanzielleSituation.nettoertraegeErbengemeinschaft = finanzielleSituation.nettoertraegeErbengemeinschaft;
+        restFinanzielleSituation.abzugSchuldzinsen = finanzielleSituation.abzugSchuldzinsen;
         finanzielleSituation.bruttoertraegeVermoegen = finanzielleSituation.bruttoertraegeVermoegen;
         if (finanzielleSituation.selbstdeklaration) {
             restFinanzielleSituation.selbstdeklaration = this.finanzielleSituationSelbstdeklarationToRestObject({}, finanzielleSituation.selbstdeklaration);
@@ -1899,7 +1900,6 @@ export class EbeguRestUtil {
         restSelbstdeklaration.einkunftUeberige = selbstdeklaration.einkunftUeberige;
         restSelbstdeklaration.einkunftLiegenschaften = selbstdeklaration.einkunftLiegenschaften;
         restSelbstdeklaration.abzugBerufsauslagen = selbstdeklaration.abzugBerufsauslagen;
-        restSelbstdeklaration.abzugSchuldzinsen = selbstdeklaration.abzugSchuldzinsen;
         restSelbstdeklaration.abzugUnterhaltsbeitragEhepartner = selbstdeklaration.abzugUnterhaltsbeitragEhepartner;
         restSelbstdeklaration.abzugUnterhaltsbeitragKinder = selbstdeklaration.abzugUnterhaltsbeitragKinder;
         restSelbstdeklaration.abzugRentenleistungen = selbstdeklaration.abzugRentenleistungen;
@@ -1969,6 +1969,15 @@ export class EbeguRestUtil {
                 finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus2;
             finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus1 =
                 finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus1;
+            finanzielleSituationTS.abzugSchuldzinsen = finanzielleSituationFromServer.abzugSchuldzinsen;
+            finanzielleSituationTS.nettoertraegeErbengemeinschaft = finanzielleSituationFromServer.nettoertraegeErbengemeinschaft;
+            finanzielleSituationTS.nettoVermoegen = finanzielleSituationFromServer.nettoVermoegen;
+            finanzielleSituationTS.einkommenInVereinfachtemVerfahrenAbgerechnet =
+                finanzielleSituationFromServer.einkommenInVereinfachtemVerfahrenAbgerechnet;
+            finanzielleSituationTS.amountEinkommenInVereinfachtemVerfahrenAbgerechnet =
+                finanzielleSituationFromServer.amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+            finanzielleSituationTS.gewinnungskosten = finanzielleSituationFromServer.gewinnungskosten;
+            finanzielleSituationTS.bruttoertraegeVermoegen = finanzielleSituationFromServer.bruttoertraegeVermoegen;
             finanzielleSituationTS.quellenbesteuert = finanzielleSituationFromServer.quellenbesteuert;
             finanzielleSituationTS.gemeinsameStekVorjahr = finanzielleSituationFromServer.gemeinsameStekVorjahr;
             finanzielleSituationTS.alleinigeStekVorjahr = finanzielleSituationFromServer.alleinigeStekVorjahr;
@@ -1997,7 +2006,6 @@ export class EbeguRestUtil {
             tsSelbstdeklaration.einkunftUeberige = selbstdeklarationFromServer.einkunftUeberige;
             tsSelbstdeklaration.einkunftLiegenschaften = selbstdeklarationFromServer.einkunftLiegenschaften;
             tsSelbstdeklaration.abzugBerufsauslagen = selbstdeklarationFromServer.abzugBerufsauslagen;
-            tsSelbstdeklaration.abzugSchuldzinsen = selbstdeklarationFromServer.abzugSchuldzinsen;
             tsSelbstdeklaration.abzugUnterhaltsbeitragEhepartner = selbstdeklarationFromServer.abzugUnterhaltsbeitragEhepartner;
             tsSelbstdeklaration.abzugUnterhaltsbeitragKinder = selbstdeklarationFromServer.abzugUnterhaltsbeitragKinder;
             tsSelbstdeklaration.abzugRentenleistungen = selbstdeklarationFromServer.abzugRentenleistungen;

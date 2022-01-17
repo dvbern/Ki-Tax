@@ -2708,6 +2708,7 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setBruttoertraegeVermoegen(finanzielleSituation.getBruttoertraegeVermoegen());
 		finanzielleSituation.setNettoertraegeErbengemeinschaft(finanzielleSituation.getNettoertraegeErbengemeinschaft());
 		finanzielleSituation.setNettoVermoegen(finanzielleSituationJAXP.getNettoVermoegen());
+		finanzielleSituation.setAbzugSchuldzinsen(finanzielleSituationJAXP.getAbzugSchuldzinsen());
 
 		finanzielleSituation.setQuellenbesteuert(finanzielleSituationJAXP.getQuellenbesteuert());
 		finanzielleSituation.setGemeinsameStekVorjahr(finanzielleSituationJAXP.getGemeinsameStekVorjahr());
@@ -2735,7 +2736,6 @@ public class JaxBConverter extends AbstractConverter {
 		selbstdeklaration.setEinkunftUeberige(jaxSelbstdeklaration.getEinkunftUeberige());
 		selbstdeklaration.setEinkunftLiegenschaften(jaxSelbstdeklaration.getEinkunftLiegenschaften());
 		selbstdeklaration.setAbzugBerufsauslagen(jaxSelbstdeklaration.getAbzugBerufsauslagen());
-		selbstdeklaration.setAbzugSchuldzinsen(jaxSelbstdeklaration.getAbzugSchuldzinsen());
 		selbstdeklaration.setAbzugUnterhaltsbeitragEhepartner(jaxSelbstdeklaration.getAbzugUnterhaltsbeitragEhepartner());
 		selbstdeklaration.setAbzugUnterhaltsbeitragKinder(jaxSelbstdeklaration.getAbzugUnterhaltsbeitragKinder());
 		selbstdeklaration.setAbzugRentenleistungen(jaxSelbstdeklaration.getAbzugRentenleistungen());
@@ -2781,6 +2781,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(persistedFinanzielleSituation.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
 		jaxFinanzielleSituation.setBruttoertraegeVermoegen(persistedFinanzielleSituation.getBruttoertraegeVermoegen());
 		jaxFinanzielleSituation.setNettoVermoegen(persistedFinanzielleSituation.getNettoVermoegen());
+		jaxFinanzielleSituation.setAbzugSchuldzinsen(persistedFinanzielleSituation.getAbzugSchuldzinsen());
 		jaxFinanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToJAX(persistedFinanzielleSituation.getSelbstdeklaration()));
 
 		return jaxFinanzielleSituation;
@@ -2804,7 +2805,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxSelbstdeklaration.setEinkunftUeberige(persistedSelbstdeklaration.getEinkunftUeberige());
 		jaxSelbstdeklaration.setEinkunftLiegenschaften(persistedSelbstdeklaration.getEinkunftLiegenschaften());
 		jaxSelbstdeklaration.setAbzugBerufsauslagen(persistedSelbstdeklaration.getAbzugBerufsauslagen());
-		jaxSelbstdeklaration.setAbzugSchuldzinsen(persistedSelbstdeklaration.getAbzugSchuldzinsen());
 		jaxSelbstdeklaration.setAbzugUnterhaltsbeitragEhepartner(persistedSelbstdeklaration.getAbzugUnterhaltsbeitragEhepartner());
 		jaxSelbstdeklaration.setAbzugUnterhaltsbeitragKinder(persistedSelbstdeklaration.getAbzugUnterhaltsbeitragKinder());
 		jaxSelbstdeklaration.setAbzugRentenleistungen(persistedSelbstdeklaration.getAbzugRentenleistungen());

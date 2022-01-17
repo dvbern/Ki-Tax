@@ -103,6 +103,10 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	private BigDecimal gewinnungskosten;
 
 	@Nullable
+	@Column(nullable = true)
+	private BigDecimal abzugSchuldzinsen;
+
+	@Nullable
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_finanziellesituation_selbstdeklaration_id"), nullable = true)
 	private FinanzielleSituationSelbstdeklaration selbstdeklaration;
@@ -304,5 +308,14 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	public void setGewinnungskosten(@Nullable BigDecimal gewinnungskosten) {
 		this.gewinnungskosten = gewinnungskosten;
+	}
+
+	@Nullable
+	public BigDecimal getAbzugSchuldzinsen() {
+		return abzugSchuldzinsen;
+	}
+
+	public void setAbzugSchuldzinsen(@Nullable BigDecimal abzugSchuldzinsen) {
+		this.abzugSchuldzinsen = abzugSchuldzinsen;
 	}
 }

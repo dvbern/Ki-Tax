@@ -77,6 +77,9 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	private BigDecimal gewinnungskosten;
 
 	@Nullable
+	private BigDecimal abzugSchuldzinsen;
+
+	@Nullable
 	private JaxFinanzielleSituationSelbstdeklaration selbstdeklaration;
 
 	public Boolean getSteuerveranlagungErhalten() {
@@ -221,5 +224,14 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	public void setGewinnungskosten(@Nullable BigDecimal gewinnungskosten) {
 		this.gewinnungskosten = gewinnungskosten;
+	}
+
+	@Nullable
+	public BigDecimal getAbzugSchuldzinsen() {
+		return abzugSchuldzinsen;
+	}
+
+	public void setAbzugSchuldzinsen(@Nullable BigDecimal abzugSchuldzinsen) {
+		this.abzugSchuldzinsen = abzugSchuldzinsen;
 	}
 }

@@ -18,6 +18,7 @@ import {TSFinanzielleSituationSelbstdeklaration} from './TSFinanzielleSituationS
 
 export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
+
     private _steuerveranlagungErhalten: boolean = false;
     private _steuererklaerungAusgefuellt: boolean = false;
     private _steuerdatenZugriff: boolean;
@@ -33,6 +34,7 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     private _einkommenInVereinfachtemVerfahrenAbgerechnet: boolean;
     private _amountEinkommenInVereinfachtemVerfahrenAbgerechnet: number;
     private _gewinnungskosten: number;
+    private _abzugSchuldzinsen: number;
     private _selbstdeklaration: TSFinanzielleSituationSelbstdeklaration;
 
     public constructor() {
@@ -138,6 +140,10 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
         return this._einkommenInVereinfachtemVerfahrenAbgerechnet;
     }
 
+    public set einkommenInVereinfachtemVerfahrenAbgerechnet(value: boolean) {
+        this._einkommenInVereinfachtemVerfahrenAbgerechnet = value;
+    }
+
     public get nettoVermoegen(): number {
         return this._nettoVermoegen;
     }
@@ -160,6 +166,14 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
     public set bruttoertraegeVermoegen(value: number) {
         this._bruttoertraegeVermoegen = value;
+    }
+
+    public get abzugSchuldzinsen(): number {
+        return this._abzugSchuldzinsen;
+    }
+
+    public set abzugSchuldzinsen(value: number) {
+        this._abzugSchuldzinsen = value;
     }
 
     public isSelbstaendig(): boolean {

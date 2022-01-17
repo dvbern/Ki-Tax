@@ -33,3 +33,12 @@ ALTER TABLE finanzielle_situation_aud ADD COLUMN IF NOT EXISTS amount_einkommen_
 
 ALTER TABLE finanzielle_situation ADD COLUMN IF NOT EXISTS gewinnungskosten DECIMAL(19,2) NULL;
 ALTER TABLE finanzielle_situation_aud ADD COLUMN IF NOT EXISTS gewinnungskosten DECIMAL(19,2) NULL;
+
+ALTER TABLE finanzielle_situation ADD COLUMN IF NOT EXISTS abzug_schuldzinsen DECIMAL(19,2) NULL;
+ALTER TABLE finanzielle_situation_aud ADD COLUMN IF NOT EXISTS abzug_schuldzinsen DECIMAL(19,2) NULL;
+
+UPDATE finanzielle_situation, finanzielle_situation_selbstdeklaration
+SET finanzielle_situation.abzug_schuldzinsen = finanzielle_situation_selbstdeklaration.abzug_schuldzinsen
+WHERE finanzielle_situation.selbstdeklaration_id = finanzielle_situation_selbstdeklaration.id;
+
+ALTER TABLE finanzielle_situation_selbstdeklaration DROP COLUMN IF EXISTS abzug_schuldzinsen;
