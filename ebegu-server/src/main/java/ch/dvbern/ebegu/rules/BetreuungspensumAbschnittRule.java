@@ -169,16 +169,13 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		zeitabschnitt.setVerguenstigungMahlzeitenBeantragtForAsivAndGemeinde(verguenstigungBeantrag);
 
 		// ErweiterteBetreuung-Flag gesetzt?
-		if(betreuung.hasErweiterteBetreuung()) {
-			initBessondereBeduerfnisse(betreuung, zeitabschnitt);
-		}
-		return zeitabschnitt;
-	}
+		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();
 
-	private void initBessondereBeduerfnisse(Betreuung betreuung, VerfuegungZeitabschnitt zeitabschnitt) {
 		// Falls die Betreuung im Status UNBEKANNTE_INSTITUTION ist, soll die Pauschale immer berechnet werden
-		boolean besondereBeduerfnisseBestaetigt = betreuung.isErweiterteBeduerfnisseBestaetigt() ||
-			betreuung.getBetreuungsstatus() == Betreuungsstatus.UNBEKANNTE_INSTITUTION;
+		boolean besondereBeduerfnisseBestaetigt =
+			besondereBeduerfnisse
+			&& (betreuung.isErweiterteBeduerfnisseBestaetigt()
+				|| betreuung.getBetreuungsstatus() == Betreuungsstatus.UNBEKANNTE_INSTITUTION);
 
 		zeitabschnitt.setBesondereBeduerfnisseBestaetigtForAsivAndGemeinde(besondereBeduerfnisseBestaetigt);
 
@@ -200,6 +197,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 				MsgKey.ERWEITERTE_BEDUERFNISSE_MSG,
 				getLocale());
 		}
+		return zeitabschnitt;
 	}
 
 	private Betreuungspensum initBetreuungspensumCopy(Betreuungspensum original) {
