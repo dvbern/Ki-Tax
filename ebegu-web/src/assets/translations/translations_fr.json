@@ -2736,5 +2736,7 @@
     "FINANZIELLE_SITUATION_EINKOMMEN_VEREINFACHTEM_VERFAHREN": "{{namegs}}: Haben Sie ein Einkommen erzielt, das im vereinfachten Verfahren abgerechnet wurde?",
     "FINANZIELLE_SITUATION_EINKOMMEN_VEREINFACHTEM_VERFAHREN_AMOUNT": "Einkommen, das im vereinfachten Verfahren abgerechnet wurde",
     "FINANZIELLE_SITUATION_ABZUEGE": "Abzüge",
+    "FINANZIELLE_SITUATION_ABZUG_SCHULDZINSEN": "Abzug: Schuldzinsen",
+    "FINANZIELLE_SITUATION_ABZUG_GEWINNUNGSKOSTEN": "Abzug: Gewinnungskosten",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

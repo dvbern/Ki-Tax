@@ -200,5 +200,4 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
         this._abzugSchuldzinsen = value;
     }
 
-
 }
