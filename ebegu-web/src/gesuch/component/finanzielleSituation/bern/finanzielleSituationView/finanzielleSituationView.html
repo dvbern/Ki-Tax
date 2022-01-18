@@ -343,6 +343,52 @@
                         </div>
                     </div>
 
+                    <!-- Bruttoertraege aus Vermögen  -->
+                    <div class="row" ng-if="vm.isFKJV()">
+                        <div class="col-sm-12 dv-input-container-medium">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float required" for="bruttoErtraegeVermoegen">
+                                    <span data-translate="FINANZIELLE_SITUATION_BRUTTOERTRAEGE_VERMOEGEN"></span>
+                                    <dv-tooltip input-id="geleisteteAlimente"
+                                                text="'FINANZIELLE_SITUATION_BRUTTOERTRAEGE_VERMOEGEN_TOOLTIP' | translate"></dv-tooltip>
+                                </label>
+                                <div class="dv-input-container-medium-select">
+                                    <dv-valueinput input-id="bruttoErtraegeVermoegen" name="bruttoertraegeVermoegen"
+                                                   ng-model="vm.getModel().finanzielleSituationJA.bruttoertraegeVermoegen"
+                                                   class="input-element" required>
+                                    </dv-valueinput>
+                                    <dv-bisher gs="vm.getModel().finanzielleSituationGS.bruttoertraegeVermoegen"
+                                               ja="vm.getModel().finanzielleSituationJA.bruttoertraegeVermoegen"
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                    <dv-error-messages input-id="bruttoErtraegeVermoegen" for="vm.form.bruttoertraegeVermoegen.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
+                            </dv-input-container>
+                        </div>
+                    </div>
+
+                    <!-- Nettoerträge ausErbengemeinschaften  -->
+                    <div class="row" ng-if="vm.isFKJV()">
+                        <div class="col-sm-12 dv-input-container-medium">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float required" for="nettoertraege_erbengemeinschaften">
+                                    <span data-translate="FINANZIELLE_SITUATION_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN"></span>
+                                </label>
+                                <div class="dv-input-container-medium-select">
+                                    <dv-valueinput input-id="nettoertraege_erbengemeinschaften" name="nettoertraegeErbengemeinschaft"
+                                                   ng-model="vm.getModel().finanzielleSituationJA.nettoertraegeErbengemeinschaft"
+                                                   class="input-element" required>
+                                    </dv-valueinput>
+                                    <dv-bisher gs="vm.getModel().finanzielleSituationGS.nettoertraegeErbengemeinschaft"
+                                               ja="vm.getModel().finanzielleSituationJA.nettoertraegeErbengemeinschaft"
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                    <dv-error-messages input-id="nettoertraege_erbengemeinschaften" for="vm.form.nettoertraegeErbengemeinschaft.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
+                            </dv-input-container>
+                        </div>
+                    </div>
+
                     <!-- Geleistete Alimente -->
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
@@ -361,6 +407,50 @@
                                                ja="vm.getModel().finanzielleSituationJA.geleisteteAlimente"
                                                show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
                                     <dv-error-messages input-id="geleisteteAlimente" for="vm.form.geleisteteAlimente.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
+                            </dv-input-container>
+                        </div>
+                    </div>
+
+                    <!-- Abzug Schuldzinsen  -->
+                    <div class="row" ng-if="vm.isFKJV()">
+                        <div class="col-sm-12 dv-input-container-medium">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float required" for="abzug_schuldzinsen">
+                                    <span data-translate="FINANZIELLE_SITUATION_ABZUG_SCHLUDZINSEN"></span>
+                                </label>
+                                <div class="dv-input-container-medium-select">
+                                    <dv-valueinput input-id="abzug_schuldzinsen" name="abzugSchuldzinsen"
+                                                   ng-model="vm.getModel().finanzielleSituationJA.abzugSchuldzinsen"
+                                                   class="input-element" required>
+                                    </dv-valueinput>
+                                    <dv-bisher gs="vm.getModel().finanzielleSituationGS.abzugSchuldzinsen"
+                                               ja="vm.getModel().finanzielleSituationJA.abzugSchuldzinsen"
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                    <dv-error-messages input-id="abzug_schuldzinsen" for="vm.form.abzugSchuldzinsen.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
+                            </dv-input-container>
+                        </div>
+                    </div>
+
+                    <!-- Abzug Schuldzinsen  -->
+                    <div class="row" ng-if="vm.isFKJV()">
+                        <div class="col-sm-12 dv-input-container-medium">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float required" for="abzug_gewinnungskosten">
+                                    <span data-translate="FINANZIELLE_SITUATION_ABZUG_SCHLUDZINSEN"></span>
+                                </label>
+                                <div class="dv-input-container-medium-select">
+                                    <dv-valueinput input-id="abzug_gewinnungskosten" name="gewinnungskosten"
+                                                   ng-model="vm.getModel().finanzielleSituationJA.gewinnungskosten"
+                                                   class="input-element" required>
+                                    </dv-valueinput>
+                                    <dv-bisher gs="vm.getModel().finanzielleSituationGS.gewinnungskosten"
+                                               ja="vm.getModel().finanzielleSituationJA.gewinnungskosten"
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                    <dv-error-messages input-id="abzug_gewinnungskosten" for="vm.form.gewinnungskosten.$error"
                                                        class="error"></dv-error-messages>
                                 </div>
                             </dv-input-container>
