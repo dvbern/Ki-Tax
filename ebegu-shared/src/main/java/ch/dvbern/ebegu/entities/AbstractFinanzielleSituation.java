@@ -27,6 +27,7 @@ import javax.persistence.Transient;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.MathUtil;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 /**
@@ -253,11 +254,13 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 		this.nettoertraegeErbengemeinschaft = nettoertraegeErbengemeinschaft;
 	}
 
+	@SuppressFBWarnings("NM_CONFUSING")
 	@Nullable
 	public BigDecimal getNettoVermoegen() {
 		return nettoVermoegen;
 	}
 
+	@SuppressFBWarnings("NM_CONFUSING")
 	public void setNettoVermoegen(@Nullable BigDecimal nettoVermoegen) {
 		this.nettoVermoegen = nettoVermoegen;
 	}
