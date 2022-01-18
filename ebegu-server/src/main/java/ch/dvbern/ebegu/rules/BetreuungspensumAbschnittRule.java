@@ -169,13 +169,16 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		zeitabschnitt.setVerguenstigungMahlzeitenBeantragtForAsivAndGemeinde(verguenstigungBeantrag);
 
 		// ErweiterteBetreuung-Flag gesetzt?
-		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();
+		if(betreuung.hasErweiterteBetreuung()) {
+			initBessondereBeduerfnisse(betreuung, zeitabschnitt);
+		}
+		return zeitabschnitt;
+	}
 
+	private void initBessondereBeduerfnisse(Betreuung betreuung, VerfuegungZeitabschnitt zeitabschnitt) {
 		// Falls die Betreuung im Status UNBEKANNTE_INSTITUTION ist, soll die Pauschale immer berechnet werden
-		boolean besondereBeduerfnisseBestaetigt =
-			besondereBeduerfnisse
-			&& (betreuung.isErweiterteBeduerfnisseBestaetigt()
-				|| betreuung.getBetreuungsstatus() == Betreuungsstatus.UNBEKANNTE_INSTITUTION);
+		boolean besondereBeduerfnisseBestaetigt = betreuung.isErweiterteBeduerfnisseBestaetigt() ||
+			betreuung.getBetreuungsstatus() == Betreuungsstatus.UNBEKANNTE_INSTITUTION;
 
 		zeitabschnitt.setBesondereBeduerfnisseBestaetigtForAsivAndGemeinde(besondereBeduerfnisseBestaetigt);
 
@@ -185,13 +188,18 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 			zeitabschnitt.setBetreuungInGemeindeForAsivAndGemeinde(erweiterteBetreuung.getBetreuungInGemeinde());
 		}
 
+		// Besondere Beduerfnisse Betrag konfigurierbar?
+		if (betreuung.hasErweiterteBeduerfnisseBetrag()) {
+			BigDecimal erweitereteBeduerfnisseBetrag = betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getErweitereteBeduerfnisseBetrag();
+			zeitabschnitt.setBesondereBeduerfnisseBetragForAsivAndGemeinde(erweitereteBeduerfnisseBetrag);
+		}
+
 		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
 		if (besondereBeduerfnisseBestaetigt) {
 			zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
 				MsgKey.ERWEITERTE_BEDUERFNISSE_MSG,
 				getLocale());
 		}
-		return zeitabschnitt;
 	}
 
 	private Betreuungspensum initBetreuungspensumCopy(Betreuungspensum original) {
