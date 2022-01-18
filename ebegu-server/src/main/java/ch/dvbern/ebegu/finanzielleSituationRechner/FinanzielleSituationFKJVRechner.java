@@ -19,14 +19,9 @@ package ch.dvbern.ebegu.finanzielleSituationRechner;
 
 import java.math.BigDecimal;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
-import ch.dvbern.ebegu.entities.FinanzielleSituation;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.util.MathUtil;
 
 public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRechner {
 
@@ -72,7 +67,7 @@ public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRec
 	private BigDecimal calcAbzuegeGesuchstelledne(BigDecimal totalAbzuege, AbstractFinanzielleSituation finanzielleSituationGS) {
 		totalAbzuege = add(totalAbzuege, finanzielleSituationGS.getGeleisteteAlimente());
 		totalAbzuege = add(totalAbzuege, finanzielleSituationGS.getAbzugSchuldzinsen());
-		totalAbzuege = add(totalAbzuege, finanzielleSituationGS.getAbzugSchuldzinsen());
+		totalAbzuege = add(totalAbzuege, finanzielleSituationGS.getGewinnungskosten());
 		return totalAbzuege;
 	}
 
