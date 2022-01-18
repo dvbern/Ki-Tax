@@ -1363,13 +1363,18 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public getErweiterteBeduerfnisseBestaetigtLabel(): string {
+
+        if (this.besondereBeduerfnisseAufwandKonfigurierbar) {
+            return this.$translate.instant('BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST_WITHOUT_BETRAG');
+        }
+
         if (this.getBetreuungModel()
             && this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-            return this.$translate.instant('BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST',
+            return this.$translate.instant('BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST_WITH_FIX_BETRAG',
                 {betrag: this.zuschlagBehinderungProStd, einheit: this.$translate.instant('STUNDE')});
         }
 
-        return this.$translate.instant('BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST',
+        return this.$translate.instant('BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST_WITH_FIX_BETRAG',
             {betrag: this.zuschlagBehinderungProTag, einheit: this.$translate.instant('TAG')});
     }
 
