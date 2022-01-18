@@ -2686,7 +2686,7 @@
     "GEMEINDE_KENNZAHLEN_FORMULAR": "Chiffres-clés",
     "GEMEINDE_KENNZAHLEN_NACHFRAGE_ERFUELLT": "Le contingent est-il épuisé ?",
     "GEMEINDE_KENNZAHLEN_GEMEINDE_KONTINGENTIERT": "Votre commune contingente-t-elle les bons de garde dans le cadre de son règlement ?",
-    "GEMEINDE_KENNZAHLEN_NACHFRAGE_ANZAHL": "Pour les communes qui appliquent un contingent : nombre d’enfants sur la liste d’attente au 01.01.2020",
+    "GEMEINDE_KENNZAHLEN_NACHFRAGE_ANZAHL": "Pour les communes qui appliquent un contingent : nombre d’enfants sur la liste d’attente au 01.01.2022",
     "GEMEINDE_KENNZAHLEN_NACHFRAGE_DAUER": "Pour les communes qui appliquent un contingent : durée moyenne d’attente pour bénéficier d’un bon",
     "GEMEINDE_KENNZAHLEN_LIMITIERUNG_TFO": "Jusqu’à quel âge votre commune accorde-t-elle des bons pour la prise en charge chez des parents de jour ?",
     "GEMEINDE_KENNZAHLEN_AKTIV": "Chiffres-clés de la commune activé",
