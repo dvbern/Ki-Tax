@@ -28,3 +28,9 @@ INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstell
 			id as gesuchsperiode_id
 		FROM gesuchsperiode
 	);
+
+ALTER TABLE erweiterte_betreuung
+ADD COLUMN erweiterete_beduerfnisse_betrag decimal(19,2);
+
+ALTER TABLE erweiterte_betreuung_aud
+ADD COLUMN erweiterete_beduerfnisse_betrag decimal(19,2);

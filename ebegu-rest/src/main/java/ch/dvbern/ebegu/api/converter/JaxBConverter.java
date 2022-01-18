@@ -3159,6 +3159,7 @@ public class JaxBConverter extends AbstractConverter {
 		erweiterteBetreuung.setKeineKesbPlatzierung(erweiterteBetreuungJAXP.getKeineKesbPlatzierung());
 		erweiterteBetreuung.setKitaPlusZuschlag(erweiterteBetreuungJAXP.getKitaPlusZuschlag());
 		erweiterteBetreuung.setBetreuungInGemeinde(erweiterteBetreuungJAXP.getBetreuungInGemeinde());
+		erweiterteBetreuung.setErweitereteBeduerfnisseBetrag(erweiterteBetreuungJAXP.getErweitereteBeduerfnisseBetrag());
 
 		//falls Erweiterte Beduerfnisse true ist, muss eine Fachstelle gesetzt sein
 		if (Boolean.TRUE.equals(erweiterteBetreuung.getErweiterteBeduerfnisse())) {
@@ -4023,6 +4024,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxErweiterteBetreuung.setKeineKesbPlatzierung(erweiterteBetreuung.getKeineKesbPlatzierung());
 		jaxErweiterteBetreuung.setKitaPlusZuschlag(erweiterteBetreuung.getKitaPlusZuschlag());
 		jaxErweiterteBetreuung.setBetreuungInGemeinde(erweiterteBetreuung.getBetreuungInGemeinde());
+		jaxErweiterteBetreuung.setErweitereteBeduerfnisseBetrag(erweiterteBetreuung.getErweitereteBeduerfnisseBetrag());
 
 		if (erweiterteBetreuung.getFachstelle() != null) {
 			jaxErweiterteBetreuung.setFachstelle(fachstelleToJAX(erweiterteBetreuung.getFachstelle()));

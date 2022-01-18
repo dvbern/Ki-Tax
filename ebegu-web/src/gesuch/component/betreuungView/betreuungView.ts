@@ -1384,6 +1384,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.erneutePlatzbestaetigungErforderlich = betreuung.betreuungsstatus === TSBetreuungsstatus.BESTAETIGT
             && erweiterteBetreuung.erweiterteBeduerfnisse
             && !erweiterteBetreuung.erweiterteBeduerfnisseBestaetigt;
+
+        // reset erweiterteBeduerfnisseBetrag on change from true to false
+        if (!erweiterteBetreuung.erweiterteBeduerfnisse) {
+            erweiterteBetreuung.erweitereteBeduerfnisseBetrag = null;
+        }
     }
 
     public gotoBetreuungAbweichungen(): void {

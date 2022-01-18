@@ -2711,6 +2711,7 @@ export class EbeguRestUtil {
         restErweiterteBetreuung.betreuungInGemeinde = erweiterteBetreuung.betreuungInGemeinde;
         restErweiterteBetreuung.keineKesbPlatzierung = erweiterteBetreuung.keineKesbPlatzierung;
         restErweiterteBetreuung.kitaPlusZuschlag = erweiterteBetreuung.kitaPlusZuschlag;
+        restErweiterteBetreuung.erweitereteBeduerfnisseBetrag = erweiterteBetreuung.erweitereteBeduerfnisseBetrag;
         if (erweiterteBetreuung.fachstelle) {
             restErweiterteBetreuung.fachstelle = this.fachstelleToRestObject({}, erweiterteBetreuung.fachstelle);
         }
@@ -2729,6 +2730,7 @@ export class EbeguRestUtil {
             erweiterteBetreuungTS.keineKesbPlatzierung = erweiterteBetreuungFromServer.keineKesbPlatzierung;
             erweiterteBetreuungTS.kitaPlusZuschlag = erweiterteBetreuungFromServer.kitaPlusZuschlag;
             erweiterteBetreuungTS.betreuungInGemeinde = erweiterteBetreuungFromServer.betreuungInGemeinde;
+            erweiterteBetreuungTS.erweitereteBeduerfnisseBetrag = erweiterteBetreuungFromServer.erweitereteBeduerfnisseBetrag;
             if (erweiterteBetreuungFromServer.fachstelle) {
                 erweiterteBetreuungTS.fachstelle =
                     this.parseFachstelle(new TSFachstelle(), erweiterteBetreuungFromServer.fachstelle);
