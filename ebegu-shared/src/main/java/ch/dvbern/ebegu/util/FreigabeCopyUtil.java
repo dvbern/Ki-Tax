@@ -131,18 +131,32 @@ public final class FreigabeCopyUtil {
 		familiensituationGS.setSozialhilfeBezueger(familiensituationJA.getSozialhilfeBezueger());
 		familiensituationGS.setVerguenstigungGewuenscht(familiensituationJA.getVerguenstigungGewuenscht());
 		familiensituationGS.setKeineMahlzeitenverguenstigungBeantragt(familiensituationJA.isKeineMahlzeitenverguenstigungBeantragt());
-		familiensituationGS.setAbweichendeZahlungsadresse(familiensituationJA.isAbweichendeZahlungsadresse());
+		familiensituationGS.setAbweichendeZahlungsadresseMahlzeiten(familiensituationJA.isAbweichendeZahlungsadresseMahlzeiten());
 		familiensituationGS.setFkjvFamSit(familiensituationJA.isFkjvFamSit());
 		familiensituationGS.setMinDauerKonkubinat(familiensituationJA.getMinDauerKonkubinat());
 		familiensituationGS.setGesuchstellerKardinalitaet(familiensituationJA.getGesuchstellerKardinalitaet());
 
-		Auszahlungsdaten auszahlungsdatenJA = familiensituationJA.getAuszahlungsdaten();
+		Auszahlungsdaten auszahlungsdatenJA = familiensituationJA.getAuszahlungsdatenMahlzeiten();
 		Auszahlungsdaten auszahlungsdatenGS = null;
 		if (auszahlungsdatenJA != null) {
 			auszahlungsdatenGS = new Auszahlungsdaten();
 			copyAuszahlungsdaten(auszahlungsdatenGS, auszahlungsdatenJA);
 		}
-		familiensituationGS.setAuszahlungsdaten(auszahlungsdatenGS);
+		familiensituationGS.setAuszahlungsdatenMahlzeiten(auszahlungsdatenGS);
+
+		Auszahlungsdaten auszahlungsdatenJAMZV = familiensituationJA.getAuszahlungsdatenInfoma();
+		Auszahlungsdaten auszahlungsdatenGSMZV = null;
+		if (auszahlungsdatenJAMZV != null) {
+			auszahlungsdatenGSMZV = new Auszahlungsdaten();
+			copyAuszahlungsdaten(auszahlungsdatenGSMZV, auszahlungsdatenJAMZV);
+		}
+		familiensituationGS.setAuszahlungsdatenInfoma(auszahlungsdatenGSMZV);
+
+		familiensituationGS.setAbweichendeZahlungsadresseInfoma(familiensituationJA.isAbweichendeZahlungsadresseInfoma());
+		familiensituationGS.setInfomaKreditorennummer(familiensituationJA.getInfomaKreditorennummer());
+		familiensituationGS.setInfomaBankcode(familiensituationJA.getInfomaBankcode());
+		familiensituationGS.setAuszahlungAnEltern(familiensituationJA.isAuszahlungAnEltern());
+
 	}
 
 	private static void copyAuszahlungsdaten(Auszahlungsdaten auszahlungsdatenGS, Auszahlungsdaten auszahlungsdatenJA) {

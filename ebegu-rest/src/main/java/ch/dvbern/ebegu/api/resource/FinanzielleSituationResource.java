@@ -50,6 +50,7 @@ import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
+import ch.dvbern.ebegu.dto.FinanzielleSituationStartDTO;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
@@ -193,18 +194,19 @@ public class FinanzielleSituationResource {
 			gesuchsteller.getFinanzielleSituationContainer());
 		convertedFinSitCont.setGesuchsteller(gesuchsteller);
 
-		if (familiensituationJA.isAbweichendeZahlungsadresse()) {
-			requireNonNull(familiensituationJA.getZahlungsadresse());
+		if (familiensituationJA.isAbweichendeZahlungsadresseMahlzeiten()) {
+			requireNonNull(familiensituationJA.getZahlungsadresseMahlzeiten());
 		}
 
 		if (familiensituationJA.isKeineMahlzeitenverguenstigungBeantragt()) {
-			familiensituationJA.setIban(null);
-			familiensituationJA.setKontoinhaber(null);
-			familiensituationJA.setAbweichendeZahlungsadresse(false);
-			familiensituationJA.setZahlungsadresse(null);
+			familiensituationJA.setIbanMahlzeiten(null);
+			familiensituationJA.setKontoinhaberMahlzeiten(null);
+			familiensituationJA.setAbweichendeZahlungsadresseMahlzeiten(false);
+			familiensituationJA.setZahlungsadresseMahlzeiten(null);
 		}
 
-		Adresse storedAdresse = new Adresse();
+		Adresse storedAdresseMahlzeit = new Adresse();
+		Adresse storedAdresseInfoma = new Adresse();
 		if (jaxFamiliensituationContainer.getId() != null) {
 			Optional<FamiliensituationContainer> storedFamSitContOptional =
 				familiensituationService.findFamiliensituation(jaxFamiliensituationContainer.getId());
@@ -212,9 +214,14 @@ public class FinanzielleSituationResource {
 			if (storedFamSitContOptional.isPresent()) {
 				Familiensituation storedFamSit = storedFamSitContOptional.get().getFamiliensituationJA();
 				if (storedFamSit != null
-					&& storedFamSit.getAuszahlungsdaten() != null
-					&& storedFamSit.getAuszahlungsdaten().getAdresseKontoinhaber() != null) {
-					storedAdresse = storedFamSit.getAuszahlungsdaten().getAdresseKontoinhaber();
+					&& storedFamSit.getAuszahlungsdatenMahlzeiten() != null
+					&& storedFamSit.getAuszahlungsdatenMahlzeiten().getAdresseKontoinhaber() != null) {
+					storedAdresseMahlzeit = storedFamSit.getAuszahlungsdatenMahlzeiten().getAdresseKontoinhaber();
+				}
+				if (storedFamSit != null
+					&& storedFamSit.getAuszahlungsdatenInfoma() != null
+					&& storedFamSit.getAuszahlungsdatenInfoma().getAdresseKontoinhaber() != null) {
+					storedAdresseInfoma = storedFamSit.getAuszahlungsdatenInfoma().getAdresseKontoinhaber();
 				}
 			}
 		}
@@ -223,7 +230,7 @@ public class FinanzielleSituationResource {
 		Boolean gemeinsameSteuererklaerung = familiensituationJA.getGemeinsameSteuererklaerung();
 		Boolean verguenstigungGewuenscht = familiensituationJA.getVerguenstigungGewuenscht();
 
-		if (gesuchJAXP.getFinSitTyp().equals(FinanzielleSituationTyp.BERN)) {
+		if (gesuchJAXP.getFinSitTyp().equals(FinanzielleSituationTyp.BERN) || gesuchJAXP.getFinSitTyp().equals(FinanzielleSituationTyp.SOLOTHURN)) {
 			requireNonNull(sozialhilfeBezueger);
 			requireNonNull(gemeinsameSteuererklaerung);
 
@@ -238,18 +245,31 @@ public class FinanzielleSituationResource {
 			verguenstigungGewuenscht = Boolean.TRUE;
 		}
 
-		Gesuch persistedGesuch = this.finanzielleSituationService.saveFinanzielleSituationStart(
-			convertedFinSitCont,
+		FinanzielleSituationStartDTO finSitStartDTO = new FinanzielleSituationStartDTO(
 			sozialhilfeBezueger,
 			gemeinsameSteuererklaerung,
 			verguenstigungGewuenscht,
 			familiensituationJA.isKeineMahlzeitenverguenstigungBeantragt(),
-			familiensituationJA.getIban(),
-			familiensituationJA.getKontoinhaber(),
-			familiensituationJA.isAbweichendeZahlungsadresse(),
-			familiensituationJA.getZahlungsadresse() == null ? null :
-				converter.adresseToEntity(familiensituationJA.getZahlungsadresse(), storedAdresse),
-			gesuchId);
+			familiensituationJA.getIbanMahlzeiten(),
+			familiensituationJA.getKontoinhaberMahlzeiten(),
+			familiensituationJA.isAbweichendeZahlungsadresseMahlzeiten(),
+			familiensituationJA.getZahlungsadresseMahlzeiten() == null ? null :
+				converter.adresseToEntity(familiensituationJA.getZahlungsadresseMahlzeiten(), storedAdresseMahlzeit),
+			familiensituationJA.getIbanInfoma(),
+			familiensituationJA.getKontoinhaberInfoma(),
+			familiensituationJA.isAbweichendeZahlungsadresseInfoma(),
+			familiensituationJA.getZahlungsadresseInfoma() == null ? null :
+				converter.adresseToEntity(familiensituationJA.getZahlungsadresseInfoma(), storedAdresseInfoma),
+			familiensituationJA.getInfomaKreditorennummer(),
+			familiensituationJA.getInfomaBankcode(),
+			familiensituationJA.getAuszahlungAnEltern()
+		);
+
+		Gesuch persistedGesuch = this.finanzielleSituationService.saveFinanzielleSituationStart(
+			convertedFinSitCont,
+			finSitStartDTO,
+			gesuchId
+		);
 
 		return converter.gesuchToJAX(persistedGesuch);
 	}

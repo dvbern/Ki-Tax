@@ -290,4 +290,9 @@ export class GemeindeRS implements IEntityRS {
         return this.$http.get(`${this.serviceURL}/mahlzeitenverguenstigung`)
             .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
     }
+
+    public getNextBesondereVolksschuleBfsNummer(): IPromise<number> {
+        return this.$http.get(`${this.serviceURL}/next-vollksschule-bfsnummer`)
+            .then(response => response.data as number);
+    }
 }

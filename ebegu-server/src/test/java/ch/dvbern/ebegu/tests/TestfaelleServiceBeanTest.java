@@ -93,11 +93,12 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 
 	private String gemeinde = null;
 	private Gesuchsperiode gesuchsperiode = null;
+	private Mandant mandant;
 
 	@Before
 	public void init() {
 		gesuchsperiode = createGesuchsperiode();
-		final Mandant mandant = insertInstitutionen();
+		mandant = insertInstitutionen();
 		createBenutzer(mandant);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 		gemeinde = TestDataUtil.getGemeindeParis(persistence).getId();
@@ -106,67 +107,67 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testVerfuegung_WaeltiDagmar() {
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true, gemeinde, gesuchsperiode);
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true, gemeinde, gesuchsperiode, mandant);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
 	public void testVerfuegung_FeutzIvonne() {
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.FEUTZ_IVONNE, true, true, gemeinde, gesuchsperiode);
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.FEUTZ_IVONNE, true, true, gemeinde, gesuchsperiode, mandant);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
 	public void testVerfuegung_BeckerNora() {
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.BECKER_NORA, true, true, gemeinde, gesuchsperiode);
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.BECKER_NORA, true, true, gemeinde, gesuchsperiode, mandant);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
 	public void testVerfuegung_LuethiMeret() {
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.LUETHI_MERET, true, true, gemeinde, gesuchsperiode);
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.LUETHI_MERET, true, true, gemeinde, gesuchsperiode, mandant);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
 	public void testVerfuegung_PerreiraMarcia() {
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.PERREIRA_MARCIA, true, true, gemeinde, gesuchsperiode);
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.PERREIRA_MARCIA, true, true, gemeinde, gesuchsperiode, mandant);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
 	public void testVerfuegung_WaltherLaura() {
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WALTHER_LAURA, true, true, gemeinde, gesuchsperiode);
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WALTHER_LAURA, true, true, gemeinde, gesuchsperiode, mandant);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
 	public void testVerfuegung_MeierMeret() {
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.MEIER_MERET, true, true, gemeinde, gesuchsperiode);
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.MEIER_MERET, true, true, gemeinde, gesuchsperiode, mandant);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
 	public void testVerfuegung_UmzugAusInAusBern() {
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.UMZUG_AUS_IN_AUS_BERN, true, true, gemeinde, gesuchsperiode);
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.UMZUG_AUS_IN_AUS_BERN, true, true, gemeinde, gesuchsperiode, mandant);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
 	public void testVerfuegung_UmzugVorGesuchsperiode() {
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.UMZUG_VOR_GESUCHSPERIODE, true, true, gemeinde, gesuchsperiode);
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.UMZUG_VOR_GESUCHSPERIODE, true, true, gemeinde, gesuchsperiode, mandant);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
 	public void testVerfuegung_Abwesenheit() {
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.ABWESENHEIT, true, true, gemeinde, gesuchsperiode);
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.ABWESENHEIT, true, true, gemeinde, gesuchsperiode, mandant);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
 	public void testVerfuegung_SchulamtOnly() {
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.SCHULAMT_ONLY, true, true, gemeinde, gesuchsperiode);
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.SCHULAMT_ONLY, true, true, gemeinde, gesuchsperiode, mandant);
 		//ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 		Assert.assertNotNull(gesuch);
 		Assert.assertTrue(gesuch.hasOnlyBetreuungenOfSchulamt());
@@ -176,7 +177,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	public void testVerfuegung_WaeltiDagmar_mutationHeirat() {
 		//waelti dagmar arbeitet 80%, Heirat am 15.1. -> gilt ab 1.2 (Eingereicht am 15.12.)
 		// Partner arbeitet 90% -> zusammen 170 -> 90% Anspruch
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true, gemeinde, gesuchsperiode);
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true, gemeinde, gesuchsperiode, mandant);
 		assert gesuch != null;
 		final Gesuch mutieren = testfaelleService.mutierenHeirat(gesuch.getDossier().getId(),
 			gesuch.getGesuchsperiode().getId(), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 15),
@@ -186,7 +187,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testVerfuegung_BeckerNora_mutationHeirat() {
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.BECKER_NORA, true, true, gemeinde, gesuchsperiode);
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.BECKER_NORA, true, true, gemeinde, gesuchsperiode, mandant);
 		assert gesuch != null;
 		final Gesuch mutieren = testfaelleService.mutierenHeirat(gesuch.getDossier().getId(),
 			gesuch.getGesuchsperiode().getId(), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 15), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 15), true);
@@ -195,7 +196,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testVerfuegung_PerreiraMarcia_mutationScheidung() {
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.PERREIRA_MARCIA, true, true, gemeinde, gesuchsperiode);
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.PERREIRA_MARCIA, true, true, gemeinde, gesuchsperiode, mandant);
 		assert gesuch != null;
 		final Gesuch mutieren = testfaelleService.mutierenScheidung(gesuch.getDossier().getId(),
 			gesuch.getGesuchsperiode().getId(), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 30), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 15), true);
@@ -207,7 +208,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	 */
 	@Test
 	public void testVerfuegung_MeierMeret_mutationScheidung() {
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.MEIER_MERET, true, true, gemeinde, gesuchsperiode);
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.MEIER_MERET, true, true, gemeinde, gesuchsperiode, mandant);
 		assert gesuch != null;
 		//		final Gesuch correctedGesuch = TestDataUtil.correctTimestampVerfuegt(gesuch, LocalDateTime.MAX, persistence);
 		LocalDate eingangsdatum = LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 15);

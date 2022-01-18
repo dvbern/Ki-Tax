@@ -64,15 +64,36 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	private boolean keineMahlzeitenverguenstigungBeantragt;
 
 	@Nullable
-	private String iban;
+	private String ibanMahlzeiten;
 
 	@Nullable
-	private String kontoinhaber;
+	private String kontoinhaberMahlzeiten;
 
-	private boolean abweichendeZahlungsadresse;
+	private boolean abweichendeZahlungsadresseMahlzeiten;
 
 	@Nullable
-	private JaxAdresse zahlungsadresse;
+	private JaxAdresse zahlungsadresseMahlzeiten;
+
+	@Nullable
+	private String ibanInfoma;
+
+	@Nullable
+	private String kontoinhaberInfoma;
+
+	private boolean abweichendeZahlungsadresseInfoma;
+
+	@Nullable
+	private JaxAdresse zahlungsadresseInfoma;
+
+	@Nullable
+	private String infomaKreditorennummer;
+
+	@Nullable
+	private String infomaBankcode;
+
+	@Nonnull
+	private Boolean auszahlungAnEltern;
+
 
 	@Nullable
 	private EnumGesuchstellerKardinalitaet gesuchstellerKardinalitaet;
@@ -159,38 +180,100 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public String getIban() {
-		return iban;
+	public String getIbanMahlzeiten() {
+		return ibanMahlzeiten;
 	}
 
-	public void setIban(@Nullable String iban) {
-		this.iban = iban;
-	}
-
-	@Nullable
-	public String getKontoinhaber() {
-		return kontoinhaber;
-	}
-
-	public void setKontoinhaber(@Nullable String kontoinhaber) {
-		this.kontoinhaber = kontoinhaber;
-	}
-
-	public boolean isAbweichendeZahlungsadresse() {
-		return abweichendeZahlungsadresse;
-	}
-
-	public void setAbweichendeZahlungsadresse(boolean abweichendeZahlungsadresse) {
-		this.abweichendeZahlungsadresse = abweichendeZahlungsadresse;
+	public void setIbanMahlzeiten(@Nullable String iban) {
+		this.ibanMahlzeiten = iban;
 	}
 
 	@Nullable
-	public JaxAdresse getZahlungsadresse() {
-		return zahlungsadresse;
+	public String getKontoinhaberMahlzeiten() {
+		return kontoinhaberMahlzeiten;
 	}
 
-	public void setZahlungsadresse(@Nullable JaxAdresse zahlungsadresse) {
-		this.zahlungsadresse = zahlungsadresse;
+	public void setKontoinhaberMahlzeiten(@Nullable String kontoinhaber) {
+		this.kontoinhaberMahlzeiten = kontoinhaber;
+	}
+
+	public boolean isAbweichendeZahlungsadresseMahlzeiten() {
+		return abweichendeZahlungsadresseMahlzeiten;
+	}
+
+	public void setAbweichendeZahlungsadresseMahlzeiten(boolean abweichendeZahlungsadresse) {
+		this.abweichendeZahlungsadresseMahlzeiten = abweichendeZahlungsadresse;
+	}
+
+	@Nullable
+	public JaxAdresse getZahlungsadresseMahlzeiten() {
+		return zahlungsadresseMahlzeiten;
+	}
+
+	public void setZahlungsadresseMahlzeiten(@Nullable JaxAdresse zahlungsadresse) {
+		this.zahlungsadresseMahlzeiten = zahlungsadresse;
+	}
+
+	@Nullable
+	public String getIbanInfoma() {
+		return ibanInfoma;
+	}
+
+	public void setIbanInfoma(@Nullable String ibanInfoma) {
+		this.ibanInfoma = ibanInfoma;
+	}
+
+	@Nullable
+	public String getKontoinhaberInfoma() {
+		return kontoinhaberInfoma;
+	}
+
+	public void setKontoinhaberInfoma(@Nullable String kontoinhaberInfoma) {
+		this.kontoinhaberInfoma = kontoinhaberInfoma;
+	}
+
+	public boolean isAbweichendeZahlungsadresseInfoma() {
+		return abweichendeZahlungsadresseInfoma;
+	}
+
+	public void setAbweichendeZahlungsadresseInfoma(boolean abweichendeZahlungsadresseInfoma) {
+		this.abweichendeZahlungsadresseInfoma = abweichendeZahlungsadresseInfoma;
+	}
+
+	@Nullable
+	public JaxAdresse getZahlungsadresseInfoma() {
+		return zahlungsadresseInfoma;
+	}
+
+	public void setZahlungsadresseInfoma(@Nullable JaxAdresse zahlungsadresseInfoma) {
+		this.zahlungsadresseInfoma = zahlungsadresseInfoma;
+	}
+
+	@Nullable
+	public String getInfomaKreditorennummer() {
+		return infomaKreditorennummer;
+	}
+
+	public void setInfomaKreditorennummer(@Nullable String infomaKreditorennummer) {
+		this.infomaKreditorennummer = infomaKreditorennummer;
+	}
+
+	@Nullable
+	public String getInfomaBankcode() {
+		return infomaBankcode;
+	}
+
+	public void setInfomaBankcode(@Nullable String infomaBankcode) {
+		this.infomaBankcode = infomaBankcode;
+	}
+
+	@Nonnull
+	public Boolean getAuszahlungAnEltern() {
+		return auszahlungAnEltern;
+	}
+
+	public void setAuszahlungAnEltern(@Nonnull Boolean auszahlungAnEltern) {
+		this.auszahlungAnEltern = auszahlungAnEltern;
 	}
 
 	@Nullable

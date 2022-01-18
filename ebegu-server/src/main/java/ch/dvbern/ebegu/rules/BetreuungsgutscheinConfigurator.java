@@ -261,6 +261,10 @@ public class BetreuungsgutscheinConfigurator {
 		Rule rule = configureErwerbspensumKantonRule(einstellungMap);
 		addToRuleSetIfRelevantForGemeinde(rule, einstellungMap);
 
+		// - KESB Platzierung: Max-Tarif bei Tagesschulen
+		KesbPlatzierungTSCalcRule kesbPlatzierungTSCalcRule = new KesbPlatzierungTSCalcRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(kesbPlatzierungTSCalcRule, einstellungMap);
+
 		// - Erwerbspensum Gemeinde
 		Einstellung minEWP_nichtEingeschultGmde = einstellungMap.get(GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
 		Einstellung minEWP_eingeschultGmde = einstellungMap.get(GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT);

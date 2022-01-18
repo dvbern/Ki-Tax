@@ -101,6 +101,12 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
                 TSErrorLevel.SEVERE,
                 'ERROR_DATA_CHANGED',
                 response.data));
+        } else if (this.isUnknownHostException(response)) {
+            errors = [];
+            errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
+                TSErrorLevel.SEVERE,
+                'ERROR_UNKNOWN_HOST',
+                response.data));
         } else {
             this.$log.error(`ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`);
             this.$log.error('ResponseData:' + JSON.stringify(response.data));
@@ -200,5 +206,16 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
             return false;
         }
         return data.status === http409;
+    }
+
+    private isUnknownHostException(data: any): boolean {
+        const http500 = 500;
+        if (!data) {
+            return false;
+        }
+
+        const msg = 'java.net.UnknownHostException';
+
+        return data.status === http500 && data.data.indexOf(msg) > -1;
     }
 }

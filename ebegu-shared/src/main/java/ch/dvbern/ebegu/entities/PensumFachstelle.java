@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.entities;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -39,8 +40,8 @@ public class PensumFachstelle extends AbstractIntegerPensum {
 
 	private static final long serialVersionUID = -9132257320978374570L;
 
-	@NotNull
-	@ManyToOne(optional = false)
+	@Nullable
+	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_pensum_fachstelle_fachstelle_id"))
 	private Fachstelle fachstelle;
 
@@ -82,11 +83,12 @@ public class PensumFachstelle extends AbstractIntegerPensum {
 			&& getIntegrationTyp() == otherPensumFachstelle.getIntegrationTyp();
 	}
 
+	@Nullable
 	public Fachstelle getFachstelle() {
 		return fachstelle;
 	}
 
-	public void setFachstelle(Fachstelle fachstelle) {
+	public void setFachstelle(@Nullable Fachstelle fachstelle) {
 		this.fachstelle = fachstelle;
 	}
 

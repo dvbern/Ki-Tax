@@ -121,6 +121,10 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private Boolean hasAltGemeindeKontakt;
 	@Nullable
 	private String altGemeindeKontaktText;
+	@Nonnull
+	private Boolean hasZusatzText;
+	@Nullable
+	private String zusatzText;
 
 	// ---------- Konfiguration ----------
 	@NotNull
@@ -506,5 +510,23 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setHasAltGemeindeKontakt(@Nonnull Boolean hasAltGemeindeKontakt) {
 		this.hasAltGemeindeKontakt = hasAltGemeindeKontakt;
+	}
+
+	@Nonnull
+	public Boolean getHasZusatzText() {
+		return hasZusatzText;
+	}
+
+	public void setHasZusatzText(@Nonnull Boolean hasZusatzText) {
+		this.hasZusatzText = hasZusatzText;
+	}
+
+	@Nullable
+	public String getZusatzText() {
+		return zusatzText;
+	}
+
+	public void setZusatzText(@Nullable String zusatzText) {
+		this.zusatzText = zusatzText;
 	}
 }

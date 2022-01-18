@@ -73,6 +73,7 @@ public class JaxGemeinde extends JaxAbstractDTO {
 	private boolean angebotBG = false;
 	private boolean angebotTS = false;
 	private boolean angebotFI = false;
+	private boolean besondereVolksschule = false;
 
 	// Dieses Feld wird *nur* für die Komponente gemeinde-multiselect.component verwendet
 	// Wir haben dort das Problem, dass in gewissen Einzelfällen die Id der Gemeinde (noch) nicht bekannt ist,
@@ -195,5 +196,13 @@ public class JaxGemeinde extends JaxAbstractDTO {
 
 	public void setFerieninselanmeldungenStartdatum(@Nullable LocalDate ferieninselanmeldungenStartdatum) {
 		this.ferieninselanmeldungenStartdatum = ferieninselanmeldungenStartdatum;
+	}
+
+	public boolean isBesondereVolksschule() {
+		return besondereVolksschule;
+	}
+
+	public void setBesondereVolksschule(boolean besondereVolksschule) {
+		this.besondereVolksschule = besondereVolksschule;
 	}
 }

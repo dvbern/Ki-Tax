@@ -135,6 +135,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
+    private hideKesbPlatzierung: boolean;
 
     public constructor(
         private readonly $state: StateService,
@@ -253,6 +254,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             response.filter(r => r.key === TSEinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT)
                 .forEach(value => {
                     this.kitaPlusZuschlagAktiviert = value.getValueAsBoolean();
+                });
+            response.filter(r => r.key === TSEinstellungKey.KESB_PLATZIERUNG_DEAKTIVIEREN)
+                .forEach(value => {
+                    if (EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean())) {
+                        this.isKesbPlatzierung = false;
+                        this.changeKeineKesbPlatzierung();
+                    }
+                    this.hideKesbPlatzierung = value.getValueAsBoolean();
                 });
         });
 

@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.testfaelle;
 
 import java.time.LocalDate;
-import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
@@ -25,7 +24,6 @@ import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 
 /**
@@ -33,14 +31,19 @@ import ch.dvbern.ebegu.enums.EnumFamilienstatus;
  */
 public abstract class AbstractASIVTestfall extends AbstractTestfall {
 
-	protected AbstractASIVTestfall(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Collection<InstitutionStammdaten> institutionStammdatenList,
-			boolean betreuungenBestaetigt, @Nonnull Gemeinde gemeinde) {
-		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
+	protected AbstractASIVTestfall(
+			@Nonnull Gesuchsperiode gesuchsperiode,
+			boolean betreuungenBestaetigt,
+			@Nonnull Gemeinde gemeinde,
+			InstitutionStammdatenBuilder institutionStammdatenBuilder) {
+		super(gesuchsperiode, betreuungenBestaetigt, gemeinde, institutionStammdatenBuilder);
 	}
 
-	protected AbstractASIVTestfall(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Collection<InstitutionStammdaten> institutionStammdatenList,
-			boolean betreuungenBestaetigt) {
-		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+	protected AbstractASIVTestfall(
+			@Nonnull Gesuchsperiode gesuchsperiode,
+			boolean betreuungenBestaetigt,
+			InstitutionStammdatenBuilder institutionStammdatenBuilder) {
+		super(gesuchsperiode, betreuungenBestaetigt, institutionStammdatenBuilder);
 	}
 
 	public abstract Gesuch createMutation(Gesuch erstgesuch);

@@ -1,0 +1,25 @@
+<div class="row">
+	<div class="col-xs-12 dv-input-container-question">
+		<div class="form-group">
+			<span class="ebegu-h1 required">{{'FINANZIELLE_SITUATION_STEK_GEMEINSAM' | translate:{basisjahr: gesuchModelManager.getBasisjahr(), namegs2: gesuchModelManager.getGesuch()?.gesuchsteller2?.gesuchstellerJA?.getFullName()} }}</span>
+			<dv-input-container-x [verticalAlign]="true">
+				<dv-radio-container-x>
+					<mat-radio-group
+							aria-labelledby="steuerveranlagungGemeinsam_id"
+							name="steuerveranlagungGemeinsam"
+							#steuerveranlagungGemeinsam="ngModel"
+							required
+							[(ngModel)]="model.finanzielleSituationJA.gemeinsameStekVorjahr">
+						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+					</mat-radio-group>
+					<dv-error-messages
+							*ngIf="steuerveranlagungGemeinsam.touched"
+							[errorObject]="steuerveranlagungGemeinsam.errors"
+							inputId="bruttolohn_id">
+					</dv-error-messages>
+				</dv-radio-container-x>
+			</dv-input-container-x>
+		</div>
+	</div>
+</div>

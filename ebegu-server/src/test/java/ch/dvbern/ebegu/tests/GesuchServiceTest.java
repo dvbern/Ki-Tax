@@ -92,6 +92,7 @@ import ch.dvbern.ebegu.services.ZahlungService;
 import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.util.JBossLoginContextFactory;
+import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.TestfallName;
@@ -210,7 +211,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		final Mandant mandant = TestDataUtil.getMandantKantonBernAndPersist(persistence);
 
 		Collection<InstitutionStammdaten> stammdaten = criteriaQueryHelper.getAll(InstitutionStammdaten.class);
-		Gesuch gesuch2 = testfaelleService.createAndSaveGesuch(new Testfall02_FeutzYvonne(gesuch.getGesuchsperiode(), stammdaten, true, bern), true, null);
+		Gesuch gesuch2 = testfaelleService.createAndSaveGesuch(new Testfall02_FeutzYvonne(gesuch.getGesuchsperiode(),
+				true, bern,  new TestDataInstitutionStammdatenBuilder(gesuchsperiode)), true, null);
 		final GeneratedDokument generatedDokument = TestDataUtil.createGeneratedDokument(gesuch);
 		persistence.persist(generatedDokument);
 		final DokumentGrund dokumentGrund = TestDataUtil.createDefaultDokumentGrund();
@@ -837,7 +839,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public void deleteGesuchWithMutationAndCopiedAnmeldungen() {
 		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(TestfallName.LUETHI_MERET, LocalDate.now(), LocalDateTime.now());
 		config.setGesuchsperiode(gesuchsperiode);
-		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
+		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config, mandant);
 		erstgesuch = testdataCreationService.addAnmeldung(AnmeldungConfig.createAnmeldungTagesschule(), erstgesuch);
 
 		Gesuch mutation = testdataCreationService.createMutation(MutationConfig.createEmptyMutationVerfuegt(LocalDate.now(),

@@ -23,6 +23,9 @@ import {TSGesuch} from '../models/TSGesuch';
 import {TSKindDublette} from '../models/TSKindDublette';
 import {TSMahnung} from '../models/TSMahnung';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
+import {AngabenGs1Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs1/angaben-gs1.component';
+import {AngabenGs2Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs2/angaben-gs2.component';
+import {FinanzielleSituationStartSolothurnComponent} from './component/finanzielleSituation/solothurn/finanzielle-situation-start-solothurn/finanzielle-situation-start-solothurn.component';
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
 import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {ResultateComponent} from './component/finanzielleSituation/luzern/resultate/resultate.component';
@@ -517,6 +520,72 @@ export class EbeguFinanzielleSituationStartLuzernState implements Ng1StateDeclar
     };
 }
 
+export class EbeguFinanzielleSituationStartSolothurnState implements Ng1StateDeclaration {
+    public name = 'gesuch.finanzielleSituationStartSolothurn';
+    public url = '/finanzielleSituationStartSolothurn/:gesuchId';
+
+    public views: any = {
+        gesuchViewPort: {
+            component: FinanzielleSituationStartSolothurnComponent
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuchModelManager: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+
+export class EbeguFinanzielleSituationGS1SolothurnState implements Ng1StateDeclaration {
+    public name = 'gesuch.finanzielleSituationGS1Solothurn';
+    public url = '/so/finanzielleSituation/1/:gesuchId';
+
+    public views: any = {
+        gesuchViewPort: {
+            component: AngabenGs1Component,
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuchModelManager: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+
+export class EbeguFinanzielleSituationGS2SolothurnState implements Ng1StateDeclaration {
+    public name = 'gesuch.finanzielleSituationGS2Solothurn';
+    public url = '/so/finanzielleSituation/2/:gesuchId';
+
+    public views: any = {
+        gesuchViewPort: {
+            component: AngabenGs2Component
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuchModelManager: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+
 export class EbeguFinanzielleSituationGS2LuzernState implements Ng1StateDeclaration {
     public name = 'gesuch.finanzielleSituationGS2Luzern';
     public url = '/lu/finanzielleSituation/2/:gesuchId';
@@ -830,7 +899,10 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguFinanzielleSituationState(),
     new EbeguFinanzielleSituationResultateState(),
     new EbeguFinanzielleSituationStartLuzernState(),
+    new EbeguFinanzielleSituationStartSolothurnState(),
     new EbeguFinanzielleSituationGS2LuzernState(),
+    new EbeguFinanzielleSituationGS1SolothurnState(),
+    new EbeguFinanzielleSituationGS2SolothurnState(),
     new EbeguFinanzielleSituationResultateLuzernState(),
     new EbeguKindState(),
     new EbeguErwerbspensenListState(),

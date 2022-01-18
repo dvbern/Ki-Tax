@@ -2,9 +2,9 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {CookieService} from 'ngx-cookie-service';
 import {Observable, ReplaySubject} from 'rxjs';
-import {KiBonMandant, KiBonMandantFull} from '../../core/constants/MANDANTS';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
+import {KiBonMandant, KiBonMandantFull} from '../../core/constants/MANDANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {WindowRef} from '../../core/service/windowRef.service';
 
@@ -85,7 +85,13 @@ export class MandantService {
         return decodeMandantCookie === 'be';
     }
 
-    public async initMandantCookie(): Promise<void> {
+    public async initMandantCookies(): Promise<void> {
+        await this.initMandantCookie();
+        await this.initMultimandantActivated();
+        await this.initMandantRedirectCookie();
+    }
+
+    private async initMandantCookie(): Promise<void> {
         if (MandantService.isLegacyBeCookie(this.getDecodeMandantCookie())) {
             await this.setMandantCookie(KiBonMandant.BE);
         }
@@ -98,15 +104,30 @@ export class MandantService {
         } else {
             this._mandant$.next(mandantFromCookie);
         }
-        this.initMultimandantActivated();
+    }
+
+    public async initMandantRedirectCookie(): Promise<void> {
+        const mandantFromCookie = MandantService.cookieToMandant(this.getDecodedMandantRedirectCookie());
+        const mandantFromUrl = this.parseHostnameForMandant();
+
+        if (mandantFromCookie !== mandantFromUrl && mandantFromUrl !== KiBonMandant.NONE) {
+            await this.setMandantRedirectCookie(mandantFromUrl);
+            this._mandant$.next(mandantFromUrl);
+        } else {
+            this._mandant$.next(mandantFromCookie);
+        }
     }
 
     private getDecodeMandantCookie(): string {
         return MandantService.decodeMandantCookie(this.cookieService.get('mandant'));
     }
 
-    private initMultimandantActivated(): void {
-        this.http.get(`${CONSTANTS.REST_API}application-properties/public/all`).subscribe(res => {
+    private getDecodedMandantRedirectCookie(): string {
+        return MandantService.decodeMandantCookie(this.cookieService.get('mandantRedirect'));
+    }
+
+    private initMultimandantActivated(): Promise<void> {
+        return this.http.get(`${CONSTANTS.REST_API}application-properties/public/all`).toPromise().then(res => {
             const props = this.restUtil.parsePublicAppConfig(res);
             this._multimandantActive$.next(props.mulitmandantAktiv);
             // overwrite cookie if not active
@@ -132,18 +153,20 @@ export class MandantService {
     public selectMandant(mandant: string, url: string): void {
         const parsedMandant = MandantService.hostnameToMandant(mandant);
 
-        // TODO: Restore AuthService once migrated
-        this.http.post(CONSTANTS.REST_API + 'auth/set-mandant', {name: parsedMandant}).subscribe(() => {
-
-            if (parsedMandant !== KiBonMandant.NONE) {
-                this.redirectToMandantSubdomain(parsedMandant, url);
-            }
-        }, error => LOG.error(error));
+        if (parsedMandant !== KiBonMandant.NONE) {
+            this.redirectToMandantSubdomain(parsedMandant, url);
+        }
     }
 
     public setMandantCookie(mandant: KiBonMandant): Promise<any> {
         // TODO: Restore AuthService once migrated
         return this.http.post(CONSTANTS.REST_API + 'auth/set-mandant',
+            {name: MandantService.shortMandantToFull(mandant)}).toPromise() as Promise<any>;
+    }
+
+    public setMandantRedirectCookie(mandant: KiBonMandant): Promise<any> {
+        // TODO: Restore AuthService once migrated
+        return this.http.post(CONSTANTS.REST_API + 'auth/set-mandant-redirect',
             {name: MandantService.shortMandantToFull(mandant)}).toPromise() as Promise<any>;
     }
 
@@ -172,5 +195,21 @@ export class MandantService {
             return '';
         }
         return matches[0];
+    }
+
+    public getMandantRedirect(): KiBonMandant {
+        return MandantService.cookieToMandant(this.getDecodedMandantRedirectCookie());
+    }
+
+    public getMandantLoginState(mandant: KiBonMandant): string {
+        switch (mandant) {
+            case KiBonMandant.BE:
+                return 'authentication.login';
+            case KiBonMandant.SO:
+            case KiBonMandant.LU:
+            case KiBonMandant.NONE:
+            default:
+                return 'authentication.locallogin';
+        }
     }
 }

@@ -599,7 +599,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Nonnull
 	private Gesuch createGesuch(boolean verfuegen) {
-		return testfaelleService.createAndSaveTestfaelle(TestfaelleService.PERREIRA_MARCIA, verfuegen, verfuegen, gemeindeId, gesuchsperiode);
+		return testfaelleService.createAndSaveTestfaelle(TestfaelleService.PERREIRA_MARCIA, verfuegen, verfuegen, gemeindeId, gesuchsperiode, mandant);
 	}
 
 	@Nullable

@@ -28,6 +28,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -122,10 +124,12 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 	@SuppressWarnings("PMD.NcssMethodCount")
 	@Override
 	@Nonnull
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Lastenausgleich createLastenausgleich(
 			int jahr,
 			@Nonnull BigDecimal selbstbehaltPro100ProzentPlatz,
 			Mandant mandant) {
+
 		// Ueberpruefen, dass es nicht schon einen Lastenausgleich oder LastenausgleichGrundlagen gibt fuer dieses Jahr
 		assertUnique(jahr);
 
@@ -205,12 +209,13 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		lastenausgleich.setTotalAlleGemeinden(totalGesamterLastenausgleich);
 
 		Lastenausgleich storedLastenausgleich = persistence.merge(lastenausgleich);
-		sendEmailsToGemeinden(storedLastenausgleich);
 
 		return storedLastenausgleich;
 	}
 
-	private void sendEmailsToGemeinden(@Nonnull Lastenausgleich storedLastenausgleich) {
+	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void sendEmailsToGemeinden(@Nonnull Lastenausgleich storedLastenausgleich) {
 		storedLastenausgleich.getLastenausgleichDetails().stream()
 			.map(LastenausgleichDetail::getGemeinde)
 			.distinct()
@@ -422,6 +427,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		detail.setKorrektur(true);
 		detail.setTotalBelegungenOhneSelbstbehalt(detail.getTotalBelegungenOhneSelbstbehalt().negate());
 		detail.setTotalBetragGutscheineOhneSelbstbehalt(detail.getTotalBetragGutscheineOhneSelbstbehalt().negate());
+		detail.setKostenFuerSelbstbehalt(detail.getKostenFuerSelbstbehalt().negate());
 		return detail;
 	}
 

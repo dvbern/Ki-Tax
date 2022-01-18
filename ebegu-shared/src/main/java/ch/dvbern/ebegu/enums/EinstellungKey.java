@@ -234,7 +234,13 @@ public enum EinstellungKey {
 
 	// (Solothurn)
 	// Siehe KIBON-2134
-	ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
+	ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,
+
+	// Soll die KESB-Platzierung in der Betreuung deaktiviert sein
+	// Siehe KIBON-2177
+	KESB_PLATZIERUNG_DEAKTIVIEREN;
+
+
 
 	private EinstellungTyp typ;
 

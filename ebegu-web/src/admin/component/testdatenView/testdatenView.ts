@@ -19,6 +19,7 @@ import {IPromise} from 'angular';
 import * as moment from 'moment';
 import {Observable} from 'rxjs';
 import {DvNgConfirmDialogComponent} from '../../../app/core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {DvNgDisplayObjectDialogComponent} from '../../../app/core/component/dv-ng-display-object-dialog/dv-ng-display-object-dialog.component';
 import {DvNgLinkDialogComponent} from '../../../app/core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
 import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
@@ -28,8 +29,10 @@ import {BenutzerRSX} from '../../../app/core/service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {GemeindeAntragService} from '../../../app/gemeinde-antraege/services/gemeinde-antrag.service';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {GesuchRS} from '../../../gesuch/service/gesuchRS.rest';
 import {TSPagination} from '../../../models/dto/TSPagination';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
+import {TSKibonAnfrage} from '../../../models/neskovanp/TSKibonAnfrage';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../models/TSGemeinde';
@@ -67,6 +70,12 @@ export class TestdatenViewComponent implements OnInit {
     public gemeindeAntragTyp: TSGemeindeAntragTyp;
     public gemeindeAntragTypeList: TSGemeindeAntragTyp[];
 
+    // kiBonAnfrage Schnitstelle Test
+    public antragId: string = '';
+    public zpvNummer: number = 10099208;
+    public gesuchsperiodeBeginnJahr: number = 2020;
+    public geburtsdatum: moment.Moment = moment('1964-12-09', 'YYYY-MM-DD');
+
     public constructor(
         public readonly testFaelleRS: TestFaelleRS,
         private readonly benutzerRS: BenutzerRSX,
@@ -76,6 +85,7 @@ export class TestdatenViewComponent implements OnInit {
         private readonly gemeindeRS: GemeindeRS,
         private readonly dialog: MatDialog,
         private readonly gemeindeAntragRS: GemeindeAntragService,
+        private readonly gesuchRS: GesuchRS,
     ) {
     }
 
@@ -296,6 +306,18 @@ export class TestdatenViewComponent implements OnInit {
         }, () => this.errorService.addMesageAsError('Anträge konnten nicht erstellt werden'));
     }
 
+    public testKibonAnfrageResponse(): void {
+        this.gesuchRS.getSteuerdaten(new TSKibonAnfrage(this.antragId,
+            this.zpvNummer,
+            this.gesuchsperiodeBeginnJahr,
+            this.geburtsdatum)).then(result => {
+                console.log(result);
+                this.dialog.open(DvNgDisplayObjectDialogComponent,
+                    {data: {object: result}});
+            },
+        );
+    }
+
     private async overwriteIfGemeindeAntragExists(): Promise<boolean> {
         const antraege = await this.gemeindeAntragRS.getGemeindeAntraege({
                 antragTyp: this.gemeindeAntragTyp,
@@ -303,7 +325,7 @@ export class TestdatenViewComponent implements OnInit {
                 gemeinde: this.gemeindeForGemeindeAntrag.name,
             },
             {},
-            new TSPagination()
+            new TSPagination(),
         ).toPromise();
         return antraege.resultList.length === 0 || this.confirmDialog(
             'Es existiert bereits ein Antrag für die gewählte Gemeinde und Periode. Fortfahren?',
