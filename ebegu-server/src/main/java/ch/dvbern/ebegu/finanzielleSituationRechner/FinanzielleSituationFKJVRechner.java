@@ -43,8 +43,8 @@ public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRec
 			total = add(total, geschaeftsgewinnDurchschnitt);
 			// Art. 12 f
 			total = add(total, abstractFinanzielleSituation.getBruttoertraegeVermoegen());
-			// TODO: ??
 			total = add(total, abstractFinanzielleSituation.getNettoertraegeErbengemeinschaft());
+			total = add(total, abstractFinanzielleSituation.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
 		}
 		return total;
 	}
