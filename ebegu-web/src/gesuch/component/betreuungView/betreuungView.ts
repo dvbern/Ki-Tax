@@ -131,6 +131,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public isKesbPlatzierung: boolean;
     private eingewoehnungAktiviert: boolean = false;
     private kitaPlusZuschlagAktiviert: boolean = false;
+    private besondereBeduerfnisseAufwandKonfigurierbar: boolean = false;
     protected minEintrittsdatum: moment.Moment;
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
@@ -262,6 +263,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                         this.changeKeineKesbPlatzierung();
                     }
                     this.hideKesbPlatzierung = value.getValueAsBoolean();
+                });
+            response.filter(r => r.key === TSEinstellungKey.BESONDERE_BEDUERFNISSE_LUZERN)
+                .forEach(value => {
+                    if (EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean())) {
+                        this.besondereBeduerfnisseAufwandKonfigurierbar = true;
+                    }
                 });
         });
 
@@ -1265,6 +1272,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA())
             && EbeguUtil.isNotNullAndTrue(this.getErweiterteBetreuungJA().erweiterteBeduerfnisse)
             && EbeguUtil.isNotNullAndTrue(this.getBetreuungModel().isAngebotBetreuungsgutschein());
+    }
+
+    public isBesondereBeduerfnisseAufwandKonfigurierbar(): boolean {
+        return this.besondereBeduerfnisseAufwandKonfigurierbar;
     }
 
     public isBetreuungInGemeindeRequired(): boolean {

@@ -2736,5 +2736,6 @@
     "UEBER_INSTITUTION": "über die Institution",
     "ERROR_UNKNOWN_HOST": "Einen Umsystem koennte nicht erreicht werden, der URL scheint nicht zu existierend",
     "BESONDERE_BEDUERFNISSE_LUZERN": "Luzern: Ausserordentlicher Betreuungaufwand konfigurierbar",
+    "BESONDERE_BEDUERFNISSE_BETRAG": "Betrag ausserordentlicher Betreuungsaufwand",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

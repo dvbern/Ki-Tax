@@ -375,7 +375,8 @@
                          dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()"
                          dv-show-expression="vm.isFachstelleRequired()">
-                        <div class="col-xs-12 dv-input-container-question">
+                        <!--ausserodentlicher Betreuungsaufwand fixer Betrag -->
+                        <div class="col-xs-12 dv-input-container-question" ng-if="!vm.isBesondereBeduerfnisseAufwandKonfigurierbar()">
                             <div class="checkbox">
                                 <md-checkbox ng-model="vm.getErweiterteBetreuungJA().erweiterteBeduerfnisseBestaetigt"
                                              name="erweiterteBeduerfnisseBestaetigt"
@@ -384,6 +385,27 @@
                                     <span>{{vm.getErweiterteBeduerfnisseBestaetigtLabel()}}</span>
                                 </md-checkbox>
                             </div>
+                        </div>
+                        <!--ausserodentlicher Betreuungsaufwand Betrag konfigurierbar-->
+                        <div class="col-xs-12 dv-input-container-question"
+                             ng-if="vm.isBesondereBeduerfnisseAufwandKonfigurierbar()">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float required" data-translate="BESONDERE_BEDUERFNISSE_BETRAG"
+                                       for="besondereBeduerfnisseAufwand"></label>
+                                <div class="dv-input-container-small">
+                                    <input
+                                        aria-describedby="besondereBeduerfnisseAufwand-error"
+                                        id="besondereBeduerfnisseAufwand" type="number"
+                                        ng-model="vm.getErweiterteBetreuungJA().erweitereteBeduerfnisseBetrag"
+                                        dv-max-length class="form-control"
+                                        ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                        ng-required="true"
+                                        ng-attr-placeholder="{{'BETRAG_PLACEHOLDER' | translate}}">
+                                    <dv-error-messages input-id="besondereBeduerfnisseAufwand"
+                                                       for="vm.form.besondereBeduerfnisseAufwand.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
+                            </dv-input-container>
                         </div>
                     </div>
 
