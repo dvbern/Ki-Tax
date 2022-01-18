@@ -238,8 +238,11 @@ public enum EinstellungKey {
 
 	// Soll die KESB-Platzierung in der Betreuung deaktiviert sein
 	// Siehe KIBON-2177
-	KESB_PLATZIERUNG_DEAKTIVIEREN;
+	KESB_PLATZIERUNG_DEAKTIVIEREN,
 
+	// Frage für Besondere Beduerfnisse in Luzern aktivieren
+	// Siehe KIBON-2189
+	BESONDERE_BEDUERFNISSE_LUZERN;
 
 
 	private EinstellungTyp typ;

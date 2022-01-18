@@ -2730,5 +2730,6 @@
     "UEBER_ELTERN": "über die Eltern",
     "UEBER_INSTITUTION": "über die Institution",
     "ERROR_UNKNOWN_HOST": "Un système tier n'a pas été trouvé, l'URL ne semble pas exister",
+    "BESONDERE_BEDUERFNISSE_LUZERN": "Luzern: ausserordentlicher Betreuungaufwand konfigurierbar",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
