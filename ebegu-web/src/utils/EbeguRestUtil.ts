@@ -613,6 +613,9 @@ export class EbeguRestUtil {
             restFamiliensituation.infomaKreditorennummer = familiensituation.infomaKreditorennummer;
             restFamiliensituation.infomaBankcode = familiensituation.infomaBankcode;
             restFamiliensituation.auszahlungAnEltern = familiensituation.auszahlungAnEltern;
+            restFamiliensituation.gesuchstellerKardinalitaet = familiensituation.gesuchstellerKardinalitaet;
+            restFamiliensituation.fkjvFamSit = familiensituation.fkjvFamSit;
+            restFamiliensituation.minDauerKonkubinat = familiensituation.minDauerKonkubinat;
             return restFamiliensituation;
         }
 
@@ -691,6 +694,9 @@ export class EbeguRestUtil {
             familiensituation.infomaKreditorennummer = familiensituationFromServer.infomaKreditorennummer;
             familiensituation.infomaBankcode = familiensituationFromServer.infomaBankcode;
             familiensituation.auszahlungAnEltern = familiensituationFromServer.auszahlungAnEltern;
+            familiensituation.gesuchstellerKardinalitaet = familiensituationFromServer.gesuchstellerKardinalitaet;
+            familiensituation.fkjvFamSit = familiensituationFromServer.fkjvFamSit;
+            familiensituation.minDauerKonkubinat = familiensituationFromServer.minDauerKonkubinat;
             return familiensituation;
         }
         return undefined;

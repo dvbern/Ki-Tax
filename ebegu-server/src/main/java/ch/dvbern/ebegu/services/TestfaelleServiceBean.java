@@ -672,6 +672,11 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			gesuch.setEingangsart(Eingangsart.PAPIER);
 		}
 
+		Einstellung neuFamiSit = einstellungService.findEinstellung(EinstellungKey.FKJV_FAMILIENSITUATION_NEU, gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
+		Einstellung dauerKonkubinat = einstellungService.findEinstellung(EinstellungKey.MINIMALDAUER_KONKUBINAT, gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
+		requireNonNull(gesuch.extractFamiliensituation()).setFkjvFamSit(neuFamiSit.getValueAsBoolean());
+		requireNonNull(gesuch.extractFamiliensituation()).setMinDauerKonkubinat(dauerKonkubinat.getValueAsInteger());
+
 		gesuchVerfuegenUndSpeichern(verfuegen, gesuch, false, false);
 
 		return gesuch;

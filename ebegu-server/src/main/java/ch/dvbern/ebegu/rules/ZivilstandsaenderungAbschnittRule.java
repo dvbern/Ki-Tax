@@ -47,11 +47,15 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
  */
 public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 
+	private final Integer paramMinDauerKonkubinat;
+
 	public ZivilstandsaenderungAbschnittRule(
 		DateRange validityPeriod,
+		Integer paramMinDauerKonkubinat,
 		@Nonnull Locale locale
 	) {
 		super(RuleKey.ZIVILSTANDSAENDERUNG, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
+		this.paramMinDauerKonkubinat = paramMinDauerKonkubinat;
 	}
 
 	@Override
@@ -106,22 +110,22 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 
 		} else if (familiensituation.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT_KEIN_KIND
 			&& familiensituation.getStartKonkubinat() != null
-			&& gesuch.getGesuchsperiode().getGueltigkeit().contains(familiensituation.getStartKonkubinat().plusYears(5))
+			&& gesuch.getGesuchsperiode().getGueltigkeit().contains(familiensituation.getStartKonkubinat().plusYears(paramMinDauerKonkubinat))
 		) {
-			final LocalDate startKonkubinatPlusFive = RuleUtil
-				.getStichtagForEreignis(familiensituation.getStartKonkubinat().plusYears(5));
+			final LocalDate startKonkubinatPlusXJahre = RuleUtil
+				.getStichtagForEreignis(familiensituation.getStartKonkubinat().plusYears(paramMinDauerKonkubinat));
 
 			zivilstandsaenderungAbschnitte.add(
 				createVerfuegungZeitabschnittForZivilstand(
 					familiensituation,
 					gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(),
-					startKonkubinatPlusFive.minusDays(1)
+					startKonkubinatPlusXJahre.minusDays(1)
 				)
 			);
 
 			final VerfuegungZeitabschnitt abschnittKonkubinat2GS = createVerfuegungZeitabschnittForZivilstand(
 				familiensituation,
-				startKonkubinatPlusFive,
+				startKonkubinatPlusXJahre,
 				gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()
 			);
 			abschnittKonkubinat2GS.getBgCalculationInputAsiv().addBemerkung(MsgKey.FAMILIENSITUATION_KONKUBINAT_MSG, getLocale());
