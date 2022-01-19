@@ -378,6 +378,7 @@ public class AbstractConverter {
 		gemeinde.setAngebotBG(jaxGemeinde.isAngebotBG());
 		gemeinde.setAngebotTS(jaxGemeinde.isAngebotTS());
 		gemeinde.setAngebotFI(jaxGemeinde.isAngebotFI());
+		gemeinde.setBesondereVolksschule(jaxGemeinde.isBesondereVolksschule());
 		return gemeinde;
 	}
 
@@ -396,6 +397,7 @@ public class AbstractConverter {
 		jaxGemeinde.setAngebotBG(persistedGemeinde.isAngebotBG());
 		jaxGemeinde.setAngebotTS(persistedGemeinde.isAngebotTS());
 		jaxGemeinde.setAngebotFI(persistedGemeinde.isAngebotFI());
+		jaxGemeinde.setBesondereVolksschule(persistedGemeinde.isBesondereVolksschule());
 		return jaxGemeinde;
 	}
 

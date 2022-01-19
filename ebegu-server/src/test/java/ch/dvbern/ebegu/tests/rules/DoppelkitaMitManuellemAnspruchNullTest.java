@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechn
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
@@ -74,7 +75,7 @@ public class DoppelkitaMitManuellemAnspruchNullTest extends AbstractBGRechnerTes
 		institutionStammdatenList.add(kita_1);
 		institutionStammdatenList.add(kita_2);
 
-		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(gesuchsperiode1718, institutionStammdatenList);
+		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(gesuchsperiode1718,  new TestDataInstitutionStammdatenBuilder(gesuchsperiode1718));
 
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));

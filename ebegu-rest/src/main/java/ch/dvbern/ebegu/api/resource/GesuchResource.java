@@ -51,12 +51,15 @@ import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
+import ch.dvbern.ebegu.dto.neskovanp.KibonAnfrageDTO;
 import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -70,6 +73,7 @@ import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
+import ch.dvbern.ebegu.services.KibonAnfrageService;
 import ch.dvbern.ebegu.services.MassenversandService;
 import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
 import ch.dvbern.ebegu.services.PersonenSucheService;
@@ -143,6 +147,12 @@ public class GesuchResource {
 	@Inject
 	private MassenversandService massenversandService;
 
+	@Inject
+	private KibonAnfrageService kibonAnfrageService;
+
+	@Inject
+	private EbeguConfiguration configuration;
+
 	@ApiOperation(value = "Creates a new Antrag in the database. The transfer object also has a relation to " +
 		"Familiensituation which is stored in the database as well.", response = JaxGesuch.class)
 	@Nonnull
@@ -173,8 +183,9 @@ public class GesuchResource {
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TS, SACHBEARBEITER_TS,  STEUERAMT,
-		GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT,
+		GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
 	public JaxGesuch update(
 		@Nonnull @NotNull JaxGesuch gesuchJAXP,
 		@Context UriInfo uriInfo,
@@ -221,7 +232,8 @@ public class GesuchResource {
 	@GET
 	@Path("/ewk/searchgesuch/{gesuchId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS,
+		SACHBEARBEITER_TS, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public EWKResultat suchePersonenByGesuch(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) throws EbeguException {
 		Objects.requireNonNull(gesuchJAXPId.getId());
@@ -235,7 +247,6 @@ public class GesuchResource {
 		Gesuch gesuch = gesuchOptional.get();
 		return personenSucheService.suchePersonen(gesuch);
 	}
-
 
 	/**
 	 * Da beim Einscannen Gesuche eingelesen werden die noch im Status Freigabequittung sind brauchen
@@ -264,7 +275,8 @@ public class GesuchResource {
 		Integer zuruckgezogenAsInt = Integer.valueOf(anzZurueckgezogen);
 		Gesuch gesuchToReturn = gesuchService.findGesuchForFreigabe(gesuchID, zuruckgezogenAsInt, true);
 
-		JaxAntragDTO jaxAntragDTO = converter.gesuchToAntragDTO(gesuchToReturn,
+		JaxAntragDTO jaxAntragDTO = converter.gesuchToAntragDTO(
+			gesuchToReturn,
 			principalBean.discoverMostPrivilegedRole());
 
 		jaxAntragDTO.setFamilienName(gesuchToReturn.extractFullnamesString()); //hier volle Namen beider GS
@@ -287,7 +299,8 @@ public class GesuchResource {
 	@Path("/institution/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION })
 	public JaxGesuch findGesuchForInstitution(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
 
@@ -308,7 +321,8 @@ public class GesuchResource {
 	 * relevant sind. Dieses Gesuch wird zurueckgeliefert
 	 */
 	@Nullable
-	private JaxGesuch cleanGesuchForInstitutionTraegerschaft(@Nullable final JaxGesuch completeGesuch,
+	private JaxGesuch cleanGesuchForInstitutionTraegerschaft(
+		@Nullable final JaxGesuch completeGesuch,
 		final Collection<Institution> userInstitutionen) {
 		if (completeGesuch != null) {
 			//clean EKV
@@ -337,8 +351,9 @@ public class GesuchResource {
 	@Path("/bemerkung/{gesuchId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TS, SACHBEARBEITER_TS,  STEUERAMT,
-		GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT,
+		GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
 	public Response updateBemerkung(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId,
 		@Nonnull @NotNull String bemerkung,
@@ -365,8 +380,9 @@ public class GesuchResource {
 	@Path("/bemerkungPruefungSTV/{gesuchId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TS, SACHBEARBEITER_TS,  STEUERAMT,
-		GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT,
+		GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
 	public Response updateBemerkungPruefungSTV(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId,
 		@Nonnull @NotNull String bemerkungPruefungSTV,
@@ -393,8 +409,9 @@ public class GesuchResource {
 	@Path("/status/{gesuchId}/{statusDTO}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TS, SACHBEARBEITER_TS,  STEUERAMT,
-		GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT,
+		GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
 	public Response updateStatus(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId,
 		@Nonnull @NotNull @PathParam("statusDTO") AntragStatusDTO statusDTO) {
@@ -411,7 +428,8 @@ public class GesuchResource {
 			}
 			return Response.ok().build();
 		}
-		String message = String.format("Could not update Status because the Gesuch with ID %s could not be read",
+		String message = String.format(
+			"Could not update Status because the Gesuch with ID %s could not be read",
 			gesuchJAXPId.getId());
 		throw new EbeguEntityNotFoundException("updateStatus", message, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			GESUCH_ID_INVALID + gesuchJAXPId.getId());
@@ -580,7 +598,7 @@ public class GesuchResource {
 	@Path("/freigebenSTV/{antragId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ STEUERAMT, SUPER_ADMIN})
+	@RolesAllowed({ STEUERAMT, SUPER_ADMIN })
 	public Response gesuchBySTVFreigeben(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
 		@Context UriInfo uriInfo,
@@ -618,7 +636,10 @@ public class GesuchResource {
 		@Context HttpServletResponse response) {
 
 		// Sicherstellen, dass der Status des Client-Objektes genau dem des Servers entspricht
-		resourceHelper.assertGesuchStatusEqual(antragJaxId.getId(), AntragStatusDTO.GEPRUEFT_STV, AntragStatusDTO.PRUEFUNG_STV);
+		resourceHelper.assertGesuchStatusEqual(
+			antragJaxId.getId(),
+			AntragStatusDTO.GEPRUEFT_STV,
+			AntragStatusDTO.PRUEFUNG_STV);
 
 		Objects.requireNonNull(antragJaxId.getId());
 		final String antragId = converter.toEntityId(antragJaxId);
@@ -730,7 +751,8 @@ public class GesuchResource {
 	@DELETE
 	@Path("/removeAntrag/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
-	@RolesAllowed({ GESUCHSTELLER, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, SUPER_ADMIN, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
+	@RolesAllowed({ GESUCHSTELLER, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, SUPER_ADMIN, ADMIN_SOZIALDIENST,
+		SACHBEARBEITER_SOZIALDIENST })
 	public Response removeAntrag(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
 		@Context HttpServletResponse response) {
@@ -897,7 +919,8 @@ public class GesuchResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
 	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
-	public Response getIdOfNewestGesuch(@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,
+	public Response getIdOfNewestGesuch(
+		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,
 		@Nonnull @NotNull @PathParam("dossierId") JaxId dossierJaxId) {
 
 		Objects.requireNonNull(dossierJaxId.getId());
@@ -961,7 +984,8 @@ public class GesuchResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
-		SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, REVISOR, JURIST, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
+		SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, REVISOR, JURIST, ADMIN_SOZIALDIENST,
+		SACHBEARBEITER_SOZIALDIENST })
 	public Response isAusserordentlicherAnspruchPossible(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
 		Objects.requireNonNull(gesuchJAXPId.getId());
 		Gesuch gesuch = gesuchService.findGesuch(converter.toEntityId(gesuchJAXPId))
@@ -1017,8 +1041,9 @@ public class GesuchResource {
 	@Path("/updateAlwaysEditableProperties")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TS, SACHBEARBEITER_TS,  STEUERAMT,
-		GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT,
+		GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
 	public JaxGesuch updateAlwaysEditableProperties(
 		@Nonnull @NotNull @Valid JaxAlwaysEditableProperties properties,
 		@Context UriInfo uriInfo,
@@ -1026,13 +1051,55 @@ public class GesuchResource {
 
 		Objects.requireNonNull(properties.getGesuchId().getId());
 		final String antragId = converter.toEntityId(properties.getGesuchId());
-		Gesuch gesuch = gesuchService.findGesuch(antragId).orElseThrow( () -> new EbeguEntityNotFoundException(
+		Gesuch gesuch = gesuchService.findGesuch(antragId).orElseThrow(() -> new EbeguEntityNotFoundException(
 			"updateAlwaysEditableProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, antragId));
 
-		converter.alwaysEditablePropertiesToGesuch(properties,gesuch);
+		converter.alwaysEditablePropertiesToGesuch(properties, gesuch);
 		// No Authcheck required as allowed users can change those datas independently from the Gesuch status
 		gesuchService.updateGesuch(gesuch, false, null, false);
 
 		return converter.gesuchToJAX(gesuch);
+	}
+
+	@ApiOperation(value = "Sucht die Steuerdaten von einer Person nach seinem ZDPNummer, Geburtsdatum, PeriodeBeginn "
+		+ "und AntragId.",
+		response = SteuerdatenResponse.class)
+	@Nullable
+	@POST
+	@Path("/kibonanfrage/getsteuerdaten")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed(SUPER_ADMIN)
+	public SteuerdatenResponse getSteuerdaten(
+		@Nonnull @NotNull KibonAnfrageDTO kibonAnfrage,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) throws EbeguException {
+		// Achtung dieser Resource ist nur fuer Tests geeignet, soll niemals Produktiv verwendet werden!!!
+		if(!configuration.getIsDevmode()) {
+			String errorMessage = "Dieser Funktion ist nicht erlaubt im Produktive Umgebung";
+			LOG.warn(errorMessage);
+			throw new EbeguRuntimeException(
+				"getSteuerdaten",
+				errorMessage,
+				errorMessage,
+				kibonAnfrage.getAntragId());
+		}
+
+		if (!configuration.getKibonAnfrageTestUuid().equals(kibonAnfrage.getAntragId().trim())) {
+			String errorMessage = "Der eingegebene UUID stimmt nicht mit der Konfiguration";
+			LOG.warn(errorMessage);
+			throw new EbeguRuntimeException(
+				"getSteuerdaten",
+				errorMessage,
+				errorMessage,
+				kibonAnfrage.getAntragId());
+		}
+
+		return kibonAnfrageService.getSteuerDaten(
+			kibonAnfrage.getZpvNummer(),
+			kibonAnfrage.getGeburtsdatum(),
+			kibonAnfrage.getAntragId(),
+			kibonAnfrage.getGesuchsperiodeBeginnJahr());
 	}
 }

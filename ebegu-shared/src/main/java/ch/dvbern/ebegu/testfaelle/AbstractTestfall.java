@@ -69,6 +69,7 @@ import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
@@ -104,7 +105,7 @@ public abstract class AbstractTestfall {
 	public static final String ID_BERNER_SOZIALDIENST = "f44a68f2-dda2-4bf2-936a-68e20264b620";
 
 	protected final Gesuchsperiode gesuchsperiode;
-	protected final Collection<InstitutionStammdaten> institutionStammdatenList;
+	private final Collection<InstitutionStammdaten> institutionStammdatenList;
 
 	protected String fixId = null;
 	protected Fall fall = null;
@@ -112,23 +113,24 @@ public abstract class AbstractTestfall {
 	protected Dossier dossier = null;
 	protected Gesuch gesuch = null;
 	protected final boolean betreuungenBestaetigt;
+	protected final InstitutionStammdatenBuilder institutionStammdatenBuilder;
 
 	protected AbstractTestfall(
-		Gesuchsperiode gesuchsperiode,
-		Collection<InstitutionStammdaten> institutionStammdatenList,
-		boolean betreuungenBestaetigt
-	) {
+			Gesuchsperiode gesuchsperiode,
+			boolean betreuungenBestaetigt,
+			InstitutionStammdatenBuilder institutionStammdatenBuilder) {
 		this.gesuchsperiode = gesuchsperiode;
-		this.institutionStammdatenList = institutionStammdatenList;
+		this.institutionStammdatenBuilder = institutionStammdatenBuilder;
+		this.institutionStammdatenList = institutionStammdatenBuilder.buildStammdaten();
 		this.betreuungenBestaetigt = betreuungenBestaetigt;
 	}
 
 	protected AbstractTestfall(
-		Gesuchsperiode gesuchsperiode,
-		Collection<InstitutionStammdaten> institutionStammdatenList,
-		boolean betreuungenBestaetigt, Gemeinde gemeinde
+			Gesuchsperiode gesuchsperiode,
+			boolean betreuungenBestaetigt, Gemeinde gemeinde,
+			InstitutionStammdatenBuilder institutionStammdatenBuilder
 	) {
-		this(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+		this(gesuchsperiode, betreuungenBestaetigt, institutionStammdatenBuilder);
 		this.gemeinde = gemeinde;
 	}
 
@@ -210,6 +212,7 @@ public abstract class AbstractTestfall {
 		familiensituation.setSozialhilfeBezueger(false);
 		familiensituation.setVerguenstigungGewuenscht(true);
 		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(true);
+		familiensituation.setMinDauerKonkubinat(5);
 	}
 
 	protected Gesuch createAlleinerziehend() {
@@ -218,6 +221,7 @@ public abstract class AbstractTestfall {
 		familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		FamiliensituationContainer familiensituationContainer = new FamiliensituationContainer();
 		familiensituationContainer.setFamiliensituationJA(familiensituation);
+		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 		setFinSitFieldsOfFamiliensituation(familiensituation);
 		gesuch.setFamiliensituationContainer(familiensituationContainer);
 		return gesuch;

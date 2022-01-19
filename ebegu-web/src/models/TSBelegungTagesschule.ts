@@ -26,5 +26,6 @@ export class TSBelegungTagesschule extends TSAbstractMutableEntity {
     public abholungTagesschule: TSAbholungTagesschule;
     public bemerkung: string;
     public abweichungZweitesSemester: boolean;
+    public keineKesbPlatzierung: boolean;
 
 }

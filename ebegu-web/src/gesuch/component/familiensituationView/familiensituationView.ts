@@ -14,12 +14,23 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
-import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {
+    getTSFamilienstatusFKJVValues,
+    getTSFamilienstatusValues,
+    TSFamilienstatus,
+} from '../../../models/enums/TSFamilienstatus';
+import {
+    getTSGesuchstellerKardinalitaetValues,
+    TSGesuchstellerKardinalitaet,
+} from '../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSFamiliensituation} from '../../../models/TSFamiliensituation';
 import {TSFamiliensituationContainer} from '../../../models/TSFamiliensituationContainer';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -56,12 +67,15 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         '$q',
         '$scope',
         'FamiliensituationRS',
+        'EinstellungRS',
         '$timeout',
     ];
-    public familienstatusValues: Array<TSFamilienstatus>;
+    private familienstatusValues: Array<TSFamilienstatus>;
     public allowedRoles: ReadonlyArray<TSRole>;
     public initialFamiliensituation: TSFamiliensituation;
     public savedClicked: boolean = false;
+    public situationFKJV = false;
+    public gesuchstellerKardinalitaetValues: Array<TSGesuchstellerKardinalitaet>;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -73,6 +87,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         private readonly $q: IQService,
         $scope: IScope,
         private readonly familiensituationRS: FamiliensituationRS,
+        private readonly einstellungRS: EinstellungRS,
         $timeout: ITimeoutService,
     ) {
 
@@ -85,10 +100,27 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         this.gesuchModelManager.initFamiliensituation();
         this.model = angular.copy(this.getGesuch().familiensituationContainer);
         this.initialFamiliensituation = angular.copy(this.gesuchModelManager.getFamiliensituation());
-        this.familienstatusValues = getTSFamilienstatusValues();
-
+        this.gesuchstellerKardinalitaetValues = getTSGesuchstellerKardinalitaetValues();
         this.initViewModel();
 
+    }
+
+    public $onInit(): void {
+        this.einstellungRS.getAllEinstellungenBySystemCached(
+            this.gesuchModelManager.getGesuchsperiode().id,
+        ).then((response: TSEinstellung[]) => {
+            response.filter(r => r.key === TSEinstellungKey.FKJV_FAMILIENSITUATION_NEU)
+                .forEach(value => {
+                    this.situationFKJV = value.getValueAsBoolean();
+                    this.familienstatusValues =
+                        this.situationFKJV ? getTSFamilienstatusFKJVValues() : getTSFamilienstatusValues();
+                    this.getFamiliensituation().fkjvFamSit = this.situationFKJV;
+                });
+            response.filter(r => r.key === TSEinstellungKey.MINIMALDAUER_KONKUBINAT)
+                .forEach(value => {
+                    this.getFamiliensituation().minDauerKonkubinat = Number(value.value);
+                });
+        });
     }
 
     private initViewModel(): void {
@@ -132,7 +164,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         this.errorService.clearAll();
         return this.familiensituationRS.saveFamiliensituation(
             this.model,
-            this.getGesuch().id
+            this.getGesuch().id,
         ).then((familienContainerResponse: any) => {
             this.model = familienContainerResponse;
             this.getGesuch().familiensituationContainer = familienContainerResponse;
@@ -165,6 +197,9 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
 
         } else if (this.isMutation() && this.getFamiliensituation().aenderungPer && this.isStartKonkubinatVisible()) {
             this.getFamiliensituation().startKonkubinat = this.getFamiliensituation().aenderungPer;
+        }
+        if (!this.showGesuchstellerKardinalitaet()) {
+            this.getFamiliensituation().gesuchstellerKardinalitaet = undefined;
         }
     }
 
@@ -258,5 +293,17 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         if (this.hasEmptyAenderungPer()) {
             this.resetFamsit();
         }
+    }
+
+    public getFamiliensituationValues(): Array<TSFamilienstatus> {
+        return this.familienstatusValues;
+    }
+
+    public showGesuchstellerKardinalitaet(): boolean {
+        if (this.getFamiliensituation() && this.situationFKJV) {
+            return this.getFamiliensituation().familienstatus === TSFamilienstatus.ALLEINERZIEHEND
+                || this.getFamiliensituation().familienstatus === TSFamilienstatus.PFLEGEFAMILIE;
+        }
+        return false;
     }
 }

@@ -77,4 +77,10 @@ public interface LastenausgleichService {
 	 * Löscht den Lastenausgleich
 	 */
 	void removeLastenausgleich(@Nonnull String lastenausgleichId);
+
+	/**
+	 * Send Email fuer die LATS
+	 * @param storedLastenausgleich
+	 */
+	void sendEmailsToGemeinden(@Nonnull Lastenausgleich storedLastenausgleich);
 }

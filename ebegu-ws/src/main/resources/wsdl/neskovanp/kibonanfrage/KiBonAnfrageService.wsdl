@@ -1,0 +1,116 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- 
+	Copyright (c) 2021 DV Bern AG, Switzerland
+	
+	Das vorliegende Dokument, einschliesslich aller seiner Teile, ist urheberrechtlich
+	geschützt. Jede Verwertung ist ohne Zustimmung der DV Bern AG unzulässig. Dies gilt
+	insbesondere für Vervielfältigungen, die Einspeicherung und Verarbeitung in
+	elektronischer Form. Wird das Dokument einem Kunden im Rahmen der Projektarbeit zur
+	Ansicht übergeben ist jede weitere Verteilung durch den Kunden an Dritte untersagt.
+	
+-->
+<wsdl:definitions name="KiBonAnfrage"
+                  targetNamespace="http://sv.fin.be.ch/schemas/NESKOVANP/20211119/KiBonAnfrageService"
+                  xmlns:tns="http://sv.fin.be.ch/schemas/NESKOVANP/20211119/KiBonAnfrageService"
+                  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:exc="http://sv.fin.be.ch/schemas/base/20070131/ExceptionInfo">
+
+    <wsdl:documentation>
+        kiBon-Anfrage beantworten/verarbeiten.
+        Ziel: Beantworten von Anfragen zu Einkünften und Vermögen aus der Applikation KiBon (Betreuungsgutscheine für Kinder).
+    </wsdl:documentation>
+
+    <wsdl:types>
+        <xs:schema>
+            <xs:import
+                    namespace="http://sv.fin.be.ch/schemas/NESKOVANP/20211119/KiBonAnfrageService"
+                    schemaLocation="KiBonAnfrageService.xsd"/>
+            <xs:import
+                    namespace="http://sv.fin.be.ch/schemas/base/20070131/ExceptionInfo"
+                    schemaLocation="../basis/ExceptionInfo.xsd"/>
+        </xs:schema>
+    </wsdl:types>
+
+    <!-- Meldungen fuer die Operation GetSteuerdaten -->
+    <wsdl:message name="GetSteuerdatenRequest">
+        <wsdl:part name="requestParameters" element="tns:GetSteuerdaten">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="GetSteuerdatenResponse">
+        <wsdl:part name="responseParameters" element="tns:GetSteuerdatenResponse">
+        </wsdl:part>
+    </wsdl:message>
+
+    <!-- Exceptions -->
+    <wsdl:message name="InfrastructureFault">
+        <wsdl:part name="fault" element="exc:InfrastructureFault"/>
+    </wsdl:message>
+    <wsdl:message name="InvalidArgumentsFault">
+        <wsdl:part name="fault" element="exc:InvalidArgumentsFault"/>
+    </wsdl:message>
+    <wsdl:message name="PermissionDeniedFault">
+        <wsdl:part name="fault" element="exc:PermissionDeniedFault"/>
+    </wsdl:message>
+    <wsdl:message name="BusinessFault">
+        <wsdl:part name="fault" element="exc:BusinessFault"/>
+    </wsdl:message>
+
+
+    <wsdl:portType name="KiBonAnfragePort">
+        <wsdl:operation name="GetSteuerdaten">
+            <wsdl:documentation>
+                Kibon will von NP Daten zu Steuerpflichtigen Personen. Eine KiBon-Anfrage wird mit der Lieferung von Steuerdaten beantwortet. Die KiBon-Anfrage findet für jede
+                Person einzeln statt.
+            </wsdl:documentation>
+            <wsdl:input
+                    message="tns:GetSteuerdatenRequest"/>
+            <wsdl:output
+                    message="tns:GetSteuerdatenResponse"/>
+            <wsdl:fault name="InfrastructureFault"
+                        message="tns:InfrastructureFault"/>
+            <wsdl:fault name="InvalidArgumentsFault"
+                        message="tns:InvalidArgumentsFault"/>
+            <wsdl:fault name="PermissionDeniedFault"
+                        message="tns:PermissionDeniedFault"/>
+            <wsdl:fault name="BusinessFault"
+                        message="tns:BusinessFault"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="KiBonAnfrageSOAPBinding"
+                  type="tns:KiBonAnfragePort">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+
+        <wsdl:operation name="GetSteuerdaten">
+            <soap:operation style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="InfrastructureFault">
+                <soap:fault name="InfrastructureFault" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="InvalidArgumentsFault">
+                <soap:fault name="InvalidArgumentsFault" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="PermissionDeniedFault">
+                <soap:fault name="PermissionDeniedFault" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="BusinessFault">
+                <soap:fault name="BusinessFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="KiBonAnfrageService">
+        <wsdl:port name="KiBonAnfrage"
+                   binding="tns:KiBonAnfrageSOAPBinding">
+            <soap:address location="urn:DynamicEndpoint"/>
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>

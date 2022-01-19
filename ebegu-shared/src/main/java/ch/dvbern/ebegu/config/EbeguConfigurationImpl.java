@@ -71,6 +71,15 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	public static final String EBEGU_GEOADMIN_SEARCHSERVER_URL = "ebegu.geoadmin.searchserver.url";
 	public static final String EBEGU_GEOADMIN_MAPSERVER_URL = "ebegu.geoadmin.mapserver.url";
 
+	public static final String EBEGU_KIBON_ANFRAGE_STS_KEYSTORE_PATH = "ebegu.kibonanfrage.sts.keystore.path";
+	public static final String EBEGU_KIBON_ANFRAGE_STS_KEYSTORE_PW = "ebegu.kibonanfrage.sts.keystore.pw";
+	public static final String EBEGU_KIBON_ANFRAGE_STS_PRIVATE_KEY_ALIAS = "ebegu.kibonanfrage.sts.private.key.alias";
+
+	public static final String EBEGU_KIBON_ANFRAGE_STS_BASE_PATH = "ebegu.kibonanfrage.sts.base.path";
+	public static final String EBEGU_KIBON_ANFRAGE_STS_WSDL = "ebegu.kibonanfrage.sts.wsdl";
+	public static final String EBEGU_KIBON_ANFRAGE_STS_ENDPOINT = "ebegu.kibonanfrage.sts.endpoint";
+	public static final String EBEGU_KIBON_ANFRAGE_STS_RENEWAL_ASSERTION_WSDL = "ebegu.kibonanfrage.sts.renewal.assertion.wsdl";
+	public static final String EBEGU_KIBON_ANFRAGE_STS_RENEWAL_ASSERTION_ENDPOINT = "ebegu.kibonanfrage.sts.renewal.assertion.endpoint";
 
 	public static final String EBEGU_KITAX_HOST = "ebegu.kitax.host";
 	public static final String EBEGU_KITAX_ENDPOINT = "ebegu.kitax.endpoint";
@@ -108,6 +117,10 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String MASSENMUTATION_EMPFAENGER_MAIL = "ebegu.massenmutation.empfaenger.mail";
 
 	private static final String MULTIMANDANT_ENABLED = "ebegu.multimandant.enabled";
+
+	private static final String EBEGU_KIBON_STEUER_ANFRAGE_ENDPOINT = "ebegu.kibonanfrage.endpoint";
+
+	private static final String EBEGU_KIBON_STEUER_ANFRAGE_TEST_UUID = "ebegu.kibonanfrage.testuuid";
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
@@ -362,6 +375,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 		return getString(EBEGU_PERSONENSUCHE_STS_ENDPOINT, getEbeguPersonensucheSTSBasePath() +  "/zertsts/services/ZertSTSWebservice");
 	}
 
+	//unused ?
 	@Override
 	public String getEbeguPersonensucheSTSRenewalAssertionWsdl() {
 		return getString(EBEGU_PERSONENSUCHE_STS_RENEWAL_ASSERTION_WSDL);
@@ -448,5 +462,58 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public Boolean getMultimandantEnabled() {
 		return getBoolean(MULTIMANDANT_ENABLED, false);
+	}
+
+	@Override
+	public String getKibonAnfrageEndpoint() {
+		return getString(EBEGU_KIBON_STEUER_ANFRAGE_ENDPOINT);
+	}
+
+	@Override
+	public String getKibonAnfrageTestUuid() {
+		return getString(EBEGU_KIBON_STEUER_ANFRAGE_TEST_UUID);
+	}
+
+	@Override
+	public String getEbeguKibonAnfrageSTSPrivateKeyAlias() {
+		return getString(EBEGU_KIBON_ANFRAGE_STS_PRIVATE_KEY_ALIAS, "rbr1");
+	}
+
+	@Override
+	public String getEbeguKibonAnfrageSTSKeystorePW() {
+		return getString(EBEGU_KIBON_ANFRAGE_STS_KEYSTORE_PW);
+	}
+
+	@Override
+	public String getEbeguKibonAnfrageSTSKeystorePath() {
+		String jbossHome =  System.getProperty("jboss.home.dir");
+		String defaultPathToJKS =  jbossHome + "/rbr1-svbern-sts-ks-t.jks";
+
+		return getString(EBEGU_KIBON_ANFRAGE_STS_KEYSTORE_PATH, defaultPathToJKS);
+	}
+
+	@Override
+	public String getEbeguKibonAnfrageSTSPrivateKeyPW() {
+		return getEbeguKibonAnfrageSTSKeystorePW();
+	}
+
+	@Override
+	public String getEbeguKibonAnfrageSTSBasePath() {
+		return getString(EBEGU_KIBON_ANFRAGE_STS_BASE_PATH, "https://nesko-replica.sv.fin.be.ch/securityService"); //test
+	}
+
+	@Override
+	public String getEbeguKibonAnfrageSTSEndpoint() {
+		return getString(EBEGU_KIBON_ANFRAGE_STS_ENDPOINT, getEbeguKibonAnfrageSTSBasePath() +  "/zertsts/services/ZertSTSWebservice");
+	}
+
+	@Override
+	public String getEbeguKibonAnfrageSTSWsdl() {
+		return getString(EBEGU_KIBON_ANFRAGE_STS_WSDL);
+	}
+
+	@Override
+	public String getEbeguKibonAnfrageSTSRenewalAssertionEndpoint() {
+		return getString(EBEGU_KIBON_ANFRAGE_STS_RENEWAL_ASSERTION_ENDPOINT, getEbeguKibonAnfrageSTSBasePath() +  "/samlrenew/services/RenewAssertionWebService");
 	}
 }

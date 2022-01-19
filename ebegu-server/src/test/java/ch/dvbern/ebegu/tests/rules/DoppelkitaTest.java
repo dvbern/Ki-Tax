@@ -22,6 +22,7 @@ import java.util.List;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -29,6 +30,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.Testfall_DoppelKita_Regel1;
 import ch.dvbern.ebegu.testfaelle.Testfall_DoppelKita_Regel2;
 import ch.dvbern.ebegu.testfaelle.Testfall_DoppelKita_Regel3;
@@ -56,13 +58,14 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
-		Testfall_DoppelKita_Regel1 testfall = new Testfall_DoppelKita_Regel1(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
+		final Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
+		Testfall_DoppelKita_Regel1 testfall = new Testfall_DoppelKita_Regel1(gesuchsperiode1718, new TestDataInstitutionStammdatenBuilder(gesuchsperiode1718));
 
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
-		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		gesuch.setGesuchsperiode(gesuchsperiode1718);
 		evaluator.evaluate(gesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
@@ -98,13 +101,14 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
-		Testfall_DoppelKita_Regel2 testfall = new Testfall_DoppelKita_Regel2(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
+		final Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
+		Testfall_DoppelKita_Regel2 testfall = new Testfall_DoppelKita_Regel2(gesuchsperiode1718, new TestDataInstitutionStammdatenBuilder(gesuchsperiode1718));
 
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
-		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		gesuch.setGesuchsperiode(gesuchsperiode1718);
 		evaluator.evaluate(gesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
@@ -140,13 +144,14 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
-		Testfall_DoppelKita_Regel3 testfall = new Testfall_DoppelKita_Regel3(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
+		final Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
+		Testfall_DoppelKita_Regel3 testfall = new Testfall_DoppelKita_Regel3(gesuchsperiode1718, new TestDataInstitutionStammdatenBuilder(gesuchsperiode1718));
 
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
-		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		gesuch.setGesuchsperiode(gesuchsperiode1718);
 		evaluator.evaluate(gesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {

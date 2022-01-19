@@ -234,7 +234,13 @@ public enum EinstellungKey {
 
 	// Kinderabzug Typ (Solothurn und FKJV)
 	// Siehe KIBON-2182
-	KINDERABZUG_TYP;
+	KINDERABZUG_TYP,
+
+	// Soll die KESB-Platzierung in der Betreuung deaktiviert sein
+	// Siehe KIBON-2177
+	KESB_PLATZIERUNG_DEAKTIVIEREN;
+
+
 
 	private EinstellungTyp typ;
 

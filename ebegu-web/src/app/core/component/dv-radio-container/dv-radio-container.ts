@@ -30,7 +30,8 @@ export class DvRadioContainerComponentConfig implements IComponentOptions {
         ariaDescribedBy: '@',
         ariaLabel: '@',
         trueOptionLabel: '@',
-        falseOptionLabel: '@'
+        falseOptionLabel: '@',
+        dvFkjvFamsit: '<',
     };
     public template = require('./dv-radio-container.html');
     public controller = DvRadioContainerController;

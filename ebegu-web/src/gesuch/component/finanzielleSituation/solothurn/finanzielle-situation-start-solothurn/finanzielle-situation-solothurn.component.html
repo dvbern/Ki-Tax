@@ -1,0 +1,54 @@
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="gesuch-modul">
+	<h1 class="access-for-all-title" translate>AFA_GESUCHSFORMULAR</h1>
+	<div class="row view-title">
+		<div class="col-md-12">
+			<h2>
+                <span translate
+					  [translateParams]="{gesuchsteller: getAntragstellerNameForCurrentStep(), basisjahr: getYearForDeklaration()}">FINANZIELLE_SITUATION</span>
+			</h2>
+			<hr class="header"/>
+		</div>
+	</div>
+	<form #form="ngForm">
+		<dv-finanzielle-situation-require-x [(verguenstigungGewuenscht)]="model.verguenstigungGewuenscht"
+											[(sozialhilfeBezueger)]="model.sozialhilfeBezueger"
+											[finanzielleSituationRequired]="finanzielleSituationRequired"
+											(finanzielleSituationRequiredChange)="finanzielleSituationRequiredChange($event)"></dv-finanzielle-situation-require-x>
+		<div *ngIf="finanzielleSituationRequired && !isGemeinsam()">
+			<dv-steuerveranlagung-erhalten [model]="getModel()" (steuerveranlagungErhaltenChange)="steuerveranlagungErhaltenChange($event)"></dv-steuerveranlagung-erhalten>
+			<dv-veranlagung-solothurn *ngIf="hasSteuerveranlagungErhalten()"
+									  [model]="getModel()"
+									  [readOnly]="gesuchModelManager.isGesuchReadonly()"></dv-veranlagung-solothurn>
+			<dv-bruttolohn *ngIf="!hasSteuerveranlagungErhalten()" [model]="getModel()"></dv-bruttolohn>
+		</div>
+		<div *ngIf="finanzielleSituationRequired && isGemeinsam()">
+			<dv-steuerveranlagung-gemeinsam [model]="getModel()"></dv-steuerveranlagung-gemeinsam>
+			<dv-steuerveranlagung-erhalten *ngIf="isSteuerveranlagungGemeinsam()"
+										   (steuerveranlagungErhaltenChange)="steuerveranlagungErhaltenChange($event)"
+										   [model]="getModel()"></dv-steuerveranlagung-erhalten>
+		</div>
+		<dv-navigation-x (dvSave)="prepareSave($event.onResult)"
+						 [dvNext]="true"
+						 [dvPrevious]="true"
+						 [dvSubStep]="getSubStepIndex()"
+						 [dvSubStepName]="getSubStepName()"></dv-navigation-x>
+	</form>
+
+</div>

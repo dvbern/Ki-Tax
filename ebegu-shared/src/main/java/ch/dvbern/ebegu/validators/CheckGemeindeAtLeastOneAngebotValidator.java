@@ -38,6 +38,6 @@ public class CheckGemeindeAtLeastOneAngebotValidator implements ConstraintValida
 
 	@Override
 	public boolean isValid(@Nonnull Gemeinde gemeinde, ConstraintValidatorContext context) {
-		return gemeinde.isAngebotBG() || gemeinde.isAngebotTS() || gemeinde.isAngebotFI();
+		return gemeinde.isBesondereVolksschule() || gemeinde.isAngebotBG() || gemeinde.isAngebotTS() || gemeinde.isAngebotFI();
 	}
 }

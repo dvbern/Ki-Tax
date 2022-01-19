@@ -65,9 +65,11 @@ export class EditGemeindeComponentBG implements OnInit {
     @Input() public beguStartDatum: Moment;
     @Input() public keineBeschwerdeAdresse: boolean;
     @Input() public gemeindeList$: Observable<TSGemeinde[]>;
+    @Input() public zusatzTextBG: boolean;
 
     @Output() public readonly altBGAdresseChange: EventEmitter<boolean> = new EventEmitter();
     @Output() public readonly keineBeschwerdeAdresseChange: EventEmitter<boolean> = new EventEmitter();
+    @Output() public readonly zusatzTextBgChange: EventEmitter<boolean> = new EventEmitter();
 
     @ViewChild(NgModelGroup) private readonly group: NgModelGroup;
 
@@ -156,6 +158,10 @@ export class EditGemeindeComponentBG implements OnInit {
 
     public altBGAdresseHasChange(newVal: boolean): void {
         this.altBGAdresseChange.emit(newVal);
+    }
+
+    public zusatzTextBgHasChange(newVal: boolean): void {
+        this.zusatzTextBgChange.emit(newVal);
     }
 
     public getKonfigKontingentierungString(): string {

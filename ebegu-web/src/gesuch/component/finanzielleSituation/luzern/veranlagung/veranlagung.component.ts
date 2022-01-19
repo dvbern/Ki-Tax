@@ -15,9 +15,11 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
 
 @Component({
     selector: 'dv-veranlagung',
@@ -42,16 +44,20 @@ export class VeranlagungComponent implements OnInit {
     @Input()
     public readOnly: boolean;
 
-    @Output() public readonly valueChange = new EventEmitter<undefined>();
+    @Input()
+    public finanzModel: TSFinanzModel;
 
-    public constructor() {
+    public constructor(
+        private readonly finSitLuService: FinanzielleSituationLuzernService
+    ) {
     }
 
     public ngOnInit(): void {
+        this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
     }
 
-    public onValueChange(): void {
-        this.valueChange.emit();
+    public onValueChangeFunction = (): void => {
+        this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
     }
 
 }

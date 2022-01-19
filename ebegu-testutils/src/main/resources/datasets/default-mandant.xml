@@ -24,6 +24,7 @@
 			 user_mutiert="anonym"
 			 version="0"
 			 name="Kanton Bern"
+			 mandant_identifier="BERN"
 			 angebotts="false"
 			 angebotfi="false"/>
 </dataset>

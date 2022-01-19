@@ -17,20 +17,16 @@ package ch.dvbern.ebegu.testfaelle;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
@@ -43,12 +39,17 @@ public class Testfall11_SchulamtOnly extends AbstractTestfall {
 
 	private static final String FAMILIENNAME = "Schmid";
 
-	public Testfall11_SchulamtOnly(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList) {
-		super(gesuchsperiode, institutionStammdatenList, false);
+	public Testfall11_SchulamtOnly(
+			Gesuchsperiode gesuchsperiode,
+			InstitutionStammdatenBuilder institutionStammdatenBuilder) {
+		super(gesuchsperiode, false, institutionStammdatenBuilder);
 	}
 
-	public Testfall11_SchulamtOnly(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt, Gemeinde gemeinde) {
-		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
+	public Testfall11_SchulamtOnly(
+			Gesuchsperiode gesuchsperiode,
+			boolean betreuungenBestaetigt,
+			Gemeinde gemeinde, InstitutionStammdatenBuilder institutionStammdatenBuilder) {
+		super(gesuchsperiode, betreuungenBestaetigt, gemeinde, institutionStammdatenBuilder);
 	}
 
 	@Override
@@ -73,7 +74,7 @@ public class Testfall11_SchulamtOnly extends AbstractTestfall {
 		// Betreuungen
 		// Kind 1: Tagesschule Bern
 		AnmeldungTagesschule anmeldungTagesschule =
-			createTagesschuleAnmeldung(ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE);
+			createTagesschuleAnmeldung(institutionStammdatenBuilder.getIdInstitutionStammdatenTagesschule());
 		anmeldungTagesschule.setKind(kind1);
 		Set<AnmeldungTagesschule> anmeldungTSSet = new TreeSet();
 		anmeldungTSSet.add(anmeldungTagesschule);

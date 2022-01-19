@@ -15,13 +15,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnChanges,
+    OnInit,
+    SimpleChanges
+} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAdresse} from '../../../models/TSAdresse';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 
 @Component({
     selector: 'dv-edit-institution-betreuungsgutscheine',
@@ -38,11 +49,15 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnC
 
     public abweichendeZahlungsAdresse: boolean;
     public incompleteOeffnungszeiten: boolean = false;
+    public isInfomazahlungen: boolean = false;
 
     public readonly CONSTANTS = CONSTANTS;
 
     public constructor(
         private readonly translate: TranslateService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly cd: ChangeDetectorRef
     ) {
     }
 
@@ -50,6 +65,10 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnC
     public ngOnInit(): void {
         const stammdatenBg = this.stammdaten.institutionStammdatenBetreuungsgutscheine;
         this.abweichendeZahlungsAdresse = stammdatenBg && !!stammdatenBg.adresseKontoinhaber;
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.isInfomazahlungen = res.infomaZahlungen;
+            this.cd.markForCheck();
+        });
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
@@ -109,5 +128,10 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnC
     private initIncompleteOeffnungszeiten(): void {
         const stammdatenBg = this.stammdaten.institutionStammdatenBetreuungsgutscheine;
         this.incompleteOeffnungszeiten = stammdatenBg && (!stammdatenBg.offenVon || !stammdatenBg.offenBis);
+    }
+
+    public showInfomaFields(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())
+        && this.isInfomazahlungen;
     }
 }

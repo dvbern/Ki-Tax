@@ -225,7 +225,42 @@
                             </div>
                         </div>
                     </div>
-
+                    <!--Zusätzlicher Text in Verfügung-->
+                    <div class="form-group">
+                        <div class="form-group checkbox-with-tooltip">
+                            <mat-checkbox id="zusatzTextBG_id"
+                                          name="zusatzTextBG_id"
+                                          [(ngModel)]="stammdaten.hasZusatzText"
+                                          (ngModelChange)="zusatzTextBgHasChange($event)">
+                                {{'ZUSAETZLICHER_TEXT_JA'|translate}}
+                            </mat-checkbox>
+                            <dv-tooltip id="zusatzText_tooltip"
+                                        [text]="'ZUSAETZLICHER_TEXT_HELP'|translate"></dv-tooltip>
+                        </div>
+                        <div *ngIf="stammdaten.hasZusatzText">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <dv-input-container-x [verticalAlign]="true">
+                                            <label  class="required"
+                                                    translate for="zusatzText_id">ZUSAETZLICHER_TEXT_TITEL</label>
+                                            <mat-form-field floatLabel="always" class="no-margin-left">
+                                            <textarea matInput
+                                                      id="zusatzText_id"
+                                                      name="nameZusatzText"
+                                                      #nameZusatzText="ngModel"
+                                                      [(ngModel)]="stammdaten.zusatzText"
+                                                      type="text"
+                                                      class="form-control" required></textarea>
+                                            <dv-error-messages [errorObject]="nameZusatzText.errors"
+                                                                   inputId="zusatzTextTitle_id"></dv-error-messages>
+                                            </mat-form-field>
+                                        </dv-input-container-x>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- Betreuungsgutscheine anbieten ab -->
                     <div class="form-group mt-5">
                         <h3 translate>BEGU_START</h3>
@@ -1168,7 +1203,14 @@
                             </h3>
                         </div>
                     </div>
-
+                    <!-- Zusätzlicher Text auf der Verfügung -->
+                    <div>
+                        <div>
+                            <h3 *ngIf="stammdaten.hasZusatzText">
+                                    {{'ZUSAETZLICHER_TEXT_JA'| translate}}
+                            </h3>
+                        </div>
+                    </div>
                     <!-- Betreuungsgutscheine anbieten ab -->
                     <div class="mt-5">
                         <div class="form-group">

@@ -68,12 +68,14 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse4;
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse5;
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse6;
+	private final Integer paramMinDauerKonkubinat;
 
 	public FamilienabzugAbschnittRule(DateRange validityPeriod,
 		BigDecimal pauschalabzugProPersonFamiliengroesse3,
 		BigDecimal pauschalabzugProPersonFamiliengroesse4,
 		BigDecimal pauschalabzugProPersonFamiliengroesse5,
 		BigDecimal pauschalabzugProPersonFamiliengroesse6,
+		Integer paramMinDauerKonkubinat,
 		@Nonnull Locale locale
 	) {
 		super(RuleKey.FAMILIENSITUATION, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
@@ -81,6 +83,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		this.pauschalabzugProPersonFamiliengroesse4 = pauschalabzugProPersonFamiliengroesse4;
 		this.pauschalabzugProPersonFamiliengroesse5 = pauschalabzugProPersonFamiliengroesse5;
 		this.pauschalabzugProPersonFamiliengroesse6 = pauschalabzugProPersonFamiliengroesse6;
+		this.paramMinDauerKonkubinat = paramMinDauerKonkubinat;
 	}
 
 	@Override
@@ -153,8 +156,8 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		Objects.requireNonNull(familiensituation.getStartKonkubinat());
 
 		final LocalDate konkubinatBeginningNextMonth =
-			getStichtagForEreignis(familiensituation.getStartKonkubinat().plusYears(5));
-		final LocalDate konkubinatDate = familiensituation.getStartKonkubinat().plusYears(5).plusMonths(1);
+			getStichtagForEreignis(familiensituation.getStartKonkubinat().plusYears(paramMinDauerKonkubinat));
+		final LocalDate konkubinatDate = familiensituation.getStartKonkubinat().plusYears(paramMinDauerKonkubinat).plusMonths(1);
 
 		Double famGrBeruecksichtigungAbzug = 0.0;
 

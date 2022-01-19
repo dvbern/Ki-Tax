@@ -206,7 +206,9 @@ export class EditGemeindeComponent implements OnInit {
         if (!gemeinde) {
             return '';
         }
-        return `${this.translate.instant('GEMEINDE')} ${gemeinde.name}`;
+        return gemeinde.besondereVolksschule ?
+            `${this.translate.instant('BESONDERE_VOLKSSCHULE')} ${gemeinde.name}` :
+            `${this.translate.instant('GEMEINDE')} ${gemeinde.name}`;
     }
 
     public getLogoImageUrl(gemeinde: TSGemeinde): string {

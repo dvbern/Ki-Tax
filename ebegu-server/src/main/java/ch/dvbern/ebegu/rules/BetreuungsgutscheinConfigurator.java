@@ -64,6 +64,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSO
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MINIMALDAUER_KONKUBINAT;
 
 /**
  * Configurator, welcher die Regeln und ihre Reihenfolge konfiguriert. Als Parameter erhält er den Mandanten sowie
@@ -118,7 +119,8 @@ public class BetreuungsgutscheinConfigurator {
 			FKJV_PAUSCHALE_RUECKWIRKEND,
 			FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF,
 			FKJV_EINGEWOEHNUNG,
-			ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
+			ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,
+			MINIMALDAUER_KONKUBINAT);
 	}
 
 	private void useRulesOfGemeinde(@Nonnull Gemeinde gemeinde, @Nullable KitaxUebergangsloesungParameter kitaxParameterDTO, @Nonnull Map<EinstellungKey, Einstellung> einstellungen) {
@@ -176,12 +178,15 @@ public class BetreuungsgutscheinConfigurator {
 		Objects.requireNonNull(param_pauschalabzug_pro_person_familiengroesse_5, "Parameter PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5 muss gesetzt sein");
 		Einstellung param_pauschalabzug_pro_person_familiengroesse_6 = einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6);
 		Objects.requireNonNull(param_pauschalabzug_pro_person_familiengroesse_6, "Parameter PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6 muss gesetzt sein");
+		Einstellung param_minimaldauer_konkubinat = einstellungMap.get(MINIMALDAUER_KONKUBINAT);
+		Objects.requireNonNull(param_minimaldauer_konkubinat, "Parameter MINIMALDAUER_KONKUBINAT muss gesetzt sein");
 
 		FamilienabzugAbschnittRule familienabzugAbschnittRule = new FamilienabzugAbschnittRule(defaultGueltigkeit,
 			param_pauschalabzug_pro_person_familiengroesse_3.getValueAsBigDecimal(),
 			param_pauschalabzug_pro_person_familiengroesse_4.getValueAsBigDecimal(),
 			param_pauschalabzug_pro_person_familiengroesse_5.getValueAsBigDecimal(),
 			param_pauschalabzug_pro_person_familiengroesse_6.getValueAsBigDecimal(),
+			param_minimaldauer_konkubinat.getValueAsInteger(),
 			locale);
 		addToRuleSetIfRelevantForGemeinde(familienabzugAbschnittRule, einstellungMap);
 
@@ -233,7 +238,7 @@ public class BetreuungsgutscheinConfigurator {
 		addToRuleSetIfRelevantForGemeinde(abwesenheitAbschnittRule, einstellungMap);
 
 		// Zivilstandsaenderung
-		ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(defaultGueltigkeit, locale);
+		ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(defaultGueltigkeit, param_minimaldauer_konkubinat.getValueAsInteger(), locale);
 		addToRuleSetIfRelevantForGemeinde(zivilstandsaenderungAbschnittRule, einstellungMap);
 
 		// Sozialhilfe
@@ -255,6 +260,10 @@ public class BetreuungsgutscheinConfigurator {
 		// - Erwerbspensum Kanton
 		Rule rule = configureErwerbspensumKantonRule(einstellungMap);
 		addToRuleSetIfRelevantForGemeinde(rule, einstellungMap);
+
+		// - KESB Platzierung: Max-Tarif bei Tagesschulen
+		KesbPlatzierungTSCalcRule kesbPlatzierungTSCalcRule = new KesbPlatzierungTSCalcRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(kesbPlatzierungTSCalcRule, einstellungMap);
 
 		// - Erwerbspensum Gemeinde
 		Einstellung minEWP_nichtEingeschultGmde = einstellungMap.get(GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
