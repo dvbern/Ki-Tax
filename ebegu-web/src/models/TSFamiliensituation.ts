@@ -15,11 +15,11 @@
 
 import * as moment from 'moment';
 import {TSFamilienstatus} from './enums/TSFamilienstatus';
+import {TSGesuchstellerKardinalitaet} from './enums/TSGesuchstellerKardinalitaet';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSAdresse} from './TSAdresse';
 
 export class TSFamiliensituation extends TSAbstractMutableEntity {
-
     private _familienstatus: TSFamilienstatus;
     private _gemeinsameSteuererklaerung: boolean;
     private _aenderungPer: moment.Moment;
@@ -39,6 +39,9 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _infomaKreditorennummer: string;
     private _infomaBankcode: string;
     private _auszahlungAnEltern: boolean;
+    private _gesuchstellerKardinalitaet: TSGesuchstellerKardinalitaet;
+    private _fkjvFamSit: boolean;
+    private _minDauerKonkubinat: number;
 
     public constructor() {
         super();
@@ -188,19 +191,31 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         this._auszahlungAnEltern = value;
     }
 
+    public get gesuchstellerKardinalitaet(): TSGesuchstellerKardinalitaet {
+        return this._gesuchstellerKardinalitaet;
+    }
+
+    public set gesuchstellerKardinalitaet(value: TSGesuchstellerKardinalitaet) {
+        this._gesuchstellerKardinalitaet = value;
+    }
+
     public hasSecondGesuchsteller(referenzdatum: moment.Moment): boolean {
         switch (this.familienstatus) {
             case TSFamilienstatus.ALLEINERZIEHEND:
-                return false;
+            case TSFamilienstatus.PFLEGEFAMILIE:
+                if (!this.fkjvFamSit) {
+                    return false;
+                }
+                return this.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
             case TSFamilienstatus.VERHEIRATET:
             case TSFamilienstatus.KONKUBINAT:
                 return true;
             case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
                 const ref = moment(referenzdatum); // must copy otherwise source is also subtracted
-                const fiveBack = ref
-                    .subtract(5, 'years')  // 5 years for konkubinat
+                const xBack = ref
+                    .subtract(this.minDauerKonkubinat, 'years')  // x years for konkubinat
                     .subtract(1, 'month'); // 1 month for rule
-                return !this.startKonkubinat || !this.startKonkubinat.isAfter(fiveBack);
+                return !this.startKonkubinat || !this.startKonkubinat.isAfter(xBack);
             default:
                 throw new Error(`hasSecondGesuchsteller is not implemented for status ${this.familienstatus}`);
         }
@@ -219,4 +234,19 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         this.startKonkubinat = other.startKonkubinat;
     }
 
+    public get fkjvFamSit(): boolean {
+        return this._fkjvFamSit;
+    }
+
+    public set fkjvFamSit(value: boolean) {
+        this._fkjvFamSit = value;
+    }
+
+    public get minDauerKonkubinat(): number {
+        return this._minDauerKonkubinat;
+    }
+
+    public set minDauerKonkubinat(value: number) {
+        this._minDauerKonkubinat = value;
+    }
 }

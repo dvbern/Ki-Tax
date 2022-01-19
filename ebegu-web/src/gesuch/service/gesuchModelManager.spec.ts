@@ -27,18 +27,25 @@ import {TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp'
 import {TSBetreuungsstatus} from '../../models/enums/TSBetreuungsstatus';
 import {TSCreationAction} from '../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../models/enums/TSEingangsart';
+import {TSFamilienstatus} from '../../models/enums/TSFamilienstatus';
 import {TSGesuchBetreuungenStatus} from '../../models/enums/TSGesuchBetreuungenStatus';
+import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
+import {TSGesuchstellerKardinalitaet} from '../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import {TSAntragStatusHistory} from '../../models/TSAntragStatusHistory';
 import {TSBenutzerNoDetails} from '../../models/TSBenutzerNoDetails';
 import {TSBetreuung} from '../../models/TSBetreuung';
 import {TSDossier} from '../../models/TSDossier';
+import {TSFamiliensituation} from '../../models/TSFamiliensituation';
+import {TSFamiliensituationContainer} from '../../models/TSFamiliensituationContainer';
 import {TSGesuch} from '../../models/TSGesuch';
+import {TSGesuchsperiode} from '../../models/TSGesuchsperiode';
 import {TSInstitutionStammdaten} from '../../models/TSInstitutionStammdaten';
 import {TSKind} from '../../models/TSKind';
 import {TSKindContainer} from '../../models/TSKindContainer';
 import {TSVerfuegung} from '../../models/TSVerfuegung';
+import {TSDateRange} from '../../models/types/TSDateRange';
 import {DateUtil} from '../../utils/DateUtil';
 import {TestDataUtil} from '../../utils/TestDataUtil.spec';
 import {DossierRS} from './dossierRS.rest';
@@ -247,25 +254,26 @@ describe('gesuchModelManager', () => {
             }));
         });
         describe('saveVerfuegung', () => {
-            it('should save the current Verfuegung und set the status of the Betreuung to VERFUEGT', waitForAsync(() => {
-                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
-                    TSCreationAction.CREATE_NEW_FALL,
-                    undefined).then(() => {
-                    createKindContainer();
-                    createBetreuung();
-                    gesuchModelManager.getBetreuungToWorkWith().id = '2afc9d9a-957e-4550-9a22-97624a000feb';
-                    const verfuegung = new TSVerfuegung();
-                    spyOn(verfuegungRS, 'saveVerfuegung').and.returnValue($q.when(verfuegung));
+            it('should save the current Verfuegung und set the status of the Betreuung to VERFUEGT',
+                waitForAsync(() => {
+                    TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
+                    gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
+                        TSCreationAction.CREATE_NEW_FALL,
+                        undefined).then(() => {
+                        createKindContainer();
+                        createBetreuung();
+                        gesuchModelManager.getBetreuungToWorkWith().id = '2afc9d9a-957e-4550-9a22-97624a000feb';
+                        const verfuegung = new TSVerfuegung();
+                        spyOn(verfuegungRS, 'saveVerfuegung').and.returnValue($q.when(verfuegung));
 
-                    gesuchModelManager.saveVerfuegung(false, false, 'bemerkungen');
-                    scope.$apply();
+                        gesuchModelManager.saveVerfuegung(false, false, 'bemerkungen');
+                        scope.$apply();
 
-                    expect(gesuchModelManager.getVerfuegenToWorkWith()).toBe(verfuegung);
-                    expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus)
-                        .toEqual(TSBetreuungsstatus.VERFUEGT);
-                });
-            }));
+                        expect(gesuchModelManager.getVerfuegenToWorkWith()).toBe(verfuegung);
+                        expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus)
+                            .toEqual(TSBetreuungsstatus.VERFUEGT);
+                    });
+                }));
         });
         describe('calculateNewStatus', () => {
             it('should be GEPRUEFT if there is no betreuung', () => {
@@ -456,9 +464,97 @@ describe('gesuchModelManager', () => {
                 expect(gesuchModelManager.areThereOnlySchulamtAngebote()).toBe(false);
             });
         });
+        describe('isGesuchsteller2Required', () => {
+            const date = DateUtil.today();
+            const gesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, new TSDateRange(date, date));
+            beforeEach(waitForAsync(() => {
+                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
+            }));
+            it('should be false if ALLEINERZIEHEND', () => {
+                createFamsit(false, TSFamilienstatus.ALLEINERZIEHEND);
+                gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
+            });
+            it('should be true if VERHEIRATET', () => {
+                createFamsit(false, TSFamilienstatus.VERHEIRATET);
+                gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+            });
+            it('should be true if KONKUBINAT', () => {
+                createFamsit(false, TSFamilienstatus.KONKUBINAT);
+                gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+            });
+            it('should be true if KONKUBINAT_KEIN_KIND', () => {
+                createFamsit(false, TSFamilienstatus.KONKUBINAT_KEIN_KIND);
+                gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
+                const startKonkubinat = DateUtil.today();
+                startKonkubinat.year(startKonkubinat.year() - 3);
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.startKonkubinat = startKonkubinat;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+                startKonkubinat.year(startKonkubinat.year() + 1);
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.startKonkubinat = startKonkubinat;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
+            });
+            it('should be false if ALLEINERZIEHEND with FKJV ALLEINE', () => {
+                createFamsit(true, TSFamilienstatus.ALLEINERZIEHEND);
+                gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ALLEINE;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
+            });
+            it('should be true if ALLEINERZIEHEND with FKJV ZUR_ZWEIT', () => {
+                createFamsit(true, TSFamilienstatus.ALLEINERZIEHEND);
+                gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ZU_ZWEIT;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+            });
+            it('should be false if PFLEGEFAMILIE with FKJV ALLEINE', () => {
+                createFamsit(true, TSFamilienstatus.PFLEGEFAMILIE);
+                gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ALLEINE;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
+            });
+            it('should be true if PFLEGEFAMILIE with FKJV ZUR_ZWEIT', () => {
+                createFamsit(true, TSFamilienstatus.PFLEGEFAMILIE);
+                gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ZU_ZWEIT;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+            });
+            it('should be true if VERHEIRATET with FKJV', () => {
+                createFamsit(true, TSFamilienstatus.VERHEIRATET);
+                gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+            });
+            it('should be true if KONKUBINAT with FKJV', () => {
+                createFamsit(true, TSFamilienstatus.KONKUBINAT);
+                gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+            });
+            it('should be true if KONKUBINAT_KEIN_KIND with FKJV', () => {
+                createFamsit(true, TSFamilienstatus.KONKUBINAT_KEIN_KIND);
+                gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
+                const startKonkubinat = DateUtil.today();
+                startKonkubinat.year(startKonkubinat.year() - 3);
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.startKonkubinat = startKonkubinat;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+                startKonkubinat.year(startKonkubinat.year() + 1);
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.startKonkubinat = startKonkubinat;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
+            });
+        });
     });
 
     // HELP METHODS
+    function createFamsit(isFKJV: boolean, familienStatus: TSFamilienstatus): void {
+        const famSitCont = new TSFamiliensituationContainer();
+        const famSit = new TSFamiliensituation();
+        famSit.minDauerKonkubinat = 2;
+        famSit.fkjvFamSit = isFKJV;
+        famSit.familienstatus = familienStatus;
+        famSitCont.familiensituationJA = famSit;
+        gesuchModelManager.getGesuch().familiensituationContainer = famSitCont;
+    }
 
     function createKindContainer(): void {
         gesuchModelManager.initKinder();

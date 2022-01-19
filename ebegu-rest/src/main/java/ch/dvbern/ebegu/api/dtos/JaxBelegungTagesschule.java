@@ -54,6 +54,7 @@ public class JaxBelegungTagesschule extends JaxAbstractDTO {
 	private String bemerkung;
 
 	private boolean abweichungZweitesSemester = false;
+	private boolean keineKesbPlatzierung = true;
 
 
 	public Set<JaxBelegungTagesschuleModul> getBelegungTagesschuleModule() {
@@ -103,5 +104,13 @@ public class JaxBelegungTagesschule extends JaxAbstractDTO {
 
 	public void setAbweichungZweitesSemester(boolean abweichungZweitesSemester) {
 		this.abweichungZweitesSemester = abweichungZweitesSemester;
+	}
+
+	public boolean isKeineKesbPlatzierung() {
+		return keineKesbPlatzierung;
+	}
+
+	public void setKeineKesbPlatzierung(boolean keineKesbPlatzierung) {
+		this.keineKesbPlatzierung = keineKesbPlatzierung;
 	}
 }
