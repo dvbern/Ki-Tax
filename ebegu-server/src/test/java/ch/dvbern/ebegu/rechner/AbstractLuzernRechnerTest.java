@@ -53,6 +53,7 @@ public class AbstractLuzernRechnerTest extends AbstractBGRechnerTest {
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = verfuegung.getZeitabschnitte().get(0);
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(testValues.anspruchsPensum);
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBetreuungspensumProzent(testValues.betreuungsPensum);
+		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBesondereBeduerfnisseZuschlag(testValues.besondereBeduerfnisseZuschlag);
 		verfuegungZeitabschnitt.setBabyTarifForAsivAndGemeinde(geburtstag.plusYears(1)
 			.isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis()));
 		return verfuegung.getZeitabschnitte().get(0);
@@ -87,6 +88,7 @@ public class AbstractLuzernRechnerTest extends AbstractBGRechnerTest {
 		protected BigDecimal betreuungsPensum = BigDecimal.ZERO;
 		protected int anspruchsPensum;
 		protected BigDecimal einkommen = BigDecimal.ZERO;
+		protected BigDecimal besondereBeduerfnisseZuschlag = BigDecimal.ZERO;
 		protected boolean isBaby = false;
 
 		protected BigDecimal expectedVollkosten = BigDecimal.ZERO;

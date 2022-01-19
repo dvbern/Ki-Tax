@@ -236,6 +236,32 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		assertCalculationResultResult(result, testValues);
 	}
 
+	@Test
+	public void testKindBesondereBeduerfnisseZuschlag() {
+		TestValues testValues = new TestValues();
+		testValues.monatlicheBetreuungsKosten = MathUtil.DEFAULT.fromNullSafe(1600);
+		testValues.betreuungsPensum = MathUtil.DEFAULT.fromNullSafe(50);
+		testValues.anspruchsPensum = 40;
+		testValues.besondereBeduerfnisseZuschlag = MathUtil.DEFAULT.fromNullSafe(10);
+		testValues.einkommen = MathUtil.DEFAULT.fromNullSafe(52000);
+		testValues.isBaby = false;
+
+		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(1280);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(894);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(894);
+		testValues.expectedVerguenstigung = BigDecimal.valueOf(976);
+		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(123);
+		testValues.expectedBetreuungsTage = BigDecimal.valueOf(10.25);
+		testValues.expectedAnspruchsTage =  BigDecimal.valueOf(8.2);
+		testValues.expectedBgTage =  BigDecimal.valueOf(8.2);
+
+		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
+		KitaLuzernRechner rechner = new KitaLuzernRechner();
+		rechner.calculate(zeitabschnitt, defaultParameterDTO);
+
+		assertCalculationResultResult(zeitabschnitt.getRelevantBgCalculationResult(), testValues);
+	}
+
 	@Override
 	protected void assertCalculationResultResult(BGCalculationResult result, TestValues testValues) {
 		super.assertCalculationResultResult(result, testValues);

@@ -62,6 +62,10 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		this.inputMassgebendesEinkommen = input.getMassgebendesEinkommen();
 		this.inputIsKitaPlusZuschlag = input.isKitaPlusZuschlag();
 
+		if(input.getBesondereBeduerfnisseZuschlag() != null) {
+			this.inputZuschlagErhoeterBeterungsbedarf = input.getBesondereBeduerfnisseZuschlag();
+		}
+
 		this.vollkosten = calculateVollkosten();
 		this.selbstBehaltElternProzent = calculateSelbstbehaltElternProzent();
 		this.geschwisternBonus2Kind = calculateGeschwisternBonus2Kind();

@@ -409,8 +409,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	}
 
 	public void setBesondereBeduerfnisseBetragForAsivAndGemeinde(@Nullable BigDecimal betrag) {
-		this.getBgCalculationInputAsiv().setBesondereBeduerfnisseBetrag(betrag);
-		this.getBgCalculationInputGemeinde().setBesondereBeduerfnisseBetrag(betrag);
+		this.getBgCalculationInputAsiv().setBesondereBeduerfnisseZuschlag(betrag);
+		this.getBgCalculationInputGemeinde().setBesondereBeduerfnisseZuschlag(betrag);
 	}
 
 	public void setEkv1AlleineForAsivAndGemeinde(boolean ekv1Alleine) {
