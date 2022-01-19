@@ -85,9 +85,11 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		BGCalculationResult result = new BGCalculationResult();
 		VerfuegungZeitabschnitt.initBGCalculationResult(this.input, result);
 
+		//TODO Werte und Naming passen Teilweise nicht zu bestehendem Result. Es wird noch abgeklärt wie Luzern das genau haben will
 		result.setVollkosten(this.inputVollkosten);
 		result.setMinimalerElternbeitrag(minimalerSelbstbehalt);
 		result.setElternbeitrag(selbstbehaltDerEltern);
+		result.setMinimalerElternbeitragGekuerzt(selbstbehaltDerEltern);
 		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(gutscheinProMonatVorZuschlagUndSelbstbehalt);
 		result.setVerguenstigungOhneBeruecksichtigungVollkosten(gutscheinProMonatVorZuschlag);
 		result.setVerguenstigung(gutscheinProMonat);
