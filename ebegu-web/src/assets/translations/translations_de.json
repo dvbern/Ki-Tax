@@ -2747,5 +2747,12 @@
     "ERROR_UNKNOWN_HOST": "Einen Umsystem koennte nicht erreicht werden, der URL scheint nicht zu existierend",
     "BESONDERE_BEDUERFNISSE_LUZERN": "Luzern: Ausserordentlicher Betreuungaufwand konfigurierbar",
     "BESONDERE_BEDUERFNISSE_BETRAG": "Betrag ausserordentlicher Betreuungsaufwand",
+    "ZAHLUNGSINFORMATIONEN": "Zahlungsinformationen",
+    "FRAGEN_ZU_ART_DER_VERANLAGUNG": "Fragen zur Art der Veranlagung",
+    "ANGABEN_ZAHLUNGSINFORMATIONEN": "Geben Sie hier Ihre Angaben für die Auszahlung der Betreuungsgutscheine ein",
+    "QUELLENBESTEUERT": "Quellenbesteuert?",
+    "GEMEINSAME_STEK": "Gemeinsame Stek mit Antragsteller*in 2?",
+    "ALLEINIGE_STEK": "Alleinige Stek?",
+    "VERANLAGT": "Veranlagt?",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
