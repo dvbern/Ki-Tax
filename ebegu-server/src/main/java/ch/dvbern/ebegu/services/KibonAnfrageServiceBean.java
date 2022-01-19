@@ -24,7 +24,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.dto.neskovanp.SteuerdatenResponse;
+import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
 import ch.dvbern.ebegu.ws.neskovanp.IKibonAnfrageWebService;
 

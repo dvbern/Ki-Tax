@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
 /**
@@ -93,6 +94,15 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	@Nonnull
 	private Boolean auszahlungAnEltern;
 
+
+	@Nullable
+	private EnumGesuchstellerKardinalitaet gesuchstellerKardinalitaet;
+
+	@Nonnull
+	private boolean fkjvFamSit;
+
+	@Nonnull
+	private Integer minDauerKonkubinat;
 
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
@@ -264,5 +274,30 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setAuszahlungAnEltern(@Nonnull Boolean auszahlungAnEltern) {
 		this.auszahlungAnEltern = auszahlungAnEltern;
+	}
+
+	@Nullable
+	public EnumGesuchstellerKardinalitaet getGesuchstellerKardinalitaet() {
+		return gesuchstellerKardinalitaet;
+	}
+
+	public void setGesuchstellerKardinalitaet(@Nullable EnumGesuchstellerKardinalitaet gesuchstellerKardinalitaet) {
+		this.gesuchstellerKardinalitaet = gesuchstellerKardinalitaet;
+	}
+
+	public boolean isFkjvFamSit() {
+		return fkjvFamSit;
+	}
+
+	public void setFkjvFamSit(boolean fkjvFamSit) {
+		this.fkjvFamSit = fkjvFamSit;
+	}
+
+	public Integer getMinDauerKonkubinat() {
+		return minDauerKonkubinat;
+	}
+
+	public void setMinDauerKonkubinat(Integer minDauerKonkubinat) {
+		this.minDauerKonkubinat = minDauerKonkubinat;
 	}
 }

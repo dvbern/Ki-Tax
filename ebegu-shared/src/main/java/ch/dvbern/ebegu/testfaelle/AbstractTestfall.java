@@ -69,6 +69,7 @@ import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
@@ -211,6 +212,7 @@ public abstract class AbstractTestfall {
 		familiensituation.setSozialhilfeBezueger(false);
 		familiensituation.setVerguenstigungGewuenscht(true);
 		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(true);
+		familiensituation.setMinDauerKonkubinat(5);
 	}
 
 	protected Gesuch createAlleinerziehend() {
@@ -219,6 +221,7 @@ public abstract class AbstractTestfall {
 		familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		FamiliensituationContainer familiensituationContainer = new FamiliensituationContainer();
 		familiensituationContainer.setFamiliensituationJA(familiensituation);
+		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 		setFinSitFieldsOfFamiliensituation(familiensituation);
 		gesuch.setFamiliensituationContainer(familiensituationContainer);
 		return gesuch;

@@ -799,7 +799,9 @@ public class JaxBConverter extends AbstractConverter {
 		familiensituation.setStartKonkubinat(familiensituationJAXP.getStartKonkubinat());
 		familiensituation.setSozialhilfeBezueger(familiensituationJAXP.getSozialhilfeBezueger());
 		familiensituation.setVerguenstigungGewuenscht(familiensituationJAXP.getVerguenstigungGewuenscht());
-
+		familiensituation.setGesuchstellerKardinalitaet(familiensituationJAXP.getGesuchstellerKardinalitaet());
+		familiensituation.setFkjvFamSit(familiensituationJAXP.isFkjvFamSit());
+		familiensituation.setMinDauerKonkubinat(familiensituationJAXP.getMinDauerKonkubinat());
 		return familiensituation;
 	}
 
@@ -834,6 +836,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setInfomaKreditorennummer(persistedFamiliensituation.getInfomaKreditorennummer());
 		jaxFamiliensituation.setInfomaBankcode(persistedFamiliensituation.getInfomaBankcode());
 		jaxFamiliensituation.setAuszahlungAnEltern(persistedFamiliensituation.isAuszahlungAnEltern());
+		jaxFamiliensituation.setGesuchstellerKardinalitaet(persistedFamiliensituation.getGesuchstellerKardinalitaet());
+		jaxFamiliensituation.setFkjvFamSit(persistedFamiliensituation.isFkjvFamSit());
+		jaxFamiliensituation.setMinDauerKonkubinat(persistedFamiliensituation.getMinDauerKonkubinat());
 		return jaxFamiliensituation;
 	}
 
@@ -2705,6 +2710,9 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setQuellenbesteuert(finanzielleSituationJAXP.getQuellenbesteuert());
 		finanzielleSituation.setGemeinsameStekVorjahr(finanzielleSituationJAXP.getGemeinsameStekVorjahr());
 		finanzielleSituation.setAlleinigeStekVorjahr(finanzielleSituationJAXP.getAlleinigeStekVorjahr());
+		finanzielleSituation.setAbzuegeKinderAusbildung(finanzielleSituationJAXP.getAbzuegeKinderAusbildung());
+		finanzielleSituation.setUnterhaltsBeitraege(finanzielleSituationJAXP.getUnterhaltsBeitraege());
+		finanzielleSituation.setBruttoLohn(finanzielleSituationJAXP.getBruttoLohn());
 		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
 		if(finanzielleSituationJAXP.getSelbstdeklaration() != null) {
 			FinanzielleSituationSelbstdeklaration selbstdeklarationToMerge =
@@ -2769,6 +2777,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setAlleinigeStekVorjahr(persistedFinanzielleSituation.getAlleinigeStekVorjahr());
 		jaxFinanzielleSituation.setVeranlagt(persistedFinanzielleSituation.getVeranlagt());
 		jaxFinanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToJAX(persistedFinanzielleSituation.getSelbstdeklaration()));
+		jaxFinanzielleSituation.setAbzuegeKinderAusbildung(persistedFinanzielleSituation.getAbzuegeKinderAusbildung());
+		jaxFinanzielleSituation.setBruttoLohn(persistedFinanzielleSituation.getBruttoLohn());
+		jaxFinanzielleSituation.setUnterhaltsBeitraege(persistedFinanzielleSituation.getUnterhaltsBeitraege());
 
 		return jaxFinanzielleSituation;
 	}
@@ -3192,6 +3203,7 @@ public class JaxBConverter extends AbstractConverter {
 		belegungTagesschule.setAbholungTagesschule(belegungTagesschuleJAXP.getAbholungTagesschule());
 		belegungTagesschule.setPlanKlasse(belegungTagesschuleJAXP.getPlanKlasse());
 		belegungTagesschule.setAbweichungZweitesSemester(belegungTagesschuleJAXP.isAbweichungZweitesSemester());
+		belegungTagesschule.setKeineKesbPlatzierung(belegungTagesschuleJAXP.isKeineKesbPlatzierung());
 		belegungTagesschule.setBemerkung(belegungTagesschuleJAXP.getBemerkung());
 		return belegungTagesschule;
 	}
@@ -3642,6 +3654,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBelegungTagesschule.setAbholungTagesschule(belegungFromServer.getAbholungTagesschule());
 		jaxBelegungTagesschule.setPlanKlasse(belegungFromServer.getPlanKlasse());
 		jaxBelegungTagesschule.setAbweichungZweitesSemester(belegungFromServer.isAbweichungZweitesSemester());
+		jaxBelegungTagesschule.setKeineKesbPlatzierung(belegungFromServer.isKeineKesbPlatzierung());
 		jaxBelegungTagesschule.setBemerkung(belegungFromServer.getBemerkung());
 
 		return jaxBelegungTagesschule;

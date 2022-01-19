@@ -136,6 +136,9 @@ public class TagesschuleBernRechner extends AbstractBernRechner {
 		@Nonnull BigDecimal maxTarif,
 		@Nonnull BGRechnerParameterDTO parameterDTO
 	) {
+		if (input.isKesbPlatzierung()) {
+			return maxTarif;
+		}
 		// Massgebendes Einkommen der Familie. Mit Maximal und Minimalwerten "verrechnen"
 		BigDecimal massgebendesEinkommen = input.getMassgebendesEinkommen();
 		BigDecimal tarifProStunde = null;

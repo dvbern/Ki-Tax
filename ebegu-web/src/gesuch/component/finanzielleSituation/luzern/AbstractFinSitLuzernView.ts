@@ -26,6 +26,7 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../abstractGesuchViewX';
+import {FinanzielleSituationLuzernService} from './finanzielle-situation-luzern.service';
 
 export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFinanzModel> {
 
@@ -35,6 +36,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
         protected gesuchstellerNumber: number,
+        protected finSitLuService: FinanzielleSituationLuzernService = finSitLuService,
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
@@ -76,6 +78,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr = undefined;
         this.getModel().finanzielleSituationJA.alleinigeStekVorjahr = undefined;
         this.getModel().finanzielleSituationJA.veranlagt = undefined;
+        this.getModel().finanzielleSituationJA.selbstdeklaration = undefined;
     }
 
     public gemeinsameStekVisible(): boolean {
@@ -95,12 +98,36 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         if (newGemeinsameStek.value === false && EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)) {
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
         }
+        if (newGemeinsameStek.value === true) {
+            this.getModel().finanzielleSituationJA.selbstdeklaration = undefined;
+        }
     }
 
     public alleinigeStekVorjahrChange(newAlleinigeStekVorjahr: MatRadioChange): void {
         if (newAlleinigeStekVorjahr.value === false && EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr)) {
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
         }
+        if (newAlleinigeStekVorjahr.value === true) {
+            this.getModel().finanzielleSituationJA.selbstdeklaration = undefined;
+        }
+    }
+
+    public veranlagtChange(newVeranlagt: MatRadioChange): void {
+        if (newVeranlagt.value === true) {
+            this.getModel().finanzielleSituationJA.selbstdeklaration = undefined;
+        }
+        if (newVeranlagt.value === false) {
+            this.resetVeranlagungValues();
+        }
+    }
+
+    private resetVeranlagungValues(): void {
+        this.getModel().finanzielleSituationJA.steuerbaresEinkommen = undefined;
+        this.getModel().finanzielleSituationJA.steuerbaresVermoegen = undefined;
+        this.getModel().finanzielleSituationJA.abzuegeLiegenschaft = undefined;
+        this.getModel().finanzielleSituationJA.geschaeftsverlust = undefined;
+        this.getModel().finanzielleSituationJA.einkaeufeVorsorge = undefined;
+        this.finSitLuService.calculateMassgebendesEinkommen(this.model);
     }
 
     public getYearForDeklaration(): number | string {
@@ -165,20 +192,16 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
 
     public isGesuchValid(form: NgForm): boolean {
         if (!form.valid) {
-            if (this.veranlagtVisible()) {
-                form.controls.steuerbaresEinkommen.markAsTouched({onlySelf: true});
-                form.controls.steuerbaresVermoegen.markAsTouched({onlySelf: true});
-                form.controls.abzuegeLiegenschaft.markAsTouched({onlySelf: true});
-                form.controls.geschaeftsverlust.markAsTouched({onlySelf: true});
-                form.controls.einkaeufeVorsorge.markAsTouched({onlySelf: true});
+            for (const control in form.controls) {
+                if (EbeguUtil.isNotNullOrUndefined(form.controls[control])) {
+                    form.controls[control].markAsTouched({onlySelf: true});
+                }
             }
             EbeguUtil.selectFirstInvalid();
         }
 
         return form.valid;
     }
-
-    public abstract notify(): void;
 
     protected abstract save(onResult: Function): IPromise<TSFinanzielleSituationContainer>;
 

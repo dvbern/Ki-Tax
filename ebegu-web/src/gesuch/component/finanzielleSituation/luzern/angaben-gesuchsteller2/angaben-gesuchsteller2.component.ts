@@ -23,6 +23,7 @@ import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanziel
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
+import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
 
 @Component({
     selector: 'dv-angaben-gesuchsteller2',
@@ -37,8 +38,9 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
+        protected finSitLuService: FinanzielleSituationLuzernService
     ) {
-        super(gesuchModelManager, wizardStepManager, 2);
+        super(gesuchModelManager, wizardStepManager, 2, finSitLuService);
     }
 
     public isGemeinsam(): boolean {
@@ -79,9 +81,5 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
             }).catch(error => {
                 throw(error);
             });
-    }
-
-    public notify(): void {
-        // do nothing in angaben-gesuchsteller2
     }
 }
