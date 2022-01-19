@@ -15,12 +15,5 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
-
-public enum SteuerdatenAnfrageStatus {
-
-	OFFEN,
-	PROVISORISCH,
-	RECHTSKRAEFTIG,
-	FAILED;
-}
+alter table finanzielle_situation add steuerdaten_abfrage_status varchar(255);
+alter table finanzielle_situation_aud add steuerdaten_abfrage_status varchar(255);

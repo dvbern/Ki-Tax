@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -49,20 +50,28 @@ import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituationContainer;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationStartDTO;
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
+import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.FamiliensituationService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
+import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
+import ch.dvbern.ebegu.services.KibonAnfrageService;
+import com.google.common.base.Strings;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -99,6 +108,15 @@ public class FinanzielleSituationResource {
 
 	@Inject
 	private FamiliensituationService familiensituationService;
+
+	@Inject
+	private KibonAnfrageService kibonAnfrageService;
+
+	@Inject
+	private GesuchService gesuchService;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@SuppressWarnings("CdiInjectionPointsInspection")
 	@Inject
@@ -373,5 +391,95 @@ public class FinanzielleSituationResource {
 		}
 		FinanzielleSituationContainer finanzielleSituationToReturn = optional.get();
 		return converter.finanzielleSituationContainerToJAX(finanzielleSituationToReturn);
+	}
+
+	@ApiOperation(value = "Setzt die schon beantworte Fragen im Backend und update die FinSitDaten gemaess die Anruf Ergebniss",
+		response = SteuerdatenResponse.class)
+	@Nullable
+	@POST
+	@Path("/kibonanfrage/{kibonAnfrageId}/{gesuchstellerId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed(SUPER_ADMIN)
+	public JaxFinanzielleSituationContainer getSteuerdatenBeiAntragId(
+		@Nonnull @NotNull @PathParam("kibonAnfrageId") JaxId kibonAnfrageId,
+		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId jaxGesuchstellerId,
+		@Nonnull @NotNull @Valid JaxFinanzielleSituationContainer jaxFinanzielleSituationContainer,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+
+		Objects.requireNonNull(kibonAnfrageId.getId());
+		Objects.requireNonNull(jaxGesuchstellerId.getId());
+		Objects.requireNonNull(jaxFinanzielleSituationContainer.getId());
+
+		//Antrag suchen
+		Gesuch gesuch = gesuchService.findGesuch(kibonAnfrageId.getId()).orElseThrow(()
+			-> new EbeguEntityNotFoundException(
+			"getSteuerdatenBeiAntragId",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			"Gesuch ID invalid: " + kibonAnfrageId.getId()));
+
+		//FinSit Suchen, Feldern updaten
+		GesuchstellerContainer gesuchsteller = gesuchstellerService.findGesuchsteller(jaxGesuchstellerId.getId()).orElseThrow(()
+			-> new EbeguEntityNotFoundException(
+			"getSteuerdatenBeiAntragId",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			"GesuchstellerId invalid: " + jaxGesuchstellerId.getId()));
+		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(
+			jaxFinanzielleSituationContainer,
+			gesuchsteller.getFinanzielleSituationContainer());
+		convertedFinSitCont.setGesuchsteller(gesuchsteller);
+
+		//FinSit GS2 Suchen wenn er exisiert als man auch dort Daten ausfuellen muessen wenn GemeinsameStek
+		FinanzielleSituationContainer finSitGS2 = null;
+
+		assert requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA() != null;
+		assert gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null;
+		assert gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung() != null;
+		if(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung() && gesuch.getGesuchsteller2() != null) {
+			finSitGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null ? gesuch.getGesuchsteller2().getFinanzielleSituationContainer() : new FinanzielleSituationContainer();
+			finSitGS2.setGesuchsteller(gesuch.getGesuchsteller2());
+		}
+
+		//wenn es ist einen Online Gesuch und der verlinkte Konto hat einen ZDP Nummber hinterlegt, Nesko anrufen
+		//sonst die query kann nur failed sein so wir setzen es sofort so
+		Benutzer benutzer = principalBean.getBenutzer();
+		if (gesuch.getEingangsart().isPapierGesuch() || Strings.isNullOrEmpty(benutzer.getZpvNummer())) {
+			updateFinSitSteuerdatenAbfrageStatusFailed(convertedFinSitCont, finSitGS2);
+		}
+		else {
+			try {
+				SteuerdatenResponse steuerdatenResponse = kibonAnfrageService.getSteuerDaten(
+				 	Integer.valueOf(benutzer.getZpvNummer()),
+					gesuchsteller.getGesuchstellerJA().getGeburtsdatum(),
+					kibonAnfrageId.getId(),
+					gesuch.getGesuchsperiode().getBasisJahr());
+				// lesen die Ergebniss und FinSit entsprechend updaten
+				// schauen wo man das Total ablegen kann, nur relevant bei gemeinsamenStek oder?
+				// was passiert wenn nicht gemeinsam aber als gemeinsam in Steuerschnittstelle
+			}
+			catch (Exception e) {
+				updateFinSitSteuerdatenAbfrageStatusFailed(convertedFinSitCont, finSitGS2);
+			}
+		}
+
+		//und zusendlich speichern und zuruckgeben
+		FinanzielleSituationContainer persistedFinSit =
+			this.finanzielleSituationService.saveFinanzielleSituationTemp(convertedFinSitCont);
+		if(finSitGS2 != null) {
+			this.finanzielleSituationService.saveFinanzielleSituationTemp(finSitGS2);
+		}
+		return converter.finanzielleSituationContainerToJAX(persistedFinSit);
+	}
+
+	private void updateFinSitSteuerdatenAbfrageStatusFailed (@Nonnull FinanzielleSituationContainer finSitGS1, @Nullable FinanzielleSituationContainer finSitGS2) {
+		finSitGS1.getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(SteuerdatenAnfrageStatus.FAILED);
+		if (finSitGS2 != null) {
+			if (finSitGS2.getFinanzielleSituationJA() == null) {
+				finSitGS2.setFinanzielleSituationJA(new FinanzielleSituation());
+			}
+			finSitGS2.getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(SteuerdatenAnfrageStatus.FAILED);
+		}
 	}
 }

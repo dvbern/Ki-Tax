@@ -52,7 +52,8 @@ import org.slf4j.LoggerFactory;
 @Dependent
 public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 
-	private static final String TARGET_NAME_SPACE = "http://sv.fin.be.ch/schemas/NESKOVANP/20211119/KiBonAnfrageService";
+	private static final String TARGET_NAME_SPACE =
+		"http://sv.fin.be.ch/schemas/NESKOVANP/20211119/KiBonAnfrageService";
 	private static final String SERVICE_NAME = "KiBonAnfrageService";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(KibonAnfrageWebService.class.getSimpleName());
@@ -80,40 +81,58 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 		LocalDateTime startDate = LocalDateTime.now();
 
 		try {
-			SteuerDatenResponseType steuerDatenResponseType = getServicePort().getSteuerdaten(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr);
+			SteuerDatenResponseType steuerDatenResponseType =
+				getServicePort().getSteuerdaten(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr);
 			steuerdatenResponse = KibonAnfrageConverter.convertFromKibonAnfrage(steuerDatenResponseType);
 			return steuerdatenResponse;
-		}
-		catch(BusinessFault businessFault) {
-			String msg = createFaultLogmessage("BusinessFault" ,methodName, businessFault.getMessage(), businessFault.getFaultInfo());
+		} catch (BusinessFault businessFault) {
+			String msg = createFaultLogmessage(
+				"BusinessFault",
+				methodName,
+				businessFault.getMessage(),
+				businessFault.getFaultInfo());
 			LOGGER.error(msg);
 			exceptionReceived = businessFault;
 			throw new KiBonAnfrageServiceException(methodName, msg, businessFault);
-		}
-		catch(InfrastructureFault infrastructureFault) {
-			String msg = createFaultLogmessage("InfrastructureFault" ,methodName, infrastructureFault.getMessage(), infrastructureFault.getFaultInfo());
+		} catch (InfrastructureFault infrastructureFault) {
+			String msg = createFaultLogmessage(
+				"InfrastructureFault",
+				methodName,
+				infrastructureFault.getMessage(),
+				infrastructureFault.getFaultInfo());
 			LOGGER.error(msg);
 			exceptionReceived = infrastructureFault;
 			throw new KiBonAnfrageServiceException(methodName, msg, infrastructureFault);
-		}
-		catch (InvalidArgumentsFault invalidArgumentsFault) {
-			String msg = createFaultLogmessage("InvalidArgumentsFault" ,methodName, invalidArgumentsFault.getMessage(), invalidArgumentsFault.getFaultInfo());
+		} catch (InvalidArgumentsFault invalidArgumentsFault) {
+			String msg = createFaultLogmessage(
+				"InvalidArgumentsFault",
+				methodName,
+				invalidArgumentsFault.getMessage(),
+				invalidArgumentsFault.getFaultInfo());
 			LOGGER.error(msg);
 			exceptionReceived = invalidArgumentsFault;
 			throw new KiBonAnfrageServiceException(methodName, msg, invalidArgumentsFault);
-		}
-		catch (PermissionDeniedFault permissionDeniedFault) {
-			String msg = createFaultLogmessage("PermissionDeniedFault" ,methodName, permissionDeniedFault.getMessage(), permissionDeniedFault.getFaultInfo());
+		} catch (PermissionDeniedFault permissionDeniedFault) {
+			String msg = createFaultLogmessage(
+				"PermissionDeniedFault",
+				methodName,
+				permissionDeniedFault.getMessage(),
+				permissionDeniedFault.getFaultInfo());
 			LOGGER.error(msg);
 			exceptionReceived = permissionDeniedFault;
 			throw new KiBonAnfrageServiceException(methodName, msg, permissionDeniedFault);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			exceptionReceived = e;
 			throw e;
-		}
-		finally {
-			writeAuditLogForKibonAnfrageCall(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr, startDate, steuerdatenResponse, exceptionReceived);
+		} finally {
+			writeAuditLogForKibonAnfrageCall(
+				zpvNummer,
+				geburtsdatum,
+				kibonAntragId,
+				gesuchsperiodeBeginnJahr,
+				startDate,
+				steuerdatenResponse,
+				exceptionReceived);
 		}
 	}
 
@@ -124,17 +143,22 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 		Integer gesuchsperiodeBeginnJahr,
 		LocalDateTime startDate,
 		SteuerdatenResponse steuerDatenResponse,
-		@Nullable  Exception exceptionReceived) {
+		@Nullable Exception exceptionReceived) {
 
-		SteuerdatenRequest request = new SteuerdatenRequest(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr);
-		SteuerdatenAnfrageStatus status = exceptionReceived == null ? SteuerdatenAnfrageStatus.SUCCESS : SteuerdatenAnfrageStatus.FAILED;
+		SteuerdatenRequest request =
+			new SteuerdatenRequest(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr);
+		SteuerdatenAnfrageStatus status =
+			exceptionReceived == null && steuerDatenResponse.getVeranlagungsstand() != null ?
+				SteuerdatenAnfrageStatus.valueOf(steuerDatenResponse.getVeranlagungsstand().name()) :
+				SteuerdatenAnfrageStatus.FAILED;
 		String faultReceived = exceptionReceived != null ? exceptionReceived.getMessage() : null;
-		SteuerdatenAnfrageLog anfrageLog = new SteuerdatenAnfrageLog(startDate, status, faultReceived, request, steuerDatenResponse);
+		SteuerdatenAnfrageLog anfrageLog =
+			new SteuerdatenAnfrageLog(startDate, status, faultReceived, request, steuerDatenResponse);
 		steuerdatenAnfrageLogService.saveSteuerdatenAnfrageLog(anfrageLog);
 	}
 
 	private KiBonAnfragePort getServicePort() throws KiBonAnfrageServiceException {
-		if(port == null){
+		if (port == null) {
 			initKiBonAnfragePort();
 		}
 		return port;
@@ -146,15 +170,20 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 		if (port == null) {
 			String endpointURL = config.getKibonAnfrageEndpoint();
 			if (StringUtils.isEmpty(endpointURL)) {
-				throw new KiBonAnfrageServiceException("initKiBonAnfragePort", "Es wurde keine Endpunkt URL definiert fuer den "
-					+ "KibonAnfrageService");
+				throw new KiBonAnfrageServiceException(
+					"initKiBonAnfragePort",
+					"Es wurde keine Endpunkt URL definiert fuer den "
+						+ "KibonAnfrageService");
 			}
 
 			LOGGER.info("KibonAnfrageService Endpoint: {}", endpointURL);
 
 			try {
-				URL url = KibonAnfrageWebService.class.getResource("/wsdl/neskovanp/kibonanfrage/KiBonAnfrageService.wsdl");
-				Objects.requireNonNull(url, "WSDL konnte unter der angegebenen URI nicht gefunden werden. Kann Service-Port nicht erstellen");
+				URL url =
+					KibonAnfrageWebService.class.getResource("/wsdl/neskovanp/kibonanfrage/KiBonAnfrageService.wsdl");
+				Objects.requireNonNull(
+					url,
+					"WSDL konnte unter der angegebenen URI nicht gefunden werden. Kann Service-Port nicht erstellen");
 				LOGGER.info("KiBonAnfrageService WSDL URL: {}", url);
 
 				LOGGER.info("KibonAnfrageService TargetNameSpace: " + TARGET_NAME_SPACE);
@@ -162,8 +191,10 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 				final QName qname = new QName(TARGET_NAME_SPACE, SERVICE_NAME);
 				LOGGER.info("KibonAnfrageService QName: {}", qname);
 				final Service service = Service.create(url, qname);
-				service.setHandlerResolver(portInfo -> Collections.singletonList(wssUsernameTokenSecurityHandler)); // handler that adds assertion to header, we need to check how it need to be apadted for this interface
-				//Ich hoffe eigentlich das die STS Server fur kiBonAnfrage ist gleich als die von Geres, wenn nicht muss man die STS Spezifikation anschauen und adaptieren der Handler entspechend
+				service.setHandlerResolver(portInfo -> Collections.singletonList(wssUsernameTokenSecurityHandler)); //
+				// handler that adds assertion to header, we need to check how it need to be apadted for this interface
+				//Ich hoffe eigentlich das die STS Server fur kiBonAnfrage ist gleich als die von Geres, wenn nicht
+				// muss man die STS Spezifikation anschauen und adaptieren der Handler entspechend
 				LOGGER.info("KibonAnfrageService created: {}", service);
 				port = service.getPort(KiBonAnfragePort.class);
 				LOGGER.info("KibonAnfrageService Port created: {}", port);
@@ -179,7 +210,8 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 	}
 
 	private String createFaultLogmessage(String exceptionName, String methodName, String message, FaultBase fault) {
-		return String.format("Call to %s failed with %s Fault '%s', user-message '%s', technical-message '%s', error-code: '%s'",
+		return String.format(
+			"Call to %s failed with %s Fault '%s', user-message '%s', technical-message '%s', error-code: '%s'",
 			methodName,
 			exceptionName,
 			message,

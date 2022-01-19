@@ -24,6 +24,7 @@ import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {IStammdatenStateParams} from '../../../../gesuch.route';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
@@ -54,13 +55,14 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         '$scope',
         '$translate',
         '$timeout',
-        'EinstellungRS'
+        'EinstellungRS',
     ];
 
     public showSelbstaendig: boolean;
     public showSelbstaendigGS: boolean;
     public allowedRoles: ReadonlyArray<TSRole>;
     private steuerSchnittstelleAktiv: boolean;
+    public showForm: boolean;
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -107,6 +109,7 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
             this.gesuchModelManager.getGesuchsperiode()?.id)
             .then(setting => {
                 this.steuerSchnittstelleAktiv = (setting.value === 'true');
+                this.showFormular();
             });
     }
 
@@ -140,8 +143,9 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
             return false;
         }
 
-        return this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuerveranlagungErhalten ||
-            this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuererklaerungAusgefuellt;
+        return (this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuerveranlagungErhalten ||
+            this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuererklaerungAusgefuellt) &&
+            this.gesuchModelManager.getGesuch().isOnlineGesuch();
     }
 
     // hier neu init
@@ -222,8 +226,27 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
     }
 
     public steuererklaerungClicked(): void {
+        this.showFormular();
         if (this.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt) {
             return;
         }
+    }
+
+    public showFormular(): void {
+        if (this.steuerSchnittstelleAktiv && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)
+            && this.gesuchModelManager.getGesuch().isOnlineGesuch()
+            && this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuererklaerungAusgefuellt
+        ) {
+            this.showForm = false;
+            return;
+        }
+        this.showForm = true;
+    }
+
+    public isSteueranfrageErlaubt(): boolean {
+        if (this.steuerSchnittstelleAktiv && EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
+            return true;
+        }
+        return false;
     }
 }

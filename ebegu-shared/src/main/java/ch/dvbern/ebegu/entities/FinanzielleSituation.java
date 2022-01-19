@@ -30,6 +30,7 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.hibernate.envers.Audited;
 
@@ -53,6 +54,10 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@Nullable
 	@Column(nullable = true)
 	private Boolean steuerdatenZugriff;
+
+	@Nullable
+	@Column(nullable = true)
+	private SteuerdatenAnfrageStatus steuerdatenAbfrageStatus;
 
 	@Nullable
 	@Column(nullable = true)
@@ -212,6 +217,15 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	public void setBruttoLohn(@Nullable BigDecimal bruttoLohn) {
 		this.bruttoLohn = bruttoLohn;
+	}
+
+	@Nullable
+	public SteuerdatenAnfrageStatus getSteuerdatenAbfrageStatus() {
+		return steuerdatenAbfrageStatus;
+	}
+
+	public void setSteuerdatenAbfrageStatus(@Nullable SteuerdatenAnfrageStatus steuerdatenAbfrageStatus) {
+		this.steuerdatenAbfrageStatus = steuerdatenAbfrageStatus;
 	}
 
 	@Nonnull
