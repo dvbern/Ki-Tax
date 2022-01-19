@@ -599,6 +599,16 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	}
 
+	public void calculateInputValuesProportionaly(double percentag) {
+		this.getBgCalculationInputAsiv().calculateInputValuesProportionaly(percentag);
+		this.getBgCalculationInputGemeinde().calculateInputValuesProportionaly(percentag);
+	}
+
+	public void setKostenAnteilMonat(BigDecimal kostenAnteilMonat) {
+		this.getBgCalculationInputAsiv().setKostenAnteilMonat(kostenAnteilMonat);
+		this.getBgCalculationInputGemeinde().setKostenAnteilMonat(kostenAnteilMonat);
+	}
+
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
 
 	@Nonnull

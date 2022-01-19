@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.util.KitaxUtil;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_ANSPRUCH_MONATSWEISE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM;
@@ -120,7 +121,8 @@ public class BetreuungsgutscheinConfigurator {
 			FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF,
 			FKJV_EINGEWOEHNUNG,
 			ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,
-			MINIMALDAUER_KONKUBINAT);
+			MINIMALDAUER_KONKUBINAT,
+			FKJV_ANSPRUCH_MONATSWEISE);
 	}
 
 	private void useRulesOfGemeinde(@Nonnull Gemeinde gemeinde, @Nullable KitaxUebergangsloesungParameter kitaxParameterDTO, @Nonnull Map<EinstellungKey, Einstellung> einstellungen) {
