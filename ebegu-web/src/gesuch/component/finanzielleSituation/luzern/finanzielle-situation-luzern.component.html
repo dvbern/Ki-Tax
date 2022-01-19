@@ -48,7 +48,7 @@
                     <div class="col-xs-12">
                         <div class="form-group">
                             <dv-radio-container-x>
-                                <label for="quellenbesteuert_id" class="required">
+                                <label for="quellenbesteuert_id" class="required ebegu-h1">
                                     {{'QUELLENBESTEUERT' | translate}}
                                 </label>
                                 <mat-radio-group
@@ -73,7 +73,7 @@
                     <div class="col-xs-12" *ngIf="gemeinsameStekVisible()">
                         <div class="form-group">
                             <dv-radio-container-x>
-                                <label for="gemeinsameSteuererklaerung_id" class="required">
+                                <label for="gemeinsameSteuererklaerung_id" class="required ebegu-h1">
                                     {{'GEMEINSAME_STEK' | translate}}</label>
                                 <mat-radio-group
                                     (change)="gemeinsameStekChange($event)"
@@ -97,7 +97,7 @@
                     <div class="col-xs-12" *ngIf="alleinigeStekVisible()">
                         <div class="form-group">
                             <dv-radio-container-x>
-                                <label for="alleinigeStekVorjahr_id" class="required">
+                                <label for="alleinigeStekVorjahr_id" class="required ebegu-h1">
                                     {{'ALLEINIGE_STEK' | translate}}</label>
                                 <mat-radio-group
                                     (change)="alleinigeStekVorjahrChange($event)"
@@ -121,7 +121,7 @@
                     <div class="col-xs-12" *ngIf="veranlagtVisible()">
                         <div class="form-group">
                             <dv-radio-container-x>
-                                <label for="veranlagt_id" class="required">
+                                <label for="veranlagt_id" class="required ebegu-h1">
                                     {{'VERANLAGT' | translate}}</label>
                                 <mat-radio-group
                                     name="veranlagt"
