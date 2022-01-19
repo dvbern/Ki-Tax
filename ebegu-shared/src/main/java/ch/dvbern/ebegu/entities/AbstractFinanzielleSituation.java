@@ -324,6 +324,12 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			target.setAbzuegeLiegenschaft(this.getAbzuegeLiegenschaft());
 			target.setGeschaeftsverlust(this.getGeschaeftsverlust());
 			target.setEinkaeufeVorsorge(this.getEinkaeufeVorsorge());
+			target.setNettoertraegeErbengemeinschaft(this.getNettoertraegeErbengemeinschaft());
+			target.setGewinnungskosten(this.getGewinnungskosten());
+			target.setAbzugSchuldzinsen(this.getAbzugSchuldzinsen());
+			target.setNettoVermoegen(this.getNettoVermoegen());
+			target.setEinkommenInVereinfachtemVerfahrenAbgerechnet(this.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
+			target.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(this.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -357,7 +363,14 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			MathUtil.isSame(getSteuerbaresVermoegen(), otherFinSituation.getSteuerbaresVermoegen()) &&
 			MathUtil.isSame(getAbzuegeLiegenschaft(), otherFinSituation.getAbzuegeLiegenschaft()) &&
 			MathUtil.isSame(getGeschaeftsverlust(), otherFinSituation.getGeschaeftsverlust()) &&
-			MathUtil.isSame(getEinkaeufeVorsorge(), otherFinSituation.getEinkaeufeVorsorge());
+			MathUtil.isSame(getEinkaeufeVorsorge(), otherFinSituation.getEinkaeufeVorsorge()) &&
+			MathUtil.isSame(getAbzugSchuldzinsen(), otherFinSituation.getAbzugSchuldzinsen()) &&
+			MathUtil.isSame(getGewinnungskosten(), otherFinSituation.getGewinnungskosten()) &&
+			MathUtil.isSame(getNettoertraegeErbengemeinschaft(), otherFinSituation.getNettoertraegeErbengemeinschaft()) &&
+			MathUtil.isSame(getNettoVermoegen(), otherFinSituation.getNettoVermoegen()) &&
+			MathUtil.isSame(
+					getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(),
+					otherFinSituation.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
 	}
 
 	@Nonnull
