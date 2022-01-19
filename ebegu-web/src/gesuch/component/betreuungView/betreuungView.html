@@ -401,6 +401,7 @@
                                             ng-model="vm.getErweiterteBetreuungJA().erweitereteBeduerfnisseBetrag"
                                             dv-max-length class="form-control"
                                             ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                            ng-disabled="!vm.enableErweiterteBeduerfnisse()"
                                             ng-required="true"
                                             ng-attr-placeholder="{{'BETRAG_PLACEHOLDER' | translate}}">
                                         <dv-error-messages input-id="besondereBeduerfnisseAufwand"
