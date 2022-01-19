@@ -273,7 +273,6 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 			erweiterteBetreuung.setBetreuungInGemeinde(null);
 
 			clientGueltigkeit = Constants.DEFAULT_GUELTIGKEIT;
-			expect(gemeindeService.getGemeindeByGemeindeNummer(2)).andReturn(Optional.of(gemeinde));
 		}
 
 		@Test

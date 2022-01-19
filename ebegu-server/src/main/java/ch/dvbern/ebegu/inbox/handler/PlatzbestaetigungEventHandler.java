@@ -161,14 +161,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			.orElseGet(() -> Processing.failure("Betreuung nicht gefunden."));
 	}
 
-	private Mandant getMandantFromBgNummer(String refnr) {
-		final int gemeindeNummer = BetreuungUtil.getGemeindeFromBGNummer(refnr);
-		Gemeinde gemeinde = gemeindeService.getGemeindeByGemeindeNummer(gemeindeNummer).orElseThrow(() ->
-				new EbeguEntityNotFoundException("getGemeindeByGemeindeNummer", gemeindeNummer));
-
-		return gemeinde.getMandant();
-	}
-
 	@Nonnull
 	private Processing processEventForBetreuung(
 		@Nonnull EventMonitor eventMonitor,

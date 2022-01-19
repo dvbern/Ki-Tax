@@ -114,7 +114,8 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 	private AnmeldungTagesschule anmeldungTagesschule;
 	private TagesschuleBestaetigungEventDTO tagesschuleBestaetigungEventDTO;
 	private EventMonitor eventMonitor = null;
-	private final Mandant mandant = new Mandant();
+	private Mandant mandant;
+	private Gemeinde gemeinde;
 
 	@BeforeEach
 	void setUp() {
@@ -127,7 +128,6 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 		tagesschuleBestaetigungEventDTO = AnmeldungTestUtil.createTagesschuleBestaetigungEventDTO();
 		String refnr = tagesschuleBestaetigungEventDTO.getRefnr();
 		eventMonitor = new EventMonitor(betreuungMonitoringService, EVENT_TIME, refnr, CLIENT_NAME);
-		expect(gemeindeService.getGemeindeByGemeindeNummer(2)).andReturn(Optional.of(gemeinde));
 	}
 
 	@ParameterizedTest
@@ -282,9 +282,6 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 			expect(betreuungService.anmeldungSchulamtModuleAkzeptieren(anmeldungTagesschule))
 				.andReturn(anmeldungTagesschule);
 
-			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(tagesschuleBestaetigungEventDTO.getRefnr(), mandant))
-					.andReturn(Optional.of(anmeldungTagesschule));
-
 			testSuccess(tagesschuleBestaetigungEventDTO);
 		}
 
@@ -298,9 +295,6 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 
 			expect(verfuegungService.anmeldungTagesschuleUebernehmen(anmeldungTagesschule))
 				.andReturn(anmeldungTagesschule);
-
-			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(tagesschuleBestaetigungEventDTO.getRefnr(), mandant))
-					.andReturn(Optional.of(anmeldungTagesschule));
 
 			testSuccess(tagesschuleBestaetigungEventDTO);
 		}
@@ -316,9 +310,6 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 				.andReturn(anmeldungTagesschule);
 
 			Capture<BetreuungMonitoring> capture = expectNewBetreuungMonitoringLog();
-
-			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(tagesschuleBestaetigungEventDTO.getRefnr(), EasyMock.anyObject()))
-					.andReturn(Optional.of(anmeldungTagesschule));
 
 			testSuccess(tagesschuleBestaetigungEventDTO);
 
@@ -340,9 +331,6 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 
 			Capture<BetreuungMonitoring> capture = expectNewBetreuungMonitoringLog();
 
-			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(tagesschuleBestaetigungEventDTO.getRefnr(), mandant))
-					.andReturn(Optional.of(anmeldungTagesschule));
-
 			testSuccess(tagesschuleBestaetigungEventDTO);
 		}
 
@@ -355,9 +343,6 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 
 			expect(betreuungService.anmeldungSchulamtModuleAkzeptieren(anmeldungTagesschule))
 				.andReturn(anmeldungTagesschule);
-
-			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(tagesschuleBestaetigungEventDTO.getRefnr(), mandant))
-					.andReturn(Optional.of(anmeldungTagesschule));
 
 			testSuccess(tagesschuleBestaetigungEventDTO);
 
@@ -381,9 +366,6 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 			expect(betreuungService.anmeldungSchulamtModuleAkzeptieren(anmeldungTagesschule))
 				.andReturn(anmeldungTagesschule);
 
-			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(tagesschuleBestaetigungEventDTO.getRefnr(), mandant))
-					.andReturn(Optional.of(anmeldungTagesschule));
-
 			testSuccess(tagesschuleBestaetigungEventDTO);
 
 			assertThat(belegung.getBelegungTagesschuleModule().size(), is(4));
@@ -405,9 +387,6 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 			expect(betreuungService.anmeldungSchulamtModuleAkzeptieren(anmeldungTagesschule))
 				.andReturn(anmeldungTagesschule);
 
-			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(tagesschuleBestaetigungEventDTO.getRefnr(), mandant))
-					.andReturn(Optional.of(anmeldungTagesschule));
-
 			testSuccess(tagesschuleBestaetigungEventDTO);
 
 			assertThat(belegung.getBelegungTagesschuleModule().size(), is(1));
@@ -427,9 +406,6 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 
 			expect(betreuungService.anmeldungSchulamtModuleAkzeptieren(anmeldungTagesschule))
 				.andReturn(anmeldungTagesschule);
-
-			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(tagesschuleBestaetigungEventDTO.getRefnr(), mandant))
-					.andReturn(Optional.of(anmeldungTagesschule));
 
 			testSuccess(tagesschuleBestaetigungEventDTO);
 

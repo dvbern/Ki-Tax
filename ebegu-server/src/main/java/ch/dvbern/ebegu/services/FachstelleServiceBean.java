@@ -45,8 +45,6 @@ public class FachstelleServiceBean extends AbstractBaseService implements Fachst
 
 	@Inject
 	private Persistence persistence;
-	@Inject
-	private PrincipalBean principalBean;
 
 	@Nonnull
 	@Override

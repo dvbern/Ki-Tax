@@ -55,8 +55,6 @@ public class AnmeldungAblehnenEventHandler extends BaseEventHandler<String> {
 	@Inject
 	private BetreuungEventHelper betreuungEventHelper;
 
-	@Inject
-	private GemeindeService gemeindeService;
 
 	@Override
 	protected void processEvent(

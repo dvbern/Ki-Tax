@@ -85,9 +85,6 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	@Inject
 	private GemeindeService gemeindeService;
 
-	@Inject
-	private PrincipalBean principalBean;
-
 	@Nonnull
 	@Override
 	public Optional<Dossier> findDossier(@Nonnull String id) {
