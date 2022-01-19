@@ -20,10 +20,7 @@ package ch.dvbern.ebegu.kafka;
 import java.time.LocalDateTime;
 
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
 
-import ch.dvbern.ebegu.entities.ReceivedEvent;
-import ch.dvbern.ebegu.services.ReceivedEventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,26 +28,14 @@ public abstract class BaseEventHandler<T> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BaseEventHandler.class);
 
-	@Inject
-	private ReceivedEventService receivedEventService;
 
 	public void onEvent(
-		@Nonnull String eventId,
 		@Nonnull String key,
 		@Nonnull LocalDateTime eventTime,
 		@Nonnull String eventType,
 		@Nonnull T dto,
 		@Nonnull String clientName
 	) {
-
-		ReceivedEvent receivedEvent = new ReceivedEvent(eventId, key, eventType, eventTime, dto.toString());
-
-		if (!receivedEventService.saveReceivedEvent(receivedEvent)) {
-			LOG.info("Event with UUID '{}' and timestamp '{}' of type '{}' was already retrieved, ignoring it",
-				eventId, eventTime, eventType);
-
-			return;
-		}
 
 		LOG.info("Received '{}' event -- key: '{}', event type: '{}'",
 			dto.getClass().getSimpleName(), key, eventType);

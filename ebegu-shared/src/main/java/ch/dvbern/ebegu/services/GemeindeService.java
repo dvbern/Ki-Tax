@@ -65,6 +65,12 @@ public interface GemeindeService {
 	Collection<Gemeinde> getAllGemeinden(@Nonnull Mandant mandant);
 
 	/**
+	 * Gibt die nächste freie Gemeindenummer zurück
+	 */
+	@Nonnull
+	long getNextGemeindeNummer();
+
+	/**
 	 * Gibt alle Gemeinden im Status "AKTIV" für den Mandanten des Principal zurück
 	 */
 	@Nonnull
@@ -134,6 +140,9 @@ public interface GemeindeService {
 
 	@Nonnull
 	Optional<BfsGemeinde> findBfsGemeinde(@Nonnull Long bfsNummer);
+
+	@Nonnull
+	Long getNextBesondereVolksschuleBfsNummer();
 
 	/**
 	 * aktiviert oder deaktiviert das BG Angebot

@@ -379,13 +379,18 @@ dv-accordion.ewksubsub {
         }
     }
     & > div {
-        height: 1px;
         min-height: 100%;
         & > * {
-            height: 1px;
+            max-height: none;
             min-height: 100%;
             .gesuch-modul {
                 min-height: 100%;
+            }
+            & > * {
+                max-height: none;
+                & > * {
+                    max-height: none;
+                }
             }
         }
     }
@@ -397,6 +402,7 @@ dv-accordion.ewksubsub {
             flex-wrap: wrap-reverse;
         }
     }
+
 }
 
 #kommentarContainer {

@@ -54,6 +54,7 @@ import ch.dvbern.ebegu.api.dtos.JaxAbstractDateRangedDTO;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.util.RestUtil;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.DokumentTyp;
@@ -101,6 +102,9 @@ public class GesuchsperiodeResource {
 	@SuppressWarnings("CdiInjectionPointsInspection")
 	@Inject
 	private JaxBConverter converter;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@ApiOperation(value = "Erstellt eine neue Gesuchsperiode in der Datenbank", response = JaxGesuchsperiode.class)
 	@Nonnull
@@ -153,9 +157,9 @@ public class GesuchsperiodeResource {
 	@Path("/newestGesuchsperiode/")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@PermitAll // Oeffentliche Daten
+	@PermitAll // Oeffentliche Daten für eingeloggte User
 	public JaxGesuchsperiode findNewestGesuchsperiode() {
-		Optional<Gesuchsperiode> optional = gesuchsperiodeService.findNewestGesuchsperiode();
+		Optional<Gesuchsperiode> optional = gesuchsperiodeService.findNewestGesuchsperiode(requireNonNull(principalBean.getMandant()));
 		return optional.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode)).orElse(null);
 	}
 

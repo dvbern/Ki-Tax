@@ -152,11 +152,13 @@ public class AuthServiceBean implements AuthService {
 
 	@Override
 	@Nonnull
-	public AuthAccessElement createLoginFromIAM(AuthorisierterBenutzer authorisierterBenutzer) {
+	public AuthAccessElement createLoginFromIAM(
+			AuthorisierterBenutzer authorisierterBenutzer,
+			Mandant mandant) {
 		try {
 			// TODO: Mandantenfähigkeit: Haben wir Benutzer hier schon?
 			Benutzer benutzerFromDB = benutzerService.findBenutzer(authorisierterBenutzer.getUsername(),
-							authorisierterBenutzer.getBenutzer().getMandant()).orElseThrow(() -> {
+							mandant).orElseThrow(() -> {
 					LOG.error("Could not find Benutzer during login from IAM. Benutzer should have been created"
 						+ "(e.g. via REST call) prior to creating the AuthorisierterBenutzer entry.");
 					return new EbeguEntityNotFoundException("createLoginFromIam", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, authorisierterBenutzer.getUsername());

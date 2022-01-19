@@ -16,7 +16,8 @@
   -->
 
 <mat-dialog-content class="dv-dialog-content">
-    <p [textContent]="'GEMEINDE_AUSWAEHLEN' | translate" class="dv-dialog-compact-text" id="dv-dialog-gemeinde"></p>
+    <p *ngIf="!besondereVolksschulen" [textContent]="'GEMEINDE_AUSWAEHLEN' | translate" class="dv-dialog-compact-text" id="dv-dialog-gemeinde"></p>
+    <p *ngIf="besondereVolksschulen" [textContent]="'BESONDERE_VOLKSSCHULE_AUSWAEHLEN' | translate" class="dv-dialog-compact-text" id="dv-dialog-besondere-volksschule"></p>
     <span *ngIf="isUserSozialdienst" [innerHTML]="'GEMEINDE_AUSWAEHLEN_INFO' | translate" id="dv-dialog-gemeinde-info"></span>
 
     <div class="dv-select-style dv-dialog-select margin-top-20">
@@ -29,6 +30,8 @@
             <option *ngFor="let gemeinde of gemeindeList" [ngValue]="gemeinde">{{gemeinde.name}}</option>
         </select>
     </div>
+
+    <span class="dv-dialog-text pointer-cursor"><a (click)="toggleBesondereVolksschulen()" [translate]="besondereVolksschulen? 'GEMEINDE_AUSWAEHLEN' : 'BESONDERE_VOLKSSCHULE_AUSWAEHLEN'"></a></span>
 
     <div *ngIf="gesuchsperiodeList">
         <p [textContent]="'GESUCHSPERIODE_AUSWAEHLEN' | translate" class="dv-dialog-text" id="dv-dialog-text"></p>

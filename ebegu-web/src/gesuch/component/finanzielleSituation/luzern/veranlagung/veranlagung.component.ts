@@ -18,6 +18,8 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
 
 @Component({
     selector: 'dv-veranlagung',
@@ -42,10 +44,20 @@ export class VeranlagungComponent implements OnInit {
     @Input()
     public readOnly: boolean;
 
-    public constructor() {
+    @Input()
+    public finanzModel: TSFinanzModel;
+
+    public constructor(
+        private readonly finSitLuService: FinanzielleSituationLuzernService
+    ) {
     }
 
     public ngOnInit(): void {
+        this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
+    }
+
+    public onValueChangeFunction = (): void => {
+        this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
     }
 
 }

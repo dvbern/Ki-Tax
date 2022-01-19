@@ -17,5 +17,4 @@ package ch.dvbern.ebegu.enums;
 
 public enum SequenceType {
 	FALL_NUMMER,
-	GEMEINDE_NUMMER,
 }

@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
@@ -52,6 +53,8 @@ public interface RueckforderungFormularService {
 	@Nonnull
 	RueckforderungFormular save(RueckforderungFormular rueckforderungFormular);
 
+	void remove(RueckforderungFormular rueckforderungFormular);
+
 	@Nonnull
 	RueckforderungFormular saveAndChangeStatusIfNecessary(RueckforderungFormular rueckforderungFormular);
 
@@ -74,4 +77,7 @@ public interface RueckforderungFormularService {
 
 	@Nonnull
 	byte[] massenVerfuegungDefinitiv(@Nonnull String auftragIdentifier) throws IOException;
+
+	@Nonnull
+	Collection<RueckforderungFormular> getRueckforderungFormulareByInstitutionStammdaten(InstitutionStammdaten institutionStammdaten);
 }

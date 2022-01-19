@@ -52,6 +52,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
 
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.REF_NUMMER;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.failed;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
@@ -94,8 +95,7 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 		mandant = Objects.requireNonNull(gesuchsperiode.getMandant());
 		anmeldungTagesschule = TestDataUtil.createAnmeldungTagesschuleWithModules(betreuung.getKind(), gesuchsperiode);
 		anmeldungTagesschule.extractGesuch().setStatus(AntragStatus.IN_BEARBEITUNG_JA);
-		eventMonitor = new EventMonitor(betreuungMonitoringService, EVENT_TIME, AnmeldungTestUtil.REFNR, CLIENT_NAME);
-		expect(gemeindeService.getGemeindeByGemeindeNummer(2)).andReturn(Optional.of(betreuung.extractGemeinde()));
+		eventMonitor = new EventMonitor(betreuungMonitoringService, EVENT_TIME, REF_NUMMER, CLIENT_NAME);
 	}
 
 	@ParameterizedTest
@@ -108,6 +108,14 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 
 	@Nested
 	class IgnoreEventTest {
+
+		@Test
+		void ignoreWhenMandantNotFound() {
+			//noinspection ConstantConditions
+			mandant = null;
+
+			testIgnored("Mandant konnte nicht gefunden werden.");
+		}
 
 		@Test
 		void ignoreEventWhenNoAnmeldungFound() {
@@ -181,6 +189,9 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 		}
 
 		private void testIgnored(@Nonnull String message) {
+			expect(betreuungEventHelper.getMandantFromBgNummer(eventMonitor.getRefnr()))
+				.andReturn(Optional.ofNullable(mandant));
+
 			replayAll();
 
 			Processing result = anmeldungAblehnenEventHandler.attemptProcessing(eventMonitor);
@@ -194,6 +205,9 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void testAnmeldungAkzeptiert() {
+			expect(betreuungEventHelper.getMandantFromBgNummer(eventMonitor.getRefnr()))
+				.andReturn(Optional.of(mandant));
+
 			expect(betreuungService.anmeldungSchulamtAblehnen(anmeldungTagesschule))
 				.andReturn(anmeldungTagesschule);
 

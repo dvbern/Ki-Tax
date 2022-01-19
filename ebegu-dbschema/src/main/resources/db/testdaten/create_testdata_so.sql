@@ -99,25 +99,6 @@ VALUES (
 	100, # current_value
 	@mandant_id_solothurn);
 
-INSERT IGNORE INTO sequence(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, sequence_type, current_value, mandant_id)
-VALUES (
-	UNHEX(REPLACE('0e285bf4-537b-11ec-98e8-f4390979fa3e', '-', '')), # id
-	'2018-01-01 00:00:00', # timestamp_erstellt
-	'2018-01-01 00:00:00', # timestamp_mutiert
-	'flyway', # user_erstellt
-	'flyway', # user_mutiert
-	0, # version
-	'GEMEINDE_NUMMER', # sequence_type
-	1, # current_value
-	@mandant_id_solothurn);
-
-UPDATE sequence
-SET current_value = (SELECT max(gemeinde_nummer)
-					 FROM gemeinde
-					 WHERE gemeinde.mandant_id = @mandant_id_solothurn)
-WHERE sequence_type = 'GEMEINDE_NUMMER' AND
-		mandant_id = @mandant_id_solothurn;
-
 # Test-Institutionen erstellen
 INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active)
 	VALUES (@traegerschaft_solothurn_id, '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, 'Kitas & Tagis Stadt Solothurn', true);
@@ -252,7 +233,7 @@ INSERT IGNORE INTO institution_stammdaten (id, timestamp_erstellt, timestamp_mut
 										   institution_stammdaten_ferieninsel_id, institution_stammdaten_tagesschule_id,
 										   send_mail_wenn_offene_pendenzen,
 										   institution_stammdaten_betreuungsgutscheine_id)
-VALUES (UNHEX(REPLACE('0f1c6b9e-37de-4c10-8ddc-9514fb840f5e', '-', '')), '2020-02-28 09:48:18', '2020-02-28 09:48:18',
+VALUES (UNHEX(REPLACE('feddca3a-617f-11ec-9b42-b89a2ae4a038', '-', '')), '2020-02-28 09:48:18', '2020-02-28 09:48:18',
 		'flyway', 'flyway', 0, NULL, '2020-08-01', '9999-12-31', 'TAGESSCHULE', 'tagesschule-so@mailbucket.dvbern.ch', NULL, NULL,
 		UNHEX(REPLACE('b240c25f-5393-11ec-98e8-f4390979fa3e', '-', '')),
 		UNHEX(REPLACE('bbf7f306-5392-11ec-98e8-f4390979fa3e', '-', '')), NULL,

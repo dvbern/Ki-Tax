@@ -16,16 +16,27 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {NgForm} from '@angular/forms';
+import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
+import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {BerechnungsManager} from '../../../../service/berechnungsManager';
 
 import {SelbstdeklarationComponent} from './selbstdeklaration.component';
 
 describe('SelbstdeklarationComponent', () => {
   let component: SelbstdeklarationComponent;
   let fixture: ComponentFixture<SelbstdeklarationComponent>;
+  const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name, ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
+  berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SelbstdeklarationComponent ]
+      declarations: [ SelbstdeklarationComponent ],
+      providers: [
+        {provide: NgForm, useValue: new NgForm([], [])},
+        {provide: BerechnungsManager, useValue: berechnungsManagerSpy}
+      ]
     })
     .compileComponents();
   });
@@ -33,6 +44,8 @@ describe('SelbstdeklarationComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SelbstdeklarationComponent);
     component = fixture.componentInstance;
+    component.model = new TSFinanzielleSituationContainer();
+    component.model.finanzielleSituationJA = new TSFinanzielleSituation();
     fixture.detectChanges();
   });
 

@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.testfaelle;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Collection;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -26,7 +25,6 @@ import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
@@ -42,13 +40,17 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public class Testfall_DoppelKita_Regel3 extends AbstractTestfall {
 
-	public Testfall_DoppelKita_Regel3(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList,
-		boolean betreuungenBestaetigt) {
-		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+	public Testfall_DoppelKita_Regel3(
+			Gesuchsperiode gesuchsperiode,
+			boolean betreuungenBestaetigt,
+			InstitutionStammdatenBuilder institutionStammdatenBuilder) {
+		super(gesuchsperiode, betreuungenBestaetigt, institutionStammdatenBuilder);
 	}
 
-	public Testfall_DoppelKita_Regel3(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList) {
-		super(gesuchsperiode, institutionStammdatenList, false);
+	public Testfall_DoppelKita_Regel3(
+			Gesuchsperiode gesuchsperiode,
+			InstitutionStammdatenBuilder institutionStammdatenBuilder) {
+		super(gesuchsperiode, false, institutionStammdatenBuilder);
 	}
 
 	@Override
@@ -66,7 +68,7 @@ public class Testfall_DoppelKita_Regel3 extends AbstractTestfall {
 		gesuch.getKindContainers().add(kind);
 		// Betreuungen
 		// Kita Weissenstein
-		Betreuung betreuungKitaAaregg = createBetreuung(ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA, betreuungenBestaetigt);
+		Betreuung betreuungKitaAaregg = createBetreuung(institutionStammdatenBuilder.getIdInstitutionStammdatenWeissenstein(), betreuungenBestaetigt);
 		betreuungKitaAaregg.setBetreuungNummer(1);
 		betreuungKitaAaregg.setKind(kind);
 		kind.getBetreuungen().add(betreuungKitaAaregg);
@@ -80,7 +82,7 @@ public class Testfall_DoppelKita_Regel3 extends AbstractTestfall {
 		betreuungKitaAaregg.getBetreuungspensumContainers().add(betreuungspensumKitaAaregg2);
 
 		// Kita Brünnen
-		Betreuung betreuungKitaBruennen = createBetreuung(ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA, betreuungenBestaetigt);
+		Betreuung betreuungKitaBruennen = createBetreuung(institutionStammdatenBuilder.getIdInstitutionStammdatenBruennen(), betreuungenBestaetigt);
 		betreuungKitaBruennen.setBetreuungNummer(2);
 		betreuungKitaBruennen.setKind(kind);
 		kind.getBetreuungen().add(betreuungKitaBruennen);

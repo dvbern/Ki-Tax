@@ -14,6 +14,7 @@
  */
 
 import {TSAbstractFinanzielleSituation} from './TSAbstractFinanzielleSituation';
+import {TSFinanzielleSituationSelbstdeklaration} from './TSFinanzielleSituationSelbstdeklaration';
 
 export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
@@ -26,6 +27,10 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     private _gemeinsameStekVorjahr: boolean;
     private _alleinigeStekVorjahr: boolean;
     private _veranlagt: boolean;
+    private _abzuegeKinderAusbildung: number;
+    private _unterhaltsBeitraege: number;
+    private _bruttoLohn: number;
+    private _selbstdeklaration: TSFinanzielleSituationSelbstdeklaration;
 
     public constructor() {
         super();
@@ -100,6 +105,37 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
     public set quellenbesteuert(value: boolean) {
         this._quellenbesteuert = value;
+    }
+
+    public get selbstdeklaration(): TSFinanzielleSituationSelbstdeklaration {
+        return this._selbstdeklaration;
+    }
+
+    public set selbstdeklaration(value: TSFinanzielleSituationSelbstdeklaration) {
+        this._selbstdeklaration = value;
+    }
+
+    public get unterhaltsBeitraege(): number {
+        return this._unterhaltsBeitraege;
+    }
+
+    public set unterhaltsBeitraege(value: number) {
+        this._unterhaltsBeitraege = value;
+    }
+    public get abzuegeKinderAusbildung(): number {
+        return this._abzuegeKinderAusbildung;
+    }
+
+    public set abzuegeKinderAusbildung(value: number) {
+        this._abzuegeKinderAusbildung = value;
+    }
+
+    public get bruttoLohn(): number {
+        return this._bruttoLohn;
+    }
+
+    public set bruttoLohn(value: number) {
+        this._bruttoLohn = value;
     }
 
     public isSelbstaendig(): boolean {

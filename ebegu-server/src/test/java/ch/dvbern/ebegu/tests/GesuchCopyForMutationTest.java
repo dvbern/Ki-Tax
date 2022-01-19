@@ -25,6 +25,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import org.junit.Assert;
@@ -42,7 +43,7 @@ public class GesuchCopyForMutationTest {
 
 		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
 		Testfall01_WaeltiDagmar testfall01_waeltiDagmar =
-			new Testfall01_WaeltiDagmar(gesuchsperiode, instStammdaten);
+			new Testfall01_WaeltiDagmar(gesuchsperiode,  new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
 		LocalDate eingangsdatum = LocalDate.now();
 		testfall01_waeltiDagmar.createGesuch(eingangsdatum);
 		Gesuch gesuch = testfall01_waeltiDagmar.getGesuch();

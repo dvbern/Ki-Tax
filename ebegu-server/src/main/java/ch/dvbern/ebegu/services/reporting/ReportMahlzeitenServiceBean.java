@@ -261,8 +261,8 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 			row.setSozialhilfeBezueger(sozialhilfeBezueger);
 
 			// IBAN-Nummer
-			if (gueltigeGesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdaten() != null) {
-				IBAN iban = gueltigeGesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdaten().getIban();
+			if (gueltigeGesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdatenMahlzeiten() != null) {
+				IBAN iban = gueltigeGesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdatenMahlzeiten().getIban();
 				row.setIban(iban.getIban());
 			}
 		}

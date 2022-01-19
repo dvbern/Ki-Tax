@@ -71,25 +71,6 @@ VALUES (
 	100, # current_value
 	UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')));
 
-INSERT IGNORE INTO sequence(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, sequence_type, current_value, mandant_id)
-VALUES (
-	UNHEX(REPLACE('aafc8af6-3262-11ec-a17e-b89a2ae4a038', '-', '')), # id
-	'2018-01-01 00:00:00', # timestamp_erstellt
-	'2018-01-01 00:00:00', # timestamp_mutiert
-	'flyway', # user_erstellt
-	'flyway', # user_mutiert
-	0, # version
-	'GEMEINDE_NUMMER', # sequence_type
-	1, # current_value
-	UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')));
-
-UPDATE sequence
-SET current_value = (SELECT max(gemeinde_nummer)
-					 FROM gemeinde
-					 WHERE gemeinde.mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')))
-WHERE sequence_type = 'GEMEINDE_NUMMER' AND
-		mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
-
 # Test-Institutionen erstellen
 INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active, mandant_id)
 	VALUES (UNHEX(REPLACE('31bf2433-30a3-11ec-a86f-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, 'Kitas & Tagis Stadt Luzern', true, UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')));
@@ -242,18 +223,6 @@ INSERT IGNORE INTO institution_stammdaten_tagesschule (id, timestamp_erstellt, t
 													   user_mutiert, version, gemeinde_id)
 VALUES (UNHEX(REPLACE('e24f092b-30aa-11ec-a86f-b89a2ae4a038', '-', '')), '2020-02-28 09:48:18', '2020-02-28 09:48:18',
 		'flyway', 'flyway', 0, UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')));
-
-INSERT IGNORE INTO institution_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert,
-										   version, vorgaenger_id, gueltig_ab, gueltig_bis, betreuungsangebot_typ, mail,
-										   telefon, webseite, adresse_id, institution_id,
-										   institution_stammdaten_ferieninsel_id, institution_stammdaten_tagesschule_id,
-										   send_mail_wenn_offene_pendenzen,
-										   institution_stammdaten_betreuungsgutscheine_id)
-VALUES (UNHEX(REPLACE('0f1c6b9e-37de-4c10-8ddc-9514fb840f5e', '-', '')), '2020-02-28 09:48:18', '2020-02-28 09:48:18',
-		'flyway', 'flyway', 0, NULL, '2020-08-01', '9999-12-31', 'TAGESSCHULE', 'test-lu@mailbucket.dvbern.ch', NULL, NULL,
-		UNHEX(REPLACE('d4388a51-30aa-11ec-a86f-b89a2ae4a038', '-', '')),
-		UNHEX(REPLACE('9d668709-30aa-11ec-a86f-b89a2ae4a038', '-', '')), NULL,
-		UNHEX(REPLACE('e24f092b-30aa-11ec-a86f-b89a2ae4a038', '-', '')), TRUE, NULL);
 
 INSERT IGNORE INTO einstellungen_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert,
 											  version,

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
@@ -40,6 +40,7 @@ import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
     selector: 'dv-add-gemeinde',
     templateUrl: './add-gemeinde.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
+    styleUrls: ['./add-gemeinde.component.less'],
 })
 export class AddGemeindeComponent implements OnInit {
 
@@ -69,6 +70,7 @@ export class AddGemeindeComponent implements OnInit {
         private readonly authServiceRS: AuthServiceRS,
         private readonly benutzerRS: BenutzerRSX,
         private readonly dialog: MatDialog,
+        private readonly cd: ChangeDetectorRef
     ) {
     }
 
@@ -208,7 +210,7 @@ export class AddGemeindeComponent implements OnInit {
 
     private getUserRoleForGemeindeAdmin(): string {
         const hasBG = this.gemeinde.angebotBG;
-        const hasTS = this.gemeinde.angebotTS || this.gemeinde.angebotFI;
+        const hasTS = this.gemeinde.angebotTS || this.gemeinde.angebotFI || this.gemeinde.besondereVolksschule;
         if (!hasBG) {
             return 'TSRole_ADMIN_TS';
         }
@@ -216,5 +218,31 @@ export class AddGemeindeComponent implements OnInit {
             return 'TSRole_ADMIN_GEMEINDE';
         }
         return 'TSRole_ADMIN_GEMEINDE';
+    }
+
+    public handleIsBesondereVolksschuleChange(checked: boolean): void {
+        this.resetGemeinde();
+        if (checked) {
+            this.setBesondereVolksschuleBfsNummer();
+        }
+    }
+
+    private resetGemeinde(): void {
+        this.selectedUnregisteredGemeinde = undefined;
+        this.bfsGemeindeSelected();
+    }
+
+    private setBesondereVolksschuleBfsNummer(): void {
+        this.gemeindeRS.getNextBesondereVolksschuleBfsNummer().then(bfsnummer => {
+            this.gemeinde.bfsNummer = bfsnummer;
+            this.cd.markForCheck();
+        });
+    }
+
+    public handleAngebotTSChange(): void {
+        if (!this.gemeinde.angebotTS) {
+            this.gemeinde.besondereVolksschule = false;
+            this.handleIsBesondereVolksschuleChange(false);
+        }
     }
 }

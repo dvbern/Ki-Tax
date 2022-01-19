@@ -18,19 +18,20 @@
 package ch.dvbern.ebegu.dto;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rules.RuleValidity;
+import org.apache.commons.collections.map.MultiKeyMap;
 
 /**
  * DTO für eine Verfügungsbemerkung
@@ -87,6 +88,12 @@ public class VerfuegungsBemerkungDTOList {
 		bemerkungenList.add(bemerkung);
 	}
 
+	@Nonnull
+	public Stream<VerfuegungsBemerkungDTO> getBemerkungenStream() {
+		return this.bemerkungenList.stream();
+	}
+
+
 	@Nullable
 	public VerfuegungsBemerkungDTO findFirstBemerkungByMsgKey(@Nonnull MsgKey msgKey) {
 		return this.bemerkungenList
@@ -114,9 +121,8 @@ public class VerfuegungsBemerkungDTOList {
 	 * Fügt otherBemerkungen zur Liste hinzu
 	 */
 	public void mergeBemerkungenMap(@Nonnull VerfuegungsBemerkungDTOList otherList) {
-		for (VerfuegungsBemerkungDTO otherBemerkung : otherList.bemerkungenList) {
-			this.addBemerkung(otherBemerkung);
-		}
+		otherList.bemerkungenList
+			.forEach(bemerkung -> this.bemerkungenList.add(new VerfuegungsBemerkungDTO(bemerkung)));
 	}
 
 	/**
@@ -126,7 +132,7 @@ public class VerfuegungsBemerkungDTOList {
 	@Nonnull
 	public List<VerfuegungsBemerkungDTO> getRequiredBemerkungen() {
 		// Wir muessen bei gleichem MsgKey dejenigen aus ASIV loeschen
-		Map<MsgKey, VerfuegungsBemerkungDTO> messagesMap = toUniqueMap();
+		Map<MsgKey, List<VerfuegungsBemerkungDTO>> messagesMap = toUniqueMap();
 		// Ab jetzt muessen wir die Herkunft (ASIV oder Gemeinde) nicht mehr beachten.
 
 		// Einige Regeln "überschreiben" einander. Die Bemerkungen der überschriebenen Regeln müssen hier entfernt werden
@@ -149,26 +155,36 @@ public class VerfuegungsBemerkungDTOList {
 			messagesMap.remove(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG);
 		}
 
-		return new ArrayList<>(messagesMap.values());
+		return messagesMap.values().stream()
+			.flatMap(List::stream)
+			.collect(Collectors.toList());
 	}
 
-	private Map<MsgKey, VerfuegungsBemerkungDTO> toUniqueMap() {
+	private Map<MsgKey, List<VerfuegungsBemerkungDTO>> toUniqueMap() {
 		// Zum jetzigen Zeitpunkt haben wir unter Umstaenden eine Bemerkung zweimal drin: Einmal fuer ASIV und einmal fuer die Gemeinde
 		// z.B. "Da ihr Kind weitere Angebote ... bleibt ein Anspruch von 10%" aus ASIV
 		// vs. "Da ihr Kind weitere Angebote ... bleibt ein Anspruch von 30%" von der Gemeinde, da dort z.B. Freiwilligenarbeit mitzaehlt
 		// Wir muessen also bei gleichem MsgKey dejenigen aus ASIV loeschen
-		Map<MsgKey, VerfuegungsBemerkungDTO> messagesMap = new HashMap<>();
+		// Bemerkungen mit demselben Key können unterschiedliche Gueltigkeiten haben, z.B. "Da ihr Kind....." 01.08-14.08 und "Da Ihr Kind...." 15.08.-31.08
+		// Beim Prüfen, ob eine Rule zweimal drin ist (für ASIV und Gemeinde) muss zusätzlich zum Message-Key auch die Gültigkeit gleich sein.
+		//Mutlimap<K1: MsgKey, K2: DateRange, V:VerfuegungsBemerkungDTO>
+		MultiKeyMap messagesMap = new MultiKeyMap();
 		for (VerfuegungsBemerkungDTO verfuegungsBemerkungDTO : bemerkungenList) {
-			VerfuegungsBemerkungDTO maybeExistingMsg = messagesMap.get(verfuegungsBemerkungDTO.getMsgKey());
+			VerfuegungsBemerkungDTO maybeExistingMsg =
+				(VerfuegungsBemerkungDTO) messagesMap.get(verfuegungsBemerkungDTO.getMsgKey(), verfuegungsBemerkungDTO.getGueltigkeit());
+
 			if (maybeExistingMsg != null) {
 				if (maybeExistingMsg.getRuleValidity() == RuleValidity.ASIV) {
-					messagesMap.remove(verfuegungsBemerkungDTO.getMsgKey());
-					messagesMap.put(verfuegungsBemerkungDTO.getMsgKey(), verfuegungsBemerkungDTO);
+					messagesMap.remove(verfuegungsBemerkungDTO.getMsgKey(), verfuegungsBemerkungDTO.getGueltigkeit());
+					messagesMap.put(verfuegungsBemerkungDTO.getMsgKey(), verfuegungsBemerkungDTO.getGueltigkeit(), verfuegungsBemerkungDTO);
 				}
 			} else {
-				messagesMap.put(verfuegungsBemerkungDTO.getMsgKey(), verfuegungsBemerkungDTO);
+				messagesMap.put(verfuegungsBemerkungDTO.getMsgKey(), verfuegungsBemerkungDTO.getGueltigkeit(), verfuegungsBemerkungDTO);
 			}
 		}
-		return messagesMap;
+
+		List<VerfuegungsBemerkungDTO> verfuegungBemerkungList = new ArrayList<>();
+		verfuegungBemerkungList.addAll(messagesMap.values());
+		return verfuegungBemerkungList.stream().collect(Collectors.groupingBy(VerfuegungsBemerkungDTO::getMsgKey));
 	}
 }

@@ -80,6 +80,27 @@ public class TSCalculationInput {
 		this.verpflegungskostenUndMahlzeitenZweiWochen = mergedZweiWochen;
 	}
 
+	public void calculatePercentage(double percent) {
+		this.betreuungszeitProWoche = Math.toIntExact(Math.round(calculatePercentage(this.betreuungszeitProWoche.doubleValue(), percent)));
+		this.verpflegungskosten = calculatePercentage(this.verpflegungskosten, percent);
+		this.verpflegungskostenVerguenstigt = calculatePercentage(this.verpflegungskostenVerguenstigt, percent);
+	}
+
+
+	private BigDecimal calculatePercentage(BigDecimal value, double percent) {
+		return BigDecimal.valueOf(Math.round(calculatePercentage(value.doubleValue(), percent)));
+	}
+
+
+	private double calculatePercentage(double value, double percent) {
+		if(value == 0) {
+			return 0;
+		}
+
+		return value / 100 * percent;
+	}
+
+
 	public boolean isSame(@Nonnull TSCalculationInput other) {
 		return Objects.equals(this.betreuungszeitProWoche, other.betreuungszeitProWoche)
 			&& MathUtil.isSame(this.verpflegungskosten, other.verpflegungskosten)

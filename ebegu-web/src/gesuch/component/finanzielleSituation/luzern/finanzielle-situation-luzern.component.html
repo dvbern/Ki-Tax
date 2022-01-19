@@ -39,6 +39,11 @@
                         </p>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <dv-infoma-fields *ngIf="showInfomaFields()"></dv-infoma-fields>
+                    </div>
+                </div>
                 <div class="row" *ngIf="!onlyFerieninselBetreuungen">
                     <div class="col-xs-12">
                         <div class="form-group">
@@ -123,6 +128,7 @@
                                     id="veranlagt_id"
                                     #veranlagt="ngModel"
                                     [(ngModel)]="getModel().finanzielleSituationJA.veranlagt"
+                                    (change)="veranlagtChange($event)"
                                     [disabled]="readonly"
                                     required>
                                     <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
@@ -137,22 +143,30 @@
                     </div>
                 </div>
             </div>
-            <dv-selbstdeklaration *ngIf="showSelbstdeklaration()"
-                                  [antragstellerNummer]="getAntragstellerNummer()"
-                                  [isGemeinsam]="isGemeinsam()"
-                                  [year]="getYearForDeklaration()"
-            ></dv-selbstdeklaration>
-            <dv-veranlagung *ngIf="showVeranlagung()"
-                            [antragstellerNummer]="getAntragstellerNummer()"
-                            [isGemeinsam]="isGemeinsam()"
-                            [year]="getYearForDeklaration()"
-                            [model]="getModel()"
-                            [readOnly]="readonly"
-            ></dv-veranlagung>
-
-
-            <dv-navigation-x (dvSave)="prepareSave($event.onResult)" [dvPrevious]="hasPrevious" [dvNext]="hasNext"
-                           [dvSubStep]="getSubStepIndex()" [dvSubStepName]="getSubStepName()"></dv-navigation-x>
+            <div class="col-md-12">
+                <dv-selbstdeklaration *ngIf="showSelbstdeklaration()"
+                                      [antragstellerNummer]="getAntragstellerNummer()"
+                                      [isGemeinsam]="isGemeinsam()"
+                                      [year]="getYearForDeklaration()"
+                                      [readOnly]="readonly"
+                                      [finanzModel]="model"
+                                      [model]="getModel()"
+                ></dv-selbstdeklaration>
+                <dv-veranlagung *ngIf="showVeranlagung()"
+                                [antragstellerNummer]="getAntragstellerNummer()"
+                                [isGemeinsam]="isGemeinsam()"
+                                [year]="getYearForDeklaration()"
+                                [model]="getModel()"
+                                [finanzModel]="model"
+                                [readOnly]="readonly"
+                ></dv-veranlagung>
+                <dv-resultat *ngIf="gemeinsameStekVisible()"
+                             [isGemeinsam]="isGemeinsam()"
+                             [year]="getYearForDeklaration()">
+                </dv-resultat>
+                <dv-navigation-x (dvSave)="prepareSave($event.onResult)" [dvPrevious]="hasPrevious" [dvNext]="hasNext"
+                                 [dvSubStep]="getSubStepIndex()" [dvSubStepName]="getSubStepName()"></dv-navigation-x>
+            </div>
         </form>
     </div>
 </div>

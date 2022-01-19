@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.testfaelle.Testfall03_PerreiraMarcia;
@@ -41,96 +43,95 @@ import org.junit.Test;
 public class TestfaelleTest extends AbstractBGRechnerTest {
 
 	private static final List<InstitutionStammdaten> INSTITUTIONS_STAMMDATEN_LIST = new ArrayList<>();
+	private static Gesuchsperiode gesuchsperiode;
 
-	private KitaxUebergangsloesungParameter kitaxUebergangsloesungParameter = TestDataUtil.geKitaxUebergangsloesungParameter();
+	private final KitaxUebergangsloesungParameter kitaxUebergangsloesungParameter =
+			TestDataUtil.geKitaxUebergangsloesungParameter();
 
 	@BeforeClass
 	public static void setup() {
 		INSTITUTIONS_STAMMDATEN_LIST.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		INSTITUTIONS_STAMMDATEN_LIST.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		INSTITUTIONS_STAMMDATEN_LIST.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
+		gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
 	}
 
 	@Test
 	public void testfall01_WaeltiDagmar() {
-		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(),
-			INSTITUTIONS_STAMMDATEN_LIST);
+		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(
+				gesuchsperiode,
+				new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
 
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
-		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		gesuch.setGesuchsperiode(gesuchsperiode);
 		evaluator.evaluate(gesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 		checkTestfall01WaeltiDagmar(gesuch);
 	}
 
 	@Test
 	public void testfall02_FeutzYvonne() {
-		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(TestDataUtil.createGesuchsperiode1718(),
-			INSTITUTIONS_STAMMDATEN_LIST);
+		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(gesuchsperiode, new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
 
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
-		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		gesuch.setGesuchsperiode(gesuchsperiode);
 		evaluator.evaluate(gesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 		checkTestfall02FeutzYvonne(gesuch);
 	}
 
 	@Test
 	public void testfall03_PerreiraMarcia() {
-		Testfall03_PerreiraMarcia testfall = new Testfall03_PerreiraMarcia(TestDataUtil.createGesuchsperiode1718(),
-			INSTITUTIONS_STAMMDATEN_LIST);
+		Testfall03_PerreiraMarcia testfall = new Testfall03_PerreiraMarcia(gesuchsperiode, new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
 
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
-		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		gesuch.setGesuchsperiode(gesuchsperiode);
 		evaluator.evaluate(gesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 		checkTestfall03PerreiraMarcia(gesuch);
 	}
 
 	@Test
 	public void testfall04_WaltherLaura() {
-		Testfall04_WaltherLaura testfall = new Testfall04_WaltherLaura(TestDataUtil.createGesuchsperiode1718(),
-			INSTITUTIONS_STAMMDATEN_LIST);
+		Testfall04_WaltherLaura testfall = new Testfall04_WaltherLaura(gesuchsperiode, new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
 
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
-		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		gesuch.setGesuchsperiode(gesuchsperiode);
 		evaluator.evaluate(gesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 		checkTestfall04WaltherLaura(gesuch);
 	}
 
 	@Test
 	public void testfall05_LuethiMeret() {
-		Testfall05_LuethiMeret testfall = new Testfall05_LuethiMeret(TestDataUtil.createGesuchsperiode1718(),
-			INSTITUTIONS_STAMMDATEN_LIST);
+		Testfall05_LuethiMeret testfall = new Testfall05_LuethiMeret(gesuchsperiode, new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
 
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
-		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		gesuch.setGesuchsperiode(gesuchsperiode);
 		evaluator.evaluate(gesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 		checkTestfall05LuethiMeret(gesuch);
 	}
 
 	@Test
 	public void testfall06_BeckerNora() {
-		Testfall06_BeckerNora testfall = new Testfall06_BeckerNora(TestDataUtil.createGesuchsperiode1718(),
-			INSTITUTIONS_STAMMDATEN_LIST);
+		Testfall06_BeckerNora testfall = new Testfall06_BeckerNora(gesuchsperiode, new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
 
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
-		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		gesuch.setGesuchsperiode(gesuchsperiode);
 		evaluator.evaluate(gesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 		checkTestfall06BeckerNora(gesuch);
 	}

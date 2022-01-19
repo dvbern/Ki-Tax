@@ -15,15 +15,19 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {IPromise} from 'angular';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
+import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {TSGesuch} from '../../../../../models/TSGesuch';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
 import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
+import {ResultatComponent} from '../resultat/resultat.component';
 
 @Component({
     selector: 'dv-finanzielle-situation-start-view-luzern',
@@ -31,18 +35,20 @@ import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern
     styleUrls: ['../finanzielle-situation-luzern.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSitLuzernView implements OnInit {
+export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSitLuzernView {
 
     @ViewChild(NgForm) private readonly form: NgForm;
+    @ViewChild(ResultatComponent) private readonly resultatComponent: ResultatComponent;
 
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
+        protected finSitLuService: FinanzielleSituationLuzernService
     ) {
-        super(gesuchModelManager, wizardStepManager, 1);
-    }
-
-    public ngOnInit(): void {
+        super(gesuchModelManager, wizardStepManager, 1, finSitLuService);
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.FINANZIELLE_SITUATION_LUZERN,
+            TSWizardStepStatus.IN_BEARBEITUNG);
     }
 
     public isGemeinsam(): boolean {
@@ -73,5 +79,19 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
             return undefined;
         }
         return this.save(onResult);
+    }
+
+    protected save(onResult: Function): angular.IPromise<TSFinanzielleSituationContainer> {
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        return this.gesuchModelManager.saveFinanzielleSituationStart()
+            .then((gesuch: TSGesuch) => {
+                if (this.isGemeinsam()) {
+                    this.updateWizardStepStatus();
+                }
+                onResult(gesuch.gesuchsteller1.finanzielleSituationContainer);
+                return gesuch.gesuchsteller1.finanzielleSituationContainer;
+            }).catch(error => {
+                throw(error);
+            });
     }
 }

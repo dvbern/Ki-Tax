@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {IPromise} from 'angular';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
@@ -23,6 +23,7 @@ import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanziel
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
+import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
 
 @Component({
     selector: 'dv-angaben-gesuchsteller2',
@@ -30,18 +31,16 @@ import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
     styleUrls: ['../finanzielle-situation-luzern.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView implements OnInit {
+export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
 
     @ViewChild(NgForm) private readonly form: NgForm;
 
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
+        protected finSitLuService: FinanzielleSituationLuzernService
     ) {
-        super(gesuchModelManager, wizardStepManager, 2);
-    }
-
-    public ngOnInit(): void {
+        super(gesuchModelManager, wizardStepManager, 2, finSitLuService);
     }
 
     public isGemeinsam(): boolean {
@@ -70,5 +69,17 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView imp
             return undefined;
         }
         return this.save(onResult);
+    }
+
+    protected save(onResult: Function): angular.IPromise<TSFinanzielleSituationContainer> {
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        return this.gesuchModelManager.saveFinanzielleSituation()
+            .then((finanzielleSituationContainer: TSFinanzielleSituationContainer) => {
+                this.updateWizardStepStatus();
+                onResult(finanzielleSituationContainer);
+                return finanzielleSituationContainer;
+            }).catch(error => {
+                throw(error);
+            });
     }
 }

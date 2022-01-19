@@ -321,8 +321,25 @@ public class AuthResource {
 	@Path("/set-mandant")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response setMandant(@Nonnull final JaxMandant mandant) {
+		// expire old mandant cookie for whole domain
+		NewCookie expiredCookie = expireCookie(AuthConstants.COOKIE_MANDANT, isCookieSecure(), true);
 		// Readable Cookie storing the mandant
 		NewCookie mandantCookie = new NewCookie(AuthConstants.COOKIE_MANDANT,
+				URLEncoder.encode(mandant.getName(), StandardCharsets.UTF_8),
+				AuthConstants.COOKIE_PATH, null, "mandant",
+				60 * 60 * 24 * 365 * 2, isCookieSecure(), false);
+
+		return Response.noContent().cookie(expiredCookie, mandantCookie).build();
+	}
+
+	@Nullable
+	@POST
+	@PermitAll
+	@Path("/set-mandant-redirect")
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response setMandantRedirect(@Nonnull final JaxMandant mandant) {
+		// Readable Cookie storing the mandant used for client redirects
+		NewCookie mandantCookie = new NewCookie(AuthConstants.COOKIE_MANDANT_REDIRECT,
 				URLEncoder.encode(mandant.getName(), StandardCharsets.UTF_8),
 				AuthConstants.COOKIE_PATH, configuration.getHostdomain(), "mandant",
 				60 * 60 * 24 * 365 * 2, isCookieSecure(), false);

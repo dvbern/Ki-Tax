@@ -936,4 +936,17 @@ public class GemeindeResource {
 			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
 			.collect(Collectors.toList());
 	}
+
+	@ApiOperation(value = "Gibt die nächste freie BFS Nummer zurück, die ener besonderen Volksschule"
+		+ "zugewiesen werden kann",
+		response = Long.class)
+	@Nullable
+	@GET
+	@Path("/next-vollksschule-bfsnummer")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	@RolesAllowed( {SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT} ) // Oeffentliche Daten
+	public Long getNextBfsnummer() {
+		return gemeindeService.getNextBesondereVolksschuleBfsNummer();
+	}
 }

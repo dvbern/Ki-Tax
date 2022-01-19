@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.services;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -102,7 +101,7 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 			throw new EbeguRuntimeException("createMutationForEachClosedAntragForBern", "Gemeinde Bern wurde nicht eindeutig gefunden");
 		}
 		final Gemeinde bern = bernCandidates.stream().findFirst().get();
-		final Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findNewestGesuchsperiode()
+		final Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findNewestGesuchsperiode(Objects.requireNonNull(bern.getMandant()))
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"createMutationForEachClosedAntragForBern",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,

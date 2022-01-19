@@ -75,14 +75,23 @@ public class AnmeldungAblehnenEventHandler extends BaseEventHandler<String> {
 		}
 	}
 
-	protected Processing attemptProcessing(EventMonitor eventMonitor) {
-		Mandant mandant = BetreuungUtil.getMandantByGemeindeFromBgNummer(gemeindeService, eventMonitor.getRefnr());
-		return betreuungService.findAnmeldungenTagesschuleByBGNummer(eventMonitor.getRefnr(), mandant)
+	@Nonnull
+	protected Processing attemptProcessing(@Nonnull EventMonitor eventMonitor) {
+		String refnr = eventMonitor.getRefnr();
+		Optional<Mandant> mandant = betreuungEventHelper.getMandantFromBgNummer(refnr);
+		if (mandant.isEmpty()) {
+			return Processing.failure("Mandant konnte nicht gefunden werden.");
+		}
+
+		return betreuungService.findAnmeldungenTagesschuleByBGNummer(refnr, mandant.get())
 			.map(anmeldungTagesschule -> processEventForAblehnung(eventMonitor, anmeldungTagesschule))
 			.orElseGet(() -> Processing.failure("AnmeldungTagesschule nicht gefunden."));
 	}
 
-	private Processing processEventForAblehnung(EventMonitor eventMonitor, AnmeldungTagesschule anmeldungTagesschule) {
+	@Nonnull
+	private Processing processEventForAblehnung(
+		@Nonnull EventMonitor eventMonitor,
+		@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
 
 		if (anmeldungTagesschule.extractGesuchsperiode().getStatus() != GesuchsperiodeStatus.AKTIV) {
 			return Processing.failure("Die Gesuchsperiode ist nicht aktiv.");
@@ -100,10 +109,11 @@ public class AnmeldungAblehnenEventHandler extends BaseEventHandler<String> {
 				anmeldungTagesschule));
 	}
 
+	@Nonnull
 	private Processing processEventForExternalClient(
-		EventMonitor eventMonitor,
-		AnmeldungTagesschule anmeldungTagesschule,
-		DateRange clientGueltigkeit) {
+		@Nonnull EventMonitor eventMonitor,
+		@Nonnull AnmeldungTagesschule anmeldungTagesschule,
+		@Nonnull DateRange clientGueltigkeit) {
 		DateRange gesuchsperiode = anmeldungTagesschule.extractGesuchsperiode().getGueltigkeit();
 		Optional<DateRange> overlap = gesuchsperiode.getOverlap(clientGueltigkeit);
 		if (overlap.isEmpty()) {
@@ -111,7 +121,7 @@ public class AnmeldungAblehnenEventHandler extends BaseEventHandler<String> {
 		}
 
 		if (isAblehnungErlaubtStatus(anmeldungTagesschule.getBetreuungsstatus())) {
-			this.betreuungService.anmeldungSchulamtAblehnen(anmeldungTagesschule);
+			betreuungService.anmeldungSchulamtAblehnen(anmeldungTagesschule);
 			LOG.info("Tagesschuleanmeldung mit RefNr: {} wurde automatisch abgelehnt", eventMonitor.getRefnr());
 			eventMonitor.record("Tagesschuleanmeldung wurde automatisch abgelehnt");
 
@@ -126,5 +136,4 @@ public class AnmeldungAblehnenEventHandler extends BaseEventHandler<String> {
 		return status == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
 			|| status == Betreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION;
 	}
-
 }

@@ -43,15 +43,24 @@ export class DvNgGemeindeDialogComponent {
 
     public isUserSozialdienst: boolean;
 
+    private readonly allGemeinden: TSGemeinde[];
+    public besondereVolksschulen = false;
+
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
         private readonly dialogRef: MatDialogRef<DvNgGemeindeDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any,
     ) {
         this.isUserSozialdienst = authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
-        this.gemeindeList = data.gemeindeList;
+        this.allGemeinden = data.gemeindeList;
         this.sortGemeinden();
+        this.filterGemeindeList();
         this.gesuchsperiodeList = data.gesuchsperiodeList;
+    }
+
+    private filterGemeindeList(): void {
+        this.gemeindeList =
+            this.allGemeinden.filter(gemeinde => gemeinde.besondereVolksschule === this.besondereVolksschulen);
     }
 
     public save(): void {
@@ -76,9 +85,15 @@ export class DvNgGemeindeDialogComponent {
     }
 
     private sortGemeinden(): void {
-        if (EbeguUtil.isNullOrUndefined(this.gemeindeList) || !Array.isArray(this.gemeindeList)) {
+        if (EbeguUtil.isNullOrUndefined(this.allGemeinden) || !Array.isArray(this.allGemeinden)) {
             return;
         }
-        this.gemeindeList.sort((a, b) => a.name.localeCompare(b.name));
+        this.allGemeinden.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    public toggleBesondereVolksschulen(): void {
+        this.selectedGemeinde = undefined;
+        this.besondereVolksschulen = !this.besondereVolksschulen;
+        this.filterGemeindeList();
     }
 }

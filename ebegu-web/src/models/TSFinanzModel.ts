@@ -14,6 +14,7 @@
  */
 
 import {EbeguUtil} from '../utils/EbeguUtil';
+import {TSFinanzielleSituationTyp} from './enums/TSFinanzielleSituationTyp';
 import {TSEinkommensverschlechterung} from './TSEinkommensverschlechterung';
 import {TSEinkommensverschlechterungContainer} from './TSEinkommensverschlechterungContainer';
 import {TSEinkommensverschlechterungInfoContainer} from './TSEinkommensverschlechterungInfoContainer';
@@ -25,7 +26,6 @@ import {TSGesuch} from './TSGesuch';
 import {TSZahlungsinformationen} from './TSZahlungsinformationen';
 
 export class TSFinanzModel {
-
     private _gemeinsameSteuererklaerung: boolean;
     private _sozialhilfeBezueger: boolean;
     private _verguenstigungGewuenscht: boolean;
@@ -37,6 +37,8 @@ export class TSFinanzModel {
 
     private _zahlungsinformationenGS: TSZahlungsinformationen;
     private _zahlungsinformationen: TSZahlungsinformationen;
+
+    private _finanzielleSituationTyp: TSFinanzielleSituationTyp;
 
     private readonly basisjahr: number;
     private readonly basisjahrPlus: number;
@@ -103,6 +105,14 @@ export class TSFinanzModel {
         this._zahlungsinformationen = value;
     }
 
+    public get finanzielleSituationTyp(): TSFinanzielleSituationTyp {
+        return this._finanzielleSituationTyp;
+    }
+
+    public set finanzielleSituationTyp(value: TSFinanzielleSituationTyp) {
+        this._finanzielleSituationTyp = value;
+    }
+
     public copyFinSitDataFromGesuch(gesuch: TSGesuch): void {
         if (!gesuch) {
             return;
@@ -119,24 +129,26 @@ export class TSFinanzModel {
         }
 
         this.zahlungsinformationen = new TSZahlungsinformationen();
-        this.zahlungsinformationen.kontoinhaber = gesuch.extractFamiliensituation().kontoinhaber;
-        this.zahlungsinformationen.iban = gesuch.extractFamiliensituation().iban;
+        this.zahlungsinformationen.kontoinhaber = gesuch.extractFamiliensituation().kontoinhaberMahlzeiten;
+        this.zahlungsinformationen.iban = gesuch.extractFamiliensituation().ibanMahlzeiten;
         this.zahlungsinformationen.abweichendeZahlungsadresse =
-            gesuch.extractFamiliensituation().abweichendeZahlungsadresse;
-        this.zahlungsinformationen.zahlungsadresse = gesuch.extractFamiliensituation().zahlungsadresse;
+            gesuch.extractFamiliensituation().abweichendeZahlungsadresseMahlzeiten;
+        this.zahlungsinformationen.zahlungsadresse = gesuch.extractFamiliensituation().zahlungsadresseMahlzeiten;
         this.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt =
             gesuch.extractFamiliensituation().keineMahlzeitenverguenstigungBeantragt;
 
         if (gesuch.extractFamiliensituationGS()) {
             this.zahlungsinformationenGS = new TSZahlungsinformationen();
-            this.zahlungsinformationenGS.kontoinhaber = gesuch.extractFamiliensituationGS().kontoinhaber;
-            this.zahlungsinformationenGS.iban = gesuch.extractFamiliensituationGS().iban;
+            this.zahlungsinformationenGS.kontoinhaber = gesuch.extractFamiliensituationGS().kontoinhaberMahlzeiten;
+            this.zahlungsinformationenGS.iban = gesuch.extractFamiliensituationGS().ibanMahlzeiten;
             this.zahlungsinformationenGS.abweichendeZahlungsadresse =
-                gesuch.extractFamiliensituationGS().abweichendeZahlungsadresse;
-            this.zahlungsinformationenGS.zahlungsadresse = gesuch.extractFamiliensituationGS().zahlungsadresse;
+                gesuch.extractFamiliensituationGS().abweichendeZahlungsadresseMahlzeiten;
+            this.zahlungsinformationenGS.zahlungsadresse = gesuch.extractFamiliensituationGS().zahlungsadresseMahlzeiten;
             this.zahlungsinformationenGS.keineMahlzeitenverguenstigungBeantragt =
                 gesuch.extractFamiliensituationGS().keineMahlzeitenverguenstigungBeantragt;
         }
+
+        this.finanzielleSituationTyp = gesuch.finSitTyp;
 
         this.initFinSit();
     }
@@ -200,11 +212,11 @@ export class TSFinanzModel {
         }
         this.resetSteuerveranlagungErhaltenAndSteuererklaerungAusgefuellt(gesuch);
 
-        familiensituation.kontoinhaber = this.zahlungsinformationen.kontoinhaber;
-        familiensituation.iban = this.zahlungsinformationen.iban?.toLocaleUpperCase();
-        familiensituation.abweichendeZahlungsadresse =
+        familiensituation.kontoinhaberMahlzeiten = this.zahlungsinformationen.kontoinhaber;
+        familiensituation.ibanMahlzeiten = this.zahlungsinformationen.iban?.toLocaleUpperCase();
+        familiensituation.abweichendeZahlungsadresseMahlzeiten =
             this.zahlungsinformationen.abweichendeZahlungsadresse;
-        familiensituation.zahlungsadresse = this.zahlungsinformationen.zahlungsadresse;
+        familiensituation.zahlungsadresseMahlzeiten = this.zahlungsinformationen.zahlungsadresse;
         familiensituation.keineMahlzeitenverguenstigungBeantragt =
             this.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
 
@@ -226,6 +238,9 @@ export class TSFinanzModel {
         }
         if (EbeguUtil.isNullOrUndefined(gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA)) {
             gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
+        }
+        if (this.finanzielleSituationTyp === TSFinanzielleSituationTyp.SOLOTHURN) {
+            return;
         }
         gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten
             = finSitGS1.steuerveranlagungErhalten;

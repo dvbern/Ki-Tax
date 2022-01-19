@@ -114,9 +114,12 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 		@Nonnull EventMonitor eventMonitor,
 		@Nonnull TagesschuleBestaetigungEventDTO dto) {
 
-		Mandant mandant = getMandantFromBgNummer(dto.getRefnr());
+		Optional<Mandant> mandant = betreuungEventHelper.getMandantFromBgNummer(dto.getRefnr());
+		if (mandant.isEmpty()) {
+			return Processing.failure("Mandant konnte nicht gefunden werden.");
+		}
 
-		return betreuungService.findAnmeldungenTagesschuleByBGNummer(dto.getRefnr(), mandant)
+		return betreuungService.findAnmeldungenTagesschuleByBGNummer(dto.getRefnr(), mandant.get())
 			.map(anmeldung -> processEventForAnmeldungBestaetigung(eventMonitor, dto, anmeldung))
 			.orElseGet(() -> Processing.failure("AnmeldungTagesschule nicht gefunden."));
 	}
