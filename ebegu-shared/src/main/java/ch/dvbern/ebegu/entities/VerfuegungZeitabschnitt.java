@@ -408,6 +408,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
 	}
 
+	public void setBesondereBeduerfnisseBetragForAsivAndGemeinde(@Nullable BigDecimal betrag) {
+		this.getBgCalculationInputAsiv().setBesondereBeduerfnisseBetrag(betrag);
+		this.getBgCalculationInputGemeinde().setBesondereBeduerfnisseBetrag(betrag);
+	}
+
 	public void setEkv1AlleineForAsivAndGemeinde(boolean ekv1Alleine) {
 		this.getBgCalculationInputAsiv().setEkv1Alleine(ekv1Alleine);
 		this.getBgCalculationInputGemeinde().setEkv1Alleine(ekv1Alleine);

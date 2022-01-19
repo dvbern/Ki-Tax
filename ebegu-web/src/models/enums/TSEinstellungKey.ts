@@ -97,6 +97,7 @@ export enum TSEinstellungKey {
     GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN = 'GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN' as any,
     KINDERABZUG_TYP = 'KINDERABZUG_TYP' as any,
     KESB_PLATZIERUNG_DEAKTIVIEREN = 'KESB_PLATZIERUNG_DEAKTIVIEREN' as any,
+    BESONDERE_BEDUERFNISSE_LUZERN = 'BESONDERE_BEDUERFNISSE_LUZERN' as any,
 }
 
 export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
@@ -172,7 +173,8 @@ export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
         TSEinstellungKey.FKJV_FAMILIENSITUATION_NEU,
         TSEinstellungKey.MINIMALDAUER_KONKUBINAT,
         TSEinstellungKey.GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN,
-        TSEinstellungKey.KESB_PLATZIERUNG_DEAKTIVIEREN
+        TSEinstellungKey.KESB_PLATZIERUNG_DEAKTIVIEREN,
+        TSEinstellungKey.BESONDERE_BEDUERFNISSE_LUZERN
     ];
 }
 

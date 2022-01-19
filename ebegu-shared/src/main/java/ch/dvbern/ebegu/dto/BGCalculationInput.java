@@ -130,6 +130,9 @@ public class BGCalculationInput {
 	private boolean besondereBeduerfnisseBestaetigt;
 
 	@Nullable
+	private BigDecimal besondereBeduerfnisseBetrag;
+
+	@Nullable
 	private BigDecimal abzugFamGroesse = null;
 
 	@NotNull @Nonnull
@@ -229,6 +232,7 @@ public class BGCalculationInput {
 		this.minimalErforderlichesPensum = toCopy.minimalErforderlichesPensum;
 		this.rueckwirkendReduziertesPensumRest = toCopy.rueckwirkendReduziertesPensumRest;
 		this.isKesbPlatzierung = toCopy.isKesbPlatzierung;
+		this.besondereBeduerfnisseBetrag = toCopy.besondereBeduerfnisseBetrag;
 	}
 
 	@Nonnull
@@ -771,6 +775,9 @@ public class BGCalculationInput {
 		this.einschulungTyp = this.einschulungTyp != null ? this.einschulungTyp : other.einschulungTyp;
 		this.betreuungsangebotTyp = this.betreuungsangebotTyp != null ? this.betreuungsangebotTyp : other.betreuungsangebotTyp;
 
+		if (this.besondereBeduerfnisseBetrag != null) {
+			this.besondereBeduerfnisseBetrag = this.besondereBeduerfnisseBetrag.add(other.besondereBeduerfnisseBetrag);
+		}
 		// Zusätzliche Felder aus Result
 		this.betreuungspensumProzent = this.betreuungspensumProzent.add(other.betreuungspensumProzent);
 		this.anspruchspensumProzent = this.anspruchspensumProzent + other.anspruchspensumProzent;
@@ -841,6 +848,7 @@ public class BGCalculationInput {
 			minimalesEwpUnterschritten == other.minimalesEwpUnterschritten &&
 			Objects.equals(einkommensjahr, other.einkommensjahr) &&
 			besondereBeduerfnisseBestaetigt == other.besondereBeduerfnisseBestaetigt &&
+			MathUtil.isSame(this.besondereBeduerfnisseBetrag, other.besondereBeduerfnisseBetrag) &&
 			this.tsInputMitBetreuung.isSame(other.tsInputMitBetreuung) &&
 			this.tsInputOhneBetreuung.isSame(other.tsInputOhneBetreuung) &&
 			this.sozialhilfeempfaenger == other.sozialhilfeempfaenger &&
@@ -865,6 +873,7 @@ public class BGCalculationInput {
 			MathUtil.isSame(this.massgebendesEinkommenVorAbzugFamgr, that.massgebendesEinkommenVorAbzugFamgr) &&
 			Objects.equals(this.einkommensjahr, that.einkommensjahr) &&
 			this.besondereBeduerfnisseBestaetigt == that.besondereBeduerfnisseBestaetigt &&
+			MathUtil.isSame(this.besondereBeduerfnisseBetrag, that.besondereBeduerfnisseBetrag) &&
 			this.minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
 			this.tsInputMitBetreuung.isSame(that.tsInputMitBetreuung) &&
 			this.tsInputOhneBetreuung.isSame(that.tsInputOhneBetreuung) &&
@@ -945,5 +954,14 @@ public class BGCalculationInput {
 
 	public void setKesbPlatzierung(boolean kesbPlatzierung) {
 		isKesbPlatzierung = kesbPlatzierung;
+	}
+
+	@Nullable
+	public BigDecimal getBesondereBeduerfnisseBetrag() {
+		return besondereBeduerfnisseBetrag;
+	}
+
+	public void setBesondereBeduerfnisseBetrag(@Nullable BigDecimal besondereBeduerfnisseBetrag) {
+		this.besondereBeduerfnisseBetrag = besondereBeduerfnisseBetrag;
 	}
 }
