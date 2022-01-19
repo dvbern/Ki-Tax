@@ -25,6 +25,7 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einstellung;
@@ -62,6 +63,7 @@ import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_09;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_10;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Before;
@@ -829,5 +831,20 @@ public abstract class AbstractBGRechnerTest {
 			Assert.assertNotNull(result.get(i).getBgCalculationResultGemeinde());
 			Assert.assertEquals(result.get(i).getBgCalculationResultGemeinde().getVerguenstigungMahlzeitenTotal(), BigDecimal.valueOf(60));
 		}
+	}
+
+	protected BigDecimal calculateKostenAnteilMonat(BGCalculationInput input, DateRange gueltigkeit) {
+		BigDecimal anteilMonat = DateUtil.calculateAnteilMonatInklWeekend(
+			gueltigkeit.getGueltigAb(),
+			gueltigkeit.getGueltigBis());
+
+		BigDecimal anteilVerguenstigesPensumAmBetreuungspensum = BigDecimal.ZERO;
+		if (input.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) > 0) {
+			anteilVerguenstigesPensumAmBetreuungspensum =
+				MathUtil.EXACT.divide(input.getBgPensumProzent(), input.getBetreuungspensumProzent());
+		}
+		BigDecimal vollkostenFuerVerguenstigtesPensum =
+			MathUtil.EXACT.multiply(input.getMonatlicheBetreuungskosten(), anteilVerguenstigesPensumAmBetreuungspensum);
+		return MathUtil.EXACT.multiply(anteilMonat, vollkostenFuerVerguenstigtesPensum);
 	}
 }

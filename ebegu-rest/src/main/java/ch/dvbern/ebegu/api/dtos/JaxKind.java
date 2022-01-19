@@ -31,10 +31,10 @@ public class JaxKind extends JaxAbstractPersonDTO {
 
 	private static final long serialVersionUID = -1297026881674137397L;
 
-	@NotNull
+	@Nullable
 	private Kinderabzug kinderabzugErstesHalbjahr;
 
-	@NotNull
+	@Nullable
 	private Kinderabzug kinderabzugZweitesHalbjahr;
 
 	@NotNull
@@ -61,20 +61,21 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	@NotNull
 	private Boolean zukunftigeGeburtsdatum = false;
 
-	@NotNull
+	@Nullable
 	public Kinderabzug getKinderabzugErstesHalbjahr() {
 		return kinderabzugErstesHalbjahr;
 	}
 
-	public void setKinderabzugErstesHalbjahr(Kinderabzug kinderabzugErstesHalbjahr) {
+	public void setKinderabzugErstesHalbjahr(@Nullable Kinderabzug kinderabzugErstesHalbjahr) {
 		this.kinderabzugErstesHalbjahr = kinderabzugErstesHalbjahr;
 	}
 
+	@Nullable
 	public Kinderabzug getKinderabzugZweitesHalbjahr() {
 		return kinderabzugZweitesHalbjahr;
 	}
 
-	public void setKinderabzugZweitesHalbjahr(Kinderabzug kinderabzugZweitesHalbjahr) {
+	public void setKinderabzugZweitesHalbjahr(@Nullable Kinderabzug kinderabzugZweitesHalbjahr) {
 		this.kinderabzugZweitesHalbjahr = kinderabzugZweitesHalbjahr;
 	}
 

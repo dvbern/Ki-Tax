@@ -24,6 +24,7 @@ import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSFinanzielleSituationTyp} from '../models/enums/TSFinanzielleSituationTyp';
+import {TSKinderabzugTyp} from '../models/enums/TSKinderabzugTyp';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
 import {TSGemeindeKennzahlen} from '../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {TSAnzahlEingeschriebeneKinder} from '../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
@@ -2717,6 +2718,7 @@ export class EbeguRestUtil {
         restErweiterteBetreuung.betreuungInGemeinde = erweiterteBetreuung.betreuungInGemeinde;
         restErweiterteBetreuung.keineKesbPlatzierung = erweiterteBetreuung.keineKesbPlatzierung;
         restErweiterteBetreuung.kitaPlusZuschlag = erweiterteBetreuung.kitaPlusZuschlag;
+        restErweiterteBetreuung.erweitereteBeduerfnisseBetrag = erweiterteBetreuung.erweitereteBeduerfnisseBetrag;
         if (erweiterteBetreuung.fachstelle) {
             restErweiterteBetreuung.fachstelle = this.fachstelleToRestObject({}, erweiterteBetreuung.fachstelle);
         }
@@ -2735,6 +2737,7 @@ export class EbeguRestUtil {
             erweiterteBetreuungTS.keineKesbPlatzierung = erweiterteBetreuungFromServer.keineKesbPlatzierung;
             erweiterteBetreuungTS.kitaPlusZuschlag = erweiterteBetreuungFromServer.kitaPlusZuschlag;
             erweiterteBetreuungTS.betreuungInGemeinde = erweiterteBetreuungFromServer.betreuungInGemeinde;
+            erweiterteBetreuungTS.erweitereteBeduerfnisseBetrag = erweiterteBetreuungFromServer.erweitereteBeduerfnisseBetrag;
             if (erweiterteBetreuungFromServer.fachstelle) {
                 erweiterteBetreuungTS.fachstelle =
                     this.parseFachstelle(new TSFachstelle(), erweiterteBetreuungFromServer.fachstelle);
@@ -5665,6 +5668,13 @@ export class EbeguRestUtil {
             return typ as TSFinanzielleSituationTyp;
         }
         throw new Error(`FinanzielleSituationTyp ${typ} not defined`);
+    }
+
+    public parseKinderabzugTyp(typ: any): TSKinderabzugTyp {
+        if (Object.values(TSKinderabzugTyp).includes(typ)) {
+            return typ as TSKinderabzugTyp;
+        }
+        throw new Error(`TSKinderabzugTyp ${typ} not defined`);
     }
 
     public parseSteuerdatenResponse(

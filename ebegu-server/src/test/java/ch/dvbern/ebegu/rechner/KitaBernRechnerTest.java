@@ -172,6 +172,7 @@ public class KitaBernRechnerTest extends AbstractBGRechnerTest {
 			.isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis()));
 		inputAsiv.setEinschulungTyp(einschulungTyp);
 		inputAsiv.setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
+		inputAsiv.setKostenAnteilMonat(calculateKostenAnteilMonat(inputAsiv, intervall));
 
 		BGCalculationResult result = kitaRechner.calculateAsiv(inputAsiv, parameterDTO);
 

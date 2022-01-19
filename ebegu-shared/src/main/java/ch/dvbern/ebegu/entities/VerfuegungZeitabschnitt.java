@@ -408,6 +408,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
 	}
 
+	public void setBesondereBeduerfnisseBetragForAsivAndGemeinde(@Nullable BigDecimal betrag) {
+		this.getBgCalculationInputAsiv().setBesondereBeduerfnisseBetrag(betrag);
+		this.getBgCalculationInputGemeinde().setBesondereBeduerfnisseBetrag(betrag);
+	}
+
 	public void setEkv1AlleineForAsivAndGemeinde(boolean ekv1Alleine) {
 		this.getBgCalculationInputAsiv().setEkv1Alleine(ekv1Alleine);
 		this.getBgCalculationInputGemeinde().setEkv1Alleine(ekv1Alleine);
@@ -592,6 +597,16 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputAsiv().setPensumUnit(unit);
 		this.getBgCalculationInputGemeinde().setPensumUnit(unit);
 
+	}
+
+	public void calculateInputValuesProportionaly(double percentag) {
+		this.getBgCalculationInputAsiv().calculateInputValuesProportionaly(percentag);
+		this.getBgCalculationInputGemeinde().calculateInputValuesProportionaly(percentag);
+	}
+
+	public void setKostenAnteilMonat(BigDecimal kostenAnteilMonat) {
+		this.getBgCalculationInputAsiv().setKostenAnteilMonat(kostenAnteilMonat);
+		this.getBgCalculationInputGemeinde().setKostenAnteilMonat(kostenAnteilMonat);
 	}
 
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
