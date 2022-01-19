@@ -59,7 +59,7 @@ public class AbstractLuzernRechnerTest extends AbstractBGRechnerTest {
 	}
 
 	protected void assertCalculationResultResult(BGCalculationResult result, TestValues testValues) {
-		Assert.assertEquals(testValues.monatlicheBetreuungsKosten.stripTrailingZeros(), result.getVollkosten().stripTrailingZeros());
+		Assert.assertEquals(testValues.expectedVollkosten.stripTrailingZeros(), result.getVollkosten().stripTrailingZeros());
 		Assert.assertEquals(testValues.betreuungsPensum.stripTrailingZeros(), result.getBetreuungspensumProzent().stripTrailingZeros());
 		Assert.assertEquals(testValues.anspruchsPensum, result.getAnspruchspensumProzent());
 		Assert.assertEquals(testValues.expectedElternbeitrag.stripTrailingZeros(), result.getElternbeitrag().stripTrailingZeros());
@@ -89,6 +89,7 @@ public class AbstractLuzernRechnerTest extends AbstractBGRechnerTest {
 		protected BigDecimal einkommen = BigDecimal.ZERO;
 		protected boolean isBaby = false;
 
+		protected BigDecimal expectedVollkosten = BigDecimal.ZERO;
 		protected BigDecimal expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.ZERO;
 		protected BigDecimal expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.ZERO;
 		protected BigDecimal expectedVerguenstigung = BigDecimal.ZERO;

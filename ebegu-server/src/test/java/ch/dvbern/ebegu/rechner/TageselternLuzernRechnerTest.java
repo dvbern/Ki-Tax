@@ -39,6 +39,7 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.einkommen = MathUtil.DEFAULT.fromNullSafe(48000);
 		testValues.isBaby = true;
 
+		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(2200);
 		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(2110.7);
 		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(2105.3);
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(2105.3);
@@ -65,6 +66,7 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.einkommen = MathUtil.DEFAULT.fromNullSafe(55000);
 		testValues.isBaby = false;
 
+		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(1200);
 		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(1439.1);
 		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(1105.3);
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(1105.3);
@@ -91,6 +93,7 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.einkommen = MathUtil.DEFAULT.fromNullSafe(125001);
 		testValues.isBaby = false;
 
+		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(600);
 		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.ZERO;
 		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.ZERO;
 		testValues.expectedVerguenstigung = BigDecimal.ZERO;
@@ -117,6 +120,7 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.einkommen = MathUtil.DEFAULT.fromNullSafe(125001);
 		testValues.isBaby = true;
 
+		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(600);
 		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.ZERO;
 		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.ZERO;
 		testValues.expectedVerguenstigung = BigDecimal.ZERO;

@@ -36,7 +36,6 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 	private BGCalculationInput input;
 
 
-	private BigDecimal inputVollkosten;
 	private BigDecimal inputMassgebendesEinkommen;
 	private BigDecimal inputZuschlagErhoeterBeterungsbedarf = BigDecimal.ZERO;
 	private boolean inputIsGeschwisternBonus2Kind = false;
@@ -45,6 +44,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 
 	private BigDecimal z;
 
+	private BigDecimal vollkosten;
 	private BigDecimal selbstBehaltElternProzent;
 	private BigDecimal geschwisternBonus2Kind;
 	private BigDecimal geschwisternBonus3Kind;
@@ -59,10 +59,10 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		this.input = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
 		this.inputParameter = parameterDTO;
 
-		this.inputVollkosten = input.getMonatlicheBetreuungskosten();
 		this.inputMassgebendesEinkommen = input.getMassgebendesEinkommen();
 		this.inputIsKitaPlusZuschlag = input.isKitaPlusZuschlag();
 
+		this.vollkosten = calculateVollkosten();
 		this.selbstBehaltElternProzent = calculateSelbstbehaltElternProzent();
 		this.geschwisternBonus2Kind = calculateGeschwisternBonus2Kind();
 		this.geschwisternBonus3Kind = calculateGeschwisternBonus3Kind();
@@ -86,7 +86,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		VerfuegungZeitabschnitt.initBGCalculationResult(this.input, result);
 
 		//TODO Werte und Naming passen Teilweise nicht zu bestehendem Result. Es wird noch abgeklärt wie Luzern das genau haben will
-		result.setVollkosten(this.inputVollkosten);
+		result.setVollkosten(this.vollkosten);
 		result.setMinimalerElternbeitrag(minimalerSelbstbehalt);
 		result.setElternbeitrag(selbstbehaltDerEltern);
 		result.setMinimalerElternbeitragGekuerzt(selbstbehaltDerEltern);
@@ -101,6 +101,19 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		result.roundAllValues();
 		verfuegungZeitabschnitt.setBgCalculationResultAsiv(result);
 		verfuegungZeitabschnitt.setBgCalculationResultGemeinde(result);
+	}
+
+	private BigDecimal calculateVollkosten() {
+		BigDecimal betreuungspensum = input.getBetreuungspensumProzent();
+		BigDecimal anspruchsPensum = BigDecimal.valueOf(input.getAnspruchspensumProzent());
+
+		//wenn anspruchspensum < betreuungspensum, dann anspruchspensum/betreuungspensum * monatlicheBetreuungskosten
+		if(anspruchsPensum.compareTo(betreuungspensum) < 0) {
+			BigDecimal anspruchsPensumDevidedByBetreuungspensum = EXACT.divide(anspruchsPensum, betreuungspensum);
+			return EXACT.multiply(anspruchsPensumDevidedByBetreuungspensum, input.getMonatlicheBetreuungskosten());
+		}
+
+		return input.getMonatlicheBetreuungskosten();
 	}
 
 	private BigDecimal calculateGeschwisternBonus2Kind() {
@@ -154,7 +167,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 	 * @return
 	 */
 	protected BigDecimal calculateEffektiverSelbstbehaltEltern(BigDecimal gutscheinProMonatVorZuschlagUndSelbstbehalt, BigDecimal minimalerSelbstbehalt) {
-		BigDecimal differenzVollkostenUndGutschein = EXACT.subtract(inputVollkosten,gutscheinProMonatVorZuschlagUndSelbstbehalt);
+		BigDecimal differenzVollkostenUndGutschein = EXACT.subtract(vollkosten,gutscheinProMonatVorZuschlagUndSelbstbehalt);
 
 		//Wenn Differenz Vollkosten und Gutschein<Minimaler Selbstbehalt, wird zusätzlicher Selbstbehalt abgezogen
 		BigDecimal zusaetzlicherSelbstbehalt = BigDecimal.ZERO;
