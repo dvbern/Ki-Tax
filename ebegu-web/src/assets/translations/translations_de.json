@@ -2730,7 +2730,7 @@
     "GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN": "Solothurn: Gemeindespezifische Konfigurationen für BG",
     "GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN_TITLE": "Gemeindespezifische Konfigurationen für BG",
     "ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM": "Solothurn: Anspruch unabhängig vom Beschäftigungspensum",
-    "KINDERABZUG_TYP": "Kinderabzugtyp",
+    "KINDERABZUG_TYP": "Kinderabzugtyp (FKJV, ASIV oder KEINE)",
     "TS_MUTATION_EXISTIERT": "Es gibt bereits eine Mutation zu diesem Antrag",
     "TS_MUTATION_EXISTIERT_BODY": "Die Tagesschulanmeldung muss bei der neusten Mutation bearbeitet werden. Falls diese noch in Bearbeitung der Antragstellenden ist, muss sie zuerst freigegeben oder gelöscht werden.",
     "FREMD_ID": "Fremd-ID",
