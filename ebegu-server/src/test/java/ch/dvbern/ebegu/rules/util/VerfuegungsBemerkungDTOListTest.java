@@ -22,6 +22,7 @@ import java.time.Month;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkungDTO;
@@ -40,6 +41,8 @@ public class VerfuegungsBemerkungDTOListTest {
 		new DateRange(LocalDate.of(2021, Month.AUGUST, 1), LocalDate.of(2021, Month.AUGUST, 15));
 	private final DateRange dateRangeLastHalfAugust =
 		new DateRange(LocalDate.of(2021, Month.AUGUST, 16), LocalDate.of(2021, Month.AUGUST, 31));
+	private final DateRange dateRangePartAugust =
+		new DateRange(LocalDate.of(2021, Month.AUGUST, 10), LocalDate.of(2021, Month.AUGUST, 20));
 
 
 	@Test
@@ -150,6 +153,73 @@ public class VerfuegungsBemerkungDTOListTest {
 		Assert.assertEquals(dateRangeFullAugust, result.get(0).getGueltigkeit());
 	}
 
+	@Test
+	public void test_sameBemerkung_adjacentRange_ausserorderntlicherAnspruch_notFullMonth_ueberschreibt() {
+		//Test:
+		//INPUT:
+		//Bemerkung Ausserordentlicher Anspruch 15.08-31.08
+		//Bemerkung Fachstelle 01.08-31.08
+		//RESULT
+		//Bemerkung Ausserordentlicher Anspruch 15.08-31.08
+		//Bemerkung Fachstelle 01.08-14.08
+		VerfuegungsBemerkungDTO bemerkungAusserordernlicherAnspruch = createDefaultVerfugeungsBemerkungeDto(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG);
+		bemerkungAusserordernlicherAnspruch.setGueltigkeit(dateRangeLastHalfAugust);
+
+		VerfuegungsBemerkungDTOList bemerkungList = new VerfuegungsBemerkungDTOList();
+		bemerkungList.addBemerkung(createDefaultVerfugeungsBemerkungeDto(MsgKey.FACHSTELLE_MSG));
+		bemerkungList.addBemerkung(bemerkungAusserordernlicherAnspruch);
+
+		List<VerfuegungsBemerkungDTO> result = bemerkungList.getRequiredBemerkungen();
+		Assert.assertEquals(2, result.size());
+
+		Map<MsgKey, List<VerfuegungsBemerkungDTO>> bemerkungenByMessageKey = mapVerfuegungsBemerkungByMsgKey(result);
+
+		Assert.assertEquals(1, bemerkungenByMessageKey.get(MsgKey.FACHSTELLE_MSG).size());
+		Assert.assertEquals(dateRangeFirstHalfAugust, bemerkungenByMessageKey.get(MsgKey.FACHSTELLE_MSG).get(0).getGueltigkeit());
+
+		Assert.assertEquals(1,  bemerkungenByMessageKey.get(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG).size());
+		Assert.assertEquals(dateRangeLastHalfAugust, bemerkungenByMessageKey.get(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG).get(0).getGueltigkeit());
+	}
+
+
+	@Test
+	public void test_sameBemerkung_adjacentRange_ausserorderntlicherAnspruch_notFullMonth_ueberschreibt_middle() {
+		//Test:
+		//INPUT:
+		//Bemerkung Ausserordentlicher Anspruch 10.08-20.08
+		//Bemerkung Fachstelle 01.08-31.08
+		//EXPECTED RESULT
+		//Bemerkung Ausserordentlicher Anspruch 10.08-20.08
+		//Bemerkung Fachstelle 01.08-09.08 und 21.08.-31.08
+		VerfuegungsBemerkungDTO bemerkungAusserordernlicherAnspruch = createDefaultVerfugeungsBemerkungeDto(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG);
+		bemerkungAusserordernlicherAnspruch.setGueltigkeit(dateRangePartAugust);
+
+		VerfuegungsBemerkungDTOList bemerkungList = new VerfuegungsBemerkungDTOList();
+		bemerkungList.addBemerkung(createDefaultVerfugeungsBemerkungeDto(MsgKey.FACHSTELLE_MSG));
+		bemerkungList.addBemerkung(bemerkungAusserordernlicherAnspruch);
+
+		List<VerfuegungsBemerkungDTO> result = bemerkungList.getRequiredBemerkungen();
+		Assert.assertEquals(3, result.size());
+
+		DateRange expectedFachstellenGueltigkeitPart1 =
+			new DateRange(LocalDate.of(2021, Month.AUGUST, 1), LocalDate.of(2021, Month.AUGUST, 9));
+		DateRange expectedFachstellenGueltigkeitPart2 =
+			new DateRange(LocalDate.of(2021, Month.AUGUST, 21), LocalDate.of(2021, Month.AUGUST, 31));
+
+		Map<MsgKey, List<VerfuegungsBemerkungDTO>> bemerkungenByMessageKey = mapVerfuegungsBemerkungByMsgKey(result);
+
+		Assert.assertEquals(2, bemerkungenByMessageKey.get(MsgKey.FACHSTELLE_MSG).size());
+		Assert.assertEquals(expectedFachstellenGueltigkeitPart1, bemerkungenByMessageKey.get(MsgKey.FACHSTELLE_MSG).get(0).getGueltigkeit());
+		Assert.assertEquals(expectedFachstellenGueltigkeitPart2, bemerkungenByMessageKey.get(MsgKey.FACHSTELLE_MSG).get(1).getGueltigkeit());
+
+		Assert.assertEquals(1,  bemerkungenByMessageKey.get(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG).size());
+		Assert.assertEquals(dateRangePartAugust, bemerkungenByMessageKey.get(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG).get(0).getGueltigkeit());
+	}
+
+	private Map<MsgKey, List<VerfuegungsBemerkungDTO>> mapVerfuegungsBemerkungByMsgKey(List<VerfuegungsBemerkungDTO> bemerkungen) {
+		return bemerkungen.stream()
+			.collect(Collectors.groupingBy(VerfuegungsBemerkungDTO::getMsgKey));
+	}
 
 	private VerfuegungsBemerkungDTO createDefaultVerfugeungsBemerkungeDto(MsgKey msgKey) {
 		VerfuegungsBemerkungDTO verfuegungsBemerkungDTO = new VerfuegungsBemerkungDTO(
