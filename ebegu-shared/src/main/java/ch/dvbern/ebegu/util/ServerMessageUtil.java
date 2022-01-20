@@ -23,6 +23,7 @@ import java.util.ResourceBundle;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -32,6 +33,9 @@ public final class ServerMessageUtil {
 
 	private static final ResourceBundle bundle_de = ResourceBundle.getBundle(Constants.SERVER_MESSAGE_BUNDLE_NAME, Constants.DEFAULT_LOCALE);
 	private static final ResourceBundle bundle_fr = ResourceBundle.getBundle(Constants.SERVER_MESSAGE_BUNDLE_NAME, Constants.FRENCH_LOCALE);
+
+	private static final MandantLocaleVisitor MANDANT_LOCALE_VISITOR_DE = new MandantLocaleVisitor(Constants.DEUTSCH_LOCALE);
+	private static final MandantLocaleVisitor MANDANT_LOCALE_VISITOR_FR = new MandantLocaleVisitor(Constants.FRENCH_LOCALE);
 
 	private ServerMessageUtil() {
 	}
@@ -43,8 +47,20 @@ public final class ServerMessageUtil {
 		return bundle_de;
 	}
 
+	private static ResourceBundle selectBundleToUse(Locale locale, Mandant mandant) {
+		if (locale.getLanguage().equalsIgnoreCase("FR")) {
+			return ResourceBundle.getBundle(Constants.SERVER_MESSAGE_BUNDLE_NAME, MANDANT_LOCALE_VISITOR_FR.process(mandant));
+		}
+		return ResourceBundle.getBundle(Constants.SERVER_MESSAGE_BUNDLE_NAME, MANDANT_LOCALE_VISITOR_DE.process(mandant));
+	}
+
 	public static String getMessage(String key, Locale locale) {
 		ResourceBundle bundle = selectBundleToUse(locale);
+		return readStringFromBundleOrReturnKey(bundle, key);
+	}
+
+	public static String getMessage(String key, Locale locale, Mandant mandant) {
+		ResourceBundle bundle = selectBundleToUse(locale, mandant);
 		return readStringFromBundleOrReturnKey(bundle, key);
 	}
 
