@@ -19,8 +19,10 @@ package ch.dvbern.ebegu.rules.util;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkungDTO;
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkungDTOList;
@@ -118,7 +120,9 @@ public class VerfuegungsBemerkungDTOListTest {
 		bemerkungList.addBemerkung(bemerkung1);
 		bemerkungList.addBemerkung(bemerkung2);
 
-		List<VerfuegungsBemerkungDTO> result = bemerkungList.getRequiredBemerkungen();
+		List<VerfuegungsBemerkungDTO> result = bemerkungList.getRequiredBemerkungen().stream()
+			.sorted(Comparator.comparing(VerfuegungsBemerkungDTO::getGueltigkeit))
+			.collect(Collectors.toList());
 		Assert.assertEquals(2, result.size());
 
 		Assert.assertEquals(dateRangeFirstHalfAugust, result.get(0).getGueltigkeit());
