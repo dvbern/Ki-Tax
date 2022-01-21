@@ -42,13 +42,16 @@ public class KibonAnfrageConverter {
 		steuerdatenResponse.setSynchroneAntwort(steuerdatenResponseType.isSynchroneAntwort());
 		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.valueOf(steuerdatenResponseType.getVeranlagungsstand().value()));
 		steuerdatenResponse.setUnterjaehrigerFall(steuerdatenResponseType.isUnterjaehrigerFall());
-		if (steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger() != null) {
-			steuerdatenResponse.setErhalteneUnterhaltsbeitraegeDossiertraeger(new BigDecimal(steuerdatenResponseType.getErwerbseinkommenUnselbstaendigkeitDossiertraeger()));
+
+		if (steuerdatenResponseType.getNettoertraegeAusEGMEPartner() != null) {
+			steuerdatenResponse.setNettoertraegeAusEgmePartner(new BigDecimal(steuerdatenResponseType.getNettoertraegeAusEGMEPartner()));
+		}
+		if (steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitDossiertraeger() != null) {
+			steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitDossiertraeger(new BigDecimal(steuerdatenResponseType.getErwerbseinkommenUnselbstaendigkeitDossiertraeger()));
 		}
 		if (steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitPartner() != null) {
 			steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitPartner(new BigDecimal(steuerdatenResponseType.getErwerbseinkommenUnselbstaendigkeitPartner()));
 		}
-
 		if (steuerdatenResponseType.getSteuerpflichtigesErsatzeinkommenDossiertraeger() != null) {
 			steuerdatenResponse.setSteuerpflichtigesErsatzeinkommenDossiertraeger(new BigDecimal(steuerdatenResponseType.getSteuerpflichtigesErsatzeinkommenDossiertraeger()));
 		}
@@ -108,6 +111,9 @@ public class KibonAnfrageConverter {
 		}
 		if (steuerdatenResponseType.getNettovermoegen() != null) {
 			steuerdatenResponse.setNettovermoegen(new BigDecimal(steuerdatenResponseType.getNettovermoegen()));
+		}
+		if (steuerdatenResponseType.getSchuldzinsen() != null) {
+			steuerdatenResponse.setSchuldzinsen(new BigDecimal(steuerdatenResponseType.getSchuldzinsen()));
 		}
 
 		return steuerdatenResponse;
