@@ -131,6 +131,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public isKesbPlatzierung: boolean;
     private eingewoehnungAktiviert: boolean = false;
     private kitaPlusZuschlagAktiviert: boolean = false;
+    private besondereBeduerfnisseAufwandKonfigurierbar: boolean = false;
     protected minEintrittsdatum: moment.Moment;
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
@@ -262,6 +263,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                         this.changeKeineKesbPlatzierung();
                     }
                     this.hideKesbPlatzierung = value.getValueAsBoolean();
+                });
+            response.filter(r => r.key === TSEinstellungKey.BESONDERE_BEDUERFNISSE_LUZERN)
+                .forEach(value => {
+                    if (EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean())) {
+                        this.besondereBeduerfnisseAufwandKonfigurierbar = true;
+                    }
                 });
         });
 
@@ -1267,6 +1274,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             && EbeguUtil.isNotNullAndTrue(this.getBetreuungModel().isAngebotBetreuungsgutschein());
     }
 
+    public isBesondereBeduerfnisseAufwandKonfigurierbar(): boolean {
+        return this.besondereBeduerfnisseAufwandKonfigurierbar;
+    }
+
     public isBetreuungInGemeindeRequired(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA())
             && !this.isSchulamt()
@@ -1352,13 +1363,18 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public getErweiterteBeduerfnisseBestaetigtLabel(): string {
+
+        if (this.besondereBeduerfnisseAufwandKonfigurierbar) {
+            return this.$translate.instant('BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST_WITHOUT_BETRAG');
+        }
+
         if (this.getBetreuungModel()
             && this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-            return this.$translate.instant('BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST',
+            return this.$translate.instant('BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST_WITH_FIX_BETRAG',
                 {betrag: this.zuschlagBehinderungProStd, einheit: this.$translate.instant('STUNDE')});
         }
 
-        return this.$translate.instant('BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST',
+        return this.$translate.instant('BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST_WITH_FIX_BETRAG',
             {betrag: this.zuschlagBehinderungProTag, einheit: this.$translate.instant('TAG')});
     }
 
@@ -1373,6 +1389,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.erneutePlatzbestaetigungErforderlich = betreuung.betreuungsstatus === TSBetreuungsstatus.BESTAETIGT
             && erweiterteBetreuung.erweiterteBeduerfnisse
             && !erweiterteBetreuung.erweiterteBeduerfnisseBestaetigt;
+
+        // reset erweiterteBeduerfnisseBetrag on change from true to false
+        if (!erweiterteBetreuung.erweiterteBeduerfnisse) {
+            erweiterteBetreuung.erweitereteBeduerfnisseBetrag = null;
+        }
     }
 
     public gotoBetreuungAbweichungen(): void {

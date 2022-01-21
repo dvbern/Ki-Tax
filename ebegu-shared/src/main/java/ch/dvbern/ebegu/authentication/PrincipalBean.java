@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.util.Constants.ANONYMOUS_USER_USERNAME;
+import static ch.dvbern.ebegu.util.Constants.LOGINCONNECTOR_USER_USERNAME;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 @RequestScoped
@@ -164,6 +165,7 @@ public class PrincipalBean {
 	}
 
 	public boolean isAnonymousSuperadmin() {
-		return isCallerInRole(UserRole.SUPER_ADMIN) && getPrincipal().getName().equals(ANONYMOUS_USER_USERNAME);
+		return isCallerInRole(UserRole.SUPER_ADMIN) && (getPrincipal().getName().equals(ANONYMOUS_USER_USERNAME)
+			|| getPrincipal().getName().equals(LOGINCONNECTOR_USER_USERNAME));
 	}
 }

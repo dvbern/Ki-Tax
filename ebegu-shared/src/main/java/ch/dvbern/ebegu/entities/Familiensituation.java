@@ -38,6 +38,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
 
@@ -49,7 +50,8 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 @Audited
 @Entity
 @Table(uniqueConstraints = {
-	@UniqueConstraint(columnNames = "auszahlungsdaten_mahlzeiten_id", name = "UK_familiensituation_auszahlungsdaten_id"),
+	@UniqueConstraint(columnNames = "auszahlungsdaten_mahlzeiten_id",
+	name = "UK_familiensituation_auszahlungsdaten_id"),
 	@UniqueConstraint(columnNames = "auszahlungsdaten_infoma_id", name = "UK_familiensituation_auszahlungsdaten_infoma_id")
 })
 public class Familiensituation extends AbstractMutableEntity {
@@ -65,7 +67,8 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Column(nullable = true)
 	private Boolean gemeinsameSteuererklaerung;
 
-	// Diese beiden Felder werden nicht immer eingegeben, deswegen Boolean und nicht boolean, damit sie auch null sein duerfen
+	// Diese beiden Felder werden nicht immer eingegeben, deswegen Boolean und nicht boolean, damit sie auch null sein
+	// duerfen
 	@Nullable
 	@Column(nullable = true)
 	private Boolean sozialhilfeBezueger;
@@ -116,6 +119,19 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Column(nullable = false)
 	private boolean auszahlungAnEltern = false;
 
+
+	@Enumerated(value = EnumType.STRING)
+	@Nullable
+	@Column(nullable = true)
+	private EnumGesuchstellerKardinalitaet gesuchstellerKardinalitaet;
+
+	@Nonnull
+	@Column(nullable = false)
+	private boolean fkjvFamSit = false;
+
+	@Nonnull
+	@Column(nullable = false)
+	private Integer minDauerKonkubinat = 5;
 
 	public Familiensituation() {
 	}
@@ -253,22 +269,53 @@ public class Familiensituation extends AbstractMutableEntity {
 		this.auszahlungAnEltern = auszahlungAnEltern;
 	}
 
+	@Nullable
+	public EnumGesuchstellerKardinalitaet getGesuchstellerKardinalitaet() {
+		return gesuchstellerKardinalitaet;
+	}
+
+	public void setGesuchstellerKardinalitaet(@Nullable EnumGesuchstellerKardinalitaet gesuchstellerKardinalitaet) {
+		this.gesuchstellerKardinalitaet = gesuchstellerKardinalitaet;
+	}
+
+	public boolean isFkjvFamSit() {
+		return fkjvFamSit;
+	}
+
+	public void setFkjvFamSit(boolean fkjvFamSit) {
+		this.fkjvFamSit = fkjvFamSit;
+	}
+
+	@Nonnull
+	public Integer getMinDauerKonkubinat() {
+		return minDauerKonkubinat;
+	}
+
+	public void setMinDauerKonkubinat(@Nonnull Integer minDauerKonkubinat) {
+		this.minDauerKonkubinat = minDauerKonkubinat;
+	}
+
 	@Transient
 	public boolean hasSecondGesuchsteller(LocalDate referenzdatum) {
 		if (this.familienstatus != null) {
 			switch (this.familienstatus) {
 			case ALLEINERZIEHEND:
-				return false;
+				if (!this.isFkjvFamSit()) {
+					return false;
+				}
+			case PFLEGEFAMILIE:
+				return this.gesuchstellerKardinalitaet != null && this.gesuchstellerKardinalitaet.equals(
+					EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
 			case VERHEIRATET:
 			case KONKUBINAT:
 				return true;
 			case KONKUBINAT_KEIN_KIND:
 				// a konkubinat is considered to be "long" and therefore requires a 2nd Gesuchsteller
-				// when it started 5 years before the given date. Since the rule applies one month after
+				// when it started x years before the given date. Since the rule applies one month after
 				// this five years (as it is with all other rules) we need to substract one month too.
 				return this.startKonkubinat == null ||
 					!this.startKonkubinat.isAfter(referenzdatum
-						.minus(5, ChronoUnit.YEARS)
+						.minus(this.getMinDauerKonkubinat(), ChronoUnit.YEARS)
 						.minus(1, ChronoUnit.MONTHS));
 			}
 		}
@@ -276,10 +323,15 @@ public class Familiensituation extends AbstractMutableEntity {
 	}
 
 	@Nonnull
-	public Familiensituation copyFamiliensituation(@Nonnull Familiensituation target, @Nonnull AntragCopyType copyType) {
+	public Familiensituation copyFamiliensituation(
+		@Nonnull Familiensituation target,
+		@Nonnull AntragCopyType copyType) {
 		super.copyAbstractEntity(target, copyType);
 		target.setFamilienstatus(this.getFamilienstatus());
 		target.setStartKonkubinat(this.getStartKonkubinat());
+		target.setGesuchstellerKardinalitaet(this.getGesuchstellerKardinalitaet());
+		target.setFkjvFamSit(this.fkjvFamSit);
+		target.setMinDauerKonkubinat(this.minDauerKonkubinat);
 		switch (copyType) {
 		case MUTATION:
 			target.setAenderungPer(this.getAenderungPer());
@@ -288,7 +340,8 @@ public class Familiensituation extends AbstractMutableEntity {
 			target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
 			target.setKeineMahlzeitenverguenstigungBeantragt(this.isKeineMahlzeitenverguenstigungBeantragt());
 			if (this.getAuszahlungsdatenMahlzeiten() != null) {
-				target.setAuszahlungsdatenMahlzeiten(this.getAuszahlungsdatenMahlzeiten().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
+				target.setAuszahlungsdatenMahlzeiten(this.getAuszahlungsdatenMahlzeiten()
+					.copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
 			target.setAbweichendeZahlungsadresseMahlzeiten(this.isAbweichendeZahlungsadresseMahlzeiten());
 			if (this.getAuszahlungsdatenInfoma() != null) {
@@ -305,7 +358,8 @@ public class Familiensituation extends AbstractMutableEntity {
 			target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
 			target.setKeineMahlzeitenverguenstigungBeantragt(this.isKeineMahlzeitenverguenstigungBeantragt());
 			if (this.getAuszahlungsdatenMahlzeiten() != null) {
-				target.setAuszahlungsdatenMahlzeiten(this.getAuszahlungsdatenMahlzeiten().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
+				target.setAuszahlungsdatenMahlzeiten(this.getAuszahlungsdatenMahlzeiten()
+					.copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
 			target.setAbweichendeZahlungsadresseMahlzeiten(this.isAbweichendeZahlungsadresseMahlzeiten());
 			break;
@@ -337,9 +391,12 @@ public class Familiensituation extends AbstractMutableEntity {
 		final Familiensituation otherFamiliensituation = (Familiensituation) other;
 		return Objects.equals(getAenderungPer(), otherFamiliensituation.getAenderungPer()) &&
 			getFamilienstatus() == otherFamiliensituation.getFamilienstatus() &&
-			EbeguUtil.isSameOrNullBoolean(getGemeinsameSteuererklaerung(), otherFamiliensituation.getGemeinsameSteuererklaerung()) &&
+			EbeguUtil.isSameOrNullBoolean(
+				getGemeinsameSteuererklaerung(),
+				otherFamiliensituation.getGemeinsameSteuererklaerung()) &&
 			Objects.equals(getSozialhilfeBezueger(), otherFamiliensituation.getSozialhilfeBezueger()) &&
 			Objects.equals(getVerguenstigungGewuenscht(), otherFamiliensituation.getVerguenstigungGewuenscht()) &&
-			Objects.equals(getStartKonkubinat(), otherFamiliensituation.getStartKonkubinat());
+			Objects.equals(getStartKonkubinat(), otherFamiliensituation.getStartKonkubinat()) &&
+			Objects.equals(getGesuchstellerKardinalitaet(), otherFamiliensituation.getGesuchstellerKardinalitaet());
 	}
 }

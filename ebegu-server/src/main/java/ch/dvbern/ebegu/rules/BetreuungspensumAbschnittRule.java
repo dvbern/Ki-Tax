@@ -185,6 +185,12 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 			zeitabschnitt.setBetreuungInGemeindeForAsivAndGemeinde(erweiterteBetreuung.getBetreuungInGemeinde());
 		}
 
+		// Besondere Beduerfnisse Betrag konfigurierbar?
+		if (betreuung.hasErweiterteBeduerfnisseBetrag()) {
+			BigDecimal erweitereteBeduerfnisseBetrag = betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getErweitereteBeduerfnisseBetrag();
+			zeitabschnitt.setBesondereBeduerfnisseBetragForAsivAndGemeinde(erweitereteBeduerfnisseBetrag);
+		}
+
 		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
 		if (besondereBeduerfnisseBestaetigt) {
 			zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(

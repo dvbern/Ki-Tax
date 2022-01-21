@@ -28,6 +28,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.dto.VerfuegungsBemerkungDTO;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -55,11 +57,11 @@ public class VerfuegungZeitabschnittBemerkung extends AbstractDateRangedEntity {
 	public VerfuegungZeitabschnittBemerkung() {
 	}
 
-	public VerfuegungZeitabschnittBemerkung(@Nonnull String bemerkung, VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		this.bemerkung = bemerkung;
+	public VerfuegungZeitabschnittBemerkung(@Nonnull VerfuegungsBemerkungDTO bemerkung, VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+		this.bemerkung = bemerkung.getTranslated();
 		this.verfuegungZeitabschnitt = verfuegungZeitabschnitt;
-		//Im Moment entspricht die Gültigkeit der Bemerkung immer der Gültigkeit des Zeitabschnittes. Dies wird später (KIBON-2095) geändert
-		this.setGueltigkeit(verfuegungZeitabschnitt.getGueltigkeit());
+		DateRange gueltig = bemerkung.getGueltigkeit() != null ? bemerkung.getGueltigkeit() : verfuegungZeitabschnitt.getGueltigkeit();
+		this.setGueltigkeit(gueltig);
 	}
 
 	@SuppressWarnings({ "OverlyComplexBooleanExpression", "OverlyComplexMethod" })

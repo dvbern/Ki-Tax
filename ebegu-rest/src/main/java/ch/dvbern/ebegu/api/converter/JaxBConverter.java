@@ -799,7 +799,9 @@ public class JaxBConverter extends AbstractConverter {
 		familiensituation.setStartKonkubinat(familiensituationJAXP.getStartKonkubinat());
 		familiensituation.setSozialhilfeBezueger(familiensituationJAXP.getSozialhilfeBezueger());
 		familiensituation.setVerguenstigungGewuenscht(familiensituationJAXP.getVerguenstigungGewuenscht());
-
+		familiensituation.setGesuchstellerKardinalitaet(familiensituationJAXP.getGesuchstellerKardinalitaet());
+		familiensituation.setFkjvFamSit(familiensituationJAXP.isFkjvFamSit());
+		familiensituation.setMinDauerKonkubinat(familiensituationJAXP.getMinDauerKonkubinat());
 		return familiensituation;
 	}
 
@@ -834,6 +836,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setInfomaKreditorennummer(persistedFamiliensituation.getInfomaKreditorennummer());
 		jaxFamiliensituation.setInfomaBankcode(persistedFamiliensituation.getInfomaBankcode());
 		jaxFamiliensituation.setAuszahlungAnEltern(persistedFamiliensituation.isAuszahlungAnEltern());
+		jaxFamiliensituation.setGesuchstellerKardinalitaet(persistedFamiliensituation.getGesuchstellerKardinalitaet());
+		jaxFamiliensituation.setFkjvFamSit(persistedFamiliensituation.isFkjvFamSit());
+		jaxFamiliensituation.setMinDauerKonkubinat(persistedFamiliensituation.getMinDauerKonkubinat());
 		return jaxFamiliensituation;
 	}
 
@@ -3160,6 +3165,7 @@ public class JaxBConverter extends AbstractConverter {
 		erweiterteBetreuung.setKeineKesbPlatzierung(erweiterteBetreuungJAXP.getKeineKesbPlatzierung());
 		erweiterteBetreuung.setKitaPlusZuschlag(erweiterteBetreuungJAXP.getKitaPlusZuschlag());
 		erweiterteBetreuung.setBetreuungInGemeinde(erweiterteBetreuungJAXP.getBetreuungInGemeinde());
+		erweiterteBetreuung.setErweitereteBeduerfnisseBetrag(erweiterteBetreuungJAXP.getErweitereteBeduerfnisseBetrag());
 
 		//falls Erweiterte Beduerfnisse true ist, muss eine Fachstelle gesetzt sein
 		if (Boolean.TRUE.equals(erweiterteBetreuung.getErweiterteBeduerfnisse())) {
@@ -3199,6 +3205,7 @@ public class JaxBConverter extends AbstractConverter {
 		belegungTagesschule.setAbholungTagesschule(belegungTagesschuleJAXP.getAbholungTagesschule());
 		belegungTagesschule.setPlanKlasse(belegungTagesschuleJAXP.getPlanKlasse());
 		belegungTagesschule.setAbweichungZweitesSemester(belegungTagesschuleJAXP.isAbweichungZweitesSemester());
+		belegungTagesschule.setKeineKesbPlatzierung(belegungTagesschuleJAXP.isKeineKesbPlatzierung());
 		belegungTagesschule.setBemerkung(belegungTagesschuleJAXP.getBemerkung());
 		return belegungTagesschule;
 	}
@@ -3649,6 +3656,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBelegungTagesschule.setAbholungTagesschule(belegungFromServer.getAbholungTagesschule());
 		jaxBelegungTagesschule.setPlanKlasse(belegungFromServer.getPlanKlasse());
 		jaxBelegungTagesschule.setAbweichungZweitesSemester(belegungFromServer.isAbweichungZweitesSemester());
+		jaxBelegungTagesschule.setKeineKesbPlatzierung(belegungFromServer.isKeineKesbPlatzierung());
 		jaxBelegungTagesschule.setBemerkung(belegungFromServer.getBemerkung());
 
 		return jaxBelegungTagesschule;
@@ -4022,6 +4030,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxErweiterteBetreuung.setKeineKesbPlatzierung(erweiterteBetreuung.getKeineKesbPlatzierung());
 		jaxErweiterteBetreuung.setKitaPlusZuschlag(erweiterteBetreuung.getKitaPlusZuschlag());
 		jaxErweiterteBetreuung.setBetreuungInGemeinde(erweiterteBetreuung.getBetreuungInGemeinde());
+		jaxErweiterteBetreuung.setErweitereteBeduerfnisseBetrag(erweiterteBetreuung.getErweitereteBeduerfnisseBetrag());
 
 		if (erweiterteBetreuung.getFachstelle() != null) {
 			jaxErweiterteBetreuung.setFachstelle(fachstelleToJAX(erweiterteBetreuung.getFachstelle()));

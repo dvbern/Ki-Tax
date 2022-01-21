@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
@@ -44,6 +46,9 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 
 	@Nullable
 	private Boolean kitaPlusZuschlag;
+
+	@Nullable
+	private BigDecimal erweitereteBeduerfnisseBetrag;
 
 	@Nullable
 	public Boolean getBetreuungInGemeinde() {
@@ -95,5 +100,14 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 
 	public void setKitaPlusZuschlag(@Nullable Boolean kitaPlusZuschlag) {
 		this.kitaPlusZuschlag = kitaPlusZuschlag;
+	}
+
+	@Nullable
+	public BigDecimal getErweitereteBeduerfnisseBetrag() {
+		return erweitereteBeduerfnisseBetrag;
+	}
+
+	public void setErweitereteBeduerfnisseBetrag(@Nullable BigDecimal erweitereteBeduerfnisseBetrag) {
+		this.erweitereteBeduerfnisseBetrag = erweitereteBeduerfnisseBetrag;
 	}
 }
