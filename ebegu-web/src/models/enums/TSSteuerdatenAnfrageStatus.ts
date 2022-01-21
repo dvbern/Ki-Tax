@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,8 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-div.inner-option {
-    margin-bottom: 1rem;
-    margin-left: 4rem;
-    margin-top: 2rem;
+export enum TSSteuerdatenAnfrageStatus {
+    OFFEN = 'OFFEN',
+    PROVISORISCH = 'PROVISORISCH',
+    RECHTSKRAEFTIG = 'RECHTSKRAEFTIG',
+    FAILED = 'FAILED',
 }

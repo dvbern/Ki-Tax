@@ -396,12 +396,13 @@ public class FinanzielleSituationResource {
 	@ApiOperation(value = "Setzt die schon beantworte Fragen im Backend und update die FinSitDaten gemaess die Anruf Ergebniss",
 		response = SteuerdatenResponse.class)
 	@Nullable
-	@POST
+	@PUT
 	@Path("/kibonanfrage/{kibonAnfrageId}/{gesuchstellerId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed(SUPER_ADMIN)
-	public JaxFinanzielleSituationContainer getSteuerdatenBeiAntragId(
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS,
+		SACHBEARBEITER_BG, GESUCHSTELLER })
+	public JaxFinanzielleSituationContainer updateFinSitMitSteuerdaten(
 		@Nonnull @NotNull @PathParam("kibonAnfrageId") JaxId kibonAnfrageId,
 		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId jaxGesuchstellerId,
 		@Nonnull @NotNull @Valid JaxFinanzielleSituationContainer jaxFinanzielleSituationContainer,

@@ -34,6 +34,18 @@
             <form role="form" name="vm.form" class="" unsaved-warning-form="" novalidate>
                 <fieldset ng-disabled="vm.isGesuchReadonly()">
 
+                    <div ng-if="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus === 'FAILED'"
+                         class="well well-status-warten minus-margin">
+                        <p class="ebegu-h3"
+                           data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED"></p>
+                    </div>
+
+                    <div ng-if="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus !== 'FAILED'"
+                         class="well well-status-bestaetigt minus-margin">
+                        <p class="ebegu-h3"
+                           data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH"></p>
+                    </div>
+
                     <!--Steuerveranlagung -->
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question" ng-if="vm.showSteuerveranlagung()">
@@ -104,7 +116,7 @@
                                                     dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
                                                     aria-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF' |translate}}"
                                                     aria-described-by="steuerdatenzugriff-error"
-                                                    ng-change="vm.showFormular()">
+                                                    ng-change="vm.steuerdatenzugriffClicked()">
                                 </dv-radio-container>
                                 <dv-error-messages input-id="steuerdatenzugriff"
                                                    for="vm.form.steuerdatenzugriff.$error"

@@ -129,4 +129,18 @@ export class FinanzielleSituationRS {
                 map((einstellung: TSEinstellung) => this.ebeguRestUtil.parseFinanzielleSituationTyp(einstellung.value)),
             );
     }
+
+    public updateFinSitMitSteuerdaten(
+            gesuchId: string,
+            gesuchsteller: TSGesuchstellerContainer,
+    ): IPromise<TSFinanzielleSituationContainer> {
+            const url = `${this.serviceURL}/kibonanfrage/${encodeURIComponent(gesuchId)}/${encodeURIComponent(
+                gesuchsteller.id)}`;
+            const finSitContainerToSend = this.ebeguRestUtil.finanzielleSituationContainerToRestObject({},
+                gesuchsteller.finanzielleSituationContainer);
+            return this.$http.put(url, finSitContainerToSend).then(response => {
+                    return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
+                        response.data);
+            });
+        }
 }

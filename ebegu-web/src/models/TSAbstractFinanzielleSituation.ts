@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSSteuerdatenAnfrageStatus} from './enums/TSSteuerdatenAnfrageStatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
@@ -29,6 +30,7 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
     private _abzuegeLiegenschaft: number;
     private _geschaeftsverlust: number;
     private _einkaeufeVorsorge: number;
+    private _steuerdatenAbfrageStatus: TSSteuerdatenAnfrageStatus;
 
     public constructor() {
         super();
@@ -137,4 +139,11 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
         this._einkaeufeVorsorge = value;
     }
 
+    public get steuerdatenAbfrageStatus(): TSSteuerdatenAnfrageStatus {
+        return this._steuerdatenAbfrageStatus;
+    }
+
+    public set steuerdatenAbfrageStatus(value: TSSteuerdatenAnfrageStatus) {
+        this._steuerdatenAbfrageStatus = value;
+    }
 }

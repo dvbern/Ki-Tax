@@ -20,6 +20,7 @@ import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFi
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSRole} from '../../../../../models/enums/TSRole';
+import {TSSteuerdatenAnfrageStatus} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
@@ -227,15 +228,31 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
 
     public steuererklaerungClicked(): void {
         this.showFormular();
+    }
+
+    public steuerdatenzugriffClicked(): void {
         if (this.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt) {
-            return;
+            this.callKiBonAnfrageAndUpdateFinSit();
+        } else {
+            this.showFormular();
         }
     }
 
+    private callKiBonAnfrageAndUpdateFinSit(): void {
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit().then(() => {
+                this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+                this.showFormular();
+            },
+        );
+    }
+
     public showFormular(): void {
-        if (this.steuerSchnittstelleAktiv && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)
+        if (this.steuerSchnittstelleAktiv
             && this.gesuchModelManager.getGesuch().isOnlineGesuch()
             && this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuererklaerungAusgefuellt
+            && (EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff) ||
+                this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus === TSSteuerdatenAnfrageStatus.FAILED)
         ) {
             this.showForm = false;
             return;

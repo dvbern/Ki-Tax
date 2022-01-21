@@ -1945,6 +1945,7 @@ export class EbeguRestUtil {
             abstractFinanzielleSituationTS.abzuegeLiegenschaft =
                 abstractFinanzielleSituationFromServer.abzuegeLiegenschaft;
             abstractFinanzielleSituationTS.einkaeufeVorsorge = abstractFinanzielleSituationFromServer.einkaeufeVorsorge;
+            abstractFinanzielleSituationTS.steuerdatenAbfrageStatus = abstractFinanzielleSituationFromServer.steuerdatenAbfrageStatus;
             return abstractFinanzielleSituationTS;
         }
         return undefined;

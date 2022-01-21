@@ -544,6 +544,16 @@ export class GesuchModelManager {
             });
     }
 
+    public callKiBonAnfrageAndUpdateFinSit(): IPromise<TSFinanzielleSituationContainer> {
+        return this.finanzielleSituationRS.updateFinSitMitSteuerdaten(
+            this.gesuch.id,
+            this.getStammdatenToWorkWith())
+            .then((finSitContRespo: TSFinanzielleSituationContainer) => {
+                this.getStammdatenToWorkWith().finanzielleSituationContainer = finSitContRespo;
+                return this.getStammdatenToWorkWith().finanzielleSituationContainer;
+            });
+    }
+
     public saveEinkommensverschlechterungContainer(): IPromise<TSEinkommensverschlechterungContainer> {
         return this.einkommensverschlechterungContainerRS.saveEinkommensverschlechterungContainer(
             this.getStammdatenToWorkWith().einkommensverschlechterungContainer,
