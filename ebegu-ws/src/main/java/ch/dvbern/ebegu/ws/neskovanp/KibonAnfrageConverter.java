@@ -46,10 +46,10 @@ public class KibonAnfrageConverter {
 		if (steuerdatenResponseType.getNettoertraegeAusEGMEPartner() != null) {
 			steuerdatenResponse.setNettoertraegeAusEgmePartner(new BigDecimal(steuerdatenResponseType.getNettoertraegeAusEGMEPartner()));
 		}
-		if (steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitDossiertraeger() != null) {
+		if (steuerdatenResponseType.getErwerbseinkommenUnselbstaendigkeitDossiertraeger() != null) {
 			steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitDossiertraeger(new BigDecimal(steuerdatenResponseType.getErwerbseinkommenUnselbstaendigkeitDossiertraeger()));
 		}
-		if (steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitPartner() != null) {
+		if (steuerdatenResponseType.getErwerbseinkommenUnselbstaendigkeitPartner() != null) {
 			steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitPartner(new BigDecimal(steuerdatenResponseType.getErwerbseinkommenUnselbstaendigkeitPartner()));
 		}
 		if (steuerdatenResponseType.getSteuerpflichtigesErsatzeinkommenDossiertraeger() != null) {
