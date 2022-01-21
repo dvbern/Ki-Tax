@@ -26,6 +26,8 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -402,6 +404,7 @@ public class FinanzielleSituationResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS,
 		SACHBEARBEITER_BG, GESUCHSTELLER })
+	@TransactionAttribute(TransactionAttributeType.NEVER)
 	public JaxFinanzielleSituationContainer updateFinSitMitSteuerdaten(
 		@Nonnull @NotNull @PathParam("kibonAnfrageId") JaxId kibonAnfrageId,
 		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId jaxGesuchstellerId,
@@ -456,15 +459,12 @@ public class FinanzielleSituationResource {
 					gesuchsteller.getGesuchstellerJA().getGeburtsdatum(),
 					kibonAnfrageId.getId(),
 					gesuch.getGesuchsperiode().getBasisJahr());
-				// lesen die Ergebniss und FinSit entsprechend updaten
-				// schauen wo man das Total ablegen kann, nur relevant bei gemeinsamenStek oder?
-				// was passiert wenn nicht gemeinsam aber als gemeinsam in Steuerschnittstelle
+				updateFinSitSteuerdatenAbfrageStatusOk(convertedFinSitCont, finSitGS2, steuerdatenResponse);
 			}
 			catch (Exception e) {
 				updateFinSitSteuerdatenAbfrageStatusFailed(convertedFinSitCont, finSitGS2);
 			}
 		}
-
 		//und zusendlich speichern und zuruckgeben
 		FinanzielleSituationContainer persistedFinSit =
 			this.finanzielleSituationService.saveFinanzielleSituationTemp(convertedFinSitCont);
@@ -481,6 +481,35 @@ public class FinanzielleSituationResource {
 				finSitGS2.setFinanzielleSituationJA(new FinanzielleSituation());
 			}
 			finSitGS2.getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(SteuerdatenAnfrageStatus.FAILED);
+		}
+	}
+
+	private void updateFinSitSteuerdatenAbfrageStatusOk (@Nonnull FinanzielleSituationContainer finSitGS1, @Nullable FinanzielleSituationContainer finSitGS2, @Nonnull SteuerdatenResponse steuerdatenResponse) {
+		if (steuerdatenResponse.getVeranlagungsstand() != null) {
+			finSitGS1.getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(SteuerdatenAnfrageStatus.valueOf(steuerdatenResponse.getVeranlagungsstand().name()));
+			if (finSitGS2 != null) {
+				if (finSitGS2.getFinanzielleSituationJA() == null) {
+					finSitGS2.setFinanzielleSituationJA(new FinanzielleSituation());
+				}
+				finSitGS2.getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(SteuerdatenAnfrageStatus.valueOf(steuerdatenResponse.getVeranlagungsstand().name()));
+			}
+		}
+		finSitGS1.getFinanzielleSituationJA().setNettolohn(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitDossiertraeger());
+		finSitGS1.getFinanzielleSituationJA().setSteuerbaresEinkommen(steuerdatenResponse.getWeitereSteuerbareEinkuenfteDossiertraeger());
+		finSitGS1.getFinanzielleSituationJA().setErsatzeinkommen(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenDossiertraeger());
+		finSitGS1.getFinanzielleSituationJA().setErhalteneAlimente(steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger());
+		finSitGS1.getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger());
+		finSitGS1.getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger());
+		finSitGS1.getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger());
+
+		if (finSitGS2 != null) {
+			finSitGS2.getFinanzielleSituationJA().setNettolohn(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitPartner());
+			finSitGS2.getFinanzielleSituationJA().setSteuerbaresEinkommen(steuerdatenResponse.getWeitereSteuerbareEinkuenftePartner());
+			finSitGS2.getFinanzielleSituationJA().setErsatzeinkommen(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenPartner());
+			finSitGS2.getFinanzielleSituationJA().setErhalteneAlimente(steuerdatenResponse.getErhalteneUnterhaltsbeitraegePartner());
+			finSitGS2.getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner());
+			finSitGS2.getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodePartner());
+			finSitGS2.getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner());
 		}
 	}
 }

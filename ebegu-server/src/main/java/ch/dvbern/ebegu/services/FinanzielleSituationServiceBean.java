@@ -263,7 +263,6 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 
 	@Nonnull
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public FinanzielleSituationContainer saveFinanzielleSituationTemp(FinanzielleSituationContainer finanzielleSituation) {
 		authorizer.checkWriteAuthorization(finanzielleSituation);
 

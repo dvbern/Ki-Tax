@@ -231,7 +231,7 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
     }
 
     public steuerdatenzugriffClicked(): void {
-        if (this.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt) {
+        if (this.getModel().finanzielleSituationJA.steuerdatenZugriff) {
             this.callKiBonAnfrageAndUpdateFinSit();
         } else {
             this.showFormular();
