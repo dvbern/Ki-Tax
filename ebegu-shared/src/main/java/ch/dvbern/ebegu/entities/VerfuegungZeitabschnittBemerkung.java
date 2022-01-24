@@ -57,8 +57,11 @@ public class VerfuegungZeitabschnittBemerkung extends AbstractDateRangedEntity {
 	public VerfuegungZeitabschnittBemerkung() {
 	}
 
-	public VerfuegungZeitabschnittBemerkung(@Nonnull VerfuegungsBemerkungDTO bemerkung, VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		this.bemerkung = bemerkung.getTranslated();
+	public VerfuegungZeitabschnittBemerkung(
+			@Nonnull VerfuegungsBemerkungDTO bemerkung,
+			VerfuegungZeitabschnitt verfuegungZeitabschnitt,
+			Mandant mandant) {
+		this.bemerkung = bemerkung.getTranslated(mandant);
 		this.verfuegungZeitabschnitt = verfuegungZeitabschnitt;
 		DateRange gueltig = bemerkung.getGueltigkeit() != null ? bemerkung.getGueltigkeit() : verfuegungZeitabschnitt.getGueltigkeit();
 		this.setGueltigkeit(gueltig);

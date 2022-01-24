@@ -307,7 +307,8 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		intro.add(new TableRowLabelValue(ANGEBOT, translateEnumValue(betreuung.getBetreuungsangebotTyp())));
 		intro.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, institutionName));
 		intro.add(new TableRowLabelValue(GEMEINDE, gemeinde));
-		return PdfUtil.createIntroTable(intro, sprache);
+		return PdfUtil.createIntroTable(intro, sprache,
+				Objects.requireNonNull(getGemeindeStammdaten().getGemeinde().getMandant()));
 	}
 
 	@Nonnull
