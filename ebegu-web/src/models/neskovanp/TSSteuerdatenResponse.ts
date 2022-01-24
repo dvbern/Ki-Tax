@@ -312,11 +312,11 @@ export class TSSteuerdatenResponse {
     }
 
     public get bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme(): number {
-        return this.bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme;
+        return this._bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme;
     }
 
     public set bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme(value: number) {
-        this.bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme = value;
+        this._bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme = value;
     }
 
     public get bruttoertraegeAusLiegenschaften(): number {

@@ -5725,10 +5725,10 @@ export class EbeguRestUtil {
             steuerdatenResponseFromServer.weitereSteuerbareEinkuenfteDossiertraeger;
         tsSteuerdatenResponse.weitereSteuerbareEinkuenftePartner =
             steuerdatenResponseFromServer.weitereSteuerbareEinkuenftePartner;
-        tsSteuerdatenResponse.bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme =
-            steuerdatenResponseFromServer.bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme;
         tsSteuerdatenResponse.bruttoertraegeAusLiegenschaften =
             steuerdatenResponseFromServer.bruttoertraegeAusLiegenschaften;
+        tsSteuerdatenResponse.bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme =
+            steuerdatenResponseFromServer.bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme;
         tsSteuerdatenResponse.nettoertraegeAusEgmeDossiertraeger =
             steuerdatenResponseFromServer.nettoertraegeAusEgmeDossiertraeger;
         tsSteuerdatenResponse.nettoertraegeAusEgmePartner = steuerdatenResponseFromServer.nettoertraegeAusEgmePartner;
