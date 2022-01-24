@@ -391,14 +391,14 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		introBasisjahr.add(new TableRowLabelValue(
 			BASISJAHR,
 			String.valueOf(gesuch.getGesuchsperiode().getBasisJahr())));
-		return PdfUtil.createIntroTable(introBasisjahr, sprache);
+		return PdfUtil.createIntroTable(introBasisjahr, sprache, requireNonNull(gesuch.getFall().getMandant()));
 	}
 
 	@Nonnull
 	private PdfPTable createIntroEkv() {
 		List<TableRowLabelValue> introEkv1 = new ArrayList<>();
 		introEkv1.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
-		return PdfUtil.createIntroTable(introEkv1, sprache);
+		return PdfUtil.createIntroTable(introEkv1, sprache, requireNonNull(gesuch.getFall().getMandant()));
 	}
 
 	@Nonnull
@@ -406,7 +406,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		List<TableRowLabelValue> introMassgEinkommen = new ArrayList<>();
 		introMassgEinkommen.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
 		introMassgEinkommen.add(new TableRowLabelValue(NAME, String.valueOf(gesuch.extractFullnamesString())));
-		return PdfUtil.createIntroTable(introMassgEinkommen, sprache);
+		return PdfUtil.createIntroTable(introMassgEinkommen, sprache, requireNonNull(gesuch.getFall().getMandant()));
 	}
 
 	@Nonnull
@@ -420,23 +420,23 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		BigDecimal totalEinkommenBeiderGS = finanzielleSituationRechner.calcTotalEinkommen(gs1, gs2);
 
 		FinanzielleSituationRow einkommenTitle = new FinanzielleSituationRow(
-			translate(EIKOMMEN_TITLE), gesuch.getGesuchsteller1().extractFullName());
+			translate(EIKOMMEN_TITLE, requireNonNull(gesuch.getFall().getMandant())), gesuch.getGesuchsteller1().extractFullName());
 		einkommenTitle.setSupertext("1");
 
-		FinanzielleSituationRow nettolohn = createRow(translate(NETTOLOHN),
+		FinanzielleSituationRow nettolohn = createRow(translate(NETTOLOHN, requireNonNull(gesuch.getFall().getMandant())),
 			AbstractFinanzielleSituation::getNettolohn, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
 
-		FinanzielleSituationRow familienzulagen = createRow(translate(FAMILIENZULAGEN),
+		FinanzielleSituationRow familienzulagen = createRow(translate(FAMILIENZULAGEN, requireNonNull(gesuch.getFall().getMandant())),
 			AbstractFinanzielleSituation::getFamilienzulage, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
 
-		FinanzielleSituationRow ersatzeinkommen = createRow(translate(ERSATZEINKOMMEN),
+		FinanzielleSituationRow ersatzeinkommen = createRow(translate(ERSATZEINKOMMEN, requireNonNull(gesuch.getFall().getMandant())),
 			AbstractFinanzielleSituation::getErsatzeinkommen, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
 
-		FinanzielleSituationRow unterhaltsbeitraege = createRow(translate(ERH_UNTERHALTSBEITRAEGE),
+		FinanzielleSituationRow unterhaltsbeitraege = createRow(translate(ERH_UNTERHALTSBEITRAEGE, requireNonNull(gesuch.getFall().getMandant())),
 			AbstractFinanzielleSituation::getErhalteneAlimente, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
 
 		FinanzielleSituationRow geschaftsgewinn = createRow(
-			translate(GESCHAEFTSGEWINN),
+			translate(GESCHAEFTSGEWINN, requireNonNull(gesuch.getFall().getMandant())),
 			AbstractFinanzielleSituation::getDurchschnittlicherGeschaeftsgewinn,
 			gs1,
 			gs2,
@@ -444,9 +444,9 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			gs2Urspruenglich);
 
 		FinanzielleSituationRow zwischentotal = new FinanzielleSituationRow(
-			translate(EINKOMMEN_ZWISCHENTOTAL), gs1.getZwischentotalEinkommen());
+			translate(EINKOMMEN_ZWISCHENTOTAL, requireNonNull(gesuch.getFall().getMandant())), gs1.getZwischentotalEinkommen());
 		FinanzielleSituationRow total = new FinanzielleSituationRow(
-			translate(EINKOMMEN_TOTAL), "");
+			translate(EINKOMMEN_TOTAL, requireNonNull(gesuch.getFall().getMandant())), "");
 
 		if (gs2 != null) {
 			requireNonNull(gesuch.getGesuchsteller2());
@@ -490,10 +490,10 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		FinanzielleSituationRow row = new FinanzielleSituationRow(message, gs1BigDecimal);
 		row.setGs2(gs2BigDecimal);
 		if (!MathUtil.isSameWithNullAsZero(gs1BigDecimal, gs1UrspruenglichBigDecimal)) {
-			row.setGs1Urspruenglich(gs1UrspruenglichBigDecimal, sprache);
+			row.setGs1Urspruenglich(gs1UrspruenglichBigDecimal, sprache, requireNonNull(gesuch.getFall().getMandant()));
 		}
 		if (!MathUtil.isSameWithNullAsZero(gs2BigDecimal, gs2UrspruenglichBigDecimal)) {
-			row.setGs2Urspruenglich(gs2UrspruenglichBigDecimal, sprache);
+			row.setGs2Urspruenglich(gs2UrspruenglichBigDecimal, sprache, requireNonNull(gesuch.getFall().getMandant()));
 		}
 		return row;
 	}

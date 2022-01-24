@@ -285,7 +285,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 		final String fileNameForGeneratedDokumentTyp = DokumenteUtil.getFileNameForGeneratedDokumentTyp(
 			GeneratedDokumentTyp.FINANZIELLE_SITUATION, gesuch.getJahrFallAndGemeindenummer(),
-			sprache.getLocale()
+			sprache.getLocale(), gesuch.extractMandant()
 		);
 
 		WriteProtectedDokument documentIfExistsAndIsWriteProtected =
@@ -333,7 +333,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 		final String fileNameForGeneratedDokumentTyp = DokumenteUtil.getFileNameForGeneratedDokumentTyp(
 			GeneratedDokumentTyp.BEGLEITSCHREIBEN, gesuch.getJahrFallAndGemeindenummer(),
-			sprache.getLocale()
+			sprache.getLocale(), gesuch.extractMandant()
 		);
 
 		// Das Begleitschreiben wird per Definition immer erst nach dem Verfügen erstellt, da die Verfügungen bzw.
@@ -436,7 +436,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		throws MergeDocException {
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
 		final String filename =
-			DokumenteUtil.getFileNameForGeneratedDokumentTyp(dokumentTyp, identification, sprache.getLocale());
+			DokumenteUtil.getFileNameForGeneratedDokumentTyp(dokumentTyp, identification, sprache.getLocale(), gesuch.extractMandant());
 		WriteProtectedDokument dokument = getDocumentIfExistsAndIsWriteProtected(gesuch.getId(), filename, false);
 		if (dokument != null) {
 			Path filePath = Paths.get(dokument.getFilepfad());
@@ -460,7 +460,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 		final String fileNameForGeneratedDokumentTyp = DokumenteUtil.getFileNameForGeneratedDokumentTyp(
 			GeneratedDokumentTyp.FREIGABEQUITTUNG, gesuch.getJahrFallAndGemeindenummer(),
-			sprache.getLocale()
+			sprache.getLocale(), gesuch.extractMandant()
 		);
 
 		WriteProtectedDokument documentIfExistsAndIsWriteProtected =
@@ -655,7 +655,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
 		String bgNummer = betreuung.getBGNummer();
 		String fileNameForGeneratedDokumentTyp = DokumenteUtil
-			.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.VERFUEGUNG, bgNummer, sprache.getLocale());
+			.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.VERFUEGUNG, bgNummer, sprache.getLocale(), gesuch.extractMandant());
 
 		WriteProtectedDokument documentIfExistsAndIsWriteProtected =
 			getDocumentIfExistsAndIsWriteProtected(gesuch.getId(), fileNameForGeneratedDokumentTyp, forceCreation);
@@ -704,7 +704,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 				final String fileNameForDocTyp =
 					DokumenteUtil.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.VERFUEGUNG,
-						matchedBetreuung.getBGNummer(), sprache.getLocale());
+						matchedBetreuung.getBGNummer(), sprache.getLocale(), gesuch.extractMandant());
 
 				// Wenn die Betreuung im Zustand Verfügt ist, soll das Dokument als schreibgeschützt gespeichert
 				// werden.
@@ -734,7 +734,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			mahnungDB == null || mahnungDB.getTimestampErstellt() == null
 				? "ENTWURF"
 				: Constants.FILENAME_DATE_TIME_FORMATTER.format(mahnungDB.getTimestampErstellt()),
-			sprache.getLocale()
+			sprache.getLocale(), gesuch.extractMandant()
 		);
 
 		// Das Dokument muss solange neu erstellt werden, bis die Mahnung ausgelöst war
@@ -787,7 +787,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
 
 		final String fileNameForGeneratedDokumentTyp = DokumenteUtil
-			.getFileNameForGeneratedDokumentTyp(dokumentTyp, betreuung.getBGNummer(), sprache.getLocale());
+			.getFileNameForGeneratedDokumentTyp(dokumentTyp, betreuung.getBGNummer(), sprache.getLocale(), gesuch.extractMandant());
 
 		WriteProtectedDokument documentIfExistsAndIsWriteProtected =
 			getDocumentIfExistsAndIsWriteProtected(gesuch.getId(), fileNameForGeneratedDokumentTyp, forceCreation);
@@ -851,7 +851,8 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		Sprache korrespondenzsprache = EbeguUtil.extractGemeindeSprachen(stammdaten).get(0);
 
 		final String fileNameForGeneratedDokumentTyp = DokumenteUtil
-			.getFileNameForGeneratedDokumentTyp(dokumentTyp, zahlungsauftrag.getFilename(), korrespondenzsprache.getLocale());
+			.getFileNameForGeneratedDokumentTyp(dokumentTyp, zahlungsauftrag.getFilename(), korrespondenzsprache.getLocale(),
+					Objects.requireNonNull(zahlungsauftrag.getMandant()));
 
 		if (!forceCreation && ZahlungauftragStatus.ENTWURF != zahlungsauftrag.getStatus()) {
 			persistedDokument = getPain001DocumentIfExistsAndIsWriteProtected(
@@ -948,6 +949,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				String zahlungstext = ServerMessageUtil.getMessage(
 					msgKey,
 					locale,
+					Objects.requireNonNull(gemeindeStammdaten.getGemeinde().getMandant()),
 					gemeindeStammdaten.getGemeinde().getName(),
 					zahlung.getEmpfaengerName(),
 					monat);
@@ -1000,7 +1002,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 		final String fileNameForGeneratedDokumentTyp = DokumenteUtil.getFileNameForGeneratedDokumentTyp(
 			GeneratedDokumentTyp.FREIGABEQUITTUNG, gesuch.getJahrFallAndGemeindenummer(),
-			sprache.getLocale()
+			sprache.getLocale(), gesuch.extractMandant()
 		);
 
 		return getMaybeExistingGeneratedDokument(gesuch.getId(), fileNameForGeneratedDokumentTyp);
@@ -1030,12 +1032,12 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		String fileNameForGeneratedDokumentTyp = "";
 		if(mitTarif) {
 			fileNameForGeneratedDokumentTyp = DokumenteUtil
-				.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.ANMELDEBESTAETIGUNGMITTARIF, bgNummer, sprache.getLocale());
+				.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.ANMELDEBESTAETIGUNGMITTARIF, bgNummer, sprache.getLocale(), gesuch.extractMandant());
 		}
 		else {
 			fileNameForGeneratedDokumentTyp = DokumenteUtil
 				.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.ANMELDEBESTAETIGUNGOHNETARIF, bgNummer,
-					sprache.getLocale());
+					sprache.getLocale(), gesuch.extractMandant());
 		}
 
 		// Wir wollen wirklich bei TS Anmeldungen der Dokument erneu erstellen als man es mehrmals verfuegen kann
@@ -1087,7 +1089,10 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 		String fileNameForGeneratedDokumentTyp = DokumenteUtil
 				.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.NOTRECHT_PROVISORISCHE_VERFUEGUNG,
-					rueckforderungFormular.getId(), rueckforderungFormular.getKorrespondenzSprache().getLocale());
+					rueckforderungFormular.getId(), rueckforderungFormular.getKorrespondenzSprache().getLocale(),
+						Objects.requireNonNull(rueckforderungFormular.getInstitutionStammdaten()
+								.getInstitution()
+								.getMandant()));
 
 		WriteProtectedDokument documentIfExistsAndIsWriteProtected =
 			getNotrechtDocumentIfExistsAndIsWriteProtected(rueckforderungFormular.getId(),
@@ -1114,7 +1119,9 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 		String fileNameForGeneratedDokumentTyp = DokumenteUtil
 			.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.NOTRECHT_DEFINITIVE_VERFUEGUNG,
-				rueckforderungFormular.getId(), rueckforderungFormular.getKorrespondenzSprache().getLocale());
+				rueckforderungFormular.getId(), rueckforderungFormular.getKorrespondenzSprache().getLocale(),
+					Objects.requireNonNull(rueckforderungFormular.getInstitutionStammdaten().getInstitution()
+							.getMandant()));
 
 		WriteProtectedDokument documentIfExistsAndIsWriteProtected =
 			getNotrechtDocumentIfExistsAndIsWriteProtected(rueckforderungFormular.getId(),

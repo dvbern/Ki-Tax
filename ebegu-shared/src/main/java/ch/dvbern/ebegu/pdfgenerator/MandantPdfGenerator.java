@@ -26,13 +26,13 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
-import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
@@ -64,7 +64,7 @@ public abstract class MandantPdfGenerator {
 	private PdfGenerator pdfGenerator;
 
 	@SuppressWarnings("PMD.ConstructorCallsOverridableMethod") // Stimmt nicht, die Methode ist final
-	public MandantPdfGenerator(Sprache sprache) {
+	public MandantPdfGenerator(Sprache sprache, Mandant mandant) {
 		byte[] mandantLogo = new byte[0];
 		try {
 			mandantLogo = IOUtils.toByteArray(MandantPdfGenerator.class.getResourceAsStream(
@@ -74,7 +74,7 @@ public abstract class MandantPdfGenerator {
 			LOG.error("KantonBernLogo.png koennte nicht geladen werden: {}", e.getMessage());
 		}
 		initSprache(sprache);
-		initGenerator(mandantLogo);
+		initGenerator(mandantLogo, mandant);
 	}
 
 	private void initSprache(Sprache sprache){
@@ -108,44 +108,44 @@ public abstract class MandantPdfGenerator {
 		getPdfGenerator().generate(outputStream, getDocumentTitle(), getEmpfaengerAdresse(), getCustomGenerator());
 	}
 
-	private void initGenerator(@Nonnull final byte[] mandantLogo) {
-		this.pdfGenerator = PdfGenerator.create(mandantLogo, getAbsenderAdresse(), true);
+	private void initGenerator(@Nonnull final byte[] mandantLogo, Mandant mandant) {
+		this.pdfGenerator = PdfGenerator.create(mandantLogo, getAbsenderAdresse(mandant), true);
 	}
 
 	@Nonnull
-	protected final List<String> getAbsenderAdresse() {
+	protected final List<String> getAbsenderAdresse(Mandant mandant) {
 		List<String> absender = new ArrayList<>();
-		absender.add(getMandantAddressAsString());
-		absender.addAll(getMandantKontaktdaten());
+		absender.add(getMandantAddressAsString(mandant));
+		absender.addAll(getMandantKontaktdaten(mandant));
 		return absender;
 	}
 
 	@Nonnull
-	public String getMandantAddressAsString() {
+	public String getMandantAddressAsString(Mandant mandant) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(translate(DIREKTION));
+		sb.append(translate(DIREKTION, mandant));
 		sb.append(Constants.LINE_BREAK);
-		sb.append(translate(AMT));
+		sb.append(translate(AMT, mandant));
 		sb.append(Constants.LINE_BREAK);
-		sb.append(translate(DIVISION));
+		sb.append(translate(DIVISION, mandant));
 		sb.append(Constants.LINE_BREAK);
 		sb.append(Constants.LINE_BREAK);
 		sb.append("Rathausgasse 1");
 		sb.append(Constants.LINE_BREAK);
-		sb.append(ServerMessageUtil.getMessage(POSTFACH, sprache));
+		sb.append(ServerMessageUtil.getMessage(POSTFACH, sprache, mandant));
 		sb.append(Constants.LINE_BREAK);
-		sb.append(ServerMessageUtil.getMessage(PLZ_ORT, sprache));
+		sb.append(ServerMessageUtil.getMessage(PLZ_ORT, sprache, mandant));
 		sb.append(Constants.LINE_BREAK);
 		return sb.toString();
 	}
 
 	@Nonnull
-	private List<String> getMandantKontaktdaten() {
+	private List<String> getMandantKontaktdaten(Mandant mandant) {
 		String email = "info.fam@be.ch";
 		String telefon = "+41 31 633 78 83";
 		String webseite = "www.be.ch/gsi";
 		return Arrays.asList(
-			translate(ABSENDER_TELEFON, telefon),
+			translate(ABSENDER_TELEFON, mandant, telefon),
 			PdfUtil.printString(email),
 			PdfUtil.printString(webseite),
 			"",
@@ -154,8 +154,8 @@ public abstract class MandantPdfGenerator {
 	}
 
 	@Nonnull
-	protected String translate(String key, Object... args) {
-		return ServerMessageUtil.getMessage(key, sprache, args);
+	protected String translate(String key, Mandant mandant, Object... args) {
+		return ServerMessageUtil.getMessage(key, sprache, mandant, args);
 	}
 
 	protected void createFusszeile(

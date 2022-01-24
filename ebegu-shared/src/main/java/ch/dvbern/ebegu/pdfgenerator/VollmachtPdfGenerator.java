@@ -241,7 +241,7 @@ public class VollmachtPdfGenerator extends BaseGenerator<VollmachtPdfLayoutConfi
 
 	@Nonnull
 	protected String translate(String key, Object... args) {
-		return ServerMessageUtil.getMessage(key, sprache, args);
+		return ServerMessageUtil.getMessage(key, sprache, sozialdienstFall.getSozialdienst().getMandant(), args);
 	}
 
 	protected void createFusszeile(
