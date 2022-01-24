@@ -251,6 +251,7 @@ import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
+import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -1669,9 +1670,11 @@ public class JaxBConverter extends AbstractConverter {
 		Collection<Benutzer> sachbearbeiter = benutzerService.getInstitutionSachbearbeiter(
 			persistedInstStammdaten.getInstitution());
 		jaxInstStammdaten.setAdministratoren(administratoren.stream()
+			.filter(benutzer -> benutzer.getStatus() != BenutzerStatus.GESPERRT)
 			.map(Benutzer::getFullName)
 			.collect(Collectors.joining(", ")));
 		jaxInstStammdaten.setSachbearbeiter(sachbearbeiter.stream()
+			.filter(benutzer -> benutzer.getStatus() != BenutzerStatus.GESPERRT)
 			.map(Benutzer::getFullName)
 			.collect(Collectors.joining(", ")));
 		return jaxInstStammdaten;
