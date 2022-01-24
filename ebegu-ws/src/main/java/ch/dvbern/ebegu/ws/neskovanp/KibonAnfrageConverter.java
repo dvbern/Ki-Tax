@@ -43,9 +43,6 @@ public class KibonAnfrageConverter {
 		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.valueOf(steuerdatenResponseType.getVeranlagungsstand().value()));
 		steuerdatenResponse.setUnterjaehrigerFall(steuerdatenResponseType.isUnterjaehrigerFall());
 
-		if (steuerdatenResponseType.getNettoertraegeAusEGMEPartner() != null) {
-			steuerdatenResponse.setNettoertraegeAusEgmePartner(new BigDecimal(steuerdatenResponseType.getNettoertraegeAusEGMEPartner()));
-		}
 		if (steuerdatenResponseType.getErwerbseinkommenUnselbstaendigkeitDossiertraeger() != null) {
 			steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitDossiertraeger(new BigDecimal(steuerdatenResponseType.getErwerbseinkommenUnselbstaendigkeitDossiertraeger()));
 		}
