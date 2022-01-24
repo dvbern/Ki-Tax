@@ -137,7 +137,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		if (gesuchsperiode.isNew()) {
 			gesuchsperiode = saveGesuchsperiode(gesuchsperiode);
 			LocalDate stichtagInVorperiode = gesuchsperiode.getGueltigkeit().getGueltigAb().minusDays(1);
-			Objects.requireNonNull(gesuchsperiode.getMandant());
 			Optional<Gesuchsperiode> lastGesuchsperiodeOptional = getGesuchsperiodeAm(stichtagInVorperiode, gesuchsperiode.getMandant());
 			if (lastGesuchsperiodeOptional.isPresent()) {
 				Gesuchsperiode lastGesuchsperiode = lastGesuchsperiodeOptional.get();
@@ -191,7 +190,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		// Nur, wenn die Gesuchsperiode noch nie auf aktiv geschaltet war.
 		if (GesuchsperiodeStatus.AKTIV == gesuchsperiode.getStatus()
 			&& gesuchsperiode.getDatumAktiviert() == null) {
-			Objects.requireNonNull(gesuchsperiode.getMandant());
 			Optional<Gesuchsperiode> lastGesuchsperiodeOptional =
 				getGesuchsperiodeAm(gesuchsperiode.getGueltigkeit().getGueltigAb().minusDays(1), gesuchsperiode.getMandant());
 			if (lastGesuchsperiodeOptional.isPresent()) {

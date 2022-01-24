@@ -5260,7 +5260,7 @@ public class JaxBConverter extends AbstractConverter {
 		Objects.requireNonNull(stammdaten.getGemeinde().getMandant());
 		List<Gesuchsperiode> gueltigeGesuchsperiodenForGemeinde = gesuchsperiodeService.getAllGesuchsperioden(stammdaten.getGemeinde().getMandant())
 			.stream()
-			.filter(gesuchsperiode -> gesuchsperiode.getMandant() != null && gesuchsperiode.getMandant().equals(stammdaten.getGemeinde().getMandant()))
+			.filter(gesuchsperiode -> gesuchsperiode.getMandant().equals(stammdaten.getGemeinde().getMandant()))
 			.filter(gesuchsperiode -> stammdaten.getGemeinde()
 				.getGueltigBis()
 				.isAfter(gesuchsperiode.getGueltigkeit().getGueltigAb()))

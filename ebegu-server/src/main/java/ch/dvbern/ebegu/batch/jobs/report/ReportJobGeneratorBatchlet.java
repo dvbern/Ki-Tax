@@ -34,8 +34,11 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.WorkJobConstants;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichSelbstbehaltService;
@@ -47,6 +50,7 @@ import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.ReportTagesschuleService;
 import ch.dvbern.ebegu.reporting.ReportVerrechnungKibonService;
 import ch.dvbern.ebegu.reporting.ReportGemeindenService;
+import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -94,6 +98,9 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 	private JobContext jobCtx;
 
 	@Inject
+	private MandantService mandantService;
+
+	@Inject
 	private JobDataContainer jobDataContainer;
 
 	@Override
@@ -139,28 +146,31 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		@Nonnull Locale locale
 	) throws ExcelMergeException, IOException, MergeDocException, URISyntaxException {
 
+		Mandant mandant = mandantService.findMandant(getParameters().getProperty(WorkJobConstants.REPORT_MANDANT_ID))
+				.orElseThrow(() -> new EbeguEntityNotFoundException("generateReport"));
+
 		switch (workJobType) {
 
 			case VORLAGE_REPORT_GESUCH_STICHTAG_DE:
 			case VORLAGE_REPORT_GESUCH_STICHTAG_FR: {
-				return this.reportService.generateExcelReportGesuchStichtag(dateFrom, gesuchPeriodeId, locale);
+				return this.reportService.generateExcelReportGesuchStichtag(dateFrom, gesuchPeriodeId, locale, mandant);
 			}
 			case VORLAGE_REPORT_GESUCH_ZEITRAUM_DE:
 			case VORLAGE_REPORT_GESUCH_ZEITRAUM_FR: {
-				return this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, gesuchPeriodeId, locale);
+				return this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, gesuchPeriodeId, locale, mandant);
 			}
 			case VORLAGE_REPORT_KANTON: {
 				BigDecimal kantonSelbstbehalt = null;
 				if(getParameters().getProperty(WorkJobConstants.KANTON_SELBSTBEHALT) != null) {
 					kantonSelbstbehalt = MathUtil.DEFAULT.from(getParameters().getProperty(WorkJobConstants.KANTON_SELBSTBEHALT));
 				}
-				return this.reportService.generateExcelReportKanton(dateFrom, dateTo, kantonSelbstbehalt, locale);
+				return this.reportService.generateExcelReportKanton(dateFrom, dateTo, kantonSelbstbehalt, locale, mandant);
 			}
 			case VORLAGE_REPORT_MITARBEITERINNEN: {
-				return this.reportService.generateExcelReportMitarbeiterinnen(dateFrom, dateTo, locale);
+				return this.reportService.generateExcelReportMitarbeiterinnen(dateFrom, dateTo, locale, mandant);
 			}
 			case VORLAGE_REPORT_BENUTZER: {
-				return this.reportService.generateExcelReportBenutzer(locale);
+				return this.reportService.generateExcelReportBenutzer(locale, mandant);
 			}
 			case VORLAGE_REPORT_ZAHLUNG_AUFTRAG: {
 				Objects.requireNonNull(zahlungsauftragId, "Zahlungsauftrag ID must be passed as param");
@@ -171,13 +181,13 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 				return this.reportService.generateExcelReportZahlungPeriode(gesuchPeriodeId, locale);
 			}
 			case VORLAGE_REPORT_GESUCHSTELLER_KINDER_BETREUUNG: {
-				return this.reportService.generateExcelReportGesuchstellerKinderBetreuung(dateFrom, dateTo, gesuchPeriodeId, locale);
+				return this.reportService.generateExcelReportGesuchstellerKinderBetreuung(dateFrom, dateTo, gesuchPeriodeId, locale, mandant);
 			}
 			case VORLAGE_REPORT_KINDER: {
-				return this.reportService.generateExcelReportKinder(dateFrom, dateTo, gesuchPeriodeId, locale);
+				return this.reportService.generateExcelReportKinder(dateFrom, dateTo, gesuchPeriodeId, locale, mandant);
 			}
 			case VORLAGE_REPORT_GESUCHSTELLER: {
-				return this.reportService.generateExcelReportGesuchsteller(dateFrom, locale);
+				return this.reportService.generateExcelReportGesuchsteller(dateFrom, locale, mandant);
 			}
 			case VORLAGE_REPORT_MASSENVERSAND: {
 				Objects.requireNonNull(gesuchPeriodeId);
@@ -189,7 +199,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			case VORLAGE_REPORT_VERRECHNUNG_KIBON: {
 				boolean doSave = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.DO_SAVE));
 				BigDecimal betragProKind = MathUtil.DEFAULT.from(getParameters().getProperty(WorkJobConstants.BETRAG_PRO_KIND));
-				return this.reportVerrechnungKibonService.generateExcelReportVerrechnungKibon(doSave, betragProKind, locale);
+				return this.reportVerrechnungKibonService.generateExcelReportVerrechnungKibon(doSave, betragProKind, locale, mandant);
 			}
 			case VORLAGE_REPORT_LASTENAUSGLEICH_SELBSTBEHALT: {
 				return this.reportLastenausgleichKibonService.generateExcelReportLastenausgleichKibon(dateFrom, locale);
@@ -213,7 +223,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 				return this.reportMahlzeitenService.generateExcelReportMahlzeiten(dateFrom, dateTo, locale, gemeindeId);
 			}
 			case VORLAGE_REPORT_GEMEINDEN: {
-				return this.reportGemeindenService.generateExcelReportGemeinden(locale);
+				return this.reportGemeindenService.generateExcelReportGemeinden(locale, mandant);
 			}
 			case VORLAGE_REPORT_FERIENBETREUUNG: {
 				return this.reportService.generateExcelReportFerienbetreuung(locale);

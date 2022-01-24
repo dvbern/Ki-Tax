@@ -54,6 +54,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBerechtigungHistory;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
+import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableMandantFilterDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -289,7 +290,8 @@ public class BenutzerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(SUPER_ADMIN)
 	public List<JaxBenutzerNoDetails> getGesuchsteller() {
-		return benutzerService.getGesuchsteller().stream()
+		requireNonNull(principalBean.getMandant());
+		return benutzerService.getGesuchsteller(principalBean.getMandant()).stream()
 			.map(converter::benutzerToJaxBenutzerNoDetails)
 			.collect(Collectors.toList());
 	}
@@ -309,7 +311,8 @@ public class BenutzerResource {
 		@Context HttpServletResponse response) {
 
 		return MonitoringUtil.monitor(GesuchResource.class, "searchBenutzer", () -> {
-			Pair<Long, List<Benutzer>> searchResultPair = benutzerService.searchBenutzer(benutzerSearch, false);
+			Pair<Long, List<Benutzer>> searchResultPair = benutzerService.searchBenutzer(new BenutzerTableMandantFilterDTO(benutzerSearch,
+					requireNonNull(principalBean.getMandant())), false);
 			List<Benutzer> foundBenutzer = searchResultPair.getRight();
 
 			List<JaxBenutzer> benutzerDTOList = foundBenutzer.stream()

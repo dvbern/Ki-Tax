@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -73,7 +74,7 @@ public class FachstelleResource {
 			@NotNull @QueryParam("gesuchsperiodeId") String gesuchsperiodeId
 	){
 		Gesuchsperiode gesuchsperiode = findGesuchsperiodeFromIdOrThrow(gesuchsperiodeId);
-		return fachstelleService.getAllFachstellen().stream()
+		return fachstelleService.getAllFachstellen(gesuchsperiode.getMandant()).stream()
 			.filter(Fachstelle::isFachstelleAnspruch)
 			.filter(fachstelle -> fachstelle.isGueltigForGesuchsperiode(gesuchsperiode))
 			.filter(fachstelle -> fachstelle.getName() != FachstelleName.KINDES_ERWACHSENEN_SCHUTZBEHOERDE)
@@ -91,7 +92,7 @@ public class FachstelleResource {
 			@NotNull @QueryParam("gesuchsperiodeId") String gesuchsperiodeId
 	){
 		Gesuchsperiode gesuchsperiode = findGesuchsperiodeFromIdOrThrow(gesuchsperiodeId);
-		return fachstelleService.getAllFachstellen().stream()
+		return fachstelleService.getAllFachstellen(gesuchsperiode.getMandant()).stream()
 			.filter(Fachstelle::isFachstelleErweiterteBetreuung)
 			.filter(fachstelle -> fachstelle.isGueltigForGesuchsperiode(gesuchsperiode))
 			.filter(fachstelle -> fachstelle.getName() != FachstelleName.KINDES_ERWACHSENEN_SCHUTZBEHOERDE)

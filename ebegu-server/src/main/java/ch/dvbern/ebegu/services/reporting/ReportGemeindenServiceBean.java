@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
@@ -87,7 +88,7 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 	@Nonnull
 	@Override
 	public UploadFileInfo generateExcelReportGemeinden(
-		@Nonnull Locale locale) throws ExcelMergeException {
+		@Nonnull Locale locale, @Nonnull Mandant mandant) throws ExcelMergeException {
 		ReportVorlage vorlage = ReportVorlage.VORLAGE_REPORT_GEMEINDEN;
 		InputStream is = ReportServiceBean.class.getResourceAsStream(vorlage.getTemplatePath());
 		requireNonNull(is, VORLAGE + vorlage.getTemplatePath() + NICHT_GEFUNDEN);
@@ -96,7 +97,7 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 		Sheet sheet = workbook.getSheet(GEMEINDE_SHEET_NAME);
 		Sheet secondSheet = workbook.getSheet(GEMEINDE_PERIODEN_SHEET_NAME);
 
-		final Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden();
+		final Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden(mandant);
 
 		List<GemeindenDataRow> reportData = getReportDataGemeinden(aktiveGemeinden, locale);
 
