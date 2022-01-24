@@ -5725,8 +5725,8 @@ export class EbeguRestUtil {
             steuerdatenResponseFromServer.weitereSteuerbareEinkuenfteDossiertraeger;
         tsSteuerdatenResponse.weitereSteuerbareEinkuenftePartner =
             steuerdatenResponseFromServer.weitereSteuerbareEinkuenftePartner;
-        tsSteuerdatenResponse.bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME =
-            steuerdatenResponseFromServer.bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME;
+        tsSteuerdatenResponse.bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme =
+            steuerdatenResponseFromServer.bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme;
         tsSteuerdatenResponse.bruttoertraegeAusLiegenschaften =
             steuerdatenResponseFromServer.bruttoertraegeAusLiegenschaften;
         tsSteuerdatenResponse.nettoertraegeAusEgmeDossiertraeger =
