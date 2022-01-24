@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -190,6 +191,7 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 
 		Gesuch gesuch = betreuung.extractGesuch();
 		Locale locale = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale();
+		Mandant mandant = gesuch.getFall().getMandant();
 
 		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
 		betreuungsmitteilung.setDossier(gesuch.getDossier());
@@ -198,7 +200,8 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 		betreuungsmitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 		betreuungsmitteilung.setEmpfaenger(gesuch.getDossier().getFall().getBesitzer());
 		betreuungsmitteilung.setMitteilungStatus(MitteilungStatus.NEU);
-		betreuungsmitteilung.setSubject(ServerMessageUtil.getMessage(BETREFF_KEY, locale));
+		betreuungsmitteilung.setSubject(ServerMessageUtil.getMessage(BETREFF_KEY, locale,
+				Objects.requireNonNull(mandant)));
 		betreuungsmitteilung.setBetreuung(betreuung);
 		betreuungsmitteilung.setBetreuungStornieren(true);
 
@@ -208,7 +211,8 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 			.collect(Collectors.toList());
 		betreuungsmitteilung.getBetreuungspensen().addAll(betreuungsMitteilungPensen);
 		betreuungsmitteilung.getBetreuungspensen().forEach(p -> p.setBetreuungsmitteilung(betreuungsmitteilung));
-		betreuungsmitteilung.setMessage(ServerMessageUtil.getMessage(MESSAGE_KEY, locale, refNummer));
+		betreuungsmitteilung.setMessage(ServerMessageUtil.getMessage(MESSAGE_KEY, locale,
+				Objects.requireNonNull(betreuung.extractGesuch().getFall().getMandant()), refNummer));
 
 		return betreuungsmitteilung;
 	}

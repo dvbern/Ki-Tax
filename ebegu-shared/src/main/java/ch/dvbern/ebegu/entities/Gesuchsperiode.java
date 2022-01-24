@@ -386,7 +386,7 @@ public class Gesuchsperiode extends AbstractDateRangedEntity implements HasManda
 	}
 
 	public String getGesuchsperiodeStatusName(@Nonnull Locale locale) {
-		return "(" + ServerMessageUtil.translateEnumValue(status, locale) + ')';
+		return "(" + ServerMessageUtil.translateEnumValue(status, locale, mandant) + ')';
 	}
 
 	@NotNull

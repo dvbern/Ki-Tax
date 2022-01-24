@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
@@ -86,21 +87,23 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 			return;
 		}
 
-		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller1, 1, gueltigAb, locale);
+		Mandant mandant = Objects.requireNonNull(gesuch.extractGemeinde().getMandant());
+
+		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller1, 1, gueltigAb, locale, mandant);
 
 		if (gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
 			final GesuchstellerContainer gesuchsteller2 = gesuch.getGesuchsteller2();
-			getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller2, 2, gueltigAb, locale);
+			getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller2, 2, gueltigAb, locale, mandant);
 		}
 	}
 
 	private void getAllDokumenteGesuchsteller(
-		@Nonnull Set<DokumentGrund> anlageVerzeichnis,
-		@Nullable GesuchstellerContainer gesuchsteller,
-		@Nonnull Integer gesuchstellerNumber,
-		LocalDate gueltigAb,
-		@Nonnull Locale locale
-	) {
+			@Nonnull Set<DokumentGrund> anlageVerzeichnis,
+			@Nullable GesuchstellerContainer gesuchsteller,
+			@Nonnull Integer gesuchstellerNumber,
+			LocalDate gueltigAb,
+			@Nonnull Locale locale,
+			Mandant mandant) {
 
 		if (gesuchsteller == null || gesuchsteller.getErwerbspensenContainers().isEmpty()) {
 			return;
@@ -117,18 +120,18 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 					NACHWEIS_ERWERBSPENSUM,
 					pensumJA,
 					gueltigAb,
-					pensumJA.getName(locale),
+					pensumJA.getName(locale, mandant),
 					DokumentGrundPersonType.GESUCHSTELLER,
 					gesuchstellerNumber,
 					DokumentGrundTyp.ERWERBSPENSUM,
 					null));
-				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_SELBSTAENDIGKEIT, locale));
-				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_AUSBILDUNG, locale));
-				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_RAV, locale));
-				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_FREIWILLIGENARBEIT, locale));
-				adder.accept(getDokument(gesuchstellerNumber, pensumJA, BESTAETIGUNG_ARZT, locale));
+				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_SELBSTAENDIGKEIT, locale, mandant));
+				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_AUSBILDUNG, locale, mandant));
+				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_RAV, locale, mandant));
+				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_FREIWILLIGENARBEIT, locale, mandant));
+				adder.accept(getDokument(gesuchstellerNumber, pensumJA, BESTAETIGUNG_ARZT, locale, mandant));
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_INTEGRATION_BESCHAEFTIGUNSPROGRAMM,
-					locale));
+					locale, mandant));
 			});
 	}
 
@@ -137,13 +140,14 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 		@Nonnull Integer gesuchstellerNumber,
 		@Nonnull Erwerbspensum erwerbspensumJA,
 		@Nonnull DokumentTyp dokumentTyp,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	) {
 
 		return getDokument(
 			dokumentTyp,
 			erwerbspensumJA,
-			erwerbspensumJA.getName(locale),
+			erwerbspensumJA.getName(locale, mandant),
 			DokumentGrundPersonType.GESUCHSTELLER,
 			gesuchstellerNumber,
 			DokumentGrundTyp.ERWERBSPENSUM);

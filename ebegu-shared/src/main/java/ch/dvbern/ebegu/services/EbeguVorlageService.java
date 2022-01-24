@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 
 import ch.dvbern.ebegu.entities.EbeguVorlage;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Vorlage;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EbeguVorlageKey;
@@ -83,12 +84,18 @@ public interface EbeguVorlageService {
 	 * Oeffentliche Institutionen
 	 */
 	@Nullable
-	Vorlage getVorlageNotrechtOeffentlicheInstitutionen(@Nonnull String language, @Nonnull BetreuungsangebotTyp angebotTyp);
+	Vorlage getVorlageNotrechtOeffentlicheInstitutionen(
+			@Nonnull String language,
+			@Nonnull BetreuungsangebotTyp angebotTyp,
+			Mandant mandant);
 
 	/**
 	 * Gibt die richtige Notrecht-Vorlage fuer die Sprache und den Angebotstyp zurueck
 	 * Private Institutionen
 	 */
 	@Nullable
-	Vorlage getVorlageNotrechtPrivateInstitutionen(@Nonnull String language, @Nonnull BetreuungsangebotTyp angebotTyp);
+	Vorlage getVorlageNotrechtPrivateInstitutionen(
+			@Nonnull String language,
+			@Nonnull BetreuungsangebotTyp angebotTyp,
+			Mandant mandant);
 }
