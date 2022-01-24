@@ -143,6 +143,25 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 	class IgnoreEventTest {
 
 		@Test
+		void ignoreEventWhenNoAnmeldungFound() {
+			expect(betreuungEventHelper.getMandantFromBgNummer(tagesschuleBestaetigungEventDTO.getRefnr()))
+				.andReturn(Optional.of(mandant));
+
+			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(
+				tagesschuleBestaetigungEventDTO.getRefnr(),
+				mandant))
+				.andReturn(Optional.empty());
+
+			replayAll();
+
+			Processing result =
+				anmeldungBestaetigungEventHandler.attemptProcessing(eventMonitor, tagesschuleBestaetigungEventDTO);
+
+			assertThat(result, failed("AnmeldungTagesschule nicht gefunden."));
+			verifyAll();
+		}
+
+		@Test
 		void ignoreWhenMandantNotFound() {
 			expect(betreuungEventHelper.getMandantFromBgNummer(tagesschuleBestaetigungEventDTO.getRefnr()))
 				.andReturn(Optional.empty());

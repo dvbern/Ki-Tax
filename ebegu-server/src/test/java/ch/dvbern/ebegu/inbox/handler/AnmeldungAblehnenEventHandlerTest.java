@@ -92,7 +92,7 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 	void setUp() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuchsperiode gesuchsperiode = betreuung.extractGesuchsperiode();
-		mandant = Objects.requireNonNull(gesuchsperiode.getMandant());
+		mandant = gesuchsperiode.getMandant();
 		anmeldungTagesschule = TestDataUtil.createAnmeldungTagesschuleWithModules(betreuung.getKind(), gesuchsperiode);
 		anmeldungTagesschule.extractGesuch().setStatus(AntragStatus.IN_BEARBEITUNG_JA);
 		eventMonitor = new EventMonitor(betreuungMonitoringService, EVENT_TIME, REF_NUMMER, CLIENT_NAME);
