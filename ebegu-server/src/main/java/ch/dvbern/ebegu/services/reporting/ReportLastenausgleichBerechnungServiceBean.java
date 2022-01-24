@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -120,7 +121,7 @@ public class ReportLastenausgleichBerechnungServiceBean extends AbstractReportSe
 				reportData,
 				lastenausgleich.getJahr(),
 				grundlagen.getSelbstbehaltPro100ProzentPlatz(),
-				locale);
+				locale, Objects.requireNonNull(principal.getMandant()));
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		lastenausgleichExcelConverter.applyAutoSize(sheet);
@@ -128,7 +129,7 @@ public class ReportLastenausgleichBerechnungServiceBean extends AbstractReportSe
 		byte[] bytes = createWorkbook(workbook);
 
 		return fileSaverService.save(bytes,
-			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale) + ".xlsx",
+			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale, principal.getMandant()) + ".xlsx",
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}

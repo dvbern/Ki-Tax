@@ -33,6 +33,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -68,6 +69,9 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 
 	@Inject
 	private RueckforderungFormularService rueckforderungFormularService;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 
 	@Nonnull
@@ -194,7 +198,8 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
 		List<NotrechtDataRow> reportData = getReportNotrecht(zahlungenAusloesen);
-		ExcelMergerDTO excelMergerDTO = excelConverter.toExcelMergerDTO(reportData, zahlungenAusloesen);
+		ExcelMergerDTO excelMergerDTO = excelConverter.toExcelMergerDTO(reportData, zahlungenAusloesen,
+				principalBean.getMandant());
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		excelConverter.applyAutoSize(sheet);
@@ -202,7 +207,7 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 		byte[] bytes = createWorkbook(workbook);
 
 		return fileSaverService.save(bytes,
-			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), Locale.GERMAN) + ".xlsx",
+			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), Locale.GERMAN, principalBean.getMandant()) + ".xlsx",
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}

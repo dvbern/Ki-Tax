@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.reporting.benutzer.BenutzerDataRow;

@@ -23,6 +23,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldFerienbetreuung;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
@@ -39,7 +40,7 @@ public class FerienbetreuungExcelConverter implements ExcelConverter {
 	}
 
 	@Nonnull
-	public ExcelMergerDTO toExcelMergerDTO(@Nonnull List<FerienbetreuungDataRow> data) {
+	public ExcelMergerDTO toExcelMergerDTO(@Nonnull List<FerienbetreuungDataRow> data, @Nonnull Mandant mandant) {
 		checkNotNull(data);
 
 		ExcelMergerDTO mergerDTO = new ExcelMergerDTO();
@@ -50,7 +51,7 @@ public class FerienbetreuungExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.gemeinde, dataRow.getGemeinde());
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.bfsNummerGemeinde, dataRow.getBfsNummerGemeinde());
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.periode, dataRow.getPeriode());
-			excelRowGroup.addValue(MergeFieldFerienbetreuung.status, ServerMessageUtil.translateEnumValue(dataRow.getStatus(), Locale.GERMAN));
+			excelRowGroup.addValue(MergeFieldFerienbetreuung.status, ServerMessageUtil.translateEnumValue(dataRow.getStatus(), Locale.GERMAN, mandant));
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.timestampMutiert, dataRow.getTimestampMutiert());
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.traegerschaft, dataRow.getTraegerschaft());
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.weitereGemeinden, dataRow.getWeitereGemeinden());
@@ -107,7 +108,7 @@ public class FerienbetreuungExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.einkommensabhaengigerTarifKinderDerGemeinde, dataRow.getEinkommensabhaengigerTarifKinderDerGemeinde());
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.tagesschuleTarifGiltFuerFerienbetreuung, dataRow.getTagesschuleTarifGiltFuerFerienbetreuung());
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet, dataRow.getFerienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet());
-			excelRowGroup.addValue(MergeFieldFerienbetreuung.kinderAusAnderenGemeindenZahlenAnderenTarif,ServerMessageUtil.translateEnumValue(dataRow.getKinderAusAnderenGemeindenZahlenAnderenTarif(), Locale.GERMAN));
+			excelRowGroup.addValue(MergeFieldFerienbetreuung.kinderAusAnderenGemeindenZahlenAnderenTarif,ServerMessageUtil.translateEnumValue(dataRow.getKinderAusAnderenGemeindenZahlenAnderenTarif(), Locale.GERMAN, mandant));
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.bemerkungenTarifsystem, dataRow.getBemerkungenTarifsystem());
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.anzahlBetreuungstageKinderBern, dataRow.getAnzahlBetreuungstageKinderBern());
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.betreuungstageKinderDieserGemeinde, dataRow.getBetreuungstageKinderDieserGemeinde());
