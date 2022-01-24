@@ -169,7 +169,6 @@ public class VerfuegungsBemerkungDTOList {
 		return verfuegungBemerkungList.stream().collect(Collectors.groupingBy(VerfuegungsBemerkungDTO::getMsgKey));
 	}
 
-	@SuppressWarnings("unused")
 	private static class BemerkungenRemover {
 
 		private final Map<MsgKey, List<VerfuegungsBemerkungDTO>> messagesMap;
@@ -178,6 +177,7 @@ public class VerfuegungsBemerkungDTOList {
 			this.messagesMap = messagesMap;
 		}
 
+		@SuppressWarnings("unused")
 		private List<VerfuegungsBemerkungDTO> getRequiredBemerkungen() {
 			this.removeNotRequiredBemerkungen();
 
