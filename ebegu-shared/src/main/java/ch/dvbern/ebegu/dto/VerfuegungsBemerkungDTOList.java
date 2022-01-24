@@ -177,7 +177,6 @@ public class VerfuegungsBemerkungDTOList {
 			this.messagesMap = messagesMap;
 		}
 
-		@SuppressWarnings("unused")
 		private List<VerfuegungsBemerkungDTO> getRequiredBemerkungen() {
 			this.removeNotRequiredBemerkungen();
 
@@ -186,6 +185,7 @@ public class VerfuegungsBemerkungDTOList {
 				.collect(Collectors.toList());
 		}
 
+		@SuppressWarnings("unused")
 		private void removeNotRequiredBemerkungen() {
 			// Einige Regeln "überschreiben" einander. Die Bemerkungen der überschriebenen Regeln müssen hier entfernt werden
 			// Aktuell bekannt:
