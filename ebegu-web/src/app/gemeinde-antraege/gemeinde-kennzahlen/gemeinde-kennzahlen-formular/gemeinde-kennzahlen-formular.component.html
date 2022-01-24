@@ -131,11 +131,14 @@
 					<mat-select class="form-control"
 								name="limitierungTfo"
 								[(ngModel)]="antragAndPrincipal[0].limitierungTfo"
+                                [required]="abschlussValidationTriggered"
 								id="limitierungTfo_id"
+                                #limitierungTfo='ngModel'
 								[disabled]="isFormDisabledFor(antragAndPrincipal)">
 						<mat-option *ngFor="let item of getEinschulungTypes()" [value]="item"
 									translate>{{item | translate}}</mat-option>
 					</mat-select>
+                    <dv-error-messages [errorObject]="limitierungTfo.errors"></dv-error-messages>
 				</mat-form-field>
 			</dv-input-container-x>
 		</div>
