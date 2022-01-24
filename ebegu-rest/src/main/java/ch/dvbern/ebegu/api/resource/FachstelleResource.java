@@ -74,7 +74,6 @@ public class FachstelleResource {
 			@NotNull @QueryParam("gesuchsperiodeId") String gesuchsperiodeId
 	){
 		Gesuchsperiode gesuchsperiode = findGesuchsperiodeFromIdOrThrow(gesuchsperiodeId);
-		Objects.requireNonNull(gesuchsperiode.getMandant());
 		return fachstelleService.getAllFachstellen(gesuchsperiode.getMandant()).stream()
 			.filter(Fachstelle::isFachstelleAnspruch)
 			.filter(fachstelle -> fachstelle.isGueltigForGesuchsperiode(gesuchsperiode))
@@ -93,7 +92,6 @@ public class FachstelleResource {
 			@NotNull @QueryParam("gesuchsperiodeId") String gesuchsperiodeId
 	){
 		Gesuchsperiode gesuchsperiode = findGesuchsperiodeFromIdOrThrow(gesuchsperiodeId);
-		Objects.requireNonNull(gesuchsperiode.getMandant());
 		return fachstelleService.getAllFachstellen(gesuchsperiode.getMandant()).stream()
 			.filter(Fachstelle::isFachstelleErweiterteBetreuung)
 			.filter(fachstelle -> fachstelle.isGueltigForGesuchsperiode(gesuchsperiode))
