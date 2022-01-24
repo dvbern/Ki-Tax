@@ -24,6 +24,8 @@ export class TSErweiterteBetreuung extends TSAbstractMutableEntity {
     private _keineKesbPlatzierung: boolean;
     private _betreuungInGemeinde: boolean = false;
     private _kitaPlusZuschlag: boolean;
+    private _erweitereteBeduerfnisseBetrag: number;
+
     public constructor() {
         super();
     }
@@ -74,5 +76,13 @@ export class TSErweiterteBetreuung extends TSAbstractMutableEntity {
 
     public set kitaPlusZuschlag(value: boolean) {
         this._kitaPlusZuschlag = value;
+    }
+
+    public get erweitereteBeduerfnisseBetrag(): number {
+        return this._erweitereteBeduerfnisseBetrag;
+    }
+
+    public set erweitereteBeduerfnisseBetrag(value: number) {
+        this._erweitereteBeduerfnisseBetrag = value;
     }
 }

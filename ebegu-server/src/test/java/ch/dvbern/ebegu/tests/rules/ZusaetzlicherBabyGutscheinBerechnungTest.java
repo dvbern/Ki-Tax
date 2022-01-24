@@ -69,6 +69,7 @@ public class ZusaetzlicherBabyGutscheinBerechnungTest extends AbstractBGRechnerT
 	public void gemeindeBabyGutschein_berechnung() {
 		// Sicherstellen, dass der minimale Elternbeitrag nichts beeinflusst:
 		this.abschnittToTest.setMonatlicheBetreuungskostenForAsivAndGemeinde(MATH.from(30000));
+		this.abschnittToTest.setKostenAnteilMonat(calculateKostenAnteilMonat(abschnittToTest.getBgCalculationInputAsiv(), abschnittToTest.getGueltigkeit()));
 
 		assertBabygutschein(100, MATH.from(0), MATH.from(0));
 		assertBabygutschein(100, MATH.from(43000), MATH.from(0));
@@ -91,6 +92,7 @@ public class ZusaetzlicherBabyGutscheinBerechnungTest extends AbstractBGRechnerT
 		// Zum Vergleichen merken wir uns zuerst den Betrag des Gutscheins bei "genug hohen" Betreuungskosten:
 		// Dies entspricht dem Maximalen Baby-Gutschein (ungekuerzten) fuer diese Konstellation
 		abschnitt.setMonatlicheBetreuungskostenForAsivAndGemeinde(MATH.from(30000));
+		abschnitt.setKostenAnteilMonat(calculateKostenAnteilMonat(abschnitt.getBgCalculationInputAsiv(), abschnitt.getGueltigkeit()));
 		rechner.calculate(abschnitt, rechnerParameterDTO);
 		Assert.assertNotNull(abschnitt.getBgCalculationResultGemeinde());
 		BigDecimal babyGutscheinMax = MATH.subtract(
@@ -101,6 +103,7 @@ public class ZusaetzlicherBabyGutscheinBerechnungTest extends AbstractBGRechnerT
 		// Wir setzen die Monatlichen Betreuungskosten auf einen Wert, der knapp ueber dem berechneten Gemeindegutschein liegt
 		// so dass der minimale Elternbeitrag zum Zug kommt:
 		abschnitt.setMonatlicheBetreuungskostenForAsivAndGemeinde(MATH.from(2400));
+		abschnitt.setKostenAnteilMonat(calculateKostenAnteilMonat(abschnitt.getBgCalculationInputAsiv(), abschnitt.getGueltigkeit()));
 		// Berechnung durchfuehren
 		rechner.calculate(abschnitt, rechnerParameterDTO);
 		final BGCalculationResult resultAsiv = abschnitt.getBgCalculationResultAsiv();

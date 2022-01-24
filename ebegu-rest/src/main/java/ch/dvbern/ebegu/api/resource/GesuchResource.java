@@ -54,12 +54,12 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.dto.neskovanp.KibonAnfrageDTO;
-import ch.dvbern.ebegu.dto.neskovanp.SteuerdatenResponse;
 import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -1077,16 +1077,25 @@ public class GesuchResource {
 	) throws EbeguException {
 		// Achtung dieser Resource ist nur fuer Tests geeignet, soll niemals Produktiv verwendet werden!!!
 		if(!configuration.getIsDevmode()) {
-			LOG.warn("Tried to trigger Search in KibonAnfrage with a test method in a non-dev environment");
-			return null;
+			String errorMessage = "Dieser Funktion ist nicht erlaubt im Produktive Umgebung";
+			LOG.warn(errorMessage);
+			throw new EbeguRuntimeException(
+				"getSteuerdaten",
+				errorMessage,
+				errorMessage,
+				kibonAnfrage.getAntragId());
 		}
 
-		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(kibonAnfrage.getAntragId());
-
-		if (!gesuchOptional.isPresent()) {
-			LOG.warn("Tried to trigger Search in KibonAnfrage for non-exisiting antragId");
-			return null;
+		if (!configuration.getKibonAnfrageTestUuid().equals(kibonAnfrage.getAntragId().trim())) {
+			String errorMessage = "Der eingegebene UUID stimmt nicht mit der Konfiguration";
+			LOG.warn(errorMessage);
+			throw new EbeguRuntimeException(
+				"getSteuerdaten",
+				errorMessage,
+				errorMessage,
+				kibonAnfrage.getAntragId());
 		}
+
 		return kibonAnfrageService.getSteuerDaten(
 			kibonAnfrage.getZpvNummer(),
 			kibonAnfrage.getGeburtsdatum(),

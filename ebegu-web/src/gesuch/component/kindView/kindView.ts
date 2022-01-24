@@ -24,6 +24,7 @@ import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
 import {TSIntegrationTyp} from '../../../models/enums/TSIntegrationTyp';
 import {getTSKinderabzugValues, TSKinderabzug} from '../../../models/enums/TSKinderabzug';
+import {TSKinderabzugTyp} from '../../../models/enums/TSKinderabzugTyp';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSEinstellung} from '../../../models/TSEinstellung';
@@ -33,6 +34,7 @@ import {TSKindContainer} from '../../../models/TSKindContainer';
 import {TSPensumAusserordentlicherAnspruch} from '../../../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../../../models/TSPensumFachstelle';
 import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {EnumEx} from '../../../utils/EnumEx';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -70,6 +72,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         'EinstellungRS',
         'GlobalCacheService',
         'AuthServiceRS',
+        'EbeguRestUtil'
     ];
 
     public readonly CONSTANTS: any = CONSTANTS;
@@ -87,7 +90,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public maxValueAllowed: number = 100;
     public kontingentierungEnabled: boolean;
     public anspruchUnabhaengingVomBeschaeftigungspensum: boolean;
-    private unknownFachstelle: TSFachstelle;
+
+    private kinderabzugTyp: TSKinderabzugTyp;
 
     public constructor(
         $stateParams: IKindStateParams,
@@ -102,6 +106,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         private readonly einstellungRS: EinstellungRS,
         private readonly globalCacheService: GlobalCacheService,
         private readonly authServiceRS: AuthServiceRS,
+        private readonly ebeguRestUtil: EbeguRestUtil,
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
         if ($stateParams.kindNumber) {
@@ -133,6 +138,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.initAusserordentlicherAnspruch();
         this.getEinstellungKontingentierung();
         this.loadEinstellungAnspruchUnabhaengig();
+        this.loadEinstellungKinderabzugTyp();
     }
 
     public $postLink(): void {
@@ -154,7 +160,6 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     private initFachstelle(): void {
         this.showFachstelle = !!(this.model.kindJA.pensumFachstelle);
         this.showFachstelleGS = !!(this.model.kindGS && this.model.kindGS.pensumFachstelle);
-        this.gesuchModelManager.getUnknownFachstelle().then(fachstelle => this.unknownFachstelle = fachstelle);
         if (this.getPensumFachstelle() && this.getPensumFachstelle().fachstelle) {
             this.fachstelleId = this.getPensumFachstelle().fachstelle.id;
         }
@@ -355,6 +360,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return this.showAusAsylwesen() && this.getModel().ausAsylwesen;
     }
 
+    public showKinderabzugFrage(): boolean {
+        return this.kinderabzugTyp !== TSKinderabzugTyp.KEINE;
+    }
+
     public isAusserordentlicherAnspruchRequired(): boolean {
         return this.getModel() && this.getModel().familienErgaenzendeBetreuung && this.showAusserordentlicherAnspruch;
     }
@@ -447,5 +456,14 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     private getEinstellungKontingentierung(): void {
         this.kontingentierungEnabled = this.gesuchModelManager.gemeindeKonfiguration.konfigKontingentierung;
+    }
+
+    private loadEinstellungKinderabzugTyp(): void {
+        this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
+            .then(einstellungen => {
+                const einstellung = einstellungen
+                    .find(e => e.key === TSEinstellungKey.KINDERABZUG_TYP);
+                this.kinderabzugTyp = this.ebeguRestUtil.parseKinderabzugTyp(einstellung.value);
+            });
     }
 }

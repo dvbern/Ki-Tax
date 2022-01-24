@@ -239,6 +239,9 @@ export class TSFinanzModel {
         if (EbeguUtil.isNullOrUndefined(gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA)) {
             gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
         }
+        if (this.finanzielleSituationTyp === TSFinanzielleSituationTyp.SOLOTHURN) {
+            return;
+        }
         gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten
             = finSitGS1.steuerveranlagungErhalten;
         gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuererklaerungAusgefuellt

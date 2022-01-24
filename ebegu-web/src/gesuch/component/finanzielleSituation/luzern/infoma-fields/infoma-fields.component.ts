@@ -19,6 +19,7 @@ import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {ListResourceRS} from '../../../../../app/core/service/listResourceRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {isAtLeastFreigegeben} from '../../../../../models/enums/TSAntragStatus';
 import {TSAdresse} from '../../../../../models/TSAdresse';
 import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
 import {TSLand} from '../../../../../models/types/TSLand';
@@ -71,6 +72,10 @@ export class InfomaFieldsComponent implements OnInit {
 
     public isKorrekturModusOrFreigegeben(): boolean {
         return this.gesuchModelManager.getGesuch().isKorrekturModusOrFreigegeben();
+    }
+
+    public isAtLeastFreigegeben(): boolean {
+        return isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status);
     }
 
     public isGemeindeOrMandant(): boolean {

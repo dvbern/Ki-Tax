@@ -55,6 +55,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_ANSPRUCH_MONATSWEISE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM;
@@ -96,6 +97,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MINIMALDAUER_KONKUBINAT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_MASSGEBENDES_EINKOMMEN;
@@ -170,6 +172,13 @@ public final class EbeguRuleTestsHelper {
 		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
 		BetreuungsgutscheinExecutor executorWithSpecificAbschlussRules = new BetreuungsgutscheinExecutor(isDebug, einstellungenAbschlussRules);
 		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungenRules, executorWithSpecificAbschlussRules);
+	}
+
+	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung, @Nonnull Map<EinstellungKey, Einstellung> einstellungenAbschlussRules, boolean doMonatsstueckelung) {
+		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
+		BetreuungsgutscheinExecutor executorWithSpecificAbschlussRules = new BetreuungsgutscheinExecutor(isDebug, einstellungenAbschlussRules);
+		return calculateAllRules(betreuung, einstellungenGemaessAsiv, initialenRestanspruchAbschnitte, executorWithSpecificAbschlussRules, doMonatsstueckelung);
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung, @Nonnull Map<EinstellungKey, Einstellung> einstellungenRules) {
@@ -280,6 +289,8 @@ public final class EbeguRuleTestsHelper {
 		einstellungenMap.addEinstellung(FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF, "null", gesuchsperiode);
 		einstellungenMap.addEinstellung(FKJV_EINGEWOEHNUNG, "false", gesuchsperiode);
 		einstellungenMap.addEinstellung(ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,"false", gesuchsperiode);
+		einstellungenMap.addEinstellung(MINIMALDAUER_KONKUBINAT, "5", gesuchsperiode);
+		einstellungenMap.addEinstellung(FKJV_ANSPRUCH_MONATSWEISE, "false", gesuchsperiode);
 
 		return einstellungenMap.getEinstellungen();
 	}

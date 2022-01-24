@@ -74,6 +74,9 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 	@Column(nullable = false)
 	private boolean abweichungZweitesSemester = false;
 
+	@Column(nullable = false)
+	private boolean keineKesbPlatzierung;
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -141,6 +144,14 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 
 	public void setAbweichungZweitesSemester(boolean abweichungZweitesSemester) {
 		this.abweichungZweitesSemester = abweichungZweitesSemester;
+	}
+
+	public boolean isKeineKesbPlatzierung() {
+		return keineKesbPlatzierung;
+	}
+
+	public void setKeineKesbPlatzierung(boolean keineKesbPlatzierung) {
+		this.keineKesbPlatzierung = keineKesbPlatzierung;
 	}
 
 	public boolean addBelegungTagesschuleModul(final BelegungTagesschuleModul modulToAdd) {

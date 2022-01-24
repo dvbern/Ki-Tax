@@ -17,23 +17,24 @@
 
 
 <div class="form-group">
-    <label class="long-label {{getRequiredCssClass()}}" for="{{inputId}}">
+    <label class="md-no-float {{getRequiredCssClass()}}" >
         <span >{{labelMessageKey | translate:labelMessageKeyArgs}}</span>
         <dv-tooltip *ngIf="tooltipMessageKey"
                     [text]="tooltipMessageKey | translate:tooltipMessageKeyArgs">
         </dv-tooltip>
     </label>
-    <input id="{{inputId}}"
-           type="{{inputType}}"
-           #inputField="ngModel"
-           [(ngModel)]="model"
-           (ngModelChange)="valueHasChange($event)"
-           [required]="inputRequired"
-           class="form-control">
-        <dv-error-messages
-            inputId="{{inputId}}"
-            [errorObject]="inputField.errors">
-        </dv-error-messages>
+    <div class="dv-input-container-medium-select">
+        <dv-valueinput-x
+            [inputId]="inputId"
+            [model]="model"
+            [name]="name"
+            (modelChange)="valueHasChange($event)"
+            [required]="inputRequired"
+            [disabled]="inputDisabled"
+            [dvOnBlur]="dvOnBlur">
+        </dv-valueinput-x>
+    </div>
+
 </div>
 
 

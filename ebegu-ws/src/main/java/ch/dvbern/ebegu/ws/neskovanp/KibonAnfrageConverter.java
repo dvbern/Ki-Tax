@@ -19,9 +19,9 @@ package ch.dvbern.ebegu.ws.neskovanp;
 
 import java.math.BigDecimal;
 
-import ch.dvbern.ebegu.dto.neskovanp.SteuerdatenResponse;
 import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.SteuerDatenResponseType;
 import ch.dvbern.ebegu.dto.neskovanp.Veranlagungsstand;
+import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 
 public class KibonAnfrageConverter {
 
@@ -31,7 +31,7 @@ public class KibonAnfrageConverter {
 
 		steuerdatenResponse.setZpvNrAntragsteller(steuerdatenResponseType.getZPVNrAntragsteller());
 		steuerdatenResponse.setGeburtsdatumAntragsteller(steuerdatenResponseType.getGeburtsdatumAntragsteller());
-		steuerdatenResponse.setKiBonAntragID(steuerdatenResponseType.getKiBonAntragID());
+		steuerdatenResponse.setKiBonAntragId(steuerdatenResponseType.getKiBonAntragID());
 		steuerdatenResponse.setBeginnGesuchsperiode(steuerdatenResponseType.getBeginnGesuchsperiode());
 		steuerdatenResponse.setZpvNrDossiertraeger(steuerdatenResponseType.getZPVNrDossiertraeger());
 		steuerdatenResponse.setGeburtsdatumDossiertraeger(steuerdatenResponseType.getGeburtsdatumDossiertraeger());
@@ -42,13 +42,16 @@ public class KibonAnfrageConverter {
 		steuerdatenResponse.setSynchroneAntwort(steuerdatenResponseType.isSynchroneAntwort());
 		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.valueOf(steuerdatenResponseType.getVeranlagungsstand().value()));
 		steuerdatenResponse.setUnterjaehrigerFall(steuerdatenResponseType.isUnterjaehrigerFall());
-		if (steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger() != null) {
+
+		if (steuerdatenResponseType.getNettoertraegeAusEGMEPartner() != null) {
+			steuerdatenResponse.setNettoertraegeAusEgmePartner(new BigDecimal(steuerdatenResponseType.getNettoertraegeAusEGMEPartner()));
+		}
+		if (steuerdatenResponseType.getErwerbseinkommenUnselbstaendigkeitDossiertraeger() != null) {
 			steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitDossiertraeger(new BigDecimal(steuerdatenResponseType.getErwerbseinkommenUnselbstaendigkeitDossiertraeger()));
 		}
-		if (steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitPartner() != null) {
+		if (steuerdatenResponseType.getErwerbseinkommenUnselbstaendigkeitPartner() != null) {
 			steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitPartner(new BigDecimal(steuerdatenResponseType.getErwerbseinkommenUnselbstaendigkeitPartner()));
 		}
-
 		if (steuerdatenResponseType.getSteuerpflichtigesErsatzeinkommenDossiertraeger() != null) {
 			steuerdatenResponse.setSteuerpflichtigesErsatzeinkommenDossiertraeger(new BigDecimal(steuerdatenResponseType.getSteuerpflichtigesErsatzeinkommenDossiertraeger()));
 		}
@@ -86,16 +89,16 @@ public class KibonAnfrageConverter {
 			steuerdatenResponse.setWeitereSteuerbareEinkuenftePartner(new BigDecimal(steuerdatenResponseType.getWeitereSteuerbareEinkuenftePartner()));
 		}
 		if (steuerdatenResponseType.getBruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME() != null) {
-			steuerdatenResponse.setBruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME(new BigDecimal(steuerdatenResponseType.getBruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME()));
+			steuerdatenResponse.setBruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme(new BigDecimal(steuerdatenResponseType.getBruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME()));
 		}
 		if (steuerdatenResponseType.getBruttoertraegeAusLiegenschaften() != null) {
 			steuerdatenResponse.setBruttoertraegeAusLiegenschaften(new BigDecimal(steuerdatenResponseType.getBruttoertraegeAusLiegenschaften()));
 		}
 		if (steuerdatenResponseType.getNettoertraegeAusEGMEDossiertraeger() != null) {
-			steuerdatenResponse.setNettoertraegeAusEGMEDossiertraeger(new BigDecimal(steuerdatenResponseType.getNettoertraegeAusEGMEDossiertraeger()));
+			steuerdatenResponse.setNettoertraegeAusEgmeDossiertraeger(new BigDecimal(steuerdatenResponseType.getNettoertraegeAusEGMEDossiertraeger()));
 		}
 		if (steuerdatenResponseType.getNettoertraegeAusEGMEPartner() != null) {
-			steuerdatenResponse.setNettoertraegeAusEGMEPartner(new BigDecimal(steuerdatenResponseType.getNettoertraegeAusEGMEPartner()));
+			steuerdatenResponse.setNettoertraegeAusEgmePartner(new BigDecimal(steuerdatenResponseType.getNettoertraegeAusEGMEPartner()));
 		}
 		if (steuerdatenResponseType.getGeleisteteUnterhaltsbeitraege() != null) {
 			steuerdatenResponse.setGeleisteteUnterhaltsbeitraege(new BigDecimal(steuerdatenResponseType.getGeleisteteUnterhaltsbeitraege()));
@@ -108,6 +111,9 @@ public class KibonAnfrageConverter {
 		}
 		if (steuerdatenResponseType.getNettovermoegen() != null) {
 			steuerdatenResponse.setNettovermoegen(new BigDecimal(steuerdatenResponseType.getNettovermoegen()));
+		}
+		if (steuerdatenResponseType.getSchuldzinsen() != null) {
+			steuerdatenResponse.setSchuldzinsen(new BigDecimal(steuerdatenResponseType.getSchuldzinsen()));
 		}
 
 		return steuerdatenResponse;

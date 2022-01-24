@@ -1,0 +1,16 @@
+<fieldset [disabled]="gesuchModelManager.isGesuchReadonly()">
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<dv-input-label-field
+						[name]="'bruttoLohn'"
+						[(model)]="model.finanzielleSituationJA.bruttoLohn"
+						[labelMessageKey]="'FINANZIELLE_SITUATION_BRUTTOLOHN'"
+						[inputRequired]="true"></dv-input-label-field>
+				<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.bruttoLohn"
+							 [korrektur]="model.finanzielleSituationJA.bruttoLohn"
+							 [showIfBisherNone]="isNotNullOrUndefined(model.finanzielleSituationGS)"></dv-bisher-x>
+			</div>
+		</div>
+	</div>
+</fieldset>
