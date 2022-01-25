@@ -44,6 +44,10 @@ export class DvFinanzielleSituationRequireX implements OnInit {
     public finanzielleSituationRequired: boolean;
     @Output()
     public readonly finanzielleSituationRequiredChange = new EventEmitter<boolean>();
+
+    @Input()
+    public areThereOnlyBgBetreuungen: boolean;
+
     private maxMassgebendesEinkommen: string;
 
     public allowedRoles: ReadonlyArray<TSRole>;
@@ -72,7 +76,7 @@ export class DvFinanzielleSituationRequireX implements OnInit {
     public setFinanziellesituationRequired(): void {
         const required = EbeguUtil.isFinanzielleSituationRequired(this.sozialhilfeBezueger,
             this.verguenstigungGewuenscht);
-        // Wenn es sich geändert und nicht den Initialwert "undefined" hat, müssen gewisse Daten gesetzt werden
+        // Wenn es sich geï¿½ndert und nicht den Initialwert "undefined" hat, mï¿½ssen gewisse Daten gesetzt werden
         if (EbeguUtil.isNotNullOrUndefined(this.finanzielleSituationRequired) &&
             required !== this.finanzielleSituationRequired &&
             this.gesuchModelManager.getGesuch()) {
@@ -84,12 +88,14 @@ export class DvFinanzielleSituationRequireX implements OnInit {
     }
 
     /**
-     * Das Feld verguenstigungGewuenscht wird nur angezeigt, wenn das Feld sozialhilfeBezueger eingeblendet ist und mit
-     * nein beantwortet wurde.
+     * Das Feld verguenstigungGewuenscht wird nur angezeigt,
+     * wenn es sich um keinen reinen BG-Antrag handelt und
+     * wenn das Feld sozialhilfeBezueger eingeblendet ist und mit nein beantwortet wurde.
      */
     public showFinanzielleSituationDeklarieren(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger)
-            && !this.sozialhilfeBezueger;
+            && !this.sozialhilfeBezueger
+            && !this.areThereOnlyBgBetreuungen;
     }
 
     public getMaxMassgebendesEinkommen(): string {

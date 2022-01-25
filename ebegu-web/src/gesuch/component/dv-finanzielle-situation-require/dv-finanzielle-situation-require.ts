@@ -27,6 +27,7 @@ export class DvFinanzielleSituationRequire implements IComponentOptions {
         sozialhilfeBezueger: '=',
         verguenstigungGewuenscht: '=',
         finanzielleSituationRequired: '=',
+        areThereOnlyBgBetreuungen: '=',
         form: '=',
     };
     public template = require('./dv-finanzielle-situation-require.html');
@@ -41,6 +42,7 @@ export class DVFinanzielleSituationRequireController implements IController {
     public finanzielleSituationRequired: boolean;
     public sozialhilfeBezueger: boolean;
     public verguenstigungGewuenscht: boolean;
+    public areThereOnlyBgBetreuungen: boolean;
 
     public maxMassgebendesEinkommen: string;
 
@@ -65,12 +67,14 @@ export class DVFinanzielleSituationRequireController implements IController {
     }
 
     /**
-     * Das Feld verguenstigungGewuenscht wird nur angezeigt, wenn das Feld sozialhilfeBezueger eingeblendet ist und mit
-     * nein beantwortet wurde.
+     * Das Feld verguenstigungGewuenscht wird nur angezeigt,
+     * wenn es sich um keinen reinen BG-Antrag handelt und
+     * wenn das Feld sozialhilfeBezueger eingeblendet ist und mit nein beantwortet wurde.
      */
     public showFinanzielleSituationDeklarieren(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger)
-            && !this.sozialhilfeBezueger;
+            && !this.sozialhilfeBezueger
+            && !this.areThereOnlyBgBetreuungen;
     }
 
     public setFinanziellesituationRequired(): void {

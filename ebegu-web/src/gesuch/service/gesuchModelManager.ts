@@ -1379,6 +1379,18 @@ export class GesuchModelManager {
     }
 
     /**
+     * Returns true when all Betreuungen are of kind BG.
+     * Returns false also if there are no Kinder with betreuungsbedarf
+     */
+    public areThereOnlyBgBetreuungen(): boolean {
+        if (!this.getGesuch()) {
+            return false;
+        }
+
+        return this.getGesuch().areThereOnlyBgBetreuungen();
+    }
+
+    /**
      * Returns true when all Betreuungen are of kind SCHULAMT.
      * Returns false also if there are no Kinder with betreuungsbedarf
      */
