@@ -23,6 +23,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
+import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableMandantFilterDTO;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
@@ -226,7 +227,7 @@ public interface BenutzerService {
 	 * @return Liste saemtlicher Gesuchsteller aus der DB
 	 */
 	@Nonnull
-	Collection<Benutzer> getGesuchsteller();
+	Collection<Benutzer> getGesuchsteller(@Nonnull Mandant mandant);
 
 	/**
 	 * entfernt die Benutzer aus der Database
@@ -264,7 +265,7 @@ public interface BenutzerService {
 	 */
 	@Nonnull
 	Pair<Long, List<Benutzer>> searchBenutzer(
-		@Nonnull BenutzerTableFilterDTO benutzerTableFilterDto,
+		@Nonnull BenutzerTableMandantFilterDTO benutzerTableFilterDto,
 		@Nonnull Boolean forStatistik);
 
 	/**

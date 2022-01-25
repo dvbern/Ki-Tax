@@ -18,10 +18,12 @@
 package ch.dvbern.ebegu.dto;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,6 +33,8 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rules.RuleValidity;
+import ch.dvbern.ebegu.types.DateRange;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.map.MultiKeyMap;
 
 /**
@@ -132,32 +136,9 @@ public class VerfuegungsBemerkungDTOList {
 	@Nonnull
 	public List<VerfuegungsBemerkungDTO> getRequiredBemerkungen() {
 		// Wir muessen bei gleichem MsgKey dejenigen aus ASIV loeschen
-		Map<MsgKey, List<VerfuegungsBemerkungDTO>> messagesMap = toUniqueMap();
+		BemerkungenRemover bemerkungenRemover = new BemerkungenRemover(toUniqueMap());
 		// Ab jetzt muessen wir die Herkunft (ASIV oder Gemeinde) nicht mehr beachten.
-
-		// Einige Regeln "überschreiben" einander. Die Bemerkungen der überschriebenen Regeln müssen hier entfernt werden
-		// Aktuell bekannt:
-		// 1. Ausserordentlicher Anspruch
-		// 2. Fachstelle
-		// 3. Erwerbspensum
-		if (messagesMap.containsKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG)) {
-			messagesMap.remove(MsgKey.ERWERBSPENSUM_ANSPRUCH);
-			messagesMap.remove(MsgKey.FACHSTELLE_MSG);
-		}
-		if (messagesMap.containsKey(MsgKey.FACHSTELLE_MSG)) {
-			messagesMap.remove(MsgKey.ERWERBSPENSUM_ANSPRUCH);
-		}
-		// Es kann sein das, trotz eine eingewoehnung, die minimal Erwerbspenum nicht erreicht ist
-		if(messagesMap.containsKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH)){
-			messagesMap.remove(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG);
-		}
-		if(messagesMap.containsKey(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG)) {
-			messagesMap.remove(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG);
-		}
-
-		return messagesMap.values().stream()
-			.flatMap(List::stream)
-			.collect(Collectors.toList());
+		return bemerkungenRemover.getRequiredBemerkungen();
 	}
 
 	private Map<MsgKey, List<VerfuegungsBemerkungDTO>> toUniqueMap() {
@@ -186,5 +167,141 @@ public class VerfuegungsBemerkungDTOList {
 		List<VerfuegungsBemerkungDTO> verfuegungBemerkungList = new ArrayList<>();
 		verfuegungBemerkungList.addAll(messagesMap.values());
 		return verfuegungBemerkungList.stream().collect(Collectors.groupingBy(VerfuegungsBemerkungDTO::getMsgKey));
+	}
+
+	private static class BemerkungenRemover {
+
+		private final Map<MsgKey, List<VerfuegungsBemerkungDTO>> messagesMap;
+
+		private BemerkungenRemover(Map<MsgKey, List<VerfuegungsBemerkungDTO>> messagesMap) {
+			this.messagesMap = messagesMap;
+		}
+
+		protected List<VerfuegungsBemerkungDTO> getRequiredBemerkungen() {
+			this.removeNotRequiredBemerkungen();
+
+			return messagesMap.values().stream()
+				.flatMap(List::stream)
+				.collect(Collectors.toList());
+		}
+
+		private void removeNotRequiredBemerkungen() {
+			// Einige Regeln "überschreiben" einander. Die Bemerkungen der überschriebenen Regeln müssen hier entfernt werden
+			// Aktuell bekannt:
+			// 1. Ausserordentlicher Anspruch
+			// 2. Fachstelle
+			// 3. Erwerbspensum
+			if (messagesMap.containsKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG)) {
+				removeBemerkungForPeriodes(MsgKey.ERWERBSPENSUM_ANSPRUCH, getGueltigkeitenByMessageKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG));
+				removeBemerkungForPeriodes(MsgKey.FACHSTELLE_MSG, getGueltigkeitenByMessageKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG));
+			}
+			if (messagesMap.containsKey(MsgKey.FACHSTELLE_MSG)) {
+				removeBemerkungForPeriodes(MsgKey.ERWERBSPENSUM_ANSPRUCH, getGueltigkeitenByMessageKey(MsgKey.FACHSTELLE_MSG));
+			}
+			// Es kann sein das, trotz eine eingewoehnung, die minimal Erwerbspenum nicht erreicht ist
+			if (messagesMap.containsKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH)) {
+				removeBemerkungForPeriodes(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG, getGueltigkeitenByMessageKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH));
+			}
+			if (messagesMap.containsKey(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG)) {
+				removeBemerkungForPeriodes(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG, getGueltigkeitenByMessageKey(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG));
+			}
+		}
+
+		/**
+		 * Entfernt den MessageKey {@param messageKeyToRemove} für sämtliche Zeiträume {@param periodes}
+		 * Gültigkeit MessageKey {@param messageKeyToRemove} vor remove 01.08 - 31.08
+		 * Zeiträume {@param periodes}: 01.08-10.08 und 20.08-25.08
+		 * Gültigkeit MessageKey {@param messageKeyToRemove} nach remove: 11.08-19.08 und 26.08-31.08
+		 */
+		private void removeBemerkungForPeriodes(MsgKey messageKeyToRemove, List<DateRange> periodes) {
+			List<VerfuegungsBemerkungDTO> messagesToRemove = messagesMap.get(messageKeyToRemove);
+
+			if(CollectionUtils.isEmpty(messagesToRemove)) {
+				return;
+			}
+
+			List<VerfuegungsBemerkungDTO> gueltigeBemerkungen = periodes.stream()
+				.flatMap(gueltigkeit -> getGueltigeBemerkungen(messagesToRemove, gueltigkeit).stream())
+				.collect(Collectors.toList());
+
+			messagesMap.put(messageKeyToRemove, gueltigeBemerkungen);
+		}
+
+
+
+		private List<VerfuegungsBemerkungDTO> getGueltigeBemerkungen(List<VerfuegungsBemerkungDTO> messagesToRemove, DateRange dateRangeNotGueltig) {
+			return messagesToRemove.stream()
+				.flatMap(verfuegungsBemerkungDTO -> getGueltigeBemerkung(verfuegungsBemerkungDTO, dateRangeNotGueltig).stream())
+				.filter(Objects::nonNull)
+				.collect(Collectors.toList());
+		}
+
+
+		private List<VerfuegungsBemerkungDTO> getGueltigeBemerkung(VerfuegungsBemerkungDTO verfuegungsBemerkungDTO, DateRange dateRangeNotGueltig) {
+			if(verfuegungsBemerkungDTO.getGueltigkeit() == null) {
+				return Collections.emptyList();
+			}
+
+			//Return: kein gültiges Resultat, wenn Gültigkeit der Bemerkung komplet innerhalb der notGueltigRange ist
+			if(dateRangeNotGueltig.contains(verfuegungsBemerkungDTO.getGueltigkeit())) {
+				return Collections.emptyList();
+			}
+
+			Optional<DateRange> overlap = verfuegungsBemerkungDTO.getGueltigkeit().getOverlap(dateRangeNotGueltig);
+
+			if(overlap.isEmpty()) {
+				return Collections.singletonList(verfuegungsBemerkungDTO);
+			}
+
+			return createGueltigeBemerkungen(verfuegungsBemerkungDTO, overlap.get());
+		}
+
+		private List<VerfuegungsBemerkungDTO> createGueltigeBemerkungen(VerfuegungsBemerkungDTO verfuegungsBemerkungDTO, DateRange overlap) {
+			List<VerfuegungsBemerkungDTO> result = new ArrayList<>();
+			result.add(createGueltigeBemerkungFirstRange(verfuegungsBemerkungDTO, overlap));
+			result.add(createGueltigeBemerkungenLastRange(verfuegungsBemerkungDTO, overlap));
+			return result.stream()
+				.filter(Objects::nonNull)
+				.collect(Collectors.toList());
+		}
+
+		@Nullable
+		private VerfuegungsBemerkungDTO createGueltigeBemerkungenLastRange(
+			VerfuegungsBemerkungDTO verfuegungsBemerkungDTO,
+			DateRange overlap) {
+			assert verfuegungsBemerkungDTO.getGueltigkeit() != null;
+
+			if(verfuegungsBemerkungDTO.getGueltigkeit().endsBefore(overlap) ||
+				verfuegungsBemerkungDTO.getGueltigkeit().endsSameDay(overlap)) {
+				return null;
+			}
+
+			VerfuegungsBemerkungDTO result = new VerfuegungsBemerkungDTO(verfuegungsBemerkungDTO);
+			result.setGueltigkeit(new DateRange(overlap.getGueltigBis().plusDays(1), verfuegungsBemerkungDTO.getGueltigkeit().getGueltigBis()));
+			return result;
+		}
+
+		@Nullable
+		private VerfuegungsBemerkungDTO createGueltigeBemerkungFirstRange(
+			VerfuegungsBemerkungDTO verfuegungsBemerkungDTO,
+			DateRange overlap) {
+
+			assert verfuegungsBemerkungDTO.getGueltigkeit() != null;
+
+			if(overlap.startsBefore(verfuegungsBemerkungDTO.getGueltigkeit()) ||
+			overlap.startsSameDay(verfuegungsBemerkungDTO.getGueltigkeit())) {
+				return null;
+			}
+
+			VerfuegungsBemerkungDTO result = new VerfuegungsBemerkungDTO(verfuegungsBemerkungDTO);
+			result.setGueltigkeit(new DateRange(verfuegungsBemerkungDTO.getGueltigkeit().getGueltigAb(), overlap.getGueltigAb().minusDays(1)));
+			return result;
+		}
+
+		private List<DateRange> getGueltigkeitenByMessageKey(MsgKey messageKey) {
+			return messagesMap.get(messageKey).stream()
+				.map(VerfuegungsBemerkungDTO::getGueltigkeit)
+				.collect(Collectors.toList());
+		}
 	}
 }

@@ -1885,6 +1885,14 @@ export class EbeguRestUtil {
         restAbstractFinanzielleSituation.abzuegeLiegenschaft = abstractFinanzielleSituation.abzuegeLiegenschaft;
         restAbstractFinanzielleSituation.einkaeufeVorsorge = abstractFinanzielleSituation.einkaeufeVorsorge;
 
+        restAbstractFinanzielleSituation.gewinnungskosten = abstractFinanzielleSituation.gewinnungskosten;
+        restAbstractFinanzielleSituation.einkommenInVereinfachtemVerfahrenAbgerechnet = abstractFinanzielleSituation.einkommenInVereinfachtemVerfahrenAbgerechnet;
+        restAbstractFinanzielleSituation.amountEinkommenInVereinfachtemVerfahrenAbgerechnet = abstractFinanzielleSituation.amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+        restAbstractFinanzielleSituation.nettoVermoegen = abstractFinanzielleSituation.nettoVermoegen;
+        restAbstractFinanzielleSituation.nettoertraegeErbengemeinschaft = abstractFinanzielleSituation.nettoertraegeErbengemeinschaft;
+        restAbstractFinanzielleSituation.abzugSchuldzinsen = abstractFinanzielleSituation.abzugSchuldzinsen;
+        restAbstractFinanzielleSituation.bruttoertraegeVermoegen = abstractFinanzielleSituation.bruttoertraegeVermoegen;
+
         return restAbstractFinanzielleSituation;
     }
 
@@ -1903,7 +1911,6 @@ export class EbeguRestUtil {
         restSelbstdeklaration.einkunftUeberige = selbstdeklaration.einkunftUeberige;
         restSelbstdeklaration.einkunftLiegenschaften = selbstdeklaration.einkunftLiegenschaften;
         restSelbstdeklaration.abzugBerufsauslagen = selbstdeklaration.abzugBerufsauslagen;
-        restSelbstdeklaration.abzugSchuldzinsen = selbstdeklaration.abzugSchuldzinsen;
         restSelbstdeklaration.abzugUnterhaltsbeitragEhepartner = selbstdeklaration.abzugUnterhaltsbeitragEhepartner;
         restSelbstdeklaration.abzugUnterhaltsbeitragKinder = selbstdeklaration.abzugUnterhaltsbeitragKinder;
         restSelbstdeklaration.abzugRentenleistungen = selbstdeklaration.abzugRentenleistungen;
@@ -1952,6 +1959,15 @@ export class EbeguRestUtil {
             abstractFinanzielleSituationTS.abzuegeLiegenschaft =
                 abstractFinanzielleSituationFromServer.abzuegeLiegenschaft;
             abstractFinanzielleSituationTS.einkaeufeVorsorge = abstractFinanzielleSituationFromServer.einkaeufeVorsorge;
+            abstractFinanzielleSituationTS.abzugSchuldzinsen = abstractFinanzielleSituationFromServer.abzugSchuldzinsen;
+            abstractFinanzielleSituationTS.nettoertraegeErbengemeinschaft = abstractFinanzielleSituationFromServer.nettoertraegeErbengemeinschaft;
+            abstractFinanzielleSituationTS.nettoVermoegen = abstractFinanzielleSituationFromServer.nettoVermoegen;
+            abstractFinanzielleSituationTS.einkommenInVereinfachtemVerfahrenAbgerechnet =
+                abstractFinanzielleSituationFromServer.einkommenInVereinfachtemVerfahrenAbgerechnet;
+            abstractFinanzielleSituationTS.amountEinkommenInVereinfachtemVerfahrenAbgerechnet =
+                abstractFinanzielleSituationFromServer.amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+            abstractFinanzielleSituationTS.gewinnungskosten = abstractFinanzielleSituationFromServer.gewinnungskosten;
+            abstractFinanzielleSituationTS.bruttoertraegeVermoegen = abstractFinanzielleSituationFromServer.bruttoertraegeVermoegen;
             abstractFinanzielleSituationTS.steuerdatenAbfrageStatus = abstractFinanzielleSituationFromServer.steuerdatenAbfrageStatus;
             return abstractFinanzielleSituationTS;
         }
@@ -2005,7 +2021,6 @@ export class EbeguRestUtil {
             tsSelbstdeklaration.einkunftUeberige = selbstdeklarationFromServer.einkunftUeberige;
             tsSelbstdeklaration.einkunftLiegenschaften = selbstdeklarationFromServer.einkunftLiegenschaften;
             tsSelbstdeklaration.abzugBerufsauslagen = selbstdeklarationFromServer.abzugBerufsauslagen;
-            tsSelbstdeklaration.abzugSchuldzinsen = selbstdeklarationFromServer.abzugSchuldzinsen;
             tsSelbstdeklaration.abzugUnterhaltsbeitragEhepartner = selbstdeklarationFromServer.abzugUnterhaltsbeitragEhepartner;
             tsSelbstdeklaration.abzugUnterhaltsbeitragKinder = selbstdeklarationFromServer.abzugUnterhaltsbeitragKinder;
             tsSelbstdeklaration.abzugRentenleistungen = selbstdeklarationFromServer.abzugRentenleistungen;
@@ -5726,10 +5741,10 @@ export class EbeguRestUtil {
             steuerdatenResponseFromServer.weitereSteuerbareEinkuenfteDossiertraeger;
         tsSteuerdatenResponse.weitereSteuerbareEinkuenftePartner =
             steuerdatenResponseFromServer.weitereSteuerbareEinkuenftePartner;
-        tsSteuerdatenResponse.bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME =
-            steuerdatenResponseFromServer.bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME;
         tsSteuerdatenResponse.bruttoertraegeAusLiegenschaften =
             steuerdatenResponseFromServer.bruttoertraegeAusLiegenschaften;
+        tsSteuerdatenResponse.bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme =
+            steuerdatenResponseFromServer.bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme;
         tsSteuerdatenResponse.nettoertraegeAusEgmeDossiertraeger =
             steuerdatenResponseFromServer.nettoertraegeAusEgmeDossiertraeger;
         tsSteuerdatenResponse.nettoertraegeAusEgmePartner = steuerdatenResponseFromServer.nettoertraegeAusEgmePartner;

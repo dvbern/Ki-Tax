@@ -74,7 +74,7 @@ export class TSSteuerdatenResponse {
 
     private _weitereSteuerbareEinkuenftePartner: number;
 
-    private _bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME: number;
+    private _bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme: number;
 
     private _bruttoertraegeAusLiegenschaften: number;
 
@@ -311,12 +311,12 @@ export class TSSteuerdatenResponse {
         this._weitereSteuerbareEinkuenftePartner = value;
     }
 
-    public get bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME(): number {
-        return this._bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME;
+    public get bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme(): number {
+        return this._bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme;
     }
 
-    public set bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME(value: number) {
-        this._bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME = value;
+    public set bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme(value: number) {
+        this._bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme = value;
     }
 
     public get bruttoertraegeAusLiegenschaften(): number {

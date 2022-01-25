@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.tests;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -59,7 +60,7 @@ public class FachstelleServiceTest extends AbstractEbeguLoginTest {
 		TestDataUtil.saveMandantIfNecessary(persistence, fachstelle.getMandant());
 		fachstelleService.saveFachstelle(fachstelle);
 
-		Collection<Fachstelle> allFachstellen = fachstelleService.getAllFachstellen();
+		Collection<Fachstelle> allFachstellen = fachstelleService.getAllFachstellen(Objects.requireNonNull(fachstelle.getMandant()));
 		assertEquals(1, allFachstellen.size());
 		Fachstelle nextFamsit = allFachstellen.iterator().next();
 		assertEquals(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE, nextFamsit.getName());
@@ -85,10 +86,11 @@ public class FachstelleServiceTest extends AbstractEbeguLoginTest {
 	public void removeFachstelleTest() {
 		assertNotNull(fachstelleService);
 		Fachstelle insertedFachstelle = insertNewEntity();
-		assertEquals(1, fachstelleService.getAllFachstellen().size());
+		assertNotNull(insertedFachstelle.getMandant());
+		assertEquals(1, fachstelleService.getAllFachstellen(insertedFachstelle.getMandant()).size());
 
 		fachstelleService.removeFachstelle(insertedFachstelle.getId());
-		assertEquals(0, fachstelleService.getAllFachstellen().size());
+		assertEquals(0, fachstelleService.getAllFachstellen(insertedFachstelle.getMandant()).size());
 	}
 
 	// HELP METHODS

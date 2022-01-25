@@ -536,7 +536,8 @@ export class WizardStepManager {
         this.hideStep(TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN);
 
         // show just one step if gesuch.finSitTyp is empty (on gesuch creation)
-        if (gesuch.finSitTyp === TSFinanzielleSituationTyp.BERN || !gesuch.finSitTyp) {
+        if (gesuch.finSitTyp === TSFinanzielleSituationTyp.BERN ||
+            gesuch.finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV || !gesuch.finSitTyp) {
             this.unhideStep(TSWizardStepName.FINANZIELLE_SITUATION);
         } else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.LUZERN) {
             this.unhideStep(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);

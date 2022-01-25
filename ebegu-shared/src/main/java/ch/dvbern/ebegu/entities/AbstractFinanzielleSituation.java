@@ -27,6 +27,7 @@ import javax.persistence.Transient;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.MathUtil;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 /**
@@ -93,6 +94,34 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	@Nullable
 	@Column(nullable = true)
 	private BigDecimal einkaeufeVorsorge;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal bruttoertraegeVermoegen;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal nettoertraegeErbengemeinschaft;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal nettoVermoegen;
+
+	@Nullable
+	@Column(nullable = true)
+	private Boolean einkommenInVereinfachtemVerfahrenAbgerechnet;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal gewinnungskosten;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal abzugSchuldzinsen;
 
 	@Nullable
 	@Transient
@@ -231,6 +260,73 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 		this.einkaeufeVorsorge = einkaeufeVorsorge;
 	}
 
+	@Nullable
+	public BigDecimal getBruttoertraegeVermoegen() {
+		return bruttoertraegeVermoegen;
+	}
+
+	public void setBruttoertraegeVermoegen(@Nullable BigDecimal bruttoertraegeVermoegen) {
+		this.bruttoertraegeVermoegen = bruttoertraegeVermoegen;
+	}
+
+	@Nullable
+	public BigDecimal getNettoertraegeErbengemeinschaft() {
+		return nettoertraegeErbengemeinschaft;
+	}
+
+	public void setNettoertraegeErbengemeinschaft(@Nullable BigDecimal nettoertraegeErbengemeinschaft) {
+		this.nettoertraegeErbengemeinschaft = nettoertraegeErbengemeinschaft;
+	}
+
+	@SuppressFBWarnings("NM_CONFUSING")
+	@Nullable
+	public BigDecimal getNettoVermoegen() {
+		return nettoVermoegen;
+	}
+
+	@SuppressFBWarnings("NM_CONFUSING")
+	public void setNettoVermoegen(@Nullable BigDecimal nettoVermoegen) {
+		this.nettoVermoegen = nettoVermoegen;
+	}
+
+	@Nullable
+	public Boolean getEinkommenInVereinfachtemVerfahrenAbgerechnet() {
+		return einkommenInVereinfachtemVerfahrenAbgerechnet;
+	}
+
+	public void setEinkommenInVereinfachtemVerfahrenAbgerechnet(
+			@Nullable Boolean einkommenInVereinfachtemVerfahrenAbgerechnet) {
+		this.einkommenInVereinfachtemVerfahrenAbgerechnet = einkommenInVereinfachtemVerfahrenAbgerechnet;
+	}
+
+	@Nullable
+	public BigDecimal getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet() {
+		return amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+	}
+
+	public void setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(
+			@Nullable BigDecimal amountEinkommenInVereinfachtemVerfahrenAbgerechnet) {
+		this.amountEinkommenInVereinfachtemVerfahrenAbgerechnet = amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+	}
+
+	@Nullable
+	public BigDecimal getGewinnungskosten() {
+		return gewinnungskosten;
+	}
+
+	public void setGewinnungskosten(@Nullable BigDecimal gewinnungskosten) {
+		this.gewinnungskosten = gewinnungskosten;
+	}
+
+	@Nullable
+	public BigDecimal getAbzugSchuldzinsen() {
+		return abzugSchuldzinsen;
+	}
+
+	public void setAbzugSchuldzinsen(@Nullable BigDecimal abzugSchuldzinsen) {
+		this.abzugSchuldzinsen = abzugSchuldzinsen;
+	}
+
 	@Nonnull
 	public AbstractFinanzielleSituation copyAbstractFinanzielleSituation(
 		@Nonnull AbstractFinanzielleSituation target,
@@ -252,6 +348,12 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			target.setAbzuegeLiegenschaft(this.getAbzuegeLiegenschaft());
 			target.setGeschaeftsverlust(this.getGeschaeftsverlust());
 			target.setEinkaeufeVorsorge(this.getEinkaeufeVorsorge());
+			target.setNettoertraegeErbengemeinschaft(this.getNettoertraegeErbengemeinschaft());
+			target.setGewinnungskosten(this.getGewinnungskosten());
+			target.setAbzugSchuldzinsen(this.getAbzugSchuldzinsen());
+			target.setNettoVermoegen(this.getNettoVermoegen());
+			target.setEinkommenInVereinfachtemVerfahrenAbgerechnet(this.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
+			target.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(this.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -285,7 +387,14 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			MathUtil.isSame(getSteuerbaresVermoegen(), otherFinSituation.getSteuerbaresVermoegen()) &&
 			MathUtil.isSame(getAbzuegeLiegenschaft(), otherFinSituation.getAbzuegeLiegenschaft()) &&
 			MathUtil.isSame(getGeschaeftsverlust(), otherFinSituation.getGeschaeftsverlust()) &&
-			MathUtil.isSame(getEinkaeufeVorsorge(), otherFinSituation.getEinkaeufeVorsorge());
+			MathUtil.isSame(getEinkaeufeVorsorge(), otherFinSituation.getEinkaeufeVorsorge()) &&
+			MathUtil.isSame(getAbzugSchuldzinsen(), otherFinSituation.getAbzugSchuldzinsen()) &&
+			MathUtil.isSame(getGewinnungskosten(), otherFinSituation.getGewinnungskosten()) &&
+			MathUtil.isSame(getNettoertraegeErbengemeinschaft(), otherFinSituation.getNettoertraegeErbengemeinschaft()) &&
+			MathUtil.isSame(getNettoVermoegen(), otherFinSituation.getNettoVermoegen()) &&
+			MathUtil.isSame(
+					getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(),
+					otherFinSituation.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
 	}
 
 	@Nonnull

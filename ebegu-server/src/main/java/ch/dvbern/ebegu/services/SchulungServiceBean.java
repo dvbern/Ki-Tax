@@ -216,7 +216,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		removeBenutzer(BENUTZER_FISCH_USERNAME,mandant);
 		removeBenutzer(BENUTZER_FORELLE_USERNAME, mandant);
 
-		
+
 		if (institutionService.findInstitution(constants.getInstitutionForelleId(), true).isPresent()) {
 			institutionService.removeInstitution(constants.getInstitutionForelleId());
 		}
@@ -282,7 +282,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		SchulungConstants constants = schulungConstantsVisitor.process(mandant);
 		Gemeinde gemeinde = createGemeindeTutorial(mandant);
 		GemeindeStammdaten gemeindeStammdaten = createGemeindeStammdatenTutorial(gemeinde);
-		
+
 		Institution institutionTutorial = createInstitution(constants.getInstitutionTutorialId(), "Kita kiBon", null, mandant);
 		createInstitutionStammdaten(
 			constants.getKitaTutorialId(),
@@ -559,7 +559,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 			@Nonnull List<InstitutionStammdaten> institutionenForSchulung,
 			boolean noRandom, InstitutionStammdatenBuilder institutionStammdatenBuilder) {
 
-		SchulungConstants constants = schulungConstantsVisitor.process(Objects.requireNonNull(gesuchsperiode.getMandant()));
+		SchulungConstants constants = schulungConstantsVisitor.process(gesuchsperiode.getMandant());
 		@SuppressWarnings("DuplicateBooleanBranch")  // Damit VERFUEGT nicht zu haeufig...
 			boolean verfuegen = RANDOM.nextBoolean() && RANDOM.nextBoolean();
 		if (noRandom) {

@@ -108,7 +108,8 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 	 * Als Abzuege habe ich die AbzuegeLiegenschaft und EinkaeufeVorsorge genommen
 	 * Die Geschäftverlust habe ich bei der Einkommen genommen
 	 */
-	private BigDecimal calcAbzuege(
+	@Override
+	protected BigDecimal calcAbzuege(
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2
 	) {
