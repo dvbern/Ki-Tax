@@ -322,13 +322,15 @@ export class GesuchModelManager {
     }
 
     public updateVerguenstigungGewuenschtFlag(): void {
-        if (this.gesuch.areThereOnlyBgBetreuungen()) {
-            this.gesuch.familiensituationContainer.familiensituationJA.verguenstigungGewuenscht = true;
-            this.familiensitutaionRS.saveFamiliensituation(this.gesuch.familiensituationContainer, this.gesuch.id)
-                .then((response: TSFamiliensituationContainer) => {
-                    this.gesuch.familiensituationContainer = response;
-                });
+        if (!this.gesuch.areThereOnlyBgBetreuungen()) {
+            return;
         }
+
+        this.gesuch.familiensituationContainer.familiensituationJA.verguenstigungGewuenscht = true;
+        this.familiensitutaionRS.saveFamiliensituation(this.gesuch.familiensituationContainer, this.gesuch.id)
+            .then((response: TSFamiliensituationContainer) => {
+                this.gesuch.familiensituationContainer = response;
+            });
     }
 
     public updateFachstellenAnspruchList(): void {
