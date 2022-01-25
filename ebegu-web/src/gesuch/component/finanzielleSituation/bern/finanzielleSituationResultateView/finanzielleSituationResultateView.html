@@ -201,8 +201,11 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="FINANZIELLE_SITUATION_ABZUEGE_ALIMENTE"
-                                       for="abzuegeBeiderGesuchsteller"></label>
+                                <label  class="md-no-float"
+                                       for="abzuegeBeiderGesuchsteller">
+                                    <span ng-if="!vm.isFKJV()" data-translate="FINANZIELLE_SITUATION_ABZUEGE_ALIMENTE"></span>
+                                    <span ng-if="vm.isFKJV()" data-translate="FINANZIELLE_SITUATION_ABZUEGE"></span>
+                                </label>
                                 <div class="dv-input-container-medium-label">
                                     <dv-valueinput input-id="abzuegeBeiderGesuchsteller"
                                                    name="abzuegeBeiderGesuchsteller"

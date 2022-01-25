@@ -128,6 +128,7 @@ export class NavigatorController implements IController {
             .subscribe(typ => {
                 switch (typ) {
                     case TSFinanzielleSituationTyp.BERN:
+                    case TSFinanzielleSituationTyp.BERN_FKJV:
                         this.finSitWizardSubStepManager =
                             new FinanzielleSituationSubStepManagerBernAsiv(this.gesuchModelManager);
                         break;

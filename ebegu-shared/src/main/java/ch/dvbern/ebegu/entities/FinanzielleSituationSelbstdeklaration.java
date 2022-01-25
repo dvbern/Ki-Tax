@@ -70,10 +70,6 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal abzugSchuldzinsen;
-
-	@Nullable
-	@Column(nullable = true)
 	private BigDecimal abzugUnterhaltsbeitragEhepartner;
 
 	@Nullable
@@ -216,15 +212,6 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 
 	public void setAbzugBerufsauslagen(@Nullable BigDecimal abzugBerufsauslagen) {
 		this.abzugBerufsauslagen = abzugBerufsauslagen;
-	}
-
-	@Nullable
-	public BigDecimal getAbzugSchuldzinsen() {
-		return abzugSchuldzinsen;
-	}
-
-	public void setAbzugSchuldzinsen(@Nullable BigDecimal abzugSchuldzinsen) {
-		this.abzugSchuldzinsen = abzugSchuldzinsen;
 	}
 
 	@Nullable
@@ -395,7 +382,6 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 			MathUtil.isSame(getEinkunftUeberige(), otherSelbstdeklaration.getEinkunftUeberige()) &&
 			MathUtil.isSame(getEinkunftLiegenschaften(), otherSelbstdeklaration.getEinkunftLiegenschaften()) &&
 			MathUtil.isSame(getAbzugBerufsauslagen(), otherSelbstdeklaration.getAbzugBerufsauslagen()) &&
-			MathUtil.isSame(getAbzugSchuldzinsen(), otherSelbstdeklaration.getAbzugSchuldzinsen()) &&
 			MathUtil.isSame(getAbzugUnterhaltsbeitragEhepartner(), otherSelbstdeklaration.getAbzugUnterhaltsbeitragEhepartner()) &&
 			MathUtil.isSame(getAbzugUnterhaltsbeitragKinder(), otherSelbstdeklaration.getAbzugUnterhaltsbeitragKinder()) &&
 			MathUtil.isSame(getAbzugRentenleistungen(), otherSelbstdeklaration.getAbzugRentenleistungen()) &&
