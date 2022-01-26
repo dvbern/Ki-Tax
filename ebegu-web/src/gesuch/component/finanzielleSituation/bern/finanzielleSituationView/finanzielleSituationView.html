@@ -34,13 +34,13 @@
             <form role="form" name="vm.form" class="" unsaved-warning-form="" novalidate>
                 <fieldset ng-disabled="vm.isGesuchReadonly()">
 
-                    <div ng-if="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus === 'FAILED'"
+                    <div ng-if="vm.showZugriffFailed()"
                          class="well well-status-warten minus-margin">
                         <p class="ebegu-h3"
                            data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED"></p>
                     </div>
 
-                    <div ng-if="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus !== 'FAILED'"
+                    <div ng-if="vm.showZugriffErfolgreich()"
                          class="well well-status-bestaetigt minus-margin">
                         <p class="ebegu-h3"
                            data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH"></p>

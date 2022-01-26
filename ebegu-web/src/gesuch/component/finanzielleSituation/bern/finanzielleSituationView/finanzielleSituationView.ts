@@ -253,12 +253,24 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
             && this.gesuchModelManager.getGesuch().isOnlineGesuch()
             && this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuererklaerungAusgefuellt
             && (EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff) ||
-                this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus === TSSteuerdatenAnfrageStatus.FAILED)
+                (EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.steuerdatenZugriff)
+                    && this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus === TSSteuerdatenAnfrageStatus.FAILED))
         ) {
             this.showForm = false;
             return;
         }
         this.showForm = true;
+    }
+
+    public showZugriffErfolgreich(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus) &&
+            this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus !== 'FAILED'
+            && this.getModel().finanzielleSituationJA.steuerdatenZugriff;
+    }
+
+    public showZugriffFailed(): boolean {
+        return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus === 'FAILED'
+            && this.getModel().finanzielleSituationJA.steuerdatenZugriff;
     }
 
     public isSteueranfrageErlaubt(): boolean {

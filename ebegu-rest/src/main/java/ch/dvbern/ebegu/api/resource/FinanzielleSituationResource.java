@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -73,6 +74,7 @@ import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.KibonAnfrageService;
+import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.base.Strings;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -102,6 +104,8 @@ import static java.util.Objects.requireNonNull;
 @Api(description = "Resource für die finanzielle Situation")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class FinanzielleSituationResource {
+
+	protected static final MathUtil EXACT = MathUtil.EXACT;
 
 	@Inject
 	private FinanzielleSituationService finanzielleSituationService;
@@ -496,22 +500,46 @@ public class FinanzielleSituationResource {
 				finSitGS2.getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(SteuerdatenAnfrageStatus.valueOf(steuerdatenResponse.getVeranlagungsstand().name()));
 			}
 		}
-		finSitGS1.getFinanzielleSituationJA().setNettolohn(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitDossiertraeger());
-		finSitGS1.getFinanzielleSituationJA().setSteuerbaresEinkommen(steuerdatenResponse.getWeitereSteuerbareEinkuenfteDossiertraeger());
-		finSitGS1.getFinanzielleSituationJA().setErsatzeinkommen(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenDossiertraeger());
-		finSitGS1.getFinanzielleSituationJA().setErhalteneAlimente(steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger());
+		// Pflichtfeldern wenn null muessen zu 0 gesetzt werden wegen Validierung
+		finSitGS1.getFinanzielleSituationJA().setNettolohn(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitDossiertraeger() != null ? steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitDossiertraeger() : BigDecimal.ZERO);
+		finSitGS1.getFinanzielleSituationJA().setFamilienzulage(steuerdatenResponse.getWeitereSteuerbareEinkuenfteDossiertraeger() != null ? steuerdatenResponse.getWeitereSteuerbareEinkuenfteDossiertraeger() : BigDecimal.ZERO);
+		finSitGS1.getFinanzielleSituationJA().setErsatzeinkommen(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenDossiertraeger() != null ? steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenDossiertraeger() : BigDecimal.ZERO);
+		finSitGS1.getFinanzielleSituationJA().setErhalteneAlimente(steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger() != null ? steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger() : BigDecimal.ZERO);
+		finSitGS1.getFinanzielleSituationJA().setNettoertraegeErbengemeinschaft(steuerdatenResponse.getNettoertraegeAusEgmeDossiertraeger()  != null ? steuerdatenResponse.getNettoertraegeAusEgmeDossiertraeger() : BigDecimal.ZERO);
+
+		// Diese muessen unbedingt null bleiben wenn null wegen die Berechnung
 		finSitGS1.getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger());
 		finSitGS1.getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger());
 		finSitGS1.getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger());
 
-		if (finSitGS2 != null) {
-			finSitGS2.getFinanzielleSituationJA().setNettolohn(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitPartner());
-			finSitGS2.getFinanzielleSituationJA().setSteuerbaresEinkommen(steuerdatenResponse.getWeitereSteuerbareEinkuenftePartner());
-			finSitGS2.getFinanzielleSituationJA().setErsatzeinkommen(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenPartner());
-			finSitGS2.getFinanzielleSituationJA().setErhalteneAlimente(steuerdatenResponse.getErhalteneUnterhaltsbeitraegePartner());
+
+		// Berechnete Feldern
+		BigDecimal bruttertraegeVermogenTotal = EXACT.addNullSafe(steuerdatenResponse.getBruttoertraegeAusLiegenschaften() != null ? steuerdatenResponse.getBruttoertraegeAusLiegenschaften() : BigDecimal.ZERO, steuerdatenResponse.getBruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme());
+		boolean hasResponse2Antragstellende = steuerdatenResponse.getZpvNrPartner() != null;
+		finSitGS1.getFinanzielleSituationJA().setBruttoertraegeVermoegen(hasResponse2Antragstellende ? EXACT.divide(bruttertraegeVermogenTotal, new BigDecimal(2)) : bruttertraegeVermogenTotal);
+		finSitGS1.getFinanzielleSituationJA().setAbzugSchuldzinsen(hasResponse2Antragstellende ? EXACT.divide(steuerdatenResponse.getSchuldzinsen(), new BigDecimal(2)) : steuerdatenResponse.getSchuldzinsen());
+		BigDecimal gewinnungskostenTotal = EXACT.addNullSafe(steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen() != null ? steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen() : BigDecimal.ONE, steuerdatenResponse.getLiegenschaftsAbzuege());
+		finSitGS1.getFinanzielleSituationJA().setGewinnungskosten(hasResponse2Antragstellende ? EXACT.divide(gewinnungskostenTotal, new BigDecimal(2)) : gewinnungskostenTotal);
+		finSitGS1.getFinanzielleSituationJA().setGeleisteteAlimente(hasResponse2Antragstellende ? EXACT.divide(steuerdatenResponse.getGeleisteteUnterhaltsbeitraege(), new BigDecimal(2)) :steuerdatenResponse.getGeleisteteUnterhaltsbeitraege());
+		finSitGS1.getFinanzielleSituationJA().setNettoVermoegen(hasResponse2Antragstellende ? EXACT.divide(steuerdatenResponse.getNettovermoegen(), new BigDecimal(2)) : steuerdatenResponse.getNettovermoegen());
+
+		if (finSitGS2 != null && hasResponse2Antragstellende) {
+			finSitGS2.getFinanzielleSituationJA().setNettolohn(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitPartner() != null ? steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitPartner() : BigDecimal.ZERO);
+			finSitGS2.getFinanzielleSituationJA().setFamilienzulage(steuerdatenResponse.getWeitereSteuerbareEinkuenftePartner() != null ? steuerdatenResponse.getWeitereSteuerbareEinkuenftePartner() : BigDecimal.ZERO);
+			finSitGS2.getFinanzielleSituationJA().setErsatzeinkommen(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenPartner() != null ? steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenPartner() : BigDecimal.ZERO);
+			finSitGS2.getFinanzielleSituationJA().setErhalteneAlimente(steuerdatenResponse.getErhalteneUnterhaltsbeitraegePartner() != null ? steuerdatenResponse.getErhalteneUnterhaltsbeitraegePartner() : BigDecimal.ZERO);
+			finSitGS2.getFinanzielleSituationJA().setNettoertraegeErbengemeinschaft(steuerdatenResponse.getNettoertraegeAusEgmePartner() != null ? steuerdatenResponse.getNettoertraegeAusEgmePartner() : BigDecimal.ZERO);
+
 			finSitGS2.getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner());
 			finSitGS2.getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodePartner());
 			finSitGS2.getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner());
+
+			//Berechnete Feldern
+			finSitGS2.getFinanzielleSituationJA().setBruttoertraegeVermoegen(EXACT.divide(bruttertraegeVermogenTotal, new BigDecimal(2)));
+			finSitGS2.getFinanzielleSituationJA().setAbzugSchuldzinsen(EXACT.divide(steuerdatenResponse.getSchuldzinsen(), new BigDecimal(2)));
+			finSitGS2.getFinanzielleSituationJA().setGewinnungskosten(EXACT.divide(gewinnungskostenTotal, new BigDecimal(2)));
+			finSitGS2.getFinanzielleSituationJA().setGeleisteteAlimente(EXACT.divide(steuerdatenResponse.getGeleisteteUnterhaltsbeitraege(), new BigDecimal(2)));
+			finSitGS2.getFinanzielleSituationJA().setNettoVermoegen(EXACT.divide(steuerdatenResponse.getNettovermoegen(), new BigDecimal(2)));
 		}
 	}
 }
