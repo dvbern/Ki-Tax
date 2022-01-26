@@ -58,6 +58,7 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableMandantFilterDTO;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
@@ -2074,7 +2075,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@Nonnull
 	public UploadFileInfo generateExcelReportBenutzer(@Nonnull Locale locale, @Nonnull Mandant mandant) throws ExcelMergeException {
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_BENUTZER;
-		Mandant mandant = Objects.requireNonNull(principalBean.getMandant());
 
 		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
 		requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);

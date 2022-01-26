@@ -87,7 +87,7 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 			return;
 		}
 
-		Mandant mandant = Objects.requireNonNull(gesuch.extractGemeinde().getMandant());
+		Mandant mandant = Objects.requireNonNull(gesuch.extractMandant());
 
 		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller1, 1, gueltigAb, locale, mandant);
 
