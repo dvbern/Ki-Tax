@@ -58,6 +58,8 @@ import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
@@ -416,7 +418,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		Betreuung betreuung = ctx.getBetreuung();
 		Gesuch gesuch = betreuung.extractGesuch();
 		Locale locale = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale();
-		Mandant mandant = Objects.requireNonNull(gesuch.getFall().getMandant());
+		Mandant mandant = betreuungEventHelper.getMandantFromBgNummer(ctx.getDto().getRefnr()).orElseThrow(() -> new EbeguRuntimeException(
+				KibonLogLevel.ERROR, "createBetreuungsmitteilung", "Mandant konnte nicht gefunden werden"));
 
 		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
 		betreuungsmitteilung.setDossier(gesuch.getDossier());

@@ -42,7 +42,8 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
@@ -194,7 +195,9 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 
 		Gesuch gesuch = betreuung.extractGesuch();
 		Locale locale = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale();
-		Mandant mandant = gesuch.getFall().getMandant();
+		Mandant mandant = betreuungEventHelper.getMandantFromBgNummer(refNummer).orElseThrow(() -> new EbeguRuntimeException(
+				KibonLogLevel.ERROR, "createBetreuungsStornierenMitteilung", "Mandant konnte nicht gefunden werden"));
+
 
 		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
 		betreuungsmitteilung.setDossier(gesuch.getDossier());
@@ -203,8 +206,7 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 		betreuungsmitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 		betreuungsmitteilung.setEmpfaenger(gesuch.getDossier().getFall().getBesitzer());
 		betreuungsmitteilung.setMitteilungStatus(MitteilungStatus.NEU);
-		betreuungsmitteilung.setSubject(ServerMessageUtil.getMessage(BETREFF_KEY, locale,
-				Objects.requireNonNull(mandant)));
+		betreuungsmitteilung.setSubject(ServerMessageUtil.getMessage(BETREFF_KEY, locale, mandant));
 		betreuungsmitteilung.setBetreuung(betreuung);
 		betreuungsmitteilung.setBetreuungStornieren(true);
 
@@ -214,8 +216,7 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 			.collect(Collectors.toList());
 		betreuungsmitteilung.getBetreuungspensen().addAll(betreuungsMitteilungPensen);
 		betreuungsmitteilung.getBetreuungspensen().forEach(p -> p.setBetreuungsmitteilung(betreuungsmitteilung));
-		betreuungsmitteilung.setMessage(ServerMessageUtil.getMessage(MESSAGE_KEY, locale,
-				Objects.requireNonNull(betreuung.extractGesuch().getFall().getMandant()), refNummer));
+		betreuungsmitteilung.setMessage(ServerMessageUtil.getMessage(MESSAGE_KEY, locale, mandant, refNummer));
 
 		return betreuungsmitteilung;
 	}
