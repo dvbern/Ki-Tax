@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
+import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
@@ -96,6 +97,11 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		testgesuch.setKindContainers(new HashSet<>());
 		testgesuch.setDossier(new Dossier());
 		mandant = TestDataUtil.getMandantKantonBern();
+		Fall fall = new Fall();
+		fall.setMandant(mandant);
+		Dossier dossier = new Dossier();
+		dossier.setFall(fall);
+		testgesuch.setDossier(dossier);
 	}
 
 	private void setUpEinstellungMock(@Nonnull Gesuch testgesuch, @Nonnull String anspruchUnabhaengig) {
