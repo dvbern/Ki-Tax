@@ -57,6 +57,7 @@ public class Testfall08_UmzugAusInAusBern extends AbstractTestfall {
 		super(gesuchsperiode, betreuungenBestaetigt, gemeinde, institutionStammdatenBuilder);
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	@Override
 	public Gesuch fillInGesuch() {
 		// Gesuch, Gesuchsteller
