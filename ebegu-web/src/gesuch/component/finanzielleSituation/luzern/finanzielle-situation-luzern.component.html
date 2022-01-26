@@ -88,7 +88,7 @@
                         <div class="form-group">
                             <dv-radio-container-x>
                                 <label for="gemeinsameSteuererklaerung_id" class="required ebegu-h1">
-                                    {{'GEMEINSAME_STEK' | translate}}</label>
+                                    {{'GEMEINSAME_STEK' | translate: {antragsteller2: getAntragsteller2Name()} }}</label>
                                 <mat-radio-group
                                     (change)="gemeinsameStekChange($event)"
                                     [(ngModel)]="getModel().finanzielleSituationJA.gemeinsameStekVorjahr"

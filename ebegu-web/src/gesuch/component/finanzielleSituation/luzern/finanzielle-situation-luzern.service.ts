@@ -35,7 +35,7 @@ export class FinanzielleSituationLuzernService {
     ) {
     }
 
-    public static finSitNeedsTwoAntragsteller(gesuchModelManager: GesuchModelManager): boolean {
+    public static finSitNeedsTwoSeparateAntragsteller(gesuchModelManager: GesuchModelManager): boolean {
         // TODO finsit Luzern: get this from server or improve
         const familiensituation = gesuchModelManager.getFamiliensituation().familienstatus;
         return familiensituation === TSFamilienstatus.KONKUBINAT

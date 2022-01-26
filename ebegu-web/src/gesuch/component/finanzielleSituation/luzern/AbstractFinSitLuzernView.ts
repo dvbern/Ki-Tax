@@ -205,6 +205,10 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
 
     protected abstract save(onResult: Function): IPromise<TSFinanzielleSituationContainer>;
 
+    public getAntragsteller2Name(): string {
+        return this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
+    }
+
     /**
      * updates the Status of the Step depending on whether the Gesuch is a Mutation or not
      */

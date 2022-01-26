@@ -30,7 +30,7 @@ export class FinanzielleSituationSubStepManagerLuzern extends FinanzielleSituati
         currentSubStep: TSFinanzielleSituationSubStepName,
     ): TSFinanzielleSituationSubStepName {
         if (TSFinanzielleSituationSubStepName.LUZERN_START === currentSubStep) {
-            if (FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller(this.gesuchModelManager)) {
+            if (FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller(this.gesuchModelManager)) {
                 return TSFinanzielleSituationSubStepName.LUZERN_GS2;
             }
             return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;

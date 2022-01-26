@@ -2752,7 +2752,7 @@
     "FRAGEN_ZU_ART_DER_VERANLAGUNG": "Fragen zur Art der Veranlagung",
     "ANGABEN_ZAHLUNGSINFORMATIONEN": "Geben Sie hier Ihre Angaben für die Auszahlung der Betreuungsgutscheine ein",
     "QUELLENBESTEUERT": "Quellenbesteuert?",
-    "GEMEINSAME_STEK": "Gemeinsame Stek mit Antragsteller*in 2?",
+    "GEMEINSAME_STEK": "Gemeinsame Stek mit {{antragsteller2}}?",
     "ALLEINIGE_STEK": "Alleinige Stek?",
     "VERANLAGT": "Veranlagt?",
     "BESONDERE_BEDUERFNISSE_LUZERN": "Lucerne: configurer les frais de garde extraordinaires",
