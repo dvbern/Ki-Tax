@@ -61,6 +61,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.enums.AbholungTagesschule;
@@ -79,6 +80,7 @@ import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.apache.commons.lang.StringUtils;
 
@@ -149,8 +151,17 @@ public abstract class AbstractTestfall {
 
 	public Fall createFall() {
 		fall = new Fall();
+		fall.setMandant(createDefaultMandant());
 		createDossier(fall);
 		return fall;
+	}
+
+	// Default for Faelle that are not persisted. Will be overwritten otherwise
+	private Mandant createDefaultMandant() {
+		Mandant mandant = new Mandant();
+		mandant.setMandantIdentifier(MandantIdentifier.BERN);
+		mandant.setName("Kanton Bern");
+		return mandant;
 	}
 
 	private void createDossier(@Nonnull Fall fallParam, @Nullable Benutzer verantwortlicher) {
