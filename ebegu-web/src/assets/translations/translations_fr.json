@@ -2750,5 +2750,6 @@
     "ERROR_UNKNOWN_HOST": "Un système tier n'a pas été trouvé, l'URL ne semble pas exister",
     "BESONDERE_BEDUERFNISSE_LUZERN": "Lucerne: configurer les frais de garde extraordinaires",
     "BESONDERE_BEDUERFNISSE_BETRAG": "Montant des frais de garde extraordinaires",
+    "FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH": "FKJV: Maximales Pensum bei ausserordentlichem Anspruch",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

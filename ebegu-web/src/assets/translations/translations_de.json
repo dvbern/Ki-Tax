@@ -2755,5 +2755,6 @@
     "ERROR_UNKNOWN_HOST": "Einen Umsystem koennte nicht erreicht werden, der URL scheint nicht zu existierend",
     "BESONDERE_BEDUERFNISSE_LUZERN": "Luzern: Ausserordentlicher Betreuungsaufwand konfigurierbar",
     "BESONDERE_BEDUERFNISSE_BETRAG": "Betrag ausserordentlicher Betreuungsaufwand",
+    "FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH": "FKJV: Maximales Pensum bei ausserordentlichem Anspruch",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

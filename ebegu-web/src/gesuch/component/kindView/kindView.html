@@ -537,7 +537,7 @@
                                                id="betreuungspensumAusserordentlicherAnspruch" type="number"
                                                name="betreuungspensumAusserordentlicherAnspruch"
                                                ng-model="vm.getPensumAusserordentlicherAnspruch().pensum"
-                                               max="20" class="form-control"
+                                               max="{{vm.maxPensumAusserordentlicherAnspruch}}" class="form-control"
                                                ng-pattern="vm.CONSTANTS.PATTERN_PERCENTAGE"
                                                ng-required="vm.isAusserordentlicherAnspruchRequired()"
                                                ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}"
