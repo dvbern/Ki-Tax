@@ -82,6 +82,12 @@ public class TestFall12_Mischgesuch extends AbstractTestfall {
 		finanzielleSituationGS1.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationGS1);
 
+		// LU
+		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationGS1);
+
+		// SO
+		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationGS1);
+
 		createEmptyEKVInfoContainer(gesuch);
 
 		return gesuch;

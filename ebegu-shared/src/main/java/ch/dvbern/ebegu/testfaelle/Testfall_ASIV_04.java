@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.testfaelle;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Objects;
@@ -37,6 +38,9 @@ import ch.dvbern.ebegu.util.MathUtil;
  * EKV, 2 Gesuchsteller
  */
 public class Testfall_ASIV_04 extends AbstractASIVTestfall {
+
+	private static final BigDecimal EINKOMMEN_GS1 = MathUtil.DEFAULT.from(70000);
+	private static final BigDecimal EINKOMMEN_GS2 = MathUtil.DEFAULT.from(30000);
 
 	public Testfall_ASIV_04(
 			Gesuchsperiode gesuchsperiode,
@@ -76,13 +80,23 @@ public class Testfall_ASIV_04 extends AbstractASIVTestfall {
 		betreuungKitaBruennen.getBetreuungspensumContainers().add(betreuungspensumKitaBruennen);
 		// Finanzielle Situation
 		FinanzielleSituationContainer finanzielleSituationContainer = createFinanzielleSituationContainer();
-		finanzielleSituationContainer.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(70000));
+		finanzielleSituationContainer.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(EINKOMMEN_GS1));
 		finanzielleSituationContainer.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationContainer);
 		FinanzielleSituationContainer finanzielleSituationGS2 = createFinanzielleSituationContainer();
-		finanzielleSituationGS2.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(30000));
+		finanzielleSituationGS2.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(EINKOMMEN_GS2));
 		finanzielleSituationGS2.setGesuchsteller(gesuchsteller2);
 		gesuchsteller2.setFinanzielleSituationContainer(finanzielleSituationGS2);
+
+		// LU
+		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationContainer);
+		assert finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration() != null;
+		finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration().setEinkunftErwerb(MathUtil.DEFAULT.from(EINKOMMEN_GS1));
+
+		// SO
+		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationContainer);
+		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationGS2);
+
 		return erstgesuch;
 	}
 

@@ -24,6 +24,7 @@ import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 
 /**
@@ -67,16 +68,24 @@ public abstract class AbstractASIVTestfall extends AbstractTestfall {
 
 	protected Gesuch createVerheiratet(Gesuch gesuch, LocalDate ereignisdatum) {
 		// Familiensituation
-		Familiensituation familiensituation = new Familiensituation();
+		assert gesuch.getFamiliensituationContainer() != null;
+		assert gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null;
+
+		Familiensituation familiensituation = gesuch.getFamiliensituationContainer()
+				.getFamiliensituationJA()
+				.copyFamiliensituation(new Familiensituation(), AntragCopyType.MUTATION);
+		familiensituation.setSozialhilfeBezueger(gesuch.getFamiliensituationContainer()
+				.getFamiliensituationJA()
+				.getSozialhilfeBezueger());
 		familiensituation.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
-		familiensituation.setGemeinsameSteuererklaerung(Boolean.TRUE);
+		familiensituation.setGemeinsameSteuererklaerung(gesuch.getFamiliensituationContainer()
+				.getFamiliensituationJA()
+				.getGemeinsameSteuererklaerung());
 		FamiliensituationContainer familiensituationContainer = new FamiliensituationContainer();
 		familiensituationContainer.setFamiliensituationJA(familiensituation);
 		familiensituation.setAenderungPer(ereignisdatum);
 
-		Familiensituation familiensituationErstgesuch = new Familiensituation();
-		familiensituationErstgesuch.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-		familiensituationContainer.setFamiliensituationErstgesuch(familiensituationErstgesuch);
+		familiensituationContainer.setFamiliensituationErstgesuch(gesuch.extractFamiliensituationErstgesuch());
 
 		gesuch.setFamiliensituationContainer(familiensituationContainer);
 		return gesuch;

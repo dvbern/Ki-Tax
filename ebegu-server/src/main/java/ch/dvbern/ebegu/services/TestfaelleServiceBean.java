@@ -73,6 +73,7 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
@@ -92,6 +93,7 @@ import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.testfaelle.AbstractASIVTestfall;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
 import ch.dvbern.ebegu.testfaelle.InstitutionStammdatenBuilder;
+import ch.dvbern.ebegu.testfaelle.MandantSozialdienstVisitor;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.testfaelle.Testfall03_PerreiraMarcia;
@@ -702,9 +704,20 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		familiensituationService.saveFamiliensituation(mutation, mutation.getFamiliensituationContainer(), null);
 		gesuchVerfuegenUndSpeichern(verfuegen, mutation, true, false);
 		setWizardStepOkayAndVerfuegbar(wizardStepService.findWizardStepFromGesuch(mutation.getId(), WizardStepName.GESUCHSTELLER).getId());
-		setWizardStepOkayAndVerfuegbar(wizardStepService.findWizardStepFromGesuch(mutation.getId(), WizardStepName.FINANZIELLE_SITUATION).getId());
+		setWizardStepOkayAndVerfuegbar(wizardStepService.findWizardStepFromGesuch(mutation.getId(),
+				getFinSitWizardStepName(mutation)).getId());
 		setWizardStepOkayAndVerfuegbar(wizardStepService.findWizardStepFromGesuch(mutation.getId(), WizardStepName.EINKOMMENSVERSCHLECHTERUNG).getId());
 		return mutation;
+	}
+
+	private WizardStepName getFinSitWizardStepName(Gesuch mutation) {
+		if (mutation.getFinSitTyp().equals(FinanzielleSituationTyp.LUZERN)) {
+			return WizardStepName.FINANZIELLE_SITUATION_LUZERN;
+		}
+		if (mutation.getFinSitTyp().equals(FinanzielleSituationTyp.SOLOTHURN)) {
+			return WizardStepName.FINANZIELLE_SITUATION_SOLOTHURN;
+		}
+		return WizardStepName.FINANZIELLE_SITUATION;
 	}
 
 	private void setWizardStepOkayAndVerfuegbar(@Nonnull String wizardStepId) {
