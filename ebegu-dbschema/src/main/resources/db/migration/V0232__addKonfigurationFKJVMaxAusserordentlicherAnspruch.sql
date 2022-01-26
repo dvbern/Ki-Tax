@@ -32,7 +32,7 @@ INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstell
 
 UPDATE einstellung
 SET value = '20'
-WHERE gesuchsperiode_id = (SELECT id
+WHERE einstellung_key = 'FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH' AND gesuchsperiode_id = (SELECT id
 						   FROM gesuchsperiode
 						   WHERE YEAR(gueltig_ab) = 2022 AND
 								   gesuchsperiode.mandant_id = (SELECT id FROM mandant WHERE name = 'KANTON BERN'));
