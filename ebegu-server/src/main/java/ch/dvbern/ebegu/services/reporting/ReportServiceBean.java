@@ -59,6 +59,7 @@ import javax.persistence.criteria.SetJoin;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
+import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableMandantFilterDTO;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
@@ -95,6 +96,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.SozialhilfeZeitraum;
 import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -271,7 +273,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@Override
 	public List<GesuchStichtagDataRow> getReportDataGesuchStichtag(
 		@Nonnull LocalDate date,
-		@Nullable String gesuchPeriodeID) {
+		@Nullable String gesuchPeriodeID,
+		@Nonnull Mandant mandant) {
 
 		requireNonNull(date, "Das Argument 'date' darf nicht leer sein");
 
@@ -285,8 +288,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.setParameter("stichTagDate", Constants.SQL_DATE_FORMAT.format(date.plusDays(1)));
 		query.setParameter("gesuchPeriodeID", gesuchPeriodeID);
 		query.setParameter("onlySchulamt", onlySchulamt());
-		Objects.requireNonNull(principalBean.getMandant());
-		query.setParameter("mandant", principalBean.getMandant().getId().replace("-", ""));
+		query.setParameter("mandant", mandant.getId().replace("-", ""));
 		final List<String> berechtigteGemeinden = getListOfBerechtigteGemeinden();
 		// we need to remove the extra - as in the query they are not working and we cannot use a REPLACE function on
 		// a list in a native query
@@ -329,7 +331,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	public UploadFileInfo generateExcelReportGesuchStichtag(
 		@Nonnull LocalDate date,
 		@Nullable String gesuchPeriodeID,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	) throws ExcelMergeException {
 
 		requireNonNull(date, "Das Argument 'date' darf nicht leer sein");
@@ -344,7 +347,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		List<GesuchStichtagDataRow> reportData = getReportDataGesuchStichtag(date, gesuchPeriodeID);
+		List<GesuchStichtagDataRow> reportData = getReportDataGesuchStichtag(date, gesuchPeriodeID, mandant);
 		ExcelMergerDTO excelMergerDTO = gesuchStichtagExcelConverter.toExcelMergerDTO(reportData, locale);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
@@ -365,7 +368,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	public List<GesuchZeitraumDataRow> getReportDataGesuchZeitraum(
 		@Nonnull LocalDate dateVon,
 		@Nonnull LocalDate dateBis,
-		@Nullable String gesuchPeriodeID) {
+		@Nullable String gesuchPeriodeID,
+		@Nonnull Mandant mandant) {
 
 		validateDateParams(dateVon, dateBis);
 
@@ -386,8 +390,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.setParameter("toDate", Constants.SQL_DATE_FORMAT.format(dateBis));
 		query.setParameter("gesuchPeriodeID", gesuchPeriodeID);
 		query.setParameter("onlySchulamt", onlySchulamt());
-		Objects.requireNonNull(principalBean.getMandant());
-		query.setParameter("mandant", principalBean.getMandant().getId().replace("-", ""));
+		query.setParameter("mandant", mandant.getId().replace("-", ""));
 		final List<String> berechtigteGemeinden = getListOfBerechtigteGemeinden();
 		// we need to remove the extra - as in the query they are not working and we cannot use a REPLACE function on
 		// a list in a native query
@@ -415,7 +418,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nonnull LocalDate dateVon,
 		@Nonnull LocalDate dateBis,
 		@Nullable String gesuchPeriodeID,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	) throws ExcelMergeException {
 
 		validateDateParams(dateVon, dateBis);
@@ -431,7 +435,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		List<GesuchZeitraumDataRow> reportData = getReportDataGesuchZeitraum(dateVon, dateBis, gesuchPeriodeID);
+		List<GesuchZeitraumDataRow> reportData = getReportDataGesuchZeitraum(dateVon, dateBis, gesuchPeriodeID, mandant);
 		ExcelMergerDTO excelMergerDTO = gesuchZeitraumExcelConverter.toExcelMergerDTO(reportData, locale);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
@@ -452,7 +456,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	public List<KantonDataRow> getReportDataKanton(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	) {
 		validateDateParams(datumVon, datumBis);
 
@@ -490,7 +495,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		predicatesToUse.add(predicateEnd);
 		Predicate mandantPredicate = builder.equal(
 			joinGemeinde.get(Gemeinde_.mandant),
-			principalBean.getMandant()
+			mandant
 		);
 		predicatesToUse.add(mandantPredicate);
 
@@ -600,7 +605,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
 		@Nullable BigDecimal kantonSelbstbehalt,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	) throws ExcelMergeException {
 
 		validateDateParams(datumVon, datumBis);
@@ -613,7 +619,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		List<KantonDataRow> reportData = getReportDataKanton(datumVon, datumBis, locale);
+		List<KantonDataRow> reportData = getReportDataKanton(datumVon, datumBis, locale, mandant);
 
 		final XSSFSheet xsslSheet =
 			(XSSFSheet) kantonExcelConverter.mergeHeaderFieldsStichtag(
@@ -634,11 +640,12 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@Override
 	public List<MitarbeiterinnenDataRow> getReportMitarbeiterinnen(
 		@Nonnull LocalDate datumVon,
-		@Nonnull LocalDate datumBis) {
+		@Nonnull LocalDate datumBis,
+		@Nonnull Mandant mandant) {
 		validateDateParams(datumVon, datumBis);
 
-		List<Tuple> numberVerantwortlicheGesuche = getAllVerantwortlicheGesuche();
-		List<Tuple> numberVerfuegteGesuche = getAllVerfuegteGesuche(datumVon, datumBis);
+		List<Tuple> numberVerantwortlicheGesuche = getAllVerantwortlicheGesuche(mandant);
+		List<Tuple> numberVerfuegteGesuche = getAllVerfuegteGesuche(datumVon, datumBis, mandant);
 
 		return convertToMitarbeiterinnenDataRow(numberVerantwortlicheGesuche, numberVerfuegteGesuche);
 	}
@@ -648,7 +655,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	 * bei denen er verantwortlich ist. Group by Verantwortlicher und oder by Verantwortlicher-nachname
 	 */
 	@Nonnull
-	private List<Tuple> getAllVerantwortlicheGesuche() {
+	private List<Tuple> getAllVerantwortlicheGesuche(@Nonnull Mandant mandant) {
 		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
 			"getAllVerantwortlicheGesuche", NO_USER_IS_LOGGED_IN));
 
@@ -691,8 +698,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		);
 		predicates.add(predicateActive);
 
-		Objects.requireNonNull(principalBean.getMandant());
-		Predicate mandantPredicate = builder.equal(dossierJoin.get(Dossier_.fall).get(Fall_.mandant), principalBean.getMandant());
+		Predicate mandantPredicate = builder.equal(dossierJoin.get(Dossier_.fall).get(Fall_.mandant), mandant);
 		predicates.add(mandantPredicate);
 
 		Set<UserRole> requiredRoles = Sets.newHashSet(
@@ -724,7 +730,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	 * die er im gegebenen Zeitraum verfuegt hat. Group by Verantwortlicher und oder by Verantwortlicher-nachname
 	 */
 	@Nonnull
-	private List<Tuple> getAllVerfuegteGesuche(LocalDate datumVon, LocalDate datumBis) {
+	private List<Tuple> getAllVerfuegteGesuche(LocalDate datumVon, LocalDate datumBis, Mandant mandant) {
 		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
 			"getAllVerfuegteGesuche", NO_USER_IS_LOGGED_IN));
 
@@ -751,13 +757,12 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			predicates.add(builder.notEqual(joinBerechtigungen.get(Berechtigung_.role), UserRole.SUPER_ADMIN));
 		}
 		// mandant
-		Objects.requireNonNull(principalBean.getMandant());
 		Predicate mandantPredicate = builder.equal(
 			root.get(AntragStatusHistory_.gesuch)
 				.get(Gesuch_.dossier)
 				.get(Dossier_.fall)
 				.get(Fall_.mandant),
-			principalBean.getMandant());
+			mandant);
 		predicates.add(mandantPredicate);
 
 		// Status ist verfuegt
@@ -841,7 +846,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	public UploadFileInfo generateExcelReportMitarbeiterinnen(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	) throws ExcelMergeException {
 
 		validateDateParams(datumVon, datumBis);
@@ -854,7 +860,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		List<MitarbeiterinnenDataRow> reportData = getReportMitarbeiterinnen(datumVon, datumBis);
+		List<MitarbeiterinnenDataRow> reportData = getReportMitarbeiterinnen(datumVon, datumBis, mandant);
 		ExcelMergerDTO excelMergerDTO =
 			mitarbeiterinnenExcelConverter.toExcelMergerDTO(reportData, locale, datumVon, datumBis);
 
@@ -1081,10 +1087,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
 		@Nullable Gesuchsperiode gesuchsperiode,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	) {
-
-		List<VerfuegungZeitabschnitt> zeitabschnittList = getReportDataBetreuungen(datumVon, datumBis, gesuchsperiode);
+		List<VerfuegungZeitabschnitt> zeitabschnittList = getReportDataBetreuungen(datumVon, datumBis, gesuchsperiode, mandant);
 		List<GesuchstellerKinderBetreuungDataRow> dataRows =
 			convertToGesuchstellerKinderBetreuungDataRow(zeitabschnittList, gesuchsperiode, locale);
 
@@ -1099,10 +1105,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
 		@Nullable Gesuchsperiode gesuchsperiode,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	) {
-
-		List<VerfuegungZeitabschnitt> zeitabschnittList = getReportDataBetreuungen(datumVon, datumBis, gesuchsperiode);
+		List<VerfuegungZeitabschnitt> zeitabschnittList = getReportDataBetreuungen(datumVon, datumBis, gesuchsperiode, mandant);
 		List<GesuchstellerKinderBetreuungDataRow> dataRows = convertToKinderDataRow(zeitabschnittList, locale, gesuchsperiode);
 
 		dataRows.sort(Comparator.comparing(GesuchstellerKinderBetreuungDataRow::getBgNummer)
@@ -1114,9 +1120,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@Nonnull
 	private List<GesuchstellerKinderBetreuungDataRow> getReportDataGesuchsteller(
 		@Nonnull LocalDate stichtag,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	) {
-		List<VerfuegungZeitabschnitt> zeitabschnittList = getReportDataBetreuungen(stichtag);
+		List<VerfuegungZeitabschnitt> zeitabschnittList = getReportDataBetreuungen(stichtag, mandant);
 
 		List<GesuchstellerKinderBetreuungDataRow> dataRows =
 			convertToGesuchstellerKinderBetreuungDataRow(zeitabschnittList, null, locale);
@@ -1132,7 +1139,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private List<VerfuegungZeitabschnitt> getReportDataBetreuungen(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
-		@Nullable Gesuchsperiode gesuchsperiode) {
+		@Nullable Gesuchsperiode gesuchsperiode,
+		@Nonnull Mandant mandant) {
 		validateDateParams(datumVon, datumBis);
 
 		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
@@ -1156,7 +1164,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		// mandant
 		Predicate mandantPredicate = builder.equal(
 			joinGemeinde.get(Gemeinde_.mandant),
-			principalBean.getMandant()
+			mandant
 		);
 		predicatesToUse.add(mandantPredicate);
 
@@ -1205,7 +1213,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@SuppressWarnings("PMD.NcssMethodCount")
 	@Nonnull
-	private List<VerfuegungZeitabschnitt> getReportDataBetreuungen(@Nonnull LocalDate stichtag) {
+	private List<VerfuegungZeitabschnitt> getReportDataBetreuungen(@Nonnull LocalDate stichtag, @Nonnull Mandant mandant) {
 		validateStichtagParam(stichtag);
 
 		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
@@ -1229,7 +1237,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		// mandant
 		Predicate mandantPredicate = builder.equal(
 			joinGemeinde.get(Gemeinde_.mandant),
-			principalBean.getMandant()
+			mandant
 		);
 		predicatesToUse.add(mandantPredicate);
 
@@ -1509,7 +1517,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
 		@Nullable String gesuchPeriodeId,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	) throws ExcelMergeException {
 
 		validateDateParams(datumVon, datumBis);
@@ -1532,7 +1541,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		}
 
 		List<GesuchstellerKinderBetreuungDataRow> reportData =
-			getReportDataGesuchstellerKinderBetreuung(datumVon, datumBis, gesuchsperiode, locale);
+			getReportDataGesuchstellerKinderBetreuung(datumVon, datumBis, gesuchsperiode, locale, mandant);
 
 		final XSSFSheet xsslSheet =
 			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFieldsPeriode(
@@ -1774,7 +1783,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
 		@Nullable String gesuchPeriodeId,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	) throws ExcelMergeException {
 
 		validateDateParams(datumVon, datumBis);
@@ -1797,7 +1807,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		}
 
 		List<GesuchstellerKinderBetreuungDataRow> reportData =
-			getReportDataKinder(datumVon, datumBis, gesuchsperiode, locale);
+			getReportDataKinder(datumVon, datumBis, gesuchsperiode, locale, mandant);
 
 		final XSSFSheet xsslSheet =
 			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFieldsPeriode(
@@ -1889,7 +1899,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@Override
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public UploadFileInfo generateExcelReportGesuchsteller(@Nonnull LocalDate stichtag, @Nonnull Locale locale)
+	public UploadFileInfo generateExcelReportGesuchsteller(@Nonnull LocalDate stichtag, @Nonnull Locale locale, @Nonnull Mandant mandant)
 		throws ExcelMergeException {
 		validateStichtagParam(stichtag);
 
@@ -1901,7 +1911,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		Sheet sheet = workbook.getSheet(reportResource.getDataSheetName());
 
-		List<GesuchstellerKinderBetreuungDataRow> reportData = getReportDataGesuchsteller(stichtag, locale);
+		List<GesuchstellerKinderBetreuungDataRow> reportData = getReportDataGesuchsteller(stichtag, locale, mandant);
 
 		if (reportData.stream().noneMatch(row -> row.getMzvBeantragt())) {
 			sheet.setColumnWidth(48, 0);
@@ -2051,7 +2061,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public UploadFileInfo generateExcelReportBenutzer(@Nonnull Locale locale) throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportBenutzer(@Nonnull Locale locale, @Nonnull Mandant mandant) throws ExcelMergeException {
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_BENUTZER;
 
 		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
@@ -2060,7 +2070,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		List<BenutzerDataRow> reportData = getReportDataBenutzer(locale);
+		List<BenutzerDataRow> reportData = getReportDataBenutzer(locale, mandant);
 
 		ExcelMergerDTO excelMergerDTO = benutzerExcelConverter.toExcelMergerDTO(reportData, locale);
 
@@ -2080,8 +2090,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public List<BenutzerDataRow> getReportDataBenutzer(@Nonnull Locale locale) {
-		Pair<Long, List<Benutzer>> searchResultPair = benutzerService.searchBenutzer(new BenutzerTableFilterDTO(), true);
+	public List<BenutzerDataRow> getReportDataBenutzer(@Nonnull Locale locale, @Nonnull Mandant mandant) {
+		Pair<Long, List<Benutzer>> searchResultPair = benutzerService.searchBenutzer(new BenutzerTableMandantFilterDTO(mandant), true);
 		List<Benutzer> benutzerList = searchResultPair.getRight();
 
 		Map<String, EnumSet<BetreuungsangebotTyp>> betreuungsangebotMap = new HashMap<>();

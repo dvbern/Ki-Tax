@@ -23,6 +23,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.reporting.verrechnungKibon.VerrechnungKibonDataRow;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
@@ -30,9 +31,10 @@ import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 public interface ReportVerrechnungKibonService {
 
 	@Nonnull
-	List<VerrechnungKibonDataRow> getReportVerrechnungKibon(boolean doSave, @Nonnull BigDecimal betragProKind, @Nonnull Locale locale);
+	List<VerrechnungKibonDataRow> getReportVerrechnungKibon(boolean doSave, @Nonnull BigDecimal betragProKind, @Nonnull Locale locale, @Nonnull
+			Mandant mandant);
 
 
 	@Nonnull
-	UploadFileInfo generateExcelReportVerrechnungKibon(boolean doSave, @Nonnull BigDecimal betragProKind, @Nonnull Locale locale) throws ExcelMergeException;
+	UploadFileInfo generateExcelReportVerrechnungKibon(boolean doSave, @Nonnull BigDecimal betragProKind, @Nonnull Locale locale, @Nonnull Mandant mandant) throws ExcelMergeException;
 }

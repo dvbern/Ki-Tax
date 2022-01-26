@@ -187,6 +187,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_FAMILIENSITUATION_NEU;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_BEI_ANSPRUCH;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE;
@@ -1476,7 +1477,6 @@ public final class TestDataUtil {
 		@Nonnull InstitutionService instService, @Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum,
 		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
 
-		Objects.requireNonNull(gesuchsperiode.getMandant());
 		instService.getAllInstitutionen(gesuchsperiode.getMandant());
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
@@ -1547,7 +1547,6 @@ public final class TestDataUtil {
 		AntragStatus status,
 		@Nonnull Gesuchsperiode gesuchsperiode
 	) {
-		Objects.requireNonNull(gesuchsperiode.getMandant());
 		instService.getAllInstitutionen(gesuchsperiode.getMandant());
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
@@ -1864,6 +1863,7 @@ public final class TestDataUtil {
 		saveEinstellung(GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN, "false", gesuchsperiode, persistence);
 		saveEinstellung(ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM, "false", gesuchsperiode, persistence);
 		saveEinstellung(KINDERABZUG_TYP, "ASIV", gesuchsperiode, persistence);
+		saveEinstellung(FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH, "100", gesuchsperiode, persistence);
 		saveEinstellung(KESB_PLATZIERUNG_DEAKTIVIEREN, "false", gesuchsperiode, persistence);
 		saveEinstellung(BESONDERE_BEDUERFNISSE_LUZERN, "false", gesuchsperiode, persistence);
 	}

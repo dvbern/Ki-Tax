@@ -32,6 +32,9 @@ public final class FinanzielleSituationRechnerFactory {
 		if (gesuch.getFinSitTyp().equals(FinanzielleSituationTyp.LUZERN)) {
 			return new FinanzielleSituationLuzernRechner();
 		}
+		if (gesuch.getFinSitTyp().equals(FinanzielleSituationTyp.BERN_FKJV)) {
+			return new FinanzielleSituationFKJVRechner();
+		}
 		// per default ist der Berner Rechner genommen
 		return new FinanzielleSituationBernRechner();
 	}

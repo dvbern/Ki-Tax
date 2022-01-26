@@ -143,7 +143,8 @@ public class ReportResourceAsync {
 			datumVon,
 			null,
 			periodeId,
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+			Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
@@ -191,7 +192,8 @@ public class ReportResourceAsync {
 			dateFrom,
 			dateTo,
 			periodeId,
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+			Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
@@ -239,7 +241,8 @@ public class ReportResourceAsync {
 			dateAuswertungBis,
 			kantonSelbstbehalt,
 			null,
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+				Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
@@ -283,7 +286,8 @@ public class ReportResourceAsync {
 			dateAuswertungVon,
 			dateAuswertungBis,
 			null,
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+			Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
@@ -311,7 +315,8 @@ public class ReportResourceAsync {
 			null,
 			null,
 			null,
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+			Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
@@ -338,7 +343,8 @@ public class ReportResourceAsync {
 			null,
 			null,
 			null,
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+				Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
@@ -371,7 +377,8 @@ public class ReportResourceAsync {
 			null,
 			null,
 			periodeId,
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+				Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
@@ -418,7 +425,8 @@ public class ReportResourceAsync {
 			dateFrom,
 			dateTo,
 			periodeId,
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+				Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
@@ -464,7 +472,8 @@ public class ReportResourceAsync {
 			dateFrom,
 			dateTo,
 			periodeId,
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+				Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
@@ -496,7 +505,8 @@ public class ReportResourceAsync {
 			date,
 			null,
 			null,
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+				Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
@@ -563,7 +573,8 @@ public class ReportResourceAsync {
 			inklTsGesucheBoolean,
 			Boolean.valueOf(ohneErneuerungsgesuch),
 			null, text,
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+				Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
@@ -594,7 +605,8 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_VERRECHNUNG_KIBON,
 			doSave,
 			betragProKind,
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+				Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
@@ -626,7 +638,8 @@ public class ReportResourceAsync {
 			LocalDate.ofYearDay(year, 1),
 			null,
 			null,
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+				Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
@@ -669,7 +682,8 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_TAGESSCHULE_ANMELDUNGEN,
 			stammdatenId,
 			gesuchsperiodeId,
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+				Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
@@ -700,7 +714,8 @@ public class ReportResourceAsync {
 			null,
 			null,
 			null,
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+				Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
@@ -729,7 +744,8 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_NOTRECHT,
 			zahlungenAusloesen,
 			BigDecimal.ZERO, // Parameter wird nicht gebraucht
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+				Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
@@ -786,7 +802,8 @@ public class ReportResourceAsync {
 			false,
 			gemeinde,
 			null,
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+				Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
@@ -822,7 +839,8 @@ public class ReportResourceAsync {
 			false,
 			null,
 			null,
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+				Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
@@ -849,7 +867,8 @@ public class ReportResourceAsync {
 			null,
 			null,
 			null,
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+				Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
@@ -876,7 +895,8 @@ public class ReportResourceAsync {
 			null,
 			null,
 			null,
-			LocaleThreadLocal.get()
+			LocaleThreadLocal.get(),
+				Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);
