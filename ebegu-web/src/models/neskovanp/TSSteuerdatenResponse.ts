@@ -74,13 +74,13 @@ export class TSSteuerdatenResponse {
 
     private _weitereSteuerbareEinkuenftePartner: number;
 
-    private _bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME: number;
+    private _bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme: number;
 
     private _bruttoertraegeAusLiegenschaften: number;
 
-    private _nettoertraegeAusEGMEDossiertraeger: number;
+    private _nettoertraegeAusEgmeDossiertraeger: number;
 
-    private _nettoertraegeAusEGMEPartner: number;
+    private _nettoertraegeAusEgmePartner: number;
 
     private _geleisteteUnterhaltsbeitraege: number;
 
@@ -311,12 +311,12 @@ export class TSSteuerdatenResponse {
         this._weitereSteuerbareEinkuenftePartner = value;
     }
 
-    public get bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME(): number {
-        return this._bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME;
+    public get bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme(): number {
+        return this._bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme;
     }
 
-    public set bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME(value: number) {
-        this._bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEGME = value;
+    public set bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme(value: number) {
+        this._bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme = value;
     }
 
     public get bruttoertraegeAusLiegenschaften(): number {
@@ -327,20 +327,20 @@ export class TSSteuerdatenResponse {
         this._bruttoertraegeAusLiegenschaften = value;
     }
 
-    public get nettoertraegeAusEGMEDossiertraeger(): number {
-        return this._nettoertraegeAusEGMEDossiertraeger;
+    public get nettoertraegeAusEgmeDossiertraeger(): number {
+        return this._nettoertraegeAusEgmeDossiertraeger;
     }
 
-    public set nettoertraegeAusEGMEDossiertraeger(value: number) {
-        this._nettoertraegeAusEGMEDossiertraeger = value;
+    public set nettoertraegeAusEgmeDossiertraeger(value: number) {
+        this._nettoertraegeAusEgmeDossiertraeger = value;
     }
 
-    public get nettoertraegeAusEGMEPartner(): number {
-        return this._nettoertraegeAusEGMEPartner;
+    public get nettoertraegeAusEgmePartner(): number {
+        return this._nettoertraegeAusEgmePartner;
     }
 
-    public set nettoertraegeAusEGMEPartner(value: number) {
-        this._nettoertraegeAusEGMEPartner = value;
+    public set nettoertraegeAusEgmePartner(value: number) {
+        this._nettoertraegeAusEgmePartner = value;
     }
 
     public get geleisteteUnterhaltsbeitraege(): number {

@@ -1038,6 +1038,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	public WizardStepName getFinSitWizardStepNameForGesuch(@Nonnull Gesuch gesuch) {
 		switch (gesuch.getFinSitTyp()) {
 		case BERN:
+		case BERN_FKJV:
 			return WizardStepName.FINANZIELLE_SITUATION;
 		case LUZERN:
 			return WizardStepName.FINANZIELLE_SITUATION_LUZERN;

@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
 import ch.dvbern.ebegu.services.BetreuungMonitoringService;
 import ch.dvbern.ebegu.services.BetreuungService;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -76,6 +77,10 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 	private BetreuungEventHelper betreuungEventHelper;
 
 	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
+	@Mock
+	private GemeindeService gemeindeService;
+
+	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock(MockType.NICE)
 	private BetreuungMonitoringService betreuungMonitoringService;
 
@@ -87,7 +92,7 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 	void setUp() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuchsperiode gesuchsperiode = betreuung.extractGesuchsperiode();
-		mandant = Objects.requireNonNull(gesuchsperiode.getMandant());
+		mandant = gesuchsperiode.getMandant();
 		anmeldungTagesschule = TestDataUtil.createAnmeldungTagesschuleWithModules(betreuung.getKind(), gesuchsperiode);
 		anmeldungTagesschule.extractGesuch().setStatus(AntragStatus.IN_BEARBEITUNG_JA);
 		eventMonitor = new EventMonitor(betreuungMonitoringService, EVENT_TIME, REF_NUMMER, CLIENT_NAME);

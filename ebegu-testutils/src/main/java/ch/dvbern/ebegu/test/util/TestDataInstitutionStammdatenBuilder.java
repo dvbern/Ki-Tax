@@ -57,7 +57,7 @@ public class TestDataInstitutionStammdatenBuilder extends InstitutionStammdatenB
 		institutionStammdaten.add(TestDataUtil.createInstitutionStammdatenFerieninselGuarda());
 
 		institutionStammdaten.forEach(stammdaten -> {
-			stammdaten.getInstitution().setMandant(Objects.requireNonNull(gesuchsperiode.getMandant()));
+			stammdaten.getInstitution().setMandant(gesuchsperiode.getMandant());
 		});
 		return institutionStammdaten;
 	}

@@ -92,6 +92,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public anspruchUnabhaengingVomBeschaeftigungspensum: boolean;
 
     private kinderabzugTyp: TSKinderabzugTyp;
+    public maxPensumAusserordentlicherAnspruch: string;
 
     public constructor(
         $stateParams: IKindStateParams,
@@ -139,6 +140,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.getEinstellungKontingentierung();
         this.loadEinstellungAnspruchUnabhaengig();
         this.loadEinstellungKinderabzugTyp();
+        this.loadEinstellungMaxAusserordentlicherAnspruch();
     }
 
     public $postLink(): void {
@@ -464,6 +466,15 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
                 const einstellung = einstellungen
                     .find(e => e.key === TSEinstellungKey.KINDERABZUG_TYP);
                 this.kinderabzugTyp = this.ebeguRestUtil.parseKinderabzugTyp(einstellung.value);
+            });
+    }
+
+    private loadEinstellungMaxAusserordentlicherAnspruch(): void {
+        this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
+            .then(einstellungen => {
+                const einstellung = einstellungen
+                    .find(e => e.key === TSEinstellungKey.FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH);
+                this.maxPensumAusserordentlicherAnspruch = einstellung.value;
             });
     }
 }

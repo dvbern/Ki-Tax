@@ -99,6 +99,7 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     public set veranlagt(value: boolean) {
         this._veranlagt = value;
     }
+
     public get quellenbesteuert(): boolean {
         return this._quellenbesteuert;
     }

@@ -56,9 +56,6 @@ public class JaxFinanzielleSituationSelbstdeklaration extends JaxAbstractDTO {
 	private BigDecimal abzugBerufsauslagen;
 
 	@Nullable
-	private BigDecimal abzugSchuldzinsen;
-
-	@Nullable
 	private BigDecimal abzugUnterhaltsbeitragEhepartner;
 
 	@Nullable
@@ -186,15 +183,6 @@ public class JaxFinanzielleSituationSelbstdeklaration extends JaxAbstractDTO {
 
 	public void setAbzugBerufsauslagen(@Nullable BigDecimal abzugBerufsauslagen) {
 		this.abzugBerufsauslagen = abzugBerufsauslagen;
-	}
-
-	@Nullable
-	public BigDecimal getAbzugSchuldzinsen() {
-		return abzugSchuldzinsen;
-	}
-
-	public void setAbzugSchuldzinsen(@Nullable BigDecimal abzugSchuldzinsen) {
-		this.abzugSchuldzinsen = abzugSchuldzinsen;
 	}
 
 	@Nullable
