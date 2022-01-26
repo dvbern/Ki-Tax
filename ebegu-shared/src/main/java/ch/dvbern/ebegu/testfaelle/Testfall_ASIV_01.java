@@ -103,6 +103,13 @@ public class Testfall_ASIV_01 extends AbstractASIVTestfall {
 		finanzielleSituationContainerGS2.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(30000));
 		finanzielleSituationContainerGS2.setGesuchsteller(gesuchsteller2);
 		gesuchsteller2.setFinanzielleSituationContainer(finanzielleSituationContainerGS2);
+		// LU
+		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationContainerGS2);
+		assert finanzielleSituationContainerGS2.getFinanzielleSituationJA().getSelbstdeklaration() != null;
+		finanzielleSituationContainerGS2.getFinanzielleSituationJA().getSelbstdeklaration().setEinkunftErwerb(MathUtil.DEFAULT.from(30000));
+		// SO
+		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationContainerGS2);
+
 		return mutation;
 	}
 

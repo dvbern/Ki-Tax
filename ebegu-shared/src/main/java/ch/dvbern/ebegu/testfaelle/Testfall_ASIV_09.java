@@ -115,6 +115,13 @@ public class Testfall_ASIV_09 extends AbstractASIVTestfall {
 		EinkommensverschlechterungContainer ekvContainerGS2 = createEinkommensverschlechterungContainer(false, true);
 		ekvContainerGS2.getEkvJABasisJahrPlus2().setNettolohn(MathUtil.DEFAULT.from(29000));
 		gesuchsteller2.setEinkommensverschlechterungContainer(ekvContainerGS2);
+
+		// LU
+		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationContainerGS2);
+		assert finanzielleSituationContainerGS2.getFinanzielleSituationJA().getSelbstdeklaration() != null;
+		finanzielleSituationContainerGS2.getFinanzielleSituationJA().getSelbstdeklaration().setEinkunftErwerb(MathUtil.DEFAULT.from(30000));
+		// SO
+		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationContainerGS2);
 		return mutation;
 	}
 
