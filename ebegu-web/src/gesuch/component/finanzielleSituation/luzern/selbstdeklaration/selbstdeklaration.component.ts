@@ -19,6 +19,7 @@ import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzielleSituationSelbstdeklaration} from '../../../../../models/TSFinanzielleSituationSelbstdeklaration';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
 
 @Component({
@@ -48,7 +49,8 @@ export class SelbstdeklarationComponent implements OnInit {
     public finanzModel: TSFinanzModel;
 
     public constructor(
-        private readonly finSitLuService: FinanzielleSituationLuzernService
+        private readonly finSitLuService: FinanzielleSituationLuzernService,
+        private readonly gesuchModelManager: GesuchModelManager
     ) {
     }
 
@@ -64,4 +66,11 @@ export class SelbstdeklarationComponent implements OnInit {
         this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
     }
 
+    public antragsteller1Name(): string {
+        return this.gesuchModelManager.getGesuch().gesuchsteller1?.extractFullName();
+    }
+
+    public antragsteller2Name(): string {
+        return this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
+    }
 }

@@ -18,14 +18,14 @@
 <div class="row">
     <div class="col-xs-12">
         <mat-divider class="margin-bottom-50"></mat-divider>
-        <h3 class="uppercase ebegu-h1" *ngIf="isGemeinsam">Selbstdeklaration gemeinsam für Jahr {{year}}</h3>
-        <h3 class="uppercase ebegu-h1" *ngIf="!isGemeinsam">Selbstdeklaration alleine für Antragsteller {{antragstellerNummer}} für Jahr {{year}}</h3>
+        <h3 class="uppercase ebegu-h1" *ngIf="isGemeinsam">{{'SELBSTDEKLARATION_GEMEINSAM_TITLE' | translate:{gs1: antragsteller1Name(), gs2: antragsteller2Name(), year: year} }}</h3>
+        <h3 class="uppercase ebegu-h1" *ngIf="!isGemeinsam">{{'SELBSTDEKLARATION_ALLEINE_TITLE'}}Selbstdeklaration alleine für Antragsteller {{antragsteller1Name()}} für Jahr {{year}}</h3>
     </div>
 </div>
 
 <div class="row">
     <div class="col-xs-12">
-        <h3 class="margin-bottom-20">Einkünfte im Jahr {{year}}</h3>
+        <h3 class="margin-bottom-20">{{'EINKUENFTE_IM_JAHR' | translate}} {{year}}</h3>
     </div>
     <div class="col-xs-12  dv-input-container-medium">
         <dv-input-label-field
@@ -123,7 +123,7 @@
     </div>
 </div>
 <mat-divider></mat-divider>
-<h3 class="margin-bottom-20">Abzüge im Jahr {{year}}</h3>
+<h3 class="margin-bottom-20">{{'ABZUEGE_IM_JAHR' | translate}} {{year}}</h3>
 <div class="row">
     <div class="col-sm-6">
         <dv-input-label-field
@@ -305,7 +305,7 @@
     </div>
 </div>
 <mat-divider></mat-divider>
-<h3 class="margin-bottom-20">Vermögen im Jahr {{year}}</h3>
+<h3 class="margin-bottom-20">{{'VERMOEGEN_IM_JAHR' | translate }} {{year}}</h3>
 <div class="row">
     <div class="col-sm-6">
         <dv-input-label-field
