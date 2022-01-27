@@ -20,13 +20,8 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
@@ -89,11 +84,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@Nullable
 	@Column(nullable = true)
 	private BigDecimal bruttoLohn;
-
-	@Nullable
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_finanziellesituation_selbstdeklaration_id"), nullable = true)
-	private FinanzielleSituationSelbstdeklaration selbstdeklaration;
 
 	public FinanzielleSituation() {
 	}
@@ -176,15 +166,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	public void setVeranlagt(@Nullable Boolean veranlagt) {
 		this.veranlagt = veranlagt;
-	}
-
-	@Nullable
-	public FinanzielleSituationSelbstdeklaration getSelbstdeklaration() {
-		return selbstdeklaration;
-	}
-
-	public void setSelbstdeklaration(@Nullable FinanzielleSituationSelbstdeklaration selbstdeklaration) {
-		this.selbstdeklaration = selbstdeklaration;
 	}
 
 	@Nullable
