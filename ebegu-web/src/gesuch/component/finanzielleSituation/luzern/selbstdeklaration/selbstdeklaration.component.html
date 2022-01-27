@@ -15,11 +15,18 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<h2 *ngIf="isGemeinsam">Selbstdeklaration gemeinsam für Jahr {{year}}</h2>
-<h2 *ngIf="!isGemeinsam">Selbstdeklaration alleine für Antragsteller {{antragstellerNummer}} für Jahr {{year}}</h2>
-
-<h3>Einkünfte im Jahr {{year}}</h3>
 <div class="row">
+    <div class="col-xs-12">
+        <mat-divider class="margin-bottom-50"></mat-divider>
+        <h3 class="uppercase ebegu-h1" *ngIf="isGemeinsam">Selbstdeklaration gemeinsam für Jahr {{year}}</h3>
+        <h3 class="uppercase ebegu-h1" *ngIf="!isGemeinsam">Selbstdeklaration alleine für Antragsteller {{antragstellerNummer}} für Jahr {{year}}</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <h3 class="margin-bottom-20">Einkünfte im Jahr {{year}}</h3>
+    </div>
     <div class="col-xs-12  dv-input-container-medium">
         <dv-input-label-field
             [(model)]="model.finanzielleSituationJA.selbstdeklaration.einkunftErwerb"
@@ -116,7 +123,7 @@
     </div>
 </div>
 <mat-divider></mat-divider>
-<h3>Abzüge im Jahr {{year}}</h3>
+<h3 class="margin-bottom-20">Abzüge im Jahr {{year}}</h3>
 <div class="row">
     <div class="col-sm-6">
         <dv-input-label-field
@@ -298,7 +305,7 @@
     </div>
 </div>
 <mat-divider></mat-divider>
-<h3>Vermögen im Jahr {{year}}</h3>
+<h3 class="margin-bottom-20">Vermögen im Jahr {{year}}</h3>
 <div class="row">
     <div class="col-sm-6">
         <dv-input-label-field

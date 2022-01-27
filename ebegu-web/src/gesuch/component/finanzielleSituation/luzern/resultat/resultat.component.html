@@ -14,10 +14,15 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
-<h2>{{'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN' | translate}}</h2>
+<div class="row">
+    <div class="col-sm-12">
+        <mat-divider class="margin-bottom-50"></mat-divider>
+        <h3 class="uppercase ebegu-h1">{{'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN' | translate}}</h3>
+    </div>
+</div>
 <div class="form-group">
     <div class="row" *ngIf="isGemeinsam">
-        <div class="col-sm-6 margin-top-20">
+        <div class="col-sm-6">
             <dv-input-label-field
                 [model]="resultate?.massgebendesEinkVorAbzFamGrGS1"
                 [labelMessageKey]=""
