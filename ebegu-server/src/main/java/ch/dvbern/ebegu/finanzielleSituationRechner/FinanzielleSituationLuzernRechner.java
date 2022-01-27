@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
+import ch.dvbern.ebegu.entities.FinanzielleSituationSelbstdeklaration;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.util.MathUtil;
 
@@ -115,28 +116,67 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 	) {
 		BigDecimal totalAbzuege = BigDecimal.ZERO;
 		if (finanzielleSituationGS1 != null) {
-			totalAbzuege = add(totalAbzuege, finanzielleSituationGS1.getAbzuegeLiegenschaft());
-			totalAbzuege = add(totalAbzuege, finanzielleSituationGS1.getEinkaeufeVorsorge());
+			BigDecimal abzuegeGS1;
+			if (finanzielleSituationGS1.getSelbstdeklaration() != null) {
+				abzuegeGS1 = calcAbzuegeFromSelbstdeklaration(finanzielleSituationGS1.getSelbstdeklaration());
+			} else {
+				abzuegeGS1 = calcAbzuegeFromVeranlagung(finanzielleSituationGS1);
+			}
+			totalAbzuege = totalAbzuege.add(abzuegeGS1);
 		}
 		if (finanzielleSituationGS2 != null) {
-			totalAbzuege = add(totalAbzuege, finanzielleSituationGS2.getAbzuegeLiegenschaft());
-			totalAbzuege = add(totalAbzuege, finanzielleSituationGS2.getEinkaeufeVorsorge());
+			BigDecimal abzuegeGS2;
+			if (finanzielleSituationGS2.getSelbstdeklaration() != null) {
+				abzuegeGS2 = calcAbzuegeFromSelbstdeklaration(finanzielleSituationGS2.getSelbstdeklaration());
+			} else {
+				abzuegeGS2 = calcAbzuegeFromVeranlagung(finanzielleSituationGS2);
+			}
+			totalAbzuege = totalAbzuege.add(abzuegeGS2);
 		}
 		return totalAbzuege;
+	}
+
+	private BigDecimal calcAbzuegeFromVeranlagung(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
+		BigDecimal total = BigDecimal.ZERO;
+		total = add(total, finanzielleSituation.getAbzuegeLiegenschaft());
+		total = add(total, finanzielleSituation.getEinkaeufeVorsorge());
+		return total;
+	}
+
+	@Nonnull
+	private BigDecimal calcAbzuegeFromSelbstdeklaration(@Nonnull FinanzielleSituationSelbstdeklaration selbstdeklaration) {
+		return BigDecimal.ZERO;
 	}
 
 	private BigDecimal calcVermoegen10Prozent(
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2) {
-		BigDecimal gs1SteuerbaresVermoegen =
-			finanzielleSituationGS1 != null ? finanzielleSituationGS1.getSteuerbaresVermoegen() : BigDecimal.ZERO;
-		BigDecimal gs2SteuerbaresVermoegen =
-			finanzielleSituationGS2 != null ? finanzielleSituationGS2.getSteuerbaresVermoegen() : BigDecimal.ZERO;
+		BigDecimal gs1SteuerbaresVermoegen = BigDecimal.ZERO;
+		if (finanzielleSituationGS1 != null) {
+			if (finanzielleSituationGS1.getSelbstdeklaration() != null) {
+				gs1SteuerbaresVermoegen = calcVermoegenFromSelbstdeklaration(finanzielleSituationGS1.getSelbstdeklaration());
+			} else {
+				gs1SteuerbaresVermoegen = finanzielleSituationGS1.getSteuerbaresVermoegen();
+			}
+		}
+		BigDecimal gs2SteuerbaresVermoegen = BigDecimal.ZERO;
+		if (finanzielleSituationGS2 != null) {
+			if (finanzielleSituationGS2.getSelbstdeklaration() != null) {
+				gs2SteuerbaresVermoegen = calcVermoegenFromSelbstdeklaration(finanzielleSituationGS2.getSelbstdeklaration());
+			} else {
+				gs2SteuerbaresVermoegen = finanzielleSituationGS2.getSteuerbaresVermoegen();
+			}
+		}
 
 		final BigDecimal totalBruttovermoegen = add(gs1SteuerbaresVermoegen, gs2SteuerbaresVermoegen);
 
 		BigDecimal total = percent(totalBruttovermoegen, 10);
 		return MathUtil.GANZZAHL.from(total);
+	}
+
+	@Nonnull
+	private BigDecimal calcVermoegenFromSelbstdeklaration(@Nonnull FinanzielleSituationSelbstdeklaration selbstdeklaration) {
+		return BigDecimal.ZERO;
 	}
 
 	@Nonnull
@@ -156,9 +196,18 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		@Nonnull BigDecimal total
 	) {
 		if (abstractFinanzielleSituation != null) {
-			total = add(total, abstractFinanzielleSituation.getSteuerbaresEinkommen());
-			total = subtract(total, abstractFinanzielleSituation.getGeschaeftsverlust());
+			if (abstractFinanzielleSituation.getSelbstdeklaration() != null) {
+				total = total.add(calcEinkommenFromSelbstdeklaration(abstractFinanzielleSituation.getSelbstdeklaration()));
+			} else {
+				total = add(total, abstractFinanzielleSituation.getSteuerbaresEinkommen());
+				total = subtract(total, abstractFinanzielleSituation.getGeschaeftsverlust());
+			}
 		}
 		return total;
+	}
+
+	@Nonnull
+	private BigDecimal calcEinkommenFromSelbstdeklaration(@Nonnull FinanzielleSituationSelbstdeklaration selbstdeklaration) {
+		return BigDecimal.ZERO;
 	}
 }
