@@ -68,6 +68,7 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 	@Inject
 	private SteuerdatenAnfrageLogService steuerdatenAnfrageLogService;
 
+	@SuppressWarnings("PMD.PreserveStackTrace")
 	@Override
 	public SteuerdatenResponse getSteuerDaten(
 		Integer zpvNummer,
