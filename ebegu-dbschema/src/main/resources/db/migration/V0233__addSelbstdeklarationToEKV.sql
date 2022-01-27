@@ -22,6 +22,6 @@ ALTER TABLE einkommensverschlechterung_aud
 	ADD COLUMN selbstdeklaration_id BINARY(16);
 
 ALTER TABLE einkommensverschlechterung
-	ADD CONSTRAINT FK_finanziellesituation_selbstdeklaration_id
+	ADD CONSTRAINT FK_einkommensverschlechterung_selbstdeklaration_id
 		FOREIGN KEY (selbstdeklaration_id)
 			REFERENCES finanzielle_situation_selbstdeklaration(id);

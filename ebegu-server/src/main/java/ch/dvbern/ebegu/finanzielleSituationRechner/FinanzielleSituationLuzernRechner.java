@@ -26,7 +26,6 @@ import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
-import ch.dvbern.ebegu.entities.FinanzielleSituationSelbstdeklaration;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.util.MathUtil;
 
@@ -118,7 +117,7 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		if (finanzielleSituationGS1 != null) {
 			BigDecimal abzuegeGS1;
 			if (finanzielleSituationGS1.getSelbstdeklaration() != null) {
-				abzuegeGS1 = calcAbzuegeFromSelbstdeklaration(finanzielleSituationGS1.getSelbstdeklaration());
+				abzuegeGS1 = finanzielleSituationGS1.getSelbstdeklaration().calculateAbzuege();
 			} else {
 				abzuegeGS1 = calcAbzuegeFromVeranlagung(finanzielleSituationGS1);
 			}
@@ -127,7 +126,7 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		if (finanzielleSituationGS2 != null) {
 			BigDecimal abzuegeGS2;
 			if (finanzielleSituationGS2.getSelbstdeklaration() != null) {
-				abzuegeGS2 = calcAbzuegeFromSelbstdeklaration(finanzielleSituationGS2.getSelbstdeklaration());
+				abzuegeGS2 = finanzielleSituationGS2.getSelbstdeklaration().calculateAbzuege();
 			} else {
 				abzuegeGS2 = calcAbzuegeFromVeranlagung(finanzielleSituationGS2);
 			}
@@ -143,18 +142,13 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		return total;
 	}
 
-	@Nonnull
-	private BigDecimal calcAbzuegeFromSelbstdeklaration(@Nonnull FinanzielleSituationSelbstdeklaration selbstdeklaration) {
-		return BigDecimal.ZERO;
-	}
-
 	private BigDecimal calcVermoegen10Prozent(
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2) {
 		BigDecimal gs1SteuerbaresVermoegen = BigDecimal.ZERO;
 		if (finanzielleSituationGS1 != null) {
 			if (finanzielleSituationGS1.getSelbstdeklaration() != null) {
-				gs1SteuerbaresVermoegen = calcVermoegenFromSelbstdeklaration(finanzielleSituationGS1.getSelbstdeklaration());
+				gs1SteuerbaresVermoegen = finanzielleSituationGS1.getSelbstdeklaration().calculateVermoegen();
 			} else {
 				gs1SteuerbaresVermoegen = finanzielleSituationGS1.getSteuerbaresVermoegen();
 			}
@@ -162,7 +156,7 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		BigDecimal gs2SteuerbaresVermoegen = BigDecimal.ZERO;
 		if (finanzielleSituationGS2 != null) {
 			if (finanzielleSituationGS2.getSelbstdeklaration() != null) {
-				gs2SteuerbaresVermoegen = calcVermoegenFromSelbstdeklaration(finanzielleSituationGS2.getSelbstdeklaration());
+				gs2SteuerbaresVermoegen = finanzielleSituationGS2.getSelbstdeklaration().calculateVermoegen();
 			} else {
 				gs2SteuerbaresVermoegen = finanzielleSituationGS2.getSteuerbaresVermoegen();
 			}
@@ -172,11 +166,6 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 
 		BigDecimal total = percent(totalBruttovermoegen, 10);
 		return MathUtil.GANZZAHL.from(total);
-	}
-
-	@Nonnull
-	private BigDecimal calcVermoegenFromSelbstdeklaration(@Nonnull FinanzielleSituationSelbstdeklaration selbstdeklaration) {
-		return BigDecimal.ZERO;
 	}
 
 	@Nonnull
@@ -197,17 +186,12 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 	) {
 		if (abstractFinanzielleSituation != null) {
 			if (abstractFinanzielleSituation.getSelbstdeklaration() != null) {
-				total = total.add(calcEinkommenFromSelbstdeklaration(abstractFinanzielleSituation.getSelbstdeklaration()));
+				total = total.add(abstractFinanzielleSituation.getSelbstdeklaration().calculateEinkuenfte());
 			} else {
 				total = add(total, abstractFinanzielleSituation.getSteuerbaresEinkommen());
 				total = subtract(total, abstractFinanzielleSituation.getGeschaeftsverlust());
 			}
 		}
 		return total;
-	}
-
-	@Nonnull
-	private BigDecimal calcEinkommenFromSelbstdeklaration(@Nonnull FinanzielleSituationSelbstdeklaration selbstdeklaration) {
-		return BigDecimal.ZERO;
 	}
 }

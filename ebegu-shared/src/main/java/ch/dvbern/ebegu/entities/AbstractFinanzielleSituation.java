@@ -22,7 +22,6 @@ import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -122,8 +121,8 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 
 	@Nullable
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_finanziellesituation_selbstdeklaration_id"), nullable = true)
-	private FinanzielleSituationSelbstdeklaration selbstdeklaration;
+	@JoinColumn(nullable = true)
+	protected FinanzielleSituationSelbstdeklaration selbstdeklaration;
 
 	public AbstractFinanzielleSituation() {
 	}

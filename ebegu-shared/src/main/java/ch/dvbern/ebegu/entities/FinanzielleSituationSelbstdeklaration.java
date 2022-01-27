@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -399,4 +400,54 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 			MathUtil.isSame(getAbzugSteuerfreierBetragKinder(), otherSelbstdeklaration.getAbzugSteuerfreierBetragKinder()) &&
 			MathUtil.isSame(getVermoegen(), otherSelbstdeklaration.getVermoegen());
 	}
+
+	@Nonnull
+	public BigDecimal calculateEinkuenfte() {
+		BigDecimal total = BigDecimal.ZERO;
+		return MathUtil.EXACT.addNullSafe(
+			total,
+			einkunftErwerb,
+			einkunftVersicherung,
+			einkunftAusgleichskassen,
+			einkunftWertschriften,
+			einkunftUnterhaltsbeitragSteuerpflichtige,
+			einkunftUnterhaltsbeitragKinder,
+			einkunftUeberige,
+			einkunftLiegenschaften
+		);
+	}
+
+	@Nonnull
+	public BigDecimal calculateAbzuege() {
+		BigDecimal total = BigDecimal.ZERO;
+		return MathUtil.EXACT.addNullSafe(
+			total,
+			abzugBerufsauslagen,
+			abzugUnterhaltsbeitragEhepartner,
+			abzugUnterhaltsbeitragKinder,
+			abzugRentenleistungen,
+			abzugSaeule3A,
+			abzugVersicherungspraemien,
+			abzugKrankheitsUnfallKosten,
+			abzugFreiweiligeZuwendungPartien,
+			abzugKinderVorschule,
+			abzugKinderSchule,
+			abzugKinderAuswaertigerAufenthalt,
+			abzugEigenbetreuung,
+			abzugFremdbetreuung,
+			abzugErwerbsunfaehigePersonen
+		);
+	}
+
+	@Nonnull
+	public BigDecimal calculateVermoegen() {
+		BigDecimal total = BigDecimal.ZERO;
+		return MathUtil.EXACT.addNullSafe(
+			total,
+			vermoegen,
+			abzugSteuerfreierBetragErwachsene,
+			abzugSteuerfreierBetragKinder
+		);
+	}
+
 }
