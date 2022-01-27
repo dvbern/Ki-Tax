@@ -42,9 +42,9 @@ import static ch.dvbern.ebegu.util.MathUtil.EXACT;
  * Berechnet die Vollkosten, den Elternbeitrag und die Vergünstigung für einen Zeitabschnitt (innerhalb eines Monats)
  * einer Betreuung für das Angebot KITA.
  */
-public class KitaKitaxRechner extends AbstractKitaxRechner {
+public class KitaKitaxBernRechner extends AbstractKitaxBernRechner {
 
-	public KitaKitaxRechner(
+	public KitaKitaxBernRechner(
 		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
 		@Nonnull KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
 		@Nonnull Locale locale

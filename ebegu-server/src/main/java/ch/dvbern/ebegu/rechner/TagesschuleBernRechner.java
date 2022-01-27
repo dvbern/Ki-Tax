@@ -29,9 +29,9 @@ import ch.dvbern.ebegu.entities.TSCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.util.MathUtil;
 
-public class TagesschuleRechner extends AbstractRechner {
+public class TagesschuleBernRechner extends AbstractBernRechner {
 
-	public TagesschuleRechner() {
+	public TagesschuleBernRechner() {
 	}
 
 

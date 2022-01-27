@@ -52,7 +52,7 @@ import static org.hamcrest.Matchers.is;
 public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 
 	private final BGRechnerParameterDTO parameterDTO = getParameter();
-	private final TageselternRechner tageselternRechner = new TageselternRechner(Collections.emptyList());
+	private final TageselternBernRechner tageselternRechner = new TageselternBernRechner(Collections.emptyList());
 
 	@Test
 	public void testVerguenstigungProZeiteinheit() {

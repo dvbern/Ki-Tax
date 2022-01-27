@@ -31,12 +31,12 @@ import ch.dvbern.ebegu.util.MathUtil;
 /**
  * Superklasse für BG-Rechner der Gemeinde: Berechnet sowohl nach ASIV wie auch nach Gemeinde-spezifischen Regeln
  */
-public abstract class AbstractGemeindeRechner extends AbstractAsivRechner {
+public abstract class AbstractGemeindeBernRechner extends AbstractAsivBernRechner {
 
 	private final List<RechnerRule> rechnerRulesForGemeinde;
 	private final RechnerRuleParameterDTO rechnerParameter = new RechnerRuleParameterDTO();
 
-	protected AbstractGemeindeRechner(List<RechnerRule> rechnerRulesForGemeinde) {
+	protected AbstractGemeindeBernRechner(List<RechnerRule> rechnerRulesForGemeinde) {
 		this.rechnerRulesForGemeinde = rechnerRulesForGemeinde;
 	}
 

@@ -32,7 +32,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 /**
  * Superklasse für BG-Rechner
  */
-public abstract class AbstractAsivRechner extends AbstractRechner {
+public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 
 	protected static final MathUtil EXACT = MathUtil.EXACT;
 
