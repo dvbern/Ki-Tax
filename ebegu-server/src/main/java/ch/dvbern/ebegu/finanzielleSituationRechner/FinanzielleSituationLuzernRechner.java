@@ -137,7 +137,8 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 
 	private BigDecimal calcAbzuegeFromVeranlagung(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
 		BigDecimal total = BigDecimal.ZERO;
-		total = add(total, finanzielleSituation.getAbzuegeLiegenschaft());
+		// abzuege liegenschaften should be ignored if negative
+		total = add(total, MathUtil.positiveNonNull(finanzielleSituation.getAbzuegeLiegenschaft()));
 		total = add(total, finanzielleSituation.getEinkaeufeVorsorge());
 		return total;
 	}
