@@ -6,5 +6,5 @@
     "FINANZIELLE_SITUATION_UNTERHALTSBEITRAEGE": "Unterhaltsbeiträge",
     "FINANZIELLE_SITUATION_STEUERVERANLAGUNG": "Haben Sie im Jahr {{basisjahrPlus}} oder {{basisjahr}} eine Steuerveranlagung erhalten?",
     "FINANZIELLE_SITUATION_BRUTTOLOHN": "Bruttolohn",
-    "LABEL_NICHT_ERHALTEN_ODER_QUELLENBESTEUERT": "Nein, nocht nicht erhalten oder quellenbesteuert"
+    "LABEL_NICHT_ERHALTEN_ODER_QUELLENBESTEUERT": "Nein, meine letzte Veranlagung ist älter oder ich bin quellenbesteuert"
 }
