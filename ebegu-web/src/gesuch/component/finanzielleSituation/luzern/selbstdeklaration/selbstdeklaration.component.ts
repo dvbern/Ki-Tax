@@ -56,6 +56,8 @@ export class SelbstdeklarationComponent implements OnInit {
         if (!this.model.finanzielleSituationJA.selbstdeklaration) {
             this.model.finanzielleSituationJA.selbstdeklaration = new TSFinanzielleSituationSelbstdeklaration();
         }
+        // load initial results
+        this.onValueChangeFunction();
     }
 
     public onValueChangeFunction = (): void => {

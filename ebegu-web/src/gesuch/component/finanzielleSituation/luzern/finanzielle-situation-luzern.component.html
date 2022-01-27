@@ -166,6 +166,7 @@
                 ></dv-veranlagung>
                 <dv-resultat *ngIf="showSelbstdeklaration() || showVeranlagung()"
                              [isGemeinsam]="isGemeinsam()"
+                             [antragstellerNummer]="getAntragstellerNummer()"
                              [year]="getYearForDeklaration()">
                 </dv-resultat>
                 <dv-navigation-x (dvSave)="prepareSave($event.onResult)" [dvPrevious]="hasPrevious" [dvNext]="hasNext"

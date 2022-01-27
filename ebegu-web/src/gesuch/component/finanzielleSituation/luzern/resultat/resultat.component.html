@@ -15,38 +15,45 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 <h2>{{'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN' | translate}}</h2>
-<div class="form-group" *ngIf="!isGemeinsam">
-    <div class="row">
-        <div class="col-sm-6">
+<div class="form-group">
+    <div class="row" *ngIf="isGemeinsam">
+        <div class="col-sm-6 margin-top-20">
             <dv-input-label-field
                 [model]="resultate?.massgebendesEinkVorAbzFamGrGS1"
                 [labelMessageKey]=""
-                [labelMessageKeyArgs]="{namegs: nameGS1}"
+                [labelMessageKeyArgs]=""
                 [inputDisabled]="true">
             </dv-input-label-field>
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-6">
+
+    <div class="row" *ngIf="!isGemeinsam">
+        <!--        this should be visible on all pages-->
+        <div class="col-sm-6 margin-top-20">
             <dv-input-label-field
-                [model]="resultate?.massgebendesEinkVorAbzFamGrGS2"
-                [labelMessageKey]=""
-                [labelMessageKeyArgs]="{namegs: nameGS2}"
+                [model]="resultate?.massgebendesEinkVorAbzFamGrGS1"
+                [labelMessageKey]="'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_MIT_GS'"
+                [labelMessageKeyArgs]="{namegs: getAntragsteller1Name()}"
                 [inputDisabled]="true">
             </dv-input-label-field>
         </div>
-    </div>
-</div>
-
-
-<div class="form-group">
-    <div class="row">
-        <div class="col-sm-12 dv-input-container-medium">
-            <dv-input-label-field
-                [model]="resultate?.massgebendesEinkVorAbzFamGr"
-                [labelMessageKey]=""
-                [inputDisabled]="true">
-            </dv-input-label-field>
-        </div>
+        <!--    this should only be visible on second page. only in this case we have multiple antragsteller a calculation -->
+        <ng-container *ngIf="antragstellerNummer === 2">
+            <div class="col-sm-12">
+                <dv-input-label-field
+                    [model]="resultate?.massgebendesEinkVorAbzFamGrGS2"
+                    [labelMessageKey]="'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_MIT_GS'"
+                    [labelMessageKeyArgs]="{namegs: getAntragsteller2Name()}"
+                    [inputDisabled]="true">
+                </dv-input-label-field>
+            </div>
+            <div class="col-sm-12">
+                <dv-input-label-field
+                    [model]="resultate?.massgebendesEinkVorAbzFamGr"
+                    [labelMessageKey]="'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN'"
+                    [inputDisabled]="true">
+                </dv-input-label-field>
+            </div>
+        </ng-container>
     </div>
 </div>

@@ -119,6 +119,7 @@
     "FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN": "Revenu déterminant",
     "FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_VOR_ABZUG_FAM": "Revenu déterminant avant déduction liée à la taille de la famille",
     "FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_VOR_ABZUG_FAM_MIT_GS": "Revenu déterminant avant déduction liée à la taille de la famille ({{namegs}})",
+    "FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_MIT_GS": "Massgebendes Einkommen {{namegs}}",
     "FINANZIELLE_SITUATION_EINKOMMENSVERSCHLECHTERUNG": "Voulez-vous faire valoir une détérioration du revenu ? ",
     "FINANZIELLE_SITUATION_SELBSTDEKLARATION_ERWERB": "Haupt- und Nebenerwerb des / der Steuerpflichtigen",
     "FINANZIELLE_SITUATION_SELBSTDEKLARATION_ERWERB_HELP": "siehe Wegleitung zur Steuererklärung <br><br> entsprechende Positionen: 100,104,110,114,118",
