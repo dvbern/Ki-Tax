@@ -40,9 +40,6 @@ export class MassgebendesEinkommenComponent implements OnInit {
     public hasZweiGesuchsteller: boolean;
 
     @Input()
-    public isGemeinsameStek: boolean = false;
-
-    @Input()
     public nameGS1: string;
 
     @Input()
