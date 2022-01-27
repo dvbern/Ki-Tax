@@ -213,8 +213,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		if (existingBenutzer == null) {
 			return convertBenutzerResponseWrapperToJax(
 				externalBenutzer,
-				ServerMessageUtil.translateEnumValue(ERROR_ENTITY_NOT_FOUND, LocaleThreadLocal.get(), requireNonNull(
-						existingBenutzer).getMandant())
+				ServerMessageUtil.translateEnumValue(ERROR_ENTITY_NOT_FOUND, LocaleThreadLocal.get(), mandantService.getMandantBern())
 			);
 		}
 
