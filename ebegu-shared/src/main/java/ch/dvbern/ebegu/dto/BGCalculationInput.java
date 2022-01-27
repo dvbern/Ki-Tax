@@ -130,6 +130,9 @@ public class BGCalculationInput {
 	private boolean besondereBeduerfnisseBestaetigt;
 
 	@Nullable
+	private BigDecimal besondereBeduerfnisseBetrag;
+
+	@Nullable
 	private BigDecimal abzugFamGroesse = null;
 
 	@NotNull @Nonnull
@@ -168,7 +171,11 @@ public class BGCalculationInput {
 
 	private int minimalErforderlichesPensum;
 
+	private boolean isKesbPlatzierung;
+
 	private PensumUnits pensumUnit = PensumUnits.PERCENTAGE;
+
+	private BigDecimal kostenAnteilMonat = BigDecimal.ZERO;
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
@@ -226,6 +233,9 @@ public class BGCalculationInput {
 		this.pensumUnit = toCopy.pensumUnit;
 		this.minimalErforderlichesPensum = toCopy.minimalErforderlichesPensum;
 		this.rueckwirkendReduziertesPensumRest = toCopy.rueckwirkendReduziertesPensumRest;
+		this.kostenAnteilMonat = toCopy.kostenAnteilMonat;
+		this.isKesbPlatzierung = toCopy.isKesbPlatzierung;
+		this.besondereBeduerfnisseBetrag = toCopy.besondereBeduerfnisseBetrag;
 	}
 
 	@Nonnull
@@ -658,6 +668,14 @@ public class BGCalculationInput {
 		this.verguenstigungMahlzeitenBeantragt = verguenstigungMahlzeitenBeantragt;
 	}
 
+	public BigDecimal getKostenAnteilMonat() {
+		return kostenAnteilMonat;
+	}
+
+	public void setKostenAnteilMonat(BigDecimal kostenAnteilMonat) {
+		this.kostenAnteilMonat = kostenAnteilMonat;
+	}
+
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder("BGCalculationInput{");
@@ -768,6 +786,11 @@ public class BGCalculationInput {
 		this.einschulungTyp = this.einschulungTyp != null ? this.einschulungTyp : other.einschulungTyp;
 		this.betreuungsangebotTyp = this.betreuungsangebotTyp != null ? this.betreuungsangebotTyp : other.betreuungsangebotTyp;
 
+		this.kostenAnteilMonat = this.kostenAnteilMonat.add(other.kostenAnteilMonat);
+
+		if (this.besondereBeduerfnisseBetrag != null) {
+			this.besondereBeduerfnisseBetrag = this.besondereBeduerfnisseBetrag.add(other.besondereBeduerfnisseBetrag);
+		}
 		// Zusätzliche Felder aus Result
 		this.betreuungspensumProzent = this.betreuungspensumProzent.add(other.betreuungspensumProzent);
 		this.anspruchspensumProzent = this.anspruchspensumProzent + other.anspruchspensumProzent;
@@ -780,6 +803,7 @@ public class BGCalculationInput {
 		this.tsInputOhneBetreuung.add(other.tsInputOhneBetreuung);
 		this.sozialhilfeempfaenger = this.sozialhilfeempfaenger || other.sozialhilfeempfaenger;
 		this.betreuungInGemeinde = this.betreuungInGemeinde || other.betreuungInGemeinde;
+		this.isKesbPlatzierung = this.isKesbPlatzierung || other.isKesbPlatzierung;
 
 		// Die Felder betreffend Familienabzug können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
 		if (other.getAbzugFamGroesse() != null) {
@@ -798,6 +822,65 @@ public class BGCalculationInput {
 
 		this.minimalErforderlichesPensum = other.minimalErforderlichesPensum;
 	}
+
+	public void calculateInputValuesProportionaly(double percentage) {
+		if (!isPercentCaluclable(percentage)) {
+			throw new IllegalArgumentException(
+				"Prozentualle Input Berechnung kann nicht durchgeführt werden mit einem Prozentuallen Wert von "
+					+ percentage);
+		}
+
+		this.erwerbspensumGS1 = calculatePercentage(this.erwerbspensumGS1, percentage);
+		this.erwerbspensumGS2 = calculatePercentage(this.erwerbspensumGS2, percentage);
+		this.betreuungspensumProzent = calculatePercentage(this.betreuungspensumProzent, percentage);
+		this.anspruchspensumProzent = calculatePercentageInt(this.anspruchspensumProzent, percentage);
+		this.anspruchspensumRest = calculatePercentageInt(this.anspruchspensumRest, percentage);
+		this.fachstellenpensum = calculatePercentageInt(this.fachstellenpensum, percentage);
+		this.ausserordentlicherAnspruch = calculatePercentageInt(this.ausserordentlicherAnspruch, percentage);
+		this.monatlicheBetreuungskosten = calculatePercentage(this.monatlicheBetreuungskosten, percentage);
+		this.tarifHauptmahlzeit = calculatePercentage(this.tarifHauptmahlzeit, percentage);
+		this.tarifNebenmahlzeit = calculatePercentage(this.tarifNebenmahlzeit, percentage);
+		this.massgebendesEinkommenVorAbzugFamgr = calculatePercentage(this.massgebendesEinkommenVorAbzugFamgr, percentage);
+		this.anzahlHauptmahlzeiten = calculatePercentage(this.anzahlHauptmahlzeiten, percentage);
+		this.anzahlNebenmahlzeiten = calculatePercentage(this.anzahlNebenmahlzeiten, percentage);
+		this.tsInputMitBetreuung.calculatePercentage(percentage);
+		this.tsInputOhneBetreuung.calculatePercentage(percentage);
+	}
+
+	private boolean isPercentCaluclable(double percent) {
+		return percent > 0 && percent < 100;
+	}
+
+	@Nullable
+	private Integer calculatePercentage(@Nullable Integer value, double percent) {
+		if(value == null) {
+			return value;
+		}
+
+		return calculatePercentageInt(value, percent);
+	}
+
+	private int calculatePercentageInt(int value, double percent) {
+		return Math.toIntExact(Math.round(actualCalculatePercentage(value*1.0, percent)));
+	}
+
+	@Nullable
+	private BigDecimal calculatePercentage(@Nullable BigDecimal value, double percent) {
+		if(value == null) {
+			return null;
+		}
+
+		return BigDecimal.valueOf(actualCalculatePercentage(value.doubleValue(), percent));
+	}
+
+	private double actualCalculatePercentage(double value, double percent) {
+		if(value == 0) {
+			return 0;
+		}
+
+		return value / 100 * percent;
+	}
+
 
 	public boolean isSame(BGCalculationInput other) {
 		return
@@ -837,9 +920,11 @@ public class BGCalculationInput {
 			minimalesEwpUnterschritten == other.minimalesEwpUnterschritten &&
 			Objects.equals(einkommensjahr, other.einkommensjahr) &&
 			besondereBeduerfnisseBestaetigt == other.besondereBeduerfnisseBestaetigt &&
+			MathUtil.isSame(this.besondereBeduerfnisseBetrag, other.besondereBeduerfnisseBetrag) &&
 			this.tsInputMitBetreuung.isSame(other.tsInputMitBetreuung) &&
 			this.tsInputOhneBetreuung.isSame(other.tsInputOhneBetreuung) &&
-			this.sozialhilfeempfaenger == other.sozialhilfeempfaenger;
+			this.sozialhilfeempfaenger == other.sozialhilfeempfaenger &&
+			this.isKesbPlatzierung == other.isKesbPlatzierung;
 	}
 
 	public boolean isSameSichtbareDaten(BGCalculationInput that) {
@@ -860,6 +945,7 @@ public class BGCalculationInput {
 			MathUtil.isSame(this.massgebendesEinkommenVorAbzugFamgr, that.massgebendesEinkommenVorAbzugFamgr) &&
 			Objects.equals(this.einkommensjahr, that.einkommensjahr) &&
 			this.besondereBeduerfnisseBestaetigt == that.besondereBeduerfnisseBestaetigt &&
+			MathUtil.isSame(this.besondereBeduerfnisseBetrag, that.besondereBeduerfnisseBetrag) &&
 			this.minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
 			this.tsInputMitBetreuung.isSame(that.tsInputMitBetreuung) &&
 			this.tsInputOhneBetreuung.isSame(that.tsInputOhneBetreuung) &&
@@ -932,5 +1018,22 @@ public class BGCalculationInput {
 
 	public void setRueckwirkendReduziertesPensumRest(int rueckwirkendReduziertesPensumRest) {
 		this.rueckwirkendReduziertesPensumRest = rueckwirkendReduziertesPensumRest;
+	}
+
+	public boolean isKesbPlatzierung() {
+		return isKesbPlatzierung;
+	}
+
+	public void setKesbPlatzierung(boolean kesbPlatzierung) {
+		isKesbPlatzierung = kesbPlatzierung;
+	}
+
+	@Nullable
+	public BigDecimal getBesondereBeduerfnisseBetrag() {
+		return besondereBeduerfnisseBetrag;
+	}
+
+	public void setBesondereBeduerfnisseBetrag(@Nullable BigDecimal besondereBeduerfnisseBetrag) {
+		this.besondereBeduerfnisseBetrag = besondereBeduerfnisseBetrag;
 	}
 }

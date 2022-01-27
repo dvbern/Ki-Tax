@@ -452,7 +452,7 @@ public abstract class AbstractFinanzielleSituationRechner {
 	}
 
 	@Nullable
-	private BigDecimal calcEinkommenProGS(
+	protected BigDecimal calcEinkommenProGS(
 		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation,
 		@Nullable BigDecimal geschaeftsgewinnDurchschnitt,
 		@Nullable BigDecimal total
@@ -467,7 +467,7 @@ public abstract class AbstractFinanzielleSituationRechner {
 		return total;
 	}
 
-	private BigDecimal calcAbzuege(
+	protected BigDecimal calcAbzuege(
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2
 	) {

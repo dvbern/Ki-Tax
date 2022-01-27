@@ -25,6 +25,7 @@ import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSAbholungTagesschuleValues, TSAbholungTagesschule} from '../../../models/enums/TSAbholungTagesschule';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
+import {isVerfuegtOrSTV} from '../../../models/enums/TSAntragStatus';
 import {
     getTSBelegungTagesschuleModulIntervallValues,
     TSBelegungTagesschuleModulIntervall,
@@ -44,6 +45,7 @@ import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {OkDialogLongTextController} from '../../dialog/OkDialogLongTextController';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
@@ -208,6 +210,9 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             this.minEintrittsdatum = this.getMinErsterSchultag();
             this.setErsterSchultag();
         }
+        this.isKesbPlatzierung =
+            EbeguUtil.isNullOrUndefined(this.betreuung?.belegungTagesschule?.keineKesbPlatzierung) ? null :
+                !this.betreuung?.belegungTagesschule?.keineKesbPlatzierung;
         this.initMutation();
     }
 
@@ -549,5 +554,24 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     public showStornierenForRole(): boolean {
         return this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getSchulamtRoles());
+    }
+
+    public changeKeineKesbPlatzierung(): void {
+        this.getBetreuungModel().belegungTagesschule.keineKesbPlatzierung = !this.isKesbPlatzierung;
+    }
+
+    public enableKESBFrage(): boolean {
+        if (this.isDuplicated) {
+            return true;
+        }
+        if (!this.gesuchModelManager.getGesuch() || !this.isAnmeldungTSEditable()) {
+            return false;
+        }
+        const gesuchsteller = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
+        const gemeindeUser = this.authServiceRS
+            .isOneOfRoles(TSRoleUtil.getAdministratorOrAmtOrSozialdienstRolle());
+        return !this.isSavingData
+            && (this.gesuchModelManager.getGesuch() && !isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status))
+            && (gesuchsteller || gemeindeUser);
     }
 }

@@ -22,6 +22,7 @@ import {FinanzielleSituationRS} from '../../../../gesuch/service/finanzielleSitu
 import {FinanzielleSituationSubStepManager} from '../../../../gesuch/service/finanzielleSituationSubStepManager';
 import {FinanzielleSituationSubStepManagerBernAsiv} from '../../../../gesuch/service/finanzielleSituationSubStepManagerBernAsiv';
 import {FinanzielleSituationSubStepManagerLuzern} from '../../../../gesuch/service/finanzielleSituationSubStepManagerLuzern';
+import {FinanzielleSituationSubStepManagerSolothurn} from '../../../../gesuch/service/finanzielleSituationSubStepManagerSolothurn';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
@@ -85,12 +86,17 @@ export class DvNavigationXComponent implements OnInit {
             .subscribe(typ => {
                 switch (typ) {
                     case TSFinanzielleSituationTyp.BERN:
+                    case TSFinanzielleSituationTyp.BERN_FKJV:
                         this.finSitWizardSubStepManager =
                             new FinanzielleSituationSubStepManagerBernAsiv(this.gesuchModelManager);
                         break;
                     case TSFinanzielleSituationTyp.LUZERN:
                         this.finSitWizardSubStepManager =
                             new FinanzielleSituationSubStepManagerLuzern(this.gesuchModelManager);
+                        break;
+                    case TSFinanzielleSituationTyp.SOLOTHURN:
+                        this.finSitWizardSubStepManager =
+                            new FinanzielleSituationSubStepManagerSolothurn(this.gesuchModelManager);
                         break;
                     default:
                         throw new Error(`unexpected TSFinanzielleSituationTyp ${typ}`);
@@ -255,7 +261,8 @@ export class DvNavigationXComponent implements OnInit {
             return undefined;
         }
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()
-            || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()) {
+            || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()
+            || TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
             const nextSubStep = this.finSitWizardSubStepManager.getNextSubStepFinanzielleSituation(this.dvSubStepName);
             const nextMainStep = this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch());
             this.navigateToSubStepFinanzielleSituation(
@@ -337,7 +344,8 @@ export class DvNavigationXComponent implements OnInit {
         }
 
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()
-            || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()) {
+            || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()
+            || TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
             const previousSubStep = this.finSitWizardSubStepManager.getPreviousSubStepFinanzielleSituation(this.dvSubStepName);
             const previousMainStep = this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch());
 
@@ -403,6 +411,15 @@ export class DvNavigationXComponent implements OnInit {
             case TSFinanzielleSituationSubStepName.LUZERN_RESULTATE:
                 this.navigateToLuzernResultate();
                 return;
+            case TSFinanzielleSituationSubStepName.SOLOTHURN_START:
+                this.navigateToSolothurnStart();
+                return;
+            case TSFinanzielleSituationSubStepName.SOLOTHURN_GS1:
+                this.navigateToSolothurnGS1();
+                return;
+            case TSFinanzielleSituationSubStepName.SOLOTHURN_GS2:
+                this.navigateToSolothurnGS2();
+                return;
             default:
                 throw new Error(`not implemented for Substep ${navigateToSubStep}`);
         }
@@ -447,6 +464,9 @@ export class DvNavigationXComponent implements OnInit {
                 return;
             case TSWizardStepName.FINANZIELLE_SITUATION_LUZERN:
                 this.$state.go('gesuch.finanzielleSituationStartLuzern', gesuchIdParam);
+                return;
+            case TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN:
+                this.$state.go('gesuch.finanzielleSituationStartSolothurn', gesuchIdParam);
                 return;
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG:
                 this.$state.go('gesuch.einkommensverschlechterungInfo', gesuchIdParam);
@@ -532,6 +552,29 @@ export class DvNavigationXComponent implements OnInit {
     private navigateToLuzernResultate(): any {
         return this.$state.go('gesuch.finanzielleSituationResultateLuzern', {
             gesuchId: this.getGesuchId(),
+        });
+    }
+
+    // tslint:disable-next-line:no-identical-functions
+    private navigateToSolothurnStart(): any {
+        return this.$state.go('gesuch.finanzielleSituationStartSolothurn', {
+            gesuchId: this.getGesuchId(),
+        });
+    }
+
+    // tslint:disable-next-line:no-identical-functions
+    private navigateToSolothurnGS1(): any {
+        return this.$state.go('gesuch.finanzielleSituationGS1Solothurn', {
+            gesuchId: this.getGesuchId(),
+            gsNummer: 1
+        });
+    }
+
+    // tslint:disable-next-line:no-identical-functions
+    private navigateToSolothurnGS2(): any {
+        return this.$state.go('gesuch.finanzielleSituationGS2Solothurn', {
+            gesuchId: this.getGesuchId(),
+            gsNummer: 2
         });
     }
 

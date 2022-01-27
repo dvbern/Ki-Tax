@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.reporting.benutzer.BenutzerDataRow;
@@ -41,14 +42,15 @@ public interface ReportService {
 
 	// Gesuch Stichtag
 	@Nonnull
-	List<GesuchStichtagDataRow> getReportDataGesuchStichtag(@Nonnull LocalDate date, @Nullable String gesuchPeriodeID)
+	List<GesuchStichtagDataRow> getReportDataGesuchStichtag(@Nonnull LocalDate date, @Nullable String gesuchPeriodeID, @Nonnull Mandant mandant)
 		throws IOException, URISyntaxException;
 
 	@Nonnull
 	UploadFileInfo generateExcelReportGesuchStichtag(
 		@Nonnull LocalDate date,
 		@Nullable String gesuchPeriodeID,
-		@Nonnull Locale locale)
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant)
 		throws ExcelMergeException, IOException, MergeDocException, URISyntaxException;
 
 	// Gesuch Zeitraum
@@ -57,7 +59,8 @@ public interface ReportService {
 	List<GesuchZeitraumDataRow> getReportDataGesuchZeitraum(
 		@Nonnull LocalDate dateVon,
 		@Nonnull LocalDate dateBis,
-		@Nullable String gesuchPeriodeID)
+		@Nullable String gesuchPeriodeID,
+		@Nonnull Mandant mandant)
 		throws IOException, URISyntaxException;
 
 	@Nonnull
@@ -65,7 +68,8 @@ public interface ReportService {
 		@Nonnull LocalDate dateVon,
 		@Nonnull LocalDate dateBis,
 		@Nullable String gesuchPeriodeID,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	)
 		throws ExcelMergeException, IOException, MergeDocException, URISyntaxException;
 
@@ -74,7 +78,8 @@ public interface ReportService {
 	List<KantonDataRow> getReportDataKanton(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
-		@Nonnull Locale locale)
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant)
 		throws IOException, URISyntaxException;
 
 	@Nonnull
@@ -82,19 +87,21 @@ public interface ReportService {
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
 		@Nullable BigDecimal kantonSelbstbehalt,
-		@Nonnull Locale locale)
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant)
 		throws ExcelMergeException, IOException, MergeDocException, URISyntaxException;
 
 	// MitarbeterInnen
 	@Nonnull
-	List<MitarbeiterinnenDataRow> getReportMitarbeiterinnen(@Nonnull LocalDate datumVon, @Nonnull LocalDate datumBis)
+	List<MitarbeiterinnenDataRow> getReportMitarbeiterinnen(@Nonnull LocalDate datumVon, @Nonnull LocalDate datumBis, @Nonnull Mandant mandant)
 		throws IOException, URISyntaxException;
 
 	@Nonnull
 	UploadFileInfo generateExcelReportMitarbeiterinnen(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
-		@Nonnull Locale locale)
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant)
 		throws ExcelMergeException, IOException, MergeDocException, URISyntaxException;
 
 	// Zahlungen
@@ -117,7 +124,8 @@ public interface ReportService {
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
 		@Nullable String gesuchPeriodeId,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	)
 		throws ExcelMergeException, IOException, MergeDocException, URISyntaxException;
 
@@ -132,19 +140,20 @@ public interface ReportService {
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
 		@Nullable String gesuchPeriodeId,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	)
 		throws ExcelMergeException, IOException, MergeDocException, URISyntaxException;
 
 	@Nonnull
-	UploadFileInfo generateExcelReportGesuchsteller(@Nonnull LocalDate stichtag, @Nonnull Locale locale)
+	UploadFileInfo generateExcelReportGesuchsteller(@Nonnull LocalDate stichtag, @Nonnull Locale locale, @Nonnull Mandant mandant)
 		throws ExcelMergeException, IOException, MergeDocException, URISyntaxException;
 
 	@Nonnull
-	UploadFileInfo generateExcelReportBenutzer(@Nonnull Locale locale) throws ExcelMergeException;
+	UploadFileInfo generateExcelReportBenutzer(@Nonnull Locale locale, @Nonnull Mandant mandant) throws ExcelMergeException;
 
 	@Nonnull
-	List<BenutzerDataRow> getReportDataBenutzer(@Nonnull Locale locale);
+	List<BenutzerDataRow> getReportDataBenutzer(@Nonnull Locale locale, @Nonnull Mandant mandant);
 
 	@Nonnull
 	UploadFileInfo generateExcelReportInstitutionen(@Nonnull Locale locale) throws ExcelMergeException;

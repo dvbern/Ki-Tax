@@ -443,6 +443,11 @@ public class Betreuung extends AbstractPlatz {
 			&& getErweiterteBetreuungContainer().getErweiterteBetreuungJA().isErweiterteBeduerfnisseBestaetigt();
 	}
 
+	public boolean hasErweiterteBeduerfnisseBetrag() {
+		return getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null
+			&& getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getErweitereteBeduerfnisseBetrag() != null;
+	}
+
 	@Override
 	public String getMessageForAccessException() {
 		return "bgNummer: " + this.getBGNummer()

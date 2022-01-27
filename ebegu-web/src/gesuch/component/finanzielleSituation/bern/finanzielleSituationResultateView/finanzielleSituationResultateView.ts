@@ -16,6 +16,7 @@
 import {IComponentOptions, IPromise} from 'angular';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSFinanzielleSituationTyp} from '../../../../../models/enums/TSFinanzielleSituationTyp';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
@@ -138,5 +139,9 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
 
     public getResultate(): TSFinanzielleSituationResultateDTO {
         return this.berechnungsManager.finanzielleSituationResultate;
+    }
+
+    public isFKJV(): boolean {
+        return this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV;
     }
 }

@@ -122,7 +122,7 @@
                     </div>
 
                     <!-- Kinderabzug: Erstes Halbjahr -->
-                    <div class="row">
+                    <div class="row" ng-show="vm.showKinderabzugFrage()">
                         <div class="col-xs-12 dv-input-container-question">
                             <dv-input-container class="form-group">
                                 <span class="ebegu-h1 required">
@@ -132,7 +132,7 @@
                                                 text="'KINDERABZUG_HELP' | translate"></dv-tooltip>
                                 </span>
                                 <dv-radio-container name="kinderabzugErstesHalbjahr" ng-model="vm.getModel().kinderabzugErstesHalbjahr"
-                                                    ng-required="true"
+                                                    ng-required="vm.showKinderabzugFrage()"
                                                     dv-enable-element
                                                     dv-enable-allowed-roles="vm.allowedRoles"
                                                     dv-enable-expression="!vm.isGesuchReadonly()"
@@ -149,7 +149,7 @@
                         </div>
                     </div>
                     <!-- Kinderabzug: Zweites Halbjahr -->
-                    <div class="row">
+                    <div class="row" ng-show="vm.showKinderabzugFrage()">
                         <div class="col-xs-12 dv-input-container-question">
                             <dv-input-container class="form-group">
                                 <span class="ebegu-h1 required">
@@ -159,7 +159,7 @@
                                                 text="'KINDERABZUG_HELP' | translate"></dv-tooltip>
                                 </span>
                                 <dv-radio-container name="kinderabzugZweitesHalbjahr" ng-model="vm.getModel().kinderabzugZweitesHalbjahr"
-                                                    ng-required="true"
+                                                    ng-required="vm.showKinderabzugFrage()"
                                                     dv-enable-element
                                                     dv-enable-allowed-roles="vm.allowedRoles"
                                                     dv-enable-expression="!vm.isGesuchReadonly()"
@@ -537,7 +537,7 @@
                                                id="betreuungspensumAusserordentlicherAnspruch" type="number"
                                                name="betreuungspensumAusserordentlicherAnspruch"
                                                ng-model="vm.getPensumAusserordentlicherAnspruch().pensum"
-                                               max="20" class="form-control"
+                                               max="{{vm.maxPensumAusserordentlicherAnspruch}}" class="form-control"
                                                ng-pattern="vm.CONSTANTS.PATTERN_PERCENTAGE"
                                                ng-required="vm.isAusserordentlicherAnspruchRequired()"
                                                ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}"

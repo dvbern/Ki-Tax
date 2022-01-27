@@ -210,10 +210,6 @@ public enum EinstellungKey {
 	// Ferienbetreuung Kosten pro Tag für Sonderschüler
 	FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER,
 
-	// Neue Frage bei Kinderabzug für FJKV
-	// Siehe KIBON-2115
-	FKJV_KINDERABZUG_NEU,
-
 	// Neue Familiensituation für FJKV
 	// Siehe KIBON-2116
 	FKJV_FAMILIENSITUATION_NEU,
@@ -236,10 +232,20 @@ public enum EinstellungKey {
 	// Siehe KIBON-2134
 	ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,
 
+	// Kinderabzug Typ (Solothurn und FKJV)
+	// Siehe KIBON-2182
+	KINDERABZUG_TYP,
+
 	// Soll die KESB-Platzierung in der Betreuung deaktiviert sein
 	// Siehe KIBON-2177
-	KESB_PLATZIERUNG_DEAKTIVIEREN;
+	KESB_PLATZIERUNG_DEAKTIVIEREN,
 
+	// Frage für Besondere Beduerfnisse in Luzern aktivieren
+	// Siehe KIBON-2189
+	BESONDERE_BEDUERFNISSE_LUZERN,
+
+	// Wie hich ist das maximale Pensum bei ausserordentlichem Anspruch
+	FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH;
 
 
 	private EinstellungTyp typ;

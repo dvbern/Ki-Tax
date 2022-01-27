@@ -106,7 +106,8 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testGetReportDataGesuchStichtag() throws Exception {
-		List<GesuchStichtagDataRow> reportData = reportService.getReportDataGesuchStichtag(LocalDate.now(), null);
+		List<GesuchStichtagDataRow> reportData = reportService.getReportDataGesuchStichtag(LocalDate.now(), null,
+				getDummySuperadmin().getMandant());
 
 		List<GesuchStichtagDataRow> rowsSorted = reportData
 			.stream()
@@ -127,7 +128,7 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 		List<GesuchZeitraumDataRow> reportData = reportService.getReportDataGesuchZeitraum(
 			LocalDate.of(2016, Month.JANUARY, 1),
 			LocalDate.of(2017, Month.DECEMBER, 31),
-			null);
+			null, getDummySuperadmin().getMandant());
 
 		List<GesuchZeitraumDataRow> rowsSorted = reportData
 			.stream()
@@ -223,7 +224,7 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchStichtag(
 			LocalDate.now(),
 			null,
-			Constants.DEUTSCH_LOCALE);
+			Constants.DEUTSCH_LOCALE, getDummySuperadmin().getMandant());
 
 		assertNotNull(uploadFileInfo.getBytes());
 		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchStichtag_DE.xlsx");
@@ -234,7 +235,7 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchStichtag(
 			LocalDate.now(),
 			null,
-			Constants.FRENCH_LOCALE);
+			Constants.FRENCH_LOCALE, getDummySuperadmin().getMandant());
 
 		assertNotNull(uploadFileInfo.getBytes());
 		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchStichtag_FR.xlsx");
@@ -246,7 +247,7 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 			LocalDate.of(2016, Month.JANUARY, 1),
 			LocalDate.of(2017, Month.DECEMBER, 31),
 			null,
-			Constants.DEUTSCH_LOCALE);
+			Constants.DEUTSCH_LOCALE, getDummySuperadmin().getMandant());
 
 		assertNotNull(uploadFileInfo.getBytes());
 		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchZeitraum_DE.xlsx");
@@ -258,7 +259,7 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 			LocalDate.of(2016, Month.JANUARY, 1),
 			LocalDate.of(2017, Month.DECEMBER, 31),
 			null,
-			Constants.FRENCH_LOCALE);
+			Constants.FRENCH_LOCALE, getDummySuperadmin().getMandant());
 
 		assertNotNull(uploadFileInfo.getBytes());
 		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchZeitraum_FR.xlsx");
@@ -282,7 +283,7 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 			}
 		}
 		UploadFileInfo uploadFileInfo = reportService
-			.generateExcelReportKanton(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, null, Constants.DEFAULT_LOCALE);
+			.generateExcelReportKanton(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, null, Constants.DEFAULT_LOCALE, getDummySuperadmin().getMandant());
 
 		assertNotNull(uploadFileInfo.getBytes());
 		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportKantonOhneSelbstbehalt.xlsx");
@@ -297,7 +298,7 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 			}
 		}
 		UploadFileInfo uploadFileInfo = reportService
-			.generateExcelReportKanton(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, new BigDecimal(1000), Constants.DEFAULT_LOCALE);
+			.generateExcelReportKanton(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, new BigDecimal(1000), Constants.DEFAULT_LOCALE, getDummySuperadmin().getMandant());
 
 		assertNotNull(uploadFileInfo.getBytes());
 		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportKantonMitSelbstbehalt.xlsx");
@@ -307,7 +308,7 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 	public void testGenerateExcelReportMitarbeiterinnen() throws Exception {
 		gesuchService.getAllGesuche();
 		UploadFileInfo uploadFileInfo = reportService
-			.generateExcelReportMitarbeiterinnen(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, Constants.DEFAULT_LOCALE);
+			.generateExcelReportMitarbeiterinnen(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, Constants.DEFAULT_LOCALE, getDummySuperadmin().getMandant());
 
 		assertNotNull(uploadFileInfo.getBytes());
 		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportMitarbeiterinnen.xlsx");
@@ -316,7 +317,7 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testGetReportMitarbeiterinnen() throws Exception {
 		final List<MitarbeiterinnenDataRow> reportMitarbeiterinnen = reportService
-			.getReportMitarbeiterinnen(LocalDate.of(1000, 1, 1), LocalDate.now());
+			.getReportMitarbeiterinnen(LocalDate.of(1000, 1, 1), LocalDate.now(), getDummySuperadmin().getMandant());
 
 		Assert.assertEquals(3, reportMitarbeiterinnen.size());
 
@@ -343,7 +344,7 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 			LocalDate.of(2016, Month.JANUARY, 1),
 			LocalDate.of(2018, Month.DECEMBER, 31),
 			null,
-			Constants.DEFAULT_LOCALE);
+			Constants.DEFAULT_LOCALE, getDummySuperadmin().getMandant());
 
 		assertNotNull(uploadFileInfo.getBytes());
 		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchstellerKinderBetreuung.xlsx");
@@ -351,7 +352,8 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void generateExcelReportBenutzer() {
-		final List<BenutzerDataRow> reportDataBenutzer = reportService.getReportDataBenutzer(Constants.DEFAULT_LOCALE);
+		final List<BenutzerDataRow> reportDataBenutzer = reportService.getReportDataBenutzer(Constants.DEFAULT_LOCALE,
+				getDummySuperadmin().getMandant());
 
 		assertNotNull(reportDataBenutzer);
 		assertEquals(7, reportDataBenutzer.size()); // anonymous is a user too

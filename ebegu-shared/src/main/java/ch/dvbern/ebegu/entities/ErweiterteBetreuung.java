@@ -1,5 +1,6 @@
 package ch.dvbern.ebegu.entities;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -12,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.util.MathUtil;
 import org.hibernate.envers.Audited;
 
 @SuppressWarnings("InstanceVariableMayNotBeInitialized")
@@ -43,6 +45,10 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 	@Nullable
 	@Column(nullable = true)
 	private Boolean kitaPlusZuschlag;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal erweitereteBeduerfnisseBetrag;
 
 	@Nullable
 	public Boolean getBetreuungInGemeinde() {
@@ -97,7 +103,14 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 		this.kitaPlusZuschlag = kitaPlusZuschlag;
 	}
 
+	@Nullable
+	public BigDecimal getErweitereteBeduerfnisseBetrag() {
+		return erweitereteBeduerfnisseBetrag;
+	}
 
+	public void setErweitereteBeduerfnisseBetrag(@Nullable BigDecimal erweitereteBeduerfnisseBetrag) {
+		this.erweitereteBeduerfnisseBetrag = erweitereteBeduerfnisseBetrag;
+	}
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
@@ -132,7 +145,11 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 			getKitaPlusZuschlag(),
 			otherErwBetr.getKitaPlusZuschlag());
 
-		return erwBeduerfnisseSame && bestAussBetrAufwand && fachstelleSame && kesbSame && kitaPlusSame;
+		boolean erweitereteBeduerfnisseSame = MathUtil.isSame(
+			getErweitereteBeduerfnisseBetrag(),
+			otherErwBetr.getErweitereteBeduerfnisseBetrag());
+
+		return erwBeduerfnisseSame && bestAussBetrAufwand && fachstelleSame && kesbSame && kitaPlusSame && erweitereteBeduerfnisseSame;
 	}
 
 	@Nonnull
@@ -149,6 +166,7 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 			target.setKeineKesbPlatzierung(this.getKeineKesbPlatzierung());
 			target.setBetreuungInGemeinde(this.getBetreuungInGemeinde());
 			target.setKitaPlusZuschlag(this.getKitaPlusZuschlag());
+			target.setErweitereteBeduerfnisseBetrag(this.getErweitereteBeduerfnisseBetrag());
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:

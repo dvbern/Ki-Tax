@@ -62,7 +62,7 @@ public interface GemeindeService {
 	 * Gibt alle Gemeinden zurück
 	 */
 	@Nonnull
-	Collection<Gemeinde> getAllGemeinden();
+	Collection<Gemeinde> getAllGemeinden(@Nonnull Mandant mandant);
 
 	/**
 	 * Gibt die nächste freie Gemeindenummer zurück

@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
+import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableMandantFilterDTO;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity;
@@ -190,9 +191,11 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		@Nonnull String adminMail, @Nonnull UserRole userRole, @Nonnull Gemeinde gemeinde
 	) {
 		requireNonNull(gemeinde);
+		requireNonNull(gemeinde.getMandant());
 		return createBenutzerFromEmail(
 			adminMail,
 			userRole,
+			gemeinde.getMandant(),
 			gemeinde,
 			b -> b.getGemeindeList().add(gemeinde));
 	}
@@ -201,9 +204,11 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Override
 	public Benutzer createAdminInstitutionByEmail(@Nonnull String adminMail, @Nonnull Institution institution) {
 		requireNonNull(institution);
+		requireNonNull(institution.getMandant());
 		return createBenutzerFromEmail(
 			adminMail,
 			UserRole.ADMIN_INSTITUTION,
+			institution.getMandant(),
 			institution,
 			b -> b.setInstitution(institution));
 	}
@@ -212,9 +217,11 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Override
 	public Benutzer createAdminTraegerschaftByEmail(@Nonnull String adminMail, @Nonnull Traegerschaft traegerschaft) {
 		requireNonNull(traegerschaft);
+		requireNonNull(traegerschaft.getMandant());
 		Benutzer admin = createBenutzerFromEmail(
 			adminMail,
 			UserRole.ADMIN_TRAEGERSCHAFT,
+			traegerschaft.getMandant(),
 			traegerschaft,
 			b -> b.setTraegerschaft(traegerschaft));
 
@@ -230,6 +237,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		return createBenutzerFromEmail(
 			adminMail,
 			UserRole.ADMIN_SOZIALDIENST,
+			sozialdienst.getMandant(),
 			sozialdienst,
 			b -> b.setSozialdienst(sozialdienst));
 	}
@@ -238,11 +246,12 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	private <T extends AbstractEntity> Benutzer createBenutzerFromEmail(
 		@Nonnull String adminMail,
 		@Nonnull UserRole role,
+		@Nonnull Mandant mandant,
 		@Nullable T associatedEntity,
 		@Nonnull Consumer<Berechtigung> appender
 	) {
 		requireNonNull(adminMail);
-		requireNonNull(principalBean.getMandant());
+		requireNonNull(mandant);
 
 		checkArgument(role.getRollenAbhaengigkeit().getAssociatedEntityClass()
 			.map(clazz -> clazz.isInstance(associatedEntity))
@@ -255,7 +264,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		benutzer.setVorname(Constants.UNKNOWN);
 		benutzer.setUsername(adminMail);
 		benutzer.setStatus(BenutzerStatus.EINGELADEN);
-		benutzer.setMandant(principalBean.getMandant());
+		benutzer.setMandant(mandant);
 
 		final Berechtigung berechtigung = new Berechtigung();
 		berechtigung.setRole(role);
@@ -317,7 +326,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		Benutzer benutzer = einladung.getEingeladener();
 		checkSuperuserRoleZuteilung(einladung.getEingeladener());
 		EinladungTyp einladungTyp = einladung.getEinladungTyp();
-		checkArgument(Objects.equals(benutzer.getMandant(), principalBean.getMandant()));
+		checkArgument(Objects.equals(benutzer.getMandant(), mandant));
 
 		if (einladungTyp == EinladungTyp.MITARBEITER && (!benutzer.isNew()
 			|| findBenutzer(benutzer.getUsername(), mandant).isPresent())) {
@@ -675,15 +684,14 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	public Collection<Benutzer> getGesuchsteller() {
+	public Collection<Benutzer> getGesuchsteller(@Nonnull Mandant mandant) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
 		Root<Benutzer> root = query.from(Benutzer.class);
 		Join<Benutzer, Berechtigung> joinBerechtigungen = root.join(Benutzer_.berechtigungen);
 		query.select(root);
 
-		Objects.requireNonNull(principalBean.getMandant());
-		Predicate predicateMandant = cb.equal(root.get(Benutzer_.mandant), principalBean.getMandant());
+		Predicate predicateMandant = cb.equal(root.get(Benutzer_.mandant), mandant);
 
 		Predicate predicateActive = cb.between(
 			cb.literal(LocalDate.now()),
@@ -974,7 +982,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Nonnull
 	@Override
 	public Pair<Long, List<Benutzer>> searchBenutzer(
-		@Nonnull BenutzerTableFilterDTO benutzerTableFilterDto,
+		@Nonnull BenutzerTableMandantFilterDTO benutzerTableFilterDto,
 		@Nonnull Boolean forStatistik) {
 		Long countResult = searchBenutzer(benutzerTableFilterDto, SearchMode.COUNT, forStatistik).getLeft();
 
@@ -989,7 +997,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@SuppressWarnings("PMD.NcssMethodCount")
 	private Pair<Long, List<Benutzer>> searchBenutzer(
-		@Nonnull BenutzerTableFilterDTO benutzerTableFilterDTO,
+		@Nonnull BenutzerTableMandantFilterDTO benutzerTableFilterDTO,
 		@Nonnull SearchMode mode,
 		@Nonnull Boolean forStatistik) {
 
@@ -1034,8 +1042,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		user.getCurrentBerechtigung();
 		Set<Gemeinde> userGemeinden = user.extractGemeindenForUser();
 
-		Objects.requireNonNull(principalBean.getMandant());
-		Predicate mandantPredicate = cb.equal(root.get(Benutzer_.mandant), principalBean.getMandant());
+		Predicate mandantPredicate = cb.equal(root.get(Benutzer_.mandant),benutzerTableFilterDTO.getMandant());
 		predicates.add(mandantPredicate);
 
 		if (addInstitutionUsers) {

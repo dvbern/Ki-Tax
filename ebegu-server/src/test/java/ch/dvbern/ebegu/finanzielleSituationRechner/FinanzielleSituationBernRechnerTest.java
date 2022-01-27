@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -39,7 +40,13 @@ public class FinanzielleSituationBernRechnerTest {
 	private static final BigDecimal EINKOMMEN_EKV_ANGENOMMEN = new BigDecimal("79990");
 	private static final BigDecimal EINKOMMEN_EKV_ANGENOMMEN_2 = new BigDecimal("79000");
 
-	private FinanzielleSituationBernRechner finSitRechner = new FinanzielleSituationBernRechner();
+	protected AbstractFinanzielleSituationRechner finSitRechner;
+
+	@Before
+	public void setUp() {
+		finSitRechner = new FinanzielleSituationBernRechner();
+	}
+
 
 	@Test
 	public void testPositiverDurschnittlicherGewinn() {

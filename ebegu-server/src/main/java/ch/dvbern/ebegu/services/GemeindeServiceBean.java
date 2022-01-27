@@ -146,14 +146,11 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
-	public Collection<Gemeinde> getAllGemeinden() {
-		if (principalBean.getMandant() == null) {
-			throw new EbeguRuntimeException("getAllGemeinden", "Mandant not defined");
-		}
+	public Collection<Gemeinde> getAllGemeinden(@Nonnull Mandant mandant) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gemeinde> query = cb.createQuery(Gemeinde.class);
 		Root<Gemeinde> root = query.from(Gemeinde.class);
-		var mandantPredicate = cb.equal(root.get(Gemeinde_.mandant), principalBean.getMandant());
+		var mandantPredicate = cb.equal(root.get(Gemeinde_.mandant), mandant);
 		query.where(mandantPredicate);
 		return persistence.getCriteriaResults(query);
 	}

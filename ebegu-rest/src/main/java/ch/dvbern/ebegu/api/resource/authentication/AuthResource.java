@@ -297,7 +297,12 @@ public class AuthResource {
 
 	@Nonnull
 	private NewCookie expireCookie(@Nonnull String name, boolean secure, boolean httpOnly) {
-		return new NewCookie(name, "", AuthConstants.COOKIE_PATH, configuration.getHostdomain(), "", 0, secure, httpOnly);
+		return new NewCookie(name, "", AuthConstants.COOKIE_PATH, null, "", 0, secure, httpOnly);
+	}
+
+	@Nonnull
+	private NewCookie expireCookie(@Nonnull String name, boolean secure, boolean httpOnly, @Nullable String domain) {
+		return new NewCookie(name, "", AuthConstants.COOKIE_PATH, domain, "", 0, secure, httpOnly);
 	}
 
 	/**
@@ -322,7 +327,7 @@ public class AuthResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response setMandant(@Nonnull final JaxMandant mandant) {
 		// expire old mandant cookie for whole domain
-		NewCookie expiredCookie = expireCookie(AuthConstants.COOKIE_MANDANT, isCookieSecure(), true);
+		NewCookie expiredCookie = expireCookie(AuthConstants.COOKIE_MANDANT, isCookieSecure(), true, configuration.getHostdomain());
 		// Readable Cookie storing the mandant
 		NewCookie mandantCookie = new NewCookie(AuthConstants.COOKIE_MANDANT,
 				URLEncoder.encode(mandant.getName(), StandardCharsets.UTF_8),

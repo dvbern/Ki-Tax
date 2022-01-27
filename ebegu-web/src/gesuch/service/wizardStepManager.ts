@@ -185,6 +185,7 @@ export class WizardStepManager {
         this.allowedSteps.push(TSWizardStepName.ERWERBSPENSUM);
         this.allowedSteps.push(TSWizardStepName.FINANZIELLE_SITUATION);
         this.allowedSteps.push(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
+        this.allowedSteps.push(TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN);
         this.allowedSteps.push(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
         this.allowedSteps.push(TSWizardStepName.DOKUMENTE);
         this.allowedSteps.push(TSWizardStepName.FREIGABE);
@@ -532,12 +533,16 @@ export class WizardStepManager {
     private hideFinSitSteps(gesuch: TSGesuch): void {
         this.hideStep(TSWizardStepName.FINANZIELLE_SITUATION);
         this.hideStep(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
+        this.hideStep(TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN);
 
         // show just one step if gesuch.finSitTyp is empty (on gesuch creation)
-        if (gesuch.finSitTyp === TSFinanzielleSituationTyp.BERN || !gesuch.finSitTyp) {
+        if (gesuch.finSitTyp === TSFinanzielleSituationTyp.BERN ||
+            gesuch.finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV || !gesuch.finSitTyp) {
             this.unhideStep(TSWizardStepName.FINANZIELLE_SITUATION);
         } else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.LUZERN) {
             this.unhideStep(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
+        } else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.SOLOTHURN) {
+            this.unhideStep(TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN);
         } else {
             throw new Error(`wrong FinSitTyp ${gesuch.finSitTyp}`);
         }
