@@ -88,29 +88,29 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 			String msg = createFaultLogmessage("BusinessFault" ,methodName, businessFault.getMessage(), businessFault.getFaultInfo());
 			LOGGER.error(msg);
 			exceptionReceived = businessFault;
-			throw new KiBonAnfrageServiceException(methodName, msg, businessFault);
+			throw new KiBonAnfrageServiceException(methodName, msg, businessFault.getFaultInfo().getErrorCode(), businessFault.getFaultInfo().getUserMessage());
 		}
 		catch(InfrastructureFault infrastructureFault) {
 			String msg = createFaultLogmessage("InfrastructureFault" ,methodName, infrastructureFault.getMessage(), infrastructureFault.getFaultInfo());
 			LOGGER.error(msg);
 			exceptionReceived = infrastructureFault;
-			throw new KiBonAnfrageServiceException(methodName, msg, infrastructureFault);
+			throw new KiBonAnfrageServiceException(methodName, msg, infrastructureFault.getFaultInfo().getErrorCode(), infrastructureFault.getFaultInfo().getUserMessage());
 		}
 		catch (InvalidArgumentsFault invalidArgumentsFault) {
 			String msg = createFaultLogmessage("InvalidArgumentsFault" ,methodName, invalidArgumentsFault.getMessage(), invalidArgumentsFault.getFaultInfo());
 			LOGGER.error(msg);
 			exceptionReceived = invalidArgumentsFault;
-			throw new KiBonAnfrageServiceException(methodName, msg, invalidArgumentsFault);
+			throw new KiBonAnfrageServiceException(methodName, msg, invalidArgumentsFault.getFaultInfo().getErrorCode(), invalidArgumentsFault.getFaultInfo().getUserMessage());
 		}
 		catch (PermissionDeniedFault permissionDeniedFault) {
 			String msg = createFaultLogmessage("PermissionDeniedFault" ,methodName, permissionDeniedFault.getMessage(), permissionDeniedFault.getFaultInfo());
 			LOGGER.error(msg);
 			exceptionReceived = permissionDeniedFault;
-			throw new KiBonAnfrageServiceException(methodName, msg, permissionDeniedFault);
+			throw new KiBonAnfrageServiceException(methodName, msg, permissionDeniedFault.getFaultInfo().getErrorCode(), permissionDeniedFault.getFaultInfo().getUserMessage());
 		}
 		catch (Exception e) {
 			exceptionReceived = e;
-			throw e;
+			throw new KiBonAnfrageServiceException(methodName, "Einen unerwartete Fehler ist aufgetretten", e);
 		}
 		finally {
 			writeAuditLogForKibonAnfrageCall(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr, startDate, steuerdatenResponse, exceptionReceived);
