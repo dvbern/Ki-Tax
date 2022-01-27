@@ -6,6 +6,7 @@ import {EbeguUtil} from '../../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../../service/wizardStepManager';
 import {AbstractFinSitsolothurnView} from '../../AbstractFinSitsolothurnView';
+import {FinanzielleSituationSolothurnService} from '../../finanzielle-situation-solothurn.service';
 
 @Component({
     selector: 'dv-angaben-gs1',
@@ -18,9 +19,10 @@ export class AngabenGs1Component extends AbstractFinSitsolothurnView {
 
     public constructor(
         public gesuchModelManager: GesuchModelManager,
+        public readonly finSitSoService: FinanzielleSituationSolothurnService,
         public wizardStepManager: WizardStepManager
     ) {
-        super(gesuchModelManager, wizardStepManager, 1);
+        super(gesuchModelManager, wizardStepManager, finSitSoService,1);
     }
 
     public ngOnInit(): void {

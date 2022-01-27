@@ -2,6 +2,7 @@ import {Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter}
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {FinanzielleSituationSolothurnService} from '../finanzielle-situation-solothurn.service';
 
 @Component({
     selector: 'dv-veranlagung-solothurn',
@@ -13,6 +14,7 @@ export class VeranlagungSolothurnComponent implements OnInit {
 
     @Input() public model: TSFinanzielleSituationContainer;
     @Input() public readOnly: boolean;
+    @Input() public onValueChange: () => void;
 
     @Output() public readonly massgebendesEinkommenChange: EventEmitter<number> = new EventEmitter<number>();
 

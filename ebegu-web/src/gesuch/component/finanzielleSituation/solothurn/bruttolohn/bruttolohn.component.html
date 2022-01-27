@@ -5,6 +5,7 @@
 				<dv-input-label-field
 						[name]="'bruttoLohn'"
 						[(model)]="model.finanzielleSituationJA.bruttoLohn"
+                        [dvOnBlur]="onValueChange"
 						[labelMessageKey]="'FINANZIELLE_SITUATION_BRUTTOLOHN'"
 						[inputRequired]="true"></dv-input-label-field>
 				<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.bruttoLohn"
