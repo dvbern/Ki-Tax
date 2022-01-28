@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -293,5 +294,50 @@ public class FinanzielleSituationBernRechnerTest {
 			FinanzielleSituationBernRechner.calculateProzentualeDifferenz(BigDecimal.valueOf(181760), BigDecimal.valueOf(140668)).doubleValue(), 0.01d);
 		Assert.assertEquals(-20.58d,
 			FinanzielleSituationBernRechner.calculateProzentualeDifferenz(BigDecimal.valueOf(181760), BigDecimal.valueOf(144336)).doubleValue(), 0.01d);
+	}
+
+	@Test
+	public void calcVermoegen5Prozent() {
+		// beide FinSit null
+		BigDecimal total = AbstractFinanzielleSituationRechner.calcVermoegen5Prozent(null, null);
+		Assert.assertEquals(BigDecimal.ZERO, total);
+
+		// FinSit GS1 Normal GS2 null
+		FinanzielleSituation finSitGS1 = new FinanzielleSituation();
+		finSitGS1.setBruttovermoegen(new BigDecimal(1500));
+		finSitGS1.setSchulden(new BigDecimal(500));
+		total = AbstractFinanzielleSituationRechner.calcVermoegen5Prozent(finSitGS1, null);
+		Assert.assertEquals(new BigDecimal(50), total);
+
+		// FinSit GS1 Steuerzugriff GS2 null
+		finSitGS1.setNettoVermoegen(new BigDecimal(2000));
+		finSitGS1.setSteuerdatenZugriff(true);
+		total = AbstractFinanzielleSituationRechner.calcVermoegen5Prozent(finSitGS1, null);
+		Assert.assertEquals(new BigDecimal(100), total);
+
+		// FinSit GS1 Normal, GS2 Normal
+		finSitGS1.setSteuerdatenZugriff(false);
+		FinanzielleSituation finSitGS2 = new FinanzielleSituation();
+		finSitGS2.setBruttovermoegen(new BigDecimal(2500));
+		finSitGS2.setSchulden(new BigDecimal(500));
+		total = AbstractFinanzielleSituationRechner.calcVermoegen5Prozent(finSitGS1, finSitGS2);
+		Assert.assertEquals(new BigDecimal(150), total);
+
+		// FinSit GS1 Normal, GS2 Steuerzugriff
+		finSitGS2.setNettoVermoegen(new BigDecimal(4000));
+		finSitGS2.setSteuerdatenZugriff(true);
+		total = AbstractFinanzielleSituationRechner.calcVermoegen5Prozent(finSitGS1, finSitGS2);
+		Assert.assertEquals(new BigDecimal(250), total);
+
+		// FinSit GS1 Steuerzugriff, GS2 Normal
+		finSitGS1.setSteuerdatenZugriff(true);
+		finSitGS2.setSteuerdatenZugriff(false);
+		total = AbstractFinanzielleSituationRechner.calcVermoegen5Prozent(finSitGS1, finSitGS2);
+		Assert.assertEquals(new BigDecimal(200), total);
+
+		// FinSit GS1 SteuerZugriff, GS2 Steuerzugriff
+		finSitGS2.setSteuerdatenZugriff(true);
+		total = AbstractFinanzielleSituationRechner.calcVermoegen5Prozent(finSitGS1, finSitGS2);
+		Assert.assertEquals(new BigDecimal(300), total);
 	}
 }
