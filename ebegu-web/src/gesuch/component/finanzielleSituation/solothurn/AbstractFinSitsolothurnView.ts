@@ -48,6 +48,7 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.setupForm();
         this.calculateMassgebendesEinkommen();
+        this.gesuchModelManager.setGesuchstellerNumber(gesuchstellerNumber);
     }
 
     private setupForm(): void {
