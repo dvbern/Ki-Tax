@@ -22,7 +22,7 @@ export class AngabenGs1Component extends AbstractFinSitsolothurnView {
         public readonly finSitSoService: FinanzielleSituationSolothurnService,
         public wizardStepManager: WizardStepManager
     ) {
-        super(gesuchModelManager, wizardStepManager, finSitSoService,1);
+        super(gesuchModelManager, wizardStepManager, finSitSoService, 1);
     }
 
     public ngOnInit(): void {
