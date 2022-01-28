@@ -21,7 +21,8 @@ import {SharedModule} from '../../../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
-import {MassgebendesEinkommenComponent} from './resultat.component';
+import {MassgebendesEinkommenComponent} from './massgebendes-einkommen.component';
+
 
 describe('ResultatComponent', () => {
     let component: MassgebendesEinkommenComponent;

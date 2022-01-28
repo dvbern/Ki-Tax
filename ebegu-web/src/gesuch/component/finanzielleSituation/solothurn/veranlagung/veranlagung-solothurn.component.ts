@@ -13,7 +13,7 @@ export class VeranlagungSolothurnComponent implements OnInit {
 
     @Input() public model: TSFinanzielleSituationContainer;
     @Input() public readOnly: boolean;
-    @Input() public onValueChange: () => void;
+    @Input() public dvValueChange: () => void;
 
     @Output() public readonly massgebendesEinkommenChange: EventEmitter<number> = new EventEmitter<number>();
 

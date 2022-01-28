@@ -7,7 +7,7 @@
 					[name]="'nettoEinkommen'"
 					[(model)]="model.finanzielleSituationJA.nettolohn"
 					[labelMessageKey]="'FINANZIELLE_SITUATION_NETTOEINKOMMEN'"
-                    [dvOnBlur]="onValueChange"
+                    [dvOnBlur]="dvValueChange"
 					[inputRequired]="true"></dv-input-label-field>
 					<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.nettolohn"
 								 [korrektur]="model.finanzielleSituationJA.nettolohn"
@@ -22,7 +22,7 @@
 							[name]="'unterhaltsBeitraege'"
 							[(model)]="model.finanzielleSituationJA.unterhaltsBeitraege"
 							[labelMessageKey]="'FINANZIELLE_SITUATION_UNTERHALTSBEITRAEGE'"
-                            [dvOnBlur]="onValueChange"
+                            [dvOnBlur]="dvValueChange"
 							[inputRequired]="true"></dv-input-label-field>
 					<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.unterhaltsBeitraege"
 								 [korrektur]="model.finanzielleSituationJA.unterhaltsBeitraege"
@@ -37,7 +37,7 @@
 							[name]="'abzuegeKinderAusbildung'"
 							[(model)]="model.finanzielleSituationJA.abzuegeKinderAusbildung"
 							[labelMessageKey]="'FINANZIELLE_SITUATION_ABZUEGE_AUSBILDUNG_KINDER'"
-                            [dvOnBlur]="onValueChange"
+                            [dvOnBlur]="dvValueChange"
 							[inputRequired]="true"></dv-input-label-field>
 					<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.abzuegeKinderAusbildung"
 								 [korrektur]="model.finanzielleSituationJA.abzuegeKinderAusbildung"
@@ -52,7 +52,7 @@
 							[name]="'steuerbaresVermoegen'"
 							[(model)]="model.finanzielleSituationJA.steuerbaresVermoegen"
 							[labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN'"
-                            [dvOnBlur]="onValueChange"
+                            [dvOnBlur]="dvValueChange"
 							[inputRequired]="true"></dv-input-label-field>
 					<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.steuerbaresVermoegen"
 								 [korrektur]="model.finanzielleSituationJA.steuerbaresVermoegen"

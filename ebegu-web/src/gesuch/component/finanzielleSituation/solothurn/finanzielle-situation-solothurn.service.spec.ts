@@ -17,12 +17,17 @@
 
 import {TestBed} from '@angular/core/testing';
 import {FinanzielleSituationSolothurnService} from './finanzielle-situation-solothurn.service';
+import {SolothurnFinSitTestHelpers} from './SolothurnFinSitTestHelpers';
 
-describe('FinanzielleSituationLuzernService', () => {
+describe('FinanzielleSituationSolothurnService', () => {
     let service: FinanzielleSituationSolothurnService;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            providers: [
+                ...SolothurnFinSitTestHelpers.getMockProvidersExceptFinSitSolothurnServiceMock()
+            ]
+        });
         service = TestBed.inject(FinanzielleSituationSolothurnService);
     });
 

@@ -12,11 +12,11 @@
 	<form #form="ngForm" role="form">
 		<dv-steuerveranlagung-erhalten *ngIf="!isSteuerveranlagungGemeinsam()" [model]="getModel()" (steuerveranlagungErhaltenChange)="steuerveranlagungErhaltenChange($event)"></dv-steuerveranlagung-erhalten>
 		<dv-veranlagung-solothurn *ngIf="hasSteuerveranlagungErhalten()" [model]="getModel()"
-                                  [onValueChange]="onValueChangeFunction"
+                                  [dvValueChange]="onValueChangeFunction"
 								  [readOnly]="gesuchModelManager.isGesuchReadonly()"></dv-veranlagung-solothurn>
 		<dv-bruttolohn *ngIf="!hasSteuerveranlagungErhalten()"
                        [model]="getModel()"
-                       [onValueChange]="onValueChangeFunction"></dv-bruttolohn>
+                       [dvValueChange]="onValueChangeFunction"></dv-bruttolohn>
         <dv-massgebendes-einkommen
             [hasZweiGesuchsteller]="true"
             [nameGS1]="extractFullNameGS1()"
