@@ -307,6 +307,7 @@ export class TestdatenViewComponent implements OnInit {
     }
 
     public testKibonAnfrageResponse(): void {
+        this.errorService.clearAll();
         this.gesuchRS.getSteuerdaten(new TSKibonAnfrage(this.antragId,
             this.zpvNummer,
             this.gesuchsperiodeBeginnJahr,

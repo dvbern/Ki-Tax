@@ -17,14 +17,27 @@
 
 package ch.dvbern.ebegu.rechner;
 
-import javax.annotation.Nonnull;
+import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.util.mandant.MandantVisitor;
 
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+public class TagesschuleRechnerVisitor implements MandantVisitor<AbstractRechner> {
 
-/**
- * Superklasse für alle kiBon-Rechner
- */
-public abstract class AbstractRechner {
+	public AbstractRechner getTagesschuleRechnerForMandant(Mandant mandant) {
+		return mandant.getMandantIdentifier().accept(this);
+	}
 
-	public abstract void calculate(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull BGRechnerParameterDTO parameterDTO);
+	@Override
+	public AbstractRechner visitBern() {
+		return new TagesschuleBernRechner();
+	}
+
+	@Override
+	public AbstractRechner visitLuzern() {
+		return new TagesschuleBernRechner();
+	}
+
+	@Override
+	public AbstractRechner visitSolothurn() {
+		return new TagesschuleBernRechner();
+	}
 }

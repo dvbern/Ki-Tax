@@ -31,7 +31,7 @@ import org.junit.Test;
 /**
  * Test fuer TagesschuleTarifRechner
  */
-public class TagesschuleRechnerTest {
+public class TagesschuleBernRechnerTest {
 
 	private final BigDecimal MATA_MIT_PEDAGOGISCHE_BETREUUNG = MathUtil.DEFAULT.fromNullSafe(12.24);
 	private final BigDecimal MATA_OHNE_PEDAGOGISCHE_BETREUUNG = MathUtil.DEFAULT.fromNullSafe(6.11);
@@ -39,7 +39,7 @@ public class TagesschuleRechnerTest {
 	private final BigDecimal MAXIMAL_MASSGEGEBENES_EINKOMMEN = MathUtil.DEFAULT.fromNullSafe(160000.00);
 	private final BigDecimal MINIMAL_MASSGEGEBENES_EINKOMMEN = MathUtil.DEFAULT.fromNullSafe(43000.00);
 
-	private TagesschuleRechner tarifRechner = new TagesschuleRechner();
+	private TagesschuleBernRechner tarifRechner = new TagesschuleBernRechner();
 	private BGRechnerParameterDTO parameterDTO;
 
 
