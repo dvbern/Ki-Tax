@@ -358,14 +358,14 @@ public abstract class AbstractFinanzielleSituationRechner {
 		BigDecimal totalBruttovermoegen = BigDecimal.ZERO;
 		BigDecimal totalSchulden = BigDecimal.ZERO;
 		BigDecimal nettovermoegen = BigDecimal.ZERO;
-		if(gs1 != null && gs1.getSteuerdatenZugriff()) {
+		if(gs1 != null && Boolean.TRUE.equals(gs1.getSteuerdatenZugriff())) {
 			nettovermoegen = gs1.getNettoVermoegen();
 		}
 		else {
 			totalBruttovermoegen = gs1 != null ? gs1.getBruttovermoegen() : BigDecimal.ZERO;
 			totalSchulden = gs1 != null ? gs1.getSchulden() : BigDecimal.ZERO;
 		}
-		if(gs2 != null && gs2.getSteuerdatenZugriff()) {
+		if(gs2 != null && Boolean.TRUE.equals(gs2.getSteuerdatenZugriff())) {
 			nettovermoegen = add(nettovermoegen, gs2.getNettoVermoegen());
 		}
 		else {
