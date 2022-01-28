@@ -55,6 +55,11 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 		return false;
 	}
 
+	@Override
+	public Boolean getSteuerdatenZugriff() {
+		return false;
+	}
+
 	@Nullable
 	public BigDecimal getGeschaeftsgewinnBasisjahrMinus1() {
 		return geschaeftsgewinnBasisjahrMinus1;

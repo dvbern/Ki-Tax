@@ -134,6 +134,8 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 
 	public abstract Boolean getSteuererklaerungAusgefuellt();
 
+	public abstract Boolean getSteuerdatenZugriff();
+
 	@Nullable
 	public BigDecimal getNettolohn() {
 		return nettolohn;
