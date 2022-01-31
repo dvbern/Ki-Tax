@@ -372,6 +372,7 @@ public abstract class AbstractTestfall {
 		ErweiterteBetreuung erwBed = new ErweiterteBetreuung();
 		erwBed.setErweiterteBeduerfnisse(false);
 		erwBed.setKeineKesbPlatzierung(true);
+		erwBed.setKitaPlusZuschlag(false);
 		erwBed.setBetreuungInGemeinde(Boolean.TRUE);
 		erwBedContainer.setErweiterteBetreuungJA(erwBed);
 		betreuung.setErweiterteBetreuungContainer(erwBedContainer);
