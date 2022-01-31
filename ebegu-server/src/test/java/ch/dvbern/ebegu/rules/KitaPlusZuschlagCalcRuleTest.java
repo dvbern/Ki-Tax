@@ -124,4 +124,18 @@ public class KitaPlusZuschlagCalcRuleTest {
 		// 1916 + 32 * 12 = 2300
 		Assert.assertEquals(result.get(0).getVerguenstigung(), new BigDecimal("2300.00"));
 	}
+
+	@Test
+	public void testRuleCalcKitaPlusSetEinstellungDeaktiviert() {
+		assert betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null;
+		betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().setKitaPlusZuschlag(true);
+
+
+		Map<EinstellungKey, Einstellung> einstellungenMap = EbeguRuleTestsHelper.getAllEinstellungen(betreuung.extractGesuchsperiode());
+		einstellungenMap.get(KITAPLUS_ZUSCHLAG_AKTIVIERT).setValue("false");
+
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungenMap);
+		// 1916 + 32 * 12 = 2300
+		Assert.assertEquals(result.get(0).getVerguenstigung(), new BigDecimal("1916.00"));
+	}
 }
