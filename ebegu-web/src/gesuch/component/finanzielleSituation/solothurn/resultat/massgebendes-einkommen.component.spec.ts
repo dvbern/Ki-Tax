@@ -23,7 +23,6 @@ import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFi
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {MassgebendesEinkommenComponent} from './massgebendes-einkommen.component';
 
-
 describe('ResultatComponent', () => {
     let component: MassgebendesEinkommenComponent;
     let fixture: ComponentFixture<MassgebendesEinkommenComponent>;
