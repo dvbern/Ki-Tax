@@ -51,7 +51,7 @@ export class FinanzielleSituationSolothurnService {
         return true;
     }
 
-    public get massgebendesEinkommenStore(): Observable<TSFinanzielleSituationResultateDTO> {
+    public massgebendesEinkommenStore(): Observable<TSFinanzielleSituationResultateDTO> {
         return this._massgebendesEinkommenStore.asObservable();
     }
 

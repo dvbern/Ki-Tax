@@ -58,7 +58,7 @@ export class MassgebendesEinkommenComponent implements OnInit {
     }
 
     public setupCalculation(): void {
-        this.finSitSoService.massgebendesEinkommenStore.subscribe((resultate: TSFinanzielleSituationResultateDTO) => {
+        this.finSitSoService.massgebendesEinkommenStore().subscribe((resultate: TSFinanzielleSituationResultateDTO) => {
                 this.resultate = resultate;
                 this.ref.markForCheck();
             }, error => LOG.error(error),

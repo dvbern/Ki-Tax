@@ -1,6 +1,8 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {of} from 'rxjs';
 import {SharedModule} from '../../../../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../../hybridTools/mockUpgradedComponent';
+import {TSFinanzielleSituationResultateDTO} from '../../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {NgGesuchModule} from '../../../../../ng-gesuch.module';
 import {GesuchModelManager} from '../../../../../service/gesuchModelManager';
 import {FinanzielleSituationSolothurnService} from '../../finanzielle-situation-solothurn.service';
@@ -13,6 +15,7 @@ describe('AngabenGs1Component', () => {
     let fixture: ComponentFixture<AngabenGs1Component>;
     const gesuchModelManagerSpy = SolothurnFinSitTestHelpers.createGesuchModelManagerMock();
     const finSitSolothurnServiceMock = SolothurnFinSitTestHelpers.createFinSitSolothurnServiceMock();
+    finSitSolothurnServiceMock.massgebendesEinkommenStore.and.returnValue(of(new TSFinanzielleSituationResultateDTO()));
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({

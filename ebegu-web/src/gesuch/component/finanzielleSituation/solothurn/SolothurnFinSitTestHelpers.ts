@@ -83,12 +83,8 @@ export class SolothurnFinSitTestHelpers {
     }
 
     public static createFinSitSolothurnServiceMock(): SpyObj<FinanzielleSituationSolothurnService> {
-        // @ts-ignore
         return jasmine.createSpyObj<FinanzielleSituationSolothurnService>(FinanzielleSituationSolothurnService.name,
             [
-                'finSitIsGemeinsam',
-                'finSitNeedsTwoAntragsteller',
-                'startKonkubinatMoreThan5YearsAgo',
                 'massgebendesEinkommenStore',
                 'calculateMassgebendesEinkommen'
             ]);
