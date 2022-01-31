@@ -315,7 +315,7 @@ describe('dvNavigation', () => {
                 $httpBackend.when('GET', '/ebegu/api/v1/antragStatusHistory/123').respond({});
                 navController.setSubstepManager(new FinanzielleSituationSubStepManagerLuzern(gesuchModelManager));
                 spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
-                spyOn(FinanzielleSituationLuzernService, 'finSitNeedsTwoAntragsteller').and.returnValue(true);
+                spyOn(FinanzielleSituationLuzernService, 'finSitNeedsTwoSeparateAntragsteller').and.returnValue(true);
                 navController.dvSubStep = 1;
                 navController.dvSubStepName = TSFinanzielleSituationSubStepName.LUZERN_START;
                 gesuchModelManager.setGesuch(mockGesuch());
@@ -329,7 +329,7 @@ describe('dvNavigation', () => {
                 $httpBackend.when('GET', '/ebegu/api/v1/antragStatusHistory/123').respond({});
                 navController.setSubstepManager(new FinanzielleSituationSubStepManagerLuzern(gesuchModelManager));
                 spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
-                spyOn(FinanzielleSituationLuzernService, 'finSitNeedsTwoAntragsteller').and.returnValue(false);
+                spyOn(FinanzielleSituationLuzernService, 'finSitNeedsTwoSeparateAntragsteller').and.returnValue(false);
                 spyOn(wizardStepManager, 'getNextStep').and.returnValue(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
                 navController.dvSubStep = 1;
                 navController.dvSubStepName = TSFinanzielleSituationSubStepName.LUZERN_START;

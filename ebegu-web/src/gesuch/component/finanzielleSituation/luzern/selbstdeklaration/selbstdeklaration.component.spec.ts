@@ -17,39 +17,56 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
+import {SharedModule} from '../../../../../app/shared/shared.module';
+import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {TSGesuch} from '../../../../../models/TSGesuch';
+import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 import {SelbstdeklarationComponent} from './selbstdeklaration.component';
 
 describe('SelbstdeklarationComponent', () => {
-  let component: SelbstdeklarationComponent;
-  let fixture: ComponentFixture<SelbstdeklarationComponent>;
-  const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name, ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
-  berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+    let component: SelbstdeklarationComponent;
+    let fixture: ComponentFixture<SelbstdeklarationComponent>;
+    const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name, ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
+    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name, ['getGesuch']);
+    gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ SelbstdeklarationComponent ],
-      providers: [
-        {provide: NgForm, useValue: new NgForm([], [])},
-        {provide: BerechnungsManager, useValue: berechnungsManagerSpy}
-      ]
-    })
-    .compileComponents();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [SelbstdeklarationComponent],
+            imports: [SharedModule],
+            providers: [
+                {provide: NgForm, useValue: new NgForm([], [])},
+                {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
+                {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
+            ]
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SelbstdeklarationComponent);
-    component = fixture.componentInstance;
-    component.model = new TSFinanzielleSituationContainer();
-    component.model.finanzielleSituationJA = new TSFinanzielleSituation();
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(SelbstdeklarationComponent);
+        component = fixture.componentInstance;
+        component.model = new TSFinanzielleSituationContainer();
+        component.model.finanzielleSituationJA = new TSFinanzielleSituation();
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+
+    function createGesuch(): TSGesuch {
+        const gesuch = new TSGesuch();
+        gesuch.gesuchsteller1 = new TSGesuchstellerContainer();
+        gesuch.gesuchsteller2 = new TSGesuchstellerContainer();
+        return gesuch;
+    }
 });
