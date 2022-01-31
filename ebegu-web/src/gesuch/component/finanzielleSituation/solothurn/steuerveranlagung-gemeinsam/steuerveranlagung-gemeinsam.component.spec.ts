@@ -30,7 +30,7 @@ describe('SteuerveranlagungGemeinsamComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(SteuerveranlagungGemeinsamComponent);
         component = fixture.componentInstance;
-        component.model = SolothurnFinSitTestHelpers.createFinanzModel().finanzielleSituationContainerGS1;
+        component.model = SolothurnFinSitTestHelpers.createFinanzModel();
         fixture.detectChanges();
     });
 

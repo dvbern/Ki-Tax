@@ -1,6 +1,6 @@
 import {Component, OnInit, ChangeDetectionStrategy, Input} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
-import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 @Component({
@@ -11,7 +11,7 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 })
 export class SteuerveranlagungGemeinsamComponent implements OnInit {
 
-  @Input() public model: TSFinanzielleSituationContainer;
+  @Input() public model: TSFinanzModel;
 
   public constructor(
       public gesuchModelManager: GesuchModelManager
