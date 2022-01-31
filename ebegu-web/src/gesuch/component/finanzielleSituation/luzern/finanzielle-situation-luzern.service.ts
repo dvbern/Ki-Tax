@@ -20,6 +20,7 @@ import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {TSFinanzielleSituationResultateDTO} from '../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
 import {TSFinanzModel} from '../../../../models/TSFinanzModel';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 
@@ -36,15 +37,11 @@ export class FinanzielleSituationLuzernService {
     }
 
     public static finSitNeedsTwoSeparateAntragsteller(gesuchModelManager: GesuchModelManager): boolean {
-        // TODO finsit Luzern: get this from server or improve
-        const familiensituation = gesuchModelManager.getFamiliensituation().familienstatus;
-        return familiensituation === TSFamilienstatus.KONKUBINAT
-            || (familiensituation === TSFamilienstatus.KONKUBINAT_KEIN_KIND && this.startKonkubinatSmallerThan2Years());
-    }
-
-    private static startKonkubinatSmallerThan2Years(): boolean {
-        // TODO finsit Luzern: migrate once Konkubinat time is in configuration
-        return true;
+        // bei Luzern gibt es einen Spezialfall: Wenn die Antragstellenden verheiratet sind, dann gibt es
+        // zwei Antragstellerinnen aber es wird nur eine FinSit verlangt
+        const hasSecondAntragsteller = EbeguUtil.isNotNullOrUndefined(gesuchModelManager.getGesuch().gesuchsteller2);
+        const isVerheiratet = gesuchModelManager.getFamiliensituation().familienstatus === TSFamilienstatus.VERHEIRATET;
+        return hasSecondAntragsteller && !isVerheiratet;
     }
 
     public get massgebendesEinkommenStore(): Observable<TSFinanzielleSituationResultateDTO> {
