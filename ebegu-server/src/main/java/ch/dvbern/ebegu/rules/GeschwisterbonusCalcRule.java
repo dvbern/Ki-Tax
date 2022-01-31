@@ -61,7 +61,7 @@ public class GeschwisterbonusCalcRule extends AbstractCalcRule {
 
 	private boolean getHasGeschwistersBonusKind3(Betreuung betreuung) {
 		List<Kind> kinderList = getRelevantKinderSortedByAgeFromBetreuung(betreuung);
-		return kinderList.indexOf(betreuung.getKind().getKindJA()) == 2;
+		return kinderList.indexOf(betreuung.getKind().getKindJA()) >= 2;
 	}
 
 	private List<Kind> getRelevantKinderSortedByAgeFromBetreuung(Betreuung betreuung) {
