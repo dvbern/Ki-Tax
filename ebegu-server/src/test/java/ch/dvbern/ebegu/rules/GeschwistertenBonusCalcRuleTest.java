@@ -109,6 +109,30 @@ public class GeschwistertenBonusCalcRuleTest {
 		Assert.assertFalse(olderInputData.isGeschwisternBonusKind3());
 	}
 
+	@Test
+	public void kindWithTwoOlderGeschwisterWithBGShouldHaveBonus2() {
+		KindContainer olderKind = createOldestKindWithBetreuungForGesuch(betreuung.extractGesuch());
+		Betreuung olderKindBetreuung = olderKind.getBetreuungen().stream().findFirst().orElseThrow();
+
+		KindContainer oldestKind = createOldestKindWithBetreuungForGesuch(betreuung.extractGesuch());
+		Betreuung oldestKindBetreuung = oldestKind.getBetreuungen().stream().findFirst().orElseThrow();
+
+		// Younger Kind
+		ruleToTest.executeRule(betreuung, inputData);
+		Assert.assertFalse(inputData.isGeschwisternBonusKind2());
+		Assert.assertTrue(inputData.isGeschwisternBonusKind3());
+		// Older Kind
+		BGCalculationInput olderInputData = new BGCalculationInput(new VerfuegungZeitabschnitt(), RuleValidity.ASIV);
+		ruleToTest.executeRule(olderKindBetreuung, olderInputData);
+		Assert.assertTrue(olderInputData.isGeschwisternBonusKind2());
+		Assert.assertFalse(olderInputData.isGeschwisternBonusKind3());
+		// Oldest Kind
+		BGCalculationInput oldestInputData = new BGCalculationInput(new VerfuegungZeitabschnitt(), RuleValidity.ASIV);
+		ruleToTest.executeRule(oldestKindBetreuung, oldestInputData);
+		Assert.assertFalse(oldestInputData.isGeschwisternBonusKind2());
+		Assert.assertFalse(oldestInputData.isGeschwisternBonusKind3());
+	}
+
 	private void addOldestKindToGesuch() {
 		final Gesuch gesuch = betreuung.extractGesuch();
 		KindContainer toAdd = createOldestKindForGesuch(gesuch);
@@ -129,7 +153,7 @@ public class GeschwistertenBonusCalcRuleTest {
 		return gesuch
 				.getKindContainers()
 				.stream()
-				.max(Comparator.comparing((KindContainer a) -> a.getKindJA()
+				.min(Comparator.comparing((KindContainer a) -> a.getKindJA()
 						.getGeburtsdatum()));
 	}
 
