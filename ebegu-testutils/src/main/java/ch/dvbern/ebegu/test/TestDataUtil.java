@@ -942,6 +942,7 @@ public final class TestDataUtil {
 		kind.setFamilienErgaenzendeBetreuung(true);
 		kind.setSprichtAmtssprache(true);
 		kind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
+		kind.setTimestampErstellt(LocalDateTime.now());
 		return kind;
 	}
 

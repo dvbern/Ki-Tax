@@ -51,12 +51,17 @@ public class GeschwisterbonusCalcRule extends AbstractCalcRule {
 			@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		Betreuung betreuung = (Betreuung) platz;
 		inputData.setGeschwisternBonusKind2(getHasGeschwistersBonusKind2(betreuung));
+		inputData.setGeschwisternBonusKind3(getHasGeschwistersBonusKind3(betreuung));
 	}
-
 
 	private boolean getHasGeschwistersBonusKind2(Betreuung betreuung) {
 		List<Kind> kinderList = getRelevantKinderSortedByAgeFromBetreuung(betreuung);
 		return kinderList.indexOf(betreuung.getKind().getKindJA()) == 1;
+	}
+
+	private boolean getHasGeschwistersBonusKind3(Betreuung betreuung) {
+		List<Kind> kinderList = getRelevantKinderSortedByAgeFromBetreuung(betreuung);
+		return kinderList.indexOf(betreuung.getKind().getKindJA()) == 2;
 	}
 
 	private List<Kind> getRelevantKinderSortedByAgeFromBetreuung(Betreuung betreuung) {

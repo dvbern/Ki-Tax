@@ -52,4 +52,5 @@ public enum RuleKey {
 
 	// LU
 	KITAPLUS_ZUSCHLAG,
+	GESCHWISTERBONUS,
 }
