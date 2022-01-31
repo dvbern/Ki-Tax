@@ -20,6 +20,7 @@ import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
@@ -45,9 +46,11 @@ import {TSErweiterteBetreuung} from '../../../models/TSErweiterteBetreuung';
 import {TSErweiterteBetreuungContainer} from '../../../models/TSErweiterteBetreuungContainer';
 import {TSExceptionReport} from '../../../models/TSExceptionReport';
 import {TSFachstelle} from '../../../models/TSFachstelle';
+import {TSFamiliensituation} from '../../../models/TSFamiliensituation';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSInstitutionStammdatenSummary} from '../../../models/TSInstitutionStammdatenSummary';
 import {TSKindContainer} from '../../../models/TSKindContainer';
+import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -99,6 +102,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         'GlobalCacheService',
         '$timeout',
         '$translate',
+        'ApplicationPropertyRS'
     ];
     public betreuungsangebot: any;
     public betreuungsangebotValues: Array<any>;
@@ -137,6 +141,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
     private hideKesbPlatzierung: boolean;
+    public showAbrechungDerGutscheineFrage: boolean = false;
 
     public constructor(
         private readonly $state: StateService,
@@ -156,6 +161,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         private readonly globalCacheService: GlobalCacheService,
         $timeout: ITimeoutService,
         $translate: ITranslateService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
         this.dvDialog = dvDialog;
@@ -270,6 +276,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                         this.besondereBeduerfnisseAufwandKonfigurierbar = true;
                     }
                 });
+
         });
 
         this.einstellungRS.findEinstellung(
@@ -287,6 +294,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         ).then(res => {
             this.zuschlagBehinderungProStd = Number(res.value);
         });
+
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then((response: TSPublicAppConfig) => {
+                this.showAbrechungDerGutscheineFrage = response.infomaZahlungen;
+            });
     }
 
     /**
@@ -685,6 +697,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
 
         return undefined;
+    }
+
+    public getFamiliensituation(): TSFamiliensituation {
+        return this.gesuchModelManager.getFamiliensituation();
     }
 
     public getBetreuungspensen(): Array<TSBetreuungspensumContainer> {

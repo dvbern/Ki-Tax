@@ -231,30 +231,6 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-12 dv-input-container-medium">
-                    <div class="form-group">
-                        <dv-radio-container-x>
-                            <label for="abrechnung_gutscheine_id" class="required">
-                                {{'ABRECHNUNG_DER_GUTSCHEINE' | translate}}
-                            </label>
-                            <mat-radio-group
-                                [(ngModel)]="getFamiliensituation().auszahlungAnEltern"
-                                name="abrechnung_gutscheine"
-                                id="abrechnung_gutscheine_id"
-                                #abrechnung_gutscheine="ngModel"
-                                [disabled]="readonly"
-                                required>
-                                <mat-radio-button [value]="true">{{'UEBER_ELTERN' | translate }}</mat-radio-button>
-                                <mat-radio-button [value]="false">{{'UEBER_INSTITUTION' | translate }}</mat-radio-button>
-                            </mat-radio-group>
-                            <dv-error-messages [errorObject]="abrechnung_gutscheine.errors"
-                                               inputId="abrechnung_gutscheine_id">
-                            </dv-error-messages>
-                        </dv-radio-container-x>
-                    </div>
-                </div>
-            </div>
         </ng-container>
     </div>
 </fieldset>
