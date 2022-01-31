@@ -313,6 +313,9 @@ public class BetreuungsgutscheinConfigurator {
 
 		AusserordentlicherAnspruchCalcRule ausserordntl = new AusserordentlicherAnspruchCalcRule(defaultGueltigkeit, maxDifferenzBeschaeftigungspensum.getValueAsInteger(), locale);
 		addToRuleSetIfRelevantForGemeinde(ausserordntl, einstellungMap);
+
+		KitaPlusZuschlagCalcRule kitaPlusZuschlagCalcRule = new KitaPlusZuschlagCalcRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(kitaPlusZuschlagCalcRule, einstellungMap);
 	}
 
 	private void reduktionsRegeln(Map<EinstellungKey, Einstellung> einstellungMap) {
