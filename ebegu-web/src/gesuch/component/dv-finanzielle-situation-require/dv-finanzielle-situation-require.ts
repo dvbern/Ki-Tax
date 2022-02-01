@@ -15,6 +15,7 @@
 
 import {IComponentOptions, IController, IFormController} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationTyp} from '../../../models/enums/TSFinanzielleSituationTyp';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
@@ -36,6 +37,8 @@ export class DvFinanzielleSituationRequire implements IComponentOptions {
     public controller = DVFinanzielleSituationRequireController;
     public controllerAs = 'vm';
 }
+
+const LOG = LogFactory.createLog('DVFinanzielleSituationRequireController');
 
 export class DVFinanzielleSituationRequireController implements IController {
 
@@ -73,7 +76,7 @@ export class DVFinanzielleSituationRequireController implements IController {
             this.gesuchModelManager.getGemeinde())
             .subscribe(typ => {
                 this.isFinSitTypFkjv = TSFinanzielleSituationTyp.BERN_FKJV === typ;
-            });
+            }, err => LOG.error(err));
     }
 
     /**

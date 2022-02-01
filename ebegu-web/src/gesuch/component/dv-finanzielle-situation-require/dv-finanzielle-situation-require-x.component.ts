@@ -16,6 +16,7 @@ import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from 
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationTyp} from '../../../models/enums/TSFinanzielleSituationTyp';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
@@ -24,6 +25,8 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {FinanzielleSituationRS} from '../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
+
+const LOG = LogFactory.createLog('DvFinanzielleSituationRequireX');
 
 @Component({
     selector: 'dv-finanzielle-situation-require-x',
@@ -80,7 +83,7 @@ export class DvFinanzielleSituationRequireX implements OnInit {
             this.gesuchModelManager.getGemeinde())
             .subscribe(typ => {
                 this.isFinSitTypFkjv = TSFinanzielleSituationTyp.BERN_FKJV === typ;
-            });
+            },  err => LOG.error(err));
     }
 
     public setFinanziellesituationRequired(): void {
