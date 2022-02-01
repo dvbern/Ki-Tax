@@ -544,10 +544,11 @@ export class GesuchModelManager {
             });
     }
 
-    public callKiBonAnfrageAndUpdateFinSit(): IPromise<TSFinanzielleSituationContainer> {
+    public callKiBonAnfrageAndUpdateFinSit(isGemeinsam: boolean): IPromise<TSFinanzielleSituationContainer> {
         return this.finanzielleSituationRS.updateFinSitMitSteuerdaten(
             this.gesuch.id,
-            this.getStammdatenToWorkWith())
+            this.getStammdatenToWorkWith(),
+            isGemeinsam)
             .then((finSitContRespo: TSFinanzielleSituationContainer) => {
                 this.getStammdatenToWorkWith().finanzielleSituationContainer = finSitContRespo;
                 return this.getStammdatenToWorkWith().finanzielleSituationContainer;

@@ -133,9 +133,10 @@ export class FinanzielleSituationRS {
     public updateFinSitMitSteuerdaten(
             gesuchId: string,
             gesuchsteller: TSGesuchstellerContainer,
+            isGemeinsam: boolean
     ): IPromise<TSFinanzielleSituationContainer> {
             const url = `${this.serviceURL}/kibonanfrage/${encodeURIComponent(gesuchId)}/${encodeURIComponent(
-                gesuchsteller.id)}`;
+                gesuchsteller.id)}/${isGemeinsam}`;
             const finSitContainerToSend = this.ebeguRestUtil.finanzielleSituationContainerToRestObject({},
                 gesuchsteller.finanzielleSituationContainer);
             return this.$http.put(url, finSitContainerToSend).then(response => {

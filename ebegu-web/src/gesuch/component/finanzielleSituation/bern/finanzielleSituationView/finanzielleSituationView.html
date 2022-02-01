@@ -40,6 +40,12 @@
                            data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED"></p>
                     </div>
 
+                    <div ng-if="vm.showWarningPartnerNichtGemeinsam()"
+                         class="well well-status-warten minus-margin">
+                        <p class="ebegu-h3"
+                           data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_PARTNER_NICHT_GEMEINSAM"></p>
+                    </div>
+
                     <div ng-if="vm.showZugriffErfolgreich()"
                          class="well well-status-bestaetigt minus-margin">
                         <p class="ebegu-h3"

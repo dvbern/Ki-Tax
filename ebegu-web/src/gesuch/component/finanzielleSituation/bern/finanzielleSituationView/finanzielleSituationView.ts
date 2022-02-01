@@ -214,7 +214,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
 
     private callKiBonAnfrageAndUpdateFinSit(): void {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit().then(() => {
+        this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(false).then(() => {
                 this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
                 this.showFormular();
             },
@@ -236,7 +236,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
 
     public isSteueranfrageErfolgreich(): boolean {
         if (this.steuerSchnittstelleAktiv && EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.steuerdatenZugriff) &&
-            this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus !== TSSteuerdatenAnfrageStatus.FAILED) {
+            !this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus.startsWith('FAILED')) {
             return true;
         }
         return false;
@@ -244,5 +244,10 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
 
     public isFKJV(): boolean {
         return this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV;
+    }
+
+    public showWarningPartnerNichtGemeinsam(): boolean {
+        return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus === TSSteuerdatenAnfrageStatus.FAILED_PARTNER_NICHT_GEMEINSAM
+            && this.getModel().finanzielleSituationJA.steuerdatenZugriff;
     }
 }
