@@ -148,7 +148,7 @@
                                     </label>
                                     <dv-valueinput input-id="nettolohn" name="nettolohn"
                                                    ng-model="vm.getModel().finanzielleSituationJA.nettolohn"
-                                                   ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErlaubt()"
+                                                   ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                    class="input-element" required>
                                     </dv-valueinput>
                                     <dv-bisher gs="vm.getModel().finanzielleSituationGS.nettolohn"
@@ -173,7 +173,7 @@
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="familienzulage" name="familienzulage"
                                                        ng-model="vm.getModel().finanzielleSituationJA.familienzulage"
-                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErlaubt()"
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element" required>
                                         </dv-valueinput>
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.familienzulage"
@@ -198,7 +198,7 @@
                                     </label>
                                     <dv-valueinput input-id="ersatzeinkommen" name="ersatzeinkommen"
                                                    ng-model="vm.getModel().finanzielleSituationJA.ersatzeinkommen"
-                                                   ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErlaubt()"
+                                                   ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                    class="input-element" required>
                                     </dv-valueinput>
                                     <dv-bisher gs="vm.getModel().finanzielleSituationGS.ersatzeinkommen"
@@ -222,7 +222,7 @@
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="erhalteneAlimente" name="erhalteneAlimente"
                                                        ng-model="vm.getModel().finanzielleSituationJA.erhalteneAlimente"
-                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErlaubt()"
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element" required>
                                         </dv-valueinput>
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.erhalteneAlimente"
@@ -245,7 +245,7 @@
                                                  id="showSelbstaendig"
                                                  aria-label="{{'FINANZIELLE_SITUATION_SELBSTAENDIGKEIT'|translate}}"
                                                  ng-change="vm.showSelbstaendigClicked()"
-                                                 ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErlaubt()">
+                                                 ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()">
                                         <span data-translate="FINANZIELLE_SITUATION_SELBSTAENDIGKEIT"></span>
                                     </md-checkbox>
                                     <dv-tooltip input-id="showSelbstaendig"
@@ -274,7 +274,7 @@
                                                        allow-negative=true
                                                        dv-on-blur="vm.calculate()"
                                                        class="input-element"
-                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErlaubt()">
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()">
                                         </dv-valueinput>
                                         <dv-error-messages input-id="geschaeftsgewinnBasisjahr"
                                                            for="vm.form.geschaeftsgewinnBasisjahr.$error"
@@ -301,7 +301,7 @@
                                                        allow-negative=true
                                                        dv-on-blur="vm.calculate()"
                                                        class="input-element"
-                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErlaubt()">
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()">
                                         </dv-valueinput>
                                         <dv-bisher
                                             gs="vm.getModel().finanzielleSituationGS.geschaeftsgewinnBasisjahrMinus1"
@@ -326,7 +326,7 @@
                                                        allow-negative=true
                                                        dv-on-blur="vm.calculate()"
                                                        class="input-element"
-                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErlaubt()">
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()">
                                         </dv-valueinput>
                                         <dv-bisher
                                             gs="vm.getModel().finanzielleSituationGS.geschaeftsgewinnBasisjahrMinus2"
