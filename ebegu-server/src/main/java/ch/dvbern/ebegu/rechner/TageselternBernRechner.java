@@ -29,9 +29,9 @@ import ch.dvbern.ebegu.util.MathUtil;
  * Berechnet die Vollkosten, den Elternbeitrag und die Vergünstigung für einen Zeitabschnitt (innerhalb eines Monats)
  * einer Betreuung für das Angebot Tageseltern.
  */
-public class TageselternRechner extends AbstractGemeindeRechner {
+public class TageselternBernRechner extends AbstractGemeindeBernRechner {
 
-	protected TageselternRechner(List<RechnerRule> rechnerRulesForGemeinde) {
+	protected TageselternBernRechner(List<RechnerRule> rechnerRulesForGemeinde) {
 		super(rechnerRulesForGemeinde);
 	}
 

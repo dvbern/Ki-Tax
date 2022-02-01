@@ -2662,6 +2662,15 @@ public class JaxBConverter extends AbstractConverter {
 		abstractFinanzielleSituation.setGeschaeftsgewinnBasisjahr(abstractFinanzielleSituationJAXP.getGeschaeftsgewinnBasisjahr());
 		abstractFinanzielleSituation.setGeleisteteAlimente(abstractFinanzielleSituationJAXP.getGeleisteteAlimente());
 
+		abstractFinanzielleSituation.setEinkommenInVereinfachtemVerfahrenAbgerechnet(abstractFinanzielleSituationJAXP.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
+		abstractFinanzielleSituation.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(abstractFinanzielleSituationJAXP.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
+		abstractFinanzielleSituation.setGewinnungskosten(abstractFinanzielleSituationJAXP.getGewinnungskosten());
+		abstractFinanzielleSituation.setBruttoertraegeVermoegen(abstractFinanzielleSituationJAXP.getBruttoertraegeVermoegen());
+		abstractFinanzielleSituation.setNettoertraegeErbengemeinschaft(abstractFinanzielleSituationJAXP.getNettoertraegeErbengemeinschaft());
+		abstractFinanzielleSituation.setNettoVermoegen(abstractFinanzielleSituationJAXP.getNettoVermoegen());
+		abstractFinanzielleSituation.setAbzugSchuldzinsen(abstractFinanzielleSituationJAXP.getAbzugSchuldzinsen());
+
+
 		abstractFinanzielleSituation.setSteuerbaresEinkommen(abstractFinanzielleSituationJAXP.getSteuerbaresEinkommen());
 		abstractFinanzielleSituation.setSteuerbaresVermoegen(abstractFinanzielleSituationJAXP.getSteuerbaresVermoegen());
 		abstractFinanzielleSituation.setEinkaeufeVorsorge(abstractFinanzielleSituationJAXP.getEinkaeufeVorsorge());
@@ -2689,6 +2698,14 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbstractFinanzielleSituation.setGeschaeftsgewinnBasisjahr(persistedAbstractFinanzielleSituation.getGeschaeftsgewinnBasisjahr());
 		jaxAbstractFinanzielleSituation.setGeleisteteAlimente(persistedAbstractFinanzielleSituation.getGeleisteteAlimente());
 
+		jaxAbstractFinanzielleSituation.setEinkommenInVereinfachtemVerfahrenAbgerechnet(persistedAbstractFinanzielleSituation.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
+		jaxAbstractFinanzielleSituation.setGewinnungskosten(persistedAbstractFinanzielleSituation.getGewinnungskosten());
+		jaxAbstractFinanzielleSituation.setNettoertraegeErbengemeinschaft(persistedAbstractFinanzielleSituation.getNettoertraegeErbengemeinschaft());
+		jaxAbstractFinanzielleSituation.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(persistedAbstractFinanzielleSituation.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
+		jaxAbstractFinanzielleSituation.setBruttoertraegeVermoegen(persistedAbstractFinanzielleSituation.getBruttoertraegeVermoegen());
+		jaxAbstractFinanzielleSituation.setNettoVermoegen(persistedAbstractFinanzielleSituation.getNettoVermoegen());
+		jaxAbstractFinanzielleSituation.setAbzugSchuldzinsen(persistedAbstractFinanzielleSituation.getAbzugSchuldzinsen());
+
 		jaxAbstractFinanzielleSituation.setSteuerbaresEinkommen(persistedAbstractFinanzielleSituation.getSteuerbaresEinkommen());
 		jaxAbstractFinanzielleSituation.setSteuerbaresVermoegen(persistedAbstractFinanzielleSituation.getSteuerbaresVermoegen());
 		jaxAbstractFinanzielleSituation.setEinkaeufeVorsorge(persistedAbstractFinanzielleSituation.getEinkaeufeVorsorge());
@@ -2709,6 +2726,7 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setSteuerdatenZugriff(finanzielleSituationJAXP.getSteuerdatenZugriff());
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus2());
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus1());
+
 
 		finanzielleSituation.setQuellenbesteuert(finanzielleSituationJAXP.getQuellenbesteuert());
 		finanzielleSituation.setGemeinsameStekVorjahr(finanzielleSituationJAXP.getGemeinsameStekVorjahr());
@@ -2739,7 +2757,6 @@ public class JaxBConverter extends AbstractConverter {
 		selbstdeklaration.setEinkunftUeberige(jaxSelbstdeklaration.getEinkunftUeberige());
 		selbstdeklaration.setEinkunftLiegenschaften(jaxSelbstdeklaration.getEinkunftLiegenschaften());
 		selbstdeklaration.setAbzugBerufsauslagen(jaxSelbstdeklaration.getAbzugBerufsauslagen());
-		selbstdeklaration.setAbzugSchuldzinsen(jaxSelbstdeklaration.getAbzugSchuldzinsen());
 		selbstdeklaration.setAbzugUnterhaltsbeitragEhepartner(jaxSelbstdeklaration.getAbzugUnterhaltsbeitragEhepartner());
 		selbstdeklaration.setAbzugUnterhaltsbeitragKinder(jaxSelbstdeklaration.getAbzugUnterhaltsbeitragKinder());
 		selbstdeklaration.setAbzugRentenleistungen(jaxSelbstdeklaration.getAbzugRentenleistungen());
@@ -2779,6 +2796,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setGemeinsameStekVorjahr(persistedFinanzielleSituation.getGemeinsameStekVorjahr());
 		jaxFinanzielleSituation.setAlleinigeStekVorjahr(persistedFinanzielleSituation.getAlleinigeStekVorjahr());
 		jaxFinanzielleSituation.setVeranlagt(persistedFinanzielleSituation.getVeranlagt());
+
 		jaxFinanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToJAX(persistedFinanzielleSituation.getSelbstdeklaration()));
 		jaxFinanzielleSituation.setAbzuegeKinderAusbildung(persistedFinanzielleSituation.getAbzuegeKinderAusbildung());
 		jaxFinanzielleSituation.setBruttoLohn(persistedFinanzielleSituation.getBruttoLohn());
@@ -2805,7 +2823,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxSelbstdeklaration.setEinkunftUeberige(persistedSelbstdeklaration.getEinkunftUeberige());
 		jaxSelbstdeklaration.setEinkunftLiegenschaften(persistedSelbstdeklaration.getEinkunftLiegenschaften());
 		jaxSelbstdeklaration.setAbzugBerufsauslagen(persistedSelbstdeklaration.getAbzugBerufsauslagen());
-		jaxSelbstdeklaration.setAbzugSchuldzinsen(persistedSelbstdeklaration.getAbzugSchuldzinsen());
 		jaxSelbstdeklaration.setAbzugUnterhaltsbeitragEhepartner(persistedSelbstdeklaration.getAbzugUnterhaltsbeitragEhepartner());
 		jaxSelbstdeklaration.setAbzugUnterhaltsbeitragKinder(persistedSelbstdeklaration.getAbzugUnterhaltsbeitragKinder());
 		jaxSelbstdeklaration.setAbzugRentenleistungen(persistedSelbstdeklaration.getAbzugRentenleistungen());

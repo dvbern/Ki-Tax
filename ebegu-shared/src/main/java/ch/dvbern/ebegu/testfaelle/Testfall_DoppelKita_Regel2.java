@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.testfaelle;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -39,6 +40,9 @@ import ch.dvbern.ebegu.util.MathUtil;
  * -> Kita A wird zuerst bedient, weil sie früher beginnt, auch ab 1.1., wo Kita B höher wäre!
  */
 public class Testfall_DoppelKita_Regel2 extends AbstractTestfall {
+
+	private static final BigDecimal EINKOMMEN_GS1 = MathUtil.DEFAULT.from(53265);
+	private static final BigDecimal VERMOEGEN_GS1 = MathUtil.DEFAULT.from(12147);
 
 	public Testfall_DoppelKita_Regel2(
 			Gesuchsperiode gesuchsperiode,
@@ -97,10 +101,20 @@ public class Testfall_DoppelKita_Regel2 extends AbstractTestfall {
 
 		// Finanzielle Situation
 		FinanzielleSituationContainer finanzielleSituationContainer = createFinanzielleSituationContainer();
-		finanzielleSituationContainer.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(53265));
-		finanzielleSituationContainer.getFinanzielleSituationJA().setBruttovermoegen(MathUtil.DEFAULT.from(12147));
+		finanzielleSituationContainer.getFinanzielleSituationJA().setNettolohn(EINKOMMEN_GS1);
+		finanzielleSituationContainer.getFinanzielleSituationJA().setBruttovermoegen(VERMOEGEN_GS1);
 		finanzielleSituationContainer.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationContainer);
+
+		// LU
+		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationContainer);
+		assert finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration() != null;
+		finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration().setEinkunftErwerb(MathUtil.DEFAULT.from(EINKOMMEN_GS1));
+		finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration().setVermoegen(MathUtil.DEFAULT.from(VERMOEGEN_GS1));
+
+		// SO
+		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationContainer);
+		finanzielleSituationContainer.getFinanzielleSituationJA().setSteuerbaresVermoegen(MathUtil.DEFAULT.from(VERMOEGEN_GS1));
 
 		createEmptyEKVInfoContainer(gesuch);
 

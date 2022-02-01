@@ -37,6 +37,9 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public class Testfall_ASIV_12_MZV_Untermonatliche extends AbstractASIVTestfall {
 
+	private static final BigDecimal EINKOMMEN_GS1 = MathUtil.DEFAULT.from(20000);
+	private static final BigDecimal EINKOMMEN_GS2 = MathUtil.DEFAULT.from(30000);
+
 	public Testfall_ASIV_12_MZV_Untermonatliche(
 			Gesuchsperiode gesuchsperiode,
 			boolean betreuungenBestaetigt,
@@ -94,14 +97,23 @@ public class Testfall_ASIV_12_MZV_Untermonatliche extends AbstractASIVTestfall {
 		betreuungKitaBruennen.getBetreuungspensumContainers().add(betreuungspensumKitaBruennen);
 		// Finanzielle Situation
 		FinanzielleSituationContainer finanzielleSituationContainer = createFinanzielleSituationContainer();
-		finanzielleSituationContainer.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(20000));
+		finanzielleSituationContainer.getFinanzielleSituationJA().setNettolohn(EINKOMMEN_GS1);
 		finanzielleSituationContainer.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationContainer);
 
 		FinanzielleSituationContainer finanzielleSituationGS2 = createFinanzielleSituationContainer();
-		finanzielleSituationGS2.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(30000));
+		finanzielleSituationGS2.getFinanzielleSituationJA().setNettolohn(EINKOMMEN_GS2);
 		finanzielleSituationGS2.setGesuchsteller(gesuchsteller2);
 		gesuchsteller2.setFinanzielleSituationContainer(finanzielleSituationGS2);
+
+		// LU
+		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationContainer);
+		assert finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration() != null;
+		finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration().setEinkunftErwerb(MathUtil.DEFAULT.from(EINKOMMEN_GS1));
+
+		// SO
+		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationContainer);
+		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationGS2);
 
 		createEmptyEKVInfoContainer(gesuch);
 

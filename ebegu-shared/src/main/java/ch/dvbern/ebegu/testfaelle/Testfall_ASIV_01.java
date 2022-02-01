@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.testfaelle;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -35,6 +36,8 @@ import ch.dvbern.ebegu.util.MathUtil;
  * Wechsel von 1 auf 2. Keine EKV
  */
 public class Testfall_ASIV_01 extends AbstractASIVTestfall {
+
+	private static final BigDecimal EINKOMMEN = MathUtil.DEFAULT.from(70000);
 
 	public Testfall_ASIV_01(
 			Gesuchsperiode gesuchsperiode,
@@ -69,9 +72,17 @@ public class Testfall_ASIV_01 extends AbstractASIVTestfall {
 		betreuungKitaBruennen.getBetreuungspensumContainers().add(betreuungspensumKitaBruennen);
 		// Finanzielle Situation
 		FinanzielleSituationContainer finanzielleSituationContainer = createFinanzielleSituationContainer();
-		finanzielleSituationContainer.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(70000));
+		finanzielleSituationContainer.getFinanzielleSituationJA().setNettolohn(EINKOMMEN);
 		finanzielleSituationContainer.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationContainer);
+
+		// LU
+		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationContainer);
+		assert finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration() != null;
+		finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration().setEinkunftErwerb(MathUtil.DEFAULT.from(EINKOMMEN));
+
+		// SO
+		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationContainer);
 
 		createEmptyEKVInfoContainer(erstgesuch);
 
@@ -92,6 +103,13 @@ public class Testfall_ASIV_01 extends AbstractASIVTestfall {
 		finanzielleSituationContainerGS2.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(30000));
 		finanzielleSituationContainerGS2.setGesuchsteller(gesuchsteller2);
 		gesuchsteller2.setFinanzielleSituationContainer(finanzielleSituationContainerGS2);
+		// LU
+		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationContainerGS2);
+		assert finanzielleSituationContainerGS2.getFinanzielleSituationJA().getSelbstdeklaration() != null;
+		finanzielleSituationContainerGS2.getFinanzielleSituationJA().getSelbstdeklaration().setEinkunftErwerb(MathUtil.DEFAULT.from(30000));
+		// SO
+		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationContainerGS2);
+
 		return mutation;
 	}
 

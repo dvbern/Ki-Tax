@@ -31,5 +31,8 @@ public class KiBonAnfrageServiceException extends EbeguException {
 		super(methodname, message, ErrorCodeEnum.ERROR_KIBON_ANFRAGE_TECHNICAL, cause);
 	}
 
+	public KiBonAnfrageServiceException(final String methodname, final String message, final String code, final String text) {
+		super(methodname, message, ErrorCodeEnum.ERROR_KIBON_ANFRAGE_TECHNICAL, code, text);
+	}
 
 }
