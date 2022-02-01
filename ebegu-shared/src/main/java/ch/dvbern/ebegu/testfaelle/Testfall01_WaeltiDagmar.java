@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.testfaelle;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Objects;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;

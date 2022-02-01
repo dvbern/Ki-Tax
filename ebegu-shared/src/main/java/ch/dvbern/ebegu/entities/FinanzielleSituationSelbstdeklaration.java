@@ -416,7 +416,6 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 			target.setEinkunftUeberige(this.getEinkunftUeberige());
 			target.setEinkunftLiegenschaften(this.getEinkunftLiegenschaften());
 			target.setAbzugBerufsauslagen(this.getAbzugBerufsauslagen());
-			target.setAbzugSchuldzinsen(this.getAbzugSchuldzinsen());
 			target.setAbzugUnterhaltsbeitragEhepartner(this.getAbzugUnterhaltsbeitragEhepartner());
 			target.setAbzugUnterhaltsbeitragKinder(this.getAbzugUnterhaltsbeitragKinder());
 			target.setAbzugRentenleistungen(this.getAbzugRentenleistungen());
