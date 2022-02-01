@@ -350,19 +350,14 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	@Override
-	public void calculateStammdatenCheckRequired() {
+	public void updateAllStammdatenCheckRequired() {
 		Collection<Institution> allInstitutionen = getAllInstitutionenForBatchjobs();
 
-		// It will set the flag to true or to false accordingly to the value of calculateStammdatenCheckRequired().
-		// This is better than only
-		// setting it to true because it helps set the flag back to false even when it is incorrectly true or hasn't
-		// been updated properly
 		allInstitutionen
 			.forEach(institution -> {
-				final boolean isCheckRequired = calculateStammdatenCheckRequiredForInstitution(institution.getId());
 				updateStammdatenCheckRequired(
 					institution.getId(),
-					institution.isStammdatenCheckRequired() ? true : isCheckRequired);
+					true);
 			});
 	}
 
@@ -516,23 +511,5 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			Berechtigung.class,
 			institution,
 			Berechtigung_.institution);
-	}
-
-	/**
-	 * Checks if the Stammdaten of the given Institution need to be checked by the user. This happens when the
-	 * stammdaten haven't
-	 * been saved for a long time (usually 100 days)
-	 */
-	private boolean calculateStammdatenCheckRequiredForInstitution(@Nonnull String institutionId) {
-		InstitutionStammdaten instStammdaten =
-			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId, false);
-
-		LocalDateTime timestampMutiert = instStammdaten.getTimestampMutiert();
-
-		LocalDateTime timestampInstiMutiert = instStammdaten.getInstitution().getTimestampMutiert();
-
-		return timestampMutiert != null && timestampInstiMutiert != null
-			&& timestampMutiert.isBefore(LocalDateTime.now().minusDays(Constants.DAYS_BEFORE_INSTITUTION_CHECK))
-			&& timestampInstiMutiert.isBefore(LocalDateTime.now().minusDays(Constants.DAYS_BEFORE_INSTITUTION_CHECK));
 	}
 }

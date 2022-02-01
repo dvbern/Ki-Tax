@@ -99,11 +99,9 @@ public interface InstitutionService {
 	BetreuungsangebotTyp getAngebotFromInstitution(@Nonnull String institutionId);
 
 	/**
-	 * Will take all Institutions and check whether its Stammdaten has to be checked (stammdaten haven't been saved
-	 * for a long time) or not.
-	 * If it does it will set the Flag stammdatenCheckRequired to true. It will set it to false otherwise.
+	 * Will set stammdatenCheckRequired Flag to true.
 	 */
-	void calculateStammdatenCheckRequired();
+	void updateAllStammdatenCheckRequired();
 
 	/**
 	 * Updates the Flag stammdatenCheckRequired to false and updates the Stammdaten so timestamp_mutiert gets updated
