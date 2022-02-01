@@ -19,6 +19,7 @@ import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
@@ -103,9 +104,10 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         'GlobalCacheService',
         '$timeout',
         '$translate',
+        'ApplicationPropertyRS',
         'DownloadRS',
         'GemeindeRS',
-        'I18nServiceRSRest',
+        'I18nServiceRSRest'
     ];
 
     public onSave: () => void;
@@ -144,6 +146,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         globalCacheService: GlobalCacheService,
         $timeout: ITimeoutService,
         $translate: ITranslateService,
+        applicationPropertyRS: ApplicationPropertyRS,
         private readonly downloadRS: DownloadRS,
         private readonly gemeindeRS: GemeindeRS,
         private readonly i18nServiceRS: I18nServiceRSRest,
@@ -165,7 +168,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             einstellungRS,
             globalCacheService,
             $timeout,
-            $translate);
+            $translate,
+            applicationPropertyRS);
 
         this.$scope.$watch(() => {
             return this.getBetreuungModel().institutionStammdaten;
