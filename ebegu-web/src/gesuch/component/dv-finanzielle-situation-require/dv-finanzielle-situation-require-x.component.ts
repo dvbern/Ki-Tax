@@ -17,10 +17,12 @@ import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSFinanzielleSituationTyp} from '../../../models/enums/TSFinanzielleSituationTyp';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {FinanzielleSituationRS} from '../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 
 @Component({
@@ -49,6 +51,7 @@ export class DvFinanzielleSituationRequireX implements OnInit {
     public areThereOnlyBgBetreuungen: boolean;
 
     private maxMassgebendesEinkommen: string;
+    private isFinSitTypFkjv: boolean = false;
 
     public allowedRoles: ReadonlyArray<TSRole>;
 
@@ -57,7 +60,8 @@ export class DvFinanzielleSituationRequireX implements OnInit {
         public readonly gesuchModelManager: GesuchModelManager,
         private readonly translate: TranslateService,
         private readonly einstellungRS: EinstellungRS,
-        private readonly cd: ChangeDetectorRef
+        private readonly cd: ChangeDetectorRef,
+        private readonly finanzielleSituationRS: FinanzielleSituationRS
     ) {
     }
 
@@ -71,6 +75,12 @@ export class DvFinanzielleSituationRequireX implements OnInit {
                 this.maxMassgebendesEinkommen = response.value;
             });
         this.allowedRoles = TSRoleUtil.getAllRolesButTraegerschaftInstitution();
+
+        this.finanzielleSituationRS.getFinanzielleSituationTyp(this.gesuchModelManager.getGesuchsperiode(),
+            this.gesuchModelManager.getGemeinde())
+            .subscribe(typ => {
+                this.isFinSitTypFkjv = TSFinanzielleSituationTyp.BERN_FKJV === typ;
+            });
     }
 
     public setFinanziellesituationRequired(): void {
@@ -89,13 +99,18 @@ export class DvFinanzielleSituationRequireX implements OnInit {
 
     /**
      * Das Feld verguenstigungGewuenscht wird nur angezeigt,
-     * wenn es sich um keinen reinen BG-Antrag handelt und
-     * wenn das Feld sozialhilfeBezueger eingeblendet ist und mit nein beantwortet wurde.
+     * wenn das Feld sozialhilfeBezueger eingeblendet ist und mit nein beantwortet wurde und
+     * wenn es sich um keinen reinen BG-Antrag in der FKJV FinSit handelt
      */
     public showFinanzielleSituationDeklarieren(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger)
-            && !this.sozialhilfeBezueger
-            && !this.areThereOnlyBgBetreuungen;
+        const isNotSozialhilfeBezueger = EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger)
+            && !this.sozialhilfeBezueger;
+
+        if (this.isFinSitTypFkjv) {
+            return isNotSozialhilfeBezueger && !this.areThereOnlyBgBetreuungen;
+        }
+
+        return isNotSozialhilfeBezueger;
     }
 
     public getMaxMassgebendesEinkommen(): string {

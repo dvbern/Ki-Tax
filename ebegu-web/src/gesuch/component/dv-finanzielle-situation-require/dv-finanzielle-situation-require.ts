@@ -16,8 +16,10 @@
 import {IComponentOptions, IController, IFormController} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSFinanzielleSituationTyp} from '../../../models/enums/TSFinanzielleSituationTyp';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {FinanzielleSituationRS} from '../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -37,12 +39,13 @@ export class DvFinanzielleSituationRequire implements IComponentOptions {
 
 export class DVFinanzielleSituationRequireController implements IController {
 
-    public static $inject: ReadonlyArray<string> = ['EinstellungRS', 'GesuchModelManager', '$translate'];
+    public static $inject: ReadonlyArray<string> = ['EinstellungRS', 'GesuchModelManager', '$translate', 'FinanzielleSituationRS'];
 
     public finanzielleSituationRequired: boolean;
     public sozialhilfeBezueger: boolean;
     public verguenstigungGewuenscht: boolean;
     public areThereOnlyBgBetreuungen: boolean;
+    public isFinSitTypFkjv: boolean = false;
 
     public maxMassgebendesEinkommen: string;
 
@@ -52,6 +55,7 @@ export class DVFinanzielleSituationRequireController implements IController {
         private readonly einstellungRS: EinstellungRS,
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly $translate: ITranslateService,
+        private readonly finanzielleSituationRS: FinanzielleSituationRS
     ) {
     }
 
@@ -64,17 +68,28 @@ export class DVFinanzielleSituationRequireController implements IController {
             .then(response => {
                 this.maxMassgebendesEinkommen = response.value;
             });
+
+        this.finanzielleSituationRS.getFinanzielleSituationTyp(this.gesuchModelManager.getGesuchsperiode(),
+            this.gesuchModelManager.getGemeinde())
+            .subscribe(typ => {
+                this.isFinSitTypFkjv = TSFinanzielleSituationTyp.BERN_FKJV === typ;
+            });
     }
 
     /**
      * Das Feld verguenstigungGewuenscht wird nur angezeigt,
-     * wenn es sich um keinen reinen BG-Antrag handelt und
-     * wenn das Feld sozialhilfeBezueger eingeblendet ist und mit nein beantwortet wurde.
+     * wenn das Feld sozialhilfeBezueger eingeblendet ist und mit nein beantwortet wurde und
+     * wenn es sich um keinen reinen BG-Antrag in der FKJV FinSit handelt
      */
     public showFinanzielleSituationDeklarieren(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger)
-            && !this.sozialhilfeBezueger
-            && !this.areThereOnlyBgBetreuungen;
+        const isNotSozialhilfeBezueger = EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger)
+            && !this.sozialhilfeBezueger;
+
+        if (this.isFinSitTypFkjv) {
+            return isNotSozialhilfeBezueger && !this.areThereOnlyBgBetreuungen;
+        }
+
+        return isNotSozialhilfeBezueger;
     }
 
     public setFinanziellesituationRequired(): void {
