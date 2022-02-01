@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.testfaelle;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

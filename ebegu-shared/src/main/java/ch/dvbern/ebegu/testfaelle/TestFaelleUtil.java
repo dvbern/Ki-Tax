@@ -41,7 +41,6 @@ public final class TestFaelleUtil {
 		selbstdeklaration.setEinkunftLiegenschaften(MathUtil.DEFAULT.from(0));
 
 		selbstdeklaration.setAbzugBerufsauslagen(MathUtil.DEFAULT.from(0));
-		selbstdeklaration.setAbzugSchuldzinsen(MathUtil.DEFAULT.from(0));
 		selbstdeklaration.setAbzugUnterhaltsbeitragEhepartner(MathUtil.DEFAULT.from(0));
 		selbstdeklaration.setAbzugUnterhaltsbeitragKinder(MathUtil.DEFAULT.from(0));
 		selbstdeklaration.setAbzugRentenleistungen(MathUtil.DEFAULT.from(0));
