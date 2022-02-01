@@ -33,6 +33,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -214,6 +215,71 @@ public class GeschwistertenBonusCalcRuleTest {
 		ruleToTest.executeRule(olderKindBetreuung, olderInputData);
 		Assert.assertFalse(olderInputData.isGeschwisternBonusKind2());
 		Assert.assertFalse(olderInputData.isGeschwisternBonusKind3());
+	}
+
+	@Test
+	public void testKindergartenKindHasNoBonus() {
+		createOldestKindWithBetreuungForGesuch(betreuung.extractGesuch());
+
+		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KINDERGARTEN1);
+		ruleToTest.executeRule(betreuung, inputData);
+		Assert.assertFalse(inputData.isGeschwisternBonusKind2());
+		Assert.assertFalse(inputData.isGeschwisternBonusKind3());
+
+		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KINDERGARTEN2);
+		ruleToTest.executeRule(betreuung, inputData);
+		Assert.assertFalse(inputData.isGeschwisternBonusKind2());
+		Assert.assertFalse(inputData.isGeschwisternBonusKind3());
+	}
+
+	@Test
+	public void testSchulKindHasNoBonus() {
+		createOldestKindWithBetreuungForGesuch(betreuung.extractGesuch());
+
+		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE1);
+		ruleToTest.executeRule(betreuung, inputData);
+		Assert.assertFalse(inputData.isGeschwisternBonusKind2());
+		Assert.assertFalse(inputData.isGeschwisternBonusKind3());
+
+		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE2);
+		ruleToTest.executeRule(betreuung, inputData);
+		Assert.assertFalse(inputData.isGeschwisternBonusKind2());
+		Assert.assertFalse(inputData.isGeschwisternBonusKind3());
+
+		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE3);
+		ruleToTest.executeRule(betreuung, inputData);
+		Assert.assertFalse(inputData.isGeschwisternBonusKind2());
+		Assert.assertFalse(inputData.isGeschwisternBonusKind3());
+
+		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE4);
+		ruleToTest.executeRule(betreuung, inputData);
+		Assert.assertFalse(inputData.isGeschwisternBonusKind2());
+		Assert.assertFalse(inputData.isGeschwisternBonusKind3());
+
+		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE5);
+		ruleToTest.executeRule(betreuung, inputData);
+		Assert.assertFalse(inputData.isGeschwisternBonusKind2());
+		Assert.assertFalse(inputData.isGeschwisternBonusKind3());
+
+		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE6);
+		ruleToTest.executeRule(betreuung, inputData);
+		Assert.assertFalse(inputData.isGeschwisternBonusKind2());
+		Assert.assertFalse(inputData.isGeschwisternBonusKind3());
+
+		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE7);
+		ruleToTest.executeRule(betreuung, inputData);
+		Assert.assertFalse(inputData.isGeschwisternBonusKind2());
+		Assert.assertFalse(inputData.isGeschwisternBonusKind3());
+
+		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE8);
+		ruleToTest.executeRule(betreuung, inputData);
+		Assert.assertFalse(inputData.isGeschwisternBonusKind2());
+		Assert.assertFalse(inputData.isGeschwisternBonusKind3());
+
+		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE9);
+		ruleToTest.executeRule(betreuung, inputData);
+		Assert.assertFalse(inputData.isGeschwisternBonusKind2());
+		Assert.assertFalse(inputData.isGeschwisternBonusKind3());
 	}
 
 	private void addOldestKindToGesuch() {

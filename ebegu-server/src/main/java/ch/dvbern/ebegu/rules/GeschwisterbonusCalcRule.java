@@ -50,8 +50,18 @@ public class GeschwisterbonusCalcRule extends AbstractCalcRule {
 	void executeRule(
 			@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		Betreuung betreuung = (Betreuung) platz;
+		if (kindHasTooHighEinschulungstyp(platz)) {
+			return;
+		}
 		inputData.setGeschwisternBonusKind2(getHasGeschwistersBonusKind2(betreuung));
 		inputData.setGeschwisternBonusKind3(getHasGeschwistersBonusKind3(betreuung));
+	}
+
+	private boolean kindHasTooHighEinschulungstyp(AbstractPlatz platz) {
+		if (platz.getKind().getKindJA().getEinschulungTyp() == null) {
+			return false;
+		}
+		return platz.getKind().getKindJA().getEinschulungTyp().isKindergarten() || platz.getKind().getKindJA().getEinschulungTyp().isEingeschult();
 	}
 
 	private boolean getHasGeschwistersBonusKind2(Betreuung betreuung) {
