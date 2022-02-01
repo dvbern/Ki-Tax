@@ -29,7 +29,6 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
-import ch.dvbern.ebegu.util.MathUtil;
 
 /**
  * http://localhost:8080/ebegu/api/v1/testfaelle/testfall/6
