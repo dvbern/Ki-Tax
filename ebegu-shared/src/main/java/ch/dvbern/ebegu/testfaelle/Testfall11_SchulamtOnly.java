@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
+import ch.dvbern.ebegu.util.MathUtil;
 
 /**
  * http://localhost:8080/ebegu/api/v1/testfaelle/testfall/11
@@ -95,6 +96,12 @@ public class Testfall11_SchulamtOnly extends AbstractTestfall {
 		FinanzielleSituationContainer finanzielleSituationGS1 = createFinanzielleSituationContainer();
 		finanzielleSituationGS1.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationGS1);
+
+		// LU
+		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationGS1);
+
+		// SO
+		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationGS1);
 
 		createEmptyEKVInfoContainer(gesuch);
 

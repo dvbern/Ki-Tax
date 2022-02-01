@@ -39,7 +39,7 @@
 			<dv-bruttolohn *ngIf="!hasSteuerveranlagungErhalten()" [model]="getModel()"></dv-bruttolohn>
 		</div>
 		<div *ngIf="finanzielleSituationRequired && isGemeinsam()">
-			<dv-steuerveranlagung-gemeinsam [model]="getModel()"></dv-steuerveranlagung-gemeinsam>
+			<dv-steuerveranlagung-gemeinsam [model]="model"></dv-steuerveranlagung-gemeinsam>
 			<dv-steuerveranlagung-erhalten *ngIf="isSteuerveranlagungGemeinsam()"
 										   (steuerveranlagungErhaltenChange)="steuerveranlagungErhaltenChange($event)"
 										   [model]="getModel()"></dv-steuerveranlagung-erhalten>
