@@ -616,11 +616,19 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 				hasSecondGesuchsteller,
 				EbeguUtil.isKorrekturmodusGemeinde(gesuch),
 				false);
-		table.addRow(vermoegenTitle);
-		table.addRow(bruttovermoegen);
-		table.addRow(schulden);
-		table.addRow(zwischentotal);
-		table.addRow(total);
+		if (gs1.getNettoVermoegen() == null || (gs2 != null && gs2.getNettoVermoegen() == null)) {
+			table.addRow(vermoegenTitle);
+			table.addRow(bruttovermoegen);
+			table.addRow(schulden);
+			table.addRow(zwischentotal);
+			table.addRow(total);
+		}
+		if (gs1.getNettoVermoegen() != null || (gs2 != null && gs2.getNettoVermoegen() != null)) {
+			FinanzielleSituationRow nettovermoegen = createRow(translate(NETTOVERMOEGEN),
+				AbstractFinanzielleSituation::getNettoVermoegen, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
+			table.addRow(nettovermoegen);
+		}
+
 		table.addRow(vermoegen5Percent);
 		return table.createTable();
 	}
@@ -695,7 +703,6 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		tableAbzuege.addRow(abzugSchuldzinsen);
 		tableAbzuege.addRow(gewinnungskosten);
 	}
-
 
 	@Nonnull
 	private PdfPTable createTableZusammenzug(
