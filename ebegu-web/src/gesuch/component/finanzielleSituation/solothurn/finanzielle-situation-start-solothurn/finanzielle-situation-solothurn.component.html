@@ -29,6 +29,7 @@
 	<form #form="ngForm">
 		<dv-finanzielle-situation-require-x [(verguenstigungGewuenscht)]="model.verguenstigungGewuenscht"
 											[(sozialhilfeBezueger)]="model.sozialhilfeBezueger"
+                                            [areThereOnlyBgBetreuungen]="gesuchModelManager.areThereOnlyBgBetreuungen()"
 											[finanzielleSituationRequired]="finanzielleSituationRequired"
 											(finanzielleSituationRequiredChange)="finanzielleSituationRequiredChange($event)"></dv-finanzielle-situation-require-x>
 		<div *ngIf="finanzielleSituationRequired && !isGemeinsam()">
