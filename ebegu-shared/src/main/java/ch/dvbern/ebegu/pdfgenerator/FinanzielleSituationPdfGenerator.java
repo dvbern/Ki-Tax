@@ -616,8 +616,8 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 				hasSecondGesuchsteller,
 				EbeguUtil.isKorrekturmodusGemeinde(gesuch),
 				false);
+		table.addRow(vermoegenTitle);
 		if (gs1.getNettoVermoegen() == null || (gs2 != null && gs2.getNettoVermoegen() == null)) {
-			table.addRow(vermoegenTitle);
 			table.addRow(bruttovermoegen);
 			table.addRow(schulden);
 			table.addRow(zwischentotal);
