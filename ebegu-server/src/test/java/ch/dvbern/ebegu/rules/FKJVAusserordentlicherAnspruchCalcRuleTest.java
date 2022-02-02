@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -114,6 +115,17 @@ public class FKJVAusserordentlicherAnspruchCalcRuleTest {
 			ruleToTest.executeRule(betreuung, bgCalculationInput);
 
 			Assert.assertEquals(0, bgCalculationInput.getAusserordentlicherAnspruch());
+		}
+
+		@Test
+		public void test80BeschaeftigungspensumFKJVKeinAnspruchMessage() {
+			bgCalculationInput.setErwerbspensumGS1(0);
+			bgCalculationInput.setErwerbspensumGS2(80);
+			ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+			Assert.assertNotNull(bgCalculationInput.getParent().getBemerkungenDTOList().findFirstBemerkungByMsgKey(
+					MsgKey.KEIN_AUSSERORDENTLICHER_ANSPRUCH_MSG
+			));
 		}
 
 		@Test

@@ -58,6 +58,9 @@ public class FKJVAusserordentlicherAnspruchCalcRule extends AbstractAusserordent
 
 		if(!hasAnspruchAufAusserordnelticherAnspruch(platz, inputData)) {
 			inputData.setAusserordentlicherAnspruch(0);
+			inputData.addBemerkung(
+					MsgKey.KEIN_AUSSERORDENTLICHER_ANSPRUCH_MSG,
+					getLocale());
 			return;
 		}
 
