@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
@@ -51,11 +52,17 @@ public class FKJVAusserordentlicherAnspruchCalcRuleTest {
 	private BGCalculationInput bgCalculationInput;
 
 	private static final int DEFAULT_AUSSERORDENTLICHER_ANSPRUCH = 40;
+	private static final int DEFAULT_MIN_BESCHAEFTIGUNGSPENSUM_VORSCHULE = 20;
+	private static final int DEFAULT_MIN_BESCHAEFTIGUNGSPENSUM_KINDERGARTEN = 40;
+	private static final int DEFAULT_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM = 20;
 	private static final DateRange DEFAULT_DATE_RANGE = new DateRange(LocalDate.MIN, LocalDate.MAX);
 
 	@BeforeEach
 	public void setUp() {
 		ruleToTest = new FKJVAusserordentlicherAnspruchCalcRule(
+				DEFAULT_MIN_BESCHAEFTIGUNGSPENSUM_VORSCHULE,
+				DEFAULT_MIN_BESCHAEFTIGUNGSPENSUM_KINDERGARTEN,
+				DEFAULT_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM,
 				DEFAULT_DATE_RANGE,
 				Constants.DEUTSCH_LOCALE);
 		bgCalculationInput = new BGCalculationInput(new VerfuegungZeitabschnitt(), RuleValidity.ASIV);
@@ -70,34 +77,153 @@ public class FKJVAusserordentlicherAnspruchCalcRuleTest {
 	}
 
 	@Nested
-	class FKJVEineAntragstellendeTest {
-		@Test
-		public void testEineGesuchstellende0BeschaeftigungspensumFKJVKeinAnspruch() {
-			bgCalculationInput.setErwerbspensumGS1(0);
-			ruleToTest.executeRule(betreuung, bgCalculationInput);
+	class EineAntragstellendeTest {
 
-			Assert.assertEquals(0, bgCalculationInput.getAusserordentlicherAnspruch());
+		@Nested
+		class VorschulalterTest {
+			@Test
+			public void test0BeschaeftigungspensumFKJVKeinAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(0);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(0, bgCalculationInput.getAusserordentlicherAnspruch());
+			}
+
+			@Test
+			public void test20BeschaeftigungspensumFKJVAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(20);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(
+						DEFAULT_AUSSERORDENTLICHER_ANSPRUCH,
+						bgCalculationInput.getAusserordentlicherAnspruch());
+			}
+
+			@Test
+			public void test60BeschaeftigungspensumFKJVAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(60);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(
+						DEFAULT_AUSSERORDENTLICHER_ANSPRUCH,
+						bgCalculationInput.getAusserordentlicherAnspruch());
+			}
 		}
 
-		@Test
-		public void testEineGesuchstellende50BeschaeftigungspensumFKJVAnspruch() {
-			bgCalculationInput.setErwerbspensumGS1(50);
-			ruleToTest.executeRule(betreuung, bgCalculationInput);
+		@Nested
+		class Kindergartenalter1Test {
 
-			Assert.assertEquals(
-					DEFAULT_AUSSERORDENTLICHER_ANSPRUCH,
-					bgCalculationInput.getAusserordentlicherAnspruch());
+			@BeforeEach
+			public void setUpKindergartenalter() {
+				betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KINDERGARTEN1);
+			}
+
+			@Test
+			public void zeroBeschaeftigungspensumFKJVKeinAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(0);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(0, bgCalculationInput.getAusserordentlicherAnspruch());
+			}
+
+			@Test
+			public void test19BeschaeftigungspensumFKJVKeinAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(19);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(
+						0,
+						bgCalculationInput.getAusserordentlicherAnspruch());
+			}
+
+			@Test
+			public void test20BeschaeftigungspensumFKJVAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(20);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(
+						DEFAULT_AUSSERORDENTLICHER_ANSPRUCH,
+						bgCalculationInput.getAusserordentlicherAnspruch());
+			}
+
+			@Test
+			public void test40BeschaeftigungspensumFKJVAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(40);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(
+						DEFAULT_AUSSERORDENTLICHER_ANSPRUCH,
+						bgCalculationInput.getAusserordentlicherAnspruch());
+			}
+
+			@Test
+			public void test60BeschaeftigungspensumFKJVAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(60);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(
+						DEFAULT_AUSSERORDENTLICHER_ANSPRUCH,
+						bgCalculationInput.getAusserordentlicherAnspruch());
+			}
 		}
 
-		@Test
-		public void testEineGesuchstellende60BeschaeftigungspensumFKJVAnspruch() {
-			bgCalculationInput.setErwerbspensumGS1(60);
-			ruleToTest.executeRule(betreuung, bgCalculationInput);
+		@Nested
+		class Kindergartenalter2Test {
 
-			Assert.assertEquals(
-					DEFAULT_AUSSERORDENTLICHER_ANSPRUCH,
-					bgCalculationInput.getAusserordentlicherAnspruch());
+			@BeforeEach
+			public void setUpKindergartenalter() {
+				betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KINDERGARTEN2);
+			}
+
+			@Test
+			public void zeroBeschaeftigungspensumFKJVKeinAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(0);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(0, bgCalculationInput.getAusserordentlicherAnspruch());
+			}
+
+			@Test
+			public void test19BeschaeftigungspensumFKJVKeinAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(19);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(
+						0,
+						bgCalculationInput.getAusserordentlicherAnspruch());
+			}
+
+			@Test
+			public void test20BeschaeftigungspensumFKJVAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(20);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(
+						DEFAULT_AUSSERORDENTLICHER_ANSPRUCH,
+						bgCalculationInput.getAusserordentlicherAnspruch());
+			}
+
+			@Test
+			public void test40BeschaeftigungspensumFKJVAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(40);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(
+						DEFAULT_AUSSERORDENTLICHER_ANSPRUCH,
+						bgCalculationInput.getAusserordentlicherAnspruch());
+			}
+
+			@Test
+			public void test60BeschaeftigungspensumFKJVAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(60);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(
+						DEFAULT_AUSSERORDENTLICHER_ANSPRUCH,
+						bgCalculationInput.getAusserordentlicherAnspruch());
+			}
 		}
+
 	}
 
 	@Nested
@@ -108,46 +234,163 @@ public class FKJVAusserordentlicherAnspruchCalcRuleTest {
 			betreuung.extractGesuch().setGesuchsteller2(TestDataUtil.createDefaultGesuchstellerContainer());
 		}
 
-		@Test
-		public void test80BeschaeftigungspensumFKJVKeinAnspruch() {
-			bgCalculationInput.setErwerbspensumGS1(0);
-			bgCalculationInput.setErwerbspensumGS2(80);
-			ruleToTest.executeRule(betreuung, bgCalculationInput);
+		@Nested
+		class VorschulalterTest {
 
-			Assert.assertEquals(0, bgCalculationInput.getAusserordentlicherAnspruch());
+			@Test
+			public void test80BeschaeftigungspensumFKJVKeinAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(0);
+				bgCalculationInput.setErwerbspensumGS2(80);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(0, bgCalculationInput.getAusserordentlicherAnspruch());
+			}
+
+			@Test
+			public void test80BeschaeftigungspensumFKJVKeinAnspruchMessage() {
+				bgCalculationInput.setErwerbspensumGS1(0);
+				bgCalculationInput.setErwerbspensumGS2(80);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertNotNull(bgCalculationInput.getParent().getBemerkungenDTOList().findFirstBemerkungByMsgKey(
+						MsgKey.KEIN_AUSSERORDENTLICHER_ANSPRUCH_MSG
+				));
+			}
+
+			@Test
+			public void test81BeschaeftigungspensumFKJVKeinAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(50);
+				bgCalculationInput.setErwerbspensumGS2(31);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(
+						0,
+						bgCalculationInput.getAusserordentlicherAnspruch());
+			}
+
+			@Test
+			public void test100BeschaeftigungspensumFKJVAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(50);
+				bgCalculationInput.setErwerbspensumGS2(50);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(
+						DEFAULT_AUSSERORDENTLICHER_ANSPRUCH,
+						bgCalculationInput.getAusserordentlicherAnspruch());
+			}
+			@Test
+			public void test119BeschaeftigungspensumFKJVAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(60);
+				bgCalculationInput.setErwerbspensumGS2(59);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(
+						DEFAULT_AUSSERORDENTLICHER_ANSPRUCH,
+						bgCalculationInput.getAusserordentlicherAnspruch());
+			}
 		}
 
-		@Test
-		public void test80BeschaeftigungspensumFKJVKeinAnspruchMessage() {
-			bgCalculationInput.setErwerbspensumGS1(0);
-			bgCalculationInput.setErwerbspensumGS2(80);
-			ruleToTest.executeRule(betreuung, bgCalculationInput);
+		@Nested
+		class Kindergartenalter1Test {
 
-			Assert.assertNotNull(bgCalculationInput.getParent().getBemerkungenDTOList().findFirstBemerkungByMsgKey(
-					MsgKey.KEIN_AUSSERORDENTLICHER_ANSPRUCH_MSG
-			));
+			@BeforeEach
+			public void setUpKindergartenalter1() {
+				betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KINDERGARTEN1);
+			}
+
+			@Test
+			public void test80BeschaeftigungspensumFKJVKeinAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(0);
+				bgCalculationInput.setErwerbspensumGS2(80);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(0, bgCalculationInput.getAusserordentlicherAnspruch());
+			}
+
+			@Test
+			public void test80BeschaeftigungspensumFKJVKeinAnspruchMessage() {
+				bgCalculationInput.setErwerbspensumGS1(0);
+				bgCalculationInput.setErwerbspensumGS2(80);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertNotNull(bgCalculationInput.getParent().getBemerkungenDTOList().findFirstBemerkungByMsgKey(
+						MsgKey.KEIN_AUSSERORDENTLICHER_ANSPRUCH_MSG
+				));
+			}
+
+			@Test
+			public void test100BeschaeftigungspensumFKJVKeinAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(50);
+				bgCalculationInput.setErwerbspensumGS2(50);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(
+						0,
+						bgCalculationInput.getAusserordentlicherAnspruch());
+			}
+			@Test
+			public void test120BeschaeftigungspensumFKJVAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(60);
+				bgCalculationInput.setErwerbspensumGS2(60);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(
+						DEFAULT_AUSSERORDENTLICHER_ANSPRUCH,
+						bgCalculationInput.getAusserordentlicherAnspruch());
+			}
+
 		}
 
-		@Test
-		public void test81BeschaeftigungspensumFKJVAnspruch() {
-			bgCalculationInput.setErwerbspensumGS1(50);
-			bgCalculationInput.setErwerbspensumGS2(31);
-			ruleToTest.executeRule(betreuung, bgCalculationInput);
+		@Nested
+		class Kindergartenalter2Test {
 
-			Assert.assertEquals(
-					DEFAULT_AUSSERORDENTLICHER_ANSPRUCH,
-					bgCalculationInput.getAusserordentlicherAnspruch());
+			@BeforeEach
+			public void setUpKindergartenalter2() {
+				betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KINDERGARTEN2);
+			}
+
+			@Test
+			public void test80BeschaeftigungspensumFKJVKeinAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(0);
+				bgCalculationInput.setErwerbspensumGS2(80);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(0, bgCalculationInput.getAusserordentlicherAnspruch());
+			}
+
+			@Test
+			public void test80BeschaeftigungspensumFKJVKeinAnspruchMessage() {
+				bgCalculationInput.setErwerbspensumGS1(0);
+				bgCalculationInput.setErwerbspensumGS2(80);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertNotNull(bgCalculationInput.getParent().getBemerkungenDTOList().findFirstBemerkungByMsgKey(
+						MsgKey.KEIN_AUSSERORDENTLICHER_ANSPRUCH_MSG
+				));
+			}
+
+			@Test
+			public void test100BeschaeftigungspensumFKJVKeinAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(50);
+				bgCalculationInput.setErwerbspensumGS2(50);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(
+						0,
+						bgCalculationInput.getAusserordentlicherAnspruch());
+			}
+			@Test
+			public void test120BeschaeftigungspensumFKJVAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(60);
+				bgCalculationInput.setErwerbspensumGS2(60);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(
+						DEFAULT_AUSSERORDENTLICHER_ANSPRUCH,
+						bgCalculationInput.getAusserordentlicherAnspruch());
+			}
+
 		}
 
-		@Test
-		public void test119BeschaeftigungspensumFKJVAnspruch() {
-			bgCalculationInput.setErwerbspensumGS1(60);
-			bgCalculationInput.setErwerbspensumGS2(59);
-			ruleToTest.executeRule(betreuung, bgCalculationInput);
-
-			Assert.assertEquals(
-					DEFAULT_AUSSERORDENTLICHER_ANSPRUCH,
-					bgCalculationInput.getAusserordentlicherAnspruch());
-		}
 	}
 }

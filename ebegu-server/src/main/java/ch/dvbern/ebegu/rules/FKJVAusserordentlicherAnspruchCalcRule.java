@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
@@ -43,10 +44,29 @@ import static ch.dvbern.ebegu.rules.AbstractAusserordentlicherAnspruchCalcRule.A
  */
 public class FKJVAusserordentlicherAnspruchCalcRule extends AbstractAusserordentlicherAnspruchCalcRule {
 
+	private int minBeschaeftigungsPensumVorschule;
+	private int minBeschaeftigungsPensumEingeschult;
+	private int maxDifferenzBeschaeftigungsPensum;
+
 	public FKJVAusserordentlicherAnspruchCalcRule(
+			int minBeschaeftigungsPensumVorschule,
+			int minBeschaeftigungsPensumEingeschult,
+			int maxDifferenzBeschaeftigungsPensum,
 			@Nonnull DateRange validityPeriod,
 			@Nonnull Locale locale) {
 		super(validityPeriod, locale);
+		this.minBeschaeftigungsPensumVorschule = minBeschaeftigungsPensumVorschule;
+		this.minBeschaeftigungsPensumEingeschult = minBeschaeftigungsPensumEingeschult;
+		this.maxDifferenzBeschaeftigungsPensum = maxDifferenzBeschaeftigungsPensum;
+	}
+
+	@Override
+	public boolean isRelevantForGemeinde(
+			@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
+		Einstellung ausserOrdentlicherAnspruchRuleTyp = einstellungMap.get(AUSSERORDENTLICHER_ANSPRUCH_RULE);
+		Objects.requireNonNull(ausserOrdentlicherAnspruchRuleTyp,"Parameter AUSSERORDENTLICHER_ANSPRUCH_RULE muss gesetzt sein");
+
+		return ausserOrdentlicherAnspruchRuleTyp.getValue().equals(FKJV.toString());
 	}
 
 	@Override
@@ -56,7 +76,7 @@ public class FKJVAusserordentlicherAnspruchCalcRule extends AbstractAusserordent
 		int ausserordentlicherAnspruch = inputData.getAusserordentlicherAnspruch();
 		int pensumAnspruch = inputData.getAnspruchspensumProzent();
 
-		if(!hasAnspruchAufAusserordnelticherAnspruch(platz, inputData)) {
+		if(!beschaeftigungspensumSufficient(platz, inputData)) {
 			inputData.setAusserordentlicherAnspruch(0);
 			inputData.addBemerkung(
 					MsgKey.KEIN_AUSSERORDENTLICHER_ANSPRUCH_MSG,
@@ -73,37 +93,54 @@ public class FKJVAusserordentlicherAnspruchCalcRule extends AbstractAusserordent
 		}
 	}
 
-	@Override
-	public boolean isRelevantForGemeinde(
-			@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
-		Einstellung ausserOrdentlicherAnspruchRuleTyp = einstellungMap.get(AUSSERORDENTLICHER_ANSPRUCH_RULE);
-		Objects.requireNonNull(ausserOrdentlicherAnspruchRuleTyp,"Parameter AUSSERORDENTLICHER_ANSPRUCH_RULE muss gesetzt sein");
-
-		return ausserOrdentlicherAnspruchRuleTyp.getValue().equals(FKJV.toString());
-	}
-
-	private boolean hasAnspruchAufAusserordnelticherAnspruch(AbstractPlatz platz, BGCalculationInput inputData) {
-		return beschaeftigungsPensumReachesMin(platz, inputData);
-	}
-
-	private boolean beschaeftigungsPensumReachesMin(AbstractPlatz platz, BGCalculationInput inputData) {
+	private boolean beschaeftigungspensumSufficient(AbstractPlatz platz, BGCalculationInput inputData) {
 		if(hasSecondGesuchsteller(platz)) {
-			return beschaeftigungsPensumReachesMinForTwoGesuchstellende(inputData.getErwerbspensumGS1(), inputData.getErwerbspensumGS2());
+			return beschaeftigungspensumSufficientForTwoGesuchstellende(platz, inputData.getErwerbspensumGS1(), inputData.getErwerbspensumGS2());
 		}
 
-		return beschaeftigungspensumReachesMinForOneGesuchstellende(inputData.getErwerbspensumGS1());
+		return beschaeftigungspensumSufficientForOneGesuchstellende(platz, inputData.getErwerbspensumGS1());
 	}
 
-	private boolean beschaeftigungsPensumReachesMinForTwoGesuchstellende(Integer erwerbspensumGS1, Integer erwerbspensumGS2) {
-		return erwerbspensumGS1 != null && erwerbspensumGS2 != null && erwerbspensumGS1 + erwerbspensumGS2 > 80;
-	}
-
-	private boolean beschaeftigungspensumReachesMinForOneGesuchstellende(Integer erwerbspensumGS1) {
-		return erwerbspensumGS1 != null && erwerbspensumGS1 > 0;
-	}
 
 	private boolean hasSecondGesuchsteller(AbstractPlatz platz) {
 		return platz.extractGesuch().getGesuchsteller2() != null;
+	}
+
+	private boolean beschaeftigungspensumSufficientForTwoGesuchstellende(
+			AbstractPlatz platz,
+			Integer erwerbspensumGS1,
+			Integer erwerbspensumGS2) {
+		Kind kind = platz.getKind().getKindJA();
+		assert kind.getEinschulungTyp() != null;
+		if (erwerbspensumGS1 == null || erwerbspensumGS2 == null) {
+			return false;
+		}
+		final int totalBeschaeftigungspensum = erwerbspensumGS1 + erwerbspensumGS2;
+		if (kind.getEinschulungTyp().isEingeschult()) {
+			return erwerbspensumSufficient(totalBeschaeftigungspensum - 100, this.minBeschaeftigungsPensumEingeschult);
+		}
+		return erwerbspensumSufficient(totalBeschaeftigungspensum - 100, this.minBeschaeftigungsPensumVorschule);
+	}
+
+	private boolean erwerbspensumSufficient(int beschaeftigungspensum, int minBeschaeftigungspensum) {
+		if (beschaeftigungspensum > minBeschaeftigungspensum) {
+			return true;
+		}
+		return Math.abs(beschaeftigungspensum - minBeschaeftigungspensum) <= this.maxDifferenzBeschaeftigungsPensum;
+	}
+
+	private boolean beschaeftigungspensumSufficientForOneGesuchstellende(
+			AbstractPlatz platz,
+			Integer beschaeftigungsPensumGS) {
+		Kind kind = platz.getKind().getKindJA();
+		assert kind.getEinschulungTyp() != null;
+		if (beschaeftigungsPensumGS == null || beschaeftigungsPensumGS == 0) {
+			return false;
+		}
+		if (kind.getEinschulungTyp().isEingeschult()) {
+			return erwerbspensumSufficient(beschaeftigungsPensumGS, this.minBeschaeftigungsPensumEingeschult);
+		}
+		return  erwerbspensumSufficient(beschaeftigungsPensumGS, this.minBeschaeftigungsPensumVorschule);
 	}
 
 }

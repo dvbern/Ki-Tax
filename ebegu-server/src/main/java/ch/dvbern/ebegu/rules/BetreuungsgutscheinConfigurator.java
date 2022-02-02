@@ -311,9 +311,16 @@ public class BetreuungsgutscheinConfigurator {
 
 		// - Ausserordentlicher Anspruch: Muss am Schluss gemacht werden, da er alle anderen Regeln überschreiben kann.
 		// Wir haben je eine Anspruch-Regel für ASIV und FKJV, die entsprechend der Einstellungen aktiv sind
+		Einstellung paramMaxDifferenzBeschaeftigungspensum = einstellungMap.get(FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM);
+		Objects.requireNonNull(paramMaxDifferenzBeschaeftigungspensum, "Parameter FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM muss gesetzt sein");
 		AusserordentlicherAnspruchCalcRule ausserordntlAsiv = new AusserordentlicherAnspruchCalcRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(ausserordntlAsiv, einstellungMap);
-		FKJVAusserordentlicherAnspruchCalcRule ausserordntlFkjv = new FKJVAusserordentlicherAnspruchCalcRule(defaultGueltigkeit, locale);
+		FKJVAusserordentlicherAnspruchCalcRule ausserordntlFkjv = new FKJVAusserordentlicherAnspruchCalcRule(
+				einstellungMap.get(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT).getValueAsInteger(),
+				einstellungMap.get(MIN_ERWERBSPENSUM_EINGESCHULT).getValueAsInteger(),
+				paramMaxDifferenzBeschaeftigungspensum.getValueAsInteger(),
+				defaultGueltigkeit,
+				locale);
 		addToRuleSetIfRelevantForGemeinde(ausserordntlFkjv, einstellungMap);
 	}
 
