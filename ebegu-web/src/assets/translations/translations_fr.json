@@ -2752,5 +2752,6 @@
     "BESONDERE_BEDUERFNISSE_LUZERN": "Lucerne: configurer les frais de garde extraordinaires",
     "BESONDERE_BEDUERFNISSE_BETRAG": "Montant des frais de garde extraordinaires",
     "FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH": "FKJV: Maximales Pensum bei ausserordentlichem Anspruch",
+    "AUSSERORDENTLICHER_ANSPRUCH_RULE": "Welche ausserordentlicher Anspruch Rule soll gelten",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

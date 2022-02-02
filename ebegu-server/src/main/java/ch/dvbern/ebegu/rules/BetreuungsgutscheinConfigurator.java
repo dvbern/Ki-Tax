@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.KitaxUtil;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_ANSPRUCH_MONATSWEISE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
@@ -122,7 +123,8 @@ public class BetreuungsgutscheinConfigurator {
 			FKJV_EINGEWOEHNUNG,
 			ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,
 			MINIMALDAUER_KONKUBINAT,
-			FKJV_ANSPRUCH_MONATSWEISE);
+			FKJV_ANSPRUCH_MONATSWEISE,
+			AUSSERORDENTLICHER_ANSPRUCH_RULE);
 	}
 
 	private void useRulesOfGemeinde(@Nonnull Gemeinde gemeinde, @Nullable KitaxUebergangsloesungParameter kitaxParameterDTO, @Nonnull Map<EinstellungKey, Einstellung> einstellungen) {
@@ -307,12 +309,12 @@ public class BetreuungsgutscheinConfigurator {
 		FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(fachstelleCalcRule, einstellungMap);
 
-		// - Ausserordentlicher Anspruch: Muss am Schluss gemacht werden, da er alle anderen Regeln überschreiben kann
-		Einstellung maxDifferenzBeschaeftigungspensum = einstellungMap.get(FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM);
-		Objects.requireNonNull(maxDifferenzBeschaeftigungspensum, "Parameter FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM muss gesetzt sein");
-
-		AusserordentlicherAnspruchCalcRule ausserordntl = new AusserordentlicherAnspruchCalcRule(defaultGueltigkeit, maxDifferenzBeschaeftigungspensum.getValueAsInteger(), locale);
-		addToRuleSetIfRelevantForGemeinde(ausserordntl, einstellungMap);
+		// - Ausserordentlicher Anspruch: Muss am Schluss gemacht werden, da er alle anderen Regeln überschreiben kann.
+		// Wir haben je eine Anspruch-Regel für ASIV und FKJV, die entsprechend der Einstellungen aktiv sind
+		AusserordentlicherAnspruchCalcRule ausserordntlAsiv = new AusserordentlicherAnspruchCalcRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(ausserordntlAsiv, einstellungMap);
+		FKJVAusserordentlicherAnspruchCalcRule ausserordntlFkjv = new FKJVAusserordentlicherAnspruchCalcRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(ausserordntlFkjv, einstellungMap);
 	}
 
 	private void reduktionsRegeln(Map<EinstellungKey, Einstellung> einstellungMap) {

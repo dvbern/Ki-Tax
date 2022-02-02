@@ -245,7 +245,10 @@ public enum EinstellungKey {
 	BESONDERE_BEDUERFNISSE_LUZERN,
 
 	// Wie hich ist das maximale Pensum bei ausserordentlichem Anspruch
-	FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH;
+	FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH,
+
+	// Welche ausserordentliche Anspruch Rule soll verwendet werden
+	AUSSERORDENTLICHER_ANSPRUCH_RULE;
 
 
 	private EinstellungTyp typ;
