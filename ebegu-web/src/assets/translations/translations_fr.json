@@ -110,6 +110,8 @@
     "FINANZIELLE_SITUATION_SCHULDEN_GS_1": "Dettes de {{namegs1}}",
     "FINANZIELLE_SITUATION_SCHULDEN_GS_2": "Dettes de {{namegs2}}",
     "FINANZIELLE_SITUATION_SCHULDEN_HELP": "Etat de la dette au 31.12 de l'année déterminante (point 4.3 de la déclaration d'impôt)<br/>Des justificatifs sur l'état de la dette doivent être fournis. Ils doivent être daté du 31.12 (les actes de défaut de biens ne sont pas pris en compte).<br/>Les dettes sont déduites de la fortune brute. ",
+    "FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_1": "Fortune nette de {{namegs1}}",
+    "FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_2": "Fortune nette de {{namegs2}}",
     "FINANZIELLE_SITUATION_NETTOVERMOEGEN": "Fortune nette, dont 5%",
     "FINANZIELLE_SITUATION_ANRECHENBARES_EINKOMMEN": "Revenu imputable",
     "FINANZIELLE_SITUATION_ANRECHENBARES_EINKOMMEN_HELP": "Le revenu déterminant comprend le salaire net (bénéfice commercial moyen des trois dernières années pour les personnes exerçant une activité lucrative indépendante), les allocations familiales, le revenu de remplacement, les contributions d'entretien perçues et 5 pour cent de la fortune nette (fortune brute moins les dettes).",

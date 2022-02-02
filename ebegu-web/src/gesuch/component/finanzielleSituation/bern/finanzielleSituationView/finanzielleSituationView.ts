@@ -101,9 +101,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.FINANZIELLE_SITUATION,
             TSWizardStepStatus.IN_BEARBEITUNG);
-        this.showSelbstaendig = this.model.getFiSiConToWorkWith().finanzielleSituationJA.isSelbstaendig();
-        this.showSelbstaendigGS = this.model.getFiSiConToWorkWith().finanzielleSituationGS
-            ? this.model.getFiSiConToWorkWith().finanzielleSituationGS.isSelbstaendig() : false;
+        this.initSelbstaendigkeit();
 
         this.settings.findEinstellung(TSEinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV,
             this.gesuchModelManager.getGemeinde()?.id,
@@ -118,6 +116,12 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         if (!this.showSelbstaendig) {
             this.resetSelbstaendigFields();
         }
+    }
+
+    private initSelbstaendigkeit(): void {
+        this.showSelbstaendig = this.model.getFiSiConToWorkWith().finanzielleSituationJA.isSelbstaendig();
+        this.showSelbstaendigGS = this.model.getFiSiConToWorkWith().finanzielleSituationGS
+            ? this.model.getFiSiConToWorkWith().finanzielleSituationGS.isSelbstaendig() : false;
     }
 
     private resetSelbstaendigFields(): void {
@@ -216,6 +220,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(false).then(() => {
                 this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+                this.initSelbstaendigkeit();
                 this.showFormular();
             },
         );

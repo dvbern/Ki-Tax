@@ -115,6 +115,8 @@
     "FINANZIELLE_SITUATION_SCHULDEN_GS_1": "Schulden {{namegs1}}",
     "FINANZIELLE_SITUATION_SCHULDEN_GS_2": "Schulden {{namegs2}}",
     "FINANZIELLE_SITUATION_SCHULDEN_HELP": "Angabe des Schuldenstands vom 31.12. des massgebenden Jahres Ziffer 4.3 der Steuererklärung.<br>Zur Berücksichtigung Ihres Schuldenstandes sind Nachweise erforderlich. Diese müssen vom Stichdatum 31.12. sein (Verlustscheine werden nicht berücksichtigt).<br>Die Schulden werden vom Bruttovermögen abgezogen.",
+    "FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_1": "Nettovermögen {{namegs1}}",
+    "FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_2": "Nettovermögen {{namegs2}}",
     "FINANZIELLE_SITUATION_NETTOVERMOEGEN": "Nettovermögen, davon 5%",
     "FINANZIELLE_SITUATION_ANRECHENBARES_EINKOMMEN": "Anrechenbares Einkommen",
     "FINANZIELLE_SITUATION_ANRECHENBARES_EINKOMMEN_HELP": "Das anrechenbare Einkommen ist die Summe aus Nettolohn (bei Selbständigerwerbenden der durchschnittliche Geschäftsgewinn der letzten 3 Jahre), Familienzulagen, Ersatzeinkommen, erhaltenen Alimenten und 5 Prozent des Nettovermögens (Nettovermögen = gesamtes Vermögen minus Schulden).",
