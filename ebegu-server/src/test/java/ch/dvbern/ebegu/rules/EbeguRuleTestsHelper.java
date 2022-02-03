@@ -50,6 +50,7 @@ import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION;
@@ -291,6 +292,7 @@ public final class EbeguRuleTestsHelper {
 		einstellungenMap.addEinstellung(ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,"false", gesuchsperiode);
 		einstellungenMap.addEinstellung(MINIMALDAUER_KONKUBINAT, "5", gesuchsperiode);
 		einstellungenMap.addEinstellung(FKJV_ANSPRUCH_MONATSWEISE, "false", gesuchsperiode);
+		einstellungenMap.addEinstellung(AUSSERORDENTLICHER_ANSPRUCH_RULE, "ASIV", gesuchsperiode);
 
 		return einstellungenMap.getEinstellungen();
 	}
@@ -336,6 +338,8 @@ public final class EbeguRuleTestsHelper {
 		einstellungenMap.addEinstellung(GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO, "0.00", gesuchsperiode);
 		// Schnittstellt Ki-Tax
 		einstellungenMap.addEinstellung(GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED, "false", gesuchsperiode);
+		// FKJV
+		einstellungenMap.addEinstellung(AUSSERORDENTLICHER_ANSPRUCH_RULE, "ASIV", gesuchsperiode);
 
 		return einstellungenMap.getEinstellungen();
 	}
