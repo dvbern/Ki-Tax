@@ -30,25 +30,29 @@
         <form role="form"
               #form="ngForm"
               novalidate>
+
             <div class="col-md-12">
-                <div class="row" *ngIf="onlyFerieninselBetreuungen">
+                <div class="row" *ngIf="showInfomaFields()">
+                    <div class="col-md-12 margin-bottom-20">
+                        <h3 translate class="uppercase ebegu-h1">ZAHLUNGSINFORMATIONEN</h3>
+                        <div class="margin-top-10 margin-bottom-30">
+                            <p class="italic" translate>ANGABEN_ZAHLUNGSINFORMATIONEN</p>
+                        </div>
+                    </div>
                     <div class="col-md-12">
-                        <p>
-                            <span data-translate="FIN_SIT_NOT_REQUIRED">
-                            </span>
-                        </p>
+                        <dv-infoma-fields></dv-infoma-fields>
+                        <mat-divider class="margin-bottom-50"></mat-divider>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
-                        <dv-infoma-fields *ngIf="showInfomaFields()"></dv-infoma-fields>
+                    <div class="col-md-12 margin-bottom-30">
+                        <h3 translate class="uppercase ebegu-h1">FRAGEN_ZU_ART_DER_VERANLAGUNG</h3>
                     </div>
-                </div>
-                <div class="row" *ngIf="!onlyFerieninselBetreuungen">
+
                     <div class="col-xs-12">
                         <div class="form-group">
                             <dv-radio-container-x>
-                                <label for="quellenbesteuert_id" class="required">
+                                <label for="quellenbesteuert_id" class="required ebegu-h1">
                                     {{'QUELLENBESTEUERT' | translate}}
                                 </label>
                                 <mat-radio-group
@@ -73,8 +77,8 @@
                     <div class="col-xs-12" *ngIf="gemeinsameStekVisible()">
                         <div class="form-group">
                             <dv-radio-container-x>
-                                <label for="gemeinsameSteuererklaerung_id" class="required">
-                                    {{'GEMEINSAME_STEK' | translate}}</label>
+                                <label for="gemeinsameSteuererklaerung_id" class="required ebegu-h1">
+                                    {{'GEMEINSAME_STEK' | translate: {antragsteller2: getAntragsteller2Name()} }}</label>
                                 <mat-radio-group
                                     (change)="gemeinsameStekChange($event)"
                                     [(ngModel)]="getModel().finanzielleSituationJA.gemeinsameStekVorjahr"
@@ -97,7 +101,7 @@
                     <div class="col-xs-12" *ngIf="alleinigeStekVisible()">
                         <div class="form-group">
                             <dv-radio-container-x>
-                                <label for="alleinigeStekVorjahr_id" class="required">
+                                <label for="alleinigeStekVorjahr_id" class="required ebegu-h1">
                                     {{'ALLEINIGE_STEK' | translate}}</label>
                                 <mat-radio-group
                                     (change)="alleinigeStekVorjahrChange($event)"
@@ -121,7 +125,7 @@
                     <div class="col-xs-12" *ngIf="veranlagtVisible()">
                         <div class="form-group">
                             <dv-radio-container-x>
-                                <label for="veranlagt_id" class="required">
+                                <label for="veranlagt_id" class="required ebegu-h1">
                                     {{'VERANLAGT' | translate}}</label>
                                 <mat-radio-group
                                     name="veranlagt"
@@ -160,8 +164,9 @@
                                 [finanzModel]="model"
                                 [readOnly]="readonly"
                 ></dv-veranlagung>
-                <dv-resultat *ngIf="gemeinsameStekVisible()"
+                <dv-resultat *ngIf="showSelbstdeklaration() || showVeranlagung()"
                              [isGemeinsam]="isGemeinsam()"
+                             [antragstellerNummer]="getAntragstellerNummer()"
                              [year]="getYearForDeklaration()">
                 </dv-resultat>
                 <dv-navigation-x (dvSave)="prepareSave($event.onResult)" [dvPrevious]="hasPrevious" [dvNext]="hasNext"

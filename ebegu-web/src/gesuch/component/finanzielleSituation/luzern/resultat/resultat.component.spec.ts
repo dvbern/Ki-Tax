@@ -20,7 +20,10 @@ import {NgForm} from '@angular/forms';
 import {SharedModule} from '../../../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSGesuch} from '../../../../../models/TSGesuch';
+import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {ResultatComponent} from './resultat.component';
 
 describe('ResultatComponent', () => {
@@ -30,12 +33,15 @@ describe('ResultatComponent', () => {
     const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name,
         ['calculateFinanzielleSituationTemp']);
     berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name, ['getGesuch']);
+    gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [ResultatComponent],
             providers: [
                 {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
+                {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 NgForm
             ],
             imports: [
@@ -57,4 +63,11 @@ describe('ResultatComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    function createGesuch(): TSGesuch {
+        const gesuch = new TSGesuch();
+        gesuch.gesuchsteller1 = new TSGesuchstellerContainer();
+        gesuch.gesuchsteller2 = new TSGesuchstellerContainer();
+        return gesuch;
+    }
 });

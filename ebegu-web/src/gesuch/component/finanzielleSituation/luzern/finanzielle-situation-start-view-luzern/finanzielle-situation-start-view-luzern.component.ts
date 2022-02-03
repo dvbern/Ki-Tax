@@ -23,6 +23,7 @@ import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSGesuch} from '../../../../../models/TSGesuch';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractFinSitLuzernView} from '../AbstractFinSitLuzernView';
@@ -52,8 +53,10 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
     }
 
     public isGemeinsam(): boolean {
-        // if we don't need two antragsteller for gesuch, this is the component for both antragsteller together
-        return !FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller(this.gesuchModelManager);
+        // if we don't need two separate antragsteller for gesuch, this is the component for both antragsteller together
+        // or only for the single antragsteller
+        return !FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller(this.gesuchModelManager)
+            && EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
     }
 
     public getAntragstellerNummer(): number {

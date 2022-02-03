@@ -115,23 +115,53 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 	) {
 		BigDecimal totalAbzuege = BigDecimal.ZERO;
 		if (finanzielleSituationGS1 != null) {
-			totalAbzuege = add(totalAbzuege, finanzielleSituationGS1.getAbzuegeLiegenschaft());
-			totalAbzuege = add(totalAbzuege, finanzielleSituationGS1.getEinkaeufeVorsorge());
+			BigDecimal abzuegeGS1;
+			if (finanzielleSituationGS1.getSelbstdeklaration() != null) {
+				abzuegeGS1 = finanzielleSituationGS1.getSelbstdeklaration().calculateAbzuege();
+			} else {
+				abzuegeGS1 = calcAbzuegeFromVeranlagung(finanzielleSituationGS1);
+			}
+			totalAbzuege = totalAbzuege.add(abzuegeGS1);
 		}
 		if (finanzielleSituationGS2 != null) {
-			totalAbzuege = add(totalAbzuege, finanzielleSituationGS2.getAbzuegeLiegenschaft());
-			totalAbzuege = add(totalAbzuege, finanzielleSituationGS2.getEinkaeufeVorsorge());
+			BigDecimal abzuegeGS2;
+			if (finanzielleSituationGS2.getSelbstdeklaration() != null) {
+				abzuegeGS2 = finanzielleSituationGS2.getSelbstdeklaration().calculateAbzuege();
+			} else {
+				abzuegeGS2 = calcAbzuegeFromVeranlagung(finanzielleSituationGS2);
+			}
+			totalAbzuege = totalAbzuege.add(abzuegeGS2);
 		}
 		return totalAbzuege;
+	}
+
+	private BigDecimal calcAbzuegeFromVeranlagung(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
+		BigDecimal total = BigDecimal.ZERO;
+		// abzuege liegenschaften should be ignored if negative
+		total = add(total, MathUtil.positiveNonNull(finanzielleSituation.getAbzuegeLiegenschaft()));
+		total = add(total, finanzielleSituation.getEinkaeufeVorsorge());
+		return total;
 	}
 
 	private BigDecimal calcVermoegen10Prozent(
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2) {
-		BigDecimal gs1SteuerbaresVermoegen =
-			finanzielleSituationGS1 != null ? finanzielleSituationGS1.getSteuerbaresVermoegen() : BigDecimal.ZERO;
-		BigDecimal gs2SteuerbaresVermoegen =
-			finanzielleSituationGS2 != null ? finanzielleSituationGS2.getSteuerbaresVermoegen() : BigDecimal.ZERO;
+		BigDecimal gs1SteuerbaresVermoegen = BigDecimal.ZERO;
+		if (finanzielleSituationGS1 != null) {
+			if (finanzielleSituationGS1.getSelbstdeklaration() != null) {
+				gs1SteuerbaresVermoegen = finanzielleSituationGS1.getSelbstdeklaration().calculateVermoegen();
+			} else {
+				gs1SteuerbaresVermoegen = finanzielleSituationGS1.getSteuerbaresVermoegen();
+			}
+		}
+		BigDecimal gs2SteuerbaresVermoegen = BigDecimal.ZERO;
+		if (finanzielleSituationGS2 != null) {
+			if (finanzielleSituationGS2.getSelbstdeklaration() != null) {
+				gs2SteuerbaresVermoegen = finanzielleSituationGS2.getSelbstdeklaration().calculateVermoegen();
+			} else {
+				gs2SteuerbaresVermoegen = finanzielleSituationGS2.getSteuerbaresVermoegen();
+			}
+		}
 
 		final BigDecimal totalBruttovermoegen = add(gs1SteuerbaresVermoegen, gs2SteuerbaresVermoegen);
 
@@ -156,8 +186,12 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		@Nonnull BigDecimal total
 	) {
 		if (abstractFinanzielleSituation != null) {
-			total = add(total, abstractFinanzielleSituation.getSteuerbaresEinkommen());
-			total = subtract(total, abstractFinanzielleSituation.getGeschaeftsverlust());
+			if (abstractFinanzielleSituation.getSelbstdeklaration() != null) {
+				total = total.add(abstractFinanzielleSituation.getSelbstdeklaration().calculateEinkuenfte());
+			} else {
+				total = add(total, abstractFinanzielleSituation.getSteuerbaresEinkommen());
+				total = subtract(total, abstractFinanzielleSituation.getGeschaeftsverlust());
+			}
 		}
 		return total;
 	}
